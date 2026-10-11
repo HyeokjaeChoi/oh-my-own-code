@@ -108,6 +108,9 @@ import {
   instructionStep,
   validateInstructionDispatch,
   validateInstructionCompletion,
+  validatePermissionModeCompletion,
+  isPolicyReapply,
+  PERMISSION_MODE_FEATURE,
   validateMcpAdmission,
   validateMcpDispatch,
   validateMcpCompletion,
@@ -322,6 +325,7 @@ function apply(root, payload, conservative = false, validatedFirstSessions) {
         GIT_INDEX_FEATURE,
         "configuration_save_v1",
         INSTRUCTION_FEATURE,
+        PERMISSION_MODE_FEATURE,
         MCP_FEATURE,
         SKILL_FEATURE,
         SKILL_RUNTIME_FEATURE,
@@ -396,6 +400,12 @@ function apply(root, payload, conservative = false, validatedFirstSessions) {
     need(
       !instructionStep(payload.identity.type) ||
         next.features.includes(INSTRUCTION_FEATURE) ||
+        conservative,
+      "unsupported_version",
+    );
+    need(
+      payload.identity.type !== "permission.mode.set" ||
+        next.features.includes(PERMISSION_MODE_FEATURE) ||
         conservative,
       "unsupported_version",
     );
@@ -569,6 +579,7 @@ function apply(root, payload, conservative = false, validatedFirstSessions) {
       operation &&
         !operation.terminal &&
         (isPermissionControl(operation.identity.type) ||
+          isPolicyReapply(operation.identity.type, payload) ||
           !operation.dispatches.some((step) => step.step === payload.step)),
       "identity_conflict",
     );
@@ -648,6 +659,7 @@ function apply(root, payload, conservative = false, validatedFirstSessions) {
       return root;
     }
     validatePermissionCompletion(operation, payload, next.sessions);
+    validatePermissionModeCompletion(payload, next.features);
     validateInstructionCompletion(
       operation,
       payload,
@@ -1726,6 +1738,15 @@ export async function openWorkspaceRegistry({
           feature: INSTRUCTION_FEATURE,
           revision: root.revision + 1,
         });
+      if (
+        immutable.type === "permission.mode.set" &&
+        !root.features.includes(PERMISSION_MODE_FEATURE)
+      )
+        await commit({
+          kind: "feature_gate",
+          feature: PERMISSION_MODE_FEATURE,
+          revision: root.revision + 1,
+        });
       if (mcpStep(immutable.type) && !root.features.includes(MCP_FEATURE))
         await commit({
           kind: "feature_gate",
@@ -2038,6 +2059,7 @@ export async function openWorkspaceRegistry({
       }
       const prior =
         !isPermissionControl(operation.identity.type) &&
+        !isPolicyReapply(operation.identity.type, request) &&
         operation.dispatches.find((entry) => entry.step === request.step);
       if (prior) {
         need(!isInboxCancel(operation.identity.type), "identity_conflict");

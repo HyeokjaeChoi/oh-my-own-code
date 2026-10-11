@@ -267,6 +267,8 @@ import {
   validateStorageReceipt,
   validateStorageIdentity,
   validateRegistryDelta,
+  validatePermissionModeCompletion,
+  PERMISSION_MODE_FEATURE,
   validateJournalPayload,
 } from "./storage-journal.mjs";
 
@@ -4272,4 +4274,18 @@ test("session record permissionMode is a closed, optional enum", () => {
       () => validateRegistryDelta(delta({ ...session, permissionMode })),
       { code: "invalid_record" },
     );
+});
+
+test("permissionMode in a completion delta requires its feature gate", () => {
+  const payload = {
+    delta: {
+      workspaces: [],
+      sessions: [{ permissionMode: "ask" }],
+      tombstones: [],
+    },
+  };
+  assert.throws(() => validatePermissionModeCompletion(payload, []), {
+    code: "unsupported_version",
+  });
+  validatePermissionModeCompletion(payload, [PERMISSION_MODE_FEATURE]);
 });

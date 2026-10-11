@@ -742,6 +742,7 @@ export function validateJournalPayload(value) {
           GIT_INDEX_FEATURE,
           "configuration_save_v1",
           INSTRUCTION_FEATURE,
+          PERMISSION_MODE_FEATURE,
           MCP_FEATURE,
           SKILL_FEATURE,
           SKILL_RUNTIME_FEATURE,
@@ -924,8 +925,29 @@ export function instructionStep(type) {
     return "native.instructions.remove";
   return undefined;
 }
+export const PERMISSION_MODE_FEATURE = "permission_mode_v1";
+export function validatePermissionModeCompletion(payload, features) {
+  if (
+    payload.delta.sessions.some((session) =>
+      Object.hasOwn(session, "permissionMode"),
+    )
+  )
+    need(features.includes(PERMISSION_MODE_FEATURE), "unsupported_version");
+}
+// Workspace checks may re-apply the persisted mode to Native (one dispatch per
+// session/child) before the op's own step.
+export const isPolicyReapply = (type, dispatch) =>
+  dispatch.step === "native.policy" &&
+  typeof dispatch.nativeSessionId === "string" &&
+  Boolean(
+    type === "permission.mode.set" ||
+      instructionStep(type) ||
+      mcpStep(type) ||
+      isSkillSave(type),
+  );
 export function validateInstructionDispatch(identity, dispatch, sessions) {
   const expected = instructionStep(identity.type);
+  if (isPolicyReapply(identity.type, dispatch)) return;
   if (!expected && !dispatch.step.startsWith("native.instructions.")) return;
   const target = sessions.get(identity.sessionId);
   need(
@@ -1093,6 +1115,7 @@ export function validateMcpAdmission(value) {
 export function validateMcpDispatch(operation, dispatch) {
   need(typeof dispatch.step === "string");
   const expected = mcpStep(operation.identity.type);
+  if (isPolicyReapply(operation.identity.type, dispatch)) return;
   if (
     !expected &&
     !dispatch.step.startsWith("native.mcp.") &&
@@ -1163,6 +1186,7 @@ export function validateSkillAdmission(value) {
 }
 export function validateSkillDispatch(operation, dispatch) {
   if (!isSkillSave(operation.identity.type)) return;
+  if (isPolicyReapply(operation.identity.type, dispatch)) return;
   need(
     [
       "filesystem.configuration.stage",
@@ -1348,6 +1372,11 @@ function historyValidator() {
         "unsupported_version",
       );
       need(
+        payload.identity.type !== "permission.mode.set" ||
+          features.has(PERMISSION_MODE_FEATURE),
+        "unsupported_version",
+      );
+      need(
         !mcpStep(payload.identity.type) || features.has(MCP_FEATURE),
         "unsupported_version",
       );
@@ -1478,6 +1507,7 @@ function historyValidator() {
           );
         need(
           isPermissionControl(prior.identity.type) ||
+            isPolicyReapply(prior.identity.type, payload) ||
             !prior.steps.has(payload.step),
           "identity_conflict",
         );
@@ -1524,6 +1554,7 @@ function historyValidator() {
           );
         validatePermissionCompletion(prior, payload, sessions);
         validateInstructionCompletion(prior, payload, sessions, [...features]);
+        validatePermissionModeCompletion(payload, [...features]);
         validateBeforeBranchCompletion(prior, payload, [...features]);
         validateInboxCancelCompletion(prior, payload, [...features]);
         validateFileCompletion(prior, payload, [...features]);

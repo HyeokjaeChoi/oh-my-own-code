@@ -519,7 +519,7 @@ export function Conversation(props: Props) {
                   >
                     <strong className={styles.permissionTitle}>
                       {permission.childTitle !== undefined &&
-                        "하위 에이전트 · "}
+                        `하위 에이전트 · ${permission.childTitle} · `}
                       {permission.title}
                     </strong>
                     <p className={styles.permissionDetail}>
