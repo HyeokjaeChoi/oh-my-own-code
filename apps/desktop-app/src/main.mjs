@@ -137,7 +137,19 @@ if (isolatedRoot) {
   }
   app.setPath("userData", join(isolatedRoot, "appdata", "OhMyOwnCode"));
 }
-const gotInstanceLock = app.requestSingleInstanceLock();
+// The owner kernel is the single-instance lock (keyed by the storage root); a second
+// request here would make its acquire fail and leave every launch in recovery.
+let gotInstanceLock;
+try {
+  namespace = prepareDurableNamespace(app);
+  kernel = createElectronOwnerKernel(app);
+  // This call must stay synchronous, before whenReady and profile override.
+  gotInstanceLock = kernel.acquire(namespace.root);
+} catch {
+  initialRecovery = "storage_denied";
+}
+// Storage unusable: still single-instance, so only one recovery window exists.
+gotInstanceLock ??= app.requestSingleInstanceLock();
 if (!gotInstanceLock) app.quit();
 else loginPathPromise = resolveLoginPath();
 app.on("second-instance", () => {
@@ -145,15 +157,6 @@ app.on("second-instance", () => {
   if (mainWindow.isMinimized()) mainWindow.restore();
   mainWindow.focus();
 });
-try {
-  if (!gotInstanceLock) throw new Error("second_instance");
-  namespace = prepareDurableNamespace(app);
-  kernel = createElectronOwnerKernel(app);
-  // This call must stay synchronous, before whenReady and profile override.
-  if (!kernel.acquire(namespace.root)) initialRecovery = "owner_conflict";
-} catch {
-  initialRecovery = "storage_denied";
-}
 const ephemeralProfile = configureEphemeralProfile(
   app,
   undefined,
