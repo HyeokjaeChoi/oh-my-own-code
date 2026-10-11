@@ -265,7 +265,9 @@ export function createTerminalHost({
     async startScript(owner, { workspaceId, script }) {
       const root = resolveWorkspace(workspaceId);
       if (typeof root !== "string") throw fail("NOT_FOUND");
+      const e = epochs.get(owner) ?? 0;
       const { packageManager, scripts } = await readProjectActions(root);
+      if ((epochs.get(owner) ?? 0) !== e) throw fail("NOT_FOUND");
       if (!scripts.some((s) => s.name === script)) throw fail("UNKNOWN_SCRIPT");
       return guarded(owner, ensurePath(), () =>
         launch(
