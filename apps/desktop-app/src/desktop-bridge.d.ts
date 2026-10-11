@@ -14,6 +14,10 @@ import type {
   PlansRequest,
   PlansResult,
 } from "./renderer/shared/plans/index.mjs";
+import type {
+  AutomationRequest,
+  AutomationResult,
+} from "./renderer/shared/automation/index.mjs";
 import type { WorkbenchPermissionPolicyObservation } from "./renderer/shared/configuration-draft/index.js";
 export type { WorkbenchPermissionPolicyObservation } from "./renderer/shared/configuration-draft/index.js";
 import type {
@@ -1036,6 +1040,14 @@ declare global {
         // eslint-disable-next-line no-unused-vars
         _request: DataRequest,
       ): Promise<DataResult<unknown>>;
+      automation(
+        // eslint-disable-next-line no-unused-vars
+        _request: AutomationRequest,
+      ): Promise<AutomationResult<unknown>>;
+      notify(
+        // eslint-disable-next-line no-unused-vars
+        _request: unknown,
+      ): Promise<unknown>;
       plans(
         // eslint-disable-next-line no-unused-vars
         _request: PlansRequest,
