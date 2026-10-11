@@ -6,6 +6,7 @@ import {
   dialog,
   ipcMain,
   nativeImage,
+  Notification,
   shell,
 } from "electron";
 import { dirname, join } from "node:path";
@@ -33,6 +34,11 @@ import { createTerminalHost, resolveLoginPath } from "./host/terminal-host.mjs";
 import { bindTerminalIpc } from "./host/terminal-ipc.mjs";
 import { createPlansHost } from "./host/plans-host.mjs";
 import { bindPlansIpc } from "./host/plans-ipc.mjs";
+import { createAutomationHost } from "./host/automation-host.mjs";
+import { bindAutomationIpc } from "./host/automation-ipc.mjs";
+import { createAutomationRunner } from "./host/automation-runners.mjs";
+import { createNotifyHost } from "./host/notify-host.mjs";
+import { bindNotifyIpc } from "./host/notify-ipc.mjs";
 import { createDataHost, wipeAppDataSync } from "./host/data-host.mjs";
 import { bindDataIpc } from "./host/data-ipc.mjs";
 import { createPreviewHost } from "./host/preview-host.mjs";
@@ -66,6 +72,24 @@ const plans = createPlansHost({
   resolveWorkspace: (id) => workbench?.terminalRoot(id),
   storeFile: () => join(namespace.metadata, "plans.json"),
   terminals: (owner, workspaceId) => terminals.list(owner, workspaceId),
+});
+const automation = createAutomationHost({
+  storeFile: () => join(namespace.metadata, "jobs.json"),
+  run: createAutomationRunner({
+    service: () => workbench,
+    terminals,
+    terminalRoot: (id) => workbench?.terminalRoot(id),
+  }),
+});
+const notifier = createNotifyHost({
+  Notification,
+  isFocused: () => Boolean(mainWindow?.isFocused()),
+  focusWindow: () => {
+    if (!mainWindow) return;
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.show();
+    mainWindow.focus();
+  },
 });
 // Set by the confirmed "앱 데이터 삭제"; executed in will-quit after storage is released.
 let wipeOnQuit = false;
@@ -256,6 +280,7 @@ let storageShutdown = false;
 let nativePreflight;
 async function finishStorage() {
   if (storageShutdown) return;
+  automation.stop();
   previews.closeAll();
   await terminals.closeAll();
   await workbench?.drain();
@@ -306,6 +331,8 @@ function bindIpc() {
   bindWorkbenchIpc({ ipcMain, admit, service: () => workbench });
   bindTerminalIpc({ ipcMain, admit, host: terminals });
   bindPlansIpc({ ipcMain, admit, host: plans });
+  bindAutomationIpc({ ipcMain, admit, host: automation });
+  bindNotifyIpc({ ipcMain, admit, host: notifier });
   bindPreviewIpc({ ipcMain, admit, host: previews });
   bindDataIpc({
     ipcMain,
@@ -626,6 +653,7 @@ app.whenReady().then(async () => {
     });
   })();
   startupPromise.catch(() => {});
+  void automation.start().catch(() => {});
   workbench = createWorkbenchService({
     contextIO: createConversationContextIO({
       validateImage: (bytes) => !nativeImage.createFromBuffer(bytes).isEmpty(),
