@@ -58,7 +58,7 @@ import {
   waitForReady,
 } from "./host/workbench-admission.mjs";
 import { performance } from "node:perf_hooks";
-import { basename } from "node:path";
+import { basename, isAbsolute } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { redactReceipt } from "./host/workbench-receipts.mjs";
 import {
@@ -279,6 +279,7 @@ export function projectMessages(data) {
 export function createWorkbenchService({
   runtime,
   pickDirectory,
+  probeWorkspace,
   confirmTrust,
   confirmSessionRemoval = async () => false,
   confirmConfigurationSave = async () => false,
@@ -2242,6 +2243,23 @@ export function createWorkbenchService({
       resources: view?.recovery.resources ?? [],
     };
   }
+  const workspaceMeta = new Map();
+  async function refreshWorkspaceMeta() {
+    if (!probeWorkspace) return;
+    const paths = new Set([
+      ...(registry?.readView().workspaces.map((e) => e.canonicalPath) ?? []),
+      ...[...tables().workspaces.values()].map((e) => e.path),
+    ]);
+    await Promise.all(
+      [...paths].slice(0, 100).map(async (path) => {
+        try {
+          workspaceMeta.set(path, (await probeWorkspace(path)) ?? {});
+        } catch {
+          workspaceMeta.delete(path);
+        }
+      }),
+    );
+  }
   function base(w, s, projection) {
     checkLive();
     if (currentScope()?.candidate)
@@ -2315,6 +2333,7 @@ export function createWorkbenchService({
           trusted,
           trustRevision,
           temporary,
+          ...workspaceMeta.get(path),
         }),
       ),
       sessions: publishedSessions.map(
@@ -4455,6 +4474,7 @@ export function createWorkbenchService({
           .map((event) => ({ ...event })),
       };
     if (request.type === "snapshot") {
+      await refreshWorkspaceMeta();
       const selectedW = w ?? tables().workspaces.get(defaultWorkspace);
       const selectedS =
         s ??
@@ -4502,7 +4522,15 @@ export function createWorkbenchService({
         return base(created);
       }
       if (!registry) await markEffect();
-      const picked = await pickDirectory();
+      // A typed path takes the same canonicalization, limit and native trust path as a picked one.
+      if (
+        request.path !== undefined &&
+        (request.type !== "workspace.import" ||
+          !isAbsolute(request.path) ||
+          request.path.length === 0)
+      )
+        fail("INVALID_REQUEST");
+      const picked = request.path ?? (await pickDirectory());
       checkLive();
       if (!picked) fail("CANCELLED");
       if (!registry) await markEffect();
@@ -4522,7 +4550,9 @@ export function createWorkbenchService({
         ? await reserveSession(undefined, "imported", path)
         : undefined;
       if (registry) await markEffect();
-      return base(addWorkspace(path, false, false, reservation));
+      const added = addWorkspace(path, false, false, reservation);
+      await refreshWorkspaceMeta();
+      return base(added);
     }
     if (request.type === "workspace.remove") {
       // Do not discard the sole live authority while its Native registration

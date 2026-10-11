@@ -1,3 +1,4 @@
+import { probeWorkspaceMeta } from "./host/workspace-meta.mjs";
 import { createConversationContextIO } from "./host/conversation-context-io.mjs";
 import {
   app,
@@ -538,6 +539,7 @@ app.whenReady().then(async () => {
     runtimeReady: startupPromise,
     runtimeEpoch,
     bootstrap: true,
+    probeWorkspace: probeWorkspaceMeta,
     async pickDirectory() {
       const staged = stagedImport;
       stagedImport = undefined;
