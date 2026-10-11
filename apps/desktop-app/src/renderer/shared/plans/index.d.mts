@@ -139,10 +139,37 @@ export function checkStale(
   check: Pick<PlanCheck, "status" | "planSha" | "fingerprint">,
   current: { planSha: string; fingerprint?: string | undefined },
 ): boolean;
+export function checkUnverified(
+  check: Pick<PlanCheck, "status" | "planSha" | "fingerprint">,
+  current: {
+    planSha: string;
+    fingerprint?: string | undefined;
+    dirty?: boolean | undefined;
+  },
+): boolean;
 export function verificationSummary(
   checks: PlanCheck[],
-  current: { planSha: string; fingerprint?: string | undefined },
-): "none" | "running" | "stale" | "failed" | "passed" | "pending";
+  current: {
+    planSha: string;
+    fingerprint?: string | undefined;
+    dirty?: boolean | undefined;
+  },
+):
+  | "none"
+  | "running"
+  | "stale"
+  | "failed"
+  | "passed"
+  | "pending"
+  | "unverified";
+export function scan(text: string): {
+  start: number;
+  end: number;
+  text: string;
+  line: number;
+  inFence: boolean;
+  review: boolean;
+}[];
 export function workspaceFingerprint(
   repository: { head: string | null } | undefined,
   files: { path: string; index: string; worktree: string }[] | undefined,

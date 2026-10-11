@@ -17,6 +17,8 @@ export {
   nextApprovalVersion,
   checkStatusFromTerminal,
   checkStale,
+  checkUnverified,
+  scan as scanPlanLines,
   verificationSummary,
   workspaceFingerprint,
   sha256Hex,

@@ -10,6 +10,7 @@ import {
   stripAnsi,
   TERMINAL_LIMITS,
   TERMINAL_STARTED_EVENT,
+  lastStartedTerminal,
   type TerminalInfo,
   type TerminalRead,
 } from "../../shared/terminal/index.js";
@@ -76,10 +77,15 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
               .filter((t) => !prev.some((p) => p.terminalId === t.terminalId))
               .map((t) => ({ ...t, text: "", cursor: 0 })),
           ]);
+          const started = lastStartedTerminal();
+          const pick =
+            started && r.value.some((t) => t.terminalId === started)
+              ? started
+              : select
+                ? r.value.at(-1)?.terminalId
+                : undefined;
           setActive(
-            (a) =>
-              (select ? r.value.at(-1)?.terminalId : a) ??
-              r.value[0]?.terminalId,
+            (a) => (select || !a ? pick : a) ?? a ?? r.value[0]?.terminalId,
           );
         },
       );

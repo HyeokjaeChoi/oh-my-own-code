@@ -10,6 +10,8 @@ import {
   approvalState,
   callPlans,
   checkStale,
+  checkUnverified,
+  scanPlanLines,
   executionMessage,
   parseChecklist,
   parseFindings,
@@ -25,6 +27,7 @@ import {
   type Resolver,
 } from "../../shared/plans/index.js";
 import {
+  announceTerminalStarted,
   callTerminal,
   type TerminalInfo,
 } from "../../shared/terminal/index.js";
@@ -32,6 +35,7 @@ import type { ProjectActions } from "../../shared/project-actions/index.js";
 import styles from "./plans.module.css";
 
 const POLL_MS = 1000;
+const IDLE_POLL_MS = 5000;
 const errors: Record<string, string> = {
   STALE: "계획 파일이 바뀌었습니다. 다시 불러온 뒤 시도하세요.",
   NOT_APPROVED: "승인된 현재 버전이 없습니다.",
@@ -54,8 +58,11 @@ const summaryLabels = {
   stale: "재검증 필요",
   failed: "검증 실패",
   passed: "검증 통과",
+  unverified: "통과 · 변경 파일 내용 확인 불가, 재검증 필요",
   pending: "검증 미완료",
 };
+const clock = (iso: string) =>
+  new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 const authorLabels = { implementer: "구현자", reviewer: "독립 리뷰어" };
 
 export function PlansPanel({
@@ -65,7 +72,7 @@ export function PlansPanel({
   workspaceId: string;
   sessionId?: string | undefined;
 }) {
-  const { actions } = useWindowWorkbench();
+  const { actions, store } = useWindowWorkbench();
   const draft = useWorkbenchSelector(selectors.workspaceFileDraft);
   const git = useWorkbenchSelector((s) => s.gitReview.observation);
   const canSave = useWorkbenchSelector(selectors.canSaveWorkspaceFile);
@@ -97,6 +104,9 @@ export function PlansPanel({
     git?.status === "available"
       ? workspaceFingerprint(git.repository, git.files)
       : undefined;
+  // Status letters cannot tell whether a changed file was edited again, so a
+  // dirty tree never counts as verified by a past run.
+  const dirtyTree = git?.status === "available" && git.files.length > 0;
   useEffect(() => {
     let live = true;
     if (!fingerprint) setFp(undefined);
@@ -115,12 +125,15 @@ export function PlansPanel({
     }).then((r) => r.ok && setProject(r.value));
   }, [workspaceId, refresh, actions]);
   const running = list?.checks.some((c) => c.status === "running");
+  // Re-observe while the panel is open (not only while a check runs).
   useEffect(() => {
-    if (!running) return;
-    const timer = setInterval(() => {
-      void refresh();
-      void actions.observeGitReview();
-    }, POLL_MS);
+    const timer = setInterval(
+      () => {
+        void refresh();
+        void actions.observeGitReview();
+      },
+      running ? POLL_MS : IDLE_POLL_MS,
+    );
     return () => clearInterval(timer);
   }, [running, refresh, actions]);
 
@@ -144,7 +157,11 @@ export function PlansPanel({
       : undefined;
   const links = (list?.links ?? []).filter((l) => l.path === path);
   const checks = (list?.checks ?? []).filter((c) => c.path === path);
-  const current = { planSha: plan?.sha256 ?? "", fingerprint: fp };
+  const current = {
+    planSha: plan?.sha256 ?? "",
+    fingerprint: fp,
+    dirty: dirtyTree,
+  };
   const checklist = parseChecklist(text);
   const findings = parseFindings(text);
   const summary = summarizeFindings(findings);
@@ -197,14 +214,25 @@ export function PlansPanel({
       await open(created);
     }
   };
+  // Approve exactly the bytes on screen: hash the displayed baseline (same UTF-8
+  // bytes as the host hashes) and require it to equal the file's current hash.
   const approve = async () => {
-    if (plan && !dirty)
-      await call({
-        type: "plans.approve",
-        workspaceId,
-        path: plan.path,
-        sha256: plan.sha256,
-      });
+    if (!plan || dirty || !loaded) return;
+    const shown = await sha256Hex(draft.baseline ?? "");
+    if (shown !== plan.sha256) {
+      setError(
+        "화면의 계획이 파일과 다릅니다. 다시 불러왔습니다. 확인 후 승인하세요.",
+      );
+      await actions.readWorkspaceFile(plan.path);
+      await refresh();
+      return;
+    }
+    await call({
+      type: "plans.approve",
+      workspaceId,
+      path: plan.path,
+      sha256: shown,
+    });
   };
   const execute = async () => {
     if (!plan || approval?.state !== "approved" || !sessionId) return;
@@ -216,7 +244,9 @@ export function PlansPanel({
       sessionId,
     });
     if (!v) return;
-    const sent = await actions.sendContextMessage(
+    const sent = await actions.sendMessageToSession(
+      workspaceId,
+      sessionId,
       executionMessage({
         path: plan.path,
         sha256: plan.sha256,
@@ -233,19 +263,26 @@ export function PlansPanel({
     if (!plan || !script) return;
     setError(undefined);
     await actions.observeGitReview();
+    // Recompute from the refreshed observation, not the pre-refresh `fp`.
+    const obs = store.getState().gitReview.observation;
+    const freshFp =
+      obs?.status === "available"
+        ? await sha256Hex(workspaceFingerprint(obs.repository, obs.files)!)
+        : undefined;
     const started = await callTerminal<TerminalInfo>({
       type: "terminal.start",
       workspaceId,
       script,
     });
     if (!started.ok) return fail(started.code);
+    announceTerminalStarted(started.value.terminalId);
     await call({
       type: "plans.check",
       workspaceId,
       path: plan.path,
       kind,
       terminalId: started.value.terminalId,
-      ...(fp ? { fingerprint: fp } : {}),
+      ...(freshFp ? { fingerprint: freshFp } : {}),
     });
   };
   const addFindings = () => {
@@ -263,8 +300,7 @@ export function PlansPanel({
 
   const rows = text.split(/\r?\n/);
   const itemByLine = new Map(checklist.items.map((i) => [i.line, i]));
-  let reviewSection = false;
-  let fence = false;
+  const scanned = scanPlanLines(text);
 
   return (
     <section className={styles.panel} aria-label="계획과 검증">
@@ -366,11 +402,10 @@ export function PlansPanel({
               ) : (
                 <div>
                   {rows.map((row, line) => {
-                    if (/^\s{0,3}(```|~~~)/.test(row)) fence = !fence;
+                    const reviewSection = scanned[line]?.review ?? false;
                     const h =
-                      !fence && /^\s{0,3}(#{1,6})\s+(.*?)\s*#*\s*$/.exec(row);
-                    if (h && h[1]!.length <= 2)
-                      reviewSection = /^review$/i.test(h[2]!);
+                      !scanned[line]?.inFence &&
+                      /^ {0,3}(#{1,6})\s+(.*?)\s*#*\s*$/.exec(row);
                     const item = itemByLine.get(line);
                     if (item)
                       return (
@@ -460,6 +495,14 @@ export function PlansPanel({
                       <li key={c.id}>
                         {c.kind} · <code>{c.command}</code> ·{" "}
                         {checkLabels[c.status]}
+                        {(c.status === "passed" || c.status === "failed") &&
+                          ` (${clock(c.finishedAt ?? c.startedAt)} 기준)`}
+                        {checkUnverified(c, current) && (
+                          <span className={styles.warn}>
+                            {" "}
+                            · 재검증 필요 (변경 파일 내용 확인 불가)
+                          </span>
+                        )}
                         {c.status === "failed" &&
                           ` (종료 코드 ${c.exitCode ?? "신호"})`}
                         {checkStale(c, current) && (
