@@ -114,6 +114,9 @@ const previews = createPreviewHost({
 });
 const here = dirname(fileURLToPath(import.meta.url));
 const developmentUrl = process.env.OMOC_DESKTOP_DEV_URL;
+// Unpackaged e2e only: a transparent, click-through, unfocused window so test runs don't cover or steal the user's screen.
+const backgroundE2E =
+  !app.isPackaged && process.env.OMOC_DESKTOP_E2E_BACKGROUND === "1";
 const runtimeEpoch = randomUUID();
 let namespace;
 let owner;
@@ -443,13 +446,20 @@ function createWindow() {
       webSecurity: true,
       allowRunningInsecureContent: false,
       webviewTag: false,
+      backgroundThrottling: !backgroundE2E,
     },
   });
   mainWindow.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
   mainWindow.webContents.on("will-navigate", (event, url) => {
     if (!allowedRendererUrl(url)) event.preventDefault();
   });
-  mainWindow.once("ready-to-show", () => mainWindow?.show());
+  mainWindow.once("ready-to-show", () => {
+    if (!backgroundE2E) return mainWindow?.show();
+    app.dock?.hide();
+    mainWindow?.setOpacity(0);
+    mainWindow?.setIgnoreMouseEvents(true);
+    mainWindow?.showInactive();
+  });
   const senderScope = String(mainWindow.webContents.id);
   mainWindow.webContents.once("destroyed", () => {
     workbench?.closeSender(senderScope);
