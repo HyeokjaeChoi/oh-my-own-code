@@ -255,6 +255,21 @@ test(
   },
 );
 
+test(
+  "closeOwner during the login PATH wait cancels the pending start",
+  { skip: !posix },
+  async () => {
+    let release;
+    const gate = new Promise((r) => (release = r));
+    const { host } = fixture(["-c", "exit 0"], { loginPath: () => gate });
+    const p = host.start("o", { workspaceId: "w1" });
+    await host.closeOwner("o");
+    release("/x");
+    await assert.rejects(p, { terminalCode: "NOT_FOUND" });
+    assert.deepEqual(host.list("o", "w1"), []);
+  },
+);
+
 test("terminal request validation is closed", () => {
   const good = [
     { type: "terminal.start", workspaceId: "w1" },

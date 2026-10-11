@@ -104,6 +104,15 @@ export function createTerminalHost({
 } = {}) {
   const terminals = new Map();
   let pathValue;
+  const epochs = new Map(); // owner -> closeOwner count; a bump during the PATH wait cancels the spawn
+  const guarded = (owner, wait, run) => {
+    if (!wait) return run();
+    const e = epochs.get(owner) ?? 0;
+    return wait.then(() => {
+      if ((epochs.get(owner) ?? 0) !== e) throw fail("NOT_FOUND");
+      return run();
+    });
+  };
   // loginPath may be a promise or a function that starts the lookup (called lazily on first use).
   // start() stays synchronous once settled; until then it waits (bounded) so no terminal gets a minimal PATH.
   let pathReady;
@@ -250,10 +259,7 @@ export function createTerminalHost({
 
   return {
     start(owner, request) {
-      const wait = ensurePath();
-      return wait
-        ? wait.then(() => launch(owner, request))
-        : launch(owner, request);
+      return guarded(owner, ensurePath(), () => launch(owner, request));
     },
     // Script must exist in the workspace's package.json right now; package manager comes from its lockfile.
     async startScript(owner, { workspaceId, script }) {
@@ -261,12 +267,13 @@ export function createTerminalHost({
       if (typeof root !== "string") throw fail("NOT_FOUND");
       const { packageManager, scripts } = await readProjectActions(root);
       if (!scripts.some((s) => s.name === script)) throw fail("UNKNOWN_SCRIPT");
-      await ensurePath();
-      return launch(
-        owner,
-        { workspaceId },
-        { file: packageManager, args: ["run", script] },
-        { script, label: `${packageManager} run ${script}` },
+      return guarded(owner, ensurePath(), () =>
+        launch(
+          owner,
+          { workspaceId },
+          { file: packageManager, args: ["run", script] },
+          { script, label: `${packageManager} run ${script}` },
+        ),
       );
     },
     async scripts(owner, workspaceId) {
@@ -314,10 +321,12 @@ export function createTerminalHost({
       return { closed: true };
     },
     // Renderer reload/destroy: nothing else can ever reach these terminals.
-    closeOwner: (owner) =>
-      Promise.all(
+    closeOwner(owner) {
+      epochs.set(owner, (epochs.get(owner) ?? 0) + 1);
+      return Promise.all(
         [...terminals.values()].filter((t) => t.owner === owner).map(remove),
-      ),
+      );
+    },
     // Workspace removed or untrusted since start.
     reap: () =>
       Promise.all(

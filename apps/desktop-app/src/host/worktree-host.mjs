@@ -57,7 +57,13 @@ function runGit(cwd, args) {
         cwd,
         timeout: 30000,
         maxBuffer: 1 << 22,
-        env: { ...process.env, GIT_TERMINAL_PROMPT: "0", LC_ALL: "C" },
+        env: {
+          ...process.env,
+          GIT_TERMINAL_PROMPT: "0",
+          LC_ALL: "C",
+          // Never discover a repo in a parent of cwd (a plain folder inside someone else's repo).
+          GIT_CEILING_DIRECTORIES: dirname(cwd),
+        },
       },
       (error, stdout, stderr) =>
         error
