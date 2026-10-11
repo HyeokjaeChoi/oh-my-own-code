@@ -186,6 +186,7 @@ const schemas = {
   ],
   "file.list": [["workspaceId"], ["path"]],
   "file.read": [["workspaceId", "path"], []],
+  "file.search": [["workspaceId", "query", "mode"], ["caseSensitive"]],
   "configuration.read": [["workspaceId", "kind"], []],
   "configuration.instructions.read": [["workspaceId", "sessionId"], []],
   "configuration.instructions.apply": [
@@ -250,7 +251,7 @@ export function validateRequest(value) {
       if (!validContextSelection(entry)) fail("INVALID_REQUEST");
       continue;
     }
-    if (["pinned", "archived"].includes(key)) {
+    if (["pinned", "archived", "caseSensitive"].includes(key)) {
       if (typeof entry !== "boolean") fail("INVALID_REQUEST");
       continue;
     }
@@ -422,6 +423,13 @@ export function validateRequest(value) {
   )
     fail("INVALID_REQUEST");
   if (
+    value.type === "file.search" &&
+    (!["name", "content"].includes(value.mode) ||
+      !value.query.trim() ||
+      value.query.length > 200)
+  )
+    fail("INVALID_REQUEST");
+  if (
     value.type === "context.observe" &&
     workspaceFilePathReason(value.path) === "invalid_path"
   )
@@ -511,6 +519,7 @@ export const READ_TYPES = Object.freeze([
   "catalog.list",
   "file.list",
   "file.read",
+  "file.search",
   "configuration.read",
   "operation.lookup",
 ]);

@@ -102,6 +102,8 @@ import type {
   WorkbenchDiagnostics,
   WorkbenchFileList,
   WorkbenchFileRead,
+  WorkbenchFileSearch,
+  WorkbenchResult,
   WorkbenchConfigurationFile,
   WorkbenchSkillFiles,
   WorkbenchAgentFiles,
@@ -3612,6 +3614,7 @@ export function createWindowWorkbench(
         void files();
       }, 5000);
   }
+  let searchAbort: AbortController | undefined;
   async function files() {
     const state = store.getState(),
       identity = state.files.identity;
@@ -4779,6 +4782,36 @@ export function createWindowWorkbench(
     },
     closeFiles() {
       dispatch({ type: "files.close" });
+      searchAbort?.abort();
+    },
+    async searchFiles(
+      query: string,
+      mode: "name" | "content",
+      caseSensitive = false,
+    ): Promise<WorkbenchResult<WorkbenchFileSearch>> {
+      const identity = store.getState().files.identity;
+      if (!identity) return { ok: false, code: "UNAVAILABLE", message: "" };
+      // The host cancels the superseded search; retry while its lane frees.
+      searchAbort?.abort();
+      const abort = (searchAbort = new AbortController());
+      for (let attempt = 0; ; attempt++) {
+        const result = await transport.read<WorkbenchFileSearch>(
+          {
+            type: "file.search",
+            workspaceId: identity.workspaceId,
+            query,
+            mode,
+            ...(caseSensitive ? { caseSensitive } : {}),
+          },
+          identity.epoch,
+          abort.signal,
+        );
+        if (result.ok || result.code !== "READ_BUSY" || attempt >= 20)
+          return result;
+        await new Promise((resolve) => clock.setTimeout(resolve, 100));
+        if (abort.signal.aborted)
+          return { ok: false, code: "CANCELLED", message: "CANCELLED" };
+      }
     },
     refreshFiles: files,
     diagnostics(
