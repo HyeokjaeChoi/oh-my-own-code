@@ -2372,6 +2372,7 @@ const mutationTypes: OperationIdentity["type"][] = [
   "session.create",
   "session.rename",
   "session.pin",
+  "permission.mode.set",
   "session.archive",
   "session.fork",
   "session.inbox.cancel",
@@ -2486,7 +2487,7 @@ function validProjection(next: WorkbenchSnapshot): boolean {
       !closed(
         s,
         ["id", "workspaceId", "title", "status"],
-        ["pinned", "archived", "parentSessionId"],
+        ["pinned", "archived", "parentSessionId", "permissionMode"],
       ) ||
       !wireId(s.id, 256) ||
       !workspaces.has(s.workspaceId) ||

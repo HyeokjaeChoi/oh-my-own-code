@@ -1,8 +1,8 @@
 import {
-  compilePermissionRules,
   matchesOrderedPermissionRules,
   matchesAuthenticatedFloor,
 } from "./permission-policy-compiler.mjs";
+import { compileModeRules } from "./permission-mode.mjs";
 import { permissionPromptInputDigest } from "./permission-input-digest.mjs";
 import { projectPermissionPolicy } from "./renderer/shared/configuration-draft/permission-policy.mjs";
 import { createConversationContextIO } from "./host/conversation-context-io.mjs";
@@ -139,6 +139,7 @@ import {
 } from "./host/workbench-native-agents.mjs";
 
 const lifecycleTypes = new Set([
+  "permission.mode.set",
   "session.rename",
   "session.pin",
   "session.archive",
@@ -402,6 +403,11 @@ export function createWorkbenchService({
   });
   const reads = new Map();
   const lifecycleReceipts = new Map();
+  // In-memory per app session; a restart or fork falls back to the safe "ask".
+  const permissionModes = new Map();
+  const modeOf = (s) => permissionModes.get(s.id) ?? "ask";
+  const policyOk = (s, rules) =>
+    matchesOrderedPermissionRules(compileModeRules(modeOf(s)), rules);
   const diagnostics = {
     startedAt: Date.now(),
     observedOperations: 0,
@@ -835,9 +841,12 @@ export function createWorkbenchService({
           record.removedSessionIds ?? [request.sessionId].filter(Boolean),
       };
     } else if (
-      ["session.rename", "session.pin", "session.archive"].includes(
-        request.type,
-      )
+      [
+        "session.rename",
+        "session.pin",
+        "session.archive",
+        "permission.mode.set",
+      ].includes(request.type)
     ) {
       record.result = {
         kind: "metadata",
@@ -1978,13 +1987,7 @@ export function createWorkbenchService({
       // A persisted mode needs its exact compiler inputs and generation readback.
       // Until that producer is connected, the legacy baseline cannot replace it.
       if (s.permissionControl) fail("POLICY_UNVERIFIED");
-      const expected = compilePermissionRules({
-        mode: "ask",
-        settings: [],
-        capabilities: [],
-        authenticatedDenies: [],
-        agentDenies: [],
-      });
+      const expected = compileModeRules(modeOf(s));
       currentScope().policyStep = step;
       await call(client.session.update, {
         sessionID: s.sdkId,
@@ -2326,6 +2329,7 @@ export function createWorkbenchService({
         }) => ({
           id,
           workspaceId,
+          permissionMode: modeOf({ id }),
           title,
           status:
             blocked ||
@@ -3656,8 +3660,8 @@ export function createWorkbenchService({
       const correlated = await verifySavedSession(target, new Map(), new Set());
       if (
         !correlated ||
-        !policyMatches(info.permissions) ||
-        !policyMatches(correlated.permissions)
+        !policyOk(target, info.permissions) ||
+        !policyOk(target, correlated.permissions)
       )
         fail("POLICY_UNVERIFIED");
       const pending = await call(client.permission.list, {
@@ -3885,8 +3889,8 @@ export function createWorkbenchService({
     const correlated = await verifySavedSession(s, new Map(), new Set());
     if (
       !correlated ||
-      !policyMatches(info.permissions) ||
-      !policyMatches(correlated.permissions)
+      !policyOk(s, info.permissions) ||
+      !policyOk(s, correlated.permissions)
     )
       fail("POLICY_UNVERIFIED");
     const pending = await call(client.permission.list, { sessionID: s.sdkId });
@@ -4163,6 +4167,11 @@ export function createWorkbenchService({
         const updated = await idleIdentity(w, s);
         if (updated.title !== request.title) fail("UNKNOWN_OUTCOME");
         s.title = request.title;
+      } else if (request.type === "permission.mode.set") {
+        // Takes effect via policy() before the next send; never replies to
+        // or approves requests that are already pending.
+        await markEffect();
+        permissionModes.set(s.id, request.mode);
       } else if (request.type === "session.pin") {
         await markEffect();
         s.pinned = request.pinned;

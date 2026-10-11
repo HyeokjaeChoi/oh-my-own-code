@@ -570,6 +570,7 @@ export function Workbench() {
               Boolean(session.archived)
             }
             archived={Boolean(session?.archived)}
+            permissionMode={session?.permissionMode ?? "ask"}
             pending={pending}
             mutate={mutate}
             openPanel={openPanel}

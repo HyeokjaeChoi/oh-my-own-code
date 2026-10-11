@@ -189,6 +189,7 @@ const mutations = new Set([
   "configuration.instructions.remove",
   "session.rename",
   "session.pin",
+  "permission.mode.set",
   "session.archive",
   "session.fork",
   "session.remove",

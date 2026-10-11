@@ -175,6 +175,10 @@ const schemas = {
   ],
   "session.interrupt": [["workspaceId", "sessionId"], []],
   "permission.policy.read": [["workspaceId", "sessionId"], []],
+  "permission.mode.set": [
+    ["workspaceId", "sessionId", "requestId", "mode"],
+    [],
+  ],
   "permission.respond": [
     ["workspaceId", "sessionId", "requestId", "decision"],
     [],
@@ -447,6 +451,11 @@ export function validateRequest(value) {
   if (value.type === "message.send" && !value.text.trim())
     fail("INVALID_REQUEST");
   if (
+    value.type === "permission.mode.set" &&
+    !["ask", "scoped_edit", "read_plan"].includes(value.mode)
+  )
+    fail("INVALID_REQUEST");
+  if (
     value.type === "permission.respond" &&
     !["once", "reject"].includes(value.decision)
   )
@@ -702,7 +711,7 @@ export function validateSnapshot(value) {
     requiredObject(
       s,
       ["id", "workspaceId", "title", "status"],
-      ["pinned", "archived", "parentSessionId"],
+      ["pinned", "archived", "parentSessionId", "permissionMode"],
     );
     needDTO(
       resourceId(s.id) &&
@@ -714,6 +723,8 @@ export function validateSnapshot(value) {
     );
     for (const flag of ["pinned", "archived"])
       if (Object.hasOwn(s, flag)) needDTO(typeof s[flag] === "boolean");
+    if (Object.hasOwn(s, "permissionMode"))
+      needDTO(["ask", "scoped_edit", "read_plan"].includes(s.permissionMode));
     if (Object.hasOwn(s, "parentSessionId"))
       needDTO(resourceId(s.parentSessionId));
   }

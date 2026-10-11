@@ -52,6 +52,7 @@ type Props = {
   executionAvailable: boolean;
   newSessionDisabled?: boolean;
   archived?: boolean;
+  permissionMode?: "ask" | "scoped_edit" | "read_plan";
   pending: boolean;
   mutate(
     _operation: MutationRequest,
@@ -673,6 +674,33 @@ export function Conversation(props: Props) {
                 Native 설정 닫기
               </Button>
             </details>
+            <label className={styles.permissionMode} hidden={branchActive}>
+              <span>권한 모드</span>
+              <select
+                aria-label="권한 모드"
+                value={props.permissionMode ?? "ask"}
+                disabled={props.pending || props.disabled}
+                onChange={(event) =>
+                  void props.mutate({
+                    type: "permission.mode.set",
+                    workspaceId: props.workspaceId,
+                    sessionId: props.sessionId,
+                    requestId: crypto.randomUUID(),
+                    mode: event.target.value as
+                      | "ask"
+                      | "scoped_edit"
+                      | "read_plan",
+                  })
+                }
+              >
+                <option value="ask">요청마다 확인</option>
+                <option value="scoped_edit">범위 내 편집 허용</option>
+                <option value="read_plan">읽기/계획</option>
+              </select>
+              <small>
+                다음 요청부터 적용됩니다. 대기 중인 요청은 바뀌지 않습니다.
+              </small>
+            </label>
             <PermissionPolicy
               className={styles.runtimeReport}
               hidden={branchActive}

@@ -721,3 +721,41 @@ test("unfiltered lineage scan rejects malformed relationships and accepts unrela
     );
   });
 });
+
+test("permission.mode.set validates strictly and does not approve or touch pending requests", async (t) => {
+  const target = { workspaceId: "w", sessionId: "s", requestId: "r" };
+  assert.equal(
+    validateRequest({
+      type: "permission.mode.set",
+      ...target,
+      mode: "read_plan",
+    }).mode,
+    "read_plan",
+  );
+  for (const mode of ["custom", "allow", "", undefined, 1])
+    assert.throws(
+      () => validateRequest({ type: "permission.mode.set", ...target, mode }),
+      { appCode: "INVALID_REQUEST" },
+    );
+  const f = await fixture(t);
+  const before = f.calls.filter((c) => c.name === "update").length;
+  const res = await f.service.handle(
+    f.request("permission.mode.set", { mode: "scoped_edit" }),
+  );
+  assert.equal(res.ok, true);
+  assert.equal(res.value.sessions[0].permissionMode, "scoped_edit");
+  // Transition itself is not retroactive: no reply, no ruleset write.
+  assert.equal(f.calls.filter((c) => c.name === "reply").length, 0);
+  assert.equal(f.calls.filter((c) => c.name === "update").length, before);
+  // The mode reaches Native at the next execution boundary, deny floor last.
+  await f.service.handle(
+    f.request("session.inbox.cancel", { inboxId: "none" }),
+  );
+  const update = f.calls.filter((c) => c.name === "update").at(before);
+  const rules = update.args[0].permissions;
+  assert.deepEqual(
+    rules.find((r) => r.action === "edit"),
+    { action: "edit", resource: "*", effect: "allow" },
+  );
+  assert.deepEqual(rules.slice(-2), BASELINE_POLICY.slice(1));
+});
