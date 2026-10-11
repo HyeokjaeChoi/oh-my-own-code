@@ -77,7 +77,7 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
               .filter((t) => !prev.some((p) => p.terminalId === t.terminalId))
               .map((t) => ({ ...t, text: "", cursor: 0 })),
           ]);
-          const started = lastStartedTerminal();
+          const started = lastStartedTerminal(workspaceId);
           const pick =
             started && r.value.some((t) => t.terminalId === started)
               ? started

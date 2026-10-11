@@ -46,7 +46,7 @@ function Export({
   const lastLength = messages.at(-1)?.text.length;
   useEffect(() => {
     setSummary(undefined);
-  }, [session?.id, outputs, messages.length, messages.at(-1)?.id, lastLength]);
+  }, [session?.id, outputs, messages, lastLength]);
   const preview = async () => {
     const r = await callData<ExportSummary>({
       type: "export.preview",

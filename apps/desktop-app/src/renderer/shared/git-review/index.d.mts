@@ -100,6 +100,7 @@ export type WorkbenchGitReview = GitReadScope &
         repository: GitRepository;
         branches: GitBranch[];
         files: GitFile[];
+        contentDigest?: string;
       }
     | { status: "unavailable"; reason: GitReviewReason }
   );

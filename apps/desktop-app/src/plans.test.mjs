@@ -197,10 +197,16 @@ test("check status only from terminal exit; staleness; summary", () => {
     "failed",
   );
   const pass = { status: "passed", planSha: "p", fingerprint: "f" };
+  const cur0 = { planSha: "p", fingerprint: "f" };
   assert.equal(checkStale(pass, { planSha: "p", fingerprint: "f" }), false);
   assert.equal(checkStale(pass, { planSha: "q", fingerprint: "f" }), true);
   assert.equal(checkStale(pass, { planSha: "p", fingerprint: "g" }), true);
   assert.equal(checkStale(pass, { planSha: "p" }), false);
+  // no recorded fingerprint (unverifiable) is never a plain pass
+  assert.equal(
+    checkStale({ status: "passed", planSha: "p", fingerprint: null }, cur0),
+    true,
+  );
   assert.equal(
     checkStale({ status: "running", planSha: "x" }, { planSha: "p" }),
     false,
@@ -224,16 +230,25 @@ test("check status only from terminal exit; staleness; summary", () => {
 });
 
 test("fingerprint is order independent; sha256Hex known vector; slugs and paths", async () => {
-  const a = workspaceFingerprint({ head: "abc" }, [
-    { path: "b", index: "M", worktree: "." },
-    { path: "a", index: ".", worktree: "M" },
-  ]);
-  const b = workspaceFingerprint({ head: "abc" }, [
-    { path: "a", index: ".", worktree: "M" },
-    { path: "b", index: "M", worktree: "." },
-  ]);
+  const a = workspaceFingerprint(
+    { head: "abc" },
+    [
+      { path: "b", index: "M", worktree: "." },
+      { path: "a", index: ".", worktree: "M" },
+    ],
+    "d",
+  );
+  const b = workspaceFingerprint(
+    { head: "abc" },
+    [
+      { path: "a", index: ".", worktree: "M" },
+      { path: "b", index: "M", worktree: "." },
+    ],
+    "d",
+  );
   assert.equal(a, b);
-  assert.equal(workspaceFingerprint(undefined, []), undefined);
+  assert.equal(workspaceFingerprint(undefined, [], "d"), undefined);
+  assert.equal(workspaceFingerprint({ head: "abc" }, []), undefined);
   assert.equal(
     await sha256Hex("abc"),
     "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
@@ -457,15 +472,19 @@ test("dirty tree: fresh check is a plain pass; plan dir ignored; status change g
   const repo = { head: "h" };
   const dirty = [{ path: "src/a.ts", index: ".", worktree: "M" }];
   const plan = { path: ".omoc/plans/p.md", index: ".", worktree: "?" };
-  const fp = workspaceFingerprint(repo, dirty);
-  assert.equal(workspaceFingerprint(repo, [...dirty, plan]), fp);
+  const fp = workspaceFingerprint(repo, dirty, "c1");
+  assert.equal(workspaceFingerprint(repo, [...dirty, plan], "c1"), fp);
   const pass = { status: "passed", planSha: "p", fingerprint: fp };
   const cur = { planSha: "p", fingerprint: fp };
   assert.equal(checkStale(pass, cur), false);
   assert.equal(verificationSummary([pass], cur), "passed");
-  const changed = workspaceFingerprint(repo, [
-    ...dirty,
-    { path: "b.ts", index: ".", worktree: "?" },
-  ]);
+  const changed = workspaceFingerprint(
+    repo,
+    [...dirty, { path: "b.ts", index: ".", worktree: "?" }],
+    "c1",
+  );
   assert.equal(checkStale(pass, { planSha: "p", fingerprint: changed }), true);
+  // same status rows, re-edited content: stale
+  const reedited = workspaceFingerprint(repo, dirty, "c2");
+  assert.equal(checkStale(pass, { planSha: "p", fingerprint: reedited }), true);
 });

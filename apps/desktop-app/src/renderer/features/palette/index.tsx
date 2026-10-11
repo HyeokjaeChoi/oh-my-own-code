@@ -150,7 +150,7 @@ export function CommandPalette() {
           startErrors[r.code] ?? "스크립트를 시작하지 못했습니다.",
         );
       actions.openPanel("terminal");
-      announceTerminalStarted(r.value.terminalId);
+      announceTerminalStarted(workspaceId, r.value.terminalId);
     } else if (a.type === "settings")
       window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT));
     else if (a.type === "notifications")

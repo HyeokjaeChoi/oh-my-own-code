@@ -38,6 +38,7 @@ const IDLE_POLL_MS = 5000;
 const errors: Record<string, string> = {
   STALE: "계획 파일이 바뀌었습니다. 다시 불러온 뒤 시도하세요.",
   NOT_APPROVED: "승인된 현재 버전이 없습니다.",
+  OBSERVATION_FAILED: "변경 사항을 확인하지 못해 검증을 시작하지 않았습니다.",
   NOT_FOUND: "작업 공간 또는 계획 파일을 찾을 수 없습니다.",
   NOT_A_SCRIPT_RUN: "프로젝트 스크립트 실행만 검증으로 기록할 수 있습니다.",
   TOO_LARGE: "계획 파일은 64KiB 이하여야 합니다.",
@@ -100,7 +101,7 @@ export function PlansPanel({
 
   const fingerprint =
     git?.status === "available"
-      ? workspaceFingerprint(git.repository, git.files)
+      ? workspaceFingerprint(git.repository, git.files, git.contentDigest)
       : undefined;
   useEffect(() => {
     let live = true;
@@ -259,20 +260,23 @@ export function PlansPanel({
   const runCheck = async () => {
     if (!plan || !script) return;
     setError(undefined);
-    await actions.observeGitReview();
+    if (!(await actions.observeGitReview())) return fail("OBSERVATION_FAILED");
+    // Fingerprint is taken here, at check start (not at completion): edits made
+    // while the check runs then make it stale, which is the safe direction.
     // Recompute from the refreshed observation, not the pre-refresh `fp`.
     const obs = store.getState().gitReview.observation;
-    const freshFp =
+    const freshRaw =
       obs?.status === "available"
-        ? await sha256Hex(workspaceFingerprint(obs.repository, obs.files)!)
+        ? workspaceFingerprint(obs.repository, obs.files, obs.contentDigest)
         : undefined;
+    const freshFp = freshRaw ? await sha256Hex(freshRaw) : undefined;
     const started = await callTerminal<TerminalInfo>({
       type: "terminal.start",
       workspaceId,
       script,
     });
     if (!started.ok) return fail(started.code);
-    announceTerminalStarted(started.value.terminalId);
+    announceTerminalStarted(workspaceId, started.value.terminalId);
     await call({
       type: "plans.check",
       workspaceId,

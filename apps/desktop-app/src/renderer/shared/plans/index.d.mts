@@ -157,6 +157,7 @@ export function scan(text: string): {
 export function workspaceFingerprint(
   repository: { head: string | null } | undefined,
   files: { path: string; index: string; worktree: string }[] | undefined,
+  contentDigest?: string,
 ): string | undefined;
 export function sha256Hex(text: string): Promise<string>;
 export function executionMessage(input: {
