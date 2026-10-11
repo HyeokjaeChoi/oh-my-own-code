@@ -17,6 +17,7 @@ import { openWorkspaceRegistry } from "./workspace-registry.mjs";
 import { createWorkbenchService } from "../workbench-service.mjs";
 import { mcpNativeName } from "./workbench-mcp.mjs";
 import { BASELINE_POLICY } from "../workbench-contract.mjs";
+import { compileModeRules } from "../permission-mode.mjs";
 import { startSidecar } from "../sidecar-supervisor.mjs";
 import { validateStorageReceipt } from "./storage-journal.mjs";
 import {
@@ -170,10 +171,18 @@ for (const scenario of [
       f.state.hooks.permissions = () => [
         { id: "permission", sessionID: f.nativeId },
       ];
-    if (scenario === "policy") f.records.get(f.nativeId).permissions = [];
+    if (scenario === "policy") {
+      f.records.get(f.nativeId).permissions = [];
+      f.state.failPolicy = true;
+    }
     const result = await f.mutate(request, `instruction-${scenario}`);
     assert.equal(result.ok, false, JSON.stringify(result));
-    assert.equal(result.receipt.effect, "none", JSON.stringify(result));
+    // A failed policy re-apply was itself a (journaled) Native dispatch.
+    assert.equal(
+      result.receipt.effect,
+      scenario === "policy" ? "unknown" : "none",
+      JSON.stringify(result),
+    );
     assert.ok(!f.state.calls.includes("instruction-put"));
     assert.ok(!f.state.calls.includes("instruction-remove"));
     assert.equal(
@@ -1440,7 +1449,9 @@ async function reopenForks(t, f, adapt = (registry) => registry, options = {}) {
   const calls = f.state.calls.slice(callsBefore);
   assert.ok(
     calls.every((name) =>
-      ["get", "active", "inbox", "messages", "permissions"].includes(name),
+      ["get", "active", "inbox", "messages", "permissions", "list"].includes(
+        name,
+      ),
     ),
     JSON.stringify(calls),
   );
@@ -2510,7 +2521,10 @@ for (const scenario of ["file", "catalog", "permissions", "policy", "inbox"])
           f.state.hooks.permissions = () => [
             { id: "pending", sessionID: nativeId },
           ];
-        if (scenario === "policy") f.records.get(nativeId).permissions = [];
+        if (scenario === "policy") {
+          f.records.get(nativeId).permissions = [];
+          f.state.failPolicy = true;
+        }
         if (scenario === "inbox")
           f.state.inbox = [{ id: "inbox", sessionID: nativeId }];
         return true;
@@ -2518,11 +2532,12 @@ for (const scenario of ["file", "catalog", "permissions", "policy", "inbox"])
     });
     const result = await f.mutate(f.register, `mcp-race-${scenario}`);
     assert.equal(result.ok, false, JSON.stringify(result));
-    assert.equal(result.receipt.effect, "none");
+    const effect = scenario === "policy" ? "unknown" : "none";
+    assert.equal(result.receipt.effect, effect);
     assert.ok(!f.state.calls.includes("mcp-add"));
     assert.equal(
       (await f.lookup(`mcp-race-${scenario}`)).value.receipt.effect,
-      "none",
+      effect,
     );
   });
 
@@ -2550,13 +2565,19 @@ for (const scenario of [
     if (scenario === "permissions")
       f.state.hooks.permissions = ({ sessionID }) =>
         sessionID === nativeId ? [{ id: "pending", sessionID }] : [];
-    if (scenario === "policy") f.records.get(nativeId).permissions = [];
+    if (scenario === "policy") {
+      f.records.get(nativeId).permissions = [];
+      f.state.failPolicy = true;
+    }
     if (scenario === "correlation") f.records.get(nativeId).metadata = {};
     if (scenario === "inbox")
       f.state.inbox = [{ id: "pending", sessionID: nativeId }];
     const result = await f.mutate(f.register, `mcp-other-${scenario}`);
     assert.equal(result.ok, false, JSON.stringify(result));
-    assert.equal(result.receipt.effect, "none");
+    assert.equal(
+      result.receipt.effect,
+      scenario === "policy" ? "unknown" : "none",
+    );
     assert.ok(!f.state.calls.includes("mcp-add"));
   });
 
@@ -5537,4 +5558,50 @@ test("stored permission mode is retained and never reset to baseline by send", a
     reopened.close();
     await reopened.drain();
   }
+});
+
+test("workspace check re-applies drifted Native rules (journaled native.policy) so instruction apply succeeds", async (t) => {
+  const f = await instructionFixture(t);
+  f.records.get(f.nativeId).permissions = compileModeRules("scoped_edit");
+  const applied = await f.mutate(f.apply, "instructions-reapply");
+  assert.equal(applied.ok, true, JSON.stringify(applied));
+  assert.deepEqual(
+    f.records.get(f.nativeId).permissions,
+    compileModeRules("ask"),
+  );
+});
+
+test("mode.set with failed readback is UNKNOWN_OUTCOME and falls back to the narrower mode", async (t) => {
+  const f = await fixture(t);
+  const snap = await f.ready();
+  const created = await f.mutate(
+    { type: "session.create", workspaceId: snap.selectedWorkspaceId },
+    "mode-trust",
+  );
+  assert.equal(created.ok, true, JSON.stringify(created));
+  const sessionId = created.value.selectedSessionId;
+  const nativeId = f.registry
+    .readView()
+    .sessions.find((x) => x.appSessionId === sessionId).nativeSessionId;
+  let first = true;
+  f.state.hooks.update = async ({ sessionID, permissions }) => {
+    const rules = first ? [] : permissions;
+    first = false;
+    f.records.get(sessionID).permissions = rules;
+  };
+  const result = await f.mutate(
+    {
+      type: "permission.mode.set",
+      workspaceId: snap.selectedWorkspaceId,
+      sessionId,
+      mode: "scoped_edit",
+      requestId: "mode-unknown",
+    },
+    "mode-unknown",
+  );
+  assert.equal(result.receipt?.effect, "unknown", JSON.stringify(result));
+  assert.deepEqual(
+    f.records.get(nativeId).permissions,
+    compileModeRules("ask"),
+  );
 });

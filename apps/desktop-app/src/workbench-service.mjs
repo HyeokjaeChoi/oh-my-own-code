@@ -1985,7 +1985,8 @@ export function createWorkbenchService({
     };
     return owner.reservation;
   }
-  // Native-owned subagent descendants of a tracked session (depth-bounded).
+  // Native-owned subagent descendants of a tracked session (depth-bounded;
+  // Native keeps finished children, so the count is not capped).
   // App-tracked sessions and forks (also parented to their source session by
   // Native) are excluded: they follow their own mode through their own policy.
   async function nativeDescendants(parentSdkId, code) {
@@ -2016,7 +2017,6 @@ export function createWorkbenchService({
           },
           code,
         );
-      if (out.length > 64) fail(code);
       frontier = next;
     }
     return out;
@@ -4265,10 +4265,23 @@ export function createWorkbenchService({
         // Takes effect via policy() before the next send; never replies to
         // or approves requests that are already pending.
         await markEffect();
+        const previousMode = modeOf(s);
         s.permissionMode = request.mode;
-        // Write + verify the new ruleset now (also narrows running subagent
-        // children); the session is idle, so this cannot race a run.
-        await policy(s);
+        // Native may now hold the new ruleset on the parent even if
+        // propagation/readback fails: report UNKNOWN_OUTCOME, and fall back
+        // to the narrower of old/new so Native is never left broader.
+        dispatched = true;
+        try {
+          // Write + verify the new ruleset now (also narrows running subagent
+          // children); the session is idle, so this cannot race a run.
+          await policy(s);
+        } catch (error) {
+          const rank = ["read_plan", "ask", "scoped_edit"];
+          if (rank.indexOf(previousMode) < rank.indexOf(request.mode))
+            s.permissionMode = previousMode;
+          await policy(s).catch(() => {});
+          throw error;
+        }
       } else if (request.type === "session.pin") {
         await markEffect();
         s.pinned = request.pinned;

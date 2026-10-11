@@ -878,3 +878,25 @@ test("mode.set overwrites broader Native rules with the mode ruleset", async (t)
   assert.deepEqual(t2.records.get("sdk-parent").permissions, BASELINE_POLICY);
   assert.ok(t2.calls.filter((c) => c.name === "update").length > before);
 });
+
+test("more than 64 finished Native subagent children never fail mode propagation or snapshot", async (t) => {
+  const f = await fixture(t);
+  for (let i = 0; i < 70; i++)
+    f.records.set(`sdk-native-child-${i}`, {
+      ...f.records.get("sdk-parent"),
+      id: `sdk-native-child-${i}`,
+      parentID: "sdk-parent",
+      title: `Agent ${i}`,
+    });
+  f.client.permission.list = async () => [];
+  assert.equal((await f.service.handle({ type: "snapshot" })).ok, true);
+  const res = await f.service.handle(
+    f.request("permission.mode.set", { mode: "scoped_edit" }),
+  );
+  assert.equal(res.ok, true, JSON.stringify(res));
+  for (let i = 0; i < 70; i++)
+    assert.deepEqual(
+      f.records.get(`sdk-native-child-${i}`).permissions,
+      f.records.get("sdk-parent").permissions,
+    );
+});
