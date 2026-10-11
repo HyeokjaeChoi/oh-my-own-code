@@ -76,6 +76,7 @@ try {
     args: [join(root, "apps/desktop-app/dist/app")],
     env: {
       PATH: process.env.PATH ?? "/usr/bin:/bin:/usr/sbin:/sbin",
+      OMOC_DESKTOP_E2E_BACKGROUND: process.env.OMOC_E2E_FOREGROUND ? "" : "1",
       HOME: fixture,
       TMPDIR: scratch,
       TMP: scratch,

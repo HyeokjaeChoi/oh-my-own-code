@@ -44,6 +44,7 @@ await writeFile(join(fixture, "outside.txt"), "Outside registered workspace\n");
 await symlink(join(fixture, "outside.txt"), join(project, "escape.txt"));
 const env = {
   PATH: process.env.PATH ?? "/usr/bin:/bin:/usr/sbin:/sbin",
+  OMOC_DESKTOP_E2E_BACKGROUND: process.env.OMOC_E2E_FOREGROUND ? "" : "1",
   HOME: fixture,
   TMPDIR: scratch,
   TMP: scratch,
