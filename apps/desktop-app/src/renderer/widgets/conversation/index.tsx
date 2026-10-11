@@ -310,7 +310,7 @@ export function Conversation(props: Props) {
       permissions,
       openFile: (path: string) => actions.openFiles(path, "file"),
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- permissions is derived from props each render
+    // permissions is derived from props each render; memo keys on its sources.
     [props.permissions, props.sessionId, actions],
   );
   const closeMenu = () => {
