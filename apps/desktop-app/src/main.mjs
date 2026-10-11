@@ -83,14 +83,20 @@ const automation = createAutomationHost({
   run: automationRunner,
   archive: automationRunner.archive,
 });
+// Focused window, else the first one: the only window that consumes a notification click.
+const targetWindow = () => {
+  const all = BrowserWindow.getAllWindows();
+  return all.find((w) => w.isFocused()) ?? all[0];
+};
 const notifier = createNotifyHost({
   Notification,
-  isFocused: () => Boolean(mainWindow?.isFocused()),
+  isFocused: () => BrowserWindow.getAllWindows().some((w) => w.isFocused()),
   focusWindow: () => {
-    if (!mainWindow) return;
-    if (mainWindow.isMinimized()) mainWindow.restore();
-    mainWindow.show();
-    mainWindow.focus();
+    const w = targetWindow();
+    if (!w) return;
+    if (w.isMinimized()) w.restore();
+    w.show();
+    w.focus();
   },
 });
 // Set by the confirmed "앱 데이터 삭제"; executed in will-quit after storage is released.
@@ -334,7 +340,12 @@ function bindIpc() {
   bindTerminalIpc({ ipcMain, admit, host: terminals });
   bindPlansIpc({ ipcMain, admit, host: plans });
   bindAutomationIpc({ ipcMain, admit, host: automation });
-  bindNotifyIpc({ ipcMain, admit, host: notifier });
+  bindNotifyIpc({
+    ipcMain,
+    admit,
+    host: notifier,
+    canTakeClicked: (event) => targetWindow()?.webContents === event.sender,
+  });
   bindPreviewIpc({ ipcMain, admit, host: previews });
   bindDataIpc({
     ipcMain,

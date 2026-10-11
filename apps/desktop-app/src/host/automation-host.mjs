@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
+import { basename, dirname } from "node:path";
 import { clearInterval, setInterval } from "node:timers";
 import {
   AUTOMATION_LIMITS,
@@ -14,11 +14,12 @@ const fail = (code) => Object.assign(new Error(code), { automationCode: code });
 // Main-owned scheduler for local recurring jobs. Runs only while the app runs.
 // Elapsed occurrences while the app was off (or asleep past the grace) are recorded as `missed`, never run.
 // run(job) -> Promise<{ result: "ok" | "failed" | "timeout", reason: string, sessionId?: string }>
-// archive(job, sessionId) archives an old prompt-run session (never deletes).
+// archive(job, sessionId, workspaceId) archives an old prompt-run session (never deletes).
 export function createAutomationHost({
   storeFile,
   run,
   archive = async () => {},
+  isIdle = async () => true,
   now = Date.now,
   tickMs = 30000,
   setTimer = setInterval,
@@ -41,10 +42,14 @@ export function createAutomationHost({
   };
   let stopped = false;
   let blocked = false;
+  let recovered;
+  let abort = new AbortController();
   // Corrupt data is moved aside, never overwritten; if that fails, saving is refused.
   const quarantine = async (content) => {
     try {
-      await writeFile(`${storeFile()}.corrupt-${now()}`, content);
+      const file = `${storeFile()}.corrupt-${now()}`;
+      await writeFile(file, content);
+      return basename(file);
     } catch {
       blocked = true;
     }
@@ -65,12 +70,16 @@ export function createAutomationHost({
         v = undefined;
       }
       if (!v || !Array.isArray(v.jobs)) {
-        await quarantine(raw);
+        const backup = await quarantine(raw);
+        if (backup) recovered = { count: 0, backup };
         return;
       }
       const jobs = v.jobs.map(normalizeStoredJob);
       const dropped = v.jobs.filter((_, i) => !jobs[i]);
-      if (dropped.length) await quarantine(JSON.stringify(dropped));
+      if (dropped.length) {
+        const backup = await quarantine(JSON.stringify(dropped));
+        if (backup) recovered = { count: dropped.length, backup };
+      }
       state = {
         lastCheck: Number.isFinite(v.lastCheck) ? v.lastCheck : 0,
         jobs: jobs.filter(Boolean).slice(0, AUTOMATION_LIMITS.jobs),
@@ -116,11 +125,24 @@ export function createAutomationHost({
       });
       return save();
     }
+    // A retained session that is still working (e.g. a timed-out run) blocks a new prompt run.
+    if (job.target.kind === "prompt") {
+      for (const s of job.sessionIds ?? [])
+        if (!(await isIdle(s.sessionId, s.workspaceId))) {
+          record(job, {
+            scheduledAt,
+            startedAt: null,
+            result: "skipped",
+            reason: "이전 세션이 아직 실행 중",
+          });
+          return save();
+        }
+    }
     running.add(job.id);
     const startedAt = now();
     let outcome;
     try {
-      outcome = await run(globalThis.structuredClone(job));
+      outcome = await run(globalThis.structuredClone(job), abort.signal);
     } catch {
       outcome = { result: "failed", reason: "실행 중 오류가 발생했습니다." };
     } finally {
@@ -128,10 +150,20 @@ export function createAutomationHost({
     }
     if (stopped) return;
     if (outcome.sessionId) {
-      job.sessionIds = [...(job.sessionIds ?? []), outcome.sessionId];
+      job.sessionIds = [
+        ...(job.sessionIds ?? []),
+        { sessionId: outcome.sessionId, workspaceId: job.target.workspaceId },
+      ];
       while (job.sessionIds.length > AUTOMATION_LIMITS.retainedSessions) {
-        const old = job.sessionIds.shift();
-        await archive(globalThis.structuredClone(job), old).catch(() => {});
+        const [old] = job.sessionIds;
+        // Never archive a session that is still working; retry on a later run.
+        if (!(await isIdle(old.sessionId, old.workspaceId))) break;
+        job.sessionIds.shift();
+        await archive(
+          globalThis.structuredClone(job),
+          old.sessionId,
+          old.workspaceId,
+        ).catch(() => {});
       }
     }
     record(job, {
@@ -149,6 +181,18 @@ export function createAutomationHost({
     await load();
     if (stopped) return;
     const t = now();
+    // Clock moved far back: re-base instead of silently stalling until it catches up.
+    if (t < state.lastCheck - AUTOMATION_LIMITS.clockBackMs) {
+      state.lastCheck = t;
+      for (const job of state.jobs)
+        if (job.enabled)
+          record(job, {
+            scheduledAt: t,
+            startedAt: null,
+            result: "skipped",
+            reason: "시스템 시계가 과거로 이동해 기준 시각을 재설정했습니다.",
+          });
+    }
     const wasStartup = startup;
     startup = false;
     const due = [];
@@ -182,6 +226,7 @@ export function createAutomationHost({
   return {
     async start() {
       stopped = false;
+      if (abort.signal.aborted) abort = new AbortController();
       startedAt = now();
       startup = true;
       await tick();
@@ -192,6 +237,7 @@ export function createAutomationHost({
     // (a prompt run may last hours); their results are discarded.
     async stop() {
       stopped = true;
+      abort.abort();
       clearTimer(timer);
       timer = undefined;
       await queue;
@@ -203,10 +249,12 @@ export function createAutomationHost({
         startedAt,
         jobs: state.jobs.map(view),
         ...(blocked ? { storeError: true } : {}),
+        ...(recovered ? { recovered } : {}),
       };
     },
     async create(input) {
       await load();
+      if (blocked) throw fail("STORE_BLOCKED");
       if (state.jobs.length >= AUTOMATION_LIMITS.jobs)
         throw fail("LIMIT_REACHED");
       const job = {
@@ -223,6 +271,7 @@ export function createAutomationHost({
     },
     async update(jobId, input) {
       await load();
+      if (blocked) throw fail("STORE_BLOCKED");
       const job = find(jobId);
       Object.assign(job, input, { anchor: now() });
       await save();
@@ -230,6 +279,7 @@ export function createAutomationHost({
     },
     async setEnabled(jobId, enabled) {
       await load();
+      if (blocked) throw fail("STORE_BLOCKED");
       const job = find(jobId);
       if (job.enabled !== enabled) {
         job.enabled = enabled;
@@ -241,6 +291,7 @@ export function createAutomationHost({
     },
     async remove(jobId) {
       await load();
+      if (blocked) throw fail("STORE_BLOCKED");
       find(jobId);
       state.jobs = state.jobs.filter((j) => j.id !== jobId);
       await save();

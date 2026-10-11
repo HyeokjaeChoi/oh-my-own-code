@@ -91,6 +91,18 @@ export function deriveJobNotices(jobs, startedAt, seenAt = 0) {
 export const jobNoticeMark = (jobs, seenAt = 0) =>
   Math.max(seenAt, ...jobs.flatMap((j) => j.history.map((e) => e.recordedAt)));
 
+// Merges two copies of the list (e.g. from another window): union by id, read wins, newest first.
+export function unionNotices(a, b) {
+  const byId = new Map();
+  for (const n of [...a, ...b]) {
+    const p = byId.get(n.id);
+    byId.set(n.id, p ? { ...p, read: p.read || n.read } : n);
+  }
+  return [...byId.values()]
+    .sort((x, y) => y.at - x.at)
+    .slice(0, NOTIFICATION_LIMIT);
+}
+
 // Adds unseen notices (unread), newest first, capped.
 export function mergeNotices(list, notices, now) {
   const have = new Set(list.map((n) => n.id));
