@@ -264,12 +264,14 @@ export function createTerminalHost({
     },
     // Script must exist in the workspace's package.json right now; package manager comes from its lockfile.
     async startScript(owner, { workspaceId, script }) {
-      if (closedAll) throw fail("CLOSED");
       const root = resolveWorkspace(workspaceId);
       if (typeof root !== "string") throw fail("NOT_FOUND");
       const e = epochs.get(owner) ?? 0;
       const { packageManager, scripts } = await readProjectActions(root);
       if ((epochs.get(owner) ?? 0) !== e) throw fail("NOT_FOUND");
+      // After the await: closeAll may have landed while reading package.json.
+      // ponytail: never reset; if quit fails mid-way, scripts stay CLOSED until restart.
+      if (closedAll) throw fail("CLOSED");
       if (!scripts.some((s) => s.name === script)) throw fail("UNKNOWN_SCRIPT");
       return guarded(owner, ensurePath(), () =>
         launch(
