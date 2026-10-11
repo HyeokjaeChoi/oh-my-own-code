@@ -33,11 +33,13 @@ function parse(value) {
 
 // Separate from desktop:v2:workbench: git/filesystem effects are host-owned.
 // info(workspaceId) -> { path, ownership } | undefined (registered workspaces only).
+// trusted(workspaceId) -> boolean.
 export function bindWorktreeIpc({
   ipcMain,
   admit,
   host,
   info,
+  trusted,
   confirmDelete,
 }) {
   ipcMain.handle("desktop:v1:worktree", async (event, ...args) => {
@@ -46,6 +48,8 @@ export function bindWorktreeIpc({
     if (!r) return err("INVALID_REQUEST");
     const w = info(r.workspaceId);
     if (!w) return err("UNKNOWN_WORKSPACE");
+    // Git can run repo-configured code; only trusted workspaces (the terminal rule) may reach it.
+    if (!trusted(r.workspaceId)) return err("UNTRUSTED_WORKSPACE");
     try {
       if (r.type === "worktree.create") {
         const made = await host.create({

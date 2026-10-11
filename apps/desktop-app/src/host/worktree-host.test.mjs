@@ -12,6 +12,8 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
+import { chmodSync } from "node:fs";
+import { bindWorktreeIpc } from "./worktree-ipc.mjs";
 import {
   createWorktreeHost,
   uuidv7,
@@ -245,4 +247,86 @@ test("refuses imported folders and the main repo; allows only managed folders in
   } finally {
     f.done();
   }
+});
+
+test("repo hooks and fsmonitor never run during create/inspect", async () => {
+  const f = fixture();
+  try {
+    const marker = join(f.dir, "ran");
+    const hook = join(f.repo, ".git", "hooks", "post-checkout");
+    writeFileSync(hook, `#!/bin/sh\ntouch "${marker}"\n`);
+    chmodSync(hook, 0o755);
+    const made = await f.host.create({
+      repo: f.repo,
+      branch: "feat/h",
+      base: "main",
+    });
+    g(f.repo, "config", "core.fsmonitor", `touch ${marker}.fsm`);
+    await f.host.inspect({ path: made.path, ownership: "imported" });
+    assert.equal(existsSync(marker), false);
+    assert.equal(existsSync(`${marker}.fsm`), false);
+  } finally {
+    f.done();
+  }
+});
+
+test("ignored files are reported as a delete reason", async () => {
+  const f = fixture();
+  try {
+    const made = await f.host.create({
+      repo: f.repo,
+      branch: "feat/i",
+      base: "main",
+    });
+    writeFileSync(join(made.path, ".gitignore"), ".env\n");
+    g(made.path, "add", ".gitignore");
+    g(made.path, "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "i");
+    writeFileSync(join(made.path, ".env"), "SECRET=1");
+    const info = await f.host.inspect({
+      path: made.path,
+      ownership: "imported",
+    });
+    assert.ok(info.reasons.some((r) => r.includes("무시된 파일 1개")));
+  } finally {
+    f.done();
+  }
+});
+
+test("concurrent creates keep every link", async () => {
+  const f = fixture();
+  try {
+    const made = await Promise.all(
+      ["a", "b", "c"].map((branch) =>
+        f.host.create({ repo: f.repo, branch, base: "main" }),
+      ),
+    );
+    assert.deepEqual(
+      Object.keys(await f.host.links()).sort(),
+      made.map((m) => m.path).sort(),
+    );
+  } finally {
+    f.done();
+  }
+});
+
+test("worktree IPC refuses untrusted workspaces before touching git", async () => {
+  let handler;
+  let touched = 0;
+  bindWorktreeIpc({
+    ipcMain: { handle: (_c, h) => (handler = h) },
+    admit: () => true,
+    host: { inspect: async () => touched++, create: async () => touched++ },
+    info: () => ({ path: "/x", ownership: "imported" }),
+    trusted: () => false,
+    confirmDelete: async () => true,
+  });
+  for (const req of [
+    { type: "worktree.inspect", workspaceId: "w" },
+    { type: "worktree.create", workspaceId: "w", branch: "b", base: "HEAD" },
+  ])
+    assert.deepEqual(await handler({}, req), {
+      ok: false,
+      code: "UNTRUSTED_WORKSPACE",
+    });
+  assert.equal(touched, 0);
 });

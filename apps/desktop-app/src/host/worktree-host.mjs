@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import {
   lstat,
   mkdir,
@@ -9,7 +9,14 @@ import {
   rm,
   writeFile,
 } from "node:fs/promises";
-import { dirname, isAbsolute, join, relative, resolve } from "node:path";
+import {
+  basename,
+  dirname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+} from "node:path";
 
 // F-02/F-03: git worktree creation and physical deletion. Host-only; the
 // renderer never supplies a command, only validated names/ids/paths.
@@ -32,11 +39,20 @@ export function validateRefName(name) {
   );
 }
 
+// Workspaces are user repos: never run their hooks or fsmonitor command.
+const NULL_DEVICE = process.platform === "win32" ? "NUL" : "/dev/null";
+const HARDEN = [
+  "-c",
+  `core.hooksPath=${NULL_DEVICE}`,
+  "-c",
+  "core.fsmonitor=false",
+];
+
 function runGit(cwd, args) {
   return new Promise((done, reject) => {
     execFile(
       "git",
-      args,
+      [...HARDEN, ...args],
       {
         cwd,
         timeout: 30000,
@@ -77,11 +93,22 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
       return {};
     }
   }
-  async function saveLinks(value) {
-    const file = linksFile();
-    await mkdir(dirname(file), { recursive: true });
-    await writeFile(`${file}.tmp`, JSON.stringify(value));
-    await rename(`${file}.tmp`, file);
+  // Read-modify-write under one queue so concurrent create/remove never lose a link.
+  let queue = Promise.resolve();
+  function updateLinks(change) {
+    const run = queue.then(async () => {
+      const value = change(await links());
+      const file = linksFile();
+      await mkdir(dirname(file), { recursive: true });
+      const tmp = `${file}.${randomUUID()}.tmp`;
+      await writeFile(tmp, JSON.stringify(value));
+      await rename(tmp, file);
+    });
+    queue = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
   }
 
   async function create({ repo, branch, base, dest }) {
@@ -129,12 +156,12 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
       const parent = await realpath(dirname(target)).catch(() => {
         throw fail("INVALID_PATH");
       });
-      target = join(parent, target.slice(dirname(target).length + 1));
+      target = join(parent, basename(target));
       if (target === top || inside(top, target)) throw fail("INVALID_PATH");
     }
     await git(top, ["worktree", "add", "-b", branch, target, base]);
     const path = await realpath(target);
-    await saveLinks({ ...(await links()), [path]: { parent: top, branch } });
+    await updateLinks((all) => ({ ...all, [path]: { parent: top, branch } }));
     return { path, parent: top, branch };
   }
 
@@ -170,11 +197,18 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
       // not a git checkout
     }
     if (linked) {
-      const status = await git(real, [
-        "status",
-        "--porcelain",
-        "--untracked-files=all",
-      ]);
+      const lines = (
+        await git(real, [
+          "status",
+          "--porcelain",
+          "--untracked-files=all",
+          "--ignored",
+        ])
+      )
+        .split("\n")
+        .filter(Boolean);
+      const ignored = lines.filter((l) => l.startsWith("!! ")).length;
+      const changed = lines.length - ignored;
       const head = (
         await git(real, ["symbolic-ref", "--short", "-q", "HEAD"]).catch(
           () => "",
@@ -194,7 +228,9 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
         ).trim(),
       );
       const reasons = [];
-      if (status.trim()) reasons.push("커밋되지 않은 변경이 있습니다");
+      if (changed) reasons.push("커밋되지 않은 변경이 있습니다");
+      if (ignored)
+        reasons.push(`.env 등 무시된 파일 ${ignored}개가 함께 삭제됩니다`);
       if (unique > 0)
         reasons.push(`다른 브랜치·원격에 없는 커밋 ${unique}개가 있습니다`);
       return {
@@ -224,9 +260,10 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
         ...(info.reasons.length ? ["--force"] : []),
         info.path,
       ]);
-      const all = await links();
-      delete all[info.path];
-      await saveLinks(all);
+      await updateLinks((all) => {
+        delete all[info.path];
+        return all;
+      });
     } else {
       // rm unlinks symlinks instead of following them.
       await rm(info.path, { recursive: true });

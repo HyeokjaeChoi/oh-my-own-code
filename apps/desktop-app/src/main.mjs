@@ -360,6 +360,7 @@ function bindIpc() {
     admit,
     host: worktrees,
     info: (id) => workbench?.workspaceInfo(id),
+    trusted: (id) => typeof workbench?.terminalRoot(id) === "string",
     async confirmDelete({ kind, path, reasons, force }) {
       const result = await dialog.showMessageBox(mainWindow, {
         type: "warning",
