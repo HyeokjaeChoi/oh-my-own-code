@@ -31,6 +31,8 @@ import { bindWorkbenchIpc } from "./host/workbench-ipc.mjs";
 import { setInterval } from "node:timers";
 import { createTerminalHost } from "./host/terminal-host.mjs";
 import { bindTerminalIpc } from "./host/terminal-ipc.mjs";
+import { createPlansHost } from "./host/plans-host.mjs";
+import { bindPlansIpc } from "./host/plans-ipc.mjs";
 import { createPreviewHost } from "./host/preview-host.mjs";
 import { bindPreviewIpc } from "./host/preview-ipc.mjs";
 import { createPreviewViewFactory } from "./host/preview-view.mjs";
@@ -56,6 +58,11 @@ const worktrees = createWorktreeHost({
 });
 const terminals = createTerminalHost({
   resolveWorkspace: (id) => workbench?.terminalRoot(id),
+});
+const plans = createPlansHost({
+  resolveWorkspace: (id) => workbench?.terminalRoot(id),
+  storeFile: () => join(namespace.metadata, "plans.json"),
+  terminals: (owner, workspaceId) => terminals.list(owner, workspaceId),
 });
 const previews = createPreviewHost({
   createView: createPreviewViewFactory({ getWindow: () => mainWindow }),
@@ -277,6 +284,7 @@ function admit(event) {
 function bindIpc() {
   bindWorkbenchIpc({ ipcMain, admit, service: () => workbench });
   bindTerminalIpc({ ipcMain, admit, host: terminals });
+  bindPlansIpc({ ipcMain, admit, host: plans });
   bindPreviewIpc({ ipcMain, admit, host: previews });
   bindWorktreeIpc({
     ipcMain,

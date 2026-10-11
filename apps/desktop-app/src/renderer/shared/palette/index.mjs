@@ -10,6 +10,7 @@ const PANELS = [
   ["activity", "활동 패널 열기"],
   ["terminal", "터미널 패널 열기"],
   ["preview", "미리보기 패널 열기"],
+  ["plans", "계획 패널 열기"],
 ];
 
 // ctx: { hasWorkspace, hasSession, pending, workspaceBlocked, resourceBlocked, connected,

@@ -2,7 +2,13 @@ export type PaletteAction =
   | { type: "settings" }
   | {
       type: "panel";
-      panel: "files" | "catalog" | "activity" | "terminal" | "preview";
+      panel:
+        | "files"
+        | "catalog"
+        | "activity"
+        | "terminal"
+        | "preview"
+        | "plans";
     }
   | { type: "session.create" }
   | { type: "workspace.import" }

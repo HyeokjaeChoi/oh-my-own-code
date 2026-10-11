@@ -6,6 +6,10 @@ import type {
   TerminalRequest,
   TerminalResult,
 } from "./renderer/shared/terminal/index.mjs";
+import type {
+  PlansRequest,
+  PlansResult,
+} from "./renderer/shared/plans/index.mjs";
 import type { WorkbenchPermissionPolicyObservation } from "./renderer/shared/configuration-draft/index.js";
 export type { WorkbenchPermissionPolicyObservation } from "./renderer/shared/configuration-draft/index.js";
 import type {
@@ -1023,6 +1027,10 @@ declare global {
         // eslint-disable-next-line no-unused-vars
         _request: TerminalRequest,
       ): Promise<TerminalResult<unknown>>;
+      plans(
+        // eslint-disable-next-line no-unused-vars
+        _request: PlansRequest,
+      ): Promise<PlansResult<unknown>>;
       preview(
         // eslint-disable-next-line no-unused-vars
         _request: PreviewRequest,
