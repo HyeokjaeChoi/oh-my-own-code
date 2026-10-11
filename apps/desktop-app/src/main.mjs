@@ -55,6 +55,7 @@ import { openWorkspaceRegistry } from "./host/workspace-registry.mjs";
 import { createLifetimeWitness } from "./host/owner-lifetime.mjs";
 import { createNativePreflight } from "./host/native-preflight.mjs";
 import { randomUUID } from "node:crypto";
+import { mkdirSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 
 let workbench;
@@ -123,6 +124,19 @@ let owner;
 let registry;
 let initialRecovery;
 let kernel;
+// e2e isolation: macOS resolves appData/documents via NSHomeDirectory (ignores $HOME), so test
+// runs would otherwise share the real profile, storage-v1 and single-instance lock.
+const isolatedRoot = process.env.OMOC_APP_DATA_DIR;
+if (isolatedRoot) {
+  for (const [name, sub] of [
+    ["appData", "appdata"],
+    ["documents", "Documents"],
+  ]) {
+    mkdirSync(join(isolatedRoot, sub), { recursive: true, mode: 0o700 });
+    app.setPath(name, join(isolatedRoot, sub));
+  }
+  app.setPath("userData", join(isolatedRoot, "appdata", "OhMyOwnCode"));
+}
 const gotInstanceLock = app.requestSingleInstanceLock();
 if (!gotInstanceLock) app.quit();
 else loginPathPromise = resolveLoginPath();

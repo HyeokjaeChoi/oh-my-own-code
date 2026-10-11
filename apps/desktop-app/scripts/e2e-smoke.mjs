@@ -78,6 +78,7 @@ await Promise.all(
 const env = {
   PATH: process.env.PATH ?? "/usr/bin:/bin:/usr/sbin:/sbin",
   OMOC_DESKTOP_E2E_BACKGROUND: process.env.OMOC_E2E_FOREGROUND ? "" : "1",
+  OMOC_APP_DATA_DIR: join(e2eRoot, "app-profile"),
   TMPDIR: e2eTmp,
   TMP: e2eTmp,
   TEMP: e2eTmp,
