@@ -177,6 +177,13 @@ const mutationTypes = new Set([
   "session.inbox.cancel",
   "permission.respond",
 ]);
+// Operations whose workspace check requires every session's Native rules to
+// match its recorded mode; drift is repaired by a separate mode.set first.
+const policySyncTypes = new Set(
+  [...mutationTypes].filter((type) =>
+    /^(git\.|file\.save$|configuration\.)/.test(type),
+  ),
+);
 const clip = (value, size = 8000) =>
   typeof value === "string" ? value.slice(0, size) : "";
 const opaque = (value) =>
@@ -467,6 +474,7 @@ export function createWorkbenchService({
     runtimeEpoch,
     mutationAllowed: () =>
       !localRecovery && (registryInput === undefined || !initializing),
+    preflight: (operation, sender) => policySync(operation, sender),
     projectReceipt,
     deadlineMs,
   });
@@ -2030,11 +2038,14 @@ export function createWorkbenchService({
       parentSdkId,
       "POLICY_UNVERIFIED",
     )) {
-      await call(client.session.update, {
-        sessionID: id,
-        permissions: expected.map((rule) => ({ ...rule })),
-      });
-      const info = await call(client.session.get, { sessionID: id });
+      let info = await call(client.session.get, { sessionID: id });
+      if (!matchesOrderedPermissionRules(expected, info?.permissions)) {
+        await call(client.session.update, {
+          sessionID: id,
+          permissions: expected.map((rule) => ({ ...rule })),
+        });
+        info = await call(client.session.get, { sessionID: id });
+      }
       if (!matchesOrderedPermissionRules(expected, info?.permissions))
         fail("POLICY_UNVERIFIED");
     }
@@ -3738,6 +3749,55 @@ export function createWorkbenchService({
       skillObservations.delete(request.observationId);
     }
   }
+  async function policySync(operation, sender) {
+    if (!registry || !policySyncTypes.has(operation.type)) return undefined;
+    const drifted = () =>
+      host
+        .startup(async () => {
+          await ready;
+          if (!client || runtime.snapshot().state !== "connected") return [];
+          const out = [];
+          for (const target of committed.sessions.values()) {
+            if (
+              target.workspaceId !== operation.workspaceId ||
+              target.lock ||
+              target.unavailable
+            )
+              continue;
+            const info = await call(client.session.get, {
+              sessionID: target.sdkId,
+            });
+            if (
+              info?.id === target.sdkId &&
+              !policyOk(target, info.permissions)
+            )
+              out.push(target);
+          }
+          return out;
+        })
+        .catch(() => []);
+    const targets = await drifted();
+    for (const target of targets) {
+      const result = await host.handle(
+        {
+          version: 2,
+          runtimeEpoch: host.epoch,
+          operationId: randomUUID(),
+          operation: {
+            type: "permission.mode.set",
+            workspaceId: target.workspaceId,
+            sessionId: target.id,
+            mode: modeOf(target),
+            requestId: randomUUID(),
+          },
+        },
+        sender,
+      );
+      if (!result.ok) return "POLICY_UNVERIFIED";
+    }
+    if (targets.length && (await drifted()).length) return "POLICY_UNVERIFIED";
+    return undefined;
+  }
   async function workspaceIdleIdentity(w, unverifiedCode) {
     if (!registry) fail("UNAVAILABLE");
     storageCheck();
@@ -3748,8 +3808,9 @@ export function createWorkbenchService({
     );
     for (const target of targets) {
       if (target.lock || target.unavailable) fail("BUSY");
-      let info = await idleIdentity(w, target);
-      if (!policyOk(target, info.permissions)) info = await policy(target);
+      // Drift is repaired beforehand by a separate journaled mode.set
+      // (policySync); writing here would add an unjournaled-shape dispatch.
+      const info = await idleIdentity(w, target);
       const correlated = await verifySavedSession(target, new Map(), new Set());
       if (
         !correlated ||
@@ -3952,7 +4013,14 @@ export function createWorkbenchService({
     });
     return observeInstructions(entries, registration);
   }
-  async function instructionIdentity(w, s, allowPending = false) {
+  // repair: the caller's own journaled shape already includes native.policy
+  // (send/fork/...); instruction/MCP ops must not write policy inside the op.
+  async function instructionIdentity(
+    w,
+    s,
+    allowPending = false,
+    repair = false,
+  ) {
     if (!registry) fail("UNAVAILABLE");
     storageCheck();
     if (!w.trusted) fail("INVALID_SELECTION");
@@ -3979,7 +4047,7 @@ export function createWorkbenchService({
       return info;
     };
     let info = await identity();
-    if (!policyOk(s, info.permissions)) info = await policy(s);
+    if (repair && !policyOk(s, info.permissions)) info = await policy(s);
     const correlated = await verifySavedSession(s, new Map(), new Set());
     if (
       !correlated ||
@@ -3995,11 +4063,11 @@ export function createWorkbenchService({
   async function verifyInstructionBaseline(w, s, allowPending = false) {
     // The legacy in-memory test lane has no instruction ownership capability.
     if (!registry) return;
-    await instructionIdentity(w, s, allowPending);
+    await instructionIdentity(w, s, allowPending, true);
     const observed = await instructionObservation(s, s.instructionRegistration);
     if (!["missing", "registered"].includes(observed.status))
       fail("INSTRUCTIONS_UNVERIFIED");
-    await instructionIdentity(w, s, allowPending);
+    await instructionIdentity(w, s, allowPending, true);
   }
   async function mutateInstructions(request, w, s) {
     if (!registry) fail("UNAVAILABLE");
@@ -4268,17 +4336,16 @@ export function createWorkbenchService({
         const previousMode = modeOf(s);
         s.permissionMode = request.mode;
         // Native may now hold the new ruleset on the parent even if
-        // propagation/readback fails: report UNKNOWN_OUTCOME, and fall back
-        // to the narrower of old/new so Native is never left broader.
+        // propagation/readback fails: report UNKNOWN_OUTCOME and re-apply the
+        // recorded previous mode (modes are not totally ordered, so never
+        // pick "the narrower").
         dispatched = true;
         try {
           // Write + verify the new ruleset now (also narrows running subagent
           // children); the session is idle, so this cannot race a run.
           await policy(s);
         } catch (error) {
-          const rank = ["read_plan", "ask", "scoped_edit"];
-          if (rank.indexOf(previousMode) < rank.indexOf(request.mode))
-            s.permissionMode = previousMode;
+          s.permissionMode = previousMode;
           await policy(s).catch(() => {});
           throw error;
         }
