@@ -149,6 +149,7 @@ export function createAutomationHost({
         return save();
       }
     }
+    if (stopped) return; // quit landed while isIdle was pending
     running.add(job.id);
     const startedAt = now();
     let outcome;
@@ -182,12 +183,13 @@ export function createAutomationHost({
       while (job.sessionIds.length > AUTOMATION_LIMITS.retainedSessions) {
         const [old] = job.sessionIds;
         // Never archive a session that is still working; retry on a later run.
-        if (!(await isIdle(old.sessionId, old.workspaceId))) break;
+        if (!(await isIdle(old.sessionId, old.workspaceId)) || stopped) break;
         job.sessionIds.shift();
         await archive(
           globalThis.structuredClone(job),
           old.sessionId,
           old.workspaceId,
+          closed.signal,
         ).catch(() => {});
       }
     }

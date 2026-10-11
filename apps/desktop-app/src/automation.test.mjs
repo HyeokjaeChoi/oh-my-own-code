@@ -538,7 +538,7 @@ test("runner: timeout interrupts and waits for idle; stop aborts", async () => {
     service: () => mkService([], ["running"]),
   })(promptJob, ac.signal);
   assert.equal(ab.result, "failed");
-  assert.equal(ab.sessionId, "s1");
+  assert.equal(ab.sessionId, undefined, "pre-aborted: no session created");
   // injected clock for script timeout
   let stopped = false;
   const script = createAutomationRunner({
@@ -834,17 +834,15 @@ test("closed host: orphaned run cannot save or reach the service; message id own
   assert.equal(r.result, "failed");
   assert.deepEqual(calls, []);
 
-  // same text but different message id => user continued; no interrupt
+  // different last user text => user continued; no interrupt
   const rc = { t: 0 };
   const c2 = [];
   const svc2 = mkService(c2, Array(10).fill("running"));
   const h = svc2.handle;
   svc2.handle = async (env) => {
     const res = await h(env);
-    if (env.operation.type === "message.send")
-      res.receipt.result.messageId = "m1";
     if (env.operation.type === "snapshot" && env.operation.sessionId)
-      res.value.messages = [{ role: "user", id: "m2", text: "p" }];
+      res.value.messages = [{ role: "user", id: "m2", text: "other" }];
     return res;
   };
   const r2 = await createAutomationRunner({
@@ -878,4 +876,46 @@ test("closed host: orphaned run cannot save or reach the service; message id own
   t = 4000;
   nh.show({ id: "done:s:2", text: "x", sessionId: "s", workspaceId: "w" });
   assert.equal(shown.length, 2);
+});
+
+test("stop during pending isIdle dispatches no run", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "auto-"));
+  const file = join(dir, "jobs.json");
+  await writeFile(
+    file,
+    JSON.stringify({
+      lastCheck: 0,
+      jobs: [
+        {
+          id: "j",
+          ...job({
+            target: { workspaceId: "w1", kind: "prompt", prompt: "p" },
+            permissionMode: "ask",
+          }),
+          enabled: true,
+          anchor: 1,
+          history: [],
+          sessionIds: [{ sessionId: "s", workspaceId: "w1" }],
+        },
+      ],
+    }),
+  );
+  let release;
+  const runs = [];
+  const run = async () => (runs.push(1), { result: "ok", reason: "" });
+  run.isIdle = () => new Promise((r) => (release = () => r(true)));
+  const host = createAutomationHost({
+    storeFile: () => file,
+    run,
+    now: () => 100 * 60 * MIN,
+    setTimer: () => ({}),
+    clearTimer() {},
+  });
+  await host.runNow("j");
+  await new Promise((r) => setImmediate(r));
+  const stopping = host.stop();
+  release();
+  await stopping;
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(runs.length, 0);
 });

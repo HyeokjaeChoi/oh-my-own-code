@@ -58,8 +58,8 @@ export function createAutomationRunner({
     }
   }
   async function runPrompt(job, signal, closed) {
+    if (signal?.aborted) throw new Error("ABORTED");
     const { workspaceId, prompt } = job.target;
-    let messageId;
     const created = await send(
       {
         type: "session.create",
@@ -82,7 +82,7 @@ export function createAutomationRunner({
         },
         closed,
       );
-      const sent = await send(
+      await send(
         {
           type: "message.send",
           workspaceId,
@@ -92,10 +92,6 @@ export function createAutomationRunner({
         },
         closed,
       );
-      // The job's own user message id, when the service reports it; ownsTurn falls back to text.
-      messageId =
-        sent.receipt?.result?.messageId ??
-        sent.value?.messages?.findLast?.((m) => m.role === "user")?.id;
     } catch (e) {
       throw Object.assign(e, { sessionId }); // still retained/archived later
     }
@@ -108,7 +104,7 @@ export function createAutomationRunner({
       if (signal?.aborted) {
         if (
           !closed?.aborted &&
-          (await ownsTurn(workspaceId, sessionId, prompt, messageId, closed))
+          (await ownsTurn(workspaceId, sessionId, prompt, closed))
         )
           await send(
             { type: "session.interrupt", workspaceId, sessionId },
@@ -122,7 +118,6 @@ export function createAutomationRunner({
             workspaceId,
             sessionId,
             prompt,
-            messageId,
             signal,
             closed,
           ),
@@ -159,7 +154,7 @@ export function createAutomationRunner({
   // occurrence cannot overlap and the session is never archived while still working.
   // False only when the session's last user message is no longer the job's prompt (the user
   // continued it); unreadable counts as ours.
-  async function ownsTurn(workspaceId, sessionId, prompt, messageId, closed) {
+  async function ownsTurn(workspaceId, sessionId, prompt, closed) {
     try {
       if (closed?.aborted) return false;
       const snap = await service().handle(
@@ -172,9 +167,7 @@ export function createAutomationRunner({
       );
       const last = snap?.value?.messages?.findLast?.((m) => m.role === "user");
       if (!last) return true;
-      return messageId && last.id
-        ? last.id === messageId
-        : last.text?.trim() === prompt.trim();
+      return last.text?.trim() === prompt.trim();
     } catch {
       return true;
     }
@@ -183,7 +176,6 @@ export function createAutomationRunner({
     workspaceId,
     sessionId,
     prompt,
-    messageId,
     signal,
     closed,
   ) {
@@ -191,7 +183,7 @@ export function createAutomationRunner({
       result: "timeout",
       reason: "제한 시간(2시간) 안에 끝나지 않아 중단했습니다.",
     };
-    if (!(await ownsTurn(workspaceId, sessionId, prompt, messageId, closed)))
+    if (!(await ownsTurn(workspaceId, sessionId, prompt, closed)))
       return { result: "timeout", reason: "사용자가 이어서 사용 중" };
     try {
       await send({ type: "session.interrupt", workspaceId, sessionId }, closed);
@@ -221,7 +213,12 @@ export function createAutomationRunner({
     }
   }
   // Archives (never deletes) an old automation session.
-  async function archive(job, sessionId, workspaceId = job.target.workspaceId) {
+  async function archive(
+    job,
+    sessionId,
+    workspaceId = job.target.workspaceId,
+    closed,
+  ) {
     await send(
       {
         type: "session.archive",
@@ -230,10 +227,11 @@ export function createAutomationRunner({
         requestId: "",
         archived: true,
       },
-      undefined,
+      closed,
     );
   }
   async function runScript(job, signal) {
+    if (signal?.aborted) throw new Error("ABORTED");
     const { workspaceId, script } = job.target;
     const t = await terminals.startScript(OWNER, { workspaceId, script });
     const deadline = now() + scriptTimeoutMs;
