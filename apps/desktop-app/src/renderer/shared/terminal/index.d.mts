@@ -11,7 +11,9 @@ export type TerminalRequest =
       workspaceId: string;
       cols?: number;
       rows?: number;
+      script?: string;
     }
+  | { type: "terminal.scripts"; workspaceId: string }
   | { type: "terminal.list"; workspaceId: string }
   | { type: "terminal.write"; terminalId: string; text: string }
   | { type: "terminal.read"; terminalId: string; cursor: number }
@@ -25,6 +27,8 @@ export type TerminalInfo = {
   status: TerminalStatus;
   exitCode: number | null;
   signal: string | null;
+  script: string | null;
+  label: string | null;
 };
 export type TerminalRead = TerminalInfo & {
   output: string;

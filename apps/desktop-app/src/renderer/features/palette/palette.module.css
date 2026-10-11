@@ -1,0 +1,33 @@
+.search {
+  width: 100%;
+  margin-bottom: var(--omoc-semantic-space-control-gap);
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--omoc-semantic-space-control-gap);
+  cursor: pointer;
+}
+.item[data-active="true"] {
+  background: var(--omoc-semantic-color-surface-hover, rgb(127 127 127 / 0.15));
+}
+.item[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.main {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--omoc-semantic-space-card-gap);
+}
+.source,
+.detail,
+.empty {
+  opacity: 0.7;
+}

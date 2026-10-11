@@ -75,6 +75,7 @@ export function applyPreferences(root, preferences, systemDark) {
 
 // Only shortcuts that exist in the renderer today.
 export const SHORTCUTS = Object.freeze([
+  { keys: "Cmd/Ctrl+K", action: "명령 팔레트 열기" },
   { keys: "?", action: "설정·단축키 열기" },
   { keys: "Esc", action: "열린 메뉴·시트·편집 닫기" },
   { keys: "/", action: "빈 입력창에서 명령 메뉴 열기" },

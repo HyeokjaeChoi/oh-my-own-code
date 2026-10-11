@@ -10,3 +10,15 @@ export type {
   TerminalResult,
   TerminalStatus,
 } from "./index.mjs";
+import type { TerminalRequest, TerminalResult } from "./index.mjs";
+export async function callTerminal<T>(
+  request: TerminalRequest,
+): Promise<TerminalResult<T>> {
+  try {
+    return (await window.desktopBridge.terminal(request)) as TerminalResult<T>;
+  } catch {
+    return { ok: false, code: "UNAVAILABLE" };
+  }
+}
+// Panels listen for this to pick up terminals started elsewhere (e.g. the command palette).
+export const TERMINAL_STARTED_EVENT = "omoc:terminal-started";

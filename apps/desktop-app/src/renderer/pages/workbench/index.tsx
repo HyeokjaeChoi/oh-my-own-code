@@ -16,6 +16,7 @@ import {
   sessionSuccessor,
 } from "../../features/sessions/index.js";
 import { PreferencesButton } from "../../features/preferences/index.js";
+import { CommandPalette } from "../../features/palette/index.js";
 import { Conversation } from "../../widgets/conversation/index.js";
 import { TerminalPanel } from "../../widgets/terminal/index.js";
 import { PreviewPanel } from "../../widgets/preview/index.js";
@@ -730,6 +731,7 @@ export function Workbench() {
               {states[connection]}
             </span>
           </div>
+          <CommandPalette />
           <PreferencesButton />
           <Button
             ref={panelButton}

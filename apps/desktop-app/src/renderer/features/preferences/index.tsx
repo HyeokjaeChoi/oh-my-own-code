@@ -8,6 +8,7 @@ import {
   SHORTCUTS,
   type Preferences,
 } from "../../shared/preferences/index.js";
+import { OPEN_SETTINGS_EVENT } from "../../shared/palette/index.js";
 import styles from "./preferences.module.css";
 
 const DARK_QUERY = "(prefers-color-scheme: dark)";
@@ -112,6 +113,11 @@ export function PreferencesSheetView(props: {
 export function PreferencesButton() {
   const { preferences, update } = usePreferences();
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener(OPEN_SETTINGS_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_SETTINGS_EVENT, onOpen);
+  }, []);
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "?" || event.metaKey || event.ctrlKey || event.altKey)
