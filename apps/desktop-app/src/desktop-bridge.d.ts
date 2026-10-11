@@ -151,6 +151,7 @@ export interface WorkbenchSession {
   pinned?: boolean;
   archived?: boolean;
   parentSessionId?: string;
+  permissionMode?: "ask" | "scoped_edit" | "read_plan";
 }
 export interface WorkbenchDiagnostics {
   startedAt: number;
@@ -750,6 +751,10 @@ export type WorkbenchRequest =
   | { type: "operation.lookup"; runtimeEpoch: string; operationId: string }
   | ({ type: "session.rename"; title: string } & SessionLifecycleTarget)
   | ({ type: "session.pin"; pinned: boolean } & SessionLifecycleTarget)
+  | ({
+      type: "permission.mode.set";
+      mode: "ask" | "scoped_edit" | "read_plan";
+    } & SessionLifecycleTarget)
   | ({ type: "session.archive"; archived: boolean } & SessionLifecycleTarget)
   | ({
       type: "session.fork";

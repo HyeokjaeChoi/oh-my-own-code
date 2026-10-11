@@ -12,6 +12,7 @@ const operationLabels: Record<string, string> = {
   "session.create": "새 세션 만들기",
   "session.rename": "세션 이름 변경",
   "session.pin": "세션 고정 변경",
+  "permission.mode.set": "권한 모드 변경",
   "session.archive": "세션 보관 변경",
   "session.fork": "대화 분기",
   "session.remove": "대화 삭제",
