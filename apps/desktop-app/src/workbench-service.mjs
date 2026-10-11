@@ -71,6 +71,7 @@ import {
   validateRequest,
   validateSnapshot,
 } from "./workbench-contract.mjs";
+import { searchFiles } from "./host/workbench-file-search.mjs";
 import {
   canonicalDirectory,
   createFolder,
@@ -4335,6 +4336,7 @@ export function createWorkbenchService({
         }
       : receipt.result;
   }
+  const fileSearches = new Map();
   async function execute(request) {
     if (
       request.type === "snapshot" &&
@@ -4757,6 +4759,20 @@ export function createWorkbenchService({
       return result;
     }
     if (request.type === "catalog.list") return (await catalog(w, true)).dto;
+    if (request.type === "file.search") {
+      await recheck(w);
+      // A newer search for the same workspace cancels the previous one.
+      fileSearches.get(w.id)?.abort();
+      const search = new AbortController();
+      fileSearches.set(w.id, search);
+      try {
+        return await searchFiles(w.path, request, search.signal);
+      } catch (error) {
+        fail(error.appCode ?? "FILE_DENIED");
+      } finally {
+        if (fileSearches.get(w.id) === search) fileSearches.delete(w.id);
+      }
+    }
     if (request.type === "file.list" || request.type === "file.read") {
       await recheck(w);
       try {

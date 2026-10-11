@@ -26,6 +26,7 @@ export type {
   WorkbenchCancel,
   WorkbenchFileList,
   WorkbenchFileRead,
+  WorkbenchFileSearch,
   OperationLookup,
   ReadType,
 } from "../../../desktop-bridge.js";

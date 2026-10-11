@@ -31,6 +31,7 @@ const readTypes = new Set([
   "catalog.list",
   "file.list",
   "file.read",
+  "file.search",
   "configuration.read",
   "configuration.instructions.read",
   "configuration.mcp.read",
@@ -50,30 +51,32 @@ const canonical = (value: object) =>
 const lane = (operation: ReadRequest) =>
   operation.type === "operation.lookup"
     ? "lookup"
-    : operation.type === "permission.policy.read" ||
-        operation.type === "git.branch.preview.read" ||
-        operation.type === "git.restore.preview.read" ||
-        operation.type === "git.commit.preview.read" ||
-        operation.type === "git.index.preview.read" ||
-        operation.type === "git.review.read" ||
-        operation.type === "git.diff.read" ||
-        operation.type.startsWith("file.") ||
-        operation.type === "context.observe" ||
-        operation.type === "session.inbox" ||
-        operation.type === "configuration.read" ||
-        operation.type === "configuration.skill.runtime.read" ||
-        operation.type === "configuration.agent.runtime.read" ||
-        operation.type === "configuration.extensions.read" ||
-        operation.type === "configuration.agent.list" ||
-        operation.type === "configuration.agent.read" ||
-        operation.type === "configuration.skill.list" ||
-        operation.type === "configuration.skill.read" ||
-        operation.type === "configuration.instructions.read" ||
-        operation.type === "configuration.mcp.read"
-      ? "files"
-      : operation.type === "catalog.list"
-        ? "catalog"
-        : "snapshot";
+    : operation.type === "file.search"
+      ? "search"
+      : operation.type === "permission.policy.read" ||
+          operation.type === "git.branch.preview.read" ||
+          operation.type === "git.restore.preview.read" ||
+          operation.type === "git.commit.preview.read" ||
+          operation.type === "git.index.preview.read" ||
+          operation.type === "git.review.read" ||
+          operation.type === "git.diff.read" ||
+          operation.type.startsWith("file.") ||
+          operation.type === "context.observe" ||
+          operation.type === "session.inbox" ||
+          operation.type === "configuration.read" ||
+          operation.type === "configuration.skill.runtime.read" ||
+          operation.type === "configuration.agent.runtime.read" ||
+          operation.type === "configuration.extensions.read" ||
+          operation.type === "configuration.agent.list" ||
+          operation.type === "configuration.agent.read" ||
+          operation.type === "configuration.skill.list" ||
+          operation.type === "configuration.skill.read" ||
+          operation.type === "configuration.instructions.read" ||
+          operation.type === "configuration.mcp.read"
+        ? "files"
+        : operation.type === "catalog.list"
+          ? "catalog"
+          : "snapshot";
 export function createTransport(
   bridge: Bridge,
   {

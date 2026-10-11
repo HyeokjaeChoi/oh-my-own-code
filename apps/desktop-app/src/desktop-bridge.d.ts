@@ -581,6 +581,12 @@ export interface WorkbenchFileList {
   path: string;
   entries: WorkbenchFileEntry[];
 }
+export interface WorkbenchFileSearch {
+  query: string;
+  mode: "name" | "content";
+  results: { path: string; line?: number; snippet?: string }[];
+  truncated: boolean;
+}
 export interface WorkbenchFileRead {
   path: string;
   content: string;
@@ -802,7 +808,14 @@ export type WorkbenchRequest =
       | { expectation: "version"; version: string }
       | { expectation: "missing"; version?: never }
     ))
-  | { type: "file.read"; workspaceId: string; path: string };
+  | { type: "file.read"; workspaceId: string; path: string }
+  | {
+      type: "file.search";
+      workspaceId: string;
+      query: string;
+      mode: "name" | "content";
+      caseSensitive?: boolean;
+    };
 export type WorkbenchConfigurationSave =
   | { requestId: string; status: "saved"; version: string; backupId?: string }
   | { requestId: string; status: "unknown" };
@@ -963,14 +976,18 @@ export type WorkbenchResponse<R extends WorkbenchRequest> = R extends {
                                                                           }
                                                                         ? WorkbenchFileRead
                                                                         : R extends {
-                                                                              type:
-                                                                                | "message.send"
-                                                                                | "session.interrupt"
-                                                                                | "permission.respond"
-                                                                                | "command.run";
+                                                                              type: "file.search";
                                                                             }
-                                                                          ? WorkbenchReceipt
-                                                                          : WorkbenchSnapshot;
+                                                                          ? WorkbenchFileSearch
+                                                                          : R extends {
+                                                                                type:
+                                                                                  | "message.send"
+                                                                                  | "session.interrupt"
+                                                                                  | "permission.respond"
+                                                                                  | "command.run";
+                                                                              }
+                                                                            ? WorkbenchReceipt
+                                                                            : WorkbenchSnapshot;
 declare global {
   interface Window {
     desktopBridge: {
@@ -1019,6 +1036,7 @@ export type ReadType =
   | "catalog.list"
   | "file.list"
   | "file.read"
+  | "file.search"
   | "configuration.read"
   | "operation.lookup";
 export type WorkbenchEnvelope<R extends WorkbenchRequest = WorkbenchRequest> =

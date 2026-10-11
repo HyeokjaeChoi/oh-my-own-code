@@ -1,7 +1,10 @@
-import { useEffect } from "react";
-import { File, Folder, FolderUp, House, RefreshCw } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { File, Folder, FolderUp, House, RefreshCw, Search } from "lucide-react";
 import styles from "./explorer.module.css";
-import { type WorkbenchCatalog } from "../../shared/api/index.js";
+import {
+  type WorkbenchCatalog,
+  type WorkbenchFileSearch,
+} from "../../shared/api/index.js";
 import { LineFeedbackPanel } from "../../features/line-feedback/index.js";
 import { GitReviewPanel } from "../../features/git-review/index.js";
 import { WorkspaceFileEditor } from "../../features/workspace-file-editor/index.js";
@@ -13,6 +16,91 @@ import {
   useWorkbenchSelector,
   useWindowWorkbench,
 } from "../../entities/workbench/index.js";
+function FileSearch({ open }: { open: (path: string) => void }) {
+  const { actions } = useWindowWorkbench();
+  const [query, setQuery] = useState("");
+  const [mode, setMode] = useState<"name" | "content">("name");
+  const [caseSensitive, setCaseSensitive] = useState(false);
+  const [found, setFound] = useState<WorkbenchFileSearch>();
+  const [state, setState] = useState<"idle" | "busy" | "error">("idle");
+  const submit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!query.trim()) return;
+    setState("busy");
+    const result = await actions.searchFiles(query, mode, caseSensitive);
+    if (!result.ok && result.code === "CANCELLED") return;
+    setFound(result.ok ? result.value : undefined);
+    setState(result.ok ? "idle" : "error");
+  };
+  return (
+    <form
+      className={styles.toolbar}
+      role="search"
+      aria-label="파일 검색"
+      onSubmit={(event) => void submit(event)}
+    >
+      <input
+        aria-label="검색어"
+        value={query}
+        maxLength={200}
+        onChange={(event) => setQuery(event.target.value)}
+      />
+      <select
+        aria-label="검색 방식"
+        value={mode}
+        onChange={(event) => setMode(event.target.value as "name" | "content")}
+      >
+        <option value="name">파일 이름</option>
+        <option value="content">내용</option>
+      </select>
+      <label>
+        <input
+          type="checkbox"
+          checked={caseSensitive}
+          onChange={(event) => setCaseSensitive(event.target.checked)}
+        />
+        대소문자
+      </label>
+      <button aria-label="검색" title="검색" disabled={!query.trim()}>
+        <Search size={18} aria-hidden="true" />
+      </button>
+      {state === "busy" && <p role="status">검색 중…</p>}
+      {state === "error" && (
+        <p role="alert" className={styles.error}>
+          검색하지 못했습니다.
+        </p>
+      )}
+      {found && state === "idle" && (
+        <>
+          {!found.results.length && <p className={styles.muted}>결과 없음</p>}
+          {found.truncated && (
+            <p role="status">결과가 많아 일부만 표시합니다.</p>
+          )}
+          <ul className={`${styles.list} file-search-results`}>
+            {found.results.map((hit) => (
+              <li key={`${hit.path}:${hit.line ?? 0}`}>
+                <button
+                  type="button"
+                  title={hit.path}
+                  onClick={() => open(hit.path)}
+                >
+                  <span aria-hidden="true">
+                    <File size={17} />
+                  </span>
+                  <span>
+                    {hit.path}
+                    {hit.line ? `:${hit.line}` : ""}
+                    {hit.snippet ? ` ${hit.snippet}` : ""}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </form>
+  );
+}
 export function FileExplorer({ workspaceId }: { workspaceId: string }) {
   const { actions } = useWindowWorkbench();
   const { listing, preview, error, busy, status } = useWorkbenchSelector(
@@ -57,6 +145,7 @@ export function FileExplorer({ workspaceId }: { workspaceId: string }) {
           <RefreshCw size={18} aria-hidden="true" />
         </button>
       </div>
+      <FileSearch open={(path) => void load(path, true)} />
       <p className={styles.path}>{listing?.path || "/"}</p>
       {busy && <p role="status">불러오는 중…</p>}
       {status === "checking" && (
