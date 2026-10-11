@@ -16,6 +16,7 @@ import {
   deriveJobNotices,
   deriveSessionNotices,
   mergeNotices,
+  unionNotices,
   type Notice,
   type NoticeSnapshot,
   type NoticeSpec,
@@ -95,6 +96,7 @@ export function NotificationCenter() {
       for (const n of added.slice(0, 3))
         void callNotify({
           type: "notify.show",
+          id: n.id,
           text: n.os ?? n.text,
           ...(n.workspaceId ? { workspaceId: n.workspaceId } : {}),
           ...(n.sessionId ? { sessionId: n.sessionId } : {}),
@@ -148,6 +150,20 @@ export function NotificationCenter() {
       clearInterval(t);
     };
   }, [push, actions]);
+
+  // Other windows write the same keys: union their list (never overwrite) and follow their job mark.
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === NOTIFICATIONS_STORAGE_KEY) {
+        const next = unionNotices(listRef.current, load());
+        listRef.current = next;
+        setList(next);
+      } else if (e.key === NOTIFICATION_JOB_MARK_KEY)
+        jobMark.current = Math.max(jobMark.current, loadMark());
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   useEffect(() => {
     const onOpen = () => setOpen(true);

@@ -31,6 +31,7 @@ export type AutomationList = {
   startedAt: number;
   jobs: JobView[];
   storeError?: boolean;
+  recovered?: { count: number; backup: string };
 };
 export type AutomationRequest =
   | { type: "automation.list" }
@@ -47,6 +48,7 @@ export const AUTOMATION_LIMITS: Readonly<{
   history: number;
   retainedSessions: number;
   promptTimeoutMs: number;
+  clockBackMs: number;
   minEveryMinutes: number;
   maxEveryMinutes: number;
   name: number;
@@ -61,7 +63,7 @@ export function normalizeStoredJob(value: unknown):
       enabled: boolean;
       anchor: number;
       history: HistoryEntry[];
-      sessionIds: string[];
+      sessionIds: { sessionId: string; workspaceId: string }[];
     })
   | undefined;
 export function validateSchedule(value: unknown): Schedule | undefined;

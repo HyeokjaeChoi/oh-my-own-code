@@ -4,6 +4,7 @@ export const AUTOMATION_LIMITS = Object.freeze({
   history: 50,
   retainedSessions: 5,
   promptTimeoutMs: 2 * 60 * 60 * 1000,
+  clockBackMs: 60 * 60 * 1000,
   minEveryMinutes: 15,
   maxEveryMinutes: 10080,
   name: 80,
@@ -109,8 +110,15 @@ export function normalizeStoredJob(j) {
     enabled: j.enabled,
     anchor: j.anchor,
     history: j.history.filter(entry).slice(-AUTOMATION_LIMITS.history),
+    // Legacy entries were bare session ids; they belonged to the job's workspace at the time.
     sessionIds: (Array.isArray(j.sessionIds) ? j.sessionIds : [])
-      .filter(id)
+      .map((s) =>
+        typeof s === "string"
+          ? { sessionId: s, workspaceId: input.target.workspaceId }
+          : s,
+      )
+      .filter((s) => s && id(s.sessionId) && id(s.workspaceId))
+      .map((s) => ({ sessionId: s.sessionId, workspaceId: s.workspaceId }))
       .slice(-AUTOMATION_LIMITS.retainedSessions),
   };
 }

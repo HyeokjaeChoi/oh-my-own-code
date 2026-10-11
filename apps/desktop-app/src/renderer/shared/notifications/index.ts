@@ -8,6 +8,7 @@ export {
   deriveSessionNotices,
   deriveJobNotices,
   mergeNotices,
+  unionNotices,
 } from "./index.mjs";
 export type {
   NoticeKind,
@@ -24,6 +25,7 @@ export async function callNotify<T>(
     | { type: "notify.status" }
     | {
         type: "notify.show";
+        id?: string;
         text: string;
         workspaceId?: string;
         sessionId?: string;

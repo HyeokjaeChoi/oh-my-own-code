@@ -31,6 +31,8 @@ const RESULT = {
 const errors: Record<string, string> = {
   LIMIT_REACHED: "작업 개수 한도에 도달했습니다.",
   NOT_FOUND: "작업을 찾을 수 없습니다.",
+  STORE_BLOCKED:
+    "저장된 자동화 파일을 읽지 못해 변경할 수 없습니다. 앱 데이터 폴더를 확인하세요.",
   INVALID_REQUEST: "입력값이 올바르지 않습니다.",
 };
 const time = (ms: number) => new Date(ms).toLocaleString();
@@ -298,6 +300,12 @@ export function AutomationButton() {
           <p role="alert">
             저장된 자동화 파일을 읽지 못해 저장을 중단했습니다. 앱 데이터 폴더를
             확인하세요.
+          </p>
+        )}
+        {data?.recovered && (
+          <p role="status">
+            저장 파일의 손상된 항목 {data.recovered.count}개를{" "}
+            {data.recovered.backup}에 따로 보관했습니다.
           </p>
         )}
         {editing ? (

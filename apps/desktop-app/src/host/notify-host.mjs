@@ -9,7 +9,7 @@ export function createNotifyHost({
 }) {
   let failed = false;
   let clicked;
-  // Several windows may echo the same entry; main shows each (text, target) once per window of time.
+  // Several windows may echo the same entry; main shows each notice id once per window of time.
   const recent = new Map();
   const supported = () => {
     try {
@@ -20,8 +20,8 @@ export function createNotifyHost({
   };
   return {
     status: () => ({ supported: supported(), failed }),
-    show({ text, workspaceId, sessionId }) {
-      const key = JSON.stringify([text, workspaceId, sessionId]);
+    show({ id, text, workspaceId, sessionId }) {
+      const key = id ?? JSON.stringify([text, workspaceId, sessionId]);
       const t = now();
       for (const [k, at] of recent) if (t - at >= dedupeMs) recent.delete(k);
       if (recent.has(key)) return { shown: false };
