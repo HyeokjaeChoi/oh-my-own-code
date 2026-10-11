@@ -842,9 +842,11 @@ export function validateSnapshot(value) {
     );
   }
   for (const p of value.permissions) {
-    requiredObject(p, ["id", "sessionId", "title", "detail"]);
+    requiredObject(p, ["id", "sessionId", "title", "detail"], ["toolId"]);
     needDTO(
-      boundedText(p.id, 256) &&
+      (!Object.hasOwn(p, "toolId") ||
+        (boundedText(p.toolId, 256) && p.toolId.length > 0)) &&
+        boundedText(p.id, 256) &&
         p.id.length > 0 &&
         sessions.has(p.sessionId) &&
         boundedText(p.title, 128) &&
