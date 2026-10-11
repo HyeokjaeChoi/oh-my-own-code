@@ -542,13 +542,17 @@ function requestQuit() {
   return quitPromise;
 }
 
-async function confirmWorkspaceTrust(path) {
+async function confirmWorkspaceTrust(path, action) {
+  const folderAction =
+    action === "worktree.inspect" || action === "worktree.delete";
   const result = await dialog.showMessageBox(mainWindow, {
     type: "warning",
     title: "Trust this workspace?",
-    message: "Opening a session can load project configuration and plugins.",
+    message: folderAction
+      ? "이 폴더의 git 정보를 읽고 삭제를 진행하려면 신뢰가 필요합니다."
+      : "Opening a session can load project configuration and plugins.",
     detail: path,
-    buttons: ["Cancel", "Trust and open"],
+    buttons: ["Cancel", folderAction ? "Trust and continue" : "Trust and open"],
     defaultId: 0,
     cancelId: 0,
     noLink: true,

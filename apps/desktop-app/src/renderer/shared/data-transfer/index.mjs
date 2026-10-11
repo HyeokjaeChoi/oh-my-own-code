@@ -104,10 +104,13 @@ export function buildExport({
   const red = (v, n) => {
     // Bounded pre-clip (redaction only shrinks text, secrets are far shorter than the slack), redact,
     // then the final clip; a cut inside a [REDACTED] marker backs up to the marker start.
+    // When pre-clipped, the cut may leave an unmatched secret fragment at the tail of the redacted
+    // text, so drop the last 256 chars before the final clip.
+    const cut = typeof v === "string" && v.length > n + 4096;
     const r = redactText(clip(v, n + 4096), { home });
     totals.secrets += r.counts.secrets;
     totals.home += r.counts.home;
-    return clipAtMarker(r.text, n);
+    return clipAtMarker(cut ? r.text.slice(0, -256) : r.text, n);
   };
   let tools = 0;
   let outputs = 0;

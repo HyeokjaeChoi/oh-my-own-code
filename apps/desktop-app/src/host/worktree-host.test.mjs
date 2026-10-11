@@ -319,13 +319,15 @@ test("concurrent creates keep every link", async () => {
 });
 
 test("worktree IPC refuses untrusted workspaces before touching git", async () => {
+  const gitDir = realpathSync(mkdtempSync(join(tmpdir(), "omoc-g-")));
+  mkdirSync(join(gitDir, ".git"));
   let handler;
   let touched = 0;
   bindWorktreeIpc({
     ipcMain: { handle: (_c, h) => (handler = h) },
     admit: () => true,
     host: { inspect: async () => touched++, create: async () => touched++ },
-    info: () => ({ path: "/x", ownership: "imported" }),
+    info: () => ({ path: gitDir, ownership: "imported" }),
     trusted: () => false,
     confirmTrust: async () => false,
     confirmDelete: async () => true,
@@ -387,6 +389,7 @@ test("worktree IPC trust gate: confirm for git workspaces, none for plain manage
     let asked = 0;
     let answer = false;
     const infos = {
+      i: { path: plain, ownership: "imported" },
       p: { path: plain, ownership: "managed" },
       g: { path: gitish, ownership: "managed" },
     };
@@ -407,13 +410,16 @@ test("worktree IPC trust gate: confirm for git workspaces, none for plain manage
       handler({}, { type: "worktree.delete", workspaceId });
     assert.equal((await del("p")).ok, true);
     assert.equal(asked, 0);
+    const gitAfterPlain = git;
     assert.deepEqual(await del("g"), {
       ok: false,
       code: "UNTRUSTED_WORKSPACE",
     });
     assert.equal(asked, 1);
-    const gitBefore = git;
-    assert.equal(git, gitBefore);
+    assert.equal(git, gitAfterPlain); // refused confirm ran no git
+    assert.deepEqual(await del("i"), { ok: false, code: "NOT_DELETABLE" });
+    assert.equal(asked, 1);
+    assert.equal(git, gitAfterPlain);
     answer = true;
     assert.equal((await del("g")).ok, true);
     assert.deepEqual(
@@ -430,5 +436,20 @@ test("worktree IPC trust gate: confirm for git workspaces, none for plain manage
     );
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("git runs never discover a repo above a plain folder", async () => {
+  const f = fixture();
+  try {
+    const plain = join(f.repo, "inner");
+    mkdirSync(plain);
+    const info = await f.host
+      .inspect({ path: plain, ownership: "managed" })
+      .catch((e) => e);
+    // Not seen as part of the parent repo: not a worktree, and not deletable outside the root.
+    assert.equal(info.worktreeCode, "NOT_DELETABLE");
+  } finally {
+    f.done();
   }
 });

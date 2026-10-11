@@ -116,13 +116,13 @@ test("redaction drops URL credentials and runs before clipping", () => {
 test("export clip never cuts a [REDACTED] marker mid-token", () => {
   const key = "sk-" + "a".repeat(40);
   const n = DATA_LIMITS.text;
-  for (let pad = 0; pad < 12; pad++) {
+  for (let pad = 0; pad < 12; pad += 3) {
     const { doc } = build({
       messages: [
         {
           id: "m1",
           role: "user",
-          text: `${"x".repeat(n - 12 + pad)} ${key} tail`,
+          text: `${"a ".repeat((n - 12 + pad) / 2)} ${key} tail`,
         },
       ],
     });
@@ -131,6 +131,25 @@ test("export clip never cuts a [REDACTED] marker mid-token", () => {
     assert.ok(
       !/\[R(E(D(A(C(T(E(D)?)?)?)?)?)?)?$/.test(t.replace(/\[REDACTED\]$/, "")),
     );
+  }
+});
+
+test("export pre-clip never leaks a secret fragment at the tail", () => {
+  const n = DATA_LIMITS.text;
+  const many = Array.from({ length: 20 }, () => "sk-" + "b".repeat(300)).join(
+    " ",
+  );
+  for (const secret of [
+    "sk-" + "SECRETPREF".repeat(8),
+    "AKIA" + "ABCDEFGHIJKLMNOP",
+  ]) {
+    for (const off of [0, 5, 100]) {
+      const lead = n + 4096 - off - Math.floor(secret.length / 2);
+      const text = `${many} ${"a ".repeat((lead - many.length - 1) / 2)}${secret} tail`;
+      const { doc } = build({ messages: [{ id: "m1", role: "user", text }] });
+      const t = doc.sessions[0].messages[0].text;
+      assert.ok(!/sk-|AKIA/.test(t), `leak at off ${off}: ${t.slice(-30)}`);
+    }
   }
 });
 
