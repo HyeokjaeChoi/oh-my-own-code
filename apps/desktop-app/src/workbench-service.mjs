@@ -2312,6 +2312,8 @@ export function createWorkbenchService({
     };
   }
   const workspaceMeta = new Map();
+  const workspaceMetaAt = new Map();
+  // Short TTL and a per-path timeout keep snapshots from re-probing slow or hung paths every time.
   async function refreshWorkspaceMeta() {
     if (!probeWorkspace) return;
     const paths = new Set([
@@ -2320,10 +2322,24 @@ export function createWorkbenchService({
     ]);
     await Promise.all(
       [...paths].slice(0, 100).map(async (path) => {
+        if (Date.now() - (workspaceMetaAt.get(path) ?? -Infinity) < 10000)
+          return;
+        workspaceMetaAt.set(path, Date.now());
+        let timer;
         try {
-          workspaceMeta.set(path, (await probeWorkspace(path)) ?? {});
+          workspaceMeta.set(
+            path,
+            (await Promise.race([
+              probeWorkspace(path),
+              new Promise((_, reject) => {
+                timer = setTimeout(() => reject(new Error("timeout")), 1500);
+              }),
+            ])) ?? {},
+          );
         } catch {
           workspaceMeta.delete(path);
+        } finally {
+          clearTimeout(timer);
         }
       }),
     );

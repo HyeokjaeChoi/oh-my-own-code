@@ -4,10 +4,7 @@ import { mkdtempSync, mkdirSync, symlinkSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
-import {
-  createTerminalHost,
-  resolveLoginPath,
-} from "./host/terminal-host.mjs";
+import { createTerminalHost, resolveLoginPath } from "./host/terminal-host.mjs";
 import {
   validateTerminalRequest,
   stripAnsi,
@@ -190,17 +187,21 @@ test(
   },
 );
 
-test("each stream keeps its own utf8 decoder state", { skip: !posix }, async () => {
-  // 0xEA 0xB0 0x80 is U+AC00; split across stdout/stderr must not merge.
-  const { host } = fixture([
-    "-c",
-    "printf '\\352\\260'; printf '\\352\\260\\200' >&2; exit 0",
-  ]);
-  const t = host.start("o", { workspaceId: "w1" });
-  await until(() => host.read("o", t.terminalId, 0).status === "exited");
-  assert.ok(host.read("o", t.terminalId, 0).output.includes("\uAC00"));
-  await host.closeAll();
-});
+test(
+  "each stream keeps its own utf8 decoder state",
+  { skip: !posix },
+  async () => {
+    // 0xEA 0xB0 0x80 is U+AC00; split across stdout/stderr must not merge.
+    const { host } = fixture([
+      "-c",
+      "printf '\\352\\260'; printf '\\352\\260\\200' >&2; exit 0",
+    ]);
+    const t = host.start("o", { workspaceId: "w1" });
+    await until(() => host.read("o", t.terminalId, 0).status === "exited");
+    assert.ok(host.read("o", t.terminalId, 0).output.includes("\uAC00"));
+    await host.closeAll();
+  },
+);
 
 test("login PATH is resolved once, bounded, with fallback", async () => {
   const calls = [];

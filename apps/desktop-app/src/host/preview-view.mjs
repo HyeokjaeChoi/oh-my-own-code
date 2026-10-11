@@ -1,14 +1,15 @@
-import { randomUUID } from "node:crypto";
 import { session, WebContentsView } from "electron";
 
 // Electron-bound factory for the isolated preview view (not unit-testable without Electron).
 // Isolation: in-memory partition (no persist: prefix => nothing written to disk), no preload,
 // sandbox + contextIsolation, no node, all permissions denied, downloads cancelled.
+// Two fixed in-memory partitions (url / inert), configured once, instead of one per view.
 export function createPreviewViewFactory({ getWindow }) {
-  return function createView({ inert }) {
-    const win = getWindow();
-    if (!win) throw new Error("no window");
-    const ses = session.fromPartition(`preview-${randomUUID()}`);
+  const sessions = new Map();
+  function sessionFor(inert) {
+    let ses = sessions.get(inert);
+    if (ses) return ses;
+    ses = session.fromPartition(inert ? "preview-inert" : "preview-url");
     ses.setPermissionRequestHandler((_wc, _perm, cb) => cb(false));
     ses.setPermissionCheckHandler(() => false);
     ses.setDevicePermissionHandler(() => false);
@@ -18,6 +19,13 @@ export function createPreviewViewFactory({ getWindow }) {
       ses.webRequest.onBeforeRequest((d, cb) =>
         cb({ cancel: !d.url.startsWith("data:") }),
       );
+    sessions.set(inert, ses);
+    return ses;
+  }
+  return function createView({ inert }) {
+    const win = getWindow();
+    if (!win) throw new Error("no window");
+    const ses = sessionFor(Boolean(inert));
     const view = new WebContentsView({
       webPreferences: {
         session: ses,
