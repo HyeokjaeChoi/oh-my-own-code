@@ -8,6 +8,10 @@ import {
   SHORTCUTS,
   type Preferences,
 } from "../../shared/preferences/index.js";
+import {
+  callNotify,
+  type NotifyStatus,
+} from "../../shared/notifications/index.js";
 import { OPEN_SETTINGS_EVENT } from "../../shared/palette/index.js";
 import styles from "./preferences.module.css";
 
@@ -70,6 +74,39 @@ function usePreferences() {
   return { preferences, update };
 }
 
+function OsNotificationField(props: {
+  preferences: Preferences;
+  onChange: (patch: Partial<Preferences>) => void;
+}) {
+  const [status, setStatus] = useState<NotifyStatus>();
+  useEffect(() => {
+    void callNotify<NotifyStatus>({ type: "notify.status" }).then(
+      (r) => r.ok && setStatus(r.value),
+    );
+  }, []);
+  const blocked = status ? !status.supported || status.failed : false;
+  return (
+    <label className={styles.field}>
+      <span>
+        OS 알림 (창이 비활성일 때, 내용 없이 알림만)
+        {blocked && (
+          <small role="status">
+            {" "}
+            이 환경에서는 OS 알림을 사용할 수 없어 앱 안에서만 표시됩니다.
+          </small>
+        )}
+      </span>
+      <input
+        type="checkbox"
+        checked={props.preferences.osNotifications}
+        onChange={(event) =>
+          props.onChange({ osNotifications: event.target.checked })
+        }
+      />
+    </label>
+  );
+}
+
 export function PreferencesSheetView(props: {
   preferences: Preferences;
   onChange: (patch: Partial<Preferences>) => void;
@@ -95,6 +132,7 @@ export function PreferencesSheetView(props: {
           </select>
         </label>
       ))}
+      <OsNotificationField {...props} />
       <h3 className={styles.subheading}>키보드 단축키</h3>
       <dl className={styles.shortcuts}>
         {SHORTCUTS.map(({ keys, action }) => (

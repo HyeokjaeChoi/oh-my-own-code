@@ -1,0 +1,40 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--omoc-semantic-space-card-gap);
+}
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.row {
+  display: flex;
+  gap: var(--omoc-semantic-space-control-gap);
+  flex-wrap: wrap;
+}
+.hint {
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.jobs,
+.history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.jobs > li {
+  margin-bottom: var(--omoc-semantic-space-section-gap);
+}
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 2px 12px;
+  margin: 4px 0;
+}
+.facts dd {
+  margin: 0;
+}
+.history {
+  margin-top: var(--omoc-semantic-space-control-gap);
+  font-size: var(--omoc-semantic-type-size-caption);
+}

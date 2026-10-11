@@ -6,3 +6,5 @@ export {
 export type { PaletteAction, PaletteEntry, PaletteContext } from "./index.mjs";
 // Palette -> preferences sheet; the sheet owns its own open state.
 export const OPEN_SETTINGS_EVENT = "omoc:open-settings";
+export const OPEN_NOTIFICATIONS_EVENT = "omoc:open-notifications";
+export const OPEN_AUTOMATION_EVENT = "omoc:open-automation";

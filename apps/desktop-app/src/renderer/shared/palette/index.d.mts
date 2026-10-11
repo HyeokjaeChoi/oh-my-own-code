@@ -1,5 +1,7 @@
 export type PaletteAction =
   | { type: "settings" }
+  | { type: "notifications" }
+  | { type: "automation" }
   | {
       type: "panel";
       panel:

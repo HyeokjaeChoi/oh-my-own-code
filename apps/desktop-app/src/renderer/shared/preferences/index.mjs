@@ -5,6 +5,7 @@ export const DEFAULT_PREFERENCES = Object.freeze({
   theme: "system",
   fontSize: "medium",
   density: "comfortable",
+  osNotifications: false,
 });
 export const PREFERENCES_STORAGE_KEY = "omoc.preferences.v1";
 const FONT_SCALE = { small: 0.9, medium: 1, large: 1.15 };
@@ -34,6 +35,7 @@ export function parsePreferences(raw) {
     theme: pick(THEMES, r.theme, DEFAULT_PREFERENCES.theme),
     fontSize: pick(FONT_SIZES, r.fontSize, DEFAULT_PREFERENCES.fontSize),
     density: pick(DENSITIES, r.density, DEFAULT_PREFERENCES.density),
+    osNotifications: r.osNotifications === true,
   };
 }
 

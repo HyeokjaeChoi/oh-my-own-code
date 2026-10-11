@@ -25,7 +25,12 @@ test("load/save round-trip and tolerate blocked storage", () => {
     getItem: (k) => data.get(k) ?? null,
     setItem: (k, v) => data.set(k, v),
   };
-  const next = { theme: "light", fontSize: "large", density: "compact" };
+  const next = {
+    theme: "light",
+    fontSize: "large",
+    density: "compact",
+    osNotifications: true,
+  };
   savePreferences(next, storage);
   assert.deepEqual(loadPreferences(storage), next);
   const broken = {
