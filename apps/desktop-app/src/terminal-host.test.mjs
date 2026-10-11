@@ -3,7 +3,11 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, symlinkSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createTerminalHost } from "./host/terminal-host.mjs";
+import { execFileSync } from "node:child_process";
+import {
+  createTerminalHost,
+  resolveLoginPath,
+} from "./host/terminal-host.mjs";
 import {
   validateTerminalRequest,
   stripAnsi,
@@ -150,6 +154,72 @@ test(
     await host.closeAll();
   },
 );
+
+const hasPython = (() => {
+  try {
+    execFileSync("python3", ["-c", ""], { stdio: "ignore" });
+    return true;
+  } catch {
+    return false;
+  }
+})();
+test(
+  "a detached descendant holding the pipes cannot hang stop or closeAll",
+  { skip: !posix || !hasPython },
+  async () => {
+    const { host } = fixture(
+      [
+        "-c",
+        `python3 -c "import subprocess;p=subprocess.Popen(['sleep','20'],start_new_session=True);print(p.pid,flush=True)"; exit 0`,
+      ],
+      { exitGraceMs: 100 },
+    );
+    const t = host.start("o", { workspaceId: "w1" });
+    await until(() => /^\d+\n/.test(host.read("o", t.terminalId, 0).output));
+    const holder = Number(host.read("o", t.terminalId, 0).output.trim());
+    try {
+      const started = Date.now();
+      await host.stop("o", t.terminalId);
+      assert.equal(host.read("o", t.terminalId, 0).status, "exited");
+      await host.closeAll();
+      assert.ok(Date.now() - started < 3000);
+      assert.equal(host.size(), 0);
+    } finally {
+      process.kill(holder, "SIGKILL");
+    }
+  },
+);
+
+test("each stream keeps its own utf8 decoder state", { skip: !posix }, async () => {
+  // 0xEA 0xB0 0x80 is U+AC00; split across stdout/stderr must not merge.
+  const { host } = fixture([
+    "-c",
+    "printf '\\352\\260'; printf '\\352\\260\\200' >&2; exit 0",
+  ]);
+  const t = host.start("o", { workspaceId: "w1" });
+  await until(() => host.read("o", t.terminalId, 0).status === "exited");
+  assert.ok(host.read("o", t.terminalId, 0).output.includes("\uAC00"));
+  await host.closeAll();
+});
+
+test("login PATH is resolved once, bounded, with fallback", async () => {
+  const calls = [];
+  const run = (file, args, opts, cb) => {
+    calls.push({ file, args, opts });
+    cb(null, "noise__OMOC_PATH__/opt/bin:rel:/usr/bin__OMOC_PATH__tail");
+  };
+  const merged = await resolveLoginPath({ run, shell: "/bin/zsh" });
+  if (posix) {
+    assert.ok(merged.startsWith("/opt/bin:/usr/bin"));
+    assert.ok(!merged.split(":").includes("rel"));
+    assert.equal(calls[0].opts.timeout, 3000);
+    assert.ok(calls[0].opts.maxBuffer <= 1 << 16);
+  }
+  const failed = await resolveLoginPath({
+    run: (_f, _a, _o, cb) => cb(new Error("x"), ""),
+  });
+  assert.equal(failed, process.env.PATH ?? "");
+});
 
 test("terminal request validation is closed", () => {
   const good = [
