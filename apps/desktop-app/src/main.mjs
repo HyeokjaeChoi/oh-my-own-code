@@ -124,9 +124,9 @@ let owner;
 let registry;
 let initialRecovery;
 let kernel;
-// e2e isolation: macOS resolves appData/documents via NSHomeDirectory (ignores $HOME), so test
+// Unpackaged e2e isolation: macOS resolves appData/documents via NSHomeDirectory (ignores $HOME), so test
 // runs would otherwise share the real profile, storage-v1 and single-instance lock.
-const isolatedRoot = process.env.OMOC_APP_DATA_DIR;
+const isolatedRoot = !app.isPackaged && process.env.OMOC_APP_DATA_DIR;
 if (isolatedRoot) {
   for (const [name, sub] of [
     ["appData", "appdata"],
@@ -164,14 +164,8 @@ const ephemeralProfile = configureEphemeralProfile(
 );
 const processIdentity = createOSProcessIdentityAdapter();
 const registryPromise = (async () => {
+  // A second instance (kernel lock lost) quits before this runs; only storage_denied reaches here.
   if (initialRecovery) {
-    if (initialRecovery === "owner_conflict") {
-      registry = await openWorkspaceRegistry({
-        runtimeEpoch,
-        recoveryReason: initialRecovery,
-      });
-      return registry;
-    }
     throw Object.assign(new Error("storage unavailable"), {
       storageReason: initialRecovery,
     });
@@ -697,7 +691,7 @@ app.whenReady().then(async () => {
   // (inside registryPromise) so it cannot race the owner's storage scan.
   void registryPromise
     .then((store) =>
-      store.readView().recovery.store.state === "ready"
+      !storageShutdown && store.readView().recovery.store.state === "ready"
         ? automation.start()
         : undefined,
     )
