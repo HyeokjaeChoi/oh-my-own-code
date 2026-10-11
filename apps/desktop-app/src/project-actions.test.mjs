@@ -124,6 +124,25 @@ test("startScript spawns argv of the detected package manager, attributed", asyn
   await host.closeAll();
 });
 
+test("closeOwner during the scripts read cancels startScript", async () => {
+  const root = dir();
+  pkg(root, { scripts: { test: "echo hi" } });
+  let spawned = 0;
+  const host = createTerminalHost({
+    resolveWorkspace: () => root,
+    spawn: (file, args, options) => {
+      spawned++;
+      return realSpawn("/bin/sh", ["-c", "exit 0"], options);
+    },
+    killGraceMs: 100,
+  });
+  const p = host.startScript("o", { workspaceId: "w1", script: "test" });
+  await host.closeOwner("o");
+  await assert.rejects(p, { terminalCode: "NOT_FOUND" });
+  assert.equal(spawned, 0);
+  await host.closeAll();
+});
+
 test("startScript rejects unknown scripts and workspaces without spawning", async () => {
   const root = dir();
   pkg(root, { scripts: { test: "echo hi" } });

@@ -4,6 +4,7 @@ import {
   existsSync,
   mkdirSync,
   mkdtempSync,
+  readFileSync,
   realpathSync,
   rmSync,
   symlinkSync,
@@ -441,15 +442,28 @@ test("worktree IPC trust gate: confirm for git workspaces, none for plain manage
 
 test("git runs never discover a repo above a plain folder", async () => {
   const f = fixture();
+  const oldPath = process.env.PATH;
   try {
     const plain = join(f.repo, "inner");
     mkdirSync(plain);
+    // PATH shim records the env git is spawned with.
+    const bin = join(f.dir, "bin");
+    const log = join(f.dir, "ceiling.log");
+    mkdirSync(bin);
+    writeFileSync(
+      join(bin, "git"),
+      `#!/bin/sh\necho "$GIT_CEILING_DIRECTORIES" >> "${log}"\nPATH="${oldPath}" exec git "$@"\n`,
+      { mode: 0o755 },
+    );
+    process.env.PATH = `${bin}:${oldPath}`;
     const info = await f.host
       .inspect({ path: plain, ownership: "managed" })
       .catch((e) => e);
-    // Not seen as part of the parent repo: not a worktree, and not deletable outside the root.
     assert.equal(info.worktreeCode, "NOT_DELETABLE");
+    const seen = readFileSync(log, "utf8").trim().split("\n");
+    assert.ok(seen.length > 0 && seen.every((v) => v === f.repo), seen.join());
   } finally {
+    process.env.PATH = oldPath;
     f.done();
   }
 });

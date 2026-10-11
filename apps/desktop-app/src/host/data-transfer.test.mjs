@@ -139,16 +139,22 @@ test("export pre-clip never leaks a secret fragment at the tail", () => {
   const many = Array.from({ length: 20 }, () => "sk-" + "b".repeat(300)).join(
     " ",
   );
-  for (const secret of [
-    "sk-" + "SECRETPREF".repeat(8),
-    "AKIA" + "ABCDEFGHIJKLMNOP",
-  ]) {
-    for (const off of [0, 5, 100]) {
-      const lead = n + 4096 - off - Math.floor(secret.length / 2);
-      const text = `${many} ${"a ".repeat((lead - many.length - 1) / 2)}${secret} tail`;
+  const jwt = `eyJ${"h".repeat(60)}.eyJ${"p".repeat(300)}.${"s".repeat(60)}`;
+  const secrets = [
+    ["QQQQ", `{"client_secret": "QQQQ${"x".repeat(1200)}`],
+    ["PPPP", `password="PPPP long pass phrase ${"y ".repeat(600)}`],
+    ["eyJhhhh", jwt],
+  ];
+  for (const [needle, secret] of secrets) {
+    for (const off of [0, 5, 100, 400, 700]) {
+      const lead = n + 4096 - off - 10;
+      const text = `${many}\n${"a ".repeat((lead - many.length - 1) / 2)}${secret} tail`;
       const { doc } = build({ messages: [{ id: "m1", role: "user", text }] });
       const t = doc.sessions[0].messages[0].text;
-      assert.ok(!/sk-|AKIA/.test(t), `leak at off ${off}: ${t.slice(-30)}`);
+      assert.ok(
+        !t.includes(needle) && !/sk-bbb|eyJ/.test(t),
+        `leak ${needle} at off ${off}: ${t.slice(-30)}`,
+      );
     }
   }
 });
