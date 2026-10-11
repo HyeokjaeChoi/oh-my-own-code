@@ -192,7 +192,7 @@ Status: `done` = implemented end to end; `partial` = some of the clause exists; 
 | Clause                                         | Status  | Evidence                                                                                                                                |
 | ---------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | Shortcut help                                  | done    | `features/preferences/index.tsx:97`                                                                                                     |
-| Command palette (keyboard global)              | partial | slash menu only                                                                                                                         |
+| Command palette (keyboard global)              | done    | `features/palette`, `shared/palette` (Cmd+K on macOS, Ctrl+K elsewhere)                                                                 |
 | Theme, font size, density                      | done    | `shared/preferences/index.mjs` (localStorage)                                                                                           |
 | Layout setting                                 | partial | detail panel width already user-resizable; no persisted layout preference                                                               |
 | Accessibility                                  | partial | aria labels present; no audit evidence                                                                                                  |
@@ -201,22 +201,13 @@ Status: `done` = implemented end to end; `partial` = some of the clause exists; 
 
 ## Remaining work, ordered
 
+Updated 2026-10-11 after merging the review-fix rounds (permissions, hosts, UI, F-18) to `main` at `274f72c5`; full suite 4776/4776 and the 4 static checks pass. Items 1-11 and 14-15 of the earlier list landed (each passed fresh-context Opus review with no critical/major).
+
 D = needs user decision.
 
-1. **S** Import by typed path + show branch/writable (F-01). No deps.
-2. **S** Unread + recent-reopen state (F-04). Needs renderer/store only if kept local; D if persisted in main.
-3. **S** Message retry as new send; no tool re-run (F-05). Dep: none.
-4. **S** Terminal resize/command attribution labels (F-12). PTY swap is item 12.
-5. **M** Permission presets, remember, revoke (F-09). Dep: confirm which SDK/native rules are writable. D: weakens/widens authority.
-6. **M** Physical delete with dirty/terminal/path preview (F-03). Dep: 1. D: new destructive fs boundary.
-7. **M** Git worktree create/detect (F-01/F-02). Dep: git kernels. D: new git write op.
-8. **M** App command palette completion + project action runner (F-13, F-12). Dep: 4.
-9. **M** Usage/context/token display from runtime (F-16 half). D if runtime lacks fields.
-10. **M** Timeline filters + navigation (F-16). Dep: 9 optional.
-11. **L** Plan/checklist + review domain (F-15). D: new domain model.
-12. **L** Real PTY via `node-pty` (F-12). D: new native dependency and runtime boundary; also needed for dev server.
-13. **L** Preview tabs and dev server (F-10). Dep: 12 for dev server. D: new untrusted-content runtime boundary (WebContentsView, origin isolation).
-14. **L** Subagent delegation, tree, abort + tool-ui cards + direct tool calls (F-07/F-08). Policy now allows `subagent` per mode (user decision); UI/tree/queue landed, live Native verification pending.
-15. **L** Export/import/retention/app-data delete, notifications, recurring jobs (F-17/F-18). D: data-transfer redaction rules, OS notification permission, scheduler model.
-
-Decisions needed from user: items 5, 6, 7, 12, 13, 14, 15 (and 2/9 conditionally). Windows (old B02/B18) is outside this table.
+1. **L** Real PTY via `node-pty` + `xterm.js` (F-12; also dev server for F-10). D: new native dependency.
+2. **M** Windows support (old B02/B18). D: needs a real Windows machine.
+3. **S** Export: values >1 MiB with no newline export as `[TRUNCATED]`; unterminated quoted secrets in raw text are not redacted (`renderer/shared/data-transfer`).
+4. **S** Git review is unavailable in repos whose ignored dirs contain symlinks or exceed file caps (e.g. `node_modules`), so plan checks never show a plain pass there (`host/workbench-git-snapshot.mjs` walk).
+5. **S** Permission policySync may return BUSY for a drifted session that Native reports active while app status is idle; config reads keep failing while any session has drifted (`workbench-service.mjs` policySync).
+6. **S** Plans: idle poll can cancel the observation `runCheck` started (`OBSERVATION_FAILED`); export summary clears on any snapshot change.
