@@ -582,7 +582,7 @@ test("host: busy retained session skips run and is never archived; legacy ids mi
   );
   const host = createAutomationHost({
     storeFile: () => file,
-    run: async (j) => (
+    run: async () => (
       runs.push(1),
       { result: "ok", reason: "", sessionId: "s6" }
     ),
