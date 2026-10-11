@@ -73,13 +73,15 @@ const plans = createPlansHost({
   storeFile: () => join(namespace.metadata, "plans.json"),
   terminals: (owner, workspaceId) => terminals.list(owner, workspaceId),
 });
+const automationRunner = createAutomationRunner({
+  service: () => workbench,
+  terminals,
+  terminalRoot: (id) => workbench?.terminalRoot(id),
+});
 const automation = createAutomationHost({
   storeFile: () => join(namespace.metadata, "jobs.json"),
-  run: createAutomationRunner({
-    service: () => workbench,
-    terminals,
-    terminalRoot: (id) => workbench?.terminalRoot(id),
-  }),
+  run: automationRunner,
+  archive: automationRunner.archive,
 });
 const notifier = createNotifyHost({
   Notification,
@@ -280,7 +282,7 @@ let storageShutdown = false;
 let nativePreflight;
 async function finishStorage() {
   if (storageShutdown) return;
-  automation.stop();
+  await automation.stop();
   previews.closeAll();
   await terminals.closeAll();
   await workbench?.drain();

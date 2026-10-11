@@ -3,6 +3,8 @@ export type NoticeSpec = {
   id: string;
   kind: NoticeKind;
   text: string;
+  /** Title-free text for OS notifications; defaults to text. */
+  os?: string;
   workspaceId?: string;
   sessionId?: string;
 };
@@ -18,9 +20,11 @@ export type NoticeSnapshot = {
 };
 export const NOTIFICATION_LIMIT: number;
 export const NOTIFICATIONS_STORAGE_KEY: string;
+export const NOTIFICATION_JOB_MARK_KEY: string;
 export function sessionText(
   kind: "done" | "error" | "approval",
   title: string,
+  os?: boolean,
 ): string;
 export function jobText(
   name: string,
@@ -43,7 +47,12 @@ export function deriveJobNotices(
     }[];
   }[],
   startedAt: number,
+  seenAt?: number,
 ): NoticeSpec[];
+export function jobNoticeMark(
+  jobs: { history: { recordedAt: number }[] }[],
+  seenAt?: number,
+): number;
 export function mergeNotices(
   list: Notice[],
   notices: NoticeSpec[],

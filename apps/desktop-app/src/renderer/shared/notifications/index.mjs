@@ -8,9 +8,21 @@ const clean = (s, n = 40) => {
     .trim();
   return t.length > n ? `${t.slice(0, n)}…` : t || "제목 없음";
 };
-export const sessionText = (kind, title) =>
-  `세션 '${clean(title)}' ${{ done: "작업 완료", error: "오류 발생", approval: "승인 요청 대기" }[kind]}`;
-const RESULT = { ok: "실행 완료", failed: "실행 실패", skipped: "건너뜀" };
+export const NOTIFICATION_JOB_MARK_KEY = "omoc.notifications.jobMark.v1";
+const LABEL = {
+  done: "작업 완료",
+  error: "오류 발생",
+  approval: "승인 요청 대기",
+};
+// Titles are auto-generated from prompts: in-app only. `os: true` yields the title-free OS text.
+export const sessionText = (kind, title, os = false) =>
+  os ? `세션 ${LABEL[kind]}` : `세션 '${clean(title)}' ${LABEL[kind]}`;
+const RESULT = {
+  ok: "실행 완료",
+  failed: "실행 실패",
+  skipped: "건너뜀",
+  timeout: "시간 초과",
+};
 export const jobText = (name, entry) =>
   entry.result === "missed"
     ? `자동화 '${clean(name)}' 놓친 실행 ${entry.count ?? 1}건`
@@ -31,6 +43,7 @@ export function deriveSessionNotices(prev, next, now) {
         id: `done:${s.id}:${now}`,
         kind: "done",
         text: sessionText("done", s.title),
+        os: sessionText("done", "", true),
       });
     else if (active && (s.status === "unavailable" || s.status === "unknown"))
       out.push({
@@ -38,6 +51,7 @@ export function deriveSessionNotices(prev, next, now) {
         id: `error:${s.id}:${now}`,
         kind: "error",
         text: sessionText("error", s.title),
+        os: sessionText("error", "", true),
       });
   }
   const seen = new Set(prev.permissions.map((p) => p.id));
@@ -51,17 +65,20 @@ export function deriveSessionNotices(prev, next, now) {
       id: `approval:${p.id}`,
       kind: "approval",
       text: sessionText("approval", s.title),
+      os: sessionText("approval", "", true),
     });
   }
   return out;
 }
 
-// Job history entries recorded since this app run started become notices; ids dedupe reloads.
-export function deriveJobNotices(jobs, startedAt) {
+// Job history entries recorded after both this app run's start and the persisted high-water mark
+// (`seenAt`, see jobNoticeMark) become notices, so each run record notifies at most once.
+export function deriveJobNotices(jobs, startedAt, seenAt = 0) {
+  const after = Math.max(startedAt - 1, seenAt);
   const out = [];
   for (const j of jobs)
     for (const e of j.history)
-      if (e.recordedAt >= startedAt)
+      if (e.recordedAt > after)
         out.push({
           id: `job:${e.id}`,
           kind: e.result === "failed" ? "error" : "job",
@@ -70,6 +87,9 @@ export function deriveJobNotices(jobs, startedAt) {
         });
   return out;
 }
+
+export const jobNoticeMark = (jobs, seenAt = 0) =>
+  Math.max(seenAt, ...jobs.flatMap((j) => j.history.map((e) => e.recordedAt)));
 
 // Adds unseen notices (unread), newest first, capped.
 export function mergeNotices(list, notices, now) {
