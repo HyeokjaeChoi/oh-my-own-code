@@ -4,6 +4,7 @@ import {
   useWindowWorkbench,
 } from "../../entities/workbench/index.js";
 import { Timeline } from "./timeline.js";
+import { SubagentPanel } from "../../features/subagents/index.js";
 import styles from "./activity.module.css";
 const operationLabels: Record<string, string> = {
   "workspace.import": "폴더 가져오기",
@@ -51,6 +52,7 @@ export function ActivityPanel({
     >
       <h2>로컬 활동</h2>
       <p className={styles.muted}>이번 앱 실행에서 관찰한 작업입니다.</p>
+      <SubagentPanel workspaceId={workspaceId} sessionId={sessionId} />
       <label className={styles.filter}>
         <input
           type="checkbox"

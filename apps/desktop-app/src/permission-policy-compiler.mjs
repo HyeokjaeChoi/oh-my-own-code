@@ -145,6 +145,7 @@ export function compilePermissionRules(input) {
           : value.mode === "custom"
             ? (settings.get(capability.capabilityId) ?? "ask")
             : capability.category === "file_read" ||
+                capability.category === "delegation" ||
                 (value.mode === "scoped_edit" &&
                   capability.category === "file_write")
               ? "allow"

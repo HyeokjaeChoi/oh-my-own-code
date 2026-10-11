@@ -16,6 +16,7 @@ const BUILTIN = [
   ["shell", "shell"],
   ["webfetch", "network"],
   ["websearch", "network"],
+  ["subagent", "delegation"],
 ];
 const capabilities = BUILTIN.map(([action, category]) => ({
   capabilityId: `opencode.tool.${action}`,

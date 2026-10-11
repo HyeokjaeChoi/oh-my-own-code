@@ -757,5 +757,5 @@ test("permission.mode.set validates strictly and does not approve or touch pendi
     rules.find((r) => r.action === "edit"),
     { action: "edit", resource: "*", effect: "allow" },
   );
-  assert.deepEqual(rules.slice(-2), BASELINE_POLICY.slice(1));
+  assert.deepEqual(rules.slice(-1), BASELINE_POLICY.slice(1));
 });

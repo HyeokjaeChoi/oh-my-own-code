@@ -421,10 +421,9 @@ export function AgentRuntimeControls() {
         등록을 제거하고 상태를 다시 확인하세요.
       </p>
       <p data-agent-runtime-policy-help>
-        primary · hidden: false. 권한 3개는 * / * / ask, external_directory / *
-        / deny, subagent / * / deny입니다. request settings·headers·body는 모두
-        비어 있습니다. model override는 없습니다. 기본 Agent와 현재 세션은
-        그대로입니다.
+        primary · hidden: false. 권한 2개는 * / * / ask, external_directory / *
+        / deny입니다. request settings·headers·body는 모두 비어 있습니다. model
+        override는 없습니다. 기본 Agent와 현재 세션은 그대로입니다.
       </p>
       <div className={styles.actions}>
         <button
@@ -536,7 +535,7 @@ export function AgentRuntimeControls() {
                 <pre
                   className={styles.diff}
                   tabIndex={0}
-                  aria-label={`${row.name} Native 권한 3개`}
+                  aria-label={`${row.name} Native 권한 2개`}
                   data-agent-runtime-policy
                 >
                   {row.permissions
