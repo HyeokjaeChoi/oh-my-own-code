@@ -15,6 +15,7 @@ import {
   SessionNavigation,
   sessionSuccessor,
 } from "../../features/sessions/index.js";
+import { PreferencesButton } from "../../features/preferences/index.js";
 import { Conversation } from "../../widgets/conversation/index.js";
 import { TerminalPanel } from "../../widgets/terminal/index.js";
 import { CatalogPanel, FileExplorer } from "../../widgets/explorer/index.js";
@@ -472,6 +473,7 @@ export function Workbench() {
               {states[connection]}
             </span>
           </div>
+          <PreferencesButton />
           <Button
             ref={panelButton}
             size="compact"
