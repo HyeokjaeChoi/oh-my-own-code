@@ -20,6 +20,7 @@ import { CommandPalette } from "../../features/palette/index.js";
 import { Conversation } from "../../widgets/conversation/index.js";
 import { TerminalPanel } from "../../widgets/terminal/index.js";
 import { PreviewPanel } from "../../widgets/preview/index.js";
+import { PlansPanel } from "../../widgets/plans/index.js";
 import { CatalogPanel, FileExplorer } from "../../widgets/explorer/index.js";
 import {
   selectors,
@@ -41,6 +42,7 @@ const panelLabels = {
   activity: "활동",
   terminal: "터미널",
   preview: "미리보기",
+  plans: "계획",
 };
 const states: Record<string, string> = {
   loading: "런타임 확인 중…",
@@ -647,6 +649,16 @@ export function Workbench() {
         ) : panel === "preview" ? (
           selection.workspaceId ? (
             <PreviewPanel key={key} workspaceId={selection.workspaceId} />
+          ) : (
+            <p className={styles.muted}>작업 공간을 선택하세요.</p>
+          )
+        ) : panel === "plans" ? (
+          selection.workspaceId ? (
+            <PlansPanel
+              key={key}
+              workspaceId={selection.workspaceId}
+              sessionId={selection.sessionId}
+            />
           ) : (
             <p className={styles.muted}>작업 공간을 선택하세요.</p>
           )
