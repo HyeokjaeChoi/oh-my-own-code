@@ -1024,6 +1024,10 @@ declare global {
         // eslint-disable-next-line no-unused-vars
         _request: PreviewRequest,
       ): Promise<PreviewResult<unknown>>;
+      worktree(
+        // eslint-disable-next-line no-unused-vars
+        _request: WorktreeRequest,
+      ): Promise<WorktreeResult>;
       cancelRead(
         // eslint-disable-next-line no-unused-vars
         _request: WorkbenchCancel,
@@ -1031,6 +1035,29 @@ declare global {
     };
   }
 }
+
+export type WorktreeRequest =
+  | {
+      type: "worktree.create";
+      workspaceId: string;
+      branch: string;
+      base: string;
+      path?: string;
+    }
+  | { type: "worktree.inspect"; workspaceId: string }
+  | { type: "worktree.delete"; workspaceId: string; force?: boolean };
+export type WorktreeResult =
+  | {
+      ok: true;
+      value: {
+        kind?: "worktree" | "managed";
+        path?: string;
+        reasons?: string[];
+        parent?: string;
+        branch?: string;
+      };
+    }
+  | { ok: false; code: string; reasons?: string[] };
 
 export type ReadType =
   | "permission.policy.read"

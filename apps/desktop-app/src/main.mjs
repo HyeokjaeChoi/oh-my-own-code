@@ -33,6 +33,8 @@ import { bindTerminalIpc } from "./host/terminal-ipc.mjs";
 import { createPreviewHost } from "./host/preview-host.mjs";
 import { bindPreviewIpc } from "./host/preview-ipc.mjs";
 import { createPreviewViewFactory } from "./host/preview-view.mjs";
+import { createWorktreeHost } from "./host/worktree-host.mjs";
+import { bindWorktreeIpc } from "./host/worktree-ipc.mjs";
 import {
   createStorageOwner,
   createElectronOwnerKernel,
@@ -45,6 +47,12 @@ import { randomUUID } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 
 let workbench;
+// One-shot path the next workspace.import adopts instead of opening a folder dialog.
+let stagedImport;
+const worktrees = createWorktreeHost({
+  documentsRoot: () => namespace.documents,
+  linksFile: () => join(namespace.metadata, "worktree-links.json"),
+});
 const terminals = createTerminalHost({
   resolveWorkspace: (id) => workbench?.terminalRoot(id),
 });
@@ -269,6 +277,31 @@ function bindIpc() {
   bindWorkbenchIpc({ ipcMain, admit, service: () => workbench });
   bindTerminalIpc({ ipcMain, admit, host: terminals });
   bindPreviewIpc({ ipcMain, admit, host: previews });
+  bindWorktreeIpc({
+    ipcMain,
+    admit,
+    host: worktrees,
+    info: (id) => workbench?.workspaceInfo(id),
+    stageImport: (path) => {
+      stagedImport = { path, until: Date.now() + 30000 };
+    },
+    async confirmDelete({ kind, path, reasons, force }) {
+      const result = await dialog.showMessageBox(mainWindow, {
+        type: "warning",
+        title: "실제 삭제",
+        message:
+          kind === "worktree"
+            ? "이 워크트리 폴더를 디스크에서 삭제하시겠습니까?"
+            : "이 앱이 만든 폴더를 디스크에서 삭제하시겠습니까?",
+        detail: `${path}\n\n폴더와 안의 파일이 디스크에서 삭제되며 되돌릴 수 없습니다.${kind === "worktree" ? "\n브랜치는 삭제하지 않습니다." : ""}${force ? `\n\n강제 삭제 사유:\n${reasons.join("\n")}` : ""}\n\n목록 제거·대화 기록 삭제와는 별개 작업입니다.`,
+        buttons: ["취소", force ? "강제로 삭제" : "삭제"],
+        defaultId: 0,
+        cancelId: 0,
+        noLink: true,
+      });
+      return result.response === 1;
+    },
+  });
   // Workspace removal/untrust has no hook; sweep so its terminals never outlive it.
   setInterval(() => void terminals.reap(), 2000).unref();
   ipcMain.handle("desktop:v1:runtime-snapshot", (event, ...args) => {
@@ -506,6 +539,9 @@ app.whenReady().then(async () => {
     runtimeEpoch,
     bootstrap: true,
     async pickDirectory() {
+      const staged = stagedImport;
+      stagedImport = undefined;
+      if (staged && staged.until > Date.now()) return staged.path;
       const result = await dialog.showOpenDialog(mainWindow, {
         properties: ["openDirectory"],
       });

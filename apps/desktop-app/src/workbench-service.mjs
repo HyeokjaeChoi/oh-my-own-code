@@ -4944,6 +4944,11 @@ export function createWorkbenchService({
       const w = committed.workspaces.get(id);
       return w?.trusted ? w.path : undefined;
     },
+    // Physical-delete authority: registered workspace path and how it was created.
+    workspaceInfo(id) {
+      const w = committed.workspaces.get(id);
+      return w && { path: w.path, ownership: w.ownership ?? "imported" };
+    },
     closeSender(sender) {
       contextIO.closeSender(sender);
       gitReader?.closeSender(sender);

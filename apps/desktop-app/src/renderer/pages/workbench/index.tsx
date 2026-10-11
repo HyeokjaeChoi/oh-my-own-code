@@ -27,6 +27,10 @@ import {
   useWindowWorkbench,
   type Panel,
 } from "../../entities/workbench/index.js";
+import type {
+  WorktreeRequest,
+  WorktreeResult,
+} from "../../../desktop-bridge.js";
 import { selectionKey } from "../../shared/projection/index.js";
 import styles from "./shell.module.css";
 
@@ -114,6 +118,14 @@ export function Workbench() {
   const [createOpen, setCreateOpen] = useState(false);
   const [locationOpen, setLocationOpen] = useState(false);
   const [folderName, setFolderName] = useState("");
+  const [worktreeOpen, setWorktreeOpen] = useState(false);
+  const [worktreeBranch, setWorktreeBranch] = useState("");
+  const [worktreeBase, setWorktreeBase] = useState("HEAD");
+  const [worktreePath, setWorktreePath] = useState("");
+  const [worktreeBusy, setWorktreeBusy] = useState(false);
+  const [worktreeMessage, setWorktreeMessage] = useState("");
+  // Physical delete: reasons are shown first; force needs a second explicit click.
+  const [deleteReasons, setDeleteReasons] = useState<string[] | null>(null);
   const navigationButton = useRef<HTMLButtonElement>(null);
   const panelButton = useRef<HTMLButtonElement>(null);
   const createInput = useRef<HTMLInputElement>(null);
@@ -164,6 +176,65 @@ export function Workbench() {
   };
   const openPanel = (next: Panel) => {
     actions.openPanel(next);
+  };
+  const worktreeCall = async (
+    request: WorktreeRequest,
+  ): Promise<WorktreeResult> => {
+    setWorktreeBusy(true);
+    try {
+      return await window.desktopBridge.worktree(request);
+    } catch {
+      return { ok: false, code: "RUNTIME_ERROR" };
+    } finally {
+      setWorktreeBusy(false);
+    }
+  };
+  const createWorktree = async () => {
+    if (!workspace) return;
+    const result = await worktreeCall({
+      type: "worktree.create",
+      workspaceId: workspace.id,
+      branch: worktreeBranch.trim(),
+      base: worktreeBase.trim(),
+      ...(worktreePath.trim() ? { path: worktreePath.trim() } : {}),
+    });
+    if (!result.ok) {
+      setWorktreeMessage(`워크트리를 만들지 못했습니다 (${result.code})`);
+      return;
+    }
+    setWorktreeMessage("");
+    setWorktreeOpen(false);
+    setWorktreeBranch("");
+    setWorktreePath("");
+    // The host staged the new path; this import registers it without a dialog.
+    void mutate({ type: "workspace.import" }, true);
+  };
+  const physicalDelete = async (force: boolean) => {
+    if (!workspace) return;
+    const result = await worktreeCall({
+      type: "worktree.delete",
+      workspaceId: workspace.id,
+      ...(force ? { force: true } : {}),
+    });
+    if (result.ok) {
+      setDeleteReasons(null);
+      setWorktreeMessage("");
+      void mutate(
+        { type: "workspace.remove", workspaceId: workspace.id },
+        true,
+      );
+    } else if (result.code === "UNSAFE") {
+      setDeleteReasons(result.reasons ?? []);
+    } else {
+      setDeleteReasons(null);
+      setWorktreeMessage(
+        result.code === "NOT_DELETABLE"
+          ? "가져온 폴더는 실제 삭제할 수 없습니다. 목록에서만 제거할 수 있습니다."
+          : result.code === "CANCELLED"
+            ? ""
+            : `실제 삭제하지 못했습니다 (${result.code})`,
+      );
+    }
   };
   const clampWidth = (value: number) => Math.min(420, Math.max(300, value));
   const navigationContent = (
@@ -222,6 +293,49 @@ export function Workbench() {
               onSelect: () => setLocationOpen(true),
             },
             {
+              label: "새 워크트리…",
+              disabled: !workspace || pending || globalDisabled,
+              onSelect: () => setWorktreeOpen(true),
+            },
+            {
+              label: "대화 기록 삭제…",
+              danger: true,
+              disabled:
+                !selection.workspaceId ||
+                !selection.sessionId ||
+                pending ||
+                resourceDisabled,
+              onSelect: () => {
+                if (selection.workspaceId && selection.sessionId)
+                  void mutate(
+                    {
+                      type: "session.remove",
+                      workspaceId: selection.workspaceId,
+                      sessionId: selection.sessionId,
+                      requestId: crypto.randomUUID(),
+                    },
+                    true,
+                  );
+              },
+            },
+            {
+              label: "실제 삭제… · 디스크에서 폴더 삭제",
+              danger: true,
+              disabled:
+                !workspace ||
+                pending ||
+                worktreeBusy ||
+                resourceDisabled ||
+                Boolean(
+                  lists?.sessions.some(
+                    (item) =>
+                      item.workspaceId === workspace?.id &&
+                      item.status !== "idle",
+                  ),
+                ),
+              onSelect: () => void physicalDelete(false),
+            },
+            {
               label: "목록에서 제거 · 파일 유지",
               danger: true,
               disabled:
@@ -246,6 +360,81 @@ export function Workbench() {
           ]}
         />
       </div>
+      {worktreeMessage && <p role="alert">{worktreeMessage}</p>}
+      {deleteReasons && (
+        <div
+          className={styles.createFolder}
+          role="alertdialog"
+          aria-label="실제 삭제 경고"
+        >
+          <p>삭제하면 되돌릴 수 없는 작업이 있습니다.</p>
+          <ul>
+            {deleteReasons.map((reason) => (
+              <li key={reason}>{reason}</li>
+            ))}
+          </ul>
+          <div className={styles.formActions}>
+            <Button
+              intent="primary"
+              disabled={worktreeBusy}
+              onClick={() => void physicalDelete(true)}
+            >
+              위험을 알고 강제로 삭제
+            </Button>
+            <Button onClick={() => setDeleteReasons(null)}>취소</Button>
+          </div>
+        </div>
+      )}
+      {worktreeOpen && (
+        <form
+          className={styles.createFolder}
+          onSubmit={(event) => {
+            event.preventDefault();
+            void createWorktree();
+          }}
+        >
+          <label>
+            새 브랜치 이름
+            <input
+              value={worktreeBranch}
+              maxLength={100}
+              required
+              onChange={(event) => setWorktreeBranch(event.target.value)}
+              placeholder="feature/my-change"
+            />
+          </label>
+          <label>
+            기준 ref
+            <input
+              value={worktreeBase}
+              maxLength={100}
+              required
+              onChange={(event) => setWorktreeBase(event.target.value)}
+            />
+          </label>
+          <label>
+            위치 (선택, 절대 경로)
+            <input
+              value={worktreePath}
+              maxLength={1024}
+              onChange={(event) => setWorktreePath(event.target.value)}
+              placeholder="비우면 Documents/OhMyOwnCode 아래 자동 생성"
+            />
+          </label>
+          <div className={styles.formActions}>
+            <Button
+              intent="primary"
+              type="submit"
+              disabled={pending || globalDisabled || worktreeBusy}
+            >
+              워크트리 만들기
+            </Button>
+            <Button type="button" onClick={() => setWorktreeOpen(false)}>
+              취소
+            </Button>
+          </div>
+        </form>
+      )}
       {createOpen && (
         <form
           className={styles.createFolder}
