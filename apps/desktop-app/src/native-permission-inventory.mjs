@@ -562,40 +562,74 @@ export const BUILTIN_PLUGIN_ORDER = Object.freeze({
 // Direct original State adapter. All source/domain/Fiber/row authority remains
 // in the SAME Control. No executable callback is retained here.
 export function observeNativeStateRegistration(
-  Effect, Scope, control, domainHandle, callback, options,
+  Effect,
+  Scope,
+  control,
+  domainHandle,
+  callback,
+  options,
 ) {
-  return Effect.uninterruptible(Effect.gen(function* () {
-    const scope = yield* Scope.Scope;
-    const token = yield* control.inventoryStateBegin(domainHandle, callback, options, scope);
-    let original;
-    let terminalState;
-    // Allocate the memoized settlement once, before original State can publish.
-    const settle = yield* Effect.cached(Effect.gen(function* () {
-      const terminal = yield* Effect.exit(control.inventoryEnd(token, terminalState));
-      const native = yield* Effect.exit(original ? original.dispose : Effect.void);
-      if (terminal._tag === "Failure" || native._tag === "Failure")
-        control.inventoryStateUncertain(token);
-      // Both Exits have settled; ensuring retains both failure Causes.
-      return yield* Effect.ensuring(terminal, native);
-    }));
-    const dispose = (state) => Effect.uninterruptible(Effect.suspend(() => {
-      terminalState ??= state;
-      return settle;
-    }));
-    return yield* Effect.gen(function* () {
-      const guarded = (...values) => {
-        control.inventoryStateReplay(token);
-        return callback(...values);
-      };
-      original = yield* control.inventoryStateRegister(domainHandle, token, guarded);
-      if (!original || types.isProxy(original)) throw new Error("native_permission_inventory_unverified");
-      const slot = Object.getOwnPropertyDescriptor(original, "dispose");
-      if (!slot || !Object.hasOwn(slot, "value") || !Effect.isEffect(slot.value))
-        throw new Error("native_permission_inventory_unverified");
-      yield* control.inventoryStateRegistered(token);
-      const cleanup = dispose("disposed");
-      yield* Scope.addFinalizer(scope, cleanup);
-      return { ...original, dispose: cleanup };
-    }).pipe(Effect.onExit((exit) => exit._tag === "Failure" ? dispose("failed") : Effect.void));
-  }));
+  return Effect.uninterruptible(
+    Effect.gen(function* () {
+      const scope = yield* Scope.Scope;
+      const token = yield* control.inventoryStateBegin(
+        domainHandle,
+        callback,
+        options,
+        scope,
+      );
+      let original;
+      let terminalState;
+      // Allocate the memoized settlement once, before original State can publish.
+      const settle = yield* Effect.cached(
+        Effect.gen(function* () {
+          const terminal = yield* Effect.exit(
+            control.inventoryEnd(token, terminalState),
+          );
+          const native = yield* Effect.exit(
+            original ? original.dispose : Effect.void,
+          );
+          if (terminal._tag === "Failure" || native._tag === "Failure")
+            control.inventoryStateUncertain(token);
+          // Both Exits have settled; ensuring retains both failure Causes.
+          return yield* Effect.ensuring(terminal, native);
+        }),
+      );
+      const dispose = (state) =>
+        Effect.uninterruptible(
+          Effect.suspend(() => {
+            terminalState ??= state;
+            return settle;
+          }),
+        );
+      return yield* Effect.gen(function* () {
+        const guarded = (...values) => {
+          control.inventoryStateReplay(token);
+          return callback(...values);
+        };
+        original = yield* control.inventoryStateRegister(
+          domainHandle,
+          token,
+          guarded,
+        );
+        if (!original || types.isProxy(original))
+          throw new Error("native_permission_inventory_unverified");
+        const slot = Object.getOwnPropertyDescriptor(original, "dispose");
+        if (
+          !slot ||
+          !Object.hasOwn(slot, "value") ||
+          !Effect.isEffect(slot.value)
+        )
+          throw new Error("native_permission_inventory_unverified");
+        yield* control.inventoryStateRegistered(token);
+        const cleanup = dispose("disposed");
+        yield* Scope.addFinalizer(scope, cleanup);
+        return { ...original, dispose: cleanup };
+      }).pipe(
+        Effect.onExit((exit) =>
+          exit._tag === "Failure" ? dispose("failed") : Effect.void,
+        ),
+      );
+    }),
+  );
 }

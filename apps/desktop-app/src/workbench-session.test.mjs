@@ -20,7 +20,7 @@ test("lifecycle validates strict booleans, normalized titles and bounded request
     { type: "session.rename", ...target, title: " " },
     { type: "session.rename", ...target, title: "x".repeat(121) },
     { type: "session.remove", ...target, requestId: "x".repeat(129) },
-    { type: "session.fork", ...target, before: "message" },
+    { type: "session.fork", ...target, before: "bad id" },
     { type: "diagnostics.list", sessionId: "s" },
   ])
     assert.throws(() => validateRequest(request), {

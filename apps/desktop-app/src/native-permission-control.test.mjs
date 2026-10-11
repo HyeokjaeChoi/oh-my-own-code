@@ -2201,7 +2201,10 @@ const stateInventory = await import(
 const setupFixture = (service, overrides = {}) =>
   Effect.gen(function* () {
     const handle = yield* service.locationBegin({ directory: "/setup" });
-    const plugin = { id: "opencode.config.worktree", effect: () => Effect.void };
+    const plugin = {
+      id: "opencode.config.worktree",
+      effect: () => Effect.void,
+    };
     service.inventorySetupSource(plugin, "a".repeat(64));
     yield* service.inventoryPlan(
       handle,
@@ -2225,294 +2228,507 @@ const setupFixture = (service, overrides = {}) =>
           calls++;
           replay = callback;
           callback({});
-          return { dispose: Effect.sync(() => { disposed++; }) };
+          return {
+            dispose: Effect.sync(() => {
+              disposed++;
+            }),
+          };
         });
       },
       ...overrides,
     };
     const domain = service.inventoryStateDomain(handle, "worktree", original);
     const register = (callback = () => {}, options) =>
-      stateInventory.observeNativeStateRegistration(
-        Effect, library.Scope, service, domain, callback, options,
-      ).pipe(Effect.provideService(library.Scope.Scope, scope));
+      stateInventory
+        .observeNativeStateRegistration(
+          Effect,
+          library.Scope,
+          service,
+          domain,
+          callback,
+          options,
+        )
+        .pipe(Effect.provideService(library.Scope.Scope, scope));
     const activate = (body) =>
       service.inventorySetupRun(token, descriptor, scope, () => body);
-    const finish = () => Effect.gen(function* () {
-      yield* service.inventoryToolResult(handle, descriptor, undefined, scope);
-      yield* service.inventoryToolDeclaration(token, descriptor, undefined);
-      yield* service.inventoryRegistered(token);
-    });
-    return { handle, plugin, descriptor, token, scope, original, domain,
-      register, activate, finish, replay: () => replay({}),
-      calls: () => calls, disposed: () => disposed };
+    const finish = () =>
+      Effect.gen(function* () {
+        yield* service.inventoryToolResult(
+          handle,
+          descriptor,
+          undefined,
+          scope,
+        );
+        yield* service.inventoryToolDeclaration(token, descriptor, undefined);
+        yield* service.inventoryRegistered(token);
+      });
+    return {
+      handle,
+      plugin,
+      descriptor,
+      token,
+      scope,
+      original,
+      domain,
+      register,
+      activate,
+      finish,
+      replay: () => replay({}),
+      calls: () => calls,
+      disposed: () => disposed,
+    };
   });
 
 test("direct State API: first replay, successful void and later replay retain original ownership", async () => {
-  await run((service) => Effect.gen(function* () {
-    const fixture = yield* setupFixture(service);
-    let replayed = 0;
-    let registration;
-    yield* fixture.activate(Effect.gen(function* () {
-      registration = yield* fixture.register(() => { replayed++; });
-    }));
-    yield* fixture.finish();
-    fixture.replay();
-    assert.equal(replayed, 2);
-    assert.equal(fixture.calls(), 1);
-    yield* registration.dispose;
-    assert.equal(fixture.disposed(), 1);
-    assert.throws(fixture.replay, /inventory_unverified/);
-    yield* library.Scope.close(fixture.scope, Exit.void);
-  }));
+  await run((service) =>
+    Effect.gen(function* () {
+      const fixture = yield* setupFixture(service);
+      let replayed = 0;
+      let registration;
+      yield* fixture.activate(
+        Effect.gen(function* () {
+          registration = yield* fixture.register(() => {
+            replayed++;
+          });
+        }),
+      );
+      yield* fixture.finish();
+      fixture.replay();
+      assert.equal(replayed, 2);
+      assert.equal(fixture.calls(), 1);
+      yield* registration.dispose;
+      assert.equal(fixture.disposed(), 1);
+      assert.throws(fixture.replay, /inventory_unverified/);
+      yield* library.Scope.close(fixture.scope, Exit.void);
+    }),
+  );
 });
 
 test("direct State API: missing source still rejects before unknown factory construction", async () => {
-  await run((service) => Effect.gen(function* () {
-    const handle = yield* service.locationBegin({ directory: "/unknown-setup" });
-    yield* service.inventoryPlan(handle,
-      stateInventory.BUILTIN_PLUGIN_ORDER.pre.map((id) => ({ id })),
-      stateInventory.BUILTIN_PLUGIN_ORDER.post.map((id) => ({ id })), [{}]);
-    const descriptor = Object.freeze({ id: "opencode.config.worktree", effect: () => Effect.void });
-    const token = yield* service.inventoryBegin(handle, "plugin", descriptor.id);
-    const scope = yield* library.Scope.make();
-    yield* expectFailure(service.inventoryToolActivation(token, descriptor, scope), "inventory_unverified");
-    yield* library.Scope.close(scope, Exit.void);
-  }));
+  await run((service) =>
+    Effect.gen(function* () {
+      const handle = yield* service.locationBegin({
+        directory: "/unknown-setup",
+      });
+      yield* service.inventoryPlan(
+        handle,
+        stateInventory.BUILTIN_PLUGIN_ORDER.pre.map((id) => ({ id })),
+        stateInventory.BUILTIN_PLUGIN_ORDER.post.map((id) => ({ id })),
+        [{}],
+      );
+      const descriptor = Object.freeze({
+        id: "opencode.config.worktree",
+        effect: () => Effect.void,
+      });
+      const token = yield* service.inventoryBegin(
+        handle,
+        "plugin",
+        descriptor.id,
+      );
+      const scope = yield* library.Scope.make();
+      yield* expectFailure(
+        service.inventoryToolActivation(token, descriptor, scope),
+        "inventory_unverified",
+      );
+      yield* library.Scope.close(scope, Exit.void);
+    }),
+  );
 });
 
-for (const variant of ["missing", "duplicate", "nonvoid", "wrong-options", "wrong-scope", "forged-domain", "other-location", "stale-generation"]) {
+for (const variant of [
+  "missing",
+  "duplicate",
+  "nonvoid",
+  "wrong-options",
+  "wrong-scope",
+  "forged-domain",
+  "other-location",
+  "stale-generation",
+]) {
   test(`direct State rejects ${variant} before claiming factory success`, async () => {
-    await run((service) => Effect.gen(function* () {
-      const fixture = yield* setupFixture(service);
-      let result;
-      const body = Effect.gen(function* () {
-        if (variant === "missing") return;
-        if (variant === "wrong-options") return yield* fixture.register(() => {}, {});
-        if (variant === "wrong-scope") {
-          const foreign = yield* library.Scope.make();
-          try {
-            return yield* stateInventory.observeNativeStateRegistration(
-              Effect, library.Scope, service, fixture.domain, () => {}, undefined,
-            ).pipe(Effect.provideService(library.Scope.Scope, foreign));
-          } finally { yield* library.Scope.close(foreign, Exit.void); }
-        }
-        if (variant === "forged-domain" || variant === "other-location") {
-          const foreign = variant === "forged-domain" ? Object.freeze({}) :
-            service.inventoryStateDomain(
-              yield* service.locationBegin({ directory: "/other-setup" }),
-              "worktree", fixture.original,
-            );
-          return yield* stateInventory.observeNativeStateRegistration(
-            Effect, library.Scope, service, foreign, () => {}, undefined,
-          ).pipe(Effect.provideService(library.Scope.Scope, fixture.scope));
-        }
-        if (variant === "stale-generation") {
-          yield* service.inventoryBegin(fixture.handle, "hook");
-          return yield* fixture.register();
-        }
-        result = yield* fixture.register();
-        if (variant === "duplicate") yield* fixture.register();
-        if (variant === "nonvoid") return {};
-      });
-      yield* expectFailure(fixture.activate(body), "inventory_unverified");
-      yield* expectFailure(fixture.finish(), "inventory_unverified");
-      assert.equal(fixture.calls(), ["duplicate", "nonvoid"].includes(variant) ? 1 : 0);
-      if (result) yield* result.dispose;
-      yield* library.Scope.close(fixture.scope, Exit.void);
-    }));
+    await run((service) =>
+      Effect.gen(function* () {
+        const fixture = yield* setupFixture(service);
+        let result;
+        const body = Effect.gen(function* () {
+          if (variant === "missing") return;
+          if (variant === "wrong-options")
+            return yield* fixture.register(() => {}, {});
+          if (variant === "wrong-scope") {
+            const foreign = yield* library.Scope.make();
+            try {
+              return yield* stateInventory
+                .observeNativeStateRegistration(
+                  Effect,
+                  library.Scope,
+                  service,
+                  fixture.domain,
+                  () => {},
+                  undefined,
+                )
+                .pipe(Effect.provideService(library.Scope.Scope, foreign));
+            } finally {
+              yield* library.Scope.close(foreign, Exit.void);
+            }
+          }
+          if (variant === "forged-domain" || variant === "other-location") {
+            const foreign =
+              variant === "forged-domain"
+                ? Object.freeze({})
+                : service.inventoryStateDomain(
+                    yield* service.locationBegin({ directory: "/other-setup" }),
+                    "worktree",
+                    fixture.original,
+                  );
+            return yield* stateInventory
+              .observeNativeStateRegistration(
+                Effect,
+                library.Scope,
+                service,
+                foreign,
+                () => {},
+                undefined,
+              )
+              .pipe(Effect.provideService(library.Scope.Scope, fixture.scope));
+          }
+          if (variant === "stale-generation") {
+            yield* service.inventoryBegin(fixture.handle, "hook");
+            return yield* fixture.register();
+          }
+          result = yield* fixture.register();
+          if (variant === "duplicate") yield* fixture.register();
+          if (variant === "nonvoid") return {};
+        });
+        yield* expectFailure(fixture.activate(body), "inventory_unverified");
+        yield* expectFailure(fixture.finish(), "inventory_unverified");
+        assert.equal(
+          fixture.calls(),
+          ["duplicate", "nonvoid"].includes(variant) ? 1 : 0,
+        );
+        if (result) yield* result.dispose;
+        yield* library.Scope.close(fixture.scope, Exit.void);
+      }),
+    );
   });
 }
 
 test("direct State refuses inherited sibling Fiber, accepts exact Fiber, refuses late registration", async () => {
-  await run((service) => Effect.gen(function* () {
-    const fixture = yield* setupFixture(service);
-    let registration;
-    yield* fixture.activate(Effect.gen(function* () {
-      const child = yield* Effect.forkChild(fixture.register());
-      assert.ok(Exit.isFailure(yield* Fiber.await(child)));
-      assert.equal(fixture.calls(), 0);
-      registration = yield* fixture.register();
-    }));
-    yield* fixture.finish();
-    yield* expectFailure(fixture.register(), "inventory_unverified");
-    assert.equal(fixture.calls(), 1);
-    fixture.replay();
-    yield* registration.dispose;
-    yield* library.Scope.close(fixture.scope, Exit.void);
-  }));
+  await run((service) =>
+    Effect.gen(function* () {
+      const fixture = yield* setupFixture(service);
+      let registration;
+      yield* fixture.activate(
+        Effect.gen(function* () {
+          const child = yield* Effect.forkChild(fixture.register());
+          assert.ok(Exit.isFailure(yield* Fiber.await(child)));
+          assert.equal(fixture.calls(), 0);
+          registration = yield* fixture.register();
+        }),
+      );
+      yield* fixture.finish();
+      yield* expectFailure(fixture.register(), "inventory_unverified");
+      assert.equal(fixture.calls(), 1);
+      fixture.replay();
+      yield* registration.dispose;
+      yield* library.Scope.close(fixture.scope, Exit.void);
+    }),
+  );
 });
 
 test("direct State refuses ended activation even when parent Scope remains open", async () => {
-  await run((service) => Effect.gen(function* () {
-    const fixture = yield* setupFixture(service);
-    const entered = yield* Deferred.make();
-    const release = yield* Deferred.make();
-    const inherited = yield* Deferred.make();
-    let registration;
-    yield* fixture.activate(Effect.gen(function* () {
-      yield* Effect.forkIn(Effect.gen(function* () {
-        yield* Deferred.succeed(entered, undefined);
-        yield* Deferred.await(release);
-        yield* Deferred.complete(inherited, fixture.register());
-      }), fixture.scope);
-      yield* Deferred.await(entered);
-      registration = yield* fixture.register();
-    }));
-    yield* fixture.finish();
-    yield* Deferred.succeed(release, undefined);
-    yield* expectFailure(Deferred.await(inherited), "inventory_unverified");
-    assert.equal(fixture.calls(), 1);
-    yield* registration.dispose;
-    yield* library.Scope.close(fixture.scope, Exit.void);
-  }));
+  await run((service) =>
+    Effect.gen(function* () {
+      const fixture = yield* setupFixture(service);
+      const entered = yield* Deferred.make();
+      const release = yield* Deferred.make();
+      const inherited = yield* Deferred.make();
+      let registration;
+      yield* fixture.activate(
+        Effect.gen(function* () {
+          yield* Effect.forkIn(
+            Effect.gen(function* () {
+              yield* Deferred.succeed(entered, undefined);
+              yield* Deferred.await(release);
+              yield* Deferred.complete(inherited, fixture.register());
+            }),
+            fixture.scope,
+          );
+          yield* Deferred.await(entered);
+          registration = yield* fixture.register();
+        }),
+      );
+      yield* fixture.finish();
+      yield* Deferred.succeed(release, undefined);
+      yield* expectFailure(Deferred.await(inherited), "inventory_unverified");
+      assert.equal(fixture.calls(), 1);
+      yield* registration.dispose;
+      yield* library.Scope.close(fixture.scope, Exit.void);
+    }),
+  );
 });
 
 test("direct State rejects copied and transplanted producer descriptors without entering run thunk", async () => {
-  await run((service) => Effect.gen(function* () {
-    const fixture = yield* setupFixture(service);
-    assert.ok(Object.isFrozen(fixture.plugin));
-    for (const plugin of [Object.freeze({ ...fixture.plugin }), Object.freeze({
-      id: fixture.plugin.id, effect: fixture.plugin.effect,
-    })]) {
-      yield* expectFailure(service.inventoryToolResolve(fixture.handle, plugin, fixture.descriptor), "inventory_unverified");
-    }
-    let entered = 0;
-    const forged = Object.freeze({ ...fixture.descriptor });
-    yield* expectFailure(service.inventorySetupRun(fixture.token, forged, fixture.scope,
-      () => { entered++; return Effect.void; }), "inventory_unverified");
-    assert.equal(entered, 0);
-    yield* library.Scope.close(fixture.scope, Exit.void);
-  }));
+  await run((service) =>
+    Effect.gen(function* () {
+      const fixture = yield* setupFixture(service);
+      assert.ok(Object.isFrozen(fixture.plugin));
+      for (const plugin of [
+        Object.freeze({ ...fixture.plugin }),
+        Object.freeze({
+          id: fixture.plugin.id,
+          effect: fixture.plugin.effect,
+        }),
+      ]) {
+        yield* expectFailure(
+          service.inventoryToolResolve(
+            fixture.handle,
+            plugin,
+            fixture.descriptor,
+          ),
+          "inventory_unverified",
+        );
+      }
+      let entered = 0;
+      const forged = Object.freeze({ ...fixture.descriptor });
+      yield* expectFailure(
+        service.inventorySetupRun(fixture.token, forged, fixture.scope, () => {
+          entered++;
+          return Effect.void;
+        }),
+        "inventory_unverified",
+      );
+      assert.equal(entered, 0);
+      yield* library.Scope.close(fixture.scope, Exit.void);
+    }),
+  );
 });
 
 test("direct State source binding rejects accessors, proxies and other setup IDs without traps", async () => {
-  await run((service) => Effect.sync(() => {
-    let traps = 0;
-    const proxy = new Proxy({}, { ownKeys() { traps++; return []; } });
-    const getter = { id: "opencode.config.worktree", get effect() { traps++; return () => Effect.void; } };
-    for (const plugin of [proxy, getter, { id: "opencode.config.mcp", effect: () => Effect.void }])
-      assert.throws(() => service.inventorySetupSource(plugin, "a".repeat(64)));
-    assert.equal(traps, 0);
-  }));
+  await run((service) =>
+    Effect.sync(() => {
+      let traps = 0;
+      const proxy = new Proxy(
+        {},
+        {
+          ownKeys() {
+            traps++;
+            return [];
+          },
+        },
+      );
+      const getter = {
+        id: "opencode.config.worktree",
+        get effect() {
+          traps++;
+          return () => Effect.void;
+        },
+      };
+      for (const plugin of [
+        proxy,
+        getter,
+        { id: "opencode.config.mcp", effect: () => Effect.void },
+      ])
+        assert.throws(() =>
+          service.inventorySetupSource(plugin, "a".repeat(64)),
+        );
+      assert.equal(traps, 0);
+    }),
+  );
 });
 
 test("direct State rejects foreign Control domain handles before original registration", async () => {
   let domain;
-  await run((service) => Effect.gen(function* () {
-    const fixture = yield* setupFixture(service);
-    domain = fixture.domain;
-    yield* library.Scope.close(fixture.scope, Exit.void);
-  }));
-  await run((service) => Effect.gen(function* () {
-    const fixture = yield* setupFixture(service);
-    yield* expectFailure(fixture.activate(stateInventory.observeNativeStateRegistration(
-      Effect, library.Scope, service, domain, () => {}, undefined,
-    ).pipe(Effect.provideService(library.Scope.Scope, fixture.scope))), "inventory_unverified");
-    assert.equal(fixture.calls(), 0);
-    yield* library.Scope.close(fixture.scope, Exit.void);
-  }));
+  await run((service) =>
+    Effect.gen(function* () {
+      const fixture = yield* setupFixture(service);
+      domain = fixture.domain;
+      yield* library.Scope.close(fixture.scope, Exit.void);
+    }),
+  );
+  await run((service) =>
+    Effect.gen(function* () {
+      const fixture = yield* setupFixture(service);
+      yield* expectFailure(
+        fixture.activate(
+          stateInventory
+            .observeNativeStateRegistration(
+              Effect,
+              library.Scope,
+              service,
+              domain,
+              () => {},
+              undefined,
+            )
+            .pipe(Effect.provideService(library.Scope.Scope, fixture.scope)),
+        ),
+        "inventory_unverified",
+      );
+      assert.equal(fixture.calls(), 0);
+      yield* library.Scope.close(fixture.scope, Exit.void);
+    }),
+  );
 });
 
 test("direct State Scope Closed replay rejects before original disposal finalizer", async () => {
-  await run((service) => Effect.gen(function* () {
-    const fixture = yield* setupFixture(service);
-    let replayed = 0;
-    yield* fixture.activate(Effect.gen(function* () {
-      yield* fixture.register(() => { replayed++; });
-    }));
-    yield* fixture.finish();
-    yield* library.Scope.addFinalizer(fixture.scope, Effect.sync(() => {
-      assert.equal(fixture.disposed(), 0);
+  await run((service) =>
+    Effect.gen(function* () {
+      const fixture = yield* setupFixture(service);
+      let replayed = 0;
+      yield* fixture.activate(
+        Effect.gen(function* () {
+          yield* fixture.register(() => {
+            replayed++;
+          });
+        }),
+      );
+      yield* fixture.finish();
+      yield* library.Scope.addFinalizer(
+        fixture.scope,
+        Effect.sync(() => {
+          assert.equal(fixture.disposed(), 0);
+          assert.throws(fixture.replay, /inventory_unverified/);
+          assert.equal(replayed, 1);
+        }),
+      );
+      yield* library.Scope.close(fixture.scope, Exit.void);
+      assert.equal(fixture.disposed(), 1);
       assert.throws(fixture.replay, /inventory_unverified/);
-      assert.equal(replayed, 1);
-    }));
-    yield* library.Scope.close(fixture.scope, Exit.void);
-    assert.equal(fixture.disposed(), 1);
-    assert.throws(fixture.replay, /inventory_unverified/);
-  }));
+    }),
+  );
 });
 
 for (const phase of ["first-replay", "after-original-return"]) {
   test(`direct State rolls back original registration when Scope closes ${phase}`, async () => {
-    await run((service) => Effect.gen(function* () {
-      let fixture;
-      let replayed = 0;
-      let disposed = 0;
-      fixture = yield* setupFixture(service, {
-        transform(callback) {
-          return Effect.gen(function* () {
-            if (phase === "first-replay") {
-              yield* library.Scope.close(fixture.scope, Exit.void);
-              callback({});
-            } else {
-              callback({});
-              yield* library.Scope.close(fixture.scope, Exit.void);
-            }
-            return { dispose: Effect.sync(() => { disposed++; }) };
-          });
-        },
-      });
-      const exit = yield* Effect.exit(fixture.activate(fixture.register(() => { replayed++; }).pipe(Effect.asVoid)));
-      assert.ok(Exit.isFailure(exit));
-      assert.equal(replayed, phase === "first-replay" ? 0 : 1);
-      // Before a dispose is returned the original activation Scope owns cleanup.
-      assert.equal(disposed, phase === "first-replay" ? 0 : 1);
-    }));
+    await run((service) =>
+      Effect.gen(function* () {
+        let fixture;
+        let replayed = 0;
+        let disposed = 0;
+        fixture = yield* setupFixture(service, {
+          transform(callback) {
+            return Effect.gen(function* () {
+              if (phase === "first-replay") {
+                yield* library.Scope.close(fixture.scope, Exit.void);
+                callback({});
+              } else {
+                callback({});
+                yield* library.Scope.close(fixture.scope, Exit.void);
+              }
+              return {
+                dispose: Effect.sync(() => {
+                  disposed++;
+                }),
+              };
+            });
+          },
+        });
+        const exit = yield* Effect.exit(
+          fixture.activate(
+            fixture
+              .register(() => {
+                replayed++;
+              })
+              .pipe(Effect.asVoid),
+          ),
+        );
+        assert.ok(Exit.isFailure(exit));
+        assert.equal(replayed, phase === "first-replay" ? 0 : 1);
+        // Before a dispose is returned the original activation Scope owns cleanup.
+        assert.equal(disposed, phase === "first-replay" ? 0 : 1);
+      }),
+    );
   });
 }
 
 test("direct State cleanup settles both Exits and joins repeated disposal", async () => {
-  await run((service) => Effect.gen(function* () {
-    const fixture = yield* setupFixture(service);
-    let nativeDisposed = 0;
-    fixture.original.transform = () => Effect.succeed({ dispose: Effect.sync(() => { nativeDisposed++; }) });
-    // Bound original function identity is immutable even if service fields mutate.
-    let registration;
-    yield* fixture.activate(Effect.gen(function* () { registration = yield* fixture.register(); }));
-    yield* fixture.finish();
-    yield* registration.dispose;
-    yield* registration.dispose;
-    yield* library.Scope.close(fixture.scope, Exit.void);
-    assert.equal(nativeDisposed, 0);
-    assert.equal(fixture.disposed(), 1);
-  }));
+  await run((service) =>
+    Effect.gen(function* () {
+      const fixture = yield* setupFixture(service);
+      let nativeDisposed = 0;
+      fixture.original.transform = () =>
+        Effect.succeed({
+          dispose: Effect.sync(() => {
+            nativeDisposed++;
+          }),
+        });
+      // Bound original function identity is immutable even if service fields mutate.
+      let registration;
+      yield* fixture.activate(
+        Effect.gen(function* () {
+          registration = yield* fixture.register();
+        }),
+      );
+      yield* fixture.finish();
+      yield* registration.dispose;
+      yield* registration.dispose;
+      yield* library.Scope.close(fixture.scope, Exit.void);
+      assert.equal(nativeDisposed, 0);
+      assert.equal(fixture.disposed(), 1);
+    }),
+  );
 });
 
 for (const failure of ["control", "native", "both"]) {
   test(`direct State original cleanup still runs after ${failure} cleanup failure`, async () => {
-    await run((service) => Effect.gen(function* () {
-      let disposed = 0;
-      let replay;
-      const fixture = yield* setupFixture(service, {
-        transform(callback) {
-          return Effect.sync(() => { replay = callback; callback({}); return { dispose: Effect.gen(function* () {
-            disposed++;
-            if (failure !== "control") return yield* Effect.fail(new Error("native_cleanup"));
-          }) }; });
-        },
-      });
-      const decoratedControl = { ...service,
-        inventoryEnd: failure === "native" ? service.inventoryEnd : () => Effect.fail(new Error("control_cleanup")),
-      };
-      let registration;
-      yield* fixture.activate(Effect.gen(function* () {
-        registration = yield* stateInventory.observeNativeStateRegistration(
-          Effect, library.Scope, decoratedControl, fixture.domain, () => {}, undefined,
-        ).pipe(Effect.provideService(library.Scope.Scope, fixture.scope));
-      }));
-      yield* fixture.finish();
-      const exit = yield* Effect.exit(registration.dispose);
-      assert.ok(Exit.isFailure(exit));
-      assert.equal(disposed, 1);
-      const messages = exit.cause.reasons.map((reason) => reason.error?.message);
-      if (failure !== "native") assert.ok(messages.includes("control_cleanup"));
-      if (failure !== "control") assert.ok(messages.includes("native_cleanup"));
-      yield* expectFailure(registration.dispose);
-      assert.equal(disposed, 1);
-      assert.throws(() => replay({}), /inventory_unverified/);
-      assert.equal((yield* snapshot(service)).runtimeHeld, true);
-      yield* expectFailure(library.Scope.close(fixture.scope, Exit.void));
-      assert.equal(disposed, 1);
-    }));
+    await run((service) =>
+      Effect.gen(function* () {
+        let disposed = 0;
+        let replay;
+        const fixture = yield* setupFixture(service, {
+          transform(callback) {
+            return Effect.sync(() => {
+              replay = callback;
+              callback({});
+              return {
+                dispose: Effect.gen(function* () {
+                  disposed++;
+                  if (failure !== "control")
+                    return yield* Effect.fail(new Error("native_cleanup"));
+                }),
+              };
+            });
+          },
+        });
+        const decoratedControl = {
+          ...service,
+          inventoryEnd:
+            failure === "native"
+              ? service.inventoryEnd
+              : () => Effect.fail(new Error("control_cleanup")),
+        };
+        let registration;
+        yield* fixture.activate(
+          Effect.gen(function* () {
+            registration = yield* stateInventory
+              .observeNativeStateRegistration(
+                Effect,
+                library.Scope,
+                decoratedControl,
+                fixture.domain,
+                () => {},
+                undefined,
+              )
+              .pipe(Effect.provideService(library.Scope.Scope, fixture.scope));
+          }),
+        );
+        yield* fixture.finish();
+        const exit = yield* Effect.exit(registration.dispose);
+        assert.ok(Exit.isFailure(exit));
+        assert.equal(disposed, 1);
+        const messages = exit.cause.reasons.map(
+          (reason) => reason.error?.message,
+        );
+        if (failure !== "native")
+          assert.ok(messages.includes("control_cleanup"));
+        if (failure !== "control")
+          assert.ok(messages.includes("native_cleanup"));
+        yield* expectFailure(registration.dispose);
+        assert.equal(disposed, 1);
+        assert.throws(() => replay({}), /inventory_unverified/);
+        assert.equal((yield* snapshot(service)).runtimeHeld, true);
+        yield* expectFailure(library.Scope.close(fixture.scope, Exit.void));
+        assert.equal(disposed, 1);
+      }),
+    );
   });
 }

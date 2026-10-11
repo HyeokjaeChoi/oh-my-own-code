@@ -377,6 +377,7 @@ test("Git commit retained operation contains lookup identity only", () => {
         operationId: "operation-1",
         workspaceId: "workspace-1",
         type: "git.commit.apply",
+        authorityHold: false,
       },
     ],
     workspaces: [],
