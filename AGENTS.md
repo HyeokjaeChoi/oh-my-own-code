@@ -1,30 +1,35 @@
-<!-- solopreneur:begin -->
-# Solopreneur
+# Oh My Own Code — agent instructions
 
-Shared guidance for independent products. Write shared presets in English; respond to the user in Korean unless requested otherwise. Follow project conventions for identifiers.
+Respond to the user in Korean. Keep code, identifiers, paths and commands in their original form.
 
-- The primary conversation coordinates through `.agents/skills/solo-orchestrate/SKILL.md`. New product/development intake starts with `solo-project-start`. Delegated children read `solo-specialist` and their assigned skill instead; they do not restart intake or orchestration.
-- Expertise lives in `.agents/skills/`. The two `.codex/agents/` profiles supply reader or worker execution defaults. Existing domain names are logical workflow aliases, not separate native agents. See `.solopreneur/docs/agent-catalog.md` for mappings and `.solopreneur/docs/skill-catalog.md` for workflows.
-- Every specialist assignment starts a fresh clean child with the current plan path/revision, selected skill/mode, relevant inputs, owned paths, acceptance criteria and evidence requirements. Corrections use a new child with prior findings referenced by path. The primary alone integrates, assigns staffing and writes the ledger; children do not recursively delegate.
-- Follow the [adaptive routing reference](.agents/skills/solo-orchestrate/references/adaptive-routing.md). Exact user choices and explicit inheritance/default instructions take precedence; otherwise retain authorized economical routing for unspecified settings. No permanent model/effort pins. Requested settings and profile names do not establish observed runtime identity or sandbox enforcement.
-- Before artifact changes, classify the work as `major` or `routine`, create or resume a schema-v2 run, and register a proportionate plan/contract. Initial new-feature introduction, substantial refactoring, and product/architecture/runtime/security/data-contract changes are `major`: obtain independent entry plan and applicable design-spec reviews. Ordinary implementation, fixes and small refactors within the existing accepted scope/design are `routine`: concise plan -> edit -> checks -> separate independent code review -> integrate. Do not require new plan/design passes for every routine change. Record consequential decisions, source authority, assumptions and phase blockers. Compare these with current user direction before dependent handoffs. Routine progress belongs in the ledger.
-- Reuse existing answers, clarify consequential unknowns and hold only dependent work while continuing independent discovery. Document delegated choices; silence is not confirmation. Do not repeat settled approval requests. New user direction supersedes old plans: update the plan; independently review changed concerns before execution only when they introduce a major boundary or an explicit review requirement.
-- Final PRDs need independent product review; new or materially changed UI/backend design contracts need design-spec review at major entry before consumers start. Routine work using an accepted design needs no repeated entry review. Actual UI needs rendered-implementation review. Every feature/bugfix needs a risk-scaled independent code gate. Reviewers cannot approve their own work or repairs. Observation-only QA cannot satisfy a final gate. Independence requires distinct invocations, not separate profile files.
-- Use `.solopreneur/docs/harness.md` and the orchestrator's run protocol for commands, prepared routing packets, approval bindings, freshness and recovery. Freeze relevant inputs before review. One bounded reviewer can cover linked parent/focused plans with separately bound verdicts. Review applicable product/design documents concurrently; architecture normally belongs to design-spec review. Add reviews only for changed independent concerns.
-- Use at most eight open specialist threads beside the primary, or the client's lower limit. Parallelize independent work with disjoint writer ownership. Completed/interrupted children may still occupy slots; preserve results before supported closure. Diagnose capacity, transport, requirements and approach before retrying instead of merely raising effort.
-- Keep product intent in `docs/product/`, requirements in `docs/specs/`, technical plans in `docs/engineering/`, and real execution tracking in existing Issues/Projects. Local drafts are not remote state. Read `.solopreneur/docs/stack.md` for platform/service choices; approved project architecture overrides generic preferences.
-- Share types, validation, API contracts, business rules, design tokens and analytics events where appropriate; keep web/mobile UI and navigation platform-specific. Use the smallest implementation meeting current requirements, with necessary validation, security and failure handling. Avoid unrelated refactoring and speculative scope.
-- Deliver bounded increments with useful feedback. Match checks to the actual behavior, runtime and risk. Complete affected contracted checks and independent reviews. Use `check-status` and reviewed `input_scope` declarations to retain unaffected checks; omitted scopes keep whole-source freshness. Do not repeat passing checks without changed relevant inputs or new evidence. Keep final reviews independent and full-source bound. Ledger consistency is not proof of product correctness.
-- External publication, messages, purchases and production changes require the request and existing authorization. Prepare a reviewable local result before seeking missing external permission. Confirm service project/environment; keep secrets out of tracked files, logs and client bundles. Administrative and secret billing keys remain server-side.
-- Report delivered behavior, actual checks and material limitations. Distinguish configuration, authentication and successful execution. Historical runs are evidence, not current operating instructions.
-<!-- solopreneur:end -->
+## Workflow (replaces the former Solopreneur harness)
 
-# Project architecture entry gate
+1. **Plan** — read the PRD row (`docs/product/prd.md`) and current status (`docs/engineering/backlog-status.md`); state scope and acceptance checks briefly.
+2. **Implement** — a cheaper model (Sonnet/Haiku) implements on its own branch/worktree with tests.
+3. **Review** — a fresh-context Opus reviewer reviews the diff (correctness, security, regressions). It does not edit code.
+4. **Fix & re-review** — repeat until the review reports no major/critical findings.
+5. **Merge & continue** — fast-forward to `main`, update `backlog-status.md`, start the next item.
+6. **Final** — after all items, run Playwright e2e against the real app as the final check.
 
-Before implementation, follow [Architecture entry](docs/engineering/architecture-entry.md) and the current [Workbench platform ADR](docs/decisions/0001-workbench-platform.md). These project-specific decisions override generic stack preferences where explicitly stated; previously approved product, security, permission and recovery contracts remain in force.
+No run ledger, hash freezes, `harness.py` or multi-stage design reviews. `docs/runs/**` is historical evidence only.
 
-- Staff-level architecture decisions are mandatory for initial bootstrap and changes to module boundaries, state ownership, build systems, runtime targets or component foundations. Document the chosen option, credible alternatives, constraints, tradeoffs, failure modes, reversibility, migration, evidence and unresolved compatibility risks. A list of fashionable libraries is insufficient.
-- Use a monorepo with explicit module ownership, public APIs and enforceable dependency direction. Apply Feature-Sliced Design to the renderer; do not impose frontend layers on bridge internals. Verify both workspace-project boundaries and within-project slice boundaries, including forbidden-import fixtures and browser/server dependency separation.
-- Select state tools by ownership and lifetime. Distinguish authoritative bridge state, client query cache, transient stream projection, shared UI state, local hooks/reducers, stable Context injection and URL state. Custom hooks do not create shared ownership. Never duplicate authoritative permissions, execution results or messages across stores without one defined projection owner and reconciliation protocol.
-- Evaluate the workspace manager, bundlers and component foundation together. Record Nx task dependencies/cache scope, runtime and peer compatibility, shared React identity, requirements-based component primitive choice, assistant-ui/Tool UI integration, token mapping, accessibility and copied-source maintenance. Pin a verified compatible set; do not install floating latest versions or enable cloud caching as an incidental default.
-- Register the architecture document as `design_spec`, obtain an independent architecture review and pass the harness handoff before dependent implementation. Record exact runtime probes separately: a reviewed ADR or static check does not prove installed module enforcement, package compatibility, bundle isolation or accessibility. Routine changes already covered by the current ADR need no duplicate ADR.
+## Checks (all must pass before merge)
+
+```sh
+TMPDIR=<private dir> ./node_modules/.bin/nx run desktop-app:test --skip-nx-cache
+./node_modules/.bin/nx run desktop-app:typecheck
+./node_modules/.bin/nx run desktop-app:lint
+./node_modules/.bin/nx run desktop-app:format-check
+./node_modules/.bin/nx run desktop-app:boundaries
+```
+
+Permission tests are sensitive to a shared `$TMPDIR`; use a private one when running suites in parallel.
+
+## Code rules
+
+- The shipping app is `apps/desktop-app` (Electron main `src/*.mjs` + `src/host/*`, renderer `src/renderer/` with Feature-Sliced Design). `apps/workbench-web` is an older scaffold.
+- Renderer ↔ main only through closed, validated IPC (`src/workbench-contract.mjs` or a dedicated `desktop:v1:*` channel with its own validator).
+- One owner per state; don't duplicate authoritative permission/execution/message state across stores.
+- Smallest change that meets the requirement; no speculative abstractions; no new dependencies without user approval.
+- Never weaken: permission deny floor (`external_directory`), path containment/symlink checks, native confirmation for destructive actions, secret redaction.
+- Keep secrets out of tracked files, logs and renderer bundles.
