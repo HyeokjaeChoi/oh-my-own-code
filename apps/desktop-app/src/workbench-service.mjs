@@ -3757,11 +3757,11 @@ export function createWorkbenchService({
           await ready;
           if (!client || runtime.snapshot().state !== "connected") return [];
           const out = [];
-          const locked = [...committed.sessions.values()].some(
-            (item) => item.workspaceId === operation.workspaceId && item.lock,
-          );
-          if (locked || committed.workspaces.get(operation.workspaceId)?.lock)
-            return out;
+          const locked =
+            committed.workspaces.get(operation.workspaceId)?.lock ||
+            [...committed.sessions.values()].some(
+              (item) => item.workspaceId === operation.workspaceId && item.lock,
+            );
           for (const target of committed.sessions.values()) {
             // Skip what mode.set would refuse; the in-op policyOk check then
             // fails closed instead of an unrelated op being rejected here.
@@ -3782,10 +3782,12 @@ export function createWorkbenchService({
             )
               out.push(target);
           }
-          return out;
+          // A lock is held only mid-dispatch: drift then is transient, so retryable BUSY.
+          return locked && out.length ? "BUSY" : locked ? [] : out;
         })
         .catch(() => []);
     const targets = await drifted();
+    if (targets === "BUSY") return "BUSY";
     for (const target of targets) {
       const result = await host.handle(
         {
@@ -3805,7 +3807,11 @@ export function createWorkbenchService({
       if (!result.ok)
         return result.code === "BUSY" ? "BUSY" : "POLICY_UNVERIFIED";
     }
-    if (targets.length && (await drifted()).length) return "POLICY_UNVERIFIED";
+    if (targets.length) {
+      const left = await drifted();
+      if (left === "BUSY") return "BUSY";
+      if (left.length) return "POLICY_UNVERIFIED";
+    }
     return undefined;
   }
   async function workspaceIdleIdentity(w, unverifiedCode) {
