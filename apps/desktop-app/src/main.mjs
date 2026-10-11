@@ -29,7 +29,10 @@ import {
 import { createWorkbenchService } from "./workbench-service.mjs";
 import { bindWorkbenchIpc } from "./host/workbench-ipc.mjs";
 import { setInterval } from "node:timers";
-import { createTerminalHost } from "./host/terminal-host.mjs";
+import {
+  createTerminalHost,
+  resolveLoginPath,
+} from "./host/terminal-host.mjs";
 import { bindTerminalIpc } from "./host/terminal-ipc.mjs";
 import { createPlansHost } from "./host/plans-host.mjs";
 import { bindPlansIpc } from "./host/plans-ipc.mjs";
@@ -58,6 +61,7 @@ const worktrees = createWorktreeHost({
 });
 const terminals = createTerminalHost({
   resolveWorkspace: (id) => workbench?.terminalRoot(id),
+  loginPath: resolveLoginPath(),
 });
 const plans = createPlansHost({
   resolveWorkspace: (id) => workbench?.terminalRoot(id),

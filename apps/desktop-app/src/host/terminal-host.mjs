@@ -1,4 +1,4 @@
-import { spawn as nodeSpawn } from "node:child_process";
+import { execFile, spawn as nodeSpawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { realpathSync, statSync } from "node:fs";
 import { isAbsolute, relative } from "node:path";
@@ -17,10 +17,46 @@ function defaultShell() {
     ? { file: process.env.ComSpec ?? "cmd.exe", args: [] }
     : { file: process.env.SHELL || "/bin/sh", args: [] };
 }
-function minimalEnv() {
+// Packaged macOS apps start with a minimal PATH; ask the login shell once for the user's real one.
+// Bounded by timeout and output size; any failure falls back to the process PATH.
+export function resolveLoginPath({
+  run = execFile,
+  shell = process.env.SHELL || "/bin/sh",
+  timeoutMs = 3000,
+} = {}) {
+  const fallback = process.env.PATH ?? "";
+  if (WIN) return Promise.resolve(fallback);
+  return new Promise((done) => {
+    try {
+      const child = run(
+        shell,
+        ["-ilc", 'printf "__OMOC_PATH__%s__OMOC_PATH__" "$PATH"'],
+        {
+          timeout: timeoutMs,
+          maxBuffer: 1 << 16,
+          env: { ...process.env, TERM: "dumb" },
+        },
+        (error, stdout) => {
+          const m = /__OMOC_PATH__([^\0]{1,8192}?)__OMOC_PATH__/.exec(
+            String(stdout),
+          );
+          if (error || !m) return done(fallback);
+          const dirs = m[1].split(":").filter((d) => isAbsolute(d));
+          const extra = fallback.split(":").filter((d) => !dirs.includes(d));
+          done([...dirs, ...extra].join(":") || fallback);
+        },
+      );
+      child?.stdin?.end?.();
+    } catch {
+      done(fallback);
+    }
+  });
+}
+function minimalEnv(pathValue) {
   const env = { TERM: "dumb" };
   for (const k of ENV_KEYS)
     if (process.env[k] !== undefined) env[k] = process.env[k];
+  if (pathValue) env.PATH = pathValue;
   return env;
 }
 function inside(root, path) {
@@ -31,6 +67,8 @@ function inside(root, path) {
 // ponytail: Windows has no process groups here; taskkill /T walks the child tree instead (untested).
 function killTree(child, signal) {
   if (child.pid === undefined) return;
+  // The pid may already be reused; never taskkill a child that has exited.
+  if (WIN && (child.exitCode !== null || child.signalCode !== null)) return;
   try {
     if (WIN)
       nodeSpawn("taskkill", ["/pid", String(child.pid), "/T", "/F"], {
@@ -49,8 +87,18 @@ export function createTerminalHost({
   spawn = nodeSpawn,
   shell = defaultShell(),
   killGraceMs = 1500,
+  exitGraceMs = 500,
+  closeAllMs = killGraceMs + exitGraceMs + 1000,
+  loginPath,
 } = {}) {
   const terminals = new Map();
+  let pathValue;
+  Promise.resolve(loginPath).then(
+    (p) => {
+      if (typeof p === "string" && p) pathValue = p;
+    },
+    () => {},
+  );
 
   function view(t) {
     return {
@@ -68,8 +116,10 @@ export function createTerminalHost({
     if (!t || t.owner !== owner) throw fail("NOT_FOUND");
     return t;
   }
-  function append(t, chunk) {
-    t.output += t.decoder.write(chunk);
+  const append = (t, chunk, stream) =>
+    appendText(t, t.decoders[stream].write(chunk));
+  function appendText(t, text) {
+    t.output += text;
     if (t.output.length > TERMINAL_LIMITS.outputChars) {
       const drop = t.output.length - TERMINAL_LIMITS.outputChars;
       t.output = t.output.slice(drop);
@@ -112,7 +162,7 @@ export function createTerminalHost({
     const target = spawnSpec ?? shell;
     const child = spawn(target.file, target.args, {
       cwd: realCwd,
-      env: minimalEnv(),
+      env: minimalEnv(pathValue),
       stdio: ["pipe", "pipe", "pipe"],
       detached: !WIN,
       windowsHide: true,
@@ -126,7 +176,10 @@ export function createTerminalHost({
       child,
       output: "",
       base: 0,
-      decoder: new StringDecoder("utf8"),
+      decoders: {
+        stdout: new StringDecoder("utf8"),
+        stderr: new StringDecoder("utf8"),
+      },
       exited: false,
       exitCode: null,
       signal: null,
@@ -135,25 +188,36 @@ export function createTerminalHost({
       label: meta.label ?? null,
     };
     t.done = new Promise((resolve) => {
+      let grace;
       const finish = (code, signal) => {
         if (t.exited) return;
+        clearTimeout(grace);
         t.exited = true;
         t.exitCode = code;
         t.signal = signal;
-        append(t, Buffer.from(t.decoder.end()));
+        appendText(t, t.decoders.stdout.end() + t.decoders.stderr.end());
         resolve();
       };
       // No orphans: anything the shell left running in its group goes with it.
-      // Finish on "close" so output still buffered in the pipes is not lost.
-      child.once("exit", () => killTree(child, "SIGKILL"));
+      // Finish on "close" so output still buffered in the pipes is not lost; a descendant that
+      // escaped the group (setsid) may hold the pipes open, so after a short grace cut them.
+      child.once("exit", (code, signal) => {
+        killTree(child, "SIGKILL");
+        grace = setTimeout(() => {
+          child.stdout?.destroy();
+          child.stderr?.destroy();
+          finish(code, signal);
+        }, exitGraceMs);
+        grace.unref?.();
+      });
       child.once("close", finish);
       child.once("error", (e) => {
-        append(t, Buffer.from(`\n[spawn error: ${e.code ?? e.message}]\n`));
+        appendText(t, `\n[spawn error: ${e.code ?? e.message}]\n`);
         finish(127, null);
       });
     });
-    child.stdout?.on("data", (c) => append(t, c));
-    child.stderr?.on("data", (c) => append(t, c));
+    child.stdout?.on("data", (c) => append(t, c, "stdout"));
+    child.stderr?.on("data", (c) => append(t, c, "stderr"));
     child.stdin?.on("error", () => {});
     terminals.set(t.id, t);
     return view(t);
@@ -230,7 +294,20 @@ export function createTerminalHost({
           .filter((t) => typeof resolveWorkspace(t.workspaceId) !== "string")
           .map(remove),
       ),
-    closeAll: () => Promise.all([...terminals.values()].map(remove)),
+    // Bounded: a terminal that never settles must not hang app quit.
+    async closeAll() {
+      let timer;
+      await Promise.race([
+        Promise.all([...terminals.values()].map(remove)),
+        new Promise((r) => {
+          timer = setTimeout(r, closeAllMs);
+          timer.unref?.();
+        }),
+      ]);
+      clearTimeout(timer);
+      for (const t of terminals.values()) killTree(t.child, "SIGKILL");
+      terminals.clear();
+    },
     // Last-ditch for process exit handlers, where async cannot run.
     killAllSync() {
       for (const t of terminals.values()) killTree(t.child, "SIGKILL");
