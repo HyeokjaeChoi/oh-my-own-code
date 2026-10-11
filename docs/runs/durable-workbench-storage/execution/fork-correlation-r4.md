@@ -1,0 +1,5 @@
+# Coordinated routine API correction r4
+
+Main authorizes a host-only read method `lookupForkIdentity({appSessionId}) -> defensive original admitted identity including digest | undefined`. No wire DTO/readView/lookup envelope, journal payload, owner record or factory shape change. Required by independently reproduced P7-R7-CODE-4: fork native metadata points to its parent, and current API hides terminal original fork keys.
+
+Lookup selects only an existing committed child with recorded parent mapping and native ID; exact validated admitted session.fork reservation, terminal confirmed forked receipt and result child/workspace/native IDs must match. Duplicate candidates are identity_conflict. Pending/in-flight/unconfirmed tail/orphan/unknown/removed mapping never returns a new confirmed correlation. Original tuple is copied; no append, observation allocation, recovery adoption or SDK effects. Host consumer must still validate exact native location/lineage and recursively validate parent inherited correlation. An API lookup result alone never authorizes Native startup. Main owns registry source/test; worker owns service+storage integration source/test.

@@ -1,0 +1,64 @@
+✖ Native Read runtime binding is private, single-use and cannot enter consumer/resource factory without current Task authority (4.0565ms)
+✖ Native Read rejects accessor/Proxy/page extras before any caller access or Task dispatch (0.453459ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 434.67375
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-control.test.mjs:2016:1
+✖ Native Read runtime binding is private, single-use and cannot enter consumer/resource factory without current Task authority (4.0565ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control.test.mjs:2019:14)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at forkUnsafe (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2238:11)
+      at MixedScheduler.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:1017:19)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:777:22)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-control.test.mjs:2052:1
+✖ Native Read rejects accessor/Proxy/page extras before any caller access or Task dispatch (0.453459ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control.test.mjs:2055:14)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at forkUnsafe (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2238:11)
+      at MixedScheduler.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:1017:19)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:777:22)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

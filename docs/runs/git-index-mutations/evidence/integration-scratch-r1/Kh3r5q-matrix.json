@@ -1,0 +1,48 @@
+{
+  "result": "fail",
+  "observations": [
+    {
+      "name": "sha1-stage",
+      "status": "pass",
+      "format": "sha1",
+      "action": "stage",
+      "indexExists": true,
+      "result": "applied",
+      "prepared": 1,
+      "published": 1,
+      "backupId": ".omoc-git-index-e426153ef1bb1961a04be059ef1b90eadbfbeb2aeaa5369bed9928bc79e93bd1.backup"
+    },
+    {
+      "name": "sha1-unstage",
+      "status": "pass",
+      "format": "sha1",
+      "action": "unstage",
+      "indexExists": true,
+      "result": "applied",
+      "prepared": 1,
+      "published": 1,
+      "backupId": ".omoc-git-index-fe662b9917b0da2fd7be44084dc51d828256923f1a52337f468e30e461785296.backup"
+    },
+    {
+      "name": "sha1-deleted",
+      "status": "pass",
+      "format": "sha1",
+      "action": "stage",
+      "indexExists": true,
+      "result": "applied",
+      "prepared": 1,
+      "published": 1,
+      "backupId": ".omoc-git-index-ee496e013ffbbf9f8ceac2b6bf12b7b619d6c6c20ac25b18b2139285c866d7c0.backup"
+    }
+  ],
+  "limits": [
+    "Synthetic Native SDK and direct kernel adapter; actual production protocol validators, not an Event Host process lifetime proof.",
+    "No production Main, provider, private project, Windows or power-loss acceptance.",
+    "All synthetic namespaces retained. Unknowns are lookup-only, never replayed."
+  ],
+  "failure": {
+    "name": "AssertionError",
+    "code": "ERR_ASSERTION",
+    "message": "{\"ok\":true,\"value\":{\"requestId\":\"sha1-absent-unborn\",\"status\":\"unknown\"},\"receipt\":{\"runtimeEpoch\":\"synthetic\",\"operationId\":\"sha1-absent-unborn\",\"type\":\"git.index.apply\",\"workspaceId\":\"12982673-7f5b-4b83-a890-acc7594de2db\",\"admission\":\"dispatched\",\"delivery\":\"unknown\",\"effect\":\"unknown\",\"revision\":11,\"evidence\":[]}}\n+ actual - expected\n\n+ 'unknown'\n- 'applied'\n"
+  }
+}

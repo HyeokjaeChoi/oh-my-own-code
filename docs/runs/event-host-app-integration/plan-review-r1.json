@@ -1,0 +1,54 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "c2596eb198b12eb215d871cd717baa1ee5c0f8b978d4239588708941d2467bdd",
+    "gate": "plan",
+    "plan_sha256": "b624078e1891a55cc448a633074103f74641b135a109419da23f37042155a412",
+    "schema_version": 2,
+    "source_sha256": "a75fd49a01211ef78a324cab7d829de4ea71bbd6018317be34bbea4330885840",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "changes_requested",
+  "summary": "새 runtime/package integration의 목표, 위임 권한, fresh-only 제한, 독립 최종 검토와 P7 미완료 조건은 적절합니다. 수정된 CLI 인자도 확인했습니다. 다만 새 evidence 출력 경로를 허용하는 guard 수정과 파일 담당자가 계획에 빠져 있습니다. 이 한 항목만 보완하면 됩니다.",
+  "open_findings": [
+    {
+      "id": "EH-PLAN-1",
+      "severity": "medium",
+      "location": "docs/runs/event-host-app-integration/plan.md: Assignments 3; contract.json: checks.native-storage, checks.hidden-ui",
+      "affected_acceptance": ["I3", "I4"],
+      "evidence": [
+        "p7-storage-probe.mjs:16,403의 출력 guard는 docs/runs/durable-workbench-storage/evidence 아래만 허용합니다. 새 integration-native-r1 경로는 이 범위 밖입니다.",
+        "run-evidence.mjs:24,96,176의 출력 guard는 docs/runs/frontend-architecture-redesign 아래만 허용합니다. 새 hidden-ui-r1 경로는 이 범위 밖입니다.",
+        "현재 계획은 durable fixture/probe consumer 수정은 배정하지만, run-evidence.mjs의 출력 guard 수정은 명시하지 않습니다."
+      ],
+      "impact": "현재 guard를 유지하면 두 필수 check가 evidence 수집 전에 실패합니다. CLI 인자 수정만으로는 해결되지 않습니다.",
+      "required_correction": "Main의 담당 파일에 p7-storage-probe.mjs와 run-evidence.mjs의 출력 경로 guard 수정을 명시하십시오. 이번 run의 정확한 evidence root를 허용하고, 기존 containment, symlink 검사, 비어 있는 destination의 exclusive claim과 이전 evidence 보존을 유지하십시오. 새 경로 허용 및 범위 밖·symlink·사용된 경로 거부 검증도 계획에 포함하십시오. 전체 저장소를 출력 허용 범위로 확대할 필요는 없습니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a109e1-2885-7ac2-bcc7-2cab6ce51edf",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "run_id": "event-host-app-integration",
+    "reviewer_role": "plan_reviewer",
+    "profile": "solo_reader",
+    "independent_report_only": true,
+    "profile_instructions_read": ".codex/agents/solo_reader.toml",
+    "skills_read": [
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-plan-review/SKILL.md",
+      ".agents/skills/solo-design-spec-review/SKILL.md"
+    ],
+    "handoff_packet": "docs/runs/event-host-app-integration/entry-review-r1b.packet.json",
+    "binding_validation": "현재 plan bytes, contract semantic digest, work classification 및 새 packet의 등록 hash를 대조했습니다. reviewed는 현재 plan-review-input.json을 그대로 복사했습니다.",
+    "review_boundary": "초기 integration plan rev1과 연결 design v1의 목표·실현 가능성만 검토했습니다. 기존 supervisor/main/service/bootstrap/preflight/manifest, build/package/provenance/probe 코드 및 완료된 feasibility 보고서와 비교했습니다. 이전 proof 전체 검토는 반복하지 않았습니다.",
+    "design_spec_verdict_issued": false,
+    "empty_design_binding_used": false,
+    "recursive_delegation": false,
+    "files_written": false,
+    "ledger_written": false,
+    "runtime_provider_native_ui_build_invoked": false,
+    "os_sandbox_attested": false,
+    "evidence_limits": "정적 검토입니다. 실제 package closure, startup fence, cleanup 및 packaged Native 실행 결과는 구현 후 검증해야 합니다.",
+    "gate_policy": "새 사용자 승인은 필요하지 않습니다. 초기 검토 후 승인된 범위의 일반 수정은 plan/design 검토를 반복하지 않고 독립 code review로 진행합니다."
+  }
+}

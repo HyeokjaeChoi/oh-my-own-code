@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "scope": "Read-only actual pinned Native source analysis; no Native module import or execution",
+  "sources": [
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-119mbqs2.js",
+      "sha256": "80ddf77b814ec271b0a169c58eb80999867a110dfe7a554838b594ecdfbe0c84"
+    },
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-kcmnw9z9.js",
+      "sha256": "80068552355da82bbe3ebe47c0d6e245da552ab51da9a0dfa3232dfd06752974"
+    },
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-e1e12dvt.js",
+      "sha256": "117fed69b80599657751ab6f24e8c162e73371021969fc580b618a453f2ed7fc"
+    },
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-s0ehs66p.js",
+      "sha256": "9a7cb24c50f09a3d07eca739a556f609fe2790016d06c3d352e441781a0f1186"
+    }
+  ],
+  "requiredConnections": [
+    {
+      "boundary": "ReadTool.files.read/list",
+      "facts": "First 256KiB read, subsequent ranged or whole-media read and directory wrong-kind fallback; adapter must retain original opaque file identity across all reads, not silently observe a replacement",
+      "implementation": "Fixed original resource only, original TaskObserver binds before ready; byte-range identity belongs to same task/path; genuine private path-kind translation only"
+    },
+    {
+      "boundary": "FileAccess.resolve/authorizeRead",
+      "facts": "Outside location/project resolution uses fs.stat/root2, and authorizeRead invokes permission.assert. Lexical containment is not physical authorization",
+      "implementation": "Admit declared in-root targets only before any outside metadata read; no fallback to original FS on unsupported path; original Permission invocation remains"
+    },
+    {
+      "boundary": "Read alternatePath/missing",
+      "facts": "AlternatePath lists parent; missing suggestions call fs.readDirectory. These are file IO even on a failed read",
+      "implementation": "Same broker and Task scope for both; no generic FS fallback"
+    },
+    {
+      "boundary": "Read instruction discovery",
+      "facts": "fs.resolve(target/root), fs.up AGENTS.md then sessionInstructions.load; caught errors do not erase any IO or synthetic-event lifetime",
+      "implementation": "Bounded in-root discovery and original task-scoped checked reads; account for original synthetic bus event before task settlement"
+    },
+    {
+      "boundary": "SessionInstructions.load",
+      "facts": "previouslyInjected reads original store context; unbounded Effect.forEach reads content then bus.publish Synthetic; Ref ensuring is not physical IO proof",
+      "implementation": "Keep actual store/event semantics and original Fiber ancestry; checked bounded instruction reads and total byte/count budget; deny before event for uncertain authority"
+    }
+  ],
+  "dependencyHold": "Actual kernel Bun probe awaiting fresh bounded CODE+exact pre-execution review. This record grants no execution or new mode. Control continues boot-held.",
+  "next": "Implement fixed Native-compatible files seam under same original resource, then all actual auxiliary IO; original Native Read stays unpublished until complete authority/compiler/inventory proof."
+}

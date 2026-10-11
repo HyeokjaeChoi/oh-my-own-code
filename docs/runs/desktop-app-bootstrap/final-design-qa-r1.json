@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "verdict": "pass",
+  "summary": "The packaged macOS connected-state screen clearly communicates the temporary bootstrap scope. Its title, synthetic session label, connected status, and privacy copy are consistent; supporting text and session ID are readable, and the generous whitespace with restrained dividers follows the approved visual direction. No design defect blocks this screen.",
+  "open_findings": [],
+  "reviewed": {
+    "contract_sha256": "c0e1cd700cafe06d62137f864c7df7fd42fc9040e7526f706b2cf7b2e180b946",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "design",
+    "plan_sha256": "ca8e5d9ccbe1257758a403cabc15f7e6a38bda65d6e5ff8c1aa44c96be6ba5ce",
+    "schema_version": 2,
+    "source_sha256": "507893e217f56cc24d6162593a456b4636ecee1119d75c22fb669304ab88141c",
+    "verification_sha256": "6417536dd387ff18e19e42d7b3ddee4e2613eac2433741d8892437843fbd9c04"
+  },
+  "provenance": {
+    "child_task_id": "/root/desktop_design_qa",
+    "author_task_id": "/root",
+    "model": "gpt-6-astra",
+    "effort": "high",
+    "runtime_identity_verified": false,
+    "context": "continued",
+    "method": "Read-only independent visual review of the recorded packaged macOS screenshot against revision-22 plan, approved UX and design-token contract. No app interaction, tests, or edits.",
+    "evidence": {
+      "path": "docs/runs/desktop-app-bootstrap/desktop-ui-packaged-macos.png",
+      "sha256": "5326164ec12016934e2e0c779d2281f7807bd4a9a627e8420969c233ec81fada",
+      "pixel_dimensions": [2360, 1576],
+      "origin": "Recorded packaged-macOS E2E connected synthetic session",
+      "window_configuration": "1180x820 BrowserWindow; exact CSS viewport dimensions were not recorded"
+    },
+    "limits": [
+      "Judgment covers one connected-state macOS packaged screenshot only.",
+      "Loading and error states, narrow windows, zoom, keyboard focus, screen readers, Windows UI, quantitative contrast, and quit cleanup were not assessed."
+    ]
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "a5ec1da9e5fa8a4da582b41a725ccae8071ca394e5dd1754306d273eac803929",
+    "gate": "plan",
+    "plan_sha256": "cdec0f299d4db93e11b529ee5b85407f4a801a5c50ce5c040f76ecfeabb455c1",
+    "schema_version": 2,
+    "source_sha256": "98f8c758f463783736f7b7503d01602717afbb875a6955b7c0dc0d5db9e978f6",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "PLAN-R1-01의 수정은 PLAN 기준을 충족합니다. 현재 등록의 출처를 영속 상태로 구분하고, 같은 내용의 child apply와 검증된 fork를 서로 다르게 기록합니다. 관련 상태 전이와 복원·표시·검증 요구도 연결되어 있습니다. 별도 DESIGN_SPEC v2 검토는 아직 필요합니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "PLAN-R1-01",
+      "result": "resolved_for_plan",
+      "evidence": [
+        "design.md:13은 registered origin을 direct 또는 fork로 제한합니다. fork에는 완료된 검증 결과의 즉시 parent appSessionId인 inheritedFromSessionId가 필요합니다. direct에는 이 필드를 금지합니다.",
+        "design.md:25는 검증된 fork 완료를 fork로 기록합니다. 확인된 child apply는 bytes와 fileVersion이 같아도 direct로 바꿉니다. remove는 origin 없는 absent로 기록합니다. denied/no-effect는 기존 origin을 유지하고, unknown은 새 origin을 추정하여 표시하지 않습니다.",
+        "plan.md:26과 design.md:15,30은 origin을 observed baseline, semantic completion, checkpoint, hydration, closed read 및 UI에 연결합니다.",
+        "design.md:30은 현재 parent의 digest나 parentSessionId만으로 출처를 판단하지 않습니다. parent의 후속 변경도 child의 출처를 바꾸지 않습니다.",
+        "design.md:33은 동일 내용의 child apply, denied/unknown, parent 후속 변경 및 checkpoint/reopen 검사를 요구합니다. Native의 기존 metadata correlation object는 유지합니다."
+      ]
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a11960-f1a7-7fa3-b621-b2b561eaa1a6",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "role": "plan_reviewer",
+    "profile": "solo_reader",
+    "skill": "solo-plan-review",
+    "mode": "default",
+    "identity_evidence": "실행 환경의 CODEX_THREAD_ID를 직접 읽었습니다. run.json의 revision 2 review dispatch child_ref와 일치하며 author_task_id와 다릅니다.",
+    "independent": true,
+    "authored_plan": false,
+    "modified_source": false,
+    "modified_artifacts": false,
+    "modified_ledger": false,
+    "recursively_delegated": false
+  },
+  "scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_path": "docs/runs/configuration-instructions/plan.md",
+    "plan_revision": 2,
+    "contract_path": "docs/runs/configuration-instructions/contract.json",
+    "design_path": "docs/runs/configuration-instructions/design.md",
+    "design_version": "2",
+    "input_path": "docs/runs/configuration-instructions/entry-plan-input-r2.json",
+    "packet_path": "docs/runs/configuration-instructions/entry-plan-packet-r2.json",
+    "prior_report_path": "docs/runs/configuration-instructions/entry-plan-review-r1.json",
+    "review_boundary": "PLAN-R1-01의 일관성 수정과 직접 관련된 소유권·출처·상태 전이·검증 요구만 검토했습니다.",
+    "prior_report_authority": "AMENDED changes_requested 보고서를 이전 판정으로 사용했습니다. 철회된 초기 pass는 승인 근거로 사용하지 않았습니다.",
+    "related_policy_interpretation": "소유권이 없는 reserved key는 ownership_conflict입니다. apply뿐 아니라 instruction-sensitive message.send, command.run, session.fork도 차단해야 한다는 현재 사용자 설명을 적용했습니다. 기존 두 policy stage는 모두 유지합니다.",
+    "other_prior_judgments": "이전 보고서의 권한·architecture·API 근거 판단은 유지합니다. 관련 없는 전체 발견 작업은 반복하지 않았습니다.",
+    "design_spec_verdict_issued": false,
+    "written_paths": []
+  },
+  "checks": [
+    {
+      "command": "python3 -B .solopreneur/harness.py review-input configuration-instructions --gate plan",
+      "result": "exit 0. 출력이 entry-plan-input-r2.json 및 reviewed와 정확히 일치합니다."
+    },
+    {
+      "command": "읽기 전용 Python으로 plan, contract, design 및 현재 harness binding 확인",
+      "result": "plan hash, packet의 contract 파일 hash, contract의 design v2 hash가 모두 일치합니다. 현재 harness binding도 EXACT input과 일치합니다."
+    },
+    {
+      "command": "harness source_fingerprint(Path.cwd()) 읽기 전용 계산",
+      "result": "현재 source SHA256은 98f8c758f463783736f7b7503d01602717afbb875a6955b7c0dc0d5db9e978f6이며 EXACT input과 일치합니다."
+    }
+  ],
+  "nonblocking_notes": [
+    "plan.md:23에는 design.md v1이라는 오래된 참조가 남아 있습니다. 현재 contract, packet, 실제 문서와 plan.md:20은 v2를 지정합니다. 이번 검토는 해당 v2에 연결했습니다."
+  ],
+  "limits": [
+    "문서의 PLAN 일관성을 검토했습니다. 구현이나 실행 동작을 검증한 결과가 아닙니다.",
+    "Native, provider, GUI, build 및 제품 테스트를 실행하지 않았습니다.",
+    "파일, artifact 및 ledger를 수정하거나 다른 작업에 위임하지 않았습니다.",
+    "별도 binding의 DESIGN_SPEC v2 gate와 후속 독립 CODE/RENDER gate는 남아 있습니다.",
+    "전체 F14와 전체 Goal은 계속 ACTIVE입니다."
+  ]
+}

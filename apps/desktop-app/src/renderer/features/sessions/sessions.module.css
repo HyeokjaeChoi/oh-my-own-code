@@ -1,0 +1,169 @@
+.navigation {
+  min-width: 0;
+}
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--omoc-semantic-color-text-secondary);
+  margin: 0 0 8px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: transparent;
+}
+.search:focus-within {
+  background: var(--omoc-semantic-color-surface);
+}
+.search input {
+  border: 0;
+  background: transparent;
+  min-width: 0;
+  width: 100%;
+  min-height: var(--omoc-component-size-control-hit-target);
+  font-size: 14px;
+  padding: 6px 0;
+}
+.views {
+  display: flex;
+  gap: 4px;
+}
+.views button {
+  min-height: var(--omoc-component-size-control-hit-target);
+  flex: 1;
+  padding: 6px 4px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+}
+.views button[aria-pressed="true"] {
+  color: var(--omoc-semantic-color-text-primary);
+  font-weight: 500;
+}
+.views button:hover {
+  background: var(--omoc-semantic-color-selection-background);
+}
+.list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.row {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  border-radius: var(--omoc-component-size-navigation-radius);
+}
+.row:hover,
+.row:focus-within {
+  background: var(--omoc-component-color-navigation-hover-background);
+}
+.row[data-selected="true"] {
+  background: var(--omoc-component-color-navigation-selected-background);
+}
+.sessionButton {
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+  min-height: var(--omoc-component-size-control-hit-target);
+  padding: 6px 8px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  font-size: var(--omoc-component-type-navigation-size);
+  line-height: var(--omoc-component-type-navigation-line);
+}
+.title {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.indicator {
+  flex-shrink: 0;
+  color: var(--omoc-semantic-color-text-secondary);
+  display: inline-flex;
+}
+.menuTrigger {
+  flex-shrink: 0;
+  opacity: 0;
+}
+.row:hover .menuTrigger,
+.row:focus-within .menuTrigger,
+.menuTrigger[data-state="open"] {
+  opacity: 1;
+}
+.rename {
+  padding: 8px;
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+.rename input {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--omoc-component-size-control-hit-target);
+  border: 1px solid var(--omoc-component-color-input-border);
+  border-radius: 8px;
+  padding: 8px;
+  background: var(--omoc-component-color-input-background);
+  font-size: 14px;
+}
+.rename > div {
+  display: flex;
+  gap: 6px;
+}
+.rename button {
+  min-height: var(--omoc-component-size-control-hit-target);
+  border: 0;
+  border-radius: 8px;
+  background: var(--omoc-semantic-color-surface);
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.rename button:hover {
+  background: var(--omoc-semantic-color-selection-background);
+}
+.rename button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.error {
+  margin: 4px 0;
+  color: var(--omoc-semantic-color-danger-foreground);
+  line-height: 1.5;
+}
+.empty {
+  font-size: 13px;
+  color: var(--omoc-semantic-color-text-secondary);
+  padding: 8px;
+  line-height: 1.5;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (hover: none) {
+  .menuTrigger {
+    opacity: 1;
+  }
+}
+
+.row[data-session-status="unavailable"] .indicator {
+  color: var(--omoc-semantic-color-danger-foreground);
+}

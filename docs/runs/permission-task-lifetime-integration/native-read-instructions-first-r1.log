@@ -1,0 +1,15 @@
+✔ original instructions preserves exact text and original metadata in Synthetic event (3.25375ms)
+✔ original store context prevents already-injected path from being read or published (0.899792ms)
+✔ ordinary messages and malformed synthetic metadata do not invent prior injection (0.414083ms)
+✔ missing instructions do not fabricate content or event (0.239792ms)
+✔ instruction read failure prevents any partial Synthetic publication (0.484166ms)
+✔ original load remains unfinished while original Synthetic publish is pending (0.348875ms)
+✔ publish failure propagates and its in-flight claim is released for a later explicit call (0.494416ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 225.854375

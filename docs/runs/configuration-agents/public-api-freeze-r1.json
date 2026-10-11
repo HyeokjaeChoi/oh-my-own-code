@@ -1,0 +1,46 @@
+{
+  "status": "Actual public DTO/helper shapes frozen; coherent18Node+tsc PASS; corrected actual Native6PASS at prerequisite source; new shared ID payload/export is exact algorithm-preserving and will be covered in final consumer build/Native proof. No consumer runtime acceptance yet.",
+  "sources": {
+    "apps/desktop-app/src/desktop-bridge.d.ts": "868c758522c29be15f3441be09a6dd4444b2250add02826a09ee627141bfed7c",
+    "apps/desktop-app/src/workbench-contract.mjs": "811df05ec11c332d75b78c51a4db22a95dafc7ea36d1d35f6ad1e4c54c9253d3",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/agent.mjs": "97a23a94e8e5ba9f1f522ce605a2cb1700c70f07036638ce826ab753585a7ee3",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/agent.d.mts": "abe0de4e62306589368ba0d26bc79ede8121883eb170b384f5e60505a8d4df5e",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/agent-runtime.mjs": "58241c1ec4faf550d8ca3543bbb307cf5214ac1ad04602c78c5de32448220318",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/agent-runtime.d.mts": "10bccd1ce0eec7c3cb16c3a351744f1be2234be025c78d5c72af5ef4e3b66794",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs": "cad78a3c98ffefbc3657bf57b8f1f692a4354873bd42f95af4babed1a8db1ba8",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts": "b4c92c7ec2c96b23cd556a4f065cf1a7ae2e395befe758ce2f1da38595741308",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts": "31176bd4a8b745d339194704eee0b7da3f68d48e8ef415cb1ea8785abb164d39",
+    "apps/desktop-app/src/native-agents-protocol.mjs": "c8a4f7066855b4b93a55d6752645012e2fb6d6b690588601ca7c086ca025f918"
+  },
+  "factory": "createWorkbenchService adds confirmAgentRuntime=async()=>false; signature exists in actual source. Existing injections/handle/cancelRead/closeSender/close/drain unchanged; implementation continues and full service SHA is not frozen.",
+  "feature": "AGENT_RUNTIME_FEATURE=configuration_agents_v1 used BOTH agent files and runtime; zero topology delta; browser/public no sessionId; Native IDs via actual nativeAgentRegistrationId(original identity).",
+  "private": "nativeAgents observe/register/remove shape unchanged; lazy transform installed after complete startup only authenticated register; Main adapter global reference reread immediately before remove RPC.",
+  "nativePrerequisite": "docs/runs/configuration-agents/evidence/native-r6/agent-evidence.json actualPASS6/ownedexits0/beforeafterequal; no publicdurable/UI acceptance",
+  "dto": "Actual desktop-bridge.d.ts types/WorkbenchRequest/ReadType/ReceiptResult conditional response + actual workbench-contract validator/READ_TYPES + helper declarations/source are authoritative. Do not invent fields or edit Main shared sources without coordination.",
+  "protocol": "nativeAgentRegistrationId(identity) additive export uses exact agentRuntimeIdPayload; nativeAgentId(owner) still full owner validation then same hash. Public result does not include system/prompt/nonce/permissions; owned observation does.",
+  "storageAPI": {
+    "helper": "host/workbench-agent-storage.mjs, one shared configuration_agents_v1 feature for files and runtime; pattern actual workbench-skill-storage and workbench-skill-runtime-storage; no duplicate journal",
+    "exports": [
+      "AGENT_FEATURE",
+      "isAgentSave",
+      "agentBackupId",
+      "validAgentSavedResult",
+      "AGENT_RUNTIME_DISPATCH_FIELDS",
+      "AGENT_RUNTIME_RESULT_FIELDS",
+      "agentRuntimeAdmission",
+      "validateAgentRuntimeAdmission",
+      "validateAgentRuntimeScope",
+      "validateAgentRuntimeDispatchPayload",
+      "validAgentRuntimeResult",
+      "validateAgentRuntimeReceipt",
+      "validateAgentRuntimeDispatch",
+      "validateAgentRuntimeCompletion"
+    ],
+    "admit": "registry.admit optional agentSourceName only configuration.agent.save, exact safe source. Optional agentRuntime only runtime: register {sourceName,nativeId,digest,version,directoryVersion}, remove {nativeId}. original requestId equals operationId. Native ID via actual nativeAgentRegistrationId(original identity + sourceName).",
+    "dispatch": "registry.dispatch optional agentRuntime ONLY native.agent.register/remove: {sourceName,nativeId,digest,nativeDigest,registrationRuntimeEpoch,registrationOperationId,systemDigest}; no nativeSessionId/nativeServerName. Main currentScope.agentRuntimeProof feeds dispatch. Only one runtime dispatch per original operation.",
+    "results": "agent_registered exact identity6+systemDigest+version+directoryVersion+defaultAgentId; agent_removed identity6+systemDigest+defaultAgentId; both plus kind/workspaceId. agent_file_saved workspaceId/sourceName/version/optional exact agent backupId. No path/prompt/nonce/permissions/session persist.",
+    "authority": "Feature appended BEFORE all agent admission/checkpoint, including zero retained. scope workspace-only. Zero topology delta. Remove exact confirmed original registration/current epoch/digests. Confirmed removal then no repeat new-key removal authority. Unknown retained original key no replay. Unrelated operation cannot carry agent authority.",
+    "workspaceRemoval": "Main checks fresh exact Native owned rows before removal. Registry must refuse workspace tombstone if confirmed original registration without confirmed removal exists in current runtimeEpoch; previous runtime registrations historical, no restore. Unresolved existing resource holds remain blocking. No additive public registry API needed.",
+    "legacy": "Use actual captured prechange legacy-storage-journal.bundle.mjs to prove byte-preserving refusal; do not regenerate it."
+  }
+}

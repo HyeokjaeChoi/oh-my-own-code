@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "b43ca53823dc73d731dd461a80541395f17e9df3a82b006e3e2f328a1f92f1d1",
+    "contract_sha256": "cd641ff94f3288b5592470f13144ac49ccce359d75372e8c5a8792427422847f",
+    "source_sha256": "e6364f507171bd7a288f6985919bac228af2918fc853437534350be33f29cd8d"
+  },
+  "verdict": "changes_requested",
+  "summary": "The desktop deliverable, trust split, and gating are appropriate, but the active plan still contains AC-8-only prohibitions that conflict with the desktop shell, dependency, lockfile and Nx topology work.",
+  "open_findings": [
+    {
+      "id": "DPR8-01",
+      "priority": "P2",
+      "file": "docs/runs/build-delivery/plan.md",
+      "title": "Scope the completed AC-8 restrictions to their historical increment",
+      "description": "The plan calls runtime-info work the current increment and prohibits dependency, lockfile and workspace topology changes, while the desktop sequence requires Electron/Forge, a desktop-shell project and a packaged app.",
+      "requested_change": "Mark AC-8 as completed historical evidence, confine its no-live-runtime and no-dependency-change rules to that probe, and explicitly permit reviewed desktop manifests, lockfile and project-topology changes after product/design review. Mark new desktop checks as planned targets that do not exist until the reviewed bootstrap creates them.",
+      "validation_expectation": "A fresh implementer can determine from the plan when desktop dependencies/topology may change and which synthetic effects are permitted, without contradictory current-increment prohibitions."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/desktop_plan_review_r8",
+    "author_task_id": "/root",
+    "review_mode": "Fresh independent read-only plan and contract review",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false,
+    "files_modified": false
+  }
+}

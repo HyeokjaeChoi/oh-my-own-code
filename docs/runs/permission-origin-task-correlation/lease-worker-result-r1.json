@@ -1,0 +1,4 @@
+{
+  "child_task_id": "01a1219d-48b6-7fd2-b241-7c8a5ce554e4",
+  "completed": "최신 correction을 반영했습니다. **두 테스트 파일은 freeze 상태입니다.**\n\n- 기존 child의 version2 전환은 `lineage` 오류로 거부됩니다.\n- Child row는 실제 settlement까지 version1을 유지합니다.\n- 새 child의 version2 admission과 actual Fiber settlement는 유지됩니다.\n- **37/37 테스트, scoped ESLint·Prettier·diff 검사 통과.**\n\nRED는 임시 복사본에 이전 child catch-up 동작을 복원하여 확인했습니다. 새 immutable-child 검사가 `Missing expected exception`으로 실패했습니다. 이전 parent guard 제거 RED는 과거 증거이며, 현재 guard 검증으로 주장하지 않습니다.\n\n새 SHA-256:\n\n```text\nnative-permission-leases.test.mjs\n9a0984573a8695a9c61bf67f49ebc6e4cb1eafbcc0d7399844892b37d3e9f802\n\nnative-permission-control.test.mjs\n36ba6d8ea747c989f8ce3c1f2a5026c6b80877080721fa6cdef8aa148d2868b4\n```\n\nProduction·archive는 수정하지 않았습니다. 전체 suite·Native 실행·독립 CODE review는 수행하지 않았습니다."
+}

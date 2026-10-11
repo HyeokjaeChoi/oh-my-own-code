@@ -1,0 +1,180 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "7dc2c801700389026f120fca42d033db467e37fd4ea1bcf5812dc6d1da5ebbe5",
+    "environment_sha256": "3e2f33abb7f623f1d5216f96abfeffc8c0a3641363878d373ad1991a1fd81f22",
+    "gate": "design",
+    "plan_sha256": "2c1c75e7dfeb6158ef0300c033a9c5a1fa8910a357d351fda08dc75bb41bebac",
+    "schema_version": 2,
+    "source_sha256": "8e519498df8e0598cb7d2c4e2ec25c900b16cd486e7c362625d9abdc092899b6",
+    "verification_sha256": "70b73646eebe487dfc06cd7759ff5db3a2970337ebf42b7a1907974598224b03",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "새 desktop dark 캡처 8개와 현재 대표 캡처 10개를 직접 검사했습니다. 구체적인 UI 결함을 찾지 못했습니다. RENDER-EVIDENCE-01의 누락 증거가 제공되어 해당 보류 사유가 해소되었습니다.",
+  "open_findings": [],
+  "inspected_scope": {
+    "plan_revision": 9,
+    "mode": "fresh_independent_bounded_correction",
+    "historical_review": "docs/runs/version-bound-line-feedback/final-render-review-r1.json",
+    "task": "원래 파일 또는 Git 출처의 줄과 의견을 확인하고 작성기 초안에 명시적으로 추가한 뒤 기존 Send를 별도로 사용합니다.",
+    "resolved_findings": [
+      {
+        "id": "RENDER-EVIDENCE-01",
+        "status": "verified_resolved",
+        "detail": "파일 baseline과 staged Git의 실제 desktop dark 캡처를 직접 검사했습니다. CSS viewport는 1440×968, zoomFactor는 1입니다."
+      }
+    ]
+  },
+  "direct_captures": {
+    "root": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r9/feedback",
+    "path_rule": "전체 경로는 root + '/' + paths 항목입니다. 각 그룹의 크기는 해당 paths 모두에 적용됩니다.",
+    "count": 18,
+    "groups": [
+      {
+        "theme": "dark",
+        "pixel_dimensions": {
+          "width": 2880,
+          "height": 1936
+        },
+        "css_viewport": {
+          "width": 1440,
+          "height": 968
+        },
+        "display_scale_factor": 2,
+        "zoom_factor": 1,
+        "paths": [
+          "feedback-5-file-original-baseline-dark-desktop-dark-desktop-path.png",
+          "feedback-6-file-original-baseline-dark-desktop-dark-desktop-version.png",
+          "feedback-7-file-original-baseline-dark-desktop-dark-desktop-excerpt.png",
+          "feedback-8-file-original-baseline-dark-desktop-dark-desktop-comment.png",
+          "feedback-23-git-staged-old-dark-desktop-dark-desktop-status.png",
+          "feedback-24-git-staged-old-dark-desktop-dark-desktop-comment.png",
+          "feedback-25-git-staged-old-dark-desktop-dark-desktop-preview.png",
+          "feedback-26-git-staged-old-dark-desktop-dark-desktop-append.png"
+        ]
+      },
+      {
+        "theme": "light",
+        "pixel_dimensions": {
+          "width": 2880,
+          "height": 1936
+        },
+        "css_viewport": {
+          "width": 1440,
+          "height": 968
+        },
+        "display_scale_factor": 2,
+        "zoom_factor": 1,
+        "paths": [
+          "feedback-1-file-original-baseline-light-desktop-path.png",
+          "feedback-4-file-original-baseline-light-desktop-comment.png",
+          "feedback-19-git-staged-old-light-desktop-status.png"
+        ]
+      },
+      {
+        "theme": "dark",
+        "pixel_dimensions": {
+          "width": 1520,
+          "height": 1936
+        },
+        "content_bounds": {
+          "width": 760,
+          "height": 968
+        },
+        "css_viewport": {
+          "width": 380,
+          "height": 484
+        },
+        "display_scale_factor": 2,
+        "zoom_factor": 2,
+        "paths": [
+          "feedback-9-file-added-separate-send-dark-760px200-status.png",
+          "feedback-10-file-added-separate-send-dark-760px200-comment.png",
+          "feedback-11-file-added-separate-send-dark-760px200-preview.png",
+          "feedback-12-file-added-separate-send-dark-760px200-append.png",
+          "feedback-15-retained-source-resume-dark-760px200-status.png",
+          "feedback-16-retained-source-resume-dark-760px200-comment.png"
+        ]
+      },
+      {
+        "theme": "light",
+        "pixel_dimensions": {
+          "width": 1520,
+          "height": 1936
+        },
+        "content_bounds": {
+          "width": 760,
+          "height": 968
+        },
+        "css_viewport": {
+          "width": 380,
+          "height": 484
+        },
+        "display_scale_factor": 2,
+        "zoom_factor": 2,
+        "paths": [
+          "feedback-13-composer-overflow-light-760px200-status.png"
+        ]
+      }
+    ]
+  },
+  "checks": [
+    {
+      "name": "capture_identity_and_dimensions",
+      "basis": "direct_file_and_png_header_inspection",
+      "result": "pass",
+      "detail": "현재 PNG 54개에 접근할 수 있습니다. 실제 PNG 크기가 capture metadata와 모두 일치합니다. 그중 명시한 18개를 직접 시각 검사했습니다."
+    },
+    {
+      "name": "desktop_dark_task_clarity",
+      "basis": "direct_visual_inspection",
+      "result": "pass",
+      "detail": "원래 경로, version, 대상 세션, Git old 쪽, 줄 범위, 의견과 발췌문을 구분할 수 있습니다. 추가 상태는 기존 전송 버튼을 별도로 사용하도록 안내합니다."
+    },
+    {
+      "name": "wrapping_and_recovery",
+      "basis": "direct_visual_inspection",
+      "result": "pass",
+      "detail": "긴 경로와 해시는 영역 안에서 줄바꿈됩니다. 760px·200% 캡처에서 의견과 안내를 읽을 수 있습니다. overflow 상태는 추가를 비활성화하고 내용 정리를 안내합니다. stale 상태는 다시 읽기와 출처 선택을 안내하며 보관 의견을 표시합니다."
+    },
+    {
+      "name": "tokens_and_semantics",
+      "basis": "source_inspection_and_direct_visual_comparison",
+      "result": "pass",
+      "detail": "feedback CSS의 token 참조는 모두 tokens.css에 선언되어 있습니다. 직접 검사한 화면에서 텍스트, 입력 경계, 비활성 상태와 focus 표시를 구분할 수 있습니다. label 연결, 발췌문 region, status의 aria-live 및 local Escape 처리는 소스에서 확인했습니다."
+    },
+    {
+      "name": "keyboard_selection_visibility_and_no_io",
+      "basis": "recorded_automation_cross_checked_against_runner_source",
+      "result": "pass",
+      "detail": "새 상태도 기존 control의 Tab/Shift+Tab 복귀, local Escape, 의견 보존, 전체 DOM range 선택 및 ratio 1 가시성 검사를 사용합니다. 16개 상태의 selection은 모두 complete이며 before/after metrics가 같습니다. scope 밖 Escape의 ModalSheet 닫기 기록도 있습니다. 직접 조작하거나 재실행하지 않았습니다."
+    },
+    {
+      "name": "current_binding_and_hidden_provenance",
+      "basis": "direct_hash_inspection_and_recorded_execution_artifacts",
+      "result": "pass",
+      "detail": "현재 입력 바인딩과 등록 artifact 해시를 확인했습니다. build stamp 및 source/script/launch artifact 해시가 manifest와 일치합니다. manifest pass, wrapperExitCode 0, provenanceVerifiedAfter true 및 owned teardown exited true/code 0을 확인했습니다."
+    }
+  ],
+  "limits": [
+    "직접 시각 검사한 PNG는 명시한 18개입니다. 나머지 36개는 크기와 메타데이터만 확인했습니다.",
+    "키보드, 문자열 선택, IO 부재와 가시성 동작은 기존 자동 검사 기록 및 소스 검토에 근거합니다.",
+    "각 캡처는 별도 스크롤 위치입니다. 모든 항목이 한 화면에 동시에 보인다는 의미는 아닙니다.",
+    "Screen reader 실행과 수치 기반 contrast 검사는 수행하지 않았습니다.",
+    "Darwin의 built Renderer/preload와 synthetic Main 증거입니다. production Main, 실제 Git backend/provider, Windows 및 전체 제품 완료를 증명하지 않습니다.",
+    "파일 수정, ledger 기록, 위임, build 및 앱 실행을 하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11c8c-ab5a-7cd3-bf8b-609b2a11196d",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "author": "Main",
+    "role": "design_qa",
+    "mode": "fresh_independent_report_only",
+    "identity_basis": "현재 CODEX_THREAD_ID 및 assignment의 Main author ID",
+    "authored_changes": false,
+    "evidence_origin": "Built Electron Renderer/preload; synthetic Main; BrowserWindow.webContents.capturePage().toPNG()",
+    "manifest": "docs/runs/version-bound-line-feedback/evidence/hidden-r9/feedback/manifest.json",
+    "report": "docs/runs/version-bound-line-feedback/evidence/hidden-r9/feedback/line-feedback-evidence.json"
+  }
+}

@@ -1,0 +1,257 @@
+{
+  "run": "durable-owner-lifetime",
+  "schema_version": 2,
+  "status": "active",
+  "work_class": "routine",
+  "required_gates": [
+    "code",
+    "checks",
+    "design_spec"
+  ],
+  "gaps": [
+    "required checks missing: owner-lifetime-unit, host-regression, packaging-unit, lint, typecheck, build, package, package-inspect, owner-lifetime-native",
+    "checks missing, failed, or stale",
+    "code review missing, unresolved, or stale",
+    "final outcome missing or changed"
+  ],
+  "dispatches": [
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "01a116aa-2e9b-7521-99d3-83f9737946a3",
+      "context": "fresh",
+      "packet": {
+        "path": "docs/runs/durable-owner-lifetime/plan-review-r1.packet.json",
+        "sha256": "d4de9441bb76f4a00d47a8bc474ed9ca49a4c0afc2a17aee175cf6dab303e1e7"
+      },
+      "phase": "review",
+      "recorded_at": "2026-10-07T14:00:14+00:00",
+      "role": "plan_reviewer",
+      "role_instruction_sha256": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      "routing": {
+        "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+        "input_sha256": {
+          ".agents/skills/solo-plan-review/SKILL.md": "08f12fa67ef2816fcbd8c4d82aa8d54fe0158e984a4316a0d58db7dafa29d8d5",
+          ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+          ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+          ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+        },
+        "mode": "default",
+        "phase": "review",
+        "profile": "solo_reader",
+        "profile_file": ".codex/agents/solo_reader.toml",
+        "references": [],
+        "role": "plan_reviewer",
+        "schema_version": 2,
+        "skill": "solo-plan-review",
+        "skill_file": ".agents/skills/solo-plan-review/SKILL.md"
+      },
+      "routing_request": {
+        "basis": "client_defaults_requested"
+      }
+    },
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "01a116ac-3f17-7b53-b76e-025eca071737",
+      "context": "fresh",
+      "packet": {
+        "path": "docs/runs/durable-owner-lifetime/design-review-r1.packet.json",
+        "sha256": "0e9cc5453074e9cf41e2767b18e45773ba731c94aac3692fc6547920acc8cc35"
+      },
+      "phase": "review",
+      "recorded_at": "2026-10-07T14:02:29+00:00",
+      "role": "design_spec_reviewer",
+      "role_instruction_sha256": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      "routing": {
+        "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+        "input_sha256": {
+          ".agents/skills/solo-design-spec-review/SKILL.md": "d96c463a56cf511d8cccae96f235ecb713517519c896a26991dd6fca9359fa76",
+          ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+          ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+          ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+        },
+        "mode": "default",
+        "phase": "review",
+        "profile": "solo_reader",
+        "profile_file": ".codex/agents/solo_reader.toml",
+        "references": [],
+        "role": "design_spec_reviewer",
+        "schema_version": 2,
+        "skill": "solo-design-spec-review",
+        "skill_file": ".agents/skills/solo-design-spec-review/SKILL.md"
+      },
+      "routing_request": {
+        "basis": "client_defaults_requested"
+      }
+    },
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "01a116aa-2e9b-7521-99d3-83f9737946a3",
+      "context": "fresh",
+      "packet": {
+        "path": "docs/runs/durable-owner-lifetime/plan-review-r2.packet.json",
+        "sha256": "0a861aec90a49180a00cab754d40fb14b13c5a853d5905fbdd9ab9b09b6762dd"
+      },
+      "phase": "review",
+      "recorded_at": "2026-10-07T14:08:09+00:00",
+      "role": "plan_reviewer",
+      "role_instruction_sha256": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      "routing": {
+        "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+        "input_sha256": {
+          ".agents/skills/solo-plan-review/SKILL.md": "08f12fa67ef2816fcbd8c4d82aa8d54fe0158e984a4316a0d58db7dafa29d8d5",
+          ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+          ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+          ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+        },
+        "mode": "default",
+        "phase": "review",
+        "profile": "solo_reader",
+        "profile_file": ".codex/agents/solo_reader.toml",
+        "references": [],
+        "role": "plan_reviewer",
+        "schema_version": 2,
+        "skill": "solo-plan-review",
+        "skill_file": ".agents/skills/solo-plan-review/SKILL.md"
+      },
+      "routing_request": {
+        "basis": "client_defaults_requested"
+      }
+    },
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "01a116ac-3f17-7b53-b76e-025eca071737",
+      "context": "fresh",
+      "packet": {
+        "path": "docs/runs/durable-owner-lifetime/design-review-r2.packet.json",
+        "sha256": "78f99f8e4538fb32f22ef4f833094e5aa7ed42ff8654bbaab37b1160ddc15593"
+      },
+      "phase": "review",
+      "recorded_at": "2026-10-07T14:08:59+00:00",
+      "role": "design_spec_reviewer",
+      "role_instruction_sha256": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      "routing": {
+        "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+        "input_sha256": {
+          ".agents/skills/solo-design-spec-review/SKILL.md": "d96c463a56cf511d8cccae96f235ecb713517519c896a26991dd6fca9359fa76",
+          ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+          ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+          ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+        },
+        "mode": "default",
+        "phase": "review",
+        "profile": "solo_reader",
+        "profile_file": ".codex/agents/solo_reader.toml",
+        "references": [],
+        "role": "design_spec_reviewer",
+        "schema_version": 2,
+        "skill": "solo-design-spec-review",
+        "skill_file": ".agents/skills/solo-design-spec-review/SKILL.md"
+      },
+      "routing_request": {
+        "basis": "client_defaults_requested"
+      }
+    },
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "01a116b4-74bb-7b32-986e-b17f8a33c854",
+      "context": "fresh",
+      "packet": {
+        "path": "docs/runs/durable-owner-lifetime/helper-r1.packet.json",
+        "sha256": "06c83bd5252f3388bc6267a4998b8a89d68ddb67f6bb536a6906ba7bcd2cc0aa"
+      },
+      "phase": "implementation",
+      "recorded_at": "2026-10-07T14:11:27+00:00",
+      "role": "engineer",
+      "role_instruction_sha256": "2488c3a019261ec7c1acad6c6224545951ea3750f8664f23bb947f6634640d01",
+      "routing": {
+        "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+        "input_sha256": {
+          ".agents/skills/solo-implement/SKILL.md": "2f92d715e6c35dd3b0ff5184311bfdc3afcd5aec86f4cf7e45d2890d91225884",
+          ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+          ".codex/agents/solo_worker.toml": "2488c3a019261ec7c1acad6c6224545951ea3750f8664f23bb947f6634640d01",
+          ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+        },
+        "mode": "general",
+        "phase": "implementation",
+        "profile": "solo_worker",
+        "profile_file": ".codex/agents/solo_worker.toml",
+        "references": [],
+        "role": "engineer",
+        "schema_version": 2,
+        "skill": "solo-implement",
+        "skill_file": ".agents/skills/solo-implement/SKILL.md"
+      },
+      "routing_request": {
+        "basis": "client_defaults_requested"
+      }
+    },
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "01a116b4-756d-7fa1-9acf-12a94dab5645",
+      "context": "fresh",
+      "packet": {
+        "path": "docs/runs/durable-owner-lifetime/adapter-r1.packet.json",
+        "sha256": "06c83bd5252f3388bc6267a4998b8a89d68ddb67f6bb536a6906ba7bcd2cc0aa"
+      },
+      "phase": "implementation",
+      "recorded_at": "2026-10-07T14:11:27+00:00",
+      "role": "engineer",
+      "role_instruction_sha256": "2488c3a019261ec7c1acad6c6224545951ea3750f8664f23bb947f6634640d01",
+      "routing": {
+        "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+        "input_sha256": {
+          ".agents/skills/solo-implement/SKILL.md": "2f92d715e6c35dd3b0ff5184311bfdc3afcd5aec86f4cf7e45d2890d91225884",
+          ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+          ".codex/agents/solo_worker.toml": "2488c3a019261ec7c1acad6c6224545951ea3750f8664f23bb947f6634640d01",
+          ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+        },
+        "mode": "general",
+        "phase": "implementation",
+        "profile": "solo_worker",
+        "profile_file": ".codex/agents/solo_worker.toml",
+        "references": [],
+        "role": "engineer",
+        "schema_version": 2,
+        "skill": "solo-implement",
+        "skill_file": ".agents/skills/solo-implement/SKILL.md"
+      },
+      "routing_request": {
+        "basis": "client_defaults_requested"
+      }
+    },
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "01a116c3-642e-7c21-93ea-801ca79e7783",
+      "context": "fresh",
+      "packet": {
+        "path": "docs/runs/durable-owner-lifetime/code-review-r1.packet.json",
+        "sha256": "2cab3dc481fad3e3c0017709db909b7a6cd2d6d756d333e895351659fd763c11"
+      },
+      "phase": "review",
+      "recorded_at": "2026-10-07T14:27:46+00:00",
+      "role": "reviewer",
+      "role_instruction_sha256": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      "routing": {
+        "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+        "input_sha256": {
+          ".agents/skills/solo-code-review/SKILL.md": "e461cb26baa50f1f496bdde0a2f1985b8a005404b751652db729e73cd9af5244",
+          ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+          ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+          ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+        },
+        "mode": "default",
+        "phase": "review",
+        "profile": "solo_reader",
+        "profile_file": ".codex/agents/solo_reader.toml",
+        "references": [],
+        "role": "reviewer",
+        "schema_version": 2,
+        "skill": "solo-code-review",
+        "skill_file": ".agents/skills/solo-code-review/SKILL.md"
+      },
+      "routing_request": {
+        "basis": "client_defaults_requested"
+      }
+    }
+  ]
+}

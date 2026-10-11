@@ -1,0 +1,36 @@
+{
+  "scope": "revision13 Main owned3 actual source checkpoint, implementation not CODE",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "sha256": "b254824c61f5a1f4099cab021366b098b9dc4dbce43ce0bc1579c947df113bfd"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "sha256": "ec3f4bcdb3a2ffc1077e5f98d01179b480cce375408aa7b347710fd2ecc5bb7c"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-startup-models.test.mjs",
+      "sha256": "548f117f39e5d2b721213bfecf10bfa8d69ab7a7911e9aa34d8b8143207f187b"
+    }
+  ],
+  "checks": {
+    "Node": 17,
+    "eslint": "exit0",
+    "prettier": "written; finalcheck pending coherent freeze"
+  },
+  "facts": [
+    "original supported fetch=false,snapshot=true Layer; mapLayer preservesdeps",
+    "originalsource768f6a969... pinned beforeNativeimport",
+    "explicitrefresh/cache/source catalog and otherprovider setup remain separate; not globalnetworkdeny",
+    "actualpinnedEffect/inertsource tests; realNetwork0"
+  ],
+  "failures_preserved": [
+    "startup-models-graph-red-r1.log",
+    "startup-models-graph-green-r1.log"
+  ],
+  "limits": [
+    "No Native/provider/server/Bun/build/GUI",
+    "Full feature incomplete"
+  ]
+}

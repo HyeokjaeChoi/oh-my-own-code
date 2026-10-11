@@ -1,0 +1,72 @@
+✖ real Control + original AISDK sdk: metadata registers, every replay stays held (8.502ms)
+✖ real Control + original AISDK language: metadata registers, every replay stays held (2.094ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 395.175583
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-sdk-host.test.mjs:649:3
+✖ real Control + original AISDK sdk: metadata registers, every replay stays held (8.502ms)
+  AssertionError [ERR_ASSERTION]: Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-sdk-host-test-94nDjA/native-permission-control.mjs:34:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-sdk-host-test-94nDjA/native-permission-control.mjs:36:9)
+      at try (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-sdk-host-test-94nDjA/native-permission-control.mjs:1431:9)
+      at ~effect/Utils/internal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Utils.js:79:14)
+  + actual - expected
+  
+  + 'Failure'
+  - 'Success'
+  
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-sdk-host.test.mjs:707:16)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/core.js:297:30)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at runControl (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-sdk-host.test.mjs:340:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Failure',
+    expected: 'Success',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-sdk-host.test.mjs:649:3
+✖ real Control + original AISDK language: metadata registers, every replay stays held (2.094ms)
+  AssertionError [ERR_ASSERTION]: Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-sdk-host-test-94nDjA/native-permission-control.mjs:34:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-sdk-host-test-94nDjA/native-permission-control.mjs:36:9)
+      at try (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-sdk-host-test-94nDjA/native-permission-control.mjs:1431:9)
+      at ~effect/Utils/internal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Utils.js:79:14)
+  + actual - expected
+  
+  + 'Failure'
+  - 'Success'
+  
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-sdk-host.test.mjs:707:16)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/core.js:297:30)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at runControl (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-sdk-host.test.mjs:340:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Failure',
+    expected: 'Success',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

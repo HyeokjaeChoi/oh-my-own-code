@@ -1,0 +1,70 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "8fbdc87a25e3bf12df65cfffa9ca8c136af80e7faea33a524d7810c6ac3d86d8",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "code",
+    "plan_sha256": "2096c596d684f315ef82aeafc9799d47ce152c52b3359a9d81de56d4684d1f41",
+    "schema_version": 2,
+    "source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd",
+    "verification_sha256": "34f545b2e124a703e8e93b132642d30496c8b60a5a35b26bcc503771412bc383",
+    "work_class_sha256": "b2e5a218f0f97cac1bfc406ac6848299534b9e83e5dd34cd7d94795a12e3eac7"
+  },
+  "verdict": "pass",
+  "summary": "고정된 r3 소스 11개를 명세 준수와 코드 품질로 독립 검토했습니다. 수정이 필요한 결함은 발견하지 못했습니다. 현재 inventory, 입력 binding, artifact 및 pinned schema 해시가 일치합니다. 기존 필수 검사 8개의 현재 입력·exit 0 기록과 hidden capture 62개·owned exit 0을 확인했습니다. build는 실제 r2 build의 재사용 검증이며 새 r3 build가 아닙니다. 이 PASS는 임시 draft의 code gate에만 적용합니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a118d3-8e0f-7933-9834-9f7dae016fd8",
+    "author_task_id": "main-continuation"
+  },
+  "scope": {
+    "plan_revision": 3,
+    "design_version": 1,
+    "review_mode": "solo-code-review/default; fresh independent reviewer; no recursive delegation",
+    "source_authority": "tracked source commit와 Git diff가 비어 있습니다. run.json baseline inventory와 실제 현재 파일 해시로 정확한 변경 경로 11개 및 source_sha256을 확인했습니다. 이전 파일 내용의 Git diff는 재구성하지 않았습니다.",
+    "inspected_changed_paths": [
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "apps/desktop-app/scripts/run-evidence.mjs",
+      "apps/desktop-app/scripts/run-evidence.test.mjs",
+      "apps/desktop-app/src/configuration-draft.test.mjs",
+      "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+      "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+      "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css",
+      "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+      "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+      "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+      "apps/desktop-app/src/workbench-store.test.mjs"
+    ],
+    "acceptance_review": {
+      "D1": "기존 단일 window store가 draft를 소유합니다. JSON key의 workspace id·현재 등록 path·kind와 reducer의 현재 선택 검사를 확인했습니다. 패널·workspace 전환 및 새 store 분리, 용량 초과 시 기존 입력 보존을 코드와 기존 테스트에서 확인했습니다. started controller의 draft action은 기존 read/poll 구독 조건을 바꾸지 않으며 transport 요청을 추가하지 않습니다.",
+      "D2": "실제 설치된 @opencode/schema 2.0.18의 MCP LocalConfig·RemoteConfig·ConfigMCP.Info와 제한된 지원 항목을 대조했습니다. 32KiB UTF-8, 중첩 16, 서버 16, command 32, 문자열 길이·제어 문자, 닫힌 key 집합, 인증 필드·URL userinfo/query/fragment 제외 및 입력을 반영하지 않는 고정 진단을 확인했습니다. edit은 revision을 올리고 validation을 지우며 UI도 revision 일치를 확인합니다.",
+      "D3": "공통 앞뒤 줄 비교는 제한된 입력에 대해 선형입니다. 표시 행은 최대 80개이며 omitted는 표시하지 않은 변경 줄의 정확한 수입니다. baseline 변경·discard는 선택 draft에만 적용합니다. React는 원문을 텍스트로 표시하며 비교 기준을 메모리 기준으로 설명합니다.",
+      "D4": "CatalogPanel 통합, store 직접 소비, native textarea/select/button, Enter 편집, 검증 안내, plain-text 비교 및 줄바꿈·scroll CSS를 확인했습니다. 기존 hidden 기록은 kind·panel·workspace 보존과 narrow200 키보드·scroll을 포함합니다. 별도 pixel gate는 이 보고서가 판정하지 않습니다.",
+      "D5": "contract의 필수 검사 8개와 실제 현재 기록의 argv·입력 해시·exit 0 및 중단/timeout/입력 변경 없음이 일치합니다. 기존 build 재사용과 실패 기록의 범위를 구분했습니다. 독립 render PASS 및 전체 제품 완료는 아직 이 보고서의 결과가 아닙니다."
+    },
+    "checks_reviewed": [
+      "boundaries",
+      "build",
+      "bundle",
+      "format",
+      "hidden-ui",
+      "lint",
+      "renderer",
+      "typecheck"
+    ],
+    "evidence_integrity": "등록 artifact와 routing/pinned-source 해시, verification-summary의 evidence pin 64개를 현재 bytes와 대조했습니다. build stamp, build input 104개, build artifact 7개, 선택 runner/fixture 4개도 size·mode·hash가 일치합니다. captureProvenance 구현과 기존 실행 기록의 input/output/resource 검사를 읽었습니다. Native resource 전체 closure를 이번 검토에서 다시 실행 검증하지 않았습니다.",
+    "build_and_failure_history": "실제 r2 build의 exit 0·stamp를 확인했습니다. hidden-r1과 hidden-r2의 build input 및 launch artifact 기록은 같으며 선택 runner 중 e2e-workbench-states.mjs만 달라졌습니다. r3 caret precondition은 setSelectionRange로 설정하고 실제 Enter 결과를 검사합니다. 초기 tsc/lint 기록과 hidden-r1의 caret 실패·owned exit 0·before/after provenance는 보존되어 있습니다. 초기 진단 메모를 원시 로그로 취급하지 않았습니다.",
+    "authorship": "UI worker는 feature/CSS/explorer 3개 파일을 소유했습니다. Main은 shared/store/controller/test/script를 소유했습니다. reviewer의 실제 CODEX_THREAD_ID는 등록된 fresh reviewer child_ref와 일치하며 구현·수정·다른 gate 작성에 참여하지 않았습니다.",
+    "unchanged_boundaries": "현재 전체 inventory의 변경 경로는 지정된 11개뿐입니다. host·DTO·Native·dependency 변경이 없습니다."
+  },
+  "limits": [
+    "테스트·build·앱·Native·provider·network·private config를 실행하지 않았습니다. 기존 기록 읽기와 현재 파일 해시 대조만 수행했습니다.",
+    "AGENTS.md draft는 사용자가 작성한 원문입니다. Native config reader가 아닙니다. 텍스트 검증 PASS는 정책 준수·실행 안전·완전한 credential 인식·Native 성공을 뜻하지 않습니다.",
+    "MCP 검증 PASS는 앱이 지원하는 제한된 형식만 뜻합니다. Native 수용·프로세스 안전·서버 연결·OAuth·lifecycle 성공은 확인하지 않았습니다.",
+    "draft와 baseline은 창 안의 메모리 상태입니다. 실제 설정 파일 읽기·저장·compare-and-set apply·reload를 구현하지 않습니다.",
+    "hidden 증거는 macOS arm64의 실제 built renderer/preload와 synthetic Main입니다. production Main·provider·private store·Windows·physical touch·OS IME·Screen Reader 증거가 아닙니다.",
+    "이번 판정은 위험에 맞춘 code gate입니다. 새 pixel gate는 별도로 필요하며 대기 중입니다. D5 전체 완료를 선언하지 않습니다.",
+    "전체 F14, file-backed apply, explicit durable MCP lifecycle 및 Goal은 미완료입니다. 이후 effect boundary는 별도 검토가 필요합니다.",
+    "요청한 review JSON만 작성했습니다. 소스 수정·수리·재위임·ledger 등록은 하지 않았습니다."
+  ]
+}

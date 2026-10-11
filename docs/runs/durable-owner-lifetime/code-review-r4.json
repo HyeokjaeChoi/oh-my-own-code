@@ -1,0 +1,213 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "verdict": "pass",
+  "summary": "지정한 범위에서 수정이 필요한 correctness, security, regression 결함을 확인하지 못했습니다. 이 판정은 durable-owner-lifetime의 제한된 code gate에만 적용합니다.",
+  "reviewed": {
+    "contract_sha256": "dd1802b2fb50a9499a28416d2b9ad3e1a02f249fa36188323bdb26d14d68cb03",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "code",
+    "plan_sha256": "fa862c8d89ff01dc5e7a065e579763240db96a31df09184f3cba5df3ee687a64",
+    "schema_version": 2,
+    "source_sha256": "c9c7974176d7b9e80208dbcc8116f7b65d7303ab0c2275bace133a13cfe7c1f2",
+    "verification_sha256": "678ca81b6d3b603a73b4f943c533160a10b0190ae7a40df25b7fbd2db5fd1555",
+    "work_class_sha256": "b3edb45b7b47b91fad53470d4004535cac0a191f2a21e21e76eaa3030799a170"
+  },
+  "binding_checks": {
+    "command": "python3 .solopreneur/harness.py review-input durable-owner-lifetime --gate code",
+    "start_exit_code": 0,
+    "end_exit_code": 0,
+    "start_matches_supplied_input": true,
+    "end_matches_supplied_input": true,
+    "binding_unchanged": true,
+    "authority": "제공된 code-review-r4.input.json과 시작·종료 command 결과를 사용했습니다. packet은 준비된 metadata이며 실행 identity 증명이 아닙니다."
+  },
+  "scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "comparison": "run.json baseline hash와 현재 구현을 비교했습니다. outcome-r4.json과 final-source-r4.json의 경로 집합을 확인하고 callers, tests, configuration을 검토했습니다.",
+    "changed_path_count": 27,
+    "all_paths_differ_from_baseline": true,
+    "all_current_hashes_match_r4_freeze": true,
+    "paths_relative_to_repository": [
+      "apps/desktop-app/native/owner-lifetime/witness.c",
+      "apps/desktop-app/scripts/build-provenance-test-fixture.mjs",
+      "apps/desktop-app/scripts/build-provenance.mjs",
+      "apps/desktop-app/scripts/build-provenance.test.mjs",
+      "apps/desktop-app/scripts/build.mjs",
+      "apps/desktop-app/scripts/fixtures/owner-lifetime-exit-observer.py",
+      "apps/desktop-app/scripts/fixtures/owner-lifetime-probe-host.mjs",
+      "apps/desktop-app/scripts/inspect-packaged-bundle.mjs",
+      "apps/desktop-app/scripts/owner-lifetime-probe.mjs",
+      "apps/desktop-app/scripts/package.mjs",
+      "apps/desktop-app/scripts/run-evidence.mjs",
+      "apps/desktop-app/scripts/run-evidence.test.mjs",
+      "apps/desktop-app/scripts/stage-owner-lifetime.mjs",
+      "apps/desktop-app/scripts/stage-owner-lifetime.test.mjs",
+      "apps/desktop-app/src/host/owner-lifetime.mjs",
+      "apps/desktop-app/src/host/owner-lifetime.test.mjs",
+      "apps/desktop-app/src/host/storage-integration.test.mjs",
+      "apps/desktop-app/src/host/storage-lock.mjs",
+      "apps/desktop-app/src/host/storage-lock.test.mjs",
+      "apps/desktop-app/src/host/workspace-registry.mjs",
+      "apps/desktop-app/src/host/workspace-registry.test.mjs",
+      "apps/desktop-app/src/main.mjs",
+      "apps/desktop-app/src/owner-lifetime-resources.mjs",
+      "apps/desktop-app/src/owner-lifetime-resources.test.mjs",
+      "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+      "apps/desktop-app/src/workbench-service.mjs",
+      "apps/desktop-app/src/workbench-store.test.mjs"
+    ]
+  },
+  "passes": {
+    "acceptance_W1_W5": "completed",
+    "concrete_correctness_security_regression": "completed"
+  },
+  "findings": [],
+  "acceptance_map": {
+    "W1": {
+      "status": "pass",
+      "implementation": "C helper는 birth/boot identity, EV_RECEIPT, early-exit 검사, registration flush 후 ACK를 처리합니다. owner는 app ACK 전 ready를 공개하지 않습니다. child ACK 후 kernel/root/record를 다시 검사합니다. supervisor는 recordChild 완료 후 init을 보냅니다.",
+      "evidence": [
+        "apps/desktop-app/native/owner-lifetime/witness.c:211",
+        "apps/desktop-app/src/host/owner-lifetime.mjs:464",
+        "apps/desktop-app/src/host/storage-lock.mjs:496",
+        "apps/desktop-app/src/host/storage-lock.mjs:520",
+        "apps/desktop-app/src/event-host-supervisor.mjs:389",
+        "apps/desktop-app/src/host/storage-lock.test.mjs:828"
+      ],
+      "saved_checks": [
+        "owner-lifetime-unit",
+        "host-regression",
+        "owner-lifetime-native"
+      ]
+    },
+    "W2": {
+      "status": "pass",
+      "implementation": "검증은 같은 owner snapshot의 전체 app/child 집합을 요구합니다. 각 호출은 전체 proof를 flush하고 두 번째 snapshot과 비교합니다. role 결과 cache는 없습니다. live 또는 identity_conflict 결과는 witness로 우회하지 않습니다.",
+      "evidence": [
+        "apps/desktop-app/src/host/owner-lifetime.mjs:273",
+        "apps/desktop-app/src/host/owner-lifetime.mjs:304",
+        "apps/desktop-app/src/host/owner-lifetime.mjs:324",
+        "apps/desktop-app/src/host/storage-lock.mjs:439",
+        "apps/desktop-app/scripts/owner-lifetime-probe.mjs:397"
+      ],
+      "saved_scenarios": [
+        "normal-native",
+        "crash-native",
+        "app-only"
+      ],
+      "historical_exit_injection": false
+    },
+    "W3": {
+      "status": "pass",
+      "implementation": "잘못된 context, membership, inode, mode, link, partial proof, flush 실패, snapshot 변경은 takeover를 차단합니다. spawnIntent에 child가 없으면 helper 정보로 보완하지 않습니다.",
+      "last_repair": "partial exact app.exit는 identity_conflict입니다. unit test는 결과와 원본 바이트 보존을 함께 확인합니다. 저장된 r4 scenario도 같은 결과와 zero Native spawn을 확인합니다.",
+      "evidence": [
+        "apps/desktop-app/src/host/owner-lifetime.mjs:197",
+        "apps/desktop-app/src/host/owner-lifetime.mjs:304",
+        "apps/desktop-app/src/host/owner-lifetime.test.mjs:315",
+        "apps/desktop-app/src/host/owner-lifetime.test.mjs:407",
+        "apps/desktop-app/scripts/owner-lifetime-probe.mjs:543"
+      ],
+      "saved_scenarios": [
+        "live-app-after-release",
+        "live-child",
+        "corrupt-terminal",
+        "missing-terminal",
+        "incomplete-app-exit"
+      ]
+    },
+    "W4": {
+      "status": "pass",
+      "implementation": "helper는 자기 generation의 고정 evidence 파일만 공개합니다. 실제 NOTE_EXIT만 exit proof로 사용합니다. app exit는 child admission을 닫습니다. 등록한 child가 살아 있으면 terminal을 공개하지 않으며, app exit 후 대기 시간은 제한됩니다.",
+      "evidence": [
+        "apps/desktop-app/native/owner-lifetime/witness.c:164",
+        "apps/desktop-app/native/owner-lifetime/witness.c:268",
+        "apps/desktop-app/native/owner-lifetime/witness.c:288",
+        "apps/desktop-app/src/host/owner-lifetime.mjs:547",
+        "apps/desktop-app/src/sidecar-supervisor.mjs:609"
+      ],
+      "saved_cleanup": {
+        "direct_owned_processes": 28,
+        "descendants": 13,
+        "all_confirmed_exited": true,
+        "cleanupUnconfirmed": false
+      },
+      "nonfresh_native_startup": "freshNativePreflight는 모든 nonfresh namespace를 계속 거부합니다."
+    },
+    "W5": {
+      "status": "pass",
+      "implementation": "고정 darwin-arm64 helper, closed manifest, Mach-O target, executable hash와 파일 identity를 검사합니다. build provenance와 package inspection은 helper resource를 포함합니다.",
+      "evidence": [
+        "apps/desktop-app/src/owner-lifetime-resources.mjs:142",
+        "apps/desktop-app/scripts/stage-owner-lifetime.mjs:61",
+        "apps/desktop-app/scripts/build-provenance.mjs:244",
+        "apps/desktop-app/scripts/package.mjs:70",
+        "apps/desktop-app/scripts/inspect-packaged-bundle.mjs:112"
+      ],
+      "read_only_byte_checks": {
+        "source_and_selected_script_inventories_match_saved_evidence": true,
+        "build_stamp_and_listed_build_artifacts_match": true,
+        "packaged_electron_asar_and_opencode_match": true,
+        "staged_and_packaged_helper_and_manifest_match": true,
+        "helper_source_sha256": "4eb42efefdef1970d48bd19368b94bae689b10fbeacc96cd1adc83a9cf996951",
+        "helper_executable_sha256": "638655f6eb09dc96aeafb2a322400d462ede59d0640e0ad9a17c037272cf4d36"
+      },
+      "independent_code_judgment": "이 보고서의 판정입니다. 저장·등록은 Main이 수행해야 합니다."
+    }
+  },
+  "scoped_regression_review": {
+    "renderer_ready_polling": "unavailable 상태에서 5초 간격으로 읽기만 재시도합니다. 한 번의 snapshot만 진행하며 visibility, disposal, stale epoch를 처리합니다. 관련 unit test를 읽었습니다.",
+    "registry_fork_lookup": "검증된 admission, reservation, confirmed receipt와 정확한 child mapping으로 원래 fork identity를 찾습니다. inherited Native metadata를 identity로 사용하지 않습니다.",
+    "service_lineage": "parent chain, Native fork.sessionID, workspace, receipt와 inherited metadata를 확인합니다. cycle과 mismatch를 차단하는 tests를 검토했습니다.",
+    "run_evidence_root": "등록한 root 아래의 output만 허용합니다. symlink redirect와 기존 evidence 덮어쓰기를 거부하며 exclusive claim을 사용합니다."
+  },
+  "saved_verification": {
+    "basis": "기존 run 기록과 저장된 evidence를 읽었습니다. checks를 재실행하지 않았습니다.",
+    "all_nine_latest_contracted_checks": "pass",
+    "all_nine_bound_to_reviewed_source": true,
+    "checks": [
+      "owner-lifetime-unit",
+      "host-regression",
+      "packaging-unit",
+      "lint",
+      "typecheck",
+      "build",
+      "package",
+      "package-inspect",
+      "owner-lifetime-native"
+    ],
+    "runtime_report": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-owner-lifetime/evidence/native-r4/owner-lifetime-evidence.json",
+    "runtime_result": "pass",
+    "runtime_scenario_count": 8,
+    "before_after_identities_equal": true,
+    "historical_failures": "r1/r2/r3 실패 evidence는 유지되어 있습니다. r3의 미등록 중단 결과는 acceptance 근거에 포함하지 않았습니다."
+  },
+  "provenance": {
+    "child_task_id": "01a116e3-787a-7e51-b2bd-d377cbba32a6",
+    "child_task_id_source": "현재 실행 환경의 CODEX_THREAD_ID",
+    "clean_context": true,
+    "reviewer_authored_implementation_or_repairs": false,
+    "recursive_delegation": false,
+    "report_only": true,
+    "no_runtime": true,
+    "no_tests": true,
+    "no_build_or_package_execution": true,
+    "no_native_ui_provider_or_private_data_access": true,
+    "no_writes": true,
+    "no_ledger_changes": true,
+    "report_saved_or_registered": false,
+    "sandbox_attestation": "solo_reader 지침을 행동 범위로 준수했습니다. profile 이름으로 OS read-only sandbox를 증명하지 않습니다."
+  },
+  "limits": [
+    "Native 결과는 저장된 r4 evidence 검토입니다. 이번 review에서 runtime을 실행하지 않았습니다.",
+    "전체 event-host resource inventory 검증은 저장된 package/provenance 결과에 의존합니다. 이번에는 source inventory와 주요 build/package/helper 파일 hash를 재확인했습니다.",
+    "lifetime proof는 nonfresh Native startup의 안전성을 증명하지 않습니다. 해당 startup 제한과 parent P7 blocker는 유지됩니다.",
+    "최종 parent P7/UI review는 여전히 pending입니다. 이 보고서는 해당 gate를 승인하지 않습니다.",
+    "production Main 창, provider, private store, Windows, power-loss, hostile same-user 또는 filesystem isolation은 검증 범위 밖입니다."
+  ],
+  "open_findings": [],
+  "normalization": {
+    "coordinator_only": "Copied reviewer findings array to harness-required open_findings; reviewer verdict and exact binding unchanged. Raw report preserved separately."
+  }
+}

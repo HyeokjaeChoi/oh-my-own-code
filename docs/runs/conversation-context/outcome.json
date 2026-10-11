@@ -1,0 +1,130 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "CTX1": {
+      "status": "verified",
+      "checks": [
+        "unit",
+        "hidden"
+      ],
+      "artifacts": [
+        "apps/desktop-app/src/host/conversation-context-io.mjs",
+        "apps/desktop-app/src/renderer/shared/conversation-context/index.mjs",
+        "apps/desktop-app/src/renderer/features/conversation-context/index.tsx",
+        "docs/runs/conversation-context/verification.json",
+        "docs/runs/conversation-context/evidence/hidden-r1/conversation-context/conversation-context-evidence.json",
+        "docs/runs/conversation-context/native-captures-r4.zip"
+      ]
+    },
+    "CTX2": {
+      "status": "verified",
+      "checks": [
+        "unit",
+        "hidden"
+      ],
+      "artifacts": [
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/host/conversation-context-io.mjs",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "docs/runs/conversation-context/verification.json",
+        "docs/runs/conversation-context/evidence/hidden-r1/conversation-context/conversation-context-evidence.json",
+        "docs/runs/conversation-context/native-captures-r4.zip"
+      ]
+    },
+    "CTX3": {
+      "status": "verified",
+      "checks": [
+        "unit",
+        "hidden"
+      ],
+      "artifacts": [
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/host/conversation-context-branch-storage.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "docs/runs/conversation-context/verification.json",
+        "docs/runs/conversation-context/evidence/hidden-r1/conversation-context/conversation-context-evidence.json",
+        "docs/runs/conversation-context/native-captures-r4.zip"
+      ]
+    },
+    "CTX4": {
+      "status": "verified",
+      "checks": [
+        "unit",
+        "hidden"
+      ],
+      "artifacts": [
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/host/conversation-context-storage.mjs",
+        "apps/desktop-app/src/host/conversation-context-native.mjs",
+        "docs/runs/conversation-context/verification.json",
+        "docs/runs/conversation-context/evidence/hidden-r1/conversation-context/conversation-context-evidence.json",
+        "docs/runs/conversation-context/native-captures-r4.zip"
+      ]
+    },
+    "CTX5": {
+      "status": "verified",
+      "checks": [
+        "unit",
+        "typecheck",
+        "boundaries",
+        "lint",
+        "format",
+        "build",
+        "bundle",
+        "hidden"
+      ],
+      "artifacts": [
+        "apps/desktop-app/scripts/e2e-conversation-context.mjs",
+        "apps/desktop-app/scripts/build-provenance.mjs",
+        "docs/runs/conversation-context/verification.json",
+        "docs/runs/conversation-context/evidence/hidden-r1/conversation-context/conversation-context-evidence.json",
+        "docs/runs/conversation-context/native-captures-r4.zip"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/scripts/build-provenance.mjs",
+    "apps/desktop-app/scripts/build-provenance.test.mjs",
+    "apps/desktop-app/scripts/e2e-conversation-context.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/scripts/run-evidence.test.mjs",
+    "apps/desktop-app/src/conversation-context.test.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/host/conversation-context-branch-storage.mjs",
+    "apps/desktop-app/src/host/conversation-context-branch-storage.test.mjs",
+    "apps/desktop-app/src/host/conversation-context-io.mjs",
+    "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+    "apps/desktop-app/src/host/conversation-context-native.mjs",
+    "apps/desktop-app/src/host/conversation-context-storage.mjs",
+    "apps/desktop-app/src/host/conversation-context-storage.test.mjs",
+    "apps/desktop-app/src/host/storage-integration.test.mjs",
+    "apps/desktop-app/src/host/storage-journal.mjs",
+    "apps/desktop-app/src/host/storage-journal.test.mjs",
+    "apps/desktop-app/src/host/workbench-admission.mjs",
+    "apps/desktop-app/src/host/workbench-admission.test.mjs",
+    "apps/desktop-app/src/host/workbench-file-edit.mjs",
+    "apps/desktop-app/src/host/workbench-file-edit.test.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/features/conversation-context/context.module.css",
+    "apps/desktop-app/src/renderer/features/conversation-context/index.tsx",
+    "apps/desktop-app/src/renderer/shared/api/index.ts",
+    "apps/desktop-app/src/renderer/shared/conversation-context/index.d.mts",
+    "apps/desktop-app/src/renderer/shared/conversation-context/index.mjs",
+    "apps/desktop-app/src/renderer/shared/conversation-context/index.ts",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts",
+    "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+    "apps/desktop-app/src/workbench-contract.mjs",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-service.test.mjs",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "deleted_paths": []
+}

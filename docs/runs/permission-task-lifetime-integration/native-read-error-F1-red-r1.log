@@ -1,0 +1,50 @@
+✖ synthetic: late read authority rethrow clears an earlier missing classification (9.81425ms)
+✖ synthetic: late list authority rethrow clears an earlier missing classification (5.570625ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 93.511666
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:17:3
+✖ synthetic: late read authority rethrow clears an earlier missing classification (9.81425ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'missing'
+  - undefined
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read.test.mjs:29:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'missing',
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:17:3
+✖ synthetic: late list authority rethrow clears an earlier missing classification (5.570625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'missing'
+  - undefined
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read.test.mjs:29:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'missing',
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

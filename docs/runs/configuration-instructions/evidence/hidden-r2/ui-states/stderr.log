@@ -1,0 +1,21 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+electronApplication.evaluate: Error: Invalid workbench request.
+    at fail (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:40:17)
+    at needDTO (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:344:19)
+    at validateSnapshot (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:435:7)
+    at applyStorageState (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/workbench-host.mjs:420:3)
+    at applyConfigurationState (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/workbench-host.mjs:252:3)
+    at fixture.setConfigurationState (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/workbench-host.mjs:142:5)
+    at applyInstructionState (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/workbench-host.mjs:165:11)
+    at fixture.setInstructionState (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/workbench-host.mjs:114:43)
+    at eval (eval at evaluate (:311:30), <anonymous>:2:34)
+    at UtilityScript.evaluate (<anonymous>:313:16)
+    at openInstructionCase (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:3469:23)
+    at async file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:3717:3 {
+  log: []
+}
+
+Node.js v24.14.1

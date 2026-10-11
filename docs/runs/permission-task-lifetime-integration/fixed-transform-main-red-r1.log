@@ -1,0 +1,40 @@
+✖ opencode.agent original registry publication is source-bound, held and disposed with original activation (5.715125ms)
+✖ opencode.mcp.codemode.defaults original registry publication is source-bound, held and disposed with original activation (0.543834ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 448.963333
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-hook-publication.test.mjs:710:3
+✖ opencode.agent original registry publication is source-bound, held and disposed with original activation (5.715125ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-hook-publication-eYXclE/native-permission-control.mjs:34:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-hook-publication-eYXclE/native-permission-control.mjs:36:9)
+      at Object.inventoryHookSource (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-hook-publication-eYXclE/native-permission-control.mjs:725:7)
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-hook-publication.test.mjs:119:11)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/core.js:297:30)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+
+test at apps/desktop-app/src/native-permission-hook-publication.test.mjs:710:3
+✖ opencode.mcp.codemode.defaults original registry publication is source-bound, held and disposed with original activation (0.543834ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-hook-publication-eYXclE/native-permission-control.mjs:34:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-hook-publication-eYXclE/native-permission-control.mjs:36:9)
+      at Object.inventoryHookSource (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-hook-publication-eYXclE/native-permission-control.mjs:725:7)
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-hook-publication.test.mjs:119:11)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/core.js:297:30)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9

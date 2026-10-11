@@ -1,0 +1,73 @@
+(node:70107) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✖ Permission policy explicit public API reads frozen envelope and detaches ordered original rules (4.70525ms)
+▶ Permission policy malformed and miscorrelated responses never become current
+  ✔ 0 (0.815333ms)
+  ✔ 1 (0.894667ms)
+  ✔ 2 (0.303334ms)
+  ✔ 3 (0.29ms)
+  ✔ 4 (0.245708ms)
+  ✔ 5 (0.225208ms)
+  ✔ 6 (0.199583ms)
+  ✔ 7 (0.203ms)
+  ✔ 8 (0.242209ms)
+  ✔ 9 (0.174792ms)
+  ✔ 10 (0.13525ms)
+✔ Permission policy malformed and miscorrelated responses never become current (4.163542ms)
+▶ Permission policy absent, present empty and unavailable remain distinct
+  ✔ absent (0.628125ms)
+  ✔ empty (0.283833ms)
+  ✔ unavailable (0.170041ms)
+✔ Permission policy absent, present empty and unavailable remain distinct (1.257416ms)
+✔ Permission policy cancellation and reentry reject late and copied request identities (0.524958ms)
+▶ Permission policy pending and completed observations retire on authority races without revival
+  ✔ epoch/pending (0.351125ms)
+  ✔ epoch/observed (0.261916ms)
+  ✔ trust/pending (0.206958ms)
+  ✔ trust/observed (0.236917ms)
+  ✔ untrusted/pending (0.2325ms)
+  ✔ untrusted/observed (0.203375ms)
+  ✔ rootABA/pending (0.244083ms)
+  ✔ rootABA/observed (0.221ms)
+  ✔ sessionABA/pending (0.218209ms)
+  ✔ sessionABA/observed (0.212791ms)
+  ✔ workspaceABA/pending (0.204375ms)
+  ✔ workspaceABA/observed (0.27175ms)
+  ✔ floor/pending (0.152375ms)
+  ✔ floor/observed (0.167292ms)
+  ✔ disconnect/pending (0.191041ms)
+  ✔ disconnect/observed (0.216875ms)
+  ✔ hold/pending (0.198958ms)
+  ✔ hold/observed (0.190417ms)
+  ✔ resourceHold/pending (0.805584ms)
+  ✔ resourceHold/observed (0.200292ms)
+  ✔ activeSession/pending (0.190459ms)
+  ✔ activeSession/observed (0.234584ms)
+✔ Permission policy pending and completed observations retire on authority races without revival (6.061167ms)
+✖ Permission policy never auto reads on start, polling, focus, selection, draft, send or decision (1.126917ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 40
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 369.2
+
+✖ failing tests:
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19192:1
+✖ Permission policy explicit public API reads frozen envelope and detaches ordered original rules (4.70525ms)
+  TypeError [Error]: client.actions.edit is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19199:20)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19296:1
+✖ Permission policy never auto reads on start, polling, focus, selection, draft, send or decision (1.126917ms)
+  TypeError [Error]: client.actions.edit is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19303:20)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a127b5-8a6e-71f3-a816-13c15c1f2ae6": {
+      "completed": "**담당 테스트 작업을 완료했습니다. 47/47 PASS이며, SKIP은 없습니다.**\n\n수정한 파일은 [native-permission-agent-metadata.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-agent-metadata.test.mjs) 하나입니다.\n\n검사 결과:\n\n- `node --test`: **47 PASS**, exit 0\n- `node --check`, ESLint, Prettier: **PASS**\n- 원본 receipt와 복사한 Control closure의 hash 안정성: **PASS**\n- 실제 **Effect 4.0.0-rc.112**, Effect JS **452개**의 receipt hash 검증\n\n이전 Scope 종료 결함은 이제 통과합니다. 실제 Scope가 `Closed`가 된 뒤 finalizer가 실행되는 구간에서도 **prepublication과 synchronous replay 모두 거부**합니다. 비정상 Scope 9종도 두 경계에서 거부하며, accessor·Proxy trap 실행은 0회입니다.\n\n고정 Agent 등록, 원본 기본값·순서·deny 내용, replay, disposal 격리, foreign/same-shape/cross-scope/finalizing 거부를 확인했습니다. 기본 raw `allow`는 실행 권한이 되지 않습니다. `assertExecution` held와 inventory `complete=false`도 유지됩니다.\n\n최종 SHA256입니다. Main source 4개는 검사 시작·종료 시 동일합니다.\n\n```text\ntest       bcd81783c89b39da31e5bb1094b75d79f27d80211138bc0cd32781e03134f684\nControl    9deb9fdc17c6c798358efb93f25ca01d885b8f4c4c26a81ebf2d4feee26f153b\ninventory  e9bc3805633b7f39b03dadaa32daf4165e8471f11c41d05a989a27cd3cd48557\ngraph      7ad38d01da04eb11c5deb48201d8595eef61370c8f5297991eea7ed55d359698\nrecipe     ea47d2c4679116e1a35ad81b5bef8b75e5cef5462cefe5ed34de4dccf23ad3ab\n```\n\n원본 producer·Agent·State·merge·Host와 schema 3개의 receipt hash도 종료 시 다시 일치했습니다. 현재 recipe에는 State 수정 entry가 없어 원본 State를 사용했습니다.\n\n**검증 한계:** notification predicate·Bus·Global 경로·일부 schema identity는 명시한 대역입니다. 실제 Bus listener, upstream startup, Native/runtime 안전성이나 독립 승인을 주장하지 않습니다. Native/core import 및 provider/DB/network/server/Bun/UI/build 실행은 하지 않았습니다."
+    }
+  },
+  "timed_out": false
+}

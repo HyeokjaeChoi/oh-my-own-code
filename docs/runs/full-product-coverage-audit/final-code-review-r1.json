@@ -1,0 +1,198 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "c4eb661b1488ec3c4b7dc5bf9dafc96093e1684ced06c7815fd475ad14517291",
+    "environment_sha256": "dcf227e8b8383b614720f7a2948b013c7d4572ecf86874cf65dd04ecc5bfcdc9",
+    "gate": "code",
+    "plan_sha256": "014d2785b87eefbc0b7a5e0ce04fa6fd168e1c21c5323ea2f315789d4aed5e73",
+    "schema_version": 2,
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "verification_sha256": "4e206790b0b39f495250d0dcd47b94e5ab96899c7f7be591aa3741040d15389c",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "changes_requested",
+  "summary": "현재 기록에는 정확한 83개 조항, 공통 요구 19개, 시나리오 7개와 두 플랫폼이 보존되어 있습니다. Windows 구현 누락, F-11 IDE 비목표, 과거 실행 증거의 제한도 구분합니다. 그러나 checker는 요구사항 누락을 통과시키며, 개인 활용 지표의 구현 작업은 backlog에 빠져 있습니다. 두 항목을 수정해야 합니다. 이 검토는 제품 전체 승인이 아닙니다.",
+  "open_findings": [
+    {
+      "id": "COV-R1-01",
+      "severity": "P2",
+      "path": "docs/runs/full-product-coverage-audit/check-coverage.py",
+      "line": 53,
+      "trigger": "input.json의 crossCuttingSections를 각 section의 제목만 남기도록 줄이고 matrix의 crossCutting을 비웁니다. 또는 각 기능의 clauses를 exactCriteria 하나로 합치고 matrix와 backlog의 clauseIndex를 맞춥니다.",
+      "impact": "변경하지 않은 PRD에 요구가 남아 있어도 checker가 공통 요구 전체 누락과 조항 단위 추적 손실을 통과시킵니다. COV1의 정확한 범위 보존을 검증하지 못합니다.",
+      "evidence": [
+        "53~56행은 section 수와 PRD 내 부분 문자열 존재만 검사합니다. 114행은 이 축소 가능한 입력으로 expected_cross를 만듭니다.",
+        "메모리 복사본에서 공통 요구 19개를 모두 제거한 뒤 실제 inputs()와 matrix()를 호출했습니다. 예외 없이 clauses=83, crossCutting=0을 반환했습니다.",
+        "별도 메모리 복사본에서 조항 83개를 기능별 18개로 합쳤습니다. 실제 inputs()와 matrix()가 clauses=18, crossCutting=19를 반환했습니다.",
+        "현재 원본 입력은 완전합니다. 결함은 checker의 누락 탐지에 있습니다."
+      ],
+      "small_correction": "고정된 PRD의 정확한 section 경계에서 공통 요구를 추출하고 입력과 전체 일치를 검사하십시오. 정확한 clause 목록과 index도 독립된 기준에 결합하십시오. 83개 조항 또는 공통 요구 19개가 줄어드는 두 사례를 거절하는 검사 사례를 추가하십시오."
+    },
+    {
+      "id": "COV-R1-02",
+      "severity": "P2",
+      "path": "docs/runs/full-product-coverage-audit/remaining-backlog.json",
+      "line": 614,
+      "trigger": "B01~B18을 남은 구현 작업의 목록으로 사용합니다.",
+      "impact": "PRD 7절의 개인 활용 지표를 구현할 작업이 누락됩니다. 기능 조항과 일곱 시나리오를 완료해도 소요 시간, 앱 밖으로 나간 이유, 잘못 이해한 상태와 복구 실패를 로컬에 기록하는 요구가 남습니다. COV3의 전체 잔여 범위 보존을 충족하지 못합니다.",
+      "evidence": [
+        "coverage-matrix.json:4543의 integratedAcceptance/3은 source_missing이며, 4599행은 개인 활용 측정 흐름이 없다고 명시합니다.",
+        "B15의 outcome과 nextAction은 timeline, usage, 설정 비교와 학습 평가를 다룹니다. 개인 활용 측정은 포함하지 않습니다. 다른 backlog 항목에도 이 구현 작업이 없습니다.",
+        "현재 ActivityPanel과 service diagnostics는 앱 호출별 operation 시간과 집계를 제공합니다. 요구된 사용자 흐름 측정과 사유 기록은 제공하지 않습니다.",
+        "check-coverage.py:137~146은 clauses의 gaps만 backlog에 연결합니다. crossCutting의 미구현 요구는 검사하지 않습니다."
+      ],
+      "small_correction": "B15 또는 별도 항목에 개인 활용 측정의 결과, 다음 구현 작업과 의존성을 명시하십시오. 공통 요구의 key를 backlog에 연결하고, 구현이 필요한 공통 요구가 연결되지 않으면 checker가 거절하도록 하십시오."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a11dee-0047-7d63-8a35-fd2920fcb55b",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "verification": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "passes": [
+      {
+        "pass": "spec_completeness",
+        "result": "현재 PRD 4·5·7·8절의 전체 내용과 입력이 일치합니다. 83개 조항, 공통 요구 19개, 시나리오 7개와 두 플랫폼을 확인했습니다. 개인 활용 지표의 backlog 누락을 확인했습니다."
+      },
+      {
+        "pass": "checker_and_evidence_correctness",
+        "result": "기본 검사는 통과했습니다. 메모리 복사본의 요구사항 누락 검사는 잘못 통과했습니다. 주요 source 주장과 현재 호출 경로, 과거 실행 증거의 적용 범위를 대조했습니다."
+      }
+    ],
+    "files_inspected": {
+      "instructions": [
+        "AGENTS.md",
+        ".codex/agents/solo_reader.toml",
+        ".agents/skills/solo-specialist/SKILL.md",
+        ".agents/skills/solo-code-review/SKILL.md",
+        ".agents/skills/solo-orchestrate/references/effort-and-feedback.md"
+      ],
+      "authority_and_audit": [
+        "docs/product/prd.md",
+        "docs/runs/full-product-coverage-audit/plan.md",
+        "docs/runs/full-product-coverage-audit/final-code-packet-r1.json",
+        "docs/runs/full-product-coverage-audit/final-code-input-r1.json",
+        "docs/runs/full-product-coverage-audit/input.json",
+        "docs/runs/full-product-coverage-audit/check-coverage.py",
+        "docs/runs/full-product-coverage-audit/coverage-matrix.json",
+        "docs/runs/full-product-coverage-audit/remaining-backlog.json",
+        "docs/runs/full-product-coverage-audit/final-evidence-r1.json",
+        "docs/runs/full-product-coverage-audit/audit-summary.md",
+        "docs/runs/full-product-coverage-audit/final-outcome-r1.json",
+        "docs/runs/full-product-coverage-audit/workspace-research-raw-r1.json",
+        "docs/runs/full-product-coverage-audit/execution-research-raw-r1.json",
+        "docs/runs/full-product-coverage-audit/tools-research-raw-r1.json",
+        "docs/runs/full-product-coverage-audit/full-product-main-f16-f18-report-r1.json",
+        "docs/runs/full-product-coverage-audit/full-product-main-section7-r1.json",
+        "docs/runs/full-product-coverage-audit/full-product-main-section8-r1.json",
+        "docs/runs/full-product-coverage-audit/full-product-platform-report-r1.json",
+        "docs/runs/full-product-coverage-audit/full-product-recovery-applicability-r1.json",
+        "docs/runs/full-product-coverage-audit/full-product-checker-negative-records-r1.json",
+        "docs/runs/full-product-coverage-audit/integrate-full-product-coverage-r1.py",
+        "docs/runs/git-branch-restore/source-freeze-r1.json",
+        "docs/runs/git-branch-restore/run.json",
+        "docs/runs/git-branch-restore/final-code-review-r1.json",
+        "docs/runs/git-branch-restore/final-render-review-r1.json"
+      ],
+      "source_selected_ranges": [
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/desktop-bridge.d.ts",
+        "apps/desktop-app/src/preload.cjs",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/event-host-child.mjs",
+        "apps/desktop-app/src/event-host-resources.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/workbench-files.mjs",
+        "apps/desktop-app/src/host/native-preflight.mjs",
+        "apps/desktop-app/src/host/owner-lifetime.mjs",
+        "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+        "apps/desktop-app/src/host/git-metadata-kernel.mjs",
+        "apps/desktop-app/src/host/workbench-git.mjs",
+        "apps/desktop-app/src/host/workbench-native-agents.mjs",
+        "apps/desktop-app/src/builtins/workbench-skills/extensions.mjs",
+        "apps/desktop-app/src/renderer/app/index.tsx",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+        "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs",
+        "apps/desktop-app/scripts/package.mjs"
+      ],
+      "historical_evidence": [
+        "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/manifest.json",
+        "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json",
+        "docs/runs/configuration-agents/evidence/native-r11/agent-evidence.json",
+        "docs/runs/configuration-extensions/evidence/hidden-r1/ui-states/ui-states-evidence.json",
+        "docs/runs/configuration-extensions/evidence/native-r3/extension-evidence.json",
+        "docs/runs/configuration-instructions/evidence/native-r4/configuration-instructions-evidence.json",
+        "docs/runs/configuration-mcp/evidence/native-r5/configuration-mcp-evidence.json",
+        "docs/runs/configuration-skill-runtime/evidence/native-r7/skill-runtime-evidence.json",
+        "docs/runs/desktop-session-lifecycle/electron-evidence.json",
+        "docs/runs/desktop-session-lifecycle/session-lifecycle-evidence.json",
+        "docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+        "docs/runs/durable-workbench-storage/evidence/hidden-ui-r5/ui-states/ui-states-evidence.json",
+        "docs/runs/durable-workbench-storage/evidence/native-r5/native-storage-evidence.json",
+        "docs/runs/frontend-architecture-redesign/evidence/p3-r2/sessions/session-lifecycle-evidence.json",
+        "docs/runs/git-branch-restore/evidence/commit-regression-r1/publication-evidence.json",
+        "docs/runs/git-branch-restore/evidence/index-regression-r1/publication-evidence.json",
+        "docs/runs/git-branch-restore/evidence/publication-r3/publication-evidence.json",
+        "docs/runs/git-branch-restore/evidence/reader-regression-r1/report.json",
+        "docs/runs/git-branch-restore/evidence/hidden-r4/git-branch-restore/git-branch-restore-evidence.json",
+        "docs/runs/version-bound-line-feedback/evidence/hidden-r9/feedback/line-feedback-evidence.json",
+        "docs/runs/workspace-file-editing/evidence/publication-r3/publication-evidence.json"
+      ]
+    },
+    "actual_checks": [
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 docs/runs/full-product-coverage-audit/check-coverage.py inputs",
+        "exit_code": 0,
+        "result": "sourceFiles=688, productAcceptance=false"
+      },
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 docs/runs/full-product-coverage-audit/check-coverage.py matrix",
+        "exit_code": 0,
+        "result": "clauses=83, crossCutting=19, scenarios=7, platforms=2, backlog=18"
+      },
+      {
+        "check": "실제 checker를 import하고 read() 입력만 메모리 복사본으로 교체했습니다.",
+        "result": "공통 요구 19개 제거와 조항 83개를 18개로 병합한 사례가 모두 잘못 통과했습니다. 원본 파일은 변경하지 않았습니다."
+      },
+      {
+        "check": "backlog의 조항 연결을 수용 검사 전용 항목으로 몰아넣은 메모리 사례",
+        "result": "통과했습니다. checker는 연결된 작업의 의미를 판단하지 않습니다."
+      },
+      {
+        "check": "PRD 전체 section 경계와 입력의 독립 비교",
+        "result": "4·5·7·8절이 모두 일치했습니다. 문단 수는 각각 6·5·5·3입니다."
+      },
+      {
+        "check": "final-evidence-r1.json의 파일 hash와 byte 수 비교",
+        "result": "18개 파일 모두 일치했습니다. 마지막 hash 확인에서도 변경이 없었습니다."
+      },
+      {
+        "check": "세 raw 보고서의 70개 조항과 최종 matrix 비교",
+        "result": "exactClause와 status가 보존되었습니다. gaps 변경은 기록된 F-11:3 IDE 비목표 해석뿐입니다."
+      },
+      {
+        "check": "실행 증거와 현재 source의 적용성 비교",
+        "result": "configuration-agents manifest의 Conversation, projection, policy hash가 현재와 일치했습니다. service 전체 hash는 다릅니다. git-branch-restore hidden 증거에 포함된 현재 파일 192개의 hash가 일치했습니다. recovery applicability의 현재 hash 6개도 일치하며 event-host-child의 과거 hash 차이가 보존되어 있습니다."
+      },
+      {
+        "check": "predecessor 상태와 독립 CODE/RENDER 보고서 확인",
+        "result": "git-branch-restore는 complete이며 두 보고서는 동일한 현재 source pin에서 pass입니다. 해당 범위만 인정했습니다."
+      }
+    ],
+    "limits": [
+      "파일, source, artifact, ledger를 수정하지 않았습니다. 재위임하지 않았습니다.",
+      "제품 runtime, provider, build, GUI, Native 실행을 하지 않았습니다.",
+      "688개 파일은 inventory와 hash를 검사했습니다. 모든 파일의 의미를 전수 검토한 것은 아닙니다.",
+      "B01 duplicate import는 source의 실행 순서를 확인했습니다. 실제 재현을 하지 않았으므로 결함 후보로 유지합니다.",
+      "Windows 실행 증거는 확인하지 못했습니다. 현재 source의 명시적 플랫폼 제한은 확인했습니다.",
+      "과거 합성 실행과 hidden renderer 증거는 현재 production Main, 실제 OS IPC, provider 또는 전체 제품 수용을 입증하지 않습니다.",
+      "수정안을 구현하거나 승인하지 않았습니다. 수정 후 별도 독립 검토가 필요합니다."
+    ]
+  }
+}

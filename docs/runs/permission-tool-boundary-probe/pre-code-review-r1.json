@@ -1,0 +1,86 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "d6d41070184bbc58fedc5ac337926a46ffb31d84767b76ee04da17474a2668b5",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "0999e215f16c747e4d6d3953e43ad595341324a99394edfabe4ec408ebe041ee",
+    "schema_version": 2,
+    "source_sha256": "98778051eecedf75d492bea2a04f703d2f8f508b6861de5672a8b985befa9dbf",
+    "verification_sha256": "2c402c3fe144b0063bdcd99755885e6f87bfe6b69a5ea192102736f0a81f84eb",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "실행 전 코드·범위 검토를 통과했습니다. 수정이 필요한 구체적 결함을 찾지 못했습니다. 저장된 실행 명령은 검토한 소스와 리소스가 유지되는 조건에서 지정된 synthetic probe에 사용할 수 있습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a12026-fc47-7d03-acd2-71eb561cb398",
+    "identity_source": "현재 실행 환경의 CODEX_THREAD_ID",
+    "independent_review": true,
+    "report_only": true,
+    "files_modified": false,
+    "delegation_performed": false,
+    "native_bun_electron_probe_executed": false
+  },
+  "scope": {
+    "phase": "PRE-EXECUTION CODE review",
+    "plan_revision": 1,
+    "source_paths": [
+      "apps/desktop-app/scripts/permission-tool-probe.mjs",
+      "apps/desktop-app/scripts/permission-tool-probe.test.mjs",
+      "apps/desktop-app/scripts/fixtures/permission-tool-native.mjs"
+    ],
+    "method": [
+      "요구사항과 구현의 일치 여부를 검토했습니다.",
+      "Native 호출 경로, 서비스 의존성, 격리 및 실패 처리를 별도로 검토했습니다."
+    ],
+    "confirmed": [
+      "실제 WriteTool.Plugin.effect를 등록하고 Tool snapshot.execute로 실행합니다. 실제 local filesystem driver를 사용합니다.",
+      "once/reject/policy_deny는 같은 경로와 payload를 사용합니다. 각 경우에 payload와 다른 기준 바이트를 다시 쓰고 확인합니다.",
+      "once/reject는 pending 상태에서 파일이 유지되는지 확인한 뒤 응답합니다.",
+      "Permission.assert observer는 onExit로 원래 Exit를 기록합니다. 정책 결정이나 파일 쓰기를 추가하지 않으며 원래 결과를 전달합니다.",
+      "거부 판정에는 실제 Permission.DeclinedError 또는 Permission.BlockedError가 필요합니다. 임의의 tool 실패만으로 거부를 인정하지 않습니다.",
+      "각 경우에 tool 결과, 실제 파일 바이트, assertion 결과 및 남은 pending 요청을 확인합니다.",
+      "서비스 교체는 기존 의존성을 제거합니다. 검토한 최소 graph는 Instance, Project.Service, Config, discovery, models 및 plugin supervisor를 획득하지 않습니다.",
+      "parent는 새 비공개 임시 namespace, whitelist 환경, 전체 resource manifest 검증, 60초 TERM/62초 KILL, 실제 자식 종료 및 65536바이트 protocol 제한을 적용합니다."
+    ]
+  },
+  "verification": {
+    "current_source_matches_whole_freeze": true,
+    "changed_source_paths_exactly_three": true,
+    "all_review_binding_hashes_match": true,
+    "registered_artifact_hashes_match": true,
+    "resource_manifest_entries_checked": 38432,
+    "resource_manifest_mismatches": 0,
+    "manifest_sha256": "3056a869509ad240f17fb6e2a40595729d15425c95b5bf60010b94cf5e5358a0",
+    "engine_sha256": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+    "resource_identities_match_saved_preflight": true,
+    "saved_checks": {
+      "unit": "7/7 PASS",
+      "lint": "PASS",
+      "format": "PASS",
+      "evidence": "현재 소스 해시에 연결된 기록과 로그를 확인했습니다. 이번 검토에서는 다시 실행하지 않았습니다."
+    },
+    "native": "NOT RUN"
+  },
+  "saved_invocation": {
+    "cwd": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/permission-tool-probe.mjs",
+      "--out",
+      "docs/runs/permission-tool-boundary-probe/evidence/native-r1"
+    ],
+    "safe_to_execute": true,
+    "scope": "검토한 정확한 소스와 Native 리소스를 사용하는 auth-free synthetic prerequisite probe",
+    "runtime_acceptance_granted": false
+  },
+  "limits": [
+    "이 pass는 코드와 실행 범위에만 적용됩니다. 실제 Native 실행 결과와 별도 실행 증거 검토가 필요합니다.",
+    "import, SQLite migration, layer acquisition 및 scoped finalization의 실제 성공은 아직 확인하지 않았습니다.",
+    "synthetic session 준비는 production upsertProject와 Session.Created projector를 사용합니다. Session.Service.create의 검증이 아닙니다.",
+    "Tool snapshot이 자동 생성하는 CodeMode execute 경로는 호출하지 않습니다. 해당 경로의 권한 동작은 검증 대상이 아닙니다.",
+    "OS sandbox, 모든 외부 접근 차단, descendant 부재, power-loss 복구, provider, UI, production Main 및 전체 F09 acceptance를 증명하지 않습니다.",
+    "다음 major permission 설계 문서는 이번 검토 범위에 포함하지 않았습니다."
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "result": "fail",
+  "observations": [
+    {
+      "name": "sha1-stage",
+      "status": "pass",
+      "format": "sha1",
+      "action": "stage",
+      "indexExists": true,
+      "result": "applied",
+      "prepared": 1,
+      "published": 1,
+      "backupId": ".omoc-git-index-e426153ef1bb1961a04be059ef1b90eadbfbeb2aeaa5369bed9928bc79e93bd1.backup"
+    },
+    {
+      "name": "sha1-unstage",
+      "status": "pass",
+      "format": "sha1",
+      "action": "unstage",
+      "indexExists": true,
+      "result": "applied",
+      "prepared": 1,
+      "published": 1,
+      "backupId": ".omoc-git-index-fe662b9917b0da2fd7be44084dc51d828256923f1a52337f468e30e461785296.backup"
+    },
+    {
+      "name": "sha1-deleted",
+      "status": "pass",
+      "format": "sha1",
+      "action": "stage",
+      "indexExists": true,
+      "result": "applied",
+      "prepared": 1,
+      "published": 1,
+      "backupId": ".omoc-git-index-ee496e013ffbbf9f8ceac2b6bf12b7b619d6c6c20ac25b18b2139285c866d7c0.backup"
+    }
+  ],
+  "kernelEvents": [
+    {
+      "name": "sha1-stage",
+      "method": "prepare",
+      "result": {
+        "status": "prepared",
+        "token": "30cd440c11a81b541f04b5411c08a491c84314774d6a800d2431833a571e42a0"
+      }
+    },
+    {
+      "name": "sha1-stage",
+      "method": "publish",
+      "result": {
+        "status": "applied",
+        "indexDigest": "f49a27eafdaf5ffe74475a122d3591c5a2345ca08fb897fa3be90823c95ec801",
+        "backupId": ".omoc-git-index-e426153ef1bb1961a04be059ef1b90eadbfbeb2aeaa5369bed9928bc79e93bd1.backup"
+      }
+    },
+    {
+      "name": "sha1-unstage",
+      "method": "prepare",
+      "result": {
+        "status": "prepared",
+        "token": "d23e817303f516fd6024db42204ece76baa0aaf03eb51e83038a3c5553f883df"
+      }
+    },
+    {
+      "name": "sha1-unstage",
+      "method": "publish",
+      "result": {
+        "status": "applied",
+        "indexDigest": "49a42a23c3c241c47d26d7efd4bf3ab31c617a289fb09fc62ccc0b93786b9f83",
+        "backupId": ".omoc-git-index-fe662b9917b0da2fd7be44084dc51d828256923f1a52337f468e30e461785296.backup"
+      }
+    },
+    {
+      "name": "sha1-deleted",
+      "method": "prepare",
+      "result": {
+        "status": "prepared",
+        "token": "a332d1271896087e7d3fa5567cfc47755f19b8bd8523617b9a7e060d89d53622"
+      }
+    },
+    {
+      "name": "sha1-deleted",
+      "method": "publish",
+      "result": {
+        "status": "applied",
+        "indexDigest": "82d51e7ef70ea3431c6550118aabef413ba1f3e9ef4c41a5328b298ea0f7c289",
+        "backupId": ".omoc-git-index-ee496e013ffbbf9f8ceac2b6bf12b7b619d6c6c20ac25b18b2139285c866d7c0.backup"
+      }
+    },
+    {
+      "name": "sha1-absent-unborn",
+      "method": "prepare",
+      "result": {
+        "status": "unknown",
+        "reason": "invalid_request"
+      }
+    }
+  ],
+  "limits": [
+    "Synthetic Native SDK and direct kernel adapter; actual production protocol validators, not an Event Host process lifetime proof.",
+    "No production Main, provider, private project, Windows or power-loss acceptance.",
+    "All synthetic namespaces retained. Unknowns are lookup-only, never replayed."
+  ],
+  "failure": {
+    "name": "AssertionError",
+    "code": "ERR_ASSERTION",
+    "message": "{\"ok\":true,\"value\":{\"requestId\":\"sha1-absent-unborn\",\"status\":\"unknown\"},\"receipt\":{\"runtimeEpoch\":\"synthetic\",\"operationId\":\"sha1-absent-unborn\",\"type\":\"git.index.apply\",\"workspaceId\":\"48572d9c-aefb-45b7-a7c0-39adcdfce506\",\"admission\":\"dispatched\",\"delivery\":\"unknown\",\"effect\":\"unknown\",\"revision\":11,\"evidence\":[]}}\n+ actual - expected\n\n+ 'unknown'\n- 'applied'\n"
+  }
+}

@@ -1,0 +1,168 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toBeVisible() failed
+
+Locator: getByText('요청 또는 실행 상태가 불명확하여 새 전송을 막았습니다. 실제 결과를 확인하거나 새 세션을 만드세요.', { exact: true })
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" getByText('요청 또는 실행 상태가 불명확하여 새 전송을 막았습니다. 실제 결과를 확인하거나 새 세션을 만드세요.', { exact: true }) with timeout 5000ms
+  - waiting for getByText('요청 또는 실행 상태가 불명확하여 새 전송을 막았습니다. 실제 결과를 확인하거나 새 세션을 만드세요.', { exact: true })
+
+    at captureRawStack (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright-core@1.63.0/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toBeVisible (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at /Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:1387:5 {
+  matcherResult: {
+    message: 'expect(locator).toBeVisible() failed\n' +
+      '\n' +
+      "Locator: getByText('요청 또는 실행 상태가 불명확하여 새 전송을 막았습니다. 실제 결과를 확인하거나 새 세션을 만드세요.', { exact: true })\n" +
+      'Expected: visible\n' +
+      'Timeout: 5000ms\n' +
+      'Error: element(s) not found\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeVisible" getByText('요청 또는 실행 상태가 불명확하여 새 전송을 막았습니다. 실제 결과를 확인하거나 새 세션을 만드세요.', { exact: true }) with timeout 5000ms\n` +
+      "  - waiting for getByText('요청 또는 실행 상태가 불명확하여 새 전송을 막았습니다. 실제 결과를 확인하거나 새 세션을 만드세요.', { exact: true })\n",
+    pass: false,
+    actual: undefined,
+    name: 'toBeVisible',
+    expected: 'visible',
+    log: [
+      `  - Expect "toBeVisible" getByText('요청 또는 실행 상태가 불명확하여 새 전송을 막았습니다. 실제 결과를 확인하거나 새 세션을 만드세요.', { exact: true }) with timeout 5000ms`,
+      "  - waiting for getByText('요청 또는 실행 상태가 불명확하여 새 전송을 막았습니다. 실제 결과를 확인하거나 새 세션을 만드세요.', { exact: true })"
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- main:\n' +
+      '  - complementary "작업 공간과 세션":\n' +
+      '    - button "탐색 닫기":\n' +
+      '      - img\n' +
+      '    - text: 작업 공간\n' +
+      '    - combobox "작업 공간":\n' +
+      '      - option "긴 한국어 작업 공간 이름과 탐색 영역의 정렬을 확인하는 프로젝트" [selected]\n' +
+      '    - button "작업 공간 작업":\n' +
+      '      - img\n' +
+      '    - button "새 세션"\n' +
+      '    - text: 세션 검색\n' +
+      '    - searchbox "세션 검색"\n' +
+      '    - button "활성 세션" [pressed]\n' +
+      '    - button "보관된 세션"\n' +
+      '    - list:\n' +
+      '      - listitem:\n' +
+      '        - button "긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다 긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다 상태 불명":\n' +
+      '          - text: 긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다 긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다\n' +
+      '          - img "상태 불명":\n' +
+      '            - img\n' +
+      '        - button "긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다 긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "1번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "1번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "2번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "2번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "3번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "3번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "4번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "4번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "5번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "5번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "6번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "6번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "7번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "7번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "8번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "8번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "9번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "9번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "10번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "10번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "11번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "11번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "12번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "12번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "13번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "13번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '      - listitem:\n' +
+      '        - button "14번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다"\n' +
+      '        - button "14번째 긴 한국어 세션 제목으로 목록 스크롤과 선택 상태를 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '    - button "작업 공간 위치·보관 정보"\n' +
+      '  - region "대화 작업 공간":\n' +
+      '    - button "작업 공간 탐색 열기" [expanded]:\n' +
+      '      - img\n' +
+      '    - strong: 긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다 긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다\n' +
+      '    - text: 로컬 연결됨\n' +
+      '    - button "파일·확장":\n' +
+      '      - img\n' +
+      '    - status: 요청 또는 실행 상태가 불명확하여 새 전송을 막았습니다. 실제 결과를 확인하세요.\n' +
+      '    - status: 현재 세션 실행 상태가 불명확합니다.\n' +
+      '    - log "현재 세션 대화 기록":\n' +
+      '      - text: 나 Inspect the synthetic workspace. 도우미 요청한 파일을 살펴보고 있습니다.\n' +
+      '      - strong: read_file\n' +
+      '      - text: 실행 중\n' +
+      '      - group: 도구 입력과 결과\n' +
+      '      - text: 도우미 검토할 자료와 도구 결과입니다.\n' +
+      '      - strong: documentation\n' +
+      '      - text: 완료\n' +
+      '      - article:\n' +
+      '        - text: example.com\n' +
+      '        - heading "프로젝트 구조 참고 문서" [level=3]\n' +
+      '        - paragraph: 도구가 반환한 자료를 읽기 전용으로 표시합니다.\n' +
+      '      - group: 도구 입력과 결과\n' +
+      '      - strong: unknown_tool\n' +
+      '      - text: 완료\n' +
+      '      - group:\n' +
+      '        - text: 도구 입력과 결과\n' +
+      '        - paragraph: 입력\n' +
+      '        - text: "{}"\n' +
+      '        - paragraph: 결과\n' +
+      '        - text: <img src=x onerror="globalThis.fixtureExecuted=true"><script>bad()</script>\n' +
+      '      - strong: read_file\n' +
+      '      - text: 오류\n' +
+      '      - group: 도구 입력과 결과\n' +
+      '      - text: 나 /inspect component states\n' +
+      '    - textbox "메시지 작성":\n' +
+      '      - /placeholder: 작업을 요청하세요. /로 명령 보기\n' +
+      '      - text: Ambiguous synthetic submission\n' +
+      '    - button "앱 동작과 명령 열기"\n' +
+      '    - combobox "실행 에이전트":\n' +
+      '      - option "기본 에이전트"\n' +
+      '      - option "Test agent" [selected]\n' +
+      '    - combobox "실행 모델":\n' +
+      '      - option "기본 모델"\n' +
+      '      - option "Test model" [selected]\n' +
+      '    - button "메시지 보내기" [disabled]\n' +
+      '    - paragraph: Enter 전송 · Shift+Enter 줄바꿈'
+  }
+}
+
+Node.js v26.8.2

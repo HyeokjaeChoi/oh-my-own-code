@@ -1,0 +1,6 @@
+# Host integration checkpoint finding: repeated policy intents
+Current plan revision6 / storage-contract version5. Existing contract requires a flushed intent before every actual policy/agent/model effect.
+
+Host integrator identified current send() applies baseline policy before active/inbox/catalog/selection and again after agent/model changes. Frozen journal DISPATCH_STEPS permits native.policy only; registry duplicate dispatch(step) cannot distinguish second actual policy effect. Reusing a step either blocks normal send or risks replaying an effect after a duplicate response.
+
+Coordinator decision: preserve BOTH baseline applications/verifications. Add two bounded allowlisted steps native.policy.before_selection and native.policy.after_selection; retain native.policy for single create/bootstrap use. No wire request, record field, privilege or recovery behavior changes. A fresh correction worker owns only storage-journal.mjs and storage-journal.test.mjs, tests both sequential intents with paused/rejected second flush and duplicate/third unknown names. Registry's distinct-step logic remains unchanged. Host writer uses distinct stage labels after corrected freeze. No checkpoint writer overlap; current independent reviewer finishes frozen source before correction. Preserve old hash/result/review evidence and publish revised source freeze.

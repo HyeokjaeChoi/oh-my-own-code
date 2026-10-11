@@ -1,0 +1,28 @@
+{
+  "claim": "Main actual source inspection early API checkpoint, not final implementation/test freeze",
+  "api": {
+    "forkTarget": {
+      "beforeMessageId": "original WireID <=128"
+    },
+    "dispatch": "native.fork only + exact forkTarget; existing nativeSessionId allowed",
+    "lookupForkBoundary": "({appSessionId}) -> defensive {beforeMessageId} or undefined; lookupForkIdentity unchanged"
+  },
+  "sources": {
+    "apps/desktop-app/src/host/conversation-context-branch-storage.mjs": {
+      "sha256": "f8e4f81d756eff597bd2d896927cc036d6ba5e0aaa83e6ef15c95498f75262b6",
+      "bytes": 3927
+    },
+    "apps/desktop-app/src/host/workspace-registry.mjs": {
+      "sha256": "7bd86068fcb0001c1a0477a385f9919a54a99573a76a1a023a5c76fa06e3e1aa",
+      "bytes": 78855
+    },
+    "apps/desktop-app/src/host/workbench-admission.mjs": {
+      "sha256": "76063fb21036fd65df0a87aac7fbbb3088fe47e5c4d24a8cc615c41d238b8e0c",
+      "bytes": 28009
+    },
+    "apps/desktop-app/src/host/storage-journal.mjs": {
+      "sha256": "2856c1beca6b28ddd16ad2016fe0d314544a824f0566d24e555fcdec7cb54d84",
+      "bytes": 63352
+    }
+  }
+}

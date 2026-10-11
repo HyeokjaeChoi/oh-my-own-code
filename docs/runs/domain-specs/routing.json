@@ -1,0 +1,36 @@
+{
+  "authority": "Standing user delegation: choose cost-appropriate models and reasoning levels autonomously.",
+  "requested_routes": [
+    {
+      "role": "plan_reviewer",
+      "model": "gpt-6-sol",
+      "effort": "medium",
+      "reason": "Bounded entry-plan judgment"
+    },
+    {
+      "role": "design_architect",
+      "model": "gpt-6-sol",
+      "effort": "medium",
+      "reason": "Substantive interaction design with explicit approved scope"
+    },
+    {
+      "role": "engineer",
+      "model": "gpt-6-sol",
+      "effort": "high",
+      "reason": "Coupled security, filesystem, runtime and recovery contracts"
+    },
+    {
+      "role": "test_engineer + reliability_engineer",
+      "model": "gpt-6-sol",
+      "effort": "medium",
+      "reason": "Risk-based verification and personal local operations design"
+    },
+    {
+      "role": "design_spec_reviewer",
+      "model": "gpt-6-sol",
+      "effort": "high",
+      "reason": "Independent cross-document consistency and safety judgment"
+    }
+  ],
+  "limits": "Requested settings are not independently observed runtime identity. No token savings measurement. All specialist contexts are fresh; no recursive delegation."
+}

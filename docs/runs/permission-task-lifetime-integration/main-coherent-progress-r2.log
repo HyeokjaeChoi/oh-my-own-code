@@ -1,0 +1,134 @@
+....................
+....................
+....................
+....................
+....................
+....................
+....................
+....................
+....................
+..................XX
+XXX.................
+....................
+....................
+....................
+....................
+................
+
+Failed tests:
+
+✖ SKILL service stage-unknown retains original unknown key without success or duplicate replay (88.752833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+  +     authorityHold: true,
+        operationId: 'skill-unknown',
+        runtimeEpoch: 'epoch',
+        type: 'configuration.skill.save',
+        workspaceId: '119ba1a0-6d4b-4d8c-96e7-351fe0a4de72'
+      }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:3299:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { runtimeEpoch: 'epoch', operationId: 'skill-unknown', type: 'configuration.skill.save', workspaceId: '119ba1a0-6d4b-4d8c-96e7-351fe0a4de72', authorityHold: true } ],
+    expected: [ { runtimeEpoch: 'epoch', operationId: 'skill-unknown', type: 'configuration.skill.save', workspaceId: '119ba1a0-6d4b-4d8c-96e7-351fe0a4de72' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+✖ SKILL service publish-unknown retains original unknown key without success or duplicate replay (97.532375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+  +     authorityHold: true,
+        operationId: 'skill-unknown',
+        runtimeEpoch: 'epoch',
+        type: 'configuration.skill.save',
+        workspaceId: 'f2e43e07-a353-49ec-9871-f9fe99ca4652'
+      }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:3299:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { runtimeEpoch: 'epoch', operationId: 'skill-unknown', type: 'configuration.skill.save', workspaceId: 'f2e43e07-a353-49ec-9871-f9fe99ca4652', authorityHold: true } ],
+    expected: [ { runtimeEpoch: 'epoch', operationId: 'skill-unknown', type: 'configuration.skill.save', workspaceId: 'f2e43e07-a353-49ec-9871-f9fe99ca4652' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+✖ SKILL service wrong-content retains original unknown key without success or duplicate replay (147.482333ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+  +     authorityHold: true,
+        operationId: 'skill-unknown',
+        runtimeEpoch: 'epoch',
+        type: 'configuration.skill.save',
+        workspaceId: 'a96f50aa-d071-4b59-85f1-1618f00700b5'
+      }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:3299:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { runtimeEpoch: 'epoch', operationId: 'skill-unknown', type: 'configuration.skill.save', workspaceId: 'a96f50aa-d071-4b59-85f1-1618f00700b5', authorityHold: true } ],
+    expected: [ { runtimeEpoch: 'epoch', operationId: 'skill-unknown', type: 'configuration.skill.save', workspaceId: 'a96f50aa-d071-4b59-85f1-1618f00700b5' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+✖ SKILL service wrong-version retains original unknown key without success or duplicate replay (128.253875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+  +     authorityHold: true,
+        operationId: 'skill-unknown',
+        runtimeEpoch: 'epoch',
+        type: 'configuration.skill.save',
+        workspaceId: 'c46a2454-0996-45c9-9b53-3644e35bd86e'
+      }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:3299:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { runtimeEpoch: 'epoch', operationId: 'skill-unknown', type: 'configuration.skill.save', workspaceId: 'c46a2454-0996-45c9-9b53-3644e35bd86e', authorityHold: true } ],
+    expected: [ { runtimeEpoch: 'epoch', operationId: 'skill-unknown', type: 'configuration.skill.save', workspaceId: 'c46a2454-0996-45c9-9b53-3644e35bd86e' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+✖ SKILL service directory-change retains original unknown key without success or duplicate replay (127.565834ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+  +     authorityHold: true,
+        operationId: 'skill-unknown',
+        runtimeEpoch: 'epoch',
+        type: 'configuration.skill.save',
+        workspaceId: '68bf93fe-f196-4b6e-9cb1-f4c8ed780443'
+      }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:3299:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { runtimeEpoch: 'epoch', operationId: 'skill-unknown', type: 'configuration.skill.save', workspaceId: '68bf93fe-f196-4b6e-9cb1-f4c8ed780443', authorityHold: true } ],
+    expected: [ { runtimeEpoch: 'epoch', operationId: 'skill-unknown', type: 'configuration.skill.save', workspaceId: '68bf93fe-f196-4b6e-9cb1-f4c8ed780443' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

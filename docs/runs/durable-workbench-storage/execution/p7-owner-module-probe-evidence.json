@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-04",
+  "platform": "darwin",
+  "electronVersion": "44.4.4",
+  "scope": "Actual frozen storage-lock module compatibility research; zero BrowserWindows/native/provider. Process birth/boot tokens are synthetic; prior app exit is proved by retained parent process handles. Not full P7 acceptance.",
+  "scenarios": [
+    {
+      "name": "same-store remains locked after first owner changes userData",
+      "pass": true
+    },
+    {
+      "name": "independent canonical store gets independent ownership",
+      "pass": true
+    },
+    {
+      "name": "frozen owner module reclaims dirty controlled app after parent confirmed exact owned process exit",
+      "pass": true
+    }
+  ],
+  "focus": {
+    "samples": 21,
+    "changedSamples": 0,
+    "applicationNamesRecorded": false
+  },
+  "result": "pass",
+  "limits": [
+    "No native child ownership/recovery or production process-birth adapter tested",
+    "No Windows or power-loss evidence",
+    "No production app window/activation behavior tested",
+    "Kernel acquisition plus PID absence alone does not prove unknown child teardown"
+  ],
+  "ownedProcessesExited": true
+}

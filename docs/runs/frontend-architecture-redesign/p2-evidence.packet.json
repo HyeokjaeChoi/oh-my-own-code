@@ -1,0 +1,84 @@
+{
+  "attestation": "Prepared input metadata; not a spawn or identity attestation",
+  "contract_sha256": "22d279c89e0cf22f97378708c1b63fecddb58684dc02c85d33fc99db459512f7",
+  "decision_register": [
+    {
+      "blocks": [],
+      "id": "replan",
+      "impact": "Changes sequencing, retains all product scope",
+      "resolution": "First visible slice followed by state foundation and hardening",
+      "source": "Latest user request",
+      "statement": "Prioritize architecture and actual UI quality before feature expansion",
+      "status": "confirmed"
+    },
+    {
+      "blocks": [],
+      "id": "storage",
+      "impact": "Supersedes temporary-storage assumption for target product",
+      "resolution": "Separate durable host increment; imports remain untouched",
+      "source": "Explicit user storage answer",
+      "statement": "Managed workspaces persist in ~/Documents/OhMyOwnCode/{session-id}",
+      "status": "confirmed"
+    },
+    {
+      "blocks": [],
+      "id": "stack",
+      "impact": "Incremental library changes after compatible versions and contracts checked",
+      "resolution": "Replace custom canonical external store with window-scoped Zustand; assistant-ui gets derived projection. No same-value duplicated store/cache.",
+      "source": "User explicitly delegates fit-for-purpose selection and prohibits same-responsibility duplication; Astra/high proposal grounded in actual dependencies.",
+      "statement": "CSS Modules only; native basic controls and Radix complex primitives; explicit Zustand sole app/domain state store; bounded fresh reads without Query/XState; pnpm/Nx retained.",
+      "status": "delegated"
+    },
+    {
+      "blocks": [],
+      "id": "no-overlapping-libraries",
+      "impact": "Dependency decisions require ownership and replacement rationale.",
+      "resolution": "CSS Modules only; Nx only task orchestrator; one projection and one read owner per resource; upstream internals disclosed.",
+      "source": "Latest explicit user instruction",
+      "statement": "No competing app libraries/stores/caches for the same responsibility.",
+      "status": "confirmed"
+    },
+    {
+      "blocks": [],
+      "id": "app-domain-zustand",
+      "impact": "Changes app-domain owner mechanism, preserves main authority and one owner per value.",
+      "resolution": "Window-scoped vanilla Zustand store with pure domain transitions; no custom competing canonical store; direct version alignment and compatibility probe required.",
+      "source": "Latest user correction: upstream assistant-ui Zustand does not obviate app state needs.",
+      "statement": "Explicitly adopt Zustand for app-wide and domain-specific state outside assistant-ui.",
+      "status": "confirmed"
+    }
+  ],
+  "documents": [
+    {
+      "gate": "design_spec",
+      "path": "docs/runs/frontend-architecture-redesign/architecture-and-ui.md",
+      "sha256": "b252e8c99e9394ab471c094f528f5a6902375b2ecd39790b20dfd2ca787387f6",
+      "version": "4"
+    }
+  ],
+  "phase": "implementation",
+  "plan_sha256": "d94e9d2d07e6f7b215fa79301836087b70d24500e0da7f233ae6887c321d7560",
+  "prepared_at": "2026-10-03T02:44:01+00:00",
+  "role": "engineer",
+  "routing": {
+    "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+    "input_sha256": {
+      ".agents/skills/solo-implement/SKILL.md": "a4c62b99b8678c31a6cd20a598d1f0da7e6f8535bc9e6bd51b888964092fd7fa",
+      ".agents/skills/solo-specialist/SKILL.md": "33378f790f39761948485f1f08617840579714dbb925aa177109a80ac4002c3b",
+      ".codex/agents/solo_worker.toml": "2488c3a019261ec7c1acad6c6224545951ea3750f8664f23bb947f6634640d01",
+      ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+    },
+    "mode": "general",
+    "phase": "implementation",
+    "profile": "solo_worker",
+    "profile_file": ".codex/agents/solo_worker.toml",
+    "references": [],
+    "role": "engineer",
+    "schema_version": 2,
+    "skill": "solo-implement",
+    "skill_file": ".agents/skills/solo-implement/SKILL.md"
+  },
+  "run": "frontend-architecture-redesign",
+  "schema_version": 2,
+  "user_approvals": []
+}

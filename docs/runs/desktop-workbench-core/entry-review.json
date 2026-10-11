@@ -1,0 +1,88 @@
+{
+  "plan": {
+    "schema_version": 2,
+    "run_id": "desktop-workbench-core",
+    "reviewer": "plan_reviewer",
+    "reviewed": {
+      "contract_sha256": "e6874734420e1ecd2e48388542e6886305110938ada8b63a8679de97c22e30e8",
+      "gate": "plan",
+      "plan_sha256": "a781ac02a05309d87f7e86f3ec19d89049ea5d000cfda46f58b65481ac49a6b9",
+      "schema_version": 2,
+      "source_sha256": "eec81d392e645f9607281e480809453a735be8018781896ca0b22db6c9351aa0"
+    },
+    "verdict": "changes_requested",
+    "summary": "revision 1은 승인된 Electron 기반의 한정된 로컬 증분이며 전체 출시와 구별되어 있다. 설치된 클라이언트에는 필요한 세션·메시지·중단·권한·목록 API가 있다. 다만 이번에 추가하는 renderer 모듈의 경계 검증과 실제 실행에 적용할 기본 권한 정책이 빠져 있어 보완이 필요하다. 추가 사용자 승인은 요구하지 않는다.",
+    "open_findings": [
+      {
+        "id": "P-01",
+        "severity": "medium",
+        "location": "docs/runs/desktop-workbench-core/plan.md:29; docs/runs/desktop-workbench-core/contract.json:checks",
+        "affected_consumer": "새 desktop renderer 모듈과 공유 패키지",
+        "evidence": "계획은 FSD 구조와 기존 Nx 경계를 유지한다고 하지만, 지정된 desktop eslint 설정에는 프로젝트 또는 slice 경계 규칙이 없다. 기존 check-boundaries.mjs는 apps/workbench-web/src를 검사하며 desktop renderer는 포함하지 않는다. bundle 검사는 일부 문자열만 검사하므로 잘못된 slice import나 제거된 type-only host import를 검출하지 못한다.",
+        "impact": "현재 계약의 모든 검사가 통과해도 ADR-0001과 architecture-entry가 요구하는 desktop 의존성 방향을 입증할 수 없다.",
+        "required_correction": "이번 renderer 경로에 적용할 프로젝트·slice·공개 API·browser/host 경계 검사와 금지 import fixture를 담당자 및 required check에 추가한다. 기존 검사기를 확장해도 된다."
+      },
+      {
+        "id": "P-02",
+        "severity": "high",
+        "location": "docs/runs/desktop-workbench-core/plan.md:15; docs/runs/desktop-workbench-core/plan.md:35",
+        "affected_consumer": "초기 및 새 세션의 message.send와 command.run",
+        "evidence": "계획에는 프로젝트 신뢰 확인과 pending permission 응답은 있지만 실행 전에 적용할 기본 권한 규칙과 적용 확인 조건이 없다. 현재 sidecar-supervisor.mjs는 빈 설정을 쓰고 permissions 없이 초기 세션을 생성한다. 설치된 SessionCreateInput은 permissions를 선택 사항으로 제공한다. 승인된 PRD 5절과 실행 아키텍처는 실행 경계에서 기본 확인 정책을 요구한다.",
+        "impact": "프로젝트를 신뢰했다는 확인이나 권한 카드 구현만으로 각 도구 실행이 확인 정책을 거친다고 보장할 수 없다.",
+        "required_correction": "이번 증분의 최소 권한 규칙, 초기 세션을 포함한 적용 지점, 적용을 확인하지 못했을 때 실행 차단 조건을 명시한다. 전체 권한 모드 UI를 구현할 필요는 없지만, 적용 전 전송 차단 및 거절·미확인 상태에 대한 검증을 계약에 추가한다."
+      }
+    ],
+    "provenance": {
+      "child_task_id": "cli:desktop-workbench-core:entry-default-r1",
+      "author_task_id": "coordinator",
+      "runtime_selection": "effective CLI default; parent-model inheritance를 주장하지 않음",
+      "evidence_limits": "파일과 설치된 클라이언트 선언 및 지정된 review-input 명령만 확인했다. 테스트, SDK 실행, 자격 증명 접근, 외부 효과, 수정 또는 위임은 수행하지 않았다."
+    }
+  },
+  "design_spec": {
+    "schema_version": 2,
+    "run_id": "desktop-workbench-core",
+    "reviewer": "design_spec_reviewer",
+    "reviewed": null,
+    "verdict": "blocked",
+    "summary": "interface.md version 1을 정적으로 검토했으나 하네스가 정확한 design_spec 바인딩을 반환하지 않아 등록 가능한 게이트 보고서를 완성할 수 없다. 바인딩을 추정하거나 생성하지 않았다. 확인된 인터페이스 문제도 함께 전달한다.",
+    "binding_error": {
+      "command": "python3 .solopreneur/harness.py review-input desktop-workbench-core --gate design_spec",
+      "exit_code": 1,
+      "message": "Obtain and record an independent pass for the current plan and contract first."
+    },
+    "open_findings": [
+      {
+        "id": "D-01",
+        "severity": "blocking",
+        "location": "docs/runs/desktop-workbench-core/run.json",
+        "affected_consumer": "design_spec 게이트와 후속 구현 handoff",
+        "evidence": "현재 reviews와 artifacts가 비어 있다. review-input은 먼저 현재 plan 통과 기록을 요구한다. document_binding 구현은 계약에 기재된 문서가 현재 artifact로 등록되어 있는지도 검사한다.",
+        "required_correction": "코디네이터가 계획 보완 및 독립 통과 기록을 완료하고 interface.md를 현재 design_spec artifact로 등록한 뒤, 정확한 design_spec review-input 바인딩으로 리뷰를 요청한다. 리뷰어는 상태를 변경하지 않는다."
+      },
+      {
+        "id": "D-02",
+        "severity": "high",
+        "location": "docs/runs/desktop-workbench-core/interface.md:15-20",
+        "affected_consumer": "세션 생성, 메시지·명령 실행 및 권한 응답 구현",
+        "evidence": "신뢰 확인과 permission.respond는 정의되어 있지만 기본 실행 정책과 그 적용 확인은 정의되지 않았다. SDK 선언의 permissions는 선택 사항이며 permission.reply는 이미 발생한 요청에 응답하는 API다.",
+        "required_correction": "P-02의 기본 정책과 실행 허용 조건을 공유 인터페이스에 반영한다. 프로젝트 신뢰 확인과 실행별 권한 확인의 의미를 구별하고, 정책 미확인 상태에서는 전송·명령 실행을 거절하도록 정의한다."
+      },
+      {
+        "id": "D-03",
+        "severity": "medium",
+        "location": "docs/runs/desktop-workbench-core/interface.md:5; docs/runs/desktop-workbench-core/interface.md:45",
+        "affected_consumer": "sidecar-supervisor, preload 및 기존 runtimeSnapshot 소비자",
+        "evidence": "5행은 runtimeSnapshot의 하위 호환성을 요구하지만 45행은 초기 session ID를 runtimeSnapshot이나 renderer globals로 노출하지 말라고 한다. 현재 supervisor.snapshot과 preload는 sessionId를 반환하며 renderer는 이를 표시한다.",
+        "impact": "backend 담당자가 기존 반환 계약을 유지하면서 새 비노출 요구도 충족할 수 없다.",
+        "required_correction": "기존 runtimeSnapshot의 sessionId 처리 방침을 하나로 정한다. 제거한다면 기존 renderer·타입·검증의 마이그레이션을 명시하고, 유지한다면 신규 workbench의 app-owned opaque ID와 기존 ID의 구별 및 권한 없는 식별자라는 조건을 명시한다."
+      }
+    ],
+    "provenance": {
+      "child_task_id": "cli:desktop-workbench-core:entry-default-r1",
+      "author_task_id": "coordinator",
+      "runtime_selection": "effective CLI default; parent-model inheritance를 주장하지 않음",
+      "evidence_limits": "문서 및 선언 검토만 수행했다. SDK 선언은 API 형태의 근거이며 실행 시 부작용, 권한 강제, Electron 상호작용 또는 패키징 성공의 증거가 아니다. 정확한 design_spec 바인딩은 획득하지 못했다."
+    }
+  }
+}

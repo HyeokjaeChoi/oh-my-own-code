@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "633fa293eeba278c2158f0e8fcbefdb36c8ef8d27914fddda76b3a4469cd3c4a",
+    "environment_sha256": "88e88bd173dd59c50b780a3c4bcf8307757869b7ea056c63b4a2b37d23c6b459",
+    "gate": "code",
+    "plan_sha256": "c557d9221e285764bde9f80d09c698dcf6457747ec346d50de6b178a2beb90af",
+    "schema_version": 2,
+    "source_sha256": "113fb104a12bf9be836b150a821d2e0b598f097832351b77e3b5cb6fe4172878",
+    "verification_sha256": "de4b76f16e1b5dc8fe01d0047cbd3446b3b5d31b1569b872068c1c13a6056add",
+    "work_class_sha256": "426030aae5d88356c9c39894eb04e091e3802cdb7315e9c46af9e39fb3ffb5ab"
+  },
+  "verdict": "pass",
+  "summary": "요구사항 검토 후 정확성·보안·동시성·호환성을 검토했습니다. 실제 호출 경로와 테스트 구현, 저장된 실행 증거에서 이 extensions 증분의 승인을 막는 구체적 결함은 찾지 못했습니다. 이 판정은 전체 제품의 완료를 뜻하지 않습니다.",
+  "open_findings": [],
+  "review_scope": {
+    "run": "configuration-extensions",
+    "plan_revision": 6,
+    "design_version": 1,
+    "changed_paths": 41,
+    "authority": "prechange-inventory.json 및 source-freeze-r1.json",
+    "source_freeze_matches": true,
+    "unlisted_baseline_changes": []
+  },
+  "verification_notes": [
+    "workspace 전용 v2 read, sender 처리, 폐쇄형 RPC, nonce와 canonical context 검증, 제한된 데이터 projection을 확인했습니다.",
+    "plugin.list와 tool.list 호출, 독립된 그룹 실패 처리, available empty 구분, Hooks not_reported를 확인했습니다. 기존 Agents·Skills RPC와 baseline policy도 확인했습니다.",
+    "Main의 전체 deadline, 늦은 owner 확인 후 dispatch 차단, 내부 RPC Promise의 실제 settlement 추적을 확인했습니다.",
+    "Service의 scope·revision·generation 재검증과 durable unknown 차단을 확인했습니다. Renderer의 명시적 조회, 취소, ABA·epoch·root·trust·floor 변경 격리와 원래 hold key 보존을 확인했습니다.",
+    "현재 source와 build hash가 저장된 증거와 일치합니다. native-r3의 6개 사례와 assertion 구현을 확인했습니다. native-r1/r2 실패 기록은 별도로 남아 있으며, 세 실행 모두 저장된 종료 코드가 0이고 전후 identity가 같습니다.",
+    "UI 증거는 실제 build의 Renderer·preload와 synthetic Main을 사용합니다. PNG 835개의 파일명이 고유하며, Agent file/runtime 구분과 wx 저장 보호를 확인했습니다."
+  ],
+  "limitations": [
+    "검토자는 파일을 변경하거나 build·test·Native·Electron·UI·provider를 실행하지 않았습니다.",
+    "기록된 Node 명령에는 현재 없는 apps/desktop-app/src/event-host-resources.test.mjs 경로가 포함되어 있습니다. 해당 파일의 개별 실행은 검증으로 인정하지 않았습니다. resource 검증은 존재하는 stage-event-host.test.mjs와 저장된 Native resource 증거를 확인했습니다.",
+    "Darwin arm64 개발 환경 증거입니다. Windows와 packaged 환경은 확인하지 않았습니다.",
+    "직접 tool 실행, filesystem isolation, provider 실행 또는 atomic authorization snapshot을 검증한 판정이 아닙니다. 별도 RENDER gate를 대체하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11b73-1163-75f3-91a3-01d0fd4bb126",
+    "mode": "independent_read_only_code_review"
+  }
+}

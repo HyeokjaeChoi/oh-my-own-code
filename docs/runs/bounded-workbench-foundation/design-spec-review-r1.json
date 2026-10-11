@@ -1,0 +1,80 @@
+{
+  "schema_version": 2,
+  "run": "bounded-workbench-foundation",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "0f0d0aa9c6315844f6452d3fefaf8594b2645ede9af455733785c300292652b9",
+    "documents_sha256": "05fa9f5ab2ecbb7cf6f1988a3986aeb8d270b285ed72bd6438306a5a206bd669",
+    "gate": "design_spec",
+    "plan_sha256": "caf2e9134c73fed34252a0967dd86b5aad37c95f32e5dae6cef5cfff27958b6c",
+    "schema_version": 2
+  },
+  "verdict": "changes_requested",
+  "summary": "P4/P5 amendment v2만 approved architecture-and-ui v4와 대조했습니다. 실제 SDK capacity 유지, receipt-only redaction, acceptance와 completion 구분, mutation 재전송 금지, window별 단일 store와 draft/resource 소유권은 기존 계약과 맞습니다. 그러나 coalesced read의 subscriber 한도와 취소 규칙, late mutation의 host 상태 반영 범위, lookup의 closed DTO가 아직 명확하지 않습니다. Consumer 구현 전에 아래 세 항목을 확정해야 합니다. Platform/design 선택과 전체 PRD는 재검토하지 않았습니다.",
+  "open_findings": [
+    {
+      "id": "DS-1",
+      "severity": "P1",
+      "artifact": "docs/runs/bounded-workbench-foundation/read-receipt-contract.md",
+      "location": "lines 7, 10-11",
+      "affected_consumer": "Host read admission, shared transport, coalesced read cancellation",
+      "finding": "Underlying logical identity는 class마다 하나로 제한하지만, 여기에 붙는 independent subscriber/readId 수는 제한하지 않습니다. 또 subscriber 하나의 취소나 deadline이 underlying signal을 언제 abort하는지 정하지 않았습니다.",
+      "evidence": "Line 10은 independent subscribers/deadlines를 허용합니다. Line 11은 cancellation/deadline에서 signal을 abort한다고 합니다. Subscriber 수 제한, 같은 sender/epoch의 active readId 재사용 규칙, 마지막 subscriber가 분리될 때의 처리 규칙은 없습니다.",
+      "impact": "동일 scope 요청을 반복하면 SDK 호출 수는 그대로여도 host의 대기 subscriber 수는 계속 늘 수 있습니다. 먼저 만료된 subscriber가 공유 signal을 abort하면, 아직 유효한 다른 subscriber의 read도 중단될 수 있습니다. 같은 active readId가 다른 scope에 쓰이면 cancel 대상도 불명확합니다.",
+      "smallest_correction": "Service 또는 sender별 subscriber 한도와 초과 시 고정 오류를 정하십시오. Active readId의 scope 변경을 거부하십시오. Subscriber 취소는 해당 subscriber만 분리하고, 공유 작업의 abort 시점과 task deadline을 명시하십시오. 만료되어 quarantine된 작업에 새 subscriber를 붙일 수 있는지도 정하십시오."
+    },
+    {
+      "id": "DS-2",
+      "severity": "P1",
+      "artifact": "docs/runs/bounded-workbench-foundation/read-receipt-contract.md",
+      "location": "lines 15-16",
+      "affected_consumer": "Host session.create/session.fork finalization, receipt reconciliation, snapshot refresh",
+      "finding": "Late mutation result는 receipt만 갱신할 수 있다는 규칙이 renderer projection과 host authoritative state를 구분하지 않습니다. 이를 문자 그대로 적용하면 늦게 성공한 session의 host 등록도 금지됩니다.",
+      "evidence": "Line 16은 late actual mutation result가 only its receipt를 갱신할 수 있다고 합니다. 기존 workbench-service.mjs lines 1040-1046에서는 native create 결과를 받은 뒤 addSession을 호출합니다. addSession의 host sessions 등록과 revision 갱신은 lines 245-270에 있습니다. Line 15는 receipt의 ID를 받은 renderer가 별도 snapshot으로 view를 갱신하도록 요구합니다.",
+      "impact": "Renderer timeout 뒤 native create가 성공하면 created receipt는 생겨도 host registry에는 session이 없을 수 있습니다. 그러면 별도 snapshot에 대상이 나타나지 않고, 그 ID를 사용하는 후속 작업도 실패합니다.",
+      "smallest_correction": "Late renderer 응답 적용 금지와 live host mutation의 완료 처리를 구분하십시오. 아직 유효한 host epoch와 operation scope에서는 같은 mutation의 authoritative registry/effect 처리를 완료하고 redacted receipt를 갱신할 수 있도록 명시하십시오. 만료된 scope나 삭제된 대상을 되살리는 처리는 계속 금지하십시오."
+    },
+    {
+      "id": "DS-3",
+      "severity": "P2",
+      "artifact": "docs/runs/bounded-workbench-foundation/read-receipt-contract.md",
+      "location": "lines 6, 15",
+      "affected_consumer": "V2 request validator, preload types, operation.lookup consumer",
+      "finding": "operation.lookup의 request와 missing/wrong-epoch response가 closed DTO로 정의되지 않았습니다.",
+      "evidence": "Line 6은 기존 exact WorkbenchRequest에 operation.lookup을 추가한다고 합니다. Line 15는 runtimeEpoch와 operationId가 필요하다고 하지만, lookup target operationId의 envelope/operation 위치를 정하지 않습니다. Found receipt는 필드가 있지만 missing/wrong-epoch uncertainty는 discriminant와 필드가 없습니다. 기존 desktop-bridge.d.ts에는 lookup request/response가 없으므로 재사용할 확정 DTO도 없습니다.",
+      "impact": "Host와 renderer가 서로 다른 request 구조나 uncertainty 응답을 구현할 수 있습니다. 특히 record가 없는 응답에는 기존 receipt의 필수 type/admission을 사실대로 채울 수 없습니다.",
+      "smallest_correction": "Lookup request의 필드 위치를 하나로 정하십시오. Found, missing, wrong-epoch를 구분하는 closed response union을 추가하십시오. Missing/wrong-epoch는 조회 대상 identity와 effect:unknown을 보존하고, 실제 admission이나 no-effect 증거를 만들어내지 않도록 명시하십시오."
+    }
+  ],
+  "review_boundary": {
+    "plan_revision": 2,
+    "amendment_version": 2,
+    "approved_architecture_version": 4,
+    "scope": "새 P4/P5 wire/read/receipt/state consumer amendment와 관련 호환성만 검토",
+    "limits": "문서와 기존 DTO/host consumer의 정적 검토입니다. Runtime enforcement는 검증하지 않았습니다."
+  },
+  "checks": [
+    {
+      "command": "python3 .solopreneur/harness.py review-input bounded-workbench-foundation --gate design_spec",
+      "result": "성공. 검토 시작과 종료 시 동일 binding을 확인했습니다."
+    },
+    {
+      "check": "Run, entry review, document registration, execution packet",
+      "result": "Run은 active입니다. Plan revision2 entry review는 pass입니다. Contract와 packet의 amendment v2 document hash가 일치합니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a10229-6e39-7cb2-8667-c5bd31efa5de",
+    "requested_model": "Sol",
+    "requested_effort": "high",
+    "runtime_identity_attested": false,
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "mode": "report_only",
+    "delegated": false,
+    "files_changed": [],
+    "tests_run": false,
+    "native_launches": false,
+    "persistence_owner": "primary"
+  }
+}

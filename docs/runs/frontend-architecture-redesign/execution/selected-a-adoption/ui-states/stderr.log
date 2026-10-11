@@ -1,0 +1,51 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toBeFocused() failed
+
+Locator:  getByRole('button', { name: '작업 공간 작업', exact: true })
+Expected: focused
+Received: inactive
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeFocused" getByRole('button', { name: '작업 공간 작업', exact: true }) with timeout 5000ms
+  - waiting for getByRole('button', { name: '작업 공간 작업', exact: true })
+    14 × locator resolved to <button type="button" id="radix-_r_10_" data-state="closed" aria-haspopup="menu" aria-label="작업 공간 작업" aria-expanded="false" class="_trigger_im3fx_1">…</button>
+       - unexpected value "inactive"
+
+    at captureRawStack (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright-core@1.63.0/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toBeFocused (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at assertOutsideDismissal (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:356:25)
+    at async file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:539:3 {
+  matcherResult: {
+    message: 'expect(locator).toBeFocused() failed\n' +
+      '\n' +
+      "Locator:  getByRole('button', { name: '작업 공간 작업', exact: true })\n" +
+      'Expected: focused\n' +
+      'Received: inactive\n' +
+      'Timeout:  5000ms\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeFocused" getByRole('button', { name: '작업 공간 작업', exact: true }) with timeout 5000ms\n` +
+      "  - waiting for getByRole('button', { name: '작업 공간 작업', exact: true })\n" +
+      '    14 × locator resolved to <button type="button" id="radix-_r_10_" data-state="closed" aria-haspopup="menu" aria-label="작업 공간 작업" aria-expanded="false" class="_trigger_im3fx_1">…</button>\n' +
+      '       - unexpected value "inactive"\n',
+    pass: false,
+    actual: 'inactive',
+    name: 'toBeFocused',
+    expected: 'focused',
+    log: [
+      `  - Expect "toBeFocused" getByRole('button', { name: '작업 공간 작업', exact: true }) with timeout 5000ms`,
+      "  - waiting for getByRole('button', { name: '작업 공간 작업', exact: true })",
+      '    14 × locator resolved to <button type="button" id="radix-_r_10_" data-state="closed" aria-haspopup="menu" aria-label="작업 공간 작업" aria-expanded="false" class="_trigger_im3fx_1">…</button>',
+      '       - unexpected value "inactive"'
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- button "작업 공간 작업":\n  - img'
+  }
+}
+
+Node.js v26.8.2

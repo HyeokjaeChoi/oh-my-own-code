@@ -1,0 +1,3169 @@
+{
+  "source_sha256": "d9289ae4cc3d77928cb317dcdeada402183eae2ae482ae5729c2eb8bf2e566e5",
+  "changed_path_count": 39,
+  "checks": [
+    "files",
+    "kernel",
+    "publication",
+    "hidden-ui",
+    "build",
+    "typecheck",
+    "boundaries",
+    "bundle",
+    "lint",
+    "format"
+  ],
+  "publication": {
+    "report": "evidence/publication-r3/publication-evidence.json",
+    "observations": [
+      {
+        "name": "exact-bytes-mode-backup-ipc",
+        "status": "pass"
+      },
+      {
+        "name": "maximum-escaped-64KiB",
+        "status": "pass"
+      },
+      {
+        "name": "blank-existing-file",
+        "status": "pass"
+      },
+      {
+        "name": "replaced-ancestor-before-stage",
+        "status": "pass"
+      },
+      {
+        "name": "staged-ancestor-symlink",
+        "status": "pass"
+      },
+      {
+        "name": "external-replacement",
+        "status": "pass"
+      },
+      {
+        "name": "external-inplace",
+        "status": "pass"
+      },
+      {
+        "name": "removed-leaf-no-create",
+        "status": "pass"
+      },
+      {
+        "name": "readonly-source-before-stage",
+        "status": "pass"
+      },
+      {
+        "name": "explicit-abort-keeps-original",
+        "status": "pass"
+      }
+    ],
+    "owned_exit": {
+      "pid": 62176,
+      "status": 0,
+      "signal": null
+    },
+    "before_after_equal": true
+  },
+  "hidden": {
+    "report": "evidence/hidden-r3/ui-states/ui-states-evidence.json",
+    "capture_records": 994,
+    "unique_png_files": 994,
+    "workspace_file_states": [
+      {
+        "state": "not-opened-desktop",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "ready",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "metrics": {
+          "reads": 0,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-not-opened-desktop-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 457.8515625,
+              "width": 304,
+              "height": 95.9765625,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-not-opened-desktop-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 547.421875,
+              "width": 304,
+              "height": 180,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              },
+              "text": ""
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-not-opened-desktop-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 741.21875,
+              "width": 304,
+              "height": 20.796875,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              },
+              "text": "UTF-8 0 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-not-opened-desktop-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 891.203125,
+              "width": 304,
+              "height": 20.796875,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              },
+              "text": "\uc800\uc7a5 \uae30\uc900\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uc5b4 \ud655\uc778\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-not-opened-desktop-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 488.828125,
+              "width": 109.3046875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-not-opened-desktop-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1199.421875,
+              "y": 844.40625,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "exact-bom-crlf-desktop",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "ready",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-exact-bom-crlf-desktop-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 457.8515625,
+              "width": 304,
+              "height": 95.9765625,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-exact-bom-crlf-desktop-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 547.421875,
+              "width": 304,
+              "height": 180,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              },
+              "text": "\ufeffSYNTHETIC TEXT\r\n\r\nExact whitespace.  \r\n"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-exact-bom-crlf-desktop-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 741.21875,
+              "width": 304,
+              "height": 20.796875,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              },
+              "text": "UTF-8 42 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-exact-bom-crlf-desktop-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 891.203125,
+              "width": 304,
+              "height": 20.796875,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              },
+              "text": "\ud3b8\uc9d1\ud560 \ud30c\uc77c\uc744 \ubd88\ub7ec\uc654\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-exact-bom-crlf-desktop-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 488.828125,
+              "width": 109.3046875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-exact-bom-crlf-desktop-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1199.421875,
+              "y": 844.40625,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "exact-bom-crlf-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "ready",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-exact-bom-crlf-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-exact-bom-crlf-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 179.91796875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ufeffSYNTHETIC TEXT\r\n\r\nExact whitespace.  \r\n"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-exact-bom-crlf-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.71484375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 42 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-exact-bom-crlf-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 375.19921875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\ud560 \ud30c\uc77c\uc744 \ubd88\ub7ec\uc654\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-exact-bom-crlf-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.57421875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-exact-bom-crlf-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 328.40234375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "confirmed-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "saved",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 1,
+          "intents": [
+            {
+              "runtimeEpoch": "fixture-runtime-v2",
+              "operationId": "031d541e-2f7f-44a8-85e8-107ea5ed81c7",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "path": "notes/SYNTHETIC-editor.txt"
+            }
+          ],
+          "receipts": [
+            {
+              "runtimeEpoch": "fixture-runtime-v2",
+              "operationId": "031d541e-2f7f-44a8-85e8-107ea5ed81c7",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "admission": "dispatched",
+              "delivery": "accepted",
+              "effect": "confirmed",
+              "revision": 199,
+              "evidence": [
+                {
+                  "kind": "host-registry",
+                  "id": "fixture-w"
+                }
+              ],
+              "result": {
+                "kind": "file_saved",
+                "workspaceId": "fixture-w",
+                "path": "notes/SYNTHETIC-editor.txt",
+                "version": "aeb487b7386432353ccdc3ce9184ef796fed6bd74547ac3640d21ccededd564e",
+                "digest": "4aaaa0f0fcc82b5f87958043ee611d12062203d8619d6c339a7a10013ab442eb",
+                "backupId": ".omoc-configuration-aba3e6a0dacd061a9438ee0e9d8e8c02c9ca21b421791b6cccd08a166d50cb70.file.backup"
+              }
+            }
+          ]
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-confirmed-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-confirmed-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 179.91796875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ufeffSYNTHETIC KEYBOARD EDIT\r\n\r\nTrailing spaces.  \r\n"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-confirmed-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.71484375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 50 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-confirmed-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 296.69921875,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5\uc744 \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4. \ub2e4\uc2dc \uc800\uc7a5\ud558\ub824\uba74 \ud3b8\uc9d1\uc6a9\uc73c\ub85c \ub2e4\uc2dc \uc5ec\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-confirmed-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.57421875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-confirmed-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 252.65234375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "explicit-reread-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "ready",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 2,
+          "effects": 1,
+          "intents": [
+            {
+              "runtimeEpoch": "fixture-runtime-v2",
+              "operationId": "031d541e-2f7f-44a8-85e8-107ea5ed81c7",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "path": "notes/SYNTHETIC-editor.txt"
+            }
+          ],
+          "receipts": [
+            {
+              "runtimeEpoch": "fixture-runtime-v2",
+              "operationId": "031d541e-2f7f-44a8-85e8-107ea5ed81c7",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "admission": "dispatched",
+              "delivery": "accepted",
+              "effect": "confirmed",
+              "revision": 199,
+              "evidence": [
+                {
+                  "kind": "host-registry",
+                  "id": "fixture-w"
+                }
+              ],
+              "result": {
+                "kind": "file_saved",
+                "workspaceId": "fixture-w",
+                "path": "notes/SYNTHETIC-editor.txt",
+                "version": "aeb487b7386432353ccdc3ce9184ef796fed6bd74547ac3640d21ccededd564e",
+                "digest": "4aaaa0f0fcc82b5f87958043ee611d12062203d8619d6c339a7a10013ab442eb",
+                "backupId": ".omoc-configuration-aba3e6a0dacd061a9438ee0e9d8e8c02c9ca21b421791b6cccd08a166d50cb70.file.backup"
+              }
+            }
+          ]
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-explicit-reread-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-explicit-reread-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 179.91796875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ufeffSYNTHETIC KEYBOARD EDIT\r\n\r\nTrailing spaces.  \r\n"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-explicit-reread-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.71484375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 50 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-explicit-reread-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 375.19921875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\ud560 \ud30c\uc77c\uc744 \ubd88\ub7ec\uc654\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-explicit-reread-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.57421875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-explicit-reread-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 328.40234375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "blank-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "ready",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-blank-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-blank-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 179.91796875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": ""
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-blank-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.71484375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 0 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-blank-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 375.19921875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\ud560 \ud30c\uc77c\uc744 \ubd88\ub7ec\uc654\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-blank-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.57421875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-blank-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 328.40234375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "limit-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "ready",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-limit-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-limit-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 179.91796875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-limit-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.71484375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 65,536 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-limit-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 375.19921875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\ud560 \ud30c\uc77c\uc744 \ubd88\ub7ec\uc654\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-limit-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.57421875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-limit-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 328.40234375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "missing-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "unavailable",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-missing-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-missing-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 179.91796875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": ""
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-missing-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.71484375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 0 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-missing-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 354.44921875,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uae30\uc874 \ud30c\uc77c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \uc5ec\uae30\uc5d0\uc11c\ub294 \uc0c8 \ud30c\uc77c\uc744 \ub9cc\ub4e4 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-missing-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.57421875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-missing-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 307.65234375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "denied-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "denied",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-denied-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-denied-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 179.91796875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": ""
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-denied-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.71484375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 0 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-denied-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 375.19921875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c\uc744 \uc77d\uc744 \uad8c\ud55c \ub610\ub294 \uacbd\ub85c \uad8c\ud55c\uc744 \ud655\uc778\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-denied-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.57421875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-denied-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 328.40234375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "unsupported-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "unavailable",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-unsupported-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-unsupported-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 179.91796875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": ""
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-unsupported-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.71484375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 0 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-unsupported-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 375.19921875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc774 \ud30c\uc77c\uc740 \uc9c0\uc6d0\ud558\ub294 UTF-8 \ud14d\uc2a4\ud2b8\uac00 \uc544\ub2d9\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-unsupported-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.57421875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-unsupported-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 328.40234375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "oversize-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "unavailable",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-oversize-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-oversize-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 179.91796875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": ""
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-oversize-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.71484375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 0 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-oversize-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 375.19921875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\ud560 \ud30c\uc77c\uc740 UTF-8 \uae30\uc900 64KiB \uc774\ud558\uc5ec\uc57c \ud569\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-oversize-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.57421875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-oversize-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 328.40234375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "protected-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "unavailable",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/AGENTS.md",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 0,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-protected-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/AGENTS.md"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-protected-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 180.10546875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": ""
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-protected-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.65234375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 0 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-protected-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 333.63671875,
+              "width": 303,
+              "height": 62.390625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ubcf4\ud638\ub41c \uc124\uc815 \ud30c\uc77c\uc785\ub2c8\ub2e4. \uc9c0\uc6d0\ub418\ub294 \uad6c\uc131\uc740 \ub7f0\ud0c0\uc784 \ubaa9\ub85d\uc758 \uc9c0\uce68\u00b7MCP\u00b7Skills\u00b7Agents \uc804\uc6a9 \ud3b8\uc9d1\uae30\ub97c \uc0ac\uc6a9\ud558\uc138\uc694. \uadf8 \ubc16\uc758 \ubcf4\ud638\ub41c \ud30c\uc77c\uc740 \ud574\ub2f9 \uc804\uc6a9 \ub3c4\uad6c\uc5d0\uc11c \ud3b8\uc9d1\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-protected-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.51171875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-protected-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 286.83984375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "escape-cancel-late-read-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "ready",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-escape-cancel-late-read-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-escape-cancel-late-read-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 179.91796875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": ""
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-escape-cancel-late-read-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.71484375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 0 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-escape-cancel-late-read-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 375.19921875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc77d\uae30\ub97c \ucde8\uc18c\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-escape-cancel-late-read-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.57421875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-escape-cancel-late-read-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 328.40234375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "external-changed-retained-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "changed",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": [
+            {
+              "runtimeEpoch": "fixture-runtime-v2",
+              "operationId": "95ec663a-0bc3-4278-844a-98fb38ce3abe",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "admission": "rejected",
+              "delivery": "pending",
+              "effect": "none",
+              "revision": 209,
+              "evidence": [],
+              "result": {
+                "kind": "rejected",
+                "code": "FILE_CHANGED"
+              }
+            }
+          ]
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-external-changed-retained-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-external-changed-retained-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 179.91796875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "SYNTHETIC NEWER RETAINED DRAFT\r\n"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-external-changed-retained-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.71484375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 32 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-external-changed-retained-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 333.69921875,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c\uc774 \uc678\ubd80\uc5d0\uc11c \ubcc0\uacbd\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ucd08\uc548\uc740 \uc720\uc9c0\ub429\ub2c8\ub2e4. \ud3b8\uc9d1\uc6a9\uc73c\ub85c \ub2e4\uc2dc \uc5f4\uc5b4 \ube44\uad50\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-external-changed-retained-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.57421875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-external-changed-retained-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 286.90234375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "save-denied-retained-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "denied",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": [
+            {
+              "runtimeEpoch": "fixture-runtime-v2",
+              "operationId": "725335d3-b5e9-4735-ab3e-c3bcd566cc0b",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "admission": "rejected",
+              "delivery": "pending",
+              "effect": "none",
+              "revision": 211,
+              "evidence": [],
+              "result": {
+                "kind": "rejected",
+                "code": "FILE_DENIED"
+              }
+            }
+          ]
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-save-denied-retained-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-save-denied-retained-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 179.91796875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "SYNTHETIC NEWER RETAINED DRAFT\r\n"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-save-denied-retained-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.71484375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 32 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-save-denied-retained-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 333.69921875,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc4f0\uae30 \uad8c\ud55c \ub610\ub294 \uacbd\ub85c \uad8c\ud55c\uc744 \ud655\uc778\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ucd08\uc548\uc740 \uc720\uc9c0\ub429\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-save-denied-retained-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.57421875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-save-denied-retained-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 286.90234375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "unknown-retained-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "unknown",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 1,
+          "intents": [
+            {
+              "runtimeEpoch": "fixture-runtime-v2",
+              "operationId": "30907171-25d8-4b90-bf6f-43ae2f10f125",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "path": "notes/SYNTHETIC-editor.txt"
+            }
+          ],
+          "receipts": [
+            {
+              "runtimeEpoch": "fixture-runtime-v2",
+              "operationId": "30907171-25d8-4b90-bf6f-43ae2f10f125",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "admission": "dispatched",
+              "delivery": "unknown",
+              "effect": "unknown",
+              "revision": 213,
+              "evidence": []
+            }
+          ]
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-unknown-retained-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-unknown-retained-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 180.05859375,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "SYNTHETIC NEWER RETAINED DRAFT\r\n"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-unknown-retained-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.60546875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 32 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-unknown-retained-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 312.83984375,
+              "width": 303,
+              "height": 62.390625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc800\uc7a5 \uacb0\uacfc\ub97c \ud655\uc778\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc6d0\ub798 \uc694\uccad\uc758 \uacb0\uacfc\ub9cc \uc870\ud68c\ud558\uba70 \uc790\ub3d9\uc73c\ub85c \ub2e4\uc2dc \uc800\uc7a5\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ucd08\uc548\uc740 \uc720\uc9c0\ub429\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-unknown-retained-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.71484375,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-unknown-retained-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 266.04296875,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-unknown-retained-narrow200-held-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 238.82421875,
+              "width": 303,
+              "height": 62.390625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc774\uc804 \ud30c\uc77c \uc694\uccad\uc758 \uc885\ub8cc \ub610\ub294 \uc791\uc5c5 \uacf5\uac04\uc758 \ubcf5\uad6c \ud655\uc778\uc744 \uae30\ub2e4\ub9bd\ub2c8\ub2e4. \ucd08\uc548\uc740 \uc120\ud0dd\ud558\uace0 \uc218\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \uc77d\uae30\uc640 \uc800\uc7a5\uc740 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "pending-save-retained-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "loading",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 1,
+          "intents": [
+            {
+              "runtimeEpoch": "fixture-runtime-v2",
+              "operationId": "720b5e9e-ac98-4ab6-9900-e163d50ea032",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "path": "notes/SYNTHETIC-editor.txt"
+            }
+          ],
+          "receipts": [
+            {
+              "runtimeEpoch": "fixture-runtime-v2",
+              "operationId": "720b5e9e-ac98-4ab6-9900-e163d50ea032",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "admission": "dispatched",
+              "delivery": "pending",
+              "effect": "none",
+              "revision": 214,
+              "evidence": []
+            }
+          ]
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-pending-save-retained-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-pending-save-retained-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 180.05859375,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "SYNTHETIC NEWER RETAINED DRAFT\r\n"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-pending-save-retained-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.60546875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 32 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-pending-save-retained-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 333.58984375,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5 \uacb0\uacfc\ub97c \ud655\uc778\ud558\ub294 \uc911\uc785\ub2c8\ub2e4. \uc804\uc1a1\ud55c \uc800\uc7a5 \uc694\uccad\uc740 \ucde8\uc18c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-pending-save-retained-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.71484375,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-pending-save-retained-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 286.79296875,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-pending-save-retained-narrow200-held-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 238.82421875,
+              "width": 303,
+              "height": 62.390625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc774\uc804 \ud30c\uc77c \uc694\uccad\uc758 \uc885\ub8cc \ub610\ub294 \uc791\uc5c5 \uacf5\uac04\uc758 \ubcf5\uad6c \ud655\uc778\uc744 \uae30\ub2e4\ub9bd\ub2c8\ub2e4. \ucd08\uc548\uc740 \uc120\ud0dd\ud558\uace0 \uc218\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \uc77d\uae30\uc640 \uc800\uc7a5\uc740 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "late-ack-newer-draft-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "saved",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 1,
+          "intents": [
+            {
+              "runtimeEpoch": "fixture-runtime-v2",
+              "operationId": "720b5e9e-ac98-4ab6-9900-e163d50ea032",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "path": "notes/SYNTHETIC-editor.txt"
+            }
+          ],
+          "receipts": [
+            {
+              "runtimeEpoch": "fixture-runtime-v2",
+              "operationId": "720b5e9e-ac98-4ab6-9900-e163d50ea032",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "admission": "dispatched",
+              "delivery": "accepted",
+              "effect": "confirmed",
+              "revision": 215,
+              "evidence": [
+                {
+                  "kind": "host-registry",
+                  "id": "fixture-w"
+                }
+              ],
+              "result": {
+                "kind": "file_saved",
+                "workspaceId": "fixture-w",
+                "path": "notes/SYNTHETIC-editor.txt",
+                "version": "eaa366a21e3e08400d39aaf994fba4a02f04d934ac4e0acf241a78ab8c448686",
+                "digest": "7b2a739482517772130d4d3a2549c52b4cf27ad6b671e7fcbea805a7a253381a",
+                "backupId": ".omoc-configuration-c101de3a7e1ef5d21e7c374b86bd8d74ae74a9652c234abe7c95d2a737bbd03d.file.backup"
+              }
+            }
+          ]
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-late-ack-newer-draft-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 221.9765625,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-late-ack-newer-draft-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 180.06640625,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "SYNTHETIC NEWER RETAINED DRAFT\r\n"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-late-ack-newer-draft-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.61328125,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 32 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-late-ack-newer-draft-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 333.59765625,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc774\uc804 \ucd08\uc548\uc758 \uc800\uc7a5\uc744 \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4. \ub354 \ucd5c\uadfc\uc5d0 \uc218\uc815\ud55c \ucd08\uc548\uc740 \uc720\uc9c0\ub429\ub2c8\ub2e4. \ud3b8\uc9d1\uc6a9\uc73c\ub85c \ub2e4\uc2dc \uc5f4\uc5b4 \ube44\uad50\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-late-ack-newer-draft-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.72265625,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-late-ack-newer-draft-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 286.80078125,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          }
+        ]
+      },
+      {
+        "state": "held-editable-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "ready",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 0,
+          "effects": 0,
+          "intents": [],
+          "receipts": [
+            {
+              "runtimeEpoch": "fixture-original-file-epoch",
+              "operationId": "fixture-original-file-save",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "admission": "dispatched",
+              "delivery": "unknown",
+              "effect": "unknown",
+              "revision": 216,
+              "evidence": []
+            }
+          ]
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-held-editable-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-held-editable-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 180.05859375,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "SYNTHETIC HELD OR UNTRUSTED EDIT"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-held-editable-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.60546875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 32 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-held-editable-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 375.08984375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc800\uc7a5 \uae30\uc900\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uc5b4 \ud655\uc778\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-held-editable-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.71484375,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-held-editable-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 328.29296875,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-held-editable-narrow200-held-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 238.82421875,
+              "width": 303,
+              "height": 62.390625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc774\uc804 \ud30c\uc77c \uc694\uccad\uc758 \uc885\ub8cc \ub610\ub294 \uc791\uc5c5 \uacf5\uac04\uc758 \ubcf5\uad6c \ud655\uc778\uc744 \uae30\ub2e4\ub9bd\ub2c8\ub2e4. \ucd08\uc548\uc740 \uc120\ud0dd\ud558\uace0 \uc218\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \uc77d\uae30\uc640 \uc800\uc7a5\uc740 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "untrusted-editable-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "ready",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 0,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-untrusted-editable-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-untrusted-editable-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 180.10546875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "SYNTHETIC HELD OR UNTRUSTED EDIT"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-untrusted-editable-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.65234375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 32 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-untrusted-editable-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 375.13671875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc800\uc7a5 \uae30\uc900\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uc5b4 \ud655\uc778\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-untrusted-editable-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.51171875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-untrusted-editable-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 328.33984375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-untrusted-editable-narrow200-trust-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 228.32421875,
+              "width": 303,
+              "height": 83.1875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc2e0\ub8b0\ud558\uc9c0 \uc54a\ub294 \uc791\uc5c5 \uacf5\uac04\uc785\ub2c8\ub2e4. \uae30\uc874 \u2018\uc0c8 \uc138\uc158\u2019\uc5d0\uc11c \uc2e0\ub8b0\ub97c \ud655\uc778\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc774 \uc791\uc5c5\uc740 \uc0c8 \uc138\uc158\uc744 \ub9cc\ub4ed\ub2c8\ub2e4. \uc2e0\ub8b0 \ud655\uc778 \ud6c4 \u2018\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30\u2019\ub97c \uc9c1\uc811 \ub20c\ub7ec\uc57c \ud569\ub2c8\ub2e4. \ud30c\uc77c\uc774\ub098 \uad6c\uc131\uc744 \uc790\ub3d9\uc73c\ub85c \ubd88\ub7ec\uc624\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "restored-original-editable-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "ready",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 0,
+          "effects": 0,
+          "intents": [],
+          "receipts": [
+            {
+              "runtimeEpoch": "fixture-original-file-epoch",
+              "operationId": "fixture-original-file-save",
+              "type": "file.save",
+              "workspaceId": "fixture-w",
+              "admission": "dispatched",
+              "delivery": "unknown",
+              "effect": "unknown",
+              "revision": 218,
+              "evidence": []
+            }
+          ]
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-restored-original-editable-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-restored-original-editable-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 180.05859375,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "SYNTHETIC HELD OR UNTRUSTED EDIT"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-restored-original-editable-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.60546875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 32 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-restored-original-editable-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 375.08984375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc800\uc7a5 \uae30\uc900\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uc5b4 \ud655\uc778\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-restored-original-editable-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.71484375,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-restored-original-editable-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 328.29296875,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-restored-original-editable-narrow200-held-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 238.82421875,
+              "width": 303,
+              "height": 62.390625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc774\uc804 \ud30c\uc77c \uc694\uccad\uc758 \uc885\ub8cc \ub610\ub294 \uc791\uc5c5 \uacf5\uac04\uc758 \ubcf5\uad6c \ud655\uc778\uc744 \uae30\ub2e4\ub9bd\ub2c8\ub2e4. \ucd08\uc548\uc740 \uc120\ud0dd\ud558\uace0 \uc218\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \uc77d\uae30\uc640 \uc800\uc7a5\uc740 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "epoch-retained-draft-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "changed",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-epoch-retained-draft-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-epoch-retained-draft-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 180.05859375,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "SYNTHETIC SELECTABLE RETAINED EDIT"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-epoch-retained-draft-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.60546875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 34 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-epoch-retained-draft-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 354.33984375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc800\uc7a5 \uae30\uc900\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uc5b4 \ud655\uc778\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-epoch-retained-draft-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.71484375,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-epoch-retained-draft-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 307.54296875,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-epoch-retained-draft-narrow200-retained-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 238.82421875,
+              "width": 303,
+              "height": 62.390625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc774\uc804 \uc5f0\uacb0\uc758 \ucd08\uc548\uc785\ub2c8\ub2e4. \ub0b4\uc6a9\uc744 \uc120\ud0dd\ud558\uace0 \uc218\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uc744 \uc77d\uac70\ub098 \uc800\uc7a5\ud558\ub824\uba74 \ubaa9\ub85d\uc5d0\uc11c \ud604\uc7ac \uc5f0\uacb0\uc758 \ud30c\uc77c\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          }
+        ]
+      },
+      {
+        "state": "root-retained-draft-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "changed",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-root-retained-draft-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-root-retained-draft-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 180.05859375,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "SYNTHETIC SELECTABLE RETAINED EDIT"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-root-retained-draft-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.60546875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 34 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-root-retained-draft-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 354.33984375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc800\uc7a5 \uae30\uc900\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uc5b4 \ud655\uc778\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-root-retained-draft-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.71484375,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-root-retained-draft-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 307.54296875,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-root-retained-draft-narrow200-retained-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 238.82421875,
+              "width": 303,
+              "height": 62.390625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc774\uc804 \uc5f0\uacb0\uc758 \ucd08\uc548\uc785\ub2c8\ub2e4. \ub0b4\uc6a9\uc744 \uc120\ud0dd\ud558\uace0 \uc218\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uc744 \uc77d\uac70\ub098 \uc800\uc7a5\ud558\ub824\uba74 \ubaa9\ub85d\uc5d0\uc11c \ud604\uc7ac \uc5f0\uacb0\uc758 \ud30c\uc77c\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          }
+        ]
+      },
+      {
+        "state": "trust-retained-draft-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "changed",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-trust-retained-draft-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-trust-retained-draft-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 180.10546875,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "SYNTHETIC SELECTABLE RETAINED EDIT"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-trust-retained-draft-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.65234375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 34 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-trust-retained-draft-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 354.38671875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc800\uc7a5 \uae30\uc900\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uc5b4 \ud655\uc778\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-trust-retained-draft-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.51171875,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-trust-retained-draft-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 307.58984375,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-trust-retained-draft-narrow200-trust-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 228.32421875,
+              "width": 303,
+              "height": 83.1875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc2e0\ub8b0\ud558\uc9c0 \uc54a\ub294 \uc791\uc5c5 \uacf5\uac04\uc785\ub2c8\ub2e4. \uae30\uc874 \u2018\uc0c8 \uc138\uc158\u2019\uc5d0\uc11c \uc2e0\ub8b0\ub97c \ud655\uc778\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc774 \uc791\uc5c5\uc740 \uc0c8 \uc138\uc158\uc744 \ub9cc\ub4ed\ub2c8\ub2e4. \uc2e0\ub8b0 \ud655\uc778 \ud6c4 \u2018\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30\u2019\ub97c \uc9c1\uc811 \ub20c\ub7ec\uc57c \ud569\ub2c8\ub2e4. \ud30c\uc77c\uc774\ub098 \uad6c\uc131\uc744 \uc790\ub3d9\uc73c\ub85c \ubd88\ub7ec\uc624\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "hold-retained-draft-narrow200",
+        "syntheticOnly": true,
+        "actualRendererPreload": true,
+        "visibleState": "changed",
+        "selectableFullTarget": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+        "selectionOnlyClipboardNotInspected": true,
+        "keyboardForwardBackward": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "metrics": {
+          "reads": 1,
+          "effects": 0,
+          "intents": [],
+          "receipts": []
+        },
+        "frames": [
+          {
+            "filename": "desktop-workspace-file-hold-retained-draft-narrow200-target-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.078125,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-hold-retained-draft-narrow200-text-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 180.05859375,
+              "width": 303,
+              "height": 180,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "SYNTHETIC SELECTABLE RETAINED EDIT"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-hold-retained-draft-narrow200-bytes-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.60546875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "UTF-8 34 / 65,536 bytes"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-hold-retained-draft-narrow200-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 354.33984375,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc800\uc7a5 \uae30\uc900\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uc5b4 \ud655\uc778\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-hold-retained-draft-narrow200-open-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 252.71484375,
+              "width": 109.30078125,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud3b8\uc9d1\uc6a9\uc73c\ub85c \uc5f4\uae30"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-hold-retained-draft-narrow200-save-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 140.421875,
+              "y": 307.54296875,
+              "width": 73.421875,
+              "height": 34.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5"
+            }
+          },
+          {
+            "filename": "desktop-workspace-file-hold-retained-draft-narrow200-held-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 238.82421875,
+              "width": 303,
+              "height": 62.390625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc774\uc804 \ud30c\uc77c \uc694\uccad\uc758 \uc885\ub8cc \ub610\ub294 \uc791\uc5c5 \uacf5\uac04\uc758 \ubcf5\uad6c \ud655\uc778\uc744 \uae30\ub2e4\ub9bd\ub2c8\ub2e4. \ucd08\uc548\uc740 \uc120\ud0dd\ud558\uace0 \uc218\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \uc77d\uae30\uc640 \uc800\uc7a5\uc740 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      }
+    ],
+    "owned_exit": {
+      "exited": true,
+      "code": 0
+    },
+    "provenance_verified_after": true
+  },
+  "failure_history": [
+    "Main missing handler initial7 RED corrected; exact publisher service synthetic15 PASS",
+    "Main independent workspace initially untrusted synthetic fixture corrected via actual session.create trust path",
+    "Main staged token cleanup authority-change reproducer RED corrected to retain token before authority recheck",
+    "Renderer host digest expectedRevision mismatch and actual predispatch subscriber races RED/GREEN",
+    "Fixture initial missing setWorkspaceFileState RED/GREEN",
+    "Hidden-r2 actual protected-path read button enabled; Main disabled using existing lexical protection without host/API change",
+    "Hidden-r1 actual responsive preview remount cleared editor authority; owned Electron exit0; Main meaningful Node RED/GREEN decoupled preview lifecycle without loosening target scope"
+  ],
+  "limits": [
+    "Darwin arm64 dev resource proof; no new packaged/Windows/power-loss acceptance",
+    "Synthetic contained ordinary files only; no real projects/private stores/provider/production Main",
+    "UI actual built Renderer/preload uses synthetic host fixtures; actual descriptor publisher proved separately via pinned staged Bun",
+    "No new files/deletion/Git/diff/restore/commit; whole AC11 and product unfinished",
+    "Independent CODE and RENDER verdicts required after this verification"
+  ]
+}

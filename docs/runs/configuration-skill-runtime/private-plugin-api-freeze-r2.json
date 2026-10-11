@@ -1,0 +1,24 @@
+{
+  "status": "Actual private API corrected against pinned Native adapters; public consumers still held",
+  "sources": {
+    "apps/desktop-app/src/native-skills-protocol.mjs": "240592970dc4c23fb8e1e75df705002a4baf54316fc157828ff93565e1463a7d",
+    "apps/desktop-app/src/native-skills-client.mjs": "f4df2e04e0fc5f1b8eab04003df5f6e38439adc4c802593e7db947e7ca9dbdc8",
+    "apps/desktop-app/src/native-skills-config.mjs": "c2760a03fef4b59bb3c8cc633f4ed3b65d612bad76d8f3dfb74c19afb9987940",
+    "apps/desktop-app/src/builtins/workbench-skills/server.mjs": "4faef4e0dc51f645c753c8240260381e4e39998ae1396005210d2d6265aa1841",
+    "apps/desktop-app/src/builtins/workbench-skills/package.json": "1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120",
+    "apps/desktop-app/src/native-skills-plugin.test.mjs": "f0f33ca121a4d3c185a0c81d288ad76670c7784d24fa685738ecab9efc20cee8",
+    "apps/desktop-app/src/native-skills-host.test.mjs": "a057b0bda47e3bc7d61e00205f5b6e6b662656bae4da6a785c9325bad4ba5bfd"
+  },
+  "corrections": [
+    "Actual Promise Skill endpoint returns located {location,data}, not array",
+    "Pinned Effect JSON adapter rejects pattern and drops excess keys; portable Standard Schema preserves raw closed validation for all inputs/results/errors"
+  ],
+  "requestResponseShapes": "unchanged three private methods; existing exact nonce/root/owner/digest authorities preserved; no public DTO or factory changes",
+  "evidence": [
+    "actual-located-list-red-r1.log",
+    "actual-located-list-green-r1.log",
+    "actual-rpc-adapter-red-r1.log",
+    "actual-rpc-adapter-green-r1.log"
+  ],
+  "previousNativeFailures": "native-r1/native-r2 preserved with owned Native/helper exit0 and before-after identity equality"
+}

@@ -1,0 +1,302 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "74e94d32605e48f5409237a1f7011513f268afdf587cdd57e5c91a7250f6f210",
+    "environment_sha256": "bacf8adbff4f9456ca8a2a573639879c6a3e78fe2c28f59554817c8ea8eda549",
+    "gate": "design",
+    "plan_sha256": "cf146f005eabf60e801da26eea13ab21d2ba9c9445cc45755c95678dc6b8d585",
+    "schema_version": 2,
+    "source_sha256": "98f8c758f463783736f7b7503d01602717afbb875a6955b7c0dc0d5db9e978f6",
+    "verification_sha256": "9f70827935fd952b1dc8245b7575d75e7c4513a25ac7df6cfd3f129ed5de9361",
+    "work_class_sha256": "115fbe71d56e7138f356b9a6d0773987ea42790493b418152303638f5185bd07"
+  },
+  "verdict": "pass",
+  "summary": "RENDER 검토를 통과했습니다. 현재 PNG 22개와 이전 PNG 3개를 view_image로 직접 열었습니다. R5-DESIGN-01의 잘못된 저장 안내는 수정되었습니다. R5-DESIGN-02의 Save 캡처 누락도 해결되었습니다. standard 760px/zoom2와 추가 360px/zoom2에서 대상, Save 버튼, 결과, 관찰 버전, 전체 backup 경로를 각 전용 프레임에서 읽을 수 있습니다. 파일 저장과 runtime 적용도 구분됩니다. 검토 범위에서 추가 수정 사항을 찾지 못했습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11955-da18-7e41-b7d0-f0583a7ae321",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "inspected_captures": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "current_root": "docs/runs/configuration-save/evidence/hidden-r4/ui-states",
+    "prior_root": "docs/runs/configuration-save/evidence/hidden-r3/ui-states",
+    "origin": "저장된 실제 built Electron renderer/preload 캡처입니다. Main은 test-only synthetic fixture입니다. 지정된 이미지의 captureMethod는 BrowserWindow.webContents.capturePage().toPNG()입니다. 보고서와 manifest는 hidden, nonfocusable 실행 및 provider 미실행을 기록합니다.",
+    "inspection": "현재 22개와 이전 3개를 view_image로 직접 확인했습니다. Main의 시각 판정을 승계하지 않았습니다. 새 렌더 실행은 하지 않았습니다.",
+    "pixel_dimension_verification": {
+      "current_png_headers_checked": 88,
+      "current_header_vs_report_mismatches": 0,
+      "current_directly_viewed": 22,
+      "current_save_directly_viewed": 17,
+      "prior_directly_viewed_and_headers_checked": 3,
+      "observed_capture_dimension_mismatches": 0,
+      "method": "PNG signature와 IHDR의 실제 폭·높이를 읽고 각 보고서의 pixelDimensions, viewport, pixelRatio, contentBounds, zoomFactor와 대조했습니다."
+    },
+    "binding_verification": {
+      "current_review_input_matches_exact_input": true,
+      "source_freeze_paths_checked": 44,
+      "source_freeze_hash_or_mode_mismatches": 0,
+      "current_provenance_unique_files_checked": 119,
+      "current_provenance_hash_size_or_mode_mismatches": 0,
+      "build_stamp_hash_matches": true
+    },
+    "save_capture_verification": {
+      "source": "apps/desktop-app/scripts/e2e-workbench-states.mjs:3172",
+      "observation": "captureSaveElement는 두 번의 requestAnimationFrame을 기다립니다. 그 뒤 현재 요소를 가운데로 스크롤하고 toBeInViewport({ratio:1})로 전체 요소의 가시성을 확인한 다음 캡처합니다. 두 narrow 세트에 같은 절차를 적용합니다. 실제 PNG에서도 각 지정 요소가 고정 header와 footer 사이에 보입니다.",
+      "backup_path": "/synthetic/configuration-workspace/.omoc-configuration-91cb2b0e6307efbd4472e57052beb565d36a237e713e1cbd4ce3f6bb4b69718a.instructions.backup",
+      "backup_observation": "일반 backup 프레임과 두 narrow backup 프레임에서 전체 경로와 basename 끝까지 읽었습니다. 줄바꿈으로 표시되며 생략 표시는 없습니다.",
+      "selectable_source": "configuration-drafts/index.tsx는 전체 backupPath를 styles.path에 표시합니다. drafts.module.css의 .path는 overflow-wrap:anywhere와 user-select:text를 사용합니다. 실제 텍스트 선택 동작을 새로 실행한 것은 아닙니다."
+    },
+    "groups": [
+      {
+        "root": "current_root",
+        "content_bounds": {
+          "width": 1440,
+          "height": 928
+        },
+        "viewport": {
+          "width": 1440,
+          "height": 928,
+          "pixelRatio": 2
+        },
+        "zoomFactor": 1,
+        "actual_png_dimensions": {
+          "width": 2880,
+          "height": 1856
+        },
+        "captures": [
+          {
+            "file": "desktop-configuration-normal-synthetic.png",
+            "observation": "파일을 불러와 비교한 뒤 저장할 수 있다고 안내합니다. runtime 적용과 연결 변경의 미제공 상태를 따로 설명합니다. R5-DESIGN-01 수정이 보입니다."
+          },
+          {
+            "file": "desktop-configuration-save-confirmed-synthetic.png",
+            "observation": "저장 대상, Save 버튼, 저장 완료, runtime 별도 안내, 관찰 버전과 전체 backup 경로가 보입니다."
+          },
+          {
+            "file": "desktop-configuration-save-confirmed-backup-synthetic.png",
+            "observation": "전체 backup 경로와 .instructions.backup 끝부분이 잘리지 않고 보입니다."
+          },
+          {
+            "file": "desktop-configuration-save-denied-synthetic.png",
+            "observation": "저장 취소, 작성 내용 유지, 다시 불러와 비교하라는 안내가 보입니다. Save는 비활성 상태입니다."
+          },
+          {
+            "file": "desktop-configuration-save-conflict-synthetic.png",
+            "observation": "외부 파일 변경과 재불러오기 안내가 보입니다. denied와 다른 문구입니다. Save는 비활성 상태입니다."
+          },
+          {
+            "file": "desktop-configuration-save-pending-newer-synthetic.png",
+            "observation": "이전 초안 버전 2의 처리 중 상태와 현재 수정의 미저장 상태를 구분합니다. newer draft 텍스트와 textarea 포커스가 보입니다."
+          },
+          {
+            "file": "desktop-configuration-save-previous-revision-synthetic.png",
+            "observation": "이전 초안 버전 2의 저장 성공과 현재 수정의 미저장 상태를 구분합니다. runtime 적용은 별도라고 안내합니다."
+          },
+          {
+            "file": "desktop-configuration-save-unknown-synthetic.png",
+            "observation": "결과 불명, 원본 변경 가능성, 재시도·불러오기 중지와 복구 안내가 보입니다. 저장 성공 표시는 없습니다. 초안과 textarea 포커스가 보입니다."
+          }
+        ]
+      },
+      {
+        "root": "current_root",
+        "purpose": "standard 760px/zoom2 Save 증거",
+        "content_bounds": {
+          "width": 760,
+          "height": 568
+        },
+        "viewport": {
+          "width": 380,
+          "height": 284,
+          "pixelRatio": 4
+        },
+        "zoomFactor": 2,
+        "actual_png_dimensions": {
+          "width": 1520,
+          "height": 1136
+        },
+        "captures": [
+          {
+            "file": "desktop-configuration-save-narrow200-target-synthetic.png",
+            "observation": "전체 저장 대상 /synthetic/configuration-workspace/AGENTS.md가 두 줄로 보입니다."
+          },
+          {
+            "file": "desktop-configuration-save-narrow200-control-synthetic.png",
+            "observation": "파일에 저장 버튼 전체가 보입니다. confirmed 상태이므로 비활성입니다."
+          },
+          {
+            "file": "desktop-configuration-save-narrow200-synthetic.png",
+            "observation": "파일에 저장됨과 runtime 적용은 별도라는 결과 문구 전체가 보입니다."
+          },
+          {
+            "file": "desktop-configuration-save-narrow200-version-synthetic.png",
+            "observation": "관찰 버전 label과 64자리 값 전체가 줄바꿈되어 보입니다."
+          },
+          {
+            "file": "desktop-configuration-save-narrow200-backup-synthetic.png",
+            "observation": "전체 backup 경로가 줄바꿈되어 보입니다. 마지막 backup의 up까지 footer 위에 보입니다."
+          }
+        ]
+      },
+      {
+        "root": "current_root",
+        "purpose": "추가 360px/zoom2 Save 증거",
+        "content_bounds": {
+          "width": 360,
+          "height": 768
+        },
+        "viewport": {
+          "width": 180,
+          "height": 384,
+          "pixelRatio": 4
+        },
+        "zoomFactor": 2,
+        "actual_png_dimensions": {
+          "width": 720,
+          "height": 1536
+        },
+        "captures": [
+          {
+            "file": "desktop-configuration-save-narrow360-200-target-synthetic.png",
+            "observation": "저장 대상 label과 전체 AGENTS.md 경로가 줄바꿈되어 보입니다."
+          },
+          {
+            "file": "desktop-configuration-save-narrow360-200-control-synthetic.png",
+            "observation": "파일에 저장 버튼 전체가 가시 영역 안에 보입니다."
+          },
+          {
+            "file": "desktop-configuration-save-narrow360-200-synthetic.png",
+            "observation": "저장 완료와 runtime 적용 구분 문구 전체가 두 줄로 보입니다."
+          },
+          {
+            "file": "desktop-configuration-save-narrow360-200-version-synthetic.png",
+            "observation": "관찰 버전 label과 64자리 값 전체를 읽을 수 있습니다. 결과 프레임에서 일부 가려진 버전 끝부분은 이 전용 프레임에서 보입니다."
+          },
+          {
+            "file": "desktop-configuration-save-narrow360-200-backup-synthetic.png",
+            "observation": "전체 backup 경로와 basename이 여러 줄로 보입니다. .instructions.backup 끝까지 footer 위에 보입니다."
+          }
+        ]
+      },
+      {
+        "root": "current_root",
+        "purpose": "기존 file/draft standard 760px/zoom2 비교",
+        "content_bounds": {
+          "width": 760,
+          "height": 568
+        },
+        "viewport": {
+          "width": 380,
+          "height": 284,
+          "pixelRatio": 4
+        },
+        "zoomFactor": 2,
+        "actual_png_dimensions": {
+          "width": 1520,
+          "height": 1136
+        },
+        "captures": [
+          {
+            "file": "desktop-configuration-file-narrow200-synthetic.png",
+            "observation": "외부 변경 가능성, Native 상태와의 구분, 비교 조작 범위 안내가 줄바꿈됩니다."
+          },
+          {
+            "file": "desktop-configuration-file-narrow200-load-synthetic.png",
+            "observation": "파일 불러오기 버튼과 포커스 링, 전체 관찰 경로가 보입니다."
+          },
+          {
+            "file": "desktop-configuration-draft-narrow200-synthetic.png",
+            "observation": "비교 텍스트의 선택 영역과 스크롤된 내용이 보입니다."
+          },
+          {
+            "file": "desktop-configuration-draft-narrow200-controls-synthetic.png",
+            "observation": "현재 프레임에는 textarea 하단과 포커스 링이 보입니다. 파일명과 달리 초안 조작 버튼은 보이지 않습니다."
+          }
+        ]
+      },
+      {
+        "root": "prior_root",
+        "purpose": "이전 안내 문구 비교",
+        "content_bounds": {
+          "width": 1440,
+          "height": 928
+        },
+        "viewport": {
+          "width": 1440,
+          "height": 928,
+          "pixelRatio": 2
+        },
+        "zoomFactor": 1,
+        "actual_png_dimensions": {
+          "width": 2880,
+          "height": 1856
+        },
+        "captures": [
+          {
+            "file": "desktop-configuration-normal-synthetic.png",
+            "observation": "이전 화면은 파일 저장도 미제공이라고 설명합니다. 현재 일반 화면에서는 이 모순이 제거되었습니다."
+          }
+        ]
+      },
+      {
+        "root": "prior_root",
+        "purpose": "이전 narrow Save 증거 비교",
+        "content_bounds": {
+          "width": 360,
+          "height": 768
+        },
+        "viewport": {
+          "width": 180,
+          "height": 384,
+          "pixelRatio": 4
+        },
+        "zoomFactor": 2,
+        "actual_png_dimensions": {
+          "width": 720,
+          "height": 1536
+        },
+        "captures": [
+          {
+            "file": "desktop-configuration-save-narrow200-synthetic.png",
+            "observation": "이전 프레임에는 패널 상단만 보이고 Save 영역은 없습니다. 현재는 standard와 추가 narrow 세트를 구분하고 각 Save 요소를 직접 보여 줍니다."
+          }
+        ]
+      },
+      {
+        "root": "prior_root",
+        "purpose": "이전 초안 버튼 배치 참고",
+        "content_bounds": {
+          "width": 760,
+          "height": 568
+        },
+        "viewport": {
+          "width": 380,
+          "height": 284,
+          "pixelRatio": 4
+        },
+        "zoomFactor": 2,
+        "actual_png_dimensions": {
+          "width": 1520,
+          "height": 1136
+        },
+        "captures": [
+          {
+            "file": "desktop-configuration-draft-narrow200-controls-synthetic.png",
+            "observation": "이전 프레임은 형식 검증, 비교 기준, 버리기 버튼의 줄바꿈과 검증 버튼 포커스를 보여 줍니다. 현재 버튼 배치의 새 검증으로 사용하지 않았습니다."
+          }
+        ]
+      }
+    ]
+  },
+  "limitations": [
+    "report-only 검토입니다. source, artifact, ledger를 수정하지 않았고 재위임하지 않았습니다.",
+    "plan revision6, design v1, 지정된 packet과 EXACT input, 이전 CODE/RENDER 보고서, correction notes, verification summary, outcome, source freeze와 actual checks를 읽었습니다. harness status와 review-input은 읽기 전용으로 조회했습니다.",
+    "hidden-r4 보고서와 manifest는 pass, 캡처 88개, owned teardown exit0을 기록합니다. 저장된 실행 증거입니다. 이번 검토에서 테스트, build, runtime, Native, GUI, provider 또는 production Main을 실행하지 않았습니다.",
+    "현재 88개 PNG의 header와 보고된 크기는 모두 일치했습니다. 그중 22개만 시각 검토했습니다. 전체 88개를 시각 검토한 것은 아닙니다.",
+    "현재 draft-narrow200-controls 프레임은 초안 조작 버튼 배치의 직접 증거가 부족합니다. 이번 판정은 수정 대상인 Save 요소의 전용 프레임과 현재 안내 문구를 직접 확인한 결과입니다.",
+    "backup의 전체 경로는 직접 읽었습니다. 텍스트 선택 가능성은 source로 확인했습니다. 정지 PNG만으로 keyboard 동작, 실제 파일 쓰기, 재전송 차단 또는 Screen Reader 출력을 재현했다고 주장하지 않습니다.",
+    "승인된 desktop32/coarse44/permission36, focus3:1 및 reflow 계약을 기준으로 검토했습니다. blanket44 또는 performance budget을 추가하지 않았습니다. Save 전용 coarse 입력과 수치 대비를 새로 측정하지 않았습니다.",
+    "이 판정은 RENDER gate에만 해당합니다. CS-R5-001의 CODE 승인, production Main 확인 창, Windows, power-loss durability, full F14 또는 whole Goal 완료를 판정하지 않습니다."
+  ]
+}

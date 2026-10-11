@@ -1,0 +1,85 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "A1",
+      "description": "Closed detached deterministic failclosed overlay planner with meaningful negative tests"
+    },
+    {
+      "id": "A2",
+      "description": "Exact pinned optional overrides forwarding recipe preserves prior lifecycle/transform interface and source bytes"
+    },
+    {
+      "id": "A3",
+      "description": "Coherent scoped static/unit checks and independent code review"
+    }
+  ],
+  "checks": {
+    "unit-overlay": {
+      "argv": [
+        "node",
+        "--test",
+        "apps/desktop-app/scripts/native-permission-overlay.test.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Pure Node synthetic planner and read-only pinned-source transformation tests; no Native execution",
+      "acceptance_ids": [
+        "A1",
+        "A2"
+      ],
+      "required": true,
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/scripts/native-permission-overlay.mjs",
+          "apps/desktop-app/scripts/native-permission-overlay.test.mjs",
+          "apps/desktop-app/scripts/native-permission-overlay-recipe.mjs",
+          "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs"
+        ],
+        "reason": "Complete pure planner/recipe static test imports; Nodebuiltins only. Pinned actual inputbytes checked by recipe test against exact embedded hashes."
+      }
+    },
+    "lint-overlay": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay.test.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Exact four new scripts lint",
+      "acceptance_ids": [
+        "A3"
+      ],
+      "required": true
+    },
+    "format-overlay": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/scripts/native-permission-overlay.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay.test.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Exact four new scripts format",
+      "acceptance_ids": [
+        "A3"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

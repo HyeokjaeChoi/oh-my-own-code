@@ -1,0 +1,74 @@
+{
+  "scope": "accepted routine revision11, exact10 all14 fixed Tool families/17 unsupported rows plus exact35 planner bound",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "bytes": 46631,
+      "sha256": "b171c9b9e05bb48ca820a822bf0e3be90de2d68a09cfc78867d3e44653fc0c84"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+      "bytes": 9523,
+      "sha256": "af1cdbc0eeabcb5767d5eba4bf42c6190ece9bc5a08455d8ec9eee95cbb4f73f"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-builtin-metadata.test.mjs",
+      "bytes": 15851,
+      "sha256": "2a16504f07b0ba20fe0013d45c78adf4d42c9ec7a1abfc7f79582d112edae66d"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "bytes": 201287,
+      "sha256": "184d78b7683afd4a04319aa9534bbcc6d4b7e9379fbdc1090025444fd8480c13"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 7979,
+      "sha256": "b3947e4abdf294deb4bf55c65362f74ef78635d330c90ef1b192828877b92ad0"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "bytes": 18759,
+      "sha256": "dc44f6bfb5022619b00d7add7319cef553d48585a1f84e3f19918d338d7350d5"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "bytes": 22066,
+      "sha256": "c6fc47bef6a05625d59a4a27881a12e3df74c966f57fb30215eba8779c608644"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-builtin-declaration.test.mjs",
+      "bytes": 15363,
+      "sha256": "4ba073958d4475b50274b63b857351b619eea901f149cffb038c65d9dcc46326"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay.mjs",
+      "bytes": 8722,
+      "sha256": "ce6d906a6e4fa61bae038b5b97625caabd533c35819e6382b22605f4edb6eb4e"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay.test.mjs",
+      "bytes": 17836,
+      "sha256": "cc9462d00caece79a3ebe084774a671291d095dfa459d35884feba4de65a84ef"
+    }
+  ],
+  "before": [
+    "prechange/builtin-all-tools-before-r1/manifest.json",
+    "prechange/builtin-planner35-before-r1/manifest.json"
+  ],
+  "checks": {
+    "native-metadata": 171,
+    "native-descriptor-read": 223,
+    "native-task-read": 12,
+    "scoped_eslint": "exit0 exact10",
+    "scoped_prettier": "exit0 exact10",
+    "coherent_initial": 69,
+    "native-read-auxiliary": 23
+  },
+  "limits": [
+    "unsupported metadata only; inventory.complete=false; no execution grant",
+    "No Native/Main/provider/server/build/GUI launch",
+    "root source coverage88 is not live inventory completeness or transitive safety proof",
+    "worker25PASS5FAIL old planner32 preserved; Main35 RED and coherent69GREEN retained"
+  ]
+}

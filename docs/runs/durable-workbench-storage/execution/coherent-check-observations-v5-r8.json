@@ -1,0 +1,131 @@
+{
+  "source_freeze": "v5-r8",
+  "node": "24.14.1",
+  "checks_passed": 10,
+  "required_checks": 11,
+  "native_result": "fail",
+  "native_error": {
+    "name": "Error",
+    "code": "NATIVE_EVENT_HISTORY_UNSUPPORTED",
+    "message": "Native event history requirement unmet; marker-only diagnostic is unsupported"
+  },
+  "native_event_capability": {
+    "status": "unsupported",
+    "nonemptyRequiredEventHistory": false,
+    "eventLogAcceptance": false,
+    "requirement": "native-event-history",
+    "reason": "Stock packaged CLI does not enable durable event payload persistence; sync watermark alone is not event history."
+  },
+  "independent_native_step_failures": [],
+  "native_cases": [
+    {
+      "case": "kernel-collision",
+      "reason": "owner_conflict",
+      "nativeLaunches": 0
+    },
+    {
+      "case": "dirty-live-child",
+      "reason": "owner_unverified",
+      "nativeLaunches": 0,
+      "bytesPreserved": true
+    },
+    {
+      "case": "dirty-unverifiable-child",
+      "reason": "owner_unverified",
+      "nativeLaunches": 0,
+      "bytesPreserved": true
+    },
+    {
+      "case": "spawn-intent-gap",
+      "reason": "owner_unverified",
+      "nativeLaunches": 0,
+      "bytesPreserved": true
+    },
+    {
+      "case": "native-event-history-capability",
+      "reason": "Stock packaged CLI does not enable durable event payload persistence; sync watermark alone is not event history."
+    },
+    {
+      "case": "bootstrap-once"
+    },
+    {
+      "case": "mapping-receipt-duplicate-conflict"
+    },
+    {
+      "case": "folder-import-sentinels"
+    },
+    {
+      "case": "standalone-same-boot-historical-owner",
+      "reason": "owner_unverified"
+    },
+    {
+      "case": "confirmed-app-receipt-zero-retained-nonfresh-native-held",
+      "reason": "native_startup_unverified",
+      "nativeLaunches": 0,
+      "nativeBytesPreserved": true
+    },
+    {
+      "case": "normal-controlled-reopen",
+      "historyPreserved": true,
+      "logPreserved": false,
+      "eventHistoryStatus": "unsupported",
+      "managedSentinelPreserved": true
+    },
+    {
+      "case": "SIGKILL-WAL"
+    },
+    {
+      "case": "SIGKILL-controlled-reopen",
+      "historyPreserved": true,
+      "logPreserved": false,
+      "eventHistoryStatus": "unsupported",
+      "managedSentinelPreserved": true
+    },
+    {
+      "case": "pending-inbox-safe-start-held",
+      "reason": "native_startup_unverified",
+      "nativeLaunches": 0,
+      "nativeBytesPreserved": true
+    }
+  ],
+  "journal_faults": [
+    {
+      "case": "corrupt",
+      "reason": "corrupt_journal",
+      "bytesPreserved": true,
+      "nativeLaunches": 0
+    },
+    {
+      "case": "version",
+      "reason": "unsupported_version",
+      "bytesPreserved": true,
+      "nativeLaunches": 0
+    },
+    {
+      "case": "partial",
+      "reason": "corrupt_journal",
+      "bytesPreserved": true,
+      "nativeLaunches": 0
+    },
+    {
+      "case": "unconfirmed-valid-tail",
+      "reason": "unconfirmed_tail",
+      "bytesPreserved": true,
+      "nativeLaunches": 0
+    }
+  ],
+  "native_owned_processes_exited": true,
+  "historical_pid41795_exit": "unverified, separate earlier attempt",
+  "ui_result": "pass",
+  "ui_states": 9,
+  "ui_captures": 46,
+  "ui_host_exit": {
+    "exited": true,
+    "code": 0
+  },
+  "provider": "not executed",
+  "production_standalone_restart": "unverified; blocked",
+  "production_nonfresh_start": "held",
+  "migration_cutover": "held",
+  "P7_complete": false
+}

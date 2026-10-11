@@ -1,0 +1,3117 @@
+{
+  "script": "design-foundation",
+  "family": null,
+  "mode": null,
+  "platform": "darwin",
+  "runnerPlatform": "darwin",
+  "runnerArch": "arm64",
+  "runnerNode": "v26.11.0",
+  "destination": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/design-foundation-v2/evidence/permission-policy-r1/design-foundation",
+  "command": [
+    "/opt/homebrew/Cellar/node/26.11.0_1/bin/node",
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-design-foundation.mjs"
+  ],
+  "startedAt": "2026-10-09T10:50:32.191Z",
+  "status": "fail",
+  "exitCode": 1,
+  "signal": null,
+  "evidence": [],
+  "provenance": {
+    "schemaVersion": 1,
+    "buildStampPath": "apps/desktop-app/dist/build-provenance.json",
+    "buildStampSha256": "2083d72efe78c19afe44eae2b7d1fa4e49c201a380416ffeb42dca1582c412d9",
+    "buildStamp": {
+      "schemaVersion": 1,
+      "kind": "desktop-build-byte-provenance",
+      "createdAt": "2026-10-09T10:50:27.761Z",
+      "builder": {
+        "node": "v26.11.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "inputs": {
+        "algorithm": "scoped-file-inventory-sha256-v1",
+        "scopes": [
+          {
+            "path": "package.json",
+            "present": true
+          },
+          {
+            "path": "pnpm-lock.yaml",
+            "present": true
+          },
+          {
+            "path": "pnpm-workspace.yaml",
+            "present": true
+          },
+          {
+            "path": "tsconfig.base.json",
+            "present": true
+          },
+          {
+            "path": "nx.json",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/package.json",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/project.json",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/index.html",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/vite.config.ts",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/tsconfig.json",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/scripts/build.mjs",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/scripts/build-provenance.mjs",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/scripts/prepare-event-host.mjs",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/scripts/stage-event-host.mjs",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/scripts/stage-owner-lifetime.mjs",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/native/owner-lifetime/witness.c",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/scripts/package.mjs",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/runtime-event-host/package.json",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/runtime-event-host/package-lock.json",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/runtime-event-host/installer-pins.json",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/src",
+            "tree": true,
+            "source": true,
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/public",
+            "tree": true,
+            "source": true,
+            "optional": true,
+            "present": false
+          },
+          {
+            "path": "packages/ui/package.json",
+            "present": true
+          },
+          {
+            "path": "packages/ui/project.json",
+            "present": true
+          },
+          {
+            "path": "packages/ui/tsconfig.json",
+            "present": true
+          },
+          {
+            "path": "packages/ui/src",
+            "tree": true,
+            "source": true,
+            "present": true
+          },
+          {
+            "path": "packages/contracts/package.json",
+            "present": true
+          },
+          {
+            "path": "packages/contracts/project.json",
+            "present": true
+          },
+          {
+            "path": "packages/contracts/tsconfig.json",
+            "present": true
+          },
+          {
+            "path": "packages/contracts/src",
+            "tree": true,
+            "source": true,
+            "present": true
+          },
+          {
+            "path": "packages/contracts/tsconfig.build.json",
+            "present": true
+          },
+          {
+            "path": "docs/design/tokens",
+            "tree": true,
+            "source": true,
+            "present": true
+          }
+        ],
+        "selection": {
+          "excludedDirectories": [
+            "node_modules",
+            "dist",
+            "exports",
+            "captures",
+            "credentials",
+            "runtime-data"
+          ],
+          "excludedNames": "hidden names and *.test.* / *.spec.*",
+          "allowedFileExtensions": "\\.(?:c|[cm]?js|[cm]?ts|jsx|tsx|css|html|json|svg|png|jpe?g|webp|gif|ico|woff2?|ttf)$"
+        },
+        "limits": {
+          "files": 4096,
+          "depth": 24,
+          "bytes": 1073741824
+        },
+        "files": [
+          {
+            "path": "apps/desktop-app/index.html",
+            "size": 584,
+            "mode": 420,
+            "sha256": "973680da1eadd48eb58ff47aaaca46a10e33c0da3a31e97662f3ddea9fddc9ae"
+          },
+          {
+            "path": "apps/desktop-app/native/owner-lifetime/witness.c",
+            "size": 16279,
+            "mode": 420,
+            "sha256": "4eb42efefdef1970d48bd19368b94bae689b10fbeacc96cd1adc83a9cf996951"
+          },
+          {
+            "path": "apps/desktop-app/package.json",
+            "size": 1395,
+            "mode": 420,
+            "sha256": "98617384d1d6afaf78c7124ec10bc50141bcea6441b21fcda75349655d586425"
+          },
+          {
+            "path": "apps/desktop-app/project.json",
+            "size": 4323,
+            "mode": 420,
+            "sha256": "0f90164352dbc9df946e3578eb604d3216dc2fdd82e35b2e126d31c2acefb622"
+          },
+          {
+            "path": "apps/desktop-app/runtime-event-host/installer-pins.json",
+            "size": 6700,
+            "mode": 420,
+            "sha256": "2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41"
+          },
+          {
+            "path": "apps/desktop-app/runtime-event-host/package-lock.json",
+            "size": 232329,
+            "mode": 420,
+            "sha256": "34f04622903ba6c3c14ba5729e0e406f1ed245307acea049c637cbdac2e64e9c"
+          },
+          {
+            "path": "apps/desktop-app/runtime-event-host/package.json",
+            "size": 276,
+            "mode": 420,
+            "sha256": "86992a64cd87494b080f2efd47dae2e2d6ae46b7958c7a063e2ed54b3e1dd0e5"
+          },
+          {
+            "path": "apps/desktop-app/scripts/build-provenance.mjs",
+            "size": 20094,
+            "mode": 420,
+            "sha256": "a5dfebae9bb9e5d449b767cbf6320062d544105b0d6a1f21115a5cac5a46af75"
+          },
+          {
+            "path": "apps/desktop-app/scripts/build.mjs",
+            "size": 2496,
+            "mode": 420,
+            "sha256": "e906fbe156109e737228c20b59f6e47952a27adb09a7d90fbfa695bcb366529d"
+          },
+          {
+            "path": "apps/desktop-app/scripts/package.mjs",
+            "size": 4176,
+            "mode": 420,
+            "sha256": "3c9c9e9a65b91996025f4e95abc533c8799fd12385aae8a7f01153a2df14faaf"
+          },
+          {
+            "path": "apps/desktop-app/scripts/prepare-event-host.mjs",
+            "size": 13241,
+            "mode": 420,
+            "sha256": "9970d480610c93628587fb97c62ff393e3515d6d87f6362542aa79456a2d1cff"
+          },
+          {
+            "path": "apps/desktop-app/scripts/stage-event-host.mjs",
+            "size": 13451,
+            "mode": 420,
+            "sha256": "c5962f23c4f33c26c7728732a5d0b4a04cb0bfd5adad2ddefd9b4f0d30d70853"
+          },
+          {
+            "path": "apps/desktop-app/scripts/stage-owner-lifetime.mjs",
+            "size": 6917,
+            "mode": 420,
+            "sha256": "d1d46210d36c321650cb1cb99e7a47de29ee924a8b72d7e81febdfacca5def65"
+          },
+          {
+            "path": "apps/desktop-app/src/builtins/workbench-skills/agents.mjs",
+            "size": 16865,
+            "mode": 420,
+            "sha256": "1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305"
+          },
+          {
+            "path": "apps/desktop-app/src/builtins/workbench-skills/extensions.mjs",
+            "size": 7951,
+            "mode": 420,
+            "sha256": "05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962"
+          },
+          {
+            "path": "apps/desktop-app/src/builtins/workbench-skills/package.json",
+            "size": 110,
+            "mode": 420,
+            "sha256": "1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120"
+          },
+          {
+            "path": "apps/desktop-app/src/builtins/workbench-skills/server.mjs",
+            "size": 13606,
+            "mode": 420,
+            "sha256": "b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d"
+          },
+          {
+            "path": "apps/desktop-app/src/css-modules.d.ts",
+            "size": 111,
+            "mode": 420,
+            "sha256": "00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4"
+          },
+          {
+            "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+            "size": 39930,
+            "mode": 420,
+            "sha256": "9048037cad1d43ce13e746f20d5a086078d85925e7a0a3975f7eccb287eaa65b"
+          },
+          {
+            "path": "apps/desktop-app/src/ephemeral-profile.mjs",
+            "size": 2527,
+            "mode": 420,
+            "sha256": "d58944c6cd050087d4dc5e8b786dd1d0d2bc98e6eb883de907a72b5615c19765"
+          },
+          {
+            "path": "apps/desktop-app/src/event-host-child.mjs",
+            "size": 16199,
+            "mode": 420,
+            "sha256": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875"
+          },
+          {
+            "path": "apps/desktop-app/src/event-host-protocol.mjs",
+            "size": 10749,
+            "mode": 420,
+            "sha256": "18fd006fa963e84015b81ac2338a5680d072aa9f8c5cf7ef5f85fd3d3eba2ed6"
+          },
+          {
+            "path": "apps/desktop-app/src/event-host-resources.mjs",
+            "size": 15942,
+            "mode": 420,
+            "sha256": "f900de7bb9b08144fc9774c9c801b74589bac6d965d9f09e310e4a3f2d0bcaf8"
+          },
+          {
+            "path": "apps/desktop-app/src/event-host-supervisor.mjs",
+            "size": 30405,
+            "mode": 420,
+            "sha256": "46cf4c7dc4f002ae4538603b2f858d3e3c500247277c751c83af2cccee18a5b8"
+          },
+          {
+            "path": "apps/desktop-app/src/host/configuration-file-observation.mjs",
+            "size": 1997,
+            "mode": 420,
+            "sha256": "83419028f952d647a23bf06b908649c97cc343b2247c15b9e1ae427acc7a9587"
+          },
+          {
+            "path": "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+            "size": 26847,
+            "mode": 420,
+            "sha256": "cca5de5aa358d1ecba8209b2c7c8af457503c1717945cba1f825245c2974fd54"
+          },
+          {
+            "path": "apps/desktop-app/src/host/configuration-source-files.mjs",
+            "size": 13095,
+            "mode": 420,
+            "sha256": "ad94c3adc982fb5b8052bdee90a34cbd1ae8b3a2179b6325f35973c6db8ff7da"
+          },
+          {
+            "path": "apps/desktop-app/src/host/conversation-context-branch-storage.mjs",
+            "size": 3927,
+            "mode": 420,
+            "sha256": "f8e4f81d756eff597bd2d896927cc036d6ba5e0aaa83e6ef15c95498f75262b6"
+          },
+          {
+            "path": "apps/desktop-app/src/host/conversation-context-io.mjs",
+            "size": 13618,
+            "mode": 420,
+            "sha256": "1ebac912b89f858f6a8b9230ef21b0b37f619c45f9d6c47c601023b2350b627e"
+          },
+          {
+            "path": "apps/desktop-app/src/host/conversation-context-native.mjs",
+            "size": 2771,
+            "mode": 420,
+            "sha256": "a36a290a952b26d5c2edf028e8507ee5d7ea369d8ffcb388e914e55b690abf2a"
+          },
+          {
+            "path": "apps/desktop-app/src/host/conversation-context-storage.mjs",
+            "size": 7439,
+            "mode": 420,
+            "sha256": "11670f7c17b540ad7b54ee2f0c52bdfeceff2eb64963e3387fe0739b74c568df"
+          },
+          {
+            "path": "apps/desktop-app/src/host/git-branch-restore-contract.mjs",
+            "size": 14144,
+            "mode": 420,
+            "sha256": "75cf0478da330b3b9fa6937be415abbcd7fb50473ba1418b913197fdfc1b21a3"
+          },
+          {
+            "path": "apps/desktop-app/src/host/git-branch-restore-kernel.mjs",
+            "size": 277,
+            "mode": 420,
+            "sha256": "f8402c66a0cc450c3e1027157de948797d4148d7225e0caa24c2faaeadbf4419"
+          },
+          {
+            "path": "apps/desktop-app/src/host/git-commit-contract.mjs",
+            "size": 12625,
+            "mode": 420,
+            "sha256": "94fe59d2bce230887fe44513ba3b829e2149ee33489df62edf0475ef655d039d"
+          },
+          {
+            "path": "apps/desktop-app/src/host/git-commit-kernel.mjs",
+            "size": 263,
+            "mode": 420,
+            "sha256": "ccd5b04f81fbd2e675ab10599dddfc3a1519dc119e4562bf8ffeb12e7213e482"
+          },
+          {
+            "path": "apps/desktop-app/src/host/git-index-contract.mjs",
+            "size": 8951,
+            "mode": 420,
+            "sha256": "87cccae8dcb53a84a80fc4b7a73a30942aa2c9b9b37f6f203debf0e9dd2d66d7"
+          },
+          {
+            "path": "apps/desktop-app/src/host/git-index-kernel.mjs",
+            "size": 261,
+            "mode": 420,
+            "sha256": "40f1b6adbbcf1b571ea03ff01e7c32e2a68d28c5350f1a60cfea6457c41730bb"
+          },
+          {
+            "path": "apps/desktop-app/src/host/git-metadata-kernel.mjs",
+            "size": 110149,
+            "mode": 420,
+            "sha256": "7c68c8587593ebe938dd3727392eda8c9e96220f66c615a269388291fd18645d"
+          },
+          {
+            "path": "apps/desktop-app/src/host/native-preflight.mjs",
+            "size": 25666,
+            "mode": 420,
+            "sha256": "710214d3cd54a69e8163c22ceaa10c27afde0ddccf47c4c1c145073960612b1f"
+          },
+          {
+            "path": "apps/desktop-app/src/host/owner-lifetime.mjs",
+            "size": 22989,
+            "mode": 420,
+            "sha256": "ce552061e68aa2cb1bb52cfece777e8f55c33de0e8b13b94b86a7d5f9ccabc95"
+          },
+          {
+            "path": "apps/desktop-app/src/host/storage-journal.mjs",
+            "size": 63352,
+            "mode": 420,
+            "sha256": "2856c1beca6b28ddd16ad2016fe0d314544a824f0566d24e555fcdec7cb54d84"
+          },
+          {
+            "path": "apps/desktop-app/src/host/storage-lock.mjs",
+            "size": 21151,
+            "mode": 420,
+            "sha256": "2be0135e99588e9511e158fa35d817a388574ae228f80cf71b320e40ae535112"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-admission.mjs",
+            "size": 28050,
+            "mode": 420,
+            "sha256": "6ae71c1303fb7304200ee9e9c5072c74e07279dced2cc369da0607cbc3cb5794"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-agent-storage.mjs",
+            "size": 12543,
+            "mode": 420,
+            "sha256": "5d5a8ad570172b6cadebf154877f33bcceb2808b6d5de8433ccafe43f56b4b5f"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-agents.mjs",
+            "size": 435,
+            "mode": 420,
+            "sha256": "c27db8c90656817693cf729c9476afa9aae8cd31206bcf93cb7958d9feb7afad"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-configuration-files.mjs",
+            "size": 8615,
+            "mode": 420,
+            "sha256": "1afc3895d4256cb27ba8a4a6342dd98ac42c5bd72a5556b8d590a70ed34ce22b"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-configuration.mjs",
+            "size": 4065,
+            "mode": 420,
+            "sha256": "45fe37e79dec410444f5bb07b50aeaae2721b000fe0f2f7aa9536f0b6010a13b"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-file-edit.mjs",
+            "size": 9832,
+            "mode": 420,
+            "sha256": "d949e0162c3c7684575c0874fac4fcc3f91a04cce770e22d23e1ea807e7d5756"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-file-storage.mjs",
+            "size": 6588,
+            "mode": 420,
+            "sha256": "0a44a2dd8029114a85cd8a07434df7aa5ff4c3e283b720e803148401e8221dc1"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-files.mjs",
+            "size": 5503,
+            "mode": 420,
+            "sha256": "afa3cd76c465d68aac695ab204b38806e9ff1c69451e92830903378195e49cbf"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-git-branch-restore-storage.mjs",
+            "size": 8902,
+            "mode": 420,
+            "sha256": "ebd5216d84808398939166aafd84233f00c4b4a9a49ed1c4b318feace8dc09f6"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-git-branch-restore.mjs",
+            "size": 32951,
+            "mode": 420,
+            "sha256": "6ee2be5e10f10ae8fa92733e5b94282c17aab4765780604d906c1da9cd01358a"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-git-commit-storage.mjs",
+            "size": 7775,
+            "mode": 420,
+            "sha256": "371507679f7c3017e4d18600ec42168eb847be43f2862ec6cc2ecd2c80f5b4f5"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-git-commit.mjs",
+            "size": 23309,
+            "mode": 420,
+            "sha256": "2c29a9a5a57fccfcc69317d8da3b4e8322845a946782f8d32dedf2e3c7aa63dc"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-git-index-storage.mjs",
+            "size": 7030,
+            "mode": 420,
+            "sha256": "6aba81920310092d2977f87dee3344ba44687e6540feb5bcb1fa26f9034608cf"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-git-index.mjs",
+            "size": 16303,
+            "mode": 420,
+            "sha256": "66e6b4bd36514a2598cc0b097a82a85e4be39fa5919021813ebd774fbe7efea8"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-git-snapshot.mjs",
+            "size": 52505,
+            "mode": 420,
+            "sha256": "465c7b364f8b9cfcffb07252dcaf79010457c2a928291368d4bcb9dbc242d622"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-git.mjs",
+            "size": 19876,
+            "mode": 420,
+            "sha256": "d28d0ae3da4ef5ab35f2c7b40d0dcb096207a7636ad409e03cdce591f1cc22b7"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-instructions.mjs",
+            "size": 3554,
+            "mode": 420,
+            "sha256": "41f04ecf2b3ad00dad8a96ad8dcc99397b42179a05468620b6eae82e5cd40812"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-ipc.mjs",
+            "size": 726,
+            "mode": 420,
+            "sha256": "7fffc482083fa9ce6acd75f7536150cdd263dcc03bf25b295498bc36b7aed8ca"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-mcp.mjs",
+            "size": 6519,
+            "mode": 420,
+            "sha256": "ad125d7eea3ef7e998d1a9ed3ddc7fd1104249399c6b5be9311dc3cb72b3ddb4"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-native-agents.mjs",
+            "size": 7779,
+            "mode": 420,
+            "sha256": "e608b3a51b489db2ada00cfe055c43e0f68296286ddb62fa8a8effb0180071fb"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-native-skills.mjs",
+            "size": 5556,
+            "mode": 420,
+            "sha256": "b39fb0277dda3143b1ce3486d084d2c7f36a1d5a6b6fe40c9c7f86474094d6a8"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-receipts.mjs",
+            "size": 9563,
+            "mode": 420,
+            "sha256": "c6c1b9a5f5b0bf269851be31e15f0fe847eff169249ad20a159bb1410e296f1f"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-skill-runtime-storage.mjs",
+            "size": 10198,
+            "mode": 420,
+            "sha256": "79dfd2883c598ef29e1fb3e7857ed7f756f7e273aaa6b48e9995082bebd771ee"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-skill-storage.mjs",
+            "size": 1832,
+            "mode": 420,
+            "sha256": "ebc61b22249dbfa133dcd680340a4552ed006e5f91b4030b928326db19247134"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-skills.mjs",
+            "size": 430,
+            "mode": 420,
+            "sha256": "64b3d7ea231ad3516de687e0e730823d15bbe5f72e3c8e2f031d52d2258e4b4b"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workspace-registry.mjs",
+            "size": 78855,
+            "mode": 420,
+            "sha256": "7bd86068fcb0001c1a0477a385f9919a54a99573a76a1a023a5c76fa06e3e1aa"
+          },
+          {
+            "path": "apps/desktop-app/src/main.mjs",
+            "size": 28053,
+            "mode": 420,
+            "sha256": "3cf63b75000d2ef032793d0d8b8ae4036c44e7ac687d4da191aebc2676d87a19"
+          },
+          {
+            "path": "apps/desktop-app/src/native-agents-client.mjs",
+            "size": 2258,
+            "mode": 420,
+            "sha256": "f24273bf0bdb47bff8391b2f5b33969f78d92d3f5f1709657dcafe0378c8ae4c"
+          },
+          {
+            "path": "apps/desktop-app/src/native-agents-protocol.mjs",
+            "size": 10838,
+            "mode": 420,
+            "sha256": "c8a4f7066855b4b93a55d6752645012e2fb6d6b690588601ca7c086ca025f918"
+          },
+          {
+            "path": "apps/desktop-app/src/native-extensions-client.mjs",
+            "size": 2556,
+            "mode": 420,
+            "sha256": "3109b26306fc60da5313f5b7987a06e0bd42d5c67ebcb1027743de04ba3d9796"
+          },
+          {
+            "path": "apps/desktop-app/src/native-extensions-protocol.mjs",
+            "size": 2745,
+            "mode": 420,
+            "sha256": "fe6f34f163787aba93090f5ed197e9605a1724b6b8f593894731996ded955d63"
+          },
+          {
+            "path": "apps/desktop-app/src/native-preflight-predicates.mjs",
+            "size": 12070,
+            "mode": 420,
+            "sha256": "1c9f9ac887bcfa968c65506c03a0ed052e3995c959c58fca99936a383c51bb4d"
+          },
+          {
+            "path": "apps/desktop-app/src/native-preflight-protocol.mjs",
+            "size": 6896,
+            "mode": 420,
+            "sha256": "532527878141aade9e7b0bab81d7d50cd76ac510602b5d5968bf8a81a05ac79c"
+          },
+          {
+            "path": "apps/desktop-app/src/native-preflight-reader.mjs",
+            "size": 7108,
+            "mode": 420,
+            "sha256": "063edc26a9c51be4010a964a3d9c445249ebca4a3136e6896ed14d2ec5625090"
+          },
+          {
+            "path": "apps/desktop-app/src/native-preflight-resources.mjs",
+            "size": 998,
+            "mode": 420,
+            "sha256": "c199734b07713200830a6076537de956d834814f329fd9265741d7b7e41e0171"
+          },
+          {
+            "path": "apps/desktop-app/src/native-skills-client.mjs",
+            "size": 1476,
+            "mode": 420,
+            "sha256": "f4df2e04e0fc5f1b8eab04003df5f6e38439adc4c802593e7db947e7ca9dbdc8"
+          },
+          {
+            "path": "apps/desktop-app/src/native-skills-config.mjs",
+            "size": 1625,
+            "mode": 420,
+            "sha256": "c2760a03fef4b59bb3c8cc633f4ed3b65d612bad76d8f3dfb74c19afb9987940"
+          },
+          {
+            "path": "apps/desktop-app/src/native-skills-protocol.mjs",
+            "size": 10987,
+            "mode": 420,
+            "sha256": "b0ceaed5814060ea4460e9b13de3db210c0fdfbfeddc22fd232372f6f5935dd3"
+          },
+          {
+            "path": "apps/desktop-app/src/owner-lifetime-resources.mjs",
+            "size": 6547,
+            "mode": 420,
+            "sha256": "02bb0d98cfab05f30f34298d77f6d1ff99568fb921d694755df0f30cb19821c6"
+          },
+          {
+            "path": "apps/desktop-app/src/preload.cjs",
+            "size": 1059,
+            "mode": 420,
+            "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer-admission.mjs",
+            "size": 319,
+            "mode": 420,
+            "sha256": "dd5d8e52c4b230dfa4ca65693e301b6c0847b8a84c18e9cc23028c18f5e2a44c"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer.css",
+            "size": 713,
+            "mode": 420,
+            "sha256": "10ebc2c146b3ed0abab023d7c50eb1089d317356a3da78146b6857e36f5beaff"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer.tsx",
+            "size": 325,
+            "mode": 420,
+            "sha256": "f2fe7997af98730fefdf9b9fe1bf42d64603c06fab75d5ae6ab2b2d7b9e323f6"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/app/index.tsx",
+            "size": 991,
+            "mode": 420,
+            "sha256": "272929824e7736a9e5e1da490da9a9272c5802ec26b7c2003fc4ea5ade7d8aa4"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+            "size": 3803,
+            "mode": 420,
+            "sha256": "7cabe0abbfcabe45ecd46565822bb2b6ff3bbd49eb6128ab53920727eca635c0"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+            "size": 167972,
+            "mode": 420,
+            "sha256": "a0af8ce3a8e4c90a29c53b416edb9c2491a643bc74ea3eca6629a79406bd71c4"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx",
+            "size": 913,
+            "mode": 420,
+            "sha256": "87e2ad8cc85de7fdef43d9b58d6801774ba09335c63ed64385b3438e98ecb2d1"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+            "size": 312741,
+            "mode": 420,
+            "sha256": "1d3c918b164f670f29cf3738820f4c125a25f63fe2d5cda1cf079e9b636cdc44"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/composer/index.ts",
+            "size": 1161,
+            "mode": 420,
+            "sha256": "e7e0bce0125bd06d29578e9c4c6a7374823ce47d57a21eb10eb06a5004f1db17"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/configuration-drafts/agent-files.tsx",
+            "size": 23797,
+            "mode": 420,
+            "sha256": "5831c56f9c8f3b4e53cdac0875b71b7f80d5d2355342a09fb2ac52bf375bec39"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css",
+            "size": 3951,
+            "mode": 420,
+            "sha256": "7509173c72b56044a534ab4069158986816feb04c847eb315fd4ffd3a237856f"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+            "size": 62721,
+            "mode": 420,
+            "sha256": "c8e9aa9c725231a2470f563cace6f34645e873ad7b048181d08c1e9676a55133"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/configuration-drafts/skill-files.tsx",
+            "size": 14332,
+            "mode": 420,
+            "sha256": "d24559bfd5282e0c3550f8cd65c1361561296c81b306a6dc1d16419241b805de"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/configuration-extensions/extensions.module.css",
+            "size": 1760,
+            "mode": 420,
+            "sha256": "016013c9df26636ad7025d62665a88160f37c2230cabeb52f31f56566cd4f105"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/configuration-extensions/index.tsx",
+            "size": 8747,
+            "mode": 420,
+            "sha256": "3581b544b355ccfcfd492403e1a2203d2aa6a51acaab8fec40f564133d95d18e"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/conversation-context/context.module.css",
+            "size": 4188,
+            "mode": 420,
+            "sha256": "5f65b8371e1c312c39ca424c898906551f6e8c07de4b02aef7e79f9a46a51d29"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/conversation-context/index.tsx",
+            "size": 21963,
+            "mode": 420,
+            "sha256": "0f8b7d05f265a29d9b4567bb4f158843d9a4bbccc8b31599b9a81981c05811da"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx",
+            "size": 23070,
+            "mode": 420,
+            "sha256": "dde298725bedda14377d1d804a2a07933b6300542cc1b0959178f4e3342f61b3"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/git-review/index.tsx",
+            "size": 39864,
+            "mode": 420,
+            "sha256": "3bdda0c0c8b840c36ba4370cd38bf4c6b2da3cb4b1800f330f1dcb3a14e8e490"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/git-review/review.module.css",
+            "size": 4038,
+            "mode": 420,
+            "sha256": "0905b53505b02d98eef3d2ec3d5925e754f334d57caae6093c9c3af212d26b1a"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/line-feedback/feedback.module.css",
+            "size": 2187,
+            "mode": 420,
+            "sha256": "09fc2816f3c5e99085dd8e5f5f75db5bb74a019004cb23fd82a44ac14424bada"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/line-feedback/index.tsx",
+            "size": 10463,
+            "mode": 420,
+            "sha256": "226b692ebceae43027dd9f3c9eb12b4914568025a70f4612e61b25060dc7580b"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/permission-policy/index.tsx",
+            "size": 5652,
+            "mode": 420,
+            "sha256": "b1a7ab9e4d1af7c1856bb42803021484354d9f47214876ef6c74b553cad73c7e"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/permission-policy/policy.module.css",
+            "size": 966,
+            "mode": 420,
+            "sha256": "03bafffe00701525283536df054b28cd5f2a02f0720a3ef748d9dff933528aa2"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/sessions/index.tsx",
+            "size": 9332,
+            "mode": 420,
+            "sha256": "0a94d34d7693fa0277153e4b7baf9b5f83184df34277a8c0693da686d10ab449"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/sessions/navigation.ts",
+            "size": 1162,
+            "mode": 420,
+            "sha256": "c4df82a89c92e591a1a369f936dd5ca14aef832ab6291af73a2c472fd1b74bbe"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/sessions/sessions.module.css",
+            "size": 3521,
+            "mode": 420,
+            "sha256": "762d12c5f51a77e12ffd1448acb8a4dc329e47ebb232a024a42f879fcb712e6a"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/workspace-file-editor/editor.module.css",
+            "size": 2197,
+            "mode": 420,
+            "sha256": "fbd1be33b9969d8333c3afba3a45e893022597309596811bbfce1d67f0792d2f"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/workspace-file-editor/index.tsx",
+            "size": 12989,
+            "mode": 420,
+            "sha256": "cf5f76faf1f8a9b6cadd6f75274de06e137439f703852e0f9cd77667c3c3831a"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+            "size": 23446,
+            "mode": 420,
+            "sha256": "7a5c9caf45f3250c8e71e18dfa9f3fd9cf2f20fd9adb671d123e86245cd21411"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/pages/workbench/shell.module.css",
+            "size": 7750,
+            "mode": 420,
+            "sha256": "96206e9bb6c24c0f5faa3bb0046ef5de702c1323230786057cae04211ce67615"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/api/index.ts",
+            "size": 4757,
+            "mode": 420,
+            "sha256": "d0cf44dd775eaec2f6c70851e39ba6601effe2d2de0d8db4765ae43024511f40"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/agent-runtime.d.mts",
+            "size": 850,
+            "mode": 420,
+            "sha256": "10bccd1ce0eec7c3cb16c3a351744f1be2234be025c78d5c72af5ef4e3b66794"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/agent-runtime.mjs",
+            "size": 6681,
+            "mode": 420,
+            "sha256": "58241c1ec4faf550d8ca3543bbb307cf5214ac1ad04602c78c5de32448220318"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/agent.d.mts",
+            "size": 876,
+            "mode": 420,
+            "sha256": "abe0de4e62306589368ba0d26bc79ede8121883eb170b384f5e60505a8d4df5e"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/agent.mjs",
+            "size": 3708,
+            "mode": 420,
+            "sha256": "97a23a94e8e5ba9f1f522ce605a2cb1700c70f07036638ce826ab753585a7ee3"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/extensions.d.mts",
+            "size": 1766,
+            "mode": 420,
+            "sha256": "d1abff817059857f02861be5de15aabb331e42a5bb604fb89b7c35407362b9a9"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/extensions.mjs",
+            "size": 8646,
+            "mode": 420,
+            "sha256": "1a51f9776ba1ef179f1fcdb3367a021ec20b881e74cc686faae0db7af3db8a04"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+            "size": 4279,
+            "mode": 420,
+            "sha256": "7807f07a7d93d4a290031c23516bee036452ce91f54fd487b022fea4d6445cee"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/permission-policy.d.mts",
+            "size": 1036,
+            "mode": 420,
+            "sha256": "24b397e872fbf3973feff9ff9563c78ed21050fbb37b6d9cfa338f52cb9c342f"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/permission-policy.mjs",
+            "size": 4039,
+            "mode": 420,
+            "sha256": "defa295677b4522e9c60b1f0c93ec1f745ddaf8f4cd8b2702184d4de8f9a5521"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/policy.d.mts",
+            "size": 303,
+            "mode": 420,
+            "sha256": "bc7b181d70de25d2a336516ed98f9104db13bfc120662e36bdaaff8dd31fccaf"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs",
+            "size": 1221,
+            "mode": 420,
+            "sha256": "cad78a3c98ffefbc3657bf57b8f1f692a4354873bd42f95af4babed1a8db1ba8"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.d.mts",
+            "size": 890,
+            "mode": 420,
+            "sha256": "e06bc8dafc41f2f6cf780ad73e886488d60d3fada2d5adba3c3a15f190a99f4d"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.mjs",
+            "size": 6885,
+            "mode": 420,
+            "sha256": "87c17743b5791871d191a16b85777a53f1cd212d5b5682feda18a9c9ebbbc0e5"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/skill.d.mts",
+            "size": 729,
+            "mode": 420,
+            "sha256": "047a0fdb3bb3368677c2dababda56049d59f0b86a0fb0840d0fc95e2dc5b9ae9"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/skill.mjs",
+            "size": 3475,
+            "mode": 420,
+            "sha256": "b30cf77b1967c83758a87203548e97331916e92536f5cda64e9e6c4a7ae8719a"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/validation.d.mts",
+            "size": 2682,
+            "mode": 420,
+            "sha256": "259ad492a1aa4159af8eba9bb86faaf2de30c1a6298da6b7fed40b29eb46f5c3"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs",
+            "size": 8052,
+            "mode": 420,
+            "sha256": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/conversation-context/index.d.mts",
+            "size": 2584,
+            "mode": 420,
+            "sha256": "a014e42e8d3f91f2996a548986231b4f96f92dee924bcca1ff641faae324adee"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/conversation-context/index.mjs",
+            "size": 7752,
+            "mode": 420,
+            "sha256": "c2ed9928a50b9dc9ae6a73c4067f9a97984aec518ff1cafa194d159b91731387"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/conversation-context/index.ts",
+            "size": 433,
+            "mode": 420,
+            "sha256": "3007516d428dc17bd5afce8af95cec6578089f718f5d08ed02acb19addca9d33"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/git-branch-restore/index.d.mts",
+            "size": 5400,
+            "mode": 420,
+            "sha256": "848d6f88fb12c69a1849baa4b6d6d7a6e8c98f5f9a8ee42496eb1e8d35eda7fa"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs",
+            "size": 15359,
+            "mode": 420,
+            "sha256": "0d5fe8eeb8e7f05089cd993b30a504e0089fbe769c0930394b69145420215441"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/git-branch-restore/index.ts",
+            "size": 1104,
+            "mode": 420,
+            "sha256": "ea53b87a772d04d4326577edc0ccd487176b5b9c4d33676d411349642571fa15"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/git-commit/index.d.mts",
+            "size": 4277,
+            "mode": 420,
+            "sha256": "bcf4f5a567d1fc5ca8096fe6d3202ec1a356a814a926a8dfe57f1fbb3add9469"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/git-commit/index.mjs",
+            "size": 12760,
+            "mode": 420,
+            "sha256": "6aad812c3e4a55026e132c1fe0c1ecf5811d43a47fb39f8c5e8fab4c8f466505"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/git-commit/index.ts",
+            "size": 867,
+            "mode": 420,
+            "sha256": "9023e25452e836406592fe605c859d5ca660f6b63bd4e51a56b71f67a607a585"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/git-index/index.d.mts",
+            "size": 3184,
+            "mode": 420,
+            "sha256": "efea624c7e7844a529843d86155f17e02deacb484eb799b19c2d2d2c42fa757b"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/git-index/index.mjs",
+            "size": 8433,
+            "mode": 420,
+            "sha256": "11846a18791480034318e6c59089e5e0d493426b65a6d8305207dbe86cc73aa5"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/git-index/index.ts",
+            "size": 620,
+            "mode": 420,
+            "sha256": "2e147dd2e24d2fb7e0ade952d178a0e5de143ee30394c96d530750eaeedb6165"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/git-review/index.d.mts",
+            "size": 3452,
+            "mode": 420,
+            "sha256": "c94015e4962bd0ac7504d09cad6671abb893658c0c3fbebdcec2e2a37aab95f9"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/git-review/index.mjs",
+            "size": 8479,
+            "mode": 420,
+            "sha256": "8cad8a846ec1965249b3bb26718370214d9239b6a90b27f2fd25934d9c88a913"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/git-review/index.ts",
+            "size": 512,
+            "mode": 420,
+            "sha256": "e6b23ca1cd7ed26b8d676e9d9fc8106c88afa89824ac302246cf927929d43fbf"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/line-feedback/index.d.mts",
+            "size": 1731,
+            "mode": 420,
+            "sha256": "15e3485856fe8806e360461f617d8df8f03a675b2316f8a99e5307abd587aadb"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/line-feedback/index.mjs",
+            "size": 8480,
+            "mode": 420,
+            "sha256": "c2355cdf6a8ece022baf6215b5e84d3dee0020050362261c14a622f24f7232e3"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/line-feedback/index.ts",
+            "size": 223,
+            "mode": 420,
+            "sha256": "3b47b657433800da52f96fbc3264474680795881b42f8eb8223d2a4d6f1a32ea"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/projection/index.ts",
+            "size": 62,
+            "mode": 420,
+            "sha256": "217eb4dbe3972fef503112ed8ef476d2073260b90904aea0ffb322a96e5717d4"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/projection/projection.d.mts",
+            "size": 290,
+            "mode": 420,
+            "sha256": "6f8a7e83685561138daf317f003a330726eb0394d8eda7d77dafac324ee4280c"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/projection/projection.mjs",
+            "size": 1873,
+            "mode": 420,
+            "sha256": "fbe46d4da555eacbce706010bf253d2ff3d809ee428a9931b352452b4f6a31cd"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/runtime-options/index.d.mts",
+            "size": 1251,
+            "mode": 420,
+            "sha256": "6af476afec5fa9381a60e7de2629e4f2f18cfbcff9fea75d93ed6973f8df529d"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/runtime-options/index.mjs",
+            "size": 4674,
+            "mode": 420,
+            "sha256": "588b7f3289e4d96c89477a905db53557ee14cb89c16ed60127a2530547d37f4e"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/runtime-options/index.ts",
+            "size": 354,
+            "mode": 420,
+            "sha256": "08d6ba3b56cd82d298cbe035fb641d10575f2798d9e932b0d7ff79270c325b61"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/transport/index.ts",
+            "size": 7449,
+            "mode": 420,
+            "sha256": "16b678b516943feb04328cd414de85182d49a4c7fe800e1f82909598341f2cff"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/workspace-file/index.d.mts",
+            "size": 1915,
+            "mode": 420,
+            "sha256": "e8adb840874c14ef2a7109243cced9acb165e12de1a826acac6c23ae97e1e8cc"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs",
+            "size": 6370,
+            "mode": 420,
+            "sha256": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/workspace-file/index.ts",
+            "size": 500,
+            "mode": 420,
+            "sha256": "bd4421ccedb70e0d3204f77524dd9ae5a7ec65f65e54b713787eed954266e8e9"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/activity/activity.module.css",
+            "size": 2183,
+            "mode": 420,
+            "sha256": "0099e650bd162c3c9a6e50c52625ad444ea45e3981ab355814bb08a90d3c1f58"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+            "size": 5265,
+            "mode": 420,
+            "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css",
+            "size": 15469,
+            "mode": 420,
+            "sha256": "423334c863fcede56d6608c79ad938c332ddabc2d4ca30238fa59f6f93821a67"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+            "size": 34425,
+            "mode": 420,
+            "sha256": "4a36db49d7810c5f0cc47849bc6130ce2b9295e2eddeaccacb8390fcc97219e6"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/conversation/markdown.tsx",
+            "size": 4486,
+            "mode": 420,
+            "sha256": "27a97009cf8db181032d6e2428ab9c2391e59317d5d998316d88310145562424"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/explorer/explorer.module.css",
+            "size": 3210,
+            "mode": 420,
+            "sha256": "d3f1995a6b31280f8bcf1a6c59aee6cd4e8d2aeaa198c6a54ae6939041059300"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+            "size": 13800,
+            "mode": 420,
+            "sha256": "e8a32fe513ba9ded7aec25b664f2329607970d613d1a7b7e55d0a8a41519740e"
+          },
+          {
+            "path": "apps/desktop-app/src/sidecar-package.mjs",
+            "size": 195,
+            "mode": 420,
+            "sha256": "7d3e8cb1ec0522862f7c301eceb0dde317c542d4891bff40aa29839b967999dd"
+          },
+          {
+            "path": "apps/desktop-app/src/sidecar-supervisor.mjs",
+            "size": 18972,
+            "mode": 420,
+            "sha256": "82c961bde9b2b152e342e012c83e98be905b208925425f1ef7c90c90dac41a7f"
+          },
+          {
+            "path": "apps/desktop-app/src/workbench-contract.mjs",
+            "size": 29212,
+            "mode": 420,
+            "sha256": "52b1b34627316b8b5f9453f2ce0b6279a245fb26fe303b7f932c6a88e70e9837"
+          },
+          {
+            "path": "apps/desktop-app/src/workbench-service.mjs",
+            "size": 163893,
+            "mode": 420,
+            "sha256": "2988d5aa66f43903e0a2360779b02b9bb79b6050ff6a6a548d5a7397d2d19856"
+          },
+          {
+            "path": "apps/desktop-app/tsconfig.json",
+            "size": 246,
+            "mode": 420,
+            "sha256": "e38ba12303e14c6c1e9413990260c2ff07e21789530295af097ad3f743f3f5ac"
+          },
+          {
+            "path": "apps/desktop-app/vite.config.ts",
+            "size": 365,
+            "mode": 420,
+            "sha256": "1d02271112ce18d2e77b2a94aff3e9de15fc6cc3903e17ed3a5126b6e5dbe052"
+          },
+          {
+            "path": "docs/design/tokens/manifest.json",
+            "size": 62992,
+            "mode": 420,
+            "sha256": "b709ef034343724cf6041c672673fed23a7856e76dee830b7d69482e03d6305c"
+          },
+          {
+            "path": "docs/design/tokens/tokens.css",
+            "size": 26378,
+            "mode": 420,
+            "sha256": "b6b93321e6f82804c725a30f13a56698d38ed8f838c71706c6bec9f3d7e208e8"
+          },
+          {
+            "path": "nx.json",
+            "size": 1782,
+            "mode": 420,
+            "sha256": "9d2a5e2fce5f862ad1226a023f9b00de6ba3f876491bee9a59a4490ed64996dc"
+          },
+          {
+            "path": "package.json",
+            "size": 1073,
+            "mode": 420,
+            "sha256": "553a56da39dcc79ba9f24d7ee687e2870efb8340bb5efaff028e8b65ca7d40ea"
+          },
+          {
+            "path": "packages/contracts/package.json",
+            "size": 261,
+            "mode": 420,
+            "sha256": "c556b0f6a485c10703ad59fe4603f704f4cfce89a46e54ee9ddc2b3f8c46e566"
+          },
+          {
+            "path": "packages/contracts/project.json",
+            "size": 1147,
+            "mode": 420,
+            "sha256": "3306d3453bd3367fbb170d87f354b700dcc41aa1597be43acfee2ba8fcf2f6d3"
+          },
+          {
+            "path": "packages/contracts/src/index.ts",
+            "size": 3965,
+            "mode": 420,
+            "sha256": "900ca3e0469a4295f6f5dcd0bc93a8e15449bb0f3bf373079e01759be7833c3c"
+          },
+          {
+            "path": "packages/contracts/tsconfig.build.json",
+            "size": 270,
+            "mode": 420,
+            "sha256": "c2000fc5adfd56edd59a39b1d9eead09c865d0e3f5f828331287a2a2770b05c5"
+          },
+          {
+            "path": "packages/contracts/tsconfig.json",
+            "size": 206,
+            "mode": 420,
+            "sha256": "a7ab513b8f39295633629f837dec141c5dcc17df7d8ce5d0f3049e1b7f1ff366"
+          },
+          {
+            "path": "packages/ui/package.json",
+            "size": 330,
+            "mode": 420,
+            "sha256": "941e6538386984a3bc924606c361492616b312c560a3f830c3e1cc4796b92619"
+          },
+          {
+            "path": "packages/ui/project.json",
+            "size": 628,
+            "mode": 420,
+            "sha256": "f2f7bdcdcc97963fd0975bcdd861b9dc571752a03a3b4121e354dd5c526c6ea4"
+          },
+          {
+            "path": "packages/ui/src/css-modules.d.ts",
+            "size": 111,
+            "mode": 420,
+            "sha256": "00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4"
+          },
+          {
+            "path": "packages/ui/src/index.ts",
+            "size": 666,
+            "mode": 420,
+            "sha256": "d65373a98650fd9d60f70f6b8f62ed432338f249eed0377d99abe4fe73192bac"
+          },
+          {
+            "path": "packages/ui/src/primitives/action-menu.module.css",
+            "size": 2037,
+            "mode": 420,
+            "sha256": "0dd05f4334d76335a8ba20fa9d68c76935602410c2d9ba64b588b53f30cea904"
+          },
+          {
+            "path": "packages/ui/src/primitives/action-menu.tsx",
+            "size": 1443,
+            "mode": 420,
+            "sha256": "589d256e7edee69fd4fb8d0126587099df5895f506d3b8ba3ccb1d0e74062a5b"
+          },
+          {
+            "path": "packages/ui/src/primitives/button.module.css",
+            "size": 2311,
+            "mode": 420,
+            "sha256": "efd5110e6976f2cbfcedef6aa9c6e4ba0c0e72c03bd910d3d0f482f99c0907f6"
+          },
+          {
+            "path": "packages/ui/src/primitives/button.tsx",
+            "size": 806,
+            "mode": 420,
+            "sha256": "3515c3aacdfc46d1f56995aaa039dae70360ff454df3dbd0652d75c086218059"
+          },
+          {
+            "path": "packages/ui/src/primitives/modal-sheet.module.css",
+            "size": 2383,
+            "mode": 420,
+            "sha256": "b03cf7bf80fdc798892498a517b87128cf1eb446a4cf3c72c355973ae434b1f1"
+          },
+          {
+            "path": "packages/ui/src/primitives/modal-sheet.tsx",
+            "size": 2450,
+            "mode": 420,
+            "sha256": "1b210af1f5a3d1f19b3f7556f9fe0ea17942c98bb123414fcf58ec3945e69c47"
+          },
+          {
+            "path": "packages/ui/src/status-badge/status-badge.module.css",
+            "size": 1133,
+            "mode": 420,
+            "sha256": "db6d168db045ed7422d8af6ca3a5724165894c76f1ea7501644a79fbecd7a4e5"
+          },
+          {
+            "path": "packages/ui/src/status-badge/status-badge.tsx",
+            "size": 414,
+            "mode": 420,
+            "sha256": "e6a6543a9f44e37702db7af12a22090320d97783826c32da14f9b57c9e4bc4dd"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/link-preview/_adapter.tsx",
+            "size": 128,
+            "mode": 420,
+            "sha256": "ac238c9b043920b082f8a3bee5efbcb68da5ef7001febc06ecc499d4d24d99d0"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/link-preview/index.ts",
+            "size": 108,
+            "mode": 420,
+            "sha256": "ec0becf6ccf9332e38da390e96dda3c5068df0ab1a27d4de5e7f18ce9956786c"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/link-preview/link-preview.module.css",
+            "size": 2427,
+            "mode": 420,
+            "sha256": "4e0e40b82a677a855ea117502f3743f6dd6801019056708abd23e5dbc6fba254"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/link-preview/link-preview.tsx",
+            "size": 3838,
+            "mode": 420,
+            "sha256": "a3da0c336b53cae282595e12136d8b0ee4452f2525d90044a1c3371782e0d599"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/link-preview/schema.ts",
+            "size": 370,
+            "mode": 420,
+            "sha256": "c13c516eab2d59870accd3f8949846be566fd6ae3e964766d02f0086907bb583"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/shared/media/aspect-ratio.module.css",
+            "size": 247,
+            "mode": 420,
+            "sha256": "8ca5cd2d43a3d5b8ac6cb7d455d0655eab6062cb5b82b0b9e550795140dc46e9"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/shared/media/aspect-ratio.ts",
+            "size": 469,
+            "mode": 420,
+            "sha256": "50dcf7be37fe1a53a6473f7caada45a08525c9dc513a17a2f34ccb64b642cb59"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/shared/media/index.ts",
+            "size": 180,
+            "mode": 420,
+            "sha256": "36d4c6b837b70bdd6c23b61f1a9c9aeeec3c62f78743511a346137354a417070"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/shared/media/safe-navigation.ts",
+            "size": 306,
+            "mode": 420,
+            "sha256": "22d9d7aabea228eb45fb1604d0c442ee515eceaf1e3aa93385305e699c95e020"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/shared/media/sanitize-href.ts",
+            "size": 981,
+            "mode": 420,
+            "sha256": "a81cb3cdd2fad7c73cedb620c9e21923d2e4ed959293b9ddf03f85b5698ff724"
+          },
+          {
+            "path": "packages/ui/tsconfig.json",
+            "size": 220,
+            "mode": 420,
+            "sha256": "c01db62bbfdb7eb397473fae06abdafed3e494c0eeba25be707f693dca561e6d"
+          },
+          {
+            "path": "pnpm-lock.yaml",
+            "size": 322432,
+            "mode": 420,
+            "sha256": "eb96a45f12a0b32ee007f38bf97a34f05ec48a487d270a76f1cca302153647b2"
+          },
+          {
+            "path": "pnpm-workspace.yaml",
+            "size": 616,
+            "mode": 420,
+            "sha256": "4d3db65848ea506ea21477408bfc430cd73aa81ac77e2f52c441a9589b2acb0b"
+          },
+          {
+            "path": "tsconfig.base.json",
+            "size": 550,
+            "mode": 420,
+            "sha256": "dc40c4449b29877bde000346ae28f50721076e0f60296163716a0a5a0e04bdf9"
+          }
+        ],
+        "sha256": "41b5eb3043994c8418f8f514b685cc586c5e20fadad00cc37d9c30eeb2690492"
+      },
+      "artifacts": {
+        "algorithm": "scoped-file-inventory-sha256-v1",
+        "scopes": [
+          {
+            "path": "apps/desktop-app/dist/app",
+            "tree": true,
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/dist/resources/opencode/darwin-arm64/opencode",
+            "present": true
+          }
+        ],
+        "selection": "all files in the listed scopes",
+        "limits": {
+          "files": 4096,
+          "depth": 24,
+          "bytes": 1073741824
+        },
+        "files": [
+          {
+            "path": "apps/desktop-app/dist/app/main.mjs",
+            "size": 1018935,
+            "mode": 420,
+            "sha256": "10a1df7ec22e13abd0b73f6fdd7a88d3d61cea5f034667c1108b64bf1b19d766"
+          },
+          {
+            "path": "apps/desktop-app/dist/app/package.json",
+            "size": 99,
+            "mode": 420,
+            "sha256": "9867ef3f45c3dc320d820cb11c32a526065d610dca2f15856aa27db6a6ffc8dd"
+          },
+          {
+            "path": "apps/desktop-app/dist/app/preload.cjs",
+            "size": 1059,
+            "mode": 420,
+            "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3"
+          },
+          {
+            "path": "apps/desktop-app/dist/app/renderer/assets/index-BJn7_Hlf.css",
+            "size": 82944,
+            "mode": 420,
+            "sha256": "a083ddb254ddf8dfd64fb0fd1746364404edc9adba32cc230b5f0c0326ee1409"
+          },
+          {
+            "path": "apps/desktop-app/dist/app/renderer/assets/index-D5sXQAjy.js",
+            "size": 1320425,
+            "mode": 420,
+            "sha256": "40d29c8a08b941a89168bea11a986cad46f4fdd68c236a2dc570ce25eaddd1bb"
+          },
+          {
+            "path": "apps/desktop-app/dist/app/renderer/index.html",
+            "size": 680,
+            "mode": 420,
+            "sha256": "9be5f88a9a9a349738a95a2bd6d93380e70f1b30adf6293c4f0ba00d9de2c504"
+          },
+          {
+            "path": "apps/desktop-app/dist/resources/opencode/darwin-arm64/opencode",
+            "size": 178946960,
+            "mode": 493,
+            "sha256": "6759c7f86f807d63d3984ca1970f9fa663ee303a35bb344eb223c71e200a96bf"
+          }
+        ],
+        "sha256": "68b46f668b983b50ff30d83b7b23d2ea5461130d0ec469b1eb0b1fbff1127386"
+      },
+      "eventHostResources": {
+        "algorithm": "event-host-full-resource-inventory-sha256-v1",
+        "manifestSha256": "d3aab67f2626f39895ed5dc949441d5de0c1e0cff0ef25c6d3d9704dbd0681c7",
+        "inventorySha256": "eb885dbec45ec3ea468b1debe704f91baf22448f15a400da3648e94b7eea8e9c",
+        "entryCount": 38432,
+        "fileCount": 35150,
+        "symlinkCount": 31,
+        "totalBytes": 399616484,
+        "versions": {
+          "bun": "1.4.2",
+          "server": "2.0.18",
+          "effect": "4.0.0-rc.112"
+        },
+        "target": {
+          "platform": "darwin",
+          "arch": "arm64"
+        },
+        "manifestPath": "opencode/event-host/darwin-arm64/manifest.json",
+        "sha256": "b6523c6866bcccd8c391f63441638daae8a30de27298732c25824a40c58b05ac"
+      },
+      "ownerLifetimeResources": {
+        "algorithm": "owner-lifetime-resource-sha256-v1",
+        "manifestSha256": "7fc0b3fd64227bf5e68ddde5779314cdf6213ca09ed9fcb269ee953d5ae14305",
+        "executableSha256": "638655f6eb09dc96aeafb2a322400d462ede59d0640e0ad9a17c037272cf4d36",
+        "sourceSha256": "4eb42efefdef1970d48bd19368b94bae689b10fbeacc96cd1adc83a9cf996951",
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "target": "arm64-apple-macos11",
+        "platform": "darwin",
+        "arch": "arm64",
+        "sha256": "7a47eee4cea15be2e251bc9a37a8ef2c3b919c9343128795dfd2bc5a45c745da"
+      },
+      "limitations": [
+        "Scoped local byte inventory, not the harness source fingerprint or a signed attestation.",
+        "Build source scope follows the exported extension/name/directory selection policy. Known credential and runtime/export/capture directories and repository paths outside the scopes are excluded; selected capture scripts/fixtures are recorded separately.",
+        "Lockfiles identify declared dependency resolution; The selected event-host installed closure is separately inventoried. Other installed dependency trees, compiler binaries and Electron runtime are not independently inventoried.",
+        "Before/after comparisons detect observed changes; they are not filesystem isolation and cannot detect change-and-restore between observations."
+      ]
+    },
+    "currentBuildInputs": {
+      "algorithm": "scoped-file-inventory-sha256-v1",
+      "scopes": [
+        {
+          "path": "package.json",
+          "present": true
+        },
+        {
+          "path": "pnpm-lock.yaml",
+          "present": true
+        },
+        {
+          "path": "pnpm-workspace.yaml",
+          "present": true
+        },
+        {
+          "path": "tsconfig.base.json",
+          "present": true
+        },
+        {
+          "path": "nx.json",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/package.json",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/project.json",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/index.html",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/vite.config.ts",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/tsconfig.json",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/build.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/build-provenance.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/prepare-event-host.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/stage-event-host.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/stage-owner-lifetime.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/native/owner-lifetime/witness.c",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/package.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/runtime-event-host/package.json",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/runtime-event-host/package-lock.json",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/runtime-event-host/installer-pins.json",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/src",
+          "tree": true,
+          "source": true,
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/public",
+          "tree": true,
+          "source": true,
+          "optional": true,
+          "present": false
+        },
+        {
+          "path": "packages/ui/package.json",
+          "present": true
+        },
+        {
+          "path": "packages/ui/project.json",
+          "present": true
+        },
+        {
+          "path": "packages/ui/tsconfig.json",
+          "present": true
+        },
+        {
+          "path": "packages/ui/src",
+          "tree": true,
+          "source": true,
+          "present": true
+        },
+        {
+          "path": "packages/contracts/package.json",
+          "present": true
+        },
+        {
+          "path": "packages/contracts/project.json",
+          "present": true
+        },
+        {
+          "path": "packages/contracts/tsconfig.json",
+          "present": true
+        },
+        {
+          "path": "packages/contracts/src",
+          "tree": true,
+          "source": true,
+          "present": true
+        },
+        {
+          "path": "packages/contracts/tsconfig.build.json",
+          "present": true
+        },
+        {
+          "path": "docs/design/tokens",
+          "tree": true,
+          "source": true,
+          "present": true
+        }
+      ],
+      "selection": {
+        "excludedDirectories": [
+          "node_modules",
+          "dist",
+          "exports",
+          "captures",
+          "credentials",
+          "runtime-data"
+        ],
+        "excludedNames": "hidden names and *.test.* / *.spec.*",
+        "allowedFileExtensions": "\\.(?:c|[cm]?js|[cm]?ts|jsx|tsx|css|html|json|svg|png|jpe?g|webp|gif|ico|woff2?|ttf)$"
+      },
+      "limits": {
+        "files": 4096,
+        "depth": 24,
+        "bytes": 1073741824
+      },
+      "files": [
+        {
+          "path": "apps/desktop-app/index.html",
+          "size": 584,
+          "mode": 420,
+          "sha256": "973680da1eadd48eb58ff47aaaca46a10e33c0da3a31e97662f3ddea9fddc9ae"
+        },
+        {
+          "path": "apps/desktop-app/native/owner-lifetime/witness.c",
+          "size": 16279,
+          "mode": 420,
+          "sha256": "4eb42efefdef1970d48bd19368b94bae689b10fbeacc96cd1adc83a9cf996951"
+        },
+        {
+          "path": "apps/desktop-app/package.json",
+          "size": 1395,
+          "mode": 420,
+          "sha256": "98617384d1d6afaf78c7124ec10bc50141bcea6441b21fcda75349655d586425"
+        },
+        {
+          "path": "apps/desktop-app/project.json",
+          "size": 4323,
+          "mode": 420,
+          "sha256": "0f90164352dbc9df946e3578eb604d3216dc2fdd82e35b2e126d31c2acefb622"
+        },
+        {
+          "path": "apps/desktop-app/runtime-event-host/installer-pins.json",
+          "size": 6700,
+          "mode": 420,
+          "sha256": "2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41"
+        },
+        {
+          "path": "apps/desktop-app/runtime-event-host/package-lock.json",
+          "size": 232329,
+          "mode": 420,
+          "sha256": "34f04622903ba6c3c14ba5729e0e406f1ed245307acea049c637cbdac2e64e9c"
+        },
+        {
+          "path": "apps/desktop-app/runtime-event-host/package.json",
+          "size": 276,
+          "mode": 420,
+          "sha256": "86992a64cd87494b080f2efd47dae2e2d6ae46b7958c7a063e2ed54b3e1dd0e5"
+        },
+        {
+          "path": "apps/desktop-app/scripts/build-provenance.mjs",
+          "size": 20094,
+          "mode": 420,
+          "sha256": "a5dfebae9bb9e5d449b767cbf6320062d544105b0d6a1f21115a5cac5a46af75"
+        },
+        {
+          "path": "apps/desktop-app/scripts/build.mjs",
+          "size": 2496,
+          "mode": 420,
+          "sha256": "e906fbe156109e737228c20b59f6e47952a27adb09a7d90fbfa695bcb366529d"
+        },
+        {
+          "path": "apps/desktop-app/scripts/package.mjs",
+          "size": 4176,
+          "mode": 420,
+          "sha256": "3c9c9e9a65b91996025f4e95abc533c8799fd12385aae8a7f01153a2df14faaf"
+        },
+        {
+          "path": "apps/desktop-app/scripts/prepare-event-host.mjs",
+          "size": 13241,
+          "mode": 420,
+          "sha256": "9970d480610c93628587fb97c62ff393e3515d6d87f6362542aa79456a2d1cff"
+        },
+        {
+          "path": "apps/desktop-app/scripts/stage-event-host.mjs",
+          "size": 13451,
+          "mode": 420,
+          "sha256": "c5962f23c4f33c26c7728732a5d0b4a04cb0bfd5adad2ddefd9b4f0d30d70853"
+        },
+        {
+          "path": "apps/desktop-app/scripts/stage-owner-lifetime.mjs",
+          "size": 6917,
+          "mode": 420,
+          "sha256": "d1d46210d36c321650cb1cb99e7a47de29ee924a8b72d7e81febdfacca5def65"
+        },
+        {
+          "path": "apps/desktop-app/src/builtins/workbench-skills/agents.mjs",
+          "size": 16865,
+          "mode": 420,
+          "sha256": "1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305"
+        },
+        {
+          "path": "apps/desktop-app/src/builtins/workbench-skills/extensions.mjs",
+          "size": 7951,
+          "mode": 420,
+          "sha256": "05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962"
+        },
+        {
+          "path": "apps/desktop-app/src/builtins/workbench-skills/package.json",
+          "size": 110,
+          "mode": 420,
+          "sha256": "1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120"
+        },
+        {
+          "path": "apps/desktop-app/src/builtins/workbench-skills/server.mjs",
+          "size": 13606,
+          "mode": 420,
+          "sha256": "b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d"
+        },
+        {
+          "path": "apps/desktop-app/src/css-modules.d.ts",
+          "size": 111,
+          "mode": 420,
+          "sha256": "00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4"
+        },
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "size": 39930,
+          "mode": 420,
+          "sha256": "9048037cad1d43ce13e746f20d5a086078d85925e7a0a3975f7eccb287eaa65b"
+        },
+        {
+          "path": "apps/desktop-app/src/ephemeral-profile.mjs",
+          "size": 2527,
+          "mode": 420,
+          "sha256": "d58944c6cd050087d4dc5e8b786dd1d0d2bc98e6eb883de907a72b5615c19765"
+        },
+        {
+          "path": "apps/desktop-app/src/event-host-child.mjs",
+          "size": 16199,
+          "mode": 420,
+          "sha256": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875"
+        },
+        {
+          "path": "apps/desktop-app/src/event-host-protocol.mjs",
+          "size": 10749,
+          "mode": 420,
+          "sha256": "18fd006fa963e84015b81ac2338a5680d072aa9f8c5cf7ef5f85fd3d3eba2ed6"
+        },
+        {
+          "path": "apps/desktop-app/src/event-host-resources.mjs",
+          "size": 15942,
+          "mode": 420,
+          "sha256": "f900de7bb9b08144fc9774c9c801b74589bac6d965d9f09e310e4a3f2d0bcaf8"
+        },
+        {
+          "path": "apps/desktop-app/src/event-host-supervisor.mjs",
+          "size": 30405,
+          "mode": 420,
+          "sha256": "46cf4c7dc4f002ae4538603b2f858d3e3c500247277c751c83af2cccee18a5b8"
+        },
+        {
+          "path": "apps/desktop-app/src/host/configuration-file-observation.mjs",
+          "size": 1997,
+          "mode": 420,
+          "sha256": "83419028f952d647a23bf06b908649c97cc343b2247c15b9e1ae427acc7a9587"
+        },
+        {
+          "path": "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+          "size": 26847,
+          "mode": 420,
+          "sha256": "cca5de5aa358d1ecba8209b2c7c8af457503c1717945cba1f825245c2974fd54"
+        },
+        {
+          "path": "apps/desktop-app/src/host/configuration-source-files.mjs",
+          "size": 13095,
+          "mode": 420,
+          "sha256": "ad94c3adc982fb5b8052bdee90a34cbd1ae8b3a2179b6325f35973c6db8ff7da"
+        },
+        {
+          "path": "apps/desktop-app/src/host/conversation-context-branch-storage.mjs",
+          "size": 3927,
+          "mode": 420,
+          "sha256": "f8e4f81d756eff597bd2d896927cc036d6ba5e0aaa83e6ef15c95498f75262b6"
+        },
+        {
+          "path": "apps/desktop-app/src/host/conversation-context-io.mjs",
+          "size": 13618,
+          "mode": 420,
+          "sha256": "1ebac912b89f858f6a8b9230ef21b0b37f619c45f9d6c47c601023b2350b627e"
+        },
+        {
+          "path": "apps/desktop-app/src/host/conversation-context-native.mjs",
+          "size": 2771,
+          "mode": 420,
+          "sha256": "a36a290a952b26d5c2edf028e8507ee5d7ea369d8ffcb388e914e55b690abf2a"
+        },
+        {
+          "path": "apps/desktop-app/src/host/conversation-context-storage.mjs",
+          "size": 7439,
+          "mode": 420,
+          "sha256": "11670f7c17b540ad7b54ee2f0c52bdfeceff2eb64963e3387fe0739b74c568df"
+        },
+        {
+          "path": "apps/desktop-app/src/host/git-branch-restore-contract.mjs",
+          "size": 14144,
+          "mode": 420,
+          "sha256": "75cf0478da330b3b9fa6937be415abbcd7fb50473ba1418b913197fdfc1b21a3"
+        },
+        {
+          "path": "apps/desktop-app/src/host/git-branch-restore-kernel.mjs",
+          "size": 277,
+          "mode": 420,
+          "sha256": "f8402c66a0cc450c3e1027157de948797d4148d7225e0caa24c2faaeadbf4419"
+        },
+        {
+          "path": "apps/desktop-app/src/host/git-commit-contract.mjs",
+          "size": 12625,
+          "mode": 420,
+          "sha256": "94fe59d2bce230887fe44513ba3b829e2149ee33489df62edf0475ef655d039d"
+        },
+        {
+          "path": "apps/desktop-app/src/host/git-commit-kernel.mjs",
+          "size": 263,
+          "mode": 420,
+          "sha256": "ccd5b04f81fbd2e675ab10599dddfc3a1519dc119e4562bf8ffeb12e7213e482"
+        },
+        {
+          "path": "apps/desktop-app/src/host/git-index-contract.mjs",
+          "size": 8951,
+          "mode": 420,
+          "sha256": "87cccae8dcb53a84a80fc4b7a73a30942aa2c9b9b37f6f203debf0e9dd2d66d7"
+        },
+        {
+          "path": "apps/desktop-app/src/host/git-index-kernel.mjs",
+          "size": 261,
+          "mode": 420,
+          "sha256": "40f1b6adbbcf1b571ea03ff01e7c32e2a68d28c5350f1a60cfea6457c41730bb"
+        },
+        {
+          "path": "apps/desktop-app/src/host/git-metadata-kernel.mjs",
+          "size": 110149,
+          "mode": 420,
+          "sha256": "7c68c8587593ebe938dd3727392eda8c9e96220f66c615a269388291fd18645d"
+        },
+        {
+          "path": "apps/desktop-app/src/host/native-preflight.mjs",
+          "size": 25666,
+          "mode": 420,
+          "sha256": "710214d3cd54a69e8163c22ceaa10c27afde0ddccf47c4c1c145073960612b1f"
+        },
+        {
+          "path": "apps/desktop-app/src/host/owner-lifetime.mjs",
+          "size": 22989,
+          "mode": 420,
+          "sha256": "ce552061e68aa2cb1bb52cfece777e8f55c33de0e8b13b94b86a7d5f9ccabc95"
+        },
+        {
+          "path": "apps/desktop-app/src/host/storage-journal.mjs",
+          "size": 63352,
+          "mode": 420,
+          "sha256": "2856c1beca6b28ddd16ad2016fe0d314544a824f0566d24e555fcdec7cb54d84"
+        },
+        {
+          "path": "apps/desktop-app/src/host/storage-lock.mjs",
+          "size": 21151,
+          "mode": 420,
+          "sha256": "2be0135e99588e9511e158fa35d817a388574ae228f80cf71b320e40ae535112"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-admission.mjs",
+          "size": 28050,
+          "mode": 420,
+          "sha256": "6ae71c1303fb7304200ee9e9c5072c74e07279dced2cc369da0607cbc3cb5794"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-agent-storage.mjs",
+          "size": 12543,
+          "mode": 420,
+          "sha256": "5d5a8ad570172b6cadebf154877f33bcceb2808b6d5de8433ccafe43f56b4b5f"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-agents.mjs",
+          "size": 435,
+          "mode": 420,
+          "sha256": "c27db8c90656817693cf729c9476afa9aae8cd31206bcf93cb7958d9feb7afad"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-configuration-files.mjs",
+          "size": 8615,
+          "mode": 420,
+          "sha256": "1afc3895d4256cb27ba8a4a6342dd98ac42c5bd72a5556b8d590a70ed34ce22b"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-configuration.mjs",
+          "size": 4065,
+          "mode": 420,
+          "sha256": "45fe37e79dec410444f5bb07b50aeaae2721b000fe0f2f7aa9536f0b6010a13b"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-file-edit.mjs",
+          "size": 9832,
+          "mode": 420,
+          "sha256": "d949e0162c3c7684575c0874fac4fcc3f91a04cce770e22d23e1ea807e7d5756"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-file-storage.mjs",
+          "size": 6588,
+          "mode": 420,
+          "sha256": "0a44a2dd8029114a85cd8a07434df7aa5ff4c3e283b720e803148401e8221dc1"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-files.mjs",
+          "size": 5503,
+          "mode": 420,
+          "sha256": "afa3cd76c465d68aac695ab204b38806e9ff1c69451e92830903378195e49cbf"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git-branch-restore-storage.mjs",
+          "size": 8902,
+          "mode": 420,
+          "sha256": "ebd5216d84808398939166aafd84233f00c4b4a9a49ed1c4b318feace8dc09f6"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git-branch-restore.mjs",
+          "size": 32951,
+          "mode": 420,
+          "sha256": "6ee2be5e10f10ae8fa92733e5b94282c17aab4765780604d906c1da9cd01358a"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git-commit-storage.mjs",
+          "size": 7775,
+          "mode": 420,
+          "sha256": "371507679f7c3017e4d18600ec42168eb847be43f2862ec6cc2ecd2c80f5b4f5"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git-commit.mjs",
+          "size": 23309,
+          "mode": 420,
+          "sha256": "2c29a9a5a57fccfcc69317d8da3b4e8322845a946782f8d32dedf2e3c7aa63dc"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git-index-storage.mjs",
+          "size": 7030,
+          "mode": 420,
+          "sha256": "6aba81920310092d2977f87dee3344ba44687e6540feb5bcb1fa26f9034608cf"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git-index.mjs",
+          "size": 16303,
+          "mode": 420,
+          "sha256": "66e6b4bd36514a2598cc0b097a82a85e4be39fa5919021813ebd774fbe7efea8"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git-snapshot.mjs",
+          "size": 52505,
+          "mode": 420,
+          "sha256": "465c7b364f8b9cfcffb07252dcaf79010457c2a928291368d4bcb9dbc242d622"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git.mjs",
+          "size": 19876,
+          "mode": 420,
+          "sha256": "d28d0ae3da4ef5ab35f2c7b40d0dcb096207a7636ad409e03cdce591f1cc22b7"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-instructions.mjs",
+          "size": 3554,
+          "mode": 420,
+          "sha256": "41f04ecf2b3ad00dad8a96ad8dcc99397b42179a05468620b6eae82e5cd40812"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-ipc.mjs",
+          "size": 726,
+          "mode": 420,
+          "sha256": "7fffc482083fa9ce6acd75f7536150cdd263dcc03bf25b295498bc36b7aed8ca"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-mcp.mjs",
+          "size": 6519,
+          "mode": 420,
+          "sha256": "ad125d7eea3ef7e998d1a9ed3ddc7fd1104249399c6b5be9311dc3cb72b3ddb4"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-native-agents.mjs",
+          "size": 7779,
+          "mode": 420,
+          "sha256": "e608b3a51b489db2ada00cfe055c43e0f68296286ddb62fa8a8effb0180071fb"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-native-skills.mjs",
+          "size": 5556,
+          "mode": 420,
+          "sha256": "b39fb0277dda3143b1ce3486d084d2c7f36a1d5a6b6fe40c9c7f86474094d6a8"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-receipts.mjs",
+          "size": 9563,
+          "mode": 420,
+          "sha256": "c6c1b9a5f5b0bf269851be31e15f0fe847eff169249ad20a159bb1410e296f1f"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-skill-runtime-storage.mjs",
+          "size": 10198,
+          "mode": 420,
+          "sha256": "79dfd2883c598ef29e1fb3e7857ed7f756f7e273aaa6b48e9995082bebd771ee"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-skill-storage.mjs",
+          "size": 1832,
+          "mode": 420,
+          "sha256": "ebc61b22249dbfa133dcd680340a4552ed006e5f91b4030b928326db19247134"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-skills.mjs",
+          "size": 430,
+          "mode": 420,
+          "sha256": "64b3d7ea231ad3516de687e0e730823d15bbe5f72e3c8e2f031d52d2258e4b4b"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workspace-registry.mjs",
+          "size": 78855,
+          "mode": 420,
+          "sha256": "7bd86068fcb0001c1a0477a385f9919a54a99573a76a1a023a5c76fa06e3e1aa"
+        },
+        {
+          "path": "apps/desktop-app/src/main.mjs",
+          "size": 28053,
+          "mode": 420,
+          "sha256": "3cf63b75000d2ef032793d0d8b8ae4036c44e7ac687d4da191aebc2676d87a19"
+        },
+        {
+          "path": "apps/desktop-app/src/native-agents-client.mjs",
+          "size": 2258,
+          "mode": 420,
+          "sha256": "f24273bf0bdb47bff8391b2f5b33969f78d92d3f5f1709657dcafe0378c8ae4c"
+        },
+        {
+          "path": "apps/desktop-app/src/native-agents-protocol.mjs",
+          "size": 10838,
+          "mode": 420,
+          "sha256": "c8a4f7066855b4b93a55d6752645012e2fb6d6b690588601ca7c086ca025f918"
+        },
+        {
+          "path": "apps/desktop-app/src/native-extensions-client.mjs",
+          "size": 2556,
+          "mode": 420,
+          "sha256": "3109b26306fc60da5313f5b7987a06e0bd42d5c67ebcb1027743de04ba3d9796"
+        },
+        {
+          "path": "apps/desktop-app/src/native-extensions-protocol.mjs",
+          "size": 2745,
+          "mode": 420,
+          "sha256": "fe6f34f163787aba93090f5ed197e9605a1724b6b8f593894731996ded955d63"
+        },
+        {
+          "path": "apps/desktop-app/src/native-preflight-predicates.mjs",
+          "size": 12070,
+          "mode": 420,
+          "sha256": "1c9f9ac887bcfa968c65506c03a0ed052e3995c959c58fca99936a383c51bb4d"
+        },
+        {
+          "path": "apps/desktop-app/src/native-preflight-protocol.mjs",
+          "size": 6896,
+          "mode": 420,
+          "sha256": "532527878141aade9e7b0bab81d7d50cd76ac510602b5d5968bf8a81a05ac79c"
+        },
+        {
+          "path": "apps/desktop-app/src/native-preflight-reader.mjs",
+          "size": 7108,
+          "mode": 420,
+          "sha256": "063edc26a9c51be4010a964a3d9c445249ebca4a3136e6896ed14d2ec5625090"
+        },
+        {
+          "path": "apps/desktop-app/src/native-preflight-resources.mjs",
+          "size": 998,
+          "mode": 420,
+          "sha256": "c199734b07713200830a6076537de956d834814f329fd9265741d7b7e41e0171"
+        },
+        {
+          "path": "apps/desktop-app/src/native-skills-client.mjs",
+          "size": 1476,
+          "mode": 420,
+          "sha256": "f4df2e04e0fc5f1b8eab04003df5f6e38439adc4c802593e7db947e7ca9dbdc8"
+        },
+        {
+          "path": "apps/desktop-app/src/native-skills-config.mjs",
+          "size": 1625,
+          "mode": 420,
+          "sha256": "c2760a03fef4b59bb3c8cc633f4ed3b65d612bad76d8f3dfb74c19afb9987940"
+        },
+        {
+          "path": "apps/desktop-app/src/native-skills-protocol.mjs",
+          "size": 10987,
+          "mode": 420,
+          "sha256": "b0ceaed5814060ea4460e9b13de3db210c0fdfbfeddc22fd232372f6f5935dd3"
+        },
+        {
+          "path": "apps/desktop-app/src/owner-lifetime-resources.mjs",
+          "size": 6547,
+          "mode": 420,
+          "sha256": "02bb0d98cfab05f30f34298d77f6d1ff99568fb921d694755df0f30cb19821c6"
+        },
+        {
+          "path": "apps/desktop-app/src/preload.cjs",
+          "size": 1059,
+          "mode": 420,
+          "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer-admission.mjs",
+          "size": 319,
+          "mode": 420,
+          "sha256": "dd5d8e52c4b230dfa4ca65693e301b6c0847b8a84c18e9cc23028c18f5e2a44c"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer.css",
+          "size": 713,
+          "mode": 420,
+          "sha256": "10ebc2c146b3ed0abab023d7c50eb1089d317356a3da78146b6857e36f5beaff"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer.tsx",
+          "size": 325,
+          "mode": 420,
+          "sha256": "f2fe7997af98730fefdf9b9fe1bf42d64603c06fab75d5ae6ab2b2d7b9e323f6"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/app/index.tsx",
+          "size": 991,
+          "mode": 420,
+          "sha256": "272929824e7736a9e5e1da490da9a9272c5802ec26b7c2003fc4ea5ade7d8aa4"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+          "size": 3803,
+          "mode": 420,
+          "sha256": "7cabe0abbfcabe45ecd46565822bb2b6ff3bbd49eb6128ab53920727eca635c0"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+          "size": 167972,
+          "mode": 420,
+          "sha256": "a0af8ce3a8e4c90a29c53b416edb9c2491a643bc74ea3eca6629a79406bd71c4"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx",
+          "size": 913,
+          "mode": 420,
+          "sha256": "87e2ad8cc85de7fdef43d9b58d6801774ba09335c63ed64385b3438e98ecb2d1"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+          "size": 312741,
+          "mode": 420,
+          "sha256": "1d3c918b164f670f29cf3738820f4c125a25f63fe2d5cda1cf079e9b636cdc44"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/composer/index.ts",
+          "size": 1161,
+          "mode": 420,
+          "sha256": "e7e0bce0125bd06d29578e9c4c6a7374823ce47d57a21eb10eb06a5004f1db17"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/configuration-drafts/agent-files.tsx",
+          "size": 23797,
+          "mode": 420,
+          "sha256": "5831c56f9c8f3b4e53cdac0875b71b7f80d5d2355342a09fb2ac52bf375bec39"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css",
+          "size": 3951,
+          "mode": 420,
+          "sha256": "7509173c72b56044a534ab4069158986816feb04c847eb315fd4ffd3a237856f"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+          "size": 62721,
+          "mode": 420,
+          "sha256": "c8e9aa9c725231a2470f563cace6f34645e873ad7b048181d08c1e9676a55133"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/configuration-drafts/skill-files.tsx",
+          "size": 14332,
+          "mode": 420,
+          "sha256": "d24559bfd5282e0c3550f8cd65c1361561296c81b306a6dc1d16419241b805de"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/configuration-extensions/extensions.module.css",
+          "size": 1760,
+          "mode": 420,
+          "sha256": "016013c9df26636ad7025d62665a88160f37c2230cabeb52f31f56566cd4f105"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/configuration-extensions/index.tsx",
+          "size": 8747,
+          "mode": 420,
+          "sha256": "3581b544b355ccfcfd492403e1a2203d2aa6a51acaab8fec40f564133d95d18e"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/conversation-context/context.module.css",
+          "size": 4188,
+          "mode": 420,
+          "sha256": "5f65b8371e1c312c39ca424c898906551f6e8c07de4b02aef7e79f9a46a51d29"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/conversation-context/index.tsx",
+          "size": 21963,
+          "mode": 420,
+          "sha256": "0f8b7d05f265a29d9b4567bb4f158843d9a4bbccc8b31599b9a81981c05811da"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx",
+          "size": 23070,
+          "mode": 420,
+          "sha256": "dde298725bedda14377d1d804a2a07933b6300542cc1b0959178f4e3342f61b3"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/git-review/index.tsx",
+          "size": 39864,
+          "mode": 420,
+          "sha256": "3bdda0c0c8b840c36ba4370cd38bf4c6b2da3cb4b1800f330f1dcb3a14e8e490"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/git-review/review.module.css",
+          "size": 4038,
+          "mode": 420,
+          "sha256": "0905b53505b02d98eef3d2ec3d5925e754f334d57caae6093c9c3af212d26b1a"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/line-feedback/feedback.module.css",
+          "size": 2187,
+          "mode": 420,
+          "sha256": "09fc2816f3c5e99085dd8e5f5f75db5bb74a019004cb23fd82a44ac14424bada"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/line-feedback/index.tsx",
+          "size": 10463,
+          "mode": 420,
+          "sha256": "226b692ebceae43027dd9f3c9eb12b4914568025a70f4612e61b25060dc7580b"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/permission-policy/index.tsx",
+          "size": 5652,
+          "mode": 420,
+          "sha256": "b1a7ab9e4d1af7c1856bb42803021484354d9f47214876ef6c74b553cad73c7e"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/permission-policy/policy.module.css",
+          "size": 966,
+          "mode": 420,
+          "sha256": "03bafffe00701525283536df054b28cd5f2a02f0720a3ef748d9dff933528aa2"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/sessions/index.tsx",
+          "size": 9332,
+          "mode": 420,
+          "sha256": "0a94d34d7693fa0277153e4b7baf9b5f83184df34277a8c0693da686d10ab449"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/sessions/navigation.ts",
+          "size": 1162,
+          "mode": 420,
+          "sha256": "c4df82a89c92e591a1a369f936dd5ca14aef832ab6291af73a2c472fd1b74bbe"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/sessions/sessions.module.css",
+          "size": 3521,
+          "mode": 420,
+          "sha256": "762d12c5f51a77e12ffd1448acb8a4dc329e47ebb232a024a42f879fcb712e6a"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/workspace-file-editor/editor.module.css",
+          "size": 2197,
+          "mode": 420,
+          "sha256": "fbd1be33b9969d8333c3afba3a45e893022597309596811bbfce1d67f0792d2f"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/workspace-file-editor/index.tsx",
+          "size": 12989,
+          "mode": 420,
+          "sha256": "cf5f76faf1f8a9b6cadd6f75274de06e137439f703852e0f9cd77667c3c3831a"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "size": 23446,
+          "mode": 420,
+          "sha256": "7a5c9caf45f3250c8e71e18dfa9f3fd9cf2f20fd9adb671d123e86245cd21411"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/shell.module.css",
+          "size": 7750,
+          "mode": 420,
+          "sha256": "96206e9bb6c24c0f5faa3bb0046ef5de702c1323230786057cae04211ce67615"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/api/index.ts",
+          "size": 4757,
+          "mode": 420,
+          "sha256": "d0cf44dd775eaec2f6c70851e39ba6601effe2d2de0d8db4765ae43024511f40"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/agent-runtime.d.mts",
+          "size": 850,
+          "mode": 420,
+          "sha256": "10bccd1ce0eec7c3cb16c3a351744f1be2234be025c78d5c72af5ef4e3b66794"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/agent-runtime.mjs",
+          "size": 6681,
+          "mode": 420,
+          "sha256": "58241c1ec4faf550d8ca3543bbb307cf5214ac1ad04602c78c5de32448220318"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/agent.d.mts",
+          "size": 876,
+          "mode": 420,
+          "sha256": "abe0de4e62306589368ba0d26bc79ede8121883eb170b384f5e60505a8d4df5e"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/agent.mjs",
+          "size": 3708,
+          "mode": 420,
+          "sha256": "97a23a94e8e5ba9f1f522ce605a2cb1700c70f07036638ce826ab753585a7ee3"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/extensions.d.mts",
+          "size": 1766,
+          "mode": 420,
+          "sha256": "d1abff817059857f02861be5de15aabb331e42a5bb604fb89b7c35407362b9a9"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/extensions.mjs",
+          "size": 8646,
+          "mode": 420,
+          "sha256": "1a51f9776ba1ef179f1fcdb3367a021ec20b881e74cc686faae0db7af3db8a04"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+          "size": 4279,
+          "mode": 420,
+          "sha256": "7807f07a7d93d4a290031c23516bee036452ce91f54fd487b022fea4d6445cee"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/permission-policy.d.mts",
+          "size": 1036,
+          "mode": 420,
+          "sha256": "24b397e872fbf3973feff9ff9563c78ed21050fbb37b6d9cfa338f52cb9c342f"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/permission-policy.mjs",
+          "size": 4039,
+          "mode": 420,
+          "sha256": "defa295677b4522e9c60b1f0c93ec1f745ddaf8f4cd8b2702184d4de8f9a5521"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/policy.d.mts",
+          "size": 303,
+          "mode": 420,
+          "sha256": "bc7b181d70de25d2a336516ed98f9104db13bfc120662e36bdaaff8dd31fccaf"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs",
+          "size": 1221,
+          "mode": 420,
+          "sha256": "cad78a3c98ffefbc3657bf57b8f1f692a4354873bd42f95af4babed1a8db1ba8"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.d.mts",
+          "size": 890,
+          "mode": 420,
+          "sha256": "e06bc8dafc41f2f6cf780ad73e886488d60d3fada2d5adba3c3a15f190a99f4d"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.mjs",
+          "size": 6885,
+          "mode": 420,
+          "sha256": "87c17743b5791871d191a16b85777a53f1cd212d5b5682feda18a9c9ebbbc0e5"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/skill.d.mts",
+          "size": 729,
+          "mode": 420,
+          "sha256": "047a0fdb3bb3368677c2dababda56049d59f0b86a0fb0840d0fc95e2dc5b9ae9"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/skill.mjs",
+          "size": 3475,
+          "mode": 420,
+          "sha256": "b30cf77b1967c83758a87203548e97331916e92536f5cda64e9e6c4a7ae8719a"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/validation.d.mts",
+          "size": 2682,
+          "mode": 420,
+          "sha256": "259ad492a1aa4159af8eba9bb86faaf2de30c1a6298da6b7fed40b29eb46f5c3"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs",
+          "size": 8052,
+          "mode": 420,
+          "sha256": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/conversation-context/index.d.mts",
+          "size": 2584,
+          "mode": 420,
+          "sha256": "a014e42e8d3f91f2996a548986231b4f96f92dee924bcca1ff641faae324adee"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/conversation-context/index.mjs",
+          "size": 7752,
+          "mode": 420,
+          "sha256": "c2ed9928a50b9dc9ae6a73c4067f9a97984aec518ff1cafa194d159b91731387"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/conversation-context/index.ts",
+          "size": 433,
+          "mode": 420,
+          "sha256": "3007516d428dc17bd5afce8af95cec6578089f718f5d08ed02acb19addca9d33"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/git-branch-restore/index.d.mts",
+          "size": 5400,
+          "mode": 420,
+          "sha256": "848d6f88fb12c69a1849baa4b6d6d7a6e8c98f5f9a8ee42496eb1e8d35eda7fa"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs",
+          "size": 15359,
+          "mode": 420,
+          "sha256": "0d5fe8eeb8e7f05089cd993b30a504e0089fbe769c0930394b69145420215441"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/git-branch-restore/index.ts",
+          "size": 1104,
+          "mode": 420,
+          "sha256": "ea53b87a772d04d4326577edc0ccd487176b5b9c4d33676d411349642571fa15"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/git-commit/index.d.mts",
+          "size": 4277,
+          "mode": 420,
+          "sha256": "bcf4f5a567d1fc5ca8096fe6d3202ec1a356a814a926a8dfe57f1fbb3add9469"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/git-commit/index.mjs",
+          "size": 12760,
+          "mode": 420,
+          "sha256": "6aad812c3e4a55026e132c1fe0c1ecf5811d43a47fb39f8c5e8fab4c8f466505"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/git-commit/index.ts",
+          "size": 867,
+          "mode": 420,
+          "sha256": "9023e25452e836406592fe605c859d5ca660f6b63bd4e51a56b71f67a607a585"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/git-index/index.d.mts",
+          "size": 3184,
+          "mode": 420,
+          "sha256": "efea624c7e7844a529843d86155f17e02deacb484eb799b19c2d2d2c42fa757b"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/git-index/index.mjs",
+          "size": 8433,
+          "mode": 420,
+          "sha256": "11846a18791480034318e6c59089e5e0d493426b65a6d8305207dbe86cc73aa5"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/git-index/index.ts",
+          "size": 620,
+          "mode": 420,
+          "sha256": "2e147dd2e24d2fb7e0ade952d178a0e5de143ee30394c96d530750eaeedb6165"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/git-review/index.d.mts",
+          "size": 3452,
+          "mode": 420,
+          "sha256": "c94015e4962bd0ac7504d09cad6671abb893658c0c3fbebdcec2e2a37aab95f9"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/git-review/index.mjs",
+          "size": 8479,
+          "mode": 420,
+          "sha256": "8cad8a846ec1965249b3bb26718370214d9239b6a90b27f2fd25934d9c88a913"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/git-review/index.ts",
+          "size": 512,
+          "mode": 420,
+          "sha256": "e6b23ca1cd7ed26b8d676e9d9fc8106c88afa89824ac302246cf927929d43fbf"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/line-feedback/index.d.mts",
+          "size": 1731,
+          "mode": 420,
+          "sha256": "15e3485856fe8806e360461f617d8df8f03a675b2316f8a99e5307abd587aadb"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/line-feedback/index.mjs",
+          "size": 8480,
+          "mode": 420,
+          "sha256": "c2355cdf6a8ece022baf6215b5e84d3dee0020050362261c14a622f24f7232e3"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/line-feedback/index.ts",
+          "size": 223,
+          "mode": 420,
+          "sha256": "3b47b657433800da52f96fbc3264474680795881b42f8eb8223d2a4d6f1a32ea"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/projection/index.ts",
+          "size": 62,
+          "mode": 420,
+          "sha256": "217eb4dbe3972fef503112ed8ef476d2073260b90904aea0ffb322a96e5717d4"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/projection/projection.d.mts",
+          "size": 290,
+          "mode": 420,
+          "sha256": "6f8a7e83685561138daf317f003a330726eb0394d8eda7d77dafac324ee4280c"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/projection/projection.mjs",
+          "size": 1873,
+          "mode": 420,
+          "sha256": "fbe46d4da555eacbce706010bf253d2ff3d809ee428a9931b352452b4f6a31cd"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/runtime-options/index.d.mts",
+          "size": 1251,
+          "mode": 420,
+          "sha256": "6af476afec5fa9381a60e7de2629e4f2f18cfbcff9fea75d93ed6973f8df529d"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/runtime-options/index.mjs",
+          "size": 4674,
+          "mode": 420,
+          "sha256": "588b7f3289e4d96c89477a905db53557ee14cb89c16ed60127a2530547d37f4e"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/runtime-options/index.ts",
+          "size": 354,
+          "mode": 420,
+          "sha256": "08d6ba3b56cd82d298cbe035fb641d10575f2798d9e932b0d7ff79270c325b61"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/transport/index.ts",
+          "size": 7449,
+          "mode": 420,
+          "sha256": "16b678b516943feb04328cd414de85182d49a4c7fe800e1f82909598341f2cff"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/workspace-file/index.d.mts",
+          "size": 1915,
+          "mode": 420,
+          "sha256": "e8adb840874c14ef2a7109243cced9acb165e12de1a826acac6c23ae97e1e8cc"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs",
+          "size": 6370,
+          "mode": 420,
+          "sha256": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/workspace-file/index.ts",
+          "size": 500,
+          "mode": 420,
+          "sha256": "bd4421ccedb70e0d3204f77524dd9ae5a7ec65f65e54b713787eed954266e8e9"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/activity/activity.module.css",
+          "size": 2183,
+          "mode": 420,
+          "sha256": "0099e650bd162c3c9a6e50c52625ad444ea45e3981ab355814bb08a90d3c1f58"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+          "size": 5265,
+          "mode": 420,
+          "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css",
+          "size": 15469,
+          "mode": 420,
+          "sha256": "423334c863fcede56d6608c79ad938c332ddabc2d4ca30238fa59f6f93821a67"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+          "size": 34425,
+          "mode": 420,
+          "sha256": "4a36db49d7810c5f0cc47849bc6130ce2b9295e2eddeaccacb8390fcc97219e6"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/conversation/markdown.tsx",
+          "size": 4486,
+          "mode": 420,
+          "sha256": "27a97009cf8db181032d6e2428ab9c2391e59317d5d998316d88310145562424"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/explorer/explorer.module.css",
+          "size": 3210,
+          "mode": 420,
+          "sha256": "d3f1995a6b31280f8bcf1a6c59aee6cd4e8d2aeaa198c6a54ae6939041059300"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+          "size": 13800,
+          "mode": 420,
+          "sha256": "e8a32fe513ba9ded7aec25b664f2329607970d613d1a7b7e55d0a8a41519740e"
+        },
+        {
+          "path": "apps/desktop-app/src/sidecar-package.mjs",
+          "size": 195,
+          "mode": 420,
+          "sha256": "7d3e8cb1ec0522862f7c301eceb0dde317c542d4891bff40aa29839b967999dd"
+        },
+        {
+          "path": "apps/desktop-app/src/sidecar-supervisor.mjs",
+          "size": 18972,
+          "mode": 420,
+          "sha256": "82c961bde9b2b152e342e012c83e98be905b208925425f1ef7c90c90dac41a7f"
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-contract.mjs",
+          "size": 29212,
+          "mode": 420,
+          "sha256": "52b1b34627316b8b5f9453f2ce0b6279a245fb26fe303b7f932c6a88e70e9837"
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "size": 163893,
+          "mode": 420,
+          "sha256": "2988d5aa66f43903e0a2360779b02b9bb79b6050ff6a6a548d5a7397d2d19856"
+        },
+        {
+          "path": "apps/desktop-app/tsconfig.json",
+          "size": 246,
+          "mode": 420,
+          "sha256": "e38ba12303e14c6c1e9413990260c2ff07e21789530295af097ad3f743f3f5ac"
+        },
+        {
+          "path": "apps/desktop-app/vite.config.ts",
+          "size": 365,
+          "mode": 420,
+          "sha256": "1d02271112ce18d2e77b2a94aff3e9de15fc6cc3903e17ed3a5126b6e5dbe052"
+        },
+        {
+          "path": "docs/design/tokens/manifest.json",
+          "size": 62992,
+          "mode": 420,
+          "sha256": "b709ef034343724cf6041c672673fed23a7856e76dee830b7d69482e03d6305c"
+        },
+        {
+          "path": "docs/design/tokens/tokens.css",
+          "size": 26378,
+          "mode": 420,
+          "sha256": "b6b93321e6f82804c725a30f13a56698d38ed8f838c71706c6bec9f3d7e208e8"
+        },
+        {
+          "path": "nx.json",
+          "size": 1782,
+          "mode": 420,
+          "sha256": "9d2a5e2fce5f862ad1226a023f9b00de6ba3f876491bee9a59a4490ed64996dc"
+        },
+        {
+          "path": "package.json",
+          "size": 1073,
+          "mode": 420,
+          "sha256": "553a56da39dcc79ba9f24d7ee687e2870efb8340bb5efaff028e8b65ca7d40ea"
+        },
+        {
+          "path": "packages/contracts/package.json",
+          "size": 261,
+          "mode": 420,
+          "sha256": "c556b0f6a485c10703ad59fe4603f704f4cfce89a46e54ee9ddc2b3f8c46e566"
+        },
+        {
+          "path": "packages/contracts/project.json",
+          "size": 1147,
+          "mode": 420,
+          "sha256": "3306d3453bd3367fbb170d87f354b700dcc41aa1597be43acfee2ba8fcf2f6d3"
+        },
+        {
+          "path": "packages/contracts/src/index.ts",
+          "size": 3965,
+          "mode": 420,
+          "sha256": "900ca3e0469a4295f6f5dcd0bc93a8e15449bb0f3bf373079e01759be7833c3c"
+        },
+        {
+          "path": "packages/contracts/tsconfig.build.json",
+          "size": 270,
+          "mode": 420,
+          "sha256": "c2000fc5adfd56edd59a39b1d9eead09c865d0e3f5f828331287a2a2770b05c5"
+        },
+        {
+          "path": "packages/contracts/tsconfig.json",
+          "size": 206,
+          "mode": 420,
+          "sha256": "a7ab513b8f39295633629f837dec141c5dcc17df7d8ce5d0f3049e1b7f1ff366"
+        },
+        {
+          "path": "packages/ui/package.json",
+          "size": 330,
+          "mode": 420,
+          "sha256": "941e6538386984a3bc924606c361492616b312c560a3f830c3e1cc4796b92619"
+        },
+        {
+          "path": "packages/ui/project.json",
+          "size": 628,
+          "mode": 420,
+          "sha256": "f2f7bdcdcc97963fd0975bcdd861b9dc571752a03a3b4121e354dd5c526c6ea4"
+        },
+        {
+          "path": "packages/ui/src/css-modules.d.ts",
+          "size": 111,
+          "mode": 420,
+          "sha256": "00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4"
+        },
+        {
+          "path": "packages/ui/src/index.ts",
+          "size": 666,
+          "mode": 420,
+          "sha256": "d65373a98650fd9d60f70f6b8f62ed432338f249eed0377d99abe4fe73192bac"
+        },
+        {
+          "path": "packages/ui/src/primitives/action-menu.module.css",
+          "size": 2037,
+          "mode": 420,
+          "sha256": "0dd05f4334d76335a8ba20fa9d68c76935602410c2d9ba64b588b53f30cea904"
+        },
+        {
+          "path": "packages/ui/src/primitives/action-menu.tsx",
+          "size": 1443,
+          "mode": 420,
+          "sha256": "589d256e7edee69fd4fb8d0126587099df5895f506d3b8ba3ccb1d0e74062a5b"
+        },
+        {
+          "path": "packages/ui/src/primitives/button.module.css",
+          "size": 2311,
+          "mode": 420,
+          "sha256": "efd5110e6976f2cbfcedef6aa9c6e4ba0c0e72c03bd910d3d0f482f99c0907f6"
+        },
+        {
+          "path": "packages/ui/src/primitives/button.tsx",
+          "size": 806,
+          "mode": 420,
+          "sha256": "3515c3aacdfc46d1f56995aaa039dae70360ff454df3dbd0652d75c086218059"
+        },
+        {
+          "path": "packages/ui/src/primitives/modal-sheet.module.css",
+          "size": 2383,
+          "mode": 420,
+          "sha256": "b03cf7bf80fdc798892498a517b87128cf1eb446a4cf3c72c355973ae434b1f1"
+        },
+        {
+          "path": "packages/ui/src/primitives/modal-sheet.tsx",
+          "size": 2450,
+          "mode": 420,
+          "sha256": "1b210af1f5a3d1f19b3f7556f9fe0ea17942c98bb123414fcf58ec3945e69c47"
+        },
+        {
+          "path": "packages/ui/src/status-badge/status-badge.module.css",
+          "size": 1133,
+          "mode": 420,
+          "sha256": "db6d168db045ed7422d8af6ca3a5724165894c76f1ea7501644a79fbecd7a4e5"
+        },
+        {
+          "path": "packages/ui/src/status-badge/status-badge.tsx",
+          "size": 414,
+          "mode": 420,
+          "sha256": "e6a6543a9f44e37702db7af12a22090320d97783826c32da14f9b57c9e4bc4dd"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/link-preview/_adapter.tsx",
+          "size": 128,
+          "mode": 420,
+          "sha256": "ac238c9b043920b082f8a3bee5efbcb68da5ef7001febc06ecc499d4d24d99d0"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/link-preview/index.ts",
+          "size": 108,
+          "mode": 420,
+          "sha256": "ec0becf6ccf9332e38da390e96dda3c5068df0ab1a27d4de5e7f18ce9956786c"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/link-preview/link-preview.module.css",
+          "size": 2427,
+          "mode": 420,
+          "sha256": "4e0e40b82a677a855ea117502f3743f6dd6801019056708abd23e5dbc6fba254"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/link-preview/link-preview.tsx",
+          "size": 3838,
+          "mode": 420,
+          "sha256": "a3da0c336b53cae282595e12136d8b0ee4452f2525d90044a1c3371782e0d599"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/link-preview/schema.ts",
+          "size": 370,
+          "mode": 420,
+          "sha256": "c13c516eab2d59870accd3f8949846be566fd6ae3e964766d02f0086907bb583"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/shared/media/aspect-ratio.module.css",
+          "size": 247,
+          "mode": 420,
+          "sha256": "8ca5cd2d43a3d5b8ac6cb7d455d0655eab6062cb5b82b0b9e550795140dc46e9"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/shared/media/aspect-ratio.ts",
+          "size": 469,
+          "mode": 420,
+          "sha256": "50dcf7be37fe1a53a6473f7caada45a08525c9dc513a17a2f34ccb64b642cb59"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/shared/media/index.ts",
+          "size": 180,
+          "mode": 420,
+          "sha256": "36d4c6b837b70bdd6c23b61f1a9c9aeeec3c62f78743511a346137354a417070"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/shared/media/safe-navigation.ts",
+          "size": 306,
+          "mode": 420,
+          "sha256": "22d9d7aabea228eb45fb1604d0c442ee515eceaf1e3aa93385305e699c95e020"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/shared/media/sanitize-href.ts",
+          "size": 981,
+          "mode": 420,
+          "sha256": "a81cb3cdd2fad7c73cedb620c9e21923d2e4ed959293b9ddf03f85b5698ff724"
+        },
+        {
+          "path": "packages/ui/tsconfig.json",
+          "size": 220,
+          "mode": 420,
+          "sha256": "c01db62bbfdb7eb397473fae06abdafed3e494c0eeba25be707f693dca561e6d"
+        },
+        {
+          "path": "pnpm-lock.yaml",
+          "size": 322432,
+          "mode": 420,
+          "sha256": "eb96a45f12a0b32ee007f38bf97a34f05ec48a487d270a76f1cca302153647b2"
+        },
+        {
+          "path": "pnpm-workspace.yaml",
+          "size": 616,
+          "mode": 420,
+          "sha256": "4d3db65848ea506ea21477408bfc430cd73aa81ac77e2f52c441a9589b2acb0b"
+        },
+        {
+          "path": "tsconfig.base.json",
+          "size": 550,
+          "mode": 420,
+          "sha256": "dc40c4449b29877bde000346ae28f50721076e0f60296163716a0a5a0e04bdf9"
+        }
+      ],
+      "sha256": "41b5eb3043994c8418f8f514b685cc586c5e20fadad00cc37d9c30eeb2690492"
+    },
+    "selectedScriptsAndFixtures": {
+      "algorithm": "scoped-file-inventory-sha256-v1",
+      "scopes": [
+        {
+          "path": "apps/desktop-app/scripts/run-evidence.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/build-provenance.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/e2e-design-foundation.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+          "present": true
+        }
+      ],
+      "selection": "all files in the listed scopes",
+      "limits": {
+        "files": 4096,
+        "depth": 24,
+        "bytes": 1073741824
+      },
+      "files": [
+        {
+          "path": "apps/desktop-app/scripts/build-provenance.mjs",
+          "size": 20094,
+          "mode": 420,
+          "sha256": "a5dfebae9bb9e5d449b767cbf6320062d544105b0d6a1f21115a5cac5a46af75"
+        },
+        {
+          "path": "apps/desktop-app/scripts/e2e-design-foundation.mjs",
+          "size": 44860,
+          "mode": 420,
+          "sha256": "25d2c9aae65808781f5a461089e0e4b4e2ac35d161d4c044e8c73c63a67dc593"
+        },
+        {
+          "path": "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+          "size": 306781,
+          "mode": 420,
+          "sha256": "64a3bc1ebe58f599269577e97bbf475698309dcb99fd6f5ac739c59a6ec5bc92"
+        },
+        {
+          "path": "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+          "size": 263164,
+          "mode": 420,
+          "sha256": "7e7457d6daed03b2ecb272fb655a26348ab8d0910d80abf77caafa126fac1791"
+        },
+        {
+          "path": "apps/desktop-app/scripts/run-evidence.mjs",
+          "size": 21065,
+          "mode": 420,
+          "sha256": "f528a7e1a7572b23d679bdf8a3e5b32e659dc3105152ff168d8c190afea6ff1e"
+        }
+      ],
+      "sha256": "9ad5ef5e9397b9a461e314339d3aa051efbe584321e98f4aad0eb5e5397f0918"
+    },
+    "currentRelevantSource": {
+      "algorithm": "sha256-of-build-input-and-selected-script-inventory-digests-v1",
+      "buildInputsSha256": "41b5eb3043994c8418f8f514b685cc586c5e20fadad00cc37d9c30eeb2690492",
+      "selectedScriptsAndFixturesSha256": "9ad5ef5e9397b9a461e314339d3aa051efbe584321e98f4aad0eb5e5397f0918",
+      "sha256": "5fe59365f1c6178190042105ea2eda031ee578c58a4cadbf7a3a424757096367"
+    },
+    "launchArtifacts": {
+      "algorithm": "scoped-file-inventory-sha256-v1",
+      "scopes": [
+        {
+          "path": "apps/desktop-app/dist/app",
+          "tree": true,
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/dist/resources/opencode/darwin-arm64/opencode",
+          "present": true
+        }
+      ],
+      "selection": "all files in the listed scopes",
+      "limits": {
+        "files": 4096,
+        "depth": 24,
+        "bytes": 1073741824
+      },
+      "files": [
+        {
+          "path": "apps/desktop-app/dist/app/main.mjs",
+          "size": 1018935,
+          "mode": 420,
+          "sha256": "10a1df7ec22e13abd0b73f6fdd7a88d3d61cea5f034667c1108b64bf1b19d766"
+        },
+        {
+          "path": "apps/desktop-app/dist/app/package.json",
+          "size": 99,
+          "mode": 420,
+          "sha256": "9867ef3f45c3dc320d820cb11c32a526065d610dca2f15856aa27db6a6ffc8dd"
+        },
+        {
+          "path": "apps/desktop-app/dist/app/preload.cjs",
+          "size": 1059,
+          "mode": 420,
+          "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3"
+        },
+        {
+          "path": "apps/desktop-app/dist/app/renderer/assets/index-BJn7_Hlf.css",
+          "size": 82944,
+          "mode": 420,
+          "sha256": "a083ddb254ddf8dfd64fb0fd1746364404edc9adba32cc230b5f0c0326ee1409"
+        },
+        {
+          "path": "apps/desktop-app/dist/app/renderer/assets/index-D5sXQAjy.js",
+          "size": 1320425,
+          "mode": 420,
+          "sha256": "40d29c8a08b941a89168bea11a986cad46f4fdd68c236a2dc570ce25eaddd1bb"
+        },
+        {
+          "path": "apps/desktop-app/dist/app/renderer/index.html",
+          "size": 680,
+          "mode": 420,
+          "sha256": "9be5f88a9a9a349738a95a2bd6d93380e70f1b30adf6293c4f0ba00d9de2c504"
+        },
+        {
+          "path": "apps/desktop-app/dist/resources/opencode/darwin-arm64/opencode",
+          "size": 178946960,
+          "mode": 493,
+          "sha256": "6759c7f86f807d63d3984ca1970f9fa663ee303a35bb344eb223c71e200a96bf"
+        }
+      ],
+      "sha256": "e92b5908fe9e6e36eac6bd0fc7165ccaf666b441729688c2b041493a81ae8ef8",
+      "eventHostResources": {
+        "algorithm": "event-host-full-resource-inventory-sha256-v1",
+        "manifestSha256": "d3aab67f2626f39895ed5dc949441d5de0c1e0cff0ef25c6d3d9704dbd0681c7",
+        "inventorySha256": "eb885dbec45ec3ea468b1debe704f91baf22448f15a400da3648e94b7eea8e9c",
+        "entryCount": 38432,
+        "fileCount": 35150,
+        "symlinkCount": 31,
+        "totalBytes": 399616484,
+        "versions": {
+          "bun": "1.4.2",
+          "server": "2.0.18",
+          "effect": "4.0.0-rc.112"
+        },
+        "target": {
+          "platform": "darwin",
+          "arch": "arm64"
+        },
+        "manifestPath": "opencode/event-host/darwin-arm64/manifest.json",
+        "sha256": "b6523c6866bcccd8c391f63441638daae8a30de27298732c25824a40c58b05ac"
+      },
+      "ownerLifetimeResources": {
+        "algorithm": "owner-lifetime-resource-sha256-v1",
+        "manifestSha256": "7fc0b3fd64227bf5e68ddde5779314cdf6213ca09ed9fcb269ee953d5ae14305",
+        "executableSha256": "638655f6eb09dc96aeafb2a322400d462ede59d0640e0ad9a17c037272cf4d36",
+        "sourceSha256": "4eb42efefdef1970d48bd19368b94bae689b10fbeacc96cd1adc83a9cf996951",
+        "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "target": "arm64-apple-macos11",
+        "platform": "darwin",
+        "arch": "arm64",
+        "sha256": "7a47eee4cea15be2e251bc9a37a8ef2c3b919c9343128795dfd2bc5a45c745da"
+      }
+    }
+  },
+  "provenanceVerifiedAfter": true,
+  "wrapperExitCode": 1,
+  "finishedAt": "2026-10-09T10:51:38.293Z"
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "T1": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/permission-tool-boundary-probe/evidence/native-r1/report.json",
+        "docs/runs/permission-tool-boundary-probe/execution-verification-r1.json"
+      ],
+      "checks": [
+        "native"
+      ]
+    },
+    "T2": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/permission-tool-boundary-probe/evidence/native-r1/report.json",
+        "docs/runs/permission-tool-boundary-probe/execution-verification-r1.json"
+      ],
+      "checks": [
+        "unit",
+        "native"
+      ]
+    },
+    "T3": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/permission-tool-boundary-probe/evidence/native-r1/report.json",
+        "docs/runs/permission-tool-boundary-probe/execution-verification-r1.json"
+      ],
+      "checks": [
+        "unit",
+        "lint",
+        "format",
+        "native"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/scripts/permission-tool-probe.mjs",
+    "apps/desktop-app/scripts/permission-tool-probe.test.mjs",
+    "apps/desktop-app/scripts/fixtures/permission-tool-native.mjs"
+  ],
+  "deleted_paths": []
+}

@@ -1,0 +1,93 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "description": "Input state geometry, single correct hint/error, and focus/error composition"
+    },
+    {
+      "id": "AC-2",
+      "description": "Consistent compact, text-hug status badges across all families and modes"
+    },
+    {
+      "id": "AC-3",
+      "description": "Start-aligned navigation with distinct Light/Dark interaction states"
+    },
+    {
+      "id": "AC-4",
+      "description": "Quiet ToolCall summary, content-hug layout with 16px bottom padding, exact target/input path match across six states in both modes, wrapped long path, and distinct conditional result action"
+    },
+    {
+      "id": "AC-5",
+      "description": "PermissionRequest actions composed from existing Buttons with visible scope and safe state semantics"
+    },
+    {
+      "id": "AC-6",
+      "description": "Figma geometry and Light/Dark captures verified for all non-Button families"
+    },
+    {
+      "id": "AC-7",
+      "description": "Independent reviews and required canonical checks pass"
+    }
+  ],
+  "checks": {
+    "tokens": {
+      "argv": [
+        "python3",
+        "docs/design/validate_system.py"
+      ],
+      "cwd": ".",
+      "scope": "Canonical token aliases, contrast, generated CSS, and exact 44-variant inventory",
+      "acceptance_ids": [
+        "AC-1",
+        "AC-2",
+        "AC-3",
+        "AC-4",
+        "AC-5",
+        "AC-6",
+        "AC-7"
+      ],
+      "required": true
+    },
+    "components": {
+      "argv": [
+        "python3",
+        "docs/runs/component-polish/check_components.py"
+      ],
+      "cwd": ".",
+      "scope": "Component layout and content bounds, feedback precedence, ToolCall target/input consistency in Light/Dark, PermissionRequest state-action mapping, exact Figma instance evidence, and Button preservation invariants",
+      "acceptance_ids": [
+        "AC-1",
+        "AC-2",
+        "AC-3",
+        "AC-4",
+        "AC-5",
+        "AC-6",
+        "AC-7"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/design/components.json",
+      "gate": "design_spec",
+      "version": "component-contract-r6",
+      "sha256": "c2eccfc549399c957734da0afd87ff29fb69cf12c61177fc9899718347026184"
+    },
+    {
+      "path": "docs/design/system.md",
+      "gate": "design_spec",
+      "version": "system-contract-r6",
+      "sha256": "863cd6da5098b8009bb1fc82e9538f731a57a38b382ec11536fc887dcab558c4"
+    },
+    {
+      "path": "docs/design/tokens/manifest.json",
+      "gate": "design_spec",
+      "version": "token-manifest-r2",
+      "sha256": "84a1ecac6ef5e6dd51f9d7a1a9a959751a3a05731fe8cb3ff4ca3379957e0498"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": []
+}

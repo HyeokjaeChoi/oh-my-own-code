@@ -1,0 +1,63 @@
+✖ pinned overlay recipe binds exact twenty-one source files and preserves frozen preparation data (0.938083ms)
+✔ actual pinned source transforms to exact checked output without executing or changing Native (1279.828167ms)
+✖ fourth argument forwards overrides while original lifecycle and HTTP transform positions stay identical (5.382583ms)
+✔ changed pinned bytes and output pins refuse the entire plan with original source preserved (64.853875ms)
+✔ patched Permission and Saved sources share the fixed control and preserve gate ordering (2.974542ms)
+✔ twenty-one-file consumer refuses missing, duplicate and extra sources and keeps recipe output order (7.77125ms)
+✔ checked Session entries guard before original effect construction and release the short admission first (2.8985ms)
+✔ original instructions preserves exact text and original metadata in Synthetic event (3.835666ms)
+✔ instruction service acquisition performs no root IO before an actual load task (0.389292ms)
+✔ original store context prevents already-injected path from being read or published (1.017333ms)
+✔ ordinary messages and malformed synthetic metadata do not invent prior injection (0.538834ms)
+✔ missing instructions do not fabricate content or event (0.327666ms)
+✔ instruction read failure prevents any partial Synthetic publication (0.603583ms)
+✔ original load remains unfinished while original Synthetic publish is pending (0.458667ms)
+✔ publish failure propagates and its in-flight claim is released for a later explicit call (0.569833ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 13
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1445.86675
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs:25:1
+✖ pinned overlay recipe binds exact twenty-one source files and preserves frozen preparation data (0.938083ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '60948d9ae0bddac359550f5571ee5e0ab8e336d156fdd6f9b29181844d52f9f3'
+  - '0ed063af48c2264d05f2047d51ea7bd1ba1ea8a7bd0f17ffa07311267851e81b'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs:29:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '60948d9ae0bddac359550f5571ee5e0ab8e336d156fdd6f9b29181844d52f9f3',
+    expected: '0ed063af48c2264d05f2047d51ea7bd1ba1ea8a7bd0f17ffa07311267851e81b',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs:174:1
+✖ fourth argument forwards overrides while original lifecycle and HTTP transform positions stay identical (5.382583ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3741 !== 1
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs:190:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3741,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

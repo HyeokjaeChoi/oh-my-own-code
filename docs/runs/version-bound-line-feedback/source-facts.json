@@ -1,0 +1,57 @@
+{
+  "preparatory_only": true,
+  "current_git_source": "51788ffd5f48d5bd73d7e383028a925e1e4ed4d4e3d008788032282bd218f387",
+  "sources": {
+    "docs/product/prd.md": {
+      "sha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3",
+      "bytes": 30435
+    },
+    "docs/design/specs/workbench-ux.md": {
+      "sha256": "1f59e6f83aca0c077a4db10cc8c65f7e27e5f177ae0aa32dc6508f4134c97525",
+      "bytes": 32048
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts": {
+      "sha256": "99e61042a0b9d97d36dc29505b4fbb8aca071bf0531f41e9987e6e1a63c1d210",
+      "bytes": 211828
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts": {
+      "sha256": "abebc97fc16505cc529b52662088f009735c8158e20a2392c6fc6748596a3ea5",
+      "bytes": 112833
+    },
+    "apps/desktop-app/src/renderer/widgets/conversation/index.tsx": {
+      "sha256": "104a6fd335ab351855524f4ba1ec4695a6cc13faa384b2cbc8bcd161a8f73df7",
+      "bytes": 25960
+    },
+    "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs": {
+      "sha256": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68",
+      "bytes": 6370
+    },
+    "apps/desktop-app/src/renderer/shared/git-review/index.mjs": {
+      "sha256": "8cad8a846ec1965249b3bb26718370214d9239b6a90b27f2fd25934d9c88a913",
+      "bytes": 8479
+    },
+    "apps/desktop-app/scripts/run-evidence.mjs": {
+      "sha256": "913d9c1263ba369c4c87216ae70da3c56d16c4860ce2d1abed3860a1c8c328e6",
+      "bytes": 10827
+    },
+    "apps/desktop-app/scripts/build-provenance.mjs": {
+      "sha256": "268ce7c3618f5e56ede2f058b3e415f1a8ee8d1751a1c8be739057a0dc8b4b04",
+      "bytes": 19246
+    }
+  },
+  "facts": [
+    "PRD F05/F11 and UX5.3 already require file/version/line feedback.",
+    "Existing composer sole owner Draft={text,revision,agent,model}, scoped selectionKey(workspaceId,sessionId).",
+    "actions.draft changes local state only; input maxLength32000 and host contract maximum32000.",
+    "Existing send intent captures submitted text and draft revision, so append must increment composer revision rather than clear unrelated text on late ACK.",
+    "Workspace-file source must use validated read.content/version/directoryVersion, not mutable edited text.",
+    "Current Git detail status available includes patch/sourceDigest, exact observationId/mode/path/baseRef/baseOid; there is no existing line mapping or feedback API.",
+    "run-evidence and build-provenance have fixed script allowlists and exclusive destinations; new focused script must be added through these lists with parser/path/provenance/report refusal tests.",
+    "Current full UI matrix1618captures preserved; next focused feedback run should reuse containment/provenance/native hidden capture/exact exit without rerunning unrelated scenario matrix."
+  ],
+  "not_proven": [
+    "No feedback implementation or rendered behavior exists yet.",
+    "No helper exports/actions/selectors frozen yet.",
+    "This source inspection is not independent approval or runtime proof."
+  ]
+}

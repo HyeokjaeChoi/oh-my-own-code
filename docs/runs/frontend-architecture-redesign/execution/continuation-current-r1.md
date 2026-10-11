@@ -1,0 +1,13 @@
+# Current frontend continuation — 2026-10-08
+
+Classification: routine. Resume parent A1-A7 final integration within accepted architecture/UI v4 and rev6; new feature entry remains after this closure. Do not repeat initial major reviews. Main alone owns records; Banach performs read-only acceptance analysis and a fresh reviewer judges the narrow fixture correction in projection-fixture-v5.
+
+Current findings: P7 + native-preflight + owner-lifetime runs are complete. The parent is still active with stale missing check/review/outcome bindings. Its workbench/sessions/smoke checks launch production Main, so these old commands are not invoked under hidden/zero-window authorization. Current actual production-function and hidden-renderer proofs must be assessed without claiming production Main or foreground execution. No acceptance requirement is silently waived.
+
+Parent unit current attempt failed because the existing SSR fixture lacks required v5 fields; corrected narrowly in projection-fixture-v5. Actual three projection tests and parent eight-file suite now pass. Independent code review pending for the exact correction. No production or frozen DTO changes.
+
+Next authorized check: node apps/desktop-app/scripts/p6-performance.mjs --out docs/runs/frontend-architecture-redesign/execution/final-performance-current-r1. This reuses the accepted P6 hidden/nonfocusable/prohibited-activation synthetic host and current built renderer. Current build provenance excludes tests; the test-only change does not invalidate the build/resources. This measurement is needed because production renderer/store and fixtures changed since accepted P6. Do not rerun unchanged Native restart or hidden-state captures solely because a test file changed. No Native/provider/private store/production Main/foreground invocation. Preserve old failures and namespaces. Record raw performance results and owned exit before any completion claim.
+
+After the gap analysis, reconcile affected exact checks/records, obtain independent code/render judgments of the current parent acceptance, and continue approved configuration/skills/MCP increments. No full product completion claim from P7 or redesign.
+
+Current design authority clarification: selected-a-desktop-adoption planrev2 records later explicit user-approved A Quiet Dock (header44/sidebar216/body15-24/composer120/input72/toolbar32), existing32px desktop/44px coarse/36px permission criteria. These accepted focused user choices supersede older blanket44px header/composer statements only where changed. Preserve focus contrast and reflow requirements; do not restore old geometry or invent a new choice. Final reviewers have both authority paths.

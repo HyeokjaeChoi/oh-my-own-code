@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "files": {
+    "apps/desktop-app/src/native-permission-graph.mjs": {
+      "bytes": 3718,
+      "sha256": "1a3899e2214c83f237a4da3c86feeef76518e0fa3e2de5c643e0ae828822514f"
+    },
+    "apps/desktop-app/src/native-permission-graph.test.mjs": {
+      "bytes": 2564,
+      "sha256": "a693ee5a30f5f9db3832ea193211b0bd7ba84220429cef462e62d5b38720868c"
+    },
+    "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs": {
+      "bytes": 9489,
+      "sha256": "6809a077aae605afca80f9b4dd15a169d9a4c98d41ff4c76aafe8bf0d1f8ce44"
+    },
+    "apps/desktop-app/src/event-host-resources.mjs": {
+      "bytes": 17168,
+      "sha256": "49a1e8afefd5d2a18645469ff956dfe4e3bf04f261df9487163beb31130e0c7c"
+    },
+    "apps/desktop-app/scripts/stage-event-host.mjs": {
+      "bytes": 17236,
+      "sha256": "fa4dc580ead8b87b8408960868805896c287e36c056146aa11a2ba6bafdf4841"
+    },
+    "apps/desktop-app/scripts/native-permission-graph-probe.mjs": {
+      "bytes": 13634,
+      "sha256": "4d68953159367c8a6f9722dfcb8cd3731fc41935432dcdd0dbdb7f4a37c07d60"
+    },
+    "apps/desktop-app/scripts/native-permission-graph-probe.test.mjs": {
+      "bytes": 9357,
+      "sha256": "052bee3d087dbbc95e069139d628399bb6c892ad092b8f7e42e3f714cd325b94"
+    }
+  },
+  "static_checks": {
+    "unit-graph": 58,
+    "lint-graph": "pass",
+    "format-graph": "pass"
+  },
+  "native_executed": false,
+  "execution_argv": [
+    "node",
+    "apps/desktop-app/scripts/native-permission-graph-probe.mjs",
+    "--out",
+    "docs/runs/native-permission-graph-foundation/evidence/native-r1"
+  ],
+  "scope": "Fresh checked staged source, isolated synthetic loopback graph; no productionMain/provider/private stores/GUI"
+}

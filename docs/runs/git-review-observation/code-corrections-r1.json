@@ -1,0 +1,54 @@
+{
+  "prior_source_sha256": "1d24e9a62d94c161c01a45f835b9887142633a2a984007d51b1496938c8240c5",
+  "prior_code_review": "final-code-review-r1.json",
+  "prior_render_review": "final-render-review-r1.json",
+  "corrected_findings": [
+    "CODE-GIT-R1-01",
+    "CODE-GIT-R1-02"
+  ],
+  "changed_since_prior_review": [
+    {
+      "path": "apps/desktop-app/scripts/git-review-probe.mjs",
+      "before": "288df28d43f96c80c140632b28ad2082639f2d6e4331c5f31e2e892b1beb6d04",
+      "after": "bcb023c67390b322b67be554f0823ed5caa40878c3ff5ecff75d530b6e82884f"
+    },
+    {
+      "path": "apps/desktop-app/src/git-review.test.mjs",
+      "before": "dcf0018fc00aaa18dcfc8690067166c1d1fb5173e03840a1093bb1a8c1255541",
+      "after": "f468fbd9a4f77ea62df59120743ae259a79f075f46ef58350b67cad235aed299"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workbench-git.mjs",
+      "before": "5e53a6e1261a44f49bbdb2d41d0522542bac6eb433ed8c474f4a2cf646a74eec",
+      "after": "6903233dd4e7492fd8a876ba46c09967e62c813eb0f01f342e97e7ea96f3629a"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workbench-git.test.mjs",
+      "before": "e36fc42550a5be43d52ab453eaf86ebc59ad7b5d98d49c5279f053e3172f1a7b",
+      "after": "9b1fbc89f6766bda306d3941481c948a4271d723deb66f78c43eca46dea0055d"
+    },
+    {
+      "path": "apps/desktop-app/src/workbench-service.mjs",
+      "before": "bf817d98a07476607c9f3a0eb4547f62efeafe794788032e1efe2c4e2082bbc7",
+      "after": "10e3863f673f990d8be51fdcf9d22c86b24d723a476b6b03596b256aa5df0578"
+    }
+  ],
+  "renderer_and_fixture_unchanged": true,
+  "public_dto_unchanged": true,
+  "private_scope_required_fields": [
+    "trusted",
+    "trustRevision"
+  ],
+  "scoped_tests": {
+    "tests": 36,
+    "pass": 36,
+    "fail": 0,
+    "log": "evidence/code-corrections-scoped-r1.log"
+  },
+  "meaningful_red_green": [
+    "evidence/code-corrections-red-r1.log",
+    "evidence/code-corrections-green-r1.log",
+    "evidence/code-trust-service-red-r1.log",
+    "evidence/code-trust-service-green-r1.log"
+  ]
+}

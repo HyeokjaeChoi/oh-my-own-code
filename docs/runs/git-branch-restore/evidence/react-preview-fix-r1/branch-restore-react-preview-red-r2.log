@@ -1,0 +1,82 @@
+(node:67374) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+▶ Git branch restore: actual React preview renders closed backup plans
+  ✖ create/ (9.717041ms)
+  ✖ select/ (1.7105ms)
+  ✖ restore/index (1.369042ms)
+  ✖ restore/head (0.853083ms)
+✖ Git branch restore: actual React preview renders closed backup plans (275.126375ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 500.1155
+
+✖ failing tests:
+
+test at apps/desktop-app/src/workbench-store.test.mjs:17049:13
+✖ create/ (9.717041ms)
+  Error: Invalid Git branch/restore request.
+      at need (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs?tsx-namespace=branch-restore-react-regression:94:25)
+      at gitBranchRestoreBackupRoles (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs?tsx-namespace=branch-restore-react-regression:433:3)
+      at GitBranchRestoreSection (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx:387:18)
+      at Object.react_stack_bottom_frame (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at renderNodeDestructive (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6367:11)
+      at renderElement (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6063:15)
+      at retryNode (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31) {
+    appCode: 'INVALID_REQUEST'
+  }
+
+test at apps/desktop-app/src/workbench-store.test.mjs:17049:13
+✖ select/ (1.7105ms)
+  Error: Invalid Git branch/restore request.
+      at need (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs?tsx-namespace=branch-restore-react-regression:94:25)
+      at gitBranchRestoreBackupRoles (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs?tsx-namespace=branch-restore-react-regression:433:3)
+      at GitBranchRestoreSection (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx:387:18)
+      at Object.react_stack_bottom_frame (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at renderNodeDestructive (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6367:11)
+      at renderElement (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6063:15)
+      at retryNode (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31) {
+    appCode: 'INVALID_REQUEST'
+  }
+
+test at apps/desktop-app/src/workbench-store.test.mjs:17049:13
+✖ restore/index (1.369042ms)
+  Error: Invalid Git branch/restore request.
+      at need (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs?tsx-namespace=branch-restore-react-regression:94:25)
+      at gitBranchRestoreBackupRoles (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs?tsx-namespace=branch-restore-react-regression:433:3)
+      at GitBranchRestoreSection (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx:387:18)
+      at Object.react_stack_bottom_frame (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at renderNodeDestructive (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6367:11)
+      at renderElement (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6063:15)
+      at retryNode (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31) {
+    appCode: 'INVALID_REQUEST'
+  }
+
+test at apps/desktop-app/src/workbench-store.test.mjs:17049:13
+✖ restore/head (0.853083ms)
+  Error: Invalid Git branch/restore request.
+      at need (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs?tsx-namespace=branch-restore-react-regression:94:25)
+      at gitBranchRestoreBackupRoles (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs?tsx-namespace=branch-restore-react-regression:433:3)
+      at GitBranchRestoreSection (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx:387:18)
+      at Object.react_stack_bottom_frame (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at renderNodeDestructive (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6367:11)
+      at renderElement (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6063:15)
+      at retryNode (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31) {
+    appCode: 'INVALID_REQUEST'
+  }

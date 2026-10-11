@@ -1,0 +1,137 @@
+{
+  "schema_version": 2,
+  "gate": "design",
+  "reviewed": {
+    "contract_sha256": "b61f7081cf46aa971cf30754921d37df51c8ec8a7bb4374b77e37e439e8b0155",
+    "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+    "gate": "design",
+    "plan_sha256": "7f614ba034b8990ec0cf61b393c055565c97f6bdeea74d5d8ee795507276fafa",
+    "schema_version": 2,
+    "source_sha256": "a331fbb22d071d3e3c6e4b78afba38c746d5df7ecbd7e4ae08792779f9d20845",
+    "verification_sha256": "54c4756bffbc4b102b3cd86f8861d5de7b763c4275011a35833644065ff93e28",
+    "work_class_sha256": "101dd49a7c54aecef71e98e8e2bfc8d944a8279736238a19062a13e5ebdaff1a"
+  },
+  "verdict": "pass",
+  "summary": "plan revision 7과 design version 2의 RENDER 수정 검토를 통과했습니다. 현재 원본 PNG 14개와 수정 전 RED 원본 1개를 직접 확인했습니다. 메뉴 접근, 명령 버튼의 명확성, quiet 기본 상태와 관련 narrow·200%·dark 화면에서 수정이 필요한 주요 결함을 찾지 못했습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11f6e-a234-7273-9486-3e6c4467d104",
+    "child_task_id_source": "CODEX_THREAD_ID",
+    "main_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "run": "design-foundation-v2",
+    "role": "design_qa",
+    "mode": "fresh_independent_report_only",
+    "binding_source": "docs/runs/design-foundation-v2/final-render-input-r2.json",
+    "entire_top_level_binding_copied": true,
+    "writes": false,
+    "delegation": false,
+    "build_test_runtime_launch": false
+  },
+  "evidence_inspected": {
+    "repository_root": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "target": "현재 production renderer/preload와 synthetic Main의 Foundation 화면입니다. light/dark, 320·760·1440 viewport와 zoomFactor 1·2의 지정된 상태를 검토했습니다.",
+    "documents": [
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-design-review/SKILL.md",
+      ".agents/skills/solo-design-review/references/evidence-review.md",
+      "docs/runs/design-foundation-v2/plan.md",
+      "docs/runs/design-foundation-v2/design-v2.md",
+      "docs/design/system.md",
+      "docs/runs/design-foundation-v2/final-render-packet-r2.json",
+      "docs/runs/design-foundation-v2/final-render-input-r2.json",
+      "docs/runs/design-foundation-v2/final-code-review-r1.json",
+      "docs/runs/design-foundation-v2/final-render-review-r1.json",
+      "docs/runs/design-foundation-v2/capture-inventory-r2.json",
+      "docs/runs/design-foundation-v2/verification-r2.json"
+    ],
+    "integrity": {
+      "current_original_png_count_verified": 289,
+      "hash_size_and_pixel_dimension_mismatches": 0,
+      "capture_to_report_path_hash_viewport_zoom_mismatches": 0,
+      "r1_original_png_count_preserved": 287,
+      "r1_hash_and_size_mismatches": 0,
+      "entire_review_binding_current_at_completion": true
+    },
+    "visual_inspection": {
+      "method": "tools.view_image로 접근 가능한 원본 PNG를 직접 열었습니다. 기본 high 표시를 사용했습니다. 이미지 파일은 변경하지 않았습니다.",
+      "current_viewed_count": 14,
+      "current_path_base": "docs/runs/design-foundation-v2/evidence/hidden-r2/design-foundation/",
+      "current_viewed_files": [
+        "000-collapsed-command-menu-first-items.png",
+        "001-collapsed-command-menu-last-item.png",
+        "002-light-1440-zoom1-collapsed-idle.png",
+        "008-light-320-zoom1-collapsed-idle.png",
+        "009-light-320-zoom1-expanded-requested.png",
+        "013-light-760-zoom2-selected-summary-final-action.png",
+        "020-dark-320-zoom1-collapsed-idle.png",
+        "025-dark-760-zoom2-selected-summary-final-action.png",
+        "032-branch-200-edit-confirm-close.png",
+        "035-running-native-report-separate-from-request.png",
+        "036-unsupported-outside-closed-task.png",
+        "038-expired-200-outside-closed-task.png",
+        "039-unknown-visible-outside-closed-task.png",
+        "046-reduced-motion-narrow-collapsed.png"
+      ],
+      "before_viewed_path": "docs/runs/design-foundation-v2/evidence/menu-red-r1/design-foundation/000-collapsed-command-menu-first-items.png",
+      "checked_original_dimensions": {
+        "1440_viewport": "2880×1936",
+        "760_viewport": "1520×1936",
+        "320_viewport": "640×1936"
+      },
+      "sampling_limit": "현재 289개 PNG의 무결성을 확인했습니다. 그중 14개의 pixels를 직접 검토했습니다."
+    },
+    "recorded_execution": {
+      "reports": [
+        "docs/runs/design-foundation-v2/evidence/hidden-r2/design-foundation/design-foundation-evidence.json",
+        "docs/runs/design-foundation-v2/evidence/context-r2/conversation-context/conversation-context-evidence.json",
+        "docs/runs/design-foundation-v2/evidence/runtime-r2/runtime-options/runtime-options-evidence.json"
+      ],
+      "capture_counts": {
+        "foundation": 47,
+        "context": 189,
+        "runtime_options": 53
+      },
+      "shared_build_stamp_sha256": "597324021547abdf83c1281fc5822c9fb785a9c205afe92cdd1fbd42a0198a12",
+      "provenance": "세 보고서의 before/after provenance가 같습니다. wrapper provenance도 보고서와 일치합니다. 목록에 있는 현재 source와 launch artifact의 bytes·mode·hash를 확인했습니다.",
+      "result": "세 보고서와 wrapper는 pass입니다. wrapper exit와 owned Electron exit는 모두 0입니다. 강제 signal, pageErrors와 externalRequests는 없습니다.",
+      "keyboard": "현재 runner와 pass 기록에서 메뉴 ArrowDown·Home·End·Escape 및 focus 복귀, disclosure Enter·Space, preview·branch·좁은 navigation의 focus 복귀 assertions를 확인했습니다. 직접 새 keyboard 실행은 하지 않았습니다."
+    }
+  },
+  "design_judgment": [
+    {
+      "concern": "메뉴 잘림 수정",
+      "result": "수정 전 원본에서 메뉴 윗부분과 첫 행동이 잘립니다. 현재 000에서는 heading·닫기·첫 항목이 보입니다. 001에서는 내부 scroll 뒤 마지막 항목과 focus ring이 보입니다. 아래 요청 요약과 toolbar도 유지됩니다. pointer 접근은 현재 실행 보고서의 first·close·last hit test로 보완했습니다.",
+      "verification_status": "지정된 1440 light 기본 상태에서 수정 확인"
+    },
+    {
+      "concern": "명령 버튼과 기본 위계",
+      "result": "명령이라는 visible label로 행동을 식별할 수 있습니다. 버튼은 quiet 표시를 유지합니다. 기본 light/dark 화면에서 전송 또는 중단이 주 행동으로 구분되며 대화가 주 읽기 영역으로 유지됩니다."
+    },
+    {
+      "concern": "narrow·200%·dark",
+      "result": "직접 본 320과 760의 200% 표본에서 명령 label, 요청 요약과 최종 행동이 읽히며 겹치지 않습니다. light/dark의 긴 값은 줄바꿈됩니다. 200% branch 화면은 경계·편집 입력·생성·닫기를 우선 표시합니다."
+    },
+    {
+      "concern": "요청값과 보고값",
+      "result": "다음 전송 설정과 Native 세션 설정이 분리됩니다. 요청값 summary와 Native 보고값은 서로 다른 값으로 표시됩니다. 요청 선택을 Native 적용 성공으로 표현하지 않습니다."
+    },
+    {
+      "concern": "critical state",
+      "result": "unsupported·expired·unknown 안내가 접힌 task 밖에서 보입니다. 필요한 재확인과 자동 재실행 금지 문구가 유지됩니다. unknown 화면은 편집 가능한 draft와 비활성 전송을 함께 보여 줍니다."
+    },
+    {
+      "concern": "reduced motion",
+      "result": "현재 reduced-motion narrow 원본에서 label과 draft가 유지됩니다. 기존 실행 기록은 reduced-motion media 적용을 확인합니다. 정지 PNG만으로 animation timing을 검증했다고 판단하지 않았습니다."
+    }
+  ],
+  "prior_review_handling": "r1 RENDER의 32개 화면 pass는 prior coverage로만 사용했습니다. r1 CODE 실패와 RENDER pass의 원래 bytes·등록 기록을 유지합니다. Main의 pixel-inspection note나 geometry pass를 독립 승인으로 사용하지 않았습니다. 이번 RENDER 판정은 직접 본 현재 pixels와 현재 실행 근거에 기반합니다.",
+  "limits": [
+    "이번 판정은 지정된 Foundation 수정 범위에 한정됩니다. CODE 판정은 별도로 반환합니다.",
+    "열린 메뉴의 pixels와 first·close·last 회귀 실행은 1440 light 상태입니다. narrow·200%·dark에서는 지정된 기본·요청·branch·critical-state 표본을 직접 확인했습니다. 모든 조합의 열린 메뉴를 직접 확인한 것은 아닙니다.",
+    "새 build·test·runtime 실행, 실제 touch device·OS screen reader 시험 또는 별도 수치 대비 측정을 하지 않았습니다.",
+    "Native runtime·provider·production Main·private store·Windows·release·full18 acceptance를 승인하지 않습니다.",
+    "보고서 저장과 ledger 등록은 Main이 수행합니다."
+  ]
+}

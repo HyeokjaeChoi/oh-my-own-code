@@ -1,0 +1,197 @@
+--- docs/runs/design-foundation-v2/before-menu-correction-r1/apps/desktop-app/src/renderer/widgets/conversation/index.tsx
++++ apps/desktop-app/src/renderer/widgets/conversation/index.tsx
+@@ -2,14 +2,7 @@
+   ConversationContextControls,
+   ContextMessageActions,
+ } from "../../features/conversation-context/index.js";
+-import {
+-  useEffect,
+-  useLayoutEffect,
+-  useId,
+-  useMemo,
+-  useRef,
+-  useState,
+-} from "react";
++import { useEffect, useId, useMemo, useRef, useState } from "react";
+ import {
+   AssistantRuntimeProvider,
+   ComposerPrimitive,
+@@ -18,7 +11,7 @@
+   useExternalStoreRuntime,
+   type ToolCallMessagePartProps,
+ } from "@assistant-ui/react";
+-import { ArrowUp, Slash, Square, X } from "lucide-react";
++import { ArrowUp, Square, X } from "lucide-react";
+ import { mapMessages } from "../../shared/projection/index.js";
+ import {
+   selectors,
+@@ -321,38 +314,6 @@
+     setMenu(false);
+     input.current?.focus();
+   };
+-  useLayoutEffect(() => {
+-    if (!menu) return;
+-    const place = () => {
+-      const popup = commandMenu.current;
+-      const form = input.current?.closest("form");
+-      if (!popup || !form) return;
+-      const bounds = form.getBoundingClientRect();
+-      const header =
+-        parseFloat(
+-          getComputedStyle(form).getPropertyValue(
+-            "--omoc-component-size-header-height",
+-          ),
+-        ) || 44;
+-      const above = Math.max(0, bounds.top - header - 8);
+-      const below = Math.max(0, window.innerHeight - bounds.bottom - 8);
+-      const useAbove =
+-        above >= Math.min(320, popup.scrollHeight) || above >= below;
+-      popup.style.maxHeight = `${Math.min(320, useAbove ? above : below)}px`;
+-      popup.style.bottom = useAbove ? "calc(100% + 8px)" : "auto";
+-      popup.style.top = useAbove ? "auto" : "calc(100% + 8px)";
+-    };
+-    place();
+-    const observer = new ResizeObserver(place);
+-    if (input.current) observer.observe(input.current);
+-    window.addEventListener("resize", place);
+-    document.addEventListener("scroll", place, true);
+-    return () => {
+-      observer.disconnect();
+-      window.removeEventListener("resize", place);
+-      document.removeEventListener("scroll", place, true);
+-    };
+-  }, [menu]);
+   // Native buttons keep Tab navigation; arrows offer quick command selection.
+   const menuButtons = () =>
+     Array.from(
+@@ -890,7 +851,7 @@
+                   }
+                 }}
+               >
+-                <Slash size={18} aria-hidden="true" />
++                명령
+               </Button>
+               {running ? (
+                 <ComposerPrimitive.Cancel
+--- docs/runs/design-foundation-v2/before-menu-correction-r1/apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css
++++ apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css
+@@ -512,11 +512,7 @@
+ }
+ 
+ .commandMenu {
+-  position: absolute;
+-  z-index: 10;
+-  right: 0;
+-  bottom: calc(100% + 8px);
+-  left: 0;
++  position: static;
+   max-height: min(320px, 40dvh);
+   padding: 8px;
+   overflow-y: auto;
+@@ -632,10 +628,6 @@
+     flex-shrink: 1;
+     transform: none;
+   }
+-  /* Keep the keyboard menu inside the short viewport's scrollable region. */
+-  .commandMenu {
+-    position: static;
+-  }
+ }
+ 
+ @media (max-height: 440px) {
+@@ -792,3 +784,17 @@
+     min-height: var(--omoc-component-size-coarse-target);
+   }
+ }
++
++/* Named quiet action stays discoverable without a decorative slash glyph. */
++.toolbar .commandTrigger {
++  flex: 0 0 auto;
++  width: auto;
++  min-width: var(--omoc-component-size-standard-control-height);
++  padding-inline: 10px;
++  color: var(--omoc-semantic-color-text-secondary);
++}
++@media (pointer: coarse) {
++  .toolbar .commandTrigger {
++    min-width: var(--omoc-component-size-coarse-target);
++  }
++}
+--- docs/runs/design-foundation-v2/before-menu-correction-r1/apps/desktop-app/scripts/e2e-design-foundation.mjs
++++ apps/desktop-app/scripts/e2e-design-foundation.mjs
+@@ -423,7 +423,75 @@
+     "Critical status must remain outside collapsed disclosures",
+   );
+ }
++async function commandMenuRegression() {
++  await scenario("ready");
++  await display("light", 1440);
++  const trigger = page.getByRole("button", {
++    name: "앱 동작과 명령 열기",
++    exact: true,
++  });
++  const menu = page.getByRole("region", {
++    name: "앱 동작 및 런타임 명령",
++    exact: true,
++  });
++  await expect(trigger).toHaveText("명령");
++  await trigger.click();
++  await expect(menu).toBeVisible();
++  await shot("collapsed-command-menu-first-items");
++  const first = menu.locator("button[data-command]").first();
++  const close = menu.getByRole("button", {
++    name: "명령 목록 닫기",
++    exact: true,
++  });
++  const pointerReachable = async (button) => {
++    const proof = await button.evaluate((element) => {
++      const box = element.getBoundingClientRect();
++      const x = box.left + box.width / 2,
++        y = box.top + box.height / 2;
++      const hit = globalThis.document.elementFromPoint(x, y);
++      return {
++        label: element.textContent || element.getAttribute("aria-label"),
++        x,
++        y,
++        reachable: Boolean(hit && element.contains(hit)),
++      };
++    });
++    assert.equal(proof.reachable, true, JSON.stringify(proof));
++    return proof;
++  };
++  const firstProof = await pointerReachable(first);
++  const closeProof = await pointerReachable(close);
++  // Trial hit tests are real pointer checks without creating a session.
++  await first.click({ trial: true });
++  await close.click();
++  await expect(menu).toHaveCount(0);
++  await expect(trigger).toBeFocused();
++  await trigger.focus();
++  await page.keyboard.press("ArrowDown");
++  await expect(first).toBeFocused();
++  await page.keyboard.press("End");
++  const last = menu.locator("button[data-command]").last();
++  await expect(last).toBeFocused();
++  await last.scrollIntoViewIfNeeded();
++  const lastProof = await pointerReachable(last);
++  await last.click({ trial: true });
++  await shot("collapsed-command-menu-last-item");
++  await page.keyboard.press("Home");
++  await expect(first).toBeFocused();
++  await pointerReachable(first);
++  await page.keyboard.press("Escape");
++  await expect(menu).toHaveCount(0);
++  await expect(trigger).toBeFocused();
++  interactions.push({
++    state: "command-menu-closed-default-hit-test",
++    firstProof,
++    closeProof,
++    lastProof,
++  });
++}
++
+ async function exerciseFoundation() {
++  await commandMenuRegression();
+   for (const theme of ["light", "dark"]) {
+     for (const [width, zoom] of [
+       [1440, 1],

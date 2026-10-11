@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "8b55c7a3d056b3d369d6aba726a0c942c2b7b9941e9f72e2f7f8bf2e43bab6a3",
+    "contract_sha256": "76363eb56c05bf0f3906f8ac867bb1d0458ed67c1c9231222be6adc201c4c321",
+    "source_sha256": "c7d10390729f1eef53f2656902273cfa67c48ad0d9971c9cac27ce070b33f160"
+  },
+  "verdict": "changes_requested",
+  "summary": "네 수명주기 동작의 분리 및 현재 PRD/UX 수정본의 검토·승인 대기 경계는 적절하다. 그러나 현재 보고서의 벤더 비교표는 수명주기만 다루며 AC-1이 요구하는 나머지 세 기능군 비교가 빠져 있다. 새 구조 검사는 이 누락을 검출하지 못하므로 사용자 조사 범위가 보존되도록 보완해야 한다.",
+  "open_findings": [
+    {
+      "id": "WFL-PLAN-03",
+      "priority": "P2",
+      "title": "수명주기 행 분리 후 누락된 세 벤더 비교 영역 복원",
+      "file": "docs/research/workbench-feature-landscape.md",
+      "start": 19,
+      "end": 25,
+      "description": "현재 벤더 비교표에는 프로젝트/작업공간 진입과 import, create, 목록 제거/archive, 물리 삭제 행만 있다. 계획 Scope 2~4 및 계약 AC-1은 네 제품군 각각에 대해 우측 browser/terminal/file/diff/artifact 표면, 실시간 tool-call/approval/question/progress/result/cancel/recovery, skill/MCP/plugin/agent/tool inventory/configuration도 비교하도록 요구한다. 저장소 구현 표와 우리 앱 권고 표에 이 주제가 남아 있어도 벤더별 비교를 대신하지 못한다. report-structure는 네 수명주기 행과 상위 제목만 검사하므로 현재 누락 상태에서도 해당 구조 조건을 충족한다.",
+      "requested_change": "새로운 네 수명주기 행을 유지하면서 나머지 세 기능군의 제품별 근거·추론·문서 공백 비교를 복원한다. 등록된 구조 검사에도 이 세 비교 영역의 존재를 확인하는 조건을 추가하여 동일한 축소를 검출하고, 변경된 정확한 plan/contract/source binding으로 필요한 검토를 진행한다. 제품 계약이나 앱 코드 변경은 필요하지 않다.",
+      "validation_basis": "현재 plan Scope의 네 기능군 및 AC-1, contract acceptance AC-1과 report-structure 조건, 보고서 벤더 비교표 19~25행 및 그 직후 비교 결과의 범위 전환을 대조했다."
+    }
+  ],
+  "resolved_findings": [
+    {
+      "id": "WFL-ANALYSIS-01",
+      "resolution": "이전 analysis-r2가 요청한 네 수명주기 질문은 별도 행으로 명시되었다. 일반 폴더 생성과 Git worktree 생성, Codex의 worktree 지원, Claude의 기존 폴더 선택과 영속 등록의 차이, Claude archive와 worktree 제거의 연계, Cursor/OpenCode의 독립 목록 제거 미확인이 모두 반영되었다. 이는 요청한 구조 수정의 확인이며 최종 analysis gate 승인을 대신하지 않는다."
+    },
+    {
+      "id": "WFL-PLAN-01",
+      "resolution": "계획 Confirmed outcome와 DR-1, 보고서 구현 범위 도입부는 보존된 승인 기능 범위와 현재 PRD/UX v0.6 수정본의 검토·정확한 해시 승인 대기 상태를 구분한다. ADR-0002 Accepted는 Electron/macOS/Windows/app-owned OpenCode v2 sidecar 선택의 승인으로 제한되며 구현 승인 또는 런타임 검증으로 승격되지 않는다."
+    }
+  ],
+  "review_notes": [
+    "요청된 plan 및 계약 전체, 현재 보고서 전체, 이전 plan-r6 및 analysis-r2, PRD/UX 헤더, spec-index v0.12 및 ADR-0002의 승인 경계를 확인했다.",
+    "계획 SHA256과 ASCII canonical JSON 계약 SHA256을 독립 계산해 요청값과 일치함을 확인했다. source_sha256은 run.json plan.source_sha256 등록값과 대조했으며 전체 소스 지문은 독립 재생성하지 않았다. 현재 보고서 SHA256은 bec74fb270de49e55afd460132c6326f14356cdd5fb123561bae46810bac9244다.",
+    "보고서의 조사 전용 범위, 권고와 승인된 릴리스 계획의 구분, 정적 점검과 패키징·실제 SDK 실행·OS 보안 증거의 구분은 유지된다. 발견 사항은 승인 경계의 오류가 아니라 요청된 비교 범위의 누락이다.",
+    "계획 헤더 Revision 3과 변경 이력 R4는 표시상 불일치하지만 이 판정은 정확한 plan SHA256에 한정하며 이 표기 자체를 차단 지적으로 삼지 않았다."
+  ],
+  "review_boundary": "Fresh-context narrow independent plan review of the lifecycle correction, preservation of all four requested capability groups, registered verification coverage, and accepted-status boundaries. No external vendor re-research, full source audit, runtime tests, or application/product/plan/contract/ledger edits. Only the requested review artifact was written.",
+  "provenance": {
+    "child_task_id": "/root/workbench_plan_review_r7",
+    "author_task_id": "/root"
+  }
+}

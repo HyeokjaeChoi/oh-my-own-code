@@ -1,0 +1,8075 @@
+{
+  "result": "pass",
+  "observations": [
+    {
+      "name": "protected-refusal",
+      "status": "pass",
+      "refusal": "INVALID_REQUEST",
+      "closedRequestRefusal": true,
+      "originalFullInventoryUnchanged": true
+    },
+    {
+      "name": "late-marker",
+      "status": "pass",
+      "format": "sha1",
+      "action": "create",
+      "source": null,
+      "outcome": "FILE_CHANGED",
+      "prepared": 0,
+      "published": 0,
+      "exactUnaffectedFileInventory": true,
+      "helpersNotInvoked": true,
+      "backups": []
+    },
+    {
+      "name": "default-cancel",
+      "status": "pass",
+      "format": "sha1",
+      "action": "restore",
+      "source": "head",
+      "outcome": "CANCELLED",
+      "prepared": 0,
+      "published": 0,
+      "exactUnaffectedFileInventory": true,
+      "helpersNotInvoked": true,
+      "backups": []
+    },
+    {
+      "name": "foreign-lock",
+      "status": "pass",
+      "format": "sha1",
+      "action": "restore",
+      "source": "head",
+      "outcome": "unknown",
+      "prepared": 1,
+      "published": 0,
+      "exactUnaffectedFileInventory": true,
+      "helpersNotInvoked": true,
+      "backups": []
+    },
+    {
+      "name": "unknown-no-replay",
+      "status": "pass",
+      "format": "sha1",
+      "action": "select",
+      "source": null,
+      "outcome": "unknown",
+      "prepared": 1,
+      "published": 0,
+      "exactUnaffectedFileInventory": true,
+      "helpersNotInvoked": true,
+      "backups": []
+    },
+    {
+      "name": "partial-no-upgrade",
+      "status": "pass",
+      "format": "sha1",
+      "action": "select",
+      "source": null,
+      "outcome": "unknown",
+      "prepared": 1,
+      "published": 1,
+      "exactUnaffectedFileInventory": true,
+      "helpersNotInvoked": true,
+      "backups": []
+    }
+  ],
+  "kernelEvents": [
+    {
+      "name": "foreign-lock",
+      "method": "prepare",
+      "status": "unknown",
+      "reason": "lock_conflict"
+    },
+    {
+      "name": "partial-no-upgrade",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "partial-no-upgrade",
+      "method": "publish",
+      "status": "unknown",
+      "reason": "path_changed"
+    }
+  ],
+  "diagnosticTimeline": [
+    {
+      "at": 152.679167,
+      "event": "namespace"
+    },
+    {
+      "at": 161.707792,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 165.601375,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 179.955375,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 184.02925,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 196.988292,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 202.197667,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 212.825292,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 217.042292,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 228.145875,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 232.641083,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 244.227833,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 248.995167,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 259.898333,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 264.785333,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 275.77875,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 280.719667,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 293.212333,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 297.957,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 308.622792,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 313.782292,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 324.466833,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 329.965542,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 341.3915,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 346.6915,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 357.632375,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 363.042292,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 375.581875,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 380.237458,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 392.397625,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 398.024667,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 408.013,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 412.430958,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 422.881542,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 427.717042,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 440.158792,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 444.665792,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 455.090167,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 459.675667,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 470.114417,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 474.324333,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 485.291167,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 489.926583,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 500.793417,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 506.494917,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 516.689208,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 521.70875,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 533.885625,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 539.480667,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 549.986125,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 554.606083,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 579.058458,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 583.891458,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 729.229375,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 735.108792,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 752.491958,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 757.163083,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 776.390083,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 781.444125,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 799.01125,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 804.478667,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 823.322708,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 828.283292,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 852.348458,
+      "event": "removed"
+    },
+    {
+      "at": 966.365875,
+      "event": "namespace"
+    },
+    {
+      "at": 971.552458,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 975.614375,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 988.107167,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 992.575292,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 1004.617708,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 1009.676333,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 1020.25325,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1024.888292,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1035.823083,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1040.873083,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1052.505792,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1058.143542,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1070.891833,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 1075.707958,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 1086.140792,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 1090.64425,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 1101.475542,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 1105.975,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 1116.375542,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 1122.727583,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 1133.899792,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 1139.353083,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 1149.748625,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 1154.874542,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 1165.751125,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 1170.353,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 1183.6595,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 1188.041083,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 1199.043542,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 1204.377292,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 1215.1555,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1219.466458,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1231.0555,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1235.831542,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1245.938875,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1250.183375,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1261.101667,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 1266.120458,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 1276.404542,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 1280.705583,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 1292.886458,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 1297.926625,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 1308.209875,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 1313.350292,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 1323.938,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 1330.116375,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 1342.240542,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 1348.394083,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 1359.276833,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 1364.536042,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 1385.529333,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 1389.844292,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 1525.491208,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 1531.193458,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 1548.078208,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 1552.115917,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 1568.448208,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 1573.324042,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 1589.078208,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 1594.421333,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 1612.901625,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 1618.253833,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 1640.020083,
+      "event": "removed"
+    },
+    {
+      "at": 1664.03875,
+      "event": "namespace"
+    },
+    {
+      "at": 1669.518125,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 1674.427917,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 1686.253958,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 1690.806833,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 1701.694167,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 1706.774208,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 1717.174667,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1721.40725,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1732.104292,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1736.443792,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1746.711083,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1750.977708,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 1762.326042,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 1767.087333,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 1777.366417,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 1781.572542,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 1792.605417,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 1797.589208,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 1807.824875,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 1813.123792,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 1825.730875,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 1831.5075,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 1842.065833,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 1847.191125,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 1857.775667,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 1862.876,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 1874.180208,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 1878.605458,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 1889.040875,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 1894.642875,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 1904.9955,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 1909.589042,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 1920.05575,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 1925.081417,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 1936.615917,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 1941.959292,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 1951.683875,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 1957.789958,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 1969.391333,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 1973.690125,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 1983.843667,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 1988.6795,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 2000.240125,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 2006.2795,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 2016.662458,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 2021.163625,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 2031.948583,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 2036.390333,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 2046.608125,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 2051.271667,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 2063.310875,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 2068.171875,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 2078.678208,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 2082.883625,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 2093.411417,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 2099.049,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 2109.379167,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 2114.732667,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 2126.410333,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 2132.269583,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 2142.68375,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 2147.321417,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 2157.742375,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 2162.849708,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 2174.985583,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 2180.80425,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 2191.642708,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 2197.421375,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 2207.172917,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 2211.151875,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 2221.558625,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 2226.8785,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 2236.794667,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 2242.446833,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 2265.857667,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 2270.591542,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 2403.457208,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 2409.029417,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 2425.429375,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 2430.419292,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 2448.588625,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 2453.357833,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 2470.154583,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 2475.712458,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 2492.800542,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 2498.827708,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 2565.183708,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "observe"
+    },
+    {
+      "at": 2569.622875,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "observe"
+    },
+    {
+      "at": 2597.735458,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 2602.972875,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 2620.987833,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 2626.103,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 2656.840375,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "observe"
+    },
+    {
+      "at": 2663.136708,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "observe"
+    },
+    {
+      "at": 2726.570667,
+      "event": "removed"
+    },
+    {
+      "at": 2730.581375,
+      "phase": "service-mutation-start"
+    },
+    {
+      "at": 2752.023917,
+      "event": "namespace"
+    },
+    {
+      "at": 2757.574917,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 2762.726,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 2774.953208,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 2779.1305,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 2790.195375,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 2795.791833,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 2806.168542,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 2810.220417,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 2820.626208,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 2824.949042,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 2836.165208,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 2841.189917,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 2853.558083,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 2856.899667,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 2867.666583,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 2872.026625,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 2882.545917,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 2886.886458,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 2897.733042,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 2903.174625,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 2913.490333,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 2918.405208,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 2929.873333,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 2935.615458,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 2946.163,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 2950.621958,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 2961.409375,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 2966.211833,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 2977.177542,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 2982.433208,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 2993.57825,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 2999.291,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 3011.132,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 3015.453042,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 3026.429417,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 3032.052458,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 3041.953542,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 3047.923417,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 3059.449292,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 3064.29275,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 3075.195625,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 3080.3825,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 3091.205292,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3096.297667,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3107.293375,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3112.066292,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3122.576208,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3127.798667,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3138.808583,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 3143.258125,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 3154.423292,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 3158.906125,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 3169.472708,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 3173.802542,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 3184.181042,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 3189.4685,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 3200.471,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 3205.866,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 3218.069792,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 3223.359125,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 3234.482667,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 3239.708125,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 3250.462833,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 3255.277625,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 3267.071125,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 3272.463458,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 3283.227958,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 3288.154833,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 3298.098375,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 3302.594333,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 3312.828083,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 3317.699958,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 3328.463625,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 3334.669375,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 3353.42875,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 3358.026458,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 3489.573625,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 3495.629625,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 3512.349958,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 3516.543833,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 3533.30825,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 3537.89125,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 3554.424292,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 3559.983417,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 3576.667,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 3582.011042,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 3609.177333,
+      "event": "removed"
+    },
+    {
+      "at": 3610.518875,
+      "phase": "service-mutation-end",
+      "ok": false,
+      "code": "FILE_CHANGED"
+    },
+    {
+      "at": 3733.312,
+      "event": "namespace"
+    },
+    {
+      "at": 3738.67375,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 3742.921583,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 3755.242167,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 3759.552708,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 3770.214125,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 3774.914083,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 3786.077875,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3790.328625,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3801.877833,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3806.419333,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3816.847167,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3821.300792,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3832.953542,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 3837.604708,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 3849.810125,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 3855.278667,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 3866.546042,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 3871.39925,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 3882.724417,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 3888.327375,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 3899.398417,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 3905.220833,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 3916.522625,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 3921.959417,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 3933.821625,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 3938.612208,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 3951.280667,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 3955.698458,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 3966.576167,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 3971.586167,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 3984.042917,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3988.542,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 3999.677042,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4004.32125,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4015.084333,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4020.587,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4032.000375,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 4036.775333,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 4047.320625,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 4051.71575,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 4062.910167,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 4067.705875,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 4079.044042,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 4084.619833,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 4095.394083,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 4100.918125,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 4111.115875,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 4115.987375,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 4126.681667,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 4131.572,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 4153.685917,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 4158.555083,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 4305.376125,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 4312.207917,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 4327.427,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 4332.35875,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 4349.449125,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 4354.294292,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 4373.513417,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 4379.014208,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 4397.130625,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 4403.529375,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 4428.6135,
+      "event": "removed"
+    },
+    {
+      "at": 4446.82175,
+      "event": "namespace"
+    },
+    {
+      "at": 4452.718042,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 4457.675542,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 4470.71675,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 4475.214375,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 4484.930667,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 4489.915792,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 4500.667083,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4505.129417,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4515.428792,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4519.588792,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4530.440875,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4535.320458,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4545.659833,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 4550.072417,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 4561.12075,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 4565.8585,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 4576.085625,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 4580.30325,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 4591.5615,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 4597.322083,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 4607.96575,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 4613.041083,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 4623.444667,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 4629.325875,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 4639.727208,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 4644.099917,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 4654.348708,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 4658.699542,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 4669.212042,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 4674.241583,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 4686.133208,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 4691.611875,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 4701.763417,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 4706.010708,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 4716.261042,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 4721.354542,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 4731.450625,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 4738.017833,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 4749.45975,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 4753.804292,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 4765.538167,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 4770.710625,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 4780.972042,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4785.308875,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4796.345333,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4801.463458,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4812.35875,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4817.295375,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 4828.247208,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 4833.062375,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 4843.442458,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 4848.035792,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 4858.929583,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 4864.281542,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 4874.674625,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 4880.052083,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 4891.381958,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 4897.418833,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 4907.9955,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 4913.459167,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 4924.1435,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 4929.34625,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 4940.495292,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 4945.744708,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 4956.460625,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 4962.160083,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 4972.95475,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 4978.007083,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 4987.749083,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 4992.156292,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 5002.756375,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 5009.276333,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 5018.965667,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 5024.964875,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 5044.264625,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 5048.345042,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 5191.385958,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 5197.199333,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 5215.805917,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 5220.727208,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 5238.130167,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 5242.769625,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 5259.74025,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 5265.488208,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 5282.018167,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 5287.358625,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 5361.84475,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 5367.32075,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 5385.034458,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 5390.056375,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 5407.671375,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 5412.893167,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 5430.487167,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 5435.563833,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 5452.332833,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "observe"
+    },
+    {
+      "at": 5458.047292,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "observe"
+    },
+    {
+      "at": 5474.537625,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 5479.976875,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 5525.489542,
+      "event": "removed"
+    },
+    {
+      "at": 5529.432875,
+      "phase": "service-mutation-start"
+    },
+    {
+      "at": 5532.001917,
+      "phase": "service-mutation-end",
+      "ok": false,
+      "code": "CANCELLED"
+    },
+    {
+      "at": 5656.345083,
+      "event": "namespace"
+    },
+    {
+      "at": 5662.22375,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 5666.894958,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 5679.07425,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 5683.075708,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 5694.028417,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 5699.424917,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 5709.78775,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 5714.210375,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 5727.284125,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 5732.357333,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 5743.122208,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 5747.641417,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 5758.373333,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 5763.2145,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 5773.661417,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 5778.060458,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 5788.339125,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 5792.918042,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 5803.693375,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 5808.678875,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 5819.947583,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 5825.436125,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 5836.137333,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 5841.359375,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 5851.605375,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 5855.97675,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 5868.594833,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 5873.151792,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 5884.145167,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 5889.418458,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 5900.793125,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 5906.028,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 5916.706083,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 5921.439667,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 5932.466792,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 5937.404583,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 5948.306583,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 5952.538833,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 5963.31425,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 5967.819,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 5977.9235,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 5982.12025,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 5992.855625,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 5998.890292,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 6011.96125,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 6017.41875,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 6028.395875,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 6034.280542,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 6044.924,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 6049.431333,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 6072.39575,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 6077.091292,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 6232.735333,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 6238.176625,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 6254.940208,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 6259.795542,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 6277.900167,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 6282.325667,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 6299.872333,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 6305.34925,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 6322.17025,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 6327.978708,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 6350.310417,
+      "event": "removed"
+    },
+    {
+      "at": 6369.1,
+      "event": "namespace"
+    },
+    {
+      "at": 6374.443708,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 6379.162042,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 6391.473542,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 6396.444167,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 6407.211958,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 6412.001542,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 6422.256333,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 6426.952417,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 6439.828,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 6444.185042,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 6454.556792,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 6459.046917,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 6469.426583,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 6473.788917,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 6483.965542,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 6487.952792,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 6498.739,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 6503.377292,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 6514.141292,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 6519.594875,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 6531.177917,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 6536.829708,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 6547.3875,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 6553.266583,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 6564.11725,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 6569.073292,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 6579.459917,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 6584.0175,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 6596.427083,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 6602.134,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 6612.552375,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 6617.587917,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 6628.594667,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 6633.59175,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 6645.2545,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 6650.5335,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 6660.649875,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 6666.980458,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 6678.983,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 6683.639875,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 6693.888958,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 6700.477083,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 6711.42275,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 6716.48575,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 6727.509875,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 6732.0915,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 6742.543292,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 6746.94575,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 6758.593917,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 6764.436542,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 6775.107542,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 6779.63725,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 6792.832333,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 6798.171958,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 6808.598458,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 6813.919125,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 6824.596958,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 6830.468583,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 6841.03175,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 6846.590417,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 6856.96925,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 6861.997208,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 6873.117792,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 6877.39975,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 6888.392708,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 6894.14775,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 6904.351792,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 6909.119125,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 6918.693875,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 6922.726458,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 6934.156292,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 6939.178917,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 6948.792125,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 6954.551583,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 6974.338917,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 6979,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 7129.679625,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 7135.334542,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 7151.924833,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 7156.736542,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 7173.879042,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 7178.292042,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 7196.127,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 7201.578583,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 7218.905708,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 7224.882125,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 7298.021917,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 7303.497917,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 7320.887708,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 7325.957208,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 7343.593125,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 7348.701042,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 7366.567958,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 7371.921458,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 7389.639208,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "observe"
+    },
+    {
+      "at": 7396.279792,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "observe"
+    },
+    {
+      "at": 7413.270208,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 7418.471625,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 7465.96,
+      "event": "removed"
+    },
+    {
+      "at": 7469.756333,
+      "phase": "service-mutation-start"
+    },
+    {
+      "at": 7489.916083,
+      "event": "namespace"
+    },
+    {
+      "at": 7495.667208,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 7500.512208,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 7512.810958,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 7516.977542,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 7529.255917,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 7534.666375,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 7545.214042,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 7549.525167,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 7560.157917,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 7564.931125,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 7575.249208,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 7579.551333,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 7590.855833,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 7595.970375,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 7607.211625,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 7611.771208,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 7622.166958,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 7626.961667,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 7637.562542,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 7642.969708,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 7653.158917,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 7658.347833,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 7670.035542,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 7675.603042,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 7686.571417,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 7691.90125,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 7702.936,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 7708.190875,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 7718.651667,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 7724.349625,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 7735.790917,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 7740.956,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 7750.547167,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 7754.808,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 7765.55225,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 7770.943958,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 7780.523792,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 7788.34925,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 7800.125625,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 7804.640917,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 7814.6485,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 7819.131792,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 7830.093417,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 7834.918125,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 7845.297667,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 7849.61375,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 7861.402833,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 7866.490625,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 7877.225042,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 7882.217,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 7892.961333,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 7898.090917,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 7908.51775,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 7912.818417,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 7923.021708,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 7929.18075,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 7939.973083,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 7945.994333,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 7957.358292,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 7963.080917,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 7973.306833,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 7978.486083,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 7989.843917,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 7994.85575,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 8007.553667,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 8012.777458,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 8022.896875,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 8028.695292,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 8038.719667,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 8043.003083,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 8053.904,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 8059.628458,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 8069.854625,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 8076.837333,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 8097.383458,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 8102.027625,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 8245.226583,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 8250.696792,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 8268.087583,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 8272.9,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 8291.132583,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 8296.206292,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 8313.019708,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 8318.013292,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 8335.077167,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 8341.027333,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 8413.029958,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 8418.648417,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 8436.364542,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 8441.789167,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 8459.250167,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 8464.76625,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 8483.708583,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 8489.11175,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 8509.11575,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "observe"
+    },
+    {
+      "at": 8515.308833,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "observe"
+    },
+    {
+      "at": 8533.303583,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 8538.645333,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 8582.619083,
+      "phase": "adapter-start",
+      "method": "prepare"
+    },
+    {
+      "at": 8777.814542,
+      "phase": "adapter-end",
+      "method": "prepare",
+      "status": "unknown"
+    },
+    {
+      "at": 8783.980167,
+      "event": "retained"
+    },
+    {
+      "at": 8784.944708,
+      "phase": "service-mutation-end",
+      "ok": true,
+      "code": null
+    },
+    {
+      "at": 8899.933667,
+      "event": "namespace"
+    },
+    {
+      "at": 8905.365708,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 8909.550042,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 8921.359208,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 8925.479125,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 8935.986708,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 8940.703917,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 8950.92975,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 8955.081042,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 8967.397167,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 8972.392083,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 8982.778667,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 8987.200875,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 8997.971375,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 9002.630792,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 9015.18525,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 9019.456583,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 9030.27175,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 9034.900292,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 9045.115875,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 9050.329833,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 9061.518083,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 9067.326292,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 9078.171625,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 9083.554792,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 9094.519917,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 9099.385125,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 9112.577792,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 9116.783625,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 9126.819708,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 9132.255167,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 9142.38475,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9146.486875,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9156.832,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9161.93525,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9172.883917,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9177.614125,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9188.086667,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 9192.968167,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 9203.675083,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 9208.107875,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 9218.506167,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 9223.061667,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 9234.179625,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 9240.236625,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 9250.806875,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 9256.397417,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 9267.022083,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 9272.988542,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 9283.258792,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 9288.426667,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 9309.153292,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 9313.310958,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 9450.488083,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 9456.241667,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 9473.437625,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 9478.149333,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 9494.814958,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 9499.321875,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 9515.617625,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 9520.472333,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 9537.033875,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 9542.610833,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 9565.465792,
+      "event": "removed"
+    },
+    {
+      "at": 9583.6255,
+      "event": "namespace"
+    },
+    {
+      "at": 9588.896625,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 9593.954167,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 9606.214917,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 9610.419792,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 9621.857125,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 9627.268167,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 9637.56775,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9641.828958,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9652.001125,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9656.207917,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9667.164167,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9672.262667,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9682.742292,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 9687.0145,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 9698.297833,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 9702.603417,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 9712.818708,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 9717.078125,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 9727.738667,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 9733.360833,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 9743.648125,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 9748.543833,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 9759.313625,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 9765.185125,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 9775.981208,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 9780.824125,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 9791.570625,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 9796.481833,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 9806.94075,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 9811.804625,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 9821.663333,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 9827.015208,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 9837.433667,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 9841.466,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 9851.591208,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 9856.392333,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 9867.185083,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 9874.317333,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 9885.76275,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 9890.019667,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 9900.650333,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 9905.550083,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 9918.650833,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9922.960542,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9933.614333,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9938.06525,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9948.210542,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9952.421958,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 9963.51575,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 9968.509292,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 9978.756542,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 9982.921417,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 9994.334542,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 9999.352333,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 10010.240958,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 10015.568375,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 10026.344208,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 10032.084083,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 10042.313417,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 10047.388583,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 10058.015583,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 10063.084625,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 10073.445208,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 10077.561375,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 10087.862292,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 10092.88325,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 10103.877917,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 10108.77325,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 10118.362375,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 10122.319542,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 10133.156583,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 10138.456667,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 10148.219792,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 10154.474083,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 10176.018083,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 10180.731292,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 10315.191625,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 10320.900667,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 10338.561667,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 10343.28375,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 10362.132458,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 10367.092667,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 10384.318167,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 10389.654,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 10406.929292,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 10412.48225,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 10478.409625,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "observe"
+    },
+    {
+      "at": 10483.08775,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "observe"
+    },
+    {
+      "at": 10509.411958,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10514.602167,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10532.286542,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10537.557917,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10554.326833,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10559.4105,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10576.877208,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10581.826958,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10598.744292,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10604.160208,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10620.547917,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10625.95575,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10642.959583,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10647.522458,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10663.46075,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10668.749208,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10683.481667,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10688.598208,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 10712.947125,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "observe"
+    },
+    {
+      "at": 10720.880875,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "observe"
+    },
+    {
+      "at": 10737.0495,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 10743.063125,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 10782.047208,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 10788.707083,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 10855.212917,
+      "event": "removed"
+    },
+    {
+      "at": 10859.698583,
+      "phase": "service-mutation-start"
+    },
+    {
+      "at": 10878.268375,
+      "event": "namespace"
+    },
+    {
+      "at": 10883.420083,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 10887.263708,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 10903.129083,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 10907.632042,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 10918.155,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 10923.662583,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 10934.982,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 10939.764792,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 10950.93825,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 10955.793042,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 10967.480792,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 10972.32125,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 10984.175875,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 10988.91925,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 11000.315208,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 11005.440375,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 11016.037083,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 11020.82575,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 11031.795583,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 11037.648542,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 11048.418083,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 11054.799417,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 11066.054625,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 11071.863417,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 11082.774458,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 11087.409708,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 11099.406333,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 11104.371417,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 11115.591708,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 11120.836333,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 11131.226292,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 11136.796542,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 11146.580458,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 11150.913542,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 11162.355042,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 11169.771375,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 11180.360083,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 11187.126458,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 11200.173375,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 11205.072917,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 11215.74475,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 11221.184958,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 11232.857625,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 11237.995,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 11250.087458,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 11255.331958,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 11266.832542,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 11272.2095,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 11283.612708,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 11288.439417,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 11299.136667,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 11303.62775,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 11314.384583,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 11318.99525,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 11332.588792,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 11337.021875,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 11347.691958,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 11353.516542,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 11365.3485,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 11371.217958,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 11382.042167,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 11386.521542,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 11397.293125,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 11402.0265,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 11412.994042,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 11417.864042,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 11427.766167,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 11433.049042,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 11443.173375,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 11448.122417,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 11459.76175,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 11465.326208,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 11475.374167,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 11481.085792,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 11500.673208,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 11505.21375,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 11648.845083,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 11654.40725,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 11671.054667,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 11675.898417,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 11694.576375,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 11699.889667,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 11717.455167,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 11722.986292,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 11742.40325,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 11748.802375,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 11820.578667,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "observe"
+    },
+    {
+      "at": 11824.868667,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "observe"
+    },
+    {
+      "at": 11855.7755,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 11861.543292,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 11880.252042,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 11885.738208,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 11905.075208,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 11910.588917,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 11925.809208,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 11931.68125,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 11947.404083,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 11952.403458,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 11970.8755,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 11976.160667,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 11994.748333,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 12001.032292,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 12019.785792,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 12025.489375,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 12042.3655,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 12047.471208,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 12077.317917,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "observe"
+    },
+    {
+      "at": 12084.116458,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "observe"
+    },
+    {
+      "at": 12101.501625,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 12107.004167,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 12145.847958,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 12151.947583,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 12215.324917,
+      "phase": "adapter-start",
+      "method": "prepare"
+    },
+    {
+      "at": 12219.553792,
+      "event": "retained"
+    },
+    {
+      "at": 12220.285667,
+      "phase": "service-mutation-end",
+      "ok": true,
+      "code": null
+    },
+    {
+      "at": 12340.874083,
+      "event": "namespace"
+    },
+    {
+      "at": 12346.258667,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 12350.790167,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 12365.787292,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 12370.491125,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 12380.682375,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 12385.850583,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 12396.505083,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 12401.471792,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 12412.556583,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 12417.169292,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 12428.595042,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 12433.55625,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 12445.199625,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 12449.581125,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 12460.604,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 12465.514625,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 12476.031292,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 12480.182,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 12491.1245,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 12497.058292,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 12508.335708,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 12513.848917,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 12525.50425,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 12532.198958,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 12542.722125,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 12547.581833,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 12559.8155,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 12564.627458,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 12576.173042,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 12581.505917,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 12592.482333,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 12597.660083,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 12607.999917,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 12612.331458,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 12622.739542,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 12627.746167,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 12638.301625,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 12642.676417,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 12656.220875,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 12661.202167,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 12672.037417,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 12676.280542,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 12687.343667,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 12693.315333,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 12704.247583,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 12709.387208,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 12719.650208,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 12724.946958,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 12735.609,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 12740.960667,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 12763.100333,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 12768.039292,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 12906.509792,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 12912.124167,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 12928.838917,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 12933.61675,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 12950.456792,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 12954.610375,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 12971.798625,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 12977.266917,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 12994.084875,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 13000.243125,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 13022.307292,
+      "event": "removed"
+    },
+    {
+      "at": 13040.979625,
+      "event": "namespace"
+    },
+    {
+      "at": 13046.243333,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 13050.892167,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 13062.924958,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 13068.024958,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 13078.525125,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 13083.49275,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 13094.249083,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 13099.129375,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 13110.1025,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 13114.423042,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 13125.956292,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 13130.933583,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 13141.182,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 13145.458458,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 13158.107667,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 13162.939292,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 13173.301625,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 13177.353625,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 13187.712375,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 13192.961542,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 13203.516417,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 13208.359917,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 13218.539417,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 13223.605833,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 13235.166917,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 13239.810333,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 13250.182042,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 13254.621333,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 13265.5045,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 13270.821375,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 13280.53375,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 13285.137917,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 13295.901667,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 13300.49275,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 13310.155333,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 13315.57875,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 13325.475958,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 13332.164875,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 13343.493792,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 13347.708417,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 13358.543083,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 13363.922292,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 13374.830708,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 13379.209333,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 13389.631167,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 13394.419083,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 13404.775167,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 13409.171208,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 13419.449167,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 13424.223667,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 13435.429458,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 13439.8555,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 13450.270125,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 13455.199083,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 13465.948458,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 13471.441875,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 13481.646042,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 13486.616083,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 13497.28675,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 13502.735583,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 13512.919833,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 13517.199083,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 13528.562292,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 13533.492333,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 13544.4,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 13550.017958,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 13560.023583,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 13567.562917,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 13577.495583,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 13582.066667,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 13592.773417,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 13598.371625,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 13608.008167,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 13613.925208,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 13634.872333,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 13639.539208,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 13774.373375,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 13780.125667,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 13797.262042,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 13802.376083,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 13818.922,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 13824.165125,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 13841.883667,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 13847.661833,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 13864.930833,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 13870.758625,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 13938.545458,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "observe"
+    },
+    {
+      "at": 13943.284,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "observe"
+    },
+    {
+      "at": 13970.357167,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 13975.767167,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 13993.014292,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 13998.573,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14016.613708,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14022.123083,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14039.513625,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14044.747833,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14062.0125,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14067.379667,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14084.163,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14089.064792,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14106.910375,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14112.052292,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14130.209667,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14135.6635,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14152.25325,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14157.231667,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 14183.732083,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "observe"
+    },
+    {
+      "at": 14190.86375,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "observe"
+    },
+    {
+      "at": 14211.550958,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 14217.111167,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 14251.875792,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 14257.930125,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 14317.741458,
+      "event": "removed"
+    },
+    {
+      "at": 14321.51075,
+      "phase": "service-mutation-start"
+    },
+    {
+      "at": 14340.410083,
+      "event": "namespace"
+    },
+    {
+      "at": 14345.819333,
+      "event": "spawn",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 14350.517583,
+      "event": "exit",
+      "kind": "version",
+      "phase": "capability"
+    },
+    {
+      "at": 14362.648,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 14367.181,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 14377.513208,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 14382.323083,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 14393.111875,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 14398.103958,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 14409.79525,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 14414.467708,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 14425.2235,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 14430.225667,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 14440.607458,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 14444.908708,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 14455.330208,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 14460.585208,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 14471.154958,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 14475.614,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 14486.532833,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 14491.772083,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 14502.827292,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 14508.526917,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 14519.000833,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 14524.44675,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 14535.348708,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 14539.934708,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 14550.4045,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 14555.582167,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 14566.816625,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 14571.957292,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 14581.529042,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 14586.126083,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 14596.295958,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 14600.721417,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 14611.32375,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 14616.478875,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 14626.601625,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 14633.421667,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 14644.599417,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 14649.268417,
+      "event": "exit",
+      "kind": "config",
+      "phase": "capability"
+    },
+    {
+      "at": 14662.863458,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 14668.642417,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "capability"
+    },
+    {
+      "at": 14679.316458,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 14683.815208,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 14694.774583,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 14699.906917,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 14710.540083,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 14715.263542,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "capability"
+    },
+    {
+      "at": 14726.07675,
+      "event": "spawn",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 14731.231333,
+      "event": "exit",
+      "kind": "tree",
+      "phase": "capability"
+    },
+    {
+      "at": 14741.863292,
+      "event": "spawn",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 14746.5385,
+      "event": "exit",
+      "kind": "blob-size",
+      "phase": "capability"
+    },
+    {
+      "at": 14757.431292,
+      "event": "spawn",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 14762.383625,
+      "event": "exit",
+      "kind": "blob",
+      "phase": "capability"
+    },
+    {
+      "at": 14772.704083,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 14777.648458,
+      "event": "exit",
+      "kind": "status",
+      "phase": "capability"
+    },
+    {
+      "at": 14788.764625,
+      "event": "spawn",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 14794.723917,
+      "event": "exit",
+      "kind": "unstaged",
+      "phase": "capability"
+    },
+    {
+      "at": 14805.893792,
+      "event": "spawn",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 14810.813292,
+      "event": "exit",
+      "kind": "base",
+      "phase": "capability"
+    },
+    {
+      "at": 14821.082958,
+      "event": "spawn",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 14825.57325,
+      "event": "exit",
+      "kind": "staged",
+      "phase": "capability"
+    },
+    {
+      "at": 14835.942833,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 14840.109708,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "capability"
+    },
+    {
+      "at": 14850.209917,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 14855.214167,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 14866.095792,
+      "event": "spawn",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 14871.475125,
+      "event": "exit",
+      "kind": "branch-restore",
+      "phase": "capability"
+    },
+    {
+      "at": 14881.516875,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 14886.102708,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "capability"
+    },
+    {
+      "at": 14896.8405,
+      "event": "spawn",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 14902.238208,
+      "event": "exit",
+      "kind": "branch-create",
+      "phase": "capability"
+    },
+    {
+      "at": 14911.865125,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 14917.754792,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "capability"
+    },
+    {
+      "at": 14937.114625,
+      "event": "spawn",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 14941.644792,
+      "event": "exit",
+      "kind": "config",
+      "phase": "observe"
+    },
+    {
+      "at": 15081.796875,
+      "event": "spawn",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 15087.353625,
+      "event": "exit",
+      "kind": "candidates",
+      "phase": "observe"
+    },
+    {
+      "at": 15104.180208,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 15108.825417,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 15125.414,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 15130.366042,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 15148.052667,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 15153.495958,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 15170.912208,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 15176.904333,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 15243.964542,
+      "event": "spawn",
+      "kind": "branch-format",
+      "phase": "observe"
+    },
+    {
+      "at": 15248.604625,
+      "event": "exit",
+      "kind": "branch-format",
+      "phase": "observe"
+    },
+    {
+      "at": 15275.3065,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15280.611625,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15298.939292,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15304.300583,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15320.979375,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15325.945875,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15343.301708,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15348.254375,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15367.709583,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15373.095125,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15392.235667,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15397.510833,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15415.193208,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15421.074125,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15437.340167,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15442.956333,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15459.716917,
+      "event": "spawn",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15464.882625,
+      "event": "exit",
+      "kind": "branch-object",
+      "phase": "observe"
+    },
+    {
+      "at": 15492.232333,
+      "event": "spawn",
+      "kind": "branch-select",
+      "phase": "observe"
+    },
+    {
+      "at": 15500.095875,
+      "event": "exit",
+      "kind": "branch-select",
+      "phase": "observe"
+    },
+    {
+      "at": 15515.516333,
+      "event": "spawn",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 15520.491375,
+      "event": "exit",
+      "kind": "attributes",
+      "phase": "observe"
+    },
+    {
+      "at": 15559.161667,
+      "event": "spawn",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 15565.409833,
+      "event": "exit",
+      "kind": "status",
+      "phase": "observe"
+    },
+    {
+      "at": 15622.58425,
+      "phase": "adapter-start",
+      "method": "prepare"
+    },
+    {
+      "at": 17963.457583,
+      "phase": "adapter-end",
+      "method": "prepare",
+      "status": "prepared"
+    },
+    {
+      "at": 17966.097625,
+      "phase": "adapter-start",
+      "method": "publish"
+    },
+    {
+      "at": 18559.966375,
+      "phase": "adapter-end",
+      "method": "publish",
+      "status": "unknown"
+    },
+    {
+      "at": 18564.02575,
+      "event": "retained"
+    },
+    {
+      "at": 18564.84825,
+      "phase": "service-mutation-end",
+      "ok": true,
+      "code": null
+    }
+  ],
+  "limits": [
+    "Actual production reader/manager/service/journal and staged pinned Bun descriptor core; SyntheticSDK/direct typed adapter with actual protocol validation. No actual EventHost OS IPC/lifetime or productionMain Native dialog pixels.",
+    "Contained known-byte synthetic repositories only; all namespaces retained. No provider/private project/Windows/power-loss acceptance; ordered publication is not global atomicity or exclusion of uncooperative writers."
+  ]
+}

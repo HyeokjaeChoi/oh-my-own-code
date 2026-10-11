@@ -1,0 +1,130 @@
+{
+  "verdict": "pass",
+  "scope": "plan revision15의 exact11 Browser component CODE",
+  "findings": [],
+  "conclusion": "검토 범위에서 수정이 필요한 결함을 찾지 못했습니다.",
+  "binding": {
+    "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "run_directory": "docs/runs/permission-task-lifetime-integration",
+    "plan_sha256": "5b1d58e587298bf407d8d6f5178da56b83d7004d577d19ab516bc60e214829d7",
+    "packet_sha256": "8eb1ef84aee57c220d58c0f6508d9a68eb6a798132aab0de2318475fbb6722fe",
+    "input_sha256": "9fa66eb0cc8f10e3465d5e0f34c8c8f2e52a1bef9e08e5b1079ba11f8c720883",
+    "api_sha256": "aaffd05f2e4066ce3ff77047849e9e391e5fd76e011f4934916503239bcd74cd",
+    "before_manifest_sha256": "6cec516f6b0aafbef2dcde99ac5ee2a51dda5216b351385af73979e884c31609",
+    "source_set_sha256": "881de1262dff6cc84b36e5f35e1e27af69386d661bc17b600a5cf6a9f775f849",
+    "source_set_encoding": "path 정렬 후 각 행 path + NUL + sha256 + LF, UTF-8",
+    "start_and_end_all11_match": true,
+    "archived_before9_match": true,
+    "new_files2_absent_before": true,
+    "plan_and_selected_routing_hashes_match": true
+  },
+  "reviewed_sources": [
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "sha256": "12771d519c8207facca1239e0fcbd145ac00f04b19fb00bbaaedbca5a51b22b1"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "sha256": "4d9789ae1420498b7c440888bd13d7c2039a29e0f5096c1fe93ad86f9b01d463"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "sha256": "a3fa318451463a3033f8362d6cb011ce8a813c672961347c1b233d44e8295f92"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+      "sha256": "b19a44268f9ebe505c62340e32e2708d7d0ff036c290b2a659682958050d3c4c"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-tool-data.mjs",
+      "sha256": "c098de3ad33f508103941d3ac5610eb8bf5c01ed6d70d18cc6a9e60a018e570e"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-tool-data.test.mjs",
+      "sha256": "8d4a046c8c63bc17aa014f0cf50c41c58eeaf9109cb947bd2e4bc05397157277"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-builtin-metadata.test.mjs",
+      "sha256": "f5e9cc45c8dd275b36f2e939ebd5e4a3b97d1a69ce53d660b434560bb56c4a4d"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "sha256": "c8a4c61c8b387d31b4fa40f8bdca0425a629d4dfd57ae4b49c585da8489436e2"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "sha256": "97dd50ce7f0addac6cb62769def0aac6606b477f211a5567d34f3fb386ed044d"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-browser-declaration.test.mjs",
+      "sha256": "52040431790b97d47ffa8759777d3321d60fc507b518aa01de9c1eedfe333c0c"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-browser-rpc.test.mjs",
+      "sha256": "2e02b522259271600e327e1c8e3a0f2363e94c22f83a43ed5a97012af97dc03b"
+    }
+  ],
+  "passes": {
+    "spec_compliance": [
+      "원래 transform 등록 위치와 Effect.orDie를 유지하고 정확한 declaration을 반환합니다.",
+      "45개 Tool의 ID, 순서, schema, options, namespace와 execute closure 코드를 보존합니다.",
+      "source-owned private WeakSet과 WeakMap으로 declaration과 publisher를 연결합니다.",
+      "8개 RPC 모두 원래 Effect 구성 전에 suspended typed unavailable 오류를 반환합니다.",
+      "RPC schema, 등록 코드, Scope와 event cleanup 코드를 보존합니다."
+    ],
+    "code_quality": [
+      "graph가 정확한 Browser plugin, brand predicate, publisher getter와 변환 후 source hash를 연결합니다.",
+      "기존 activation Scope, 반환값 identity, current editor 목록과 replay 검사 경로가 Browser bundle에도 적용됩니다.",
+      "projection 상한은 기존 inventory 상한과 같은 256이며 정확한 metadata 개수와 순서를 추가 검사합니다.",
+      "기존 recipe 37개 항목은 보관된 원본과 동일합니다.",
+      "complete=false, unsupported와 capabilities=[] 상태를 유지합니다."
+    ]
+  },
+  "verification": {
+    "independent_tests": {
+      "passed": 20,
+      "failed": 0,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "coverage": [
+        "Browser declaration 및 default Plugin: 2",
+        "Browser RPC 8개 및 schema·cleanup 보존: 9",
+        "공유 projector 및 경계 검사: 6",
+        "Browser metadata와 graph 연결·거부 경로: 3"
+      ]
+    },
+    "independent_additional_check": {
+      "result": "pass",
+      "description": "고정된 원본 Browser schema 45개와 원본 converter를 추출하여 실제 projector에 연결했습니다.",
+      "effect_version": "4.0.0-rc.112",
+      "projected_rows": 45,
+      "io_calls": 0,
+      "previous37_recipe_entries_unchanged": true,
+      "exit_code": 0
+    },
+    "main_evidence": {
+      "source": "browser-verification-r1.json",
+      "affected_passes": 491,
+      "focused_passes": 58,
+      "status": "저장된 결과를 읽었습니다. 전체 suite는 반복하지 않았습니다.",
+      "static": "Main exact7 exit0, worker exact4 reported exit0",
+      "check_status_all8_reusable": "Main이 보고한 결과입니다."
+    }
+  },
+  "limits": [
+    "Node, 추출한 pinned source, Effect와 scripted IO 범위의 검토입니다.",
+    "실제 Browser·Native·core·provider·Main·server 모듈을 실행하지 않았습니다.",
+    "Bun, network, socket, build, GUI와 physical probe를 실행하지 않았습니다.",
+    "실제 runtime graph와 Browser 연결 동작은 검증하지 않았습니다.",
+    "소스·보고서·ledger를 수정하지 않았고 delegation을 수행하지 않았습니다.",
+    "이 판정은 bounded component CODE에만 적용됩니다. F09/full18 완료 또는 runtime 실행 승인이 아닙니다.",
+    "보고서와 ledger 저장은 Main이 수행합니다."
+  ],
+  "provenance": {
+    "agent_id": "01a12718-8a5c-7f21-9422-87bb50b996a3",
+    "nickname": "Kant",
+    "source": "actual wait_agent completed output"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a127e5-60c6-7a73-9b41-edb87c100d6f": {
+      "completed": "Main의 source 조사 결과를 다음 경계로 반영합니다.\n\n- `opencode.config.worktree` (`config-gk30pdy3.js`)는 Native `Service17.transform`과 `observe2(config, ctx.event, worktrees.reload())`를 직접 사용합니다.\n- ConfigMCP (`config-k1qb6em6.js`)도 `Service32.transform`을 직접 사용합니다.\n- 따라서 **Host gate 완화나 per-plugin publication exports만으로 직접 State registration을 보호할 수 없습니다.**\n- 다음 조사 대상은 Native State registration에서 같은 Control의 source/Scope를 포착하고 검증하는 지점입니다.\n\n이 두 source 경로는 Main이 보고한 내용이며, 제 test로 직접 검증한 범위는 아닙니다. 소유 test 범위와 production은 확장하지 않았습니다."
+    }
+  },
+  "timed_out": false
+}

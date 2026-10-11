@@ -1,0 +1,51 @@
+✖ actual saved child refuses Node before Native imports and emits all closed failure slots (89.068542ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 164.065167
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/native-permission-graph-probe.test.mjs:235:1
+✖ actual saved child refuses Node before Native imports and emits all closed failure slots (89.068542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   {
+  -     name: 'overlay_forwarding',
+  -     result: 'fail'
+  -   },
+  -   {
+  -     name: 'fixed_config',
+  -     result: 'fail'
+  -   },
+  -   {
+  -     name: 'fixed_plugin_source',
+  -     result: 'fail'
+  -   },
+  -   {
+  -     name: 'sdk_registration_denied',
+  -     result: 'fail'
+  -   },
+  -   {
+  -     name: 'inert_wellknown',
+  -     result: 'fail'
+  -   }
+  - ]
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-graph-probe.test.mjs:242:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ { name: 'overlay_forwarding', result: 'fail' }, { name: 'fixed_config', result: 'fail' }, { name: 'fixed_plugin_source', result: 'fail' }, { name: 'sdk_registration_denied', result: 'fail' }, { name: 'inert_wellknown', result: 'fail' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

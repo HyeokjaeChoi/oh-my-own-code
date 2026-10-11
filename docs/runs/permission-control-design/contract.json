@@ -1,0 +1,97 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "D1",
+      "description": "Complete source-grounded ownership/security/compatibility design and credible alternatives for remaining F09"
+    },
+    {
+      "id": "D2",
+      "description": "Closed API/storage/transition/remember/path/inheritance contracts and honest verification/implementation holds"
+    },
+    {
+      "id": "D3",
+      "description": "Independent current whole-boundary plan and design-spec judgments before mutation consumers"
+    }
+  ],
+  "checks": {
+    "source-inputs": {
+      "argv": [
+        "python3",
+        "-c",
+        "import json,hashlib,pathlib; d=json.loads(pathlib.Path('docs/runs/permission-control-design/source-inputs-expanded-r3.json').read_text()); assert all(pathlib.Path(p).stat().st_size==v['bytes'] and hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==v['sha256'] for p,v in d['files'].items()); print('selected static design inputs match')"
+      ],
+      "cwd": ".",
+      "scope": "Verify selected static design input bytes only; no runtime or effect proof",
+      "acceptance_ids": [
+        "D1",
+        "D2"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/permission-control-design/design-contract-r4.md",
+      "gate": "design_spec",
+      "version": "corrected-r4",
+      "sha256": "8747f6a01336837b1ccce2a983f8045c446b13aaba0ef1ee12b9fa989c6b1095"
+    },
+    {
+      "path": "docs/runs/permission-control-design/schema-contract-r3.md",
+      "gate": "design_spec",
+      "version": "closed-r3",
+      "sha256": "17c00fca2d188bfb6026216458766a553b03310798704b94ddecc65f7c3d2906"
+    },
+    {
+      "path": "docs/runs/permission-control-design/path-scope-clarification-r2.md",
+      "gate": "product",
+      "version": "clarification-r2",
+      "sha256": "76775f8c5e658dd22f2e86116b67f16dbeb5ce31b2b28864fb2c5afb355fcaf4"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ],
+  "decision_register": [
+    {
+      "id": "inventory",
+      "statement": "Resolve trusted active tool/plugin/hook inventory and read-only completeness",
+      "status": "confirmed",
+      "source": "PRD section5 and current selected source manifest; Main autonomous technical design",
+      "impact": "Blocks enabling presets",
+      "blocks": [],
+      "resolution": "design-contract-r4.md sections3/5 verified fixed sources and complete generation/location lifecycle protocol; independent PRODUCT product-review-r2.json and DESIGN design-spec-review-r4.json; runtime implementation remains required, not claimed."
+    },
+    {
+      "id": "settlement",
+      "statement": "Resolve actual-call settlement and complete child/pending serialization",
+      "status": "confirmed",
+      "source": "PRD section5 and current selected source manifest; Main autonomous technical design",
+      "impact": "Blocks active transition",
+      "blocks": [],
+      "resolution": "design-contract-r4.md sections6/13 actual lease, lock, directShell/background/move and boot ticket protocol; independent PRODUCT product-review-r2.json and DESIGN design-spec-review-r4.json; runtime implementation remains required, not claimed."
+    },
+    {
+      "id": "paths",
+      "statement": "Resolve checked physical target enforcement for scoped edits",
+      "status": "confirmed",
+      "source": "PRD section5 and current selected source manifest; Main autonomous technical design",
+      "impact": "Blocks scoped write preset",
+      "blocks": [],
+      "resolution": "path-scope-clarification-r2.md exact normative product supplement + design-contract-r4.md section7 checked object-scoped broker and explicit external-rename residual; independent PRODUCT product-review-r2.json and DESIGN design-spec-review-r4.json; runtime implementation remains required, not claimed."
+    },
+    {
+      "id": "remember",
+      "statement": "Resolve full project-wide pending/grant inventory and readback",
+      "status": "confirmed",
+      "source": "PRD section5 and current selected source manifest; Main autonomous technical design",
+      "impact": "Blocks remember/revoke consumer",
+      "blocks": [],
+      "resolution": "schema-contract-r3.md exact full-project previews/intent digest/progress/reply/grant/revoke and closed journal protocol; independent PRODUCT product-review-r2.json and DESIGN design-spec-review-r4.json; runtime implementation remains required, not claimed."
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "A1",
+      "description": "Single fixed recipe identity and closed receipt with explicit legacy requirement"
+    },
+    {
+      "id": "A2",
+      "description": "Mandatory verified copied-stage overlay, original preservation and retained upgrades"
+    },
+    {
+      "id": "A3",
+      "description": "Scoped coherent checks and independent CODE"
+    }
+  ],
+  "checks": {
+    "unit-stage": {
+      "argv": [
+        "node",
+        "--test",
+        "apps/desktop-app/scripts/native-permission-overlay.test.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Exact copied-stage integration and unchanged pure planner regression; synthetic Node only",
+      "acceptance_ids": [
+        "A1",
+        "A2"
+      ],
+      "required": true
+    },
+    "lint-stage": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+        "apps/desktop-app/scripts/stage-event-host.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs",
+        "apps/desktop-app/src/event-host-resources.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Exact copied-stage integration and unchanged pure planner regression; synthetic Node only",
+      "acceptance_ids": [
+        "A3"
+      ],
+      "required": true
+    },
+    "format-stage": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+        "apps/desktop-app/scripts/stage-event-host.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs",
+        "apps/desktop-app/src/event-host-resources.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Exact copied-stage integration and unchanged pure planner regression; synthetic Node only",
+      "acceptance_ids": [
+        "A3"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

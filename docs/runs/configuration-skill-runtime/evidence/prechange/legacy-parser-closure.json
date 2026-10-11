@@ -1,0 +1,107 @@
+{
+  "authority": "Actual completed Skill-files parser closure before Native runtime changes; inert Node esbuild only",
+  "node": "v26.8.2",
+  "output": "docs/runs/configuration-skill-runtime/evidence/prechange/legacy-storage-journal.bundle.mjs",
+  "sha256": "0da4ad71b3db112d356677aa9077e450da9e2ba1eea4c75df76f3b4d5fac2795",
+  "inputs": {
+    "apps/desktop-app/src/host/configuration-file-observation.mjs": "fee8c6f8216a0cc34240b1137541f649dd533e1019e5b6f4173fef4b072f5c53",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/skill.mjs": "b30cf77b1967c83758a87203548e97331916e92536f5cda64e9e6c4a7ae8719a",
+    "apps/desktop-app/src/host/workbench-skill-storage.mjs": "ebc61b22249dbfa133dcd680340a4552ed006e5f91b4030b928326db19247134",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157",
+    "apps/desktop-app/src/workbench-contract.mjs": "68fbd0d255d39be65618494e2de34975ff212c73ffb303a33eb2a807552aab6b",
+    "apps/desktop-app/src/host/workbench-mcp.mjs": "ad125d7eea3ef7e998d1a9ed3ddc7fd1104249399c6b5be9311dc3cb72b3ddb4",
+    "apps/desktop-app/src/host/workbench-instructions.mjs": "41f04ecf2b3ad00dad8a96ad8dcc99397b42179a05468620b6eae82e5cd40812",
+    "apps/desktop-app/src/host/storage-journal.mjs": "fc76197cc6d26160a33eca2fd29c03219394a41611c9d631057b2da51fed45c5"
+  },
+  "outputs": {
+    "docs/runs/configuration-skill-runtime/evidence/prechange/legacy-storage-journal.bundle.mjs": {
+      "imports": [
+        {
+          "path": "node:crypto",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:crypto",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:fs/promises",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:fs",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:crypto",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:path",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:util",
+          "kind": "import-statement",
+          "external": true
+        }
+      ],
+      "exports": [
+        "DISPATCH_STEPS",
+        "RESOURCE_RECOVERY_REASONS",
+        "STORAGE_LIMITS",
+        "STORE_RECOVERY_REASONS",
+        "instructionStep",
+        "isMcpAbsentRemoval",
+        "openStorageJournal",
+        "storageError",
+        "validateInstructionCompletion",
+        "validateInstructionDispatch",
+        "validateJournalPayload",
+        "validateMcpAdmission",
+        "validateMcpCompletion",
+        "validateMcpDispatch",
+        "validateRegistryDelta",
+        "validateSkillAdmission",
+        "validateSkillCompletion",
+        "validateSkillDispatch",
+        "validateStorageIdentity",
+        "validateStorageReceipt"
+      ],
+      "entryPoint": "apps/desktop-app/src/host/storage-journal.mjs",
+      "inputs": {
+        "apps/desktop-app/src/host/configuration-file-observation.mjs": {
+          "bytesInOutput": 476
+        },
+        "apps/desktop-app/src/renderer/shared/configuration-draft/skill.mjs": {
+          "bytesInOutput": 869
+        },
+        "apps/desktop-app/src/host/workbench-skill-storage.mjs": {
+          "bytesInOutput": 1426
+        },
+        "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": {
+          "bytesInOutput": 211
+        },
+        "apps/desktop-app/src/workbench-contract.mjs": {
+          "bytesInOutput": 3507
+        },
+        "apps/desktop-app/src/host/workbench-mcp.mjs": {
+          "bytesInOutput": 1029
+        },
+        "apps/desktop-app/src/host/storage-journal.mjs": {
+          "bytesInOutput": 43622
+        },
+        "apps/desktop-app/src/host/workbench-instructions.mjs": {
+          "bytesInOutput": 1534
+        }
+      },
+      "bytes": 53752
+    }
+  }
+}

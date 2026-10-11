@@ -1,0 +1,29 @@
+✖ UI family selector is closed and only belongs to ui-states (0.578958ms)
+✖ focused UI dispatch never invokes prerequisite matrices; all retains order (0.165958ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 54.630542
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/run-evidence.test.mjs:611:1
+✖ UI family selector is closed and only belongs to ui-states (0.578958ms)
+  Error: Usage: run-evidence.mjs --out <fresh-run-directory> --script <sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|conversation-markdown|workbench|smoke> [--mode dev|packaged --platform darwin|win32]
+      at parseArgs (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.mjs:92:13)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.test.mjs:612:20)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/desktop-app/scripts/run-evidence.test.mjs:618:1
+✖ focused UI dispatch never invokes prerequisite matrices; all retains order (0.165958ms)
+  TypeError: runUiStateFamilies is not a function
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.test.mjs:622:26)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

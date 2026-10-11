@@ -1,0 +1,84 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "86e925a0d9a90ceca2b0716bca62de066eb0fa435d227378c965c6bfab9e92a5",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "a5b1dd9a8cce70ee5bbc4410ec7702bab51c93968c9d36201fd99eddd87747f2",
+    "schema_version": 2,
+    "source_sha256": "af2ac557cf2c7de82871f5acdd1207db0fbe7918c0df9d4f21148207eeaf619f",
+    "verification_sha256": "c7de4a424e8fa654946c07f4c406e57f322e1523ebdf4f7f6d5eaf7449efd51e",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "승인된 routine revision1의 boot_held 범위에서 수정이 필요한 결함을 찾지 못했습니다. 변경 없는 소스의 Raman3 PASS를 재사용했습니다. 저장된 실제 Native17 증거와 최종 binding을 확인했습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a12184-ad30-7952-9f25-1fa1616cf3bd",
+    "identity_source": "현재 프로세스의 CODEX_THREAD_ID",
+    "mode": "fresh_independent_final_code_evidence_review",
+    "implementation_authored_by_this_child": false,
+    "delegation_used": false,
+    "files_written": false,
+    "skills_applied": [
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-code-review/SKILL.md"
+    ],
+    "prior_judgment_reused_from": "docs/runs/native-permission-session-entry-gate/preexecution-code-review-r1.json",
+    "reuse_basis": "독립 preexecution child의 실제 completed 응답과 저장된 PASS를 확인했습니다. source, plan, contract, environment, work class binding이 최종 입력과 같습니다. 현재 6개 파일의 hash와 크기는 preexecution 및 final freeze와 일치합니다."
+  },
+  "verification": {
+    "spec_compliance": {
+      "S1": "실제 SDK로 준비한 synthetic session의 실제 Session, Store, DB, Control을 사용하는 증거를 확인했습니다. mutation 호출은 native_permission_held로 실패합니다. info, messages, inbox, environment는 검사 전후 동일합니다. direct SessionShell은 실제 Store와 Control만 제공한 상태에서 Instance와 Shell 획득 전에 거부됩니다.",
+      "S2": "checked9 overlay의 원본 before hash와 보존된 staged after hash를 확인했습니다. 실제 child의 정상 종료와 정확한 17개 PASS case를 확인했습니다."
+    },
+    "code_quality": {
+      "source_judgment": "동일 소스에 대한 Raman3의 spec compliance 및 code quality 판단을 재사용했습니다.",
+      "output_provenance": "고정 output 경로의 단독 생성, report의 wx 저장, 고정 child protocol, 정상 exit 요구와 실패 시 identity 재검사 구조를 확인했습니다.",
+      "effect_limits": "저장된 상태 불변 검사와 기존 source guard 판단은 현재 held 범위를 뒷받침합니다. 모든 외부 효과의 부재를 증명한다고 해석하지 않았습니다."
+    },
+    "binding": {
+      "whole_input": "읽기 전용 harness review-input 결과가 final-code-input-r1.json 전체 객체와 검토 시작 및 종료 시 일치합니다.",
+      "before_archive": "보존된 원본 5개 파일의 실제 bytes, hash, 크기가 before-manifest.json과 일치합니다. 새 테스트의 before 부재도 확인했습니다.",
+      "routing": "최종 packet의 skill 및 profile hash가 현재 파일과 일치합니다.",
+      "artifacts": "등록된 artifact의 현재 hash가 ledger 기록과 일치합니다."
+    },
+    "native_evidence": {
+      "path": "docs/runs/native-permission-session-entry-gate/evidence/native-r1/report.json",
+      "sha256": "691c190f1d29d96361035f4fe373d2ba3719645ee8189e9d01a2c25b40a9cbab",
+      "child_pid": 4535,
+      "exit_code": 0,
+      "signal": null,
+      "exited": true,
+      "timed_out": false,
+      "spawn_failed": false,
+      "protocol_overflow": false,
+      "passed_cases": 17,
+      "total_cases": 17,
+      "identityStable": true,
+      "before_equals_after": true,
+      "retainedRoot": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-graph-6r3SkF",
+      "retained_files": "복사한 child, pinned engine, staged source assets, manifest와 checked9 출력 hash가 보고서 및 checkpoint와 일치합니다. 현재 original engine, 입력 파일과 checked9 원본 hash도 일치합니다.",
+      "original_effects": "보고서의 original identity는 실행 전후 동일합니다. 보존된 unapproved-plugin 실행 marker는 없습니다."
+    },
+    "saved_checks": {
+      "unit": "132/132 PASS",
+      "lint": "PASS",
+      "format": "PASS",
+      "native-r1": "PASS",
+      "current_source_binding": true,
+      "checks_rerun": false
+    }
+  },
+  "verification_limits": [
+    "현재 범위는 항상 boot_held인 진입 거부입니다. positive execution이나 production 활성화를 승인하지 않습니다.",
+    "실제 SDK session.create는 증거 준비 단계입니다. create/import bootstrap authority의 완성을 뜻하지 않습니다.",
+    "original app key 연결, positive leases와 generation 검증, raw internal Move 및 inbox/tool 경로와 lifecycle의 전체 적용은 미완료입니다.",
+    "lease_component_runtime은 runtime component 호환성 검사입니다. Native 실행 권한이나 descendant settlement의 증거가 아닙니다.",
+    "full F09, full18, provider, UI와 production Main의 완료를 주장하지 않습니다.",
+    "before-after hash는 change-and-restore 부재, OS sandbox나 power-loss recovery를 증명하지 않습니다.",
+    "이번 검토에서는 Native, Bun, build, UI, provider, production Main과 테스트를 실행하지 않았습니다. 파일과 ledger를 수정하지 않았습니다.",
+    "결과 저장과 gate 등록은 Main이 수행합니다."
+  ]
+}

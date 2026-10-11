@@ -1,0 +1,184 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "256b25538ef017bc78f35e9bb14141900bd488ef63fd9312130dacaf11cf9b4a",
+    "gate": "plan",
+    "plan_sha256": "93daf54c09a31788055e4ba4c22aeecda8aab7f014b8cd10a362044ba45c324f",
+    "schema_version": 2,
+    "source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "PLAN revision 3은 이전 R2-P1, R2-P2, R2-P3을 모두 문서에 반영했습니다. plan, design v2, contract 및 정확한 entry 입력이 일치합니다. 고정 파일의 명시적 읽기, editor load, 파일 version 관찰과 disk comparison 범위를 유지합니다. production의 config.project:false와 fs.filewatcher:false도 유지합니다. 추가 사용자 승인은 필요하지 않습니다. 이 PASS는 초기 PLAN 판정입니다. 구현 성공이나 DESIGN_SPEC·CODE·RENDER 판정은 포함하지 않습니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "R2-P1",
+      "status": "resolved_in_plan",
+      "acceptance_ids": [
+        "C1",
+        "C2",
+        "C5"
+      ],
+      "locations": [
+        {
+          "path": "docs/runs/configuration-files/plan.md",
+          "line": 11
+        },
+        {
+          "path": "docs/runs/configuration-files/plan.md",
+          "line": 35
+        },
+        {
+          "path": "docs/runs/configuration-files/design.md",
+          "line": 11
+        },
+        {
+          "path": "docs/runs/configuration-files/design.md",
+          "line": 21
+        }
+      ],
+      "resolution": "공유 validator는 모든 객체에서 중복 member name을 거절합니다. Unicode escape를 해석한 이름도 비교합니다. 검증에 성공한 전체 문서만 원문을 반환합니다. 실패 응답에는 content/version과 입력값이 포함된 parser 진단이 없습니다. root mcp, servers, server와 option 중복 key 및 Unicode canary 검사가 명시됐습니다.",
+      "limit": "문서 수정의 확인입니다. 아직 구현하거나 검사를 실행한 결과가 아닙니다."
+    },
+    {
+      "id": "R2-P2",
+      "status": "resolved_in_plan",
+      "acceptance_ids": [
+        "C3",
+        "C5"
+      ],
+      "locations": [
+        {
+          "path": "docs/runs/configuration-files/plan.md",
+          "line": 19
+        },
+        {
+          "path": "docs/runs/configuration-files/plan.md",
+          "line": 35
+        },
+        {
+          "path": "docs/runs/configuration-files/design.md",
+          "line": 15
+        },
+        {
+          "path": "docs/runs/configuration-files/design.md",
+          "line": 21
+        }
+      ],
+      "resolution": "store는 변경할 수 없는 정확한 active request identity를 확인합니다. discard는 controller의 요청을 abort하고 store의 identity를 제거합니다. revision 0 또는 같은 key의 재생성은 요청을 되살리지 못합니다. 늦은 success/error는 무시합니다. 다시 읽으려면 새 명시적 load가 필요합니다. revision 0 discard 및 same-key recreation 검사도 명시됐습니다.",
+      "limit": "구현 단계에서 store와 controller의 실제 응답 처리로 확인해야 합니다."
+    },
+    {
+      "id": "R2-P3",
+      "status": "resolved_in_plan",
+      "acceptance_ids": [
+        "C5"
+      ],
+      "locations": [
+        {
+          "path": "docs/runs/configuration-files/plan.md",
+          "line": 21
+        },
+        {
+          "path": "docs/runs/configuration-files/contract.json",
+          "json_pointer": "/checks/lint"
+        },
+        {
+          "path": "docs/runs/configuration-files/contract.json",
+          "json_pointer": "/checks/format"
+        }
+      ],
+      "resolution": "contract에 변경 예정 경로를 대상으로 하는 ESLint와 Prettier --check argv가 등록됐습니다. 두 검사 모두 required:true와 acceptance_ids:[C5]를 갖습니다. run의 required_checks도 두 검사를 포함하며 contract와 일치합니다. 변경 없는 Native/package/performance 검사는 추가되지 않았습니다.",
+      "limit": "argv와 등록 상태만 확인했습니다. 검사는 실행하지 않았습니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a118df-4f66-7782-8ecc-64e2acd63b40",
+    "author_task_id": "main-continuation"
+  },
+  "review_scope": {
+    "role": "plan_reviewer",
+    "phase": "initial PLAN correction",
+    "plan_path": "docs/runs/configuration-files/plan.md",
+    "plan_revision": "3",
+    "design_context": {
+      "path": "docs/runs/configuration-files/design.md",
+      "version": "2",
+      "separate_design_spec_verdict": false
+    },
+    "bounded_concerns": [
+      "R2-P1 duplicate decoded JSON keys",
+      "R2-P2 discard request invalidation",
+      "R2-P3 required lint/format registration",
+      "corrected document and binding coherence"
+    ],
+    "report_only_authorization": "현재 사용자 지시는 이 보고서 한 파일의 저장을 허용합니다. source, plan, design, contract와 ledger는 수정하지 않았습니다.",
+    "future_effects": "전체 제품의 file apply, Native activation/reload 및 다른 F14 효과는 후속 범위로 유지됩니다. 이 명시적 읽기 increment의 PLAN PASS에 미래 효과 검사를 추가하지 않습니다.",
+    "next_dependency": "Main은 PLAN 보고서를 등록할 수 있습니다. 해당 design v2의 DESIGN_SPEC 판정은 같은 초기 reader에게 보내는 별도 정확한 binding이 필요합니다. 그 판정 전에는 의존 구현을 시작하지 않습니다. 이 reader는 implementer 또는 final reviewer가 아닙니다."
+  },
+  "evidence": {
+    "method": "지정 문서와 이전 지적을 읽고 수정 내용을 비교했습니다. production 옵션을 정적으로 확인했습니다. 파일 bytes 및 canonical JSON hash를 계산했습니다. 제품 코드, test payload, app 또는 harness 명령은 실행하지 않았습니다. source freshness를 확인하는 과정은 저장소 파일의 hash 계산뿐입니다.",
+    "binding_checks": {
+      "entry_input_copied_exactly": true,
+      "plan_raw_sha256_match": true,
+      "packet_contract_raw_sha256_match": true,
+      "entry_contract_semantic_sha256_match": true,
+      "design_sha256_match": true,
+      "design_registration_version_match": true,
+      "routing_input_sha256_matches": true,
+      "work_class_sha256_match": true,
+      "registered_source_sha256_match": true,
+      "current_source_sha256_match": true,
+      "previous_source_binding_unchanged": true,
+      "required_checks_match": true,
+      "lint_format_required_c5": true,
+      "decisions_match": true,
+      "source_inventory_file_count": 534,
+      "current_source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd",
+      "packet_vs_entry_contract_note": "packet은 contract 파일 bytes의 SHA256을 사용합니다. entry-plan-input은 harness의 canonical JSON 의미 hash를 사용합니다. 둘 다 현재 파일과 일치합니다."
+    },
+    "production_boundary": [
+      {
+        "path": "apps/desktop-app/src/event-host-child.mjs",
+        "line": 310,
+        "observation": "config.project:false"
+      },
+      {
+        "path": "apps/desktop-app/src/event-host-child.mjs",
+        "line": 314,
+        "observation": "fs.filewatcher:false"
+      }
+    ],
+    "inspected_paths": [
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-plan-review/SKILL.md",
+      "docs/runs/configuration-files/plan.md",
+      "docs/runs/configuration-files/design.md",
+      "docs/runs/configuration-files/contract.json",
+      "docs/runs/configuration-files/entry-packet-r3.json",
+      "docs/runs/configuration-files/entry-plan-input-r3.json",
+      "docs/runs/configuration-files/entry-plan-review-r2.json",
+      "docs/runs/configuration-files/run.json",
+      "apps/desktop-app/src/event-host-child.mjs",
+      "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+      "apps/desktop-app/eslint.config.mjs",
+      ".solopreneur/harness.py"
+    ],
+    "not_executed": [
+      "tests",
+      "app/runtime",
+      "builds",
+      "Native",
+      "package/performance gates",
+      "private files/stores",
+      "recursive delegation",
+      "source edits",
+      "ledger edits"
+    ],
+    "limits": "기존 source hash는 r2와 동일합니다. 수정된 정책의 runtime 동작은 아직 검증하지 않았습니다. host/editor parity, FD race 방어, 실제 요청 취소와 UI 접근성 증거는 승인된 구현 및 후속 독립 CODE/RENDER 검토에서 확인합니다."
+  },
+  "reviewed_at": "2026-10-08T00:18:57.447690+00:00"
+}

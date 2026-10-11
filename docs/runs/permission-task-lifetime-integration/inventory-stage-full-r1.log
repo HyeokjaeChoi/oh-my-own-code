@@ -1,0 +1,104 @@
+✔ closed descriptor and verifier return actual full manifest including contained relative link (46.088375ms)
+✔ packaging preserves exact relative links and refuses occupied resource roots (86.80925ms)
+✔ reject actual tree missing (13.080958ms)
+✔ reject actual tree extra (14.7855ms)
+✔ reject actual tree hash (14.298792ms)
+✔ reject actual tree mode (13.878125ms)
+✔ reject actual tree hardlink (9.8235ms)
+✔ reject actual tree symlink-escape (10.104709ms)
+✔ reject actual tree symlink-chain (9.416583ms)
+✔ reject actual tree symlink-undeclared (9.422167ms)
+✔ reject actual tree directory-mode (9.874167ms)
+✔ reject actual tree manifest-hardlink (8.432042ms)
+✔ reject manifest unknown (7.325041ms)
+✔ reject manifest duplicate (8.127875ms)
+✔ reject manifest escape (6.297583ms)
+✔ reject manifest version (6.859084ms)
+✔ reject manifest target (6.546042ms)
+✔ reject manifest entry-unknown (6.306916ms)
+✔ reject manifest nlink (8.042417ms)
+✔ reject manifest type (7.027917ms)
+✔ reject manifest size (7.409708ms)
+✔ reject manifest depth (6.395375ms)
+✔ symlink ancestor rejected before inventory (8.109ms)
+✔ full resource inventory has separate 100k limit and accepts over4096 files (1308.680334ms)
+✔ guard constructs env from zero and pins all downloaded lock origins (7.208875ms)
+✔ unsupported preparation target rejects before any directory/network action (0.605417ms)
+✔ corrupt official archive rejects before decompression or engine write (2.879208ms)
+✔ pin hash mutation blocks preparation before network (2.456958ms)
+✖ stage copies actual supplied child/protocol/full declared links; repeat exact stage is read-only reuse (429.021125ms)
+✔ actual child and fixed Skill plugin transitive source closure stage together without engine execution (2281.694792ms)
+✔ stage rejects receipt before creating destination (265.142125ms)
+✔ stage rejects dependency before creating destination (421.422875ms)
+✔ stage rejects engine before creating destination (413.26875ms)
+✔ stage rejects child-import before creating destination (389.89225ms)
+✔ stage rejects protocol-hardlink before creating destination (408.938959ms)
+✔ controller rejects preload/path/custom CA before any network (0.301292ms)
+✔ contained npm alias name is validated against exact lock name; changed version still rejects (19.134375ms)
+✔ archive extractor rejects traversal/links/duplicates even when archive SHA512 matches supplied synthetic pins (1.862334ms)
+✔ configuration staged closure refuses an undeclared local dependency before destination publication (573.798333ms)
+✖ permission overlay is mandatory in newly staged resources with exact output and original preservation (551.052375ms)
+✔ legacy resources remain verifiable but cannot satisfy required permission overlay (13.659333ms)
+✔ overlay original missing refuses before destination writes without fallback (685.254958ms)
+✔ overlay original changed refuses before destination writes without fallback (685.451167ms)
+✖ closed overlay receipt rejects forged metadata and manifest-consistent wrong output (396.717167ms)
+✖ checked legacy stage upgrades with retained original tree and packaged exact overlay (412.87575ms)
+✔ resource import syntax ignores recipe strings/comments but checks real imports and reexports (0.769667ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 42
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9848.004
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/stage-event-host.test.mjs:417:1
+✖ stage copies actual supplied child/protocol/full declared links; repeat exact stage is read-only reuse (429.021125ms)
+  SyntaxError [Error]: Unexpected token 'e', "export con"... is not valid JSON
+      at JSON.parse (<anonymous>)
+      at localResourceImports (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:41:10)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:228:30
+      at async Promise.all (index 33)
+      at async stageEventHost (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:224:23)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.test.mjs:419:13)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/scripts/stage-event-host.test.mjs:679:1
+✖ permission overlay is mandatory in newly staged resources with exact output and original preservation (551.052375ms)
+  SyntaxError [Error]: Unexpected token 'e', "export con"... is not valid JSON
+      at JSON.parse (<anonymous>)
+      at localResourceImports (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:41:10)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:228:30
+      at async Promise.all (index 33)
+      at async stageEventHost (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:224:23)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.test.mjs:694:13)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/scripts/stage-event-host.test.mjs:754:1
+✖ closed overlay receipt rejects forged metadata and manifest-consistent wrong output (396.717167ms)
+  SyntaxError [Error]: Unexpected token 'e', "export con"... is not valid JSON
+      at JSON.parse (<anonymous>)
+      at localResourceImports (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:41:10)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:228:30
+      at async Promise.all (index 33)
+      at async stageEventHost (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:224:23)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.test.mjs:756:13)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/scripts/stage-event-host.test.mjs:797:1
+✖ checked legacy stage upgrades with retained original tree and packaged exact overlay (412.87575ms)
+  SyntaxError [Error]: Unexpected token 'e', "export con"... is not valid JSON
+      at JSON.parse (<anonymous>)
+      at localResourceImports (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:41:10)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:228:30
+      at async Promise.all (index 33)
+      at async stageEventHost (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:224:23)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.test.mjs:799:13)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

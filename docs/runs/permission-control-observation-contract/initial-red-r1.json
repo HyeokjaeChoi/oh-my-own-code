@@ -1,0 +1,12 @@
+{
+  "kind": "missing_module_api_red",
+  "command": [
+    "node",
+    "--input-type=module",
+    "-e",
+    "import { validatePermissionControlObservation } from \"./apps/desktop-app/src/permission-control-observations.mjs\"; validatePermissionControlObservation({status:\"unavailable\"});"
+  ],
+  "exit_code": 1,
+  "observed": "ERR_MODULE_NOT_FOUND",
+  "scope": "New production module did not exist before implementation. Behavioral negative tests are separate; this does not prove their original RED."
+}

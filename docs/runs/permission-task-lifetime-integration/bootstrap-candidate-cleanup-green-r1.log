@@ -1,0 +1,29 @@
+✔ candidate binds actual root metadata, exact Native directory SHA1 and retained close (11.862458ms)
+✔ all ancestor marker kinds are refused without following markers (6.391584ms)
+✔ root replacement irreversibly revokes candidate (2.065042ms)
+✔ closed detached inputs reject proxies, accessors, symbols, extra fields and async checks before IO (0.858625ms)
+✔ aliases, unreadable ancestors and excessive depth are refused (22.716959ms)
+✔ ancestor replacement and marker insertion revoke without revival (7.310708ms)
+✔ observes each canonical ancestor through filesystem root with both markers (2.156583ms)
+✔ marker inserted after an early ancestor observation fails acquisition and closes real FD (2.254667ms)
+✔ ancestor swapped during observation refuses both original and replacement (1.530041ms)
+✔ permission failure after acquisition closes retained FD without treating it as marker absence (1.049667ms)
+✔ post-open check rejection closes actual retained handle (0.6705ms)
+✔ cleanup failure is exposed; close revokes synchronously and keeps failed close promise (2.403334ms)
+✔ the last check cannot revoke or insert markers just before assertCurrent returns (14.090666ms)
+✔ last acquisition callback cannot insert a marker before publication; FD is closed (2.669333ms)
+✔ check failure during assertCurrent is permanent and a pending close blocks reentry (3.642333ms)
+✔ fixed actual Native NON-VCS expression and util hash are read as source only (1.06775ms)
+✔ every acquisition check failure closes any acquired actual FD (56.803917ms)
+✔ exactly 64 ancestors is accepted and the next level is refused (32.632042ms)
+✔ changed ancestor metadata and transient marker insertion fail observation (5.117291ms)
+✔ failed candidate acquisition exposes only factory-proven cleanup and refuses reused error proof (1.017292ms)
+✔ candidate acquisition close rejection cannot produce a cleanup fact (1.06ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 254.7645

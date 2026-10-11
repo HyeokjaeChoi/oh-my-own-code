@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "run": "host-probe-isolation",
+  "phase": "review",
+  "role": "plan_reviewer",
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "b833017322ce9804c43f660de4175bab101453fa271c751518df0d6b5131ddd2",
+    "contract_sha256": "2bb0715d60cedba46b9cd37b0a2dae4dfaecea1f13cfb7cdc213038e06569280",
+    "source_sha256": "83a5f247fed8bcbb2f511a6388a43e16f92736ad49dc1d7cc3467411d2d1b2b6"
+  },
+  "inputs": [
+    "docs/runs/host-probe-isolation/plan.md",
+    "docs/runs/host-probe-isolation/contract.json",
+    "docs/runs/build-delivery/host-lifecycle-static-research-r1.md",
+    "docs/runs/build-delivery/host-lifecycle-plan-assessment-r1.md",
+    "docs/runs/host-probe-isolation/pre-canary-review-r1.json"
+  ],
+  "constraints": [
+    "Read-only review. Do not execute code, tests, canaries, SDKs, network, or configuration access.",
+    "Review revision 5 conditional HPI-1 and cleanup acceptance for early NO-RUN; exact runtime identity, all seven controls unverified, and no fixture/listener/canary effects.",
+    "Confirm corrected research/assessment paths and changed plan/contract hashes.",
+    "Retain previous revision 4 review findings about watchdogs, dependency gate, and truthful NO-RUN; verify separate real-SDK approval hold."
+  ],
+  "attestation": "Prepared plan review input metadata; not spawn or runtime identity attestation"
+}

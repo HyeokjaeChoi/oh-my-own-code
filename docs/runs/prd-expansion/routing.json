@@ -1,0 +1,34 @@
+{
+  "authority": "User delegated autonomous model and effort selection; shared adaptive routing applies.",
+  "assignments": [
+    {
+      "role": "plan_reviewer",
+      "child": "/root/expanded_prd_plan",
+      "requested_model": "gpt-6-sol",
+      "requested_effort": "medium",
+      "result": "changes_requested; corrected paths and role assignment"
+    },
+    {
+      "role": "plan_reviewer",
+      "child": "/root/expanded_plan_recheck",
+      "requested_model": "gpt-6-sol",
+      "requested_effort": "medium",
+      "result": "pass after procedural finding corrected without further plan edit"
+    },
+    {
+      "role": "web_researcher",
+      "child": null,
+      "requested_model": "gpt-6-luna",
+      "requested_effort": "high",
+      "result": "spawn rejected: thread limit reached; coordinator performed retrieval"
+    },
+    {
+      "role": "plan_reviewer + product_reviewer",
+      "child": "/root/expanded_product_review",
+      "requested_model": "gpt-6-sol",
+      "requested_effort": "medium",
+      "result": "pending"
+    }
+  ],
+  "observation_limit": "Requested routes and returned child IDs; no independent runtime model identity attestation. No recursive delegation or application implementation."
+}

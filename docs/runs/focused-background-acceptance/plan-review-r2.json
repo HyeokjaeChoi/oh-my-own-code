@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "run": "focused-background-acceptance",
+  "reviewer": "plan_reviewer",
+  "reviewed": {
+    "contract_sha256": "6b5e91cbda78f5ad52917ea8606242d65f922ac7294471ed921099c9b1a660c3",
+    "gate": "plan",
+    "plan_sha256": "6012cf011b5df55a82f3fde6907ef2e1757d814838a07d6eef481b9e0c762544",
+    "schema_version": 2,
+    "source_sha256": "78cb020ce68f9e620afaf0e123aa036e4ed04fc3859a09aaf526d2a9e43a352e"
+  },
+  "verdict": "pass",
+  "summary": "P6 plan revision2의 변경 항목만 검토했습니다. P6-ENTRY-1과 P6-ENTRY-2는 해결되었습니다. 측정 실패는 기록하고 분석해야 하며, 필요한 production 수정은 별도 amendment 등록과 독립 검토 후 진행합니다. Cold hidden synthetic startup은 launcher dispatch부터 connected DOM까지와 renderer navigation-start부터 connected DOM까지로 구분합니다. Packaged production startup과 provider 초기화는 제외합니다. p95 목표는 input/menu/panel/projection 100ms, in-window shell 150ms입니다. Typing·scroll의 50ms 초과 long task 수와 반복 여부를 기록하며, 반복 시 분석·수정 또는 명시적 미해결 결과가 필요합니다. Observer 미지원은 미검증으로 처리합니다. 100회 switch와 기존 통과 범위를 유지합니다. P6 source consumer는 Foundation 완료까지 대기합니다. 승인된 F01–18, background-only·OS focus 금지, Electron macOS/Windows, OpenCode SDK v2, A Quiet Dock, sole Zustand 조건을 유지합니다. 추가 승인이나 ADR 반복은 필요하지 않습니다. 현재 입력 binding과 canonical contract hash를 확인했습니다. 이 판정은 최종 code·render 또는 성능 통과 판정이 아닙니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a10280-c815-7c93-b686-ffdb39fa2efc",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "runtime_identity_attested": false,
+    "skills": [
+      "solo-specialist",
+      "solo-plan-review"
+    ],
+    "mode": "report_only",
+    "files_changed": [],
+    "ledger_changed": false,
+    "tests_run": false,
+    "gui_launches": false,
+    "provider_calls": false,
+    "delegated": false,
+    "persistence_owner": "coordinator",
+    "report_destination": "docs/runs/focused-background-acceptance/P6plan-review-r2.json"
+  }
+}

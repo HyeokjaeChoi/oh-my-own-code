@@ -1,0 +1,94 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "AC-1": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/workbench-session.test.mjs"
+      ],
+      "checks": [
+        "unit",
+        "electron-session-e2e"
+      ]
+    },
+    "AC-2": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/src/renderer/features/sessions/index.tsx",
+        "docs/runs/desktop-session-lifecycle/capture-manifest.json"
+      ],
+      "checks": [
+        "unit",
+        "typecheck",
+        "electron-session-e2e",
+        "electron-ui-states"
+      ]
+    },
+    "AC-3": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/src/renderer/features/activity/index.tsx",
+        "apps/desktop-app/src/workbench-session.test.mjs"
+      ],
+      "checks": [
+        "unit",
+        "electron-session-e2e"
+      ]
+    },
+    "AC-4": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/desktop-session-lifecycle/verification-summary.json"
+      ],
+      "checks": [
+        "unit",
+        "typecheck",
+        "lint",
+        "format",
+        "build",
+        "bundle",
+        "boundaries",
+        "electron-e2e",
+        "electron-ui-states",
+        "packaged-lifecycle"
+      ]
+    },
+    "AC-5": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/desktop-session-lifecycle/report.md",
+        "docs/runs/desktop-session-lifecycle/package-source-match.json",
+        "docs/runs/desktop-session-lifecycle/capture-manifest.json"
+      ],
+      "checks": [
+        "package-macos",
+        "packaged-lifecycle"
+      ]
+    }
+  },
+  "changed_paths": [
+    "README.md",
+    "apps/desktop-app/package.json",
+    "apps/desktop-app/project.json",
+    "apps/desktop-app/scripts/e2e-session-lifecycle.mjs",
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/e2e-workbench.mjs",
+    "apps/desktop-app/scripts/fixtures/session-history-probe.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/renderer.css",
+    "apps/desktop-app/src/renderer/app/index.tsx",
+    "apps/desktop-app/src/renderer/app/useWorkbench.ts",
+    "apps/desktop-app/src/renderer/features/activity/index.tsx",
+    "apps/desktop-app/src/renderer/features/conversation/index.tsx",
+    "apps/desktop-app/src/renderer/features/sessions/index.tsx",
+    "apps/desktop-app/src/renderer/features/sessions/navigation.ts",
+    "apps/desktop-app/src/renderer/shared/index.ts",
+    "apps/desktop-app/src/session-navigation.test.mjs",
+    "apps/desktop-app/src/workbench-contract.mjs",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-session.test.mjs"
+  ],
+  "deleted_paths": []
+}

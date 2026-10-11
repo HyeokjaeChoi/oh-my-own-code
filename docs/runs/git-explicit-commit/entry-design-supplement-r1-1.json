@@ -1,0 +1,82 @@
+{
+  "schema_version": 2,
+  "run": "git-explicit-commit",
+  "gate": "design_spec",
+  "reviewer": "design_spec_reviewer",
+  "report_scope": "initial_design_spec_addendum",
+  "supersedes_previous_report": false,
+  "prior_findings_remain_open": ["DS1", "DS2", "DS3"],
+  "reviewed": {
+    "contract_sha256": "5c3fac52c8cd3b5af6a517fd387a836fb57f4e4da7b521b18df323872e04b115",
+    "documents_sha256": "7007469f33c3ef5a7681e0baf9d9079a1df62f768e5d50e5db0713b409d5f1f8",
+    "gate": "design_spec",
+    "plan_sha256": "086fd06de293501e90bf193c9cce8ed9210e73d7aea8b0f2231b2b9ac3eac19b",
+    "schema_version": 2,
+    "work_class_sha256": "ae478e9c4d1bef657cf7951c15a327d5fa9d7d4379653257922675630e5d2ade"
+  },
+  "verdict": "changes_requested",
+  "summary": "API freeze 전에 exact-input identity 규칙을 보완해야 합니다. Git이 입력을 바꾸는 boundary forms는 거부하고, native ident와 commit body를 원래 사용자 입력에 독립적으로 대조해야 합니다. 구현 결함 판정이 아닌 추가 설계 finding DS4입니다.",
+  "open_findings": [
+    {
+      "id": "DS4",
+      "severity": "medium",
+      "path": "docs/runs/git-explicit-commit/design.md",
+      "line": 9,
+      "title": "사용자 identity와 native Git identity의 byte 일치를 명시해야 합니다",
+      "affected_consumer": "Public input validator, private Git producer, preview와 commit kernel",
+      "trigger": "Name이 ' Synthetic User ' 또는 ',Synthetic User,'이거나 email이 ':synthetic@example.invalid:'입니다. 현재 명시된 규칙만으로는 이러한 boundary forms를 모두 거부하지 않습니다.",
+      "impact": "Git은 이 입력들을 다른 identity bytes로 바꿉니다. Preview가 원래 입력을 표시하면 commit body와 다를 수 있습니다. Native 결과를 그대로 채택하면 사용자 입력을 조용히 수정하게 됩니다. 기존 exact-header 검사를 엄격히 적용하면 publication은 막을 수 있지만, 허용 입력이 뒤늦게 실패하는 불완전한 API 계약은 남습니다.",
+      "evidence": [
+        "design.md:9는 크기, nonempty, NUL/CR/LF/header delimiter와 email whitespace 제한을 명시합니다. Native canonicalization으로 바뀌는 모든 boundary forms의 거부와 원래 입력 bytes 기준은 명시하지 않습니다.",
+        "Scratch report의 네 사례 중 boundary spaces/comma name과 boundary colon email은 input_preserved=false입니다. 정상 Synthetic User와 synthetic@example.invalid은 true입니다. 기록된 Git SHA256 before/after는 모두 738d0159292a08341abe63a7decd0715ff34d67d532e17349902a6dc42f60ae7입니다.",
+        "Upstream crud()는 ASCII bytes 0..32와 comma, colon, semicolon, angle brackets, double quote, backslash, apostrophe를 boundary에서 제거합니다. fmt_ident()는 name과 email 모두에 이 처리를 적용합니다. [Git v2.50.1 ident.c](https://github.com/git/git/blob/v2.50.1/ident.c#L190-L250)"
+      ],
+      "existing_guards_considered": "design.md:18의 exact author/committer/time header 검증은 유효한 방어입니다. 그러나 비교 기준을 이미 정규화된 native 결과로 잡으면 원래 입력과의 일치를 증명하지 못합니다. CommitBodyDigest도 그 자체로 사용자 입력 일치를 증명하지 않습니다.",
+      "smallest_correction": "Name/email은 trim, Unicode normalization 또는 punctuation 제거 없이 원래 입력 bytes를 유지한다고 명시하십시오. 기존 제한에 더해 Git의 boundary crud 제거로 값이 바뀌는 입력을 preview 전에 거부하십시오. Native author/committer ident를 원래 name/email과 고정 timestamp/+0000으로 독립 구성한 기대 bytes에 대조하십시오. 실제 raw commit body의 author/committer headers도 같은 원래 입력에 비교해야 합니다. 불일치 시 preview/publication을 거부하고 조용히 수정하지 마십시오. Reflog committer ident도 같은 기준에 연결하십시오.",
+      "verification_required": [
+        "보고된 세 가지 변경 입력은 원본 효과 전에 거부해야 합니다.",
+        "허용되는 boundary crud 각 byte와 연속된 조합의 거부를 검증해야 합니다.",
+        "정상 identity, 한국어 name과 허용된 내부 공백·문장부호는 byte 그대로 보존해야 합니다.",
+        "SHA1/SHA256에서 author/committer headers, timestamp와 reflog ident를 독립 검증해야 합니다.",
+        "Native ident 또는 commit header가 입력과 다른 경우 거부하는 negative case가 필요합니다."
+      ]
+    }
+  ],
+  "inspected_scope": [
+    "docs/runs/git-explicit-commit/design.md:9",
+    "docs/runs/git-explicit-commit/design.md:11",
+    "docs/runs/git-explicit-commit/design.md:16",
+    "docs/runs/git-explicit-commit/design.md:18",
+    "/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-commit-ident-gifsr3_c/report.json",
+    "Upstream Git v2.50.1 ident.c의 crud, strbuf_addstr_without_crud와 fmt_ident"
+  ],
+  "checks": [
+    {
+      "name": "scratch_report_inspection",
+      "result": "pass",
+      "details": "기존 report의 네 사례와 Git before/after hashes를 읽었습니다. 이번 검토에서 Git을 실행하거나 사례를 재현하지 않았습니다."
+    },
+    {
+      "name": "frozen_design_integrity",
+      "result": "pass",
+      "details": "design.md SHA256은 기존 77aefd16422d25cb272312aa75401850f6897d636d319b9e8e24c54e28efbee2와 같습니다. 문서를 수정하지 않았습니다."
+    }
+  ],
+  "limits": [
+    "Scratch report는 native ident 정규화 관찰입니다. 실제 commit body, committer, reflog 또는 product validator 실행 증거는 아닙니다.",
+    "Upstream source는 변환 규칙의 근거이며 Apple binary 전체의 동작 보증은 아닙니다.",
+    "구현, 앱 실행, build, product tests, 파일·ledger 수정 또는 위임은 하지 않았습니다.",
+    "이 보충 보고서는 이전 DS1~DS3을 닫거나 최종 CODE/RENDER를 승인하지 않습니다."
+  ],
+  "next_dependency": "Main이 DS4를 기존 findings에 추가하고 API freeze 전에 입력 거부 규칙과 독립 byte 비교 기준을 설계에 반영해야 합니다. 기존 accepted PLAN의 보완이며 별도 PLAN gate를 요구하지 않습니다.",
+  "provenance": {
+    "child_task_id": "01a11ced-0973-7a03-8cb5-ad2604d4e322",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "child_task_id_source": "CODEX_THREAD_ID",
+    "mode": "initial_design_spec_review_addendum_report_only",
+    "independent_from_author": true,
+    "authored_or_repaired_reviewed_artifacts": false,
+    "delegated": false,
+    "report_persistence_owner": "Main"
+  }
+}

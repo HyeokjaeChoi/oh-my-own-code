@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "sha256": "3e8d65e36910948d96c2e2c1f34c25c0edb34bc3fad75d580f32ea917119cc4f",
+      "bytes": 76457
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "sha256": "28b8b661b6ffdfacad02ae271980e678083844a3a0939b7768ee602656974d55",
+      "bytes": 18509
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-read-declaration.test.mjs",
+      "sha256": "03aa68d6c9887e8b177b2596675a4d77580c35bb6121051a88faa8a280f3791b",
+      "bytes": 5799
+    }
+  ],
+  "api": "Pinned Native Read readDeclaration2 constructs one frozen declaration outside transform callbacks. Actual Plugin37 consumes that exact object. Original execute literal preserved; original Native install unchanged.",
+  "checks": [
+    {
+      "log": "read-declaration-coherent-r1.log",
+      "passed": 11
+    }
+  ],
+  "static": {
+    "eslint": "pass exact3",
+    "prettier": "pass exact3"
+  },
+  "limits": [
+    "No trusted declaration registration or positive adapter authority yet",
+    "General synchronous Tool transforms remain denied before body",
+    "No Native/Bun/Electron/build/package/provider/server/GUI/private originals invoked",
+    "No independent CODE verdict yet; full18/F09 unfinished"
+  ]
+}

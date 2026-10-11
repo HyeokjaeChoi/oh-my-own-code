@@ -1,0 +1,51 @@
+{
+  "revision": 26,
+  "source_facts": [
+    "EventHost guardInit requires database = dataPath/event-host.sqlite and data/config/state inside checked namespace; exact child environment verified before startup. These source checks do not prove filesystem isolation.",
+    "EventHost start options pass database.path; original makeRoutes replaces Database.node with Database.configured(options.database) before application acquisition. App graph overrides append last.",
+    "Original databaseLayer acquires makeDatabase, conditionally runs five tuning PRAGMA statements plus foreign_keys, then serialized migration apply3, before publishing Service84.",
+    "Original default is :memory:, relative path joins Global.data; production child supplies exact absolute namespace path.",
+    "Graph now refuses missing/wrong-type/changed reviewed original Database constructor before any pinned module import. This is source identity only."
+  ],
+  "node_evidence": {
+    "actual_extracted_constructor_tests": 5,
+    "scripted_dependencies": [
+      "SQLite client",
+      "db.run",
+      "migration apply3",
+      "Global service"
+    ],
+    "real": [
+      "pinned Effect Layer/Scope/Semaphore",
+      "unchanged extracted databaseLayer/layer26/lockFor expressions"
+    ],
+    "physical_sqlite_or_migration_executed": false
+  },
+  "sources": [
+    {
+      "path": "apps/desktop-app/src/event-host-child.mjs",
+      "bytes": 19222,
+      "sha256": "9732da796190f6efb74ec83c6246ce58b736916ee8a739bf7de9173ec5ab8343"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 23449,
+      "sha256": "5a7880b5cfd4db85ca33dedcfb6dffa30799507f894fc898828e22cda0df3b9e"
+    },
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-yds56wag.js",
+      "bytes": 2863,
+      "sha256": "694e68cfbc64c520478a98074c0b7e53a5a60f555a5ada934f08635c37e6f9ee"
+    },
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/server/dist/chunks/service-status-74x861p1.js",
+      "bytes": 6728,
+      "sha256": "1b5486b51b8ba87868a1b2148b8220867dde8bf2b081658b23f082a4299e665d"
+    }
+  ],
+  "limits": [
+    "No Native/core module import, DB/file/process/network/SDK/provider/startup execution",
+    "Not dependency transitive purity, trusted complete inventory, persisted mode authority or full18 acceptance",
+    "Original Bus imports Location/Session SQL and acquires database; those imports and global acquisition remain separately source/runtime prerequisites."
+  ]
+}

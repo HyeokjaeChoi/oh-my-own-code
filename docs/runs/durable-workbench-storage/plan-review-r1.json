@@ -1,0 +1,67 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "7d239ec5b013706e5838b27f69a3dfbb97d00d5a3f00c7b1b9365fc0e58d4806",
+    "gate": "plan",
+    "plan_sha256": "ffadd3121853f83daa49cee88b517b75f02e1c3ca7c206c65554489bee7ffbdd",
+    "schema_version": 2,
+    "source_sha256": "6b708712f5519cb2141621901a64b8b24286ec2e5e6ddcace9e7bbe8978e94c9"
+  },
+  "verdict": "changes_requested",
+  "open_findings": [
+    {
+      "id": "P7-PLAN-1",
+      "priority": "P1",
+      "title": "P4 receipt 연동 검증을 명시해야 합니다",
+      "paths": [
+        "docs/runs/durable-workbench-storage/plan.md:21",
+        "docs/runs/durable-workbench-storage/contract.json:26",
+        "docs/runs/durable-workbench-storage/storage-contract.md:90"
+      ],
+      "finding": "P7은 workbench-service와 P4 lookup 계약을 변경합니다. 그러나 필수 storage-unit 명령에는 service·receipt 연동 검증이 없습니다. native-storage도 이 연동의 필수 시나리오를 명시하지 않습니다.",
+      "impact": "Journal 자체가 정상이어도 service가 효과를 먼저 실행하거나, 새 runtimeEpoch에서 과거 unknown hold를 우회하는 결함을 놓칠 수 있습니다.",
+      "required_change": "P4 완료 후 적용할 필수 연동 검증과 담당자를 등록하십시오. admission·dispatch flush 실패 시 native 호출 0회, 재시작 후 과거 receiptEpoch lookup, 동일 identity의 digest 충돌 거부, unknown scope hold 유지, 중복 dispatch 금지를 포함하십시오. 기존 service 검증을 확장하거나 native-storage에서 직접 검증할 수 있습니다."
+    },
+    {
+      "id": "P7-PLAN-2",
+      "priority": "P2",
+      "title": "저장소 복구 화면의 검증 경로가 빠져 있습니다",
+      "paths": [
+        "docs/runs/durable-workbench-storage/plan.md:18",
+        "docs/runs/durable-workbench-storage/contract.json:104",
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs:33",
+        "apps/desktop-app/scripts/fixtures/workbench-host.mjs:28"
+      ],
+      "finding": "hidden-ui는 기존 ui-states script를 실행합니다. 현재 script는 temporary=true인 synthetic host를 사용합니다. P7의 durable 위치, unavailable 경로, corrupt journal, owner 충돌, pending inbox recovery 상태를 공급하고 확인할 변경 경로와 담당자가 계획에 명시되지 않았습니다.",
+      "impact": "기존 화면 capture가 통과해도 S5의 저장소 위치와 recovery 표시가 정확하다는 근거는 없습니다.",
+      "required_change": "기존 UI script와 fixture의 P7 확장 경로를 담당자에게 배정하십시오. 필수 상태와 표시·mutation 차단 assertions를 명시하십시오. 실제 renderer의 hidden/unfocused capture를 유지하고, synthetic 화면 증거와 native 복구 증거를 구분하십시오."
+    },
+    {
+      "id": "P7-PLAN-3",
+      "priority": "P2",
+      "title": "S5 package 검증이 등록되지 않았습니다",
+      "paths": [
+        "docs/runs/durable-workbench-storage/plan.md:15",
+        "docs/runs/durable-workbench-storage/contract.json:80",
+        "apps/desktop-app/scripts/build.mjs:1"
+      ],
+      "finding": "S5는 local package/build 증거를 요구합니다. 등록된 build 명령은 renderer·main bundle과 sidecar resource를 생성합니다. package 생성과 packaged runtime 검증 명령은 없습니다.",
+      "impact": "개발 build 통과만으로 packaged 앱의 저장소 경로, owner binding, 재시작 보존을 확인할 수 없습니다.",
+      "required_change": "macOS package 생성과 P7 저장소 검증의 정확한 명령·담당자·증거 경로를 등록하십시오. 실행 검증은 hidden/nonfocused 방식을 유지하십시오. Windows native 검증은 별도 capability hold로 남기십시오."
+    }
+  ],
+  "summary": "plan rev1, contract schema2, storage-contract v1을 parent rev6 P7 및 autonomous-continuation과 비교했습니다. Native transcript/database/WAL 보존, 효과 전 journal flush, corrupt tail 보존과 mutation 차단, exclusive owner의 미검증 시 시작 차단, pending inbox 자동 resume 금지, 명시적 retention·migration·rollback, managed Documents와 imported 파일 보존은 계획에 반영돼 있습니다. 저장되지 않은 native probe는 최종 acceptance로 인정하지 않았습니다. Windows·provider 한계도 정확히 남아 있습니다. 위 세 검증 공백을 수정해야 합니다. P4/P5 완료 전 중복 writer 금지와 독립 design_spec gate는 유지하십시오. 이번 결과는 entry plan 검토이며 runtime 또는 최종 설계 승인 증거가 아닙니다.",
+  "provenance": {
+    "child_task_id": "01a1022d-0341-78b0-8bb8-d4284cd015d8",
+    "requested_model": "Sol",
+    "requested_effort": "high",
+    "runtime_identity_attested": false,
+    "mode": "report_only",
+    "delegated": false,
+    "files_changed": [],
+    "tests_run": false,
+    "native_launches": false,
+    "binding_verified_twice": true,
+    "persistence_owner": "primary"
+  }
+}

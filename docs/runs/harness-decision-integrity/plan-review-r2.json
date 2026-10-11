@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "run": "harness-decision-integrity",
+  "role": "plan-reviewer",
+  "verdict": "changes_requested",
+  "reviewer": "fresh-context independent review",
+  "plan_sha256": "e86b572bc0d8d3da451939eb8c784fa051c7a57cbbcb67b6f26ce4f97297a364",
+  "contract_sha256": "051bcb00660282531510dfe7e8104b94005664bf2dc091d085f7a13dd9306e9e",
+  "findings": [
+    {
+      "id": "HDI-04",
+      "severity": "high",
+      "summary": "The plan permits release as a decision-blocking phase, but prepare-handoff supports only research, implementation, and review.",
+      "required_change": "Restrict registered blocking phases to CLI-supported phases, or explicitly add and test release handoffs before relying on that phase."
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+(node:72122) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+▶ Git branch restore: actual React preview renders closed backup plans
+  ✖ create/ (49.617167ms)
+  ✖ select/ (9.22075ms)
+  ✖ restore/index (6.285375ms)
+  ✖ restore/head (6.233583ms)
+✖ Git branch restore: actual React preview renders closed backup plans (242.603333ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 491.703875
+
+✖ failing tests:
+
+test at apps/desktop-app/src/workbench-store.test.mjs:17051:13
+✖ create/ (49.617167ms)
+  AssertionError [ERR_ASSERTION]: Each original backup has its own complete selectable evidence block
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:17081:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:17051:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/workbench-store.test.mjs:17051:13
+✖ select/ (9.22075ms)
+  AssertionError [ERR_ASSERTION]: Each original backup has its own complete selectable evidence block
+  
+  0 !== 3
+  
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:17081:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:17051:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/workbench-store.test.mjs:17051:13
+✖ restore/index (6.285375ms)
+  AssertionError [ERR_ASSERTION]: Each original backup has its own complete selectable evidence block
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:17081:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:17051:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/workbench-store.test.mjs:17051:13
+✖ restore/head (6.233583ms)
+  AssertionError [ERR_ASSERTION]: Each original backup has its own complete selectable evidence block
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:17081:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:17051:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

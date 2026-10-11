@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "run": "durable-native-preflight",
+  "gate": "design_spec",
+  "reviewer": "design_spec_reviewer",
+  "verdict": "pass",
+  "summary": "D2-01은 design3에서 해결됐다. Main은 요청 frame 하나를 보낸 후 stdin을 유지한다. inspector는 EOF/error와 추가 입력을 cancellation으로 처리한다. child는 dependency import 전에 감시와 독립 20초 deadline을 시작한다. scoped finalization과 physical exit 확인도 명시됐다. 이 수정에서 직접 생긴 설계 결함은 찾지 못했다. 이전 changes_requested는 이력으로 유지한다. runtime 검증은 구현 후 gate에서 수행한다.",
+  "open_findings": [],
+  "reviewed": {
+    "contract_sha256": "e38fa6693cc67a1a3712ef38021793090182dc8e0737d97edb977fe0a0ab11c2",
+    "documents_sha256": "ad614f7078c6288c38973081b15b8b5c7542e43b9af0390156f632b43c695639",
+    "gate": "design_spec",
+    "plan_sha256": "96afd3e51426c0147ef8de4fa8ea13c5b142c859d09ab6b3219fb96b5fcc94f9",
+    "schema_version": 2,
+    "work_class_sha256": "0cf67befd6c644a6564e2c1228c00b9137ee9ef45d27e89fb0cf1de7e760e671"
+  },
+  "provenance": {
+    "child_task_id": "01a11702-587e-7ad3-b6b8-f407c7e34f53",
+    "child_task_id_source": "현재 CODEX_THREAD_ID이며 run dispatch의 child_ref와 일치한다.",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "distinct_from_author": true,
+    "authored_or_repaired_reviewed_artifacts": false,
+    "recursive_delegation": false,
+    "profile_sandbox_enforcement_claimed": false
+  },
+  "binding_verification": {
+    "command": "python3 -B .solopreneur/harness.py review-input durable-native-preflight --gate design_spec",
+    "matches_current_supplied_input": true,
+    "packet_skill_profile_hashes_match": true,
+    "design_version": "3",
+    "design_sha256": "51e9448968f027c5a2f397b4537f48aa97b97e0c956251c71484f00d92dc0891",
+    "run_status": "active",
+    "work_class": "routine"
+  },
+  "review_boundary": "D2-01 수정과 직접 도입된 결함만 검토했다. design.md:35,63을 기존 ChildProcess spawn 및 IPC disconnect 처리와 대조했다. 기존 plan과 나머지 graph 검토는 반복하지 않았다.",
+  "execution": {
+    "files_or_ledger_written": false,
+    "tests_native_ui_bun_build_executed": false,
+    "private_store_or_provider_accessed": false,
+    "delegation_performed": false
+  },
+  "next_dependency": "Main이 이 report를 저장·등록하고 design_spec handoff를 확인한다. parent-exit, EOF/error, 추가 입력, deadline, scoped close와 physical exit의 실행 검증 및 독립 code review는 후속 gate로 유지한다."
+}

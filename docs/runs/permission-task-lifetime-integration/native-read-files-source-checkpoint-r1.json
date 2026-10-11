@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+      "bytes": 8755,
+      "sha256": "f90dfdeb7c559289a05030929cdd15fa7fee475f013ae5b98f4fd38733f2ceaf"
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs",
+      "bytes": 37840,
+      "sha256": "ddf92b90cb73d5d934198c2619d1b1c7a050f0f3da2eedfb84d98b04db719e66"
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read.mjs",
+      "bytes": 16050,
+      "sha256": "227d08e792e28df575c1b6d5c677d610dc1856aed3411324100f4bc9fccfd934"
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read.test.mjs",
+      "bytes": 25057,
+      "sha256": "49eb610169482301ca3d4f25e2081cea958eeafcaf35c04cd4f1b499c5a63977"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-read-consumer.test.mjs",
+      "bytes": 18103,
+      "sha256": "626897ffc9f70781f8cb9891c77374c5346145489a024d74a6c79adb364cc2dd"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-descriptor-probe.mjs",
+      "bytes": 23243,
+      "sha256": "bba4a0b8c6ecef7cffa2f8bb1761a60d35965f8c9cde8aff101267a5a6f9aa34"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-descriptor-probe.test.mjs",
+      "bytes": 2335,
+      "sha256": "b79d55aca57c4fa7b2679cd477f06df806ec4b9a1b5b520d06b98fd8e49f268a"
+    }
+  ],
+  "before": "prechange/native-read-files-before-r1/manifest.json",
+  "checks": {
+    "native-descriptor-read": 217,
+    "native-metadata": 119,
+    "probe-diagnostics": 2,
+    "stage": "native-read-files-stage-r1.log 1PASS",
+    "static": "exact7 eslint/prettier PASS"
+  },
+  "red": [
+    "native-read-files-red-r1.log missing API",
+    "native-read-whole-race-red-r1.log actual whole request mutation bypass then fixed",
+    "native-read-root-kind-red-r2.log actual missing root kind support then fixed"
+  ],
+  "setupFailure": "native-read-root-kind-red-r1.log had a test fixture TypeError, not product defect; preserved and corrected before meaningful RED r2",
+  "probe": "descriptor-probe-preparation-r4.json",
+  "scope": "Fixed one-use original-resource absolute Native Read file view and root-kind support; actual pure pinned Native consumer under scripted Node only. Current source not yet physically re-probed. Prior r3 10PASS is historical helper bytes.",
+  "limits": "No original Native module/service, Task execution grant, tool registration/publication, FileAccess/instruction IO integration, provider/server/Main/build/GUI/private stores."
+}

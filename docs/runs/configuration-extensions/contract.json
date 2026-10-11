@@ -1,0 +1,200 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "E1",
+      "description": "Closed actual observe-only Native projection with no unsafe effects/data"
+    },
+    {
+      "id": "E2",
+      "description": "Explicit scoped and stale-safe single-owner renderer observation"
+    },
+    {
+      "id": "E3",
+      "description": "Truthful accessible extension UI and source/runtime distinctions"
+    },
+    {
+      "id": "E4",
+      "description": "Current checks/actual runtime evidence/independent final gates"
+    }
+  ],
+  "checks": {
+    "extensions": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/configuration-extensions.test.mjs",
+        "apps/desktop-app/src/native-extensions-host.test.mjs",
+        "apps/desktop-app/src/native-extensions-plugin.test.mjs",
+        "apps/desktop-app/src/workbench-contract.test.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs",
+        "apps/desktop-app/src/native-agents-plugin.test.mjs",
+        "apps/desktop-app/src/native-skills-plugin.test.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/event-host-supervisor.test.mjs",
+        "apps/desktop-app/src/event-host-resources.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs",
+        "apps/desktop-app/scripts/fixtures/native-extensions-public.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Closed extension projection/observe-only safety/read lifecycle/renderer and affected legacy regression",
+      "acceptance_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4"
+      ],
+      "required": true
+    },
+    "native": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/configuration-extensions-probe.mjs",
+        "--out",
+        "docs/runs/configuration-extensions/evidence/native-r3"
+      ],
+      "cwd": ".",
+      "scope": "Actual contained production owner/fixed plugin/Main observation and no-effect/cleanup/current-byte proof",
+      "acceptance_ids": [
+        "E1",
+        "E4"
+      ],
+      "required": true
+    },
+    "hidden-ui": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--script",
+        "ui-states",
+        "--out",
+        "docs/runs/configuration-extensions/evidence/hidden-r1"
+      ],
+      "cwd": ".",
+      "scope": "Actual built hidden extension UI/current read states/keyboard/narrow200",
+      "acceptance_ids": [
+        "E3",
+        "E4"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "nx",
+        "run",
+        "desktop-app:build",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Actual coherent new observer/resources/renderer build",
+      "acceptance_ids": [
+        "E4"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Closed public/private/renderer types",
+      "acceptance_ids": [
+        "E4"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Enforced renderer slice/browser boundaries",
+      "acceptance_ids": [
+        "E4"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Browser/server dependency closure",
+      "acceptance_ids": [
+        "E4"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "docs/runs/configuration-extensions/check-changed.mjs",
+        "lint"
+      ],
+      "cwd": ".",
+      "scope": "Affected actual path lint",
+      "acceptance_ids": [
+        "E4"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "docs/runs/configuration-extensions/check-changed.mjs",
+        "format"
+      ],
+      "cwd": ".",
+      "scope": "Affected actual path format",
+      "acceptance_ids": [
+        "E4"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/configuration-extensions/design.md",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "bc1a6c0b2cfa0adbc4c489e17682867e51009c03c7c67833f6d307390676b18a"
+    }
+  ],
+  "environment_files": [
+    "pnpm-lock.yaml",
+    "docs/runs/configuration-extensions/source-facts.json",
+    "docs/runs/configuration-extensions/prechange-inventory.json",
+    "docs/runs/configuration-extensions/check-changed.mjs",
+    "docs/runs/configuration-extensions/source-facts-context-r1.json",
+    "docs/runs/configuration-extensions/producer-source-freeze-r3.json",
+    "apps/desktop-app/eslint.config.mjs"
+  ],
+  "user_approvals": [],
+  "decision_register": [
+    {
+      "id": "read-only-extension-observation",
+      "statement": "Use existing fixed trusted plugin for closed plugin/tool inventory read; hooks not_reported; no installer/update/check/execute/autoload",
+      "status": "delegated",
+      "source": "User ongoing full local remaining-work authorization and current PRD F14/accepted ADR; current exact pinned source facts",
+      "impact": "New read API/runtime projection/UI boundary; no persistent schema or execution authority",
+      "blocks": [],
+      "resolution": "Initial independent PLAN and DESIGN_SPEC once, exact pinned source/actual producer Node API freeze before consumers, one final coherent actual Native observation plus hidden UI and independent CODE/RENDER"
+    }
+  ]
+}

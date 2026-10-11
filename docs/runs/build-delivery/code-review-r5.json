@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "code",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "schema_version": 2,
+    "source_sha256": "7a622ea223a2495933ee641ff476abde0efdea553210b42ec4eb47e6408d0476",
+    "verification_sha256": "6dabc8097b0fb39a5090b68f05a9f282c6f265121d8461ec274d052376fc96da"
+  },
+  "verdict": "changes_requested",
+  "summary": "The original R4 interleaving case is fixed: valid foreign-session events advance the global cursor while only selected-session events change its state. A remaining out-of-order case loses a foreign event beyond a gap, allowing reconciliation to clear with the cursor behind an event already observed.",
+  "open_findings": [
+    {
+      "severity": "medium",
+      "path": "apps/workbench-web/src/entities/session/model/assistant-thread.ts:131",
+      "trigger": "Starting at cursor 0, receive selected-session sequence 1 and foreign-session sequence 3 while sequence 2 is missing; then pass the returned projection back with late sequence 2.",
+      "impact": "The first projection correctly reports unknown at cursor 1, but its returned events omit foreign sequence 3. The next projection advances only to cursor 2 and clears reconciliation, despite having observed sequence 3. A later selected-session sequence 4 then appears to have a gap and can stall.",
+      "evidence": "The continuity loop checks allEvents, but the returned projection stores only selectedSessionEvents. The existing recovery test retains a selected-session event beyond the gap; it does not cover a foreign-session event beyond the gap.",
+      "correction": "Preserve pending global events across projections in a separate cursor buffer while exposing only selected-session events to the transcript. Add a regression for late sequence 2 following an already observed foreign sequence 3."
+    }
+  ],
+  "prior_finding_closure": "R4's stated sequence-1 foreign, sequence-2 selected case is closed. The test also verifies that a missing foreign sequence keeps the run unknown until it arrives.",
+  "evidence": "All eleven required ledger checks record exit 0 against the reviewed source hash. The supplemental compiled bridge launch-smoke report also cites that hash and records exit 0. I inspected the source, tests, and recorded evidence; I did not rerun tests. This uncommitted checkout has no HEAD diff.",
+  "limitations": [
+    "The frozen-lockfile install reported 'Already up to date'; it does not prove a clean checkout installation.",
+    "Browser E2E uses the Vite development server and a synthetic tsx bridge. The compiled bridge launch-smoke is supplemental evidence only.",
+    "No real SDK integration or persistence is implemented. Synthetic operational drills do not prove production recovery, migration, scheduling, or control-channel security.",
+    "This review does not establish PRD AC-01–18 or full product acceptance."
+  ],
+  "provenance": {
+    "child_task_id": "/root/final_code_review_r5",
+    "author_task_id": "/root",
+    "report_only": true
+  }
+}

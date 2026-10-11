@@ -1,0 +1,98 @@
+{
+  "run": "permission-task-lifetime-integration",
+  "checks": {
+    "native-metadata": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "native-descriptor-read": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "native-descriptor-bun-probe": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T16:41:24+00:00",
+      "source_sha256": "892d4b5de8a09efefa8da5320260f795af4f7d6c0ebd6b74b5efd38976d72f86",
+      "input_binding_sha256": "4321e50348d83590b8f4c722b05e8b02c43bf7e12f945c4e167f673fabb45a14",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src/host/native-descriptor-read.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+          "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs",
+          "apps/desktop-app/src/host/darwin-directory-entry.mjs",
+          "apps/desktop-app/src/host/workspace-root-authority.mjs",
+          "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs",
+          "apps/desktop-app/scripts/native-descriptor-probe.mjs",
+          "apps/desktop-app/runtime-event-host/installer-pins.json"
+        ],
+        "reason": "Full explicit source/import closure of saved Node parent and Bun child uses only listed product sources and Node/Bun builtins. Exact argv SHA binds original external input bytes before spawn; project copied input and exact staged engine bytes bind environment freshness. Source/engine hashes checked before+after; not isolation or change-and-restore proof. Exact external input bytes are already required by SHA256 in the contracted argv and parent preflight; they are not unrelated Node check environment inputs. Fresh namespaces do not invalidate unchanged kernel Node inputs."
+      }
+    },
+    "native-descriptor-probe-diagnostics": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T15:24:43+00:00",
+      "source_sha256": "11d378a4217b51cdb9eed9fa500cf93aed9a8e7b900b0a0df438cc9d248ef1c5",
+      "input_binding_sha256": "ddfbaaa6b71277a5179f39f416487b4bad5665702f7b2f3ce30a34ed5c0faada",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/scripts/native-descriptor-probe.mjs",
+          "apps/desktop-app/scripts/native-descriptor-probe.test.mjs"
+        ],
+        "reason": "Exact extracted probe inventory function, actual Node fs and scripted descriptor-path refusal. Archived before source separately environment-bound."
+      }
+    },
+    "main-task-owner-fence": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T15:47:45+00:00",
+      "source_sha256": "7ffb6dac73e21c9021e51ce72185b3ad36fcd42905c4e793438906702b17db41",
+      "input_binding_sha256": "32cdcb53fd2951d913584aa7f0ec38798641c9a56c20a12f0a9a795536063b94",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src/main.mjs",
+          "apps/desktop-app/src/host/main-task-owner-fence.test.mjs"
+        ],
+        "reason": "Exact actual Main requireOwner and forwarded-method loop executed inert with scripted private dependencies; static extraction bounds unique anchors, Node builtins only."
+      }
+    },
+    "native-read-auxiliary": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "native-read-effect": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T16:26:50+00:00",
+      "source_sha256": "8f0e67a8bdfcb76458872fbb3dab5a472f32e765979fab928e21218f5a0c52ff",
+      "input_binding_sha256": "3a07778291c4b397a5ad3d6ba0e99da0c32c373c1d72696974adc793f434def2",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src/native-permission-read-effect.mjs",
+          "apps/desktop-app/src/native-permission-read-effect.test.mjs",
+          "apps/desktop-app/src/native-permission-control-input.mjs",
+          "apps/desktop-app/src/host/workbench-task-storage.mjs",
+          "apps/desktop-app/src/wire-id.mjs",
+          "apps/desktop-app/src/permission-control-canonical.mjs",
+          "apps/desktop-app/src/host/native-read-auxiliary.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read.mjs"
+        ],
+        "reason": "Effect runner/current authority/input capture/error conversion closure; original Native tagged error bytes hash-asserted before inert extraction. Scripted producer standins never physical or Task proof."
+      }
+    },
+    "native-task-read": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    }
+  }
+}

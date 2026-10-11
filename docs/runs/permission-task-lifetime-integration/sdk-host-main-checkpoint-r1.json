@@ -1,0 +1,27 @@
+{
+  "revision": 23,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+      "bytes": 18539,
+      "sha256": "82583553e1903231215cdeb92b37cec9e39e258f920a89a5c2068f66179314f0"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "bytes": 299494,
+      "sha256": "74fd5423491b36b9d22f86f20ddcdb8c21d8ff5594259b3890ac606008edec78"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "bytes": 31443,
+      "sha256": "ecd09aef9bea9c8c1e4f45bb7020e13707a1616bcb6fb18ac03ea056bfa2a016"
+    }
+  ],
+  "api": "observeNativeSdkRegistration(Effect,Scope,control,handle,name,callback,options,publish)",
+  "semantics": "name sdk|language; same hook token, original callback publication+same Scope/options before held inventoryGuard, then guarded callback passed to original Host event conversion; no Native SDK registration effect constructed while held",
+  "producer": "existing fixedHook publication private source table, no Control API changes",
+  "limits": [
+    "eager shared requirements acquisition unproved",
+    "no positive runtime grant"
+  ]
+}

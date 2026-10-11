@@ -1,0 +1,30 @@
+✖ stored permission mode is retained and never reset to baseline by send (59.089333ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 178.860667
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:5375:1
+✖ stored permission mode is retained and never reset to baseline by send (59.089333ms)
+  AssertionError [ERR_ASSERTION]: {"ok":true,"value":{"requestId":"mode-no-reset","status":"accepted"},"receipt":{"runtimeEpoch":"epoch","operationId":"mode-no-reset","type":"message.send","workspaceId":"658c8b92-d3ed-46ba-9a29-038f1844a4ae","sessionId":"cf554481-b76e-43ac-85a0-46fcb017442c","admission":"dispatched","delivery":"accepted","effect":"confirmed","revision":12,"evidence":[{"kind":"native-ack","id":"inbox-1"}],"result":{"kind":"delivery","status":"accepted","nativeInboxId":"inbox-1"}}}
+  + actual - expected
+  
+  + undefined
+  - 'POLICY_UNVERIFIED'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:5387:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'POLICY_UNVERIFIED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

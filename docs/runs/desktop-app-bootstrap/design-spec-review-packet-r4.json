@@ -1,0 +1,98 @@
+{
+  "attestation": "Prepared input metadata; not a spawn or identity attestation",
+  "contract_sha256": "2b2c00004de0aae1ce9b04540be12ef1bfb0840aad682b64ce75b1734b5e5aa1",
+  "decision_register": [
+    {
+      "blocks": [],
+      "id": "DESKTOP-PLATFORM",
+      "impact": "Architecture, packaging, security, and runtime verification must cover both operating systems independently.",
+      "resolution": "Treat macOS and Windows as required targets; Windows behavior must be observed on Windows.",
+      "source": "Explicit user confirmation in the project conversation.",
+      "statement": "The product is an installed desktop application for macOS and Windows.",
+      "status": "confirmed"
+    },
+    {
+      "blocks": [],
+      "id": "OPENCODE-SIDECAR-OWNERSHIP",
+      "impact": "Do not use browser loopback evidence as desktop lifecycle/security evidence or silently adopt a shared ambient service.",
+      "resolution": "Package or provision the pinned server per platform; the selected app host must own startup, readiness, shutdown, and reaping.",
+      "source": "Explicit user direction in the project conversation, including the correction that the server runs as a sidecar.",
+      "statement": "The desktop app owns and supervises an OpenCode v2 `serve` sidecar.",
+      "status": "confirmed"
+    },
+    {
+      "blocks": [
+        "implementation"
+      ],
+      "id": "DESKTOP-SHELL",
+      "impact": "The shell changes host implementation, packaging, process supervision, isolation, and per-OS evidence.",
+      "resolution": null,
+      "source": "The user asked for a shell comparison and explicitly said Electron is not mandatory.",
+      "statement": "Select Electron, Tauri 2, or a justified TS-oriented alternative for the desktop host.",
+      "status": "open"
+    }
+  ],
+  "documents": [
+    {
+      "gate": "product",
+      "path": "docs/product/prd.md",
+      "sha256": "d1cd469b2d3e6a057296c611a1665a2337b957b77800afb402ba442fd30a37a0",
+      "version": "0.5"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/design/specs/workbench-ux.md",
+      "sha256": "87ba96ce240f627e66220e5d6a67d7d118b1cae7b3ac36a3bbf333199a14608e",
+      "version": "0.5"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/engineering/workbench-architecture.md",
+      "sha256": "f551acdd7b46b5e5d14f924f2178baf9a63abf6205b58d1ac49fca8f1f53ef79",
+      "version": "0.5"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/engineering/verification.md",
+      "sha256": "c6b6385f5bb97231b488c057ee0c621f1a64e4a9fa993767e53aa725f6a78d64",
+      "version": "0.4"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/operations/local-release-monitoring.md",
+      "sha256": "19a16a91b679c69c7af5d018f814500e9107925cbbd4aa7c52ca1b7e8b8864cd",
+      "version": "0.3"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/engineering/spec-index.md",
+      "sha256": "71435b640146a8a7a1ee91c5565266db0a2da64ee502ad047713894f787bb0fd",
+      "version": "0.10"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/decisions/0002-desktop-runtime.md",
+      "sha256": "7f1711954a474de64fac9a2d8dc3a5fd41ff0b4d58b4c042e4fef211991d6b73",
+      "version": "0002"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/design/system.md",
+      "sha256": "4697eb4961952ee85a4732ed77e5addbb17058a8b3d12485aa56158324f661a5",
+      "version": "2026-09-27"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/design/components.json",
+      "sha256": "76460f0cc7099ef6b628ce654994d89fc75e5e863d33c103daae8049493f2ed2",
+      "version": "component-contract-v3"
+    }
+  ],
+  "phase": "review",
+  "plan_sha256": "b5206ee10f32240a2ea57e68324a44d08bb25f9c7571f76f450ce412ac45fc57",
+  "prepared_at": "2026-09-28T01:51:55+00:00",
+  "role": "design_spec_reviewer",
+  "run": "desktop-app-bootstrap",
+  "schema_version": 2,
+  "user_approvals": []
+}

@@ -1,0 +1,337 @@
+{
+  "result": "fail",
+  "platform": "darwin",
+  "provenance": "Synthetic main-process fixtures with actual built Electron renderer/preload",
+  "providerExecution": "not performed",
+  "observations": [
+    "Navigation open and close controls work at the desktop viewport",
+    "Workspace ActionMenu keyboard navigation and dismissal cause no host mutation",
+    "Session ActionMenu keyboard opening, arrow navigation and Escape focus return",
+    "Docked inspector separator resizes by keyboard and restores its initial width",
+    "Narrow navigation and inspector sheets contain forward/backward keyboard focus, hide background, dismiss with Escape and restore each trigger",
+    "Synthetic compositionstart/Enter/compositionend guard dispatches no request and preserves the Korean draft; physical OS IME verification remains separate",
+    "Real assistant-ui onNew sends selected IDs, agent and model exactly once"
+  ],
+  "screenshots": [
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/evidence/p3-r6/ui-states/desktop-empty-conversation-normal-1280-synthetic.png",
+      "state": "empty-conversation; normal-1280",
+      "viewport": {
+        "width": 1280,
+        "height": 768,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2360,
+        "height": 1576
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/evidence/p3-r6/ui-states/desktop-empty-conversation-normal-1180-synthetic.png",
+      "state": "empty-conversation; normal-1180",
+      "viewport": {
+        "width": 1180,
+        "height": 788,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1180,
+        "height": 788
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1180,
+        "height": 820
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/evidence/p3-r6/ui-states/desktop-empty-conversation-narrow-synthetic.png",
+      "state": "empty-conversation; narrow",
+      "viewport": {
+        "width": 760,
+        "height": 568,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/evidence/p3-r6/ui-states/desktop-empty-conversation-normal-200-percent-synthetic.png",
+      "state": "empty-conversation; normal-200-percent",
+      "viewport": {
+        "width": 640,
+        "height": 384,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/evidence/p3-r6/ui-states/desktop-empty-conversation-narrow-200-percent-synthetic.png",
+      "state": "empty-conversation; narrow-200-percent",
+      "viewport": {
+        "width": 380,
+        "height": 284,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/evidence/p3-r6/ui-states/desktop-permission-synthetic.png",
+      "state": "Running tool and two pending permission requests",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/evidence/p3-r6/ui-states/desktop-permission-long-korean-draft-normal-1280-synthetic.png",
+      "state": "permission-long-korean-draft; normal-1280",
+      "viewport": {
+        "width": 1280,
+        "height": 768,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2360,
+        "height": 1576
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/evidence/p3-r6/ui-states/desktop-permission-long-korean-draft-normal-1180-synthetic.png",
+      "state": "permission-long-korean-draft; normal-1180",
+      "viewport": {
+        "width": 1180,
+        "height": 788,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1180,
+        "height": 788
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1180,
+        "height": 820
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/evidence/p3-r6/ui-states/desktop-permission-long-korean-draft-narrow-synthetic.png",
+      "state": "permission-long-korean-draft; narrow",
+      "viewport": {
+        "width": 760,
+        "height": 568,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/evidence/p3-r6/ui-states/desktop-permission-long-korean-draft-normal-200-percent-synthetic.png",
+      "state": "permission-long-korean-draft; normal-200-percent",
+      "viewport": {
+        "width": 640,
+        "height": 384,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/evidence/p3-r6/ui-states/desktop-failure-synthetic.png",
+      "state": "Failure during permission-long-korean-draft; narrow-200-percent",
+      "viewport": {
+        "width": 380,
+        "height": 284,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    }
+  ],
+  "error": "Error: expect(locator).toBeInViewport() failed\n\nLocator:  getByRole('region', { name: '실행 권한 요청' }).first().getByRole('button', { name: '이번만 허용', exact: true })\nExpected: in viewport\nReceived: viewport ratio 0.9982244372367859\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeInViewport\" getByRole('region', { name: '실행 권한 요청' }).first().getByRole('button', { name: '이번만 허용', exact: true }) with timeout 5000ms\n  - waiting for getByRole('region', { name: '실행 권한 요청' }).first().getByRole('button', { name: '이번만 허용', exact: true })\n    14 × locator resolved to <button type=\"button\" class=\"_permissionAllow_2s6ll_211\">이번만 허용</button>\n       - unexpected value \"viewport ratio 0.9982244372367859\"\n"
+}

@@ -1,0 +1,26 @@
+{
+  "authority": "Read-only actual pinned source during current instruction Native checks; next design not selected",
+  "sources": {
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-znr04804.js": "5d3cbf85696f24f6e07fc226754ca19544d15a19abd82eaf01dfbbbb49c7107d",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/client/dist/promise/generated/client.d.ts": "22589f1c0f305239a9621cc725767bcbff46dff057fcc4b9cb2190518f1b1e7c",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/client/dist/promise/generated/types.d.ts": "096d60398948fe66e211c30e62fdffdcaa00ebf79a8e1aee34a48608bf97aa4f",
+    "apps/desktop-app/src/workbench-service.mjs": "73f2a6db95345ff75cb29fe99b294657eec1e7e84196eed3c399c7bd56c534aa",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/mcp/client.js": "dd6d46d474e85f576eaa2b415ed075b4733567033a09f3e7c198eb90c37e3491"
+  },
+  "facts": [
+    "MCP is a location node using location.directory, not per-session registration. Current app catalog lists names/status only after trust.",
+    "Actual SDK add/remove/connect/disconnect take server plus optional location and return void. list returns location and data array. No SDK public config or process identity postcondition follows from list.",
+    "disabled:true registration skips startServer but can replace and dispose existing server; first reserved-name collision must be rejected before add.",
+    "Runtime overrides Map is location-local/in-memory. add and remove invoke state.reload; neither writes the user config file.",
+    "connect always stops then starts selected entry under lock. disconnect closes scope and marks disabled. Neither void ACK alone establishes exact child process exit.",
+    "Connected remote sessions can automatically reconnect on session-expired callbacks or integration switched events. Any explicit-only process/reconnect claim must account for those existing hooks.",
+    "Do not enable project:true or filewatcher:true as a shortcut. Native/provider/auth/real MCP server not invoked during this inspection.",
+    "Actual remote register() creates OAuth integration/method registration before the disabled start check unless oauth:false; conversion must deliberately retain external-auth boundary and avoid presenting a new built-in auth flow. This source path does not alone prove network activity on disabled registration.",
+    "Existing supported file validator permits oauth:false or omitted only. Native default behavior differs between omitted and false; the initial MCP design must resolve that conversion explicitly.",
+    "Connecting a workspace location can expose MCP tools/instructions to all sessions in that location; a selected-session-only UI claim would be incorrect.",
+    "Native mcp.list exposes location.directory and data[{name,status,integrationID?}]. Validate exact workspace directory and redact integrationID/raw error before public projection.",
+    "Native local MCP client resolves config.cwd relative to selected location.directory; an absolute cwd can select another directory. Confirmation and validation must name actual resolved execution directory rather than imply it is always the workspace root.",
+    "Native local transport closes via scoped client.close; public SDK still provides no process identity. Actual synthetic child exit evidence and product connection-status claims must be kept distinct."
+  ],
+  "not_selected": "No next run, public API, process ownership or durable MCP design has been adopted."
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "run": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/effort-adoption",
+  "reviewed": {
+    "contract_sha256": "4bf4b496fa2fc548865a9a7061a05a7b8efeaac99d95d76bfb26c75e34fcaa32",
+    "gate": "plan",
+    "plan_sha256": "0d40cd9e0d7ed1dbc2b61120e4eece950acb422d9017fab102c5eb0e0b380f6f",
+    "schema_version": 2,
+    "source_sha256": "1263cd81f21106e99c6d5b3bbb04519c398068e78d7a010cb5790d01f60111d0"
+  },
+  "verdict": "pass",
+  "summary": "Revision 1 safely limits product adoption to managed harness synchronization and a product-specific workflow record. The planned conflict stop, reviewed library snapshot, managed-copy check, frozen PRD hash and before/after inventory provide suitable preservation evidence. Permissions, session boundaries, cancellation and trace completeness are concrete future verification concerns without prematurely specifying APIs or implementation. Pending PRD approval and routing clarification remain correctly isolated from this authorized work.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/effort_method_plan_review",
+    "author_task_id": "/root"
+  },
+  "verification_limits": [
+    "Reviewed the assigned product plan, contract and review input; independently verified the plan and contract SHA256 values.",
+    "The source_sha256 binding was copied from the supplied review input and was not independently regenerated.",
+    "Did not inspect or execute the installer, verify current target-file conflicts, compare product inventories or recompute the frozen PRD hash; those remain planned execution checks.",
+    "Pass applies to the managed synchronization and adoption-record scope only; it does not approve the PRD, domain specifications, application implementation or external operations.",
+    "A separate final review must evaluate actual synchronized artifacts and preservation evidence with the product's own binding."
+  ]
+}

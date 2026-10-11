@@ -1,0 +1,29 @@
+{
+  "result": "fail",
+  "reason": "outer_check_timeout",
+  "timeout_seconds": 240,
+  "source_sha256": "709299e9a85286bc7fceb34f300d46b4fd1d16b4faf33b1503b76c3d628235ad",
+  "probe_final_report_present": false,
+  "process_scan": "No running configuration-instructions probe or owned helper observed after timeout; no process was killed by recovery",
+  "lifetime_files": [
+    {
+      "registration": "docs/runs/configuration-instructions/evidence/native-r1/synthetic-msEdVh/appData/OhMyOwnCode/storage-v1/lifetime-witness-v1/bc2ea3ff-860e-445f-9147-c479a41290f4/app.registration",
+      "registration_sha256": "c9e492625661f46b97a4748c7f41e98b0b802492ef050274026b2101e4a6c24a",
+      "app_exit_present": true,
+      "child_registered": true,
+      "child_exit_present": true,
+      "terminal_present": true
+    },
+    {
+      "registration": "docs/runs/configuration-instructions/evidence/native-r1/synthetic-msEdVh/appData/OhMyOwnCode/storage-v1/lifetime-witness-v1/4cde0018-161c-4205-a765-77700a6d6c34/app.registration",
+      "registration_sha256": "99306817575d3c4db5427342844805ca079dfe212531b09e49bfe671c116abb8",
+      "app_exit_present": true,
+      "child_registered": false,
+      "child_exit_present": false,
+      "terminal_present": true
+    }
+  ],
+  "limits": [
+    "Outer harness SIGKILL prevented probe finally/report. Lifetime files are preserved; this is not a successful Native lifecycle proof."
+  ]
+}

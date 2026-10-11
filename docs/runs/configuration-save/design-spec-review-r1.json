@@ -1,0 +1,127 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "c6261171f7d87d71a7cfa403240a8b77e2d87204ce0811615ac19948c763f259",
+    "documents_sha256": "3043cb7765d4385ed6cb192c19c943e6168b5a30372a383d9c50f7be0c34cb66",
+    "gate": "design_spec",
+    "plan_sha256": "8cee9f0d654c317385f52346d614b935e5475a25faa07d262773e48996b90e7f",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "Configuration save design v1의 initial DESIGN_SPEC 검토는 PASS입니다. plan revision 1과 승인된 local synthetic 범위를 유지합니다. 고정 target의 explicit Save, 기존 owned Bun Event Host와 private IPC, stage/publish intent, 관찰 기반 non-CAS 및 retained displacement, 제한된 metadata 정책, 기존 journal의 feature marker와 closed receipt, sole window store의 draft/ACK 규칙이 일관됩니다. 소비자 구현을 막는 미해결 design 항목은 없습니다. 실제 helper/API freeze와 production adapter 검증은 구현 dependency이며, 최종 CODE/RENDER 판정은 별도입니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11913-3128-70d1-beaa-89eef7a90c66",
+    "author_task_id": "Main01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "role": "design_spec_reviewer",
+    "profile": "solo_reader",
+    "skill": "solo-design-spec-review",
+    "mode": "default",
+    "identity_evidence": "현재 실행 환경의 CODEX_THREAD_ID와 새 design_spec_reviewer dispatch child_ref가 같습니다. dispatch packet hash가 실제 design-spec-packet-r1.json과 같습니다. 이 child는 이전 PLAN correction도 검토했으며 plan/design/source를 작성하지 않았습니다. 새 gate binding으로 문서 검토를 수행했습니다. packet의 fresh 표시는 coordinator metadata이며 새 runtime context 또는 OS sandbox의 증명이 아닙니다.",
+    "independent": true,
+    "authored_plan": false,
+    "authored_design": false,
+    "modified_product_source": false,
+    "modified_ledger": false,
+    "recursively_delegated": false
+  },
+  "review_scope": {
+    "run": "configuration-save",
+    "gate": "design_spec",
+    "plan_path": "docs/runs/configuration-save/plan.md",
+    "plan_revision": "1",
+    "design_path": "docs/runs/configuration-save/design.md",
+    "design_version": "1",
+    "input_path": "docs/runs/configuration-save/design-spec-input-r1.json",
+    "packet_path": "docs/runs/configuration-save/design-spec-packet-r1.json",
+    "boundary": "Initial changed configuration-save document boundary: request/confirmation, descriptor stage/publish, metadata, durable compatibility, owned IPC, receipt and editor reconciliation.",
+    "only_written_path": "docs/runs/configuration-save/design-spec-review-r1.json",
+    "rendered_implementation_verdict_issued": false
+  },
+  "assessment": [
+    {
+      "concern": "Scope와 기존 계약",
+      "observation": "원래 workspace의 AGENTS.md 및 지원하는 opencode.json만 명시적으로 저장합니다. missing 관찰 뒤 exclusive 생성과 blank instructions의 별도 clear confirmation을 포함합니다. unsupported 파일을 대체하지 않으며 project:false/filewatcher:false/deny-all 및 저장과 Native activation의 분리를 유지합니다. PRD F14 전체 완료로 표시하지 않습니다."
+    },
+    {
+      "concern": "Closed request와 confirmation",
+      "observation": "renderer가 path/backup/approval/kernel option을 주지 않습니다. Host가 등록 root와 fixed kind에서 target을 결정합니다. exact load 또는 missing observation, bounded UTF8 bytes, well-formed UTF16, controls 및 duplicate-free MCP 검증을 요구합니다. confirmation 이후 owner/admission/workspace/version을 재검사합니다. denial과 pre-dispatch conflict는 target effect 없이 draft를 보존합니다."
+    },
+    {
+      "concern": "Two-phase effect와 non-CAS",
+      "observation": "stage intent flush가 stage effect보다 먼저이고 publish intent flush가 correlated publication보다 먼저입니다. held root/source FDs, exclusive stage, bounded IO, NOFOLLOW/NONBLOCK/EXCL plan 제약을 유지합니다. swap은 원본 또는 경쟁 변경 entry를 보존하며 missing 생성은 collision을 거절합니다. 최종 관찰/flush/IPC가 불확실하면 UNKNOWN과 resource hold를 유지합니다. rollback/replay/자동 retry가 없고 stage directory times 및 post-swap ctime를 CAS로 쓰지 않습니다."
+    },
+    {
+      "concern": "Metadata와 retained originals",
+      "observation": "singly linked supported UTF8 regular file, current uid/gid, ordinary non-executable mode, flags0 및 no extended ACL로 profile을 제한합니다. bounded opaque xattrs와 mode를 stage로 복사하고 body/metadata를 검사합니다. stage inherited ACL/flags도 정책을 충족해야 합니다. unsupported는 publication 전에 거절합니다. reserved backup prefix를 일반 read/tree에서 숨기며 UNKNOWN의 entry를 verified original backup으로 표시하지 않습니다."
+    },
+    {
+      "concern": "Durable marker와 receipt",
+      "observation": "기존 journal/registry에 feature marker를 새 save admission 전에 기록하고 checkpoint/reopen에서 유지합니다. source-facts의 pre-marker expectedRevision 비교와 rejected 새 identity 전 marker 제약은 helper freeze에서 유지해야 합니다. 원래 epoch/id/digest/owner fence와 두 dispatch step을 보존하며 confirmed에는 final observation과 flushed completion이 필요합니다. closed configuration_saved에는 raw text/path/admitted digest를 넣지 않고 empty delta를 Native mapping으로 해석하지 않습니다."
+    },
+    {
+      "concern": "Private IPC와 process ownership",
+      "observation": "기존 owned pinned Bun process를 사용합니다. Main-derived root, nonce/request correlation 및 readiness/PID/closing 검사를 요구하며 한 token이 original key/root/digest에 묶입니다. duplicate publish는 다시 실행하지 않습니다. save 전용 bounded IPC cap과 staged import/asset closure를 구현해야 합니다. pending prepare/publish를 idle/exit 정산에 포함하고 실제 task settlement 전에 lane을 해제하지 않습니다. 새 process 또는 SDK write bypass가 없습니다."
+    },
+    {
+      "concern": "Editor journey와 접근성",
+      "observation": "sole window store가 epoch/workspace/path/kind/draft revision 및 immutable request identity를 소유합니다. late ACK가 새 text를 지우거나 discarded draft를 되살리지 않습니다. 정확히 일치한 confirmed만 baseline/version을 갱신하고 UNKNOWN은 draft와 lookup-only key를 유지합니다. denied/conflict/unknown과 file-saved/runtime-separate 상태, verified backup location, explicit missing-create/blank-clear confirmation을 정의합니다. 기존 focus/reflow/token 및 desktop32/coarse44 계약을 재사용합니다. actual keyboard/narrow200/rendered 검증은 final design gate에 남습니다."
+    },
+    {
+      "concern": "Evidence와 소비자 readiness",
+      "observation": "metadata primitive는 두 opaque xattrs/mode/body 보존만, exclusive primitive는 완전한 생성/collision/stage retention만 증명합니다. prechange legacy open은 checksum-valid marker/checkpoint에서 unsupported_version 및 bytesUnchanged만 증명합니다. 새 production kernel/IPC/writer/reopen 통합 증거는 아닙니다. plan은 actual production kernel을 먼저 검증하고 DTO/action freeze 뒤 consumer를 구현하도록 요구하므로 문서 PASS가 실험을 통합 증거로 승격하지 않습니다."
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 -B .solopreneur/harness.py review-input configuration-save --gate design_spec",
+      "result": "exit 0; 출력이 EXACT design-spec-input-r1.json과 같습니다. PLAN gate binding을 재사용하지 않았습니다."
+    },
+    {
+      "command": "read-only harness v2_review_binding, v2_review_current, document registration 및 packet SHA256 확인",
+      "result": "exit 0; active run, current PLAN PASS, 등록된 design_spec artifact와 실제 design/plan/contract/routing hash를 확인했습니다. documents_sha256=3043cb7765d4385ed6cb192c19c943e6168b5a30372a383d9c50f7be0c34cb66. 현재 source는 entry source 626ff99cee537ff1b5f53c228dfe4bbfdc4df32aa1ccaa7df076f84e2be7019e와 같습니다."
+    },
+    {
+      "command": "문서와 bounded source/evidence 비교",
+      "result": "design v1을 plan r1, 기존 configuration-files design v2, PRD F14, 관련 architecture/UX/ADR 및 current token/source 제약과 비교했습니다. pixels, store open 또는 adapter 실행을 수행하지 않았습니다."
+    }
+  ],
+  "inspected_paths": [
+    ".agents/skills/solo-design-spec-review/SKILL.md",
+    "AGENTS.md",
+    ".codex/agents/solo_reader.toml",
+    ".agents/skills/solo-specialist/SKILL.md",
+    ".solopreneur/harness.py",
+    "docs/runs/configuration-save/design-spec-packet-r1.json",
+    "docs/runs/configuration-save/design-spec-input-r1.json",
+    "docs/runs/configuration-save/run.json",
+    "docs/runs/configuration-save/plan.md",
+    "docs/runs/configuration-save/contract.json",
+    "docs/runs/configuration-save/design.md",
+    "docs/runs/configuration-save/source-facts-r1.md",
+    "docs/runs/configuration-save/evidence/metadata-primitive-r1.json",
+    "docs/runs/configuration-save/evidence/exclusive-primitive-r1.json",
+    "docs/runs/configuration-save/evidence/prechange/legacy-open-evidence.json",
+    "docs/runs/configuration-files/design.md",
+    "docs/runs/configuration-files/design-spec-review-r3.json",
+    "docs/product/prd.md",
+    "docs/engineering/architecture-entry.md",
+    "docs/engineering/workbench-architecture.md",
+    "docs/decisions/0001-workbench-platform.md",
+    "docs/design/specs/workbench-ux.md",
+    "docs/design/system.md",
+    "docs/design/tokens/manifest.json",
+    "docs/design/tokens/tokens.css",
+    "apps/desktop-app/src/host/workbench-configuration-files.mjs",
+    "apps/desktop-app/src/host/workbench-files.mjs",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs"
+  ],
+  "limitations": [
+    "Initial design 문서 판정만 수행했습니다. product 구현과 actual helper freeze를 작성하거나 검증하지 않았습니다.",
+    "전체 source discovery를 반복하지 않았습니다. 새 문서 계약과 관련 기존 계약 및 source-facts를 제한적으로 비교했습니다.",
+    "Metadata ABI/production adapter, staging/import closure, private IPC, new writer/checkpoint/reopen 및 actual Save UI는 구현 뒤 실제 증거와 별도 CODE/RENDER 검토가 필요합니다.",
+    "Native/provider/private stores, Figma/browser/device/pixels를 사용하지 않았으며 power-loss/Windows 또는 runtime activation 성공을 주장하지 않습니다."
+  ],
+  "next_dependency": "Main이 실제 보고서를 design_spec gate로 등록하고 handoff --gate design_spec를 통과한 뒤, plan의 kernel 검증 및 public DTO/action freeze 순서에 따라 dependent implementation을 진행해야 합니다."
+}

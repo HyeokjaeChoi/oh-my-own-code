@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "files": {
+    "apps/desktop-app/src/desktop-bridge.d.ts": {
+      "sha256": "9048037cad1d43ce13e746f20d5a086078d85925e7a0a3975f7eccb287eaa65b",
+      "bytes": 39930
+    },
+    "apps/desktop-app/src/workbench-contract.mjs": {
+      "sha256": "52b1b34627316b8b5f9453f2ce0b6279a245fb26fe303b7f932c6a88e70e9837",
+      "bytes": 29212
+    },
+    "apps/desktop-app/src/workbench-service.mjs": {
+      "sha256": "0839cc0fee6acb54de737b0d99d30becbc432c14836769deba86989ceffee70a",
+      "bytes": 163819
+    },
+    "apps/desktop-app/src/host/workbench-admission.mjs": {
+      "sha256": "6ae71c1303fb7304200ee9e9c5072c74e07279dced2cc369da0607cbc3cb5794",
+      "bytes": 28050
+    },
+    "apps/desktop-app/src/renderer/shared/transport/index.ts": {
+      "sha256": "16b678b516943feb04328cd414de85182d49a4c7fe800e1f82909598341f2cff",
+      "bytes": 7449
+    },
+    "apps/desktop-app/src/renderer/shared/api/index.ts": {
+      "sha256": "d0cf44dd775eaec2f6c70851e39ba6601effe2d2de0d8db4765ae43024511f40",
+      "bytes": 4757
+    },
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts": {
+      "sha256": "7807f07a7d93d4a290031c23516bee036452ce91f54fd487b022fea4d6445cee",
+      "bytes": 4279
+    },
+    "apps/desktop-app/src/renderer/shared/configuration-draft/permission-policy.mjs": {
+      "sha256": "defa295677b4522e9c60b1f0c93ec1f745ddaf8f4cd8b2702184d4de8f9a5521",
+      "bytes": 4039
+    },
+    "apps/desktop-app/src/renderer/shared/configuration-draft/permission-policy.d.mts": {
+      "sha256": "24b397e872fbf3973feff9ff9563c78ed21050fbb37b6d9cfa338f52cb9c342f",
+      "bytes": 1036
+    }
+  },
+  "request": {
+    "type": "permission.policy.read",
+    "workspaceId": "string",
+    "sessionId": "string"
+  },
+  "envelope": "v2 runtimeEpoch/readId; read lane files; cancel same key",
+  "response": "WorkbenchPermissionPolicyObservation",
+  "validator": "validatePermissionPolicyObservation(value) returns same valid value or appCode INVALID_REQUEST; public shared/api barrel export",
+  "no_mutation": true
+}

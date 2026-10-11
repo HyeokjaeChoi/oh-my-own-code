@@ -1,0 +1,126 @@
+✔ fixed DIRECTORY package has only the closed local metadata (0.772209ms)
+✖ setup registers the closed producer with no Skill or reload; lifecycle is explicit (1.1405ms)
+✔ setup rejects noncanonical location and closed-option violations before registration (0.419583ms)
+✔ all handlers manually reject wrong nonce, extra fields and cross-root input without effects (0.968166ms)
+✖ same-source replacement requires expected original Native ID and removes only old generation (0.692916ms)
+✖ foreign IDs, including prefix and exact-record collisions, never establish ownership (0.184542ms)
+✖ ownership requires original registration, workspace and exact public record (0.612459ms)
+✖ original-key cache returns immutable results and rejects same-key method or payload conflicts (0.373125ms)
+
+Interrupted while running:
+
+⚠ apps/desktop-app/src/native-skills-plugin.test.mjs (apps/desktop-app/src/native-skills-plugin.test.mjs:1:1)
+✖ apps/desktop-app/src/native-skills-plugin.test.mjs (44077.297625ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 3
+ℹ fail 5
+ℹ cancelled 1
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 44080.4975
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-skills-plugin.test.mjs:181:1
+✖ setup registers the closed producer with no Skill or reload; lifecycle is explicit (1.1405ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'unavailable'
+  - 'ready'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-plugin.test.mjs:190:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unavailable',
+    expected: 'ready',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-skills-plugin.test.mjs:285:1
+✖ same-source replacement requires expected original Native ID and removes only old generation (0.692916ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'omoc-skill-ac68483a2a4f8d2afd7b3dab4ba4053d9baee260397a6597744e80009008397e'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-plugin.test.mjs:295:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'omoc-skill-ac68483a2a4f8d2afd7b3dab4ba4053d9baee260397a6597744e80009008397e',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-skills-plugin.test.mjs:309:1
+✖ foreign IDs, including prefix and exact-record collisions, never establish ownership (0.184542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  
+  undefined !== []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-plugin.test.mjs:314:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-skills-plugin.test.mjs:322:1
+✖ ownership requires original registration, workspace and exact public record (0.612459ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   reason: 'runtime_error',
+  -   reason: 'identity_conflict',
+      status: 'unavailable'
+    }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-plugin.test.mjs:338:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { status: 'unavailable', reason: 'runtime_error' },
+    expected: { status: 'unavailable', reason: 'identity_conflict' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-skills-plugin.test.mjs:350:1
+✖ original-key cache returns immutable results and rejects same-key method or payload conflicts (0.373125ms)
+  AssertionError [ERR_ASSERTION]: Values have same structure but are not reference-equal:
+  
+  [Error: Native Skill request denied.] {
+    data: {
+      code: 'changed'
+    },
+    type: 'denied'
+  }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-plugin.test.mjs:354:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { type: 'denied', data: { code: 'changed' } },
+    expected: { type: 'denied', data: { code: 'changed' } },
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-skills-plugin.test.mjs:1:1
+✖ apps/desktop-app/src/native-skills-plugin.test.mjs (44077.297625ms)
+  'Promise resolution is still pending but the event loop has already resolved'

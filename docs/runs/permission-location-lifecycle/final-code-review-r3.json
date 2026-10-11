@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "673fbc042d5e8bb3dbddc575121203a141299edf49729745d746816e0bb62777",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "9f7d70da502b87a55531db7b71b5d50db5b5c62ce23fa4cf93ca7c5b70d9656e",
+    "schema_version": 2,
+    "source_sha256": "c7e7d9f0ecee850ac66abfe6c3bfb807b2da0588b292717f5d5d3ca4101959d8",
+    "verification_sha256": "9e3625d7c69a1f70d8d9cafd909bb0d74f9278f356902d8415adf8768006bd65",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "추가로 확인한 코드 결함은 없습니다. CODE-02 수정은 실제 pinned Native instance에서 관찰 옵션을 전달하고, 실제 LayerNode.compile이 생성한 local MemoMap의 constructor 실패를 관찰합니다. acquired service의 Scope cleanup 전에 finalizing을 기록하는 경로를 확인했습니다. 기존 shared/local 캐시 선택과 MemoMap·Scope 소유권은 유지됩니다. CODE-01 및 변경 없는 범위의 기존 평가를 재사용했습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a12456-9fa6-7920-b2f6-98adc73a6d86",
+    "binding_input": "docs/runs/permission-location-lifecycle/final-code-input-r4.json",
+    "binding_before_after": "harness 출력과 입력 전체 객체가 검토 전후 일치",
+    "source_freeze_before_after": "source-freeze-r3.json의 8개 파일 hash 일치",
+    "baseline_verification": "before-manifest-r2의 원본 7개와 새 파일 부재, before-correction-manifest-r2의 사본 8개 확인",
+    "overlay_verification": {
+      "transformed_outputs_verified": 16,
+      "prior_outputs_preserved": 11,
+      "new_overlay_pins_verified": 5,
+      "recipe_sha256": "c811479bb584370cebb5d4280a87df730ec05774d6ab9cd992599b41f800f690",
+      "method": "파일 저장 없이 Node 메모리 내 변환 및 hash 비교"
+    },
+    "regression_assessment": "실제 변환된 instance와 compiler를 추출하는 검사 소스에서 local constructor 실패, 내부 interruption, 서로 다른 location의 shared service 재사용을 확인했습니다. Native 의존성은 inert graph와 유효한 테스트 replacement입니다.",
+    "prior_assessment_reused": "final-code-review-r2.json의 CODE-01 승인 및 변경 없는 범위 평가",
+    "checks": {
+      "saved_unit_126": "현재 바인딩의 exit_code=0 기록 확인",
+      "unit": "reusable",
+      "lint": "reusable",
+      "format": "reusable",
+      "saved_checks_rerun": false,
+      "narrow_runtime_reproducer_executed": false
+    },
+    "limits": "전체 Native 실행과 실제 task/IO/child-process settlement는 검증하지 않았습니다. 저장된 Native probe는 NOT RUN입니다.",
+    "native_bun_server_electron_build_provider_main_launched": false,
+    "delegation": false,
+    "source_edits": false,
+    "report_saved": false,
+    "ledger_edits": false
+  }
+}

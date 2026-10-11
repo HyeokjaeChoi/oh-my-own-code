@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "verdict": "changes_requested",
+  "scope": "bounded exact7 metadata-only Read activation",
+  "reviewed_checkpoint": {
+    "path": "docs/runs/permission-task-lifetime-integration/read-metadata-source-checkpoint-r1.json",
+    "sha256": "c70604fc0649712fa18564d9708f61a5b9f30fc608e7b4c7f2f5e9f144e14dec"
+  },
+  "findings": [
+    {
+      "id": "READ-META-01",
+      "priority": 2,
+      "file": "apps/desktop-app/src/native-permission-control.mjs",
+      "line": 936,
+      "summary": "inventoryEnd uses ordinary bounded metadata admission. At 32 queued writers, Scope finalizer fails busy before clearing result/scope/metadata; Scope is Closed and finalizer cannot retry. Preserve snapshot synchronization but allow internal terminal cleanup without ordinary admission refusal."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a12605-8108-7a93-8d83-66179e0bfcd2"
+  },
+  "checks_read": {
+    "contract_node": 101,
+    "stage": 1
+  },
+  "reviewer_reran_tests": false,
+  "source_pins_before_after": "exact7 match",
+  "limits": [
+    "Static finding, reproduction pending Main",
+    "No execution privilege escalation claimed",
+    "Not final wholeCODE/full18"
+  ]
+}

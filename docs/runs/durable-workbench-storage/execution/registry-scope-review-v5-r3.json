@@ -1,0 +1,91 @@
+{
+  "verdict": "changes_requested",
+  "review_kind": "registry_scope_correction_bounded_followup",
+  "final_gate": false,
+  "whole_P7_approved": false,
+  "summary": "이 경계에서는 새 ID를 할당합니다. 실제 허용된 API 경로와 기존 테스트로 확인했습니다. 첫 실제 session이 folderSessionId를 유지해야 한다는 요구 사항과 맞지 않아, 이전 중간 pass를 변경합니다.",
+  "findings": [
+    {
+      "id": "JR-V5-R3-01",
+      "severity": "P2",
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.mjs",
+      "line": 104,
+      "title": "Effect 없는 첫 session reservation 거부가 첫 실제 session의 안정된 ID를 소비함",
+      "trigger": [
+        "Managed workspace.create를 confirmed로 완료합니다. Workspace에는 folderSessionId가 있고 session mapping은 없습니다.",
+        "첫 session.create가 그 folderSessionId를 예약합니다.",
+        "Dispatch 없이 admission:rejected, effect:none, 빈 delta로 완료합니다.",
+        "같은 workspace에 새 operationId로 session.create를 요청합니다."
+      ],
+      "actual_behavior": [
+        "Rejected completion은 terminal이 됩니다. 그러나 기존 reservation은 operation 기록에 남습니다.",
+        "canUseManagedFirstSession은 creator와 거부된 session reservation을 모두 계산합니다. reservations.length가 2이므로 false를 반환합니다.",
+        "다음 reserve는 새 UUID를 사용합니다. 여유 capacity가 있으면 정상적으로 예약됩니다.",
+        "아직 실제 session mapping과 tombstone이 없는데도 첫 실제 session의 ID가 folderSessionId와 달라집니다."
+      ],
+      "impact": "Workspace 생성 때 보존한 첫 session ID와 이후 첫 실제 session의 identity가 분리됩니다. 중복 Native 실행이나 데이터 손실이 발생한다고 주장하는 finding은 아닙니다.",
+      "contract_basis": [
+        {
+          "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/storage-contract.md",
+          "line": 10,
+          "requirement": "Workspace 생성이 session 생성보다 먼저이면 첫 session ID를 workspace record에 예약합니다."
+        },
+        {
+          "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/execution/first-session-reservation-finding-v5.md",
+          "line": 7,
+          "requirement": "첫 실제 session의 정확한 folderSessionId와 추가 session의 새 ID를 요구합니다."
+        }
+      ],
+      "evidence": [
+        {
+          "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.mjs",
+          "lines": [98, 104, 276, 283, 295, 440, 675, 879],
+          "detail": "Reservation 계산에는 terminal operation도 포함됩니다. Effect:none은 dispatch가 없어야 하고 비어 있지 않은 delta를 허용하지 않습니다. 거부 완료는 scope hold를 해제하지만 reservation 기록은 유지합니다."
+        },
+        {
+          "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.test.mjs",
+          "lines": [1038, 1107, 1123, 1148, 1152, 1153],
+          "detail": "other-reservation 사례가 이 경로를 직접 사용합니다. Dispatch 없이 거부 완료한 뒤 checkpoint/reopen하고, 다음 reservation이 원래 ID와 다르다고 명시적으로 검사합니다."
+        },
+        {
+          "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/execution/registry-scope-correction-main-unit-v5-r3.log",
+          "line": 61,
+          "detail": "위 테스트의 pass가 저장되어 있습니다. 따라서 테스트 누락만의 문제가 아니라 현재 기대 결과가 요구 사항과 충돌합니다."
+        }
+      ],
+      "immutable_identity_assessment": "이전 operation의 identity와 reservation 기록은 그대로 보존할 수 있습니다. 정확한 lineage와 완료된 no-effect 증거를 가진 새 operation으로 첫 ID를 이전하는 것은 이전 operation의 identity를 변경하는 일이 아닙니다.",
+      "required_correction": "완료된 managed workspace-create에서 시작한 정확한 ID lineage 안에서만 예외를 허용하십시오. 이전 session 예약이 terminal rejected이고 effect:none이며 dispatch·mapping·tombstone이 없다는 검증된 증거가 있을 때, 다음 첫 session 요청이 folderSessionId를 유지하도록 처리하십시오. 일반 collision 검사를 제거하지 마십시오.",
+      "required_regression": [
+        "여유 capacity에서 첫 예약을 zero-dispatch no-effect로 거부한 뒤, 다음 요청이 정확한 folderSessionId로 예약되고 실제 mapping 완료와 checkpoint/reopen까지 유지되는지 검사합니다.",
+        "기존 other-reservation 사례에서 검증된 no-effect 종료와 일반 충돌을 구분합니다.",
+        "Unknown, dispatched, 비종료 reservation, 기존 mapping, tombstone과 다른 workspace의 ID 충돌 거부를 유지합니다.",
+        "Unconfirmed tail의 거부 record만으로 ID 이전이나 hold 해제를 자동 허용하지 않습니다."
+      ],
+      "verification": "정적 API 경로와 기존 테스트·저장된 실행 log로 확인했습니다. 새 reproducer는 실행하지 않았습니다."
+    }
+  ],
+  "preserved_assessment": "JR-V5-R2-01, fork의 정확한 parent, partial mapping의 unknown 상태, capacity 계산, 이전 수정과 lookupIdentity에 대한 기존 평가는 유지합니다.",
+  "provenance": {
+    "thread_id": "01a106d3-fdac-7b33-80cb-b6085432674c",
+    "method": "같은 독립 reviewer의 범위 내 추가 정적 검토",
+    "source_hashes_still_match_v5_r3": true,
+    "tests_run": false,
+    "files_modified": [],
+    "delegation_used": false,
+    "native_ui_or_provider_invoked": false,
+    "moving_host_renderer_or_script_sources_inspected": false
+  },
+  "inspected_sha256": {
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.mjs": "00cfee265a5ccc062b603bc2a059974f285286d93cd7d5a823598251bcfec928",
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.test.mjs": "b072dda81819d8cffeaa359e2d616cbf40da58b0bbd0904963f936443b295f07",
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/storage-contract.md": "c58a79f5c62840873e5a2cededc67e9d381006926365fecf07728c5f484fdab7",
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/execution/first-session-reservation-finding-v5.md": "bc6976e613727cdc5385c21b12712c10b8725d8420ec61e74a9344ae998c5764",
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/execution/registry-scope-correction-main-unit-v5-r3.log": "6a16411e49e91ea167823fe790a03025a98267c14367ac26a448faf9fb6455fb"
+  },
+  "limits": [
+    "새 실행 검증이나 Host 통합 검증은 수행하지 않았습니다.",
+    "Unknown 또는 dispatched ID의 재사용을 요구하지 않습니다.",
+    "Production normal-restart Native preflight와 OS lifetime 한계는 범위 밖이며, 해결된 것으로 처리하지 않습니다.",
+    "보고서와 ledger는 작성하지 않았습니다. 이 결과는 final gate가 아닙니다."
+  ]
+}

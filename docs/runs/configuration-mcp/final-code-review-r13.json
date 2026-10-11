@@ -1,0 +1,203 @@
+{
+  "schema_version": 2,
+  "run": "configuration-mcp",
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "fdf6b8f562361d071b13724afa127c252af6af335164b2341047fd873dfdabe3",
+    "environment_sha256": "5aeb2a2ecc308f991252752fa57d9f1603444a261f84c423260f43cb0652b0c8",
+    "gate": "code",
+    "plan_sha256": "b7bc69344397ab5b11f29bd6111d4e0c21e835ac6a10731916bda8e1c495de7c",
+    "schema_version": 2,
+    "source_sha256": "4c77540b8bee2dc299e3a80f92e2877264d9fb8f3a9953aa5dfc118054d301a0",
+    "verification_sha256": "43de6b070a82f2381aaa341f1482c6367e812c9dad0849f449ad76a04b2ca6ae",
+    "work_class_sha256": "fb440b14b39523b5a964d9a49f6775baa09c69c408f2ecff205b50787a83e333"
+  },
+  "verdict": "pass",
+  "summary": "r13의 한정된 MCP 수정과 연결 경로에서 추가 조치가 필요한 결함을 찾지 못했습니다. local cwd는 확인창 전후에 재검사됩니다. symlink 교체는 연결 효과 전에 rejected/MCP_UNSUPPORTED로 종료됩니다. 정상 내부 cwd의 연결은 유지됩니다. workspace 제거의 선행 작업 안내도 추가됐습니다.",
+  "open_findings": [],
+  "scope": {
+    "plan_revision": 13,
+    "design_version": "1",
+    "comparison": "source-freeze-r12.json 대비 r13 inventory 변경",
+    "correction_paths": [
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "apps/desktop-app/src/host/storage-integration.test.mjs",
+      "apps/desktop-app/src/host/workbench-mcp.mjs",
+      "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+      "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+      "apps/desktop-app/src/workbench-service.mjs"
+    ],
+    "correction_path_count": 6,
+    "current_inventory_count": 551,
+    "current_inventory_exact": true,
+    "original_baseline_changed_path_count": 34,
+    "original_baseline_changed_paths_exact": true,
+    "review_binding_recomputed_exact": true,
+    "inspection": "6개 수정 경로와 연결된 admission, confirmation, SDK dispatch, receipt, liveMap 경로를 검토했습니다. 변경되지 않은 기존 기능의 모든 줄을 다시 검토했다고 주장하지 않습니다.",
+    "prior_reports": [
+      {
+        "path": "docs/runs/configuration-mcp/final-code-review-r12.json",
+        "verdict": "changes_requested",
+        "use": "이전 독립 finding과 수정 기준"
+      },
+      {
+        "path": "docs/runs/configuration-mcp/final-render-review-r12.json",
+        "verdict": "changes_requested",
+        "use": "이전 독립 finding과 수정 기준"
+      }
+    ]
+  },
+  "passes": [
+    {
+      "name": "spec_compliance",
+      "result": "pass",
+      "acceptance": {
+        "M1": "공통 validateMcpLocalCwd가 canonical root, containment, 각 경로 구성 요소의 directory 여부, symlink 및 최종 realpath를 검사합니다. 등록과 local connect가 같은 검사를 사용합니다. 기존 정의 변환, argv, disabled:true 및 digest 생성을 유지합니다.",
+        "M2": "expected()는 observation과 소유권 확인 후 mcpIdentity, local cwd 검사, checkLive 순서로 진행합니다. 확인창 전후에 expected()를 호출합니다. 통과 뒤 SDK 경로가 정확한 intent를 flush하고 admission을 다시 확인합니다.",
+        "M3": "거절은 effect:none과 닫힌 rejected 결과로 기록됩니다. 등록 소유권은 durable completion 뒤 liveMap에 반영합니다. 수정은 영구 command/config 저장이나 새로운 API를 추가하지 않습니다.",
+        "M4": "explorer는 MCP 제어 위치와 등록 제거 작업을 안내합니다. MCP 영역은 상태 확인 후 앱 소유 항목의 등록 제거를 각각 선택하도록 안내합니다. workspace.remove의 BUSY 보호를 유지합니다.",
+        "M5": "r13에 결합된 9개 check, 새 production build, Native-r5 9개 case 및 hidden-r5 240개 capture를 확인했습니다. 기존 acceptance는 r12 검토와 연결해 평가했습니다."
+      }
+    },
+    {
+      "name": "correctness_security_and_regression",
+      "result": "pass",
+      "checked": [
+        "등록 뒤 확인창 전에 cwd를 외부 symlink로 교체하면 확인창과 SDK connect에 진입하지 않습니다.",
+        "확인창 안에서 cwd를 외부 symlink로 교체하면 두 번째 검사에서 거절합니다.",
+        "두 거절 테스트는 SDK connect 0회, connect intent 없음, Native stub 상태 disabled 및 effect:none을 확인합니다.",
+        "최종 테스트는 receipt.result가 {kind:rejected,code:MCP_UNSUPPORTED}임을 직접 확인합니다. unknown 또는 undefined를 기대하지 않습니다.",
+        "정상 내부 cwd 테스트는 연결 상태 connected, SDK connect 1회 및 확인 1회를 확인합니다.",
+        "테스트는 실제 격리 디렉터리와 symlink를 사용합니다. SDK는 stub입니다.",
+        "기존 all-session idle, inbox, permission, correlation, policy 및 canonical workspace root 검사가 연결 경로에 유지됩니다.",
+        "postcondition 확인과 durable completion 이후 liveMap 반영 순서를 유지합니다."
+      ]
+    }
+  ],
+  "prior_findings": [
+    {
+      "id": "MCP-R12-CODE-01",
+      "status": "resolved",
+      "evidence": [
+        "apps/desktop-app/src/host/workbench-mcp.mjs:57",
+        "apps/desktop-app/src/workbench-service.mjs:1717",
+        "apps/desktop-app/src/host/storage-integration.test.mjs:2783",
+        "docs/runs/configuration-mcp/evidence/cwd-regression-green-final-r13.log"
+      ]
+    },
+    {
+      "id": "MCP-RENDER-R12-01",
+      "status": "correction_verified_in_code_scope",
+      "evidence": [
+        "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx:161",
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx:194",
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs:4002"
+      ],
+      "detail": "새 안내 문단과 desktop 및 760/200% capture를 확인했습니다. 별도 최종 RENDER gate의 판정은 이 보고서에 포함하지 않습니다."
+    }
+  ],
+  "verification": {
+    "recorded_checks": {
+      "path": "docs/runs/configuration-mcp/actual-checks-r13.json",
+      "checks": [
+        "mcp",
+        "native",
+        "hidden-ui",
+        "build",
+        "typecheck",
+        "boundaries",
+        "bundle",
+        "lint",
+        "format"
+      ],
+      "all_exit_codes": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "timed_out": false,
+      "current_ledger_records_exact": true,
+      "rerun": false,
+      "log_limit": "mcp와 hidden-ui의 command stdout은 저장 시 잘렸습니다. 전체 suite의 test 수를 이 stdout에서 추정하지 않았습니다. 최종 targeted GREEN 로그는 별도로 확인했습니다."
+    },
+    "targeted_regression": {
+      "final_green_log": "docs/runs/configuration-mcp/evidence/cwd-regression-green-final-r13.log",
+      "tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "preserved_history": [
+        "cwd-regression-red-r13.log는 두 symlink 교체에서 연결이 허용된 원래 실패를 보존합니다.",
+        "cwd-regression-green-r13.log는 rejected 결과를 undefined로 잘못 기대한 두 실패를 보존합니다.",
+        "최종 GREEN은 닫힌 rejected/MCP_UNSUPPORTED 결과를 기대합니다."
+      ]
+    },
+    "build": {
+      "path": "docs/runs/configuration-mcp/actual-build-r13.json",
+      "command": "pnpm exec nx run desktop-app:build --skip-nx-cache",
+      "exit_code": 0,
+      "build_stamp_sha256": "015eab24e0a64dbb588686296576824dcc1bec885dc470863ba49980d0202133",
+      "current_inputs_artifacts_resources_verified": true,
+      "build_reexecuted_by_reviewer": false
+    },
+    "native": {
+      "path": "docs/runs/configuration-mcp/evidence/native-r5/configuration-mcp-evidence.json",
+      "result": "pass",
+      "cases": 9,
+      "current_provenance_exact": true,
+      "current_additional_hashes_verified": 14,
+      "before_after_provenance_exact": true,
+      "owned_helper_native_cleanup_records": 2,
+      "cleanup_exit_codes": 0,
+      "fallback_disconnect": false,
+      "exact_kernel_observers": 2,
+      "exit_evidence": "두 target의 birth identity와 attached identity가 일치합니다. EVFILT_PROC/NOTE_EXIT 및 observer exit0를 확인했습니다.",
+      "legacy": "실제 immutable old parser의 unsupported_version과 journal/checkpoint 전후 hash 일치를 확인했습니다.",
+      "fault_scope": "unknown case의 post-add read 실패는 명시적 fault injection입니다.",
+      "runtime_reexecuted_by_reviewer": false
+    },
+    "hidden_ui": {
+      "path": "docs/runs/configuration-mcp/evidence/hidden-r5/ui-states/ui-states-evidence.json",
+      "result": "pass",
+      "captures": 240,
+      "prior_capture_names_retained": 238,
+      "new_guidance_captures": 2,
+      "png_dimensions_checked": 240,
+      "png_dimension_mismatches": [],
+      "current_provenance_exact": true,
+      "owned_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "directly_viewed": [
+        "desktop-configuration-mcp-currentdisabled-desktop-removal-prerequisite-synthetic.png",
+        "desktop-configuration-mcp-currentdisabled-removal-prerequisite-synthetic.png"
+      ],
+      "observation": "두 capture에서 선행 작업 안내가 잘리지 않고 읽힙니다. saved metadata는 문단의 fullyVisible과 narrow200의 horizontalOverflow:false를 기록합니다.",
+      "origin": "실제 built Electron renderer/preload와 synthetic main-process fixtures",
+      "runtime_reexecuted_by_reviewer": false
+    },
+    "preserved_failures": "두 r12 changes_requested 보고서, Native-r1/r2/r3 실패 및 hidden-r1/r2/r3 실패 기록을 확인했습니다. 현재 PASS로 다시 표시하지 않았습니다."
+  },
+  "limits": [
+    "보안 판정은 확인창 전후의 파일 시스템 검사에 한정됩니다. atomic filesystem locking이나 모든 same-UID 동시 변경 방지를 증명하지 않습니다.",
+    "symlink 회귀 테스트는 실제 파일 시스템과 SDK stub을 사용합니다. Native에서 외부 cwd 실행을 재현하지 않았습니다.",
+    "Native 증거는 지정한 macOS synthetic stdio child에 한정됩니다.",
+    "real remote, auth, provider, model consumption, Windows, power-loss 및 물리 입력은 검증하지 않았습니다.",
+    "Native catalog는 전체 설정, PID, CAS 또는 임의 descendant 종료의 증거가 아닙니다.",
+    "이번 검토에서 파일이나 ledger를 수정하지 않았습니다. delegation과 Native/Electron/UI/build/provider/private-content launch를 수행하지 않았습니다.",
+    "별도 최종 RENDER gate와 전체 F14/Goal 완료를 승인하지 않습니다. 전체 F14/Goal은 ACTIVE입니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a119f6-c8d5-78a2-8c8c-c6f819d431ca",
+    "identity_source": "현재 runtime environment의 CODEX_THREAD_ID",
+    "coordinator_dispatch_child_ref_match": true,
+    "coordinator_dispatch_is_runtime_attestation": false,
+    "profile": "solo_reader",
+    "skill": "solo-code-review",
+    "context": "fresh",
+    "independent_of_implementation": true,
+    "report_only": true,
+    "files_written": [],
+    "ledger_edited": false,
+    "delegation_performed": false,
+    "runtime_rerun": false
+  },
+  "completion_scope": "r13의 한정된 MCP 수정과 이전 검토에 연결된 acceptance에 대한 CODE PASS입니다.",
+  "next_dependency": "Main이 이 보고서를 final-code-review-r13.json으로 저장·등록하고 별도 최종 RENDER 판정을 통합해야 합니다."
+}

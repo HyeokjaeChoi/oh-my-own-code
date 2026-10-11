@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "gate": "design_spec",
+    "contract_sha256": "eacf6d247318575f5e86d9e6f73a364daedc1d4e6ba89747a6423c03cb93305f",
+    "documents_sha256": "ccfca6f3bdb65ef42b32e8c732df846337d9732bf0560fdf94d0f0fb3b5763fa",
+    "plan_sha256": "f708386620e5139e13ffd304979ee0a6fd98b9cbfbac298956cc46620712e356",
+    "schema_version": 2
+  },
+  "verdict": "pass",
+  "summary": "Independent document-only design-spec review for run component-polish. Reviewed docs/design/components.json (SHA-256 3d6dc737e733ce7858cf069d9a8969efaf746bbd4001b27eeb9a3dae11a72b2e), docs/design/system.md (SHA-256 66ccad0c8d2e9c99062929b439b9e2d03155a2fe9c18ca3d6a440a2c65d618f6), and docs/design/tokens/manifest.json (SHA-256 84a1ecac6ef5e6dd51f9d7a1a9a959751a3a05731fe8cb3ff4ca3379957e0498) against docs/runs/component-polish/plan.md (SHA-256 f708386620e5139e13ffd304979ee0a6fd98b9cbfbac298956cc46620712e356). All five non-Button contracts are coherent for the planned Figma handoff: Input defines stable 40px control and error-over-hint feedback with error+focus composition; StatusBadge specifies 24px text-hug sizing and owned color bindings; NavigationItem specifies full-width start alignment, 500/700 label weights and selected+focus preservation; ToolCall separates borderless summary, local disclosure, conditional result navigation and shared status; PermissionRequest composes existing Buttons, retains disabled actions while sending, preserves exact scope and separates decision delivery from execution. The revision-6 Dark navigation parent/default, hover and selected aliases resolve respectively to #262626, #171717 and #3d3d3d, matching the plan and system guide; Light parent/default, hover and selected resolve to #fafafa, #f5f5f5 and #e8e8e8. The 44-variant inventory has no duplicate family/name pairs and all non-null binding paths exist in the manifest. This pass judges source-contract implementation readiness only. Current Figma nodes, nested instance geometry, actual variable bindings, Light/Dark captures, browser behavior, real hit regions, zoom, keyboard interaction and assistive technology were not inspected or proven here; they remain implementation and design-QA evidence.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/design_spec_review_rev4",
+    "author_task_id": "/root"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "sources": {
+    "apps/desktop-app/scripts/run-evidence.mjs": "1733f0afddb82d993fa70a91ff1e3f215ffe05f3688ea77136407aa5f55619a2",
+    "apps/desktop-app/scripts/run-evidence.test.mjs": "7cabc824ff16ed748c40da4cfb8f8b683ef0525bebb5c29c4c57ff314aed1342",
+    "apps/desktop-app/scripts/build-provenance.mjs": "233325d5c26071030d81e15106c9545bade812a0c2ec684569d766d420a4e93e",
+    "apps/desktop-app/scripts/build-provenance.test.mjs": "20190f7fb01cbf5e57497d30391a5bbb9575b7d9b82280480c34e707eaa5e1b0"
+  },
+  "selector": "feedback",
+  "invocation": "node apps/desktop-app/scripts/run-evidence.mjs --script feedback --out docs/runs/version-bound-line-feedback/evidence/hidden-r1",
+  "script": "apps/desktop-app/scripts/e2e-line-feedback.mjs",
+  "report": "line-feedback-evidence.json",
+  "destination_suffix": "feedback",
+  "selected_provenance": [
+    "e2e-line-feedback.mjs",
+    "fixtures/workbench-host.mjs"
+  ],
+  "report_required": {
+    "result": "pass",
+    "teardown": {
+      "exited": true,
+      "code": 0
+    },
+    "screenshots": "nonempty metadata records with absolute contained PNG path"
+  },
+  "capture_fields": [
+    "path",
+    "state",
+    "pixelDimensions",
+    "contentBounds",
+    "viewport",
+    "displayScaleFactor",
+    "zoomFactor",
+    "beforeCapture",
+    "osWindowVisible",
+    "osWindowFocused",
+    "osWindowFocusable",
+    "captureMethod"
+  ],
+  "capture_requirements": [
+    "captureMethod=BrowserWindow.webContents.capturePage().toPNG()",
+    "beforeCapture.visible/focused/focusable and osWindowVisible/Focused/Focusable all strictly false",
+    "PNG IHDR dimensions equal pixelDimensions and complete contentBounds*displayScaleFactor",
+    "viewport width/height reflect zoom, pixelRatio=displayScaleFactor*zoomFactor"
+  ],
+  "limits": [
+    "Fixed focused runner only, no arbitrary script/path/mode/platform options",
+    "Same exclusive output/symlink refusal/actual source-build preflight and before-after provenance",
+    "No Electron/UI execution yet; Node wrapper/report/provenance test evidence only"
+  ],
+  "checks": [
+    "focused selector RED/GREEN",
+    "unproved/failed exit and visible/focused/dimension forged capture RED/GREEN",
+    "full wrapper/provenance suite completed; see evidence/evidence-wrapper-final-r1.log"
+  ]
+}

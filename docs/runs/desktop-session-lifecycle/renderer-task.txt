@@ -1,0 +1,46 @@
+Fresh bounded implementation worker. Read .codex/agents/solo_worker.toml,
+.agents/skills/solo-specialist/SKILL.md and solo-implement/SKILL.md.
+Read docs/runs/desktop-session-lifecycle/renderer.packet.json and current
+plan.md, interface.md, contract.json. Frozen interface is authoritative; the
+backend worker owns its matching DTO implementation. Do not coordinate by
+editing each other's files. Root /Users/hyukjaechoi/Projects/oh-my-own-code.
+
+Implement AC-2/AC-3 renderer session organization and local activity panel.
+Owned files: apps/desktop-app/src/renderer/app/{index.tsx,useWorkbench.ts},
+new renderer/features/sessions/** and renderer/features/activity/**,
+renderer/features/conversation/index.tsx only for archive disable behavior,
+renderer/shared/index.ts only for type re-exports, renderer.css,
+and new src/session-navigation.test.mjs. No host, desktop-bridge.d.ts,
+package/lockfiles, E2E scripts, run ledger, presets or recursive delegation.
+
+Read the UI/UX principles relevant to this work from the available local
+ui-ux-pro-max skill; retain the approved ChatGPT-inspired light design tokens,
+restrained borders/spacing and actual assistant-ui/Tool UI integration. Do not
+redesign the existing successful button/foundation system or add packages.
+
+Session list: labelled search, active/archived view, stable pinned-first order,
+selected ID correctness; small accessible action menu with Escape/focus return;
+rename form with validation; pin, archive/restore, labelled complete-history fork,
+native-confirmed delete. Prevent nested interactive elements. Disabled/unknown/
+pending states are explicit. Archived sessions remain readable, composer disabled.
+Host is authority. No optimistic deletion/fork and no automatic retry. Use bounded
+fresh requestId per user action, preserve it through the in-flight request.
+Successful archive/delete selects a valid same-workspace successor; do not leak
+the previous session's draft/messages. Preserve current generation/receipt guards.
+Changing menu state must not reopen/reset focus on every polling snapshot.
+
+Activity: separate right-panel feature consuming diagnostics.list via public
+typed bridge; app-wide counters honestly labelled, optional selected-session
+filter, event status/duration/time, dropped count, empty/loading/error states.
+No duplicate authoritative store or billing/token-use claims. Bound request
+polling, reject stale responses after navigation/unmount, no permanent storage.
+Preserve file/catalog controls, panel restoration, navigation toggle, composer
+visibility, keyboard behavior and narrow viewport. Korean UI strings; English
+code comments/preset descriptions. No decorative bands or unnecessary borders.
+
+Use public FSD slice entrypoints (no sibling slice imports). A pure session
+navigation helper may live inside its feature and be exported publicly for
+focused node tests in session-navigation.test.mjs. Add meaningful search/order/
+filter/selection tests. Run only focused tests/typecheck if useful, format only
+owned files. Coordinator runs actual Electron integration/captures. Report exact
+accessible control names for E2E, files changed, actual checks and remaining gaps.

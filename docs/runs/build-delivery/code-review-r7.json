@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "source_sha256": "fde27e141cb7907a9a6cbedd6e7e575db043f8b7a87b9ef53823428776c10d2d",
+    "verification_sha256": "3f08fa8ab5c2d803883fca27e6000b808e0ff73f8052e25980ccba24b70bbcd5",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "verdict": "pass",
+  "summary": "The global pending event buffer preserves out-of-order events across projections, advances the cursor only through contiguous global sequences, and excludes foreign-session messages from the selected transcript. The static workbench label and browser title are localized in source and the registered production HTML. No new code finding was identified.",
+  "open_findings": [],
+  "evidence": "Inspected projection code and regression tests, localization source, production HTML, and the run ledger. The current harness binding matches the requested hashes. All eleven required checks record exit code 0 for this source; browser E2E records four passes. Checks were not rerun.",
+  "limitations": [
+    "The checkout is entirely untracked, so Git cannot provide a clean patch diff.",
+    "Browser E2E uses Vite development mode and a synthetic bridge; the compiled launch smoke is supplemental.",
+    "The frozen-lockfile install reported Already up to date and does not prove a clean checkout installation.",
+    "Evidence does not establish real SDK integration, persistent data, control-channel security, or full PRD acceptance."
+  ],
+  "provenance": {
+    "child_task_id": "/root/final_code_review_r7",
+    "author_task_id": "/root",
+    "report_only": true,
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "high",
+    "runtime_identity_verified": false
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a127fd-2451-76b2-911b-9f454ed6c679": {
+      "completed": "**GREEN 검증 완료: 39/39 통과**, 실패·취소·skip 0개입니다.\n\n수정 파일: [native-permission-metadata-startup.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-metadata-startup.test.mjs)\n\n- 기존 20개 보존. archive와 테스트 AST도 비교했습니다.\n- 직접 등록 증거 14개, discovery 증거 5개입니다.\n- exact-file ESLint·Prettier 통과.\n- Main의 recipe source SHA, canonical SHA, discovery after SHA 모두 일치했습니다.\n\n원본 discovery는 fixed flags에서도 resolve 6회를 실행합니다. patched discovery는 정확한 조건에서 빈 결과를 반환하며, **FS·path factory 호출 기록은 `[]`**입니다. 기존 3개 service capture와 나머지 source statements는 유지됐습니다. 다른 flags, explicit file, `null`·`0`·빈 문자열 분기도 원본 결과와 호출 기록을 유지합니다.\n\n최종 파일 SHA-256:\n\n```text\nb558dc361fabd28e0b69eadd9d4f8a4b6c6b6a2e8deed1fc43185b2e74d94929\n```\n\n실제 Effect와 추출한 원본 함수의 증거입니다. Config.entries·FS·Bus·Location/Global·Git 의존성은 명시적 standin입니다. 전체 Config layer 격리나 runtime/inventory 권한을 입증하지 않습니다.\n\nproduction·docs·ledger 수정, 전체552 재실행, self-approval은 없습니다. 독립 검토와 통합은 Main에 남깁니다."
+    }
+  },
+  "timed_out": false
+}

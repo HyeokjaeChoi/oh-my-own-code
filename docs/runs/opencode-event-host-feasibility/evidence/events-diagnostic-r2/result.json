@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "case": "events",
+  "status": "HOLD",
+  "namespace": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/db1611ff-bdeb-4ff5-a1ac-04c17016c66e",
+  "namespace_retained": true,
+  "before": {
+    "input_manifest_sha256": "f9b70a72f5f00da36b75e4666595d87266235b5254f49ed03162b8a8d927ee48",
+    "runtime_manifest_sha256": "7e5aa4c28b60e3a7415602ec1358d445889e64a23f15f8c8a32573779fc0c062",
+    "inventory_sha256": "40c2ad62f19a4bf090aa49908803eee1ff0afd096e9c776f44cf1f8f8aadbaad"
+  },
+  "after": {
+    "input_manifest_sha256": "f9b70a72f5f00da36b75e4666595d87266235b5254f49ed03162b8a8d927ee48",
+    "runtime_manifest_sha256": "7e5aa4c28b60e3a7415602ec1358d445889e64a23f15f8c8a32573779fc0c062",
+    "inventory_sha256": "40c2ad62f19a4bf090aa49908803eee1ff0afd096e9c776f44cf1f8f8aadbaad"
+  },
+  "journal": [
+    {
+      "type": "api-ack",
+      "method": "server.info"
+    },
+    {
+      "type": "authenticated-ready",
+      "pid": 96315,
+      "engine": "1.4.2"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.create"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.export"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.import"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.update"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.get"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.export"
+    },
+    {
+      "type": "api-ack",
+      "method": "message.list"
+    },
+    {
+      "type": "scope-closed",
+      "pid": 96315,
+      "reason": "requested",
+      "observation": {
+        "scope": "direct JS ChildProcess/Bun handles only; not arbitrary native/OS descendants",
+        "observerGap": false,
+        "handles": [
+          {
+            "id": 1,
+            "kind": "Bun.spawn",
+            "pid": 96325,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 2,
+            "kind": "node.spawn",
+            "pid": 96325,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 3,
+            "kind": "Bun.spawn",
+            "pid": 96327,
+            "exited": true,
+            "code": 2,
+            "signal": null
+          },
+          {
+            "id": 4,
+            "kind": "node.spawn",
+            "pid": 96327,
+            "exited": true,
+            "code": 2,
+            "signal": null
+          },
+          {
+            "id": 5,
+            "kind": "Bun.spawn",
+            "pid": 96328,
+            "exited": true,
+            "code": 128,
+            "signal": null
+          },
+          {
+            "id": 6,
+            "kind": "node.spawn",
+            "pid": 96328,
+            "exited": true,
+            "code": 128,
+            "signal": null
+          },
+          {
+            "id": 7,
+            "kind": "Bun.spawn",
+            "pid": 96329,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 8,
+            "kind": "node.spawn",
+            "pid": 96329,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 9,
+            "kind": "Bun.spawn",
+            "pid": 96330,
+            "exited": true,
+            "code": 2,
+            "signal": null
+          },
+          {
+            "id": 10,
+            "kind": "node.spawn",
+            "pid": 96330,
+            "exited": true,
+            "code": 2,
+            "signal": null
+          },
+          {
+            "id": 11,
+            "kind": "Bun.spawn",
+            "pid": 96331,
+            "exited": true,
+            "code": 128,
+            "signal": null
+          },
+          {
+            "id": 12,
+            "kind": "node.spawn",
+            "pid": 96331,
+            "exited": true,
+            "code": 128,
+            "signal": null
+          },
+          {
+            "id": 13,
+            "kind": "Bun.spawn",
+            "pid": 96332,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 14,
+            "kind": "node.spawn",
+            "pid": 96332,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 15,
+            "kind": "Bun.spawn",
+            "pid": 96333,
+            "exited": true,
+            "code": 2,
+            "signal": null
+          },
+          {
+            "id": 16,
+            "kind": "node.spawn",
+            "pid": 96333,
+            "exited": true,
+            "code": 2,
+            "signal": null
+          },
+          {
+            "id": 17,
+            "kind": "Bun.spawn",
+            "pid": 96334,
+            "exited": true,
+            "code": 128,
+            "signal": null
+          },
+          {
+            "id": 18,
+            "kind": "node.spawn",
+            "pid": 96334,
+            "exited": true,
+            "code": 128,
+            "signal": null
+          }
+        ],
+        "live": 0
+      }
+    },
+    {
+      "pid": 96315,
+      "code": 0,
+      "signal": null,
+      "observed": "ChildProcess.exit"
+    }
+  ],
+  "diagnostic": {
+    "stage": "message.list",
+    "name": "AssertionError",
+    "code": "ERR_ASSERTION",
+    "source_line": 206,
+    "assertion_operator": "=="
+  },
+  "result": null,
+  "limitation": "Direct JS handles only; no OS confinement, queued recovery, provider safety, pairing/PTY, power-loss, production adoption or P7 completion proof."
+}

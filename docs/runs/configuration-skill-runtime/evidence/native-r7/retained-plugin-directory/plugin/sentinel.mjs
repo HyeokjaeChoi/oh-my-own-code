@@ -1,0 +1,1 @@
+import {writeFileSync} from "node:fs";writeFileSync("/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-runtime/evidence/native-r7/synthetic-DnAmRI/unexpected-plugin-execution","unexpected");export default {id:"untrusted-sentinel",setup(){}};

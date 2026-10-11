@@ -1,0 +1,118 @@
+✔ MCP inactive registration and explicit connection lifecycle are durable, scoped and status-observed (126.050833ms)
+✔ MCP denied is rejected before any effect (50.08975ms)
+✔ MCP collision is rejected before any effect (39.30775ms)
+✔ MCP file-changed is rejected before any effect (47.57125ms)
+✔ MCP observation is workspace-scoped, read-only and rejects a different Native location (26.058083ms)
+✔ MCP file changed during confirmation is rejected before SDK mutation (38.84725ms)
+✔ MCP catalog changed during confirmation is rejected before SDK mutation (40.104625ms)
+✔ MCP permissions changed during confirmation is rejected before SDK mutation (39.96675ms)
+✔ MCP policy changed during confirmation is rejected before SDK mutation (41.087083ms)
+✔ MCP inbox changed during confirmation is rejected before SDK mutation (41.927584ms)
+✔ MCP checks busy in another session of the same workspace (48.884875ms)
+✔ MCP checks permissions in another session of the same workspace (52.066ms)
+✔ MCP checks policy in another session of the same workspace (64.080291ms)
+✔ MCP checks correlation in another session of the same workspace (54.623458ms)
+✔ MCP checks inbox in another session of the same workspace (55.036209ms)
+✔ MCP observed failed confirms only the connection attempt (71.427583ms)
+✔ MCP observed needs_auth confirms only the connection attempt (67.547583ms)
+✔ MCP owned already absent remove has no SDK effect and clears live ownership only after completion (60.729417ms)
+✖ MCP ACK with wrong-status stays unknown and keeps an original workspace-wide hold (78.942584ms)
+✖ MCP ACK with malformed stays unknown and keeps an original workspace-wide hold (73.316625ms)
+✖ MCP ACK with other-drift stays unknown and keeps an original workspace-wide hold (83.966833ms)
+✖ MCP ACK with policy-after-effect stays unknown and keeps an original workspace-wide hold (74.850083ms)
+✔ MCP completion failure never publishes speculative receipt or live ownership (51.935334ms)
+✖ MCP completion delay never publishes speculative receipt or live ownership (2038.995375ms)
+
+Interrupted while running:
+
+⚠ apps/desktop-app/src/host/storage-integration.test.mjs (apps/desktop-app/src/host/storage-integration.test.mjs:1:1)
+✖ apps/desktop-app/src/host/storage-integration.test.mjs (33272.245208ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 19
+ℹ fail 5
+ℹ cancelled 1
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 33275.470958
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2422:3
+✖ MCP ACK with wrong-status stays unknown and keeps an original workspace-wide hold (78.942584ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2491:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2422:3
+✖ MCP ACK with malformed stays unknown and keeps an original workspace-wide hold (73.316625ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2491:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2422:3
+✖ MCP ACK with other-drift stays unknown and keeps an original workspace-wide hold (83.966833ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2491:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2422:3
+✖ MCP ACK with policy-after-effect stays unknown and keeps an original workspace-wide hold (74.850083ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2491:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2498:3
+✖ MCP completion delay never publishes speculative receipt or live ownership (2038.995375ms)
+  TypeError: Cannot read properties of undefined (reading 'servers')
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2531:35)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:1:1
+✖ apps/desktop-app/src/host/storage-integration.test.mjs (33272.245208ms)
+  'Promise resolution is still pending but the event loop has already resolved'

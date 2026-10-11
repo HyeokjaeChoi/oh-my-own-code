@@ -1,0 +1,58 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "b833017322ce9804c43f660de4175bab101453fa271c751518df0d6b5131ddd2",
+    "contract_sha256": "2bb0715d60cedba46b9cd37b0a2dae4dfaecea1f13cfb7cdc213038e06569280",
+    "source_sha256": "83a5f247fed8bcbb2f511a6388a43e16f92736ad49dc1d7cc3467411d2d1b2b6",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "verification_sha256": "7f4ab8c4c3c6cf4dad9eeba1107578bab28b5cec835b5993db91599a6a0fdaf4"
+  },
+  "verdict": "changes_requested",
+  "summary": "Do not run even the early NO-RUN branch until the verifier entrypoint has a clean executable environment, the no-effects report truthfully classifies all controls, and source bytes are bound to what is executed.",
+  "open_findings": [
+    {
+      "severity": "high",
+      "path": ".solopreneur/harness.py:703; docs/runs/host-probe-isolation/contract.json:27",
+      "issue": "The bare `node` command resolves through inherited PATH and NODE_OPTIONS/loader state can execute code before verify.mjs; worker-level clean environment is too late.",
+      "correction": "Pin the absolute Node executable and invoke the verifier with an explicit literal clean environment; bind its exact runtime identity."
+    },
+    {
+      "severity": "high",
+      "path": "spikes/host-probe-isolation/preflight-worker.mjs:270,294; spikes/host-probe-isolation/verify.mjs:33",
+      "issue": "The early dependency-closure NO-RUN reports all controls as unavailable, despite none being evaluated, and the supervisor accepts that report.",
+      "correction": "Mark all seven controls unverified before returning and validate no-fixture/no-listener/child-not-started invariants in the supervisor."
+    },
+    {
+      "severity": "high",
+      "path": "spikes/host-probe-isolation/verify.mjs:101,115; spikes/host-probe-isolation/preflight-worker.mjs:196",
+      "issue": "The supervisor hashes worker/canary/profile paths and later executes or rereads them by pathname, leaving a replacement window; the worker's reported hashes are accepted without comparison.",
+      "correction": "Execute verified worker bytes from an immutable snapshot and pass/verify the other source bytes once, then use the same verified buffers for execution/profile generation."
+    },
+    {
+      "severity": "high",
+      "path": "spikes/host-probe-isolation/preflight-worker.mjs:199",
+      "issue": "The output-limit callback calls undefined killGroup(), throwing outside main cleanup and potentially leaving the fixture until the outer watchdog terminates the process.",
+      "correction": "Use the defined owned-child termination path, wait for confirmed child close/reap, then clean the owned fixture or report blocked cleanup."
+    },
+    {
+      "severity": "medium",
+      "path": "spikes/host-probe-isolation/profile.sb.in:17",
+      "issue": "The profile grants broad /System and /usr/lib subtree reads. An exact audited runtime closure is required before any canary launch.",
+      "correction": "Replace subtree grants with reviewed exact dependency paths before enabling canaries; until then keep the early NO-RUN gate."
+    }
+  ],
+  "verification_limits": [
+    "Strictly static code and hash review. No Node process, verifier, canary, sandbox, SDK, test, network or user configuration ran or was read.",
+    "Actual runtime dependency closure, macOS sandbox enforcement, and denial attribution remain unverified."
+  ],
+  "provenance": {
+    "child_task_id": "/root/precanary_code_reviewer_r2",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "high",
+    "runtime_identity_verified": false,
+    "review_mode": "fresh-context static security review"
+  }
+}

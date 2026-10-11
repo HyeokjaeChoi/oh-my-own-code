@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "sha256": "ccc4489a7cbea4e8d5279ee8265c770022d8c18a52b9183c50ea169c0efb9851",
+      "bytes": 67531
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-session-entry.test.mjs",
+      "sha256": "080769937f66a227a5c90440b22a65921b22de538666ce657667a592e1d6066a",
+      "bytes": 10362
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "sha256": "cca315ef9b0a7dffb137b538625160b05d9c1bd666ea81cf210e8fcb6050856c",
+      "bytes": 18297
+    }
+  ],
+  "recipe_sha256": "080974b896b18d9f5068bc63b2bdb6b3631521919f87a4cf704a239ef7a23b1b",
+  "native_create_chunk_sha256": "0b365a3c2be9ba0698beb85865a9091b48d12c4f5758317fe173964c0556f819",
+  "checks": [
+    {
+      "log": "native-bootstrap-entry-red-r1.log",
+      "result": "meaningful failure: actual extracted create returned existing session before any bootstrap gate"
+    },
+    {
+      "log": "native-bootstrap-entry-green-r1.log",
+      "passed": 12,
+      "scope": "actual extracted Native entry functions and exact source transformation recipe"
+    },
+    {
+      "log": "native-bootstrap-stage-r1.log",
+      "passed": 2,
+      "scope": "current source dependency closure and mandatory recipe copied into inert synthetic staging"
+    }
+  ],
+  "static": {
+    "eslint": "pass exact3",
+    "prettier": "pass exact3"
+  },
+  "behavior": [
+    "Native Session.create refuses before input getters, Native ID allocation, session store access, project resolution or bus publication",
+    "Service bootstrap/create/fork guard prevents bypass through Main while private bootstrap authority is pending",
+    "Existing actual Node fixed-read physical lease lifecycle remains unchanged"
+  ],
+  "limits": [
+    "Bootstrap positive method handoff and inventory/mode authority are still unimplemented",
+    "No Native/Bun/Electron/build/provider/server/UI executed",
+    "Bounded root/IO reviewer excludes this disjoint entry patch; whole-source final CODE still pending"
+  ]
+}

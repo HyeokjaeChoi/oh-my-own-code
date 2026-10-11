@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "scope": "Read-only next-integration analysis, no production authority or runtime claim",
+  "sources": [
+    {
+      "path": "apps/desktop-app/src/main.mjs",
+      "sha256": "285a02f92bd88a9d237187a70464773a5be2dc13a50cafd506397c6c46ed4cf9"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workspace-registry.mjs",
+      "sha256": "5eeb5459fde0c3a16bb5e2c726a822caad62585621227a7ecd24ce00aff4caf8"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "sha256": "82be0c149a3d9f0f82993dc4c893bb67cb89f6380fed46208942170353a66a89"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-leases.mjs",
+      "sha256": "48e99b962348b104e7ab947d8f01c980e4a5c01aea3edee958ed0229cbabc9cc"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-origin-scopes.mjs",
+      "sha256": "0f496ac5d77d095f4afc5f43e4f7db4d90048a2abe6f89b6609e956b41a31f53"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "sha256": "79ac78b01c1d2188031e1e0e1030e563c9f83d89139180d7d66fabbb4f587c2d"
+    }
+  ],
+  "facts": [
+    {
+      "id": "main-owner-fence-candidate",
+      "fact": "Main spreads actual storage methods into registry, then owner-wraps an explicit list. New recordTask, recordPermissionReconciled and permissionProgress are exposed by spread but omitted from the fence list. Production taskAuthoritySource and permissionReconciliationSource are not passed, so task/reconciliation positive admission currently refuses; do not claim an observed unauthorized journal write.",
+      "next": "Reproduce on exact extracted inert Main facade with lost owner. Add all new mutating methods to same owner fence, preserve synchronous invalidateTaskAuthority on loss. No Electron/Main import required."
+    },
+    {
+      "id": "authority-source-location",
+      "fact": "taskAuthoritySource is a private openWorkspaceRegistry constructor input in Main journal lane, not a createNativeLeaseRegistry constructor option. Current leases/origins do not consume a source named taskAuthoritySource.",
+      "next": "Keep genuine Main child-fact verifier distinct from Native current Fiber/scope/lease authority. No constructor signature invented from historical summary."
+    },
+    {
+      "id": "read-io-next",
+      "fact": "Fixed resource/nativefiles seam is IO only. Control.prepareTask remains held, inventorySnapshot complete:false and inventoryGuard rejects. Read source is unpublished metadata-only.",
+      "next": "Complete FileAccess/alternate/missing/AGENTS/SessionInstructions raw IO under same original Task/root before publishing Read; bind store context and Synthetic bus as original task effects."
+    },
+    {
+      "id": "owner-lifetime-current",
+      "fact": "Current Main already imports createLifetimeWitness from host/owner-lifetime.mjs. Historical statement that no witness exists is stale.",
+      "next": "Read its current independent runtime evidence before making standalone same-boot restart claims; no owner runtime re-executed in this increment."
+    }
+  ],
+  "holds": [
+    "No defaultallow or synthetic generation",
+    "No dummy taskAuthoritySource callback",
+    "No Native/server/provider/Main execution",
+    "Current r4 physical probe still pending fresh CODE/preExec"
+  ]
+}

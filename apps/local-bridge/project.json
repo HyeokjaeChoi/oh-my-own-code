@@ -1,0 +1,44 @@
+{
+  "name": "local-bridge",
+  "projectType": "application",
+  "sourceRoot": "apps/local-bridge/src",
+  "tags": ["platform:server", "scope:bridge"],
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build"],
+      "options": { "command": "pnpm exec tsx apps/local-bridge/src/server.ts" }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "command": "pnpm exec tsc -p apps/local-bridge/tsconfig.build.json"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec tsc -p apps/local-bridge/tsconfig.json --noEmit"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec eslint --config apps/local-bridge/eslint.config.mjs apps/local-bridge/src"
+      }
+    },
+    "format-check": {
+      "executor": "nx:run-commands",
+      "options": { "command": "pnpm exec prettier --check apps/local-bridge" }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^build"],
+      "options": {
+        "command": "node --import tsx --test apps/local-bridge/src/*.test.ts"
+      }
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "schema_version": 2,
+  "run": "durable-owner-lifetime",
+  "reviewer": "design_spec_reviewer",
+  "plan_revision": 1,
+  "design_version": "1",
+  "reviewed": {
+    "contract_sha256": "ceaa5bf5c5ce8463c15a87b8351431e7fa88d4113720c012756e6c1c4af86b21",
+    "documents_sha256": "227a857322b480ff3d5936a9fa14e86f23932c764c4e3e97406867f75e3495f1",
+    "gate": "design_spec",
+    "plan_sha256": "fa862c8d89ff01dc5e7a065e579763240db96a31df09184f3cba5df3ee687a64",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "changes_requested",
+  "summary": "design1의 evidence-only macOS kqueue 방향은 기존 v5 owner 계약과 맞습니다. App 등록 ACK 전에 owner ready를 공개하지 않고, child 등록과 recordChild 완료 전에 Native init을 보내지 않는 경계도 적절합니다. 그러나 terminal의 전체 registration 집합을 owner record와 비교할 책임과 입력이 닫히지 않았습니다. 또 완전한 terminal 바이트를 쓴 뒤 flush가 실패한 경우의 다음 앱 검증 정책이 없습니다. 이 두 계약을 닫아야 소비자가 같은 규칙으로 구현할 수 있습니다. 현재 review binding은 제공된 입력과 정확히 일치합니다. 이 판정은 계획 재승인, 구현 승인 또는 Parent P7 완료 판정이 아닙니다.",
+  "open_findings": [
+    {
+      "id": "D1",
+      "severity": "P1",
+      "status": "confirmed_design_gap",
+      "title": "전체 app·child 집합 비교에 필요한 입력과 책임을 정하십시오",
+      "artifact_location": {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-owner-lifetime/design.md",
+        "start": 51,
+        "end": 53
+      },
+      "affected_consumer": "createStorageOwner의 이전 generation 재획득과 createLifetimeWitness.verify",
+      "acceptance_ids": [
+        "W2",
+        "W3"
+      ],
+      "evidence": [
+        "11행의 closed context에는 root, rootIdentity, ownerNonce, role, identity만 있습니다. 이전 owner의 전체 app·child 집합은 없습니다.",
+        "43행의 context.json에는 app만 있습니다. terminal에는 optional child registration과 exit hash도 있습니다.",
+        "53행은 terminal의 optional child proof 존재 여부가 owner record와 정확히 같아야 한다고 요구합니다.",
+        "기존 storage-lock.mjs 242~248행은 이전 app과 기록된 child를 각각 검증합니다. child=null이면 child 검증 호출이 없습니다.",
+        "새 witness 인스턴스가 app context만 받으면, terminal에 child가 있는 것이 정상인 owner와 child=null인 owner를 구분할 수 없습니다. 모든 child terminal을 app 단계에서 거부하면 정상 child owner도 재획득할 수 없습니다."
+      ],
+      "impact": "역할별 exited 결과만으로는 terminal의 전체 집합과 owner record의 정확한 일치를 보장할 수 없습니다. 암묵적 호출 순서나 이전 register 메모리에 의존하면 별도 앱의 production 검증 경로가 달라집니다.",
+      "smallest_precise_correction": "verify 입력에 검증한 이전 owner의 expectedRegistrations:{app,child:null|identity}를 포함시키고, 동일한 검증 snapshot에서 context와 terminal의 전체 집합을 비교하도록 명시하십시오. createLifetimeWitness의 생성 API, public owner handle, owner.json v5와 DTO는 유지할 수 있습니다. 현재 closed context를 유지하려면, owner가 전체 proof 집합을 비교하는 별도 책임과 데이터 경로를 명시해야 합니다. helper가 owner.json을 읽게 해서는 안 됩니다.",
+      "required_verification": [
+        "owner child=null인데 terminal에 child가 있는 경우를 거부합니다.",
+        "owner child가 있는데 proof가 없거나 다른 identity인 경우를 거부합니다.",
+        "새 witness 인스턴스로 정상 app-only와 app+child generation을 각각 검증합니다.",
+        "역할별 검증 사이에 파일 집합이 바뀌면 이전 결과를 조합해 승인하지 않습니다."
+      ]
+    },
+    {
+      "id": "D2",
+      "severity": "P2",
+      "status": "confirmed_design_gap",
+      "title": "완전한 terminal 뒤 flush 실패의 재검증 정책을 정하십시오",
+      "artifact_location": {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-owner-lifetime/design.md",
+        "start": 49,
+        "end": 51
+      },
+      "affected_consumer": "C helper의 terminal 발행과 다음 앱의 historical proof 검증",
+      "acceptance_ids": [
+        "W3",
+        "W4"
+      ],
+      "evidence": [
+        "29행은 uncertain flush를 거부하고 실패한 바이트를 보존하도록 요구합니다.",
+        "49행은 고정 terminal 파일을 exclusive creation으로 쓰고 fsync(file), fsync(generation)을 수행하도록 정합니다.",
+        "전체 terminal line을 쓴 다음 file 또는 directory fsync가 실패하면, 완전하고 hash-valid인 바이트가 남을 수 있습니다.",
+        "stdout에는 registration READY와 FAILED만 있습니다. 부모가 이미 종료한 terminal 발행 단계에는 다음 앱이 읽을 durable completion 결과가 별도로 없습니다.",
+        "verify가 살아남은 바이트를 직접 다시 flush하는지, helper의 이전 flush 성공을 요구하는지 명시되지 않았습니다."
+      ],
+      "impact": "구현자가 완전한 terminal을 성공 발행으로 취급하면 uncertain flush 거부 규칙을 만족하지 못합니다. 반대로 이전 fsync 성공을 파일 바이트에서 추론하려 하면 구현할 수 없는 검증 조건이 됩니다. 이는 가짜 NOTE_EXIT가 확인됐다는 finding이 아니라, 증거 발행과 수용 정책의 공백입니다.",
+      "smallest_precise_correction": "evidence-only 특성에 맞게 verifier가 완전하고 context-matched인 모든 proof 파일과 generation을 성공적으로 flush하고, 동일 snapshot을 다시 확인한 뒤 lifetime 사실을 수용하는 정책을 명시하십시오. 이 경우 helper의 이전 flush 성공이나 ACK를 추론하지 않는다고 쓰고, uncertain flush 거부는 verifier의 현재 실패에도 적용하십시오. helper의 미완료 발행 자체를 반드시 영구 거부해야 한다면, 이를 구분할 발행 프로토콜을 별도로 정해야 합니다. checksum만으로 그 구분을 대신하지 마십시오.",
+      "required_verification": [
+        "terminal 전체 line을 쓴 직후 file fsync가 실패한 상태로 별도 verifier를 실행합니다.",
+        "generation fsync 실패와 terminal write 직후 helper 종료도 같은 정책으로 처리합니다.",
+        "현재 verifier의 flush 또는 snapshot 재확인이 실패하면 exited를 반환하지 않습니다.",
+        "살아남은 lifetime 사실의 수용을 owner write 성공, Native startup 또는 effect 성공으로 확대하지 않습니다."
+      ]
+    }
+  ],
+  "assessment": {
+    "scope_and_authority": "Helper의 권한은 이전 generation의 lifetime 증거에 한정됩니다. singleton, owner, journal, Native database와 project 쓰기 권한을 주지 않습니다. Observer ACK는 등록 완료의 증거입니다. Native startup 또는 effect 권한이 아닙니다.",
+    "os_identity": "현재 macOS adapter는 boot UUID 문자열의 SHA256과 libproc seconds:microseconds 문자열의 SHA256을 사용합니다. design1의 hash 형식은 이 알고리즘과 맞습니다. Helper는 PID를 재결합하지 않고 attach 전후 identity를 비교해야 합니다. PID 부재와 대체 PID는 종료 증거가 아닙니다.",
+    "kqueue": "NOTE_EXIT는 선택한 lifetime 관찰에 맞는 OS primitive입니다. EV_RECEIPT 성공의 EV_ERROR/data=0과 실제 오류를 구분해야 합니다. 이는 현재 문장의 구현 주의사항이며 별도 차단 finding으로 세지 않았습니다.",
+    "registration_and_async_fences": "App registration 완료 뒤 candidate를 persist하고, child registration 완료 뒤 recordChild를 persist하는 순서는 적절합니다. await 뒤 kernel/root/record 재확인도 명시돼 있습니다. 기존 owner serial lane과 event-host의 recordChild 대기를 사용할 수 있습니다. Timeout이 끝난 뒤 늦은 ACK가 authority를 되살리지 않도록 구현해야 합니다.",
+    "ipc_and_wait": "고정 frame, 단일 child, seal, EOF와 NOTE_EXIT의 구분, SIGPIPE 무시와 app 종료 뒤 monotonic 15초 deadline은 구현 가능한 경계입니다. Helper의 stdin 대기가 kqueue 관찰을 막지 않아야 합니다. Parent는 helper 종료를 기다리느라 자기 종료를 막아서는 안 됩니다. 실제 정상 종료와 abrupt 종료 probe가 이 동작을 확인해야 합니다.",
+    "proof_security": "Nonce/root/inode/role/birth/boot 결합, single-link 파일, mode 제한, descriptor/path 재확인과 bounded read는 적절합니다. SHA256은 corruption 검출입니다. Hostile same-user authenticity 또는 OS sandbox를 증명하지 않습니다.",
+    "package_and_api": "darwin-arm64 전용 packaged resource, manifest/hash/provenance 확인, zero-spawn rejection과 전역 binary 금지는 기존 build/package 소비자에 통합할 수 있습니다. C source와 staging script도 source provenance 범위에 넣어야 합니다. 현재 provenance의 source extension 목록에는 .c가 없으므로 명시적 범위 추가가 필요합니다. 이는 설계에 이미 요구한 provenance 통합의 구현 사항입니다.",
+    "python_boundary": "기존 createOSProcessIdentityAdapter는 /usr/bin/python3를 사용합니다. 승인된 plan review는 helper 자체의 Python 비의존성과 전체 runtime 의존성을 구분했습니다. 이 bounded 변경의 차단 사항으로 다시 제기하지 않습니다. 전체 앱의 Python 비의존성을 주장해서는 안 됩니다.",
+    "native_startup_and_parent_p7": "freshNativePreflight는 유지됩니다. Lifetime proof가 통과해도 nonfresh Native startup은 허용되지 않습니다. Production lifetime 구현과 별도 safe Native startup이 해결되기 전까지 Parent P7은 미충족입니다."
+  },
+  "binding_verification": {
+    "provided_input_exact_match_at_start": true,
+    "provided_input_exact_match_at_end": true,
+    "registered_design_sha256_matches": true,
+    "routing_file_hashes_match": true,
+    "run_status": "active",
+    "work_class": "major",
+    "plan_review_verdict": "pass",
+    "design_sha256": "092315aa5c6785b3279134b1f841ec40fb199ef6b0dc120aa5f160b4228f228c"
+  },
+  "provenance": {
+    "child_task_id": "01a116ac-3f17-7b53-b76e-025eca071737",
+    "child_id_source": "CODEX_THREAD_ID",
+    "run_id": "durable-owner-lifetime",
+    "reviewer_role": "design_spec_reviewer",
+    "profile": "solo_reader",
+    "independent_report_only": true,
+    "profile_instructions_read": ".codex/agents/solo_reader.toml",
+    "skills_read": [
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-design-spec-review/SKILL.md"
+    ],
+    "handoff_packet": "docs/runs/durable-owner-lifetime/design-review-r1.packet.json",
+    "binding_source": "docs/runs/durable-owner-lifetime/design-review-r1.input.json",
+    "binding_validation": "Read-only harness review-input 출력을 검토 시작과 종료에 확인했습니다. 제공된 binding과 정확히 일치했습니다.",
+    "review_boundary": "design1의 backend 계약, 기존 owner/OS identity/event-host/build/package 소비자와 macOS primitive 문서를 정적으로 검토했습니다. Plan revision1의 독립 pass를 다시 판단하지 않았습니다.",
+    "recursive_delegation": false,
+    "files_written": false,
+    "ledger_written": false,
+    "tests_executed": false,
+    "build_or_package_executed": false,
+    "native_or_ui_launched": false,
+    "private_data_accessed": false,
+    "runtime_identity_attested": false,
+    "os_sandbox_attested": false,
+    "evidence_limits": "문서, 소스와 read-only binding 확인만 수행했습니다. 현재 C helper 구현, 실제 NOTE_EXIT, flush 실패, helper 생존, packaged 실행과 standalone owner 재획득을 실행 검증하지 않았습니다."
+  },
+  "next_dependency": "Coordinator가 D1과 D2의 계약을 닫고 변경된 design binding에 대한 독립 판단을 확보합니다. 이후 지정된 구현과 contracted checks를 진행합니다. 승인된 계약 안의 routine 구현 수정에는 반복 design entry approval을 추가하지 않습니다. 이 reviewer는 보고서나 ledger를 저장하지 않습니다."
+}

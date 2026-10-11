@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "report_type": "ENTRY_PLAN",
+  "reviewed": {
+    "contract_sha256": "03e47be0915f174eb6019ea66b900e3414a51bbae012e4d3709d1b4bc44000ee",
+    "gate": "plan",
+    "plan_sha256": "e4c89b2727112aba053a4b855495696bfcbff538415f5b9843e491ad9ede0298",
+    "schema_version": 2,
+    "source_sha256": "ca2a82bbbcc2ac3715010b0a7dc74159a79faa2071816eb859ab9ce2344479a6",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "permission-input-digest plan revision 1의 PLAN 검토를 통과합니다. 미정이던 actual inputDigest 계약의 최초 정의에 한정한 major 분류가 타당합니다. accepted fullF09 범위는 유지됩니다.",
+  "open_findings": [],
+  "assessment": [
+    "현재 Main session.prompt는 sessionID, text, 선택적 delivery와 files를 전달합니다. 제안한 닫힌 입력과 일치합니다. text 32000 UTF-16 units, 첨부 8개, text/plain 64KiB, 기타 파일 8MiB, 첨부 합계 16MiB 제한도 현재 계약과 일치합니다.",
+    "text와 정확한 data URI의 leaf hash를 compact metadata에 넣는 방식은 구현 가능합니다. 선택적 필드의 존재 여부, 파일 순서, name, MIME과 길이를 함께 결합합니다. raw attachment를 1MiB canonical control budget에 넣거나 기존 digest domain을 변경할 필요가 없습니다.",
+    "filename 조건은 기존 single-segment grammar와 함께 적용해야 합니다. 현재 grammar의 실제 component 상한은 255 UTF-8 bytes입니다. 문서의 2048-byte 조건이 이 상한을 확대하지 않습니다. 경계 테스트는 255/256 bytes도 포함해야 합니다.",
+    "Proxy와 accessor 거부 후 동기적으로 입력을 분리하는 접근은 기존 Node 검사 방식으로 구현할 수 있습니다. canonical base64와 decoded 길이 및 합계 검증은 decoding 전에 수행할 수 있습니다.",
+    "Main의 구현 소유권은 새 helper와 test 두 파일로 제한됩니다. 두 파일이 현재 없음을 확인했습니다. 기존 canonical/digest, Main service, Native, DTO와 runtime 변경은 포함하지 않습니다.",
+    "독립 digest vector, 필드 변경, presence/order, Unicode, hostile structure, base64 및 크기 경계 테스트와 scoped lint/format, 독립 final CODE 검토는 이번 helper 범위에 적절합니다. helper 부재는 현재 단계의 예상 상태입니다.",
+    "inputDigest는 payload identity만 제공합니다. durable original admission과 native.send intent를 대체하지 않습니다. 실제 Native binding, genuine messageID 연결, generation 검증과 coherent resource closure는 후속 종속 작업으로 계속 보류됩니다.",
+    "별도 DESIGN_SPEC entry gate를 유지합니다. entry 설계가 승인된 뒤 같은 계약의 routine 구현에는 반복 PLAN/DESIGN 검토가 필요하지 않습니다."
+  ],
+  "limitations": [
+    "판정은 entry-plan-input-r1.json의 전체 객체와 plan revision 1에 한정됩니다.",
+    "DESIGN_SPEC, CODE, Native 동작 또는 fullF09 완료를 승인하지 않습니다.",
+    "문서와 관련 소스를 정적으로 읽었습니다. plan, supplement와 routing skill/profile의 파일 hash 일치를 확인했습니다.",
+    "테스트, runtime import, Bun, Native, build 또는 provider를 실행하지 않았습니다. private original IO를 열지 않았습니다.",
+    "파일과 ledger를 수정하지 않았으며 재위임하지 않았습니다. Main이 이 raw report를 저장해야 합니다."
+  ]
+}

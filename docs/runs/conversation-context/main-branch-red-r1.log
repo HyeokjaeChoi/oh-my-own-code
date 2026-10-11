@@ -1,0 +1,52 @@
+✖ context before-user branch validates Native boundary and never prompts or restores files (9.910667ms)
+✖ context before-user branch refuses assistant targets before Native fork (2.321042ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 72.416583
+
+✖ failing tests:
+
+test at apps/desktop-app/src/workbench-service.test.mjs:1167:1
+✖ context before-user branch validates Native boundary and never prompts or restores files (9.910667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+  -     before: 'user-before',
+        sessionID: 'sdk-default'
+      }
+    ]
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-service.test.mjs:1173:61)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { sessionID: 'sdk-default' } ],
+    expected: [ { sessionID: 'sdk-default', before: 'user-before' } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/workbench-service.test.mjs:1175:1
+✖ context before-user branch refuses assistant targets before Native fork (2.321042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-service.test.mjs:1177:143)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

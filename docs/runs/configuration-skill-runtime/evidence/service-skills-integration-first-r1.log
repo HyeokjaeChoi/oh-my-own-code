@@ -1,0 +1,88 @@
+✖ Native Skills durable explicit inactive registration, one session record, duplicate and removal preserve file/history (58.601958ms)
+✖ Native Skills cancel refuses before producer effect (39.2175ms)
+✖ Native Skills file-race refuses before producer effect (42.9945ms)
+✖ Native Skills lost-observation refuses before producer effect (52.472833ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 256.986792
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:3423:1
+✖ Native Skills durable explicit inactive registration, one session record, duplicate and removal preserve file/history (58.601958ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"INVALID_REQUEST","message":"Invalid workbench request."}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:3427:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:3487:3
+✖ Native Skills cancel refuses before producer effect (39.2175ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'INVALID_REQUEST'
+  - 'CANCELLED'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:3504:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INVALID_REQUEST',
+    expected: 'CANCELLED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:3487:3
+✖ Native Skills file-race refuses before producer effect (42.9945ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'INVALID_REQUEST'
+  - 'FILE_CHANGED'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:3504:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INVALID_REQUEST',
+    expected: 'FILE_CHANGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:3487:3
+✖ Native Skills lost-observation refuses before producer effect (52.472833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'INVALID_REQUEST'
+  - 'SKILL_CHANGED'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:3504:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'INVALID_REQUEST',
+    expected: 'SKILL_CHANGED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

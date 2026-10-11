@@ -1,0 +1,75 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "description": "Matrix covers four capability groups across Codex, Claude Code/Desktop, OpenCode Desktop, and Cursor with first-party citations; within workspace lifecycle it separately covers import, create, remove from app list/archive, and physical disk/worktree delete."
+    },
+    {
+      "id": "AC-2",
+      "description": "Report separates directly documented facts, inference, and documentation gaps."
+    },
+    {
+      "id": "AC-3",
+      "description": "Repository audit separately identifies actual Electron implementation for import, create, remove from app list/archive, and physical disk/worktree delete; distinguish PRD target, partial state, and actual implementation with code references."
+    },
+    {
+      "id": "AC-4",
+      "description": "Report recommends a coherent product baseline and sequenced next slices with risks without implementing or changing approved contracts."
+    }
+  ],
+  "checks": {
+    "report-structure": {
+      "argv": [
+        "python3",
+        "-c",
+        "from pathlib import Path; import re; p=Path('docs/research/workbench-feature-landscape.md'); s=p.read_text(); required=['## 벤더 기능 비교','## 현재 저장소 구현 범위','## 이 앱에 필요한 제품 기준선','## 출처','| **Import:','| **Create:','| **Remove from app list / archive**','| **Physical delete:','| **우측 아티팩트 패널**','| **도구 호출·승인·결과**','| **Skills / MCP / plugin 목록**']; assert all(x in s for x in required); assert s.count('https://') >= 12; bad=[u for u in re.findall(r'\\[[^]]+\\]\\(([^)]+)\\)',s) if not u.startswith(('https://','http://','#','mailto:')) and u.split('#',1)[0] and not (p.parent/u.split('#',1)[0]).resolve().exists()]; assert not bad, bad"
+      ],
+      "cwd": ".",
+      "scope": "Research report required sections and linked sources",
+      "acceptance_ids": [
+        "AC-1",
+        "AC-2",
+        "AC-3",
+        "AC-4"
+      ],
+      "required": true
+    },
+    "tracked-whitespace": {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": ".",
+      "scope": "Whitespace errors in tracked working-tree diff",
+      "acceptance_ids": [
+        "AC-4"
+      ],
+      "required": false
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [],
+  "decision_register": [
+    {
+      "id": "DR-1",
+      "statement": "Use preserved approved feature scope and the explicitly user-selected Electron/macOS/Windows/app-owned-sidecar target; compare against PRD/UX v0.6 amendments as current research context, while preserving their review-required and exact-hash approval status.",
+      "status": "confirmed",
+      "source": "User request; docs/decisions/0002-desktop-runtime.md; docs/product/prd.md and docs/design/specs/workbench-ux.md headers; docs/engineering/spec-index.md v0.12",
+      "impact": "Bounds comparisons and product fit.",
+      "blocks": [],
+      "resolution": "Separate user-selected shell and preserved approved feature scope from unapproved amended document hashes; do not infer vendor parity beyond sources."
+    },
+    {
+      "id": "DR-2",
+      "statement": "This run produces research recommendations and does not alter product scope or code.",
+      "status": "confirmed",
+      "source": "Current user request asks to research the requested baseline features.",
+      "impact": "Prevents premature implementation before evidence synthesis.",
+      "blocks": [],
+      "resolution": "Write a report and identify proposed follow-up decisions only."
+    }
+  ]
+}

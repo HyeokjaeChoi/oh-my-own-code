@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "eb99a82eab90228956308cca7bb58621e69c2e5e197e12defaa9c414cc3a797a",
+    "environment_sha256": "a768b935b68bced02a848ba606c0256ee223732d0800f5b2f99e553189a6322d",
+    "gate": "code",
+    "plan_sha256": "ce0b6110a0c29fe57b11f7b0e4c7689ba56c509cbd1a5ecf585c121e1d2d8664",
+    "schema_version": 2,
+    "source_sha256": "6401814e676f13783d3ecb0b106a1e08eddd9f422899b3877e420e88729d8f68",
+    "verification_sha256": "2b5092bef25c13bb6956a6a0224e7a323594af86a854a1ec1a9e0388eebbdd97",
+    "work_class_sha256": "e607760a80d9b949d27d76cab2f4026ba62d2c79bf1cd2a4c60b36c77755a99e"
+  },
+  "verdict": "changes_requested",
+  "summary": "\uba85\uc138 \uc900\uc218\uc640 \ucf54\ub4dc \ud488\uc9c8\uc744 \ubcc4\ub3c4\ub85c \uac80\ud1a0\ud588\uc2b5\ub2c8\ub2e4. variant\uc758 \uc6d0\ub798 \uc694\uccad digest, \uc591\ucabd policy \ub2e8\uacc4, omission \uc720\uc9c0, \ub2eb\ud78c public projection, \uc11c\ub85c \ub2e4\ub978 session/assistant \ubcf4\uace0, \ub2a6\uc740 \uacb0\uacfc \ucc28\ub2e8, unknown \uc6d0\ub798 \ud0a4 \uc870\ud68c \uacbd\ub85c\uc5d0\uc11c \ucd94\uac00 \uacb0\ud568\uc740 \ud655\uc778\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4. \uc18c\uc2a4 696\uac1c\uc640 \uc785\ub825 hash 6\uac1c, \ubcc0\uacbd \uacbd\ub85c 35\uac1c, beforebytes\uc640 27\uac1c \uacbd\ub85c\uc758 patch\uac00 \uc77c\uce58\ud569\ub2c8\ub2e4. inbound managed \uacbd\ub85c 8\uac1c\uc758 hash, UI runner\uc758 \uc774\uc804 \ubcf4\uc874\ubcf8\uacfc selector \uad50\uccb4 9\uac1c, line-feedback \uad50\uccb4 2\uac1c\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4. \uc774\uc804 UI review\uc758 evidence hash\uc640 \uc785\ub825\ub3c4 \uc77c\uce58\ud569\ub2c8\ub2e4. \uc800\uc7a5\uc18c \ubc16 check-input-reuse run \uc6d0\ubcf8\uc740 \uc9c1\uc811 \uac80\uc99d\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uae30\ub85d\ub41c \uac80\uc0ac 8\uac1c\ub294 \ubaa8\ub450 \ud1b5\uacfc\ud588\uace0, scoped binding 6\uac1c\ub97c \ub3c5\ub9bd \uacc4\uc0b0\ud588\uc2b5\ub2c8\ub2e4. PNG 41\uac1c\uc758 hash\u00b7\uce58\uc218\uc640 \ucea1\ucc98 \uc804\ud6c4\u00b7\ud604\uc7ac build provenance\ub3c4 \uc77c\uce58\ud569\ub2c8\ub2e4. \uc544\ub798 2\uac1c \uc218\uc815\uc774 \ud544\uc694\ud569\ub2c8\ub2e4. \ud30c\uc77c \ubcc0\uacbd, ledger \uba85\ub839, \uc704\uc784, runtime \uc2e4\ud589, \uad11\ubc94\uc704\ud55c suite \uc7ac\uc2e4\ud589\uc740 \ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. provider\u00b7production Main\u00b7private store\u00b7Windows \ub3d9\uc791\uc740 \uac80\uc99d\ud558\uc9c0 \uc54a\uc558\uc73c\uba70, full18 \ub610\ub294 release \uc2b9\uc778\ub3c4 \uc544\ub2d9\ub2c8\ub2e4.",
+  "open_findings": [
+    {
+      "id": "F1",
+      "severity": "P2",
+      "path": "docs/runs/conversation-runtime-options/contract.json",
+      "line": 99,
+      "trigger": "boundaries \ud1b5\uacfc \ud6c4 docs/design/tokens/tokens.css\ub9cc \ubcc0\uacbd\ud558\uace0 \uc774\uc804 \uac80\uc0ac \uacb0\uacfc\ub97c \uc7ac\uc0ac\uc6a9\ud560 \ub54c.",
+      "impact": "\uc2e4\uc81c boundary \uac80\uc0ac \uacb0\uacfc\uac00 \ub2ec\ub77c\uc838\ub3c4 input_binding_sha256\uac00 \uc720\uc9c0\ub418\uc5b4 \uc774\uc804 \ud1b5\uacfc \uacb0\uacfc\ub97c \uc7ac\uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.",
+      "evidence": "renderer.tsx:3\uc774 token CSS\ub97c import\ud558\uace0, check-renderer-boundaries.mjs:511 \ubc0f :566\uc774 \ud574\ub2f9 \ud30c\uc77c\uc744 \uc77d\uace0 dependency\ub97c \uc21c\ud68c\ud569\ub2c8\ub2e4. \uc774 \uacbd\ub85c\ub294 boundaries.input_scope, \uc790\ub3d9 guards, environment_files\uc5d0 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uc744 \uc4f0\uc9c0 \uc54a\uace0 token CSS\uc5d0 \uae08\uc9c0\ub41c \uc678\ubd80 @import\ub97c \ucd94\uac00\ud55c \uba54\ubaa8\ub9ac \uac80\uc99d\uc5d0\uc11c \uc2e4\uc81c checker\ub294 \uc624\ub958\ub97c \ubc18\ud658\ud588\uc2b5\ub2c8\ub2e4. \uadf8\ub7ec\ub098 \ub3c5\ub9bd \uacc4\uc0b0\ud55c boundaries binding\uc740 e2673d24376a9dfccce9d877a57e6f779fad9713b889728da9b9d975ddb30e6e\ub85c \uadf8\ub300\ub85c\uc600\uc2b5\ub2c8\ub2e4. \ud604\uc7ac \uc18c\uc2a4\uc758 \ud1b5\uacfc \uacb0\uacfc \uc790\uccb4\ub294 \uc720\ud6a8\ud569\ub2c8\ub2e4.",
+      "correction": "boundaries.input_scope\uc5d0 docs/design/tokens\ub97c \ud3ec\ud568\ud558\uace0, \ud574\ub2f9 \uac80\uc0ac binding\uacfc \uc601\ud5a5\ubc1b\ub294 \ucd5c\uc885 review \uc785\ub825\uc744 \uac31\uc2e0\ud558\uc138\uc694."
+    },
+    {
+      "id": "F2",
+      "severity": "P2",
+      "path": "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "line": 635,
+      "trigger": "\ud604\uc7ac renderer\ub85c legacy \ub610\ub294 \uae30\ubcf8 all family\ub97c \uc2e4\ud589\ud558\uc5ec assertComposerGeometry\uc5d0 \ub3c4\ub2ec\ud560 \ub54c.",
+      "impact": "\uc0c8 \uc785\ub825 \uad6c\uc870\ub97c \uc774\uc804 geometry \uae30\uc900\uc73c\ub85c \uce21\uc815\ud558\ubbc0\ub85c runner\uac00 \uc2dc\uc791 \ub2e8\uacc4\uc5d0\uc11c \uc2e4\ud328\ud558\uace0 \uc774\ud6c4 legacy \uac80\uc99d\uc744 \uc9c4\ud589\ud558\uc9c0 \ubabb\ud569\ub2c8\ub2e4.",
+      "evidence": "selector \uad50\uccb4 \ud6c4 parentElement\ub294 toolbar\uac00 \uc544\ub2c8\ub77c conversation/index.tsx:710\uc758 Agent label\uc785\ub2c8\ub2e4. conversation.module.css:725\ub294 \uc774 label\uc744 \uc138\ub85c flex\ub85c \ubc30\uce58\ud558\ubbc0\ub85c label \ub192\uc774\ub294 20px \ud14d\uc2a4\ud2b8\uc640 32px select\ub97c \ud3ec\ud568\ud569\ub2c8\ub2e4. \uadf8\ub7ec\ub098 runner:647\uc740 \uc774\ub97c 32px toolbar\ub85c \uac80\uc0ac\ud569\ub2c8\ub2e4. \ub610\ud55c \uc0c8 fieldset\uacfc \uc548\ub0b4\ubb38\uc774 composer \ub0b4\ubd80\uc5d0 \ucd94\uac00\ub410\uc9c0\ub9cc runner:645\ub294 \uc804\uccb4 \ub192\uc774\ub97c \uacc4\uc18d 120px\ub85c \uac80\uc0ac\ud569\ub2c8\ub2e4. \ubcf4\uc874\ub41c 000-requested-keyboard.png\uc5d0\uc11c\ub3c4 \ud655\uc7a5\ub41c composer\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4. legacy/all GUI\ub294 \uc2e4\ud589\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.",
+      "correction": "\uc2e4\uc81c toolbar\ub97c \uc9c1\uc811 \uc120\ud0dd\ud558\uace0, accepted F06 \uad6c\uc870\uc5d0 \ub9de\uac8c composer geometry \uc870\uac74\uc744 \uac31\uc2e0\ud558\uc138\uc694. \uc218\uc815\ud55c geometry \uac80\uc0ac\ub97c \ubcc4\ub3c4\ub85c \uac80\uc99d\ud558\uc138\uc694."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a11eb3-3c2a-74e1-a7d7-996076cd34c7",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

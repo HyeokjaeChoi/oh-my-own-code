@@ -1,0 +1,214 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "G1",
+      "description": "Closed scoped exact Git read observations and separate staged/unstaged states"
+    },
+    {
+      "id": "G2",
+      "description": "Actual no-helper/no-original-write bounded read adapter and linked worktree proof"
+    },
+    {
+      "id": "G3",
+      "description": "Explicit scoped accessible Git status/diff UI and truthful unavailable states"
+    },
+    {
+      "id": "G4",
+      "description": "Current actual Git/build/UI checks plus independent final CODE/RENDER"
+    }
+  ],
+  "checks": {
+    "files": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/git-review.test.mjs",
+        "apps/desktop-app/src/host/workbench-git.test.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/src/workbench-contract.test.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Closed Git grammar/DTO, real inspector, service admission, Renderer lifecycle and synthetic host/evidence runner regression",
+      "acceptance_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "nx",
+        "run",
+        "desktop-app:build",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Actual coherent Git helper/host/Renderer build with preserved existing features",
+      "acceptance_ids": [
+        "G4"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Closed public/private/Renderer types",
+      "acceptance_ids": [
+        "G4"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Enforced FSD/browser boundaries",
+      "acceptance_ids": [
+        "G4"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Actual browser/server build closure",
+      "acceptance_ids": [
+        "G4"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "docs/runs/git-review-observation/check-changed.mjs",
+        "lint"
+      ],
+      "cwd": ".",
+      "scope": "Affected current source lint",
+      "acceptance_ids": [
+        "G4"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "docs/runs/git-review-observation/check-changed.mjs",
+        "format"
+      ],
+      "cwd": ".",
+      "scope": "Affected current source format",
+      "acceptance_ids": [
+        "G4"
+      ],
+      "required": true
+    },
+    "git-probe": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/git-review-probe.mjs",
+        "--out",
+        "docs/runs/git-review-observation/evidence/git-r3"
+      ],
+      "cwd": ".",
+      "scope": "Actual production inspector on contained synthetic Git repositories and linked worktrees with hostile helper canaries and byte preservation",
+      "acceptance_ids": [
+        "G2",
+        "G4"
+      ],
+      "required": true
+    },
+    "hidden-ui": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--script",
+        "ui-states",
+        "--out",
+        "docs/runs/git-review-observation/evidence/hidden-r3"
+      ],
+      "cwd": ".",
+      "scope": "Actual hidden built Renderer/preload with preserved existing matrix plus explicit Git state appendix, keyboard and760px200%",
+      "acceptance_ids": [
+        "G3",
+        "G4"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/git-review-observation/design.md",
+      "gate": "design_spec",
+      "version": "7",
+      "sha256": "37428fc4dedcf857db288096ae3da864b97e28e6d3f6c35b026a194207630ca5"
+    }
+  ],
+  "environment_files": [
+    "pnpm-lock.yaml",
+    "docs/runs/git-review-observation/source-facts.json",
+    "docs/runs/git-review-observation/prechange-inventory.json",
+    "docs/runs/git-review-observation/check-changed.mjs"
+  ],
+  "decision_register": [
+    {
+      "id": "controlled-git-read-observation",
+      "statement": "Use disposable inert metadata observation and explicit trusted Git reads; no SDK VCS bypass, repo helper execution or original writes; full AC11 mutations remain next",
+      "status": "delegated",
+      "source": "Repeated user authorization to continue remaining product work; approved PRD AC11 and architecture app operation modules/security contract; actual pinned SDK source facts",
+      "impact": "New app Git read process and public UI/DTO boundary require initial major PLAN and DESIGN_SPEC before implementation",
+      "blocks": [],
+      "resolution": "Existing controlled detached-copy strategy extended to checked private worktree as well as metadata/objects, with combined128MiB/16384files and existing4096candidates/8s; original Git config stays memory/stdin-only. Strict directCLTcomponenttrust and exact2.50.1/2.54.x capability policy unchanged. No original worktree path reaches Git. DESIGNv7 changed-boundary review precedes dependent implementation; public API/UI unchanged. Nested Git markers refuse whole observation; all copied current files and all walked dirs count; complete manifest checked before/after Git. Before worktreecopy reject any git/common metadata overlap outsideexcludedtop.git, including.git->.meta; no selective omission."
+    },
+    {
+      "id": "git-semantics",
+      "statement": "Separate HEAD-index and index-worktree; explicit local base TIP-worktree, never merge-base; supported config/attribute table; reject unknown conversions",
+      "status": "delegated",
+      "source": "User authorized continuing product implementation; existing PRD/architecture and initial PLAN findings01/02/03",
+      "impact": "Truthful staged/unstaged/base and unsupported state",
+      "blocks": [],
+      "resolution": "Designv3 section3 exact table and independent diverged-base/CRLF/ignore/filemode probe cases"
+    },
+    {
+      "id": "git-public-limits",
+      "statement": "Closed normalv2 workspace-only status/detail, exact sender observation scope,8s total read, copied objects128MiB, patch64KiB, DTO196608 and existing wire262144",
+      "status": "delegated",
+      "source": "User authorized continuing product implementation; existing PRD/architecture and initial PLAN findings01/02/03",
+      "impact": "IPC fit, partial-read refusal, renderer stale/ABA and bounded lifecycle",
+      "blocks": [],
+      "resolution": "Designv3 sections4/5 closed fields/enums and aggregate counts/encoded limits linked to files/git-probe/hidden-ui"
+    },
+    {
+      "id": "git-reader-lifetime",
+      "statement": "Owned temporary read namespace and children settle on normal/cancel/timeout; unproved exit retains namespace and disables reader; no original writes or crash-orphan completion claim",
+      "status": "delegated",
+      "source": "User authorized continuing product implementation; existing PRD/architecture and initial PLAN findings01/02/03",
+      "impact": "No false cleanup, bounded ongoing read lifetime without second durable mutation store",
+      "blocks": [],
+      "resolution": "Designv5 preserves exact deadlines/signals/owned exit proof and no original writer; private ordinary-source copies can remain on host crash/unproved exit, never exported. Raw Git config canaries must show no persisted credential copy. No secure erasure/OS isolation/crash cleanup claim."
+    }
+  ]
+}

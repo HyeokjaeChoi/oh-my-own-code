@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "run": "conversation-runtime-options",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "7520edc40b57a84f1dbe386ad4f210fc7b09058072ff2363086bed73f592f226",
+    "documents_sha256": "113b7e0a312f7b3d42c5057a7a68d65720c875e92eef56007ced5ce6023d637d",
+    "gate": "design_spec",
+    "plan_sha256": "8044a403b45977e2eb09fa95b6b766eef588bbd05baa25eb5212bf098feaa199",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "design-v1.md의 첫 DTO/module/security 계약은 구현 가능합니다. SDK2.0.18에서 Session.Info의 선택적 agent/model과 assistant message의 필수 agent/model을 확인했습니다. 설계는 다음 전송 요청값, Native session 설정, 개별 assistant 응답 보고값을 분리하며 switch ACK를 실행 증거로 사용하지 않습니다. 공개 DTO는 제한된 variant ID와 capabilities만 투영하고 provider overlays·credentials를 제외합니다. 현재 활성·인증 모델의 variant membership 검증, 원래 요청 digest, 두 policy 단계, flush-before-effects와 unknown no-replay를 유지합니다. sessionSelection은 검증된 session/location의 성공한 최신 refresh에서만 보고하며, 실패·누락·연결 단절·권한 또는 recovery 문제에서는 현재 관측값으로 유지하지 않습니다. 옵션 생략은 요청하지 않음이며 reset이나 적용된 기본값을 뜻하지 않습니다. 기존 단일 window store와 순수 shared helper, transient projection으로 구현할 수 있습니다. 전체 review binding과 등록 문서 hash가 일치합니다. predecessor COMPLETE와 독립 CODE/RENDER PASS도 확인했습니다. Main은 결과 등록 후 design_spec handoff를 확인하고, 실제 helper/DTO source shape를 동결한 뒤 consumers에 전달해야 합니다. 이번 판정은 초기 설계 계약에 한정됩니다. 구현·runtime·접근성·전체 제품 완료를 승인하지 않으며, 해당 검사는 실행하지 않았습니다. 파일·보고서·ledger 수정과 delegation은 하지 않았습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11e44-6d5e-77a2-ae40-ff2c39004ed2",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

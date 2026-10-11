@@ -1,0 +1,130 @@
+✖ fixed read metadata requires original source, scope and result and stays unsupported (4.813458ms)
+✖ fixed question metadata requires original source, scope and result and stays unsupported (0.400333ms)
+✖ fixed glob metadata requires original source, scope and result and stays unsupported (0.344542ms)
+✖ fixed grep metadata requires original source, scope and result and stays unsupported (0.279ms)
+✖ fixed skill metadata requires original source, scope and result and stays unsupported (0.331208ms)
+✖ fixed webfetch metadata requires original source, scope and result and stays unsupported (0.263042ms)
+✖ known unconfigured family refuses; unknown family cannot inject tool metadata (0.484334ms)
+✖ cross-family results, same-id source transplants and undeclared descriptor copies refuse (0.376542ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 0
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 362.703292
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-builtin-metadata.test.mjs:45:27
+✖ fixed read metadata requires original source, scope and result and stays unsupported (4.813458ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:35:9)
+      at file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:906:9
+      at ~effect/Utils/internal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Utils.js:79:14)
+      at Object.~effect/Effect/args (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:732:22)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:682:22)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+
+test at apps/desktop-app/src/native-permission-builtin-metadata.test.mjs:45:27
+✖ fixed question metadata requires original source, scope and result and stays unsupported (0.400333ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:35:9)
+      at file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:906:9
+      at ~effect/Utils/internal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Utils.js:79:14)
+      at Object.~effect/Effect/args (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:732:22)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:682:22)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+
+test at apps/desktop-app/src/native-permission-builtin-metadata.test.mjs:45:27
+✖ fixed glob metadata requires original source, scope and result and stays unsupported (0.344542ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:35:9)
+      at file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:906:9
+      at ~effect/Utils/internal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Utils.js:79:14)
+      at Object.~effect/Effect/args (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:732:22)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:682:22)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+
+test at apps/desktop-app/src/native-permission-builtin-metadata.test.mjs:45:27
+✖ fixed grep metadata requires original source, scope and result and stays unsupported (0.279ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:35:9)
+      at file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:906:9
+      at ~effect/Utils/internal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Utils.js:79:14)
+      at Object.~effect/Effect/args (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:732:22)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:682:22)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+
+test at apps/desktop-app/src/native-permission-builtin-metadata.test.mjs:45:27
+✖ fixed skill metadata requires original source, scope and result and stays unsupported (0.331208ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:35:9)
+      at file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:906:9
+      at ~effect/Utils/internal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Utils.js:79:14)
+      at Object.~effect/Effect/args (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:732:22)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:682:22)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+
+test at apps/desktop-app/src/native-permission-builtin-metadata.test.mjs:45:27
+✖ fixed webfetch metadata requires original source, scope and result and stays unsupported (0.263042ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:35:9)
+      at file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:906:9
+      at ~effect/Utils/internal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Utils.js:79:14)
+      at Object.~effect/Effect/args (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:732:22)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:682:22)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+
+test at apps/desktop-app/src/native-permission-builtin-metadata.test.mjs:62:1
+✖ known unconfigured family refuses; unknown family cannot inject tool metadata (0.484334ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:35:9)
+      at file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:906:9
+      at ~effect/Utils/internal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Utils.js:79:14)
+      at Object.~effect/Effect/args (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:732:22)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:682:22)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+
+test at apps/desktop-app/src/native-permission-builtin-metadata.test.mjs:73:1
+✖ cross-family results, same-id source transplants and undeclared descriptor copies refuse (0.376542ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:35:9)
+      at file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-stO3lS/native-permission-control.mjs:906:9
+      at ~effect/Utils/internal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Utils.js:79:14)
+      at Object.~effect/Effect/args (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:732:22)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:682:22)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19

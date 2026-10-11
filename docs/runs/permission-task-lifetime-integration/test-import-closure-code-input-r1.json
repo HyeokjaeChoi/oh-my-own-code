@@ -1,0 +1,74 @@
+{
+  "revision": 17,
+  "scope": "exact9 code/data plus contract: dependency extraction and checked descriptor/task freshness scope; no execution semantics/grant change",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/event-host-code-assets.mjs",
+      "bytes": 2919,
+      "sha256": "045d165620b01317c023d8bcd7764c5046fbcd5daef6f797b2f94cde0c121d86"
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-resources.mjs",
+      "bytes": 15720,
+      "sha256": "7d6b70f678131fae446005314d8f628e2f7d8cf6106104857113afcdb0b2f9be"
+    },
+    {
+      "path": "apps/desktop-app/scripts/local-resource-imports.mjs",
+      "bytes": 1316,
+      "sha256": "5a77f467416b26b9edc6a7f686b2789c399e0f076faae0c2c5c70c9dcd1942a2"
+    },
+    {
+      "path": "apps/desktop-app/scripts/stage-event-host.mjs",
+      "bytes": 17169,
+      "sha256": "c347d31aad3992142adadcff2357e48327286c641dfbfcf01cf9d2ff78974de2"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-test-fixture.mjs",
+      "bytes": 1812,
+      "sha256": "0640db01f2eb744979e2bc31ee0a52d6563ffacdbf9d306e7fcc68a421f28dbc"
+    },
+    {
+      "path": "apps/desktop-app/scripts/resource-import-closure.test.mjs",
+      "bytes": 3844,
+      "sha256": "74a0326110bcfa67922819224eec035d382d0441afe6cfbf75bb461b6673c33c"
+    },
+    {
+      "path": "apps/desktop-app/scripts/permission-test-input-closure.mjs",
+      "bytes": 2878,
+      "sha256": "425d5199767f19cc9050e23d6fbed9f29cece98e9d407de402c00fbd8ded0d72"
+    },
+    {
+      "path": "apps/desktop-app/scripts/permission-test-inputs.json",
+      "bytes": 5027,
+      "sha256": "e725f6f214db18aebc1641e3f0945c83c42fb9738c6a5749f2780be18443ed8f"
+    },
+    {
+      "path": "apps/desktop-app/scripts/stage-event-host.test.mjs",
+      "bytes": 31055,
+      "sha256": "10d6f9e58a8869016ea9a2a7db777a1a59da2d2fcc6ad89ea1903c6086c43b0a"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+      "bytes": 18128,
+      "sha256": "ebb43d6c04e8dfe50fafd38f1e1d8d99cf3d0306037b7f2bb7b7c875bca0c87f"
+    }
+  ],
+  "before": "prechange/test-import-closure-before-r1/manifest.json",
+  "red": "test-import-closure-red-r1.log: actual fixture graph includes stage-event-host",
+  "proof": "test-import-closure-binding-sensitivity-r1.json: actual harness check_input_binding with synthetic current inventory mutation, not filesystem change-and-restore",
+  "checked_closure": "apps/desktop-app/scripts/permission-test-inputs.json",
+  "behavior": [
+    "one pure owner for asset constants, public verifier exports preserved; new pure module included in staged assets",
+    "exact original AST import parser extracted; stage public export preserved",
+    "fixture no longer imports stage/preparation/overlay recipe/verifier",
+    "descriptor/task complete named source imports/literal copy/local source URL closure with required test self-check",
+    "host directory fallback for scripted dynamic kernels, package/lock manifests plus original environment binding retained",
+    "selected check spec/acceptance/classification/environment guards remain harness-owned; final CODE whole-source gate unchanged"
+  ],
+  "limits": [
+    "Node tests and synthetic staging; synthetic engine bytes never executed",
+    "sensitivity result changes in-memory inventory data only; not filesystem isolation proof",
+    "no Native/core/provider/browser/Main/server/Bun/network/build/GUI/physical runtime invocation"
+  ],
+  "checks": "affected descriptor/task/metadata + synthetic stage underway, source frozen"
+}

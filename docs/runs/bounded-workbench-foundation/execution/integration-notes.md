@@ -1,0 +1,4 @@
+# Current integration notes
+The planned renderer/workbench-store.test.ts command path is incompatible with real FSD/browser boundary ownership. Worker must place Node tests at src/workbench-store.test.mjs, executing with node --import tsx. Coordinator reconciles that exact contract check argv after coherent source freeze and obtains changed-binding independent entry/document review before final checks. No browser-boundary exemption or fake wrapper. Current reviewed business/wire contract stays v3; this is check-path correction only, not source/platform/state policy change.
+
+Fixture worker 01a1023c-4a09-72d2-a316-e51984b39653 completed v2 hidden host/capture assertions and8 fixture tests, lint/format/syntax (worker-reported). Add scripts/fixtures/workbench-host.test.mjs to final contracted unit argv along with corrected src/workbench-store.test.mjs. Native not launched. Primary runs current final checks after all host/renderer source freezes.

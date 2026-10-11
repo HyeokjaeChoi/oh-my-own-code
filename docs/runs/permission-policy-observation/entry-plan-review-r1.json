@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "verdict": "pass",
+  "summary": "ENTRY PLAN rev1을 통과로 판정합니다. 명시적 Native session 규칙 읽기와 인접 화면 표시는 첫 B06 증분으로 적절합니다. 구현은 별도 binding의 design-spec 통과 후 시작해야 합니다.",
+  "open_findings": [],
+  "reviewed": {
+    "contract_sha256": "55fd3c8383b05459c5e45e2ba2020c995591004f7190a9aac09397a683425879",
+    "gate": "plan",
+    "plan_sha256": "420f5b81e718791df92f741dd85771c33448302a9c2a219b5e0f58f357606ed5",
+    "schema_version": 2,
+    "source_sha256": "98778051eecedf75d492bea2a04f703d2f8f508b6861de5672a8b985befa9dbf",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "assessment": {
+    "scope": "preset 적용, remember, revoke, 전체 F09는 제외됩니다. 관측 결과를 최종 실행 권한으로 표시하지 않습니다.",
+    "ownership": "Main은 공유 DTO/helper, transport와 service를 담당합니다. producer API 고정 후 별도 renderer 작업자가 진행합니다. CODE와 RENDER는 구현과 독립됩니다.",
+    "acceptance_and_checks": "P1~P4와 host, renderer, boundary, type, build, lint, bundle, fixture, hidden 검사는 범위에 맞습니다. 서비스 무변경, 응답 상관관계, renderer race와 화면 상태 검증은 후속 구현에서 실제 증거로 확인해야 합니다.",
+    "authority": "현재 autonomous authority로 이 범위를 진행할 수 있습니다. 추가 human approval은 필요하지 않습니다. 새 platform 선택이나 외부 작업도 없습니다.",
+    "future_holds": "mode 전환, path containment, remembered grant와 child propagation 문제는 후속 확장을 제한합니다. 현재의 읽기 전용 증분을 막지는 않습니다.",
+    "design_consistency": "design.md v1은 기존 service와 단일 Zustand projection을 유지합니다. 읽기 경로에서 policy()와 session.update를 금지하므로 기존 BASELINE 재설치 동작과 분리됩니다. closed DTO와 not_evaluated 표시는 관측의 한계를 보존합니다. FileAccess의 lexical commonroot를 OS sandbox 증거로 취급하지 않습니다.",
+    "prerequisite": "permission-tool-boundary-probe의 COMPLETE 상태와 독립 final CODE PASS를 확인했습니다. once/reject/configured-deny 증거는 해당 prerequisite 범위로만 유지합니다."
+  },
+  "provenance": {
+    "child_task_id": "01a12033-8f7e-7872-9471-6282d93fda8b",
+    "identity_source": "현재 환경의 CODEX_THREAD_ID",
+    "independent_review": true,
+    "report_only": true,
+    "files_modified": false,
+    "delegation_performed": false,
+    "probe_or_tests_executed": false,
+    "method": "AGENTS.md, solo_reader.toml, 지정 skill, plan·contract·design·entry packet, 관련 source와 저장된 prerequisite 보고서를 읽고 대조했습니다. 문서 파일의 SHA256을 확인했습니다.",
+    "binding_copy": "entry-plan-input-r1.json의 전체 객체를 reviewed에 그대로 복사했습니다.",
+    "full_source_fingerprint_recomputed": false,
+    "runtime_model_or_os_sandbox_attested": false
+  },
+  "next_dependency": "별도 entry-design-input binding으로 design-spec 판정을 받아야 합니다. 이 보고서는 design-spec 통과나 제품 구현 완료를 의미하지 않습니다."
+}

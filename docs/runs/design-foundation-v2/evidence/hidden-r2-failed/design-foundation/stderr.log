@@ -1,0 +1,13 @@
+Error: expect(locator).toBeFocused() failed
+
+Locator:  locator('[data-context-observe]')
+Expected: focused
+Received: inactive
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeFocused" locator('[data-context-observe]') with timeout 5000ms
+  - waiting for locator('[data-context-observe]')
+    14 × locator resolved to <button disabled type="button" data-context-observe="true" class="_button_13bxn_1 _quiet_13bxn_45 _standard_13bxn_19">파일 확인 후 추가</button>
+       - unexpected value "inactive"
+

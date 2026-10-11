@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "55fd3c8383b05459c5e45e2ba2020c995591004f7190a9aac09397a683425879",
+    "document_requirement_epoch": 1,
+    "documents_sha256": "7a176b2393db251651f153fa04850f3c690d257a32e78992b0212ad337bb0fa2",
+    "gate": "design_spec",
+    "plan_sha256": "420f5b81e718791df92f741dd85771c33448302a9c2a219b5e0f58f357606ed5",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "changes_requested",
+  "summary": "design.md v1에 기존 closed read envelope와 다른 필드명이 있습니다. 이 protocol 표기만 수정해야 합니다. 추가 product approval이나 전체 설계 재검토는 필요하지 않습니다.",
+  "open_findings": [
+    {
+      "id": "DS1",
+      "severity": "medium",
+      "location": "docs/runs/permission-policy-observation/design.md:9",
+      "affected_consumer": "permission.policy.read의 producer, transport, renderer와 취소 경로",
+      "finding": "설계는 outer envelope를 epoch/requestId로 명시하지만, 기존 v2 read envelope는 runtimeEpoch/readId를 사용합니다.",
+      "evidence": [
+        "apps/desktop-app/src/workbench-contract.mjs:593의 validateEnvelope는 outer requestId를 허용하지 않습니다.",
+        "apps/desktop-app/src/workbench-contract.mjs:608은 readId를 요구합니다.",
+        "apps/desktop-app/src/workbench-contract.mjs:644의 취소 schema도 runtimeEpoch/readId를 사용합니다.",
+        "apps/desktop-app/src/host/workbench-admission.mjs:262는 sender, epoch, envelope.readId로 읽기 identity를 구성합니다."
+      ],
+      "impact": "명시된 protocol을 그대로 구현하면 INVALID_REQUEST가 발생합니다. 요청과 취소의 상관관계도 기존 transport 계약과 달라집니다.",
+      "required_correction": "9행을 기존 v2 envelope {version:2,runtimeEpoch,readId,operation:{type:'permission.policy.read',workspaceId,sessionId}}로 명시하십시오. 취소도 같은 runtimeEpoch/readId를 사용하며 outer requestId를 추가하지 않는다고 명시하십시오.",
+      "review_boundary": "수정된 protocol 표기와 관련 binding만 확인하면 됩니다."
+    }
+  ],
+  "assessment": {
+    "service_boundary": "Native ID와 canonical location의 상관관계, await 이후 authority 재검증, generation/root/trust/mapping 검사와 atomic clock 사용은 기존 구조에 맞습니다. policy(), session.update와 permission.reply 금지는 읽기로 인한 BASELINE 재설치를 막습니다.",
+    "closed_observation": "absent와 present-empty 구분, 순서와 중복 보존, 크기 제한, 잘못된 데이터의 unavailable 처리는 적절합니다. raw Native 응답을 공개하지 않습니다.",
+    "projection_and_lifecycle": "단일 Zustand projection, 명시적 읽기, 자동 IO 금지, scope·epoch·generation·floor 변경 시 폐기는 현재 ownership 계약에 맞습니다.",
+    "truthful_ui": "저장된 session 규칙을 최종 실행 판단과 구분합니다. baseline mismatch를 표시하며 OS sandbox나 전체 F09 완료를 주장하지 않습니다.",
+    "foundation_and_accessibility": "기존 task-surface, component와 semantic token 사용은 적절합니다. loading·unavailable·stale·error 상태, 키보드와 focus, 전체 값 선택·줄바꿈, Light/Dark와 200% 검증 요구도 있습니다. 실제 통과 여부는 후속 RENDER에서 확인해야 합니다.",
+    "alternatives": "메뉴에서 권한을 추정하는 방식, 자동 snapshot 읽기, 별도 policy store를 제외한 이유는 정확성과 IO 및 lifecycle 비용에 근거합니다.",
+    "future_scope": "네 가지 mode, 전환, remember/revoke와 child propagation은 이번 증분 밖에 남습니다. 해당 미래 문제를 현재 gate의 추가 blocker로 삼지 않습니다."
+  },
+  "provenance": {
+    "run": "permission-policy-observation",
+    "reviewer_role": "design_spec_reviewer",
+    "child_task_id": "01a12033-8f7e-7872-9471-6282d93fda8b",
+    "identity_source": "현재 환경의 CODEX_THREAD_ID",
+    "independent_review": true,
+    "design_authored_by_reviewer": false,
+    "linked_entry_reviewer_reused": true,
+    "report_only": true,
+    "files_modified": false,
+    "delegation_performed": false,
+    "probe_or_tests_executed": false,
+    "method": "지정 skill, 실제 design packet과 input, 등록 design.md v1, plan과 ledger, 기존 protocol·service·admission source 및 디자인 기준을 읽고 대조했습니다.",
+    "registered_design_sha256_matches": true,
+    "binding_copy": "entry-design-input-r1.json의 전체 객체를 reviewed에 그대로 복사했습니다.",
+    "full_source_fingerprint_recomputed": false,
+    "runtime_model_or_os_sandbox_attested": false,
+    "evidence_limits": "문서 설계 판정입니다. runtime 동작이나 실제 화면 접근성 통과를 증명하지 않습니다. 기존 prerequisite probe는 재실행하지 않았습니다."
+  }
+}

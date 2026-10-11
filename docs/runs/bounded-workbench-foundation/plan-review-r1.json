@@ -1,0 +1,70 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "591f0f86cb6f1b40a4bb77ef836694d058df2291a5a38f49f796a1af867d4d4f",
+    "gate": "plan",
+    "plan_sha256": "ecd254b0561179d99acee2d5f97f5f3a9044676da1c1cfe4ea785599ed155152",
+    "schema_version": 2,
+    "source_sha256": "6b708712f5519cb2141621901a64b8b24286ec2e5e6ddcace9e7bbe8978e94c9"
+  },
+  "verdict": "changes_requested",
+  "summary": "Revision1의 새 wire·ownership 변경만 검토했습니다. No replay, 단일 window Zustand 소유권, 독립 design_spec/code/design gate는 유지됩니다. Receipt redaction, shared ready와 mutation admission의 수명, 필수 native check 경로는 수정이 필요합니다. 정적 검토만 수행했습니다. 파일 수정, 테스트 실행, 앱 실행, 위임은 하지 않았습니다.",
+  "open_findings": [
+    {
+      "id": "PLAN-1",
+      "priority": "P1",
+      "title": "Receipt result가 redaction 규칙과 충돌합니다",
+      "references": [
+        "docs/runs/bounded-workbench-foundation/read-receipt-contract.md:14-16",
+        "apps/desktop-app/src/desktop-bridge.d.ts:149-167",
+        "apps/desktop-app/src/workbench-service.mjs:308-346",
+        "apps/desktop-app/src/workbench-service.mjs:995-1047"
+      ],
+      "finding": "Receipt는 prompts, arguments, paths를 노출하지 않아야 합니다. 그러나 result에 기존 allowlisted DTO를 허용합니다. 기존 workspace/session mutation 결과는 WorkbenchSnapshot입니다. 이 DTO에는 workspace path, message text, tool input/output, permission detail이 있습니다. 따라서 기존 결과를 receipt에 넣으면 redaction 규칙을 위반합니다. 전체 snapshot은 해당 operation만의 증거도 아닙니다.",
+      "impact": "operation.lookup과 duplicate 응답이 민감한 내용을 노출할 수 있습니다. 최대 2,048개 receipt에 전체 snapshot을 보관하면 큰 payload를 반복 보관하게 됩니다.",
+      "proposed_fix": "Receipt 전용 closed result union을 정의하십시오. Created/forked ID, confirmed removed target ID, native inbox/request ID, revision, 고정 error code 등 필요한 증거만 허용하십시오. 정상 mutation 응답의 snapshot과 redacted receipt를 별도 필드로 분리하십시오. Duplicate는 저장된 redacted receipt를 반환하고, 화면 갱신은 별도 bounded snapshot read로 수행하십시오.",
+      "required_verification": "모든 mutation 종류의 lookup, duplicate, late-result receipt를 검사하십시오. Prompt, path, tool arguments/output sentinel이 직렬화된 receipt에 없고, 상관관계가 있는 ID와 증거는 남는지 확인하십시오."
+    },
+    {
+      "id": "PLAN-2",
+      "priority": "P1",
+      "title": "Shared ready와 mutation admission의 수명 규칙이 불완전합니다",
+      "references": [
+        "docs/runs/bounded-workbench-foundation/read-receipt-contract.md:10-16",
+        "docs/runs/bounded-workbench-foundation/plan.md:21",
+        "apps/desktop-app/src/workbench-service.mjs:184-207",
+        "apps/desktop-app/src/workbench-service.mjs:272-307",
+        "apps/desktop-app/src/workbench-service.mjs:1131-1149"
+      ],
+      "finding": "Read deadline과 actual promise quarantine은 명시되어 있습니다. 하지만 shared ready의 소유권과 mutation의 admission 순서는 고정되지 않았습니다. 현재 ready는 service 생성 시 시작하며 workspace/session 등록과 policy mutation을 수행합니다. handle은 ready를 기다린 뒤 dispatch합니다. 새 계약의 '효과 전 등록'만 따르면 ready 대기 뒤에 receipt를 등록하는 구현도 가능합니다. 그러면 ready가 멈춘 동안 미등록 mutation waiter가 쌓일 수 있습니다. 또한 read expiry 뒤 host projection 변경 금지 규칙이 독립 startup 작업에도 적용되는지 불명확합니다. Mutation/startup SDK lane의 정확한 용량과 공유 범위도 없습니다.",
+      "impact": "2,048개 receipt 제한이 admission 이전 대기를 제한하지 못할 수 있습니다. Read 취소가 shared startup을 잘못 중단하거나, timeout 뒤 startup/mutation이 잘못된 소유권으로 이어질 수 있습니다. 여러 workspace의 mutation이 actual SDK 작업 제한을 우회할 여지도 있습니다.",
+      "proposed_fix": "Validate → identity/digest 확인 → receipt 용량 및 mutation lane 확보 → ready 대기 → dispatch 순서를 계약에 고정하십시오. Ready 이전 대기를 허용한다면 그 용량과 종료 조건을 명시하십시오. Startup ready는 service 소유 task로 분리하고, read 취소는 해당 subscriber만 분리하도록 하십시오. Mutation/startup lane의 service 전체 용량을 숫자로 정하고, 모든 nested SDK 호출이 같은 limiter를 통과하게 하십시오. 여러 단계 중 앞선 효과가 dispatch된 경우, 이후 lane 거절을 effect:none으로 처리하지 않도록 명시하십시오.",
+      "required_verification": "Host owner가 never-settling ready, ready 대기 중 duplicate/conflict, 여러 workspace의 동시 mutation, ignored-abort startup/mutation, 일부 효과 뒤 lane 거절을 검사하십시오. 실제 SDK 호출 수, 미등록 waiter 수, timeout 뒤 dispatch 여부, lookup 가용성을 확인하십시오. Shared startup과 만료된 read projection의 late completion도 구분하십시오."
+    },
+    {
+      "id": "PLAN-3",
+      "priority": "P2",
+      "title": "필수 hidden-ui 명령이 현재 runner 경로 검사를 통과할 수 없습니다",
+      "references": [
+        "docs/runs/bounded-workbench-foundation/contract.json:121-136",
+        "docs/runs/bounded-workbench-foundation/plan.md:18-21",
+        "apps/desktop-app/scripts/run-evidence.mjs:23-24",
+        "apps/desktop-app/scripts/run-evidence.mjs:68-72",
+        "apps/desktop-app/scripts/run-evidence.mjs:176-180"
+      ],
+      "finding": "Contract의 출력 경로는 docs/runs/bounded-workbench-foundation/evidence/native-r1입니다. 현재 runner는 docs/runs/frontend-architecture-redesign 아래 경로만 허용합니다. CLI에는 runRoot를 바꾸는 인자가 없습니다. 따라서 필수 hidden-ui check는 native 실행 전에 경로 검사에서 실패합니다. 계획에는 이 runner 변경의 명시적 작업과 선행 검증이 없습니다.",
+      "impact": "A4/A5의 필수 evidence를 만들 수 없습니다. 독립 rendered review도 해당 evidence를 받을 수 없습니다.",
+      "proposed_fix": "Fixture owner에게 runner와 runner test의 정확한 경로를 배정하십시오. 새 run을 검증된 출력 root로 지원하거나, contract 출력 경로를 현재 허용 root에 맞추십시오. Root containment, symlink 거절, nonempty destination 거절은 유지하십시오. 이 변경을 hidden-ui check의 선행 조건으로 기록하십시오.",
+      "required_verification": "Native 실행 없이 정확한 contracted 경로의 admission을 먼저 검사하십시오. 이후 hidden/nonfocusable fixture에서 계약 명령을 실행하고 source/build provenance와 hidden/unfocused assertions를 보존하십시오. 실제 capture review는 구현자와 다른 reviewer가 수행해야 합니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a1021f-1d64-7230-b289-e7fab371e109",
+    "requested_model": "Sol",
+    "requested_effort": "high",
+    "runtime_identity_attested": false,
+    "mode": "report_only",
+    "delegated": false,
+    "files_changed": []
+  }
+}

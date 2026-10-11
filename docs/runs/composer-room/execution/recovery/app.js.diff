@@ -1,0 +1,16 @@
+--- docs/runs/desktop-design-candidates/preview/app.js
++++ docs/runs/composer-room/preview/app.js
+@@ -241,9 +241,10 @@
+ else gallery();
+ document.body.classList.toggle('app-only',params.has('app')||params.get('mode')==='app');
+ }
+-function grow(t){t.style.height='24px';
+-t.style.height=Math.max(24,Math.min(144,t.scrollHeight))+'px';
+-t.style.overflowY=t.scrollHeight>144?'auto':'hidden';
++function grow(t){const min=Number(tokens['component.composer.inputMin']??tokens['semantic.composer.inputMin']),max=Number(tokens['component.composer.inputMax']??tokens['semantic.composer.inputMax']);
++t.style.height=min+'px';
++t.style.height=Math.max(min,Math.min(max,t.scrollHeight))+'px';
++t.style.overflowY=t.scrollHeight>max?'auto':'hidden';
+ }
+ function growAll(){$$('textarea',stage).forEach(grow);
+ }

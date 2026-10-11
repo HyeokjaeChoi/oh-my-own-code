@@ -1,0 +1,2100 @@
+{
+  "source_sha256": "5052c067b46b620c4594c391a75e11d7ee05713f3774e3d14717aafd1fec09ae",
+  "changed_path_count": 52,
+  "checks": [
+    "runtime",
+    "native",
+    "hidden-ui",
+    "build",
+    "typecheck",
+    "boundaries",
+    "bundle",
+    "lint",
+    "format"
+  ],
+  "native": {
+    "report": "evidence/native-r7/skill-runtime-evidence.json",
+    "cases": [
+      {
+        "name": "fixed-directory-plugin-closed-rpc-ready-no-automatic-registration",
+        "result": "pass"
+      },
+      {
+        "name": "wrong-nonce-extra-field-unknown-method-cross-location-zero-skill-effect",
+        "result": "pass"
+      },
+      {
+        "name": "disabled-register-transform-reload-public-list-exact-file-unchanged-original-key-duplicate",
+        "result": "pass"
+      },
+      {
+        "name": "explicit-resume-false-appends-one-exact-native-skill-message-no-inbox",
+        "result": "pass"
+      },
+      {
+        "name": "owned-remove-reload-no-session-history-undo-file-unchanged",
+        "result": "pass"
+      },
+      {
+        "name": "public-durable-service-confirmation-cancel-disabled-register-original-duplicate-file-unchanged",
+        "result": "pass"
+      },
+      {
+        "name": "public-durable-service-resume-false-exact-message-and-existing-record-zero-reapply",
+        "result": "pass"
+      },
+      {
+        "name": "public-durable-fork-inherits-skill-record-and-refuses-reapply-without-direct-origin-claim",
+        "result": "pass"
+      },
+      {
+        "name": "public-durable-service-owned-remove-retains-exact-session-history-and-file",
+        "result": "pass"
+      },
+      {
+        "name": "actual-production-nonfresh-changed-global-json-zero-inspector-native-plugin-byte-preserved-recovery-facade",
+        "result": "pass"
+      },
+      {
+        "name": "actual-production-nonfresh-added-jsonc-zero-inspector-native-plugin-byte-preserved-recovery-facade",
+        "result": "pass"
+      },
+      {
+        "name": "actual-production-nonfresh-plugin-directory-zero-inspector-native-plugin-byte-preserved-recovery-facade",
+        "result": "pass"
+      },
+      {
+        "name": "actual-production-nonfresh-plugins-directory-zero-inspector-native-plugin-byte-preserved-recovery-facade",
+        "result": "pass"
+      },
+      {
+        "name": "actual-production-clean-reopen-no-auto-skills-untrusted-explicit-trust-side-effect-historical-receipt-record-only",
+        "result": "pass"
+      },
+      {
+        "name": "controlled-lost-ack-original-unknown-no-replay-and-production-pending-reopen-zero-inspector-native-byte-preserved",
+        "result": "pass"
+      }
+    ],
+    "owned_clean_exits": 7,
+    "before_after_equal": true
+  },
+  "hidden": {
+    "report": "evidence/hidden-r4/ui-states/ui-states-evidence.json",
+    "captures": 391,
+    "runtime_states": [
+      {
+        "state": "empty-registered",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694.",
+        "action": "registered_disabled",
+        "metrics": {
+          "mutations": {
+            "attempted": 34,
+            "dispatched": 28,
+            "rejected": 6
+          },
+          "reads": 2,
+          "runtimeReads": 2,
+          "runtimeEffects": 1,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-registered-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 469.3203125,
+              "width": 104.890625,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-registered-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1230.890625,
+              "y": 469.3203125,
+              "width": 166.84375,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-registered-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 465.015625,
+              "width": 304,
+              "height": 41.59375,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-registered-action-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 465.109375,
+              "width": 304,
+              "height": 41.59375,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc694\uccad \uacb0\uacfc: \uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d\ud588\uc2b5\ub2c8\ub2e4. \uc0c8 \uc0c1\ud0dc \ud655\uc778\uc774 \ud544\uc694\ud569\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "empty-applied",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 35,
+            "dispatched": 29,
+            "rejected": 6
+          },
+          "reads": 2,
+          "runtimeReads": 4,
+          "runtimeEffects": 2,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-applied-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.50390625,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-applied-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.50390625,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-applied-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 252.49609375,
+              "width": 283,
+              "height": 35.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "# SYNTHETIC SKILL A\n"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-applied-control-3-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 253.2890625,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d \uc81c\uac70"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-applied-control-4-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 191.88671875,
+              "y": 253.2890625,
+              "width": 113.0703125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc5d0 \uc801\uc6a9"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-applied-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.703125,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-applied-history-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 185.78515625,
+              "width": 303,
+              "height": 168.3828125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc758 Skill \uae30\ub85dReview notes \u00b7 omoc-skill-6ee5c6691dce33b5b185c55faaa3a5a7266fded3b9ef61a1f2cbaa1370832c48 \u00b7 \uae30\ub85d ID: fixture-skill-message-4\ud45c\uc2dc\ub41c \ud56d\ubaa9\uc740 \uad00\ucc30\ud55c \uae30\ub85d\uc785\ub2c8\ub2e4. \uc9c1\uc811 \uc801\uc6a9 \ub610\ub294 fork \ucd9c\ucc98\ub294 \ud310\ub2e8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-applied-body-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 252.49609375,
+              "width": 283,
+              "height": 35.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "# SYNTHETIC SKILL A\n"
+            }
+          }
+        ]
+      },
+      {
+        "state": "empty-removed",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 36,
+            "dispatched": 30,
+            "rejected": 6
+          },
+          "reads": 2,
+          "runtimeReads": 5,
+          "runtimeEffects": 3,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-removed-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.50390625,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-removed-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.50390625,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-removed-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.703125,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-empty-removed-history-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 185.875,
+              "width": 303,
+              "height": 168.3828125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc758 Skill \uae30\ub85dReview notes \u00b7 omoc-skill-6ee5c6691dce33b5b185c55faaa3a5a7266fded3b9ef61a1f2cbaa1370832c48 \u00b7 \uae30\ub85d ID: fixture-skill-message-4\ud45c\uc2dc\ub41c \ud56d\ubaa9\uc740 \uad00\ucc30\ud55c \uae30\ub85d\uc785\ub2c8\ub2e4. \uc9c1\uc811 \uc801\uc6a9 \ub610\ub294 fork \ucd9c\ucc98\ub294 \ud310\ub2e8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "removePreservesFileAndSessionHistory": true
+      },
+      {
+        "state": "owned",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 36,
+            "dispatched": 30,
+            "rejected": 6
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-owned-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.35546875,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-owned-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.35546875,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-owned-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 252.34765625,
+              "width": 283,
+              "height": 35.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "# SYNTHETIC SKILL A\n"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-owned-control-3-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 253.296875,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d \uc81c\uac70"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-owned-control-4-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 191.88671875,
+              "y": 253.296875,
+              "width": 113.0703125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc5d0 \uc801\uc6a9"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-owned-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.5546875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-owned-history-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 222.04296875,
+              "width": 303,
+              "height": 95.9921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc758 Skill \uae30\ub85d\uc644\uc804\ud55c \uad00\ucc30\uc5d0\uc11c Skill \uae30\ub85d\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.\ud45c\uc2dc\ub41c \ud56d\ubaa9\uc740 \uad00\ucc30\ud55c \uae30\ub85d\uc785\ub2c8\ub2e4. \uc9c1\uc811 \uc801\uc6a9 \ub610\ub294 fork \ucd9c\ucc98\ub294 \ud310\ub2e8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-owned-body-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 252.34765625,
+              "width": 283,
+              "height": 35.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "# SYNTHETIC SKILL A\n"
+            }
+          }
+        ]
+      },
+      {
+        "state": "already-present",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 36,
+            "dispatched": 30,
+            "rejected": 6
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-already-present-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 469.4296875,
+              "width": 104.890625,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-already-present-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1230.890625,
+              "y": 469.4296875,
+              "width": 166.84375,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-already-present-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1140,
+              "y": 468.6328125,
+              "width": 284,
+              "height": 35.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "# SYNTHETIC SKILL A\n"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-already-present-control-3-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1140,
+              "y": 469.421875,
+              "width": 104.890625,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \ub4f1\ub85d \uc81c\uac70"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-already-present-control-4-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1250.890625,
+              "y": 469.421875,
+              "width": 113.0703125,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc5d0 \uc801\uc6a9"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-already-present-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 475.625,
+              "width": 304,
+              "height": 20.796875,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-already-present-history-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 401.9140625,
+              "width": 304,
+              "height": 168.375,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc758 Skill \uae30\ub85dReview notes \u00b7 omoc-skill-b191820d28d4c123b6b76f98061ae5bc93c9db85de442f9e59e0a03677e42fd7 \u00b7 \uae30\ub85d ID: fixture-recorded-skill\ud45c\uc2dc\ub41c \ud56d\ubaa9\uc740 \uad00\ucc30\ud55c \uae30\ub85d\uc785\ub2c8\ub2e4. \uc9c1\uc811 \uc801\uc6a9 \ub610\ub294 fork \ucd9c\ucc98\ub294 \ud310\ub2e8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-already-present-body-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1140,
+              "y": 468.6328125,
+              "width": 284,
+              "height": 35.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "# SYNTHETIC SKILL A\n"
+            }
+          }
+        ]
+      },
+      {
+        "state": "history-unavailable",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 36,
+            "dispatched": 30,
+            "rejected": 6
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-history-unavailable-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.35546875,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-history-unavailable-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.35546875,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-history-unavailable-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 252.34765625,
+              "width": 283,
+              "height": 35.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "# SYNTHETIC SKILL A\n"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-history-unavailable-control-3-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 253.296875,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d \uc81c\uac70"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-history-unavailable-control-4-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 191.88671875,
+              "y": 253.296875,
+              "width": 113.0703125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc5d0 \uc801\uc6a9"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-history-unavailable-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.5546875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-history-unavailable-history-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 211.54296875,
+              "width": 303,
+              "height": 116.7890625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc758 Skill \uae30\ub85d\uae30\ub85d\uc744 \ud655\uc778\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: history_truncated. \uae30\ub85d\uc774 \uc5c6\ub2e4\uace0 \ud310\ub2e8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.\ud45c\uc2dc\ub41c \ud56d\ubaa9\uc740 \uad00\ucc30\ud55c \uae30\ub85d\uc785\ub2c8\ub2e4. \uc9c1\uc811 \uc801\uc6a9 \ub610\ub294 fork \ucd9c\ucc98\ub294 \ud310\ub2e8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-history-unavailable-body-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 252.34765625,
+              "width": 283,
+              "height": 35.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "# SYNTHETIC SKILL A\n"
+            }
+          }
+        ]
+      },
+      {
+        "state": "inherited",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 36,
+            "dispatched": 30,
+            "rejected": 6
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-inherited-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.35546875,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-inherited-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.35546875,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-inherited-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 252.34765625,
+              "width": 283,
+              "height": 35.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "# SYNTHETIC SKILL A\n"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-inherited-control-3-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 253.390625,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d \uc81c\uac70"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-inherited-control-4-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 191.88671875,
+              "y": 253.390625,
+              "width": 113.0703125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc5d0 \uc801\uc6a9"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-inherited-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.5546875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-inherited-history-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 185.88671875,
+              "width": 303,
+              "height": 168.3828125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc758 Skill \uae30\ub85dReview notes \u00b7 omoc-skill-b191820d28d4c123b6b76f98061ae5bc93c9db85de442f9e59e0a03677e42fd7 \u00b7 \uae30\ub85d ID: fixture-recorded-skill\ud45c\uc2dc\ub41c \ud56d\ubaa9\uc740 \uad00\ucc30\ud55c \uae30\ub85d\uc785\ub2c8\ub2e4. \uc9c1\uc811 \uc801\uc6a9 \ub610\ub294 fork \ucd9c\ucc98\ub294 \ud310\ub2e8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-inherited-body-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 252.34765625,
+              "width": 283,
+              "height": 35.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "# SYNTHETIC SKILL A\n"
+            }
+          }
+        ]
+      },
+      {
+        "state": "foreign",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 36,
+            "dispatched": 30,
+            "rejected": 6
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-foreign-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.35546875,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-foreign-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.35546875,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-foreign-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.5546875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-foreign-history-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 221.9140625,
+              "width": 303,
+              "height": 95.9921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc758 Skill \uae30\ub85d\uc644\uc804\ud55c \uad00\ucc30\uc5d0\uc11c Skill \uae30\ub85d\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.\ud45c\uc2dc\ub41c \ud56d\ubaa9\uc740 \uad00\ucc30\ud55c \uae30\ub85d\uc785\ub2c8\ub2e4. \uc9c1\uc811 \uc801\uc6a9 \ub610\ub294 fork \ucd9c\ucc98\ub294 \ud310\ub2e8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "restart",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 36,
+            "dispatched": 30,
+            "rejected": 6
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-restart-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.35546875,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-restart-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.35546875,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-restart-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.5546875,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-restart-history-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 185.9140625,
+              "width": 303,
+              "height": 168.3828125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc758 Skill \uae30\ub85dReview notes \u00b7 omoc-skill-0c9875a25409396976031ea2ae4e3d2a9e2796945c1c279c458d45405d7249bb \u00b7 \uae30\ub85d ID: fixture-recorded-skill\ud45c\uc2dc\ub41c \ud56d\ubaa9\uc740 \uad00\ucc30\ud55c \uae30\ub85d\uc785\ub2c8\ub2e4. \uc9c1\uc811 \uc801\uc6a9 \ub610\ub294 fork \ucd9c\ucc98\ub294 \ud310\ub2e8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "untrusted",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 36,
+            "dispatched": 30,
+            "rejected": 6
+          },
+          "reads": 0,
+          "runtimeReads": 0,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-untrusted-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.44921875,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-untrusted-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.44921875,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-untrusted-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 249.1484375,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          }
+        ]
+      },
+      {
+        "state": "unknown",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694.",
+        "action": "unknown",
+        "metrics": {
+          "mutations": {
+            "attempted": 37,
+            "dispatched": 31,
+            "rejected": 6
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 1,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-unknown-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.3515625,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-unknown-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.3515625,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-unknown-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 249.30078125,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-unknown-action-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 238.89453125,
+              "width": 303,
+              "height": 62.390625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc774\uc804 \ub300\uc0c1\uc758 \uc694\uccad \uacb0\uacfc: \uacb0\uacfc\ub97c \ud655\uc778\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4. \uc790\ub3d9 \uc7ac\uc804\uc1a1\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ubcf4\ub958 \uc0c1\ud0dc\uac00 \ud574\uc81c\ub420 \ub54c\uae4c\uc9c0 \ubcc0\uacbd\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "originalKey": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "operationId": "89a77f92-8b28-450f-8b20-b0227df9fe59"
+        },
+        "heldDraftEditableSelectable": true,
+        "noReplay": true
+      },
+      {
+        "state": "denied",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694.",
+        "action": "denied",
+        "metrics": {
+          "mutations": {
+            "attempted": 38,
+            "dispatched": 31,
+            "rejected": 7
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-denied-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 469.4296875,
+              "width": 104.890625,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-denied-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1230.890625,
+              "y": 469.4296875,
+              "width": 166.84375,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-denied-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 465.125,
+              "width": 304,
+              "height": 41.59375,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-denied-action-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 465.21875,
+              "width": 304,
+              "height": 41.59375,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc694\uccad \uacb0\uacfc: \uc694\uccad\uc774 \uac70\ubd80\ub418\uc5c8\uc2b5\ub2c8\ub2e4: CANCELLED. \ud30c\uc77c\uacfc Native \uc0c1\ud0dc\ub97c \ub2e4\uc2dc \ud655\uc778\ud558\uc138\uc694."
+            }
+          }
+        ]
+      },
+      {
+        "state": "changed",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694.",
+        "action": "denied",
+        "metrics": {
+          "mutations": {
+            "attempted": 39,
+            "dispatched": 31,
+            "rejected": 8
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-changed-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 469.4296875,
+              "width": 104.890625,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-changed-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1230.890625,
+              "y": 469.4296875,
+              "width": 166.84375,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-changed-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 465.125,
+              "width": 304,
+              "height": 41.59375,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-changed-action-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 465.21875,
+              "width": 304,
+              "height": 41.59375,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc694\uccad \uacb0\uacfc: \uc694\uccad\uc774 \uac70\ubd80\ub418\uc5c8\uc2b5\ub2c8\ub2e4: SKILL_CHANGED. \ud30c\uc77c\uacfc Native \uc0c1\ud0dc\ub97c \ub2e4\uc2dc \ud655\uc778\ud558\uc138\uc694."
+            }
+          }
+        ]
+      },
+      {
+        "state": "unavailable",
+        "syntheticOnly": true,
+        "observation": "Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: runtime_error",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 39,
+            "dispatched": 31,
+            "rejected": 8
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-unavailable-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 469.4296875,
+              "width": 104.890625,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-unavailable-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1230.890625,
+              "y": 469.4296875,
+              "width": 166.84375,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-unavailable-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 475.625,
+              "width": 304,
+              "height": 20.796875,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: runtime_error"
+            }
+          }
+        ]
+      },
+      {
+        "state": "pending",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694.",
+        "action": "pending",
+        "metrics": {
+          "mutations": {
+            "attempted": 40,
+            "dispatched": 31,
+            "rejected": 8
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.35546875,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.35546875,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 249.3046875,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-action-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 249.1484375,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc694\uccad \uacb0\uacfc: \ud655\uc778 \ub610\ub294 \ucc98\ub9ac \uc911\uc785\ub2c8\ub2e4. \ucd08\uc548\uc740 \uacc4\uc18d \ud3b8\uc9d1\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "pending-registered",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694.",
+        "action": "registered_disabled",
+        "metrics": {
+          "mutations": {
+            "attempted": 40,
+            "dispatched": 32,
+            "rejected": 8
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 1,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-registered-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.50390625,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-registered-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.50390625,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-registered-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 249.203125,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-registered-action-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 249.296875,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc694\uccad \uacb0\uacfc: \uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d\ud588\uc2b5\ub2c8\ub2e4. \uc0c8 \uc0c1\ud0dc \ud655\uc778\uc774 \ud544\uc694\ud569\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "pending-applied",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 41,
+            "dispatched": 33,
+            "rejected": 8
+          },
+          "reads": 2,
+          "runtimeReads": 3,
+          "runtimeEffects": 2,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-applied-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.50390625,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-applied-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.50390625,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-applied-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 252.49609375,
+              "width": 283,
+              "height": 35.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "# SYNTHETIC SKILL A\n"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-applied-control-3-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 253.2890625,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d \uc81c\uac70"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-applied-control-4-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 191.88671875,
+              "y": 253.2890625,
+              "width": 113.0703125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc5d0 \uc801\uc6a9"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-applied-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.703125,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-applied-history-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 185.78515625,
+              "width": 303,
+              "height": 168.3828125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc758 Skill \uae30\ub85dReview notes \u00b7 omoc-skill-b92be3e71e5fbc60e7bea35eb5206807d0ac74855feb7566c6519a57569373e1 \u00b7 \uae30\ub85d ID: fixture-skill-message-3\ud45c\uc2dc\ub41c \ud56d\ubaa9\uc740 \uad00\ucc30\ud55c \uae30\ub85d\uc785\ub2c8\ub2e4. \uc9c1\uc811 \uc801\uc6a9 \ub610\ub294 fork \ucd9c\ucc98\ub294 \ud310\ub2e8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-applied-body-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 252.49609375,
+              "width": 283,
+              "height": 35.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "# SYNTHETIC SKILL A\n"
+            }
+          }
+        ]
+      },
+      {
+        "state": "pending-removed",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 42,
+            "dispatched": 34,
+            "rejected": 8
+          },
+          "reads": 2,
+          "runtimeReads": 4,
+          "runtimeEffects": 3,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-removed-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.50390625,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-removed-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.50390625,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-removed-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 259.703125,
+              "width": 303,
+              "height": 20.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac Native \uc0c1\ud0dc\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-pending-removed-history-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 185.875,
+              "width": 303,
+              "height": 168.3828125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc138\uc158\uc758 Skill \uae30\ub85dReview notes \u00b7 omoc-skill-b92be3e71e5fbc60e7bea35eb5206807d0ac74855feb7566c6519a57569373e1 \u00b7 \uae30\ub85d ID: fixture-skill-message-3\ud45c\uc2dc\ub41c \ud56d\ubaa9\uc740 \uad00\ucc30\ud55c \uae30\ub85d\uc785\ub2c8\ub2e4. \uc9c1\uc811 \uc801\uc6a9 \ub610\ub294 fork \ucd9c\ucc98\ub294 \ud310\ub2e8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "removePreservesFileAndSessionHistory": true
+      },
+      {
+        "state": "restoredoldkey",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 42,
+            "dispatched": 34,
+            "rejected": 8
+          },
+          "reads": 0,
+          "runtimeReads": 0,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-restoredoldkey-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.31640625,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-restoredoldkey-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.31640625,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-restoredoldkey-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 249.265625,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          }
+        ],
+        "originalKey": {
+          "runtimeEpoch": "fixture-Skill-runtime-original-epoch",
+          "operationId": "fixture-Skill-runtime-original-register",
+          "type": "configuration.skill.register",
+          "workspaceId": "fixture-w"
+        },
+        "noReplayAfterReload": true
+      },
+      {
+        "state": "cancelled",
+        "syntheticOnly": true,
+        "observation": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694.",
+        "action": null,
+        "metrics": {
+          "mutations": {
+            "attempted": 42,
+            "dispatched": 34,
+            "rejected": 8
+          },
+          "reads": 2,
+          "runtimeReads": 1,
+          "runtimeEffects": 0,
+          "sends": 0
+        },
+        "keyboardFocus": true,
+        "fullTargetAndBodySelectable": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "noImplicitReadOrEffectAfterReselection": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-runtime-cancelled-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.35546875,
+              "width": 104.88671875,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-cancelled-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 171.88671875,
+              "y": 253.35546875,
+              "width": 166.83984375,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc790\ub3d9 \ud638\ucd9c \uc5c6\uc774 Native\uc5d0 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-runtime-cancelled-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 249.3046875,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud604\uc7ac \uad00\ucc30\uc774 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uacfc \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 Native \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          }
+        ],
+        "keyboardEscape": true
+      }
+    ],
+    "owned_exit": {
+      "exited": true,
+      "code": 0
+    },
+    "provenance_verified_after": true
+  },
+  "executed_proof_reuse": "Actual consumer-build-r1/native-r7/hidden-r4 completed once. Contracted read-only verifiers compare exact current selected source/build/resources/helper/probe/evidence; UI-only runner fixes excluded from Native/build source selection. No false reexecution claim.",
+  "failure_history": [
+    "Native prerequisite failures r1-r5 preserved; actual prerequisite r6 PASS9 before consumers",
+    "hidden-r1 292captures/ownedexit0, desktop runner incorrectly queried narrow-only dialog",
+    "hidden-r2 301captures/ownedexit0, rendered selection omitted finalLF at narrow200; exact selected DOM range assertion added plus explicit rendered newline normalization",
+    "hidden-r3 355captures/ownedexit0, new UI states through unknown PASS; runner expected rejected but actual frozen renderer action status is denied; exact assertion corrected"
+  ],
+  "limits": [
+    "Darwin arm64 Native proof; Windows not newly verified",
+    "Synthetic contained stores and auth-free providers only; no model/provider, credentials, private stores or production Main launch",
+    "Native session Skill record and resume:false do not prove model consumption",
+    "Selected fork history is a recorded fact, no new direct-origin claim",
+    "UI uses actual built renderer/preload with synthetic Main fixtures, independent from actual Native production service probe",
+    "Whole F14 and product Goal remain unfinished; independent CODE and RENDER not self approved"
+  ]
+}

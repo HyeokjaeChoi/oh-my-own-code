@@ -1,0 +1,84 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--omoc-semantic-space-control-gap);
+  min-width: var(--omoc-component-size-control-hit-target);
+  max-width: 100%;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--omoc-component-size-control-radius);
+  font: inherit;
+  font-size: var(--omoc-component-type-navigation-size);
+  line-height: var(--omoc-component-type-navigation-line);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.standard {
+  min-height: var(--omoc-component-size-standard-control-height);
+}
+
+.compact {
+  min-height: var(--omoc-component-size-control-hit-target);
+  padding: 4px 8px;
+}
+
+.primary {
+  background: var(--omoc-component-color-button-primary-background);
+  color: var(--omoc-component-color-button-primary-foreground);
+}
+.primary:hover:not(:disabled) {
+  background: var(--omoc-component-color-button-primary-hover);
+}
+.primary:active:not(:disabled) {
+  background: var(--omoc-component-color-button-primary-pressed);
+}
+
+.secondary {
+  border-color: var(--omoc-semantic-color-border-default);
+  background: var(--omoc-semantic-color-surface);
+  color: var(--omoc-semantic-color-text-primary);
+}
+.secondary:hover:not(:disabled),
+.quiet:hover:not(:disabled) {
+  background: var(--omoc-component-color-button-quiet-hover);
+}
+.secondary:active:not(:disabled),
+.quiet:active:not(:disabled) {
+  background: var(--omoc-component-color-button-quiet-pressed);
+}
+
+.quiet {
+  background: transparent;
+  color: var(--omoc-component-color-button-quiet-foreground);
+}
+
+.danger {
+  background: var(--omoc-component-color-button-danger-background);
+  color: var(--omoc-component-color-button-danger-foreground);
+}
+.danger:hover:not(:disabled) {
+  background: var(--omoc-component-color-button-danger-hover);
+}
+.danger:active:not(:disabled) {
+  background: var(--omoc-component-color-button-danger-pressed);
+}
+
+.button:focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: var(--omoc-semantic-size-focus-gap);
+}
+.button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+@media (pointer: coarse) {
+  .button {
+    min-width: var(--omoc-component-size-coarse-target);
+    min-height: var(--omoc-component-size-coarse-target);
+  }
+}

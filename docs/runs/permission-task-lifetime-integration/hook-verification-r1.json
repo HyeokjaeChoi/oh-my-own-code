@@ -1,0 +1,29 @@
+{
+  "revision": 16,
+  "checks": {
+    "native-metadata": 255,
+    "native-descriptor-read": 223,
+    "native-read-auxiliary": 23,
+    "native-task-read": 12
+  },
+  "affected_total": 513,
+  "input": "hook-code-input-r1.json",
+  "status": "hook-check-status-final-r1.json",
+  "static": {
+    "main_exact7_eslint": "exit0",
+    "main_exact7_prettier": "exit0",
+    "worker_exact3": "reported eslint/prettier exit0"
+  },
+  "reused": [
+    "physical kernel r5",
+    "probe diagnostics",
+    "Mainownerfence",
+    "read Effect"
+  ],
+  "independent_code": "pending Aristotle",
+  "limits": [
+    "Node/extracted pinned Effect/scripted only",
+    "complete=false unsupported capabilities=[]",
+    "no Native/Bun/Main/provider/browser/network/build/GUI/physical execution"
+  ]
+}

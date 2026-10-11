@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a1209b-f8ef-7d83-8906-cdd6c4c02faf": {
+      "completed": "출처를 정정합니다. 이전 보고서의 “이번 사용자 지시가 adversarial external rename 조건을 명확히 확정했다”는 문장은 잘못되었습니다.\n\n정정한 요구사항 출처는 다음과 같습니다.\n\n- **사용자 직접 지시:** 전체 제품 목표를 자율적으로 완수하고 계속 진행하는 것입니다.\n- **실제 PRD:** 허용 경로를 실행 경계에서 강제하도록 요구합니다. 적대적인 외부 same-user namespace mutation의 정확한 threat model은 정의하지 않습니다.\n- **r1 reviewer의 해석:** 외부 ancestor/root rename 경쟁까지 처리해야 현재 허용 경로 보장을 충족한다고 판단했습니다.\n- **Main assignment의 지시:** 해당 검토 조건을 보존하며 조사하고, 허용 경로 의미를 held-object 의미로 약화하지 말라는 것입니다.\n\n따라서 기존 문장은 다음으로 교체합니다.\n\n> PRD는 allowed-path execution enforcement를 요구하지만, 적대적인 외부 same-user namespace mutation의 정확한 threat model은 정의하지 않는다. 이 보고서의 strict current-path 및 외부 rename 경쟁 조건은 r1 reviewer의 해석과 이를 보존하도록 한 Main assignment에서 유래한다. 사용자 직접 요구로 확정된 조건이라고 표현해서는 안 된다.\n\n기술 조사 결과는 그대로 두되, blocker 판단은 **그 reviewer 해석과 Main assignment의 검토 조건 아래에서 내린 판단**으로 한정합니다."
+    }
+  },
+  "timed_out": false
+}

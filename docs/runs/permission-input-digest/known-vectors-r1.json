@@ -1,0 +1,156 @@
+{
+  "provenance": "Independent Python hashlib + sorted compact JSON for ASCII metadata keys, no candidate implementation imported; synthetic-only",
+  "vectors": [
+    {
+      "id": 1,
+      "input": {
+        "sessionID": "native-1",
+        "text": "﻿Hello\r\n"
+      },
+      "compact_body": {
+        "version": 1,
+        "kind": "prompt",
+        "sessionID": "native-1",
+        "text": {
+          "bytes": 10,
+          "digest": "9b4e1f195afba7da4371138d6ec6ba72d1a00bbfc97b554490ab2b212c14d51f"
+        },
+        "delivery": {
+          "present": false,
+          "value": "steer"
+        },
+        "files": {
+          "present": false,
+          "items": []
+        }
+      },
+      "canonical_body": "{\"delivery\":{\"present\":false,\"value\":\"steer\"},\"files\":{\"items\":[],\"present\":false},\"kind\":\"prompt\",\"sessionID\":\"native-1\",\"text\":{\"bytes\":10,\"digest\":\"9b4e1f195afba7da4371138d6ec6ba72d1a00bbfc97b554490ab2b212c14d51f\"},\"version\":1}",
+      "expected_digest": "be49c3d75e9310ef66ce787195a9fa990e3d9c5156fde4c7b85e493582fb1cfc"
+    },
+    {
+      "id": 2,
+      "input": {
+        "sessionID": "native-1",
+        "text": "﻿Hello\r\n",
+        "delivery": "steer"
+      },
+      "compact_body": {
+        "version": 1,
+        "kind": "prompt",
+        "sessionID": "native-1",
+        "text": {
+          "bytes": 10,
+          "digest": "9b4e1f195afba7da4371138d6ec6ba72d1a00bbfc97b554490ab2b212c14d51f"
+        },
+        "delivery": {
+          "present": true,
+          "value": "steer"
+        },
+        "files": {
+          "present": false,
+          "items": []
+        }
+      },
+      "canonical_body": "{\"delivery\":{\"present\":true,\"value\":\"steer\"},\"files\":{\"items\":[],\"present\":false},\"kind\":\"prompt\",\"sessionID\":\"native-1\",\"text\":{\"bytes\":10,\"digest\":\"9b4e1f195afba7da4371138d6ec6ba72d1a00bbfc97b554490ab2b212c14d51f\"},\"version\":1}",
+      "expected_digest": "d1fd981beba3e53ab2653f9e81bb7159c5902699b9ded129c70ba6621055e426"
+    },
+    {
+      "id": 3,
+      "input": {
+        "sessionID": "native-1",
+        "text": "한글🙂\r\n",
+        "files": [
+          {
+            "name": "a.txt",
+            "uri": "data:text/plain;base64,"
+          },
+          {
+            "name": "a.txt",
+            "uri": "data:text/plain;base64,eA=="
+          }
+        ]
+      },
+      "compact_body": {
+        "version": 1,
+        "kind": "prompt",
+        "sessionID": "native-1",
+        "text": {
+          "bytes": 12,
+          "digest": "b51d6f984e3e95f4d46017b8a70062179c235945c07fd15bfb5e07a4828f6735"
+        },
+        "delivery": {
+          "present": false,
+          "value": "steer"
+        },
+        "files": {
+          "present": true,
+          "items": [
+            {
+              "name": "a.txt",
+              "mime": "text/plain",
+              "bytes": 0,
+              "uriDigest": "f7c760ac5fcdc0bc720709cc624a150b3460c5aabe96bad7da3a164bbc73e0d7"
+            },
+            {
+              "name": "a.txt",
+              "mime": "text/plain",
+              "bytes": 1,
+              "uriDigest": "a7a2561c6a5123597c5fe5d19227977fe7322121918ae0cbd195cf1674a0e818"
+            }
+          ]
+        }
+      },
+      "canonical_body": "{\"delivery\":{\"present\":false,\"value\":\"steer\"},\"files\":{\"items\":[{\"bytes\":0,\"mime\":\"text/plain\",\"name\":\"a.txt\",\"uriDigest\":\"f7c760ac5fcdc0bc720709cc624a150b3460c5aabe96bad7da3a164bbc73e0d7\"},{\"bytes\":1,\"mime\":\"text/plain\",\"name\":\"a.txt\",\"uriDigest\":\"a7a2561c6a5123597c5fe5d19227977fe7322121918ae0cbd195cf1674a0e818\"}],\"present\":true},\"kind\":\"prompt\",\"sessionID\":\"native-1\",\"text\":{\"bytes\":12,\"digest\":\"b51d6f984e3e95f4d46017b8a70062179c235945c07fd15bfb5e07a4828f6735\"},\"version\":1}",
+      "expected_digest": "543d891862be773de30009807ced7c5a2bf7a0577fc8a70e50b364d1941c05d7"
+    },
+    {
+      "id": 4,
+      "input": {
+        "sessionID": "native-1",
+        "text": "한글🙂\r\n",
+        "files": [
+          {
+            "name": "a.txt",
+            "uri": "data:text/plain;base64,eA=="
+          },
+          {
+            "name": "a.txt",
+            "uri": "data:text/plain;base64,"
+          }
+        ]
+      },
+      "compact_body": {
+        "version": 1,
+        "kind": "prompt",
+        "sessionID": "native-1",
+        "text": {
+          "bytes": 12,
+          "digest": "b51d6f984e3e95f4d46017b8a70062179c235945c07fd15bfb5e07a4828f6735"
+        },
+        "delivery": {
+          "present": false,
+          "value": "steer"
+        },
+        "files": {
+          "present": true,
+          "items": [
+            {
+              "name": "a.txt",
+              "mime": "text/plain",
+              "bytes": 1,
+              "uriDigest": "a7a2561c6a5123597c5fe5d19227977fe7322121918ae0cbd195cf1674a0e818"
+            },
+            {
+              "name": "a.txt",
+              "mime": "text/plain",
+              "bytes": 0,
+              "uriDigest": "f7c760ac5fcdc0bc720709cc624a150b3460c5aabe96bad7da3a164bbc73e0d7"
+            }
+          ]
+        }
+      },
+      "canonical_body": "{\"delivery\":{\"present\":false,\"value\":\"steer\"},\"files\":{\"items\":[{\"bytes\":1,\"mime\":\"text/plain\",\"name\":\"a.txt\",\"uriDigest\":\"a7a2561c6a5123597c5fe5d19227977fe7322121918ae0cbd195cf1674a0e818\"},{\"bytes\":0,\"mime\":\"text/plain\",\"name\":\"a.txt\",\"uriDigest\":\"f7c760ac5fcdc0bc720709cc624a150b3460c5aabe96bad7da3a164bbc73e0d7\"}],\"present\":true},\"kind\":\"prompt\",\"sessionID\":\"native-1\",\"text\":{\"bytes\":12,\"digest\":\"b51d6f984e3e95f4d46017b8a70062179c235945c07fd15bfb5e07a4828f6735\"},\"version\":1}",
+      "expected_digest": "11fce30c1c122346168057477e66ede639b7d747213fbf9024c13d06b01db94c"
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+✖ pinned overlay recipe binds exact nineteen source files and preserves frozen preparation data (1.479667ms)
+✔ actual pinned source transforms to exact checked output without executing or changing Native (1124.935791ms)
+✔ fourth argument forwards overrides while original lifecycle and HTTP transform positions stay identical (4.660667ms)
+✔ changed pinned bytes and output pins refuse the entire plan with original source preserved (49.265291ms)
+✔ patched Permission and Saved sources share the fixed control and preserve gate ordering (2.556917ms)
+✔ nineteen-file consumer refuses missing, duplicate and extra sources and keeps recipe output order (6.172042ms)
+✔ checked Session entries guard before original effect construction and release the short admission first (2.630375ms)
+✔ actual shared Control denies coordinator callback after two Native identity reads (7.041083ms)
+✔ missing, malformed and accessor identity is refused without invoking effect callbacks (0.713125ms)
+✔ changed project, path or workspace during gate wait refuses old admission (3.317042ms)
+✔ invalid entry and body fail before Store IO; dependency accessors never run (0.459583ms)
+✔ saved child capture uses real pinned Layer and Context APIs (0.854584ms)
+✔ tool context session ID capture refuses accessor and Proxy before callbacks (0.162417ms)
+✔ fixed producer pins the actual complete relative module closure before load (12.390458ms)
+✔ unknown source is refused by actual extracted PluginSupervisor.resolve BEFORE modules.load (10.923208ms)
+✔ actual extracted hook layer observes register/finalizer and blocks retained callback before effects (2.242459ms)
+✔ actual pinned State replays tool transforms; same owner invalidates each replay and disposal (1.461375ms)
+✔ ordered builtin plan rejects missing/duplicate/reordered plugins before activation (1.087ms)
+✔ actual extracted Tool layer publishes exact action identities as unsupported and observes reload/dispose (2.422417ms)
+✔ actual extracted Plugin.load records successful registration and actual scope disposal on the same Control (1.218917ms)
+✔ actual cache factory registers resolved ready location and retains finalizing on invalidate (11.039083ms)
+✔ actual failed Native build retains unproved incarnation instead of dropping context (1.772042ms)
+✔ actual project resolution observes unknown build before its first effect and holds no project lock (1.511291ms)
+✔ actual owner scope close retains unproved finalizing entry (finalizer failure=false) (1.385292ms)
+✔ actual owner scope close retains unproved finalizing entry (finalizer failure=true) (1.244167ms)
+✔ actual cache hit reuses incarnation; invalidated replacement never erases old one (1.43425ms)
+✔ actual AppNodeBuilder replacement declares Control before constructing location map (1.972666ms)
+✔ actual invalidation during unresolved build cannot publish late ready context (1.269917ms)
+✔ actual registration capacity failure blocks before Native project resolution and invalidates graph (1.4395ms)
+✔ partial Native Layer failure marks finalizing before acquired service cleanup (3.404792ms)
+[20:00:37.097] INFO (#65): location services booted {
+  directory: '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-location-node-YfB9VN/roots/one',
+  workspaceID: undefined,
+  durationMs: 0
+}
+[20:00:37.098] INFO (#68): location services booted {
+  directory: '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-location-node-YfB9VN/roots/two',
+  workspaceID: undefined,
+  durationMs: 0
+}
+✔ actual compiled local cache preserves shared service reuse across location incarnations (3.230375ms)
+✔ actual compiled local interruption records finalizing before acquired finalizer (1.195708ms)
+✔ actual checked Native prompt refuses before preparation and admission (6.508125ms)
+✔ actual checked existing-session mutation methods all refuse before original callbacks (2.00175ms)
+✔ held sessions retain read-only access and cancellation intent (0.9005ms)
+✔ actual checked direct SessionShell refuses before Instance or Shell acquisition (0.6375ms)
+✔ held raw actual execute refuses before decode, tool callback and output schema (5.586792ms)
+✖ held actual Tool.snapshot refuses before catalog and definition schema callbacks (1.34425ms)
+✖ held actual direct entry refuses before hook construction (0.649334ms)
+✖ held actual nested entry refuses before hook construction (0.489792ms)
+✖ held actual direct-accessor entry refuses before hook construction (0.457084ms)
+✔ raw entry with missing store service cannot call schema or callback (0.611459ms)
+✔ raw actual execution refuses accessor scope without callback access (0.412333ms)
+✔ raw actual execution refuses proxy scope without callback access (0.28925ms)
+✔ raw actual execution refuses missing scope without callback access (0.351084ms)
+✔ raw actual execution refuses mismatch scope without callback access (0.389875ms)
+✔ raw actual execution refuses changed scope without callback access (0.335666ms)
+✔ raw Tool guard does not hold project gate across callback effects (0.447167ms)
+ℹ tests 48
+ℹ suites 0
+ℹ pass 43
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1291.434584
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs:25:1
+✖ pinned overlay recipe binds exact nineteen source files and preserves frozen preparation data (1.479667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      'c553abcc5404848220a97776c0d599ca45f183ca1c113610e6149bd6cf1a862a',
+      '972489e8409c9b187fc6d60502fd55907407eff495691c490907400059f90338',
+      'aba86336a925c76c0de2e2da6324b85cf11eb304ce85f327c0a9aab613a032a1',
+      'b94b04da1aec07a7a2f5446670ba746d337f4d8c684cd88aa3d8b27142425d9e',
+  ...
+      '41593f4696861893d2a07d5a02bc6aee294e9440a7ff2c89580334db05156208',
+  +   'bc91187f78b5c59727654030e9f3f9c0efa133ef72951e0da3d3757f6ef22b34',
+  -   '99373c7ad6a0fd4281c0004197c8f9e01a127549d8f42b743d34aee2fd3c7e5b',
+      '912d6a88a8c0be08ec0bfb183cfc0cc96c38e6b346ee8347f1b84641303acf36',
+      'cee18a3e9ad7a1d5bc611821875f528a676bad6f51f16a8e0225dd95551b46d1',
+      'f93ae92f8bd8f3ac26091b9ca39ad30fcbc652de3ada36d7f0a9f243328ab3fe',
+      '560b721c3e6782bb857561c08e4bcecafedc5dfb0d10fe2649c1a08337b9028c',
+      'fe8306ad0004907b088a7016002951c12e462ee739358694a60bc6382009c95f',
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs:81:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'c553abcc5404848220a97776c0d599ca45f183ca1c113610e6149bd6cf1a862a', '972489e8409c9b187fc6d60502fd55907407eff495691c490907400059f90338', 'aba86336a925c76c0de2e2da6324b85cf11eb304ce85f327c0a9aab613a032a1', 'b94b04da1aec07a7a2f5446670ba746d337f4d8c684cd88aa3d8b27142425d9e', '2646f6b2fccf432303f0a322e1b973d031f50bcd0dc46b47782a3a0759764be3', 'f96d58b1e4a68ddd261170f16b953157f590229f52c2ebe4b4b0a50860391b9d', '7e619e08c82a171a669c8743ed2cec700f11b1459d348d7f3a55a37e4435b442', '8bb1cbb6771fed3b5a77255c9e17f6ab266251e6031335b439137f8f2815ea77', '0df2feaebd55679ccc94f251d8052ffc40d7a417910097caa2be19b2f4d550c9', '2b374f48f4be331e06419fb43f30dfab5b2fa72d45b1cc8500d633ab3e6f0a6b', '41593f4696861893d2a07d5a02bc6aee294e9440a7ff2c89580334db05156208', 'bc91187f78b5c59727654030e9f3f9c0efa133ef72951e0da3d3757f6ef22b34', '912d6a88a8c0be08ec0bfb183cfc0cc96c38e6b346ee8347f1b84641303acf36', 'cee18a3e9ad7a1d5bc611821875f528a676bad6f51f16a8e0225dd95551b46d1', 'f93ae92f8bd8f3ac26091b9ca39ad30fcbc652de3ada36d7f0a9f243328ab3fe', '560b721c3e6782bb857561c08e4bcecafedc5dfb0d10fe2649c1a08337b9028c', 'fe8306ad0004907b088a7016002951c12e462ee739358694a60bc6382009c95f', '34e398474363d8b61faed2a8b32dce9d3c6bec0033a15db9d7d4fcc6405ebd83', '7bae793b1b7944b5f53f307021b695644dc1de045a517b36cba8cb3829cc176a' ],
+    expected: [ 'c553abcc5404848220a97776c0d599ca45f183ca1c113610e6149bd6cf1a862a', '972489e8409c9b187fc6d60502fd55907407eff495691c490907400059f90338', 'aba86336a925c76c0de2e2da6324b85cf11eb304ce85f327c0a9aab613a032a1', 'b94b04da1aec07a7a2f5446670ba746d337f4d8c684cd88aa3d8b27142425d9e', '2646f6b2fccf432303f0a322e1b973d031f50bcd0dc46b47782a3a0759764be3', 'f96d58b1e4a68ddd261170f16b953157f590229f52c2ebe4b4b0a50860391b9d', '7e619e08c82a171a669c8743ed2cec700f11b1459d348d7f3a55a37e4435b442', '8bb1cbb6771fed3b5a77255c9e17f6ab266251e6031335b439137f8f2815ea77', '0df2feaebd55679ccc94f251d8052ffc40d7a417910097caa2be19b2f4d550c9', '2b374f48f4be331e06419fb43f30dfab5b2fa72d45b1cc8500d633ab3e6f0a6b', '41593f4696861893d2a07d5a02bc6aee294e9440a7ff2c89580334db05156208', '99373c7ad6a0fd4281c0004197c8f9e01a127549d8f42b743d34aee2fd3c7e5b', '912d6a88a8c0be08ec0bfb183cfc0cc96c38e6b346ee8347f1b84641303acf36', 'cee18a3e9ad7a1d5bc611821875f528a676bad6f51f16a8e0225dd95551b46d1', 'f93ae92f8bd8f3ac26091b9ca39ad30fcbc652de3ada36d7f0a9f243328ab3fe', '560b721c3e6782bb857561c08e4bcecafedc5dfb0d10fe2649c1a08337b9028c', 'fe8306ad0004907b088a7016002951c12e462ee739358694a60bc6382009c95f', '34e398474363d8b61faed2a8b32dce9d3c6bec0033a15db9d7d4fcc6405ebd83', '7bae793b1b7944b5f53f307021b695644dc1de045a517b36cba8cb3829cc176a' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:255:1
+✖ held actual Tool.snapshot refuses before catalog and definition schema callbacks (1.34425ms)
+  AssertionError [ERR_ASSERTION]: Cause([Die(ReferenceError: observeRegistration is not defined)])
+      at refused (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:218:12)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:280:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:285:3
+✖ held actual direct entry refuses before hook construction (0.649334ms)
+  AssertionError [ERR_ASSERTION]: Cause([Die(ReferenceError: observeRegistration is not defined)])
+      at refused (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:218:12)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:325:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:285:3
+✖ held actual nested entry refuses before hook construction (0.489792ms)
+  AssertionError [ERR_ASSERTION]: Cause([Die(ReferenceError: observeRegistration is not defined)])
+      at refused (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:218:12)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:325:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:285:3
+✖ held actual direct-accessor entry refuses before hook construction (0.457084ms)
+  AssertionError [ERR_ASSERTION]: Cause([Die(ReferenceError: observeRegistration is not defined)])
+      at refused (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:218:12)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:325:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

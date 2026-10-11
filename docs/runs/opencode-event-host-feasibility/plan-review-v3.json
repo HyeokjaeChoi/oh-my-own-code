@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "run": "opencode-event-host-feasibility",
+  "reviewer": "plan_reviewer",
+  "plan_revision": 3,
+  "reviewed": {
+    "contract_sha256": "3b872a1ee6b8c9384611dacdf0ab498248603915246a767550a02009cb56a695",
+    "gate": "plan",
+    "plan_sha256": "e591a18b7c60637f837bec4174357ee059573224a7c412a69c2229de80354f43",
+    "schema_version": 2,
+    "source_sha256": "343e17fe5bdb3dcecf1371933644103751d15c403030df0839865c8671fe6547"
+  },
+  "verdict": "pass",
+  "summary": "revision3은 제한된 phase1 진입 계획으로 적절합니다. 고정 Bun1.4.2와 official server2.0.18의 event persistence, idle 상태의 정상 종료 및 소유한 SIGKILL 후 reopen만 검증합니다. 이전 지적 5개는 구체적인 guard 또는 명시적인 범위 제외로 처리했습니다. 전체 제품 목표와 P7 완료 조건은 유지합니다.",
+  "open_findings": [],
+  "assessments": {
+    "EH-DESIGN-V2-01": "spawn과 API 호출 전 경로 검사, containment, symlink/hard-link 거절, config/env 제한과 폐쇄된 API 목록을 명시했습니다. OS filesystem confinement 주장은 제외했습니다.",
+    "EH-DESIGN-V2-02": "일반 API의 Basic/CORS 기대 결과와 보고서 redaction을 명시했습니다. pairing과 PTY ticket은 호출 및 검증 범위에서 제외했습니다.",
+    "EH-DESIGN-V2-03": "queued/suspended seed와 provider/tool 실행 API를 금지했습니다. pending restart와 provider-safe 주장을 제외하므로 해당 관찰 시험은 phase1에 필요하지 않습니다.",
+    "EH-DESIGN-V2-04": "소유한 ChildProcess의 실제 exit 확인과 실패별 종료 순서를 명시했습니다. 관찰된 descendant는 별도 exit 증거가 필요합니다. observer gap이나 불확실한 종료는 hold와 namespace 보존으로 처리합니다.",
+    "EH-DESIGN-V2-05": "첫 metadata 요청부터 installer 전용 allowlist env와 npm config를 적용합니다. public registry, 고정 lock, integrity, script 금지 및 예외 hook의 사전 검토 기준을 명시했습니다.",
+    "input_freeze": "초기 review 후 실제 입력을 생성합니다. 각 입력을 environment_files에 등록하고 새 revision의 독립 ENTRY review를 받은 뒤 runtime/check를 시작합니다. 검사 중 입력 변경과 diagnostic fallback은 허용하지 않습니다.",
+    "product_intent": "PRD v0.6 F01–18과 P7 S1–S5 및 11개 검사를 유지합니다. phase1 PASS는 제품 완료, production replacement 또는 adoption 승인으로 사용할 수 없습니다.",
+    "ownership_and_completion": "prototype writer와 Main의 소유 범위가 구분되어 있습니다. EH-01–07과 final verifier가 완료 기준을 정의하며, 최종 산출물에는 새 독립 code review가 필요합니다."
+  },
+  "checks": [
+    "지정된 profile, 두 SKILL.md, 계획, contract, 입력 정책, 설계, review binding 및 이전 design review를 읽었습니다.",
+    "plan SHA256, canonical JSON contract SHA256, 등록된 design SHA256이 현재 파일과 일치합니다.",
+    "reviewed는 plan-review-input-v3.json에서 정확히 복사했습니다. source_sha256은 별도로 재계산하지 않았습니다."
+  ],
+  "review_boundary": {
+    "mode": "fresh_independent_static_entry_plan_review",
+    "binding": "initial_bootstrap_direct_binding",
+    "input_path": "docs/runs/opencode-event-host-feasibility/plan-review-input-v3.json",
+    "packet_path": null,
+    "runtime_capability_verified": false,
+    "production_accepted": false,
+    "P7_complete": false,
+    "next_dependency": "독립 design_spec PASS 후 prototype 입력을 준비합니다. 모든 실제 입력을 등록하고 refreshed ENTRY review를 받은 뒤 runtime/check를 진행합니다."
+  },
+  "provenance": {
+    "child_task_id": "01a10797-2168-7b02-8b3e-f1eddb7c3c0e",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-plan-review"
+    ],
+    "delegated": false,
+    "dispatch_invented": false,
+    "runtime_identity_attested": false,
+    "sandbox_enforcement_attested": false,
+    "source_edits": false,
+    "ledger_edits": false,
+    "runtime_checks_run": false,
+    "install_run": false,
+    "native_launches": false,
+    "provider_calls": false,
+    "private_npmrc_read": false,
+    "files_changed": []
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "c4eb661b1488ec3c4b7dc5bf9dafc96093e1684ced06c7815fd475ad14517291",
+    "environment_sha256": "8e32acf34ffcebd752900a7276dd09678e8e14b5f31a158f4d5b686d3632ce89",
+    "gate": "code",
+    "plan_sha256": "014d2785b87eefbc0b7a5e0ce04fa6fd168e1c21c5323ea2f315789d4aed5e73",
+    "schema_version": 2,
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "verification_sha256": "3f5b526ba1b62770bac41c61aa0010cafe693ae8d6f76df965f74df172e74294",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "COV-R1-01/02의 수정과 인접 검증 조건을 독립적으로 확인했습니다. 원래 83개 조항과 공통 요구 19개가 보존되며, 요구사항 누락 사례는 거절됩니다. B15에 로컬 개인 활용 지표와 작업 의존성이 명시되었습니다. 검토 범위에서 추가 수정이 필요한 결함은 없습니다. 이 판정은 audit 기록과 checker에만 적용하며 전체 제품 승인이 아닙니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11df2-bda3-79e3-9593-489049db1877",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "verification": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "passes": [
+      {
+        "pass": "spec_completeness",
+        "result": "변경하지 않은 PRD에서 독립적으로 추출한 83개 조항이 입력과 일치합니다. 4·5·7·8절의 전체 경계와 문단 수 6·5·5·3을 확인했습니다. 공통 요구 19개에는 각각 backlog 담당 항목이 있습니다. 개인 활용 지표는 B15에 연결됩니다."
+      },
+      {
+        "pass": "checker_and_backlog_correctness",
+        "result": "이전 checker와 현재 checker로 세 회귀 사례를 재실행했습니다. 저장된 RED와 GREEN 결과를 재현했습니다. 수정된 검사, backlog 내용, 현재 diagnostics 호출 경로와 인접 검증 조건에서 추가 결함을 찾지 못했습니다."
+      }
+    ],
+    "files_inspected": {
+      "instructions": [
+        "AGENTS.md",
+        ".codex/agents/solo_reader.toml",
+        ".agents/skills/solo-specialist/SKILL.md",
+        ".agents/skills/solo-code-review/SKILL.md",
+        ".agents/skills/solo-orchestrate/references/effort-and-feedback.md"
+      ],
+      "authority_and_audit": [
+        "docs/product/prd.md",
+        "docs/runs/full-product-coverage-audit/plan.md",
+        "docs/runs/full-product-coverage-audit/final-code-packet-r2.json",
+        "docs/runs/full-product-coverage-audit/final-code-input-r2.json",
+        "docs/runs/full-product-coverage-audit/final-code-review-r1.json",
+        "docs/runs/full-product-coverage-audit/review-repair-r2.json",
+        "docs/runs/full-product-coverage-audit/input.json",
+        "docs/runs/full-product-coverage-audit/check-coverage.py",
+        "docs/runs/full-product-coverage-audit/coverage-matrix.json",
+        "docs/runs/full-product-coverage-audit/remaining-backlog.json",
+        "docs/runs/full-product-coverage-audit/final-evidence-r2.json",
+        "docs/runs/full-product-coverage-audit/audit-summary.md",
+        "docs/runs/full-product-coverage-audit/final-outcome-r2.json",
+        "docs/runs/full-product-coverage-audit/before-review-repair-r1/input.json",
+        "docs/runs/full-product-coverage-audit/before-review-repair-r1/check-coverage.py",
+        "docs/runs/full-product-coverage-audit/before-review-repair-r1/coverage-matrix.json",
+        "docs/runs/full-product-coverage-audit/before-review-repair-r1/remaining-backlog.json",
+        "docs/runs/full-product-coverage-audit/audit-review-regressions-r2.py",
+        "docs/runs/full-product-coverage-audit/audit-review-red-r3.json",
+        "docs/runs/full-product-coverage-audit/audit-review-green-r2.json",
+        "docs/runs/full-product-coverage-audit/integrate-full-product-coverage-r1.py"
+      ],
+      "research_leads": [
+        "docs/runs/full-product-coverage-audit/workspace-research-raw-r1.json",
+        "docs/runs/full-product-coverage-audit/execution-research-raw-r1.json",
+        "docs/runs/full-product-coverage-audit/tools-research-raw-r1.json",
+        "docs/runs/full-product-coverage-audit/full-product-main-f16-f18-report-r1.json",
+        "docs/runs/full-product-coverage-audit/full-product-main-section7-r1.json",
+        "docs/runs/full-product-coverage-audit/full-product-main-section8-r1.json",
+        "docs/runs/full-product-coverage-audit/full-product-platform-report-r1.json",
+        "docs/runs/full-product-coverage-audit/full-product-recovery-applicability-r1.json"
+      ],
+      "source_selected_ranges": [
+        "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/desktop-bridge.d.ts",
+        "apps/desktop-app/src/event-host-resources.mjs",
+        "apps/desktop-app/src/host/owner-lifetime.mjs"
+      ]
+    },
+    "actual_checks": [
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 docs/runs/full-product-coverage-audit/check-coverage.py inputs",
+        "exit_code": 0,
+        "result": "inputs=pass, sourceFiles=688, productAcceptance=false"
+      },
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 docs/runs/full-product-coverage-audit/check-coverage.py matrix",
+        "exit_code": 0,
+        "result": "clauses=83, crossCutting=19, scenarios=7, platforms=2, backlog=18"
+      },
+      {
+        "check": "PRD 표의 독립 문장 분할과 section 제목 경계 비교",
+        "result": "원래 83개 조항과 입력이 일치했습니다. segmentation SHA256은 eab39891d0fa450daa044c654624bc5e632518b07b4b1fce57f02a7f808354df입니다. 4·5·7·8절은 각각 6·5·5·3문단이며 전체 내용이 일치했습니다."
+      },
+      {
+        "check": "메모리 복사본으로 이전 및 현재 checker의 세 회귀 사례 재실행",
+        "result": "section-headings-only, collapsed-clauses, unmapped-personal-metrics가 이전에는 모두 통과하고 현재는 모두 거절되었습니다. audit-review-red-r3.json과 audit-review-green-r2.json의 사례별 결과 및 거절 이유와 일치했습니다."
+      },
+      {
+        "check": "83개 수와 전체 문장을 유지하면서 조항 경계 변경",
+        "result": "original clause segmentation changed로 거절되었습니다."
+      },
+      {
+        "check": "공통 요구 19개를 하나씩 backlog 연결에서 제거",
+        "result": "19개 사례 모두 remaining cross-cutting requirements missing from backlog로 거절되었습니다."
+      },
+      {
+        "check": "인접 검증 조건",
+        "result": "문단 수를 유지한 section 내용 삭제, 알 수 없는 crossCuttingKey, 뒤쪽 항목에 대한 의존성, 다른 조항으로 옮긴 non_goal 예외를 모두 거절했습니다."
+      },
+      {
+        "check": "B15와 현재 diagnostics 호출 경로 대조",
+        "result": "현재 operation별 duration 기록은 개인 활용 측정을 충족하지 않습니다. backlog는 이를 남은 구현으로 유지하며 소요 시간, 앱 밖으로 나간 이유, 잘못 이해한 상태, 복구 실패의 로컬 기록을 명시합니다. 의존성 B05·B07·B08·B14도 유지됩니다."
+      },
+      {
+        "check": "기존 조사 결과와 matrix 보존 확인",
+        "result": "세 raw 보고서의 70개 조항은 exactClause와 status가 일치했습니다. gaps 조정은 명시된 F-11:3 IDE 비목표뿐입니다. Main의 F16~18·7절·8절·플랫폼 결과도 matrix와 일치했습니다. matrix는 수정 전 snapshot과 byte 단위로 동일합니다."
+      },
+      {
+        "check": "final-evidence-r2.json의 파일 hash와 byte 수 재확인",
+        "result": "25개 파일 모두 일치했습니다. 최종 확인에서도 변경이 없었습니다."
+      }
+    ],
+    "limits": [
+      "검토는 COV-R1-01/02의 수정과 관련된 인접 조건에 한정했습니다. 이전에 검토한 무관한 제품 영역은 다시 전수 검토하지 않았습니다.",
+      "688개 source의 inventory와 hash 검사는 통과했습니다. 모든 파일의 의미를 전수 검토한 것은 아닙니다.",
+      "제품 runtime, provider, build, GUI, Native 실행은 하지 않았습니다.",
+      "Windows 구현 누락과 별도 실행 필요는 기록에 유지됩니다. 실제 Windows 실행은 검증하지 않았습니다.",
+      "과거 scoped 실행 증거는 현재 전체 runtime이나 전체 제품 수용 근거로 확대하지 않았습니다.",
+      "B01 duplicate import는 실제 재현 전 결함 후보로 유지했습니다. 후속 실제 재현은 이번 검토 범위 밖입니다.",
+      "파일, source, artifact, ledger를 수정하지 않았습니다. 재위임하거나 수정안을 직접 구현하지 않았습니다."
+    ]
+  }
+}

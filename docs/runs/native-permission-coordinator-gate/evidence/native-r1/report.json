@@ -1,0 +1,350 @@
+{
+  "schema_version": 1,
+  "result": "pass",
+  "phase": "complete",
+  "cases": [
+    {
+      "name": "overlay_forwarding",
+      "result": "pass"
+    },
+    {
+      "name": "fixed_config",
+      "result": "pass"
+    },
+    {
+      "name": "fixed_plugin_source",
+      "result": "pass"
+    },
+    {
+      "name": "sdk_registration_denied",
+      "result": "pass"
+    },
+    {
+      "name": "inert_wellknown",
+      "result": "pass"
+    },
+    {
+      "name": "control_boot",
+      "result": "pass"
+    },
+    {
+      "name": "permission_held",
+      "result": "pass"
+    },
+    {
+      "name": "saved_held",
+      "result": "pass"
+    },
+    {
+      "name": "coordinator_held",
+      "result": "pass"
+    },
+    {
+      "name": "session_execution_held",
+      "result": "pass"
+    },
+    {
+      "name": "lease_component_runtime",
+      "result": "pass"
+    }
+  ],
+  "limits": [
+    "Synthetic fixed Native graph only; not full F09, provider, UI or production Main acceptance.",
+    "lease_component_runtime checks only pinned Bun/Effect and real PassThrough with synthetic private bookkeeping; it is not Native execution authorization or descendant proof.",
+    "No OS filesystem/network sandbox or descendant enumeration is claimed.",
+    "Retained namespaces and before-after hashes do not prove change-and-restore absence or power-loss recovery."
+  ],
+  "before": {
+    "source": {
+      "files": {
+        "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs": "6a0e7af5fa1969a1f6e83879feb09f567efb49fb89091674967b3e2dfb9cbae0",
+        "apps/desktop-app/scripts/native-permission-graph-probe.mjs": "e51dc28b43ea8800a7235f639adf4a53e5af09343b5b574be45fadc956b0719e",
+        "apps/desktop-app/scripts/native-permission-overlay.mjs": "3cd666a90ba26272c4daf4a9f27eb21cea216d4ba6322330432231f1c21a3731",
+        "apps/desktop-app/scripts/permission-tool-probe.mjs": "731e7a0605e38bb7dd20b8499a3f6a92f4672e78749cb44a651804a30dce19d4",
+        "apps/desktop-app/scripts/prepare-event-host.mjs": "9970d480610c93628587fb97c62ff393e3515d6d87f6362542aa79456a2d1cff",
+        "apps/desktop-app/scripts/stage-event-host.mjs": "fa4dc580ead8b87b8408960868805896c287e36c056146aa11a2ba6bafdf4841",
+        "apps/desktop-app/src/builtins/workbench-skills/agents.mjs": "1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305",
+        "apps/desktop-app/src/builtins/workbench-skills/extensions.mjs": "05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962",
+        "apps/desktop-app/src/builtins/workbench-skills/package.json": "1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120",
+        "apps/desktop-app/src/builtins/workbench-skills/server.mjs": "b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d",
+        "apps/desktop-app/src/event-host-child.mjs": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+        "apps/desktop-app/src/event-host-protocol.mjs": "18fd006fa963e84015b81ac2338a5680d072aa9f8c5cf7ef5f85fd3d3eba2ed6",
+        "apps/desktop-app/src/event-host-resources.mjs": "ecb234a99a062b4e706c5c15f92a90e72102f08cf1f7432ec33e052d6ca94896",
+        "apps/desktop-app/src/host/configuration-file-observation.mjs": "83419028f952d647a23bf06b908649c97cc343b2247c15b9e1ae427acc7a9587",
+        "apps/desktop-app/src/host/configuration-save-kernel.mjs": "cca5de5aa358d1ecba8209b2c7c8af457503c1717945cba1f825245c2974fd54",
+        "apps/desktop-app/src/host/git-branch-restore-contract.mjs": "75cf0478da330b3b9fa6937be415abbcd7fb50473ba1418b913197fdfc1b21a3",
+        "apps/desktop-app/src/host/git-branch-restore-kernel.mjs": "f8402c66a0cc450c3e1027157de948797d4148d7225e0caa24c2faaeadbf4419",
+        "apps/desktop-app/src/host/git-commit-contract.mjs": "94fe59d2bce230887fe44513ba3b829e2149ee33489df62edf0475ef655d039d",
+        "apps/desktop-app/src/host/git-commit-kernel.mjs": "ccd5b04f81fbd2e675ab10599dddfc3a1519dc119e4562bf8ffeb12e7213e482",
+        "apps/desktop-app/src/host/git-index-contract.mjs": "87cccae8dcb53a84a80fc4b7a73a30942aa2c9b9b37f6f203debf0e9dd2d66d7",
+        "apps/desktop-app/src/host/git-index-kernel.mjs": "40f1b6adbbcf1b571ea03ff01e7c32e2a68d28c5350f1a60cfea6457c41730bb",
+        "apps/desktop-app/src/host/git-metadata-kernel.mjs": "7c68c8587593ebe938dd3727392eda8c9e96220f66c615a269388291fd18645d",
+        "apps/desktop-app/src/native-agents-protocol.mjs": "c8a4f7066855b4b93a55d6752645012e2fb6d6b690588601ca7c086ca025f918",
+        "apps/desktop-app/src/native-extensions-protocol.mjs": "fe6f34f163787aba93090f5ed197e9605a1724b6b8f593894731996ded955d63",
+        "apps/desktop-app/src/native-permission-control-input.mjs": "ec542dbe5f19637a2477a2f143fe1c44d6b0a1774519f03188159df6277c0180",
+        "apps/desktop-app/src/native-permission-control.mjs": "663c0558f2f7c2f08c360ba398ced221b36aa16d579816b05575b3d6960400df",
+        "apps/desktop-app/src/native-permission-coordinator-admission.mjs": "fd595b142338caf0cdb4a89c08013c95f9a9914283b1cb08973cd17e6dab6487",
+        "apps/desktop-app/src/native-permission-graph.mjs": "26e455fbdd9d42af2cf78867574bb220142d962b448f64ab51f242522fc88d07",
+        "apps/desktop-app/src/native-permission-leases.mjs": "158a7b47ecf8f686df6f09e18eef7f72a91c21783ebaeae037fd2908256916c4",
+        "apps/desktop-app/src/native-permission-overlay-contract.mjs": "df03b81bf203712381cc70720a9d99d8177b0bd659640a2680d49b12c99af348",
+        "apps/desktop-app/src/native-permission-task-observer.mjs": "c70dbaa5a2241b97718c5b37f03550b4ab15d1d5e58c646e577ccf6610e07fe5",
+        "apps/desktop-app/src/native-preflight-predicates.mjs": "1c9f9ac887bcfa968c65506c03a0ed052e3995c959c58fca99936a383c51bb4d",
+        "apps/desktop-app/src/native-preflight-protocol.mjs": "532527878141aade9e7b0bab81d7d50cd76ac510602b5d5968bf8a81a05ac79c",
+        "apps/desktop-app/src/native-preflight-reader.mjs": "063edc26a9c51be4010a964a3d9c445249ebca4a3136e6896ed14d2ec5625090",
+        "apps/desktop-app/src/native-preflight-resources.mjs": "c199734b07713200830a6076537de956d834814f329fd9265741d7b7e41e0171",
+        "apps/desktop-app/src/native-skills-config.mjs": "c2760a03fef4b59bb3c8cc633f4ed3b65d612bad76d8f3dfb74c19afb9987940",
+        "apps/desktop-app/src/native-skills-protocol.mjs": "b0ceaed5814060ea4460e9b13de3db210c0fdfbfeddc22fd232372f6f5935dd3",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/agent-runtime.mjs": "58241c1ec4faf550d8ca3543bbb307cf5214ac1ad04602c78c5de32448220318",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/agent.mjs": "97a23a94e8e5ba9f1f522ce605a2cb1700c70f07036638ce826ab753585a7ee3",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/extensions.mjs": "1a51f9776ba1ef179f1fcdb3367a021ec20b881e74cc686faae0db7af3db8a04",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs": "cad78a3c98ffefbc3657bf57b8f1f692a4354873bd42f95af4babed1a8db1ba8",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/skill.mjs": "b30cf77b1967c83758a87203548e97331916e92536f5cda64e9e6c4a7ae8719a",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157",
+        "apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs": "0d5fe8eeb8e7f05089cd993b30a504e0089fbe769c0930394b69145420215441",
+        "apps/desktop-app/src/renderer/shared/git-commit/index.mjs": "6aad812c3e4a55026e132c1fe0c1ecf5811d43a47fb39f8c5e8fab4c8f466505",
+        "apps/desktop-app/src/renderer/shared/git-index/index.mjs": "11846a18791480034318e6c59089e5e0d493426b65a6d8305207dbe86cc73aa5",
+        "apps/desktop-app/src/renderer/shared/git-review/index.mjs": "8cad8a846ec1965249b3bb26718370214d9239b6a90b27f2fd25934d9c88a913",
+        "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68"
+      }
+    },
+    "original": {
+      "install": "feee77df58d34bb4dee0757d526bbe83dae0fadb55c55201c24130176ca43983",
+      "engine": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+      "inputs": {
+        "package.json": "86992a64cd87494b080f2efd47dae2e2d6ae46b7958c7a063e2ed54b3e1dd0e5",
+        "package-lock.json": "34f04622903ba6c3c14ba5729e0e406f1ed245307acea049c637cbdac2e64e9c",
+        "installer-pins.json": "2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41",
+        ".generated/receipt.json": "c49498006ac735792c3c390c3f934b3f5b3cff141edb0ff05bc07639d6bb32e5"
+      }
+    },
+    "child": "6a0e7af5fa1969a1f6e83879feb09f567efb49fb89091674967b3e2dfb9cbae0",
+    "staged": {
+      "manifest": "9d6577470359d10ce0190f3539551d35cbfb25e93d9c8e66b20f561a62bc58ac",
+      "inventory": "0f5b845879f06123952c87fa3d38c19cce845d02e34e62da70552545c179024a",
+      "engine": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+      "assets": {
+        "host.mjs": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+        "event-host-protocol.mjs": "18fd006fa963e84015b81ac2338a5680d072aa9f8c5cf7ef5f85fd3d3eba2ed6",
+        "event-host-resources.mjs": "ecb234a99a062b4e706c5c15f92a90e72102f08cf1f7432ec33e052d6ca94896",
+        "native-permission-overlay-contract.mjs": "df03b81bf203712381cc70720a9d99d8177b0bd659640a2680d49b12c99af348",
+        "native-permission-graph.mjs": "26e455fbdd9d42af2cf78867574bb220142d962b448f64ab51f242522fc88d07",
+        "native-permission-control.mjs": "663c0558f2f7c2f08c360ba398ced221b36aa16d579816b05575b3d6960400df",
+        "native-permission-control-input.mjs": "ec542dbe5f19637a2477a2f143fe1c44d6b0a1774519f03188159df6277c0180",
+        "native-permission-leases.mjs": "158a7b47ecf8f686df6f09e18eef7f72a91c21783ebaeae037fd2908256916c4",
+        "native-permission-task-observer.mjs": "c70dbaa5a2241b97718c5b37f03550b4ab15d1d5e58c646e577ccf6610e07fe5",
+        "native-permission-coordinator-admission.mjs": "fd595b142338caf0cdb4a89c08013c95f9a9914283b1cb08973cd17e6dab6487",
+        "host/git-branch-restore-kernel.mjs": "f8402c66a0cc450c3e1027157de948797d4148d7225e0caa24c2faaeadbf4419",
+        "host/git-branch-restore-contract.mjs": "75cf0478da330b3b9fa6937be415abbcd7fb50473ba1418b913197fdfc1b21a3",
+        "renderer/shared/git-branch-restore/index.mjs": "0d5fe8eeb8e7f05089cd993b30a504e0089fbe769c0930394b69145420215441",
+        "host/git-metadata-kernel.mjs": "7c68c8587593ebe938dd3727392eda8c9e96220f66c615a269388291fd18645d",
+        "host/git-commit-kernel.mjs": "ccd5b04f81fbd2e675ab10599dddfc3a1519dc119e4562bf8ffeb12e7213e482",
+        "host/git-commit-contract.mjs": "94fe59d2bce230887fe44513ba3b829e2149ee33489df62edf0475ef655d039d",
+        "renderer/shared/git-commit/index.mjs": "6aad812c3e4a55026e132c1fe0c1ecf5811d43a47fb39f8c5e8fab4c8f466505",
+        "host/git-index-kernel.mjs": "40f1b6adbbcf1b571ea03ff01e7c32e2a68d28c5350f1a60cfea6457c41730bb",
+        "host/git-index-contract.mjs": "87cccae8dcb53a84a80fc4b7a73a30942aa2c9b9b37f6f203debf0e9dd2d66d7",
+        "renderer/shared/git-index/index.mjs": "11846a18791480034318e6c59089e5e0d493426b65a6d8305207dbe86cc73aa5",
+        "renderer/shared/git-review/index.mjs": "8cad8a846ec1965249b3bb26718370214d9239b6a90b27f2fd25934d9c88a913",
+        "host/configuration-save-kernel.mjs": "cca5de5aa358d1ecba8209b2c7c8af457503c1717945cba1f825245c2974fd54",
+        "renderer/shared/workspace-file/index.mjs": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68",
+        "host/configuration-file-observation.mjs": "83419028f952d647a23bf06b908649c97cc343b2247c15b9e1ae427acc7a9587",
+        "renderer/shared/configuration-draft/validation.mjs": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157",
+        "renderer/shared/configuration-draft/skill.mjs": "b30cf77b1967c83758a87203548e97331916e92536f5cda64e9e6c4a7ae8719a",
+        "native-skills-config.mjs": "c2760a03fef4b59bb3c8cc633f4ed3b65d612bad76d8f3dfb74c19afb9987940",
+        "native-skills-protocol.mjs": "b0ceaed5814060ea4460e9b13de3db210c0fdfbfeddc22fd232372f6f5935dd3",
+        "builtins/workbench-skills/package.json": "1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120",
+        "builtins/workbench-skills/server.mjs": "b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d",
+        "native-agents-protocol.mjs": "c8a4f7066855b4b93a55d6752645012e2fb6d6b690588601ca7c086ca025f918",
+        "renderer/shared/configuration-draft/agent-runtime.mjs": "58241c1ec4faf550d8ca3543bbb307cf5214ac1ad04602c78c5de32448220318",
+        "builtins/workbench-skills/agents.mjs": "1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305",
+        "renderer/shared/configuration-draft/agent.mjs": "97a23a94e8e5ba9f1f522ce605a2cb1700c70f07036638ce826ab753585a7ee3",
+        "renderer/shared/configuration-draft/policy.mjs": "cad78a3c98ffefbc3657bf57b8f1f692a4354873bd42f95af4babed1a8db1ba8",
+        "native-extensions-protocol.mjs": "fe6f34f163787aba93090f5ed197e9605a1724b6b8f593894731996ded955d63",
+        "renderer/shared/configuration-draft/extensions.mjs": "1a51f9776ba1ef179f1fcdb3367a021ec20b881e74cc686faae0db7af3db8a04",
+        "builtins/workbench-skills/extensions.mjs": "05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962",
+        "native-preflight-reader.mjs": "063edc26a9c51be4010a964a3d9c445249ebca4a3136e6896ed14d2ec5625090",
+        "native-preflight-protocol.mjs": "532527878141aade9e7b0bab81d7d50cd76ac510602b5d5968bf8a81a05ac79c",
+        "native-preflight-predicates.mjs": "1c9f9ac887bcfa968c65506c03a0ed052e3995c959c58fca99936a383c51bb4d"
+      }
+    }
+  },
+  "after": {
+    "source": {
+      "files": {
+        "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs": "6a0e7af5fa1969a1f6e83879feb09f567efb49fb89091674967b3e2dfb9cbae0",
+        "apps/desktop-app/scripts/native-permission-graph-probe.mjs": "e51dc28b43ea8800a7235f639adf4a53e5af09343b5b574be45fadc956b0719e",
+        "apps/desktop-app/scripts/native-permission-overlay.mjs": "3cd666a90ba26272c4daf4a9f27eb21cea216d4ba6322330432231f1c21a3731",
+        "apps/desktop-app/scripts/permission-tool-probe.mjs": "731e7a0605e38bb7dd20b8499a3f6a92f4672e78749cb44a651804a30dce19d4",
+        "apps/desktop-app/scripts/prepare-event-host.mjs": "9970d480610c93628587fb97c62ff393e3515d6d87f6362542aa79456a2d1cff",
+        "apps/desktop-app/scripts/stage-event-host.mjs": "fa4dc580ead8b87b8408960868805896c287e36c056146aa11a2ba6bafdf4841",
+        "apps/desktop-app/src/builtins/workbench-skills/agents.mjs": "1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305",
+        "apps/desktop-app/src/builtins/workbench-skills/extensions.mjs": "05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962",
+        "apps/desktop-app/src/builtins/workbench-skills/package.json": "1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120",
+        "apps/desktop-app/src/builtins/workbench-skills/server.mjs": "b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d",
+        "apps/desktop-app/src/event-host-child.mjs": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+        "apps/desktop-app/src/event-host-protocol.mjs": "18fd006fa963e84015b81ac2338a5680d072aa9f8c5cf7ef5f85fd3d3eba2ed6",
+        "apps/desktop-app/src/event-host-resources.mjs": "ecb234a99a062b4e706c5c15f92a90e72102f08cf1f7432ec33e052d6ca94896",
+        "apps/desktop-app/src/host/configuration-file-observation.mjs": "83419028f952d647a23bf06b908649c97cc343b2247c15b9e1ae427acc7a9587",
+        "apps/desktop-app/src/host/configuration-save-kernel.mjs": "cca5de5aa358d1ecba8209b2c7c8af457503c1717945cba1f825245c2974fd54",
+        "apps/desktop-app/src/host/git-branch-restore-contract.mjs": "75cf0478da330b3b9fa6937be415abbcd7fb50473ba1418b913197fdfc1b21a3",
+        "apps/desktop-app/src/host/git-branch-restore-kernel.mjs": "f8402c66a0cc450c3e1027157de948797d4148d7225e0caa24c2faaeadbf4419",
+        "apps/desktop-app/src/host/git-commit-contract.mjs": "94fe59d2bce230887fe44513ba3b829e2149ee33489df62edf0475ef655d039d",
+        "apps/desktop-app/src/host/git-commit-kernel.mjs": "ccd5b04f81fbd2e675ab10599dddfc3a1519dc119e4562bf8ffeb12e7213e482",
+        "apps/desktop-app/src/host/git-index-contract.mjs": "87cccae8dcb53a84a80fc4b7a73a30942aa2c9b9b37f6f203debf0e9dd2d66d7",
+        "apps/desktop-app/src/host/git-index-kernel.mjs": "40f1b6adbbcf1b571ea03ff01e7c32e2a68d28c5350f1a60cfea6457c41730bb",
+        "apps/desktop-app/src/host/git-metadata-kernel.mjs": "7c68c8587593ebe938dd3727392eda8c9e96220f66c615a269388291fd18645d",
+        "apps/desktop-app/src/native-agents-protocol.mjs": "c8a4f7066855b4b93a55d6752645012e2fb6d6b690588601ca7c086ca025f918",
+        "apps/desktop-app/src/native-extensions-protocol.mjs": "fe6f34f163787aba93090f5ed197e9605a1724b6b8f593894731996ded955d63",
+        "apps/desktop-app/src/native-permission-control-input.mjs": "ec542dbe5f19637a2477a2f143fe1c44d6b0a1774519f03188159df6277c0180",
+        "apps/desktop-app/src/native-permission-control.mjs": "663c0558f2f7c2f08c360ba398ced221b36aa16d579816b05575b3d6960400df",
+        "apps/desktop-app/src/native-permission-coordinator-admission.mjs": "fd595b142338caf0cdb4a89c08013c95f9a9914283b1cb08973cd17e6dab6487",
+        "apps/desktop-app/src/native-permission-graph.mjs": "26e455fbdd9d42af2cf78867574bb220142d962b448f64ab51f242522fc88d07",
+        "apps/desktop-app/src/native-permission-leases.mjs": "158a7b47ecf8f686df6f09e18eef7f72a91c21783ebaeae037fd2908256916c4",
+        "apps/desktop-app/src/native-permission-overlay-contract.mjs": "df03b81bf203712381cc70720a9d99d8177b0bd659640a2680d49b12c99af348",
+        "apps/desktop-app/src/native-permission-task-observer.mjs": "c70dbaa5a2241b97718c5b37f03550b4ab15d1d5e58c646e577ccf6610e07fe5",
+        "apps/desktop-app/src/native-preflight-predicates.mjs": "1c9f9ac887bcfa968c65506c03a0ed052e3995c959c58fca99936a383c51bb4d",
+        "apps/desktop-app/src/native-preflight-protocol.mjs": "532527878141aade9e7b0bab81d7d50cd76ac510602b5d5968bf8a81a05ac79c",
+        "apps/desktop-app/src/native-preflight-reader.mjs": "063edc26a9c51be4010a964a3d9c445249ebca4a3136e6896ed14d2ec5625090",
+        "apps/desktop-app/src/native-preflight-resources.mjs": "c199734b07713200830a6076537de956d834814f329fd9265741d7b7e41e0171",
+        "apps/desktop-app/src/native-skills-config.mjs": "c2760a03fef4b59bb3c8cc633f4ed3b65d612bad76d8f3dfb74c19afb9987940",
+        "apps/desktop-app/src/native-skills-protocol.mjs": "b0ceaed5814060ea4460e9b13de3db210c0fdfbfeddc22fd232372f6f5935dd3",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/agent-runtime.mjs": "58241c1ec4faf550d8ca3543bbb307cf5214ac1ad04602c78c5de32448220318",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/agent.mjs": "97a23a94e8e5ba9f1f522ce605a2cb1700c70f07036638ce826ab753585a7ee3",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/extensions.mjs": "1a51f9776ba1ef179f1fcdb3367a021ec20b881e74cc686faae0db7af3db8a04",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs": "cad78a3c98ffefbc3657bf57b8f1f692a4354873bd42f95af4babed1a8db1ba8",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/skill.mjs": "b30cf77b1967c83758a87203548e97331916e92536f5cda64e9e6c4a7ae8719a",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157",
+        "apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs": "0d5fe8eeb8e7f05089cd993b30a504e0089fbe769c0930394b69145420215441",
+        "apps/desktop-app/src/renderer/shared/git-commit/index.mjs": "6aad812c3e4a55026e132c1fe0c1ecf5811d43a47fb39f8c5e8fab4c8f466505",
+        "apps/desktop-app/src/renderer/shared/git-index/index.mjs": "11846a18791480034318e6c59089e5e0d493426b65a6d8305207dbe86cc73aa5",
+        "apps/desktop-app/src/renderer/shared/git-review/index.mjs": "8cad8a846ec1965249b3bb26718370214d9239b6a90b27f2fd25934d9c88a913",
+        "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68"
+      }
+    },
+    "original": {
+      "install": "feee77df58d34bb4dee0757d526bbe83dae0fadb55c55201c24130176ca43983",
+      "engine": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+      "inputs": {
+        "package.json": "86992a64cd87494b080f2efd47dae2e2d6ae46b7958c7a063e2ed54b3e1dd0e5",
+        "package-lock.json": "34f04622903ba6c3c14ba5729e0e406f1ed245307acea049c637cbdac2e64e9c",
+        "installer-pins.json": "2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41",
+        ".generated/receipt.json": "c49498006ac735792c3c390c3f934b3f5b3cff141edb0ff05bc07639d6bb32e5"
+      }
+    },
+    "child": "6a0e7af5fa1969a1f6e83879feb09f567efb49fb89091674967b3e2dfb9cbae0",
+    "staged": {
+      "manifest": "9d6577470359d10ce0190f3539551d35cbfb25e93d9c8e66b20f561a62bc58ac",
+      "inventory": "0f5b845879f06123952c87fa3d38c19cce845d02e34e62da70552545c179024a",
+      "engine": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+      "assets": {
+        "host.mjs": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+        "event-host-protocol.mjs": "18fd006fa963e84015b81ac2338a5680d072aa9f8c5cf7ef5f85fd3d3eba2ed6",
+        "event-host-resources.mjs": "ecb234a99a062b4e706c5c15f92a90e72102f08cf1f7432ec33e052d6ca94896",
+        "native-permission-overlay-contract.mjs": "df03b81bf203712381cc70720a9d99d8177b0bd659640a2680d49b12c99af348",
+        "native-permission-graph.mjs": "26e455fbdd9d42af2cf78867574bb220142d962b448f64ab51f242522fc88d07",
+        "native-permission-control.mjs": "663c0558f2f7c2f08c360ba398ced221b36aa16d579816b05575b3d6960400df",
+        "native-permission-control-input.mjs": "ec542dbe5f19637a2477a2f143fe1c44d6b0a1774519f03188159df6277c0180",
+        "native-permission-leases.mjs": "158a7b47ecf8f686df6f09e18eef7f72a91c21783ebaeae037fd2908256916c4",
+        "native-permission-task-observer.mjs": "c70dbaa5a2241b97718c5b37f03550b4ab15d1d5e58c646e577ccf6610e07fe5",
+        "native-permission-coordinator-admission.mjs": "fd595b142338caf0cdb4a89c08013c95f9a9914283b1cb08973cd17e6dab6487",
+        "host/git-branch-restore-kernel.mjs": "f8402c66a0cc450c3e1027157de948797d4148d7225e0caa24c2faaeadbf4419",
+        "host/git-branch-restore-contract.mjs": "75cf0478da330b3b9fa6937be415abbcd7fb50473ba1418b913197fdfc1b21a3",
+        "renderer/shared/git-branch-restore/index.mjs": "0d5fe8eeb8e7f05089cd993b30a504e0089fbe769c0930394b69145420215441",
+        "host/git-metadata-kernel.mjs": "7c68c8587593ebe938dd3727392eda8c9e96220f66c615a269388291fd18645d",
+        "host/git-commit-kernel.mjs": "ccd5b04f81fbd2e675ab10599dddfc3a1519dc119e4562bf8ffeb12e7213e482",
+        "host/git-commit-contract.mjs": "94fe59d2bce230887fe44513ba3b829e2149ee33489df62edf0475ef655d039d",
+        "renderer/shared/git-commit/index.mjs": "6aad812c3e4a55026e132c1fe0c1ecf5811d43a47fb39f8c5e8fab4c8f466505",
+        "host/git-index-kernel.mjs": "40f1b6adbbcf1b571ea03ff01e7c32e2a68d28c5350f1a60cfea6457c41730bb",
+        "host/git-index-contract.mjs": "87cccae8dcb53a84a80fc4b7a73a30942aa2c9b9b37f6f203debf0e9dd2d66d7",
+        "renderer/shared/git-index/index.mjs": "11846a18791480034318e6c59089e5e0d493426b65a6d8305207dbe86cc73aa5",
+        "renderer/shared/git-review/index.mjs": "8cad8a846ec1965249b3bb26718370214d9239b6a90b27f2fd25934d9c88a913",
+        "host/configuration-save-kernel.mjs": "cca5de5aa358d1ecba8209b2c7c8af457503c1717945cba1f825245c2974fd54",
+        "renderer/shared/workspace-file/index.mjs": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68",
+        "host/configuration-file-observation.mjs": "83419028f952d647a23bf06b908649c97cc343b2247c15b9e1ae427acc7a9587",
+        "renderer/shared/configuration-draft/validation.mjs": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157",
+        "renderer/shared/configuration-draft/skill.mjs": "b30cf77b1967c83758a87203548e97331916e92536f5cda64e9e6c4a7ae8719a",
+        "native-skills-config.mjs": "c2760a03fef4b59bb3c8cc633f4ed3b65d612bad76d8f3dfb74c19afb9987940",
+        "native-skills-protocol.mjs": "b0ceaed5814060ea4460e9b13de3db210c0fdfbfeddc22fd232372f6f5935dd3",
+        "builtins/workbench-skills/package.json": "1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120",
+        "builtins/workbench-skills/server.mjs": "b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d",
+        "native-agents-protocol.mjs": "c8a4f7066855b4b93a55d6752645012e2fb6d6b690588601ca7c086ca025f918",
+        "renderer/shared/configuration-draft/agent-runtime.mjs": "58241c1ec4faf550d8ca3543bbb307cf5214ac1ad04602c78c5de32448220318",
+        "builtins/workbench-skills/agents.mjs": "1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305",
+        "renderer/shared/configuration-draft/agent.mjs": "97a23a94e8e5ba9f1f522ce605a2cb1700c70f07036638ce826ab753585a7ee3",
+        "renderer/shared/configuration-draft/policy.mjs": "cad78a3c98ffefbc3657bf57b8f1f692a4354873bd42f95af4babed1a8db1ba8",
+        "native-extensions-protocol.mjs": "fe6f34f163787aba93090f5ed197e9605a1724b6b8f593894731996ded955d63",
+        "renderer/shared/configuration-draft/extensions.mjs": "1a51f9776ba1ef179f1fcdb3367a021ec20b881e74cc686faae0db7af3db8a04",
+        "builtins/workbench-skills/extensions.mjs": "05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962",
+        "native-preflight-reader.mjs": "063edc26a9c51be4010a964a3d9c445249ebca4a3136e6896ed14d2ec5625090",
+        "native-preflight-protocol.mjs": "532527878141aade9e7b0bab81d7d50cd76ac510602b5d5968bf8a81a05ac79c",
+        "native-preflight-predicates.mjs": "1c9f9ac887bcfa968c65506c03a0ed052e3995c959c58fca99936a383c51bb4d"
+      }
+    }
+  },
+  "retainedRoot": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-graph-kIQwdJ",
+  "copiedChild": {
+    "before": "6a0e7af5fa1969a1f6e83879feb09f567efb49fb89091674967b3e2dfb9cbae0",
+    "after": "6a0e7af5fa1969a1f6e83879feb09f567efb49fb89091674967b3e2dfb9cbae0"
+  },
+  "child": {
+    "pid": 91856,
+    "code": 0,
+    "signal": null,
+    "exited": true,
+    "timedOut": false,
+    "spawnFailed": false,
+    "protocolOverflow": false,
+    "signals": [],
+    "report": {
+      "schema_version": 1,
+      "result": "pass",
+      "phase": "complete",
+      "cases": [
+        {
+          "name": "overlay_forwarding",
+          "result": "pass"
+        },
+        {
+          "name": "fixed_config",
+          "result": "pass"
+        },
+        {
+          "name": "fixed_plugin_source",
+          "result": "pass"
+        },
+        {
+          "name": "sdk_registration_denied",
+          "result": "pass"
+        },
+        {
+          "name": "inert_wellknown",
+          "result": "pass"
+        },
+        {
+          "name": "control_boot",
+          "result": "pass"
+        },
+        {
+          "name": "permission_held",
+          "result": "pass"
+        },
+        {
+          "name": "saved_held",
+          "result": "pass"
+        },
+        {
+          "name": "coordinator_held",
+          "result": "pass"
+        },
+        {
+          "name": "session_execution_held",
+          "result": "pass"
+        },
+        {
+          "name": "lease_component_runtime",
+          "result": "pass"
+        }
+      ]
+    }
+  },
+  "identityStable": true
+}

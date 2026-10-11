@@ -1,0 +1,20 @@
+✖ private Skill RPC reserves a host request through owner checks and native settlement (7.400958ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 60.683625
+
+✖ failing tests:
+
+test at apps/desktop-app/src/event-host-supervisor.test.mjs:209:1
+✖ private Skill RPC reserves a host request through owner checks and native settlement (7.400958ms)
+  TypeError: 'get' on proxy: property 'observe' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '(input) => call("observe", input)' but got 'function (...args) {
+            if (observationActive || stopping || uncertain || exitResult)
+              throw ...<omitted>... }')
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/event-host-supervisor.test.mjs:220:20)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

@@ -1,0 +1,155 @@
+{
+  "schema_version": 2,
+  "run": "focused-background-acceptance",
+  "reviewer": "reviewer",
+  "plan_path": "docs/runs/focused-background-acceptance/plan.md",
+  "plan_revision": 6,
+  "reviewed": {
+    "contract_sha256": "07d1d1fdab06bdd6bb8d685c4fd973cb393e330ad6560f4b72931decaabcce02",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "code",
+    "plan_sha256": "fdffb7770b3112e5d0ca7309ec21fb80e2fd27a192a1d2dac5c8e754aac83e04",
+    "schema_version": 2,
+    "source_sha256": "be44a6f2c01f67d53d80bb278722b2b39e1864fbbc609247b674167942241989",
+    "verification_sha256": "a8084481afc7beb7e876db7b0fa4e77566b75f83fada41e49f4c0c9ee9a303fa"
+  },
+  "verdict": "pass",
+  "summary": "현재 plan revision 6과 변경 source 10개를 독립 검토했습니다. 수정이 필요한 구체적 결함은 발견하지 못했습니다. Review input은 검토 시작과 종료 시 현재 파일에서 계산한 binding과 정확히 일치했습니다. 이 판정은 지정된 code gate 범위에만 적용합니다.",
+  "open_findings": [],
+  "inspected_changed_paths": [
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/p6-performance.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+    "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+    "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "binding_verification": {
+    "method": "현재 파일을 읽고 harness의 inventory 및 digest 규칙으로 다시 계산했습니다.",
+    "review_input_exact_match_at_start": true,
+    "review_input_exact_match_at_end": true,
+    "routing_input_hashes_match": true,
+    "actual_changed_paths_match_outcome": true,
+    "deleted_paths": [],
+    "registered_artifacts": 52,
+    "artifact_hash_mismatches": [],
+    "outcome_hash_matches": true,
+    "native_provenance_file_identity_checks": 267,
+    "native_provenance_file_identity_mismatches": [],
+    "performance_script_before_after_current_hash_match": true,
+    "current_png_dimension_checks": 32,
+    "current_png_metadata_mismatches": []
+  },
+  "review_passes": {
+    "spec_compliance": "Plan의 M1–M5와 revision 3–6의 변경 범위를 구현 및 저장된 검증 증거에 대조했습니다. Resource 구간 수정, interrupt 예외, 상태 표현과 기존 기능 보존을 확인했습니다. 전체 제품 완료 승인은 포함하지 않습니다.",
+    "code_quality": "변경 코드와 transport, projection, build provenance, evidence wrapper 및 회귀 검사를 함께 읽었습니다. 상태 경쟁, 오래된 응답, receipt 보존, 실패 처리, 입력·출력 경계와 cleanup을 확인했습니다."
+  },
+  "assessments": {
+    "interrupt": "session.interrupt만 같은 대상의 unknown 차단을 통과합니다. 현재 connected snapshot, 등록된 선택 대상, epoch 일치, confirmed revision floor, running, 비보관 조건을 검사합니다. 전역 pending, capacity와 disposed 차단도 유지합니다. 기존 unknown receipt와 draft를 보존하며 자동 재전송하지 않습니다. 허용·거부 및 floor 경계 회귀 검사를 확인했습니다.",
+    "store_and_activity": "Confirmed current-epoch receipt만 revision floor를 올립니다. 오래된 snapshot과 health 응답은 현재 상태를 덮어쓰지 못합니다. 새 idle 관측은 interrupt 안내만 없애며 operation evidence를 완료로 바꾸지 않습니다. Activity filter 변경·닫기·선택 및 epoch 변경은 diagnostics identity를 갱신하고 오래된 응답을 거부합니다.",
+    "live_status": "현재 세션의 짧은 polite status와 aria-live=off인 log를 사용합니다. Token 및 전체 대화 기록을 반복 발표하지 않습니다. idle을 실행 완료로 표현하지 않습니다. Disconnected와 archived 상태는 별도로 표현하며 버튼과 onCancel에 실행 가능 조건을 적용합니다.",
+    "resource_scope": "고정 warmup 5/5/5/10, latency별 raw 20개, 실제 전환 100개와 25회 batch 4개를 유지합니다. 준비 60회와 전환 100회의 baseline을 분리합니다. 네 resource 지표의 10%·last-batch 기준을 유지하며 준비 단계의 중간 실패도 보존합니다. 누락·잘못된 지표·불완전 경계·GC 미확인·미정리 read는 실패로 처리합니다. 합산 160회 raw 관측값과 >10% flag도 남습니다.",
+    "profiler": "Phase/control과 retainer 진단은 acceptance 대상에서 제외됩니다. Control은 UI 변경 없이 검증된 frame·시간 계획을 사용합니다. Task input은 경로 포함 관계, symlink, regular file, 크기, schema, 수치 상한, source/build identity와 읽기 전후 변경을 검사합니다. Heap 출력은 제한된 counts·types·hash이며 원본 이름·값·edge name을 저장하지 않습니다. Capture listener와 timer를 정리합니다.",
+    "containment_cleanup_provenance": "새 output의 경로·symlink·비어 있음과 exclusive claim 검사를 유지합니다. Performance host는 종료 확인 뒤 소유한 임시 root의 identity를 검사하고 정리합니다. 현재 native 증거의 source/build/script hash가 실제 파일과 일치합니다. 이러한 검사는 OS sandbox 또는 runtime identity attestation을 뜻하지 않습니다."
+  },
+  "verification_evidence": {
+    "contracted_checks": {
+      "checks": [
+        "unit",
+        "typecheck",
+        "lint",
+        "boundaries",
+        "build",
+        "bundle",
+        "performance",
+        "hidden-ui"
+      ],
+      "recorded_exit_codes": "8개 모두 0",
+      "same_current_source": true,
+      "inputs_changed": false,
+      "reviewer_reexecuted": false,
+      "unit_limit": "현재 unit 기록은 exit 0입니다. stdout이 잘렸으므로 합산 test 수는 확정하지 않습니다. 별도 worker 결과의 87/87과 30/30은 자체 보고로 구분했습니다."
+    },
+    "performance_native_r2": {
+      "path": "docs/runs/frontend-architecture-redesign/execution/p6-performance-native-r2/ui-states/performance-evidence.json",
+      "result": "pass",
+      "failures": [],
+      "p95_ms": {
+        "input": 7.7,
+        "menu": 7.5,
+        "panel": 8,
+        "shell": 9.4,
+        "projection": 9.5
+      },
+      "correct_switches": 100,
+      "old_transcript_observations": 0,
+      "blank_pending_observations": 1,
+      "preparation60_used_heap_growth_percent": 6.8756889211239125,
+      "switch100_used_heap_growth_percent": 5.628535717092786,
+      "switch_last25_used_heap_growth_percent": 1.6696558557660834,
+      "combined160_used_heap_growth_percent": 12.891225244938354,
+      "combined160_exceeds10Percent": true,
+      "sampled_reads": "모든 resource capture에서 active=0, pending=0, admitted=settled",
+      "teardown": "test process exit confirmed"
+    },
+    "hidden_acceptance_native_r3": {
+      "evidence_path": "docs/runs/frontend-architecture-redesign/execution/p6-acceptance-native-r3/ui-states/ui-states-evidence.json",
+      "manifest_path": "docs/runs/frontend-architecture-redesign/execution/p6-acceptance-native-r3/ui-states/manifest.json",
+      "result": "pass",
+      "script_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "provenance_verified_after": true,
+      "png_count": 32,
+      "observations": [
+        "Connected-running-unknown에서 interrupt 1회가 허용되고 원래 unknown receipt와 draft가 보존됩니다.",
+        "Disconnected에서 stop이 disabled이며 mutation 시도가 증가하지 않습니다.",
+        "Archived에서 manual reconnect를 확인한 뒤 readOnly draft 선택과 stop 차단을 확인합니다.",
+        "Synthetic token update 3회 동안 짧은 status가 유지됩니다.",
+        "기존 keyboard·IME synthetic·reflow·permission·Tool UI·unknown·activity filter 검사를 유지합니다."
+      ]
+    },
+    "summary_path": "docs/runs/focused-background-acceptance/acceptance-summary-r1.md",
+    "measurement_history_paths": [
+      "docs/runs/focused-background-acceptance/measurement-findings-r1.md",
+      "docs/runs/focused-background-acceptance/measurement-findings-r2.md",
+      "docs/runs/focused-background-acceptance/measurement-findings-r3.md"
+    ],
+    "historical_results": "원본 performance r1의 +13.1455% 실패, 안정 diagnostic 실패, provenance가 변한 무효 비교 및 과거 hidden-ui 실패를 실제 JSON에서 확인했습니다. 이 결과들은 현재 통과 증거로 계산하지 않았습니다. Phase/control은 diagnostic-only 범위이며 JIT 원인이나 product leak 부재를 증명하지 않습니다."
+  },
+  "limitations": [
+    "현재 성능은 macOS의 가벼운 synthetic fixture와 hidden renderer에서 측정한 DOM/local IPC proxy입니다. 실제 provider, foreground 체감 속도, heavy history 또는 Windows 검증이 아닙니다.",
+    "합산 160회의 heap 증가 12.89%는 그대로 남습니다. 구간별 기준 통과는 leak 부재나 zero growth를 뜻하지 않습니다.",
+    "DOM live semantics와 computed contrast는 실제 OS screen-reader 출력이나 WCAG 전체 준수를 증명하지 않습니다. Computed focus outline은 unverified입니다.",
+    "Historical gzip의 압축 방식과 정확한 bytes가 없어 gzip 증가율 비교는 unverified입니다.",
+    "이 보고서는 code gate만 판정합니다. 독립 rendered gate와 run 완료 조건은 main이 별도로 확인해야 합니다. P7과 전체 F01–18 완료를 승인하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a104eb-166c-7592-8a4c-2ac77e220ae3",
+    "child_id_source": "CODEX_THREAD_ID",
+    "mode": "report_only",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-code-review"
+    ],
+    "binding_verified_by_read_only_hashing": true,
+    "runtime_identity_attested": false,
+    "os_read_only_sandbox_attested": false,
+    "checks_run": false,
+    "tests_run": false,
+    "builds_run": false,
+    "native_checks_run": false,
+    "gui_launches": false,
+    "browser_or_native_foreground_focus": false,
+    "delegated": false,
+    "files_changed": [],
+    "ledger_changed": false,
+    "report_saved": false,
+    "persistence_owner": "main"
+  }
+}

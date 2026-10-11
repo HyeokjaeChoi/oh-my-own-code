@@ -1,0 +1,221 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "debe652dcbaaf58681c587d325f6b2a0778044ddc1bc5c373029f18f372d56dd",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "design",
+    "plan_sha256": "e006bde1dc9ca04a1f65936137f99ab4f9fef500c2d5bf1039d9ffe9a0e62e38",
+    "schema_version": 2,
+    "source_sha256": "856cdbc8cdb1bb7dc06693857b47d5d90635491b38b6a5664e95210eb9900756",
+    "verification_sha256": "cb9569ddb176920de4efe5a99162e75d075edabed0bbb6c03ae5809d04c34a1c"
+  },
+  "verdict": "pass",
+  "summary": "Plan revision7의 제한된 P4/P5 수정 후 design gate를 통과합니다. 현재 r3 PNG 11개를 직접 확인했습니다. 선택한 세션의 활동 기록과 앱 전체 집계가 구분됩니다. unknown 안내, 초안 보존, 전송 차단 표시가 유지됩니다. 긴 제목, 세션 목록, 좁은 화면과 200% 권한 화면에서 이번 범위를 막는 새 화면 결함은 발견하지 않았습니다.",
+  "open_findings": [],
+  "scope": {
+    "run": "bounded-workbench-foundation",
+    "plan_revision": 7,
+    "read_receipt_contract_version": 3,
+    "architecture_version": 4,
+    "selected_design": "A Quiet Dock",
+    "review_type": "independent rendered design_qa after repair",
+    "method": "accessible implementation captures and read-only evidence inspection",
+    "product_release_approved": false,
+    "prior_review_retained": {
+      "path": "docs/runs/bounded-workbench-foundation/design-review-r1.json",
+      "verdict": "pass",
+      "prior_directly_viewed_png_count": 18,
+      "scope": "수정 영향이 없는 Selected A 구조와 기존 화면 판정은 유지합니다. 이 18개를 이번 검토에서 다시 보았다고 주장하지 않습니다.",
+      "composer_geometry": {
+        "composer": 120,
+        "input": 72,
+        "toolbar": 32,
+        "unit": "CSS px",
+        "verification": "기존 독립 검토와 현재 r3 실행 측정 기록이 일치합니다. PNG에서 정확한 CSS 치수를 재측정하지 않았습니다."
+      }
+    }
+  },
+  "evidence": {
+    "base_path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/execution/p4-p5-foundation-native-r3/ui-states",
+    "manifest": "manifest.json",
+    "report": "ui-states-evidence.json",
+    "registered_png_count": 28,
+    "directly_viewed_png_count": 11,
+    "directly_viewed_filenames": [
+      "desktop-unknown-synthetic.png",
+      "desktop-activity-filtered-synthetic.png",
+      "desktop-long-korean-titles-normal-1280-synthetic.png",
+      "desktop-long-korean-titles-narrow-navigation-synthetic.png",
+      "desktop-long-korean-titles-narrow-200-percent-navigation-synthetic.png",
+      "desktop-long-korean-titles-narrow-200-percent-synthetic.png",
+      "desktop-permission-long-korean-draft-normal-1280-synthetic.png",
+      "desktop-permission-long-korean-draft-narrow-synthetic.png",
+      "desktop-permission-long-korean-draft-normal-200-percent-synthetic.png",
+      "desktop-permission-long-korean-draft-narrow-200-percent-synthetic.png",
+      "desktop-populated-conversation-narrow-200-percent-synthetic.png"
+    ],
+    "dimensions": [
+      {
+        "states": ["unknown", "activity-filtered"],
+        "logical_viewport": [1440, 928],
+        "png_pixels": [2880, 1856],
+        "dpr": 2,
+        "zoom_factor": 1
+      },
+      {
+        "states": ["long-korean-titles-normal-1280", "permission-long-korean-draft-normal-1280"],
+        "logical_viewport": [1280, 768],
+        "png_pixels": [2560, 1536],
+        "dpr": 2,
+        "zoom_factor": 1
+      },
+      {
+        "states": ["long-korean-titles-narrow-navigation", "permission-long-korean-draft-narrow"],
+        "logical_viewport": [760, 568],
+        "png_pixels": [1520, 1136],
+        "dpr": 2,
+        "zoom_factor": 1
+      },
+      {
+        "states": ["permission-long-korean-draft-normal-200-percent"],
+        "logical_viewport": [640, 384],
+        "png_pixels": [2560, 1536],
+        "dpr": 4,
+        "zoom_factor": 2
+      },
+      {
+        "states": [
+          "long-korean-titles-narrow-200-percent",
+          "long-korean-titles-narrow-200-percent-navigation",
+          "permission-long-korean-draft-narrow-200-percent",
+          "populated-conversation-narrow-200-percent"
+        ],
+        "logical_viewport": [380, 284],
+        "png_pixels": [1520, 1136],
+        "dpr": 4,
+        "zoom_factor": 2
+      }
+    ],
+    "capture_integrity": {
+      "png_signature_and_ihdr_checked": 28,
+      "dimension_mismatches": [],
+      "viewport_dpr_match": true,
+      "crop_dimension_rule": "Tool UI crop 1개는 bounds × DPR로 확인했습니다.",
+      "registered_artifact_hashes_checked": 99,
+      "artifact_hash_mismatches": [],
+      "current_capture_hashes_match_registered_artifacts": true,
+      "unknown_png_sha256": "1ee1b4a0264551d68c91bcda40e3e3744573150241f143c0e3cd9ecae4e5b77e",
+      "activity_filtered_png_sha256": "66dcadea45288ca62a58e769eee0fd21c6715702c05095dd738f86e88315eff8"
+    },
+    "build_provenance": {
+      "origin": "실제 built Electron renderer/preload와 test-only synthetic main process",
+      "platform": "darwin arm64",
+      "build_stamp_sha256": "8242f636fec8ff9df6c5a15914c8baf2d9591615f9f8f7a230de093224564def",
+      "current_relevant_source_sha256": "2d09813b6373e37e9509b9d3234eed3479ef15a40879890bfe7d6e8b6fcdb75b",
+      "provenance_verified_after": true,
+      "independent_file_comparison": {
+        "build_inputs_matched": 78,
+        "selected_scripts_and_fixtures_matched": 4,
+        "launch_artifacts_matched": 7,
+        "build_stamp_hash_matched": true,
+        "build_stamp_inputs_equal_current_build_inputs": true,
+        "frozen_changed_file_hashes_matched": 39,
+        "frozen_deleted_paths_absent": true,
+        "plan_hash_matched_reviewed_input": true,
+        "outcome_hash_matched_run_record": true,
+        "packet_routing_hashes_matched": true
+      },
+      "attestation_limit": "로컬 byte hash와 PNG signature를 확인했습니다. cryptographic signature 또는 외부 서명 attestation으로 해석하지 않습니다."
+    },
+    "capture_window_state": {
+      "records_checked": 28,
+      "before": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "after": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "mismatches": [],
+      "record_format": "전체 화면 27개는 beforeCapture와 osWindowVisible/osWindowFocused/osWindowFocusable를 확인했습니다. crop 1개는 beforeCapture와 afterCapture를 확인했습니다.",
+      "verification_limit": "캡처 전후 기록을 확인했습니다. 전체 실행 동안 OS activation이 없었다는 독립 관찰은 수행하지 않았습니다."
+    },
+    "existing_check_records": {
+      "source": "docs/runs/bounded-workbench-foundation/run.json",
+      "checks": ["unit", "typecheck", "lint", "boundaries", "build", "bundle", "hidden-ui"],
+      "result": "현재 7개 기록 모두 exit_code=0, inputs_changed=false입니다. 각 기록의 source/plan/environment/contract binding이 reviewed input과 일치합니다.",
+      "rerun_by_reviewer": false,
+      "run_status_observed": "active",
+      "outcome": "outcome.json의 A1–A5 verified 기록을 읽었습니다. 이번 독립 판정은 rendered design 범위에 한정합니다."
+    }
+  },
+  "assessment": [
+    {
+      "location": "activity / selected-session filter",
+      "result": "pass",
+      "direct_observation": "선택한 세션만 보기 체크 상태에서 선택한 세션의 기록 아래 세션 이름 변경 1개가 보입니다. 앱 전체 집계는 관찰한 작업 2, 오류 0, 결과 불명 0으로 별도 표시됩니다. 전체 집계 2를 필터 실패로 판단하지 않습니다.",
+      "execution_evidence": "현재 성공한 실행 기록과 capture script는 지연된 전체 응답을 해제한 뒤에도 다른 세션의 세션 고정 변경이 나타나지 않고 effect count가 유지됨을 확인합니다.",
+      "verification_status": "화면은 직접 확인했습니다. 비동기 응답과 close 동작은 기존 현재 실행 증거로 확인했습니다.",
+      "proposed_correction": null
+    },
+    {
+      "location": "unknown receipt / composer",
+      "result": "pass",
+      "direct_observation": "새 전송을 막았다는 안내와 결과 확인 또는 새 세션 생성 안내가 보입니다. Ambiguous synthetic submission 초안이 유지되고 전송 버튼은 비활성 상태로 표시됩니다.",
+      "execution_evidence": "현재 실행의 toBeDisabled, 초안 값, operationId가 일치하는 receipt lookup, lookup 전후 effect count 불변 검사가 이를 뒷받침합니다.",
+      "verification_status": "안내와 초안 및 버튼 표시는 직접 확인했습니다. disabled semantics와 자동 replay 없음은 성공한 현재 실행 기록에 근거합니다.",
+      "proposed_correction": null
+    },
+    {
+      "location": "session list / long Korean titles / narrow navigation",
+      "result": "pass",
+      "direct_observation": "선택 행과 긴 목록 제목의 생략 표시가 유지됩니다. 좁은 화면은 navigation sheet로 전환합니다. 200%에서는 닫기 버튼과 opener의 파란 focus ring이 보입니다. 긴 제목이 핵심 탐색 버튼을 화면 밖으로 밀어내지 않습니다.",
+      "verification_status": "현재 r3 PNG 직접 확인. focus containment, Escape와 focus return의 동작은 현재 실행 관찰 기록으로 확인했습니다.",
+      "proposed_correction": null
+    },
+    {
+      "location": "permission queue / long draft / narrow and 200% reflow",
+      "result": "pass",
+      "direct_observation": "긴 초안, composer 경계, 중단 버튼이 유지됩니다. normal과 narrow 화면에서 파일 경로, 거절 경고, 허용·거절 동작을 확인했습니다. 380×284의 캡처에서는 권한 경로 일부와 결정 버튼이 현재 scroll 위치 밖에 있습니다.",
+      "execution_evidence": "현재 실행 기록은 queue scrolling으로 전체 경로·경고·동작을 확인하고, Tab/Shift+Tab으로 권한 동작에 접근했음을 기록합니다.",
+      "verification_status": "현재 보이는 화면은 직접 확인했습니다. 200%에서 모든 권한 정보를 한 PNG에 볼 수 있다고 주장하지 않습니다. 화면 밖 동작의 접근은 현재 실행 증거로 확인했습니다.",
+      "proposed_correction": null
+    },
+    {
+      "location": "Selected A conversation / composer preservation",
+      "result": "pass",
+      "direct_observation": "흰 대화 영역, 절제된 sidebar, 단일 composer 표면과 toolbar가 유지됩니다. 좁은 200% 대화에서도 composer와 전송 동작이 보입니다.",
+      "verification_status": "이번 영향 범위의 r3 화면을 직접 확인했습니다. 수정 영향이 없는 전체 구조는 이전 18개 화면 독립 통과 기록을 유지합니다.",
+      "proposed_correction": null
+    }
+  ],
+  "limits": [
+    "현재 r3 PNG 11개를 직접 보았습니다. 나머지 17개는 등록 hash, PNG signature, 크기와 provenance 기록만 확인했습니다.",
+    "일부 큰 PNG는 view_image 표시 과정에서 축소되었습니다. 원본 크기는 IHDR로 별도 확인했습니다.",
+    "동적 keyboard, scrolling, disabled semantics와 비동기 race 동작은 현재 성공한 실행 기록을 검토했습니다. reviewer가 재실행하지 않았습니다.",
+    "P6 contrast 측정, performance 측정과 전체 state 확장은 미완료입니다.",
+    "P7 durable storage와 restart recovery는 미완료입니다.",
+    "실제 provider 실행, Windows native runtime, 물리적 OS IME와 실제 touch device 검증은 수행하지 않았습니다.",
+    "로컬 hash 일치는 OS sandbox enforcement, 실행 전체의 isolation 또는 change-and-restore 탐지를 보장하지 않습니다.",
+    "GUI 실행, OS focus 작업, provider 실행, source/report/ledger 수정과 delegation을 수행하지 않았습니다.",
+    "이 판정은 제한된 P4/P5 design gate입니다. 제품 전체 완료 또는 출시 승인이 아닙니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a10486-3d6b-7bc0-8315-d04b50768676",
+    "identity_source": "현재 실행 환경의 CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_application": "명시적으로 주입된 reader 지침을 읽고 적용했습니다. OS read-only sandbox enforcement는 주장하지 않습니다.",
+    "skill": "solo-design-review",
+    "mode": "default",
+    "packet": "docs/runs/bounded-workbench-foundation/execution/repair-final-design_qa.packet.json",
+    "input": "docs/runs/bounded-workbench-foundation/execution/repair-final-design_qa.input.json",
+    "requested_routing": "economical Sol / medium",
+    "runtime_model_effort_attested": false,
+    "report_only": true,
+    "saved_by_reviewer": false,
+    "report_persistence_owner": "main coordinator"
+  }
+}

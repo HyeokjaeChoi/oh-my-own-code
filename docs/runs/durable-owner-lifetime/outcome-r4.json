@@ -1,0 +1,93 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "W1": {
+      "status": "verified",
+      "checks": [
+        "owner-lifetime-unit",
+        "host-regression",
+        "owner-lifetime-native"
+      ],
+      "artifacts": [
+        "docs/runs/durable-owner-lifetime/evidence/native-r4/owner-lifetime-evidence.json"
+      ]
+    },
+    "W2": {
+      "status": "verified",
+      "checks": [
+        "owner-lifetime-native"
+      ],
+      "artifacts": [
+        "docs/runs/durable-owner-lifetime/evidence/native-r4/owner-lifetime-evidence.json"
+      ]
+    },
+    "W3": {
+      "status": "verified",
+      "checks": [
+        "owner-lifetime-unit",
+        "packaging-unit",
+        "owner-lifetime-native"
+      ],
+      "artifacts": [
+        "docs/runs/durable-owner-lifetime/evidence/native-r4/owner-lifetime-evidence.json"
+      ]
+    },
+    "W4": {
+      "status": "verified",
+      "checks": [
+        "owner-lifetime-unit",
+        "host-regression",
+        "owner-lifetime-native"
+      ],
+      "artifacts": [
+        "docs/runs/durable-owner-lifetime/evidence/native-r4/owner-lifetime-evidence.json"
+      ]
+    },
+    "W5": {
+      "status": "verified",
+      "checks": [
+        "owner-lifetime-unit",
+        "packaging-unit",
+        "lint",
+        "typecheck",
+        "build",
+        "package",
+        "package-inspect",
+        "owner-lifetime-native"
+      ],
+      "artifacts": [
+        "docs/runs/durable-owner-lifetime/evidence/native-r4/owner-lifetime-evidence.json"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/native/owner-lifetime/witness.c",
+    "apps/desktop-app/scripts/build-provenance-test-fixture.mjs",
+    "apps/desktop-app/scripts/build-provenance.mjs",
+    "apps/desktop-app/scripts/build-provenance.test.mjs",
+    "apps/desktop-app/scripts/build.mjs",
+    "apps/desktop-app/scripts/fixtures/owner-lifetime-exit-observer.py",
+    "apps/desktop-app/scripts/fixtures/owner-lifetime-probe-host.mjs",
+    "apps/desktop-app/scripts/inspect-packaged-bundle.mjs",
+    "apps/desktop-app/scripts/owner-lifetime-probe.mjs",
+    "apps/desktop-app/scripts/package.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/scripts/run-evidence.test.mjs",
+    "apps/desktop-app/scripts/stage-owner-lifetime.mjs",
+    "apps/desktop-app/scripts/stage-owner-lifetime.test.mjs",
+    "apps/desktop-app/src/host/owner-lifetime.mjs",
+    "apps/desktop-app/src/host/owner-lifetime.test.mjs",
+    "apps/desktop-app/src/host/storage-integration.test.mjs",
+    "apps/desktop-app/src/host/storage-lock.mjs",
+    "apps/desktop-app/src/host/storage-lock.test.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/owner-lifetime-resources.mjs",
+    "apps/desktop-app/src/owner-lifetime-resources.test.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "deleted_paths": []
+}

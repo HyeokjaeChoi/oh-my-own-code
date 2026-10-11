@@ -1,0 +1,118 @@
+{
+  "attestation": "Prepared input metadata; not a spawn or identity attestation",
+  "contract_sha256": "7c9841c5b1f15e673bacfc40e5f49f2e18f5a0af4d99146adc4ed6ee39e4a711",
+  "decision_register": [
+    {
+      "blocks": [],
+      "id": "DESKTOP-PLATFORM",
+      "impact": "Architecture, packaging, security, and runtime verification must cover both operating systems independently.",
+      "resolution": "Treat macOS and Windows as required targets; Windows behavior must be observed on Windows.",
+      "source": "Explicit user confirmation in the project conversation.",
+      "statement": "The product is an installed desktop application for macOS and Windows.",
+      "status": "confirmed"
+    },
+    {
+      "blocks": [],
+      "id": "OPENCODE-SIDECAR-OWNERSHIP",
+      "impact": "Do not use browser loopback evidence as desktop lifecycle/security evidence or silently adopt a shared ambient service.",
+      "resolution": "Package or provision the pinned server per platform; the selected app host must own startup, readiness, shutdown, and reaping.",
+      "source": "Explicit user direction in the project conversation, including the correction that the server runs as a sidecar.",
+      "statement": "The desktop app owns and supervises an OpenCode v2 `serve` sidecar.",
+      "status": "confirmed"
+    },
+    {
+      "blocks": [],
+      "id": "DESKTOP-SHELL",
+      "impact": "Electron-specific host, renderer isolation, sidecar lifecycle, packaging and per-OS verification contracts govern the approved implementation increment.",
+      "resolution": "Electron is selected. Exact document-set packet r1 and its receipt are recorded; bounded synthetic-data Electron/OpenCode compatibility probes and bootstrap are authorized after current plan, product, design-spec and matching handoff gates are registered. Storage/retention, user/global config and credentials, ambient services, signing/public release/auto-update and external telemetry remain excluded or separately held.",
+      "source": "Explicit user selection in the project conversation on 2026-09-28: 'electron\uc73c\ub85c \uc9c4\ud589'.",
+      "statement": "Use Electron as the desktop host for the macOS and Windows app.",
+      "status": "confirmed"
+    },
+    {
+      "blocks": [],
+      "id": "PREVIEW-BOOTSTRAP-BOUNDARY",
+      "impact": "Prevents claiming preview isolation without a preview surface while preserving the later approved product capability.",
+      "resolution": "Require no iframe, webview, or preview surface and no subframe preload bridge in this bootstrap; add a separate reviewed preview-isolation gate before implementing preview.",
+      "source": "Revision 21 coordinator reconciliation of independent review finding CR3-4 against the current bootstrap renderer and approved product/design specs.",
+      "statement": "The current bootstrap exposes no preview surface; preview isolation is verified separately before preview implementation.",
+      "status": "assumption"
+    }
+  ],
+  "documents": [
+    {
+      "gate": "product",
+      "path": "docs/product/prd.md",
+      "sha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3",
+      "version": "0.6"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/design/specs/workbench-ux.md",
+      "sha256": "1f59e6f83aca0c077a4db10cc8c65f7e27e5f177ae0aa32dc6508f4134c97525",
+      "version": "0.6"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/engineering/workbench-architecture.md",
+      "sha256": "d07aa9234632541056bbe3b96756f2fe7081214f4590397fe0260fd01c31ccae",
+      "version": "0.6"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/engineering/verification.md",
+      "sha256": "4c1e60680cf7b20b02efb35230e8af1588b558b80adab8c15442639c49ead696",
+      "version": "0.5"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/operations/local-release-monitoring.md",
+      "sha256": "fe97cb8a4c69e2331b74e3c8263387132ae466150a721e9838a107a95a60e163",
+      "version": "0.4"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/engineering/spec-index.md",
+      "sha256": "5d63ccc5304887e83f5d16092fd67a5b9cb4cc7eca724e8536e44665f9e31dc9",
+      "version": "0.12"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/decisions/0002-desktop-runtime.md",
+      "sha256": "1ebaa6585f7e56e1361d174fec25a7cdd080fd4f283067c72ca1d5111f7dcb65",
+      "version": "0002"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/design/system.md",
+      "sha256": "4697eb4961952ee85a4732ed77e5addbb17058a8b3d12485aa56158324f661a5",
+      "version": "2026-09-27"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/design/components.json",
+      "sha256": "76460f0cc7099ef6b628ce654994d89fc75e5e863d33c103daae8049493f2ed2",
+      "version": "component-contract-v3"
+    }
+  ],
+  "phase": "review",
+  "plan_sha256": "ca8e5d9ccbe1257758a403cabc15f7e6a38bda65d6e5ff8c1aa44c96be6ba5ce",
+  "prepared_at": "2026-09-28T11:56:27+00:00",
+  "role": "design_qa",
+  "run": "desktop-app-bootstrap",
+  "schema_version": 2,
+  "user_approvals": [
+    {
+      "evidence": {
+        "path": "docs/runs/desktop-app-bootstrap/user-approval-r1.json",
+        "sha256": "deb1ebf40030d5855821af2f3a6a3bb0a8e94304b04492e0f0217921a1a7b885"
+      },
+      "id": "ELECTRON-DOC-SET-R1",
+      "target": {
+        "path": "docs/runs/desktop-app-bootstrap/exact-document-set-approval-r1.md",
+        "sha256": "9d45be0146846ed0cf3e4bf91995b7dff3e858fc355794bdae2af272ef401ecd"
+      },
+      "version": "r1"
+    }
+  ]
+}

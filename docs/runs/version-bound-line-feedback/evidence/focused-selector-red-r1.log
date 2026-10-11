@@ -1,0 +1,30 @@
+✖ focused feedback pins only its actual runner and fixture plus unchanged build authority (120.737084ms)
+✖ focused feedback is fixed allowlisted evidence, never an arbitrary script (0.597125ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 177.256167
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/build-provenance.test.mjs:28:1
+✖ focused feedback pins only its actual runner and fixture plus unchanged build authority (120.737084ms)
+  TypeError: selectedPaths[selected.script] is not iterable
+      at captureProvenance (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/build-provenance.mjs:498:23)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/build-provenance.test.mjs:31:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/desktop-app/scripts/run-evidence.test.mjs:53:1
+✖ focused feedback is fixed allowlisted evidence, never an arbitrary script (0.597125ms)
+  Error: Required --out and enumerated --script
+      at parseArgs (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.mjs:83:11)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.test.mjs:54:20)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)

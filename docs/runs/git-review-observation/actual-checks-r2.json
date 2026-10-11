@@ -1,0 +1,199 @@
+{
+  "files": {
+    "argv": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "--test-reporter=dot",
+      "apps/desktop-app/src/git-review.test.mjs",
+      "apps/desktop-app/src/host/workbench-git.test.mjs",
+      "apps/desktop-app/src/workbench-service.test.mjs",
+      "apps/desktop-app/src/workbench-store.test.mjs",
+      "apps/desktop-app/src/workbench-contract.test.mjs",
+      "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+      "apps/desktop-app/scripts/run-evidence.test.mjs"
+    ],
+    "contract_sha256": "71fba6497564041133ab9ce26cedd3b9e69fe931a0987f6f107d3c1d8c689d87",
+    "cwd": ".",
+    "environment_sha256": "c8a7382e511aced11b3dafdea0c323ad164a97c03b3f6e2f392b7b230d2c127a",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "3d11812decb522032b3614685be47c711f17e4b1dbf067f6f2720d71eb56f932",
+    "recorded_at": "2026-10-08T15:57:16+00:00",
+    "scope": "Closed Git grammar/DTO, real inspector, service admission, Renderer lifecycle and synthetic host/evidence runner regression",
+    "source_sha256": "51788ffd5f48d5bd73d7e383028a925e1e4ed4d4e3d008788032282bd218f387",
+    "stderr": "",
+    "stdout": "....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n.........\n",
+    "timed_out": false
+  },
+  "build": {
+    "argv": [
+      "pnpm",
+      "exec",
+      "nx",
+      "run",
+      "desktop-app:build",
+      "--skip-nx-cache"
+    ],
+    "contract_sha256": "71fba6497564041133ab9ce26cedd3b9e69fe931a0987f6f107d3c1d8c689d87",
+    "cwd": ".",
+    "environment_sha256": "c8a7382e511aced11b3dafdea0c323ad164a97c03b3f6e2f392b7b230d2c127a",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "3d11812decb522032b3614685be47c711f17e4b1dbf067f6f2720d71eb56f932",
+    "recorded_at": "2026-10-08T15:58:44+00:00",
+    "scope": "Actual coherent Git helper/host/Renderer build with preserved existing features",
+    "source_sha256": "51788ffd5f48d5bd73d7e383028a925e1e4ed4d4e3d008788032282bd218f387",
+    "stderr": "(node:23583) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n[plugin builtin:vite-reporter] \u001b[33;1m\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\u001b[0m\n",
+    "stdout": "\n> nx run desktop-app:build\n\n> node apps/desktop-app/scripts/build.mjs\r\n\r\nvite v8.3.0 building client environment for production...\ntransforming...\n\u001b[32m\u2713\u001b[0m 2430 modules transformed.\nrendering chunks...\ncomputing gzip size...\n\u001b[2mapps/desktop-app/dist/app/renderer/\u001b[0m\u001b[32mindex.html                 \u001b[0m\u001b[1;2m  0.68 kB\u001b[0m\u001b[2m \u2502 gzip:   0.41 kB\u001b[0m\n\u001b[2mapps/desktop-app/dist/app/renderer/\u001b[0m\u001b[2massets/\u001b[0m\u001b[35mindex-o2Ky1umu.css  \u001b[0m\u001b[1;2m 66.47 kB\u001b[0m\u001b[2m \u2502 gzip:   8.93 kB\u001b[0m\n\u001b[2mapps/desktop-app/dist/app/renderer/\u001b[0m\u001b[2massets/\u001b[0m\u001b[36mindex-wL9GaUN7.js   \u001b[0m\u001b[33;1m992.34 kB\u001b[0m\u001b[2m \u2502 gzip: 279.59 kB\u001b[0m\n\n\u2713 built in 535ms\n\n\n\n NX   Successfully ran target build for project desktop-app\n\n\n  Run duration:      1m 6s\n  Cache:             Skipped (--skip-nx-cache)\n  Critical path:     1m 5s (1 task)\n  Recoverable time:  <1ms\n\n  Recommendations:\n    - Cache: drop --skip-nx-cache to restore unchanged tasks instantly.\n    - Speed up or split the longest tasks on the critical path:\n        desktop-app:build    1m 5s\n",
+    "timed_out": false
+  },
+  "typecheck": {
+    "argv": [
+      "pnpm",
+      "exec",
+      "tsc",
+      "-p",
+      "apps/desktop-app/tsconfig.json",
+      "--noEmit"
+    ],
+    "contract_sha256": "71fba6497564041133ab9ce26cedd3b9e69fe931a0987f6f107d3c1d8c689d87",
+    "cwd": ".",
+    "environment_sha256": "c8a7382e511aced11b3dafdea0c323ad164a97c03b3f6e2f392b7b230d2c127a",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "3d11812decb522032b3614685be47c711f17e4b1dbf067f6f2720d71eb56f932",
+    "recorded_at": "2026-10-08T15:57:22+00:00",
+    "scope": "Closed public/private/Renderer types",
+    "source_sha256": "51788ffd5f48d5bd73d7e383028a925e1e4ed4d4e3d008788032282bd218f387",
+    "stderr": "",
+    "stdout": "",
+    "timed_out": false
+  },
+  "boundaries": {
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+    ],
+    "contract_sha256": "71fba6497564041133ab9ce26cedd3b9e69fe931a0987f6f107d3c1d8c689d87",
+    "cwd": ".",
+    "environment_sha256": "c8a7382e511aced11b3dafdea0c323ad164a97c03b3f6e2f392b7b230d2c127a",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "3d11812decb522032b3614685be47c711f17e4b1dbf067f6f2720d71eb56f932",
+    "recorded_at": "2026-10-08T15:57:24+00:00",
+    "scope": "Enforced FSD/browser boundaries",
+    "source_sha256": "51788ffd5f48d5bd73d7e383028a925e1e4ed4d4e3d008788032282bd218f387",
+    "stderr": "",
+    "stdout": "{\"result\":\"pass\",\"sourceFiles\":74,\"boundaryFixtures\":68,\"positiveFixtures\":16}\n",
+    "timed_out": false
+  },
+  "bundle": {
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+    ],
+    "contract_sha256": "71fba6497564041133ab9ce26cedd3b9e69fe931a0987f6f107d3c1d8c689d87",
+    "cwd": ".",
+    "environment_sha256": "c8a7382e511aced11b3dafdea0c323ad164a97c03b3f6e2f392b7b230d2c127a",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "3d11812decb522032b3614685be47c711f17e4b1dbf067f6f2720d71eb56f932",
+    "recorded_at": "2026-10-08T15:58:47+00:00",
+    "scope": "Actual browser/server build closure",
+    "source_sha256": "51788ffd5f48d5bd73d7e383028a925e1e4ed4d4e3d008788032282bd218f387",
+    "stderr": "",
+    "stdout": "{\n  \"result\": \"pass\",\n  \"rendererFiles\": [\n    {\n      \"file\": \"assets/index-o2Ky1umu.css\",\n      \"sha256\": \"434855229089227015488afee751e88ddda99876f9ef86a60e58d0ded1bde730\"\n    },\n    {\n      \"file\": \"assets/index-wL9GaUN7.js\",\n      \"sha256\": \"978c2c63438f9a3a1f4ac6deecfc9226d8e96c3e9e516947dee63bd896c36ff1\"\n    },\n    {\n      \"file\": \"index.html\",\n      \"sha256\": \"677e431370b93ed429abb58c1ad98f3f1fbaf328d240423adf9509ffe665f771\"\n    }\n  ]\n}\n",
+    "timed_out": false
+  },
+  "lint": {
+    "argv": [
+      "node",
+      "docs/runs/git-review-observation/check-changed.mjs",
+      "lint"
+    ],
+    "contract_sha256": "71fba6497564041133ab9ce26cedd3b9e69fe931a0987f6f107d3c1d8c689d87",
+    "cwd": ".",
+    "environment_sha256": "c8a7382e511aced11b3dafdea0c323ad164a97c03b3f6e2f392b7b230d2c127a",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "3d11812decb522032b3614685be47c711f17e4b1dbf067f6f2720d71eb56f932",
+    "recorded_at": "2026-10-08T15:57:29+00:00",
+    "scope": "Affected current source lint",
+    "source_sha256": "51788ffd5f48d5bd73d7e383028a925e1e4ed4d4e3d008788032282bd218f387",
+    "stderr": "",
+    "stdout": "{\"mode\":\"lint\",\"paths\":[\"apps/desktop-app/scripts/e2e-workbench-states.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\",\"apps/desktop-app/scripts/git-review-probe.mjs\",\"apps/desktop-app/scripts/run-evidence.mjs\",\"apps/desktop-app/scripts/run-evidence.test.mjs\",\"apps/desktop-app/src/desktop-bridge.d.ts\",\"apps/desktop-app/src/git-review.test.mjs\",\"apps/desktop-app/src/host/workbench-admission.mjs\",\"apps/desktop-app/src/host/workbench-git.mjs\",\"apps/desktop-app/src/host/workbench-git.test.mjs\",\"apps/desktop-app/src/renderer/entities/workbench/index.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/store.ts\",\"apps/desktop-app/src/renderer/features/git-review/index.tsx\",\"apps/desktop-app/src/renderer/shared/api/index.ts\",\"apps/desktop-app/src/renderer/shared/git-review/index.d.mts\",\"apps/desktop-app/src/renderer/shared/git-review/index.mjs\",\"apps/desktop-app/src/renderer/shared/git-review/index.ts\",\"apps/desktop-app/src/renderer/shared/transport/index.ts\",\"apps/desktop-app/src/renderer/widgets/explorer/index.tsx\",\"apps/desktop-app/src/workbench-contract.mjs\",\"apps/desktop-app/src/workbench-service.mjs\",\"apps/desktop-app/src/workbench-service.test.mjs\",\"apps/desktop-app/src/workbench-store.test.mjs\"],\"exit\":0}\n",
+    "timed_out": false
+  },
+  "format": {
+    "argv": [
+      "node",
+      "docs/runs/git-review-observation/check-changed.mjs",
+      "format"
+    ],
+    "contract_sha256": "71fba6497564041133ab9ce26cedd3b9e69fe931a0987f6f107d3c1d8c689d87",
+    "cwd": ".",
+    "environment_sha256": "c8a7382e511aced11b3dafdea0c323ad164a97c03b3f6e2f392b7b230d2c127a",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "3d11812decb522032b3614685be47c711f17e4b1dbf067f6f2720d71eb56f932",
+    "recorded_at": "2026-10-08T15:57:33+00:00",
+    "scope": "Affected current source format",
+    "source_sha256": "51788ffd5f48d5bd73d7e383028a925e1e4ed4d4e3d008788032282bd218f387",
+    "stderr": "",
+    "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n{\"mode\":\"format\",\"paths\":[\"apps/desktop-app/scripts/e2e-workbench-states.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\",\"apps/desktop-app/scripts/git-review-probe.mjs\",\"apps/desktop-app/scripts/run-evidence.mjs\",\"apps/desktop-app/scripts/run-evidence.test.mjs\",\"apps/desktop-app/src/desktop-bridge.d.ts\",\"apps/desktop-app/src/git-review.test.mjs\",\"apps/desktop-app/src/host/workbench-admission.mjs\",\"apps/desktop-app/src/host/workbench-git.mjs\",\"apps/desktop-app/src/host/workbench-git.test.mjs\",\"apps/desktop-app/src/renderer/entities/workbench/index.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/store.ts\",\"apps/desktop-app/src/renderer/features/git-review/index.tsx\",\"apps/desktop-app/src/renderer/features/git-review/review.module.css\",\"apps/desktop-app/src/renderer/shared/api/index.ts\",\"apps/desktop-app/src/renderer/shared/git-review/index.d.mts\",\"apps/desktop-app/src/renderer/shared/git-review/index.mjs\",\"apps/desktop-app/src/renderer/shared/git-review/index.ts\",\"apps/desktop-app/src/renderer/shared/transport/index.ts\",\"apps/desktop-app/src/renderer/widgets/explorer/index.tsx\",\"apps/desktop-app/src/workbench-contract.mjs\",\"apps/desktop-app/src/workbench-service.mjs\",\"apps/desktop-app/src/workbench-service.test.mjs\",\"apps/desktop-app/src/workbench-store.test.mjs\"],\"exit\":0}\n",
+    "timed_out": false
+  },
+  "git-probe": {
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/git-review-probe.mjs",
+      "--out",
+      "docs/runs/git-review-observation/evidence/git-r3"
+    ],
+    "contract_sha256": "71fba6497564041133ab9ce26cedd3b9e69fe931a0987f6f107d3c1d8c689d87",
+    "cwd": ".",
+    "environment_sha256": "c8a7382e511aced11b3dafdea0c323ad164a97c03b3f6e2f392b7b230d2c127a",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "3d11812decb522032b3614685be47c711f17e4b1dbf067f6f2720d71eb56f932",
+    "recorded_at": "2026-10-08T15:59:35+00:00",
+    "scope": "Actual production inspector on contained synthetic Git repositories and linked worktrees with hostile helper canaries and byte preservation",
+    "source_sha256": "51788ffd5f48d5bd73d7e383028a925e1e4ed4d4e3d008788032282bd218f387",
+    "stderr": "",
+    "stdout": "{\"status\":\"pass\",\"productionReaderSyntheticMatrixPassed\":true,\"report\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-review-observation/evidence/git-r3/report.json\",\"retainedSyntheticEvidence\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-review-observation/evidence/git-r3/synthetic-5D7aaw\"}\n",
+    "timed_out": false
+  },
+  "hidden-ui": {
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/run-evidence.mjs",
+      "--script",
+      "ui-states",
+      "--out",
+      "docs/runs/git-review-observation/evidence/hidden-r3"
+    ],
+    "contract_sha256": "71fba6497564041133ab9ce26cedd3b9e69fe931a0987f6f107d3c1d8c689d87",
+    "cwd": ".",
+    "environment_sha256": "c8a7382e511aced11b3dafdea0c323ad164a97c03b3f6e2f392b7b230d2c127a",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "3d11812decb522032b3614685be47c711f17e4b1dbf067f6f2720d71eb56f932",
+    "recorded_at": "2026-10-08T16:04:52+00:00",
+    "scope": "Actual hidden built Renderer/preload with preserved existing matrix plus explicit Git state appendix, keyboard and760px200%",
+    "source_sha256": "51788ffd5f48d5bd73d7e383028a925e1e4ed4d4e3d008788032282bd218f387",
+    "stderr": "",
+    "stdout": "{\"script\":\"ui-states\",\"mode\":null,\"platform\":\"darwin\",\"runnerPlatform\":\"darwin\",\"runnerArch\":\"arm64\",\"runnerNode\":\"v26.8.2\",\"destination\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-review-observation/evidence/hidden-r3/ui-states\",\"command\":[\"/opt/homebrew/Cellar/node/26.8.2/bin/node\",\"/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs\"],\"startedAt\":\"2026-10-08T15:59:37.324Z\",\"status\":\"pass\",\"exitCode\":0,\"signal\":null,\"evidence\":[\"ui-states-evidence.json\",\"desktop-empty-conversation-normal-1280-synthetic.png\",\"desktop-empty-conversation-normal-1180-synthetic.png\",\"desktop-empty-conversation-narrow-synthetic.png\",\"desktop-empty-conversation-normal-200-percent-synthetic.png\",\"desktop-empty-conversation-narrow-200-percent-synthetic.png\",\"desktop-permission-synthetic.png\",\"desktop-permission-long-korean-draft-normal-1280-synthetic.png\",\"desktop-permission-long-korean-draft-normal-1180-synthetic.png\",\"desktop-permission-long-korean-draft-narrow-synthetic.png\",\"desktop-permission-long-korean-draft-normal-200-percent-synthetic.png\",\"desktop-permission-long-korean-draft-narrow-200-percent-synthetic.png\",\"desktop-link-preview-synthetic.png\",\"desktop-tool-results-synthetic.png\",\"desktop-populated-conversation-normal-1280-synthetic.png\",\"desktop-populated-conversation-normal-1180-synthetic.png\",\"desktop-populated-conversation-narrow-synthetic.png\",\"desktop-populated-conversation-normal-200-percent-synthetic.png\",\"desktop-populated-conversation-narrow-200-percent-synthetic.png\",\"desktop-long-korean-titles-normal-1280-synthetic.png\",\"desktop-long-korean-titles-normal-1180-synthetic.png\",\"desktop-long-korean-titles-narrow-synthetic.png\",\"desktop-long-korean-titles-narrow-navigation-synthetic.png\",\"desktop-long-korean-titles-normal-200-percent-synthetic.png\",\"desktop-long-korean-titles-normal-200-percent-navigation-synthetic.png\",\"desktop-long-korean-titles-narrow-200-percent-synthetic.png\",\"desktop-long-korean-titles-narrow-200-percent-navigation-synthetic.png\",\"desktop-unknown-synthetic.png\",\"desktop-activity-filtered-synthetic.png\",\"desktop-p6-streaming-synthetic.png\",\"desktop-p6-disconnected-synthetic.png\",\"desktop-p6-archived-synthetic.png\",\"desktop-p6-inspector-synthetic.png\",\"desktop-p7-durable-documents-location-synthetic.png\",\"desktop-p7-durable-documents-synthetic.png\",\"desktop-p7-imported-location-synthetic.png\",\"desktop-p7-imported-synthetic.png\",\"desktop-p7-missing-path-synthetic.png\",\"desktop-p7-denied-path-synthetic.png\",\"desktop-p7-corrupt-journal-synthetic.png\",\"desktop-p7-owner-conflict-synthetic.png\",\"desktop-p7-pending-inbox-synthetic.png\",\"desktop-p7-pending-inbox-bootstrap-synthetic.png\",\"desktop-p7-unconfirmed-tail-synthetic.png\",\"desktop-p7-unconfirmed-tail-bootstrap-synthetic.png\",\"desktop-p7-partial-mapping-synthetic.png\",\"desktop-p7-partial-mapping-bootstrap-synthetic.png\",\"desktop-p7-pending-inbox-draft-narrow-200-synthetic.png\",\"desktop-p7-pending-inbox-warnings-narrow-200-synthetic.png\",\"desktop-p7-pending-inbox-bootstrap-narrow-200-synthetic.png\",\"desktop-p7-durable-documents-path-narrow-200-synthetic.png\",\"desktop-p7-durable-documents-location-narrow-200-synthetic.png\",\"desktop-configuration-normal-synthetic.png\",\"desktop-configuration-mcp-observed-synthetic.png\",\"desktop-configuration-untrusted-synthetic.png\",\"desktop-configuration-partial-synthetic.png\",\"desktop-configuration-missing-synthetic.png\",\"desktop-configuration-long-path-synthetic.png\",\"desktop-configuration-draft-instructions-synthetic.png\",\"desktop-configuration-draft-mcp-unsupported-synthetic.png\",\"desktop-configuration-draft-mcp-valid-synthetic.png\",\"desktop-configuration-draft-narrow200-synthetic.png\",\"desktop-configuration-draft-narrow200-controls-synthetic.png\",\"desktop-configuration-file-loaded-synthetic.png\",\"desktop-configuration-file-comparison-synthetic.png\",\"desktop-configuration-file-unsupported-synthetic.png\",\"desktop-configuration-file-narrow200-synthetic.png\",\"desktop-configuration-file-narrow200-load-synthetic.png\",\"desktop-configuration-file-blank-synthetic.png\",\"desktop-configuration-file-posix-backslash-synthetic.png\",\"desktop-configuration-save-confirmed-synthetic.png\",\"desktop-configuration-save-confirmed-backup-synthetic.png\",\"desktop-configuration-save-narrow200-target-synthetic.png\",\"desktop-configuration-save-narrow200-control-synthetic.png\",\"desktop-configuration-save-narrow200-synthetic.png\",\"desktop-configuration-save-narrow200-version-synthetic.png\",\"desktop-configuration-save-narrow200-backup-synthetic.png\",\"desktop-configuration-save-narrow360-200-target-synthetic.png\",\"desktop-configuration-save-narrow360-200-control-synthetic.png\",\"desktop-configuration-save-narrow360-200-synthetic.png\",\"desktop-configuration-save-narrow360-200-version-synthetic.png\",\"desktop-configuration-save-narrow360-200-backup-synthetic.png\",\"desktop-configuration-save-created-synthetic.png\",\"desktop-configuration-save-blank-synthetic.png\",\"desktop-configuration-save-denied-synthetic.png\",\"desktop-configuration-save-conflict-synthetic.png\",\"desktop-configuration-save-pending-newer-synthetic.png\",\"desktop-configuration-save-previous-revision-synthetic.png\",\"desktop-configuration-save-unknown-synthetic.png\",\"desktop-configuration-instructions-untrusted-guidance-narrow200-session-synthetic.png\",\"desktop-configuration-instructions-untrusted-guidance-narrow200-observe-synthetic.png\",\"desktop-configuration-instructions-untrusted-guidance-narrow200-apply-synthetic.png\",\"desktop-configuration-instructions-untrusted-guidance-narrow200-remove-synthetic.png\",\"desktop-configuration-instructions-untrusted-guidance-narrow200-status-synthetic.png\",\"desktop-configuration-instructions-untrusted-guidance-narrow200-trust-block-synthetic.png\",\"desktop-configuration-instructions-untrusted-guidance-narrow200-trust-next-step-synthetic.png\",\"desktop-configuration-instructions-untrusted-guidance-narrow200-trust-stored-metadata-synthetic.png\",\"desktop-configuration-instructions-registered-direct-session-synthetic.png\",\"desktop-configuration-instructions-registered-direct-observe-synthetic.png\",\"desktop-configuration-instructions-registered-direct-apply-synthetic.png\",\"desktop-configuration-instructions-registered-direct-remove-synthetic.png\",\"desktop-configuration-instructions-registered-direct-status-synthetic.png\",\"desktop-configuration-instructions-registered-direct-narrow200-session-synthetic.png\",\"desktop-configuration-instructions-registered-direct-narrow200-observe-synthetic.png\",\"desktop-configuration-instructions-registered-direct-narrow200-apply-synthetic.png\",\"desktop-configuration-instructions-registered-direct-narrow200-remove-synthetic.png\",\"desktop-configuration-instructions-registered-direct-narrow200-status-synthetic.png\",\"desktop-configuration-instructions-inherited-narrow200-session-synthetic.png\",\"desktop-configuration-instructions-inherited-narrow200-observe-synthetic.png\",\"desktop-configuration-instructions-inherited-narrow200-apply-synthetic.png\",\"desktop-configuration-instructions-inherited-narrow200-remove-synthetic.png\",\"desktop-configuration-instructions-inherited-narrow200-status-synthetic.png\",\"desktop-configuration-instructions-inherited-narrow200-parent-synthetic.png\",\"desktop-configuration-instructions-same-bytes-child-direct-session-synthetic.png\",\"desktop-configuration-instructions-same-bytes-child-direct-observe-synthetic.png\",\"desktop-configuration-instructions-same-bytes-child-direct-apply-synthetic.png\",\"desktop-configuration-instructions-same-bytes-child-direct-remove-synthetic.png\",\"desktop-configuration-instructions-same-bytes-child-direct-status-synthetic.png\",\"desktop-configuration-instructions-removed-no-file-load-narrow200-session-synthetic.png\",\"desktop-configuration-instructions-removed-no-file-load-narrow200-observe-synthetic.png\",\"desktop-configuration-instructions-removed-no-file-load-narrow200-apply-synthetic.png\",\"desktop-configuration-instructions-removed-no-file-load-narrow200-remove-synthetic.png\",\"desktop-configuration-instructions-removed-no-file-load-narrow200-status-synthetic.png\",\"desktop-configuration-instructions-drift-narrow200-session-synthetic.png\",\"desktop-c\n[truncated]",
+    "timed_out": false
+  }
+}

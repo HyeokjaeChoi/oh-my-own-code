@@ -1,0 +1,57 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "description": "Qualified vendor research"
+    },
+    {
+      "id": "AC-2",
+      "description": "Four comparable two-mode foundation candidates"
+    },
+    {
+      "id": "AC-3",
+      "description": "Functional accessible responsive preview"
+    },
+    {
+      "id": "AC-4",
+      "description": "Preservation and independent review"
+    }
+  ],
+  "checks": {
+    "foundation": {
+      "argv": [
+        "python3",
+        "docs/runs/foundation-options/check_foundations.py"
+      ],
+      "cwd": ".",
+      "scope": "Candidate aliases, contrast, structural coverage and baseline preservation",
+      "acceptance_ids": [
+        "AC-1",
+        "AC-2",
+        "AC-4"
+      ],
+      "required": true
+    },
+    "browser": {
+      "argv": [
+        "node",
+        "docs/runs/foundation-options/check_browser.cjs"
+      ],
+      "cwd": ".",
+      "scope": "Synthetic preview interactions, responsive overflow, console and screenshots",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-3"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "docs/runs/foundation-options/check_foundations.py",
+    "docs/runs/foundation-options/check_browser.cjs",
+    "docs/runs/foundation-options/baseline.json"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "beforeRecipeSha256": "fd55243f71f4cbf9e45ad78ed07b5dbe69f85a1c412d180db8f6c7c49490a145",
+  "recipeSha256": "5ac1cafe72654ef0096f26b47c815cf4140d52cb66b790e4e73dcc3fb967a259",
+  "files": 58,
+  "edits": 234,
+  "entry": {
+    "path": "node_modules/@opencode/core/dist/chunks/config-76n1dez8.js",
+    "beforeSha256": "d287ae519253b75a2b350a53b4b5c5eef01b819afcf64e79c66566daccbe361b",
+    "afterSha256": "6a943e8b8e07d1df29f5d57d9f4a08713ef0539fc003e34c3a174a65198d597b",
+    "edits": [
+      {
+        "find": "// src/plugin/host.ts",
+        "replace": "import { Service as WorkbenchControl, node as workbenchControlNode, LocationBuildScope } from \"../../../../../native-permission-control.mjs\";\nimport { observeNativeTransformRegistration } from \"../../../../../native-permission-inventory.mjs\";\n// src/plugin/host.ts"
+      },
+      {
+        "find": "transform: (callback) => agents.transform((editor) => {\n        callback({\n          list: () => mutable(editor.list()),\n          get: (id) => mutable(editor.get(ID10.make(id))),\n          default: (id) => editor.default(id === undefined ? undefined : ID10.make(id)),\n          update: (id, update) => editor.update(ID10.make(id), update),\n          remove: (id) => editor.remove(ID10.make(id))\n        });\n      })",
+        "replace": "transform: (callback) => observeNativeTransformRegistration(Effect, Scope, control, inventoryHandle, \"agent\", callback, (guarded) => agents.transform((editor) => {\n        guarded({\n          list: () => mutable(editor.list()),\n          get: (id) => mutable(editor.get(ID10.make(id))),\n          default: (id) => editor.default(id === undefined ? undefined : ID10.make(id)),\n          update: (id, update) => editor.update(ID10.make(id), update),\n          remove: (id) => editor.remove(ID10.make(id))\n        });\n      }))"
+      },
+      {
+        "find": "transform: (callback) => providers.transform((editor) => {\n        callback({\n          list: editor.list,\n          get: (id) => editor.get(ID12.make(id)),\n          add: (definition) => editor.add({\n            ...definition,\n            sourceConnection: definition.sourceConnection?.type === \"credential\" ? { ...definition.sourceConnection, id: ID14.make(definition.sourceConnection.id) } : definition.sourceConnection\n          }),\n          update: (id, update) => editor.update(ID12.make(id), update),\n          remove: (id) => editor.remove(ID12.make(id)),\n          models: {\n            set: (id, models) => editor.models.set(ID12.make(id), models),\n            update: (providerID, modelID, update) => editor.models.update(ID12.make(providerID), ID11.make(modelID), update),\n            remove: (providerID, modelID) => editor.models.remove(ID12.make(providerID), ID11.make(modelID))\n          }\n        });\n      })",
+        "replace": "transform: (callback) => observeNativeTransformRegistration(Effect, Scope, control, inventoryHandle, \"provider\", callback, (guarded) => providers.transform((editor) => {\n        guarded({\n          list: editor.list,\n          get: (id) => editor.get(ID12.make(id)),\n          add: (definition) => editor.add({\n            ...definition,\n            sourceConnection: definition.sourceConnection?.type === \"credential\" ? { ...definition.sourceConnection, id: ID14.make(definition.sourceConnection.id) } : definition.sourceConnection\n          }),\n          update: (id, update) => editor.update(ID12.make(id), update),\n          remove: (id) => editor.remove(ID12.make(id)),\n          models: {\n            set: (id, models) => editor.models.set(ID12.make(id), models),\n            update: (providerID, modelID, update) => editor.models.update(ID12.make(providerID), ID11.make(modelID), update),\n            remove: (providerID, modelID) => editor.models.remove(ID12.make(providerID), ID11.make(modelID))\n          }\n        });\n      }))"
+      },
+      {
+        "find": "transform: (callback) => models.transform((editor) => callback({\n        list: (providerID) => editor.list(providerID === undefined ? undefined : ID12.make(providerID)),\n        get: (providerID, modelID) => editor.get(ID12.make(providerID), ID11.make(modelID)),\n        update: (providerID, modelID, update) => editor.update(ID12.make(providerID), ID11.make(modelID), update),\n        remove: (providerID, modelID) => editor.remove(ID12.make(providerID), ID11.make(modelID)),\n        default: {\n          get: editor.default.get,\n          set: (providerID, modelID) => editor.default.set(ID12.make(providerID), ID11.make(modelID))\n        },\n        provider: {\n          list: editor.provider.list,\n          get: (id) => editor.provider.get(ID12.make(id))\n        }\n      }))",
+        "replace": "transform: (callback) => observeNativeTransformRegistration(Effect, Scope, control, inventoryHandle, \"model\", callback, (guarded) => models.transform((editor) => guarded({\n        list: (providerID) => editor.list(providerID === undefined ? undefined : ID12.make(providerID)),\n        get: (providerID, modelID) => editor.get(ID12.make(providerID), ID11.make(modelID)),\n        update: (providerID, modelID, update) => editor.update(ID12.make(providerID), ID11.make(modelID), update),\n        remove: (providerID, modelID) => editor.remove(ID12.make(providerID), ID11.make(modelID)),\n        default: {\n          get: editor.default.get,\n          set: (providerID, modelID) => editor.default.set(ID12.make(providerID), ID11.make(modelID))\n        },\n        provider: {\n          list: editor.provider.list,\n          get: (id) => editor.provider.get(ID12.make(id))\n        }\n      })))"
+      },
+      {
+        "find": "transform: (callback) => integration.transform((editor) => {\n        callback({\n          list: () => mutable(editor.list()),\n          get: (id) => mutable(editor.get(ID13.make(id))),\n          update: (id, update) => editor.update(ID13.make(id), update),\n          remove: (id) => editor.remove(ID13.make(id)),\n          method: {\n            list: (id) => editor.method.list(ID13.make(id)),\n            update: (input) => editor.method.update(methodImplementation(input)),\n            remove: (id, method) => editor.method.remove(ID13.make(id), Schema.decodeUnknownSync(Method2)(method))\n          }\n        });\n      })",
+        "replace": "transform: (callback) => observeNativeTransformRegistration(Effect, Scope, control, inventoryHandle, \"integration\", callback, (guarded) => integration.transform((editor) => {\n        guarded({\n          list: () => mutable(editor.list()),\n          get: (id) => mutable(editor.get(ID13.make(id))),\n          update: (id, update) => editor.update(ID13.make(id), update),\n          remove: (id) => editor.remove(ID13.make(id)),\n          method: {\n            list: (id) => editor.method.list(ID13.make(id)),\n            update: (input) => editor.method.update(methodImplementation(input)),\n            remove: (id, method) => editor.method.remove(ID13.make(id), Schema.decodeUnknownSync(Method2)(method))\n          }\n        });\n      }))"
+      },
+      {
+        "find": "transform: (callback) => mcp.transform((editor) => {\n        callback({\n          list: () => editor.list().map(([name, config]) => [name, mutable(config)]),\n          get: (name) => mutable(editor.get(name)),\n          set: (name, config) => editor.set(name, Schema.decodeUnknownSync(ServerConfig)(config)),\n          update: editor.update,\n          remove: editor.remove\n        });\n      })",
+        "replace": "transform: (callback) => observeNativeTransformRegistration(Effect, Scope, control, inventoryHandle, \"mcp\", callback, (guarded) => mcp.transform((editor) => {\n        guarded({\n          list: () => editor.list().map(([name, config]) => [name, mutable(config)]),\n          get: (name) => mutable(editor.get(name)),\n          set: (name, config) => editor.set(name, Schema.decodeUnknownSync(ServerConfig)(config)),\n          update: editor.update,\n          remove: editor.remove\n        });\n      }))"
+      },
+      {
+        "find": "import { Effect, Schema, Stream } from \"effect\";",
+        "replace": "import { Effect, Schema, Stream, Scope } from \"effect\";"
+      },
+      {
+        "find": "var make11 = Effect.fn(\"PluginHost.make\")(function* (plugin, pluginID = \"test\") {",
+        "replace": "var make11 = Effect.fn(\"PluginHost.make\")(function* (plugin, pluginID = \"test\") {\n  const control = yield* WorkbenchControl;\n  const inventoryHandle = (yield* LocationBuildScope).handle;"
+      },
+      {
+        "find": "var requirements3 = LayerNode.group([\n",
+        "replace": "var requirements3 = LayerNode.group([\n  workbenchControlNode,\n"
+      }
+    ]
+  }
+}

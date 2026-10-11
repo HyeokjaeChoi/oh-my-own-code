@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "086572f8594b791367fd88cd0d8345f1ec168a12c9ef7a7c0f508826f4afc88d",
+    "environment_sha256": "c067298f13ba38c875c309f7e33243ac3ce68da71b1e22b3c3346fb25245a50f",
+    "gate": "design",
+    "plan_sha256": "7bcbe9c4e78258f192b17df9660db4b11d6e92daf3b96f57486d6da87db78fe7",
+    "schema_version": 2,
+    "source_sha256": "0db657dfe16930c542c7bb06addd00d94f9ec5390495c588a0779c9bebf53bec",
+    "verification_sha256": "4cdc69a56e90ef6d137d450cb97e454a876400ace128ae89cc30055fb0e82dc3"
+  },
+  "verdict": "changes_requested",
+  "summary": "Independent actual source and10PNG review found narrow200% composer/model clipping missed by initial native assertions. Other A baseline and outside behavior meet scope; bounded correction required.",
+  "open_findings": [
+    {
+      "id": "A-FINAL-01",
+      "severity": "P2",
+      "path": "apps/desktop-app/src/renderer/features/conversation/conversation.module.css",
+      "summary": "380x284 permission+longdraft clips model selector/composer lower edge; native test omitted complete form/combobox viewport ratios. Preserve72input44queue; fix total layout and assert entire composer/selectors."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/a_actual_final_review",
+    "author_task_id": "/root"
+  }
+}

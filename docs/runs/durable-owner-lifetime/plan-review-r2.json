@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "a3d3748437fbf3b5465fbada14ee318e6470f5f4457722abf968b67acdb12df2",
+    "gate": "plan",
+    "plan_sha256": "fa862c8d89ff01dc5e7a065e579763240db96a31df09184f3cba5df3ee687a64",
+    "schema_version": 2,
+    "source_sha256": "13ab095dd779a44e1a9f42848cbb64ce761b916443680e4c33580ed881b32c93",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "open_findings": [],
+  "summary": "같은 초기 entry review의 변경 부분만 검토했습니다. Design2는 D1의 expectedRegistrations 전체 집합 비교와 동일 owner snapshot 재확인을 명시합니다. D2는 현재 file·directory sync와 전체 동일 snapshot 재확인 뒤 immutable lifetime 사실만 수용합니다. 이전 fsync 성공이나 ACK를 추론하지 않으며, partial proof·현재 sync 실패·snapshot 변경은 차단합니다. 관련 검증 사례도 명시돼 있습니다. Plan1 W1–W5, helper 권한 제한과 nonfresh Native hold는 유지됩니다. 필수 수정이나 새 승인 gate는 없습니다. 이번 supplemental pass는 실행 검증이나 별도 design_spec 판정을 대체하지 않습니다.",
+  "provenance": {
+    "child_task_id": "01a116aa-2e9b-7521-99d3-83f9737946a3",
+    "mode": "report_only",
+    "review_scope": "동일 초기 검토의 design2 D1/D2 변경 부분",
+    "binding_source": "docs/runs/durable-owner-lifetime/plan-review-r2.input.json",
+    "artifact_hashes_match_packet": true,
+    "source_fingerprint_recomputed": false,
+    "runtime_identity_attested": false,
+    "delegated": false,
+    "files_changed": [],
+    "tests_run": false,
+    "native_launches": false,
+    "ui_launches": false,
+    "persistence_owner": "primary"
+  }
+}

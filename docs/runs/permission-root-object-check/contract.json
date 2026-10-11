@@ -1,0 +1,101 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "R1",
+      "description": "Pinned private root owner; exact identity, cleanup and synchronous revocation"
+    },
+    {
+      "id": "R2",
+      "description": "Actual opened observer root checked before descendant IO"
+    },
+    {
+      "id": "R3",
+      "description": "Same existing writer actual root checked before effects, no substitution"
+    },
+    {
+      "id": "R4",
+      "description": "Scoped adversarial validation and separate independent CODE"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/host/workspace-root-authority.test.mjs",
+        "apps/desktop-app/src/host/workbench-file-edit.test.mjs",
+        "apps/desktop-app/src/host/configuration-save-kernel.test.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Retained directory object and existing observer/writer only; synthetic contained fixtures",
+      "required": true,
+      "acceptance_ids": [
+        "R1",
+        "R2",
+        "R3",
+        "R4"
+      ]
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/host/workspace-root-authority.mjs",
+        "apps/desktop-app/src/host/workspace-root-authority.test.mjs",
+        "apps/desktop-app/src/host/workbench-file-edit.mjs",
+        "apps/desktop-app/src/host/workbench-file-edit.test.mjs",
+        "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+        "apps/desktop-app/src/host/configuration-save-kernel.test.mjs",
+        "apps/desktop-app/src/event-host-resources.mjs",
+        "apps/desktop-app/scripts/stage-event-host.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Retained directory object and existing observer/writer only; synthetic contained fixtures",
+      "required": true,
+      "acceptance_ids": [
+        "R1",
+        "R2",
+        "R3",
+        "R4"
+      ]
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/host/workspace-root-authority.mjs",
+        "apps/desktop-app/src/host/workspace-root-authority.test.mjs",
+        "apps/desktop-app/src/host/workbench-file-edit.mjs",
+        "apps/desktop-app/src/host/workbench-file-edit.test.mjs",
+        "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+        "apps/desktop-app/src/host/configuration-save-kernel.test.mjs",
+        "apps/desktop-app/src/event-host-resources.mjs",
+        "apps/desktop-app/scripts/stage-event-host.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Retained directory object and existing observer/writer only; synthetic contained fixtures",
+      "required": true,
+      "acceptance_ids": [
+        "R1",
+        "R2",
+        "R3",
+        "R4"
+      ]
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

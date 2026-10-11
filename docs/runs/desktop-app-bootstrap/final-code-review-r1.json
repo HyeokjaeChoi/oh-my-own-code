@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "reviewer": "independent_code_reviewer",
+  "verdict": "changes_requested",
+  "binding": {
+    "contract": {
+      "path": "docs/workplans/desktop-app-bootstrap/contract.json",
+      "sha256": "97cafead7925fa98cd014fd9c9d9a044a85143875194bef556b7cc9a66358a61"
+    },
+    "plan": {
+      "path": "docs/workplans/desktop-app-bootstrap/plan.md",
+      "revision": 20,
+      "sha256": "b881fc85abb27e5f8c892acb1ffbdd81904bcaef168f9bf7e37ec5a71da89a4f"
+    },
+    "source_files": {
+      "apps/desktop-app/src/main.mjs": "137a5937f53ff2dbf23a68470650ea8a8cc3ffa30079f31539fd30f1cac03c2b",
+      "apps/desktop-app/src/preload.cjs": "96eb76507438d0670b251e7ae508b6c339f7f0c615e92bcda37305ddf5cad2a4",
+      "apps/desktop-app/src/sidecar-supervisor.mjs": "c08ce69fb0fee82ccafc1bc0a2e5fba643033229eeafb9d19cc6dfc05898fced",
+      "apps/desktop-app/src/ephemeral-profile.mjs": "dc161c3b1da5832af479e6bb9cdd25c20b748ee59343ba5e79543bc7ab39444d",
+      "apps/desktop-app/src/renderer.tsx": "b38eb0f23339b3d728e990c80ec64ce05c8e11fc822826c7d00abe52b8839cb7",
+      "apps/desktop-app/src/desktop-bridge.d.ts": "e4303b270671ce9408bc383c6e34dd9df34b4f0802631e29b68481e577879765",
+      "apps/desktop-app/index.html": "973680da1eadd48eb58ff47aaaca46a10e33c0da3a31e97662f3ddea9fddc9ae",
+      "apps/desktop-app/package.json": "766e7ffeb63023ad636261dabb7d8fecad815d86867e8acd6b2794675e2ee181",
+      "apps/desktop-app/project.json": "e4615aa2f35cf32e87328a4497e8e8579d9ae9efb70a9a234d20878e141dcd40",
+      "apps/desktop-app/vite.config.ts": "1d02271112ce18d2e77b2a94aff3e9de15fc6cc3903e17ed3a5126b6e5dbe052",
+      "apps/desktop-app/scripts/build.mjs": "3cd0bda00d0f1e867783a3bcce4f213a73e2f7b6a0433a27ed72ea5f99502dcf",
+      "apps/desktop-app/scripts/package.mjs": "c147654b3d9b9b96a218a8b21bf451c55fc3e293b8c613b75fae694627513f63",
+      "apps/desktop-app/scripts/e2e-smoke.mjs": "64ebb817aff46a7206fc83a3adeba09155ff06cad10a74baf57c0c270cd89b8a",
+      "apps/desktop-app/scripts/inspect-packaged-bundle.mjs": "5a2a20515cf05ef541eefbd9f88ee0df8ce065d75f833f200e92e6bc576e53b4",
+      "apps/desktop-app/scripts/inspect-renderer-bundle.mjs": "5d05ced2a5a531f49fe6c7385f411b3397e46a03c768441b649b632aa195d056",
+      "apps/desktop-app/src/sidecar-supervisor.test.mjs": "10c50c4d5d73a66965a69e2eaff8229e40a5a9db9338607e08c42b96e0450379",
+      "apps/desktop-app/src/ephemeral-profile.test.mjs": "8430e8f078a413f139ffca41a2a0b7a27f8288179bdb28cab64ae167123c06bb",
+      "pnpm-lock.yaml": "be1b170489bbe1b8f54b0aee1c0e0e7b53a65d87dfb693186093542728a90cd2",
+      "pnpm-workspace.yaml": "4d3db65848ea506ea21477408bfc430cd73aa81ac77e2f52c441a9589b2acb0b"
+    }
+  },
+  "findings": [
+    {
+      "id": "CR-1",
+      "severity": "P1",
+      "path": "apps/desktop-app/src/renderer.tsx",
+      "line": 16,
+      "title": "A sidecar crash leaves the UI claiming it is connected",
+      "trigger": "After the initial runtimeSnapshot resolves connected, the owned child exits or the connection drops.",
+      "impact": "The renderer never asks for another snapshot and has no host event subscription. It keeps showing a connected runtime indefinitely, despite sidecar-supervisor.mjs returning unavailable after child exit. No reconnect or restart path exists. This contradicts the plan's disconnect/reconnect visibility and truthful lifecycle requirement.",
+      "correction": "Publish validated runtime state changes from main to the renderer or poll a bounded snapshot, render unavailable after exit, and implement and verify the approved restart/recovery behavior."
+    },
+    {
+      "id": "CR-2",
+      "severity": "P1",
+      "path": "apps/desktop-app/scripts/e2e-smoke.mjs",
+      "line": 96,
+      "title": "Packaged E2E cannot establish required security and failure behavior",
+      "trigger": "The packaged E2E runs its current happy-path sequence.",
+      "impact": "It checks initial connection, one popup/navigation attempt, a single owned child and clean quit, but never injects malformed IPC, subframe senders, startup failure, child crash, timeout, service collision, disconnect, or restart. It also emits no app or sidecar digest to bind the observed launch to the artifact inspected by inspect-packaged-bundle.mjs. The D-2/D-3 required packaged checks and prior plan concerns about exact package evidence therefore remain unsatisfied even if this smoke passes.",
+      "correction": "Add the contract's negative and lifecycle scenarios to native packaged E2E on each OS, and record/compare exact app and sidecar digests in the launch and inspection receipts."
+    },
+    {
+      "id": "CR-3",
+      "severity": "P2",
+      "path": "apps/desktop-app/src/sidecar-supervisor.mjs",
+      "line": 79,
+      "title": "Failed scratch setup leaves a disposable runtime directory behind",
+      "trigger": "mkdir or writeFile rejects after mkdtemp succeeds, for example because temporary storage fills or permissions change.",
+      "impact": "Those operations precede the try/catch that calls stopOwnedChild, so the created root is never removed. main.mjs treats this as an ordinary startup error and may quit, leaving temporary data behind.",
+      "correction": "Put all post-mkdtemp setup inside a cleanup scope, and remove the root on every pre-spawn failure."
+    },
+    {
+      "id": "CR-4",
+      "severity": "P2",
+      "path": "apps/desktop-app/src/sidecar-supervisor.mjs",
+      "line": 23,
+      "title": "Windows profile isolation is incomplete",
+      "trigger": "OpenCode or a child dependency resolves Windows profile or application-data paths through Windows-native home paths instead of HOME/XDG paths.",
+      "impact": "The sanitized environment sets HOME and XDG paths but omits USERPROFILE, APPDATA and LOCALAPPDATA. The approved synthetic-only run therefore cannot establish that the Windows sidecar avoids the real user's configuration and data. This is a platform risk, not proof that the pinned binary currently reads those paths.",
+      "correction": "Redirect the Windows profile and app-data variables into the disposable root and verify observed filesystem access on Windows."
+    },
+    {
+      "id": "CR-5",
+      "severity": "P2",
+      "path": "apps/desktop-app/src/main.mjs",
+      "line": 175,
+      "title": "Electron profile deletion failure still permits app exit",
+      "trigger": "ephemeralProfile.cleanup throws during will-quit, such as when Windows still holds a profile file open.",
+      "impact": "The handler only displays an error and does not prevent quitting or retain a recoverable absolute profile path. The app exits with temporary data left behind while the UI promises cleanup on exit.",
+      "correction": "Make cleanup failure observable and recoverable: retain/report the exact path and retry or block quit when safe, with a bounded recovery path."
+    }
+  ],
+  "method": {
+    "review_type": "fresh independent static review",
+    "scope": "Current Electron bootstrap source, callers, tests, Nx/package configuration, approved revision-20 plan and contract; two passes for contract compliance and code correctness/security.",
+    "prior_finding_check": "The registered desktop run has no earlier code-review report. Compared implementation directly against previously reviewed plan concerns about packaged security, lifecycle and exact artifact binding; these remain open in CR-1 and CR-2.",
+    "verification": "No app, tests, build, or E2E commands executed in this review. Hashes were read from the current files; runtime claims from the coordinator's separate checks were not adopted as proof of untested scenarios.",
+    "positive_observations": "Packaged window enables context isolation and sandboxing, disables Node integration and webviews, denies popup/navigation, and exposes only a named runtimeSnapshot preload method. Sidecar uses a pinned platform resource, loopback port zero, password authentication, PID/version identity check and guarded stop before scratch deletion.",
+    "limits": "Windows process and filesystem behavior, packaged native failure cases and exact artifact identity were not observed by this static reviewer."
+  }
+}

@@ -1,0 +1,58 @@
+✔ MCP inactive registration and explicit connection lifecycle are durable, scoped and status-observed (117.778292ms)
+✖ MCP connect refuses cwd symlink replacement before-confirmation before SDK dispatch (64.971375ms)
+✖ MCP connect refuses cwd symlink replacement during-confirmation before SDK dispatch (62.442459ms)
+✔ MCP connect refuses cwd symlink replacement unchanged before SDK dispatch (70.779708ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 381.5795
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2783:3
+✖ MCP connect refuses cwd symlink replacement before-confirmation before SDK dispatch (64.971375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + {
+  +   code: 'MCP_UNSUPPORTED',
+  +   kind: 'rejected'
+  + }
+  - undefined
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2847:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { kind: 'rejected', code: 'MCP_UNSUPPORTED' },
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2783:3
+✖ MCP connect refuses cwd symlink replacement during-confirmation before SDK dispatch (62.442459ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + {
+  +   code: 'MCP_UNSUPPORTED',
+  +   kind: 'rejected'
+  + }
+  - undefined
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2847:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { kind: 'rejected', code: 'MCP_UNSUPPORTED' },
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

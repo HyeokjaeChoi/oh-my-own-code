@@ -1,0 +1,23 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "c81d2b8df50bed38ed0c884390364208a8d6d1ed8428e45a42363fdf592479bc",
+    "contract_sha256": "7bbcbe58dff8e191732fb2478356d0d7de4fa079fa5ade79dfa9ae9f94ca898d",
+    "source_sha256": "959854d1ae8c050c30c217111bd66bbf9d86dc5e7800874885178971b5b15d27"
+  },
+  "verdict": "pass",
+  "summary": "Revision 10 explicitly owns and reconciles the existing product-local plan template, and adds a valid fail-closed source/product parity check. Ordered work preserves canonical-first edits, target-only synchronization, required zero-tests-fail checks, and independent code review.",
+  "open_findings": [],
+  "validation": "Fresh independent Astra/high read-only review of the exact plan and contract; parity command and cwd semantics verified; no tests or edits.",
+  "provenance": {
+    "child_task_id": "/root/harness_plan_review_r10",
+    "author_task_id": "/root",
+    "review_mode": "Fresh independent read-only plan review",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false,
+    "files_modified": false
+  }
+}

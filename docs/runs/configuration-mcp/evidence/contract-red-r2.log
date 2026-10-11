@@ -1,0 +1,33 @@
+✔ configuration content reads keep closed fixed-source v2 admission (1.503333ms)
+✔ closed requests reject extra fields, cross-selection, malformed values and bulk permissions (0.137667ms)
+✔ portable folder names and exact ask policy (0.261458ms)
+✔ v5 snapshot clocks and closed recovery validate before publication (0.562833ms)
+✔ configuration save is a closed mutation with exact expected file observation and lossless bounded text (2.041584ms)
+✔ instruction API keeps read and mutation identity closed with exact file and registration observations (0.387417ms)
+✖ MCP operations are closed workspace targets with explicit read and immutable file/catalog baseline (0.144042ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 52.511292
+
+✖ failing tests:
+
+test at apps/desktop-app/src/workbench-contract.test.mjs:279:1
+✖ MCP operations are closed workspace targets with explicit read and immutable file/catalog baseline (0.144042ms)
+  Error: Invalid workbench request.
+      at fail (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:40:17)
+      at validateRequest (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:101:16)
+      at validateEnvelope (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:275:21)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.test.mjs:286:20)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    appCode: 'INVALID_REQUEST'
+  }

@@ -1,0 +1,401 @@
+{
+  "phase": "before",
+  "session": "omoc-C-edge-repair",
+  "source_sha256": {
+    "validate.mjs": "07360185409f126d484fbd8add2394b2bd9270a0410ed4a724de8de5c344e473",
+    "index.html": "be8247f9a83f3a1d8bab4ce11aa7078dfb0bd568a003d6647711377d410ec74e",
+    "styles.css": "7cd897ec0a1941150a451439ce77911006597ccf79d7a803ec031559ab4e0a90",
+    "repair-check.py": "5527c665d785e982e0cdd516dc75fa626f8625bd43b1f0f0aee8387d4d71e1a2",
+    "capture.py": "51c92569f5a50b6229abb978156d490859bee2b84432b80ba49c6a83f3d3cf04",
+    "observe.py": "6cfc74acc639205af941aab8b4c2880d3d1437ceaf44b375af2ee0eec612dd2f",
+    "data.js": "25f942b5b17aea48a084487c5b6db0082f1dc0846a45f53f6d505072c55e14f7",
+    "app.js": "6b7cfcc46006e1e5327983f69465ecf805a562963764a19a85b4435db6ed8686"
+  },
+  "observations": [
+    {
+      "state": "empty",
+      "rect": {
+        "x": 48,
+        "y": 213,
+        "width": 672,
+        "height": 68
+      },
+      "zone": {
+        "x": 32,
+        "y": 213,
+        "width": 704,
+        "height": 68
+      },
+      "outline": "3px",
+      "outlineOffset": "0px",
+      "expected": "rgb(170, 45, 45)",
+      "edge": "rgb(140, 140, 140)",
+      "edgeDisplay": "none",
+      "edgeZ": "auto",
+      "zoneZ": "1",
+      "radius": "0px",
+      "viewport": [
+        1280,
+        800
+      ],
+      "dpr": 1,
+      "scale": 1,
+      "theme": "light",
+      "capture": "C-edge-before-light-empty.png",
+      "captureSha256": "7a3e8ac74df6b48aef4cd24efcef2c0f80ff6d8034890347c9811d124c9e2345",
+      "pixelRows": [
+        {
+          "y": 212,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "y": 213,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            232,
+            232,
+            232
+          ]
+        },
+        {
+          "y": 214,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            255,
+            255,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "state": "error",
+      "rect": {
+        "x": 48,
+        "y": 366,
+        "width": 672,
+        "height": 68
+      },
+      "zone": {
+        "x": 32,
+        "y": 366,
+        "width": 704,
+        "height": 94
+      },
+      "outline": "3px",
+      "outlineOffset": "0px",
+      "expected": "rgb(170, 45, 45)",
+      "edge": "rgb(170, 45, 45)",
+      "edgeDisplay": "block",
+      "edgeZ": "auto",
+      "zoneZ": "1",
+      "radius": "0px",
+      "viewport": [
+        1280,
+        800
+      ],
+      "dpr": 1,
+      "scale": 1,
+      "theme": "light",
+      "capture": "C-edge-before-light-error.png",
+      "captureSha256": "7886a3d1178111b0061ed8c6d010a9fbf4a89f49dc221645c4322bc66399c2f8",
+      "pixelRows": [
+        {
+          "y": 365,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "y": 366,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            232,
+            232,
+            232
+          ]
+        },
+        {
+          "y": 367,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            255,
+            255,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "state": "error-focus-visible",
+      "rect": {
+        "x": 48,
+        "y": 674,
+        "width": 672,
+        "height": 68
+      },
+      "zone": {
+        "x": 32,
+        "y": 674,
+        "width": 704,
+        "height": 94
+      },
+      "outline": "2px",
+      "outlineOffset": "2px",
+      "expected": "rgb(170, 45, 45)",
+      "edge": "rgb(170, 45, 45)",
+      "edgeDisplay": "block",
+      "edgeZ": "auto",
+      "zoneZ": "1",
+      "radius": "0px",
+      "viewport": [
+        1280,
+        800
+      ],
+      "dpr": 1,
+      "scale": 1,
+      "theme": "light",
+      "capture": "C-edge-before-light-error-focus-visible.png",
+      "captureSha256": "ef63a88820256f131b690dc81fc88e5447c10709922fbf6c4afa95a99b2d7691",
+      "pixelRows": [
+        {
+          "y": 673,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "y": 674,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            232,
+            232,
+            232
+          ]
+        },
+        {
+          "y": 675,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            255,
+            255,
+            255
+          ]
+        }
+      ]
+    },
+    {
+      "state": "empty",
+      "rect": {
+        "x": 48,
+        "y": 213,
+        "width": 672,
+        "height": 68
+      },
+      "zone": {
+        "x": 32,
+        "y": 213,
+        "width": 704,
+        "height": 68
+      },
+      "outline": "3px",
+      "outlineOffset": "0px",
+      "expected": "rgb(255, 179, 172)",
+      "edge": "rgb(118, 118, 118)",
+      "edgeDisplay": "none",
+      "edgeZ": "auto",
+      "zoneZ": "1",
+      "radius": "0px",
+      "viewport": [
+        1280,
+        800
+      ],
+      "dpr": 1,
+      "scale": 1,
+      "theme": "dark",
+      "capture": "C-edge-before-dark-empty.png",
+      "captureSha256": "bd4c7bab02f2acbd82c879559cc562defda92fcdba8a89cc926fdb0f2fb5d71a",
+      "pixelRows": [
+        {
+          "y": 212,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            23,
+            23,
+            23
+          ]
+        },
+        {
+          "y": 213,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            61,
+            61,
+            61
+          ]
+        },
+        {
+          "y": 214,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            23,
+            23,
+            23
+          ]
+        }
+      ]
+    },
+    {
+      "state": "error",
+      "rect": {
+        "x": 48,
+        "y": 366,
+        "width": 672,
+        "height": 68
+      },
+      "zone": {
+        "x": 32,
+        "y": 366,
+        "width": 704,
+        "height": 94
+      },
+      "outline": "3px",
+      "outlineOffset": "0px",
+      "expected": "rgb(255, 179, 172)",
+      "edge": "rgb(255, 179, 172)",
+      "edgeDisplay": "block",
+      "edgeZ": "auto",
+      "zoneZ": "1",
+      "radius": "0px",
+      "viewport": [
+        1280,
+        800
+      ],
+      "dpr": 1,
+      "scale": 1,
+      "theme": "dark",
+      "capture": "C-edge-before-dark-error.png",
+      "captureSha256": "c298016e0ce668772ef1516aed9d5a7a330461b27f7d031ec6ad75f99a4108e2",
+      "pixelRows": [
+        {
+          "y": 365,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            23,
+            23,
+            23
+          ]
+        },
+        {
+          "y": 366,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            61,
+            61,
+            61
+          ]
+        },
+        {
+          "y": 367,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            23,
+            23,
+            23
+          ]
+        }
+      ]
+    },
+    {
+      "state": "error-focus-visible",
+      "rect": {
+        "x": 48,
+        "y": 674,
+        "width": 672,
+        "height": 68
+      },
+      "zone": {
+        "x": 32,
+        "y": 674,
+        "width": 704,
+        "height": 94
+      },
+      "outline": "2px",
+      "outlineOffset": "2px",
+      "expected": "rgb(255, 179, 172)",
+      "edge": "rgb(255, 179, 172)",
+      "edgeDisplay": "block",
+      "edgeZ": "auto",
+      "zoneZ": "1",
+      "radius": "0px",
+      "viewport": [
+        1280,
+        800
+      ],
+      "dpr": 1,
+      "scale": 1,
+      "theme": "dark",
+      "capture": "C-edge-before-dark-error-focus-visible.png",
+      "captureSha256": "f82087c38e302ada9b56bf5a4f2074d1f0c6d6c2e02c57a83a5f65dcf55c3da7",
+      "pixelRows": [
+        {
+          "y": 673,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            23,
+            23,
+            23
+          ]
+        },
+        {
+          "y": 674,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            61,
+            61,
+            61
+          ]
+        },
+        {
+          "y": 675,
+          "expectedErrorPixels": 0,
+          "pixelsSampled": 640,
+          "midpointRGB": [
+            23,
+            23,
+            23
+          ]
+        }
+      ]
+    }
+  ],
+  "meaning": "Actual isolated agent-browser Chromium screenshots. PNG row pixels decoded with Python standard library and compared with resolved invalidBorder RGB. Author observation, not independent approval. No production tests."
+}

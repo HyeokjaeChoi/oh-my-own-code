@@ -1,0 +1,5 @@
+# Harness behavior evaluation protocol
+
+Freeze `requests.json` and keep `rubric.json` hidden from each executor. Run all cases with the current harness instructions and the same model/effort on a comparable control prompt without those instructions. Save request hashes, model/effort, route, captured responses, timestamps, and evaluator version. A second independent grader judges anonymized captures against the semantic rubric, records case-level evidence and uncertainty, and compares accuracy, omissions, tokens, and time only where measured. Do not grade your own captures or fabricate missing execution.
+
+Label prior captures historical with their request/instruction hashes. A changed request, rubric, role/skill instruction, or runtime route needs a new current capture; historical files stay as provenance and are never counted as current success. Report sample size and that this rehearsal cannot establish live tool execution, true context isolation, reviewer identity, or production reliability.

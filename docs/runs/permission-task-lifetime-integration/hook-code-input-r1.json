@@ -1,0 +1,80 @@
+{
+  "revision": 16,
+  "scope": "exact10 fixed8 source-only hook roots23 registrations and original private owner/Scope/current metadata/return/disposal; no positive hook execution",
+  "api": "hook-source-api-r1.json",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "bytes": 61279,
+      "sha256": "8757fde3db8f0a66e25aa63854a5a7b250c41c36ff12d18d96048df2951d82b3"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+      "bytes": 12673,
+      "sha256": "adfc46e6e8725fd6e7e26faa82027149ce70201cd3b54786369da6c4b27ef760"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 14373,
+      "sha256": "af7eec00a00be6def3e64e25513cc43663378e48b97ad92042ce9d10738ebead"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "bytes": 30988,
+      "sha256": "4e6274525b29cd98abf46e18bbab7ee8fb4d3cef17f0854246e174ced87cae46"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.test.mjs",
+      "bytes": 17322,
+      "sha256": "26ec787d0c054c0a9b2ec83ce406351050947ff35036999ce5b972305bdb3804"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-builtin-metadata.test.mjs",
+      "bytes": 21161,
+      "sha256": "63422470bfe4f34fee2b91dee891841d20f7e09a5d1565aceb7945520e27cf22"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "bytes": 242313,
+      "sha256": "00732d934f99c7035d4ba2640297c061f4eac599a99a4db2f20cf59b6f5b3abd"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "bytes": 26095,
+      "sha256": "8cce3fd55b9d53df910f466c02cba31531ecb375a695b980eac14c8b858158e7"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-hook-declaration.test.mjs",
+      "bytes": 27410,
+      "sha256": "e135b0e7567a726d3abbb8e3cf074b4d105bb0925c043fd90417b7777b04ba4b"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-hook-publication.test.mjs",
+      "bytes": 13375,
+      "sha256": "aab7d8379b0e1eb75390b41f91777f3a52804cd25aecf74a8fb8dad82703415b"
+    }
+  ],
+  "before": "prechange/hook-source-before-r1/manifest.json",
+  "meaningful_red": [
+    "hook-publication-red-r1.log:missing API7 failures",
+    "hook-graph-red-r1.log:actual0 expected8"
+  ],
+  "green": [
+    "hook-publication-green-r4.log:11PASS actual transformed repair->actual Control->original registry included",
+    "hook-graph-green-r1.log:15PASS",
+    "hook-shared-green-r2.log:65PASS",
+    "hook-control-green-r1.log:91PASS"
+  ],
+  "limits": [
+    "Node/extracted pinned Effect and scripted dependencies only",
+    "original hook callbacks held by existing inventoryGuard",
+    "complete=false unsupported capabilities=[]",
+    "no Native/core/provider/browser/Main/server/Bun/network/build/GUI/physical invocation"
+  ],
+  "fixture_corrections": [
+    "previous input.repair is now a known unconfigured hook source and must refuse; unknown ID cannot enter builtin plan",
+    "unowned hook never installs so empty trigger is inert; source-owned lifetime covered in new test",
+    "generic Plugin.load smoke uses original non-hook warming identity rather than newly closed repair identity"
+  ],
+  "recipe_sha256": "a784f792e5b1983a65660b4aceb4b276dcbe8c08b0f77833addb3b340c7af667"
+}

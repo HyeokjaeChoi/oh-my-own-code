@@ -1,0 +1,9 @@
+{
+  "actualEvidence": "evidence/native-r9/agent-evidence.json",
+  "actualPassedCases": 11,
+  "actualBlockedPhase": "clean-production-reopen",
+  "cause": "Two explicit SDK-created unmapped synthetic reference sessions remained after proving Agent removal preserves sessions. Production preflight correctly requires exact Native/app mapping and denied startup.",
+  "productChanges": false,
+  "correction": "Keep all Agent-removal preservation assertions. Separately remove ONLY those two exact created synthetic sessions with baseline/location/idle/inbox proof, never mapped app sessions; verify remaining full global session set equals app mapping before clean restart. No Native DB queries/mutations or preflight relaxation.",
+  "nodeChecks": "5/5 PASS including mapped/outside deletion refusal and exact two removal"
+}

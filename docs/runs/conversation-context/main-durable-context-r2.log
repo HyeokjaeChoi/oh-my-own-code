@@ -1,0 +1,29 @@
+✔ context durable checked bytes remain original after external edit and journal retains no bytes (75.503708ms)
+✖ context durable cancel confirms request ACK with exact original target and both flushed policies (31.100833ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 175.275084
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:4836:1
+✖ context durable cancel confirms request ACK with exact original target and both flushed policies (31.100833ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"POLICY_UNVERIFIED","message":"The required permission policy could not be verified.","receipt":{"runtimeEpoch":"epoch","operationId":"cancel-context","type":"session.inbox.cancel","workspaceId":"fa879a1c-8b7b-443e-8fb9-0fa7c9734822","sessionId":"5eec4f6a-8875-46a8-a872-1369c2ff76c5","admission":"rejected","delivery":"pending","effect":"none","revision":10,"evidence":[],"result":{"kind":"rejected","code":"POLICY_UNVERIFIED"}}}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:4841:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,873 @@
+{
+  "schema_version": 1,
+  "figma_file_key": "e6QYqEsmA3FHB6A2ohNr2o",
+  "components_sha256": "c2eccfc549399c957734da0afd87ff29fb69cf12c61177fc9899718347026184",
+  "families": {
+    "Input": {
+      "component_set_id": "7:7",
+      "variant_count": 5,
+      "variants": [
+        {
+          "id": "7:2",
+          "state": "default",
+          "width": 280,
+          "height": 70,
+          "control_height": 40,
+          "feedback_count": 0
+        },
+        {
+          "id": "7:3",
+          "state": "hover",
+          "width": 280,
+          "height": 70,
+          "control_height": 40,
+          "feedback_count": 0
+        },
+        {
+          "id": "7:4",
+          "state": "focus",
+          "width": 280,
+          "height": 70,
+          "control_height": 40,
+          "focus_ring_id": "7:15",
+          "focus_ring_bounds": [
+            -2,
+            28,
+            284,
+            44
+          ]
+        },
+        {
+          "id": "7:5",
+          "state": "disabled",
+          "width": 280,
+          "height": 70,
+          "control_height": 40,
+          "feedback_count": 0
+        },
+        {
+          "id": "7:6",
+          "state": "error",
+          "width": 280,
+          "height": 98,
+          "control_height": 40,
+          "feedback_count": 1,
+          "error_text": "경로를 확인하세요"
+        }
+      ],
+      "light_capture_node": "7:7"
+    },
+    "StatusBadge": {
+      "component_set_id": "7:82",
+      "variant_count": 6,
+      "variants": [
+        {
+          "id": "7:76",
+          "state": "queued",
+          "width": 64,
+          "height": 24,
+          "label_width": 48,
+          "padding_x": 8,
+          "label": "대기 중"
+        },
+        {
+          "id": "7:77",
+          "state": "running",
+          "width": 64,
+          "height": 24,
+          "label_width": 48,
+          "padding_x": 8,
+          "label": "실행 중"
+        },
+        {
+          "id": "7:78",
+          "state": "waiting",
+          "width": 79,
+          "height": 24,
+          "label_width": 63,
+          "padding_x": 8,
+          "label": "응답 대기"
+        },
+        {
+          "id": "7:79",
+          "state": "success",
+          "width": 79,
+          "height": 24,
+          "label_width": 63,
+          "padding_x": 8,
+          "label": "확인 완료"
+        },
+        {
+          "id": "7:80",
+          "state": "error",
+          "width": 46,
+          "height": 24,
+          "label_width": 30,
+          "padding_x": 8,
+          "label": "실패"
+        },
+        {
+          "id": "7:81",
+          "state": "unknown",
+          "width": 97,
+          "height": 24,
+          "label_width": 81,
+          "padding_x": 8,
+          "label": "상태 확인 중"
+        }
+      ],
+      "light_capture_node": "7:82",
+      "dark_examples_node": "7:92"
+    },
+    "NavigationItem": {
+      "component_set_id": "7:110",
+      "variant_count": 4,
+      "variants": [
+        {
+          "id": "7:106",
+          "state": "default",
+          "width": 220,
+          "height": 40,
+          "alignment": "MIN",
+          "padding_left": 12,
+          "label_x": 12,
+          "weight": 500
+        },
+        {
+          "id": "7:107",
+          "state": "hover",
+          "width": 220,
+          "height": 40,
+          "alignment": "MIN",
+          "padding_left": 12,
+          "label_x": 12,
+          "weight": 500
+        },
+        {
+          "id": "7:108",
+          "state": "selected",
+          "width": 220,
+          "height": 40,
+          "alignment": "MIN",
+          "padding_left": 12,
+          "label_x": 12,
+          "weight": 700
+        },
+        {
+          "id": "7:109",
+          "state": "focus",
+          "width": 220,
+          "height": 40,
+          "alignment": "MIN",
+          "padding_left": 0,
+          "label_x": 12,
+          "weight": 500,
+          "base_row_id": "7:114",
+          "ring_id": "46:7"
+        }
+      ],
+      "dark_parent": "#262626",
+      "dark_surfaces": {
+        "parent": "#262626",
+        "default": "#262626",
+        "hover": "#171717",
+        "selected": "#3d3d3d"
+      },
+      "dark_state_instances": [
+        {
+          "id": "7:121",
+          "state": "default",
+          "fill": "#262626",
+          "weight": 500
+        },
+        {
+          "id": "7:123",
+          "state": "hover",
+          "fill": "#171717",
+          "weight": 500
+        },
+        {
+          "id": "7:125",
+          "state": "selected",
+          "fill": "#3d3d3d",
+          "weight": 700
+        }
+      ],
+      "selected_focus_examples": [
+        "48:9",
+        "48:14"
+      ],
+      "light_capture_node": "7:116",
+      "dark_capture_node": "7:119"
+    },
+    "ToolCall": {
+      "component_set_id": "7:136",
+      "variant_count": 6,
+      "variants": [
+        {
+          "id": "7:130",
+          "state": "queued",
+          "stroke_count": 0,
+          "badge_component_set": "7:82",
+          "badge_component_variant": "7:76",
+          "badge_label": "대기 중",
+          "master_geometry": {
+            "id": "7:130",
+            "width": 400,
+            "height": 338,
+            "vertical_sizing": "AUTO",
+            "bottom_padding": 16,
+            "content_bottom": 322,
+            "bottom_gap": 16,
+            "last_child_id": "50:41"
+          },
+          "dark_geometry": {
+            "id": "I7:178;7:130",
+            "x": 32,
+            "y": 72,
+            "width": 400,
+            "height": 338,
+            "vertical_sizing": "AUTO",
+            "bottom_padding": 16,
+            "content_bottom": 322,
+            "bottom_gap": 16,
+            "last_child_id": "I7:178;50:41"
+          },
+          "target_text_id": "7:140",
+          "input_text_id": "7:141",
+          "dark_target_text_id": "I7:178;7:140",
+          "dark_input_text_id": "I7:178;7:141",
+          "target_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "input_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "dark_target_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "dark_input_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "target_geometry": {
+            "id": "7:140",
+            "y": 114,
+            "width": 368,
+            "height": 72,
+            "bottom": 186
+          },
+          "input_geometry": {
+            "id": "7:141",
+            "y": 198,
+            "width": 368,
+            "height": 60,
+            "bottom": 258
+          },
+          "dark_target_geometry": {
+            "id": "I7:178;7:140",
+            "y": 114,
+            "width": 368,
+            "height": 72,
+            "bottom": 186
+          },
+          "dark_input_geometry": {
+            "id": "I7:178;7:141",
+            "y": 198,
+            "width": 368,
+            "height": 60,
+            "bottom": 258
+          }
+        },
+        {
+          "id": "7:131",
+          "state": "running",
+          "stroke_count": 0,
+          "badge_component_set": "7:82",
+          "badge_component_variant": "7:77",
+          "badge_label": "실행 중",
+          "master_geometry": {
+            "id": "7:131",
+            "width": 400,
+            "height": 310,
+            "vertical_sizing": "AUTO",
+            "bottom_padding": 16,
+            "content_bottom": 294,
+            "bottom_gap": 16,
+            "last_child_id": "7:148"
+          },
+          "dark_geometry": {
+            "id": "I7:185;7:131",
+            "x": 32,
+            "y": 422,
+            "width": 400,
+            "height": 310,
+            "vertical_sizing": "AUTO",
+            "bottom_padding": 16,
+            "content_bottom": 294,
+            "bottom_gap": 16,
+            "last_child_id": "I7:185;7:148"
+          },
+          "target_text_id": "7:146",
+          "input_text_id": "7:147",
+          "dark_target_text_id": "I7:185;7:146",
+          "dark_input_text_id": "I7:185;7:147",
+          "target_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "input_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "dark_target_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "dark_input_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "target_geometry": {
+            "id": "7:146",
+            "y": 114,
+            "width": 368,
+            "height": 72,
+            "bottom": 186
+          },
+          "input_geometry": {
+            "id": "7:147",
+            "y": 198,
+            "width": 368,
+            "height": 60,
+            "bottom": 258
+          },
+          "dark_target_geometry": {
+            "id": "I7:185;7:146",
+            "y": 114,
+            "width": 368,
+            "height": 72,
+            "bottom": 186
+          },
+          "dark_input_geometry": {
+            "id": "I7:185;7:147",
+            "y": 198,
+            "width": 368,
+            "height": 60,
+            "bottom": 258
+          }
+        },
+        {
+          "id": "7:132",
+          "state": "waiting",
+          "stroke_count": 0,
+          "badge_component_set": "7:82",
+          "badge_component_variant": "7:78",
+          "badge_label": "응답 대기",
+          "master_geometry": {
+            "id": "7:132",
+            "width": 400,
+            "height": 310,
+            "vertical_sizing": "AUTO",
+            "bottom_padding": 16,
+            "content_bottom": 294,
+            "bottom_gap": 16,
+            "last_child_id": "7:154"
+          },
+          "dark_geometry": {
+            "id": "I7:192;7:132",
+            "x": 32,
+            "y": 744,
+            "width": 400,
+            "height": 310,
+            "vertical_sizing": "AUTO",
+            "bottom_padding": 16,
+            "content_bottom": 294,
+            "bottom_gap": 16,
+            "last_child_id": "I7:192;7:154"
+          },
+          "target_text_id": "7:152",
+          "input_text_id": "7:153",
+          "dark_target_text_id": "I7:192;7:152",
+          "dark_input_text_id": "I7:192;7:153",
+          "target_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "input_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "dark_target_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "dark_input_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "target_geometry": {
+            "id": "7:152",
+            "y": 114,
+            "width": 368,
+            "height": 72,
+            "bottom": 186
+          },
+          "input_geometry": {
+            "id": "7:153",
+            "y": 198,
+            "width": 368,
+            "height": 60,
+            "bottom": 258
+          },
+          "dark_target_geometry": {
+            "id": "I7:192;7:152",
+            "y": 114,
+            "width": 368,
+            "height": 72,
+            "bottom": 186
+          },
+          "dark_input_geometry": {
+            "id": "I7:192;7:153",
+            "y": 198,
+            "width": 368,
+            "height": 60,
+            "bottom": 258
+          }
+        },
+        {
+          "id": "7:133",
+          "state": "success",
+          "stroke_count": 0,
+          "badge_component_set": "7:82",
+          "badge_component_variant": "7:79",
+          "badge_label": "확인 완료",
+          "master_geometry": {
+            "id": "7:133",
+            "width": 400,
+            "height": 338,
+            "vertical_sizing": "AUTO",
+            "bottom_padding": 16,
+            "content_bottom": 322,
+            "bottom_gap": 16,
+            "last_child_id": "50:51"
+          },
+          "dark_geometry": {
+            "id": "I7:199;7:133",
+            "x": 32,
+            "y": 1066,
+            "width": 400,
+            "height": 338,
+            "vertical_sizing": "AUTO",
+            "bottom_padding": 16,
+            "content_bottom": 322,
+            "bottom_gap": 16,
+            "last_child_id": "I7:199;50:51"
+          },
+          "target_text_id": "7:158",
+          "input_text_id": "7:159",
+          "dark_target_text_id": "I7:199;7:158",
+          "dark_input_text_id": "I7:199;7:159",
+          "target_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "input_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "dark_target_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "dark_input_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "target_geometry": {
+            "id": "7:158",
+            "y": 114,
+            "width": 368,
+            "height": 72,
+            "bottom": 186
+          },
+          "input_geometry": {
+            "id": "7:159",
+            "y": 198,
+            "width": 368,
+            "height": 60,
+            "bottom": 258
+          },
+          "dark_target_geometry": {
+            "id": "I7:199;7:158",
+            "y": 114,
+            "width": 368,
+            "height": 72,
+            "bottom": 186
+          },
+          "dark_input_geometry": {
+            "id": "I7:199;7:159",
+            "y": 198,
+            "width": 368,
+            "height": 60,
+            "bottom": 258
+          }
+        },
+        {
+          "id": "7:134",
+          "state": "error",
+          "stroke_count": 0,
+          "badge_component_set": "7:82",
+          "badge_component_variant": "7:80",
+          "badge_label": "실패",
+          "master_geometry": {
+            "id": "7:134",
+            "width": 400,
+            "height": 310,
+            "vertical_sizing": "AUTO",
+            "bottom_padding": 16,
+            "content_bottom": 294,
+            "bottom_gap": 16,
+            "last_child_id": "7:166"
+          },
+          "dark_geometry": {
+            "id": "I7:206;7:134",
+            "x": 32,
+            "y": 1416,
+            "width": 400,
+            "height": 310,
+            "vertical_sizing": "AUTO",
+            "bottom_padding": 16,
+            "content_bottom": 294,
+            "bottom_gap": 16,
+            "last_child_id": "I7:206;7:166"
+          },
+          "target_text_id": "7:164",
+          "input_text_id": "7:165",
+          "dark_target_text_id": "I7:206;7:164",
+          "dark_input_text_id": "I7:206;7:165",
+          "target_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "input_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "dark_target_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "dark_input_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "target_geometry": {
+            "id": "7:164",
+            "y": 114,
+            "width": 368,
+            "height": 72,
+            "bottom": 186
+          },
+          "input_geometry": {
+            "id": "7:165",
+            "y": 198,
+            "width": 368,
+            "height": 60,
+            "bottom": 258
+          },
+          "dark_target_geometry": {
+            "id": "I7:206;7:164",
+            "y": 114,
+            "width": 368,
+            "height": 72,
+            "bottom": 186
+          },
+          "dark_input_geometry": {
+            "id": "I7:206;7:165",
+            "y": 198,
+            "width": 368,
+            "height": 60,
+            "bottom": 258
+          }
+        },
+        {
+          "id": "7:135",
+          "state": "unknown",
+          "stroke_count": 0,
+          "badge_component_set": "7:82",
+          "badge_component_variant": "7:81",
+          "badge_label": "상태 확인 중",
+          "master_geometry": {
+            "id": "7:135",
+            "width": 400,
+            "height": 310,
+            "vertical_sizing": "AUTO",
+            "bottom_padding": 16,
+            "content_bottom": 294,
+            "bottom_gap": 16,
+            "last_child_id": "7:172"
+          },
+          "dark_geometry": {
+            "id": "I7:213;7:135",
+            "x": 32,
+            "y": 1738,
+            "width": 400,
+            "height": 310,
+            "vertical_sizing": "AUTO",
+            "bottom_padding": 16,
+            "content_bottom": 294,
+            "bottom_gap": 16,
+            "last_child_id": "I7:213;7:172"
+          },
+          "target_text_id": "7:170",
+          "input_text_id": "7:171",
+          "dark_target_text_id": "I7:213;7:170",
+          "dark_input_text_id": "I7:213;7:171",
+          "target_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "input_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "dark_target_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "dark_input_path": "packages/desktop/src/features/permissions/PermissionRequest.ts",
+          "target_geometry": {
+            "id": "7:170",
+            "y": 114,
+            "width": 368,
+            "height": 72,
+            "bottom": 186
+          },
+          "input_geometry": {
+            "id": "7:171",
+            "y": 198,
+            "width": 368,
+            "height": 60,
+            "bottom": 258
+          },
+          "dark_target_geometry": {
+            "id": "I7:213;7:170",
+            "y": 114,
+            "width": 368,
+            "height": 72,
+            "bottom": 186
+          },
+          "dark_input_geometry": {
+            "id": "I7:213;7:171",
+            "y": 198,
+            "width": 368,
+            "height": 60,
+            "bottom": 258
+          }
+        }
+      ],
+      "light_capture_node": "7:136",
+      "dark_capture_node": "7:176",
+      "success_result_action": "근거 보기 ↗",
+      "success_action_decoration": "UNDERLINE",
+      "queued_non_actionable_note": "유효한 결과 대상이 없어 이동 링크를 표시하지 않습니다.",
+      "dark_stack": {
+        "frame_id": "7:176",
+        "width": 460,
+        "height": 2080,
+        "item_spacing": 12,
+        "padding_bottom": 32,
+        "instances": [
+          {
+            "id": "I7:178;7:130",
+            "state": "queued",
+            "y": 72,
+            "height": 338
+          },
+          {
+            "id": "I7:185;7:131",
+            "state": "running",
+            "y": 422,
+            "height": 310
+          },
+          {
+            "id": "I7:192;7:132",
+            "state": "waiting",
+            "y": 744,
+            "height": 310
+          },
+          {
+            "id": "I7:199;7:133",
+            "state": "success",
+            "y": 1066,
+            "height": 338
+          },
+          {
+            "id": "I7:206;7:134",
+            "state": "error",
+            "y": 1416,
+            "height": 310
+          },
+          {
+            "id": "I7:213;7:135",
+            "state": "unknown",
+            "y": 1738,
+            "height": 310
+          }
+        ]
+      },
+      "light_set_geometry": {
+        "id": "7:136",
+        "width": 928,
+        "height": 1076,
+        "row_gap": 14,
+        "row_y": [
+          48,
+          400,
+          752
+        ]
+      },
+      "captures": [
+        {
+          "node_id": "7:136",
+          "mode": "light",
+          "original_size": [
+            928,
+            1076
+          ]
+        },
+        {
+          "node_id": "7:176",
+          "mode": "dark",
+          "original_size": [
+            460,
+            2080
+          ]
+        },
+        {
+          "node_id": "7:130",
+          "mode": "light",
+          "state": "queued",
+          "original_size": [
+            400,
+            338
+          ]
+        },
+        {
+          "node_id": "7:133",
+          "mode": "light",
+          "state": "success",
+          "original_size": [
+            400,
+            338
+          ]
+        }
+      ]
+    },
+    "PermissionRequest": {
+      "component_set_id": "8:7",
+      "variant_count": 5,
+      "variants": [
+        {
+          "id": "8:2",
+          "state": "pending",
+          "outer_stroke_count": 0,
+          "scope_stroke_count": 1,
+          "badge_label": "승인 대기",
+          "badge_state": "waiting",
+          "actions": [
+            {
+              "target_height": 44,
+              "button_height": 40,
+              "main_component": "6:2",
+              "label": "허용",
+              "intent": "primary",
+              "state": "default",
+              "enabled": true
+            },
+            {
+              "target_height": 44,
+              "button_height": 40,
+              "main_component": "6:8",
+              "label": "거절",
+              "intent": "quiet",
+              "state": "default",
+              "enabled": true
+            }
+          ],
+          "action_group_gap": 8
+        },
+        {
+          "id": "8:3",
+          "state": "sending",
+          "outer_stroke_count": 0,
+          "scope_stroke_count": 1,
+          "badge_label": "결정 전송 중",
+          "badge_state": "running",
+          "actions": [
+            {
+              "target_height": 44,
+              "button_height": 40,
+              "main_component": "6:6",
+              "label": "허용",
+              "intent": "primary",
+              "state": "disabled",
+              "enabled": false
+            },
+            {
+              "target_height": 44,
+              "button_height": 40,
+              "main_component": "6:12",
+              "label": "거절",
+              "intent": "quiet",
+              "state": "disabled",
+              "enabled": false
+            }
+          ],
+          "action_group_gap": 8
+        },
+        {
+          "id": "8:4",
+          "state": "approved",
+          "outer_stroke_count": 0,
+          "scope_stroke_count": 1,
+          "badge_label": "승인 전달됨",
+          "badge_state": "unknown",
+          "badge_tone": "info",
+          "actions": []
+        },
+        {
+          "id": "8:5",
+          "state": "denied",
+          "outer_stroke_count": 0,
+          "scope_stroke_count": 1,
+          "badge_label": "거절됨",
+          "badge_state": "error",
+          "actions": []
+        },
+        {
+          "id": "8:6",
+          "state": "stale",
+          "outer_stroke_count": 0,
+          "scope_stroke_count": 1,
+          "badge_label": "요청 만료",
+          "badge_state": "unknown",
+          "actions": [
+            {
+              "target_height": 44,
+              "button_height": 40,
+              "main_component": "6:8",
+              "label": "최신 상태 확인",
+              "intent": "quiet",
+              "state": "default",
+              "enabled": true
+            }
+          ],
+          "action_group_gap": 8
+        }
+      ],
+      "action_targets": [
+        {
+          "target_height": 44,
+          "button_height": 40,
+          "main_component": "6:2",
+          "label": "허용",
+          "intent": "primary",
+          "state": "default",
+          "enabled": true
+        },
+        {
+          "target_height": 44,
+          "button_height": 40,
+          "main_component": "6:8",
+          "label": "거절",
+          "intent": "quiet",
+          "state": "default",
+          "enabled": true
+        },
+        {
+          "target_height": 44,
+          "button_height": 40,
+          "main_component": "6:6",
+          "label": "허용",
+          "intent": "primary",
+          "state": "disabled",
+          "enabled": false
+        },
+        {
+          "target_height": 44,
+          "button_height": 40,
+          "main_component": "6:12",
+          "label": "거절",
+          "intent": "quiet",
+          "state": "disabled",
+          "enabled": false
+        },
+        {
+          "target_height": 44,
+          "button_height": 40,
+          "main_component": "6:8",
+          "label": "최신 상태 확인",
+          "intent": "quiet",
+          "state": "default",
+          "enabled": true
+        }
+      ],
+      "responsive_examples": {
+        "narrow_width": 280,
+        "narrow_action_layout": "VERTICAL",
+        "wide_width": 720,
+        "wide_action_layout": "HORIZONTAL"
+      },
+      "light_capture_node": "8:7",
+      "dark_capture_node": "8:42",
+      "responsive_capture_node": "56:60"
+    }
+  },
+  "button": {
+    "component_set_id": "6:20",
+    "variant_count": 18,
+    "source_page_mutated": false,
+    "baseline_path": "docs/runs/component-polish/button-baseline.json"
+  },
+  "limits": [
+    "Figma layout inspection is not runtime hit testing, keyboard proof, screen-reader proof, browser behavior, zoom, or production runtime evidence.",
+    "Result-navigation action is an illustrative valid-runtime-target branch; no destination URL is attached."
+  ],
+  "manifest_sha256": "84a1ecac6ef5e6dd51f9d7a1a9a959751a3a05731fe8cb3ff4ca3379957e0498"
+}

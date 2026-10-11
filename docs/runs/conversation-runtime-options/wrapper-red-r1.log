@@ -1,0 +1,31 @@
+✖ runtime options evidence has a fixed selector and registered contained output (0.630833ms)
+✖ runtime options evidence wrapper requires actual native frame metadata and owned exit (103.64975ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 161.926791
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/run-evidence.test.mjs:906:1
+✖ runtime options evidence has a fixed selector and registered contained output (0.630833ms)
+  Error: Required --out and enumerated --script
+      at parseArgs (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.mjs:188:11)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.test.mjs:907:20)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/desktop-app/scripts/run-evidence.test.mjs:911:1
+✖ runtime options evidence wrapper requires actual native frame metadata and owned exit (103.64975ms)
+  Error: Required --out and enumerated --script
+      at parseArgs (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.mjs:188:11)
+      at runEvidence (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.mjs:433:20)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.test.mjs:918:26)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

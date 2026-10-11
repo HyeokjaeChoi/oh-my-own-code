@@ -1,0 +1,193 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "050e5a1a145f42f8ec261421314f3e28c0e2e7139fd1504c051ab139f274d0e5",
+    "environment_sha256": "b7971a3c584cced85258a0b3d03629b05baab44ac7a31fb08c375bad950f911a",
+    "gate": "design",
+    "plan_sha256": "509d6e14ff41266d33652c102c75c55eb448c057528a5d3d9843f8aec94416cd",
+    "schema_version": 2,
+    "source_sha256": "427b06f7f8c298c4c8ef156fd8b4ceaafc710e3d451ea29f5b330210f5721b16",
+    "verification_sha256": "697d94b30dd5207dcf43eb01b7251232cc00656829bb003b904df26cd284327e",
+    "work_class_sha256": "ae478e9c4d1bef657cf7951c15a327d5fa9d7d4379653257922675630e5d2ade"
+  },
+  "verdict": "pass",
+  "summary": "plan14/source55의 제한된 Commit RENDER 검토를 통과했습니다. hidden-r3와 hidden-r6의 실제 PNG 63개를 직접 확인했습니다. 확인한 화면에서 사용자에게 영향을 주는 구체적인 결함은 찾지 못했습니다. hidden-r3 전체 결과는 여전히 fail입니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11d67-a68f-7dc1-a5cf-7266f7e38299",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "identity_source": "현재 프로세스의 CODEX_THREAD_ID를 직접 읽었습니다.",
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "assignment": "/Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/git-commit-final-render-assignment-r2.md",
+    "mode": "independent_report_only",
+    "edits": false,
+    "delegation": false,
+    "build_or_runtime_launches": false
+  },
+  "inspected_scope": [
+    "실제 final-render-input-r1.json의 최상위 8개 필드 전체와 final-render-packet-r1.json을 읽었습니다.",
+    "solo_reader 설정, solo-specialist, solo-design-review와 evidence-review 지침을 읽었습니다.",
+    "plan.md, design.md, contract.json, source-freeze-r1.json, actual-checks-r1.json, verification-summary-r1.json, outcome-r1.json을 읽었습니다.",
+    "hidden-current-verification-r1.json, hidden-r3와 hidden-r6의 실제 report, coverage, provenance, teardown을 확인했습니다.",
+    "e2e-git-commit.mjs, check-hidden-current.mjs, verify-publication-ui-only.mjs, 관련 Renderer 코드와 CSS, Native Commit 확인 창 소스를 확인했습니다.",
+    "light/dark, desktop, 760px·200% 화면의 입력, preview, staged 경로, canonical message, OID, digest, ref, reflog, backup, 완료·거부·unknown·pending·historical 상태를 검토했습니다.",
+    "tail의 newer-draft, workspace, root, epoch 경계에서 receipt-before-finally와 late ACK 화면을 모두 직접 확인했습니다."
+  ],
+  "checks": [
+    {
+      "kind": "current_file_verification",
+      "result": "pass",
+      "detail": "source-freeze의 sources 55개와 현재 파일의 SHA-256이 모두 일치했습니다."
+    },
+    {
+      "kind": "saved_execution_evidence",
+      "result": "pass",
+      "detail": "현재 source/environment에 연결된 저장된 check 11개는 모두 exit 0입니다. 이번 검토에서 테스트를 다시 실행하지 않았습니다."
+    },
+    {
+      "kind": "prefix_evidence_verification",
+      "result": "pass",
+      "detail": "hidden-r3 전체는 fail입니다. 완료된 43개 상태에 속한 PNG 3503개의 실제 바이트, SHA-256, 크기, coverage와 선택 assertion, 상태 전후 counter를 읽기 전용으로 확인했습니다. 미완료 상태의 캡처를 완료 증거에 포함하지 않았습니다."
+    },
+    {
+      "kind": "tail_evidence_verification",
+      "result": "pass",
+      "detail": "hidden-r6는 실제 실행된 상태 8개와 PNG 736개를 가진 pass report입니다. 해당 PNG의 실제 바이트, SHA-256, 크기와 coverage를 확인했습니다. source/build 전후 값은 같고 owned exit는 0입니다."
+    },
+    {
+      "kind": "composite_evidence",
+      "result": "pass",
+      "detail": "43개 prefix 상태와 8개 tail 상태는 receipt-before-finally-newer-draft 1개가 겹칩니다. 고유 state/theme/size key는 50개입니다. 최종 check가 새로 실행한 UI 상태는 0개입니다."
+    },
+    {
+      "kind": "direct_visual_judgment",
+      "result": "pass",
+      "detail": "실제 PNG 63개를 직접 보았습니다. 확인한 대상 문구는 읽을 수 있었습니다. 긴 경로, SHA-256 OID와 digest는 좁은 화면에서 줄바꿈됩니다. canonical message의 <script>는 텍스트로 표시됩니다. unborn, detached HEAD, packed ref, 기존 파일 없음과 backup 없음의 구분을 확인했습니다."
+    },
+    {
+      "kind": "direct_visual_judgment",
+      "result": "pass",
+      "detail": "staged 전체 적용 안내, 서명·hooks·네트워크 사용 제한, 성공 뒤 preview 무효화와 직접 새로고침 안내를 확인했습니다. historical·untrusted·held·unknown 화면은 적용 제한과 원래 작업 정보를 표시합니다."
+    },
+    {
+      "kind": "direct_visual_judgment",
+      "result": "pass",
+      "detail": "tail에서 원래 호출이 끝나기 전의 IO 보류 문구와 완료 뒤 그 문구가 사라진 화면을 확인했습니다. newer-draft의 새 메시지는 유지됩니다. workspace/root/epoch의 이전 결과는 원래 작업 공간 정보를 표시합니다."
+    },
+    {
+      "kind": "saved_automated_assertions",
+      "result": "pass",
+      "detail": "초기 이름·이메일·메시지가 비어 있고 초기 read/apply counter가 0임을 확인하는 assertion을 읽었습니다. 편집만으로 read/stage/commit이 발생하지 않는 assertion도 확인했습니다. 초기 빈 입력 자체의 직접 PNG 판단은 하지 않았습니다."
+    },
+    {
+      "kind": "saved_automated_assertions",
+      "result": "pass",
+      "detail": "전체 대상의 viewport 포함, 가로 overflow 부재, 전체 텍스트 선택, Enter/Tab/Shift+Tab/focus, ModalSheet의 Escape 닫기와 trigger 복귀·Enter 재열기 assertion을 확인했습니다. Escape를 Commit 취소로 해석하지 않았습니다."
+    },
+    {
+      "kind": "saved_automated_assertions",
+      "result": "pass",
+      "detail": "pending 취소 뒤 늦은 read 응답 무시, unknown의 원래 epoch/operation key 조회와 재전송 없음, 완료 뒤 명시적 reread를 확인했습니다. late ACK 뒤 read-ready assertion은 newer-draft에만 적용됩니다. workspace/root/epoch의 실제 read-ready 값 false를 유지합니다."
+    },
+    {
+      "kind": "source_inspection_only",
+      "result": "pass",
+      "location": "apps/desktop-app/src/main.mjs:592",
+      "detail": "Native Commit 확인 창은 buttons[0]이 취소이고 defaultId와 cancelId가 모두 0입니다. response 1만 승인합니다. 실제 Native 창의 픽셀은 확인하지 않았습니다."
+    }
+  ],
+  "capture_geometry": {
+    "dimension_source": "실제 PNG IHDR 바이트를 읽었습니다.",
+    "desktop": {
+      "png_width_px": 2880,
+      "png_height_px": 1936,
+      "viewport_width_css_px": 1440,
+      "viewport_height_css_px": 968,
+      "pixel_ratio": 2,
+      "zoom_factor": 1
+    },
+    "760px200": {
+      "png_width_px": 1520,
+      "png_height_px": 1936,
+      "viewport_width_css_px": 380,
+      "viewport_height_css_px": 484,
+      "pixel_ratio": 4,
+      "content_width_dip": 760,
+      "zoom_factor": 2
+    }
+  },
+  "directly_inspected_captures": [
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-28-ready-preview-commit-light-desktop.png","width":2880,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-35-ready-preview-commit-light-desktop.png","width":2880,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-65-ready-preview-commit-light-desktop.png","width":2880,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-82-ready-preview-commit-light-desktop.png","width":2880,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-87-ready-preview-dark-context-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-119-ready-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-124-ready-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-137-ready-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-143-ready-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-147-ready-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-149-ready-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-151-ready-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-153-ready-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-155-ready-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-161-ready-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-164-ready-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-206-ready-committed-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-250-ready-committed-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-256-ready-committed-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-645-unborn-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-651-unborn-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-768-unborn-committed-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-901-detached-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-1171-packed-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-1689-absent-logs-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-2048-new-logs-committed-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-2208-full-staged-deletion-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-2347-unavailable-no_changes-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-2390-unavailable-unsupported_commit_state-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-2478-apply-denied-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-2567-apply-unknown-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-2655-apply-expired_preview-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-2743-apply-stale_preview-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-2831-apply-lock_conflict-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-2919-apply-unsupported_commit_state-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-2961-pending-preview-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-2962-pending-preview-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-3004-historical-held-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-3087-historical-global-held-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-3170-historical-untrusted-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-3252-historical-epoch-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-3335-historical-root-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-3403-retained-original-key-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-3410-retained-original-key-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r6/git-commit/git-commit-42-receipt-before-finally-newer-draft-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r6/git-commit/git-commit-88-receipt-before-finally-newer-draft-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r6/git-commit/git-commit-129-late-ack-newer-draft-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r6/git-commit/git-commit-135-late-ack-newer-draft-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r6/git-commit/git-commit-180-late-ack-newer-draft-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r6/git-commit/git-commit-272-receipt-before-finally-workspace-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r6/git-commit/git-commit-364-late-ack-workspace-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r6/git-commit/git-commit-456-receipt-before-finally-root-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r6/git-commit/git-commit-548-late-ack-root-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r6/git-commit/git-commit-640-receipt-before-finally-epoch-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r6/git-commit/git-commit-732-late-ack-epoch-commit-light-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-1157-packed-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-1161-packed-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-1163-packed-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-393-sha256-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-395-sha256-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-399-sha256-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-403-sha256-preview-dark-commit-dark-760px200.png","width":1520,"height":1936},
+    {"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/hidden-r3/git-commit/git-commit-1433-disabled-existing-logs-preview-dark-commit-dark-760px200.png","width":1520,"height":1936}
+  ],
+  "limits": [
+    "직접 시각 검토한 캡처는 63개입니다. 검증된 PNG 4239개 전체를 직접 보았다는 뜻은 아닙니다.",
+    "hidden-r3의 전체 fail을 pass로 바꾸지 않았습니다. 합성한 50개 상태가 모두 새로 실행되었다고 판단하지 않았습니다.",
+    "hidden 실행은 실제 built Renderer/preload와 synthetic Main을 사용합니다. 실제 production Main의 Native 확인 창, 실제 publication, EventHost OS channel과 OS lifetime은 이 화면 증거로 입증되지 않습니다.",
+    "publication-r2 33개, Reader 51개, native Git kernel 82개와 index 52개의 재사용 근거 및 새 Index 14개 실행은 저장된 증거로 검토했습니다. 이번 검토에서 해당 실행을 반복하지 않았습니다.",
+    "초기 빈 입력, 전체 텍스트 선택, keyboard 동작과 자동 IO 부재는 저장된 assertion과 소스로 구분했습니다. 정적 PNG만으로 동작을 입증하지 않았습니다.",
+    "별도의 실제 파일 시스템 readonly 세션, assistive technology, 수치로 측정한 WCAG contrast, 다른 OS의 Native dialog는 직접 검증하지 않았습니다.",
+    "이번 pass는 제한된 explicit Commit RENDER 범위에만 적용됩니다. branch create/select, restore와 전체 제품 감사는 후속 필수 작업으로 남아 있습니다."
+  ]
+}

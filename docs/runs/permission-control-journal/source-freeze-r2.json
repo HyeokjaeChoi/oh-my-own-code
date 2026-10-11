@@ -1,0 +1,71 @@
+{
+  "scope": "Frozen storage metadata only; no Native effect or settlement proof",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/host/workbench-permission-storage.mjs",
+      "bytes": 29915,
+      "sha256": "8bd7feb47858efad21927d653ec04f2a6c02c0377c9e75c6e9bd0f7c59bb66d9"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workbench-permission-storage.test.mjs",
+      "bytes": 20070,
+      "sha256": "d97bc90bb9296fa832f77a3e664bff2c5a528ca9423a98f3e407b1d35b5d7c68"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workspace-registry.mjs",
+      "bytes": 85035,
+      "sha256": "283731dc87326394d4bd9d3ae0dce291fe673b415d204982bd829516fbbca60a"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workspace-registry.test.mjs",
+      "bytes": 375384,
+      "sha256": "84f315c5245fa1d3b19c7400348639b559c2f6cc9ea5bf58b4c9c94f976fbcfe"
+    },
+    {
+      "path": "apps/desktop-app/src/host/storage-journal.mjs",
+      "bytes": 65604,
+      "sha256": "c666bd052c38c21939cc0a0cc319b72ae190442c04944734cdca019bf8e5dacf"
+    },
+    {
+      "path": "apps/desktop-app/src/host/storage-journal.test.mjs",
+      "bytes": 119084,
+      "sha256": "c1cd0180515b84d5e05f42e238d6e4bc10bfa93f69903bc3d341d67d592227c1"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workbench-receipts.mjs",
+      "bytes": 10178,
+      "sha256": "1451e474de29a2c794d8b253ffa37a57da710c9b908dea91f7f86a27bb0eb6dc"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+      "bytes": 19662,
+      "sha256": "38a06403fa0318fdf6fd14d7071ac9902b1450084406681ca1bccc5dadc04589"
+    }
+  ],
+  "changed_paths": [
+    ".solopreneur/harness.py",
+    ".solopreneur/managed.json",
+    "apps/desktop-app/src/host/storage-journal.mjs",
+    "apps/desktop-app/src/host/storage-journal.test.mjs",
+    "apps/desktop-app/src/host/workbench-permission-storage.mjs",
+    "apps/desktop-app/src/host/workbench-permission-storage.test.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs"
+  ],
+  "deleted_paths": [],
+  "api": {
+    "permissionProgress": "({runtimeEpoch,operationId,ordinal,outcome,observation}) -> Promise<{status:recorded}>",
+    "marker": "permission_control_v1"
+  },
+  "limits": [
+    "Missing persisted BEFORE policy refuses mode",
+    "Unknown remains held and lookup-only; no reconciliation release"
+  ],
+  "corrections": [
+    "CODE-R1-01 complete prior/next workspace scope and workspace-wide recovery hold",
+    "CODE-R1-02 existingSaved presence exact object, not truthiness"
+  ],
+  "prior_code_report": "docs/runs/permission-control-journal/final-code-review-r1.json"
+}

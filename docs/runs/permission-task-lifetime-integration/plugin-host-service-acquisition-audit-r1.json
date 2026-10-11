@@ -1,0 +1,2567 @@
+{
+  "revision": 23,
+  "method": "AST local import/export resolution; Layer constructors and syntactic yields, not callgraph reachability or runtime proof",
+  "services": [
+    {
+      "local": "app",
+      "service": "Metadata2",
+      "symbol": "Metadata2",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-8tkazwjn.js",
+      "bytes": 1035,
+      "sha256": "2e4a73c91df43a2512362110f0f0fd96397f11a60ea245fc3b3acb9b5577b6f6",
+      "layers": [
+        {
+          "constructor": "Layer.succeed",
+          "yields": []
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "agents",
+      "service": "Service62",
+      "symbol": "Service62",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-tats7t1r.js",
+      "bytes": 4132,
+      "sha256": "30003b4f011a368aa4e3f9a8c86e95e6994b1f889b21a70a531297b6c79cad64",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "Global.Service"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "aisdk",
+      "service": "Service70",
+      "symbol": "Service70",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-ppzgkaaq.js",
+      "bytes": 32542,
+      "sha256": "070409f56769cf4bd845dc6adc94c51a51f4818947a6b821809b21e367c5acc5",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": true,
+              "expression": "Scope.Scope"
+            },
+            {
+              "deferred": true,
+              "expression": "Scope.addFinalizer(scope, dispose)"
+            },
+            {
+              "deferred": true,
+              "expression": "result"
+            },
+            {
+              "deferred": true,
+              "expression": "new InitError2({\n          providerID: model.providerID,\n          cause: new Error(`Unsupported package ${model.package}`)\n        })"
+            },
+            {
+              "deferred": true,
+              "expression": "service.runSDK({ model, package: packageName, options }).pipe(initError(model.providerID))"
+            },
+            {
+              "deferred": true,
+              "expression": "new InitError2({\n          providerID: model.providerID,\n          cause: new Error(\"No AISDK provider plugin returned an SDK\")\n        })"
+            },
+            {
+              "deferred": true,
+              "expression": "service.runLanguage({ model, sdk, options }).pipe(initError(model.providerID))"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.sync(() => result.language ?? sdk.languageModel(model.modelID ?? model.id)).pipe(initError(model.providerID))"
+            },
+            {
+              "deferred": true,
+              "expression": "service.language(model)"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "providers",
+      "service": "Service71",
+      "symbol": "Service71",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-zrq68ahz.js",
+      "bytes": 29009,
+      "sha256": "475eaad9396f996a69155ece0828e12135646cad1905c41e2f123a9fa2a34757",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "Service72"
+            },
+            {
+              "deferred": false,
+              "expression": "Service80"
+            },
+            {
+              "deferred": false,
+              "expression": "Effect.addFinalizer(() => shutdown2(state.reload()))"
+            },
+            {
+              "deferred": true,
+              "expression": "integrations.list()"
+            },
+            {
+              "deferred": true,
+              "expression": "snapshot()"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(Provider.Event.Updated, {}, {\n      location: { directory: location.directory, workspaceID: location.workspaceID }\n    })"
+            },
+            {
+              "deferred": false,
+              "expression": "bus.subscribe([Event17.Updated, Credential.Event.Updated, Credential.Event.Switched]).pipe(Stream.runForEach(() => notify), Effect.forkScoped({ startImmediately: true }))"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "models",
+      "service": "Service68",
+      "symbol": "Service68",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-2e655exz.js",
+      "bytes": 8713,
+      "sha256": "dec09d0bf8fa0b6716b82502604014af9db5734d2ac3ef3315c6bfb89767824e",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service71"
+            },
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "Service80"
+            },
+            {
+              "deferred": false,
+              "expression": "Effect.addFinalizer(() => shutdown2(state.reload()))"
+            },
+            {
+              "deferred": true,
+              "expression": "providers.snapshot()"
+            },
+            {
+              "deferred": true,
+              "expression": "providers.snapshot()"
+            },
+            {
+              "deferred": true,
+              "expression": "read()"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(Model.Event.Updated, {}, {\n      location: { directory: location.directory, workspaceID: location.workspaceID }\n    })"
+            },
+            {
+              "deferred": false,
+              "expression": "bus.subscribe(Event16.Updated).pipe(Stream.runForEach(() => notify), Effect.forkScoped({ startImmediately: true }))"
+            },
+            {
+              "deferred": true,
+              "expression": "read()"
+            },
+            {
+              "deferred": true,
+              "expression": "read()"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "commands",
+      "service": "Service55",
+      "symbol": "Service55",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-c716n2s3.js",
+      "bytes": 2960,
+      "sha256": "42e2c79b207555aacc57354441ceb8d82cf7d99f8baed3f0f152dfd39ced8220",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": true,
+              "expression": "new NotFoundError8({ command: input.name, message: `Command not found: ${input.name}` })"
+            },
+            {
+              "deferred": true,
+              "expression": "definition.execute(input.invocation).pipe(Effect.tapError((error) => Effect.logError(\"command execution failed\", { command: input.name, error })), Effect.mapError((error) => new ExecutionError2({ command: input.name, message: errorMessage(e"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "bus",
+      "service": "Service83",
+      "symbol": "Service83",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-vhejgqwc.js",
+      "bytes": 26214,
+      "sha256": "d1c57ce84aa8014e8e2f2ba09fae01912941dc2ef614821556bd6e2b7726ccc4",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Effect.promise(() => import(\"../location.js\"))"
+            },
+            {
+              "deferred": false,
+              "expression": "Effect.promise(() => import(\"../session/sql.js\"))"
+            },
+            {
+              "deferred": false,
+              "expression": "PubSub.unbounded()"
+            },
+            {
+              "deferred": false,
+              "expression": "Service84"
+            },
+            {
+              "deferred": true,
+              "expression": "db.select({ directory: SessionTable.directory, workspaceID: SessionTable.workspace_id }).from(SessionTable).where(eq(SessionTable.id, owner)).get().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "PubSub.unbounded()"
+            },
+            {
+              "deferred": false,
+              "expression": "Effect.addFinalizer(() => Effect.gen(function* () {\n        yield* PubSub.shutdown(pubsub.live);\n        yield* Effect.forEach(pubsub.durable.values(), (pubsubs) => Effect.forEach(pubsubs, PubSub.shutdown, { discard: true }), { discard: tru"
+            },
+            {
+              "deferred": true,
+              "expression": "PubSub.shutdown(pubsub.live)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(pubsub.durable.values(), (pubsubs) => Effect.forEach(pubsubs, PubSub.shutdown, { discard: true }), { discard: true })"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(pubsub.typed.values(), PubSub.shutdown, { discard: true })"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.void"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new InvalidDurableEventError2({\n              type: event.type,\n              message: `Expected string aggregate field ${durable.aggregate}`\n            }))"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new InvalidDurableEventError2({\n              type: event.type,\n              message: `Aggregate mismatch: expected ${input.aggregateID}, got ${aggregateID}`\n            }))"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.uninterruptible(Effect.gen(function* () {\n            const committed = yield* db.transaction(() => Effect.gen(function* () {\n              const row = yield* db.select({ seq: EventSequenceTable2.seq, ownerID: EventSequenceTable2.own"
+            },
+            {
+              "deferred": true,
+              "expression": "db.transaction(() => Effect.gen(function* () {\n              const row = yield* db.select({ seq: EventSequenceTable2.seq, ownerID: EventSequenceTable2.owner_id }).from(EventSequenceTable2).where(eq(EventSequenceTable2.aggregate_id, aggregat"
+            },
+            {
+              "deferred": true,
+              "expression": "db.select({ seq: EventSequenceTable2.seq, ownerID: EventSequenceTable2.owner_id }).from(EventSequenceTable2).where(eq(EventSequenceTable2.aggregate_id, aggregateID)).get().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new InvalidDurableEventError2({\n                  type: event.type,\n                  message: `Replay owner mismatch for aggregate ${aggregateID}: expected ${row.ownerID}, got ${input.ownerID ?? \"none\"}`\n                }))"
+            },
+            {
+              "deferred": true,
+              "expression": "db.select().from(EventTable2).where(and(eq(EventTable2.aggregate_id, aggregateID), eq(EventTable2.seq, input.seq))).get().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "db.update(EventSequenceTable2).set({ owner_id: input.ownerID }).where(eq(EventSequenceTable2.aggregate_id, aggregateID)).run().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new InvalidDurableEventError2({\n                  type: event.type,\n                  message: `Replay diverged at aggregate ${aggregateID} sequence ${input.seq}`\n                }))"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new InvalidDurableEventError2({\n                  type: event.type,\n                  message: `Sequence mismatch for aggregate ${aggregateID}: expected ${latest + 1}, got ${seq}`\n                }))"
+            },
+            {
+              "deferred": true,
+              "expression": "db.select({ aggregateID: EventTable2.aggregate_id, seq: EventTable2.seq }).from(EventTable2).where(eq(EventTable2.id, event.id)).get().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new InvalidDurableEventError2({\n                    type: event.type,\n                    message: `Event ${event.id} already exists at aggregate ${stored.aggregateID} sequence ${stored.seq}`\n                  }))"
+            },
+            {
+              "deferred": true,
+              "expression": "prepareRoutes([committed])"
+            },
+            {
+              "deferred": true,
+              "expression": "projector(committed)"
+            },
+            {
+              "deferred": true,
+              "expression": "commit(seq)"
+            },
+            {
+              "deferred": true,
+              "expression": "db.insert(EventSequenceTable2).values([{ aggregate_id: aggregateID, seq, owner_id: input?.ownerID }]).onConflictDoUpdate({\n                target: EventSequenceTable2.aggregate_id,\n                set: {\n                  seq: sql`max(${Eve"
+            },
+            {
+              "deferred": true,
+              "expression": "db.insert(EventTable2).values([\n                  {\n                    id: event.id,\n                    aggregate_id: aggregateID,\n                    seq,\n                    created: event.created ?? 0,\n                    type: version"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(pubsub.durable.get(committed.aggregateID) ?? [], (wake) => PubSub.publish(wake, undefined), { discard: true })"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new InvalidDurableEventError2({\n              type: event.type,\n              message: \"Local commit hooks require a durable event\"\n            }))"
+            },
+            {
+              "deferred": true,
+              "expression": "commitDurableEvent(definition, event, undefined, commit).pipe(Effect.as(event))"
+            },
+            {
+              "deferred": true,
+              "expression": "durableLocks.withLock(aggregateID)(Effect.gen(function* () {\n              const committed = yield* commitDurableEvent(definition, event, undefined, commit);\n              if (!committed)\n                return event;\n              event = "
+            },
+            {
+              "deferred": true,
+              "expression": "commitDurableEvent(definition, event, undefined, commit)"
+            },
+            {
+              "deferred": true,
+              "expression": "notify(event, true)"
+            },
+            {
+              "deferred": true,
+              "expression": "prepareRoutes([event])"
+            },
+            {
+              "deferred": true,
+              "expression": "notify(event, false)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(listeners, (listener) => isolateListeners ? observe(event, listener) : listener(event), { discard: true })"
+            },
+            {
+              "deferred": true,
+              "expression": "PubSub.publish(typed, event)"
+            },
+            {
+              "deferred": true,
+              "expression": "PubSub.publish(pubsub.live, event)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.serviceOption(Location.Service)"
+            },
+            {
+              "deferred": true,
+              "expression": "publishEvent(definition, {\n            id: options?.id ?? Event.ID.create(),\n            created: yield* Clock.currentTimeMillis,\n            ...options?.metadata ? { metadata: options.metadata } : {},\n            type: definition.type,\n   "
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.serviceOption(Location.Service)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(events, ([definition, data, options]) => Effect.gen(function* () {\n            const aggregateID = data[definition.durable.aggregate];\n            if (typeof aggregateID !== \"string\") {\n              return yield* Effect.die("
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new InvalidDurableEventError2({\n                type: definition.type,\n                message: `Expected string aggregate field ${definition.durable.aggregate}`\n              }))"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new InvalidDurableEventError2({\n              type: payloads[0].definition.type,\n              message: \"Published events must belong to the same aggregate\"\n            }))"
+            },
+            {
+              "deferred": true,
+              "expression": "durableLocks.withLock(aggregateID)(Effect.uninterruptible(Effect.gen(function* () {\n            const committed = yield* db.transaction(() => Effect.gen(function* () {\n              const row = yield* db.select({ seq: EventSequenceTable2.se"
+            },
+            {
+              "deferred": true,
+              "expression": "db.transaction(() => Effect.gen(function* () {\n              const row = yield* db.select({ seq: EventSequenceTable2.seq }).from(EventSequenceTable2).where(eq(EventSequenceTable2.aggregate_id, aggregateID)).get().pipe(Effect.orDie);\n       "
+            },
+            {
+              "deferred": true,
+              "expression": "db.select({ seq: EventSequenceTable2.seq }).from(EventSequenceTable2).where(eq(EventSequenceTable2.aggregate_id, aggregateID)).get().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "prepareRoutes(queued)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new InvalidDurableEventError2({\n                      type: item.event.type,\n                      message: `Event ${item.event.id} appears more than once in the batch`\n                    }))"
+            },
+            {
+              "deferred": true,
+              "expression": "db.select({ aggregateID: EventTable2.aggregate_id, seq: EventTable2.seq }).from(EventTable2).where(eq(EventTable2.id, item.event.id)).get().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new InvalidDurableEventError2({\n                      type: item.event.type,\n                      message: `Event ${item.event.id} already exists at aggregate ${stored.aggregateID} sequence ${stored.seq}`\n                    }))"
+            },
+            {
+              "deferred": true,
+              "expression": "projector(event)"
+            },
+            {
+              "deferred": true,
+              "expression": "item.commit(seq)"
+            },
+            {
+              "deferred": true,
+              "expression": "db.insert(EventSequenceTable2).values([{ aggregate_id: aggregateID, seq: finalSeq }]).onConflictDoUpdate({ target: EventSequenceTable2.aggregate_id, set: { seq: finalSeq } }).run().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "db.insert(EventTable2).values(rows).run().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(pubsub.durable.get(aggregateID) ?? [], (wake) => PubSub.publish(wake, undefined), {\n              discard: true\n            })"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(committed.events, (event) => notify(event, true), { discard: true })"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new InvalidDurableEventError2({ type: event.type, message: `Unknown durable event type ${event.type}` }))"
+            },
+            {
+              "deferred": true,
+              "expression": "durableLocks.withLock(event.aggregateID)(Effect.gen(function* () {\n            const payload = {\n              id: event.id,\n              created: event.created ?? 0,\n              type: definition.type,\n              data: Schema.decodeUn"
+            },
+            {
+              "deferred": true,
+              "expression": "commitDurableEvent(definition, payload, {\n              seq: event.seq,\n              aggregateID: event.aggregateID,\n              ownerID: options?.ownerID,\n              strictOwner: options?.strictOwner\n            })"
+            },
+            {
+              "deferred": true,
+              "expression": "notify(committed.event, true)"
+            },
+            {
+              "deferred": true,
+              "expression": "db.delete(EventSequenceTable2).where(eq(EventSequenceTable2.aggregate_id, aggregateID)).run()"
+            },
+            {
+              "deferred": true,
+              "expression": "db.delete(EventTable2).where(eq(EventTable2.aggregate_id, aggregateID)).run()"
+            },
+            {
+              "deferred": true,
+              "expression": "PubSub.sliding(1)"
+            },
+            {
+              "deferred": true,
+              "expression": "PubSub.subscribe(wake)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.acquireRelease(Effect.sync(() => {\n          const wakes = pubsub.durable.get(aggregateID) ?? new Set;\n          wakes.add(wake);\n          pubsub.durable.set(aggregateID, wakes);\n        }), () => Effect.sync(() => {\n          const"
+            },
+            {
+              "deferred": true,
+              "expression": "subscribeDurable(input.aggregateID)"
+            },
+            {
+              "deferred": true,
+              "expression": "latestSequence2(db, input.aggregateID)"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "integration",
+      "service": "Service72",
+      "symbol": "Service72",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-vaz5h5qv.js",
+      "bytes": 25265,
+      "sha256": "61e70c3fbcb62f304a6e930404e6f306a36385c5e93d58ef8ae5da2bc87aac2e",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service73"
+            },
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "AppProcess.Service"
+            },
+            {
+              "deferred": false,
+              "expression": "Scope.Scope"
+            },
+            {
+              "deferred": true,
+              "expression": "credentials.create(input)"
+            },
+            {
+              "deferred": true,
+              "expression": "credentials.list(input.integrationID)"
+            },
+            {
+              "deferred": true,
+              "expression": "credentials.create({ ...input, label })"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.modify(attempts, (current) => {\n      const match = current.get(attemptID);\n      if (!match || match.status !== \"pending\" || match.persisting)\n        return [undefined, current];\n      const next = Exit.isSuccess(exit) ? {"
+            },
+            {
+              "deferred": true,
+              "expression": "close(attempt.scope)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.gen(function* () {\n      const persistence = yield* Effect.suspend(() => {\n        const implementation = state.get().integrations.get(attempt.integrationID)?.implementations.get(attempt.methodID);\n        return createCredential({\n "
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.suspend(() => {\n        const implementation = state.get().integrations.get(attempt.integrationID)?.implementations.get(attempt.methodID);\n        return createCredential({\n          integrationID: attempt.integrationID,\n          la"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.update(attempts, (current) => new Map(current).set(attemptID, terminal))"
+            },
+            {
+              "deferred": true,
+              "expression": "persistence"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.modify(commandAttempts, (current) => {\n      const match = current.get(attemptID);\n      if (!match || match.status !== \"pending\" || match.persisting)\n        return [undefined, current];\n      const next = Exit.isSuccess(ex"
+            },
+            {
+              "deferred": true,
+              "expression": "close(attempt.scope)"
+            },
+            {
+              "deferred": true,
+              "expression": "createCredential({\n      integrationID: attempt.integrationID,\n      label: attempt.label,\n      value: Key4.make({ type: \"key\", key: exit.value })\n    }).pipe(Effect.asVoid, Effect.exit)"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.update(commandAttempts, (current) => new Map(current).set(attemptID, terminal))"
+            },
+            {
+              "deferred": true,
+              "expression": "close(attempt.scope)"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.modify(attempts, (current) => {\n      const next = new Map(current);\n      const scopes = [];\n      for (const [id, attempt] of current) {\n        if (attempt.status === \"pending\" && !attempt.persisting && attempt.time.expir"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(expired, close, { discard: true })"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.modify(commandAttempts, (current) => {\n      const next = new Map(current);\n      const scopes = [];\n      for (const [id, attempt] of current) {\n        if (attempt.status === \"pending\" && !attempt.persisting && attempt.tim"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(expired, close, { discard: true })"
+            },
+            {
+              "deferred": false,
+              "expression": "scrub().pipe(Effect.repeat(Schedule.spaced(scrubInterval)), Effect.forkIn(scope))"
+            },
+            {
+              "deferred": false,
+              "expression": "scrubCommands().pipe(Effect.repeat(Schedule.spaced(scrubInterval)), Effect.forkIn(scope))"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new Error(`OAuth method not found: ${input.integrationID}/${input.methodID}`))"
+            },
+            {
+              "deferred": true,
+              "expression": "new AuthorizationError2({ cause: new Error(invalid) })"
+            },
+            {
+              "deferred": true,
+              "expression": "Scope.fork(scope)"
+            },
+            {
+              "deferred": true,
+              "expression": "authorize(method.authorize(answer)).pipe(Scope.provide(attemptScope), Effect.onExit((exit) => Exit.isFailure(exit) ? Scope.close(attemptScope, exit) : Effect.void))"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.update(attempts, (current) => new Map(current).set(id, {\n      status: \"pending\",\n      completing: authorization.mode === \"auto\",\n      persisting: false,\n      authorization,\n      integrationID: input.integrationID,\n     "
+            },
+            {
+              "deferred": true,
+              "expression": "authorization.callback.pipe(Effect.exit, Effect.flatMap((exit) => settle(id, exit)), Effect.forkIn(attemptScope, { startImmediately: true }))"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new Error(`Command method not found: ${input.integrationID}/${input.methodID}`))"
+            },
+            {
+              "deferred": true,
+              "expression": "Scope.fork(scope)"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.update(commandAttempts, (current) => new Map(current).set(attemptID, {\n      status: \"pending\",\n      integrationID: input.integrationID,\n      label: input.label,\n      persisting: false,\n      scope: attemptScope,\n      ti"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.gen(function* () {\n      const handle = yield* processes.spawn(ChildProcess.make(method.command[0], method.command.slice(1), {\n        extendEnv: true,\n        stdin: \"ignore\"\n      }));\n      const stdout = yield* AppProcess.collect"
+            },
+            {
+              "deferred": true,
+              "expression": "processes.spawn(ChildProcess.make(method.command[0], method.command.slice(1), {\n        extendEnv: true,\n        stdin: \"ignore\"\n      }))"
+            },
+            {
+              "deferred": true,
+              "expression": "AppProcess.collectStream(handle.stdout, undefined).pipe(Effect.forkScoped)"
+            },
+            {
+              "deferred": true,
+              "expression": "handle.stderr.pipe(Stream.decodeText, Stream.tap((chunk) => SynchronizedRef.update(commandAttempts, (current) => {\n        const attempt = current.get(attemptID);\n        if (!attempt || attempt.status !== \"pending\")\n          return curren"
+            },
+            {
+              "deferred": true,
+              "expression": "handle.exitCode"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.get(commandAttempts)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.fail(new Error(attempt?.message?.trim() || `Authentication command exited ${exitCode}`))"
+            },
+            {
+              "deferred": true,
+              "expression": "Fiber.join(stdout)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.fail(new Error(\"Authentication command returned no credential\"))"
+            },
+            {
+              "deferred": true,
+              "expression": "credentials.list(id)"
+            },
+            {
+              "deferred": true,
+              "expression": "credentials.all()"
+            },
+            {
+              "deferred": true,
+              "expression": "credentials.list(id)"
+            },
+            {
+              "deferred": true,
+              "expression": "credentials.get(connection.id)"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "authorize(implementation.refresh(credential.value))"
+            },
+            {
+              "deferred": true,
+              "expression": "credentials.update(credential.id, { value })"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new Error(`Key method not found: ${input.integrationID}`))"
+            },
+            {
+              "deferred": true,
+              "expression": "new AuthorizationError2({ cause: new Error(invalid) })"
+            },
+            {
+              "deferred": true,
+              "expression": "new AuthorizationError2({ cause: new Error(\"Key method does not accept a form answer\") })"
+            },
+            {
+              "deferred": true,
+              "expression": "createCredential({\n          integrationID: input.integrationID,\n          label: input.label,\n          value: Key4.make({\n            type: \"key\",\n            key: input.key,\n            ...Object.keys(answer).length > 0 ? { configuration"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.get(attempts)"
+            },
+            {
+              "deferred": true,
+              "expression": "new AttemptNotFoundError2(input)"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.modify(attempts, (current) => {\n          const match = current.get(input.attemptID);\n          if (!match || match.integrationID !== input.integrationID)\n            return [undefined, current];\n          if (match.status !"
+            },
+            {
+              "deferred": true,
+              "expression": "new AttemptNotFoundError2(input)"
+            },
+            {
+              "deferred": true,
+              "expression": "new CodeRequiredError2({ attemptID: input.attemptID })"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new Error(`OAuth attempt already completing: ${input.attemptID}`))"
+            },
+            {
+              "deferred": true,
+              "expression": "authorize(callback).pipe(Effect.exit)"
+            },
+            {
+              "deferred": true,
+              "expression": "settle(input.attemptID, exit)"
+            },
+            {
+              "deferred": true,
+              "expression": "exit"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.modify(attempts, (current) => {\n          const match = current.get(input.attemptID);\n          if (!match || match.integrationID !== input.integrationID || match.status !== \"pending\" || match.persisting)\n            return "
+            },
+            {
+              "deferred": true,
+              "expression": "Scope.close(attempt.scope, Exit.void)"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.get(commandAttempts)"
+            },
+            {
+              "deferred": true,
+              "expression": "new AttemptNotFoundError2(input)"
+            },
+            {
+              "deferred": true,
+              "expression": "SynchronizedRef.modify(commandAttempts, (current) => {\n          const match = current.get(input.attemptID);\n          if (!match || match.integrationID !== input.integrationID || match.status !== \"pending\" || match.persisting)\n            "
+            },
+            {
+              "deferred": true,
+              "expression": "Scope.close(attempt.scope, Exit.void)"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "kv",
+      "service": "Service67",
+      "symbol": "Service67",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-vtnt34eh.js",
+      "bytes": 2409,
+      "sha256": "894b56fa4b734700abe18dcf1fd75df6d2827af0d1845058a931e71b17e7c7ce",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service84"
+            },
+            {
+              "deferred": true,
+              "expression": "db.select({ value: KVTable2.value }).from(KVTable2).where(eq(KVTable2.key, key)).get().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "db.insert(KVTable2).values({ key, value }).onConflictDoUpdate({ target: KVTable2.key, set: { value, time_updated: Date.now() } }).run().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "db.delete(KVTable2).where(eq(KVTable2.key, key)).run().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "db.select({ key: KVTable2.key, value: KVTable2.value }).from(KVTable2).where(and(options.prefix === \"\" ? undefined : gte(KVTable2.key, options.prefix), end === undefined ? undefined : lt(KVTable2.key, end), options.after === undefined ? und"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "mcp",
+      "service": "Service32",
+      "symbol": "Service32",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-znr04804.js",
+      "bytes": 25336,
+      "sha256": "5d3cbf85696f24f6e07fc226754ca19544d15a19abd82eaf01dfbbbb49c7107d",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service80"
+            },
+            {
+              "deferred": false,
+              "expression": "Service78"
+            },
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "Service74"
+            },
+            {
+              "deferred": false,
+              "expression": "Service72"
+            },
+            {
+              "deferred": false,
+              "expression": "Service73"
+            },
+            {
+              "deferred": false,
+              "expression": "Effect.scope"
+            },
+            {
+              "deferred": false,
+              "expression": "FiberSet.makeRuntime()"
+            },
+            {
+              "deferred": true,
+              "expression": "Scope.fork(root)"
+            },
+            {
+              "deferred": true,
+              "expression": "integration.transform((editor) => {\n      editor.update(integrationID, (ref) => {\n        ref.name = name;\n        ref.metadata = { source: \"mcp\" };\n      });\n      editor.method.update({\n        integrationID,\n        method: { id: methodI"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.promise(() => import(\"../mcp/oauth.js\"))"
+            },
+            {
+              "deferred": true,
+              "expression": "McpOAuth.authorize({ name, config: remote, integrationID, methodID }).pipe(Effect.provideService(Service73, credentials))"
+            },
+            {
+              "deferred": true,
+              "expression": "new NotFoundError4({ server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.promise(() => import(\"../mcp/oauth.js\"))"
+            },
+            {
+              "deferred": true,
+              "expression": "McpOAuth.connectProvider({ config: entry.config, integrationID: entry.integrationID }).pipe(Effect.provideService(Service73, credentials))"
+            },
+            {
+              "deferred": true,
+              "expression": "forms.ask({\n          id: formID,\n          sessionID: GLOBAL_ELICITATION_SESSION_ID,\n          title: `${input.server} is requesting input`,\n          metadata: {\n            kind: \"mcp-elicitation\",\n            server: input.server,\n     "
+            },
+            {
+              "deferred": true,
+              "expression": "forms.ask({\n        sessionID: GLOBAL_ELICITATION_SESSION_ID,\n        title: `${input.server} is requesting input`,\n        metadata: { kind: \"mcp-elicitation\", server: input.server, message: params.message },\n        fields: [field, ...fie"
+            },
+            {
+              "deferred": true,
+              "expression": "forms.reply({ id: formID, answer: { [URL_ELICITATION_FIELD_KEY]: true } }).pipe(Effect.ignore)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.logInfo(\"mcp session expired, reconnecting\", { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "stopServer(name, entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "startServer(name, entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "stopServer(name, entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(McpEvent.StatusChanged, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(McpEvent.StatusChanged, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "Scope.fork(root)"
+            },
+            {
+              "deferred": true,
+              "expression": "connectProvider(entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.promise(() => import(\"../mcp/client.js\"))"
+            },
+            {
+              "deferred": true,
+              "expression": "(entry.config.type === \"remote\" ? endpointLoads.withLock(entry.config.url)(load) : load).pipe(Effect.exit)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.logInfo(\"mcp connected\", { server: name, tools: entry.tools.length })"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(McpEvent.ToolsChanged, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(McpEvent.ResourcesChanged, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(McpEvent.StatusChanged, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "Scope.close(scope, Exit.void)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.logWarning(\"mcp connect failed\", { server: name, status: entry.status })"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(McpEvent.StatusChanged, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "Scope.close(scope, Exit.void)"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(McpEvent.ToolsChanged, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(McpEvent.ResourcesChanged, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(PromptsChanged2, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "stopServer(name, entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "entry.registration.dispose"
+            },
+            {
+              "deferred": true,
+              "expression": "disposeServer(name, previous)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.gen(function* () {\n      yield* register(name, entry);\n      if (serverConfig.disabled) {\n        entry.status = { status: \"disabled\" };\n        yield* bus.publish(McpEvent.StatusChanged, { server: name });\n        return;\n      }\n  "
+            },
+            {
+              "deferred": true,
+              "expression": "register(name, entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(McpEvent.StatusChanged, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "startServer(name, entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "disposeServer(name, entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(McpEvent.StatusChanged, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(entries, ([name, entry]) => register(name, entry), { discard: true })"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(McpEvent.StatusChanged, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "removeServer(name).pipe(locks.withLock(name))"
+            },
+            {
+              "deferred": true,
+              "expression": "replaceServer(name, updated).pipe(locks.withLock(name))"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.gen(function* () {\n      const entry = entries.get(name);\n      if (!entry || entry.integrationID !== integrationID)\n        return;\n      if (entry.status.status === \"disabled\")\n        return;\n      yield* stopServer(name, entry);\n"
+            },
+            {
+              "deferred": true,
+              "expression": "stopServer(name, entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "startServer(name, entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "state.reload()"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.gen(function* () {\n        const target = yield* requireServer(name);\n        yield* stopServer(name, target.entry);\n        yield* startServer(name, target.entry);\n      }).pipe(locks.withLock(name))"
+            },
+            {
+              "deferred": true,
+              "expression": "requireServer(name)"
+            },
+            {
+              "deferred": true,
+              "expression": "stopServer(name, target.entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "startServer(name, target.entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.gen(function* () {\n        const target = yield* requireServer(name);\n        yield* stopServer(name, target.entry);\n        target.entry.status = { status: \"disabled\" };\n        yield* bus.publish(McpEvent.StatusChanged, { server: n"
+            },
+            {
+              "deferred": true,
+              "expression": "requireServer(name)"
+            },
+            {
+              "deferred": true,
+              "expression": "stopServer(name, target.entry)"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(McpEvent.StatusChanged, { server: name })"
+            },
+            {
+              "deferred": true,
+              "expression": "requireServer(name)"
+            },
+            {
+              "deferred": true,
+              "expression": "state.reload()"
+            },
+            {
+              "deferred": true,
+              "expression": "requireServer(input.server)"
+            },
+            {
+              "deferred": true,
+              "expression": "target.entry.startup.await"
+            },
+            {
+              "deferred": true,
+              "expression": "new ToolCallError2({\n          server: target.name,\n          tool: input.name,\n          message: \"MCP server is not connected\"\n        })"
+            },
+            {
+              "deferred": true,
+              "expression": "recovering(target.name, target.entry, target.entry.client, (connection) => connection.callTool({ name: input.name, args: input.args, sessionID: input.sessionID })).pipe(Effect.mapError((error) => new ToolCallError2({ server: target.name, to"
+            },
+            {
+              "deferred": true,
+              "expression": "requireServer(input.server)"
+            },
+            {
+              "deferred": true,
+              "expression": "target.entry.startup.await"
+            },
+            {
+              "deferred": true,
+              "expression": "recovering(target.name, target.entry, target.entry.client, (connection) => connection.prompt({ name: input.name, args: input.args })).pipe(Effect.orElseSucceed(() => {\n        return;\n      }))"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(Array.from(entries), ([name, entry]) => entry.client ? loadCatalog(name, entry, entry.client).pipe(Effect.orElseSucceed(() => empty)) : Effect.succeed(empty), { concurrency: \"unbounded\" })"
+            },
+            {
+              "deferred": true,
+              "expression": "requireServer(input.server)"
+            },
+            {
+              "deferred": true,
+              "expression": "target.entry.startup.await"
+            },
+            {
+              "deferred": true,
+              "expression": "loadCatalog(target.name, target.entry, target.entry.client)"
+            },
+            {
+              "deferred": true,
+              "expression": "requireServer(input.server)"
+            },
+            {
+              "deferred": true,
+              "expression": "target.entry.startup.await"
+            },
+            {
+              "deferred": true,
+              "expression": "recovering(target.name, target.entry, target.entry.client, (connection) => connection.readResource({ uri: input.uri }))"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "location",
+      "service": "Service80",
+      "symbol": "Service80",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-vyy061a2.js",
+      "bytes": 1405,
+      "sha256": "5f1e4661eaee95de66c6ea2442985a5ebb4601ad2e2dba4235a50bbb8f72bd19",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service81"
+            },
+            {
+              "deferred": false,
+              "expression": "project.resolve(ref.directory, options)"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "reference",
+      "service": "Service57",
+      "symbol": "Service57",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-73b9b00p.js",
+      "bytes": 3705,
+      "sha256": "909ef0978a544cd2da0193fb48f018a03551428d7e7f7123502905a430840165",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Global.Service"
+            },
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "Service58"
+            },
+            {
+              "deferred": false,
+              "expression": "Scope.Scope"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(list(), (reference) => Effect.gen(function* () {\n      if (reference.source.type !== \"git\")\n        return;\n      yield* cache.ensure({\n        reference: parseRemote2(reference.source.repository),\n        branch: reference.s"
+            },
+            {
+              "deferred": true,
+              "expression": "cache.ensure({\n        reference: parseRemote2(reference.source.repository),\n        branch: reference.source.branch,\n        refresh: \"daily\"\n      })"
+            },
+            {
+              "deferred": true,
+              "expression": "refresh().pipe(Effect.forkIn(scope))"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(Reference.Event.Updated, {})"
+            },
+            {
+              "deferred": false,
+              "expression": "Effect.sleep(\"1 hour\").pipe(Effect.andThen(refresh()), Effect.forever, Effect.forkScoped)"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "rpc",
+      "service": "Service23",
+      "symbol": "Service23",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-t363gy9t.js",
+      "bytes": 8970,
+      "sha256": "b0cab7e6fd1574667f8612867c4441ef0222ec3c64cfb772e3775b8c42a132a2",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "Service80"
+            },
+            {
+              "deferred": false,
+              "expression": "Deferred.make()"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.acquireRelease(Effect.sync(() => registrations.set(definition.id, [...registrations.get(definition.id) ?? [], entry])), () => dispose)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.fail(new Error(`Unknown RPC event: ${definition.id}.${args[0]}`))"
+            },
+            {
+              "deferred": true,
+              "expression": "encode(event.schema, args[1])"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(registered.definition, data, {\n            location: Ref4.make({ directory: ref.directory, workspaceID: ref.workspaceID })\n          }).pipe(Effect.asVoid)"
+            },
+            {
+              "deferred": true,
+              "expression": "Deferred.isDone(closed)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.fail(failure(\"rpc.unavailable\", `RPC is unavailable: ${rpcID}`))"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.fail(failure(\"rpc.unavailable\", `RPC is unavailable: ${rpcID}`))"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.fail(failure(\"rpc.method_not_found\", `Unknown RPC method: ${rpcID}.${name}`))"
+            },
+            {
+              "deferred": true,
+              "expression": "parse(method.input, input).pipe(Effect.mapError((error) => failure(\"rpc.invalid_input\", errorMessage(error, \"Invalid RPC input\"))))"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.suspend(() => {\n      const execution = handler(parsed, callContext);\n      return execution;\n    }).pipe(Effect.catch((error) => encodeError(method, error)), Effect.catchDefect((defect) => Effect.logError(\"rpc handler failed\", { rpc"
+            },
+            {
+              "deferred": true,
+              "expression": "encode(method.output, result).pipe(Effect.mapError((error) => failure(\"rpc.invalid_output\", errorMessage(error, \"Invalid RPC output\"))))"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "skill",
+      "service": "Service40",
+      "symbol": "Service40",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-ps3c5a77.js",
+      "bytes": 3628,
+      "sha256": "27506d0991a379ea6d7c3c53d28a25cbfefb9eb3b80bdeb6ece7651d4fa81d70",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service83"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "tools",
+      "service": "Service59",
+      "symbol": "Service59",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-yw6qsgb4.js",
+      "bytes": 11357,
+      "sha256": "3731a6ac99d3de9db8acd15d2ee4a7559b121dfa28e6694c7db5ed38f203e3aa",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service61"
+            },
+            {
+              "deferred": false,
+              "expression": "Service60"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(content, (item) => {\n      if (item.type !== \"file\" || !item.mime.startsWith(\"image/\"))\n        return Effect.succeed(item);\n      const base64 = /^data:[^,]*;base64,(.*)$/s.exec(item.uri)?.[1];\n      if (base64 === undefined"
+            },
+            {
+              "deferred": true,
+              "expression": "execute3(tool, input, context).pipe(Effect.map((value) => ({ value })), Effect.catchTag(\"Tool.Error\", (failure) => Effect.succeed({ failure })))"
+            },
+            {
+              "deferred": true,
+              "expression": "hooks.trigger(\"tool\", \"execute.after\", afterEvent)"
+            },
+            {
+              "deferred": true,
+              "expression": "afterEvent.error"
+            },
+            {
+              "deferred": true,
+              "expression": "hooks.trigger(\"tool\", \"execute.after\", afterEvent)"
+            },
+            {
+              "deferred": true,
+              "expression": "normalizeImages(normalizeContent2(afterEvent.result.content, afterEvent.result.output))"
+            },
+            {
+              "deferred": true,
+              "expression": "beforeExecute(input.call.name, input.call.input, context)"
+            },
+            {
+              "deferred": true,
+              "expression": "new Tool.Error({ message: `Tool is not available for this request: ${event.tool}` })"
+            },
+            {
+              "deferred": true,
+              "expression": "executeTool(codeModeTool, name, event.input, context)"
+            },
+            {
+              "deferred": true,
+              "expression": "executeTool(tool, name, event.input, context)"
+            },
+            {
+              "deferred": true,
+              "expression": "new Tool.Error({\n            message: `No tool named \"${name}\" is currently available. Please use a tool from the available tool list.`\n          })"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "vcs",
+      "service": "Service24",
+      "symbol": "Service24",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-ggv4pg5y.js",
+      "bytes": 7058,
+      "sha256": "4965abd1501f25caf27244864d4a4501fc46eef5690ee91b3ba408cb57a5afc0",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "FSUtil.Service"
+            },
+            {
+              "deferred": false,
+              "expression": "Service80"
+            },
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "Effect.scope"
+            },
+            {
+              "deferred": false,
+              "expression": "FiberSet.makeRuntime()"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.gen(function* () {\n      const provider = selected();\n      const next = provider ? {\n        ...yield* protect(provider, \"info\", provider.info(scope).pipe(Effect.flatMap(decodeInfo)), { branch: {} }),\n        provider: provider.id\n "
+            },
+            {
+              "deferred": true,
+              "expression": "protect(provider, \"info\", provider.info(scope).pipe(Effect.flatMap(decodeInfo)), { branch: {} })"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(VcsEvent.BranchUpdated, { branch })"
+            },
+            {
+              "deferred": false,
+              "expression": "fs.realPath(vcs.store).pipe(Effect.orElseSucceed(() => vcs.store))"
+            },
+            {
+              "deferred": false,
+              "expression": "bus.subscribe(FileSystem.Event.Changed).pipe(Stream.filter((event) => isBranchMetadata(event.data.file)), Stream.runForEach((event) => refresh().pipe(Effect.catchCauseIf((cause) => !Cause.hasInterrupts(cause), (cause) => Effect.logWarning(\""
+            },
+            {
+              "deferred": true,
+              "expression": "review(provider, \"base\", provider.base(scope).pipe(Effect.flatMap(decodeBase)))"
+            },
+            {
+              "deferred": true,
+              "expression": "protect(provider, \"branches\", provider.branches({ ...scope, ...options }).pipe(Effect.flatMap(decodeBranches)), [])"
+            },
+            {
+              "deferred": true,
+              "expression": "protect(provider, \"status\", provider.status(scope).pipe(Effect.flatMap(decodeStatus), Effect.map((rows) => Array.from(rows))), [])"
+            },
+            {
+              "deferred": true,
+              "expression": "review(provider, \"diff\", provider.diff({\n        ...scope,\n        mode,\n        ...options?.base !== undefined ? { base: options.base } : {},\n        context: options?.context ?? PATCH_CONTEXT_LINES2,\n        maxOutputBytes: MAX_TOTAL_PATC"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "websearch",
+      "service": "Service19",
+      "symbol": "Service19",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-c738b566.js",
+      "bytes": 7946,
+      "sha256": "1762a56b487b7da1bd04da966444d6de83949e8563c754a97cd2574ae6ab87f6",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "Service67"
+            },
+            {
+              "deferred": false,
+              "expression": "Effect.addFinalizer(() => Effect.sync(() => preferred.clear()))"
+            },
+            {
+              "deferred": false,
+              "expression": "bus.subscribe([SessionEvent.Deleted, SessionEvent.Moved]).pipe(Stream.runForEach((event) => Effect.sync(() => {\n    preferred.delete(event.data.sessionID);\n  })), Effect.forkScoped({ startImmediately: true }))"
+            },
+            {
+              "deferred": true,
+              "expression": "kv.get(ProviderKey2)"
+            },
+            {
+              "deferred": true,
+              "expression": "kv.remove(ProviderKey2)"
+            },
+            {
+              "deferred": true,
+              "expression": "new DisabledError2"
+            },
+            {
+              "deferred": true,
+              "expression": "defaultProvider(yield* selection())"
+            },
+            {
+              "deferred": true,
+              "expression": "selection()"
+            },
+            {
+              "deferred": true,
+              "expression": "kv.set(ProviderKey2, selection)"
+            },
+            {
+              "deferred": true,
+              "expression": "selection()"
+            },
+            {
+              "deferred": true,
+              "expression": "requireProvider(state.get().providers, input.providerID)"
+            },
+            {
+              "deferred": true,
+              "expression": "defaultProvider(choice)"
+            },
+            {
+              "deferred": true,
+              "expression": "new ProviderRequiredError2"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "options.onProvider({ id: provider.id, name: provider.name })"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "provider.execute({ query: input.query }).pipe(Effect.flatMap(decodeResults), Effect.result)"
+            },
+            {
+              "deferred": true,
+              "expression": "error"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "Clock.currentTimeMillis"
+            },
+            {
+              "deferred": true,
+              "expression": "cooldown.error"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "generate",
+      "service": "Service26",
+      "symbol": "Service26",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-d9ymz6xc.js",
+      "bytes": 2741,
+      "sha256": "28e887dadd4a77857fd8d3d4a30123d1e3cef06cef9d96d7b25efdac499551da",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "LLMClient.Service"
+            },
+            {
+              "deferred": false,
+              "expression": "Service63"
+            },
+            {
+              "deferred": true,
+              "expression": "resolver.resolve(input.model).pipe(Effect.catchTag([\n      \"SessionRunnerModel.VariantUnavailableError\",\n      \"SessionRunnerModel.UnsupportedPackageError\",\n      \"SessionRunnerModel.ModelConfigurationError\",\n      \"SessionRunnerModel.Model"
+            },
+            {
+              "deferred": true,
+              "expression": "new ModelSelectionError2({\n        message: input.model ? `Model unavailable: ${input.model.providerID}/${input.model.id}` : \"No model specified and no supported model is available\"\n      })"
+            },
+            {
+              "deferred": true,
+              "expression": "llm.generate(LLM.request({ model: resolved.model, prompt: input.prompt })).pipe(Effect.mapError((error) => new UnavailableError3({\n      message: error.message,\n      service: resolved.ref.providerID\n    })))"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "permission",
+      "service": "Service49",
+      "symbol": "Service49",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-vgpkvtp0.js",
+      "bytes": 10968,
+      "sha256": "a28683ef6d49fad12e71abb5ed77b23aaa093becd9369d5d2eea2c639f524f65",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "Service80"
+            },
+            {
+              "deferred": false,
+              "expression": "Service62"
+            },
+            {
+              "deferred": false,
+              "expression": "Service50"
+            },
+            {
+              "deferred": false,
+              "expression": "Service51"
+            },
+            {
+              "deferred": false,
+              "expression": "Service61"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(Array.from(pending.values()), (item) => bus.publish(Permission.Event.Replied, {\n      sessionID: item.request.sessionID,\n      requestID: item.request.id,\n      reply: \"reject\"\n    }).pipe(Effect.ensuring(Deferred.fail(item.d"
+            },
+            {
+              "deferred": false,
+              "expression": "Effect.addFinalizer(() => close)"
+            },
+            {
+              "deferred": true,
+              "expression": "saved.list({ projectID: location.project.id })"
+            },
+            {
+              "deferred": true,
+              "expression": "sessions.get(sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "new NotFoundError7({ sessionID })"
+            },
+            {
+              "deferred": true,
+              "expression": "agents.resolve(agentID ?? session.agent)"
+            },
+            {
+              "deferred": true,
+              "expression": "configured(input.sessionID, input.agent)"
+            },
+            {
+              "deferred": true,
+              "expression": "savedRules()"
+            },
+            {
+              "deferred": true,
+              "expression": "hooks.trigger(\"permission\", \"evaluate\", {\n      sessionID: input.sessionID,\n      agent: input.agent,\n      action: input.action,\n      resources: input.resources,\n      metadata: input.metadata,\n      source: input.source,\n      effect\n   "
+            },
+            {
+              "deferred": true,
+              "expression": "Deferred.make()"
+            },
+            {
+              "deferred": true,
+              "expression": "Deferred.fail(deferred, new DeclinedError2)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new Error(`Duplicate pending permission ID: ${request.id}`))"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(Permission.Event.Asked, request).pipe(Effect.onError(() => Effect.sync(() => pending.delete(request.id))))"
+            },
+            {
+              "deferred": true,
+              "expression": "evaluateInput(input)"
+            },
+            {
+              "deferred": true,
+              "expression": "create(value, input.agent)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new DeclinedError2)"
+            },
+            {
+              "deferred": true,
+              "expression": "evaluateInput(input)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.uninterruptibleMask((restore) => Effect.gen(function* () {\n      if (result.effect === \"deny\") {\n        return yield* new BlockedError2({\n          rules: relevant(input, result.rules),\n          permission: input.action,\n          "
+            },
+            {
+              "deferred": true,
+              "expression": "new BlockedError2({\n          rules: relevant(input, result.rules),\n          permission: input.action,\n          resources: input.resources,\n          reason: result.message\n        })"
+            },
+            {
+              "deferred": true,
+              "expression": "create(request(input, result.message), input.agent)"
+            },
+            {
+              "deferred": true,
+              "expression": "restore(Deferred.await(item.deferred)).pipe(Effect.catchTag(\"Permission.DeclinedError\", (error) => Effect.die(error)), Effect.ensuring(Effect.sync(() => {\n        pending.delete(item.request.id);\n      })))"
+            },
+            {
+              "deferred": true,
+              "expression": "new NotFoundError6({ requestID: input.requestID })"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(Permission.Event.Replied, {\n      sessionID: existing.request.sessionID,\n      requestID: existing.request.id,\n      reply: input.reply\n    })"
+            },
+            {
+              "deferred": true,
+              "expression": "Deferred.fail(existing.deferred, input.message ? new CorrectedError2({ feedback: input.message }) : new DeclinedError2)"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(Permission.Event.Replied, {\n          sessionID: item.request.sessionID,\n          requestID: item.request.id,\n          reply: \"reject\"\n        })"
+            },
+            {
+              "deferred": true,
+              "expression": "Deferred.fail(item.deferred, new DeclinedError2)"
+            },
+            {
+              "deferred": true,
+              "expression": "saved.add({\n        projectID: location.project.id,\n        action: existing.request.action,\n        resources: existing.request.save\n      })"
+            },
+            {
+              "deferred": true,
+              "expression": "Deferred.succeed(existing.deferred, undefined)"
+            },
+            {
+              "deferred": true,
+              "expression": "evaluateInput({ ...item.request, agent: item.agent }).pipe(Effect.catchTag(\"Session.NotFoundError\", () => Effect.undefined))"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(Permission.Event.Replied, {\n        sessionID: item.request.sessionID,\n        requestID: item.request.id,\n        reply: \"always\"\n      })"
+            },
+            {
+              "deferred": true,
+              "expression": "Deferred.succeed(item.deferred, undefined)"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "hooks",
+      "service": "Service61",
+      "symbol": "Service61",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-5y480sgp.js",
+      "bytes": 2276,
+      "sha256": "0632bbee9e0b05f2ee384845014c062387f9c8e8eeaafcdd98d59aac9e6bc9bf",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": true,
+              "expression": "Scope.Scope"
+            },
+            {
+              "deferred": true,
+              "expression": "Scope.addFinalizer(scope, dispose)"
+            },
+            {
+              "deferred": true,
+              "expression": "result"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "sessions",
+      "service": "Service27",
+      "symbol": "Service27",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-zyp346xr.js",
+      "bytes": 12995,
+      "sha256": "76638b2c4d683d304603080ba002d054cfcf49e037d378071e80b46efb74440b",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Metadata2"
+            },
+            {
+              "deferred": false,
+              "expression": "Service84"
+            },
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "Service81"
+            },
+            {
+              "deferred": false,
+              "expression": "Service44"
+            },
+            {
+              "deferred": false,
+              "expression": "LLMClient.Service"
+            },
+            {
+              "deferred": false,
+              "expression": "Service36"
+            },
+            {
+              "deferred": false,
+              "expression": "Service50"
+            },
+            {
+              "deferred": false,
+              "expression": "Service47"
+            },
+            {
+              "deferred": false,
+              "expression": "Service34"
+            },
+            {
+              "deferred": false,
+              "expression": "Service56"
+            },
+            {
+              "deferred": false,
+              "expression": "Service42"
+            },
+            {
+              "deferred": false,
+              "expression": "Service52"
+            },
+            {
+              "deferred": false,
+              "expression": "make15()"
+            },
+            {
+              "deferred": true,
+              "expression": "store.get(sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "store.get(input.parentID)"
+            },
+            {
+              "deferred": true,
+              "expression": "new NotFoundError7({ sessionID: input.parentID })"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.die(new Error(\"Session.create requires either location or an existing parentID\"))"
+            },
+            {
+              "deferred": true,
+              "expression": "projects.resolve(location.directory)"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(SessionEvent2.Created, {\n        sessionID,\n        slug: Slug2.create(),\n        version: app.version,\n        projectID: project.id,\n        parentID: input.parentID,\n        location,\n        subpath: RelativePath2.make(path."
+            },
+            {
+              "deferred": true,
+              "expression": "result.get(sessionID).pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "result.get(input.sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "db.select({ id: SessionMessageTable2.id }).from(SessionMessageTable2).where(and(eq(SessionMessageTable2.session_id, input.sessionID), input.before ? eq(SessionMessageTable2.id, input.before) : undefined)).orderBy(desc(SessionMessageTable2.s"
+            },
+            {
+              "deferred": true,
+              "expression": "new MessageNotFoundError2({\n          sessionID: input.sessionID,\n          messageID: input.before\n        })"
+            },
+            {
+              "deferred": true,
+              "expression": "new ForkEmptyError2({ sessionID: input.sessionID })"
+            },
+            {
+              "deferred": true,
+              "expression": "db.transaction(() => Effect.all({\n        instructions: current2(db, parent.id),\n        instructionEntries: snapshot2(db, parent.id)\n      })).pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(SessionEvent2.Forked, {\n        sessionID,\n        parentID: parent.id,\n        boundary: { type: input.before ? \"before\" : \"through\", messageID: boundary.id },\n        ...inherited\n      })"
+            },
+            {
+              "deferred": true,
+              "expression": "result.get(sessionID).pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "result.get(input.sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "environments.set(input.sessionID, input.variables)"
+            },
+            {
+              "deferred": true,
+              "expression": "environments.get(input.sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "result.get(sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "execution.interrupt(sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "execution.awaitIdle(sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "transport.close(sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "result.list({ parentID: sessionID })"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(children.data, (child) => result.remove(child.id), { concurrency: 1, discard: true })"
+            },
+            {
+              "deferred": true,
+              "expression": "environments.clear(sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(SessionEvent2.Deleted, { sessionID })"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.remove(sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "store.list(input)"
+            },
+            {
+              "deferred": true,
+              "expression": "result.get(input.sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "store.messages(input)"
+            },
+            {
+              "deferred": true,
+              "expression": "result.get(sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "store.context(sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "result.get(input.sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "execution.isActive(input.sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "turn2(db, locations, {\n        session,\n        active,\n        from: input.from,\n        to: input.to,\n        context: input.context\n      })"
+            },
+            {
+              "deferred": true,
+              "expression": "result.get(input.sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "generate2({ session, prompt: input.prompt }).pipe(Effect.provideService(Service47, instances), Effect.provideService(Service84, database), Effect.provideService(LLMClient.Service, llm))"
+            },
+            {
+              "deferred": true,
+              "expression": "result.get(input.sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "execute2({ ...input, session }).pipe(Effect.provideService(Service47, instances))"
+            },
+            {
+              "deferred": true,
+              "expression": "result.get(sessionID)"
+            },
+            {
+              "deferred": true,
+              "expression": "jobs.backgroundAll({ sessionID })"
+            },
+            {
+              "deferred": true,
+              "expression": "result.synthetic({\n        sessionID,\n        text: [\n          \"User requested that active blocking work be moved to the background.\",\n          \"\",\n          \"Backgrounded work:\",\n          ...backgrounded.map((job) => `- ${job.type}: ${j"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "persistentPty",
+      "service": "Service25",
+      "symbol": "Service25",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-srrn7w60.js",
+      "bytes": 11062,
+      "sha256": "f8f62b4caf9fb534471bc16e73461e43f42be0b73164ecbde654f314850a458d",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "Global.Service"
+            },
+            {
+              "deferred": false,
+              "expression": "Effect.context()"
+            },
+            {
+              "deferred": false,
+              "expression": "makeDaemonTransport2(options.handoff?.directory ?? runtimeDirectory(), () => binary ??= resolveBinary(global.bin).catch((error) => {\n    binary = undefined;\n    throw error;\n  }), options.handoff).pipe(Effect.mapError(unavailable))"
+            },
+            {
+              "deferred": true,
+              "expression": "optionalRequest(daemon, { op: \"list\" })"
+            },
+            {
+              "deferred": true,
+              "expression": "unexpected(response)"
+            },
+            {
+              "deferred": true,
+              "expression": "list()"
+            },
+            {
+              "deferred": true,
+              "expression": "new NotFoundError3({ ptyID: id })"
+            },
+            {
+              "deferred": true,
+              "expression": "request(daemon, {\n      op: \"create\",\n      program: input.command ?? environment2(global.bin),\n      args: input.args,\n      cwd: input.cwd ?? path.resolve(\"/\"),\n      title: input.title,\n      group_id: sessionID,\n      env: input.env,\n  "
+            },
+            {
+              "deferred": true,
+              "expression": "unexpected(response)"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(Added, { sessionID, terminal })"
+            },
+            {
+              "deferred": true,
+              "expression": "get(id)"
+            },
+            {
+              "deferred": true,
+              "expression": "request(daemon, {\n      op: \"write\",\n      id: fromID(id),\n      attachment_id: attachmentID ?? null,\n      data_base64: Buffer.from(data).toString(\"base64\")\n    })"
+            },
+            {
+              "deferred": true,
+              "expression": "unexpected(response)"
+            },
+            {
+              "deferred": true,
+              "expression": "get(id)"
+            },
+            {
+              "deferred": true,
+              "expression": "request(daemon, {\n      op: \"resize\",\n      id: fromID(id),\n      attachment_id: attachmentID ?? null,\n      cols,\n      rows\n    })"
+            },
+            {
+              "deferred": true,
+              "expression": "unexpected(response)"
+            },
+            {
+              "deferred": true,
+              "expression": "get(id)"
+            },
+            {
+              "deferred": true,
+              "expression": "request(daemon, {\n      op: \"control\",\n      id: fromID(id),\n      attachment_id: attachmentID,\n      cols,\n      rows\n    })"
+            },
+            {
+              "deferred": true,
+              "expression": "unexpected(response)"
+            },
+            {
+              "deferred": true,
+              "expression": "get(id)"
+            },
+            {
+              "deferred": true,
+              "expression": "request(daemon, {\n      op: \"input\",\n      id: fromID(id),\n      attachment_id: attachmentID,\n      cols,\n      rows,\n      data_base64: Buffer.from(data).toString(\"base64\")\n    })"
+            },
+            {
+              "deferred": true,
+              "expression": "unexpected(response)"
+            },
+            {
+              "deferred": true,
+              "expression": "get(id)"
+            },
+            {
+              "deferred": true,
+              "expression": "request(daemon, { op: \"snapshot\", id: fromID(id) })"
+            },
+            {
+              "deferred": true,
+              "expression": "unexpected(response)"
+            },
+            {
+              "deferred": true,
+              "expression": "new UnavailableError2({ message: \"lines must be an integer between 1 and 65535\" })"
+            },
+            {
+              "deferred": true,
+              "expression": "get(id).pipe(Effect.catchTag(\"PersistentPty.NotFoundError\", () => Effect.succeed(null)))"
+            },
+            {
+              "deferred": true,
+              "expression": "request(daemon, { op: \"read_rows\", id: fromID(id), rows: lines })"
+            },
+            {
+              "deferred": true,
+              "expression": "unexpected(response)"
+            },
+            {
+              "deferred": true,
+              "expression": "get(id)"
+            },
+            {
+              "deferred": true,
+              "expression": "request(daemon, { op: \"terminate\", id: fromID(id) })"
+            },
+            {
+              "deferred": true,
+              "expression": "unexpected(response)"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(Removed, { sessionID: terminal.sessionID, ptyID: id })"
+            },
+            {
+              "deferred": true,
+              "expression": "daemon.shutdown.pipe(Effect.mapError(unavailable))"
+            },
+            {
+              "deferred": true,
+              "expression": "unexpected(response)"
+            },
+            {
+              "deferred": true,
+              "expression": "get(id)"
+            },
+            {
+              "deferred": true,
+              "expression": "daemon.subscribe(fromID(id), {\n      ...input,\n      onEvent: (event) => {\n        if (event.type === \"exited\")\n          removeVisibleExit(id);\n        input.onEvent(event);\n      }\n    }).pipe(Effect.mapError(unavailable))"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "locations",
+      "service": "Service52",
+      "symbol": "Service52",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-rxswhrhz.js",
+      "bytes": 1833,
+      "sha256": "4de13390e79eca5355c381e2d49c39644ff55115ac587abbed67193ca19ef1e4",
+      "layers": [],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "worktrees",
+      "service": "Service16",
+      "symbol": "Service16",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-446vgdts.js",
+      "bytes": 12261,
+      "sha256": "83d0e8bfff2bb5111c22420f11a344853a2811a120b48461391c06ac9949d27a",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "FSUtil.Service"
+            },
+            {
+              "deferred": false,
+              "expression": "Service84"
+            },
+            {
+              "deferred": false,
+              "expression": "Service83"
+            },
+            {
+              "deferred": false,
+              "expression": "AppProcess.Service"
+            },
+            {
+              "deferred": false,
+              "expression": "Service52"
+            },
+            {
+              "deferred": false,
+              "expression": "make12"
+            },
+            {
+              "deferred": true,
+              "expression": "db.select().from(ProjectTable2).where(eq(ProjectTable2.id, projectID)).get().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "new NotFoundError11({ projectID })"
+            },
+            {
+              "deferred": true,
+              "expression": "fs.isDir(directory)"
+            },
+            {
+              "deferred": true,
+              "expression": "new DirectoryUnavailableError2({ directory })"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.promise(() => import(\"../plugin.js\"))"
+            },
+            {
+              "deferred": true,
+              "expression": "locations.contextEffect(Ref4.make({ directory }))"
+            },
+            {
+              "deferred": true,
+              "expression": "Context.get(context, Plugin.Service).awaitActivation"
+            },
+            {
+              "deferred": true,
+              "expression": "bus.publish(Event5.Updated, { projectID })"
+            },
+            {
+              "deferred": true,
+              "expression": "db.select({ directory: WorktreeTable2.directory, strategy: WorktreeTable2.strategy }).from(WorktreeTable2).where(eq(WorktreeTable2.project_id, projectID)).orderBy(desc(WorktreeTable2.time_created), asc(WorktreeTable2.directory)).all().pipe("
+            },
+            {
+              "deferred": true,
+              "expression": "db.select({ directory: WorktreeTable2.directory, strategy: WorktreeTable2.strategy }).from(WorktreeTable2).where(and(eq(WorktreeTable2.project_id, projectID), eq(WorktreeTable2.directory, directory))).get().pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "canonical2(fs, sourceDirectory)"
+            },
+            {
+              "deferred": true,
+              "expression": "ops.find(projectID, resolved)"
+            },
+            {
+              "deferred": true,
+              "expression": "new SourceDirectoryNotFoundError2({ projectID, directory: resolved })"
+            },
+            {
+              "deferred": true,
+              "expression": "new StrategyUnavailableError2({ strategy: id })"
+            },
+            {
+              "deferred": true,
+              "expression": "project(input.projectID)"
+            },
+            {
+              "deferred": true,
+              "expression": "load(row.worktree, current)"
+            },
+            {
+              "deferred": true,
+              "expression": "getStrategy(settings.selected, settings.strategies)"
+            },
+            {
+              "deferred": true,
+              "expression": "source(input.projectID, input.from ?? row.worktree)"
+            },
+            {
+              "deferred": true,
+              "expression": "fs.makeDirectory(directory, { recursive: true }).pipe(Effect.orDie)"
+            },
+            {
+              "deferred": true,
+              "expression": "fs.existsSafe(worktreeDirectory)"
+            },
+            {
+              "deferred": true,
+              "expression": "new DestinationExistsError2({ directory: worktreeDirectory })"
+            },
+            {
+              "deferred": true,
+              "expression": "selected.create({\n      directory: worktreeDirectory,\n      sourceDirectory,\n      branch: input.branch\n    }).pipe(Effect.mapError((error) => operationError(selected.id, \"create\", error)))"
+            },
+            {
+              "deferred": true,
+              "expression": "canonical2(fs, created.directory)"
+            },
+            {
+              "deferred": true,
+              "expression": "changed(input.projectID, yield* ops.create(input.projectID, {\n      directory: result.directory,\n      strategy: selected.id,\n      replace: true\n    }))"
+            },
+            {
+              "deferred": true,
+              "expression": "ops.create(input.projectID, {\n      directory: result.directory,\n      strategy: selected.id,\n      replace: true\n    })"
+            },
+            {
+              "deferred": true,
+              "expression": "processService.run(ChildProcess.make(windows ? command : \"bash\", windows ? [] : [\"-lc\", command], {\n        cwd: result.directory,\n        env: {\n          OPENCODE_WORKTREE_BASE: sourceDirectory,\n          OPENCODE_WORKTREE_PATH: result.di"
+            },
+            {
+              "deferred": true,
+              "expression": "project(input.projectID)"
+            },
+            {
+              "deferred": true,
+              "expression": "canonical2(fs, input.directory)"
+            },
+            {
+              "deferred": true,
+              "expression": "ops.find(input.projectID, worktreeDirectory)"
+            },
+            {
+              "deferred": true,
+              "expression": "new InvalidDirectoryError2({ directory: worktreeDirectory })"
+            },
+            {
+              "deferred": true,
+              "expression": "load(row.worktree, current)"
+            },
+            {
+              "deferred": true,
+              "expression": "getStrategy(StrategyID2.make(stored.strategy), settings.strategies)"
+            },
+            {
+              "deferred": true,
+              "expression": "strategy.remove({\n      directory: worktreeDirectory,\n      force: input.force\n    }).pipe(Effect.mapError((error) => operationError(strategy.id, \"remove\", error)))"
+            },
+            {
+              "deferred": true,
+              "expression": "changed(input.projectID, yield* ops.remove(input.projectID, worktreeDirectory))"
+            },
+            {
+              "deferred": true,
+              "expression": "ops.remove(input.projectID, worktreeDirectory)"
+            },
+            {
+              "deferred": true,
+              "expression": "project(input.projectID)"
+            },
+            {
+              "deferred": true,
+              "expression": "load(row.worktree, current)"
+            },
+            {
+              "deferred": true,
+              "expression": "ops.list(input.projectID)"
+            },
+            {
+              "deferred": true,
+              "expression": "Effect.forEach(stored, (item) => fs.isDir(item.directory).pipe(Effect.map((exists) => ({ ...item, exists }))), { concurrency: \"unbounded\" })"
+            },
+            {
+              "deferred": true,
+              "expression": "fs.isDir(directory)"
+            },
+            {
+              "deferred": true,
+              "expression": "strategy.list(directory).pipe(Effect.mapError((error) => operationError(strategy.id, \"list\", error)), Effect.catch((error) => Effect.logWarning(\"worktree discovery failed\", { directory, strategy: strategy.id, error }).pipe(Effect.as([]))))"
+            },
+            {
+              "deferred": true,
+              "expression": "canonical2(fs, entry.directory).pipe(Effect.catchTag(\"Worktree.DirectoryUnavailableError\", () => Effect.undefined))"
+            },
+            {
+              "deferred": true,
+              "expression": "db.transaction((tx) => Effect.all({\n      updated: Effect.filter(Array.from(discovered.values()), (item) => ops.create(input.projectID, item, tx)).pipe(Effect.map((items) => items.map((item) => item.directory))),\n      removed: Effect.filte"
+            },
+            {
+              "deferred": true,
+              "expression": "changed(input.projectID, changes.updated.length > 0 || changes.removed.length > 0)"
+            },
+            {
+              "deferred": true,
+              "expression": "project(input.projectID)"
+            },
+            {
+              "deferred": true,
+              "expression": "ops.list(input.projectID)"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    },
+    {
+      "local": "worktreeStrategies",
+      "service": "Service17",
+      "symbol": "Service17",
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-skwjfd4r.js",
+      "bytes": 1786,
+      "sha256": "26b0675f239f11bb5053567ad0ce8f3d32aa2e559d8158947db4ea69e4b34ffc",
+      "layers": [
+        {
+          "constructor": "Layer.effect",
+          "yields": [
+            {
+              "deferred": false,
+              "expression": "Service80"
+            },
+            {
+              "deferred": false,
+              "expression": "Global.Service"
+            },
+            {
+              "deferred": false,
+              "expression": "make12"
+            }
+          ]
+        }
+      ],
+      "status": "source-only; acquisition safety not approved"
+    }
+  ],
+  "limits": [
+    "nested function depth is syntactic, not proof of when a callback executes",
+    "no Native modules imported or effects executed",
+    "requires semantic audit of reachable service dependencies and replacements before startup acceptance"
+  ],
+  "semantic_followup": [
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-sk3qaz4a.js",
+      "sha256": "8e871cf8fa72b92c0d6d65d10967e8a1778e3e31dd2da51302fccee39de15ccf",
+      "bytes": 19416,
+      "source_fact": "Transport constructor registers finalizer and returns methods; discover/claim runs at acquisition only if inherited handoff exists. Request methods can connect/spawn later, not approved here."
+    },
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-ggv4pg5y.js",
+      "sha256": "4965abd1501f25caf27244864d4a4501fc46eef5690ee91b3ba408cb57a5afc0",
+      "bytes": 7058,
+      "source_fact": "VCS startup realPath/subscription is conditional on location.vcs; production Control candidate currently sets vcs undefined. State provider notify may have later effects; unapproved registrations remain held."
+    },
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-vaz5h5qv.js",
+      "sha256": "61e70c3fbcb62f304a6e930404e6f306a36385c5e93d58ef8ae5da2bc87aac2e",
+      "bytes": 25265,
+      "source_fact": "Two scrub loops start in service Scope; initial attempts maps are empty. This is real background lifetime, not Task settlement or absence of effects."
+    },
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-73b9b00p.js",
+      "sha256": "909ef0978a544cd2da0193fb48f018a03551428d7e7f7123502905a430840165",
+      "bytes": 3705,
+      "source_fact": "Reference hourly refresh loop is Scope-owned; initial sources map is empty. Source registration can enable Git materialization and is not startup-approved by declaration metadata alone."
+    }
+  ],
+  "unresolved": [
+    "shared/global dependencies include database, credential, filesystem/process, Config observation layers; actual transitive constructors and scope ownership must be checked",
+    "No new source authority or compiler proof is issued by this audit",
+    "No Native startup execution was performed"
+  ]
+}

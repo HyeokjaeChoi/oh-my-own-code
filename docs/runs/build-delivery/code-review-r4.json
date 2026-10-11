@@ -1,0 +1,44 @@
+{
+  "schema_version": 2,
+  "verdict": "changes_requested",
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "source_sha256": "e8343287ec1948f2a0f4025da03a737c9cc699081fde5afce332eeca62dd8352",
+    "verification_sha256": "ba8419a587ad57beec8c40c7aa47aaacfd33163f172822f0289ab108bf02f698",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "summary": "Current synthetic bootstrap changes are largely correct, but event sequence handling can permanently stall when globally sequenced events from other sessions interleave.",
+  "scope": "Current working-tree synthetic bootstrap slice; no tracked base-to-head diff exists.",
+  "open_findings": [
+    {
+      "severity": "medium",
+      "path": "apps/workbench-web/src/entities/session/model/assistant-thread.ts:68",
+      "trigger": "Global app events interleave sessions: sequence 1 belongs to another session and sequence 2 belongs to the selected session.",
+      "impact": "Filtering the foreign event before the contiguous-sequence check makes sequence 2 appear to be a gap. The current-session event is withheld, the cursor stays at 0, and the UI reports reconciliation needed indefinitely. The architecture defines one monotonic app sequence.",
+      "evidence": "The filter at lines 68–75 precedes the gap check at lines 83–97. Existing mixed-session tests place foreign events after the selected session's contiguous events.",
+      "correction": "Check continuity and advance the global cursor across all valid events, then apply only events belonging to the selected session. Add an interleaved-session regression case."
+    }
+  ],
+  "prior_finding_closure": {
+    "r2": "Snapshot session filtering, stale status ordering, package direction/public entries, invalid-result fallback, and omitted test discovery are closed in current source.",
+    "r3": "Single-session out-of-order replay, browser-reachable Node builtin rejection, and compiled bridge build target are closed. The global-sequence interleaving case above remains uncovered."
+  },
+  "checks_reviewed": "The ledger records exit 0 at this source hash for integrity, frozen-lockfile install, format, lint, typecheck, tests, build, boundaries, E2E, hooks, and operational drills. I inspected the source and recorded outputs; I did not rerun suites.",
+  "limitations": [
+    "The installed packages were already present during the recorded frozen-lockfile install, so that result does not establish a clean checkout installation.",
+    "The compiled bridge launch-smoke target exists, but no corresponding run-ledger check was recorded.",
+    "Browser E2E used the Vite development server and a synthetic tsx bridge; it did not launch the production browser bundle with the compiled bridge.",
+    "Operational drills explicitly exercise synthetic models and an in-process fixture bridge. Production diagnostics, persistence, migration, scheduler, real SDK behavior, and control-channel security remain unverified.",
+    "This review does not establish PRD AC-01–18 or full product acceptance."
+  ],
+  "provenance": {
+    "child_task_id": "/root/final_code_review_r4",
+    "author_task_id": "/root",
+    "requested_route": "gpt-6-sol/high",
+    "observed_runtime_identity": "unverified",
+    "report_only": true
+  }
+}

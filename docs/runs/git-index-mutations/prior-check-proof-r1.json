@@ -1,0 +1,694 @@
+{
+  "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+  "environment_files": {
+    "pnpm-lock.yaml": "4f934b6eee81de8189c30e4e1efca5d227fa757a3e225a21263a97b9aed1b502",
+    "docs/runs/git-index-mutations/source-facts.json": "6dba96c8862fe0e7d6ba2b44a7ee5b582101cba759029afc05ed45166464e1eb",
+    "docs/runs/git-index-mutations/prechange-inventory.json": "63940b3088a7f18cee3fb344dcc5ed4efc6bdcb219ea184eddc6f2a3ead0c23d",
+    "docs/runs/git-index-mutations/check-changed.mjs": "336daba6b80a4d12672a798443ed50b956eafc96b1b93268753a391930412392",
+    "docs/runs/git-index-mutations/ensure-current-build.mjs": "653bd2822ef996e23fb23024d6741c5cb8bd1304fe6c130d1a66b826912bbcb7"
+  },
+  "original_contract": {
+    "schema_version": 2,
+    "acceptance": [
+      {
+        "id": "GI1",
+        "description": "Exact selected stage/unstage and untouched resource preservation"
+      },
+      {
+        "id": "GI2",
+        "description": "Current original authority, safe no-execution and path/metadata boundaries"
+      },
+      {
+        "id": "GI3",
+        "description": "Durable ordered intent/receipt/compatibility/unknown no replay"
+      },
+      {
+        "id": "GI4",
+        "description": "Accessible explicit selected preview/apply and race/retained UI"
+      },
+      {
+        "id": "GI5",
+        "description": "Current affected verification and independent final gates"
+      }
+    ],
+    "checks": {
+      "files": {
+        "argv": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          "--test-reporter=dot",
+          "apps/desktop-app/src/git-index.test.mjs",
+          "apps/desktop-app/src/host/workbench-git.test.mjs",
+          "apps/desktop-app/src/host/workbench-git-index.test.mjs",
+          "apps/desktop-app/src/host/workbench-git-index-storage.test.mjs",
+          "apps/desktop-app/src/host/workspace-registry.test.mjs",
+          "apps/desktop-app/src/host/storage-journal.test.mjs",
+          "apps/desktop-app/src/host/workbench-admission.test.mjs",
+          "apps/desktop-app/src/host/storage-integration.test.mjs",
+          "apps/desktop-app/src/workbench-store.test.mjs",
+          "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+          "apps/desktop-app/scripts/run-evidence.test.mjs",
+          "apps/desktop-app/scripts/build-provenance.test.mjs",
+          "apps/desktop-app/src/host/git-index-kernel.test.mjs",
+          "apps/desktop-app/src/event-host-protocol.test.mjs",
+          "apps/desktop-app/src/event-host-supervisor.test.mjs",
+          "apps/desktop-app/src/host/git-index-contract.test.mjs",
+          "apps/desktop-app/src/workbench-service.test.mjs",
+          "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+          "apps/desktop-app/src/host/workbench-ipc.test.mjs"
+        ],
+        "cwd": ".",
+        "scope": "Affected pure/private/service/storage/renderer/provenance regressions",
+        "acceptance_ids": [
+          "GI1",
+          "GI2",
+          "GI3",
+          "GI4",
+          "GI5"
+        ],
+        "required": true
+      },
+      "typecheck": {
+        "argv": [
+          "pnpm",
+          "exec",
+          "tsc",
+          "-p",
+          "apps/desktop-app/tsconfig.json",
+          "--noEmit"
+        ],
+        "cwd": ".",
+        "scope": "Current DTO and consumers",
+        "acceptance_ids": [
+          "GI5"
+        ],
+        "required": true
+      },
+      "boundaries": {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+        ],
+        "cwd": ".",
+        "scope": "Current FSD/browser boundaries",
+        "acceptance_ids": [
+          "GI5"
+        ],
+        "required": true
+      },
+      "lint": {
+        "argv": [
+          "node",
+          "docs/runs/git-index-mutations/check-changed.mjs",
+          "lint"
+        ],
+        "cwd": ".",
+        "scope": "Exact changed source lint",
+        "acceptance_ids": [
+          "GI5"
+        ],
+        "required": true
+      },
+      "format": {
+        "argv": [
+          "node",
+          "docs/runs/git-index-mutations/check-changed.mjs",
+          "format"
+        ],
+        "cwd": ".",
+        "scope": "Exact changed source format",
+        "acceptance_ids": [
+          "GI5"
+        ],
+        "required": true
+      },
+      "build": {
+        "argv": [
+          "node",
+          "docs/runs/git-index-mutations/ensure-current-build.mjs"
+        ],
+        "cwd": ".",
+        "scope": "Verify exact current build inputs/artifacts/resources; rebuild via original Nx command only when provenance is stale",
+        "acceptance_ids": [
+          "GI5"
+        ],
+        "required": true
+      },
+      "bundle": {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+        ],
+        "cwd": ".",
+        "scope": "Browser isolation",
+        "acceptance_ids": [
+          "GI5"
+        ],
+        "required": true
+      },
+      "index-publication": {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/git-index-probe.mjs",
+          "--out",
+          "docs/runs/git-index-mutations/evidence/publication-r3",
+          "--platform",
+          "darwin"
+        ],
+        "cwd": ".",
+        "scope": "Actual fixedGit/pinned bundledBun production kernel on owned synthetic repos, current source/provenance, no Native/provider/private store",
+        "acceptance_ids": [
+          "GI1",
+          "GI2",
+          "GI3",
+          "GI5"
+        ],
+        "required": true
+      },
+      "hidden-index": {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/run-evidence.mjs",
+          "--script",
+          "git-index",
+          "--out",
+          "docs/runs/git-index-mutations/evidence/hidden-r2"
+        ],
+        "cwd": ".",
+        "scope": "Actual builtRenderer/preload synthetic host, explicit preview/apply/confirmation/status/retained/noauto/desktoplightdark/narrow760200, ownedexit",
+        "acceptance_ids": [
+          "GI4",
+          "GI5"
+        ],
+        "required": true
+      },
+      "reader-regression": {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/git-review-probe.mjs",
+          "--out",
+          "docs/runs/git-index-mutations/evidence/reader-regression-r1"
+        ],
+        "cwd": ".",
+        "scope": "Actual unchanged saved read-only Git matrix after private snapshot extraction, helper/config canaries and original preservation",
+        "acceptance_ids": [
+          "GI2",
+          "GI5"
+        ],
+        "required": true
+      }
+    },
+    "documents": [
+      {
+        "path": "docs/runs/git-index-mutations/design.md",
+        "gate": "design_spec",
+        "version": "3",
+        "sha256": "79e10e767d9361e0e6610a22b28f0dce200b21d378ca619690470bbb566c43f0"
+      }
+    ],
+    "environment_files": [
+      "pnpm-lock.yaml",
+      "docs/runs/git-index-mutations/source-facts.json",
+      "docs/runs/git-index-mutations/prechange-inventory.json",
+      "docs/runs/git-index-mutations/check-changed.mjs",
+      "docs/runs/git-index-mutations/ensure-current-build.mjs"
+    ],
+    "decision_register": [
+      {
+        "id": "original-index-publisher",
+        "statement": "Fixed Git private computation + narrow pinned Darwin descriptor kernel; no original Git process/path fallback",
+        "status": "delegated",
+        "source": "User authorization for full work and architecture boundary under accepted F11; current read compatibility evidence",
+        "impact": "New original index/object write authority only after entry review",
+        "blocks": [],
+        "resolution": "Explicit stage/unstage closed target, originalindexbackup, cooperativeindexlock, exact before/post checks and unknown on observed divergence; refs/worktree writes remain subsequent slices."
+      },
+      {
+        "id": "bounded-delivery",
+        "statement": "Stage/unstage first, keep commit/branch/restore required next",
+        "status": "delegated",
+        "source": "PRD F11 and repeated user continue-to-completion instructions",
+        "impact": "Bounded useful delivery without claiming fullAC11",
+        "blocks": [],
+        "resolution": "Independent gates finish only selected index increment; continue next required actions."
+      },
+      {
+        "id": "platform-and-races",
+        "statement": "Darwin arm64 pinnedBun and exacttrustedGit only; no Windows/OSexclusive/powerloss claims",
+        "status": "confirmed",
+        "source": "Accepted architecture and actual Darwincapability findings",
+        "impact": "Conservative refusal on unsupported states",
+        "blocks": [],
+        "resolution": "Actual ownedsynthetic publication/lifecycle proof + explicit failclosed supportedscope."
+      }
+    ]
+  },
+  "attempts": {
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "contract_sha256": "9ea86932cf7cc40b3c7f97f02892ddb3126bbfb99aaca23edccd40227ee68641",
+      "cwd": ".",
+      "environment_sha256": "053f1cc61afdb86d81f178e8e41412664acfc430d48cb7770a34229f2990b230",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "a0df14f73fa045606ae0e0cb4af30acdb7aef08f15324dc4f56d928069b04423",
+      "recorded_at": "2026-10-08T18:44:50+00:00",
+      "scope": "Current FSD/browser boundaries",
+      "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+      "stderr": "",
+      "stdout": "{\"result\":\"pass\",\"sourceFiles\":82,\"boundaryFixtures\":68,\"positiveFixtures\":16}\n",
+      "timed_out": false
+    },
+    "build": {
+      "argv": [
+        "node",
+        "docs/runs/git-index-mutations/ensure-current-build.mjs"
+      ],
+      "contract_sha256": "9ea86932cf7cc40b3c7f97f02892ddb3126bbfb99aaca23edccd40227ee68641",
+      "cwd": ".",
+      "environment_sha256": "053f1cc61afdb86d81f178e8e41412664acfc430d48cb7770a34229f2990b230",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "a0df14f73fa045606ae0e0cb4af30acdb7aef08f15324dc4f56d928069b04423",
+      "recorded_at": "2026-10-08T18:40:11+00:00",
+      "scope": "Verify exact current build inputs/artifacts/resources; rebuild via original Nx command only when provenance is stale",
+      "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+      "stderr": "",
+      "stdout": "{\"result\":\"pass\",\"action\":\"[REDACTED]\"buildStampSha256\":\"28e01b867bd2986a86d965e1b3d2da98adabedaf7a8527a0e08e89bc5b001526\",\"inputsSha256\":\"d5af33ef2454678a0ce3e21c210928e5cce46738488253ca5136a6368e4a9404\",\"artifactsSha256\":\"4a7677ecb34942ed7872068bf153e768eeb477ac82f7492fceb7db499b79e84e\",\"selectedScriptsSha256\":\"2523a12f506ee55d0a173998c1f21a483a777f4030f669eb5e79463b4e250744\"}\n",
+      "timed_out": false
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "contract_sha256": "9ea86932cf7cc40b3c7f97f02892ddb3126bbfb99aaca23edccd40227ee68641",
+      "cwd": ".",
+      "environment_sha256": "053f1cc61afdb86d81f178e8e41412664acfc430d48cb7770a34229f2990b230",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "a0df14f73fa045606ae0e0cb4af30acdb7aef08f15324dc4f56d928069b04423",
+      "recorded_at": "2026-10-08T18:40:12+00:00",
+      "scope": "Browser isolation",
+      "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+      "stderr": "",
+      "stdout": "{\n  \"result\": \"pass\",\n  \"rendererFiles\": [\n    {\n      \"file\": \"assets/index-CNPHUBGL.css\",\n      \"sha256\": \"58b8fcb57e0a1304049a78f2782f32b6ce78cf8deb0258de1f6712e88c370136\"\n    },\n    {\n      \"file\": \"assets/index-yQ8LrDUG.js\",\n      \"sha256\": \"7e666c0449b3def45d7b00a729e311bec0aca81d60af06d9068b1f0400424961\"\n    },\n    {\n      \"file\": \"index.html\",\n      \"sha256\": \"09ba2e27e7b90aaf3a5f151c67877104606c81bf2c6fd92803fc26daa3e816b3\"\n    }\n  ]\n}\n",
+      "timed_out": false
+    },
+    "files": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/git-index.test.mjs",
+        "apps/desktop-app/src/host/workbench-git.test.mjs",
+        "apps/desktop-app/src/host/workbench-git-index.test.mjs",
+        "apps/desktop-app/src/host/workbench-git-index-storage.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs",
+        "apps/desktop-app/scripts/build-provenance.test.mjs",
+        "apps/desktop-app/src/host/git-index-kernel.test.mjs",
+        "apps/desktop-app/src/event-host-protocol.test.mjs",
+        "apps/desktop-app/src/event-host-supervisor.test.mjs",
+        "apps/desktop-app/src/host/git-index-contract.test.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+        "apps/desktop-app/src/host/workbench-ipc.test.mjs"
+      ],
+      "contract_sha256": "9ea86932cf7cc40b3c7f97f02892ddb3126bbfb99aaca23edccd40227ee68641",
+      "cwd": ".",
+      "environment_sha256": "053f1cc61afdb86d81f178e8e41412664acfc430d48cb7770a34229f2990b230",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "a0df14f73fa045606ae0e0cb4af30acdb7aef08f15324dc4f56d928069b04423",
+      "recorded_at": "2026-10-08T18:44:44+00:00",
+      "scope": "Affected pure/private/service/storage/renderer/provenance regressions",
+      "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+      "stderr": "",
+      "stdout": "....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n...\n",
+      "timed_out": false
+    },
+    "format": {
+      "argv": [
+        "node",
+        "docs/runs/git-index-mutations/check-changed.mjs",
+        "format"
+      ],
+      "contract_sha256": "9ea86932cf7cc40b3c7f97f02892ddb3126bbfb99aaca23edccd40227ee68641",
+      "cwd": ".",
+      "environment_sha256": "053f1cc61afdb86d81f178e8e41412664acfc430d48cb7770a34229f2990b230",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "a0df14f73fa045606ae0e0cb4af30acdb7aef08f15324dc4f56d928069b04423",
+      "recorded_at": "2026-10-08T18:39:56+00:00",
+      "scope": "Exact changed source format",
+      "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+      "stderr": "",
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n{\"mode\":\"format\",\"argv\":[\"exec\",\"prettier\",\"--check\",\"apps/desktop-app/scripts/build-provenance.mjs\",\"apps/desktop-app/scripts/e2e-git-index.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\",\"apps/desktop-app/scripts/git-index-probe.mjs\",\"apps/desktop-app/scripts/run-evidence.mjs\",\"apps/desktop-app/scripts/run-evidence.test.mjs\",\"apps/desktop-app/scripts/stage-event-host.mjs\",\"apps/desktop-app/src/desktop-bridge.d.ts\",\"apps/desktop-app/src/event-host-child.mjs\",\"apps/desktop-app/src/event-host-protocol.mjs\",\"apps/desktop-app/src/event-host-protocol.test.mjs\",\"apps/desktop-app/src/event-host-resources.mjs\",\"apps/desktop-app/src/event-host-supervisor.mjs\",\"apps/desktop-app/src/event-host-supervisor.test.mjs\",\"apps/desktop-app/src/git-index.test.mjs\",\"apps/desktop-app/src/host/git-index-contract.mjs\",\"apps/desktop-app/src/host/git-index-contract.test.mjs\",\"apps/desktop-app/src/host/git-index-kernel.mjs\",\"apps/desktop-app/src/host/git-index-kernel.test.mjs\",\"apps/desktop-app/src/host/storage-journal.mjs\",\"apps/desktop-app/src/host/storage-journal.test.mjs\",\"apps/desktop-app/src/host/workbench-admission.mjs\",\"apps/desktop-app/src/host/workbench-git-index-storage.mjs\",\"apps/desktop-app/src/host/workbench-git-index-storage.test.mjs\",\"apps/desktop-app/src/host/workbench-git-index.mjs\",\"apps/desktop-app/src/host/workbench-git-index.test.mjs\",\"apps/desktop-app/src/host/workbench-git-snapshot.mjs\",\"apps/desktop-app/src/host/workbench-git.mjs\",\"apps/desktop-app/src/host/workbench-receipts.mjs\",\"apps/desktop-app/src/host/workspace-registry.mjs\",\"apps/desktop-app/src/host/workspace-registry.test.mjs\",\"apps/desktop-app/src/main.mjs\",\"apps/desktop-app/src/renderer/entities/workbench/index.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/store.ts\",\"apps/desktop-app/src/renderer/features/git-review/index.tsx\",\"apps/desktop-app/src/renderer/features/git-review/review.module.css\",\"apps/desktop-app/src/renderer/shared/api/index.ts\",\"apps/desktop-app/src/renderer/shared/git-index/index.d.mts\",\"apps/desktop-app/src/renderer/shared/git-index/index.mjs\",\"apps/desktop-app/src/renderer/shared/git-index/index.ts\",\"apps/desktop-app/src/renderer/shared/transport/index.ts\",\"apps/desktop-app/src/workbench-contract.mjs\",\"apps/desktop-app/src/workbench-service.mjs\",\"apps/desktop-app/src/workbench-store.test.mjs\"],\"exit\":0}\n",
+      "timed_out": false
+    },
+    "hidden-index": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--script",
+        "git-index",
+        "--out",
+        "docs/runs/git-index-mutations/evidence/hidden-r2"
+      ],
+      "contract_sha256": "9ea86932cf7cc40b3c7f97f02892ddb3126bbfb99aaca23edccd40227ee68641",
+      "cwd": ".",
+      "environment_sha256": "053f1cc61afdb86d81f178e8e41412664acfc430d48cb7770a34229f2990b230",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "a0df14f73fa045606ae0e0cb4af30acdb7aef08f15324dc4f56d928069b04423",
+      "recorded_at": "2026-10-08T18:43:55+00:00",
+      "scope": "Actual builtRenderer/preload synthetic host, explicit preview/apply/confirmation/status/retained/noauto/desktoplightdark/narrow760200, ownedexit",
+      "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+      "stderr": "",
+      "stdout": "{\"script\":\"git-index\",\"mode\":null,\"platform\":\"darwin\",\"runnerPlatform\":\"darwin\",\"runnerArch\":\"arm64\",\"runnerNode\":\"v24.14.1\",\"destination\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-index-mutations/evidence/hidden-r2/git-index\",\"command\":[\"/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node\",\"/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-git-index.mjs\"],\"startedAt\":\"2026-10-08T18:41:41.521Z\",\"status\":\"pass\",\"exitCode\":0,\"signal\":null,\"evidence\":[\"git-index-evidence.json\",\"git-index-1-ready-stage-preview-light-desktop.png\",\"git-index-2-ready-stage-preview-light-desktop.png\",\"git-index-3-ready-stage-preview-light-desktop.png\",\"git-index-4-ready-stage-preview-light-desktop.png\",\"git-index-5-ready-stage-preview-light-desktop.png\",\"git-index-6-ready-stage-preview-metadata-light-desktop.png\",\"git-index-7-ready-stage-preview-metadata-light-desktop.png\",\"git-index-8-ready-stage-preview-metadata-light-desktop.png\",\"git-index-9-ready-stage-preview-metadata-light-desktop.png\",\"git-index-10-ready-stage-preview-metadata-light-desktop.png\",\"git-index-11-ready-stage-preview-metadata-light-desktop.png\",\"git-index-12-ready-preview-dark-desktop-dark-desktop.png\",\"git-index-13-ready-preview-dark-desktop-dark-desktop.png\",\"git-index-14-ready-preview-dark-desktop-dark-desktop.png\",\"git-index-15-ready-preview-dark-desktop-dark-desktop.png\",\"git-index-16-ready-preview-dark-desktop-dark-desktop.png\",\"git-index-17-ready-stage-applied-dark-760px200.png\",\"git-index-18-ready-stage-applied-dark-760px200.png\",\"git-index-19-ready-stage-applied-dark-760px200.png\",\"git-index-20-ready-stage-applied-dark-760px200.png\",\"git-index-21-ready-stage-applied-dark-760px200.png\",\"git-index-22-ready-stage-applied-metadata-dark-760px200.png\",\"git-index-23-ready-stage-applied-metadata-dark-760px200.png\",\"git-index-24-ready-stage-applied-metadata-dark-760px200.png\",\"git-index-25-ready-stage-applied-metadata-dark-760px200.png\",\"git-index-26-ready-unstage-preview-dark-desktop.png\",\"git-index-27-ready-unstage-preview-dark-desktop.png\",\"git-index-28-ready-unstage-preview-dark-desktop.png\",\"git-index-29-ready-unstage-preview-dark-desktop.png\",\"git-index-30-ready-unstage-preview-dark-desktop.png\",\"git-index-31-ready-unstage-preview-metadata-dark-desktop.png\",\"git-index-32-ready-unstage-preview-metadata-dark-desktop.png\",\"git-index-33-ready-unstage-preview-metadata-dark-desktop.png\",\"git-index-34-ready-unstage-preview-metadata-dark-desktop.png\",\"git-index-35-ready-unstage-preview-metadata-dark-desktop.png\",\"git-index-36-ready-unstage-preview-metadata-dark-desktop.png\",\"git-index-37-ready-unstage-applied-dark-760px200.png\",\"git-index-38-ready-unstage-applied-dark-760px200.png\",\"git-index-39-ready-unstage-applied-dark-760px200.png\",\"git-index-40-ready-unstage-applied-dark-760px200.png\",\"git-index-41-ready-unstage-applied-dark-760px200.png\",\"git-index-42-sha256-stage-preview-light-760px200.png\",\"git-index-43-sha256-stage-preview-light-760px200.png\",\"git-index-44-sha256-stage-preview-light-760px200.png\",\"git-index-45-sha256-stage-preview-light-760px200.png\",\"git-index-46-sha256-stage-preview-light-760px200.png\",\"git-index-47-sha256-stage-preview-metadata-light-760px200.png\",\"git-index-48-sha256-stage-preview-metadata-light-760px200.png\",\"git-index-49-sha256-stage-preview-metadata-light-760px200.png\",\"git-index-50-sha256-stage-preview-metadata-light-760px200.png\",\"git-index-51-sha256-stage-preview-metadata-light-760px200.png\",\"git-index-52-sha256-stage-preview-metadata-light-760px200.png\",\"git-index-53-sha256-stage-applied-dark-760px200.png\",\"git-index-54-sha256-stage-applied-dark-760px200.png\",\"git-index-55-sha256-stage-applied-dark-760px200.png\",\"git-index-56-sha256-stage-applied-dark-760px200.png\",\"git-index-57-sha256-stage-applied-dark-760px200.png\",\"git-index-58-sha256-stage-applied-metadata-dark-760px200.png\",\"git-index-59-sha256-stage-applied-metadata-dark-760px200.png\",\"git-index-60-sha256-stage-applied-metadata-dark-760px200.png\",\"git-index-61-sha256-stage-applied-metadata-dark-760px200.png\",\"git-index-62-sha256-unstage-preview-dark-760px200.png\",\"git-index-63-sha256-unstage-preview-dark-760px200.png\",\"git-index-64-sha256-unstage-preview-dark-760px200.png\",\"git-index-65-sha256-unstage-preview-dark-760px200.png\",\"git-index-66-sha256-unstage-preview-dark-760px200.png\",\"git-index-67-sha256-unstage-applied-dark-760px200.png\",\"git-index-68-sha256-unstage-applied-dark-760px200.png\",\"git-index-69-sha256-unstage-applied-dark-760px200.png\",\"git-index-70-sha256-unstage-applied-dark-760px200.png\",\"git-index-71-sha256-unstage-applied-dark-760px200.png\",\"git-index-72-absent-stage-preview-light-desktop.png\",\"git-index-73-absent-stage-preview-light-desktop.png\",\"git-index-74-absent-stage-preview-light-desktop.png\",\"git-index-75-absent-stage-preview-light-desktop.png\",\"git-index-76-absent-stage-preview-light-desktop.png\",\"git-index-77-absent-stage-preview-metadata-light-desktop.png\",\"git-index-78-absent-stage-preview-metadata-light-desktop.png\",\"git-index-79-absent-stage-preview-metadata-light-desktop.png\",\"git-index-80-absent-stage-preview-metadata-light-desktop.png\",\"git-index-81-absent-stage-preview-metadata-light-desktop.png\",\"git-index-82-absent-stage-preview-metadata-light-desktop.png\",\"git-index-83-absent-stage-applied-dark-760px200.png\",\"git-index-84-absent-stage-applied-dark-760px200.png\",\"git-index-85-absent-stage-applied-dark-760px200.png\",\"git-index-86-absent-stage-applied-dark-760px200.png\",\"git-index-87-absent-stage-applied-dark-760px200.png\",\"git-index-88-absent-stage-applied-metadata-dark-760px200.png\",\"git-index-89-absent-stage-applied-metadata-dark-760px200.png\",\"git-index-90-absent-stage-applied-metadata-dark-760px200.png\",\"git-index-91-absent-stage-applied-metadata-dark-760px200.png\",\"git-index-92-absent-unstage-no-changes-dark-760px200.png\",\"git-index-93-absent-unstage-no-changes-dark-760px200.png\",\"git-index-94-absent-unstage-no-changes-dark-760px200.png\",\"git-index-95-absent-unstage-no-changes-dark-760px200.png\",\"git-index-96-absent-unstage-no-changes-dark-760px200.png\",\"git-index-97-unborn-existing-stage-preview-light-desktop.png\",\"git-index-98-unborn-existing-stage-preview-light-desktop.png\",\"git-index-99-unborn-existing-stage-preview-light-desktop.png\",\"git-index-100-unborn-existing-stage-preview-light-desktop.png\",\"git-index-101-unborn-existing-stage-preview-light-desktop.png\",\"git-index-102-unborn-existing-stage-applied-dark-760px200.png\",\"git-index-103-unborn-existing-stage-applied-dark-760px200.png\",\"git-index-104-unborn-existing-stage-applied-dark-760px200.png\",\"git-index-105-unborn-existing-stage-applied-dark-760px200.png\",\"git-index-106-unborn-existing-stage-applied-dark-760px200.png\",\"git-index-107-unborn-existing-unstage-preview-dark-desktop.png\",\"git-index-108-unborn-existing-unstage-preview-dark-desktop.png\",\"git-index-109-unborn-existing-unstage-preview-dark-desktop.png\",\"git-index-110-unborn-existing-unstage-preview-dark-desktop.png\",\"git-index-111-unborn-existing-unstage-preview-dark-desktop.png\",\"git-index-112-unborn-existing-unstage-applied-dark-760px200.png\",\"git-index-113-unborn-existing-unstage-applied-dark-760px200.png\",\"git-index-114-unborn-existing-unstage-applied-dark-760px200.png\",\"git-index-115-unborn-existing-unstage-applied-dark-760px200.png\",\"git-index-116-unborn-existing-unstage-applied-dark-760px200.png\",\"git-index-117-refused-no_changes-dark-760px200.png\",\"git-index-118-refused-no_changes-dark-760px200.png\",\"git-index-119-refused-no_changes-dark-760px200.png\",\"git-index-120-refused-no_changes-dark-760px200.png\",\"git-index-121-refused-no_changes-dark-760px200.png\",\"git-index-122-refused-stale_observation-dark-760px200.png\",\"git-index-123-refused-stale_observation-dark-760px200.png\",\"git-index-124-refused-stale_observation-dark-760px200.png\",\"git-index-125-refused-stale_observation-dark-760px200.png\",\"git-index-126-refused-stale_observation-dark-760px200.png\",\"git-index-127-refused-expired_observation-dark-760px200.png\",\"git-index-128-refused-expired_observation-dark-760px200.png\",\"git-index-129-refused-expired_observation-dark-760px200.png\",\"git-index-130-refused-expired_observation-dark-760px200.png\",\"\n[truncated]",
+      "timed_out": false
+    },
+    "index-publication": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/git-index-probe.mjs",
+        "--out",
+        "docs/runs/git-index-mutations/evidence/publication-r3",
+        "--platform",
+        "darwin"
+      ],
+      "contract_sha256": "9ea86932cf7cc40b3c7f97f02892ddb3126bbfb99aaca23edccd40227ee68641",
+      "cwd": ".",
+      "environment_sha256": "053f1cc61afdb86d81f178e8e41412664acfc430d48cb7770a34229f2990b230",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "a0df14f73fa045606ae0e0cb4af30acdb7aef08f15324dc4f56d928069b04423",
+      "recorded_at": "2026-10-08T18:41:40+00:00",
+      "scope": "Actual fixedGit/pinned bundledBun production kernel on owned synthetic repos, current source/provenance, no Native/provider/private store",
+      "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+      "stderr": "",
+      "stdout": "",
+      "timed_out": false
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "docs/runs/git-index-mutations/check-changed.mjs",
+        "lint"
+      ],
+      "contract_sha256": "9ea86932cf7cc40b3c7f97f02892ddb3126bbfb99aaca23edccd40227ee68641",
+      "cwd": ".",
+      "environment_sha256": "053f1cc61afdb86d81f178e8e41412664acfc430d48cb7770a34229f2990b230",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "a0df14f73fa045606ae0e0cb4af30acdb7aef08f15324dc4f56d928069b04423",
+      "recorded_at": "2026-10-08T18:39:52+00:00",
+      "scope": "Exact changed source lint",
+      "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+      "stderr": "",
+      "stdout": "{\"mode\":\"lint\",\"argv\":[\"exec\",\"eslint\",\"--config\",\"apps/desktop-app/eslint.config.mjs\",\"apps/desktop-app/scripts/build-provenance.mjs\",\"apps/desktop-app/scripts/e2e-git-index.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\",\"apps/desktop-app/scripts/git-index-probe.mjs\",\"apps/desktop-app/scripts/run-evidence.mjs\",\"apps/desktop-app/scripts/run-evidence.test.mjs\",\"apps/desktop-app/scripts/stage-event-host.mjs\",\"apps/desktop-app/src/desktop-bridge.d.ts\",\"apps/desktop-app/src/event-host-child.mjs\",\"apps/desktop-app/src/event-host-protocol.mjs\",\"apps/desktop-app/src/event-host-protocol.test.mjs\",\"apps/desktop-app/src/event-host-resources.mjs\",\"apps/desktop-app/src/event-host-supervisor.mjs\",\"apps/desktop-app/src/event-host-supervisor.test.mjs\",\"apps/desktop-app/src/git-index.test.mjs\",\"apps/desktop-app/src/host/git-index-contract.mjs\",\"apps/desktop-app/src/host/git-index-contract.test.mjs\",\"apps/desktop-app/src/host/git-index-kernel.mjs\",\"apps/desktop-app/src/host/git-index-kernel.test.mjs\",\"apps/desktop-app/src/host/storage-journal.mjs\",\"apps/desktop-app/src/host/storage-journal.test.mjs\",\"apps/desktop-app/src/host/workbench-admission.mjs\",\"apps/desktop-app/src/host/workbench-git-index-storage.mjs\",\"apps/desktop-app/src/host/workbench-git-index-storage.test.mjs\",\"apps/desktop-app/src/host/workbench-git-index.mjs\",\"apps/desktop-app/src/host/workbench-git-index.test.mjs\",\"apps/desktop-app/src/host/workbench-git-snapshot.mjs\",\"apps/desktop-app/src/host/workbench-git.mjs\",\"apps/desktop-app/src/host/workbench-receipts.mjs\",\"apps/desktop-app/src/host/workspace-registry.mjs\",\"apps/desktop-app/src/host/workspace-registry.test.mjs\",\"apps/desktop-app/src/main.mjs\",\"apps/desktop-app/src/renderer/entities/workbench/index.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/store.ts\",\"apps/desktop-app/src/renderer/features/git-review/index.tsx\",\"apps/desktop-app/src/renderer/shared/api/index.ts\",\"apps/desktop-app/src/renderer/shared/git-index/index.d.mts\",\"apps/desktop-app/src/renderer/shared/git-index/index.mjs\",\"apps/desktop-app/src/renderer/shared/git-index/index.ts\",\"apps/desktop-app/src/renderer/shared/transport/index.ts\",\"apps/desktop-app/src/workbench-contract.mjs\",\"apps/desktop-app/src/workbench-service.mjs\",\"apps/desktop-app/src/workbench-store.test.mjs\"],\"exit\":0}\n",
+      "timed_out": false
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "contract_sha256": "9ea86932cf7cc40b3c7f97f02892ddb3126bbfb99aaca23edccd40227ee68641",
+      "cwd": ".",
+      "environment_sha256": "053f1cc61afdb86d81f178e8e41412664acfc430d48cb7770a34229f2990b230",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "a0df14f73fa045606ae0e0cb4af30acdb7aef08f15324dc4f56d928069b04423",
+      "recorded_at": "2026-10-08T18:44:49+00:00",
+      "scope": "Current DTO and consumers",
+      "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+      "stderr": "",
+      "stdout": "",
+      "timed_out": false
+    },
+    "reader-regression": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/git-review-probe.mjs",
+        "--out",
+        "docs/runs/git-index-mutations/evidence/reader-regression-r1"
+      ],
+      "contract_sha256": "8769dc829f8078d38e487a5b0d8f12f9b60515b953e407450ae1c6fb0f0972d5",
+      "cwd": ".",
+      "environment_sha256": "053f1cc61afdb86d81f178e8e41412664acfc430d48cb7770a34229f2990b230",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "c3863f16ed78a52b194ea7f494a90d4e29219d6dd0bdf531812dcb9466581516",
+      "recorded_at": "2026-10-08T18:46:10+00:00",
+      "scope": "Actual unchanged saved read-only Git matrix after private snapshot extraction, helper/config canaries and original preservation",
+      "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+      "stderr": "",
+      "stdout": "{\"status\":\"pass\",\"productionReaderSyntheticMatrixPassed\":true,\"report\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-index-mutations/evidence/reader-regression-r1/report.json\",\"retainedSyntheticEvidence\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-index-mutations/evidence/reader-regression-r1/synthetic-5RKR15\"}\n",
+      "timed_out": false
+    }
+  },
+  "evidence_files": {
+    "docs/runs/git-index-mutations/evidence/reader-regression-r1/report.json": "d251271a6bb233b6ef61c819c07e50340ad9d995147951cf382e3428e78363da",
+    "docs/runs/git-index-mutations/evidence/publication-r3/publication-evidence.json": "ed6ba164253ac6a46fc6da77cf990f47c4038df85a935d5f15556062ddc477ce",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-evidence.json": "1f5de861da119dd4b2aaf875412a5887c4a6bfe9caf08769e758f98080e23702",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/manifest.json": "d07a44632268c1d6999fe7cfbf32c8a0b7d1eee7eab19c889b1af2529173e5c2",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-1-ready-stage-preview-light-desktop.png": "915319657b6a2ebc367c587484c644f36283d19b867e05536cfeb9ad0ccc4ab3",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-10-ready-stage-preview-metadata-light-desktop.png": "3911b804b6bacf46cadfb738ee7c2c3c004ce26687cdbc8370690fda03699b9e",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-100-unborn-existing-stage-preview-light-desktop.png": "0d80dc7267c65756aeed7af0191adeaf55ada87faf3c18eaedfa31136067e15a",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-101-unborn-existing-stage-preview-light-desktop.png": "ff43fedfe16b8a402445a67f95c9e34feaad61865edc5a67d8665c8d84c583a4",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-102-unborn-existing-stage-applied-dark-760px200.png": "59d56afbbd0f7c265a9620f82787a6c0bbbd50f3d329e5f92b45457f5ec6e11b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-103-unborn-existing-stage-applied-dark-760px200.png": "fc3fdcc384250c30acf40572d8de15940f010856dd4fc2528c88174cf76b2c6c",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-104-unborn-existing-stage-applied-dark-760px200.png": "4344945766ab619bb84cc8c8581f7017b08175aff511e22608e2f4b04951663a",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-105-unborn-existing-stage-applied-dark-760px200.png": "4344945766ab619bb84cc8c8581f7017b08175aff511e22608e2f4b04951663a",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-106-unborn-existing-stage-applied-dark-760px200.png": "fc6d8bd9f6172b8a889df7d2705f029bcfbb8e13e54b1dc01a29a847c1f1349b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-107-unborn-existing-unstage-preview-dark-desktop.png": "315a0d82c2e662fe77914ec7f0420076b737e25f0bce578853a45d560e41f6ac",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-108-unborn-existing-unstage-preview-dark-desktop.png": "7a0fa47c16a6d35e707b767f3bb90cd27a4ae72022079579bfc1ab657c5d6951",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-109-unborn-existing-unstage-preview-dark-desktop.png": "b63aee6accec126c6338c73e90c4632a74b1fa73782797890693c98dac8ddf6c",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-11-ready-stage-preview-metadata-light-desktop.png": "f573dd7e46ce8d50d6cad2e40e6df5ac41cb3973afef294b9e6706944d97c773",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-110-unborn-existing-unstage-preview-dark-desktop.png": "79a7d669583cefceed888b72c5c809694c11bf00786a5f60b98531390cc65944",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-111-unborn-existing-unstage-preview-dark-desktop.png": "7ab46177a0d283dc85574bae661678fdd03775ba98bc402353ec0e14df61974b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-112-unborn-existing-unstage-applied-dark-760px200.png": "90fc9f1fe01e34f32a52efb2d2114440e1efcd6ab0a7c2aa0cc31bdc272dbbe7",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-113-unborn-existing-unstage-applied-dark-760px200.png": "bdcc725e25ec082b12a7763fd3a3b3cadf0b6bc9f3d2b3a249afbe0aa797de8e",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-114-unborn-existing-unstage-applied-dark-760px200.png": "8c1149a3844bad87582c119597c2a26605c09cb3f4389dafcebd0417f307c953",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-115-unborn-existing-unstage-applied-dark-760px200.png": "8c1149a3844bad87582c119597c2a26605c09cb3f4389dafcebd0417f307c953",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-116-unborn-existing-unstage-applied-dark-760px200.png": "7e6ea1fedb157003f0924a131e77ff4676bb70822c6e822abbeb462a79e3b6a1",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-117-refused-no_changes-dark-760px200.png": "8e13074603d002dde419a1cfc884dfffc9f7817b375523331eb65fd44b793995",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-118-refused-no_changes-dark-760px200.png": "2824b09c744ea2e22248fdd3ae9d03e580d36cbc4b9af3e8611a39117b3b0bef",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-119-refused-no_changes-dark-760px200.png": "9f8c77849e4cff91f65665b612594ad95150ebd09d2721ad5cba28b0aa6afef9",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-12-ready-preview-dark-desktop-dark-desktop.png": "002ab6fd4a6278e5dda227bbe7b0c49baaf6be7ce2cffd1af01981810c1ada02",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-120-refused-no_changes-dark-760px200.png": "b998b559ae10838f0abdc729cc7c13b8fff74cc95da457027439426b11207a20",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-121-refused-no_changes-dark-760px200.png": "c235befed0a826b3802fe7c787716b32f709a8785080a7828ec8cbf0561232b2",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-122-refused-stale_observation-dark-760px200.png": "32c380a1f391e58b83299c5fc50c035b463396a393555f7c2f3768d65617fd24",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-123-refused-stale_observation-dark-760px200.png": "b81aaae63988c3a4d1e9ee2568f3f83d5982501e54c26362f063f713c2339912",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-124-refused-stale_observation-dark-760px200.png": "2a6f36bf85b2e0c645ad091e26a0c1a31e7a6b453903e7afb1b9a842e8e99cca",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-125-refused-stale_observation-dark-760px200.png": "2a6f36bf85b2e0c645ad091e26a0c1a31e7a6b453903e7afb1b9a842e8e99cca",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-126-refused-stale_observation-dark-760px200.png": "3f684ffe3c36a033b619f2c24b21444e46e29d730fa31df989227d169d61c63d",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-127-refused-expired_observation-dark-760px200.png": "194a1c464c67de388d548a37234e9d554ed5b0a527d772ce4ab6fe352d5bd6c2",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-128-refused-expired_observation-dark-760px200.png": "8aaf22468754005679766c44ecef417e4e057a029ad5faef9ffc1a4f9abe82da",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-129-refused-expired_observation-dark-760px200.png": "302ded0aeef9cff962ee67cb4e9193661037ce7cf9c03057a1baa76bd8e6b852",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-13-ready-preview-dark-desktop-dark-desktop.png": "cda7fcfc47f34cbec31d6f80019be5f8cb49d39f6586e66b337269777b7d0eaf",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-130-refused-expired_observation-dark-760px200.png": "302ded0aeef9cff962ee67cb4e9193661037ce7cf9c03057a1baa76bd8e6b852",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-131-refused-expired_observation-dark-760px200.png": "d6aedb819063e63ae2cc1e84dc88e9258ee75123aad93763c5f3244dd9ff8f82",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-132-refused-lock_conflict-dark-760px200.png": "758e385e602e221fa5c954eded15e31b37f1ecee6855d973131b4fe4088f236b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-133-refused-lock_conflict-dark-760px200.png": "2824b09c744ea2e22248fdd3ae9d03e580d36cbc4b9af3e8611a39117b3b0bef",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-134-refused-lock_conflict-dark-760px200.png": "6959c012eecf450e6cffa8d03bd28747d6a1506b63d08c0c64b55767c8e6b74e",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-135-refused-lock_conflict-dark-760px200.png": "7d8879475cc7614f1eb1fa18dcd1699e65ce5a67ee7d13b5a237e35e0bea413e",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-136-refused-lock_conflict-dark-760px200.png": "7f44f7fb45ef60fa4ddaf957f2352dd54cb94451bf6563c17b43176d43bd4598",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-137-refused-unsupported_index_mutation-dark-760px200.png": "b221c4031636c71064609b9dabbc710595271dee149649ceed7e77abd366e1e1",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-138-refused-unsupported_index_mutation-dark-760px200.png": "f50cd5dd9e73946bf410a91795b3d9f9409daa97128c99e60529a23a2eeef128",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-139-refused-unsupported_index_mutation-dark-760px200.png": "7248f35f5a6d3341518cdafc5fdc30755b2c15470c94436b4fb686d9d638abea",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-14-ready-preview-dark-desktop-dark-desktop.png": "2ba901389a68fb34fe7ad90561f672b59a075ea967504961491d68d4b2988c00",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-140-refused-unsupported_index_mutation-dark-760px200.png": "4525b13fa2888f631ebdbad5b4c9d6e1f00181707435bc5f19e2956296bfb3f1",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-141-refused-unsupported_index_mutation-dark-760px200.png": "6e47e8bbc9e5d27a9635c331e652c716e56e889c80b97079520084a45845b772",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-142-apply-denied-light-760px200.png": "d09973f4ff49348466fd3149e5b0ff4d2513c8f3391c6dc1179680d6ae930e44",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-143-apply-denied-light-760px200.png": "2dd7ee5a940759edcaa3632fe225e3e4d5edf609f7abc567bd732ecc421781a7",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-144-apply-denied-light-760px200.png": "37a1328ec6f5dd13aa46c86696dd38f611d8795d4e670ff4ed3a99458e403408",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-145-apply-denied-light-760px200.png": "a7f13f28f89d76b764e6c21cc2d66269a20c565af0cf897eb1aa8847d429e22b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-146-apply-denied-light-760px200.png": "df1abc2669a573aff8c97e5837d5d23f20d33f739371c47516284d7fd4c2f612",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-147-apply-unknown-light-760px200.png": "e7e29b38334a2f0519f80201063ce7661424fedab094d9af506d8c385b60abbb",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-148-apply-unknown-light-760px200.png": "890a4e9d0d40ee0e09566bbfa86c3f0397b5eef100588149fa88c1c5a7eb0d63",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-149-apply-unknown-light-760px200.png": "ac25fd2bb4158a15cf93e673ef15b014c73f7f2fb216685a66af111966d89a20",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-15-ready-preview-dark-desktop-dark-desktop.png": "541b0c6c594bf2995d08eefc85204809a3eb67e1b44c0de04675f96447dc4352",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-150-apply-unknown-light-760px200.png": "ac25fd2bb4158a15cf93e673ef15b014c73f7f2fb216685a66af111966d89a20",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-151-apply-unknown-light-760px200.png": "8011168c4c87fff38c10fa17fdd031ec873ce8ff36c3923ea8b8a6a2bdd7ec43",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-152-apply-unknown-metadata-light-760px200.png": "b91b431b9fa7b6dce13137d153c92caf6a7208daa8e2e3eb70c111c8cedb2e0d",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-153-apply-unknown-metadata-light-760px200.png": "1ce32298d396b1843bdb9c16506e8dfba7a0dfacc2e75549b514eddf2efde121",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-154-apply-unknown-metadata-light-760px200.png": "1668a45d6df90d50e5260fc9ee64990866479388fe1de9525f8f3fde619fe145",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-155-apply-stale_preview-light-760px200.png": "d09973f4ff49348466fd3149e5b0ff4d2513c8f3391c6dc1179680d6ae930e44",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-156-apply-stale_preview-light-760px200.png": "2dd7ee5a940759edcaa3632fe225e3e4d5edf609f7abc567bd732ecc421781a7",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-157-apply-stale_preview-light-760px200.png": "37a1328ec6f5dd13aa46c86696dd38f611d8795d4e670ff4ed3a99458e403408",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-158-apply-stale_preview-light-760px200.png": "a7f13f28f89d76b764e6c21cc2d66269a20c565af0cf897eb1aa8847d429e22b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-159-apply-stale_preview-light-760px200.png": "df1abc2669a573aff8c97e5837d5d23f20d33f739371c47516284d7fd4c2f612",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-16-ready-preview-dark-desktop-dark-desktop.png": "89a5ec12dec2143c5066d0e86f6d2ad88110ff16e896a780b5ce6458673584e5",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-160-apply-expired_preview-light-760px200.png": "d09973f4ff49348466fd3149e5b0ff4d2513c8f3391c6dc1179680d6ae930e44",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-161-apply-expired_preview-light-760px200.png": "2dd7ee5a940759edcaa3632fe225e3e4d5edf609f7abc567bd732ecc421781a7",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-162-apply-expired_preview-light-760px200.png": "37a1328ec6f5dd13aa46c86696dd38f611d8795d4e670ff4ed3a99458e403408",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-163-apply-expired_preview-light-760px200.png": "a7f13f28f89d76b764e6c21cc2d66269a20c565af0cf897eb1aa8847d429e22b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-164-apply-expired_preview-light-760px200.png": "df1abc2669a573aff8c97e5837d5d23f20d33f739371c47516284d7fd4c2f612",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-165-apply-lock_conflict-light-760px200.png": "d09973f4ff49348466fd3149e5b0ff4d2513c8f3391c6dc1179680d6ae930e44",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-166-apply-lock_conflict-light-760px200.png": "2dd7ee5a940759edcaa3632fe225e3e4d5edf609f7abc567bd732ecc421781a7",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-167-apply-lock_conflict-light-760px200.png": "37a1328ec6f5dd13aa46c86696dd38f611d8795d4e670ff4ed3a99458e403408",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-168-apply-lock_conflict-light-760px200.png": "a7f13f28f89d76b764e6c21cc2d66269a20c565af0cf897eb1aa8847d429e22b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-169-apply-lock_conflict-light-760px200.png": "df1abc2669a573aff8c97e5837d5d23f20d33f739371c47516284d7fd4c2f612",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-17-ready-stage-applied-dark-760px200.png": "59d56afbbd0f7c265a9620f82787a6c0bbbd50f3d329e5f92b45457f5ec6e11b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-170-apply-unsupported_index_mutation-light-760px200.png": "d09973f4ff49348466fd3149e5b0ff4d2513c8f3391c6dc1179680d6ae930e44",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-171-apply-unsupported_index_mutation-light-760px200.png": "2dd7ee5a940759edcaa3632fe225e3e4d5edf609f7abc567bd732ecc421781a7",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-172-apply-unsupported_index_mutation-light-760px200.png": "37a1328ec6f5dd13aa46c86696dd38f611d8795d4e670ff4ed3a99458e403408",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-173-apply-unsupported_index_mutation-light-760px200.png": "a7f13f28f89d76b764e6c21cc2d66269a20c565af0cf897eb1aa8847d429e22b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-174-apply-unsupported_index_mutation-light-760px200.png": "df1abc2669a573aff8c97e5837d5d23f20d33f739371c47516284d7fd4c2f612",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-175-pending-preview-dark-760px200.png": "5b00b576c0e3264d1b979fb389c52af944c3a0f3e24635203addb001e3af026a",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-176-pending-preview-dark-760px200.png": "1287382303cea0e3002d5c72fe7ab9301a25a999d744283f3a7bb46d56e3afec",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-177-pending-preview-dark-760px200.png": "1de54d016a509de85d95372a79fb4397847a9f337dee800490d401583428f88f",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-178-pending-preview-dark-760px200.png": "1de54d016a509de85d95372a79fb4397847a9f337dee800490d401583428f88f",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-179-pending-preview-dark-760px200.png": "73f0e660649eea055b189fece6c5c4ccead11b7c431a8405d9ca7162675d72e5",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-18-ready-stage-applied-dark-760px200.png": "fc3fdcc384250c30acf40572d8de15940f010856dd4fc2528c88174cf76b2c6c",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-180-historical-held-dark-760px200.png": "9952b57226fd2a1c58aa7ab38f06804d574d9c09212994e3b00414a7f24ea684",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-181-historical-held-dark-760px200.png": "393d240447d56723a527226b7903bbd0813a8c7a332c99bcb9463136ffa6654d",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-182-historical-held-dark-760px200.png": "c4e33e7f7bcf78dae8462dd1e9c3391f43a37b4cbf2cc584c63b1a11f75dc495",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-183-historical-held-dark-760px200.png": "c4e33e7f7bcf78dae8462dd1e9c3391f43a37b4cbf2cc584c63b1a11f75dc495",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-184-historical-held-dark-760px200.png": "7ed1b65e3717487645f42f4dc2d995ffee8b30a0b687e8558e3a49b4b9b436c1",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-185-historical-global-held-dark-760px200.png": "6b1b4e2ebe037ec4a619a3c644e6a9f4b8fba1975e8e26993afc3b688e936b4f",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-186-historical-global-held-dark-760px200.png": "9cf7fa31421ecbc2e12471106bc9c81f4bbaff8d67afe46a462b00d5a4b3d9b4",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-187-historical-global-held-dark-760px200.png": "0fa8138e974ac4b852db14e1a40f4b9e8521ec7143f16fd1f955d7a1144c50cc",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-188-historical-global-held-dark-760px200.png": "0fa8138e974ac4b852db14e1a40f4b9e8521ec7143f16fd1f955d7a1144c50cc",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-189-historical-global-held-dark-760px200.png": "124272f7a4ea77b5a2330a1beda456de1cf94596a97ce999c0cba0c8d2779d3a",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-19-ready-stage-applied-dark-760px200.png": "4344945766ab619bb84cc8c8581f7017b08175aff511e22608e2f4b04951663a",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-190-historical-untrusted-dark-760px200.png": "d6db9af88faa16b5129df2e201a721846ddfd53683e45a735896f1e9aeb448bd",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-191-historical-untrusted-dark-760px200.png": "9e0026dd2b78bf7560e36f36ef21acac77646c460d3519445266cfe599036118",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-192-historical-untrusted-dark-760px200.png": "188bf09d860011d8b7c2a7987e032fbde256777a760a5a535c209447d39d9a1e",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-193-historical-untrusted-dark-760px200.png": "188bf09d860011d8b7c2a7987e032fbde256777a760a5a535c209447d39d9a1e",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-194-historical-untrusted-dark-760px200.png": "f6ba87ad75a4472b1b688df1a08fab74a464b4e110902841667f446e0d76b53d",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-195-historical-epoch-dark-760px200.png": "57fb7b8838c2fa67fc93972ccf129337630e2f0277035bd3637b4a4fc464d80b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-196-historical-epoch-dark-760px200.png": "4a5e595408aad745676893426e162c520ce1e453319010514d9c6b6566d6e182",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-197-historical-epoch-dark-760px200.png": "5dc198d3b93549b7756ca31f581cc149d0874f7cb4e3285a885d1370af34cb1a",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-198-historical-epoch-dark-760px200.png": "5dc198d3b93549b7756ca31f581cc149d0874f7cb4e3285a885d1370af34cb1a",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-199-historical-epoch-dark-760px200.png": "faeb0639cfcb19d5986b123018eb291e66a8b7e47c6e88ca78b6e0f38efe29d6",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-2-ready-stage-preview-light-desktop.png": "990164cdf71cdb1d6ee772aa8f9ac7d156d35df3df3eaca169423bb80c1a807f",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-20-ready-stage-applied-dark-760px200.png": "4344945766ab619bb84cc8c8581f7017b08175aff511e22608e2f4b04951663a",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-200-historical-root-dark-760px200.png": "beefd110b2058b543bf006c56281febbe92c6d4699154a5679ec31816d15b5d0",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-201-historical-root-dark-760px200.png": "39e675ebbc000a0f49d5297445a229d50de7a0f13d83358534da8bd591b847a8",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-202-historical-root-dark-760px200.png": "fd83e6bb8bf0ce66672380618dc40f2cb7d85052ab637d7b49ac66f522d39c9e",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-203-historical-root-dark-760px200.png": "fd83e6bb8bf0ce66672380618dc40f2cb7d85052ab637d7b49ac66f522d39c9e",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-204-historical-root-dark-760px200.png": "c7717b82a67e9040d2a089e91c5fb0d2f0b64c8ea7b587173a0bd7bf4f1a93dc",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-205-retained-original-key-light-760px200.png": "21e82502958c739efbb0a79c10dd236ad80e8607924371312a79683a8316ee4d",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-206-retained-original-key-light-760px200.png": "d46292130b54ef7315d6d04c1933693480c69fe08d0f9d40608db6b74a352f8c",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-207-retained-original-key-light-760px200.png": "6a3d72a17e3c432f0bcb41f93fde950d0aed89da56bcbb550ef28880344988b7",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-208-retained-original-key-light-760px200.png": "6a3d72a17e3c432f0bcb41f93fde950d0aed89da56bcbb550ef28880344988b7",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-209-retained-original-key-light-760px200.png": "32038e0d4869e59e7826b27b903fd4dd91413c07bba21479adb23d87ad1331c7",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-21-ready-stage-applied-dark-760px200.png": "fc6d8bd9f6172b8a889df7d2705f029bcfbb8e13e54b1dc01a29a847c1f1349b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-22-ready-stage-applied-metadata-dark-760px200.png": "389e5ff9f55ae38fa890f14a7f5c9fca3e035dbc7ebdab1c70916447a91254a9",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-23-ready-stage-applied-metadata-dark-760px200.png": "ca4e999b222c02413427a8774780a700034d229106f407623f6fccf5ce4c563c",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-24-ready-stage-applied-metadata-dark-760px200.png": "c9bc47bf31544d1f1eb07a2cf5423157676dc6f0f7c17abcc089b70b9cb6c3eb",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-25-ready-stage-applied-metadata-dark-760px200.png": "6af58a336b863cc443f34b7bd7526eeede92e993f92412959d6bb3f24f9b786f",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-26-ready-unstage-preview-dark-desktop.png": "a34519d08a04b6ddb6f0415d2c06d4d153c89e36d35f00929bcfc121a72e66ab",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-27-ready-unstage-preview-dark-desktop.png": "5f9913e59faa1249ee877a8746f5cbd7a67fb0e9819f8dc36ed63798ed8a27e0",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-28-ready-unstage-preview-dark-desktop.png": "90551286a7cc7d7676d1166a200603f0465a2ef42732615c822b1feee9ddde88",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-29-ready-unstage-preview-dark-desktop.png": "ed6dc76884eb500d286671f750b5c933f94c47accd8e94886648b44cccd84291",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-3-ready-stage-preview-light-desktop.png": "a38a5d0f1fbd8d1ac9cd8ceaf32cf41569f984f1c0bbf9cd770247adb4d20445",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-30-ready-unstage-preview-dark-desktop.png": "09f8285f2ed43209b788b4928e1501984480eefa2fde432f6e1c99d869cf94a9",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-31-ready-unstage-preview-metadata-dark-desktop.png": "b7000496e69875339f218a07686ee0a13e77a6aca1f50247e89bd7b600153507",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-32-ready-unstage-preview-metadata-dark-desktop.png": "4ec8d5790a3073ac6bda376df1e6b90892c03062bd7bc0fc086410ed6dfe1a33",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-33-ready-unstage-preview-metadata-dark-desktop.png": "3fc3e9bc3e04040cff74e87840a5315fe7d208b6cca369eb45e8d55750a8490d",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-34-ready-unstage-preview-metadata-dark-desktop.png": "6d3a1c2367853b61e3a5fc4e91726ebe53807b010aae1dbfb6e9a73ecd96dd78",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-35-ready-unstage-preview-metadata-dark-desktop.png": "cc44432b9a4882d9f2c36cefc8bb0171342f61a920e26a4b5a34a3076d741549",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-36-ready-unstage-preview-metadata-dark-desktop.png": "d049bd140151b81c62c29b22f8ddff93d2566d724902046d76b28ba107f82c50",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-37-ready-unstage-applied-dark-760px200.png": "59d56afbbd0f7c265a9620f82787a6c0bbbd50f3d329e5f92b45457f5ec6e11b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-38-ready-unstage-applied-dark-760px200.png": "5e290187bc356815d654e0bcf33f3031ff7ba8d2077157fddc2ab51f92c9adfb",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-39-ready-unstage-applied-dark-760px200.png": "7238b8d692ed1a0232332aaceb9bc6298f3983e0905686906da24a69ed0ffa4b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-4-ready-stage-preview-light-desktop.png": "a040f3934812d6efb7ddbdb0c9cce7027eb668c1f6bef95f855ef8faad6b67fb",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-40-ready-unstage-applied-dark-760px200.png": "7238b8d692ed1a0232332aaceb9bc6298f3983e0905686906da24a69ed0ffa4b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-41-ready-unstage-applied-dark-760px200.png": "5e1ec6c143da5f597519c4503af28eef5104738938af3526361f53c5a98b45d4",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-42-sha256-stage-preview-light-760px200.png": "22732153fe6a1b0683beab3733849217ac6c62a9d7716a507b64b16331687333",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-43-sha256-stage-preview-light-760px200.png": "4e46f31c57589b33507f730b819fe6941045f30a1da41b90c9c2e60f1fcfdd8e",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-44-sha256-stage-preview-light-760px200.png": "4d9828325f9a97c3968fab1407330aa38e51155d71ad3b49601bf100f897adea",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-45-sha256-stage-preview-light-760px200.png": "7114d14a975ed40d43b03d421f392da7488c4d02678c4b3fc8213b6a044eaefd",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-46-sha256-stage-preview-light-760px200.png": "8e6763fcd26db275647983efbd11d3440b59f6d8e011f1bbd958b13f815679ba",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-47-sha256-stage-preview-metadata-light-760px200.png": "33b6a0920963c02afe302dedddcfd728523978d9978a8324d3caf68da16ed02a",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-48-sha256-stage-preview-metadata-light-760px200.png": "a80c146a40d18681740086145e820e1ee2bbde1db33a9109dc7fc8966fc887a6",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-49-sha256-stage-preview-metadata-light-760px200.png": "70f6c53d85b637e0db21f0fa50ff08339378f634ce012830dccda2498fb0a47a",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-5-ready-stage-preview-light-desktop.png": "09d7063a7bcbae173ac4010f4baa344c0d31d99c0ab098cdb480eaf862a26dfb",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-50-sha256-stage-preview-metadata-light-760px200.png": "999c40d9e8774814e311dbd0d9df8225afc44742a315411e924da4d511a6d896",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-51-sha256-stage-preview-metadata-light-760px200.png": "5cac0f0ea0e49f1fb63eb2161c37d35fda9c97502193754f515afd948463510d",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-52-sha256-stage-preview-metadata-light-760px200.png": "6ca404925d8d52d9556bd79856df7b66cea80642c5155667ca709285487881f1",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-53-sha256-stage-applied-dark-760px200.png": "5ef4388c30c3ba1a06a9d7af44be6e3cb1c6dc60d63f9374363aab2ed15a245c",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-54-sha256-stage-applied-dark-760px200.png": "22e6cbf56898ffad0d21dfdfce758d6d8be1e27ddf03243f3cb006c3817d6141",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-55-sha256-stage-applied-dark-760px200.png": "9124a36eb93212922844f17885f8abe5735d9724aa34eb288add093f4fc72fe9",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-56-sha256-stage-applied-dark-760px200.png": "9124a36eb93212922844f17885f8abe5735d9724aa34eb288add093f4fc72fe9",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-57-sha256-stage-applied-dark-760px200.png": "b78e4d34c2d765e5e056505ba45069a320c1235edc7e1a591bbe0eb04dd257d7",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-58-sha256-stage-applied-metadata-dark-760px200.png": "3a1e42cafeada86f164a3aa330f9ddbd99a919d86170147ae4b0e0b837caa1fc",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-59-sha256-stage-applied-metadata-dark-760px200.png": "ca1561e29ce92b64c8381a639ddfb7d97c15c83574d1d321621758703a88d851",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-6-ready-stage-preview-metadata-light-desktop.png": "12217afb3fc7e0a99e2b06ae380db4804ebe0d058e27753ceb1bec1bd02e868b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-60-sha256-stage-applied-metadata-dark-760px200.png": "edc7580642033f5524cfda1d35a7af2a77519917201e9ba3ef9f855fae4dedf8",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-61-sha256-stage-applied-metadata-dark-760px200.png": "e663476ca668343c433f657076c2570d87b29a17c9d920030411fba2abdf7f77",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-62-sha256-unstage-preview-dark-760px200.png": "9df300bcd7d96874f5d680770a3e6f90cfad811d5c28f99433b090136d2092ae",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-63-sha256-unstage-preview-dark-760px200.png": "7a688a02adf3b4c267ff5711298ef5bd5d7cd00e1f7d7b1b47f7fc87509f609f",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-64-sha256-unstage-preview-dark-760px200.png": "befe4b9e360e7fd4ec9cdcd4af45d4ebeb917dc22f191acc5c071128dd725565",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-65-sha256-unstage-preview-dark-760px200.png": "eaef87cafebeb85750dd9c03738d264b6d75ca6616788aefb652dec5c987afcb",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-66-sha256-unstage-preview-dark-760px200.png": "67c403eaea4a837f1e0b5730f741146d6126ef66d47529d851b436566707ac05",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-67-sha256-unstage-applied-dark-760px200.png": "5ef4388c30c3ba1a06a9d7af44be6e3cb1c6dc60d63f9374363aab2ed15a245c",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-68-sha256-unstage-applied-dark-760px200.png": "0e11c2f763d846ec2ffd784a93f8119037c476c873e41c323b273215a251b527",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-69-sha256-unstage-applied-dark-760px200.png": "cd4decf290e558f4df66f254f2eb37503c39d9c54ad0203cd0571d72f621dc1b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-7-ready-stage-preview-metadata-light-desktop.png": "9bacab24e7c06d7d9843ec8dbbb63ae3717f50a601e3c2f33d62e91894534a0d",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-70-sha256-unstage-applied-dark-760px200.png": "cd4decf290e558f4df66f254f2eb37503c39d9c54ad0203cd0571d72f621dc1b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-71-sha256-unstage-applied-dark-760px200.png": "777b4b2cd96593f30216cd46a919e2f6023d20cf13579f8718590de24ef13be7",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-72-absent-stage-preview-light-desktop.png": "1940654964a719b45848685992d7891fb45acb0bd01fe5248eaf2efb1b51d646",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-73-absent-stage-preview-light-desktop.png": "63582905c3d2329c9f446993779dfbe3c4c89eb6a82fe0baf276bd038c6fc3ea",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-74-absent-stage-preview-light-desktop.png": "d44797e77ab15832f1037c4c491805b8118d15a163e41eaa7bc6cde690a04f08",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-75-absent-stage-preview-light-desktop.png": "c0d1c3e2c00486fc5b2a4aed6fd5331e3b2bbdb2a20f4967655e9288b41a53c6",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-76-absent-stage-preview-light-desktop.png": "e16217f963b3c99e52c27b756a2db1b7d91b4cd86b5dba989a09304ce2d47b32",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-77-absent-stage-preview-metadata-light-desktop.png": "c8d63bda33a50dd6ed40fc265dd71cb2bde216367d29876d350d43bffb06c2ac",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-78-absent-stage-preview-metadata-light-desktop.png": "0630e91be24c3878615105d8203cf9e9e32fcf3655a381962afa8892c1057bcd",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-79-absent-stage-preview-metadata-light-desktop.png": "d90433b66c2ff38099245de6d577eed23e7c39009a46e7d4e81c32cf00f7f728",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-8-ready-stage-preview-metadata-light-desktop.png": "6af783b738affdda5dfa679b6bb534f6bea227cc7dae42d0bd8ec24e42078db2",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-80-absent-stage-preview-metadata-light-desktop.png": "d12f9c6c254842e607375e9b801cfb32c8315afb17e172af6f6ba97c7bdf5ddd",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-81-absent-stage-preview-metadata-light-desktop.png": "2405040771cd82d7d8bd582619a70957259d83615663901617b5d214e5f48e03",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-82-absent-stage-preview-metadata-light-desktop.png": "f3982104aa0094d8e2f5f7da23318838341c69d2f6eb2ba8084ab03b42f988ad",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-83-absent-stage-applied-dark-760px200.png": "1991ed4b45e49bac1bae60ab154403fc2411c96c59b03ff7f2b493c66d201928",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-84-absent-stage-applied-dark-760px200.png": "b6664a3cb11c70f8ac988e03e50f4709551aaea56451e96f4efdbb599eb393c2",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-85-absent-stage-applied-dark-760px200.png": "6f6eb6e32ccf576166c672c2c3d2b904fc8fd78d892929d9bdc2d76405577964",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-86-absent-stage-applied-dark-760px200.png": "6f6eb6e32ccf576166c672c2c3d2b904fc8fd78d892929d9bdc2d76405577964",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-87-absent-stage-applied-dark-760px200.png": "6967489f2515a095d2da1baea1071661fcf77236dd18dd15de1b1d9e8a70d86b",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-88-absent-stage-applied-metadata-dark-760px200.png": "390aee500e929057134c199c12dd61a1efdf5cec94c2789dc16c23d5a7da7690",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-89-absent-stage-applied-metadata-dark-760px200.png": "f7253f94cbfeb762c3d63f2157b4c9f61d69b925535b077b8ea494817c2a8697",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-9-ready-stage-preview-metadata-light-desktop.png": "d8796f44e893e785749cafca67b8ef3a9ddefcd4e4e7fd32399066aa00babd32",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-90-absent-stage-applied-metadata-dark-760px200.png": "72cea8a314a5267a867cb36feff3ae0f8fcb7a4761cf9333bb5ca2fe91701a7d",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-91-absent-stage-applied-metadata-dark-760px200.png": "afc0a73e7bbacce3cd06821ee545665051f1f114ccd9a8d6d4f4561f0d43dc02",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-92-absent-unstage-no-changes-dark-760px200.png": "56ed45e75a8c14a3c2720db9dad04c5a8ceb126b243e15fa4e309c4e209037d3",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-93-absent-unstage-no-changes-dark-760px200.png": "4109974db924b662889921448529148d7b3eed4effb62748dd2d17a9907a1c31",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-94-absent-unstage-no-changes-dark-760px200.png": "65c862a195e9e2660162cc00451d0d745cf286eb126092842a2e7df29c262df8",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-95-absent-unstage-no-changes-dark-760px200.png": "4a2878d533043af9155fa7a575be8cd5080850c6ab3c94931eeec6145fece27e",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-96-absent-unstage-no-changes-dark-760px200.png": "ce34e369da83b865b0bb808bf70cc99b5bcf9ad9921be024a39054a29cb7ad14",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-97-unborn-existing-stage-preview-light-desktop.png": "6f1bb5a4504cb7e9321217dff3d663795565afb97918ac84b3bea06c11df4e97",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-98-unborn-existing-stage-preview-light-desktop.png": "95ccd20c291ffc60fc1d9565da3986fa9428f1d48fa94ca4fb69a32e1392d2f3",
+    "docs/runs/git-index-mutations/evidence/hidden-r2/git-index/git-index-99-unborn-existing-stage-preview-light-desktop.png": "cf6f11059516b57fb37744326bbc8716fe1ac24df309833eeb9639f2f7c1ce2f"
+  },
+  "semantics": "Verify unchanged prior actual executions; do not claim a new test/runtime execution."
+}

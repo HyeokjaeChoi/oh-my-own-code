@@ -1,0 +1,50 @@
+{
+  "files": {
+    "apps/desktop-app/src/native-permission-inventory.mjs": {
+      "bytes": 8462,
+      "sha256": "da9b170882e4be15dd08f6cb525cff86706b159c47b0411444bba32d8dc75375"
+    },
+    "apps/desktop-app/src/native-permission-inventory.test.mjs": {
+      "bytes": 16690,
+      "sha256": "2ffc8185adefb85e9bf13caf59e24f2b2eb0ed0319209ad12f34e04041bfd72d"
+    },
+    "apps/desktop-app/src/native-permission-control.mjs": {
+      "bytes": 25654,
+      "sha256": "af8434f297e774d3dd61998e6ff9c375167cced3863cd6d0d8b5e602b3926614"
+    },
+    "apps/desktop-app/src/native-permission-control.test.mjs": {
+      "bytes": 43706,
+      "sha256": "3924de3232a761661d542ee6f5ebc31dec55327b3b4c457f6ea554ef12482034"
+    },
+    "apps/desktop-app/src/native-permission-graph.mjs": {
+      "bytes": 5244,
+      "sha256": "4a97fd24a90f1e8a1954cda687b84348ebdce1f4e66995d0958f02274c7b48e0"
+    },
+    "apps/desktop-app/src/native-permission-graph.test.mjs": {
+      "bytes": 15840,
+      "sha256": "f4527c0ff2dcd24a721abbb86bb5b7070545163e33d2e547247e23befd4b5c9e"
+    },
+    "apps/desktop-app/src/native-permission-overlay-contract.mjs": {
+      "bytes": 67045,
+      "sha256": "c1a90642ccdd9d627d728d1eca77c8c30782afa3e74dca112f633befef49407e"
+    },
+    "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs": {
+      "bytes": 18297,
+      "sha256": "de8db1711148848c69665a91c986e47fcb01e3f7a22b998cff997230c9940e70"
+    }
+  },
+  "worker_checks": {
+    "tests": 54,
+    "eslint": "pass",
+    "prettier": "pass",
+    "overlay_source_files": 19
+  },
+  "private_api": [
+    "inventorySnapshot(tx,projectId)",
+    "inventoryLookup(tx,projectId,snapshot,capabilityId)"
+  ],
+  "complete": false,
+  "verified_mapping_count": 0,
+  "obstacle": "Tool.transform and State.get callbacks dynamically recompute resources and execute closures. Registration identity alone does not prove a physical broker adapter or executable mapping.",
+  "limits": "Actual recipe source wiring and Node/extracted Effect only. No positive inventory/mode/Native authority or independent CODE."
+}

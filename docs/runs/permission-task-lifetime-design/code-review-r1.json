@@ -1,0 +1,84 @@
+{
+  "schema_version": 2,
+  "run": "permission-task-lifetime-design",
+  "reviewer": "reviewer",
+  "reviewed": {
+    "contract_sha256": "b15083b396fb8ab82e77d29eb802a204387aa8699b1bed63e1fe814697c28ec1",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "70056362fe060ef9f278e02494f11e44150e3d4a772e8f1e0d8e7ff6784bd9eb",
+    "schema_version": 2,
+    "source_sha256": "1ab65d7bc0818d4c8f1903bc47171f97ae3361db4d2944d7065ddce58b1d18ef",
+    "verification_sha256": "8c17ea475738fb1cde358d712f4d418cc848771c59290f1a88373a9c292630dc",
+    "work_class_sha256": "cd6c9dd8295369c1153e39927bf24e04b360e4546daee8d98e86ebe3a7ffa93d"
+  },
+  "verdict": "changes_requested",
+  "summary": "최종 code-input-r2.json 전체가 현재 파일과 ledger에서 계산한 바인딩과 일치합니다. 설계와 관련 producer·consumer의 정적 비교에서 추가 설계 결함은 찾지 못했습니다. R1 지적의 수정, 실제 독립 design-review-r2 PASS, artifact 해시와 T3 checks:[]도 확인했습니다. 다만 outcome의 변경 경로 누락으로 현재 run을 종료할 수 없습니다.",
+  "open_findings": [
+    {
+      "id": "TL-CODE-01",
+      "severity": "P2",
+      "artifact": "docs/runs/permission-task-lifetime-design/outcome-r2.json",
+      "lines": [
+        33,
+        34,
+        35
+      ],
+      "trigger": "현재 baseline과 source inventory로 run 종료 조건을 검사합니다.",
+      "impact": "harness.py:957-960은 전체 변경 경로의 정확한 일치를 요구합니다. 현재 outcome은 이 조건을 충족하지 못하므로 finish가 거부됩니다. outcome 등록 성공은 이 검사를 통과했다는 뜻이 아닙니다.",
+      "evidence": {
+        "declared_changed_paths": [
+          ".agents/skills/solo-orchestrate/references/run-protocol.md"
+        ],
+        "omitted_changed_paths": [
+          ".solopreneur/managed.json",
+          "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+          "apps/desktop-app/src/native-permission-location-lifecycle.test.mjs",
+          "apps/desktop-app/src/native-permission-overlay-contract.mjs"
+        ],
+        "deleted_paths": [],
+        "registration_behavior": "outcome 등록은 acceptance의 check/artifact 링크를 검사합니다. 전체 변경 경로 검사는 종료 시 수행합니다."
+      },
+      "violated_requirement": "run-protocol의 baseline 대비 변경·삭제 경로 전체 기록과 정확한 closeout 조건",
+      "smallest_correction": "outcome에 현재 baseline 대비 변경 5개 경로를 정확히 기록하십시오. 병렬 location correction과 managed adoption의 출처를 구분하고, 이 설계 run이 제품 코드를 작성했다고 표현하지 마십시오. outcome을 재등록한 뒤 새 전체 CODE 입력으로 이 수정과 바인딩만 독립 재검토하십시오."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a1246b-d64e-7361-bfb4-e843c24cf6f7",
+    "identity_source": "현재 프로세스의 CODEX_THREAD_ID",
+    "binding_input": "docs/runs/permission-task-lifetime-design/code-input-r2.json",
+    "routing_packet": "docs/runs/permission-task-lifetime-design/code-packet-r1.json",
+    "review_boundary": "설계 산출물, closeout 연결, 관련 현재 통합 소스를 정적으로 검토했습니다. 전체 F09 검토는 반복하지 않았습니다.",
+    "verification": {
+      "entire_final_input_matches_current_binding": true,
+      "registered_plan_and_design_reviews_match": true,
+      "artifact_and_outcome_hashes_match": true,
+      "packet_contract_and_routing_hashes_match": true,
+      "selected_source_manifest_entries": 20,
+      "selected_source_sizes_and_hashes_match": true,
+      "T3_checks_empty_and_review_based": true,
+      "managed_protocol_matches_toolkit_and_marker": true,
+      "managed_adoption_prior_code_pass_read": true,
+      "outcome_covers_baseline_changes": false
+    },
+    "design_assessment": [
+      "ACK receipt와 task lifetime을 분리하고 기존 terminal dispatch 금지를 유지합니다.",
+      "실제 prompt의 reconcile/prepare/revert/admit/wake 전에 handoff 소비를 요구합니다.",
+      "현재 count 기반 promotion, pendingWake, title Fiber와 input owner에 필요한 변경을 함께 지정합니다.",
+      "permission-only recovery와 별도 TaskRecoveryTicket을 구분합니다.",
+      "현재 parser와 renderer의 미구현 부분을 통합 완료로 주장하지 않습니다.",
+      "TL-DS-01/02/03의 수정과 별도 design-spec PASS를 확인했습니다."
+    ],
+    "limits": [
+      "이 검토는 Native·Effect·component 통합 승인이나 실행 성공을 뜻하지 않습니다.",
+      "실제 task/IO/child 종료, migration, renderer 동작은 실행 검증하지 않았습니다.",
+      "기존 source-inputs PASS는 정적 provenance로만 사용했습니다.",
+      "병렬 location correction의 제품 변경은 전체 재검토하지 않았습니다.",
+      "테스트, build, Native, provider, 제품 runtime 또는 harness 명령을 실행하지 않았습니다."
+    ],
+    "delegation": false,
+    "file_edits": false,
+    "report_saved": false,
+    "ledger_edits": false
+  }
+}

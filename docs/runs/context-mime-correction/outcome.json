@@ -1,0 +1,49 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "MIME1": {
+      "status": "verified",
+      "checks": [
+        "unit",
+        "lint",
+        "format"
+      ],
+      "artifacts": [
+        "apps/desktop-app/src/host/conversation-context-io.mjs",
+        "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+        "apps/desktop-app/src/conversation-context.test.mjs",
+        "docs/runs/context-mime-correction/verification.json",
+        "docs/runs/context-mime-correction/inbound-foundation.json"
+      ]
+    },
+    "MIME2": {
+      "status": "verified",
+      "checks": [
+        "unit",
+        "lint",
+        "format"
+      ],
+      "artifacts": [
+        "apps/desktop-app/src/host/conversation-context-io.mjs",
+        "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+        "apps/desktop-app/src/conversation-context.test.mjs",
+        "docs/runs/context-mime-correction/verification.json",
+        "docs/runs/context-mime-correction/inbound-foundation.json"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/src/conversation-context.test.mjs",
+    "apps/desktop-app/src/host/conversation-context-io.mjs",
+    "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+    "docs/design/components.json",
+    "docs/design/system.md",
+    "docs/design/tokens/manifest.json",
+    "docs/design/tokens/tokens.css",
+    "packages/ui/src/index.ts",
+    "packages/ui/src/primitives/button.module.css",
+    "packages/ui/src/primitives/button.tsx",
+    "packages/ui/src/primitives/modal-sheet.module.css"
+  ],
+  "deleted_paths": []
+}

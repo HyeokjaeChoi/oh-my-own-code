@@ -1,0 +1,1 @@
+import "./Global.module.css";

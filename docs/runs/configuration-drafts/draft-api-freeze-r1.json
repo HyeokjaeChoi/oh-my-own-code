@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "types_and_actions": "Read actual shared helper/types and store/controller; shape frozen, implementation internals may receive Main fixes. No DTO/transport/native API changed.",
+  "files": {
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts": "1199a732c68eab8944576e9c51e98a69eb8135e2dd3e9a783982aa6f74127d8c",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts": "b03d6481cb2fa14c31a7373514fb9e32b5177677edc41e574ad96e0b353a0ed2",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts": "b9558165d31572a2dcfc33d4a4e175df21e0efc4d653d7112c6268049fe7e102"
+  },
+  "ui_owned_paths": [
+    "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css",
+    "apps/desktop-app/src/renderer/widgets/explorer/index.tsx"
+  ],
+  "actions": [
+    "editConfigurationDraft(kind,text)",
+    "validateConfigurationDraft(kind)",
+    "baselineConfigurationDraft(kind)",
+    "discardConfigurationDraft(kind)"
+  ],
+  "selectors": [
+    "selectors.configurationDraft(kind)",
+    "selectors.configurationNotice",
+    "Existing selected registered workspace via lists+selection"
+  ],
+  "shared_exports": [
+    "ConfigurationDraftKind",
+    "configurationIssueMessages",
+    "compareConfigurationDraft",
+    "CONFIGURATION_DRAFT_LIMITS",
+    "ConfigurationDraft"
+  ]
+}

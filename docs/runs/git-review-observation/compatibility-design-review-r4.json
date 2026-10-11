@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "ee2c3f732cfd1b714b8e2cded75dab444c237501151189df5de581c596062246",
+    "documents_sha256": "03626fc4953e3156e0726b0efaf9645e9094528dd5893cb18092dc0641595d51",
+    "gate": "design_spec",
+    "plan_sha256": "245e21c4df7ec9de0ced0b4c41c57d980517d5e79db3f2de59bf878d5d706ad9",
+    "schema_version": 2,
+    "work_class_sha256": "201d17492a4cefb963a6b8a5a34a68dfbb1017ac43c833a6fd460efa9ffcd387"
+  },
+  "verdict": "pass",
+  "summary": "git-review-observation의 plan revision4/designv4에서 변경된 version policy만 검토했습니다. 입력 binding과 현재 문서 해시가 일치합니다. 정확한 direct CLT 경로, 모든 경로 구성요소의 root 소유·쓰기 제한, 고정 명령, config 격리를 유지하면서 2.50.1 (Apple Git-155)을 동일한 필수 probe 조건으로 허용하는 정책은 일관되고 검증 가능합니다. 실행 파일의 현재 SHA256과 경로 metadata는 제공된 evidence와 일치하며, Xcode 경로의 /Applications 0775는 기존 정책을 통과하지 못합니다. Upstream의 stdin 및 명시적 no-includes 처리는 정책과 맞습니다. 근거: [Git v2.50.1 builtin/config.c](https://github.com/git/git/blob/v2.50.1/builtin/config.c), [Git v2.54.0 builtin/config.c](https://github.com/git/git/blob/v2.54.0/builtin/config.c). 새로 전달된 inspector 결과에서 실제 rootFD status 명령은 exit128로 실패했습니다. 따라서 현재 G2는 차단 상태입니다. 설계대로 git_unavailable을 반환해야 하며, rootFD 지원이나 fallback은 승인하지 않습니다. 실제 설치된 실행 파일의 fixed-command/stdin/no-includes/SHA1·SHA256/rootFD/lifecycle probe와 모든 G2 검사는 여전히 필요합니다. 이 pass는 version policy의 DESIGN_SPEC 판정이며 runtime 통과 또는 version string의 안전 인증이 아닙니다. 기존 DTO/UI/semantics는 재검토하지 않았습니다. 파일·ledger 변경, 새로운 Git·제품 실행, 재위임은 수행하지 않았습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11bfa-f957-73b3-88e6-2ae2df362e36",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

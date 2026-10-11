@@ -1,0 +1,57 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {"id": "AC-1", "description": "Validated workspace/session host operations with disposable filesystem evidence"},
+    {"id": "AC-2", "description": "Real assistant-ui conversation with session identity, drafts, cancellation and honest failure handling"},
+    {"id": "AC-3", "description": "Safe Tool UI, checked permission responses, contained file preview and runtime catalog"},
+    {"id": "AC-4", "description": "Preserved native runtime security and passing affected checks"},
+    {"id": "AC-5", "description": "Local macOS build, observed UI, remaining parent backlog and fresh independent reviews"}
+  ],
+  "checks": {
+    "unit": {
+      "argv": ["node", "--import", "tsx", "--test", "apps/desktop-app/src/workbench-service.test.mjs", "apps/desktop-app/src/workbench-contract.test.mjs", "apps/desktop-app/src/workbench-projection.test.mjs", "apps/desktop-app/src/sidecar-supervisor.test.mjs", "apps/desktop-app/src/renderer-admission.test.mjs", "apps/desktop-app/src/ephemeral-profile.test.mjs"],
+      "cwd": ".", "scope": "Owned workspace/session operations, request validation, projection isolation and sidecar regressions", "acceptance_ids": ["AC-1", "AC-2", "AC-3", "AC-4"], "required": true
+    },
+    "typecheck": {
+      "argv": ["pnpm", "exec", "tsc", "-p", "apps/desktop-app/tsconfig.json", "--noEmit"],
+      "cwd": ".", "scope": "Desktop renderer and typed preload contract", "acceptance_ids": ["AC-1", "AC-2", "AC-3", "AC-4"], "required": true
+    },
+    "lint": {
+      "argv": ["pnpm", "exec", "eslint", "--config", "apps/desktop-app/eslint.config.mjs", "apps/desktop-app/src", "apps/desktop-app/scripts"],
+      "cwd": ".", "scope": "Desktop host, renderer and scripts", "acceptance_ids": ["AC-4"], "required": true
+    },
+    "format": {
+      "argv": ["pnpm", "exec", "prettier", "--check", "apps/desktop-app"],
+      "cwd": ".", "scope": "Desktop source and build definitions", "acceptance_ids": ["AC-4"], "required": true
+    },
+    "build": {
+      "argv": ["node", "apps/desktop-app/scripts/build.mjs"],
+      "cwd": ".", "scope": "Real Electron host/preload/renderer build", "acceptance_ids": ["AC-2", "AC-4", "AC-5"], "required": true
+    },
+    "bundle": {
+      "argv": ["node", "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"],
+      "cwd": ".", "scope": "Renderer excludes privileged host and sidecar modules", "acceptance_ids": ["AC-4", "AC-5"], "required": true
+    },
+    "boundaries": {
+      "argv": ["node", "apps/desktop-app/scripts/check-renderer-boundaries.mjs"],
+      "cwd": ".", "scope": "Desktop resolved imports, public APIs, FSD directions and browser/host separation with positive and negative fixtures", "acceptance_ids": ["AC-2", "AC-4"], "required": true
+    },
+    "electron-e2e": {
+      "argv": ["node", "apps/desktop-app/scripts/e2e-workbench.mjs"],
+      "cwd": ".", "scope": "Disposable actual Electron startup, UI controls, authentic unavailable-provider behavior and shutdown", "acceptance_ids": ["AC-1", "AC-2", "AC-3", "AC-4", "AC-5"], "required": true
+    },
+    "package-macos": {
+      "argv": ["node", "apps/desktop-app/scripts/package.mjs", "darwin", "arm64"],
+      "cwd": ".", "scope": "Local macOS app package with pinned sidecar resources; no publication", "acceptance_ids": ["AC-5"], "required": true
+    }
+  },
+  "documents": [
+    {"path": "docs/runs/desktop-workbench-core/interface.md", "gate": "design_spec", "version": "2", "sha256": "f2f59fe78364c84009e4bd73a2ef308ebc3deb092159b5ce59aad6325ef628b4"}
+  ],
+  "user_approvals": [],
+  "environment_files": ["pnpm-lock.yaml"],
+  "decision_register": [
+    {"id": "local-continuation", "statement": "Continue the selected Electron workbench with the app-owned sidecar and pinned packages.", "status": "confirmed", "source": "User requested continuing remaining oh-my-own-code work; prior explicit Electron/macOS/Windows/assistant-ui/Tool UI selections remain in effect.", "impact": "Local implementation and disposable validation, with no personal-project execution or external publication.", "blocks": [], "resolution": "Implement the reviewed core interface; retain the full F-01–18 parent scope."},
+    {"id": "temporary-storage", "statement": "Keep session-scoped workspace registration until a durable storage and retention policy is selected.", "status": "assumption", "source": "Current isolated bootstrap and the unresolved persistent-data choice in the parent plan.", "impact": "No implicit persistent user-data directory; full restart/recovery acceptance remains unfinished in the parent.", "blocks": [], "resolution": "Reversible core increment with visible temporary-mode status; do not claim full persistence or release completion."}
+  ]
+}

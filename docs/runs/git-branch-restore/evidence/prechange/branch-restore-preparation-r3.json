@@ -1,0 +1,54 @@
+{
+  "status": "preparatory_behavior_only",
+  "count": 6,
+  "cases": [
+    {
+      "case": "HEAD-tracked-index-deleted-selected-target-sha1",
+      "pass": true,
+      "selected_existing_content_replaced": true,
+      "staged_semantics_unchanged": true,
+      "native_index_bytes_preserved": true
+    },
+    {
+      "case": "INDEX-source-missing-selected-target-sha1",
+      "pass": true,
+      "exit": 1,
+      "content_modes_unchanged": true
+    },
+    {
+      "case": "LF-policy-raw-CRLF-plus-canonical-ident-sha1",
+      "pass": true,
+      "existing_crlf_preserved": true,
+      "ident_only_transform": true
+    },
+    {
+      "case": "HEAD-tracked-index-deleted-selected-target-sha256",
+      "pass": true,
+      "selected_existing_content_replaced": true,
+      "staged_semantics_unchanged": true,
+      "native_index_bytes_preserved": true
+    },
+    {
+      "case": "INDEX-source-missing-selected-target-sha256",
+      "pass": true,
+      "exit": 1,
+      "content_modes_unchanged": true
+    },
+    {
+      "case": "LF-policy-raw-CRLF-plus-canonical-ident-sha256",
+      "pass": true,
+      "existing_crlf_preserved": true,
+      "ident_only_transform": true
+    }
+  ],
+  "fixed_git": {
+    "path": "/Library/Developer/CommandLineTools/usr/bin/git",
+    "sha256": "738d0159292a08341abe63a7decd0715ff34d67d532e17349902a6dc42f60ae7"
+  },
+  "retained_synthetic_root": "/private/tmp/omoc-branch-restore-prep-kmgxd9f7",
+  "limits": [
+    "New known-byte cases only, no prior passing cases repeated.",
+    "Native flags/contents do not prove app kernel/descriptor/durable/UI behavior.",
+    "No private project/provider/Bun/Electron/productionMain or independent approval."
+  ]
+}

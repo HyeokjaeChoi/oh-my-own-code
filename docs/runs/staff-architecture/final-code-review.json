@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "e73288b3ac61b2ceb63744045740bd54f81829747e245563925a1d4f4d3e2d26",
+    "contract_sha256": "1fd332547476908a0000f2e2f74070803f46f6b986e607e1be135a1935c5314d",
+    "source_sha256": "595715af0b6ef0ec848c59861f6a4c6010d012136d5e4d2bfec50afd09b8b641",
+    "environment_sha256": "f39eccd848d2ba026ca25479c3d83765674ed7b4f874e723684ad06f4e8399a5",
+    "verification_sha256": "e7428efee407b403f5eb3cd8bd2162cbc0c040b9462f32f6c58b33f4267a7aac"
+  },
+  "verdict": "pass",
+  "summary": "Spec pass: AGENTS adds the mandatory project-specific architecture gate outside the unchanged managed block; entry links ADR and gives ordered implementation checkpoints; ADR covers the staff decisions and validation criteria while leaving bootstrap and runtime probes pending. Outcome changed paths exactly match AGENTS, ADR and entry, with no deleted paths. Quality pass: checker reads 12 frozen baseline hashes, managed-block hash, nonempty docs, local target existence and mandatory cross-links. The recorded docs check passed on current inputs; independent read-only hash comparison found all 12 protected files unchanged. No code or runtime installation is in scope.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/staff_arch_final",
+    "author_task_id": "/root",
+    "context": "Continuation of the same independent review; no fresh-context claim."
+  },
+  "limits": "Checker does not prove fragment anchors, architecture quality, actual Nx or import enforcement, package peers, browser isolation or accessibility. Documents accurately defer those implementation gates. Passing checks were not rerun."
+}

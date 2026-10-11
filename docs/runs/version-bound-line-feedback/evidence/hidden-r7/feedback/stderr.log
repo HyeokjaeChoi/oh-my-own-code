@@ -1,0 +1,13 @@
+Feedback evidence failed in protected-source: Error: expect(locator).toBeInViewport() failed
+
+Locator:  getByRole('region', { name: '파일·diff 줄 피드백', exact: true }).locator('[data-line-feedback-comment]')
+Expected: in viewport
+Received: viewport ratio 0.992382824420929
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeInViewport" getByRole('region', { name: '파일·diff 줄 피드백', exact: true }).locator('[data-line-feedback-comment]') with timeout 5000ms
+  - waiting for getByRole('region', { name: '파일·diff 줄 피드백', exact: true }).locator('[data-line-feedback-comment]')
+    14 × locator resolved to <textarea id="_r_l_-comment" aria-describedby="_r_l_-limits" data-line-feedback-comment="true"></textarea>
+       - unexpected value "viewport ratio 0.992382824420929"
+

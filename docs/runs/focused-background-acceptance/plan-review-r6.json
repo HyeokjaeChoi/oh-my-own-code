@@ -1,0 +1,117 @@
+{
+  "schema_version": 2,
+  "run": "focused-background-acceptance",
+  "reviewer": "plan_reviewer",
+  "plan_path": "docs/runs/focused-background-acceptance/plan.md",
+  "plan_revision": 6,
+  "reviewed": {
+    "contract_sha256": "07d1d1fdab06bdd6bb8d685c4fd973cb393e330ad6560f4b72931decaabcce02",
+    "gate": "plan",
+    "plan_sha256": "fdffb7770b3112e5d0ca7309ec21fb80e2fd27a192a1d2dac5c8e754aac83e04",
+    "schema_version": 2,
+    "source_sha256": "81dff1f086b2da11fb04008a91114d86b065ca1f2be78d077d4baca1bd407577"
+  },
+  "verdict": "pass",
+  "summary": "revision 6은 근거가 있는 측정 범위·분모 교정입니다. 각 구간의 실패 기준과 합산 증가 표시를 보존하므로 증가를 숨기는 계획으로 판단하지 않습니다. Exact input binding은 현재 plan·contract·source와 일치합니다. 이 판정은 구현 또는 acceptance 통과를 뜻하지 않습니다. F01–18은 미완료이며 P7은 계속 보류합니다.",
+  "open_findings": [],
+  "review_findings": [
+    {
+      "id": "P6-R6-SOURCE-SEQUENCE",
+      "result": "pass",
+      "summary": "현재 source는 warmup과 observer 초기화 후 resources(0)을 저장하고, input20→menu20→panel20→switch25/50/75/100을 실행합니다. 따라서 기존 stabilization의 baseline→final은 switch100만이 아니라 보조60을 포함한160회 범위입니다. 진단은 이 순서를 직접 분리해 기록했습니다."
+    },
+    {
+      "id": "P6-R6-MATH",
+      "result": "pass",
+      "summary": "원본 JSON으로 증가율을 다시 계산했습니다. 계산식은 100×(final/baseline−1)입니다. 분리된 구간이 각각10% 미만이어도 합산 증가가10%를 넘을 수 있습니다. 합산값과 flag를 함께 보존해야 합니다.",
+      "task_metrics": {
+        "JSHeapUsedSize": {
+          "pre_aux": 7809276,
+          "post_aux": 8340768,
+          "post_switch100": 8823244,
+          "aux60_growth_percent": 6.805906,
+          "switch100_growth_percent": 5.784551,
+          "combined160_growth_percent": 12.984149,
+          "combined_exceeds_10_percent": true,
+          "switch_last_batch_growth_percent": 1.71984
+        },
+        "JSHeapTotalSize": {
+          "pre_aux": 9175040,
+          "post_aux": 9437184,
+          "post_switch100": 10223616,
+          "aux60_growth_percent": 2.857143,
+          "switch100_growth_percent": 8.333333,
+          "combined160_growth_percent": 11.428571,
+          "combined_exceeds_10_percent": true,
+          "switch_last_batch_growth_percent": 0
+        },
+        "Nodes": {
+          "pre_aux": 310,
+          "post_aux": 310,
+          "post_switch100": 310,
+          "combined_growth_percent": 0,
+          "switch_last_batch_growth_percent": 0.323625
+        },
+        "JSEventListeners": {
+          "pre_aux": 221,
+          "post_aux": 221,
+          "post_switch100": 221,
+          "combined_growth_percent": 0,
+          "switch_last_batch_growth_percent": 0
+        }
+      }
+    },
+    {
+      "id": "P6-R6-DIAGNOSTIC-PROVENANCE",
+      "result": "pass",
+      "summary": "지정한 task/control JSON은 둘 다 acceptance.eligible=false입니다. Task의 유일한 실패는 진단 이후 ordinary cohort의 JSHeapTotalSize 증가11.111%입니다. Control은 diagnostic-only입니다. 두 실행의 before/after provenance와 서로의 build·fixture·script identity가 일치합니다. 현재 파일과 비교한 build input78개, selected script/fixture4개, launch artifact7개에도 불일치가 없습니다. Control의 input SHA-256은 완료된 task report와 일치합니다. Source는 task process 종료와 cleanup 후 report를 저장하고, control launch 전에 그 report를 검증합니다. 이는 순차 실행 근거이며 OS 격리 보장은 아닙니다.",
+      "task_report_sha256": "2dfb37aad25807287873e89423280e11cf3ede881b8863a31222c0a3e66aad8a",
+      "causal_limits": "Control의 used heap도325972bytes, 4.173918% 증가했습니다. Action evaluate/frame 수는 일치하며 시간 차이는 −0.5~5.3ms입니다. 실행 코드·state·GC·JIT·polling 차이가 남습니다. Control값 차감, JIT 원인 확정, leak 부재 판정은 정당화되지 않습니다."
+    },
+    {
+      "id": "P6-R6-ACCEPTANCE-PRESERVATION",
+      "result": "pass",
+      "summary": "계획은 pre-aux sample, 고정aux60, 이후switch100, 4×25 batch와 raw sample을 보존합니다. 두 구간 모두 네 metric의10% 기준과 마지막 batch 기준을 유지하며, 어느 구간이든 실패하면 전체 결과가 실패해야 합니다. 합산160의 >10% flag도 유지합니다. 기존 normal r1의13.145516%와 no-observer stable r2의13.086150% 실패는 그대로 남아 있습니다.",
+      "required_execution_conditions": [
+        "Aux60과 switch100의 baseline·final·마지막 batch 계산을 별도로 저장하고 검증합니다.",
+        "각 metric의 구간 실패와 마지막 batch 실패가 결과에서 사라지지 않는 regression test를 추가합니다.",
+        "Combined160 flag가 true인 결과를 zero growth 또는 leak absence로 표현하지 않습니다.",
+        "Optional diagnostic 결과는 normal acceptance를 대체하지 않습니다.",
+        "Warmup5/5/5/10, latency20씩, switch100, p95 목표와10% 기준을 유지합니다."
+      ]
+    },
+    {
+      "id": "P6-R6-SCOPE-GUARDS-CHECKS",
+      "result": "pass",
+      "summary": "새 수정 범위는 p6-performance.mjs와 fixtures/workbench-host.test.mjs 두 파일뿐입니다. r5의 controller·target-floor 수정은 source-complete 기록과 일치하며 이번 변경 범위에 추가되지 않습니다. DTO·store ownership 변경도 없습니다. 기존 containment·symlink·nonempty destination 거부·exclusive claim·입력 byte/schema/count/identity/freshness guard와 hidden/nonfocusable/macOS activation prohibited 설정을 확인했습니다. Performance r2와 hidden r3 경로는 현재 없으며 경로 구성 요소에도 symlink가 없습니다. Contract는 unit/typecheck/lint/boundaries/build/bundle/hidden-ui/performance의8개 필수 check를 유지합니다. 수정 후 source freeze와 coherent build, 현재 check 결과, fresh independent code/render gate가 필요합니다."
+    },
+    {
+      "id": "P6-R6-DOCUMENTARY-NOTE",
+      "result": "optional",
+      "summary": "measurement-findings-r3.md의 JS738256 표기는 원본 두 JSON의738263bytes와7bytes 다릅니다. CSS55761은 일치합니다. Main이 문서 수치를 정정할 수 있습니다. 두 실행의 실제 artifact identity는 일치하므로 측정 범위 교정의 entry blocker는 아닙니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a104d1-2730-7281-bdd7-a13bbdb346ac",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "runtime_identity_attested": false,
+    "os_read_only_sandbox_attested": false,
+    "skills": [
+      "solo-specialist",
+      "solo-plan-review"
+    ],
+    "mode": "report_only",
+    "binding_verified_by_read_only_hashing": true,
+    "files_changed": [],
+    "ledger_changed": false,
+    "report_saved": false,
+    "checks_run": false,
+    "tests_run": false,
+    "native_checks_run": false,
+    "gui_launches": false,
+    "delegated": false,
+    "persistence_owner": "main"
+  }
+}

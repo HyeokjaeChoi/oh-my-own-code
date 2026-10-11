@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "report_type": "ENTRY_PLAN",
+  "reviewed": {
+    "contract_sha256": "77569c2b3c42389559f172b6b40ce3131acd5adfe9234139c342b01eab3e5817",
+    "gate": "plan",
+    "plan_sha256": "de263d947b000568d0e1de2af58f48ba6d44a5a467f6ca944887ae3ed2593d64",
+    "schema_version": 2,
+    "source_sha256": "519779e6bcbb8161db80c50716a78777da20bde9dcd6342ce7e1935dd6fde861",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "open_findings": [],
+  "summary": "revision1의 설계 작업 계획은 통과입니다. full18 목표를 유지하면서 이번 run의 완료 범위를 남은 F09 전체 구현 설계로 구분합니다. D1은 실제 소스의 소유권과 대안을 조사합니다. D2는 계약과 구현 차단 조건을 명시합니다. D3는 새 mutation consumer 시작 전에 독립 design-spec 판정을 요구합니다. 이 판정은 구체 API, 구현 또는 runtime 실행을 승인하지 않습니다.",
+  "assessment": [
+    "PRD section5의 기본 ask, 상위 deny, 명시적 모드 범위, pending 재평가, 실제 실행 종료 확인, 확대 확인, 자식 권한 적용을 보존합니다. 단일 권한 소유자와 renderer projection도 유지합니다.",
+    "permission-policy-observation의 현재 run 상태는 complete입니다. 최종 CODE 근거는 session rules 조회에 한정되며 전체 F09 완료를 뜻하지 않습니다.",
+    "permission-tool-boundary-probe의 저장된 실행 근거는 합성 namespace의 WriteTool once, reject, policy_deny 사례에 한정됩니다. 계획은 이를 provider, production Main, OS sandbox 또는 전체 F09 검증으로 확대하지 않습니다.",
+    "Native 내부 awaitSettlement와 awaitIdle은 소스에 존재합니다. 확인한 server session.interrupt 경로는 resume만 전달합니다. 계획은 내부 함수의 존재를 실제 호출 종료 보장으로 취급하지 않습니다.",
+    "trusted inventory, 실제 호출 settlement, 물리 경로 강제, project-wide remembered pending 집합은 open 결정으로 남아 있습니다. 이 결정은 종속 구현을 막으며 이미 허용된 소스 분석은 막지 않습니다.",
+    "정적 byte 검사는 provenance만 확인합니다. 최종 설계는 문서 등록과 해당 design-spec handoff를 거쳐야 합니다. 실제 구현 경계가 정해진 뒤 필요한 명령과 인력을 정하므로 존재하지 않는 모듈의 테스트를 요구하지 않습니다."
+  ],
+  "limitations": [
+    "검토 범위는 docs/runs/permission-control-design/plan.md revision1과 지정된 최상위 entry-plan-input-r1.json 객체입니다.",
+    "최종 설계의 완전성, API 적합성, 구현 동작은 이번 판정 대상이 아닙니다.",
+    "runtime, 테스트, build, Native, provider, production Main, foreground app, private original, Windows 및 release invocation을 실행하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a12065-0117-7e52-b328-8326091c410a",
+    "identity_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "implementation_authored": false,
+    "delegation": false,
+    "report_only": true,
+    "files_modified": false,
+    "ledger_modified": false,
+    "product_runtime_executed": false,
+    "tests_executed": false,
+    "build_executed": false
+  }
+}

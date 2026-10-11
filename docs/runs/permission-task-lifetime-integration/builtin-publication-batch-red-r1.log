@@ -1,0 +1,81 @@
+[03:15:51.821] WARN (#1): failed to load plugin {
+  'plugin.id': 'opencode.tool.read',
+  cause: { _id: 'Cause', failures: [ [Object] ] }
+}
+[03:15:51.826] WARN (#2): failed to load plugin {
+  'plugin.id': 'opencode.tool.read',
+  cause: { _id: 'Cause', failures: [ [Object] ] }
+}
+▶ actual Read → PluginInternal → supervisor copies → loader retains inert metadata on the original activation Scope
+  ✖ ordinary actual loader disposal (9.911667ms)
+  ✖ 32 queued writers during actual loader disposal (1.482125ms)
+✖ actual Read → PluginInternal → supervisor copies → loader retains inert metadata on the original activation Scope (22.708375ms)
+✖ original State.batch defers list notification until branded result is accepted (7.212875ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 398.257917
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-read-metadata.test.mjs:308:13
+✖ ordinary actual loader disposal (9.911667ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(loaded.activation)
+  
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-read-metadata.test.mjs:459:20)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/core.js:297:30)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:781:15
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:742:50 {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-read-metadata.test.mjs:308:13
+✖ 32 queued writers during actual loader disposal (1.482125ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(loaded.activation)
+  
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-read-metadata.test.mjs:459:20)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/core.js:297:30)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:781:15
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:742:50 {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-tool-publication.test.mjs:405:1
+✖ original State.batch defers list notification until branded result is accepted (7.212875ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-5XdxKO/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-5XdxKO/native-permission-control.mjs:35:9)
+      at file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-5XdxKO/native-permission-control.mjs:825:9
+      at ~effect/Utils/internal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Utils.js:79:14)
+      at Object.~effect/Effect/args (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:732:22)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:682:22)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19

@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {"id": "AC-1", "description": "Qualified public design evidence and CLI provenance"},
+    {"id": "AC-2", "description": "Valid canonical three-layer light/dark tokens and CSS"},
+    {"id": "AC-3", "description": "Restrained responsive and accessible workbench preview"},
+    {"id": "AC-4", "description": "Independent review and Figma source synchronization when available"}
+  ],
+  "checks": {
+    "tokens": {
+      "argv": ["python3", "docs/design/validate_system.py"],
+      "cwd": ".",
+      "scope": "Canonical token aliases, CSS determinism, contrast, component states",
+      "acceptance_ids": ["AC-2"],
+      "required": true
+    },
+    "browser": {
+      "argv": ["node", "docs/runs/chatgpt-foundation/check_browser.cjs"],
+      "cwd": ".",
+      "scope": "Selected preview interactions, responsive geometry, focus and screenshot evidence",
+      "acceptance_ids": ["AC-3"],
+      "required": true
+    }
+  },
+  "documents": [
+    {"path": "docs/design/system.md", "gate": "design_spec", "version": "2026-09-27-chatgpt-r4", "sha256": "a477ded51cf6a18b92d83211688725951e790eaac22d074a78a41f57f2c943de"},
+    {"path": "docs/design/tokens/manifest.json", "gate": "design_spec", "version": "2026-09-27-chatgpt-r4", "sha256": "90b8a71145d2c487697f145400c1ceac0e3eb217c3db98681018058b42034543"},
+    {"path": "docs/design/components.json", "gate": "design_spec", "version": "2026-09-27-chatgpt-r4", "sha256": "825cc81879eb66a6da5fb076d30009f93ea154539a3bdd2f1b7e44e4195bd360"}
+  ],
+  "user_approvals": [],
+  "environment_files": ["docs/design/validate_system.py"]
+}

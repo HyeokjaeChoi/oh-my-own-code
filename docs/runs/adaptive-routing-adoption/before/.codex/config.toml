@@ -1,0 +1,14 @@
+# The current conversation selects its model and reasoning effort. Subagents
+# inherit both unless an explicit supported request overrides them.
+# Permissions and service authentication remain controlled by the user.
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 3
+
+# Lifecycle hooks are declared only in hooks.json to avoid duplicate execution.
+# Additional MCP servers are selected per project from the integration catalog.
+
+[mcp_servers.openaiDeveloperDocs]
+url = "https://developers.openai.com/mcp"
+enabled = true

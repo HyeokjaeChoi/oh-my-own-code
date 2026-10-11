@@ -1,0 +1,17 @@
+{
+  "reviewer": "01a12621-a1cf-7f00-9533-8a5377d08ad8",
+  "verdict": "changes_requested",
+  "checkpointSha256": "5997a933ecf648d5a3c1689820ca956d400bdb23dae191a109ce9ca13d0eac6e",
+  "scope": "exact6 descriptor ABI/file-read foundation; not whole CODE",
+  "findings": [
+    {
+      "id": "READ-ROOT-01",
+      "priority": 2,
+      "path": "apps/desktop-app/src/host/native-descriptor-read.mjs",
+      "line": 109,
+      "description": "Observed root replacement does not permanently revoke the existing kernel. Restore original root and same kernel can disclose bytes again.",
+      "reproducer": "rename root to moved; mkdir root; read throws; rmdir root; rename moved back; same kernel read incorrectly returns original bytes."
+    }
+  ],
+  "checks": "Reviewer reran Node30PASS and independent synthetic reproducer; unchanged exact6 pins at end. No runtime/Native invocation."
+}

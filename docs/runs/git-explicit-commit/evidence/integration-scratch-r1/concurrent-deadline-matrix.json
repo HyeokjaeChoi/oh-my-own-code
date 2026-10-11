@@ -1,0 +1,808 @@
+{
+  "result": "fail",
+  "observations": [
+    {
+      "name": "sha1-attached",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "attached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "branch_log",
+          "present": true
+        },
+        {
+          "role": "branch_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-unborn",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "unborn",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": false,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": false
+        },
+        {
+          "role": "branch_log",
+          "present": false
+        },
+        {
+          "role": "branch_ref",
+          "present": false
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-nested-unborn",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "unborn",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": false,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": false
+        },
+        {
+          "role": "branch_log",
+          "present": false
+        },
+        {
+          "role": "branch_ref",
+          "present": false
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-detached",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "detached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "head_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-packed",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "attached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": false,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "branch_log",
+          "present": true
+        },
+        {
+          "role": "branch_ref",
+          "present": false
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-linked",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "linked",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "branch_log",
+          "present": true
+        },
+        {
+          "role": "branch_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-all-deleted",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "attached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "branch_log",
+          "present": true
+        },
+        {
+          "role": "branch_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-logs-disabled-existing",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "attached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "branch_log",
+          "present": true
+        },
+        {
+          "role": "branch_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-logs-disabled-absent",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "attached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [],
+      "backupRoles": [
+        {
+          "role": "branch_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-readonly-index",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "attached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "branch_log",
+          "present": true
+        },
+        {
+          "role": "branch_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-no-changes",
+      "status": "pass",
+      "format": "sha1",
+      "refusal": "no_changes",
+      "originalUnchanged": true
+    },
+    {
+      "name": "sha1-ordinary-marker",
+      "status": "pass",
+      "format": "sha1",
+      "refusal": "unsupported_commit_state",
+      "originalUnchanged": true
+    },
+    {
+      "name": "sha256-attached",
+      "status": "pass",
+      "format": "sha256",
+      "layout": "attached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "branch_log",
+          "present": true
+        },
+        {
+          "role": "branch_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha256-unborn",
+      "status": "pass",
+      "format": "sha256",
+      "layout": "unborn",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": false,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": false
+        },
+        {
+          "role": "branch_log",
+          "present": false
+        },
+        {
+          "role": "branch_ref",
+          "present": false
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha256-nested-unborn",
+      "status": "pass",
+      "format": "sha256",
+      "layout": "unborn",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": false,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": false
+        },
+        {
+          "role": "branch_log",
+          "present": false
+        },
+        {
+          "role": "branch_ref",
+          "present": false
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha256-detached",
+      "status": "pass",
+      "format": "sha256",
+      "layout": "detached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "head_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha256-packed",
+      "status": "pass",
+      "format": "sha256",
+      "layout": "attached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": false,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "branch_log",
+          "present": true
+        },
+        {
+          "role": "branch_ref",
+          "present": false
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha256-linked",
+      "status": "pass",
+      "format": "sha256",
+      "layout": "linked",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "branch_log",
+          "present": true
+        },
+        {
+          "role": "branch_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha256-all-deleted",
+      "status": "pass",
+      "format": "sha256",
+      "layout": "attached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "branch_log",
+          "present": true
+        },
+        {
+          "role": "branch_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha256-logs-disabled-existing",
+      "status": "pass",
+      "format": "sha256",
+      "layout": "attached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "branch_log",
+          "present": true
+        },
+        {
+          "role": "branch_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha256-logs-disabled-absent",
+      "status": "pass",
+      "format": "sha256",
+      "layout": "attached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [],
+      "backupRoles": [
+        {
+          "role": "branch_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    }
+  ],
+  "kernelEvents": [
+    {
+      "name": "sha1-attached",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-attached",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha1-unborn",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-unborn",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha1-nested-unborn",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-nested-unborn",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha1-detached",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-detached",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha1-packed",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-packed",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha1-linked",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-linked",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha1-all-deleted",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-all-deleted",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha1-logs-disabled-existing",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-logs-disabled-existing",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha1-logs-disabled-absent",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-logs-disabled-absent",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha1-readonly-index",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-readonly-index",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha256-attached",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha256-attached",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha256-unborn",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha256-unborn",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha256-nested-unborn",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha256-nested-unborn",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha256-detached",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha256-detached",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha256-packed",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha256-packed",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha256-linked",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha256-linked",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha256-all-deleted",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha256-all-deleted",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha256-logs-disabled-existing",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha256-logs-disabled-existing",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha256-logs-disabled-absent",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha256-logs-disabled-absent",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha256-readonly-index",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha256-readonly-index",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    }
+  ],
+  "limits": [
+    "Actual production paired manager/service/journal and pinned staged descriptor core with SyntheticSDK/directadapter +actual protocol validation. Not actual EventHost OS channel/lifetime or productionMain Nativedialog acceptance.",
+    "No provider/privateproject/Windows/powerloss acceptance. Every contained synthetic namespace retained. Unknowns never replayed or upgraded."
+  ],
+  "failure": {
+    "name": "AssertionError",
+    "code": "ERR_ASSERTION",
+    "message": "{\"ok\":false,\"code\":\"UNKNOWN_OUTCOME\",\"message\":\"The operation outcome is unknown. It will not be resent automatically.\",\"receipt\":{\"runtimeEpoch\":\"synthetic\",\"operationId\":\"sha256-readonly-index\",\"type\":\"git.commit.apply\",\"workspaceId\":\"c8f64b4d-78b2-4164-83b9-001353c6fa43\",\"admission\":\"dispatched\",\"delivery\":\"unknown\",\"effect\":\"unknown\",\"revision\":11,\"evidence\":[]}}\n\nfalse !== true\n"
+  }
+}

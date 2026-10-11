@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "checkpoint": "actual public producer r1",
+  "plan_revision": 3,
+  "source": [
+    {
+      "path": "apps/desktop-app/src/renderer/shared/git-index/index.mjs",
+      "bytes": 8433,
+      "sha256": "11846a18791480034318e6c59089e5e0d493426b65a6d8305207dbe86cc73aa5"
+    },
+    {
+      "path": "apps/desktop-app/src/renderer/shared/git-index/index.d.mts",
+      "bytes": 3184,
+      "sha256": "efea624c7e7844a529843d86155f17e02deacb484eb799b19c2d2d2c42fa757b"
+    },
+    {
+      "path": "apps/desktop-app/src/renderer/shared/git-index/index.ts",
+      "bytes": 620,
+      "sha256": "2e147dd2e24d2fb7e0ade952d178a0e5de143ee30394c96d530750eaeedb6165"
+    },
+    {
+      "path": "apps/desktop-app/src/git-index.test.mjs",
+      "bytes": 10118,
+      "sha256": "b84b5d11203ba1de222c1f9ff19e7724ee6893dbcf89d12aa07051ec2ddf09f9"
+    },
+    {
+      "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+      "bytes": 33004,
+      "sha256": "8e17296b7f172746a7eb9b1be175830c0a05e7933e2e08bf7cebd6fee3c3ae71"
+    },
+    {
+      "path": "apps/desktop-app/src/workbench-contract.mjs",
+      "bytes": 25565,
+      "sha256": "9d7bfaf06cfaec0c997b56375e50fe12b1ae6f26ec7836402e714872ba2571c1"
+    },
+    {
+      "path": "apps/desktop-app/src/renderer/shared/transport/index.ts",
+      "bytes": 6975,
+      "sha256": "98a0f74140c900597f423977f0115aa71f4a925695b161a97b85b2e835f6f906"
+    }
+  ],
+  "checks": {
+    "node": "19/19 PASS (10 index + 9 contract)",
+    "typecheck": "exit0",
+    "eslint": "exit0",
+    "prettier": "exit0",
+    "boundaries": "82sources/68negative/16positive PASS"
+  },
+  "limits": "Not kernel/storage/runtime/UI acceptance; no self approval"
+}

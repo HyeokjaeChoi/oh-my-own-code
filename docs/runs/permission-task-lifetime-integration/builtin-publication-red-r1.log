@@ -1,0 +1,137 @@
+✖ source-owned publication API exists before original State registration (13.084333ms)
+✖ original State/editor publishes exact declaration, replays and retires original Scope (4.393083ms)
+✖ unowned callback is refused before original registration or callback effects (10.3005ms)
+✖ different activation Scope is refused before publication (1.880834ms)
+✖ returned declaration must be the exact originally published value (1.432917ms)
+✖ one original plugin activation cannot publish a second declaration (1.262042ms)
+✖ disposed publication callback cannot replay even when retained (1.308334ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 0
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 590.021292
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-tool-publication.test.mjs:47:1
+✖ source-owned publication API exists before original State registration (13.084333ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at Object.~effect/Effect/args (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:48:9)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:673:29)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at run (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:31:24)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:47:83)
+      at Test.runInAsyncScope (node:async_hooks:226:14) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-tool-publication.test.mjs:50:1
+✖ original State/editor publishes exact declaration, replays and retires original Scope (4.393083ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:35:9)
+      at Object.inventoryMutation (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:939:5)
+      at args.<computed> [as run] (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:165:19)
+      at get (eval at <anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:20:21), <anonymous>:78:21)
+      at Array.eval (eval at <anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:20:21), <anonymous>:97:19)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+
+test at apps/desktop-app/src/native-permission-tool-publication.test.mjs:61:1
+✖ unowned callback is refused before original registration or callback effects (10.3005ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(Exit.isFailure(yield* Effect.exit(effect)))
+  
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:46:53)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/core.js:297:30)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at run (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:31:24) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-tool-publication.test.mjs:66:1
+✖ different activation Scope is refused before publication (1.880834ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:35:9)
+      at Object.inventoryMutation (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:939:5)
+      at args.<computed> [as run] (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:165:19)
+      at Object.get (eval at <anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:20:21), <anonymous>:78:21)
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:68:23)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/core.js:297:30)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+
+test at apps/desktop-app/src/native-permission-tool-publication.test.mjs:70:1
+✖ returned declaration must be the exact originally published value (1.432917ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:35:9)
+      at Object.inventoryMutation (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:939:5)
+      at args.<computed> [as run] (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:165:19)
+      at get (eval at <anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:20:21), <anonymous>:78:21)
+      at Array.eval (eval at <anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:20:21), <anonymous>:97:19)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+
+test at apps/desktop-app/src/native-permission-tool-publication.test.mjs:74:1
+✖ one original plugin activation cannot publish a second declaration (1.262042ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:35:9)
+      at Object.inventoryMutation (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:939:5)
+      at args.<computed> [as run] (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:165:19)
+      at get (eval at <anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:20:21), <anonymous>:78:21)
+      at Array.eval (eval at <anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:20:21), <anonymous>:97:19)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+
+test at apps/desktop-app/src/native-permission-tool-publication.test.mjs:79:1
+✖ disposed publication callback cannot replay even when retained (1.308334ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:35:9)
+      at Object.inventoryMutation (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-tool-publication-EYN97U/native-permission-control.mjs:939:5)
+      at args.<computed> [as run] (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:165:19)
+      at get (eval at <anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:20:21), <anonymous>:78:21)
+      at Array.eval (eval at <anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-publication.test.mjs:20:21), <anonymous>:97:19)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)

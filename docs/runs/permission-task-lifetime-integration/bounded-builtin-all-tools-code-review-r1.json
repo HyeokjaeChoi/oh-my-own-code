@@ -1,0 +1,71 @@
+{
+  "verdict": "pass",
+  "summary": "지정한 exact10 범위에서 수정이 필요한 결함을 찾지 못했습니다.",
+  "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+  "plan_revision": 11,
+  "input": "docs/runs/permission-task-lifetime-integration/builtin-all-tools-code-input-r1.json",
+  "findings": [],
+  "passes": {
+    "acceptance": {
+      "verdict": "pass",
+      "verified": [
+        "14개 고정 Tool family와 17개 metadata row",
+        "edit/write/patch의 action=edit 매핑",
+        "모든 row의 unsupported 상태, complete=false, capabilities=[] 유지",
+        "planner 파일 한도 35개, 36개 거부",
+        "32MiB 및 256edit 한도 유지"
+      ]
+    },
+    "correctness": {
+      "verdict": "pass",
+      "verified": [
+        "원본 pinned source와 recipe의 before/after SHA 및 역변환 일치",
+        "기존 recipe 27개 항목 유지, 새 항목 8개 추가",
+        "원본 execute closure, schema, options 및 hook 본문·순서 보존",
+        "private bundle brand, namespace 및 declaration 배열 동결",
+        "source/descriptor/copy/Scope/result 연결과 복제·replay 거부",
+        "dispose 이후 결과 재사용 거부 및 metadata 제거",
+        "graph close와 지연 prepare/acquisition 경계"
+      ]
+    }
+  },
+  "evidence": {
+    "bindings": "plan과 routing SHA 일치. immutable before manifest exact8+exact2 모두 일치.",
+    "fresh_node_tests": {
+      "passed": 69,
+      "failed": 0,
+      "commands": [
+        "node --test --test-reporter=dot apps/desktop-app/src/native-permission-builtin-declaration.test.mjs apps/desktop-app/src/native-permission-builtin-metadata.test.mjs apps/desktop-app/scripts/native-permission-overlay.test.mjs apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+        "node --test --test-reporter=tap apps/desktop-app/src/native-permission-graph.test.mjs"
+      ]
+    },
+    "hash_verification": "10개 파일 모두 시작 SHA = 종료 SHA = code-input SHA",
+    "edits": "source/docs/ledger 수정 없음",
+    "delegation": "없음"
+  },
+  "reviewed_file_hashes": {
+    "apps/desktop-app/src/native-permission-control.mjs": "b171c9b9e05bb48ca820a822bf0e3be90de2d68a09cfc78867d3e44653fc0c84",
+    "apps/desktop-app/src/native-permission-inventory.mjs": "af1cdbc0eeabcb5767d5eba4bf42c6190ece9bc5a08455d8ec9eee95cbb4f73f",
+    "apps/desktop-app/src/native-permission-builtin-metadata.test.mjs": "2a16504f07b0ba20fe0013d45c78adf4d42c9ec7a1abfc7f79582d112edae66d",
+    "apps/desktop-app/src/native-permission-overlay-contract.mjs": "184d78b7683afd4a04319aa9534bbcc6d4b7e9379fbdc1090025444fd8480c13",
+    "apps/desktop-app/src/native-permission-graph.mjs": "b3947e4abdf294deb4bf55c65362f74ef78635d330c90ef1b192828877b92ad0",
+    "apps/desktop-app/src/native-permission-graph.test.mjs": "dc44f6bfb5022619b00d7add7319cef553d48585a1f84e3f19918d338d7350d5",
+    "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs": "c6fc47bef6a05625d59a4a27881a12e3df74c966f57fb30215eba8779c608644",
+    "apps/desktop-app/src/native-permission-builtin-declaration.test.mjs": "4ba073958d4475b50274b63b857351b619eea901f149cffb038c65d9dcc46326",
+    "apps/desktop-app/scripts/native-permission-overlay.mjs": "ce6d906a6e4fa61bae038b5b97625caabd533c35819e6382b22605f4edb6eb4e",
+    "apps/desktop-app/scripts/native-permission-overlay.test.mjs": "cc9462d00caece79a3ebe084774a671291d095dfa459d35884feba4de65a84ef"
+  },
+  "limits": [
+    "이 판정은 revision11 exact10 변경 범위에만 적용합니다. full18/F09 gate 승인이 아닙니다.",
+    "Native/Main/provider/Bun/server/build/UI 실행과 physical probe는 수행하지 않았습니다.",
+    "graph 테스트의 Native 의존성은 inert fixture입니다. 실제 서비스 획득과 transitive effect 안전성을 증명하지 않습니다.",
+    "Main이 보고한 metadata171/descriptor223/task12/aux23 및 lint·format 결과는 재실행하지 않았습니다.",
+    "과거 worker25PASS5FAIL과 Main35RED 기록은 변경하지 않았습니다.",
+    "실행 grant 또는 activation 승인을 부여하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a126d3-1846-76e3-ac25-7398263f6bb1",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "scope": "bounded exact10 CODE, not final whole feature gate"
+}

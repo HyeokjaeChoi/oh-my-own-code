@@ -1,0 +1,42 @@
+{
+  "code": {
+    "schema_version": 2,
+    "reviewed": {
+      "contract_sha256": "f68b871486ed0d2b3ae83c60d415384668c31c3fff2ca2327a34791f4a28c604",
+      "environment_sha256": "a768b935b68bced02a848ba606c0256ee223732d0800f5b2f99e553189a6322d",
+      "gate": "code",
+      "plan_sha256": "8a78b67646218faa140571a225403134d48b180b216ef7c7144d4d38278d15d2",
+      "schema_version": 2,
+      "source_sha256": "f3e0528548724635e213b942ace1f653fc0f270fb3dc95e6876b1dbefad46950",
+      "verification_sha256": "b6f03cd3fc4192b040830af65d5940ac0af24bd2e243bffac497b458299eb23c",
+      "work_class_sha256": "e607760a80d9b949d27d76cab2f4026ba62d2c79bf1cd2a4c60b36c77755a99e"
+    },
+    "verdict": "pass",
+    "summary": "ledger 연결 수정에 대한 독립 검토입니다. outcome 전후 차이는 acceptance의 checks 목록뿐입니다. RT1은 unit/boundaries/bundle/hidden, RT2–RT4는 unit/hidden, RT5는 전체 8개이며, 모두 contract의 acceptance_ids와 정확히 일치합니다. acceptance 상태·증거·변경 경로는 유지됩니다. 실제 source 696개가 r2 inventory와 일치하고 등록 artifact 121개의 hash가 유효합니다. 기존 8개 check의 입력 적용 범위를 읽기 전용으로 계산했으며 모두 reusable입니다. build provenance 파일 202개와 build stamp의 실제 bytes를 확인했습니다. r1/r2의 build 관련 필드도 같습니다. 이전 CODE PASS는 r2 input과 일치합니다. r3에서는 verification_sha256만 바뀌었으며, correction artifact 추가와 outcome hash 교체를 되돌린 계산이 이전 verification hash와 정확히 일치합니다. 현재 binding은 r3 input 전체와 같습니다. 남은 gap은 stale CODE/RENDER 두 개뿐입니다. 전체 코드 검토나 suite를 반복하지 않았습니다. 파일·ledger 수정, 위임, 테스트, 앱 실행은 하지 않았습니다. provider, production Main, private store, Windows, 전체 legacy/all GUI와 full18 완료는 검증하지 않았습니다. 작성자와 다른 task에서 수행한 제한된 검토이며 release 승인이 아닙니다.",
+    "open_findings": [],
+    "provenance": {
+      "child_task_id": "01a11ec5-5959-7790-97e9-27c9a9bb11da",
+      "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+    }
+  },
+  "render": {
+    "schema_version": 2,
+    "reviewed": {
+      "contract_sha256": "f68b871486ed0d2b3ae83c60d415384668c31c3fff2ca2327a34791f4a28c604",
+      "environment_sha256": "a768b935b68bced02a848ba606c0256ee223732d0800f5b2f99e553189a6322d",
+      "gate": "design",
+      "plan_sha256": "8a78b67646218faa140571a225403134d48b180b216ef7c7144d4d38278d15d2",
+      "schema_version": 2,
+      "source_sha256": "f3e0528548724635e213b942ace1f653fc0f270fb3dc95e6876b1dbefad46950",
+      "verification_sha256": "b6f03cd3fc4192b040830af65d5940ac0af24bd2e243bffac497b458299eb23c",
+      "work_class_sha256": "e607760a80d9b949d27d76cab2f4026ba62d2c79bf1cd2a4c60b36c77755a99e"
+    },
+    "verdict": "pass",
+    "summary": "ledger 수정 후 기존 RENDER 판단의 적용 여부를 별도로 검토했습니다. 이전 RENDER PASS는 r2 input과 일치하며, 현재 binding은 r3 input 전체와 같습니다. source와 build는 유지되어 있습니다. hidden-r2/runtime-options의 원본 013-light-200-response-value-3.png, 015-light-200-send-keyboard-access.png, 031-dark-200-response-value-3.png, 033-dark-200-send-keyboard-access.png를 original 해상도로 직접 보았습니다. Light/Dark 200%에서 response-model·response.variant, 요청 값, Composer 안내문 전체와 전송 버튼이 보입니다. 전송 버튼의 focus 표시도 명확합니다. 각 원본은 1520×1936px이며 viewport는 380×484 CSS px입니다. 직접 pixel 판단은 이 4장에 한정합니다. 전체 53장에는 PNG signature·SHA256·IHDR 크기·viewport·native contentBounds와 캡처 전후 hidden/nonfocusable 기록을 대조했습니다. 실제 report와 verification의 캡처 및 teardown 기록이 일치합니다. provenance 전후가 같고, 기록된 owned pid95503·runner·wrapper는 exit0입니다. pageErrors와 externalRequests는 비어 있습니다. ledger 연결 수정은 acceptance 내용과 화면 증거를 약화하지 않습니다. 재실행·새 캡처·foreground 조작·파일 수정은 하지 않았습니다. provider, production Main, private store, screen reader, native select popup 조작, Windows, 전체 legacy/all GUI와 full18 완료는 검증하지 않았습니다. 독립된 제한 검토이며 release 승인이 아닙니다.",
+    "open_findings": [],
+    "provenance": {
+      "child_task_id": "01a11ec5-5959-7790-97e9-27c9a9bb11da",
+      "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+    }
+  }
+}

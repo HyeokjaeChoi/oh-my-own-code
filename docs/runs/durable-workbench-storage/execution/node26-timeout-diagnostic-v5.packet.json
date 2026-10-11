@@ -1,0 +1,48 @@
+{
+  "attestation": "Prepared input metadata; not a spawn or identity attestation",
+  "contract_sha256": "41fbc6f10a1a02d40055fc943b4374e1c6de4e1ba28cb7e0207e0cff5c23f5a9",
+  "decision_register": [
+    {
+      "blocks": [],
+      "id": "storage-path",
+      "impact": "Separate disposable process cleanup from durable native/app ownership",
+      "resolution": "Native path API, allowlisted hash-chain journal, one verified owner, no implicit migration",
+      "source": "User explicit managed-storage answer plus authorized engineering delegation",
+      "statement": "Native Documents managed stable session folders; private appData durable metadata/native storage",
+      "status": "delegated"
+    }
+  ],
+  "documents": [
+    {
+      "gate": "design_spec",
+      "path": "docs/runs/durable-workbench-storage/storage-contract.md",
+      "sha256": "c58a79f5c62840873e5a2cededc67e9d381006926365fecf07728c5f484fdab7",
+      "version": "5"
+    }
+  ],
+  "phase": "implementation",
+  "plan_sha256": "640b6c072bc358cce8e0d5e44b2998ce3be06d57526f21a2320a17c0ef241212",
+  "prepared_at": "2026-10-04T13:06:35+00:00",
+  "role": "qa_runner",
+  "routing": {
+    "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+    "input_sha256": {
+      ".agents/skills/solo-qa-run/SKILL.md": "677b90cbcd9c32bd2cd27140fb2b0810039dcc77ae3bb7ac5d2fd6cfc049c861",
+      ".agents/skills/solo-specialist/SKILL.md": "33378f790f39761948485f1f08617840579714dbb925aa177109a80ac4002c3b",
+      ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+    },
+    "mode": "default",
+    "phase": "implementation",
+    "profile": "solo_reader",
+    "profile_file": ".codex/agents/solo_reader.toml",
+    "references": [],
+    "role": "qa_runner",
+    "schema_version": 2,
+    "skill": "solo-qa-run",
+    "skill_file": ".agents/skills/solo-qa-run/SKILL.md"
+  },
+  "run": "durable-workbench-storage",
+  "schema_version": 2,
+  "user_approvals": []
+}

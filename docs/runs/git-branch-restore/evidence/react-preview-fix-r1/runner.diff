@@ -1,0 +1,83 @@
+--- before/apps/desktop-app/scripts/e2e-git-branch-restore.mjs
++++ after/apps/desktop-app/scripts/e2e-git-branch-restore.mjs
+@@ -231,6 +231,13 @@
+       applies: f.requests.filter((r) =>
+         ["git.branch.apply", "git.restore.apply"].includes(r.type),
+       ).length,
++      rejectedApplies: [...f.retainedReceipts.values()].filter(
++        ({ receipt }) =>
++          ["git.branch.apply", "git.restore.apply"].includes(receipt.type) &&
++          receipt.admission === "rejected" &&
++          receipt.effect === "none" &&
++          receipt.result?.kind === "rejected",
++      ).length,
+       effects: f.gitBranchRestoreEffects.length,
+       backups: f.syntheticGitBranchRestoreBackups.size,
+       heldCalls: f.pendingGitBranchRestoreWorkspaces.size,
+@@ -268,6 +275,7 @@
+     statusReads: 0,
+     previewReads: 0,
+     applies: 0,
++    rejectedApplies: 0,
+     effects: 0,
+     backups: 0,
+     heldCalls: 0,
+@@ -398,13 +406,33 @@
+   for (const [kind, group] of groups)
+     for (const item of await group.all()) {
+       await expect(item).toBeVisible();
+-      await item.evaluate((e) =>
+-        e.scrollIntoView({
+-          block: "center",
+-          inline: "nearest",
+-          behavior: "instant",
+-        }),
+-      );
++      await item.evaluate((e) => {
++        const r = e.getBoundingClientRect();
++        const points = [
++          [r.left + 1, r.top + 1],
++          [r.right - 1, r.top + 1],
++          [r.left + 1, r.bottom - 1],
++          [r.right - 1, r.bottom - 1],
++          [r.left + r.width / 2, r.top + r.height / 2],
++        ];
++        const complete =
++          r.left >= 0 &&
++          r.top >= 0 &&
++          r.right <= globalThis.innerWidth &&
++          r.bottom <= globalThis.innerHeight &&
++          points.every(([x, y]) =>
++            e.contains(e.ownerDocument.elementFromPoint(x, y)),
++          );
++        // Keep the exact current surface when it already contains the full,
++        // unoccluded block. All viewport, PNG, focus and selection checks below
++        // still run for every block; only redundant centered scrolling is gone.
++        if (!complete)
++          e.scrollIntoView({
++            block: "center",
++            inline: "nearest",
++            behavior: "instant",
++          });
++      });
+       await expect(item).toBeInViewport({ ratio: 1 });
+       const geometry = await item.evaluate((e) => {
+         const r = e.getBoundingClientRect();
+@@ -639,7 +667,8 @@
+       name === "denied" ? "denied" : "unknown",
+     );
+     assert.equal((await metrics()).effects, 0);
+-    assert.equal((await metrics()).applies, 1);
++    assert.equal((await metrics()).applies, name === "denied" ? 0 : 1);
++    assert.equal((await metrics()).rejectedApplies, name === "denied" ? 1 : 0);
+     await control("branch").fill("refs/heads/SYNTHETIC-still-editable");
+     await expect(command("apply")).toBeDisabled();
+     await recordState(name, { theme: "light", narrow: true });
+@@ -948,6 +977,7 @@
+   state: currentState,
+   states,
+   observations,
++  pageErrors: errors,
+   screenshots,
+   teardown,
+   sourceBuildProvenance: { before: provenanceBefore, after: provenanceAfter },

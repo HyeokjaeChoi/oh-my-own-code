@@ -1,0 +1,24 @@
+{
+  "name": "ui",
+  "projectType": "library",
+  "sourceRoot": "packages/ui/src",
+  "tags": ["platform:isomorphic", "scope:ui"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec tsc -p packages/ui/tsconfig.json --noEmit"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec eslint --config packages/ui/eslint.config.mjs packages/ui/src"
+      }
+    },
+    "format-check": {
+      "executor": "nx:run-commands",
+      "options": { "command": "pnpm exec prettier --check packages/ui" }
+    }
+  }
+}

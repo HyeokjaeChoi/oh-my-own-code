@@ -1,0 +1,257 @@
+.section {
+  min-width: 0;
+  color: var(--omoc-semantic-color-text-primary);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.section > p {
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+
+.section > [role="alert"],
+.section > [data-context-send-blocked],
+.section > [data-context-held] {
+  padding: 8px 12px;
+  border-radius: var(--omoc-component-size-control-radius);
+  background: var(--omoc-semantic-color-surface-subtle);
+}
+
+.section > [role="alert"] {
+  color: var(--omoc-semantic-color-danger-foreground);
+  background: var(--omoc-semantic-color-danger-background);
+}
+
+.task {
+  min-width: 0;
+}
+
+.taskGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 16px;
+}
+
+.taskGroup[hidden] {
+  display: none;
+}
+
+.taskGroup > details {
+  flex: 1 1 220px;
+}
+
+.taskGroup > details[open] {
+  flex-basis: 100%;
+}
+
+.task > summary,
+.list summary,
+.branch summary {
+  min-height: var(--omoc-component-size-control-hit-target);
+  padding-block: 6px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.task > summary {
+  color: var(--omoc-semantic-color-text-secondary);
+}
+
+.task[open] > summary {
+  color: var(--omoc-semantic-color-text-primary);
+  font-weight: 500;
+}
+
+.body {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  padding-block: 8px 16px;
+}
+
+.body h2 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+}
+
+.body p,
+.branch p,
+.messageActions p {
+  margin-block: 4px;
+  overflow-wrap: anywhere;
+}
+
+.controls {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.controls > button,
+.body > button {
+  justify-self: start;
+}
+
+.controls input,
+.branch textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--omoc-component-size-standard-control-height);
+  padding: 8px 12px;
+  border: 1px solid var(--omoc-component-color-input-border);
+  border-radius: var(--omoc-component-size-control-radius);
+  background: var(--omoc-component-color-input-background);
+  color: var(--omoc-component-color-input-foreground);
+  font: inherit;
+}
+
+.branch textarea {
+  display: block;
+  height: 96px;
+  max-height: 240px;
+  margin-top: 8px;
+  resize: vertical;
+  overflow-y: auto;
+}
+
+.section :focus-visible,
+.messageActions :focus-visible {
+  outline: 2px solid var(--omoc-semantic-color-focus);
+  outline-offset: 2px;
+}
+
+.list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  min-width: 0;
+  padding-block: 8px;
+  border-block-end: 1px solid var(--omoc-semantic-color-selection-background);
+}
+
+.list li > strong {
+  flex: 1 1 100%;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.list li > span {
+  color: var(--omoc-semantic-color-text-secondary);
+}
+
+.list li > details {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.list li > p,
+.list li > pre {
+  flex-basis: 100%;
+}
+
+.preview,
+.branch {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 16px;
+  border-radius: var(--omoc-component-size-card-radius);
+  background: var(--omoc-semantic-color-surface-subtle);
+}
+
+.branch > strong {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+}
+
+.branch .actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  padding-block: 8px;
+  background: var(--omoc-semantic-color-surface-subtle);
+}
+
+.section dl {
+  margin: 0;
+}
+
+.section dt {
+  color: var(--omoc-semantic-color-text-secondary);
+}
+
+.section dd {
+  margin: 0 0 8px;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+.section strong,
+.list span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.section pre {
+  min-width: 0;
+  width: 100%;
+  max-height: 240px;
+  overflow: auto;
+  margin: 4px 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+  font:
+    13px/20px ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+}
+
+.preview img {
+  display: block;
+  max-width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+}
+
+.actions,
+.messageActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.messageActions {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.messageActions p {
+  flex-basis: 100%;
+}
+
+@media (max-height: 440px) {
+  .branch textarea {
+    height: 64px;
+  }
+  .branch,
+  .preview {
+    padding: 8px;
+  }
+}

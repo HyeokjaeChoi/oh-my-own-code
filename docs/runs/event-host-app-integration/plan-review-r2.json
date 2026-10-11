@@ -1,0 +1,49 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "c2596eb198b12eb215d871cd717baa1ee5c0f8b978d4239588708941d2467bdd",
+    "gate": "plan",
+    "plan_sha256": "35ba14f484f5ba77f28fd7e10cbf99e5fbe3ab2e66c5d11119e1bcfee1ac9d87",
+    "schema_version": 2,
+    "source_sha256": "a75fd49a01211ef78a324cab7d829de4ea71bbd6018317be34bbea4330885840",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "plan rev2는 EH-PLAN-1의 계획 누락을 해결했습니다. Main이 두 출력 guard 수정과 검증을 담당합니다. 정확한 evidence root만 추가하고 containment, symlink 검사, 빈 destination의 exclusive claim, 기존 evidence 보존을 유지하도록 명시했습니다. 현재 CLI 인자도 contract와 일치합니다. guard 구현과 실제 실행 검증은 아직 남아 있습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a109e4-93c9-7760-a34d-24860e701cd7",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "run_id": "event-host-app-integration",
+    "reviewer_role": "plan_reviewer",
+    "profile": "solo_reader",
+    "independent_report_only": true,
+    "profile_instructions_read": ".codex/agents/solo_reader.toml",
+    "skills_read": [
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-plan-review/SKILL.md",
+      ".agents/skills/solo-design-spec-review/SKILL.md"
+    ],
+    "handoff_packet": "docs/runs/event-host-app-integration/entry-review-r2.packet.json",
+    "binding_source": "docs/runs/event-host-app-integration/plan-review-r2-input.json",
+    "binding_validation": "read-only review-input 명령의 현재 출력이 제공된 binding과 정확히 일치했습니다. reviewed에 해당 binding을 그대로 복사했습니다.",
+    "review_boundary": "EH-PLAN-1의 담당 파일, 출력 허용 범위, guard 보존, 허용 및 outside/symlink/used 경로 거부 검증 계획만 검토했습니다. 이전 proof 전체 검토와 변경 없는 계획 항목의 재검토는 하지 않았습니다.",
+    "inspected_implementation": [
+      "apps/desktop-app/scripts/p7-storage-probe.mjs: parseProbeOptions, checkedPath, claimProbeOutput",
+      "apps/desktop-app/scripts/run-evidence.mjs: parseArgs, assertWithin, checkedPath, prepareDestination, runEvidence"
+    ],
+    "cli_contract_result": "native-storage의 --out/--mode packaged/--platform darwin과 hidden-ui의 --out/--script ui-states는 현재 parser 규칙과 일치합니다.",
+    "guard_result": "현재 guard는 기존 run root만 허용합니다. rev2는 새 root 허용에 필요한 두 파일 수정과 거부 검증을 Main에게 명시적으로 배정했습니다. 계획 검토 pass는 구현 완료를 의미하지 않습니다.",
+    "design_spec_verdict_issued": false,
+    "empty_design_binding_used": false,
+    "next_dependency": "Main이 plan pass를 등록하고 실제 design_spec binding을 생성한 뒤, 같은 reader가 design v1의 초기 설계 검토를 받습니다.",
+    "recursive_delegation": false,
+    "files_written": false,
+    "ledger_written": false,
+    "runtime_provider_native_ui_build_invoked": false,
+    "private_data_accessed": false,
+    "os_sandbox_attested": false,
+    "evidence_limits": "정적 코드 검토와 read-only binding 확인만 수행했습니다. guard 테스트, production compatibility, Native, hidden UI, build, package 실행은 수행하지 않았습니다.",
+    "gate_policy": "이미 승인된 로컬 구현에 새 사용자 승인이나 추가 gate를 요구하지 않습니다."
+  }
+}

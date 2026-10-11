@@ -1,0 +1,75 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "D1",
+      "description": "Exact bounded canonical JSON and no dangerous input coercion"
+    },
+    {
+      "id": "D2",
+      "description": "Accepted domain hashes remain separated from original admission digest with exact identity fields"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "apps/desktop-app/src/permission-control-canonical.test.mjs",
+        "apps/desktop-app/src/permission-control-digests.test.mjs",
+        "apps/desktop-app/src/permission-policy.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Inert closed canonical data and domain digests; no admission digest or Native effects change",
+      "acceptance_ids": [
+        "D1",
+        "D2"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/permission-control-canonical.mjs",
+        "apps/desktop-app/src/permission-control-canonical.test.mjs",
+        "apps/desktop-app/src/permission-control-digests.mjs",
+        "apps/desktop-app/src/permission-control-digests.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Inert closed canonical data and domain digests; no admission digest or Native effects change",
+      "acceptance_ids": [
+        "D1",
+        "D2"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/permission-control-canonical.mjs",
+        "apps/desktop-app/src/permission-control-canonical.test.mjs",
+        "apps/desktop-app/src/permission-control-digests.mjs",
+        "apps/desktop-app/src/permission-control-digests.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Inert closed canonical data and domain digests; no admission digest or Native effects change",
+      "acceptance_ids": [
+        "D1",
+        "D2"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

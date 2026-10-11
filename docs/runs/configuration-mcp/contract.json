@@ -1,0 +1,267 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "M1",
+      "description": "Explicit closed supported workspace registration/controls"
+    },
+    {
+      "id": "M2",
+      "description": "Flushed effects/status postconditions/unknown original identity"
+    },
+    {
+      "id": "M3",
+      "description": "Feature compatibility and no restored live authority"
+    },
+    {
+      "id": "M4",
+      "description": "Truthful race-safe workspace UI"
+    },
+    {
+      "id": "M5",
+      "description": "Actual affected verification and independent gates"
+    }
+  ],
+  "checks": {
+    "mcp": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "apps/desktop-app/src/host/workbench-mcp.test.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/workbench-contract.test.mjs",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs",
+        "apps/desktop-app/src/host/workbench-ipc.test.mjs",
+        "apps/desktop-app/scripts/configuration-mcp-probe.test.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Affected actual MCP closed producer/registry/service/renderer/fixture regressions",
+      "acceptance_ids": [
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5"
+      ],
+      "required": true
+    },
+    "native": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/configuration-mcp-probe.mjs",
+        "--out",
+        "docs/runs/configuration-mcp/evidence/native-r5"
+      ],
+      "cwd": ".",
+      "scope": "Actual fresh9case contained synthetic MCP production-module Native probe after r13 cwd validation correction",
+      "acceptance_ids": [
+        "M1",
+        "M2",
+        "M3",
+        "M5"
+      ],
+      "required": true
+    },
+    "hidden-ui": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--out",
+        "docs/runs/configuration-mcp/evidence/hidden-r5",
+        "--script",
+        "ui-states"
+      ],
+      "cwd": ".",
+      "scope": "Actual fresh built synthetic MCP states plus removal prerequisite desktop and760/200%",
+      "acceptance_ids": [
+        "M4",
+        "M5"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "nx",
+        "run",
+        "desktop-app:build",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Actual fresh production build after r13 host/helper and UI guidance correction",
+      "acceptance_ids": [
+        "M5"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Closed DTO/renderer type consumers",
+      "acceptance_ids": [
+        "M5"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Existing slice/runtime boundary enforcement",
+      "acceptance_ids": [
+        "M5"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Browser-only renderer closure",
+      "acceptance_ids": [
+        "M5"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/scripts/configuration-mcp-probe.mjs",
+        "apps/desktop-app/scripts/configuration-mcp-probe.test.mjs",
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+        "apps/desktop-app/scripts/fixtures/p7-storage-owner-host.mjs",
+        "apps/desktop-app/scripts/fixtures/synthetic-mcp-server.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+        "apps/desktop-app/src/desktop-bridge.d.ts",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/host/storage-journal.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs",
+        "apps/desktop-app/src/host/workbench-mcp.mjs",
+        "apps/desktop-app/src/host/workbench-mcp.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+        "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+        "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+        "apps/desktop-app/src/renderer/shared/api/index.ts",
+        "apps/desktop-app/src/renderer/shared/transport/index.ts",
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-contract.test.mjs",
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "All affected JavaScript/TypeScript source/scripts; definitions checked by tsc, Python AST checked by worker",
+      "acceptance_ids": [
+        "M5"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "prettier",
+        "--check",
+        "apps/desktop-app/scripts/configuration-mcp-probe.mjs",
+        "apps/desktop-app/scripts/configuration-mcp-probe.test.mjs",
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+        "apps/desktop-app/scripts/fixtures/p7-storage-owner-host.mjs",
+        "apps/desktop-app/scripts/fixtures/synthetic-mcp-server.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+        "apps/desktop-app/src/desktop-bridge.d.ts",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/host/storage-journal.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs",
+        "apps/desktop-app/src/host/workbench-mcp.mjs",
+        "apps/desktop-app/src/host/workbench-mcp.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+        "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+        "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css",
+        "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+        "apps/desktop-app/src/renderer/shared/api/index.ts",
+        "apps/desktop-app/src/renderer/shared/transport/index.ts",
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-contract.test.mjs",
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "All changed JS/TS/CSS source/scripts; Python AST validated separately",
+      "acceptance_ids": [
+        "M5"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/configuration-mcp/design.md",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "b4efada75d156e2e7d4376e05f2e720a60cf0f23598398f8c5779aab8eb8f316"
+    }
+  ],
+  "environment_files": [
+    "pnpm-lock.yaml",
+    "docs/runs/configuration-mcp/evidence/prechange/legacy-storage-journal.mjs",
+    "docs/runs/configuration-mcp/evidence/prechange/legacy-storage-journal.bundle.mjs",
+    "docs/runs/configuration-mcp/evidence/prechange/legacy-parser-closure.json"
+  ],
+  "user_approvals": [],
+  "decision_register": [
+    {
+      "id": "mcp-runtime-scope",
+      "statement": "Workspace Native MCP controls with current-runtime-only app ownership and explicit inactive registration",
+      "status": "delegated",
+      "source": "User ongoing remaining local product authorization, PRD F14/AC14 and actual pinned source facts",
+      "impact": "Explicit Native MCP runtime/process effects; no durable configuration copies, auth UI or automatic restart activation",
+      "blocks": [],
+      "resolution": "Initial independent PLAN and DESIGN_SPEC before implementation; predecessor completion hold; closed unsupported conversion and honest status/process limits"
+    }
+  ]
+}

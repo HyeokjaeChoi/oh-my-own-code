@@ -1,0 +1,101 @@
+✔ lease identity is internally minted, frozen, bounded and rejects accessors (3.157708ms)
+✔ actual Fiber proof settles once; forged or foreign proofs cannot settle (5.674917ms)
+✔ parent foreground exit cannot settle while child lives; no late child admission (1.106375ms)
+✔ cancellation is intent only; actual IO and Fiber finalizers must finish (1.113ms)
+✔ unbound owned-effect reservation is permanently unverified, never upgraded (0.533458ms)
+✔ runtime closure revokes outstanding proofs and cannot claim task completion (0.425875ms)
+✔ late task capture and forged Fiber cannot turn an admitted lease into running work (0.495708ms)
+✔ descriptor-cloned actual Fiber cannot settle its live original lease (0.859041ms)
+✔ a caller-written exit field is not the runtime end callback (0.700417ms)
+✔ failed actual task can settle, while unverified child permanently holds parent (0.679875ms)
+✔ lease lifetime capacity is bounded even after closure, child reservations max32 (33.981166ms)
+✔ actual owned Node child exit is awaited but cannot prove descendant settlement (64.485916ms)
+✔ admission requires an owned current scope and exact immutable constraints (0.863833ms)
+✔ root advancement retains one actual Fiber; existing child snapshot never catches up (1.610667ms)
+✔ advancement rejects foreign, forged, Proxy and changed-generation scopes without mutation (1.08825ms)
+✔ capture and start refuse stale admission scopes before actual task ownership (0.63775ms)
+✔ revoked or closed origins prevent new work but preserve actual task and IO settlement (1.293292ms)
+✔ actual capture keeps one owner before start and after version advancement (0.593959ms)
+✔ child scope advancement refuses a cancelled parent even at the matching current version (0.644541ms)
+✔ child scope advancement refuses a ended parent even at the matching current version (0.493042ms)
+✔ pending queue input holds an ended lease before root settlement (0.397708ms)
+✔ queue cancellation after Fiber exit uses an exact observed callback and forbids settled reentry (0.758833ms)
+✔ promotion wins exclusively and carrying child IO holds every original root (0.739167ms)
+✔ no-effect cancellation before any execution lease still waits for the actual original RPC (0.352458ms)
+✔ command expansion reserves before callback and never fabricates a prompt identity (0.436125ms)
+✔ reservation observations reject foreign proof, lost capture, late binding and closure (0.395583ms)
+✔ reserved original RPC IO must close after callback Fiber ends (0.417583ms)
+✔ synthetic child input inherits original scope and requires a reserved actual child lease (0.707958ms)
+✔ failed cancellation callback cannot issue completion or erase pending input (0.302458ms)
+✔ a newly promoted input cannot borrow a prior completed lease as its carrier (0.495917ms)
+✔ pending child cancellation does not deadlock physically completed parent and child proofs (0.445875ms)
+✔ workspace mutation refuses session execution leases and synthetic input categories (0.2015ms)
+✔ workspace original RPC and actual IO hold settlement without any session lease (0.394292ms)
+✔ filesystem lease settles only from its captured task and actual checked file IO (6.362916ms)
+✔ file response or interrupted Fiber cannot clear the lease while actual close is pending (3.0455ms)
+✔ workspace original RPC owns checked file IO without creating a session execution scope (2.548583ms)
+✔ observe synchronously seals, returns stable Effect and opaque lease-bound proof (3.12025ms)
+✔ actual Fiber interruption waits finalizers and all IO close, without trusting result fields (4.159042ms)
+✔ IO errors and unbound slots are incomplete; process exit and close never prove descendants (0.881375ms)
+✔ existing reservations can bind while running; every IO must close (0.571958ms)
+✔ close revokes synchronously, removes listeners, never kills or bypasses actual finalizers (0.888958ms)
+✔ real failures are sanitized; result/status/slot fields grant no evidence (0.426625ms)
+✔ rejects proxy and obvious fake authority without executing traps or getters (0.412875ms)
+✔ slots, resources, fibers and proofs have single ownership across leases and observers (0.333667ms)
+✔ late closed resource bindings and unbound post-Fiber bindings fail closed (0.538917ms)
+✔ 32 slots per lease and 8192 lifetime slots remain bounded (7.6075ms)
+✔ 8192 lifetime lease limit also applies to zero-slot observations (62.747208ms)
+✔ a rejected already-closed IO cannot be replaced to erase lost evidence (2.049041ms)
+✔ a close event on an open PassThrough is permanently incomplete (0.860583ms)
+✔ close evidence ignores caller closed and errored accessors (0.538333ms)
+✔ binding checks native closed, destroyed and errored state without own getters (0.263958ms)
+✔ native closure evidence covers Readable and Writable independently (0.480792ms)
+✔ descriptor and prototype clone cannot prove completion while original Fiber is live (0.35925ms)
+✖ capture is an Effect and unregistered actual Fibers cannot be observed (0.724833ms)
+✔ captured Fiber identity cannot move to a foreign observer or lease (0.326959ms)
+✔ late capture cannot replace a completed registered Fiber or revive a closed observer (0.368125ms)
+✔ capture rejects proxy and forged leases without invoking caller traps (0.221958ms)
+✔ capture records task termination before observe and cannot lose unbound-slot evidence (0.222125ms)
+✔ running reservations belong to the captured Fiber and block proof until actual IO closes (8.118375ms)
+✔ workspace and mutation labels cannot create resource evidence before or within a captured RPC (0.42925ms)
+✔ descriptor IO pre-start cancellation settles only the actual claimed original resource without running Bun (3.637833ms)
+✔ descriptor IO constructor rejection cannot supply task settlement through an error or RPC exit (1.947583ms)
+✔ actual checked file IO is bound before effects and waits physical descriptor closure (4.4345ms)
+✔ file IO binding refuses forged, Proxy, wrong-kind and duplicate resource owners (2.722417ms)
+✔ Fiber interruption cannot settle file IO before its actual pending close (2.544958ms)
+✔ sibling Fiber cannot claim a file resource for another captured task (1.007166ms)
+ℹ tests 66
+ℹ suites 0
+ℹ pass 65
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 491.508208
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-task-observer.test.mjs:631:1
+✖ capture is an Effect and unregistered actual Fibers cannot be observed (0.724833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'acquireDescriptorRead',
+      'bindFileIO',
+      'bindIO',
+      'bindProcess',
+      'capture',
+      'close',
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-task-observer.test.mjs:643:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'acquireDescriptorRead', 'bindFileIO', 'bindIO', 'bindProcess', 'capture', 'close', 'observe', 'proofFor', 'reserve', 'reserveRunning' ],
+    expected: [ 'bindFileIO', 'bindIO', 'bindProcess', 'capture', 'close', 'observe', 'proofFor', 'reserve', 'reserveRunning' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

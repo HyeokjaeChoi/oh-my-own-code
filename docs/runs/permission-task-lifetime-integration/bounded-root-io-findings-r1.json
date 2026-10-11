@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "reviewer": "01a1259f-5f1f-70f0-ac6f-84740b1969a6",
+  "role": "independent bounded code inspection; not whole-run final CODE",
+  "findings": [
+    {
+      "id": "ROOT-RETURN",
+      "priority": 2,
+      "file": "apps/desktop-app/src/host/workbench-file-edit.mjs",
+      "line": 343,
+      "problem": "Final close authority callback can revoke retained root; root guard not checked again before returned bytes",
+      "reproduction": "Reviewer actual Node read returned available bytes while root guard refused after final callback revoked owner"
+    },
+    {
+      "id": "FIBER-OWNER",
+      "priority": 2,
+      "file": "apps/desktop-app/src/native-permission-control.mjs",
+      "line": 125,
+      "problem": "Mutable Fiber.id accepted as transaction owner instead of actual Fiber object",
+      "reproduction": "Reviewer child Fiber temporarily copied parent id and inspect(parentTx) succeeded"
+    }
+  ],
+  "excluded": "Disjoint forthcoming config-zyp346xr Native create guard",
+  "limits": "No final whole-source approval; execution remains held"
+}

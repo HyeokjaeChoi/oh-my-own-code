@@ -1,0 +1,26 @@
+✖ retained snapshot authorityHold is a required closed boolean, never inferred from lookup (1.009125ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 127.629542
+
+✖ failing tests:
+
+test at apps/desktop-app/src/workbench-contract.test.mjs:516:1
+✖ retained snapshot authorityHold is a required closed boolean, never inferred from lookup (1.009125ms)
+  Error: Invalid workbench request.
+      at fail (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:89:17)
+      at closed (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:593:5)
+      at requiredObject (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:680:3)
+      at validateSnapshot (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:817:5)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.test.mjs:520:18)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    appCode: 'INVALID_REQUEST'
+  }

@@ -1,0 +1,87 @@
+{
+  "schema_version": 2,
+  "run": "permission-task-lifetime-design",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "7b75a16a173bcf005456c6e8aa181f06bb0879f4d804c3e239e6fb096f15c35b",
+    "documents_sha256": "7dfbf8ad8227beeea48566b5eaa193e223e2c6c65560a1d155f4cd43cb80ea28",
+    "gate": "design_spec",
+    "plan_sha256": "0f9d084716a6f9225b337a1e549fa47a439187dbd0e64590d65a44b891eb0eb8",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "changes_requested",
+  "summary": "ACK receipt 보존, 같은 journal 사용, effect 전 원본 바인딩, 실제 Fiber/IO/child 추적 방향은 타당합니다. 그러나 새 task의 복구 경로, 미승격 input의 종료 조건, effect 전 실패의 상태 전이가 닫혀 있지 않습니다. 이 세 항목을 계약에서 확정한 뒤 소비자 구현을 시작해야 합니다.",
+  "open_findings": [
+    {
+      "id": "TL-DS-01",
+      "severity": "P1",
+      "artifact": "docs/runs/permission-task-lifetime-design/design-contract-r1.md",
+      "lines": [
+        48,
+        73,
+        77
+      ],
+      "trigger": "message.send의 confirmed ACK 뒤 task가 남은 상태에서 IPC 또는 프로세스를 잃고 재시작합니다.",
+      "affected_consumer": "Main startup/preflight, host recovery, registry retainedOperations, renderer recovery projection",
+      "evidence": "새 계약은 비종료 task를 startup hold로 복원하고 DS03 ticket을 복구 경로로 참조합니다. 그러나 schema-contract-r3.md:149-159의 ticket은 permission_control_v1 key만 허용하며 nonpermission key와 pending inbox를 거부합니다. 따라서 message.send/command/bootstrap task는 이 ticket으로 복구할 수 없습니다. 새 계약은 별도 ticket을 후속 검토로 남깁니다. 또한 기존 schema-contract-r3.md:162는 authorityHold:false 관찰로 permission hold를 해제하고 원본 key를 유지하도록 정하지만, 새 계약은 projection removal을 해제 기준으로 설명합니다. renderer store.ts:2801-2840, 2844-2890은 hostHeld와 resource hold를 함께 사용하므로 소비자 계약을 명시해야 합니다.",
+      "violated_requirement": "Plan T2의 닫힌 recovery/consumer compatibility 계약과 기존 DS03의 정확한 ticket 및 authorityHold 규칙",
+      "smallest_correction": "새 task 종류별로 복구 가능한 범위와 영구 hold 범위를 명시하십시오. 복구를 지원한다면 별도 task recovery ticket, 원본 key 집합, prior settlement 증거, copied Native input 상태, durable reconciliation record, 양쪽 startup 검증 및 renderer hold 해제 규칙을 정확히 정의하십시오. 기존 permission authorityHold 규칙도 명시적으로 유지하십시오. 재시도나 원본 replay는 허용하지 마십시오."
+    },
+    {
+      "id": "TL-DS-02",
+      "severity": "P1",
+      "artifact": "docs/runs/permission-task-lifetime-design/design-contract-r1.md",
+      "lines": [
+        42,
+        66,
+        70
+      ],
+      "trigger": "queue input이 ACK를 받았지만 아직 coordinator scope로 승격되지 않았거나, cancellation과 promotion이 경합합니다.",
+      "affected_consumer": "Native inbox/coordinator, origin scopes, task verifier, registry task settlement",
+      "evidence": "종료 조건은 원본 origin을 가진 모든 lease와 RPC의 종료를 요구하지만, 아직 lease에 들어가지 않은 bound input의 소진을 요구하지 않습니다. 실제 config-qs9wxzz9.js:205-206은 queue가 남아 있어도 steer drain을 끝낼 수 있습니다. config-7stqpyhf.js:302-319는 이후 promotion을 별도로 수행합니다. 현재 origin-scopes는 input.consumed를 추적하지만 새 task 계약에는 pending input이 settlement를 막는 조건과 취소 완료 조건이 없습니다. 따라서 lease만 검사하면 ACK된 queued root를 먼저 settled로 기록한 뒤 해당 input을 실행 scope에 넣는 해석이 가능합니다.",
+      "violated_requirement": "Plan T2의 original-operation lifetime 보존과 계약 66행의 모든 원본 input lineage 유지",
+      "smallest_correction": "각 input을 pending/promoted/cancelled로 관리하는 단일 소유자와 원자적 전이를 정하십시오. pending input, 예약된 expansion/child input, armed handoff가 하나라도 있으면 root settlement를 거부하십시오. cancellation은 실제 inbox에서 해당 input의 미승격 제거를 확인해야 합니다. settled root에는 input 추가, promotion, handoff 및 새 lease admission을 금지하십시오. 이 조건을 verifier와 journal history validator의 규칙으로 명시하십시오."
+    },
+    {
+      "id": "TL-DS-03",
+      "severity": "P2",
+      "artifact": "docs/runs/permission-task-lifetime-design/design-contract-r1.md",
+      "lines": [
+        43,
+        44,
+        46,
+        48,
+        55
+      ],
+      "trigger": "task.prepare flush 뒤 handoff가 만료되거나 Native 최종 진입에서 body mismatch로 거부되어 실행 scope/Fiber가 만들어지지 않습니다.",
+      "affected_consumer": "Strict journal parser/checkpoint, private verifier, Main failure cleanup",
+      "evidence": "task.settlement은 no_effect를 허용하지만 허용 전이는 prepared -> bound -> running -> cancelling -> settled뿐입니다. effect 전 거부에서는 scopeId/scopeVersion/leaseId를 요구하는 observation을 정직하게 만들 수 없습니다. settlement.sequence가 마지막 observation sequence와 같은지 다음 값인지도 정해져 있지 않습니다. 구현자는 안전한 no_effect를 영구 hold로 남기거나, 존재하지 않는 running/cancelling observation을 만들어야 합니다.",
+      "violated_requirement": "Plan T2의 닫힌 schema/state/failure-window 계약",
+      "smallest_correction": "정확한 전이표를 추가하십시오. prepared/bound에서 no_effect로 끝나는 조건, running에서 정상 settled로 끝나는 조건, observation 없는 settlement의 sequence 값, 중복 record 규칙을 정하십시오. no_effect는 outstanding RPC와 handoff의 완전 종료 및 Native effect 미발생 증거를 요구하도록 하십시오. 존재하지 않는 scope/lease에는 가짜 ID를 쓰지 않는 closed variant를 정의하십시오."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a1245d-c941-7e82-87eb-011268ca6ba0",
+    "identity_source": "현재 프로세스의 CODEX_THREAD_ID",
+    "binding_input": "docs/runs/permission-task-lifetime-design/design-input-r1.json",
+    "binding_before_after": {
+      "entire_parsed_input_matches_harness_before": true,
+      "entire_parsed_input_matches_harness_after": true,
+      "input_unchanged": true,
+      "registered_document_hash_matches_before_after": true,
+      "packet_contract_file_hash_matches_before_after": true,
+      "selected_source_manifest_entries": 20,
+      "selected_source_sizes_and_hashes_match_before_after": true
+    },
+    "review_boundary": "candidate-r1의 task lifetime/storage/private handoff와 관련 실제 소스만 독립 정적 검토했습니다. 기존 accepted DS02/03을 재사용했으며 전체 F09를 재검토하지 않았습니다.",
+    "limits": [
+      "API/code 구현 승인이나 실행 성공을 뜻하지 않습니다.",
+      "실제 Native settlement, positive execution, runtime 동작을 검증하지 않았습니다.",
+      "location correction의 기존 CODE/126 Node 결과를 재실행하거나 확대 해석하지 않았습니다.",
+      "테스트, Native, Bun, server, provider, production Main, Electron, build, UI를 실행하지 않았습니다.",
+      "파일, report, ledger를 수정하지 않았으며 위임하지 않았습니다.",
+      "보고서는 저장하지 않았습니다."
+    ]
+  }
+}

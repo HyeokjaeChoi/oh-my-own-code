@@ -1,0 +1,50 @@
+{
+  "kind": "actual-source-hooks",
+  "runtime_verified": false,
+  "actions": [
+    "observePermissionPolicy",
+    "cancelPermissionPolicyObservation"
+  ],
+  "selectors": [
+    "permissionPolicy",
+    "currentPermissionPolicyObservation",
+    "canObservePermissionPolicy"
+  ],
+  "component": "PermissionPolicy",
+  "mount": "widgets/conversation adjacentTasks third disclosure; className=styles.runtimeReport; hidden=branchActive",
+  "hooks": {
+    "data-runtime-task": [
+      "permission"
+    ],
+    "data-permission-policy-action": [
+      "observe",
+      "cancel"
+    ],
+    "data-permission-policy-status": [
+      "not_observed",
+      "checking",
+      "observed",
+      "unavailable",
+      "stale",
+      "error"
+    ],
+    "data-permission-policy-baseline": [
+      "matches",
+      "mismatch"
+    ],
+    "data-permission-policy-source": [
+      "session",
+      "required"
+    ],
+    "data-runtime-task-close": true
+  },
+  "files": {
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts": "75ec4f73e61273a24e3a06462c658797c52d59c2ee4303e028194323ed572bfc",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts": "0cf295b46493b1650ce631c21c88638d5565acd551cf3104af1a87f3d507ebe8",
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts": "f31132d18fa65048e89f4efab2e143db9c0dadf4c032535321ca62f10dd7f9c6",
+    "apps/desktop-app/src/renderer/features/permission-policy/index.tsx": "d42bf6422a941e6c1828ef33c5680003bfa459aa74b8e90860719ba1cc50c8ee",
+    "apps/desktop-app/src/renderer/features/permission-policy/policy.module.css": "d348959073f52063ff50b59becaa861cf075e76c2fc24515e9c3feb035626672",
+    "apps/desktop-app/src/renderer/widgets/conversation/index.tsx": "d063d93e1e3f4f8bebff584f47a3353c99b353eac27a415656f5210a69e7d55a",
+    "apps/desktop-app/src/workbench-store.test.mjs": "869103250db5d83ab3a67ce164c4b23ec071b5e63e017a4fe2fe89c765ee992a"
+  }
+}

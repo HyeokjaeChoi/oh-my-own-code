@@ -1,0 +1,37 @@
+✔ MCP evidence claims refuse reuse, escape and symlink redirects (7.753125ms)
+✔ synthetic MCP protocol handles actual initialize, list, call and ping without execution (0.480709ms)
+✔ exit acceptance requires exact birth identity and actual kernel event (1.162459ms)
+✔ synthetic confirmation requires frozen exact target, nested argv and contained root (1.023666ms)
+✔ SDK counting wrapper preserves actual calls/results/errors (0.159666ms)
+✔ explicit synthetic failure gate follows real add and read, then resets (0.192167ms)
+✖ saved MCP probe input satisfies the actual supported file reader before any Native launch (4.42675ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 74.024542
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/configuration-mcp-probe.test.mjs:210:1
+✖ saved MCP probe input satisfies the actual supported file reader before any Native launch (4.42675ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'unsupported'
+  - 'unavailable'
+       ^
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/configuration-mcp-probe.test.mjs:231:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unsupported',
+    expected: 'unavailable',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

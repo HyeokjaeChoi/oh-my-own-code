@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "authority": "Actual host/factory API checkpoint, source implementation continues within this shape",
+  "producer_sha256": {
+    "apps/desktop-app/src/desktop-bridge.d.ts": "471972d9be3e58c013a34aca265ded7cebb8fb51f5fb345f12387542f6a6736d",
+    "apps/desktop-app/src/workbench-contract.mjs": "91431c5ba0a157061a8c3362557ebcba7b50ea88256f3902099786097c36acf3",
+    "apps/desktop-app/src/host/workbench-mcp.mjs": "601ab78536584803e80912cfa6d2131ed8ea60e56f96cc39ee055918385ef140",
+    "apps/desktop-app/src/workbench-service.mjs": "79ba6e9ce0b5491001f52ada06d96356bdf25fe146aa05e6876f85b9ffa5f752",
+    "apps/desktop-app/src/host/workbench-admission.mjs": "9f58da437133b0cfcadd63cfa1c9adf929ac418af98b11e61312eca348906186",
+    "apps/desktop-app/src/host/workbench-receipts.mjs": "338916766de0c7bffce829c09f703abda8a8d55ebcf600aea0d8e06bd6182e98",
+    "apps/desktop-app/src/main.mjs": "568bc09eb4c7046a659097d9daaa10aeca8afce7c7ef08499815a9f660752262"
+  },
+  "factory": "createWorkbenchService existing injections plus confirmMcp?:async immutableTarget=>boolean, default false. No other new injection. Normal v2 envelope+sender required with registry. Existing runtime/registry/runtimeEpoch/bootstrap behavior unchanged.",
+  "confirmMcp_target": {
+    "required": [
+      "action register|connect|disconnect|remove",
+      "workspaceId",
+      "workspacePath canonical",
+      "sourceName",
+      "nativeName",
+      "expectedObservationVersion",
+      "digest submitted normalized definition",
+      "sourceVersion exact file observation"
+    ],
+    "optional": "definition for register/connect only: actual normalized local argv/cwd/disabled:true or remote oauth:false/disabled:true; Object.freeze nested definition from helper"
+  },
+  "checks": "actual registry/service MCP5 targeted PASS; storage worker149PASS/hashverified. No Native/UI/build execution.",
+  "storage_checkpoint": "docs/runs/configuration-mcp/storage-api-freeze-r1.json",
+  "renderer_checkpoint": "await worker actual hooks/labels, relay later; do not invent"
+}

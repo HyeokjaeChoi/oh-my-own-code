@@ -1,0 +1,317 @@
+[
+  {
+    "section": "integratedAcceptance",
+    "paragraphIndex": 0,
+    "exactParagraph": "**출시 판정:** AC-01~18 각각의 실제 실행 근거와 실패 경로를 확보하고 독립 제품/코드/디자인 검토에서 중대한 미해결 문제가 없어야 한다. 권한 우회·잘못된 경로 변경·데이터 유실·중복 부작용은 출시 차단 항목이다. 모든 아래 시나리오를 지원 환경에서 통과한다.",
+    "status": "source_partial",
+    "sourceRefs": [
+      {
+        "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+        "line": 51,
+        "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688",
+        "observation": "Activity UI explicitly scopes data to this app invocation; one selected-session filter, operation list/detail; no child/tool/verification category filters or result navigation actions in this component."
+      },
+      {
+        "path": "apps/desktop-app/src/workbench-service.mjs",
+        "line": 360,
+        "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+        "observation": "Service diagnostics owns in-memory operation totals and maximum500 events; observes operation/status/duration/scope, drops oldest and counts omissions. diagnostics.list filters workspace/session only at3994."
+      },
+      {
+        "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+        "line": 121,
+        "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+        "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+      },
+      {
+        "path": "apps/desktop-app/src/main.mjs",
+        "line": 407,
+        "sha256": "8a7b32319c7b13ce4a3ddedb8679963ec35e3792ec0e355d6a0f0e0e4730e049",
+        "observation": "Production startup checks copied Native state with actual createNativePreflight before owner intent and startSidecar, passes the same preflight callback. Pending retained keys reject before startup at398."
+      },
+      {
+        "path": "apps/desktop-app/src/host/native-preflight.mjs",
+        "line": 51,
+        "sha256": "710214d3cd54a69e8163c22ceaa10c27afde0ddccf47c4c1c145073960612b1f",
+        "observation": "viewBinding requires ready registry/store, no resource recovery/retained keys, then original confirmed receipt+mapping identity at88. Current authority is beyond historical fresh-only P7 helper."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "line": 3089,
+        "sha256": "0a0c91ab1fbb3e3edb45bdb5d28002633c295b1c155f9ea92cf4ff6e47713b7f",
+        "observation": "Snapshot read polling rechecks current scope and epoch; current original-key unknown receipts lookup at3265 without replay. Disconnected health does not itself establish event subscription or missing-history projection."
+      },
+      {
+        "path": "apps/desktop-app/src/event-host-child.mjs",
+        "line": 328,
+        "sha256": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+        "observation": "Official server starts with events.persist=true. createDirectHandleObserver15 tracks direct JS handles and observerGap, not arbitrary OS descendants or a public lost-history timeline."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "line": 65,
+        "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+        "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+      }
+    ],
+    "runtimeRefs": [],
+    "gaps": [
+      "All18 exact groups and seven integrated supported-platform scenarios are not yet complete. Current narrow run passes remain valid only for their recorded scope."
+    ],
+    "limits": [
+      "Full product requirements preserved; this row is an audit finding, not a release or scope approval."
+    ]
+  },
+  {
+    "section": "integratedAcceptance",
+    "paragraphIndex": 1,
+    "exactParagraph": "1. 이름·경로를 비운 신규 작업 → 올바른 루트와 이름 생성 → 대화 → 파일/도구 작업 → 결과 프리뷰 → 재시작 후 재열기.\n2. 기존 저장소와 외부 worktree import → 새 worktree 두 개에서 병렬 세션 → 두 자식 위임 → 결과 회수 → diff/테스트/리뷰 → 명시적 commit.\n3. 같은 파일 도구에 확인 후 허용, 사용자 거절, 정책 deny, 기억 취소를 각각 적용 → 실행 효과 확인. 실행 중 모드 축소·대기 승인·자식까지 검증.\n4. 내장 명령 검색/인자 입력/실행과 앱 slash 명령 → 도구 rich UI/질문 응답 → 터미널/dev server → 우측 브라우저와 파일 프리뷰. 잘못된 인자·스키마도 확인.\n5. dirty/untracked·활성 세션·경로 이탈·실패 전략에서 삭제 차단 → 명시적 종료/재확인 → 정상 삭제. 일반 폴더/원본 저장소/다른 세션의 자료 보존을 확인.\n6. 연결 중단·프로세스 종료·앱 재시작·이중 승인 → 재연결과 상태 재조회 → 누락 표기. 이미 실행한 도구가 자동 재실행되지 않음을 확인.\n7. 로컬 구성 변경과 MCP 연결/해제 → 실제 활성 상태 확인 → 계획/검증 결과 열기 → 기록 export/import·삭제 → 로컬 자동화 pause/resume·미실행 표시.",
+    "status": "source_partial",
+    "sourceRefs": [
+      {
+        "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+        "line": 51,
+        "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688",
+        "observation": "Activity UI explicitly scopes data to this app invocation; one selected-session filter, operation list/detail; no child/tool/verification category filters or result navigation actions in this component."
+      },
+      {
+        "path": "apps/desktop-app/src/workbench-service.mjs",
+        "line": 360,
+        "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+        "observation": "Service diagnostics owns in-memory operation totals and maximum500 events; observes operation/status/duration/scope, drops oldest and counts omissions. diagnostics.list filters workspace/session only at3994."
+      },
+      {
+        "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+        "line": 121,
+        "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+        "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+      },
+      {
+        "path": "apps/desktop-app/src/main.mjs",
+        "line": 407,
+        "sha256": "8a7b32319c7b13ce4a3ddedb8679963ec35e3792ec0e355d6a0f0e0e4730e049",
+        "observation": "Production startup checks copied Native state with actual createNativePreflight before owner intent and startSidecar, passes the same preflight callback. Pending retained keys reject before startup at398."
+      },
+      {
+        "path": "apps/desktop-app/src/host/native-preflight.mjs",
+        "line": 51,
+        "sha256": "710214d3cd54a69e8163c22ceaa10c27afde0ddccf47c4c1c145073960612b1f",
+        "observation": "viewBinding requires ready registry/store, no resource recovery/retained keys, then original confirmed receipt+mapping identity at88. Current authority is beyond historical fresh-only P7 helper."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "line": 3089,
+        "sha256": "0a0c91ab1fbb3e3edb45bdb5d28002633c295b1c155f9ea92cf4ff6e47713b7f",
+        "observation": "Snapshot read polling rechecks current scope and epoch; current original-key unknown receipts lookup at3265 without replay. Disconnected health does not itself establish event subscription or missing-history projection."
+      },
+      {
+        "path": "apps/desktop-app/src/event-host-child.mjs",
+        "line": 328,
+        "sha256": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+        "observation": "Official server starts with events.persist=true. createDirectHandleObserver15 tracks direct JS handles and observerGap, not arbitrary OS descendants or a public lost-history timeline."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "line": 65,
+        "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+        "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+      }
+    ],
+    "runtimeRefs": [],
+    "gaps": [
+      "Seven end-to-end flows require the missing clause implementations and coherent supported-platform execution; individual synthetic feature reports do not establish whole-scenario success."
+    ],
+    "limits": [
+      "Full product requirements preserved; this row is an audit finding, not a release or scope approval."
+    ]
+  },
+  {
+    "section": "integratedAcceptance",
+    "paragraphIndex": 2,
+    "exactParagraph": "UI 통합은 실제 화면 E2E로, 정책·경로·재실행 방지는 임시 합성 저장소와 부작용 검사로 검증한다. lint/type/unit/integration/E2E와 hook 실행은 실제 명령·종료 코드·현재 소스 버전의 근거를 남긴다. 초록 체크 아이콘이나 에이전트 자기 보고는 검증 결과가 아니다. 접근성은 키보드만으로 위 핵심 흐름을 수행하고, focus 복원·스크린리더 상태 안내·대비·좁은 화면 조작을 검토한다.",
+    "status": "source_partial",
+    "sourceRefs": [
+      {
+        "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+        "line": 51,
+        "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688",
+        "observation": "Activity UI explicitly scopes data to this app invocation; one selected-session filter, operation list/detail; no child/tool/verification category filters or result navigation actions in this component."
+      },
+      {
+        "path": "apps/desktop-app/src/workbench-service.mjs",
+        "line": 360,
+        "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+        "observation": "Service diagnostics owns in-memory operation totals and maximum500 events; observes operation/status/duration/scope, drops oldest and counts omissions. diagnostics.list filters workspace/session only at3994."
+      },
+      {
+        "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+        "line": 121,
+        "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+        "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+      },
+      {
+        "path": "apps/desktop-app/src/main.mjs",
+        "line": 407,
+        "sha256": "8a7b32319c7b13ce4a3ddedb8679963ec35e3792ec0e355d6a0f0e0e4730e049",
+        "observation": "Production startup checks copied Native state with actual createNativePreflight before owner intent and startSidecar, passes the same preflight callback. Pending retained keys reject before startup at398."
+      },
+      {
+        "path": "apps/desktop-app/src/host/native-preflight.mjs",
+        "line": 51,
+        "sha256": "710214d3cd54a69e8163c22ceaa10c27afde0ddccf47c4c1c145073960612b1f",
+        "observation": "viewBinding requires ready registry/store, no resource recovery/retained keys, then original confirmed receipt+mapping identity at88. Current authority is beyond historical fresh-only P7 helper."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "line": 3089,
+        "sha256": "0a0c91ab1fbb3e3edb45bdb5d28002633c295b1c155f9ea92cf4ff6e47713b7f",
+        "observation": "Snapshot read polling rechecks current scope and epoch; current original-key unknown receipts lookup at3265 without replay. Disconnected health does not itself establish event subscription or missing-history projection."
+      },
+      {
+        "path": "apps/desktop-app/src/event-host-child.mjs",
+        "line": 328,
+        "sha256": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+        "observation": "Official server starts with events.persist=true. createDirectHandleObserver15 tracks direct JS handles and observerGap, not arbitrary OS descendants or a public lost-history timeline."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "line": 65,
+        "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+        "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+      }
+    ],
+    "runtimeRefs": [],
+    "gaps": [
+      "Existing actual hidden UI and synthetic effects evidence covers bounded features; complete keyboard-only integrated normal/failure flows and fresh independent product/platform acceptance remain required."
+    ],
+    "limits": [
+      "Full product requirements preserved; this row is an audit finding, not a release or scope approval."
+    ]
+  },
+  {
+    "section": "integratedAcceptance",
+    "paragraphIndex": 3,
+    "exactParagraph": "**개인 활용 지표:** 사용자가 별도 CLI 조작 없이 시나리오 1~4의 정상 흐름을 완료하는 것을 목표로 한다. 소요 시간, 앱 밖으로 나간 이유, 잘못 이해한 상태, 복구 실패를 로컬에 기록한다. 아직 실측 기준선이 없으므로 시간 절감 비율을 출시 성과로 약속하지 않는다.",
+    "status": "source_missing",
+    "sourceRefs": [
+      {
+        "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+        "line": 51,
+        "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688",
+        "observation": "Activity UI explicitly scopes data to this app invocation; one selected-session filter, operation list/detail; no child/tool/verification category filters or result navigation actions in this component."
+      },
+      {
+        "path": "apps/desktop-app/src/workbench-service.mjs",
+        "line": 360,
+        "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+        "observation": "Service diagnostics owns in-memory operation totals and maximum500 events; observes operation/status/duration/scope, drops oldest and counts omissions. diagnostics.list filters workspace/session only at3994."
+      },
+      {
+        "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+        "line": 121,
+        "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+        "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+      },
+      {
+        "path": "apps/desktop-app/src/main.mjs",
+        "line": 407,
+        "sha256": "8a7b32319c7b13ce4a3ddedb8679963ec35e3792ec0e355d6a0f0e0e4730e049",
+        "observation": "Production startup checks copied Native state with actual createNativePreflight before owner intent and startSidecar, passes the same preflight callback. Pending retained keys reject before startup at398."
+      },
+      {
+        "path": "apps/desktop-app/src/host/native-preflight.mjs",
+        "line": 51,
+        "sha256": "710214d3cd54a69e8163c22ceaa10c27afde0ddccf47c4c1c145073960612b1f",
+        "observation": "viewBinding requires ready registry/store, no resource recovery/retained keys, then original confirmed receipt+mapping identity at88. Current authority is beyond historical fresh-only P7 helper."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "line": 3089,
+        "sha256": "0a0c91ab1fbb3e3edb45bdb5d28002633c295b1c155f9ea92cf4ff6e47713b7f",
+        "observation": "Snapshot read polling rechecks current scope and epoch; current original-key unknown receipts lookup at3265 without replay. Disconnected health does not itself establish event subscription or missing-history projection."
+      },
+      {
+        "path": "apps/desktop-app/src/event-host-child.mjs",
+        "line": 328,
+        "sha256": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+        "observation": "Official server starts with events.persist=true. createDirectHandleObserver15 tracks direct JS handles and observerGap, not arbitrary OS descendants or a public lost-history timeline."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "line": 65,
+        "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+        "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+      }
+    ],
+    "runtimeRefs": [],
+    "gaps": [
+      "Service operation duration/counts do not record end-to-end user completion time, reasons for leaving the app, misunderstandings or recovery failure. Personal-use baseline and in-app local measurement workflow remain missing."
+    ],
+    "limits": [
+      "Full product requirements preserved; this row is an audit finding, not a release or scope approval."
+    ]
+  },
+  {
+    "section": "integratedAcceptance",
+    "paragraphIndex": 4,
+    "exactParagraph": "**학습 지표:** 합성 읽기 예제와 실제 위임 작업 각각에서 (1) 모델과 도구가 한 일, (2) 권한 적용의 실행 근거, (3) 부모·자식 컨텍스트/권한 관계, (4) 설정·요청·실제 관측의 차이를 설명한다. 각 4문항 중 3개 이상, 권한 근거 문항 필수 통과를 목표로 한다. 예측·답·근거·오답을 남기되 hidden chain-of-thought 복원이나 성능/캐시 보장을 요구하지 않는다. 실패하면 해당 설명·상태 표현을 고치며 사용자의 범위 승인 없이 제품 전체를 실험 뷰어로 축소하지 않는다.",
+    "status": "source_missing",
+    "sourceRefs": [
+      {
+        "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+        "line": 51,
+        "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688",
+        "observation": "Activity UI explicitly scopes data to this app invocation; one selected-session filter, operation list/detail; no child/tool/verification category filters or result navigation actions in this component."
+      },
+      {
+        "path": "apps/desktop-app/src/workbench-service.mjs",
+        "line": 360,
+        "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+        "observation": "Service diagnostics owns in-memory operation totals and maximum500 events; observes operation/status/duration/scope, drops oldest and counts omissions. diagnostics.list filters workspace/session only at3994."
+      },
+      {
+        "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+        "line": 121,
+        "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+        "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+      },
+      {
+        "path": "apps/desktop-app/src/main.mjs",
+        "line": 407,
+        "sha256": "8a7b32319c7b13ce4a3ddedb8679963ec35e3792ec0e355d6a0f0e0e4730e049",
+        "observation": "Production startup checks copied Native state with actual createNativePreflight before owner intent and startSidecar, passes the same preflight callback. Pending retained keys reject before startup at398."
+      },
+      {
+        "path": "apps/desktop-app/src/host/native-preflight.mjs",
+        "line": 51,
+        "sha256": "710214d3cd54a69e8163c22ceaa10c27afde0ddccf47c4c1c145073960612b1f",
+        "observation": "viewBinding requires ready registry/store, no resource recovery/retained keys, then original confirmed receipt+mapping identity at88. Current authority is beyond historical fresh-only P7 helper."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "line": 3089,
+        "sha256": "0a0c91ab1fbb3e3edb45bdb5d28002633c295b1c155f9ea92cf4ff6e47713b7f",
+        "observation": "Snapshot read polling rechecks current scope and epoch; current original-key unknown receipts lookup at3265 without replay. Disconnected health does not itself establish event subscription or missing-history projection."
+      },
+      {
+        "path": "apps/desktop-app/src/event-host-child.mjs",
+        "line": 328,
+        "sha256": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+        "observation": "Official server starts with events.persist=true. createDirectHandleObserver15 tracks direct JS handles and observerGap, not arbitrary OS descendants or a public lost-history timeline."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "line": 65,
+        "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+        "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+      }
+    ],
+    "runtimeRefs": [],
+    "gaps": [
+      "Current entry/DTO/activity projection has no learning prediction/answer/evidence/question workflow. Both synthetic and real delegated-task four-question evaluation (permission evidence mandatory) remain missing/unverified."
+    ],
+    "limits": [
+      "Full product requirements preserved; this row is an audit finding, not a release or scope approval."
+    ]
+  }
+]

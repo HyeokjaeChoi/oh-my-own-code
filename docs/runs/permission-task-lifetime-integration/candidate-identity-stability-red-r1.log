@@ -1,0 +1,32 @@
+✖ same checked root permits ordinary file/subdirectory changes between complete observations (10.815542ms)
+✖ unrelated sibling changes do not replace an ancestor or revoke the selected object (4.872875ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 91.238833
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/native-bootstrap-workspace.test.mjs:607:1
+✖ same checked root permits ordinary file/subdirectory changes between complete observations (10.815542ms)
+  Error: native_bootstrap_workspace_unverified
+      at refuse (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-bootstrap-workspace.mjs:14:9)
+      at need (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-bootstrap-workspace.mjs:17:15)
+      at Object.assertCurrent (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-bootstrap-workspace.mjs:172:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-bootstrap-workspace.test.mjs:615:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/desktop-app/src/host/native-bootstrap-workspace.test.mjs:623:1
+✖ unrelated sibling changes do not replace an ancestor or revoke the selected object (4.872875ms)
+  Error: native_bootstrap_workspace_unverified
+      at refuse (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-bootstrap-workspace.mjs:14:9)
+      at need (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-bootstrap-workspace.mjs:17:15)
+      at Object.assertCurrent (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-bootstrap-workspace.mjs:172:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-bootstrap-workspace.test.mjs:631:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

@@ -1,0 +1,45 @@
+{
+  "scope": "Static observed production SDK wait path; no actual settlement runtime acceptance",
+  "files": {
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-9qsysn39.js": {
+      "bytes": 13110,
+      "sha256": "9ba44fa3bdf13bef28d5eb0c71dea56bbd80526d665c1d1d4853c146db3e084d"
+    },
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-76n1dez8.js": {
+      "bytes": 21879,
+      "sha256": "d287ae519253b75a2b350a53b4b5c5eef01b819afcf64e79c66566daccbe361b"
+    },
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-yp2x3t23.js": {
+      "bytes": 3614,
+      "sha256": "ad6fc7b1e763dd7c05a9fe5a6028ad108be368568afc040dbe2f324edc7779d3"
+    },
+    "node_modules/.pnpm/@opencode+client@2.0.18_effect@4.0.0-rc.112/node_modules/@opencode/client/dist/promise/client.d.ts": {
+      "bytes": 22272,
+      "sha256": "1070b60e9014d67322b0c63f462273dfb507650ba9dcc3aca2a201b2344525e7"
+    }
+  },
+  "facts": [
+    {
+      "path": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-9qsysn39.js",
+      "lines": "206-209",
+      "fact": "Session.wait first resolves session then calls execution.awaitIdle; it does not call resume or wake."
+    },
+    {
+      "path": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-76n1dez8.js",
+      "lines": "529-530",
+      "fact": "RPC exposes both interrupt(resume only) and wait(sessionID). Can compose existing public calls rather than invent private await-settlement RPC."
+    },
+    {
+      "path": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-yp2x3t23.js",
+      "lines": "73-77",
+      "fact": "awaitIdle waits current original execution.done and rechecks map until no active execution, covering cleanup and newly admitted execution during wait."
+    },
+    {
+      "path": "node_modules/.pnpm/@opencode+client@2.0.18_effect@4.0.0-rc.112/node_modules/@opencode/client/dist/promise/client.d.ts",
+      "lines": "53",
+      "fact": "Actual pinned Promise SDK session.wait(input,requestOptions) returns Promise<void>."
+    }
+  ],
+  "preferred_candidate": "Host transition admission hold -> interrupt(resume:false) -> tracked existing session.wait with deadline -> complete pending/child inventory and identity/generation recheck -> install/readback; unknown or unsettled task retains hold. Actual effect proof required.",
+  "supersedes": "Private EventHost settlement RPC candidate in permission-settlement-facts-r1.json is larger than necessary and not selected."
+}

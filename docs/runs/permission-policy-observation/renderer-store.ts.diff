@@ -1,0 +1,206 @@
+--- before/apps/desktop-app/src/renderer/entities/workbench/model/store.ts
++++ apps/desktop-app/src/renderer/entities/workbench/model/store.ts
+@@ -1,3 +1,7 @@
++import {
++  validatePermissionPolicyObservation,
++  type WorkbenchPermissionPolicyObservation,
++} from "../../../shared/api/index.js";
+ import {
+   validContextList,
+   validateContextObservation,
+@@ -1561,6 +1565,90 @@
+   | { lookupOnly?: false; operation: MutationRequest & OperationIdentity }
+   | { lookupOnly: true; operation: OperationIdentity }
+ );
++export type PermissionPolicyIdentity = Readonly<{
++  epoch: string;
++  workspaceId: string;
++  sessionId: string;
++  workspacePath: string;
++  trustRevision: number;
++  selectionGeneration: number;
++  generation: number;
++  floor: number;
++}>;
++export type PermissionPolicy = {
++  generation: number;
++  request?: PermissionPolicyIdentity | undefined;
++  observationIdentity?: PermissionPolicyIdentity;
++  observation?: WorkbenchPermissionPolicyObservation;
++  error?:
++    | "CANCELLED"
++    | "STALE"
++    | "POLICY_UNVERIFIED"
++    | "READ_TIMEOUT"
++    | "READ_BUSY"
++    | "UNAVAILABLE"
++    | undefined;
++};
++function permissionPolicyTargetReady(state: State): boolean {
++  return instructionTargetReady(state) && !extensionsHeld(state);
++}
++export function currentPermissionPolicyScope(
++  state: State,
++  identity: PermissionPolicyIdentity,
++): boolean {
++  return (
++    state.epoch === identity.epoch &&
++    state.selection.workspaceId === identity.workspaceId &&
++    state.selection.sessionId === identity.sessionId &&
++    state.selection.generation === identity.selectionGeneration &&
++    state.permissionPolicy.generation === identity.generation &&
++    state.revision === identity.floor &&
++    state.lists.workspaces.some(
++      (w) =>
++        w.id === identity.workspaceId &&
++        w.path === identity.workspacePath &&
++        w.trusted &&
++        w.trustRevision === identity.trustRevision,
++    )
++  );
++}
++export function currentPermissionPolicyObservation(
++  state: State,
++): WorkbenchPermissionPolicyObservation | undefined {
++  const entry = state.permissionPolicy;
++  return !entry.request &&
++    !entry.error &&
++    entry.observationIdentity &&
++    permissionPolicyTargetReady(state) &&
++    currentPermissionPolicyScope(state, entry.observationIdentity)
++    ? entry.observation
++    : undefined;
++}
++export function canObservePermissionPolicy(state: State): boolean {
++  return permissionPolicyTargetReady(state) && !state.permissionPolicy.request;
++}
++function retirePermissionPolicy(state: State, next: State): State {
++  if (state === next) return next;
++  const entry = next.permissionPolicy,
++    identity = entry.request ?? entry.observationIdentity;
++  if (
++    !identity ||
++    identity.generation !== entry.generation ||
++    (currentPermissionPolicyScope(next, identity) &&
++      permissionPolicyTargetReady(next))
++  )
++    return next;
++  // Keep one inert historical projection. Returning to an old scope cannot revive it.
++  return {
++    ...next,
++    permissionPolicy: {
++      ...entry,
++      generation: entry.generation + 1,
++      request: undefined,
++      error: "STALE",
++    },
++  };
++}
+ export type ExtensionIdentity = Readonly<{
+   epoch: string;
+   workspaceId: string;
+@@ -2099,6 +2187,7 @@
+   agentFiles: AgentFiles;
+   agentRuntime: AgentRuntime;
+   agentDrafts: Record<string, AgentDraft>;
++  permissionPolicy: PermissionPolicy;
+   extensions: Record<string, Extensions>;
+   extensionsGeneration: number;
+   mcp: Record<string, Mcp>;
+@@ -5085,6 +5174,13 @@
+       action: "edit" | "validate" | "discard";
+       text?: string;
+     }
++  | { type: "permission.policy.read"; identity: PermissionPolicyIdentity }
++  | {
++      type: "permission.policy.observed";
++      identity: PermissionPolicyIdentity;
++      value?: WorkbenchPermissionPolicyObservation;
++      error?: PermissionPolicy["error"];
++    }
+   | { type: "extensions.read"; identity: ExtensionIdentity }
+   | {
+       type: "extensions.observed";
+@@ -6645,6 +6741,56 @@
+       };
+     }
+ 
++    case "permission.policy.read": {
++      if (
++        !canObservePermissionPolicy(state) ||
++        !currentPermissionPolicyScope(state, event.identity)
++      )
++        return state;
++      return {
++        ...state,
++        permissionPolicy: {
++          generation: state.permissionPolicy.generation,
++          request: event.identity,
++        },
++      };
++    }
++    case "permission.policy.observed": {
++      const { identity } = event;
++      if (state.permissionPolicy.request !== identity) return state;
++      let value: WorkbenchPermissionPolicyObservation | undefined;
++      try {
++        if (event.value)
++          value = validatePermissionPolicyObservation(event.value);
++        if (
++          !value ||
++          !permissionPolicyTargetReady(state) ||
++          !currentPermissionPolicyScope(state, identity) ||
++          value.runtimeEpoch !== identity.epoch ||
++          value.workspaceId !== identity.workspaceId ||
++          value.workspacePath !== identity.workspacePath ||
++          value.sessionId !== identity.sessionId ||
++          value.revision !== identity.floor
++        )
++          value = undefined;
++        if (value) value = structuredClone(value);
++      } catch {
++        value = undefined;
++      }
++      return {
++        ...state,
++        permissionPolicy: value
++          ? {
++              generation: state.permissionPolicy.generation,
++              observationIdentity: identity,
++              observation: value,
++            }
++          : {
++              generation: state.permissionPolicy.generation + 1,
++              error: event.error ?? "POLICY_UNVERIFIED",
++            },
++      };
++    }
+     case "extensions.read": {
+       if (
+         !canObserveExtensions(state) ||
+@@ -9344,6 +9490,7 @@
+     }
+   }
+   next = retireConversationContext(state, next);
++  next = retirePermissionPolicy(state, next);
+   if (next === state) return state;
+   const entry = selectedExtensions(state);
+   const identity = entry.request ?? entry.observationIdentity;
+@@ -9397,6 +9544,7 @@
+     agentRuntime: {},
+     agentFiles: { generation: 0 },
+     agentDrafts: {},
++    permissionPolicy: { generation: 0 },
+     extensions: {},
+     extensionsGeneration: 0,
+     mcp: {},
+@@ -9507,6 +9655,9 @@
+   },
+   canReadWorkspaceFile,
+   canSaveWorkspaceFile,
++  permissionPolicy: (s: State) => s.permissionPolicy,
++  currentPermissionPolicyObservation,
++  canObservePermissionPolicy,
+   extensions: selectedExtensions,
+   extensionReadBlockReason,
+   currentExtensionObservation,

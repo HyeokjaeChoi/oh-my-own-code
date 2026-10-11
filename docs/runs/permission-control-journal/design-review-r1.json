@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "report_type": "DESIGN_SPEC",
+  "run": "permission-control-journal",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "9fc55a78295c90ebf16788a8e1572f20ff9da2b2e14f9cecbdc28cf3d5fc7019",
+    "documents_sha256": "8f2bf1999f0e5671026db45baf33a204ef63801acbf640b6f4bb5b9be12be937",
+    "gate": "design_spec",
+    "plan_sha256": "473944c50b4a284f5294e4379128febeab9b75e88d7f7eb21a3e10198a803052",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "design-supplement-r1은 기존 계약의 누락된 private persisted digest 입력을 보완하기에 충분합니다. 기존 hash 공식, target·slot·result 연결, journal 소유권과 실제 readback·settlement 조건을 유지합니다. 이번 focused major 판단 이후, 변경 없는 저장 계층 8개 파일 구현은 routine으로 진행할 수 있습니다.",
+  "open_findings": [],
+  "assessment": [
+    "필수 projectIdentityDigest는 기존 grantDigest와 ruleDigest의 입력을 복원합니다. scopeDigest로 대체하거나 raw Native ID를 저장하지 않습니다.",
+    "PolicyBinding.after는 현재 permissionPolicyDigest의 정확한 입력과 일치합니다. session target별 단일 binding, targetIndex 순서, afterPolicyDigest 재계산, result와 permissionControl delta의 정확한 비교가 mode 의미의 대체를 막습니다. BEFORE digest는 기존 persisted policyDigest와 일치해야 하며, 누락된 current policy를 임의로 생성할 수 없습니다.",
+    "추가 필드는 기존 private permissionTarget에 한정됩니다. 기존 Target union, EffectSlot, ProgressObservation과 공개 result의 exact shape를 변경하지 않습니다. grant의 실제 saved identity와 timestamps, existingSaved 및 revoke binding의 연결 조건도 유지됩니다.",
+    "unknown-slot digest는 ORIGINAL runtimeEpoch·operationId와 admitted previewDigest·EffectSlot에 고정됩니다. verified state와 verified grant progress의 digest도 구분합니다. 이 metadata는 현재 상태의 증명이나 실행 권한이 아닙니다.",
+    "동일 journal이 marker·target·ordinal·progress·completion·checkpoint를 소유합니다. flush 전 effect 금지, 다음 slot의 정확한 일치, progress 불변성, reopen 이후 dispatch 금지, unknown의 confirmed 전환 금지와 hold 유지가 기존 계약에 부합합니다.",
+    "실제 readback, actual-effect lease settlement와 durable completion flush는 계속 필수입니다. storage validator의 shape·digest 일치만으로 이 조건을 충족할 수 없습니다.",
+    "Main은 archive와 통합을 소유하고 storage engineer는 지정한 8개 파일만 구현합니다. Main service·admission·DTO·renderer·runtime activation과 reconciliation release는 이번 단계에서 허용되지 않습니다. 독립 CODE gate와 실제 API checkpoint가 후속 조건으로 남습니다.",
+    "packet의 routing·문서·plan hash와 design-input의 contract·documents semantic hash를 확인했습니다. 기존 6개 파일과 archive가 일치하고 새 2개 파일은 없습니다. legacy closure 33개 파일, 401729 bytes의 hash와 크기도 일치합니다."
+  ],
+  "limitations": [
+    "판정은 design-input-r1.json 최상위 객체 전체에 바인딩된 focused supplement에 한정됩니다. 전체 F09 초기 설계 검토를 반복하지 않았습니다.",
+    "archived parser와 registry import PASS는 저장된 evidence에서 확인했습니다. 이 검토에서 import나 테스트를 실행하지 않았습니다. 실제 unsupported marker·journal·checkpoint 거부와 byte 보존 테스트는 구현 뒤에 필요합니다.",
+    "구현 완료, Native effect, settlement 또는 runtime activation을 승인하거나 검증한 보고서가 아닙니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a1238d-0698-70c1-a94b-e0b38ca2d7ad",
+    "identity_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "implementation_authored": false,
+    "delegation": false,
+    "report_only": true,
+    "files_modified": false,
+    "ledger_modified": false,
+    "product_runtime_executed": false,
+    "tests_executed": false,
+    "build_executed": false
+  }
+}

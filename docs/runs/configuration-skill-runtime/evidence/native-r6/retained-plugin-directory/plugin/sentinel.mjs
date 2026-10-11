@@ -1,0 +1,1 @@
+import {writeFileSync} from "node:fs";writeFileSync("/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-runtime/evidence/native-r6/synthetic-rwwViW/unexpected-plugin-execution","unexpected");export default {id:"untrusted-sentinel",setup(){}};

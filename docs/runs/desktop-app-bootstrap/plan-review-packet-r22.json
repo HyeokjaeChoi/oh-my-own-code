@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "run": "desktop-app-bootstrap",
+  "role": "plan_reviewer",
+  "phase": "review",
+  "plan_path": "docs/workplans/desktop-app-bootstrap/plan.md",
+  "contract_path": "docs/workplans/desktop-app-bootstrap/contract.json",
+  "review_input": {
+    "contract_sha256": "c0e1cd700cafe06d62137f864c7df7fd42fc9040e7526f706b2cf7b2e180b946",
+    "gate": "plan",
+    "plan_sha256": "ca8e5d9ccbe1257758a403cabc15f7e6a38bda65d6e5ff8c1aa44c96be6ba5ce",
+    "schema_version": 2,
+    "source_sha256": "de85595cde807ec020c3b50c4af9d9136b087c310aa3a7188c861a373cd559e6"
+  },
+  "scope": "Review revision 22 only for accurate bootstrap E2E scope after r21 finding. Confirm development and packaged E2E both assert crash-disconnect visibility and recovery by clean app restart; startup failure, timeout and collision are packaged-only; no duplicate launch or in-process reconnect claim; preview absence now and separate later preview isolation. Ensure no unrelated approved product requirement was reduced.",
+  "constraints": [
+    "Read-only. Do not launch app or run commands.",
+    "The nine approved product/design documents and exact approval receipt remain unchanged.",
+    "State that macOS GUI and Windows runtime behavior remain unverified."
+  ]
+}

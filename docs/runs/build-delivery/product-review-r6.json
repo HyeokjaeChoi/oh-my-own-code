@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "product",
+    "plan_sha256": "d948d3b3ac16fd325e381defffd6cff7101ba7dccb94969c17db5738b16d44a3",
+    "contract_sha256": "064248d8e9743d7823753cef30c2e95a1644feec1dbbaa69ccdc83b7a491d8fd",
+    "documents_sha256": "ee775f27a38cbbb9c3353831d3e4337ae165307ebfd619986fdf2cd9091f906a"
+  },
+  "verdict": "pass",
+  "summary": "Read-only product review of build-delivery plan revision 5 against the approved PRD v0.2 and user approval evidence. The pinned client probe stays within the approved technical-probe scope: it uses synthetic transport without network access, real service lifecycle, mutations, or user data. AC-7 describes only the bounded client probe, and the plan and contract map its check to AC-2, AC-4, and AC-7 while explicitly retaining AC-2 real-runtime requirements. The plan preserves PRD AC-01–18, seven integrated scenarios, independent final review, and full product acceptance; synthetic success cannot complete them. The requested hashes match the reviewed plan, contract, and registered product document. This verdict does not verify implementation or runtime behavior.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/product_review_r6",
+    "author_task_id": "/root",
+    "requested_route": "gpt-6-sol/high",
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "high",
+    "runtime_identity_verified": false
+  }
+}

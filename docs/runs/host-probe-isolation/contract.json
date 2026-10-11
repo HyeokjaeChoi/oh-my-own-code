@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "HPI-1",
+      "description": "Verify the exact Node path and SHA-256 `/opt/homebrew/Cellar/node/26.8.2/bin/node` / `902b6a6984d5d825829ea9064ab73b734548df37bc0683990dca31c8dc2a9253`; invoke verifier through `/usr/bin/env -i` with literal LANG, LC_ALL and NO_COLOR values only. Only after auditing the exact read-only dependency closure may the runner create a canonical restrictive temporary root and allowlisted child environment. If unaudited, stop before fixture, listener, child environment, or canary effects; report the prerequisite and all seven controls unverified, and verify no owned resources were created or require cleanup. Do not claim protections for resources never created."
+    },
+    {
+      "id": "HPI-2",
+      "description": "Safely evaluate the recorded sandbox profile and its supported enforcement scope; record each control as verified, unavailable, failed, or unverified without implying that a failed or unavailable control is enforced. READY_FOR_REVIEW is eligible only if all required containment controls pass; otherwise the truthful decision is NO-RUN."
+    },
+    {
+      "id": "HPI-3",
+      "description": "Require an audited exact read-only runtime dependency closure before any canary effects. If unavailable, report all seven controls unverified and NO-RUN before fixture/listener creation. If verified, safely evaluate exactly two positive and five negative SDK-free canaries (allowed immutable input read; allowed owned scratch write; denied outside-root synthetic read and write; denied loopback bind/listen and zero-payload connect to an owned listener; denied execution of the exact existing Node binary). Verify targets, record each actual outcome, and clean owned resources. An exit-0 NO-RUN means the preflight decision and cleanup were safely completed, not that containment succeeded."
+    },
+    {
+      "id": "HPI-4",
+      "description": "Cleanup and bounded redacted evidence are verified; source hashes bind the exact bytes subsequently executed or used; independent code review and required check pass."
+    },
+    {
+      "id": "HPI-5",
+      "description": "The run recommends READY_FOR_REVIEW or NO-RUN and never executes the real OpenCode SDK host."
+    }
+  ],
+  "checks": {
+    "isolation-canaries": {
+      "argv": [
+        "/usr/bin/env",
+        "-i",
+        "LANG=C",
+        "LC_ALL=C",
+        "NO_COLOR=1",
+        "/opt/homebrew/Cellar/node/26.8.2/bin/node",
+        "spikes/host-probe-isolation/verify.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Exact Node path and SHA-256; verifier launched via /usr/bin/env -i with literal LANG=C, LC_ALL=C, NO_COLOR=1 only, preventing inherited PATH and Node loader settings from reaching Node. SDK-free macOS sandbox positive/negative controls; hashes pin and bind exact worker/canary/profile bytes to subsequent execution/use; 45-second worker limit, 16-KiB aggregate worker output, five-second reap window; outer harness `check --timeout 60` process-group watchdog with 8-KiB per-stream capture. An unaudited exact runtime dependency closure causes truthful NO-RUN before any fixture/listener/canary effect, with all controls unverified. Broad `/System`, `/usr/lib`, and package-store subtree reads are prohibited; if the prerequisite is audited, only exact dependency paths may be allowed. If that prerequisite is audited, tests use synthetic files in an owned /private/tmp root and one supervisor-owned loopback listener with zero-payload local TCP only; no routed/external network attempt; exact-root cleanup. Exit 0 means preflight evaluated and truthful READY_FOR_REVIEW or NO-RUN emitted, not that containment passed. No OpenCode SDK import, user files/config/credentials, registry or external request.",
+      "acceptance_ids": [
+        "HPI-1",
+        "HPI-2",
+        "HPI-3",
+        "HPI-4",
+        "HPI-5"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": []
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "14071b9773bd220f62c2f650f243a333a3689ebd24a813900281037ce21a0acb",
+    "gate": "plan",
+    "plan_sha256": "bd5027a9dcfa584f65c7637d77200e854a79217f0d7d98b644030895b5bf8618",
+    "schema_version": 2,
+    "source_sha256": "42b56c7b7b071a36337ad221c4fb299afa29f4cf0297274513e75fbf97186ed6"
+  },
+  "verdict": "changes_requested",
+  "summary": "The authorization and exact current document hashes are sound, and the staff architecture, local-first scope, and first-increment concept are generally coherent. Four changes are required before implementation: enforce the early bridge security/recovery gate, make monitoring and clean-build evidence explicit, hold persistence on unresolved storage/retention choices and distinguish synthetic from real runtime proof, and add an independent final product acceptance review.",
+  "open_findings": [
+    {"id":"PR-1","severity":"high","finding":"The current sequence permits real host/core conversation before early S-08 channel security, deny admission and recovery prerequisites.","required_change":"Move bootstrap/Origin/Host/WS security, minimum deny admission and applicable S-01/S-09 evidence before any real browser-triggered SDK mutations; keep the first slice synthetic until they pass."},
+    {"id":"PR-2","severity":"high","finding":"The build command alone does not prove local monitoring, redaction, backup/migration/rollback, clean-install or browser/bridge bundle isolation; generic Nx target success may omit targets or be cached.","required_change":"Require an explicit target inventory, frozen-lockfile clean install, bundle/boundary inspection, S-01–10 evidence and operational drills; map those checks to AC-6. Missing targets and cached stateful checks cannot satisfy acceptance. Include format and hooks or a justified applicability record."},
+    {"id":"PR-3","severity":"high","finding":"Storage location, local retention policy and supported runtime/platform details remain open; synthetic adapter evidence could be mistaken for real SDK readiness.","required_change":"Hold persistent user-data behavior until storage location and retention are confirmed. Record an evidence matrix separating synthetic, actual local SDK/effect and credential-dependent runtime proof; missing live evidence keeps dependent acceptance incomplete."},
+    {"id":"PR-4","severity":"medium","finding":"Finalization does not assign an independent product reviewer to the implemented PRD acceptance groups and integrated scenarios.","required_change":"Add a fresh product_reviewer against the frozen implementation/evidence packet before declaring product completion."}
+  ],
+  "provenance": {
+    "child_task_id": "/root/build_plan_review",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "routing_basis": "coordinator-selected under standing user preference for planning and independent review"
+  }
+}

@@ -1,0 +1,32 @@
+if (process.isMainFrame) {
+  const { contextBridge, ipcRenderer } = require("electron");
+
+  contextBridge.exposeInMainWorld("desktopBridge", {
+    workbench: (...args) => ipcRenderer.invoke("desktop:v2:workbench", ...args),
+    cancelRead: (...args) =>
+      ipcRenderer.invoke("desktop:v2:cancel-read", ...args),
+    runtimeSnapshot: async (...args) => {
+      const value = await ipcRenderer.invoke(
+        "desktop:v1:runtime-snapshot",
+        ...args,
+      );
+      if (value?.state === "unavailable" || value?.state === "disconnected") {
+        return { state: value.state };
+      }
+      if (
+        value?.state === "connected" &&
+        typeof value.serverVersion === "string" &&
+        typeof value.sessionTitle === "string" &&
+        typeof value.sessionId === "string"
+      ) {
+        return {
+          state: "connected",
+          serverVersion: value.serverVersion,
+          sessionTitle: value.sessionTitle,
+          sessionId: value.sessionId,
+        };
+      }
+      throw new Error("invalid_runtime_snapshot");
+    },
+  });
+}

@@ -1,0 +1,20 @@
+{
+    "schema_version": 2,
+    "reviewed": {
+      "contract_sha256": "3ac9df6425c82eda03299dea31c8c8bee39a8a9582ca4164986fd07e5b1f1b00",
+      "environment_sha256": "d0c2c9798a71ecdf928da3b911c3c91e971fcb8ca80000884e487a38ba7a714f",
+      "gate": "code",
+      "plan_sha256": "08369ab39ff0e2cb419c14b6f52114b514d4c647036dd2dac5d68378720c68b7",
+      "schema_version": 2,
+      "source_sha256": "abe6078f67b9ca6d37e691be9901808022b1f5b19ac4caabc036589d57b5c3cc",
+      "verification_sha256": "7a6646772c1e0382e50cf99fe8a2da758f41f3a2103412a66be15ab9b0ddf312",
+      "work_class_sha256": "2e17126b31d8fa5c6c959c6574bfa41485568e70b239ceb95740d3d44a1e0dde"
+    },
+    "verdict": "pass",
+    "summary": "plan revision 7/design-v1을 기준으로 요구사항 준수와 코드 품질을 각각 검토했습니다. source-freeze-r1 대비 변경은 e2e-conversation-markdown.mjs 하나이며, 보존한 before 파일에서 계산한 diff가 render-correction-r2.patch와 정확히 일치합니다. 현재 frozen source와 두 review binding도 일치합니다. 제품 코드, dependencies, DTO와 build 입력은 그대로입니다.\nshot()은 두 requestAnimationFrame과 후속 task를 기다린 뒤 native capture를 호출합니다. pending Promise는 캡처 중 미완료 상태이며, text 변경 후에만 resolve합니다. disabled/status assertion과 viewport 확인을 유지합니다. 해시 assertion은 원래의 동일 실패 프레임 재사용을 검출하지만, pending 픽셀 판정을 대신하지 않습니다. hidden/nonfocusable 검사와 cleanup 순서도 유지됩니다. barrier 자체에는 deadline이 없고, 전체 실행 제한은 기존 harness의 timeout과 process-group 종료가 담당합니다. 정상 종료에는 기존 15초 deadline이 적용됩니다.\n저장된 현재 8개 check의 exit 0과 binding을 확인했습니다. hidden-r5의 38개 native PNG, pageErrors=[], externalRequests=[], owned exit 0, source before/after 일치를 확인했습니다. build 입력 189개, 선택한 script/fixture 4개와 launch artifact 7개의 현재 바이트가 기록과 일치합니다. 실제 r3 build를 재사용한 근거이며 새 build를 수행하지 않았습니다. 이번 correction 범위에서 수정이 필요한 결함은 없습니다. 새 runtime이나 테스트를 실행하지 않았으며, whole F05/full18/Windows/release 승인은 포함하지 않습니다.",
+    "open_findings": [],
+    "provenance": {
+      "child_task_id": "01a11e42-cb50-7810-b31c-2fccc9c1d49d",
+      "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+    }
+  }

@@ -1,0 +1,13 @@
+Commit evidence failed in receipt-before-finally-workspace: Error: expect(locator).toBeEnabled() failed
+
+Locator:  getByRole('region', { name: 'Git 변경 검토', exact: true }).getByRole('button', { name: 'Git 상태 새로고침', exact: true })
+Expected: enabled
+Received: disabled
+Timeout:  10000ms
+
+Call log:
+  - Expect "toBeEnabled" getByRole('region', { name: 'Git 변경 검토', exact: true }).getByRole('button', { name: 'Git 상태 새로고침', exact: true }) with timeout 10000ms
+  - waiting for getByRole('region', { name: 'Git 변경 검토', exact: true }).getByRole('button', { name: 'Git 상태 새로고침', exact: true })
+    24 × locator resolved to <button disabled>Git 상태 새로고침</button>
+       - unexpected value "disabled"
+

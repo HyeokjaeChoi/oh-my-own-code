@@ -1,0 +1,51 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "gate": "code",
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "schema_version": 2,
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "verification_sha256": "bcf9864ac9478579e6690a0427f20c407186e4f29becc6631a3299fdf4ff81cd",
+    "work_class_sha256": "bedc6ccdc1b1909a9b8b1de179e564ab2b82c47a24563c162af4476a693b86c9"
+  },
+  "verdict": "pass",
+  "summary": "DESIGNv3와 plan11의 제한된 local branch create/select 및 tracked worktree INDEX/HEAD restore 범위를 검토했습니다. 현재 source와 증거에서 수정이 필요한 구체적 결함은 발견하지 못했습니다.",
+  "open_findings": [],
+  "inspected_scope": [
+    "solo_reader 설정, solo-specialist 및 solo-code-review 지침, 현재 plan/design/contract/source-freeze/actual-checks/verification-summary/outcome, final input 전체와 packet을 직접 읽었습니다. 요구사항 일치 여부와 코드 품질을 나누어 검토했습니다.",
+    "Git diff에만 의존하지 않았습니다. tracked·untracked 파일을 포함한 현재 inventory 688개의 경로, type, mode, SHA256이 frozen inventory와 정확히 일치합니다. 변경된 51개 경로와 관련 호출자·소비자·테스트·설정을 검토했습니다.",
+    "shared metadata kernel의 단일 writer lane, kind/token 검증, prepare/publish/abort, 실제 종료 전 hold 유지, 잘못된 kind와 중복 호출의 효과 차단을 검토했습니다.",
+    "Main과 kernel의 독립적인 SHA1/SHA256 raw object, original index, HEAD tree, desired tree, attribute 및 clean-select 증명을 검토했습니다. Main의 전체 raw blob closure 수정과 packed current/target loose-ref absence 증명도 확인했습니다.",
+    "각 effect 전 source·marker·occupancy·artifact 재검사, unaffected original 보존, 유한한 parent 생성, mode 계산, lock·stage·backup 소유권 검사를 검토했습니다. reflog의 전체 기존 prefix, OID, identity, timestamp, reason 검증과 create log→ref 마지막, select worktree→index→log→HEAD 마지막, restore worktree 전용 순서를 확인했습니다.",
+    "stage/publish intent의 durable 기록, admitted target과 original digest에 묶인 closed receipt, partial·unknown 및 reopen 처리, rollback·replay·결과 upgrade 차단을 검토했습니다.",
+    "Renderer의 immutable target, scope 변경 시 권한 무효화, 명시적 preview/apply, receipt와 실제 IO hold의 분리, 자동 실행 차단을 검토했습니다.",
+    "최근 4개 경로의 수정과 테스트를 검토했습니다. TARGET_FIELDS projection, Backup role/path/ID 개별 행, 전체 geometry와 5개 hitpoint를 검사하는 capture callback, denied와 unknown의 dispatch/reject 구분을 확인했습니다."
+  ],
+  "checks": [
+    "final input의 plan, contract, source, environment, verification, work_class hash를 현재 파일 및 run 기록과 직접 대조했습니다. 모두 일치합니다.",
+    "react-preview-fix-r1/proof.json의 이전 전체 inventory와 현재 inventory 사이에는 허용된 4개 경로만 다릅니다. before/after hash가 일치하며, 기존 store·fixture 테스트 prefix는 byte 단위로 보존되어 있습니다. 이전 9개 passing check 기록도 확인했습니다.",
+    "현재 13개 contracted command 기록은 모두 exit_code=0입니다. inputs_changed, interrupted, timed_out은 모두 false이며 현재 source/environment에 묶여 있습니다. 이 리뷰에서는 command를 재실행하지 않았습니다.",
+    "unit 증거는 이전 23개 affected 파일 실행과 현재 4개 전체 suite 실행을 구분합니다. 나머지 19개 파일은 변경되지 않은 source를 근거로 재사용합니다.",
+    "callback assertion이 product의 unknown 처리에 삼켜지지 않도록 callback 오류를 보관하고 호출 밖에서 검증하는 수정을 확인했습니다. 초기 잘못된 assertion 및 loader RED 기록은 유효한 회귀 증거와 구분되어 있습니다.",
+    "이전 실제 kernel 보고서 108+52+82=242개 case의 보고서 hash, passing 상태, process exit, source hash 및 현재 Bun bytes를 직접 대조했습니다. 최종 UI 수정 source에서 새 kernel 실행이 있었다고 판단하지 않았습니다.",
+    "publication-r3의 실제 34개 case, before/after 일치, owned exit 0을 확인했습니다. 현재 host/kernel source assets 28개, manifest, Git/Bun bytes와 component identities를 대조했습니다. 최종 UI 수정 후 새 publication 실행이 있었다고 판단하지 않았습니다.",
+    "build 기록과 provenance를 검토했습니다. 현재 artifact 검증 또는 필요한 rebuild를 수행하는 check이며, 최종 check가 새 build를 생성했다는 주장은 하지 않습니다.",
+    "새 hidden-r4 보고서는 44 states, 1,283 PNG, pageErrors=[], owned exit 0을 기록합니다. PNG hash 1,283개를 직접 대조했고, 최근 수정과 관련된 success-select·denied·unknown 등의 PNG 7개를 직접 열었습니다.",
+    "capture callback의 complete/clipped/occluded 회귀와 실제 synthetic transport를 사용하는 denied metrics 회귀를 검토했습니다. 기존 full viewport, native PNG, exclusive write, hidden/nonfocusable, keyboard/focus/Escape 및 text selection 검사는 유지됩니다.",
+    "현재 reader/index/commit regression의 새 실행 기록을 검토했습니다. 각각 51/14/33개 case입니다. 과거 hidden-r1/r2/r3 및 publication 실패 기록은 최종 passing 증거와 구분되어 있습니다."
+  ],
+  "limits": [
+    "리뷰 중 파일·ledger·product를 수정하지 않았습니다. delegation, test/build/runtime, Native/provider/private-store/productionMain 또는 foreground launch를 수행하지 않았습니다.",
+    "이 pass는 지정된 제한 범위의 code review입니다. 전체 18개 PRD group, integrated product, Windows 또는 전체 platform acceptance를 의미하지 않습니다.",
+    "direct typed adapter 증거는 실제 EventHost OS IPC/lifetime을 증명하지 않습니다. hidden synthetic Main 증거는 production Native confirmation dialog pixels를 증명하지 않습니다.",
+    "ordered publication은 global atomicity, 비협조적 외부 writer의 완전 배제 또는 power-loss 안전성을 증명하지 않습니다.",
+    "deep linked-path에서 관측된 약 10.25초 실행과 original-key unknown 결과는 남은 제한입니다. 짧은 경로의 약 8.48초 성공은 이 제한을 해소하지 않습니다. budget 증가, replay 또는 receipt upgrade는 확인되지 않았습니다.",
+    "PNG 전체의 hash를 확인했지만 모든 PNG를 눈으로 검사하지는 않았습니다. Node capture callback 테스트를 pixel 검증으로 취급하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11ddd-2a12-7773-86b8-51758a541b0d",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

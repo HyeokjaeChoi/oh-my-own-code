@@ -1,0 +1,955 @@
+{
+  "artifacts": [
+    {
+      "path": "docs/design/preparation.md",
+      "sha256": "263e6b241ce151eaed5a5fceb2266ead81cef357438e5191d1333b407951b3d1",
+      "type": "general"
+    },
+    {
+      "path": "docs/research/sdk-ui-feasibility.md",
+      "sha256": "cd223205da17ce8591e4bed5b3f747e911be33e37186ddb7f5ca9fadefd0b5e2",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/.gitignore",
+      "sha256": "4d56952b0fb13bf8f9b6c13a6d4c34a075bac3af447636a1df4335d7576e2f97",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/client-probe.mjs",
+      "sha256": "efce1faad275cab4c1ffa5b8dbba230fa6c68568fe7e14e94d4fd303e883bdcc",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/lib/utils.ts",
+      "sha256": "ab11c9dc0e604024c0337a3705e7fd311b7625fbe400b3e1efa7a2efda5375a9",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/package.json",
+      "sha256": "d85ee02cf7f6001aaa9c1770a574ffb1ea701ee73d74b21d82f36553f752fd3b",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/pnpm-lock.yaml",
+      "sha256": "7c110f4e2394477fa2efb92761c7b9a2e4282996c1d89a7c79bf7cf97cf8707b",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/pnpm-workspace.yaml",
+      "sha256": "2c0430b5a20e474711c8f58ac004effce03f957fdda36756386a08f1dcf63cc6",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/probe.tsx",
+      "sha256": "e46faae6ff18378b98c4d35ffa1b0566a0350283a45361ef4e340eaa812cee12",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/tsconfig.json",
+      "sha256": "b749624c1848d41fcfd12b77fda31bbb2e8d88cd92ba14e45a45130031a75295",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/LICENSE.md",
+      "sha256": "71fd4b7b76d27a09af2e8b2bedf14e51f4c229e32b59654d327cc24dc63e60d7",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/link-preview/README.md",
+      "sha256": "b185c4fe7510ef99262c7dcdb50d265075c0fd01dd36a2f92c96d7619bc2b1a6",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/link-preview/_adapter.tsx",
+      "sha256": "4a5b87bfa8f041bc181ed51487ea5bbc3b7555495582d30fda09a27afc62a0ef",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/link-preview/index.ts",
+      "sha256": "91dd4313d27405adf96873fa089a085fcd6ccd11b29ad03a0d8bdfd606bc67b1",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/link-preview/link-preview.tsx",
+      "sha256": "0292361383a38f30bda00d5542a6cc379970781d2bce5ce2372149d658437206",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/link-preview/schema.ts",
+      "sha256": "172ec4ea73173cdcf0c58ab965bb22e98d13d64b2ff52dde0a17e4c97169ab87",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/contract.ts",
+      "sha256": "549d3572e17e5f42666a513db344f3e46e5118fb31ae8b09c829fe66c9fe1650",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/media/aspect-ratio.ts",
+      "sha256": "5d519f493410ffedc7cac593a5b635025e5fd3055f04e7dac975c39465be2d57",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/media/format-utils.ts",
+      "sha256": "906ff69ceb0e601ab4b0b4fe07607015f2a133648fa2546641435457ce810830",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/media/index.ts",
+      "sha256": "926e82868dbc2579af1bcd199fe33bad664c5c613c544a52b0d2aa701fa6adb5",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/media/overlay-gradient.ts",
+      "sha256": "156e742405432fad3dc22c17a8325ba0dcf733a870b3248222df2024e0277220",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/media/safe-navigation.ts",
+      "sha256": "e9ea169130c03dc47a18b7fc368a24e2876d8413cc3ebf5a90e173a1c4b4c1d0",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/media/sanitize-href.ts",
+      "sha256": "2daabd7d79b867673fc04c81ce88f9118309d8ec2a785abbc3c5dda3406b1f19",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/parse.ts",
+      "sha256": "8839af540bebc2bf95da3dcbf30500f13a2c53e701b98d7ac285c6a64845c9b0",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/schema.ts",
+      "sha256": "aaa77e580338b90059a6bfc9a6c1a810913f4f13a958a97f5cd4ddb362f38e7d",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/link-preview.registry.json",
+      "sha256": "448c466f90f38775e758882c3df6afcbbf935ddd54262d4cc1725dde1cf24028",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/vendor/tool-ui/provenance.json",
+      "sha256": "78f524aca3d402764175d38f7805ee1744a7985d23ffc0b42734fde75b4e0702",
+      "type": "general"
+    },
+    {
+      "path": "spikes/sdk-ui/verify.mjs",
+      "sha256": "2288e0a87fdba9a7bc8cf3e9396d1dc7f5e4bd9a1a29e57619afa43408ad1118",
+      "type": "general"
+    }
+  ],
+  "baseline": {
+    ".agents/skills/solo-analytics-experiment/SKILL.md": {
+      "mode": 384,
+      "sha256": "8f3e60723c567bf48f6b12c6ab5655cf359a3c90e8a34c6f7178da15ffdc302e",
+      "type": "file"
+    },
+    ".agents/skills/solo-analytics-instrumentation/SKILL.md": {
+      "mode": 384,
+      "sha256": "43bc7a98b519c6a5b91a7c395852ec136f04c115fbb3387de9342224f6206d9b",
+      "type": "file"
+    },
+    ".agents/skills/solo-aso/SKILL.md": {
+      "mode": 384,
+      "sha256": "ae1cca3eb73899b5cdd23943ed614ce3121409a90beb62443e83d67df72a0848",
+      "type": "file"
+    },
+    ".agents/skills/solo-aso/references/aso-evidence.md": {
+      "mode": 384,
+      "sha256": "7db7cdf09e1c5e3d25bf1b466cccdacbac42dd6cf1c47f9e01c1028ca78e96dc",
+      "type": "file"
+    },
+    ".agents/skills/solo-code-review/SKILL.md": {
+      "mode": 384,
+      "sha256": "4a26e7cb4e82fdc9c6e7d280b4b43c1796244e5604457f77f31c4fda27a689d1",
+      "type": "file"
+    },
+    ".agents/skills/solo-debugging/SKILL.md": {
+      "mode": 384,
+      "sha256": "44f5eef83b24eca2d074d61d016bb65263cc92cbc999108285edb8e9ef0213ad",
+      "type": "file"
+    },
+    ".agents/skills/solo-design-research/SKILL.md": {
+      "mode": 384,
+      "sha256": "58702dfa03c21b502f6bf314ee550a61ddd2aabb7b511fc1606f8da893fdc743",
+      "type": "file"
+    },
+    ".agents/skills/solo-design-research/references/research-method.md": {
+      "mode": 384,
+      "sha256": "5d99e59100b453352e1a8232b36043a6ef91616b6f58a1baacb061dc1710156b",
+      "type": "file"
+    },
+    ".agents/skills/solo-design-review/SKILL.md": {
+      "mode": 384,
+      "sha256": "eaaebad0ca89cc39f59492e07bcda6bcf6f5ba7f70629652593e8ba7aa73cd1b",
+      "type": "file"
+    },
+    ".agents/skills/solo-design-review/references/evidence-review.md": {
+      "mode": 384,
+      "sha256": "60bfb7501c102c5da6f372f254b0b0d26d1bd4b54fe61057555a91664f235fcf",
+      "type": "file"
+    },
+    ".agents/skills/solo-design-spec-review/SKILL.md": {
+      "mode": 384,
+      "sha256": "07d014ed99fe0bd7c18677954d45e8492e7822cd8cd9385cb61a8a4eacb0fb4a",
+      "type": "file"
+    },
+    ".agents/skills/solo-design-system/SKILL.md": {
+      "mode": 384,
+      "sha256": "60113d1248cb51181f1bba205aff9b1ace14970f5c5af4a0210902e7f50af5ed",
+      "type": "file"
+    },
+    ".agents/skills/solo-design-system/references/system-contract.md": {
+      "mode": 384,
+      "sha256": "0aac4c0fea7cd4eb7eee0027d02491e0deed9b4ec85f61d6c0a7025cd4180a9d",
+      "type": "file"
+    },
+    ".agents/skills/solo-engineering-plan/SKILL.md": {
+      "mode": 384,
+      "sha256": "811ee41682823d404db44ac5ed25cd6262099e43f74504ebcd68489877e131e8",
+      "type": "file"
+    },
+    ".agents/skills/solo-engineering-plan/references/complex-features.md": {
+      "mode": 384,
+      "sha256": "5e7627e6986862beb8bb0052d014a6ebe3d65e4e8f646fdce578a113d7d2b336",
+      "type": "file"
+    },
+    ".agents/skills/solo-evidence-research/SKILL.md": {
+      "mode": 384,
+      "sha256": "09371d9f8ba9a1a39eb8c69250bf769e783b9ed0ca90776ff8387054934c81a7",
+      "type": "file"
+    },
+    ".agents/skills/solo-implement/SKILL.md": {
+      "mode": 384,
+      "sha256": "9f14e52d1d65d6de84a5c3ba018c5cf3bfd58b51cc68c49657119b1f894a53f7",
+      "type": "file"
+    },
+    ".agents/skills/solo-marketing/SKILL.md": {
+      "mode": 384,
+      "sha256": "aa32583f1384fa67ed967a6efe25d20ae15f814ab5b5e4d081b67c5bf278af3f",
+      "type": "file"
+    },
+    ".agents/skills/solo-marketing/references/landing-workflow.md": {
+      "mode": 384,
+      "sha256": "eda7b70e493914abd9074c3dc9d0ec2584517d5baad981d5779d3c43e23377a3",
+      "type": "file"
+    },
+    ".agents/skills/solo-monitoring/SKILL.md": {
+      "mode": 384,
+      "sha256": "df22dc728991b1b0f6df4a83bc5eef21ef1d92e1b6c270ae20312a328ed7684e",
+      "type": "file"
+    },
+    ".agents/skills/solo-orchestrate/SKILL.md": {
+      "mode": 384,
+      "sha256": "1b71f4d317adde4ec3a93a01df37b71332bae0c4999127b383d08ccbbb71e98d",
+      "type": "file"
+    },
+    ".agents/skills/solo-orchestrate/evals/PROTOCOL.md": {
+      "mode": 384,
+      "sha256": "58d233180d57637365ad2f2b456881d2a4d0e5fb82ab83d40529948ca717d7f5",
+      "type": "file"
+    },
+    ".agents/skills/solo-orchestrate/evals/requests.json": {
+      "mode": 384,
+      "sha256": "b83bb03883e1e569672be69d6b60f39243a224620f0d2aec3c5c53ff4d37bda7",
+      "type": "file"
+    },
+    ".agents/skills/solo-orchestrate/evals/rubric.json": {
+      "mode": 384,
+      "sha256": "95ca5b7d1a52bab750e04a02fee5a98ae908e36b2cba8b0e5107a50307b735ce",
+      "type": "file"
+    },
+    ".agents/skills/solo-orchestrate/references/adaptive-routing.md": {
+      "mode": 384,
+      "sha256": "0e4f2a4e437fac0ba2e218f551a952acc12c7ae9a73783d1c5b0f895175e93b0",
+      "type": "file"
+    },
+    ".agents/skills/solo-orchestrate/references/effort-and-feedback.md": {
+      "mode": 384,
+      "sha256": "7a8da6ff7a0a7c029010aeeae6ba8d9166ee6726dfa6d945e7e887d0c6f355bc",
+      "type": "file"
+    },
+    ".agents/skills/solo-orchestrate/references/planning-contract.md": {
+      "mode": 384,
+      "sha256": "8b2fc1de4aefaa4ecfc64dec575714e5c5f34cdcf8ada9346bc448db4edf0972",
+      "type": "file"
+    },
+    ".agents/skills/solo-orchestrate/references/run-protocol.md": {
+      "mode": 384,
+      "sha256": "eedd3635259c601c75b7d610af2e0ea3e6aa17a26eee0254c6fdd2655a877b82",
+      "type": "file"
+    },
+    ".agents/skills/solo-plan-review/SKILL.md": {
+      "mode": 384,
+      "sha256": "9e634f2f6e72aa3b9f4933d2d5af420d45a8b2cca7f7fa3f80944e2af5f605b8",
+      "type": "file"
+    },
+    ".agents/skills/solo-product-review/SKILL.md": {
+      "mode": 384,
+      "sha256": "0cea16a9d9c06711e5e81b13e88a6720bc0bc8a4b4be197b558621033a0c198c",
+      "type": "file"
+    },
+    ".agents/skills/solo-product-spec/SKILL.md": {
+      "mode": 384,
+      "sha256": "2ced970c3bfa67757d21bcb7cdfbf59fd0e72b713745704ac24b563059c64782",
+      "type": "file"
+    },
+    ".agents/skills/solo-product-spec/references/issue-slicing.md": {
+      "mode": 384,
+      "sha256": "3a5aa9a6c6b9f4070f01807c490666bb0e0197cb0190a17260f2cb7915d964aa",
+      "type": "file"
+    },
+    ".agents/skills/solo-product-spec/references/product-review.md": {
+      "mode": 384,
+      "sha256": "f331fc8ba87378d9b03be282a0c646e73730ffa30909e5282882a0d5de61c612",
+      "type": "file"
+    },
+    ".agents/skills/solo-project-start/SKILL.md": {
+      "mode": 384,
+      "sha256": "1d1e8d70b4e9f8d3b29dfad5f28eb88c632d10d4db39bf7b950075dd397693df",
+      "type": "file"
+    },
+    ".agents/skills/solo-project-start/references/development-entry.md": {
+      "mode": 384,
+      "sha256": "47349244765f32419ab2f9aadda8941578be3cd7f56a66aabe15e73c17e022c3",
+      "type": "file"
+    },
+    ".agents/skills/solo-project-start/references/idea-to-launch.md": {
+      "mode": 384,
+      "sha256": "cf02485089111f0a778e28282d06998816b5d96dd0668dcc512a4e310a05b70b",
+      "type": "file"
+    },
+    ".agents/skills/solo-qa-run/SKILL.md": {
+      "mode": 384,
+      "sha256": "677b90cbcd9c32bd2cd27140fb2b0810039dcc77ae3bb7ac5d2fd6cfc049c861",
+      "type": "file"
+    },
+    ".agents/skills/solo-release/SKILL.md": {
+      "mode": 384,
+      "sha256": "11d193f237bb076a66a4626f2ea4d59bedc083ae51eba8248cfa36b1945671b9",
+      "type": "file"
+    },
+    ".agents/skills/solo-store-launch/SKILL.md": {
+      "mode": 384,
+      "sha256": "9286a5c06242a54d1065c1be0cecd71aae0204c167b145fa8b013978f6f18cba",
+      "type": "file"
+    },
+    ".agents/skills/solo-store-launch/references/store-assets.md": {
+      "mode": 384,
+      "sha256": "af0a5ca562a5af51bcd758812629c208d676202d6f98c4d04da2beb8b2e35364",
+      "type": "file"
+    },
+    ".agents/skills/solo-subscription-check/SKILL.md": {
+      "mode": 384,
+      "sha256": "5238903dd6c0366e1ab32f7ed0d500cb79eac07def8352b2b3d9b7e95edbbd99",
+      "type": "file"
+    },
+    ".agents/skills/solo-tdd/SKILL.md": {
+      "mode": 384,
+      "sha256": "e8c2d5f23642f52330dcd4765e2000a1f0a4de04390605fbd56bdd9c07a86e2f",
+      "type": "file"
+    },
+    ".codex/agents/analytics_analyst.toml": {
+      "mode": 384,
+      "sha256": "43e48ffd145b0fbe4c659983baa94ee529c0c33f7bc7e82bdd3a2f49bbca5341",
+      "type": "file"
+    },
+    ".codex/agents/analytics_engineer.toml": {
+      "mode": 384,
+      "sha256": "4760eee18b302fd4ff7a06d1ab5c95ed3458d09d6ac6d0fe5a36dfc455cdcab3",
+      "type": "file"
+    },
+    ".codex/agents/aso_specialist.toml": {
+      "mode": 384,
+      "sha256": "8a82b64e8d2e557f57ee1d5a7583cdb6fa197a6c8cb7edca7578182f27ff179a",
+      "type": "file"
+    },
+    ".codex/agents/bug_analyst.toml": {
+      "mode": 384,
+      "sha256": "8088fea0ff9383dd72e45310994c07abbe06f5aa76d19a71142c4ea516f09f48",
+      "type": "file"
+    },
+    ".codex/agents/code_explorer.toml": {
+      "mode": 384,
+      "sha256": "bd22b6c575c63464faaaab29039e07a3f8c7300b179ad33f818fc6ada8411abb",
+      "type": "file"
+    },
+    ".codex/agents/design_architect.toml": {
+      "mode": 384,
+      "sha256": "ff66f0dfc2a77f015d5d9a4c05b55faf6c238a872ffd3cbcb92159b1b293147f",
+      "type": "file"
+    },
+    ".codex/agents/design_qa.toml": {
+      "mode": 384,
+      "sha256": "0a4d321501b7933afce70b955c6e4ea0f5bd88c3a7290ebb74a7e8d7a21f57dc",
+      "type": "file"
+    },
+    ".codex/agents/design_researcher.toml": {
+      "mode": 384,
+      "sha256": "bb287bddcd7b88d3e9822610e8c7b590596cca220573bd5cc873c9ebe4a225f7",
+      "type": "file"
+    },
+    ".codex/agents/design_spec_reviewer.toml": {
+      "mode": 384,
+      "sha256": "1e4896aad01f608ad343dc8e5ff8a0b5f6443fa364019edd88c8ce532f867641",
+      "type": "file"
+    },
+    ".codex/agents/engineer.toml": {
+      "mode": 384,
+      "sha256": "b62aaa617c18cad31a8ea65c86a6d6f87bc0b00c5e41cbb925461602aaf02d1d",
+      "type": "file"
+    },
+    ".codex/agents/file_scout.toml": {
+      "mode": 384,
+      "sha256": "90ea954179cc90f4713daff2144e0b56e2c2c722a65daf113c05b9d71eff553c",
+      "type": "file"
+    },
+    ".codex/agents/marketing_specialist.toml": {
+      "mode": 384,
+      "sha256": "9183c64c4314f48d56d83bd4ac3acd5f9206055ff7105b465d241b43d261ac1a",
+      "type": "file"
+    },
+    ".codex/agents/mobile_engineer.toml": {
+      "mode": 384,
+      "sha256": "db39e7e438c94dcecea580703108cb97bfb90e47bc8daea00fd36415992af41d",
+      "type": "file"
+    },
+    ".codex/agents/monetization_engineer.toml": {
+      "mode": 384,
+      "sha256": "5f63195fa820c095966b5e92ad2c31070f5c2b3a7e67324be575913225b8e285",
+      "type": "file"
+    },
+    ".codex/agents/plan_reviewer.toml": {
+      "mode": 384,
+      "sha256": "ccb9b1d6d085993456bf9b4b5d3bd3f375cdb7c808521a70b3ef197c2f4ea597",
+      "type": "file"
+    },
+    ".codex/agents/planner.toml": {
+      "mode": 384,
+      "sha256": "5403c6cce4ead00f3ce26d904b2349e24df95e03fb5c3cdaf08dba55f0f940b9",
+      "type": "file"
+    },
+    ".codex/agents/product_manager.toml": {
+      "mode": 384,
+      "sha256": "c31b51668c10fe2d561f41bff87da6b3289cd0cadf079fe68b35504f7df058fd",
+      "type": "file"
+    },
+    ".codex/agents/product_research.toml": {
+      "mode": 384,
+      "sha256": "73367099db8f409afc273dd5c04d7b27da03685031ddbb3741421d52c73c72ed",
+      "type": "file"
+    },
+    ".codex/agents/product_reviewer.toml": {
+      "mode": 384,
+      "sha256": "5640b19a3bf869261f8277b69321785ddde359ded1ea4e5254cb1dd41f5086db",
+      "type": "file"
+    },
+    ".codex/agents/qa_runner.toml": {
+      "mode": 384,
+      "sha256": "e2dc5e72868b6d9691581d01b1109094d24bb385ae70e552eb82aa73fcf280cd",
+      "type": "file"
+    },
+    ".codex/agents/release_engineer.toml": {
+      "mode": 384,
+      "sha256": "d36a16b9e4e4111495a7148e48ca4a42047b81f76c2c66b49cfe01fbe6e082bf",
+      "type": "file"
+    },
+    ".codex/agents/reliability_engineer.toml": {
+      "mode": 384,
+      "sha256": "231ab8800369b9b9af554089a323bbdde92c25eb18030e5dc83b12f8a30e228e",
+      "type": "file"
+    },
+    ".codex/agents/reviewer.toml": {
+      "mode": 384,
+      "sha256": "6a895070c7d172f794161f77dbbea333260ac8543fb29fe847c9f1c24525860d",
+      "type": "file"
+    },
+    ".codex/agents/store_assets.toml": {
+      "mode": 384,
+      "sha256": "53f0e9e2ce6a282fa852749e7072f6fdc4b16693d4d21182806fe5978d7624ab",
+      "type": "file"
+    },
+    ".codex/agents/test_engineer.toml": {
+      "mode": 384,
+      "sha256": "cf9a6062f420c69fc32abacf37b7cfcbe617b199e51e9e11c00a76db23bc9343",
+      "type": "file"
+    },
+    ".codex/agents/web_researcher.toml": {
+      "mode": 384,
+      "sha256": "1d83e6ee476888714c083f2b0ad66cd4e8acced2986ef4982794d2048f82b055",
+      "type": "file"
+    },
+    ".codex/config.toml": {
+      "mode": 384,
+      "sha256": "fbdbcc827fc6b6817151861eb4f97577f4c29c20425b037c16510b77f8adc965",
+      "type": "file"
+    },
+    ".codex/hooks.json": {
+      "mode": 384,
+      "sha256": "18fcd89f9ddf60e9e3da149162d0d50249ea663618a8cf956821215fbba4b6f6",
+      "type": "file"
+    },
+    ".codex/hooks/check_diff.py": {
+      "mode": 384,
+      "sha256": "fee6d10b8eee617bd79eb04fa92c777835ae553324c32c1181559f46a8035c9e",
+      "type": "file"
+    },
+    ".codex/hooks/lifecycle.py": {
+      "mode": 384,
+      "sha256": "b6b6d845b900185d9dacb2bae976c4c9993a5613277dc0961ff3acf22ca498f9",
+      "type": "file"
+    },
+    ".github/ISSUE_TEMPLATE/bug.yml": {
+      "mode": 384,
+      "sha256": "0bacea9cc535446797e642a166bcb40c604c8952b6701545286173a65c92be76",
+      "type": "file"
+    },
+    ".github/ISSUE_TEMPLATE/feature.yml": {
+      "mode": 384,
+      "sha256": "e646ec66f7c4ab35c588832c3c31694a77faa9e9004f1447bafc6e53816c0c40",
+      "type": "file"
+    },
+    ".github/PULL_REQUEST_TEMPLATE.md": {
+      "mode": 384,
+      "sha256": "ab4d3e71ac7ca1aa2c54f87cddbbb6c870139bd71ef3308d5bfa63307575ac0e",
+      "type": "file"
+    },
+    ".gitignore": {
+      "mode": 384,
+      "sha256": "b7d03eb511f2acfdac1f7ef58f70628e789c0f5981f0633b549c1433d7768ab9",
+      "type": "file"
+    },
+    ".solopreneur/docs/agent-catalog.md": {
+      "mode": 384,
+      "sha256": "b94d54970a97e96caab7e7058e5b1e9e350eab70f9d3038a392e78caca5216d9",
+      "type": "file"
+    },
+    ".solopreneur/docs/codex-runtime.md": {
+      "mode": 384,
+      "sha256": "454f4df79d2fb06c40640bbf8a7c81b03fd9f9e919a7b7e2e073ca63d14e8b31",
+      "type": "file"
+    },
+    ".solopreneur/docs/computer-use.md": {
+      "mode": 384,
+      "sha256": "ddc05a5a9c55517da16dd0c7c801cb4c25a80b31b9361033c46b2dbf5fa3a9ae",
+      "type": "file"
+    },
+    ".solopreneur/docs/handoff-coverage.md": {
+      "mode": 384,
+      "sha256": "e5b85ff76abd5421fa77182145918bfafce72b4e7d6a1cde9944ccfe7ff25dd7",
+      "type": "file"
+    },
+    ".solopreneur/docs/harness.md": {
+      "mode": 384,
+      "sha256": "a41f3e19a5666f9101142bd0e65fd19c3e2ece98259ae149f61750a1898ad6e4",
+      "type": "file"
+    },
+    ".solopreneur/docs/mcp.md": {
+      "mode": 384,
+      "sha256": "1ede0561811918966106dde1e653517f529f9a2e5c57e95b6eb1a4bda699e48c",
+      "type": "file"
+    },
+    ".solopreneur/docs/research-sources.md": {
+      "mode": 384,
+      "sha256": "194ceee68e43d3088387fdcc0a05fe5bee225c4aa88862898eb41c5bc1864350",
+      "type": "file"
+    },
+    ".solopreneur/docs/research/agent-routing-and-verification.md": {
+      "mode": 384,
+      "sha256": "2dc9c128b6cd673b86af5fe6795d0889100e2cfa3fadeaaea481a8a71fdb527d",
+      "type": "file"
+    },
+    ".solopreneur/docs/research/architecture-speckit.md": {
+      "mode": 384,
+      "sha256": "3abef58517d50a736fa9b1206fcf01c27d21f8b7a8ae064305556c503580af0a",
+      "type": "file"
+    },
+    ".solopreneur/docs/research/ecc-superpowers.md": {
+      "mode": 384,
+      "sha256": "7a9e42c80ac3f093308edf1e9a448607a7796648fd8a305408ebb3a31871d6b9",
+      "type": "file"
+    },
+    ".solopreneur/docs/research/gstack-matt.md": {
+      "mode": 384,
+      "sha256": "aae3717aa5434384c8c3459cebfdb428cc9e0db0340ac389b494365e2f726b22",
+      "type": "file"
+    },
+    ".solopreneur/docs/research/spending-effort.md": {
+      "mode": 384,
+      "sha256": "5133e006bc355c30df695fed038096929f2518d2fb80b7efc9f484e58c76dd5e",
+      "type": "file"
+    },
+    ".solopreneur/docs/skill-catalog.md": {
+      "mode": 384,
+      "sha256": "a88a389b968983c06f26f94fc4c75bb4d71b5f086c719eaf5661030ff0f22662",
+      "type": "file"
+    },
+    ".solopreneur/docs/stack.md": {
+      "mode": 384,
+      "sha256": "6fc839a4b0179695c7ae9d32c6e62364d63d4686c132b72359d7818beff933d4",
+      "type": "file"
+    },
+    ".solopreneur/harness.py": {
+      "mode": 384,
+      "sha256": "d394d912ac00fbb3e7149611407e704c7115b8f2ee42c41f3bd6fe375f787ac3",
+      "type": "file"
+    },
+    ".solopreneur/hooks/check_staged.py": {
+      "mode": 384,
+      "sha256": "3053d5f1d8a1e623fe4125a18371e4254d1158d405bee8ebce23b16200182152",
+      "type": "file"
+    },
+    ".solopreneur/hooks/pre-commit": {
+      "mode": 493,
+      "sha256": "d7d164554392313e9c2a53c74c9f7afce2e58c27242023a2d3ce18ae7303a814",
+      "type": "file"
+    },
+    ".solopreneur/managed.json": {
+      "mode": 384,
+      "sha256": "3ca941b3d0823fa8ecee471e529e5f4babaa2000ff99a19641f7d6d3068d7aa6",
+      "type": "file"
+    },
+    ".solopreneur/roles.json": {
+      "mode": 384,
+      "sha256": "757f7b252d419710cb4c6c98829ca3b5caa7ff19dc6faed2de449e3af615b9a7",
+      "type": "file"
+    },
+    ".solopreneur/setup.lock": {
+      "mode": 384,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "type": "file"
+    },
+    "AGENTS.md": {
+      "mode": 384,
+      "sha256": "4b608b8ed5dde5c0bc423d11d0125a235e69e1cd47c795d9e750b41620372bfe",
+      "type": "file"
+    },
+    "README.md": {
+      "mode": 384,
+      "sha256": "c6a8cb14ef40909d8fc33256e0bb36a28010027df84010fb2ab729e1515275ef",
+      "type": "file"
+    },
+    "docs/README.md": {
+      "mode": 384,
+      "sha256": "86a6700e64ef6c6ff1e10c3140d935c833ddf8c4b7b6a8263c8b5201c575aae8",
+      "type": "file"
+    },
+    "docs/analytics/events.md": {
+      "mode": 384,
+      "sha256": "d7cc0333a37eee9ddd908f8a8907f7e79c002438e61e53e860f70cd24d1cb245",
+      "type": "file"
+    },
+    "docs/decisions/decision-template.md": {
+      "mode": 384,
+      "sha256": "6544feb913b2f035b6e33bba1a5000e61a570f4b33c500d56bf54b00ca1fd1d4",
+      "type": "file"
+    },
+    "docs/design/research-template.md": {
+      "mode": 384,
+      "sha256": "c4f22a57b7e9081b689a433622883dff740f06f03da2868a40b19d5e6218e8cc",
+      "type": "file"
+    },
+    "docs/design/review-template.md": {
+      "mode": 384,
+      "sha256": "a894e0e615a0239f08501f8e90d8c7a1c069a96a91b423533714c8494d5949bc",
+      "type": "file"
+    },
+    "docs/design/specs/workbench-ux.md": {
+      "mode": 420,
+      "sha256": "bfe3425f8334b91f882368e3e6670ec965dfd6361cf4cd71ee7af76890f61d43",
+      "type": "file"
+    },
+    "docs/design/system.md": {
+      "mode": 384,
+      "sha256": "bc8023d2e8a21322905b279749a8ea27cb8c70ad6c2525c97f52637fc8a19faf",
+      "type": "file"
+    },
+    "docs/engineering/plan-template.md": {
+      "mode": 384,
+      "sha256": "92291b255ef18bc62864e594c39e664481b2269d45b16258cf21be8f6720dc25",
+      "type": "file"
+    },
+    "docs/engineering/spec-index.md": {
+      "mode": 420,
+      "sha256": "771c023836af77cdc8633d05729caef176ef62b4804f9aafbd762679d1d1db93",
+      "type": "file"
+    },
+    "docs/engineering/verification.md": {
+      "mode": 420,
+      "sha256": "dba31b7266df9dcd93f6477342e07f77bef9897c42578048c4c38c024f62feee",
+      "type": "file"
+    },
+    "docs/engineering/workbench-architecture.md": {
+      "mode": 420,
+      "sha256": "4a031f5c8cd194c315b92df8ac468600d5b769387c2271d8c04810fbc4959cba",
+      "type": "file"
+    },
+    "docs/experiments/experiment-template.md": {
+      "mode": 384,
+      "sha256": "8b7e547db29470b10871ad71b9ef54d7615e7b797ed3d122506e476e3dafaa15",
+      "type": "file"
+    },
+    "docs/growth/aso.md": {
+      "mode": 384,
+      "sha256": "1ecd167324b55e3eeb8d2488dd97c3fe9aa470abb7eb4ef9e3864d927d18fa3e",
+      "type": "file"
+    },
+    "docs/launch/store-assets.md": {
+      "mode": 384,
+      "sha256": "4f0c163e008a3580de870d0349832362a50a9a0aa1e2d30ea99b9dfaaed0d761",
+      "type": "file"
+    },
+    "docs/launch/store-listing.md": {
+      "mode": 384,
+      "sha256": "4dc46c48fdecee0301a214301d8be621bd1bb2eb9dd4b3910d515f8853c828c0",
+      "type": "file"
+    },
+    "docs/marketing/brief.md": {
+      "mode": 384,
+      "sha256": "067b35a9cce5389ccd6d0afd42d38a07211499f85d185b57a28f40b7894e3102",
+      "type": "file"
+    },
+    "docs/monetization/subscriptions.md": {
+      "mode": 384,
+      "sha256": "11febc9c33d8a696fb891dae7b5d8d74eac3c7cacdfe6394845f67885e2fddae",
+      "type": "file"
+    },
+    "docs/operations/local-release-monitoring.md": {
+      "mode": 420,
+      "sha256": "f0d88e1836f230da09f7afe093d4320298d8d191845abae69ad4a0d4ef17263b",
+      "type": "file"
+    },
+    "docs/operations/runbook-template.md": {
+      "mode": 384,
+      "sha256": "106f92cc6ed112d0a3d90983bce614f8981ac691d980011447b4b7c8ade3c46e",
+      "type": "file"
+    },
+    "docs/product/brief.md": {
+      "mode": 384,
+      "sha256": "5a9c3775ffd42257f1779a5ef92013f47098235aaac42b9a61284f6db729f2e4",
+      "type": "file"
+    },
+    "docs/product/opportunity.md": {
+      "mode": 420,
+      "sha256": "77928f1548fa18b4f9ae45e578b46cb99a8f6d2c828b2184440a963ee845f65a",
+      "type": "file"
+    },
+    "docs/product/prd.md": {
+      "mode": 420,
+      "sha256": "597e64d100ea67b878762fde160b3a6d5c2f1275662661094dadfe0dad270dfb",
+      "type": "file"
+    },
+    "docs/releases/release-template.md": {
+      "mode": 384,
+      "sha256": "9fa2b3075de9808edc6a38143cc998f35696872235e6bffd2cc38256bca33191",
+      "type": "file"
+    },
+    "docs/research/assistant-ui-opencode.md": {
+      "mode": 420,
+      "sha256": "141a3527f40931b446cc224c3ee34cf67b185d9894f724c79370c839d955b460",
+      "type": "file"
+    },
+    "docs/research/opencode-sdk-initial.md": {
+      "mode": 420,
+      "sha256": "52e55c0d703cfd62fe7b9f05ca0513c576fc8950bc2ba3e7cc1d8683738f5f51",
+      "type": "file"
+    },
+    "docs/research/workbench-expansion.md": {
+      "mode": 420,
+      "sha256": "8441bce6d51587cc4803b7d15211581194bc5e159367b9f34e2ab64366679824",
+      "type": "file"
+    },
+    "docs/specs/feature-template.md": {
+      "mode": 384,
+      "sha256": "717ae2718fb3f6b76c8d92f20ee88bbea07beddb8bb1faf080b40584cc64aee2",
+      "type": "file"
+    }
+  },
+  "begin_required_checks": [],
+  "checks": {
+    "approved-inputs": [
+      {
+        "argv": [
+          "python3",
+          "docs/runs/technical-feasibility/check_approved.py"
+        ],
+        "contract_sha256": "5f301fd5893c578f28caefc05851919ca15053f84098615d5b03973760e2edfb",
+        "cwd": ".",
+        "environment_sha256": "fb1569f048e9094cf2380c1f19e7899d2d932b735d5b10a2e0bc39d79b1f169a",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "214a85b2dbfec177fda9fe8ce9d7b332cb085d1c239120e2e3f8ebdd65d27d24",
+        "recorded_at": "2026-09-26T04:53:20+00:00",
+        "scope": "Approved exact hashes, receipt, prior reviewed document handoffs",
+        "source_sha256": "31cd1423b375589b401c2a0e19fbd13270a1bf99acc579c27998df2647213a6f",
+        "stderr": "",
+        "stdout": "product handoff ready\ndesign_spec handoff ready\nApproved inputs unchanged; prior product/design handoffs ready; local-browser approval recorded.\n",
+        "timed_out": false
+      }
+    ],
+    "compatibility": [
+      {
+        "argv": [
+          "node",
+          "spikes/sdk-ui/verify.mjs"
+        ],
+        "contract_sha256": "5f301fd5893c578f28caefc05851919ca15053f84098615d5b03973760e2edfb",
+        "cwd": ".",
+        "environment_sha256": "fb1569f048e9094cf2380c1f19e7899d2d932b735d5b10a2e0bc39d79b1f169a",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "214a85b2dbfec177fda9fe8ce9d7b332cb085d1c239120e2e3f8ebdd65d27d24",
+        "recorded_at": "2026-09-26T04:53:23+00:00",
+        "scope": "Local deterministic compatibility probe and evidence checks; real integration or explicit unexecuted capabilities",
+        "source_sha256": "31cd1423b375589b401c2a0e19fbd13270a1bf99acc579c27998df2647213a6f",
+        "stderr": "(node:13934) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n",
+        "stdout": "PASS pinned packages, lockfile, genuine Tool UI registry source and MIT license\nPASS @opencode/client 2.0.18 generated route through synthetic custom fetch; no network request\nPASS TypeScript UI/SDK host type boundary\nPASS assistant-ui ExternalStoreRuntime synthetic text/tool fallback SSR\nPASS Tool UI schema and standalone component SSR; Toolkit registration typechecked only\nNOT READY embedded host lifecycle, credentials/config isolation, native event replay and live tool dispatch\nNOT EXECUTED browser interaction, accessibility, cancel/reconnect and production UI\n",
+        "timed_out": false
+      }
+    ]
+  },
+  "completed_at": "2026-09-26T04:56:15+00:00",
+  "contract": {
+    "path": "docs/runs/technical-feasibility/contract.json",
+    "sha256": "5f301fd5893c578f28caefc05851919ca15053f84098615d5b03973760e2edfb"
+  },
+  "created_at": "2026-09-26T04:40:31+00:00",
+  "dispatches": [
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "/root/sdk_ui_spike",
+      "context": "explicit_instruction_injection",
+      "packet": {
+        "path": "docs/runs/technical-feasibility/engineer-packet.json",
+        "sha256": "bb7e47b28427db45e4a66efd6ac5163af0890db4b11c8c30905a53a42938ebf4"
+      },
+      "phase": "implementation",
+      "recorded_at": "2026-09-26T04:44:01+00:00",
+      "role": "engineer",
+      "role_instruction_sha256": "b62aaa617c18cad31a8ea65c86a6d6f87bc0b00c5e41cbb925461602aaf02d1d",
+      "routing_request": {
+        "basis": "coordinator_reported_explicit",
+        "effort": "medium",
+        "model": "gpt-6-sol"
+      }
+    },
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "/root/sdk_ui_independent_review",
+      "context": "explicit_instruction_injection",
+      "packet": {
+        "path": "docs/runs/technical-feasibility/reviewer-packet.json",
+        "sha256": "2afb91fc7e3c064b9005e287caa76253007521638df6a7e7fabbebc2fc86c90c"
+      },
+      "phase": "review",
+      "recorded_at": "2026-09-26T04:54:20+00:00",
+      "role": "reviewer",
+      "role_instruction_sha256": "6a895070c7d172f794161f77dbbea333260ac8543fb29fe847c9f1c24525860d",
+      "routing_request": {
+        "basis": "coordinator_reported_explicit",
+        "effort": "medium",
+        "model": "gpt-6-sol"
+      }
+    }
+  ],
+  "kind": "research",
+  "objective": "Verify approved local-browser workbench SDK generation and UI integration feasibility using synthetic data; prepare design inputs",
+  "outcome": {
+    "path": "docs/runs/technical-feasibility/outcome.json",
+    "sha256": "6ee0172318a49e0fd23382d693db7b998fae5e39a7779cfc709358ceed8f039d"
+  },
+  "ownership": [],
+  "plan": {
+    "path": "docs/runs/technical-feasibility/plan.md",
+    "sha256": "214a85b2dbfec177fda9fe8ce9d7b332cb085d1c239120e2e3f8ebdd65d27d24",
+    "source_sha256": "5bb72eac83b3c01646e5fc00fee1301ba97874dac88eb639295a24c3c438f298"
+  },
+  "prepared_handoffs": [
+    {
+      "path": "docs/runs/technical-feasibility/engineer-packet.json",
+      "sha256": "bb7e47b28427db45e4a66efd6ac5163af0890db4b11c8c30905a53a42938ebf4"
+    },
+    {
+      "path": "docs/runs/technical-feasibility/reviewer-packet.json",
+      "sha256": "2afb91fc7e3c064b9005e287caa76253007521638df6a7e7fabbebc2fc86c90c"
+    }
+  ],
+  "required_checks": [
+    "approved-inputs",
+    "compatibility"
+  ],
+  "required_gates": [
+    "plan",
+    "code"
+  ],
+  "required_reviews": [
+    "code"
+  ],
+  "reviews": {
+    "code": {
+      "attestation": "Coordinator-reported metadata; not runtime identity attestation",
+      "evidence": {
+        "path": "docs/runs/technical-feasibility/code-review.json",
+        "sha256": "a76c7f40404160959fc3846f78eac08b19443146de6bcd970c12fa7ed9cdb5c0"
+      },
+      "provenance": {
+        "author_task_id": "/root/sdk_ui_spike",
+        "child_task_id": "/root/sdk_ui_independent_review"
+      },
+      "recorded_at": "2026-09-26T04:56:15+00:00",
+      "reviewed": {
+        "contract_sha256": "5f301fd5893c578f28caefc05851919ca15053f84098615d5b03973760e2edfb",
+        "environment_sha256": "fb1569f048e9094cf2380c1f19e7899d2d932b735d5b10a2e0bc39d79b1f169a",
+        "gate": "code",
+        "plan_sha256": "214a85b2dbfec177fda9fe8ce9d7b332cb085d1c239120e2e3f8ebdd65d27d24",
+        "schema_version": 2,
+        "source_sha256": "31cd1423b375589b401c2a0e19fbd13270a1bf99acc579c27998df2647213a6f",
+        "verification_sha256": "bb85a614e687c4bed253536775a14d7cd8f4a4fa856fad34eaa252657ba961e6"
+      },
+      "reviewer": "reviewer",
+      "routing_request": {
+        "basis": "coordinator_reported_explicit",
+        "effort": "medium",
+        "model": "gpt-6-sol"
+      },
+      "verdict": "pass"
+    },
+    "plan": {
+      "attestation": "Coordinator-reported metadata; not runtime identity attestation",
+      "evidence": {
+        "path": "docs/runs/technical-feasibility/plan-review.json",
+        "sha256": "3790f684feb1da95f16e34a94a6d447d56281776282438f2ae472a2900a9a733"
+      },
+      "provenance": {
+        "author_task_id": "/root",
+        "child_task_id": "/root/feasibility_plan_review"
+      },
+      "recorded_at": "2026-09-26T04:43:35+00:00",
+      "reviewed": {
+        "contract_sha256": "5f301fd5893c578f28caefc05851919ca15053f84098615d5b03973760e2edfb",
+        "gate": "plan",
+        "plan_sha256": "214a85b2dbfec177fda9fe8ce9d7b332cb085d1c239120e2e3f8ebdd65d27d24",
+        "schema_version": 2,
+        "source_sha256": "5bb72eac83b3c01646e5fc00fee1301ba97874dac88eb639295a24c3c438f298"
+      },
+      "reviewer": "plan_reviewer",
+      "routing_request": {
+        "basis": "coordinator_reported_explicit",
+        "effort": "medium",
+        "model": "gpt-6-sol"
+      },
+      "verdict": "pass"
+    }
+  },
+  "run": "technical-feasibility",
+  "schema_version": 2,
+  "status": "complete",
+  "transitions": [],
+  "ui": false,
+  "updated_at": "2026-09-26T04:56:15+00:00"
+}

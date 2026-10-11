@@ -1,0 +1,24 @@
+{
+  "schema_version": 2,
+  "checkpoint": "actual early paired manager API r1; implementation continues",
+  "source": [
+    {
+      "path": "apps/desktop-app/src/host/workbench-git.mjs",
+      "sha256": "49309a1912e55fb8a076aead0e28f1420508e4586521a5bc1c9c7aed6e7cfccd"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workbench-git-snapshot.mjs",
+      "sha256": "baa112a11908479c072e67c8543fc91cd68abcc87e58de165ad2692c5ace813b"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workbench-git-index.mjs",
+      "sha256": "d7ccce4bdb5bdf4e97b102ed82fc81f303e8b70bb9d1dd55ff39c8d72682b271"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workbench-git-index.test.mjs",
+      "sha256": "0de1ed0f36070b00b436e7393197280792523c4ec8c11797e016937c0f30375f"
+    }
+  ],
+  "api": "createWorkbenchGitAccess(options) -> {reader,indexManager}; original reader factory/API unchanged. manager preview(workspace,request,scope),previewForApply(workspace,request,scope),apply(workspace,request,scope,publisher),closeSender,close. No DTO clocks. scope adds revision; apply scope.operationDigest original canonical admitted digest. publisher actual kernel request callback after Main confirmation/intent markers.",
+  "checks": "3 actual manager tests pass; includes fixed Git SHA1/SHA256 selected preview/artifact/originalbytepreservation/unknown no replay. Not publication/runtime/UI approval."
+}

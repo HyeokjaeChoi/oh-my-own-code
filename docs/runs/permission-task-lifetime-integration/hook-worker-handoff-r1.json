@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a1271e-00d3-7cb1-a48d-85a5511ea0c4": {
+      "completed": "완료했습니다. 지정한 3개 파일만 수정했습니다.\n\n- 8개 producer, 23개 hook의 frozen bundle과 private WeakMap provenance를 추가했습니다.\n- 두 export는 API 계약과 같습니다. getter는 정확한 `pluginId`에만 같은 bundle을 반환합니다.\n- 원본 callback, 등록 순서, Verbosity 서비스 획득 위치를 보존했습니다.\n- 기존 recipe 40개 항목은 그대로입니다.\n\n검증: **RED 확인 → 테스트 19개 PASS**, ESLint·Prettier PASS. SHA·고유 역변환·문법·digest 검증도 통과했습니다.\n\n최종 파일 SHA256:\n\n| 파일 | SHA256 |\n|---|---|\n| [overlay contract](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-overlay-contract.mjs) | `00732d934f99c7035d4ba2640297c061f4eac599a99a4db2f20cf59b6f5b3abd` |\n| [recipe test](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs) | `8cce3fd55b9d53df910f466c02cba31531ecb375a695b980eac14c8b858158e7` |\n| [hook test](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-hook-declaration.test.mjs) | `e135b0e7567a726d3abbb8e3cf074b4d105bb0925c043fd90417b7777b04ba4b` |\n\nRecipe digest: `a784f792e5b1983a65660b4aceb4b276dcbe8c08b0f77833addb3b340c7af667`\n\n검증 범위는 Node와 추출한 source·pinned Effect·scripted context입니다. 금지된 runtime·network·build·GUI 실행은 하지 않았습니다. 원본·문서·ledger는 수정하지 않았습니다. 실행 권한은 추가하지 않았으며, `complete=false`, `capabilities=[]`를 유지합니다. 독립 CODE review와 통합은 Main에 인계합니다."
+    }
+  },
+  "timed_out": false
+}

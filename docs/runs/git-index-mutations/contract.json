@@ -1,0 +1,212 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "GI1",
+      "description": "Exact selected stage/unstage and untouched resource preservation"
+    },
+    {
+      "id": "GI2",
+      "description": "Current original authority, safe no-execution and path/metadata boundaries"
+    },
+    {
+      "id": "GI3",
+      "description": "Durable ordered intent/receipt/compatibility/unknown no replay"
+    },
+    {
+      "id": "GI4",
+      "description": "Accessible explicit selected preview/apply and race/retained UI"
+    },
+    {
+      "id": "GI5",
+      "description": "Current affected verification and independent final gates"
+    }
+  ],
+  "checks": {
+    "files": {
+      "argv": [
+        "python3",
+        "docs/runs/git-index-mutations/verify-prior-check.py",
+        "files"
+      ],
+      "cwd": ".",
+      "scope": "Verify unchanged actual prior execution and source/environment/build/evidence bytes: Affected pure/private/service/storage/renderer/provenance regressions",
+      "acceptance_ids": [
+        "GI1",
+        "GI2",
+        "GI3",
+        "GI4",
+        "GI5"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "python3",
+        "docs/runs/git-index-mutations/verify-prior-check.py",
+        "typecheck"
+      ],
+      "cwd": ".",
+      "scope": "Verify unchanged actual prior execution and source/environment/build/evidence bytes: Current DTO and consumers",
+      "acceptance_ids": [
+        "GI5"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "python3",
+        "docs/runs/git-index-mutations/verify-prior-check.py",
+        "boundaries"
+      ],
+      "cwd": ".",
+      "scope": "Verify unchanged actual prior execution and source/environment/build/evidence bytes: Current FSD/browser boundaries",
+      "acceptance_ids": [
+        "GI5"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "python3",
+        "docs/runs/git-index-mutations/verify-prior-check.py",
+        "lint"
+      ],
+      "cwd": ".",
+      "scope": "Verify unchanged actual prior execution and source/environment/build/evidence bytes: Exact changed source lint",
+      "acceptance_ids": [
+        "GI5"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "python3",
+        "docs/runs/git-index-mutations/verify-prior-check.py",
+        "format"
+      ],
+      "cwd": ".",
+      "scope": "Verify unchanged actual prior execution and source/environment/build/evidence bytes: Exact changed source format",
+      "acceptance_ids": [
+        "GI5"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "python3",
+        "docs/runs/git-index-mutations/verify-prior-check.py",
+        "build"
+      ],
+      "cwd": ".",
+      "scope": "Verify unchanged actual prior execution and source/environment/build/evidence bytes: Verify exact current build inputs/artifacts/resources; rebuild via original Nx command only when provenance is stale",
+      "acceptance_ids": [
+        "GI5"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "python3",
+        "docs/runs/git-index-mutations/verify-prior-check.py",
+        "bundle"
+      ],
+      "cwd": ".",
+      "scope": "Verify unchanged actual prior execution and source/environment/build/evidence bytes: Browser isolation",
+      "acceptance_ids": [
+        "GI5"
+      ],
+      "required": true
+    },
+    "index-publication": {
+      "argv": [
+        "python3",
+        "docs/runs/git-index-mutations/verify-prior-check.py",
+        "index-publication"
+      ],
+      "cwd": ".",
+      "scope": "Verify unchanged actual prior execution and source/environment/build/evidence bytes: Actual fixedGit/pinned bundledBun production kernel on owned synthetic repos, current source/provenance, no Native/provider/private store",
+      "acceptance_ids": [
+        "GI1",
+        "GI2",
+        "GI3",
+        "GI5"
+      ],
+      "required": true
+    },
+    "hidden-index": {
+      "argv": [
+        "python3",
+        "docs/runs/git-index-mutations/verify-prior-check.py",
+        "hidden-index"
+      ],
+      "cwd": ".",
+      "scope": "Verify unchanged actual prior execution and source/environment/build/evidence bytes: Actual builtRenderer/preload synthetic host, explicit preview/apply/confirmation/status/retained/noauto/desktoplightdark/narrow760200, ownedexit",
+      "acceptance_ids": [
+        "GI4",
+        "GI5"
+      ],
+      "required": true
+    },
+    "reader-regression": {
+      "argv": [
+        "python3",
+        "docs/runs/git-index-mutations/verify-prior-check.py",
+        "reader-regression"
+      ],
+      "cwd": ".",
+      "scope": "Verify unchanged actual prior execution and source/environment/build/evidence bytes: Actual unchanged saved read-only Git matrix after private snapshot extraction, helper/config canaries and original preservation",
+      "acceptance_ids": [
+        "GI2",
+        "GI5"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/git-index-mutations/design.md",
+      "gate": "design_spec",
+      "version": "3",
+      "sha256": "79e10e767d9361e0e6610a22b28f0dce200b21d378ca619690470bbb566c43f0"
+    }
+  ],
+  "environment_files": [
+    "pnpm-lock.yaml",
+    "docs/runs/git-index-mutations/source-facts.json",
+    "docs/runs/git-index-mutations/prechange-inventory.json",
+    "docs/runs/git-index-mutations/check-changed.mjs",
+    "docs/runs/git-index-mutations/ensure-current-build.mjs",
+    "docs/runs/git-index-mutations/verify-prior-check.py",
+    "docs/runs/git-index-mutations/prior-check-proof-r1.json"
+  ],
+  "decision_register": [
+    {
+      "id": "original-index-publisher",
+      "statement": "Fixed Git private computation + narrow pinned Darwin descriptor kernel; no original Git process/path fallback",
+      "status": "delegated",
+      "source": "User authorization for full work and architecture boundary under accepted F11; current read compatibility evidence",
+      "impact": "New original index/object write authority only after entry review",
+      "blocks": [],
+      "resolution": "Explicit stage/unstage closed target, originalindexbackup, cooperativeindexlock, exact before/post checks and unknown on observed divergence; refs/worktree writes remain subsequent slices."
+    },
+    {
+      "id": "bounded-delivery",
+      "statement": "Stage/unstage first, keep commit/branch/restore required next",
+      "status": "delegated",
+      "source": "PRD F11 and repeated user continue-to-completion instructions",
+      "impact": "Bounded useful delivery without claiming fullAC11",
+      "blocks": [],
+      "resolution": "Independent gates finish only selected index increment; continue next required actions."
+    },
+    {
+      "id": "platform-and-races",
+      "statement": "Darwin arm64 pinnedBun and exacttrustedGit only; no Windows/OSexclusive/powerloss claims",
+      "status": "confirmed",
+      "source": "Accepted architecture and actual Darwincapability findings",
+      "impact": "Conservative refusal on unsupported states",
+      "blocks": [],
+      "resolution": "Actual ownedsynthetic publication/lifecycle proof + explicit failclosed supportedscope."
+    }
+  ]
+}

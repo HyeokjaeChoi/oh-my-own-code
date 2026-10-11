@@ -1,0 +1,110 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "59620fb9556cda69b3e516615879e7ccdac1a9db9849b9bc6886fa1b13b1879a",
+    "gate": "plan",
+    "plan_sha256": "bf16de004052cb994f6bbe9bd2d67014b555d17dde63b1508bafef879d3b5249",
+    "schema_version": 2,
+    "source_sha256": "98f8c758f463783736f7b7503d01602717afbb875a6955b7c0dc0d5db9e978f6",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "changes_requested",
+  "summary": "같은 binding의 이전 pass 판정을 정정합니다. 현재 closed projection은 등록 내용은 확인할 수 있지만, 현재 등록이 fork에서 상속되었는지는 구분할 수 없습니다. child가 같은 내용을 직접 apply하면 parentSessionId, digest, sourceVersion이 모두 그대로일 수 있습니다. 따라서 I4의 truthful inherited 표시를 충족하려면 영속 출처와 상태 전이 계약을 보완해야 합니다. 다른 PLAN 범위와 권한 판단은 유지합니다.",
+  "open_findings": [
+    {
+      "id": "PLAN-R1-01",
+      "priority": "P2",
+      "title": "현재 등록의 상속 출처를 closed projection으로 구분할 수 없음",
+      "location": {
+        "path": "docs/runs/configuration-instructions/design.md",
+        "line": 13
+      },
+      "related_locations": [
+        {
+          "path": "docs/runs/configuration-instructions/design.md",
+          "line": 8
+        },
+        {
+          "path": "docs/runs/configuration-instructions/design.md",
+          "line": 25
+        },
+        {
+          "path": "docs/runs/configuration-instructions/design.md",
+          "line": 30
+        },
+        {
+          "path": "docs/runs/configuration-instructions/plan.md",
+          "line": 8
+        },
+        {
+          "path": "docs/runs/configuration-instructions/plan.md",
+          "line": 16
+        }
+      ],
+      "evidence": "design의 registered projection은 state/key/digest/sourceVersion만 허용합니다. fork는 parent의 metadata를 복사합니다. 이후 child가 같은 AGENTS.md bytes와 같은 fileVersion으로 apply하면 동일한 projection을 만들 수 있습니다. 기존 parentSessionId는 session의 fork 관계를 나타내며, 현재 instruction 등록의 출처를 나타내지 않습니다. read DTO에도 출처 정보가 정의되어 있지 않습니다. 추가 origin 필드나 operation 이력 기반 판정 규칙은 현재 문서에 없습니다.",
+      "impact": "직접 apply한 child 등록을 계속 inherited로 표시할 수 있습니다. 재시작 뒤에도 두 상태를 구분할 근거가 없습니다. 현재 parent와 metadata를 비교하는 방식은 parent의 후속 변경에 따라 child의 출처 표시를 잘못 바꿀 수도 있습니다. 이는 I4의 표시 정확성과 I3의 영속 projection에 영향을 줍니다.",
+      "required_correction": [
+        "plan과 design에 현재 등록의 출처를 구분하는 closed 영속 계약을 명시하십시오. 예를 들어 직접 apply와 검증된 fork 상속을 구분하는 origin과 상속 근거를 둘 수 있습니다. 다른 방식도 가능하지만, 같은 내용의 직접 apply 뒤에도 두 상태를 구분하고 재시작 뒤 복원할 수 있어야 합니다.",
+        "상태 전이를 정의하십시오. 검증된 fork 완료는 child의 상속 출처를 기록하고, 확인된 child apply는 같은 내용이어도 직접 등록으로 바꿔야 합니다. remove는 현재 등록의 inherited 표시를 제거해야 합니다. denied 또는 효과 없는 거절은 출처를 바꾸지 않아야 하며, unknown은 확정된 출처 전이로 표시하지 않아야 합니다.",
+        "상속 근거는 fork 당시의 검증된 사실에 연결하십시오. 현재 parent의 digest 일치만으로 판정하지 마십시오. 영속 출처를 baseline version, completion 검증, checkpoint/hydration 및 closed read/UI projection에 어떻게 반영하는지도 명시하십시오. Native의 기존 metadata correlation object는 유지하십시오.",
+        "기존 I3–I5 검사에 검증된 fork 직후, 같은 bytes와 같은 fileVersion의 child apply 후, checkpoint/reopen 후의 출처 구분을 추가하십시오. denied/unknown 처리와 parent의 후속 변경도 출처를 잘못 바꾸지 않는지 확인하십시오. 전체 suite나 추가 Native 실행을 일괄 요구하지 않습니다.",
+        "수정한 plan/design과 contract의 문서 hash를 일치시키고 새 binding을 준비하십시오. 이 finding의 수정 범위만 다시 PLAN 검토한 뒤 별도 DESIGN_SPEC gate를 진행하십시오. 새 사용자 권한이나 반복적인 routine entry 승인은 필요하지 않습니다."
+      ],
+      "acceptance_ids": [
+        "I3",
+        "I4",
+        "I5"
+      ]
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a1195c-afcc-7291-8afb-7c78a67419c1",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "role": "plan_reviewer",
+    "profile": "solo_reader",
+    "skill": "solo-plan-review",
+    "mode": "default",
+    "identity_evidence": "현재 실행 환경의 CODEX_THREAD_ID가 앞서 확인한 run의 review dispatch child_ref와 일치하며 author_task_id와 다릅니다.",
+    "independent": true,
+    "authored_plan": false,
+    "modified_source": false,
+    "modified_artifacts": false,
+    "modified_ledger": false,
+    "recursively_delegated": false
+  },
+  "scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_path": "docs/runs/configuration-instructions/plan.md",
+    "plan_revision": 1,
+    "contract_path": "docs/runs/configuration-instructions/contract.json",
+    "design_path": "docs/runs/configuration-instructions/design.md",
+    "design_version": "1",
+    "input_path": "docs/runs/configuration-instructions/entry-plan-input-r1.json",
+    "packet_path": "docs/runs/configuration-instructions/entry-plan-packet-r1.json",
+    "follow_up": "현재 등록의 inherited 출처를 영속 상태와 UI가 구분할 수 있는지 재검토했습니다.",
+    "supersedes_previous_verdict": true,
+    "design_spec_verdict_issued": false,
+    "written_paths": []
+  },
+  "checks": [
+    {
+      "command": "현재 plan.md와 design.md의 줄 번호 포함 재확인",
+      "result": "I4의 inherited 요구와 closed instructionRegistration/read projection 사이의 누락을 확인했습니다."
+    },
+    {
+      "command": "현재 service/journal/registry/store의 parentSessionId 및 instructionRegistration 참조 검색",
+      "result": "기존 parentSessionId 처리 경로를 확인했습니다. 현재 제품 소스에 instructionRegistration 출처 구현은 없습니다. 명시되지 않은 필드나 복원 규칙을 가정하지 않았습니다."
+    },
+    {
+      "command": "python3 -B .solopreneur/harness.py review-input configuration-instructions --gate plan",
+      "result": "exit 0. 출력은 지정된 entry-plan-input-r1.json 및 이 보고서의 reviewed와 정확히 같습니다."
+    }
+  ],
+  "limits": [
+    "PLAN 일관성 finding입니다. DESIGN_SPEC 판정을 대신하지 않습니다.",
+    "소스, 문서, artifact 또는 ledger를 수정하지 않았습니다.",
+    "Native, provider, GUI, production Main, build 또는 제품 테스트를 실행하지 않았습니다.",
+    "기존 API 가능성, 권한, 두 Native policy 단계 및 최종 독립 CODE/RENDER 요구에 대한 판단은 유지합니다.",
+    "fullF14의 후속 범위와 전체 Goal은 계속 남아 있습니다."
+  ]
+}

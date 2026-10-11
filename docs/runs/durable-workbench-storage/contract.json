@@ -1,0 +1,223 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "S1",
+      "description": "Managed identity and sentinel preservation"
+    },
+    {
+      "id": "S2",
+      "description": "Durable native transcript and mapping recovery"
+    },
+    {
+      "id": "S3",
+      "description": "Journal, receipts and unknown holds Closed recovery snapshot and original-epoch retained keys remain readable before native readiness; startup and resource blocks cannot be cleared by idle health."
+    },
+    {
+      "id": "S4",
+      "description": "Exclusive safe owner and explicit migration"
+    },
+    {
+      "id": "S5",
+      "description": "Truthful renderer and local build evidence"
+    }
+  ],
+  "checks": {
+    "storage-unit": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/storage-lock.test.mjs",
+        "apps/desktop-app/src/sidecar-supervisor.test.mjs",
+        "apps/desktop-app/src/ephemeral-profile.test.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "storage-unit durable storage evidence",
+      "acceptance_ids": [
+        "S1",
+        "S3",
+        "S4"
+      ],
+      "required": true
+    },
+    "native-storage": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/p7-storage-probe.mjs",
+        "--out",
+        "docs/runs/durable-workbench-storage/evidence/native-r5",
+        "--mode",
+        "packaged",
+        "--platform",
+        "darwin"
+      ],
+      "cwd": ".",
+      "scope": "Isolated saved native storage/host recovery probes using exact hashed packaged sidecar binary, no production-window launch",
+      "acceptance_ids": [
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "typecheck durable storage evidence",
+      "acceptance_ids": [
+        "S5"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/build.mjs"
+      ],
+      "cwd": ".",
+      "scope": "build durable storage evidence",
+      "acceptance_ids": [
+        "S5"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "boundaries durable storage evidence",
+      "acceptance_ids": [
+        "S5"
+      ],
+      "required": true
+    },
+    "hidden-ui": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--out",
+        "docs/runs/durable-workbench-storage/evidence/hidden-ui-r5",
+        "--script",
+        "ui-states"
+      ],
+      "cwd": ".",
+      "scope": "hidden-ui durable storage evidence; exact closed storage reason and disabled global/resource mutations without native startup",
+      "acceptance_ids": [
+        "S5"
+      ],
+      "required": true
+    },
+    "package-macos": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/package.mjs",
+        "darwin",
+        "arm64"
+      ],
+      "cwd": ".",
+      "scope": "Local macOS package artifact generation; no visible application launch",
+      "acceptance_ids": [
+        "S5"
+      ],
+      "required": true
+    },
+    "package-inspect": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-packaged-bundle.mjs",
+        "darwin"
+      ],
+      "cwd": ".",
+      "scope": "Current package and pinned native resources integrity; not production-window runtime proof",
+      "acceptance_ids": [
+        "S5"
+      ],
+      "required": true
+    },
+    "renderer-unit": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "apps/desktop-app/src/workbench-store.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Durable revision floor, ephemeral observation order, slow payload freshness, interrupt notice and draft/epoch regressions; retained-key bootstrap/current-envelope old-receipt lookup, atomic stale recovery rejection and persistent recovery/unknown holds",
+      "acceptance_ids": [
+        "S3",
+        "S5"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src",
+        "apps/desktop-app/scripts"
+      ],
+      "cwd": ".",
+      "scope": "Changed durable integration sources and saved probes lint",
+      "acceptance_ids": [
+        "S5"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Built renderer excludes privileged storage/native/Node capabilities",
+      "acceptance_ids": [
+        "S5"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/durable-workbench-storage/storage-contract.md",
+      "gate": "design_spec",
+      "version": "5",
+      "sha256": "c58a79f5c62840873e5a2cededc67e9d381006926365fecf07728c5f484fdab7"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": [
+    "pnpm-lock.yaml"
+  ],
+  "decision_register": [
+    {
+      "id": "storage-path",
+      "statement": "Native Documents managed stable session folders; private appData durable metadata/native storage",
+      "status": "delegated",
+      "source": "User explicit managed-storage answer plus authorized engineering delegation",
+      "impact": "Separate disposable process cleanup from durable native/app ownership",
+      "blocks": [],
+      "resolution": "Native path API, allowlisted hash-chain journal, one verified owner, no implicit migration"
+    }
+  ]
+}

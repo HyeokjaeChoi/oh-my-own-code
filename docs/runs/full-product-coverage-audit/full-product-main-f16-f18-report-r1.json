@@ -1,0 +1,649 @@
+{
+  "schemaVersion": 2,
+  "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+  "clauses": [
+    {
+      "groupId": "F-16",
+      "clauseIndex": 0,
+      "exactClause": "시간순 타임라인을 세션/자식/tool/권한/검증별로 필터링하고 해당 결과로 이동한다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+          "line": 51,
+          "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688",
+          "observation": "Activity UI explicitly scopes data to this app invocation; one selected-session filter, operation list/detail; no child/tool/verification category filters or result navigation actions in this component."
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 360,
+          "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+          "observation": "Service diagnostics owns in-memory operation totals and maximum500 events; observes operation/status/duration/scope, drops oldest and counts omissions. diagnostics.list filters workspace/session only at3994."
+        },
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 185,
+          "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+          "observation": "Native messages are projected to text/tools; output deliberately omits native usage metrics. This is positive data-shape tracing, not a dependency or keyword inference."
+        }
+      ],
+      "runtimeRefs": [],
+      "gaps": [
+        "Only per-invocation operation timeline and session filter exist here; child/tool/permission/verification filtering and result navigation need source/UI/runtime completion."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    },
+    {
+      "groupId": "F-16",
+      "clauseIndex": 1,
+      "exactClause": "제공되는 context/token/usage와 선택된 모델을 보여주되 미제공 값·추정 비용을 실제 청구로 표현하지 않는다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+          "line": 51,
+          "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688",
+          "observation": "Activity UI explicitly scopes data to this app invocation; one selected-session filter, operation list/detail; no child/tool/verification category filters or result navigation actions in this component."
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 360,
+          "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+          "observation": "Service diagnostics owns in-memory operation totals and maximum500 events; observes operation/status/duration/scope, drops oldest and counts omissions. diagnostics.list filters workspace/session only at3994."
+        },
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 185,
+          "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+          "observation": "Native messages are projected to text/tools; output deliberately omits native usage metrics. This is positive data-shape tracing, not a dependency or keyword inference."
+        }
+      ],
+      "runtimeRefs": [],
+      "gaps": [
+        "Token/context/usage and selected-model telemetry are not carried by current message/diagnostics projection; add truthful supplied/missing/estimated values through runtime ownership."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    },
+    {
+      "groupId": "F-16",
+      "clauseIndex": 2,
+      "exactClause": "설정 비교와 합성 학습 모드를 제공하며 실제 프로젝트 작업도 동일하게 관찰한다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+          "line": 51,
+          "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688",
+          "observation": "Activity UI explicitly scopes data to this app invocation; one selected-session filter, operation list/detail; no child/tool/verification category filters or result navigation actions in this component."
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 360,
+          "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+          "observation": "Service diagnostics owns in-memory operation totals and maximum500 events; observes operation/status/duration/scope, drops oldest and counts omissions. diagnostics.list filters workspace/session only at3994."
+        },
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 185,
+          "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+          "observation": "Native messages are projected to text/tools; output deliberately omits native usage metrics. This is positive data-shape tracing, not a dependency or keyword inference."
+        }
+      ],
+      "runtimeRefs": [],
+      "gaps": [
+        "No mounted settings comparison or synthetic learning workflow exists in the current application entry/service protocol; implement app workflow with predictions/answers/evidence."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    },
+    {
+      "groupId": "F-16",
+      "clauseIndex": 3,
+      "exactClause": "7절의 학습 평가와 기록 신뢰성 기준을 따른다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+          "line": 51,
+          "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688",
+          "observation": "Activity UI explicitly scopes data to this app invocation; one selected-session filter, operation list/detail; no child/tool/verification category filters or result navigation actions in this component."
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 360,
+          "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+          "observation": "Service diagnostics owns in-memory operation totals and maximum500 events; observes operation/status/duration/scope, drops oldest and counts omissions. diagnostics.list filters workspace/session only at3994."
+        },
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 185,
+          "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+          "observation": "Native messages are projected to text/tools; output deliberately omits native usage metrics. This is positive data-shape tracing, not a dependency or keyword inference."
+        }
+      ],
+      "runtimeRefs": [],
+      "gaps": [
+        "Section7 actual learning evaluation and reliable persisted timeline/gap distinction remain unverified and partly unimplemented."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    },
+    {
+      "groupId": "F-17",
+      "clauseIndex": 0,
+      "exactClause": "연결 단절, 런타임 종료, 부분 실패, 재접속, 앱 재시작을 다룬다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/main.mjs",
+          "line": 407,
+          "sha256": "8a7b32319c7b13ce4a3ddedb8679963ec35e3792ec0e355d6a0f0e0e4730e049",
+          "observation": "Production startup checks copied Native state with actual createNativePreflight before owner intent and startSidecar, passes the same preflight callback. Pending retained keys reject before startup at398."
+        },
+        {
+          "path": "apps/desktop-app/src/host/native-preflight.mjs",
+          "line": 51,
+          "sha256": "710214d3cd54a69e8163c22ceaa10c27afde0ddccf47c4c1c145073960612b1f",
+          "observation": "viewBinding requires ready registry/store, no resource recovery/retained keys, then original confirmed receipt+mapping identity at88. Current authority is beyond historical fresh-only P7 helper."
+        },
+        {
+          "path": "apps/desktop-app/src/main.mjs",
+          "line": 175,
+          "sha256": "8a7b32319c7b13ce4a3ddedb8679963ec35e3792ec0e355d6a0f0e0e4730e049",
+          "observation": "Shutdown drains actual service calls, closes preflight with exited/cleanup proof, checkpoints registry and releases owner; stopRuntime276 waits drain before runtime stop and refuses unproved exit."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+          "line": 3089,
+          "sha256": "0a0c91ab1fbb3e3edb45bdb5d28002633c295b1c155f9ea92cf4ff6e47713b7f",
+          "observation": "Snapshot read polling rechecks current scope and epoch; current original-key unknown receipts lookup at3265 without replay. Disconnected health does not itself establish event subscription or missing-history projection."
+        },
+        {
+          "path": "apps/desktop-app/src/event-host-child.mjs",
+          "line": 328,
+          "sha256": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+          "observation": "Official server starts with events.persist=true. createDirectHandleObserver15 tracks direct JS handles and observerGap, not arbitrary OS descendants or a public lost-history timeline."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 65,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+        },
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        }
+      ],
+      "runtimeRefs": [
+        {
+          "path": "docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+          "sha256": "0d068305316fb576ab4d00cf2bab304ce0d0a0b0b06ea4558e1fa86f1fb6a0f3",
+          "observation": "Actual synthetic macOS arm64 report result=pass: fresh bootstrap, normal production-preflight reopen with exact2sessions/history/original receipts/fork lineage; idle SIGKILL, public Native pending startup hold and inspector cleanup recorded.",
+          "applicability": "Historical result=pass on synthetic macOS arm64. Exact current hashes match apps/desktop-app/src/host/native-preflight.mjs, apps/desktop-app/src/host/owner-lifetime.mjs, apps/desktop-app/src/native-preflight-reader.mjs, apps/desktop-app/src/native-preflight-protocol.mjs, apps/desktop-app/native/owner-lifetime/witness.c. Current apps/desktop-app/src/event-host-child.mjs differs; full runtime/build applicability is not established. Use historical scenario proof only; new current integrated runtime remains required.",
+          "limits": [
+            "No Windows/provider/private store/productionMain/foreground/power-loss claim.",
+            "End-to-end event-gap UI and all platform behavior require new coherent evidence."
+          ]
+        }
+      ],
+      "gaps": [
+        "Normal/SIGKILL macOS synthetic recovery has narrow actual proof; full disconnect/reconnect/partial-failure UI and Windows need complete coherent end-to-end evidence."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    },
+    {
+      "groupId": "F-17",
+      "clauseIndex": 1,
+      "exactClause": "요청 중단과 실제 종료 확인을 구분한다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/main.mjs",
+          "line": 407,
+          "sha256": "8a7b32319c7b13ce4a3ddedb8679963ec35e3792ec0e355d6a0f0e0e4730e049",
+          "observation": "Production startup checks copied Native state with actual createNativePreflight before owner intent and startSidecar, passes the same preflight callback. Pending retained keys reject before startup at398."
+        },
+        {
+          "path": "apps/desktop-app/src/host/native-preflight.mjs",
+          "line": 51,
+          "sha256": "710214d3cd54a69e8163c22ceaa10c27afde0ddccf47c4c1c145073960612b1f",
+          "observation": "viewBinding requires ready registry/store, no resource recovery/retained keys, then original confirmed receipt+mapping identity at88. Current authority is beyond historical fresh-only P7 helper."
+        },
+        {
+          "path": "apps/desktop-app/src/main.mjs",
+          "line": 175,
+          "sha256": "8a7b32319c7b13ce4a3ddedb8679963ec35e3792ec0e355d6a0f0e0e4730e049",
+          "observation": "Shutdown drains actual service calls, closes preflight with exited/cleanup proof, checkpoints registry and releases owner; stopRuntime276 waits drain before runtime stop and refuses unproved exit."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+          "line": 3089,
+          "sha256": "0a0c91ab1fbb3e3edb45bdb5d28002633c295b1c155f9ea92cf4ff6e47713b7f",
+          "observation": "Snapshot read polling rechecks current scope and epoch; current original-key unknown receipts lookup at3265 without replay. Disconnected health does not itself establish event subscription or missing-history projection."
+        },
+        {
+          "path": "apps/desktop-app/src/event-host-child.mjs",
+          "line": 328,
+          "sha256": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+          "observation": "Official server starts with events.persist=true. createDirectHandleObserver15 tracks direct JS handles and observerGap, not arbitrary OS descendants or a public lost-history timeline."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 65,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+        },
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        }
+      ],
+      "runtimeRefs": [
+        {
+          "path": "docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+          "sha256": "0d068305316fb576ab4d00cf2bab304ce0d0a0b0b06ea4558e1fa86f1fb6a0f3",
+          "observation": "Actual synthetic macOS arm64 report result=pass: fresh bootstrap, normal production-preflight reopen with exact2sessions/history/original receipts/fork lineage; idle SIGKILL, public Native pending startup hold and inspector cleanup recorded.",
+          "applicability": "Historical result=pass on synthetic macOS arm64. Exact current hashes match apps/desktop-app/src/host/native-preflight.mjs, apps/desktop-app/src/host/owner-lifetime.mjs, apps/desktop-app/src/native-preflight-reader.mjs, apps/desktop-app/src/native-preflight-protocol.mjs, apps/desktop-app/native/owner-lifetime/witness.c. Current apps/desktop-app/src/event-host-child.mjs differs; full runtime/build applicability is not established. Use historical scenario proof only; new current integrated runtime remains required.",
+          "limits": [
+            "No Windows/provider/private store/productionMain/foreground/power-loss claim.",
+            "End-to-end event-gap UI and all platform behavior require new coherent evidence."
+          ]
+        }
+      ],
+      "gaps": [
+        "Actual-call drain, unknown holds and stop exit checks exist; complete user interruption-versus-actual-exit behavior across all future tools/children/platforms remains required."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    },
+    {
+      "groupId": "F-17",
+      "clauseIndex": 2,
+      "exactClause": "새 이벤트 구독과 저장 상태 재조회를 수행하고 복구 불가능한 기록 구간을 표시한다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/main.mjs",
+          "line": 407,
+          "sha256": "8a7b32319c7b13ce4a3ddedb8679963ec35e3792ec0e355d6a0f0e0e4730e049",
+          "observation": "Production startup checks copied Native state with actual createNativePreflight before owner intent and startSidecar, passes the same preflight callback. Pending retained keys reject before startup at398."
+        },
+        {
+          "path": "apps/desktop-app/src/host/native-preflight.mjs",
+          "line": 51,
+          "sha256": "710214d3cd54a69e8163c22ceaa10c27afde0ddccf47c4c1c145073960612b1f",
+          "observation": "viewBinding requires ready registry/store, no resource recovery/retained keys, then original confirmed receipt+mapping identity at88. Current authority is beyond historical fresh-only P7 helper."
+        },
+        {
+          "path": "apps/desktop-app/src/main.mjs",
+          "line": 175,
+          "sha256": "8a7b32319c7b13ce4a3ddedb8679963ec35e3792ec0e355d6a0f0e0e4730e049",
+          "observation": "Shutdown drains actual service calls, closes preflight with exited/cleanup proof, checkpoints registry and releases owner; stopRuntime276 waits drain before runtime stop and refuses unproved exit."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+          "line": 3089,
+          "sha256": "0a0c91ab1fbb3e3edb45bdb5d28002633c295b1c155f9ea92cf4ff6e47713b7f",
+          "observation": "Snapshot read polling rechecks current scope and epoch; current original-key unknown receipts lookup at3265 without replay. Disconnected health does not itself establish event subscription or missing-history projection."
+        },
+        {
+          "path": "apps/desktop-app/src/event-host-child.mjs",
+          "line": 328,
+          "sha256": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+          "observation": "Official server starts with events.persist=true. createDirectHandleObserver15 tracks direct JS handles and observerGap, not arbitrary OS descendants or a public lost-history timeline."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 65,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+        },
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        }
+      ],
+      "runtimeRefs": [
+        {
+          "path": "docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+          "sha256": "0d068305316fb576ab4d00cf2bab304ce0d0a0b0b06ea4558e1fa86f1fb6a0f3",
+          "observation": "Actual synthetic macOS arm64 report result=pass: fresh bootstrap, normal production-preflight reopen with exact2sessions/history/original receipts/fork lineage; idle SIGKILL, public Native pending startup hold and inspector cleanup recorded.",
+          "applicability": "Historical result=pass on synthetic macOS arm64. Exact current hashes match apps/desktop-app/src/host/native-preflight.mjs, apps/desktop-app/src/host/owner-lifetime.mjs, apps/desktop-app/src/native-preflight-reader.mjs, apps/desktop-app/src/native-preflight-protocol.mjs, apps/desktop-app/native/owner-lifetime/witness.c. Current apps/desktop-app/src/event-host-child.mjs differs; full runtime/build applicability is not established. Use historical scenario proof only; new current integrated runtime remains required.",
+          "limits": [
+            "No Windows/provider/private store/productionMain/foreground/power-loss claim.",
+            "End-to-end event-gap UI and all platform behavior require new coherent evidence."
+          ]
+        }
+      ],
+      "gaps": [
+        "Current UI polls snapshots and original operation lookups; persisted Native events exist but explicit new subscription/requery and unrecoverable history-gap presentation are not demonstrated by these paths."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    },
+    {
+      "groupId": "F-17",
+      "clauseIndex": 3,
+      "exactClause": "세션·기록 export/import, 보존 설정과 앱 데이터 삭제를 제공한다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        },
+        {
+          "path": "apps/desktop-app/src/preload.cjs",
+          "line": 4,
+          "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3",
+          "observation": "Main-frame bridge exports workbench, cancelRead, runtimeSnapshot only. No native notification or arbitrary filesystem data-management bridge is exposed."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 30,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Actual panel routing is files/catalog/activity with workspace/session actions and durable storage information; current layout widths/navigation exist. No theme/font/density/shortcut-help/local-job registration UI is routed here."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/app/index.tsx",
+          "line": 7,
+          "sha256": "272929824e7736a9e5e1da490da9a9272c5802ec26b7c2003fc4ea5ade7d8aa4",
+          "observation": "Single application entry creates one window workbench and mounts WorkbenchPage; page imports session/conversation/file/catalog/activity surfaces. No settings/learning/automation surface is mounted through this entry."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 65,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+        }
+      ],
+      "runtimeRefs": [],
+      "gaps": [
+        "Current public request/bridge and mounted UI expose no session/history export/import, user retention settings or app-data deletion operations; these must be implemented."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    },
+    {
+      "groupId": "F-17",
+      "clauseIndex": 4,
+      "exactClause": "삭제 범위와 외부 보존 한계를 설명한다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        },
+        {
+          "path": "apps/desktop-app/src/preload.cjs",
+          "line": 4,
+          "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3",
+          "observation": "Main-frame bridge exports workbench, cancelRead, runtimeSnapshot only. No native notification or arbitrary filesystem data-management bridge is exposed."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 30,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Actual panel routing is files/catalog/activity with workspace/session actions and durable storage information; current layout widths/navigation exist. No theme/font/density/shortcut-help/local-job registration UI is routed here."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/app/index.tsx",
+          "line": 7,
+          "sha256": "272929824e7736a9e5e1da490da9a9272c5802ec26b7c2003fc4ea5ade7d8aa4",
+          "observation": "Single application entry creates one window workbench and mounts WorkbenchPage; page imports session/conversation/file/catalog/activity surfaces. No settings/learning/automation surface is mounted through this entry."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 65,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+        }
+      ],
+      "runtimeRefs": [],
+      "gaps": [
+        "Durable workspace location is shown, but user-facing data deletion/export/retention scope and external copies limits need the missing data-management workflow."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    },
+    {
+      "groupId": "F-18",
+      "clauseIndex": 0,
+      "exactClause": "키보드 팔레트·단축키 도움말, 테마·폰트/밀도·레이아웃 설정, 접근성, 완료/오류/승인 알림을 제공한다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        },
+        {
+          "path": "apps/desktop-app/src/preload.cjs",
+          "line": 4,
+          "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3",
+          "observation": "Main-frame bridge exports workbench, cancelRead, runtimeSnapshot only. No native notification or arbitrary filesystem data-management bridge is exposed."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 30,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Actual panel routing is files/catalog/activity with workspace/session actions and durable storage information; current layout widths/navigation exist. No theme/font/density/shortcut-help/local-job registration UI is routed here."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/app/index.tsx",
+          "line": 7,
+          "sha256": "272929824e7736a9e5e1da490da9a9272c5802ec26b7c2003fc4ea5ade7d8aa4",
+          "observation": "Single application entry creates one window workbench and mounts WorkbenchPage; page imports session/conversation/file/catalog/activity surfaces. No settings/learning/automation surface is mounted through this entry."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 65,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+        }
+      ],
+      "runtimeRefs": [],
+      "gaps": [
+        "Existing keyboard focus/layout/accessibility evidence covers bounded features; keyboard command palette/help, user theme/font/density settings and notification workflow are not mounted in current entry. Full clause remains partial."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    },
+    {
+      "groupId": "F-18",
+      "clauseIndex": 1,
+      "exactClause": "사용자가 등록한 로컬 반복 작업은 대상·주기·권한을 명시하고 일시정지·재개·기록을 제공한다.",
+      "status": "source_missing",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        },
+        {
+          "path": "apps/desktop-app/src/preload.cjs",
+          "line": 4,
+          "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3",
+          "observation": "Main-frame bridge exports workbench, cancelRead, runtimeSnapshot only. No native notification or arbitrary filesystem data-management bridge is exposed."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 30,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Actual panel routing is files/catalog/activity with workspace/session actions and durable storage information; current layout widths/navigation exist. No theme/font/density/shortcut-help/local-job registration UI is routed here."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/app/index.tsx",
+          "line": 7,
+          "sha256": "272929824e7736a9e5e1da490da9a9272c5802ec26b7c2003fc4ea5ade7d8aa4",
+          "observation": "Single application entry creates one window workbench and mounts WorkbenchPage; page imports session/conversation/file/catalog/activity surfaces. No settings/learning/automation surface is mounted through this entry."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 65,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+        }
+      ],
+      "runtimeRefs": [],
+      "gaps": [
+        "Current operation union, service route, preload and app page expose no local repeat-job registration/target/schedule/permission/pause/resume/history workflow."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    },
+    {
+      "groupId": "F-18",
+      "clauseIndex": 2,
+      "exactClause": "앱/실행 서비스가 꺼진 동안의 미실행은 표시하고 임의 소급 실행하지 않는다.",
+      "status": "source_missing",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        },
+        {
+          "path": "apps/desktop-app/src/preload.cjs",
+          "line": 4,
+          "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3",
+          "observation": "Main-frame bridge exports workbench, cancelRead, runtimeSnapshot only. No native notification or arbitrary filesystem data-management bridge is exposed."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 30,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Actual panel routing is files/catalog/activity with workspace/session actions and durable storage information; current layout widths/navigation exist. No theme/font/density/shortcut-help/local-job registration UI is routed here."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/app/index.tsx",
+          "line": 7,
+          "sha256": "272929824e7736a9e5e1da490da9a9272c5802ec26b7c2003fc4ea5ade7d8aa4",
+          "observation": "Single application entry creates one window workbench and mounts WorkbenchPage; page imports session/conversation/file/catalog/activity surfaces. No settings/learning/automation surface is mounted through this entry."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 65,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+        }
+      ],
+      "runtimeRefs": [],
+      "gaps": [
+        "No local-job authority/state exists in traced app/service surfaces; missed-run accounting and explicit no-backfill semantics must accompany implementation."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    },
+    {
+      "groupId": "F-18",
+      "clauseIndex": 3,
+      "exactClause": "민감 내용은 알림에 숨기며 OS 알림 미허용 시 앱 안에서 대기 상태를 유지한다.",
+      "status": "source_missing",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "line": 121,
+          "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+          "observation": "Diagnostics DTO has counts and operation events; message projection contains text/tools without token/context/usage metrics. Complete WorkbenchRequest union562..752 has no learning/history-export/import/retention/automation/notification/settings operations."
+        },
+        {
+          "path": "apps/desktop-app/src/preload.cjs",
+          "line": 4,
+          "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3",
+          "observation": "Main-frame bridge exports workbench, cancelRead, runtimeSnapshot only. No native notification or arbitrary filesystem data-management bridge is exposed."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 30,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Actual panel routing is files/catalog/activity with workspace/session actions and durable storage information; current layout widths/navigation exist. No theme/font/density/shortcut-help/local-job registration UI is routed here."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/app/index.tsx",
+          "line": 7,
+          "sha256": "272929824e7736a9e5e1da490da9a9272c5802ec26b7c2003fc4ea5ade7d8aa4",
+          "observation": "Single application entry creates one window workbench and mounts WorkbenchPage; page imports session/conversation/file/catalog/activity surfaces. No settings/learning/automation surface is mounted through this entry."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 65,
+          "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+          "observation": "Retained host-held operation counts and closed store/resource recovery reasons are projected; unknown identity remains original operation authority. Recovery labels alone are not full data export/import/retention."
+        }
+      ],
+      "runtimeRefs": [],
+      "gaps": [
+        "No native notification API or in-app pending notification queue is wired in current bridge/Main import/UI path; implement content minimization and OS-denied fallback with actual evidence."
+      ],
+      "limits": [
+        "Factual source/evidence coverage only; not whole-clause or release acceptance.",
+        "Search misses alone were not used: actual mounted entry, closed DTO, bridge and service projection were inspected."
+      ]
+    }
+  ]
+}

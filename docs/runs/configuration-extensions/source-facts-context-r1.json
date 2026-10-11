@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "kind": "Actual pinned Native context source clarification, routine producer defect correction",
+  "facts": [
+    "PluginHost locationInfo returns Schema.Class Location.Info with directory, optional workspaceID and project",
+    "Promise adapter preserves host.location instance",
+    "Promise plugin.list adaptApiMethod serializes public endpoint response Location.PublicRef, directory only",
+    "Private context normalization and public response location validation need distinct shapes; public Workbench DTO unchanged"
+  ],
+  "pins": {
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-76n1dez8.js": "d287ae519253b75a2b350a53b4b5c5eef01b819afcf64e79c66566daccbe361b",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/plugin/dist/promise/adapter.js": "91cdd88e66f7e6768c49a9b0a5907e52d66a76481330add5cf183e456e036c86",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/location.js": "c017747dfc2090b07e9dd943cd39aee80042da188334d22a0cf64a5178ac752c",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/project-id.js": "15c284fb922ccdd784e2460584fa469fabed4587caf5b7d856d74e78be0c6588"
+  },
+  "executedNodeReproducer": {
+    "command": "node --input-type=module imports installed Location.Info and actual setupNativeExtensions; synthetic mock rpc only",
+    "result": "RED invalid_context before Native inventory; prototypePlain=false; ownkeys directory,workspaceID,project",
+    "log": "/Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/extensions-native-context-red-r1.log"
+  },
+  "runtimeInvoked": false
+}

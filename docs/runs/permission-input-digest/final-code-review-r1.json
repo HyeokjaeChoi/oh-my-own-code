@@ -1,0 +1,59 @@
+{
+  "schema_version": 2,
+  "run": "permission-input-digest",
+  "gate": "code",
+  "reviewer": "reviewer",
+  "reviewed": {
+    "contract_sha256": "03e47be0915f174eb6019ea66b900e3414a51bbae012e4d3709d1b4bc44000ee",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "ab66449b88d1b6094cfe1394766bf232db413ae09df2a2a39728a28edc738a66",
+    "schema_version": 2,
+    "source_sha256": "5d6eebc968090d93e5cab60fab34f3193f57fcfa8b6e28c24c312791812fdc8e",
+    "verification_sha256": "97c97749d5bf3ea0f081965e36bdddd85437ec9c7628fa5d163ce03b8b5ddbd5",
+    "work_class_sha256": "fba972f6dde29436e063b4de8661501c42c11087d9c6e8237848814bf9d7d76c"
+  },
+  "verdict": "pass",
+  "summary": "NEW2 helper와 test의 독립 CODE 검토를 통과합니다. 계약 준수와 코드 품질을 각각 검토했습니다. 수정이 필요한 구체적 결함은 발견하지 못했습니다.",
+  "open_findings": [],
+  "verification": [
+    "지정된 AGENTS.md, solo_reader profile, solo-specialist, solo-code-review, packet, plan revision 2와 계약 자료를 읽었습니다. routing 파일 hash가 packet과 일치했습니다.",
+    "읽기 전후에 전체 source inventory와 plan, contract, environment, verification, work_class 바인딩을 재계산했습니다. 두 결과 모두 final-code-input-r1.json 전체 객체와 일치했습니다.",
+    "읽기 전후에 NEW2의 SHA256과 파일 크기가 source-freeze-r1과 일치했습니다. 등록된 모든 artifact hash와 outcome hash도 확인했습니다.",
+    "P1: 기존 permissionCanonicalJSON의 1MiB 제한과 domain allowlist를 유지합니다. compact metadata만 canonical JSON에 전달합니다. 기존 validWireId와 validWorkspaceFilePath를 사용하며 filename의 실제 255 UTF-8 byte 경계를 적용합니다.",
+    "P2: domain 구분자는 실제 newline입니다. text와 정확한 ASCII URI의 leaf hash, delivery와 files의 존재 여부, 파일 순서, name, MIME과 decoded 길이를 결합합니다. BOM, CRLF와 Unicode를 정규화하지 않습니다.",
+    "P2: Proxy를 descriptor 조회 전에 거부합니다. accessor, inherited 필드, symbol, custom prototype과 sparse array를 거부합니다. caller 값을 강제 변환하거나 getter를 호출하지 않고 동기적으로 분리합니다.",
+    "P2: encoded 길이, padding 기반 decoded 길이, 파일 수와 합계 제한을 모든 decoding 전에 검사합니다. 이후 base64 round-trip으로 canonical encoding을 확인합니다. URL과 파일 경로를 다시 열지 않습니다.",
+    "P2: export는 digest 하나입니다. 제품 소스에서 호출 연결은 발견되지 않았습니다. helper는 IO, journal 기록, Native 호출 또는 실행 권한을 제공하지 않습니다.",
+    "P3: 독립 known-vectors-r1의 네 벡터와 test의 고정 expected digest를 대조했습니다. presence, order, Unicode, 필드 변경, hostile structure, base64와 크기 경계 테스트를 정적으로 확인했습니다.",
+    "before-manifest-r1과 targeted-execution-r1의 missing-helper RED 및 초기 GREEN 기록을 읽었습니다. run.json의 최신 unit, lint, format은 모두 exit_code 0이며 현재 소스와 계약에 연결됩니다. inputs_changed, interrupted, timed_out은 모두 false입니다."
+  ],
+  "limitations": [
+    "제품 모듈을 import하거나 테스트를 다시 실행하지 않았습니다. 기존 실행 기록과 정적 코드 검토를 근거로 판정했습니다.",
+    "known vector를 이번 검토에서 독립 재계산하지 않았습니다. 제공된 벡터, 공식, 구현과 테스트를 대조했습니다.",
+    "Git 작업 트리가 untracked 상태이므로 NEW2 범위는 manifest, freeze와 현재 파일을 기준으로 확인했습니다. 과거 파일 부재는 제공된 기록에 의존합니다.",
+    "Native, Bun, Electron, build와 provider를 실행하지 않았습니다. 실제 Native submit 연결, original admission, generation 검증과 fullF09 완료는 이 판정 범위 밖입니다.",
+    "읽기 전후의 hash 검사는 변경 여부를 확인합니다. OS 수준의 read-only sandbox 강제를 증명하지는 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a123cd-402b-7fa2-97f0-a846881c7b80",
+    "identity_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "report_only": true,
+    "implementation_authored": false,
+    "writes": false,
+    "repairs": false,
+    "delegation": false,
+    "files_modified": false,
+    "ledger_modified": false,
+    "report_file_written": false,
+    "product_source_read": true,
+    "product_runtime_executed": false,
+    "tests_executed": false,
+    "build_executed": false,
+    "native_executed": false,
+    "bun_executed": false,
+    "electron_executed": false,
+    "provider_executed": false
+  }
+}

@@ -1,0 +1,29 @@
+Fresh independent rendered-design review. Do not edit, execute tests, use
+personal browsing sessions, spawn children, or write the ledger.
+Root: /Users/hyukjaechoi/Projects/oh-my-own-code.
+Read .codex/agents/solo_reader.toml, .agents/skills/solo-specialist/SKILL.md,
+.agents/skills/solo-design-review/SKILL.md and its evidence-review reference,
+docs/runs/desktop-workbench-core/design-review.packet.json and plan.md revision 2.
+
+Directly inspect the four supplied PNG captures. The two desktop-workbench
+captures came from the actual Electron application with the owned OpenCode
+sidecar, no provider credentials, and disposable workspaces. The two named
+synthetic captures are of the same built production renderer and preload with
+a TEST-ONLY main-process fixture; they prove rendered UI states, not live model
+or tool execution. Read electron-evidence.json and ui-states-evidence.json for
+provenance, state and viewport dimensions. Verify image pixel dimensions with
+available read-only tools rather than assuming CSS pixels equal image pixels.
+
+The approved direction is ChatGPT-inspired, neutral white surfaces, restrained
+boundaries and existing tokens. Judge the bounded core workbench: hierarchy,
+spacing, transcript/composer, permission controls, tool results, responsive
+navigation, file/catalog panel affordances, readable state/error handling,
+keyboard/focus implications. Source inspection may clarify an inference but
+cannot replace rendered evidence. Do not demand unrelated unreleased F-01-18
+features as defects in this increment; they remain in the parent backlog.
+
+Return concise concrete findings with severity, affected view/component,
+direct evidence path or clearly labelled code inference, impact, and smallest
+useful correction. Distinguish preference from blocking usability defects.
+Do not approve source you change or invent final binding hashes. The coordinator
+will freeze evidence and request only affected follow-up review after repairs.

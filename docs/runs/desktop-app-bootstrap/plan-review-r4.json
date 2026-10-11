@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "gate": "plan",
+    "plan_path": "docs/workplans/desktop-app-bootstrap/plan.md",
+    "revision": 4,
+    "plan_sha256": "724787a2785418e6dfaeea0ae401b9ba5398f3fc594d3b0794d7ecb57db7ebff",
+    "contract_sha256": "85816342806345335bcfc0222cc2792816a1d7812dc69d46ec806371da2a0390",
+    "source_sha256": "3b3ecdaad82db3db7fe793afd6fa1259eaf40ab747b8a4c16647a7ee7ef09389"
+  },
+  "verdict": "changes_requested",
+  "summary": "Revision 4 correctly makes macOS and Windows, an app-owned OpenCode v2 serve sidecar, and a shell comparison before implementation mandatory. It correctly limits browser pairing/CORS evidence and rejects cross-builds as Windows runtime proof. Two remaining gate gaps need correction.",
+  "open_findings": [
+    {
+      "id": "DP4-01",
+      "priority": "P1",
+      "finding": "The plan updates ADR-0002 but does not explicitly reconcile the other registered design inputs before implementation. The contract still binds an ADR that selects Electron for a macOS-first synthetic worker, while workbench-architecture.md and spec-index.md retain embedded-host, Electron and macOS-first assumptions.",
+      "evidence": "plan.md:20-23; contract.json:241-269,283-294; 0002-desktop-runtime.md:7-9; workbench-architecture.md:11-20; spec-index.md:65,81,85",
+      "impact": "A reviewed shell choice and serve-sidecar implementation could consume contradictory, previously registered design contracts or a stale approval target.",
+      "required_correction": "Make reconciliation of the affected architecture, spec index, verification contract and ADR an explicit dependency before implementation. Refresh document hashes and handoffs, then rebind and re-review the changed plan/contract as required. Record the current user confirmation without seeking it again."
+    },
+    {
+      "id": "DP4-02",
+      "priority": "P1",
+      "finding": "The exact checks do not yet require equivalent packaged security evidence for Windows. The Windows packaged E2E scope omits malformed renderer admission, navigation/popup denial, privilege absence, timeout and service-collision cases required on macOS. Bundle inspection names one unspecified packaged artifact, and the shared development E2E check has no separate per-OS result.",
+      "evidence": "plan.md:24,30-33; contract.json:142-155,181-225",
+      "impact": "A passing macOS package check plus a narrower Windows run could be reported as satisfying both platforms' host and renderer boundaries.",
+      "required_correction": "Require distinct macOS and Windows receipts for development E2E and packaged bundle inspection, each bound to its own app and sidecar hashes. Cover the same relevant admission, navigation, privilege and failure/lifecycle assertions on the exact Windows package, or document and review a justified platform-specific equivalent."
+    }
+  ],
+  "validation": "Read-only inspection of the plan, contract, research notes, registered design documents and run binding; contract JSON parsed. No application, sidecar, tests or Windows runtime were executed.",
+  "confidence": "high",
+  "report_file": null,
+  "note": "The named plan-review-input-r4.json was absent when checked. Its exact hashes were independently matched against the current files and run.json. No report path was available, so no file or ledger was modified."
+}

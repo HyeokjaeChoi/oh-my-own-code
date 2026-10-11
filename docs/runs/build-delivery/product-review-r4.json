@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "documents_sha256": "ee775f27a38cbbb9c3353831d3e4337ae165307ebfd619986fdf2cd9091f906a",
+    "gate": "product",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "schema_version": 2
+  },
+  "verdict": "pass",
+  "summary": "Run build-delivery; role product_reviewer. Reviewed docs/product/prd.md v0.2 (SHA256 597e64d100ea67b878762fde160b3a6d5c2f1275662661094dadfe0dad270dfb) against docs/runs/build-delivery/plan.md revision 4 (SHA256 4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985) and docs/runs/build-delivery/contract.json (SHA256 4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1). The bound spec index, UX v0.3, architecture, verification, operations and design-system/component contracts were checked for product consistency. The PRD identifies one personal user and the unmeasured-demand boundary; it defines the work-and-learn outcome, all F-01 through F-18 acceptance groups, explicit exclusions and failure/recovery states, seven integrated scenarios, and observable personal-use and learning measures. Revision 4 preserves that scope while tying permission display to the runtime state map and the established design foundation. The plan holds persistent-data choices and credential-dependent acceptance until evidence exists. The PRD approval-pending and provisional-platform wording reflects its original authoring state; exact-hash PRD approval is recorded in docs/runs/domain-specs/prd-approval.json, and the current plan selects a local-browser baseline subject to S-10 evidence. Current implementation approval authorizes proceeding with the bound bundle; it does not establish that the user reviewed each revised sentence. This is document review only: it does not verify implemented UI or code, actual SDK or service behavior, user demand, or acceptance-test results. Prepared input metadata does not attest runtime reviewer identity.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/product_review_r4",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "high",
+    "runtime_identity_verified": false
+  }
+}

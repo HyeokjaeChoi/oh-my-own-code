@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "0f0d0aa9c6315844f6452d3fefaf8594b2645ede9af455733785c300292652b9",
+    "gate": "plan",
+    "plan_sha256": "caf2e9134c73fed34252a0967dd86b5aad37c95f32e5dae6cef5cfff27958b6c",
+    "schema_version": 2,
+    "source_sha256": "6b708712f5519cb2141621901a64b8b24286ec2e5e6ddcace9e7bbe8978e94c9"
+  },
+  "verdict": "pass",
+  "summary": "plan revision2와 contract v2의 변경 및 관련 회귀만 검토했습니다. PLAN-1: receipt는 증거 전용 closed union이며 정상 응답 DTO와 분리됩니다. Duplicate·lookup·late result에도 redaction 규칙이 적용됩니다. PLAN-2: 실제 SDK 호출은 service 전체에서 최대 4개입니다. 별도 mutation admission 1개를 ready 이전에 확보하며, ready 대기는 SDK slot을 점유하지 않습니다. Service-owned startup과 만료된 read를 구분하고, 효과 이전 timeout 뒤 late dispatch를 금지합니다. 계약에서 deadlock을 요구하는 순서는 없습니다. PLAN-3: 필수 evidence 경로는 기존 허용 root 안의 미사용 경로입니다. Containment·symlink·nonempty guards는 유지됩니다. 세 finding은 계획 수준에서 해소되었습니다. 새 차단 사항이나 범위 확대는 없습니다. 등록된 문서 hash와 최종 binding도 확인했습니다. 정적 검토이며 runtime 구현 검증은 아닙니다. 독립 design_spec 검토와 host DTO freeze는 계속 선행 조건입니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a10226-14bc-79c1-9e68-4cfdedafd4e3",
+    "requested_model": "Sol",
+    "requested_effort": "high",
+    "runtime_identity_attested": false,
+    "mode": "report_only",
+    "delegated": false,
+    "files_changed": [],
+    "tests_run": false,
+    "native_launches": false,
+    "persistence_owner": "primary"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "child_task_id": "01a12124-0c18-7380-8318-1c43b5dcc5f8",
+  "result": {
+    "completed": "**수정 완료. 두 파일을 다시 최종 freeze합니다.**\n\n- 열린 IO의 `emit(\"close\")`는 영구 불완전 상태로 처리합니다. 교체·재연결을 거부합니다.\n- 캡처한 Node getter로 실제 종료와 오류 상태를 확인합니다. 호출자가 덮어쓴 accessor는 사용하지 않습니다.\n- RED 3건 확인 후 수정했습니다. 최종 테스트 **16/16 PASS**, ESLint·Prettier **PASS**.\n\nSHA-256:\n\n`native-permission-task-observer.mjs`\n```text\nf87f317f39941522b8fdac2131baf82548cd862f0ae89c7e714f8faf34492b1a\n```\n\n`native-permission-task-observer.test.mjs`\n```text\n45cad881169247e2e8c8b3f0a4aa0c9171d924b7a28a90c5633def8df0947f00\n```\n\nMain의 contracted 재검사와 독립 CODE review가 남아 있습니다."
+  },
+  "scope": "Observer exact2 files; implementation evidence only, no approval. Contracted candidate83/82/1 failure retained; worker fixed lost-binding replacement and false close event."
+}

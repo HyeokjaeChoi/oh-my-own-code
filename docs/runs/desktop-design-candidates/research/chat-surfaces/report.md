@@ -1,0 +1,14 @@
+# ChatGPT and Claude reference discovery
+2026-10-03; fresh inherited-model reader /root/reference_chat_density. agent-browser0.38.1 named isolated session;1280×800 DPR1 visualViewport.scale1 documentzoom1. Both https://chatgpt.com/ and https://claude.ai/ hit Cloudflare; did not solve CAPTCHA. Challenge captures are access-limit evidence only.
+
+Official OpenAI Windows companion reference https://help.openai.com/en/articles/9982051-using-the-chatgpt-windows-app viewed through its official inline image in browser. Image intrinsic642×849, displayed604×800(scale.941); composer estimated608×140 original image px. Image pixel estimates are not liveCSS dimensions. This historical image alone cannot establish current desktop metrics or a shorter composer. Tool row aligned, rare functions under ellipsis, primary action right.
+
+Official Claude Mac quick entry https://support.claude.com/en/articles/12626668-use-quick-entry-with-claude-desktop-on-mac : actual quickentry image intrinsic1702×302, displayed652×115.6875. Bar estimated582×49 displayed px. @2x filename suggests possible760×64logical bar, but DPI not proven; only inference. Icon→input→context→send one axis. https://academy.claude.com/tutorials/navigating-the-claude-desktop-app confirms small separate quickentry, no fullchat screenshot on viewed page. File claude-official-full-doc.png is Cowork instructions settings, not full chat; exclude from nav inference. Authenticated Claude sidebar/fonts/filledcomposer unavailable.
+
+## Coordinator supplemental live ChatGPT observation
+Existing Chrome extension tab https://chatgpt.com/ was directly observed read-only via CUA, loggedout darkweb at1200×897 DPR2. Screenshot ../figma/chatgpt-live-chrome.png and geometry ../figma/chatgpt-live-composer.json. Actual sidebar260px; newchat row36px with14/20 font,20px glyph; sidebarclose44px target/20px glyph. Actual empty composer FORM768×52px padding7px10px,radius28; textarea17/24; attach/mic/send44px targets with20px glyph. System sans stack. Measured viewport differs from CLI1280×800; do not normalize values falsely. This is current loggedout web, not authenticated/native desktop. It shows compact composition can preserve large click areas and readable input text. No message sent, settings/theme changed or login performed.
+
+Baseline current app256sidebar/44rows/16body/128composer is user-rejected aesthetic, not a required target. Separate nav14/metadata12 from conversation15–16; structural options proposed by synthesis, not measured Claude specifications.
+
+## Native Claude access boundary
+Coordinator launched the installed com.anthropic.claudefordesktop application through CUA. Actual native window showed Claude for Mac onboarding / Start and a Sign in webview, rather than an authenticated conversation. No login, settings modification or prompt submission was performed. This does not establish native composer/sidebar measurements.

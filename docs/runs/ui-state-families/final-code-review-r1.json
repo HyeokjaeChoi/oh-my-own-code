@@ -1,0 +1,90 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "00e39cc13b6fde03fdb6cbe639a9a4e6fcce8333686b1d0d213131b9d364669d",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "8f9289eecd437cf5ef4620e6e729b185c5b5c90a64c3dfd8295c42deea47d771",
+    "schema_version": 2,
+    "source_sha256": "7f739ba8af0e5a840c6eb34271428113ef9a516796cd8c35c251b0eee644362a",
+    "verification_sha256": "a138bb5b910be46cf3330cdb2bb154f420927c070af7d3294c6bce1d6aa555de",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "changes_requested",
+  "summary": "수정이 필요한 P2 결함 1개를 확인했습니다. 새 보고서 검증이 기존 Tool UI 캡처를 거부하므로 기본 all과 명시적 legacy 경로는 성공한 실행도 실패로 처리합니다. 나머지 family 분리와 기록된 focused 실행 증거는 검토 범위에서 일치합니다.",
+  "open_findings": [
+    {
+      "id": "F1",
+      "priority": "P2",
+      "severity": "medium",
+      "path": "apps/desktop-app/scripts/run-evidence.mjs",
+      "line": 128,
+      "title": "기존 Tool UI 캡처가 all과 legacy 보고서를 실패시킵니다",
+      "trigger": "--script ui-states의 기본 all, 명시적 --family all 또는 --family legacy 실행이 기존 Tool UI 캡처까지 완료한 경우입니다.",
+      "impact": "UI assertion과 owned exit가 모두 성공해도 wrapper가 보고서를 거부합니다. 기본 전체 실행과 legacy 단독 실행의 정상 완료 경로가 깨집니다.",
+      "evidence": [
+        "e2e-workbench-states.mjs:1569의 기존 screenshots.push 객체에는 family가 없습니다. validateUiStateCoverage는 line128에서 이 객체를 거부합니다.",
+        "현재 소스의 해당 객체를 AST에서 추출했습니다. GUI 없이 validateUiStateCoverage에 전달했을 때 all과 legacy 모두 'UI captures do not cover exactly the selected families' 오류를 재현했습니다.",
+        "family만 추가해도 해결되지 않습니다. 해당 객체는 line1589에서 Playwright locator.screenshot()을 사용하며 contentBounds, displayScaleFactor, osWindowVisible 등의 필드가 없습니다. run-evidence.mjs:283과 :317 이후의 새 native capture 검증에도 맞지 않습니다.",
+        "추가된 테스트와 focused extensions/workspace-files/git-review 실행은 이 legacy 캡처를 포함하지 않습니다."
+      ],
+      "smallest_useful_correction": "기존 crop 원본을 보조 캡처로 유지하면서 family와 증거 유형을 명시하십시오. native PNG 검증 대상과 보조 crop을 구분하거나 별도 native 원본 증거에 연결하십시오. 실제 legacy 캡처 형식을 포함한 all/legacy 보고서 회귀검사를 추가하십시오.",
+      "acceptance_ids": [
+        "A1",
+        "A2"
+      ]
+    }
+  ],
+  "verification": {
+    "binding": "읽기 전용 review-input 결과가 final-code-input.json 전체와 정확히 일치했습니다.",
+    "scope": "baseline inventory와 현재 소스를 비교했습니다. 변경 경로는 지정한 3개뿐입니다.",
+    "structure": {
+      "original_statements": 1051,
+      "preserved_statements": 1051,
+      "non_hoisted_statement_order_preserved": true,
+      "cross_family_references": 0
+    },
+    "recorded_focused_runs": [
+      {
+        "family": "extensions",
+        "states": 27,
+        "pngs": 323,
+        "wrapper_exit": 0,
+        "owned_exit": 0
+      },
+      {
+        "family": "workspace-files",
+        "states": 25,
+        "pngs": 159,
+        "wrapper_exit": 0,
+        "owned_exit": 0
+      },
+      {
+        "family": "git-review",
+        "states": 44,
+        "pngs": 654,
+        "wrapper_exit": 0,
+        "owned_exit": 0
+      }
+    ],
+    "capture_evidence": "PNG 1136개의 실제 바이트 해시, 크기, family, native capture 방식과 숨김 창 기록을 대조했습니다. inventory와 일치했습니다.",
+    "build_evidence": "production captureProvenance를 읽기 전용으로 실행했습니다. 현재 build와 runner 증거가 세 manifest의 provenance에 정확히 일치했습니다. 각 manifest는 실행 전후 provenance 검증 성공을 기록합니다.",
+    "existing_checks": "unit, lint, format과 focused 실행 3개의 기록은 모두 exit 0입니다. check-status는 6개 모두 reusable로 반환했습니다.",
+    "limitations": [
+      "전체 passing suite와 GUI는 다시 실행하지 않았습니다.",
+      "legacy/all runtime 성공은 검증하지 않았습니다. F1은 현재 캡처 객체와 실제 검증 함수로 재현했습니다.",
+      "product/provider/native Git G2 실행과 rebuild는 수행하지 않았습니다.",
+      "family는 한 스크립트에 남아 있습니다. 향후 input_scope에는 shared runner를 포함해야 합니다. statement 수준 자동 재사용은 입증되지 않았습니다."
+    ]
+  },
+  "provenance": {
+    "child_task_id": "01a11e71-374b-7f81-bb5e-5cb9f36f194e",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "child_id_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "report_only": true,
+    "delegation_performed": false,
+    "file_edits_performed": false,
+    "ledger_writes_performed": false
+  }
+}

@@ -1,0 +1,339 @@
+{
+  "source_sha256": "427b06f7f8c298c4c8ef156fd8b4ceaafc710e3d451ea29f5b330210f5721b16",
+  "environment_sha256": "b7971a3c584cced85258a0b3d03629b05baab44ac7a31fb08c375bad950f911a",
+  "changed_paths": [
+    "apps/desktop-app/scripts/build-provenance.mjs",
+    "apps/desktop-app/scripts/build-provenance.test.mjs",
+    "apps/desktop-app/scripts/e2e-git-commit.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/git-commit-probe.mjs",
+    "apps/desktop-app/scripts/git-index-probe.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/scripts/run-evidence.test.mjs",
+    "apps/desktop-app/scripts/stage-event-host.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/event-host-child.mjs",
+    "apps/desktop-app/src/event-host-protocol.mjs",
+    "apps/desktop-app/src/event-host-protocol.test.mjs",
+    "apps/desktop-app/src/event-host-resources.mjs",
+    "apps/desktop-app/src/event-host-supervisor.mjs",
+    "apps/desktop-app/src/event-host-supervisor.test.mjs",
+    "apps/desktop-app/src/git-commit.test.mjs",
+    "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+    "apps/desktop-app/src/host/configuration-save-kernel.test.mjs",
+    "apps/desktop-app/src/host/git-commit-contract.mjs",
+    "apps/desktop-app/src/host/git-commit-contract.test.mjs",
+    "apps/desktop-app/src/host/git-commit-kernel.mjs",
+    "apps/desktop-app/src/host/git-commit-kernel.test.mjs",
+    "apps/desktop-app/src/host/git-index-kernel.mjs",
+    "apps/desktop-app/src/host/git-index-kernel.test.mjs",
+    "apps/desktop-app/src/host/git-metadata-kernel.mjs",
+    "apps/desktop-app/src/host/git-metadata-kernel.test.mjs",
+    "apps/desktop-app/src/host/storage-journal.mjs",
+    "apps/desktop-app/src/host/storage-journal.test.mjs",
+    "apps/desktop-app/src/host/workbench-admission.mjs",
+    "apps/desktop-app/src/host/workbench-git-commit-storage.mjs",
+    "apps/desktop-app/src/host/workbench-git-commit-storage.test.mjs",
+    "apps/desktop-app/src/host/workbench-git-commit.mjs",
+    "apps/desktop-app/src/host/workbench-git-commit.test.mjs",
+    "apps/desktop-app/src/host/workbench-git-index.test.mjs",
+    "apps/desktop-app/src/host/workbench-git-snapshot.mjs",
+    "apps/desktop-app/src/host/workbench-git.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/features/git-review/index.tsx",
+    "apps/desktop-app/src/renderer/features/git-review/review.module.css",
+    "apps/desktop-app/src/renderer/shared/api/index.ts",
+    "apps/desktop-app/src/renderer/shared/git-commit/index.d.mts",
+    "apps/desktop-app/src/renderer/shared/git-commit/index.mjs",
+    "apps/desktop-app/src/renderer/shared/git-commit/index.ts",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts",
+    "apps/desktop-app/src/workbench-contract.mjs",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "deleted_paths": [],
+  "sources": {
+    "apps/desktop-app/scripts/build-provenance.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "a595ca78a8a4a8ef132cdc7c74d0098b77a7a57256c796d6c6c7292233582940"
+    },
+    "apps/desktop-app/scripts/build-provenance.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "f5ded45a38059ce2c4c918f0580b22e5ad2bcfdc893c8db38a1cc8828db77798"
+    },
+    "apps/desktop-app/scripts/e2e-git-commit.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "e53a03d1de1254871a77ebda8badb040ac03344af8628b19be47db51c50e4725"
+    },
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "f5560d9b26040590032a2fd0e98fee9ef6fb1a87720936586a1d6d1ada13442b"
+    },
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "8fa769345c8db130539f497e99cded2a2ff3f5a0b72900c11610a1ab381c1e85"
+    },
+    "apps/desktop-app/scripts/git-commit-probe.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "3da818b8c9c281468d224dee7fe1253349c2db1573dbe5690ee58b7b95a4db36"
+    },
+    "apps/desktop-app/scripts/git-index-probe.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "a953d164b5b48ed085fa6522301993d8ec2a07a193515e30f9b5b18cabbe6b35"
+    },
+    "apps/desktop-app/scripts/run-evidence.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "430ec5c31fc49b322ccbbc70ca9f00bbd08fcb45612c2b0bedbbc6f68a9ebe55"
+    },
+    "apps/desktop-app/scripts/run-evidence.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "d6349aff26c2ac034b4c7ec1d51ed072f37c171fe0786f0664664ba6dd8bec95"
+    },
+    "apps/desktop-app/scripts/stage-event-host.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "c5962f23c4f33c26c7728732a5d0b4a04cb0bfd5adad2ddefd9b4f0d30d70853"
+    },
+    "apps/desktop-app/src/desktop-bridge.d.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "e2ac3be222fa858a2385518d5ff17fbcda4837cb8000f497332e2d378c151f72"
+    },
+    "apps/desktop-app/src/event-host-child.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "87e93fae125e7d76ee0048c11adc4e04afb1703d98d8b49454e8d636bdd3e47a"
+    },
+    "apps/desktop-app/src/event-host-protocol.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "ee1efecbe8944b6832df67b80de8f35498e0ae020d6cdd59a9b0dfae2a5716db"
+    },
+    "apps/desktop-app/src/event-host-protocol.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "8a420076c6d72d4832946de2b02d17b9ad90f6e198912dd164bbb814f80dc027"
+    },
+    "apps/desktop-app/src/event-host-resources.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "5dca98f34ffe17da5e0d64a32abd850d13abfdf585325120f9941282d386bbbe"
+    },
+    "apps/desktop-app/src/event-host-supervisor.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "1986fce0f3530119c101b55b9c5c2c3f1bf169b80f85dc71d0096b37c72520f3"
+    },
+    "apps/desktop-app/src/event-host-supervisor.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "7dcaed9a3efa9b6a1678d8b947509cfff9399a8dbcf236408ee7a24cda3f4f70"
+    },
+    "apps/desktop-app/src/git-commit.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "fc85714da0bca7ebe0f77a8ae5006a55ecc6c03763de89c9d7fbccf2e9b7fa42"
+    },
+    "apps/desktop-app/src/host/configuration-save-kernel.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "cca5de5aa358d1ecba8209b2c7c8af457503c1717945cba1f825245c2974fd54"
+    },
+    "apps/desktop-app/src/host/configuration-save-kernel.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "e12a1e4304c67a804d8d72e731d7db818bbe481609b92a8bba656a31b8a1cad3"
+    },
+    "apps/desktop-app/src/host/git-commit-contract.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "94fe59d2bce230887fe44513ba3b829e2149ee33489df62edf0475ef655d039d"
+    },
+    "apps/desktop-app/src/host/git-commit-contract.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "735ddf84d24fe302df47213e258485d220fcf2a6c5d72e2582553b0b6cc07596"
+    },
+    "apps/desktop-app/src/host/git-commit-kernel.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "ccd5b04f81fbd2e675ab10599dddfc3a1519dc119e4562bf8ffeb12e7213e482"
+    },
+    "apps/desktop-app/src/host/git-commit-kernel.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "57b9002793643a1ca4192e49f35c5b749e3d727f9872199a22740db8cb73f9b9"
+    },
+    "apps/desktop-app/src/host/git-index-kernel.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "40f1b6adbbcf1b571ea03ff01e7c32e2a68d28c5350f1a60cfea6457c41730bb"
+    },
+    "apps/desktop-app/src/host/git-index-kernel.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "aa0270748863e57fc903f660f196e5ac250eb2503eb4bbefe417988255d88f1c"
+    },
+    "apps/desktop-app/src/host/git-metadata-kernel.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "ee148ee77098b1bdc4265f497d42953fa8f0cdb7ac224827bbbd6613c0249f6d"
+    },
+    "apps/desktop-app/src/host/git-metadata-kernel.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "c10e2ce131c8eb72198685dae2eab2c5a4aab0af724cbdd80256dce4dbe05d7b"
+    },
+    "apps/desktop-app/src/host/storage-journal.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "289e3af859f1cce31d8cd60fd6691b452b9558b4f25d2b8d74ff13c2d5e7e7c4"
+    },
+    "apps/desktop-app/src/host/storage-journal.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "41d20ed6b6662bca9cc2b23b1b1016d1f4594496beed382c3978c7bd656f7a7d"
+    },
+    "apps/desktop-app/src/host/workbench-admission.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "cd0b6c1ee8a5b6f3c16c0aae492d61620e0878c87d8aeb1452195ce5c551ded4"
+    },
+    "apps/desktop-app/src/host/workbench-git-commit-storage.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "371507679f7c3017e4d18600ec42168eb847be43f2862ec6cc2ecd2c80f5b4f5"
+    },
+    "apps/desktop-app/src/host/workbench-git-commit-storage.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "3cf36d5fa457476045525340be813141e503b48bcc63c6f124fd82179dcbeb6e"
+    },
+    "apps/desktop-app/src/host/workbench-git-commit.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "2c29a9a5a57fccfcc69317d8da3b4e8322845a946782f8d32dedf2e3c7aa63dc"
+    },
+    "apps/desktop-app/src/host/workbench-git-commit.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "5ce8166cf98fdf140ef4ce09d4828eda0c28e54b1200f17b91645b3e8ea090bf"
+    },
+    "apps/desktop-app/src/host/workbench-git-index.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "2b8747ee8b54e9aa0261c43d469435aa3115a4d4992fad9ac69e131315483e1a"
+    },
+    "apps/desktop-app/src/host/workbench-git-snapshot.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "eaaa3d791ca204c9414c65dc66f1a81f369b54a879298a0d274755f19c272015"
+    },
+    "apps/desktop-app/src/host/workbench-git.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "1340c7c5eae2f838b6e2f660cd667066a55917ab4fffa4393dbe11af6bd8799c"
+    },
+    "apps/desktop-app/src/host/workbench-receipts.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "f510d487ff77dccde26c53ab54e032ff2942b47b0f347c85eb5d7c60455b60d1"
+    },
+    "apps/desktop-app/src/host/workspace-registry.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "eb21c61ac5cacdd0e73f034368ee5206f2a24413114d22cbe4792dfe0eb7cbfb"
+    },
+    "apps/desktop-app/src/host/workspace-registry.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "0c8c9cbef48c8e1c31fc1d54ec675edc0d14c7a82e6b06dc1550c31ed73fd950"
+    },
+    "apps/desktop-app/src/main.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "fd43cb2988d2140a37f8de3099d019c565b2da71a6c8679f3173428852114cec"
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "c9ced086c2176b40c56d21f632dfde1f305490b78dcfe5661a2c012ac7916958"
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "7c86b4b04ec98ac05dd9ae5740a6fd8959217c9ee4a06e3dc16acb58e04cc91a"
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "26036a8d7fd83477260bf7e2371db6e6238118dc7d034aad464ada23d71e2a8c"
+    },
+    "apps/desktop-app/src/renderer/features/git-review/index.tsx": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "771163d8fbb151d7802301b70bd94c73e9b26b375a9329eace862ddf3093c3f9"
+    },
+    "apps/desktop-app/src/renderer/features/git-review/review.module.css": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "941b46c79676373947e0f166f1488278d6c3528ecac716296a827d689ace4870"
+    },
+    "apps/desktop-app/src/renderer/shared/api/index.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "b82c26d4e2d1b0eb80ccbce83f386236893ac913b5a2c660492f20e65e8b27ad"
+    },
+    "apps/desktop-app/src/renderer/shared/git-commit/index.d.mts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "bcf4f5a567d1fc5ca8096fe6d3202ec1a356a814a926a8dfe57f1fbb3add9469"
+    },
+    "apps/desktop-app/src/renderer/shared/git-commit/index.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "6aad812c3e4a55026e132c1fe0c1ecf5811d43a47fb39f8c5e8fab4c8f466505"
+    },
+    "apps/desktop-app/src/renderer/shared/git-commit/index.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "9023e25452e836406592fe605c859d5ca660f6b63bd4e51a56b71f67a607a585"
+    },
+    "apps/desktop-app/src/renderer/shared/transport/index.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "cd08f9e0b8aee54aaaa49312766ede568b35bd57baca8bb1d03c59964ff0d9f7"
+    },
+    "apps/desktop-app/src/workbench-contract.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "2094b95f4b08b1d6d1067f7f59780db77f74a929ae498b9cab8bc09884c19321"
+    },
+    "apps/desktop-app/src/workbench-service.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "47347266e4302d4416a5d4fdb60b5dd6be7c2e53efe8470b3271b2628ee4dab8"
+    },
+    "apps/desktop-app/src/workbench-store.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "44def82ef64ee510a97c4b57becc33d9897ff64a53cb8081aa69ef9486bbd37d"
+    }
+  }
+}

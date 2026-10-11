@@ -1,0 +1,135 @@
+{
+  "schema_version": 2,
+  "run": "durable-native-preflight",
+  "gate": "design_spec",
+  "reviewer": "design_spec_reviewer",
+  "verdict": "changes_requested",
+  "summary": "design2의 copied-read 경계와 알려진 pending selector 검사는 구현 가능한 설계다. Native 2.0.18 소스에서 추가로 빠진 pending selector는 찾지 못했다. 다만 stdin/stdout 전용 protocol의 parent 종료 감지 방식이 정해지지 않았다. 이 lifecycle 공백 하나를 수정해야 한다. N1–N5의 실행 검증은 구현 후 작업이며, 이번 entry 판정에서 실행 증거를 요구하지 않았다.",
+  "open_findings": [
+    {
+      "id": "D2-01",
+      "priority": 2,
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-native-preflight/design.md",
+      "line": 35,
+      "related_lines": [
+        21,
+        63
+      ],
+      "title": "parent 종료 감지 신호를 protocol에 명시해야 한다",
+      "trigger": "Main이 요청 frame을 전달하고 inspector가 입력을 닫은 뒤, 조회 도중 Main이 종료된다.",
+      "evidence": "line35는 stdin/stdout 전용 통신과 한 frame 뒤 입력 닫기를 지정한다. line21은 parent disconnect에 따른 cancellation과 scoped close를 약속한다. 그러나 입력을 닫은 뒤 parent 생존을 감시할 신호는 지정하지 않는다. 기존 event-host-child의 disconnect 처리는 IPC channel을 사용하는 별도 구조다.",
+      "source_references": [
+        {
+          "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/event-host-supervisor.mjs",
+          "line": 326
+        },
+        {
+          "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/event-host-child.mjs",
+          "line": 384
+        },
+        {
+          "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/@types/node/process.d.ts",
+          "line": 2020
+        }
+      ],
+      "impact": "현재 문구만으로는 parent 종료 시 inspector cancellation과 connection close를 구현할 수 없다. Main에만 둔 deadline과 종료 처리는 Main 종료 뒤 작동하지 않는다. inspector는 복사본만 다루므로 원본 쓰기 위험을 주장하는 finding은 아니다.",
+      "smallest_correction": "한 요청 frame 뒤 추가 명령은 금지하되 stdin pipe는 inspector 종료까지 열어 둔다. inspector가 EOF 또는 pipe 오류를 cancellation으로 처리하도록 명시한다. 20초 deadline의 host/child 책임도 명시하고, parent 없이도 child가 종료 절차를 시작하도록 한다. IPC나 registry API를 추가할 필요는 없다.",
+      "acceptance_ids": [
+        "N4"
+      ],
+      "verification_stage": "설계 수정 후 구현 단계에서 parent 종료, EOF, deadline, scoped close와 physical exit를 검증한다. 이번 검토에서는 실행하지 않는다."
+    }
+  ],
+  "reviewed": {
+    "contract_sha256": "e24f366b0ecd153561eadc970f8218ef958a6bda62e70487c76c35bc79d4ff00",
+    "documents_sha256": "b1009755dfbed6adbcdcfee3836bddd490928f1400508bd990afcded764a877f",
+    "gate": "design_spec",
+    "plan_sha256": "96afd3e51426c0147ef8de4fa8ea13c5b142c859d09ab6b3219fb96b5fcc94f9",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "provenance": {
+    "child_task_id": "01a116fc-990f-75d3-afa6-b44e01dcf30b",
+    "child_task_id_source": "현재 CODEX_THREAD_ID이며 run dispatch의 child_ref와 일치한다.",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "author_task_id_source": "run의 author provenance와 상속된 CODEX_SESSION_ID가 일치한다.",
+    "distinct_from_author": true,
+    "authored_or_repaired_reviewed_artifacts": false,
+    "recursive_delegation": false,
+    "profile_sandbox_enforcement_claimed": false
+  },
+  "binding_verification": {
+    "command": "python3 -B .solopreneur/harness.py review-input durable-native-preflight --gate design_spec",
+    "start_matches_supplied_input": true,
+    "end_matches_start": true,
+    "packet_skill_profile_hashes_match": true,
+    "plan_revision": "1",
+    "design_version": "2",
+    "design_sha256": "5789a770366f785445af24d9f251908d87c7e97a037a51cbd6df5a0b19b6fae3",
+    "contract_file_sha256": "a7c6890689174f713baf629949f4168729f34b47db1d2935703875b9c3413d57",
+    "contract_hash_explanation": "packet은 파일 bytes를 hash한다. review-input은 정규화된 contract를 hash한다. 두 값의 차이는 stale binding이 아니다.",
+    "run_status": "active",
+    "fresh_plan_review": "plan-review-r1.json의 pass와 현재 review-input의 plan gate 확인을 대조했다."
+  },
+  "assessment": {
+    "N1": "고정 manifest 경로, stopped DB/WAL/SHM/journal 전체 복사, original descriptor/path/metadata/hash 재검사, owner/registry/resource binding이 명시되어 있다. inspector에 원본 경로나 원본 descriptor를 전달하지 않는다.",
+    "N2": "공개 table의 raw .values 조회는 SQL NULL과 JSON null을 구분할 수 있다. 전역 Pending/Inbox 조회는 orphan도 포함한다. 모든 KV row 거부는 malformed background marker의 decode 누락을 막는다. parent_id의 빈 문자열, claim, resume_attempts와 compacting 상태도 거부한다.",
+    "transcript": "공개 SessionMessage.Info의 encoded schema와 별도 completion predicates를 함께 사용하는 설계는 타당하다. 설치된 Effect의 실제 encoded schema API는 Schema.toEncoded다. 공식 projector도 data에 row id/type을 합쳐 decode한다. schema decode만으로 completion을 증명하지 않는 설계다.",
+    "migration": "공식 migration ledger 정의는 migration(id TEXT PRIMARY KEY, time_completed INTEGER NOT NULL)이다. public migration.gen이 참조하는 실제 id를 읽어 48개이며 모두 고유함을 확인했다. 정확한 ID 집합은 applyOnly의 completed membership skip을 뒷받침한다. inspector는 apply/up와 default Database layer를 실행하지 않아야 한다.",
+    "legacy": "Bun V1Migration.status는 legacy session table 존재와 legacy 상태를 검사한다. schema migration 상태 API로 사용하지 않는다. KV 전역 거부와 completed 요구는 알려진 legacy conversion 분기를 닫는다.",
+    "mapping": "기존 lookupIdentity, lookup과 confirmed receipt로 root admission을 검증할 수 있다. 실제 metadata의 originalRuntimeEpoch를 응답 runtimeEpoch에 대응시켜야 한다. fork는 상속된 root metadata와 별도로 lookupForkIdentity 및 원래 confirmed fork receipt를 검증하는 설계다. 새 registry API는 필요하지 않다.",
+    "N3": "별도 owner generation의 normal/SIGKILL/fork reopen에서 production lifetime verifier와 production preflight를 사용하는 계획이 적절하다. public Native API producer와 synthetic store를 사용한다. orphan 및 ledger corruption fixture 증거는 실제 public producer 증거와 구분한다.",
+    "N4": "정확한 ChildProcess handle, cancellation, physical exit, 불확실한 copy 보존과 shutdown 순서는 적절하다. D2-01의 parent 종료 감지 신호는 수정이 필요하다.",
+    "N5": "현재 host는 ServerProcess.start에 lifecycle을 전달하지 않는다. 따라서 installRestartContinuity 분기는 실행되지 않는다. 알려진 restart selector도 KV 전역 거부와 raw suspended/parent 검사가 방어한다. service acquisition 전체가 inert하다는 주장은 하지 않는다.",
+    "main_integration": "owner startup append 전 검사, append 후 revision 변경에 따른 재검사, 기존 supervisor guard 내부 검사와 kernel release 전 reader close가 명시되어 있다. 구현 및 실제 shutdown caller 검증은 후속 code review 대상이다."
+  },
+  "startup_selector_closure": [
+    {
+      "selector": "SessionStore.listSuspended",
+      "guard": "모든 raw time_suspended가 정확히 null이어야 한다.",
+      "source": "config-sd0msgcy.js:109"
+    },
+    {
+      "selector": "SessionStore.releaseChildClaims",
+      "guard": "모든 raw parent_id와 time_suspended가 정확히 null이어야 한다. 빈 parent 문자열도 거부한다.",
+      "source": "config-sd0msgcy.js:118"
+    },
+    {
+      "selector": "Job.pendingBackground",
+      "guard": "KVTable 전역 limit1 조회에서 어떤 row도 없어야 한다.",
+      "source": "config-30xg31xn.js:330"
+    },
+    {
+      "selector": "SessionInbox 및 SessionPending",
+      "guard": "각 공개 table의 전역 조회에서 어떤 row도 없어야 한다.",
+      "source": "config-7stqpyhf.js:269"
+    },
+    {
+      "selector": "DatabaseMigration.apply/applyOnly",
+      "guard": "공개 SessionTable 조회 성공과 정확한 48개 완료 ledger ID를 요구한다. inspector에서는 migrator를 호출하지 않는다.",
+      "source": "config-hkzp38b2.js:21"
+    },
+    {
+      "selector": "V1Migration.run",
+      "guard": "전역 KV 부재와 Bun V1Migration.status completed를 요구한다.",
+      "source": "database/v1-migration.bun.js:390"
+    }
+  ],
+  "accepted_limits": [
+    "ledger ID 일치는 임의의 SQLite schema, index, constraint 또는 전체 데이터 무결성 증명이 아니다.",
+    "원본 hash 검사는 hostile same-user 격리나 change-and-restore 탐지 증명이 아니다.",
+    "controlled startup에서도 Global directory 준비, Database tuning과 migrator 검사 등 초기화는 존재한다.",
+    "provider, credential, private configuration의 실제 활동 부재와 package/runtime 동작은 후속 contracted checks로 확인한다.",
+    "public API로 만들 수 없는 malformed/orphan/ledger 상태는 unit 또는 copied fixture로 별도 표시한다."
+  ],
+  "execution": {
+    "boundary": "한 번의 INITIAL DESIGN 문서 및 pinned source 검토",
+    "read_only_review_input_start_and_end": true,
+    "source_and_hash_inspection": true,
+    "tests_bun_node_db_native_ui_build_executed": false,
+    "files_or_ledger_written": false,
+    "delegation_performed": false,
+    "provider_private_store_or_production_main_launched": false
+  },
+  "next_dependency": "Main이 D2-01을 설계에 반영하고 수정된 binding의 검토 결과를 저장·등록한다. 실제 구현 증거와 fresh final code review는 별도 단계다."
+}

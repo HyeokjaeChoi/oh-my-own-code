@@ -1,0 +1,127 @@
+✖ held raw actual execute refuses before decode, tool callback and output schema (7.016417ms)
+✖ held actual Tool.snapshot refuses before catalog and definition schema callbacks (1.630583ms)
+✖ held actual direct entry refuses before hook construction (1.450041ms)
+✖ held actual nested entry refuses before hook construction (0.497458ms)
+✖ raw entry with missing store service cannot call schema or callback (0.267083ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 192.371834
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:77:1
+✖ held raw actual execute refuses before decode, tool callback and output schema (7.016417ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(Exit.isFailure(exit))
+  
+      at refused (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:73:33)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:80:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:84:1
+✖ held actual Tool.snapshot refuses before catalog and definition schema callbacks (1.630583ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(Exit.isFailure(exit))
+  
+      at refused (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:73:33)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:88:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:92:2
+✖ held actual direct entry refuses before hook construction (1.450041ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      catalog: 0,
+  +   decode: 1,
+  -   decode: 0,
+      encode: 0,
+      execute: 0,
+  +   hook: 1,
+  -   hook: 0,
+      image: 0,
+      progress: 0,
+      schema: 0
+    }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:102:24)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { decode: 1, execute: 0, encode: 0, hook: 1, schema: 0, catalog: 0, image: 0, progress: 0 },
+    expected: { decode: 0, execute: 0, encode: 0, hook: 0, schema: 0, catalog: 0, image: 0, progress: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:92:2
+✖ held actual nested entry refuses before hook construction (0.497458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+      catalog: 0,
+  +   decode: 1,
+  -   decode: 0,
+      encode: 0,
+      execute: 0,
+  +   hook: 1,
+  -   hook: 0,
+      image: 0,
+      progress: 0,
+      schema: 0
+    }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:102:24)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { decode: 1, execute: 0, encode: 0, hook: 1, schema: 0, catalog: 0, image: 0, progress: 0 },
+    expected: { decode: 0, execute: 0, encode: 0, hook: 0, schema: 0, catalog: 0, image: 0, progress: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:105:1
+✖ raw entry with missing store service cannot call schema or callback (0.267083ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(Exit.isFailure(exit))
+  
+      at refused (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:73:33)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:106:25)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

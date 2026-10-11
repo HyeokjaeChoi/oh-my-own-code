@@ -1,0 +1,105 @@
+{
+  "root": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-duplicate-import-repro-JlItkm",
+  "synthetic": true,
+  "productionServiceAndRegistry": true,
+  "nativeProviderExecution": false,
+  "first": {
+    "ok": true,
+    "value": {
+      "runtimeEpoch": "epoch",
+      "revision": 4,
+      "observationSequence": 3,
+      "recovery": {
+        "store": {
+          "state": "ready"
+        },
+        "resources": []
+      },
+      "retainedOperations": [],
+      "state": "connected",
+      "temporary": false,
+      "workspaces": [
+        {
+          "id": "6754c5cb-d9eb-4dac-98a8-a1ce8653dfea",
+          "name": "imported",
+          "path": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-duplicate-import-repro-JlItkm/imported",
+          "kind": "folder",
+          "trusted": false,
+          "trustRevision": 1,
+          "temporary": false
+        }
+      ],
+      "sessions": [],
+      "selectedWorkspaceId": "6754c5cb-d9eb-4dac-98a8-a1ce8653dfea",
+      "messages": [],
+      "permissions": []
+    },
+    "receipt": {
+      "runtimeEpoch": "epoch",
+      "operationId": "first",
+      "type": "workspace.import",
+      "admission": "dispatched",
+      "delivery": "accepted",
+      "effect": "confirmed",
+      "revision": 4,
+      "evidence": [
+        {
+          "kind": "host-registry",
+          "id": "6754c5cb-d9eb-4dac-98a8-a1ce8653dfea"
+        }
+      ],
+      "result": {
+        "kind": "created",
+        "workspaceId": "6754c5cb-d9eb-4dac-98a8-a1ce8653dfea"
+      }
+    }
+  },
+  "second": {
+    "ok": false,
+    "code": "RUNTIME_ERROR",
+    "message": "The runtime operation failed.",
+    "receipt": {
+      "runtimeEpoch": "epoch",
+      "operationId": "second",
+      "type": "workspace.import",
+      "admission": "rejected",
+      "delivery": "pending",
+      "effect": "none",
+      "revision": 6,
+      "evidence": [],
+      "result": {
+        "kind": "rejected",
+        "code": "RUNTIME_ERROR"
+      }
+    }
+  },
+  "picks": 2,
+  "nativeCalls": 0,
+  "registryStatus": {
+    "state": "ready",
+    "revision": 6,
+    "closed": false,
+    "journal": {
+      "state": "ready",
+      "sequence": 6,
+      "hash": "9c742e23b717d5dd2150d01be22797b4c257278cb7aedd2ce254febd2f19495d",
+      "checkpointGeneration": 0,
+      "checkpointSequence": 0,
+      "directoryFlush": "required; platform failures block writes; power-loss durability unverified",
+      "closed": false
+    }
+  },
+  "workspaces": [
+    {
+      "workspaceId": "6754c5cb-d9eb-4dac-98a8-a1ce8653dfea",
+      "ownership": "imported",
+      "canonicalPath": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-duplicate-import-repro-JlItkm/imported",
+      "registrationState": "registered",
+      "name": "imported",
+      "trustRevision": 1,
+      "revision": 4,
+      "temporary": false
+    }
+  ],
+  "originalBytesPreserved": true
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "6ebf1c4b6d6ad79ca5a4fa3dd6cc093b908695fbbfdadf47a8cc6a1e6b57215b",
+    "environment_sha256": "1263d32858ddb8a526da6bb5493b8b5a6d9eaec4b580f9d99cf558e7311fcb08",
+    "gate": "code",
+    "plan_sha256": "0c5a3af2b8448a771b31643873172d7c0ccc177b9d579d286d2d15eb6e2deb3f",
+    "schema_version": 2,
+    "source_sha256": "e592cb2ea327ab50ea9d50a96c092c3e1c9102795d37d1754b744cf5a2ea9e8b",
+    "verification_sha256": "06cf9b2ee2ae81d6ba5c5d4c845929fa97fe7543c1836e40d1ee1241b35ca12a",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "고정된 source의 변경 경로 4개를 두 번 검토했습니다. DUP1~3과 code quality 검토에서 수정이 필요한 결함은 찾지 못했습니다. 공개 API, DTO, journal 형식은 유지됩니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11df9-1893-7e61-a27e-96f41a51ab6b",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "report_only": true,
+    "edits": false,
+    "ledger_mutation": false,
+    "recursive_delegation": false
+  },
+  "verification": {
+    "inspected": [
+      "AGENTS.md, solo_reader.toml, solo-specialist/SKILL.md, solo-code-review/SKILL.md, effort-and-feedback.md",
+      "plan.md revision 1, contract.json, final-code-packet-r1.json, final-code-input-r1.json",
+      "source-freeze-r1.json, working-change-r1.patch, original-source-r1.json, before/ 원본 4개",
+      "service와 registry의 호출부, admission, digest 충돌 검사, canonical path 검사, replay, dispatch, completion",
+      "resource hold, ownership, trust, name, managed folderSessionId, capacity 100/101, Native 호출 경로",
+      "기존 첫 session lineage 및 위조 방지 검사와 신규 regression test",
+      "run.json, verification-r1.json, RED/GREEN 및 unit/lint/format 로그"
+    ],
+    "passes": [
+      {
+        "pass": "spec_compliance",
+        "result": "DUP1~3 충족. canonical path와 alias 재가져오기는 기존 identity를 사용합니다. 각 새 요청의 durable 기록과 기존 key의 receipt를 유지합니다."
+      },
+      {
+        "pass": "code_quality",
+        "result": "기존 workspace의 ownership, trust, name, sessions를 유지합니다. resource hold를 검사합니다. managed 첫 session 재사용 조건은 확정된 metadata-only 재가져오기로 제한됩니다."
+      }
+    ],
+    "runs": [
+      {
+        "kind": "reviewer_executed",
+        "command": "node --test --test-reporter=spec --test-name-pattern='^(durable duplicate import|durable reimport|durable import at100|duplicate import reservation)' apps/desktop-app/src/host/storage-integration.test.mjs apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "exit_code": 0,
+        "passed": 5,
+        "failed": 0
+      },
+      {
+        "kind": "reviewer_executed_read_only",
+        "result": "전체 review binding을 다시 계산해 일치를 확인했습니다. source 목록 688개, 원본 4개의 hash와 크기, 원본 대비 patch, 정확한 변경 경로 4개를 확인했습니다. test 실행 후 source와 binding도 유지됐습니다."
+      },
+      {
+        "kind": "recorded_evidence_inspected",
+        "result": "수정 전 RED는 4 fail/1 pass입니다. GREEN-r1의 실패는 reopen 준비 시점입니다. test-only readiness barrier 적용 후 GREEN-r2는 5/5입니다."
+      },
+      {
+        "kind": "recorded_evidence_inspected",
+        "result": "고정된 source에서 계약된 6개 파일의 unit check와 변경 4개 경로의 lint/format check가 exit 0입니다. 전체 check는 재실행하지 않았습니다."
+      }
+    ],
+    "limits": [
+      "검증은 production module을 사용하는 synthetic Node filesystem 환경입니다.",
+      "실제 Native, GUI, provider, productionMain, build, Windows, 전원 손실은 검증하지 않았습니다.",
+      "기존 session 및 operation 보관 한도는 유지됩니다.",
+      "이 판정은 routine F01 수정의 CODE gate 범위입니다. full18 완료 또는 출시 승인을 뜻하지 않습니다."
+    ]
+  }
+}

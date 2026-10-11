@@ -1,0 +1,57 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "c2596eb198b12eb215d871cd717baa1ee5c0f8b978d4239588708941d2467bdd",
+    "documents_sha256": "fd1f836703c6ee28404e8d6d2d7b6797979c3991e1cf7294a43d8720f0c05132",
+    "gate": "design_spec",
+    "plan_sha256": "35ba14f484f5ba77f28fd7e10cbf99e5fbe3ab2e66c5d11119e1bcfee1ac9d87",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "design v1은 초기 runtime/package 구현에 필요한 경계를 정했습니다. 전체 resource 검증, 격리된 installer, identity 기록 후 IPC init, fresh-only startup, 불확실한 종료 시 보존과 recovery hold가 현재 v5 contract와 일치합니다. 기존 코드에 필요한 변경도 설계에 명시되어 있습니다. 구현과 production compatibility 검증은 아직 남아 있습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a109e4-93c9-7760-a34d-24860e701cd7",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "run_id": "event-host-app-integration",
+    "reviewer_role": "design_spec_reviewer",
+    "profile": "solo_reader",
+    "independent_report_only": true,
+    "profile_instructions_read": ".codex/agents/solo_reader.toml",
+    "skills_read": [
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-plan-review/SKILL.md",
+      ".agents/skills/solo-design-spec-review/SKILL.md"
+    ],
+    "handoff_packet": "docs/runs/event-host-app-integration/design-review-r1.packet.json",
+    "binding_source": "docs/runs/event-host-app-integration/design_spec-review-input.json",
+    "binding_validation": "read-only review-input 명령의 현재 design_spec 출력이 제공된 binding과 정확히 일치했습니다. 등록된 design v1의 검증을 통과한 실제 binding을 reviewed에 그대로 복사했습니다.",
+    "reviewed_document": {
+      "path": "docs/runs/event-host-app-integration/design.md",
+      "version": "1",
+      "sha256": "712252bda26f9b55df6edac0398aa7a5197bd572bee0fbbbb2060b198c3325fc"
+    },
+    "review_boundary": "초기 design v1의 runtime/package, installer, IPC, owner, startup, stop, recovery, asset path와 기존 consumer 호환성을 검토했습니다. 변경 없는 plan은 재검토하지 않았습니다.",
+    "assessment": {
+      "closure_and_assets": "standalone npm lock과 전체 선택된 dependency closure를 package resource로 분리합니다. 각 asset의 path/mode/size/hash와 허용된 상대 symlink를 검증하고, missing/extra/drift/escape를 거부합니다. 기존 app provenance의 4096 제한과 별도 resource 제한을 구분합니다. 현재 build와 package inspection은 legacy executable 중심이므로 설계에 지정된 확장이 필요합니다.",
+      "installer": "첫 subprocess와 metadata 요청 전에 전용 HOME/cache/tmp/config와 환경 allowlist를 적용합니다. public registry, 고정 Bun archive integrity, scripts 비활성화, target 제한을 명시합니다. prototype installer와 pinned package 입력을 정적으로 비교했습니다. production installer를 실행하지 않았습니다.",
+      "ipc_and_startup": "owner와 preflight를 setup 전에 확인하고 spawn 직전에 다시 확인합니다. exit/error/IPC observer를 연결하고 정확한 child identity를 기록한 뒤 init을 전송합니다. child의 server import도 init 검증 이후입니다. nonce, password, payload 제한, timeout, loopback endpoint, server PID/version 검증을 요구합니다. 기존 CLI의 spawn 직후 실행 경로를 새 adapter가 그대로 재사용하지 않도록 경계를 정했습니다.",
+      "ownership_stop_and_recovery": "정확한 ChildProcess handle과 exit Promise를 유지합니다. scope 종료와 direct handle의 종료 증거가 불확실하면 cleanup 완료나 owner clean release를 허용하지 않습니다. 현재 Main은 cleanup failed일 때도 finishStorage를 호출할 수 있으므로 새 adapter의 불확실한 종료는 incomplete/recovery hold로 전달해야 합니다. 설계는 이를 요구하며 service drain도 engine stop 전에 배치합니다.",
+      "storage_and_consumers": "새 database 위치를 fresh manifest에 먼저 묶고 기존 incompatible namespace는 변경 없이 보존합니다. 현재 manifest validator는 paths를 정확히 비교하므로 Main의 명시된 manifest 통합 변경이 필요합니다. durable workbenchContext의 session undefined와 journal reservation 이후 bootstrap은 현재 service 구조와 맞습니다. v5 DTO, receipt correlation, retained holds와 baseline policy를 유지합니다.",
+      "capability_boundary": "pinned server의 lifecycle 분기와 prototype scoped start를 정적으로 확인했습니다. capability proof는 격리된 synthetic 실행의 근거입니다. production nonfresh restart, provider 안전성, 임의 OS descendant 종료 또는 P7 완료의 근거로 사용하지 않았습니다."
+    },
+    "next_dependency": "Main이 이 보고서를 design_spec gate에 등록하고 handoff를 확인한 뒤 지정된 consumer 구현을 진행합니다. 이후 실제 package/Native/hidden UI 검증과 독립 최종 code 및 rendered review가 필요합니다.",
+    "plan_reaudit_performed": false,
+    "duplicate_full_capability_review_performed": false,
+    "empty_design_binding_used": false,
+    "recursive_delegation": false,
+    "files_written": false,
+    "ledger_written": false,
+    "runtime_provider_native_ui_build_invoked": false,
+    "private_data_accessed": false,
+    "os_sandbox_attested": false,
+    "evidence_limits": "문서와 관련 코드의 정적 검토 및 read-only binding 확인만 수행했습니다. production closure 설치, asset resolution, IPC 실패 주입, stop settlement, package 실행과 compatibility 테스트는 수행하지 않았습니다.",
+    "gate_policy": "초기 design 판단입니다. 이미 승인된 로컬 구현에 새 사용자 승인이나 추가 gate를 요구하지 않습니다."
+  }
+}

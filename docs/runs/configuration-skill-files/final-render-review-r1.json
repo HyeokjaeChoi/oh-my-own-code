@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "9da9812d76893d212dff6698374d927e2b5818fcba2d4ee601ab13b93654f74f",
+    "environment_sha256": "0212a4df14efccf9cf20b7d8406362ff4c8c6aee90482da1a643f37f87b02a55",
+    "gate": "design",
+    "plan_sha256": "2a80f254964df9dfd53ba36afd74d83671dfff706ac7b7aaf3551df4675bb58f",
+    "schema_version": 2,
+    "source_sha256": "fe860cac1d5c3b256dfce7033549771e046ff8747927edb6f710a9e00d67c68e",
+    "verification_sha256": "48b80e559f0fca4c5b0a0b92b172362fb2e2bf21159605748824405773ca0edd",
+    "work_class_sha256": "35dcc45e02285185d9a4c21e229c0d87599cfb83b474dbb2eb9e0bd7fcab9fae"
+  },
+  "verdict": "pass",
+  "summary": "독립 RENDER 검토를 통과합니다. hidden-r2의 Skill PNG 51장 중 16장을 직접 보았습니다. 이 표본은 15개 상태를 포함합니다. 명시적 목록 확인·선택·읽기, 원문 편집, 검증, 저장 결과와 복구 안내에서 수정이 필요한 시각·사용성 결함을 찾지 못했습니다. 760px·200% 화면에서 긴 전체 경로와 주요 버튼, 상태 문구가 읽힙니다. 이 판정은 synthetic renderer 증거 범위에 한정됩니다.",
+  "open_findings": [],
+  "evidence_review": {
+    "metadata_paths": [
+      "docs/runs/configuration-skill-files/final-render-input-r1.json",
+      "docs/runs/configuration-skill-files/final-render-packet-r1.json",
+      "docs/runs/configuration-skill-files/source-freeze-r1.json",
+      "docs/runs/configuration-skill-files/verification-summary-r1.json",
+      "docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/ui-states-evidence.json",
+      "docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/manifest.json"
+    ],
+    "byte_inspection": {
+      "frozen_source_files": 39,
+      "frozen_source_mismatches": [],
+      "manifest_build_input_files": 116,
+      "manifest_selected_script_files": 4,
+      "manifest_launch_artifact_files": 7,
+      "manifest_file_hash_mismatches": [],
+      "build_stamp_hash_matches": true
+    },
+    "recorded_execution": {
+      "independently_rerun": false,
+      "current_checks": 9,
+      "current_check_exit_codes": 0,
+      "hidden_r2_captures": 291,
+      "skill_states": 17,
+      "skill_captures": 51,
+      "owned_process_exit_code": 0,
+      "history": "hidden-r1은 Skills 첫 상태 전에 실패했습니다. 241개 캡처와 종료 코드 0은 성공 판정이 아닙니다. 기록된 수정은 누적 metrics의 initialMetrics 기준 비교입니다. 최종 화면 판정에는 새 hidden-r2를 사용했습니다."
+    },
+    "capture_origin": {
+      "platform": "darwin arm64",
+      "implementation": "실제 build의 Electron renderer·preload와 test-only synthetic Main",
+      "filesystem": "synthetic fixture filesystem",
+      "method": "BrowserWindow.webContents.capturePage().toPNG()",
+      "native_observation": "not_observed",
+      "provider_execution": "not performed",
+      "dimensions": "직접 본 16개 파일의 PNG IHDR 크기를 읽었습니다. 모두 해당 screenshot metadata와 일치합니다."
+    },
+    "capture_groups": [
+      {
+        "pixel_dimensions": {
+          "width": 2880,
+          "height": 1856
+        },
+        "viewport": {
+          "width": 1440,
+          "height": 928,
+          "pixelRatio": 2
+        },
+        "zoom_factor": 1,
+        "paths": [
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-list-available-path-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-file-available-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-list-missingparent-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-list-denied-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-file-rawunsupportedgrammar-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-file-changed-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-file-oversize-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-file-missingleaf-path-synthetic.png"
+        ]
+      },
+      {
+        "pixel_dimensions": {
+          "width": 1520,
+          "height": 1936
+        },
+        "content_width": 760,
+        "viewport": {
+          "width": 380,
+          "height": 484,
+          "pixelRatio": 4
+        },
+        "zoom_factor": 2,
+        "paths": [
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-dirtyvalid-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-confirmed-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-list-truncated-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-file-unsafeunsupported-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-unknown-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-restoredoldkey-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-untrusted-status-synthetic.png",
+          "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-files/evidence/hidden-r2/ui-states/desktop-configuration-skill-dirtyvalid-path-synthetic.png"
+        ]
+      }
+    ],
+    "observations": [
+      {
+        "verification": "direct_capture",
+        "assessment": "sourceName review-notes와 전체 SKILL.md 경로가 보입니다. 긴 경로는 줄바꿈됩니다. 목록 확인, 파일 선택, 파일 읽기는 구분된 조작으로 표시됩니다."
+      },
+      {
+        "verification": "direct_capture",
+        "assessment": "missing-parent는 폴더 생성 불가를 알립니다. denied는 빈 목록이 아님을 알립니다. truncated는 64개 검사·16개 표시 제한을 밝힙니다."
+      },
+      {
+        "verification": "direct_capture",
+        "assessment": "지원하지 않는 YAML 원문이 편집기에 남습니다. 검증 오류는 지원 문법을 설명하며 저장 버튼은 비활성 상태입니다. unsafe·changed·oversize는 읽기 제한과 재읽기 안내를 표시합니다."
+      },
+      {
+        "verification": "direct_capture",
+        "assessment": "dirty valid 상태의 저장 버튼과 confirmed 상태의 비활성 저장 버튼이 구분됩니다. confirmed는 파일 저장과 Native 등록·활성화를 구분하며 backup 전체 경로를 표시합니다."
+      },
+      {
+        "verification": "direct_capture",
+        "assessment": "unknown은 자동 재전송하지 않음을 알리고 이전 요청 결과와 현재 초안을 구분합니다. retained-key 화면은 파일 내용이 복원된 것처럼 표시하지 않습니다."
+      },
+      {
+        "verification": "direct_capture",
+        "assessment": "untrusted 안내는 기존 ‘새 세션’의 신뢰 확인 절차를 설명합니다. 별도 trust API를 제시하지 않습니다. Native 미관찰·비활성 범위와 기존 폴더 안에서만 파일을 만드는 제한이 보입니다."
+      },
+      {
+        "verification": "recorded_metadata_and_source",
+        "assessment": "keyboard focus, 전체 경로 선택, held draft 편집·선택, Enter의 message 전송 차단, Escape 닫기, 원래 operation key 조회와 no replay는 runner 기록 및 해당 source를 대조했습니다. 직접 keyboard 조작을 수행하지는 않았습니다."
+      }
+    ]
+  },
+  "limits": [
+    "전체 291개 캡처나 Skill 캡처 51개를 모두 직접 보지는 않았습니다. list-unread와 file-unread는 metadata와 source로만 확인했습니다.",
+    "Skill 비교 영역의 제목·기준 설명·버전은 보았지만 변경 줄 전체의 시각 배치는 직접 검증하지 못했습니다.",
+    "저장 확인 창 자체는 제공된 Skill 캡처에 없습니다. main.mjs:516의 기존 확인 창 연결과 전체 대상·내용·backup 구성은 source로 확인했습니다. 실제 OS dialog의 렌더와 조작은 검증하지 못했습니다.",
+    "file-missingleaf 캡처는 synthetic 저장 이후 상태입니다. 저장 전 missing-leaf 화면 전체를 직접 관찰한 증거로 사용하지 않았습니다.",
+    "실제 Native registry·activation, production Main, provider, 실제 사용자 filesystem 및 screen reader 작동은 검증 범위 밖입니다.",
+    "이 판정은 CODE gate, Skills Native runtime 또는 전체 Goal·F14 완료를 뜻하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11a29-9750-7f22-b910-6266dd97efe4",
+    "author_task_id": null,
+    "identity_evidence": "현재 환경의 CODEX_THREAD_ID를 읽었습니다. 구현 author task ID는 제공되지 않았습니다.",
+    "independent": true,
+    "authored_implementation": false,
+    "modified_source": false,
+    "modified_artifacts": false,
+    "modified_ledger": false,
+    "recursively_delegated": false,
+    "runtime_build_tests_executed": false
+  }
+}

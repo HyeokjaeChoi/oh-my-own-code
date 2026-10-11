@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "mode": "bounded current-version routing and evidence rehearsal; hidden rubric, no live application execution",
+  "cases": [
+    {
+      "id": "mechanical-copy",
+      "request": "A reviewed plan authorizes changing two existing button labels. No behavior, CSS, dependencies or data changes are needed. The user did not specify a model or effort. Explain specialist routing, next handoff, and relevant verification without restarting settled planning."
+    },
+    {
+      "id": "transport-stall",
+      "request": "A QA executor's initial native browser tool call stalled before returning any screenshot or accessibility state. A slot-limit error also occurred on an earlier dispatch. The coordinator can use the same native browser successfully. Explain the next actions, what can be reported as completed QA, and whether a different model should be dispatched."
+    },
+    {
+      "id": "image-handoff",
+      "request": "The coordinator saw desktop and mobile screenshots in chat. The independent reviewer received the text history but cannot see any image blocks or exported image files. All code checks pass. Explain what the reviewer may conclude and what evidence handoff should happen next."
+    },
+    {
+      "id": "verification-coverage",
+      "request": "An approved UI change has run requirements format, lint and unit. The ledger contains only a passing unit check. The project has existing Prettier and ESLint commands but no browser E2E script. A human-operated browser walkthrough succeeded. Explain completion readiness, how to report E2E coverage, and whether Stop hooks or a successful HTTP access script prove browser E2E."
+    },
+    {
+      "id": "unchanged-source",
+      "request": "The final source and environment are unchanged. Selected build, lint and test checks are current and passing. Only a QA evidence report was corrected to remove an unsupported claim; final review records now predate that report. Explain which work must be repeated and how to finish without re-running unrelated successful suites."
+    },
+    {
+      "id": "billing-ambiguity",
+      "request": "A request to change subscription downgrade behavior leaves existing-customer entitlements and refund rules unspecified. The code change looks short. The user did not choose a model or effort. Explain which work can proceed, which role resolves the decision, and how model inheritance works."
+    },
+    {
+      "id": "explicit-model-only",
+      "request": "The user asks: \"Use a supported model X for the plan reviewer,\" with no effort specified. The role TOML contains no model or effort. Explain the spawn request, effort resolution, validation, and what the ledger may claim."
+    },
+    {
+      "id": "unsupported-override",
+      "request": "The user explicitly requests a model/effort combination that the current client does not support. Explain how to proceed without silently substituting another combination or inventing a successful review."
+    },
+    {
+      "id": "clean-child-capability",
+      "request": "A client exposes only a full-history fork and a fresh generic child; custom named roles are not directly selectable. A specialist role TOML exists. Explain how to route an authorized bounded code investigation, what to put in the handoff, and what cannot be claimed about isolation or identity."
+    },
+    {
+      "id": "compaction-recovery",
+      "request": "After context compaction, a schema v2 feature run has an old passing plan review, one child still running, a newer user scope correction, and a stale check. Explain the coordinator recovery sequence and what work must wait."
+    },
+    {
+      "id": "contradictory-review",
+      "request": "A reviewer JSON says pass, but has one material open finding and binds an older plan hash. The coordinator is tempted to replace the report with a one-line pass because the author fixed the issue in chat. Explain the acceptable repair and completion status."
+    },
+    {
+      "id": "no-op-replacement",
+      "request": "An active v1 run has no verified original file inventory. Current sources happen to match the intended result. The coordinator proposes migrating using today’s files or creating a fresh no-op v2 run and marking the old task complete. Explain the lifecycle and evidence response."
+    },
+    {
+      "id": "wrong-kind-completion",
+      "request": "A run was begun as docs, but the final diff changes application code for a bugfix. A generic check passes and the plan report is green. Explain which gates, acceptance/path coverage, and review evidence are required before completion."
+    },
+    {
+      "id": "document-approval-readiness",
+      "request": "A new implementation child will consume a reviewed PRD and backend API contract. The contract names both documents and a user approval version, but the approval evidence file no longer matches its recorded hash. Explain preparation/dispatch readiness and how backend design is reviewed."
+    }
+  ],
+  "response_fields": [
+    "id",
+    "selected_skills",
+    "next_actions",
+    "routing_request",
+    "completion_claim",
+    "verification_limits"
+  ]
+}

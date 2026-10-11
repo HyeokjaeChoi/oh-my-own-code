@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs",
+      "bytes": 3303,
+      "sha256": "1af173e00c9e095f265dad1e6a6509d7f45521d4e6fa9ba5c37ed65a499f2117"
+    },
+    {
+      "path": "apps/desktop-app/src/host/darwin-descriptor-ffi.test.mjs",
+      "bytes": 4004,
+      "sha256": "3c42cb3a0671a990394da8ff4c2b3f882f4ee293a8bfcbd09e27cacaa88e1142"
+    },
+    {
+      "path": "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+      "bytes": 26629,
+      "sha256": "137b86921877f45e48d942e2177d6b5a016c35f35a569e46e67e9d6767ac7d1c"
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read.mjs",
+      "bytes": 15978,
+      "sha256": "71e5f0106dceb4b2584a7658536251859bf9d14a90f88fcb94456a90552eee54"
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read.test.mjs",
+      "bytes": 24691,
+      "sha256": "fdebcc51299ba49326ebe13d454f93af542eb6582ce3fcbbd800ff105e8eb4c7"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workspace-root-authority.mjs",
+      "bytes": 6572,
+      "sha256": "a8f977e5b8458eb8b51ed1c47ab4fa515e35b78e72f9303f79f724fa9eac0fd0"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workspace-root-authority.test.mjs",
+      "bytes": 22077,
+      "sha256": "67091d0580fd5f3dd273a408fae4c572306d54367f9fd50656f9438ba992dd0a"
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+      "bytes": 5354,
+      "sha256": "82aed4ebbb7bf21e8cf69994b954c6b7248cad735c32fff0abae12e7bcf9a4dc"
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs",
+      "bytes": 22656,
+      "sha256": "5a336f62c5b9335c05e82b4217980f615967a44e62df12c051781487d8769f5a"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-observer.mjs",
+      "bytes": 11402,
+      "sha256": "625fac099f98618e29e57ac01394ff24140cce97171f283f9d263f89268985fe"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-observer.test.mjs",
+      "bytes": 36817,
+      "sha256": "297ae7cab3f9b55e7c697cab82172701b5370481921a56e4f5b30bdf8faebf0b"
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-resources.mjs",
+      "bytes": 17946,
+      "sha256": "f48157b1f3397d2301001bce82388094fc05e824f805dc4f77abc50c1b95545e"
+    },
+    {
+      "path": "apps/desktop-app/src/host/darwin-directory-entry.mjs",
+      "bytes": 1953,
+      "sha256": "994d968244f511d0b4c43fd2b93c345334a0c9b0306065485513200c3817a132"
+    },
+    {
+      "path": "apps/desktop-app/src/host/darwin-directory-entry.test.mjs",
+      "bytes": 2195,
+      "sha256": "2f2f43ee09f270da66ae06d7cb6bba99472e6aa41e0b10309f50b867286f042a"
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-directory.test.mjs",
+      "bytes": 24874,
+      "sha256": "b7003189f6f5adec3cbc549ca3c6ecd73f745bea4a98342ee20e2ed866290fe1"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-descriptor-probe.mjs",
+      "bytes": 21196,
+      "sha256": "3e00b300942d3dc50a3967c78169528ab4d095d04ec3efa9c4cb26c97c2267bf"
+    }
+  ],
+  "checks": {
+    "node": 199,
+    "nativeMetadata": "105 PASS current rerun",
+    "stage": "directory-stage-r1.log 1 PASS",
+    "static": "exact16 ESLint and Prettier PASS"
+  },
+  "scope": "Bounded directory/file physical kernel and exact owned synthetic Bun probe; not Native activation or final whole CODE",
+  "before": [
+    "prechange/descriptor-ffi-before-r1/manifest.json",
+    "prechange/descriptor-read-before-r1/manifest.json",
+    "prechange/descriptor-root-revocation-before-r1/manifest.json",
+    "prechange/descriptor-read-resource-before-r1/manifest.json",
+    "prechange/descriptor-directory-before-r1/manifest.json",
+    "prechange/descriptor-probe-before-r1/manifest.json"
+  ],
+  "probePreparation": "descriptor-probe-preparation-r2.json",
+  "limits": "Actual Bun pending independent code and pre-execution review. Node physical tests use explicit transformed copies."
+}

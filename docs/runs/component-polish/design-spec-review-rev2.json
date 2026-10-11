@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "628e61ac228f7b3c21bb84b816520e064d41e9ddcae6cf1f60256a957a2c69b5",
+    "documents_sha256": "2f97fc70150b5c9d7bac09ddca9e8e172a89e420f3e4a507d96aed9b683f2728",
+    "gate": "design_spec",
+    "plan_sha256": "d0326774cf3b47dce1387e06e56ecdedca664e5b605444333a9ca6df13f1c6e7",
+    "schema_version": 2
+  },
+  "verdict": "pass",
+  "summary": "Independent design_spec document review for run component-polish. Reviewed docs/design/components.json (SHA-256 0e750674d5df88b3fe0a5fe8e126e8596f3c2b001462a3863e5b845e30bdc486) and docs/design/system.md (SHA-256 4109ea6904d0a76e423a0235f4273014bbd825d41a8b1307ddd058fc502f2f51) against docs/runs/component-polish/plan.md revision 3 (SHA-256 d0326774cf3b47dce1387e06e56ecdedca664e5b605444333a9ca6df13f1c6e7), the registered contract, and relevant approved UX requirements. The previous P2 shared-badge gap is resolved: ToolCall's six and PermissionRequest's five variants each declare an actual nested StatusBadge reference, semantic state and visible label; PermissionRequest maps its distinct tones, including approved as unknown with info tone and the label '승인 전달됨' so decision delivery is not execution success. StatusBadge owns 24px text-hug geometry and background/foreground token bindings, and neither parent retains competing status color bindings. Input feedback and focus/error composition, start-aligned selected navigation, quiet ToolCall summaries and distinct evidence actions, and PermissionRequest's existing Button actions and narrow-layout rules remain coherent. The inventory remains 44 variants. This is specification readiness for Figma projection only; no Figma nodes, rendered Light/Dark captures, actual variable bindings, browser/runtime hit regions, keyboard interaction, zoom, or assistive-technology behavior were verified in this review.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "sol_design_spec_review_rev2",
+    "author_task_id": "/root"
+  }
+}

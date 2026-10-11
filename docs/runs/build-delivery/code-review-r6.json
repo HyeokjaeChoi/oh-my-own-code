@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "source_sha256": "6609f8a53501a3d49d14a024509da030521eb1934a415ef4dfda7685e6b34492",
+    "verification_sha256": "1f2d5a710403531546c91e84b0af380a10bed71dfc2a7c7d83f9d77bdb291a2e",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "verdict": "pass",
+  "summary": "R5's pending foreign-event gap is closed. Selected sequence 1 and foreign sequence 3 leave cursor 1 with sequence 3 pending. Late sequence 2 consumes through 3 and clears reconciliation; sequence 4 then advances. The projection deduplicates messages, validates pending events through the snapshot schema, and exposes only selected-session events and state to the transcript. No further code finding was identified.",
+  "open_findings": [],
+  "evidence": "Source and regression test inspected. All eleven required ledger checks record exit 0 for the reviewed source hash; browser E2E records four passing cases. Tests were not rerun.",
+  "limitations": [
+    "Browser E2E uses Vite dev and a synthetic tsx bridge. The compiled bridge launch smoke is supplemental.",
+    "The frozen-lockfile install reported Already up to date, so it does not prove a clean installation.",
+    "The evidence does not establish real SDK integration, persistence, control-channel security, or full PRD acceptance."
+  ],
+  "provenance": {
+    "child_task_id": "/root/final_code_review_r6",
+    "author_task_id": "/root",
+    "report_only": true,
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "high",
+    "runtime_identity_verified": false
+  }
+}

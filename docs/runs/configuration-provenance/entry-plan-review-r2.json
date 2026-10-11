@@ -1,0 +1,73 @@
+{
+  "schema_version": 2,
+  "run": "configuration-provenance",
+  "reviewer": "plan_reviewer",
+  "plan_path": "docs/runs/configuration-provenance/plan.md",
+  "plan_revision": 2,
+  "reviewed": {
+    "contract_sha256": "b19bbd0ff4717e6767bcc2d85b248ca28d2e5397ec90d7151fbd69c1b00f9074",
+    "gate": "plan",
+    "plan_sha256": "04b08288e35eb2ae26d0add19bdb48a2bb2096a5267b33047801603c4b1be718",
+    "schema_version": 2,
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "Revision 2는 F14-PLAN-R1-01의 핵심 문제를 해결합니다. 새 config.get 호출을 제외하고 runtime 설정 문서·디렉터리·count를 not_reported로 둡니다. 수정된 plan과 contract, supporting design context 사이에 남은 중대한 충돌은 없습니다. 이 판정은 해당 수정과 영향을 받은 일관성에만 적용합니다. design_spec 판정과 구현 승인은 포함하지 않습니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "F14-PLAN-R1-01",
+      "resolution": "초기화된 Native location을 추정할 필요가 있는 새 config.get 호출 자체를 제거했습니다. 기존 trusted skill.list 결과의 허용된 path metadata와 기존 MCP 관측 상태, inert workspace marker만 사용합니다. 새 SDK method, location 초기화, activation, reload, watcher를 도입하지 않습니다. Mock counter는 앱의 명시적 호출과 secret projection만 확인하며 Native 내부 전체의 부작용 없음은 증명하지 않습니다.",
+      "evidence": [
+        "plan.md Revision 2의 C2, Verification and rollback, Revision2 correction",
+        "contract.json의 C2 및 native-location decision",
+        "design.md Version 2의 Boundary and wire shape와 Revision2 correction"
+      ]
+    }
+  ],
+  "review_notes": [
+    "이번 검토는 첫 major feature의 INITIAL entry correction review입니다. broad intake 또는 완료된 parent audit를 반복하지 않았습니다.",
+    "Commands count는 제거됐습니다. 지원 근거가 없는 hooks/tools는 unknown/not_reported이며 0, 활성, 지원 상태로 추정하지 않습니다. Runtime 설정 문서·디렉터리·category count를 보고하지 않는 경계는 기존 Skills/MCP 관측을 유지하는 경계와 일치합니다.",
+    "Contract host check의 secret/no-effect 표현은 plan과 supporting design에 명시된 앱의 명시적 호출 및 inert discovery 범위로 읽습니다. Native 내부 전체에 대한 증명으로 승인하지 않습니다.",
+    "전체 F14의 편집·검증·diff·apply/reload·MCP lifecycle·설치/업데이트·unsupported-format conversion은 후속 필수 작업입니다. 이 increment의 pass는 F14 완료가 아닙니다.",
+    "사용자 handoff의 현재 source a33 및 parent COMPLETE를 유지된 전제로 사용했습니다. Parent 상태를 다시 감사하거나 blocker로 만들지 않았습니다.",
+    "계약의 source checks, tests, build, bundle, hidden UI 및 독립 code/render review는 구현 후 필요한 계획입니다. 이번 검토에서 실행하거나 통과 처리하지 않았습니다. 별도 design_spec 판정과 handoff가 구현 전에 필요합니다."
+  ],
+  "verification": {
+    "method": "지정 문서와 Revision 2 packet 읽기, 문서 및 지정 profile/skill의 읽기 전용 SHA-256 계산",
+    "reviewed_binding_source": "docs/runs/configuration-provenance/entry-plan-input-r2.json",
+    "reviewed_binding_copied_exactly": true,
+    "plan_sha256_matches": true,
+    "packet_raw_contract_sha256_matches": true,
+    "design_document_sha256_matches": true,
+    "packet_profile_and_skill_sha256_matches": true,
+    "packet_work_class_binding_matches": true,
+    "semantic_contract_hash_recomputed": false,
+    "work_class_hash_recomputed": false,
+    "source_hash_recomputed": false,
+    "source_status_authority": "사용자 handoff: source a33 유지, parent COMPLETE",
+    "product_source_inspected": false,
+    "planned_source_checks_run": false,
+    "runtime_checks_run": false,
+    "tests_run": false,
+    "builds_run": false,
+    "network_used": false,
+    "private_invocations_run": false
+  },
+  "provenance": {
+    "child_task_id": "01a118ab-da9e-79c1-a28a-b21b660e6825",
+    "child_id_source": "CODEX_THREAD_ID",
+    "author_task_id": "main-continuation",
+    "profile": "solo_reader",
+    "skills": ["solo-specialist", "solo-plan-review"],
+    "mode": "report_only",
+    "runtime_identity_attested": false,
+    "os_read_only_sandbox_attested": false,
+    "delegated": false,
+    "ledger_changed": false,
+    "product_source_changed": false,
+    "repairs_authored": false,
+    "files_changed": ["docs/runs/configuration-provenance/entry-plan-review-r2.json"]
+  }
+}

@@ -1,0 +1,405 @@
+{
+  "boundaries": [
+    {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "c8ae284cb2d01e4e5c1cc6be27d5f16d576afabeb64aeb34661c2cf0b6e42088",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:00:53+00:00",
+      "scope": "FSD public exports and browser-server isolation",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\"result\":\"pass\",\"sourceFiles\":89,\"boundaryFixtures\":68,\"positiveFixtures\":16}\n",
+      "timed_out": false
+    },
+    {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "e78cfbda8006ff52429c4add232416c4e3dd5e23dca41e5c90c70d43e2c18bc2",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:03:48+00:00",
+      "scope": "FSD public exports and browser-server isolation",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\"result\":\"pass\",\"sourceFiles\":89,\"boundaryFixtures\":68,\"positiveFixtures\":16}\n",
+      "timed_out": false
+    }
+  ],
+  "build": [
+    {
+      "argv": [
+        "node",
+        "docs/runs/git-branch-restore/ensure-current-build.mjs"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "c8ae284cb2d01e4e5c1cc6be27d5f16d576afabeb64aeb34661c2cf0b6e42088",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:02:11+00:00",
+      "scope": "Exact current input/artifact verified build or Nx rebuild",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "(node:68855) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n[plugin builtin:vite-reporter] \u001b[33;1m\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\u001b[0m\n",
+      "stdout": "\n> nx run desktop-app:build\n\n> node apps/desktop-app/scripts/build.mjs\r\n\r\nvite v8.3.0 building client environment for production...\ntransforming...\n\u001b[32m\u2713\u001b[0m 2441 modules transformed.\nrendering chunks...\ncomputing gzip size...\n\u001b[2mapps/desktop-app/dist/app/renderer/\u001b[0m\u001b[32mindex.html                 \u001b[0m\u001b[1;2m    0.68 kB\u001b[0m\u001b[2m \u2502 gzip:   0.41 kB\u001b[0m\n\u001b[2mapps/desktop-app/dist/app/renderer/\u001b[0m\u001b[2massets/\u001b[0m\u001b[35mindex-DtjcA24X.css  \u001b[0m\u001b[1;2m   70.07 kB\u001b[0m\u001b[2m \u2502 gzip:   9.34 kB\u001b[0m\n\u001b[2mapps/desktop-app/dist/app/renderer/\u001b[0m\u001b[2massets/\u001b[0m\u001b[36mindex-DBnhZ_R7.js   \u001b[0m\u001b[33;1m1,100.02 kB\u001b[0m\u001b[2m \u2502 gzip: 302.36 kB\u001b[0m\n\n\u2713 built in 321ms\n\n\n\n NX   Successfully ran target build for project desktop-app\n\n\n  Run duration:      53.1s\n  Cache:             Skipped (--skip-nx-cache)\n  Critical path:     53.0s (1 task)\n  Recoverable time:  <1ms\n\n  Recommendations:\n    - Cache: drop --skip-nx-cache to restore unchanged tasks instantly.\n    - Speed up or split the longest tasks on the critical path:\n        desktop-app:build    53.0s\n{\"result\":\"pass\",\"action\":\"rebuilt_and_verified\",\"buildStampSha256\":\"52d4783115760bc7f579f99dd8ca24b54a38d66edb26bf7ce27bd85fdac6f6cf\",\"inputsSha256\":\"d2fc32779617ce2a615d455f0d66d925b07e14e8bf93cfa1d1d093ab1c4b75fc\",\"artifactsSha256\":\"94ed6cbebd7f86c75c92143ea0fdd21d536df009218740cae62147a981684464\",\"selectedScriptsSha256\":\"319dbe049445eb637c82f419712825c4b3ee36a1a4f38dfa3e0d89f4687bcbd8\"}\n",
+      "timed_out": false
+    },
+    {
+      "argv": [
+        "node",
+        "docs/runs/git-branch-restore/ensure-current-build.mjs"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "e78cfbda8006ff52429c4add232416c4e3dd5e23dca41e5c90c70d43e2c18bc2",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:04:12+00:00",
+      "scope": "Exact current input/artifact verified build or Nx rebuild",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\"result\":\"pass\",\"action\":\"[REDACTED]\"buildStampSha256\":\"52d4783115760bc7f579f99dd8ca24b54a38d66edb26bf7ce27bd85fdac6f6cf\",\"inputsSha256\":\"d2fc32779617ce2a615d455f0d66d925b07e14e8bf93cfa1d1d093ab1c4b75fc\",\"artifactsSha256\":\"94ed6cbebd7f86c75c92143ea0fdd21d536df009218740cae62147a981684464\",\"selectedScriptsSha256\":\"319dbe049445eb637c82f419712825c4b3ee36a1a4f38dfa3e0d89f4687bcbd8\"}\n",
+      "timed_out": false
+    }
+  ],
+  "bundle": [
+    {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "c8ae284cb2d01e4e5c1cc6be27d5f16d576afabeb64aeb34661c2cf0b6e42088",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:02:12+00:00",
+      "scope": "Renderer bundle no arbitrary process/filesystem/credential authority",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\n  \"result\": \"pass\",\n  \"rendererFiles\": [\n    {\n      \"file\": \"assets/index-DBnhZ_R7.js\",\n      \"sha256\": \"e52846902a4385c2f9d206b884ed0057b33c17d59f0c8b511aac93b8bcf35f32\"\n    },\n    {\n      \"file\": \"assets/index-DtjcA24X.css\",\n      \"sha256\": \"14e16e7cc39d03f2bdb7d30d799bd597e79c401496d1a0cd052c01a6a321bf95\"\n    },\n    {\n      \"file\": \"index.html\",\n      \"sha256\": \"cc0cfd093e6b32abce7066ad4e6442139f424e35178a3901c15dfe290c3bd3bb\"\n    }\n  ]\n}\n",
+      "timed_out": false
+    },
+    {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "e78cfbda8006ff52429c4add232416c4e3dd5e23dca41e5c90c70d43e2c18bc2",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:04:14+00:00",
+      "scope": "Renderer bundle no arbitrary process/filesystem/credential authority",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\n  \"result\": \"pass\",\n  \"rendererFiles\": [\n    {\n      \"file\": \"assets/index-DBnhZ_R7.js\",\n      \"sha256\": \"e52846902a4385c2f9d206b884ed0057b33c17d59f0c8b511aac93b8bcf35f32\"\n    },\n    {\n      \"file\": \"assets/index-DtjcA24X.css\",\n      \"sha256\": \"14e16e7cc39d03f2bdb7d30d799bd597e79c401496d1a0cd052c01a6a321bf95\"\n    },\n    {\n      \"file\": \"index.html\",\n      \"sha256\": \"cc0cfd093e6b32abce7066ad4e6442139f424e35178a3901c15dfe290c3bd3bb\"\n    }\n  ]\n}\n",
+      "timed_out": false
+    }
+  ],
+  "format": [
+    {
+      "argv": [
+        "node",
+        "docs/runs/git-branch-restore/check-changed.mjs",
+        "format"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "c8ae284cb2d01e4e5c1cc6be27d5f16d576afabeb64aeb34661c2cf0b6e42088",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:01:02+00:00",
+      "scope": "Exact changed ownership paths",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n{\"mode\":\"format\",\"argv\":[\"exec\",\"prettier\",\"--check\",\"apps/desktop-app/scripts/build-provenance.mjs\",\"apps/desktop-app/scripts/build-provenance.test.mjs\",\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\",\"apps/desktop-app/scripts/git-branch-restore-probe.mjs\",\"apps/desktop-app/scripts/git-commit-probe.mjs\",\"apps/desktop-app/scripts/git-index-probe.mjs\",\"apps/desktop-app/scripts/run-evidence.mjs\",\"apps/desktop-app/scripts/run-evidence.test.mjs\",\"apps/desktop-app/src/desktop-bridge.d.ts\",\"apps/desktop-app/src/event-host-child.mjs\",\"apps/desktop-app/src/event-host-protocol.mjs\",\"apps/desktop-app/src/event-host-protocol.test.mjs\",\"apps/desktop-app/src/event-host-resources.mjs\",\"apps/desktop-app/src/event-host-supervisor.mjs\",\"apps/desktop-app/src/event-host-supervisor.test.mjs\",\"apps/desktop-app/src/git-branch-restore.test.mjs\",\"apps/desktop-app/src/host/git-branch-restore-contract.mjs\",\"apps/desktop-app/src/host/git-branch-restore-contract.test.mjs\",\"apps/desktop-app/src/host/git-branch-restore-kernel.mjs\",\"apps/desktop-app/src/host/git-branch-restore-kernel.test.mjs\",\"apps/desktop-app/src/host/git-metadata-kernel.mjs\",\"apps/desktop-app/src/host/storage-journal.mjs\",\"apps/desktop-app/src/host/storage-journal.test.mjs\",\"apps/desktop-app/src/host/workbench-admission.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore-storage.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore-storage.test.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore.test.mjs\",\"apps/desktop-app/src/host/workbench-git-index.test.mjs\",\"apps/desktop-app/src/host/workbench-git-snapshot.mjs\",\"apps/desktop-app/src/host/workbench-git.mjs\",\"apps/desktop-app/src/host/workbench-receipts.mjs\",\"apps/desktop-app/src/host/workspace-registry.mjs\",\"apps/desktop-app/src/host/workspace-registry.test.mjs\",\"apps/desktop-app/src/main.mjs\",\"apps/desktop-app/src/renderer/entities/workbench/index.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/store.ts\",\"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\",\"apps/desktop-app/src/renderer/features/git-review/index.tsx\",\"apps/desktop-app/src/renderer/features/git-review/review.module.css\",\"apps/desktop-app/src/renderer/shared/api/index.ts\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.d.mts\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.ts\",\"apps/desktop-app/src/renderer/shared/transport/index.ts\",\"apps/desktop-app/src/workbench-contract.mjs\",\"apps/desktop-app/src/workbench-service.mjs\",\"apps/desktop-app/src/workbench-store.test.mjs\"],\"exit\":0}\n",
+      "timed_out": false
+    },
+    {
+      "argv": [
+        "node",
+        "docs/runs/git-branch-restore/check-changed.mjs",
+        "format"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "e78cfbda8006ff52429c4add232416c4e3dd5e23dca41e5c90c70d43e2c18bc2",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:03:56+00:00",
+      "scope": "Exact changed ownership paths",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n{\"mode\":\"format\",\"argv\":[\"exec\",\"prettier\",\"--check\",\"apps/desktop-app/scripts/build-provenance.mjs\",\"apps/desktop-app/scripts/build-provenance.test.mjs\",\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\",\"apps/desktop-app/scripts/git-branch-restore-probe.mjs\",\"apps/desktop-app/scripts/git-commit-probe.mjs\",\"apps/desktop-app/scripts/git-index-probe.mjs\",\"apps/desktop-app/scripts/run-evidence.mjs\",\"apps/desktop-app/scripts/run-evidence.test.mjs\",\"apps/desktop-app/src/desktop-bridge.d.ts\",\"apps/desktop-app/src/event-host-child.mjs\",\"apps/desktop-app/src/event-host-protocol.mjs\",\"apps/desktop-app/src/event-host-protocol.test.mjs\",\"apps/desktop-app/src/event-host-resources.mjs\",\"apps/desktop-app/src/event-host-supervisor.mjs\",\"apps/desktop-app/src/event-host-supervisor.test.mjs\",\"apps/desktop-app/src/git-branch-restore.test.mjs\",\"apps/desktop-app/src/host/git-branch-restore-contract.mjs\",\"apps/desktop-app/src/host/git-branch-restore-contract.test.mjs\",\"apps/desktop-app/src/host/git-branch-restore-kernel.mjs\",\"apps/desktop-app/src/host/git-branch-restore-kernel.test.mjs\",\"apps/desktop-app/src/host/git-metadata-kernel.mjs\",\"apps/desktop-app/src/host/storage-journal.mjs\",\"apps/desktop-app/src/host/storage-journal.test.mjs\",\"apps/desktop-app/src/host/workbench-admission.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore-storage.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore-storage.test.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore.test.mjs\",\"apps/desktop-app/src/host/workbench-git-index.test.mjs\",\"apps/desktop-app/src/host/workbench-git-snapshot.mjs\",\"apps/desktop-app/src/host/workbench-git.mjs\",\"apps/desktop-app/src/host/workbench-receipts.mjs\",\"apps/desktop-app/src/host/workspace-registry.mjs\",\"apps/desktop-app/src/host/workspace-registry.test.mjs\",\"apps/desktop-app/src/main.mjs\",\"apps/desktop-app/src/renderer/entities/workbench/index.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/store.ts\",\"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\",\"apps/desktop-app/src/renderer/features/git-review/index.tsx\",\"apps/desktop-app/src/renderer/features/git-review/review.module.css\",\"apps/desktop-app/src/renderer/shared/api/index.ts\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.d.mts\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.ts\",\"apps/desktop-app/src/renderer/shared/transport/index.ts\",\"apps/desktop-app/src/workbench-contract.mjs\",\"apps/desktop-app/src/workbench-service.mjs\",\"apps/desktop-app/src/workbench-store.test.mjs\"],\"exit\":0}\n",
+      "timed_out": false
+    }
+  ],
+  "hidden": [
+    {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--script",
+        "git-branch-restore",
+        "--out",
+        "docs/runs/git-branch-restore/evidence/hidden-r2"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "e78cfbda8006ff52429c4add232416c4e3dd5e23dca41e5c90c70d43e2c18bc2",
+      "exit_code": 1,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:06:58+00:00",
+      "scope": "Actual current builtRenderer/preload with synthetic Main, keyboard/light/dark/760px200/held/unknown/lateScope, native PNG only",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\"script\":\"git-branch-restore\",\"mode\":null,\"platform\":\"darwin\",\"runnerPlatform\":\"darwin\",\"runnerArch\":\"arm64\",\"runnerNode\":\"v24.14.[REDACTED]\"destination\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-branch-restore/evidence/hidden-r2/git-branch-restore\",\"command\":[\"/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node\",\"/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-git-branch-restore.mjs\"],\"startedAt\":\"2026-10-08T23:04:30.803Z\",\"status\":\"fail\",\"exitCode\":1,\"signal\":null,\"evidence\":[],\"provenance\":{\"schemaVersion\":1,\"buildStampPath\":\"apps/desktop-app/dist/build-provenance.json\",\"buildStampSha256\":\"52d4783115760bc7f579f99dd8ca24b54a38d66edb26bf7ce27bd85fdac6f6cf\",\"buildStamp\":{\"schemaVersion\":1,\"kind\":\"desktop-build-byte-provenance\",\"createdAt\":\"2026-10-08T23:01:56.793Z\",\"builder\":{\"node\":\"v24.14.[REDACTED]\"platform\":\"darwin\",\"arch\":\"arm64\"},\"inputs\":{\"algorithm\":\"scoped-file-inventory-sha256-v[REDACTED]\"scopes\":[{\"path\":\"package.json\",\"present\":true},{\"path\":\"pnpm-lock.yaml\",\"present\":true},{\"path\":\"pnpm-workspace.yaml\",\"present\":true},{\"path\":\"tsconfig.base.json\",\"present\":true},{\"path\":\"nx.json\",\"present\":true},{\"path\":\"apps/desktop-app/package.json\",\"present\":true},{\"path\":\"apps/desktop-app/project.json\",\"present\":true},{\"path\":\"apps/desktop-app/index.html\",\"present\":true},{\"path\":\"apps/desktop-app/vite.config.ts\",\"present\":true},{\"path\":\"apps/desktop-app/tsconfig.json\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/build.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/build-provenance.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/prepare-event-host.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/stage-event-host.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/stage-owner-lifetime.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/native/owner-lifetime/witness.c\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/package.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/package.json\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/package-lock.json\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/installer-pins.json\",\"present\":true},{\"path\":\"apps/desktop-app/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"apps/desktop-app/public\",\"tree\":true,\"source\":true,\"optional\":true,\"present\":false},{\"path\":\"packages/ui/package.json\",\"present\":true},{\"path\":\"packages/ui/project.json\",\"present\":true},{\"path\":\"packages/ui/tsconfig.json\",\"present\":true},{\"path\":\"packages/ui/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"packages/contracts/package.json\",\"present\":true},{\"path\":\"packages/contracts/project.json\",\"present\":true},{\"path\":\"packages/contracts/tsconfig.json\",\"present\":true},{\"path\":\"packages/contracts/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"packages/contracts/tsconfig.build.json\",\"present\":true},{\"path\":\"docs/design/tokens\",\"tree\":true,\"source\":true,\"present\":true}],\"selection\":{\"excludedDirectories\":[\"node_modules\",\"dist\",\"exports\",\"captures\",\"credentials\",\"runtime-data\"],\"excludedNames\":\"hidden names and *.test.* / *.spec.*\",\"allowedFileExtensions\":\"\\\\.(?:c|[cm]?js|[cm]?ts|jsx|tsx|css|html|json|svg|png|jpe?g|webp|gif|ico|woff2?|ttf)$\"},\"limits\":{\"files\":4096,\"depth\":24,\"bytes\":1073741824},\"files\":[{\"path\":\"apps/desktop-app/index.html\",\"size\":584,\"mode\":420,\"sha256\":\"973680da1eadd48eb58ff47aaaca46a10e33c0da3a31e97662f3ddea9fddc9ae\"},{\"path\":\"apps/desktop-app/native/owner-lifetime/witness.c\",\"size\":16279,\"mode\":420,\"sha256\":\"4eb42efefdef1970d48bd19368b94bae689b10fbeacc96cd1adc83a9cf996951\"},{\"path\":\"apps/desktop-app/package.json\",\"size\":1321,\"mode\":420,\"sha256\":\"04ce567af16e2e04ae7abc44c9c6e9c1ba890d5677ece35fffcca1e162521418\"},{\"path\":\"apps/desktop-app/project.json\",\"size\":4323,\"mode\":420,\"sha256\":\"0f90164352dbc9df946e3578eb604d3216dc2fdd82e35b2e126d31c2acefb622\"},{\"path\":\"apps/desktop-app/runtime-event-host/installer-pins.json\",\"size\":6700,\"mode\":420,\"sha256\":\"2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41\"},{\"path\":\"apps/desktop-app/runtime-event-host/package-lock.json\",\"size\":232329,\"mode\":420,\"sha256\":\"34f04622903ba6c3c14ba5729e0e406f1ed245307acea049c637cbdac2e64e9c\"},{\"path\":\"apps/desktop-app/runtime-event-host/package.json\",\"size\":276,\"mode\":420,\"sha256\":\"86992a64cd87494b080f2efd47dae2e2d6ae46b7958c7a063e2ed54b3e1dd0e5\"},{\"path\":\"apps/desktop-app/scripts/build-provenance.mjs\",\"size\":19673,\"mode\":420,\"sha256\":\"31bf8275302b5827387abb015d9c1dce969d28d08af8ebfbf4eaa7e998b994c7\"},{\"path\":\"apps/desktop-app/scripts/build.mjs\",\"size\":2496,\"mode\":420,\"sha256\":\"e906fbe156109e737228c20b59f6e47952a27adb09a7d90fbfa695bcb366529d\"},{\"path\":\"apps/desktop-app/scripts/package.mjs\",\"size\":4176,\"mode\":420,\"sha256\":\"3c9c9e9a65b91996025f4e95abc533c8799fd12385aae8a7f01153a2df14faaf\"},{\"path\":\"apps/desktop-app/scripts/prepare-event-host.mjs\",\"size\":13241,\"mode\":420,\"sha256\":\"9970d480610c93628587fb97c62ff393e3515d6d87f6362542aa79456a2d1cff\"},{\"path\":\"apps/desktop-app/scripts/stage-event-host.mjs\",\"size\":13451,\"mode\":420,\"sha256\":\"c5962f23c4f33c26c7728732a5d0b4a04cb0bfd5adad2ddefd9b4f0d30d70853\"},{\"path\":\"apps/desktop-app/scripts/stage-owner-lifetime.mjs\",\"size\":6917,\"mode\":420,\"sha256\":\"d1d46210d36c321650cb1cb99e7a47de29ee924a8b72d7e81febdfacca5def65\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/agents.mjs\",\"size\":16865,\"mode\":420,\"sha256\":\"1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/extensions.mjs\",\"size\":7951,\"mode\":420,\"sha256\":\"05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/package.json\",\"size\":110,\"mode\":420,\"sha256\":\"1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/server.mjs\",\"size\":13606,\"mode\":420,\"sha256\":\"b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d\"},{\"path\":\"apps/desktop-app/src/css-modules.d.ts\",\"size\":111,\"mode\":420,\"sha256\":\"00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4\"},{\"path\":\"apps/desktop-app/src/desktop-bridge.d.ts\",\"size\":36164,\"mode\":420,\"sha256\":\"4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5\"},{\"path\":\"apps/desktop-app/src/ephemeral-profile.mjs\",\"size\":2527,\"mode\":420,\"sha256\":\"d58944c6cd050087d4dc5e8b786dd1d0d2bc98e6eb883de907a72b5615c19765\"},{\"path\":\"apps/desktop-app/src/event-host-child.mjs\",\"size\":16199,\"mode\":420,\"sha256\":\"11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875\"},{\"path\":\"apps/desktop-app/src/event-host-protocol.mjs\",\"size\":10749,\"mode\":420,\"sha256\":\"18fd006fa963e84015b81ac2338a5680d072aa9f8c5cf7ef5f85fd3d3eba2ed6\"},{\"path\":\"apps/desktop-app/src/event-host-resources.mjs\",\"size\":15942,\"mode\":420,\"sha256\":\"f900de7bb9b08144fc9774c9c801b74589bac6d965d9f09e310e4a3f2d0bcaf8\"},{\"path\":\"apps/desktop-app/src/event-host-supervisor.mjs\",\"size\":30405,\"mode\":420,\"sha256\":\"46cf4c7dc4f002ae4538603b2f858d3e3c500247277c751c83af2cccee18a5b8\"},{\"path\":\"apps/desktop-app/src/host/configuration-file-observation.mjs\",\"size\":1997,\"mode\":420,\"sha256\":\"83419028f952d647a23bf06b908649c97cc343b2247c15b9e1ae427acc7a9587\"},{\"path\":\"apps/desktop-app/src/host/configuration-save-kernel.mjs\",\"size\":26847,\"mode\":420,\"sha256\":\"cca5de5aa358d1ecba8209b2c7c8af457503c1717945cba1f825245c2974fd54\"},{\"path\":\"apps/desktop-app/src/host/configuration-source-files.mjs\",\"size\":13095,\"mode\":420,\"sha256\":\"ad94c3adc982fb5b8052bdee90a34cbd1ae8b3a2179b6325f35973c6db8ff7da\"},{\"path\":\"apps/desktop-app/src/host/git-branch-restore-contract.mjs\",\"size\":14144,\"mode\":420,\"sha256\":\"75cf0478da330b3b9fa6937be415abbcd7fb50473ba1418b913197fdfc1b21a3\"},{\"path\":\"apps/desktop-app/src/host/git-branch-restore-kernel.mjs\",\"size\":277,\"mode\":420,\"sha256\":\"f8402c66a0cc450c3e1027157de948797d4148d7225e0caa24c2faaeadbf4419\"},{\"path\":\"apps/desktop-app/src/host/git-commit-contract.mjs\",\"size\":12625,\"mode\":420,\"sha256\":\"94fe59d2bce230887fe44513ba3b829e2149ee33489df62edf0475ef655d039d\"},{\"path\":\"apps/desktop-app/src/host/git-commit-kernel.mjs\",\"size\":263,\"mode\":420,\"sha256\":\"ccd5b04f81fbd2e675ab10599dddfc3a1519dc119e4562bf8ffeb12e7213e482\"},{\"path\":\"ap\n[truncated]",
+      "timed_out": false
+    }
+  ],
+  "kernel": [
+    {
+      "argv": [
+        "python3",
+        "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+        "kernel"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "c8ae284cb2d01e4e5c1cc6be27d5f16d576afabeb64aeb34661c2cf0b6e42088",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T22:59:34+00:00",
+      "scope": "Exact full source inventory allows ONLY UI closed-target projection, appended actual React render tests and bounded page-error report. Reuse prior actual branch108+index52+commit82 only after source/report/Bun/environment proof; no new kernel runtime claimed.",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\"priorActualNativeReports\": [{\"path\": \"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-git-branch-restore-kernel-7ZZCHc/report.json\", \"sha256\": \"2fb52278287efd28597d1f08e82c7073cc314bae933a9c33a5db618b9afce91b\", \"cases\": 108}, {\"path\": \"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-git-commit-kernel-ifEP5y/report.json\", \"sha256\": \"ca51f8ab45345a729783d47414dee1ae0c042f2512ea245dfc7d6742fdd63e4a\", \"cases\": 82}, {\"path\": \"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-git-index-kernel-SF7YIU/report.json\", \"sha256\": \"541b9e04cd11dc51ccab4bfd71719e1e9f9a081770d15dc503c17958e8df37b8\", \"cases\": 52}], \"newKernelExecution\": false, \"reusedNativeCases\": 242, \"exactOnlyChangedUIPaths\": [\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\", \"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\", \"apps/desktop-app/src/workbench-store.test.mjs\"]}\n",
+      "timed_out": false
+    },
+    {
+      "argv": [
+        "python3",
+        "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+        "kernel"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "e78cfbda8006ff52429c4add232416c4e3dd5e23dca41e5c90c70d43e2c18bc2",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:02:46+00:00",
+      "scope": "Exact full source inventory allows ONLY UI closed-target projection, appended actual React render tests and bounded page-error report. Reuse prior actual branch108+index52+commit82 only after source/report/Bun/environment proof; no new kernel runtime claimed.",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\"priorActualNativeReports\": [{\"path\": \"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-git-branch-restore-kernel-7ZZCHc/report.json\", \"sha256\": \"2fb52278287efd28597d1f08e82c7073cc314bae933a9c33a5db618b9afce91b\", \"cases\": 108}, {\"path\": \"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-git-commit-kernel-ifEP5y/report.json\", \"sha256\": \"ca51f8ab45345a729783d47414dee1ae0c042f2512ea245dfc7d6742fdd63e4a\", \"cases\": 82}, {\"path\": \"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-git-index-kernel-SF7YIU/report.json\", \"sha256\": \"541b9e04cd11dc51ccab4bfd71719e1e9f9a081770d15dc503c17958e8df37b8\", \"cases\": 52}], \"newKernelExecution\": false, \"reusedNativeCases\": 242, \"exactOnlyChangedUIPaths\": [\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\", \"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\", \"apps/desktop-app/src/workbench-store.test.mjs\"]}\n",
+      "timed_out": false
+    }
+  ],
+  "lint": [
+    {
+      "argv": [
+        "node",
+        "docs/runs/git-branch-restore/check-changed.mjs",
+        "lint"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "c8ae284cb2d01e4e5c1cc6be27d5f16d576afabeb64aeb34661c2cf0b6e42088",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:00:58+00:00",
+      "scope": "Exact changed ownership paths",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\"mode\":\"lint\",\"argv\":[\"exec\",\"eslint\",\"--config\",\"apps/desktop-app/eslint.config.mjs\",\"apps/desktop-app/scripts/build-provenance.mjs\",\"apps/desktop-app/scripts/build-provenance.test.mjs\",\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\",\"apps/desktop-app/scripts/git-branch-restore-probe.mjs\",\"apps/desktop-app/scripts/git-commit-probe.mjs\",\"apps/desktop-app/scripts/git-index-probe.mjs\",\"apps/desktop-app/scripts/run-evidence.mjs\",\"apps/desktop-app/scripts/run-evidence.test.mjs\",\"apps/desktop-app/src/desktop-bridge.d.ts\",\"apps/desktop-app/src/event-host-child.mjs\",\"apps/desktop-app/src/event-host-protocol.mjs\",\"apps/desktop-app/src/event-host-protocol.test.mjs\",\"apps/desktop-app/src/event-host-resources.mjs\",\"apps/desktop-app/src/event-host-supervisor.mjs\",\"apps/desktop-app/src/event-host-supervisor.test.mjs\",\"apps/desktop-app/src/git-branch-restore.test.mjs\",\"apps/desktop-app/src/host/git-branch-restore-contract.mjs\",\"apps/desktop-app/src/host/git-branch-restore-contract.test.mjs\",\"apps/desktop-app/src/host/git-branch-restore-kernel.mjs\",\"apps/desktop-app/src/host/git-branch-restore-kernel.test.mjs\",\"apps/desktop-app/src/host/git-metadata-kernel.mjs\",\"apps/desktop-app/src/host/storage-journal.mjs\",\"apps/desktop-app/src/host/storage-journal.test.mjs\",\"apps/desktop-app/src/host/workbench-admission.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore-storage.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore-storage.test.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore.test.mjs\",\"apps/desktop-app/src/host/workbench-git-index.test.mjs\",\"apps/desktop-app/src/host/workbench-git-snapshot.mjs\",\"apps/desktop-app/src/host/workbench-git.mjs\",\"apps/desktop-app/src/host/workbench-receipts.mjs\",\"apps/desktop-app/src/host/workspace-registry.mjs\",\"apps/desktop-app/src/host/workspace-registry.test.mjs\",\"apps/desktop-app/src/main.mjs\",\"apps/desktop-app/src/renderer/entities/workbench/index.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/store.ts\",\"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\",\"apps/desktop-app/src/renderer/features/git-review/index.tsx\",\"apps/desktop-app/src/renderer/shared/api/index.ts\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.d.mts\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.ts\",\"apps/desktop-app/src/renderer/shared/transport/index.ts\",\"apps/desktop-app/src/workbench-contract.mjs\",\"apps/desktop-app/src/workbench-service.mjs\",\"apps/desktop-app/src/workbench-store.test.mjs\"],\"exit\":0}\n",
+      "timed_out": false
+    },
+    {
+      "argv": [
+        "node",
+        "docs/runs/git-branch-restore/check-changed.mjs",
+        "lint"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "e78cfbda8006ff52429c4add232416c4e3dd5e23dca41e5c90c70d43e2c18bc2",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:03:52+00:00",
+      "scope": "Exact changed ownership paths",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\"mode\":\"lint\",\"argv\":[\"exec\",\"eslint\",\"--config\",\"apps/desktop-app/eslint.config.mjs\",\"apps/desktop-app/scripts/build-provenance.mjs\",\"apps/desktop-app/scripts/build-provenance.test.mjs\",\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\",\"apps/desktop-app/scripts/git-branch-restore-probe.mjs\",\"apps/desktop-app/scripts/git-commit-probe.mjs\",\"apps/desktop-app/scripts/git-index-probe.mjs\",\"apps/desktop-app/scripts/run-evidence.mjs\",\"apps/desktop-app/scripts/run-evidence.test.mjs\",\"apps/desktop-app/src/desktop-bridge.d.ts\",\"apps/desktop-app/src/event-host-child.mjs\",\"apps/desktop-app/src/event-host-protocol.mjs\",\"apps/desktop-app/src/event-host-protocol.test.mjs\",\"apps/desktop-app/src/event-host-resources.mjs\",\"apps/desktop-app/src/event-host-supervisor.mjs\",\"apps/desktop-app/src/event-host-supervisor.test.mjs\",\"apps/desktop-app/src/git-branch-restore.test.mjs\",\"apps/desktop-app/src/host/git-branch-restore-contract.mjs\",\"apps/desktop-app/src/host/git-branch-restore-contract.test.mjs\",\"apps/desktop-app/src/host/git-branch-restore-kernel.mjs\",\"apps/desktop-app/src/host/git-branch-restore-kernel.test.mjs\",\"apps/desktop-app/src/host/git-metadata-kernel.mjs\",\"apps/desktop-app/src/host/storage-journal.mjs\",\"apps/desktop-app/src/host/storage-journal.test.mjs\",\"apps/desktop-app/src/host/workbench-admission.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore-storage.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore-storage.test.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore.test.mjs\",\"apps/desktop-app/src/host/workbench-git-index.test.mjs\",\"apps/desktop-app/src/host/workbench-git-snapshot.mjs\",\"apps/desktop-app/src/host/workbench-git.mjs\",\"apps/desktop-app/src/host/workbench-receipts.mjs\",\"apps/desktop-app/src/host/workspace-registry.mjs\",\"apps/desktop-app/src/host/workspace-registry.test.mjs\",\"apps/desktop-app/src/main.mjs\",\"apps/desktop-app/src/renderer/entities/workbench/index.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/store.ts\",\"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\",\"apps/desktop-app/src/renderer/features/git-review/index.tsx\",\"apps/desktop-app/src/renderer/shared/api/index.ts\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.d.mts\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.ts\",\"apps/desktop-app/src/renderer/shared/transport/index.ts\",\"apps/desktop-app/src/workbench-contract.mjs\",\"apps/desktop-app/src/workbench-service.mjs\",\"apps/desktop-app/src/workbench-store.test.mjs\"],\"exit\":0}\n",
+      "timed_out": false
+    }
+  ],
+  "publication": [
+    {
+      "argv": [
+        "python3",
+        "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+        "publication"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "c8ae284cb2d01e4e5c1cc6be27d5f16d576afabeb64aeb34661c2cf0b6e42088",
+      "exit_code": 1,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:02:15+00:00",
+      "scope": "Reuse actual coherent publication-r3 full34 ONLY after exact UI-only three-path source diff, unchanged all host/kernel/native sources, current verified resources/Git/Bun component identities and original pass/exit/before-after report hash; no new publication claimed.",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-branch-restore/verify-ui-fix-current.py\", line 89, in <module>\n    result = [REDACTED]\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py\", line 528, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['node', '--input-type=module', '-e', \"[REDACTED]\\nconst d=[REDACTED]\\nawait verifyEventHostResources(d);\\nconsole.log(JSON.stringify({manifest:await resourceFileSha256(d.manifestPath)}));\"]' returned non-zero exit status 1.\n",
+      "stdout": "",
+      "timed_out": false
+    },
+    {
+      "argv": [
+        "python3",
+        "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+        "publication"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "e78cfbda8006ff52429c4add232416c4e3dd5e23dca41e5c90c70d43e2c18bc2",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:04:29+00:00",
+      "scope": "Reuse actual coherent publication-r3 full34 ONLY after exact UI-only three-path source diff, unchanged all host/kernel/native sources, current verified resources/Git/Bun component identities and original pass/exit/before-after report hash; no new publication claimed.",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\"priorPublication\": {\"path\": \"docs/runs/git-branch-restore/evidence/publication-r3/publication-evidence.json\", \"sha256\": \"7c0d5129a101e6ed6e9835cf63544df5f25fbc666712f5bda8cebddf53e4b879\"}, \"actualCases\": 34, \"newPublicationExecution\": false, \"hostKernelNativeSourcesAndIdentitiesUnchanged\": true, \"exactOnlyChangedUIPaths\": [\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\", \"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\", \"apps/desktop-app/src/workbench-store.test.mjs\"]}\n",
+      "timed_out": false
+    }
+  ],
+  "typecheck": [
+    {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "c8ae284cb2d01e4e5c1cc6be27d5f16d576afabeb64aeb34661c2cf0b6e42088",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:00:51+00:00",
+      "scope": "Current public/private producers and consumers",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "",
+      "timed_out": false
+    },
+    {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "e78cfbda8006ff52429c4add232416c4e3dd5e23dca41e5c90c70d43e2c18bc2",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:03:46+00:00",
+      "scope": "Current public/private producers and consumers",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "",
+      "timed_out": false
+    }
+  ],
+  "unit": [
+    {
+      "argv": [
+        "python3",
+        "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+        "unit"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "c8ae284cb2d01e4e5c1cc6be27d5f16d576afabeb64aeb34661c2cf0b6e42088",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:00:47+00:00",
+      "scope": "New full current renderer store (including actual React regression), fixture, build-provenance and wrapper suites; exact original23file execution source/environment proof reuses other19unchanged files.",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\"priorActualUnitFiles\": 23, \"newAffectedUnitArgv\": [\"node\", \"--import\", \"tsx\", \"--test\", \"--test-concurrency=[REDACTED] \"--test-reporter=[REDACTED] \"apps/desktop-app/src/workbench-store.test.mjs\", \"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\", \"apps/desktop-app/scripts/build-provenance.test.mjs\", \"apps/desktop-app/scripts/run-evidence.test.mjs\"], \"reusedOtherUnitFiles\": 19, \"exactOnlyChangedUIPaths\": [\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\", \"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\", \"apps/desktop-app/src/workbench-store.test.mjs\"]}\n\u2714 focused feedback pins only its actual runner and fixture plus unchanged build authority (153.218459ms)\n\u2714 stamp inventories source/config/tokens and actual built bytes separately from selected fixtures (97.219333ms)\n\u2714 lock/config/main/preload/renderer/package/token/asset drift invalidates stamp before capture (656.079666ms)\n\u2714 selected fixture edits change capture source identity without silently relabelling the build (130.722791ms)\n\u2714 changed inputs during build leave no stamp; missing stamp refuses validation (87.278875ms)\n\u2714 bounded source scope excludes tests, credentials, exports and captures; rejects symlinked inputs (84.19875ms)\n\u2714 source traversal enforces a finite depth bound (79.448708ms)\n\u2714 packaged capture binds archive entries and sidecar to stamped outputs before launch (222.369791ms)\n\u2714 event-host bytes and declared link are part of launch identity; old4096 app bound stays fixed (105.207833ms)\n\u2714 a valid replacement lifetime helper still fails stamped launch identity (107.54325ms)\n\u2714 resource lock and preparation scripts invalidate build source binding (443.804833ms)\n\u2714 explicit commit pins only its actual runner and fixture plus unchanged build authority (110.314333ms)\n\u2714 branch restore pins only its actual runner and fixture plus unchanged build authority (115.234125ms)\n\u2714 Extensions actual controller start, polling, catalog, selection, refocus and file actions never auto-observe (179.203084ms)\n\u2714 Extensions real helper redacts unsupported source and Native private fields before public read (132.832834ms)\n\u25b6 Extensions actual controller refuses malformed wire rather than displaying an empty success\n  \u2714 extra (133.428667ms)\n  \u2714 sparse (135.59475ms)\n  \u2714 duplicate (124.960458ms)\n  \u2714 zeroHooks (126.043ms)\n  \u2714 wrongFloor (125.330792ms)\n  \u2714 wrongRoot (122.136125ms)\n  \u2714 wrongEpoch (122.508958ms)\n\u2714 Extensions actual controller refuses malformed wire rather than displaying an empty success (890.619375ms)\n\u2714 Extensions actual controller pending cancel retires late result and permits a new explicit read (121.667166ms)\n\u25b6 Extensions pending producer rechecks original epoch, root, trust, revision and reset generation\n  \u2714 epoch (0.356625ms)\n  \u2714 root (0.210917ms)\n  \u2714 trust (0.203ms)\n  \u2714 revokeTrust (0.170459ms)\n  \u2714 floor (0.166541ms)\n  \u2714 disconnected (0.177ms)\n  \u2714 newHold (0.20475ms)\n  \u2714 reset (0.2165ms)\n\u2714 Extensions pending producer rechecks original epoch, root, trust, revision and reset generation (2.006541ms)\n\u25b6 Extensions actual controller late workspace ABA, epoch and floor never revive current rows\n  \u2714 late-workspace (135.139625ms)\n  \u2714 late-epoch (124.178042ms)\n  \u2714 late-floor (130.783625ms)\n\u2714 Extensions actual controller late workspace ABA, epoch and floor never revive current rows (390.306291ms)\n\u2714 Extensions held original key stays held through lookup and reload with no replay or read (251.739834ms)\n\u2714 UI capture actual writer refuses duplicate PNG names without overwriting earlier evidence (17.349834ms)\n\u25b6 Extensions closed reset inventory produces fresh scoped state and refuses guessed state\n  \u2714 not-observed (0.397417ms)\n  \u2714 populated (0.223792ms)\n  \u2714 empty (0.128542ms)\n  \u2714 plugins-unavailable (0.12575ms)\n  \u2714 tools-unavailable (0.168667ms)\n  \u2714 unavailable (0.102542ms)\n  \u2714 invalid-response (0.178166ms)\n  \u2714 limit-reached (0.149375ms)\n  \u2714 unsupported-source (0.187916ms)\n  \u2714 pending (0.198833ms)\n  \u2714 cancel (0.170875ms)\n  \u2714 escape (0.188958ms)\n  \u2714 late-workspace (0.177209ms)\n  \u2714 late-epoch (0.172ms)\n  \u2714 late-floor (0.16775ms)\n  \u2714 stale (0.163917ms)\n  \u2714 held (0.103584ms)\n  \u2714 untrusted (0.083541ms)\n  \u2714 disconnected (0.080584ms)\n  \u2714 snapshot-required (0.156917ms)\n\u2714 Extensions closed reset inventory produces fresh scoped state and refuses guessed state (3.849542ms)\n\u25b6 Extensions untrusted, disconnected and non-idle snapshots block real controller reads\n  \u2714 untrusted (127.278208ms)\n  \u2714 disconnected (125.066125ms)\n  \u2714 snapshot-required (126.847542ms)\n\u2714 Extensions untrusted, disconnected and non-idle snapshots block real controller reads (379.412583ms)\n\u2714 Extensions fixture uses the closed workspace-only read and never mints effect authority (0.496459ms)\n\u25b6 Extensions fixture available empty is distinct from independently failed or bounded groups\n  \u2714 empty (0.237792ms)\n  \u2714 plugins-unavailable (0.199167ms)\n  \u2714 tools-unavailable (0.226709ms)\n  \u2714 unavailable (0.144125ms)\n  \u2714 invalid-response (0.205792ms)\n  \u2714 limit-reached (0.223541ms)\n\u2714 Extensions fixture available empty is distinct from independently failed or bounded groups (1.46375ms)\n\u2714 instruction fixture reset removes discarded parent lineage before DTO validation (1.162417ms)\n\u2714 untrusted instruction fixture retains stored metadata but refuses observation and mutation (0.638625ms)\n\u2714 instruction probe claims fresh native attempts, rejects redirects and retains prior output (36.955375ms)\n\u2714 synthetic confirmation consumes the closed frozen production request and defaults false (26.973792ms)\n\u2714 same-bytes child fixture apply becomes direct while parent later changes preserve fork fact (1.070042ms)\n\u2714 instruction fixture uses actual projection, preserves file/history and refuses takeover (0.706958ms)\n\u2714 held instruction ACK retains original scope, unknown key and committed fork origin (0.403833ms)\n\u2714 configuration UI fixture keeps discovered/reported/unknown and untrusted states distinct (0.347084ms)\n\u2714 saved Native fork reads its original receipt key and rejects changed lineage or admission (4.667625ms)\n\u2714 synthetic configuration read projects only supported files and never enters mutation lane (0.563833ms)\n\u2714 v2 bootstrap and exact sender/frame admission reject legacy and malformed wire (0.218667ms)\n\u2714 duplicate and conflict cannot dispatch twice; lookup is redacted and read-only (0.307833ms)\n\u2714 unknown stays unknown after duplicate, lookup and successful snapshot (0.207ms)\n\u2714 native permission ID is separate; stale revision/epoch cannot perform effects (0.178333ms)\n\u2714 cancel owns sender/frame, current epoch and admitted read; late read never projects (0.190917ms)\n\u2714 sender/service teardown settles admitted reads (0.159709ms)\n\u2714 approved main frame at a foreign URL is refused before parsing (0.065541ms)\n\u2714 permission rejection cancels only its session queue; interrupt is acceptance only (0.176375ms)\n\u2714 deferred diagnostics cancellation preserves only the current filtered read without effects (0.218833ms)\n\u2714 performance scope returns distinct registered transcripts and rejects foreign scope (0.432125ms)\n\u2714 count-only metrics distinguish read deduplication, cancellation and late settlement (0.123208ms)\n\u2714 scoped snapshot is detached and sends update only the registered target (0.528458ms)\n\u2714 logical request peak is counted once and teardown cannot settle twice (0.118417ms)\n\u2714 mutation attempts are observable separately from disconnected/archived effects (0.140958ms)\n\u2714 connected running can interrupt with unknown receipt without changing its evidence (0.141125ms)\n\u2714 heap deltas prove ID survival/removal and strong references without exporting names (0.741167ms)\n\u2714 heap schema follows field indexes and rejects invalid graph metadata (0.575625ms)\n\u2714 heap group/path bounds disclose omissions and never label a truncated chain complete (1.24025ms)\n\u2714 heap capture streams in memory and always detaches listener; errors are redacted (0.305208ms)\n\u2714 heap stream byte limit refuses oversized capture and cleans its listener (10.083958ms)\n\u2714 analysis selectors\n[truncated]",
+      "timed_out": false
+    },
+    {
+      "argv": [
+        "python3",
+        "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+        "unit"
+      ],
+      "contract_sha256": "9bf8c78b7f51af7761b53285a75594f31cb435289b5a63f53e729c80e20b7910",
+      "cwd": ".",
+      "environment_sha256": "e78cfbda8006ff52429c4add232416c4e3dd5e23dca41e5c90c70d43e2c18bc2",
+      "exit_code": 0,
+      "inputs_changed": false,
+      "interrupted": false,
+      "plan_sha256": "ffabf252670a683082a59b14eeb7e0f5b65430617b68d808debceeac38bf68ff",
+      "recorded_at": "2026-10-08T23:03:41+00:00",
+      "scope": "New full current renderer store (including actual React regression), fixture, build-provenance and wrapper suites; exact original23file execution source/environment proof reuses other19unchanged files.",
+      "source_sha256": "d3b6b4ade04fc6bfec9fd94794d2ab511f56fb51d77e922b2bf6a38be23281f1",
+      "stderr": "",
+      "stdout": "{\"priorActualUnitFiles\": 23, \"newAffectedUnitArgv\": [\"node\", \"--import\", \"tsx\", \"--test\", \"--test-concurrency=[REDACTED] \"--test-reporter=[REDACTED] \"apps/desktop-app/src/workbench-store.test.mjs\", \"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\", \"apps/desktop-app/scripts/build-provenance.test.mjs\", \"apps/desktop-app/scripts/run-evidence.test.mjs\"], \"reusedOtherUnitFiles\": 19, \"exactOnlyChangedUIPaths\": [\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\", \"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\", \"apps/desktop-app/src/workbench-store.test.mjs\"]}\n\u2714 focused feedback pins only its actual runner and fixture plus unchanged build authority (155.963292ms)\n\u2714 stamp inventories source/config/tokens and actual built bytes separately from selected fixtures (95.096834ms)\n\u2714 lock/config/main/preload/renderer/package/token/asset drift invalidates stamp before capture (653.94175ms)\n\u2714 selected fixture edits change capture source identity without silently relabelling the build (132.040792ms)\n\u2714 changed inputs during build leave no stamp; missing stamp refuses validation (85.498625ms)\n\u2714 bounded source scope excludes tests, credentials, exports and captures; rejects symlinked inputs (84.919ms)\n\u2714 source traversal enforces a finite depth bound (83.701542ms)\n\u2714 packaged capture binds archive entries and sidecar to stamped outputs before launch (224.302167ms)\n\u2714 event-host bytes and declared link are part of launch identity; old4096 app bound stays fixed (105.942875ms)\n\u2714 a valid replacement lifetime helper still fails stamped launch identity (107.20675ms)\n\u2714 resource lock and preparation scripts invalidate build source binding (452.088958ms)\n\u2714 explicit commit pins only its actual runner and fixture plus unchanged build authority (110.106333ms)\n\u2714 branch restore pins only its actual runner and fixture plus unchanged build authority (104.133375ms)\n\u2714 Extensions actual controller start, polling, catalog, selection, refocus and file actions never auto-observe (186.902833ms)\n\u2714 Extensions real helper redacts unsupported source and Native private fields before public read (134.555042ms)\n\u25b6 Extensions actual controller refuses malformed wire rather than displaying an empty success\n  \u2714 extra (132.473917ms)\n  \u2714 sparse (131.084917ms)\n  \u2714 duplicate (124.975292ms)\n  \u2714 zeroHooks (125.765625ms)\n  \u2714 wrongFloor (121.426208ms)\n  \u2714 wrongRoot (123.570375ms)\n  \u2714 wrongEpoch (125.015167ms)\n\u2714 Extensions actual controller refuses malformed wire rather than displaying an empty success (884.901959ms)\n\u2714 Extensions actual controller pending cancel retires late result and permits a new explicit read (124.66925ms)\n\u25b6 Extensions pending producer rechecks original epoch, root, trust, revision and reset generation\n  \u2714 epoch (0.348959ms)\n  \u2714 root (0.20625ms)\n  \u2714 trust (0.203167ms)\n  \u2714 revokeTrust (0.169375ms)\n  \u2714 floor (0.166916ms)\n  \u2714 disconnected (0.162625ms)\n  \u2714 newHold (0.208916ms)\n  \u2714 reset (0.293041ms)\n\u2714 Extensions pending producer rechecks original epoch, root, trust, revision and reset generation (2.072542ms)\n\u25b6 Extensions actual controller late workspace ABA, epoch and floor never revive current rows\n  \u2714 late-workspace (138.519458ms)\n  \u2714 late-epoch (127.201125ms)\n  \u2714 late-floor (126.145584ms)\n\u2714 Extensions actual controller late workspace ABA, epoch and floor never revive current rows (392.083292ms)\n\u2714 Extensions held original key stays held through lookup and reload with no replay or read (253.468125ms)\n\u2714 UI capture actual writer refuses duplicate PNG names without overwriting earlier evidence (15.847083ms)\n\u25b6 Extensions closed reset inventory produces fresh scoped state and refuses guessed state\n  \u2714 not-observed (0.386459ms)\n  \u2714 populated (0.218917ms)\n  \u2714 empty (0.120792ms)\n  \u2714 plugins-unavailable (0.1475ms)\n  \u2714 tools-unavailable (0.187041ms)\n  \u2714 unavailable (0.104875ms)\n  \u2714 invalid-response (0.1685ms)\n  \u2714 limit-reached (0.171083ms)\n  \u2714 unsupported-source (0.1845ms)\n  \u2714 pending (0.212166ms)\n  \u2714 cancel (0.182458ms)\n  \u2714 escape (0.1825ms)\n  \u2714 late-workspace (0.181083ms)\n  \u2714 late-epoch (0.173583ms)\n  \u2714 late-floor (0.191542ms)\n  \u2714 stale (0.174334ms)\n  \u2714 held (0.114542ms)\n  \u2714 untrusted (0.086125ms)\n  \u2714 disconnected (0.088833ms)\n  \u2714 snapshot-required (0.170583ms)\n\u2714 Extensions closed reset inventory produces fresh scoped state and refuses guessed state (4.004ms)\n\u25b6 Extensions untrusted, disconnected and non-idle snapshots block real controller reads\n  \u2714 untrusted (129.739709ms)\n  \u2714 disconnected (125.950166ms)\n  \u2714 snapshot-required (128.106417ms)\n\u2714 Extensions untrusted, disconnected and non-idle snapshots block real controller reads (383.993959ms)\n\u2714 Extensions fixture uses the closed workspace-only read and never mints effect authority (0.516042ms)\n\u25b6 Extensions fixture available empty is distinct from independently failed or bounded groups\n  \u2714 empty (0.223834ms)\n  \u2714 plugins-unavailable (0.185167ms)\n  \u2714 tools-unavailable (0.212583ms)\n  \u2714 unavailable (0.168375ms)\n  \u2714 invalid-response (0.202292ms)\n  \u2714 limit-reached (0.188625ms)\n\u2714 Extensions fixture available empty is distinct from independently failed or bounded groups (1.411417ms)\n\u2714 instruction fixture reset removes discarded parent lineage before DTO validation (1.037333ms)\n\u2714 untrusted instruction fixture retains stored metadata but refuses observation and mutation (0.605833ms)\n\u2714 instruction probe claims fresh native attempts, rejects redirects and retains prior output (37.553208ms)\n\u2714 synthetic confirmation consumes the closed frozen production request and defaults false (26.171875ms)\n\u2714 same-bytes child fixture apply becomes direct while parent later changes preserve fork fact (1.250292ms)\n\u2714 instruction fixture uses actual projection, preserves file/history and refuses takeover (0.726792ms)\n\u2714 held instruction ACK retains original scope, unknown key and committed fork origin (0.429916ms)\n\u2714 configuration UI fixture keeps discovered/reported/unknown and untrusted states distinct (0.396542ms)\n\u2714 saved Native fork reads its original receipt key and rejects changed lineage or admission (5.004334ms)\n\u2714 synthetic configuration read projects only supported files and never enters mutation lane (0.613375ms)\n\u2714 v2 bootstrap and exact sender/frame admission reject legacy and malformed wire (0.254541ms)\n\u2714 duplicate and conflict cannot dispatch twice; lookup is redacted and read-only (0.313875ms)\n\u2714 unknown stays unknown after duplicate, lookup and successful snapshot (0.213209ms)\n\u2714 native permission ID is separate; stale revision/epoch cannot perform effects (0.167625ms)\n\u2714 cancel owns sender/frame, current epoch and admitted read; late read never projects (0.159041ms)\n\u2714 sender/service teardown settles admitted reads (0.157167ms)\n\u2714 approved main frame at a foreign URL is refused before parsing (0.074042ms)\n\u2714 permission rejection cancels only its session queue; interrupt is acceptance only (0.175541ms)\n\u2714 deferred diagnostics cancellation preserves only the current filtered read without effects (0.191416ms)\n\u2714 performance scope returns distinct registered transcripts and rejects foreign scope (0.446042ms)\n\u2714 count-only metrics distinguish read deduplication, cancellation and late settlement (0.12625ms)\n\u2714 scoped snapshot is detached and sends update only the registered target (0.59525ms)\n\u2714 logical request peak is counted once and teardown cannot settle twice (0.115333ms)\n\u2714 mutation attempts are observable separately from disconnected/archived effects (0.154458ms)\n\u2714 connected running can interrupt with unknown receipt without changing its evidence (0.132791ms)\n\u2714 heap deltas prove ID survival/removal and strong references without exporting names (0.7745ms)\n\u2714 heap schema follows field indexes and rejects invalid graph metadata (0.5335ms)\n\u2714 heap group/path bounds disclose omissions and never label a truncated chain complete (1.245875ms)\n\u2714 heap capture streams in memory and always detaches listener; errors are redacted (0.299667ms)\n\u2714 heap stream byte limit refuses oversized capture and cleans its listener (10.489083ms)\n\u2714 analysis selector\n[truncated]",
+      "timed_out": false
+    }
+  ]
+}

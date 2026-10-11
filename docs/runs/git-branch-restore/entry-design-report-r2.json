@@ -1,0 +1,117 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "a527b6ed5e7721b449d8560781cfe34ce1de70d99088ae6f2eb75ab4436df6f8",
+    "documents_sha256": "11df640fede3b004228f26791cacfdfd521108ae18af3ed9c0bbf30065056edc",
+    "gate": "design_spec",
+    "plan_sha256": "e7d06cc86e8058af63d99ad14efbda3e9c9c0b21e3a23902c0ca46002ce27bae",
+    "schema_version": 2,
+    "work_class_sha256": "bedc6ccdc1b1909a9b8b1de179e564ab2b82c47a24563c162af4476a693b86c9"
+  },
+  "verdict": "pass",
+  "summary": "변경된 초기 DESIGN_SPEC는 통과입니다. 설계 v3는 BR-DS-01의 selected-worktree marker 부재 계약과 BR-DS-02의 동작별 독립 reflog 검증 계약을 해소합니다. 기존 단일 authority, 제한된 효과, unknown 복구 정책과 충돌하지 않습니다. 실제 API는 예정된 source checkpoint에서 동결해야 합니다. 이 결과는 구현 또는 runtime 검증의 통과를 뜻하지 않습니다.",
+  "open_findings": [],
+  "inspected_scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "run": "git-branch-restore",
+    "run_status": "active",
+    "review_boundary": "초기 DESIGN_SPEC의 변경된 concern과 기존 설계의 연결 부분. 초기 PLAN 방향은 유지합니다.",
+    "plan_revision": "3",
+    "design_version": "3",
+    "contract_check_count": 13,
+    "assignment_path": "/Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/git-branch-restore-entry-design-assignment-r2.md",
+    "input_path": "docs/runs/git-branch-restore/entry-design-input-r2.json",
+    "input_file_sha256": "0e1f79c74d0669dde703a7a6876af655fd0c4460dec7772105e1068f493969af",
+    "packet_path": "docs/runs/git-branch-restore/entry-design-packet-r2.json",
+    "packet_file_sha256": "927768dda39f5984910894449a01df0674b32189e230814de490c41594731cb5",
+    "binding_verification": {
+      "entire_parsed_input_matches_current_binding": true,
+      "plan_contract_document_and_classification_hashes_match": true,
+      "packet_and_routing_inputs_match_registered_hashes": true,
+      "child_matches_registered_dispatch": true,
+      "prechange_inventory_entries_checked": 673,
+      "prechange_inventory_entry_mismatches": 0,
+      "prechange_source_sha256": "427b06f7f8c298c4c8ef156fd8b4ceaafc710e3d451ea29f5b330210f5721b16"
+    },
+    "resolved_findings": [
+      {
+        "id": "BR-DS-01",
+        "status": "resolved_in_design",
+        "locations": [
+          "docs/runs/git-branch-restore/design.md:11",
+          "docs/runs/git-branch-restore/design.md:29",
+          "docs/runs/git-branch-restore/design.md:33",
+          "docs/runs/git-branch-restore/design.md:49",
+          "docs/runs/git-branch-restore/design.md:51"
+        ],
+        "assessment": "create/select/restore 모두 selected gitDirectory의 기존 finite marker 집합이 없어야 합니다. 각 경로를 source.missing에 결합하고 preview, apply 재계산, kernel admission 및 lock·parent 생성 등 모든 원본 효과 직전에 검사합니다. marker를 읽거나 지우지 않습니다. 이전 효과 뒤 marker가 생기면 unknown을 유지합니다. 다른 linked worktree의 marker와 target occupancy를 구분하며 기존 reader/index 지원 범위를 유지합니다.",
+        "feasibility_evidence": [
+          "apps/desktop-app/src/host/git-commit-contract.mjs:354의 실제 marker 집합과 일치합니다.",
+          "apps/desktop-app/src/host/workbench-git-commit.mjs:104에 Sources.requireMissing 사용 패턴이 있습니다.",
+          "apps/desktop-app/src/host/git-metadata-kernel.mjs:295의 commitState는 commit kind 전용입니다. 설계는 새 kind에 필요한 확장을 명시합니다.",
+          "apps/desktop-app/src/host/git-metadata-kernel.mjs:675의 verifySource는 source.missing과 제한된 owned delta를 검증합니다."
+        ]
+      },
+      {
+        "id": "BR-DS-02",
+        "status": "resolved_in_design",
+        "locations": [
+          "docs/runs/git-branch-restore/design.md:7",
+          "docs/runs/git-branch-restore/design.md:33",
+          "docs/runs/git-branch-restore/design.md:35",
+          "docs/runs/git-branch-restore/design.md:47",
+          "docs/runs/git-branch-restore/design.md:49"
+        ],
+        "assessment": "create는 commonDirectory의 새 branch log만, select는 selected gitDirectory의 HEAD log만 변경합니다. restore는 log를 변경하지 않습니다. 기존 log가 있거나 log policy가 enabled이면 append를 요구합니다. 부재, 원본 prefix, LF 경계, format-width OID, 명시적 identity, timestamp 및 정확한 reason을 결합합니다. Main과 kernel은 각각 예상 line을 만들고 proposal 전체를 비교합니다. native 결과가 다르면 원본 효과 전에 거부합니다.",
+        "feasibility_evidence": [
+          "apps/desktop-app/src/host/workbench-git-commit.mjs:259의 기존 Main 패턴은 원본 prefix와 예상 line을 합쳐 native proposal 전체와 비교합니다.",
+          "apps/desktop-app/src/host/git-metadata-kernel.mjs:1330의 commitLogPolicy와 :1425 이후 검증은 policy, 실제 log 존재, LF 경계 및 proposal 전체를 독립 검증합니다. 현재 commit 전용이므로 새 동작의 검증을 자동 적용된 것으로 판단하지 않았습니다.",
+          "apps/desktop-app/src/host/workbench-git-snapshot.mjs:453 이후 identity 환경과 :683 이후 log policy 처리는 현재 commit 전용입니다. 설계는 새 private capability와 preflight의 명시적 확장을 요구합니다."
+        ],
+        "native_semantics_assessment": "지정된 HEAD 시작점의 create reason과 custom GIT_REFLOG_ACTION이 없는 select reason은 upstream 구현과 일치합니다. log 존재 또는 enabled policy 규칙도 일치합니다. [Git branch.c v2.50.1](https://raw.githubusercontent.com/git/git/v2.50.1/branch.c), [Git checkout.c v2.50.1](https://raw.githubusercontent.com/git/git/v2.50.1/builtin/checkout.c), [Git files-backend.c v2.50.1](https://raw.githubusercontent.com/git/git/v2.50.1/refs/files-backend.c)"
+      }
+    ],
+    "other_inspected_documents": [
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-design-spec-review/SKILL.md",
+      "docs/product/prd.md:46",
+      "docs/design/specs/workbench-ux.md:81",
+      "docs/engineering/architecture-entry.md",
+      "docs/decisions/0001-workbench-platform.md",
+      "docs/runs/git-branch-restore/plan.md",
+      "docs/runs/git-branch-restore/contract.json",
+      "docs/runs/git-branch-restore/run.json",
+      "docs/runs/git-branch-restore/entry-design-report-r1.json",
+      "docs/runs/git-branch-restore/prechange-inventory.json",
+      "docs/runs/git-branch-restore/evidence/prechange/branch-restore-normalization-resolution-r1.md",
+      "docs/runs/git-branch-restore/evidence/prechange/legacy-closure.json",
+      "docs/runs/git-explicit-commit/design.md",
+      "apps/desktop-app/src/renderer/shared/git-commit/index.mjs",
+      ".solopreneur/harness.py"
+    ],
+    "supplementary_preparatory_evidence": {
+      "report_path": "/private/tmp/omoc-branch-log-prep-qbsiq_1u/report.json",
+      "script_path": "/Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/probe-branch-reflog-preparation-r1.py",
+      "reported_case_count": 20,
+      "reported_all_passed": true,
+      "assessment": "report와 script를 읽었습니다. SHA1/SHA256, create/select, policy false/true, 기존·부재 log 및 detached/linked 사례의 예상 prefix·line 비교를 확인했습니다. 준비 단계의 native 동작 증거로만 사용했습니다. 입력 binding과 설계 문서는 변경하지 않았습니다."
+    }
+  },
+  "limits": [
+    "파일, report, product 또는 ledger를 수정하지 않았습니다. 위임, 제품 runtime, build, test, Git 실행, private store 접근 또는 foreground launch를 하지 않았습니다.",
+    "JSON·hash·파일 metadata의 읽기 전용 검사를 수행했습니다. 기존 inventory 673개 항목을 확인했으며 새 파일까지 포함하는 전체 inventory는 생성하지 않았습니다.",
+    "기존 26개 준비 사례, 추가 20개 reflog 사례 및 parser archive는 production kernel·admission·Electron 검증의 통과 증거가 아닙니다. 추가 사례를 직접 실행하지 않았습니다.",
+    "새 producer/API와 source freeze는 향후 작업입니다. matching DESIGN_SPEC handoff와 실제 source checkpoint가 필요합니다.",
+    "최종 CODE/RENDER, 실제 Event Host OS channel과 lifetime, production Native dialog pixels, Windows, release 및 전체 제품 완료는 검토하거나 승인하지 않았습니다. upstream source 확인은 Apple Git patch의 runtime 검증을 뜻하지 않습니다."
+  ],
+  "provenance": {
+    "role": "design_spec_reviewer",
+    "child_task_id": "01a11d78-72bd-7121-a0c4-e60ac399dd5c",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "identity_evidence": "현재 환경의 CODEX_THREAD_ID가 run.json의 entry-design-packet-r2 DESIGN_SPEC dispatch child_ref와 일치합니다. author task 및 이전 reviewer task와 다릅니다.",
+    "independent": true,
+    "report_only": true
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "745984df9aa632b6b0336b5700513859883c0d524e418dbb56906d9d5a028449",
+    "environment_sha256": "c90a1847cab588816cd06cd329515b3326131b367ca573894c74b18f2757f34c",
+    "gate": "code",
+    "plan_sha256": "23777e96ef18faf4923b407a0445b8f06d3dc04b748ca20e0dd16c74a936391d",
+    "schema_version": 2,
+    "source_sha256": "17de8bbea52a9cf9a20b2389eeed2252d0671362ae5a0cf42697fbdeba38afa6",
+    "verification_sha256": "fe242b576ea977101d8dc5a17217c57b0346547efeb5a08818550002c087eada"
+  },
+  "verdict": "changes_requested",
+  "summary": "Fresh independent reviewer /root/session_final_code found one P2 deletion/navigation race; no additional actionable host defect in bounded review. Coordinator transcribed the returned finding. Reviewer checked 21 file hashes and supplied successful checks, but did not rerun tests.",
+  "open_findings": [
+    {
+      "id": "CODE-1",
+      "priority": "P2",
+      "path": "apps/desktop-app/src/renderer/app/useWorkbench.ts",
+      "line": 213,
+      "title": "Reconcile confirmed deletion against current selected IDs after navigation",
+      "trigger": "Remove A, reselect A or navigate A\u2192B\u2192A while pending, then confirm.",
+      "impact": "Generation check discards authoritative successor; removed session remains selected and snapshot retry returns NOT_FOUND.",
+      "correction": "On confirmed removal, reconcile current target IDs independently of original navigation generation; preserve a different valid selection. Add delayed-removal regression; never replay mutation."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/session_final_code",
+    "author_task_id": "/root",
+    "mode": "fresh independent read-only review",
+    "source_edits": false,
+    "tests_executed": false
+  },
+  "limitations": [
+    "User rejected UI; no design approval.",
+    "Persistence, provider execution and Windows runtime remain unverified."
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "status": "Main actual public service/confirmation/probe implementation checkpoint; worker sources still moving, not final runtime acceptance",
+  "sources": {
+    "apps/desktop-app/src/workbench-service.mjs": "e9bf39d0d109971c96a21b12bed8e35c403cd1eddc087befa335c6497beddee2",
+    "apps/desktop-app/src/main.mjs": "cd7d3b8f3a3f5f0a216cd074f320279bcaa1dcad8ee895a86ec3761d287bcf3f",
+    "apps/desktop-app/src/host/workbench-native-agents.mjs": "e608b3a51b489db2ada00cfe055c43e0f68296286ddb62fa8a8effb0180071fb",
+    "apps/desktop-app/src/native-agents-host.test.mjs": "697e978ff5777a485274cad4d8812f6b37d15cc22988c4b4989e7c6385c48171",
+    "apps/desktop-app/src/host/storage-integration.test.mjs": "ac0d9ab18d12becf78c5000f4d0db524345f3613a9f57ca064134f3a929d7e46",
+    "apps/desktop-app/scripts/configuration-agent-probe.mjs": "a60e2c8ffb2186ee0a81dd91fd6eaa40b66405a16a1c6c584dc0a019683ef184",
+    "apps/desktop-app/scripts/fixtures/p7-storage-owner-host.mjs": "cedcee17530d40fe3884d287853c455ef17079cbb04b4a3f53ed45f114accb8d",
+    "apps/desktop-app/scripts/fixtures/native-agents-public.mjs": "d05aa86b0dfc57c7dc66855818fef2eaae10d2d9adcc2d749a51f42816e93bb7",
+    "apps/desktop-app/scripts/fixtures/native-agents-public.test.mjs": "a12e7a21305bae461de028933dc3e4198eae641451e99f671d0378f512f45cd9"
+  },
+  "actualChecks": [
+    "Native Agents service integration9/9PASS actualfixedproducer+Mainadapter synthetic endpoint: lifecycle/save/cancel/race/globalrefs/lateintentref/ACKloss",
+    "Main pureprojection5/5PASS",
+    "publicAPI+grammar+contract18/18PASS",
+    "probe-observer+legacySkillobserver12/12PASS",
+    "scopedESLint PASS0",
+    "tsc after additive policy declaration PASS0"
+  ],
+  "runtime": "Expanded public Native probe SAVED NOT RUN. Actual prerequisite Native-r6 PASS6 remains prerequisite-only at old source; final coherent build/native/hidden waits writers."
+}

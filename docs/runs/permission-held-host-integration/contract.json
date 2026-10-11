@@ -1,0 +1,95 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "H1",
+      "description": "Exact Main epoch and closed private init without preflight weakening"
+    },
+    {
+      "id": "H2",
+      "description": "Actual checked fixed graph overrides before server acquisition"
+    },
+    {
+      "id": "H3",
+      "description": "Failure and closing lifecycle remains conservatively held"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/event-host-child.test.mjs",
+        "apps/desktop-app/src/event-host-protocol.test.mjs",
+        "apps/desktop-app/src/event-host-supervisor.test.mjs",
+        "apps/desktop-app/src/sidecar-supervisor.test.mjs",
+        "apps/desktop-app/src/native-permission-graph.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Accepted held graph private EventHost initialization; no Native activation",
+      "acceptance_ids": [
+        "H1",
+        "H2",
+        "H3"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/sidecar-supervisor.mjs",
+        "apps/desktop-app/src/sidecar-supervisor.test.mjs",
+        "apps/desktop-app/src/event-host-supervisor.mjs",
+        "apps/desktop-app/src/event-host-supervisor.test.mjs",
+        "apps/desktop-app/src/event-host-protocol.mjs",
+        "apps/desktop-app/src/event-host-protocol.test.mjs",
+        "apps/desktop-app/src/event-host-child.mjs",
+        "apps/desktop-app/src/event-host-child.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Accepted held graph private EventHost initialization; no Native activation",
+      "acceptance_ids": [
+        "H1",
+        "H2",
+        "H3"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/sidecar-supervisor.mjs",
+        "apps/desktop-app/src/sidecar-supervisor.test.mjs",
+        "apps/desktop-app/src/event-host-supervisor.mjs",
+        "apps/desktop-app/src/event-host-supervisor.test.mjs",
+        "apps/desktop-app/src/event-host-protocol.mjs",
+        "apps/desktop-app/src/event-host-protocol.test.mjs",
+        "apps/desktop-app/src/event-host-child.mjs",
+        "apps/desktop-app/src/event-host-child.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Accepted held graph private EventHost initialization; no Native activation",
+      "acceptance_ids": [
+        "H1",
+        "H2",
+        "H3"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

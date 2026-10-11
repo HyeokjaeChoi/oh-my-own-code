@@ -1,0 +1,13 @@
+Commit evidence failed in ready-preview: Error: expect(locator).toBeInViewport() failed
+
+Locator:  getByRole('region', { name: 'Git 변경 검토', exact: true }).locator(':scope > dl dt,:scope > dl dd,:scope > p[role="status"]').nth(19)
+Expected: in viewport
+Received: viewport ratio 0.988730251789093
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeInViewport" getByRole('region', { name: 'Git 변경 검토', exact: true }).locator(':scope > dl dt,:scope > dl dd,:scope > p[role="status"]').nth(19) with timeout 5000ms
+  - waiting for getByRole('region', { name: 'Git 변경 검토', exact: true }).locator(':scope > dl dt,:scope > dl dd,:scope > p[role="status"]').nth(19)
+    14 × locator resolved to <dt>경로</dt>
+       - unexpected value "viewport ratio 0.988730251789093"
+

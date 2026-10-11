@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a120d0-fa1b-7a61-a1f5-6891c0e31f0d": {
+      "completed": "parent 소스를 고정했습니다. 새 파일 두 개만 작성했습니다.\n\n- [native-permission-graph-probe.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-graph-probe.mjs)\n- [native-permission-graph-probe.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-graph-probe.test.mjs)\n\n**검증:** RED 확인 후 Node 테스트 6/6 PASS. 두 파일의 ESLint, Prettier, `node --check` PASS. Native·Bun·실제 staging·network는 실행하지 않았습니다.\n\n저장된 실행 명령은 다음과 같습니다. 독립 pre-execution CODE 이후 실행해야 합니다.\n\n```sh\nnode apps/desktop-app/scripts/native-permission-graph-probe.mjs --out docs/runs/native-permission-graph-foundation/evidence/native-r1\n```\n\n출력은 해당 디렉터리의 `report.json`입니다. 성공·실패 namespace 모두 보존합니다.\n\n**남은 blocker:** 현재 child는 fd3에 `scopeClosed`, 실패 시 `error`·`errorKind`도 출력합니다. parent의 정확한 네 필드 검사와 충돌합니다. Main에서 child 출력을 수정해야 합니다.\n\n최종 SHA-256:\n\n```text\nparent  4d68953159367c8a6f9722dfcb8cd3731fc41935432dcdd0dbdb7f4a37c07d60\ntest    6007753028fcc4d17c62350ce5b902801694850893052314b8d3c9e9dab71f52\n```\n\n독립 CODE 승인은 수행하지 않았습니다."
+    }
+  },
+  "timed_out": false
+}

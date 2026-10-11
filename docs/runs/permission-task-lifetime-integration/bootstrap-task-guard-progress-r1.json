@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/workbench-service.mjs",
+      "sha256": "b259363d22ddabbdfc6ae6629bd47a5e9e43925b0a8282da38d19ccfc1765359",
+      "bytes": 166664
+    },
+    {
+      "path": "apps/desktop-app/src/host/storage-integration.test.mjs",
+      "sha256": "e444f687341fe85d739fda51028c8b945961734ba690e703ce4adf821d9668e0",
+      "bytes": 187561
+    }
+  ],
+  "checks": [
+    {
+      "log": "bootstrap-task-guard-red-r1.log",
+      "result": "meaningful failure: unverified Native create called"
+    },
+    {
+      "log": "bootstrap-task-guard-green-r2.log",
+      "passed": 4
+    },
+    {
+      "log": "bootstrap-task-guard-suite-r1.log",
+      "passed": 232,
+      "exit": 0,
+      "scope": "full service and durable storage integration suites"
+    }
+  ],
+  "static": {
+    "eslint": "pass exact2",
+    "prettier": "pass exact2"
+  },
+  "behavior": [
+    "Actual production nativeTasks channel cannot bootstrap/create/fork before verified bootstrap authority",
+    "Initial bootstrap refused before admission/materialization; ordinary create/fork rejected before reservation/Native intent",
+    "Prompt preparation cannot substitute bootstrap authority; seed-only synthetic prompt fixture attaches channel after synthetic bootstrap"
+  ],
+  "limits": [
+    "Positive bootstrap task/handoff not implemented; guard remains closed",
+    "No Native/Electron/Bun/build/provider/server/UI execution",
+    "No final independent CODE claim; full18/F09 unfinished"
+  ]
+}

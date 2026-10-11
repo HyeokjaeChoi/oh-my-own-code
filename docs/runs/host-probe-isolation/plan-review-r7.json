@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "4913f0364309bfcf0a8292d8c79f137a4dcbc35862e6b9e9be2c2e322bce27f4",
+    "contract_sha256": "27d3c372f4dc20bf61cfd41df9d2d6bcc29c80a5057defa26d72445f26c06608",
+    "source_sha256": "83a5f247fed8bcbb2f511a6388a43e16f92736ad49dc1d7cc3467411d2d1b2b6"
+  },
+  "verdict": "pass",
+  "summary": "Revision 6 plan changes are coherent: exact Node path/digest, clean verifier environment, immutable source-byte use, exact runtime-dependency policy, early NO-RUN with all controls unverified, and the separate SDK approval boundary are explicit. This plan verdict does not resolve implementation findings or authorize execution.",
+  "open_findings": [],
+  "verification_limits": [
+    "Read-only plan and contract review with plan/contract hash verification only.",
+    "The source fingerprint and Node binary digest were not independently recomputed by the reviewer.",
+    "No implementation, code, test, canary, SDK, network, user configuration, or secret was executed/accessed."
+  ],
+  "provenance": {
+    "child_task_id": "/root/plan_review_rev6_fresh",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "runtime_identity_verified": false,
+    "review_mode": "fresh-context independent read-only plan review"
+  }
+}

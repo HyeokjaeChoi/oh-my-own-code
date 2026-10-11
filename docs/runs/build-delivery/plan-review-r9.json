@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "05089ac37b7837ebafaec7f0003721efa2a8bf10f1b1f85089fc9a5d0961cb31",
+    "contract_sha256": "cd641ff94f3288b5592470f13144ac49ccce359d75372e8c5a8792427422847f",
+    "source_sha256": "e6364f507171bd7a288f6985919bac228af2918fc853437534350be33f29cd8d"
+  },
+  "verdict": "pass",
+  "summary": "Revision 9 resolves DPR8-01: completed AC-8 restrictions no longer prohibit the reviewed desktop bootstrap, and the four future desktop targets have explicit owned synthetic effects and cleanup requirements. The plan preserves the full product scope while holding platform-specific implementation, product/design consumers and live SDK work behind their respective unresolved decisions and review gates.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "DPR8-01",
+      "evidence": "plan.md lines 38-65 explicitly mark AC-8 as historical, permit apps/desktop-shell, Nx/root manifests, pinned Electron/Forge peers and lockfile changes after product/design review and handoff, and identify all four desktop checks as unimplemented future targets with owned fixture/process/output and cleanup boundaries."
+    }
+  ],
+  "review_notes": [
+    "Electron remains a provisional recommendation subject to independent architecture review and compatibility probes. The confirmed-requirements section holds platform-specific code until the OS answer; desktop packaging and build acceptance require the confirmed initial OS. macOS-first is not treated as user confirmation.",
+    "The proposed main/preload/renderer/bridge separation requires narrow IPC, a sandboxed renderer without general Node or native execution APIs, a separately supervised bridge, and untrusted previews without bridge capabilities. The existing browser pairing flow cannot be assumed valid for packaged origins; its replacement must be specified and reviewed before implementation.",
+    "PRD F-01 through F-18 and AC-01 through AC-18 remain the complete product goal. The synthetic shell is expressly an incremental milestone, not a reduced release scope or a substitute for real-runtime acceptance.",
+    "The ordered sequence requires plan review, revised product and architecture/security/UX documents, independent product/design review, exact-hash registration and matching handoffs before dependent implementation. The presently registered older documents are a baseline to revise, not sufficient desktop implementation authorization.",
+    "Historical browser and AC-8 synthetic evidence is explicitly partial. Neither it nor the new synthetic desktop checks establish live SDK readiness, host containment, authentication, durable recovery or complete release readiness. A separate reviewed host-lifecycle/isolation plan is required before real SDK startup or ambient-service access.",
+    "The contract provides concrete future Nx commands and observable desktop lifecycle, package-launch, boundary and cleanup criteria. Final evidence also requires confirmed-OS build metadata and hash, target inventory, uncached checks, actual desktop UI QA and independent product/code/release reviews. This plan pass makes no claim that these targets exist or have passed."
+  ],
+  "provenance": {
+    "child_task_id": "/root/desktop_plan_review_r9",
+    "author_task_id": "/root",
+    "review_mode": "Fresh independent static plan and contract review; only the assigned review report was written",
+    "plan_and_contract_hashes_verified": true,
+    "source_binding": "Exact source_sha256 supplied in the coordinator review assignment; source fingerprint was not independently recomputed",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false,
+    "implementation_modified": false,
+    "files_written": ["docs/runs/build-delivery/plan-review-r9.json"]
+  }
+}

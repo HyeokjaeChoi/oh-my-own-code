@@ -1,0 +1,23 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "ba748305d8701ac2dda4fe22ba88926aa21e0d0256f892d8b76d4471d3d1673a",
+    "contract_sha256": "1865114507457e8d4a0ef5766c5592b557dcb67b1e57f0cca2910eb17e437ea5",
+    "source_sha256": "1cd65092be33028c03228d052b6623b85814f45bd2f218d29c78c5ac9a976441"
+  },
+  "verdict": "pass",
+  "summary": "Revision 9 registers updated document versions and exact hashes while preserving the shell and approval sequence. Shell comparison and independent ADR review precede explicit user selection; dependent-document reconciliation, fresh reviews and matching handoffs precede exact-set approval and implementation.",
+  "open_findings": [],
+  "validation": "Fresh independent Astra/high plan and contract review with recomputed exact plan, contract and source hashes; all nine registered document hashes matched.",
+  "provenance": {
+    "child_task_id": "/root/desktop_plan_review_r8",
+    "author_task_id": "/root",
+    "review_mode": "Read-only revision 9 plan and contract review with hash verification",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false,
+    "files_modified": false
+  }
+}

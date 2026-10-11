@@ -1,0 +1,101 @@
+(node:38462) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ conversation context: malformed additive attachment body is refused locally without IO (6.239459ms)
+✔ conversation context: explicit selection uses exact full version and UTF16 offsets without renderer text (3.2915ms)
+▶ conversation context: no capability inference from absent unsupported or historical model reports
+  ✔ undefined (0.764167ms)
+  ✔ image (0.572334ms)
+  ✔ unknown (0.492375ms)
+✔ conversation context: no capability inference from absent unsupported or historical model reports (2.088416ms)
+▶ conversation context: late file reads reject epoch root trust floor disconnect and ABA
+  ✔ epoch (0.521459ms)
+  ✔ root (0.396125ms)
+  ✔ trust (0.357333ms)
+  ✔ floor (0.363ms)
+  ✔ disconnected (0.354666ms)
+  ✔ ABA (0.303083ms)
+✔ conversation context: late file reads reject epoch root trust floor disconnect and ABA (2.642792ms)
+▶ conversation context: subscriber races at request and actual read IO prevent the bridge effect
+  ✔ request:root (1.659ms)
+  ✔ request:trust (0.22ms)
+  ✔ request:floor (0.226084ms)
+  ✔ request:ABA (0.198167ms)
+  ✔ request:hold (0.189625ms)
+  ✔ IO:root (0.22975ms)
+  ✔ IO:trust (0.182292ms)
+  ✔ IO:floor (0.181375ms)
+  ✔ IO:ABA (0.164375ms)
+  ✔ IO:hold (0.227959ms)
+✔ conversation context: subscriber races at request and actual read IO prevent the bridge effect (3.905584ms)
+▶ conversation context: async digest and pending intent subscriber races prevent original attachment dispatch
+  ✔ digest:root (5.419125ms)
+  ✔ digest:trust (1.984666ms)
+  ✔ digest:floor (0.791333ms)
+  ✔ digest:ABA (2.51825ms)
+  ✔ digest:hold (0.769584ms)
+  ✔ digest:model (0.5935ms)
+  ✔ intent:root (1.065875ms)
+  ✔ intent:trust (0.598541ms)
+  ✔ intent:floor (0.601959ms)
+  ✔ intent:ABA (0.626ms)
+  ✔ intent:hold (0.470833ms)
+  ✔ intent:model (0.524041ms)
+✔ conversation context: async digest and pending intent subscriber races prevent original attachment dispatch (16.705166ms)
+✔ conversation context: bounded metadata list keeps one preview slot and refuses the ninth item (0.805542ms)
+▶ conversation context: late attachment ACK preserves newer text and NEXT options across authority changes
+  ✔ root (0.889375ms)
+  ✔ trust (0.616416ms)
+  ✔ floor (0.596291ms)
+  ✔ ABA (1.365083ms)
+  ✔ epoch (1.070542ms)
+✔ conversation context: late attachment ACK preserves newer text and NEXT options across authority changes (4.831917ms)
+✔ conversation context: unknown branch lookup cannot reconstruct text or send and no guessed child is selected (0.891208ms)
+✔ conversation context: malformed historical metadata rejects the complete snapshot (0.195959ms)
+✔ conversation context: digest failure refuses the action without intent or effect (0.317042ms)
+✔ conversation context: observing another file cannot extend the earliest cache deadline (0.283916ms)
+✔ conversation context: confirmed Native admission permits subsequent running queue without NEXT switches (1.258208ms)
+✔ conversation context: actual React controls render inert previews and complete branch and queue hooks (247.979541ms)
+✔ conversation context: exact cancellation ACK means request accepted and invalidates explicit inbox observation (1.704792ms)
+▶ conversation context: wrong cancel digest or target stays unknown and original key lookup never replays
+  ✔ digest (0.626792ms)
+  ✔ inboxId (0.448959ms)
+  ✔ workspaceId (0.407208ms)
+  ✔ sessionId (0.406334ms)
+✔ conversation context: wrong cancel digest or target stays unknown and original key lookup never replays (2.12125ms)
+✔ conversation context: before-user branch prepares edited draft with historical input unavailable and zero sends (0.5845ms)
+✔ conversation context: malformed fork snapshot cannot navigate or prepare a fabricated child (0.369917ms)
+✖ conversation context: empty attachment send readiness requires current Workspace trust (34.769375ms)
+✔ conversation context: expired summaries never revive when another file is observed (0.91775ms)
+✔ conversation context: read timeout keeps actual IO hold until the host call settles (0.494583ms)
+✔ conversation context: invalid runtime delivery is refused locally with zero IO (0.249291ms)
+✔ conversation context: explicit capture retains exact BOM CRLF and sends frozen descriptors only (6.759084ms)
+✔ conversation context: late read after selection ABA is discarded without automatic reread (0.315542ms)
+✔ conversation context: historical unavailable context is accepted only for user metadata (0.075167ms)
+✔ conversation context: running delivery omits NEXT options and attachments (0.506541ms)
+ℹ tests 66
+ℹ suites 0
+ℹ pass 65
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 717.194584
+
+✖ failing tests:
+
+test at apps/desktop-app/src/workbench-store.test.mjs:986:1
+✖ conversation context: empty attachment send readiness requires current Workspace trust (34.769375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  '' !== 'inert draft'
+  
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:997:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: 'inert draft',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

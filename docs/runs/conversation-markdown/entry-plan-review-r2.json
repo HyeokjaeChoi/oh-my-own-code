@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "9b245f737a929fe3de35e258f3292123756f7099fed82cbe03153af45e96890a",
+    "gate": "plan",
+    "plan_sha256": "2a38131ab6c049de32cac9674a8fcdc128b55ee3885f435f9ea541ab60c847a4",
+    "schema_version": 2,
+    "source_sha256": "e592cb2ea327ab50ea9d50a96c092c3e1c9102795d37d1754b744cf5a2ea9e8b",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "plan.md revision 2는 전체 18개 기능의 구현 권한을 유지한다. 이번 완료 범위는 F-05의 Markdown·코드·복사 기능으로 명확하다. PRD, UX의 assistant-ui 경계, ADR, 실제 Conversation·projection·package manifest와 부합한다. MD1–MD4는 표시 범위, 비활성 링크·이미지, HTML 이스케이프, 복사 Promise와 상태 수명, 회귀 검사와 실제 renderer 검증을 정의한다. 의존성 도입 전 isolated clean install·type·bundle·external-runtime SSR 확인을 요구하며, 현재 진행 중인 검사를 통과로 간주하지 않는다. revision 2는 build-provenance selector-map 소유 범위와 검사 경로를 추가하여 검증 경로의 누락을 해결했다. 현재 review binding과 source fingerprint가 r2 입력과 일치한다. 별도로 바인딩한 DESIGN_SPEC 검토는 아직 필요하다. 이 결과는 DESIGN_SPEC을 승인하지 않는다. 일반 구현·수정에 반복 entry review나 새 사용자 허가는 필요하지 않다. 파일·ledger 변경, 설치, runtime 실행, 위임은 수행하지 않았다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11dfe-22eb-7d81-8614-034d7ad3dada",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "run": "bounded-workbench-foundation",
+  "reviewer": "design_spec_reviewer",
+  "verdict": "pass",
+  "reviewed": {
+    "contract_sha256": "debe652dcbaaf58681c587d325f6b2a0778044ddc1bc5c373029f18f372d56dd",
+    "documents_sha256": "602fb979444c8f448a2e04e72af800e727ef26591f937e6d4af3623230ab2a65",
+    "gate": "design_spec",
+    "plan_sha256": "e006bde1dc9ca04a1f65936137f99ab4f9fef500c2d5bf1039d9ffe9a0e62e38",
+    "schema_version": 2
+  },
+  "summary": "Plan revision7의 design_spec binding을 통과했습니다. 현재 binding은 정확한 r5 input과 일치합니다. Closed wire v3의 실제 hash와 documents binding은 이전 검토와 같습니다. CODE-1의 confirmed receipt revision 하한과 CODE-2의 diagnostics filter/generation 및 controller scheduling은 sole projection, 기존 sender·cancel·read·receipt 규칙과 호환됩니다. 수정이 필요한 문서 결함은 없습니다.",
+  "open_findings": [],
+  "verification": {
+    "run_status": "active",
+    "binding_verified_twice": true,
+    "packet_plan_contract_documents_and_routing_hashes_match": true,
+    "packet_contract_hash_explanation": "Packet은 파일 원본 hash를 사용합니다. Review input은 계약 내용의 hash를 사용합니다. 두 값 모두 현재 계약과 일치합니다.",
+    "wire_version": "3",
+    "wire_sha256": "f2887069f18e87bc9b786db21c268c1c3f60912e24d034ab3b808e290386532f",
+    "documents_binding_unchanged_from_r4": true,
+    "source_sha256": "856cdbc8cdb1bb7dc06693857b47d5d90635491b38b6a5664e95210eb9900756",
+    "source_matches_plan_r7_input": true,
+    "CODE-1": "Store는 operation identity·epoch·type·target을 확인한 후, 현재 epoch의 evidence가 있는 confirmed receipt만 revision 하한을 원자적으로 올립니다. 낮은 revision의 snapshot은 health와 목록을 변경하지 못합니다. 이전 epoch receipt는 현재 하한을 올리지 않습니다. B 선택과 최신 draft 보존을 확인하는 regression이 있습니다.",
+    "CODE-2": "Store가 diagnostics filter와 request generation을 소유합니다. Controller가 단일 요청, polling과 400ms READ_BUSY 재시도를 관리합니다. Filter 변경·선택 변경·epoch 변경·close·dispose는 이전 요청을 detach하고 늦은 payload와 error를 거부합니다. Activity component에는 polling timer나 별도 canonical payload가 없습니다.",
+    "wire_compatibility": "Diagnostics identity와 revision 하한은 renderer 내부 상태입니다. Wire 필드는 추가하지 않습니다. Diagnostics는 기존 snapshot lane과 bounded transport를 사용합니다. Cancel은 기존 version2·runtimeEpoch·readId envelope를 사용합니다. 취소된 실제 작업은 완료 전까지 lane을 점유합니다. Reserved lookup lane과 unknown의 lookup-only recovery는 유지됩니다.",
+    "receipt_semantics": "Receipt reconciliation은 navigation과 별개로 원래 operation에 연결됩니다. Draft는 일치하는 submitted revision만 지웁니다. Accepted delivery를 실행 완료로 해석하지 않습니다. Diagnostics 결과는 unknown intent를 해제하거나 mutation을 재전송하지 않습니다.",
+    "coverage": "Unit 계약은 store regression을 포함합니다. Hidden-ui 계약은 정확한 r3 output과 ui-states script를 지정합니다. Unknown의 send 차단·draft 보존·correlated lookup·effect count 유지와 filtered activity의 늦은 전체 응답 거부를 검사하는 assertion 및 capture 경로를 정적으로 확인했습니다."
+  },
+  "review_boundary": {
+    "input": "docs/runs/bounded-workbench-foundation/execution/design-spec-r5-input.json",
+    "packet": "docs/runs/bounded-workbench-foundation/execution/design-spec-r5.packet.json",
+    "previous_reviews": [
+      "docs/runs/bounded-workbench-foundation/design-spec-review-r4.json",
+      "docs/runs/bounded-workbench-foundation/plan-review-r7.json"
+    ],
+    "scope": "현재 문서 binding과 CODE-1·CODE-2 수정의 계약 호환성",
+    "limits": "정적 검토입니다. Broad host research와 final code gate는 반복하지 않았습니다. 테스트·native capture를 실행하지 않았습니다. 현재 runtime 및 rendered UI 통과를 주장하지 않습니다.",
+    "next_dependency": "Coordinator가 보고서를 저장·등록하고 design_spec handoff를 확인합니다. 현재 checks와 독립 final code/render gate는 별도로 완료해야 합니다."
+  },
+  "provenance": {
+    "child_task_id": "01a10483-6b37-7ab0-aeda-b276ed38694f",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-design-spec-review"
+    ],
+    "mode": "report_only",
+    "requested_model": "Sol",
+    "requested_reasoning_effort": "medium",
+    "runtime_identity_attested": false,
+    "files_changed": [],
+    "ledger_changed": false,
+    "report_written": false,
+    "tests_run": false,
+    "gui_launches": false,
+    "provider_calls": false,
+    "delegated": false,
+    "persistence_owner": "coordinator"
+  }
+}

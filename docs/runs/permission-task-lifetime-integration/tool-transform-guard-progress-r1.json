@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "sha256": "d1d4713929e7546d2e88d73d818a6d28ffcc220298b6cc8d52c5616585c95663",
+      "bytes": 30848
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.test.mjs",
+      "sha256": "357d3fe934e2548d9e8bad122eca9aa64a4b84fd2074b9f38950aa5efa41fa93",
+      "bytes": 17256
+    }
+  ],
+  "checks": [
+    {
+      "log": "tool-transform-guard-red-r1.log",
+      "result": "meaningful failure actual pinned State callback body executed twice outside verified authority"
+    },
+    {
+      "log": "tool-transform-guard-green-r1.log",
+      "result": "inventory scoped pass"
+    },
+    {
+      "log": "tool-transform-coherent-r1.log",
+      "passed": 77,
+      "scope": "actual pinned Control/inventory/Tool/Session/graph and exact Native recipe"
+    }
+  ],
+  "static": {
+    "eslint": "pass exact2",
+    "prettier": "pass exact2"
+  },
+  "behavior": [
+    "inventoryMutation now rejects before every unverified transform callback, not merely mark invalid then execute",
+    "Actual pinned State registration, replay and reload cannot run callbacks; original Native Scope disposal still removes them",
+    "Unsupported inert declaration metadata can be observed without callback execution and is never a verified capability"
+  ],
+  "limits": [
+    "No trusted metadata/physical tool adapter activation yet",
+    "Earlier bounded root/IO review did not review this later disjoint inventory fix",
+    "Full18/F09 and final independent whole-source CODE unfinished",
+    "No Native/Bun/Electron/build/server/provider/network/UI/private originals executed"
+  ]
+}

@@ -1,0 +1,1 @@
+DS1 only: design.md now spells the existing runtimeEpoch/readId envelope and cancellation identity exactly. No schema invention or implementation change. Initial plan PASS preserved historically; routine correction does not require a new plan ceremony. Explicit design-spec pass is still required before implementation.

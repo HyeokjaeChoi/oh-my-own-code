@@ -1,0 +1,106 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "AC-1": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs"
+      ],
+      "checks": [
+        "unit",
+        "electron-e2e"
+      ]
+    },
+    "AC-2": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/src/renderer/features/conversation/index.tsx",
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+        "docs/runs/desktop-workbench-core/ui-states-evidence.json"
+      ],
+      "checks": [
+        "unit",
+        "typecheck",
+        "electron-e2e"
+      ]
+    },
+    "AC-3": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/src/host/workbench-files.mjs",
+        "apps/desktop-app/src/renderer/features/explorer/index.tsx",
+        "docs/runs/desktop-workbench-core/ui-states-evidence.json"
+      ],
+      "checks": [
+        "unit",
+        "electron-e2e"
+      ]
+    },
+    "AC-4": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/preload.cjs",
+        "docs/runs/desktop-workbench-core/supplementary-verification.json"
+      ],
+      "checks": [
+        "unit",
+        "typecheck",
+        "lint",
+        "format",
+        "build",
+        "bundle",
+        "boundaries",
+        "electron-e2e"
+      ]
+    },
+    "AC-5": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/desktop-workbench-core/report.md",
+        "docs/runs/desktop-workbench-core/package-source-match.json",
+        "docs/runs/desktop-workbench-core/capture-manifest.json"
+      ],
+      "checks": [
+        "package-macos",
+        "build",
+        "bundle",
+        "electron-e2e"
+      ]
+    }
+  },
+  "changed_paths": [
+    "README.md",
+    "apps/desktop-app/package.json",
+    "apps/desktop-app/project.json",
+    "apps/desktop-app/scripts/check-renderer-boundaries.mjs",
+    "apps/desktop-app/scripts/e2e-smoke.mjs",
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/e2e-workbench.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/package.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/host/workbench-files.mjs",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/preload.cjs",
+    "apps/desktop-app/src/renderer.css",
+    "apps/desktop-app/src/renderer.tsx",
+    "apps/desktop-app/src/renderer/app/index.tsx",
+    "apps/desktop-app/src/renderer/app/useWorkbench.ts",
+    "apps/desktop-app/src/renderer/features/conversation/index.tsx",
+    "apps/desktop-app/src/renderer/features/explorer/index.tsx",
+    "apps/desktop-app/src/renderer/shared/index.ts",
+    "apps/desktop-app/src/renderer/shared/projection.d.mts",
+    "apps/desktop-app/src/renderer/shared/projection.mjs",
+    "apps/desktop-app/src/renderer/shared/request.ts",
+    "apps/desktop-app/src/sidecar-supervisor.mjs",
+    "apps/desktop-app/src/workbench-contract.mjs",
+    "apps/desktop-app/src/workbench-contract.test.mjs",
+    "apps/desktop-app/src/workbench-projection.test.mjs",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-service.test.mjs",
+    "pnpm-lock.yaml"
+  ],
+  "deleted_paths": []
+}

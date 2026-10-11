@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+  "reviewMode": "fresh_independent_report_only",
+  "summary": "한정된 CODE와 정확한 r3 preExec 모두 pass입니다. 수정이 필요한 결함을 찾지 못했습니다. 실제 Bun r3 결과는 아직 확인되지 않았습니다.",
+  "independence": {
+    "implementationAuthored": false,
+    "delegation": false,
+    "filesWritten": [],
+    "testsExecuted": false,
+    "bunExecuted": false,
+    "nativeExecuted": false,
+    "prepareOrExecuteInvoked": false,
+    "persistenceOwner": "Main",
+    "runtimeIdentityOrOSSandboxAttested": false
+  },
+  "bindingConvention": "아래 상대 경로는 repo 기준입니다. sharedBindings와 sourceHashes는 두 판정에 공통으로 적용됩니다.",
+  "sharedBindings": {
+    "planRevision": 4,
+    "workClass": "routine",
+    "plan": {
+      "path": "docs/runs/permission-task-lifetime-integration/plan.md",
+      "sha256": "38771d4b254085b000d0fbcb81588609ea3936a5dafb35aae96bbf46faf512a2"
+    },
+    "contract": {
+      "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+      "sha256": "cb261b2d8b2142277e180eacd91011ac80fd9bc35cdcffd3d1be836912091e57"
+    },
+    "packet": {
+      "path": "docs/runs/permission-task-lifetime-integration/descriptor-probe-diagnostic-review-packet-r1.json",
+      "sha256": "f8d76e63418d484f4e44f0aff9370b9e38399f4815375862a5fff7070b51d82d"
+    },
+    "checkpoint": {
+      "path": "docs/runs/permission-task-lifetime-integration/descriptor-probe-diagnostic-checkpoint-r1.json",
+      "sha256": "58319bfd23a86665c73d36021f215169a038e393cdb639d1c0ffdd671e66b1cd"
+    },
+    "routingPins": {
+      ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+      ".agents/skills/solo-code-review/SKILL.md": "95f470f4f81520f23436a1d650a25b3054ec3251121ad8cc7ed0f5fe0d09ac19",
+      ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+    },
+    "packetPlanContractAndRoutingMatched": true
+  },
+  "CODE": {
+    "verdict": "pass",
+    "acceptanceIds": [
+      "I2",
+      "I4"
+    ],
+    "scope": "checkpoint의 정확한 probe 파일 2개와 변경 전후 수정 경로. helper는 이전 판정과 바이트 일치만 확인했습니다.",
+    "files": [
+      {
+        "path": "apps/desktop-app/scripts/native-descriptor-probe.mjs",
+        "bytes": 21629,
+        "sha256": "77d8481f224024ccf4998e1bae433d43dae820e337c06cf5855c6eb80305ab1a"
+      },
+      {
+        "path": "apps/desktop-app/scripts/native-descriptor-probe.test.mjs",
+        "bytes": 2335,
+        "sha256": "b79d55aca57c4fa7b2679cd477f06df806ec4b9a1b5b520d06b98fd8e49f268a"
+      }
+    ],
+    "beforeArchive": {
+      "manifest": "docs/runs/permission-task-lifetime-integration/prechange/descriptor-probe-diagnostic-before-r1/manifest.json",
+      "manifestSha256": "33d68b11fa618c95476c2036a37863b8fb668d7aaa97a68e46db3fcebd9e0cf2",
+      "scriptBytes": 21196,
+      "scriptSha256": "3e00b300942d3dc50a3967c78169528ab4d095d04ec3efa9c4cb26c97c2267bf"
+    },
+    "findings": [],
+    "reviewedBehavior": [
+      "열거한 FD 번호를 숫자로 변환하여 fstatSync에 전달합니다. dev/ino 비교를 완화하지 않습니다.",
+      "ownerDescriptors가 1이 아니면 descriptor_baseline 실패를 case matrix에 남깁니다. 해당 불일치만으로 전체 matrix를 잃지 않습니다.",
+      "body 실패는 case_body와 error name을 기록합니다. error message는 지정된 5개 code만 기록합니다.",
+      "case 실패 또는 FD baseline 불일치는 passed:false를 유지합니다.",
+      "parent 성공 조건은 정상 child 종료, signal/error 부재, source/engine 사후 일치, fixture passed:true를 모두 요구합니다.",
+      "기존 intent와 결과가 있는 namespace는 정확한 root 항목 검사와 exclusive intent 기록 때문에 재실행할 수 없습니다."
+    ],
+    "failureTruthfulness": {
+      "r2ExitCode": 1,
+      "r2Signal": null,
+      "r2Fatal": "AssertionError",
+      "r2Passed": false,
+      "preservedReport": "docs/runs/permission-task-lifetime-integration/descriptor-probe-first-execution.json",
+      "preservedReportSha256": "c288fa9372e42675ca6570fb2b2454daed240cd7486c4be5613937d2f699c496",
+      "preservedCopyMatchesOriginalExecutionReport": true,
+      "oldNamespace": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h",
+      "oldNamespaceReplayPermitted": false,
+      "diagnostic": {
+        "path": "docs/runs/permission-task-lifetime-integration/descriptor-path-diagnostic-r1.json",
+        "sha256": "dceb6dbd3b7d61942dc6e931406e21bc96655f4baeca939ccee1beb7b41869c6",
+        "directFD": {
+          "dev": "16777232",
+          "ino": "21688671"
+        },
+        "descriptorPath": {
+          "dev": "-1002459940",
+          "ino": "21688671"
+        },
+        "sameIdentity": false
+      },
+      "conclusion": "저장된 Node 진단은 descriptor-path stat의 dev 값이 실제 FD와 다름을 보여 줍니다. r2의 fatal 보고에는 위치가 없으므로, 실제 Bun 실패 원인과 r3 해결 여부까지 입증하지는 않습니다."
+    },
+    "scopeAdjustment": {
+      "verdict": "pass",
+      "reason": "외부 input은 정확한 contracted argv SHA와 spawn 전 필수 raw-byte SHA 검사로 묶입니다. 관련 없는 Node suite의 공통 environment_files에서 이를 제외해도 probe 입력 검사는 유지됩니다.",
+      "engineAndInstallerPinsRemainGlobal": true,
+      "declaredProbeImportClosureCovered": true,
+      "unrelatedNodeChecksAutomaticallyDeclaredFresh": false
+    },
+    "verificationEvidence": {
+      "archivedRedLog": "2개 실패를 확인했습니다.",
+      "currentGreenLog": "2개 통과를 확인했습니다.",
+      "recordedNodeDiagnosticAttempt": "exit_code:0, inputs_changed:false, timed_out:false",
+      "lintFormat": "checkpoint와 사용자 제공 PASS 보고를 사용했습니다. 별도 실행 또는 상세 lint/format 로그 검증은 하지 않았습니다.",
+      "runtimeLimit": "Node 진단은 실제 Bun FFI 성공 증거가 아닙니다."
+    }
+  },
+  "preExec": {
+    "verdict": "pass",
+    "eligibleAtReviewEnd": true,
+    "executed": false,
+    "scope": "preparation-r3의 정확한 parent 명령과 input-r3의 단일 owned synthetic Bun probe",
+    "preparation": {
+      "path": "docs/runs/permission-task-lifetime-integration/descriptor-probe-preparation-r3.json",
+      "sha256": "b9fc01be8a934196118408ab21449019a687565e3657a636ffa56ea6a9eba740"
+    },
+    "input": {
+      "projectCopy": "docs/runs/permission-task-lifetime-integration/descriptor-probe-input-r3.json",
+      "externalPath": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-9p8lyH/input.json",
+      "sha256": "8b9b09e9f9f04921ecd8da03237ded17847f8f6edcf497d8146ae4b9c07e7220",
+      "copiesByteIdentical": true
+    },
+    "parentCwd": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "parentArgv": [
+      "/opt/homebrew/Cellar/node/26.11.0_1/bin/node",
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-descriptor-probe.mjs",
+      "--execute",
+      "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-9p8lyH/input.json",
+      "--input-sha256",
+      "8b9b09e9f9f04921ecd8da03237ded17847f8f6edcf497d8146ae4b9c07e7220"
+    ],
+    "parentNodeSha256": "849e5785bd5b3ac68516f105d617c4a7ddcc3de1d7a89ba696d5dab271ab0164",
+    "contractArgvMatchesPreparation": true,
+    "childCwd": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-9p8lyH",
+    "childArgv": [
+      "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-9p8lyH/bun",
+      "--no-install",
+      "--no-env-file",
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-descriptor-probe.mjs",
+      "--fixture",
+      "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-9p8lyH"
+    ],
+    "childEnvironment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-9p8lyH/home",
+      "TMPDIR": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-9p8lyH/tmp",
+      "XDG_CONFIG_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-9p8lyH/config",
+      "XDG_CACHE_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-9p8lyH/cache",
+      "XDG_DATA_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-9p8lyH/data",
+      "XDG_STATE_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-9p8lyH/state",
+      "BUN_INSTALL_CACHE_DIR": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-9p8lyH/cache",
+      "OMOC_DESCRIPTOR_PROBE_NONCE": "58f2d222-b38f-4841-b1ed-06ea55996fe3"
+    },
+    "engine": {
+      "versionPin": "1.4.2",
+      "platform": "darwin",
+      "arch": "arm64",
+      "sha256": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+      "copiedAndStagedBytesMatch": true,
+      "versionExecuted": false
+    },
+    "namespace": {
+      "ownerUid": 501,
+      "rootCanonicalAndNotSymlink": true,
+      "rootMode": "0700",
+      "inputAndMarkerMode": "0600",
+      "inputAndMarkerLinkCount": 1,
+      "engineMode": "0500",
+      "engineLinkCount": 1,
+      "sixEnvironmentDirectories": "canonical, symlink 아님, UID 501, mode 0700, 모두 비어 있음",
+      "markerRootAndNonceMatch": true,
+      "markerSha256": "f702f0f43237d0ab0ccffb7ef96c38f8c4c34f12d8ec9559784c09b8ab548ad9",
+      "executionIntentAbsent": true,
+      "executionReportAbsent": true,
+      "fixtureResultAbsent": true,
+      "unexpectedEntries": []
+    },
+    "timeoutMs": 30000,
+    "killSignal": "SIGKILL",
+    "findings": [],
+    "validityConditions": [
+      "명령, 입력, source/helper, engine 바이트와 namespace 상태를 유지해야 합니다.",
+      "기존 필수 preflight를 그대로 통과해야 합니다.",
+      "검토 환경에서 없었던 NODE_OPTIONS, NODE_PATH, DYLD_INSERT_LIBRARIES, DYLD_LIBRARY_PATH, BUN_OPTIONS를 parent에 추가하지 않아야 합니다.",
+      "intent 기록 후에는 성공, 실패, 중단 여부와 관계없이 같은 namespace를 재사용하지 않아야 합니다."
+    ]
+  },
+  "sourceHashes": {
+    "apps/desktop-app/scripts/native-descriptor-probe.mjs": "77d8481f224024ccf4998e1bae433d43dae820e337c06cf5855c6eb80305ab1a",
+    "apps/desktop-app/src/host/native-descriptor-read.mjs": "71e5f0106dceb4b2584a7658536251859bf9d14a90f88fcb94456a90552eee54",
+    "apps/desktop-app/src/host/native-descriptor-read-resource.mjs": "82aed4ebbb7bf21e8cf69994b954c6b7248cad735c32fff0abae12e7bcf9a4dc",
+    "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs": "1af173e00c9e095f265dad1e6a6509d7f45521d4e6fa9ba5c37ed65a499f2117",
+    "apps/desktop-app/src/host/darwin-directory-entry.mjs": "994d968244f511d0b4c43fd2b93c345334a0c9b0306065485513200c3817a132",
+    "apps/desktop-app/src/host/workspace-root-authority.mjs": "a8f977e5b8458eb8b51ed1c47ab4fa515e35b78e72f9303f79f724fa9eac0fd0",
+    "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68",
+    "apps/desktop-app/runtime-event-host/installer-pins.json": "2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41"
+  },
+  "pinVerification": {
+    "beforeAt": "2026-10-10T15:04:25.451892+00:00",
+    "afterAt": "2026-10-10T15:06:42.397627+00:00",
+    "beforeAndAfterUseReportedExactHashes": true,
+    "planContractPacketCheckpointPreparationInputUnchanged": true,
+    "exactTwoFilesMatched": true,
+    "sourceBindingsMatched": "8/8",
+    "copiedEngineStagedEngineAndParentNodeUnchanged": true,
+    "routingPinsMatchedBeforeAndAfter": true,
+    "priorReviewHelperAndInstallerBindingsMatched": "7/7",
+    "priorFull16ReviewRepeated": false,
+    "namespaceStillUnusedAtFinalCheck": true
+  },
+  "parallelMainWork": {
+    "excludedPath": "apps/desktop-app/src/native-permission-read-consumer.test.mjs",
+    "reviewed": false,
+    "reason": "probe/helper import closure 밖의 새 Node test입니다. 현재 exact2와 실행 입력의 바이트 일치 판정에 영향을 주지 않습니다.",
+    "reportedSixPassAcceptedAsThisReviewEvidence": false,
+    "nextIncrementOwner": "Main"
+  },
+  "limits": {
+    "actualR3SuccessVerified": false,
+    "bunFailureDiagnosisProved": false,
+    "fullCodeApproval": false,
+    "full18Approval": false,
+    "nativeActivationApproval": false,
+    "totalTaskExecutionGrant": false,
+    "osSandboxOrChangeAndRestoreProtectionProved": false,
+    "nextStep": "Main이 보고서를 보존한 뒤, 동일한 바인딩과 필수 preflight 조건에서 정확한 r3 probe를 실행할 수 있습니다."
+  },
+  "provenance": {
+    "child_task_id": "01a12657-177b-7930-97ea-635cefe94dc5",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

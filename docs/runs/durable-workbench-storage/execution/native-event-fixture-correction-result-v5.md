@@ -1,0 +1,4 @@
+# Durable Native event fixture correction
+Fresh author01a1071b-44e1-71e2-9b38-734053701a0f changed three assigned scripts only. History import transfers info/messages and does not prove Native durable log. Added distinct-title production service v2/sender session.rename after import, exact confirmed scope receipt and authentic SDK event IDs/type/version/positive seq/hash. Normal/SIGKILL comparison retains every original event. No fake events, SQL mutation or empty bypass. Original metadata/mapping/digest/receipts/history/sentinels retained. Progress phase preserved.
+Writer48/48 Node(original46+2) syntax/scoped ESLint pass. No Native/Electron runtime/self approval/delegation. Prior failed logs and roots retained, old41795 exit still unverified.
+SHA probe c151aa471cf1a1411570d633de5421a4ef0213df3004c6d28a14929cdc4dcd02; helper0ee6434faa3cbfd7f4c48279e9e57d9e65574727682c183a3d9f4d0746549c3d; test2abc4857632ca7e0eec65bb4b2461909a4aae5b9be8f3fb8bb94b6f6076c2cf9.

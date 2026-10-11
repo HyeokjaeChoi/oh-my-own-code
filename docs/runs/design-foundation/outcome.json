@@ -1,0 +1,56 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "AC-1": {
+      "status": "verified",
+      "artifacts": [
+        "docs/design/figma-source.json"
+      ],
+      "checks": [
+        "figma-parity"
+      ]
+    },
+    "AC-2": {
+      "status": "verified",
+      "artifacts": [
+        "docs/design/system.md",
+        "docs/design/tokens/manifest.json",
+        "docs/design/tokens/tokens.css",
+        "docs/design/components.json"
+      ],
+      "checks": [
+        "tokens"
+      ]
+    },
+    "AC-3": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/design-foundation/visual-evidence.json",
+        "docs/runs/design-foundation/figma-final-audit.json"
+      ],
+      "checks": [
+        "figma-parity"
+      ]
+    },
+    "AC-4": {
+      "status": "verified",
+      "artifacts": [
+        "docs/design/preparation.md",
+        "docs/design/figma-source.json"
+      ],
+      "checks": [
+        "figma-parity"
+      ]
+    }
+  },
+  "changed_paths": [
+    "docs/design/components.json",
+    "docs/design/figma-source.json",
+    "docs/design/preparation.md",
+    "docs/design/system.md",
+    "docs/design/tokens/manifest.json",
+    "docs/design/tokens/tokens.css",
+    "docs/design/validate_system.py"
+  ],
+  "deleted_paths": []
+}

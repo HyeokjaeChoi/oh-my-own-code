@@ -1,0 +1,53 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "b8695c026e2c8a978ac8cc86596cd2cf9f7f0bc4acc8059beaf0f8aa6e8ce16b",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "e68ac244a234f1d7cdce21776dfce0a6391de21cb9e7434e4fcdfbfc546c6e52",
+    "schema_version": 2,
+    "source_sha256": "ca2a82bbbcc2ac3715010b0a7dc74159a79faa2071816eb859ab9ce2344479a6",
+    "verification_sha256": "26841a615671c2d7c2f87f7934615e9cc1791c2298daddf56a9a217a9bafdf65",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "plan revision 1의 H1–H3 범위에서 수정이 필요한 결함을 찾지 못했다. 계약 준수와 코드 품질을 별도로 검토했다. 검토 전후 9개 파일의 크기와 SHA-256이 source-freeze-r1과 일치했다. 보존된 변경 전 8개 파일도 manifest와 일치했고, 새 test 파일은 변경 전 경로에 없었다. 읽기 전용 harness가 재계산한 binding은 final-code-input-r1.json의 전체 parsed object와 정확히 일치했다.",
+  "open_findings": [],
+  "acceptance": {
+    "H1": "Main의 기존 runtimeEpoch가 sidecar와 supervisor를 거쳐 닫힌 init 메시지로 전달된다. 누락되거나 잘못된 epoch는 setup과 spawn 전에 거부된다. IPC는 bootHolds, overrides, permissionControl을 받지 않는다. Main과 native-preflight의 모든 retainedOperations 거부 조건은 유지된다. 기존 nonfresh copied preflight 경로도 유지된다.",
+    "H2": "parent의 두 resource 검사와 child 검사가 permission overlay를 요구한다. 기존 validator는 overlay receipt와 output hash, 전체 inventory의 변경을 거부한다. 실제 initialize는 prepareHeldEventHostStart를 호출한다. helper는 초기화 검증, checked graph 생성, 고정 server module 로드 순서를 지키고 graph.overrides를 start의 네 번째 인자로 그대로 전달한다. permissive fallback은 없다.",
+    "H3": "graph 실패, graph 생성 중 종료, server module 로드 중 종료는 server start 구성 전에 거부된다. 실제 caller는 helper 반환 뒤에도 종료 상태를 확인하고 Fiber를 시작한다. 기존 Scope, Fiber, direct-handle 정리 경로와 ready 전 종료 검사는 유지된다. 검토 범위에서 새 load/start race나 정리 경로 회귀를 찾지 못했다."
+  },
+  "verification": {
+    "inspected": [
+      "AGENTS.md, solo_reader, solo-specialist, solo-code-review",
+      "code-reviewer-packet-r1.json, plan.md, contract.json",
+      "before-manifest-r1.json, source-freeze-r1.json, outcome-r1.json, targeted-execution-r1.json",
+      "변경된 9개 source/test 파일과 보존된 변경 전 파일",
+      "design-contract-r4의 fixed graph 및 boot sequence",
+      "기존 graph producer, resource validator, initialization validator, Main과 native-preflight",
+      "native-permission-gated-graph/final-code-review-r1.json",
+      "run.json의 실제 check 기록"
+    ],
+    "recorded_checks": "현재 source binding에서 Node 117개, lint, format 모두 exit 0이다. inputs_changed, timed_out, interrupted는 모두 false다. check-status는 세 검사 모두 reusable로 판정했다.",
+    "reviewer_execution": "파일 읽기, diff와 SHA-256 대조, 읽기 전용 review-input 및 check-status만 수행했다. 구체적인 미해결 결함이 없어 Node probe와 전체 test를 다시 실행하지 않았다."
+  },
+  "limitations": [
+    "이 PASS는 기존 boot-held graph 연결에 한정된다. positive lease, activation, reconciliation 또는 control API를 승인하지 않는다.",
+    "Node scripted dependency tests는 순서, 실패 처리, 인자 전달을 확인한다. 실제 Native module 동작이나 실제 task/process settlement를 입증하지 않는다.",
+    "기존 native-permission-gated-graph 보고서는 producer의 과거 증거다. 이번 production integration의 실제 runtime acceptance 증거로 사용하지 않았다.",
+    "Native, Bun, Electron, build, provider, production Main을 실행하지 않았다. 실제 통합 실행과 F09 및 전체 제품 승인은 남아 있다."
+  ],
+  "provenance": {
+    "child_task_id": "01a123bd-0535-7710-a553-1c8ad8eaa98a",
+    "identity_source": "현재 invocation의 CODEX_THREAD_ID",
+    "role": "reviewer",
+    "mode": "fresh independent CODE, report-only",
+    "binding_exact_entire_final_input": true,
+    "source_freeze_verified_before_and_after": true,
+    "writes": false,
+    "repairs": false,
+    "delegation": false
+  }
+}

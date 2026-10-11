@@ -1,0 +1,156 @@
+{
+  "name": "desktop-app",
+  "projectType": "application",
+  "sourceRoot": "apps/desktop-app/src",
+  "tags": ["platform:desktop", "scope:workbench"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node apps/desktop-app/scripts/build.mjs"
+      },
+      "inputs": [
+        "production",
+        "^production",
+        "frontendSources",
+        {
+          "runtime": "node -p \"process.platform + '-' + process.arch\""
+        }
+      ]
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "pnpm exec electron apps/desktop-app/dist/app"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec tsc -p apps/desktop-app/tsconfig.json --noEmit"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec eslint --config apps/desktop-app/eslint.config.mjs apps/desktop-app/src apps/desktop-app/scripts"
+      }
+    },
+    "format-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec prettier --check apps/desktop-app"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --test apps/desktop-app/src/*.test.mjs"
+      }
+    },
+    "boundaries": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      }
+    },
+    "e2e-workbench": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/e2e-workbench.mjs"
+      }
+    },
+    "bundle-inspect": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      },
+      "cache": false
+    },
+    "e2e-macos": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/e2e-smoke.mjs dev darwin"
+      },
+      "cache": false
+    },
+    "e2e-windows": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/e2e-smoke.mjs dev win32"
+      },
+      "cache": false
+    },
+    "package-macos": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/package.mjs darwin arm64"
+      },
+      "cache": false
+    },
+    "package-windows": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/package.mjs win32 x64"
+      },
+      "cache": false
+    },
+    "packaged-e2e-macos": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["package-macos"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/e2e-smoke.mjs packaged darwin"
+      },
+      "cache": false
+    },
+    "packaged-e2e-windows": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["package-windows"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/e2e-smoke.mjs packaged win32"
+      },
+      "cache": false
+    },
+    "bundle-inspection-macos": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["package-macos"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/inspect-packaged-bundle.mjs darwin"
+      },
+      "cache": false
+    },
+    "bundle-inspection-windows": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["package-windows"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/inspect-packaged-bundle.mjs win32"
+      },
+      "cache": false
+    },
+    "e2e-sessions": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/e2e-session-lifecycle.mjs"
+      }
+    },
+    "e2e-ui-states": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/e2e-workbench-states.mjs"
+      }
+    }
+  }
+}

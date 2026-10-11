@@ -1,0 +1,110 @@
+{
+  "schema_version": 2,
+  "run": "bounded-workbench-foundation",
+  "reviewer": "reviewer",
+  "verdict": "pass",
+  "reviewed": {
+    "contract_sha256": "debe652dcbaaf58681c587d325f6b2a0778044ddc1bc5c373029f18f372d56dd",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "code",
+    "plan_sha256": "e006bde1dc9ca04a1f65936137f99ab4f9fef500c2d5bf1039d9ffe9a0e62e38",
+    "schema_version": 2,
+    "source_sha256": "856cdbc8cdb1bb7dc06693857b47d5d90635491b38b6a5664e95210eb9900756",
+    "verification_sha256": "cb9569ddb176920de4efe5a99162e75d075edabed0bbb6c03ae5809d04c34a1c"
+  },
+  "summary": "CODE-1과 CODE-2 수정, 관련 테스트, Main 소유 fixture/E2E 변경을 독립 검토했습니다. 두 기존 결함은 해소되었습니다. 검토 범위에서 수정이 필요한 새 결함은 찾지 못했습니다. 현재 binding은 지정된 입력과 정확히 일치합니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "CODE-1",
+      "status": "resolved",
+      "evidence": [
+        "store.ts는 operation identity와 removal target을 검증한 뒤 현재 epoch의 confirmed receipt revision을 Math.max로 반영합니다. revision 하한과 삭제 정리를 같은 상태 전이에 적용합니다.",
+        "snapshot은 현재 revision 하한보다 낮으면 상태와 health를 변경하지 않습니다. 하한과 같은 authoritative snapshot은 기존 snapshot보다 새로우면 허용합니다.",
+        "workbench-store.test.mjs는 A 삭제 후 지연된 B snapshot revision 9를 전달합니다. 현재 epoch에서는 A 재등장과 disconnected 상태를 거부하고 B 선택 및 최신 B draft를 보존합니다.",
+        "이전 epoch receipt는 현재 epoch의 revision 하한을 올리지 않습니다. 별도 테스트가 invalid identity, evidence 없는 receipt, unconfirmed receipt와 하한의 단조 증가를 검사합니다."
+      ]
+    },
+    {
+      "id": "CODE-2",
+      "status": "resolved",
+      "evidence": [
+        "store.ts가 diagnostics filter와 requestGeneration을 소유합니다. 응답에는 현재 identity 참조와 selection/epoch scope가 모두 일치해야 합니다.",
+        "controller.ts는 filter 변경, selection/epoch 변경, 패널 종료 및 dispose에서 이전 요청을 detach합니다. 이전 payload와 error는 현재 diagnostics 또는 connection에 반영하지 않습니다.",
+        "controller는 READ_BUSY 이후 400ms 간격으로 현재 identity만 재시도합니다. 활성 요청은 하나이며 겹친 refresh는 새 요청을 만들지 않습니다. 일반 polling 간격은 3000ms입니다.",
+        "ActivityPanel에는 polling timer가 없습니다. mount와 cleanup은 controller action만 호출합니다.",
+        "테스트는 all-to-filtered, filtered-to-all, 늦은 성공/오류, close/dispose, selection/epoch/reopen, 겹친 refresh와 timer 정리를 검사합니다."
+      ]
+    }
+  ],
+  "passes": {
+    "spec_compliance": "plan revision7과 read-receipt version3의 A3/A4 수정 요구를 코드와 테스트에 대조했습니다. 현재 epoch revision 하한, B 선택/draft 보존, diagnostics identity, 취소 및 controller-only scheduling이 요구와 일치합니다.",
+    "code_quality": "수정 경로의 호출자, transport cancellation/quarantine, 상태 전이와 테스트를 검토했습니다. 현재 identity를 이전 요청 완료가 지우지 않도록 하는 guard와 dispose 이후 쓰기 차단을 확인했습니다.",
+    "fixture_e2e": "fixture는 diagnostics payload를 복사한 뒤 보류하고 필터를 적용합니다. 관련 테스트는 취소된 전체 응답, 선택된 event와 앱 전체 집계의 구분, effect 없음을 검사합니다. E2E는 실제 built renderer/preload에서 filter 교체, foreign event 부재, unknown draft 보존, disabled send와 lookup 이후 effect count 보존을 검사합니다."
+  },
+  "verification": {
+    "checks": {
+      "unit": 0,
+      "typecheck": 0,
+      "lint": 0,
+      "boundaries": 0,
+      "build": 0,
+      "bundle": 0,
+      "hidden-ui": 0
+    },
+    "basis": "현재 run.checks를 읽었습니다. 7개 check의 argv가 계약과 일치하며 plan/contract/source/environment binding도 일치합니다. inputs_changed, interrupted, timed_out은 모두 false입니다. check를 다시 실행하지 않았습니다.",
+    "unit_output_limit": "저장된 unit stdout은 잘려 있습니다. 전체 테스트 수나 모든 개별 테스트 통과 출력을 직접 확인했다고 주장하지 않습니다. 현재 계약 명령의 exit 0 기록과 관련 테스트 소스를 확인했습니다.",
+    "final_binding_verified": true,
+    "source_freeze_verified": true,
+    "changed_paths_match": true,
+    "changed_file_metadata_match": true,
+    "deleted_paths_absent": true,
+    "registered_artifacts_current": true,
+    "outcome_current": true,
+    "routing_inputs_current": true,
+    "native_evidence": "docs/runs/frontend-architecture-redesign/execution/p4-p5-foundation-native-r3/ui-states",
+    "native_result": "pass",
+    "capture_count": 28,
+    "provenanceVerifiedAfter": true,
+    "evidence_validation": "현재 build input, fixture/script, launch artifact와 build stamp의 hash가 일치합니다. 28개 PNG와 28개 screenshot record가 존재합니다. 모든 record의 beforeCapture는 hidden, unfocused, nonfocusable이며 이후 기록도 같은 상태입니다.",
+    "png_visual_review_performed": false
+  },
+  "review_boundary": {
+    "input": "docs/runs/bounded-workbench-foundation/execution/repair-final-reviewer.input.json",
+    "packet": "docs/runs/bounded-workbench-foundation/execution/repair-final-reviewer.packet.json",
+    "scope": "docs/runs/bounded-workbench-foundation/execution/final-repair-review-scope.md",
+    "source_freeze": "docs/runs/bounded-workbench-foundation/execution/final-source-freeze.json",
+    "inspected_changed_paths": [
+      "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+      "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+      "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+      "apps/desktop-app/src/workbench-store.test.mjs",
+      "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+      "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs"
+    ],
+    "retained_prior_evidence": "code-review-r1.json의 별도 독립 high review가 통과시킨 unrelated host lane/receipt/ready/quarantine 범위를 유지합니다. 해당 범위를 이번 검토에서 다시 검증했다고 주장하지 않습니다.",
+    "limits": "P4/P5 runtime-lifetime의 수정 및 인접 회귀 검토입니다. real provider, native Windows, physical IME, foreground performance와 PNG 시각 품질은 이번 검토에서 검증하지 않았습니다. P6 측정, P7 durable storage 및 나머지 F-01–18은 미완료 범위로 유지합니다."
+  },
+  "provenance": {
+    "child_task_id": "01a10486-3ca5-7643-aa15-19bd08ba1971",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-code-review"
+    ],
+    "requested_routing": "Sol/medium",
+    "runtime_identity_attested": false,
+    "files_changed": [],
+    "tests_run": false,
+    "read_only_binding_and_hash_checks_run": true,
+    "gui_launches": false,
+    "cua_used": false,
+    "provider_calls": false,
+    "delegated": false,
+    "self_repairs": false,
+    "persistence_owner": "coordinator"
+  }
+}

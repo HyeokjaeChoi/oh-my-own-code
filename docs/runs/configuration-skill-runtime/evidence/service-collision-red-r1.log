@@ -1,0 +1,30 @@
+✖ Native Skill known ID collision rejects before flushed effect and never claims foreign ownership (109.542542ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 171.500333
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:3617:1
+✖ Native Skill known ID collision rejects before flushed effect and never claims foreign ownership (109.542542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'RUNTIME_ERROR'
+  - 'SKILL_OWNERSHIP_CONFLICT'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:3623:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'RUNTIME_ERROR',
+    expected: 'SKILL_OWNERSHIP_CONFLICT',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

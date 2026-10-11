@@ -1,0 +1,93 @@
+{
+  "verdict": "pass",
+  "scope": "독립 correction CODE, exact11, solo-code-review/default, plan revision14",
+  "findings": [],
+  "F1": {
+    "status": "resolved",
+    "reason": "정확한 declaration과 activation Scope 검사는 유지한다. 현재 editor 목록의 일치·누락 검사는 원본 batch 종료 후 notify에서 수행한다."
+  },
+  "passes": {
+    "spec_compliance": {
+      "verdict": "pass",
+      "verified": [
+        "원본 batch2·inherit2 및 loader의 context·Scope 전달",
+        "notify 전 live metadata 생성 없음",
+        "실제 editor 목록에서 completeness 확인",
+        "complete=false, unsupported, capabilities=[] 유지"
+      ]
+    },
+    "correctness": {
+      "verdict": "pass",
+      "verified": [
+        "same-ID·options·execute 교체 거부 검사 유지",
+        "목록 reconciliation 실패 후 metadata 복구 차단",
+        "dispose·failed parent·closed Scope에서 replay 차단 경로",
+        "검사 시점 이동으로 인한 추가 결함 없음"
+      ]
+    }
+  },
+  "exact_binding": {
+    "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_sha256": "ca2ebb955090f8aac62e7aeba8a8fc97ad9232c698df676033e3a0b784cdcca8",
+    "packet": "docs/runs/permission-task-lifetime-integration/builtin-publication-code-packet-r2.json",
+    "packet_sha256": "b39b2a878221c66833d4de53ff3510bc34ae30d2ad14a8610c2125598aa5f50a",
+    "input": "docs/runs/permission-task-lifetime-integration/builtin-publication-code-input-r2.json",
+    "input_sha256": "70d224e52cfa157ca8142d2ac1d957fdc821e7e801e448eb42a1be6b70e67409",
+    "start_source_set_sha256": "e89fcbccec3bfc45b7be042869160bb712a166cbcf75215637e6c257a0d2b757",
+    "end_source_set_sha256": "e89fcbccec3bfc45b7be042869160bb712a166cbcf75215637e6c257a0d2b757",
+    "encoding": "UTF-8, path 정렬, 각 행 path + NUL + sha256 + LF",
+    "all11_match": true,
+    "changed3": [
+      "apps/desktop-app/src/native-permission-control.mjs",
+      "apps/desktop-app/src/native-permission-read-metadata.test.mjs",
+      "apps/desktop-app/src/native-permission-tool-publication.test.mjs"
+    ],
+    "reviewed_before_manifest_sha256": "f2f82a88c34b0d14352d75f0b67a9c0a0447e364487a1a6ca556aec63ee0e13d",
+    "before11_match_r1": true,
+    "remaining8_match_r1": true,
+    "remaining8_assessment": "새 반증이 없어 이전 no-finding 평가를 재사용함",
+    "packet_plan_and_routing_hashes_match": true
+  },
+  "ownchecks": {
+    "bounded_correction_tests": {
+      "passed": 24,
+      "failed": 0,
+      "exit_code": 0,
+      "includes": "원본 State.batch 회귀 및 실제 추출 loader의 ordinary·32 queued writers 검사"
+    },
+    "changed3_eslint": {
+      "exit_code": 0
+    },
+    "changed3_prettier": {
+      "exit_code": 0
+    },
+    "live_check_status": {
+      "exit_code": 0,
+      "all_four_reusable": true,
+      "reused_pass_counts": [
+        220,
+        223,
+        23,
+        12
+      ],
+      "whole_suites_rerun": false
+    },
+    "batch_RED": {
+      "preserved": true,
+      "sha256": "a189902c9a8ef95fa4accffb66ccb413eb58c36b5f08073495eac057f8c38408"
+    }
+  },
+  "limits": [
+    "Node와 pinned Effect 4.0.0-rc.112 및 추출한 inert source 범위의 결과이다.",
+    "publication fixture의 schema validator는 scripted이다.",
+    "Native/core/provider/Main/server 모듈 실행, Bun, network, build, GUI, physical probe는 수행하지 않았다.",
+    "소스·문서·ledger 수정과 delegation은 수행하지 않았다.",
+    "bounded CODE 통과이며 final F09/full18 완료 판정이 아니다.",
+    "complete=false와 unsupported 상태를 유지한다. 실행 권한을 부여하지 않는다."
+  ],
+  "provenance": {
+    "agent_id": "01a1270c-5a03-72f2-b143-7659233cd93c",
+    "saved_by": "Main",
+    "source": "actual wait_agent completed result"
+  }
+}

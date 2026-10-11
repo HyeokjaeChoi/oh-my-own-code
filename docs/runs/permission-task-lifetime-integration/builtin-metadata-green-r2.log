@@ -1,0 +1,32 @@
+✔ fixed read metadata requires original source, scope and result and stays unsupported (6.482708ms)
+✔ fixed question metadata requires original source, scope and result and stays unsupported (0.721375ms)
+✔ fixed glob metadata requires original source, scope and result and stays unsupported (0.714542ms)
+✔ fixed grep metadata requires original source, scope and result and stays unsupported (0.6295ms)
+✔ fixed skill metadata requires original source, scope and result and stays unsupported (0.635417ms)
+✔ fixed webfetch metadata requires original source, scope and result and stays unsupported (0.54825ms)
+✔ known unconfigured family refuses; unknown family cannot inject tool metadata (0.539ms)
+✖ cross-family results, same-id source transplants and undeclared descriptor copies refuse (0.705834ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 366.626334
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-builtin-metadata.test.mjs:75:1
+✖ cross-family results, same-id source transplants and undeclared descriptor copies refuse (0.705834ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-fUA4mE/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-fUA4mE/native-permission-control.mjs:35:9)
+      at Object.inventoryMutation (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-builtin-metadata-fUA4mE/native-permission-control.mjs:881:5)
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-builtin-metadata.test.mjs:87:12)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/core.js:297:30)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9

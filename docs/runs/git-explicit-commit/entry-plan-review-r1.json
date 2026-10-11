@@ -1,0 +1,120 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "5c3fac52c8cd3b5af6a517fd387a836fb57f4e4da7b521b18df323872e04b115",
+    "gate": "plan",
+    "plan_sha256": "086fd06de293501e90bf193c9cce8ed9210e73d7aea8b0f2231b2b9ac3eac19b",
+    "schema_version": 2,
+    "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "plan revision 1의 초기 PLAN 검토를 통과로 판정합니다. 요구 범위, 작업 순서, 소유권, 선행 조건과 검증 계획에서 수정을 요구할 구체적 결함을 찾지 못했습니다. 이 판정은 이후 초기 DESIGN_SPEC/architecture 검토를 대체하지 않으며, 구현 시작을 단독으로 허용하지 않습니다.",
+  "open_findings": [],
+  "inspected_scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "gate": "plan",
+    "plan_revision": 1,
+    "design_version": "1",
+    "design_status": "계획의 실현 가능성과 범위를 확인하기 위한 초기 proposal로만 검토했습니다.",
+    "inputs": [
+      "/Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/git-commit-entry-plan-assignment-r1.md",
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-plan-review/SKILL.md",
+      ".agents/skills/solo-orchestrate/references/adaptive-routing.md",
+      "docs/product/prd.md",
+      "docs/engineering/architecture-entry.md",
+      "docs/runs/git-explicit-commit/plan.md",
+      "docs/runs/git-explicit-commit/contract.json",
+      "docs/runs/git-explicit-commit/design.md",
+      "docs/runs/git-explicit-commit/entry-plan-input-r1.json",
+      "docs/runs/git-explicit-commit/entry-plan-packet-r1.json",
+      "docs/runs/git-explicit-commit/source-facts.json",
+      "docs/runs/git-explicit-commit/prechange-inventory.json",
+      "docs/runs/git-explicit-commit/run.json",
+      "docs/runs/git-explicit-commit/check-changed.mjs",
+      "docs/runs/git-explicit-commit/ensure-current-build.mjs",
+      "docs/runs/git-explicit-commit/evidence/prechange/git-commit-private-feasibility-r1.py",
+      "docs/runs/git-explicit-commit/evidence/prechange/git-commit-private-feasibility-r1-report.json",
+      "docs/runs/git-explicit-commit/evidence/prechange/git-commit-layout-feasibility-r1.py",
+      "docs/runs/git-explicit-commit/evidence/prechange/git-commit-layout-feasibility-r1-report.json",
+      "docs/runs/git-index-mutations/run.json",
+      "docs/runs/git-index-mutations/outcome-r1.json",
+      "docs/runs/git-index-mutations/final-code-review-r1.json",
+      "docs/runs/git-index-mutations/evidence/reader-regression-r1/report.json"
+    ],
+    "source_inspection": [
+      "기존 descriptor kernel의 FFI, rename, mkdir 및 object publication 경로",
+      "기존 index manager의 observation/scope/preview 결합과 shared snapshot 공개 경계",
+      "service, admission, journal, receipt와 Event Host의 기존 통합 지점",
+      "harness의 source inventory, PLAN binding, review report와 provenance 검사"
+    ],
+    "acceptance_coverage": {
+      "GC1": "ALL staged tree, 명시적 identity/message/time, no_changes 거부, SHA1/SHA256 및 HEAD 상태를 계획에 포함합니다. 원본 index/worktree/config와 다른 refs/worktrees 보존을 요구합니다.",
+      "GC2": "현재 preview와 원본 authority를 결합합니다. 원본 쓰기는 descriptor 경로로 제한합니다. 새 ref/reflog/tree/commit object 권한, root backup, 크기·시간 제한과 unsupported 상태를 명시합니다.",
+      "GC3": "admission 전 marker, stage/publish 전 durable intent, 원래 operation key의 target/receipt/backup 결합을 요구합니다. 부분 publication은 unknown으로 보존하며 자동 rollback/replay와 전체 atomicity 주장을 금지합니다.",
+      "GC4": "명시적 read/preview/Apply, 기본 취소 native confirmation, 자동 stage/commit 금지, draft 편집, scope 격리와 original-key lookup을 포함합니다. 실제 접근성·화면 검증은 구현 후 요구합니다.",
+      "GC5": "현재 소스에 대한 11개 필수 check, 실제 synthetic publication, built Renderer/preload 증거와 별도 독립 CODE/RENDER 검토를 요구합니다. 기존 read51/index14/kernel52 회귀 범위를 유지합니다."
+    },
+    "decisions_and_dependencies": [
+      "네 개의 decision_register 항목은 delegated로 표시되며 source, impact와 resolution을 포함합니다.",
+      "PLAN과 초기 DESIGN_SPEC/architecture 검토 후에만 구현을 시작합니다. 실제 DTO/helper/API checkpoint 후 소비자 작업을 배정합니다.",
+      "Main과 kernel/storage/Renderer/fixture 작업의 소유 경계가 구분되어 있습니다. Fixture 작업은 실제 API/hook 확정에 의존합니다.",
+      "기존 architecture 안의 일반 구현·수정에 반복 entry review를 요구하지 않습니다. 중대한 경계 변경과 최종 독립 review는 유지합니다.",
+      "branch 선택·생성과 previewed restore는 이후 필수 작업으로 남습니다. 이번 commit 범위를 전체 AC11 또는 제품 완료로 처리하지 않습니다."
+    ]
+  },
+  "checks": [
+    {
+      "name": "exact_plan_binding",
+      "result": "pass",
+      "details": "harness의 hash 규칙으로 PLAN binding을 재계산했습니다. entry-plan-input-r1.json의 전체 top-level object와 정확히 일치합니다. packet의 contract hash는 파일 hash이고 reviewed의 contract hash는 semantic hash입니다. 각각 현재 입력과 일치합니다."
+    },
+    {
+      "name": "current_source_integrity",
+      "result": "pass",
+      "details": "현재 포함 대상 657개 파일의 type/mode/hash inventory를 계산했습니다. prechange-inventory.json과 동일하며 source fingerprint는 35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f입니다. 새 commit 구현 소스 변경은 없습니다."
+    },
+    {
+      "name": "packet_and_dispatch_integrity",
+      "result": "pass",
+      "details": "plan, contract, design proposal과 routing 입력 hash가 일치합니다. 현재 CODEX_THREAD_ID가 기록된 PLAN dispatch의 child_ref와 일치하며 packet hash도 일치합니다. PLAN 전 design artifact 등록이 거부된 초기 순서는 현재 결함으로 처리하지 않았습니다."
+    },
+    {
+      "name": "predecessor_boundary",
+      "result": "pass",
+      "details": "git-index-mutations의 COMPLETE 상태, 변경 46개 경로와 서로 다른 reviewer의 CODE/RENDER PASS 기록을 확인했습니다. 해당 source fingerprint가 현재 입력과 같습니다. 이전 검증을 이번 검토에서 다시 실행했다고 주장하지 않습니다."
+    },
+    {
+      "name": "preparatory_evidence_scope",
+      "result": "pass",
+      "details": "두 script와 두 report를 읽고 report hash를 확인했습니다. SHA1/SHA256의 네 사례는 private Git의 commit body, old-OID 거부, linked reflog 경로, signing/hook 억제와 log-disabled 동작을 지원합니다. 원본 descriptor publisher, locking, journal 또는 crash 검증으로 확대하지 않았습니다."
+    },
+    {
+      "name": "verification_and_feasibility_plan",
+      "result": "pass",
+      "details": "11개 check가 모두 required로 선언되어 있습니다. 새 publisher와 shared kernel 변경에 맞는 회귀 검증을 포함합니다. 기존 FFI에는 두 parent FD를 받는 renameatx_np와 mkdirat가 있습니다. 새 closed policy의 구현과 증명은 이후 DESIGN_SPEC 검토 및 구현 단계의 조건으로 남습니다."
+    }
+  ],
+  "limits": [
+    "이번 검토는 PLAN만 대상으로 합니다. DESIGN_SPEC/architecture 승인, 최종 CODE/RENDER 승인 또는 구현 완료 판정이 아닙니다.",
+    "읽기와 hash 계산만 수행했습니다. 파일·ledger 수정, build, test, product runtime, delegation, provider, production Main, private project 또는 foreground 앱 실행은 하지 않았습니다.",
+    "기존 소스는 계획의 실현 가능성과 통합 경계를 확인하기 위해 선택한 부분을 읽었습니다. 전체 코드 재검토는 하지 않았습니다.",
+    "원본 commit publication, multi-file partial failure, 실제 Event Host OS 수명과 native confirmation 동작은 이번 검토에서 실행 검증하지 않았습니다.",
+    "지원 범위는 계획에 명시한 Darwin arm64, pinned Bun과 fixed Git 및 bounded repository 형식입니다. 다른 플랫폼, power-loss 안전성 또는 전체 atomicity를 승인하지 않습니다."
+  ],
+  "next_dependency": "Main이 design.md v1을 artifact로 등록하고, 새 독립 초기 DESIGN_SPEC/architecture 검토와 해당 handoff를 통과해야 합니다. 그 후 실제 DTO/helper/API checkpoint를 확정하고 구현 소비자를 배정합니다.",
+  "provenance": {
+    "child_task_id": "01a11ce8-71bf-7720-b202-0d97c268b073",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "child_task_id_source": "CODEX_THREAD_ID",
+    "coordinator_dispatch_matches": true,
+    "mode": "fresh_independent_initial_plan_report_only",
+    "independent_from_author": true,
+    "authored_or_repaired_reviewed_artifacts": false,
+    "delegated": false,
+    "report_persistence_owner": "Main"
+  }
+}

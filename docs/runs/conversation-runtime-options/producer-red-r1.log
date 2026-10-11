@@ -1,0 +1,73 @@
+✖ runtime options explicit opaque variant is accepted only with a model (0.526833ms)
+✖ runtime options assistant report is from its native message, never inferred (1.124042ms)
+✖ runtime options shared helper projects only bounded catalog options (0.303333ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 71.761167
+
+✖ failing tests:
+
+test at apps/desktop-app/src/runtime-options.test.mjs:6:1
+✖ runtime options explicit opaque variant is accepted only with a model (0.526833ms)
+  Error: Invalid workbench request.
+      at fail (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:79:17)
+      at validateRequest (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:280:5)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/runtime-options.test.mjs:8:16)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    appCode: 'INVALID_REQUEST'
+  }
+
+test at apps/desktop-app/src/runtime-options.test.mjs:13:1
+✖ runtime options assistant report is from its native message, never inferred (1.124042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - {
+  -   agent: 'reported-agent',
+  -   model: {
+  -     id: 'historical-model',
+  -     providerId: 'old-provider',
+  -     variant: 'actual'
+  -   }
+  - }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/runtime-options.test.mjs:16:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { agent: 'reported-agent', model: { providerId: 'old-provider', id: 'historical-model', variant: 'actual' } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/runtime-options.test.mjs:21:1
+✖ runtime options shared helper projects only bounded catalog options (0.303333ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/runtime-options/index.mjs' imported from /Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/runtime-options.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+      at moduleResolve (node:internal/modules/esm/resolve:879:10)
+      at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:708:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:728:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:766:56)
+      at #resolve (node:internal/modules/esm/loader:690:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:610:35)
+      at node:internal/modules/esm/loader:639:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:547:22) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/runtime-options/index.mjs'
+  }

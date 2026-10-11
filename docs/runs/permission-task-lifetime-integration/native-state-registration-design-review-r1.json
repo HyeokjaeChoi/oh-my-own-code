@@ -1,0 +1,86 @@
+{
+  "schema_version": 2,
+  "run": "permission-task-lifetime-integration",
+  "gate": "design_spec",
+  "reviewer": "design_spec_reviewer",
+  "verdict": "pass",
+  "reviewed": {
+    "contract_sha256": "e75344f5044f170b549e1dccb59e04cabf0656d5dbf7c0874132f5d638da7067",
+    "documents_sha256": "1bad9b546d4359c7073e005dde998abe1cdd20d068133a95c0174c41d9e04bb5",
+    "gate": "design_spec",
+    "plan_sha256": "5aeb5cb5862208dec837efd67e05b8a69d2f5b8b791008082c2cd8626b56c03e",
+    "schema_version": 2,
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "summary": "변경한 direct-State provenance 설계에 차단 결함을 찾지 못했습니다. 기존 Control inventory와 original State callback set을 유지하는 Worktree 한정 adapter는 구현 가능한 작은 경계입니다. root Context 전파 설명에는 비차단 문구 수정이 필요합니다. 이 pass는 factory 진입이나 runtime 실행을 허용하지 않습니다.",
+  "review_boundary": {
+    "candidate": "docs/runs/permission-task-lifetime-integration/native-state-registration-supplement-r1.md",
+    "plan_revision": 33,
+    "retained_binding": "docs/runs/permission-task-lifetime-integration/workspace-mutation-supplement-r1.md",
+    "scope": "새 direct-State provenance 방식만 검토했습니다. 기존 workspace-mutation 계약과 승인 범위는 유지합니다.",
+    "binding_input": "docs/runs/permission-task-lifetime-integration/native-state-registration-design-input-r1.json",
+    "architecture_analysis": "direct-state-architecture-analysis-r1.json은 분석 자료로만 사용했습니다. 승인 증거로 사용하지 않았습니다."
+  },
+  "findings": [
+    {
+      "id": "DS-01",
+      "severity": "P3",
+      "blocking": false,
+      "file": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/permission-task-lifetime-integration/native-state-registration-supplement-r1.md",
+      "line": 46,
+      "reason": "다른 root가 설치한 Control은 전달되지 않는다는 단정은 너무 강합니다. receipt와 일치하는 LayerNode.compile의 148행은 root를 순서대로 Layer.provideMerge로 결합합니다. 따라서 앞선 root의 output이 뒤 root에 제공될 수 있습니다. 이 사실은 현재 실제 graph의 root 순서나 같은 Control 전달을 증명하지 않습니다. 51행의 explicit dependency 선택은 여전히 유효합니다.",
+      "minimalfix": "46행의 두 번째 문장만 다음으로 교체하십시오: \"Control may be available from an earlier root through compile's ordered Layer.provideMerge composition; this does not prove availability or identity in the actual graph. Use the selected explicit dependency wiring rather than rely on root order.\""
+    }
+  ],
+  "open_findings": [],
+  "assessments": [
+    {
+      "topic": "source와 domain binding",
+      "result": "17–19행은 실제 original plugin object와 effect identity, 실제 반환 Service17과 transform 함수, 같은 Control의 private location handle/incarnation을 연결합니다. 실제 mutable plugin을 검사한 뒤 최초 노출 전에 freeze합니다. ID, digest, 복사 객체 또는 함수 transplant만으로 권한을 만들 수 없습니다."
+    },
+    {
+      "topic": "activation과 Context",
+      "result": "22–24행의 bracket은 원본 Loader updateContext 안쪽에 있어야 합니다. 새 등록에는 실제 실행 Fiber의 동일성을 요구하고 factory 종료 시 activation을 무효화합니다. 기존 resolver의 Effect.provide(context)는 확인한 pinned Effect에서 Context를 병합합니다. activation key 제거 결함으로 보고하지 않습니다. 같은 Control의 Fiber-keyed private WeakMap은 선택 가능한 구현 방식이며 필수 수정은 아닙니다."
+    },
+    {
+      "topic": "publication과 replay",
+      "result": "26–29행은 성공한 void 결과와 정확히 한 개의 Worktree publication을 함께 요구합니다. 첫 replay는 검증된 registering row를 사용할 수 있습니다. 이후 replay는 현재 row, parent, source, registration Scope와 location incarnation을 검사합니다. 종료한 factory Fiber나 최초 generation을 영구 요구하지 않습니다."
+    },
+    {
+      "topic": "Scope와 cleanup",
+      "result": "29–33행은 callback 직전 Closed Scope를 거부하고 publication 후 상태를 다시 검사합니다. Control terminalization 실패가 original dispose를 생략하지 않도록 두 Exits를 보존합니다. cleanup 완료가 불명확하면 hold를 유지합니다. original State의 finalizer, group, batch, shutdown과 callback set 소유권을 유지합니다."
+    },
+    {
+      "topic": "graph와 최소 변경 경계",
+      "result": "51행의 distinct identity-map clone을 original dependency로 사용하고 control.node와 함께 makeLocationNode에 전달하는 방식은 원본 API와 맞습니다. original.node만 교체하므로 clone을 재귀 교체하지 않습니다. 별도 callback registry나 전체 feature 진입 검토는 필요하지 않습니다. 저장된 r1 script/report는 synthetic services를 사용한 positive dependency mechanics 근거로 유지합니다."
+    },
+    {
+      "topic": "유지할 보류 조건",
+      "result": "정확한 setup dependency proof를 승인하기 전에는 original ConfigWorktree factory를 열 수 없습니다. Config.entries cache나 ConfigDiscovery fastpath만으로 startup isolation을 주장할 수 없습니다. ConfigMCP, 다른 State domain, 전체 inventory, compiler, Task와 runtime 보류 조건을 유지합니다."
+    }
+  ],
+  "verification": {
+    "input_copied_entire": true,
+    "input_matches_current_binding": true,
+    "packet_contract_hash_matches": true,
+    "routing_input_hashes_match": true,
+    "document_hashes_match_packet": true,
+    "workspace_supplement_unchanged": true,
+    "run_status": "active",
+    "original_source_receipt_hashes_checked": true,
+    "method": "문서와 source text를 읽고 JSON binding 및 SHA256을 계산했습니다. 제품 module을 import하거나 실행하지 않았습니다."
+  },
+  "risks_and_limits": [
+    "실제 Native acquisition, 현재 graph root ordering, 여러 location의 같은 global Control 공유와 handle 분리는 실행 검증하지 않았습니다.",
+    "구현 시 sibling/late registration, 첫 replay 중 close, post-close replay, 중복·누락 publication과 두 cleanup 실패 경로의 독립 증거가 필요합니다.",
+    "constructor proof worker의 metadata-startup.test 작업은 진행 중인 별도 prerequisite입니다. 현재 setup을 승인하거나 test 이동을 완료된 변경으로 판단하지 않았습니다.",
+    "이미 구성한 notification, background Fiber와 IO의 종료는 이 provenance 설계로 증명되지 않습니다. 기존 Task/lifetime gate를 유지합니다.",
+    "파일 쓰기, 위임, 테스트 재실행과 runtime 실행은 하지 않았습니다. Main이 보고서 저장과 등록을 담당합니다. 구현에 대한 자기 승인은 없습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a1281e-2a4a-7291-94fb-f947c22212ff",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "context": "fresh-clean",
+    "basis": "Actual completed wait saved in native-state-registration-design-wait-r1.json; coordinator adds identity metadata only, reviewer text/verdict/binding preserved."
+  }
+}

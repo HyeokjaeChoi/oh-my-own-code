@@ -1,0 +1,46 @@
+✔ closed descriptor and verifier return actual full manifest including contained relative link (29.535833ms)
+✔ packaging preserves exact relative links and refuses occupied resource roots (77.216042ms)
+✔ reject actual tree missing (11.422875ms)
+✔ reject actual tree extra (13.339417ms)
+✔ reject actual tree hash (11.332167ms)
+✔ reject actual tree mode (11.354708ms)
+✔ reject actual tree hardlink (10.176875ms)
+✔ reject actual tree symlink-escape (10.099208ms)
+✔ reject actual tree symlink-chain (10.75525ms)
+✔ reject actual tree symlink-undeclared (10.709833ms)
+✔ reject actual tree directory-mode (9.997ms)
+✔ reject actual tree manifest-hardlink (8.044541ms)
+✔ reject manifest unknown (6.873208ms)
+✔ reject manifest duplicate (7.701875ms)
+✔ reject manifest escape (7.003916ms)
+✔ reject manifest version (9.650667ms)
+✔ reject manifest target (7.631708ms)
+✔ reject manifest entry-unknown (8.29325ms)
+✔ reject manifest nlink (7.5985ms)
+✔ reject manifest type (6.641292ms)
+✔ reject manifest size (7.195291ms)
+✔ reject manifest depth (6.425167ms)
+✔ symlink ancestor rejected before inventory (7.085333ms)
+✔ full resource inventory has separate 100k limit and accepts over4096 files (1323.880417ms)
+✔ guard constructs env from zero and pins all downloaded lock origins (6.715458ms)
+✔ unsupported preparation target rejects before any directory/network action (0.507709ms)
+✔ corrupt official archive rejects before decompression or engine write (2.643833ms)
+✔ pin hash mutation blocks preparation before network (2.182209ms)
+✔ stage copies actual supplied child/protocol/full declared links; repeat exact stage is read-only reuse (3910.109917ms)
+✔ stage rejects receipt before creating destination (269.485041ms)
+✔ stage rejects dependency before creating destination (385.652208ms)
+✔ stage rejects engine before creating destination (389.950458ms)
+✔ stage rejects child-import before creating destination (386.876625ms)
+✔ stage rejects protocol-hardlink before creating destination (387.914ms)
+✔ controller rejects preload/path/custom CA before any network (0.327208ms)
+✔ contained npm alias name is validated against exact lock name; changed version still rejects (18.599333ms)
+✔ archive extractor rejects traversal/links/duplicates even when archive SHA512 matches supplied synthetic pins (1.894208ms)
+✔ configuration staged closure refuses an undeclared local dependency before destination publication (507.840292ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7951.239

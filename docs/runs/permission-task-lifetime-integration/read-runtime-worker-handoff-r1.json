@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "worker": "01a12759-61a0-7a60-9f59-318fb273022c",
+  "actual_wait_result": {
+    "status": {
+      "01a12759-61a0-7a60-9f59-318fb273022c": {
+        "completed": "구현을 완료했습니다. 지정한 두 파일만 수정했습니다.\n\n- `current()`는 `Effect.withFiber`로 실제 Fiber를 확인합니다. 이미 capture·start한 동일한 running Fiber에 기존 opaque handle을 반환합니다.\n- 기존 Fiber collection을 `WeakMap`으로 재사용했습니다. 중복 소유권 검사는 유지했습니다.\n- 외부·sibling·시작 전·종료·취소·revoked·stale scope·registry close는 거부합니다. handle은 실행 권한을 부여하지 않습니다.\n\n검증: API 부재 RED 확인 → **Node 101/101 PASS**. 두 파일 ESLint·Prettier PASS. 기존 Task-read 12개와 physical-kernel import fixture는 그대로 유지했습니다.\n\nSHA-256 — early-ready와 최종 값이 같습니다.\n\n**[leases](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-leases.mjs)**\n\n```text\nbefore 3c6ab21b76644807a54c42612a773ad8a35fdb1cecc385d6e9e32924028d1303\nafter  69b8b29c275f98d7132ea8adf613595460c629a2a1bbb11cee064309bc961e83\n```\n\n**[task-read tests](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-task-read.test.mjs)**\n\n```text\nbefore 5ddf80f3265ff603b69fcd839a1ad869bfd67ef6217ce736c2d01fbaa607bf3b\nafter  9e2cf1915a5e4cb7c2356f830ab8fb175f2632eec8e61c4585e82205f5b0aa79\n```\n\nMain 연결과 독립 CODE review는 coordinator의 후속 작업입니다. Native·Bun·build·GUI·physical runtime은 실행하지 않았습니다."
+      }
+    },
+    "timed_out": false
+  }
+}

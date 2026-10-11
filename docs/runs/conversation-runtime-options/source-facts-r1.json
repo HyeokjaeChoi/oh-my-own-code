@@ -1,0 +1,95 @@
+{
+  "status": "Read-only verified local source facts; no next API adoption or runtime execution",
+  "sdk_version": "2.0.18",
+  "files": {
+    "apps/desktop-app/src/workbench-service.mjs": {
+      "sha256": "b5211da4f71c8e6c143a63262c85f7638d3900916616919aefc2069f90fa40fb",
+      "bytes": 151631
+    },
+    "apps/desktop-app/src/desktop-bridge.d.ts": {
+      "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5",
+      "bytes": 36164
+    },
+    "apps/desktop-app/src/workbench-contract.mjs": {
+      "sha256": "bec2c493d72b749aae05a47e19ea14306e78f6e919900be8ab35bea616b75702",
+      "bytes": 26430
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts": {
+      "sha256": "56d534bd790aac11a0e0dbc8f7ddd2ad0b74971fbd2759f6ce8909ef8831aebe",
+      "bytes": 275444
+    },
+    "apps/desktop-app/src/renderer/shared/line-feedback/index.mjs": {
+      "sha256": "c2355cdf6a8ece022baf6215b5e84d3dee0020050362261c14a622f24f7232e3",
+      "bytes": 8480
+    },
+    "apps/desktop-app/node_modules/@opencode/client/dist/effect/api/api.d.ts": {
+      "sha256": "40fac3542dd644712e43f53d9f97fe7123e358e7286f36b0626bbae5176bced9",
+      "bytes": 102262
+    },
+    "node_modules/.pnpm/@opencode+schema@2.0.18/node_modules/@opencode/schema/dist/model.js": {
+      "sha256": "ad854faf08da84185f8ca4a7e136a11333cc5a2f9735f9ca9baff2899e12f2f4",
+      "bytes": 4978
+    },
+    "node_modules/.pnpm/@opencode+schema@2.0.18/node_modules/@opencode/schema/dist/model.d.ts": {
+      "sha256": "0aef75ab9ddb8e78656772de5992350a2b6de3fae4a83b17d57d8b03208b5940",
+      "bytes": 25916
+    },
+    "node_modules/.pnpm/@opencode+schema@2.0.18/node_modules/@opencode/schema/dist/session.js": {
+      "sha256": "44d0925cbb41764e3f09f3b1e864d3387753b1bf59953b986dae8cda14b0b252",
+      "bytes": 2220
+    },
+    "node_modules/.pnpm/@opencode+schema@2.0.18/node_modules/@opencode/schema/dist/session.d.ts": {
+      "sha256": "74a12c905a292fd73ec1f51bea3465ef554db07ac7f859d80cf466222a8272a4",
+      "bytes": 15349
+    },
+    "node_modules/.pnpm/@opencode+schema@2.0.18/node_modules/@opencode/schema/dist/session-message.js": {
+      "sha256": "eab00b891850fa054d5aace9787e83d2ff4cd5550a7ff8ba68ff9950f0641c54",
+      "bytes": 9666
+    },
+    "node_modules/.pnpm/@opencode+schema@2.0.18/node_modules/@opencode/schema/dist/prompt-input.d.ts": {
+      "sha256": "317766dfee4e1d69976df066b0b9d1ba2d5d775f147373c912df1e4d45ec609b",
+      "bytes": 6624
+    },
+    "node_modules/.pnpm/@opencode+schema@2.0.18/node_modules/@opencode/schema/dist/agent.js": {
+      "sha256": "c18ebdc0462ffb0625c286b6ab8a1f6f25081f395ca06b53553ba3d3147dd25e",
+      "bytes": 1744
+    }
+  },
+  "findings": [
+    {
+      "id": "RT1",
+      "source": "model.js Ref / Info / Variant",
+      "fact": "Model.Ref has optional variant. Info.variants lists IDs plus arbitrary settings/headers/body overlays. Only IDs and bounded display capability strings are candidates for public projection; never export overlay objects."
+    },
+    {
+      "id": "RT2",
+      "source": "session.js Info; session-message.js Assistant",
+      "fact": "Session.Info has optional agent/model; Assistant has required agent/model. Distinguish session setting observation from per-assistant-message runtime report. Neither a successful switch ACK nor an absent model field proves a provider used the requested model."
+    },
+    {
+      "id": "RT3",
+      "source": "api.d.ts ModelDefaultOutput",
+      "fact": "model.default returns Model.Info|undefined, not a Model.Ref or resolved session variant. Do not infer a default variant from catalog ordering or model.default."
+    },
+    {
+      "id": "RT4",
+      "source": "workbench-service.mjs catalog/send/refresh/projectMessages",
+      "fact": "Current catalog returns name/status and opaque provider-model hash only. send switches explicit id/providerID, keeps both baseline policy calls, then text-only prompt. refresh validates session ID/location and generation, but public projection omits session agent/model and assistant model. No provider call executed during inspection."
+    },
+    {
+      "id": "RT5",
+      "source": "prompt-input.d.ts FileAttachment",
+      "fact": "FileAttachment URI is a generic string, with optional name/description/mention. This type establishes neither safe URI schemes nor supported bytes, size, source access, protected paths or provider compatibility. Do not pass arbitrary renderer URI to Native."
+    },
+    {
+      "id": "RT6",
+      "source": "line-feedback/index.mjs and store.ts line.feedback.append",
+      "fact": "Existing line feedback produces version-bound, bounded selected text plus reference metadata and appends it atomically to the composer. It performs no IO/hash/automatic send. Reuse its observation authority rather than introduce competing selection versions."
+    }
+  ],
+  "limits": [
+    "No Native/provider/Electron/clipboard/build or additional test invocation",
+    "Source facts do not prove runtime default resolution or provider model execution",
+    "Independent review invocations unavailable due account usage limit"
+  ]
+}

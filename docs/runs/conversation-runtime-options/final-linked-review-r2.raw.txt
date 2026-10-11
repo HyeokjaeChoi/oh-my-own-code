@@ -1,0 +1,42 @@
+{
+  "code": {
+    "schema_version": 2,
+    "reviewed": {
+      "contract_sha256": "f68b871486ed0d2b3ae83c60d415384668c31c3fff2ca2327a34791f4a28c604",
+      "environment_sha256": "a768b935b68bced02a848ba606c0256ee223732d0800f5b2f99e553189a6322d",
+      "gate": "code",
+      "plan_sha256": "8a78b67646218faa140571a225403134d48b180b216ef7c7144d4d38278d15d2",
+      "schema_version": 2,
+      "source_sha256": "f3e0528548724635e213b942ace1f653fc0f270fb3dc95e6876b1dbefad46950",
+      "verification_sha256": "e866e2c21576633ca5b1e369d2edbb7ac55cbaf41639fe2a46dff49d567d83d5",
+      "work_class_sha256": "e607760a80d9b949d27d76cab2f4026ba62d2c79bf1cd2a4c60b36c77755a99e"
+    },
+    "verdict": "pass",
+    "summary": "F06 r2 수정에 대한 독립 CODE 검토입니다. 명세 준수와 코드 품질을 확인했으며, 남은 결함을 찾지 못했습니다. 실제 소스 696개와 전체 review binding이 일치합니다. r1 대비 변경은 correction-source-map-r2.json의 runner/test 3개뿐입니다. 제품·DTO·store·host는 변경되지 않았습니다. final-integration-r2.patch의 27개 경로와 102개 hunk가 현재 소스와 일치합니다. F1: boundaries 입력에 docs/design/tokens가 포함됩니다. 실제 production check_input_binding을 메모리에서 호출하여 token CSS 변경 시 이전 범위의 binding은 유지되고 새 범위의 binding은 바뀜을 확인했습니다. F2: 실제 command toolbar를 선택하며 입력창 72px·toolbar 32px와 runtime fieldset의 순서·포함·비겹침을 검사합니다. RED의 224px 대 120px 실패, GREEN과 overlap 거부 검사를 확인했습니다. hidden-r2는 같은 helper를 현재 production renderer에 실행했습니다. 기록된 source/function hash가 현재 함수와 일치하며, 실제 geometry는 composer 224px·input 72px·fieldset 100px·toolbar 32px입니다. typecheck/build의 재사용 binding과 소스 범위가 유효합니다. r1/r2의 buildStampSha256·buildStamp·currentBuildInputs·launchArtifacts가 같고, 현재 provenance 파일 203개의 hash·크기를 확인했습니다. 나머지 6개 검사는 r2에서 exit0으로 실행되었습니다. inbound managed 경로 8개는 그대로이며, 이전 완료 CODE 보고서의 hash와 binding도 확인했습니다. 파일 변경·ledger 쓰기·위임·runtime 실행·suite 재실행은 하지 않았습니다. 전체 legacy/all GUI, provider, production Main, private store, Windows는 검증하지 않았습니다. full18 또는 release 승인이 아닙니다.",
+    "open_findings": [],
+    "provenance": {
+      "child_task_id": "01a11ebf-e9cf-7c93-836d-9406cbb9ac04",
+      "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+    }
+  },
+  "render": {
+    "schema_version": 2,
+    "reviewed": {
+      "contract_sha256": "f68b871486ed0d2b3ae83c60d415384668c31c3fff2ca2327a34791f4a28c604",
+      "environment_sha256": "a768b935b68bced02a848ba606c0256ee223732d0800f5b2f99e553189a6322d",
+      "gate": "design",
+      "plan_sha256": "8a78b67646218faa140571a225403134d48b180b216ef7c7144d4d38278d15d2",
+      "schema_version": 2,
+      "source_sha256": "f3e0528548724635e213b942ace1f653fc0f270fb3dc95e6876b1dbefad46950",
+      "verification_sha256": "e866e2c21576633ca5b1e369d2edbb7ac55cbaf41639fe2a46dff49d567d83d5",
+      "work_class_sha256": "e607760a80d9b949d27d76cab2f4026ba62d2c79bf1cd2a4c60b36c77755a99e"
+    },
+    "verdict": "pass",
+    "summary": "F06 r2 수정에 대한 별도 독립 RENDER 검토입니다. RENDER-R1-001은 검증 완료입니다. evidence/hidden-r2/runtime-options의 원본 PNG 010–015와 028–033을 original 해상도로 모두 직접 보았습니다. Light/Dark 200%에서 실제 scroll 후 응답의 Agent·Provider·모델·Variant 값을 각각 읽을 수 있습니다. Composer 안내문 전체와 focus 표시가 있는 전송 버튼도 보입니다. 실제 viewport는 380×484 CSS px이며 원본 PNG는 1520×1936px입니다. runner의 각 dd·안내문·전송 버튼에 대한 viewport ratio 0.95 assertion과 전송 버튼 focus assertion을 확인했습니다. 이전 원본 009·021과 비교하여 누락된 화면 증거가 보완되었음을 확인했습니다. 현재 원본 004·016·019·034·037·045·048·052도 직접 보았습니다. 320/760/1440 화면, Light/Dark, 사용 불가 Variant, session refresh 실패와 별도 응답 보고, 실행 중 다음 draft, unknown 전송 차단에서 추가 결함을 찾지 못했습니다. 직접 본 현재 원본은 총 20개입니다. 전체 53개 PNG는 signature·SHA256·IHDR 크기와 native contentBounds/displayScaleFactor 및 viewport/pixelRatio를 대조했습니다. 모든 캡처 전후 visible/focused/focusable=false입니다. production renderer/preload와 synthetic Main의 provenance가 일치합니다. 소유 프로세스 pid95503과 wrapper는 exit0이며 pageErrors·externalRequests는 비어 있습니다. build 재사용과 현재 소스 binding도 확인했습니다. 새 실행·캡처·파일 변경·ledger 쓰기는 하지 않았습니다. Provider 실행, production Main, private store, screen reader, native select popup 키보드 선택, Windows 및 전체 legacy/all GUI는 검증하지 않았습니다. full18 또는 release 승인이 아닙니다.",
+    "open_findings": [],
+    "provenance": {
+      "child_task_id": "01a11ebf-e9cf-7c93-836d-9406cbb9ac04",
+      "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+    }
+  }
+}

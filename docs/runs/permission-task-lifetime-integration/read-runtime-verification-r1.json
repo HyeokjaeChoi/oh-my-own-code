@@ -1,0 +1,41 @@
+{
+  "revision": 20,
+  "checks": {
+    "metadata": {
+      "log": "read-runtime-metadata-r2.log",
+      "tests": 299,
+      "failures": 0,
+      "sha256": "81c6871b6f314d43288b5f12903f587eec6daddbe193b099d456727474d18b18"
+    },
+    "descriptor": {
+      "log": "read-runtime-descriptor-r1.log",
+      "tests": 226,
+      "failures": 0,
+      "sha256": "1394177a6b80feba7fbce93ebd1fc267c513f36ac7bed2782ed72d2f6d4d9edc"
+    },
+    "task": {
+      "log": "read-runtime-task-r1.log",
+      "tests": 22,
+      "failures": 0,
+      "sha256": "a61c893c7821f6d1ff61ce1cde1fdceedf39293715e09c1976ddc4ccddd35033"
+    },
+    "auxiliary": {
+      "log": "read-runtime-auxiliary-r1.log",
+      "tests": 23,
+      "failures": 0,
+      "sha256": "abf9b9adf6a2bacaf3bcb4373bc36a35572791787a98ce6bfb0167d84e0f7a56"
+    }
+  },
+  "static": {
+    "scoped_eslint": "read-runtime-eslint-r1.log",
+    "exact10_prettier": "read-runtime-prettier-r1.log"
+  },
+  "check_status": "read-runtime-check-status-r1.json",
+  "all_eight_reusable": true,
+  "physical": "unchanged prior r5 explicit closure reused; no invocation",
+  "limits": [
+    "No Native/Main/Bun/provider/server/browser/GUI/build/runtime acceptance",
+    "current Task identity alone does not authorize Read; assertExecution remains held",
+    "independent CODE pending; full18/F09 unfinished"
+  ]
+}

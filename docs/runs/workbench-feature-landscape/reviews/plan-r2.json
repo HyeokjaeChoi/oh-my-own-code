@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "654c663c54198f9339d4e7ffc15c2d94adf7666b9697659807914741f5dd2f4f",
+    "contract_sha256": "bb08f9980a24dcc752d714b37feb7422d6ad5c611f278372d2ff5802c6a52663",
+    "source_sha256": "507893e217f56cc24d6162593a456b4636ecee1119d75c22fb669304ab88141c"
+  },
+  "verdict": "changes_requested",
+  "summary": "Prior finding WFL-PLAN-01 is resolved: the plan and DR-1 now distinguish preserved approved feature scope, the explicit Electron/macOS/Windows/app-owned-sidecar choice, and PRD/UX v0.6 amendments that remain review required; ADR-0002 is correctly linked. The factual vendor report plus repository gap analysis fits the requested research outcome. One narrow acceptance clarification remains because the current criteria do not enumerate import, create, remove-from-list, and physical delete as requested in this re-review assignment.",
+  "open_findings": [
+    {
+      "id": "WFL-PLAN-02",
+      "priority": "P2",
+      "title": "Enumerate the four distinct lifecycle behaviors in acceptance",
+      "file": "docs/runs/workbench-feature-landscape/plan.md",
+      "start": 40,
+      "end": 43,
+      "description": "AC-1 requires four generic capability groups and AC-3 a repository audit, while scope calls the first group only workspace/project/worktree lifecycle. Neither the plan acceptance nor contract acceptance enumerates import, create, remove-from-list, and physical delete. These are distinct behaviors in PRD F-01 through F-03 and the spec-index common invariants; a broad lifecycle cell could satisfy the current wording while omitting a requested behavior or conflating removal with disk deletion.",
+      "requested_change": "In plan AC-1 and matching contract acceptance, explicitly require separate coverage for import, create, remove-from-list, and physical delete. Require the same distinctions in the AC-3 repository gap audit. Keep undocumented vendor behavior labeled as not established; no new user approval, implementation, or runtime test is needed.",
+      "validation_basis": "The re-review assignment explicitly requests enumeration; comparison with PRD F-01/F-02/F-03, UX project lifecycle flows, spec-index lifecycle invariants, plan Scope/AC-1/AC-3, and contract acceptance."
+    }
+  ],
+  "resolved_findings": [
+    {
+      "id": "WFL-PLAN-01",
+      "resolution": "Plan Decisions and assumptions and contract DR-1 separate scope authority, runtime selection, and amended-document review status, and cite docs/decisions/0002-desktop-runtime.md."
+    }
+  ],
+  "review_notes": [
+    "Scope otherwise covers all four vendor families and requested groups: project/worktree lifecycle; browser, terminal, file, diff/artifact surfaces; live tool-call interactions; and skill/MCP/plugin/agent/tool inventory/configuration. First-party citations, explicit fact/inference/documentation-gap labels, file/symbol evidence, baseline recommendations, risks, dependencies and sequenced next slices are included.",
+    "The structural source-link count check is only a smoke check; coordinator citation verification and independent final analysis review remain responsible for entailment, complete coverage and actionable gaps.",
+    "Keep family members and app/CLI surfaces attributable. Static repository evidence does not establish successful Electron execution, packaging, per-OS process supervision, or security enforcement."
+  ],
+  "review_boundary": "Focused independent plan re-review only. Inspected plan/contract, prior review, relevant PRD/UX/spec-index/ADR sections, and run binding semantics. No vendor research, application implementation audit, runtime tests, research report authorship or ledger edits performed.",
+  "provenance": {
+    "child_task_id": "/root/workbench_plan_review_r2",
+    "author_task_id": "/root"
+  }
+}

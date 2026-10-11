@@ -1,0 +1,129 @@
+{
+  "verdict": "changes_requested",
+  "review_kind": "journal_registry_checkpoint",
+  "final_gate": false,
+  "repository_root": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+  "plan_revision": 6,
+  "storage_contract_version": 5,
+  "provenance": {
+    "reviewer_id": "218b3c61-5103-465e-85c8-0d0fbd3691e2",
+    "thread_id": "01a106af-c63d-7200-8bf5-69408b9ac975",
+    "profile_read": "solo_reader",
+    "bootstrap_read": "solo-specialist",
+    "selected_skill": "solo-code-review",
+    "method": "독립 정적 검토: contract 준수와 코드 검토의 두 pass",
+    "source_hashes_match_freeze": true,
+    "source_hashes_unchanged_at_end": true,
+    "files_modified": [],
+    "tests_run": false,
+    "native_or_gui_run": false,
+    "delegation_used": false,
+    "moving_host_source_inspected": false,
+    "test_evidence": "저장된 log는 48/48 pass입니다. Main의 재실행은 사용자 제공 사실입니다. 이 reviewer는 테스트를 실행하지 않았습니다."
+  },
+  "findings": [
+    {
+      "id": "JR-V5-01",
+      "severity": "P2",
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-journal.mjs",
+      "line": 61,
+      "title": "두 policy effect를 별도 dispatch intent로 기록할 수 없음",
+      "trigger": "추가 evidence에 따르면 send()는 selection 전후에 baseline policy를 적용합니다. 같은 operation에서 native.policy를 두 번 dispatch하면 두 번째 호출은 duplicate로 반환됩니다.",
+      "impact": "Duplicate를 지키면 두 번째 필수 policy effect를 실행할 수 없습니다. Duplicate 뒤에도 effect를 실행하면 해당 effect의 별도 flushed intent가 없습니다.",
+      "evidence": [
+        "DISPATCH_STEPS는 native.policy 하나만 허용합니다.",
+        "workspace-registry.mjs:850-858은 같은 step의 두 번째 dispatch를 append 없이 duplicate로 반환합니다.",
+        "storage-journal.mjs:442-444도 같은 step의 중복 record를 거부합니다.",
+        "storage-contract.md section3과 section9는 각 policy/agent/model effect 전에 별도 flushed intent를 요구합니다.",
+        "Host 동작의 근거는 repeated-policy-step-finding-v5.md:4입니다. 이동 중인 host source를 직접 검토한 결과는 아닙니다."
+      ],
+      "required_correction": "제안된 native.policy.before_selection과 native.policy.after_selection을 bounded allowlist에 추가하십시오. 단일 적용용 native.policy는 유지하십시오. 두 intent의 순차 flush, 두 번째 flush 실패 시 effect 차단, 각 step의 duplicate 거부를 검증하십시오."
+    },
+    {
+      "id": "JR-V5-02",
+      "severity": "P2",
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.mjs",
+      "line": 189,
+      "title": "Session removal이 immutable session scope 밖의 tombstone을 허용함",
+      "trigger": "Workspace W에 parent가 없는 session A와 B가 있습니다. session.remove의 identity와 receipt는 A를 가리킵니다. Completion delta에는 B의 session tombstone만 넣습니다.",
+      "impact": "Completion은 B를 registry에서 제거하고 A의 receipt를 confirmed로 저장할 수 있습니다. Checkpoint와 reopen도 이 잘못된 결합을 허용합니다.",
+      "evidence": [
+        "155-167은 receipt의 scope가 admission identity와 같은지만 검사합니다.",
+        "189-194는 session tombstone의 workspace만 검사합니다. Tombstone ID와 identity.sessionId를 비교하지 않습니다.",
+        "326-336의 존재·parent guard는 parent가 없는 B를 막지 않습니다."
+      ],
+      "required_correction": "session.remove completion의 tombstone을 admitted sessionId에 결합하십시오. 다른 session의 tombstone은 append 전에 거부하십시오. Workspace 전체 제거의 기존 허용 범위는 유지하십시오."
+    },
+    {
+      "id": "JR-V5-03",
+      "severity": "P2",
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.mjs",
+      "line": 759,
+      "title": "Session capacity를 native effect 전에 예약하지 않음",
+      "trigger": "Committed session이 이미 200개인 ready registry에서 기존 workspace에 session.create를 begin하고 reserve합니다. 이후 native.create dispatch도 허용됩니다.",
+      "impact": "Native create effect 후 201번째 session mapping의 completion이 retained_limit로 실패합니다. Capacity 부족을 effect 전에 차단하지 못합니다. Session 199개에서 서로 다른 workspace의 동시 reservation도 같은 문제를 만들 수 있습니다.",
+      "evidence": [
+        "begin()은 685에서 operation 수만 검사합니다.",
+        "reservation 적용의 102-140은 session capacity를 검사하거나 예약하지 않습니다.",
+        "dispatch()는 reservation 존재만 확인하고 진행할 수 있습니다.",
+        "Session 200개 제한은 completion 적용의 356-359에서 검사합니다.",
+        "storage-contract.md section6은 admission limit를 effect 전에 적용하도록 요구합니다."
+      ],
+      "required_correction": "첫 effect 전에 committed sessions와 아직 mapping으로 전환되지 않은 reservation을 함께 계산하여 session capacity를 확보하십시오. 중복 reservation을 이중 계산하지 마십시오. Full-capacity와 서로 다른 workspace의 동시 reservation 경계를 검증하십시오."
+    },
+    {
+      "id": "JR-V5-04",
+      "severity": "P2",
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-journal.mjs",
+      "line": 164,
+      "title": "Falsy optional 값이 closed receipt validation을 우회함",
+      "trigger": "다른 필드는 유효한 receipt에 result:null 또는 result:false를 넣습니다. Removed result에 removedSessionIds:null 또는 false를 넣는 경우도 같습니다.",
+      "impact": "잘못된 값이 validation과 clone을 통과합니다. Journal append와 reopen validation은 이를 잘못된 receipt로 거부하지 않습니다.",
+      "evidence": [
+        "164의 if(value.result)는 falsy 값의 variant 검사를 생략합니다.",
+        "194의 if(result.removedSessionIds)도 같은 방식으로 array 검사를 생략합니다.",
+        "361은 이 validator를 completion payload 검사에 사용합니다."
+      ],
+      "required_correction": "Optional 필드는 truthiness가 아니라 property 존재 여부로 검사하십시오. 제공된 result는 유효한 closed variant여야 합니다. 제공된 removedSessionIds는 유효한 array여야 합니다."
+    }
+  ],
+  "preserved_checks": [
+    "Append/flush 실패 후 writer poison과 후속 쓰기 차단",
+    "손상된 journal bytes 보존",
+    "Confirmed checkpoint와 checksum-valid uncertain tail 구분",
+    "Uncertain tail에서 completion·mapping·tombstone 자동 공개 금지",
+    "Serialized latest-root 적용과 flush 후 candidate 공개",
+    "Digest를 포함한 immutable duplicate identity 검사",
+    "Retained-key limit의 보수적 전역 차단",
+    "Managed folder 생성 전 stable first-session identity 기록",
+    "Production journal/registry 코드에 project 삭제 동작 없음"
+  ],
+  "verification_limits": [
+    "Finding은 고정 source의 정적 경로 분석입니다. 실행 reproducer는 수행하지 않았습니다.",
+    "Host 통합, native 실행, Windows flush, power-loss durability, GUI와 P7 final gate는 검증 범위 밖입니다.",
+    "기존 conservative unknown hold와 명시적 recovery 조건은 결함으로 처리하지 않았습니다."
+  ],
+  "inspected_sha256": {
+    "AGENTS.md": "cf8b55daec926fff916fdec83a0e0b81822f1105fd3347ece4ba4f13b3b32b55",
+    ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+    ".agents/skills/solo-specialist/SKILL.md": "33378f790f39761948485f1f08617840579714dbb925aa177109a80ac4002c3b",
+    ".agents/skills/solo-code-review/SKILL.md": "e461cb26baa50f1f496bdde0a2f1985b8a005404b751652db729e73cd9af5244",
+    "docs/runs/durable-workbench-storage/plan.md": "640b6c072bc358cce8e0d5e44b2998ce3be06d57526f21a2320a17c0ef241212",
+    "docs/runs/durable-workbench-storage/storage-contract.md": "c58a79f5c62840873e5a2cededc67e9d381006926365fecf07728c5f484fdab7",
+    "docs/runs/durable-workbench-storage/execution/journal-registry-checkpoint-review-v5.packet.json": "b33e600c503e23dc144b33a0ce27a6e88977ae9fbd4a793a48677134a6f56f78",
+    "docs/runs/durable-workbench-storage/execution/storage-api-freeze-v5.json": "f0078b8a593550aa06827956ce30c14dd4a4409cd2a44dfc43baa746d98c6781",
+    "docs/runs/durable-workbench-storage/execution/journal-registry-checkpoint-result-v5.md": "9f5117bc117b9205df79f380ab2ab9b08772387104e33e2d16f45b0665e86274",
+    "docs/runs/durable-workbench-storage/execution/journal-registry-unit-checkpoint-v5.log": "49c950d197be74e8e06487b10e3a85bc7a10c2fb10f05e6fb4fc1497cbc60370",
+    "docs/runs/durable-workbench-storage/execution/repeated-policy-step-finding-v5.md": "24dffd58193353801bc0fa80cbe8b700a4668ae7f6c5917ce5c5753189e16aab",
+    "apps/desktop-app/src/host/storage-journal.mjs": "cca0369cfcc798cd6b7e2044734a7cdb1616da59eebe95011eb04b6296605069",
+    "apps/desktop-app/src/host/storage-journal.test.mjs": "d2a6c11e4c7af7b239bfaa1b5a3062104fae0d92e18d4fbd25876daba58b969b",
+    "apps/desktop-app/src/host/workspace-registry.mjs": "93121111e674e403c758cc15644b7e67da2b53c3b233c9d32e537f6c75c3b41f",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs": "3b427b6e7b9579bfb8df3abda5d21a692b3691d6da28af4669e136f7c2fe0b77"
+  },
+  "additional_binding_check": {
+    ".solopreneur/roles.json": {
+      "sha256": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0",
+      "inspection": "Packet hash 일치만 확인했습니다. 전체 role catalog는 읽지 않았습니다."
+    }
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "L1",
+      "description": "Bounded private actual location owner"
+    },
+    {
+      "id": "L2",
+      "description": "Graph membership exclusion preserves disjoint project concurrency"
+    },
+    {
+      "id": "L3",
+      "description": "Pinned actual factory/builder and resolved location integration"
+    },
+    {
+      "id": "L4",
+      "description": "Saved real Tool canaries without runtime launch"
+    },
+    {
+      "id": "L5",
+      "description": "Meaningful lifecycle refusals and honest settlement holds"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/native-permission-control.test.mjs",
+        "apps/desktop-app/src/native-permission-location-lifecycle.test.mjs",
+        "apps/desktop-app/src/native-permission-tool-entry.test.mjs",
+        "apps/desktop-app/src/native-permission-coordinator-admission.test.mjs",
+        "apps/desktop-app/src/native-permission-session-entry.test.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+        "apps/desktop-app/scripts/native-permission-graph-probe.test.mjs",
+        "apps/desktop-app/src/event-host-resources.test.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Actual extracted location lifetime graph membership, existing project concurrency and saved probe source; Node only",
+      "acceptance_ids": [
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/native-permission-control.mjs",
+        "apps/desktop-app/src/native-permission-control.test.mjs",
+        "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+        "apps/desktop-app/src/native-permission-location-lifecycle.test.mjs",
+        "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs",
+        "apps/desktop-app/scripts/native-permission-graph-probe.test.mjs",
+        "apps/desktop-app/scripts/native-permission-graph-probe.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Actual extracted location lifetime graph membership, existing project concurrency and saved probe source; Node only",
+      "acceptance_ids": [
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/native-permission-control.mjs",
+        "apps/desktop-app/src/native-permission-control.test.mjs",
+        "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+        "apps/desktop-app/src/native-permission-location-lifecycle.test.mjs",
+        "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs",
+        "apps/desktop-app/scripts/native-permission-graph-probe.test.mjs",
+        "apps/desktop-app/scripts/native-permission-graph-probe.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Actual extracted location lifetime graph membership, existing project concurrency and saved probe source; Node only",
+      "acceptance_ids": [
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+  "reviewMode": "fresh_independent_report_only",
+  "summary": "두 검토 모두 pass입니다. 현재 16개 파일에서 수정이 필요한 결함을 찾지 못했습니다. 정확한 preparation-r2 명령은 아래 조건에서 실행 전 적격성을 충족합니다. 실제 실행은 하지 않았습니다.",
+  "independence": {
+    "implementationAuthoredInThisInvocation": false,
+    "delegation": false,
+    "filesWritten": [],
+    "runtimeIdentityOrOSSandboxAttested": false
+  },
+  "sharedBindings": {
+    "planRevision": 3,
+    "planSha256": "16f297eaa41da82e5e3ba70397798b33e2c1d7b90d764615a56e84d149caa63f",
+    "contractSha256": "dc447b301b9dc7cdffb1c2b8a16d445a7f8870d79ae0ae9a040b6ae57ba883b4",
+    "reviewPacketSha256": "bbc9a3cc61627504b1bffcbd972762eb5f1407c3a3b57cb5d471eca9d521a4f7",
+    "checkpoint": "docs/runs/permission-task-lifetime-integration/directory-source-checkpoint-r1.json",
+    "checkpointSha256": "ab27073dde73dd3c6b06968b20283d2b040300c7eb0e43f4740f652997bf7abc",
+    "resolvedSkill": ".agents/skills/solo-code-review/SKILL.md",
+    "routingPinsMatched": true
+  },
+  "boundedCodeReview": {
+    "verdict": "pass",
+    "scope": "checkpoint의 현재 16개 파일에 한정한 ABI, file/directory kernel, root revocation, resource lifetime, TaskObserver 연결, resource 목록 및 probe 코드",
+    "acceptanceIds": [
+      "I2",
+      "I4"
+    ],
+    "findings": [],
+    "reviewedBehavior": [
+      "기존 configuration-save-kernel의 변경은 shared FFI loader 추출과 import에 한정됩니다. 보존된 원본과 diff를 확인했습니다.",
+      "directory ABI는 고정된 opt-in입니다. Darwin arm64 SDK의 dirent 필드, 함수 원형 및 symbol alias 조건과 일치합니다.",
+      "fdopendir 성공 후 target FD 소유권은 stream으로 이동합니다. 실패 시에는 원래 FD 정리 경로를 유지합니다.",
+      "readdir 호출 전 errno를 지웁니다. 비정상 EOF, 잘못된 record, 중복 이름 또는 크기 한도 초과는 전체 결과 반환을 막습니다.",
+      "임시 FD와 stream 정리 후 최종 권한 및 경로 검사를 수행합니다. 실패 시 bytes, rows 또는 private kind를 반환하지 않습니다.",
+      "취소는 즉시 사용을 막습니다. library.close는 원래 호출의 closedir 정리가 끝날 때까지 지연됩니다.",
+      "정리 실패는 계속 유지됩니다. 실패한 close나 closedir를 다시 실행하여 성공으로 바꾸지 않습니다.",
+      "resource completion은 factory 종료와 활성 호출의 finally 종료를 기다립니다. factory 실패와 확인되지 않은 정리는 complete:false로 남습니다.",
+      "TaskObserver 연결은 실제 opaque resource의 IO completion만 사용합니다. 이 변경 자체는 전체 Task 실행 권한을 부여하지 않습니다."
+    ],
+    "beforeArchives": {
+      "manifestsRead": 6,
+      "archivedFilePinsVerified": true,
+      "productionDiffsInspected": true
+    },
+    "limits": [
+      "물리적 Bun/Darwin 동작은 이번 검토에서 실행하지 않았습니다.",
+      "Node의 transformed/scripted tests는 실제 Bun FFI 실행 증거가 아닙니다.",
+      "instruction discovery, Native 활성화 및 전체 Task lifetime 통합은 이 bounded 판정에 포함되지 않습니다."
+    ]
+  },
+  "exactPreExecutionReview": {
+    "verdict": "pass",
+    "eligibleAtReviewEnd": true,
+    "executed": false,
+    "scope": "아래 정확한 Node parent 명령과 저장된 Bun child 명령의 단일 owned synthetic probe",
+    "preparationSha256": "80d8059b74438a46994bfc278abdd64678af915d0836a52d62dea54e0e60a8d4",
+    "inputPath": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h/input.json",
+    "inputSha256": "d43f681b518870217a2d238ac50bfe8e7b6e3eca61280cbc7125fd944fa337f9",
+    "projectInputCopyMatchesExternalInput": true,
+    "parentCwd": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "parentArgv": [
+      "/opt/homebrew/Cellar/node/26.11.0_1/bin/node",
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-descriptor-probe.mjs",
+      "--execute",
+      "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h/input.json",
+      "--input-sha256",
+      "d43f681b518870217a2d238ac50bfe8e7b6e3eca61280cbc7125fd944fa337f9"
+    ],
+    "parentNodeSha256": "849e5785bd5b3ac68516f105d617c4a7ddcc3de1d7a89ba696d5dab271ab0164",
+    "childArgv": [
+      "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h/bun",
+      "--no-install",
+      "--no-env-file",
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-descriptor-probe.mjs",
+      "--fixture",
+      "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h"
+    ],
+    "childCwd": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h",
+    "childEnvironment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h/home",
+      "TMPDIR": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h/tmp",
+      "XDG_CONFIG_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h/config",
+      "XDG_CACHE_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h/cache",
+      "XDG_DATA_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h/data",
+      "XDG_STATE_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h/state",
+      "BUN_INSTALL_CACHE_DIR": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-aZWE6h/cache",
+      "OMOC_DESCRIPTOR_PROBE_NONCE": "795c9e58-2bce-44fc-8cc4-4a2801b09257"
+    },
+    "observedPlatform": "Darwin arm64",
+    "engineVersionPin": "1.4.2",
+    "engineSha256": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+    "copiedAndStagedEnginePinsMatchedBeforeAndAfter": true,
+    "sourceHashes": {
+      "apps/desktop-app/scripts/native-descriptor-probe.mjs": "3e00b300942d3dc50a3967c78169528ab4d095d04ec3efa9c4cb26c97c2267bf",
+      "apps/desktop-app/src/host/native-descriptor-read.mjs": "71e5f0106dceb4b2584a7658536251859bf9d14a90f88fcb94456a90552eee54",
+      "apps/desktop-app/src/host/native-descriptor-read-resource.mjs": "82aed4ebbb7bf21e8cf69994b954c6b7248cad735c32fff0abae12e7bcf9a4dc",
+      "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs": "1af173e00c9e095f265dad1e6a6509d7f45521d4e6fa9ba5c37ed65a499f2117",
+      "apps/desktop-app/src/host/darwin-directory-entry.mjs": "994d968244f511d0b4c43fd2b93c345334a0c9b0306065485513200c3817a132",
+      "apps/desktop-app/src/host/workspace-root-authority.mjs": "a8f977e5b8458eb8b51ed1c47ab4fa515e35b78e72f9303f79f724fa9eac0fd0",
+      "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68",
+      "apps/desktop-app/runtime-event-host/installer-pins.json": "2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41"
+    },
+    "namespaceVerification": {
+      "ownerUid": 501,
+      "rootCanonicalAndNotSymlink": true,
+      "rootMode": "0700",
+      "inputAndMarkerMode": "0600",
+      "inputAndMarkerLinkCount": 1,
+      "engineMode": "0500",
+      "engineLinkCount": 1,
+      "sixEnvironmentDirectories": "소유자 일치, canonical, symlink 아님, 0700, 모두 비어 있음",
+      "markerRootAndNonceMatched": true,
+      "executionIntentAbsent": true,
+      "executionReportAbsent": true,
+      "fixtureResultAbsent": true,
+      "unexpectedRootEntries": []
+    },
+    "containmentAndReporting": [
+      "parent는 정확한 input SHA, sourceHashes, argv, 환경, engine 및 namespace 상태를 spawn 전에 검사합니다.",
+      "child는 명시된 환경만 받습니다. stdio는 ignore이며 timeout은 30000ms, killSignal은 SIGKILL입니다.",
+      "fixture의 파일, symlink, hardlink 및 outside sentinel은 모두 owned synthetic namespace 안에 생성됩니다.",
+      "실행 전 exclusive execution-intent를 기록합니다. 중단 또는 불명확한 종료 후 같은 namespace를 재실행하지 못하게 합니다.",
+      "성공은 child 종료 상태, signal/error 부재, source/engine 사후 일치 및 fixture-result의 passed:true를 모두 요구합니다.",
+      "실패와 보고 누락은 성공으로 바꾸지 않습니다. namespace와 실행 결과를 보존합니다."
+    ],
+    "findings": [],
+    "validityConditions": [
+      "정확한 argv, input bytes, source/helper bytes, engine bytes 및 namespace 상태가 유지되어야 합니다.",
+      "Node parent 실행 환경에 추가 preload 또는 loader 설정을 넣지 않아야 합니다. 검토 환경에서 NODE_OPTIONS, NODE_PATH, DYLD_INSERT_LIBRARIES, DYLD_LIBRARY_PATH 및 BUN_OPTIONS는 없었습니다.",
+      "실행 시 기존 preflight 검사를 그대로 통과해야 합니다. intent 기록 후에는 결과와 관계없이 같은 namespace를 재사용하지 않아야 합니다."
+    ],
+    "limits": [
+      "이 판정은 실행 전 적격성입니다. 실제 Bun version, FFI 동작 또는 probe 성공을 확인한 결과가 아닙니다.",
+      "환경 분리와 hash 검사는 OS sandbox 또는 same-user change-and-restore 방지 증거가 아닙니다.",
+      "Native, Main, server, provider, build, GUI, 실제 private store 및 전체 Task 실행을 승인하지 않습니다."
+    ]
+  },
+  "pinVerification": {
+    "method": "checkpoint에 나열된 16개 파일 각각의 실제 bytes와 SHA-256을 검토 시작과 종료에 계산하여 비교",
+    "before": {
+      "matchedFiles": 16,
+      "mismatches": []
+    },
+    "after": {
+      "checkedAt": "2026-10-10T14:58:22.062208+00:00",
+      "matchedFiles": 16,
+      "mismatches": []
+    },
+    "beforeAfterPinsIdentical": true,
+    "probeSourceHelperPinsMatched": "8/8 before 및 after",
+    "planContractPreparationInputPinsUnchanged": true
+  },
+  "verificationEvidence": {
+    "reused": {
+      "node": "199 PASS",
+      "nativeMetadata": "105 PASS",
+      "inertStage": "1 PASS",
+      "exact16ESLint": "제공된 PASS 증거 재사용",
+      "exact16Prettier": "제공된 PASS 증거 재사용"
+    },
+    "reviewerExecuted": [
+      "읽기 전용 source, archive, SDK, metadata 및 SHA-256 검사",
+      "python3 .solopreneur/harness.py check-status permission-task-lifetime-integration"
+    ],
+    "checkStatus": {
+      "native-descriptor-read": "reusable",
+      "native-metadata": "reusable",
+      "native-descriptor-bun-probe": "missing: no recorded attempt"
+    },
+    "testsRepeated": false,
+    "bunExecuted": false,
+    "fixturePreparedOrExecuted": false
+  },
+  "primarySourceCrossChecks": [
+    "[Apple Libc fdopendir 구현](https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/gen/FreeBSD/opendir.c)",
+    "[Apple Libc readdir 구현](https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/gen/FreeBSD/readdir.c)",
+    "[Apple Libc closedir 구현](https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/gen/FreeBSD/closedir.c)"
+  ],
+  "approvalLimits": {
+    "finalWholeCodeApproval": false,
+    "full18Approval": false,
+    "totalTaskExecutionGrant": false,
+    "nativeIntegrationApproval": false,
+    "persistenceOwner": "Main"
+  },
+  "provenance": {
+    "child_task_id": "01a1264f-c45c-7db2-8347-bae3048980f6",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

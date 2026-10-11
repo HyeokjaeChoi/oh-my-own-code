@@ -1,0 +1,57 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "f984074224c6966e017ac5eaf864f6697750f17f42b9da563c63dffa81dac2a2",
+    "environment_sha256": "33b5d2c83b147ac2a2995c34915a9c02b8a46f6247bcdd067f12e9aab3eecdee",
+    "gate": "code",
+    "plan_sha256": "19c68a0c63080533a956a93d37a586f26b1b9bc1ee5b14470098f00f8783c7d5",
+    "schema_version": 2,
+    "source_sha256": "04abe5bca8f8b9dba1179736422dc82abf0a1a34a3bca5a5cfdae6e8274c9911",
+    "verification_sha256": "b57688bc2d7f9ec698da8ed26b578ee88e86560ec07714156e282f9aead23749",
+    "work_class_sha256": "4793e59879fb3b3abfaa6ad3aa4c35a5142d1a853380d1f95bbb254f075c9228"
+  },
+  "verdict": "pass",
+  "summary": "r10 안내 문단 수정과 근거 재사용을 검토했습니다. 수정이 필요한 결함은 찾지 못했습니다. 파일 저장, 선택한 세션의 AGENTS.md 등록·제거, 아직 제공하지 않는 다른 설정과 MCP 변경이 구분됩니다.",
+  "open_findings": [],
+  "spec_compliance": {
+    "result": "pass",
+    "observations": [
+      "plan revision 10과 design v2의 범위 안내 요구에 맞습니다.",
+      "기존 29개 파일의 SHA256은 r9와 같습니다. r10 목록의 30개 파일 모두 현재 파일 해시와 일치합니다.",
+      "explorer-before-r10.tsx와 현재 explorer/index.tsx의 차이는 187행부터 시작하는 안내 문단 하나입니다.",
+      "선택한 세션의 등록 기능을 설명하며, 자동 등록이나 provider의 실제 지침 소비를 보장하지 않습니다."
+    ]
+  },
+  "code_quality": {
+    "result": "pass",
+    "observations": [
+      "CatalogPanel 호출부, 기존 CSS, ConfigurationDraftEditor의 파일 저장·등록·제거 안내를 확인했습니다.",
+      "수정은 정적 문구에 한정됩니다. 이벤트 처리, API, 상태 관리, host 또는 Native 동작 변경은 없습니다."
+    ]
+  },
+  "verification": {
+    "executed": [
+      "harness review-input의 code와 design 결과가 각각 준비된 r10 input과 정확히 일치합니다.",
+      "두 packet의 plan, design, profile 및 routing input 해시가 현재 파일과 일치합니다.",
+      "verify-native-r10.mjs가 exit code 0으로 통과했습니다. 문단 하나의 정확한 교체, 나머지 production 입력, non-renderer 산출물, resources, helper, probe, Electron 해시 일치를 확인합니다.",
+      "읽기 전용 captureProvenance 결과가 hidden-r4 manifest의 전체 provenance와 일치했습니다."
+    ],
+    "recorded_evidence": [
+      "actual-checks-r10.json의 9개 check는 exit code 0이며 입력 변경, 중단, timeout이 없습니다. build와 hidden-ui는 새 실행 기록입니다.",
+      "final-code-review-r9.json의 기존 29개 경로 검토는 변경 없는 범위의 근거로 재사용했습니다.",
+      "Native-r4의 실제 12개 사례와 두 Native/helper의 정상 종료 기록을 재사용했습니다. 이번 검토에서 Native를 재실행하지 않았습니다.",
+      "Native-r1/r2/r3 및 hidden-r1/r2의 과거 실패는 성공으로 대체하지 않았습니다."
+    ],
+    "limits": [
+      "이번 검토는 문단 수정과 근거 재사용에 한정됩니다. 전체 기능을 다시 검토하거나 test suite를 재실행하지 않았습니다.",
+      "Native, Electron, UI, provider 또는 build를 실행하지 않았습니다.",
+      "Windows, power-loss, CAS, same-UID 외부 경쟁 및 provider의 실제 지침 소비는 검증하지 않았습니다.",
+      "기존 reopen의 명시적 trust 절차는 session.create 효과가 있습니다. 이후 instruction reconciliation만 읽기 전용입니다.",
+      "파일·ledger 수정, 보고서 저장, 위임과 의존성 설치를 하지 않았습니다."
+    ]
+  },
+  "provenance": {
+    "child_task_id": "01a119a2-67a2-7750-b5a4-b328f3ae96e4",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

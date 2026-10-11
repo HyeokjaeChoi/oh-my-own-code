@@ -1,0 +1,3 @@
+#!/bin/sh
+# Solopreneur: staged-file checks only. No network, formatting, or test suite.
+exec python3 "$(git rev-parse --show-toplevel)/.solopreneur/hooks/check_staged.py"

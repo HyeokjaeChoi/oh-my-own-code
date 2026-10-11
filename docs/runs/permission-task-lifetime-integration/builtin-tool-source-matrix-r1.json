@@ -1,0 +1,734 @@
+{
+  "status": "source_only_advisory",
+  "summary": "14개 Tool plugin family의 정의와 등록 지점을 확인했습니다. 첫 추출 후보는 question입니다. 선언 factory 추출과 기존 inventory 소비 경로 확장을 하나의 source-family batch로 진행할 수 있습니다. 전체 inventory는 아직 불완전합니다.",
+  "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+  "chunk_base": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks",
+  "path_rule": "각 chunk 경로는 chunk_base와 file을 결합합니다. 모든 행의 line은 원본 설치 파일 기준입니다.",
+  "routing": {
+    "profile": "solo_worker",
+    "skill": "solo-implement",
+    "selected_mode": "general",
+    "restriction": "보고 전용. 파일 변경 없음. runtime 실행 없음.",
+    "profile_sha256": "2488c3a019261ec7c1acad6c6224545951ea3750f8664f23bb947f6634640d01"
+  },
+  "input_fingerprints": {
+    "docs/runs/permission-task-lifetime-integration/plan.md": "18f959df0984e7da23836e2d12d2c35153daff24216bafe7e67a306d93e7ae4f",
+    "docs/runs/permission-task-lifetime-integration/builtin-tool-source-matrix-packet-r1.json": "8efd428a458db3361d1e81747b7b408a0ea582208d9b59e67615ba973e5e3b8b",
+    "docs/runs/permission-task-lifetime-integration/task-wiring-analysis-r1.md": "6067bf01487fad246d1f3f3c1bd8b1a0e1428dbbdbc83b7cdf63de70facde2de",
+    "docs/runs/permission-control-design/design-contract-r4.md": "8747f6a01336837b1ccce2a983f8045c446b13aaba0ef1ee12b9fa989c6b1095",
+    ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+    ".agents/skills/solo-implement/SKILL.md": "875d7a4d5ca8dc0462b7051c6bb3703317c1662676eaf2967c58a5cad1943bc8"
+  },
+  "verification": {
+    "performed": [
+      "지정 문서와 실제 설치 chunk의 텍스트 읽기",
+      "정의·등록·직접 dependency setup 지점의 제한된 검색",
+      "SHA-256 계산"
+    ],
+    "files_changed": [],
+    "callbacks_executed": [],
+    "runtime_imports": [],
+    "tests_run": [],
+    "delegation": [],
+    "runtime_evidence": "없음. 사용자가 전달한 r5 11PASS와 ownership CODE PASS는 이 분석에서 재검증하지 않았습니다.",
+    "pin_limit": "@opencode/core/package.json의 version은 2.0.18입니다. 아래 hash는 읽은 원본 설치 bytes의 fingerprint입니다. 새 family 전체가 기존 overlay recipe에 이미 등록되었다는 뜻은 아닙니다."
+  },
+  "shared_source_facts": {
+    "builtin_identity": {
+      "file": "config-8t2s61hj.js",
+      "sha256": "dc829fc3193e71713caec7b0c94915afefc1c398c6c92049d9651b8cffa1b802",
+      "anchors": [
+        "218–267: 지정 family의 실제 import 연결",
+        "461–477: 지정 family의 pre 배열 순서",
+        "499–508: PluginInternal.list가 원본 plugin.effect를 context와 함께 감싼 descriptor 생성"
+      ],
+      "acquisition_warning": "344–443의 services/requirements는 여러 service를 함께 요구합니다. 선언을 얻기 위해 이 graph를 획득하면 개별 Tool plugin 이전의 setup 효과가 발생할 수 있습니다."
+    },
+    "tool_registry": {
+      "file": "config-yw6qsgb4.js",
+      "sha256": "3731a6ac99d3de9db8acd15d2ee4a7559b121dfa28e6694c7db5ed38f203e3aa",
+      "anchors": [
+        "137–176: namespace/add/update/remove editor",
+        "148–155: effective ID 계산 후 선언과 options 복사",
+        "187–190: transform/reload/list 공개",
+        "191–215: policy 필터와 직접 Tool·codemode Tool 분리",
+        "204–214: 현재 codemode 집합에서 execute Tool 생성",
+        "85–92,224–233: execute.before hook 이후 실행 대상 선택",
+        "103–122: execute.after hook"
+      ],
+      "risk": "정적 family 선언 목록은 현재 Tool registry, hook 적용 결과, 생성된 execute Tool의 전체 inventory가 아닙니다. 동일 ID add는 Map.set으로 기존 항목을 덮을 수 있습니다."
+    },
+    "schema_and_id": {
+      "file": "config-3w5fmr99.js",
+      "sha256": "28f8e167d496e3469ce4d1532b003b6adbc03c6641734be66a9e7b02fad1584d",
+      "anchors": [
+        "6–16: top-level Effect.runSync로 schema cache 생성",
+        "17–22: definition2에서 input/output JSON Schema 생성",
+        "24–27: 입력 decode 후 tool.execute 호출",
+        "109–119: schema 형식별 JSON Schema 변환 분기",
+        "211–212: namespace를 포함한 effectiveName2 계산"
+      ],
+      "risk": "원본 Schema 객체 생성 지점과 최종 JSON Schema 생성 지점은 다릅니다. 이번에는 변환을 실행하거나 schema digest를 만들지 않았습니다."
+    },
+    "hooks": {
+      "file": "config-5y480sgp.js",
+      "sha256": "0632bbee9e0b05f2ee384845014c062387f9c8e8eeaafcdd98d59aac9e6bc9bf",
+      "anchors": [
+        "28–45: callback 등록과 Scope finalizer dispose",
+        "47–54: 등록 순서대로 callback 실행",
+        "56–57: has/register/trigger만 제공"
+      ],
+      "risk": "완전한 hook 목록 API가 없습니다. 등록·dispose·callback identity를 원래 owner에서 추적해야 합니다."
+    },
+    "row_conventions": {
+      "setup": "plugin effect 본문에서 execute 이전에 확인한 동작입니다. 직접 dependency 위험은 dependency_effects에 따로 기록했습니다.",
+      "extraction": "소스 구조상 가능한 변경 제안입니다. 현재 export나 실행 검증 결과가 아닙니다.",
+      "permission": "options.permission과 execute 내부 permission.assert action을 구분했습니다.",
+      "external_directory": "FileAccess를 사용하는 family는 필요할 때 external_directory action도 평가합니다.",
+      "provider_registration": "지정 14개 plugin 본문에서 provider transform 등록은 확인되지 않았습니다. provider 조회·실행은 별도입니다."
+    }
+  },
+  "verified_rows": [
+    {
+      "plugin_id": "opencode.tool.patch",
+      "file": "config-8f36rj9w.js",
+      "sha256": "4cfbad9b1b79a35f8996501401ed8229036536a8c4a533451b295a052293fcb6",
+      "tool_ids": [
+        "patch"
+      ],
+      "options": {
+        "codemode": false,
+        "permission": "edit"
+      },
+      "permission": {
+        "action": "edit",
+        "anchor": "213–226",
+        "resources": "원본·이동 대상 resource의 중복 제거 집합",
+        "additional_action": "external_directory"
+      },
+      "schemas": "89–102: Input10, Applied2, Output6. description은 51–85의 patch_default.",
+      "declaration": "117–273: transform. 118–272: 선언 객체.",
+      "acquisition": "111–116: Environment Service78, FileAccess Service21, FileMutation Service18, Formatter Service20, Location Service80, Permission Service49.",
+      "registration": [
+        "117–273: tool.transform",
+        "283–285: session.context/compaction/generate"
+      ],
+      "hooks": "274–282: model.id가 gpt-를 포함하고 oss 및 gpt-4를 포함하지 않으면 edit/write를 삭제합니다. 그 외에는 patch를 삭제합니다.",
+      "setup": "service 획득 후 transform과 3개 hook을 등록합니다. plugin 본문에 직접 setup IO 호출은 없습니다.",
+      "effect_risks": [
+        "125–129: execute 함수 진입 시 Patch.parse와 lock 대상 계산",
+        "160–206: edit permission.assert 전에 기존 파일을 읽어 preview 준비",
+        "227–254: write/remove 및 이동의 부분 완료 가능",
+        "255–259: Formatter 실행과 추가 읽기"
+      ],
+      "extraction": "가능. 같은 factory에서 선언과 execute closure를 생성하고 transform과 metadata가 공유하게 합니다. model별 hook 적용 결과는 별도 inventory로 남겨야 합니다."
+    },
+    {
+      "plugin_id": "opencode.tool.edit",
+      "file": "config-04zc2vp5.js",
+      "sha256": "9587254b3d400ae332f6c358038a4886dbfc42c887c20776a13e089036e26989",
+      "tool_ids": [
+        "edit"
+      ],
+      "options": {
+        "codemode": false,
+        "permission": "edit"
+      },
+      "permission": {
+        "action": "edit",
+        "anchor": "157–165",
+        "resources": "[target.resource]",
+        "additional_action": "external_directory"
+      },
+      "schemas": "43–56: Input4, Output3.",
+      "declaration": "115–193: transform. 116–192: 선언 객체.",
+      "acquisition": "109–114: FileAccess, FileMutation, Environment, Formatter, Location, Permission.",
+      "registration": [
+        "115–193: tool.transform"
+      ],
+      "hooks": [],
+      "setup": "plugin 본문에 직접 setup IO 호출은 없습니다.",
+      "effect_risks": [
+        "138–140: resolve·외부 경로 평가·파일 읽기",
+        "157–165: preview 준비 후 edit action 평가",
+        "177–187: write, Formatter, 추가 읽기, lock"
+      ],
+      "extraction": "가능. 선언 생성은 service method를 호출하지 않습니다. FileMutation·Formatter의 실제 실행 의미를 그대로 보존해야 합니다."
+    },
+    {
+      "plugin_id": "opencode.tool.glob",
+      "file": "config-ec87pa6m.js",
+      "sha256": "d3cd19fc3d179442a6371f0b0f385ae3207287f98387552f05de4a6592a81980",
+      "tool_ids": [
+        "glob"
+      ],
+      "options": {
+        "codemode": false
+      },
+      "permission": {
+        "action": "glob",
+        "anchor": "85–98",
+        "resources": "[input.pattern]",
+        "additional_action": "external_directory"
+      },
+      "schemas": "46–58: Input3, Output2. GlobInput2/Entry4는 config-b2s03exd.js에서 import.",
+      "declaration": "74–124: transform. 75–123: 선언 객체.",
+      "acquisition": "69–73: Environment, Ripgrep Service77, Location, FileAccess, Permission.",
+      "registration": [
+        "74–124: tool.transform"
+      ],
+      "hooks": [],
+      "setup": "plugin 본문에 직접 setup IO 호출은 없습니다. Ripgrep service 획득과 실제 검색 실행을 구분해야 합니다.",
+      "effect_risks": [
+        "83–101: resolve·외부 경로 평가·permission·directory 확인",
+        "104–117: ripgrep.glob 실행. binary 준비와 process 실행 가능"
+      ],
+      "extraction": "가능. Schema 필드 참조와 description을 같은 factory에서 유지합니다. metadata 수집 중 Ripgrep service를 획득하거나 glob을 호출하면 안 됩니다."
+    },
+    {
+      "plugin_id": "opencode.tool.grep",
+      "file": "config-e661jwrm.js",
+      "sha256": "63ef4cf89a3e7e2d1b3d697259d528de1c429558e3c986dfe060471ccb97f7fd",
+      "tool_ids": [
+        "grep"
+      ],
+      "options": {
+        "codemode": false
+      },
+      "permission": {
+        "action": "grep",
+        "anchor": "104–119",
+        "resources": "[input.pattern]",
+        "additional_action": "external_directory"
+      },
+      "schemas": "48–68: Input12, Output8. GrepInput2/Match2는 config-b2s03exd.js에서 import.",
+      "declaration": "94–153: transform. 95–152: 선언 객체.",
+      "acquisition": "89–93: Environment, Ripgrep, Location, FileAccess, Permission.",
+      "registration": [
+        "94–153: tool.transform"
+      ],
+      "hooks": [],
+      "setup": "plugin 본문에 직접 setup IO 호출은 없습니다.",
+      "effect_risks": "102–143: 경로 resolve, 외부 경로 평가, permission, 파일 종류 확인, ripgrep.grep process 실행.",
+      "extraction": "가능. glob과 같은 구조입니다. 검색 결과가 read-only라는 설명은 setup·process 무효과성의 증거가 아닙니다."
+    },
+    {
+      "plugin_id": "opencode.tools",
+      "file": "config-kb6gw2zp.js",
+      "sha256": "d0ad28539fdfed16e4341b00bddc430d343a789caa1957eb8ef409b8584f5d8d",
+      "tool_ids": [
+        "opencode_session_rename",
+        "opencode_session_move",
+        "opencode_models"
+      ],
+      "options": {
+        "session_rename": {
+          "namespace": "opencode",
+          "codemode": true
+        },
+        "session_move": {
+          "namespace": "opencode",
+          "codemode": true,
+          "pinned": true
+        },
+        "models": {
+          "namespace": "opencode",
+          "codemode": true
+        }
+      },
+      "permission": {
+        "explicit_assert": "각 execute 본문에는 permission.assert가 없습니다.",
+        "snapshot_filter_actions": [
+          "opencode_session_rename",
+          "opencode_session_move",
+          "opencode_models"
+        ],
+        "limit": "Tool.snapshot의 ID 기반 필터는 각 underlying session mutation의 최종 권한 검증을 대신하지 않습니다."
+      },
+      "schemas": "19–30: rename/move. 31–66: models.",
+      "declaration": "76–160: transform. 77–80: namespace. 81–97: rename. 98–116: move. 117–159: models.",
+      "acquisition": "별도 yield service 획득 없음. execute가 ctx.session/provider/model API를 사용합니다.",
+      "registration": [
+        "73–75: session.context/compaction/generate",
+        "76–160: namespace와 3개 Tool 등록"
+      ],
+      "hooks": "70–72: event.system에 session_move 안내를 추가합니다.",
+      "setup": "hook 등록 후 transform 등록. plugin 본문에 직접 setup IO 호출은 없습니다.",
+      "effect_risks": [
+        "92: ctx.session.update",
+        "106–110: ctx.session.move, delivery=steer",
+        "126–130: session/provider/model 조회"
+      ],
+      "extraction": "가능. namespace와 3개 선언을 하나의 고정 bundle factory로 추출합니다. factory에서 ctx API를 호출하지 않습니다. models 결과와 실제 provider 집합은 동적입니다."
+    },
+    {
+      "plugin_id": "opencode.tools.mcp-resources",
+      "file": "config-e2skv07x.js",
+      "sha256": "86a48168402c0a62344bf1fc645f1e0278c60291d43f8d37aa12f60e138a3a4e",
+      "tool_ids": [
+        "opencode_list_mcp_resources",
+        "opencode_read_mcp_resource"
+      ],
+      "options": {
+        "namespace": "opencode",
+        "codemode": true
+      },
+      "permission": [
+        {
+          "action": "opencode_list_mcp_resources",
+          "anchor": "41–49",
+          "resources": "명시한 server 또는 현재 server 이름 집합"
+        },
+        {
+          "action": "opencode_read_mcp_resource",
+          "anchor": "69–77",
+          "resources": "server:uri",
+          "save": "server:*"
+        }
+      ],
+      "schemas": "32–38,59–67: transform callback 안에서 생성합니다. Resource2/ResourceTemplate2/ResourceContent2는 config-znr04804.js에서 import.",
+      "declaration": "27–92: transform. 28–54 및 55–91: 두 선언.",
+      "acquisition": "25–26: MCP Service32, Permission.",
+      "registration": [
+        "27–92: tool.transform"
+      ],
+      "hooks": [],
+      "setup": "plugin 자체는 두 service 획득 후 transform만 등록합니다. MCP dependency는 subscription과 재연결 경로를 소유합니다.",
+      "effect_risks": "40: permission 전 server 조회. 50–52: resource catalog/list. 78: 실제 resource 읽기.",
+      "extraction": "가능. inline Schema 생성도 bundle factory로 함께 이동해야 합니다. 고정된 두 wrapper 선언만 추출할 수 있습니다. MCP server·resource·remote Tool 집합은 불완전한 동적 범위로 남깁니다."
+    },
+    {
+      "plugin_id": "opencode.tool.question",
+      "file": "config-fcxyj98j.js",
+      "sha256": "0ca34f434362b7a2598849e7f4b5614be97f118a04408b4cad2100a1e0875317",
+      "tool_ids": [
+        "question"
+      ],
+      "options": {
+        "codemode": false
+      },
+      "permission": {
+        "action": "question",
+        "anchor": "64–70",
+        "resources": [
+          "*"
+        ]
+      },
+      "schemas": "37–42: Input14, Output9. Question.Prompt/Answer는 @opencode/schema/question에서 import.",
+      "declaration": "58–100: transform. 59–99: 선언 객체.",
+      "acquisition": "56–57: Form Service74, Permission.",
+      "registration": [
+        "58–100: tool.transform"
+      ],
+      "hooks": [],
+      "setup": "plugin 본문에 직접 setup IO 호출은 없습니다.",
+      "effect_risks": "64–99: permission 평가, forms.ask 구성·실행, 응답 대기와 취소 처리.",
+      "extraction": "첫 후보. 선언 객체를 공통 factory로 이동합니다. transform과 metadata가 같은 결과를 사용하게 합니다. execute closure 생성 시 permission.assert나 forms.ask를 호출하지 않습니다."
+    },
+    {
+      "plugin_id": "opencode.tool.read",
+      "file": "config-kcmnw9z9.js",
+      "sha256": "80068552355da82bbe3ebe47c0d6e245da552ab51da9a0dfa3232dfd06752974",
+      "tool_ids": [
+        "read"
+      ],
+      "options": {
+        "codemode": false
+      },
+      "permission": {
+        "action": "read",
+        "via": "FileAccess.authorizeRead",
+        "additional_action": "external_directory"
+      },
+      "schemas": "47–57: LocationInput/Input2/Output.",
+      "declaration": "66–72에서 원본 선언과 execute 시작 확인.",
+      "acquisition": "61–65: Reader Service7, FileAccess Service21, SessionInstructions Service12, FSUtil.Service, Location Service80.",
+      "registration": [
+        "원본 66행: tool.transform"
+      ],
+      "hooks": [],
+      "setup": "기존 분석 결과를 유지합니다. Location/Read 실행 경로는 재분석하지 않았습니다.",
+      "extraction": "기존 overlay-contract 808–835의 readDeclaration2/isReadDeclaration2 및 기존 Control provenance 경로를 재사용 기준으로 삼습니다. 현재 overlay는 원본 transform을 declaration 생성으로 바꾸고 unsupported metadata를 반환하는 구조입니다. 이를 실제 Tool 등록 완료로 보고하면 안 됩니다.",
+      "coverage": "이번에는 family 대응, hash, schema·획득 경계와 기존 factory 소비 방식만 확인했습니다."
+    },
+    {
+      "plugin_id": "opencode.tool.shell",
+      "file": "config-2et2b5t1.js",
+      "sha256": "42d9a74391603b2d191e2d05cfcb2d502b218f2aee43b3fb28bf0a6ca588ddaa",
+      "tool_ids": [
+        "shell"
+      ],
+      "options": {
+        "codemode": false
+      },
+      "permission": {
+        "action": "shell",
+        "anchor": "148–156",
+        "condition": "scanner의 parsed.commands.length > 0",
+        "resources": "parsed.commands의 resource/save",
+        "additional_action": "external_directory"
+      },
+      "schemas": "73–96: Input5, StructuredOutput, Output.",
+      "declaration": "186–251: transform. 187–250: 선언 객체.",
+      "acquisition": "122–131: Session Service27, Job Service56, Scope, Environment, FileAccess, Shell Service41, ShellSelect Service53, Permission, Config Service64.",
+      "registration": [
+        "186–251: tool.transform",
+        "258–260: session.context/compaction/generate"
+      ],
+      "hooks": "252–257: compatibleShell을 평가하고 description을 현재 shell 이름으로 변경합니다.",
+      "setup": "129: shellSelect.resolve 호출로 Effect 값을 구성합니다. 이 지점에서는 yield하지 않습니다. 132–185의 prepare/notifyWhenDone은 함수 정의입니다. Shell dependency 획득 자체에는 실제 setup IO가 있습니다.",
+      "effect_risks": [
+        "138–159: 경로 resolve·Config 조회·scanner·외부 경로·permission·directory 확인",
+        "195–203: shell.create와 before callback",
+        "221–243: Job 시작·background 전환·notification Fiber",
+        "162–185: 완료 뒤 Synthetic session 입력"
+      ],
+      "extraction": "선언 factory 추출은 가능. metadata 수집을 위해 Shell graph를 획득하면 안 됩니다. hook description과 실제 process/background lifetime은 별도 추적 대상입니다."
+    },
+    {
+      "plugin_id": "opencode.tool.skill",
+      "file": "config-ym52mge9.js",
+      "sha256": "ddcfa3ec00066bee8de602338b89add4a1683b71fa8f577accce996000b14f57",
+      "tool_ids": [
+        "skill"
+      ],
+      "options": {
+        "codemode": false
+      },
+      "permission": {
+        "action": "skill",
+        "anchor": "63–70",
+        "resources": "[skill.id]",
+        "save": "[skill.id]"
+      },
+      "schemas": "30–37: Input8, Output5. ID5/Name2는 config-ps3c5a77.js에서 import.",
+      "declaration": "52–78: transform. 53–77: 선언 객체.",
+      "acquisition": "49–51: FSUtil.Service, Skill Service40, Permission.",
+      "registration": [
+        "52–78: tool.transform"
+      ],
+      "hooks": [],
+      "setup": "plugin 본문에 직접 setup IO 호출은 없습니다.",
+      "effect_risks": "59: 현재 skill 조회. 71: prepare3가 SKILL.md 주변 파일을 scan할 수 있습니다.",
+      "extraction": "가능. 고정 wrapper 선언과 동적 skill 목록·내용을 구분합니다."
+    },
+    {
+      "plugin_id": "opencode.tool.subagent",
+      "file": "config-191v1wnc.js",
+      "sha256": "62b9246e5455e6b2515955c2f519f4b1c1963b48052c8e66f683f0bfca895834",
+      "tool_ids": [
+        "subagent"
+      ],
+      "options": {
+        "codemode": false
+      },
+      "permission": {
+        "action": "subagent",
+        "anchor": "141–152",
+        "resources": "[agent.id]",
+        "save": "[agent.id]"
+      },
+      "schemas": "59–79: Input11, Output7.",
+      "declaration": "117–219: transform. 118–218: 선언 객체.",
+      "acquisition": "92–98: Session, Job, Agent Service62, Config, Permission, Model Service68, make9.",
+      "registration": [
+        "117–219: tool.transform",
+        "220–231: tool.execute.before",
+        "250–252: session.context/compaction/generate"
+      ],
+      "hooks": [
+        "220–231: 빈 model/sessionID 문자열을 제거하여 event.input 변경",
+        "232–249: 현재 Agent 목록과 evaluate2 결과를 사용하여 description 변경"
+      ],
+      "setup": "98에서 make9를 실제 yield합니다. 직접 확인한 make9는 Session/Job/Scope 획득, Set 생성, 함수 반환을 수행합니다. setup 중 child 시작이나 fork는 하지 않습니다. dependency service 전체의 무효과성을 뜻하지는 않습니다.",
+      "effect_risks": [
+        "124–140: parent ancestry·Config·Agent 조회",
+        "153–173: 기존 child 확인, Agent/Model 변경 또는 child 생성",
+        "176–199: prompt·Job 시작·background·notification",
+        "194–196: interrupt/cancel"
+      ],
+      "extraction": "가능. factory에 실제 service와 subagents 객체를 closure dependency로 전달합니다. metadata 경로에서 make9를 실행하지 않습니다. 동적 Agent/Model/child 집합과 input 변경 hook을 함께 미완료 상태로 추적해야 합니다."
+    },
+    {
+      "plugin_id": "opencode.tool.webfetch",
+      "file": "config-4xsr0mw7.js",
+      "sha256": "169ec515b2cda2813937ff559cf98ef226603145c5d1308ed4f778fd5ffd491e",
+      "tool_ids": [
+        "webfetch"
+      ],
+      "options": {
+        "codemode": false
+      },
+      "permission": {
+        "action": "webfetch",
+        "anchor": "111–119",
+        "resources": "[input.url]"
+      },
+      "schemas": "40–53: Timeout, Input7, Output.",
+      "declaration": "100–146: transform. 101–145: 선언 객체.",
+      "acquisition": "98–99: HttpClient.HttpClient, Permission.",
+      "registration": [
+        "100–146: tool.transform"
+      ],
+      "hooks": [],
+      "setup": "plugin 본문에 HTTP 요청이나 다른 직접 setup IO 호출은 없습니다.",
+      "effect_risks": "120–145: HTTP 요청, Cloudflare challenge 시 재요청, body 수집, timeout, 변환.",
+      "extraction": "가능. 네트워크 동작은 execute closure 내부에 남깁니다. HttpClient layer의 전체 acquisition closure는 이번 범위에서 감사하지 않았습니다."
+    },
+    {
+      "plugin_id": "opencode.tool.websearch",
+      "file": "config-9tndjada.js",
+      "sha256": "a5d09253a81ccc330da2d096afbc4cb8ad14c31feb2af42119f04cb6bf3531ff",
+      "tool_ids": [
+        "websearch"
+      ],
+      "options": {
+        "codemode": false
+      },
+      "permission": {
+        "action": "websearch",
+        "anchor": "62–70",
+        "resources": "[input.query]"
+      },
+      "schemas": "42–48: Input9, Output. ID4/Result2는 config-c738b566.js에서 import.",
+      "declaration": "55–175: transform. 56–174: 선언 객체.",
+      "acquisition": "52–54: Permission, Form, WebSearch Service19.",
+      "registration": [
+        "55–175: tool.transform",
+        "181–183: session.context/compaction/generate"
+      ],
+      "hooks": "176–180: websearch.default를 평가합니다. Disabled이면 Tool을 삭제합니다.",
+      "setup": "34: module 범위 Semaphore 생성. 39–41: 현재 연도를 포함한 description 생성. plugin effect 자체는 service 획득과 등록만 수행합니다.",
+      "effect_risks": [
+        "71–147: provider query·선택 Form·선택 저장·재검색",
+        "176–180: hook의 default 조회는 dependency의 KV 읽기와 정리 쓰기로 이어질 수 있음"
+      ],
+      "extraction": "선언 factory 추출은 가능. description은 시간 의존 값입니다. hook은 순수한 event 변경으로 분류할 수 없습니다. provider 목록·선택·실제 execute는 동적이며 이번 범위에서 불완전합니다."
+    },
+    {
+      "plugin_id": "opencode.tool.write",
+      "file": "config-5m3ds5v3.js",
+      "sha256": "25900de0d0c03cfbc001844a6ff2e26ef7b834a3808bf90990d489d8f3b909ac",
+      "tool_ids": [
+        "write"
+      ],
+      "options": {
+        "codemode": false,
+        "permission": "edit"
+      },
+      "permission": {
+        "action": "edit",
+        "anchor": "81–89",
+        "resources": "[target.resource]",
+        "additional_action": "external_directory"
+      },
+      "schemas": "39–50: Input6, Output4.",
+      "declaration": "60–97: transform. 61–96: 선언 객체.",
+      "acquisition": "55–59: FileAccess, FileMutation, Environment, Formatter, Permission.",
+      "registration": [
+        "60–97: tool.transform"
+      ],
+      "hooks": [],
+      "setup": "plugin 본문에 직접 setup IO 호출은 없습니다.",
+      "effect_risks": [
+        "76–80: edit permission 전에 기존 파일을 읽고 preview 준비",
+        "90–94: write, BOM 재읽기, Formatter 및 BOM 동기화"
+      ],
+      "extraction": "가능. factory 추출로 실행의 read/write/Formatter 효과가 안전해지는 것은 아닙니다."
+    }
+  ],
+  "dependency_effects": [
+    {
+      "file": "config-aw9tbzfk.js",
+      "sha256": "aa18e42eeb9b00433b0e1972dd75d33e288465ce3ad1305ac69a33b7f398eb48",
+      "anchors": "37–48: Environment 획득, lock 생성, 함수 정의. 49–56: 호출 시 stat/read/write.",
+      "conclusion": "직접 layer 본문에서 파일 쓰기를 실행하지 않습니다."
+    },
+    {
+      "file": "config-crj6ha2h.js",
+      "sha256": "3e4206baa368bb72c62a3f3018b81d2c59d2a2f97f1615099992fc298028a397",
+      "anchors": "26–43: Location/AppProcess 획득과 Formatter registry 구성. 50–64: enabled 평가 후 processes.run.",
+      "conclusion": "Formatter 실행은 process 효과입니다. 선언 metadata와 분리해야 합니다."
+    },
+    {
+      "file": "config-s16xw6kj.js",
+      "sha256": "30cb0a2ffe07acaf2ba2214938404cb233fce9cccd988a2d268612e76ea5d35a",
+      "anchors": "66–71: Environment와 RipgrepBinary 획득. run 호출 시 binary.filepath 평가 및 spawn.",
+      "conclusion": "Ripgrep layer 획득과 검색 process 실행은 다른 단계입니다."
+    },
+    {
+      "file": "config-8d7r5vzw.js",
+      "sha256": "fa9f3334a2d671a74dda3d4c7f3b5b2b441a9438e3c16a1c5ad0d316058d4934",
+      "anchors": "32–36: dependency 획득. 73–96: cached filepath Effect. 85–94: 미설치 시 다운로드·파일 쓰기·압축 해제·삭제. 38–70: process와 copy/chmod.",
+      "conclusion": "cached Effect의 실제 평가 전에는 다운로드 본문을 실행하지 않습니다. 검색 시 최초 filepath 평가가 네트워크·파일·process 효과를 낼 수 있습니다."
+    },
+    {
+      "file": "config-hbtt76ya.js",
+      "sha256": "8afa7591a9f6c71e2c3169b0b55a2429ad578705ca32a67b35fe992dc8b76198",
+      "anchors": "76–88: cleanup가 저장 디렉터리를 열거하고 cleanup3를 호출하며 반복 Fiber로 실행. 90–106: Shell layer 획득 시 fs 모듈 로드와 mkdir. 328–340: cleanupNode가 dependency에 포함.",
+      "conclusion": "Shell은 Tool execute 이전에 setup IO와 cleanup Fiber를 실행할 수 있습니다. 선언 수집을 위한 graph 획득은 부적합합니다."
+    },
+    {
+      "file": "config-qnzd3xnt.js",
+      "sha256": "f8ba1b7e8b4fb35447028df89dd79bc0d86ad068b7dc3af9dedba77651e9dcd3",
+      "anchors": "191–207: ShellSelect registry와 resolve/list Effect 구성. 167–181: resolve 시 환경과 cache 사용.",
+      "conclusion": "plugin의 compatibleShell 변수는 Effect 값입니다. session hook에서 yield하면 실제 선택이 수행됩니다."
+    },
+    {
+      "file": "config-gk47d069.js",
+      "sha256": "f3ea0c5b51ae6f7cc29146cbb5cdfba0654a95cbb33a32425eb55315674e5657",
+      "anchors": "22–26: make9 획득과 Set 생성. 27–36: notify 호출 시 fork. 39–50: start 호출 시 Job과 Session resume.",
+      "conclusion": "make9 획득 자체가 child 실행은 아닙니다. 반환한 함수 호출은 lifetime 효과를 가집니다."
+    },
+    {
+      "file": "config-ps3c5a77.js",
+      "sha256": "27506d0991a379ea6d7c3c53d28a25cbfefb9eb3b80bdeb6ece7651d4fa81d70",
+      "anchors": "65–71: prepare3 파일 scan. 76–109: Skill registry와 변경 publish callback.",
+      "conclusion": "고정 skill Tool 선언과 동적 Skill registry 및 파일 scan을 구분해야 합니다."
+    },
+    {
+      "file": "config-znr04804.js",
+      "sha256": "5d3cbf85696f24f6e07fc226754ca19544d15a19abd82eaf01dfbbbb49c7107d",
+      "anchors": "104–116: MCP service 획득과 Fiber runtime. 243–274: connection callback과 시작. 387: bus subscription fork. 388–411: registry notify가 reconcile 연결.",
+      "conclusion": "MCP 획득은 subscription을 만듭니다. registry 변경은 연결·재연결을 유발할 수 있습니다. 두 resource wrapper 추출은 MCP 연결 graph 획득의 근거가 아닙니다."
+    },
+    {
+      "file": "config-c738b566.js",
+      "sha256": "1762a56b487b7da1bd04da966444d6de83949e8563c754a97cd2574ae6ab87f6",
+      "anchors": "68–77: WebSearch layer의 bus subscription Fiber. 93–101: selection이 KV를 읽고 잘못된 저장값을 remove. 141: 선택 저장. 160: provider.execute.",
+      "conclusion": "websearch hook의 default 조회는 KV 효과를 가질 수 있습니다. preview 중 호출하여 순수성을 시험하면 안 됩니다."
+    },
+    {
+      "file": "config-q1x6b938.js",
+      "sha256": "cd2b155748280855c016a5142b6ec3f4c2398d3fc6f078b30c72022e8258c030",
+      "anchors": "84–90: Form cache 구성. 112–121: create/ask의 cache·publish·대기. 161: close finalizer.",
+      "conclusion": "질문 효과는 forms.ask 실행 경로에 있습니다. Form dependency graph 전체의 무효과성은 이번에 입증하지 않았습니다."
+    },
+    {
+      "file": "config-e1e12dvt.js",
+      "sha256": "117fed69b80599657751ab6f24e8c162e73371021969fc580b618a453f2ed7fc",
+      "anchors": "58–61: FileAccess 획득. 72–81: 외부 경로 stat/root 확인. 85–106: external_directory/read action.",
+      "conclusion": "주 action 외에 external_directory가 필요합니다. 경로 resolve에도 실제 FS 조회가 포함될 수 있습니다."
+    },
+    {
+      "file": "config-b2s03exd.js",
+      "sha256": "4745bfc5e0fe77529523cbddc418c329850fdd9fbb2b8a2166e6f13f6b1a6cbc",
+      "anchors": "44–45: Entry/Match 외부 schema import. 68–85: 검색 기본값과 GlobInput2/GrepInput2. 92–96: 별도 FileSystem layer의 root realPath.",
+      "conclusion": "schema import만 필요한 작업에서 같은 chunk의 FileSystem layer를 획득할 필요는 없습니다."
+    }
+  ],
+  "next_coherent_batch": {
+    "sequence": [
+      {
+        "priority": 1,
+        "families": [
+          "question",
+          "glob",
+          "grep",
+          "skill",
+          "webfetch"
+        ],
+        "change": "hook 없는 고정 선언을 공통 factory로 추출합니다. question부터 같은 source→descriptor→copy→activation→result 소비 경로를 확장합니다."
+      },
+      {
+        "priority": 2,
+        "families": [
+          "edit",
+          "write",
+          "patch"
+        ],
+        "change": "실제 execute closure를 보존하는 선언 factory를 추출합니다. patch의 model별 삭제 hook을 고정 hook 명세에 포함합니다. edit action과 외부 경로 action을 별도로 기록합니다."
+      },
+      {
+        "priority": 3,
+        "families": [
+          "opencode.tools",
+          "opencode.tools.mcp-resources"
+        ],
+        "change": "여러 선언을 고정 bundle로 반환합니다. namespace, 순서, effective ID, inline Schema 생성과 각 선언 provenance를 함께 묶습니다. 동적 provider/MCP 집합은 미완료로 유지합니다."
+      },
+      {
+        "priority": 4,
+        "families": [
+          "shell",
+          "subagent",
+          "websearch"
+        ],
+        "change": "선언 factory만 추출합니다. setup helper와 hook은 실행하지 않고 등록 명세로 추적합니다. Shell setup IO, subagent input 변경, WebSearch KV 효과를 별도 위험으로 유지합니다."
+      }
+    ],
+    "review_unit": "위 family 변경과 공통 소비 경로를 하나의 coherent batch로 묶습니다. helper별 반복 CODE 단위로 나누지 않습니다.",
+    "concrete_changed_paths": [
+      {
+        "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+        "change": "각 실제 family chunk에 exact before/after hash와 factory 추출 patch를 추가합니다. 기존 PluginInternal·supervisor·loader copy/activation 연결도 함께 확장합니다.",
+        "native_chunks": [
+          "config-fcxyj98j.js",
+          "config-ec87pa6m.js",
+          "config-e661jwrm.js",
+          "config-ym52mge9.js",
+          "config-4xsr0mw7.js",
+          "config-04zc2vp5.js",
+          "config-5m3ds5v3.js",
+          "config-8f36rj9w.js",
+          "config-kb6gw2zp.js",
+          "config-e2skv07x.js",
+          "config-2et2b5t1.js",
+          "config-191v1wnc.js",
+          "config-9tndjada.js",
+          "config-8t2s61hj.js",
+          "config-j7k7jnd5.js",
+          "config-48y8hbvk.js"
+        ],
+        "risk": "원본 설치 파일을 직접 수정하지 않습니다. 선언 수집을 위해 원본 plugin.effect나 editor callback을 실행하는 구현을 피해야 합니다."
+      },
+      {
+        "path": "apps/desktop-app/src/native-permission-control.mjs",
+        "current_anchor": "653–813: Read 전용 source/resolve/copy/activation/result/declaration 추적",
+        "change": "같은 private owner 아래 고정 family manifest와 단일·복수 선언 provenance를 처리합니다. 원본 plugin/effect identity, Location incarnation, activation Scope, 결과 재사용 금지, dispose/reload 무효화를 보존합니다.",
+        "risk": "문자열 plugin ID 또는 caller가 제공한 metadata만으로 선언을 신뢰하면 안 됩니다. 새 행도 unsupported이며 adapter/resource 권한을 만들지 않습니다."
+      },
+      {
+        "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+        "current_anchor": "91–146: observeRegistration. 149 이후: BUILTIN_PLUGIN_ORDER.",
+        "change": "고정 family의 source hash·Tool ID·action·hook 등록 명세를 소비하도록 연결합니다. 실제 등록과 dispose의 owner 추적을 보존합니다.",
+        "risk": "현재 hook identity는 domain/event 문자열입니다. 같은 이름을 가진 다른 callback을 고정 hook으로 인정하면 안 됩니다. 등록 owner·callback provenance도 필요합니다."
+      },
+      {
+        "path": "apps/desktop-app/src/native-permission-read-metadata.test.mjs",
+        "change": "기존 provenance fixture를 비-Read family와 복수 선언 bundle로 확장할 후보입니다. 이 분석에서는 수정하거나 실행하지 않았습니다.",
+        "risk": "가짜 editor로 transform을 실행한 결과를 metadata 수집의 무효과성 증거로 사용하면 안 됩니다."
+      },
+      {
+        "path": "apps/desktop-app/src/native-permission-inventory.test.mjs",
+        "change": "고정 Tool/hook 집합, collision, missing row, reload/dispose 및 불완전 집합 거부를 검증할 후보입니다.",
+        "risk": "정적 manifest 일치만으로 실제 graph inventory 완료를 주장하면 안 됩니다."
+      }
+    ],
+    "consumer_fingerprints": {
+      "apps/desktop-app/src/native-permission-overlay-contract.mjs": "5a90f825e0748eb7ea14da12d6070782c0ba666296f768d1e007db2a41face09",
+      "apps/desktop-app/src/native-permission-control.mjs": "82be0c149a3d9f0f82993dc4c893bb67cb89f6380fed46208942170353a66a89",
+      "apps/desktop-app/src/native-permission-inventory.mjs": "da9b170882e4be15dd08f6cb525cff86706b159c47b0411444bba32d8dc75375",
+      "apps/desktop-app/src/native-permission-read-metadata.test.mjs": "6c9f2ee2664b1e0863a4d0cd6a94bdaa8dcddd6daf2a9981f9ad19b3b6e2bbaa",
+      "apps/desktop-app/src/native-permission-inventory.test.mjs": "357d3fe934e2548d9e8bad122eca9aa64a4b84fd2074b9f38950aa5efa41fa93"
+    }
+  },
+  "remaining_whole_inventory_gaps": [
+    "이번 범위는 지정된 14개 family입니다. 나머지 builtin, provider, prompt/config plugin의 전체 효과는 감사하지 않았습니다.",
+    "원본 고정 선언은 17개입니다. hook 적용 후 Tool 집합과 생성된 codemode execute Tool의 전체 inventory는 아닙니다.",
+    "외부 @opencode/schema 및 util import의 전체 transitive source closure와 최종 schema digest는 미확인입니다.",
+    "Session·Agent·Model·Config·Environment·Permission·HttpClient·storage 등 dependency graph 전체의 acquisition 효과는 미확인입니다.",
+    "MCP server/resource/remote Tool, Skill registry, Agent/Model/provider 집합은 동적이며 불완전합니다.",
+    "고정 hook의 owner·callback identity·등록 순서·dispose·reload 추적을 실제 graph에서 연결해야 합니다. 이번에는 hook을 실행하지 않았습니다.",
+    "Source 검증이 modules.load보다 먼저 적용되는 전체 graph 경로와 supplementary discovery 차단은 이번 batch만으로 완성되지 않습니다.",
+    "원래 Tool editor의 복사·덮어쓰기·update/remove와 기존 closure의 generation 무효화를 실제 소비 경로에서 연결해야 합니다.",
+    "실제 Location/session/project mapping, inventory generation, effective policy compiler, mode readback과 최종 실행 경계는 이번 보고서의 완료 범위가 아닙니다.",
+    "Location/Read 기존 상세 분석과 physical pre-execution 검토는 반복하지 않았습니다."
+  ],
+  "authority": {
+    "inventory_complete": false,
+    "execution_authority": "없음",
+    "mode_authority": "없음",
+    "approval_or_gate_verdict": "없음"
+  }
+}

@@ -1,0 +1,368 @@
+.workbench {
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--omoc-semantic-color-canvas);
+  color: var(--omoc-semantic-color-text-primary);
+  font-size: 14px;
+}
+.navigation {
+  width: var(--omoc-component-size-sidebar-width);
+  flex-shrink: 0;
+  background: var(--omoc-component-color-navigation-background);
+  overflow: auto;
+}
+.navigationBody {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 8px;
+  gap: 8px;
+  font-size: var(--omoc-component-type-navigation-size);
+  line-height: var(--omoc-component-type-navigation-line);
+}
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--omoc-component-size-control-hit-target);
+  min-width: var(--omoc-component-size-control-hit-target);
+  min-height: var(--omoc-component-size-control-hit-target);
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 0;
+}
+.iconButton:hover {
+  background: var(--omoc-semantic-color-surface-subtle);
+}
+.workspaceSelector {
+  order: -1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 4px;
+}
+.workspaceSelector > svg {
+  flex-shrink: 0;
+}
+.workspaceSelector select {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  min-height: var(--omoc-component-size-control-hit-target);
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.newSession,
+.primaryButton {
+  min-height: var(--omoc-component-size-control-hit-target);
+  border: 0;
+  border-radius: 8px;
+  background: var(--omoc-component-color-button-primary-background);
+  color: var(--omoc-component-color-button-primary-foreground);
+  cursor: pointer;
+  font-weight: 500;
+  padding: 6px 8px;
+}
+.newSession {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: transparent;
+  color: var(--omoc-semantic-color-text-primary);
+}
+.newSession:hover {
+  background: var(--omoc-semantic-color-surface-subtle);
+}
+.primaryButton:hover {
+  background: var(--omoc-component-color-button-primary-hover);
+}
+.newSession:disabled,
+.primaryButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.createFolder {
+  display: grid;
+  gap: 8px;
+  padding: 8px 0;
+}
+.createFolder label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+.createFolder input {
+  min-width: 0;
+  width: 100%;
+  border: 1px solid var(--omoc-component-color-input-border);
+  background: var(--omoc-component-color-input-background);
+  border-radius: 8px;
+  padding: 10px;
+  min-height: var(--omoc-component-size-control-hit-target);
+}
+.createFolder p {
+  font-size: 12px;
+  color: var(--omoc-semantic-color-text-secondary);
+  margin: 0;
+}
+.formActions {
+  display: flex;
+  gap: 8px;
+}
+.formActions button,
+.statusLine button,
+.returnButton,
+.storageButton {
+  border: 0;
+  border-radius: 8px;
+  background: var(--omoc-semantic-color-surface-subtle);
+  min-height: var(--omoc-component-size-control-hit-target);
+  padding: 6px 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.formActions button:hover,
+.statusLine button:hover,
+.returnButton:hover,
+.storageButton:hover {
+  background: var(--omoc-semantic-color-selection-background);
+}
+.storageButton {
+  margin-top: auto;
+  text-align: left;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+}
+.mainPane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+.header {
+  display: flex;
+  gap: 10px;
+  padding: 6px 16px;
+  align-items: center;
+  min-height: var(--omoc-component-size-header-height);
+  flex-shrink: 0;
+}
+.sessionHeading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+.sessionHeading strong {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-weight: 500;
+  font-size: 14px;
+}
+.runtimeState {
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.runtimeState[data-state="disconnected"],
+.runtimeState[data-state="unavailable"] {
+  color: var(--omoc-semantic-color-danger-foreground);
+}
+.statusLine {
+  margin: 4px 24px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: var(--omoc-semantic-color-surface-subtle);
+  font-size: 13px;
+  line-height: 1.5;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  overflow-wrap: anywhere;
+}
+.error {
+  color: var(--omoc-semantic-color-danger-foreground);
+  background: var(--omoc-semantic-color-danger-background);
+}
+.noSession {
+  text-align: center;
+  max-width: var(--omoc-component-size-reading-width);
+  width: 100%;
+  padding: 24px;
+  margin: auto;
+}
+.noSession h1 {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+.noSession p {
+  color: var(--omoc-semantic-color-text-secondary);
+  line-height: 1.5;
+  margin: 0 0 20px;
+}
+.detailPanel {
+  display: flex;
+  flex-direction: column;
+  width: var(--detail-width);
+  flex-shrink: 0;
+  min-width: 0;
+  background: var(--omoc-semantic-color-surface);
+}
+.panelHeading {
+  display: flex;
+  align-items: center;
+  padding: 2px 8px;
+  gap: 0;
+  min-height: var(--omoc-component-size-header-height);
+  flex-shrink: 0;
+}
+.panelTabs {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+.panelTabs button {
+  min-height: var(--omoc-component-size-control-hit-target);
+  border: 0;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 13px;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.panelTabs button[aria-pressed="true"],
+.panelTabs button:hover {
+  background: var(--omoc-semantic-color-surface-subtle);
+}
+.panelContent {
+  overflow: auto;
+  min-height: 0;
+  flex: 1;
+  padding: 12px 16px 20px;
+}
+.separator {
+  width: 5px;
+  flex-shrink: 0;
+  cursor: col-resize;
+  touch-action: none;
+  background: transparent;
+  position: relative;
+}
+.separator::after {
+  content: "";
+  position: absolute;
+  width: 1px;
+  top: 0;
+  bottom: 0;
+  left: 2px;
+  background: var(--omoc-semantic-color-selection-background);
+}
+.separator:hover::after,
+.separator:focus-visible::after {
+  background: var(--omoc-semantic-color-focus);
+  width: 3px;
+  left: 1px;
+}
+.returnButton {
+  width: 100%;
+  flex-shrink: 0;
+}
+.locationInfo {
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.locationInfo h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 16px;
+  overflow-wrap: anywhere;
+}
+.locationInfo dl {
+  margin: 0;
+}
+.locationInfo dt {
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+}
+.locationInfo dd {
+  margin: 0 0 16px;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.locationInfo p {
+  margin: 12px 0;
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.muted {
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 599px) {
+  .header {
+    padding: 7px 8px;
+    gap: 4px;
+  }
+  .sessionHeading {
+    display: block;
+  }
+  .sessionHeading strong {
+    display: block;
+  }
+  .runtimeState {
+    display: block;
+    font-size: 11px;
+  }
+  .statusLine {
+    margin: 4px 12px;
+  }
+}
+
+@media (pointer: coarse) {
+  .workbench {
+    --omoc-component-size-control-hit-target: var(
+      --omoc-component-size-coarse-target
+    );
+  }
+  .header {
+    min-height: 56px;
+  }
+}
+
+.recovery {
+  color: var(--omoc-semantic-color-danger-foreground);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.recovery p {
+  margin: 0;
+}

@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a11a84-67ca-7dc2-8d03-4bff55a1825c": {
+      "completed": "지정된 **세 파일만 수정하고 동결했습니다.** ledger·제품 소스는 수정하지 않았습니다. runtime·build·UI는 실행하지 않았습니다.\n\n| Source checkpoint | 변경 |\n|---|---|\n| [workbench-host.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/workbench-host.mjs:391) | runtime 상태 14개, 실제 DTO·receipt 검증, 원래 등록 key 기반 Native ID |\n| [workbench-host.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/workbench-host.test.mjs:4507) | runtime 검증 11개 추가 |\n| [e2e-workbench-states.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:4926) | 기존 matrix 유지, 실제 버튼 흐름·760px/200%·키보드·전체 내용 선택 검증 저장 |\n\nhooks: `setSkillRuntimeState(name)`, `releaseSkillRuntime()`, `releaseSkillRuntimeReads()`, `skillRuntimeReads`, `skillRuntimeEffects`.\n\n실행 결과:\n\n- Node: **105/105 PASS** — 등록·적용·제거, 파일/Native 분리, 중복 거부, unknown 조회만 허용, 취소·지연 응답 포함.\n- 세 파일의 `node --check`, ESLint, Prettier: **PASS**.\n- 추가 제품 소스 결함은 확인하지 못했습니다. 실제 UI 결과와 독립 review는 Main 확인이 필요합니다.\n\n최종 SHA-256:\n\n```text\nworkbench-host.mjs\nee4fba36653ef65d7c5f534562621ef17852c9d5afd6db278bb61579d48ac324\n\nworkbench-host.test.mjs\n9e3df25074754052a24576f247ca0fc013c472c3c3703f9fc272cfb6fd2f6fa9\n\ne2e-workbench-states.mjs\n704288462393381bfd60d74689608f5bfec5fb2184b393fe1eb779ae70d31fbe\n```\n\nMain 실행용 명령입니다. **실행하지 않았습니다.**\n\n```sh\nnode apps/desktop-app/scripts/run-evidence.mjs \\\n  --out docs/runs/configuration-skill-runtime/evidence/hidden-ui-r1 \\\n  --script ui-states\n```"
+    }
+  },
+  "timed_out": false
+}

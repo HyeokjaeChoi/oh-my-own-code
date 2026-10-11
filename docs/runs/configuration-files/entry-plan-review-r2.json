@@ -1,0 +1,192 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "f5b5ea4fd1d1acae9f835a612899d7544234c85865171b7901b0131c9b34084d",
+    "gate": "plan",
+    "plan_sha256": "59cba33ca6ffffd2cc3d36962854ab321fd072a37c06f3334b78210360e811c1",
+    "schema_version": 2,
+    "source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "changes_requested",
+  "summary": "revision 2의 명시적 파일 읽기 범위와 사용자 권한은 적절합니다. production의 project:false와 filewatcher:false를 실제 소스에서 확인했습니다. 파일 읽기를 Native 활성화와 분리하며, 전체 F14와 Goal 요구를 유지합니다. 다만 공유 검증의 중복 JSON key 처리, discard 이후 늦은 응답 무효화, C5와 contract의 lint/format 일치를 명시해야 합니다. 아래 3개 항목만 수정하면 됩니다. 미래 파일 쓰기·Native·MCP 효과나 변경 없는 package/performance 검사를 추가할 이유는 없습니다. 이 결과는 초기 PLAN 검토이며 구현·최종 검토 결과가 아닙니다.",
+  "open_findings": [
+    {
+      "id": "R2-P1",
+      "priority": "P1",
+      "title": "원문을 반환하기 전에 중복 JSON key를 거절해야 합니다",
+      "acceptance_ids": [
+        "C1",
+        "C2",
+        "C5"
+      ],
+      "locations": [
+        {
+          "path": "docs/runs/configuration-files/plan.md",
+          "line": 11
+        },
+        {
+          "path": "docs/runs/configuration-files/design.md",
+          "line": 11
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+          "line": 110
+        }
+      ],
+      "finding": "계획은 기존 검증을 공유 모듈로 추출한 뒤 전체 MCP 원문을 반환합니다. 현재 검증은 JSON.parse 결과만 검사합니다. JSON.parse는 같은 객체의 중복 key 중 마지막 값만 남깁니다. 따라서 앞쪽 값의 금지 필드가 검증 대상에서 사라져도 원문에는 남습니다. 예: {\"mcp\":{\"servers\":{\"demo\":{\"type\":\"local\",\"command\":[\"node\"],\"environment\":{\"TOKEN\":\"SYNTHETIC-CANARY\"}}}},\"mcp\":{\"servers\":{\"demo\":{\"type\":\"local\",\"command\":[\"node\"]}}}}. 마지막 mcp는 현재 허용 subset입니다. 앞쪽 environment.TOKEN은 원문에 남습니다. 이는 허용 argv에 임의 private text가 들어가는 문제와 다릅니다. 구조적으로 금지한 credential 필드를 원문으로 노출하는 경로입니다. 소스 분석으로 확인한 위험이며 예제를 실행하지 않았습니다.",
+      "impact": "공유 검증을 그대로 추출하면 C2의 unsupported/credential 필드 원문 비노출 보장이 깨질 수 있습니다.",
+      "required_correction": "크기와 깊이가 제한된 공통 검증에서 모든 객체의 중복 member name을 거절하는 규칙을 명시하세요. Unicode escape를 해석한 key가 같을 때도 중복으로 처리해야 합니다. host와 editor가 같은 규칙을 사용해야 합니다. 전체 원문은 계속 거절하고 파일을 변경하지 마세요. root mcp, servers, server name과 중첩 옵션의 중복 key canary를 검증 계획에 추가하세요. 실패 응답에는 content/version과 입력을 포함한 진단이 없어야 합니다. 별도 dependency나 Native 검사는 필요하지 않습니다."
+    },
+    {
+      "id": "R2-P2",
+      "priority": "P2",
+      "title": "discard가 진행 중인 load 응답을 무효화해야 합니다",
+      "acceptance_ids": [
+        "C3",
+        "C5"
+      ],
+      "locations": [
+        {
+          "path": "docs/runs/configuration-files/plan.md",
+          "line": 19
+        },
+        {
+          "path": "docs/runs/configuration-files/design.md",
+          "line": 15
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+          "line": 778
+        }
+      ],
+      "finding": "늦은 응답 규칙은 edit·kind·path·workspace·epoch 변경과 새 요청을 다룹니다. 기존 discard는 draft key를 삭제하고 다음 조회에서 revision 0의 emptyConfigurationDraft를 반환합니다. 빈 초안 revision 0에서 load 시작 → 같은 초안 discard → 응답 도착 순서에서는 key/epoch/kind/revision과 마지막 read generation이 그대로 맞을 수 있습니다. discard가 generation 또는 active request identity를 무효화한다는 계약은 없습니다. 이 경우 사용자가 버린 초안을 늦은 파일 응답이 다시 만들 수 있습니다. 새로운 read 구현의 실행 결함을 주장하는 것이 아니라, 기존 동작과 연결할 때 필요한 규칙 누락입니다.",
+      "impact": "기존 초안 버리기 동작을 보존하지 못하고, 늦은 응답이 사용자 선택을 되돌릴 수 있습니다.",
+      "required_correction": "선택한 draft의 discard에서 해당 load를 abort하고 store의 active request identity 또는 generation을 무효화하세요. 무효화는 draft 삭제와 revision 초기화 뒤에도 유효해야 합니다. 응답 적용 시 store에서도 이를 확인해야 합니다. revision 0의 begin-load → discard → late-success/late-error, 그리고 discard 후 같은 key를 다시 만든 경우를 계획의 store/controller 검사에 포함하세요. 새 읽기는 사용자가 다시 load를 선택할 때만 시작해야 합니다."
+    },
+    {
+      "id": "R2-P3",
+      "priority": "P2",
+      "title": "C5의 lint/format 요구를 contract에 등록해야 합니다",
+      "acceptance_ids": [
+        "C5"
+      ],
+      "locations": [
+        {
+          "path": "docs/runs/configuration-files/plan.md",
+          "line": 21
+        },
+        {
+          "path": "docs/runs/configuration-files/contract.json",
+          "line": 25
+        },
+        {
+          "path": "apps/desktop-app/project.json",
+          "line": 34
+        }
+      ],
+      "finding": "계획 C5는 affected lint와 format 검사를 요구합니다. 정확히 결합된 contract의 checks에는 typecheck, boundaries, bundle, configuration, build, hidden-ui만 있습니다. run의 required_checks도 같은 6개입니다. 따라서 contract만 충족하면 계획이 요구한 lint/format 증거 없이 종료할 수 있습니다. 기존 desktop-app에 lint와 format-check 명령은 이미 있습니다.",
+      "impact": "계획의 완료 조건과 harness가 요구하는 검증 조건이 다릅니다. 이는 사용자 승인 누락이 아니라 검증 계약 불일치입니다.",
+      "required_correction": "Main이 변경 파일을 다루는 lint와 format-check argv를 required:true, acceptance_ids:[C5]로 contract에 추가하고 입력을 다시 결합하세요. 기존 명령을 사용하거나 변경 경로에 한정한 명령을 등록하면 됩니다. 변경 없는 Native/package/performance 검사를 추가하지 마세요. 이 reviewer는 검사를 실행하거나 ledger를 수정하지 않습니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a118dc-3f37-7840-95f1-10dc3bf2148f",
+    "author_task_id": "main-continuation"
+  },
+  "review_scope": {
+    "role": "plan_reviewer",
+    "phase": "initial PLAN",
+    "plan_path": "docs/runs/configuration-files/plan.md",
+    "plan_revision": "2",
+    "design_context": {
+      "path": "docs/runs/configuration-files/design.md",
+      "version": "1",
+      "separate_design_spec_verdict": false
+    },
+    "report_only_authorization": "현재 사용자 지시가 이 보고서 파일 하나의 저장을 명시적으로 허용했습니다. solo_reader의 기본 보고 전용 규칙에 따라 source와 ledger는 변경하지 않았습니다.",
+    "future_effects": "파일 apply, Native activation/reload, Skills/agents/hooks/tools/plugins와 MCP lifecycle은 전체 F14/Goal의 후속 필수 범위입니다. 이 PLAN 검토의 실행 범위에는 포함하지 않았습니다.",
+    "next_dependency": "Main이 위 항목을 계획/계약에 반영하고 갱신한 입력으로 해당 변경을 검토해야 합니다. DESIGN_SPEC 판정은 별도로 결합한 입력이 필요합니다."
+  },
+  "evidence": {
+    "method": "지정 문서와 필요한 실제 소스를 읽었습니다. 파일 해시와 JSON metadata를 계산했습니다. 제품 코드나 예제 payload를 실행하지 않았습니다.",
+    "binding_checks": {
+      "entry_input_copied_exactly": true,
+      "plan_raw_sha256_match": true,
+      "packet_contract_raw_sha256_match": true,
+      "entry_contract_semantic_sha256_match": true,
+      "design_sha256_match": true,
+      "routing_input_sha256_matches": true,
+      "work_class_sha256_match": true,
+      "registered_source_sha256_match": true,
+      "current_source_sha256_match": true,
+      "source_inventory_file_count": 534,
+      "packet_vs_entry_contract_note": "packet은 contract 파일 bytes의 hash를 사용합니다. entry-plan-input은 harness의 canonical JSON 의미 hash를 사용합니다. 둘 다 현재 파일과 일치합니다. 이 차이는 authority mismatch가 아닙니다."
+    },
+    "production_boundary": [
+      {
+        "path": "apps/desktop-app/src/event-host-child.mjs",
+        "line": 308,
+        "observation": "config.project:false; fs.filewatcher:false; app.version 2.0.18"
+      },
+      {
+        "path": "apps/desktop-app/src/event-host-protocol.mjs",
+        "line": 3,
+        "observation": "닫힌 EVENT_HOST_CONFIG; plugins [], mcp {}, providers {}, instructions []"
+      },
+      {
+        "path": "apps/desktop-app/src/host/workbench-files.mjs",
+        "line": 9,
+        "observation": "일반 file preview는 opencode.json/jsonc 등 민감 이름을 거절합니다."
+      }
+    ],
+    "inspected_paths": [
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-plan-review/SKILL.md",
+      "docs/runs/configuration-files/entry-packet-r2.json",
+      "docs/runs/configuration-files/entry-plan-input-r2.json",
+      "docs/runs/configuration-files/plan.md",
+      "docs/runs/configuration-files/contract.json",
+      "docs/runs/configuration-files/design.md",
+      "docs/runs/configuration-files/run.json",
+      "docs/engineering/architecture-entry.md",
+      "docs/decisions/0001-workbench-platform.md",
+      "docs/engineering/workbench-architecture.md",
+      "docs/product/prd.md",
+      "docs/design/specs/workbench-ux.md",
+      "apps/desktop-app/src/event-host-child.mjs",
+      "apps/desktop-app/src/event-host-protocol.mjs",
+      "apps/desktop-app/src/host/workbench-files.mjs",
+      "apps/desktop-app/src/host/workbench-configuration.mjs",
+      "apps/desktop-app/src/host/workbench-admission.mjs",
+      "apps/desktop-app/src/host/workbench-ipc.mjs",
+      "apps/desktop-app/src/workbench-contract.mjs",
+      "apps/desktop-app/src/workbench-service.mjs",
+      "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+      "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+      "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+      "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+      "apps/desktop-app/src/configuration-draft.test.mjs",
+      "apps/desktop-app/src/workbench-store.test.mjs",
+      "apps/desktop-app/src/host/workbench-admission.test.mjs",
+      "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+      "apps/desktop-app/scripts/build.mjs",
+      "apps/desktop-app/project.json",
+      ".solopreneur/harness.py"
+    ],
+    "not_executed": [
+      "tests",
+      "apps",
+      "builds",
+      "Native",
+      "private stores",
+      "recursive delegation",
+      "source edits",
+      "ledger edits"
+    ],
+    "limits": "이 검토는 계획과 소스에 근거합니다. 새 configuration.read의 FD race 방어, 실제 host/editor parity, 취소, UI 접근성의 런타임 성공을 검증한 결과가 아닙니다."
+  },
+  "reviewed_at": "2026-10-08T00:16:40.388077+00:00"
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "AC-1": {
+      "status": "verified",
+      "artifacts": [
+        "docs/design/research/chatgpt-observations.md",
+        "docs/design/research/chatgpt-designlang/README.md"
+      ],
+      "checks": []
+    },
+    "AC-2": {
+      "status": "verified",
+      "artifacts": [
+        "docs/design/system.md",
+        "docs/design/tokens/manifest.json",
+        "docs/design/tokens/tokens.css",
+        "docs/design/components.json"
+      ],
+      "checks": ["tokens"]
+    },
+    "AC-3": {
+      "status": "verified",
+      "artifacts": [
+        "docs/design/explorations/foundation-options/index.html",
+        "docs/design/explorations/foundation-options/styles.css",
+        "docs/design/explorations/foundation-options/app.js",
+        "docs/runs/chatgpt-foundation/captures/browser-results.json"
+      ],
+      "checks": ["browser"]
+    },
+    "AC-4": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/chatgpt-foundation/figma-sync.json",
+        "docs/runs/chatgpt-foundation/captures/desktop-light.png",
+        "docs/runs/chatgpt-foundation/captures/desktop-dark.png",
+        "docs/runs/chatgpt-foundation/captures/mobile-dark.png",
+        "docs/runs/chatgpt-foundation/captures/mobile-permission-dark.png"
+      ],
+      "checks": []
+    }
+  },
+  "changed_paths": [
+    "docs/design/components.json",
+    "docs/design/explorations/foundation-options/app.js",
+    "docs/design/explorations/foundation-options/index.html",
+    "docs/design/explorations/foundation-options/styles.css",
+    "docs/design/research/chatgpt-designlang/README.md",
+    "docs/design/research/chatgpt-observations.md",
+    "docs/design/system.md",
+    "docs/design/tokens/manifest.json",
+    "docs/design/tokens/tokens.css",
+    "docs/design/validate_system.py"
+  ],
+  "deleted_paths": []
+}

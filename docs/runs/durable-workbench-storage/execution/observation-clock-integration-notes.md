@@ -1,0 +1,13 @@
+# Candidate clock integration constraints
+
+Preparation only; canonical P7v3 is unchanged. storage-contract-v4-draft/plan-r4-draft need independent entry/design_spec before source consumers.
+
+The new durable metadata revision cannot be incremented merely for reads. A separate accepted snapshot observationSequence must permit fresh same-revision transcript/status/pending-permission projection while rejecting lower committed metadata revisions first. Existing verified deletion floor, epoch retirement, A-B-A generation/draft survival and receipt identity rules remain.
+
+One observation counter is owned by authoritative current host runtime, not random per-renderer timestamps. Allocate at accepted publication after source identity/generation/commit-root checks; late projections cannot allocate a newer sequence to resurrect pre-commit metadata. New runtime epoch restarts its sequence; old-epoch receipts do not raise current floors. Bootstrap/read generation and current target checks precede sequence acceptance.
+
+Do not accidentally starve slow catalog/file/diagnostics reads by invalidating their DATA solely because independent snapshot polling advances observationSequence. Existing target/trust/path/filter/requestGeneration/cancellation identity governs those payloads. Their late health/error or interrupt-retirement effects must additionally be ordered against the latest accepted observation. A catalog/file/diagnostics read started before a newer accepted snapshot must not overwrite its health or retire a wait notice, even if durable registry revision stayed equal. Include tests where slow valid payload completes across several snapshot polls and still projects within its unchanged identity without lowering health, alongside stale payload cancellation cases.
+
+Define exact Scope/health clock semantics and closed DTO field validation before workers. A receipt ACK can set an interrupt wait notice but is not an observation of stopped; fresh same-revision higher-sequence current idle can retire display only, preserving unresolved original effect and unknown send hold. Receipt metadata commits can raise floor without fabricating an observed current snapshot. Missing/invalid sequence and lower registry revision are rejected; files stay separately scoped.
+
+App journal stores metadata/receipts only. Native transcript/status projection stays disposable and must not be journaled just to force revisions to advance. Native title/status changes observed on reads need explicit projection-versus-app-metadata policy; no hidden authoritative mutable Session cache updates before completion flush. These notes are proposed integration constraints, not a reviewed contract or claim of runtime behavior.

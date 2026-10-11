@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "6aba776d2a233dc66ad2d4f24d85347b32d623e85dba9621231e7accb96ed066",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "code",
+    "plan_sha256": "f1394dff1232453425e0811cf666188aa6d1bb5ad5aa589454c85e48d382a2c4",
+    "schema_version": 2,
+    "source_sha256": "42b56c7b7b071a36337ad221c4fb299afa29f4cf0297274513e75fbf97186ed6",
+    "verification_sha256": "f69d40cf1a8049f58c7ca7c8cdbe515c4a20922f8bba3f98b46d62139d7b2b2d"
+  },
+  "verdict": "pass",
+  "summary": "Independent final static review found no actionable defect after the outcome record repair. The repaired outcome references existing evidence and source artifacts, and its registered ledger digest matches the supplied final input verification_sha256. The three earlier code-review gaps remain closed: the component check requires each PermissionRequest state exactly once and checks its Button identity, intent, state, and enabled status; the token validator checks the exact raw Dark NavigationItem aliases; and the component check derives each ToolCall bottom gap from frame height and last-child content_bottom in both modes. Current recorded evidence has all six ToolCall states with matching target/input paths, 16px measured bottom gaps, AUTO vertical sizing, and in-frame target/input text bounds. The canonical Button family matches its saved normalized baseline. The latest registered token and component checks record exit_code 0 at the input source hash; this reviewer did not execute them.",
+  "open_findings": [],
+  "review_boundary": "Read plan revision 7 and contract; inspected current canonical components and token manifest, validator and component-check sources, Button baseline, structural Figma evidence, prior code-review findings, run ledger, and repaired outcome. Confirmed the final input verification digest against the ledger checks, artifact list, and registered outcome. The project is untracked, so no meaningful committed base-to-head diff was available. Only this report was written.",
+  "evidence_limits": "Static review of source and recorded Figma evidence only. Recorded geometry and captures do not independently prove live Figma node measurements or application rendering, hit regions, keyboard and screen-reader behavior, or zoom. The Button baseline is a saved local snapshot rather than an independently established pre-run reference. This reviewer ran no project checks or product tests.",
+  "provenance": {
+    "child_task_id": "/root/code_reviewer_outcome_final",
+    "author_task_id": "/root"
+  }
+}

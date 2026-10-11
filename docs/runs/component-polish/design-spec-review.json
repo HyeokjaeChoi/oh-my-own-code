@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "d04d044acadf2db25767f1a8cea10307ce525a903127ff83cd9bf75630576b83",
+    "documents_sha256": "824914283f75bc7d06712df5d3e0a108c5a40804dadf0151a48fdde24a6b5041",
+    "gate": "design_spec",
+    "plan_sha256": "160bd3fc63e7f0314b3f5e2ee815244c709227d97e51290ce363c33f98b964db",
+    "schema_version": 2
+  },
+  "verdict": "changes_requested",
+  "summary": "Independent document review of docs/design/components.json (SHA-256 6bd2b962952e96862ea43cc36763066d1fd1a610af3cbe552eed7fa98cd64740) and docs/design/system.md (SHA-256 b2cfd553a61ce6ad0b13fa77129d6898fbfe0d64e1bcc9cb4f69eb316931e0e5) against docs/runs/component-polish/plan.md (SHA-256 160bd3fc63e7f0314b3f5e2ee815244c709227d97e51290ce363c33f98b964db) found the Input geometry and feedback precedence, navigation composition, ToolCall disclosure versus result navigation, and PermissionRequest Button/action mapping coherent. The inventory is exactly 44 variants, including 18 Button variants; this document review cannot establish byte-equivalence to the previously accepted Button source without a recorded pre-change fingerprint. One material shared-badge composition decision remains implicit before Figma work. The 44px PermissionRequest target is a renderer requirement, not proven by these documents or Figma geometry. No rendered Figma, browser, device, runtime interaction, or assistive-technology evidence was reviewed.",
+  "open_findings": [
+    {
+      "severity": "P2",
+      "artifact": "docs/design/components.json",
+      "location": "componentContracts.StatusBadge.sharedBy and ToolCall/PermissionRequest status fields (approximately lines 961-1339 and 1413-1423)",
+      "affected_consumer": "ToolCall and PermissionRequest Figma status indicators; AC-2 shared badge geometry",
+      "evidence": "StatusBadge defines 24px text-hug geometry and lists ToolCall and PermissionRequest as consumers, but neither consuming family declares a nested StatusBadge component reference or a state/label mapping. Both retain independent statusBackground/statusForeground bindings, so a Figma implementation can satisfy those fields with separate fixed-size status frames and recreate the inconsistency this run is meant to remove.",
+      "correction": "Add an explicit StatusBadge child/reference contract for ToolCall and PermissionRequest, with each parent state's badge semantic state and visible label or override. State that nested instances use StatusBadge's 24px, rendered-text-plus-16px geometry and token binding; keep the 44 canonical variants unchanged. Reconcile the same rule in system.md if needed."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "sol_design_spec_review",
+    "author_task_id": "/root"
+  }
+}

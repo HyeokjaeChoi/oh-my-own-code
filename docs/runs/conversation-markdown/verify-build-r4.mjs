@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {readFile,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import {captureProvenance} from '../../../apps/desktop-app/scripts/build-provenance.mjs';
+const bytes=await readFile(new URL('./evidence/hidden-r1/conversation-markdown/conversation-markdown-evidence.json',import.meta.url));
+assert.equal(createHash('sha256').update(bytes).digest('hex'),'e1908d172cc5106cdaa9a32341c3dcfbc62d65e99736b99898c7d6a8e9d4a0df');
+const original=JSON.parse(bytes).sourceBuildProvenance.before;
+const current=await captureProvenance(fileURLToPath(new URL('../../../',import.meta.url)),{script:'conversation-markdown'});
+for(const field of ['buildStampPath','buildStampSha256','buildStamp','currentBuildInputs','launchArtifacts'])assert.deepEqual(current[field],original[field],field);
+const changed=current.selectedScriptsAndFixtures.files.filter(file=>JSON.stringify(file)!==JSON.stringify(original.selectedScriptsAndFixtures.files.find(old=>old.path===file.path))).map(file=>file.path);
+assert.deepEqual(changed,['apps/desktop-app/scripts/e2e-conversation-markdown.mjs']);
+const report={pass:true,scope:'Read-only exact-byte reuse of actual r3 build. Runner-only initial navigation readiness fix does not affect production source/build/resource bytes.',actualBuildLog:'check-build-r3.log',baselineSha256:'e1908d172cc5106cdaa9a32341c3dcfbc62d65e99736b99898c7d6a8e9d4a0df',buildStampSha256:current.buildStampSha256,buildInputsSha256:current.currentBuildInputs.sha256,launchArtifactsSha256:current.launchArtifacts.sha256,changedSelectedScripts:changed};
+await writeFile(new URL('./actual-build-applicability-r4.json',import.meta.url),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));

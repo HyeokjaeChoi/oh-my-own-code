@@ -1,0 +1,78 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "f984074224c6966e017ac5eaf864f6697750f17f42b9da563c63dffa81dac2a2",
+    "environment_sha256": "33b5d2c83b147ac2a2995c34915a9c02b8a46f6247bcdd067f12e9aab3eecdee",
+    "gate": "design",
+    "plan_sha256": "19c68a0c63080533a956a93d37a586f26b1b9bc1ee5b14470098f00f8783c7d5",
+    "schema_version": 2,
+    "source_sha256": "04abe5bca8f8b9dba1179736422dc82abf0a1a34a3bca5a5cfdae6e8274c9911",
+    "verification_sha256": "b57688bc2d7f9ec698da8ed26b578ee88e86560ec07714156e282f9aead23749",
+    "work_class_sha256": "4793e59879fb3b3abfaa6ad3aa4c35a5142d1a853380d1f95bbb254f075c9228"
+  },
+  "verdict": "pass",
+  "summary": "새 hidden-r4 PNG 8개를 직접 확인했습니다. RENDER-R9-01의 잘못된 기능 안내가 수정됐습니다. 확인한 화면에서 문구, 줄바꿈, 세션 대상과 등록·제거 영역에 수정이 필요한 문제는 찾지 못했습니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "RENDER-R9-01",
+      "status": "verified",
+      "location": "apps/desktop-app/src/renderer/widgets/explorer/index.tsx:187",
+      "observation": "새 기본 화면과 untrusted 화면에서 선택한 세션의 AGENTS.md 등록·제거를 지원한다고 안내합니다. 다른 설정의 런타임 적용과 MCP 연결 변경은 아직 제공하지 않는다고 구분합니다."
+    }
+  ],
+  "evidence": {
+    "capture_directory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-instructions/evidence/hidden-r4/ui-states",
+    "origin": "실제 built Electron renderer/preload와 test-only synthetic main의 capturePage PNG입니다. provider 실행은 없습니다.",
+    "directly_inspected_png_count": 8,
+    "directly_inspected_pngs": [
+      "desktop-configuration-normal-synthetic.png",
+      "desktop-configuration-untrusted-synthetic.png",
+      "desktop-configuration-instructions-registered-direct-status-synthetic.png",
+      "desktop-configuration-instructions-registered-direct-narrow200-session-synthetic.png",
+      "desktop-configuration-instructions-registered-direct-narrow200-status-synthetic.png",
+      "desktop-configuration-instructions-untrusted-guidance-narrow200-session-synthetic.png",
+      "desktop-configuration-instructions-untrusted-guidance-narrow200-trust-next-step-synthetic.png",
+      "desktop-configuration-draft-narrow200-synthetic.png"
+    ],
+    "dimensions": {
+      "desktop": "viewport 1440×928, pixelRatio 2, 실제 PNG 2880×1856",
+      "instruction_narrow200": "contentBounds 760×968, zoomFactor 2, viewport 380×484, pixelRatio 4, 실제 PNG 1520×1936",
+      "draft_narrow200": "contentBounds 760×568, zoomFactor 2, viewport 380×284, pixelRatio 4, 실제 PNG 1520×1136",
+      "metadata_only_check": "155개 PNG의 실제 크기를 screenshot metadata와 비교했습니다. 불일치 0개입니다. 155개 전체의 시각 검토를 뜻하지 않습니다."
+    },
+    "direct_observations": [
+      "기본 화면의 수정된 안내 문단은 패널 안에서 줄바꿈되며 잘림이나 겹침이 보이지 않습니다.",
+      "등록 화면은 파일 저장과 세션 등록을 구분합니다. 제거 후 파일·대화 기록·이전 context가 유지됨을 설명합니다.",
+      "다음 context preparation과 provider의 실제 지침 소비 미확인을 구분합니다.",
+      "200% 확대에서 긴 경로와 세션 제목이 줄바꿈됩니다. 확인한 등록 상태와 untrusted 안내에 가로 넘침은 보이지 않습니다.",
+      "untrusted 안내는 신뢰 확인, 원래 세션 재선택과 명시적 상태 확인을 설명하며 관련 버튼은 비활성 상태입니다."
+    ],
+    "reuse": [
+      "final-render-review-r9.json의 이전 24개 PNG 검토는 변경 없는 영역의 근거로 재사용했습니다.",
+      "r9의 changes_requested를 현재 화면의 승인으로 승계하지 않았습니다. 수정 문구와 관련 배치는 새 hidden-r4 PNG로 판단했습니다."
+    ]
+  },
+  "verification": {
+    "executed": [
+      "현재 design binding이 final-design-input-r10.json과 정확히 일치합니다.",
+      "현재 build·renderer/preload·선택된 fixture의 provenance가 hidden-r4 manifest와 정확히 일치합니다."
+    ],
+    "recorded_evidence": [
+      "hidden-r4 manifest는 pass, exitCode 0, wrapperExitCode 0, provenanceVerifiedAfter true입니다.",
+      "UI evidence는 owned Electron 종료 code 0을 기록합니다.",
+      "실제 새 build 시각은 2026-10-08T03:47:31.556Z입니다."
+    ],
+    "limits": [
+      "직접 시각 검토한 새 PNG는 8개입니다. 나머지 147개를 직접 검토했다고 주장하지 않습니다.",
+      "수정된 상단 문단의 narrow200 전용 캡처는 직접 확인한 자료에 없습니다. 해당 문단은 desktop에서 확인했고, narrow200에서는 관련 등록·신뢰 안내의 배치를 확인했습니다.",
+      "pending·checking·stale 전용 화면, foreground Native 확인 창, accessibility tree, screen reader와 물리 장치 입력은 검증하지 않았습니다.",
+      "앱·Native·UI·provider 실행, 파일·ledger 수정, 보고서 저장과 위임을 하지 않았습니다.",
+      "판정은 r10 문단 수정과 관련 화면에 한정됩니다. Full F14와 F01–18 전체 완료 판정은 아닙니다."
+    ]
+  },
+  "provenance": {
+    "child_task_id": "01a119a2-67a2-7750-b5a4-b328f3ae96e4",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

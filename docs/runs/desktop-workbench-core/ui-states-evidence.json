@@ -1,0 +1,48 @@
+{
+  "result": "pass",
+  "platform": "darwin",
+  "provenance": "Synthetic main-process fixtures with actual built Electron renderer/preload",
+  "providerExecution": "not performed",
+  "observations": [
+    "Navigation open and close controls work at the desktop viewport",
+    "Real assistant-ui onNew sends selected IDs, agent and model exactly once",
+    "Once/reject buttons send exact permission and session identity; obsolete permission UI disappears",
+    "Cancellation waits for authoritative state instead of fabricating stopped status",
+    "Actual Tool UI dispatch renders one schema-safe preview; unknown markup is inert escaped text",
+    "Listed slash command uses command.run with literal arguments",
+    "Unknown receipt blocks another submission and is never automatically replayed"
+  ],
+  "screenshots": [
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-permission-synthetic.png",
+      "state": "Running tool and two pending permission requests",
+      "viewport": {
+        "width": 1180,
+        "height": 788,
+        "pixelRatio": 2
+      },
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-link-preview-synthetic.png",
+      "state": "Isolated schema-validated Tool UI component from the actual renderer",
+      "provenance": "Built production Electron renderer with test-only tool output",
+      "bounds": {
+        "x": 315,
+        "y": 189.921875,
+        "width": 448,
+        "height": 104.296875
+      }
+    },
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-tool-results-synthetic.png",
+      "state": "Schema-validated Tool UI link, escaped unknown output, and tool error",
+      "viewport": {
+        "width": 1180,
+        "height": 788,
+        "pixelRatio": 2
+      },
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    }
+  ]
+}

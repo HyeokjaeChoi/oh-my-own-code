@@ -1,0 +1,181 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "EH-01",
+      "description": "immutable prototype/runtime/dependency/P7 byte bindings before/after."
+    },
+    {
+      "id": "EH-02",
+      "description": "fixed Bun official-package import, scoped start, authenticated ready, owned stop/exit; no in-check input changes."
+    },
+    {
+      "id": "EH-03",
+      "description": "caller path/closed API guards, contained config/env/installer and ordinary API Basic/CORS matrix; no general auth/pairing/ticket isolation claim."
+    },
+    {
+      "id": "EH-04",
+      "description": "nonempty actual HTTP durable history with seq0, exclusive cursor, marker correlation/head and canonical hashes; no fake events or marker-only pass."
+    },
+    {
+      "id": "EH-05",
+      "description": "owned normal stop/reopen exact same idle session/transcript/mapping/events/sentinel and no bootstrap duplicate."
+    },
+    {
+      "id": "EH-06",
+      "description": "owned idle SIGKILL/reopen preserves acknowledged committed prefix/transcript/sentinel and exact exits; no queued-state or power-loss claim."
+    },
+    {
+      "id": "EH-07",
+      "description": "final result verifier checks all required cases/inputs/exit/retention and omissions; missing or unsupported required phase1 capability fails. Unmeasured downstream capabilities explicitly excluded, never inherited as PASS."
+    }
+  ],
+  "checks": {
+    "inputs": {
+      "argv": [
+        "/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node",
+        "prototype/verify.mjs",
+        "--case",
+        "inputs"
+      ],
+      "cwd": "docs/runs/opencode-event-host-feasibility",
+      "scope": "Phase1 capability proof only: inputs",
+      "acceptance_ids": [
+        "EH-01"
+      ],
+      "required": true
+    },
+    "runtime": {
+      "argv": [
+        "/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node",
+        "prototype/probe.mjs",
+        "--case",
+        "runtime",
+        "--out",
+        "evidence/runtime-r1"
+      ],
+      "cwd": "docs/runs/opencode-event-host-feasibility",
+      "scope": "Phase1 capability proof only: runtime",
+      "acceptance_ids": [
+        "EH-02"
+      ],
+      "required": true
+    },
+    "guards": {
+      "argv": [
+        "/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node",
+        "prototype/probe.mjs",
+        "--case",
+        "guards",
+        "--out",
+        "evidence/guards-r1"
+      ],
+      "cwd": "docs/runs/opencode-event-host-feasibility",
+      "scope": "Phase1 capability proof only: guards",
+      "acceptance_ids": [
+        "EH-03"
+      ],
+      "required": true
+    },
+    "events": {
+      "argv": [
+        "/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node",
+        "prototype/probe.mjs",
+        "--case",
+        "events",
+        "--out",
+        "evidence/events-r1"
+      ],
+      "cwd": "docs/runs/opencode-event-host-feasibility",
+      "scope": "Phase1 capability proof only: events",
+      "acceptance_ids": [
+        "EH-04"
+      ],
+      "required": true
+    },
+    "normal-reopen": {
+      "argv": [
+        "/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node",
+        "prototype/probe.mjs",
+        "--case",
+        "normal-reopen",
+        "--out",
+        "evidence/normal-reopen-r1"
+      ],
+      "cwd": "docs/runs/opencode-event-host-feasibility",
+      "scope": "Phase1 capability proof only: normal-reopen",
+      "acceptance_ids": [
+        "EH-05"
+      ],
+      "required": true
+    },
+    "owned-sigkill-reopen": {
+      "argv": [
+        "/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node",
+        "prototype/probe.mjs",
+        "--case",
+        "owned-sigkill-reopen",
+        "--out",
+        "evidence/owned-sigkill-reopen-r1"
+      ],
+      "cwd": "docs/runs/opencode-event-host-feasibility",
+      "scope": "Phase1 capability proof only: owned-sigkill-reopen",
+      "acceptance_ids": [
+        "EH-06"
+      ],
+      "required": true
+    },
+    "final": {
+      "argv": [
+        "/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node",
+        "prototype/verify.mjs",
+        "--case",
+        "final"
+      ],
+      "cwd": "docs/runs/opencode-event-host-feasibility",
+      "scope": "Phase1 capability proof only: final",
+      "acceptance_ids": [
+        "EH-07"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/opencode-event-host-feasibility/design.txt",
+      "gate": "design_spec",
+      "version": "3",
+      "sha256": "cfb13caa53d5316e68bb71654a406dbc9432e0df7f1bfdc0422b06ed408cfbff"
+    }
+  ],
+  "environment_files": [
+    "docs/runs/opencode-event-host-feasibility/prototype-input-policy.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/package.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/package-lock.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/host.mjs",
+    "docs/runs/opencode-event-host-feasibility/prototype/probe.mjs",
+    "docs/runs/opencode-event-host-feasibility/prototype/freeze.mjs",
+    "docs/runs/opencode-event-host-feasibility/prototype/verify.mjs",
+    "docs/runs/opencode-event-host-feasibility/prototype/runtime-manifest.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/input-manifest.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/installer-config.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/.npmrc",
+    "docs/runs/opencode-event-host-feasibility/prototype/user.npmrc",
+    "docs/runs/opencode-event-host-feasibility/prototype/global.npmrc",
+    "docs/runs/opencode-event-host-feasibility/prototype/cases/idle-history.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/cases/api-auth.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/cases/paths.json"
+  ],
+  "decision_register": [
+    {
+      "id": "HOST-1",
+      "statement": "Use official server2.0.18 HTTP wrapper as isolated experiment, no production replacement.",
+      "status": "delegated",
+      "source": "Full-product autonomous local continuation; Main chooses technical approach based on exact primary-source route analysis.",
+      "impact": "Prototype only, existing app and P7 untouched.",
+      "blocks": [],
+      "resolution": "Fixed Bun1.4.2 and official server2.0.18; scope only idle event/history capability. No production replacement/preflight change. Prior broad phase2 candidates explicitly unmeasured."
+    }
+  ],
+  "user_approvals": []
+}

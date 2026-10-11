@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "b7a41fd4f376c9660b169967b0412ca1f61720995b866d46c65050237b464fe2",
+    "contract_sha256": "d6732757680c0fb8aa1a17ca5569f2e29b7a952471a07ace9a4107221fdac38a",
+    "source_sha256": "7b7b1375da5454d0521fe3f3a9a4566635a5a647266285f8d32920a4a8cccb14"
+  },
+  "verdict": "changes_requested",
+  "summary": "Revision 1 preserves the complete F-01–18 product goal and truthfully limits this increment to a synthetic local desktop shell. The unresolved additional-OS answer need not block a reversible macOS-only increment. Two execution gaps require correction: the existing renderer depends on browser pairing/bearer HTTP transport without an owned migration task, and packaged security/lifecycle verification is weaker than the bound ADR-0002 requirements.",
+  "open_findings": [
+    {
+      "id": "DP-01",
+      "severity": "P1",
+      "path": "docs/workplans/desktop-app-bootstrap/plan.md",
+      "line": 21,
+      "title": "Define the renderer transport adaptation and its owned files",
+      "evidence": "Step 3 reuses the existing Vite renderer while line 37 restricts engineer ownership to desktop-shell and manifests/config. Existing WorkbenchPage imports pairWithBridge/readSyntheticFixture/heartbeatBridge/revokeBridge and keeps capabilityRef; read-synthetic-fixture.ts performs bearer-authenticated HTTP requests. The desktop contract instead requires a named preload surface and no renderer bridge bearer token. No task specifies how this existing connection state and transport will be replaced or adapted.",
+      "impact": "Loading the existing app alone presents a browser-pairing workflow rather than a working supervised desktop bridge flow. An engineer must either exceed the stated file ownership, leave the synthetic bridge disconnected, or invent an integration mechanism at the trust boundary.",
+      "required_correction": "Record a concrete desktop renderer integration choice before handoff: a separately owned desktop composition that reuses presentational workbench components, or an explicit transport-injection refactor with the affected workbench/shared files added to ownership. State the named operations and startup/error/restart mapping, and require an end-to-end assertion that the displayed snapshot/events came through the owned utility/main/preload path without browser pairing or bearer credentials in the renderer. Preserve browser regression coverage if shared files change."
+    },
+    {
+      "id": "DP-02",
+      "severity": "P1",
+      "path": "docs/workplans/desktop-app-bootstrap/contract.json",
+      "line": 151,
+      "title": "Bind packaged security and failure lifecycle checks to required commands",
+      "evidence": "desktop-e2e explicitly launches only the dev app. desktop-package-smoke at line 180 requires packaged launch and ordinary exit/child cleanup only. ADR-0002 explicitly requires packaged sender/frame, navigation, renderer privilege and preview checks, close/quit/crash/timeout/restart behavior, and inspection of the packaged renderer bundle for forbidden authority. Plan completion claims ADR alignment but the exact check contract does not require this packaged coverage.",
+      "impact": "All named checks could satisfy their declared scopes while a packaged-only origin, preload, asset, CSP or crash/restart cleanup defect remains untested. A successful startup smoke cannot establish the promised packaged boundary.",
+      "required_correction": "Expand the required packaged check or add a required packaged E2E target covering sender/frame and malformed payload rejection, navigation/window-open denial, privilege absence, preview isolation, startup failure, close/quit/restart/crash/timeout cleanup with observed owned child exits, and packaged bundle inspection. Bind these checks to D-2 and D-3, identify owned synthetic failure-injection fixtures, and require the checked artifact digest to match the delivered artifact."
+    }
+  ],
+  "verification_limits": [
+    "Read-only plan/contract review; plan and contract SHA-256 values independently matched the supplied binding. The aggregate source SHA-256 was supplied by the coordinator and matched the registered run metadata, but was not independently recomputed.",
+    "The requested .solopreneur/agents/roles/plan_reviewer.md path does not exist. The repository's actual .codex/agents/plan_reviewer.toml and linked .agents/skills/solo-plan-review/SKILL.md were read instead.",
+    "No dependency install, application runtime, tests, browser session, SDK, user configuration, credential access or ledger mutation occurred. Only this requested review report was created; files_modified below refers to reviewed plan, contract and implementation files.",
+    "This verdict reviews execution readiness only and does not replace the independently required product/design-spec gates or prove Electron/Forge compatibility."
+  ],
+  "provenance": {
+    "child_task_id": "/root/desktop_plan_review_r1",
+    "author_task_id": "/root",
+    "review_mode": "Fresh independent read-only plan and contract review",
+    "runtime_identity_verified": false,
+    "runtime_executed": false,
+    "tests_run": false,
+    "ledger_modified": false,
+    "files_modified": false
+  }
+}

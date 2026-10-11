@@ -1,0 +1,130 @@
+{
+  "run": "conversation-context",
+  "checks": {
+    "unit": {
+      "status": "stale",
+      "reasons": [
+        "declared inputs, safeguards, specification or dependencies changed"
+      ],
+      "recorded_at": "2026-10-09T05:03:02+00:00",
+      "source_sha256": "8ae28757b0c84b2ed678f98324e4a588323a68bf83eee1d22e5e4029bcc0edf4",
+      "input_binding_sha256": "fba0b7e6a98e7dcd392777ad544e0edb46ff33b22ca765c39a38d0a08bc8b2a9",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src",
+          "packages/ui",
+          "packages/contracts",
+          "apps/desktop-app/scripts"
+        ],
+        "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+      }
+    },
+    "typecheck": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-09T05:03:07+00:00",
+      "source_sha256": "8ae28757b0c84b2ed678f98324e4a588323a68bf83eee1d22e5e4029bcc0edf4",
+      "input_binding_sha256": "e2e9ab89ff4e836fcd817fecfff06cd0ad4c0534fb4859d5c2c9fe2ebef1bec2",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src",
+          "packages/ui",
+          "packages/contracts",
+          "apps/desktop-app/tsconfig.json"
+        ],
+        "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+      }
+    },
+    "boundaries": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-09T05:03:09+00:00",
+      "source_sha256": "8ae28757b0c84b2ed678f98324e4a588323a68bf83eee1d22e5e4029bcc0edf4",
+      "input_binding_sha256": "4a7fe95fbe3936e0e69db1971d6b6215dcb3876f51818ebfaf178bce18cc7098",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src",
+          "packages/ui",
+          "packages/contracts",
+          "apps/desktop-app/scripts/check-renderer-boundaries.mjs",
+          "apps/desktop-app/scripts/fixtures/boundaries",
+          "docs/design/tokens"
+        ],
+        "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+      }
+    },
+    "lint": {
+      "status": "stale",
+      "reasons": [
+        "project source changed"
+      ],
+      "recorded_at": "2026-10-09T05:03:14+00:00",
+      "source_sha256": "8ae28757b0c84b2ed678f98324e4a588323a68bf83eee1d22e5e4029bcc0edf4",
+      "input_binding_sha256": null,
+      "input_scope": null
+    },
+    "format": {
+      "status": "stale",
+      "reasons": [
+        "project source changed"
+      ],
+      "recorded_at": "2026-10-09T05:03:19+00:00",
+      "source_sha256": "8ae28757b0c84b2ed678f98324e4a588323a68bf83eee1d22e5e4029bcc0edf4",
+      "input_binding_sha256": null,
+      "input_scope": null
+    },
+    "build": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-09T05:04:10+00:00",
+      "source_sha256": "8ae28757b0c84b2ed678f98324e4a588323a68bf83eee1d22e5e4029bcc0edf4",
+      "input_binding_sha256": "86d41d1bdb37e67695547f05f826903d33d1336a8b9449383e0ca44e8bd543b1",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src",
+          "packages/ui",
+          "packages/contracts",
+          "apps/desktop-app/public",
+          "docs/design/tokens",
+          "apps/desktop-app/package.json",
+          "apps/desktop-app/project.json",
+          "apps/desktop-app/index.html",
+          "apps/desktop-app/vite.config.ts",
+          "apps/desktop-app/tsconfig.json",
+          "apps/desktop-app/native/owner-lifetime/witness.c",
+          "apps/desktop-app/scripts/build.mjs",
+          "apps/desktop-app/scripts/build-provenance.mjs",
+          "apps/desktop-app/scripts/prepare-event-host.mjs",
+          "apps/desktop-app/scripts/stage-event-host.mjs",
+          "apps/desktop-app/scripts/stage-owner-lifetime.mjs",
+          "apps/desktop-app/scripts/package.mjs",
+          "apps/desktop-app/runtime-event-host/package.json",
+          "apps/desktop-app/runtime-event-host/package-lock.json",
+          "apps/desktop-app/runtime-event-host/installer-pins.json"
+        ],
+        "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+      }
+    },
+    "bundle": {
+      "status": "stale",
+      "reasons": [
+        "project source changed"
+      ],
+      "recorded_at": "2026-10-09T05:04:12+00:00",
+      "source_sha256": "8ae28757b0c84b2ed678f98324e4a588323a68bf83eee1d22e5e4029bcc0edf4",
+      "input_binding_sha256": null,
+      "input_scope": null
+    },
+    "hidden": {
+      "status": "failed",
+      "reasons": [
+        "latest attempt failed",
+        "project source changed"
+      ],
+      "recorded_at": "2026-10-09T05:08:29+00:00",
+      "source_sha256": "8ae28757b0c84b2ed678f98324e4a588323a68bf83eee1d22e5e4029bcc0edf4",
+      "input_binding_sha256": null,
+      "input_scope": null
+    }
+  }
+}

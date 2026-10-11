@@ -1,0 +1,16 @@
+---
+name: solo-design-spec-review
+description: Independently review design documents, flows, and token contracts for product alignment, accessibility, internal consistency, and implementation readiness before dependent work.
+---
+
+# Design specification review
+
+Use an independent `design_spec_reviewer` inheriting current conversation settings unless the user explicitly requests a supported override. Review the registered design documents, flows, or token contracts independently of their author. Read the current `docs/runs/<run-id>/plan.md`, approved product requirements, registered design-spec artifacts, and only the existing design sources needed to detect conflicts. Run kind `design-spec`, `docs/design/system.md`, artifacts under `docs/design/specs/`, and custom artifacts registered with `--type design_spec` route to this review. Check run status; do not begin, mutate, or finish the run.
+
+Review whether the specification is coherent and implementable. For a backend-only resource, assess API/schema/security/state/error contracts and consumer compatibility instead of visual criteria. For UI resources, assess: trace the required user journeys; loading, empty, error, success, permission, and recovery states; information hierarchy and interaction rules; responsive or adaptive behavior; keyboard, focus, semantics, contrast, text scaling, touch targets, and safe areas where applicable; semantic token roles; component variants; platform boundaries; and explicit deviations from existing design decisions. Judge only dimensions relevant to the artifact. Do not require screenshots or rendered UI for this document gate.
+
+Return `pass`, `changes_requested`, or `blocked`. A passing artifact resolves material design decisions needed by its consumers and does not contradict the plan or product requirements. For each finding, give severity, artifact location, affected journey or consumer, evidence, and the smallest precise correction. Separate confirmed gaps from questions and optional refinements.
+
+Use the exact `review-input <run-id> --gate design_spec` binding in the schema v2 JSON report; it binds the reviewed documents and plan. State the run ID, reviewer role, verdict, review boundary, and any evidence limits. Do not fabricate Figma, browser, simulator, device, service, or interaction evidence. This gate reviews the design specification; implemented UI remains a separate `design_qa` review under the `design` gate.
+
+Return the report to the coordinator. The coordinator saves and registers the actual independent JSON report with `python3 .solopreneur/harness.py review <run-id> --gate design_spec --reviewer design_spec_reviewer --evidence <report-path>`. Before assigning work that consumes the design artifacts, the coordinator checks `python3 .solopreneur/harness.py handoff <run-id> --gate design_spec`. The reviewer does not write the report file or ledger. A changed design artifact, artifact set, plan, or review report requires a new handoff review; later code-only edits do not invalidate this artifact-scoped handoff. In a mixed run, an unchanged design document keeps its document review; final implementation and UI judgments are separate.

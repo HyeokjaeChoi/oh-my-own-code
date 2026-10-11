@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "baseUrl": "../..",
+    "paths": {
+      "@fixture/*": ["apps/desktop-app/src/renderer/*"],
+      "@workbench/ui": ["packages/ui/src/index.ts"],
+      "@workbench/contracts": ["packages/contracts/src/index.ts"],
+      "@ui/*": ["packages/ui/src/*"],
+      "react": ["deps/react.d.ts"],
+      "radix-ui": ["deps/radix-ui.d.ts"],
+      "zustand/vanilla": ["deps/zustand-vanilla.d.ts"],
+      "zustand": ["deps/zustand-react.d.ts"],
+      "zustand/react": ["deps/zustand-react.d.ts"]
+    }
+  }
+}

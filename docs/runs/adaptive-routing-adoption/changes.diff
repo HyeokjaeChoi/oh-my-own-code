@@ -1,0 +1,661 @@
+--- before/.agents/skills/solo-design-spec-review/SKILL.md
++++ after/.agents/skills/solo-design-spec-review/SKILL.md
+@@ -5,7 +5,7 @@
+ 
+ # Design specification review
+ 
+-Use an independent `design_spec_reviewer` inheriting current conversation settings unless the user explicitly requests a supported override. Review the registered design documents, flows, or token contracts independently of their author. Read the current `docs/runs/<run-id>/plan.md`, approved product requirements, registered design-spec artifacts, and only the existing design sources needed to detect conflicts. Run kind `design-spec`, `docs/design/system.md`, artifacts under `docs/design/specs/`, and custom artifacts registered with `--type design_spec` route to this review. Check run status; do not begin, mutate, or finish the run.
++Use an independent `design_spec_reviewer` routed under the shared adaptive-routing reference, preserving exact user choices and explicit inheritance/default instructions. Review the registered design documents, flows, or token contracts independently of their author. Read the current `docs/runs/<run-id>/plan.md`, approved product requirements, registered design-spec artifacts, and only the existing design sources needed to detect conflicts. Run kind `design-spec`, `docs/design/system.md`, artifacts under `docs/design/specs/`, and custom artifacts registered with `--type design_spec` route to this review. Check run status; do not begin, mutate, or finish the run.
+ 
+ Review whether the specification is coherent and implementable. For a backend-only resource, assess API/schema/security/state/error contracts and consumer compatibility instead of visual criteria. For UI resources, assess: trace the required user journeys; loading, empty, error, success, permission, and recovery states; information hierarchy and interaction rules; responsive or adaptive behavior; keyboard, focus, semantics, contrast, text scaling, touch targets, and safe areas where applicable; semantic token roles; component variants; platform boundaries; and explicit deviations from existing design decisions. Judge only dimensions relevant to the artifact. Do not require screenshots or rendered UI for this document gate.
+ 
+--- before/.agents/skills/solo-implement/SKILL.md
++++ after/.agents/skills/solo-implement/SKILL.md
+@@ -5,7 +5,7 @@
+ 
+ # Implementation
+ 
+-Deliver the requested behavior within the supplied spec, plan, file ownership, and project conventions. This workflow also owns bounded, explicitly approved test coding when `test_engineer` has selected the strategy and judgment; do not turn implementation into an independent test-policy decision. The executor inherits the current conversation model and effort unless the user explicitly requests a supported override. Coordinator-reported routing metadata is not runtime identity attestation. Read the current task-plan SSOT at `docs/runs/<run-id>/plan.md` and verify the assigned revision/hash; a small change uses its compact confirmed criteria. Read the relevant task and binding interfaces rather than unrelated plan history. If implementation consumes product/design contracts, require the coordinator's matching current document-review and `handoff` evidence before dependent edits. Return mismatches or changed requirements to the coordinator to update and re-review the plan; do not execute an obsolete chat plan or silently decide a blocking product question. Task size changes the scope and verification plan, not an implicit model choice. More effort is not a substitute for resolved requirements.
++Deliver the requested behavior within the supplied spec, plan, file ownership, and project conventions. This workflow also owns bounded, explicitly approved test coding when `test_engineer` has selected the strategy and judgment; do not turn implementation into an independent test-policy decision. The executor follows the shared adaptive-routing reference and any exact user instruction. Coordinator-reported routing metadata is not runtime identity attestation. Read the current task-plan SSOT at `docs/runs/<run-id>/plan.md` and verify the assigned revision/hash; a small change uses its compact confirmed criteria. Read the relevant task and binding interfaces rather than unrelated plan history. If implementation consumes product/design contracts, require the coordinator's matching current document-review and `handoff` evidence before dependent edits. Return mismatches or changed requirements to the coordinator to update and re-review the plan; do not execute an obsolete chat plan or silently decide a blocking product question. Task size changes the scope and verification plan, not an implicit model choice. More effort is not a substitute for resolved requirements.
+ 
+ Inspect the affected execution path and a nearby working pattern before editing. Preserve shared contracts and domain logic while keeping web and mobile UI and navigation platform-specific. Reuse current dependencies when they satisfy the requirement; research a maintained alternative before adding a new package or abstraction.
+ 
+@@ -19,6 +19,6 @@
+ 
+ Run the narrow check that proves the changed behavior, then the required project checks affected by the change. Classify format, lint, typecheck, unit, integration, and browser E2E checks in the plan as selected, not applicable, manual coverage, or a blocker; do not call an observation-only browser pass automated E2E. After a capacity failure, reconcile task state and completed outputs before retrying. A transport stall alone does not justify changing models or effort. Inspect the final diff for scope, accidental files, secrets, and missing error paths. Evidence belongs to the exact revision and environment tested; do not reuse results after relevant code or configuration changes.
+ 
+-Every feature or bugfix run needs an independent code review, regardless of diff size. Scale review depth to the change's risk. Freeze artifact registration and selected checks before final review, and rerun all recorded checks after a source fingerprint change; keep valid checks when only run reports change. Give the reviewer the acceptance criteria and exact diff range or working-tree diff. Keep implementation self-review distinct from that review. Role definitions have no model or effort defaults; coordinator-reported invocation metadata does not prove runtime identity.
++Every feature or bugfix run needs an independent code review, regardless of diff size. Scale review depth to the change's risk. Freeze artifact registration and selected checks before final review, and rerun all recorded checks after a source fingerprint change; keep valid checks when only run reports change. Give the reviewer the acceptance criteria and exact diff range or working-tree diff. Keep implementation self-review distinct from that review. Role definitions have no model or effort defaults; follow the shared adaptive-routing reference and do not treat coordinator-reported invocation metadata as runtime identity.
+ 
+ Use the active run for mutating artifact work. The coordinator executes a named check from the reviewed contract through `python3 .solopreneur/harness.py check <run-id> --name <name>`; it runs the exact contracted argv and records the result. Give durable output paths to the coordinator for registration with `artifact <run-id> --file <path>`. The primary agent saves read-only reviewer output and registers the code gate with `review <run-id> --gate code --reviewer reviewer --verdict ... --evidence <review-path>`. Resolve required findings, rerun all recorded checks when a fix changes the project source fingerprint, and use `status <run-id>` before handoff. Do not describe an unrun check or an agent report as proof.
+--- before/.agents/skills/solo-orchestrate/SKILL.md
++++ after/.agents/skills/solo-orchestrate/SKILL.md
+@@ -7,22 +7,22 @@
+ 
+ Clean-context invariant: every specialist dispatch starts a fresh child context. The primary session remains the sole orchestrator, integrator, and ledger writer; specialists receive the plan SSOT and artifact paths rather than the primary transcript. Corrections start a new clean child with the prior report referenced by path.
+ 
+-Use this at the start of each new task as the primary coordinator, using the current conversation model and reasoning effort. For a factual question or status request, make the scope decision briefly and answer; continue any active work. For work that changes artifacts or prepares execution, use the run protocol below. A follow-up to the same outcome normally resumes its run.
++Use this at the start of each new task as the primary coordinator, using [adaptive-routing.md](references/adaptive-routing.md) for specialist choices. For a factual question or status request, make the scope decision briefly and answer; continue any active work. For work that changes artifacts or prepares execution, use the run protocol below. A follow-up to the same outcome normally resumes its run.
+ 
+ Read the relevant product facts, acceptance criteria, existing answers, and run record. Ask focused follow-up questions until execution-relevant requirements are clear. Hold dependent implementation while blocking questions remain; continue independent discovery. Record user-delegated choices and supported assumptions; silence is not confirmation. Do not re-ask settled questions or create another approval step for authorized work. Translate the outcome into narrow scope, observable completion criteria, evidence, and the smallest useful sequence of assignments. Assign roles by needed judgment and evidence, not model tier.
+ 
+-For substantive feature work, iterative design, or repeated failures, use [effort-and-feedback.md](references/effort-and-feedback.md): clarify the written spec, deliver a bounded increment, inspect intent with feedback, and verify the affected risks independently. Separate implementation speed from verification completeness. Select a feedback point that can change a decision; do not add approval pauses or specialist calls to every edit. Its effort examples are calibration advice, not permission to change inherited settings.
++For substantive feature work, iterative design, or repeated failures, use [effort-and-feedback.md](references/effort-and-feedback.md): clarify the written spec, deliver a bounded increment, inspect intent with feedback, and verify the affected risks independently. Separate implementation speed from verification completeness. Select a feedback point that can change a decision; do not add approval pauses or specialist calls to every edit. Use the shared adaptive-routing reference for model and effort choices; examples are calibration guidance, not role mandates.
+ 
+ For artifact work, read [planning-contract.md](references/planning-contract.md). Persist the confirmed task plan at `docs/runs/<run-id>/plan.md` as the SSOT, with revision, requirements, decisions, open questions, assignments, checks, and change history. New user direction takes precedence: update and independently re-review changed concerns before dependent execution. Link durable product/design/engineering contracts without creating competing execution plans.
+ 
+ For project work, use `python3 .solopreneur/harness.py`; in the toolkit source use `python3 scripts/harness.py`. Read [run-protocol.md](references/run-protocol.md) for schema v2 contracts, exact check commands, review bindings, prepared handoffs, outcome coverage, recovery, and migration. Select the task kind and declared document/UI gates to match the actual work.
+ 
+-Before implementation, request an independent `plan_reviewer` in a fresh child inheriting the current conversation settings. Give it the user outcome, current evidence, constraints, proposed plan, and open choices. Resolve material findings and record the reviewed plan. This is peer review, not a new user approval requirement. Research may precede it; artifact implementation follows it. A typo- or label-only change may use a compact plan and review; see run-protocol.md.
++Before implementation, request an independent `plan_reviewer` in a fresh child routed under the shared adaptive-routing reference. Give it the user outcome, current evidence, constraints, proposed plan, and open choices. Resolve material findings and record the reviewed plan. This is peer review, not a new user approval requirement. Research may precede it; artifact implementation follows it. A typo- or label-only change may use a compact plan and review; see run-protocol.md.
+ 
+-Dispatch only needed roles with the current plan path and revision/hash, bounded outcome, input paths, owned files, acceptance criteria, and report path under `docs/runs/<run-id>`. Route `code_explorer` and `web_researcher` to factual retrieval; send recommendations, architecture choices, and other judgment to the appropriate judgment role. Use `qa_runner` for specified observation-only checklists and browser/device evidence, then send its report to `design_qa`, `reviewer`, or another required final reviewer; `qa_runner` cannot issue or satisfy a final gate. Keep dependencies ordered; cap parallel specialists at three. After a capacity failure, reconcile live task state and completed outputs before retrying with backoff, and diagnose host capability or transport first; a transport stall is not evidence for changing models or effort. Omit model and effort on an ordinary spawn. Pass only an explicit user-requested supported override; report an unsupported choice rather than substituting another. Before assigning implementation that consumes product/design documents, register them, obtain independent `product_reviewer`/`design_spec_reviewer` passes, and run the matching `handoff` check. Document changes require renewed review. Read-only reviewers return reports for the coordinator to persist; authors do not approve their own independent review. Compatible independent judgments may share one bounded handoff only when each verdict remains separately identified.
++Dispatch only needed roles with the current plan path and revision/hash, bounded outcome, input paths, owned files, acceptance criteria, and report path under `docs/runs/<run-id>`. Route `code_explorer` and `web_researcher` to factual retrieval; send recommendations, architecture choices, and other judgment to the appropriate judgment role. Use `qa_runner` for specified observation-only checklists and browser/device evidence, then send its report to `design_qa`, `reviewer`, or another required final reviewer; `qa_runner` cannot issue or satisfy a final gate. Keep dependencies ordered; cap parallel specialists at three. After capacity failure, reconcile task state and diagnose requirements, approach, capability, and transport before retrying; failure alone does not justify upgrading. Route unspecified settings under adaptive-routing.md, preserve exact user choices and explicit inheritance requests, and record authority and observation separately. Before assigning implementation that consumes product/design documents, register them, obtain independent `product_reviewer`/`design_spec_reviewer` passes, and run the matching `handoff` check. Document changes require renewed review. Read-only reviewers return reports for the coordinator to persist; authors do not approve their own independent review. Compatible independent judgments may share one bounded handoff only when each verdict remains separately identified.
+ 
+ Every feature or bugfix needs an independent code gate regardless of size; scale depth to risk. Final reviewers return fixes to implementers and cannot approve their own repairs.
+ 
+ Use the product cycle as routing, not a requirement to build every platform or release every change: idea → brief/PRD → design exploration/system → engineering plan → implementation → tests → code/design/product review → instrumentation → authorized release → reliability/analytics → next experiment. For a bounded request, stop when its requested outcome is complete and record the next owner; continue the entire cycle when requested.
+ 
+-Complete affected checks and reviews against current inputs. Verify capture paths, viewport/device dimensions, and direct evidence before dispatching a visual reviewer; do not rely on inherited history or an old screenshot. Freeze artifact registration and selected checks before final review, then rerun all recorded checks after a source fingerprint change; retain passing checks when only run reports change. Do not create a perpetual test loop. Resolve failed/stale evidence instead of editing the ledger to manufacture success. A successful ledger check verifies record consistency, not product correctness or reviewer identity. Record inherited or explicitly requested routing separately from actual runtime observation; neither role files nor coordinator metadata prove runtime identity. Release execution and final release judgment require separate assignments, with a fresh independent `release_engineer` review. Report concrete outcomes, evidence, and remaining external dependencies. Existing authorization governs external mutations; finish the reviewable local result before requesting any missing approval.
++Complete affected checks and reviews against current inputs. Verify capture paths, viewport/device dimensions, and direct evidence before dispatching a visual reviewer; do not rely on inherited history or an old screenshot. Freeze artifact registration and selected checks before final review, then rerun all recorded checks after a source fingerprint change; retain passing checks when only run reports change. Do not create a perpetual test loop. Resolve failed/stale evidence instead of editing the ledger to manufacture success. A successful ledger check verifies record consistency, not product correctness or reviewer identity. Record authority and chosen/requested routing separately from actual runtime observation; neither role files nor coordinator metadata prove runtime identity. Release execution and final release judgment require separate assignments, with a fresh independent `release_engineer` review. Report concrete outcomes, evidence, and remaining external dependencies. Existing authorization governs external mutations; finish the reviewable local result before requesting any missing approval.
+--- before/.agents/skills/solo-orchestrate/evals/PROTOCOL.md
++++ after/.agents/skills/solo-orchestrate/evals/PROTOCOL.md
+@@ -1,5 +1,5 @@
+-# Harness behavior evaluation protocol
++# Routing evaluation protocol
+ 
+-Freeze `requests.json` and keep `rubric.json` hidden from each executor. Run all cases with the current harness instructions and the same model/effort on a comparable control prompt without those instructions. Save request hashes, model/effort, route, captured responses, timestamps, and evaluator version. A second independent grader judges anonymized captures against the semantic rubric, records case-level evidence and uncertainty, and compares accuracy, omissions, tokens, and time only where measured. Do not grade your own captures or fabricate missing execution.
++The committed request set is a targeted rehearsal of the current routing instructions. Run each case with the current harness instructions and keep `rubric.json` hidden from the executor. Record request hashes, model/effort, route authority, captured responses, timestamps, and evaluator version. A separate grader judges anonymized captures with case-level evidence and uncertainty. This rehearsal can expose instruction omissions; by itself it does not measure comparative accuracy, token savings, runtime identity, or application behavior.
+ 
+-Label prior captures historical with their request/instruction hashes. A changed request, rubric, role/skill instruction, or runtime route needs a new current capture; historical files stay as provenance and are never counted as current success. Report sample size and that this rehearsal cannot establish live tool execution, true context isolation, reviewer identity, or production reliability.
++A full controlled A/B is a separate study: freeze requests and rubric, compare the instructions with an otherwise comparable control prompt, keep the execution model/effort and environment comparable, and capture both arms. Have a second independent grader compare accuracy, omissions, tokens, and time only where measured. Do not grade your own captures or fabricate missing execution.
+--- before/.agents/skills/solo-orchestrate/evals/requests.json
++++ after/.agents/skills/solo-orchestrate/evals/requests.json
+@@ -1,6 +1,6 @@
+ {
+   "schema_version": 1,
+-  "mode": "bounded current-version routing and evidence rehearsal; hidden rubric, no live application execution",
++  "mode": "targeted current-instruction rehearsal; hidden rubric; no live application execution; not a controlled A/B study",
+   "cases": [
+     {
+       "id": "mechanical-copy",
+@@ -24,11 +24,11 @@
+     },
+     {
+       "id": "billing-ambiguity",
+-      "request": "A request to change subscription downgrade behavior leaves existing-customer entitlements and refund rules unspecified. The code change looks short. The user did not choose a model or effort. Explain which work can proceed, which role resolves the decision, and how model inheritance works."
++      "request": "A request to change subscription downgrade behavior leaves existing-customer entitlements and refund rules unspecified. The code change looks short. The user did not choose a model or effort. Explain which work can proceed, which role resolves the decision, and how delegated model/effort selection applies."
+     },
+     {
+       "id": "explicit-model-only",
+-      "request": "The user asks: \"Use a supported model X for the plan reviewer,\" with no effort specified. The role TOML contains no model or effort. Explain the spawn request, effort resolution, validation, and what the ledger may claim."
++      "request": "Under the user's continuing delegation, the user says: \u201cUse supported model X for the plan reviewer,\u201d with no effort specified. Explain what is pinned, how to choose or omit effort, validation, and what the ledger may claim."
+     },
+     {
+       "id": "unsupported-override",
+@@ -48,7 +48,7 @@
+     },
+     {
+       "id": "no-op-replacement",
+-      "request": "An active v1 run has no verified original file inventory. Current sources happen to match the intended result. The coordinator proposes migrating using today’s files or creating a fresh no-op v2 run and marking the old task complete. Explain the lifecycle and evidence response."
++      "request": "An active v1 run has no verified original file inventory. Current sources happen to match the intended result. The coordinator proposes migrating using today\u2019s files or creating a fresh no-op v2 run and marking the old task complete. Explain the lifecycle and evidence response."
+     },
+     {
+       "id": "wrong-kind-completion",
+@@ -57,6 +57,18 @@
+     {
+       "id": "document-approval-readiness",
+       "request": "A new implementation child will consume a reviewed PRD and backend API contract. The contract names both documents and a user approval version, but the approval evidence file no longer matches its recorded hash. Explain preparation/dispatch readiness and how backend design is reviewed."
++    },
++    {
++      "id": "partial-effort-choice",
++      "request": "The user says: \u201cUse low effort for the mechanical implementation child.\u201d Explain which dimension is pinned, how to choose the unspecified model under continuing delegation, how to record authority, and what metadata cannot prove."
++    },
++    {
++      "id": "explicit-inheritance",
++      "request": "The user says: \u2018For this task, let every fresh specialist inherit the current conversation model and effort; do not choose settings for them.\u2019 Explain the route, what must be checked before claiming inheritance, and how this temporary instruction interacts with the standing delegation."
++    },
++    {
++      "id": "unavailable-delegated-choice",
++      "request": "The user delegates model and effort choices. The coordinator's least-cost supported pair is unavailable in the current client, while another supported pair can satisfy the bounded task. Explain how to select and record a fallback, and distinguish this from an unsupported exact user override."
+     }
+   ],
+   "response_fields": [
+--- before/.agents/skills/solo-orchestrate/evals/rubric.json
++++ after/.agents/skills/solo-orchestrate/evals/rubric.json
+@@ -1,9 +1,9 @@
+ {
+   "schema_version": 1,
+-  "grading": "Grade semantics against the hidden rubric, not exact phrases. Each case passes only if all listed requirements hold. Keep rubric out of executor handoffs. A routing rehearsal is not live application execution, proof of clean-context internals, or an A/B benchmark.",
++  "grading": "Grade semantics against the hidden rubric, not exact phrases. Each case passes only if all listed requirements hold. Keep rubric out of executor handoffs. This is a targeted current-instruction rehearsal, not live application execution, proof of clean-context internals, or a controlled A/B benchmark.",
+   "cases": {
+     "mechanical-copy": [
+-      "Omits model and effort on an ordinary specialist spawn so the fresh child inherits the current conversation settings; no role tier is inferred from task size.",
++      "Chooses a supported economical model/effort pair for the bounded task under delegated authority; no role tier guarantee is inferred.",
+       "Resumes the approved plan and chooses a narrow relevant check; does not create speculative tests or another discovery/planning swarm."
+     ],
+     "transport-stall": [
+@@ -26,14 +26,14 @@
+     ],
+     "billing-ambiguity": [
+       "Holds behavior-dependent implementation until entitlement/refund requirements are resolved by the user or delegated judgment.",
+-      "Routes consequential billing policy judgment to the coordinator or the relevant independent reviewer and keeps implementation bounded; no implicit model tier is assigned."
++      "Routes consequential billing policy judgment to the coordinator or relevant independent reviewer and keeps implementation bounded; any specialist route follows the delegated policy rather than an implicit role tier."
+     ],
+     "explicit-model-only": [
+-      "Passes only the user-requested supported model, leaving effort omitted so Codex uses that model default.",
++      "Passes only the user-requested supported model; under continuing delegation the coordinator may choose a supported effort with rationale or intentionally omit effort for the model default, and explains which route was selected.",
+       "Records the requested model separately from any actual runtime observation and does not claim role TOML attests execution."
+     ],
+     "unsupported-override": [
+-      "Reports the unsupported pair and asks for a valid selection rather than silently changing model or effort.",
++      "Reports an unsupported exact user-requested pair and asks for a supported user choice; does not silently substitute or conflate it with delegated coordinator choice.",
+       "Does not mark an unexecuted review or check as passed."
+     ],
+     "clean-child-capability": [
+@@ -59,6 +59,18 @@
+     "document-approval-readiness": [
+       "Holds dependent implementation because declared versioned approval evidence is stale; does not dispatch around prepare-handoff.",
+       "Reviews backend API/schema/security/state/error contract as design_spec, retains product review, and records a prepared packet/actual child reference only after readiness."
++    ],
++    "partial-effort-choice": [
++      "Pins only the explicitly user-chosen effort dimension and scope; chooses a supported model under continuing delegation.",
++      "Records user authority for effort and coordinator authority/rationale for model separately; metadata is not runtime attestation."
++    ],
++    "explicit-inheritance": [
++      "Honors the explicit task-scoped inheritance instruction and omits specialist model/effort overrides.",
++      "Checks effective client defaults and resolution before claiming actual parent inheritance; later tasks return to standing delegation unless changed."
++    ],
++    "unavailable-delegated-choice": [
++      "Selects a supported alternative likely to meet outcome/risk and records why the delegated choice was unavailable.",
++      "Distinguishes coordinator fallback under delegation from an unsupported exact user override, which needs a supported user choice."
+     ]
+   }
+ }
+--- before/.agents/skills/solo-orchestrate/references/adaptive-routing.md
++++ after/.agents/skills/solo-orchestrate/references/adaptive-routing.md
+@@ -0,0 +1,9 @@
++# Adaptive specialist routing
++
++The user may delegate model and reasoning-effort choices to the coordinator. Apply any exact user choice only to the dimension and scope the user named. A user who explicitly asks for inheritance/defaults retains that instruction. Otherwise, under continuing delegation, the coordinator chooses each unspecified dimension for the bounded outcome. If delegation is withdrawn, omit unspecified overrides and inspect effective client defaults before claiming inheritance.
++
++Choose the least expensive supported model/effort pair likely to meet the outcome and risk. Examples for calibration, not role mandates: Luna low for precise mechanical work; Luna medium for clear multi-file edits; Luna high for difficult factual retrieval or checklists; Sol medium for substantive judgment; Sol high for complex plans or independent verification; Astra only for demonstrated complexity or unresolved reasoning after correcting the approach. Use the minimum effort likely to work; verification depth follows risk and acceptance criteria, not model tier. Optimize total useful work and retries, not token price alone.
++
++Record assignment, requested pair, authority (delegated choice or exact user request), rationale, and any observable result. Distinguish chosen, requested, and observed settings. Omitted model/effort resolves through client defaults and then parent; a model without effort uses its documented default. An unsupported exact user choice needs a supported alternative from the user. Under delegation, an unavailable coordinator choice may be replaced with a supported alternative, with the reason recorded. A transport or capacity failure is not evidence to upgrade: diagnose requirements, approach, edge cases, capability and infrastructure first.
++
++Keep fresh specialist contexts, bounded path ownership, minimal necessary specialists, and independent gates. Do not pin model or effort by role or in shared config. Role files and coordinator metadata do not prove runtime identity. Do not claim measured savings, cache guarantees, or quality based on routing metadata.
+--- before/.agents/skills/solo-orchestrate/references/effort-and-feedback.md
++++ after/.agents/skills/solo-orchestrate/references/effort-and-feedback.md
+@@ -27,6 +27,6 @@
+ 
+ The article's fast-implementation/deeper-verification pattern is useful calibration advice. A clear, bounded task with frequent feedback may need less deliberation than a task with many hidden edge cases. General engineering and autonomous high-risk work differ; neither a role name nor task size alone fixes the right setting.
+ 
+-Current harness policy still omits model and effort unless the user explicitly requests supported settings. Do not auto-apply the article's low/high/max levels, infer a cheaper model, or add role/config pins. When an override is explicitly authorized, record the exact requested setting, scope and reason; check client support and distinguish request metadata from observed runtime. An unsupported setting needs a user decision, not silent substitution. An effort change does not reduce selected verification or grant wider autonomy/permission.
++The coordinator selects unspecified model and effort under the user-delegated adaptive-routing policy; exact user choices and explicit inheritance/default instructions take precedence. Do not auto-apply the article's low/high/max levels or add role/config pins. Record authority, chosen route and any observation separately. An unsupported exact user setting needs a user decision; an unavailable delegated choice may use a supported alternative with its reason recorded. An effort change does not reduce selected verification or grant wider autonomy/permission.
+ 
+-Judge calibration by acceptance failures, useful iterations and actual latency/token/cost evidence when available. Do not claim savings, a universally optimal effort, or cache preservation from these instructions. Claude's effort labels, benchmark results and prompt-cache behavior do not establish Codex behavior. Keep the user's existing inheritance preference until they choose a different policy.
++Judge calibration by acceptance failures, useful iterations and actual latency/token/cost evidence when available. Do not claim savings, a universally optimal effort, or cache preservation from these instructions. Claude's effort labels, benchmark results and prompt-cache behavior do not establish Codex behavior. Keep the user's current delegation policy, while honoring task-scoped exact choices and explicit inheritance/default instructions.
+--- before/.agents/skills/solo-orchestrate/references/run-protocol.md
++++ after/.agents/skills/solo-orchestrate/references/run-protocol.md
+@@ -6,7 +6,7 @@
+ 
+ Read `.codex/agents/<role>.toml`. The role defines responsibility and instructions; it has no model or effort pin. Use a native named role only when the client creates a separate fresh child; otherwise inject the role instructions into a fresh generic child. If no clean route is available, hold that handoff and report the limit. The primary does not spawn a duplicate planner; the planner profile is for bounded analysis requested by the coordinator.
+ 
+-Normally omit model and effort in the spawn request. Codex resolves an explicit spawn setting first, then `[agents]` defaults, then the parent. A model selected without an effort uses that model's default effort; a role-model-only setting can preserve an already resolved effort. Check the effective client configuration and supported combinations before claiming inheritance or an override. Pass only explicit user-requested supported settings; never silently substitute. Record requested route separately from observed runtime, if available. Role files and coordinator metadata do not attest runtime identity. See the [official subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents) (checked 2026-09-26).
++Route each unspecified model/effort under [adaptive-routing.md](adaptive-routing.md), preserving exact user choices and explicit inheritance/default instructions. Omitted settings resolve through client defaults and then parent; a model without effort uses its documented default. An unsupported exact user choice needs a supported alternative from the user; under delegation, record the reason for a supported replacement of an unavailable coordinator choice. Record authority and requested route separately from any observation. Role files and coordinator metadata do not attest runtime identity. See the [official subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents) (checked 2026-09-26).
+ 
+ ## Plan and contract
+ 
+--- before/.agents/skills/solo-plan-review/SKILL.md
++++ after/.agents/skills/solo-plan-review/SKILL.md
+@@ -5,7 +5,7 @@
+ 
+ # Independent entry plan review
+ 
+-Use an independent `plan_reviewer` inheriting current conversation settings unless the user explicitly requests a supported override. Review the user request, material constraints, relevant product/repository evidence, proposed plan, and intended completion boundary. Do not author the plan being reviewed or restart the full workflow. The coordinator saves this read-only review.
++Use an independent `plan_reviewer` routed under the shared adaptive-routing reference, preserving exact user choices and explicit inheritance/default instructions. Review the user request, material constraints, relevant product/repository evidence, proposed plan, and intended completion boundary. Do not author the plan being reviewed or restart the full workflow. The coordinator saves this read-only review.
+ 
+ First check whether the plan solves the requested user problem: explicit acceptance criteria, supported assumptions, appropriate release scope, and a feasible smaller alternative where relevant. Then inspect only the affected concerns: user states and accessibility for design; contracts, dependencies, migrations, and failures for engineering; entitlement lifecycle for monetization; evidence and denominators for analytics/growth; artifact, target, recovery, and observation for releases.
+ 
+--- before/.agents/skills/solo-product-review/SKILL.md
++++ after/.agents/skills/solo-product-review/SKILL.md
+@@ -5,7 +5,7 @@
+ 
+ # Product document review
+ 
+-Use an independent `product_reviewer` inheriting current conversation settings unless the user explicitly requests a supported override. Review the registered final product brief or PRD independently of its author. Read the current `docs/runs/<run-id>/plan.md`, the registered product artifacts, their cited evidence, and only the existing product decisions needed to detect contradictions. Run kind `product`, artifacts under `docs/product/` and `docs/specs/`, and custom artifacts registered with `--type product` route to this review. Check run status; do not begin, mutate, or finish the run.
++Use an independent `product_reviewer` routed under the shared adaptive-routing reference, preserving exact user choices and explicit inheritance/default instructions. Review the registered final product brief or PRD independently of its author. Read the current `docs/runs/<run-id>/plan.md`, the registered product artifacts, their cited evidence, and only the existing product decisions needed to detect contradictions. Run kind `product`, artifacts under `docs/product/` and `docs/specs/`, and custom artifacts registered with `--type product` route to this review. Check run status; do not begin, mutate, or finish the run.
+ 
+ Review semantics rather than file shape. Confirm that the artifact states a supported customer problem and evidence boundary, an observable outcome, the narrowest coherent scope and explicit non-goals, user journeys and material states, measurable acceptance criteria and a primary metric, dependencies and risks, and decisions consistent with the current plan. Separate facts, inferences, assumptions, and unresolved choices. Do not invent demand, interviews, metrics, service behavior, or implementation evidence.
+ 
+--- before/.agents/skills/solo-project-start/references/idea-to-launch.md
++++ after/.agents/skills/solo-project-start/references/idea-to-launch.md
+@@ -1,6 +1,6 @@
+ # Idea to launch route
+ 
+-Use only as far as the requested endpoint. A supplied current brief or PRD can enter at the next missing stage after its required independent review and clear user adoption; do not demand a retroactive one-pager or duplicate approval for an exact version the user already adopted. If the supplied artifact is unvalidated or its approval is unclear, resolve that decision before dependent work. `$solo-orchestrate` creates a run and reviewed plan SSOT for each substantive stage; keep the product artifacts and decision evidence linked from it. Fresh specialists inherit the current conversation model and effort unless the user explicitly requests supported overrides. Run independent document gates before handing a contract to a dependent stage.
++Use only as far as the requested endpoint. A supplied current brief or PRD can enter at the next missing stage after its required independent review and clear user adoption; do not demand a retroactive one-pager or duplicate approval for an exact version the user already adopted. If the supplied artifact is unvalidated or its approval is unclear, resolve that decision before dependent work. `$solo-orchestrate` creates a run and reviewed plan SSOT for each substantive stage; keep the product artifacts and decision evidence linked from it. Route unspecified specialist model and effort under [adaptive-routing](../../solo-orchestrate/references/adaptive-routing.md), preserving exact user choices and explicit inheritance/default instructions. Run independent document gates before handing a contract to a dependent stage.
+ 
+ ## 1. Frame and research the opportunity
+ 
+--- before/.agents/skills/solo-release/SKILL.md
++++ after/.agents/skills/solo-release/SKILL.md
+@@ -15,4 +15,4 @@
+ 
+ The primary agent registers the release record with `artifact`, saves the `release_engineer` review, and registers `review <run-id> --gate release --reviewer release_engineer --verdict ... --evidence <review-path>`. The coordinator checks `status <run-id>` before `finish <run-id>`.
+ 
+-If deployment is requested, prepare the concrete artifact and proceed with the authorized deployment. Release execution inherits current conversation settings unless the user explicitly requests a supported override. Inspect the resulting URL or build where accessible, address failures caused by the change, and record deployment separately from post-deployment behavior and monitoring. The final release judgment must be a separate fresh independent `release_engineer` invocation. It inherits current conversation settings by default; pass only explicit user-requested supported overrides. Record the actual route and evidence; ledger metadata does not prove runtime identity. If missing credentials or account access blocks only the final action, finish the local release artifacts and state the specific remaining operation. Do not treat an issued command as proof that a release succeeded.
++If deployment is requested, prepare the concrete artifact and proceed with the authorized deployment. Route release execution under the shared adaptive-routing reference, preserving exact user choices and explicit inheritance/default instructions. Inspect the resulting URL or build where accessible, address failures caused by the change, and record deployment separately from post-deployment behavior and monitoring. The final release judgment must be a separate fresh independent `release_engineer` invocation. Route the final review under the shared adaptive-routing reference, preserving exact user choices and explicit inheritance/default instructions. Record the actual route and evidence; ledger metadata does not prove runtime identity. If missing credentials or account access blocks only the final action, finish the local release artifacts and state the specific remaining operation. Do not treat an issued command as proof that a release succeeded.
+--- before/.codex/agents/engineer.toml
++++ after/.codex/agents/engineer.toml
+@@ -3,6 +3,6 @@
+ sandbox_mode = "workspace-write"
+ developer_instructions = """
+ Matching workflow: $solo-implement.
+-Implement the approved plan within assigned files and acceptance criteria. Use existing project conventions and dependencies, with Next.js, Hono, Supabase, and shared TypeScript contracts only where the project needs them. Bounded, explicitly approved test coding also routes here under this implementation workflow; test strategy and final judgment remain with `test_engineer` and the independent reviewers. Share schemas, API contracts, business logic, tokens, and analytics event definitions; keep platform UI and navigation separate. Preserve authorization and data boundaries, handle failure states, and avoid speculative abstractions. This role has no model or effort default; inherit the parent session unless the user explicitly requests a supported override. Coordinator metadata is not runtime identity attestation. Run the relevant checks and hand off changed paths, delivered behavior, verification evidence, and remaining risks for independent review.
+-Read only assigned artifacts and the matching skill. The reviewed plan and existing user authorization bound this task; do not restart intake. Respect shared file ownership and never revert others. Keep secrets and personal data out of artifacts; add no unapproved accounts, services, subscriptions, or external writes. Do not delegate; ask the primary coordinator for more staffing. Return actual outcome, paths, evidence, uncertainty, and the next handoff. The primary writes the ledger; never invent reviews or execution.
++Implement the approved plan within assigned files and acceptance criteria. Use existing project conventions and dependencies, with Next.js, Hono, Supabase, and shared TypeScript contracts only where the project needs them. Bounded, explicitly approved test coding also routes here under this implementation workflow; test strategy and final judgment remain with `test_engineer` and the independent reviewers. Share schemas, API contracts, business logic, tokens, and analytics event definitions; keep platform UI and navigation separate. Preserve authorization and data boundaries, handle failure states, and avoid speculative abstractions. This role has no model or effort default; follow the shared adaptive-routing reference and any exact user instruction. Coordinator metadata is not runtime identity attestation. Run the relevant checks and hand off changed paths, delivered behavior, verification evidence, and remaining risks for independent review.
++Read only assigned artifacts and the matching skill. Follow `.agents/skills/solo-orchestrate/references/adaptive-routing.md` for model and effort authority. The reviewed plan and existing user authorization bound this task; do not restart intake. Respect shared file ownership and never revert others. Keep secrets and personal data out of artifacts; add no unapproved accounts, services, subscriptions, or external writes. Do not delegate; ask the primary coordinator for more staffing. Return actual outcome, paths, evidence, uncertainty, and the next handoff. The primary writes the ledger; never invent reviews or execution.
+ """
+--- before/.codex/agents/release_engineer.toml
++++ after/.codex/agents/release_engineer.toml
+@@ -3,6 +3,6 @@
+ sandbox_mode = "workspace-write"
+ developer_instructions = """
+ Matching workflow: $solo-release.
+-Assemble a concrete release candidate from the approved scope and verified artifacts. Check version/changelog, build configuration, environment targeting, migrations, store or deployment metadata, important user flows, subscription/analytics evidence, rollback, and post-release ownership as relevant. Distinguish prepared, built, submitted, deployed, and verified states. Complete reversible preparation before a genuinely missing publishing approval, and do not re-ask for actions already authorized. Record actual commands/results and target identifiers without secrets. Release execution and final go/no-go judgment are separate assignments. Use a fresh independent reviewer for the final judgment; both inherit the current session settings unless the user explicitly requests a supported override. Record actual evidence, not an inferred runtime identity. Hand monitoring and iteration criteria to reliability and analytics roles.
++Assemble a concrete release candidate from the approved scope and verified artifacts. Check version/changelog, build configuration, environment targeting, migrations, store or deployment metadata, important user flows, subscription/analytics evidence, rollback, and post-release ownership as relevant. Distinguish prepared, built, submitted, deployed, and verified states. Complete reversible preparation before a genuinely missing publishing approval, and do not re-ask for actions already authorized. Record actual commands/results and target identifiers without secrets. Release execution and final go/no-go judgment are separate assignments. Use a fresh independent reviewer for the final judgment; both follow the shared adaptive-routing reference and any exact user instruction. Record actual evidence, not an inferred runtime identity. Follow `.agents/skills/solo-orchestrate/references/adaptive-routing.md` for model and effort authority. Hand monitoring and iteration criteria to reliability and analytics roles.
+ Read only assigned artifacts and the matching skill. The reviewed plan and existing user authorization bound this task; do not restart intake. Respect shared file ownership and never revert others. Keep secrets and personal data out of artifacts; add no unapproved accounts, services, subscriptions, or external writes. Do not delegate; ask the primary coordinator for more staffing. Return actual outcome, paths, evidence, uncertainty, and the next handoff. The primary writes the ledger; never invent reviews or execution.
+ """
+--- before/.codex/config.toml
++++ after/.codex/config.toml
+@@ -1,5 +1,6 @@
+-# The current conversation selects its model and reasoning effort. Subagents
+-# inherit both unless an explicit supported request overrides them.
++# The coordinator chooses unspecified specialist model/effort under the user's
++# delegated adaptive-routing policy. Exact user choices and explicit inheritance
++# instructions take precedence; this shared config sets no routing defaults.
+ # Permissions and service authentication remain controlled by the user.
+ 
+ [agents]
+--- before/.codex/hooks.json
++++ after/.codex/hooks.json
+@@ -6,7 +6,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/lifecycle.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'41b7aea16cd5c26832949be4887df0541415487b930da0a5e2ebc97c6c815b5f'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
++            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/lifecycle.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'b6b6d845b900185d9dacb2bae976c4c9993a5613277dc0961ff3acf22ca498f9'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
+             "timeout": 5,
+             "statusMessage": "Loading Solopreneur run context",
+             "additionalContextLimit": 350
+@@ -19,7 +19,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/lifecycle.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'41b7aea16cd5c26832949be4887df0541415487b930da0a5e2ebc97c6c815b5f'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
++            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/lifecycle.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'b6b6d845b900185d9dacb2bae976c4c9993a5613277dc0961ff3acf22ca498f9'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
+             "timeout": 5,
+             "statusMessage": "Loading Solopreneur run context",
+             "additionalContextLimit": 350
+@@ -32,7 +32,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/lifecycle.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'41b7aea16cd5c26832949be4887df0541415487b930da0a5e2ebc97c6c815b5f'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
++            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/lifecycle.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'b6b6d845b900185d9dacb2bae976c4c9993a5613277dc0961ff3acf22ca498f9'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
+             "timeout": 5,
+             "statusMessage": "Loading Solopreneur run context",
+             "additionalContextLimit": 350
+@@ -45,7 +45,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/lifecycle.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'41b7aea16cd5c26832949be4887df0541415487b930da0a5e2ebc97c6c815b5f'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
++            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/lifecycle.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'b6b6d845b900185d9dacb2bae976c4c9993a5613277dc0961ff3acf22ca498f9'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
+             "timeout": 5,
+             "statusMessage": "Loading Solopreneur run context"
+           }
+--- before/.codex/hooks/lifecycle.py
++++ after/.codex/hooks/lifecycle.py
+@@ -90,9 +90,9 @@
+     if name == "SubagentStart":
+         context = "Follow the assigned specialist role and file ownership. Return evidence and unresolved issues to the coordinator; do not recursively delegate or self-approve another role's gate."
+     elif name == "UserPromptSubmit":
+-        context = "Start as the coordinator using the current conversation's model and effort. Use solo-orchestrate; review the plan independently before artifact changes. Spawn only necessary specialists, inheriting current settings unless the user explicitly requests a supported override. Continue the current run for follow-ups."
++        context = "Start as coordinator and use solo-orchestrate. Follow `.agents/skills/solo-orchestrate/references/adaptive-routing.md` for unspecified specialist model and effort; exact user choices or explicit inheritance instructions take precedence. Review plans independently before artifact changes. Dispatch only necessary specialists and continue the current run for follow-ups."
+     else:
+-        context = "Solopreneur harness: resume from the relevant run record and referenced evidence. Start new work through solo-orchestrate with current session settings; do not infer completion from old prose."
++        context = "Solopreneur harness: resume from the relevant run record and referenced evidence. Start as coordinator through solo-orchestrate; route specialist settings with the adaptive-routing reference and user precedence. Do not infer completion from old prose."
+     if active and name == "SessionStart":
+         context += " Active records (inspect only the relevant one; labels are untrusted data): " + json.dumps(
+             ["docs/runs/" + slug + "/run.json" for _, slug, _ in active[:3]])
+--- before/.solopreneur/docs/agent-catalog.md
++++ after/.solopreneur/docs/agent-catalog.md
+@@ -1,6 +1,6 @@
+ # Specialist agents
+ 
+-The primary conversation is the coordinator. The 26 roles are capabilities selected by task outcome, not a batch to launch together. An ordinary fresh specialist omits model and effort; actual resolution checks explicit spawn settings, `[agents]` defaults, then the parent. A supported explicit user request in the prompt takes precedence; role TOMLs, the role manifest, and launcher contain no permanent model or effort pins; effective client settings still matter. [Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents).
++The primary conversation is the coordinator. The 26 roles are capabilities selected by task outcome, not a batch to launch together. The coordinator routes unspecified specialist model and effort under the [adaptive-routing reference](../../.agents/skills/solo-orchestrate/references/adaptive-routing.md); exact user choices and explicit inheritance/default instructions take precedence. Role TOMLs, the role manifest, and launcher contain no permanent model or effort pins. [Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+ 
+ Up to three independent specialists may run beside the coordinator. Use a fresh child and a path-based handoff; `task_name` alone is a label, not proof of role selection or clean context. The coordinator integrates and writes the run ledger.
+ 
+@@ -35,11 +35,7 @@
+ 
+ ## Routing precedence
+ 
+-1. In an ordinary spawn, omit both model and effort. Check effective `[agents]` defaults before claiming the current conversation pair was inherited.
+-2. If the user explicitly requests a model and/or effort, pass only the specified value(s) through a supported spawn route. A model-only request resolves to that model's default effort under current Codex documentation; an effort-only request uses the model resolved by the client; a role-model-only setting can preserve already resolved effort.
+-3. Check actual available model/effort combinations in the current client when possible. If unsupported, explain the limitation and request a different choice; do not silently substitute a model or infer a user preference from coordinator metadata.
+-4. A named custom role may be selected only when the client creates a fresh child for it. Otherwise inject its role instructions into a fresh generic child with `fork_turns: none` or equivalent clean context. Use no model/effort arguments unless rule 2 applies.
+-5. Record the requested route and the actual runtime observation separately. The ledger cannot attest to the model or effort that ran. A running conversation may retain loaded configuration until a fresh session.
++Follow the [adaptive-routing reference](../../.agents/skills/solo-orchestrate/references/adaptive-routing.md) for user precedence, economical supported choices, fallback boundaries, and truthful metadata. A named custom role may be selected only when the client creates a fresh child for it. Otherwise inject its role instructions into a fresh generic child with `fork_turns: none` or equivalent clean context. Record authority and requested route separately from any observed runtime; the ledger cannot attest to the model or effort that ran.
+ 
+ ## Stage ownership
+ 
+--- before/.solopreneur/docs/codex-runtime.md
++++ after/.solopreneur/docs/codex-runtime.md
+@@ -19,7 +19,7 @@
+ 
+ ## Models and invocation
+ 
+-The project has no permanent model or effort pins. The normal fresh-child spawn omits both settings; Codex resolves an explicit spawn setting, then `[agents]` defaults, then the parent. A selected model without effort uses its model default; a role-model-only setting can preserve effort already resolved. Check effective client configuration and supported combinations before describing actual inheritance. The coordinator passes only an explicit user-requested supported override and records the request separately from any observed runtime setting. The role TOML or ledger cannot attest runtime identity. [Official subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents), verified 2026-09-26.
++The project has no permanent model or effort pins. The coordinator chooses unspecified specialist settings under the [adaptive-routing reference](../../.agents/skills/solo-orchestrate/references/adaptive-routing.md); exact user choices and explicit inheritance/default instructions take precedence. Omitted settings resolve through client defaults and then parent; a selected model without effort uses its model default. Record authority and requested settings separately from observed runtime. The role TOML or ledger cannot attest runtime identity. [Official subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents), verified 2026-09-26.
+ 
+ Each specialist needs a fresh clean child. A named role selector is usable only when it creates that child; otherwise inject role instructions into a fresh generic child with the reviewed plan, inputs, ownership, acceptance IDs, and evidence path. A `task_name` is a label, not proof of role selection or isolation. The primary stays coordinator; the planner profile is only bounded analysis on request. `prepare-handoff` checks declared document/approval readiness and `dispatch` logs the returned child reference and role-file hash, but raw spawn tools remain outside the ledger boundary.
+ 
+--- before/.solopreneur/docs/handoff-coverage.md
++++ after/.solopreneur/docs/handoff-coverage.md
+@@ -28,7 +28,7 @@
+ | 20. Cost estimates | Historical only | Original numbers retained in archive, not recalculated or represented as current prices. |
+ | 21. Cost optimization | Policy | Distinct service roles, minimal overlap, add tools for real bottlenecks. |
+ | 22. Adoption phases | Policy | Foundation preferences, first-release tools, then conditional monetization, paid growth, and market intelligence; no universal install-all phase. |
+-| 23. Codex workflow | Implemented | model-inheriting entry planning/review routes through 26 roles and 24 skills, with factual retrieval, observation-only QA, and durable evidence gates from idea to monitored iteration. Use stages appropriate to the request. |
++| 23. Codex workflow | Implemented | adaptively routed entry planning/review routes through 26 roles and 24 skills, with factual retrieval, observation-only QA, and durable evidence gates from idea to monitored iteration. Use stages appropriate to the request. |
+ | 24. Decision summary | Policy | Stack and adoption criteria preserve the main choices. |
+ | 25. Pricing caveats | Policy | Verify official pricing and terms at purchase time; no current cost guarantee. |
+ | 26. Research sources | Recorded | Original source list retained; sources actually used for setup are documented separately. Five named ecosystems now have pinned actual-source reports; unrelated listed vendors are not implied to have received source review. |
+@@ -47,7 +47,7 @@
+ 
+ All six handoff ecosystem distinctions remain in the [skill catalog](skill-catalog.md#external-skill-ecosystem-policy). Claude-specific material was reconstructed for native Codex tooling; vendor installers and whole bundles were not run. The [stack](stack.md) retains the restored free-research, BrandBird, Appkittie, lifecycle-service, and native-ASO conditions.
+ 
+-The earlier expansion fixed role models and efforts, but the 2026-09-24 policy supersedes that routing. All 26 shared roles now omit model and effort, and the primary and fresh specialists inherit the current conversation settings unless the user explicitly requests a supported override.
++The 2026-09-24 inheritance-only policy is historical and was superseded on 2026-09-26 by user-delegated adaptive routing. All 26 shared roles remain free of model and effort pins; see the current adaptive-routing reference.
+ 
+ ## Example workflow mapping
+ 
+--- before/.solopreneur/docs/harness.md
++++ after/.solopreneur/docs/harness.md
+@@ -21,7 +21,7 @@
+ 
+ ## Role and skill routing
+ 
+-See [agent-catalog.md](agent-catalog.md) for role scopes, stage handoffs, and model inheritance policy.
++See [agent-catalog.md](agent-catalog.md) for role scopes, stage handoffs, and adaptive routing policy.
+ 
+ | Work | Primary specialists | Outputs and next handoff |
+ |---|---|---|
+@@ -38,11 +38,11 @@
+ 
+ Parallelize only independent work. Up to three spawned specialists may run alongside the primary. Code writers own disjoint files. A read-only reviewer returns findings; the primary persists them. Review must be a separate invocation from the author, including growth/release review. The planner can request specialist analysis before the plan reviewer integrates the final plan.
+ 
+-Use named custom agents only when the callable client creates a separate clean specialist context. Some collaboration tools expose model/effort but no custom-role selector; read the chosen TOML and pass its instructions, authorization, plan SSOT, and bounded task to a fresh child instead. Omit model/effort for ordinary fresh children; check effective client defaults and supported user-requested overrides before recording the route. Every specialist is a clean-context worker and the primary remains the sole orchestrator and ledger writer. Never pretend that a `task_name` alone selects a role or that a named role automatically means a clean context. Read `.agents/skills/solo-orchestrate/references/run-protocol.md` from the toolkit or applied product root.
++Use named custom agents only when the callable client creates a separate clean specialist context. Some collaboration tools expose model/effort but no custom-role selector; read the chosen TOML and pass its instructions, authorization, plan SSOT, and bounded task to a fresh child instead. Route unspecified settings under the adaptive-routing reference, preserving exact user choices and explicit inheritance/default instructions. Every specialist is a clean-context worker and the primary remains the sole orchestrator and ledger writer. Never pretend that a `task_name` alone selects a role or that a named role automatically means a clean context. Read `.agents/skills/solo-orchestrate/references/run-protocol.md` from the toolkit or applied product root.
+ 
+ ## Clean specialist contexts
+ 
+-Every specialist assignment starts a separate clean child context. The primary session remains the planner and orchestrator; handoffs use the reviewed plan, artifact paths, acceptance criteria, ownership, and evidence instead of copying the primary transcript. A named role is acceptable only when the client creates that clean child. Otherwise inject the role instructions into a fresh child, omitting model and effort by default. `task_name` is only a thread label. Corrections start a new clean child as well.
++Every specialist assignment starts a separate clean child context. The primary session remains the planner and orchestrator; handoffs use the reviewed plan, artifact paths, acceptance criteria, ownership, and evidence instead of copying the primary transcript. A named role is acceptable only when the client creates that clean child. Otherwise inject the role instructions into a fresh child and route unspecified settings under the adaptive-routing reference. `task_name` is only a thread label. Corrections start a new clean child as well.
+ 
+ ## Lifecycle
+ 
+@@ -93,7 +93,7 @@
+ | Event | Behavior |
+ |---|---|
+ | SessionStart | Remind the session of the entry workflow and relevant active run paths |
+-| UserPromptSubmit | Route a new task through the coordinator with current session settings; keep follow-ups in their active run |
++| UserPromptSubmit | Route tasks through the coordinator and adaptive specialist settings with user precedence; keep follow-ups in their active run |
+ | SessionStart (compact source) | Recover from durable run paths after compaction without mining chat transcripts |
+ | SubagentStart | Reinforce bounded scope, evidence handoff, and no recursive delegation |
+ | Stop | Existing fast whitespace check, active-run reminder, and bounded missing/failed declared-check names |
+--- before/.solopreneur/docs/research/agent-routing-and-verification.md
++++ after/.solopreneur/docs/research/agent-routing-and-verification.md
+@@ -1,6 +1,6 @@
+ # Agent routing and verification synthesis
+ 
+-Reviewed 2026-09-24 for the current harness revision. The user's ChatGPT conversations “OpenViking 성능 향상 비교” and “모델 소개” were read as design input, then checked against the current repository and [Codex subagent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents). Those conversations are prior discussion, not proof of current repository behavior.
++Historical research checked 2026-09-24; its inheritance-only routing conclusion was superseded by the user-delegated adaptive policy on 2026-09-26. The user's ChatGPT conversations “OpenViking 성능 향상 비교” and “모델 소개” were read as design input, then checked against the current repository and [Codex subagent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents). Those conversations are prior discussion, not proof of current repository behavior.
+ 
+ ## Routing conclusion
+ 
+@@ -16,6 +16,6 @@
+ 
+ The current configuration can establish absence of shared model pins and can exercise ledger behavior. It cannot attest to the model/effort a live child used unless the client exposes a trustworthy runtime observation. Coordinator-reported routing fields preserve the request only. Historical run reports retain their old model metadata as dated evidence and are not active policy.
+ 
+-## 2026-09-26 runtime clarification
++## Historical 2026-09-26 runtime clarification (superseded)
+ 
+-The current default request omits model and effort, but actual resolution is explicit spawn setting, then `[agents]` defaults, then parent. A model chosen without effort uses its model default; a role-model-only setting may keep resolved effort. Inspect effective client configuration before describing a child as inheriting the parent pair. Role files and ledger dispatch metadata cannot attest runtime identity. [Official subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents) was checked on 2026-09-26. Schema v2 contract and prepared-handoff details are in [run-protocol](../../../.agents/skills/solo-orchestrate/references/run-protocol.md). Earlier research remains historical.
++At the time of this note, the default request omitted model and effort, but actual resolution was explicit spawn setting, then `[agents]` defaults, then parent. A model chosen without effort uses its model default; a role-model-only setting may keep resolved effort. Inspect effective client configuration before describing a child as inheriting the parent pair. Role files and ledger dispatch metadata cannot attest runtime identity. [Official subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents) was checked on 2026-09-26. Schema v2 contract and prepared-handoff details are in [run-protocol](../../../.agents/skills/solo-orchestrate/references/run-protocol.md). Earlier research remains historical.
+--- before/.solopreneur/docs/research/architecture-speckit.md
++++ after/.solopreneur/docs/research/architecture-speckit.md
+@@ -2,7 +2,7 @@
+ 
+ Checked: 2026-09-13. This report records inspected sources, architecture decisions, and limits. It does not establish account authentication, paid model execution, hook trust, or remote deployment.
+ 
+-> Historical source review (2026-09-13): fixed model and effort recommendations below are superseded by the current [runtime policy](../codex-runtime.md), which inherits the active conversation settings unless the user explicitly requests a supported override. Treat old tier references as provenance, not executable guidance.
++> Historical source review (2026-09-13): fixed model and effort recommendations below are superseded by the current [runtime policy](../codex-runtime.md), which follows the current user-delegated [adaptive-routing policy](../../../.agents/skills/solo-orchestrate/references/adaptive-routing.md). Treat old tier references as provenance, not executable guidance.
+ 
+ ## Inputs and product scope
+ 
+--- before/.solopreneur/docs/research/ecc-superpowers.md
++++ after/.solopreneur/docs/research/ecc-superpowers.md
+@@ -2,7 +2,7 @@
+ 
+ Verified 2026-09-13. This review used local, non-executed clones of the canonical repositories and the immutable commits below. No downloaded installer, hook, script, package, or plugin was executed.
+ 
+-> Historical source review: its role and skill counts and fixed-model references describe the 2026-09-13 expansion, not the current harness. The current policy has 26 model-agnostic roles and 24 skills; fresh children inherit the parent settings unless the user explicitly requests a supported override. See `docs/codex-runtime.md` from the product root.
++> Historical source review: its role and skill counts and fixed-model references describe the 2026-09-13 expansion, not the current harness. The current harness has 26 roles and 24 skills with no permanent model/effort pins. Unspecified specialist settings follow the user-delegated [adaptive-routing policy](../../../.agents/skills/solo-orchestrate/references/adaptive-routing.md); this report is historical provenance only.
+ 
+ | Project | Canonical source and reviewed revision | License | Codex surface at that revision |
+ |---|---|---|---|
+--- before/.solopreneur/docs/research/spending-effort.md
++++ after/.solopreneur/docs/research/spending-effort.md
+@@ -6,4 +6,4 @@
+ 
+ The author recommends clarifying a spec through questions, implementing and iterating with fast feedback, then spending more effort on verification. More deliberation helped edge-case-heavy examples but did not consistently fix a wrong approach. These are Claude observations with limited samples and benchmark conditions, not Codex measurements or cache guarantees.
+ 
+-Local decision: adopt the clarification, bounded feedback and risk-based verification loop. Preserve explicit authorization, current model/effort inheritance and independent gates. Numerical effort defaults require a separate explicit user choice. The maintained [workflow reference](../../../.agents/skills/solo-orchestrate/references/effort-and-feedback.md) defines execution; this note records provenance, not a competing policy.
++Local decision: adopt the clarification, bounded feedback and risk-based verification loop. Preserve explicit authorization and independent gates. This 2026-09-26 inheritance-only routing decision was superseded the same day by the user's delegated adaptive-routing instruction; numerical examples remain calibration rather than role defaults. The maintained [workflow reference](../../../.agents/skills/solo-orchestrate/references/effort-and-feedback.md) defines execution; this note records provenance, not a competing policy.
+--- before/.solopreneur/docs/skill-catalog.md
++++ after/.solopreneur/docs/skill-catalog.md
+@@ -29,7 +29,7 @@
+ | `solo-release` | Prepare/execute an authorized release with validation, recovery, and observation |
+ | `solo-monitoring` | Examine release health and Sentry signals; prioritize measured fixes and follow-up work |
+ 
+-The coordinator omits model/effort for ordinary fresh children, checks effective `[agents]` defaults, and obtains independent plan review; explicit supported user overrides take precedence. `docs/runs/<run-id>/plan.md` remains the execution SSOT: handoffs name its current path and hash/version and reference canonical product or design artifacts without copying their requirements into a competing plan. Run kind `product`, final briefs and PRDs under `docs/product/` or `docs/specs/`, and custom artifacts registered with `--type product` route through `solo-product-review`. Run kind `design-spec`, `docs/design/system.md`, documents under `docs/design/specs/`, and custom artifacts registered with `--type design_spec` route through `solo-design-spec-review`. Each passing report and artifact-scoped handoff precedes dependent implementation. `solo-qa-run` collects specified observations and browser/device evidence only; it cannot issue or satisfy a final gate. Implemented UI still routes separately through `solo-design-review` with actual rendered evidence. Unchanged document subsets retain their reviews; final code/UI judgments bind current implementation and outcome evidence. Small tasks use compact plans; substantive engineering work can add `solo-engineering-plan`. TDD is conditional, with test strategy/judgment in `test_engineer` and approved bounded test coding in `engineer`. No skill fixes a model or effort by role. Route by work and evidence needs. A skill does not supply a browser, device, service login, or OS permission.
++The coordinator chooses unspecified specialist settings under the [adaptive-routing reference](../../.agents/skills/solo-orchestrate/references/adaptive-routing.md) and obtains independent plan review; exact user choices and explicit inheritance/default instructions take precedence. `docs/runs/<run-id>/plan.md` remains the execution SSOT: handoffs name its current path and hash/version and reference canonical product or design artifacts without copying their requirements into a competing plan. Run kind `product`, final briefs and PRDs under `docs/product/` or `docs/specs/`, and custom artifacts registered with `--type product` route through `solo-product-review`. Run kind `design-spec`, `docs/design/system.md`, documents under `docs/design/specs/`, and custom artifacts registered with `--type design_spec` route through `solo-design-spec-review`. Each passing report and artifact-scoped handoff precedes dependent implementation. `solo-qa-run` collects specified observations and browser/device evidence only; it cannot issue or satisfy a final gate. Implemented UI still routes separately through `solo-design-review` with actual rendered evidence. Unchanged document subsets retain their reviews; final code/UI judgments bind current implementation and outcome evidence. Small tasks use compact plans; substantive engineering work can add `solo-engineering-plan`. TDD is conditional, with test strategy/judgment in `test_engineer` and approved bounded test coding in `engineer`. No skill fixes a model or effort by role. Route by work and evidence needs. A skill does not supply a browser, device, service login, or OS permission.
+ 
+ ```text
+ $solo-project-start Explore a named idea, prepare a decision one-pager, and continue toward launch through the required approval checkpoints.
+@@ -62,4 +62,4 @@
+ 
+ Vendor telemetry, transcript mining, global config overwrites, universal TDD/coverage, automatic publication, mandatory commits/worktrees, recursive model wrappers, and unsupported hook handlers were not adopted. License and concrete source-path decisions are recorded in the linked analyses.
+ 
+-The [Astra article](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra) informs short triggers, selective reading, and evidence-based completion. The current user requirement sets model inheritance and explicit prompt overrides while preserving independent entry plan review. This is peer review, not repeated user permission for authorized work. Installed specialist platform skills can supplement these workflows without duplicating them or overriding the user's scope.
++The [Astra article](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra) informs short triggers, selective reading, and evidence-based completion. The user-delegated adaptive-routing policy and exact user precedence preserve independent entry plan review. This is peer review, not repeated user permission for authorized work. Installed specialist platform skills can supplement these workflows without duplicating them or overriding the user's scope.
+--- before/.solopreneur/harness.py
++++ after/.solopreneur/harness.py
+@@ -853,7 +853,7 @@
+         if args.gate in FINAL_GATES and child in [entry.get("child_ref") for entry in state["dispatches"] if entry.get("phase") == "implementation"]:
+             raise ValueError("Implementation child cannot review its own work.")
+         registry(project)[args.reviewer]
+-        request = {"basis": "coordinator_reported_explicit" if args.model or args.effort else "inherit_parent_requested"}
++        request = {"basis": "coordinator_reported_explicit" if args.model or args.effort else "client_defaults_requested"}
+         if args.model:
+             request["model"] = args.model
+         if args.effort:
+@@ -936,7 +936,7 @@
+                 if not v2_review_current(project, state, doc["gate"]):
+                     raise ValueError("Document approval stale before dispatch.")
+         registry(project)[args.role]
+-        request = {"basis": "coordinator_reported_explicit" if args.model or args.effort else "inherit_parent_requested"}
++        request = {"basis": "coordinator_reported_explicit" if args.model or args.effort else "client_defaults_requested"}
+         if args.model:
+             request["model"] = args.model
+         if args.effort:
+@@ -1001,8 +1001,8 @@
+     review.add_argument("--reviewer", required=True)
+     review.add_argument("--verdict", choices=("pass", "changes_requested", "blocked"))
+     review.add_argument("--evidence", required=True)
+-    review.add_argument("--model")
+-    review.add_argument("--effort", choices=EFFORTS)
++    review.add_argument("--model", help="Coordinator-reported requested model; does not attest runtime identity")
++    review.add_argument("--effort", choices=EFFORTS, help="Coordinator-reported requested effort; does not attest runtime identity")
+     check = sub.add_parser("check")
+     check.add_argument("run")
+     check.add_argument("--name", required=True)
+@@ -1010,8 +1010,8 @@
+     dispatch = sub.add_parser("dispatch", help="Manual specialist handoff log; advisory only, never blocks finish")
+     dispatch.add_argument("run")
+     dispatch.add_argument("--role", required=True)
+-    dispatch.add_argument("--model", help="Coordinator-reported requested model, only for an explicit user override")
+-    dispatch.add_argument("--effort", choices=EFFORTS, help="Coordinator-reported requested effort, only for an explicit user override")
++    dispatch.add_argument("--model", help="Coordinator-reported requested model")
++    dispatch.add_argument("--effort", choices=EFFORTS, help="Coordinator-reported requested effort")
+     dispatch.add_argument("--minutes", type=float, default=0)
+     dispatch.add_argument("--result", choices=("pass", "changes_requested", "blocked", "failed", "done"), default="done")
+     dispatch.add_argument("--tokens", type=int, default=None)
+@@ -1061,7 +1061,7 @@
+         raise ValueError("Select the applied product root with --project.")
+     if args.command == "roles":
+         for name, role in registry(project).items():
+-            print(name + ": " + role["skill"] + " (inherits session model and effort)")
++            print(name + ": " + role["skill"] + " (adaptive model and effort routing)")
+         return 0
+     if args.command in ("status", "handoff", "review-input"):
+         return run_command(args, project, command)
+--- before/.solopreneur/managed.json
++++ after/.solopreneur/managed.json
+@@ -1,5 +1,5 @@
+ {
+-  "agents_hash": "acc8ad5279095c1a786abe2bea677981fcb95d53afcb78f8568b7d79d11e41aa",
++  "agents_hash": "be0dc871e6983cab895852c09abe1e50f6eeabb1ce8fe059990814521210281f",
+   "files": {
+     ".agents/skills/solo-analytics-experiment/SKILL.md": "8f3e60723c567bf48f6b12c6ab5655cf359a3c90e8a34c6f7178da15ffdc302e",
+     ".agents/skills/solo-analytics-instrumentation/SKILL.md": "43bc7a98b519c6a5b91a7c395852ec136f04c115fbb3387de9342224f6206d9b",
+@@ -11,33 +11,34 @@
+     ".agents/skills/solo-design-research/references/research-method.md": "5d99e59100b453352e1a8232b36043a6ef91616b6f58a1baacb061dc1710156b",
+     ".agents/skills/solo-design-review/SKILL.md": "eaaebad0ca89cc39f59492e07bcda6bcf6f5ba7f70629652593e8ba7aa73cd1b",
+     ".agents/skills/solo-design-review/references/evidence-review.md": "60bfb7501c102c5da6f372f254b0b0d26d1bd4b54fe61057555a91664f235fcf",
+-    ".agents/skills/solo-design-spec-review/SKILL.md": "bcfe77ad0ec2e000be9780cfb0b1efa99a5227b3e51c9dfa8f668382f82202d3",
++    ".agents/skills/solo-design-spec-review/SKILL.md": "07d014ed99fe0bd7c18677954d45e8492e7822cd8cd9385cb61a8a4eacb0fb4a",
+     ".agents/skills/solo-design-system/SKILL.md": "60113d1248cb51181f1bba205aff9b1ace14970f5c5af4a0210902e7f50af5ed",
+     ".agents/skills/solo-design-system/references/system-contract.md": "0aac4c0fea7cd4eb7eee0027d02491e0deed9b4ec85f61d6c0a7025cd4180a9d",
+     ".agents/skills/solo-engineering-plan/SKILL.md": "811ee41682823d404db44ac5ed25cd6262099e43f74504ebcd68489877e131e8",
+     ".agents/skills/solo-engineering-plan/references/complex-features.md": "5e7627e6986862beb8bb0052d014a6ebe3d65e4e8f646fdce578a113d7d2b336",
+     ".agents/skills/solo-evidence-research/SKILL.md": "09371d9f8ba9a1a39eb8c69250bf769e783b9ed0ca90776ff8387054934c81a7",
+-    ".agents/skills/solo-implement/SKILL.md": "b44bda059fd6ccf254ba6f92878c3424202419b3ff4c59f8be57768882c9c9a2",
++    ".agents/skills/solo-implement/SKILL.md": "9f14e52d1d65d6de84a5c3ba018c5cf3bfd58b51cc68c49657119b1f894a53f7",
+     ".agents/skills/solo-marketing/SKILL.md": "aa32583f1384fa67ed967a6efe25d20ae15f814ab5b5e4d081b67c5bf278af3f",
+     ".agents/skills/solo-marketing/references/landing-workflow.md": "eda7b70e493914abd9074c3dc9d0ec2584517d5baad981d5779d3c43e23377a3",
+     ".agents/skills/solo-monitoring/SKILL.md": "df22dc728991b1b0f6df4a83bc5eef21ef1d92e1b6c270ae20312a328ed7684e",
+-    ".agents/skills/solo-orchestrate/SKILL.md": "6738417ee58710d6773793bbe8fb6ae4bf3153d9fbfa0c2ceb363b617b75006f",
+-    ".agents/skills/solo-orchestrate/evals/PROTOCOL.md": "03528ccc5027b256b2b49141d5d3b9fd862c358a6a62cd6f4dc5851431f88940",
+-    ".agents/skills/solo-orchestrate/evals/requests.json": "587acaa85a1312fda63a1515fd5898921bad96b0af98056b1d2e4aa8214ead37",
+-    ".agents/skills/solo-orchestrate/evals/rubric.json": "58f9c284ed23d5ccabea8a1ab1f249f528e3619fc4180f568256bf83929f56bc",
+-    ".agents/skills/solo-orchestrate/references/effort-and-feedback.md": "86c9a7966990c86620547b05da75c8d2f32116470c40f44b63c8a17af15bdd57",
++    ".agents/skills/solo-orchestrate/SKILL.md": "745ba5d47a553ef6b844c1b3d5d96ebb14968679bc1b99eab3108cd10dc89196",
++    ".agents/skills/solo-orchestrate/evals/PROTOCOL.md": "58d233180d57637365ad2f2b456881d2a4d0e5fb82ab83d40529948ca717d7f5",
++    ".agents/skills/solo-orchestrate/evals/requests.json": "b83bb03883e1e569672be69d6b60f39243a224620f0d2aec3c5c53ff4d37bda7",
++    ".agents/skills/solo-orchestrate/evals/rubric.json": "95ca5b7d1a52bab750e04a02fee5a98ae908e36b2cba8b0e5107a50307b735ce",
++    ".agents/skills/solo-orchestrate/references/adaptive-routing.md": "0e4f2a4e437fac0ba2e218f551a952acc12c7ae9a73783d1c5b0f895175e93b0",
++    ".agents/skills/solo-orchestrate/references/effort-and-feedback.md": "7a8da6ff7a0a7c029010aeeae6ba8d9166ee6726dfa6d945e7e887d0c6f355bc",
+     ".agents/skills/solo-orchestrate/references/planning-contract.md": "8b2fc1de4aefaa4ecfc64dec575714e5c5f34cdcf8ada9346bc448db4edf0972",
+-    ".agents/skills/solo-orchestrate/references/run-protocol.md": "ff4fe91d93e95043a134e232c1c0dfad176675027b3e5e98ff6f19ed9558d359",
+-    ".agents/skills/solo-plan-review/SKILL.md": "4ee73c626494ccac25db4d00c504688215bb852577838a31f773bcca70a76a75",
+-    ".agents/skills/solo-product-review/SKILL.md": "b4ea0cc18935ad742564f8c210aaea3443ab0835db0e03c2327da123bde28da7",
++    ".agents/skills/solo-orchestrate/references/run-protocol.md": "ec5cfaf527ceb2c2cf6a0faa6fb4f89aef9d705702e2cc89d7a05a7178602b3a",
++    ".agents/skills/solo-plan-review/SKILL.md": "9e634f2f6e72aa3b9f4933d2d5af420d45a8b2cca7f7fa3f80944e2af5f605b8",
++    ".agents/skills/solo-product-review/SKILL.md": "0cea16a9d9c06711e5e81b13e88a6720bc0bc8a4b4be197b558621033a0c198c",
+     ".agents/skills/solo-product-spec/SKILL.md": "2ced970c3bfa67757d21bcb7cdfbf59fd0e72b713745704ac24b563059c64782",
+     ".agents/skills/solo-product-spec/references/issue-slicing.md": "3a5aa9a6c6b9f4070f01807c490666bb0e0197cb0190a17260f2cb7915d964aa",
+     ".agents/skills/solo-product-spec/references/product-review.md": "f331fc8ba87378d9b03be282a0c646e73730ffa30909e5282882a0d5de61c612",
+     ".agents/skills/solo-project-start/SKILL.md": "1d1e8d70b4e9f8d3b29dfad5f28eb88c632d10d4db39bf7b950075dd397693df",
+     ".agents/skills/solo-project-start/references/development-entry.md": "47349244765f32419ab2f9aadda8941578be3cd7f56a66aabe15e73c17e022c3",
+-    ".agents/skills/solo-project-start/references/idea-to-launch.md": "da3db944a386d74840a360eb2f757f7abba997f12ef75dee52013c71fdf8c2f3",
++    ".agents/skills/solo-project-start/references/idea-to-launch.md": "cf02485089111f0a778e28282d06998816b5d96dd0668dcc512a4e310a05b70b",
+     ".agents/skills/solo-qa-run/SKILL.md": "677b90cbcd9c32bd2cd27140fb2b0810039dcc77ae3bb7ac5d2fd6cfc049c861",
+-    ".agents/skills/solo-release/SKILL.md": "14c4b7bfc205128f74bf83698b34f3290815ca9602a50ef24b51fc51e13988a4",
++    ".agents/skills/solo-release/SKILL.md": "11d193f237bb076a66a4626f2ea4d59bedc083ae51eba8248cfa36b1945671b9",
+     ".agents/skills/solo-store-launch/SKILL.md": "9286a5c06242a54d1065c1be0cecd71aae0204c167b145fa8b013978f6f18cba",
+     ".agents/skills/solo-store-launch/references/store-assets.md": "af0a5ca562a5af51bcd758812629c208d676202d6f98c4d04da2beb8b2e35364",
+     ".agents/skills/solo-subscription-check/SKILL.md": "5238903dd6c0366e1ab32f7ed0d500cb79eac07def8352b2b3d9b7e95edbbd99",
+@@ -51,7 +52,7 @@
+     ".codex/agents/design_qa.toml": "0a4d321501b7933afce70b955c6e4ea0f5bd88c3a7290ebb74a7e8d7a21f57dc",
+     ".codex/agents/design_researcher.toml": "bb287bddcd7b88d3e9822610e8c7b590596cca220573bd5cc873c9ebe4a225f7",
+     ".codex/agents/design_spec_reviewer.toml": "1e4896aad01f608ad343dc8e5ff8a0b5f6443fa364019edd88c8ce532f867641",
+-    ".codex/agents/engineer.toml": "fae54be92bbc6871932cff27ea0e540cece1e659af6930fc4978f5e50e898446",
++    ".codex/agents/engineer.toml": "b62aaa617c18cad31a8ea65c86a6d6f87bc0b00c5e41cbb925461602aaf02d1d",
+     ".codex/agents/file_scout.toml": "90ea954179cc90f4713daff2144e0b56e2c2c722a65daf113c05b9d71eff553c",
+     ".codex/agents/marketing_specialist.toml": "9183c64c4314f48d56d83bd4ac3acd5f9206055ff7105b465d241b43d261ac1a",
+     ".codex/agents/mobile_engineer.toml": "db39e7e438c94dcecea580703108cb97bfb90e47bc8daea00fd36415992af41d",
+@@ -62,31 +63,31 @@
+     ".codex/agents/product_research.toml": "73367099db8f409afc273dd5c04d7b27da03685031ddbb3741421d52c73c72ed",
+     ".codex/agents/product_reviewer.toml": "5640b19a3bf869261f8277b69321785ddde359ded1ea4e5254cb1dd41f5086db",
+     ".codex/agents/qa_runner.toml": "e2dc5e72868b6d9691581d01b1109094d24bb385ae70e552eb82aa73fcf280cd",
+-    ".codex/agents/release_engineer.toml": "51a44c33ee4edee662279ccc79d2853664ecc4c4492522479b217d45203bd32f",
++    ".codex/agents/release_engineer.toml": "d36a16b9e4e4111495a7148e48ca4a42047b81f76c2c66b49cfe01fbe6e082bf",
+     ".codex/agents/reliability_engineer.toml": "231ab8800369b9b9af554089a323bbdde92c25eb18030e5dc83b12f8a30e228e",
+     ".codex/agents/reviewer.toml": "6a895070c7d172f794161f77dbbea333260ac8543fb29fe847c9f1c24525860d",
+     ".codex/agents/store_assets.toml": "53f0e9e2ce6a282fa852749e7072f6fdc4b16693d4d21182806fe5978d7624ab",
+     ".codex/agents/test_engineer.toml": "cf9a6062f420c69fc32abacf37b7cfcbe617b199e51e9e11c00a76db23bc9343",
+     ".codex/agents/web_researcher.toml": "1d83e6ee476888714c083f2b0ad66cd4e8acced2986ef4982794d2048f82b055",
+-    ".codex/config.toml": "239a19fe4e96dba0a9fdae3817b9d2ad480b9207fae28e64222697bd3935ff40",
+-    ".codex/hooks.json": "a0ca4242d26198539e4972d16413297185dba0204ad19de523b9978dbfc08456",
++    ".codex/config.toml": "016ec5e07d3a0b926431f905ee1215e313f1f1c1cd15698b5b4db9ed7deb5b45",
++    ".codex/hooks.json": "18fcd89f9ddf60e9e3da149162d0d50249ea663618a8cf956821215fbba4b6f6",
+     ".codex/hooks/check_diff.py": "fee6d10b8eee617bd79eb04fa92c777835ae553324c32c1181559f46a8035c9e",
+-    ".codex/hooks/lifecycle.py": "41b7aea16cd5c26832949be4887df0541415487b930da0a5e2ebc97c6c815b5f",
+-    ".solopreneur/docs/agent-catalog.md": "2a716b1f6d966e93eb2bba04de9d48f5aa83dee446dc825ebe0721b816d5910b",
+-    ".solopreneur/docs/codex-runtime.md": "33b536b71cbfab5413f30f827f10e0ea3fc7b7784f9eb2afe9daee4d7a466a0b",
++    ".codex/hooks/lifecycle.py": "b6b6d845b900185d9dacb2bae976c4c9993a5613277dc0961ff3acf22ca498f9",
++    ".solopreneur/docs/agent-catalog.md": "7c337596bb09a0d482f35f97a76b7d90e9a6281a0617e6402fe9a51cbda19840",
++    ".solopreneur/docs/codex-runtime.md": "e152773875df581b1488aa2338c9f2d271c948f24af47a641c0d172b61363b31",
+     ".solopreneur/docs/computer-use.md": "ddc05a5a9c55517da16dd0c7c801cb4c25a80b31b9361033c46b2dbf5fa3a9ae",
+-    ".solopreneur/docs/handoff-coverage.md": "7646c14c11dde3e63f47b5d18c4a4845f9a02f4ba18f8a41a89eea90590f0d0a",
+-    ".solopreneur/docs/harness.md": "f76e0dc02ce79d9a7a9c83cb40a97a4dfcca34a31f4423a7db0502f17ba604be",
++    ".solopreneur/docs/handoff-coverage.md": "e5b85ff76abd5421fa77182145918bfafce72b4e7d6a1cde9944ccfe7ff25dd7",
++    ".solopreneur/docs/harness.md": "fcc4486aaf1ab2e82430a7278c61b754606c3556e85bdbc79230d2b010d4f867",
+     ".solopreneur/docs/mcp.md": "1ede0561811918966106dde1e653517f529f9a2e5c57e95b6eb1a4bda699e48c",
+     ".solopreneur/docs/research-sources.md": "194ceee68e43d3088387fdcc0a05fe5bee225c4aa88862898eb41c5bc1864350",
+-    ".solopreneur/docs/research/agent-routing-and-verification.md": "d6c57d3bd92acde66ae77dd866c2126fcead685fe3fa2f1b4045b77de2680806",
+-    ".solopreneur/docs/research/architecture-speckit.md": "6eb714918465a723eddb593d11ca0e7c6f38a174e2016bd0db72630ecdcfbab9",
+-    ".solopreneur/docs/research/ecc-superpowers.md": "c8214717fd9e8427d45f12f1036fd871cb9fe659fa729c9686e317ba9aa3809f",
++    ".solopreneur/docs/research/agent-routing-and-verification.md": "2dc9c128b6cd673b86af5fe6795d0889100e2cfa3fadeaaea481a8a71fdb527d",
++    ".solopreneur/docs/research/architecture-speckit.md": "3abef58517d50a736fa9b1206fcf01c27d21f8b7a8ae064305556c503580af0a",
++    ".solopreneur/docs/research/ecc-superpowers.md": "7a9e42c80ac3f093308edf1e9a448607a7796648fd8a305408ebb3a31871d6b9",
+     ".solopreneur/docs/research/gstack-matt.md": "aae3717aa5434384c8c3459cebfdb428cc9e0db0340ac389b494365e2f726b22",
+-    ".solopreneur/docs/research/spending-effort.md": "aafc5fcb94ba716efcc942c422ff7e8c12e6da38dddaa3d7409eff9584743660",
+-    ".solopreneur/docs/skill-catalog.md": "f8945646a851cd5ecd6427201159fa237a3d7b22c82d6ce17d97f8c0fce11904",
++    ".solopreneur/docs/research/spending-effort.md": "5133e006bc355c30df695fed038096929f2518d2fb80b7efc9f484e58c76dd5e",
++    ".solopreneur/docs/skill-catalog.md": "a88a389b968983c06f26f94fc4c75bb4d71b5f086c719eaf5661030ff0f22662",
+     ".solopreneur/docs/stack.md": "6fc839a4b0179695c7ae9d32c6e62364d63d4686c132b72359d7818beff933d4",
+-    ".solopreneur/harness.py": "57af1b7067e9c65cb4ffcfa857302622937bed62e84fd06565cb3718d2ea0cb4",
++    ".solopreneur/harness.py": "d394d912ac00fbb3e7149611407e704c7115b8f2ee42c41f3bd6fe375f787ac3",
+     ".solopreneur/hooks/check_staged.py": "3053d5f1d8a1e623fe4125a18371e4254d1158d405bee8ebce23b16200182152",
+     ".solopreneur/hooks/pre-commit": "d7d164554392313e9c2a53c74c9f7afce2e58c27242023a2d3ce18ae7303a814",
+     ".solopreneur/roles.json": "757f7b252d419710cb4c6c98829ca3b5caa7ff19dc6faed2de449e3af615b9a7"
+--- before/AGENTS.md
++++ after/AGENTS.md
+@@ -4,8 +4,8 @@
+ Shared Codex guidance for independent products. Write shared instructions and preset descriptions in English; respond to the user in Korean unless requested otherwise. Follow project conventions for code identifiers.
+ 
+ - Begin each new task as the coordinator using `.agents/skills/solo-orchestrate/SKILL.md`; for a new product or development engagement, first route intake with `.agents/skills/solo-project-start/SKILL.md`. The primary session handles planning; the planner profile is only for bounded analysis requested by the coordinator. Keep simple question routing brief.
+-- Do not assign a model or reasoning effort by role, task size, or presumed cost. For an ordinary fresh specialist, omit both spawn parameters; check effective `[agents]` defaults before claiming parent inheritance. If the user explicitly specifies either setting in the prompt, pass only the requested setting(s) through a supported spawn route; a model selected without effort uses that model's default effort under Codex's documented resolution; a role-model-only setting can preserve resolved effort. Validate availability and supported combinations with the current client when possible; report an unsupported choice instead of silently substituting one. Do not treat coordinator-chosen spawn values as user choices.
+-- Before changing artifacts, create or resume a schema v2 run, register its plan and check/acceptance contract, and obtain an independent `plan_reviewer` review using the same inheritance rule. Keep confirmed requirements, decisions, scope, acceptance criteria, assignments, verification, and changes in `docs/runs/<run-id>/plan.md` as the task-plan SSOT. Current user direction takes precedence: update and re-review changed concerns before dependent work. Every handoff names the plan path and revision/hash.
++- Follow the shared [adaptive routing reference](.agents/skills/solo-orchestrate/references/adaptive-routing.md): exact user choices and explicit inheritance/default instructions take precedence; otherwise use the user's standing delegation to choose supported unspecified settings economically for the task. Do not pin settings by role or in shared config, and distinguish requested, chosen, and observed settings.
++- Before changing artifacts, create or resume a schema v2 run, register its plan and check/acceptance contract, and obtain an independent `plan_reviewer` review using the same delegated adaptive-routing policy. Keep confirmed requirements, decisions, scope, acceptance criteria, assignments, verification, and changes in `docs/runs/<run-id>/plan.md` as the task-plan SSOT. Current user direction takes precedence: update and re-review changed concerns before dependent work. Every handoff names the plan path and revision/hash.
+ - Delegate only needed specialists from `.solopreneur/docs/agent-catalog.md`; every specialist assignment starts a fresh clean child context and receives the plan SSOT, relevant artifact paths, ownership, acceptance criteria, and evidence paths. The primary session alone orchestrates, integrates, and writes the ledger; specialists request any extra staffing from it. Factual retrieval uses `web_researcher` or `code_explorer` and escalates judgment; observation-only browser/device checklists use `qa_runner` and cannot satisfy a final gate. Final PRDs require `product_reviewer`; design documents (including backend API/schema/security/state/error contracts) require `design_spec_reviewer` before dependent implementation; actual UI requires `design_qa` judgment from the running application or accessible implementation captures. Register product/design documents and check the matching `handoff` before assigning work that consumes them. See `.solopreneur/docs/harness.md` for commands and review freshness.
+ - Keep product intent in `docs/product/`, feature requirements in `docs/specs/`, technical plan/tasks in `docs/engineering/`, execution status in GitHub Projects, and implementation records in Issues/PRs. Do not present local drafts as remote state.
+ - Default to Next.js, React Native/Expo, Hono, and pnpm/Turborepo; build only needed platforms. Read `.solopreneur/docs/stack.md` when choosing the stack or adding services.

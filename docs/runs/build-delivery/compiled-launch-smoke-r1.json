@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "kind": "supplemental_build_evidence",
+  "objective": "Verify the compiled local bridge starts and serves the fixed synthetic health/snapshot contract while mutations remain denied.",
+  "command": "NX_DAEMON=false NX_ISOLATE_PLUGINS=false pnpm nx run local-bridge:launch-smoke --skip-nx-cache",
+  "exit_code": 0,
+  "recorded_at": "2026-09-27T14:09:00+00:00",
+  "source_sha256": "fde27e141cb7907a9a6cbedd6e7e575db043f8b7a87b9ef53823428776c10d2d",
+  "environment": {
+    "node": "v26.8.2",
+    "pnpm": "11.17.0",
+    "git_head": null,
+    "note": "The checkout has no commit at HEAD; source is bound by harness inventory SHA256."
+  },
+  "result": {
+    "compiled_bridge": "built with apps/local-bridge/tsconfig.build.json and launched with Node",
+    "assertions": [
+      "health endpoint responds successfully",
+      "snapshot endpoint returns the synthetic fixture",
+      "mutations remain denied"
+    ],
+    "summary": "PASS compiled bridge launch and synthetic HTTP smoke"
+  },
+  "limits": [
+    "This smoke uses the synthetic fixture, not the real OpenCode SDK.",
+    "The Chromium E2E target uses Vite dev and a synthetic tsx bridge; it does not launch the production browser bundle with the compiled bridge.",
+    "The smoke does not establish control-channel bootstrap/origin/websocket security or persistence/recovery guarantees."
+  ]
+}

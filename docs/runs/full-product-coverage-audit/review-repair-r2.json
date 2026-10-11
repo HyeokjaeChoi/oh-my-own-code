@@ -1,0 +1,13 @@
+{
+  "prior": "final-code-review-r1.json",
+  "findings": {
+    "COV-R1-01": "Exact section boundary extraction and frozen original83 clause segmentation/count; actual heading-only and collapsed18 cases now reject.",
+    "COV-R1-02": "B15 explicitly implements elapsed time, leaving-app reason, misunderstood state and recovery failure. All19 cross-cutting paragraphs have explicit backlog ownership, and removing personal metric mapping rejects."
+  },
+  "additionalCorrection": "B01 wording allows per-operation durable bookkeeping but forbids duplicate workspace identity; actual implementation design remains next run.",
+  "evidence": [
+    "audit-review-red-r3.json",
+    "audit-review-green-r2.json"
+  ],
+  "sourceUnchanged": true
+}

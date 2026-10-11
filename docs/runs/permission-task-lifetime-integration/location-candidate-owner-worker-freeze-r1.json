@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "provenance": {
+    "child_task_id": "01a125d8-6d8f-7890-9483-3b248ba24ffb"
+  },
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "sha256": "279ba6991c77b12801d9ca019d4832f7386bc18b5de45df5c7419feb690d3b73",
+      "bytes": 37081
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.test.mjs",
+      "sha256": "8e874a02be5ca78cbf3cf5699b8edf79025defa943044cd8db5feeb9e776c3bd",
+      "bytes": 67958
+    }
+  ],
+  "api": "locationProjectCandidate(handle) -> Effect<frozen {id,directory,canonical,vcs:undefined}>; readonly candidate retained on same registered Location entry; no Native persistence or execution grant",
+  "reported_checks": {
+    "meaningful_red": "missing API undefined vs function, 1 failing test",
+    "control": 55,
+    "related_serial": 113,
+    "related_parallel": {
+      "passed": 111,
+      "failed": 2,
+      "scope": "helper ancestor stat comparison/refusal; exact conflicting path/actor not captured, sibling-temp inference only"
+    },
+    "syntax": "pass exact2",
+    "eslint": "pass exact2",
+    "prettier": "pass exact2",
+    "logs": "worker tool outputs only, no saved log files"
+  },
+  "main_verification": "source hashes matched; later Main helper stability repair has its own meaningful RED2/coherent98 evidence, not retroactively worker acceptance",
+  "limits": [
+    "Worker did not edit Main recipe/helper/ledger",
+    "No Native/Bun/Electron/build/provider/GUI invocation",
+    "No independent approval/full18 claim"
+  ]
+}

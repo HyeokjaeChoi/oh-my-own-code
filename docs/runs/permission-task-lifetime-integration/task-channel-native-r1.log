@@ -1,0 +1,119 @@
+✔ prompt preparation is a detached immutable closed metadata snapshot (1.815333ms)
+✔ all metadata and original fields are required; extras and undefined are refused (0.407542ms)
+✔ existing shared wire syntax and exact lowercase 64hex digests are enforced (1.0635ms)
+✔ accessors, proxies, prototypes, symbols and hidden fields run no caller code (0.534209ms)
+✔ boot-held admission allocates no leases, including after invalidation (5.598625ms)
+✔ default global node fails closed without explicit configuration (0.832292ms)
+✔ configured global node replacement shares one kernel across actual graph consumers (1.156208ms)
+✔ configured rejects malformed closed inputs synchronously without getter or proxy traps (0.46825ms)
+✔ boot holds are copied, sorted, deduplicated, deeply frozen and remain held (0.567083ms)
+✔ initialization accepts exact UTF8 and count boundaries (45.75375ms)
+✔ transaction rejects invalid inputs before callbacks and does not execute getters (0.531583ms)
+✔ capabilities reject forgery, copies, uncovered projects, child fibers and escaped reuse (3.448291ms)
+✔ same-fiber public reentry fails before acquiring even disjoint projects (0.324458ms)
+✔ inherited child transaction reentry rejects before parent-held or disjoint locks (0.705417ms)
+✔ same projects serialize; disjoint projects continue; reversed duplicate inputs cannot deadlock (1.954166ms)
+✔ reverse inputs acquire the sorted first project before touching the second (1.612333ms)
+✔ callback throw, failed Effect and interruption release all gates and expire capabilities (0.747542ms)
+✔ 32 waiters exclude the holder; overflow never enters; cancellation restores every project slot (62.051459ms)
+✔ invalidation proceeds while gates are held and is permanent for existing and new projects (0.623084ms)
+✔ invalid invalidation reasons fail without changing runtime state (0.408208ms)
+✔ each acquisition of the same configured Layer owns an independent kernel (0.200458ms)
+✔ location owner retains building, ready and finalizing incarnations without settlement claims (0.742667ms)
+✔ location metadata excludes active project transactions without holding across Native effects (1.519958ms)
+✔ queued metadata precedes later shared admissions with staggered overlapping readers (5.284459ms)
+✔ metadata admission bounds and cancellation reopen readers only after the last writer leaves (60.745875ms)
+✔ failed queued metadata releases admission and inherited lifecycle reentry fails before waiting (2.311583ms)
+✔ location handles reject forgery, cross owner use, identity rebinding and reentrant lifecycle mutation (0.396958ms)
+✔ location capacity retains all thirty-two unknown entries and refuses another before effects (0.504ms)
+✔ location identity validation never invokes caller accessors or Proxy traps (0.224208ms)
+✔ cancelled exclusive metadata waiter releases graph permits and does not leak an unknown build (1.441791ms)
+✔ actual acquired Control prepareTask holds without allocating authority (0.479167ms)
+✔ prepare captures entry metadata and observes runtime loss before deferred execution (0.303625ms)
+✔ trusted configured callback runs only at acquisition and receives the actual shared Service (0.184ms)
+✔ graph factory refuses unverified resource roots before any Native import (1.093292ms)
+✔ graph factory rejects accessor options without invoking authority getters (0.091ms)
+✔ legacy resource manifest is refused before loading its inert Native placeholders (31.211417ms)
+✔ closed options reject proxies, hidden properties, symbols and inherited authority (0.238375ms)
+✔ exact four initialization fields reach resource verification only when valid (2.895875ms)
+✔ malformed initialization is refused before resource verification (0.831542ms)
+✔ initialization rejects accessors and proxies without invoking their code (0.26275ms)
+✔ actual graph facade binds the same acquired Control once and observes its invalidation (107.278792ms)
+✔ graph close revokes synchronously even with deferred invalidation and pending prepare (7.834416ms)
+✔ closing before acquisition refuses later acquisition of that graph (7.006958ms)
+node:internal/modules/esm/resolve:241
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-leases-test-a2fKvp/wire-id.mjs' imported from /private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-leases-test-a2fKvp/native-permission-control-input.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:241:11)
+    at moduleResolve (node:internal/modules/esm/resolve:846:10)
+    at defaultResolve (node:internal/modules/esm/resolve:973:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:708:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:728:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:766:56)
+    at #resolve (node:internal/modules/esm/loader:690:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:610:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:389:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-leases-test-a2fKvp/wire-id.mjs'
+}
+
+Node.js v26.11.0
+✖ apps/desktop-app/src/native-permission-leases.test.mjs (168.969167ms)
+✔ multiple admitted origins share one immutable execution scope without losing original keys (4.368833ms)
+✔ an original cannot be reused as another execution scope cause or input (0.57025ms)
+✔ scope input is detached and closed; duplicate original identities never mint new handles (1.058125ms)
+✔ no getters, Proxy traps, foreign handles or sparse batch can create bookkeeping (0.97775ms)
+✔ complete batch rejects mismatched owner or generation atomically before consuming any input (1.628833ms)
+✔ inbox correlation is unique and promotion cannot replay or substitute inputs (0.244625ms)
+✔ revoke and close stop new scope use while retaining read-only original data (0.226583ms)
+✔ scope origin bound refuses complete append without partial state or lost input (11.37075ms)
+✔ graph lifetime origin and version bounds do not evict or reuse old keys (220.041042ms)
+✔ closed origin variants never synthesize prompt digests or pre-session IDs (0.606ms)
+✔ opaque location UUID participates in promotion and immutable lease constraints (0.286834ms)
+✔ pending, promoted and cancelled transitions cannot be asserted with caller proof objects (0.197625ms)
+✔ empty workspace mutation admits exact detached target without session or prompt fabrication (0.171708ms)
+✔ mutation target variants require complete unique bounded sets and exact owner membership (1.4565ms)
+✔ session mutation cannot promote genuine prompt inputs or borrow their lineage (0.230708ms)
+✔ Native mutation admission preserves the exact shared closed-binding digest for both targets (1.523958ms)
+node:internal/modules/esm/resolve:241
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-task-observer-test-uR6w1h/wire-id.mjs' imported from /private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-task-observer-test-uR6w1h/native-permission-control-input.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:241:11)
+    at moduleResolve (node:internal/modules/esm/resolve:846:10)
+    at defaultResolve (node:internal/modules/esm/resolve:973:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:708:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:728:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:766:56)
+    at #resolve (node:internal/modules/esm/loader:690:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:610:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:389:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-task-observer-test-uR6w1h/wire-id.mjs'
+}
+
+Node.js v26.11.0
+✖ apps/desktop-app/src/native-permission-task-observer.test.mjs (164.008166ms)
+ℹ tests 61
+ℹ suites 0
+ℹ pass 59
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 403.956167
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-leases.test.mjs:1:1
+✖ apps/desktop-app/src/native-permission-leases.test.mjs (168.969167ms)
+  'test failed'
+
+test at apps/desktop-app/src/native-permission-task-observer.test.mjs:1:1
+✖ apps/desktop-app/src/native-permission-task-observer.test.mjs (164.008166ms)
+  'test failed'

@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "7bcacee7766d65c157a9b1e8b402f9a77e792f6907c89a045b084a62546999d3",
+    "contract_sha256": "1a5b79ccd693e06ae42c169818e444f63bbaa5eaa3a80f5207f5fd217b838386",
+    "source_sha256": "e9fb6e590350972c6d23515bd1bd1a3ea57ba8d1dcd5e73923bcc62ac42cd095",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "verification_sha256": "7b44d2d318dc53fc915d87e5224e9b4d8dc399361db4409589c7a17f7c226541"
+  },
+  "verdict": "pass",
+  "summary": "The bridge-owned runtime-info validator admits only the four required own data fields within the stated limits, copies only the accepted version, and reduces inspection failures and rejected reads to fixed outcomes. The injected-client probe checks one GET /api/info without a body per scenario, zero ambient fetches, exact result and diagnostic shapes, and canary exclusion. No actionable defect was identified in the assigned scope.",
+  "open_findings": [],
+  "evidence": "Independently inspected plan revision 7, runtime-info-boundary v0.1, contract AC-8, the five assigned source/probe/configuration files, bridge build and test targets, and the run ledger. The current schema-v2 code binding was computed from the harness and matches the latest source fingerprint e9fb6e590350972c6d23515bd1bd1a3ea57ba8d1dcd5e73923bcc62ac42cd095. All 13 latest required check records have exit code 0 at that source, plan, and contract binding. The runtime-info-boundary record reports 15 passing tests; the sdk-client-probe record reports five passing synthetic runtime-info scenarios and no ambient fetch. The latest recorded probe stdout/stderr contains no synthetic canaries. No checks, services, or network calls were run for this review.",
+  "limitations": [
+    "The checkout is entirely untracked, so Git cannot provide a base-to-head diff; this review covers the specified current files and their registered source binding.",
+    "The synthetic probe and recorded checks do not establish a live SDK host, service ownership, authentication, compatibility, process health, or mutation readiness.",
+    "The frozen-lockfile install record says Already up to date and does not establish a clean-checkout install.",
+    "The runtime-info validator is not wired into a live bridge route or browser API; the current boundary intentionally provides no operational health or recovery evidence."
+  ],
+  "provenance": {
+    "child_task_id": "/root/runtime_info_code_review_r1",
+    "author_task_id": "/root",
+    "report_only": true,
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "high",
+    "runtime_identity_verified": false
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "56166d7c800662d35e9893537be192246297f9e1c2c318ce7b163233c64ec7b1",
+    "contract_sha256": "05b7381ab945f74d10b174f92c7af44b25a31b16936d4f09d6e9a6f69771a01c",
+    "source_sha256": "a54cd6fe86793cf0e9168cdd09a0cd4e383236d761f9d12c361b65be282a0d1b"
+  },
+  "verdict": "changes_requested",
+  "summary": "Revision 2 resolves DP-01: the owned desktop adapter explicitly uses named preload operations, skips browser pairing/bearer creation, and preserves browser regression coverage. DP-02 is substantially resolved by a required exact-artifact packaged E2E target covering IPC, navigation, privileges, preview isolation and failure lifecycle/child reaping. One prior requirement remains absent from the exact command contract: packaged renderer bundle inspection. Full F-01–18 product scope remains active; this increment is correctly described as a synthetic desktop shell milestone only.",
+  "open_findings": [
+    {
+      "id": "DP-02",
+      "severity": "P2",
+      "path": "docs/workplans/desktop-app-bootstrap/contract.json",
+      "line": 180,
+      "title": "Bind packaged renderer bundle inspection to a required check",
+      "evidence": "Plan step 5 and completion criteria require packaged bundle inspection, and ADR-0002 explicitly requires inspecting the packaged renderer bundle for Node built-ins, secrets, bridge-only code and unsafe APIs. However, desktop-packaged-e2e scope lists runtime privilege/preview inspection and lifecycle assertions without bundle inspection; desktop-build only builds/hashes, and boundaries remains workbench-web:boundaries. No required command scope currently owns this remaining DP-02 obligation.",
+      "impact": "The required command scopes can pass without inspecting the delivered renderer assets. Runtime privilege absence does not establish that forbidden authority, bridge-only code or secrets were excluded from the packaged renderer bundle.",
+      "required_correction": "Add packaged renderer bundle inspection for Node built-ins, secrets, bridge-only code and unsafe APIs explicitly to desktop-packaged-e2e scope (or a separate required packaged inspection check), bound to D-2 and D-3 and the same delivered artifact SHA-256. The existing exact-artifact E2E command can own this; no new user approval or wider product scope is needed."
+    }
+  ],
+  "resolved_findings": [
+    {
+      "id": "DP-01",
+      "resolution": "Plan lines 21–22 specify readSyntheticSnapshot/onBridgeStatus through owned utility/main/preload, desktop-only adapter selection, no pairing or bearer creation, explicit startup/unavailable/quit/restart states; line 37 owns the affected renderer/shared API paths. Packaged E2E explicitly verifies the transport path and browser regression coverage remains required."
+    }
+  ],
+  "verification_limits": [
+    "Read-only plan/contract review. Local SHA-256 computation and harness review-input confirmed the reviewed binding. The assignment contract hash contained a transcription error (f09e9 versus actual f09d6e9); this report uses the independently observed file/harness hash. The source hash is the harness registered plan source binding, not a fresh independent inventory recomputation.",
+    "The requested .solopreneur/agents/roles/plan_reviewer.md path does not exist; the actual .codex/agents/plan_reviewer.toml and linked .agents/skills/solo-plan-review/SKILL.md were read. The registered plan SSOT is docs/workplans/desktop-app-bootstrap/plan.md; docs/runs/desktop-app-bootstrap/plan.md does not exist.",
+    "No dependency install, application runtime, tests, SDK, user configuration, credential access or ledger mutation occurred. Only this requested review report was created; files_modified below refers to reviewed plan, contract and implementation files.",
+    "This verdict reviews execution readiness only. Product/design-spec handoffs, Electron/Forge compatibility, actual packaged security/lifecycle execution and running-app design QA remain separate mandatory gates."
+  ],
+  "provenance": {
+    "child_task_id": "/root/desktop_plan_review_r2",
+    "author_task_id": "/root",
+    "review_mode": "Fresh independent read-only plan and contract review",
+    "runtime_identity_verified": false,
+    "runtime_executed": false,
+    "tests_run": false,
+    "ledger_modified": false,
+    "files_modified": false
+  }
+}

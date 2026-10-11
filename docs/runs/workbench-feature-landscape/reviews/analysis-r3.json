@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "analysis",
+    "plan_sha256": "a22761fdd6a8c1f9a959cfcbe3122af11dacb35e512494d0ca18ab7f4a070d5c",
+    "contract_sha256": "c0c53b9bdad432628ef90eeec945932dd0b5dd0555380fc15781156b2e3e7378",
+    "source_sha256": "3de8cd6968c1a88fba8e737f01dacc5d3be0301ed1470e0fed5f36e5abfc1ff6",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "verification_sha256": "0b29d7c3e6aad7d96aa41ac068b40d936553bd7628f1d26127d6ab4013e71e49"
+  },
+  "verdict": "pass",
+  "summary": "수정된 한국어 조사 보고서는 AC-1~4를 충족한다. 8개 비교 행이 하나의 연속된 Markdown 표에 있으며 네 벤더 각각의 import, 일반 폴더/worktree 생성, 목록 제거/archive, 물리 삭제를 독립적으로 확인할 수 있다. 이전 수명주기 구분 지적은 해소되었고, 아티팩트 패널·실제 도구 상호작용·확장 관리 비교도 유지되어 있다. 저장소 구현 판단과 승인 경계에 새로운 중대한 지적은 없다.",
+  "open_findings": [],
+  "review_notes": [
+    "벤더 비교 표에서 header/separator를 제외한 8개 행을 독립적으로 세고, 빈 줄 없이 하나의 표로 이어짐을 확인했다. 네 수명주기 행의 모든 벤더 셀에 해당 동작의 근거 또는 제한된 조사에서 확인되지 않았다는 결과가 있다. 일반 폴더 생성과 Git worktree 생성도 각 벤더에서 분리된다.",
+    "Codex 공식 소개의 Work with multiple agents in parallel은 built-in worktrees와 격리 사본을 직접 설명한다. 수정본이 이를 생성 행에 반영한다. https://openai.com/index/introducing-the-codex-app/",
+    "Claude Code Desktop 공식 문서의 Start a session은 기존 폴더/저장소 선택을, Work in parallel with sessions는 worktree 선택과 archive 아이콘을 통한 제거를 설명한다. 수정본은 프로젝트 영속 등록과 세션 작업 폴더 선택을 구분하며 archive가 worktree 제거를 수반한다는 사실을 목록 제거/물리 삭제 양쪽에 유지한다. 임의 폴더 강제 삭제 보장으로 확대하지 않는다. https://code.claude.com/docs/en/desktop",
+    "Cursor 공식 worktree 문서는 Agents Window의 격리 checkout 생성 및 IDE worktree skill의 /delete-worktree를 설명한다. 수정본은 이를 단순 앱 목록 숨김/archive의 증거로 사용하지 않고 해당 동작은 별도 미확인으로 표시한다. https://cursor.com/docs/configuration/worktrees",
+    "OpenCode SDK의 worktree create/refresh/remove와 기록된 전략 경계, Plugin API의 세션·skill·MCP API, Tools의 Desktop 연결 browser namespace를 확인했다. 수정본은 API를 Desktop의 완성된 import/목록 제거/아티팩트/확장 UI로 승격하지 않는다. https://opencode.ai/v2/docs/build/sdk ; https://opencode.ai/v2/docs/build/plugins ; https://opencode.ai/v2/docs/tools/",
+    "아티팩트 패널, 도구 호출·승인·결과, Skills/MCP/plugin 목록이 각각 비교 행으로 유지된다. Codex 업데이트의 다중 terminal 및 파일 preview/summary pane, Claude의 Code pane과 일반 chat artifact 구분, Cursor browser approval 모드와 Customize 통합 목록, OpenAI plugin의 skill/MCP/선택적 UI 구성을 관련 공식 페이지에서 대조했다. https://openai.com/ca-ES/index/codex-for-almost-everything/ ; https://cursor.com/docs/agent/tools/browser ; https://cursor.com/docs/customize-cursor ; https://developers.openai.com/plugins/concepts/plugins",
+    "Electron renderer의 DesktopBootstrap, preload/타입의 runtimeSnapshot 전용 표면, main의 desktop:v1:runtime-snapshot IPC, 웹 AssistantTranscript의 onNew no-op 및 LinkPreview interactive=false, local-bridge syntheticSnapshot과 WorkbenchPage의 읽기 전용 fixture 설명을 정적으로 확인했다. 사용자 프로젝트 관리자·실제 composer·도구 승인·확장 UI가 아직 연결되지 않았다는 보고서 판단은 현재 코드에 맞는다. 임시 sidecar 감독/정리 bootstrap을 사용자 폴더 삭제 기능으로 혼동하지 않는다.",
+    "PRD/UX v0.6 및 spec-index v0.12의 review-required 표기와 이전 승인 해시의 한계를 확인했다. 보고서는 명시된 Electron/macOS/Windows 선택과 수정 문서의 구현 승인을 분리하고, 후속 순서를 권고로만 제시한다. 한국어 설명은 이해 가능하며 API/기술 식별자를 유지한다. 로컬 Markdown 링크를 독립 추출한 결과 누락된 대상은 없었다.",
+    "plan 파일 SHA256, canonical JSON contract SHA256, run checks/artifacts/outcome의 verification digest를 독립 재계산하여 요청 binding과 대조했다. source_sha256은 현재 run plan/check 기록과 대조했으며 전체 소스 지문은 독립 재생성하지 않았다. 직접 읽은 최종 보고서 SHA256은 cd60d3826ccc298b4d6fc5e310f6fc81cd67573373dd894b73f919a4a507ab21이다. 이는 run artifacts 항목에 남아 있는 이전 보고서 해시와 다르므로 coordinator가 최종 등록 시 해당 항목의 정확성을 정리해야 한다. 이 노트는 문서 내용 verdict와 별개의 ledger integration 주의사항이다."
+  ],
+  "review_boundary": "Fresh documentation-based analysis review of the current report, plan, contract, binding, selected first-party sources, product/UX/spec-index context and referenced source paths. No competitor runtime operation, SDK execution, app tests, packaging tests or OS security verification. No report, product contract, app code or run ledger edits. Only this requested review JSON was written.",
+  "provenance": {
+    "child_task_id": "/root/workbench_analysis_review_r3",
+    "author_task_id": "/root"
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "c4eb661b1488ec3c4b7dc5bf9dafc96093e1684ced06c7815fd475ad14517291",
+    "environment_sha256": "8e32acf34ffcebd752900a7276dd09678e8e14b5f31a158f4d5b686d3632ce89",
+    "gate": "code",
+    "plan_sha256": "014d2785b87eefbc0b7a5e0ce04fa6fd168e1c21c5323ea2f315789d4aed5e73",
+    "schema_version": 2,
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "verification_sha256": "ef466102c6cbadabe4ecab8509d05cb561e02647f0d8cb6413b10724d3478184",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "변경은 COV3.checks에서 coverage-inputs를 제거한 1곳뿐입니다. Contract의 연결 규칙과 일치합니다. 필수 검사와 coverage는 유지되며, source 688개와 기존 증거 파일 25개도 변경되지 않았습니다. 추가 결함은 없습니다. 이 판정은 audit 기록 수정에만 적용합니다. 전체 제품 승인은 아닙니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11df5-8ea2-77a3-8b21-dfd2bfd7288f",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "verification": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_revision": 1,
+    "exact_commands": [
+      {
+        "command": "printenv CODEX_THREAD_ID CODEX_TASK_ID",
+        "result": "현재 task ID: 01a11df5-8ea2-77a3-8b21-dfd2bfd7288f"
+      },
+      {
+        "command": "git diff --no-index -- docs/runs/full-product-coverage-audit/final-outcome-r2.json docs/runs/full-product-coverage-audit/final-outcome-r3.json",
+        "result": "COV3.checks의 coverage-inputs 한 줄만 제거됐습니다."
+      },
+      {
+        "command": "python3 -B .solopreneur/harness.py status full-product-coverage-audit",
+        "exit_code": 0,
+        "result": {
+          "status": "active",
+          "required_gates": [
+            "code"
+          ],
+          "gaps": [
+            "code review missing, unresolved, or stale"
+          ]
+        }
+      },
+      {
+        "command": "python3 -B .solopreneur/harness.py review-input full-product-coverage-audit --gate code",
+        "exit_code": 0,
+        "result": "출력 전체가 parsed final-code-input-r3.json 및 reviewed와 정확히 일치합니다."
+      },
+      {
+        "command": "python3 -B -",
+        "execution": "읽기 전용 Python을 stdin으로 실행했습니다. JSON 비교, SHA256 비교, harness의 inventory와 binding 계산만 수행했습니다.",
+        "exit_code": 0,
+        "result": "변경 1곳, 모든 acceptance 연결, source inventory, 증거 파일 hash와 byte 수, packet hash, 기존 검사 freshness 및 ledger 불변 조건을 모두 확인했습니다."
+      }
+    ],
+    "exact_diff": {
+      "path": "acceptance.COV3.checks",
+      "before": [
+        "coverage-inputs",
+        "coverage-matrix"
+      ],
+      "after": [
+        "coverage-matrix"
+      ],
+      "other_parsed_fields_equal": true
+    },
+    "passes": [
+      {
+        "pass": "spec_compliance",
+        "result": "coverage-inputs는 COV1·COV2에 연결됩니다. coverage-matrix는 COV1·COV2·COV3에 연결됩니다. 두 검사 모두 required=true입니다. COV1·COV2, acceptance 상태, artifact 연결, changed_paths와 deleted_paths는 유지됐습니다."
+      },
+      {
+        "pass": "binding_and_freshness",
+        "result": "Harness의 acceptance 검사 조건과 일치합니다. r2와 r3 binding의 차이는 verification_sha256뿐입니다. 현재 checks와 artifacts를 유지하고 outcome 참조만 r2로 되돌린 메모리 복사본에서 r2 verification hash가 재현됐습니다. 현재 status에는 acceptance 연결 오류가 없습니다. 남은 gap은 변경 전 r2 CODE review의 stale 상태이며, 이번 r3 보고서 등록 전 상태와 일치합니다."
+      }
+    ],
+    "existing_checks": [
+      {
+        "name": "coverage-inputs",
+        "recorded_at": "2026-10-08T23:56:24+00:00",
+        "exit_code": 0,
+        "fresh": true,
+        "recorded_result": {
+          "inputs": "pass",
+          "sourceFiles": 688,
+          "productAcceptance": false
+        }
+      },
+      {
+        "name": "coverage-matrix",
+        "recorded_at": "2026-10-08T23:56:27+00:00",
+        "exit_code": 0,
+        "fresh": true,
+        "recorded_result": {
+          "inputs": "pass",
+          "sourceFiles": 688,
+          "productAcceptance": false,
+          "clauses": 83,
+          "crossCutting": 19,
+          "scenarios": 7,
+          "platforms": 2,
+          "backlog": 18
+        }
+      }
+    ],
+    "preservation": {
+      "current_source_files": 688,
+      "frozen_inventory_exact_match": true,
+      "unchanged_evidence_files": 25,
+      "packet_and_routing_hashes_current": true,
+      "ledger_unchanged": true,
+      "ledger_sha256_before_and_after": "42de285bd8224cd86e5ec8f6dbcae9dd6555a7cdfd1c200c903abeac949fb654"
+    },
+    "scope_limits": [
+      "r1 수정 사항과 r2 PASS 범위는 다시 검토하지 않았습니다.",
+      "기존 coverage 검사는 재실행하지 않았습니다. 저장된 결과와 현재 hash의 일치 여부를 확인했습니다.",
+      "제품 runtime, GUI, build, provider 실행은 하지 않았습니다.",
+      "추가 entry PLAN·DESIGN review, 위임, 파일 수정, ledger 수정, finish 실행은 하지 않았습니다.",
+      "이 보고서는 audit 기록의 check 연결 수정만 승인합니다."
+    ]
+  }
+}

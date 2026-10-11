@@ -1,0 +1,35 @@
+{
+  "scope": "actual API unchanged; six new fixed Provider metadata/graph source bindings; integration tests present",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+      "sha256": "216baf39b7731580d426aaf4950ab5af6beb404f0b4189682e3f54ccd630f274"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "sha256": "58241b2549dea1952abaab194e2074c541c26deaaac2a40ac1f887efc3d663f1"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "sha256": "2a0747a3155685632c2c37d47a739b6735c67e50c6761cca19aed415a76049c9"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-hook-publication.test.mjs",
+      "sha256": "725cf040be4fbeb6b49066dc69f103bfdb4d741117df5f5cebbbf57d175102b9"
+    }
+  ],
+  "checks": {
+    "graph": 16,
+    "scripted_publication": 17,
+    "actual_producer_to_control": {
+      "pass": 6,
+      "moving_source": true,
+      "final_acceptance": false
+    }
+  },
+  "limits": [
+    "complete=false/capabilities empty",
+    "callbacks remain held",
+    "no Native/provider/Main/server/Bun/network/build/GUI/physical invocation"
+  ]
+}

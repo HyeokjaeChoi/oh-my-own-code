@@ -1,0 +1,189 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "BSI-1",
+      "description": "Implement exact loopback browser admission and strict JSON schemas for listed pairing/read routes; reject a BOM-prefixed otherwise-valid pair JSON body without consuming its code; deny invalid origins/hosts/credentials, unknown methods/routes, WebSocket and all domain mutations before effects."
+    },
+    {
+      "id": "BSI-2",
+      "description": "Implement one-use bounded in-memory pairing and read-only per-tab capability lifecycle with independent expiry, heartbeat and revoke."
+    },
+    {
+      "id": "BSI-3",
+      "description": "Provide accessible manual pairing, fixture reads and revoke using direct credential-omitting requests and memory-only capability state; validate the complete snapshot response before composing its separately validated events array."
+    },
+    {
+      "id": "BSI-4",
+      "description": "Verify actual Chromium development-origin preflight/pair/read/revoke, opaque denied-Origin behavior, server-enforced capability expiry and per-tab isolation; HTTP tests cover rejected metadata, restart invalidation, WebSocket closure, strict JSON grammar and originless same-origin read. Assert unknown/mutation paths do not change synthetic state; static code review verifies no SDK, filesystem or process-execution call sites. This is partial evidence only and does not complete parent BB-01..10 scenarios or runtime handler/effect counters; no OS-isolation guarantee is claimed."
+    },
+    {
+      "id": "BSI-5",
+      "description": "Pass current focused and workspace checks, independent code review, and running-application design QA without unresolved high/critical findings."
+    }
+  ],
+  "checks": {
+    "bridge-security-unit": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "apps/local-bridge/src/http.test.ts"
+      ],
+      "cwd": ".",
+      "scope": "Synthetic in-process loopback bridge tests for route admission, strict pairing/control JSON grammar, pairing and capability state; no external network or SDK.",
+      "acceptance_ids": [
+        "BSI-1",
+        "BSI-2",
+        "BSI-5"
+      ],
+      "required": true
+    },
+    "workbench-web-test": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "workbench-web:test",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Frontend unit tests for direct bridge client and synthetic UI state, including malformed snapshot events with valid separate events; no services or user data.",
+      "acceptance_ids": [
+        "BSI-3",
+        "BSI-5"
+      ],
+      "required": true
+    },
+    "bridge-browser-e2e": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "playwright",
+        "test",
+        "--config",
+        "apps/workbench-web/playwright.config.ts"
+      ],
+      "cwd": ".",
+      "scope": "Chromium against owned synthetic loopback UI and bridge on 127.0.0.1:5420 and :5318; direct CORS pairing/read/revoke, actual denied-Origin opacity, server-enforced capability expiry and per-tab isolation; Playwright tracing/HAR disabled; no user data, SDK or external service.",
+      "acceptance_ids": [
+        "BSI-3",
+        "BSI-4",
+        "BSI-5"
+      ],
+      "required": true
+    },
+    "workspace-lint": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run-many",
+        "-t",
+        "lint",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Uncached local static analysis; no services or external network.",
+      "acceptance_ids": [
+        "BSI-5"
+      ],
+      "required": true
+    },
+    "workspace-typecheck": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run-many",
+        "-t",
+        "typecheck",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Uncached local typechecking; no services or external network.",
+      "acceptance_ids": [
+        "BSI-5"
+      ],
+      "required": true
+    },
+    "workspace-format-check": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run-many",
+        "-t",
+        "format-check",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Uncached read-only formatting verification; no services or external network.",
+      "acceptance_ids": [
+        "BSI-5"
+      ],
+      "required": true
+    },
+    "local-bridge-build": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "local-bridge:build",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Local TypeScript output under the bridge project dist; no SDK host, services, user data or external network.",
+      "acceptance_ids": [
+        "BSI-5"
+      ],
+      "required": true
+    },
+    "workbench-web-build": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "workbench-web:build",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Local Vite build output under the web project dist; no publication, telemetry, services or external network.",
+      "acceptance_ids": [
+        "BSI-5"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/design/specs/browser-bridge-security.md",
+      "gate": "design_spec",
+      "version": "0.4",
+      "sha256": "ff4fa28a7d1c529542536f7cb879a4706344de2a4758003a5da9e0d5a8b7937e"
+    },
+    {
+      "path": "docs/design/specs/bridge-pairing-client-contract.md",
+      "gate": "design_spec",
+      "version": "0.8",
+      "sha256": "832b9d29e99cd4bcdafe5fcc8fb5d7e1682fabdf406386fc5f286d4090f8995a"
+    },
+    {
+      "path": "docs/design/specs/workbench-ux.md",
+      "gate": "design_spec",
+      "version": "0.3",
+      "sha256": "80dd5ec3d6f3a93d00b737703e9ee80318f0ba335c55c345a4c7235c4ca5e4fc"
+    },
+    {
+      "path": "docs/design/system.md",
+      "gate": "design_spec",
+      "version": "2026-09-27",
+      "sha256": "4697eb4961952ee85a4732ed77e5addbb17058a8b3d12485aa56158324f661a5"
+    },
+    {
+      "path": "docs/design/components.json",
+      "gate": "design_spec",
+      "version": "component-contract-v3",
+      "sha256": "76460f0cc7099ef6b628ce654994d89fc75e5e863d33c103daae8049493f2ed2"
+    }
+  ],
+  "user_approvals": []
+}

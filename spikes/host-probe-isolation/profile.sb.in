@@ -1,0 +1,21 @@
+(version 1)
+(deny default)
+
+; The child is launched from an exact, supervisor-resolved Node binary. The
+; process-fork denial is tested by a canary; this source does not assume that
+; process-exec alone prevents posix_spawn or every other process facility.
+(allow process-exec (literal "@NODE@"))
+(deny process-fork)
+
+; Runtime dependency closure is unaudited. This template must not be used to
+; launch canaries until exact, reviewed dependency paths are added.
+(allow file-read*
+  (literal "@NODE@")
+  (literal "@INPUT@")
+  (literal "/dev/null")
+  (literal "/dev/urandom"))
+(allow file-write* (subpath "@SCRATCH@"))
+
+; Local TCP canaries exercise two specific operations. No routed destination
+; is contacted, so this rule alone is not accepted as general egress proof.
+(deny network*)

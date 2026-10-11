@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "evidence": "docs/runs/native-permission-graph-foundation/evidence/native-r1/report.json",
+  "evidence_sha256": "662378125ff3ea6cf116b322ff9918f00a6f35740f87d94e5338ecae8fdd62f2",
+  "argv": [
+    "node",
+    "apps/desktop-app/scripts/native-permission-graph-probe.mjs",
+    "--out",
+    "docs/runs/native-permission-graph-foundation/evidence/native-r1"
+  ],
+  "controller_exit": 0,
+  "child": {
+    "pid": 32954,
+    "code": 0,
+    "signal": null,
+    "exited": true,
+    "timedOut": false,
+    "spawnFailed": false,
+    "protocolOverflow": false,
+    "signals": [],
+    "report": {
+      "schema_version": 1,
+      "result": "pass",
+      "phase": "complete",
+      "cases": [
+        {
+          "name": "overlay_forwarding",
+          "result": "pass"
+        },
+        {
+          "name": "fixed_config",
+          "result": "pass"
+        },
+        {
+          "name": "fixed_plugin_source",
+          "result": "pass"
+        },
+        {
+          "name": "sdk_registration_denied",
+          "result": "pass"
+        },
+        {
+          "name": "inert_wellknown",
+          "result": "pass"
+        }
+      ]
+    }
+  },
+  "identity_stable": true,
+  "source_closure_files": 43,
+  "retained_namespace": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-graph-QeM7rV",
+  "limits": [
+    "Synthetic fixed Native graph only; not full F09, provider, UI or production Main acceptance.",
+    "No OS filesystem/network sandbox or descendant enumeration is claimed.",
+    "Retained namespaces and before-after hashes do not prove change-and-restore absence or power-loss recovery."
+  ],
+  "interpretation": "Actual fixed-source graph canaries passed; full permission control/modes/gate/leases/physical scope/recovery and full F09 remain incomplete. Not independent acceptance."
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "e0564da54b3a4faac03aa6ee6915b94298db5615bde1731c1284b2cef503bb6d",
+    "contract_sha256": "82ad680f69e34c2abb849149e04ef0074d983d8e19ae90d36a61b21e13b56247",
+    "source_sha256": "e9fb6e590350972c6d23515bd1bd1a3ea57ba8d1dcd5e73923bcc62ac42cd095"
+  },
+  "verdict": "pass",
+  "summary": "Revision 3 and its exact current acceptance contract resolve HPI-PR2-01. HPI-2 and HPI-3 now require truthful bounded evaluation rather than unconditional containment success; both use the current two-positive/five-negative matrix and preserve failed or uncertain controls in NO-RUN. READY_FOR_REVIEW requires all required controls to pass, cleanup failure blocks completion, and neither outcome approves real SDK execution. The plan gate passes for bounded SDK-free implementation, subject to the mandatory independent static code/security review before any canary executes.",
+  "open_findings": [],
+  "observations": [
+    "Directly inspected plan revision 3, contract.json, static host-lifecycle research, prior r1/r2 review reports, the repository plan-reviewer role, and solo-plan-review skill. The malformed r3 report was not read or reused.",
+    "Independently recomputed plan_sha256 and contract_sha256 from current file bytes and source_sha256 from the current repository using only the harness read-only inventory/digest functions. All three exactly match the coordinator-supplied binding. The run ledger also records this plan/contract/source binding. Source hashing establishes freshness, not an implementation audit or containment proof.",
+    "HPI-PR2-01 is fully resolved at plan/contract level: contract HPI-2 explicitly records verified/unavailable/failed/unverified controls and limits READY_FOR_REVIEW to all required controls passing. Contract HPI-3 defines safe evaluation, actual outcome recording, the exact matrix, and exit-0 NO-RUN as completed investigation and cleanup rather than containment success. Plan HPI-2/HPI-3/HPI-5, required-check scope, and Completion agree.",
+    "The required matrix contains exactly two positive operations (immutable synthetic input read and owned scratch write) and five negative operations (outside-read, outside-write, loopback bind/listen, zero-payload connection to an owned loopback listener, and harmless execution of the exact existing runtime). These are operations, not inferred guarantees about all socket families or all process facilities. Target accessibility and attributable denial evidence are required; generic errors remain unverified.",
+    "HPI-PR1-01 and HPI-PR1-02 remain resolved: no routed/public/documentation-range/DNS destination is permitted; unexpected successes require immediate exact-owned-resource cleanup. Local TCP outcomes cannot establish general egress, UDP, DNS, IPC, native, or other untested containment. Any required control lacking independent evidence keeps the real-host recommendation NO-RUN.",
+    "HPI-PR1-03 remains resolved: a safely completed NO-RUN investigation may pass its evaluation check without passing containment. Failed runner integrity, bounded execution, evidence integrity, or cleanup keeps the check failed and the run blocked. Plan HPI-4/HPI-5 and Completion explicitly prohibit finishing with unresolved cleanup; contract HPI-4 requires verified cleanup.",
+    "HPI-PR1-04 remains resolved: independent static code/security review of exact launcher/profile/canary bodies/effects/limits/cleanup precedes first execution; only frozen reviewed hashes may run; a separate fresh final code review binds source and resulting evidence. Concrete denial attribution, launcher startup versus subsequent execution control, and external time/output enforcement remain implementation-review responsibilities, not facts established by this plan review.",
+    "The static research supports the real-host hold because SDK initialization exposes filesystem/config, service initialization, recovery fibers, process/native, and network uncertainty. The proposed synthetic investigation does not prove SDK lifecycle behavior or product readiness, and the broader build-delivery run remains active.",
+    "Real SDK/client import, host startup/attachment, user configuration and secrets, external services, and package installation remain excluded. A future real-host probe requires adequate containment evidence and separate explicit user approval of its concrete reviewed runner/effect manifest. This review adds no approval requirement to already authorized local SDK-free preparation.",
+    "Only the assigned r4 report was written. No SDK/client/host, canary, project test, network operation, user configuration, secret, or environment value was accessed or executed. Repository source files were hashed solely for binding verification; no implementation changes or ledger commands were made."
+  ],
+  "provenance": {
+    "child_task_id": "/root/host_probe_isolation_plan_review_r4",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "runtime_identity_verified": false,
+    "review_mode": "read-only independent plan re-review; assigned report artifact only",
+    "runtime_executed": false,
+    "sdk_executed": false,
+    "canaries_executed": false,
+    "tests_executed": false,
+    "network_accessed": false,
+    "user_configuration_accessed": false,
+    "secrets_accessed": false,
+    "ledger_modified": false,
+    "binding_verification": "All three SHA-256 values independently recomputed from current files; no reuse of r3 binding.",
+    "ledger_sha256_before_after": "ea1c8c8944b3071d3f9691bef181b6a8079f23eb91b6f897fd3d942c228cff46"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "phase": "focused_phase1_routine_continuation_prepared",
+  "required_input_paths_before_checks": [
+    "docs/runs/opencode-event-host-feasibility/prototype/package.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/package-lock.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/host.mjs",
+    "docs/runs/opencode-event-host-feasibility/prototype/probe.mjs",
+    "docs/runs/opencode-event-host-feasibility/prototype/freeze.mjs",
+    "docs/runs/opencode-event-host-feasibility/prototype/verify.mjs",
+    "docs/runs/opencode-event-host-feasibility/prototype/runtime-manifest.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/input-manifest.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/installer-config.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/.npmrc",
+    "docs/runs/opencode-event-host-feasibility/prototype/user.npmrc",
+    "docs/runs/opencode-event-host-feasibility/prototype/global.npmrc",
+    "docs/runs/opencode-event-host-feasibility/prototype/cases/idle-history.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/cases/api-auth.json",
+    "docs/runs/opencode-event-host-feasibility/prototype/cases/paths.json"
+  ],
+  "rule": "Before contracted checks bind each actual created input individually in environment_files and register the routine continuation. Initial plan/design3 already passed; ordinary input registration and implementation within that unchanged design do not require another entry review under explicit user policy. Keep required checks and separate independent code review.",
+  "runtime_candidates": {
+    "controller": "Node24.14.1",
+    "selected_engine": "Bun1.4.2",
+    "optional_diagnostic_only": "Node26.8.2"
+  },
+  "p7_source_freeze": "docs/runs/durable-workbench-storage/execution/coherent-source-freeze-v5-r8.json",
+  "selection_timing": "Bun1.4.2 selected by Main before input preparation; actual bytes/manifests frozen before refreshed entry and counted checks. Inputs immutable during check; changes stale evidence. No diagnostic substitution or fallback.",
+  "prohibited_operations": [
+    "prompt",
+    "command",
+    "shell",
+    "pty",
+    "generate",
+    "skill",
+    "provider/integration connect",
+    "MCP",
+    "permission approval",
+    "queued/suspended seeds",
+    "migration"
+  ],
+  "installer_policy": "Contained allowlist env/config from first metadata request; public registry only; ignore-scripts/auditfalse/fundfalse/workspacesfalse; no credential/proxy/npm override inheritance."
+}

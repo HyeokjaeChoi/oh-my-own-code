@@ -1,0 +1,52 @@
+[
+  {
+    "path": "node_modules/@opencode/core/dist/chunks/config-3w5fmr99.js",
+    "beforeSha256": "28f8e167d496e3469ce4d1532b003b6adbc03c6641734be66a9e7b02fad1584d",
+    "afterSha256": "2b374f48f4be331e06419fb43f30dfab5b2fa72d45b1cc8500d633ab3e6f0a6b",
+    "edits": [
+      {
+        "find": "// src/tool/runtime.ts",
+        "replace": "import { Service as WorkbenchControl, node as workbenchControlNode } from \"../../../../../native-permission-control.mjs\";\nimport { createCoordinatorAdmission, toolSessionID } from \"../../../../../native-permission-coordinator-admission.mjs\";\nimport { Service50 as WorkbenchSessionStore, node52 as workbenchSessionStoreNode } from \"./config-sd0msgcy.js\";\n// src/tool/runtime.ts"
+      },
+      {
+        "find": "var execute3 = (tool, input, context) => Effect.gen(function* () {\n  const decoded",
+        "replace": "var execute3 = (tool, input, context) => Effect.gen(function* () {\n  const sessionID = toolSessionID(context);\n  const control = yield* WorkbenchControl;\n  const store = yield* WorkbenchSessionStore;\n  yield* createCoordinatorAdmission({ control, store })(sessionID, () => Effect.void);\n  const decoded"
+      }
+    ]
+  },
+  {
+    "path": "node_modules/@opencode/core/dist/chunks/config-yw6qsgb4.js",
+    "beforeSha256": "3731a6ac99d3de9db8acd15d2ee4a7559b121dfa28e6694c7db5ed38f203e3aa",
+    "afterSha256": "799266971ab65c018595ce1fa22779dad3de0ce432c73a3d6279f93e3519f103",
+    "edits": [
+      {
+        "find": "// src/tool.ts",
+        "replace": "import { Service as WorkbenchControl, node as workbenchControlNode } from \"../../../../../native-permission-control.mjs\";\nimport { createCoordinatorAdmission, toolSessionID } from \"../../../../../native-permission-coordinator-admission.mjs\";\nimport { Service50 as WorkbenchSessionStore, node52 as workbenchSessionStoreNode } from \"./config-sd0msgcy.js\";\nimport { Service80 as WorkbenchLocation, node84 as workbenchLocationNode } from \"./config-vyy061a2.js\";\n// src/tool.ts"
+      },
+      {
+        "find": "  const hooks = yield* Service61;",
+        "replace": "  const control = yield* WorkbenchControl;\n  const store = yield* WorkbenchSessionStore;\n  const location = yield* WorkbenchLocation;\n  const enter = createCoordinatorAdmission({ control, store });\n  const hooks = yield* Service61;"
+      },
+      {
+        "find": "  const beforeExecute = (name, input, context) => hooks.trigger(\"tool\", \"execute.before\", {\n    tool: name,\n    sessionID: context.sessionID,\n    agent: context.agent,\n    messageID: context.messageID,\n    id: context.id,\n    input\n  });",
+        "replace": "  const beforeExecute = (name, input, context) => Effect.gen(function* () {\n    const sessionID = toolSessionID(context);\n    yield* enter(sessionID, () => Effect.void);\n    return yield* hooks.trigger(\"tool\", \"execute.before\", {\n      tool: name,\n      sessionID,\n      agent: context.agent,\n      messageID: context.messageID,\n      id: context.id,\n      input\n    });\n  });"
+      },
+      {
+        "find": "execute3(tool, input, context).pipe(Effect.map",
+        "replace": "execute3(tool, input, context).pipe(Effect.provideService(WorkbenchControl, control), Effect.provideService(WorkbenchSessionStore, store), Effect.map"
+      },
+      {
+        "find": "snapshot: Effect.fn(\"Tool.snapshot\")((permissions) => Effect.sync(() => {",
+        "replace": "snapshot: Effect.fn(\"Tool.snapshot\")((permissions) => control.transaction([location.project.id], (tx) => control.assertExecution(tx, location.project.id)).pipe(Effect.andThen(Effect.sync(() => {"
+      },
+      {
+        "find": "    }))\n  });",
+        "replace": "    }))))\n  });"
+      },
+      {
+        "find": "  deps: [node63, node62]",
+        "replace": "  deps: [node63, node62, workbenchControlNode, workbenchSessionStoreNode, workbenchLocationNode]"
+      }
+    ]
+  }
+]

@@ -1,0 +1,841 @@
+{
+  "graph": {
+    "nodes": {
+      "contracts": {
+        "name": "contracts",
+        "type": "lib",
+        "data": {
+          "root": "packages/contracts",
+          "targets": {
+            "build": {
+              "cache": true,
+              "inputs": [
+                "production",
+                "^production",
+                "frontendSources"
+              ],
+              "outputs": [
+                "{projectRoot}/dist"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec tsc -p packages/contracts/tsconfig.build.json"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "typecheck": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec tsc -p packages/contracts/tsconfig.json --noEmit"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "lint": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec eslint --config scripts/eslint.config.mjs packages/contracts/src"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "format-check": {
+              "cache": true,
+              "inputs": [
+                "default"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec prettier --check packages/contracts/src packages/contracts/package.json packages/contracts/project.json packages/contracts/tsconfig.json packages/contracts/tsconfig.build.json"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "test": {
+              "cache": false,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "node --import tsx --test packages/contracts/src/*.test.ts"
+              },
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "name": "contracts",
+          "tags": [
+            "npm:private",
+            "platform:isomorphic",
+            "scope:contracts"
+          ],
+          "metadata": {
+            "targetGroups": {},
+            "js": {
+              "packageName": "@workbench/contracts",
+              "packageExports": {
+                ".": {
+                  "types": "./dist/index.d.ts",
+                  "import": "./dist/index.js"
+                },
+                "./source": "./src/index.ts"
+              },
+              "isInPackageManagerWorkspaces": true
+            }
+          },
+          "projectType": "library",
+          "sourceRoot": "packages/contracts/src",
+          "implicitDependencies": []
+        }
+      },
+      "workbench-web": {
+        "name": "workbench-web",
+        "type": "app",
+        "data": {
+          "root": "apps/workbench-web",
+          "targets": {
+            "build": {
+              "cache": true,
+              "inputs": [
+                "production",
+                "^production",
+                "frontendSources"
+              ],
+              "outputs": [
+                "{projectRoot}/dist"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec vite build --config apps/workbench-web/vite.config.ts"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "dev": {
+              "cache": false,
+              "continuous": true,
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec vite --config apps/workbench-web/vite.config.ts --host 127.0.0.1 --port 4200"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "typecheck": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec tsc -p apps/workbench-web/tsconfig.json --noEmit"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "lint": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec eslint --config apps/workbench-web/eslint.config.mjs apps/workbench-web/src"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "format-check": {
+              "cache": true,
+              "inputs": [
+                "default"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec prettier --check apps/workbench-web"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "test": {
+              "cache": false,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "node --import tsx --test apps/workbench-web/src/entities/session/model/*.test.ts apps/workbench-web/src/shared/api/*.test.ts apps/workbench-web/src/widgets/session-workspace/ui/*.test.tsx apps/workbench-web/scripts/*.test.mjs"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "e2e": {
+              "cache": false,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec playwright test --config apps/workbench-web/playwright.config.ts"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "boundaries": {
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "build"
+              ],
+              "options": {
+                "command": "node apps/workbench-web/scripts/check-boundaries.mjs"
+              },
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "name": "workbench-web",
+          "tags": [
+            "npm:private",
+            "platform:browser",
+            "scope:workbench"
+          ],
+          "metadata": {
+            "targetGroups": {},
+            "js": {
+              "packageName": "@workbench/web",
+              "isInPackageManagerWorkspaces": true
+            }
+          },
+          "projectType": "application",
+          "sourceRoot": "apps/workbench-web/src",
+          "implicitDependencies": []
+        }
+      },
+      "local-bridge": {
+        "name": "local-bridge",
+        "type": "app",
+        "data": {
+          "root": "apps/local-bridge",
+          "targets": {
+            "build": {
+              "cache": true,
+              "inputs": [
+                "production",
+                "^production",
+                "frontendSources"
+              ],
+              "outputs": [
+                "{projectRoot}/dist"
+              ],
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "^build"
+              ],
+              "options": {
+                "command": "pnpm exec tsc -p apps/local-bridge/tsconfig.build.json"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "dev": {
+              "cache": false,
+              "continuous": true,
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "^build"
+              ],
+              "options": {
+                "command": "pnpm exec tsx apps/local-bridge/src/server.ts"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "typecheck": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec tsc -p apps/local-bridge/tsconfig.json --noEmit"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "lint": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec eslint --config apps/local-bridge/eslint.config.mjs apps/local-bridge/src"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "format-check": {
+              "cache": true,
+              "inputs": [
+                "default"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec prettier --check apps/local-bridge"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "test": {
+              "cache": false,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "^build"
+              ],
+              "options": {
+                "command": "node --import tsx --test apps/local-bridge/src/*.test.ts"
+              },
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "name": "local-bridge",
+          "tags": [
+            "npm:private",
+            "platform:server",
+            "scope:bridge"
+          ],
+          "metadata": {
+            "targetGroups": {},
+            "js": {
+              "packageName": "@workbench/local-bridge",
+              "isInPackageManagerWorkspaces": true
+            }
+          },
+          "projectType": "application",
+          "sourceRoot": "apps/local-bridge/src",
+          "implicitDependencies": []
+        }
+      },
+      "desktop-app": {
+        "name": "desktop-app",
+        "type": "app",
+        "data": {
+          "root": "apps/desktop-app",
+          "targets": {
+            "package:macos": {
+              "cache": false,
+              "executor": "nx:run-script",
+              "metadata": {
+                "scriptContent": "node scripts/package.mjs darwin arm64",
+                "runCommand": "pnpm run package:macos"
+              },
+              "options": {
+                "script": "package:macos"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "package:windows": {
+              "cache": false,
+              "executor": "nx:run-script",
+              "metadata": {
+                "scriptContent": "node scripts/package.mjs win32 x64",
+                "runCommand": "pnpm run package:windows"
+              },
+              "options": {
+                "script": "package:windows"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "inspect:bundle": {
+              "cache": false,
+              "executor": "nx:run-script",
+              "metadata": {
+                "scriptContent": "node scripts/inspect-renderer-bundle.mjs",
+                "runCommand": "pnpm run inspect:bundle"
+              },
+              "options": {
+                "script": "inspect:bundle"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "e2e:workbench": {
+              "cache": false,
+              "executor": "nx:run-script",
+              "metadata": {
+                "scriptContent": "node scripts/e2e-workbench.mjs",
+                "runCommand": "pnpm run e2e:workbench"
+              },
+              "options": {
+                "script": "e2e:workbench"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "e2e:dev": {
+              "cache": false,
+              "executor": "nx:run-script",
+              "metadata": {
+                "scriptContent": "node scripts/e2e-smoke.mjs dev",
+                "runCommand": "pnpm run e2e:dev"
+              },
+              "options": {
+                "script": "e2e:dev"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "e2e:packaged": {
+              "cache": false,
+              "executor": "nx:run-script",
+              "metadata": {
+                "scriptContent": "node scripts/e2e-smoke.mjs packaged",
+                "runCommand": "pnpm run e2e:packaged"
+              },
+              "options": {
+                "script": "e2e:packaged"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "e2e:sessions": {
+              "cache": false,
+              "executor": "nx:run-script",
+              "metadata": {
+                "scriptContent": "node scripts/e2e-session-lifecycle.mjs",
+                "runCommand": "pnpm run e2e:sessions"
+              },
+              "options": {
+                "script": "e2e:sessions"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "e2e:ui-states": {
+              "cache": false,
+              "executor": "nx:run-script",
+              "metadata": {
+                "scriptContent": "node scripts/e2e-workbench-states.mjs",
+                "runCommand": "pnpm run e2e:ui-states"
+              },
+              "options": {
+                "script": "e2e:ui-states"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "build": {
+              "cache": true,
+              "inputs": [
+                "production",
+                "^production",
+                "frontendSources",
+                {
+                  "runtime": "node -p \"process.platform + '-' + process.arch\""
+                }
+              ],
+              "outputs": [
+                "{projectRoot}/dist"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "node apps/desktop-app/scripts/build.mjs"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "dev": {
+              "cache": false,
+              "continuous": true,
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "build"
+              ],
+              "options": {
+                "command": "pnpm exec electron apps/desktop-app/dist/app"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "typecheck": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec tsc -p apps/desktop-app/tsconfig.json --noEmit"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "lint": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec eslint --config apps/desktop-app/eslint.config.mjs apps/desktop-app/src apps/desktop-app/scripts"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "format-check": {
+              "cache": true,
+              "inputs": [
+                "default"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec prettier --check apps/desktop-app"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "test": {
+              "cache": false,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "node --test apps/desktop-app/src/*.test.mjs"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "check:boundaries": {
+              "executor": "nx:run-script",
+              "metadata": {
+                "scriptContent": "node scripts/check-renderer-boundaries.mjs",
+                "runCommand": "pnpm run check:boundaries"
+              },
+              "options": {
+                "script": "check:boundaries"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "boundaries": {
+              "executor": "nx:run-commands",
+              "cache": false,
+              "options": {
+                "command": "node apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "e2e-workbench": {
+              "executor": "nx:run-commands",
+              "cache": false,
+              "dependsOn": [
+                "build"
+              ],
+              "options": {
+                "command": "node apps/desktop-app/scripts/e2e-workbench.mjs"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "bundle-inspect": {
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "build"
+              ],
+              "cache": false,
+              "options": {
+                "command": "node apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "e2e-macos": {
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "build"
+              ],
+              "cache": false,
+              "options": {
+                "command": "node apps/desktop-app/scripts/e2e-smoke.mjs dev darwin"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "e2e-windows": {
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "build"
+              ],
+              "cache": false,
+              "options": {
+                "command": "node apps/desktop-app/scripts/e2e-smoke.mjs dev win32"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "package-macos": {
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "build"
+              ],
+              "cache": false,
+              "options": {
+                "command": "node apps/desktop-app/scripts/package.mjs darwin arm64"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "package-windows": {
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "build"
+              ],
+              "cache": false,
+              "options": {
+                "command": "node apps/desktop-app/scripts/package.mjs win32 x64"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "packaged-e2e-macos": {
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "package-macos"
+              ],
+              "cache": false,
+              "options": {
+                "command": "node apps/desktop-app/scripts/e2e-smoke.mjs packaged darwin"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "packaged-e2e-windows": {
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "package-windows"
+              ],
+              "cache": false,
+              "options": {
+                "command": "node apps/desktop-app/scripts/e2e-smoke.mjs packaged win32"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "bundle-inspection-macos": {
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "package-macos"
+              ],
+              "cache": false,
+              "options": {
+                "command": "node apps/desktop-app/scripts/inspect-packaged-bundle.mjs darwin"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "bundle-inspection-windows": {
+              "executor": "nx:run-commands",
+              "dependsOn": [
+                "package-windows"
+              ],
+              "cache": false,
+              "options": {
+                "command": "node apps/desktop-app/scripts/inspect-packaged-bundle.mjs win32"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "e2e-sessions": {
+              "executor": "nx:run-commands",
+              "cache": false,
+              "dependsOn": [
+                "build"
+              ],
+              "options": {
+                "command": "node apps/desktop-app/scripts/e2e-session-lifecycle.mjs"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "e2e-ui-states": {
+              "executor": "nx:run-commands",
+              "cache": false,
+              "dependsOn": [
+                "build"
+              ],
+              "options": {
+                "command": "node apps/desktop-app/scripts/e2e-workbench-states.mjs"
+              },
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "name": "desktop-app",
+          "tags": [
+            "npm:private",
+            "platform:desktop",
+            "scope:workbench"
+          ],
+          "metadata": {
+            "targetGroups": {
+              "NPM Scripts": [
+                "package:macos",
+                "package:windows",
+                "inspect:bundle",
+                "check:boundaries",
+                "e2e:workbench",
+                "e2e:dev",
+                "e2e:packaged",
+                "e2e:sessions",
+                "e2e:ui-states"
+              ]
+            },
+            "js": {
+              "packageName": "@workbench/desktop",
+              "packageVersion": "0.1.0",
+              "packageMain": "main.mjs",
+              "isInPackageManagerWorkspaces": true
+            }
+          },
+          "projectType": "application",
+          "sourceRoot": "apps/desktop-app/src",
+          "implicitDependencies": []
+        }
+      },
+      "ui": {
+        "name": "ui",
+        "type": "lib",
+        "data": {
+          "root": "packages/ui",
+          "targets": {
+            "typecheck": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec tsc -p packages/ui/tsconfig.json --noEmit"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "lint": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec eslint --config packages/ui/eslint.config.mjs packages/ui/src"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "format-check": {
+              "cache": true,
+              "inputs": [
+                "default"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec prettier --check packages/ui"
+              },
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "name": "ui",
+          "tags": [
+            "npm:private",
+            "platform:isomorphic",
+            "scope:ui"
+          ],
+          "metadata": {
+            "targetGroups": {},
+            "js": {
+              "packageName": "@workbench/ui",
+              "packageExports": {
+                ".": {
+                  "types": "./src/index.ts",
+                  "import": "./src/index.ts"
+                }
+              },
+              "isInPackageManagerWorkspaces": true
+            }
+          },
+          "projectType": "library",
+          "sourceRoot": "packages/ui/src",
+          "implicitDependencies": []
+        }
+      }
+    },
+    "dependencies": {
+      "contracts": [],
+      "workbench-web": [
+        {
+          "source": "workbench-web",
+          "target": "contracts",
+          "type": "static"
+        },
+        {
+          "source": "workbench-web",
+          "target": "ui",
+          "type": "static"
+        }
+      ],
+      "local-bridge": [
+        {
+          "source": "local-bridge",
+          "target": "contracts",
+          "type": "static"
+        }
+      ],
+      "desktop-app": [
+        {
+          "source": "desktop-app",
+          "target": "contracts",
+          "type": "static"
+        },
+        {
+          "source": "desktop-app",
+          "target": "ui",
+          "type": "static"
+        }
+      ],
+      "ui": []
+    }
+  }
+}

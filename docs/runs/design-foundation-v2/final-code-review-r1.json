@@ -1,0 +1,73 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+    "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+    "gate": "code",
+    "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+    "schema_version": 2,
+    "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+    "verification_sha256": "65a8d3f108cd00fbec2c298917cebebe77fdc8804af96e5160fdc3d0f4ee37db",
+    "work_class_sha256": "101dd49a7c54aecef71e98e8e2bfc8d944a8279736238a19062a13e5ebdaff1a"
+  },
+  "summary": "두 차례 CODE 검토를 완료했습니다. 새 scroll container가 기존 명령 메뉴를 자르는 P2 회귀 1건을 찾았습니다. 나머지 검토 범위에서 추가 조치가 필요한 결함은 찾지 못했습니다.",
+  "verdict": "changes_requested",
+  "open_findings": [
+    {
+      "id": "CODE-DF-01",
+      "severity": "P2",
+      "title": "scroll container 안의 명령 메뉴가 잘리지 않도록 배치하십시오",
+      "path": "apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css",
+      "line": 240,
+      "line_end": 242,
+      "trigger": "1440×1000, zoom 1 같은 높이 600px 초과 화면에서 Context와 실행 설정 disclosure를 접은 뒤, Composer의 '앱 동작과 명령 열기'를 선택합니다.",
+      "effect": "새 overflow-y:auto가 composeRegion 밖의 내용을 자릅니다. 명령 메뉴는 여전히 Composer 위에 absolute로 배치되며, 배치 계산은 scroll container 대신 전체 window의 여유 공간을 사용합니다. 접힌 task 두 행보다 높은 메뉴의 윗부분이 scrollport 위로 나가므로 닫기, 새 세션, 파일 보기 같은 첫 항목을 pointer로 사용할 수 없습니다. 메뉴의 z-index는 이 clipping을 해제하지 않습니다.",
+      "evidence": [
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css",
+          "lines": "226-242, 514-528",
+          "observation": "이번 변경은 composeRegion에 항상 overflow-y:auto를 적용합니다. 내부 commandMenu는 position:absolute와 bottom:calc(100% + 8px)를 유지합니다."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+          "lines": "325-343",
+          "observation": "메뉴 높이와 방향은 form bounds 및 window.innerHeight로 계산합니다. composeRegion의 clipping 경계는 계산하지 않습니다."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css",
+          "lines": "626-638",
+          "observation": "기존 position:static 보정은 높이 600px 이하에만 적용됩니다. 위 trigger에서는 적용되지 않습니다."
+        },
+        {
+          "path": "apps/desktop-app/scripts/e2e-conversation-context.mjs",
+          "lines": "579-593",
+          "observation": "현재 검사는 메뉴 region의 visible 여부와 Escape 복원만 확인합니다. 잘린 첫 메뉴 항목의 hit testing은 확인하지 않습니다. Foundation runner에도 접힌 기본 상태의 메뉴 항목 접근 검사가 없습니다."
+        }
+      ],
+      "nearby_guards_checked": "메뉴 배치 effect, 내부 overflow, z-index, short viewport 보정과 현재 검사를 확인했습니다. 부분 clipping은 region의 toBeVisible 검사를 통과할 수 있습니다.",
+      "smallest_useful_correction": "기존 short viewport의 position:static 메뉴 배치를 일반 scroll 상태에도 적용하여 메뉴가 정상 flow 안에 있도록 하십시오. 접힌 기본 상태에서 첫 항목·닫기·마지막 항목의 pointer 및 keyboard 접근을 확인하는 focused regression 검사를 추가하십시오.",
+      "verification_status": "CSS clipping과 배치 코드에서 확인한 회귀입니다. 지시대로 새 build, test 또는 runtime 재현은 실행하지 않았습니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a11f60-978c-7630-9625-287158d7edf5"
+  },
+  "review_passes": {
+    "spec_compliance": "plan revision 6과 design version 2의 DF1–DF5를 구현 및 기존 검증에 대조했습니다. task 분리, 항상 보이는 critical state, 일반 draft 보존, 요청값과 Native 보고값 분리를 확인했습니다. CODE-DF-01은 DF4의 실제 행동 접근성에 영향을 줍니다.",
+    "correctness_security_regression": "29개 변경 경로를 callers, unchanged store/controller, 테스트 및 설정과 함께 검토했습니다. Button의 native props/ref/type/disabled 전달, 권한 guard, 첨부 authority, branch 별도 전송 경계와 MIME 최종 바이트 검사를 확인했습니다."
+  },
+  "evidence_inspected": {
+    "integrity": "현재 source 713개 항목의 hash와 mode가 inventory와 일치합니다. 실제 inclusion 목록과 aggregate source hash도 일치합니다. 보존 원본에서 29개 patch를 메모리 안에서 재구성했으며 현재 파일과 모두 일치합니다. plan, contract, environment 및 verification binding을 확인했습니다.",
+    "preservation": "Context와 runtime-options의 원래 exercise 함수는 변경되지 않았습니다. legacy runner는 geometry helper 밖의 bytes가 같습니다. 기존 components 데이터와 44 variants는 그대로입니다. 현재 토큰은 223개이며 변경 CSS의 토큰 참조 누락은 없습니다.",
+    "recorded_verification": "기존 계약 검사 11개의 마지막 실행은 모두 exit 0입니다. 세 hidden renderer family는 같은 build stamp를 사용하며, wrapper는 provenance 전후 일치와 owned exit 0을 기록합니다. 원본 PNG 287개의 dimensions와 기록된 hash를 확인했습니다.",
+    "historical_findings": "원래 Context CODE와 RENDER의 changes_requested 판정은 보존돼 있습니다. MIME 수정의 별도 독립 CODE pass와 source-consumption-release 연결을 확인했습니다. 두 reconstructed before-source는 after-edit 복원으로 명시돼 있으며 pre-edit copy로 취급하지 않았습니다.",
+    "managed_docs": "두 managed 문서 변경과 metadata hash 갱신을 검토했습니다. source 보존 절차 설명이며 runtime 동작 변경은 없습니다."
+  },
+  "limits": [
+    "파일·문서·보고서·ledger를 변경하지 않았고 위임하지 않았습니다.",
+    "build, test 또는 runtime을 새로 실행하지 않았습니다.",
+    "별도 pixel 판단이나 RENDER 승인을 수행하지 않았습니다.",
+    "provider, private store, Native 실행, production Main, Windows, release 또는 full18 acceptance를 승인하지 않습니다."
+  ]
+}

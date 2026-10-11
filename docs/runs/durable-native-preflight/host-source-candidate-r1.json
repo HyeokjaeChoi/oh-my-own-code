@@ -1,0 +1,16 @@
+{
+  "stage": "host-source-candidate",
+  "finalGate": false,
+  "files": {
+    "apps/desktop-app/src/host/native-preflight.mjs": "5a881832295bd7f4af52c8b99a0440bfe45da9236094a7585139f025e5759219",
+    "apps/desktop-app/src/native-preflight-resources.mjs": "c199734b07713200830a6076537de956d834814f329fd9265741d7b7e41e0171",
+    "apps/desktop-app/src/main.mjs": "7571af045e7f811e2f657cf15dbf4f5257f3146a54b0fdf1d926e11ecf5668ab",
+    "apps/desktop-app/scripts/stage-event-host.mjs": "5b2315425bcf5b138e2c9780e55708cf132018e663b1a4fc6e07d70289683f86",
+    "apps/desktop-app/scripts/inspect-packaged-bundle.mjs": "d3936f7d0ee14b3dbe454c4b0aa13d7981a57e4de0d4c748106562aea91bb401"
+  },
+  "api": {
+    "factory": "createNativePreflight({namespace,owner,registry,eventHost,processIdentity,signal?,io?,spawn?,resourceVerifier?,deadlineMs?,stopTimeoutMs?})",
+    "returned": "{check():Promise<boolean>,reason():StoreRecoveryReason,close():Promise<{exited,cleanup,recoveryPath?}>"
+  },
+  "limits": "Constructor injections are host test-only. Native API diagnostic used owner and registry doubles and does not prove production startup authority."
+}

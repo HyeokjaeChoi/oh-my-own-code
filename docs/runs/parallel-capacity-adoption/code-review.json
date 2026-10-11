@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "c9c3d73dd56d5d00d5a8226615bab18e123bbd496301f13a2793fbb4bc17ff0e",
+    "contract_sha256": "da4caeb33694a4b149d209aa40ec423e709a457cdbedcde07ff77d7e4ba9b79b",
+    "source_sha256": "ef5d74eb318a82795176420be1934a228b3f8e85cfa2b51352675c95339ad1ec",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "verification_sha256": "01d80dc0e5c0bb81532b259834f2ff03096090f183baf7594d6ebd02c207e974"
+  },
+  "verdict": "pass",
+  "summary": "The eight changed product paths exactly match the before/after inventory. The managed-file check passes against the library; the PRD remains at its recorded SHA, and Git HEAD/config file hashes are preserved. No app work or approval claim was introduced.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/parallel_capacity_final",
+    "author_task_id": "/root/parallel_capacity_author"
+  },
+  "verification_limits": "Read-only review; managed check was inspected, not rerun. PRD approval remains pending, and configuration does not establish live concurrency."
+}

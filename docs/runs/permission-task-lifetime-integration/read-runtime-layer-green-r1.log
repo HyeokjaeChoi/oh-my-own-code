@@ -1,0 +1,325 @@
+✔ pinned overlay recipe binds exact fifty-four source files and preserves frozen preparation data (1.422709ms)
+✔ actual pinned source transforms to exact checked output without executing or changing Native (6047.611292ms)
+✔ fourth argument forwards overrides while original lifecycle and HTTP transform positions stay identical (7.530125ms)
+✔ changed pinned bytes and output pins refuse the entire plan with original source preserved (320.745917ms)
+✔ patched Permission and Saved sources share the fixed control and preserve gate ordering (5.50375ms)
+✔ fifty-four-file consumer refuses missing, duplicate and extra sources and keeps recipe output order (28.235292ms)
+✔ checked Session entries guard before original effect construction and release the short admission first (5.276625ms)
+✔ fixed fourteen families publish at original transform positions and preserve all plugin setup and hook bytes (5.993458ms)
+✔ provider extension preserves every archived recipe entry as a byte-equivalent object and stays within 256 edits (3.296167ms)
+✖ actual Native Read layer routes read/list to same Control without acquiring raw Environment files (2.133083ms)
+✖ checked layer preserves original consumer algorithms and has no environment dependency fallback (0.91825ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 9
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6511.349417
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-read-layer.test.mjs:35:1
+✖ actual Native Read layer routes read/list to same Control without acquiring raw Environment files (2.133083ms)
+  Error: raw Environment file IO forbidden
+      at forbidden (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-read-layer.test.mjs:43:11)
+      at get files (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-read-layer.test.mjs:64:22)
+      at Array.eval (eval at <anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-read-layer.test.mjs:46:17), <anonymous>:6:23)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/core.js:297:30)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+
+test at apps/desktop-app/src/native-permission-read-layer.test.mjs:99:1
+✖ checked layer preserves original consumer algorithms and has no environment dependency fallback (0.91825ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /makeLocationNode\(\{ service: Service7, layer, deps: \[workbenchControlNode\] \}\)/u. Input:
+  
+  'import {\n' +
+    '  NonNegativeInt2,\n' +
+    '  PositiveInt2,\n' +
+    '  RelativePath2\n' +
+    '} from "./config-922hggd3.js";\n' +
+    'import {\n' +
+    '  Service78,\n' +
+    '  node81\n' +
+    '} from "./config-64mjhprr.js";\n' +
+    'import {\n' +
+    '  Content3\n' +
+    '} from "./config-b2s03exd.js";\n' +
+    'import {\n' +
+    '  detect2\n' +
+    '} from "./config-3smtnn6g.js";\n' +
+    'import {\n' +
+    '  __export\n' +
+    '} from "./config-9rqn6x4v.js";\n' +
+    '\n' +
+    '// src/tool/read-filesystem.ts\n' +
+    'var exports_read_filesystem = {};\n' +
+    '__export(exports_read_filesystem, {\n' +
+    '  BinaryFileError: () => BinaryFileError2,\n' +
+    '  FileContent: () => FileContent2,\n' +
+    '  ListEntry: () => ListEntry2,\n' +
+    '  ListPage: () => ListPage2,\n' +
+    '  MAX_MEDIA_INGEST_BYTES: () => MAX_MEDIA_INGEST_BYTES2,\n' +
+    '  MAX_READ_BYTES: () => MAX_READ_BYTES2,\n' +
+    '  MAX_READ_LINES: () => MAX_READ_LINES2,\n' +
+    '  MEDIA_MIMES: () => MEDIA_MIMES2,\n' +
+    '  MediaIngestLimitError: () => MediaIngestLimitError2,\n' +
+    '  OffsetOutOfRangeError: () => OffsetOutOfRangeError2,\n' +
+    '  PageInput: () => PageInput2,\n' +
+    '  PathKindError: () => PathKindError2,\n' +
+    '  ReadToolFileSystem: () => exports_read_filesystem,\n' +
+    '  Service: () => Service7,\n' +
+    '  TextPage: () => TextPage2,\n' +
+    '  node: () => node8,\n' +
+    '  read: () => read2\n' +
+    '});\n' +
+    'import path from "path";\n' +
+    'import { pathToFileURL } from "url";\n' +
+    'import { makeLocationNode } from "@opencode/util/effect/app-node";\n' +
+    'import { Context, Effect, Layer, Schema } from "effect";\n' +
+    'import { lookup } from "mime-types";\n' +
+    'var MAX_READ_LINES2 = 2000;\n' +
+    'var MAX_READ_BYTES2 = 50 * 1024;\n' +
+    'var MAX_MEDIA_INGEST_BYTES2 = 20 * 1024 * 1024;\n' +
+    'var FIRST_CHUNK = 256 * 1024;\n' +
+    'var MAX_LINE_LENGTH = 2000;\n' +
+    'var TREE_BASE = 6;\n' +
+    'var MAX_LINE_SUFFIX = `... (line truncated to ${MAX_LINE_LENGTH} chars)`;\n' +
+    'var MEDIA_MIMES2 = new Set(["image/png", "image/jpeg", "image/gif", "image/webp", "application/pdf"]);\n' +
+    '\n' +
+    'class BinaryFileError2 extends Schema.TaggedError()("ReadTool.BinaryFileError", {\n' +
+    '  resource: Schema.String\n' +
+    '}) {\n' +
+    '  get message() {\n' +
+    '    return `Cannot read binary file: ${this.resource}`;\n' +
+    '  }\n' +
+    '}\n' +
+    '\n' +
+    'class MediaIngestLimitError2 extends Schema.TaggedError()("ReadTool.MediaIngestLimitError", {\n' +
+    '  resource: Schema.String,\n' +
+    '  maximumBytes: Schema.Number\n' +
+    '}) {\n' +
+    '  get message() {\n' +
+    '    return `Media exceeds ${this.maximumBytes} byte ingestion limit: ${this.resource}`;\n' +
+    '  }\n' +
+    '}\n' +
+    '\n' +
+    'class OffsetOutOfRangeError2 extends Schema.TaggedError()("ReadTool.OffsetOutOfRangeError", { offset: Schema.Number, lines: Schema.Number }) {\n' +
+    '  get message() {\n' +
+    '    return `Offset ${this.offset} is out of range for this file (${this.lines} ${this.lines === 1 ? "line" : "lines"})`;\n' +
+    '  }\n' +
+    '}\n' +
+    '\n' +
+    'class PathKindError2 extends Schema.TaggedError()("ReadTool.PathKindError", {\n' +
+    '  resource: Schema.String,\n' +
+    '  expected: Schema.Literals(["a file", "a file or directory"])\n' +
+    '}) {\n' +
+    '  get message() {\n' +
+    '    return `Path is not ${this.expected}: ${this.resource}`;\n' +
+    '  }\n' +
+    '}\n' +
+    'var PageInput2 = Schema.Struct({\n' +
+    '  offset: Schema.optionalKey(NonNegativeInt2),\n' +
+    '  limit: Schema.optionalKey(NonNegativeInt2)\n' +
+    '});\n' +
+    'var FileContent2 = Schema.Struct({\n' +
+    '  type: Schema.Literal("file"),\n' +
+    '  ...Content3.fields\n' +
+    '}).annotate({ identifier: "ReadTool.FileContent" });\n' +
+    '\n' +
+    'class TextPage2 extends Schema.Class("ReadTool.TextPage")({\n' +
+    '  type: Schema.Literal("text-page"),\n' +
+    '  content: Schema.String,\n' +
+    '  mime: Schema.String,\n' +
+    '  offset: PositiveInt2,\n' +
+    '  truncated: Schema.Boolean,\n' +
+    '  next: Schema.optionalKey(PositiveInt2)\n' +
+    '}) {\n' +
+    '}\n' +
+    'var ListEntry2 = Schema.Struct({\n' +
+    '  path: RelativePath2,\n' +
+    '  type: Schema.Literals(["file", "directory", "symlink"])\n' +
+    '}).annotate({ identifier: "ReadTool.ListEntry" });\n' +
+    '\n' +
+    'class ListPage2 extends Schema.Class("ReadTool.ListPage")({\n' +
+    '  type: Schema.Literal("list-page"),\n' +
+    '  entries: Schema.Array(ListEntry2),\n' +
+    '  truncated: Schema.Boolean,\n' +
+    '  next: Schema.optionalKey(PositiveInt2)\n' +
+    '}) {\n' +
+    '}\n' +
+    '\n' +
+    'class Service7 extends Context.Service()("@opencode/ReadToolFileSystem") {\n' +
+    '}\n' +
+    'var mimeType = (value) => lookup(value) || "application/octet-stream";\n' +
+    'var read2 = Effect.fn("ReadTool.read")(function* (files, input, resource, page = {}) {\n' +
+    '  const first = yield* files.read(input, { offset: 0, length: FIRST_CHUNK }).pipe(Effect.catchTag("Environment.WrongKind", (error) => {\n' +
+    '    if (error.actual !== "directory")\n' +
+    '      return Effect.fail(new PathKindError2({ resource, expected: "a file or directory" }));\n' +
+    '    return files.list(input).pipe(Effect.map((entries) => list(entries, page)), Effect.catchTag("Environment.WrongKind", () => Effect.fail(new PathKindError2({ resource, expected: "a file or directory" }))));\n' +
+    '  }));\n' +
+    '  if (first instanceof ListPage2)\n' +
+    '    return first;\n' +
+    '  const media = detect2(first.bytes);\n' +
+    '  if (MEDIA_MIMES2.has(media)) {\n' +
+    '    if (first.info.size > MAX_MEDIA_INGEST_BYTES2)\n' +
+    '      return yield* new MediaIngestLimitError2({ resource, maximumBytes: MAX_MEDIA_INGEST_BYTES2 });\n' +
+    '    const whole = yield* readFile(files, input, resource);\n' +
+    '    return {\n' +
+    '      type: "file",\n' +
+    '      uri: pathToFileURL(input).href,\n' +
+    '      name: path.basename(input),\n' +
+    '      content: Buffer.from(whole.bytes).toString("base64"),\n' +
+    '      encoding: "base64",\n' +
+    '      mime: media\n' +
+    '    };\n' +
+    '  }\n' +
+    '  const paged = first.info.size > MAX_READ_BYTES2 || page.offset !== undefined || page.limit !== undefined;\n' +
+    '  if (!paged) {\n' +
+    '    if (first.bytes.includes(0))\n' +
+    '      return yield* new BinaryFileError2({ resource });\n' +
+    '    return {\n' +
+    '      type: "file",\n' +
+    '      uri: pathToFileURL(input).href,\n' +
+    '      name: path.basename(input),\n' +
+    '      content: new TextDecoder().decode(first.bytes).split(`\n' +
+    '`).map(clampLine).join(`\n' +
+    '`),\n' +
+    '      encoding: "utf8",\n' +
+    '      mime: mimeType(input)\n' +
+    '    };\n' +
+    '  }\n' +
+    '  if (first.bytes.length >= first.info.size) {\n' +
+    '    const result = textPage(first.bytes, true, page);\n' +
+    '    if (result === undefined)\n' +
+    '      return yield* Effect.die("Read page did not settle for a complete first chunk");\n' +
+    '    return yield* makeTextPage(input, resource, result, first.bytes.subarray(0, result.consumed).includes(0), lineCount(textLeaf(first.bytes).summary.lines, first.bytes.at(-1)));\n' +
+    '  }\n' +
+    '  const offset = page.offset || 1;\n' +
+    '  const limit = Math.min(page.limit || MAX_READ_LINES2, MAX_READ_LINES2);\n' +
+    '  const leaves = [textLeaf(first.bytes)];\n' +
+    '  let bytes = first.bytes.length;\n' +
+    '  let lines = leaves[0].summary.lines;\n' +
+    '  let ended = false;\n' +
+    '  while (true) {\n' +
+    '    const eof = ended || bytes >= first.info.size;\n' +
+    '    if (lines >= offset - 1 || eof) {\n' +
+    '      const tree = textTree(leaves);\n' +
+    '      const start = textOffset(tree, offset - 1);\n' +
+    '      let position = 0;\n' +
+    '      const selected = Buffer.concat(leaves.flatMap((leaf) => {\n' +
+    '        const leafStart = position;\n' +
+    '        position += leaf.summary.bytes;\n' +
+    '        if (position <= start)\n' +
+    '          return [];\n' +
+    '        return [leaf.bytes.subarray(Math.max(0, start - leafStart))];\n' +
+    '      }));\n' +
+    '      const result = textPage(selected, eof, { limit });\n' +
+    '      if (result !== undefined) {\n' +
+    '        const translated = {\n' +
+    '          ...result,\n' +
+    '          offset,\n' +
+    '          ...result.next === undefined ? { next: undefined } : { next: offset + result.next - 1 }\n' +
+    '        };\n' +
+    '        const consumed = start + result.consumed;\n' +
+    '        let checked = 0;\n' +
+    '        const binary = leaves.some((leaf) => {\n' +
+    '          const length = Math.min(leaf.summary.bytes, consumed - checked);\n' +
+    '          checked += leaf.summary.bytes;\n' +
+    '          return length > 0 && leaf.bytes.subarray(0, length).includes(0);\n' +
+    '        });\n' +
+    '        return yield* makeTextPage(input, resource, translated, binary, lineCount(lines, leaves.at(-1)?.bytes.at(-1)));\n' +
+    '      }\n' +
+    '    }\n' +
+    '    const next = yield* readFile(files, input, resource, { offset: bytes, length: FIRST_CHUNK });\n' +
+    '    if (next.bytes.length === 0) {\n' +
+    '      ended = true;\n' +
+    '      continue;\n' +
+    '    }\n' +
+    '    const leaf = textLeaf(next.bytes);\n' +
+    '    leaves.push(leaf);\n' +
+    '    bytes += leaf.summary.bytes;\n' +
+    '    lines += leaf.summary.lines;\n' +
+    '  }\n' +
+    '});\n' +
+    'var readFile = (files, input, resource, range) => files.read(input, range).pipe(Effect.catchTag("Environment.WrongKind", () => Effect.fail(new PathKindError2({ resource, expected: "a file" }))));\n' +
+    'var makeTextPage = Effect.fnUntraced(function* (input, resource, result, binary, lines) {\n' +
+    '  if (binary)\n' +
+    '    return yield* new BinaryFileError2({ resource });\n' +
+    '  if (result.entries.length === 0 && result.offset !== 1)\n' +
+    '    return yield* new OffsetOutOfRangeError2({ offset: result.offset, lines });\n' +
+    '  return new TextPage2({\n' +
+    '    type: "text-page",\n' +
+    '    content: result.entries.join(`\n' +
+    '`),\n' +
+    '    mime: mimeType(input),\n' +
+    '    offset: result.offset,\n' +
+    '    truncated: result.next !== undefined,\n' +
+    '    ...result.next === undefined ? {} : { next: result.next }\n' +
+    '  });\n' +
+    '});\n' +
+    'var list = (items, page) => {\n' +
+    '  const offset = page.offset || 1;\n' +
+    '  const limit = Math.min(page.limit || MAX_READ_LINES2, MAX_READ_LINES2);\n' +
+    '  const visible = items.flatMap((item) => item.type === "other" ? [] : [\n' +
+    '    ListEntry2.make({\n' +
+    '      path: RelativePath2.make(item.name + (item.type === "directory" ? path.sep : "")),\n' +
+    '      type: item.type\n' +
+    '    })\n' +
+    '  ]).sort((a, b) => a.type === "directory" ? b.type === "directory" ? a.path.localeCompare(b.path) : -1 : b.type === "directory" ? 1 : a.path.localeCompare(b.path));\n' +
+    '  const selected = visible.slice(offset - 1, offset - 1 + limit);\n' +
+    '  const truncated = offset - 1 + selected.length < visible.length;\n' +
+    '  return new ListPage2({\n' +
+    '    type: "list-page",\n' +
+    '    entries: selected,\n' +
+    '    truncated,\n' +
+    '    ...truncated ? { next: offset + selected.length } : {}\n' +
+    '  });\n' +
+    '};\n' +
+    'var textPage = (bytes, eof, page) => {\n' +
+    '  const offset = page.offset || 1;\n' +
+    '  const limit = Math.min(page.limit || MAX_READ_LINES2, MAX_READ_LINES2);\n' +
+    '  const decoded = new TextDecoder().decode(bytes);\n' +
+    '  const split = decoded.split(`\n' +
+    '`);\n' +
+    '  const complete = eof ? split.at(-1) === "" ? split.slice(0, -1) : split : split.slice(0, -1);\n' +
+    '  const available = complete.map((line) => line.endsWith("\\r") ? line.slice(0, -1) : line);\n' +
+    '  const entries = [];\n' +
+    '  let size = 0;\n' +
+    '  let next;\n' +
+    '  for (const [index, value] of available.slice(offset - 1).entries()) {\n' +
+    '    const line = offset + index;\n' +
+    '    if (entries.length >= limit || size >= MAX_READ_BYTES2) {\n' +
+    '      next = line;\n' +
+    '      break;\n' +
+    '    }\n' +
+    '    const text = clampLine(value);\n' +
+    '    const lineSize = Buffer.byteLength(text, "utf-8") + (entries.length > 0 ? 1 : 0);\n' +
+    '    if (size + lineSize > MAX_READ_BYTES2) {\n' +
+    '      next = line;\n' +
+    '      break;\n' +
+    '    }\n' +
+    '    entries.push(text);\n' +
+    '    size += lineSize;\n' +
+    '  }\n' +
+    '  if (next === undefined && entries.length >= limit &'... 2681 more characters
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-read-layer.test.mjs:111:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'import {\n  NonNegativeInt2,\n  PositiveInt2,\n  RelativePath2\n} from "./config-922hggd3.js";\nimport {\n  Service78,\n  node81\n} from "./config-64mjhprr.js";\nimport {\n  Content3\n} from "./config-b2s03exd.js";\nimport {\n  detect2\n} from "./config-3smtnn6g.js";\nimport {\n  __export\n} from "./config-9rqn6x4v.js";\n\n// src/tool/read-filesystem.ts\nvar exports_read_filesystem = {};\n__export(exports_read_filesystem, {\n  BinaryFileError: () => BinaryFileError2,\n  FileContent: () => FileContent2,\n  ListEntry: () => ListEntry2,\n  ListPage: () => ListPage2,\n  MAX_MEDIA_INGEST_BYTES: () => MAX_MEDIA_INGEST_BYTES2,\n  MAX_READ_BYTES: () => MAX_READ_BYTES2,\n  MAX_READ_LINES: () => MAX_READ_LINES2,\n  MEDIA_MIMES: () => MEDIA_MIMES2,\n  MediaIngestLimitError: () => MediaIngestLimitError2,\n  OffsetOutOfRangeError: () => OffsetOutOfRangeError2,\n  PageInput: () => PageInput2,\n  PathKindError: () => PathKindError2,\n  ReadToolFileSystem: () => exports_read_filesystem,\n  Service: () => Service7,\n  TextPage: () => TextPage2,\n  node: () => node8,\n  read: () => read2\n});\nimport path from "path";\nimport { pathToFileURL } from "url";\nimport { makeLocationNode } from "@opencode/util/effect/app-node";\nimport { Context, Effect, Layer, Schema } from "effect";\nimport { lookup } from "mime-types";\nvar MAX_READ_LINES2 = 2000;\nvar MAX_READ_BYTES2 = 50 * 1024;\nvar MAX_MEDIA_INGEST_BYTES2 = 20 * 1024 * 1024;\nvar FIRST_CHUNK = 256 * 1024;\nvar MAX_LINE_LENGTH = 2000;\nvar TREE_BASE = 6;\nvar MAX_LINE_SUFFIX = `... (line truncated to ${MAX_LINE_LENGTH} chars)`;\nvar MEDIA_MIMES2 = new Set(["image/png", "image/jpeg", "image/gif", "image/webp", "application/pdf"]);\n\nclass BinaryFileError2 extends Schema.TaggedError()("ReadTool.BinaryFileError", {\n  resource: Schema.String\n}) {\n  get message() {\n    return `Cannot read binary file: ${this.resource}`;\n  }\n}\n\nclass MediaIngestLimitError2 extends Schema.TaggedError()("ReadTool.MediaIngestLimitError", {\n  resource: Schema.String,\n  maximumBytes: Schema.Number\n}) {\n  get message() {\n    return `Media exceeds ${this.maximumBytes} byte ingestion limit: ${this.resource}`;\n  }\n}\n\nclass OffsetOutOfRangeError2 extends Schema.TaggedError()("ReadTool.OffsetOutOfRangeError", { offset: Schema.Number, lines: Schema.Number }) {\n  get message() {\n    return `Offset ${this.offset} is out of range for this file (${this.lines} ${this.lines === 1 ? "line" : "lines"})`;\n  }\n}\n\nclass PathKindError2 extends Schema.TaggedError()("ReadTool.PathKindError", {\n  resource: Schema.String,\n  expected: Schema.Literals(["a file", "a file or directory"])\n}) {\n  get message() {\n    return `Path is not ${this.expected}: ${this.resource}`;\n  }\n}\nvar PageInput2 = Schema.Struct({\n  offset: Schema.optionalKey(NonNegativeInt2),\n  limit: Schema.optionalKey(NonNegativeInt2)\n});\nvar FileContent2 = Schema.Struct({\n  type: Schema.Literal("file"),\n  ...Content3.fields\n}).annotate({ identifier: "ReadTool.FileContent" });\n\nclass TextPage2 extends Schema.Class("ReadTool.TextPage")({\n  type: Schema.Literal("text-page"),\n  content: Schema.String,\n  mime: Schema.String,\n  offset: PositiveInt2,\n  truncated: Schema.Boolean,\n  next: Schema.optionalKey(PositiveInt2)\n}) {\n}\nvar ListEntry2 = Schema.Struct({\n  path: RelativePath2,\n  type: Schema.Literals(["file", "directory", "symlink"])\n}).annotate({ identifier: "ReadTool.ListEntry" });\n\nclass ListPage2 extends Schema.Class("ReadTool.ListPage")({\n  type: Schema.Literal("list-page"),\n  entries: Schema.Array(ListEntry2),\n  truncated: Schema.Boolean,\n  next: Schema.optionalKey(PositiveInt2)\n}) {\n}\n\nclass Service7 extends Context.Service()("@opencode/ReadToolFileSystem") {\n}\nvar mimeType = (value) => lookup(value) || "application/octet-stream";\nvar read2 = Effect.fn("ReadTool.read")(function* (files, input, resource, page = {}) {\n  const first = yield* files.read(input, { offset: 0, length: FIRST_CHUNK }).pipe(Effect.catchTag("Environment.WrongKind", (error) => {\n    if (error.actual !== "directory")\n      return Effect.fail(new PathKindError2({ resource, expected: "a file or directory" }));\n    return files.list(input).pipe(Effect.map((entries) => list(entries, page)), Effect.catchTag("Environment.WrongKind", () => Effect.fail(new PathKindError2({ resource, expected: "a file or directory" }))));\n  }));\n  if (first instanceof ListPage2)\n    return first;\n  const media = detect2(first.bytes);\n  if (MEDIA_MIMES2.has(media)) {\n    if (first.info.size > MAX_MEDIA_INGEST_BYTES2)\n      return yield* new MediaIngestLimitError2({ resource, maximumBytes: MAX_MEDIA_INGEST_BYTES2 });\n    const whole = yield* readFile(files, input, resource);\n    return {\n      type: "file",\n      uri: pathToFileURL(input).href,\n      name: path.basename(input),\n      content: Buffer.from(whole.bytes).toString("base64"),\n      encoding: "base64",\n      mime: media\n    };\n  }\n  const paged = first.info.size > MAX_READ_BYTES2 || page.offset !== undefined || page.limit !== undefined;\n  if (!paged) {\n    if (first.bytes.includes(0))\n      return yield* new BinaryFileError2({ resource });\n    return {\n      type: "file",\n      uri: pathToFileURL(input).href,\n      name: path.basename(input),\n      content: new TextDecoder().decode(first.bytes).split(`\n`).map(clampLine).join(`\n`),\n      encoding: "utf8",\n      mime: mimeType(input)\n    };\n  }\n  if (first.bytes.length >= first.info.size) {\n    const result = textPage(first.bytes, true, page);\n    if (result === undefined)\n      return yield* Effect.die("Read page did not settle for a complete first chunk");\n    return yield* makeTextPage(input, resource, result, first.bytes.subarray(0, result.consumed).includes(0), lineCount(textLeaf(first.bytes).summary.lines, first.bytes.at(-1)));\n  }\n  const offset = page.offset || 1;\n  const limit = Math.min(page.limit || MAX_READ_LINES2, MAX_READ_LINES2);\n  const leaves = [textLeaf(first.bytes)];\n  let bytes = first.bytes.length;\n  let lines = leaves[0].summary.lines;\n  let ended = false;\n  while (true) {\n    const eof = ended || bytes >= first.info.size;\n    if (lines >= offset - 1 || eof) {\n      const tree = textTree(leaves);\n      const start = textOffset(tree, offset - 1);\n      let position = 0;\n      const selected = Buffer.concat(leaves.flatMap((leaf) => {\n        const leafStart = position;\n        position += leaf.summary.bytes;\n        if (position <= start)\n          return [];\n        return [leaf.bytes.subarray(Math.max(0, start - leafStart))];\n      }));\n      const result = textPage(selected, eof, { limit });\n      if (result !== undefined) {\n        const translated = {\n          ...result,\n          offset,\n          ...result.next === undefined ? { next: undefined } : { next: offset + result.next - 1 }\n        };\n        const consumed = start + result.consumed;\n        let checked = 0;\n        const binary = leaves.some((leaf) => {\n          const length = Math.min(leaf.summary.bytes, consumed - checked);\n          checked += leaf.summary.bytes;\n          return length > 0 && leaf.bytes.subarray(0, length).includes(0);\n        });\n        return yield* makeTextPage(input, resource, translated, binary, lineCount(lines, leaves.at(-1)?.bytes.at(-1)));\n      }\n    }\n    const next = yield* readFile(files, input, resource, { offset: bytes, length: FIRST_CHUNK });\n    if (next.bytes.length === 0) {\n      ended = true;\n      continue;\n    }\n    const leaf = textLeaf(next.bytes);\n    leaves.push(leaf);\n    bytes += leaf.summary.bytes;\n    lines += leaf.summary.lines;\n  }\n});\nvar readFile = (files, input, resource, range) => files.read(input, range).pipe(Effect.catchTag("Environment.WrongKind", () => Effect.fail(new PathKindError2({ resource, expected: "a file" }))));\nvar makeTextPage = Effect.fnUntraced(function* (input, resource, result, binary, lines) {\n  if (binary)\n    return yield* new BinaryFileError2({ resource });\n  if (result.entries.length === 0 && result.offset !== 1)\n    return yield* new OffsetOutOfRangeError2({ offset: result.offset, lines });\n  return new TextPage2({\n    type: "text-page",\n    content: result.entries.join(`\n`),\n    mime: mimeType(input),\n    offset: result.offset,\n    truncated: result.next !== undefined,\n    ...result.next === undefined ? {} : { next: result.next }\n  });\n});\nvar list = (items, page) => {\n  const offset = page.offset || 1;\n  const limit = Math.min(page.limit || MAX_READ_LINES2, MAX_READ_LINES2);\n  const visible = items.flatMap((item) => item.type === "other" ? [] : [\n    ListEntry2.make({\n      path: RelativePath2.make(item.name + (item.type === "directory" ? path.sep : "")),\n      type: item.type\n    })\n  ]).sort((a, b) => a.type === "directory" ? b.type === "directory" ? a.path.localeCompare(b.path) : -1 : b.type === "directory" ? 1 : a.path.localeCompare(b.path));\n  const selected = visible.slice(offset - 1, offset - 1 + limit);\n  const truncated = offset - 1 + selected.length < visible.length;\n  return new ListPage2({\n    type: "list-page",\n    entries: selected,\n    truncated,\n    ...truncated ? { next: offset + selected.length } : {}\n  });\n};\nvar textPage = (bytes, eof, page) => {\n  const offset = page.offset || 1;\n  const limit = Math.min(page.limit || MAX_READ_LINES2, MAX_READ_LINES2);\n  const decoded = new TextDecoder().decode(bytes);\n  const split = decoded.split(`\n`);\n  const complete = eof ? split.at(-1) === "" ? split.slice(0, -1) : split : split.slice(0, -1);\n  const available = complete.map((line) => line.endsWith("\\r") ? line.slice(0, -1) : line);\n  const entries = [];\n  let size = 0;\n  let next;\n  for (const [index, value] of available.slice(offset - 1).entries()) {\n    const line = offset + index;\n    if (entries.length >= limit || size >= MAX_READ_BYTES2) {\n      next = line;\n      break;\n    }\n    const text = clampLine(value);\n    const lineSize = Buffer.byteLength(text, "utf-8") + (entries.length > 0 ? 1 : 0);\n    if (size + lineSize > MAX_READ_BYTES2) {\n      next = line;\n      break;\n    }\n    entries.push(text);\n    size += lineSize;\n  }\n  if (next === undefined && entries.length >= limit &'... 2681 more characters,
+    expected: /makeLocationNode\(\{ service: Service7, layer, deps: \[workbenchControlNode\] \}\)/u,
+    operator: 'match',
+    diff: 'simple'
+  }

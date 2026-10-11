@@ -1,0 +1,5669 @@
+{
+  "schemaVersion": 1,
+  "status": "DRAFT proposal; not production adoption or independent approval",
+  "revision": 1,
+  "date": "2026-10-03",
+  "plan": "docs/runs/desktop-design-candidates/plan.md revision1",
+  "units": "All numeric dimensions are logical CSS px at100% zoom; durations are ms. Colors are sRGB hex.",
+  "resolution": {
+    "tokens": "Index common.tokens by path. Overlay candidate.tokenOverrides on token.value only. For mode light/dark select that mode when value is an object. Resolve {path} recursively, reject missing/cyclic references and type mismatch.",
+    "components": "Deep-merge common.components with candidate.componentOverrides by family. State profile strings resolve against common.stateProfiles; profile extends is recursive. Component style token references resolve after candidate tokens. Candidate.layout and candidate.interactions complete the composition.",
+    "layerRule": "Primitive has raw values only; Semantic references Primitive; Component references Semantic. Profile/component contracts may consume Component tokens.",
+    "notCanonicalSchema": "This draft schema does not replace docs/design/tokens/manifest.json. Candidate adoption requires a reviewed translation to the existing generator schema."
+  },
+  "sourceAuthority": [
+    "Latest user correction and plan revision1",
+    "Existing approved product/permission/architecture contracts",
+    "Frozen research reports with scoped provenance",
+    "This file supplies proposed dimensions, not unobserved vendor measurements"
+  ],
+  "common": {
+    "tokens": [
+      {
+        "path": "primitive.color.white",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#ffffff"
+      },
+      {
+        "path": "primitive.color.n0",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#fafafa"
+      },
+      {
+        "path": "primitive.color.n1",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#f5f5f5"
+      },
+      {
+        "path": "primitive.color.n2",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#e8e8e8"
+      },
+      {
+        "path": "primitive.color.n3",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#c6c6c6"
+      },
+      {
+        "path": "primitive.color.n35",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#8c8c8c"
+      },
+      {
+        "path": "primitive.color.n4",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#767676"
+      },
+      {
+        "path": "primitive.color.n5",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#555555"
+      },
+      {
+        "path": "primitive.color.n6",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#3d3d3d"
+      },
+      {
+        "path": "primitive.color.n7",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#262626"
+      },
+      {
+        "path": "primitive.color.n8",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#171717"
+      },
+      {
+        "path": "primitive.color.n9",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#121212"
+      },
+      {
+        "path": "primitive.color.blue0",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#e8f0ff"
+      },
+      {
+        "path": "primitive.color.blue6",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#0b5fc4"
+      },
+      {
+        "path": "primitive.color.blue7",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#a9c9ff"
+      },
+      {
+        "path": "primitive.color.blueDeep",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#1d2b40"
+      },
+      {
+        "path": "primitive.color.green0",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#e7f5ec"
+      },
+      {
+        "path": "primitive.color.green6",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#17653a"
+      },
+      {
+        "path": "primitive.color.green7",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#91ddb0"
+      },
+      {
+        "path": "primitive.color.greenDeep",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#173226"
+      },
+      {
+        "path": "primitive.color.amber0",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#fff2d8"
+      },
+      {
+        "path": "primitive.color.amber7",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#704b00"
+      },
+      {
+        "path": "primitive.color.amber8",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#f0c976"
+      },
+      {
+        "path": "primitive.color.amberDeep",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#342c1a"
+      },
+      {
+        "path": "primitive.color.red0",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#ffebea"
+      },
+      {
+        "path": "primitive.color.red1",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#ffd5d1"
+      },
+      {
+        "path": "primitive.color.red6",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#aa2d2d"
+      },
+      {
+        "path": "primitive.color.red7",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#ffb3ac"
+      },
+      {
+        "path": "primitive.color.redDeep",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#3d2325"
+      },
+      {
+        "path": "primitive.color.transparent",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#ffffff00"
+      },
+      {
+        "path": "primitive.color.scrimLight",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#17171752"
+      },
+      {
+        "path": "primitive.color.scrimDark",
+        "layer": "primitive",
+        "type": "color",
+        "value": "#0000008f"
+      },
+      {
+        "path": "primitive.px.0",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 0
+      },
+      {
+        "path": "primitive.px.1",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 1
+      },
+      {
+        "path": "primitive.px.2",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 2
+      },
+      {
+        "path": "primitive.px.4",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 4
+      },
+      {
+        "path": "primitive.px.6",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 6
+      },
+      {
+        "path": "primitive.px.8",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 8
+      },
+      {
+        "path": "primitive.px.10",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 10
+      },
+      {
+        "path": "primitive.px.12",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 12
+      },
+      {
+        "path": "primitive.px.14",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 14
+      },
+      {
+        "path": "primitive.px.16",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 16
+      },
+      {
+        "path": "primitive.px.18",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 18
+      },
+      {
+        "path": "primitive.px.20",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 20
+      },
+      {
+        "path": "primitive.px.22",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 22
+      },
+      {
+        "path": "primitive.px.24",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 24
+      },
+      {
+        "path": "primitive.px.26",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 26
+      },
+      {
+        "path": "primitive.px.28",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 28
+      },
+      {
+        "path": "primitive.px.32",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 32
+      },
+      {
+        "path": "primitive.px.36",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 36
+      },
+      {
+        "path": "primitive.px.40",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 40
+      },
+      {
+        "path": "primitive.px.44",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 44
+      },
+      {
+        "path": "primitive.px.48",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 48
+      },
+      {
+        "path": "primitive.px.52",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 52
+      },
+      {
+        "path": "primitive.px.56",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 56
+      },
+      {
+        "path": "primitive.px.64",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 64
+      },
+      {
+        "path": "primitive.px.68",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 68
+      },
+      {
+        "path": "primitive.px.72",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 72
+      },
+      {
+        "path": "primitive.px.80",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 80
+      },
+      {
+        "path": "primitive.px.96",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 96
+      },
+      {
+        "path": "primitive.px.104",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 104
+      },
+      {
+        "path": "primitive.px.112",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 112
+      },
+      {
+        "path": "primitive.px.120",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 120
+      },
+      {
+        "path": "primitive.px.128",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 128
+      },
+      {
+        "path": "primitive.px.136",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 136
+      },
+      {
+        "path": "primitive.px.144",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 144
+      },
+      {
+        "path": "primitive.px.160",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 160
+      },
+      {
+        "path": "primitive.px.176",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 176
+      },
+      {
+        "path": "primitive.px.192",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 192
+      },
+      {
+        "path": "primitive.px.200",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 200
+      },
+      {
+        "path": "primitive.px.208",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 208
+      },
+      {
+        "path": "primitive.px.216",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 216
+      },
+      {
+        "path": "primitive.px.224",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 224
+      },
+      {
+        "path": "primitive.px.240",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 240
+      },
+      {
+        "path": "primitive.px.256",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 256
+      },
+      {
+        "path": "primitive.px.280",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 280
+      },
+      {
+        "path": "primitive.px.288",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 288
+      },
+      {
+        "path": "primitive.px.300",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 300
+      },
+      {
+        "path": "primitive.px.320",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 320
+      },
+      {
+        "path": "primitive.px.336",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 336
+      },
+      {
+        "path": "primitive.px.360",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 360
+      },
+      {
+        "path": "primitive.px.400",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 400
+      },
+      {
+        "path": "primitive.px.420",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 420
+      },
+      {
+        "path": "primitive.px.440",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 440
+      },
+      {
+        "path": "primitive.px.480",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 480
+      },
+      {
+        "path": "primitive.px.560",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 560
+      },
+      {
+        "path": "primitive.px.600",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 600
+      },
+      {
+        "path": "primitive.px.640",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 640
+      },
+      {
+        "path": "primitive.px.680",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 680
+      },
+      {
+        "path": "primitive.px.720",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 720
+      },
+      {
+        "path": "primitive.px.760",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 760
+      },
+      {
+        "path": "primitive.px.800",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 800
+      },
+      {
+        "path": "primitive.px.816",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 816
+      },
+      {
+        "path": "primitive.px.900",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 900
+      },
+      {
+        "path": "primitive.px.960",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 960
+      },
+      {
+        "path": "primitive.px.1200",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 1200
+      },
+      {
+        "path": "primitive.px.1280",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 1280
+      },
+      {
+        "path": "primitive.px.9999",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 9999
+      },
+      {
+        "path": "primitive.weight.400",
+        "layer": "primitive",
+        "type": "number",
+        "value": 400
+      },
+      {
+        "path": "primitive.weight.500",
+        "layer": "primitive",
+        "type": "number",
+        "value": 500
+      },
+      {
+        "path": "primitive.weight.700",
+        "layer": "primitive",
+        "type": "number",
+        "value": 700
+      },
+      {
+        "path": "primitive.font.ui",
+        "layer": "primitive",
+        "type": "fontFamily",
+        "value": "-apple-system, BlinkMacSystemFont, system-ui, \"Segoe UI\", \"Noto Sans KR\", sans-serif"
+      },
+      {
+        "path": "primitive.font.mono",
+        "layer": "primitive",
+        "type": "fontFamily",
+        "value": "\"IBM Plex Mono\", ui-monospace, SFMono-Regular, Consolas, monospace"
+      },
+      {
+        "path": "primitive.font.figmaUi",
+        "layer": "primitive",
+        "type": "fontFamily",
+        "value": "Noto Sans KR"
+      },
+      {
+        "path": "primitive.font.figmaMono",
+        "layer": "primitive",
+        "type": "fontFamily",
+        "value": "IBM Plex Mono"
+      },
+      {
+        "path": "primitive.px.15",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 15
+      },
+      {
+        "path": "primitive.stroke.icon",
+        "layer": "primitive",
+        "type": "number",
+        "value": 1.75
+      },
+      {
+        "path": "primitive.opacity.disabled",
+        "layer": "primitive",
+        "type": "number",
+        "value": 1
+      },
+      {
+        "path": "primitive.duration.none",
+        "layer": "primitive",
+        "type": "duration",
+        "value": 0
+      },
+      {
+        "path": "primitive.duration.hover",
+        "layer": "primitive",
+        "type": "duration",
+        "value": 100
+      },
+      {
+        "path": "primitive.duration.popup",
+        "layer": "primitive",
+        "type": "duration",
+        "value": 140
+      },
+      {
+        "path": "primitive.duration.panel",
+        "layer": "primitive",
+        "type": "duration",
+        "value": 180
+      },
+      {
+        "path": "primitive.easing.standard",
+        "layer": "primitive",
+        "type": "string",
+        "value": "cubic-bezier(0.2, 0, 0, 1)"
+      },
+      {
+        "path": "primitive.shadow.none",
+        "layer": "primitive",
+        "type": "shadow",
+        "value": "none"
+      },
+      {
+        "path": "primitive.shadow.menuLight",
+        "layer": "primitive",
+        "type": "shadow",
+        "value": "0 4px 16px #17171714, 0 1px 3px #1717170d"
+      },
+      {
+        "path": "primitive.shadow.menuDark",
+        "layer": "primitive",
+        "type": "shadow",
+        "value": "0 4px 16px #00000052, 0 1px 3px #00000033"
+      },
+      {
+        "path": "primitive.shadow.modalLight",
+        "layer": "primitive",
+        "type": "shadow",
+        "value": "0 12px 40px #17171724"
+      },
+      {
+        "path": "primitive.shadow.modalDark",
+        "layer": "primitive",
+        "type": "shadow",
+        "value": "0 12px 40px #00000066"
+      },
+      {
+        "path": "semantic.color.canvas",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.white}",
+          "dark": "{primitive.color.n8}"
+        }
+      },
+      {
+        "path": "semantic.color.surface",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.white}",
+          "dark": "{primitive.color.n7}"
+        }
+      },
+      {
+        "path": "semantic.color.surface.subtle",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n0}",
+          "dark": "{primitive.color.n9}"
+        }
+      },
+      {
+        "path": "semantic.color.surface.inset",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n1}",
+          "dark": "{primitive.color.n9}"
+        }
+      },
+      {
+        "path": "semantic.color.surface.raised",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.white}",
+          "dark": "{primitive.color.n7}"
+        }
+      },
+      {
+        "path": "semantic.color.overlay",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.scrimLight}",
+          "dark": "{primitive.color.scrimDark}"
+        }
+      },
+      {
+        "path": "semantic.color.text.primary",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n8}",
+          "dark": "{primitive.color.white}"
+        }
+      },
+      {
+        "path": "semantic.color.text.secondary",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n5}",
+          "dark": "{primitive.color.n3}"
+        }
+      },
+      {
+        "path": "semantic.color.text.muted",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n5}",
+          "dark": "{primitive.color.n3}"
+        }
+      },
+      {
+        "path": "semantic.color.text.disabled",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n4}",
+          "dark": "{primitive.color.n4}"
+        }
+      },
+      {
+        "path": "semantic.color.text.inverse",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.white}",
+          "dark": "{primitive.color.n8}"
+        }
+      },
+      {
+        "path": "semantic.color.text.link",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.blue6}",
+          "dark": "{primitive.color.blue7}"
+        }
+      },
+      {
+        "path": "semantic.color.border.decorative",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n2}",
+          "dark": "{primitive.color.n6}"
+        }
+      },
+      {
+        "path": "semantic.color.border.interactive",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n35}",
+          "dark": "{primitive.color.n4}"
+        }
+      },
+      {
+        "path": "semantic.color.border.strong",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n5}",
+          "dark": "{primitive.color.n3}"
+        }
+      },
+      {
+        "path": "semantic.color.focus",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.blue6}",
+          "dark": "{primitive.color.blue7}"
+        }
+      },
+      {
+        "path": "semantic.color.control.background",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.transparent}",
+          "dark": "{primitive.color.transparent}"
+        }
+      },
+      {
+        "path": "semantic.color.control.hover",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n1}",
+          "dark": "{primitive.color.n6}"
+        }
+      },
+      {
+        "path": "semantic.color.control.pressed",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n2}",
+          "dark": "{primitive.color.n5}"
+        }
+      },
+      {
+        "path": "semantic.color.control.disabled",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n1}",
+          "dark": "{primitive.color.n7}"
+        }
+      },
+      {
+        "path": "semantic.color.action.background",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n8}",
+          "dark": "{primitive.color.white}"
+        }
+      },
+      {
+        "path": "semantic.color.action.hover",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n6}",
+          "dark": "{primitive.color.n2}"
+        }
+      },
+      {
+        "path": "semantic.color.action.pressed",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n7}",
+          "dark": "{primitive.color.n3}"
+        }
+      },
+      {
+        "path": "semantic.color.action.foreground",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.white}",
+          "dark": "{primitive.color.n8}"
+        }
+      },
+      {
+        "path": "semantic.color.selection.background",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n2}",
+          "dark": "{primitive.color.n6}"
+        }
+      },
+      {
+        "path": "semantic.color.selection.foreground",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n8}",
+          "dark": "{primitive.color.white}"
+        }
+      },
+      {
+        "path": "semantic.color.field.background",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n0}",
+          "dark": "{primitive.color.n7}"
+        }
+      },
+      {
+        "path": "semantic.color.field.content",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n8}",
+          "dark": "{primitive.color.white}"
+        }
+      },
+      {
+        "path": "semantic.color.field.placeholder",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n5}",
+          "dark": "{primitive.color.n3}"
+        }
+      },
+      {
+        "path": "semantic.color.success.background",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.green0}",
+          "dark": "{primitive.color.greenDeep}"
+        }
+      },
+      {
+        "path": "semantic.color.success.foreground",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.green6}",
+          "dark": "{primitive.color.green7}"
+        }
+      },
+      {
+        "path": "semantic.color.warning.background",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.amber0}",
+          "dark": "{primitive.color.amberDeep}"
+        }
+      },
+      {
+        "path": "semantic.color.warning.foreground",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.amber7}",
+          "dark": "{primitive.color.amber8}"
+        }
+      },
+      {
+        "path": "semantic.color.danger.background",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.red0}",
+          "dark": "{primitive.color.redDeep}"
+        }
+      },
+      {
+        "path": "semantic.color.danger.foreground",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.red6}",
+          "dark": "{primitive.color.red7}"
+        }
+      },
+      {
+        "path": "semantic.color.danger.hover",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.red1}",
+          "dark": "{primitive.color.redDeep}"
+        }
+      },
+      {
+        "path": "semantic.color.info.background",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.blue0}",
+          "dark": "{primitive.color.blueDeep}"
+        }
+      },
+      {
+        "path": "semantic.color.info.foreground",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.blue6}",
+          "dark": "{primitive.color.blue7}"
+        }
+      },
+      {
+        "path": "semantic.color.unknown.background",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n1}",
+          "dark": "{primitive.color.n6}"
+        }
+      },
+      {
+        "path": "semantic.color.unknown.foreground",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.n5}",
+          "dark": "{primitive.color.n2}"
+        }
+      },
+      {
+        "path": "semantic.color.stale.background",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.amber0}",
+          "dark": "{primitive.color.amberDeep}"
+        }
+      },
+      {
+        "path": "semantic.color.stale.foreground",
+        "layer": "semantic",
+        "type": "color",
+        "value": {
+          "light": "{primitive.color.amber7}",
+          "dark": "{primitive.color.amber8}"
+        }
+      },
+      {
+        "path": "primitive.px.13",
+        "layer": "primitive",
+        "type": "dimension",
+        "value": 13
+      },
+      {
+        "path": "semantic.type.body.size",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.15}",
+          "dark": "{primitive.px.15}"
+        }
+      },
+      {
+        "path": "semantic.type.body.line",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.24}",
+          "dark": "{primitive.px.24}"
+        }
+      },
+      {
+        "path": "semantic.type.body.weight",
+        "layer": "semantic",
+        "type": "number",
+        "value": {
+          "light": "{primitive.weight.400}",
+          "dark": "{primitive.weight.400}"
+        }
+      },
+      {
+        "path": "semantic.type.body.family",
+        "layer": "semantic",
+        "type": "fontFamily",
+        "value": {
+          "light": "{primitive.font.ui}",
+          "dark": "{primitive.font.ui}"
+        }
+      },
+      {
+        "path": "semantic.type.ui.size",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.14}",
+          "dark": "{primitive.px.14}"
+        }
+      },
+      {
+        "path": "semantic.type.ui.line",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.20}",
+          "dark": "{primitive.px.20}"
+        }
+      },
+      {
+        "path": "semantic.type.ui.weight",
+        "layer": "semantic",
+        "type": "number",
+        "value": {
+          "light": "{primitive.weight.400}",
+          "dark": "{primitive.weight.400}"
+        }
+      },
+      {
+        "path": "semantic.type.ui.family",
+        "layer": "semantic",
+        "type": "fontFamily",
+        "value": {
+          "light": "{primitive.font.ui}",
+          "dark": "{primitive.font.ui}"
+        }
+      },
+      {
+        "path": "semantic.type.label.size",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.14}",
+          "dark": "{primitive.px.14}"
+        }
+      },
+      {
+        "path": "semantic.type.label.line",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.20}",
+          "dark": "{primitive.px.20}"
+        }
+      },
+      {
+        "path": "semantic.type.label.weight",
+        "layer": "semantic",
+        "type": "number",
+        "value": {
+          "light": "{primitive.weight.500}",
+          "dark": "{primitive.weight.500}"
+        }
+      },
+      {
+        "path": "semantic.type.label.family",
+        "layer": "semantic",
+        "type": "fontFamily",
+        "value": {
+          "light": "{primitive.font.ui}",
+          "dark": "{primitive.font.ui}"
+        }
+      },
+      {
+        "path": "semantic.type.meta.size",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.12}",
+          "dark": "{primitive.px.12}"
+        }
+      },
+      {
+        "path": "semantic.type.meta.line",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.18}",
+          "dark": "{primitive.px.18}"
+        }
+      },
+      {
+        "path": "semantic.type.meta.weight",
+        "layer": "semantic",
+        "type": "number",
+        "value": {
+          "light": "{primitive.weight.400}",
+          "dark": "{primitive.weight.400}"
+        }
+      },
+      {
+        "path": "semantic.type.meta.family",
+        "layer": "semantic",
+        "type": "fontFamily",
+        "value": {
+          "light": "{primitive.font.ui}",
+          "dark": "{primitive.font.ui}"
+        }
+      },
+      {
+        "path": "semantic.type.smallLabel.size",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.12}",
+          "dark": "{primitive.px.12}"
+        }
+      },
+      {
+        "path": "semantic.type.smallLabel.line",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.18}",
+          "dark": "{primitive.px.18}"
+        }
+      },
+      {
+        "path": "semantic.type.smallLabel.weight",
+        "layer": "semantic",
+        "type": "number",
+        "value": {
+          "light": "{primitive.weight.500}",
+          "dark": "{primitive.weight.500}"
+        }
+      },
+      {
+        "path": "semantic.type.smallLabel.family",
+        "layer": "semantic",
+        "type": "fontFamily",
+        "value": {
+          "light": "{primitive.font.ui}",
+          "dark": "{primitive.font.ui}"
+        }
+      },
+      {
+        "path": "semantic.type.title.size",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.16}",
+          "dark": "{primitive.px.16}"
+        }
+      },
+      {
+        "path": "semantic.type.title.line",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.22}",
+          "dark": "{primitive.px.22}"
+        }
+      },
+      {
+        "path": "semantic.type.title.weight",
+        "layer": "semantic",
+        "type": "number",
+        "value": {
+          "light": "{primitive.weight.500}",
+          "dark": "{primitive.weight.500}"
+        }
+      },
+      {
+        "path": "semantic.type.title.family",
+        "layer": "semantic",
+        "type": "fontFamily",
+        "value": {
+          "light": "{primitive.font.ui}",
+          "dark": "{primitive.font.ui}"
+        }
+      },
+      {
+        "path": "semantic.type.emptyTitle.size",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.18}",
+          "dark": "{primitive.px.18}"
+        }
+      },
+      {
+        "path": "semantic.type.emptyTitle.line",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.26}",
+          "dark": "{primitive.px.26}"
+        }
+      },
+      {
+        "path": "semantic.type.emptyTitle.weight",
+        "layer": "semantic",
+        "type": "number",
+        "value": {
+          "light": "{primitive.weight.500}",
+          "dark": "{primitive.weight.500}"
+        }
+      },
+      {
+        "path": "semantic.type.emptyTitle.family",
+        "layer": "semantic",
+        "type": "fontFamily",
+        "value": {
+          "light": "{primitive.font.ui}",
+          "dark": "{primitive.font.ui}"
+        }
+      },
+      {
+        "path": "semantic.type.code.size",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.13}",
+          "dark": "{primitive.px.13}"
+        }
+      },
+      {
+        "path": "semantic.type.code.line",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.20}",
+          "dark": "{primitive.px.20}"
+        }
+      },
+      {
+        "path": "semantic.type.code.weight",
+        "layer": "semantic",
+        "type": "number",
+        "value": {
+          "light": "{primitive.weight.400}",
+          "dark": "{primitive.weight.400}"
+        }
+      },
+      {
+        "path": "semantic.type.code.family",
+        "layer": "semantic",
+        "type": "fontFamily",
+        "value": {
+          "light": "{primitive.font.mono}",
+          "dark": "{primitive.font.mono}"
+        }
+      },
+      {
+        "path": "semantic.type.input.size",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.15}",
+          "dark": "{primitive.px.15}"
+        }
+      },
+      {
+        "path": "semantic.type.input.line",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.24}",
+          "dark": "{primitive.px.24}"
+        }
+      },
+      {
+        "path": "semantic.type.input.weight",
+        "layer": "semantic",
+        "type": "number",
+        "value": {
+          "light": "{primitive.weight.400}",
+          "dark": "{primitive.weight.400}"
+        }
+      },
+      {
+        "path": "semantic.type.input.family",
+        "layer": "semantic",
+        "type": "fontFamily",
+        "value": {
+          "light": "{primitive.font.ui}",
+          "dark": "{primitive.font.ui}"
+        }
+      },
+      {
+        "path": "semantic.space.micro",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.2}",
+          "dark": "{primitive.px.2}"
+        }
+      },
+      {
+        "path": "semantic.space.tight",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.4}",
+          "dark": "{primitive.px.4}"
+        }
+      },
+      {
+        "path": "semantic.space.related",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.space.controlInset",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.space.block",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.12}",
+          "dark": "{primitive.px.12}"
+        }
+      },
+      {
+        "path": "semantic.space.panel",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.16}",
+          "dark": "{primitive.px.16}"
+        }
+      },
+      {
+        "path": "semantic.space.section",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.24}",
+          "dark": "{primitive.px.24}"
+        }
+      },
+      {
+        "path": "semantic.space.group",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.32}",
+          "dark": "{primitive.px.32}"
+        }
+      },
+      {
+        "path": "semantic.space.coarseGap",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.radius.control",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.6}",
+          "dark": "{primitive.px.6}"
+        }
+      },
+      {
+        "path": "semantic.radius.row",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.6}",
+          "dark": "{primitive.px.6}"
+        }
+      },
+      {
+        "path": "semantic.radius.field",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.10}",
+          "dark": "{primitive.px.10}"
+        }
+      },
+      {
+        "path": "semantic.radius.composer",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.16}",
+          "dark": "{primitive.px.16}"
+        }
+      },
+      {
+        "path": "semantic.radius.card",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.10}",
+          "dark": "{primitive.px.10}"
+        }
+      },
+      {
+        "path": "semantic.radius.menu",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.radius.dialog",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.12}",
+          "dark": "{primitive.px.12}"
+        }
+      },
+      {
+        "path": "semantic.radius.tooltip",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.6}",
+          "dark": "{primitive.px.6}"
+        }
+      },
+      {
+        "path": "semantic.radius.pill",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.9999}",
+          "dark": "{primitive.px.9999}"
+        }
+      },
+      {
+        "path": "semantic.size.glyph.small",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.16}",
+          "dark": "{primitive.px.16}"
+        }
+      },
+      {
+        "path": "semantic.size.glyph.standard",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.18}",
+          "dark": "{primitive.px.18}"
+        }
+      },
+      {
+        "path": "semantic.size.glyph.emphasis",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.20}",
+          "dark": "{primitive.px.20}"
+        }
+      },
+      {
+        "path": "semantic.size.target.utility",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.28}",
+          "dark": "{primitive.px.28}"
+        }
+      },
+      {
+        "path": "semantic.size.target.default",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.32}",
+          "dark": "{primitive.px.32}"
+        }
+      },
+      {
+        "path": "semantic.size.target.primary",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.32}",
+          "dark": "{primitive.px.32}"
+        }
+      },
+      {
+        "path": "semantic.size.target.permission",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.36}",
+          "dark": "{primitive.px.36}"
+        }
+      },
+      {
+        "path": "semantic.size.target.coarse",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.44}",
+          "dark": "{primitive.px.44}"
+        }
+      },
+      {
+        "path": "semantic.stroke.hairline",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.1}",
+          "dark": "{primitive.px.1}"
+        }
+      },
+      {
+        "path": "semantic.stroke.focus",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.2}",
+          "dark": "{primitive.px.2}"
+        }
+      },
+      {
+        "path": "semantic.size.focusGap",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.2}",
+          "dark": "{primitive.px.2}"
+        }
+      },
+      {
+        "path": "semantic.layout.sidebarWidth",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.216}",
+          "dark": "{primitive.px.216}"
+        }
+      },
+      {
+        "path": "semantic.layout.railWidth",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.56}",
+          "dark": "{primitive.px.56}"
+        }
+      },
+      {
+        "path": "semantic.layout.headerHeight",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.44}",
+          "dark": "{primitive.px.44}"
+        }
+      },
+      {
+        "path": "semantic.layout.navRowHeight",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.32}",
+          "dark": "{primitive.px.32}"
+        }
+      },
+      {
+        "path": "semantic.layout.navInset",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.layout.mainGutter",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.32}",
+          "dark": "{primitive.px.32}"
+        }
+      },
+      {
+        "path": "semantic.layout.threadMax",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.720}",
+          "dark": "{primitive.px.720}"
+        }
+      },
+      {
+        "path": "semantic.layout.inspectorWidth",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.336}",
+          "dark": "{primitive.px.336}"
+        }
+      },
+      {
+        "path": "semantic.layout.inspectorMin",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.300}",
+          "dark": "{primitive.px.300}"
+        }
+      },
+      {
+        "path": "semantic.layout.inspectorMax",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.480}",
+          "dark": "{primitive.px.480}"
+        }
+      },
+      {
+        "path": "semantic.layout.threadMinForSplit",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.480}",
+          "dark": "{primitive.px.480}"
+        }
+      },
+      {
+        "path": "semantic.layout.messageGap",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.24}",
+          "dark": "{primitive.px.24}"
+        }
+      },
+      {
+        "path": "semantic.composer.emptyHeight",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.72}",
+          "dark": "{primitive.px.72}"
+        }
+      },
+      {
+        "path": "semantic.composer.inputMin",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.24}",
+          "dark": "{primitive.px.24}"
+        }
+      },
+      {
+        "path": "semantic.composer.inputMax",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.144}",
+          "dark": "{primitive.px.144}"
+        }
+      },
+      {
+        "path": "semantic.composer.toolbarHeight",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.32}",
+          "dark": "{primitive.px.32}"
+        }
+      },
+      {
+        "path": "semantic.composer.paddingX",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.12}",
+          "dark": "{primitive.px.12}"
+        }
+      },
+      {
+        "path": "semantic.composer.paddingY",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.composer.rowGap",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.0}",
+          "dark": "{primitive.px.0}"
+        }
+      },
+      {
+        "path": "semantic.composer.attachmentHeight",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.32}",
+          "dark": "{primitive.px.32}"
+        }
+      },
+      {
+        "path": "semantic.composer.attachmentGap",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.composer.bottomInset",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.16}",
+          "dark": "{primitive.px.16}"
+        }
+      },
+      {
+        "path": "semantic.composer.hintHeight",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.18}",
+          "dark": "{primitive.px.18}"
+        }
+      },
+      {
+        "path": "semantic.composer.hintGap",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.4}",
+          "dark": "{primitive.px.4}"
+        }
+      },
+      {
+        "path": "semantic.menu.minWidth",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.192}",
+          "dark": "{primitive.px.192}"
+        }
+      },
+      {
+        "path": "semantic.menu.maxWidth",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.320}",
+          "dark": "{primitive.px.320}"
+        }
+      },
+      {
+        "path": "semantic.menu.rowHeight",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.32}",
+          "dark": "{primitive.px.32}"
+        }
+      },
+      {
+        "path": "semantic.menu.padding",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.4}",
+          "dark": "{primitive.px.4}"
+        }
+      },
+      {
+        "path": "semantic.menu.rowInset",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.menu.iconGap",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.menu.offset",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.4}",
+          "dark": "{primitive.px.4}"
+        }
+      },
+      {
+        "path": "semantic.menu.viewportInset",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.menu.maxHeight",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.320}",
+          "dark": "{primitive.px.320}"
+        }
+      },
+      {
+        "path": "semantic.dialog.width",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.440}",
+          "dark": "{primitive.px.440}"
+        }
+      },
+      {
+        "path": "semantic.dialog.padding",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.20}",
+          "dark": "{primitive.px.20}"
+        }
+      },
+      {
+        "path": "semantic.dialog.actionGap",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.tooltip.maxWidth",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.280}",
+          "dark": "{primitive.px.280}"
+        }
+      },
+      {
+        "path": "semantic.tooltip.paddingX",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.tooltip.paddingY",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.6}",
+          "dark": "{primitive.px.6}"
+        }
+      },
+      {
+        "path": "semantic.tooltip.offset",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.6}",
+          "dark": "{primitive.px.6}"
+        }
+      },
+      {
+        "path": "semantic.input.height",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.36}",
+          "dark": "{primitive.px.36}"
+        }
+      },
+      {
+        "path": "semantic.input.inset",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.10}",
+          "dark": "{primitive.px.10}"
+        }
+      },
+      {
+        "path": "semantic.attachment.maxWidth",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.240}",
+          "dark": "{primitive.px.240}"
+        }
+      },
+      {
+        "path": "semantic.permission.padding",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.16}",
+          "dark": "{primitive.px.16}"
+        }
+      },
+      {
+        "path": "semantic.permission.actionGap",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.8}",
+          "dark": "{primitive.px.8}"
+        }
+      },
+      {
+        "path": "semantic.permission.maxWidth",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.640}",
+          "dark": "{primitive.px.640}"
+        }
+      },
+      {
+        "path": "semantic.code.padding",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.12}",
+          "dark": "{primitive.px.12}"
+        }
+      },
+      {
+        "path": "semantic.inspector.tabsHeight",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.40}",
+          "dark": "{primitive.px.40}"
+        }
+      },
+      {
+        "path": "semantic.inspector.tabTarget",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.32}",
+          "dark": "{primitive.px.32}"
+        }
+      },
+      {
+        "path": "semantic.inspector.headerHeight",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.40}",
+          "dark": "{primitive.px.40}"
+        }
+      },
+      {
+        "path": "semantic.inspector.contentInset",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.16}",
+          "dark": "{primitive.px.16}"
+        }
+      },
+      {
+        "path": "semantic.toast.width",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.360}",
+          "dark": "{primitive.px.360}"
+        }
+      },
+      {
+        "path": "semantic.toast.padding",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.12}",
+          "dark": "{primitive.px.12}"
+        }
+      },
+      {
+        "path": "semantic.extensions.rowHeight",
+        "layer": "semantic",
+        "type": "dimension",
+        "value": {
+          "light": "{primitive.px.44}",
+          "dark": "{primitive.px.44}"
+        }
+      },
+      {
+        "path": "semantic.stroke.icon",
+        "layer": "semantic",
+        "type": "number",
+        "value": {
+          "light": "{primitive.stroke.icon}",
+          "dark": "{primitive.stroke.icon}"
+        }
+      },
+      {
+        "path": "semantic.opacity.disabled",
+        "layer": "semantic",
+        "type": "number",
+        "value": {
+          "light": "{primitive.opacity.disabled}",
+          "dark": "{primitive.opacity.disabled}"
+        }
+      },
+      {
+        "path": "semantic.motion.hover",
+        "layer": "semantic",
+        "type": "duration",
+        "value": {
+          "light": "{primitive.duration.hover}",
+          "dark": "{primitive.duration.hover}"
+        }
+      },
+      {
+        "path": "semantic.motion.popup",
+        "layer": "semantic",
+        "type": "duration",
+        "value": {
+          "light": "{primitive.duration.popup}",
+          "dark": "{primitive.duration.popup}"
+        }
+      },
+      {
+        "path": "semantic.motion.panel",
+        "layer": "semantic",
+        "type": "duration",
+        "value": {
+          "light": "{primitive.duration.panel}",
+          "dark": "{primitive.duration.panel}"
+        }
+      },
+      {
+        "path": "semantic.motion.reduced",
+        "layer": "semantic",
+        "type": "duration",
+        "value": {
+          "light": "{primitive.duration.none}",
+          "dark": "{primitive.duration.none}"
+        }
+      },
+      {
+        "path": "semantic.motion.easing",
+        "layer": "semantic",
+        "type": "string",
+        "value": {
+          "light": "{primitive.easing.standard}",
+          "dark": "{primitive.easing.standard}"
+        }
+      },
+      {
+        "path": "semantic.elevation.base",
+        "layer": "semantic",
+        "type": "shadow",
+        "value": {
+          "light": "{primitive.shadow.none}",
+          "dark": "{primitive.shadow.none}"
+        }
+      },
+      {
+        "path": "semantic.elevation.menu",
+        "layer": "semantic",
+        "type": "shadow",
+        "value": {
+          "light": "{primitive.shadow.menuLight}",
+          "dark": "{primitive.shadow.menuDark}"
+        }
+      },
+      {
+        "path": "semantic.elevation.modal",
+        "layer": "semantic",
+        "type": "shadow",
+        "value": {
+          "light": "{primitive.shadow.modalLight}",
+          "dark": "{primitive.shadow.modalDark}"
+        }
+      },
+      {
+        "path": "component.control.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.control.background}"
+      },
+      {
+        "path": "component.control.hover",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.control.hover}"
+      },
+      {
+        "path": "component.control.pressed",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.control.pressed}"
+      },
+      {
+        "path": "component.control.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.control.disabledForeground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.disabled}"
+      },
+      {
+        "path": "component.control.disabledBackground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.control.disabled}"
+      },
+      {
+        "path": "component.control.target",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.size.target.default}"
+      },
+      {
+        "path": "component.control.utilityTarget",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.size.target.utility}"
+      },
+      {
+        "path": "component.control.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.control}"
+      },
+      {
+        "path": "component.control.glyph",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.size.glyph.small}"
+      },
+      {
+        "path": "component.control.focus",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.focus}"
+      },
+      {
+        "path": "component.control.focusWidth",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.stroke.focus}"
+      },
+      {
+        "path": "component.control.focusOffset",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.size.focusGap}"
+      },
+      {
+        "path": "component.control.size",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.ui.size}"
+      },
+      {
+        "path": "component.control.line",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.ui.line}"
+      },
+      {
+        "path": "component.control.weight",
+        "layer": "component",
+        "type": "number",
+        "value": "{semantic.type.ui.weight}"
+      },
+      {
+        "path": "component.primary.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.action.background}"
+      },
+      {
+        "path": "component.primary.hover",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.action.hover}"
+      },
+      {
+        "path": "component.primary.pressed",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.action.pressed}"
+      },
+      {
+        "path": "component.primary.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.action.foreground}"
+      },
+      {
+        "path": "component.primary.target",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.size.target.primary}"
+      },
+      {
+        "path": "component.primary.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.control}"
+      },
+      {
+        "path": "component.shell.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.canvas}"
+      },
+      {
+        "path": "component.shell.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.shell.headerHeight",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.layout.headerHeight}"
+      },
+      {
+        "path": "component.shell.gutter",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.layout.mainGutter}"
+      },
+      {
+        "path": "component.shell.divider",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.border.decorative}"
+      },
+      {
+        "path": "component.navigation.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.surface.subtle}"
+      },
+      {
+        "path": "component.navigation.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.navigation.width",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.layout.sidebarWidth}"
+      },
+      {
+        "path": "component.navigation.railWidth",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.layout.railWidth}"
+      },
+      {
+        "path": "component.navigation.rowHeight",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.layout.navRowHeight}"
+      },
+      {
+        "path": "component.navigation.inset",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.layout.navInset}"
+      },
+      {
+        "path": "component.navigation.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.row}"
+      },
+      {
+        "path": "component.navigation.hover",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.control.hover}"
+      },
+      {
+        "path": "component.navigation.selected",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.selection.background}"
+      },
+      {
+        "path": "component.navigation.selectedForeground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.selection.foreground}"
+      },
+      {
+        "path": "component.navigation.size",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.ui.size}"
+      },
+      {
+        "path": "component.navigation.line",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.ui.line}"
+      },
+      {
+        "path": "component.navigation.weight",
+        "layer": "component",
+        "type": "number",
+        "value": "{semantic.type.ui.weight}"
+      },
+      {
+        "path": "component.field.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.field.background}"
+      },
+      {
+        "path": "component.field.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.field.content}"
+      },
+      {
+        "path": "component.field.placeholder",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.field.placeholder}"
+      },
+      {
+        "path": "component.field.border",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.border.interactive}"
+      },
+      {
+        "path": "component.field.hoverBorder",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.border.strong}"
+      },
+      {
+        "path": "component.field.invalidBorder",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.danger.foreground}"
+      },
+      {
+        "path": "component.field.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.field}"
+      },
+      {
+        "path": "component.field.height",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.input.height}"
+      },
+      {
+        "path": "component.field.inset",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.input.inset}"
+      },
+      {
+        "path": "component.field.size",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.ui.size}"
+      },
+      {
+        "path": "component.field.line",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.ui.line}"
+      },
+      {
+        "path": "component.composer.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.field.background}"
+      },
+      {
+        "path": "component.composer.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.field.content}"
+      },
+      {
+        "path": "component.composer.placeholder",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.field.placeholder}"
+      },
+      {
+        "path": "component.composer.border",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.border.interactive}"
+      },
+      {
+        "path": "component.composer.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.composer}"
+      },
+      {
+        "path": "component.composer.emptyHeight",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.emptyHeight}"
+      },
+      {
+        "path": "component.composer.inputMin",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.inputMin}"
+      },
+      {
+        "path": "component.composer.inputMax",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.inputMax}"
+      },
+      {
+        "path": "component.composer.toolbarHeight",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.toolbarHeight}"
+      },
+      {
+        "path": "component.composer.paddingX",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.paddingX}"
+      },
+      {
+        "path": "component.composer.paddingY",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.paddingY}"
+      },
+      {
+        "path": "component.composer.rowGap",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.rowGap}"
+      },
+      {
+        "path": "component.composer.attachmentHeight",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.attachmentHeight}"
+      },
+      {
+        "path": "component.composer.attachmentGap",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.attachmentGap}"
+      },
+      {
+        "path": "component.composer.bottomInset",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.bottomInset}"
+      },
+      {
+        "path": "component.composer.hintHeight",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.hintHeight}"
+      },
+      {
+        "path": "component.composer.hintGap",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.hintGap}"
+      },
+      {
+        "path": "component.composer.size",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.input.size}"
+      },
+      {
+        "path": "component.composer.line",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.input.line}"
+      },
+      {
+        "path": "component.menu.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.surface.raised}"
+      },
+      {
+        "path": "component.menu.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.menu.muted",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.secondary}"
+      },
+      {
+        "path": "component.menu.border",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.border.decorative}"
+      },
+      {
+        "path": "component.menu.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.menu}"
+      },
+      {
+        "path": "component.menu.shadow",
+        "layer": "component",
+        "type": "shadow",
+        "value": "{semantic.elevation.menu}"
+      },
+      {
+        "path": "component.menu.minWidth",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.menu.minWidth}"
+      },
+      {
+        "path": "component.menu.maxWidth",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.menu.maxWidth}"
+      },
+      {
+        "path": "component.menu.rowHeight",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.menu.rowHeight}"
+      },
+      {
+        "path": "component.menu.padding",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.menu.padding}"
+      },
+      {
+        "path": "component.menu.rowInset",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.menu.rowInset}"
+      },
+      {
+        "path": "component.menu.iconGap",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.menu.iconGap}"
+      },
+      {
+        "path": "component.menu.offset",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.menu.offset}"
+      },
+      {
+        "path": "component.menu.viewportInset",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.menu.viewportInset}"
+      },
+      {
+        "path": "component.menu.maxHeight",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.menu.maxHeight}"
+      },
+      {
+        "path": "component.dialog.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.surface.raised}"
+      },
+      {
+        "path": "component.dialog.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.dialog.scrim",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.overlay}"
+      },
+      {
+        "path": "component.dialog.width",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.dialog.width}"
+      },
+      {
+        "path": "component.dialog.padding",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.dialog.padding}"
+      },
+      {
+        "path": "component.dialog.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.dialog}"
+      },
+      {
+        "path": "component.dialog.shadow",
+        "layer": "component",
+        "type": "shadow",
+        "value": "{semantic.elevation.modal}"
+      },
+      {
+        "path": "component.tooltip.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.action.background}"
+      },
+      {
+        "path": "component.tooltip.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.action.foreground}"
+      },
+      {
+        "path": "component.tooltip.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.tooltip}"
+      },
+      {
+        "path": "component.tooltip.maxWidth",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.tooltip.maxWidth}"
+      },
+      {
+        "path": "component.tooltip.paddingX",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.tooltip.paddingX}"
+      },
+      {
+        "path": "component.tooltip.paddingY",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.tooltip.paddingY}"
+      },
+      {
+        "path": "component.tooltip.offset",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.tooltip.offset}"
+      },
+      {
+        "path": "component.tooltip.size",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.meta.size}"
+      },
+      {
+        "path": "component.tooltip.line",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.meta.line}"
+      },
+      {
+        "path": "component.message.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.message.secondary",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.secondary}"
+      },
+      {
+        "path": "component.message.maxWidth",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.layout.threadMax}"
+      },
+      {
+        "path": "component.message.gap",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.layout.messageGap}"
+      },
+      {
+        "path": "component.message.size",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.body.size}"
+      },
+      {
+        "path": "component.message.line",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.body.line}"
+      },
+      {
+        "path": "component.message.weight",
+        "layer": "component",
+        "type": "number",
+        "value": "{semantic.type.body.weight}"
+      },
+      {
+        "path": "component.userMessage.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.surface.inset}"
+      },
+      {
+        "path": "component.userMessage.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.userMessage.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.card}"
+      },
+      {
+        "path": "component.userMessage.padding",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.space.block}"
+      },
+      {
+        "path": "component.code.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.surface.inset}"
+      },
+      {
+        "path": "component.code.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.code.border",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.border.decorative}"
+      },
+      {
+        "path": "component.code.padding",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.code.padding}"
+      },
+      {
+        "path": "component.code.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.card}"
+      },
+      {
+        "path": "component.code.size",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.code.size}"
+      },
+      {
+        "path": "component.code.line",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.code.line}"
+      },
+      {
+        "path": "component.code.family",
+        "layer": "component",
+        "type": "fontFamily",
+        "value": "{semantic.type.code.family}"
+      },
+      {
+        "path": "component.tool.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.secondary}"
+      },
+      {
+        "path": "component.tool.rowHeight",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.layout.navRowHeight}"
+      },
+      {
+        "path": "component.tool.detailBackground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.surface.inset}"
+      },
+      {
+        "path": "component.tool.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.control}"
+      },
+      {
+        "path": "component.tool.size",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.ui.size}"
+      },
+      {
+        "path": "component.tool.line",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.ui.line}"
+      },
+      {
+        "path": "component.evidence.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.surface.subtle}"
+      },
+      {
+        "path": "component.evidence.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.link}"
+      },
+      {
+        "path": "component.evidence.border",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.border.decorative}"
+      },
+      {
+        "path": "component.evidence.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.control}"
+      },
+      {
+        "path": "component.evidence.target",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.size.target.default}"
+      },
+      {
+        "path": "component.permission.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.warning.background}"
+      },
+      {
+        "path": "component.permission.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.permission.statusForeground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.warning.foreground}"
+      },
+      {
+        "path": "component.permission.border",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.warning.foreground}"
+      },
+      {
+        "path": "component.permission.padding",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.permission.padding}"
+      },
+      {
+        "path": "component.permission.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.card}"
+      },
+      {
+        "path": "component.permission.target",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.size.target.permission}"
+      },
+      {
+        "path": "component.permission.actionGap",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.permission.actionGap}"
+      },
+      {
+        "path": "component.permission.maxWidth",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.permission.maxWidth}"
+      },
+      {
+        "path": "component.permission.size",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.ui.size}"
+      },
+      {
+        "path": "component.permission.line",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.ui.line}"
+      },
+      {
+        "path": "component.status.size",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.meta.size}"
+      },
+      {
+        "path": "component.status.line",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.type.meta.line}"
+      },
+      {
+        "path": "component.status.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.pill}"
+      },
+      {
+        "path": "component.status.successBackground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.success.background}"
+      },
+      {
+        "path": "component.status.successForeground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.success.foreground}"
+      },
+      {
+        "path": "component.status.warningBackground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.warning.background}"
+      },
+      {
+        "path": "component.status.warningForeground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.warning.foreground}"
+      },
+      {
+        "path": "component.status.dangerBackground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.danger.background}"
+      },
+      {
+        "path": "component.status.dangerForeground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.danger.foreground}"
+      },
+      {
+        "path": "component.status.infoBackground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.info.background}"
+      },
+      {
+        "path": "component.status.infoForeground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.info.foreground}"
+      },
+      {
+        "path": "component.status.unknownBackground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.unknown.background}"
+      },
+      {
+        "path": "component.status.unknownForeground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.unknown.foreground}"
+      },
+      {
+        "path": "component.status.staleBackground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.stale.background}"
+      },
+      {
+        "path": "component.status.staleForeground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.stale.foreground}"
+      },
+      {
+        "path": "component.toast.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.surface.raised}"
+      },
+      {
+        "path": "component.toast.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.toast.border",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.border.decorative}"
+      },
+      {
+        "path": "component.toast.width",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.toast.width}"
+      },
+      {
+        "path": "component.toast.padding",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.toast.padding}"
+      },
+      {
+        "path": "component.toast.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.menu}"
+      },
+      {
+        "path": "component.toast.shadow",
+        "layer": "component",
+        "type": "shadow",
+        "value": "{semantic.elevation.menu}"
+      },
+      {
+        "path": "component.inspector.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.canvas}"
+      },
+      {
+        "path": "component.inspector.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.inspector.border",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.border.decorative}"
+      },
+      {
+        "path": "component.inspector.width",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.layout.inspectorWidth}"
+      },
+      {
+        "path": "component.inspector.minWidth",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.layout.inspectorMin}"
+      },
+      {
+        "path": "component.inspector.maxWidth",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.layout.inspectorMax}"
+      },
+      {
+        "path": "component.inspector.headerHeight",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.inspector.headerHeight}"
+      },
+      {
+        "path": "component.inspector.tabsHeight",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.inspector.tabsHeight}"
+      },
+      {
+        "path": "component.inspector.tabTarget",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.inspector.tabTarget}"
+      },
+      {
+        "path": "component.inspector.contentInset",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.inspector.contentInset}"
+      },
+      {
+        "path": "component.attachment.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.surface}"
+      },
+      {
+        "path": "component.attachment.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.attachment.border",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.border.decorative}"
+      },
+      {
+        "path": "component.attachment.height",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.composer.attachmentHeight}"
+      },
+      {
+        "path": "component.attachment.maxWidth",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.attachment.maxWidth}"
+      },
+      {
+        "path": "component.attachment.radius",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.radius.control}"
+      },
+      {
+        "path": "component.extensions.rowHeight",
+        "layer": "component",
+        "type": "dimension",
+        "value": "{semantic.extensions.rowHeight}"
+      },
+      {
+        "path": "component.extensions.foreground",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.primary}"
+      },
+      {
+        "path": "component.extensions.secondary",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.text.secondary}"
+      },
+      {
+        "path": "component.extensions.background",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.canvas}"
+      },
+      {
+        "path": "component.extensions.border",
+        "layer": "component",
+        "type": "color",
+        "value": "{semantic.color.border.decorative}"
+      }
+    ],
+    "stateProfiles": {
+      "control": {
+        "default": {
+          "background": "{component.control.background}",
+          "foreground": "{component.control.foreground}"
+        },
+        "hover": {
+          "background": "{component.control.hover}"
+        },
+        "pressed": {
+          "background": "{component.control.pressed}"
+        },
+        "focus-visible": {
+          "outlineColor": "{component.control.focus}",
+          "outlineWidth": "{component.control.focusWidth}",
+          "outlineOffset": "{component.control.focusOffset}"
+        },
+        "disabled": {
+          "background": "{component.control.disabledBackground}",
+          "foreground": "{component.control.disabledForeground}",
+          "behavior": "No action; preserve accessible name and adjacent reason when consequential."
+        }
+      },
+      "primary": {
+        "default": {
+          "background": "{component.primary.background}",
+          "foreground": "{component.primary.foreground}"
+        },
+        "hover": {
+          "background": "{component.primary.hover}"
+        },
+        "pressed": {
+          "background": "{component.primary.pressed}"
+        },
+        "focus-visible": {
+          "extends": "control.focus-visible"
+        },
+        "disabled": {
+          "extends": "control.disabled"
+        }
+      },
+      "row": {
+        "default": {
+          "background": "{component.control.background}",
+          "foreground": "{component.navigation.foreground}"
+        },
+        "hover": {
+          "background": "{component.navigation.hover}"
+        },
+        "focus-visible": {
+          "extends": "control.focus-visible"
+        },
+        "selected": {
+          "background": "{component.navigation.selected}",
+          "foreground": "{component.navigation.selectedForeground}",
+          "weight": 500,
+          "behavior": "Expose aria-current or aria-selected for its actual pattern, not both indiscriminately."
+        },
+        "disabled": {
+          "extends": "control.disabled"
+        }
+      },
+      "field": {
+        "default": {
+          "background": "{component.field.background}",
+          "foreground": "{component.field.foreground}",
+          "borderColor": "{component.field.border}",
+          "borderWidth": 1
+        },
+        "hover": {
+          "borderColor": "{component.field.hoverBorder}"
+        },
+        "focus-visible": {
+          "extends": "control.focus-visible"
+        },
+        "read-only": {
+          "behavior": "Keep text selectable; label Read only. Do not imply editable affordance."
+        },
+        "disabled": {
+          "extends": "control.disabled"
+        },
+        "error": {
+          "borderColor": "{component.field.invalidBorder}",
+          "behavior": "Set aria-invalid; associate a concrete message; preserve entered text."
+        }
+      },
+      "surface": {
+        "default": {
+          "background": "{component.shell.background}",
+          "foreground": "{component.shell.foreground}"
+        }
+      },
+      "async": {
+        "default": {
+          "behavior": "Show only observed content and its source."
+        },
+        "loading": {
+          "behavior": "Stable content footprint, static Loading label, aria-busy; never a synthetic progress percentage."
+        },
+        "empty": {
+          "behavior": "State that the successful read returned no items, separately from unavailable."
+        },
+        "error": {
+          "foreground": "{component.status.dangerForeground}",
+          "behavior": "Readable cause and safe next action; keep last content only with Stale label."
+        },
+        "unknown": {
+          "foreground": "{component.status.unknownForeground}",
+          "behavior": "Result unknown, not failure or success; no automatic resend or replay; offer reconciliation if available."
+        },
+        "stale": {
+          "foreground": "{component.status.staleForeground}",
+          "behavior": "Show last observed timestamp and Stale label; disable effect/permission actions until fresh."
+        },
+        "unavailable": {
+          "foreground": "{component.message.secondary}",
+          "behavior": "Explain absent capability or connection without claiming an empty result."
+        }
+      }
+    },
+    "components": {
+      "shell": {
+        "tokenPrefix": "component.shell",
+        "states": {
+          "default": {
+            "profile": "surface.default"
+          },
+          "disconnected": {
+            "profile": "async.stale"
+          },
+          "unavailable": {
+            "profile": "async.unavailable"
+          }
+        },
+        "geometry": {
+          "header": "component.shell.headerHeight",
+          "minPaneWidth": 0,
+          "viewport": "100dvh; nested content regions own scrolling"
+        },
+        "behavior": [
+          "Header has one session title, connection text and navigation/inspector toggles; no decorative title band.",
+          "Disconnected state is persistent text near the session, not a transient toast.",
+          "Native window controls belong to Electron; preview does not draw imitation traffic lights."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/shell",
+          "variantAxes": {
+            "State": [
+              "default",
+              "disconnected",
+              "unavailable"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "navigation": {
+        "tokenPrefix": "component.navigation",
+        "states": {
+          "expanded": {},
+          "collapsed": {},
+          "overlay": {},
+          "loading": {
+            "profile": "async.loading"
+          },
+          "error": {
+            "profile": "async.error"
+          },
+          "stale": {
+            "profile": "async.stale"
+          }
+        },
+        "geometry": {
+          "width": "component.navigation.width",
+          "rowHeight": "component.navigation.rowHeight",
+          "padding": "component.navigation.inset"
+        },
+        "behavior": [
+          "Use one subtle background; selected row fill and label weight; no borders around groups.",
+          "Top workspace row, quiet New session and Search, then pinned/recent sessions; footer Extensions and workspace location access.",
+          "Overlay has dialog focus containment, Escape dismissal and focus return; expanded navigation is a nav landmark."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/navigation",
+          "variantAxes": {
+            "Layout": [
+              "expanded",
+              "collapsed",
+              "overlay"
+            ],
+            "Data": [
+              "ready",
+              "loading",
+              "error",
+              "stale"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "workspaceSelect": {
+        "tokenPrefix": "component.navigation",
+        "states": {
+          "default": {
+            "profile": "row.default"
+          },
+          "hover": {
+            "profile": "row.hover"
+          },
+          "focus-visible": {
+            "profile": "row.focus-visible"
+          },
+          "selected": {
+            "profile": "row.selected"
+          },
+          "disabled": {
+            "profile": "row.disabled"
+          }
+        },
+        "geometry": {
+          "height": 32,
+          "glyph": 16,
+          "gap": 8,
+          "menuMinWidth": 240
+        },
+        "behavior": [
+          "Keep workspace label and disclosure arrow together; ellipsis is a separate 28px target.",
+          "Menu includes Import folder, New workspace, Location/storage and Remove from list, files kept. Preserve scope and operation semantics.",
+          "Long name truncates in trigger only; full name and path are available in an explicitly opened menu."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/workspaceSelect",
+          "variantAxes": {
+            "State": [
+              "default",
+              "hover",
+              "focus-visible",
+              "selected",
+              "disabled"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "sessionRow": {
+        "tokenPrefix": "component.navigation",
+        "states": {
+          "default": {
+            "profile": "row.default"
+          },
+          "hover": {
+            "profile": "row.hover"
+          },
+          "focus-visible": {
+            "profile": "row.focus-visible"
+          },
+          "selected": {
+            "profile": "row.selected"
+          },
+          "disabled": {
+            "profile": "row.disabled"
+          },
+          "running": {
+            "profile": "row.default",
+            "label": "실행 중"
+          },
+          "unknown": {
+            "profile": "async.unknown"
+          },
+          "stale": {
+            "profile": "async.stale"
+          },
+          "renaming": {
+            "profile": "field.default"
+          },
+          "rename-error": {
+            "profile": "field.error"
+          }
+        },
+        "geometry": {
+          "height": "component.navigation.rowHeight",
+          "labelLines": 1,
+          "trailingTarget": 28,
+          "glyph": 16,
+          "gap": 8
+        },
+        "behavior": [
+          "Open selected session with a button; inline More is a sibling, never nested.",
+          "More appears on hover and focus-within and remains discoverable through the row action name; touch keeps it visible.",
+          "Keep Pin, Rename, Archive/Restore, Fork and Delete conversation in the action menu. Unknown/running restrictions follow existing authority.",
+          "Selected label can truncate; status label must remain exposed to assistive technology."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/sessionRow",
+          "variantAxes": {
+            "State": [
+              "default",
+              "hover",
+              "focus-visible",
+              "selected",
+              "disabled",
+              "running",
+              "unknown",
+              "stale",
+              "renaming",
+              "rename-error"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "search": {
+        "tokenPrefix": "component.field",
+        "states": {
+          "default": {
+            "profile": "field.default"
+          },
+          "hover": {
+            "profile": "field.hover"
+          },
+          "focus-visible": {
+            "profile": "field.focus-visible"
+          },
+          "disabled": {
+            "profile": "field.disabled"
+          },
+          "error": {
+            "profile": "field.error"
+          }
+        },
+        "geometry": {
+          "collapsedTarget": 32,
+          "expandedHeight": 32,
+          "paddingX": 8,
+          "glyph": 16
+        },
+        "behavior": [
+          "Default is a quiet Search row or icon according to candidate; activation focuses an actual search input.",
+          "Escape clears an active query first, then closes the expanded search if empty; return focus to its trigger.",
+          "Show matched result count and empty results; search does not filter another workspace silently."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/search",
+          "variantAxes": {
+            "State": [
+              "default",
+              "hover",
+              "focus-visible",
+              "disabled",
+              "error"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "button": {
+        "tokenPrefix": "component.control",
+        "states": {
+          "default": {
+            "profile": "control.default"
+          },
+          "hover": {
+            "profile": "control.hover"
+          },
+          "pressed": {
+            "profile": "control.pressed"
+          },
+          "focus-visible": {
+            "profile": "control.focus-visible"
+          },
+          "disabled": {
+            "profile": "control.disabled"
+          },
+          "loading": {
+            "profile": "control.disabled",
+            "label": "처리 중…"
+          }
+        },
+        "geometry": {
+          "height": 32,
+          "paddingX": 12,
+          "gap": 6,
+          "glyph": 16
+        },
+        "behavior": [
+          "Fit-content width; primary means the immediate main action only.",
+          "Loading retains width and has an explicit label; do not hide it behind an unlabeled spinner."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/button",
+          "variantAxes": {
+            "Intent": [
+              "neutral",
+              "primary",
+              "danger"
+            ],
+            "State": [
+              "default",
+              "hover",
+              "pressed",
+              "focus-visible",
+              "disabled",
+              "loading"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "iconButton": {
+        "tokenPrefix": "component.control",
+        "states": {
+          "default": {
+            "profile": "control.default"
+          },
+          "hover": {
+            "profile": "control.hover"
+          },
+          "pressed": {
+            "profile": "control.pressed"
+          },
+          "focus-visible": {
+            "profile": "control.focus-visible"
+          },
+          "disabled": {
+            "profile": "control.disabled"
+          }
+        },
+        "geometry": {
+          "visualGlyph": 16,
+          "target": 32,
+          "utilityTarget": 28,
+          "gapBetweenTargets": 4
+        },
+        "behavior": [
+          "Give every icon an accessible action name; tooltip supplements it.",
+          "Glyph is optically centered inside the real target; no overlapping pseudo-element hit areas.",
+          "Use 18px for panel controls, 20px only for high-salience empty/error illustration; do not make every icon 20px."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/iconButton",
+          "variantAxes": {
+            "State": [
+              "default",
+              "hover",
+              "pressed",
+              "focus-visible",
+              "disabled"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "menu": {
+        "tokenPrefix": "component.menu",
+        "states": {
+          "closed": {},
+          "open": {},
+          "item-default": {
+            "profile": "control.default"
+          },
+          "item-hover": {
+            "profile": "control.hover"
+          },
+          "item-focus": {
+            "profile": "control.focus-visible"
+          },
+          "item-selected": {
+            "profile": "row.selected"
+          },
+          "item-disabled": {
+            "profile": "control.disabled"
+          }
+        },
+        "geometry": {
+          "minWidth": "component.menu.minWidth",
+          "maxWidth": "component.menu.maxWidth",
+          "rowHeight": "component.menu.rowHeight",
+          "padding": 4,
+          "rowPaddingX": 8,
+          "icon": 16,
+          "gap": 8,
+          "sideOffset": 4,
+          "collisionInset": 8,
+          "maxHeight": 320,
+          "focusInset": 2
+        },
+        "behavior": [
+          "Use existing Radix ActionMenu for action lists; native select remains acceptable for simple value selection.",
+          "Arrow keys/Home/End move focus; typeahead, Enter/Space activate; Escape closes and returns focus.",
+          "Focus indicator is inset 2px inside the item so overflow cannot clip it; selected checkmark occupies the reserved 16px icon slot.",
+          "Width may grow to 320; long destructive labels wrap to two lines and rows grow, never clip. Separate destructive items with one separator."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/menu",
+          "variantAxes": {
+            "State": [
+              "closed",
+              "open",
+              "item-default",
+              "item-hover",
+              "item-focus",
+              "item-selected",
+              "item-disabled"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "dialog": {
+        "tokenPrefix": "component.dialog",
+        "states": {
+          "closed": {},
+          "open": {},
+          "submitting": {
+            "profile": "async.loading"
+          },
+          "error": {
+            "profile": "async.error"
+          },
+          "unknown": {
+            "profile": "async.unknown"
+          }
+        },
+        "geometry": {
+          "width": 440,
+          "maxWidth": "calc(100vw - 32px)",
+          "padding": 20,
+          "gap": 16,
+          "closeTarget": 32,
+          "maxHeight": "calc(100dvh - 32px)"
+        },
+        "behavior": [
+          "Existing Radix dialog owns focus containment and restoration; heading labels the dialog.",
+          "Initial focus goes to the named field or least consequential action; a destructive action never receives automatic activation.",
+          "Long content scrolls inside the dialog; title and action labels remain reachable at 200% zoom."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/dialog",
+          "variantAxes": {
+            "State": [
+              "closed",
+              "open",
+              "submitting",
+              "error",
+              "unknown"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "tooltip": {
+        "tokenPrefix": "component.tooltip",
+        "states": {
+          "closed": {},
+          "open": {}
+        },
+        "geometry": {
+          "maxWidth": 280,
+          "paddingX": 8,
+          "paddingY": 6,
+          "offset": 6,
+          "fontSize": 12,
+          "lineHeight": 18,
+          "radius": 6
+        },
+        "behavior": [
+          "Open after 400ms hover, immediately on keyboard focus; close on Escape, blur or pointer departure.",
+          "Noninteractive text only, linked with aria-describedby; never contains unique warnings, shortcuts essential to use or permission details.",
+          "Keep pointer movement toward the tooltip from dismissing it immediately; collision padding 8px; no tooltip on disabled-only target unless a focusable explanatory wrapper is used."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/tooltip",
+          "variantAxes": {
+            "State": [
+              "closed",
+              "open"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "select": {
+        "tokenPrefix": "component.field",
+        "states": {
+          "default": {
+            "profile": "field.default"
+          },
+          "hover": {
+            "profile": "field.hover"
+          },
+          "focus-visible": {
+            "profile": "field.focus-visible"
+          },
+          "disabled": {
+            "profile": "field.disabled"
+          },
+          "error": {
+            "profile": "field.error"
+          },
+          "loading": {
+            "profile": "async.loading"
+          },
+          "unavailable": {
+            "profile": "async.unavailable"
+          }
+        },
+        "geometry": {
+          "regularHeight": 36,
+          "compactHeight": 28,
+          "compactMaxWidth": 176,
+          "paddingX": 8,
+          "chevron": 16
+        },
+        "behavior": [
+          "Use native select for existing agent/model selection unless complexity warrants the current Radix family; no new primitive library.",
+          "Compact selector label is 12/18; short visible agent/model name never stretches to fill remaining width.",
+          "Unavailable selected value stays visible and marked unavailable; block sending rather than silently switching a model."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/select",
+          "variantAxes": {
+            "State": [
+              "default",
+              "hover",
+              "focus-visible",
+              "disabled",
+              "error",
+              "loading",
+              "unavailable"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "input": {
+        "tokenPrefix": "component.field",
+        "states": {
+          "default": {
+            "profile": "field.default"
+          },
+          "hover": {
+            "profile": "field.hover"
+          },
+          "focus-visible": {
+            "profile": "field.focus-visible"
+          },
+          "read-only": {
+            "profile": "field.read-only"
+          },
+          "disabled": {
+            "profile": "field.disabled"
+          },
+          "error": {
+            "profile": "field.error"
+          }
+        },
+        "geometry": {
+          "height": 36,
+          "paddingX": 10,
+          "labelGap": 4,
+          "helperGap": 4
+        },
+        "behavior": [
+          "Single label outside field; content role is separate from control label role.",
+          "Required/error text remains readable and associated; no nested borders or placeholder-only label."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/input",
+          "variantAxes": {
+            "State": [
+              "default",
+              "hover",
+              "focus-visible",
+              "read-only",
+              "disabled",
+              "error"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "composer": {
+        "tokenPrefix": "component.composer",
+        "states": {
+          "empty": {},
+          "draft": {},
+          "focus-visible": {
+            "profile": "control.focus-visible"
+          },
+          "multiline": {},
+          "attachment": {},
+          "sending": {
+            "profile": "async.loading"
+          },
+          "running": {},
+          "stopping": {
+            "profile": "async.loading"
+          },
+          "archived": {
+            "profile": "field.read-only"
+          },
+          "error": {
+            "profile": "field.error"
+          },
+          "unknown": {
+            "profile": "async.unknown"
+          },
+          "stale": {
+            "profile": "async.stale"
+          },
+          "unavailable": {
+            "profile": "async.unavailable"
+          }
+        },
+        "geometry": {
+          "height": "candidate.layout.composer",
+          "contentType": "input",
+          "controlType": "smallLabel",
+          "inputMax": "component.composer.inputMax"
+        },
+        "behavior": [
+          "One shared outer field surface, borderless inner textarea; never a boxed input inside a boxed composer.",
+          "Input grows by line-height up to its cap; attachments consume a conditional row, not reserved blank space.",
+          "Enter submits only outside IME composition; Shift+Enter inserts a newline; Escape closes a menu and never silently stops a run.",
+          "Slash action and agent/model choices remain accessible. Agent/model switches are disabled during an active run or pending mutation.",
+          "Unknown send result retains the draft safely but never auto-resends; do not show an invented success.",
+          "Input/helper errors add measured height; composer growth reduces transcript viewport while keeping the newest focused input in view."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/composer",
+          "variantAxes": {
+            "State": [
+              "empty",
+              "draft",
+              "focus-visible",
+              "multiline",
+              "attachment",
+              "sending",
+              "running",
+              "stopping",
+              "archived",
+              "error",
+              "unknown",
+              "stale",
+              "unavailable"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "sendStop": {
+        "tokenPrefix": "component.primary",
+        "states": {
+          "send-empty": {
+            "profile": "primary.disabled"
+          },
+          "send-ready": {
+            "profile": "primary.default"
+          },
+          "hover": {
+            "profile": "primary.hover"
+          },
+          "focus-visible": {
+            "profile": "primary.focus-visible"
+          },
+          "sending": {
+            "profile": "primary.disabled",
+            "label": "전송 확인 중"
+          },
+          "stop-ready": {
+            "profile": "primary.default",
+            "label": "현재 세션 실행 중단"
+          },
+          "stopping": {
+            "profile": "primary.disabled",
+            "label": "중단 확인 중"
+          },
+          "unknown": {
+            "profile": "async.unknown"
+          },
+          "stale": {
+            "profile": "primary.disabled"
+          }
+        },
+        "geometry": {
+          "target": 32,
+          "sendGlyph": 16,
+          "stopGlyph": 16
+        },
+        "behavior": [
+          "Send and Stop share one stable rightmost slot, never two competing primary buttons.",
+          "Stop is shown only for the selected running session; unknown cancellation is not confirmed stopped.",
+          "Label and status text carry meaning beyond arrow/square glyphs."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/sendStop",
+          "variantAxes": {
+            "State": [
+              "send-empty",
+              "send-ready",
+              "hover",
+              "focus-visible",
+              "sending",
+              "stop-ready",
+              "stopping",
+              "unknown",
+              "stale"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "attachment": {
+        "tokenPrefix": "component.attachment",
+        "states": {
+          "default": {},
+          "focus-visible": {
+            "profile": "control.focus-visible"
+          },
+          "loading": {
+            "profile": "async.loading"
+          },
+          "error": {
+            "profile": "async.error"
+          },
+          "unavailable": {
+            "profile": "async.unavailable"
+          }
+        },
+        "geometry": {
+          "height": 32,
+          "maxWidth": 240,
+          "glyph": 16,
+          "removeTarget": 28,
+          "gap": 8
+        },
+        "behavior": [
+          "Filename, size and remove action; use a short filename with full text available on focus.",
+          "Wrap attachment chips to additional 32px rows with 8px gaps; no horizontal page overflow.",
+          "Attachment ingestion is a proposed affordance, not demonstrated by current renderer. Preview uses an explicitly synthetic chip; no real file read/upload."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/attachment",
+          "variantAxes": {
+            "State": [
+              "default",
+              "focus-visible",
+              "loading",
+              "error",
+              "unavailable"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "commands": {
+        "tokenPrefix": "component.menu",
+        "states": {
+          "closed": {},
+          "open": {},
+          "item-default": {
+            "profile": "control.default"
+          },
+          "item-focus": {
+            "profile": "control.focus-visible"
+          },
+          "item-disabled": {
+            "profile": "control.disabled"
+          },
+          "loading": {
+            "profile": "async.loading"
+          },
+          "empty": {
+            "profile": "async.empty"
+          },
+          "error": {
+            "profile": "async.error"
+          },
+          "stale": {
+            "profile": "async.stale"
+          },
+          "unavailable": {
+            "profile": "async.unavailable"
+          }
+        },
+        "geometry": {
+          "width": "min(400px, composer width)",
+          "rowHeight": 40,
+          "groupLabelHeight": 24,
+          "maxHeight": "min(320px, 40dvh)",
+          "offset": 8
+        },
+        "behavior": [
+          "Anchor above the composer; flip when necessary and preserve the focused item in view.",
+          "Group App actions, Runtime commands and Skills; never imply a skill mention is an installed capability grant.",
+          "Typing slash and explicit slash button expose the same list. Enter selects an item; executable requests still require the existing send path.",
+          "Arrow/Home/End navigation and Escape focus return match existing semantics; Korean IME must not trigger menu activation."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/commands",
+          "variantAxes": {
+            "State": [
+              "closed",
+              "open",
+              "item-default",
+              "item-focus",
+              "item-disabled",
+              "loading",
+              "empty",
+              "error",
+              "stale",
+              "unavailable"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "message": {
+        "tokenPrefix": "component.message",
+        "states": {
+          "default": {},
+          "streaming": {
+            "profile": "async.loading"
+          },
+          "error": {
+            "profile": "async.error"
+          },
+          "unknown": {
+            "profile": "async.unknown"
+          },
+          "stale": {
+            "profile": "async.stale"
+          }
+        },
+        "geometry": {
+          "maxWidth": "component.message.maxWidth",
+          "gap": "component.message.gap",
+          "paragraphGap": 12,
+          "speakerGap": 4
+        },
+        "behavior": [
+          "Transcript is one readable document with role labels and stable logical order.",
+          "Do not render every message inside a heavy card; wrap prose, preserve code formatting separately.",
+          "New chunks do not steal focus; polite run status is separate from token-by-token content. User scrolling pauses autoscroll until explicit return to latest."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/message",
+          "variantAxes": {
+            "State": [
+              "default",
+              "streaming",
+              "error",
+              "unknown",
+              "stale"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "userMessage": {
+        "tokenPrefix": "component.userMessage",
+        "states": {
+          "default": {},
+          "pending": {
+            "profile": "async.loading"
+          },
+          "unknown": {
+            "profile": "async.unknown"
+          },
+          "error": {
+            "profile": "async.error"
+          }
+        },
+        "geometry": {
+          "maxWidth": "min(88%, 640px)",
+          "padding": 12,
+          "radius": 10
+        },
+        "behavior": [
+          "Quiet filled user bubble aligns right in A, left task-entry block in B/C as specified; speaker identity remains text.",
+          "Message text remains selectable; copy action is 28px, revealed on hover/focus-within. No hidden claim that sending succeeded."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/userMessage",
+          "variantAxes": {
+            "State": [
+              "default",
+              "pending",
+              "unknown",
+              "error"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "assistantMessage": {
+        "tokenPrefix": "component.message",
+        "states": {
+          "default": {},
+          "streaming": {
+            "profile": "async.loading"
+          },
+          "error": {
+            "profile": "async.error"
+          },
+          "unknown": {
+            "profile": "async.unknown"
+          },
+          "stale": {
+            "profile": "async.stale"
+          }
+        },
+        "geometry": {
+          "padding": 0,
+          "avatarReservedWidth": 0,
+          "actionTarget": 28,
+          "actionGap": 4
+        },
+        "behavior": [
+          "Unboxed text, no oversized avatar. Speaker/agent label uses smallLabel; body is the candidate body role.",
+          "Copy, evidence and artifact actions are conditional on actual data; preview controls point only to fixture content."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/assistantMessage",
+          "variantAxes": {
+            "State": [
+              "default",
+              "streaming",
+              "error",
+              "unknown",
+              "stale"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "code": {
+        "tokenPrefix": "component.code",
+        "states": {
+          "default": {},
+          "focus-visible": {
+            "profile": "control.focus-visible"
+          },
+          "copied": {
+            "label": "복사됨"
+          },
+          "copy-error": {
+            "profile": "async.error"
+          }
+        },
+        "geometry": {
+          "padding": 12,
+          "headerHeight": 32,
+          "copyTarget": 28,
+          "maxInlineHeight": 320,
+          "tabSize": 2
+        },
+        "behavior": [
+          "Monospace 13/20; preserve indentation, horizontal scroll is inside the code region only.",
+          "Language/file label and Copy have quiet chrome. Long file paths wrap or truncate with full focus-accessible text.",
+          "Copy success appears only after the clipboard operation succeeds; no Run affordance without capability."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/code",
+          "variantAxes": {
+            "State": [
+              "default",
+              "focus-visible",
+              "copied",
+              "copy-error"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "toolSummary": {
+        "tokenPrefix": "component.tool",
+        "states": {
+          "pending": {
+            "label": "대기 중",
+            "statusForeground": "{component.status.unknownForeground}"
+          },
+          "running": {
+            "label": "실행 중",
+            "statusForeground": "{component.status.infoForeground}"
+          },
+          "completed": {
+            "label": "완료",
+            "statusForeground": "{component.status.successForeground}"
+          },
+          "error": {
+            "profile": "async.error",
+            "statusForeground": "{component.status.dangerForeground}"
+          },
+          "unknown": {
+            "profile": "async.unknown",
+            "statusForeground": "{component.status.unknownForeground}"
+          },
+          "stale": {
+            "profile": "async.stale",
+            "statusForeground": "{component.status.staleForeground}"
+          },
+          "expanded": {},
+          "focus-visible": {
+            "profile": "control.focus-visible"
+          }
+        },
+        "geometry": {
+          "summaryMinHeight": 32,
+          "glyph": 16,
+          "gap": 8,
+          "detailPadding": 12
+        },
+        "behavior": [
+          "One compact disclosure summary with tool name, state and terse subject; do not make completed routine tools large cards.",
+          "Expanded content shows escaped input/output and source status; a success mark requires a confirmed completed result.",
+          "assistant-ui dispatches known validated Tool UI cards; unknown tools use safe generic details, not inferred rich actions."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/toolSummary",
+          "variantAxes": {
+            "State": [
+              "pending",
+              "running",
+              "completed",
+              "error",
+              "unknown",
+              "stale",
+              "expanded",
+              "focus-visible"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "evidence": {
+        "tokenPrefix": "component.evidence",
+        "states": {
+          "default": {
+            "profile": "control.default"
+          },
+          "hover": {
+            "profile": "control.hover"
+          },
+          "pressed": {
+            "profile": "control.pressed"
+          },
+          "focus-visible": {
+            "profile": "control.focus-visible"
+          },
+          "disabled": {
+            "profile": "control.disabled"
+          },
+          "unavailable": {
+            "profile": "async.unavailable"
+          },
+          "stale": {
+            "profile": "async.stale"
+          }
+        },
+        "geometry": {
+          "target": 32,
+          "paddingX": 8,
+          "glyph": 16,
+          "gap": 6
+        },
+        "behavior": [
+          "Evidence links identify artifact/file and source; open the corresponding read-only inspector tab.",
+          "Unavailable source is stated; links must use existing safe navigation rules and never claim external navigation succeeded."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/evidence",
+          "variantAxes": {
+            "State": [
+              "default",
+              "hover",
+              "pressed",
+              "focus-visible",
+              "disabled",
+              "unavailable",
+              "stale"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "permission": {
+        "tokenPrefix": "component.permission",
+        "states": {
+          "pending": {
+            "label": "승인 대기",
+            "background": "{component.status.warningBackground}",
+            "statusForeground": "{component.status.warningForeground}"
+          },
+          "submitting": {
+            "profile": "async.loading"
+          },
+          "approved": {
+            "label": "이번 요청 허용 응답 확인됨",
+            "background": "{component.status.successBackground}",
+            "statusForeground": "{component.status.successForeground}"
+          },
+          "denied": {
+            "label": "거절 응답 확인됨",
+            "background": "{component.status.dangerBackground}",
+            "statusForeground": "{component.status.dangerForeground}"
+          },
+          "error": {
+            "profile": "async.error"
+          },
+          "unknown": {
+            "profile": "async.unknown",
+            "background": "{component.status.unknownBackground}",
+            "statusForeground": "{component.status.unknownForeground}"
+          },
+          "stale": {
+            "profile": "async.stale",
+            "background": "{component.status.staleBackground}",
+            "statusForeground": "{component.status.staleForeground}"
+          },
+          "expired": {
+            "label": "요청이 만료되어 응답할 수 없습니다.",
+            "background": "{component.status.unknownBackground}",
+            "statusForeground": "{component.status.unknownForeground}"
+          },
+          "focus-visible": {
+            "profile": "control.focus-visible"
+          }
+        },
+        "geometry": {
+          "maxWidth": 640,
+          "padding": 16,
+          "contentGap": 8,
+          "actionTarget": 36,
+          "actionGap": 8,
+          "minimumHeight": "content driven; never clip to fit a density target"
+        },
+        "behavior": [
+          "Keep operation, requesting session/server when supplied, exact scope and consequence text visible without a disclosure.",
+          "Use existing actions 이번만 허용 and 거절. Preserve warning that rejection also cancels other pending permissions in this session. Do not add Always/This session from reference demos.",
+          "Buttons wrap at narrow widths; no countdown, automatic acceptance or hidden scope.",
+          "Pending card is present adjacent to the latest work; show queue count when multiple. Never reduce critical warnings to a tooltip.",
+          "Submitting/stale/unknown/expired states disable decisions; reconciliation must be authoritative before enabling them. Approved does not mean the tool effect completed."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/permission",
+          "variantAxes": {
+            "State": [
+              "pending",
+              "submitting",
+              "approved",
+              "denied",
+              "error",
+              "unknown",
+              "stale",
+              "expired",
+              "focus-visible"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "status": {
+        "tokenPrefix": "component.status",
+        "states": {
+          "info": {
+            "background": "{component.status.infoBackground}",
+            "foreground": "{component.status.infoForeground}"
+          },
+          "success": {
+            "background": "{component.status.successBackground}",
+            "foreground": "{component.status.successForeground}"
+          },
+          "warning": {
+            "background": "{component.status.warningBackground}",
+            "foreground": "{component.status.warningForeground}"
+          },
+          "danger": {
+            "background": "{component.status.dangerBackground}",
+            "foreground": "{component.status.dangerForeground}"
+          },
+          "unknown": {
+            "background": "{component.status.unknownBackground}",
+            "foreground": "{component.status.unknownForeground}"
+          },
+          "stale": {
+            "background": "{component.status.staleBackground}",
+            "foreground": "{component.status.staleForeground}"
+          }
+        },
+        "geometry": {
+          "minHeight": 24,
+          "paddingX": 6,
+          "glyph": 16,
+          "gap": 4
+        },
+        "behavior": [
+          "Text plus icon or shape, never color alone; informational badges are not controls.",
+          "Interactive status details use a separate 28px target. Connection, request acceptance and effect confirmation must use distinct wording."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/status",
+          "variantAxes": {
+            "State": [
+              "info",
+              "success",
+              "warning",
+              "danger",
+              "unknown",
+              "stale"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "toast": {
+        "tokenPrefix": "component.toast",
+        "states": {
+          "info": {
+            "statusForeground": "{component.status.infoForeground}",
+            "statusLabel": "info"
+          },
+          "success": {
+            "statusForeground": "{component.status.successForeground}",
+            "statusLabel": "success"
+          },
+          "error": {
+            "statusForeground": "{component.status.dangerForeground}",
+            "statusLabel": "danger"
+          },
+          "unknown": {
+            "statusForeground": "{component.status.unknownForeground}",
+            "statusLabel": "unknown"
+          }
+        },
+        "geometry": {
+          "width": 360,
+          "maxWidth": "calc(100vw - 32px)",
+          "padding": 12,
+          "actionTarget": 28,
+          "dismissTarget": 28
+        },
+        "behavior": [
+          "Nonblocking confirmations may auto-dismiss after 5 seconds and pause on hover/focus; errors and unknown outcomes remain until dismissed or resolved.",
+          "Use polite status for routine confirmation, alert for an immediate blocking error; no duplicate announcement of inline error text.",
+          "Permission and disconnected state never exist only in a toast. Preview does not claim an unperformed action succeeded."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/toast",
+          "variantAxes": {
+            "State": [
+              "info",
+              "success",
+              "error",
+              "unknown"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "error": {
+        "tokenPrefix": "component.status",
+        "states": {
+          "validation": {
+            "background": "{component.status.dangerBackground}",
+            "foreground": "{component.status.dangerForeground}"
+          },
+          "recoverable-read": {
+            "background": "{component.status.dangerBackground}",
+            "foreground": "{component.status.dangerForeground}"
+          },
+          "blocked-action": {
+            "background": "{component.status.warningBackground}",
+            "foreground": "{component.status.warningForeground}"
+          },
+          "unknown-effect": {
+            "background": "{component.status.unknownBackground}",
+            "foreground": "{component.status.unknownForeground}"
+          }
+        },
+        "geometry": {
+          "padding": 12,
+          "gap": 8,
+          "actionTarget": 32
+        },
+        "behavior": [
+          "State what is known, what failed and a safe next action. Unknown effect wording must not promise failure.",
+          "A read may offer Refresh; a mutation never auto-retries because of a visual error state.",
+          "Persist essential text inline near affected content; include original draft if relevant."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/error",
+          "variantAxes": {
+            "State": [
+              "validation",
+              "recoverable-read",
+              "blocked-action",
+              "unknown-effect"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "inspector": {
+        "tokenPrefix": "component.inspector",
+        "states": {
+          "closed": {},
+          "open": {},
+          "resizing": {},
+          "loading": {
+            "profile": "async.loading"
+          },
+          "empty": {
+            "profile": "async.empty"
+          },
+          "error": {
+            "profile": "async.error"
+          },
+          "unknown": {
+            "profile": "async.unknown"
+          },
+          "stale": {
+            "profile": "async.stale"
+          }
+        },
+        "geometry": {
+          "width": "component.inspector.width",
+          "minWidth": 300,
+          "maxWidth": 480,
+          "headerHeight": 40,
+          "contentPadding": 16,
+          "separatorTarget": 8
+        },
+        "behavior": [
+          "Right panel shares canvas surface with one functional left divider; no floating outer card.",
+          "Maintain existing File/Catalog/Activity access and proposed artifact Browser/Terminal/File tabs within artifact view; do not rename current catalog as a working browser.",
+          "Resize handle has keyboard separator semantics: 16px arrows, 64px with Shift, Home minimum, End maximum; restore width 336/360/400 per candidate.",
+          "Opening inspector preserves session context and returns focus to its trigger on close; narrower windows use an overlay with a visible Return to conversation."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/inspector",
+          "variantAxes": {
+            "State": [
+              "closed",
+              "open",
+              "resizing",
+              "loading",
+              "empty",
+              "error",
+              "unknown",
+              "stale"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "artifactTabs": {
+        "tokenPrefix": "component.inspector",
+        "states": {
+          "default": {
+            "profile": "row.default"
+          },
+          "hover": {
+            "profile": "row.hover"
+          },
+          "focus-visible": {
+            "profile": "row.focus-visible"
+          },
+          "selected": {
+            "profile": "row.selected"
+          },
+          "disabled": {
+            "profile": "row.disabled"
+          }
+        },
+        "geometry": {
+          "stripHeight": 40,
+          "tabTargetHeight": 32,
+          "minTabWidth": 80,
+          "glyph": 16,
+          "gap": 4,
+          "underline": 2
+        },
+        "behavior": [
+          "Tabs Browser, Terminal, File use tablist/tab/tabpanel, roving Tab stop, Left/Right/Home/End and Enter/Space activation.",
+          "Use a 2px selected underline or weight plus selected fill; focus ring remains separate.",
+          "Panel status identifies fixture/read-only/unavailable; tab activation is local presentation, not a live browser or shell launch."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/artifactTabs",
+          "variantAxes": {
+            "State": [
+              "default",
+              "hover",
+              "focus-visible",
+              "selected",
+              "disabled"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "filePreview": {
+        "tokenPrefix": "component.code",
+        "states": {
+          "default": {},
+          "loading": {
+            "profile": "async.loading"
+          },
+          "empty": {
+            "profile": "async.empty"
+          },
+          "error": {
+            "profile": "async.error"
+          },
+          "unavailable": {
+            "profile": "async.unavailable"
+          },
+          "stale": {
+            "profile": "async.stale"
+          }
+        },
+        "geometry": {
+          "pathHeaderHeight": 36,
+          "codeFontSize": 13,
+          "codeLineHeight": 20,
+          "padding": 12
+        },
+        "behavior": [
+          "Show path, read-only label and source timestamp; existing file explorer remains accessible.",
+          "No Save or edit control until the product provides a reviewed edit operation. Preserve source line numbering and contained code scroll."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/filePreview",
+          "variantAxes": {
+            "State": [
+              "default",
+              "loading",
+              "empty",
+              "error",
+              "unavailable",
+              "stale"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "terminalPreview": {
+        "tokenPrefix": "component.code",
+        "states": {
+          "idle": {},
+          "running": {},
+          "completed": {},
+          "error": {
+            "profile": "async.error"
+          },
+          "unknown": {
+            "profile": "async.unknown"
+          },
+          "stale": {
+            "profile": "async.stale"
+          },
+          "unavailable": {
+            "profile": "async.unavailable"
+          }
+        },
+        "geometry": {
+          "headerHeight": 36,
+          "fontSize": 13,
+          "lineHeight": 20,
+          "padding": 12
+        },
+        "behavior": [
+          "Output is a read-only escaped transcript with command, source and status. A displayed terminal is not an interactive shell.",
+          "Distinguish process exited, exit code unknown and disconnected; do not show a prompt/caret implying working input.",
+          "No Run/Rerun/Paste into terminal control in this proposal."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/terminalPreview",
+          "variantAxes": {
+            "State": [
+              "idle",
+              "running",
+              "completed",
+              "error",
+              "unknown",
+              "stale",
+              "unavailable"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "browserPreview": {
+        "tokenPrefix": "component.inspector",
+        "states": {
+          "default": {},
+          "loading": {
+            "profile": "async.loading"
+          },
+          "blocked": {
+            "profile": "async.unavailable"
+          },
+          "error": {
+            "profile": "async.error"
+          },
+          "stale": {
+            "profile": "async.stale"
+          },
+          "unavailable": {
+            "profile": "async.unavailable"
+          }
+        },
+        "geometry": {
+          "addressRowHeight": 36,
+          "contentMinHeight": 176,
+          "padding": 12
+        },
+        "behavior": [
+          "Address/source label is read-only; browser fixture is local markup, not remote navigation.",
+          "Actual future browser preview retains approved isolation/safe navigation constraints; visual tabs cannot relax them.",
+          "Show blocked/unavailable source explicitly, no fake network result or verified indicator."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/browserPreview",
+          "variantAxes": {
+            "State": [
+              "default",
+              "loading",
+              "blocked",
+              "error",
+              "stale",
+              "unavailable"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      },
+      "extensions": {
+        "tokenPrefix": "component.extensions",
+        "states": {
+          "default": {
+            "profile": "async.default"
+          },
+          "loading": {
+            "profile": "async.loading"
+          },
+          "empty": {
+            "profile": "async.empty"
+          },
+          "error": {
+            "profile": "async.error"
+          },
+          "unknown": {
+            "profile": "async.unknown"
+          },
+          "stale": {
+            "profile": "async.stale"
+          },
+          "unavailable": {
+            "profile": "async.unavailable"
+          },
+          "selected": {
+            "profile": "row.selected"
+          }
+        },
+        "geometry": {
+          "rowMinHeight": 44,
+          "descriptionLines": 2,
+          "icon": 16,
+          "paddingX": 12,
+          "sectionGap": 16
+        },
+        "behavior": [
+          "Library access is a labelled Extensions entry, including Skills, MCP, Commands, Agents and Models.",
+          "Show name, origin/scope, requested versus actual active state when supplied and distinct unavailable/empty/stale states.",
+          "Current catalog is read-only. Install, connect, enable and publish are not functioning preview/product features; show no active toggles implying those effects.",
+          "Commands and skill mentions return to the existing composer route."
+        ],
+        "figma": {
+          "componentSet": "DRAFT/Workbench/extensions",
+          "variantAxes": {
+            "State": [
+              "default",
+              "loading",
+              "empty",
+              "error",
+              "unknown",
+              "stale",
+              "unavailable",
+              "selected"
+            ]
+          },
+          "binding": "Apply tokenPrefix defaults, then named state profile properties, then local state properties; candidate tokens resolve first."
+        }
+      }
+    },
+    "foundations": {
+      "northStar": "A quiet local desktop workbench: compact control chrome, readable working content, and explicit authority at consequential actions.",
+      "typography": {
+        "roles": {
+          "body": [
+            15,
+            24,
+            400
+          ],
+          "ui": [
+            14,
+            20,
+            400
+          ],
+          "label": [
+            14,
+            20,
+            500
+          ],
+          "meta": [
+            12,
+            18,
+            400
+          ],
+          "smallLabel": [
+            12,
+            18,
+            500
+          ],
+          "title": [
+            16,
+            22,
+            500
+          ],
+          "emptyTitle": [
+            18,
+            26,
+            500
+          ],
+          "code": [
+            13,
+            20,
+            400
+          ],
+          "input": [
+            15,
+            24,
+            400
+          ]
+        },
+        "uiFontStack": "{primitive.font.ui}",
+        "monoFontStack": "{primitive.font.mono}",
+        "loading": "No network font loading for preview. Actual web font is the locally resolved system face; do not claim Noto renders on macOS.",
+        "weights": [
+          400,
+          500,
+          700
+        ],
+        "letterSpacing": 0,
+        "localization": "Korean prose uses normal word wrapping; overflow-wrap:anywhere for paths/IDs. Never truncate permission scope.",
+        "distinction": "Field content uses input/body role. Button, agent/model and navigation chrome use ui/label/smallLabel; reducing chrome does not mechanically reduce message text.",
+        "rolesFormat": "Each common role array is [size px, line-height px, weight]. Resolve semantic.type.<role> tokens for actual candidate/mode values."
+      },
+      "spacing": {
+        "base": 4,
+        "micro": 2,
+        "allowedMicroUse": [
+          "icon optical alignment",
+          "focus offset",
+          "small label gaps",
+          "6px tooltip padding"
+        ],
+        "rule": "Main layout uses 4px multiples. Intentional 2px subdivisions never create targets smaller than24. Border1px is a stroke, not a spacing unit."
+      },
+      "icons": {
+        "library": "Existing lucide-react geometry or matching local inline SVG in preview; no dependency addition.",
+        "sizes": [
+          16,
+          18,
+          20
+        ],
+        "stroke": 1.75,
+        "targets": {
+          "utility": 28,
+          "default": 32,
+          "permission": 36,
+          "coarse": 44
+        },
+        "rule": "Every target is a real nonoverlapping box; 16px glyph does not mean16px click area."
+      },
+      "borders": {
+        "width": 1,
+        "decorative": "Only pane division, code region and grouped section where needed; decorative edges are not required to reach3:1.",
+        "interactive": "Standalone field/composer boundary uses semantic.color.border.interactive and is checked at3:1 to its field background.",
+        "focus": "2px focus outline +2px offset; menu uses inset focus to avoid clipping.",
+        "selection": "Fill plus text weight or selected marker; no row separator for every session.",
+        "composerMeasurement": "Paint the composer stroke as an inset non-layout pseudo-element. Height formulas describe the entire shell; do not add2px of CSS border after calculating them. Focus outline remains separate."
+      },
+      "elevation": {
+        "base": "No shadow for shell, sidebar, composer, messages, code or permission cards.",
+        "menu": "Only anchored menus/tooltips/toasts may use the menu shadow.",
+        "modal": "Only dialog/drawer uses modal shadow and scrim.",
+        "noDecorativeGradients": true
+      },
+      "motion": {
+        "hoverMs": 100,
+        "popupMs": 140,
+        "panelMs": 180,
+        "purpose": "Communicate hover, overlay origin and panel state; do not animate token text or smooth-scroll every streamed chunk.",
+        "reducedMotion": "Durations0; disable transform, shimmer and pulsing; use a static Running label.",
+        "scroll": "Use instant scroll for focus restoration and reduced motion; user reading position wins."
+      },
+      "accessibility": {
+        "textContrastMinimum": 4.5,
+        "essentialUIContrastMinimum": 3,
+        "targetMinimum": 24,
+        "preferredDesktopTargets": [
+          28,
+          32,
+          36
+        ],
+        "coarseTarget": 44,
+        "focus": "Visible for every keyboard action, never clipped or obscured by dock; scroll-margin8 on focusable rows.",
+        "zoom200": "Use CSS viewport reflow. At an effective width of640, navigation and inspector are mutually exclusive overlays; messages and controls wrap. No transform scale.",
+        "forcedColors": "Use Canvas/CanvasText/Field/FieldText/ButtonText/Highlight/HighlightText; preserve2px outlines and1px control borders with currentColor; remove shadows; let forced-color-adjust:auto apply. Selected states use text/marker as well as fill.",
+        "screenReader": "Landmarks nav/main/complementary; labelled transcript, composer and status; stable focus; no per-token live announcement.",
+        "coarsePointer": "Increase real control rows/targets to44 and gaps to8; composer and menu height recalculate from content, not fixed72/52/68 values."
+      }
+    },
+    "responsive": {
+      "wide": {
+        "minCssWidth": 1200,
+        "behavior": "Persistent nav plus inspector allowed only while main pane remains at least480. Clamp resize using actual available width."
+      },
+      "medium": {
+        "minCssWidth": 900,
+        "maxCssWidth": 1199,
+        "behavior": "Nav may persist when inspector closed. Opening inspector hides nav; main remains at least480 or inspector becomes modal."
+      },
+      "narrow": {
+        "minCssWidth": 600,
+        "maxCssWidth": 899,
+        "behavior": "Nav and inspector are modal overlays, one at a time; main gutters24; context selectors may collapse."
+      },
+      "small": {
+        "maxCssWidth": 599,
+        "behavior": "Main gutters16; hide rail; full-width dialog/sheet minus16px edges; wrap permission actions; keep Send and Slash reachable. At320px no page horizontal scroll; code has local horizontal scroll."
+      },
+      "shortHeight": {
+        "maxCssHeight": 440,
+        "behavior": "Scrollable one-pane layout; textarea cap80; no vertically centered empty hero; permission card in document flow, not a clipped queue. Focused control scrolls into view."
+      }
+    },
+    "interactionRules": {
+      "stateCompositionOrder": [
+        "candidate token resolution",
+        "component defaults",
+        "semantic variant",
+        "data state",
+        "interaction state",
+        "disabled/blocked interaction veto"
+      ],
+      "focusVisible": "Focus styling may coexist with selected/error/unknown; data state must never remove a focus indicator.",
+      "keyboard": "Native buttons and inputs first; Radix for existing complex overlays; keep browser/OS shortcuts unless existing product shortcut is registered.",
+      "operationAuthority": "Only bridge-confirmed revisions/receipts establish effects. Preview state switches demonstrate presentation only.",
+      "disabled": "No global opacity multiplier; use explicit disabled tokens. Reasons for blocked consequential actions remain visible.",
+      "unknown": "Never relabel unknown as failed or complete. Preserve draft and provide safe refresh/reconciliation only where capability exists."
+    },
+    "contrastPairs": [
+      {
+        "foreground": "semantic.color.text.primary",
+        "background": "semantic.color.canvas",
+        "minimum": 4.5
+      },
+      {
+        "foreground": "semantic.color.text.secondary",
+        "background": "semantic.color.surface.subtle",
+        "minimum": 4.5
+      },
+      {
+        "foreground": "semantic.color.field.content",
+        "background": "semantic.color.field.background",
+        "minimum": 4.5
+      },
+      {
+        "foreground": "semantic.color.field.placeholder",
+        "background": "semantic.color.field.background",
+        "minimum": 4.5
+      },
+      {
+        "foreground": "semantic.color.action.foreground",
+        "background": "semantic.color.action.background",
+        "minimum": 4.5
+      },
+      {
+        "foreground": "semantic.color.focus",
+        "background": "semantic.color.canvas",
+        "minimum": 3
+      },
+      {
+        "foreground": "semantic.color.border.interactive",
+        "background": "semantic.color.field.background",
+        "minimum": 3
+      },
+      {
+        "foreground": "semantic.color.success.foreground",
+        "background": "semantic.color.success.background",
+        "minimum": 4.5
+      },
+      {
+        "foreground": "semantic.color.warning.foreground",
+        "background": "semantic.color.warning.background",
+        "minimum": 4.5
+      },
+      {
+        "foreground": "semantic.color.danger.foreground",
+        "background": "semantic.color.danger.background",
+        "minimum": 4.5
+      },
+      {
+        "foreground": "semantic.color.info.foreground",
+        "background": "semantic.color.info.background",
+        "minimum": 4.5
+      },
+      {
+        "foreground": "semantic.color.unknown.foreground",
+        "background": "semantic.color.unknown.background",
+        "minimum": 4.5
+      },
+      {
+        "foreground": "semantic.color.stale.foreground",
+        "background": "semantic.color.stale.background",
+        "minimum": 4.5
+      }
+    ]
+  },
+  "candidates": [
+    {
+      "id": "A",
+      "name": "Quiet Dock",
+      "labelKo": "A · 컴팩트 도크",
+      "hypothesis": "A familiar session sidebar and a small two-row shared composer remove visual burden without relocating the work.",
+      "recommended": true,
+      "tokenOverrides": {},
+      "componentOverrides": {
+        "userMessage": {
+          "alignment": "right",
+          "surface": "quiet filled bubble"
+        },
+        "search": {
+          "presentation": "32px quiet labelled row; full search field on activation"
+        },
+        "navigation": {
+          "newSession": "32px neutral row with 16px plus, not a full-width dark CTA"
+        }
+      },
+      "layout": {
+        "navigation": "Persistent 216px sidebar, 8px insets, 32px session rows. Workspace selector first; new session and search remain separate quiet actions.",
+        "headerHeight": 44,
+        "thread": {
+          "maxWidth": 720,
+          "alignment": "center in conversation pane",
+          "gutter": 32,
+          "body": "15/24",
+          "messageGap": 24
+        },
+        "empty": {
+          "title": "무엇을 함께 만들까요?",
+          "titleSize": 18,
+          "titleLine": 26,
+          "blockWidth": 720,
+          "blockCenterY": 368,
+          "titleToComposerGap": 16,
+          "secondaryCopy": false
+        },
+        "composer": {
+          "placementEmpty": "Centered empty block",
+          "placementConversation": "Docked at bottom of conversation pane",
+          "width": "min(720px, pane width - 64px)",
+          "emptySurfaceHeight": 72,
+          "inputLines1Height": 24,
+          "inputLines2Height": 48,
+          "inputLines3Height": 72,
+          "multiline3SurfaceHeight": 120,
+          "maxInputHeight": 144,
+          "maxSurfaceHeight": 192,
+          "attachmentOneLineSurfaceHeight": 112,
+          "attachment3LineSurfaceHeight": 160,
+          "toolbarHeight": 32,
+          "paddingX": 12,
+          "paddingY": 8,
+          "inputToolbarGap": 0,
+          "attachmentRowHeight": 32,
+          "attachmentRowGap": 8,
+          "bottomInset": 16,
+          "hintHeight": 18,
+          "hintGap": 4,
+          "radius": 16,
+          "rowLayout": [
+            "Input occupies full width on row 1.",
+            "Row 2: Attach 32, Slash 32, Agent fit-content max128, Model fit-content max176; 4px action gaps; Send/Stop 32 at far right.",
+            "Input baseline and controls share one shell. Context values use 12/18; labels never stretch."
+          ],
+          "heightFormula": "8 + (attachments ? 32 + 8 : 0) + clamp(24, textarea scrollHeight, 144) + 32 + 8; 22px hint zone is outside."
+        },
+        "inspectorWidth": 336,
+        "context": "Agent and model in the composer toolbar; workspace is in navigation; warnings remain above composer."
+      },
+      "interactions": [
+        "At pane widths below 600, show one 32px Settings control labelled with Agent/Model summary; its popover exposes both selectors. Slash and Send remain direct.",
+        "At viewport below 1200, opening inspector hides persistent navigation and provides a return control.",
+        "At 200% zoom, effective CSS width controls reflow; no CSS scale transform."
+      ]
+    },
+    {
+      "id": "B",
+      "name": "Threadline",
+      "labelKo": "B · 대화 흐름",
+      "hypothesis": "Put configuration beside the session and the next input directly after the response, reducing the distance between reading and writing.",
+      "recommended": false,
+      "tokenOverrides": {
+        "semantic.layout.sidebarWidth": "{primitive.px.200}",
+        "semantic.layout.headerHeight": "{primitive.px.40}",
+        "semantic.layout.threadMax": "{primitive.px.760}",
+        "semantic.layout.mainGutter": "{primitive.px.48}",
+        "semantic.layout.inspectorWidth": "{primitive.px.360}",
+        "semantic.layout.messageGap": "{primitive.px.20}",
+        "semantic.radius.composer": "{primitive.px.10}",
+        "semantic.composer.emptyHeight": "{primitive.px.52}",
+        "semantic.composer.toolbarHeight": "{primitive.px.0}",
+        "semantic.composer.paddingY": "{primitive.px.10}",
+        "semantic.composer.inputMax": "{primitive.px.144}",
+        "semantic.composer.bottomInset": "{primitive.px.24}",
+        "semantic.composer.paddingX": "{primitive.px.10}"
+      },
+      "componentOverrides": {
+        "userMessage": {
+          "alignment": "left",
+          "surface": "No bubble; 2px logical-start marker and 12px inset, user label above"
+        },
+        "search": {
+          "presentation": "Search icon beside 32px New session in sidebar action row"
+        },
+        "navigation": {
+          "newSession": "Small neutral text button sharing row with search"
+        },
+        "composer": {
+          "singleRow": true
+        }
+      },
+      "layout": {
+        "navigation": "Persistent 200px sidebar. Compact workspace row and one New/Search action row precede sessions.",
+        "headerHeight": 40,
+        "contextBarHeight": 32,
+        "thread": {
+          "maxWidth": 760,
+          "alignment": "left, 48px from pane start",
+          "gutter": 48,
+          "body": "15/24",
+          "messageGap": 20
+        },
+        "empty": {
+          "title": "새 작업",
+          "titleSize": 18,
+          "titleLine": 26,
+          "top": 144,
+          "titleToComposerGap": 16,
+          "secondaryCopy": false
+        },
+        "composer": {
+          "placementEmpty": "In document flow below the small New work title",
+          "placementConversation": "In transcript flow 20px after latest assistant block; never moves to screen center",
+          "width": "min(760px, pane width - 96px)",
+          "emptySurfaceHeight": 52,
+          "inputLines1Height": 24,
+          "inputLines2Height": 48,
+          "inputLines3Height": 72,
+          "multiline3SurfaceHeight": 92,
+          "maxInputHeight": 144,
+          "maxSurfaceHeight": 164,
+          "attachmentOneLineSurfaceHeight": 92,
+          "attachment3LineSurfaceHeight": 132,
+          "toolbarHeight": 0,
+          "paddingX": 10,
+          "paddingY": 10,
+          "inputToolbarGap": 0,
+          "attachmentRowHeight": 32,
+          "attachmentRowGap": 8,
+          "bottomInset": 24,
+          "hintHeight": 18,
+          "hintGap": 4,
+          "radius": 10,
+          "rowLayout": [
+            "One row: Attach 32, input flexible min120, Slash 32, Send/Stop 32; 8px gaps.",
+            "Attach/send align to the bottom of multiline input; their targets do not stretch.",
+            "Agent and Model are fit-content 28px controls in the 32px session context bar, beneath the main header, not in the field."
+          ],
+          "heightFormula": "10 + (attachments ? 32 + 8 : 0) + max(32, clamp(24, textarea scrollHeight, 144)) + 10; 22px hint outside."
+        },
+        "inspectorWidth": 360,
+        "context": "Top context bar: Agent, Model, requested/observed context status; never a fabricated token budget."
+      },
+      "interactions": [
+        "When the input is below the visible transcript, a 32px Write control in the context bar scrolls and focuses it; it does not overlay a second composer.",
+        "New streamed content keeps focused composer visible only while the user is already at the latest content; do not drag the reader away from older messages.",
+        "With inspector open or pane narrower than 760px, reduce gutters to24; below600 collapse context values into a labelled Settings popover.",
+        "Inline permission card appears before composer and in document order; keyboard can always reach it."
+      ]
+    },
+    {
+      "id": "C",
+      "name": "Rail Workbench",
+      "labelKo": "C · 작업 레일",
+      "hypothesis": "Give artifacts and the transcript most of the window by moving session navigation into a drawer and making composition an integrated bottom shelf.",
+      "recommended": false,
+      "tokenOverrides": {
+        "semantic.layout.sidebarWidth": "{primitive.px.56}",
+        "semantic.layout.headerHeight": "{primitive.px.40}",
+        "semantic.layout.threadMax": "{primitive.px.816}",
+        "semantic.layout.inspectorWidth": "{primitive.px.400}",
+        "semantic.layout.messageGap": "{primitive.px.20}",
+        "semantic.composer.emptyHeight": "{primitive.px.68}",
+        "semantic.composer.toolbarHeight": "{primitive.px.28}",
+        "semantic.composer.paddingY": "{primitive.px.4}",
+        "semantic.composer.paddingX": "{primitive.px.0}",
+        "semantic.composer.bottomInset": "{primitive.px.0}",
+        "semantic.radius.composer": "{primitive.px.0}",
+        "semantic.composer.hintHeight": "{primitive.px.0}",
+        "semantic.composer.hintGap": "{primitive.px.0}"
+      },
+      "componentOverrides": {
+        "userMessage": {
+          "alignment": "left",
+          "surface": "No bubble; user label above a compact unboxed request"
+        },
+        "search": {
+          "presentation": "Rail Search target opens the session drawer with search focused"
+        },
+        "navigation": {
+          "drawerWidth": 256,
+          "sessionAccess": "Labelled Sessions rail button plus session title button; tooltip alone is not the only access label"
+        },
+        "composer": {
+          "surface": "Canvas; one functional top divider, no outer rounded box"
+        }
+      },
+      "layout": {
+        "navigation": "56px rail with 32px targets: Sessions, Search, New session, Files, Extensions; bottom workspace/location. A 256px modal drawer exposes the same workspace and full session list.",
+        "headerHeight": 40,
+        "thread": {
+          "maxWidth": 816,
+          "alignment": "left, 32px from pane start",
+          "gutter": 32,
+          "body": "15/24",
+          "messageGap": 20
+        },
+        "empty": {
+          "title": "새 작업",
+          "titleSize": 16,
+          "titleLine": 22,
+          "top": 112,
+          "titleToComposerGap": "composer stays at bottom",
+          "secondaryCopy": false
+        },
+        "composer": {
+          "placementEmpty": "Integrated bottom shelf of conversation pane",
+          "placementConversation": "Same bottom shelf; never spans the inspector",
+          "width": "pane width; input content aligns with thread start and max width",
+          "emptySurfaceHeight": 68,
+          "inputLines1Height": 24,
+          "inputLines2Height": 48,
+          "inputLines3Height": 72,
+          "multiline3SurfaceHeight": 108,
+          "maxInputHeight": 144,
+          "maxSurfaceHeight": 180,
+          "attachmentOneLineSurfaceHeight": 108,
+          "attachment3LineSurfaceHeight": 148,
+          "toolbarHeight": 28,
+          "paddingX": 0,
+          "paddingY": 4,
+          "inputToolbarGap": 0,
+          "attachmentRowHeight": 32,
+          "attachmentRowGap": 8,
+          "bottomInset": 0,
+          "hintHeight": 0,
+          "hintGap": 0,
+          "radius": 0,
+          "rowLayout": [
+            "Row 1 min32 inside 4px top/bottom padding: Attach 32, input flexible, Send/Stop32; 8px gaps.",
+            "Row 2 28px: Slash28, Agent fit-content max128, Model fit-content max176; current workspace scope text at end.",
+            "Connection/errors live above the shelf; keyboard hint is available as associated help and only shown on focus, without adding fixed empty height."
+          ],
+          "heightFormula": "4 + (attachments ? 32 + 8 : 0) + max(32, clamp(24, textarea scrollHeight, 144)) + 4 + 28; divider is inset and does not add a CSS pixel."
+        },
+        "inspectorWidth": 400,
+        "context": "Workspace and session title in header; agent/model/scope in lower shelf row."
+      },
+      "interactions": [
+        "Click Sessions opens modal drawer; selection closes drawer and restores focus to the active session title.",
+        "Rail is not five unlabeled mystery icons: tooltip on focus and visible accessible labels in the drawer; persistent Sessions button may include a small textual indicator only if it still fits32 target.",
+        "Below600 CSS px replace rail with header Navigation button; full single-pane width takes priority.",
+        "At narrow composer width, lower row becomes one Context control plus Slash; scope warning remains separately visible."
+      ]
+    }
+  ],
+  "figmaProjection": {
+    "status": "Draft projection contract only; no Figma writes performed by synthesis.",
+    "targetFile": "e6QYqEsmA3FHB6A2ohNr2o",
+    "preserveExisting": true,
+    "collections": {
+      "sharedPrimitive": {
+        "name": "DRAFT Compact / Primitive",
+        "modes": [
+          "Base"
+        ]
+      },
+      "perCandidateSemantic": {
+        "namePattern": "DRAFT Compact / {candidate} / Semantic",
+        "modes": [
+          "Light",
+          "Dark"
+        ]
+      },
+      "perCandidateComponent": {
+        "namePattern": "DRAFT Compact / {candidate} / Component",
+        "modes": [
+          "Light",
+          "Dark"
+        ]
+      }
+    },
+    "aliasDirection": "Common Primitive -> each candidate Semantic -> matching candidate Component. Resolve candidate overrides before creating semantic aliases. Never alias a candidate to another candidate.",
+    "variableTypes": {
+      "color": "COLOR, convert hex to RGBA",
+      "dimension": "FLOAT, logical px",
+      "number": "FLOAT",
+      "duration": "FLOAT, ms",
+      "fontFamily": "STRING metadata; text styles map family explicitly",
+      "string": "STRING metadata",
+      "shadow": "STRING metadata; corresponding effect style owns rendered shadow"
+    },
+    "fontRepresentation": {
+      "webUi": "System-first CSS stack in primitive.font.ui. No bundled woff observed.",
+      "figmaUi": {
+        "family": "Noto Sans KR",
+        "weights": {
+          "400": "Regular",
+          "500": "Medium",
+          "700": "Bold"
+        }
+      },
+      "webMono": "IBM Plex Mono with local monospace fallbacks",
+      "figmaMono": {
+        "family": "IBM Plex Mono",
+        "weights": {
+          "400": "Regular",
+          "500": "Medium",
+          "600": "SemiBold"
+        }
+      },
+      "availability": "Coordinator reported these actual available Figma styles on2026-10-03. Load exact font before assigning characters.",
+      "parity": "Figma represents the intended Korean type scale, not macOS system-font glyph parity. Do not replace the code stack to force screenshot identity."
+    },
+    "textStyles": "Create per-candidate Body, UI, Label, Meta, Small label, Title, Empty title, Code and Input styles using resolved semantic size/line/weight. Only family follows explicit Figma representation mapping.",
+    "componentInventory": "One candidate-local component set for each common.components entry. State axes come from figma.variantAxes; do not generate impossible Cartesian combinations. Apply candidate componentOverrides after common contracts.",
+    "bindingRules": [
+      "Use VARIABLE_ALIAS objects for aliases, not copied literal values. Bind visible fills, strokes, radius, paddings, gaps and sizes where the Figma node API supports binding.",
+      "Typography styles and effect styles carry dimensions/family/effects that cannot be represented as a single bound variable; record that binding explicitly.",
+      "For a state style that extends another profile, resolve that profile first; merge local properties last.",
+      "Duplicate no legacy pages or collection names. Candidate frames and component sets include DRAFT labels. Modes are explicitly applied to each candidate frame.",
+      "Explicitly set both candidate Semantic and Component collection modes on every candidate frame; matching mode names alone do not prove cross-collection mode selection."
+    ],
+    "pages": [
+      "DRAFT Compact / Foundations",
+      "DRAFT Compact / Components",
+      "DRAFT Compact / A Quiet Dock",
+      "DRAFT Compact / B Threadline",
+      "DRAFT Compact / C Rail Workbench"
+    ],
+    "readinessChecks": [
+      "All token references resolve in6 candidate-mode combinations.",
+      "Every visible component has geometry, correct text style, state binding and declared behavior.",
+      "Verify actual collection/mode/variable IDs and bound-variable inventories after projection.",
+      "Capture representative Empty/Permission/Artifact frames and compare against the approved proposal; no automatic production adoption."
+    ]
+  }
+}

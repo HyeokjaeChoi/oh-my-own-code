@@ -1,0 +1,59 @@
+(node:41120) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✖ line feedback: old submitted revision ACK cannot clear appended composer (6.512167ms)
+▶ line feedback: selected pending Send allows local Git context without granting read authority
+  ✖ selected (1.56875ms)
+  ✔ unknown (0.536542ms)
+  ✔ hostHeld (0.420084ms)
+  ✔ lookupOnly (0.383042ms)
+  ✔ otherSession (1.037125ms)
+  ✔ otherWorkspace (0.342375ms)
+  ✔ otherEpoch (0.321625ms)
+  ✔ otherOperation (0.308292ms)
+✖ line feedback: selected pending Send allows local Git context without granting read authority (5.45775ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 7
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 163.657125
+
+✖ failing tests:
+
+test at apps/desktop-app/src/workbench-store.test.mjs:13376:1
+✖ line feedback: old submitted revision ACK cannot clear appended composer (6.512167ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:13388:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/workbench-store.test.mjs:13719:13
+✖ selected (1.56875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:13739:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:13719:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

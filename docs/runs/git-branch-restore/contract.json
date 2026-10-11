@@ -1,0 +1,278 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "BR1",
+      "description": "Real branch and tracked worktree restore semantics and unaffected data preservation"
+    },
+    {
+      "id": "BR2",
+      "description": "Immutable bounded scope/occupancy/path proof and descriptor-only effects"
+    },
+    {
+      "id": "BR3",
+      "description": "Durable original-key intent/receipt/reopen/unknown no replay"
+    },
+    {
+      "id": "BR4",
+      "description": "Accessible explicit preview/loss/control and lifecycle isolation"
+    },
+    {
+      "id": "BR5",
+      "description": "Coherent scoped runtime evidence and independent final gates"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "python3",
+        "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+        "unit"
+      ],
+      "cwd": ".",
+      "scope": "New full current renderer store (including actual React regression), fixture, build-provenance and wrapper suites; exact original23file execution source/environment proof reuses other19unchanged files.",
+      "acceptance_ids": [
+        "BR1",
+        "BR2",
+        "BR3",
+        "BR4",
+        "BR5"
+      ],
+      "required": true
+    },
+    "kernel": {
+      "argv": [
+        "python3",
+        "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+        "kernel"
+      ],
+      "cwd": ".",
+      "scope": "Exact full source inventory allows ONLY UI closed-target projection, appended actual React render tests, bounded page-error report, complete unoccluded capture reuse and callback test. Reuse prior actual branch108+index52+commit82 only after source/report/Bun/environment proof; no new kernel runtime claimed.",
+      "acceptance_ids": [
+        "BR1",
+        "BR2",
+        "BR3",
+        "BR5"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Current public/private producers and consumers",
+      "acceptance_ids": [
+        "BR5"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "FSD public exports and browser-server isolation",
+      "acceptance_ids": [
+        "BR5"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "docs/runs/git-branch-restore/check-changed.mjs",
+        "lint"
+      ],
+      "cwd": ".",
+      "scope": "Exact changed ownership paths",
+      "acceptance_ids": [
+        "BR5"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "docs/runs/git-branch-restore/check-changed.mjs",
+        "format"
+      ],
+      "cwd": ".",
+      "scope": "Exact changed ownership paths",
+      "acceptance_ids": [
+        "BR5"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "node",
+        "docs/runs/git-branch-restore/ensure-current-build.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Exact current input/artifact verified build or Nx rebuild",
+      "acceptance_ids": [
+        "BR5"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Renderer bundle no arbitrary process/filesystem/credential authority",
+      "acceptance_ids": [
+        "BR5"
+      ],
+      "required": true
+    },
+    "publication": {
+      "argv": [
+        "python3",
+        "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+        "publication"
+      ],
+      "cwd": ".",
+      "scope": "Reuse actual coherent publication-r3 full34 ONLY after exact UI-only four-path source diff, unchanged all host/kernel/native sources, current verified resources/Git/Bun component identities and original pass/exit/before-after report hash; no new publication claimed.",
+      "acceptance_ids": [
+        "BR1",
+        "BR2",
+        "BR3",
+        "BR4",
+        "BR5"
+      ],
+      "required": true
+    },
+    "hidden": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--script",
+        "git-branch-restore",
+        "--out",
+        "docs/runs/git-branch-restore/evidence/hidden-r4"
+      ],
+      "cwd": ".",
+      "scope": "Actual current builtRenderer/preload with synthetic Main, keyboard/light/dark/760px200/held/unknown/lateScope, native PNG only",
+      "acceptance_ids": [
+        "BR4",
+        "BR5"
+      ],
+      "required": true
+    },
+    "reader-regression": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/git-review-probe.mjs",
+        "--out",
+        "docs/runs/git-branch-restore/evidence/reader-regression-r1"
+      ],
+      "cwd": ".",
+      "scope": "Affected current safe reader Native matrix; exact unchanged evidence reuse only through recorded applicability proof",
+      "acceptance_ids": [
+        "BR1",
+        "BR2",
+        "BR5"
+      ],
+      "required": true
+    },
+    "index-regression": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/git-index-probe.mjs",
+        "--out",
+        "docs/runs/git-branch-restore/evidence/index-regression-r1",
+        "--platform",
+        "darwin"
+      ],
+      "cwd": ".",
+      "scope": "Affected old index authority/publication, no source API regression",
+      "acceptance_ids": [
+        "BR1",
+        "BR2",
+        "BR3",
+        "BR5"
+      ],
+      "required": true
+    },
+    "commit-regression": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/git-commit-probe.mjs",
+        "--out",
+        "docs/runs/git-branch-restore/evidence/commit-regression-r1",
+        "--platform",
+        "darwin"
+      ],
+      "cwd": ".",
+      "scope": "Affected old commit authority/publication after shared core changes",
+      "acceptance_ids": [
+        "BR1",
+        "BR2",
+        "BR3",
+        "BR5"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/git-branch-restore/design.md",
+      "gate": "design_spec",
+      "version": "3",
+      "sha256": "7d6530676d36f4ccc1391230944b5b5afccc065723f33ba7bff3cd62fd5a878f"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": [
+    "pnpm-lock.yaml",
+    "package.json",
+    "apps/desktop-app/project.json",
+    "docs/runs/git-branch-restore/prechange-inventory.json",
+    "docs/runs/git-branch-restore/check-unit.mjs",
+    "docs/runs/git-branch-restore/unit-argv-r1.json",
+    "docs/runs/git-branch-restore/check-changed.mjs",
+    "docs/runs/git-branch-restore/ensure-current-build.mjs",
+    "docs/runs/git-branch-restore/check-kernel-current.mjs",
+    "docs/runs/git-branch-restore/evidence/declaration-format-r1/proof.json",
+    "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+    "docs/runs/git-branch-restore/evidence/react-preview-fix-r1/proof.json"
+  ],
+  "decision_register": [
+    {
+      "id": "BR-AUTHORITY",
+      "statement": "Existing one checked private Git authority and typed descriptor core are selected; new worktree effects require initial independent design gate before consumers.",
+      "status": "confirmed",
+      "source": "Current accepted architecture + Main engineering choice under authorized remaining work; design.md v1 is proposal until independent matching pass.",
+      "impact": "No original-path Git, second writer or new journal.",
+      "blocks": [],
+      "resolution": "Design_spec gate required. Routine corrections inside accepted boundary need no repeated PLAN/DESIGN."
+    },
+    {
+      "id": "BR-SAFE-SELECTION",
+      "statement": "Initial selection requires clean tracked state, preserves all ignored/untracked/empty dirs and blocks occupied/conflicting target; no force/remote guessing.",
+      "status": "confirmed",
+      "source": "PRD F11 preservation requirement and Main safe bounded support choice in plan1/design1; initial reviewers assess suitability before implementation.",
+      "impact": "Dirty tracked checkout refuses explicitly; full-product audit must not infer broader support.",
+      "blocks": [],
+      "resolution": "No silent scope deletion; ordinary safe feature implemented within closed support and reported limits."
+    },
+    {
+      "id": "BR-EXECUTION",
+      "statement": "Only authorized contained synthetic fixedGit/pinnedBun/hidden nonfocusable Electron; no provider/private project/productionMain or external publication.",
+      "status": "confirmed",
+      "source": "Existing user authorization and current project runtime/security contracts.",
+      "impact": "Exact evidence scope and platform limits.",
+      "blocks": [],
+      "resolution": "No new external permission needed for contained local work; no private content exported."
+    }
+  ]
+}

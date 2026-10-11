@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "d73b9f25b3712a9329bd4adae322c5aedd223d871b00b79375d73261d1e370b5",
+    "contract_sha256": "bf50435133379c97df8c7cce83deb40f50d3f51a1f06655972c049e64d663b0e",
+    "source_sha256": "c8eaa977e7e03a4557220dad5cd47295b7a614730fb3cb1d092d5626f278baa8"
+  },
+  "verdict": "pass",
+  "summary": "Revision 15 correctly records the explicit Electron selection while preserving macOS and Windows, app-owned OpenCode serve supervision, and the full product goal. Its dependency sequence requires document reconciliation, exact registration, fresh independent reviews and handoffs, then explicit integrated-set user approval before probes or implementation.",
+  "open_findings": [],
+  "observations": [
+    "Build-delivery revision 10 contains provisional Electron, macOS-first, synthetic-bridge-only scope, old document bindings, and desktop-shell targets. Revision 15 explicitly requires reconciling this parent plan and contract before downstream work; this review does not certify those current parent documents as implementation-ready.",
+    "The current contract user_approvals array is empty, correctly avoiding a claim that shell selection approved the revised document set. Add the exact integrated-set approval binding only after reconciliation and fresh reviews, then obtain explicit user approval before implementation."
+  ],
+  "validation": "Static independent review recomputed the plan, contract and source-inventory SHA-256 values; all match review-input. All nine currently registered document digests match current bytes. This does not verify Electron/package compatibility, renderer isolation, sidecar lifecycle, or macOS/Windows runtime behavior.",
+  "provenance": {
+    "child_task_id": "/root/electron_plan_review_r15",
+    "author_task_id": "/root",
+    "review_mode": "Fresh independent read-only plan review following plan_reviewer role instructions",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false,
+    "files_modified": false
+  }
+}

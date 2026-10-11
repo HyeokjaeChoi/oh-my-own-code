@@ -1,0 +1,25 @@
+Fresh independent read-only reviewer. Read .codex/agents/solo_reader.toml,
+.agents/skills/solo-specialist/SKILL.md and solo-design-spec-review/SKILL.md.
+No edits, tests/services, credentials, log scans, recursive agents or ledger.
+
+This is a narrow correction review, not another repository audit. Read only
+docs/runs/desktop-session-lifecycle/{design-spec-v2.packet.json,interface.md,
+design-spec-binding.json,design-spec-review.normalized.json,
+plan-r2-review.normalized.json}. The plan revision 2 already passed and the
+current v2 interface is registered. Prior independent review accepted the rest
+of the contract and verified installed SDK declarations.
+
+Judge the two corrections: paginated authoritative descendant checks before
+dialog and immediately before removal (including hidden/unregistered SDK child,
+empty page with next cursor, invalid cursor/bounds and typed/exhaustive absence
+proof); and explicit duplicate receipt states preserving UNKNOWN_OUTCOME rather
+than returning a false success. New fixed failure codes are documented. No
+product/architecture/security boundary or stored-data scope was broadened.
+Read exact installed types only if you identify an unresolved concrete conflict;
+do not repeat broad generated-client or source searches.
+
+Return ONLY JSON: schema_version:2, reviewed:<exact design-spec-binding.json>,
+verdict:pass|changes_requested|blocked, summary, open_findings:[],
+provenance:{child_task_id:"cli:session-lifecycle-design-v2-independent",
+author_task_id:"coordinator"}. Task label only, not runtime attestation.
+No Markdown escape sequences, code fence or writing block. Concrete blockers only.

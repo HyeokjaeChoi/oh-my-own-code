@@ -1,0 +1,89 @@
+{
+  "schema_version": 2,
+  "run": "durable-owner-lifetime",
+  "reviewer": "design_spec_reviewer",
+  "plan_revision": 1,
+  "design_version": "2",
+  "reviewed": {
+    "contract_sha256": "a3d3748437fbf3b5465fbada14ee318e6470f5f4457722abf968b67acdb12df2",
+    "documents_sha256": "a8c93869f3c4db0fccde0015e95c07ff39fe925e23c9dad5d0920fce75606f1b",
+    "gate": "design_spec",
+    "plan_sha256": "fa862c8d89ff01dc5e7a065e579763240db96a31df09184f3cba5df3ee687a64",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "동일 초기 design review의 D1·D2 수정과 관련 충돌만 독립적으로 검토했습니다. design2는 전체 expectedRegistrations 비교와 현재 flush·동일 snapshot 재확인 정책을 명시합니다. 두 finding은 해결됐습니다. 수정으로 생긴 필수 충돌은 발견하지 못했습니다. 현재 binding은 제공된 r2 입력과 정확히 일치합니다. 이 pass는 설계 판정입니다. 구현 성공, Native startup 권한 또는 Parent P7 완료를 뜻하지 않습니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "D1",
+      "status": "resolved",
+      "artifact_location": {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-owner-lifetime/design.md",
+        "lines": [
+          13,
+          53,
+          55,
+          69
+        ]
+      },
+      "assessment": "verify가 동일한 검증된 owner record에서 expectedRegistrations:{app,child}를 받습니다. 각 호출은 전체 registration·exit·terminal 집합을 검증합니다. Child 부재도 정확히 비교합니다. 서로 다른 snapshot의 역할별 결과를 cache로 결합하지 않습니다. Owner는 authority를 부여하기 전에 같은 이전 record와 kernel을 재확인합니다. 별도 앱의 새 witness 인스턴스에도 필요한 입력이 있습니다."
+    },
+    {
+      "id": "D2",
+      "status": "resolved",
+      "artifact_location": {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-owner-lifetime/design.md",
+        "lines": [
+          29,
+          31,
+          53,
+          69
+        ]
+      },
+      "assessment": "Verifier는 완전하고 정확히 결합된 lifetime 사실만 현재 검증으로 수용합니다. Checked file 각각과 generation directory의 fsync가 성공한 뒤 전체 동일 file·inode·path 집합과 변경 없는 owner snapshot을 다시 확인합니다. 이전 helper의 ACK나 fsync 성공은 추론하지 않습니다. Partial proof, 현재 sync 실패와 재확인 변경은 차단합니다. 파일 내용이나 success marker를 쓰지 않으며 journal 또는 effect 성공을 채택하지 않습니다."
+    }
+  ],
+  "contradiction_check": {
+    "required_contradictions_found": false,
+    "ev_receipt": "47행은 matching EV_ERROR receipt의 data==0을 성공으로 정의합니다. Nonzero data, 누락·불일치 receipt와 syscall 실패는 등록을 거부합니다.",
+    "registration_authority": "현재 owner ready와 child init은 실제 registration ACK와 recordChild 완료를 계속 기다립니다. Historical lifetime 사실 수용은 이 경계를 우회하지 않습니다.",
+    "proof_protocol": "고정 filename, context.json, stdin/stdout frame과 terminal 형식은 유지됩니다. expectedRegistrations는 host verify 입력에만 추가됩니다.",
+    "api_compatibility": "Public owner handle, owner.json v5, DTO와 createLifetimeWitness 생성 API는 유지됩니다. Helper는 owner.json을 읽지 않습니다.",
+    "failure_policy": "완전한 surviving lifetime 사실의 현재 재검증과 partial/current-sync/recheck 실패 거부가 구분됩니다. Helper 실패 자체는 takeover 근거가 아닙니다.",
+    "native_and_parent": "freshNativePreflight와 nonfresh Native hold는 유지됩니다. Production lifetime 구현과 별도 safe Native startup이 해결되기 전까지 Parent P7은 미충족입니다."
+  },
+  "binding_verification": {
+    "provided_input_exact_match_at_start": true,
+    "provided_input_exact_match_at_end": true,
+    "registered_document_hash_matches": true,
+    "routing_file_hashes_match": true,
+    "run_status": "active",
+    "supplemental_current_plan_pass_registered": true,
+    "design_sha256": "a73182f3610f58706a44c0e76a3e5d9124e8c9f8be621ece2db4bf2242593e47"
+  },
+  "provenance": {
+    "child_task_id": "01a116ac-3f17-7b53-b76e-025eca071737",
+    "child_id_source": "CODEX_THREAD_ID",
+    "reviewer_role": "design_spec_reviewer",
+    "profile": "solo_reader",
+    "independent_report_only": true,
+    "review_scope": "동일 초기 design review의 D1·D2 수정과 관련 충돌",
+    "handoff_packet": "docs/runs/durable-owner-lifetime/design-review-r2.packet.json",
+    "binding_source": "docs/runs/durable-owner-lifetime/design-review-r2.input.json",
+    "binding_validation": "Read-only harness review-input의 시작·종료 출력이 제공된 r2 binding과 정확히 일치했습니다.",
+    "full_design_entry_restarted": false,
+    "plan_reaudit_performed": false,
+    "recursive_delegation": false,
+    "files_written": false,
+    "ledger_written": false,
+    "tests_executed": false,
+    "build_or_package_executed": false,
+    "native_or_ui_launched": false,
+    "runtime_identity_attested": false,
+    "os_sandbox_attested": false,
+    "evidence_limits": "문서 수정, 관련 계약, 등록된 supplemental plan pass와 현재 binding만 확인했습니다. 명시된 test case는 실행하지 않았습니다. 실제 OS lifetime, flush 실패 처리와 standalone 재획득은 구현 검증에 남아 있습니다."
+  },
+  "next_dependency": "Coordinator가 이 보고서를 기존 design_spec gate에 등록하고 현재 handoff를 확인한 뒤 지정된 구현을 진행합니다. 추가 entry gate는 요구하지 않습니다. 승인된 계약 안의 routine 수정은 기존 checks와 독립 code review 절차를 따릅니다."
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 2,
+  "run_id": "desktop-app-bootstrap",
+  "reviewer": "product_reviewer",
+  "plan_path": "docs/workplans/desktop-app-bootstrap/plan.md",
+  "plan_revision": 22,
+  "verdict": "pass",
+  "summary": "PRD v0.6 and revision 22 preserve the approved Electron macOS/Windows bootstrap, app-owned OpenCode v2 sidecar, and full F-01–18 product goal. The exact nine-document approval remains valid. No material product scope or acceptance contradiction was found. This passes the product-document gate only; bootstrap completion and full-product readiness remain unproven.",
+  "open_findings": [],
+  "reviewed": {
+    "contract_sha256": "c0e1cd700cafe06d62137f864c7df7fd42fc9040e7526f706b2cf7b2e180b946",
+    "documents_sha256": "13d5504cb9e7a5156cffd1ebcd6abf2a3dc9ef5ff4227699309dbff6caf315f6",
+    "gate": "product",
+    "plan_sha256": "ca8e5d9ccbe1257758a403cabc15f7e6a38bda65d6e5ff8c1aa44c96be6ba5ce",
+    "schema_version": 2
+  },
+  "artifacts": [
+    {"path":"docs/product/prd.md","sha256":"1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3","review_scope":"Full product semantics and bootstrap compatibility"},
+    {"path":"docs/workplans/desktop-app-bootstrap/plan.md","sha256":"ca8e5d9ccbe1257758a403cabc15f7e6a38bda65d6e5ff8c1aa44c96be6ba5ce","review_scope":"Registered active plan, revision 22"},
+    {"path":"docs/workplans/desktop-app-bootstrap/contract.json","sha256":"7c9841c5b1f15e673bacfc40e5f49f2e18f5a0af4d99146adc4ed6ee39e4a711","review_scope":"Decisions, acceptance, checks and approval registrations"},
+    {"path":"docs/runs/desktop-app-bootstrap/exact-document-set-approval-r1.md","sha256":"9d45be0146846ed0cf3e4bf91995b7dff3e858fc355794bdae2af272ef401ecd","review_scope":"Immutable approved packet"},
+    {"path":"docs/runs/desktop-app-bootstrap/user-approval-r1.json","sha256":"deb1ebf40030d5855821af2f3a6a3bb0a8e94304b04492e0f0217921a1a7b885","review_scope":"Approval receipt, authority and exclusions"},
+    {"path":"docs/research/workbench-expansion.md","sha256":"8441bce6d51587cc4803b7d15211581194bc5e159367b9f34e2ab64366679824","review_scope":"Cited product capability evidence and limitations"},
+    {"path":"docs/runs/build-delivery/plan.md","sha256":"557211939151b3b93277245cc11f69307c6c64fa9c65382e7081d3c5837fe0dc","review_scope":"Relevant full-product scope, sequencing and acceptance"},
+    {"path":"docs/runs/desktop-app-bootstrap/synthetic-sidecar-probe-r1.md","sha256":"f0df0551ba49bc97a513d0b756a7f10771fa4c88c14f29a9aed7d7ff5d2108a1","review_scope":"Recorded compatibility evidence boundary"}
+  ],
+  "observations": [
+    "All nine current file digests and registered versions match the approved packet and contract. Packet and receipt hashes also match their registrations.",
+    "The PRD states a single-user development and learning problem, explicitly disclaims measured demand and time-saving evidence, and provides observable acceptance scenarios, a CLI-independent usage outcome and a measurable learning threshold.",
+    "Revision 22 limits bootstrap recovery to visible disconnection followed by a clean app restart. It does not retire the full product's reconnection, event-gap reconciliation or duplicate-effect requirements.",
+    "Preview absence is a bounded bootstrap state. F-10 preview functionality and its separate isolation gate remain required before that capability is exposed.",
+    "Approval remains limited to disposable synthetic workspace/configuration and the planned bootstrap. Persistence decisions remain held; personal projects, global credentials/configuration, ambient services, telemetry and public release are excluded.",
+    "Windows runtime evidence and macOS GUI evidence remain absent. Static checks and macOS package output cannot satisfy these completion requirements."
+  ],
+  "method": "Read-only independent semantic review under solo-product-review; inspected the registered active plan/contract, full PRD, approval packet/receipt, cited local research and relevant parent/design requirements. Verified exact document digests and current product review-input binding.",
+  "limits": ["No files, app, tests, installation, runtime probe or external call modified or executed.", "Approved documents received integrity and targeted contradiction checks; they were not all re-reviewed as design specifications.", "No implemented-UI, platform-runtime, security-enforcement, user-demand or full-product acceptance attestation."],
+  "provenance": {
+    "child_task_id": "/root/desktop_product_review_final",
+    "author_task_id": "/root",
+    "role": "product_reviewer",
+    "model": "gpt-6-astra",
+    "effort": "high",
+    "routing_basis": "Coordinator-reported explicit routing in registered dispatch; not independently observed runtime identity",
+    "tests_executed": false,
+    "runtime_executed": false,
+    "files_modified": [],
+    "ledger_modified": false
+  }
+}

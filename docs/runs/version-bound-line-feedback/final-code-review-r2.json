@@ -1,0 +1,89 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "7dc2c801700389026f120fca42d033db467e37fd4ea1bcf5812dc6d1da5ebbe5",
+    "environment_sha256": "3e2f33abb7f623f1d5216f96abfeffc8c0a3641363878d373ad1991a1fd81f22",
+    "gate": "code",
+    "plan_sha256": "2c1c75e7dfeb6158ef0300c033a9c5a1fa8910a357d351fda08dc75bb41bebac",
+    "schema_version": 2,
+    "source_sha256": "8e519498df8e0598cb7d2c4e2ec25c900b16cd486e7c362625d9abdc092899b6",
+    "verification_sha256": "70b73646eebe487dfc06cd7759ff5db3a2970337ebf42b7a1907974598224b03",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "수정 범위에서 구체적인 결함을 찾지 못했습니다. r1 이후 변경은 runner의 desktop dark 상태 두 개와 필수 상태 검사 하나뿐입니다. 제품 코드와 기존 검사 조건은 유지됩니다.",
+  "open_findings": [],
+  "inspected_scope": {
+    "plan_revision": 9,
+    "mode": "fresh_independent_bounded_correction",
+    "changed_path": "apps/desktop-app/scripts/e2e-line-feedback.mjs",
+    "changed_locations": [
+      "apps/desktop-app/scripts/e2e-line-feedback.mjs:549",
+      "apps/desktop-app/scripts/e2e-line-feedback.mjs:656",
+      "apps/desktop-app/scripts/e2e-line-feedback.mjs:816"
+    ],
+    "historical_review": "docs/runs/version-bound-line-feedback/final-code-review-r1.json",
+    "spec_compliance": [
+      "LF1: helper와 출처 매핑 코드는 r1과 동일합니다. 새 상태는 기존 baseline 및 Git observation을 그대로 사용합니다.",
+      "LF2: 새 상태는 기존 recordState의 before/after metrics 비교를 사용합니다. 명시적 append 이후 composer 내용 검사가 유지됩니다.",
+      "LF3: 파일과 staged Git의 desktop dark 캡처를 추가합니다. 기존 가시성, 선택, 키보드, Escape, no-IO 검사를 그대로 적용합니다.",
+      "LF4: 현재 바인딩에 연결된 8개 검사 기록을 확인했습니다. RENDER 판정은 별도 보고서에 있습니다."
+    ],
+    "code_quality": [
+      "새 호출은 기존 recordState를 사용하며 별도 IO 또는 실행 권한을 추가하지 않습니다.",
+      "dark 및 non-narrow 상태를 요구하는 guard는 캡처와 검사가 완료된 states 배열을 검사합니다.",
+      "capture의 hidden/nonfocusable 조건, PNG 크기 검사, exclusive write와 teardown 처리는 변경되지 않았습니다."
+    ]
+  },
+  "checks": {
+    "reviewer_performed": {
+      "current_source_hashes_and_modes": "20개 경로 모두 source-freeze-r2.json과 일치합니다.",
+      "r1_to_r2_inventory": "runner 한 개만 변경되었습니다. 나머지 19개 경로는 동일합니다.",
+      "exact_delta": "추가된 세 블록을 메모리에서 제거한 runner의 SHA-256은 r1 값 9d2a13be0724ac46ded067eb6fd3d86e0c2eb5fe15240ae69d07cbca8a19b178과 정확히 일치합니다. 파일은 수정하지 않았습니다.",
+      "binding": "plan 파일, contract 의미 해시, environment, work class 및 verification 해시가 입력 객체와 일치합니다.",
+      "registered_artifacts": "등록된 artifact의 현재 파일 해시가 모두 일치합니다.",
+      "provenance": "현재 build stamp, build input 164개, 선택 script/fixture 4개, launch artifact 7개의 해시와 mode가 manifest와 일치합니다."
+    },
+    "existing_recorded_checks": {
+      "files": "pass",
+      "typecheck": "pass",
+      "boundaries": "pass",
+      "lint": "pass",
+      "format": "pass",
+      "build": "pass",
+      "bundle": "pass",
+      "hidden-feedback": "pass"
+    },
+    "check_binding": "8개 기록 모두 현재 source, plan, contract, environment와 일치합니다. exit_code는 0이며 inputs_changed, interrupted, timed_out은 false입니다.",
+    "hidden_r9": {
+      "states": 16,
+      "png_files": 54,
+      "png_header_dimensions_match": true,
+      "hidden_nonfocused_nonfocusable_metadata": true,
+      "all_state_metrics_unchanged": true,
+      "all_recorded_selections_complete": true,
+      "owned_exit_code": 0,
+      "provenance_verified_after": true,
+      "wrapper_exit_code": 0
+    }
+  },
+  "direct_captures": {
+    "used_for_code_verdict": false,
+    "detail": "직접 시각 검사 결과는 별도 design_review에 기록했습니다."
+  },
+  "limits": [
+    "이번 검토는 r1 이후 수정과 영향을 받는 증거 경로에 한정합니다. 변경 없는 전체 구현을 다시 검토하지 않았습니다.",
+    "테스트, build, 앱 또는 provider를 실행하지 않았습니다. 실행 결과는 기존 기록을 검토했습니다.",
+    "파일 수정, ledger 기록 및 위임을 하지 않았습니다.",
+    "로컬 줄 피드백 범위의 판정입니다. production Main, Windows, 실제 provider, 남은 Git mutation 및 전체 제품 완료는 포함하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11c8c-ab5a-7cd3-bf8b-609b2a11196d",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "author": "Main",
+    "role": "reviewer",
+    "mode": "fresh_independent_report_only",
+    "identity_basis": "현재 CODEX_THREAD_ID 및 assignment의 Main author ID",
+    "authored_changes": false
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "allowedPath": "apps/desktop-app/scripts/git-branch-restore-probe.mjs",
+  "beforeSha256": "fdf85b1390fbc3f355f0a7fff292f2d7974c170cc72361b65c2ede1f68079dfc",
+  "afterSha256": "59fb298694d10efc57744694a0cde032c6d0df0f75b07f9dd7c2b56d0ea81cd2",
+  "exactOld": "    const root = await fs.mkdtemp(join(out, \"synthetic-\"));\n",
+  "exactNew": "    const container = await fs.mkdtemp(\n      \"/private/tmp/omoc-branch-restore-probe-\",\n    );\n    await fs.chmod(container, 0o700);\n    await fs.writeFile(\n      join(container, \".owned-branch-restore-probe\"),\n      \"synthetic only\\n\",\n      { flag: \"wx\", mode: 0o600 },\n    );\n    const root = join(container, \"synthetic\");\n    await fs.mkdir(root, { mode: 0o700 });\n    report.retainedContainer = container;\n",
+  "before": "before-probe.mjs.txt",
+  "after": "after-probe.mjs.txt",
+  "diagnosticShort": "/private/tmp/omoc-branch-linked-diagnostic-88_qqc8b",
+  "diagnosticDeep": "docs/runs/git-branch-restore/evidence/omoc-branch-linked-diagnostic-fu6jacpp",
+  "timingsMs": {
+    "shortService": 8482.24,
+    "deepService": 10247.63,
+    "deepKernelPrepare": 3508.68,
+    "deepKernelPublish": 5099.49
+  },
+  "scope": "Only test runtime namespace placement; same synthetic matrix and production code. All budgets unchanged. Existing deep logical timeout remains actual observed limitation; no replay/confirmed-upgrade claim."
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "run": "bounded-workbench-foundation",
+  "reviewer": "plan_reviewer",
+  "reviewed": {
+    "contract_sha256": "debe652dcbaaf58681c587d325f6b2a0778044ddc1bc5c373029f18f372d56dd",
+    "gate": "plan",
+    "plan_sha256": "e006bde1dc9ca04a1f65936137f99ab4f9fef500c2d5bf1039d9ffe9a0e62e38",
+    "schema_version": 2,
+    "source_sha256": "856cdbc8cdb1bb7dc06693857b47d5d90635491b38b6a5664e95210eb9900756"
+  },
+  "verdict": "pass",
+  "summary": "Revision7의 argv 수정은 적절합니다. 전체 명령은 revision6 PLAN-1의 요구와 일치합니다. 실제 parseArgs 함수로 옵션 부분을 평가한 결과, 정확한 r3 경로와 script=ui-states를 반환했습니다. r3 경로는 허용된 root 내부에 있습니다. 기존 경로 구성 요소는 모두 실제 directory이며 symlink가 없습니다. r3 경로는 아직 없습니다. Plan, contract, source hash는 exact input과 일치합니다. Source hash는 revision6과 같습니다. 기존 CODE-1/CODE-2 검증 범위, 필수 checks, 실패 및 통과 증거 이력 보존, background-only 제약은 유지됩니다. 실행 전 destination admission, 현재 r3 증거 생성, 변경된 코드의 독립 code gate, unknown/filtered activity 및 영향받은 상태의 독립 rendered gate는 계속 필요합니다. 이 판정은 단일 명령 수정의 entry review입니다. Native 실행, 출력 생성, 최종 code/render gate 통과를 주장하지 않습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a10481-764b-73b0-8204-77951c2e7c7a",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "runtime_identity_attested": false,
+    "skills": [
+      "solo-specialist",
+      "solo-plan-review"
+    ],
+    "mode": "report_only",
+    "review_scope": "revision7_single_argv_correction",
+    "requested_model": "Sol",
+    "requested_reasoning_effort": "medium",
+    "files_changed": [],
+    "ledger_changed": false,
+    "report_written": false,
+    "tests_run": false,
+    "parser_evaluation_performed": true,
+    "root_containment_verified": true,
+    "existing_path_components_verified": true,
+    "r3_output_absent_verified": true,
+    "prepare_destination_called": false,
+    "evidence_runner_called": false,
+    "output_created": false,
+    "gui_launches": false,
+    "cua_used": false,
+    "provider_calls": false,
+    "delegated": false,
+    "binding_hashes_verified": true,
+    "persistence_owner": "coordinator"
+  }
+}

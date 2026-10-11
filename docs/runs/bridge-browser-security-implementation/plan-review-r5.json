@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "21ef6dd01cf320832f20da70a761971f131d977f90c77a7a9e4511c6b0f6cefa",
+    "gate": "plan",
+    "plan_sha256": "7d9052e61b20868524c6842910c94b564f2b5f55bc614811085be86443362d4c",
+    "schema_version": 2,
+    "source_sha256": "e40efb4e9e59919e0f9ba6e5a7c04fe574979915cd753daa3fbb21898b97e416"
+  },
+  "verdict": "pass",
+  "summary": "Independent Astra/high plan review passed. Client contract v0.2 precedence resolves prior status-mapping conflict; pairing errors and capability failures have separate UI behavior. Exact checks, bounded effects and independent follow-up gates remain registered.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/bridge_security_impl_plan_review_r5",
+    "author_task_id": "/root"
+  },
+  "verification_limits": "Static plan/contract/document review and recomputed hashes only. No edits, code execution, tests, services, browser, network, SDK, or runtime security behavior were exercised. Runtime model identity is unverified. Reviewer also advised sequential handoff because frontend and test ownership overlap on a unit-test file, and to distinguish CORS-blocked transport outcomes from observable application 403 errors in the design review."
+}

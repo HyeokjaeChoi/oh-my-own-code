@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "child": "01a120e9-4163-76d1-8255-931068dac284",
+  "reports": [
+    {
+      "id": "msg_0dddddbd7268c085016ac8f117bddc8191bf4c01cdf50820f8",
+      "text": "테스트 파일만 수정했습니다: [native-permission-control.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control.test.mjs).\n\n- **최초 RED:** `node --test apps/desktop-app/src/native-permission-control.test.mjs` → 종료 `1`. 모듈 부재로 `copyFile`에서 `ENOENT`.\n- **최종 실행:** 같은 명령 → **16개 중 11개 통과, 5개 실패**, 종료 `1`.\n- **통과:** 기본 node 초기화 거부, configured replacement 인스턴스 공유, child transaction 재진입 거부, 큐 32개·취소 복구, 활성 transaction 중 invalidate.\n- **실패:** 입력 검증 2개와 capability 관련 3개. `native_permission_input` 또는 `native_permission_transaction`이 typed `Fail` 대신 `Die`로 반환됩니다. 해당 테스트의 후속 검사는 아직 완료되지 않았습니다.\n\n아래 검사는 모두 종료 `0`입니다.\n\n```sh\nnode --check apps/desktop-app/src/native-permission-control.test.mjs\npnpm exec eslint --config apps/desktop-app/eslint.config.mjs apps/desktop-app/src/native-permission-control.test.mjs\npnpm exec prettier --check apps/desktop-app/src/native-permission-control.test.mjs\n```\n\n검사한 source SHA-256: `78f8dec18d3c99139b2caa549cdbccbdcf423c214ec0e0fee66d59ef64cba2af`.\n\nNative 실행과 docs/ledger 수정은 하지 않았습니다."
+    },
+    {
+      "id": "msg_0dddddbd7268c085016ac8f12841a48191a7e4d325c8ad30eb",
+      "text": "현재 소스로 한 번 실행했습니다.\n\n```sh\nnode --test apps/desktop-app/src/native-permission-control.test.mjs\n```\n\n**16개 모두 통과했습니다.** 종료 코드 `0`, 실패·취소·건너뛰기 `0`입니다. 이전 실패 5개도 모두 해결됐습니다.\n\n파일 수정이나 Native 실행은 하지 않았습니다."
+    }
+  ],
+  "scope": "Worker-owned test file only. Earlier 11/16 failure retained; Main typed-failure fix then actual 16/16 current source pass. Node actual pinned libraries, no Native execution."
+}

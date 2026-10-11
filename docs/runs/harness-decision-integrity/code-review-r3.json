@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "c81d2b8df50bed38ed0c884390364208a8d6d1ed8428e45a42363fdf592479bc",
+    "contract_sha256": "7bbcbe58dff8e191732fb2478356d0d7de4fa079fa5ade79dfa9ae9f94ca898d",
+    "source_sha256": "b918bf66d3d2176942232a2aa09d73af75f55a577a47ca521195750769874a0b",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "verification_sha256": "75234008001b85f9d97ba1c79e788f68dcc57183eaf855290c3a68fd86d4f3dc"
+  },
+  "verdict": "pass",
+  "summary": "Independent Astra/high code review found no open findings. The canonical and synchronized decision gate validates legacy/new contracts, blocks unresolved decisions by phase, and rechecks current plan/contract/packet at dispatch. Product and canonical implementations match, focused tests cover the state and staleness cases, and no external/model-calling side-effect path was found.",
+  "open_findings": [],
+  "validation": "Read-only source and test review; exact source and verification bindings checked before and after. The reviewer inspected recorded test receipts rather than rerunning them.",
+  "provenance": {
+    "child_task_id": "/root/desktop_plan_review_r4",
+    "author_task_id": "/root",
+    "review_mode": "Independent read-only code review",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false,
+    "files_modified": false
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "P1": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/permission-control-journal/source-freeze-r2.json",
+        "docs/runs/permission-control-journal/storage-worker-final-r1.json",
+        "docs/runs/permission-control-journal/design-supplement-r1.md",
+        "docs/runs/permission-control-journal/design-review-r1.json",
+        "apps/desktop-app/src/host/workbench-permission-storage.mjs",
+        "docs/runs/permission-control-journal/final-code-review-r1.json",
+        "docs/runs/permission-control-journal/main-correction-r1.json",
+        "docs/runs/permission-control-journal/main-correction-execution-r1.json",
+        "docs/runs/permission-control-journal/correction-worker-final-r1.json"
+      ],
+      "checks": [
+        "unit",
+        "lint",
+        "format"
+      ]
+    },
+    "P2": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/permission-control-journal/source-freeze-r2.json",
+        "docs/runs/permission-control-journal/storage-worker-final-r1.json",
+        "apps/desktop-app/src/host/workbench-permission-storage.mjs",
+        "apps/desktop-app/src/host/workbench-permission-storage.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/storage-journal.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+        ".solopreneur/harness.py",
+        ".solopreneur/managed.json",
+        "docs/runs/permission-control-journal/inherited-managed-evidence-r1.json",
+        "docs/runs/harness-outcome-preflight-adoption/final-code-review-r1.json",
+        "docs/runs/permission-control-journal/final-code-review-r1.json",
+        "docs/runs/permission-control-journal/main-correction-r1.json",
+        "docs/runs/permission-control-journal/main-correction-execution-r1.json",
+        "docs/runs/permission-control-journal/correction-worker-final-r1.json"
+      ],
+      "checks": [
+        "unit",
+        "lint",
+        "format"
+      ]
+    },
+    "P3": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/permission-control-journal/source-freeze-r2.json",
+        "docs/runs/permission-control-journal/storage-worker-final-r1.json",
+        "docs/runs/permission-control-journal/prechange/legacy-manifest-r1.json",
+        "docs/runs/permission-control-journal/prechange/legacy-import-verification-r1.json",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "docs/runs/permission-control-journal/final-code-review-r1.json",
+        "docs/runs/permission-control-journal/main-correction-r1.json",
+        "docs/runs/permission-control-journal/main-correction-execution-r1.json",
+        "docs/runs/permission-control-journal/correction-worker-final-r1.json"
+      ],
+      "checks": [
+        "unit"
+      ]
+    }
+  },
+  "changed_paths": [
+    ".solopreneur/harness.py",
+    ".solopreneur/managed.json",
+    "apps/desktop-app/src/host/storage-journal.mjs",
+    "apps/desktop-app/src/host/storage-journal.test.mjs",
+    "apps/desktop-app/src/host/workbench-permission-storage.mjs",
+    "apps/desktop-app/src/host/workbench-permission-storage.test.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs"
+  ],
+  "deleted_paths": []
+}

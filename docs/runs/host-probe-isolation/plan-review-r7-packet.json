@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "run": "host-probe-isolation",
+  "phase": "review",
+  "role": "plan_reviewer",
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "4913f0364309bfcf0a8292d8c79f137a4dcbc35862e6b9e9be2c2e322bce27f4",
+    "contract_sha256": "27d3c372f4dc20bf61cfd41df9d2d6bcc29c80a5057defa26d72445f26c06608",
+    "source_sha256": "83a5f247fed8bcbb2f511a6388a43e16f92736ad49dc1d7cc3467411d2d1b2b6"
+  },
+  "inputs": [
+    "docs/runs/host-probe-isolation/plan.md",
+    "docs/runs/host-probe-isolation/contract.json",
+    "docs/runs/build-delivery/host-lifecycle-static-research-r1.md",
+    "docs/runs/build-delivery/host-lifecycle-plan-assessment-r1.md",
+    "docs/runs/host-probe-isolation/pre-canary-review-r2.json",
+    "docs/runs/host-probe-isolation/plan-review-r6.json"
+  ],
+  "constraints": [
+    "Read-only review; no code, tests, canary, SDK, network, user config, secret, edits or delegation.",
+    "Review exact executable path/digest and clean verifier environment; check that the contract launches env -i before Node and checks identity before any worker start.",
+    "Check TOCTOU prevention: execute verified worker bytes, and ensure canary/profile bytes hashed are the same bytes subsequently used.",
+    "Check exact runtime dependency allowlist requirements prohibit broad /System, /usr/lib and package-store trees.",
+    "Keep early NO-RUN precondition, all-controls-unverified reporting, cleanup and independent static code review before any canary; real SDK remains separately unapproved."
+  ],
+  "attestation": "Prepared plan review input metadata; not spawn or runtime identity attestation"
+}

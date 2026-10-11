@@ -1,0 +1,95 @@
+{
+  "verdict": "PASS",
+  "summary": "지정된 8개 파일의 bounded CODE review에서 수정이 필요한 결함을 찾지 못했습니다.",
+  "scope": {
+    "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_revision": 10,
+    "source_checkpoint": "r1",
+    "review_passes": [
+      "spec compliance",
+      "code quality"
+    ],
+    "independence": "구현자와 별도 invocation에서 검토했습니다.",
+    "whole_feature_final_CODE": false,
+    "source_matrix": "advisory로만 사용했습니다."
+  },
+  "findings": [],
+  "verified": [
+    "Plan·contract packet binding과 변경 전 manifest의 SHA256이 일치합니다. 새 test 파일 2개는 추가 파일로 비교했습니다.",
+    "고정 manifest는 read·question·glob·grep·skill·webfetch의 toolId와 action만 제공합니다.",
+    "원본 frozen plugin/effect, Location incarnation, descriptor copy, activation Scope, private predicate, result 일회 사용 연결을 확인했습니다.",
+    "알려진 family의 누락·위조 source는 거부합니다. 알 수 없는 family에는 이 경로로 metadata를 추가하지 않습니다.",
+    "dispose와 reload가 보관한 metadata·result·Scope 연결을 지웁니다. 기존 Read API alias와 boot hold를 유지합니다.",
+    "새 5개 factory의 execute 본문은 원본과 일치합니다. options 값과 schema 참조를 유지하며, factory 생성 경로에서 service·callback·IO를 호출하지 않습니다.",
+    "Recipe 27개 모두 실제 입력 hash, 변환 출력 hash, 역변환이 일치합니다. 원본 설치 bytes도 유지됩니다.",
+    "Recipe canonical SHA256은 12e7a638bfc863494181fe3e8d1851a440c7166d8193086e928eecc387ae92d7이며 receipt와 일치합니다.",
+    "정적 relative import/export closure 141개 파일과 bare import target 366개를 확인했습니다. syntax 오류와 누락 target은 없습니다. staged asset 53개의 정적 local import에도 누락은 없습니다.",
+    "metadata는 unsupported, complete=false, capabilities=[]를 유지합니다. 이 변경에서 추가된 권한 활성화나 setupEffects 호출을 찾지 못했습니다."
+  ],
+  "evidence": {
+    "review_execution": "읽기, diff, SHA256, AST 분석만 수행했습니다. test suite는 재실행하지 않았습니다.",
+    "retained_logs": {
+      "base": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/permission-task-lifetime-integration",
+      "builtin-native-metadata-r1.log": "136 PASS, 0 FAIL",
+      "builtin-native-descriptor-r1.log": "223 PASS, 0 FAIL",
+      "builtin-native-task-read-r1.log": "12 PASS, 0 FAIL",
+      "builtin-native-read-auxiliary-r1.log": "23 PASS, 0 FAIL",
+      "builtin-eslint-r1.log": "빈 로그입니다. 로그만으로 성공 exit code를 증명하지는 않습니다.",
+      "builtin-prettier-r1.log": "All matched files use Prettier code style!"
+    },
+    "test_quality": [
+      "새 test는 source 위조, family 간 result 교환, descriptor 복제, 잘못된 Scope, result 재사용, dispose, reload를 다룹니다.",
+      "초기 RED 8건은 inventoryToolSource API 부재로 실패했습니다. 각 보안 조건이 이전 코드에서 개별 실패했다는 증거는 아닙니다.",
+      "실제 5개 factory와 predicate를 concrete Control에 연결한 test를 확인했습니다. services와 plugin 객체는 synthetic입니다.",
+      "기존 actual Read loader lifecycle과 32 queued writers disposal regression의 PASS 기록을 확인했습니다."
+    ]
+  },
+  "hash_stability": {
+    "rule": "각 sha256은 시작과 종료 측정값 모두에 해당합니다.",
+    "all_match_input_packet": true,
+    "all_start_equal_end": true,
+    "files": [
+      {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control.mjs",
+        "sha256": "74ec75694f5cbf646e083de9940dcd8a9238ad0e33f14688e084629f0a0eeeff"
+      },
+      {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs",
+        "sha256": "9e3bd7ef0a88f5ac04c7826a3ad7bfd19b95d35a903112ef0cc0e15e3da1133c"
+      },
+      {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-builtin-metadata.test.mjs",
+        "sha256": "b7625adae7e1123d37609d4cabeda6bb61401ddb1eeab22bd7250ae250b8dccb"
+      },
+      {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-overlay-contract.mjs",
+        "sha256": "c89f9ef6220c3de903332c27cc1dbed0f7c9b6c3bed4db59ae0e3201e4975634"
+      },
+      {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.mjs",
+        "sha256": "ab8580b6b5abf80d618476878c02dfa277d1f76efa9f4e4cf64f68f075440177"
+      },
+      {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs",
+        "sha256": "7d82df0f0b4a2131b4d6b732a962728cbca9c16a20b783c15c1b048c9f428a01"
+      },
+      {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+        "sha256": "0c3bd2dce556414729734c277fa9306f0e27bce71ba4818b5eca9ceb695af540"
+      },
+      {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-builtin-declaration.test.mjs",
+        "sha256": "a3fb49c81c432024a4fe48cef2e3f228813628d52a961af2740ee39a39a28b1d"
+      }
+    ]
+  },
+  "limits": [
+    "파일 수정, 위임, self-repair, report·ledger 저장을 하지 않았습니다.",
+    "Native·Bun·Main·Electron·server·GUI·provider·network·build·private original 실행을 하지 않았습니다.",
+    "실제 Native authority, dynamic import resolution, dependency graph 전체의 acquisition 효과를 실행으로 검증하지 않았습니다.",
+    "시작·종료 hash 일치는 중간 변경 후 복원을 탐지하지 못합니다.",
+    "Physical r5 kernel 11 PASS는 기존 이력입니다. probe를 실행하거나 현재 runtime 증거로 갱신하지 않았습니다.",
+    "Adapters·mode·전체 inventory·Main handoff·전체 Task lineage와 full18은 미완료로 유지합니다. 이 PASS는 해당 완료를 요구하거나 승인하지 않습니다."
+  ],
+  "next_owner": "Main이 이 결과를 저장하고 ledger에 등록합니다."
+}

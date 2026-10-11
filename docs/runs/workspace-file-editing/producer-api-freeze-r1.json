@@ -1,0 +1,74 @@
+{
+  "schema_version": 2,
+  "plan_revision": 3,
+  "design_version": "3",
+  "status": "actual-producer-source-checkpoint",
+  "files": {
+    "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68",
+    "apps/desktop-app/src/renderer/shared/workspace-file/index.d.mts": "e8adb840874c14ef2a7109243cced9acb165e12de1a826acac6c23ae97e1e8cc",
+    "apps/desktop-app/src/renderer/shared/workspace-file/index.ts": "bd4421ccedb70e0d3204f77524dd9ae5a7ec65f65e54b713787eed954266e8e9",
+    "apps/desktop-app/src/workspace-file.test.mjs": "0f7e2fe04e42613c7cf28f38aaf4957a0b7d01db86c1ef204dbce9d2cebb261f",
+    "apps/desktop-app/src/workbench-contract.mjs": "ec123cea0d567cb247be2ce28abbf1f86aa91b65ca550f6d54044934e0b9c00a",
+    "apps/desktop-app/src/desktop-bridge.d.ts": "4ac62abdcb4e454d99a5207c8181fc6356c0f5d66fd84e6f4bcb86d0580466c7",
+    "apps/desktop-app/src/event-host-protocol.mjs": "08116fef8c20097d2f965abfce7641e60361ae6e48537a3c416a364fccc98658",
+    "apps/desktop-app/src/event-host-resources.mjs": "a594a57520ad2243d87ff0efbc6a4f85d82dd795b1f04ef3d24bab49b752ab97",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts": "56e2560e9fb986f8ae963e11c50f4bdfa1782e5275fd95389c4d71ca6ac46cb1"
+  },
+  "api": {
+    "module": "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs",
+    "exports": [
+      "WORKSPACE_FILE_FEATURE",
+      "WORKSPACE_FILE_LIMITS",
+      "validWorkspaceFilePath",
+      "validWorkspaceFileRoot",
+      "workspaceFilePathReason",
+      "workspaceFileTargetPath",
+      "workspaceFileContentFits",
+      "workspaceFileWriteFits",
+      "workspaceFileIssueMessages",
+      "validateWorkspaceFileText",
+      "validateWorkspaceFileObservation",
+      "validateWorkspaceFileSave"
+    ],
+    "operations": {
+      "file.edit.read": [
+        "workspaceId",
+        "path"
+      ],
+      "file.save": [
+        "workspaceId",
+        "path",
+        "requestId",
+        "expectation=version",
+        "version",
+        "directoryVersion",
+        "text"
+      ]
+    },
+    "observation": "Exact WorkbenchFileObservation from actual index.d.mts; full targetPath separate from portable relative path. Validators same validated object or Error(INVALID_REQUEST).",
+    "private_prepare": [
+      "runtimeEpoch",
+      "operationId",
+      "workspaceId",
+      "workspacePath",
+      "kind=file",
+      "path",
+      "text",
+      "expectation=version",
+      "version",
+      "directoryVersion"
+    ],
+    "save": "saved requires deterministic original-key .file.backup; unknown has requestId/status only",
+    "observer_pending": "IO worker exports readWorkspaceFile(workspace,relativePath,{check?,io?}) returning observation without runtimeEpoch/revision; Main adds scoped clocks."
+  },
+  "checks": {
+    "node": "16/16 PASS at file-api-green-r3.log",
+    "typecheck": "tsc --noEmit exit0 after DTO additions",
+    "lint": "scoped exit0 after no-control-regex correction",
+    "format": "9 owned files formatted"
+  },
+  "limits": [
+    "No host observer/service/storage implementation yet",
+    "No build/Native/Electron/provider/UI execution"
+  ]
+}

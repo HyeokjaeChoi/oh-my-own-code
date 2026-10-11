@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "e0564da54b3a4faac03aa6ee6915bde1731c1284b2cef503bb6d",
+    "contract_sha256": "82ad680f69e34c2abb849149e04ef0074d983d8e19ae90d36a61b21e13b56247",
+    "source_sha256": "e9fb6e590350972c6d23515bd1bd1a3ea57ba8d1dcd5e73923bcc62ac42cd095"
+  },
+  "verdict": "pass",
+  "summary": "Revision 3 resolves HPI-PR2-01. The exact plan and contract now accept safe, truthful evaluation of containment controls, without requiring or implying successful containment for a completed NO-RUN investigation. Both specify the same two-positive/five-negative matrix. READY_FOR_REVIEW still requires every required control to pass; cleanup failure remains blocking, and neither decision authorizes real SDK import or host execution. This is an independent static plan judgment only, not a containment or execution finding.",
+  "open_findings": [],
+  "observations": [
+    "Compared plan revision 3 and its exact contract against plan-review-r2.json, the assigned static research, and the planning assessment using the plan_reviewer role and solo-plan-review skill. No SDK/client code, canary, test, network operation, configuration, secret, or environment-value inspection was performed. Only this assigned report was written; the plan, contract, source, and ledger were not changed.",
+    "Independently confirmed the plan and contract SHA-256 values with shasum; both match the supplied reviewed binding. The source_sha256 is the coordinator-supplied binding and was not independently recomputed within this artifact-only review.",
+    "HPI-PR2-01 is resolved: plan HPI-2 explicitly records verified/unavailable/failed/unverified control states and distinguishes successful evaluation from containment success. Contract HPI-2 likewise requires bounded truthful evaluation and limits READY_FOR_REVIEW to passing required controls. Plan HPI-3 also records unexpected_allowed, and contract HPI-3 requires recording actual outcomes and explicitly states that exit-0 NO-RUN means investigation and cleanup completed, not containment succeeded.",
+    "The current plan HPI-3, seven-operation verification matrix, and contract HPI-3 agree on exactly two positive controls (immutable synthetic input read and owned scratch write) and five negative controls (outside-root synthetic read, outside-root synthetic write, loopback bind/listen, zero-payload connect to the supervisor-owned listener, and execution of the exact existing Node binary). Historical descriptions in the prior review are superseded by these current acceptance definitions.",
+    "Plan scope, HPI-4/HPI-5, and Completion preserve verified cleanup as a prerequisite for either completed decision. Contract HPI-3 requires cleaning owned resources, HPI-4 requires verified cleanup, and the required check explicitly ties exit 0 to safe evaluation and exact-root cleanup. Unresolved cleanup cannot be converted into a completed NO-RUN outcome.",
+    "The plan continues to require attributable operation-specific denials, independently accessible synthetic targets, externally enforced time/output limits, and immediate closure or termination of exact owned resources after unexpected success. Generic errors, refusals, missing targets, or timeouts remain unverified. Concrete enforcement, launcher startup versus child-execution permissions, denial attribution, and failure-path cleanup require the mandated independent static implementation review against frozen hashes before any canary executes.",
+    "The static research and planning assessment establish why broader runtime, native, resource, IPC, process, and network uncertainty cannot be resolved by the narrow local TCP matrix alone. The current plan preserves those limitations and requires NO-RUN for missing required enforcement evidence. This plan verdict supplies no runtime isolation evidence.",
+    "A fresh independent static code/security review must pass before first canary execution; execution is limited to those reviewed hashes, followed by a separate fresh final review of exact source and resulting evidence. Passing this plan gate permits only the already authorized SDK-free preparation workflow, subject to those remaining gates.",
+    "Real SDK import/start remains separately unapproved. Neither READY_FOR_REVIEW, NO-RUN, nor this report authorizes it. Any future real-host proposal requires adequate containment evidence and explicit approval tied to the concrete reviewed runner and effect manifest; approval cannot cure missing or failed containment. The broader build-delivery run remains active."
+  ],
+  "provenance": {
+    "child_task_id": "/root/host_probe_isolation_plan_review_r3",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "runtime_identity_verified": false,
+    "review_mode": "read-only independent plan re-review; requested review artifact only",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false
+  }
+}

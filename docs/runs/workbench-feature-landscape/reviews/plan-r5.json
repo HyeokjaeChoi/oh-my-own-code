@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "dcc0cb63ff9ee4820e9646a097f5fb450178a5dacf60e80b8fdae05eca5ebe5c",
+    "contract_sha256": "aae5506a0b7ac49f8c1f706ad8f68a6c50d588d6a40bd2e2762ad13920c57551",
+    "source_sha256": "7c931760641d662f53d2d0b9ac0cbfa7aabd8f1801be636aa13f89152dab014c"
+  },
+  "verdict": "pass",
+  "summary": "계획 revision 2는 요청된 기능 조사 범위를 유지한다. 한국어 보고서와 저장소 상대 링크가 이전 검토의 지적을 해결했으며, 네 제품군과 네 기능군, 네 가지 workspace 수명주기 동작, 권고안과 승인 및 구현 상태의 구분이 유지된다. 이번 변경 범위에서 계획 수준의 차단 지적은 없다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "WFL-PLAN-01",
+      "resolution": "계획과 계약 DR-1 및 보고서는 사용자가 선택한 Electron/macOS/Windows/app-owned OpenCode v2 sidecar와 현재 PRD/UX v0.6 수정본의 review-required 상태를 계속 구분한다. spec-index v0.12와 ADR-0002의 승인 경계도 보존한다."
+    },
+    {
+      "id": "WFL-PLAN-02",
+      "resolution": "계획 및 계약 AC-1/AC-3은 import, create, 앱 목록 제거/archive, 디스크/worktree 물리 삭제를 별개로 요구한다. 한국어 비교표의 수명주기 행과 저장소 감사의 네 개 행이 그 구분을 유지한다."
+    }
+  ],
+  "review_notes": [
+    "plan-r4의 언어 관련 의견이 해결되었다. 본문, 분석, 권고, 상태 설명은 한국어이며 제품명, API/코드 식별자와 출처 제목의 영어 표기는 자연스럽다. 공유 계획/계약의 영어 사용은 저장소 지침과 충돌하지 않는다.",
+    "보고서 Markdown 로컬 링크 24개(고유 대상 13개)를 docs/research 기준으로 해석해 모두 존재함을 확인했다. 앱 소스 링크는 ../../apps를 사용하며 문서 링크도 실제 파일로 연결된다. 외부 링크의 재접속 검증은 이번 범위에 포함하지 않았다.",
+    "네 제품군과 workspace lifecycle, artifact surfaces, live tool interaction, extension inventory의 네 기능군이 한국어 비교표에 유지된다. 문서화됨/확인되지 않음과 분석자의 권고를 구분하고, CLI/SDK와 Desktop UI를 혼동하지 않는다. 이번 번역 및 링크 수정이 조사 범위나 기존 근거 경계를 축소한 흔적은 없다.",
+    "Electron renderer/preload의 runtimeSnapshot 경계와 웹 AssistantTranscript의 no-op onNew를 정적으로 확인했다. 보고서는 제품 목표, 현재 bootstrap, 합성 웹 fixture, 미구현 워크벤치를 구분하며 권장 순서를 승인된 릴리스 계획으로 표현하지 않는다.",
+    "계획 파일 SHA256 및 canonical JSON 계약 SHA256은 요청한 binding과 일치한다. source_sha256은 현재 run.json의 등록값과 일치함을 확인했으며 전체 소스 지문을 독립 재생성하지 않았다. 검토한 보고서 SHA256은 5ada594d0da84ba445bb0270e9d993092d9b83d3b2debedf031b874fc3d693be이다.",
+    "구조 및 링크 확인은 vendor claim entailment 검증이나 최종 보고서 승인과 다르다. 동결된 보고서의 독립 analysis review와 조정자의 출처 검증은 여전히 필요하다. 이 판정은 구현 승인, 패키징 검증, OS 보안 및 실제 실행 증거가 아니다."
+  ],
+  "review_boundary": "Fresh-context plan binding refresh limited to translation, internal link resolution, preserved research coverage, prior plan-r2/r3/r4 findings and scope/status distinctions. Read current plan/contract/report, scoped PRD/UX/spec-index/ADR headers and relevant renderer/preload/transcript symbols. No vendor re-research, runtime tests, report/product edits or ledger edits. Only this review artifact was written.",
+  "provenance": {
+    "child_task_id": "/root/workbench_plan_review_r5",
+    "author_task_id": "/root"
+  }
+}

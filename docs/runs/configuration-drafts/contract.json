@@ -1,0 +1,198 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "D1",
+      "description": "Window-owned temporary workspace-isolated instruction/MCP drafts without transport or writes"
+    },
+    {
+      "id": "D2",
+      "description": "Revision-bound bounded app-supported format validation with no credential projection"
+    },
+    {
+      "id": "D3",
+      "description": "Honest bounded comparison against explicit in-memory baseline"
+    },
+    {
+      "id": "D4",
+      "description": "Keyboard/selectable narrow UI without activation authority"
+    },
+    {
+      "id": "D5",
+      "description": "Actual affected checks and independent final code/render evidence"
+    }
+  ],
+  "checks": {
+    "renderer": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "apps/desktop-app/src/configuration-draft.test.mjs",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/src/workbench-projection.test.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Pure draft validation/diff, single-window retention/isolation, zero transport, existing renderer and output admission regressions",
+      "acceptance_ids": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Additive DTO and renderer consumers",
+      "acceptance_ids": [
+        "D5"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+        "apps/desktop-app/src/configuration-draft.test.mjs",
+        "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+        "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Changed source/test lint",
+      "acceptance_ids": [
+        "D5"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "prettier",
+        "--check",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+        "apps/desktop-app/src/configuration-draft.test.mjs",
+        "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+        "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+        "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css",
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Changed source/test format",
+      "acceptance_ids": [
+        "D5"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Preserved FSD/runtime separation",
+      "acceptance_ids": [
+        "D5"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "node",
+        "--input-type=module",
+        "--eval",
+        "import { captureProvenance } from './apps/desktop-app/scripts/build-provenance.mjs'; await captureProvenance(process.cwd(), { script: 'ui-states' }); console.log('Current build inputs and bytes verified; prior actual build reused');"
+      ],
+      "cwd": ".",
+      "scope": "Production captureProvenance verifies unchanged actual r2 build input/output/native-resource bytes; runner-only correction does not require rebuild; no new build execution claim",
+      "acceptance_ids": [
+        "D5"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "No Node/credential/server renderer dependency",
+      "acceptance_ids": [
+        "D5"
+      ],
+      "required": true
+    },
+    "hidden-ui": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--out",
+        "docs/runs/configuration-drafts/evidence/hidden-r2",
+        "--script",
+        "ui-states"
+      ],
+      "cwd": ".",
+      "scope": "Synthetic user-authored drafts in actual hidden renderer: edit/validation/diff/retention/narrow200, current relevant regressions and owned exit; no Native",
+      "acceptance_ids": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/configuration-drafts/design.md",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "cd0162cf971d7b2dc20bb5d2d09b25258cdaef6784b05a8613d352fc8d830ef8"
+    }
+  ],
+  "environment_files": [
+    "pnpm-lock.yaml"
+  ],
+  "user_approvals": [],
+  "decision_register": [
+    {
+      "id": "draft-boundary",
+      "statement": "F14 temporary user-authored draft stage precedes real file apply/MCP lifecycle; full product remains required",
+      "status": "confirmed",
+      "source": "PRD F14, approved workbench UX section6 and user uninterrupted full-product continuation",
+      "impact": "No SDK/host/Native or persistent write boundary in this increment",
+      "blocks": [],
+      "resolution": "Pure browser state/format/diff only; later effect work receives proportional changed-boundary review"
+    }
+  ]
+}

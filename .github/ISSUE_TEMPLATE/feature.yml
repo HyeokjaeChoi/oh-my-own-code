@@ -1,0 +1,22 @@
+name: Feature or product experiment
+description: Record a small product change and completion criteria.
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: User problem and desired outcome
+      description: Who should be able to do what, and when? Link related briefs/specs.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Scope and acceptance criteria
+      description: Describe observable completion criteria and exclusions.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and references
+      description: Include relevant user observations, designs, metrics, or implementation constraints.

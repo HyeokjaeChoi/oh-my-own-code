@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "A1": {
+      "status": "verified",
+      "checks": [
+        "unit",
+        "lint",
+        "format"
+      ],
+      "artifacts": [
+        "docs/runs/ui-state-families/verification.json"
+      ]
+    },
+    "A2": {
+      "status": "verified",
+      "checks": [
+        "unit",
+        "hidden-extensions",
+        "hidden-workspace-files",
+        "hidden-git-review"
+      ],
+      "artifacts": [
+        "docs/runs/ui-state-families/verification.json"
+      ]
+    },
+    "A3": {
+      "status": "verified",
+      "checks": [
+        "hidden-extensions",
+        "hidden-workspace-files",
+        "hidden-git-review"
+      ],
+      "artifacts": [
+        "docs/runs/ui-state-families/verification.json"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/scripts/run-evidence.test.mjs"
+  ],
+  "deleted_paths": []
+}

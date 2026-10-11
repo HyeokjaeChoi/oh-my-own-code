@@ -1,0 +1,16 @@
+{
+  "files": 65,
+  "edits": 254,
+  "recipeSha256": "1b61e8ad5b02c82d5091c6325221000085be6063f46d0fc1345048bf595c7ca6",
+  "newSource": {
+    "path": "node_modules/@opencode/core/dist/chunks/config-gh5tebn4.js",
+    "beforeSha256": "3fd56d8e579c116c8e766b080295d35dc0af3ac04a276834fa4649b7bfe29cef",
+    "afterSha256": "33a831968ed658e6790905ce9cf33a1fe4887d8138ec57209d2a0d81303f5f39",
+    "edits": [
+      {
+        "find": "  const globalDirectory = AbsolutePath2.make(global.config);",
+        "replace": "  if (options?.project === false && options?.global === false && options?.file === undefined)\n    return { global: undefined, explicit: undefined, direct: [], project: [], claude: [], agents: [] };\n  const globalDirectory = AbsolutePath2.make(global.config);"
+      }
+    ]
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "kind": "bounded_renderer_implementation_checkpoint",
+  "assignment": "renderer-assignment-r1.md",
+  "plan_revision": 1,
+  "design_version": "v1 corrected DS1",
+  "work_class": "routine",
+  "before_manifest": "renderer-before-r1.json",
+  "early_actual_hooks": "renderer-actualhooks-r1.json",
+  "final_diff": "renderer-final-r1.diff",
+  "producer_freeze": "producer-api-freeze-r2.json",
+  "frozen9_sha256_match": true,
+  "files": {
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts": {
+      "sha256": "1d3c918b164f670f29cf3738820f4c125a25f63fe2d5cda1cf079e9b636cdc44",
+      "bytes": 312741
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts": {
+      "sha256": "a0af8ce3a8e4c90a29c53b416edb9c2491a643bc74ea3eca6629a79406bd71c4",
+      "bytes": 167972
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts": {
+      "sha256": "7cabe0abbfcabe45ecd46565822bb2b6ff3bbd49eb6128ab53920727eca635c0",
+      "bytes": 3803
+    },
+    "apps/desktop-app/src/renderer/features/permission-policy/index.tsx": {
+      "sha256": "b1a7ab9e4d1af7c1856bb42803021484354d9f47214876ef6c74b553cad73c7e",
+      "bytes": 5652
+    },
+    "apps/desktop-app/src/renderer/features/permission-policy/policy.module.css": {
+      "sha256": "03bafffe00701525283536df054b28cd5f2a02f0720a3ef748d9dff933528aa2",
+      "bytes": 966
+    },
+    "apps/desktop-app/src/renderer/widgets/conversation/index.tsx": {
+      "sha256": "4a36db49d7810c5f0cc47849bc6130ce2b9295e2eddeaccacb8390fcc97219e6",
+      "bytes": 34425
+    },
+    "apps/desktop-app/src/workbench-store.test.mjs": {
+      "sha256": "f958f00c6c7ecbd7d02f37c35f4dc95b918492ccf21fe63c51516db8ad1e18ca",
+      "bytes": 652365
+    }
+  },
+  "checks": [
+    {
+      "name": "RED",
+      "command": "node --import tsx --test --test-name-pattern='Permission policy' apps/desktop-app/src/workbench-store.test.mjs",
+      "result": "expected_fail_missing_observePermissionPolicy",
+      "log": "renderer-red-r1.log",
+      "limits": "Initial no-auto test also had a fake-clock call typo, corrected before GREEN."
+    },
+    {
+      "name": "focused_unit",
+      "command": "node --import tsx --test --test-name-pattern='Permission policy' apps/desktop-app/src/workbench-store.test.mjs",
+      "exit_code": 0,
+      "tests": 57,
+      "log": "renderer-green-r4.log"
+    },
+    {
+      "name": "store_regression",
+      "command": "node --import tsx --test apps/desktop-app/src/workbench-store.test.mjs",
+      "exit_code": 0,
+      "tests": 1560,
+      "log": "renderer-unit-r3.log"
+    },
+    {
+      "name": "type",
+      "command": "pnpm exec tsc -p apps/desktop-app/tsconfig.json --noEmit",
+      "exit_code": 0,
+      "log": "renderer-type-r2.log",
+      "input_scope": "src/**/*.ts and src/**/*.tsx; unchanged since check"
+    },
+    {
+      "name": "scoped_lint",
+      "command": "pnpm exec eslint --config apps/desktop-app/eslint.config.mjs apps/desktop-app/src/renderer/entities/workbench/model/store.ts apps/desktop-app/src/renderer/entities/workbench/model/controller.ts apps/desktop-app/src/renderer/entities/workbench/index.ts apps/desktop-app/src/renderer/features/permission-policy/index.tsx apps/desktop-app/src/renderer/widgets/conversation/index.tsx apps/desktop-app/src/workbench-store.test.mjs",
+      "exit_code": 0,
+      "warnings": 3,
+      "log": "renderer-lint-r2.log",
+      "notes": "Existing unchanged unused no-unused-vars disable comments in controller/store/widget. Updated test lint rechecked in renderer-test-lint-r3.log with exit 0 and no warnings."
+    },
+    {
+      "name": "scoped_format",
+      "command": "pnpm exec prettier --check apps/desktop-app/src/renderer/entities/workbench/model/store.ts apps/desktop-app/src/renderer/entities/workbench/model/controller.ts apps/desktop-app/src/renderer/entities/workbench/index.ts apps/desktop-app/src/renderer/features/permission-policy/index.tsx apps/desktop-app/src/renderer/features/permission-policy/policy.module.css apps/desktop-app/src/renderer/widgets/conversation/index.tsx apps/desktop-app/src/workbench-store.test.mjs",
+      "exit_code": 0,
+      "log": "renderer-format-r2.log",
+      "notes": "Only test changed afterwards; rechecked renderer-test-format-r3.log exit 0."
+    },
+    {
+      "name": "boundary",
+      "command": "node apps/desktop-app/scripts/check-renderer-boundaries.mjs",
+      "exit_code": 0,
+      "sourceFiles": 104,
+      "boundaryFixtures": 68,
+      "positiveFixtures": 16,
+      "log": "renderer-boundary-r2.log",
+      "input_scope": "renderer graph unchanged since check"
+    }
+  ],
+  "behavior": [
+    "Explicit session policy read only; one scoped projection with immutable identity and exact response validation.",
+    "Retirement on epoch/workspace/session/root/trust/generation/floor/authority loss, read-only cancellation and late-response rejection.",
+    "Third adjacentTasks disclosure with exact action/status/baseline/source hooks and limits. Closed summary shows current baseline mismatch.",
+    "Original ordered full rule values rendered as React text with wrapping/selectability, absent vs present-empty separate.",
+    "Existing controls and Composer + source preserved."
+  ],
+  "not_executed": [
+    "Native",
+    "Electron",
+    "build",
+    "UI/browser",
+    "provider",
+    "delegation"
+  ],
+  "approval_claimed": false,
+  "next_dependency": "Main synthetic fixture/hidden runner integration and fresh independent CODE/RENDER gates."
+}

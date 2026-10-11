@@ -1,0 +1,30 @@
+{
+  "authority": "User standing delegation to choose models/effort economically; fresh bounded specialists",
+  "assignments": [
+    {
+      "role": "plan_reviewer",
+      "child": "/root/feasibility_plan_review",
+      "requested_model": "gpt-6-sol",
+      "requested_effort": "medium",
+      "reason": "Bounded entry plan/safety judgment",
+      "observed": "Spawn accepted; returned independent report; runtime identity not independently attested"
+    },
+    {
+      "role": "engineer",
+      "child": "/root/sdk_ui_spike",
+      "requested_model": "gpt-6-sol",
+      "requested_effort": "medium",
+      "reason": "SDK generation and package integration uncertainty within a single probe",
+      "observed": "Spawn accepted; returned actual probe/report and passing local check; runtime identity not independently attested"
+    },
+    {
+      "role": "reviewer",
+      "child": "/root/sdk_ui_independent_review",
+      "requested_model": "gpt-6-sol",
+      "requested_effort": "medium",
+      "reason": "Independent code/evidence judgment for compact synthetic spike",
+      "observed": "Spawn accepted; independently returned pass; same-assignment schema formatting correction confirmed without new tests/source changes. Runtime identity not independently attested"
+    }
+  ],
+  "no_recursive_delegation": true
+}

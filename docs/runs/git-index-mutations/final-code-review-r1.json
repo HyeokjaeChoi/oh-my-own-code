@@ -1,0 +1,91 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "2552ac5985470a78d5af214ec99baac40205d8457751d31b46ba42a9c2e806f6",
+    "environment_sha256": "bf6cbdd7f28e745d6669f7eec086ebfe25c2f75737abde462a10d7456b171b0c",
+    "gate": "code",
+    "plan_sha256": "cb00cf0b39fe91417a0bdc5410936f7ab02dabd410e792558a6ea727d92308e3",
+    "schema_version": 2,
+    "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+    "verification_sha256": "2f6de26bff3bfac4a416ff0dfd417e0e382b791f18ac5272e9935f9313123180",
+    "work_class_sha256": "6229d9f55383c513255c61dda184c5f24ad6b52c55417bcf63c8c643028ec83c"
+  },
+  "verdict": "pass",
+  "summary": "plan8과 accepted designv3을 기준으로 요구사항과 코드 안전성을 각각 검토했습니다. 선택한 stage/unstage 범위에서 수정이 필요한 구체적 결함을 찾지 못했습니다. 현재 소스, 변경 목록, review binding과 저장된 증거의 일치를 독립적으로 확인했습니다.",
+  "open_findings": [],
+  "inspected_scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "range": "prechange-inventory.json과 현재 전체 inventory의 차이입니다. 변경 46개, 삭제 0개이며 source-freeze-r1.json과 정확히 일치합니다. Git diff만으로 범위를 판단하지 않았습니다.",
+    "inputs": [
+      "docs/runs/git-index-mutations/plan.md",
+      "docs/runs/git-index-mutations/design.md",
+      "docs/runs/git-index-mutations/contract.json",
+      "docs/runs/git-index-mutations/final-code-input-r1.json",
+      "docs/runs/git-index-mutations/final-code-packet-r1.json",
+      "docs/runs/git-index-mutations/source-freeze-r1.json",
+      "docs/runs/git-index-mutations/actual-checks-r1.json",
+      "docs/runs/git-index-mutations/verification-summary-r1.json",
+      "docs/runs/git-index-mutations/outcome-r1.json"
+    ],
+    "code": [
+      "공유 Git index DTO와 validation, paired reader/index manager, shared snapshot 및 fixed Git 실행 경로",
+      "service, admission, registry, journal, receipt와 checkpoint/reopen 경로",
+      "Darwin descriptor kernel, private IPC, child/supervisor와 resource import graph",
+      "Renderer store/controller, transport/API, GitReview UI와 관련 regression tests",
+      "fixture, publication probe, hidden UI runner, evidence wrapper와 build provenance",
+      "ensure-current-build.mjs, verify-prior-check.py와 prior-check-proof-r1.json"
+    ],
+    "acceptance": {
+      "GI1": "선택 항목의 mode/OID/삭제, builtin normalization, core.filemode=false, 비선택 항목 보존과 index 부재 처리를 확인했습니다.",
+      "GI2": "preview와 원본 authority 결합, descriptor 검사, metadata/lock 충돌 및 unsupported 상태 거부를 확인했습니다. Git 명령은 app 소유 snapshot을 사용합니다.",
+      "GI3": "stage/publish intent 순서, immutable target, 전체 next-index digest, 원래 operation key의 backup/null 결합, unknown과 재실행 방지, 실제 호출 종료까지의 hold를 확인했습니다.",
+      "GI4": "명시적 선택·preview·Apply, 기본 거부 confirmation, scope 변경과 비동기 결과 격리, historical preview와 original-key lookup을 확인했습니다.",
+      "GI5": "현재 10개 check의 이전 실제 실행 재사용 방식과 소스·환경·build·증거 결합을 확인했습니다."
+    }
+  },
+  "checks": [
+    {
+      "name": "reviewer_read_only_integrity",
+      "result": "pass",
+      "details": "전체 소스 657개로 source fingerprint를 재계산했습니다. 변경 소스 46개, 환경 파일 5개, 저장된 증거 213개, build 입력 172개와 산출물 7개가 일치합니다. plan, contract, design, environment, verification과 work-class binding도 일치합니다."
+    },
+    {
+      "name": "resource_and_executable_integrity",
+      "result": "pass",
+      "details": "Event Host resource 38,423개의 manifest 항목과 현재 파일이 일치합니다. fixed Git binary hash와 경로 component 7개의 metadata도 일치합니다."
+    },
+    {
+      "name": "prior_execution_reuse",
+      "result": "pass",
+      "details": "현재 10개 check는 verified_prior_actual_check이며 new_test_execution=false입니다. 이전 argv/cwd/scope와 성공 기록을 확인했습니다. build checker의 verified_existing_current_build와 stale 시 rebuild 분기도 검토했습니다. 이번 리뷰에서는 verifier, build 또는 테스트를 실행하지 않았습니다."
+    },
+    {
+      "name": "saved_publication_r3",
+      "result": "pass",
+      "details": "저장된 실제 publication 14개 case, child exit 0과 실행 전후 provenance 일치를 확인했습니다. 실제 paired manager/service/registry와 app-staged Bun kernel을 사용한 범위입니다."
+    },
+    {
+      "name": "saved_kernel_and_reader",
+      "result": "pass",
+      "details": "실제 kernel synthetic 보고서의 52개 PASS와 exit 0, 현재 kernel/test hash를 확인했습니다. reader regression 51개 결과와 source/executable 안정성 기록도 확인했습니다."
+    },
+    {
+      "name": "saved_hidden_ui",
+      "result": "pass",
+      "details": "hidden-r2의 34개 state, PNG 209개, owned exit 0과 provenance 일치를 확인했습니다. CODE 검토의 보조 증거로 사용했습니다."
+    }
+  ],
+  "limits": [
+    "이번 리뷰는 읽기 전용입니다. 파일 수정, build, 테스트, 앱 실행 또는 delegation을 하지 않았습니다.",
+    "publication 증거는 synthetic SDK와 direct private adapter를 사용합니다. 새 channel의 실제 Event Host OS process 수명을 입증하지 않습니다. supervisor 수명 검사는 scripted test 범위입니다.",
+    "hidden UI는 실제 built Renderer/preload와 synthetic Main을 사용합니다. production Main confirmation 창과 실제 backend publication을 입증하지 않습니다. 별도 독립 RENDER review가 필요합니다.",
+    "실제 128MiB 경계, ACL 주입, power-loss, Windows, provider와 private project 동작은 검증하지 않았습니다.",
+    "판정 범위는 선택한 stage/unstage입니다. commit, branch 선택·생성, restore와 전체 제품 완료는 포함하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11cdd-a340-7503-b9ff-7718b4001e46",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "mode": "fresh_independent_report_only",
+    "child_task_id_source": "CODEX_THREAD_ID"
+  }
+}

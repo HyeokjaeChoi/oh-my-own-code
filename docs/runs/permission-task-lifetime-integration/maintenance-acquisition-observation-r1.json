@@ -1,0 +1,79 @@
+{
+  "scope": "original cleanup acquisition with real pinned Effect, scripted FS/Global only",
+  "sources": [
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-gd4qta3r.js",
+      "sha256": "89c5db7b2a8dac6d7383745186270354317edab7c3771410532923cd32422982"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-g4xer9vd.js",
+      "sha256": "0b78f3dbd0899a168d980f6946490c7763b37005fe6d3bd9518cc161f1c97029"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-hbtt76ya.js",
+      "sha256": "8afa7591a9f6c71e2c3169b0b55a2429ad578705ca32a67b35fe992dc8b76198"
+    }
+  ],
+  "results": [
+    {
+      "name": "ToolOutput",
+      "blocked": false,
+      "calls": [
+        "read",
+        "stat:/synthetic-native-data/tool-output/tool_abcdefabcdef",
+        "remove:/synthetic-native-data/tool-output/tool_abcdefabcdef"
+      ],
+      "interrupted": 0,
+      "actualScopeClosed": true,
+      "noTaskOrPermissionAuthorityProvided": true,
+      "physicalFilesystemCalls": 0
+    },
+    {
+      "name": "ToolOutput",
+      "blocked": true,
+      "calls": [
+        "read"
+      ],
+      "interrupted": 1,
+      "actualScopeClosed": true,
+      "noTaskOrPermissionAuthorityProvided": true,
+      "physicalFilesystemCalls": 0
+    },
+    {
+      "name": "Shell",
+      "blocked": false,
+      "calls": [
+        "read",
+        "read",
+        "stat:/synthetic-native-data/shell/project/sh_abcdefabcdef.out",
+        "remove:/synthetic-native-data/shell/project/sh_abcdefabcdef.out"
+      ],
+      "interrupted": 0,
+      "actualScopeClosed": true,
+      "noTaskOrPermissionAuthorityProvided": true,
+      "physicalFilesystemCalls": 0
+    },
+    {
+      "name": "Shell",
+      "blocked": true,
+      "calls": [
+        "read"
+      ],
+      "interrupted": 1,
+      "actualScopeClosed": true,
+      "noTaskOrPermissionAuthorityProvided": true,
+      "physicalFilesystemCalls": 0
+    }
+  ],
+  "pass": 4,
+  "actualNativeImports": false,
+  "runtimeAcceptance": false,
+  "findings": [
+    "Both original cleanup nodes schedule filesystem retention during acquisition without waiting for a Task or execution grant.",
+    "Closing actual Scope interrupts a blocked scripted read before removal; later cancellation does not undo already executed removal."
+  ],
+  "limits": [
+    "No actual filesystem read/stat/remove through Native; FSUtil and Global are standins.",
+    "No source patch, execution grant, startup isolation or inventory completeness claim."
+  ]
+}

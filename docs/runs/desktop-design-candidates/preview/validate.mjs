@@ -1,0 +1,10 @@
+import fs from 'node:fs';import vm from 'node:vm';import path from 'node:path';
+const root=path.dirname(new URL(import.meta.url).pathname);const context={window:{}};vm.runInNewContext(fs.readFileSync(path.join(root,'data.js'),'utf8'),context);const d=context.window.DESIGN;
+const errors=[];let resolved=0;
+for(const c of d.candidates)for(const theme of ['light','dark']){const raw=Object.fromEntries(d.common.tokens.map(t=>[t.path,t.value]));Object.assign(raw,c.tokenOverrides);const cache={};const resolve=(p,stack=[])=>{if(p in cache)return cache[p];if(!(p in raw))throw Error('Missing '+p);if(stack.includes(p))throw Error('Cycle '+p);let v=raw[p];if(v&&typeof v==='object')v=v[theme];if(typeof v==='string'&&/^\{.*\}$/.test(v))v=resolve(v.slice(1,-1),[...stack,p]);return cache[p]=v;};for(const p of Object.keys(raw))resolve(p);resolved+=Object.keys(cache).length;const h=resolve('semantic.composer.emptyHeight');if(h!==c.layout.composer.emptySurfaceHeight)errors.push(c.id+' empty height');}
+const html=fs.readFileSync(path.join(root,'index.html'),'utf8');const js=fs.readFileSync(path.join(root,'app.js'),'utf8');const css=fs.readFileSync(path.join(root,'styles.css'),'utf8');
+for(const family of Object.keys(d.common.components))if(!js.includes("case '"+family+"'"))errors.push('Missing specimen '+family);
+if(/https?:\/\//.test(html))errors.push('Remote HTML dependency');if(/transform\s*:\s*scale/.test(css))errors.push('Scaled UI');if(/#[a-fA-F0-9]{3,8}\b/.test(css))errors.push('Invented palette');
+if(Object.keys(d.common.components).length!==32)errors.push('Family inventory');
+if(!js.includes('e.isComposing')||!js.includes('e.keyCode!==229'))errors.push('IME guard');
+const result={tokens:d.common.tokens.length,candidateModes:6,resolvedValues:resolved,families:Object.keys(d.common.components).length,localIcons:Object.keys(context.window.ICONS.icons).length,errors,meaning:'Source parsing and inventory only. No rendered approval or product test.'};console.log(JSON.stringify(result,null,2));if(errors.length)process.exitCode=1;

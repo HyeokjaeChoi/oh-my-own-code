@@ -1,0 +1,83 @@
+{
+  "schema_version": 2,
+  "reviewer": "design_spec_reviewer",
+  "verdict": "pass",
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "design_spec",
+    "plan_sha256": "b881fc85abb27e5f8c892acb1ffbdd81904bcaef168f9bf7e37ec5a71da89a4f",
+    "contract_sha256": "3500230beaf7416cb9c1874002c5935692b39f9e1f4b4e41485e7e666a01da81",
+    "documents_sha256": "82a0a4229b413813463c01fce166a13fbb7bceeb629815900e5a047d1ffe1aed"
+  },
+  "summary": "Independent read-only review passes the design-spec gate for focused plan revision 20. All nine approved file paths, versions and SHA-256 values match approval packet r1, the registered contract and current artifacts; the packet and user receipt hashes match. The eight design-spec documents remain coherent on Electron main ownership of the exact app-launched OpenCode v2 serve child, named typed least-authority preload operations, preview isolation, truthful UX/permission/recovery states and distinct macOS/Windows evidence. This report rebinds the unchanged approved document set to the current plan and contract; it does not request renewed user approval or assert runtime compatibility or security enforcement.",
+  "open_findings": [],
+  "findings": [],
+  "reviewed_artifacts": [
+    { "path": "docs/design/specs/workbench-ux.md", "sha256": "1f59e6f83aca0c077a4db10cc8c65f7e27e5f177ae0aa32dc6508f4134c97525" },
+    { "path": "docs/engineering/workbench-architecture.md", "sha256": "d07aa9234632541056bbe3b96756f2fe7081214f4590397fe0260fd01c31ccae" },
+    { "path": "docs/engineering/verification.md", "sha256": "4c1e60680cf7b20b02efb35230e8af1588b558b80adab8c15442639c49ead696" },
+    { "path": "docs/operations/local-release-monitoring.md", "sha256": "fe97cb8a4c69e2331b74e3c8263387132ae466150a721e9838a107a95a60e163" },
+    { "path": "docs/engineering/spec-index.md", "sha256": "5d63ccc5304887e83f5d16092fd67a5b9cb4cc7eca724e8536e44665f9e31dc9" },
+    { "path": "docs/decisions/0002-desktop-runtime.md", "sha256": "1ebaa6585f7e56e1361d174fec25a7cdd080fd4f283067c72ca1d5111f7dcb65" },
+    { "path": "docs/design/system.md", "sha256": "4697eb4961952ee85a4732ed77e5addbb17058a8b3d12485aa56158324f661a5" },
+    { "path": "docs/design/components.json", "sha256": "76460f0cc7099ef6b628ce654994d89fc75e5e863d33c103daae8049493f2ed2" }
+  ],
+  "approval_integrity": {
+    "approved_file_count": 9,
+    "all_paths_versions_and_hashes_match": true,
+    "all_documents_registered_as_current_artifacts": true,
+    "product_document_hash_verified": { "path": "docs/product/prd.md", "sha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3" },
+    "packet": { "path": "docs/runs/desktop-app-bootstrap/exact-document-set-approval-r1.md", "sha256": "9d45be0146846ed0cf3e4bf91995b7dff3e858fc355794bdae2af272ef401ecd" },
+    "receipt": { "path": "docs/runs/desktop-app-bootstrap/user-approval-r1.json", "sha256": "deb1ebf40030d5855821af2f3a6a3bb0a8e94304b04492e0f0217921a1a7b885" },
+    "receipt_targets_exact_packet": true,
+    "interpretation": "The immutable approval-request packet and approved documents retain their pre-approval status wording and revision-18 references. The current linked SSOT is revision 20 and the separate exact-packet receipt records approval. Conditional prerequisites in those documents are satisfied through current bound reviews, receipt and handoffs; their historical labels do not require another user approval."
+  },
+  "review_observations": [
+    {
+      "area": "Host and sidecar ownership",
+      "evidence": ["docs/engineering/workbench-architecture.md:18", "docs/engineering/workbench-architecture.md:20", "docs/engineering/workbench-architecture.md:64", "docs/decisions/0002-desktop-runtime.md"],
+      "assessment": "Electron main owns trusted service/admission modules, window lifecycle, the exact app-launched foreground serve child and the version-matched client. Ambient/shared servers and an embedded-host substitution are excluded; identity, readiness/authentication and observed shutdown/reaping remain required probes."
+    },
+    {
+      "area": "Renderer and preview authority",
+      "evidence": ["docs/engineering/workbench-architecture.md:62", "docs/engineering/workbench-architecture.md:96", "docs/workplans/desktop-app-bootstrap/contract.json"],
+      "assessment": "Closed versioned named preload functions require main-side sender/frame/lifecycle/payload validation, context isolation, sandboxing and disabled Node integration. Raw channels, filesystem/process authority and sidecar URL credentials are prohibited. Preview has a separate context without privileged preload; navigation/popups, local resources, CSP and external opens require separate evidence. Browser HTTP/CORS/pairing is explicitly scoped apart from desktop authority."
+    },
+    {
+      "area": "UX, state and operation semantics",
+      "evidence": ["docs/design/specs/workbench-ux.md", "docs/engineering/workbench-architecture.md", "docs/design/components.json", "docs/operations/local-release-monitoring.md"],
+      "assessment": "Requested/effective/observed state, accepted versus effect-confirmed, stop-requested versus terminated, and window/tab closure versus process exit remain distinct. Unknown effects and event gaps are visible; dispatched mutations and stale permission decisions are not automatically replayed. Permission labels derive from current revision and matching receipts, with policy denial distinguished from user denial. Operations preserve local diagnostics/redaction and recovery limits."
+    },
+    {
+      "area": "Design foundation coherence",
+      "evidence": ["docs/design/system.md", "docs/design/components.json", "docs/design/tokens/manifest.json", "docs/design/specs/workbench-ux.md:159"],
+      "assessment": "Static inspection confirms the documented 61 primitive, 65 semantic and 37 component tokens, 44 variants and six component families. UX and components agree on receipt-bound permission labels, execution-neutral approval tone, stale read-only reconciliation, keyboard access, inline versus modal focus behavior, reduced motion, long paths and per-platform visual verification. Manifest/CSS are supporting source references, not additional files in the nine-file approval packet; the design validator and UI were not executed."
+    },
+    {
+      "area": "Verification and operations scope",
+      "evidence": ["docs/engineering/verification.md:14", "docs/engineering/verification.md:106", "docs/engineering/workbench-architecture.md:171", "docs/operations/local-release-monitoring.md:5", "docs/workplans/desktop-app-bootstrap/plan.md"],
+      "assessment": "Development E2E, package building, exact-package E2E and renderer inspection have distinct macOS/Windows obligations. Windows behavior requires Windows execution; package and sidecar hashes and observed process effects bind receipts. Browser evidence, mocks, static review and Figma artifacts do not replace platform security/accessibility evidence. Storage/retention-dependent persistence remains held, while bounded synthetic probes/bootstrap are authorized; signing, public release, auto-update, user/global configuration and credentials, ambient services and external telemetry remain excluded."
+    }
+  ],
+  "limitations": [
+    "No project tests, design validator, dependency installation, Electron process, OpenCode process or runtime probes were executed.",
+    "Package compatibility, per-OS binary provisioning, actual preload and preview security, accessibility, lifecycle and child reaping remain unverified implementation evidence.",
+    "The design-spec verdict does not replace the independent product gate, matching handoff checks, code review, running-app design QA or full AC-01–18 completion."
+  ],
+  "provenance": {
+    "child_task_id": "/root/electron_design_spec_review_r6",
+    "author_task_id": "/root",
+    "role": "design_spec_reviewer",
+    "plan_path": "docs/workplans/desktop-app-bootstrap/plan.md",
+    "plan_revision": 20,
+    "contract_path": "docs/workplans/desktop-app-bootstrap/contract.json",
+    "review_method": "Independent local document inspection, byte-level SHA-256 comparison, JSON metadata inspection and exact gate-binding recomputation using the harness canonical JSON digest rules. No prior verdict was adopted as proof.",
+    "binding_recomputed_and_matches_assignment": true,
+    "ledger_plan_and_contract_hashes_match_files": true,
+    "reviewed_source_files_modified": false,
+    "ledger_modified": false,
+    "report_file_written": "docs/runs/desktop-app-bootstrap/design-spec-review-r6.json",
+    "tests_executed": false,
+    "runtime_executed": false
+  }
+}

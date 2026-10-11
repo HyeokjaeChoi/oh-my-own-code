@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "6aba776d2a233dc66ad2d4f24d85347b32d623e85dba9621231e7accb96ed066",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "code",
+    "plan_sha256": "f1394dff1232453425e0811cf666188aa6d1bb5ad5aa589454c85e48d382a2c4",
+    "schema_version": 2,
+    "source_sha256": "85e6ea89ecd92e97a6ea8e963edf3cb3875dfdac86af20f61a67d02add9aa2ce",
+    "verification_sha256": "825cc88d8b5d38ca525b435d5422a59ba78afd7a3c0fd31b46c0c0eb90c73688"
+  },
+  "verdict": "changes_requested",
+  "summary": "Independent read-only review of the current canonical component, token, validator, and recorded Figma evidence sources against plan revision 7. The current PermissionRequest visual action tuples and recorded Figma Button IDs, intent, state, enabled status, and action gaps correspond to the expected matrix. The evidence hashes match the current component and manifest files. The two prior findings are partially closed: state coverage in recorded Figma evidence and exact dark navigation alias paths remain unguarded. The new ToolCall checks record target/input text bounds but still accept inconsistent bottom-gap measurements. No live Figma nodes were read in this review.",
+  "open_findings": [
+    {
+      "severity": "P2",
+      "path": "docs/runs/component-polish/check_components.py",
+      "line": 107,
+      "title": "Require each recorded PermissionRequest state exactly once",
+      "trigger": "The evidence variants array records five entries but duplicates pending and omits sending. The variant_count remains 5, and each recorded action tuple and gap still matches the lookup for its own state.",
+      "impact": "The required component check can pass with no Figma structural evidence for the sending state, so the disabled allow and deny composition required by AC-5 and the five-state coverage required by AC-6 are unverified.",
+      "evidence": "Line 99 checks only the declared variant_count and strokes. Lines 107-111 compare each present variant with expected_figma_actions[variant['state']] but never compare the actual state set or reject duplicates. The current evidence happens to contain one of each state.",
+      "suggested_correction": "Compare the recorded PermissionRequest state multiset with the five expected state names before checking each state's Button mapping, and derive the count from the actual variants array."
+    },
+    {
+      "severity": "P2",
+      "path": "docs/design/validate_system.py",
+      "line": 318,
+      "title": "Check the dark navigation token aliases as well as their resolved colors",
+      "trigger": "The dark component.color.navigation.background alias is changed from semantic.color.surface to semantic.color.selection.background. Both currently resolve to #262626; after regenerating tokens.css and refreshing the evidence manifest hash, both required checks accept the edit.",
+      "impact": "The checked implementation can diverge from plan revision 6's exact semantic parent/default alias while presenting the same current hex value. A later change to selection semantics can then alter navigation independently of the documented surface token.",
+      "evidence": "The current manifest binds navigation background to semantic.color.surface at lines 1535-1540; semantic.color.selection.background and semantic.color.surface both resolve to primitive.color.n7 (#262626) in Dark mode. Lines 318-330 compare resolved colors only. check_components.py checks the declarative component contract and manifest hash, not the actual component token alias targets.",
+      "suggested_correction": "Assert the raw dark alias targets of navigation background, hover-background, and selected-background against semantic.color.surface, semantic.color.canvas, and semantic.color.surface.subtle respectively, then retain the resolved surface comparison."
+    },
+    {
+      "severity": "P2",
+      "path": "docs/runs/component-polish/check_components.py",
+      "line": 104,
+      "title": "Derive ToolCall bottom gaps from recorded frame and content bounds",
+      "trigger": "A ToolCall master or Dark instance has its last visible child at the frame bottom, while the evidence's separate bottom_gap field remains 16 and content_bottom equals height.",
+      "impact": "The new strict component check passes despite zero actual bottom space in a state, leaving the revision-7 AC-4 and AC-6 content-fit repair unguarded.",
+      "evidence": "Lines 104-105 trust bottom_gap == 16 as an independent field. Line 107 only checks content_bottom <= height; it allows height - content_bottom = 0. The target/input text-node checks at lines 108-112 do not cover the last visible child. Current recorded values happen to satisfy height - content_bottom = 16 in all six states and both modes.",
+      "suggested_correction": "For each recorded master and Dark geometry, require abs(height - content_bottom - 16) <= 1 and use the measured last-child bound to populate content_bottom. Keep bottom_gap only as a redundant diagnostic if useful."
+    }
+  ],
+  "review_boundary": "Read-only inspection of plan.md revision 7, contract.json, components.json, system.md, manifest.json, validate_system.py, check_components.py, prior code-review-final.json, and figma-structural-evidence.json. Git status shows project contents untracked, so no committed base-to-head diff was available. Only this requested review artifact was written.",
+  "evidence_limits": "Recorded Figma structural evidence was inspected; live Figma nodes, visual screenshots, browser/runtime target sizing, keyboard behavior, and assistive technology were not independently verified. Validators were inspected statically, not executed in this review. The evidence's matching source hashes establish source binding, not independent Figma reinspection.",
+  "provenance": {
+    "child_task_id": "/root/code_reviewer_rev2",
+    "author_task_id": "/root"
+  }
+}

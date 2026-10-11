@@ -1,0 +1,13 @@
+# Current integration checkpoint, 2026-10-10
+
+Routine implementation under plan revision 2. This supersedes the next-step sequencing in bootstrap-integration-work-r1.md, not its historical evidence. Full18/F09 remains unfinished.
+
+Completed and bounded independently reviewed: actual Control private preparation owns and closes NONVCS candidate IO; real Location retains the same candidate and original root; Native Location uses candidate without Project.resolve/provider dependency; ordinary directory changes do not replace dev/ino/mode/uid/gid object authority; handoff target is actual shared closed TaskIdentity including sessionless bootstrap/workspace variants. General Tool transform callbacks remain refused before body.
+
+Latest source prerequisite: actual Native Read common readDeclaration2 factory outside transform callbacks; actual Plugin consumes the same declaration; original execute body preserved. Source checkpoint read-declaration-source-checkpoint-r1.json binds exact3. Existing coherent check read-declaration-coherent-r1.log passes11. Bounded reviewer Boole 01a125f0-e0ee-7d01-8b5a-1c585adcc665 is inspecting exact3; Main holds these paths. This is not positive adapter proof.
+
+Next critical implementation: structured fixed-source declaration registration without arbitrary callbacks, mutable-schema conversion or exposing the original unsafe execute closure. Actual Tool State replays synchronous transforms and registrationError invokes ToolDefinition.make(definition2(tool)); a frozen outer object alone is insufficient. Engineer Euler 01a125ef-fcb4-79a1-87ad-f14add854064 is analyzing exact source/dependency/lifecycle alternatives read-only. Main owns implementation and integration.
+
+After this: complete inventory (all builtins/hooks/namespaces/dynamic MCP), real generation/mode compiler owner and policy readback, actual physical Read/Write/Edit/Patch adapters, Main durable task facts/flush/private one-use Native handoff/settlement, positive bootstrap binding and nonfresh recovery. Registry taskAuthoritySource is not connected; Native create and Main bootstrap remain held. No synthetic generation or dummy verifier is permitted.
+
+Verification rule: retain unaffected passing checks; do not rerun the same matrix for a report-only edit. Add explicit scoped contracted checks once the coherent source increment is stable (current contract checks are empty). Final whole-source CODE remains separate and mandatory. Keep actual runtime evidence separate from Node/extracted Effect/inert staging. No Native/Bun/Electron/build/package/provider/server/GUI/private originals executed in this increment.

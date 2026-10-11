@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "d948d3b3ac16fd325e381defffd6cff7101ba7dccb94969c17db5738b16d44a3",
+    "contract_sha256": "064248d8e9743d7823753cef30c2e95a1644feec1dbbaa69ccdc83b7a491d8fd",
+    "source_sha256": "fde27e141cb7907a9a6cbedd6e7e575db043f8b7a87b9ef53823428776c10d2d"
+  },
+  "verdict": "pass",
+  "summary": "Read-only review of corrected revision 5 and its research handoff closes PR5-01, PR5-02, and PR5-03. The plan and contract hashes match the requested binding. AC-7 appears in both acceptance lists, and sdk-client-probe consistently maps to AC-2/AC-4/AC-7 without claiming real-runtime or product completion. The four owned files, dedicated strict TypeScript configuration, verify.mjs wiring, existing check command, and transport/HTTP/JSON failure cases are explicit; the research handoff requires failure propagation for every case and typecheck. Package manifests, lockfile, and dependency versions remain unchanged, and unavailable cached dependencies require stopping without installation or registry access. Runtime startup, discovery, event subscription, network, lifecycle effects, project-file access, and persistence are explicitly outside this increment and require a separate reviewed plan. The research correctly distinguishes its reported npm default 0.0.0-reserved from the locally cached 2.0.18 package and leaves fresh tarball availability unresolved. Local manifest inspection confirms version 2.0.18 with declared exports and dependencies; it does not prove host execution or fresh availability. The plan's wording that these sources 'disagree' is imprecise because both observations can coexist, but its explicit uncertainty and execution boundaries prevent a material overclaim. No tests, package installation, network requests, or runtime operations were performed.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/plan_review_r6",
+    "author_task_id": "/root",
+    "requested_route": "gpt-6-astra/high",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "runtime_identity_verified": false
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "revision": 27,
+  "tests": 3,
+  "log": "agent-notification-proof-r1.log",
+  "sources": [
+    {
+      "path": "apps/desktop-app/src/native-permission-agent-notification.test.mjs",
+      "bytes": 7336,
+      "sha256": "5359c8a30d152c23b4222e706b291aa9cf52992713a6f08de4e977b32e3d91cb"
+    },
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-vhejgqwc.js",
+      "bytes": 26214,
+      "sha256": "d1c57ce84aa8014e8e2f2ba09fae01912941dc2ef614821556bd6e2b7726ccc4"
+    },
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-11jgdds2.js",
+      "bytes": 2504,
+      "sha256": "ca0f6134bc21197f76ca12fede197b08f41eb4ad736db99bf3beed4eed03f992"
+    },
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/schema/dist/agent.js",
+      "bytes": 1744,
+      "sha256": "c18ebdc0462ffb0625c286b6ab8a1f6f25081f395ca06b53553ba3d3147dd25e"
+    },
+    {
+      "path": "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/schema/dist/session-event.js",
+      "bytes": 19001,
+      "sha256": "f1e5e1652c97ebdde3fd945bca43bf7bc77ff77e949b36307ca1d9af850ff07c"
+    }
+  ],
+  "actual_evaluated": [
+    "original Bus publish/publishEvent/prepareRoutes/notify",
+    "original LocationLifecycle bus.listen arrow",
+    "real pinned Effect Clock/PubSub/Scope",
+    "original Agent ephemeral declaration arguments"
+  ],
+  "scripted": [
+    "event ID",
+    "Session type cases derived from pinned literal declarations, not runtime schema import",
+    "unused DB/SessionTable/durable/physical canaries"
+  ],
+  "facts": [
+    "agent.updated data={} is ephemeral and excluded from literal session event definitions.",
+    "That event skips original Session routing and original LocationLifecycle project.activate; no durable commit branch or DB canary executes.",
+    "Original typed/live PubSub receives same actual event.",
+    "Arbitrary extra Bus listener executes/refuses: no blanket listener or upstream startup safety claim.",
+    "Tool.notify source differs: it invalidates catalog/logs errors, not Bus. Prior analogy was corrected before any production gate change."
+  ],
+  "authority": "No production gate loosened at this proof checkpoint; fixed-source Agent callback proof and separate CODE remain required.",
+  "limits": [
+    "No actual Bus Layer or upstream DB acquisition, Native/Main/server/Bun/provider/GUI/physical/network execution.",
+    "Not complete live listener inventory or runtime execution authority.",
+    "Unknown plugin activation and callback execution gates must remain held; full feature remains unfinished."
+  ]
+}

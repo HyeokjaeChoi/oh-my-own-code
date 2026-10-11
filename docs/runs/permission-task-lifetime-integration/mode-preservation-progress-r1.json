@@ -1,0 +1,27 @@
+{
+  "files": {
+    "apps/desktop-app/src/workbench-service.mjs": {
+      "bytes": 165647,
+      "sha256": "ea3988009e5f0741c3adb89fe962c02fb10c9aef982a7d4f4332f550f74d6e38"
+    },
+    "apps/desktop-app/src/host/storage-integration.test.mjs": {
+      "bytes": 184895,
+      "sha256": "3aa4240e78ed9d4741c01d1736a74f5dbc9743858942e3835029aa758a4ddd5d"
+    }
+  },
+  "implemented": [
+    "Private session hydration and ordinary session records retain existing permissionControl",
+    "Stored mode cannot be blindly replaced by legacy baseline policy; send/cancel policy refuses until exact compiler generation is verified",
+    "Fork refuses stored-mode source before reservation/native fork until new admitted effective policy can be established"
+  ],
+  "evidence": {
+    "main-mode-preservation-r1.log": {
+      "tests": 249,
+      "pass": 249
+    },
+    "mode-preservation-corrected-red.log": "Real old hydration/policy behavior reproduces failure with corrected reopen/trust fixture",
+    "mode-fork-red.log": "Actual Native fork mock reached without parent mode guard",
+    "mode-fork-green.log": "No Native fork or baseline policy call after guard"
+  },
+  "limits": "Projection seam verifies Main hydration and no-reset behavior only; does not prove production mode transition, persisted generation authority or Native/compiler activation. Inventory producer is active; compiler, task lifetime and independent CODE remain pending."
+}

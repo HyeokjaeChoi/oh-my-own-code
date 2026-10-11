@@ -1,0 +1,7 @@
+{
+  "provenance": {
+    "child_task_id": "01a126da-087c-7461-ab91-2b865d8c4137"
+  },
+  "report": "지정한 3개 파일의 구현을 완료했습니다.\n\n- 14개 producer에 각 private predicate와 원본 `definition2`를 사용하는 projector를 연결했습니다.\n- source SHA는 검증된 manifest에서 정확한 chunk 경로의 `afterSha256`을 사용합니다.\n- helper를 `EVENT_HOST_CODE_ASSETS`에 추가했습니다.\n- 기존 lifecycle, public DTO, `inventory.complete=false`를 유지했습니다.\n\n검사 결과:\n\n- 소스 수정 전 RED: projector 누락, staged asset 누락으로 2개 실패.\n- 최종 Node graph tests: **12/12 PASS**.\n- 3개 파일 ESLint, Prettier: **PASS**.\n- fixture에서 14개 binding, 17개 row의 source SHA와 digest, unbranded result 거부를 확인했습니다.\n\n최종 SHA256:\n\n```text\nnative-permission-graph.mjs\ne8bd0e93db4251ece41f4142429386717819e52d8dd542cc18ff329879bb7090\n\nnative-permission-graph.test.mjs\ndcdfdfc076a9ad53a4a4349bdd104e0af6d3e1b6386f0276d304ed1369ff39ac\n\nevent-host-resources.mjs\n8a227c95e8f678992edbbd9a85aa5a2b24437357849f759a8d08e066d2546598\n```\n\nhelper SHA는 제공된 값과 같고, helper는 수정하지 않았습니다. 실제 Native/core module 실행, Bun, build, GUI, physical probe는 수행하지 않았습니다. docs·ledger·report도 작성하지 않았습니다. 독립 CODE review와 통합 검사는 Main에 남아 있습니다.",
+  "scope": "owned3 implementation, not CODE approval"
+}

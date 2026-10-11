@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "endpoint": "/api/info",
+  "method": "GET",
+  "rows": [
+    {
+      "label": "missing-basic",
+      "auth": "missing",
+      "origin": "none",
+      "status": 401,
+      "allow_origin": false
+    },
+    {
+      "label": "wrong-basic",
+      "auth": "wrong",
+      "origin": "none",
+      "status": 401,
+      "allow_origin": false
+    },
+    {
+      "label": "valid-no-origin",
+      "auth": "valid",
+      "origin": "none",
+      "status": 200,
+      "allow_origin": false
+    },
+    {
+      "label": "valid-controlled-origin",
+      "auth": "valid",
+      "origin": "controlled",
+      "status": 200,
+      "allow_origin": true
+    },
+    {
+      "label": "valid-rejected-origin",
+      "auth": "valid",
+      "origin": "https://fixture-rejected.invalid",
+      "status": 200,
+      "allow_origin": false
+    }
+  ],
+  "excluded": [
+    "pairing",
+    "cookies",
+    "PTY tickets"
+  ]
+}

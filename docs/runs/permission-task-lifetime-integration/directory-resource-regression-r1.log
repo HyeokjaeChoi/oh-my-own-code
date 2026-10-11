@@ -1,0 +1,38 @@
+✔ shared descriptor ABI matches the actual pre-extraction kernel including Apple arm64 variadic mode position (2.998416ms)
+✔ Node cannot load the descriptor library or obtain syscall functions (0.873333ms)
+✔ directory ABI is a separate fixed opt-in with no writable or caller-defined symbols (0.26525ms)
+✔ save kernel preserves every original byte outside the shared loader replacement (1.366125ms)
+✔ scripted: directory rows do not settle the retained root before close (9.361125ms)
+✔ scripted: directory cancellation waits original finally; late close failure=false (3.270208ms)
+✔ scripted: directory cancellation waits original finally; late close failure=true (3.433833ms)
+✔ actual: exact data objects and real guard are checked synchronously without traps (1.602ms)
+✔ actual: private brand rejects forged, copied and proxied resources without traps (1.17425ms)
+✔ actual: claimed prestart cancellation has zero callbacks and verified no-factory completion (0.949708ms)
+✔ actual: Node unsupported factory is unverified, regardless of its error text (1.114084ms)
+✔ scripted: an unclaimed reader never enters the factory and late claims fail (2.772292ms)
+✔ scripted: claimed prestart cancel bypasses factory and joins completion (2.249333ms)
+✔ scripted: claimed prestart close bypasses factory and joins completion (2.384791ms)
+✔ scripted: claim starts only on microtask, captures inputs, retains root until close (2.441541ms)
+✔ scripted: cancel during pending factory waits for real ready and cleanup (2.603916ms)
+✔ scripted: close during pending factory waits for real ready and cleanup (2.187292ms)
+✔ scripted: constructor rejection cannot use fake proof: unsupported_runtime (2.4025ms)
+✔ scripted: constructor rejection cannot use fake proof: native_permission_file_io_cancelled (2.531792ms)
+✔ scripted: reentrant factory check cancellation is rejected before original acquisition (2.34225ms)
+✔ scripted: reentrant read cancel, late cleanup failure=false (2.616833ms)
+✔ scripted: reentrant read cancel, late cleanup failure=true (3.05725ms)
+✔ scripted: reentrant read close, late cleanup failure=false (2.364041ms)
+✔ scripted: reentrant read close, late cleanup failure=true (2.487291ms)
+✔ scripted: read-check cancellation revokes before reentrant original read or IO (2.491583ms)
+✔ scripted: read failure alone leaves retained root and completion pending until close (3.035417ms)
+✔ scripted: sticky close failure stays unverified and repeated closes join once (2.947333ms)
+✔ scripted: one-use claim rejects reuse before IO and throughout pending factory (2.48825ms)
+✔ scripted: cancellation plus a rejecting pending factory cannot claim cleanup proof (2.679917ms)
+✔ scripted: restored root name cannot revive the actual shared revoked guard (2.838458ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 158.252709

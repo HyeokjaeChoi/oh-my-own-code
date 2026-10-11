@@ -1,0 +1,179 @@
+{
+  "result": "fail",
+  "observations": [
+    {
+      "name": "sha1-attached",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "attached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "branch_log",
+          "present": true
+        },
+        {
+          "role": "branch_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-unborn",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "unborn",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": false,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": false
+        },
+        {
+          "role": "branch_log",
+          "present": false
+        },
+        {
+          "role": "branch_ref",
+          "present": false
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-nested-unborn",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "unborn",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": false,
+      "logRoles": [
+        "head_log",
+        "branch_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": false
+        },
+        {
+          "role": "branch_log",
+          "present": false
+        },
+        {
+          "role": "branch_ref",
+          "present": false
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    },
+    {
+      "name": "sha1-detached",
+      "status": "pass",
+      "format": "sha1",
+      "layout": "detached",
+      "result": "committed",
+      "prepared": 1,
+      "published": 1,
+      "referencePhysicalExists": true,
+      "logRoles": [
+        "head_log"
+      ],
+      "backupRoles": [
+        {
+          "role": "head_log",
+          "present": true
+        },
+        {
+          "role": "head_ref",
+          "present": true
+        }
+      ],
+      "originalIndexWorktreeConfigPreserved": true,
+      "helpersNotInvoked": true
+    }
+  ],
+  "kernelEvents": [
+    {
+      "name": "sha1-attached",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-attached",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha1-unborn",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-unborn",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha1-nested-unborn",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-nested-unborn",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    },
+    {
+      "name": "sha1-detached",
+      "method": "prepare",
+      "status": "prepared",
+      "reason": null
+    },
+    {
+      "name": "sha1-detached",
+      "method": "publish",
+      "status": "committed",
+      "reason": null
+    }
+  ],
+  "limits": [
+    "Actual production paired manager/service/journal and pinned staged descriptor core with SyntheticSDK/directadapter +actual protocol validation. Not actual EventHost OS channel/lifetime or productionMain Nativedialog acceptance.",
+    "No provider/privateproject/Windows/powerloss acceptance. Every contained synthetic namespace retained. Unknowns never replayed or upgraded."
+  ],
+  "failure": {
+    "name": "AssertionError",
+    "code": "ERR_ASSERTION",
+    "message": "{\"workspaceId\":\"896c15da-254d-4bdd-9352-e6779d3dc778\",\"workspacePath\":\"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-commit-chain-dgxx1004/synthetic/sha1-packed/Documents/OhMyOwnCode/69def998-420c-4a22-a49d-77e95a34a233\",\"status\":\"unavailable\",\"reason\":\"unsupported_repository\",\"runtimeEpoch\":\"synthetic\",\"revision\":7}\n+ actual - expected\n\n+ 'unavailable'\n- 'available'\n"
+  }
+}

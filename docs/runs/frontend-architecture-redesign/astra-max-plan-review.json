@@ -1,0 +1,63 @@
+{
+  "schema_version": 2,
+  "run": "frontend-architecture-redesign",
+  "reviewer": "plan_reviewer",
+  "reviewed": {
+    "contract_sha256": "f008b6ab348e3edd7251ff8f67e3e2c53bc6f7d4ad569263f1d72b1c0fdcfd58",
+    "gate": "plan",
+    "plan_sha256": "8a7528f959d052c904cf29458b00788e70a4c9393b5083f4b697dac947097ae6",
+    "schema_version": 2,
+    "source_sha256": "17de8bbea52a9cf9a20b2389eeed2252d0671362ae5a0cf42697fbdeba38afa6"
+  },
+  "verdict": "changes_requested",
+  "summary": "Separate full Astra/max review: preserve stack and product direction, but correct mutation reconciliation, migration order, file cache freshness and run-specific evidence output before dependent execution. Coordinator transcription of returned independent findings.",
+  "open_findings": [
+    {
+      "id": "AMAX-1",
+      "priority": "P1",
+      "path": "docs/runs/frontend-architecture-redesign/architecture-and-ui.md",
+      "line": 33,
+      "title": "Freeze mutation outcome reconciliation before Stage 3",
+      "impact": "Receipt/status lookup and per-operation identity are missing. Snapshot idle/existence must not clear unknown.",
+      "correction": "Specify operation identity, authoritative outcome evidence, lookup and unknown release conditions, or explicitly preserve runtime-lifetime unknown and defer receipt reconciliation."
+    },
+    {
+      "id": "AMAX-2",
+      "priority": "P2",
+      "path": "docs/runs/frontend-architecture-redesign/plan.md",
+      "line": 45,
+      "title": "Prepare boundary and styling migration before Stage 2",
+      "impact": "Current checker rejects Base UI and packages/ui stylesheets while the required checker change is scheduled later.",
+      "correction": "Add minimal approved import/CSS Module support with negative fixtures and temporary legacy CSS containment before first UI slice."
+    },
+    {
+      "id": "AMAX-3",
+      "priority": "P2",
+      "path": "docs/runs/frontend-architecture-redesign/architecture-and-ui.md",
+      "line": 25,
+      "title": "Tie file cache freshness to real file changes",
+      "impact": "Tool edits or external deletion/recreation can leave stale previews after reopening.",
+      "correction": "Specify cache keys, forced refresh, mutation invalidation, external-change revalidation, stale display and regression cases before Query migration."
+    },
+    {
+      "id": "AMAX-4",
+      "priority": "P2",
+      "path": "docs/runs/frontend-architecture-redesign/contract.json",
+      "line": 173,
+      "title": "Bind E2E evidence output to this run",
+      "impact": "Default scripts overwrite earlier run captures/evidence unless an ambient environment variable is set.",
+      "correction": "Use a cross-platform wrapper or explicit output-directory argument in exact commands. Register packages/ui checks before Stage 2."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/astra_max_full_plan_review",
+    "author_task_id": "/root",
+    "mode": "fresh independent read-only full review",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "max",
+    "runtime_identity_attested": false,
+    "source_edits": false,
+    "tests_executed": false,
+    "ledger_mutated": false
+  }
+}

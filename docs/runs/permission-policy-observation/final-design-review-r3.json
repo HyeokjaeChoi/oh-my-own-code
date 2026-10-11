@@ -1,0 +1,94 @@
+{
+  "schema_version": 2,
+  "report_type": "DESIGN",
+  "reviewed": {
+    "contract_sha256": "e9ce9f37a54eefa95d0d844414a9845fa60a134504ed0ee5cd2188478b54e3e4",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "design",
+    "plan_sha256": "420f5b81e718791df92f741dd85771c33448302a9c2a219b5e0f58f357606ed5",
+    "schema_version": 2,
+    "source_sha256": "3faa928ac42db98e4ac63ce797b4b5b8a43d4093d846c8592b71b7fd5eeb14aa",
+    "verification_sha256": "c0664ecb9d74c7ff6845e8dd7c0145f69308270a19875991c7b297eded054f85",
+    "work_class_sha256": "ba16432c80da2b47bb752cb44e06f079cb2f2912df38745c1f3378038adbe968"
+  },
+  "verdict": "pass",
+  "summary": "지정된 PNG 원본 8개를 직접 열었습니다. 권한 규칙의 위계, 최종 실행 판단과 OS sandbox에 대한 한계 설명, baseline 불일치 표시, 긴 값의 줄바꿈과 focus 표시를 확인했습니다. 좁은 200% 확대 화면에서도 기존 Composer +와 전송 동작이 구분됩니다. 검토한 화면에서 수정이 필요한 시각적 결함은 찾지 못했습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a12055-2eef-7d70-af61-611eddf65843",
+    "independent_review": true,
+    "implementation_authored": false,
+    "delegation": false,
+    "report_only": true
+  },
+  "inspected_evidence": {
+    "requirements": [
+      ".agents/skills/solo-design-review/SKILL.md",
+      ".agents/skills/solo-design-review/references/evidence-review.md",
+      "docs/runs/permission-policy-observation/plan.md",
+      "docs/runs/permission-policy-observation/design.md",
+      "docs/runs/permission-policy-observation/final-design_qa-packet-r3.json",
+      "docs/runs/permission-policy-observation/final-design-input-r3.json"
+    ],
+    "capture_root": "docs/runs/design-foundation-v2/evidence/permission-policy-r3/design-foundation",
+    "originals_opened": [
+      {
+        "file": "000-collapsed-command-menu-first-items.png",
+        "png_pixels": [2880, 1936]
+      },
+      {
+        "file": "011-light-760-zoom2-collapsed-idle.png",
+        "png_pixels": [1520, 1936]
+      },
+      {
+        "file": "013-light-760-zoom2-selected-summary-final-action.png",
+        "png_pixels": [1520, 1936]
+      },
+      {
+        "file": "023-dark-760-zoom2-collapsed-idle.png",
+        "png_pixels": [1520, 1936]
+      },
+      {
+        "file": "025-dark-760-zoom2-selected-summary-final-action.png",
+        "png_pixels": [1520, 1936]
+      },
+      {
+        "file": "047-permission-policy-light-1440-100.png",
+        "png_pixels": [2880, 1936]
+      },
+      {
+        "file": "048-permission-policy-dark-760-100.png",
+        "png_pixels": [1520, 1936]
+      },
+      {
+        "file": "049-permission-policy-dark-1440-200.png",
+        "png_pixels": [2880, 1936]
+      }
+    ],
+    "capture_integrity": "8개 원본의 PNG metadata에서 dimensions를 읽었습니다. 각 SHA는 capture-index-r3.json과 일치합니다. index에는 기존 47개와 policy 3개를 합한 50개가 있습니다.",
+    "visual_judgment": "직접 연 이미지의 글자, 줄바꿈, 배치, 상태 표시와 focus 표시를 판단했습니다. geometry 수치를 시각적 판단으로 사용하지 않았습니다.",
+    "interaction_review": "e2e-design-foundation.mjs의 Enter 읽기, Tab 이동, 취소 후 status focus, Escape 닫기와 summary focus, 늦은 응답 차단, stale 제거, absent·empty·unavailable 구분 및 held·untrusted 차단 assertions를 읽었습니다. 실제 hidden report의 pass 결과와 before/after interaction counters를 확인했습니다.",
+    "full_values": "report의 valueCoverage는 3개 policy 화면에서 action 128자와 resource 2048자의 전체 선택, 줄바꿈 및 수평 overflow 부재를 기록합니다. 화면 밖의 전체 값 확인은 이 DOM 증거에 근거합니다.",
+    "mutation_counters": "policy 읽기 전후 effects·intents·mutation counters가 같습니다. synthetic historical setup의 기존 요청 1건을 policy 변경으로 계산하지 않았습니다.",
+    "runtime_provenance": "production renderer/preload와 synthetic Main의 hidden Electron capture입니다. 검사한 capture는 전후 visible·focused·focusable이 모두 false입니다. sourceBuildProvenance의 before와 after가 일치합니다.",
+    "actual_exit": {
+      "pid": 78792,
+      "exited": true,
+      "code": 0,
+      "signal": null,
+      "signals": []
+    },
+    "runtime_errors": {
+      "pageErrors": [],
+      "externalRequests": []
+    },
+    "harness_status": "read-only status를 확인했습니다. 최종 CODE와 DESIGN gate는 보고서 등록 전 상태였습니다."
+  },
+  "limitations": [
+    "50개 전체 이미지를 직접 열지는 않았습니다. 직접 시각 검토한 원본은 위의 8개입니다.",
+    "키보드 동작은 저장된 실행 증거와 assertion 검토에 근거합니다. 직접 재실행하지 않았습니다.",
+    "screen reader, Windows, production Main, provider 및 release 환경은 검증하지 않았습니다.",
+    "이 DESIGN pass는 별도 CODE 보고서의 DTO 검증 결함을 해소하지 않습니다.",
+    "파일과 ledger를 수정하지 않았으며 application을 실행하거나 run을 시작·종료하지 않았습니다."
+  ]
+}

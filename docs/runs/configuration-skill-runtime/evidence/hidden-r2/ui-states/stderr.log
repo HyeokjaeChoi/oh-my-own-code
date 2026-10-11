@@ -1,0 +1,22 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ '# SYNTHETIC SKILL A'
+- '# SYNTHETIC SKILL A\n'
+                      ^
+
+    at captureRuntime (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:5039:14)
+    at async file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:5289:5 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '# SYNTHETIC SKILL A',
+  expected: '# SYNTHETIC SKILL A\n',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.8.2

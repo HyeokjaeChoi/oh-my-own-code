@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "design_spec",
+    "plan_sha256": "6adfc264a2e5094054b64875e53039dcba276494e3eb2b2188da6e1752341ba0",
+    "contract_sha256": "9132abd4bea374ed75afb3f18ef8643f91d53b88b412327ada8774e8657783d0",
+    "documents_sha256": "4cd6ba76b68b47d5bb7eecfb8bda47d2f707e2add8038bf2b894e9ee5376c72a"
+  },
+  "verdict": "changes_requested",
+  "summary": "Independent document review found invisible primary focus ring and identical danger/navigation pointer states. Validator passes, but Figma construction is held pending fixes.",
+  "open_findings": [
+    {
+      "severity": "P1",
+      "artifact": "docs/design/components.json",
+      "correction": "Specify contrasting focus gap/offset and validate."
+    },
+    {
+      "severity": "P2",
+      "artifact": "docs/design/components.json",
+      "correction": "Differentiate danger hover/pressed and navigation hover."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/foundation_contract_review",
+    "author_task_id": "/root"
+  }
+}

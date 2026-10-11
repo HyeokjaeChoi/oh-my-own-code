@@ -1,0 +1,1195 @@
+{
+  "source_sha256": "fe860cac1d5c3b256dfce7033549771e046ff8747927edb6f710a9e00d67c68e",
+  "changed_paths": [
+    "apps/desktop-app/scripts/configuration-skill-files-probe.mjs",
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/src/configuration-skill-draft.test.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/event-host-protocol.mjs",
+    "apps/desktop-app/src/event-host-resources.mjs",
+    "apps/desktop-app/src/event-host-supervisor.test.mjs",
+    "apps/desktop-app/src/host/configuration-file-observation.mjs",
+    "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+    "apps/desktop-app/src/host/configuration-save-kernel.test.mjs",
+    "apps/desktop-app/src/host/storage-integration.test.mjs",
+    "apps/desktop-app/src/host/storage-journal.mjs",
+    "apps/desktop-app/src/host/storage-journal.test.mjs",
+    "apps/desktop-app/src/host/workbench-admission.mjs",
+    "apps/desktop-app/src/host/workbench-admission.test.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+    "apps/desktop-app/src/host/workbench-skill-storage.mjs",
+    "apps/desktop-app/src/host/workbench-skills.mjs",
+    "apps/desktop-app/src/host/workbench-skills.test.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/skill-files.tsx",
+    "apps/desktop-app/src/renderer/shared/api/index.ts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/skill.d.mts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/skill.mjs",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts",
+    "apps/desktop-app/src/workbench-contract.mjs",
+    "apps/desktop-app/src/workbench-contract.test.mjs",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "checks": [
+    "skills",
+    "publication",
+    "hidden-ui",
+    "build",
+    "typecheck",
+    "boundaries",
+    "bundle",
+    "lint",
+    "format"
+  ],
+  "publication_status": "pass",
+  "publication_cases": [
+    {
+      "name": "unsupported-original-conversion",
+      "status": "pass"
+    },
+    {
+      "name": "missing-leaf-create",
+      "status": "pass"
+    },
+    {
+      "name": "missing-ancestor-replaced",
+      "status": "pass"
+    },
+    {
+      "name": "staged-ancestor-symlink",
+      "status": "pass"
+    },
+    {
+      "name": "external-file-replacement",
+      "status": "pass"
+    },
+    {
+      "name": "parent-required-no-mkdir",
+      "status": "pass"
+    }
+  ],
+  "publication_cleanup": {
+    "pid": 83339,
+    "status": 0,
+    "signal": null
+  },
+  "hidden_capture_count": 291,
+  "skill_ui_evidence": {
+    "configurationSkillStates": [
+      {
+        "state": "list-unread",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "not_observed",
+        "read": "not_observed",
+        "readReason": null,
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "",
+        "focusedControls": 2,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills",
+        "horizontalOverflow": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-list-unread-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.8125,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-list-unread-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 476.3203125,
+              "width": 304,
+              "height": 19.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc544\uc9c1 \ubaa9\ub85d\uc744 \ud655\uc778\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-list-unread-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.84375,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "list-available",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "available",
+        "read": "not_observed",
+        "readReason": null,
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "review-notes",
+        "focusedControls": 6,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md",
+        "horizontalOverflow": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-list-available-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 437.8125,
+              "width": 304,
+              "height": 95.9765625,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-list-available-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 476.3203125,
+              "width": 304,
+              "height": 19.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uae30\uc874 \ud3f4\ub354 3\uac1c\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-list-available-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.84375,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "list-truncated",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "available",
+        "read": "not_observed",
+        "readReason": null,
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "review-notes",
+        "focusedControls": 6,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md",
+        "horizontalOverflow": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "explicitKindReselection": true,
+        "noAutomaticCallsOnResize": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-list-truncated-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 212.30078125,
+              "width": 303,
+              "height": 115.1953125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-list-truncated-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 237.15625,
+              "width": 303,
+              "height": 65.59765625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uae30\uc874 \ud3f4\ub354 16\uac1c\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4.\ubaa9\ub85d \uc77c\ubd80\ub9cc \ud45c\uc2dc\ud569\ub2c8\ub2e4. \ucd5c\ub300 64\uac1c \ud56d\ubaa9\uc744 \uac80\uc0ac\ud558\uace0 16\uac1c \ud3f4\ub354\ub97c \ud45c\uc2dc\ud569\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-list-truncated-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 231.66015625,
+              "width": 303,
+              "height": 76.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "list-missingparent",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "missing",
+        "read": "not_observed",
+        "readReason": null,
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "",
+        "focusedControls": 2,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills",
+        "horizontalOverflow": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-list-missingparent-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.5078125,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-list-missingparent-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 466.8203125,
+              "width": 304,
+              "height": 38.390625,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uad00\ucc30 \uc2dc\uc810\uc5d0 \uae30\uc874 Skill \ud3f4\ub354\ub97c \ucc3e\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4. \ud3f4\ub354 \uc0dd\uc131\uc740 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-list-missingparent-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.84375,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "list-denied",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "unavailable",
+        "read": "not_observed",
+        "readReason": null,
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "",
+        "focusedControls": 2,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills",
+        "horizontalOverflow": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-list-denied-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.8125,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-list-denied-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 476.3203125,
+              "width": 304,
+              "height": 19.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\ud3f4\ub354 \ub610\ub294 \ud30c\uc77c\uc5d0 \uc811\uadfc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ube48 \ubaa9\ub85d\uc774 \uc544\ub2d9\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-list-denied-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.84375,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "file-unread",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "available",
+        "read": "not_observed",
+        "readReason": null,
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "review-notes",
+        "focusedControls": 6,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md",
+        "horizontalOverflow": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-file-unread-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 437.8125,
+              "width": 304,
+              "height": 95.9765625,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-unread-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 476.3203125,
+              "width": 304,
+              "height": 19.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uae30\uc874 \ud3f4\ub354 3\uac1c\ub97c \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-unread-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.84375,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "file-available",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "available",
+        "read": "available",
+        "readReason": null,
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "review-notes",
+        "focusedControls": 6,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md",
+        "horizontalOverflow": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-file-available-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 437.8125,
+              "width": 304,
+              "height": 95.9765625,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-available-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 476.265625,
+              "width": 304,
+              "height": 19.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\ud30c\uc77c\uc758 \uc6d0\ubcf8 \ub0b4\uc6a9\uc744 \ubd88\ub7ec\uc654\uc2b5\ub2c8\ub2e4. \ud615\uc2dd \uac80\uc99d\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-available-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.84375,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "distinctPerFileDrafts": true,
+        "selectionDoesNotRead": true
+      },
+      {
+        "state": "file-missingleaf",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "stale",
+        "read": "missing",
+        "readReason": "missing_file",
+        "save": "saved",
+        "saveCurrent": "true",
+        "sourceName": "review-notes",
+        "focusedControls": 4,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md",
+        "horizontalOverflow": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-file-missingleaf-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 437.8125,
+              "width": 304,
+              "height": 95.9765625,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-missingleaf-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 466.8828125,
+              "width": 304,
+              "height": 38.390625,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5\uc744 \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4. Native\uc5d0 \ub4f1\ub85d\ud558\uac70\ub098 \ud65c\uc131\ud654\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \ub2e4\uc2dc \uc800\uc7a5\ud558\ub824\uba74 \ud30c\uc77c\uc744 \ubd88\ub7ec\uc624\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-missingleaf-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.84375,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "receiptFloor": 98,
+        "snapshotBeforeExplicitReread": true,
+        "receiptIsNotReadAuthority": true
+      },
+      {
+        "state": "file-rawunsupportedgrammar",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "available",
+        "read": "available",
+        "readReason": null,
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "review-notes",
+        "focusedControls": 6,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md",
+        "horizontalOverflow": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-file-rawunsupportedgrammar-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 437.8125,
+              "width": 304,
+              "height": 95.9765625,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-rawunsupportedgrammar-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 443.6015625,
+              "width": 304,
+              "height": 84.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc9c0\uc6d0\ud558\uc9c0 \uc54a\ub294 \ud615\uc2dd\uc9c0\uc6d0\ud558\ub294 \uc55e\uba38\ub9ac\ub294 name\uacfc description\uc758 JSON \ubb38\uc790\uc5f4, metadata \uc544\ub798\uc758 opencode/autoinvoke: true \ub610\ub294 false\uc785\ub2c8\ub2e4. \ub2e4\ub978 YAML \ubb38\ubc95\uc740 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-rawunsupportedgrammar-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.84375,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "explicitRepairValid": true
+      },
+      {
+        "state": "file-unsafeunsupported",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "available",
+        "read": "unsupported",
+        "readReason": "unsupported_content",
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "review-notes",
+        "focusedControls": 6,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md",
+        "horizontalOverflow": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "explicitKindReselection": true,
+        "noAutomaticCallsOnResize": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-file-unsafeunsupported-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 212.40234375,
+              "width": 303,
+              "height": 115.1953125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-unsafeunsupported-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 227.59375,
+              "width": 303,
+              "height": 84.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc548\uc804\ud55c UTF-8 \ud30c\uc77c\ub85c \uc77d\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uae30\uc874 \ucd08\uc548\uc740 \uc720\uc9c0\ud569\ub2c8\ub2e4.\ud604\uc7ac \uc800\uc7a5 \uae30\uc900\uc774 \uc544\ub2d9\ub2c8\ub2e4. \ucd5c\uc2e0 \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 \ud30c\uc77c\uc744 \uba85\uc2dc\uc801\uc73c\ub85c \ub2e4\uc2dc \ubd88\ub7ec\uc624\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-unsafeunsupported-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 231.66015625,
+              "width": 303,
+              "height": 76.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "heldDraftEditableSelectable": true
+      },
+      {
+        "state": "file-changed",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "available",
+        "read": "unavailable",
+        "readReason": "file_changed",
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "review-notes",
+        "focusedControls": 6,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md",
+        "horizontalOverflow": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-file-changed-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 382.8125,
+              "width": 304,
+              "height": 95.9765625,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-changed-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 453.265625,
+              "width": 304,
+              "height": 65.5859375,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\ud3f4\ub354 \ub610\ub294 \ud30c\uc77c\uc774 \ubc14\ub00c\uc5c8\uc2b5\ub2c8\ub2e4. \ub2e4\uc2dc \ud655\uc778\ud558\uc138\uc694.\ud604\uc7ac \uc800\uc7a5 \uae30\uc900\uc774 \uc544\ub2d9\ub2c8\ub2e4. \ucd5c\uc2e0 \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 \ud30c\uc77c\uc744 \uba85\uc2dc\uc801\uc73c\ub85c \ub2e4\uc2dc \ubd88\ub7ec\uc624\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-changed-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.84375,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "heldDraftEditableSelectable": true
+      },
+      {
+        "state": "file-oversize",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "available",
+        "read": "unavailable",
+        "readReason": "too_large",
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "review-notes",
+        "focusedControls": 6,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md",
+        "horizontalOverflow": false,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-file-oversize-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 395.8125,
+              "width": 304,
+              "height": 95.9765625,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-oversize-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 453.265625,
+              "width": 304,
+              "height": 65.5859375,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\ud30c\uc77c \ud06c\uae30\uac00 32KiB\ub97c \ub118\uc2b5\ub2c8\ub2e4. \ub0b4\uc6a9\uc744 \ubd88\ub7ec\uc624\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.\ud604\uc7ac \uc800\uc7a5 \uae30\uc900\uc774 \uc544\ub2d9\ub2c8\ub2e4. \ucd5c\uc2e0 \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 \ud30c\uc77c\uc744 \uba85\uc2dc\uc801\uc73c\ub85c \ub2e4\uc2dc \ubd88\ub7ec\uc624\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-file-oversize-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 447.84375,
+              "width": 304,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "heldDraftEditableSelectable": true
+      },
+      {
+        "state": "dirtyvalid",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "available",
+        "read": "available",
+        "readReason": null,
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "review-notes",
+        "focusedControls": 7,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md",
+        "horizontalOverflow": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "explicitKindReselection": true,
+        "noAutomaticCallsOnResize": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-dirtyvalid-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 212.40234375,
+              "width": 303,
+              "height": 115.1953125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-dirtyvalid-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 260.48046875,
+              "width": 303,
+              "height": 19.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud615\uc2dd \uac80\uc99d \ud1b5\uacfc"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-dirtyvalid-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 231.66015625,
+              "width": 303,
+              "height": 76.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "explicitDiscardAndReread": true,
+        "keyboardEnterNoSend": true
+      },
+      {
+        "state": "confirmed",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "stale",
+        "read": "available",
+        "readReason": null,
+        "save": "saved",
+        "saveCurrent": "true",
+        "sourceName": "review-notes",
+        "focusedControls": 4,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md",
+        "horizontalOverflow": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "explicitKindReselection": true,
+        "noAutomaticCallsOnResize": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-confirmed-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 212.40234375,
+              "width": 303,
+              "height": 115.1953125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-confirmed-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 170.078125,
+              "width": 303,
+              "height": 199.9921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud30c\uc77c \uc800\uc7a5\uc744 \ud655\uc778\ud588\uc2b5\ub2c8\ub2e4. Native\uc5d0 \ub4f1\ub85d\ud558\uac70\ub098 \ud65c\uc131\ud654\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \ub2e4\uc2dc \uc800\uc7a5\ud558\ub824\uba74 \ud30c\uc77c\uc744 \ubd88\ub7ec\uc624\uc138\uc694./synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/.omoc-configuration-868f952c490260aca9095c30c5ad331bdb83f6ea1cc056159f184eb58fde72d0.skill.backup"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-confirmed-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 231.66015625,
+              "width": 303,
+              "height": 76.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "receiptFloor": 105,
+        "snapshotBeforeExplicitReread": true,
+        "receiptIsNotReadAuthority": true
+      },
+      {
+        "state": "unknown",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "available",
+        "read": "available",
+        "readReason": null,
+        "save": "unknown",
+        "saveCurrent": "false",
+        "sourceName": "review-notes",
+        "focusedControls": 4,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md",
+        "horizontalOverflow": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "explicitKindReselection": true,
+        "noAutomaticCallsOnResize": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-unknown-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 212.40234375,
+              "width": 303,
+              "height": 115.1953125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills/review-notes/SKILL.md"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-unknown-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 227.52734375,
+              "width": 303,
+              "height": 84.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc800\uc7a5 \uacb0\uacfc\ub97c \ud655\uc778\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4. \uc790\ub3d9 \uc7ac\uc804\uc1a1\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc6d0\ub798 \uc694\uccad\uc758 \uacb0\uacfc\ub97c \ubcf5\uad6c \uc0c1\ud0dc\uc5d0\uc11c \ud655\uc778\ud558\uc138\uc694.\uc774\uc804 \ucd08\uc548\uc758 \uc694\uccad \uacb0\uacfc\uc785\ub2c8\ub2e4. \ud604\uc7ac \uc218\uc815 \ub0b4\uc6a9\uc758 \uc800\uc7a5 \uacb0\uacfc\uac00 \uc544\ub2d9\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-unknown-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 231.66015625,
+              "width": 303,
+              "height": 76.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "originalKey": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "operationId": "ec8c1cf1-2173-4d59-9b08-f4332a717437"
+        },
+        "noReplay": true,
+        "heldDraftEditableSelectable": true
+      },
+      {
+        "state": "restoredoldkey",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "not_observed",
+        "read": "not_observed",
+        "readReason": null,
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "",
+        "focusedControls": 1,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills",
+        "horizontalOverflow": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "explicitKindReselection": true,
+        "noAutomaticCallsOnResize": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-restoredoldkey-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 221.91015625,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-restoredoldkey-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 231.66796875,
+              "width": 303,
+              "height": 76.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-restoredoldkey-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 231.66796875,
+              "width": 303,
+              "height": 76.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "originalKey": {
+          "runtimeEpoch": "fixture-Skill-original-epoch",
+          "operationId": "fixture-Skill-original-save",
+          "type": "configuration.skill.save",
+          "workspaceId": "fixture-w"
+        },
+        "payloadRestored": false,
+        "noReplayAfterReload": true
+      },
+      {
+        "state": "untrusted",
+        "syntheticVirtualFilesystem": true,
+        "nativeObservation": "not_observed",
+        "list": "not_observed",
+        "read": "not_observed",
+        "readReason": null,
+        "save": "idle",
+        "saveCurrent": "false",
+        "sourceName": "",
+        "focusedControls": 1,
+        "selectableFullPath": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills",
+        "horizontalOverflow": false,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "explicitKindReselection": true,
+        "noAutomaticCallsOnResize": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-skill-untrusted-path-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 221.94921875,
+              "width": 303,
+              "height": 95.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "/synthetic/skills-workspace/selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-selectable-long-path-/.opencode/skills"
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-untrusted-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 231.70703125,
+              "width": 303,
+              "height": 76.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc2e0\ub8b0\ud558\uc9c0 \uc54a\uc740 \uc791\uc5c5 \uacf5\uac04\uc5d0\uc11c\ub294 \ubaa9\ub85d \ud655\uc778\u00b7\ud30c\uc77c \uc77d\uae30\u00b7\uc800\uc7a5\uc744 \ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uae30\uc874 \u2018\uc0c8 \uc138\uc158\u2019\uc740 \uc2e0\ub8b0 \ud655\uc778 \ub4a4 \uc0c8 \ub300\ud654\ub97c \ub9cc\ub4ed\ub2c8\ub2e4. \uc2e0\ub8b0\ub97c \ud655\uc778\ud55c \ub4a4 Skill \ubaa9\ub85d\uacfc \ud30c\uc77c\uc744 \uc9c1\uc811 \ubd88\ub7ec\uc624\uc138\uc694. \uc774 \uacfc\uc815\uc5d0\uc11c Skill\uc744 \uc790\ub3d9 \ub4f1\ub85d\ud558\uac70\ub098 \uc2e4\ud589\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-skill-untrusted-native-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 231.66015625,
+              "width": 303,
+              "height": 76.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "Native \ub4f1\ub85d\u00b7\ud65c\uc131\ud654\ub294 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc800\uc7a5\uc740 \ud30c\uc77c\ub9cc \ubc14\uafc9\ub2c8\ub2e4. \ud604\uc7ac Native registry \uc0c1\ud0dc\ub294 \uc774 \ud654\uba74\uc5d0\uc11c \ud655\uc778\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \ub0b4\uc6a9\uacfc opencode/autoinvoke \uac12\uc740 \uc2e4\ud589\uc5d0 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "trustNoticeDescribesDisabledControls": true,
+        "keyboardEscape": true
+      }
+    ]
+  },
+  "limits": [
+    "Existing verified source directories only; no mkdir/delete",
+    "No Native registry, activation, project discovery, plugins, provider or production Main invocation",
+    "Synthetic Bun filesystem proof and hidden built UI are distinct from full Native runtime integration",
+    "Whole product Goal and F14 remain unfinished"
+  ],
+  "ui_failure_history": "hidden-r1 had241captures and ownedexit0; preserved old matrix mutation counters were cumulative. Only UI runner initialMetrics assertion repaired, product/fixture/build unchanged. Eight actual r1 passes reused by exact inventory delta and current build provenance verification; changed runner syntax/scoped lint/format rechecked. Fresh actual hidden-r2.",
+  "initial_evidence": "Initial source-kernel six-case actual Bun PASS is historical; final publication imports freshly staged production kernel and verifies asset parity before and after"
+}

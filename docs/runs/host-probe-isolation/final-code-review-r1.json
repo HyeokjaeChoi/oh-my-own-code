@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "27d3c372f4dc20bf61cfd41df9d2d6bcc29c80a5057defa26d72445f26c06608",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "code",
+    "plan_sha256": "4913f0364309bfcf0a8292d8c79f137a4dcbc35862e6b9e9be2c2e322bce27f4",
+    "schema_version": 2,
+    "source_sha256": "324029e1b516a8dbf36569eaf8303aa6bd9b100342e7222308a114ba1879bb13",
+    "verification_sha256": "9a0544eb2441b92effaa7ddac3b0950ffd214742d2dcd539cd497b46f5b975f4"
+  },
+  "verdict": "pass",
+  "summary": "Independent static review of plan revision 6, contract, all four isolation source files, prior findings, and saved isolation-canaries evidence found no actionable defect in the currently reachable NO-RUN path. The recorded check exited 0 without timeout, interruption, changed inputs, or stderr. It truthfully reports an unaudited runtime dependency closure, all seven controls unverified, no fixture/listener/sandbox child created, and successful no-resource cleanup. This supports finishing only the bounded preflight run as NO-RUN; the real SDK host remains held.",
+  "open_findings": [],
+  "acceptance_assessment": {
+    "HPI-1": "The exact Node executable is invoked through /usr/bin/env -i with literal LANG, LC_ALL, and NO_COLOR. The dependency gate precedes fixture, listener, sandbox-child, and canary effects.",
+    "HPI-2": "Every required control is unverified; no containment-pass claim is made. Worker, canary, and profile source bytes are hash-bound in memory.",
+    "HPI-3": "The saved report has all seven expected controls unverified. Exit 0 means the permitted early preflight decision completed, not that containment passed.",
+    "HPI-4": "The supervisor validates early-NO-RUN invariants, bounds output/time, and the saved output reports no created resources and successful no-resource cleanup.",
+    "HPI-5": "The decision is NO-RUN. No SDK is imported or started; real-host execution remains separately held."
+  },
+  "provenance": {
+    "child_task_id": "host_probe_final_review_r1",
+    "author_task_id": "/root"
+  },
+  "verification_limits": "Reviewer performed static inspection only. The actual check executed the unsandboxed verifier and worker but did not start the sandbox canary child. Runtime dependency closure, all seven containment controls, general egress, UDP/DNS/IPC, memory/scratch limits, disabled canaries, failure-path runtime behavior, and outer harness implementation remain unverified. This does not authorize canary activation or real SDK execution."
+}

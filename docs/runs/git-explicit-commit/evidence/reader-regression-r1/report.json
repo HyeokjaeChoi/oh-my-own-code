@@ -1,0 +1,840 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "syntheticRoot": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-explicit-commit/evidence/reader-regression-r1/synthetic-wr1GnV",
+  "runtime": {
+    "platform": "darwin",
+    "node": "v24.14.1"
+  },
+  "sourceHashes": {
+    "../src/host/workbench-git.mjs": "1340c7c5eae2f838b6e2f660cd667066a55917ab4fffa4393dbe11af6bd8799c",
+    "../src/host/workbench-git.test.mjs": "9b1fbc89f6766bda306d3941481c948a4271d723deb66f78c43eca46dea0055d",
+    "./git-review-probe.mjs": "bcb023c67390b322b67be554f0823ed5caa40878c3ff5ecff75d530b6e82884f"
+  },
+  "results": [
+    {
+      "id": "fixed-executor-and-original-preservation",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "originalMetadataAndBytesUnchanged": true,
+        "fixedDirectExecutor": true,
+        "exactExitEvents": true
+      }
+    },
+    {
+      "id": "primary-and-two-linked-worktrees-direct-diverged-base",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "primaryPlusTwoLinked": true,
+        "separateXY": true,
+        "directTipNotMergeBase": true,
+        "untrackedBaseEqualEmpty": true
+      }
+    },
+    {
+      "id": "untracked-base-different",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "originalBaseBlobUsed": true
+      }
+    },
+    {
+      "id": "sha256-objects-index-refs",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "actualSha256": true
+      }
+    },
+    {
+      "id": "crlf-text-ignore-filemode",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "crlfNormalization": true,
+        "crlfIgnorePattern": true
+      }
+    },
+    {
+      "id": "filemode-change",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "executableModePreserved": true
+      }
+    },
+    {
+      "id": "base-only-native-text-crlf-ident-equal",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "realNativeNormalization": true,
+        "baseEqualEmpty": true,
+        "untrackedEmptyUsesNativeConversion": true
+      }
+    },
+    {
+      "id": "base-only-native-text-crlf-ident-different",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "originalAttributeIndexPreserved": true,
+        "realNativeNormalization": true
+      }
+    },
+    {
+      "id": "binary-protected-oversize-literal-path",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "noUnavailablePatch": true,
+        "optionLookingNameLiteral": true
+      }
+    },
+    {
+      "id": "actual-unmerged-index",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "realThreeStageIndex": true,
+        "noResolvedPatch": true
+      }
+    },
+    {
+      "id": "rename-is-separate-added-deleted",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "separateAddedDeleted": true
+      }
+    },
+    {
+      "id": "detached-head",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "detachedExactOid": true
+      }
+    },
+    {
+      "id": "unborn-empty-index",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "unbornUntrackedEmptyComparison": true
+      }
+    },
+    {
+      "id": "whole-observation-worktree-symlink",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "wholeObservationRefused": true,
+        "nestedConfigWrites": 0
+      }
+    },
+    {
+      "id": "whole-observation-worktree-hardlink",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "wholeObservationRefused": true,
+        "nestedConfigWrites": 0
+      }
+    },
+    {
+      "id": "whole-observation-metadata-symlink",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "wholeObservationRefused": true,
+        "nestedConfigWrites": 0
+      }
+    },
+    {
+      "id": "whole-observation-alternate",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "wholeObservationRefused": true,
+        "nestedConfigWrites": 0
+      }
+    },
+    {
+      "id": "whole-observation-nested-git",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "wholeObservationRefused": true,
+        "nestedConfigWrites": 0
+      }
+    },
+    {
+      "id": "whole-observation-nested-git-upper",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "wholeObservationRefused": true,
+        "nestedConfigWrites": 0
+      }
+    },
+    {
+      "id": "whole-observation-nested-git-mixed",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "wholeObservationRefused": true,
+        "nestedConfigWrites": 0
+      }
+    },
+    {
+      "id": "whole-observation-shallow",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "wholeObservationRefused": true,
+        "nestedConfigWrites": 0
+      }
+    },
+    {
+      "id": "whole-observation-split-index",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "wholeObservationRefused": true,
+        "nestedConfigWrites": 0
+      }
+    },
+    {
+      "id": "limit-combined-bytes",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "loweredSameProductionBound": {
+          "objectBytes": 2048
+        },
+        "noPartialClean": true
+      }
+    },
+    {
+      "id": "limit-combined-files",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "loweredSameProductionBound": {
+          "objectFiles": 14
+        },
+        "noPartialClean": true
+      }
+    },
+    {
+      "id": "limit-walk-includes-empty-directories",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "loweredSameProductionBound": {
+          "candidates": 8
+        },
+        "noPartialClean": true
+      }
+    },
+    {
+      "id": "limit-metadata-bytes",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "loweredSameProductionBound": {
+          "metadataBytes": 16
+        },
+        "noPartialClean": true
+      }
+    },
+    {
+      "id": "limit-aggregate-output",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "loweredSameProductionBound": {
+          "stdoutBytes": 128
+        },
+        "noPartialClean": true
+      }
+    },
+    {
+      "id": "actual-source-substitution-root",
+      "provenance": "ACTUAL production reader; harness deliberately replaces owned synthetic source during child execution",
+      "status": "pass",
+      "facts": {
+        "actualFixtureMutationInjected": true,
+        "staleResultDiscarded": true,
+        "productionOriginalWriteClaim": false
+      }
+    },
+    {
+      "id": "actual-source-substitution-index",
+      "provenance": "ACTUAL production reader; harness deliberately replaces owned synthetic source during child execution",
+      "status": "pass",
+      "facts": {
+        "actualFixtureMutationInjected": true,
+        "staleResultDiscarded": true,
+        "productionOriginalWriteClaim": false
+      }
+    },
+    {
+      "id": "actual-source-substitution-object",
+      "provenance": "ACTUAL production reader; harness deliberately replaces owned synthetic source during child execution",
+      "status": "pass",
+      "facts": {
+        "actualFixtureMutationInjected": true,
+        "staleResultDiscarded": true,
+        "productionOriginalWriteClaim": false
+      }
+    },
+    {
+      "id": "actual-source-substitution-current-file",
+      "provenance": "ACTUAL production reader; harness deliberately replaces owned synthetic source during child execution",
+      "status": "pass",
+      "facts": {
+        "actualFixtureMutationInjected": true,
+        "staleResultDiscarded": true,
+        "productionOriginalWriteClaim": false
+      }
+    },
+    {
+      "id": "no-helper-fsmonitor",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "attemptedProductionPath": true,
+        "markerAbsent": true,
+        "originalUnchanged": true
+      }
+    },
+    {
+      "id": "no-helper-hooks",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "attemptedProductionPath": true,
+        "markerAbsent": true,
+        "originalUnchanged": true
+      }
+    },
+    {
+      "id": "no-helper-filter",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "attemptedProductionPath": true,
+        "markerAbsent": true,
+        "originalUnchanged": true
+      }
+    },
+    {
+      "id": "no-helper-process",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "attemptedProductionPath": true,
+        "markerAbsent": true,
+        "originalUnchanged": true
+      }
+    },
+    {
+      "id": "no-helper-textconv",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "attemptedProductionPath": true,
+        "markerAbsent": true,
+        "originalUnchanged": true
+      }
+    },
+    {
+      "id": "no-helper-extdiff",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "attemptedProductionPath": true,
+        "markerAbsent": true,
+        "originalUnchanged": true
+      }
+    },
+    {
+      "id": "no-helper-include",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "attemptedProductionPath": true,
+        "markerAbsent": true,
+        "originalUnchanged": true
+      }
+    },
+    {
+      "id": "no-helper-attributes",
+      "provenance": "actual production reader + fixed Git on synthetic input",
+      "status": "pass",
+      "facts": {
+        "attemptedProductionPath": true,
+        "markerAbsent": true,
+        "originalUnchanged": true
+      }
+    },
+    {
+      "id": "metadata-overlap-credential-normal",
+      "provenance": "ACTUAL .git -> .meta credential fixture refused before namespace/spawn; armed lifecycle injections never reached. Ordinary credential cases separately test runtime phases.",
+      "status": "pass",
+      "facts": {
+        "metadataGuardReached": true,
+        "wholeOverlapRefusal": true,
+        "lifecycleInjectionNotReached": true,
+        "noGitChildStarted": true,
+        "rawOriginalConfigNeverEnteredStdin": true,
+        "originalUnchanged": true,
+        "writeAudit": {
+          "checkedWrites": 0
+        },
+        "scan": {
+          "files": 0,
+          "bytes": 0,
+          "absent": true
+        },
+        "actualExitBehindInjectedUnproved": false
+      }
+    },
+    {
+      "id": "metadata-overlap-credential-parsefailure",
+      "provenance": "ACTUAL .git -> .meta credential fixture refused before namespace/spawn; armed lifecycle injections never reached. Ordinary credential cases separately test runtime phases.",
+      "status": "pass",
+      "facts": {
+        "metadataGuardReached": true,
+        "wholeOverlapRefusal": true,
+        "lifecycleInjectionNotReached": true,
+        "noGitChildStarted": true,
+        "rawOriginalConfigNeverEnteredStdin": true,
+        "originalUnchanged": true,
+        "writeAudit": {
+          "checkedWrites": 0
+        },
+        "scan": {
+          "files": 0,
+          "bytes": 0,
+          "absent": true
+        },
+        "actualExitBehindInjectedUnproved": false
+      }
+    },
+    {
+      "id": "metadata-overlap-credential-timeout",
+      "provenance": "ACTUAL .git -> .meta credential fixture refused before namespace/spawn; armed lifecycle injections never reached. Ordinary credential cases separately test runtime phases.",
+      "status": "pass",
+      "facts": {
+        "metadataGuardReached": true,
+        "wholeOverlapRefusal": true,
+        "lifecycleInjectionNotReached": true,
+        "noGitChildStarted": true,
+        "rawOriginalConfigNeverEnteredStdin": true,
+        "originalUnchanged": true,
+        "writeAudit": {
+          "checkedWrites": 0
+        },
+        "scan": {
+          "files": 0,
+          "bytes": 0,
+          "absent": true
+        },
+        "actualExitBehindInjectedUnproved": false
+      }
+    },
+    {
+      "id": "metadata-overlap-credential-cancel",
+      "provenance": "ACTUAL .git -> .meta credential fixture refused before namespace/spawn; armed lifecycle injections never reached. Ordinary credential cases separately test runtime phases.",
+      "status": "pass",
+      "facts": {
+        "metadataGuardReached": true,
+        "wholeOverlapRefusal": true,
+        "lifecycleInjectionNotReached": true,
+        "noGitChildStarted": true,
+        "rawOriginalConfigNeverEnteredStdin": true,
+        "originalUnchanged": true,
+        "writeAudit": {
+          "checkedWrites": 0
+        },
+        "scan": {
+          "files": 0,
+          "bytes": 0,
+          "absent": true
+        },
+        "actualExitBehindInjectedUnproved": false
+      }
+    },
+    {
+      "id": "metadata-overlap-credential-injected-unproved",
+      "provenance": "ACTUAL .git -> .meta credential fixture refused before namespace/spawn; armed lifecycle injections never reached. Ordinary credential cases separately test runtime phases.",
+      "status": "pass",
+      "facts": {
+        "metadataGuardReached": true,
+        "wholeOverlapRefusal": true,
+        "lifecycleInjectionNotReached": true,
+        "noGitChildStarted": true,
+        "rawOriginalConfigNeverEnteredStdin": true,
+        "originalUnchanged": true,
+        "writeAudit": {
+          "checkedWrites": 0
+        },
+        "scan": {
+          "files": 0,
+          "bytes": 0,
+          "absent": true
+        },
+        "actualExitBehindInjectedUnproved": false
+      }
+    },
+    {
+      "id": "metadata-overlap-credential-controlled-host-crash",
+      "provenance": "ACTUAL .git -> .meta credential fixture refused before namespace/spawn; armed lifecycle injections never reached. Ordinary credential cases separately test runtime phases.",
+      "status": "pass",
+      "facts": {
+        "actualHostExit": 88,
+        "metadataGuardReached": true,
+        "crashTriggerNotReached": true,
+        "noGitChildStarted": true,
+        "scan": {
+          "files": 0,
+          "bytes": 0,
+          "absent": true
+        }
+      }
+    },
+    {
+      "id": "credential-normal",
+      "provenance": "ACTUAL fixed Git process; timeout/cancel use explicit synthetic SIGSTOP scheduling injection",
+      "status": "pass",
+      "facts": {
+        "originalPreserved": true,
+        "scan": {
+          "files": 0,
+          "bytes": 0,
+          "absent": true
+        },
+        "writeAudit": {
+          "checkedWrites": 27
+        },
+        "rawConfigChildActuallyIntercepted": false,
+        "injectedUnproved": false,
+        "actualExitObservedBehindInjection": false,
+        "actualStoppedGit": false,
+        "exactExitCount": 31
+      }
+    },
+    {
+      "id": "credential-parsefailure",
+      "provenance": "ACTUAL fixed Git process; timeout/cancel use explicit synthetic SIGSTOP scheduling injection",
+      "status": "pass",
+      "facts": {
+        "originalPreserved": true,
+        "scan": {
+          "files": 0,
+          "bytes": 0,
+          "absent": true
+        },
+        "writeAudit": {
+          "checkedWrites": 18
+        },
+        "rawConfigChildActuallyIntercepted": false,
+        "injectedUnproved": false,
+        "actualExitObservedBehindInjection": false,
+        "actualStoppedGit": false,
+        "exactExitCount": 26
+      }
+    },
+    {
+      "id": "credential-timeout",
+      "provenance": "ACTUAL fixed Git process; timeout/cancel use explicit synthetic SIGSTOP scheduling injection",
+      "status": "pass",
+      "facts": {
+        "originalPreserved": true,
+        "scan": {
+          "files": 0,
+          "bytes": 0,
+          "absent": true
+        },
+        "writeAudit": {
+          "checkedWrites": 18
+        },
+        "rawConfigChildActuallyIntercepted": true,
+        "injectedUnproved": false,
+        "actualExitObservedBehindInjection": false,
+        "actualStoppedGit": true,
+        "exactExitCount": 26
+      }
+    },
+    {
+      "id": "credential-cancel",
+      "provenance": "ACTUAL fixed Git process; timeout/cancel use explicit synthetic SIGSTOP scheduling injection",
+      "status": "pass",
+      "facts": {
+        "originalPreserved": true,
+        "scan": {
+          "files": 0,
+          "bytes": 0,
+          "absent": true
+        },
+        "writeAudit": {
+          "checkedWrites": 18
+        },
+        "rawConfigChildActuallyIntercepted": true,
+        "injectedUnproved": false,
+        "actualExitObservedBehindInjection": false,
+        "actualStoppedGit": true,
+        "exactExitCount": 26
+      }
+    },
+    {
+      "id": "credential-injected-unproved",
+      "provenance": "INJECTED missing close event; real child separately observed exited",
+      "status": "pass",
+      "facts": {
+        "originalPreserved": true,
+        "scan": {
+          "files": 18,
+          "bytes": 1212,
+          "absent": true
+        },
+        "writeAudit": {
+          "checkedWrites": 18
+        },
+        "rawConfigChildActuallyIntercepted": true,
+        "injectedUnproved": true,
+        "actualExitObservedBehindInjection": true,
+        "actualStoppedGit": false,
+        "exactExitCount": 25
+      }
+    },
+    {
+      "id": "credential-controlled-host-crash",
+      "provenance": "ACTUAL controlled synthetic Node host process exit; orphan Git settlement unclaimed",
+      "status": "pass",
+      "facts": {
+        "actualHostExit": 86,
+        "ownedGitSettlementProven": false,
+        "scratchRetained": true,
+        "scan": {
+          "files": 18,
+          "bytes": 1212,
+          "absent": true
+        }
+      }
+    }
+  ],
+  "limits": {
+    "candidates": 4096,
+    "files": 512,
+    "branches": 128,
+    "branchBytes": 512,
+    "sourceBytes": 65536,
+    "patchBytes": 65536,
+    "patchLines": 2048,
+    "patchHunks": 128,
+    "dtoBytes": 196608,
+    "envelopeBytes": 262144,
+    "indexBytes": 16777216,
+    "metadataBytes": 1048576,
+    "objectBytes": 134217728,
+    "objectFiles": 16384,
+    "refs": 4096,
+    "refDepth": 32,
+    "copyChunkBytes": 1048576,
+    "stdoutBytes": 16777216,
+    "childStdoutBytes": 8388608,
+    "stderrBytes": 8192,
+    "deadlineMs": 8000,
+    "childMs": 2000,
+    "termMs": 250,
+    "exitMs": 1500,
+    "observationsPerWorkspace": 4,
+    "observations": 256,
+    "observationMs": 30000
+  },
+  "productionReaderSyntheticMatrixPassed": true,
+  "retainedSyntheticEvidence": true,
+  "independentCodeVerdict": "not performed",
+  "packagedGitAcceptance": "not performed",
+  "executableBefore": {
+    "path": "/Library/Developer/CommandLineTools/usr/bin/git",
+    "version": "git version 2.50.1 (Apple Git-155)",
+    "sha256": "738d0159292a08341abe63a7decd0715ff34d67d532e17349902a6dc42f60ae7",
+    "components": [
+      {
+        "path": "/",
+        "dev": "16777234",
+        "ino": "2",
+        "uid": "0",
+        "gid": "0",
+        "mode": 16877,
+        "size": "704",
+        "mtimeNs": "1786589515000000000",
+        "ctimeNs": "1786589515000000000"
+      },
+      {
+        "path": "/Library",
+        "dev": "16777234",
+        "ino": "11005193",
+        "uid": "0",
+        "gid": "0",
+        "mode": 16877,
+        "size": "2144",
+        "mtimeNs": "1788113501120808548",
+        "ctimeNs": "1788113501120808548"
+      },
+      {
+        "path": "/Library/Developer",
+        "dev": "16777234",
+        "ino": "218788",
+        "uid": "0",
+        "gid": "0",
+        "mode": 16877,
+        "size": "256",
+        "mtimeNs": "1789804909001105742",
+        "ctimeNs": "1789804909001105742"
+      },
+      {
+        "path": "/Library/Developer/CommandLineTools",
+        "dev": "16777234",
+        "ino": "218789",
+        "uid": "0",
+        "gid": "0",
+        "mode": 16877,
+        "size": "160",
+        "mtimeNs": "1775116891234785795",
+        "ctimeNs": "1775116935814003064"
+      },
+      {
+        "path": "/Library/Developer/CommandLineTools/usr",
+        "dev": "16777234",
+        "ino": "221911",
+        "uid": "0",
+        "gid": "0",
+        "mode": 16877,
+        "size": "224",
+        "mtimeNs": "1772187937000000000",
+        "ctimeNs": "1775116931643017078"
+      },
+      {
+        "path": "/Library/Developer/CommandLineTools/usr/bin",
+        "dev": "16777234",
+        "ino": "221912",
+        "uid": "0",
+        "gid": "0",
+        "mode": 16877,
+        "size": "4448",
+        "mtimeNs": "1775116891093784094",
+        "ctimeNs": "1775116931516006350"
+      },
+      {
+        "path": "/Library/Developer/CommandLineTools/usr/bin/git",
+        "dev": "16777234",
+        "ino": "221994",
+        "uid": "0",
+        "gid": "0",
+        "mode": 33261,
+        "size": "7604272",
+        "mtimeNs": "1773208097000000000",
+        "ctimeNs": "1775116931515755309"
+      }
+    ]
+  },
+  "sourceHashesAfter": {
+    "../src/host/workbench-git.mjs": "1340c7c5eae2f838b6e2f660cd667066a55917ab4fffa4393dbe11af6bd8799c",
+    "../src/host/workbench-git.test.mjs": "9b1fbc89f6766bda306d3941481c948a4271d723deb66f78c43eca46dea0055d",
+    "./git-review-probe.mjs": "bcb023c67390b322b67be554f0823ed5caa40878c3ff5ecff75d530b6e82884f"
+  },
+  "executableAfter": {
+    "path": "/Library/Developer/CommandLineTools/usr/bin/git",
+    "version": "git version 2.50.1 (Apple Git-155)",
+    "sha256": "738d0159292a08341abe63a7decd0715ff34d67d532e17349902a6dc42f60ae7",
+    "components": [
+      {
+        "path": "/",
+        "dev": "16777234",
+        "ino": "2",
+        "uid": "0",
+        "gid": "0",
+        "mode": 16877,
+        "size": "704",
+        "mtimeNs": "1786589515000000000",
+        "ctimeNs": "1786589515000000000"
+      },
+      {
+        "path": "/Library",
+        "dev": "16777234",
+        "ino": "11005193",
+        "uid": "0",
+        "gid": "0",
+        "mode": 16877,
+        "size": "2144",
+        "mtimeNs": "1788113501120808548",
+        "ctimeNs": "1788113501120808548"
+      },
+      {
+        "path": "/Library/Developer",
+        "dev": "16777234",
+        "ino": "218788",
+        "uid": "0",
+        "gid": "0",
+        "mode": 16877,
+        "size": "256",
+        "mtimeNs": "1789804909001105742",
+        "ctimeNs": "1789804909001105742"
+      },
+      {
+        "path": "/Library/Developer/CommandLineTools",
+        "dev": "16777234",
+        "ino": "218789",
+        "uid": "0",
+        "gid": "0",
+        "mode": 16877,
+        "size": "160",
+        "mtimeNs": "1775116891234785795",
+        "ctimeNs": "1775116935814003064"
+      },
+      {
+        "path": "/Library/Developer/CommandLineTools/usr",
+        "dev": "16777234",
+        "ino": "221911",
+        "uid": "0",
+        "gid": "0",
+        "mode": 16877,
+        "size": "224",
+        "mtimeNs": "1772187937000000000",
+        "ctimeNs": "1775116931643017078"
+      },
+      {
+        "path": "/Library/Developer/CommandLineTools/usr/bin",
+        "dev": "16777234",
+        "ino": "221912",
+        "uid": "0",
+        "gid": "0",
+        "mode": 16877,
+        "size": "4448",
+        "mtimeNs": "1775116891093784094",
+        "ctimeNs": "1775116931516006350"
+      },
+      {
+        "path": "/Library/Developer/CommandLineTools/usr/bin/git",
+        "dev": "16777234",
+        "ino": "221994",
+        "uid": "0",
+        "gid": "0",
+        "mode": 33261,
+        "size": "7604272",
+        "mtimeNs": "1773208097000000000",
+        "ctimeNs": "1775116931515755309"
+      }
+    ]
+  },
+  "sourceAndExecutableStable": true
+}

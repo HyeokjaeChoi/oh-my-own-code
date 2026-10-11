@@ -1,0 +1,94 @@
+{
+  "at": "2026-10-10T07:04:18.413430+00:00",
+  "state": "implementation_active",
+  "files": {
+    "apps/desktop-app/src/wire-id.mjs": {
+      "bytes": 195,
+      "sha256": "6764b3faff6efa18ffc0b5ea2c433f2216f69adc489a8b5aa5a59a9e1eb2628b"
+    },
+    "apps/desktop-app/src/permission-input-digest.mjs": {
+      "bytes": 4459,
+      "sha256": "5fb31f86ef3b7852774e38673dfafd5304ac2bd580b16f9b7c348e314eefae4c"
+    },
+    "apps/desktop-app/src/workbench-contract.mjs": {
+      "bytes": 29250,
+      "sha256": "538eb4a39e11f07ef0ae3d8a00a5ffc33ee88f40ad5149914a7046cad3daa474"
+    },
+    "apps/desktop-app/src/native-permission-task-handoff.mjs": {
+      "bytes": 5610,
+      "sha256": "8e96f3b05f5a683a959a2ad04bbb53b18e2c315f2005650aa22c81e6dceec532"
+    },
+    "apps/desktop-app/src/native-permission-task-handoff.test.mjs": {
+      "bytes": 6097,
+      "sha256": "0ed01956aa0edd8a77f49e819483922640e9cba8861ed096f6bd6be3361fa7f0"
+    },
+    "apps/desktop-app/src/native-permission-task-request.mjs": {
+      "bytes": 2894,
+      "sha256": "d2e37ecd2c22552a5495c00faca800e5e9364aaf503ad1834ac43ae6531310db"
+    },
+    "apps/desktop-app/src/native-permission-task-request.test.mjs": {
+      "bytes": 6295,
+      "sha256": "5d95ecee5c6ce7006b968a5ac1668701f2cd6d6a181e81afb53afe646ea6bcb8"
+    },
+    "apps/desktop-app/src/event-host-supervisor.mjs": {
+      "bytes": 31536,
+      "sha256": "f18aa41b79b396e4485ec268498f41876ab3ed7cf2195f6aa049c19e6e17cbf8"
+    },
+    "apps/desktop-app/src/workbench-service.mjs": {
+      "bytes": 164136,
+      "sha256": "9626e6cff07337c47baeeb8e64510bca2fff94a1cd6853b91e1cd58c4225faa9"
+    },
+    "apps/desktop-app/src/host/storage-integration.test.mjs": {
+      "bytes": 179502,
+      "sha256": "3c82b9a3b1fd58bb2d6363de057539a7d4ffb2e3bbd13320800b40f58a3eb24b"
+    },
+    "apps/desktop-app/src/conversation-context.test.mjs": {
+      "bytes": 16512,
+      "sha256": "60da094da2fb21622bd680d651c4f8722402ce5d17df5e707c5575464492e051"
+    }
+  },
+  "checks": {
+    "main_coherent_progress_r3": {
+      "result": "pass",
+      "tests": 337,
+      "log": "docs/runs/permission-task-lifetime-integration/main-coherent-progress-r3.log",
+      "scope": "six Main suites; progress evidence, not final contracted whole source acceptance"
+    },
+    "contract_and_input_digest": {
+      "result": "pass",
+      "tests": 20
+    },
+    "fixture_worker": {
+      "result": "reported_pass",
+      "tests": 622,
+      "matched_manifest": "fixture-source-freeze-r1.json"
+    },
+    "renderer_worker": {
+      "result": "reported_pass",
+      "tests": 1566,
+      "matched_manifest": "renderer-source-freeze-r1.json"
+    }
+  },
+  "genuine_behavioral_red_green": [
+    "explicit released retained authority must allow file baseline; true/missing remains held",
+    "unknown Native step and non-UUID location must refuse handoff",
+    "detached original RPC during awaited owner check must not fetch",
+    "cached attachment validation must precede both actual Native policy calls"
+  ],
+  "review": {
+    "workspace_design": "independent pass; harness handoff ready",
+    "final_code": "not performed"
+  },
+  "remaining": [
+    "coherent workspace mutation producer/Native freeze and shared digest tests",
+    "actual Main journal-to-private-child stage issuer and Native task/input/promotion/title bindings",
+    "trusted inventory, effective mode compiler, root broker and bootstrap/recovery",
+    "coherent contracted checks + independent CODE/render and authorized actual contained runtime gates",
+    "remaining original full18 product goals"
+  ],
+  "limits": [
+    "No Native/Bun/Electron/server/build/UI/provider/network/private originals executed this turn",
+    "Control remains boot-held; helpers do not enable execution",
+    "Worker hashes and Node checks are not independent final approval"
+  ]
+}

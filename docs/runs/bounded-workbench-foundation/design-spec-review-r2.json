@@ -1,0 +1,69 @@
+{
+  "schema_version": 2,
+  "run": "bounded-workbench-foundation",
+  "reviewer": "design_spec_reviewer",
+  "verdict": "pass",
+  "reviewed": {
+    "contract_sha256": "912da66ee17154fbe329a0989e656e0750be18edbf0d1034d8d347c08266f2a0",
+    "documents_sha256": "602fb979444c8f448a2e04e72af800e727ef26591f937e6d4af3623230ab2a65",
+    "gate": "design_spec",
+    "plan_sha256": "3a99ec1f50093347d0ffe2e966d6b4e41185b28dc95cf43632a933d100f7fbe0",
+    "schema_version": 2
+  },
+  "summary": "DS-1/2/3의 수정과 직접 회귀만 독립 검토했습니다. 세 finding은 해소되었습니다. 변경된 계약은 구현을 시작할 수 있을 만큼 명확합니다. 추가 수정 요구는 없습니다. Primary는 보고서를 등록하고 design_spec handoff를 확인해야 합니다. Host DTO freeze 뒤 renderer 구현을 진행할 수 있습니다. 이 판정은 정적 설계 검토이며 runtime 검증은 아닙니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "DS-1",
+      "artifact": "docs/runs/bounded-workbench-foundation/read-receipt-contract.md",
+      "location": "lines 10-11",
+      "result": "Class별 subscriber 최대8, 전체 최대32, lookup 전용8이 명시되었습니다. 초과 요청은 queue 없이 READ_BUSY를 반환합니다. Active readId의 scope는 고정되며 동일 ID와 scope는 기존 promise를 반환합니다. Subscriber 취소는 해당 subscriber만 분리합니다. Shared task는 마지막 subscriber 분리, 원래 deadline 만료 또는 teardown 때 abort합니다. Join은 deadline을 연장하지 않습니다. Quarantine된 task는 새 subscriber를 받지 않으며 실제 완료 또는 입증된 teardown까지 capacity를 유지합니다."
+    },
+    {
+      "id": "DS-2",
+      "artifact": "docs/runs/bounded-workbench-foundation/read-receipt-contract.md",
+      "location": "lines 11, 16",
+      "result": "Live host epoch와 원래 operation scope에서는 같은 admitted mutation의 authoritative registry/effect commit과 redacted receipt를 완료할 수 있습니다. 따라서 늦게 완료된 create/fork도 host registry에 등록되고 후속 snapshot에 나타날 수 있습니다. 만료된 renderer 응답과 read projection은 적용하지 않습니다. Retired scope나 제거된 identity의 복원 및 recovery mutation dispatch는 계속 금지됩니다. 기존 addSession consumer와 직접 충돌하지 않습니다."
+    },
+    {
+      "id": "DS-3",
+      "artifact": "docs/runs/bounded-workbench-foundation/read-receipt-contract.md",
+      "location": "lines 6, 15",
+      "result": "Lookup target은 operation 안의 runtimeEpoch와 operationId로 고정되었습니다. Envelope의 현재 transport epoch와 구분됩니다. 응답은 found, missing, wrong_epoch의 closed DTO입니다. Found는 redacted receipt를 반환합니다. Missing과 wrong_epoch는 target identity 및 effect:unknown을 보존하며 type, admission, evidence 또는 no-effect 증거를 만들지 않습니다."
+    }
+  ],
+  "review_boundary": {
+    "plan_revision": 3,
+    "amendment_version": 3,
+    "scope": "DS-1/2/3 변경 및 직접 회귀",
+    "prior_report": "docs/runs/bounded-workbench-foundation/design-spec-review-r1.json",
+    "execution_packet": "docs/runs/bounded-workbench-foundation/execution/design-spec-r2.packet.json",
+    "unchanged_concerns": "Receipt redaction, mutation admission, global SDK cap, platform/design 선택은 재검토하지 않았습니다.",
+    "limits": "문서와 관련 기존 host consumer만 정적으로 검토했습니다. 테스트와 native 실행은 하지 않았습니다."
+  },
+  "checks": [
+    {
+      "command": "python3 .solopreneur/harness.py review-input bounded-workbench-foundation --gate design_spec",
+      "result": "성공. 검토 시작과 종료의 binding이 같습니다."
+    },
+    {
+      "check": "Run 및 입력 정합성",
+      "result": "Run은 active입니다. 현재 plan-review-r3는 pass입니다. Amendment v3의 실제 SHA256은 contract와 packet의 등록값에 일치합니다. Packet의 contract SHA256도 실제 파일과 run 등록값에 일치합니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a10234-43ef-7c73-be3b-f30f01721f23",
+    "requested_model": "Sol",
+    "requested_effort": "medium",
+    "runtime_identity_attested": false,
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skill": "solo-design-spec-review",
+    "mode": "report_only",
+    "delegated": false,
+    "files_changed": [],
+    "tests_run": false,
+    "native_launches": false,
+    "persistence_owner": "primary"
+  }
+}

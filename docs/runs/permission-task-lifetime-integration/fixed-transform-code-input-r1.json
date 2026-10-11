@@ -1,0 +1,54 @@
+{
+  "revision": 21,
+  "scope": "original Agent and MCP CodeMode defaults fixed transform source declarations, same held hook registry/publication, original source and dependency preservation",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "bytes": 288343,
+      "sha256": "768497de103036c08330a8b6bfd960fb0db064431cbc71bd5f03ec127ef3b0e5"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "bytes": 31439,
+      "sha256": "64d545f62fa6c392db46f932b26af69ecca7e570fa60731c46a63da26a4df8a1"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-transform-declaration.test.mjs",
+      "bytes": 14190,
+      "sha256": "1926ad0ba984fcb5ffbeb572d4dc44a42f7f94efead325eaaeab812301a4bbb6"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+      "bytes": 14660,
+      "sha256": "f0e54a8b3cc429b7998dc83aeecd18fb93f7dd45b02205c624dce0dbebf54208"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 22300,
+      "sha256": "6d4cf14c109a090af8f9daf414f1e72fae410f3a95ee830e0350099137c6a0a1"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "bytes": 39739,
+      "sha256": "974ca10b2be24fdbd1e94d0fbec50c6a89f226aa2a241062f7b1cea982459005"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-hook-publication.test.mjs",
+      "bytes": 25594,
+      "sha256": "8441a005da0d881b79974fe77b677966feac038987c65ea9dedc40cf19707e9b"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+      "bytes": 18634,
+      "sha256": "ff99445c07f22accfae6be3bc96c7d43b15ee1917ec83f741e6e589202f81d82"
+    }
+  ],
+  "before_manifest": "prechange/fixed-transform-source-before-r1/manifest.json",
+  "worker_report": "fixed-transform-worker-handoff-r1.json",
+  "harness_improvement": "graph asserts exact full closed hook ID set and exact import URL set including no duplicates; count-only assertions replaced to avoid unrelated future count repairs",
+  "limits": [
+    "Callbacks never run; complete=false capabilities=[] unchanged",
+    "No Native/Bun/Main/server/provider/browser/UI/build/physical run",
+    "full18/F09 unfinished"
+  ]
+}

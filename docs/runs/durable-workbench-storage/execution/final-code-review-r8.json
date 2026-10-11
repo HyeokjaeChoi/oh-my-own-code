@@ -1,0 +1,241 @@
+{
+  "schema_version": 2,
+  "run": "durable-workbench-storage",
+  "gate": "code",
+  "reviewer": "reviewer",
+  "verdict": "pass",
+  "summary": "parent plan revision7과 storage-contract v5의 현재 범위에서 이전 다섯 finding의 correction closure를 확인했습니다. 현재 source와 실제 evidence에서 추가 코드 결함을 찾지 못했습니다. S2 evidence-index 수정 후 재생성된 최신 FINAL binding을 사용했습니다.",
+  "reviewed": {
+    "contract_sha256": "1c90e65790048346aefd45f13f80de0e12061be1fe3ac5e1f59f0e325c283448",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "code",
+    "plan_sha256": "595f9a0c369808547b3f8c6e709e8de841b7654046c3a6ab3eccedbe4cc81f8f",
+    "schema_version": 2,
+    "source_sha256": "3770a81d225bf29ea36016e03d602660986aa002b0c0710d20ee79698f441e8f",
+    "verification_sha256": "547717a00f6ea9fd064d09262fbf3589edd7e8763e7cc075b4527839a515558b",
+    "work_class_sha256": "4f0672eaedcbeccf2b6e189dfee8b1d0ea01dbf003d7039973e55d03d8f8aa02"
+  },
+  "provenance": {
+    "child_task_id": "01a1172e-3def-7271-84b5-7e67cd74f216",
+    "child_task_id_source": "현재 실행 환경의 CODEX_THREAD_ID",
+    "independent_from_implementation_author": true,
+    "reviewer_authored_implementation_or_repairs": false,
+    "report_only": true,
+    "delegation": false,
+    "recursive_agents": false,
+    "source_artifact_or_ledger_writes": false,
+    "tests_build_package_or_native_execution": false,
+    "gui_provider_or_private_execution": false,
+    "report_saved_or_registered": false,
+    "sandbox_attestation": "solo_reader의 행동 제한을 준수했습니다. profile 이름으로 OS sandbox를 증명하지 않습니다."
+  },
+  "binding_checks": {
+    "supplied_input": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/execution/final-code-review-r8.input.json",
+    "supplied_input_sha256": "f66235f4174d61b317188269449248576530f7f7fdc45d6ff599d1553d8d74e8",
+    "method": "S2 수정 후 최신 supplied object를 다시 읽고 읽기 전용 harness review-input 결과와 비교했습니다. 검토 종료 시 다시 계산했습니다.",
+    "initial_match": true,
+    "final_match": true,
+    "registered_artifact_count": 15,
+    "registered_artifact_hashes_match": true,
+    "registered_outcome_hash_matches": true,
+    "s2_outcome_checks": [
+      "native-storage"
+    ],
+    "superseded_verification_binding_used": false
+  },
+  "scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "method": "Spec compliance와 code quality를 별도로 검토했습니다. 이전 finding 각각의 fix와 영향을 받는 caller, consumer, test, configuration 및 현재 evidence를 확인했습니다.",
+    "plan_revision": 7,
+    "storage_contract_version": 5,
+    "baseline_changed_path_count": 123,
+    "deleted_paths_in_changed_inventory": 12,
+    "delta_inventory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/current-changed-paths-r3.json",
+    "outcome_path_inventory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/outcome-current-r8.json",
+    "line_review_scope": [
+      "현재 focused copied-read boundary의 18개 경로",
+      "production Main과 event-host supervisor의 startup 및 shutdown 연결",
+      "owner lifetime, storage lock, journal, registry와 retained-operation 경계",
+      "workbench admission/receipt, recursive root/fork reopen correlation",
+      "renderer controller의 unavailable readiness retry와 stale epoch/visibility/disposal 처리",
+      "evidence output containment와 현재 saved storage/UI probes",
+      "실제 pinned public startup graph의 durable/provider/credential/migration/legacy 선택 경로"
+    ],
+    "baseline_limit": "123개 경로 전체를 이번에 줄 단위로 다시 검토하지 않았습니다. 이전에 수용된 변경은 관련 bytes와 영향을 확인하고 필요한 부분만 재검토했습니다.",
+    "owner_lifetime_evidence_reuse": {
+      "prior_report": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-owner-lifetime/code-review-r4.json",
+      "prior_freeze": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-owner-lifetime/final-source-r4.json",
+      "current_matching_paths": 24,
+      "prior_paths": 27,
+      "changed_paths_reviewed_directly": [
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/main.mjs",
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/inspect-packaged-bundle.mjs",
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/owner-lifetime-exit-observer.py"
+      ]
+    }
+  },
+  "prior_findings_assessment": [
+    {
+      "id": "P7-R7-CODE-1",
+      "status": "closed",
+      "files": [
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/main.mjs",
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-preflight.mjs",
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/event-host-supervisor.mjs"
+      ],
+      "assessment": "Main이 production copied preflight를 owner intent 전에 수행하고 supervisor에도 반복 guard를 전달합니다. 허용된 nonfresh store는 재시작할 수 있습니다. pending/unknown store는 보존하며 차단합니다.",
+      "evidence": "native-r3의 실제 normal 및 idle Native SIGKILL 재시작은 productionAuthority=true입니다. synthetic startup callback을 closure 증거로 사용하지 않았습니다."
+    },
+    {
+      "id": "P7-R7-CODE-2",
+      "status": "closed",
+      "files": [
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/owner-lifetime.mjs",
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-lock.mjs",
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/main.mjs"
+      ],
+      "assessment": "production lifetime witness와 verifier가 현재 owner acquisition에 연결됩니다. 과거 PID 부재나 cleanShutdown만으로 종료를 추정하지 않습니다. shutdown은 inspector와 Native 종료를 처리한 뒤 owner를 정리합니다.",
+      "evidence": "현재 bytes가 같은 owner-lifetime r4 구현과 실제 evidence, native-r3의 별도 owner process 재시작 및 witness terminal 확인."
+    },
+    {
+      "id": "P7-R7-CODE-3",
+      "status": "closed",
+      "files": [
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs"
+      ],
+      "assessment": "unavailable snapshot에도 5초 간격의 read retry를 예약합니다. visibility, disposal과 epoch guard가 적용됩니다. mutation을 자동 재시도하지 않습니다.",
+      "evidence": "delayed readiness, visibility/disposal, stale epoch와 permanent recovery regression source 및 현재 renderer-unit 결과."
+    },
+    {
+      "id": "P7-R7-CODE-4",
+      "status": "closed",
+      "files": [
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-service.mjs",
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.mjs"
+      ],
+      "assessment": "root는 원래 admission과 confirmed receipt로 확인합니다. fork는 자신의 committed fork receipt, exact child mapping, parent lineage와 inherited root metadata로 확인합니다. 재귀 parent 확인과 cycle guard를 검토했습니다.",
+      "evidence": "native-r3의 normal/SIGKILL 재시작에서 exactOriginalReceipts=true와 exactForkLineage=true. inherited metadata를 child receipt로 오인하지 않습니다."
+    },
+    {
+      "id": "P7-R7-CODE-5",
+      "status": "closed",
+      "files": [
+        "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.mjs"
+      ],
+      "assessment": "좁은 durable-workbench-storage/evidence root가 허용됩니다. containment, symlink와 exclusive-output guard는 유지됩니다.",
+      "evidence": "현재 hidden-ui-r5 contracted check exit_code=0, 실제 evidence result=pass, 46개 capture와 teardown exit_code=0."
+    }
+  ],
+  "acceptance_assessment": {
+    "S1": {
+      "status": "pass",
+      "assessment": "현재 registry/journal/admission/receipt 경계와 storage evidence가 exact mapping, duplicate/conflict 처리와 파일 보존을 뒷받침합니다.",
+      "evidence": "현재 storage-unit 및 native-r5의 mapping-receipt-duplicate-conflict와 folder-import-sentinels."
+    },
+    "S2": {
+      "status": "pass",
+      "assessment": "현재 owner witness와 production copied preflight가 허용된 nonfresh root/fork 재시작 경로를 완성합니다.",
+      "evidence": "native-r3의 production preflight 정상 재시작과 idle Native SIGKILL 후 재시작. native-r5의 추가 service/storage 증거.",
+      "qualification": "native-r5의 trusted synthetic startup과 historical fresh-only helper 결과는 production safe-start 증거로 사용하지 않았습니다. S2 outcome의 check 목록은 native-storage 하나로 수정된 상태입니다."
+    },
+    "S3": {
+      "status": "pass",
+      "assessment": "retained/unknown receipt, pending과 partial mapping은 읽을 수 있는 recovery 상태를 유지하고 mutation/replay를 차단합니다.",
+      "evidence": "현재 storage/renderer regression, native-r3의 실제 Native-only pending denial, hidden-ui-r5의 synthetic recovery DTO assertions."
+    },
+    "S4": {
+      "status": "pass",
+      "assessment": "owner 충돌과 미확인 종료는 차단됩니다. exact lifetime 확인 후 재획득 경로가 있습니다. dirty WAL과 recovery data를 보존합니다. staged migration은 검토한 보존/rollback 범위에 머뭅니다.",
+      "evidence": "bytes가 일치하는 owner-lifetime r4 evidence, native-r3 및 native-r5의 실제 process/retention 결과.",
+      "qualification": "migration cutover나 power-loss durability를 검증한 것은 아닙니다."
+    },
+    "S5": {
+      "status": "pass",
+      "assessment": "renderer readiness와 evidence runner correction을 확인했습니다. 현재 11개 contracted check와 hidden-ui-r5 결과가 현재 source에 연결됩니다.",
+      "evidence": "renderer-unit, boundaries, build, lint, typecheck, bundle, package-macos, package-inspect 및 hidden-ui 결과.",
+      "qualification": "이번 code review는 46개 새 capture의 pixel review를 수행하지 않았습니다. 별도 rendered/design gate는 이 보고서의 범위 밖입니다."
+    }
+  },
+  "startup_graph_assessment": {
+    "status": "pass",
+    "assessment": "copied reader closure 밖의 실제 server startup graph도 검토했습니다. Database migration, SessionRestart, Job/KV, Credential, WellKnown/config, provider/plugin location services, Workspace, PersistentPty와 output cleanup 경로에서 현재 허용 상태를 벗어나는 추가 자동 durable 작업을 찾지 못했습니다.",
+    "authority": "실제 packaged dependency bytes와 source inspection입니다. synthetic callback 성공으로 추정하지 않았습니다.",
+    "packaged_inventory_checked": {
+      "manifest_entries": 38393,
+      "regular_files": 35122,
+      "hash_or_metadata_mismatches": [],
+      "extra_or_missing_paths": []
+    },
+    "qualification": "이 판단은 pinned 버전과 현재 config/namespace policy에 한정됩니다. 이후 provider/catalog/request 경로의 실행 안전성을 승인하지 않습니다."
+  },
+  "verification": {
+    "checks": {
+      "count": 11,
+      "all_current_source": true,
+      "all_exit_code_zero": true,
+      "all_inputs_changed_false": true,
+      "reviewer_reexecuted": false
+    },
+    "native_r5": {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/native-r5/native-storage-evidence.json",
+      "sha256": "bd5b3645492f163351fd3b8e7396e347daeaa024761b01cdf7d92fe970cdadc4",
+      "result": "pass",
+      "failed_requirements": [],
+      "identities_unchanged": true,
+      "before_after_identities_independently_equal": true,
+      "recorded_current_file_hashes_checked": 111,
+      "hash_mismatches": [],
+      "recorded_processes": 17,
+      "all_recorded_processes_exited": true,
+      "all_native_exit_confirmations": true,
+      "exit_qualification": "두 synthetic sentinel은 SIGTERM으로 종료됐습니다. 모든 process가 exit code 0이라는 주장은 하지 않습니다."
+    },
+    "production_preflight_evidence": {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+      "sha256": "0d068305316fb576ab4d00cf2bab304ce0d0a0b0b06ea4558e1fa86f1fb6a0f3",
+      "result": "pass",
+      "cleanup_complete": true,
+      "identities_unchanged": true,
+      "normal_and_sigkill_root_fork_history_assertions": true,
+      "actual_native_only_pending_denial": true
+    },
+    "reader_lifecycle_evidence": {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-native-preflight/evidence/lifecycle-r2/reader-lifecycle-evidence.json",
+      "sha256": "d38bbae034f55e41949bd5186fe10bee7e27ad05b8916d7246da6bfb75804f7f",
+      "result": "pass",
+      "cleanup_complete": true,
+      "identities_unchanged": true,
+      "active_sql_cancellation_observed": false
+    },
+    "hidden_ui_r5": {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r5/ui-states/ui-states-evidence.json",
+      "sha256": "d00b64fe4dbc145e119cefc7ee239af80a65be0077e6793dfa7d23ff422bf399",
+      "result": "pass",
+      "captures": 46,
+      "teardown_exited": true,
+      "teardown_exit_code": 0,
+      "provenance": "synthetic host DTO와 실제 built hidden Electron renderer",
+      "reviewer_inspected_new_pixels": false
+    },
+    "outcome": {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/outcome-current-r8.json",
+      "sha256": "126c0a8d5e9630102a319c0dea7c8c69e81925f1826912bb60e1e85f492a1bdb",
+      "s2_check_index_correction_confirmed": true
+    }
+  },
+  "open_findings": [],
+  "limits": [
+    "이 verdict는 현재 parent code gate와 명시된 contract 범위에 적용됩니다. 전체 123개 변경 경로의 새 줄 단위 감사는 아닙니다.",
+    "실제 runtime 보고서는 직접 읽었습니다. reviewer가 Native, tests, build, package 또는 GUI를 실행하지 않았습니다.",
+    "production Main 전체 실행, visible window, provider, credentials, private store, Windows와 power-loss는 검증하지 않았습니다.",
+    "native-r5의 controlled synthetic startup은 현재 production startup 안전성을 독자적으로 증명하지 않습니다. 해당 판단에는 native-r3와 Main/supervisor source를 사용했습니다.",
+    "pending/provider/unknown 상태는 안전하게 차단합니다. 자동 replay, drain, resume 또는 approval을 제공한다는 주장은 하지 않습니다.",
+    "migration evidence는 synthetic staged-copy 보존과 rollback입니다. 실제 cutover는 여전히 held입니다.",
+    "새 hidden-ui-r5 pixel review와 별도 rendered/design gate 완료를 승인하지 않습니다.",
+    "현재 lifecycle evidence는 pre-import cancellation과 physical exit를 확인합니다. active SQL cancellation은 관찰하지 않았습니다.",
+    "hash와 identity 비교는 filesystem isolation, hostile same-user 방어 또는 관찰 사이 change-and-restore를 증명하지 않습니다.",
+    "이전 native-r2의 미확인 witness cleanup은 현재 run의 pass로 변경되지 않습니다.",
+    "Main만 보고서 저장, gate 등록과 ledger 변경을 수행합니다."
+  ]
+}

@@ -1,0 +1,360 @@
+▶ production service refuses final-byte MIME mismatches before Native prompt
+  ✖ BMP (20.153458ms)
+  ✖ AVIF (12.396667ms)
+  ✖ AVIS (10.022125ms)
+  ✖ invalid GIF8 (11.299584ms)
+  ✖ selection BMtext (36.334166ms)
+  ✖ selection GIF8xx (29.804042ms)
+  ✖ selection %PDF-1.7 (19.805291ms)
+  ✖ selection RIFFxxxxWEBP (12.321542ms)
+  ✖ selection xxxxftypavif (9.273625ms)
+  ✖ selection xxxxftypavis (11.75725ms)
+✖ production service refuses final-byte MIME mismatches before Native prompt (218.518417ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 0
+ℹ fail 11
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 339.203459
+
+✖ failing tests:
+
+test at apps/desktop-app/src/conversation-context.test.mjs:498:13
+✖ BMP (20.153458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'policy'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:542:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:498:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'policy' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/conversation-context.test.mjs:498:13
+✖ AVIF (12.396667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'policy',
+  +   'policy'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:542:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:498:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'policy', 'policy' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/conversation-context.test.mjs:498:13
+✖ AVIS (10.022125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'policy',
+  +   'policy',
+  +   'policy'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:542:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:498:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'policy', 'policy', 'policy' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/conversation-context.test.mjs:498:13
+✖ invalid GIF8 (11.299584ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:542:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:498:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'policy', 'policy', 'policy', 'policy' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/conversation-context.test.mjs:498:13
+✖ selection BMtext (36.334166ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:542:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:498:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'policy', 'policy', 'policy', 'policy', 'policy' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/conversation-context.test.mjs:498:13
+✖ selection GIF8xx (29.804042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:542:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:498:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'policy', 'policy', 'policy', 'policy', 'policy', 'policy' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/conversation-context.test.mjs:498:13
+✖ selection %PDF-1.7 (19.805291ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:542:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:498:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy'
+    ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/conversation-context.test.mjs:498:13
+✖ selection RIFFxxxxWEBP (12.321542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:542:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:498:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy', 'policy'
+    ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/conversation-context.test.mjs:498:13
+✖ selection xxxxftypavif (9.273625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:542:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:498:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy'
+    ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/conversation-context.test.mjs:498:13
+✖ selection xxxxftypavis (11.75725ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:542:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:498:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy', 'policy'
+    ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/conversation-context.test.mjs:331:1
+✖ production service refuses final-byte MIME mismatches before Native prompt (218.518417ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+  +   'policy',
+      'switchModel',
+      'policy',
+      'prompt'
+    ]
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/conversation-context.test.mjs:558:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy', 'policy',
+      'policy', 'switchModel',
+      'policy', 'prompt'
+    ],
+    expected: [ 'policy', 'switchModel', 'policy', 'prompt' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

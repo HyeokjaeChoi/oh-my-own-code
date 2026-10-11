@@ -1,0 +1,73 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "MIME1",
+      "description": "Final supported MIME matches pinned Native; BMP/AVIF and media-prefixed text selection refused before prompt"
+    },
+    {
+      "id": "MIME2",
+      "description": "Existing scope/byte authority preserved; scoped checks and independent code"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+        "apps/desktop-app/src/conversation-context.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Exact final-byte MIME correction and existing production IO/service regressions",
+      "acceptance_ids": [
+        "MIME1",
+        "MIME2"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/host/conversation-context-io.mjs",
+        "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+        "apps/desktop-app/src/conversation-context.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Exact final-byte MIME correction and existing production IO/service regressions",
+      "acceptance_ids": [
+        "MIME1",
+        "MIME2"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/host/conversation-context-io.mjs",
+        "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+        "apps/desktop-app/src/conversation-context.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Exact final-byte MIME correction and existing production IO/service regressions",
+      "acceptance_ids": [
+        "MIME1",
+        "MIME2"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ],
+  "user_approvals": []
+}

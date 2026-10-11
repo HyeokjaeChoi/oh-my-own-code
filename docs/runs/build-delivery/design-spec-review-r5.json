@@ -1,0 +1,22 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "design_spec",
+    "plan_sha256": "d948d3b3ac16fd325e381defffd6cff7101ba7dccb94969c17db5738b16d44a3",
+    "contract_sha256": "064248d8e9743d7823753cef30c2e95a1644feec1dbbaa69ccdc83b7a491d8fd",
+    "documents_sha256": "b2dda914c31c7ff2ffa97c03e8e47c9b5ca318e8c0076f348d388d4e7b3695a4"
+  },
+  "verdict": "pass",
+  "summary": "Plan revision 5 confines the pinned client probe to injected synthetic fetch and compile-only public types. It preserves the bridge as execution authority and keeps real host lifecycle, network security, permissions, event reconciliation, persistence, and recovery behind separate reviewed gates. AC-7 explicitly treats the probe as partial evidence; TypeScript declarations are not claimed as runtime response validation. The packet binding and registered source hashes match current files.",
+  "open_findings": [],
+  "limits": "Read-only specification review. The planned probe extensions were not implemented or executed in this review. Synthetic transport outcomes cannot establish real SDK behavior, credential safety, live event replay, or release readiness.",
+  "provenance": {
+    "child_task_id": "/root/design_spec_review_r5",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "high",
+    "runtime_identity_verified": false,
+    "report_only": true
+  }
+}

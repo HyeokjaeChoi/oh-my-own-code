@@ -1,0 +1,199 @@
+{
+  "schema_version": 2,
+  "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+  "review_profile": "solo_reader",
+  "profiles": {
+    "solo_reader": {
+      "file": ".codex/agents/solo_reader.toml",
+      "sandbox_mode": "read-only"
+    },
+    "solo_worker": {
+      "file": ".codex/agents/solo_worker.toml",
+      "sandbox_mode": "workspace-write"
+    }
+  },
+  "roles": {
+    "planner": {
+      "skill": "solo-engineering-plan",
+      "description": "Provide bounded planning analysis when requested by the primary coordinator; never orchestrate a second run.",
+      "profile": "solo_reader",
+      "mode": "analysis",
+      "references": []
+    },
+    "plan_reviewer": {
+      "skill": "solo-plan-review",
+      "description": "Independently review every entry plan for product fit, design, architecture, and verification gaps.",
+      "profile": "solo_reader",
+      "mode": "default",
+      "references": []
+    },
+    "file_scout": {
+      "skill": "solo-evidence-research",
+      "description": "Find the smallest relevant set of files and symbols for an assigned question.",
+      "profile": "solo_reader",
+      "mode": "files",
+      "references": []
+    },
+    "code_explorer": {
+      "skill": "solo-evidence-research",
+      "description": "Retrieve factual code-path evidence and escalate architectural judgment before changes.",
+      "profile": "solo_reader",
+      "mode": "code",
+      "references": []
+    },
+    "web_researcher": {
+      "skill": "solo-evidence-research",
+      "description": "Retrieve bounded external facts from current primary sources and escalate judgment.",
+      "profile": "solo_reader",
+      "mode": "web",
+      "references": []
+    },
+    "product_research": {
+      "skill": "solo-product-spec",
+      "description": "Assess user problems, demand assumptions, competitors, and a lean validation experiment.",
+      "profile": "solo_reader",
+      "mode": "research",
+      "references": []
+    },
+    "product_manager": {
+      "skill": "solo-product-spec",
+      "description": "Produce product briefs and PRDs with scope, user journeys, KPIs, and acceptance criteria.",
+      "profile": "solo_worker",
+      "mode": "author",
+      "references": []
+    },
+    "product_reviewer": {
+      "skill": "solo-product-review",
+      "description": "Independently review a final product brief or PRD for product coherence, scope, measurable outcomes, and implementation-ready acceptance criteria.",
+      "profile": "solo_reader",
+      "mode": "default",
+      "references": []
+    },
+    "design_researcher": {
+      "skill": "solo-design-research",
+      "description": "Research relevant user flows and visual references with evidence and design implications.",
+      "profile": "solo_reader",
+      "mode": "default",
+      "references": []
+    },
+    "design_architect": {
+      "skill": "solo-design-system",
+      "description": "Define user flows, state specifications, and reusable design tokens for web and mobile.",
+      "profile": "solo_worker",
+      "mode": "default",
+      "references": []
+    },
+    "design_spec_reviewer": {
+      "skill": "solo-design-spec-review",
+      "description": "Independently review UI or backend design contracts for implementation readiness.",
+      "profile": "solo_reader",
+      "mode": "default",
+      "references": []
+    },
+    "design_qa": {
+      "skill": "solo-design-review",
+      "description": "Independently make the final rendered-UI quality judgment from visual evidence.",
+      "profile": "solo_reader",
+      "mode": "default",
+      "references": []
+    },
+    "engineer": {
+      "skill": "solo-implement",
+      "description": "Implement and verify assigned web, backend, shared-contract, or general engineering work.",
+      "profile": "solo_worker",
+      "mode": "general",
+      "references": []
+    },
+    "mobile_engineer": {
+      "skill": "solo-implement",
+      "description": "Implement React Native and Expo behavior with native navigation, lifecycle, and device evidence.",
+      "profile": "solo_worker",
+      "mode": "mobile",
+      "references": []
+    },
+    "reviewer": {
+      "skill": "solo-code-review",
+      "description": "Independently review completed code for correctness, security, maintainability, and regressions.",
+      "profile": "solo_reader",
+      "mode": "default",
+      "references": []
+    },
+    "bug_analyst": {
+      "skill": "solo-debugging",
+      "description": "Reproduce failures, test competing causes, and identify the smallest defensible fix.",
+      "profile": "solo_worker",
+      "mode": "default",
+      "references": []
+    },
+    "test_engineer": {
+      "skill": "solo-tdd",
+      "description": "Own test strategy and verification judgment; route approved bounded test coding to engineer.",
+      "profile": "solo_worker",
+      "mode": "strategy",
+      "references": []
+    },
+    "qa_runner": {
+      "skill": "solo-qa-run",
+      "description": "Run specified observation-only QA checklists and collect browser or device evidence without approving final quality gates.",
+      "profile": "solo_reader",
+      "mode": "default",
+      "references": []
+    },
+    "analytics_engineer": {
+      "skill": "solo-analytics-instrumentation",
+      "description": "Implement event contracts and privacy-conscious product instrumentation with delivery checks.",
+      "profile": "solo_worker",
+      "mode": "default",
+      "references": []
+    },
+    "analytics_analyst": {
+      "skill": "solo-analytics-experiment",
+      "description": "Interpret activation, funnels, retention, and experiments with explicit uncertainty.",
+      "profile": "solo_reader",
+      "mode": "default",
+      "references": []
+    },
+    "monetization_engineer": {
+      "skill": "solo-subscription-check",
+      "description": "Implement and verify RevenueCat purchase, entitlement, restore, and subscription state behavior.",
+      "profile": "solo_worker",
+      "mode": "default",
+      "references": []
+    },
+    "aso_specialist": {
+      "skill": "solo-aso",
+      "description": "Prepare evidence-backed store positioning, metadata, localization, and ASO experiments.",
+      "profile": "solo_worker",
+      "mode": "default",
+      "references": []
+    },
+    "marketing_specialist": {
+      "skill": "solo-marketing",
+      "description": "Produce positioning, landing-page copy, launch content, and measurable growth experiments.",
+      "profile": "solo_worker",
+      "mode": "default",
+      "references": []
+    },
+    "store_assets": {
+      "skill": "solo-store-launch",
+      "description": "Prepare real product screenshots and localized store launch assets.",
+      "profile": "solo_worker",
+      "mode": "default",
+      "references": []
+    },
+    "release_engineer": {
+      "skill": "solo-release",
+      "description": "Prepare and execute authorized releases with reproducible validation, rollback, and monitoring.",
+      "profile": "solo_worker",
+      "mode": "default",
+      "references": []
+    },
+    "reliability_engineer": {
+      "skill": "solo-monitoring",
+      "description": "Validate release health, investigate Sentry signals, and prioritize reliability iterations.",
+      "profile": "solo_worker",
+      "mode": "default",
+      "references": []
+    }
+  }
+}

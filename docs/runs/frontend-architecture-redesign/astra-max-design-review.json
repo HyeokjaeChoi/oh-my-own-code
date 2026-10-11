@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "run": "frontend-architecture-redesign",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "f008b6ab348e3edd7251ff8f67e3e2c53bc6f7d4ad569263f1d72b1c0fdcfd58",
+    "documents_sha256": "77d398b13b3f58a24bd7c7cec19c1aeb5d4fd6a0fc7c76c01ca98defaa71357d",
+    "gate": "design_spec",
+    "plan_sha256": "8a7528f959d052c904cf29458b00788e70a4c9393b5083f4b697dac947097ae6",
+    "schema_version": 2
+  },
+  "verdict": "changes_requested",
+  "summary": "Mutation reconciliation and file cache freshness require explicit contracts before consumer implementation. No actual UI/runtime approval.",
+  "open_findings": [
+    {
+      "id": "AMAX-1",
+      "priority": "P1",
+      "path": "docs/runs/frontend-architecture-redesign/architecture-and-ui.md",
+      "line": 33,
+      "title": "Freeze mutation outcome reconciliation before Stage 3",
+      "impact": "Receipt/status lookup and per-operation identity are missing. Snapshot idle/existence must not clear unknown.",
+      "correction": "Specify operation identity, authoritative outcome evidence, lookup and unknown release conditions, or explicitly preserve runtime-lifetime unknown and defer receipt reconciliation."
+    },
+    {
+      "id": "AMAX-3",
+      "priority": "P2",
+      "path": "docs/runs/frontend-architecture-redesign/architecture-and-ui.md",
+      "line": 25,
+      "title": "Tie file cache freshness to real file changes",
+      "impact": "Tool edits or external deletion/recreation can leave stale previews after reopening.",
+      "correction": "Specify cache keys, forced refresh, mutation invalidation, external-change revalidation, stale display and regression cases before Query migration."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/astra_max_full_plan_review",
+    "author_task_id": "/root",
+    "mode": "fresh independent read-only full review",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "max",
+    "runtime_identity_attested": false,
+    "source_edits": false,
+    "tests_executed": false,
+    "ledger_mutated": false
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "scope": "MIME correction + explicitly declared8inbound common foundation files, not wholeContext/foundation UI acceptance",
+  "checks": {
+    "format": [
+      {
+        "argv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--check",
+          "apps/desktop-app/src/host/conversation-context-io.mjs",
+          "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+          "apps/desktop-app/src/conversation-context.test.mjs"
+        ],
+        "contract_sha256": "1677c3e32c8df5ba1176b5fcc1282a82bc2681ef01aeaff1a11c5976b5dde446",
+        "cwd": ".",
+        "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "1a305316eae06c4463b8529ef46f20f92b7b2ab21398c533c78d3506bcdc7821",
+        "recorded_at": "2026-10-09T05:54:37+00:00",
+        "scope": "Exact final-byte MIME correction and existing production IO/service regressions",
+        "source_sha256": "49be8040253dd310d52de0baf8b89dab339676e47b28419869003dc85e0deff2",
+        "stderr": "",
+        "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+        "timed_out": false
+      }
+    ],
+    "lint": [
+      {
+        "argv": [
+          "node",
+          "node_modules/eslint/bin/eslint.js",
+          "--config",
+          "apps/desktop-app/eslint.config.mjs",
+          "apps/desktop-app/src/host/conversation-context-io.mjs",
+          "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+          "apps/desktop-app/src/conversation-context.test.mjs"
+        ],
+        "contract_sha256": "1677c3e32c8df5ba1176b5fcc1282a82bc2681ef01aeaff1a11c5976b5dde446",
+        "cwd": ".",
+        "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "1a305316eae06c4463b8529ef46f20f92b7b2ab21398c533c78d3506bcdc7821",
+        "recorded_at": "2026-10-09T05:54:35+00:00",
+        "scope": "Exact final-byte MIME correction and existing production IO/service regressions",
+        "source_sha256": "49be8040253dd310d52de0baf8b89dab339676e47b28419869003dc85e0deff2",
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      }
+    ],
+    "unit": [
+      {
+        "argv": [
+          "node",
+          "--test",
+          "--test-reporter=dot",
+          "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+          "apps/desktop-app/src/conversation-context.test.mjs"
+        ],
+        "contract_sha256": "1677c3e32c8df5ba1176b5fcc1282a82bc2681ef01aeaff1a11c5976b5dde446",
+        "cwd": ".",
+        "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "1a305316eae06c4463b8529ef46f20f92b7b2ab21398c533c78d3506bcdc7821",
+        "recorded_at": "2026-10-09T05:54:32+00:00",
+        "scope": "Exact final-byte MIME correction and existing production IO/service regressions",
+        "source_sha256": "49be8040253dd310d52de0baf8b89dab339676e47b28419869003dc85e0deff2",
+        "stderr": "",
+        "stdout": "....................\n....................\n....................\n......\n",
+        "timed_out": false
+      }
+    ]
+  },
+  "author_evidence": "worker-final-r1.txt",
+  "inbound": "inbound-foundation.json",
+  "source": "49be8040253dd310d52de0baf8b89dab339676e47b28419869003dc85e0deff2",
+  "limits": [
+    "Native stub, no real Native/provider/build/GUI",
+    "Foundation UI source consumers remain held until independentCODE on this correction"
+  ]
+}

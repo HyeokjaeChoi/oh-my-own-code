@@ -1,0 +1,321 @@
+{
+  "source_sha256": "5052c067b46b620c4594c391a75e11d7ee05713f3774e3d14717aafd1fec09ae",
+  "environment_sha256": "6ea57967c10c02df833eb39b003e733545ede90659bb190ed75b482a4a1ac686",
+  "changed_paths": [
+    "apps/desktop-app/scripts/configuration-skill-runtime-probe.mjs",
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/fixtures/native-skills-prerequisite.mjs",
+    "apps/desktop-app/scripts/fixtures/native-skills-prerequisite.test.mjs",
+    "apps/desktop-app/scripts/fixtures/p7-storage-owner-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/p7-storage-probe.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/scripts/stage-event-host.mjs",
+    "apps/desktop-app/scripts/stage-event-host.test.mjs",
+    "apps/desktop-app/src/builtins/workbench-skills/package.json",
+    "apps/desktop-app/src/builtins/workbench-skills/server.mjs",
+    "apps/desktop-app/src/configuration-skill-runtime-api.test.mjs",
+    "apps/desktop-app/src/configuration-skill-runtime.test.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/event-host-child.mjs",
+    "apps/desktop-app/src/event-host-resources.mjs",
+    "apps/desktop-app/src/event-host-supervisor.mjs",
+    "apps/desktop-app/src/event-host-supervisor.test.mjs",
+    "apps/desktop-app/src/host/storage-integration.test.mjs",
+    "apps/desktop-app/src/host/storage-journal.mjs",
+    "apps/desktop-app/src/host/storage-journal.test.mjs",
+    "apps/desktop-app/src/host/workbench-admission.mjs",
+    "apps/desktop-app/src/host/workbench-admission.test.mjs",
+    "apps/desktop-app/src/host/workbench-native-skills.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+    "apps/desktop-app/src/host/workbench-skill-runtime-storage.mjs",
+    "apps/desktop-app/src/host/workbench-skill-runtime-storage.test.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/native-skills-client.mjs",
+    "apps/desktop-app/src/native-skills-config.mjs",
+    "apps/desktop-app/src/native-skills-host.test.mjs",
+    "apps/desktop-app/src/native-skills-plugin.test.mjs",
+    "apps/desktop-app/src/native-skills-protocol.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/skill-files.tsx",
+    "apps/desktop-app/src/renderer/shared/api/index.ts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.d.mts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.mjs",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts",
+    "apps/desktop-app/src/workbench-contract.mjs",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "deleted_paths": [],
+  "sources": {
+    "apps/desktop-app/scripts/configuration-skill-runtime-probe.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "47554b518308dfc6858d32cba8e90eb01260907943ecd73bad3974cccc45c2b3"
+    },
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "0ea3397a6382f78a5900ed6805f29cf02daad1cd057d5a551143a7d1da63bce4"
+    },
+    "apps/desktop-app/scripts/fixtures/native-skills-prerequisite.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "94053114df718e71d03e3555bbcbb9b196a5ff44bf2acb90660e09125f57d4ae"
+    },
+    "apps/desktop-app/scripts/fixtures/native-skills-prerequisite.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "c63d686963a38402ec287d8e7d5befa1e4524b15d9cf58c5eaa30eb36f8a8957"
+    },
+    "apps/desktop-app/scripts/fixtures/p7-storage-owner-host.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "09c86d103b99ba01e3248d89c0463fb26ec88bc41649daff21d995b33aa00a01"
+    },
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "ee4fba36653ef65d7c5f534562621ef17852c9d5afd6db278bb61579d48ac324"
+    },
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "9e3df25074754052a24576f247ca0fc013c472c3c3703f9fc272cfb6fd2f6fa9"
+    },
+    "apps/desktop-app/scripts/p7-storage-probe.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "08896e43017e875fa8c09490393942aa6ab894ebad9c485e9a81b77e55232685"
+    },
+    "apps/desktop-app/scripts/run-evidence.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "0695928d8660158028c8c295710172e1e05d5e9f42f79b5cf47087cbeab7d172"
+    },
+    "apps/desktop-app/scripts/stage-event-host.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "8750d7d39b454d9fca4cb57d1cb3e78418bedf0b3e6d2d280f98ab3d9ddcf416"
+    },
+    "apps/desktop-app/scripts/stage-event-host.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "32c9a56ac0c3d005c5a07b9cd692ba9a0d6c88f49911a0e20015a089303b1012"
+    },
+    "apps/desktop-app/src/builtins/workbench-skills/package.json": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120"
+    },
+    "apps/desktop-app/src/builtins/workbench-skills/server.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "4faef4e0dc51f645c753c8240260381e4e39998ae1396005210d2d6265aa1841"
+    },
+    "apps/desktop-app/src/configuration-skill-runtime-api.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "184c04d6759b7d2e2f8a3460c8e12c9c061074915172aad011ba71420c50c7a4"
+    },
+    "apps/desktop-app/src/configuration-skill-runtime.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "3dadb706bb55408c91750fe5bf6dda877292329e9ac6e47afb0c5dfc97bab1ff"
+    },
+    "apps/desktop-app/src/desktop-bridge.d.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "2bb126aadc3c34e0ed5cff17ac062859d440bbc9713665843bf6cfa17ab0d823"
+    },
+    "apps/desktop-app/src/event-host-child.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "be7280e59f2a26c043307c395b49d0837d1959a50581d71af8996fdd6a07fd6f"
+    },
+    "apps/desktop-app/src/event-host-resources.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "f4391c418319e63f877c18eeecbbe41efd48432b0b2532b8db884e037dfdbe86"
+    },
+    "apps/desktop-app/src/event-host-supervisor.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "96abba5441a331da0018aacdd34cde907647c82b291a506d2a013c4e48b23fe5"
+    },
+    "apps/desktop-app/src/event-host-supervisor.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "0b38be679ac97bb45b2d6bb7ebfc0a039bb919ac0c8a85467301bbba8368f4e3"
+    },
+    "apps/desktop-app/src/host/storage-integration.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "154fb3ecfbdedc83682ac9aebfdf2dd7fe3595555d275048b236ad2ad503c840"
+    },
+    "apps/desktop-app/src/host/storage-journal.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "22fe31342435bd8bc1c60203b33a1ca6a37cf9b7ede6e276b0bcef096f3c801b"
+    },
+    "apps/desktop-app/src/host/storage-journal.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "807a8929a4f174dcfbe012938a24fe3947413fc2aeb94377ad6a47722d823645"
+    },
+    "apps/desktop-app/src/host/workbench-admission.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "469761a7aebaa219c20d342a333a5d9425cddafd05622a875e423feb1e997c70"
+    },
+    "apps/desktop-app/src/host/workbench-admission.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "a1b3a617886a2bed9fa5f48278e69680aa6f1273bcd00ebd9946dc1c12d808e0"
+    },
+    "apps/desktop-app/src/host/workbench-native-skills.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "b39fb0277dda3143b1ce3486d084d2c7f36a1d5a6b6fe40c9c7f86474094d6a8"
+    },
+    "apps/desktop-app/src/host/workbench-receipts.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "7bd40ecd9b21bbb90c6f49af1ada7d6f6cf15c2926dd04e81add0ddd6a9d4931"
+    },
+    "apps/desktop-app/src/host/workbench-receipts.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "c97899d1eba42ee3b12d29cb471470388ac9e9479014f35ca5aff205ad6a9e2e"
+    },
+    "apps/desktop-app/src/host/workbench-skill-runtime-storage.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "79dfd2883c598ef29e1fb3e7857ed7f756f7e273aaa6b48e9995082bebd771ee"
+    },
+    "apps/desktop-app/src/host/workbench-skill-runtime-storage.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "00e6ca7d227c9fb7b6957c509dce641b3c5d3d3baab66a5d873db66ec0e6adb8"
+    },
+    "apps/desktop-app/src/host/workspace-registry.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "7ea94e1007544b7edb46986482a89aea45c38a149dc7526b4f9928d9b3ce70e2"
+    },
+    "apps/desktop-app/src/host/workspace-registry.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "3f1366f22deb65cf8929b7bfb1c96192a15600091905aa0ccdeb5011861242eb"
+    },
+    "apps/desktop-app/src/main.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "3815f13225c91d0de9d9b1f00b6fd22efb1b9578a1381ff5759f11a29ec3d2c4"
+    },
+    "apps/desktop-app/src/native-skills-client.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "f4df2e04e0fc5f1b8eab04003df5f6e38439adc4c802593e7db947e7ca9dbdc8"
+    },
+    "apps/desktop-app/src/native-skills-config.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "c2760a03fef4b59bb3c8cc633f4ed3b65d612bad76d8f3dfb74c19afb9987940"
+    },
+    "apps/desktop-app/src/native-skills-host.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "a057b0bda47e3bc7d61e00205f5b6e6b662656bae4da6a785c9325bad4ba5bfd"
+    },
+    "apps/desktop-app/src/native-skills-plugin.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "f0f33ca121a4d3c185a0c81d288ad76670c7784d24fa685738ecab9efc20cee8"
+    },
+    "apps/desktop-app/src/native-skills-protocol.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "b0ceaed5814060ea4460e9b13de3db210c0fdfbfeddc22fd232372f6f5935dd3"
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "727a13b7be41997b3553a14deb75f545dd56479b904f54fbb40cdebc4f2b2867"
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "55cadee96019d78f3d3a6fa3630d8d76b7714a17eaf6c1929ee9b1025d9e8f57"
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "08995b0cb695cf7741bca8ad9f6f7f35b26c9d7535bb3b4d987c53e14bfbd30d"
+    },
+    "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "6e85b2bc009725463867e50b92159a4ffb680f7a6393f945cd05aa1df07794c8"
+    },
+    "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "296db00716913418554c6911e43efc86ad681d704cbd67cf8466c5682e5d34e2"
+    },
+    "apps/desktop-app/src/renderer/features/configuration-drafts/skill-files.tsx": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "d24559bfd5282e0c3550f8cd65c1361561296c81b306a6dc1d16419241b805de"
+    },
+    "apps/desktop-app/src/renderer/shared/api/index.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "d82a99121a5adf3107073ba7317baf0a994d16347fb9e7e18a7fffd9fdc48ac0"
+    },
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "afb4e0084f8c840887a681481ad7c4329e213ac69ac31ff11130906670e163d6"
+    },
+    "apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.d.mts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "e06bc8dafc41f2f6cf780ad73e886488d60d3fada2d5adba3c3a15f190a99f4d"
+    },
+    "apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "87c17743b5791871d191a16b85777a53f1cd212d5b5682feda18a9c9ebbbc0e5"
+    },
+    "apps/desktop-app/src/renderer/shared/transport/index.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "131bd00fe2a3b1362ad8c499071c5001de461551ab91fcb10d6944702082436a"
+    },
+    "apps/desktop-app/src/workbench-contract.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "aeab94ef1a7667f7314015adb66d1e929ed9f75e5daae459482cf50a3653aa91"
+    },
+    "apps/desktop-app/src/workbench-service.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "0118165e4c9c0686a162e9d043c1cf83bae4c6146a42b7788a619e9212b7abb8"
+    },
+    "apps/desktop-app/src/workbench-store.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "b0f82c8b85e4a11e96eae230ed65c9be033fbca5d96116b42aabeb4e5c4e826c"
+    }
+  }
+}

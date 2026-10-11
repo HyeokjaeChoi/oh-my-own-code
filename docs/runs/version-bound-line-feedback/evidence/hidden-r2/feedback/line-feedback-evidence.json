@@ -1,0 +1,30 @@
+{
+  "result": "fail",
+  "platform": "darwin",
+  "provenance": "Synthetic Main with actual built Renderer/preload through fixed feedback wrapper",
+  "providerExecution": "not performed",
+  "actualGitG2": "not established",
+  "fixtureRoot": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-line-feedback-z4yrQ2",
+  "state": "file-ready",
+  "states": [],
+  "observations": [
+    {
+      "childOutput": {
+        "stdoutBytes": 0,
+        "stderrBytes": 206
+      }
+    },
+    {
+      "failureCaptureError": "Error: electronApplication.evaluate: Error: Exactly one background host window required\n    at eval (eval at evaluate (:311:30), <anonymous>:4:15)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at WebContents.emit (node:events:489:44)"
+    }
+  ],
+  "screenshots": [],
+  "teardown": {
+    "exited": true,
+    "code": 1,
+    "signal": null,
+    "retainedRoot": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-line-feedback-z4yrQ2",
+    "error": "AssertionError [ERR_ASSERTION]: Owned synthetic host must exit normally\n\n1 !== 0\n"
+  },
+  "error": "Error: page.reload: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n\u001b[2m  - waiting for navigation until \"load\"\u001b[22m\n"
+}

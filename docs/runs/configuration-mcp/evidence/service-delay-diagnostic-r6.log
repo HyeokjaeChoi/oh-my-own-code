@@ -1,0 +1,32 @@
+TAP version 13
+# Subtest: MCP completion delay never publishes speculative receipt or live ownership
+not ok 1 - MCP completion delay never publishes speculative receipt or live ownership
+  ---
+  duration_ms: 2063.201833
+  type: 'test'
+  location: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2498:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2547:14)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2130.954458

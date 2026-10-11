@@ -1,0 +1,88 @@
+{
+  "status": "Source evidence, not executed Git behavior or acceptance",
+  "predecessor": "workspace-file-editing complete d9289ae4",
+  "installed_native": {
+    "status": "read-only installed pinned source analysis, no VCS operation executed",
+    "version": "@opencode/core2.0.18 staged current build",
+    "files": {
+      "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/plugin/vcs/git.js": {
+        "sha256": "180ca2e2fd2c726888eac6324fc9abe6d9cedd7101eac32d49431c4c6bdcac9e",
+        "bytes": 3544
+      },
+      "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-ryg0g705.js": {
+        "sha256": "ca6d765095f4e9284337e39469c94a97465d3a3219ef75d0e2c1f491476baaa1",
+        "bytes": 17955
+      },
+      "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-ef5x83kb.js": {
+        "sha256": "7a0c2783eb685a31ed3f7975f9ffc2e2b3aed29e5e9357f1d4368b1892089a54",
+        "bytes": 443
+      },
+      "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-b7j7903f.js": {
+        "sha256": "27115008f705bb7c797fed072d5ea4b6bfadea519cb995861c3ad377fa3506d6",
+        "bytes": 19958
+      }
+    },
+    "observations": [
+      {
+        "file": "chunks/config-ryg0g705.js",
+        "lines": [
+          64,
+          81
+        ],
+        "fact": "VCS status returns file/additions/deletions/kind and discards raw XY staged/unstaged code from public rows"
+      },
+      {
+        "file": "chunks/config-ryg0g705.js",
+        "lines": [
+          83,
+          102
+        ],
+        "fact": "working diff chooses HEAD; branch/committed use merge base; no separate cached/index mode"
+      },
+      {
+        "file": "chunks/config-ryg0g705.js",
+        "lines": [
+          103,
+          137
+        ],
+        "fact": "cfg no-optional-locks/autocrlf=false/fsmonitor=false/longpaths/symlinks/quotepath; process extendEnv true, no suppression of local/global config or filter drivers shown"
+      },
+      {
+        "file": "chunks/config-ryg0g705.js",
+        "lines": [
+          310,
+          352
+        ],
+        "fact": "patch uses no-ext-diff and no-renames, does not pass no-textconv here"
+      },
+      {
+        "file": "chunks/config-ef5x83kb.js",
+        "lines": [
+          6,
+          13
+        ],
+        "fact": "non-Windows Git executable is PATH git, not bundled fixed executable"
+      }
+    ],
+    "decision": "Do not treat VCS SDK read method presence as sufficient staged/unstaged or no-repo-execution boundary. Further bounded design/proof needed; product dependencies unchanged."
+  },
+  "files": {
+    "docs/product/prd.md": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3",
+    "docs/design/specs/workbench-ux.md": "1f59e6f83aca0c077a4db10cc8c65f7e27e5f177ae0aa32dc6508f4134c97525",
+    "docs/engineering/workbench-architecture.md": "d07aa9234632541056bbe3b96756f2fe7081214f4590397fe0260fd01c31ccae",
+    "docs/engineering/verification.md": "4c1e60680cf7b20b02efb35230e8af1588b558b80adab8c15442639c49ead696",
+    "docs/decisions/0001-workbench-platform.md": "2b9f07ca0c5b2cf665873e611fde1f984fed4955d902c4c4fc5f4148e608ed23",
+    "apps/desktop-app/src/desktop-bridge.d.ts": "4ac62abdcb4e454d99a5207c8181fc6356c0f5d66fd84e6f4bcb86d0580466c7",
+    "apps/desktop-app/src/workbench-contract.mjs": "ec123cea0d567cb247be2ce28abbf1f86aa91b65ca550f6d54044934e0b9c00a",
+    "apps/desktop-app/src/event-host-protocol.mjs": "08116fef8c20097d2f965abfce7641e60361ae6e48537a3c416a364fccc98658",
+    "apps/desktop-app/src/workbench-service.mjs": "47da7e32341a5d2a07c105b472c50567397db9572236c08c8e43379293d9c35f"
+  },
+  "primary_sources": [
+    "https://git-scm.com/docs/git",
+    "https://git-scm.com/docs/git-status",
+    "https://git-scm.com/docs/git-diff",
+    "https://git-scm.com/docs/git-config"
+  ],
+  "historical_isolation": "host-probe-isolation actual NO-RUN; no containment pass inherited",
+  "host_tool_discovery": "/usr/bin/git --version => git2.54.0 AppleGit157; not product pin or runtime proof"
+}

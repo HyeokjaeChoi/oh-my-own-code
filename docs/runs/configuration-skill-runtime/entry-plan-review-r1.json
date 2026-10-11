@@ -1,0 +1,61 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "f83447dca1b99fb30ea4b85e76b93119725564ec643c73e7e2b26105f3a25db5",
+    "gate": "plan",
+    "plan_sha256": "a54bb057914f7f0e69d25eb8101d6abae7a53c091fafef2a81078cbfd65a17b6",
+    "schema_version": 2,
+    "source_sha256": "fe860cac1d5c3b256dfce7033549771e046ff8747927edb6f710a9e00d67c68e",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "PLAN revision 1은 승인된 로컬 작업 범위에 맞습니다. 권한 경계, 실패 처리, migration, 작업 순서와 완료 기준이 충분합니다. 필수 수정 사항은 없습니다. 구현은 별도 DESIGN_SPEC 통과 후 시작해야 합니다. 첫 production-helper 경로 검증이 성공하기 전에는 후속 consumer 작업을 시작하면 안 됩니다.",
+  "open_findings": [],
+  "evidence": [
+    {
+      "concern": "입력 일치",
+      "result": "PLAN·design의 파일 해시와 contract의 의미 해시가 supplied binding에 일치합니다. packet의 contract 해시는 파일 바이트 해시이며 정상입니다. routing 입력 4개, source-facts 소스 30개, prechange 소스 252개도 일치합니다. 현재 source inventory 560개 경로의 fingerprint는 fe860cac1d5c3b256dfce7033549771e046ff8747927edb6f710a9e00d67c68e입니다. entry baseline 이후 변경은 없습니다."
+    },
+    {
+      "concern": "목표와 권한",
+      "result": "PRD F-14/AC-14에 맞는 명시적 Native Skill 관찰·비활성 등록·소유 등록 제거·선택 세션 적용으로 제한됩니다. 기존 사용자 위임과 decision_register가 일치합니다. 전체 제품 완료를 주장하지 않으며 새 사용자 승인 요구도 필요하지 않습니다."
+    },
+    {
+      "concern": "경로 실행 가능성",
+      "result": "실제 ConfigPluginSource는 configured FILE을 제외하고 DIRECTORY entrypoint의 containment를 검사합니다. PluginModule의 absolute-local 경로는 npm 설치 분기를 사용하지 않습니다. Context.skill.transform/reload와 rpc.register 선언이 존재합니다. PLAN은 이를 실행 성공으로 간주하지 않고, 기존 isolation과 owner fence를 사용하는 첫 실제 검증으로 후속 작업을 제한합니다."
+    },
+    {
+      "concern": "권한과 소유권",
+      "result": "Main이 파일·nonce·operation 권한을 유지합니다. 고정 plugin, 닫힌 RPC, canonical workspace 검사, manifest 검증과 autoinvoke:false를 요구합니다. Native Skill.Info에 임의 metadata가 없다는 실제 schema와 맞으며, 소유권은 원래 등록 identity와 public readback으로 확인합니다."
+    },
+    {
+      "concern": "실패와 기록 상관관계",
+      "result": "Public session.skill에는 caller messageID가 없습니다. PLAN은 resume:false, 완전한 bounded type:skill history, 등록별 고유 Native ID, 새 messageID와 name/body digest 확인을 요구합니다. 불완전한 history는 효과 전에 거절하며, 효과 후 불확실성은 unknown으로 유지하고 재실행하지 않습니다. Fork 기록과 기존 session history도 구분합니다."
+    },
+    {
+      "concern": "migration과 작업 순서",
+      "result": "효과 전 original-key intent flush, admission 전 feature marker, 기존 single writer, byte-preserving legacy refusal과 checkpoint 호환성을 요구합니다. 재시작 시 자동 등록하지 않습니다. Main의 producer 검증과 DTO 고정 후 최대 3명의 분리된 writer가 진행하며, 별도 CODE·RENDER 검토로 종료합니다."
+    },
+    {
+      "concern": "완료 증거",
+      "result": "contract는 affected tests, 실제 contained Native proof, hidden UI, build, typecheck, boundaries, bundle, lint와 format을 요구합니다. UI는 파일·Native registry·session 기록을 분리하고 unknown 상태에서도 draft 편집을 유지합니다. 문서 검토와 실행 검증의 차이를 명시합니다."
+    }
+  ],
+  "limits": [
+    "이 판정은 docs/runs/configuration-skill-runtime/plan.md revision 1의 초기 PLAN 검토에만 적용합니다. DESIGN_SPEC 승인을 대신하지 않습니다.",
+    "Native plugin 경로, RPC 인증, reload와 session 기록 상관관계의 실제 동작은 아직 입증되지 않았습니다.",
+    "파일 읽기와 해시 계산만 수행했습니다. 파일·ledger 수정, 위임, Native·Electron·build·test·provider 실행과 private content 접근은 하지 않았습니다.",
+    "보고서 보존·등록·종료는 Main이 수행해야 합니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11a34-c173-74b1-af7c-c5ad544ec922",
+    "author_task_id": null,
+    "identity_evidence": "현재 실행 환경의 CODEX_THREAD_ID로 확인했습니다. author_task_id는 제공되지 않았습니다.",
+    "independent": true,
+    "authored_plan": false,
+    "modified_source": false,
+    "modified_artifacts": false,
+    "modified_ledger": false,
+    "recursively_delegated": false
+  }
+}

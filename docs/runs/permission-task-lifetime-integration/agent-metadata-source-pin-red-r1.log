@@ -1,0 +1,25 @@
+✖ Agent notification closure requires exact original and transformed source identities before any Native import (148.686958ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 356.362584
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-graph.test.mjs:1270:1
+✖ Agent notification closure requires exact original and transformed source identities before any Native import (148.686958ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:1284:7)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /native_permission_graph_unverified/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }

@@ -1,0 +1,1 @@
+import "./Transitive.module.css";

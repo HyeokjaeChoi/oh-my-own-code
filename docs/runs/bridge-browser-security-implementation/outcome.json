@@ -1,0 +1,78 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "BSI-1": {
+      "status": "verified",
+      "artifacts": [
+        "apps/local-bridge/src/server.ts",
+        "apps/local-bridge/src/browser-admission.ts",
+        "apps/local-bridge/src/http.test.ts"
+      ],
+      "checks": [
+        "bridge-security-unit"
+      ]
+    },
+    "BSI-2": {
+      "status": "verified",
+      "artifacts": [
+        "apps/local-bridge/src/server.ts",
+        "apps/local-bridge/src/http.test.ts"
+      ],
+      "checks": [
+        "bridge-security-unit"
+      ]
+    },
+    "BSI-3": {
+      "status": "verified",
+      "artifacts": [
+        "apps/workbench-web/src/shared/api/read-synthetic-fixture.ts",
+        "apps/workbench-web/src/shared/api/read-synthetic-fixture.test.ts",
+        "apps/workbench-web/src/pages/workbench/ui/WorkbenchPage.tsx"
+      ],
+      "checks": [
+        "workbench-web-test",
+        "bridge-browser-e2e"
+      ]
+    },
+    "BSI-4": {
+      "status": "verified",
+      "artifacts": [
+        "apps/workbench-web/e2e/synthetic-workbench.spec.ts",
+        "apps/local-bridge/src/http.test.ts"
+      ],
+      "checks": [
+        "bridge-browser-e2e"
+      ]
+    },
+    "BSI-5": {
+      "status": "verified",
+      "artifacts": [
+        "apps/workbench-web/src/pages/workbench/ui/WorkbenchPage.tsx",
+        "apps/workbench-web/src/workbench.css",
+        "apps/workbench-web/e2e/synthetic-workbench.spec.ts"
+      ],
+      "checks": [
+        "workspace-lint",
+        "workspace-typecheck",
+        "workspace-format-check",
+        "local-bridge-build",
+        "workbench-web-build"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/local-bridge/project.json",
+    "apps/local-bridge/src/browser-admission.ts",
+    "apps/local-bridge/src/http.test.ts",
+    "apps/local-bridge/src/server.ts",
+    "apps/workbench-web/e2e/synthetic-workbench.spec.ts",
+    "apps/workbench-web/playwright.config.ts",
+    "apps/workbench-web/src/pages/workbench/ui/WorkbenchPage.tsx",
+    "apps/workbench-web/src/shared/api/read-synthetic-fixture.test.ts",
+    "apps/workbench-web/src/shared/api/read-synthetic-fixture.ts",
+    "apps/workbench-web/src/workbench.css",
+    "apps/workbench-web/vite.config.ts",
+    "docs/design/specs/bridge-pairing-client-contract.md"
+  ],
+  "deleted_paths": []
+}

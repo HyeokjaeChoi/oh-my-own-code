@@ -1,0 +1,40 @@
+{
+  "sourceRoot": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64",
+  "files": [
+    {
+      "path": "node_modules/@opencode/server/dist/process.js",
+      "beforeSha256": "90fb992ca4c656649178ddc8af706922262256c13f4f2fc95c5cd95a913f2fcb",
+      "afterSha256": "c553abcc5404848220a97776c0d599ca45f183ca1c113610e6149bd6cf1a862a",
+      "edits": [
+        {
+          "find": "function* (options, lifecycle, transform) {",
+          "replace": "function* (options, lifecycle, transform, overrides) {"
+        },
+        {
+          "find": "    }, urls).pipe(Layer.provideMerge(NodeHttpServer.layerHttpServices)), applicationScope);",
+          "replace": "    }, urls, overrides).pipe(Layer.provideMerge(NodeHttpServer.layerHttpServices)), applicationScope);"
+        }
+      ],
+      "beforeBytes": 10064,
+      "afterBytes": 10086
+    },
+    {
+      "path": "node_modules/@opencode/server/dist/process.d.ts",
+      "beforeSha256": "145cc4c09c12627ec49ae134811dfec7773cc462f506e61a9bfec5179eb646a5",
+      "afterSha256": "972489e8409c9b187fc6d60502fd55907407eff495691c490907400059f90338",
+      "edits": [
+        {
+          "find": "import { Effect, Scope } from \"effect\";",
+          "replace": "import { Effect, Scope } from \"effect\";\nimport type { LayerNode } from \"@opencode/util/effect/layer-node\";"
+        },
+        {
+          "find": "}, lifecycle?: Lifecycle<E, R> | undefined, transform?: Transform | undefined) => Effect.Effect<{",
+          "replace": "}, lifecycle?: Lifecycle<E, R> | undefined, transform?: Transform | undefined, overrides?: LayerNode.Replacements | undefined) => Effect.Effect<{"
+        }
+      ],
+      "beforeBytes": 2444,
+      "afterBytes": 2559
+    }
+  ],
+  "scope": "Read-only static exact pinned source transformation; files not changed or executed"
+}

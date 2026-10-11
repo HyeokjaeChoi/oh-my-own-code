@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "befaf30d5d8987ac00c90f08d0d1d92af62c33773f316523f453c13b58cfb561",
+    "environment_sha256": "33b5d2c83b147ac2a2995c34915a9c02b8a46f6247bcdd067f12e9aab3eecdee",
+    "gate": "design",
+    "plan_sha256": "843140fd8c89ec7ced999f7c23af55450ced5078e7a106220e3c24d7f63462e3",
+    "schema_version": 2,
+    "source_sha256": "4d1fe111acae821a669082355bd0dfd569d6c116aef978b3072ae70fbac39daa",
+    "verification_sha256": "0411d1455a339cb137305fc47b1ed782f723ee3058a7c13a76ff88304c824017",
+    "work_class_sha256": "4793e59879fb3b3abfaa6ad3aa4c35a5142d1a853380d1f95bbb254f075c9228"
+  },
+  "verdict": "changes_requested",
+  "summary": "실제 PNG 24개를 직접 확인했습니다. 세션 대상, 직접 등록과 상속 출처, 제거 범위, 실패 안내와 200% 확대 배치는 확인한 범위에서 적절합니다. 그러나 기본 화면의 기능 안내가 현재 제공하는 세션 등록 기능과 맞지 않습니다.",
+  "open_findings": [
+    {
+      "id": "RENDER-R9-01",
+      "severity": "medium",
+      "location": "apps/desktop-app/src/renderer/widgets/explorer/index.tsx:187 — 확장·명령 기본 화면의 상단 안내",
+      "impact": "화면은 ‘런타임 적용과 연결 변경은 아직 제공하지 않습니다’라고 안내합니다. 같은 패널 아래에는 선택한 세션의 Native 지침을 확인하고 등록·제거하는 기능이 있습니다. 사용자는 이 기능을 사용할 수 없다고 오해할 수 있습니다. design.md v2의 현재 지원 범위 안내 기준에도 맞지 않습니다.",
+      "capture": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-instructions/evidence/hidden-r3/ui-states/desktop-configuration-normal-synthetic.png",
+      "correction": "상단 안내에 ‘AGENTS.md는 선택한 세션에 별도로 등록·제거할 수 있습니다. 다른 설정의 런타임 적용과 MCP 연결 변경은 아직 제공하지 않습니다’처럼 지원 범위를 명시하세요. 파일 저장, 세션 등록, model consumption 확인의 차이를 유지하세요.",
+      "verification": "실제 기본 화면 캡처에서 문구를 직접 확인했습니다. 소스 187~190행에서도 같은 문구를 확인했습니다. 수정 후 기본 화면과 세션 등록 영역을 새로 캡처하여 독립 검토해야 합니다."
+    }
+  ],
+  "evidence": {
+    "capture_directory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-instructions/evidence/hidden-r3/ui-states",
+    "directly_inspected_png_count": 24,
+    "instruction_capture_metadata": {
+      "checked_png_count": 67,
+      "dimension_mismatches": 0,
+      "desktop": "viewport 1440×928, pixelRatio 2, PNG 2880×1856",
+      "narrow200": "contentBounds 760×968, zoomFactor 2, viewport 380×484, pixelRatio 4, PNG 1520×1936"
+    },
+    "direct_visual_observations": [
+      "대상 파일 경로와 선택한 세션 ID가 표시되고 긴 제목과 경로가 줄바꿈됩니다.",
+      "direct와 fork 안내가 구분됩니다. 상속 화면에는 fixture-instruction-parent가 표시되고 동일 내용의 자식 직접 등록 화면에는 상속 출처가 표시되지 않습니다.",
+      "제거 안내는 AGENTS.md 파일, 대화 기록과 이전 context가 유지됨을 설명합니다.",
+      "untrusted 안내는 기존 ‘새 세션’의 신뢰 확인 절차, 세션 추가 효과, 원래 세션 재선택과 명시적 상태 확인을 설명합니다.",
+      "denied, changed, ownership conflict, unknown 상태에 결과와 다음 행동이 표시됩니다. unknown 화면은 버튼을 비활성화하고 이전 초안의 요청 결과임을 구분합니다.",
+      "200% 확대의 여러 스크롤 위치에서 버튼, 상태, 결과와 상속 출처를 읽을 수 있습니다. 확인한 캡처에서 가로 넘침은 보이지 않습니다.",
+      "파일 저장 성공과 세션 등록이 구분됩니다. provider의 지침 수신·준수는 미확인으로 안내합니다."
+    ],
+    "supporting_record_and_source_observations": [
+      "plan.md와 design.md의 해시, source-freeze-r9.json의 모든 파일 해시가 일치합니다.",
+      "hidden-r3 manifest는 pass, exitCode 0과 synthetic main을 사용한 built Electron renderer/preload를 기록합니다.",
+      "실행 스크립트와 pass 기록은 Enter 등록, receipt 후 명시적 재관찰, pending 중 세션 변경, 늦은 결과 격리, unknown 초안 수정과 재전송 방지를 뒷받침합니다. 이번 검토에서 재실행하지 않았습니다.",
+      "소스에서 stale 관찰 차단, pending/resource hold, role=status, aria-atomic과 설명 연결을 확인했습니다. desktop32/coarse44/permission36과 기존 focus 토큰을 기준으로 검토했습니다."
+    ],
+    "limits": [
+      "instruction pending·checking·stale의 전용 PNG는 제공되지 않았습니다. 해당 상태의 시각적 결과는 확인하지 못했습니다.",
+      "foreground Native 확인 창, 실제 신뢰 확인 절차, accessibility tree, screen reader 출력, 물리 장치 입력과 provider 실행은 이번 검토에서 확인하지 않았습니다.",
+      "파일 수정, 앱 실행, 의존성 설치와 위임은 하지 않았습니다."
+    ]
+  },
+  "provenance": {
+    "child_task_id": "01a11997-e8e2-7fd3-849a-a1c94afd6afe",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

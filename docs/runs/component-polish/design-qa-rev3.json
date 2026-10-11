@@ -1,0 +1,654 @@
+{
+  "schema_version": 2,
+  "verdict": "pass",
+  "summary": "Targeted independent DQ-3 resolution: fresh 2x node.screenshot captures of 7:130, 7:133, and 7:199 visibly show 세부 정보 접기 while details are expanded, exactly matching live TEXT.characters at 50:40, 50:50, and I7:199;50:50. The earlier rendered/live mismatch is not reproduced. DQ-1/DQ-2 remain resolved in the three sampled nodes; no new finding was observed within this targeted scope.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "DQ-3",
+      "severity": "P2",
+      "status": "verified_resolved_after_fresh_recapture",
+      "result": "All three new rendered images show 세부 정보 접기, not 세부 정보 보기. Source, target, input, output, and result details are visibly present; live disclosure names are expanded=true and characters are 세부 정보 접기. No source or Figma mutation was needed or performed by this reviewer.",
+      "evidence_nodes": [
+        "7:130",
+        "7:133",
+        "7:199"
+      ],
+      "text_nodes": [
+        "50:40",
+        "50:50",
+        "I7:199;50:50"
+      ],
+      "cause": "Cause of the prior mismatch is undetermined. This review establishes current rendered/live agreement, not a diagnosis of the previous capture."
+    },
+    {
+      "id": "DQ-1",
+      "severity": "P2",
+      "status": "verified_resolved_in_targeted_recheck",
+      "result": "Three sampled Light queued, Light success, and Dark success nodes are 400x338, VERTICAL/HUG/AUTO, spacing 12, no strokes, and both declared and measured bottom padding 16. Fresh images show content contained without clipping or overlap. The prior review's twelve-state closure is not re-audited in full here."
+    },
+    {
+      "id": "DQ-2",
+      "severity": "P2",
+      "status": "verified_resolved_in_targeted_recheck",
+      "result": "In all three fresh samples, target and input path exactly equal packages/desktop/src/features/permissions/PermissionRequest.ts. Fresh pixels show the wrapped path with filename intact. Target/input text nodes retain HEIGHT resize and 368px width."
+    }
+  ],
+  "verified_observations": [
+    {
+      "family": "ToolCall",
+      "nodes": [
+        "7:130",
+        "7:133",
+        "7:199"
+      ],
+      "result": "Disclosure wording agrees with the visible expanded content. Queued retains a non-actionable absent-result explanation; success retains a distinct 근거 보기 ↗ result action. Light and Dark samples remain legible."
+    }
+  ],
+  "evidence": {
+    "file_key": "e6QYqEsmA3FHB6A2ohNr2o",
+    "page_id": "5:9",
+    "binding_input_path": "docs/runs/component-polish/design-qa-disclosure-input.json",
+    "dispatch_path": "docs/runs/component-polish/design-qa-disclosure-dispatch.json",
+    "origin": "Fresh read-only Figma use_figma call in /root/design_qa_disclosure, captured and inspected directly inline; previous report used only to identify findings and exact targets.",
+    "observed_at_utc": "2026-09-27T09:46:32Z",
+    "captures": [
+      {
+        "node_id": "7:130",
+        "node_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-130",
+        "theme": "Light",
+        "state": "queued",
+        "locale": "ko-KR",
+        "original_size": [
+          400,
+          338
+        ],
+        "raster_size": [
+          800,
+          676
+        ],
+        "method": "node.screenshot({scale:2})",
+        "capture_scope": "Figma component node, not browser viewport",
+        "pixel_disclosure": "세부 정보 접기",
+        "expanded_details_visible": true,
+        "origin": "Fresh inline image independently inspected in /root/design_qa_disclosure"
+      },
+      {
+        "node_id": "7:133",
+        "node_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-133",
+        "theme": "Light",
+        "state": "success",
+        "locale": "ko-KR",
+        "original_size": [
+          400,
+          338
+        ],
+        "raster_size": [
+          800,
+          676
+        ],
+        "method": "node.screenshot({scale:2})",
+        "capture_scope": "Figma component node, not browser viewport",
+        "pixel_disclosure": "세부 정보 접기",
+        "expanded_details_visible": true,
+        "origin": "Fresh inline image independently inspected in /root/design_qa_disclosure"
+      },
+      {
+        "node_id": "7:199",
+        "node_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-199",
+        "theme": "Dark",
+        "state": "success",
+        "locale": "ko-KR",
+        "original_size": [
+          400,
+          338
+        ],
+        "raster_size": [
+          800,
+          676
+        ],
+        "method": "node.screenshot({scale:2})",
+        "capture_scope": "Figma component node, not browser viewport",
+        "pixel_disclosure": "세부 정보 접기",
+        "expanded_details_visible": true,
+        "origin": "Fresh inline image independently inspected in /root/design_qa_disclosure"
+      }
+    ],
+    "live_disclosure": [
+      {
+        "id": "50:40",
+        "name": "Disclosure action · expanded=true",
+        "type": "TEXT",
+        "characters": "세부 정보 접기",
+        "visible": true,
+        "parentId": "7:130",
+        "parentName": "State=queued"
+      },
+      {
+        "id": "50:50",
+        "name": "Disclosure action · expanded=true",
+        "type": "TEXT",
+        "characters": "세부 정보 접기",
+        "visible": true,
+        "parentId": "7:133",
+        "parentName": "State=success"
+      },
+      {
+        "id": "I7:199;50:50",
+        "name": "Disclosure action · expanded=true",
+        "type": "TEXT",
+        "characters": "세부 정보 접기",
+        "visible": true,
+        "parentId": "7:199",
+        "parentName": "ToolCall"
+      }
+    ],
+    "live_geometry": [
+      {
+        "id": "7:130",
+        "name": "State=queued",
+        "width": 400,
+        "height": 338,
+        "layoutMode": "VERTICAL",
+        "layoutSizingVertical": "HUG",
+        "primaryAxisSizingMode": "AUTO",
+        "paddingBottom": 16,
+        "itemSpacing": 12,
+        "strokes": 0,
+        "measuredBottomPadding": 16,
+        "children": [
+          {
+            "id": "7:137",
+            "name": "파일 읽기 · read_file",
+            "bounds": {
+              "x": 120,
+              "y": 404,
+              "width": 368,
+              "height": 22
+            }
+          },
+          {
+            "id": "50:38",
+            "name": "StatusBadge · queued",
+            "bounds": {
+              "x": 120,
+              "y": 438,
+              "width": 64,
+              "height": 24
+            }
+          },
+          {
+            "id": "50:40",
+            "name": "Disclosure action · expanded=true",
+            "bounds": {
+              "x": 120,
+              "y": 474,
+              "width": 78,
+              "height": 16
+            }
+          },
+          {
+            "id": "7:140",
+            "name": "출처  개발 에이전트\n대상  src/workbench/session.ts",
+            "bounds": {
+              "x": 120,
+              "y": 502,
+              "width": 368,
+              "height": 72
+            }
+          },
+          {
+            "id": "7:141",
+            "name": "입력  { path: \"src/workbench/session.ts\" }\n출력  민감한 값은 [마스킹]",
+            "bounds": {
+              "x": 120,
+              "y": 586,
+              "width": 368,
+              "height": 60
+            }
+          },
+          {
+            "id": "7:142",
+            "name": "결과  아직 확인되지 않음",
+            "bounds": {
+              "x": 120,
+              "y": 658,
+              "width": 368,
+              "height": 24
+            }
+          },
+          {
+            "id": "50:41",
+            "name": "Non-actionable result note · target absent",
+            "bounds": {
+              "x": 120,
+              "y": 694,
+              "width": 300,
+              "height": 16
+            }
+          }
+        ],
+        "texts": [
+          {
+            "id": "7:137",
+            "name": "파일 읽기 · read_file",
+            "characters": "파일 읽기 · read_file",
+            "width": 368,
+            "height": 22,
+            "textAutoResize": "HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "I50:38;7:83",
+            "name": "대기 중",
+            "characters": "대기 중",
+            "width": 48,
+            "height": 22,
+            "textAutoResize": "WIDTH_AND_HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "50:40",
+            "name": "Disclosure action · expanded=true",
+            "characters": "세부 정보 접기",
+            "width": 78,
+            "height": 16,
+            "textAutoResize": "WIDTH_AND_HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "7:140",
+            "name": "출처  개발 에이전트\n대상  src/workbench/session.ts",
+            "characters": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+            "width": 368,
+            "height": 72,
+            "textAutoResize": "HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "7:141",
+            "name": "입력  { path: \"src/workbench/session.ts\" }\n출력  민감한 값은 [마스킹]",
+            "characters": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+            "width": 368,
+            "height": 60,
+            "textAutoResize": "HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "7:142",
+            "name": "결과  아직 확인되지 않음",
+            "characters": "결과 대상 없음 · 이동 링크 미표시",
+            "width": 368,
+            "height": 24,
+            "textAutoResize": "HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "50:41",
+            "name": "Non-actionable result note · target absent",
+            "characters": "유효한 결과 대상이 없어 이동 링크를 표시하지 않습니다.",
+            "width": 300,
+            "height": 16,
+            "textAutoResize": "WIDTH_AND_HEIGHT",
+            "visible": true
+          }
+        ]
+      },
+      {
+        "id": "7:133",
+        "name": "State=success",
+        "width": 400,
+        "height": 338,
+        "layoutMode": "VERTICAL",
+        "layoutSizingVertical": "HUG",
+        "primaryAxisSizingMode": "AUTO",
+        "paddingBottom": 16,
+        "itemSpacing": 12,
+        "strokes": 0,
+        "measuredBottomPadding": 16,
+        "children": [
+          {
+            "id": "7:155",
+            "name": "파일 읽기 · read_file",
+            "bounds": {
+              "x": 560,
+              "y": 756,
+              "width": 368,
+              "height": 22
+            }
+          },
+          {
+            "id": "50:48",
+            "name": "StatusBadge · success",
+            "bounds": {
+              "x": 560,
+              "y": 790,
+              "width": 79,
+              "height": 24
+            }
+          },
+          {
+            "id": "50:50",
+            "name": "Disclosure action · expanded=true",
+            "bounds": {
+              "x": 560,
+              "y": 826,
+              "width": 78,
+              "height": 16
+            }
+          },
+          {
+            "id": "7:158",
+            "name": "출처  개발 에이전트\n대상  src/workbench/session.ts",
+            "bounds": {
+              "x": 560,
+              "y": 854,
+              "width": 368,
+              "height": 72
+            }
+          },
+          {
+            "id": "7:159",
+            "name": "입력  { path: \"src/workbench/session.ts\" }\n출력  민감한 값은 [마스킹]",
+            "bounds": {
+              "x": 560,
+              "y": 938,
+              "width": 368,
+              "height": 60
+            }
+          },
+          {
+            "id": "7:160",
+            "name": "결과  읽기 완료 · 근거 보기",
+            "bounds": {
+              "x": 560,
+              "y": 1010,
+              "width": 368,
+              "height": 24
+            }
+          },
+          {
+            "id": "50:51",
+            "name": "Result navigation · valid runtime target required",
+            "bounds": {
+              "x": 560,
+              "y": 1046,
+              "width": 67,
+              "height": 16
+            }
+          }
+        ],
+        "texts": [
+          {
+            "id": "7:155",
+            "name": "파일 읽기 · read_file",
+            "characters": "파일 읽기 · read_file",
+            "width": 368,
+            "height": 22,
+            "textAutoResize": "HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "I50:48;7:86",
+            "name": "확인 완료",
+            "characters": "확인 완료",
+            "width": 63,
+            "height": 22,
+            "textAutoResize": "WIDTH_AND_HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "50:50",
+            "name": "Disclosure action · expanded=true",
+            "characters": "세부 정보 접기",
+            "width": 78,
+            "height": 16,
+            "textAutoResize": "WIDTH_AND_HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "7:158",
+            "name": "출처  개발 에이전트\n대상  src/workbench/session.ts",
+            "characters": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+            "width": 368,
+            "height": 72,
+            "textAutoResize": "HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "7:159",
+            "name": "입력  { path: \"src/workbench/session.ts\" }\n출력  민감한 값은 [마스킹]",
+            "characters": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+            "width": 368,
+            "height": 60,
+            "textAutoResize": "HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "7:160",
+            "name": "결과  읽기 완료 · 근거 보기",
+            "characters": "결과  읽기 완료",
+            "width": 368,
+            "height": 24,
+            "textAutoResize": "HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "50:51",
+            "name": "Result navigation · valid runtime target required",
+            "characters": "근거 보기 ↗",
+            "width": 67,
+            "height": 16,
+            "textAutoResize": "WIDTH_AND_HEIGHT",
+            "visible": true
+          }
+        ]
+      },
+      {
+        "id": "7:199",
+        "name": "ToolCall",
+        "width": 400,
+        "height": 338,
+        "layoutMode": "VERTICAL",
+        "layoutSizingVertical": "HUG",
+        "primaryAxisSizingMode": "AUTO",
+        "paddingBottom": 16,
+        "itemSpacing": 12,
+        "strokes": 0,
+        "measuredBottomPadding": 16,
+        "children": [
+          {
+            "id": "I7:199;7:155",
+            "name": "파일 읽기 · read_file",
+            "bounds": {
+              "x": 1136,
+              "y": 1422,
+              "width": 368,
+              "height": 22
+            }
+          },
+          {
+            "id": "I7:199;50:48",
+            "name": "StatusBadge · success",
+            "bounds": {
+              "x": 1136,
+              "y": 1456,
+              "width": 79,
+              "height": 24
+            }
+          },
+          {
+            "id": "I7:199;50:50",
+            "name": "Disclosure action · expanded=true",
+            "bounds": {
+              "x": 1136,
+              "y": 1492,
+              "width": 78,
+              "height": 16
+            }
+          },
+          {
+            "id": "I7:199;7:158",
+            "name": "출처  개발 에이전트\n대상  src/workbench/session.ts",
+            "bounds": {
+              "x": 1136,
+              "y": 1520,
+              "width": 368,
+              "height": 72
+            }
+          },
+          {
+            "id": "I7:199;7:159",
+            "name": "입력  { path: \"src/workbench/session.ts\" }\n출력  민감한 값은 [마스킹]",
+            "bounds": {
+              "x": 1136,
+              "y": 1604,
+              "width": 368,
+              "height": 60
+            }
+          },
+          {
+            "id": "I7:199;7:160",
+            "name": "결과  읽기 완료 · 근거 보기",
+            "bounds": {
+              "x": 1136,
+              "y": 1676,
+              "width": 368,
+              "height": 24
+            }
+          },
+          {
+            "id": "I7:199;50:51",
+            "name": "Result navigation · valid runtime target required",
+            "bounds": {
+              "x": 1136,
+              "y": 1712,
+              "width": 67,
+              "height": 16
+            }
+          }
+        ],
+        "texts": [
+          {
+            "id": "I7:199;7:155",
+            "name": "파일 읽기 · read_file",
+            "characters": "파일 읽기 · read_file",
+            "width": 368,
+            "height": 22,
+            "textAutoResize": "HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "I7:199;50:48;7:86",
+            "name": "확인 완료",
+            "characters": "확인 완료",
+            "width": 63,
+            "height": 22,
+            "textAutoResize": "WIDTH_AND_HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "I7:199;50:50",
+            "name": "Disclosure action · expanded=true",
+            "characters": "세부 정보 접기",
+            "width": 78,
+            "height": 16,
+            "textAutoResize": "WIDTH_AND_HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "I7:199;7:158",
+            "name": "출처  개발 에이전트\n대상  src/workbench/session.ts",
+            "characters": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+            "width": 368,
+            "height": 72,
+            "textAutoResize": "HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "I7:199;7:159",
+            "name": "입력  { path: \"src/workbench/session.ts\" }\n출력  민감한 값은 [마스킹]",
+            "characters": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+            "width": 368,
+            "height": 60,
+            "textAutoResize": "HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "I7:199;7:160",
+            "name": "결과  읽기 완료 · 근거 보기",
+            "characters": "결과  읽기 완료",
+            "width": 368,
+            "height": 24,
+            "textAutoResize": "HEIGHT",
+            "visible": true
+          },
+          {
+            "id": "I7:199;50:51",
+            "name": "Result navigation · valid runtime target required",
+            "characters": "근거 보기 ↗",
+            "width": 67,
+            "height": 16,
+            "textAutoResize": "WIDTH_AND_HEIGHT",
+            "visible": true
+          }
+        ]
+      }
+    ],
+    "source_hash_verification": {
+      "plan_sha256": "f1394dff1232453425e0811cf666188aa6d1bb5ad5aa589454c85e48d382a2c4",
+      "registered_documents": "All three dispatch document hashes recomputed from current files and matched; exact document records copied from dispatch at report write.",
+      "documents": [
+        {
+          "gate": "design_spec",
+          "path": "docs/design/components.json",
+          "sha256": "c2eccfc549399c957734da0afd87ff29fb69cf12c61177fc9899718347026184",
+          "version": "component-contract-r6"
+        },
+        {
+          "gate": "design_spec",
+          "path": "docs/design/system.md",
+          "sha256": "863cd6da5098b8009bb1fc82e9538f731a57a38b382ec11536fc887dcab558c4",
+          "version": "system-contract-r6"
+        },
+        {
+          "gate": "design_spec",
+          "path": "docs/design/tokens/manifest.json",
+          "sha256": "84a1ecac6ef5e6dd51f9d7a1a9a959751a3a05731fe8cb3ff4ca3379957e0498",
+          "version": "token-manifest-r2"
+        }
+      ]
+    },
+    "prior_review_context": {
+      "child_task_id": "/root/design_qa_outcome_final",
+      "report_path": "docs/runs/component-polish/design-qa-rev3.json (superseded by this report)",
+      "result": "Previous report classified DQ-1/DQ-2 resolved and reported no observed regression in its named accepted-family spot checks; DQ-3 was its only open finding. Those other-family observations are prior evidence, not fresh observations by this child."
+    }
+  },
+  "limitations": [
+    "Targeted resolution of the sole open DQ-3 finding; this is not a new complete five-family or twelve-state visual audit.",
+    "Figma component-library evidence only. No product runtime, keyboard operation, screen-reader behavior, semantic attributes, hit testing, zoom, destination validity, browser E2E, or permission execution was verified.",
+    "The earlier capture discrepancy's root cause remains unknown; current agreement does not prove caching was the cause.",
+    "Figma is mutable and no immutable Figma revision hash is available. Fresh screenshots were directly inspected inline, not persisted as image files.",
+    "Initial harness status reported unresolved/stale design and code gates. This report does not claim run completion; the coordinator must register current judgments and verify overall gates."
+  ],
+  "next_handoff": "Coordinator: register this exact-bound targeted design pass, preserving its narrow scope and prior accepted-family review context. DQ-3 is resolved after fresh recapture; no further source/pixel investigation is required unless the discrepancy recurs.",
+  "provenance": {
+    "child_task_id": "/root/design_qa_disclosure",
+    "author_task_id": "/root",
+    "role": "design_qa",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "routing_attestation": "Requested settings from parent; not independent runtime model identity attestation.",
+    "independence": "Fresh child did not author or edit Figma or canonical source. Only the specifically assigned report is overwritten."
+  },
+  "reviewed": {
+    "contract_sha256": "6aba776d2a233dc66ad2d4f24d85347b32d623e85dba9621231e7accb96ed066",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "design",
+    "plan_sha256": "f1394dff1232453425e0811cf666188aa6d1bb5ad5aa589454c85e48d382a2c4",
+    "schema_version": 2,
+    "source_sha256": "42b56c7b7b071a36337ad221c4fb299afa29f4cf0297274513e75fbf97186ed6",
+    "verification_sha256": "f69d40cf1a8049f58c7ca7c8cdbe515c4a20922f8bba3f98b46d62139d7b2b2d"
+  }
+}

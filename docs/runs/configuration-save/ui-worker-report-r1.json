@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "phase": "implementation_complete_ready_for_main_integration_and_independent_review",
+  "work_class": "routine within accepted configuration-save plan revision2/designv1",
+  "ownership": [
+    "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css"
+  ],
+  "report_path": "docs/runs/configuration-save/ui-worker-report-r1.json",
+  "consumed_inputs_sha256": {
+    "docs/runs/configuration-save/ui-worker-packet-r1.json": "fce3574926fe034bac37c0e20187dcc7b3c8be8ad51b45440a448f6ec6cf1b36",
+    "docs/runs/configuration-save/renderer-ui-api-checkpoint-r1.json": "97141a7a38616bb46adc69e78e00a6c67c9d44f45cd886b5dee3c3223e8196fb",
+    "docs/runs/configuration-save/save-public-api-freeze-r1.json": "6ede0705935ba71d9c11f0f668dff430eb39dfd6e9ac2f711fcb8eb56325a297",
+    "docs/runs/configuration-save/plan.md": "96fafc56733dd6f37229f28cac9e6bc20df31e4051852e14c7c1dc8eded5d96c",
+    "docs/runs/configuration-save/design.md": "6767951711becc0ffafc56e765d5c12aba55afb80279296a21f7dc2c82a85c2e"
+  },
+  "public_ui_contract": {
+    "save_button": {
+      "role": "button",
+      "accessible_name": "파일에 저장",
+      "selector": "button[data-configuration-action=\"save\"]",
+      "disabled": "!selectors.canSaveConfigurationDraft(kind)(state) || saveBlocked",
+      "action": "await actions.saveConfigurationDraft(kind); return value never creates local success"
+    },
+    "buttons": {
+      "load": {
+        "accessible_name": "파일 불러오기",
+        "selector": "button[data-configuration-action=\"load\"]"
+      },
+      "baseline": {
+        "accessible_name": "현재 초안을 비교 기준으로",
+        "selector": "button[data-configuration-action=\"baseline\"]"
+      },
+      "discard": {
+        "accessible_name": "이 초안 버리기",
+        "selector": "button[data-configuration-action=\"discard\"]"
+      },
+      "validate": {
+        "accessible_name": "형식 검증"
+      }
+    },
+    "editor": {
+      "accessible_name": "설정 초안",
+      "selector": "section[data-configuration-draft-kind]",
+      "kind_values": ["instructions", "mcp"]
+    },
+    "kind_select_accessible_name": "초안 종류",
+    "textarea_accessible_name": "설정 초안 내용",
+    "save_status": {
+      "role": "status",
+      "accessible_name": "설정 파일 저장 상태",
+      "selector": "[data-configuration-save-status]",
+      "values": ["idle", "pending", "saved", "denied", "conflict", "unknown"],
+      "current_attribute": "data-configuration-save-current",
+      "current_values": ["true", "false"],
+      "revision_attribute": "data-configuration-save-revision",
+      "code_attribute": "data-configuration-save-code",
+      "message_selector": "[data-configuration-save-message]",
+      "history_selector": "[data-configuration-save-history]"
+    },
+    "labels": {
+      "idle": "아직 파일에 저장하지 않았습니다.",
+      "pending_current": "파일 저장 확인 또는 처리 중입니다. 초안은 계속 편집할 수 있습니다.",
+      "pending_previous": "이전 초안 버전 {revision}의 저장 확인 또는 처리 중입니다. 현재 수정 내용은 저장되지 않았습니다.",
+      "saved_current": "파일에 저장됨 · 런타임 적용은 별도",
+      "saved_previous": "이전 초안 버전 {revision}은 파일에 저장되었습니다. 현재 수정 내용은 저장되지 않았습니다. 런타임 적용은 별도입니다.",
+      "denied_cancelled": "파일 저장이 취소되었습니다. 작성 중인 내용은 유지합니다. 다시 저장하려면 파일을 불러와 비교하세요.",
+      "denied_other": "파일 저장이 거부되었습니다. 작성 중인 내용은 유지합니다. 다시 저장하려면 파일을 불러와 비교하세요.",
+      "conflict": "외부에서 파일이 변경되었습니다. 다시 불러와 비교하세요.",
+      "unknown": "저장 결과를 확인하지 못했습니다. 작성 중인 내용과 보관된 파일을 유지합니다.",
+      "noncurrent_denied_conflict_unknown_prefix": "이전 초안 버전 {revision}의 저장 요청 결과입니다. 현재 수정 내용은 저장되지 않았습니다."
+    },
+    "target": {
+      "selector": "[data-configuration-save-target]",
+      "label_prefix": "저장 대상: "
+    },
+    "version": {
+      "selector": "[data-configuration-save-version]",
+      "label_prefix": "저장 완료 시점의 관찰 버전: "
+    },
+    "backup": {
+      "selector": "[data-configuration-save-backup]",
+      "label_prefix": "확인된 보관 파일: ",
+      "condition": "fileSave.status=saved with exact current epoch/workspaceId/root path/kind; only fileSave.backupId matching fixed safe basename and selected kind; never identity.backupId",
+      "path": "configurationTargetPath(selected root,kind) with fixed target basename replaced by verified backupId; POSIX literal backslashes preserved; no backup read"
+    },
+    "baseline": {
+      "selector": "[data-configuration-baseline]",
+      "values": ["saved-file", "observed-file", "file", "new", "memory"],
+      "labels": {
+        "saved-file": "마지막으로 저장한 파일 기준",
+        "observed-file": "마지막으로 확인한 파일 기준",
+        "file": "마지막으로 불러온 파일 기준",
+        "new": "새 초안 기준 · 실제 파일과 비교하지 않음",
+        "memory": "이 창의 메모리 기준 · 실제 파일과 비교하지 않음"
+      }
+    },
+    "interaction": "Pending/unknown including retained workspace save operations block load/save/baseline; actual save promise counter blocks globally. Text, kind selection, validation and discard remain usable. No local confirmation, retry, reload, content polling, automatic resend, or new keyboard/wheel/Escape handlers."
+  },
+  "changed_paths_sha256": {
+    "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx": "4b0240dac7e9252aa9f861272600842ac7b18fda61cadcffd481a640e2f9fae2",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css": "59db247350d59a8618b7d9a7bcfbd1454aeef671a84b77f9fa13a8da8fa8c844"
+  },
+  "validation": [
+    {
+      "name": "owned-lint",
+      "command": "pnpm exec eslint --config apps/desktop-app/eslint.config.mjs apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+      "chunk_id": "dde4fc",
+      "wall_time_seconds": 0.511679542,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "name": "desktop-typecheck",
+      "command": "pnpm exec tsc -p apps/desktop-app/tsconfig.json --noEmit",
+      "chunk_id": "e3e784",
+      "wall_time_seconds": 1.589657125,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "name": "owned-format",
+      "command": "pnpm exec prettier --check apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css docs/runs/configuration-save/ui-worker-report-r1.json",
+      "chunk_id": "e6014a",
+      "wall_time_seconds": 0.291817417,
+      "exit_code": 0,
+      "original_token_count": 17,
+      "output": "Checking formatting...\nAll matched files use Prettier code style!\n"
+    },
+    {
+      "name": "owned-ui-ssr",
+      "command": "node --input-type=module (exact stdin shell command in ssr_probe.shell_command)",
+      "chunk_id": "4357cb",
+      "wall_time_seconds": 7.5e-6,
+      "exit_code": 0,
+      "original_token_count": 36,
+      "output": "{\"checks\":56,\"result\":\"passed\",\"evidence\":\"actual component SSR; synthetic state; CSS module stub; no DOM/browser/layout or Host effect claim\"}\n"
+    }
+  ],
+  "limitations": [
+    "Final independent CODE/RENDER and fixture/hidden flows remain Main-owned. This worker report is implementation evidence, not independent approval.",
+    "SSR verifies state labels and disabled attributes using synthetic state and a CSS module stub; no browser visual/event or actual Host filesystem save claim.",
+    "No Native/Electron/provider/full build invoked; no shared source, fixtures, runner, ledger, dependencies, DTO or state writes. No delegation."
+  ],
+  "ssr_probe": {
+    "shell_command": "node --input-type=module <<'JS'\nimport { createRequire, Module } from 'node:module';\nconst require = createRequire(process.cwd() + '/apps/desktop-app/package.json');\nconst { build } = require('esbuild');\nconst source = \"\\nimport React from 'react';\\nimport { renderToStaticMarkup } from 'react-dom/server';\\nimport assert from 'node:assert/strict';\\nimport { ConfigurationDraftEditor } from './apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx';\\nimport { WorkbenchProvider, createWorkbenchStore } from './apps/desktop-app/src/renderer/entities/workbench/index.ts';\\nimport { configurationDraftKey, configurationTargetPath } from './apps/desktop-app/src/renderer/shared/configuration-draft/index.ts';\\nconst initial = createWorkbenchStore().getState();\\nconst version = 'a'.repeat(64), backup = '.omoc-configuration-' + 'b'.repeat(64) + '.instructions.backup';\\nlet checks = 0;\\nfunction render({ status, current = true, root = '/synthetic/root', identity = {}, backupId, text = 'new text', code, held = false, saves = 0, missing = false } = {}) {\\n  const path = configurationTargetPath(root, 'instructions');\\n  const saveIdentity = { operationId: 'op', epoch: 'epoch', workspaceId: 'w', path: root, kind: 'instructions', revision: 1, floor: 1, backupId: backup, request: { type: 'configuration.save', workspaceId: 'w', requestId: 'r', kind: 'instructions', text: 'new text', expectation: 'version', version }, ...identity };\\n  const draft = { text, baseline: 'old text', revision: current ? 1 : 2, validation: null, baselineFile: { path, version }, fileObservation: { id: 'read', epoch: 'epoch', workspaceId: 'w', path: root, kind: 'instructions', revision: 0 }, fileRead: missing ? { status: 'missing', path, reason: 'missing_file' } : { status: 'available', path }, ...(status ? { fileSave: { status, current, identity: saveIdentity, version: status === 'saved' ? version : undefined, backupId, code } } : {}) };\\n  const state = { ...initial, epoch: 'epoch', revision: 1, connection: 'connected', recovery: { store: { state: 'ready' }, resources: [] }, selection: { workspaceId: 'w', generation: 1 }, lists: { workspaces: [{ id: 'w', path: root }], sessions: [] }, configurationDrafts: { [configurationDraftKey('w', root, 'instructions')]: draft }, configurationIO: { reads: 0, saves }, operations: held ? { held: { operation: { type: 'configuration.save', workspaceId: 'w' }, status: 'unknown', hostHeld: true } } : {} };\\n  const store = { getState: () => state, getInitialState: () => state, subscribe: () => () => {} };\\n  const actions = new Proxy({}, { get: () => () => { throw new Error('SSR must not invoke actions'); } });\\n  return renderToStaticMarkup(<WorkbenchProvider value={{ store, actions }}><ConfigurationDraftEditor /></WorkbenchProvider>).replaceAll('<!-- -->', '');\\n}\\nfunction has(html, text) { assert.ok(html.includes(text), text); checks++; }\\nfunction absent(html, text) { assert.ok(!html.includes(text), text); checks++; }\\nfunction disabled(html, action, expected) {\\n  const button = html.match(new RegExp('<button[^>]*data-configuration-action=\\\"' + action + '\\\"[^>]*>'))?.[0];\\n  assert.ok(button, action); assert.equal(button.includes('disabled=\\\"\\\"'), expected, action); checks++;\\n}\\nlet html = render();\\nhas(html, 'data-configuration-save-status=\\\"idle\\\"'); disabled(html, 'save', false);\\nfor (const status of ['pending', 'unknown']) {\\n  html = render({ status });\\n  has(html, 'data-configuration-save-status=\\\"' + status + '\\\"');\\n  for (const action of ['save', 'load', 'baseline']) disabled(html, action, true);\\n  disabled(html, 'discard', false);\\n  absent(html.match(/<textarea[^>]*>/)[0], 'disabled');\\n  absent(html.match(/<select[^>]*>/)[0], 'disabled');\\n  absent(html, 'data-configuration-save-backup=');\\n}\\nhtml = render({ status: 'saved', backupId: backup });\\nhas(html, '파일에 저장됨 · 런타임 적용은 별도');\\nhas(html, 'data-configuration-baseline=\\\"saved-file\\\"');\\nhas(html, '/synthetic/root/' + backup);\\nhtml = render({ status: 'saved', current: false, backupId: backup });\\nabsent(html, '파일에 저장됨 · 런타임 적용은 별도');\\nhas(html, '이전 초안 버전 1은 파일에 저장되었습니다. 현재 수정 내용은 저장되지 않았습니다.');\\nhas(html, 'data-configuration-save-current=\\\"false\\\"');\\nhtml = render({ status: 'conflict', current: false });\\nhas(html, '외부에서 파일이 변경되었습니다. 다시 불러와 비교하세요.');\\nhas(html, '이전 초안 버전 1의 저장 요청 결과입니다.');\\ndisabled(html, 'load', false);\\nhas(render({ status: 'denied', code: 'CANCELLED' }), '파일 저장이 취소되었습니다.');\\nhas(render({ status: 'denied', code: 'FILE_DENIED' }), '파일 저장이 거부되었습니다.');\\nhtml = render({ status: 'unknown', current: false, backupId: backup });\\nhas(html, '저장 결과를 확인하지 못했습니다. 작성 중인 내용과 보관된 파일을 유지합니다.');\\nabsent(html, 'data-configuration-save-backup=');\\nfor (const identity of [{ epoch: 'old' }, { workspaceId: 'other' }, { path: '/other' }, { kind: 'mcp' }]) {\\n  html = render({ status: 'saved', backupId: backup, identity });\\n  absent(html, '파일에 저장됨 · 런타임 적용은 별도');\\n  absent(html, 'data-configuration-save-backup=');\\n}\\nfor (const backupId of [undefined, '../escape', backup + '/escape', backup.replace('.instructions.', '.mcp.')]) {\\n  absent(render({ status: 'saved', backupId }), 'data-configuration-save-backup=');\\n}\\nhas(render({ status: 'saved', root: '/synthetic/literal\\\\\\\\name/', backupId: backup }), '/synthetic/literal\\\\\\\\name/' + backup);\\nhas(render({ status: 'saved', root: 'C:\\\\\\\\synthetic\\\\\\\\root', backupId: backup }), 'C:\\\\\\\\synthetic\\\\\\\\root\\\\\\\\' + backup);\\nfor (const options of [{ held: true }, { saves: 1 }]) {\\n  html = render(options);\\n  for (const action of ['save', 'load', 'baseline']) disabled(html, action, true);\\n  disabled(html, 'discard', false);\\n}\\ndisabled(render({ text: '' }), 'save', false);\\ndisabled(render({ text: '', missing: true }), 'save', false);\\nhas(render({ status: 'pending' }), 'data-configuration-baseline=\\\"observed-file\\\"');\\nconsole.log(JSON.stringify({ checks, result: 'passed', evidence: 'actual component SSR; synthetic state; CSS module stub; no DOM/browser/layout or Host effect claim' }));\\n\";\nconst bundle = await build({ stdin: { contents: source, resolveDir: process.cwd(), sourcefile: 'owned-ui-ssr-probe.tsx', loader: 'tsx' }, nodePaths: [process.cwd() + '/apps/desktop-app/node_modules'], bundle: true, platform: 'node', format: 'cjs', write: false, logLevel: 'silent', plugins: [{ name: 'css-module-stub', setup(b) { b.onLoad({ filter: /\\.module\\.css$/ }, () => ({ contents: 'export default new Proxy({}, { get: (_, key) => String(key) });', loader: 'js' })); } }] });\nconst module = new Module(process.cwd() + '/owned-ui-ssr-probe.cjs');\nmodule.filename = process.cwd() + '/owned-ui-ssr-probe.cjs';\nmodule.paths = Module._nodeModulePaths(process.cwd());\nmodule._compile(bundle.outputFiles[0].text, module.filename);\nJS",
+    "scope": "Actual ConfigurationDraftEditor/WorkbenchProvider/public selectors rendered by ReactDOMServer with synthetic Zustand-compatible state, existing installed dependencies, in-memory CSS stub and no emitted files.",
+    "assertions": 56,
+    "limitations": "No DOM events, browser layout, keyboard/Escape/wheel, 200% reflow, actual Host confirmation or filesystem effect verified by SSR."
+  },
+  "implementation": [
+    "Actual selected public imports only; save eligibility comes from selectors.canSaveConfigurationDraft(kind), save action delegates to existing actions.saveConfigurationDraft(kind) without local success or confirmation.",
+    "Exact fileSave epoch/workspaceId/path/kind binding gates display. Current confirmed save and prior revision save have distinct labels. Denial/conflict preserve text and show historical request prefix when non-current.",
+    "Pending/unknown/retained save and actual unsettled promise counter block load/save/baseline. Editing, kind selection, validate and discard remain available. No save retry/reload/content polling/automatic resend added.",
+    "Only fileSave.backupId is projected for confirmed saved matching selected scope. Closed safe basename and kind check; full root path uses existing configurationTargetPath separator and preserves literal POSIX backslashes. Backup body never read.",
+    "Saved-file versus loaded-file baseline provenance is explicit. A later pending/refused save can replace fileSave while keeping older baseline; that baseline uses neutral observed-file wording rather than a fabricated loaded/saved claim.",
+    "Temporary unsaved retention and actual save effects are distinct. Blank instructions save eligibility is independent of empty-invalid format validation. Missing-create and clear consent remain in actual Host dialog.",
+    "Existing CSS token hit target, 44px coarse media rule, focus outlines, wrapping, selectable paths and content, scrolling and event handlers preserved; new save section/status reuse CSS Modules."
+  ],
+  "validation_attempts": [
+    {
+      "check": "owned-ui-ssr",
+      "exit_code": 1,
+      "reason": "Initial in-memory probe entry could not resolve react/react-dom from repository root. Corrected probe-only nodePaths to existing apps/desktop-app/node_modules; no dependency or source edit; subsequent 56 assertions passed."
+    },
+    {
+      "check": "owned-format-final-report",
+      "exit_code": 1,
+      "reason": "Final JSON update required Prettier formatting. Formatted report only, then reran owned-format; no source fingerprint changed."
+    }
+  ],
+  "unresolved_findings": [],
+  "next_dependency": "Main integration and hidden fixture flows, then fresh independent CODE and rendered implementation review.",
+  "environment": {
+    "working_directory": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "node": "v26.8.2"
+  },
+  "actual_api_source_sha256": {
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts": "f6316254dbb2a2ff437f7ecd7b0e339fb4e5e8009d92be41c566a691152aa326",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.d.mts": "259ad492a1aa4159af8eba9bb86faaf2de30c1a6298da6b7fed40b29eb46f5c3",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts": "ca67c02d74366a6039055ac54c06a02233b81c91b7e127c9fd21cdabd921313a",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts": "6e74426d2120bda435bd2cdf8da4b11fe66a2500e07f7f0905a3fe23618d80fb"
+  },
+  "freeze_hashes_still_match": true
+}

@@ -1,0 +1,19 @@
+{
+  "authority": "Actual implemented additive read/renderer API; baseline renderer/helper tests and tsc pass, not full new acceptance",
+  "files": {
+    "apps/desktop-app/src/desktop-bridge.d.ts": "d6cd03e192a4de8861598eab500222eae3a6c25199830904a695403f14f257fb",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.d.mts": "5e53254cf1ea7003b4ac6d5bcf4c02c942e132659b5b3f26a4d871a9fea86f59",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts": "d27743306b64dd972bf40427ed86adaeaa9f6817e8a2ef3473b5b83f1eed0ad6",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts": "3b177b53a84125ac7d2262a79a9920da39c100f3a9b4092df03de38385e39257"
+  },
+  "actions": [
+    "loadConfigurationDraft(kind) -> Promise<boolean>",
+    "cancelConfigurationLoad(kind?) -> void"
+  ],
+  "draft_fields": {
+    "baselineFile": "optional {path,version}; last explicitly loaded disk baseline; memory-baseline action clears this field",
+    "fileRequest": "optional immutable read identity; display busy, never edit identity",
+    "fileRead": "optional {status:loading|available|missing|unsupported|unavailable|error,path,reason?}; fixed reasons, no original error strings"
+  },
+  "scope": "UI worker only feature/CSS. Main owns model/API/test/runner; implementation fixes may occur without API shape change, coordinate any shape change."
+}

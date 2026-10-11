@@ -1,0 +1,8 @@
+현재 rendered-design gate는 통과시키기 어렵습니다. 직접 확인한 범위에서 **blocking finding 1건, medium finding 1건**이 있습니다.
+
+- **High — 권한 요청 상태에서 composer/중단 컨트롤이 viewport 밖으로 밀림.** 영향 화면은 Running tool + two pending permission requests입니다. desktop-permission-synthetic.png에서 composer 상단만 보이고 대부분이 잘립니다. 현재 evidence도 textbox가 viewport에 **34.56%만 노출**되어 실패했다고 기록합니다. ui-states-evidence.json (line 21) 코드상 permission queue와 composer가 같은 .compose-region 안에 쌓여 있습니다. conversation/index.tsx (line 229) 실행 중에는 composer toolbar의 핵심 액션이 중단이므로, 단순 미관 문제가 아니라 실행 제어 접근성이 떨어집니다. 가장 작은 수정은 **composer를 항상 하단에 완전히 고정하고, pending permission 목록만 별도 스크롤 영역으로 제한**하는 것입니다.
+- **Medium — 1180px 기본 폭에서 탐색 토글이 실제 레이아웃 동작과 맞지 않습니다.** desktop-workbench.png과 synthetic captures에서 사이드바가 이미 열린 상태인데 헤더에 탐색, 사이드바에 닫기가 동시에 표시됩니다. 코드 추론상 narrow-only는 <=1199px에서 나타나지만, navigation 자체가 실제로 기본 숨김이 되는 것은 <=899px입니다. renderer.css (line 507) 따라서 900–1199px에서는 닫기를 눌러도 일반 상태의 sidebar가 사라지지 않는 구조입니다. 가장 작은 수정은 이 폭에서 navigation이 실제로 숨겨지는 상태에만 토글을 노출하거나, 이 구간에서도 토글 state가 실제 visibility를 제어하도록 맞추는 것입니다.
+
+그 외 직접 관찰 범위에서는 narrow 800px 레이아웃의 composer/control wrapping과 가로 overflow는 괜찮고, focus-visible outline, 44px button target, panel open/close focus 반환 및 Escape 처리는 소스상 갖춰져 있습니다. 파일/카탈로그 **패널 내부의 시각적 완성도는 이번 네 캡처에 열린 패널 상태가 없어 직접 판정하지 않았습니다**. 상단 파일·확장 진입 affordance와 keyboard/focus 처리는 확인했습니다.
+
+원본 PNG의 실제 픽셀 크기도 헤더에서 읽어 확인했습니다. desktop-workbench.png, 두 synthetic 이미지는 **2360×1576 px**, narrow는 **1600×1336 px**입니다. Synthetic provenance의 viewport는 **1180×788 @2x**이고, narrow는 Electron window를 800×700으로 resize한 뒤 content capture가 **800×668 @2x**가 된 상태입니다. 따라서 CSS viewport 크기와 PNG 픽셀 크기를 동일하게 취급하지 않았습니다.

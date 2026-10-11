@@ -1,0 +1,63 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "T1",
+      "description": "Actual valid v5 fixture reaches assistant-ui with validated link, escaped fallback and preserved permission controls"
+    }
+  ],
+  "checks": {
+    "projection": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "apps/desktop-app/src/workbench-projection.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Existing real dependency SSR regression and narrow fixture validation; no production runtime execution",
+      "acceptance_ids": [
+        "T1"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/workbench-projection.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Existing real dependency SSR regression and narrow fixture validation; no production runtime execution",
+      "acceptance_ids": [
+        "T1"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "prettier",
+        "--check",
+        "apps/desktop-app/src/workbench-projection.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Existing real dependency SSR regression and narrow fixture validation; no production runtime execution",
+      "acceptance_ids": [
+        "T1"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "pnpm-lock.yaml"
+  ],
+  "decision_register": []
+}

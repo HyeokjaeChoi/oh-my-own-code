@@ -1,0 +1,23 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "d855f733662687f0230556179854e4a30fcbbec14c36a4e1a130c4c218e0c58f",
+    "gate": "plan",
+    "plan_sha256": "430c609602eeb5f37412a9e85e63210afe81c59879ee6e11e30ebc139f64a1ec",
+    "schema_version": 2,
+    "source_sha256": "97026fb5daacd92f37c0943014c5768d01f7dd69b3f179fc1c41abc476f7e474"
+  },
+  "verdict": "pass",
+  "summary": "docs/runs/prd/plan.md 리비전 1은 승인된 원페이저 v0.1과 PRD 작성 권한을 정확히 반영한다. 목적·범위·제외사항, 관측 가능한 여정과 실패 상태, 학습 평가, 담당자와 산출물, 독립 제품 검토 및 다음 단계 승인 경계가 문서 작업에 적절하게 정의되어 있다. SDK 세대와 어댑터 호환성 등 기술 미확인 사항은 구현 전 검증 조건으로 분리되어 PRD 작성을 막지 않는다. 계획·계약·승인 기록·원페이저의 실제 SHA256이 제공된 값과 일치하며, 수정이 필요한 사항은 없다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/own_code_prd_plan_review",
+    "author_task_id": "/root"
+  },
+  "verification_limits": [
+    "배정된 계획, 계약, 승인 기록, 검토 입력, 원페이저 및 역할·스킬 지침에 대한 읽기 전용 검토다. 파일과 원장은 변경하지 않았다.",
+    "source_sha256은 제공된 검토 입력의 바인딩이며 전체 저장소에서 독립적으로 재산출하지 않았다.",
+    "완료된 원페이저의 제품 검토와 인계를 반복하지 않았다. 사용자 승인 근거는 코디네이터가 제공한 실제 응답 기록이다.",
+    "아직 작성되지 않은 PRD의 품질이나 SDK·어댑터 동작을 승인한 결과가 아니다. PRD 확정 후 정확한 버전에 대한 독립 제품 검토가 필요하다."
+  ]
+}

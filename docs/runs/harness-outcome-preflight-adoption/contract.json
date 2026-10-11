@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "A1",
+      "description": "Exact reviewed utility applied with only managed metadata and valid/invalid synthetic outcome flows"
+    }
+  ],
+  "checks": {
+    "adoption": {
+      "argv": [
+        "/opt/homebrew/bin/python3.12",
+        "-c",
+        "import pathlib,json,hashlib,subprocess,sys\np=pathlib.Path('.solopreneur/harness.py');expected='edbd0a93d3f56b937de69221814c1821f0facb190911e67cfdbcd726ff5d6c6a'\nassert hashlib.sha256(p.read_bytes()).hexdigest()==expected\nbefore=json.loads(pathlib.Path('docs/runs/harness-outcome-preflight-adoption/before/.solopreneur/managed.json').read_text());before['files']['.solopreneur/harness.py']=expected\nassert json.loads(pathlib.Path('.solopreneur/managed.json').read_text())==before\nsubprocess.run([sys.executable,'-m','unittest','discover','-s','docs/runs/harness-outcome-preflight-adoption/synthetic-tests','-p','test_harness_outcome_links.py'],check=True)\nprint('exact applied reviewed hash, metadata and real synthetic CLI7 PASS')\n"
+      ],
+      "cwd": ".",
+      "scope": "Exact reviewed utility identity and actual applied synthetic CLI7; no product behavior change",
+      "acceptance_ids": [
+        "A1"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": []
+}

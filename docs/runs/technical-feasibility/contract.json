@@ -1,0 +1,67 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "description": "Exact approved inputs and platform"
+    },
+    {
+      "id": "AC-2",
+      "description": "SDK and UI generation evidence"
+    },
+    {
+      "id": "AC-3",
+      "description": "Reproducible safe compatibility probes with truthful blockers"
+    },
+    {
+      "id": "AC-4",
+      "description": "Reviewed findings and design preparation"
+    }
+  ],
+  "checks": {
+    "approved-inputs": {
+      "argv": [
+        "python3",
+        "docs/runs/technical-feasibility/check_approved.py"
+      ],
+      "cwd": ".",
+      "scope": "Approved exact hashes, receipt, prior reviewed document handoffs",
+      "acceptance_ids": [
+        "AC-1"
+      ],
+      "required": true
+    },
+    "compatibility": {
+      "argv": [
+        "node",
+        "spikes/sdk-ui/verify.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Local deterministic compatibility probe and evidence checks; real integration or explicit unexecuted capabilities",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-3",
+        "AC-4"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [
+    {
+      "id": "spec-v01-local-browser",
+      "version": "0.1",
+      "target": {
+        "path": "docs/engineering/spec-index.md",
+        "sha256": "771c023836af77cdc8633d05729caef176ef62b4804f9aafbd762679d1d1db93"
+      },
+      "evidence": {
+        "path": "docs/runs/technical-feasibility/spec-approval.json",
+        "sha256": "3dee33d435016e5a17115e8127ecaba34648a762b10963c627c397041eb3a06f"
+      }
+    }
+  ],
+  "environment_files": [
+    "docs/runs/technical-feasibility/check_approved.py"
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "A1",
+      "description": "Approved A actual Electron design"
+    },
+    {
+      "id": "A2",
+      "description": "Safe outside pointer/touch dismissal and focus"
+    },
+    {
+      "id": "A3",
+      "description": "Current static/build/native evidence"
+    }
+  ],
+  "checks": {
+    "static": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "nx",
+        "run-many",
+        "-t",
+        "typecheck",
+        "lint",
+        "format-check",
+        "--projects=desktop-app,ui",
+        "--skip-nx-cache"
+      ],
+      "scope": "Affected renderer and UI package static validity",
+      "cwd": ".",
+      "acceptance_ids": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "scope": "Renderer FSD imports",
+      "cwd": ".",
+      "acceptance_ids": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/build.mjs"
+      ],
+      "scope": "Production Electron build",
+      "cwd": ".",
+      "acceptance_ids": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "required": true
+    },
+    "native": {
+      "argv": [
+        "node",
+        "docs/runs/selected-a-desktop-adoption/run-native.mjs"
+      ],
+      "scope": "Native Electron fixture layout, keyboard, outside dismissal and current capture provenance",
+      "cwd": ".",
+      "acceptance_ids": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "docs/runs/selected-a-desktop-adoption/run-native.mjs"
+  ]
+}

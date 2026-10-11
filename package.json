@@ -1,0 +1,35 @@
+{
+  "name": "oh-my-own-code-workbench",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.17.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "nx run-many -t dev",
+    "lint": "nx run-many -t lint --skip-nx-cache",
+    "format-check": "nx run-many -t format-check --skip-nx-cache",
+    "typecheck": "nx run-many -t typecheck --skip-nx-cache",
+    "test": "nx run-many -t test --skip-nx-cache",
+    "boundaries": "nx run-many -t boundaries --projects=desktop-app,workbench-web --skip-nx-cache",
+    "build": "nx run-many -t build --skip-nx-cache"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.1",
+    "@nx/vite": "23.2.1",
+    "@playwright/test": "1.63.0",
+    "@types/node": "24.10.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@typescript-eslint/eslint-plugin": "8.50.0",
+    "@typescript-eslint/parser": "8.50.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "eslint": "9.39.1",
+    "nx": "23.2.1",
+    "prettier": "3.6.2",
+    "tsx": "4.20.5",
+    "typescript": "5.9.3",
+    "vite": "8.3.0"
+  }
+}

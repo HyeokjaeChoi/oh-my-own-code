@@ -1,0 +1,101 @@
+{
+  "schema_version": 2,
+  "run": "durable-workbench-storage",
+  "reviewer": "design_spec_reviewer",
+  "verdict": "pass",
+  "reviewed": {
+    "contract_sha256": "95f08f1ed63501ecef586b7b22321c8137e9401cdab084d2f1801a3310b7e76b",
+    "documents_sha256": "da29e0c8ac8f50330a4c410fe584fdfe874477d8ad4a094dde4c2f67d65d9719",
+    "gate": "design_spec",
+    "plan_sha256": "a84ce7bda8c6628847f8c261030cc07376a5d0cc4b2091f3ff6103964e2c378d",
+    "schema_version": 2
+  },
+  "summary": "plan rev3와 storage-contract v3의 수정 범위를 독립 검토했습니다. P7-DS-1과 P7-DS-2는 설계 문서에서 해소되었습니다. 장애 주입과 crash 경계 검증을 구현할 수 있도록 기대 결과와 담당 경로가 명시되어 있습니다. 데이터 보존·unknown·no-replay·owner 경계도 유지됩니다. 추가 설계 수정 요구는 없습니다. 이 판정은 구현이나 runtime 검증의 통과를 뜻하지 않습니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "P7-DS-1",
+      "artifact_location": {
+        "path": "docs/runs/durable-workbench-storage/storage-contract.md",
+        "lines": [
+          42
+        ]
+      },
+      "result": "append·partial write·file/directory flush 실패는 writer를 recovery-required로 전환합니다. 이후 append·mutation·effect를 service 전체에서 차단합니다. 실패 bytes와 journal을 보존합니다. 첫 effect 전 실패는 effect 호출 0회를 요구합니다. 이전 effect가 있으면 dispatch intent와 unknown hold를 유지하며 메모리 결과를 durable success로 확정하지 않습니다.",
+      "failure_test_feasibility": "plan rev3는 storage-unit에 partial write, admission·중간 dispatch·결과 flush 실패와 후속 요청의 dispatch 0회 검증을 명시합니다. 합성 journal과 호출 계수로 검증할 수 있습니다. 중간 dispatch 실패는 이후 effect가 중단되는지, 결과 flush 실패는 unknown hold가 남는지 확인해야 합니다."
+    },
+    {
+      "id": "P7-DS-2",
+      "artifact_location": {
+        "path": "docs/runs/durable-workbench-storage/storage-contract.md",
+        "lines": [
+          44,
+          46
+        ]
+      },
+      "result": "하나의 closed completion record가 필요한 registry delta·native mapping·tombstone·최종 redacted receipt·revision을 함께 기록합니다. 전체 record의 flush 뒤에만 authoritative memory·snapshot·lookup completion을 확정합니다. checkpoint와 journal replay도 이를 원자적으로 적용합니다. 완전한 완료 기록이 없으면 reservation·dispatch intent·unknown hold를 유지하고 native effect를 재실행하지 않습니다. Native SQLite와 app journal은 계속 별도 commit domain입니다.",
+      "failure_test_feasibility": "plan rev3는 create·remove·metadata commit 경계의 crash 검증과 registry/lookup 일치를 명시합니다. completion 전 중단과 completion 후 memory 갱신 전 중단을 합성 fixture에서 비교할 수 있습니다. 앞의 경우는 unknown을 유지하고, 뒤의 경우는 registry와 receipt가 함께 복구되어야 합니다."
+    }
+  ],
+  "review_boundary": {
+    "plan_revision": 3,
+    "document_version": 3,
+    "prior_report": "docs/runs/durable-workbench-storage/design-spec-review-r1.json",
+    "input": "docs/runs/durable-workbench-storage/execution/design-spec-current.input.json",
+    "packet": "docs/runs/durable-workbench-storage/execution/design-spec-current.packet.json",
+    "scope": [
+      "P7-DS-1·P7-DS-2 수정과 직접 회귀",
+      "장애 검증의 기대 결과·담당 경로·기존 host fixture 활용 가능성",
+      "P4 receipt key와 unknown/no-replay 경계의 호환성",
+      "데이터 보존·crash·owner 경계의 유지"
+    ],
+    "retained_boundaries": [
+      "native database와 WAL, imported paths, migration source와 rollback copies를 보존합니다.",
+      "epoch 변경·missing receipt·idle·queue 부재는 no-effect 증거가 아닙니다.",
+      "원래 nested runtimeEpoch receipt key를 검증된 durable ledger로 조회합니다.",
+      "canonical store owner와 이전 app/native child의 종료를 검증하지 못하면 sidecar와 쓰기를 차단합니다.",
+      "pending inbox의 안전한 startup과 완전한 native transfer가 검증되지 않으면 해당 실행과 migration cutover를 보류합니다."
+    ],
+    "evidence_limits": [
+      "테스트·GUI·native 실행과 private migration을 수행하지 않았습니다.",
+      "process-crash 검증 계획은 power-loss durability의 증거가 아닙니다.",
+      "provider-configured startup·인증·Windows runtime에 대한 새 검증 주장은 없습니다.",
+      "최종 code·render 판정은 포함하지 않습니다."
+    ]
+  },
+  "checks": [
+    {
+      "check": "입력과 등록 상태",
+      "result": "run은 active입니다. 현재 plan-review-r3는 pass로 등록되어 있습니다. 검토 시작과 종료의 review-input 출력은 지정한 input JSON과 정확히 같습니다."
+    },
+    {
+      "check": "문서와 packet hash",
+      "result": "plan·contract·문서·profile·skill의 실제 SHA256이 packet과 일치합니다. 등록 문서는 storage-contract v3입니다."
+    },
+    {
+      "check": "장애 검증 경로",
+      "result": "storage-unit은 journal·registry·lock·storage-integration test와 기존 service/admission 회귀를 포함합니다. 기존 host fixture는 SDK 호출 계수와 deferred 결과를 지원합니다. P7 검증은 새 journal 장애 주입과 재개방 fixture를 구현해야 합니다. 실행 결과는 확인하지 않았습니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a10270-3e7f-7722-b21b-631205f8fb7b",
+    "child_id_source": "CODEX_THREAD_ID 및 두 run의 dispatch 기록",
+    "runtime_identity_attested": false,
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-design-spec-review"
+    ],
+    "mode": "report_only",
+    "delegated": false,
+    "files_changed": [],
+    "tests_run": false,
+    "native_launches": false,
+    "gui_launches": false,
+    "private_migrations": false,
+    "binding_verified_twice": true,
+    "packet_and_document_hashes_verified": true,
+    "persistence_owner": "coordinator"
+  }
+}

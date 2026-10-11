@@ -1,0 +1,158 @@
+{
+  "schema_version": 2,
+  "gate": "design",
+  "reviewed": {
+    "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+    "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+    "gate": "design",
+    "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+    "schema_version": 2,
+    "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+    "verification_sha256": "65a8d3f108cd00fbec2c298917cebebe77fdc8804af96e5160fdc3d0f4ee37db",
+    "work_class_sha256": "101dd49a7c54aecef71e98e8e2bfc8d944a8279736238a19062a13e5ebdaff1a"
+  },
+  "summary": "지정된 Foundation RENDER 검토는 pass입니다. 현재 원본 PNG 32개를 직접 확인했습니다. 기본 대화의 위계, Composer와 문맥 작업의 분리, branch 작업의 우선순위, 차단 사유 표시에서 수정이 필요한 주요 결함을 찾지 못했습니다. 이 판정은 plan revision 6과 design version 2의 한정된 범위에만 적용합니다.",
+  "verdict": "pass",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11f60-969f-73a2-92f3-d7492e2fd1fe",
+    "child_task_id_source": "CODEX_THREAD_ID",
+    "main_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "role": "design_qa",
+    "run": "design-foundation-v2",
+    "mode": "independent_report_only",
+    "binding_source": "docs/runs/design-foundation-v2/final-render-input-r1.json",
+    "entire_top_level_binding_copied": true,
+    "writes": false,
+    "delegation": false,
+    "build_test_runtime_launch": false
+  },
+  "evidence_inspected": {
+    "repository_root": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "documents": [
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-design-review/SKILL.md",
+      ".agents/skills/solo-design-review/references/evidence-review.md",
+      "docs/runs/design-foundation-v2/final-render-packet-r1.json",
+      "docs/runs/design-foundation-v2/final-render-input-r1.json",
+      "docs/runs/design-foundation-v2/plan.md",
+      "docs/runs/design-foundation-v2/design-v2.md",
+      "docs/design/system.md",
+      "docs/runs/design-foundation-v2/review-navigation-draft-r1.md",
+      "docs/runs/design-foundation-v2/reference-audit-r1.md",
+      "docs/runs/design-foundation-v2/final-integration-r1.patch",
+      "docs/runs/design-foundation-v2/final-source-inventory-r1.json",
+      "docs/runs/design-foundation-v2/verification-r1.json",
+      "docs/runs/design-foundation-v2/capture-inventory-r1.json",
+      "docs/runs/design-foundation-v2/source-consumption-release-r1.json",
+      "docs/runs/design-foundation-v2/context-supersession-r1.md",
+      "docs/runs/design-foundation-v2/integration-corrections-r1.md",
+      "docs/runs/design-foundation-v2/reconstructed-before-workbench-states-r1.json",
+      "docs/runs/design-foundation-v2/reconstructed-before-managed-metadata-r1.json",
+      "docs/runs/conversation-context/final-code-review-r1.json",
+      "docs/runs/conversation-context/final-render-review-r1.json",
+      "docs/runs/context-mime-correction/final-code-review-r1.json"
+    ],
+    "integrity": {
+      "current_original_png_paths_hashes_sizes_and_pixel_dimensions_verified": 287,
+      "capture_mismatches": 0,
+      "changed_source_hashes_verified": 29,
+      "changed_source_mismatches": 0,
+      "reconstructed_before_files_verified": 2,
+      "reconstruction_chronology": "e2e-workbench-states.mjs와 .solopreneur/managed.json은 편집 후 재구성한 바이트입니다. 기록된 SHA-256과 크기가 일치합니다. 편집 전에 복사한 파일로 취급하지 않았습니다."
+    },
+    "visual_inspection": {
+      "method": "현재 원본 PNG 경로를 tools.view_image로 열어 확인했습니다. 기본 high 표시를 사용했습니다. 이미지 파일을 수정하지 않았습니다.",
+      "viewed_count": 32,
+      "path_base": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+      "viewed_paths": [
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/000-light-1440-zoom1-collapsed-idle.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/001-light-1440-zoom1-expanded-requested.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/003-light-760-zoom1-collapsed-idle.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/006-light-320-zoom1-collapsed-idle.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/011-light-760-zoom2-selected-summary-final-action.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/012-dark-1440-zoom1-collapsed-idle.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/015-dark-760-zoom1-collapsed-idle.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/018-dark-320-zoom1-collapsed-idle.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/019-dark-320-zoom1-expanded-requested.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/022-dark-760-zoom2-expanded-requested.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/024-attachment-compact-collapsed.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/025-attachment-expanded-original-metadata.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/026-attachment-200-long-source-path.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/027-attachment-200-original-sha256.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/028-attachment-explicit-reobserve-preview.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/029-branch-first-task-boundary.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/030-branch-200-edit-confirm-close.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/032-running-current-run-task.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/033-running-native-report-separate-from-request.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/034-unsupported-outside-closed-task.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/036-expired-200-outside-closed-task.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/037-unknown-visible-outside-closed-task.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/040-untrusted-visible-outside-closed-task.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/041-wide-navigation-side-task.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/042-narrow-navigation.png",
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/043-narrow-side-task-return.png",
+        "docs/runs/design-foundation-v2/evidence/context-r1/conversation-context/037-image-captured-preview.png",
+        "docs/runs/design-foundation-v2/evidence/context-r1/conversation-context/148-branch-light-320-zoom1-values-148.png",
+        "docs/runs/design-foundation-v2/evidence/context-r1/conversation-context/151-branch-dark-320-zoom1-values-151.png",
+        "docs/runs/design-foundation-v2/evidence/context-r1/conversation-context/166-cancel-request-ACK-light-320-zoom1-values-166.png",
+        "docs/runs/design-foundation-v2/evidence/runtime-r1/runtime-options/036-dark-320-zoom1-response.png",
+        "docs/runs/design-foundation-v2/evidence/runtime-r1/runtime-options/052-unknown-original-key-no-replay.png"
+      ],
+      "pixel_dimensions": "1440 viewport는 2880×1936, 760 viewport는 1520×1936, 320 viewport는 640×1936 원본입니다. 200% 캡처의 zoomFactor는 2입니다.",
+      "sampling_limit": "287개 전체의 무결성을 확인했고, 그중 32개의 pixels를 직접 검토했습니다."
+    },
+    "recorded_execution": {
+      "reports": [
+        "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/design-foundation-evidence.json",
+        "docs/runs/design-foundation-v2/evidence/context-r1/conversation-context/conversation-context-evidence.json",
+        "docs/runs/design-foundation-v2/evidence/runtime-r1/runtime-options/runtime-options-evidence.json"
+      ],
+      "capture_counts": {
+        "foundation": 45,
+        "context": 189,
+        "runtime_options": 53
+      },
+      "shared_build_stamp_sha256": "2e5039ab13c0a084190250beb0370442ccdac27d83f5ac2205aa09be12a5c6d7",
+      "result": "세 report의 build stamp가 전후 동일합니다. wrapper는 pass와 exit 0을 기록합니다. pageErrors와 externalRequests는 비어 있습니다. 소유 Electron 종료는 code 0입니다.",
+      "current_checks": "읽기 전용 check-status에서 contracted checks 11개 모두 reusable임을 확인했습니다. 기존 실행 기록은 모두 exit 0입니다. 재실행하지 않았습니다.",
+      "focus_evidence": "현재 runner와 pass 기록에서 Enter/Space 펼침, Escape 후 summary 복귀, preview 닫기 후 현재 행으로 복귀, branch 닫기 후 원래 trigger와 draft 복귀, 좁은 navigation 및 side task의 focus 복귀를 확인했습니다."
+    }
+  },
+  "design_judgment": [
+    {
+      "concern": "대화 위계와 시각적 일관성",
+      "result": "기본 light/dark 화면에서 대화가 주 읽기 영역입니다. Composer의 주 행동은 전송 또는 중단으로 구분됩니다. 첨부 조사·요청 설정·현재 실행 관리는 form 밖의 문맥 작업으로 분리됩니다."
+    },
+    {
+      "concern": "요청값과 보고값",
+      "result": "다음 전송 설정, Native 세션 설정, 응답이 보고한 실행 정보가 서로 구분됩니다. 선택 요약은 요청값을 표시하며 Native 적용 성공으로 표현하지 않습니다."
+    },
+    {
+      "concern": "첨부와 긴 값",
+      "result": "파일명·형식·상태와 다시 확인·제거 행동이 보입니다. 경로·version·SHA-256은 명시적 상세에서 확인할 수 있습니다. 직접 본 200% 경로와 hash는 줄바꿈되며 가로로 잘리지 않습니다."
+    },
+    {
+      "concern": "차단 상태",
+      "result": "unsupported·expired·unknown·untrusted 안내가 접힌 task 밖에 표시됩니다. 초안 편집과 비활성 전송이 함께 표현됩니다. cancel ACK는 취소 또는 미실행 확인으로 표현되지 않습니다."
+    },
+    {
+      "concern": "반응형과 복귀",
+      "result": "직접 본 light/dark 320·760·1440 및 200% 표본에서 겹침이나 핵심 행동의 접근 불가를 찾지 못했습니다. 좁은 side task에는 닫기와 대화로 돌아가기 행동이 보입니다. focus 동작은 기존 실행 근거로 확인했습니다."
+    }
+  ],
+  "carried_review_handling": {
+    "original_context_reviews": "원래 Context CODE와 RENDER의 changes_requested 판정을 그대로 유지합니다.",
+    "CODE-01": "source-consumption-release와 fresh independent MIME CODE pass를 확인했습니다. 이 RENDER 검토가 별도 CODE 승인을 발급하는 것은 아닙니다.",
+    "RENDER-D1": "현재 Foundation에서 수정 확인했습니다. branch 경계·편집 입력·생성·닫기가 첫 작업으로 표시됩니다. 일반 Composer와 다른 작업은 분기 준비 중 숨겨집니다. 320 light/dark와 200% 원본 pixels 및 기존 focus·별도 Send 실행 근거를 확인했습니다."
+  },
+  "limits": [
+    "Main의 main-pixel-inspection과 worker 보고서를 독립 승인으로 사용하지 않았습니다. Geometry pass만으로 RENDER를 판정하지 않았습니다.",
+    "Vendor 비교는 reference-audit의 출처 범위만 검토했습니다. Claude Desktop, ChatGPT Web, Mobbin viewport, 공식 홍보 이미지와 Refero 미리보기를 직접 재관찰하지 않았습니다. Native ChatGPT 검증을 주장하지 않습니다.",
+    "새 build·test·runtime 실행, OS keyboard·screen reader 시험 또는 별도 수치 대비 측정을 하지 않았습니다.",
+    "캡처와 실행 기록은 production renderer/preload 및 synthetic Main의 근거입니다. 실제 Native·provider·private store·production Main·Windows·release 검증을 뜻하지 않습니다.",
+    "이 pass는 지정된 Foundation RENDER 범위에 한정합니다. 전체 제품 또는 full18 acceptance가 아닙니다."
+  ]
+}

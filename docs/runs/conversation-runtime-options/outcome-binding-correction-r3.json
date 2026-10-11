@@ -1,0 +1,12 @@
+{
+  "status": "Ledger-only correction, no source/contract/plan/checks/captures change",
+  "defect": "Main assigned all8 checks to every acceptance; RT1\u2013RT4 included unrelated checks and status rejects invalid linkage. Outcome registration did not reject early.",
+  "correction": "Derive each acceptance check list directly from contracted acceptance_ids; validate non-review status gaps before obtaining final review.",
+  "product_source": "f3e0528548724635e213b942ace1f653fc0f270fb3dc95e6876b1dbefad46950",
+  "checks_reused": "All8 current unaffected, no rerun",
+  "prior_verdicts": [
+    "final-code-review-r2.json",
+    "final-render-review-r2.json"
+  ],
+  "next_harness_improvement": "Canonical outcome command should reject invalid acceptance/check linkage at registration; separate routine toolkit fix after F06 terminal so completed product source is not needlessly rebuilt."
+}

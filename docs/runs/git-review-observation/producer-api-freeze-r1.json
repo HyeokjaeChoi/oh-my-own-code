@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "status": "Actual source checkpoint; initial design handoff passed. No Git inspector/runtime proof yet.",
+  "plan_revision": 3,
+  "design_version": 3,
+  "files": {
+    "apps/desktop-app/src/renderer/shared/git-review/index.mjs": {
+      "sha256": "8cad8a846ec1965249b3bb26718370214d9239b6a90b27f2fd25934d9c88a913",
+      "bytes": 8479
+    },
+    "apps/desktop-app/src/renderer/shared/git-review/index.d.mts": {
+      "sha256": "c94015e4962bd0ac7504d09cad6671abb893658c0c3fbebdcec2e2a37aab95f9",
+      "bytes": 3452
+    },
+    "apps/desktop-app/src/renderer/shared/git-review/index.ts": {
+      "sha256": "e6b23ca1cd7ed26b8d676e9d9fc8106c88afa89824ac302246cf927929d43fbf",
+      "bytes": 512
+    },
+    "apps/desktop-app/src/desktop-bridge.d.ts": {
+      "sha256": "d875e9af04eefdec496273fc9dd82ccc51532227e8093a8a23df90cf82af57ae",
+      "bytes": 31838
+    },
+    "apps/desktop-app/src/workbench-contract.mjs": {
+      "sha256": "0f73aaae5af070a1936924d6681d2d190b98c85c234d7f8ba5a80808f2fba38b",
+      "bytes": 25101
+    },
+    "apps/desktop-app/src/renderer/shared/transport/index.ts": {
+      "sha256": "8e2460128e3fc3578519f1bb0116c2f15ca878dcd44e3127fd884bed5b0dc7e9",
+      "bytes": 6892
+    },
+    "apps/desktop-app/src/host/workbench-admission.mjs": {
+      "sha256": "7453ec87e4d01d2f63efc04acd8ec0e7029834ecb419295f10020e318b56f7af",
+      "bytes": 23597
+    }
+  },
+  "exports": [
+    "GIT_REVIEW_LIMITS",
+    "GIT_REVIEW_REASONS",
+    "GIT_DIFF_REASONS",
+    "GIT_DIFF_MODES",
+    "GIT_FILE_STATES",
+    "validGitDigest",
+    "validGitOid",
+    "validGitBranch",
+    "validateGitReviewRequest",
+    "validateGitReviewObservation",
+    "validateGitDiffObservation"
+  ],
+  "tests": {
+    "actual_red": "valid authenticated git.review.read rejected INVALID_REQUEST before implementation",
+    "actual_green": "node --test apps/desktop-app/src/git-review.test.mjs = 9/9 pass",
+    "typecheck": "pnpm exec tsc -p apps/desktop-app/tsconfig.json --noEmit = exit0",
+    "lint": "changed producer scoped eslint exit0 after TextEncoder globalThis and regex escape corrections",
+    "boundaries": "72sources/68negative/16positive pass"
+  },
+  "base_unavailable": "Unknown/evicted/wrong-sender observation and unobserved baseRef reject through existing transport errors; known expired original metadata yields expired_observation with original baseOid. See actual independent entry-design-base-clarification-r3.md; no nullable OID or invented current TIP."
+}

@@ -1,0 +1,116 @@
+{
+  "schema_version": 2,
+  "run": "durable-workbench-storage",
+  "reviewer": "design_spec_reviewer",
+  "plan_revision": 5,
+  "verdict": "changes_requested",
+  "reviewed": {
+    "contract_sha256": "4a64e40fe4d4574304ad731d9c485c8625eb87ba633ce4951361d83b9d7fb11e",
+    "documents_sha256": "d7dfb96fcf88344d3a492da8d2b2a98872f81c10cca8a9195a8da3f0de5930fa",
+    "gate": "design_spec",
+    "plan_sha256": "387850d22f6c2ec2d57b4b55c4a330baa91ead86c47cab7cbb2ad0df2cb66aaa",
+    "schema_version": 2
+  },
+  "summary": "Plan revision 5와 storage-contract v4를 독립 검토했습니다. Candidate 격리, latest-root rebasing, atomic completion, partial mapping의 unknown 유지, unconfirmed tail 보존, durable revision과 observationSequence 분리는 일관됩니다. 다만 새 recovery 상태를 host에서 renderer로 전달할 consumer 계약이 부족합니다. Recovery projection의 의미와 전달 경로를 문서에 확정한 뒤 새 독립 검토가 필요합니다. 구현 방식의 선호나 새 사용자 승인을 요구하는 판정은 아닙니다.",
+  "open_findings": [
+    {
+      "id": "P7-DS-V4-1",
+      "severity": "medium",
+      "status": "confirmed_design_gap",
+      "title": "Recovery 상태와 복원할 receipt identity의 wire 계약이 부족합니다.",
+      "artifact_location": {
+        "path": "docs/runs/durable-workbench-storage/storage-contract.md",
+        "lines": [94, 106, 108, 114, 116]
+      },
+      "related_locations": [
+        {"path": "docs/runs/durable-workbench-storage/plan.md", "lines": [18]},
+        {"path": "apps/desktop-app/src/desktop-bridge.d.ts", "lines": [13, 17, 58, 61, 69, 297]},
+        {"path": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts", "lines": [729, 744]},
+        {"path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts", "lines": [209, 214, 215]}
+      ],
+      "affected_consumer": "Host snapshot producer, desktop-bridge.d.ts, renderer store/controller와 recovery fixture",
+      "affected_journey": "앱 재시작 후 unknown 작업 조회, native를 시작할 수 없는 복구 화면, unconfirmed tail 차단, policy 검증 실패 뒤 partial mapping 표시",
+      "evidence": "계약은 snapshot에서 retained receipt identity를 복원하고, partial mapping은 unavailable lifecycle로 공개하며, dirty recovery는 recovery_required를 표시하도록 요구합니다. 하지만 section 10의 정확한 DTO 변경은 observationSequence만 정의합니다. 기존 WorkbenchSnapshot에는 recovery 상태나 retained operation key가 없고, WorkbenchSession.status에도 unavailable이 없습니다. 새 renderer store는 operations를 빈 객체로 시작하며, lookup은 그 객체에 이미 있는 unknown intent만 조회합니다. 따라서 renderer는 원래 runtimeEpoch와 operationId를 어떻게 얻는지 알 수 없습니다. 일반 연결 실패와 store 전체 복구 차단, 특정 session의 사용 불가 상태를 구분하는 계약도 없습니다. Plan의 DTO freeze 순서는 적절하지만, freeze할 recovery 의미가 아직 정해지지 않았습니다. 현재 소스는 consumer hold 상태이므로 이를 구현 결함으로 판정하지 않습니다.",
+      "smallest_precise_correction": "Storage-contract에 작은 closed recovery DTO 표를 추가하십시오. 기존 snapshot 또는 명시한 응답 경로에서 store 전체 상태와 bounded reason, resource별 unavailable lifecycle, 검증된 retained operation key의 bounded 목록을 어떻게 전달하는지 정하십시오. Native startup/ready가 차단돼도 이 정보를 읽을 수 있는 경로를 명시하십시오. Retained key는 원래 runtimeEpoch와 operationId를 보존하고 기존 lookup으로 연결해야 합니다. Raw mutation payload나 trusted permission은 복원하지 마십시오. Store 전체 차단과 resource 차단의 mutation 범위, 기존 UNAVAILABLE/unknown 응답과의 관계, revision·observationSequence 적용을 정하십시오. 이후 기존 host DTO checkpoint에서 producer·types·renderer·fixture 계약을 함께 freeze하십시오. 새 recovery mutation이나 자동 resume는 필요하지 않습니다.",
+      "required_acceptance": [
+        "빈 renderer store가 재시작 snapshot에서 retained key를 얻고, 현재 transport epoch로 원래 receipt key를 조회합니다.",
+        "Native를 시작하지 못해도 owner conflict, corrupt journal, unconfirmed tail과 pending-inbox recovery의 정확한 사유를 표시합니다.",
+        "검증된 partial mapping은 unknown receipt와 unavailable 상태로 보이며 usable success나 permission hydration으로 처리하지 않습니다.",
+        "오래된 recovery projection은 clock 검증 뒤 폐기됩니다. 새 connected 또는 idle 관측만으로 recovery 차단이나 unknown hold를 해제하지 않습니다."
+      ]
+    }
+  ],
+  "assessments": [
+    {"concern": "Immutable candidate와 committed-root rebasing", "result": "Map/Set 격리, 최신 root에 delta rebase, concurrent BUSY/admission 보존과 flush 뒤 await 없는 publication이 명시돼 있습니다. 추가 설계 공백을 찾지 못했습니다."},
+    {"concern": "Atomic completion", "result": "Receipt·registry delta·mapping·tombstone·revision을 하나의 closed record로 flush한 뒤 공개합니다. Replay의 원자 적용과 completion 실패 시 prior root·unknown hold 유지도 명시돼 있습니다. V3의 P7-DS-1과 P7-DS-2 해소를 유지합니다."},
+    {"concern": "Partial mapping", "result": "정확히 검증한 mapping만 unknown receipt와 함께 공개하고 사용을 차단하는 내부 규칙은 일관됩니다. Renderer 전달 계약의 공백은 P7-DS-V4-1에 포함했습니다."},
+    {"concern": "Unconfirmed tail recovery", "result": "Checksum-valid tail도 과거 flush 성공의 증거로 승격하지 않습니다. Bytes·validated checkpoint·uncertainty를 보존하며 추가 채택과 재개는 명시적 host recovery decision에 한정합니다."},
+    {"concern": "Durable revision과 observation clock", "result": "Safe integer 검증, epoch별 positive observationSequence, 낮은 revision 우선 거절, duplicate sequence 거절, bootstrap-only epoch reset과 old-epoch receipt floor 제한이 명시돼 있습니다. Observation exhaustion은 publication 전에 fail closed합니다."},
+    {"concern": "Slow payload와 health", "result": "Catalog/files/diagnostics DATA는 기존 resource identity로 검증합니다. Health는 observation order도 확인합니다. 반복 snapshot polling이 유효한 slow payload를 취소하지 않는 acceptance가 명시돼 있습니다."},
+    {"concern": "Interrupt notice", "result": "Notice의 receipt floor와 observationSequence보다 새롭고, 현재 target에 속한 connected idle snapshot만 notice를 해제합니다. ACK는 stopped 증거가 아니며 notice 해제는 원래 receipt나 unknown hold를 제거하지 않습니다."},
+    {"concern": "Owned-module API와 consumer 순서", "result": "Journal/registry의 reserve·dispatch·begin·complete·readView·lookup·status 또는 동등한 좁은 API checkpoint와 owner API checkpoint가 host integration보다 앞섭니다. Host DTO freeze 뒤 renderer/fixture 소비 순서도 유지됩니다. 아직 없는 export나 guessed API를 구현 근거로 승인하지 않습니다."}
+  ],
+  "review_boundary": {
+    "mode": "fresh_independent_changed_concern_design_spec_review",
+    "plan_revision": 5,
+    "document_version": 4,
+    "input_path": "docs/runs/durable-workbench-storage/execution/design-spec-review-v4.input.json",
+    "packet_path": "docs/runs/durable-workbench-storage/execution/design-spec-review-v4.packet.json",
+    "prior_review_path": "docs/runs/durable-workbench-storage/design-spec-review-r2.json",
+    "prior_contract_path": "docs/runs/durable-workbench-storage/execution/canonical-v3-storage-contract.md",
+    "analysis_path": "docs/runs/durable-workbench-storage/execution/transaction-analysis-result.md",
+    "retained_boundaries": [
+      "Main은 app metadata와 receipt를 소유합니다. OpenCode는 native database·transcript·inbox를 소유합니다.",
+      "Native SQLite와 app journal은 별도 commit domain입니다. Exactly-once나 power-loss durability를 주장하지 않습니다.",
+      "Writer poison은 service 전체 append·mutation·effect를 차단하며 원본 bytes와 unknown hold를 보존합니다.",
+      "Owner와 recorded native child의 종료를 검증하지 못하면 sidecar launch와 쓰기를 차단합니다.",
+      "Imported paths와 private native data를 보존합니다. Credentials와 개인 설정을 자동 import하지 않습니다.",
+      "Synthetic inbox는 provider-configured startup 안전성의 증거가 아닙니다. 미검증 pending-inbox startup은 계속 보류합니다.",
+      "Lossless native transfer가 입증되지 않으면 migration cutover를 보류하고 source와 rollback copies를 보존합니다.",
+      "F-01–18과 기존 플랫폼 결정 및 autonomous local authorization을 유지합니다."
+    ],
+    "evidence_limits": [
+      "정적 문서·소스 검토와 읽기 전용 hash 확인만 수행했습니다.",
+      "P6 완료와 기존 pass는 저장된 기록을 확인한 결과입니다. 검증을 재실행하지 않았습니다.",
+      "P7 테스트·lint·build·native·GUI·foreground 작업을 수행하지 않았습니다.",
+      "OS owner enforcement, Windows runtime, authenticated provider, power-loss와 실제 migration 성공을 입증하지 않습니다.",
+      "최종 code 및 rendered implementation 판정은 포함하지 않습니다."
+    ],
+    "next_dependency": "Main이 보고서를 저장합니다. Recovery DTO 의미 계약을 최소 수정하고 plan·contract·document binding을 갱신한 뒤 fresh independent design_spec 검토를 받습니다. 현재 source consumer hold를 유지합니다. 새 사용자 승인은 요구하지 않습니다."
+  },
+  "checks": [
+    {"check": "Exact design_spec binding", "result": "검토 시작과 종료의 읽기 전용 review-input 결과가 지정한 input JSON과 정확히 일치합니다."},
+    {"check": "Actual hashes", "result": "Plan, raw contract, storage-contract v4, solo_reader profile, 두 skill과 roles.json의 실제 SHA256이 packet과 일치합니다. Normalized contract 및 documents binding도 확인했습니다."},
+    {"check": "Run과 선행 조건", "result": "P7 run은 active이며 plan revision 5의 entry pass와 storage-contract v4가 등록돼 있습니다. P6는 complete입니다. 저장된 8개 check는 모두 exit_code 0이고 inputs_changed·timed_out·interrupted는 false입니다. P6 code/design pass 보고서의 파일 hash도 일치합니다."},
+    {"check": "Acceptance 등록", "result": "Contract에는 기존 8개와 renderer-unit·lint·bundle을 포함한 11개 required check가 있습니다. 이번 검토에서 실행하지 않았습니다."}
+  ],
+  "provenance": {
+    "child_task_id": "01a104fa-6838-7881-b2ac-ef10391899da",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": ["solo-specialist", "solo-design-spec-review"],
+    "mode": "report_only",
+    "runtime_identity_attested": false,
+    "runtime_model_effort_attested": false,
+    "sandbox_enforcement_attested": false,
+    "os_runtime_proof": false,
+    "delegated": false,
+    "files_changed": [],
+    "report_written": false,
+    "ledger_changed": false,
+    "tests_run": false,
+    "lint_run": false,
+    "builds_run": false,
+    "native_launches": false,
+    "gui_launches": false,
+    "computer_use_used": false,
+    "foreground_actions": false,
+    "provider_calls": false,
+    "private_migrations": false,
+    "read_only_hashing_performed": true,
+    "binding_verified_twice": true,
+    "packet_and_document_hashes_verified": true,
+    "persistence_owner": "main"
+  }
+}

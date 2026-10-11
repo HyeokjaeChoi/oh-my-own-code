@@ -1,0 +1,22 @@
+name: Bug
+description: Record reproduction conditions and actual impact.
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Actual and expected behavior
+      description: What problem does the user experience?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction and environment
+      description: Include known steps, build/version, platform, and frequency.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Link sanitized errors, captures, Sentry links, or other evidence.

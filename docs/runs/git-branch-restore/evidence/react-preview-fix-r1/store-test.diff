@@ -1,0 +1,98 @@
+--- before/apps/desktop-app/src/workbench-store.test.mjs
++++ after/apps/desktop-app/src/workbench-store.test.mjs
+@@ -17003,3 +17003,95 @@
+     app.dispose();
+   }
+ });
++
++test("Git branch restore: actual React preview renders closed backup plans", async (t) => {
++  const { registerHooks } = await import("node:module");
++  // Server-render the real component. Only CSS loading is inert here; native
++  // captures remain responsible for actual pixels and browser interaction.
++  const css = registerHooks({
++    load(url, context, nextLoad) {
++      return new URL(url).pathname.endsWith(".module.css")
++        ? {
++            format: "module",
++            shortCircuit: true,
++            source:
++              "export default new Proxy({}, {get: (_value, key) => String(key)});",
++          }
++        : nextLoad(url, context);
++    },
++  });
++  const { register } = await import("tsx/esm/api");
++  const { fileURLToPath } = await import("node:url");
++  const scoped = register({
++    namespace: "branch-restore-react-regression",
++    tsconfig: fileURLToPath(new URL("../tsconfig.json", import.meta.url)),
++  });
++  let GitBranchRestoreSection, WorkbenchProvider;
++  try {
++    ({ GitBranchRestoreSection } = await scoped.import(
++      "./renderer/features/git-review/branch-restore.tsx",
++      import.meta.url,
++    ));
++    ({ WorkbenchProvider } = await scoped.import(
++      "./renderer/entities/workbench/index.ts",
++      import.meta.url,
++    ));
++  } finally {
++    css.deregister();
++    await scoped.unregister();
++  }
++  const { createElement } = await import("react");
++  const { renderToStaticMarkup } = await import("react-dom/server");
++  for (const [action, source] of [
++    ["create", ""],
++    ["select", ""],
++    ["restore", "index"],
++    ["restore", "head"],
++  ])
++    await t.test(`${action}/${source}`, async () => {
++      const { app, calls } = branchRestoreWindow();
++      try {
++        await prepareBranchRestore(app, action, source);
++        const value = {
++          ...app,
++          store: { ...app.store, getInitialState: () => app.store.getState() },
++        };
++        const html = renderToStaticMarkup(
++          createElement(
++            WorkbenchProvider,
++            { value },
++            createElement(GitBranchRestoreSection),
++          ),
++        );
++        assert.match(html, /Backup 계획/);
++        assert.match(html, /data-git-branch-restore-state="available"/);
++        assert.ok(html.includes("d".repeat(64)));
++        assert.match(
++          html,
++          action === "create"
++            ? /branch_ref \/ metadata \/ 원래 없음 · backup null/
++            : /worktree \/ a.txt \/ 원래 epoch·operation·role·path/,
++        );
++        assert.equal(calls.length, 2, "Rendering never dispatches an effect");
++        assert.equal(await app.actions.applyGitBranchRestore(), true);
++        const resultHtml = renderToStaticMarkup(
++          createElement(
++            WorkbenchProvider,
++            { value },
++            createElement(GitBranchRestoreSection),
++          ),
++        );
++        const backups =
++          app.store.getState().gitBranchRestore.mutation.identity.backups;
++        assert.equal(
++          (resultHtml.match(/data-git-branch-restore-backup=/g) ?? []).length,
++          backups.length,
++          "Each original backup has its own complete selectable evidence block",
++        );
++        for (const backup of backups)
++          assert.ok(resultHtml.includes(backup.backupId ?? "null · 원래 없음"));
++      } finally {
++        app.dispose();
++      }
++    });
++});

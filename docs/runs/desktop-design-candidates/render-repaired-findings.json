@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "dccbd65874f787423630885178d1332d77c6471f0fccf210e9d0c63922fe040c",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "design",
+    "plan_sha256": "59040c75d5d2226699704b74afce484ec976b251ed5546f3d67a89eabcb5858c",
+    "schema_version": 2,
+    "source_sha256": "9e48c96ec1a3518302d576a7b00b297191eae35b33016f1c37995d9af05e40e3",
+    "verification_sha256": "4613cf5815806a7e790d237d68f21c0fb603964ec16f2cff7b920190e3b550bb"
+  },
+  "verdict": "changes_requested",
+  "summary": "Independent Astra review confirmed focus and state corrections; C error edge remains occluded by the higher gray shelf divider.",
+  "open_findings": [
+    {
+      "id": "D2-edge",
+      "severity": "P2",
+      "path": "docs/runs/desktop-design-candidates/preview/styles.css",
+      "line": 18,
+      "observed": "composer::before error edge is behind composer-zone::before z-index 1 at the same top coordinate in Light and Dark.",
+      "correction": "Apply the error token to the actually visible shelf edge or fix stacking; preserve resting geometry and verify actual rendered pixels."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/compact_delivery_repaired_review",
+    "author_task_id": "/root"
+  }
+}

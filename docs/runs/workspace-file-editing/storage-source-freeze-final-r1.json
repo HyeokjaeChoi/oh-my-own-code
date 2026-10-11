@@ -1,0 +1,23 @@
+{
+  "schema_version": 2,
+  "files": {
+    "apps/desktop-app/src/host/workbench-file-storage.mjs": "0a44a2dd8029114a85cd8a07434df7aa5ff4c3e283b720e803148401e8221dc1",
+    "apps/desktop-app/src/host/workspace-registry.mjs": "b835be99943e7ed9b75fbbf3cfdf2cc21c74dc2b081892a205c831e277b95e9f",
+    "apps/desktop-app/src/host/storage-journal.mjs": "54b78ce7faa670379c37f917498b278f8f60cb145e8b7f61ded21cc84f40f83c",
+    "apps/desktop-app/src/host/workbench-admission.mjs": "f4c3a714af9a57c2e58b39953f80af06022f29e04cd97722cd2388c5e754340c",
+    "apps/desktop-app/src/host/workbench-receipts.mjs": "b191066acbad98669b50d5abc582809f5c4fa4ca73152e8b1e7945f6f001bda9",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs": "7f350677a3e6d3fbde698d2f25ae0c0a1d8e084d1fe5e098a4640869aad25052",
+    "apps/desktop-app/src/host/storage-journal.test.mjs": "f2a986260422a7c6628a121b532d749be3de3fdc2c4994a2e7a550a70c8b4b94",
+    "apps/desktop-app/src/host/workbench-file-storage.test.mjs": "bc12b1a6ef7d42779fb3579b8a40a1811c74c2bed70ed36d33a14f802be900fd"
+  },
+  "fileTarget": [
+    "path",
+    "version",
+    "directoryVersion"
+  ],
+  "dispatch": "Both existing filesystem.configuration.stage and publish require exact fileTarget matched admission; publish requires prior stage.",
+  "receipt": "file_saved exact workspaceId/path/version/digest=record.digest/backupId deterministic original-key fileBackupId",
+  "limits": [
+    "Worker scoped Node313 PASS and owned lint/format PASS; Main coherent integration and independent gates remain."
+  ]
+}

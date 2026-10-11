@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "e9048b5a650556d14534c4e39de6d08b1f296be856e327a6779d08deb5a0527f",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "code",
+    "plan_sha256": "047cb9f3e2cd429d526a059126bb35fb3d5e9d13148f88411b3858a5d276ebc5",
+    "schema_version": 2,
+    "source_sha256": "be7cdedd85eba72bbb7b0d56fe7a0cfe0fc5d953f9a474aedce8198705fa3836",
+    "verification_sha256": "2038c01132884aba49cfc0b376f260ac92706d19c8ed670e4e86109190dd7bf2",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "제품 통합 CODE 검토를 통과했습니다. source inventory 749개에서 변경은 harness.py와 managed.json뿐입니다. 적용 script SHA는 Toolkit 승인본과 일치합니다. metadata는 해당 hash만 변경했습니다. 기존 finish gate와 기본 동작은 유지됩니다. 수정이 필요한 결함은 없습니다.",
+  "open_findings": [],
+  "verification": {
+    "whole_input_matches": true,
+    "before_and_freeze_match": true,
+    "packet_inputs_match": true,
+    "other_managed_drift": [],
+    "outcome_paths_and_links_valid": true,
+    "recorded_synthetic_cli": "실제 적용 script를 사용한 7/7 PASS. 현재 입력과 check binding이 일치합니다. fixture helper 변경은 제품 script 경로 연결뿐입니다.",
+    "toolkit_algorithm_judgment": "terminal complete의 등록된 독립 CODE PASS를 재사용했습니다.",
+    "tests_rerun": false,
+    "ledger_unchanged": true
+  },
+  "limits": [
+    "전체 제품, Native, Bun, UI, build, provider 실행은 하지 않았습니다.",
+    "source 수정, ledger 기록, 위임은 하지 않았습니다.",
+    "Journal의 후속 outcome은 이 utility 적용을 inherited 변경으로 포함해야 합니다. storage worker의 작성 변경으로 기록하면 안 됩니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a12390-888f-71e2-91fc-b6d80cfc1091",
+    "reviewer_ref": "01a12390-888f-71e2-91fc-b6d80cfc1091",
+    "reviewer_ref_source": "CODEX_THREAD_ID",
+    "independence": "이번 invocation은 구현이나 수정에 참여하지 않았습니다. 실제 reviewer ID는 등록된 dispatch와 일치합니다.",
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_path": "docs/runs/harness-outcome-preflight-adoption/plan.md",
+    "plan_revision": 1,
+    "input_path": "docs/runs/harness-outcome-preflight-adoption/final-code-input-r1.json",
+    "inherited_toolkit_report": "/Users/hyukjaechoi/Solopreneur/docs/runs/outcome-artifact-preflight/final-code-review-r1.json",
+    "inherited_toolkit_reviewer_id": "01a1238c-7330-7ca3-be75-5a6590f0558e"
+  }
+}

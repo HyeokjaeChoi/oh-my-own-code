@@ -1,0 +1,68 @@
+{
+  "scope": "readonly linked metadata/startup prerequisite map during revision28 CODE; no production changes or authority",
+  "source_identity": [
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-zrq68ahz.js",
+      "bytes": 29009,
+      "sha256": "475eaad9396f996a69155ece0828e12135646cad1905c41e2f123a9fa2a34757"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-2e655exz.js",
+      "bytes": 8713,
+      "sha256": "dec09d0bf8fa0b6716b82502604014af9db5734d2ac3ef3315c6bfb89767824e"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-vaz5h5qv.js",
+      "bytes": 25265,
+      "sha256": "61e70c3fbcb62f304a6e930404e6f306a36385c5e93d58ef8ae5da2bc87aac2e"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-znr04804.js",
+      "bytes": 25336,
+      "sha256": "5d3cbf85696f24f6e07fc226754ca19544d15a19abd82eaf01dfbbbb49c7107d"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-rtyr3d5h.js",
+      "bytes": 9499,
+      "sha256": "266273e7fa161f5a7bf45bb62f6260eb708c25a36acd4cfb6a9f07d400b6d68f"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-64mjhprr.js",
+      "bytes": 2309,
+      "sha256": "dbc86dd6eb8a79bd2b3dbffa1bba22de46ea229f987409081d77e27ee86abf13"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-rdw6cm16.js",
+      "bytes": 4933,
+      "sha256": "8627e8ffcac2bfc7225c3d4731b0d180c86dc1cf9b445e7f2f74fb436328288c"
+    }
+  ],
+  "facts": [
+    {
+      "module": "Provider",
+      "behavior": "State notify reads integrations/credential metadata and publishes Provider Updated. Construction subscribes to Integration/Credential events."
+    },
+    {
+      "module": "Model",
+      "behavior": "prepare uses provider snapshot; notify reads derived state then publishes Model Updated. Subscription runs notify on Provider Updated."
+    },
+    {
+      "module": "Integration",
+      "behavior": "Constructor creates two empty attempt maps and forks scrub loops. Metadata State notify publishes Integration Updated; OAuth/command methods separately allocate scopes and external effects."
+    },
+    {
+      "module": "MCP",
+      "behavior": "State notify invokes reconcile through root FiberSet. Non-disabled rows startServer; remote OAuth rows register integration metadata before start. Empty-only acquisition proof cannot authorize arbitrary reload."
+    },
+    {
+      "module": "Environment",
+      "behavior": "Workspace presence selects workspace.connect; no general safe acquisition claim from metadata stubs."
+    }
+  ],
+  "next_outcome": "One linked original-expression proof batch for Provider/Model/Integration/MCP constructors and State notification dependencies before any domain release. Real pinned Effect/Scope, explicit throwing process/network/FS/credential-write canaries. Preserve holds; do not repeat88 roots.",
+  "limits": [
+    "Source reading only; no Native/core imports or process/network/FS/credential operations.",
+    "No new child/task owner; same Control/Scope/source registration only.",
+    "complete=false and assertExecution held; no recipe/source edits."
+  ]
+}

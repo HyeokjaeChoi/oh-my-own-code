@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "run": "opportunity",
+  "reviewer_role": "product_reviewer",
+  "reviewed": {
+    "contract_sha256": "ffd85fd549ea7b953d8eaac56a344350fba1cbf808c456c33ecff753136d9cb0",
+    "documents_sha256": "6c693de702dccf589a1d572e32841b6f8187b61fc3e7c8911b1d16d3abd80894",
+    "gate": "product",
+    "plan_sha256": "a48b42204c9c6bfe5f84818570c342577f18fa0f7635c9e7f826861ed3304f49",
+    "schema_version": 2
+  },
+  "reviewed_artifacts": [
+    {
+      "path": "docs/product/opportunity.md",
+      "version": "0.1",
+      "sha256": "77928f1548fa18b4f9ae45e578b46cb99a8f6d2c828b2184440a963ee845f65a"
+    },
+    {
+      "path": "docs/research/assistant-ui-opencode.md",
+      "sha256": "141a3527f40931b446cc224c3ee34cf67b185d9894f724c79370c839d955b460"
+    },
+    {
+      "path": "docs/research/opencode-sdk-initial.md",
+      "sha256": "52e55c0d703cfd62fe7b9f05ca0513c576fc8950bc2ba3e7cc1d8683738f5f51"
+    }
+  ],
+  "reviewed_plan": {
+    "path": "docs/runs/opportunity/plan.md",
+    "revision": 1,
+    "sha256": "a48b42204c9c6bfe5f84818570c342577f18fa0f7635c9e7f826861ed3304f49"
+  },
+  "verdict": "pass",
+  "summary": "Independently reviewed the frozen v0.1 decision one-pager after the final binding plan pass was registered. It faithfully targets the user's personal understanding of harness components, behavior, and execution flow while retaining assistant-ui. It distinguishes confirmed requirements, proposed learning mode and local browser surface, untested educational benefit, observed configuration and events, and explanatory inference. Three alternatives support a coherent minimal recommendation: synthetic examples, one session and tool, and an ask-versus-deny permission comparison, with broader harness components initially limited to explanation and provenance. Failure, cancellation, disconnection, and missing-record states are visible without claiming complete internal reasoning or invented execution history. The personal learning experiment has an explicit denominator, a proposed threshold of at least three correct answers out of four for each of two examples, predefined expected answers, a comparison with existing documentation and CLI use, and scope-reduction signals. The research correctly acknowledges an existing experimental native adapter while leaving compatibility with the new SDK generation unverified. SDK generation, package pinning, and integration validation remain prerequisites for dependent technical work. The document requests explicit approval before PRD and does not represent design, implementation, or release as completed. No material correction is required for this decision-stage artifact.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/own_code_final_reviews",
+    "author_task_id": "/root"
+  },
+  "verification_limits": [
+    "This is a decision-one-pager review, not approval of a PRD, design specification, implementation contract, or completed application.",
+    "Actual artifact hashes match the registered packet. The coordinator's successful plan registration and active product-review dispatch were inspected before product judgment.",
+    "The key adapter, custom-state integration, and live-event limitations were cross-checked against current official documentation; the entire supporting SDK survey was not independently re-created.",
+    "No packages were installed, versions pinned, server started, adapter compatibility tested, or permission, cancellation, recovery, or context-isolation behavior exercised.",
+    "The learning threshold is a proposed personal experiment; no educational benefit, user-performance result, or commercial demand has been demonstrated.",
+    "Learning mode and local browser delivery remain proposals pending the user's answer or explicit approval. This verdict does not substitute for that decision or authorize dependent implementation."
+  ]
+}

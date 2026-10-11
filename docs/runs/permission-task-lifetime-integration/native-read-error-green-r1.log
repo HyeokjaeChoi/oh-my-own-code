@@ -1,0 +1,41 @@
+✔ synthetic: missing classifications require original errno observation and completed cleanup (11.070917ms)
+✔ synthetic: authority refusal after a missing open cannot become a missing observation (5.657791ms)
+✔ synthetic: missing-path parent cleanup failure never publishes a typed missing result (4.354041ms)
+✔ synthetic: rethrowing an earlier observed error from authority cannot retain its classification (4.131833ms)
+✔ synthetic: Native root file-read reports genuine directory kind after cleanup (4.531ms)
+✔ synthetic: observed root replacement permanently revokes kernel and shared root guard after restoration (3.9045ms)
+✔ real module refuses Node before invoking the authority callback (1.895958ms)
+✔ factory accepts only exact data objects and a real root guard with a synchronous check (1.927375ms)
+✔ synthetic: frozen synchronous paged reads retain the root and use only relative child opens (4.65525ms)
+✔ synthetic: default page is 256 KiB; empty files and exact 20 MiB bound work (4.691542ms)
+✔ synthetic: lexical path and closed page validation reject without child IO or getter execution (3.706459ms)
+✔ synthetic: issued tokens bind the original object, kernel, path and full file stat (7.944334ms)
+✔ synthetic: symlink ancestors/leaves, hard links and directories cannot return bytes (4.449125ms)
+✔ synthetic: throw failure closes temporary FDs and discloses no bytes (3.755917ms)
+✔ synthetic: zero failure closes temporary FDs and discloses no bytes (3.329791ms)
+✔ synthetic: changedStat failure closes temporary FDs and discloses no bytes (3.403333ms)
+✔ synthetic: crossDevice failure closes temporary FDs and discloses no bytes (3.604833ms)
+✔ synthetic: final authority leafReplacement after temporary close prevents byte disclosure (4.157167ms)
+✔ synthetic: final authority ancestorReplacement after temporary close prevents byte disclosure (4.245917ms)
+✔ synthetic: final authority rootReplacement after temporary close prevents byte disclosure (4.573417ms)
+✔ synthetic: final authority leafSymlink after temporary close prevents byte disclosure (4.1035ms)
+✔ synthetic: final authority revokeOwner after temporary close prevents byte disclosure (5.068042ms)
+✔ synthetic: final authority throwCheck after temporary close prevents byte disclosure (3.52925ms)
+✔ synthetic: final authority closeKernel after temporary close prevents byte disclosure (3.3655ms)
+✔ synthetic: read reentry from the final authority callback refuses; final named checks follow it (3.518541ms)
+✔ synthetic: temporary close failure erases bytes, attempts every FD and prevents successful close (3.521208ms)
+✔ synthetic: rootClose revokes first and cannot report successful close (3.015042ms)
+✔ synthetic: libraryClose revokes first and cannot report successful close (3.395416ms)
+✔ real runtime gate with instrumented fs rejects Node with no kernel IO (2.649292ms)
+✔ synthetic: identity compares every full-stat field, even if file bytes stay unchanged (5.17175ms)
+✔ synthetic: callback returning an object or Promise fails closed during read (9.456875ms)
+✔ synthetic: explicit null and undefined page numbers cannot use omitted-field defaults (3.20375ms)
+✔ synthetic: a close failure that retains a leaf FD still attempts other cleanup and poisons reads (3.558542ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 220.261292

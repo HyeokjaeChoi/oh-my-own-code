@@ -1,0 +1,147 @@
+{
+  "status": "frozen",
+  "schema_version": 2,
+  "plan_revision": 3,
+  "contract_version": 3,
+  "created_at": "2026-10-03T14:45:03.878178+00:00",
+  "sources": {
+    "apps/desktop-app/src/desktop-bridge.d.ts": "7b02627472cc5abeb2409295628cda8d1226c19a1694f2a75e6ce8bb2600bdf1",
+    "apps/desktop-app/src/workbench-contract.mjs": "903774834354d6eb7f7f2c660603272530ad2bf29adcd379511305af2c2c1c81"
+  },
+  "methods": {
+    "workbench": "desktop:v2:workbench: WorkbenchEnvelope<R> -> WorkbenchResult<WorkbenchResponse<R> | {status:duplicate}>",
+    "cancelRead": "desktop:v2:cancel-read: {version:2,runtimeEpoch,readId} -> WorkbenchResult<{status:cancelled|missing}>",
+    "runtimeSnapshot": "existing read-only runtime health channel retained"
+  },
+  "shapes": {
+    "read": "version2, readId, operation; runtimeEpoch required except snapshot bootstrap",
+    "mutation": "version2, runtimeEpoch, operationId, operation, optional expectedRevision; no readId",
+    "lookup": "read envelope current runtimeEpoch; operation:{type:operation.lookup,runtimeEpoch:targetEpoch,operationId:targetId}",
+    "snapshot": "runtimeEpoch and workspaces[].trustRevision added",
+    "normal_mutation": "existing normal value DTO and separate optional receipt",
+    "duplicate": "{ok:true,value:{status:duplicate},receipt}",
+    "receipt": "RedactedReceipt with closed evidence-only ReceiptResult union",
+    "lookup_value": "found + receipt OR missing|wrong_epoch + effect:unknown"
+  },
+  "interface_checkpoint_findings": [
+    "closed schema validation test passed",
+    "legacy service reproducer fails as expected before host internals; implementation continues",
+    "no independent code gate claimed",
+    "native permission requestId remains separate from operationId"
+  ],
+  "commitment": "Do not change frozen desktop-bridge.d.ts or workbench-contract.mjs without explicit dependency report to coordinator.",
+  "implementation_status": "Host implementation complete; independent code review and coordinator integration remain.",
+  "completed_at": "2026-10-03T15:12:04.904425+00:00",
+  "implemented_source_sha256": {
+    "apps/desktop-app/src/workbench-service.mjs": "f9870cfb1919b801e4d0180938b6c36a052c6d4d91ad0b3786979282f132704e",
+    "apps/desktop-app/src/workbench-contract.mjs": "903774834354d6eb7f7f2c660603272530ad2bf29adcd379511305af2c2c1c81",
+    "apps/desktop-app/src/main.mjs": "6dac35945017b130cc3a81d4f17cc21696613d8733b48b12eee4f6fd0699f64e",
+    "apps/desktop-app/src/preload.cjs": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3",
+    "apps/desktop-app/src/desktop-bridge.d.ts": "7b02627472cc5abeb2409295628cda8d1226c19a1694f2a75e6ce8bb2600bdf1",
+    "apps/desktop-app/src/workbench-service.test.mjs": "2345b339e24b574d21e83359fb52a861c71cc86560bbb38e090157cba803c67e",
+    "apps/desktop-app/src/workbench-session.test.mjs": "786b1da9fb6bd920c17d5c3f205c938b276892fd62fdf3ac7e2a9f58d3b133f0",
+    "apps/desktop-app/src/host/workbench-admission.mjs": "49cb6cf21b9a091a5da7fbf6682799a248c35d6ee63b1503cdc5768dc92dac7e",
+    "apps/desktop-app/src/host/workbench-receipts.mjs": "5101547831cdad0c5e2650bf1a92ab123e0ba368a75f7b511600ce7cbe3bea18",
+    "apps/desktop-app/src/host/workbench-admission.test.mjs": "a9e900b069693909db5ab1bc32090221529648a6ce806c10be5c3927d51794fe",
+    "apps/desktop-app/src/host/workbench-ipc.mjs": "7fffc482083fa9ce6acd75f7536150cdd263dcc03bf25b295498bc36b7aed8ca",
+    "apps/desktop-app/src/host/workbench-ipc.test.mjs": "66f11a05ee703fe77fe9a970f39914e699b1263e3430bd3ea8fd7ae4f4889d36"
+  },
+  "checks": [
+    {
+      "name": "host regression + admission + IPC",
+      "result": "pass",
+      "tests": 100,
+      "argv": [
+        "node",
+        "--test",
+        "apps/desktop-app/src/workbench-service.test.mjs",
+        "apps/desktop-app/src/workbench-contract.test.mjs",
+        "apps/desktop-app/src/workbench-session.test.mjs",
+        "apps/desktop-app/src/session-navigation.test.mjs",
+        "apps/desktop-app/src/renderer-admission.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs",
+        "apps/desktop-app/src/host/workbench-ipc.test.mjs"
+      ]
+    },
+    {
+      "name": "projection compatibility after concurrent renderer correction",
+      "result": "pass",
+      "tests": 7,
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "apps/desktop-app/src/workbench-projection.test.mjs"
+      ]
+    },
+    {
+      "name": "typecheck",
+      "result": "pass",
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ]
+    },
+    {
+      "name": "owned host lint",
+      "result": "pass",
+      "scope": "12 owned source files and host directory"
+    },
+    {
+      "name": "owned host format",
+      "result": "pass",
+      "scope": "12 owned source files and host directory"
+    },
+    {
+      "name": "build",
+      "result": "pass",
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/build.mjs"
+      ],
+      "notes": "500 kB renderer chunk warning remains"
+    },
+    {
+      "name": "bundle isolation",
+      "result": "pass",
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ]
+    },
+    {
+      "name": "boundaries",
+      "result": "pass",
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "negative_fixtures": 68,
+      "positive_fixtures": 16
+    },
+    {
+      "name": "frozen interface hashes",
+      "result": "pass"
+    }
+  ],
+  "resolved_probe_failures": [
+    "Pre-implementation legacy production-wire reproducer failed as intended; now passes.",
+    "First legacy cancellation regression exposed fixture wait compatibility; trusted service-only adapter now preserves bounded waits without releasing actual SDK capacity.",
+    "Lookup capacity probe required a bounded microtask admission window; reserved lookup8 now tested.",
+    "Deadline tests now wait for actual SDK settlement and the independent startup deadline rather than equating separate timer boundaries.",
+    "Concurrent renderer projection import/typecheck errors were observed; subsequent projection7 and typecheck pass. Host worker did not edit renderer."
+  ],
+  "limitations": [
+    "No independent code gate is claimed; coordinator registers checks/review.",
+    "Synthetic SDK fixtures count actual nested client-method invocations; no real provider credentials or native Electron launch used.",
+    "Hidden native UI/Windows checks not performed by this host worker; normal production window show behavior retained.",
+    "Runtime-lifetime receipt ledger remains temporary; P7 durable journal/recovery not implemented.",
+    "Full contracted unit command includes renderer workbench-store.test.ts, which was not present at this checkpoint; renderer/coordinator integration owns that dependency.",
+    "Profile/requested model and effort are not runtime identity or sandbox attestations."
+  ]
+}

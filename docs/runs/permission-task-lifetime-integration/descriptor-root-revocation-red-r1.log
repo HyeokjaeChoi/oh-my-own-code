@@ -1,0 +1,25 @@
+✖ synthetic: observed root replacement permanently revokes kernel and shared root guard after restoration (10.116125ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 82.117417
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:16:1
+✖ synthetic: observed root replacement permanently revokes kernel and shared root guard after restoration (10.116125ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception: restoring the original object must not revive the existing kernel
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read.test.mjs:24:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

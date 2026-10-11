@@ -1,0 +1,15 @@
+# The coordinator chooses unspecified specialist model/effort under the user's
+# delegated adaptive-routing policy. Exact user choices and explicit inheritance
+# instructions take precedence; this shared config sets no routing defaults.
+# Permissions and service authentication remain controlled by the user.
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 3
+
+# Lifecycle hooks are declared only in hooks.json to avoid duplicate execution.
+# Additional MCP servers are selected per project from the integration catalog.
+
+[mcp_servers.openaiDeveloperDocs]
+url = "https://developers.openai.com/mcp"
+enabled = true

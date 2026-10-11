@@ -1,0 +1,154 @@
+{
+  "status": "owned implementation and scoped checks complete; independent CODE/RENDER and actual Bun publication remain Main responsibilities",
+  "workspace": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+  "runtime": "v26.8.2",
+  "binding": {
+    "packet": "docs/runs/configuration-skill-files/implementation-packet-routine-r3.json",
+    "packet_sha256": "264681bfcc64eac56da0e18f176156fc36a7c4411449f6d07a67fe6fb359ea13",
+    "plan_revision": 2,
+    "design_version": 2,
+    "contract_sha256": "4ca70217c995cdf0f5ce7278068f57867d05630d6ce12c913b310ced18f2a6a9",
+    "plan_sha256": "2a80f254964df9dfd53ba36afd74d83671dfff706ac7b7aaf3551df4675bb58f",
+    "producer_freeze": "docs/runs/configuration-skill-files/producer-api-freeze-r2.json",
+    "producer_sources_match": {
+      "apps/desktop-app/src/desktop-bridge.d.ts": true,
+      "apps/desktop-app/src/workbench-contract.mjs": true,
+      "apps/desktop-app/src/renderer/shared/configuration-draft/skill.mjs": true,
+      "apps/desktop-app/src/renderer/shared/configuration-draft/skill.d.mts": true,
+      "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts": true
+    }
+  },
+  "owned_sha256": {
+    "apps/desktop-app/src/host/storage-journal.mjs": "fc76197cc6d26160a33eca2fd29c03219394a41611c9d631057b2da51fed45c5",
+    "apps/desktop-app/src/host/storage-journal.test.mjs": "8c096a23544d3bdeec68ce8397e0ab3ed590cd37429993296f38a9e606d8dcd9",
+    "apps/desktop-app/src/host/workspace-registry.mjs": "55e1430d353926b1b91c124d8afc76e051d0e533d1a2a58dab1225410164f724",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs": "c83e877f24ada6158a923e41419d895f1fc95a878681886e6cc33faf7d36f4df",
+    "apps/desktop-app/src/host/workbench-admission.mjs": "2d598220d68bfa9df06a78ba9df71065fb76f1ef849189db8ee63eab41402763",
+    "apps/desktop-app/src/host/workbench-admission.test.mjs": "59dfd0b9b9368b615a85b9315ea9e7dbb976fef2d2b4afcce60db5cc3bab93ee",
+    "apps/desktop-app/src/host/workbench-receipts.mjs": "f365775391c3e263103ccf170d70e5d49985b2f9d14971a91d1a6e18b4064549",
+    "apps/desktop-app/src/host/workbench-receipts.test.mjs": "1d117afa579ab83f63a0ab28f94bb19ae320d9472deacb8c621ca347cff990b3",
+    "apps/desktop-app/src/host/storage-integration.test.mjs": "bb05e9fa7095accc2c4b14a0d3785b2419a26c7a41176c47398d20a82e491bc9",
+    "apps/desktop-app/src/host/workbench-skill-storage.mjs": "ebc61b22249dbfa133dcd680340a4552ed006e5f91b4030b928326db19247134"
+  },
+  "helper_exports": {
+    "SKILL_FEATURE": "configuration_skill_files_v1",
+    "isSkillSave": "(type) => boolean",
+    "skillBackupId": "(runtimeEpoch, operationId) => configurationBackupId(runtimeEpoch, operationId, \"skill\")",
+    "validSkillSavedResult": "(record, admittedSourceName) => boolean; permits internal sessionId === undefined; public storage schemas reject explicit sessionId"
+  },
+  "journal_internal_exports": [
+    "validateSkillAdmission",
+    "validateSkillDispatch",
+    "validateSkillCompletion"
+  ],
+  "private_admission": {
+    "field": "skillSourceName",
+    "derived_from": "exact operation.sourceName at record construction; shared identity helper used by both normal begin and rejectRecord begin",
+    "storage": "admission payload only, outside immutable public identity; replay operation retains field",
+    "allowed_type": "configuration.skill.save only",
+    "duplicate": "full identity and skillSourceName must match",
+    "digest": "unchanged canonical whole-request digest binds sourceName/directoryVersion/text",
+    "public_retained": "unchanged runtimeEpoch/operationId/type/workspaceId; no private name, digest, text, path or directoryVersion"
+  },
+  "receipt_constraints": [
+    "closed skill_file_saved {workspaceId, sourceName, version, backupId?}",
+    "exact original private sourceName and workspace binding",
+    "dispatched + accepted + confirmed only",
+    "stage then publish, exactly two dispatches, zero registry delta and no reservation",
+    "backupId matches canonical original epoch/operation key with .skill.backup",
+    "unknown retains original immutable key and matching workspace hold; no result fabrication or duplicate replay",
+    "legacy configuration.save instructions|mcp validation and projection unchanged"
+  ],
+  "checks": {
+    "red": {
+      "initial": "/tmp/skill-storage-red.log",
+      "initial_failed": 3,
+      "internal_undefined_session_reproducer": "/tmp/skill-storage-red-internal-session.log"
+    },
+    "node": {
+      "command": "node --test apps/desktop-app/src/host/storage-journal.test.mjs apps/desktop-app/src/host/workspace-registry.test.mjs apps/desktop-app/src/host/workbench-admission.test.mjs apps/desktop-app/src/host/workbench-receipts.test.mjs apps/desktop-app/src/host/storage-integration.test.mjs",
+      "exit_code": 0,
+      "tests": 332,
+      "pass": 332,
+      "fail": 0,
+      "skill_tests": 34,
+      "log": "/tmp/skill-storage-final-tests.log"
+    },
+    "scoped_eslint": {
+      "exit_code": 0,
+      "log": "/tmp/skill-storage-final-lint.log",
+      "scope": [
+        "apps/desktop-app/src/host/storage-journal.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/host/workbench-skill-storage.mjs"
+      ]
+    },
+    "scoped_prettier": {
+      "exit_code": 0,
+      "log": "/tmp/skill-storage-final-format.log",
+      "scope": [
+        "apps/desktop-app/src/host/storage-journal.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/host/workbench-skill-storage.mjs"
+      ]
+    },
+    "original_tests_preserved_exact_prefix": {
+      "storage-journal.test.mjs": true,
+      "workspace-registry.test.mjs": true,
+      "workbench-admission.test.mjs": true,
+      "storage-integration.test.mjs": true
+    },
+    "actual_service_skill_cases": [
+      "explicit list/read and exact safe unsupported-grammar bytes",
+      "missing parent unavailable/path_missing; symlink path_denied; missing leaf directoryVersion",
+      "confirmation cancel zero stage/publication/Native calls",
+      "same empty folder replacement during confirmation FILE_CHANGED before stage",
+      "missing and existing files stage/publish and actual final reread, confirmed skill_file_saved",
+      "stage/publish uncertainty and final content/version/directoryVersion mismatch remain unknown",
+      "duplicate no replay, new key blocked by workspace hold",
+      "completion flush failure after publication exposes original unknown receipt only"
+    ],
+    "legacy_parser": {
+      "bundle": "docs/runs/configuration-skill-files/evidence/prechange/legacy-storage-journal.bundle.mjs",
+      "sha256": "6ccadc0c97bf67345da0bcb2dfe07174678177c744098c321d22df25ddb68b68",
+      "manifest": "docs/runs/configuration-skill-files/evidence/prechange/legacy-parser-closure.json",
+      "manifest_sha256": "1d6467d746e8c58f0aaa44d7b652e3e6d93d310fb8cc6e6a2c38f319e48f9b3f",
+      "actual_imported_bundle": true,
+      "cases": [
+        "marker uncheckpointed tail",
+        "marker checkpoint with zero admitted operations",
+        "confirmed checkpoint with zero retained operations"
+      ],
+      "result": "old parser unsupported_version; checkpoint/append refused; entire synthetic store file inventory and bytes unchanged"
+    }
+  },
+  "integration_dependencies_sha256": {
+    "apps/desktop-app/src/workbench-service.mjs": "b9508ec43d78615600e35fd95de3f10e31fa7903ad6afc14841b355ff7c6217c",
+    "apps/desktop-app/src/workbench-contract.mjs": "68fbd0d255d39be65618494e2de34975ff212c73ffb303a33eb2a807552aab6b",
+    "apps/desktop-app/src/host/workbench-skills.mjs": "d77b5e749647c392326946d8610fdbe6f43d1f3e8abdf26729d05bdde70a384b",
+    "apps/desktop-app/src/host/configuration-file-observation.mjs": "fee8c6f8216a0cc34240b1137541f649dd533e1019e5b6f4173fef4b072f5c53",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/skill.mjs": "b30cf77b1967c83758a87203548e97331916e92536f5cda64e9e6c4a7ae8719a"
+  },
+  "handoff": [
+    "Add apps/desktop-app/src/host/workbench-receipts.test.mjs to Main full skills contract command (absent in routine-r3 packet contract at verification time)",
+    "Main owns final coherent harness checks, actual Bun publication probe, IPC tests, independent CODE/RENDER; no self approval performed"
+  ],
+  "limits": [
+    "Node adapter is a controlled outcome fixture using synthetic file bytes; does not claim production publication kernel verification",
+    "No ledger/docs/DTO/service/kernel/reader/renderer/scripts/dependency/runtime/provider changes made by this worker"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "files": {
+    "apps/desktop-app/src/event-host-resources.mjs": {
+      "bytes": 17650,
+      "sha256": "f8a95f4951eb65c8b297a69a7418d6878865e78bf93958b1d122a8acc0dc4c49"
+    },
+    "apps/desktop-app/scripts/stage-event-host.mjs": {
+      "bytes": 18382,
+      "sha256": "0cb7fad5b52eb3484fa4a5cb325544ef971ed5bf8bf6d683923f2453c4cc41af"
+    },
+    "apps/desktop-app/scripts/stage-event-host.test.mjs": {
+      "bytes": 30478,
+      "sha256": "f2cbca618010c644b33031954407a6472011f5e27b3d53775510d8e778b0f80f"
+    }
+  },
+  "implementation": [
+    "Add native-permission-inventory.mjs to real child code assets",
+    "Use existing pinned TypeScript5.9.3 AST to inspect actual static/dynamic literal imports and reexports; recipe strings/comments are data",
+    "JSON assets validate as JSON; corrected synthetic JSON package fixture to valid inert {}",
+    "Unknown actual import, unresolved relative template and syntax error remain rejected before stage"
+  ],
+  "checks": {
+    "inventory-stage-full-r2.log": {
+      "tests": 46,
+      "pass": 46
+    },
+    "inventory-coherent-node-r1.log": {
+      "tests": 54,
+      "pass": 54
+    }
+  },
+  "preserved_failures": [
+    "inventory-assets-red.log",
+    "inventory-assets-green.log",
+    "inventory-assets-parser-green.log",
+    "inventory-assets-parser-r2.log",
+    "inventory-stage-full-r1.log"
+  ],
+  "limits": "Synthetic Node resource staging and source/manifest/syntax checks only; no built package or Native/Bun execution, no independent CODE judgment."
+}

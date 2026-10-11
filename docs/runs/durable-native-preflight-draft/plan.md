@@ -1,0 +1,35 @@
+# Durable Native startup preflight — revision1
+
+2026-10-08. Parent is durable-workbench-storage revision7 and unchanged storage-contract v5. This is one initial major entry for a new evidence-only runtime boundary. Design2 replaces the unready high-level draft using the exact public typed-read analysis. Do not implement until independent focused plan and design reviews accept its concrete proof. Daily corrections inside the accepted boundary use plan, edit, appropriate checks, separate code review and integration.
+
+## Outcome and present state
+
+Current production denies every nonfresh Native launch. Exact owner lifetime witness addresses prior app/child exit but does not prove that Native durable work is inert. Build a conservative, credential-independent read-only check of a complete private copy using pinned public Native read APIs. Allow existing mapped idle sessions only when all verified conditions hold; any unknown state stays metadata-only with native_startup_unverified or pending_inbox. No retry, resume, approval, inbox mutation, journal adoption or automatic migration.
+
+## Decision and limits
+
+Inspect only a complete stopped DB/WAL/SHM/journal copy under a verified canonical owner/kernel. Original content and identity/permissions/mtime/ctime remain unchanged; ordinary read access time is not an immutability claim. A separate contained packaged Bun process uses only official readonly SqlClient, official Drizzle and public Session/Message/Pending/Inbox/KV table definitions plus V1Migration.status. It never constructs ServerProcess, executor, provider, plugin, permission, migration or credentials services. Do not acquire default Database dependencies, apply/up/run any migration, or use handwritten SQL, PRAGMA version inference, native table edits or private graph symbols.
+
+Explicit compatibility-reader decision: a version-bound readonly Drizzle descriptor for the native migration ledger's id/time_completed fields, confirmed from official source, requires exact equality with the 48 public pinned migration.gen IDs. This is app coupling to a known Native format, not a fabricated public MigrationTable API or full arbitrary SQLite integrity claim. Initial independent design review must assess that coupling. Its absent/extra/incomplete/unsupported states fail closed. Global raw typed reads close empty-parent/orphan/JSON-null projection gaps. Bounded public message-schema validation also holds incomplete assistant/tool/shell/compaction transcripts. The earlier high-level draft and research are preserved as rejected approaches.
+
+Conservative global rule: all bounded Native sessions must match current committed registry native IDs, raw parent/claim/compacting fields must be exactly null, no global pending/inbox items, no KV entries of any kind, no incomplete transcript and no required/running/error legacy migration. Official forks are roots with a raw fork reference and remain eligible only with exact parent, boundary, inherited root metadata and original child receipt/admission correlation. Rejecting all background child/KV-bearing stores avoids silently discarding claims or malformed job markers. Missing/corrupt/unsupported APIs or enumeration bounds deny launch.
+
+The inspector process has only copied-state authority and is never substituted for the executor owner child. Main retains its exact process handle and proves its exit before disposing any temporary copy. It cannot be selected by stored inputs. Bind the result to exact owner nonce/root identity, registry epoch/revision/retained set, original file descriptors/metadata/bytes, expected mapped IDs, official runtime resource identity, inspector source and configuration policy. Recheck the binding before append/spawn and inside supervisor preflight. Failure never creates a Native executor; uncertain inspector cleanup retains its disposable copy and blocks.
+
+Fresh stores continue the existing fresh proof. Nonfresh admission additionally requires the new positive proof and existing no-retained registry gate. Provider-independent pending detection and the pinned initialization graph must be demonstrated using controlled official Native APIs and synthetic states; no real authentication, private stores, production Main or foreground UI. Unknown provider/private configuration is held, not declared tested. If the exact read closure cannot establish pending absence or init cannot be proved inert under the accepted policy, preserve the existing production hold and report an unmet dependency. No implementation may replace this proof with registry idleness or auth-free reopen success.
+
+## Acceptance
+
+- N1: Positive decision reads only a verified complete copied Native set, creates no original files, and is bound to unchanged owner/registry/resources/original bytes.
+- N2: Raw root/child/empty-parent claims, global pending/inbox (including orphan), any KV marker including malformed values, missing/extra ledger ID, legacy-required state, partial fork/incomplete transcript, unknown/unmapped Native session and bounds deny executor spawn without clearing data.
+- N3: Actual controlled normal/SIGKILL nonfresh startup can reopen exact app/native/session/fork mappings and history only after positive production preflight; no synthetic allowSyntheticStart substitute.
+- N4: Inspector crashes, timeouts, drift and missing/corrupt resources preserve originals, keep recovery readable and leave no unconfirmed cleanup claim.
+- N5: Official read dependency graph and server init behavior are independently reviewed; current source/build/package/native evidence and final code judgment agree. Provider/private/Windows/power-loss and migration cutover limits remain explicit.
+
+## Ownership and order
+
+Main alone owns documents, decisions, contract, handoffs, integration and ledger. First freeze a reviewed read-program protocol/API and proof binding. One worker owns read-program/resource bytes; a disjoint host worker owns copied-set validation and preflight decision. Existing owner/journal/registry/DTO APIs remain unchanged. Main coordinates any actual API defect before edits. Then integrate Main/supervisor and saved probes, complete appropriate Node and actual zero-window checks, obtain a fresh independent final code reviewer, and refresh parent P7 code/render acceptance. No recursive delegation, shared writable paths, real credentials, native SQL edits, release or store cutover.
+
+## Next concrete step
+
+Exact lifetime run is complete: nine contracted checks and fresh final code pass with actual r4 macOS evidence. Parent current hidden UI and rendered judgment passed; actual saved Native fork normal/SIGKILL controlled reopen also passed, with synthetic startup explicitly distinguished. Register plan1/design2 for the single initial major entry review. First implement only the reviewed copied-read program/host boundary, freeze actual private API, then integrate and obtain the actual production-preflight acceptance. No source implementation is authorized by the plan document alone before its entry reviews.

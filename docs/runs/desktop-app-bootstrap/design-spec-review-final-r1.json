@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "run": "desktop-app-bootstrap",
+  "reviewer": "design_spec_reviewer",
+  "verdict": "pass",
+  "summary": "Plan revision 22 and the registered design, architecture, verification, and operations documents are consistent and actionable for the bounded Electron bootstrap. Sidecar ownership, narrow preload API, failure states, restart-based recovery, accessibility requirements, and per-OS verification are clear. Bootstrap preview absence is distinguished from the future product preview requirement. The documents do not claim AC-01–18 or actual desktop verification complete. No material document-gate defect was found.",
+  "open_findings": [],
+  "reviewed": {
+    "contract_sha256": "c0e1cd700cafe06d62137f864c7df7fd42fc9040e7526f706b2cf7b2e180b946",
+    "documents_sha256": "82a0a4229b413813463c01fce166a13fbb7bceeb629815900e5a047d1ffe1aed",
+    "gate": "design_spec",
+    "plan_sha256": "ca8e5d9ccbe1257758a403cabc15f7e6a38bda65d6e5ff8c1aa44c96be6ba5ce",
+    "schema_version": 2
+  },
+  "provenance": {
+    "child_task_id": "/root/desktop_design_spec_review_final",
+    "author_task_id": "/root",
+    "role": "design_spec_reviewer",
+    "model": "gpt-6-astra",
+    "effort": "high",
+    "settings_attestation": "Coordinator-reported dispatch settings; not independent runtime identity attestation.",
+    "plan_path": "docs/workplans/desktop-app-bootstrap/plan.md",
+    "plan_revision": 22,
+    "files_modified": false,
+    "ledger_modified": false,
+    "tests_executed": false,
+    "runtime_executed": false,
+    "gui_used": false,
+    "external_calls_made": false
+  },
+  "method": [
+    "Read solo-design-spec-review, current plan and contract, all registered design-spec artifacts, approved PRD, approval packet and receipt, relevant local research, and parent-plan linkage.",
+    "Compared journeys, permission and backend-to-UI state mappings, recovery semantics, destructive-action safeguards, desktop trust boundaries, acceptance scenarios, and evidence requirements.",
+    "Checked keyboard/focus, screen-reader announcements, contrast targets, 200% enlargement, responsive breakpoints, reduced motion, and target sizes against component contracts.",
+    "Verified all nine registered document hashes and the approval target/evidence hashes against local file bytes.",
+    "Inspected renderer source only to check bounded user-facing claims; no rendered-UI evidence was claimed."
+  ],
+  "limits": [
+    "This document pass does not satisfy design_qa, desktop E2E, package lifecycle, accessibility runtime, or release gates.",
+    "The locked macOS GUI prevents current rendered-app inspection; Windows runtime evidence remains absent.",
+    "The bootstrap has no preview surface; future preview isolation requires a separate implementation and verification gate.",
+    "Restart-based recovery does not establish in-process reconnect, event-gap recovery, or duplicate-launch behavior.",
+    "Full-product persistence, provider integration, AC-01–18 completion, signing, public release, and auto-update remain outside this bootstrap pass."
+  ]
+}

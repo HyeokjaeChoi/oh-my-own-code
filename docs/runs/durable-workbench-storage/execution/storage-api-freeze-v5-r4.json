@@ -1,0 +1,15 @@
+{
+  "plan_revision": 7,
+  "document_version": 5,
+  "revision": 4,
+  "source": {
+    "apps/desktop-app/src/host/storage-journal.mjs": "3040d498efd42f80f14b2c9509baea3d27a692e53ee9ccceabb13261627d8e9d",
+    "apps/desktop-app/src/host/storage-journal.test.mjs": "74222ef71960bf5c3bcec1862edce788248ba53e43d110c08e4b2b38c12a4776",
+    "apps/desktop-app/src/host/workspace-registry.mjs": "c0a97ce852da529ef1bb4c456309e59995f3d064a718e1d7f3f2b21463bc86b7",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs": "b050da5d59b47a32ae3e5356c9c596a3aedf3867b656dc0fa02fa208e93021da"
+  },
+  "supersedes": "storage-api-freeze-v5-r3.json registry source/tests only; all old methods, journal/DTO remain unchanged",
+  "host_only_method": "lookupForkIdentity({appSessionId}) -> defensive validated original admitted session.fork identity including digest or undefined. Terminal confirmed forked receipt exact child/workspace/native IDs and committed parent mapping required. Invalid closed input invalid_record, closed registry closed. No append/effect/observation allocation.",
+  "evidence": "execution/fork-registry-r4-unit.log 60/60 pass",
+  "final_gate": false
+}

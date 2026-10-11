@@ -1,0 +1,128 @@
+{
+  "schema_version": 2,
+  "run": "opencode-event-host-feasibility",
+  "reviewer": "plan_reviewer",
+  "plan_revision": 1,
+  "reviewed": {
+    "contract_sha256": "9ee6c441fda94f4cc47e53aa6d92b67456bf1ca64cbdff6150d2535726c8b92e",
+    "gate": "plan",
+    "plan_sha256": "15a67b53b8b5fdb978371715b03549b90186bece41050e6bc913bd45262a7942",
+    "schema_version": 2,
+    "source_sha256": "343e17fe5bdb3dcecf1371933644103751d15c403030df0839865c8671fe6547"
+  },
+  "verdict": "changes_requested",
+  "summary": "ENTRY plan revision 1은 runtime 선택과 입력 고정 순서를 수정해야 합니다. EH-02 안에서 선택한 runtime을 hashed runtime-manifest에 기록하면 check 입력이 바뀝니다. 현재 문구는 그 결과를 고정 입력의 PASS로 등록할 수 있습니다. 그 외에는 전체 PRD, P7 미완료 상태, 독립 staging 범위와 기존 보호 규칙을 유지합니다. 아직 check 코드가 없는 점은 ENTRY 결함이 아닙니다.",
+  "open_findings": [
+    {
+      "id": "EH-ENTRY-V1-01",
+      "severity": "high",
+      "category": "runtime_selection_input_binding_order",
+      "paths": [
+        "docs/runs/opencode-event-host-feasibility/plan.md",
+        "docs/runs/opencode-event-host-feasibility/design.txt",
+        "docs/runs/opencode-event-host-feasibility/prototype-input-policy.json",
+        "docs/runs/opencode-event-host-feasibility/contract.json"
+      ],
+      "finding": "plan은 실제 runtime-manifest와 모든 입력을 등록하고 독립 ENTRY를 갱신한 뒤 check를 실행하도록 요구합니다. 동시에 EH-02는 Node26.8.2와 Bun1.4.2를 실행한 뒤 한 runtime을 선택합니다. 선택값과 실제 runtime bytes를 manifest에 반영하는 시점이 정의되지 않았습니다. check 중 manifest 변경은 before/after 동일 입력 조건과 충돌합니다. manifest를 변경하지 않는다면 이후 check가 어떤 review-bound 입력에서 선택 runtime을 읽는지도 불명확합니다.",
+      "impact": "EH-02 또는 후속 EH-03–10의 결과가 이전 runtime/input binding에 연결될 수 있습니다. 같은 check의 결과를 사후 manifest hash로 다시 표시하면 실행 당시 입력을 증명하지 못합니다.",
+      "required_correction": "plan, design, input policy, contract와 decision register에 다음 두 경로 중 하나를 명시하십시오. A: Bun1.4.2를 primary experimental engine으로 사전에 고정하고 실제 bytes와 선택값을 manifest에 기록한 뒤 ENTRY를 갱신합니다. Node26.8.2 import/start는 별도 diagnostic으로 보존하고 Bun 또는 EH-02 PASS로 이전하지 않습니다. EH-02는 고정 Bun의 import/start/authenticated ready/owned exit를 검증하며 입력을 바꾸지 않습니다. B: 사전 고정한 candidate inventory로 viability phase를 별도 수행합니다. 그 결과는 최종 선택 manifest에 대한 contracted PASS로 계산하지 않습니다. 이후 선택 runtime, staged assets와 실제 입력을 고정하고 새 plan/contract 및 독립 ENTRY를 완료한 뒤 고정 target의 EH-02와 나머지 checks를 실행합니다. 어느 경로든 selected runtime manifest는 counted check 중 불변이며, 변경하면 해당 결과를 stale로 처리하고 새 binding에서 재검증합니다.",
+      "verification": "새 독립 reader가 candidate inventory, selection authority, 선택 시점, freeze 시점, refreshed ENTRY, counted check 순서를 문서에서 확인할 수 있어야 합니다. Node/Bun 관찰 결과와 실패를 각각 보존하십시오. 입력이 바뀐 check를 unchanged PASS로 등록하지 마십시오.",
+      "blocks": [
+        "initial_plan_pass",
+        "dependent_prototype_implementation"
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "concern": "Outcome and decisions",
+      "result": "PRD v0.6 F01–18과 P7 active/incomplete를 유지합니다. 저장된 v5-r8 근거는 eleven checks 중 ten pass와 native-event-history 실패를 구분합니다. controlled reopen history는 standalone safe restart 증거가 아닙니다. 공식 HTTP wrapper 선택은 prototype 범위의 delegated 기술 결정이며 production 교체 권한이 아닙니다."
+    },
+    {
+      "concern": "Source-independent staging viability",
+      "result": "고정 공식 npm package를 별도 directory에 설치하고 dist exports 및 native/WASM/migration assets를 inventory로 묶는 경로는 정적으로 타당합니다. 확인한 npm 2.0.18 metadata의 server/core exports는 dist JavaScript이며 workspace:*가 아닌 배포 버전 dependencies를 사용합니다. 원본 monorepo build가 필수라는 근거는 찾지 못했습니다. 실제 Node/Bun import, native hooks, asset 해석과 standalone replay 성공은 미검증이며 EH-02/EH-09가 판정해야 합니다."
+    },
+    {
+      "concern": "Installation boundary",
+      "result": "npm --workspaces=false와 npm ci --ignore-scripts --workspaces=false를 명시합니다. 필요한 hook만 package/script/output으로 사전 등록하며 root manifests, global install, version fallback과 production 변경을 허용하지 않습니다. 실제 lockfile 및 hook 목록은 구현 후 갱신 검토에서 확인해야 합니다."
+    },
+    {
+      "concern": "Security and seed boundaries",
+      "result": "auth/Origin/pairing/ticket, contained config, cleared credentials와 baseline deny를 명시합니다. supported API seed만 허용하며 loopback model fixture는 별도 reviewed 입력입니다. seed effects와 startup/read/idle/shutdown의 zero-effect interval을 구분합니다. mandatory unsupported/unseedable case는 실패입니다. credentials 부재만으로 isolation을 주장하지 않습니다. 구체적 observation 방법과 seed API는 후속 독립 design review에서 확인해야 합니다."
+    },
+    {
+      "concern": "Ownership and nonfresh startup",
+      "result": "Scope를 유지하고 exact owned ChildProcess exit 뒤에만 다음 owner를 시작합니다. PID absence, EOF, port closure로 종료를 추정하지 않습니다. duplicate executor refusal, unknown exit hold와 failed namespace 보존을 포함합니다. lifecycle 생략은 managed sweep 경로만 피하며 전체 startup 안전성을 보장하지 않습니다."
+    },
+    {
+      "concern": "Acceptance and input coverage",
+      "result": "EH-01–10 각각에 required 명령과 acceptance 연결이 있습니다. history payload/seq0/exclusive cursor, normal reopen, committed SIGKILL prefix와 sentinel을 별도로 검사합니다. docs/runs 입력 제외를 인지하고 actual environment_files 등록과 refreshed ENTRY를 요구합니다. 초기 미구현 명령을 실패 근거로 삼지 않았습니다. counted evidence에서는 missing/unsupported와 입력 변경이 실패해야 합니다."
+    },
+    {
+      "concern": "Downstream gates",
+      "result": "독립 design_spec pass가 구현 전에 필요합니다. 실제 prototype 입력 생성 뒤 갱신 ENTRY와 최종 독립 code review가 필요합니다. P7 production fresh-only preflight, historical owner, unknown receipt, mapping/cutover hold는 유지됩니다. Electron/Windows/provider/power-loss acceptance는 이번 결과에서 도출할 수 없습니다."
+    }
+  ],
+  "checks": [
+    {
+      "check": "Binding integrity",
+      "result": "검토 시작과 저장 직전 plan SHA256, normalized contract SHA256, registered design SHA256이 일치합니다. reviewed는 지정 입력 object를 그대로 복사했습니다."
+    },
+    {
+      "check": "P7 source freeze",
+      "result": "coherent-source-freeze-v5-r8.json의 35개 실제 파일 hash가 모두 일치합니다. packaged binary의 현재 bytes는 독립 재검사하지 않았으며 EH-01 준비에 남습니다."
+    },
+    {
+      "check": "Source fingerprint",
+      "result": "source_sha256은 exact binding에서 복사했습니다. 전체 source fingerprint는 독립 재계산하지 않았습니다."
+    },
+    {
+      "check": "Runtime checks",
+      "result": "앱, engine, Native, Electron, provider, GUI, install, build와 tests를 실행하지 않았습니다. 정적 문서/hash/공식 metadata 검토만 수행했습니다."
+    }
+  ],
+  "primary_sources": [
+    "https://registry.npmjs.org/@opencode%2Fserver/2.0.18",
+    "https://registry.npmjs.org/@opencode%2Fcore/2.0.18",
+    "https://raw.githubusercontent.com/anomalyco/opencode/cd9a14a6b688d4021bee381dfd39d2cef9c0f862/packages/server/src/process.ts"
+  ],
+  "review_boundary": {
+    "mode": "fresh_independent_direct_bootstrap_entry_review",
+    "input_path": "docs/runs/opencode-event-host-feasibility/plan-review-input-v1.json",
+    "packet_path": null,
+    "prepared_dispatch_claimed": false,
+    "implementation_accepted": false,
+    "production_accepted": false,
+    "next_dependency": "Main이 runtime 선택/freeze 순서를 수정하고 새 exact binding으로 fresh 독립 ENTRY를 받습니다. 통과 뒤 독립 design_spec review를 진행합니다."
+  },
+  "provenance": {
+    "childID": "01a10769-dd74-74b0-a7d1-d56f9632f974",
+    "authorMain": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-plan-review"
+    ],
+    "delegated": false,
+    "runtime_identity_attested": false,
+    "sandbox_enforcement_attested": false,
+    "prepared_packet_fabricated": false,
+    "source_edits": false,
+    "ledger_edits": false,
+    "runtime_checks_run": false,
+    "install_run": false,
+    "native_launches": false,
+    "electron_launches": false,
+    "provider_calls": false,
+    "gui_launches": false,
+    "private_data_access": false,
+    "files_changed": [
+      "docs/runs/opencode-event-host-feasibility/plan-review-v1.json"
+    ],
+    "child_task_id": "01a10769-dd74-74b0-a7d1-d56f9632f974",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "coordinator_normalization": "Only schema provenance key names added from actual returned childID/authorMain; verdict/findings/reviewed unchanged; original report retained."
+}

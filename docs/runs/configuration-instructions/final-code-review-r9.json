@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "befaf30d5d8987ac00c90f08d0d1d92af62c33773f316523f453c13b58cfb561",
+    "environment_sha256": "33b5d2c83b147ac2a2995c34915a9c02b8a46f6247bcdd067f12e9aab3eecdee",
+    "gate": "code",
+    "plan_sha256": "843140fd8c89ec7ced999f7c23af55450ced5078e7a106220e3c24d7f63462e3",
+    "schema_version": 2,
+    "source_sha256": "4d1fe111acae821a669082355bd0dfd569d6c116aef978b3072ae70fbac39daa",
+    "verification_sha256": "0411d1455a339cb137305fc47b1ed782f723ee3058a7c13a76ff88304c824017",
+    "work_class_sha256": "4793e59879fb3b3abfaa6ad3aa4c35a5142d1a853380d1f95bbb254f075c9228"
+  },
+  "verdict": "pass",
+  "summary": "Spec compliance와 Code quality를 별도로 검토했습니다. 수정이 필요한 결함은 찾지 못했습니다. 29개 파일의 SHA256, plan revision 9, design v2가 고정한 입력과 일치합니다. 실제 호출과 소비 경로에서 확인 후 재검사, SDK 호출 전 intent 저장, postcondition 확인, 불확실한 결과의 성공 표시 차단, 원래 operation key 조회, fork 출처와 제거 처리를 확인했습니다.",
+  "open_findings": [],
+  "verification": {
+    "executed": [
+      "읽기 전용 Node 검증 85개 통과.",
+      "verify-native-r8.mjs 통과. 기존 Native-r4 실행의 현재 파일 일치를 확인했습니다.",
+      "verify-build-r5.mjs 통과. 기존 r4 build의 현재 파일 일치를 확인했습니다."
+    ],
+    "recorded_evidence": [
+      "Native-r4의 12개 사례 통과와 두 Native/helper의 exit code 0을 확인했습니다.",
+      "hidden-r3 manifest와 UI evidence의 pass를 확인했습니다.",
+      "Native r1/r2/r3의 실패 기록은 실패로 유지됩니다."
+    ],
+    "limits": [
+      "Native, UI, provider 또는 새 build를 실행하지 않았습니다.",
+      "Windows, power-loss, CAS, provider의 실제 지침 소비는 검증하지 않았습니다.",
+      "재시작 후 기존 trust 경로는 session.create로 새 Native 세션을 만듭니다. 이후 지침 상태 조회만 읽기 전용입니다.",
+      "파일 수정, 보고서 저장, 작업 위임은 하지 않았습니다."
+    ]
+  },
+  "provenance": {
+    "child_task_id": "01a11997-e884-76e3-bc6a-7a024af38f70",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

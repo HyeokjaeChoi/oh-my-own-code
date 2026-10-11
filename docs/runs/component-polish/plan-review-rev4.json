@@ -1,0 +1,23 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "6ae27ab0174df7256950e740bf28660c2c1b96ca7efc083069c14cb7ae705db2",
+    "gate": "plan",
+    "plan_sha256": "8b71335088096b47809cbff0da4e385defac636f7a554853a10d7e9d87e2dd60",
+    "schema_version": 2,
+    "source_sha256": "9726324f4e8c1705bbbc302c694fca8308c1ab2bfda22c857241276880478785"
+  },
+  "verdict": "changes_requested",
+  "summary": "Revision 4 retains the authorized five-family scope, accepted Button variants, source-first design-spec review and handoff before Figma work, and later Light/Dark visual judgment. The registered hashes match the current plan, contract, and source documents. The selected NavigationItem contract now specifies 700 versus default 500 weight, a meaningful persistent non-color cue. Dark hover resolves to canvas #171717 and dark selected to surface.subtle #3d3d3d, on opposite sides of the previously reported #262626 parent surface; actual perceptual distinction still requires the planned comparison on the real Figma parent. One contradictory per-variant source instruction can lead the Figma projection back to the ineffective medium-weight cue and must be reconciled before the design-spec handoff.",
+  "open_findings": [
+    {
+      "severity": "P2",
+      "finding": "The NavigationItem default, hover, and focus entries in docs/design/components.json still say selected/current uses a medium-weight label and set visual.selectedCue to medium-weight-label, while the selected entry and componentContracts.NavigationItem specify 700 against default 500. A consumer of the per-variant entries could preserve the already ineffective 500-weight cue.",
+      "required_correction": "Reconcile those three per-variant behavior and selectedCue fields with the 700-weight selected contract, register the changed source hashes, and obtain fresh plan and design-spec reviews before Figma projection. Capture the actual dark navigation parent fill when comparing default, hover, and selected in the planned Light/Dark visual check."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "sol_plan_review_rev4",
+    "author_task_id": "/root"
+  }
+}

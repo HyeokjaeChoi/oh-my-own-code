@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+  "summary": "Correction CODE와 정확한 r5 preExecution 검토를 각각 통과했습니다. 수정이 필요한 결함을 찾지 못했습니다. 실행은 하지 않았습니다.",
+  "codeVerdict": {
+    "verdict": "pass",
+    "scope": "plan revision 9, source checkpoint r2 exact4. r1 이후 Promise 수정과 새 회귀 테스트를 검토했습니다. 변경 없는 observer와 기존 테스트는 이전 exact4 검토를 재사용했습니다.",
+    "passes": [
+      "spec_compliance",
+      "code_quality"
+    ],
+    "findings": [],
+    "resolvedFinding": {
+      "priorReport": "docs/runs/permission-task-lifetime-integration/bounded-native-task-read-code-review-r1.json",
+      "severity": "P2",
+      "evidence": [
+        "native-permission-leases.mjs:310에서 settings.check() 반환 직후 실제 Promise의 rejection handler를 등록합니다. 후속 readCurrent(handle)보다 먼저 실행됩니다.",
+        "기존 authority 사전·사후 검사와 반환값 거부 동작을 유지합니다.",
+        "새 테스트는 cancel, revoke, close 각각과 Promise.reject를 결합합니다. 작업 거부, kernel list 미실행, 다음 event-loop 시점까지 rejection 처리를 확인합니다.",
+        "보존된 r1 두 파일의 바이트와 SHA-256이 r1 checkpoint와 일치합니다. source 변경은 handler 한 줄이며 test 변경은 회귀 테스트 하나입니다."
+      ]
+    },
+    "savedEvidence": {
+      "native-task-read-promise-red-r1.log": {
+        "result": "unhandled rejection과 cleanup ENOTEMPTY가 함께 기록되어 있습니다. pass 0, fail 2입니다.",
+        "sha256": "90740254ba7eaeebaba9d37c123860195d96eacb3a178dfeb01f2678dbdc3316"
+      },
+      "native-task-read-promise-green-r1.log": {
+        "result": "12 PASS, 0 FAIL",
+        "sha256": "959e25c46ebc9a23357b4c03067b6711e037bffc1246ad5457dfc191df635cfe"
+      },
+      "native-task-read-contract-r2.log": {
+        "result": "12 PASS, 0 FAIL",
+        "sha256": "f2fc0d16343dc605c05b9935a86cd55b66f362c9c9e891a8cc7b9fe4845f9d69"
+      },
+      "native-task-read-descriptor-r2.log": {
+        "result": "223 PASS, 0 FAIL",
+        "sha256": "5ce3440b643f8c17130b7f7901d80b961203c6602209545f342ca776ea999e89"
+      },
+      "native-task-read-metadata-r2.log": {
+        "result": "119 PASS, 0 FAIL 요약을 확인했습니다. 저장 로그 중간에는 생략·redaction 표시가 있습니다.",
+        "sha256": "15a6c740968ee8bebc0422fb6c147d192d2be078353224602b884d3ac598ef51"
+      },
+      "native-task-read-eslint-r2.log": "0 bytes입니다. exit 0은 사용자 제공 tool 관찰 결과이며, 빈 로그 자체는 exit status를 증명하지 않습니다.",
+      "native-task-read-prettier-r2.log": "All matched files use Prettier code style 문구를 확인했습니다."
+    },
+    "executionObservedByReviewer": false
+  },
+  "preExecutionVerdict": {
+    "verdict": "pass",
+    "eligibleAtReviewEnd": true,
+    "executed": false,
+    "scope": "아래 정확한 parent argv와 r5 input으로 수행하는 단일 owned physical kernel probe만 통과합니다.",
+    "findings": [],
+    "originalInput": {
+      "path": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG/input.json",
+      "projectCopy": "docs/runs/permission-task-lifetime-integration/descriptor-probe-input-r5.json",
+      "bytes": 2880,
+      "sha256": "e3a7c482e7aadf4e671014509bfab75571a49b8d5179c36debc56d215d7e4686",
+      "copiesByteIdentical": true
+    },
+    "parentCwd": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "parentArgv": [
+      "/opt/homebrew/Cellar/node/26.11.0_1/bin/node",
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-descriptor-probe.mjs",
+      "--execute",
+      "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG/input.json",
+      "--input-sha256",
+      "e3a7c482e7aadf4e671014509bfab75571a49b8d5179c36debc56d215d7e4686"
+    ],
+    "contractArgvMatchesPreparation": true,
+    "parentNode": {
+      "bytes": 132848,
+      "sha256": "849e5785bd5b3ac68516f105d617c4a7ddcc3de1d7a89ba696d5dab271ab0164",
+      "mode": "0555",
+      "symlink": false
+    },
+    "childCwd": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG",
+    "childArgv": [
+      "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG/bun",
+      "--no-install",
+      "--no-env-file",
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-descriptor-probe.mjs",
+      "--fixture",
+      "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG"
+    ],
+    "childEnvironment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG/home",
+      "TMPDIR": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG/tmp",
+      "XDG_CONFIG_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG/config",
+      "XDG_CACHE_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG/cache",
+      "XDG_DATA_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG/data",
+      "XDG_STATE_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG/state",
+      "BUN_INSTALL_CACHE_DIR": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG/cache",
+      "OMOC_DESCRIPTOR_PROBE_NONCE": "242f6e37-e7a2-47c6-b374-7eed8a50e9dc"
+    },
+    "parentEnvironmentConditions": {
+      "observedAbsent": [
+        "NODE_OPTIONS",
+        "NODE_PATH",
+        "DYLD_INSERT_LIBRARIES",
+        "DYLD_LIBRARY_PATH",
+        "BUN_OPTIONS"
+      ],
+      "requirement": "실행 parent에도 이 변수들을 추가하지 않아야 합니다."
+    },
+    "engine": {
+      "manifestVersion": "1.4.2",
+      "bytes": 61884464,
+      "sha256": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+      "copiedAndStagedHashesMatch": true,
+      "copiedMode": "0500",
+      "copiedUid": 501,
+      "copiedLinkCount": 1,
+      "copiedSymlink": false,
+      "versionExecuted": false
+    },
+    "namespace": {
+      "currentUid": 501,
+      "rootUid": 501,
+      "rootMode": "0700",
+      "rootCanonicalAndNotSymlink": true,
+      "inputAndMarker": "UID 501, mode 0600, regular file, symlink 아님, nlink 1",
+      "markerRootAndNonceMatch": true,
+      "markerSha256": "ebff4a4cc81d4f807a69f16cd21e4930c9498550bfd1478cf730344e4d1fc31e",
+      "exactInitialEntries": [
+        "bun",
+        "cache",
+        "config",
+        "data",
+        "home",
+        "input.json",
+        "marker.json",
+        "state",
+        "tmp"
+      ],
+      "environmentDirectories": "6개 모두 canonical, symlink 아님, UID 501, mode 0700, 비어 있음",
+      "executionIntentAbsent": true,
+      "executionReportAbsent": true,
+      "fixtureResultAbsent": true,
+      "unexpectedEntries": []
+    },
+    "reviewedControls": [
+      "Parent는 spawn 전에 원본 input raw SHA, 소유권, mode, 단일 link, 읽기 전후 metadata, marker, source 8개, engine, argv, 환경, 초기 폴더 내용을 검사합니다.",
+      "execution-intent.json은 wx로 생성합니다. intent 생성 후 같은 namespace를 다시 실행하면 안 됩니다.",
+      "Child import closure는 아래 source와 Node/Bun builtins입니다. bun:ffi는 /usr/lib/libSystem.B.dylib을 엽니다. observer, lease, Effect adapter, Native, Main, server, provider를 import하지 않습니다.",
+      "11개 physical smoke case에는 warmup이 포함됩니다. 파일·디렉터리·resource·files view와 FD baseline 복구를 검사합니다.",
+      "Child exit 0, signal/error 없음, source/engine 사후 일치, fixture passed:true를 모두 요구합니다.",
+      "실패·누락된 fixture report는 성공으로 처리하지 않습니다. namespace와 결과를 보존합니다."
+    ],
+    "executionLimits": {
+      "timeoutMs": 30000,
+      "killSignal": "SIGKILL",
+      "stdio": "ignore",
+      "namespaceRetention": true,
+      "replayR2R3R4": false,
+      "validity": "검토한 input, argv, 환경, source, engine과 초기 namespace 상태를 유지하고 필수 parent preflight를 통과해야 합니다.",
+      "scope": "현재 바이트의 새로운 physical unit evidence만 생성합니다. Task 또는 mode 권한을 부여하지 않습니다."
+    }
+  },
+  "exactCheckedBytes": {
+    "pathBase": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "codeExact4": [
+      {
+        "path": "apps/desktop-app/src/native-permission-task-observer.mjs",
+        "bytes": 12662,
+        "sha256": "3b19b6ee2f53db9be19d4db02fbd7481479e6b7529ce3e0e9e764d7754a3d3e9",
+        "unchangedFromR1": true
+      },
+      {
+        "path": "apps/desktop-app/src/native-permission-task-observer.test.mjs",
+        "bytes": 36846,
+        "sha256": "50c8df8c80ea512b3e414eec09babaaa9d0703bda3b9b32b07319d5dec51f935",
+        "unchangedFromR1": true
+      },
+      {
+        "path": "apps/desktop-app/src/native-permission-leases.mjs",
+        "bytes": 13013,
+        "sha256": "3c6ab21b76644807a54c42612a773ad8a35fdb1cecc385d6e9e32924028d1303"
+      },
+      {
+        "path": "apps/desktop-app/src/native-permission-task-read.test.mjs",
+        "bytes": 19636,
+        "sha256": "5ddf80f3265ff603b69fcd839a1ad869bfd67ef6217ce736c2d01fbaa607bf3b"
+      }
+    ],
+    "preExecutionExact8": [
+      {
+        "path": "apps/desktop-app/scripts/native-descriptor-probe.mjs",
+        "bytes": 23243,
+        "sha256": "bba4a0b8c6ecef7cffa2f8bb1761a60d35965f8c9cde8aff101267a5a6f9aa34"
+      },
+      {
+        "path": "apps/desktop-app/src/host/native-descriptor-read.mjs",
+        "bytes": 17236,
+        "sha256": "b9df06c0013576e4e5aa93544fd222980a49bdb374ec4f31c3f4722b888a877a"
+      },
+      {
+        "path": "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+        "bytes": 9431,
+        "sha256": "cfc61061ea7095dcfc7b1e189569e984b64bda3ddfddceffd45740a510499c9d"
+      },
+      {
+        "path": "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs",
+        "bytes": 3303,
+        "sha256": "1af173e00c9e095f265dad1e6a6509d7f45521d4e6fa9ba5c37ed65a499f2117"
+      },
+      {
+        "path": "apps/desktop-app/src/host/darwin-directory-entry.mjs",
+        "bytes": 1953,
+        "sha256": "994d968244f511d0b4c43fd2b93c345334a0c9b0306065485513200c3817a132"
+      },
+      {
+        "path": "apps/desktop-app/src/host/workspace-root-authority.mjs",
+        "bytes": 6572,
+        "sha256": "a8f977e5b8458eb8b51ed1c47ab4fa515e35b78e72f9303f79f724fa9eac0fd0"
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs",
+        "bytes": 6370,
+        "sha256": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68"
+      },
+      {
+        "path": "apps/desktop-app/runtime-event-host/installer-pins.json",
+        "bytes": 6700,
+        "sha256": "2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41"
+      }
+    ],
+    "bindings": {
+      "planRevision": 9,
+      "planSha256": "18f959df0984e7da23836e2d12d2c35153daff24216bafe7e67a306d93e7ae4f",
+      "contractSha256": "6976830adf52f33adc378bc156fdbe558a4c8b29de2ddd80d691e438e8ad0bbe",
+      "packetR2Sha256": "09c0707731b00907abedd8c6922dda9bde12a4cc58190c4122d930fc11d3ea8b",
+      "checkpointR2Sha256": "21d5cdf94ca1362579c7e5f0b3e44efe4f3244e177ba759226a37d3e9477595c",
+      "preparationR5Sha256": "0e948e97cfd21013a42d112448e5d20a9505814b5cd0fd463ece11c1f5101143",
+      "packetPlanContractRoutingHashesMatch": true
+    }
+  },
+  "sourceStartEndStable": true,
+  "stability": {
+    "startAt": "2026-10-10T16:38:26.952334+00:00",
+    "endAt": "2026-10-10T16:39:15.387156+00:00",
+    "codeExact4AndPreExecutionExact8": "시작·종료 SHA-256이 일치합니다.",
+    "inputBindingsParentAndEngines": "시작·종료 바이트가 일치합니다.",
+    "namespaceUnusedAtEnd": true
+  },
+  "priorReviewReuse": {
+    "unchangedScriptInterpretation": "bounded-native-read-files-code-and-preexecution-review-r1.json",
+    "currentKernelCode": "bounded-native-read-effect-code-review-r2.json의 kernel SHA와 일치합니다.",
+    "currentResourceCode": "bounded-native-read-auxiliary-code-review-r1.json의 resource SHA와 일치합니다.",
+    "r4PhysicalResultProvesCurrentBytes": false
+  },
+  "limits": [
+    "검토자는 probe, Bun, 테스트, Native, Main, GUI, provider, server, build를 실행하지 않았습니다.",
+    "파일 수정, ledger 작성, 위임, 구현 또는 self-approval을 하지 않았습니다. Main이 보고서를 저장합니다.",
+    "저장된 테스트 로그를 확인했습니다. 해당 테스트 실행을 직접 관찰하지 않았습니다.",
+    "시작·종료 hash 일치는 OS sandbox 또는 중간 change-and-restore 방지를 증명하지 않습니다.",
+    "실제 store, Documents, private originals는 실행 대상이 아닙니다.",
+    "이 결과는 final full18/F09 승인, Native activation, service 설치 또는 Task/mode 권한 부여가 아닙니다."
+  ]
+}

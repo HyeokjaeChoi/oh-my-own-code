@@ -1,0 +1,21 @@
+✖ actual child and fixed Skill plugin transitive source closure stage together without engine execution (525.586333ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 734.551
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/stage-event-host.test.mjs:459:1
+✖ actual child and fixed Skill plugin transitive source closure stage together without engine execution (525.586333ms)
+  Error: Unrecognized event host resource import graph
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:238:17
+      at async Promise.all (index 29)
+      at async stageEventHost (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:224:23)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.test.mjs:492:22)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

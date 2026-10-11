@@ -1,0 +1,690 @@
+{
+  "schemaVersion": 2,
+  "scope": {
+    "features": ["F-01", "F-02", "F-03", "F-04"],
+    "crossCutting": ["section4", "section7.scenario1", "section7.scenario2", "section7.scenario5", "section7.scenario6"],
+    "purpose": "사실과 근거 회수. 독립 최종 수용 판정, 설계 선택, 범위 축소 또는 예외 승인이 아님.",
+    "execution": "파일 읽기와 hash 비교만 수행. 파일 수정, run 시작·종료, 테스트, build, Native, provider, UI, 외부 실행 없음."
+  },
+  "binding": {
+    "plan": "docs/runs/full-product-coverage-audit/plan.md",
+    "planRevision": 1,
+    "planSha256": "014d2785b87eefbc0b7a5e0ce04fa6fd168e1c21c5323ea2f315789d4aed5e73",
+    "input": "docs/runs/full-product-coverage-audit/input.json",
+    "packet": "docs/runs/full-product-coverage-audit/research-packet-r1.json",
+    "sourceFreeze": "docs/runs/git-branch-restore/source-freeze-r1.json",
+    "sourceSha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "inventoryVerification": {
+      "files": 688,
+      "checks": ["파일 존재", "파일 종류", "symlink 아님", "sha256 일치", "mode 일치"],
+      "drift": [],
+      "repeatedBeforeReturn": true
+    },
+    "prd": {
+      "path": "docs/product/prd.md",
+      "version": "0.6",
+      "sha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3",
+      "hashMatched": true
+    },
+    "predecessor": {
+      "path": "docs/runs/git-branch-restore/run.json",
+      "status": "complete",
+      "codeReview": "docs/runs/git-branch-restore/final-code-review-r1.json",
+      "renderReview": "docs/runs/git-branch-restore/final-render-review-r1.json",
+      "recordedVerdicts": ["pass", "pass"],
+      "reviewSourcePinMatched": true,
+      "limits": "해당 branch/restore 범위만 확정한다. 전체 F-11 또는 전체 18개 기능 완료 근거가 아니다."
+    }
+  },
+  "sharedEvidenceLimits": {
+    "historicalRuntime": "P7 native-r5, hidden-ui-r5, lifecycle와 preflight 보고서는 실제 과거 실행 근거다. P7와 preflight의 build input inventory를 현재 파일과 비교하면 workbench-service, registry, contract, Main, controller, store 등 공유 파일이 달라졌다. 과거 실행을 현재 전체 경로의 실행 통과로 승격하지 않았다.",
+    "currentRegression": {
+      "path": "docs/runs/git-branch-restore/run.json",
+      "observation": "현재 pin의 unit check는 exit_code 0이다. unit-argv-r1.json에는 registry, journal, admission, storage-integration, service, contract, store 등의 suite가 포함된다.",
+      "limits": "mock·fixture 회귀 근거다. 실제 병렬 provider 실행, OS picker 조작, worktree 생성·삭제 또는 전체 재시작 UI 실행을 증명하지 않는다."
+    },
+    "platform": {
+      "requirement": "docs/decisions/0002-desktop-runtime.md:7",
+      "observation": "제품 대상은 macOS와 Windows다. 확인한 Native 실행 보고서는 darwin/arm64다.",
+      "sourceRef": "apps/desktop-app/src/host/owner-lifetime.mjs:149",
+      "limits": "현재 lifetime witness의 supported 조건은 darwin/arm64다. Windows 동작을 macOS 결과에서 추론할 수 없다."
+    },
+    "absenceClosure": "작업 공간 화면 → controller → transport → preload → IPC → closed request validator → service execute → registry 또는 Native 호출까지 추적했다. apps/local-bridge/src/server.ts:514의 별도 HTTP 경로는 fixture snapshot/events를 반환한다. packages/contracts의 workspace.delete 문자열은 desktop 물리 삭제 실행 연결이 아니다."
+  },
+  "groups": [
+    {
+      "id": "F-01",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 36},
+      "clauses": [
+        {
+          "clauseIndex": 0,
+          "exactClause": "폴더 선택 또는 경로 입력으로 기존 일반 폴더, Git 저장소, 기존 워크트리를 등록한다.",
+          "status": "source_partial",
+          "callTrace": "WorkbenchPage 폴더 가져오기 → mutate(workspace.import) → transport.mutate → desktopBridge.workbench → desktop:v2:workbench → service.handle/execute → pickDirectory → canonicalDirectory → registry.reserve(imported) → addWorkspace.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 197, "observation": "폴더 가져오기 메뉴는 인자 없는 workspace.import를 보낸다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 207, "observation": "workspace.import는 추가 인자를 받지 않는다. path 입력 연결이 없다."},
+            {"path": "apps/desktop-app/src/main.mjs", "line": 447, "observation": "pickDirectory는 Electron openDirectory dialog를 사용한다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4049, "observation": "선택 경로를 canonicalize하여 등록한다. Git/worktree 사전 분류 호출은 없다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/desktop-session-lifecycle/electron-evidence.json",
+              "observation": "실제 Electron에서 untrusted import와 파일 탐색을 관측했다.",
+              "applicability": "과거 macOS Electron·sidecar 실행.",
+              "limits": "picker는 test dialog로 대체했다. 현재 pin, 직접 경로 입력, 일반 폴더·저장소·외부 worktree 세 종류의 분류는 증명하지 않는다."
+            }
+          ],
+          "gaps": ["직접 경로 입력 UI/API가 없다.", "Git 저장소와 기존 worktree의 유형·metadata를 확인하는 import 경로가 없다."]
+        },
+        {
+          "clauseIndex": 1,
+          "exactClause": "원본·브랜치·절대 경로·쓰기 가능 상태를 표시하고 중복 경로를 하나의 대상으로 식별한다.",
+          "status": "source_partial",
+          "callTrace": "canonicalDirectory(realpath) → registry.reserve → reservation apply → addWorkspace → base DTO → 위치·보관 정보. durable reserve가 addWorkspace의 기존 경로 검색보다 먼저 실행된다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/host/workbench-files.mjs", "line": 17, "observation": "realpath와 directory 여부를 확인한다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 413, "observation": "새 workspace reservation의 canonicalPath가 기존 항목과 같으면 identity_conflict를 발생시킨다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 1781, "observation": "addWorkspace에는 기존 동일 path 반환 코드가 있지만 durable import는 먼저 reserve를 호출한다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2147, "observation": "durable workspace DTO의 kind는 항상 folder다."},
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 615, "observation": "전체 경로·종류·신뢰를 표시한다. 원본 저장소·branch·writability 항목은 없다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": [
+            "절대 경로는 표시한다. 원본·branch·쓰기 상태는 import 결과에 연결되지 않았다.",
+            "durable 중복 import는 기존 항목 열기 전에 reservation에서 거절될 것으로 소스가 나타낸다. 실제 반복 import와 symlink alias의 결과·저장소 상태를 Main이 확인해야 한다.",
+            "중복 항목 생성 차단과 기존 대상 식별·열기 안내를 구분해야 한다."
+          ]
+        },
+        {
+          "clauseIndex": 2,
+          "exactClause": "없는 경로·깨진 worktree·접근 거절은 이유와 복구 동작을 제공한다.",
+          "status": "source_partial",
+          "callTrace": "registry 열기 → 기록 경로 canonicalDirectory 검사 → unavailablePaths/pathReason → recoveryDTO → renderer recoveryMessages. 최초 import의 canonicalDirectory 실패는 service error 처리로 이동한다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 946, "observation": "저장 경로를 재검사하고 실패 이유를 기록한다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4053, "observation": "최초 import 경로 확인은 registry reservation 전에 수행한다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4425, "observation": "appCode가 없는 오류는 RUNTIME_ERROR로 반환한다."},
+            {"path": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts", "line": 2005, "observation": "path_missing·path_denied 등의 문구와 변경 차단 상태가 있다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/durable-workbench-storage/evidence/hidden-ui-r5/ui-states/ui-states-evidence.json",
+              "observation": "missing-path·denied-path 문구와 mutation 차단을 관측했다.",
+              "applicability": "과거 macOS의 실제 hidden renderer.",
+              "limits": "경로 상태는 synthetic host DTO다. 실제 접근 거절·깨진 worktree 검사나 수정·재연결 동작의 실행 근거가 아니다."
+            }
+          ],
+          "gaps": ["깨진 worktree metadata 검사 연결이 없다.", "문제 경로 수정·재연결 복구 동작이 없다.", "최초 import 실패와 저장된 경로의 recovery 표현이 다르다."]
+        },
+        {
+          "clauseIndex": 3,
+          "exactClause": "Import만으로 파일 이동, Git 초기화, 프로젝트 스크립트 실행을 하지 않는다.",
+          "status": "runtime_unverified",
+          "callTrace": "workspace.import → picker → realpath → app registry reservation/completion. Native session.create는 별도 session.create에서 confirmTrust 뒤 호출한다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4053, "observation": "import 분기는 canonicalDirectory와 등록만 호출한다. createFolder 또는 Native session 생성은 호출하지 않는다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4108, "observation": "Native 활성화는 별도 세션 생성과 trust 확인 뒤 수행한다."},
+            {"path": "apps/desktop-app/src/main.mjs", "line": 701, "observation": "trust dialog는 세션 열기가 project configuration/plugin을 로드할 수 있음을 설명한다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/durable-workbench-storage/evidence/native-r5/native-storage-evidence.json",
+              "observation": "folder-import-sentinels에서 import된 파일과 unregister 후 파일 보존을 관측했다.",
+              "applicability": "과거 packaged macOS·실제 service/Native·합성 폴더.",
+              "limits": "현재 공유 소스가 달라졌다. import 중 Git 초기화와 plugin/setup 실행 횟수를 모두 검증한 현재 근거는 아니다."
+            }
+          ],
+          "gaps": ["현재 pin에서 import 전후 파일·Git metadata와 plugin/setup sentinel을 비교하는 실행 근거가 필요하다."]
+        }
+      ]
+    },
+    {
+      "id": "F-02",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 37},
+      "clauses": [
+        {
+          "clauseIndex": 0,
+          "exactClause": "경로 지정 시 선택한 위치를 사용한다.",
+          "status": "source_missing",
+          "callTrace": "새 작업 공간 form → workspace.create(name?) → closed validator → registry managed reservation → Documents/OhMyOwnCode/{appSessionId} → materializeManaged.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 243, "observation": "생성 요청에는 선택적 name만 있다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 208, "observation": "workspace.create는 targetPath·parentPath를 허용하지 않는다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1525, "observation": "managed 요청의 canonicalPath 입력을 금지하고 Documents 아래 경로를 만든다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["현재 durable 생성 경로에는 사용자 지정 목적지를 전달할 수 없다."]
+        },
+        {
+          "clauseIndex": 1,
+          "exactClause": "미지정 시 작업 루트 아래 새 자식 디렉터리를 자동 생성한다.",
+          "status": "source_partial",
+          "callTrace": "prepareDurableNamespace(app.getPath(documents)) → registry documentsPath → reserve managed → materializeManaged mkdir.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/ephemeral-profile.mjs", "line": 47, "observation": "OS Documents 경로를 직접 사용한다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1532, "observation": "Documents/OhMyOwnCode/{appSessionId}를 정한다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1989, "observation": "예약 경로를 mkdir한다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/durable-workbench-storage/evidence/native-r5/native-storage-evidence.json",
+              "observation": "bootstrap-once와 managed 폴더 sentinel 보존을 관측했다.",
+              "applicability": "과거 macOS packaged 합성 namespace.",
+              "limits": "사용자가 선택한 작업 루트 또는 최초 루트 선택 흐름의 근거가 아니다."
+            }
+          ],
+          "gaps": ["사용자가 선택·저장하는 작업 루트와 최초 지정 흐름이 없다.", "Documents 기반의 좁은 구현과 원래 PRD 작업 루트 요구의 조정은 Main 결정이 필요하다."]
+        },
+        {
+          "clauseIndex": 2,
+          "exactClause": "검증된 SDK 기본 네이밍을 우선하고 없으면 `yyyy-mm-dd-<uuid-v7>`을 사용한다.",
+          "status": "source_partial",
+          "callTrace": "production registry 분기 → randomUUID appSessionId → 폴더명으로 사용. registry 없는 분기만 createFolder → defaultFolderName → uuidV7를 호출한다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4031, "observation": "registry가 있으면 legacy createFolder를 거치지 않는다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1490, "observation": "appSessionId를 randomUUID로 만든다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1532, "observation": "날짜 없이 appSessionId 자체를 폴더명에 사용한다."},
+            {"path": "apps/desktop-app/src/host/workbench-files.mjs", "line": 137, "observation": "UUIDv7와 현지 날짜 fallback helper는 존재한다. 현재 durable 생성 경로에는 연결되지 않는다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["durable 폴더명은 날짜+UUIDv7 규칙이 아니다.", "검증된 SDK 기본 네이밍 선택·호출 경로가 없다.", "helper 존재를 production 생성 동작으로 계산하면 안 된다."]
+        },
+        {
+          "clauseIndex": 3,
+          "exactClause": "일반 폴더 생성과 기존 저장소의 워크트리 생성을 구분한다.",
+          "status": "source_partial",
+          "callTrace": "생성 form → workspace.create(name?) → managed mkdir → kind:folder. closed schema에 worktree 생성 요청이 없다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 238, "observation": "일반 managed 폴더 생성 form만 있다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 208, "observation": "kind·sourceProjectId·startingRef·newBranch 입력이 없다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4031, "observation": "durable 생성은 registry.materializeManaged로 연결된다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1989, "observation": "실제 생성 effect는 mkdir다. worktree API 호출이 아니다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["새 worktree 선택·생성의 제품 경로가 없다.", "Git branch 생성 기능은 worktree 생성 기능을 대체하지 않는다."]
+        },
+        {
+          "clauseIndex": 4,
+          "exactClause": "결과 경로·브랜치를 확인하며 충돌·권한·설정 실패를 처리한다.",
+          "status": "source_partial",
+          "callTrace": "managed reservation → lstat 충돌 확인 → dispatch journal → 부모 canonical 재검사 → mkdir → 대상 canonical 재검사 → workspace DTO.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1975, "observation": "기존 대상이 있으면 path_conflict로 거절한다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1987, "observation": "flush 뒤 부모를 다시 검사하고 mkdir 뒤 대상 경로를 확인한다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1993, "observation": "오류를 경로 recovery 이유로 보존한다."},
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 615, "observation": "생성 후 전체 경로를 확인할 수 있다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["branch 결과 확인이 없다.", "setup 실행·승인·created_setup_failed 구분이 없다.", "현재 pin에서 충돌·접근 거절·동시 생성의 실제 파일 부작용 검증이 필요하다."]
+        },
+        {
+          "clauseIndex": 5,
+          "exactClause": "자세한 규칙은 4절.",
+          "status": "source_partial",
+          "callTrace": "production managed 생성은 고정 Documents reservation/mkdir 경로다. section4의 root·SDK strategy·worktree·setup 입력은 closed API에 없다.",
+          "sourceRefs": [
+            {"path": "docs/product/prd.md", "line": 61, "observation": "작업 루트·SDK 이름·UUIDv7 규칙을 요구한다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 208, "observation": "생성 API는 name만 허용한다."},
+            {"path": "docs/runs/durable-workbench-storage/storage-contract.md", "line": 10, "observation": "좁은 durable 계약은 Documents/{stableAppSessionId}를 지정한다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["section4의 상세 차이는 crossCutting.section4에 기록했다.", "durable 계약의 수용이 원래 PRD의 나머지 생성 요구를 삭제한 근거는 아니다."]
+        }
+      ]
+    },
+    {
+      "id": "F-03",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 38},
+      "clauses": [
+        {
+          "clauseIndex": 0,
+          "exactClause": "‘목록에서 제거’, ‘대화 기록 삭제’, ‘워크트리/폴더 실제 삭제’를 별개 동작으로 제공한다.",
+          "status": "source_partial",
+          "callTrace": "목록 제거 → workspace.remove → registry.unregister/tombstone. 대화 삭제 → session.remove → confirmSessionRemoval → Native session.remove → verifyRemoved. 물리 삭제의 UI/API/execute 분기는 없다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 214, "observation": "목록에서 제거 · 파일 유지 메뉴가 있다."},
+            {"path": "apps/desktop-app/src/renderer/features/sessions/index.tsx", "line": 248, "observation": "대화 삭제 메뉴는 session.remove를 보낸다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 206, "observation": "session.remove와 workspace.remove는 있다. 물리 삭제 요청은 없다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4087, "observation": "workspace.remove는 등록 관계를 제거한다. 폴더 제거를 호출하지 않는다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3856, "observation": "session.remove는 Native 대화 기록 제거를 호출한다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/durable-workbench-storage/evidence/native-r5/native-storage-evidence.json",
+              "observation": "importedSessionRemovalPreservesFiles와 unregisterPreservesFiles를 관측했다.",
+              "applicability": "과거 macOS·실제 service/Native·합성 파일 sentinel.",
+              "limits": "물리 삭제의 실행 근거가 아니다. 현재 공유 소스의 전체 재실행도 아니다."
+            }
+          ],
+          "gaps": ["세 동작 중 물리 삭제 동작이 없다."]
+        },
+        {
+          "clauseIndex": 1,
+          "exactClause": "실제 삭제는 대상 절대 경로·변경 사항·영향받는 세션을 보여주고 확인받는다.",
+          "status": "source_missing",
+          "callTrace": "작업 공간 메뉴와 closed request schema에는 물리 삭제가 없다. 존재하는 confirmSessionRemoval은 대화 삭제만 설명한다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 195, "observation": "작업 공간 메뉴는 import·create·위치 정보·unregister로 닫힌다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 272, "observation": "등록되지 않은 operation과 추가 인자를 거절한다."},
+            {"path": "apps/desktop-app/src/main.mjs", "line": 688, "observation": "대화 삭제 확인은 프로젝트 파일과 폴더를 유지한다고 명시한다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["물리 삭제 preview/checkRevision·dirty 목록·영향받는 세션·확인 실행 경로가 없다."]
+        },
+        {
+          "clauseIndex": 2,
+          "exactClause": "활성 작업·터미널·dev server 또는 미커밋·untracked 변경이 있으면 일반 삭제를 막는다.",
+          "status": "source_missing",
+          "callTrace": "workspace.remove에는 세션 lock/status와 Native 등록 guard가 있다. 이 분기는 unregister만 수행한다. 물리 삭제 요청과 최종 Git/process 검사 경로는 없다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4064, "observation": "Native agent/skill/MCP와 활성 세션 조건으로 unregister를 막는다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4087, "observation": "guard 뒤 effect는 registry.unregister다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 209, "observation": "workspace.remove 외 물리 삭제 API가 없다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["unregister BUSY guard를 물리 삭제 안전성 근거로 사용할 수 없다.", "dirty/untracked·터미널·server·다른 세션·최종 재검사와 경쟁 쓰기 차단이 물리 삭제에 연결되지 않았다."]
+        },
+        {
+          "clauseIndex": 3,
+          "exactClause": "취소 시 데이터는 유지된다.",
+          "status": "source_partial",
+          "callTrace": "session.remove → idle/descendant 검사 → confirmSessionRemoval → 취소면 CANCELLED → Native remove 미호출. 물리 삭제 취소 경로는 없다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3845, "observation": "확인 취소는 Native session.remove 전에 종료된다."},
+            {"path": "apps/desktop-app/src/main.mjs", "line": 694, "observation": "대화 삭제 dialog의 기본값과 cancelId는 취소다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/desktop-session-lifecycle/session-lifecycle-evidence.json",
+              "observation": "대화 삭제 취소 재전송은 다시 묻지 않고, 확인된 삭제 재전송은 다시 제거하지 않으며 파일 sentinel이 유지됐다.",
+              "applicability": "과거 macOS·실제 SDK/service와 Electron.",
+              "limits": "Native dialog는 test substitution이다. 물리 삭제 취소와 현재 durable 통합 전체의 근거가 아니다."
+            }
+          ],
+          "gaps": ["물리 삭제 취소의 데이터 보존 근거가 없다."]
+        },
+        {
+          "clauseIndex": 4,
+          "exactClause": "자세한 규칙은 4절.",
+          "status": "source_partial",
+          "callTrace": "archive는 metadata 변경, unregister는 등록 제거, session.remove는 Native 대화 제거다. 물리 삭제 전략 경로가 없다.",
+          "sourceRefs": [
+            {"path": "docs/product/prd.md", "line": 67, "observation": "보호 경로·활성 소유·최종 상태 재검사를 요구한다."},
+            {"path": "docs/product/prd.md", "line": 69, "observation": "비강제 기본값·전략 실패·branch 보존·삭제 후 읽기 전용을 요구한다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4064, "observation": "현재 workspace 제거는 unregister다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["section4 물리 삭제 보호·전략·force·삭제 후 상태 요구는 구현 연결이 없다."]
+        }
+      ]
+    },
+    {
+      "id": "F-04",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 39},
+      "clauses": [
+        {
+          "clauseIndex": 0,
+          "exactClause": "생성, 이름 변경, 검색, 고정, 보관·복원, 삭제, 최근 작업 재열기와 읽지 않은 상태를 제공한다.",
+          "status": "source_partial",
+          "callTrace": "새 세션 → session.create/Native create. SessionNavigation → title 검색·pin 정렬·rename/archive/remove → lifecycle → Native update/remove 또는 registry metadata. snapshot → 저장된 세션 목록.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 141, "observation": "새 세션 생성 호출이 있다."},
+            {"path": "apps/desktop-app/src/renderer/features/sessions/navigation.ts", "line": 2, "observation": "workspace·archive·제목으로 필터하고 pin으로 정렬한다. 최근 사용 순서 처리는 없다."},
+            {"path": "apps/desktop-app/src/renderer/features/sessions/index.tsx", "line": 204, "observation": "이름 변경·고정·보관/복원·분기·대화 삭제 메뉴가 있다. unread 표시/조작은 없다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 694, "observation": "세션 DTO는 id/workspaceId/title/status와 pin/archive/parent만 가진다. unread·최근 열기 metadata가 없다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 982, "observation": "hydrate 뒤 기본 선택은 첫 workspace/session이다. 마지막으로 연 작업을 복원하는 경로가 아니다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/frontend-architecture-redesign/evidence/p3-r2/sessions/session-lifecycle-evidence.json",
+              "observation": "검색·rename·pin·archive/restore·대화 삭제를 실제 renderer/SDK에서 관측했다.",
+              "applicability": "과거 macOS 실행.",
+              "limits": "unread·최근 작업 재열기는 포함하지 않는다. 현재 service와 store 전체의 실행 근거도 아니다."
+            }
+          ],
+          "gaps": ["읽지 않은 상태의 저장·조회·표시·읽음 처리 연결이 없다.", "최근 사용 목록과 마지막 작업 재열기 metadata·복원 경로가 없다."]
+        },
+        {
+          "clauseIndex": 1,
+          "exactClause": "최소 두 세션을 다른 경로에서 동시에 실행하고 전환해도 입력·결과·승인 대상이 섞이지 않는다.",
+          "status": "runtime_unverified",
+          "callTrace": "선택 → selection generation 변경 → workspace/session별 draft key → mutation에 원래 대상 고정 → service.session(wid,sid) 검증 → Native sessionID. refresh는 해당 session의 messages/permissions를 조회하고 permission.respond는 sessionID/requestID를 재검사한다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts", "line": 3420, "observation": "mutation key와 입력 초안을 workspace/session에 묶는다."},
+            {"path": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts", "line": 4770, "observation": "선택 generation을 증가시키고 이전 snapshot·catalog를 비운다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 991, "observation": "session과 workspace 소속을 검사한다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2277, "observation": "해당 Native sessionID로 상태·메시지·승인을 재조회한다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4347, "observation": "승인 응답 전에 원래 sessionID/requestID의 pending 여부를 재검사한다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/desktop-session-lifecycle/electron-evidence.json",
+              "observation": "두 실제 sidecar 세션의 identity와 전환 시 별도 assistant-ui draft를 관측했다.",
+              "applicability": "과거 macOS Electron·실제 sidecar.",
+              "limits": "provider 실행 없음. 다른 두 경로에서 실제 작업을 동시에 실행하고 결과·승인을 전환한 근거는 아니다."
+            },
+            {
+              "path": "docs/runs/git-branch-restore/run.json",
+              "observation": "현재 pin의 store/service/admission 관련 unit check가 exit_code 0이다.",
+              "applicability": "현재 소스의 fixture 회귀.",
+              "limits": "실제 두 provider 작업의 병렬 실행과 승인 격리를 증명하지 않는다."
+            }
+          ],
+          "gaps": ["서로 다른 두 경로의 실제 동시 실행·전환·결과·승인 대상 격리 실행 근거가 필요하다."]
+        },
+        {
+          "clauseIndex": 2,
+          "exactClause": "기록 분기와 빈 새 작업을 구분한다.",
+          "status": "runtime_unverified",
+          "callTrace": "새 세션 → session.create → Native create(location). 전체 대화 기록으로 분기 → session.fork → Native fork → parentSessionId·Native fork.sessionID 검증. 빈 세션 fork는 typed empty_session으로 거절한다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 283, "observation": "새 세션 동작이 있다."},
+            {"path": "apps/desktop-app/src/renderer/features/sessions/index.tsx", "line": 241, "observation": "전체 대화 기록으로 분기라는 별도 동작이 있다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3768, "observation": "Native fork와 빈 기록 typed error를 처리한다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 1814, "observation": "durable fork의 Native lineage를 검사한다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+              "observation": "정상 종료·SIGKILL 뒤 두 세션의 exactForkLineage와 exactHistory를 확인했다.",
+              "applicability": "실제 public SDK 합성 기록과 production preflight helper, macOS.",
+              "limits": "production Main/UI/provider를 실행하지 않았다. 현재 변경된 service·store의 새 작업/분기 화면 전체 실행 근거는 아니다."
+            }
+          ],
+          "gaps": ["현재 pin의 화면에서 빈 새 작업과 전체 기록 분기를 각각 실행한 근거가 필요하다."]
+        },
+        {
+          "clauseIndex": 3,
+          "exactClause": "재시작 후 작업·경로 연결을 복원하고 사라진 경로는 명시한다.",
+          "status": "runtime_unverified",
+          "callTrace": "durable journal → registry readView → 경로 재검사 → hydrateRegistry → Main lifetime owner/preflight → Native 시작 → session identity/location/lineage 대조 → snapshot → recovery 문구.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 946, "observation": "저장 경로가 없어지거나 바뀌면 resource recovery를 만든다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 921, "observation": "workspace/session/native ID 연결을 registry에서 복원한다."},
+            {"path": "apps/desktop-app/src/main.mjs", "line": 407, "observation": "현재 Main은 Native preflight를 만들고 check 통과 뒤 sidecar를 시작한다."},
+            {"path": "apps/desktop-app/src/host/native-preflight.mjs", "line": 659, "observation": "nonfresh namespace의 복사본·mapping·pending 상태를 검사한다. 과거 fresh-only hold와 다르다."},
+            {"path": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts", "line": 2005, "observation": "사라진 작업 공간 폴더를 명시하고 변경을 막는다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+              "observation": "normal-production-preflight-reopen과 sigkill-production-preflight-reopen에서 exactSessions=2, exactHistory, exactRootAdmission, exactOriginalReceipts, exactForkLineage, eventHistoryProved를 확인했다.",
+              "applicability": "실제 macOS Native·production preflight helper·합성 저장소.",
+              "limits": "공유 source bytes 일부가 이후 변경됐다. production Main/UI/provider·Windows·전원 손실 검증은 아니다."
+            },
+            {
+              "path": "docs/runs/durable-workbench-storage/evidence/hidden-ui-r5/ui-states/ui-states-evidence.json",
+              "observation": "missing-path 문구와 mutation 차단을 관측했다.",
+              "applicability": "과거 실제 hidden renderer.",
+              "limits": "synthetic DTO다. 실제 폴더 제거 후 앱 재시작 통합 근거는 아니다."
+            }
+          ],
+          "gaps": ["현재 pin의 저장 경로·세션 복원과 실제 missing path를 함께 검증해야 한다.", "Windows 실행 근거가 없다."]
+        }
+      ]
+    }
+  ],
+  "crossCutting": [
+    {
+      "id": "section4",
+      "quoteMode": "아래 exactClause는 각 PRD 문단의 짧은 원문 발췌다. sourceRefs와 gaps는 해당 문단 전체의 할당된 경로·생성·삭제 요구를 다룬다.",
+      "clauses": [
+        {
+          "clauseIndex": 0,
+          "exactClause": "사용자가 지정한 폴더는 그 위치에 연결한다.",
+          "status": "source_partial",
+          "requirementRef": {"path": "docs/product/prd.md", "line": 59},
+          "callTrace": "picker → realpath → imported reservation → untrusted workspace. 별도 session.create의 trust 뒤 Native 활성화.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4049, "observation": "picker에는 작업 루트 내부 제한이 없고 import 경로는 이동하지 않는다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1534, "observation": "import된 경로를 canonicalize하여 기록한다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 413, "observation": "동일 canonical path의 새 reservation은 거절된다."},
+            {"path": "apps/desktop-app/src/main.mjs", "line": 701, "observation": "project/plugin 활성화는 별도 trust dialog로 설명한다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["직접 경로 입력·Git/worktree 사전 검사·중복 대상 열기 안내가 없다.", "symlink alias·경로 교체·외부 worktree·무실행 import의 현재 실행 근거가 필요하다."]
+        },
+        {
+          "clauseIndex": 1,
+          "exactClause": "먼저 선택한 작업 루트를 사용한다.",
+          "status": "source_partial",
+          "requirementRef": {"path": "docs/product/prd.md", "line": 61},
+          "callTrace": "OS Documents resolver → managed appSessionId reservation → 고정 경로 mkdir. legacy createFolder의 날짜/UUIDv7는 production registry 분기에서 우회된다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/ephemeral-profile.mjs", "line": 47, "observation": "작업 루트 선택 대신 OS Documents를 사용한다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1490, "observation": "randomUUID ID를 먼저 예약한다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1532, "observation": "이 ID가 managed 폴더명이다."},
+            {"path": "apps/desktop-app/src/host/workbench-files.mjs", "line": 145, "observation": "현지 날짜+UUIDv7 helper는 registry 없는 생성 경로에서 사용된다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["최초 루트 선택·저장·명시 목적지·SDK 네이밍·production 날짜/UUIDv7 연결이 없다.", "name 입력은 durable 폴더 basename을 바꾸지 않는다."]
+        },
+        {
+          "clauseIndex": 2,
+          "exactClause": "충돌 시 기존 폴더를 덮어쓰지 않는다.",
+          "status": "source_partial",
+          "requirementRef": {"path": "docs/product/prd.md", "line": 63},
+          "callTrace": "serialized registry operation → reserved ID → lstat → journal dispatch flush → 부모 재검사 → 비재귀 mkdir → 경로 재검사.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1939, "observation": "생성 effect를 직렬화하고 같은 dispatch의 재실행을 금지한다."},
+            {"path": "apps/desktop-app/src/host/workspace-registry.mjs", "line": 1975, "observation": "기존 대상은 path_conflict다. 다른 ID로 자동 재시도하지 않는다."},
+            {"path": "apps/desktop-app/src/host/workbench-files.mjs", "line": 151, "observation": "최대 5회 fallback 재시도는 legacy createFolder에만 있다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["durable 경로의 충돌 시 새 UUID 제한 재시도가 없다.", "SDK strategy의 실행 전 목적지 강제와 strategy 실패 구분은 연결되지 않았다.", "부모 경로 재검사를 외부 경쟁 쓰기 전체 차단으로 해석하면 안 된다."]
+        },
+        {
+          "clauseIndex": 3,
+          "exactClause": "워크트리는 소스 저장소, 시작 ref, 새 branch 여부를 표시하고 선택한다.",
+          "status": "source_missing",
+          "requirementRef": {"path": "docs/product/prd.md", "line": 65},
+          "callTrace": "생성 UI → workspace.create(name?) → closed schema → managed mkdir. worktree source/ref/branch/setup/initGit를 받거나 실행하는 분기가 없다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 243, "observation": "생성 form은 name만 보낸다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 208, "observation": "source/ref/newBranch/setup/initGit 입력이 없다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4038, "observation": "생성은 registry.materializeManaged로 연결된다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["HEAD 제안·새 branch 선택·미커밋/ignored 복사 선택·setup 확인·준비 실패 상태·Git 초기화 선택이 없다."]
+        },
+        {
+          "clauseIndex": 4,
+          "exactClause": "저장소 원본 루트는 워크트리 삭제 대상으로 삼지 않는다.",
+          "status": "source_missing",
+          "requirementRef": {"path": "docs/product/prd.md", "line": 67},
+          "callTrace": "작업 공간 메뉴 → workspace.remove → Native 등록/활성 session guard → unregister. 물리 삭제 inspector와 실행 API가 없다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 209, "observation": "등록 제거만 노출한다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4064, "observation": "현재 guard는 unregister를 위한 것이다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4087, "observation": "파일시스템 제거를 실행하지 않는다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["원본 repo·home·filesystem root·작업 루트·중첩 프로젝트 보호를 물리 삭제 경로에서 확인할 수 없다.", "다른 세션과 child/terminal/server 종료 확인·최종 dirty 검사·경쟁 쓰기 차단이 없다."]
+        },
+        {
+          "clauseIndex": 5,
+          "exactClause": "기본은 비강제 삭제다.",
+          "status": "source_partial",
+          "requirementRef": {"path": "docs/product/prd.md", "line": 69},
+          "callTrace": "archive → metadata. unregister → app 등록 제거. history delete → Native session.remove. 물리 삭제 strategy·force·branch 삭제·삭제 후 기록 상태 연결은 없다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3765, "observation": "archive는 세션 metadata 변경이다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3856, "observation": "대화 삭제는 Native session.remove다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4087, "observation": "unregister는 디스크 삭제를 호출하지 않는다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/durable-workbench-storage/evidence/native-r5/native-storage-evidence.json",
+              "observation": "대화 삭제와 unregister 후 project sentinel 보존을 확인했다.",
+              "applicability": "과거 macOS 합성 자료.",
+              "limits": "force·전략 실패·branch 유지·물리 삭제 후 읽기 전용 검증은 아니다."
+            }
+          ],
+          "gaps": ["force의 별도 경고·경로 재확인, 제거 strategy, 실패 시 재귀 삭제 금지, branch 기본 유지, 물리 삭제 후 기록 표시의 실행 경로가 없다."]
+        }
+      ]
+    },
+    {
+      "id": "section7",
+      "scopeLimit": "지정된 네 시나리오의 작업 공간·세션 연결을 추적했다. 다른 담당 범위의 최종 수용 판정은 하지 않았다.",
+      "clauses": [
+        {
+          "clauseIndex": 0,
+          "scenarioNumber": 1,
+          "exactClause": "이름·경로를 비운 신규 작업 → 올바른 루트와 이름 생성 → 대화 → 파일/도구 작업 → 결과 프리뷰 → 재시작 후 재열기.",
+          "status": "source_partial",
+          "requirementRef": {"path": "docs/product/prd.md", "line": 105},
+          "callTrace": "workspace.create → managed Documents 폴더 → 별도 session.create/trust → message.send → Native prompt. 재시작은 registry hydrate와 Native preflight로 연결한다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4031, "observation": "빈 name으로 managed 폴더를 만들 수 있지만 선택 루트·날짜/UUIDv7 요구와 다르다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4116, "observation": "폴더 생성 뒤 세션 생성은 별도 Native 호출이다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2581, "observation": "대화는 해당 Native sessionID의 prompt로 보낸다."},
+            {"path": "apps/desktop-app/src/main.mjs", "line": 407, "observation": "재시작 시 preflight를 거친다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+              "observation": "합성 기록의 정상·SIGKILL 재열기와 mapping/history 보존을 확인했다.",
+              "applicability": "macOS helper/Native 범위.",
+              "limits": "빈 신규 작업에서 provider 대화·파일/도구·프리뷰·화면 재열기까지 이어진 단일 E2E가 아니다."
+            }
+          ],
+          "gaps": ["루트·이름 요구의 차이가 있다.", "전체 시나리오의 현재 pin 실제 화면 E2E와 Windows 근거가 없다."]
+        },
+        {
+          "clauseIndex": 1,
+          "scenarioNumber": 2,
+          "exactClause": "기존 저장소와 외부 worktree import → 새 worktree 두 개에서 병렬 세션 → 두 자식 위임 → 결과 회수 → diff/테스트/리뷰 → 명시적 commit.",
+          "status": "source_partial",
+          "requirementRef": {"path": "docs/product/prd.md", "line": 106},
+          "callTrace": "현재 import는 generic folder 등록이다. 생성은 managed mkdir다. 세션은 Native create와 session-scoped prompt로 연결한다. 새 worktree 두 개를 만드는 초기 단계가 없다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4049, "observation": "import의 Git/worktree 사전 분류가 없다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 208, "observation": "worktree 생성 source/ref/branch 요청이 없다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4116, "observation": "Native session은 지정 workspace 경로에 생성한다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/desktop-session-lifecycle/electron-evidence.json",
+              "observation": "두 실제 sidecar 세션 identity와 초안 분리를 확인했다.",
+              "applicability": "과거 macOS, provider 없음.",
+              "limits": "두 새 worktree·실제 병렬 실행·두 fresh child 위임·결과 회수·commit의 통합 근거가 아니다."
+            }
+          ],
+          "gaps": ["외부 worktree 인식과 새 worktree 두 개 생성 연결이 없다.", "두 세션의 실제 병렬 실행 근거가 없다.", "위임 이후 단계는 담당 연구 결과와 Main이 연결해야 한다. branch/restore 완료로 이 시나리오를 완료 처리하면 안 된다."]
+        },
+        {
+          "clauseIndex": 4,
+          "scenarioNumber": 5,
+          "exactClause": "dirty/untracked·활성 세션·경로 이탈·실패 전략에서 삭제 차단 → 명시적 종료/재확인 → 정상 삭제. 일반 폴더/원본 저장소/다른 세션의 자료 보존을 확인.",
+          "status": "source_missing",
+          "requirementRef": {"path": "docs/product/prd.md", "line": 109},
+          "callTrace": "현재 workspace 제거는 unregister다. closed validator에 물리 delete-check/delete가 없으므로 해당 preview·guard·strategy·정상 삭제로 이어지는 제품 경로가 없다.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 214, "observation": "목록 제거 메뉴는 파일 유지를 명시한다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 272, "observation": "미등록 물리 삭제 operation을 거절한다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4087, "observation": "제거 effect는 registry.unregister다."}
+          ],
+          "runtimeRefs": [],
+          "gaps": ["물리 삭제의 성공·차단·취소·실패 전략·보존 통합 근거가 없다.", "일반 폴더/원본 repo/다른 세션 자료 보존은 합성 저장소에서 실제 삭제 경로와 함께 검증해야 한다."]
+        },
+        {
+          "clauseIndex": 5,
+          "scenarioNumber": 6,
+          "exactClause": "연결 중단·프로세스 종료·앱 재시작·이중 승인 → 재연결과 상태 재조회 → 누락 표기. 이미 실행한 도구가 자동 재실행되지 않음을 확인.",
+          "status": "source_partial",
+          "requirementRef": {"path": "docs/product/prd.md", "line": 110},
+          "callTrace": "transport timeout → UNKNOWN_OUTCOME → controller operation.lookup(original epoch/id), 자동 mutation 재전송 없음. snapshot → Native 상태/messages/permissions 재조회. 재시작 → journal/owner witness/copied Native preflight. permission.respond → pending session/request 재검사.",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/shared/transport/index.ts", "line": 184, "observation": "mutation timeout은 UNKNOWN_OUTCOME으로 끝낸다. 자동 retry 호출은 없다."},
+            {"path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts", "line": 3245, "observation": "복원된 불명 요청은 원래 epoch/id로 읽기 조회한다. mutation payload를 재전송하지 않는다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2277, "observation": "선택 세션의 Native 상태와 기록을 재조회한다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4347, "observation": "승인 대상과 stale request를 재검사한다."},
+            {"path": "apps/desktop-app/src/host/native-preflight.mjs", "line": 685, "observation": "pending/inbox가 0인지 확인하고 mapping을 대조한다."}
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+              "observation": "정상·SIGKILL 재열기와 실제 public Native-only pending 생성 후 pending_inbox 거절·executorSpawns=0을 확인했다.",
+              "applicability": "macOS, 합성 public SDK 기록, production preflight helper.",
+              "limits": "provider 실행·production Main/UI·Windows 없음. 이중 승인과 실제 도구 부작용의 전체 통합 시나리오가 아니다."
+            },
+            {
+              "path": "docs/runs/durable-owner-lifetime/evidence/native-r4/owner-lifetime-evidence.json",
+              "observation": "정상·crash owner 종료와 live app/child·손상/누락 terminal의 재획득 차단을 확인했다.",
+              "applicability": "macOS lifetime witness와 합성 저장소.",
+              "limits": "lifetime 증거만으로 Native startup이나 도구 재실행 방지를 확정할 수 없다."
+            }
+          ],
+          "gaps": ["현재 session snapshot 경로에서 native event 구독·cursor·history_gap을 화면까지 연결한 근거가 없다.", "실제 도구 효과 한 번과 중단·재시작·이중 승인 이후 효과 횟수를 비교한 현재 통합 근거가 필요하다.", "pending 차단은 임의 자동 복구·resume 지원 근거가 아니다."]
+        }
+      ]
+    }
+  ],
+  "reconciliation": [
+    {
+      "concern": "Documents durable 생성과 전체 PRD",
+      "sourceRefs": [
+        {"path": "docs/runs/durable-workbench-storage/storage-contract.md", "line": 10, "observation": "Documents/OhMyOwnCode/{stableAppSessionId}, rename 시 경로 유지, 추가 세션/fork의 경로 공유를 지정한다."},
+        {"path": "docs/runs/durable-workbench-storage/plan.md", "line": 5, "observation": "full PRD F-01–18과 기존 플랫폼 결정을 유지한다고 명시한다."},
+        {"path": "docs/product/prd.md", "line": 61, "observation": "사용자 작업 루트와 날짜/UUIDv7 네이밍 요구가 남아 있다."}
+      ],
+      "fact": "좁은 durable 경로는 구현되어 있다. 원래 경로 선택·네이밍·worktree 요구의 삭제 또는 예외 승인 근거는 확인되지 않았다.",
+      "mainDecisionNeeded": "기존 durable identity를 보존하면서 남은 PRD 경로·이름 요구를 어떻게 충족할지 조정해야 한다."
+    },
+    {
+      "concern": "과거 fresh-only hold와 현재 복구",
+      "sourceRefs": [
+        {"path": "apps/desktop-app/src/main.mjs", "line": 407, "observation": "현재 Main은 copied Native preflight를 사용한다."},
+        {"path": "apps/desktop-app/src/host/native-preflight.mjs", "line": 659, "observation": "nonfresh mapping과 Native 복사본을 검사하는 경로가 있다."}
+      ],
+      "runtimeRefs": [
+        {
+          "path": "docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+          "observation": "실제 정상·SIGKILL 재열기와 pending 차단을 확인했다.",
+          "applicability": "해당 보고서의 macOS 합성 helper 실행.",
+          "limits": "과거 P7 fresh-only helper의 제한을 현재 Main 전체 제한으로 복사하면 안 된다. 반대로 이 결과를 현재 전체 제품 수용으로 확대할 수도 없다."
+        }
+      ]
+    }
+  ],
+  "prioritizedNextBoundedEvidenceChecks": [
+    {
+      "priority": 1,
+      "scope": "durable import 중복과 검사",
+      "check": "합성 일반 폴더·Git repo·외부 worktree·broken worktree·symlink alias를 준비한다. 동일 canonical 대상의 반복 import에서 기존 항목 반환, reservation 결과, registry recovery 상태와 파일/plugin/setup sentinel을 확인한다.",
+      "reason": "reserve의 동일 경로 거절이 addWorkspace의 기존 대상 반환보다 먼저 발생한다."
+    },
+    {
+      "priority": 2,
+      "scope": "경로·네이밍 요구 조정",
+      "check": "Main이 Documents durable 계약과 원래 PRD를 조정한 뒤 명시 목적지, 최초 작업 루트, 빈 이름, 현지 날짜/UUIDv7, 충돌·동시 생성·권한 거절을 하나의 생성 경로에서 확인한다.",
+      "reason": "현재 production 생성은 고정 Documents 경로와 randomUUID 폴더명이다."
+    },
+    {
+      "priority": 3,
+      "scope": "worktree 생성",
+      "check": "source repo·HEAD/ref·새 branch·목적지·setup 허용/거절·setup 실패 보존을 포함한 bounded 생성 경로를 마련하고 합성 repo의 실제 Git 결과를 확인한다.",
+      "reason": "현재 제품 API와 UI에 worktree 생성 연결이 없다."
+    },
+    {
+      "priority": 4,
+      "scope": "물리 삭제",
+      "check": "Main이 삭제 경로를 마련한 뒤 합성 자료에서 보호 경로, dirty/untracked, 활성 session/child/terminal/server, 최종 identity 변경, 취소, strategy 실패, 정상 삭제와 인접 자료 보존을 확인한다.",
+      "reason": "unregister와 history delete의 현재 근거는 물리 삭제를 포함하지 않는다."
+    },
+    {
+      "priority": 5,
+      "scope": "세션 기능과 실제 병렬 실행",
+      "check": "unread·최근 작업 metadata 연결을 확인하고, 서로 다른 두 경로에서 실제 실행 중 전환하여 입력·결과·승인 대상과 효과 횟수를 확인한다.",
+      "reason": "현재 근거는 두 identity·초안 분리와 fixture 회귀까지다."
+    },
+    {
+      "priority": 6,
+      "scope": "현재 pin 재시작·누락·재실행 방지",
+      "check": "현재 build/source binding으로 정상 종료·SIGKILL·missing path·pending·중복 승인을 연결한다. 원래 operation ID, Native lineage, history gap 표시와 도구 효과 횟수를 확인한다. Windows는 별도 실행한다.",
+      "reason": "새 lifetime/preflight의 실제 근거는 존재하지만 현재 전체 화면·provider 경로와 Windows까지 연결되지 않았다."
+    }
+  ]
+}

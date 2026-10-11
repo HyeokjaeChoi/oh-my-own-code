@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "kind": "preserved-unregistered-runtime-artifact",
+  "report": "docs/runs/durable-owner-lifetime/evidence/native-r3/owner-lifetime-evidence.json",
+  "result": "fail",
+  "failure": {
+    "phase": "incomplete-app-exit:denial",
+    "name": "AssertionError",
+    "code": "probe_failed"
+  },
+  "observations": [
+    "normal-native",
+    "crash-native",
+    "app-only",
+    "live-app-after-release",
+    "live-child",
+    "corrupt-terminal",
+    "missing-terminal"
+  ],
+  "cleanupUnconfirmed": false,
+  "ledgerAttemptRegistered": false,
+  "explanation": "The prior command handle disappeared after user interruption. The independently published report is preserved; no contracted pass or current before-after provenance is inferred. Last malformed app.exit fact returned identity_conflict while probe expected owner_unverified. Correct the exact expected reason, preserve zero-spawn/byte-retention checks, and use fresh r4 evidence. No production behavior or accepted design change."
+}

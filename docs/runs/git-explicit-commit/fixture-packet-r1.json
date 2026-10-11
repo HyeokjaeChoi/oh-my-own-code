@@ -1,0 +1,76 @@
+{
+  "attestation": "Prepared input metadata; not a spawn or identity attestation",
+  "contract_sha256": "a3ef4a8e908ce0fb3d010d5539b8c39e2d265d5273e6c8f680a4cbf9978c7565",
+  "decision_register": [
+    {
+      "blocks": [],
+      "id": "bounded-delivery",
+      "impact": "Original reference/reflog publication only after initial independent major reviews",
+      "resolution": "Initial major ref/log authority review once, then routine implementation/fixes; bounded finish only.",
+      "source": "PRD F11/AC11 and repeated user instructions to complete remaining work; accepted current architecture and exact synthetic feasibility",
+      "statement": "Explicit commit now, branch select/create and restore remain required",
+      "status": "delegated"
+    },
+    {
+      "blocks": [],
+      "id": "private-computation",
+      "impact": "Original reference/reflog publication only after initial independent major reviews",
+      "resolution": "Same supported platform/runtime, no native launcher or unchecked original-path fallback.",
+      "source": "PRD F11/AC11 and repeated user instructions to complete remaining work; accepted current architecture and exact synthetic feasibility",
+      "statement": "Trusted Git operates only on owned checked copies; original writes descriptor-only",
+      "status": "delegated"
+    },
+    {
+      "blocks": [],
+      "id": "explicit-identity",
+      "impact": "Original reference/reflog publication only after initial independent major reviews",
+      "resolution": "User-entered bounded identity/message and exact unsigned/no-hooks preview before default-cancel confirmation.",
+      "source": "PRD F11/AC11 and repeated user instructions to complete remaining work; accepted current architecture and exact synthetic feasibility",
+      "statement": "Never infer real author identity or use synthetic test defaults",
+      "status": "delegated"
+    },
+    {
+      "blocks": [],
+      "id": "partial-publication",
+      "impact": "Original reference/reflog publication only after initial independent major reviews",
+      "resolution": "Closed targets/deterministic root backups, logs first/ref last, unknown retained no rollback/replay on partial effect.",
+      "source": "PRD F11/AC11 and repeated user instructions to complete remaining work; accepted current architecture and exact synthetic feasibility",
+      "statement": "Reference plus reflogs are not globally atomic",
+      "status": "delegated"
+    }
+  ],
+  "documents": [
+    {
+      "gate": "design_spec",
+      "path": "docs/runs/git-explicit-commit/design.md",
+      "sha256": "06c92dd3d0d140638110515067a354547cdb0d8c18f195db3549735f6552533a",
+      "version": "2"
+    }
+  ],
+  "phase": "implementation",
+  "plan_sha256": "1538ec68dd5434603a0ffec396293452bdb7416f84ef3b2e9fb825c4d11ee6c9",
+  "prepared_at": "2026-10-08T19:43:32+00:00",
+  "role": "engineer",
+  "routing": {
+    "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+    "input_sha256": {
+      ".agents/skills/solo-implement/SKILL.md": "2f92d715e6c35dd3b0ff5184311bfdc3afcd5aec86f4cf7e45d2890d91225884",
+      ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+      ".codex/agents/solo_worker.toml": "2488c3a019261ec7c1acad6c6224545951ea3750f8664f23bb947f6634640d01",
+      ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+    },
+    "mode": "general",
+    "phase": "implementation",
+    "profile": "solo_worker",
+    "profile_file": ".codex/agents/solo_worker.toml",
+    "references": [],
+    "role": "engineer",
+    "schema_version": 2,
+    "skill": "solo-implement",
+    "skill_file": ".agents/skills/solo-implement/SKILL.md"
+  },
+  "run": "git-explicit-commit",
+  "schema_version": 2,
+  "user_approvals": [],
+  "work_class_sha256": "ae478e9c4d1bef657cf7951c15a327d5fa9d7d4379653257922675630e5d2ade"
+}

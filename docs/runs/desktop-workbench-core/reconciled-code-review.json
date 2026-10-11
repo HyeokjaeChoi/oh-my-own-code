@@ -1,0 +1,19 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "ffe855df3b3c4295dfecc9f03950fc01e0933a350823d32c3093eabf9136a70a",
+    "environment_sha256": "c90a1847cab588816cd06cd329515b3326131b367ca573894c74b18f2757f34c",
+    "gate": "code",
+    "plan_sha256": "a9a9c09e41b2d4d030fec8141663bd16b942a07a61c5ee8b2c25ceb1538cc0bb",
+    "schema_version": 2,
+    "source_sha256": "a43b573d8cebecb5dcb2cb5605f84bcbe69e11143cde2c27e1242e81dd24c687",
+    "verification_sha256": "c3940a56be24a79e559d65f24b639b873f372c9604a7800ed0de4cc690d6104e"
+  },
+  "verdict": "pass",
+  "summary": "Evidence-only reconciliation preserves the prior passing code conclusion. The reconciled binding differs from the final binding only in verification_sha256. The actual packaged app.asar independently hashes to dc75706349b3eaed92e50cf08099503b27bc045075a63303ba2bad03d7a12c49, matching the corrected run artifact registration and the unchanged package-source-match.json, package-inspection.json and supplementary-verification.json; those evidence files also match their registered file hashes. No source, tests, captures or recorded outcomes changed. This is evidence reconciliation, not a new full code review, new visual observation, provider-authenticated execution, Windows validation or a full-release conclusion.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "cli:session-lifecycle-entry-independent",
+    "author_task_id": "coordinator"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "4df3f96210af1ddb48d3e47855d604d2b9e0c6c6e691a5adf3d9e2411306b42b",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "464741fec5d30f7a75046eb21c258eb134418207ee12c6b8240466becbf856e5",
+    "schema_version": 2,
+    "source_sha256": "eea5886578814f79f2d7dadfe0edee7c0f039c700fce350b788e7d5b2272d011",
+    "verification_sha256": "be34fe4fdb01eaf0140517327eaba289a6d3ed6e0a061bd2354330a801823d84",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "전체 binding을 재계산하여 final-code-input-r4와 정확히 일치함을 확인했습니다. 승인된 전체 source와 source-freeze-r2의 두 파일 hash·크기가 같습니다. 변경은 기존 source 두 파일과 genuine changes_requested 보고서 final-code-review-r1의 artifact 등록 metadata뿐입니다. 이 세 등록을 메모리에서 제외하면 이전 PASS의 verification hash가 정확히 복원됩니다. 따라서 plan·contract·outcome·checks는 그대로입니다. O1–O3의 artifact 연결은 각각 9개 모두 등록되어 있고 현재 파일 hash와 일치합니다. 필수 unit·lint·format의 acceptance coverage와 증거 유효성을 확인했습니다. 이전 Schrodinger3의 final-code-review-r2 source 판정과 67개 test·lint·format PASS를 재사용했습니다. 불일치는 발견하지 못했습니다. 판정 범위는 연결되지 않은 Node shape validator입니다. Native inventory 완전성, digest 정확성, 실행 권한은 증명하지 않습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a12387-2343-7361-befb-041790fe2ae6",
+    "reused_source_review_child_task_id": "01a12384-2056-7dd3-8367-30e3fb98cde9",
+    "review_method": "독립적인 읽기 전용 evidence/binding 검토. 실제 전체 source inventory, freeze, artifact hash, acceptance 연결, check freshness, packet routing hash를 확인했습니다. source code review와 test는 반복하지 않았습니다.",
+    "writes": false,
+    "delegation": false,
+    "code_review_repeated": false,
+    "tests_executed": false,
+    "product_runtime_execution": false
+  }
+}

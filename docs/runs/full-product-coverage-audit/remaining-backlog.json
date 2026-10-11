@@ -1,0 +1,865 @@
+{
+  "schemaVersion": 2,
+  "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+  "prd_sha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3",
+  "items": [
+    {
+      "id": "B01",
+      "featureGroups": [
+        "F-01"
+      ],
+      "outcome": "Re-importing an already registered canonical path reuses the existing workspace without allocating a duplicate workspace identity or returning identity_conflict.",
+      "nextAction": "Reproduce actual durable duplicate-import behavior using production registry/service and contained synthetic path. Fix only if reproduced; check original operation identity, folder preservation and no duplicate Native activation.",
+      "dependsOn": [],
+      "clauseKeys": [
+        [
+          "F-01",
+          1
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/host/workbench-files.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-service.mjs"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": []
+    },
+    {
+      "id": "B02",
+      "featureGroups": [],
+      "outcome": "Windows runtime ownership, filesystem publication and checked Git platform support track starts explicitly; no macOS-only implementation is presented as Windows support.",
+      "nextAction": "Design and implement exact Windows EventHost/lifetime/descriptor/Git adapters with equivalent authority, then obtain actual native Windows execution. Platform prerequisite blocks only dependent Windows verification, not unrelated macOS implementation.",
+      "dependsOn": [],
+      "clauseKeys": [],
+      "evidence": [
+        "docs/runs/full-product-coverage-audit/coverage-matrix.json"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": []
+    },
+    {
+      "id": "B03",
+      "featureGroups": [
+        "F-01",
+        "F-02",
+        "F-03"
+      ],
+      "outcome": "Complete chosen root/direct path/naming/import/worktree creation and distinct unregister/history/physical deletion workflows.",
+      "nextAction": "Resolve current Documents-only reservation behavior against original PRD; define lifecycle API once, UUIDv7/local-date naming, safe source/ref/setup and nonforced deletion proofs; implement one complete creation flow before deletion.",
+      "dependsOn": [
+        "B01"
+      ],
+      "clauseKeys": [
+        [
+          "F-01",
+          0
+        ],
+        [
+          "F-01",
+          1
+        ],
+        [
+          "F-01",
+          2
+        ],
+        [
+          "F-01",
+          3
+        ],
+        [
+          "F-02",
+          0
+        ],
+        [
+          "F-02",
+          1
+        ],
+        [
+          "F-02",
+          2
+        ],
+        [
+          "F-02",
+          3
+        ],
+        [
+          "F-02",
+          4
+        ],
+        [
+          "F-02",
+          5
+        ],
+        [
+          "F-03",
+          0
+        ],
+        [
+          "F-03",
+          1
+        ],
+        [
+          "F-03",
+          2
+        ],
+        [
+          "F-03",
+          3
+        ],
+        [
+          "F-03",
+          4
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/ephemeral-profile.mjs",
+        "apps/desktop-app/src/host/workbench-files.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+        "apps/desktop-app/src/renderer/features/sessions/index.tsx",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-service.mjs",
+        "docs/product/prd.md",
+        "docs/runs/durable-workbench-storage/storage-contract.md"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": [
+        [
+          "pathLifecycle",
+          0
+        ],
+        [
+          "pathLifecycle",
+          1
+        ],
+        [
+          "pathLifecycle",
+          2
+        ],
+        [
+          "pathLifecycle",
+          3
+        ],
+        [
+          "pathLifecycle",
+          4
+        ],
+        [
+          "pathLifecycle",
+          5
+        ]
+      ]
+    },
+    {
+      "id": "B04",
+      "featureGroups": [
+        "F-04"
+      ],
+      "outcome": "Complete session organization, unread/recent reopen and two independently running paths with durable lineage.",
+      "nextAction": "Use current lifecycle/recovery and fill missing metadata/UI; execute two-session isolation and actual reopen scenarios.",
+      "dependsOn": [
+        "B03"
+      ],
+      "clauseKeys": [
+        [
+          "F-04",
+          0
+        ],
+        [
+          "F-04",
+          1
+        ],
+        [
+          "F-04",
+          2
+        ],
+        [
+          "F-04",
+          3
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/host/native-preflight.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+        "apps/desktop-app/src/renderer/features/sessions/index.tsx",
+        "apps/desktop-app/src/renderer/features/sessions/navigation.ts",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-service.mjs"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": []
+    },
+    {
+      "id": "B05",
+      "featureGroups": [
+        "F-05",
+        "F-06"
+      ],
+      "outcome": "Complete rich conversation/context/attachments/retry/edit-fork/queue and truthful requested/default/observed model/effort/input capabilities.",
+      "nextAction": "Implement a useful Markdown/code/copy increment under accepted presentation architecture, then add reviewed context and runtime contracts; preserve no replay and explicit input support. Actual provider prerequisites stay separate.",
+      "dependsOn": [],
+      "clauseKeys": [
+        [
+          "F-05",
+          0
+        ],
+        [
+          "F-05",
+          1
+        ],
+        [
+          "F-05",
+          2
+        ],
+        [
+          "F-05",
+          3
+        ],
+        [
+          "F-06",
+          0
+        ],
+        [
+          "F-06",
+          1
+        ],
+        [
+          "F-06",
+          2
+        ],
+        [
+          "F-06",
+          3
+        ],
+        [
+          "F-06",
+          4
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/desktop-bridge.d.ts",
+        "apps/desktop-app/src/host/workbench-admission.mjs",
+        "apps/desktop-app/src/host/workbench-native-agents.mjs",
+        "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+        "apps/desktop-app/src/renderer/features/line-feedback/index.tsx",
+        "apps/desktop-app/src/renderer/features/sessions/index.tsx",
+        "apps/desktop-app/src/renderer/shared/line-feedback/index.mjs",
+        "apps/desktop-app/src/renderer/shared/transport/index.ts",
+        "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": []
+    },
+    {
+      "id": "B06",
+      "featureGroups": [
+        "F-09"
+      ],
+      "outcome": "Complete effective permission presets/rules/remember/revoke and policy transitions at actual execution boundaries.",
+      "nextAction": "First prove same synthetic file tool once/reject/policy-deny effects. Define new preset/transition/expiry contract once before enabling mode changes; preserve upper deny and actual-exit holds.",
+      "dependsOn": [],
+      "clauseKeys": [
+        [
+          "F-09",
+          0
+        ],
+        [
+          "F-09",
+          1
+        ],
+        [
+          "F-09",
+          2
+        ],
+        [
+          "F-09",
+          3
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/desktop-bridge.d.ts",
+        "apps/desktop-app/src/host/workbench-admission.mjs",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs",
+        "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": [
+        [
+          "authorityDelegation",
+          0
+        ],
+        [
+          "authorityDelegation",
+          1
+        ],
+        [
+          "authorityDelegation",
+          2
+        ]
+      ]
+    },
+    {
+      "id": "B07",
+      "featureGroups": [
+        "F-07"
+      ],
+      "outcome": "Fresh scoped delegation, child tree/result collection/concurrency/queue/individual-all cancellation and inherited effective authority.",
+      "nextAction": "Do not relax subagent deny speculatively. Review bounded delegation execution contract once, then implement two fresh independent child tasks plus one failure and real state recovery.",
+      "dependsOn": [
+        "B06"
+      ],
+      "clauseKeys": [
+        [
+          "F-07",
+          0
+        ],
+        [
+          "F-07",
+          1
+        ],
+        [
+          "F-07",
+          2
+        ],
+        [
+          "F-07",
+          3
+        ],
+        [
+          "F-07",
+          4
+        ],
+        [
+          "F-07",
+          5
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/desktop-bridge.d.ts",
+        "apps/desktop-app/src/renderer/features/sessions/index.tsx",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs",
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-service.mjs"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": [
+        [
+          "authorityDelegation",
+          3
+        ]
+      ]
+    },
+    {
+      "id": "B08",
+      "featureGroups": [
+        "F-08"
+      ],
+      "outcome": "Complete tool-name/version/schema renderer registry, questions/selections/approval and schema-based direct calls with shared authority.",
+      "nextAction": "Add closed caller/tool/request/policy correlation and safe rich renderers; implement schema form→actual permitted tool call with cancel/record and unknown fallback.",
+      "dependsOn": [
+        "B06",
+        "B07"
+      ],
+      "clauseKeys": [
+        [
+          "F-08",
+          0
+        ],
+        [
+          "F-08",
+          1
+        ],
+        [
+          "F-08",
+          2
+        ],
+        [
+          "F-08",
+          3
+        ],
+        [
+          "F-08",
+          4
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/desktop-bridge.d.ts",
+        "apps/desktop-app/src/event-host-child.mjs",
+        "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-service.mjs",
+        "packages/contracts/src/index.ts"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": [
+        [
+          "authorityDelegation",
+          4
+        ]
+      ]
+    },
+    {
+      "id": "B09",
+      "featureGroups": [
+        "F-12"
+      ],
+      "outcome": "Actual workspace terminals and project build/lint/test/dev actions with tabs, ownership, output, exit and orphan proof.",
+      "nextAction": "Introduce reviewed PTY/process ownership contract once, then actual synthetic terminal start/input/resize/stop/close and dev action with unchanged paths.",
+      "dependsOn": [
+        "B06"
+      ],
+      "clauseKeys": [
+        [
+          "F-12",
+          0
+        ],
+        [
+          "F-12",
+          1
+        ],
+        [
+          "F-12",
+          2
+        ],
+        [
+          "F-12",
+          3
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/event-host-child.mjs",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+        "apps/desktop-app/src/sidecar-supervisor.mjs",
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-service.mjs"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": []
+    },
+    {
+      "id": "B10",
+      "featureGroups": [
+        "F-10"
+      ],
+      "outcome": "Isolated browser/artifact tabs with real local preview, navigation, media/PDF and devserver connection.",
+      "nextAction": "Define untrusted content boundary once; implement local devserver preview and inert artifact rendering, then verify bridge/navigation/popup isolation and external-open fallback.",
+      "dependsOn": [
+        "B09"
+      ],
+      "clauseKeys": [
+        [
+          "F-10",
+          0
+        ],
+        [
+          "F-10",
+          1
+        ],
+        [
+          "F-10",
+          2
+        ],
+        [
+          "F-10",
+          3
+        ],
+        [
+          "F-10",
+          4
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/host/workbench-files.mjs",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/preload.cjs",
+        "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-service.mjs"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": []
+    },
+    {
+      "id": "B11",
+      "featureGroups": [
+        "F-11"
+      ],
+      "outcome": "Complete file search and current file/diff/feedback/Git integration with actual execution-channel and platform evidence.",
+      "nextAction": "Add bounded source search with exact target and cancellation; verify current mounted file editing/diff/line-feedback plus Git stage/commit/branch/restore through the real execution channel. Preserve supported-repository limitations and obtain Windows proof after B02.",
+      "dependsOn": [
+        "B02"
+      ],
+      "clauseKeys": [
+        [
+          "F-11",
+          0
+        ],
+        [
+          "F-11",
+          1
+        ],
+        [
+          "F-11",
+          2
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/host/workbench-git-branch-restore.mjs",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "apps/desktop-app/src/renderer/features/git-review/index.tsx",
+        "apps/desktop-app/src/renderer/features/workspace-file-editor/index.tsx",
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+        "apps/desktop-app/src/workbench-service.mjs",
+        "docs/product/prd.md"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": []
+    },
+    {
+      "id": "B12",
+      "featureGroups": [
+        "F-13"
+      ],
+      "outcome": "Searchable runtime/app command palette with source/arguments/targets/errors and supported operations.",
+      "nextAction": "Connect actual runtime command metadata and literal execution, then register real app operations in one palette; no fake unsupported actions.",
+      "dependsOn": [
+        "B05",
+        "B08",
+        "B09",
+        "B10"
+      ],
+      "clauseKeys": [
+        [
+          "F-13",
+          0
+        ],
+        [
+          "F-13",
+          1
+        ],
+        [
+          "F-13",
+          2
+        ],
+        [
+          "F-13",
+          3
+        ],
+        [
+          "F-13",
+          4
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+        "apps/desktop-app/src/workbench-service.mjs"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": []
+    },
+    {
+      "id": "B13",
+      "featureGroups": [
+        "F-14"
+      ],
+      "outcome": "Close Hooks/extension editing and activation gaps with truthful current Native state and existing external auth guidance.",
+      "nextAction": "Check pinned Native capabilities without project autoload; implement missing supported contract or explicit app-owned safe adapter after one changed-boundary review; rerun only affected current integration evidence.",
+      "dependsOn": [
+        "B06",
+        "B08"
+      ],
+      "clauseKeys": [
+        [
+          "F-14",
+          0
+        ],
+        [
+          "F-14",
+          1
+        ],
+        [
+          "F-14",
+          2
+        ],
+        [
+          "F-14",
+          3
+        ],
+        [
+          "F-14",
+          4
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/builtins/workbench-skills/extensions.mjs",
+        "apps/desktop-app/src/host/workbench-configuration.mjs",
+        "apps/desktop-app/src/host/workbench-mcp.mjs",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+        "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs",
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+        "apps/desktop-app/src/workbench-service.mjs"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": []
+    },
+    {
+      "id": "B14",
+      "featureGroups": [
+        "F-15"
+      ],
+      "outcome": "In-product plans/checklists/version approval and independent review findings with actual verification linkage.",
+      "nextAction": "Build actual plan domain/UI and version→execution binding; distinguish implementer/reviewer identity, unresolved findings and rerun evidence.",
+      "dependsOn": [
+        "B07",
+        "B09"
+      ],
+      "clauseKeys": [
+        [
+          "F-15",
+          0
+        ],
+        [
+          "F-15",
+          1
+        ],
+        [
+          "F-15",
+          2
+        ],
+        [
+          "F-15",
+          3
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/renderer/features/git-review/index.tsx",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+        "apps/desktop-app/src/workbench-contract.mjs",
+        "apps/desktop-app/src/workbench-service.mjs"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": []
+    },
+    {
+      "id": "B15",
+      "featureGroups": [
+        "F-16"
+      ],
+      "outcome": "Reliable timeline/filter/result navigation plus provided usage/context/model, setting comparison and learning assessment. Implement local personal-use measurements for scenarios1..4: elapsed time, reason for leaving the app, misunderstood state and recovery failure.",
+      "nextAction": "Extend one authoritative projection, persist/gap-bind real events, show missing metrics honestly, and implement synthetic+delegated learning question/answer/evidence flow. Provide local flow start/end and explicit reason/outcome recording without external telemetry; preserve raw observations and establish a baseline without claiming time savings.",
+      "dependsOn": [
+        "B05",
+        "B07",
+        "B08",
+        "B14"
+      ],
+      "clauseKeys": [
+        [
+          "F-16",
+          0
+        ],
+        [
+          "F-16",
+          1
+        ],
+        [
+          "F-16",
+          2
+        ],
+        [
+          "F-16",
+          3
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/desktop-bridge.d.ts",
+        "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+        "apps/desktop-app/src/workbench-service.mjs"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": [
+        [
+          "integratedAcceptance",
+          3
+        ],
+        [
+          "integratedAcceptance",
+          4
+        ]
+      ]
+    },
+    {
+      "id": "B16",
+      "featureGroups": [
+        "F-17"
+      ],
+      "outcome": "Complete reconnect/event-gap and local history export/import/retention/app-data deletion with scoped privacy.",
+      "nextAction": "Define data transfer/redaction/confirmation/retention boundaries once; preserve raw Native identity and no replay; implement local contained roundtrip and deletion-scope proofs.",
+      "dependsOn": [
+        "B04",
+        "B15"
+      ],
+      "clauseKeys": [
+        [
+          "F-17",
+          0
+        ],
+        [
+          "F-17",
+          1
+        ],
+        [
+          "F-17",
+          2
+        ],
+        [
+          "F-17",
+          3
+        ],
+        [
+          "F-17",
+          4
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/desktop-bridge.d.ts",
+        "apps/desktop-app/src/event-host-child.mjs",
+        "apps/desktop-app/src/host/native-preflight.mjs",
+        "apps/desktop-app/src/main.mjs",
+        "apps/desktop-app/src/preload.cjs",
+        "apps/desktop-app/src/renderer/app/index.tsx",
+        "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": [
+        [
+          "dataExternalBoundaries",
+          0
+        ]
+      ]
+    },
+    {
+      "id": "B17",
+      "featureGroups": [
+        "F-18"
+      ],
+      "outcome": "Complete shortcut/help/theme/font/density/accessibility/notifications and user registered local recurring jobs.",
+      "nextAction": "Implement inert user settings and notification queue first, then reviewed scheduler with exact target/permission, pause/resume/history and explicit missed runs without backfill.",
+      "dependsOn": [
+        "B06",
+        "B09",
+        "B12",
+        "B15",
+        "B16"
+      ],
+      "clauseKeys": [
+        [
+          "F-18",
+          0
+        ],
+        [
+          "F-18",
+          1
+        ],
+        [
+          "F-18",
+          2
+        ],
+        [
+          "F-18",
+          3
+        ]
+      ],
+      "evidence": [
+        "apps/desktop-app/src/desktop-bridge.d.ts",
+        "apps/desktop-app/src/preload.cjs",
+        "apps/desktop-app/src/renderer/app/index.tsx",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": []
+    },
+    {
+      "id": "B18",
+      "featureGroups": [],
+      "outcome": "All18 clauses and seven integrated scenarios independently accepted on macOS and Windows with current coherent source.",
+      "nextAction": "After component implementation, run actual continuous UI/effect/recovery scenarios and fresh product/code/render/release review; do not turn old narrow passes into whole-product approval.",
+      "dependsOn": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B09",
+        "B10",
+        "B11",
+        "B12",
+        "B13",
+        "B14",
+        "B15",
+        "B16",
+        "B17"
+      ],
+      "clauseKeys": [],
+      "evidence": [
+        "docs/runs/full-product-coverage-audit/coverage-matrix.json"
+      ],
+      "scopeRule": "Complete missing requirements; a bounded increment does not complete the whole group. Major new API/runtime/security ownership gets one applicable initial design review; ordinary accepted-scope fixes use routine flow.",
+      "crossCuttingKeys": [
+        [
+          "integratedAcceptance",
+          0
+        ],
+        [
+          "integratedAcceptance",
+          1
+        ],
+        [
+          "integratedAcceptance",
+          2
+        ],
+        [
+          "dataExternalBoundaries",
+          1
+        ],
+        [
+          "dataExternalBoundaries",
+          2
+        ]
+      ]
+    }
+  ],
+  "executionPolicy": "Dependency order and parallel platform track; no requirement deferred or removed. B01 is a defect candidate until an actual reproducer confirms it. Source reading is not runtime proof."
+}

@@ -1,0 +1,405 @@
+{
+  "schema_version": 2,
+  "run": "durable-workbench-storage",
+  "gate": "design",
+  "verdict": "pass",
+  "summary": "수정된 최신 input을 다시 읽고 현재 harness binding과 일치를 확인했습니다. S2 outcome의 unmatched storage-unit check가 제거되었으며, native-storage와 actual Native runtime artifact는 유지됩니다. r4/r5 PNG 전체를 다시 hash/header 검사한 결과, 직접 관찰한 이미지와 모두 같습니다. 검토한 rendered UI 범위에서 수정이 필요한 문제를 찾지 못했습니다. P7 narrow/200%와 아래 material limits는 검증 범위에 포함되지 않습니다.",
+  "open_findings": [],
+  "findings": [],
+  "reviewed": {
+    "contract_sha256": "1c90e65790048346aefd45f13f80de0e12061be1fe3ac5e1f59f0e325c283448",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "design",
+    "plan_sha256": "595f9a0c369808547b3f8c6e709e8de841b7654046c3a6ab3eccedbe4cc81f8f",
+    "schema_version": 2,
+    "source_sha256": "3770a81d225bf29ea36016e03d602660986aa002b0c0710d20ee79698f441e8f",
+    "verification_sha256": "547717a00f6ea9fd064d09262fbf3589edd7e8763e7cc075b4527839a515558b",
+    "work_class_sha256": "4f0672eaedcbeccf2b6e189dfee8b1d0ea01dbf003d7039973e55d03d8f8aa02"
+  },
+  "binding_verification": {
+    "input_path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/execution/render-review-r4.input.json",
+    "input_sha256": "d42e26d9f98a20b831b8893914d9177c222f8b46e18ec0d674c79c36d23b262c",
+    "current_binding_matches": true,
+    "method": "最新 input을 다시 읽고 read-only load 및 v2_review_binding으로 비교했습니다. 보고 직전에도 일치했습니다.",
+    "outcome_path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/outcome-current-r8.json",
+    "outcome_sha256": "126c0a8d5e9630102a319c0dea7c8c69e81925f1826912bb60e1e85f492a1bdb",
+    "outcome_hash_matches_registration": true,
+    "s2_checks": [
+      "native-storage"
+    ],
+    "s2_artifacts": [
+      "docs/runs/durable-workbench-storage/evidence/native-r5/native-storage-evidence.json",
+      "docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json"
+    ],
+    "contracted_check_count": 11,
+    "registered_check_observation": "11개 check 모두 최종 source binding과 일치하며 exit_code 0입니다. inputs_changed, interrupted, timed_out은 모두 false입니다. Reviewer가 check를 재실행하지는 않았습니다.",
+    "registered_artifact_hashes_verified": 15,
+    "registered_artifact_hash_mismatches": [],
+    "supersedes": "이 child가 앞서 반환한 이전 verification binding의 보고서를 대체합니다."
+  },
+  "scope": {
+    "review_mode": "fresh_independent_report_only_rendered_ui",
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "instructions_read": [
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/AGENTS.md",
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/.codex/agents/solo_reader.toml",
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/.agents/skills/solo-specialist/SKILL.md",
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/.agents/skills/solo-design-review/SKILL.md",
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/.agents/skills/solo-design-review/references/evidence-review.md"
+    ],
+    "reference_assessment": "Storage-contract v5 section12, 현재 plan, architecture-and-ui, design system 및 token 근거를 읽었습니다. Recovery 문구, retained lookup 표시, unavailable 상태, durable 위치, draft 및 global/resource 차단을 비교했습니다.",
+    "historical_report_use": "render-review-r3.json은 과거 참고자료입니다. 현재 verdict를 가져오지 않았습니다.",
+    "runtime_boundary": "저장된 screenshot과 증거 파일을 읽었습니다. Native, GUI, provider, private execution은 하지 않았습니다."
+  },
+  "capture_review": {
+    "r4_root": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states",
+    "r5_root": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r5/ui-states",
+    "path_resolution": "아래 filename을 각 root에 연결하면 해당 round의 정확한 절대 경로가 됩니다.",
+    "r4_direct_pixel_inspections": 46,
+    "r5_header_and_hash_comparisons": 46,
+    "r5_changed_direct_pixel_inspections": 6,
+    "same_names": true,
+    "same_image_bytes": 40,
+    "changed_image_bytes": 6,
+    "header_metadata_mismatches": [],
+    "cross_round_dimensions_viewport_zoom_mismatches": [],
+    "latest_revalidation": "두 round의 PNG 92개를 다시 읽었습니다. Signature, IHDR, SHA256과 inventory가 앞선 실제 픽셀 관찰 시점과 일치합니다.",
+    "both_round_inventory_sha256": "c6fb16774609c8f296d2eaf14fcfc703905e1ca89555db170c2d9d8591625287",
+    "inventory_method": "Round별 filename map에 sha256, pixels, viewport, zoomFactor, beforeCapture를 넣고 Python json.dumps(sort_keys=True,separators=(',',':'))의 UTF-8 bytes를 SHA256 처리했습니다.",
+    "all_capture_groups": [
+      {
+        "css_viewport": [
+          1280,
+          768
+        ],
+        "pixel_ratio": 2,
+        "zoom_factor": 1,
+        "png_size": [
+          2560,
+          1536
+        ],
+        "count": 4,
+        "filenames": [
+          "desktop-empty-conversation-normal-1280-synthetic.png",
+          "desktop-permission-long-korean-draft-normal-1280-synthetic.png",
+          "desktop-populated-conversation-normal-1280-synthetic.png",
+          "desktop-long-korean-titles-normal-1280-synthetic.png"
+        ]
+      },
+      {
+        "css_viewport": [
+          1180,
+          788
+        ],
+        "pixel_ratio": 2,
+        "zoom_factor": 1,
+        "png_size": [
+          2360,
+          1576
+        ],
+        "count": 4,
+        "filenames": [
+          "desktop-empty-conversation-normal-1180-synthetic.png",
+          "desktop-permission-long-korean-draft-normal-1180-synthetic.png",
+          "desktop-populated-conversation-normal-1180-synthetic.png",
+          "desktop-long-korean-titles-normal-1180-synthetic.png"
+        ]
+      },
+      {
+        "css_viewport": [
+          760,
+          568
+        ],
+        "pixel_ratio": 2,
+        "zoom_factor": 1,
+        "png_size": [
+          1520,
+          1136
+        ],
+        "count": 5,
+        "filenames": [
+          "desktop-empty-conversation-narrow-synthetic.png",
+          "desktop-permission-long-korean-draft-narrow-synthetic.png",
+          "desktop-populated-conversation-narrow-synthetic.png",
+          "desktop-long-korean-titles-narrow-synthetic.png",
+          "desktop-long-korean-titles-narrow-navigation-synthetic.png"
+        ]
+      },
+      {
+        "css_viewport": [
+          640,
+          384
+        ],
+        "pixel_ratio": 4,
+        "zoom_factor": 2,
+        "png_size": [
+          2560,
+          1536
+        ],
+        "count": 5,
+        "filenames": [
+          "desktop-empty-conversation-normal-200-percent-synthetic.png",
+          "desktop-permission-long-korean-draft-normal-200-percent-synthetic.png",
+          "desktop-populated-conversation-normal-200-percent-synthetic.png",
+          "desktop-long-korean-titles-normal-200-percent-synthetic.png",
+          "desktop-long-korean-titles-normal-200-percent-navigation-synthetic.png"
+        ]
+      },
+      {
+        "css_viewport": [
+          380,
+          284
+        ],
+        "pixel_ratio": 4,
+        "zoom_factor": 2,
+        "png_size": [
+          1520,
+          1136
+        ],
+        "count": 5,
+        "filenames": [
+          "desktop-empty-conversation-narrow-200-percent-synthetic.png",
+          "desktop-permission-long-korean-draft-narrow-200-percent-synthetic.png",
+          "desktop-populated-conversation-narrow-200-percent-synthetic.png",
+          "desktop-long-korean-titles-narrow-200-percent-synthetic.png",
+          "desktop-long-korean-titles-narrow-200-percent-navigation-synthetic.png"
+        ]
+      },
+      {
+        "css_viewport": [
+          1440,
+          928
+        ],
+        "pixel_ratio": 2,
+        "zoom_factor": 1,
+        "png_size": [
+          2880,
+          1856
+        ],
+        "count": 22,
+        "filenames": [
+          "desktop-permission-synthetic.png",
+          "desktop-tool-results-synthetic.png",
+          "desktop-unknown-synthetic.png",
+          "desktop-activity-filtered-synthetic.png",
+          "desktop-p6-streaming-synthetic.png",
+          "desktop-p6-disconnected-synthetic.png",
+          "desktop-p6-archived-synthetic.png",
+          "desktop-p6-inspector-synthetic.png",
+          "desktop-p7-durable-documents-location-synthetic.png",
+          "desktop-p7-durable-documents-synthetic.png",
+          "desktop-p7-imported-location-synthetic.png",
+          "desktop-p7-imported-synthetic.png",
+          "desktop-p7-missing-path-synthetic.png",
+          "desktop-p7-denied-path-synthetic.png",
+          "desktop-p7-corrupt-journal-synthetic.png",
+          "desktop-p7-owner-conflict-synthetic.png",
+          "desktop-p7-pending-inbox-synthetic.png",
+          "desktop-p7-pending-inbox-bootstrap-synthetic.png",
+          "desktop-p7-unconfirmed-tail-synthetic.png",
+          "desktop-p7-unconfirmed-tail-bootstrap-synthetic.png",
+          "desktop-p7-partial-mapping-synthetic.png",
+          "desktop-p7-partial-mapping-bootstrap-synthetic.png"
+        ]
+      },
+      {
+        "css_viewport_context": [
+          1440,
+          928
+        ],
+        "pixel_ratio": 2,
+        "zoom_factor": 1,
+        "png_size": [
+          896,
+          208
+        ],
+        "count": 1,
+        "capture_type": "component_crop",
+        "filenames": [
+          "desktop-link-preview-synthetic.png"
+        ]
+      }
+    ],
+    "r5_changed_original_resolution_samples": [
+      "desktop-activity-filtered-synthetic.png",
+      "desktop-p6-disconnected-synthetic.png",
+      "desktop-p7-owner-conflict-synthetic.png",
+      "desktop-p7-partial-mapping-synthetic.png",
+      "desktop-p7-unconfirmed-tail-synthetic.png",
+      "desktop-permission-long-korean-draft-normal-200-percent-synthetic.png"
+    ],
+    "p7_matrix": {
+      "state_count": 9,
+      "capture_count": 14,
+      "base_state_captures": 9,
+      "location_dialog_captures": 2,
+      "retained_bootstrap_captures": 3,
+      "css_viewport": [
+        1440,
+        928
+      ],
+      "zoom_percent": 100,
+      "narrow_or_200_percent_p7_evidence": false
+    },
+    "p6_matrix": "Empty conversation, long Korean permission draft, populated conversation, long Korean titles의 4개 scenario가 5개 viewport/zoom 조합에 있습니다. 추가 navigation sheet 3개와 wide 상태 화면이 있습니다. 모든 상태의 전체 viewport 조합은 아닙니다."
+  },
+  "direct_visual_observations": [
+    "Durable Documents와 imported 위치 dialog에 경로가 표시되고 선택된 영역이 보입니다. 긴 managed 경로는 줄바꿈됩니다. 종료 후 보관, imported 원래 위치 유지, 폴더 파일을 삭제하지 않는다는 문구가 읽힙니다.",
+    "Recovery 화면에 정확한 reason 문구, unavailable 표시, 보존된 draft와 비활성 send/new-session control이 보입니다.",
+    "Partial mapping은 성공한 idle 상태로 보이지 않습니다. 세션 사용 불가 경고, retained 요청 확인 및 전송 차단 문구가 함께 있습니다. 로컬 연결됨 표시는 별도 transport 상태입니다.",
+    "Pending inbox, unconfirmed tail, partial mapping의 일반 및 bootstrap 화면에 이전 요청 결과 확인과 자동 재실행 금지 문구가 보입니다.",
+    "Disconnected 화면은 연결 끊김과 재전송 없는 연결 확인 문구를 표시합니다. Draft와 composer focus 표시가 보입니다.",
+    "Streaming, archived, inspector와 activity 화면의 상태 및 내용 구분이 읽힙니다. Tool 결과는 완료와 오류를 구분합니다.",
+    "관찰한 viewport에서 composer와 주요 control이 보입니다. 긴 제목의 생략 표시와 narrow navigation sheet가 보입니다.",
+    "r5 normal 200% permission 표본에는 src/main.ts, 거절 시 다른 대기 권한 취소 경고, 이번만 허용·거절 버튼 및 composer가 보입니다. 전체 queue의 모든 경로가 동시에 보이는 것은 아닙니다.",
+    "관찰한 화면은 A Quiet Dock의 밝은 conversation, 절제된 sidebar, 어두운 primary control, 붉은 오류 표시와 파란 focus 표시를 유지합니다."
+  ],
+  "acceptance_assessment": {
+    "storage_contract_version": 5,
+    "storage_contract_section": 12,
+    "storage_contract_sha256": "c58a79f5c62840873e5a2cededc67e9d381006926365fecf07728c5f484fdab7",
+    "recovery_reason_strings": [
+      {
+        "reason": "path_missing",
+        "scope": "resource",
+        "visible_text": "작업 공간 폴더를 찾을 수 없습니다. 변경할 수 없습니다."
+      },
+      {
+        "reason": "path_denied",
+        "scope": "resource",
+        "visible_text": "작업 공간 폴더에 접근할 수 없습니다. 변경할 수 없습니다."
+      },
+      {
+        "reason": "corrupt_journal",
+        "scope": "global",
+        "visible_text": "저장 기록이 손상되었습니다. 복구가 필요합니다."
+      },
+      {
+        "reason": "owner_conflict",
+        "scope": "global",
+        "visible_text": "다른 앱이 저장소를 사용 중입니다. 변경할 수 없습니다."
+      },
+      {
+        "reason": "pending_inbox",
+        "scope": "global",
+        "visible_text": "처리 중이던 요청이 남아 있습니다. 자동으로 실행하지 않습니다."
+      },
+      {
+        "reason": "unconfirmed_tail",
+        "scope": "global",
+        "visible_text": "마지막 저장 결과를 확인할 수 없습니다. 복구가 필요합니다."
+      },
+      {
+        "reason": "partial_native_mapping",
+        "scope": "resource",
+        "visible_text": "세션 연결을 완료하지 못했습니다. 사용할 수 없습니다."
+      }
+    ],
+    "retained_lookup": {
+      "visible_label": "이전 요청 1개의 결과 확인이 필요합니다. 자동으로 다시 실행하지 않습니다.",
+      "states": [
+        "pending-inbox",
+        "unconfirmed-tail",
+        "partial-mapping"
+      ],
+      "visual_assessment": "일반 및 bootstrap 화면에서 결과 불명확 상태와 전송 차단을 유지합니다.",
+      "saved_assertion_assessment": "Current envelope의 operation.lookup이 original runtimeEpoch/operationId를 조회합니다. Reload bootstrap에서도 original key를 유지하고 mutation/replay 수가 늘지 않는 저장된 근거를 확인했습니다.",
+      "proof_limit": "Original key와 no replay는 저장된 fixture/assertion 근거입니다. 픽셀만으로 증명하지 않습니다."
+    },
+    "durable_location": {
+      "managed_displayed_path": "/synthetic/Documents/OhMyOwnCode/11111111-1111-4111-8111-111111111111",
+      "imported_displayed_path": "/synthetic/imported-project",
+      "selection_visible": true
+    },
+    "editable_drafts_and_disabled_operations": {
+      "direct_pixels": "보존된 draft와 비활성 주요 실행 control을 확인했습니다.",
+      "saved_assertions": "7개 recovery 상태에서 textarea enabled/editable/selection, draft 유지, disabled send/new session/unregister/session action과 mutation 수 불변을 검사합니다. Global recovery는 import/new workspace도 차단합니다. Resource recovery에서는 import/new workspace가 enabled로 남습니다.",
+      "proof_limit": "모든 menu action이 screenshot에 펼쳐져 있지는 않습니다. 실제 host 권한 차단을 Reviewer가 재실행한 결과는 아닙니다."
+    }
+  },
+  "saved_interaction_assertions": [
+    "Permission queue 스크롤로 전체 경로·경고·action 접근 및 forward/backward keyboard focus를 검사한 근거가 있습니다.",
+    "ActionMenu, dialog, narrow navigation/inspector sheet의 Escape, focus return, focus containment 및 outside dismissal 근거가 있습니다.",
+    "Synthetic composition guard는 Korean draft를 유지하고 Enter 요청을 막습니다.",
+    "Cancellation은 authoritative state를 기다립니다. Unknown receipt는 새 전송을 막고 자동 replay하지 않습니다.",
+    "지연된 activity 응답이 selected-session filter를 덮어쓰지 않는 근거가 있습니다.",
+    "Computed contrast, reduced-motion 및 live-region은 제한된 표본입니다. Computed focus의 unverified 항목을 전체 접근성 통과로 바꾸지 않았습니다."
+  ],
+  "evidence_binding": {
+    "r4_evidence_sha256": "7546f51e411b5fcc3b1dacdd4472a843bf5477f53bf7729909821b49cda39caa",
+    "r5_evidence_sha256": "d00b64fe4dbc145e119cefc7ee239af80a65be0077e6793dfa7d23ff422bf399",
+    "r5_manifest_sha256": "7834ff5fbf4e5876d9a654cdc1b1cab233bb488666ee1887fbcdd48a9834ebe4",
+    "r5_build_stamp_sha256": "c5a486f81d5c0f58251e0b8d7037ea9be444ab11aae190ab6df9952593761b8c",
+    "current_build_input_files_verified": 100,
+    "selected_script_fixture_files_verified": 4,
+    "launch_artifact_files_verified": 7,
+    "current_file_hash_mismatches": [],
+    "production_renderer_and_preload_unchanged_from_r4": true,
+    "saved_r5_result": "pass",
+    "saved_r5_teardown": {
+      "exited": true,
+      "code": 0
+    },
+    "saved_capture_visibility": {
+      "before_capture_hidden_unfocused_nonfocusable": 46,
+      "separate_os_window_fields_hidden_unfocused_nonfocusable": 45,
+      "exception": "Link preview crop에는 별도 osWindow fields가 없습니다. beforeCapture 기록은 있습니다.",
+      "reviewer_measured_live_window_state": false
+    },
+    "separate_native_runtime_evidence": {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+      "sha256": "0d068305316fb576ab4d00cf2bab304ce0d0a0b0b06ea4558e1fa86f1fb6a0f3",
+      "saved_result": "pass",
+      "unmet_proof": [],
+      "cleanup_complete": true,
+      "identities_unchanged": true,
+      "observed_report_scope": "Actual Native production preflight의 normal/SIGKILL reopen, exact history/receipts/fork lineage 및 actual public Native pending producer 차단 근거를 읽었습니다.",
+      "distinction": "별도 actual Native runtime 증거입니다. Synthetic hidden UI screenshot으로 대체하지 않았습니다. Reviewer가 Native를 실행하지 않았습니다.",
+      "material_limit": "Public SDK history seed는 synthetic입니다. 해당 report는 production Main/windows, private stores, provider/credential, Windows 및 power-loss acceptance를 포함하지 않습니다."
+    }
+  },
+  "limitations": [
+    "P7의 9개 상태·14개 capture는 CSS 1440×928, 100%만 포함합니다. P7 narrow 또는 200% 검증을 주장하지 않습니다.",
+    "기존 P6 scenario matrix와 wide 상태 화면은 모든 상태·viewport의 전체 조합이 아닙니다.",
+    "200% permission screenshot은 전체 queue의 모든 경로·경고·action을 동시에 보여주지 않습니다. 전체 접근 가능성은 저장된 scrolling/keyboard assertion 근거입니다.",
+    "896×208 link preview는 component crop입니다. 전체 viewport 근거가 아닙니다.",
+    "r4 이미지 도구 출력 일부는 표시 과정에서 축소되었습니다. 원본 크기는 모든 PNG header로 확인했습니다. r5 변경 화면 6개는 original detail로 관찰했습니다.",
+    "Hidden UI는 actual built production renderer/preload와 synthetic main-process host DTO를 사용합니다. Screenshot만으로 실제 storage recovery나 Native restart를 증명하지 않습니다.",
+    "Original epoch/id lookup, no replay, draft 편집, disabled menu 및 mutation 수 불변은 저장된 assertion 근거입니다.",
+    "관찰한 7개 recovery reason 외의 모든 closed enum 상태를 픽셀로 확인한 것은 아닙니다.",
+    "Contrast 표본에는 disabled/offscreen/배경 측정 제한이 있습니다. Computed focus는 unverified 항목을 포함합니다. 전체 WCAG 또는 OS screen reader 검증을 주장하지 않습니다.",
+    "Static screenshot과 computed reduced-motion/live-region 기록은 실제 지각된 motion이나 장시간 streaming을 증명하지 않습니다.",
+    "Dark theme, Windows, physical touch, 실제 macOS IME 및 OS screen reader를 검사하지 않았습니다.",
+    "별도 Native runtime 증거는 읽기만 했습니다. 이 design verdict는 code/runtime gate의 독립 검토나 전체 run 승인을 대신하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a1172e-3e5d-76a0-8045-5ba4181d5a0d",
+    "actual_child_id": "01a1172e-3e5d-76a0-8045-5ba4181d5a0d",
+    "identity_evidence": "현재 CODEX_THREAD_ID를 다시 읽어 확인했습니다. 준비된 dispatch의 child_ref도 확인했습니다. Parent session ID나 과거 reviewer ID를 사용하지 않았습니다.",
+    "role": "design_qa",
+    "profile": "solo_reader",
+    "review_mode": "fresh_independent_report_only",
+    "report_only": true,
+    "read_only_actions": [
+      "지정 규칙·계약·증거·ledger 읽기",
+      "실제 screenshot view_image 관찰",
+      "PNG SHA256 및 IHDR 검사",
+      "Build provenance와 현재 파일 hash 비교",
+      "최신 harness binding 재계산"
+    ],
+    "filesystem_sandbox_enforcement_claimed": false,
+    "runtime_or_ui_launched": false,
+    "native_execution": false,
+    "gui_execution": false,
+    "tests_run": false,
+    "browser_used": false,
+    "provider_or_private_access": false,
+    "file_or_ledger_writes": false,
+    "recursive_delegation": false,
+    "implementation_or_repairs_performed": false,
+    "self_approval": false,
+    "capture_origin": "BrowserWindow.webContents.capturePage().toPNG(); actual built renderer/preload; test-only synthetic main process",
+    "runtime_provenance_limit": "Visibility/focus/teardown 및 interaction 동작은 저장된 관찰입니다. 실제 픽셀과 파일 byte 검사는 이 Reviewer가 직접 수행했습니다.",
+    "report_persistence_owner": "Main"
+  }
+}

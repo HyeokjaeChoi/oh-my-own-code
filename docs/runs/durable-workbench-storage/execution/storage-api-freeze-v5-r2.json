@@ -1,0 +1,19 @@
+{
+  "plan_revision": 6,
+  "document_version": 5,
+  "revision": 2,
+  "source": {
+    "apps/desktop-app/src/host/storage-journal.mjs": "3040d498efd42f80f14b2c9509baea3d27a692e53ee9ccceabb13261627d8e9d",
+    "apps/desktop-app/src/host/storage-journal.test.mjs": "74222ef71960bf5c3bcec1862edce788248ba53e43d110c08e4b2b38c12a4776",
+    "apps/desktop-app/src/host/workspace-registry.mjs": "2314b38de9f57e60a64063f99a9c08777a4d8a84bb527d693b8f799ca34528c2",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs": "6afb7f67fe9c4de7c325416cd96488e3c068ba5f4e5b475e24f40256c726f58c"
+  },
+  "supersedes": "storage-api-freeze-v5.json journal/registry hashes only",
+  "policy_steps_added": [
+    "native.policy.before_selection",
+    "native.policy.after_selection"
+  ],
+  "host_only_method": "lookupIdentity({runtimeEpoch,operationId}) -> defensive original admitted identity including digest or undefined; malformed key invalid_record; no append/effect/observation allocation",
+  "result": "journal-registry-correction-result-v5.md",
+  "final_gate": false
+}

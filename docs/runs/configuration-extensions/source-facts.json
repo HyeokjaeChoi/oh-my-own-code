@@ -1,0 +1,43 @@
+{
+  "authority": "Read-only current pinned source facts collected while configuration-agents final review runs. Not accepted next design, not implementation or runtime proof.",
+  "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+  "pins": {
+    "docs/product/prd.md": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3",
+    "docs/engineering/workbench-architecture.md": "d07aa9234632541056bbe3b96756f2fe7081214f4590397fe0260fd01c31ccae",
+    "apps/desktop-app/src/host/workbench-configuration.mjs": "45fe37e79dec410444f5bb07b50aeaae2721b000fe0f2f7aa9536f0b6010a13b",
+    "apps/desktop-app/src/native-skills-config.mjs": "c2760a03fef4b59bb3c8cc633f4ed3b65d612bad76d8f3dfb74c19afb9987940",
+    "apps/desktop-app/src/event-host-protocol.mjs": "beef614f4ccab66d04f35baa9da74c518f2f5978e91febd3d3de0d7951236f06",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/plugin/dist/promise/tool.d.ts": "14ead93a2c03136af9768f9f02447c5fb357d1bce12a4b38a5e9fe31a0e91eff",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/config/plugin.d.ts": "53fdc2c8d56eefa6940ef4d515b2fabe13a91ebbfcce643f7e11292c94ce9c0d",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/plugin.d.ts": "57bb313826b93ec540607edc34b3674b23789d80fdc6e3454dca7640593330d6",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/client/dist/promise/generated/client.d.ts": "22589f1c0f305239a9621cc725767bcbff46dff057fcc4b9cb2190518f1b1e7c",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/server/dist/chunks/service-status-vgxn80m1.js": "f0d55a3c53e82ef2d6eb149ca5f75468fcd1e13628195ca4495d0870f694eccd",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-0jq9fyba.js": "bfd865157f07ba87f8df74fe1ac32a6893e198d1b2049dcea564159662148cf6",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-48y8hbvk.js": "618d0d178a428d7a7ec96671edefb11f8cf3c811505e7fae56e7c15d6937dcf0",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/plugin/dist/promise/plugin.d.ts": "ad8e00e94b4c94587800db750132a44754f42fe322d5cfb6da9fb0168ced09f1",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/plugin/dist/promise/registration.d.ts": "16436600a035f85d035e3baebb8412084119f620ee4eafc9feba1c7438f6f5ff",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-yw6qsgb4.js": "3731a6ac99d3de9db8acd15d2ee4a7559b121dfa28e6694c7db5ed38f203e3aa",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-76n1dez8.js": "d287ae519253b75a2b350a53b4b5c5eef01b819afcf64e79c66566daccbe361b"
+  },
+  "facts": [
+    "PRD F14 includes hooks/tools/plugins location/source/active scope, local edit/validate/preview/apply/reload; incompatible vendor formats are not executed.",
+    "Current discoverConfiguration is metadata-only over8top-level markers; hooks/tools/plugins DTO enum exists but helper does not discover their individual definitions. It never reads/evaluates these files or invokes Native config.get.",
+    "Current fixed bundled plugin configuration is closed to verified builtins/workbench-skills with in-memory nonce; project plugins/config auto loading remains excluded.",
+    "Pinned @opencode/client2.0.18 provides plugin.list/check/update; no public tool domain field in generated client API. check/update are not assumed read-only or approved from their names.",
+    "Pinned plugin ToolDomain exports transform/reload/list and execute.before/after hooks; callbacks and tool execute are executable code. ConfigPlugin accepts package strings or package+arbitrary options; schema validity does not establish safe execution.",
+    "Existing shared simple draft validator handles instructions/mcp only; Skills/Agents use separate grammar helpers. No hooks/tools/plugins converter selected.",
+    "Actual pinned server plugin.list invokes Plugin.Service.list; plugin.check gathers package targets from current inventory and calls PluginUpdate.check(refresh:true). Actual PluginUpdate.check invokes Npm.check; plugin.update invokes Npm.update. Neither may be silently treated as harmless polling.",
+    "Actual plugin source distinguishes builtin/package/local/sdk with active|failed state and server/tui/rpc features. Raw failed error/ref and arbitrary package/local paths need a bounded public projection; do not leak implementation output or secrets.",
+    "Pinned Plugin.Service.list function returns current inventory without calling activation/check/update; service/context startup lifecycle still needs existing verified Native owner/preflight.",
+    "Pinned trusted plugin Context.plugin is Pick<PluginApi,list>; Context.tool exposes ToolDomain. Hooks type registers named callbacks and returns dispose; it does not expose an inventory enumeration API.",
+    "Actual Tool.Service.list returns Array.from(state.get().tools.values()) in Effect.sync; plugin host forwards ctx.tool.list directly. Tool snapshot(permission filtering) and execute are separate paths. Registry presence is not execution permission."
+  ],
+  "next_decisions": [
+    "Choose a bounded next increment from actual unsupported gaps without claiming wholeF14 done.",
+    "Inspect pinned Native implementation for plugin list/check/update scope and side effects before selecting public read or mutation API.",
+    "Do not infer safe user-code execution, package installation, network or Native plugin ownership from DTO names or file presence. New executable/security/data boundary requires initialmajorPLAN/DESIGN once."
+  ],
+  "runtimeInvoked": false,
+  "sourceWrites": false
+}

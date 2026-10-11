@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "7b75a16a173bcf005456c6e8aa181f06bb0879f4d804c3e239e6fb096f15c35b",
+    "gate": "plan",
+    "plan_sha256": "0f9d084716a6f9225b337a1e549fa47a439187dbd0e64590d65a44b891eb0eb8",
+    "schema_version": 2,
+    "source_sha256": "c7e7d9f0ecee850ac66abfe6c3bfb807b2da0588b292717f5d5d3ca4101959d8",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "계약 변경은 candidate design 문서 선언 1개 추가입니다. 초기 계획의 범위, T1/T2/T3 요구, 검사 및 work class는 유지됩니다. 기존 실질 통과 평가를 재사용합니다. 현재 등록된 plan 소스 hash는 현재 source_fingerprint와 일치합니다. 이 판단은 초기 plan gate에만 적용되며 design-spec 승인은 별도로 필요합니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a12456-9fa6-7920-b2f6-98adc73a6d86",
+    "binding_input": "docs/runs/permission-task-lifetime-design/plan-input-r4.json",
+    "binding_before_after": "입력 전체 객체와 harness 출력이 검토 전후 일치",
+    "registered_plan_source_matches_current_fingerprint": true,
+    "plan_source_work_class_unchanged": true,
+    "acceptance_and_checks_unchanged": true,
+    "contract_change": {
+      "type": "document_declaration_only",
+      "path": "docs/runs/permission-task-lifetime-design/design-contract-r1.md",
+      "gate": "design_spec",
+      "version": "candidate-r1",
+      "sha256": "0ef9cc38402fa92f0e110667642363fafc3008028dfc479a0aa78b13e916be6e",
+      "declared_hash_matches_file": true
+    },
+    "prior_assessment_reused": "plan-review-r3.json의 초기 계획 실질 통과 평가",
+    "design_spec_review_performed": false,
+    "full_review_or_tests_repeated": false,
+    "runtime_launched": false,
+    "delegation": false,
+    "source_edits": false,
+    "report_saved": false,
+    "ledger_edits": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "eacf6d247318575f5e86d9e6f73a364daedc1d4e6ba89747a6423c03cb93305f",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "code",
+    "plan_sha256": "f708386620e5139e13ffd304979ee0a6fd98b9cbfbac298956cc46620712e356",
+    "schema_version": 2,
+    "source_sha256": "1c414c72232dc8cb91910a3da65313b6e8ab5e89dbcca1d6b3d33eb4c6299f28",
+    "verification_sha256": "ccd9191b5bb26d653980b336033689042a6ed97b45c4281bccd97bc9ee5837b7"
+  },
+  "verdict": "changes_requested",
+  "summary": "Independent read-only review of the named current canonical sources, validators, Button baseline, Figma structural record, and phase evidence against plan revision 6. Current source values and recorded structures align with the acceptance matrix, and the coordinator-recorded token/component checks exit 0. Two targeted-check gaps allow material contract regressions to pass. The repository is untracked, so this is not a complete base-to-head diff review.",
+  "open_findings": [
+    {
+      "severity": "P2",
+      "path": "docs/runs/component-polish/check_components.py",
+      "line": 68,
+      "title": "Compare each PermissionRequest variant and Figma action with the state action map",
+      "trigger": "A future edit leaves componentContracts.PermissionRequest.actions correct but changes visual.actions for sending to enabled primary/default, or changes an evidence action main_component to the wrong Button variant. The current checker verifies only the top-level action map and target heights; validate_system.py checks enabled properties but not visual.actions.",
+      "impact": "Both required checks can report success while the canonical variant or recorded Figma composition exposes a duplicate permission decision or incorrect Button intent/state, contrary to AC-5 and AC-7.",
+      "evidence": "The state map assertion is at line 68; lines 88-90 inspect outer/scope strokes and target heights without mapping each per-state evidence action. Current visual.actions in components.json:1196-1210 and 1250-1264 happen to match the plan.",
+      "suggested_correction": "Derive each variant visual.actions into the same action/intent/state/enabled tuple and compare it with the expected state map; compare per-state Figma Button main-component IDs and disabled status to that mapping. Record and assert measured target gaps if this check claims the 8px spacing requirement."
+    },
+    {
+      "severity": "P2",
+      "path": "docs/design/validate_system.py",
+      "line": 318,
+      "title": "Assert the exact dark NavigationItem surface aliases",
+      "trigger": "A later manifest edit points component.color.navigation.selected-background to another semantic surface that differs from parent and hover. The token validator tests only inequality at lines 311-319, while check_components.py compares a hardcoded contract map and recorded hex colors without binding the Figma evidence to the manifest hash.",
+      "impact": "Both checks can pass after the source token binding departs from the revision-6 parent/default=#262626, hover=#171717, selected=#3d3d3d matrix, making the recorded source-to-Figma parity stale under AC-3 and AC-7.",
+      "evidence": "The current manifest has the intended aliases at lines 1535-1540, 1562-1567, and 1847-1852; the validator never compares these resolved aliases to the exact contract matrix, and figma-structural-evidence.json is tied only to components_sha256.",
+      "suggested_correction": "Assert each dark component alias resolves to its documented semantic path and expected value. Include the manifest hash in the Figma structural evidence binding, or explicitly compare evidence surfaces against colors resolved from the current manifest."
+    }
+  ],
+  "review_boundary": "Read-only inspection of plan.md; components.json; system.md; manifest.json; generated tokens.css; validate_system.py; check_components.py; button-baseline.json; figma-structural-evidence.json; phase-1-evidence.md; phase-2-evidence.md; contract.json; run status. Git status shows all project contents untracked, so no meaningful committed diff baseline was available.",
+  "evidence_limits": "Recorded Figma structural values and phase prose were inspected, not live Figma nodes or screenshots. Static checks and Figma geometry do not establish browser/runtime hit targets, keyboard behavior, assistive technology, zoom, or production interaction. The prior accepted Button snapshot cannot independently prove pre-run equivalence without an external baseline.",
+  "provenance": {
+    "child_task_id": "/root/code_review_final",
+    "author_task_id": "/root"
+  }
+}

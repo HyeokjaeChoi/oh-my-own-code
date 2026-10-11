@@ -1,0 +1,89 @@
+✔ root owner binds actual opened directory identity and close revokes immediately (5.577292ms)
+✔ observer refuses a replacement at the same pathname before opening any descendant (3.537ms)
+✔ observer checks retained owner after reentrant authority checks and keeps bytes private (4.251791ms)
+✔ root owner refuses malformed descriptor inputs and cleans failed acquisition (1.07725ms)
+✔ root replacement during acquisition is refused and the opened replacement FD is closed (1.448709ms)
+✔ a symlink root is refused before open and revocation does not reopen the path (1.689583ms)
+✔ final owned guard inspection never invokes supplied lookalikes, wrappers or proxies (1.075625ms)
+✔ assertCurrent checks actual retained and named identity before and after check (1.400542ms)
+✔ assertCurrent irreversibly revokes after replacement, retaining FD until close (1.485625ms)
+✔ assertCurrent irreversibly revokes after symlink, retaining FD until close (1.312083ms)
+✔ assertCurrent irreversibly revokes after ancestor relocation, retaining FD until close (1.3255ms)
+✔ close during pending stat phase 1 stops subsequent IO (0.874042ms)
+✔ close during pending stat phase 2 stops subsequent IO (1.301458ms)
+✔ close during pending lstat phase 1 stops subsequent IO (0.866ms)
+✔ close during pending lstat phase 2 stops subsequent IO (0.992ms)
+✔ close during pending realpath phase 1 stops subsequent IO (0.911667ms)
+✔ close during pending realpath phase 2 stops subsequent IO (0.931625ms)
+✔ a check that closes reentrantly stops before the first identity pass (0.832792ms)
+✔ a replacement in check is detected by the second actual identity pass (1.047709ms)
+✔ revocation by another assertion stops a pending identity check without closing the handle (1.4915ms)
+✔ a throwing runtime check permanently revokes the pure guard and retains the handle (0.798417ms)
+✔ a retained stat failure permanently revokes without reopening the original path (0.970584ms)
+✔ close settlement stays pending and injected close failure remains rejected and idempotent (0.908916ms)
+✔ assertCurrent refuses revoked caller authority before its first metadata IO (0.890834ms)
+✔ root acquisition records actual cleanup, never caller-written settlement (1.077625ms)
+✔ boot-held admission allocates no leases, including after invalidation (6.135792ms)
+✔ default global node fails closed without explicit configuration (0.697ms)
+✔ configured global node replacement shares one kernel across actual graph consumers (2.376666ms)
+✔ configured rejects malformed closed inputs synchronously without getter or proxy traps (0.532875ms)
+✔ boot holds are copied, sorted, deduplicated, deeply frozen and remain held (0.647792ms)
+✔ initialization accepts exact UTF8 and count boundaries (44.963334ms)
+✔ transaction rejects invalid inputs before callbacks and does not execute getters (0.611042ms)
+✔ capabilities reject forgery, copies, uncovered projects, child fibers and escaped reuse (3.307583ms)
+✔ same-fiber public reentry fails before acquiring even disjoint projects (0.3805ms)
+✔ inherited child transaction reentry rejects before parent-held or disjoint locks (0.517458ms)
+✔ same projects serialize; disjoint projects continue; reversed duplicate inputs cannot deadlock (1.841625ms)
+✔ reverse inputs acquire the sorted first project before touching the second (1.656791ms)
+✔ callback throw, failed Effect and interruption release all gates and expire capabilities (0.64625ms)
+✔ 32 waiters exclude the holder; overflow never enters; cancellation restores every project slot (60.040917ms)
+✔ invalidation proceeds while gates are held and is permanent for existing and new projects (0.442458ms)
+✔ invalid invalidation reasons fail without changing runtime state (0.358958ms)
+✔ each acquisition of the same configured Layer owns an independent kernel (0.195209ms)
+✔ location owner retains building, ready and finalizing incarnations without settlement claims (0.917417ms)
+✔ location metadata excludes active project transactions without holding across Native effects (1.472ms)
+✔ queued metadata precedes later shared admissions with staggered overlapping readers (5.05225ms)
+✔ metadata admission bounds and cancellation reopen readers only after the last writer leaves (63.548875ms)
+✔ failed queued metadata releases admission and inherited lifecycle reentry fails before waiting (2.255667ms)
+✔ location handles reject forgery, cross owner use, identity rebinding and reentrant lifecycle mutation (0.384459ms)
+✔ location capacity retains all thirty-two unknown entries and refuses another before effects (0.439375ms)
+✔ location identity validation never invokes caller accessors or Proxy traps (0.224416ms)
+✔ cancelled exclusive metadata waiter releases graph permits and does not leak an unknown build (2.010666ms)
+✔ actual acquired Control prepareTask holds without allocating authority (0.487958ms)
+✔ prepare captures entry metadata and observes runtime loss before deferred execution (0.3255ms)
+✔ trusted configured callback runs only at acquisition and receives the actual shared Service (0.196208ms)
+✔ real Control owns inventory counters and refuses caller completeness and old registration closures (0.674083ms)
+✔ location root pins actual directory before services and closes only at observed scope exit (2.957416ms)
+✔ location root replacement cannot be blessed by a current transaction or rename-back (1.9865ms)
+✔ location root capture refuses missing roots and cannot turn failure into a ready pin (0.495166ms)
+✔ location root changed during Native service construction cannot become ready (1.607541ms)
+✔ actual cache factory registers resolved ready location and retains finalizing on invalidate (11.481416ms)
+✔ actual failed Native build retains unproved incarnation instead of dropping context (1.538417ms)
+✔ actual project resolution observes unknown build before its first effect and holds no project lock (1.353708ms)
+✔ actual owner scope close retains unproved finalizing entry (finalizer failure=false) (1.388375ms)
+✔ actual owner scope close retains unproved finalizing entry (finalizer failure=true) (1.403542ms)
+✔ actual cache hit reuses incarnation; invalidated replacement never erases old one (2.011959ms)
+✔ actual AppNodeBuilder replacement declares Control before constructing location map (2.111083ms)
+✔ actual invalidation during unresolved build cannot publish late ready context (1.293584ms)
+✔ actual registration capacity failure blocks before Native project resolution and invalidates graph (1.2635ms)
+✔ partial Native Layer failure marks finalizing before acquired service cleanup (2.095833ms)
+[20:09:58.129] INFO (#65): location services booted {
+  directory: '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-location-node-kAIEms/roots/one',
+  workspaceID: undefined,
+  durationMs: 0
+}
+[20:09:58.129] INFO (#68): location services booted {
+  directory: '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-location-node-kAIEms/roots/two',
+  workspaceID: undefined,
+  durationMs: 0
+}
+✔ actual compiled local cache preserves shared service reuse across location incarnations (2.437791ms)
+✔ actual compiled local interruption records finalizing before acquired finalizer (0.955125ms)
+ℹ tests 71
+ℹ suites 0
+ℹ pass 71
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 551.576458

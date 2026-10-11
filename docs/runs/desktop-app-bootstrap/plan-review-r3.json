@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "905ce4a9a5c67874c0101e46fbdd1e96998226399c6ea7acbfa1667bc3de5471",
+    "contract_sha256": "c945fb6edaa9b0544b7bac342a98e23135b5744c6a25cc5e3ccfbc929722c2ff",
+    "source_sha256": "4c823c8760b4f4ef9d52183ba0ab18a087e9e4cee6ff2e15d4d6f9db4023615d"
+  },
+  "verdict": "pass",
+  "summary": "Revision 3 fully resolves the remaining DP-02 plan-level finding: desktop-bundle-inspection is a separate required uncached command, explicitly inspects packaged renderer assets for all four forbidden-content categories, covers D-2 and D-3, and binds its report to the exact artifact SHA-256 and build evidence. The existing packaged E2E check binds to that same built artifact and covers the synthetic preload transport, security and lifecycle behavior. Acceptance remains bounded to a local macOS synthetic desktop shell milestone, with no full PRD, real SDK isolation, cross-platform, signing or public-release claim. The execution plan is ready to proceed through its mandatory product/design-spec handoffs and compatibility probe before dependent implementation; this review does not establish that those gates or any runtime checks have passed.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "DP-01",
+      "resolution": "The explicit desktop-only read-only adapter, named readSyntheticSnapshot/onBridgeStatus operations, owned utility/main/preload path, absence of browser pairing/bearer credentials, owned renderer/API paths and browser regression coverage remain intact in revision 3."
+    },
+    {
+      "id": "DP-02",
+      "resolution": "contract.checks.desktop-bundle-inspection requires pnpm nx run desktop-shell:bundle-inspection --skip-nx-cache. Its scope names Node built-ins, secrets, bridge-only code and unsafe APIs in packaged renderer assets, requires the exact desktop artifact SHA-256/build binding, and maps to D-2 and D-3. Plan steps 5-6 and completion criteria require the same package across build, inspection and E2E. The existing required desktop-packaged-e2e command separately covers transport, malformed IPC sender/frame/payload, navigation/popups, privileges, preview isolation, startup failure/crash/timeout/close/quit/restart and observed child reaping."
+    }
+  ],
+  "verification_limits": [
+    "Read-only plan and contract review of docs/workplans/desktop-app-bootstrap/plan.md revision 3, contract.json, prior review and relevant ADR/verification requirements. This is a plan-level pass, not a claim that the future Nx targets exist or succeed.",
+    "Local SHA-256 computation confirmed plan and contract hashes. The read-only harness review-input command confirmed all supplied bindings. source_sha256 is the harness registered plan source binding; no independent source inventory fingerprint was recomputed.",
+    "The assigned .solopreneur/agents/roles/plan_reviewer.md does not exist. The actual .codex/agents/plan_reviewer.toml and .agents/skills/solo-plan-review/SKILL.md were read and applied. The registered workplans path is the reviewed SSOT rather than the generic skill example docs/runs path.",
+    "Product/design-spec document reviews and handoffs, pinned Electron/Forge compatibility, executed package inspection/security/lifecycle checks, independent code review and running packaged-app design QA remain mandatory and unverified here.",
+    "No dependency install, application runtime, tests, SDK, user configuration, credential access or ledger mutation occurred. Only this requested report was created. files_modified=false refers to the reviewed plan, contract and implementation artifacts; it excludes this explicitly requested report output.",
+    "Runtime provenance identifiers are assignment metadata, not independently attested runtime identity."
+  ],
+  "provenance": {
+    "child_task_id": "/root/desktop_plan_review_r3",
+    "author_task_id": "/root",
+    "review_mode": "Fresh independent read-only plan and contract review",
+    "runtime_identity_verified": false,
+    "runtime_executed": false,
+    "tests_executed": false,
+    "tests_run": false,
+    "ledger_modified": false,
+    "files_modified": false
+  }
+}

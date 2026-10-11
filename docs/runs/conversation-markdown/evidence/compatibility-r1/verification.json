@@ -1,0 +1,62 @@
+{
+  "pass": true,
+  "cleanInstall": true,
+  "ignoredInstallScripts": true,
+  "checks": [
+    {
+      "command": "pnpm install --ignore-scripts",
+      "exit": 0
+    },
+    {
+      "command": "tsc --noEmit --skipLibCheck --moduleResolution bundler --module esnext --jsx react-jsx --target ES2022 probe.tsx",
+      "exit": 0
+    },
+    {
+      "command": "esbuild probe.tsx --bundle --platform=node --format=esm --outfile=probe.mjs --packages=external",
+      "exit": 0
+    },
+    {
+      "command": "node probe.mjs",
+      "exit": 0
+    }
+  ],
+  "scope": "Isolated exact pinned package peers and actual external-runtime SSR. Not browser/app integration. Packages external at runtime resolve from the clean isolated installation.",
+  "files": {
+    "package.json": {
+      "sha256": "4f6e1696378aa775ce57af71ac11202e057f52580792ce889d46b4d3edb4d908",
+      "bytes": 388
+    },
+    "pnpm-lock.yaml": {
+      "sha256": "c3f6f1ab22e9fc2d08d2a230a05ffe91cff52e3578b070ac43fef1a7b33f38cb",
+      "bytes": 141583
+    },
+    "probe.tsx": {
+      "sha256": "dcdf39a987220ba3b90268b695e81806fb0e90c9711978857adc790376e8131b",
+      "bytes": 1435
+    },
+    "probe.mjs": {
+      "sha256": "a311c5bd30bf192c755f7bcfd3e167805ebfbdb6e9a573d01fde10da5416cf2c",
+      "bytes": 1727
+    },
+    "install.log": {
+      "sha256": "5c48527e124d2c6de4d8cd59bcae08b6344406383c1ea89a831a67b502adbf67",
+      "bytes": 862
+    },
+    "typecheck.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "build.log": {
+      "sha256": "15e522c28cbeefe42d8f1073258697b52eacc52a02f56409631002f3bc59d9ef",
+      "bytes": 37
+    },
+    "render.json": {
+      "sha256": "5c50114196bb166a4283e5ce3e253a52273a13e5babd8e4f86cc44e195b43802",
+      "bytes": 455
+    },
+    "render.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  }
+}

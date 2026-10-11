@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "run": "bounded-workbench-foundation",
+  "reviewer": "design_spec_reviewer",
+  "verdict": "pass",
+  "reviewed": {
+    "contract_sha256": "2f1912340a82a7b8bf6aa10f33f4e4e45443a48ca1ae9780077a92b009d6895b",
+    "documents_sha256": "602fb979444c8f448a2e04e72af800e727ef26591f937e6d4af3623230ab2a65",
+    "gate": "design_spec",
+    "plan_sha256": "743593ca74cb41eeca7a19aee5570736c24425fb6a09fc57a5c9a1468f6a81ce",
+    "schema_version": 2
+  },
+  "summary": "plan revision5의 지정 범위를 통과했습니다. read-receipt-contract v3의 실제 hash와 documents binding은 r3 통과 입력과 같습니다. r2 출력은 허용 root 내부이며 아직 없습니다. 기존 부모 경로에는 symlink가 없습니다. containment·symlink·nonempty 거부와 exclusive 생성 조건을 정적으로 확인했습니다. 실패한 r1의 manifest·로그·27개 capture는 남아 있습니다. assertion은 현재 visible unknown 문구와 일치합니다. Send 비활성화·draft 보존·correlated lookup·effect count 유지 검사는 남아 있습니다.",
+  "open_findings": [],
+  "review_boundary": {
+    "input": "docs/runs/bounded-workbench-foundation/execution/design-spec-r4.input.json",
+    "packet": "docs/runs/bounded-workbench-foundation/execution/design-spec-r4.packet.json",
+    "limits": "문서 연결과 변경된 검증 계약만 검토했습니다. 기존 architecture·safety 설계를 재검토하지 않았습니다. runtime·최종 code·UI 판정은 포함하지 않습니다."
+  },
+  "provenance": {
+    "actualchildID": "01a10285-1c6f-74e2-a080-8c1235e6c0dd",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-design-spec-review"
+    ],
+    "runtime_identity_attested": false,
+    "binding_verified_twice": true,
+    "packet_and_document_hashes_verified": true,
+    "files_changed": [],
+    "tests_run": false,
+    "gui_launches": false,
+    "provider_calls": false,
+    "delegated": false,
+    "persistence_owner": "coordinator",
+    "child_task_id": "01a10285-1c6f-74e2-a080-8c1235e6c0dd",
+    "coordinator_added_schema_key_from_actualchildID": true
+  }
+}

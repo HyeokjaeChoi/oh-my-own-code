@@ -1,0 +1,688 @@
+✔ boot-held admission allocates no leases, including after invalidation (7.1005ms)
+✔ default global node fails closed without explicit configuration (0.753125ms)
+✔ configured global node replacement shares one kernel across actual graph consumers (1.26725ms)
+✔ configured rejects malformed closed inputs synchronously without getter or proxy traps (0.516875ms)
+✔ boot holds are copied, sorted, deduplicated, deeply frozen and remain held (0.595042ms)
+✔ initialization accepts exact UTF8 and count boundaries (43.994ms)
+✔ transaction rejects invalid inputs before callbacks and does not execute getters (0.611375ms)
+✔ capabilities reject forgery, copies, uncovered projects, child fibers and escaped reuse (4.2125ms)
+✔ same-fiber public reentry fails before acquiring even disjoint projects (0.432417ms)
+✔ inherited child transaction reentry rejects before parent-held or disjoint locks (0.556ms)
+✔ same projects serialize; disjoint projects continue; reversed duplicate inputs cannot deadlock (1.943459ms)
+✔ reverse inputs acquire the sorted first project before touching the second (1.805625ms)
+✔ callback throw, failed Effect and interruption release all gates and expire capabilities (0.625791ms)
+✔ 32 waiters exclude the holder; overflow never enters; cancellation restores every project slot (63.436542ms)
+✔ invalidation proceeds while gates are held and is permanent for existing and new projects (0.618667ms)
+✔ invalid invalidation reasons fail without changing runtime state (0.435708ms)
+✔ each acquisition of the same configured Layer owns an independent kernel (0.239042ms)
+✔ location owner retains building, ready and finalizing incarnations without settlement claims (1.05875ms)
+✔ location metadata excludes active project transactions without holding across Native effects (1.582209ms)
+✔ queued metadata precedes later shared admissions with staggered overlapping readers (5.120583ms)
+✔ metadata admission bounds and cancellation reopen readers only after the last writer leaves (64.581333ms)
+✔ failed queued metadata releases admission and inherited lifecycle reentry fails before waiting (3.007ms)
+✔ location handles reject forgery, cross owner use, identity rebinding and reentrant lifecycle mutation (0.763209ms)
+✔ location capacity retains all thirty-two unknown entries and refuses another before effects (1.125708ms)
+✔ location identity validation never invokes caller accessors or Proxy traps (0.298125ms)
+✔ cancelled exclusive metadata waiter releases graph permits and does not leak an unknown build (2.057792ms)
+✔ actual acquired Control prepareTask holds without allocating authority (0.7255ms)
+✔ prepare captures entry metadata and observes runtime loss before deferred execution (0.334125ms)
+✔ trusted configured callback runs only at acquisition and receives the actual shared Service (0.202125ms)
+✔ real Control owns inventory counters and refuses caller completeness and old registration closures (0.888166ms)
+✔ location root pins actual directory before services and closes only at observed scope exit (3.755083ms)
+✔ location root replacement cannot be blessed by a current transaction or rename-back (2.523459ms)
+✔ location root capture refuses missing roots and cannot turn failure into a ready pin (0.504958ms)
+✔ location root changed during Native service construction cannot become ready (1.72425ms)
+✔ transaction owner is the actual Fiber object even if a child copies its id (0.449833ms)
+✔ bootstrap preparation observes actual candidate and closes retained root before held reply (8.919417ms)
+✔ runtime close waits for original bootstrap open and descriptor close, with no new preparation IO (2.224708ms)
+✔ bootstrap candidate rejection closes original root without inventing location or poisoning clean runtime (1.671291ms)
+✔ location project candidate API exists on the actual acquired Control (0.159125ms)
+✔ location candidate retains real pins, returns detached NONVCS metadata and preserves holds (7.482625ms)
+✔ location candidate refuses actual root .git and physically cleans construction (1.995542ms)
+✔ location candidate refuses actual ancestor .git and physically cleans construction (1.553166ms)
+✔ location candidate refuses actual root .hg and physically cleans construction (1.46475ms)
+✔ location candidate refuses actual ancestor .hg and physically cleans construction (1.44725ms)
+✔ location candidate ready rechecks actual ancestor marker and permanently refuses stale owner (3.845417ms)
+✔ location candidate check rechecks actual ancestor marker and permanently refuses stale owner (4.427667ms)
+✔ location candidate cannot bless replacement of the original pin (1.14975ms)
+✔ location candidate close during original open prevents result and waits for cleanup (2.032083ms)
+✔ location candidate scope during original open prevents result and waits for cleanup (1.783667ms)
+✔ location candidate finalizing during original open prevents result and waits for cleanup (1.836209ms)
+✔ location candidate invalidate during original open prevents result and waits for cleanup (1.733334ms)
+✔ location candidate rejects foreign, forged and inherited transaction handles without IO (0.827458ms)
+✔ location candidate interruption waits for original acquisition and scope physically closes both pins (3.993ms)
+✔ location candidate physical close failure escapes scope cleanup and remains failed on runtime cleanup (4.187459ms)
+✔ location candidate physical close failure escapes failed construction and remains failed on runtime cleanup (1.876292ms)
+✔ Native Read runtime binding is private, single-use and cannot enter consumer/resource factory without current Task authority (0.473917ms)
+✔ Native Read rejects accessor/Proxy/page extras before any caller access or Task dispatch (0.213667ms)
+✔ Agent notification capture accepts only one fixed synchronous source and detached listeners (0.306292ms)
+✔ Agent notification capture rejects non-true source responses and closed Control (0.319875ms)
+✔ actual Host constructor retains the opaque LocationBuildScope handle (5.276042ms)
+✔ original Host agent arrow bypasses Control before State registration and replay (0.278375ms)
+✔ original Host provider arrow bypasses Control before State registration and replay (0.144083ms)
+✔ original Host model arrow bypasses Control before State registration and replay (0.124417ms)
+✔ original Host integration arrow bypasses Control before State registration and replay (0.115125ms)
+✔ original Host mcp arrow bypasses Control before State registration and replay (0.095875ms)
+✔ original Host agent editor conversion under isolated scripted permissive fixture (0.257834ms)
+✖ patched Host agent editor conversion under isolated scripted permissive fixture (0.430958ms)
+✔ original Host provider editor conversion under isolated scripted permissive fixture (0.1915ms)
+✖ patched Host provider editor conversion under isolated scripted permissive fixture (0.192292ms)
+✔ original Host model editor conversion under isolated scripted permissive fixture (0.138209ms)
+✖ patched Host model editor conversion under isolated scripted permissive fixture (0.145375ms)
+✔ original Host integration editor conversion under isolated scripted permissive fixture (0.153542ms)
+✖ patched Host integration editor conversion under isolated scripted permissive fixture (0.114ms)
+✔ original Host mcp editor conversion under isolated scripted permissive fixture (0.107833ms)
+✖ patched Host mcp editor conversion under isolated scripted permissive fixture (0.106292ms)
+✔ original Host and pinned Effect entry retain source hashes after extraction (4.257541ms)
+✔ patched actual Host agent preserves fixed editor adapter expression (0.330042ms)
+✔ patched actual Host provider preserves fixed editor adapter expression (0.141292ms)
+✔ patched actual Host model preserves fixed editor adapter expression (0.113459ms)
+✔ patched actual Host integration preserves fixed editor adapter expression (0.092667ms)
+✔ patched actual Host mcp preserves fixed editor adapter expression (0.080334ms)
+✔ patched actual Host agent: publication failure before State construction, same-token cleanup (0.365125ms)
+✖ patched actual Host agent: guard failure before State construction, same-token cleanup (0.338125ms)
+✖ patched actual Host agent: scripted isolated permissive registration then held synchronous replay (0.121ms)
+✔ patched actual Host provider: publication failure before State construction, same-token cleanup (0.075542ms)
+✖ patched actual Host provider: guard failure before State construction, same-token cleanup (0.127792ms)
+✖ patched actual Host provider: scripted isolated permissive registration then held synchronous replay (0.069792ms)
+✔ patched actual Host model: publication failure before State construction, same-token cleanup (0.068208ms)
+✖ patched actual Host model: guard failure before State construction, same-token cleanup (0.107209ms)
+✖ patched actual Host model: scripted isolated permissive registration then held synchronous replay (0.062667ms)
+✔ patched actual Host integration: publication failure before State construction, same-token cleanup (0.054875ms)
+✖ patched actual Host integration: guard failure before State construction, same-token cleanup (0.083333ms)
+✖ patched actual Host integration: scripted isolated permissive registration then held synchronous replay (0.054333ms)
+✔ patched actual Host mcp: publication failure before State construction, same-token cleanup (0.056875ms)
+✖ patched actual Host mcp: guard failure before State construction, same-token cleanup (0.1225ms)
+✖ patched actual Host mcp: scripted isolated permissive registration then held synchronous replay (0.077667ms)
+✔ actual Control + inert agent producer: original-source held before State (5.293625ms)
+✔ actual Control + inert agent producer: foreign-callback held before State (1.311167ms)
+✔ actual Control + inert agent producer: same-shape held before State (1.255792ms)
+✔ actual Control + inert agent producer: origin-callback held before State (1.479208ms)
+✔ actual Control + inert agent producer: foreign-source held before State (1.609792ms)
+✔ actual Control + inert agent producer: foreign-scope held before State (1.135542ms)
+✔ actual Control + inert agent producer: closed-scope held before State (1.003875ms)
+✔ actual Control + inert mcp producer: original-source held before State (1.38425ms)
+✔ actual Control + inert mcp producer: foreign-callback held before State (0.94475ms)
+✔ actual Control + inert mcp producer: same-shape held before State (0.87625ms)
+✔ actual Control + inert mcp producer: origin-callback held before State (0.875709ms)
+✔ actual Control + inert mcp producer: foreign-source held before State (1.607041ms)
+✔ actual Control + inert mcp producer: foreign-scope held before State (0.900625ms)
+✔ actual Control + inert mcp producer: closed-scope held before State (0.861125ms)
+✔ actual Control + inert provider producer: original-source held before State (0.97725ms)
+✔ actual Control + inert provider producer: foreign-callback held before State (0.694166ms)
+✔ actual Control + inert provider producer: same-shape held before State (0.667084ms)
+✔ actual Control + inert provider producer: origin-callback held before State (0.710708ms)
+✔ actual Control + inert provider producer: foreign-source held before State (1.066708ms)
+✔ actual Control + inert provider producer: foreign-scope held before State (0.704625ms)
+✔ actual Control + inert provider producer: closed-scope held before State (0.695958ms)
+✖ isolated scripted agent publish construct failure retires original token (0.238083ms)
+✖ isolated scripted agent publish effect failure retires original token (0.1005ms)
+✖ isolated scripted provider publish construct failure retires original token (0.098417ms)
+✖ isolated scripted provider publish effect failure retires original token (0.089583ms)
+✖ isolated scripted model publish construct failure retires original token (0.0755ms)
+✖ isolated scripted model publish effect failure retires original token (0.077792ms)
+✖ isolated scripted integration publish construct failure retires original token (0.065167ms)
+✖ isolated scripted integration publish effect failure retires original token (0.065083ms)
+✖ isolated scripted mcp publish construct failure retires original token (0.077792ms)
+✖ isolated scripted mcp publish effect failure retires original token (0.1015ms)
+✔ bridge rejects non-function before token or fixed publisher (0.065042ms)
+✔ bridge rejects async before token or fixed publisher (0.032083ms)
+✔ bridge rejects generator before token or fixed publisher (0.030875ms)
+✔ bridge rejects proxy before token or fixed publisher (0.037583ms)
+✔ bridge rejects unknown-domain before token or fixed publisher (0.028917ms)
+✔ current invocation, copied pure closure and original source bytes remain exact after tests (3.591291ms)
+ℹ tests 133
+ℹ suites 0
+ℹ pass 108
+ℹ fail 25
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 633.025917
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:394:3
+✖ patched Host agent editor conversion under isolated scripted permissive fixture (0.430958ms)
+  TypeError [Error]: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:430:18)
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:394:3
+✖ patched Host provider editor conversion under isolated scripted permissive fixture (0.192292ms)
+  TypeError [Error]: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:430:18)
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:394:3
+✖ patched Host model editor conversion under isolated scripted permissive fixture (0.145375ms)
+  TypeError [Error]: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:430:18)
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:394:3
+✖ patched Host integration editor conversion under isolated scripted permissive fixture (0.114ms)
+  TypeError [Error]: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:430:18)
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:394:3
+✖ patched Host mcp editor conversion under isolated scripted permissive fixture (0.106292ms)
+  TypeError [Error]: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:430:18)
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:636:5
+✖ patched actual Host agent: guard failure before State construction, same-token cleanup (0.338125ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /inventory_unverified/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:655:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:656:18),
+    expected: /inventory_unverified/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:699:3
+✖ patched actual Host agent: scripted isolated permissive registration then held synchronous replay (0.121ms)
+  TypeError [Error]: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:716:20)
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:636:5
+✖ patched actual Host provider: guard failure before State construction, same-token cleanup (0.127792ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /inventory_unverified/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:655:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:656:18),
+    expected: /inventory_unverified/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:699:3
+✖ patched actual Host provider: scripted isolated permissive registration then held synchronous replay (0.069792ms)
+  TypeError [Error]: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:716:20)
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:636:5
+✖ patched actual Host model: guard failure before State construction, same-token cleanup (0.107209ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /inventory_unverified/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:655:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:656:18),
+    expected: /inventory_unverified/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:699:3
+✖ patched actual Host model: scripted isolated permissive registration then held synchronous replay (0.062667ms)
+  TypeError [Error]: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:716:20)
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:636:5
+✖ patched actual Host integration: guard failure before State construction, same-token cleanup (0.083333ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /inventory_unverified/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:655:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:656:18),
+    expected: /inventory_unverified/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:699:3
+✖ patched actual Host integration: scripted isolated permissive registration then held synchronous replay (0.054333ms)
+  TypeError [Error]: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:716:20)
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:636:5
+✖ patched actual Host mcp: guard failure before State construction, same-token cleanup (0.1225ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /inventory_unverified/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:655:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:656:18),
+    expected: /inventory_unverified/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:699:3
+✖ patched actual Host mcp: scripted isolated permissive registration then held synchronous replay (0.077667ms)
+  TypeError [Error]: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:716:20)
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:883:5
+✖ isolated scripted agent publish construct failure retires original token (0.238083ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /scripted_publish_failure/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:905:7)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:906:16),
+    expected: /scripted_publish_failure/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:883:5
+✖ isolated scripted agent publish effect failure retires original token (0.1005ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /scripted_publish_failure/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:905:7)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:906:16),
+    expected: /scripted_publish_failure/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:883:5
+✖ isolated scripted provider publish construct failure retires original token (0.098417ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /scripted_publish_failure/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:905:7)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:906:16),
+    expected: /scripted_publish_failure/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:883:5
+✖ isolated scripted provider publish effect failure retires original token (0.089583ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /scripted_publish_failure/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:905:7)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:906:16),
+    expected: /scripted_publish_failure/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:883:5
+✖ isolated scripted model publish construct failure retires original token (0.0755ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /scripted_publish_failure/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:905:7)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:906:16),
+    expected: /scripted_publish_failure/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:883:5
+✖ isolated scripted model publish effect failure retires original token (0.077792ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /scripted_publish_failure/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:905:7)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:906:16),
+    expected: /scripted_publish_failure/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:883:5
+✖ isolated scripted integration publish construct failure retires original token (0.065167ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /scripted_publish_failure/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:905:7)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:906:16),
+    expected: /scripted_publish_failure/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:883:5
+✖ isolated scripted integration publish effect failure retires original token (0.065083ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /scripted_publish_failure/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:905:7)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:906:16),
+    expected: /scripted_publish_failure/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:883:5
+✖ isolated scripted mcp publish construct failure retires original token (0.077792ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /scripted_publish_failure/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:905:7)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:906:16),
+    expected: /scripted_publish_failure/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-plugin-host.test.mjs:883:5
+✖ isolated scripted mcp publish effect failure retires original token (0.1015ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /scripted_publish_failure/u. Input:
+  
+  'TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable'
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:905:7)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: yield* (intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value)(intermediate value) is not iterable
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-inventory.mjs:380:22)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:940:23)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+        at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-plugin-host.test.mjs:906:16),
+    expected: /scripted_publish_failure/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }

@@ -1,0 +1,132 @@
+{
+  "revision": 16,
+  "scope": "existing8 source-only hook roots; provenance metadata only, no callback execution grant",
+  "plugins": {
+    "opencode.tool.input.repair": [
+      [
+        "tool",
+        "execute.before"
+      ]
+    ],
+    "opencode.prompt.openai": [
+      [
+        "session",
+        "context"
+      ],
+      [
+        "session",
+        "compaction"
+      ],
+      [
+        "session",
+        "generate"
+      ]
+    ],
+    "opencode.prompt.anthropic": [
+      [
+        "session",
+        "context"
+      ],
+      [
+        "session",
+        "compaction"
+      ],
+      [
+        "session",
+        "generate"
+      ]
+    ],
+    "opencode.prompt.kimi": [
+      [
+        "session",
+        "context"
+      ],
+      [
+        "session",
+        "compaction"
+      ],
+      [
+        "session",
+        "generate"
+      ]
+    ],
+    "opencode.prompt.arcee": [
+      [
+        "session",
+        "context"
+      ],
+      [
+        "session",
+        "compaction"
+      ],
+      [
+        "session",
+        "generate"
+      ]
+    ],
+    "opencode.prompt.meta": [
+      [
+        "session",
+        "context"
+      ],
+      [
+        "session",
+        "compaction"
+      ],
+      [
+        "session",
+        "generate"
+      ]
+    ],
+    "opencode.prompt.verbosity": [
+      [
+        "session",
+        "context"
+      ],
+      [
+        "session",
+        "compaction"
+      ],
+      [
+        "session",
+        "generate"
+      ],
+      [
+        "session",
+        "title"
+      ]
+    ],
+    "opencode.prompt.identity": [
+      [
+        "session",
+        "context"
+      ],
+      [
+        "session",
+        "compaction"
+      ],
+      [
+        "session",
+        "generate"
+      ]
+    ]
+  },
+  "source_chunks": [
+    "config-reg6q42h.js",
+    "config-6pc27hjz.js",
+    "config-rqzxc8xy.js",
+    "config-y6mhz57t.js"
+  ],
+  "exports": [
+    "isFixedHookDeclaration2(value,pluginId) => boolean",
+    "getFixedHookPublication2(callback,pluginId) => same branded declaration | undefined"
+  ],
+  "declaration": "frozen {hooks:frozen original ordered rows {domain,name,callback,options}}. options property exists and retains original undefined. private WeakMap ties declaration and callback to exact original pluginId. Factories are source-owned and inert; actual original plugin.effect creates bundle, registers exact original callbacks at original positions and returns SAME bundle. All8 actual plugin descriptors frozen. Getter/predicate sync no callback or IO. Optimize common maker preserves original model/template/mode closures and exact per-plugin brand identity.",
+  "consumer": "Main binds frozen original plugin+source hash and private predicate/getter. Original copied descriptor/effect identity, original activation Scope, exact matching result, bounded original registrations/closure and cleanup. Replayed/foreign/duplicate/wrong-hook/extra-option callback refuses before underlying register. Callback wrapper still original inventoryGuard held.",
+  "limits": [
+    "only Node/extracted source/pinned Effect + scripted context",
+    "no Native/core/provider/browser/Main/server/Bun/network/build/GUI/physical module invocation",
+    "complete=false unsupported capabilities=[] remain",
+    "no DTO/API execution privilege or trustflag"
+  ]
+}

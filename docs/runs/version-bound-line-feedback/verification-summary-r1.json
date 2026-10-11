@@ -1,0 +1,1985 @@
+{
+  "source_sha256": "60c8480bb8c6a45dfcdd6b59c8bacee73c5aa22dd7e553063d5a1f59f8bcc9f3",
+  "changed_path_count": 20,
+  "checks": [
+    "files",
+    "typecheck",
+    "boundaries",
+    "lint",
+    "format",
+    "build",
+    "bundle",
+    "hidden-feedback"
+  ],
+  "production_patch_probe": {
+    "report": "evidence/production-patch-r2/report.json",
+    "producer_exact_copy": "evidence/production-patch-r2/probe.mjs",
+    "results": [
+      {
+        "id": "real-production-CRLF-function-context",
+        "path": "sample.c",
+        "patchBytes": 314,
+        "functionContextPresent": true,
+        "expectedExcerptConfirmed": true,
+        "originalIdentityChecked": true
+      },
+      {
+        "id": "real-production-no-newline",
+        "path": "sample.c",
+        "patchBytes": 701,
+        "functionContextPresent": false,
+        "expectedExcerptConfirmed": true,
+        "originalIdentityChecked": true
+      },
+      {
+        "id": "real-production-mode-only-no-lines",
+        "path": "sample.c",
+        "patchBytes": 65,
+        "functionContextPresent": false,
+        "expectedExcerptConfirmed": true,
+        "originalIdentityChecked": false
+      },
+      {
+        "id": "real-production-quoted-UTF8-path",
+        "path": "\ud55c\uae00 \uc774\ub984.txt",
+        "patchBytes": 305,
+        "functionContextPresent": false,
+        "expectedExcerptConfirmed": true,
+        "originalIdentityChecked": true
+      }
+    ],
+    "source_executable_script_stable": true
+  },
+  "hidden": {
+    "report": "evidence/hidden-r8/feedback/line-feedback-evidence.json",
+    "capture_records": 46,
+    "unique_png_files": 46,
+    "states": [
+      {
+        "state": "file-original-baseline",
+        "source": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "revision": 2,
+          "workspaceId": "fixture-w",
+          "workspacePath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-",
+          "path": "notes/SYNTHETIC-editor.txt",
+          "targetPath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+          "status": "available",
+          "content": "\ufeffSYNTHETIC TEXT\r\n\r\nExact whitespace.  \r\n",
+          "directoryVersion": "eea130a24ab5594e442f6122e2b389fd84f2152c3da0e85cb57f29df5fa3b153",
+          "version": "8c35ab0e1aaa18e1190691ea611e59a2d8b678c018c321227b3a164b2c59b322"
+        },
+        "theme": "light",
+        "narrow": false,
+        "reason": "ready",
+        "status": "ready",
+        "visibility": [
+          {
+            "part": "path",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-1-file-original-baseline-light-desktop-path.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1128,
+              "y": 427.265625,
+              "width": 288,
+              "height": 115.171875,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              }
+            }
+          },
+          {
+            "part": "version",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-2-file-original-baseline-light-desktop-version.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1128,
+              "y": 455.2265625,
+              "width": 288,
+              "height": 76.78125,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              }
+            }
+          },
+          {
+            "part": "excerpt",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-3-file-original-baseline-light-desktop-excerpt.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 741.984375,
+              "width": 304,
+              "height": 57.5859375,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              }
+            }
+          },
+          {
+            "part": "comment",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-4-file-original-baseline-light-desktop-comment.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1129,
+              "y": 558.1875,
+              "width": 286,
+              "height": 120,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 188,
+            "selectedCharacters": 188,
+            "clonedCharacters": 188,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 22,
+            "selectedCharacters": 22,
+            "clonedCharacters": 22,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 131,
+            "selectedCharacters": 131,
+            "clonedCharacters": 131,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 40,
+            "selectedCharacters": 38,
+            "clonedCharacters": 40,
+            "userSelect": "text",
+            "finalLineBreakOmitted": true
+          }
+        ],
+        "before": {
+          "fileReads": 1,
+          "gitReads": 0,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 1,
+          "gitReads": 0,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "file-added-separate-send",
+        "source": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "revision": 2,
+          "workspaceId": "fixture-w",
+          "workspacePath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-",
+          "path": "notes/SYNTHETIC-editor.txt",
+          "targetPath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+          "status": "available",
+          "content": "\ufeffSYNTHETIC TEXT\r\n\r\nExact whitespace.  \r\n",
+          "directoryVersion": "eea130a24ab5594e442f6122e2b389fd84f2152c3da0e85cb57f29df5fa3b153",
+          "version": "8c35ab0e1aaa18e1190691ea611e59a2d8b678c018c321227b3a164b2c59b322"
+        },
+        "theme": "dark",
+        "narrow": true,
+        "reason": "ready",
+        "status": "ADDED",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-5-file-added-separate-send-dark-760px200-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 342.40234375,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "comment",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-6-file-added-separate-send-dark-760px200-comment.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 70,
+              "y": 209.9609375,
+              "width": 285,
+              "height": 120,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "preview",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-7-file-added-separate-send-dark-760px200-preview.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 241.2578125,
+              "width": 303,
+              "height": 57.59765625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "append",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-8-file-added-separate-send-dark-760px200-append.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 295.60546875,
+              "width": 120.84375,
+              "height": 38.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 188,
+            "selectedCharacters": 188,
+            "clonedCharacters": 188,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 22,
+            "selectedCharacters": 22,
+            "clonedCharacters": 22,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 131,
+            "selectedCharacters": 131,
+            "clonedCharacters": 131,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 40,
+            "selectedCharacters": 38,
+            "clonedCharacters": 40,
+            "userSelect": "text",
+            "finalLineBreakOmitted": true
+          }
+        ],
+        "before": {
+          "fileReads": 1,
+          "gitReads": 0,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 1,
+          "gitReads": 0,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "composer-overflow",
+        "theme": "light",
+        "narrow": true,
+        "reason": "DRAFT_TOO_LARGE",
+        "status": "DRAFT_TOO_LARGE",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-9-composer-overflow-light-760px200-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 342.40234375,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "disabled-append",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-10-composer-overflow-light-760px200-disabled-append.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 295.60546875,
+              "width": 120.84375,
+              "height": 38.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 188,
+            "selectedCharacters": 188,
+            "clonedCharacters": 188,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 22,
+            "selectedCharacters": 22,
+            "clonedCharacters": 22,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 131,
+            "selectedCharacters": 131,
+            "clonedCharacters": 131,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 40,
+            "selectedCharacters": 38,
+            "clonedCharacters": 40,
+            "userSelect": "text",
+            "finalLineBreakOmitted": true
+          }
+        ],
+        "before": {
+          "fileReads": 1,
+          "gitReads": 0,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 1,
+          "gitReads": 0,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "retained-source-resume",
+        "source": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "revision": 2,
+          "workspaceId": "fixture-w",
+          "workspacePath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-",
+          "path": "notes/SYNTHETIC-editor.txt",
+          "targetPath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+          "status": "available",
+          "content": "\ufeffSYNTHETIC TEXT\r\n\r\nExact whitespace.  \r\n",
+          "directoryVersion": "eea130a24ab5594e442f6122e2b389fd84f2152c3da0e85cb57f29df5fa3b153",
+          "version": "8c35ab0e1aaa18e1190691ea611e59a2d8b678c018c321227b3a164b2c59b322"
+        },
+        "theme": "dark",
+        "narrow": true,
+        "reason": "STALE_SOURCE",
+        "status": "STALE_SOURCE",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-11-retained-source-resume-dark-760px200-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 342.40234375,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "comment",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-12-retained-source-resume-dark-760px200-comment.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 70,
+              "y": 209.9609375,
+              "width": 285,
+              "height": 120,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "preview",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-13-retained-source-resume-dark-760px200-preview.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 241.2578125,
+              "width": 303,
+              "height": 57.59765625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "append",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-14-retained-source-resume-dark-760px200-append.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 295.60546875,
+              "width": 120.84375,
+              "height": 38.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 188,
+            "selectedCharacters": 188,
+            "clonedCharacters": 188,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 22,
+            "selectedCharacters": 22,
+            "clonedCharacters": 22,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 131,
+            "selectedCharacters": 131,
+            "clonedCharacters": 131,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 40,
+            "selectedCharacters": 38,
+            "clonedCharacters": 40,
+            "userSelect": "text",
+            "finalLineBreakOmitted": true
+          }
+        ],
+        "before": {
+          "fileReads": 2,
+          "gitReads": 0,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 2,
+          "gitReads": 0,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "git-staged-old",
+        "source": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "revision": 3,
+          "workspaceId": "fixture-w",
+          "workspacePath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-",
+          "observationId": "f7c65d88e5f67e55b1779ec9bd13ac2b750ffe84e09111cfeb102b45e3b1f07c",
+          "path": "notes/SYNTHETIC-editor.txt",
+          "mode": "staged",
+          "status": "available",
+          "patch": "diff --git a/notes/SYNTHETIC-editor.txt b/notes/SYNTHETIC-editor.txt\n--- a/notes/SYNTHETIC-editor.txt\n+++ b/notes/SYNTHETIC-editor.txt\n@@ -8 +12 @@\n-SYNTHETIC OLD\n\\ No newline at end of file\n+SYNTHETIC NEW\n\\ No newline at end of file\n",
+          "sourceDigest": "85eca7969440690149afc6dafaadeb8beb7b7288cfc71579fa3ccbde202cf4d0"
+        },
+        "theme": "light",
+        "narrow": false,
+        "reason": "ready",
+        "status": "ADDED",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-15-git-staged-old-light-desktop-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 858.3203125,
+              "width": 304,
+              "height": 41.59375,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              }
+            }
+          },
+          {
+            "part": "comment",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-16-git-staged-old-light-desktop-comment.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1129,
+              "y": 596.53125,
+              "width": 286,
+              "height": 120,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              }
+            }
+          },
+          {
+            "part": "preview",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-17-git-staged-old-light-desktop-preview.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 780.328125,
+              "width": 304,
+              "height": 19.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              }
+            }
+          },
+          {
+            "part": "append",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-18-git-staged-old-light-desktop-append.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 811.5234375,
+              "width": 120.84375,
+              "height": 38.796875,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 187,
+            "selectedCharacters": 187,
+            "clonedCharacters": 187,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 22,
+            "selectedCharacters": 22,
+            "clonedCharacters": 22,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 140,
+            "selectedCharacters": 140,
+            "clonedCharacters": 140,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 13,
+            "selectedCharacters": 13,
+            "clonedCharacters": 13,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          }
+        ],
+        "before": {
+          "fileReads": 0,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 0,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "git-unstaged-new",
+        "source": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "revision": 4,
+          "workspaceId": "fixture-w",
+          "workspacePath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-",
+          "observationId": "50d38a76e419d061d8afd285f37891ae40e41143fcf0c10fa4c15f215713d299",
+          "path": "notes/SYNTHETIC-editor.txt",
+          "mode": "unstaged",
+          "status": "available",
+          "patch": "diff --git a/notes/SYNTHETIC-editor.txt b/notes/SYNTHETIC-editor.txt\n--- a/notes/SYNTHETIC-editor.txt\n+++ b/notes/SYNTHETIC-editor.txt\n@@ -8 +12 @@\n-SYNTHETIC OLD\n\\ No newline at end of file\n+SYNTHETIC NEW\n\\ No newline at end of file\n",
+          "sourceDigest": "2ce7519950e3747aaf9f46ea0cfb9c5922e4fae1b2f3fc43ee609f4898aef842"
+        },
+        "theme": "dark",
+        "narrow": true,
+        "reason": "ready",
+        "status": "ADDED",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-19-git-unstaged-new-dark-760px200-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 342.421875,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "comment",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-20-git-unstaged-new-dark-760px200-comment.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 70,
+              "y": 209.87890625,
+              "width": 285,
+              "height": 120,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "preview",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-21-git-unstaged-new-dark-760px200-preview.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 264.42578125,
+              "width": 303,
+              "height": 19.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "append",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-22-git-unstaged-new-dark-760px200-append.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 295.625,
+              "width": 120.84375,
+              "height": 38.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 187,
+            "selectedCharacters": 187,
+            "clonedCharacters": 187,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 22,
+            "selectedCharacters": 22,
+            "clonedCharacters": 22,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 142,
+            "selectedCharacters": 142,
+            "clonedCharacters": 142,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 13,
+            "selectedCharacters": 13,
+            "clonedCharacters": 13,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          }
+        ],
+        "before": {
+          "fileReads": 0,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 0,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "git-base-new",
+        "source": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "revision": 5,
+          "workspaceId": "fixture-w",
+          "workspacePath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-",
+          "observationId": "650fb68e0d0917918c5498fc9826f451c46b17a3929b16d90b8a3774ddaaacf6",
+          "path": "notes/SYNTHETIC-editor.txt",
+          "mode": "base",
+          "baseRef": "review/diverged-local-tip",
+          "baseOid": "2222222222222222222222222222222222222222",
+          "status": "available",
+          "patch": "diff --git a/notes/SYNTHETIC-editor.txt b/notes/SYNTHETIC-editor.txt\n--- a/notes/SYNTHETIC-editor.txt\n+++ b/notes/SYNTHETIC-editor.txt\n@@ -8 +12 @@\n-SYNTHETIC OLD\n\\ No newline at end of file\n+SYNTHETIC NEW\n\\ No newline at end of file\n",
+          "sourceDigest": "7f4daf975065829de998d5a9c91199d56f4b8cdc7243f1c4e8ca84125efd893b"
+        },
+        "theme": "light",
+        "narrow": true,
+        "reason": "ready",
+        "status": "ADDED",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-23-git-base-new-light-760px200-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 342.4609375,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "comment",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-24-git-base-new-light-760px200-comment.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 70,
+              "y": 209.91796875,
+              "width": 285,
+              "height": 120,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "preview",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-25-git-base-new-light-760px200-preview.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 264.46484375,
+              "width": 303,
+              "height": 19.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "append",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-26-git-base-new-light-760px200-append.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 295.6640625,
+              "width": 120.84375,
+              "height": 38.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 187,
+            "selectedCharacters": 187,
+            "clonedCharacters": 187,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 22,
+            "selectedCharacters": 22,
+            "clonedCharacters": 22,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 138,
+            "selectedCharacters": 138,
+            "clonedCharacters": 138,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 68,
+            "selectedCharacters": 68,
+            "clonedCharacters": 68,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 13,
+            "selectedCharacters": 13,
+            "clonedCharacters": 13,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          }
+        ],
+        "before": {
+          "fileReads": 0,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 0,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "git-absent-side",
+        "source": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "revision": 6,
+          "workspaceId": "fixture-w",
+          "workspacePath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-",
+          "observationId": "b7a88103eeb7154501b5810948d0f73ea0cc33a637ea834fae0827f2863ff0a0",
+          "path": "notes/SYNTHETIC-editor.txt",
+          "mode": "unstaged",
+          "status": "available",
+          "patch": "--- /dev/null\n+++ b/x\n@@ -0,0 +1 @@\n+SYNTHETIC\n",
+          "sourceDigest": "c86f5ad736fb9de683903d2efce099b946b8effd1e72b487b48ca4d70467af35"
+        },
+        "theme": "dark",
+        "narrow": true,
+        "reason": "INVALID_LINE_RANGE",
+        "status": "INVALID_LINE_RANGE",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-27-git-absent-side-dark-760px200-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 342.42578125,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "side",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-28-git-absent-side-dark-760px200-side.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 70,
+              "y": 252.3984375,
+              "width": 285,
+              "height": 35.25,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "disabled-append",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-29-git-absent-side-dark-760px200-disabled-append.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 295.62890625,
+              "width": 120.84375,
+              "height": 38.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 187,
+            "selectedCharacters": 187,
+            "clonedCharacters": 187,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 22,
+            "selectedCharacters": 22,
+            "clonedCharacters": 22,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 142,
+            "selectedCharacters": 142,
+            "clonedCharacters": 142,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 26,
+            "selectedCharacters": 26,
+            "clonedCharacters": 26,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          }
+        ],
+        "before": {
+          "fileReads": 0,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 0,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "git-malformed-header",
+        "source": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "revision": 7,
+          "workspaceId": "fixture-w",
+          "workspacePath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-",
+          "observationId": "8229690dd48150762c8e625d73dac6384f1b3a169e190fef35c2d7e39b04a6b3",
+          "path": "notes/SYNTHETIC-editor.txt",
+          "mode": "unstaged",
+          "status": "available",
+          "patch": "--- /dev/null\n+++ b/x\n@@ -1 +1 @@\n-SYNTHETIC\n+SYNTHETIC\n",
+          "sourceDigest": "414b0de5a46d47b4e9e8bfe9d70aedf534f0ad978c25ab2d1776df42e9724c19"
+        },
+        "theme": "dark",
+        "narrow": true,
+        "reason": "UNSUPPORTED_DIFF",
+        "status": "UNSUPPORTED_DIFF",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-30-git-malformed-header-dark-760px200-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 342.375,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "side",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-31-git-malformed-header-dark-760px200-side.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 70,
+              "y": 252.34765625,
+              "width": 285,
+              "height": 35.25,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "disabled-append",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-32-git-malformed-header-dark-760px200-disabled-append.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 295.578125,
+              "width": 120.84375,
+              "height": 38.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 187,
+            "selectedCharacters": 187,
+            "clonedCharacters": 187,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 22,
+            "selectedCharacters": 22,
+            "clonedCharacters": 22,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 142,
+            "selectedCharacters": 142,
+            "clonedCharacters": 142,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 26,
+            "selectedCharacters": 26,
+            "clonedCharacters": 26,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          }
+        ],
+        "before": {
+          "fileReads": 0,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 0,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "protected-source",
+        "theme": "light",
+        "narrow": true,
+        "reason": "MISSING_SOURCE",
+        "status": "MISSING_SOURCE",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-33-protected-source-light-760px200-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 342.45703125,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "source",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-34-protected-source-light-760px200-source.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 70,
+              "y": 252.44140625,
+              "width": 285,
+              "height": 35.25,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "disabled-append",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-35-protected-source-light-760px200-disabled-append.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 295.66015625,
+              "width": 120.84375,
+              "height": 38.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 21,
+            "selectedCharacters": 21,
+            "clonedCharacters": 21,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 26,
+            "selectedCharacters": 26,
+            "clonedCharacters": 26,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          }
+        ],
+        "before": {
+          "fileReads": 0,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 0,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "original-draft-root",
+        "source": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "revision": 9,
+          "workspaceId": "fixture-w",
+          "workspacePath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-",
+          "path": "notes/SYNTHETIC-editor.txt",
+          "targetPath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+          "status": "available",
+          "content": "\ufeffSYNTHETIC TEXT\r\n\r\nExact whitespace.  \r\n",
+          "directoryVersion": "eea130a24ab5594e442f6122e2b389fd84f2152c3da0e85cb57f29df5fa3b153",
+          "version": "8c35ab0e1aaa18e1190691ea611e59a2d8b678c018c321227b3a164b2c59b322"
+        },
+        "theme": "dark",
+        "narrow": true,
+        "reason": "STALE_SOURCE",
+        "status": "STALE_SOURCE",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-36-original-draft-root-dark-760px200-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 342.40625,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "comment",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-37-original-draft-root-dark-760px200-comment.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 70,
+              "y": 210.11328125,
+              "width": 285,
+              "height": 120,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "disabled-append",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-38-original-draft-root-dark-760px200-disabled-append.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 295.609375,
+              "width": 120.84375,
+              "height": 38.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 188,
+            "selectedCharacters": 188,
+            "clonedCharacters": 188,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 22,
+            "selectedCharacters": 22,
+            "clonedCharacters": 22,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 131,
+            "selectedCharacters": 131,
+            "clonedCharacters": 131,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 17,
+            "selectedCharacters": 15,
+            "clonedCharacters": 17,
+            "userSelect": "text",
+            "finalLineBreakOmitted": true
+          }
+        ],
+        "before": {
+          "fileReads": 1,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 1,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "original-draft-held",
+        "source": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "revision": 10,
+          "workspaceId": "fixture-w",
+          "workspacePath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-",
+          "path": "notes/SYNTHETIC-editor.txt",
+          "targetPath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+          "status": "available",
+          "content": "\ufeffSYNTHETIC TEXT\r\n\r\nExact whitespace.  \r\n",
+          "directoryVersion": "eea130a24ab5594e442f6122e2b389fd84f2152c3da0e85cb57f29df5fa3b153",
+          "version": "8c35ab0e1aaa18e1190691ea611e59a2d8b678c018c321227b3a164b2c59b322"
+        },
+        "theme": "light",
+        "narrow": true,
+        "reason": "HELD",
+        "status": "HELD",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-39-original-draft-held-light-760px200-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 342.44140625,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "comment",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-40-original-draft-held-light-760px200-comment.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 70,
+              "y": 209.8984375,
+              "width": 285,
+              "height": 120,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "disabled-append",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-41-original-draft-held-light-760px200-disabled-append.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 295.64453125,
+              "width": 120.84375,
+              "height": 38.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 188,
+            "selectedCharacters": 188,
+            "clonedCharacters": 188,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 23,
+            "selectedCharacters": 23,
+            "clonedCharacters": 23,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 131,
+            "selectedCharacters": 131,
+            "clonedCharacters": 131,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 17,
+            "selectedCharacters": 15,
+            "clonedCharacters": 17,
+            "userSelect": "text",
+            "finalLineBreakOmitted": true
+          }
+        ],
+        "before": {
+          "fileReads": 1,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 1,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "original-draft-trust",
+        "source": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "revision": 11,
+          "workspaceId": "fixture-w",
+          "workspacePath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-",
+          "path": "notes/SYNTHETIC-editor.txt",
+          "targetPath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+          "status": "available",
+          "content": "\ufeffSYNTHETIC TEXT\r\n\r\nExact whitespace.  \r\n",
+          "directoryVersion": "eea130a24ab5594e442f6122e2b389fd84f2152c3da0e85cb57f29df5fa3b153",
+          "version": "8c35ab0e1aaa18e1190691ea611e59a2d8b678c018c321227b3a164b2c59b322"
+        },
+        "theme": "dark",
+        "narrow": true,
+        "reason": "UNTRUSTED",
+        "status": "UNTRUSTED",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-42-original-draft-trust-dark-760px200-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 342.48828125,
+              "width": 303,
+              "height": 41.59375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "comment",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-43-original-draft-trust-dark-760px200-comment.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 70,
+              "y": 209.9453125,
+              "width": 285,
+              "height": 120,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          },
+          {
+            "part": "disabled-append",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-44-original-draft-trust-dark-760px200-disabled-append.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 295.69140625,
+              "width": 120.84375,
+              "height": 38.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 188,
+            "selectedCharacters": 188,
+            "clonedCharacters": 188,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 23,
+            "selectedCharacters": 23,
+            "clonedCharacters": 23,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 131,
+            "selectedCharacters": 131,
+            "clonedCharacters": 131,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 17,
+            "selectedCharacters": 15,
+            "clonedCharacters": 17,
+            "userSelect": "text",
+            "finalLineBreakOmitted": true
+          }
+        ],
+        "before": {
+          "fileReads": 1,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 1,
+          "gitReads": 2,
+          "effects": 0,
+          "intents": 0,
+          "mutation": {
+            "attempted": 0,
+            "dispatched": 0,
+            "rejected": 0
+          },
+          "sends": 0,
+          "fileBackups": 0
+        }
+      },
+      {
+        "state": "late-send-ack-newer-context",
+        "source": {
+          "runtimeEpoch": "fixture-runtime-v2",
+          "revision": 12,
+          "workspaceId": "fixture-w",
+          "workspacePath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-",
+          "path": "notes/SYNTHETIC-editor.txt",
+          "targetPath": "/synthetic/workspace-file/selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-selectable-full-root-/notes/SYNTHETIC-editor.txt",
+          "status": "available",
+          "content": "\ufeffSYNTHETIC TEXT\r\n\r\nExact whitespace.  \r\n",
+          "directoryVersion": "eea130a24ab5594e442f6122e2b389fd84f2152c3da0e85cb57f29df5fa3b153",
+          "version": "8c35ab0e1aaa18e1190691ea611e59a2d8b678c018c321227b3a164b2c59b322"
+        },
+        "theme": "light",
+        "narrow": false,
+        "reason": "HELD",
+        "status": "HELD",
+        "visibility": [
+          {
+            "part": "status",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-45-late-send-ack-newer-context-light-desktop-status.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 858.1640625,
+              "width": 304,
+              "height": 41.59375,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              }
+            }
+          },
+          {
+            "part": "comment",
+            "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/feedback-46-late-send-ack-newer-context-light-desktop-comment.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1129,
+              "y": 596.375,
+              "width": 286,
+              "height": 120,
+              "viewport": {
+                "width": 1440,
+                "height": 968
+              }
+            }
+          }
+        ],
+        "selection": [
+          {
+            "complete": true,
+            "characters": 36,
+            "selectedCharacters": 36,
+            "clonedCharacters": 36,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 188,
+            "selectedCharacters": 188,
+            "clonedCharacters": 188,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 23,
+            "selectedCharacters": 23,
+            "clonedCharacters": 23,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 131,
+            "selectedCharacters": 131,
+            "clonedCharacters": 131,
+            "userSelect": "text",
+            "finalLineBreakOmitted": false
+          },
+          {
+            "complete": true,
+            "characters": 17,
+            "selectedCharacters": 15,
+            "clonedCharacters": 17,
+            "userSelect": "text",
+            "finalLineBreakOmitted": true
+          }
+        ],
+        "before": {
+          "fileReads": 1,
+          "gitReads": 2,
+          "effects": 1,
+          "intents": 1,
+          "mutation": {
+            "attempted": 1,
+            "dispatched": 1,
+            "rejected": 0
+          },
+          "sends": 1,
+          "fileBackups": 0
+        },
+        "after": {
+          "fileReads": 1,
+          "gitReads": 2,
+          "effects": 1,
+          "intents": 1,
+          "mutation": {
+            "attempted": 1,
+            "dispatched": 1,
+            "rejected": 0
+          },
+          "sends": 1,
+          "fileBackups": 0
+        }
+      }
+    ],
+    "owned_exit": {
+      "exited": true,
+      "code": 0
+    },
+    "provenance_verified_after": true
+  },
+  "meaningful_red_green": [
+    "Actual hidden-r7 minimal nested scroll left a disabled control clipped ~1px (ratio0.99238). Runner centers controls like capture targets; strict ratio1 visibility retained, no tolerance relaxation.",
+    "Actual hidden-r6 protected Open correctly disabled before IO; runner wrong click expectation repaired to assert disabled/unavailable/missing source/unchanged metrics, no bypass.",
+    "Actual hidden-r5 passed all selected Git mode/malformed/absent-side cases, then wrong zero counter expectation confused earlier explicit Git reads with mount IO. Runner now compares before/after mount actual counters without clearing history.",
+    "Actual hidden-r4 local Escape passed; subsequent reread correctly preserved unsaved file draft as changed. Runner wrong ready-only expectation repaired using real read counter/settled call/available DTO and ready-or-changed, no product discard.",
+    "Actual hidden-r3 narrow Escape dismissed ModalSheet before local focus. Shared primitive now honors explicit local Escape scope at Radix capture; feedback prevents default/focuses status; runner verifies ordinary outside Escape still dismisses.",
+    "Actual hidden-r2 reload raced Main initial loadFile, aborting startup with owned exit1; retained namespace and failure report. Runner now waits exact built URL with load before any reset/reload.",
+    "Actual hidden-r1 selection assertion failed on terminal newline; owned exit0 retained. Synthetic hidden Chromium diagnostic confirms final rendered line break is omitted by Selection.toString while cloned DOM range remains exact. Runner now checks exact DOM range/body/CSS and only that one serialization difference; no product source normalization.",
+    "Actual contracted hidden-r1 rejected before launch due missing run-root registration; exact root and closed/symlink/exclusive regression RED/GREEN added. No GUI launched in failed attempt.",
+    "Main actual pending Send HELD defect reproduced and corrected locally; real read/mutation holds and Git retirement unchanged.",
+    "Coherent lint caught unused GitDiffMode type import; removed without exported API changes. Prior failed attempt preserved.",
+    "Missing helper/API behavior; EOF marker followed by more source lines; inconsistent null-side and repeated diff headers.",
+    "Fixed selector and feedback-only owned-exit/hidden/capture-geometry refusal regressions.",
+    "Renderer original baseline/line mapping/local atomic draft scope and source lifecycle; fixture original baselines and no-auto-effects."
+  ],
+  "limits": [
+    "Local composer feedback only; no automatic provider send, filesystem write or new native mutation authority.",
+    "Actual built hidden Renderer/preload uses synthetic Main; separate production Git reader+formatter probe on owned synthetic source. Standalone inserted clocks do not prove durable service clock acceptance.",
+    "Darwin only; no Windows, production Main, provider, private real project or credentials invocation.",
+    "Whole Git mutations and full product remain unfinished.",
+    "Fresh independent final CODE and RENDER judgment still required."
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "cause": "event-host-protocol parent saved result backup allowlist omitted agent suffix; actual kernel publication succeeded then child validator converted success to unknown/io_failed",
+  "evidence": "evidence/native-r8/agent-evidence.json",
+  "boundedTrace": [
+    {
+      "method": "prepare",
+      "status": "staged"
+    },
+    {
+      "method": "publish",
+      "status": "unknown",
+      "reason": "io_failed"
+    }
+  ],
+  "reproducer": "Agent publication IPC accepts its exact backup and rejects unsafe/unsupported suffixes",
+  "redLog": "/Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/agent-publication-ipc-red.log",
+  "redExit": 1,
+  "greenExit": 0,
+  "correction": "Add only agent to existing closed backup suffix allowlist; malformed/path-traversal/unsupported suffixes remain rejected",
+  "sourceHashes": {
+    "apps/desktop-app/src/event-host-protocol.mjs": "beef614f4ccab66d04f35baa9da74c518f2f5978e91febd3d3de0d7951236f06",
+    "apps/desktop-app/src/event-host-supervisor.test.mjs": "c8409de5652cdc4e4c75154f6f589c7b39bbc5e53cea34691e08074b72ab791f"
+  }
+}

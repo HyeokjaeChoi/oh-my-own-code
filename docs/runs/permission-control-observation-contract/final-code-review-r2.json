@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "4df3f96210af1ddb48d3e47855d604d2b9e0c6c6e691a5adf3d9e2411306b42b",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "464741fec5d30f7a75046eb21c258eb134418207ee12c6b8240466becbf856e5",
+    "schema_version": 2,
+    "source_sha256": "eea5886578814f79f2d7dadfe0edee7c0f039c700fce350b788e7d5b2272d011",
+    "verification_sha256": "e9bee0c2db482f3d1af16358d813281a89543c976b39dc991e26385750cd364b",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "CODE-R2-01 수정이 확인되었습니다. locations [locationId,incarnation], sessions [workspaceId,sessionId], pending [locationId,sessionId,permissionId], saved savedId, capabilities/settings capabilityId에 canonicalJSON(identity)의 UTF-8 바이트 순서를 검사합니다. 비정규 입력은 거부하며 입력을 정렬하거나 정규화하지 않습니다. rules/resources/savePatterns 순서는 보존합니다. 독립 fixture comparator, 정렬된 cycle 입력, parent-after-child ancestry 회귀 검사를 확인했습니다. 기존 결함 외에 추가 결함은 발견하지 못했습니다. 현재 전체 binding은 final-code-input-r3와 일치합니다. 기록된 RED 1건 실패 → GREEN 1건 통과 및 현재 source의 67개 테스트·lint·format PASS 증거를 재사용했으며 재실행하지 않았습니다. 이 판정은 연결되지 않은 Node shape validator에 한정됩니다. 실행 권한, digest 정확성, Native inventory 완전성을 증명하지 않습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a12384-2056-7dd3-8367-30e3fb98cde9",
+    "changed_paths": [
+      "apps/desktop-app/src/permission-control-observations.mjs",
+      "apps/desktop-app/src/permission-control-observations.test.mjs"
+    ],
+    "review_method": "계약 준수와 코드 품질을 별도로 검토했습니다. 두 파일 전체와 reviewed-r1 대비 수정 diff를 확인했습니다. reviewed-r1 사본은 source-freeze-r1과, 현재 두 파일은 source-freeze-r2와 hash·크기가 일치합니다. absent baseline 대비 변경은 지정된 두 파일뿐입니다. 전체 source·plan·contract·environment·verification·work_class binding을 읽기 전용으로 재계산하여 final-code-input-r3 전체 객체와 일치를 확인했습니다. 변경되지 않은 acceptance의 이전 결론은 현재 코드와 증거를 확인한 범위에서 유지했습니다.",
+    "writes": false,
+    "delegation": false,
+    "product_runtime_execution": false
+  }
+}

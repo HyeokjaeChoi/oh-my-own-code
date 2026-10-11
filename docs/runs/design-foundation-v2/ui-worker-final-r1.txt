@@ -1,0 +1,19 @@
+승인된 Foundation UI를 구현하고 **6개 source 파일을 동결했습니다**. plan revision 3 / design-v2를 적용했습니다.
+
+- 설정·첨부 조사·현재 실행 작업을 Composer 밖으로 분리했습니다.
+- 요청값·첨부 요약과 오류·보류 사유를 계속 표시합니다.
+- 분기 작업을 먼저 표시하고 focus 이동·복귀 코드를 추가했습니다. 일반 Composer는 draft와 mount를 유지합니다.
+- 기존 상태·callback·IME·send/interrupt 처리를 유지했습니다. shared `Button`의 실제 API를 사용했습니다.
+
+**검사 통과:** typecheck, scoped ESLint·Prettier, import 경계 검사. 기존 hook 37개, 주요 control 11개의 guard/callback, token 참조 139개를 정적으로 확인했습니다. 원본 bytes와 공통 source freeze도 확인했습니다.
+
+| 파일 | 최종 SHA-256 |
+|---|---|
+| [workbench/index.tsx](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/pages/workbench/index.tsx) | `7a5c9caf45f3250c8e71e18dfa9f3fd9cf2f20fd9adb671d123e86245cd21411` |
+| [shell.module.css](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/pages/workbench/shell.module.css) | `96206e9bb6c24c0f5faa3bb0046ef5de702c1323230786057cae04211ce67615` |
+| [conversation/index.tsx](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/widgets/conversation/index.tsx) | `bce09f4ee6b601d90c0c74ee3c18928171d0220e5cc623bd90c5b5c0e5fad9e8` |
+| [conversation.module.css](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css) | `853cd4ef18ef9123a66472f520baf79b7b07236a707605f07eb7cd250475d124` |
+| [conversation-context/index.tsx](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/features/conversation-context/index.tsx) | `2e228aa6a96c0d5b6892c2adff6a16b0b172f45c5b61ea0a920d8d0cd0ce2f5d` |
+| [context.module.css](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/features/conversation-context/context.module.css) | `8ed3b02c32e181a139b7c8b127f62240a5eee01d6c8afaefb7aa844ee6d33f9c` |
+
+build/runtime/UI/Native/provider는 실행하지 않았습니다. 실제 화면·focus 검증, carried MIME unit regressions, 독립 CODE·RENDER는 Main의 후속 검증 대상입니다.

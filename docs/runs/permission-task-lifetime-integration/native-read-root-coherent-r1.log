@@ -1,0 +1,37 @@
+✔ synthetic: Native root file-read reports genuine directory kind after cleanup (10.064541ms)
+✔ synthetic: observed root replacement permanently revokes kernel and shared root guard after restoration (4.836084ms)
+✔ real module refuses Node before invoking the authority callback (2.481167ms)
+✔ factory accepts only exact data objects and a real root guard with a synchronous check (1.874458ms)
+✔ synthetic: frozen synchronous paged reads retain the root and use only relative child opens (5.767416ms)
+✔ synthetic: default page is 256 KiB; empty files and exact 20 MiB bound work (5.220625ms)
+✔ synthetic: lexical path and closed page validation reject without child IO or getter execution (4.140709ms)
+✔ synthetic: issued tokens bind the original object, kernel, path and full file stat (8.037333ms)
+✔ synthetic: symlink ancestors/leaves, hard links and directories cannot return bytes (4.757334ms)
+✔ synthetic: throw failure closes temporary FDs and discloses no bytes (3.6935ms)
+✔ synthetic: zero failure closes temporary FDs and discloses no bytes (3.49475ms)
+✔ synthetic: changedStat failure closes temporary FDs and discloses no bytes (3.796375ms)
+✔ synthetic: crossDevice failure closes temporary FDs and discloses no bytes (3.589667ms)
+✔ synthetic: final authority leafReplacement after temporary close prevents byte disclosure (4.187458ms)
+✔ synthetic: final authority ancestorReplacement after temporary close prevents byte disclosure (4.024625ms)
+✔ synthetic: final authority rootReplacement after temporary close prevents byte disclosure (4.020458ms)
+✔ synthetic: final authority leafSymlink after temporary close prevents byte disclosure (4.026917ms)
+✔ synthetic: final authority revokeOwner after temporary close prevents byte disclosure (3.555417ms)
+✔ synthetic: final authority throwCheck after temporary close prevents byte disclosure (3.788667ms)
+✔ synthetic: final authority closeKernel after temporary close prevents byte disclosure (3.716ms)
+✔ synthetic: read reentry from the final authority callback refuses; final named checks follow it (3.89825ms)
+✔ synthetic: temporary close failure erases bytes, attempts every FD and prevents successful close (4.604917ms)
+✔ synthetic: rootClose revokes first and cannot report successful close (5.155667ms)
+✔ synthetic: libraryClose revokes first and cannot report successful close (3.014375ms)
+✔ real runtime gate with instrumented fs rejects Node with no kernel IO (2.719333ms)
+✔ synthetic: identity compares every full-stat field, even if file bytes stay unchanged (5.119375ms)
+✔ synthetic: callback returning an object or Promise fails closed during read (9.728375ms)
+✔ synthetic: explicit null and undefined page numbers cannot use omitted-field defaults (3.265041ms)
+✔ synthetic: a close failure that retains a leaf FD still attempts other cleanup and poisons reads (3.372083ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 207.431958

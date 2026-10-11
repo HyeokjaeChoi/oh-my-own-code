@@ -1,0 +1,21 @@
+{
+  "plan_revision": 6,
+  "document_version": 5,
+  "source": {
+    "apps/desktop-app/src/sidecar-supervisor.mjs": "9cd1285498f7d9bbfb301f08bcf2f0d8db897503f0dead94ace5f525395a7749",
+    "apps/desktop-app/src/sidecar-supervisor.test.mjs": "0293a6dda9d0d1f566771770766a03089fa5b452b1d20afcfaac5a0e4d8c4f53",
+    "apps/desktop-app/src/ephemeral-profile.mjs": "d58944c6cd050087d4dc5e8b786dd1d0d2bc98e6eb883de907a72b5615c19765",
+    "apps/desktop-app/src/ephemeral-profile.test.mjs": "87864888bdf4f0e564bd40f52a0633f16977c39a9045cf017aa14f429b7924fe"
+  },
+  "writer_tests": {
+    "pass": 24,
+    "fail": 0
+  },
+  "shape_checkpoint": "supervisor-early-api-v5.md",
+  "limits": [
+    "OS adapter unit evidence uses injected mocks",
+    "Historical same-boot PID absence remains unverified",
+    "freshNativePreflight only permits fresh namespace"
+  ],
+  "final_gate": false
+}

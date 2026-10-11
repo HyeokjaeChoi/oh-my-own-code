@@ -1,0 +1,31 @@
+{
+  "status": "Read-only current production API capability observation, not an adopted new-feature test or provider execution",
+  "node": "v24.14.1",
+  "cases": [
+    {
+      "name": "existing_model",
+      "status": "accepted"
+    },
+    {
+      "name": "explicit_variant",
+      "status": "rejected",
+      "code": "INVALID_REQUEST"
+    },
+    {
+      "name": "assistant_runtime_projection",
+      "textPreserved": true,
+      "publicKeys": [
+        "id",
+        "role",
+        "text",
+        "tools"
+      ],
+      "runtimeReported": false
+    }
+  ],
+  "limits": [
+    "No Native/service factory/provider/IO execution",
+    "Only validator and pure projectMessages called",
+    "Synthetic literal values only"
+  ]
+}

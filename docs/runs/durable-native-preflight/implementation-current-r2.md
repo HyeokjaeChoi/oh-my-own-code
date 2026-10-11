@@ -1,0 +1,9 @@
+# Current copied Native preflight integration
+
+Accepted design3 remains unchanged. Main validates stopped originals and copies the complete DB companion set. The packaged Bun inspector only reads bounded public raw tables, the reviewed native migration ledger and completed transcripts. Exact root/fork receipt identity, owner, registry revision, resources, original content and locations are rechecked before startup. Shutdown settles the owned inspector before owner release. Unknown state remains held.
+
+Routine correction after native-r1: Native creates a private empty shell/global directory; the host now admits only that exact empty directory alongside empty 40-hex project directories. Workspace directory descriptors and permissions are bound while ordinary contents may change. Corrupt/extra contents remain rejected. native-r1 is preserved as failed with confirmed cleanup; no passing claim for it.
+
+Current checks: 46/46 copied-reader/host/resource/protocol tests, host regression, packaging units, lint, types, build and package passed at current source. Full parent storage and renderer suites returned exit0. Formatting of all 17 focused changed paths passed. Runtime EOF, extra input, independent child20s deadline and exact kernel-observed parent loss passed; this proves early cancellation and physical exit, not observation of cancellation of an active SQL query. Current actual normal/SIGKILL/fork/pending Native proof remains pending native-r2 until its saved report is inspected.
+
+No original SQLite connection, native table edit, provider, credential, real store or production Main execution. Prior owner lifetime evidence and unchanged renderer bytes remain separate facts. Final independent code/render judgments and parent finish are still required. Source freeze is source-freeze-current-r2.json; all current runtime outputs are exclusive contained synthetic roots and are retained.

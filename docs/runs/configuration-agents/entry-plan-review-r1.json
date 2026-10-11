@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "630aefb576e16367dda08043efd30697b7a1653e8ac0821f3c5696fed5424284",
+    "gate": "plan",
+    "plan_sha256": "a25af87d3e99f3e7ebc5787e5957f02c023face0f718a6e5443d2b453137e1e4",
+    "schema_version": 2,
+    "source_sha256": "5052c067b46b620c4594c391a75e11d7ee05713f3774e3d14717aafd1fec09ae",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "configuration-agents PLAN revision 1은 사용자 위임, PRD F-14/AC-14, 현재 ADR과 맞습니다. 범위, 안전 조건, 작업 순서와 완료 증거가 충분합니다. 필수 수정 사항은 없습니다. 구현은 별도 DESIGN_SPEC 통과 후 시작해야 합니다. 실제 Native 경로 검증이 성공하기 전에는 후속 consumer 작업을 시작하면 안 됩니다.",
+  "open_findings": [],
+  "evidence": [
+    {
+      "concern": "검토 입력",
+      "result": "plan 파일 해시, contract 의미 해시, design 파일 해시와 work_class 해시가 제공된 binding과 일치합니다. packet의 contract 값은 파일 바이트 해시이며 일치합니다. source-facts 14개, prechange 소스 277개, routing 입력 4개도 일치합니다. run baseline 577개 항목에서 변경을 발견하지 않았습니다. 이전 configuration-skill-runtime run 상태는 complete입니다."
+    },
+    {
+      "concern": "목표와 대안",
+      "result": "기존 디렉터리의 agent 파일 편집과 명시적 Native 등록·제거는 PRD F-14/AC-14의 제한된 증분으로 적절합니다. 파일 편집만 제공하는 작은 대안은 가능하지만 Native 적용·관찰을 별도로 남깁니다. 선택한 방식은 기존 고정 plugin과 저장 계층을 재사용합니다. public setter, config.update, project discovery와 임의 plugin 대안의 API 또는 안전 한계도 설명합니다. 전체 F14 완료를 주장하지 않습니다."
+    },
+    {
+      "concern": "Native API와 권한",
+      "result": "고정된 config-tats7t1r.js의 AgentEditor.update는 없는 ID를 생성합니다. Agent.Info.default의 wildcard allow와 추가 external_directory allow도 소스에서 확인했습니다. 계획은 inherited 규칙에 추가하는 방식 대신 전체 권한을 정확한 BASELINE_POLICY로 교체합니다. model override 제거, 빈 request, builtin/default 보존과 public readback도 요구합니다. 현재 send의 before_selection·after_selection 정책 검증을 모두 유지합니다."
+    },
+    {
+      "concern": "파일과 실행 경계",
+      "result": "지원 범위는 기존 .opencode/agents의 평면 Markdown과 제한된 JSON frontmatter로 명확합니다. pinned decoder의 body.trim 처리와 맞습니다. legacy YAML, 미지원 필드, 링크, 변경된 파일 identity는 거절합니다. 파일 저장과 Native 활성화가 분리됩니다. 기존 고정 DIRECTORY plugin, project:false, resource 검증과 닫힌 RPC를 유지하며 임의 code·autoload·model·provider 실행을 추가하지 않습니다."
+    },
+    {
+      "concern": "제거와 session 참조",
+      "result": "Native Session.Info에는 agent와 archived 시간이 있습니다. 고정된 SessionStore.list는 필터 없는 전역 조회를 지원하며 archived 항목을 기본 제외하지 않습니다. 계획은 directory·project·parent·search 필터 없이 bounded pagination을 끝까지 확인하고, 중복 ID·반복 cursor·불완전 결과를 거절합니다. 모든 참조는 제거 전에 차단합니다. 실제 전역 조회와 cursor 동작은 아직 실행 검증되지 않았습니다."
+    },
+    {
+      "concern": "durable identity와 복구",
+      "result": "계획은 원래 registration key, source identity와 digest를 유지합니다. 효과 전 feature marker와 dispatch flush, duplicate 무재실행, conflict 거절, unknown lookup-only, restart 무복원과 legacy reader의 byte-preserving refusal을 요구합니다. zero-retained checkpoint도 포함합니다. 제거와 workspace 해제가 retained 또는 unknown mapping을 남기는 경우를 차단합니다."
+    },
+    {
+      "concern": "실행 순서와 완료 기준",
+      "result": "Main이 실제 production helper 경로를 먼저 검증하고 API를 고정한 뒤 분리된 storage·renderer 작업을 시작합니다. route 실패 시 consumer를 중단하며 unsafe fallback을 금지합니다. contract는 영향받는 checks, contained Native proof, built hidden UI와 독립 CODE·RENDER 검토를 요구합니다. 최초 major entry 이후 같은 범위의 routine 수정에 entry 검토를 반복하지 않는 정책도 적절합니다."
+    }
+  ],
+  "limits": [
+    "이 판정은 docs/runs/configuration-agents/plan.md revision 1의 초기 PLAN 검토에만 적용합니다. DESIGN_SPEC 검토를 대신하지 않습니다.",
+    "API 실행 가능성은 로컬 소스에 근거한 판단입니다. 실제 transform/reload, 권한·default 보존, 전역 session 참조 거절과 process cleanup은 아직 실행하지 않은 필수 선행 검증입니다.",
+    "파일 읽기와 해시 계산만 수행했습니다. 파일·artifact·ledger 수정, 제품 runtime·test·build 실행 또는 위임은 하지 않았습니다. 보고서 저장과 등록은 Main이 수행해야 합니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11aac-d506-7ac3-8531-69f136670a6f",
+    "author_task_id": null,
+    "identity_evidence": "현재 실행 환경의 CODEX_THREAD_ID를 직접 읽었습니다. author_task_id는 제공되지 않았습니다.",
+    "independent": true,
+    "authored_plan": false,
+    "modified_source": false,
+    "modified_artifacts": false,
+    "modified_ledger": false,
+    "recursively_delegated": false
+  }
+}

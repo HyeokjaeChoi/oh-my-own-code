@@ -1,0 +1,210 @@
+{
+  "schema_version": 2,
+  "run": "configuration-provenance",
+  "reviewer": "design_qa",
+  "reviewer_id": "01a118bf-24f8-76e1-a2ab-f7392d95cbb9",
+  "author_id": "main-continuation",
+  "plan_path": "docs/runs/configuration-provenance/plan.md",
+  "plan_revision": 4,
+  "design_version": 2,
+  "reviewed": {
+    "contract_sha256": "8f0e1cca9153db6a9006a83629b5810657689724580cd72eeabf572186c413da",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "design",
+    "plan_sha256": "211e3aafa641a5cf938212beb7c205e502868ea7a5a131ecea719bee361fcf66",
+    "schema_version": 2,
+    "source_sha256": "52490cfb1316635ca655ec880a41e4932c47952c168996ca4fb0246bc1574a1d",
+    "verification_sha256": "908abed25275f8785b0f538d80a3abbb603b829ee02e7ea3022b1d3d42b68b5f",
+    "work_class_sha256": "c76116575ea4a2ed832c572e9eaa0f98837cd8b1b7c2ff1a6e3328f4ef67005d"
+  },
+  "verdict": "pass",
+  "summary": "F14 첫 읽기 전용 configuration provenance UI를 승인합니다. PNG 6개와 현재 regression PNG 2개를 원본으로 직접 확인했습니다. 현재 UI에 필수 수정 사항은 없습니다. 저장된 interaction 검사와 직접 본 pixels를 구분했습니다. 전체 F14 완료 판정은 아닙니다.",
+  "open_findings": [],
+  "review_boundary": {
+    "kind": "fresh_independent_final_rendered_ui_review",
+    "skill": "solo-design-review",
+    "reviewer_identity_evidence": "이번 실행의 CODEX_THREAD_ID 환경 값입니다. profile은 model·effort·OS sandbox의 증거가 아닙니다.",
+    "independence": "구현과 수리에 참여하지 않은 이번 실행에서 독립적으로 판정했습니다. Main 구현 및 workerOhm의 explorer 2개 파일은 직접 수정하지 않았습니다.",
+    "scope": "accepted design v2와 frozen r4 입력에 대한 실제 CatalogPanel 캡처의 정보 구분, 상태 안내, 경로 표시와 narrow layout입니다. source code gate를 대신하지 않습니다.",
+    "capture_origin": "Built production Electron renderer/preload; test-only synthetic Main; hidden nonfocusable capturePage().toPNG(); darwin arm64; 한국어 안내와 light theme를 확인했습니다.",
+    "direct_pixel_count": 8,
+    "saved_capture_count": 57,
+    "coverage": "원래 51개와 새 6개의 현재 capture 기록을 확인했습니다. 나머지 49개 PNG의 pixels는 직접 검토하지 않았습니다.",
+    "no_execution": "tests·app·build·Native·provider·network를 실행하지 않았습니다. source·ledger를 읽거나 수정하지 않았습니다. harness status는 이 제한 때문에 호출하지 않았습니다.",
+    "only_written_path": "docs/runs/configuration-provenance/final-render-review-r4.json"
+  },
+  "direct_pixel_evidence": [
+    {
+      "path": "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/desktop-configuration-normal-synthetic.png",
+      "state": "Configuration provenance normal",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "pixel_dimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "zoom_factor": 1,
+      "sha256_matches_saved_pin": true,
+      "pixel_observation": "설정 출처의 제목, source·scope, 전체 경로와 파일 발견·적용 여부 미확인 안내가 읽힙니다. Skill의 런타임 보고는 실행 여부 미확인으로 구분됩니다."
+    },
+    {
+      "path": "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/desktop-configuration-untrusted-synthetic.png",
+      "state": "Configuration provenance untrusted",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "pixel_dimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "zoom_factor": 1,
+      "sha256_matches_saved_pin": true,
+      "pixel_observation": "untrusted 안내가 설정 출처 위에 표시됩니다. 경로의 선택 highlight가 보입니다. 명령·Skill·MCP 목록은 사용 불가로 표시됩니다."
+    },
+    {
+      "path": "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/desktop-configuration-partial-synthetic.png",
+      "state": "Configuration provenance partial",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "pixel_dimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "zoom_factor": 1,
+      "sha256_matches_saved_pin": true,
+      "pixel_observation": "partial 안내와 확인할 수 없는 .opencode 경로가 표시됩니다. 발견한 AGENTS.md 항목은 유지됩니다."
+    },
+    {
+      "path": "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/desktop-configuration-missing-synthetic.png",
+      "state": "Configuration provenance missing",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "pixel_dimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "zoom_factor": 1,
+      "sha256_matches_saved_pin": true,
+      "pixel_observation": "설정 출처 정보를 제공하지 않는다고 표시합니다. 빈 목록을 적용 완료나 설정 없음으로 표시하지 않습니다."
+    },
+    {
+      "path": "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/desktop-configuration-long-path-synthetic.png",
+      "state": "Configuration provenance long-path",
+      "viewport": {
+        "width": 380,
+        "height": 284,
+        "pixelRatio": 4
+      },
+      "pixel_dimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "zoom_factor": 2,
+      "sha256_matches_saved_pin": true,
+      "pixel_observation": "200% narrow sheet의 header, 탭, close, scrollbar와 대화로 돌아가기 버튼이 보입니다. wheel 이동 후 명령 영역이며 긴 경로 자체는 이 PNG에 보이지 않습니다."
+    },
+    {
+      "path": "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/desktop-configuration-mcp-observed-synthetic.png",
+      "state": "Configuration MCP reported needs_auth/connected, no activation",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "pixel_dimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "zoom_factor": 1,
+      "sha256_matches_saved_pin": true,
+      "pixel_observation": "needs_auth는 외부 인증 설정 필요, connected는 연결됨 · 런타임 관측으로 표시됩니다. 이 캡처의 MCP 영역에는 login·connect 버튼이 없습니다."
+    },
+    {
+      "path": "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/desktop-populated-conversation-normal-1280-synthetic.png",
+      "state": "populated-conversation; normal-1280",
+      "viewport": {
+        "width": 1280,
+        "height": 768,
+        "pixelRatio": 2
+      },
+      "pixel_dimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "zoom_factor": 1,
+      "sha256_matches_saved_pin": true,
+      "pixel_observation": "현재 대화의 tool 결과, 완료·오류 상태와 composer가 읽힙니다. unknown markup은 화면에서 문자로 표시됩니다."
+    },
+    {
+      "path": "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/desktop-p7-durable-documents-location-narrow-200-synthetic.png",
+      "state": "P7 durable Documents location; narrow 200%; selectable full path and scrollable information",
+      "viewport": {
+        "width": 380,
+        "height": 284,
+        "pixelRatio": 4
+      },
+      "pixel_dimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "zoom_factor": 2,
+      "sha256_matches_saved_pin": true,
+      "pixel_observation": "현재 P7 위치 정보 sheet의 trust·보관 안내가 좁은 200% 화면에서 줄바꿈됩니다. close와 scrollbar가 보입니다."
+    }
+  ],
+  "saved_assertion_evidence": {
+    "path": "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/ui-states-evidence.json",
+    "configuration_states": "normal·untrusted·partial·missing·long-path의 keyboardRefresh와 mutationAttemptsUnchanged가 true입니다. missing에는 선택할 configuration 경로가 없으므로 selectablePath=false입니다. 다른 4개는 true입니다.",
+    "long_path": "synthetic DTO의 긴 경로에 대해 zoomFactor=2, actualWheelScroll=true, horizontalOverflow=false, escapeReturnsFocus=true입니다. 동작을 이번 실행에서 재현하지 않았습니다. 저장된 결과에는 이 상태의 raw wheel 거리나 mutation counter 값이 없습니다.",
+    "claim_limit": "합성 긴 경로는 layout 검증입니다. 실제 filesystem 존재, Native loaded state, 초기화 또는 config 적용을 증명하지 않습니다. App mock의 zero-action 검사는 명시적 앱 호출 범위이며 Native 내부 모든 effect의 보장이 아닙니다."
+  },
+  "saved_verification": {
+    "paths": [
+      "docs/runs/configuration-provenance/source-freeze-r4.json",
+      "docs/runs/configuration-provenance/actual-checks-r4.json",
+      "docs/runs/configuration-provenance/verification-summary-r4.json",
+      "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/manifest.json"
+    ],
+    "changed_source_files": 13,
+    "required_checks": [
+      "boundaries",
+      "build",
+      "bundle",
+      "format",
+      "hidden-ui",
+      "host",
+      "lint",
+      "renderer",
+      "typecheck"
+    ],
+    "result": "저장된 9개 검사 모두 exit_code=0이고 final r4 plan·contract·source·environment binding과 일치합니다. inputs_changed·interrupted·timed_out은 false입니다. 재실행하지 않았습니다.",
+    "owned_exit": {
+      "exited": true,
+      "code": 0
+    },
+    "provenance": "저장된 manifest는 launch 전 provenance와 provenanceVerifiedAfter=true를 포함합니다. runner status=pass, exitCode=0, wrapperExitCode=0입니다. manifest·UI evidence·검토한 PNG 8개의 현재 bytes는 summary pin과 일치합니다. source와 실행 artifact를 다시 계산하거나 실행하지 않았습니다.",
+    "binding": "reviewed는 final-design-input-r4.json의 schema2 객체를 그대로 복사했습니다. prepared packet의 이전 contract hash로 대체하지 않았습니다. plan bytes와 accepted design v2 hash를 확인했고 current contract는 canonical sorted compact JSON hash가 reviewed와 일치합니다."
+  },
+  "design_alignment": "기존 selected A의 monochrome hierarchy와 panel 구성을 유지합니다. token contract의 desktop32·coarse44와 focus palette를 확인했습니다. 모든 control을 44px로 바꾸라는 요구는 없습니다. 이번 8개 PNG로 모든 focus 상태나 dark theme까지 검증했다고 주장하지 않습니다.",
+  "limits": [
+    "runtime configuration 문서·directory·count는 not_reported입니다. 새 config.get 또는 SDK method 호출과 Native initialization proof는 이번 검토 범위가 아닙니다.",
+    "Windows, production Main, 실제 provider·private data, physical touch, OS IME·Screen Reader와 전체 WCAG는 검증하지 않았습니다.",
+    "새 performance·package·Native config invocation claim은 없습니다. 새 high-frequency store 또는 미래 component의 검증을 요구하지 않습니다.",
+    "editing·validation·diff·apply·reload와 MCP lifecycle actions는 이후 F14 단계입니다. 이번 pass는 그 단계의 승인이나 전체 제품 완료를 뜻하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a118bf-24f8-76e1-a2ab-f7392d95cbb9",
+    "author_task_id": "main-continuation"
+  }
+}

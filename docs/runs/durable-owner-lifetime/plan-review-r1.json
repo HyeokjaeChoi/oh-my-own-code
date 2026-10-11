@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "ceaa5bf5c5ce8463c15a87b8351431e7fa88d4113720c012756e6c1c4af86b21",
+    "gate": "plan",
+    "plan_sha256": "fa862c8d89ff01dc5e7a065e579763240db96a31df09184f3cba5df3ee687a64",
+    "schema_version": 2,
+    "source_sha256": "040cc165b64b3af5a3e15a0cdd1f644183e8c1dd1b5807d57338870388b3c006",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "open_findings": [],
+  "summary": "plan revision1, contract schema2, design1은 요청한 범위에 맞습니다. App 등록은 owner ready 전에, child 등록은 recordChild와 Native init 전에 완료됩니다. 기존 owner lane과 event-host의 recordChild 대기 경계에 통합할 수 있습니다. 비동기 등록 뒤 authority 재확인도 명시돼 있습니다. PID 부재, clean marker, heartbeat는 exact lifetime을 증명하지 못합니다. Launch broker는 실행 권한과 소유 범위를 늘립니다. 선택한 evidence-only helper는 현재 spawn fencing을 유지하며 필요한 종료 증거만 추가하므로 이번 범위에 적합합니다. Generation별 고정 파일, 제한된 IPC, 단일 child, 용량 한도, app 종료 후 15초 deadline이 helper 권한과 수명을 제한합니다. Spawn gap과 불완전 증거는 계속 차단됩니다. Package hash/provenance 검증과 별도 zero-window app의 production verifier 재획득 probe가 필요한 증거로 계획돼 있습니다. Parent가 관찰한 ownedExited 주입은 standalone 증거로 인정하지 않습니다. Nonfresh Native, provider, private stores, Windows와 power-loss 제외도 유지됩니다. 필수 수정이나 추가 사용자 확인은 없습니다. Matching design_spec pass와 기존 handoff 조건을 유지하고, routine 수정에는 새 entry gate를 추가하지 않습니다. 이번 pass는 계획 적합성 판단이며 실행 성공이나 최종 P7 완료 판정은 아닙니다.",
+  "optional_notes": [
+    {
+      "id": "OL-OPTIONAL-1",
+      "note": "기존 OS identity adapter는 /usr/bin/python3를 사용합니다. Helper 자체의 Python 비의존성과 전체 runtime의 의존성은 결과 보고에서 구분하십시오. 이번 bounded 변경의 차단 사항은 아닙니다."
+    },
+    {
+      "id": "OL-OPTIONAL-2",
+      "note": "자동 삭제가 없으므로 retained generation 64개에 도달하면 새 ownership이 차단됩니다. 이 운영 한계를 결과에 명시하십시오. 이번 범위에 garbage collection을 추가할 필요는 없습니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a116aa-2e9b-7521-99d3-83f9737946a3",
+    "mode": "report_only",
+    "runtime_identity_attested": false,
+    "delegated": false,
+    "files_changed": [],
+    "tests_run": false,
+    "native_launches": false,
+    "ui_launches": false,
+    "artifact_hashes_verified_twice": true,
+    "source_fingerprint_recomputed": false,
+    "binding_source": "docs/runs/durable-owner-lifetime/plan-review-r1.input.json",
+    "persistence_owner": "primary"
+  }
+}

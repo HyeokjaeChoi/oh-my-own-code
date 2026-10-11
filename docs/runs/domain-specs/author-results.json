@@ -1,0 +1,40 @@
+{
+  "scope": "Five document specifications, no application implementation",
+  "authors": [
+    {
+      "child": "/root/domain_ux_author",
+      "owned": [
+        "docs/design/specs/workbench-ux.md"
+      ],
+      "requested_model": "gpt-6-sol",
+      "requested_effort": "medium"
+    },
+    {
+      "child": "/root/domain_engineering_author",
+      "owned": [
+        "docs/engineering/workbench-architecture.md"
+      ],
+      "requested_model": "gpt-6-sol",
+      "requested_effort": "high"
+    },
+    {
+      "child": "/root/domain_verification_author",
+      "owned": [
+        "docs/engineering/verification.md",
+        "docs/operations/local-release-monitoring.md"
+      ],
+      "requested_model": "gpt-6-sol",
+      "requested_effort": "medium"
+    }
+  ],
+  "coordinator_integration": [
+    "spec-index and approval trace",
+    "inline permission cards do not trap focus",
+    "policy state naming consistency",
+    "targetPath versus parentPath/name",
+    "protected root and scoped idempotency keys",
+    "retention tombstones and invalidated execution namespaces",
+    "configuration trust digest and metadata-only Git inspection"
+  ],
+  "verification_limit": "Author static observations only until final contracted check and independent review. git diff --check does not inspect untracked files; exact source inventory and document integrity are checked separately."
+}

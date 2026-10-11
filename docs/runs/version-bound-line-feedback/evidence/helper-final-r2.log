@@ -1,0 +1,67 @@
+✔ feedback preserves loaded BOM/CRLF baseline and original file version (3.366167ms)
+✔ feedback maps exact Git old/new side without inventing absent lines (0.795125ms)
+✔ feedback append preserves existing draft and refuses overflow without truncation (0.211917ms)
+✔ file line boundaries preserve blanks and final newline without invented trailing line (0.261459ms)
+✔ Git no-newline marker preserves exact side excerpt and original direct base OID (0.837459ms)
+✔ Git absent side and unseen inter-hunk gaps cannot acquire lines (0.265042ms)
+▶ malformed unified hunks never produce a misleading excerpt
+  ✔ @@ -1,2 +1 @@
+-old
++new
+ (0.097833ms)
+  ✔ @@ -1 +1 @@
+-old
++new
++extra
+ (0.096291ms)
+  ✔ @@@ -1 +1 @@@
+ line
+ (0.097834ms)
+  ✔ @@ -1 +1 @@
+ line (0.087125ms)
+  ✔ @@ -1 +1 @@
+\ No newline at end of file
+ line (0.065333ms)
+  ✔ @@ -1 +1 @@
+ line
+\ No newline at end of file (0.072625ms)
+  ✔ @@ -2 +2 @@
+ line
+@@ -1 +1 @@
+ previous
+ (0.059291ms)
+  ✔ @@ -1 +1 @@
+ line
+@@ -1 +1 @@
+ repeated
+ (0.056958ms)
+  ✔ @@ -9007199254740991,1 +1 @@
+ line
+ (0.05ms)
+  ✔ diff --git a/a b/a
+diff --git a/b b/b
+@@ -1 + (0.041042ms)
+  ✔ @@ -1 +1 @@
+ line
+diff --git a/b b/b
+ (0.051375ms)
+  ✔ @@ -1,0 +1,0 @@
+ (0.038666ms)
+✔ malformed unified hunks never produce a misleading excerpt (1.31375ms)
+✔ Git lines after an EOF no-newline marker are unsupported (0.099417ms)
+✔ closed sources, protected paths, unknown data and accessors have no feedback authority (0.203166ms)
+✔ feedback bounds and JSON quoting preserve user data without truncation (0.440333ms)
+✔ file standalone CR is preserved as its original line separator (0.069167ms)
+✔ empty and mode-only Git diffs have no selectable lines (0.132375ms)
+✔ staged context and header-like payload lines remain plain exact source (0.113416ms)
+✔ unavailable source and malformed scope cannot be relabeled as current content (0.149166ms)
+✔ formatted feedback detaches original identity without minting new source metadata (0.085041ms)
+✔ declared absent sides and repeated file headers cannot fabricate line identity (0.149958ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 58.46225

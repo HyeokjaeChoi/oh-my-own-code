@@ -1,0 +1,74 @@
+(node:67182) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+▶ Git branch restore: actual React preview renders closed backup plans
+  ✖ create/ (7.496917ms)
+  ✖ select/ (1.18125ms)
+  ✖ restore/index (1.222916ms)
+  ✖ restore/head (0.683916ms)
+✖ Git branch restore: actual React preview renders closed backup plans (87.191084ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 360.885833
+
+✖ failing tests:
+
+test at apps/desktop-app/src/workbench-store.test.mjs:17042:13
+✖ create/ (7.496917ms)
+  ReferenceError: React is not defined
+      at WorkbenchProvider (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx:14:3)
+      at Object.react_stack_bottom_frame (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at performWork (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:7435:17)
+      at startWork (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:8270:7)
+      at renderToStringImpl (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:8380:7)
+      at process.env.NODE_ENV.exports.renderToStaticMarkup (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9861:14)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:17050:22)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:17042:13
+✖ select/ (1.18125ms)
+  ReferenceError: React is not defined
+      at WorkbenchProvider (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx:14:3)
+      at Object.react_stack_bottom_frame (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at performWork (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:7435:17)
+      at startWork (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:8270:7)
+      at renderToStringImpl (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:8380:7)
+      at process.env.NODE_ENV.exports.renderToStaticMarkup (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9861:14)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:17050:22)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:17042:13
+✖ restore/index (1.222916ms)
+  ReferenceError: React is not defined
+      at WorkbenchProvider (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx:14:3)
+      at Object.react_stack_bottom_frame (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at performWork (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:7435:17)
+      at startWork (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:8270:7)
+      at renderToStringImpl (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:8380:7)
+      at process.env.NODE_ENV.exports.renderToStaticMarkup (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9861:14)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:17050:22)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:17042:13
+✖ restore/head (0.683916ms)
+  ReferenceError: React is not defined
+      at WorkbenchProvider (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx:14:3)
+      at Object.react_stack_bottom_frame (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18)
+      at renderWithHooks (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19)
+      at renderElement (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23)
+      at retryNode (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6417:31)
+      at performWork (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:7435:17)
+      at startWork (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:8270:7)
+      at renderToStringImpl (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:8380:7)
+      at process.env.NODE_ENV.exports.renderToStaticMarkup (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9861:14)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:17050:22)

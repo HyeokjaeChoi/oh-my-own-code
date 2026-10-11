@@ -1,0 +1,130 @@
+{
+  "schema_version": 2,
+  "run": "opencode-event-host-feasibility",
+  "reviewer": "plan_reviewer",
+  "plan_revision": 2,
+  "reviewed": {
+    "contract_sha256": "a09ba6cfb771fa5d763d1e4686b8dbe6d2a3ffeb498a92716cdb18e5b2c910ed",
+    "gate": "plan",
+    "plan_sha256": "edab37705619d563c277ae81435e5dcbb26611e28ecbb924ca100d9cdae26dda",
+    "schema_version": 2,
+    "source_sha256": "343e17fe5bdb3dcecf1371933644103751d15c403030df0839865c8671fe6547"
+  },
+  "verdict": "pass",
+  "summary": "Revision 2의 변경 사항과 관련 회귀를 독립 검토했습니다. EH-ENTRY-V1-01은 해결되었습니다. Bun1.4.2 선택, 실제 입력 준비와 고정, 갱신 독립 ENTRY, counted checks 순서가 plan, design v2, input policy, contract와 decision register에서 일치합니다. Node26.8.2는 별도 diagnostic이며 EH 결과를 대체할 수 없습니다. 추가 ENTRY 차단 결함은 없습니다. 이 판정은 계획 검토 결과입니다. 구현, runtime 성공, design 승인, P7 완료 또는 production 교체를 증명하지 않습니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "EH-ENTRY-V1-01",
+      "prior_report": "docs/runs/opencode-event-host-feasibility/plan-review-v1.json",
+      "registered_prior_report": "docs/runs/opencode-event-host-feasibility/plan-review-v1-normalized.json",
+      "result": "resolved",
+      "evidence": [
+        "plan.md Decisions, Entry input phase와 Revision2에서 준비 전 Bun 선택과 고정 입력에 대한 갱신 ENTRY를 요구합니다.",
+        "design.txt Runtime과 Input integrity, prototype-input-policy.json selection_timing이 같은 순서를 유지합니다.",
+        "contract.json EH-02와 HOST-1 resolution은 fixed Bun을 지정하고 Node diagnostic의 대체 사용을 금지합니다.",
+        "Counted check 중 선택값이나 입력을 변경할 수 없습니다. 변경하면 이전 affected evidence는 stale이며 새 등록 binding과 독립 ENTRY 뒤에 다시 검증합니다. Bun 실패는 보존하고 hold하며 자동 fallback을 하지 않습니다."
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "concern": "Outcome, authority and alternatives",
+      "result": "Full PRD v0.6 F01–18과 P7 미완료 상태를 유지합니다. 저장된 P7 분석의 10/11 pass와 stock Native의 native-event-history 실패를 새로운 runtime 성공으로 해석하지 않습니다. 공식 server wrapper는 기존 HTTP client 경계를 유지하는 격리 후보입니다. Promise SDK의 startup recovery, Effect override의 의미 변경, CLI patch와 upgrade 비용을 비교한 기존 근거를 확인했습니다. HOST-1 delegated 권한은 prototype 범위이며 app 변경이나 migration 권한이 아닙니다."
+    },
+    {
+      "concern": "Preparation, dependencies and assets",
+      "result": "공식 npm metadata에서 @oven/bun-darwin-aarch641.4.2의 darwin/arm64 제한과 SHA512 integrity, server/core2.0.18의 dist import exports와 고정 배포 dependencies를 확인했습니다. 이는 contained staging 경로의 정적 근거입니다. 준비는 initial plan/design pass 뒤에만 수행하고 npm --workspaces=false 및 npm ci --ignore-scripts --workspaces=false를 사용합니다. 필요한 hook은 정확한 package/script/output을 먼저 등록합니다. Native/WASM/migration 자산과 controller를 포함한 실제 runtime bytes는 준비 후 고정하여 갱신 ENTRY에서 검토해야 합니다. Global 설치, root dependency 변경과 version fallback은 허용되지 않습니다. 실제 import 또는 native 호환성은 검증하지 않았습니다."
+    },
+    {
+      "concern": "Immutable evidence bindings",
+      "result": "docs/runs 입력 제외를 보완하기 위해 초기 policy와 나중에 생성하는 각 source/case/lockfile/manifest를 environment_files로 등록합니다. 실제 inventory와 before/after byte 검사를 요구합니다. Legitimate 새 입력도 counted evidence 전에 reviewed contract update를 거칩니다. Before/after 일치는 change-and-restore나 OS isolation 증명이 아니라는 design 제한을 유지합니다. 아직 prototype 파일이 없다는 이유로 initial ENTRY를 차단하지 않습니다."
+    },
+    {
+      "concern": "Isolation and owned exit",
+      "result": "Synthetic namespace, loopback, contained 환경과 config, cleared credentials, baseline deny, password IPC, auth/Origin/pairing/ticket 검증을 유지합니다. Credentials 부재만으로 effect isolation을 주장하지 않습니다. Scope를 서버 수명 동안 유지하고 exact owned ChildProcess exit 뒤에만 다음 owner 또는 cleanup을 허용합니다. Unknown exit와 spawn gap은 namespace 보존 및 reuse hold입니다. PID absence, port closure, EOF는 exit 증거가 아닙니다. 구체적 effect 관찰과 seed 허용 범위는 다음 독립 design review에서 검토해야 합니다."
+    },
+    {
+      "concern": "Genuine events and restart claims",
+      "result": "EH-05는 실제 nonempty HTTP durable payload, sequence0, exclusive cursor, marker/head 상관관계와 canonical hash를 요구하며 marker-only를 실패로 처리합니다. Normal reopen과 owned SIGKILL은 committed prefix, transcript, mapping과 실제 sentinel을 비교합니다. Unconfirmed 최종 요청은 unknown으로 남습니다. 기존 controlled proof를 standalone restart, power-loss, Electron 또는 Windows acceptance로 이전하지 않습니다."
+    },
+    {
+      "concern": "Startup adversarial coverage",
+      "result": "Queued/steer/suspended/shell/subagent 필수 상태는 supported API로만 seed합니다. SQLite 수정이나 가짜 증거를 금지합니다. Startup/read/repeated read/bounded idle/shutdown에서 resume, 소비, 완료, 승인, provider/tool 시도를 검증합니다. Seed effects는 reopen의 zero-effect interval과 분리합니다. Contained loopback model fixture도 reviewed 입력이며 실제 provider를 허용하지 않습니다. Unsupported/unseedable 필수 case와 missing 결과는 coverage 실패입니다. Lifecycle 생략은 managed sweep 경로만 피하며 전체 safe-start 증명은 아닙니다."
+    },
+    {
+      "concern": "Downstream gates and production holds",
+      "result": "Initial plan pass 뒤 독립 design_spec pass가 prototype 구현의 선행 조건입니다. 실제 입력 생성 후 새 plan/contract와 독립 ENTRY를 갱신해야 contracted runtime checks를 계산할 수 있습니다. 최종 독립 code review를 유지합니다. P7 fresh-only preflight, historical owner, unknown receipt와 mapping/cutover holds는 해제하지 않습니다. UI가 없다는 이유로 architecture/design_spec review를 생략하지 않습니다."
+    }
+  ],
+  "checks": [
+    {
+      "check": "Exact review object and document hashes",
+      "result": "reviewed는 plan-review-input-v2.json object를 그대로 복사했습니다. Plan bytes SHA256, harness 방식의 normalized contract SHA256과 등록된 design v2 SHA256이 검토 시점과 저장 후 검사에서 일치했습니다."
+    },
+    {
+      "check": "Input policy",
+      "result": "검토한 prototype-input-policy.json SHA256은 d7dab38c248dfd6eae4b051a546f039654aee0b43080794d4f524c1c97696d84입니다. 현재 environment_files에 이 파일이 등록되어 있습니다. Plan review object 자체에는 environment digest가 없으므로 policy를 별도 관찰 hash로 기록합니다."
+    },
+    {
+      "check": "P7 source preservation",
+      "result": "coherent-source-freeze-v5-r8.json에 기록된 실제 source 35개 SHA256은 모두 일치했습니다. Packaged executable bytes는 이번 검토에서 재검사하지 않았습니다. EH-01 준비와 runtime 전후 검증 요구를 유지합니다."
+    },
+    {
+      "check": "Source binding and prior registration",
+      "result": "source_sha256은 지정 object에서 복사했고 현재 run plan의 값과 일치했습니다. 전체 source fingerprint는 독립 재계산하지 않았습니다. Run review_history에서 v1 normalized changes_requested 보고서의 등록을 확인했습니다."
+    },
+    {
+      "check": "Static primary-source verification",
+      "result": "공식 고정 commit process.ts에서 scoped Effect start, password 필수, lifecycle 조건부 restart continuity를 읽었습니다. Npm metadata는 읽기 전용 요청으로 확인했습니다. Web 도구의 registry 요청 실패 뒤 직접 metadata를 읽었으며 package 다운로드, extraction, 설치 또는 runtime 실행은 하지 않았습니다."
+    },
+    {
+      "check": "Execution boundary",
+      "result": "App, prototype engine, Native, Electron, GUI, provider, install, build와 tests를 실행하지 않았습니다. Private data를 읽지 않았습니다. 문서, hash와 공개 metadata만 검토했습니다."
+    }
+  ],
+  "primary_sources": [
+    "https://registry.npmjs.org/@oven%2Fbun-darwin-aarch64/1.4.2",
+    "https://registry.npmjs.org/@opencode%2Fserver/2.0.18",
+    "https://registry.npmjs.org/@opencode%2Fcore/2.0.18",
+    "https://raw.githubusercontent.com/anomalyco/opencode/cd9a14a6b688d4021bee381dfd39d2cef9c0f862/packages/server/src/process.ts"
+  ],
+  "review_boundary": {
+    "mode": "fresh_independent_changed_concern_direct_bootstrap_entry_review",
+    "input_path": "docs/runs/opencode-event-host-feasibility/plan-review-input-v2.json",
+    "bootstrap_note": "docs/runs/opencode-event-host-feasibility/entry-bootstrap-note-v1.md",
+    "packet_path": null,
+    "prepared_dispatch_claimed": false,
+    "design_spec_approved": false,
+    "implementation_accepted": false,
+    "production_accepted": false,
+    "next_dependency": "Main이 이 실제 보고서를 plan gate에 등록한 뒤 fresh 독립 design_spec review를 받습니다. Prototype 구현은 design pass 뒤에 시작합니다. Contracted runtime evidence는 실제 입력 등록과 갱신 독립 ENTRY 뒤에만 계산합니다."
+  },
+  "provenance": {
+    "child_task_id": "01a1076f-3c7a-7252-8bd5-ee42f73923a4",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-plan-review"
+    ],
+    "delegated": false,
+    "runtime_identity_attested": false,
+    "sandbox_enforcement_attested": false,
+    "prepared_packet_fabricated": false,
+    "source_edits": false,
+    "ledger_edits": false,
+    "runtime_checks_run": false,
+    "install_run": false,
+    "native_launches": false,
+    "electron_launches": false,
+    "provider_calls": false,
+    "gui_launches": false,
+    "private_data_access": false,
+    "files_changed": [
+      "docs/runs/opencode-event-host-feasibility/plan-review-v2.json"
+    ]
+  }
+}

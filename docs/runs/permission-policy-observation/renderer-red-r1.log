@@ -1,0 +1,534 @@
+(node:69784) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✖ Permission policy explicit public API reads frozen envelope and detaches ordered original rules (44.8495ms)
+▶ Permission policy malformed and miscorrelated responses never become current
+  ✖ 0 (0.35175ms)
+  ✖ 1 (0.242833ms)
+  ✖ 2 (0.262125ms)
+  ✖ 3 (0.302708ms)
+  ✖ 4 (0.220125ms)
+  ✖ 5 (0.182917ms)
+  ✖ 6 (0.177416ms)
+  ✖ 7 (0.176834ms)
+  ✖ 8 (0.189625ms)
+  ✖ 9 (0.138209ms)
+  ✖ 10 (0.100583ms)
+✖ Permission policy malformed and miscorrelated responses never become current (2.910833ms)
+▶ Permission policy absent, present empty and unavailable remain distinct
+  ✖ absent (0.132625ms)
+  ✖ empty (0.095041ms)
+  ✖ unavailable (0.100416ms)
+✖ Permission policy absent, present empty and unavailable remain distinct (0.448084ms)
+✖ Permission policy cancellation and reentry reject late and copied request identities (0.172375ms)
+▶ Permission policy pending and completed observations retire on authority races without revival
+  ✖ epoch/pending (0.131834ms)
+  ✖ epoch/observed (0.112041ms)
+  ✖ trust/pending (0.098042ms)
+  ✖ trust/observed (0.098542ms)
+  ✖ untrusted/pending (0.093792ms)
+  ✖ untrusted/observed (0.09525ms)
+  ✖ rootABA/pending (0.096333ms)
+  ✖ rootABA/observed (0.097416ms)
+  ✖ sessionABA/pending (0.095708ms)
+  ✖ sessionABA/observed (0.103667ms)
+  ✖ workspaceABA/pending (0.102042ms)
+  ✖ workspaceABA/observed (0.122041ms)
+  ✖ floor/pending (0.134333ms)
+  ✖ floor/observed (0.093084ms)
+  ✖ disconnect/pending (0.109333ms)
+  ✖ disconnect/observed (0.0945ms)
+  ✖ hold/pending (0.086834ms)
+  ✖ hold/observed (0.08775ms)
+  ✖ resourceHold/pending (0.102459ms)
+  ✖ resourceHold/observed (0.086ms)
+  ✖ activeSession/pending (0.081167ms)
+  ✖ activeSession/observed (0.076625ms)
+✖ Permission policy pending and completed observations retire on authority races without revival (2.667ms)
+✖ Permission policy never auto reads on start, polling, focus, selection, draft, send or decision (0.813334ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 0
+ℹ fail 42
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 413.344292
+
+✖ failing tests:
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19192:1
+✖ Permission policy explicit public API reads frozen envelope and detaches ordered original rules (44.8495ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19196:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19221:53
+✖ 0 (0.35175ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19224:41)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19221:53)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19221:53
+✖ 1 (0.242833ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19224:41)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19221:53)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19221:53
+✖ 2 (0.262125ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19224:41)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19221:53)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19221:53
+✖ 3 (0.302708ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19224:41)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19221:53)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19221:53
+✖ 4 (0.220125ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19224:41)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19221:53)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19221:53
+✖ 5 (0.182917ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19224:41)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19221:53)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19221:53
+✖ 6 (0.177416ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19224:41)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19221:53)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19221:53
+✖ 7 (0.176834ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19224:41)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19221:53)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19221:53
+✖ 8 (0.189625ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19224:41)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19221:53)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19221:53
+✖ 9 (0.138209ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19224:41)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19221:53)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19221:53
+✖ 10 (0.100583ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19224:41)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19221:53)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19232:217
+✖ absent (0.132625ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19236:45)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19232:217)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19232:217
+✖ empty (0.095041ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19236:45)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19232:217)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19232:217
+✖ unavailable (0.100416ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19236:45)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19232:217)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19241:1
+✖ Permission policy cancellation and reentry reject late and copied request identities (0.172375ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19245:34)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ epoch/pending (0.131834ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ epoch/observed (0.112041ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ trust/pending (0.098042ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ trust/observed (0.098542ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ untrusted/pending (0.093792ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ untrusted/observed (0.09525ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ rootABA/pending (0.096333ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ rootABA/observed (0.097416ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ sessionABA/pending (0.095708ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ sessionABA/observed (0.103667ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ workspaceABA/pending (0.102042ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ workspaceABA/observed (0.122041ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ floor/pending (0.134333ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ floor/observed (0.093084ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ disconnect/pending (0.109333ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ disconnect/observed (0.0945ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ hold/pending (0.086834ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ hold/observed (0.08775ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ resourceHold/pending (0.102459ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ resourceHold/observed (0.086ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ activeSession/pending (0.081167ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19280:116
+✖ activeSession/observed (0.076625ms)
+  TypeError [Error]: client.actions.observePermissionPolicy is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19284:35)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at TestContext.test (node:internal/test_runner/test:400:20)
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19280:116)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/workbench-store.test.mjs:19296:1
+✖ Permission policy never auto reads on start, polling, focus, selection, draft, send or decision (0.813334ms)
+  TypeError [Error]: clock.tick is not a function
+      at TestContext.<anonymous> (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:19300:42)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

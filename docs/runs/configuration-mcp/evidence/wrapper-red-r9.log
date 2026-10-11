@@ -1,0 +1,19 @@
+✖ configuration-mcp evidence root stays closed and exclusively claimed (114.670209ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 164.879666
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/run-evidence.test.mjs:388:3
+✖ configuration-mcp evidence root stays closed and exclusively claimed (114.670209ms)
+  Error: Evidence path outside registered run roots
+      at evidenceRootForOutput (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.mjs:48:20)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.test.mjs:393:18)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

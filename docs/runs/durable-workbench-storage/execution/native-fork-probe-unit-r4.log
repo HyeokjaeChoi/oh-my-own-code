@@ -1,0 +1,25 @@
+✖ saved Native fork reads its original receipt key and rejects changed lineage or admission (3.050167ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 223.141875
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/fixtures/workbench-host.test.mjs:26:1
+✖ saved Native fork reads its original receipt key and rejects changed lineage or admission (3.050167ms)
+  Error: Invalid workbench request.
+      at fail (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:34:17)
+      at needDTO (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:281:19)
+      at validateSnapshot (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:379:5)
+      at snapshot (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/p7-storage-probe.mjs:988:18)
+      at async assertNativeForkCheckpoint (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/p7-storage-probe.mjs:401:19)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/workbench-host.test.mjs:93:17)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    appCode: 'INVALID_REQUEST'
+  }

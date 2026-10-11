@@ -1,0 +1,100 @@
+{
+  "schema_version": 2,
+  "run_id": "prd",
+  "reviewer_role": "product_reviewer",
+  "reviewed": {
+    "contract_sha256": "ef561556c9047742361bf1290437a6122bab248e914df95957b7ae71f928c195",
+    "documents_sha256": "75e102144bad01f0b604182dc287f50096db6e7e1354dd3cb0641f7befa8f523",
+    "gate": "product",
+    "plan_sha256": "430c609602eeb5f37412a9e85e63210afe81c59879ee6e11e30ebc139f64a1ec",
+    "schema_version": 2
+  },
+  "plan": {
+    "path": "docs/runs/prd/plan.md",
+    "revision": 1,
+    "sha256": "430c609602eeb5f37412a9e85e63210afe81c59879ee6e11e30ebc139f64a1ec"
+  },
+  "reviewed_artifacts": [
+    {
+      "path": "docs/product/prd.md",
+      "version": "0.1",
+      "sha256": "10fde88d87cb19ebcf5bebfd940281e8928ac0a25a3d92d64d4f543be1ee4198"
+    }
+  ],
+  "supporting_artifacts": [
+    {
+      "path": "docs/product/opportunity.md",
+      "sha256": "77928f1548fa18b4f9ae45e578b46cb99a8f6d2c828b2184440a963ee845f65a"
+    },
+    {
+      "path": "docs/research/opencode-sdk-initial.md",
+      "sha256": "52e55c0d703cfd62fe7b9f05ca0513c576fc8950bc2ba3e7cc1d8683738f5f51"
+    },
+    {
+      "path": "docs/research/assistant-ui-opencode.md",
+      "sha256": "141a3527f40931b446cc224c3ee34cf67b185d9894f724c79370c839d955b460"
+    },
+    {
+      "path": "docs/runs/prd/opportunity-approval.json",
+      "sha256": "ff972b291b288b955e4d9fc6822b09a7333f58c0d8f0e86ba41fcc208eb13e1a"
+    },
+    {
+      "path": "docs/runs/prd/contract.json",
+      "sha256": "ef561556c9047742361bf1290437a6122bab248e914df95957b7ae71f928c195"
+    },
+    {
+      "path": "docs/runs/prd/product-review-input.json",
+      "sha256": "dd74d4d59a1a4df2ababc940142d8122614bb33abb6046fa39f2bce5ef7bd37e"
+    },
+    {
+      "path": "docs/runs/prd/reviewer-packet.json",
+      "sha256": "a5f34eadc5168c68b76727ed328cfc15074dcb4c87925940a773e6ae3efb73d2"
+    },
+    {
+      "path": "docs/runs/prd/manual-evidence.json",
+      "sha256": "d33d47dcdbb34d5e4babdffa57002f2ca9f1ec2e583ed4524ec13e8678ffb223"
+    }
+  ],
+  "verdict": "pass",
+  "summary": "PRD v0.1은 승인된 개인 하네스 학습 실험실의 목적과 범위를 보존하고, 사용자 승인 및 후속 상세 명세 작성에 필요한 제품 동작과 판단 기준을 구체화했다. 합성 예제 두 개, 읽기 도구 하나, 새 세션에서의 순차 ask/deny 비교, 관측 근거와 실패 상태, 자격 증명 경계, 사전 고정 학습 평가 및 중단 기준이 일관된다. SDK 세대와 어댑터 호환성 등 미확인 사항은 의존 구현 전 기술 보류로 명시되어 있다. 제품 결과를 바꾸거나 후속 설계를 막는 중대한 모호성·모순은 발견하지 못했다.",
+  "open_findings": [],
+  "assessment": [
+    {
+      "plan_acceptance": "AC-1",
+      "result": "개인 사용자와 로컬 브라우저 범위, assistant-ui 사용, 작은 합성 실행 예제 및 제외사항이 승인된 원페이저와 일치한다. 수요와 학습 효과는 미측정 가설로 유지한다."
+    },
+    {
+      "plan_acceptance": "AC-2",
+      "result": "REQ-01~08과 AC-01~08은 구성 출처 탐색, 예측, 대화, 권한 분기, 타임라인 및 비교의 관찰 가능한 결과를 정의한다. 설정 근거·런타임 관측·설명용 추론을 구분하고, 권한 외 실질 조건 고정과 매회 새 세션을 요구한다."
+    },
+    {
+      "plan_acceptance": "AC-3",
+      "result": "승인·질문 대기, 정책 거절·사용자 거절, 오류, 취소 요청·확인, 단절 및 부분 기록을 구별한다. 도구 미호출·반복 호출은 비교 부적격, deny 중 도구 시작은 정책 실패로 다룬다. 자동 재전송을 금지하고 종료 확인 전 재실행을 막으며, 비밀값과 외부 전송·삭제 범위를 명시한다."
+    },
+    {
+      "plan_acceptance": "AC-4",
+      "result": "예제 두 개와 동일한 네 문항, 기대 답과 근거, 문항별 점수, Q2 필수 조건, 시간 한도, 무효 실행 처리, 재시도 상한 및 축소·수정 신호가 사전 정의되어 있다. 문서·CLI 기준 비교와 고정 순서에서 발생하는 연습 효과의 한계를 명시한다."
+    },
+    {
+      "plan_acceptance": "AC-5",
+      "result": "신규 @opencode/sdk 및 @opencode/client와 기존 @opencode-ai/sdk/v2를 명확히 구분한다. 공식 assistant-ui 어댑터의 존재와 신규 세대 호환성 미확인을 함께 보존하고, 최소 능력 검증·사용자 정의 연결·불성립 시 구현 보류의 결정 경로를 제시한다."
+    },
+    {
+      "plan_acceptance": "AC-6",
+      "result": "등록된 현재 계획 통과와 제품 검토 입력을 확인한 뒤 최종 판정을 내렸다. PRD 검토, 사용자 PRD 승인, 도메인·기술 명세 검토와 승인, 의존 구현의 단계가 분리되어 있으며 이후 단계 완료를 주장하지 않는다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/own_code_prd_final_review",
+    "author_task_id": "/root/own_code_prd_author"
+  },
+  "review_boundary": "PRD v0.1의 의미적 품질과 사용자 승인 준비 상태에 대한 독립 읽기 전용 검토다. 계획 바인딩 검토와 제품 검토를 순차 수행했으며, 현재 계획 통과가 run.json에 등록된 뒤 제품 최종 판정을 확정했다.",
+  "verification_limits": [
+    "제품 문서·승인 기록·계획·조사 자료·검토 입력을 읽고 명시된 파일 해시를 확인했다. 파일, 보고서 및 원장은 변경하지 않았다.",
+    "documents_sha256은 제공된 helper 입력의 집합 바인딩이다. 개별 PRD 파일 해시는 직접 확인했으며 helper의 집합 직렬화 알고리즘을 별도로 재실행하지 않았다.",
+    "외부 공식 페이지의 현재 상태를 다시 조사하지 않았다. 기술 사실의 근거는 배정된 2026-09-26 조사 기록이며 실제 배포 버전과 호환성은 여전히 후속 검증 대상이다.",
+    "SDK 설치, provider 호출, 애플리케이션 실행, 자동 테스트, UI 검증 및 개인 학습 측정은 수행하지 않았다. 권한 집행, 취소, 기록 완전성, 자격 증명 보호, 호환성 또는 학습 효과의 런타임 증거가 아니다.",
+    "원페이저 승인 근거는 코디네이터가 기록한 실제 사용자 응답이다. 이 제품 검토 통과는 PRD 사용자 승인이나 후속 명세·구현·배포 승인을 대신하지 않는다."
+  ],
+  "next_handoff": "코디네이터가 이 정확한 보고서를 제품 검토로 등록하고 product handoff를 확인한 뒤 PRD v0.1의 사용자 승인을 요청한다. 의존 명세 작성은 그 승인 이후 진행한다."
+}

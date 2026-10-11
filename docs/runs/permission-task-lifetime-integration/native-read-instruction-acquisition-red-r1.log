@@ -1,0 +1,39 @@
+✔ original instructions preserves exact text and original metadata in Synthetic event (3.786708ms)
+✖ instruction service acquisition performs no root IO before an actual load task (1.04575ms)
+✔ original store context prevents already-injected path from being read or published (0.986667ms)
+✔ ordinary messages and malformed synthetic metadata do not invent prior injection (0.553375ms)
+✔ missing instructions do not fabricate content or event (0.344541ms)
+✔ instruction read failure prevents any partial Synthetic publication (0.675625ms)
+✔ original load remains unfinished while original Synthetic publish is pending (0.41825ms)
+✔ publish failure propagates and its in-flight claim is released for a later explicit call (0.949792ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 418.848959
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-read-instructions.test.mjs:141:1
+✖ instruction service acquisition performs no root IO before an actual load task (1.04575ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'resolve-root'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-read-instructions.test.mjs:146:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'resolve-root' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

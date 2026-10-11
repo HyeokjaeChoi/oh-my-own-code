@@ -1,0 +1,68 @@
+{
+  "schema_version": 2,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/host/native-bootstrap-workspace.mjs",
+      "sha256": "b00dc373790ced2288da581976114f71120617ea323be256be69190a0845df79",
+      "bytes": 7424
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-bootstrap-workspace.test.mjs",
+      "sha256": "875173725ee66463394305dfe7082f46c39dfac77063f150c400a5f24ad805a3",
+      "bytes": 20745
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "sha256": "0c32b07768d93f42619a7d6658377fa26dfd1eb61edfd52be0038526de0cb843",
+      "bytes": 33273
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.test.mjs",
+      "sha256": "171d2ac5ac1e256bde9aa55722d1535b07297186203eacd336e70de1cf9db4fb",
+      "bytes": 53845
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-resources.mjs",
+      "sha256": "f3910c4a0620470ad4e2e5f7222cdbb66903095e6f6afe67acc21ae5036b81b4",
+      "bytes": 17790
+    }
+  ],
+  "checks": [
+    {
+      "log": "bootstrap-candidate-cleanup-red-r1.log",
+      "result": "missing factory proof export, two meaningful failures"
+    },
+    {
+      "log": "bootstrap-candidate-cleanup-green-r1.log",
+      "passed": 21
+    },
+    {
+      "log": "bootstrap-prepare-io-red-r1.log",
+      "result": "actual open count zero instead of required one"
+    },
+    {
+      "log": "bootstrap-prepare-io-green-r2.log",
+      "passed": 59
+    },
+    {
+      "log": "bootstrap-prepare-coherent-r1.log",
+      "result": "pass graph/inventory/input/resource tests"
+    }
+  ],
+  "static": {
+    "eslint": "pass exact5",
+    "prettier": "formatted exact5; final check pending"
+  },
+  "behavior": [
+    "Actual acquired Control performs bounded read-only NON-VCS candidate observation with original IO and physical close retained through uninterruptible settlement",
+    "Runtime close revokes authority checks before waiting for original candidate work; no new preparation admitted",
+    "Factory-private failed acquisition cleanup facts refuse forged error properties, reused errors and rejected physical close",
+    "Held replies only: no location/mode/inventory generation, task allocation, Native creation or execution permission"
+  ],
+  "limits": [
+    "Full18/F09 and final whole-source CODE unfinished",
+    "No positive preparation/handoff or Native method authority yet",
+    "Deadline checked at IO checkpoints; an unsettled original OS IO is retained, never falsely reported timed-out closed",
+    "No Native/Bun/Electron/build/package/server/UI/provider/network/private originals executed"
+  ]
+}

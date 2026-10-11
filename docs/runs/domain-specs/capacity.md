@@ -1,0 +1,3 @@
+# Capacity observation
+
+2026-09-26: domain_ux_author spawn succeeded. Concurrent domain_engineering_author spawn returned `agent thread limit reached`; it did not run. Agent inventory showed root and domain_ux_author running, plus two historical completed agents retained by the host. No close-agent operation is exposed. Do not treat completion or interruption as released capacity. Follow the reviewed plan's capacity-aware scheduling: coordinator integration can proceed alongside the UX author; dispatch remaining fresh authors when the host accepts another child. Do not change models to retry transport failures or reuse historical specialist contexts.

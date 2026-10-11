@@ -1,0 +1,50 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toHaveAttribute(expected) failed
+
+Locator:  getByRole('region', { name: '설정 초안', exact: true }).getByRole('region', { name: 'Agent 파일 편집', exact: true }).locator('[data-agent-save-status]')
+Expected: "saved"
+Received: "denied"
+Timeout:  5000ms
+
+Call log:
+  - Expect "toHaveAttribute" getByRole('region', { name: '설정 초안', exact: true }).getByRole('region', { name: 'Agent 파일 편집', exact: true }).locator('[data-agent-save-status]') with timeout 5000ms
+  - waiting for getByRole('region', { name: '설정 초안', exact: true }).getByRole('region', { name: 'Agent 파일 편집', exact: true }).locator('[data-agent-save-status]')
+    14 × locator resolved to <div role="status" id="_r_b_-save" aria-label="Agent 파일 저장 상태" data-agent-save-current="true" data-agent-save-status="denied">…</div>
+       - unexpected value "denied"
+
+    at captureRawStack (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright-core@1.63.0/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toHaveAttribute (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at /Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:5841:35 {
+  matcherResult: {
+    name: 'toHaveAttribute',
+    expected: 'saved',
+    message: 'expect(locator).toHaveAttribute(expected) failed\n' +
+      '\n' +
+      "Locator:  getByRole('region', { name: '설정 초안', exact: true }).getByRole('region', { name: 'Agent 파일 편집', exact: true }).locator('[data-agent-save-status]')\n" +
+      'Expected: "saved"\n' +
+      'Received: "denied"\n' +
+      'Timeout:  5000ms\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toHaveAttribute" getByRole('region', { name: '설정 초안', exact: true }).getByRole('region', { name: 'Agent 파일 편집', exact: true }).locator('[data-agent-save-status]') with timeout 5000ms\n` +
+      "  - waiting for getByRole('region', { name: '설정 초안', exact: true }).getByRole('region', { name: 'Agent 파일 편집', exact: true }).locator('[data-agent-save-status]')\n" +
+      '    14 × locator resolved to <div role="status" id="_r_b_-save" aria-label="Agent 파일 저장 상태" data-agent-save-current="true" data-agent-save-status="denied">…</div>\n' +
+      '       - unexpected value "denied"\n',
+    pass: false,
+    actual: 'denied',
+    log: [
+      `  - Expect "toHaveAttribute" getByRole('region', { name: '설정 초안', exact: true }).getByRole('region', { name: 'Agent 파일 편집', exact: true }).locator('[data-agent-save-status]') with timeout 5000ms`,
+      "  - waiting for getByRole('region', { name: '설정 초안', exact: true }).getByRole('region', { name: 'Agent 파일 편집', exact: true }).locator('[data-agent-save-status]')",
+      '    14 × locator resolved to <div role="status" id="_r_b_-save" aria-label="Agent 파일 저장 상태" data-agent-save-current="true" data-agent-save-status="denied">…</div>',
+      '       - unexpected value "denied"'
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- status "Agent 파일 저장 상태":\n  - paragraph: 저장이 취소되거나 거부되었습니다. 초안을 유지합니다.'
+  }
+}
+
+Node.js v26.8.2

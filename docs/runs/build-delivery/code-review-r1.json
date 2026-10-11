@@ -1,0 +1,66 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed_revision": 5,
+  "verdict": "pass",
+  "summary": "The bounded @opencode/client@2.0.18 probe meets AC-7. Its strict compile-only file checks the public fetch and ServerInfo types, and the runtime probe asserts one injected synthetic GET /api/info with no body for success, transport rejection, HTTP 503, malformed JSON, and a valid-JSON invalid-shape observation. The ambient fetch sentinel observes zero calls. The existing check command invokes both probes and passed from cached dependencies. No actionable correctness or security defect was found in the assigned scope.",
+  "reviewed_files_sha256": {
+    "spikes/sdk-ui/client-probe.mjs": "60b687ef97ee0243e76826ed2ec3ad91c452571d30bf7024b188ca6a41b520c8",
+    "spikes/sdk-ui/client-probe.types.ts": "91183fbba742e19160c0d6f79218a4a7497a943f0d99aa31d8eebf8cfd6fb1f5",
+    "spikes/sdk-ui/tsconfig.client-probe.json": "279457617ec6f95d7e226a24ea4a33730b108d77b6d94a3a08c41415257bf464",
+    "spikes/sdk-ui/verify.mjs": "2bed23b95cb2c5f4a286d073b6ddfe70adf84121778c439d13de333de8dc390d"
+  },
+  "findings": [],
+  "evidence": [
+    {
+      "command": "pnpm --dir spikes/sdk-ui run check",
+      "exit_code": 0,
+      "result": "Pinned package checks, strict client typecheck, all synthetic success/failure assertions, existing UI/SDK typecheck, and synthetic SSR checks passed. The output separately labels host lifecycle and live behavior NOT READY, and browser interaction/production UI NOT EXECUTED."
+    },
+    {
+      "path": "spikes/sdk-ui/client-probe.mjs",
+      "lines": "8-22,24-29,38-83",
+      "result": "Each branch asserts exactly one recorded request equal to GET https://synthetic.invalid/api/info with undefined body; global fetch is replaced by a throwing counter and restored in finally."
+    },
+    {
+      "path": "spikes/sdk-ui/client-probe.types.ts",
+      "lines": "1-30",
+      "result": "Public OpenCode and ServerInfo imports compile under the dedicated strict noEmit config; no any or unchecked cast appears."
+    },
+    {
+      "path": "spikes/sdk-ui/node_modules/@opencode/client/dist/chunks/contract-n8g24fq8.js",
+      "lines": "16-49,63-68,139-140",
+      "result": "The pinned client chooses options.fetch before globalThis.fetch, prepares the info request as GET /api/info, and maps transport and non-success status to the asserted ClientError reasons."
+    }
+  ],
+  "limitations": [
+    "This is synthetic client transport and type evidence only. It does not establish a real SDK host, actual service lifecycle, browser bridge security, persistence/recovery, credentials, or product readiness.",
+    "The incomplete ServerInfo case confirms that valid JSON is returned unchanged without runtime schema validation; static ServerInfo typing must not be represented as runtime validation.",
+    "The repository tree is untracked, so a base-to-head diff could not be established. Review was bound to the assigned four file contents and their recorded SHA-256 values; historical package/lockfile unchanged status could not be independently proven from Git.",
+    "The check used existing cached dependencies; no clean or fresh registry install was attempted."
+  ],
+  "provenance": {
+    "child_task_id": "/root/sdk_client_probe_review_r1",
+    "author_task_id": "/root",
+    "report_only": true,
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "high",
+    "runtime_identity_verified": false
+  },
+  "reviewed": {
+    "contract_sha256": "064248d8e9743d7823753cef30c2e95a1644feec1dbbaa69ccdc83b7a491d8fd",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "code",
+    "plan_sha256": "d948d3b3ac16fd325e381defffd6cff7101ba7dccb94969c17db5738b16d44a3",
+    "schema_version": 2,
+    "source_sha256": "21115e12aba461dac2882aebf85b66894df5cbece77ceddd5973cca25467b905",
+    "verification_sha256": "60eafc033802b7adab640c788c104a748a9c744d86dfbb0b16c21efe6c188ead"
+  },
+  "open_findings": [],
+  "limits": [
+    "This is synthetic client transport and type evidence only. It does not establish a real SDK host, actual service lifecycle, browser bridge security, persistence/recovery, credentials, or product readiness.",
+    "The incomplete ServerInfo case confirms that valid JSON is returned unchanged without runtime schema validation; static ServerInfo typing must not be represented as runtime validation.",
+    "The repository tree is untracked, so a base-to-head diff could not be established. Review was bound to the assigned four file contents and their recorded SHA-256 values; historical package/lockfile unchanged status could not be independently proven from Git.",
+    "The check used existing cached dependencies; no clean or fresh registry install was attempted."
+  ]
+}

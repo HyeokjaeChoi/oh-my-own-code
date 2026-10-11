@@ -1,0 +1,13 @@
+# Bootstrap integration work inside accepted task design
+
+Active plan remains revision 2. This is routine implementation sequencing, not a new security contract or an approval.
+
+Done: closed reserved bootstrap metadata request over the existing authenticated 16KiB channel; actual checked NON-VCS workspace candidate owner; Main and actual Native create remain held before effects. Root cleanup/disclosure and Fiber owner fixes independently inspected. Unverified synchronous Tool transforms now reject before body; separate current-source CODE remains required.
+
+Next local step: connect actual candidate observation to the same acquired Control private preparation path. It must be uninterruptible through original Node IO/close, bounded, and revoke on runtime close. Held preparation must close temporary pins before responding; failures cannot treat a failed constructor cleanup as closed from caller flags. Add private factory-sourced failure-close facts as needed, with reused-error refusal. No prepared/authority response or generation may be fabricated. Keep production creation blocked while this metadata stage has no verified mode/inventory/method authority.
+
+Then: actual pending bootstrap owner/generation issuance, exact current registered location identity, shared taskBindingDigest and original reservation correlation; return genuine prepared metadata only when its source exists. Main's synchronous registry taskAuthoritySource must consume correlated facts from the actual owned child, flush task.prepare and existing per-stage intent, then arm the one-use handoff. No caller-created token or HTTP first-owner shortcut.
+
+Native final create must consume before input getters, ID allocation, Project.resolve or any callbacks. Actual pinned Project.resolve currently persists project rows and can invoke Git/Hg discovery; do not use it as read-only preparation or allow it as an untracked callback. Its NON-VCS branch ID is SHA1("directory:"+canonicalDirectory), not global. VCS branch is separate still-unverified work. Any metadata persistence must be inside the actual verified bootstrap stage; no unchecked original-path resolver fallback.
+
+After actual create: exact Native ID/location/full metadata readback, one-time bootstrap-binding, initial policy intent/readback, actual permanent mode/inventory source and genuine task/RPC/IO settlement before durable proof/settlement. Bootstrap never creates prompt/tool execution scope. Both ordinary baseline policy stages remain. Read/Write/Edit/Patch adapter activation, inventory completeness, nonfresh startup/recovery, coherent checks/final CODE and authorized saved runtime acceptance remain unfinished; do not claim full18/F09 from metadata success.
