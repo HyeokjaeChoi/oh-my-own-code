@@ -113,3 +113,12 @@
   font-family: var(--omoc-semantic-type-family-code);
   overflow-wrap: anywhere;
 }
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 8px 0;
+}
+.chips button[aria-pressed="true"] {
+  background: var(--omoc-semantic-color-selection-background);
+}

@@ -462,6 +462,7 @@ export function Conversation(props: Props) {
                 <section
                   className={styles.permission}
                   aria-label="실행 권한 요청"
+                  data-permission-id={permission.id}
                   key={permission.id}
                 >
                   <strong className={styles.permissionTitle}>

@@ -3,6 +3,7 @@ import {
   useWorkbenchSelector,
   useWindowWorkbench,
 } from "../../entities/workbench/index.js";
+import { Timeline } from "./timeline.js";
 import styles from "./activity.module.css";
 const operationLabels: Record<string, string> = {
   "workspace.import": "폴더 가져오기",
@@ -90,6 +91,11 @@ export function ActivityPanel({
             <br />
             보관 한도로 제외된 기록: {data.droppedEvents}개 · 앱 전체
           </p>
+          <Timeline
+            workspaceId={workspaceId}
+            sessionId={sessionId}
+            events={data.events}
+          />
           <h3>
             {filtered && sessionId ? "선택한 세션의 기록" : "앱 전체 기록"}
           </h3>
