@@ -789,3 +789,93 @@ test("wiring, follow-up, latest-session busy, anchor clamp, cleared mark, sessio
   nh.show({ id: "done:s1:222", text: "x", workspaceId: "w", sessionId: "s1" });
   assert.equal(shown.length, 1);
 });
+
+test("closed host: orphaned run cannot save or reach the service; message id ownership", async () => {
+  const clock = { t: 100 * 60 * MIN };
+  const dir = await mkdtemp(join(tmpdir(), "auto-"));
+  const file = join(dir, "jobs.json");
+  let closedSig;
+  let finish;
+  const host = createAutomationHost({
+    storeFile: () => file,
+    run: (_j, _s, c) => (
+      (closedSig = c),
+      new Promise(
+        (r) =>
+          (finish = () => r({ result: "ok", reason: "", sessionId: "so" })),
+      )
+    ),
+    now: () => clock.t,
+    setTimer: () => ({}),
+    clearTimer() {},
+  });
+  const j = await host.create(job());
+  await host.runNow(j.id);
+  await new Promise((r) => setImmediate(r));
+  await host.stop(); // runner ignores abort -> 3s grace elapses
+  assert.equal(closedSig.aborted, true);
+  const before = await readFile(file, "utf8");
+  finish();
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(await readFile(file, "utf8"), before);
+
+  // runner: closed signal blocks every service call
+  const calls = [];
+  const svc = mkService(calls, []);
+  const closed = new AbortController();
+  closed.abort();
+  const runner = createAutomationRunner({
+    service: () => svc,
+    terminals: {},
+    terminalRoot: () => "/x",
+    wait: async () => {},
+  });
+  const r = await runner(promptJob, undefined, closed.signal);
+  assert.equal(r.result, "failed");
+  assert.deepEqual(calls, []);
+
+  // same text but different message id => user continued; no interrupt
+  const rc = { t: 0 };
+  const c2 = [];
+  const svc2 = mkService(c2, Array(10).fill("running"));
+  const h = svc2.handle;
+  svc2.handle = async (env) => {
+    const res = await h(env);
+    if (env.operation.type === "message.send")
+      res.receipt.result.messageId = "m1";
+    if (env.operation.type === "snapshot" && env.operation.sessionId)
+      res.value.messages = [{ role: "user", id: "m2", text: "p" }];
+    return res;
+  };
+  const r2 = await createAutomationRunner({
+    service: () => svc2,
+    terminals: {},
+    terminalRoot: () => "/x",
+    wait: async () => void (rc.t += 60 * 60 * 1000),
+    now: () => rc.t,
+  })(promptJob);
+  assert.match(r2.reason, /이어서/);
+  assert.equal(c2.includes("session.interrupt"), false);
+
+  // session notices: 3s window
+  let t = 0;
+  const shown = [];
+  const nh = createNotifyHost({
+    Notification: class {
+      static isSupported() {
+        return true;
+      }
+      on() {}
+      show() {
+        shown.push(1);
+      }
+    },
+    isFocused: () => false,
+    focusWindow() {},
+    now: () => t,
+  });
+  nh.show({ id: "done:s:1", text: "x", sessionId: "s", workspaceId: "w" });
+  t = 4000;
+  nh.show({ id: "done:s:2", text: "x", sessionId: "s", workspaceId: "w" });
+  assert.equal(shown.length, 2);
+});
