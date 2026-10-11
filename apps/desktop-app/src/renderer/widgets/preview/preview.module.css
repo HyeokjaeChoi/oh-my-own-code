@@ -1,0 +1,68 @@
+.panel {
+  font-size: 13px;
+  line-height: 1.5;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.panel h2 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+.panel button {
+  border: 0;
+  border-radius: 8px;
+  min-height: var(--omoc-component-size-control-hit-target);
+  padding: 8px 12px;
+  background: var(--omoc-semantic-color-surface-subtle);
+  color: var(--omoc-semantic-color-text-primary);
+  cursor: pointer;
+}
+.panel button:hover:not(:disabled) {
+  background: var(--omoc-semantic-color-selection-background);
+}
+.panel button:disabled {
+  cursor: default;
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.panel button:focus-visible,
+.panel input:focus-visible {
+  outline: 2px solid var(--omoc-semantic-color-focus);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.row input {
+  flex: 1;
+  min-width: 120px;
+}
+.stage {
+  height: 360px;
+  overflow: auto;
+  border: 1px solid var(--omoc-semantic-color-border-default);
+  border-radius: 8px;
+  background: var(--omoc-semantic-color-canvas);
+}
+.text {
+  margin: 0;
+  padding: 8px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 12px/1.5 var(--omoc-semantic-type-family-code);
+}
+.image {
+  max-width: 100%;
+}
+.error {
+  color: var(--omoc-semantic-color-danger, #c62828);
+  margin: 0;
+}
+.muted {
+  margin: 0;
+  color: var(--omoc-semantic-color-text-secondary);
+}

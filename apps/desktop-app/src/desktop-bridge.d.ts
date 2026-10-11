@@ -1,4 +1,8 @@
 import type {
+  PreviewRequest,
+  PreviewResult,
+} from "./renderer/shared/preview/index.mjs";
+import type {
   TerminalRequest,
   TerminalResult,
 } from "./renderer/shared/terminal/index.mjs";
@@ -1011,6 +1015,10 @@ declare global {
         // eslint-disable-next-line no-unused-vars
         _request: TerminalRequest,
       ): Promise<TerminalResult<unknown>>;
+      preview(
+        // eslint-disable-next-line no-unused-vars
+        _request: PreviewRequest,
+      ): Promise<PreviewResult<unknown>>;
       cancelRead(
         // eslint-disable-next-line no-unused-vars
         _request: WorkbenchCancel,

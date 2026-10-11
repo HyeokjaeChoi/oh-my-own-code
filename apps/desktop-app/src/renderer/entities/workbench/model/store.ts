@@ -1983,7 +1983,7 @@ export type DiagnosticsIdentity = Scope & {
   filtered: boolean;
   requestGeneration: number;
 };
-export type Panel = "files" | "catalog" | "activity" | "terminal";
+export type Panel = "files" | "catalog" | "activity" | "terminal" | "preview";
 export type ContextDraft = {
   items: readonly ContextDescriptor[];
   verifiedIds: readonly string[];
