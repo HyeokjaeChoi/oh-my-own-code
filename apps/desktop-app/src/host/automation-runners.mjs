@@ -84,10 +84,19 @@ export function createAutomationRunner({
     let idleReads = 0;
     const done = (r) => ({ ...r, sessionId });
     for (;;) {
-      if (signal?.aborted)
+      if (signal?.aborted) {
+        if (await ownsTurn(workspaceId, sessionId, prompt))
+          await send({
+            type: "session.interrupt",
+            workspaceId,
+            sessionId,
+          }).catch(() => {});
         return done({ result: "failed", reason: "앱 종료로 중단되었습니다." });
+      }
       if (now() > deadline)
-        return done(await interruptAndWait(workspaceId, sessionId, signal));
+        return done(
+          await interruptAndWait(workspaceId, sessionId, prompt, signal),
+        );
       await wait(pollMs);
       let status;
       try {
@@ -118,11 +127,31 @@ export function createAutomationRunner({
   }
   // On timeout: interrupt the agent and stay "running" until it is idle (bounded), so the next
   // occurrence cannot overlap and the session is never archived while still working.
-  async function interruptAndWait(workspaceId, sessionId, signal) {
+  // False only when the session's last user message is no longer the job's prompt (the user
+  // continued it); unreadable counts as ours.
+  async function ownsTurn(workspaceId, sessionId, prompt) {
+    try {
+      const snap = await service().handle(
+        {
+          version: 2,
+          readId: randomUUID(),
+          operation: { type: "snapshot", workspaceId, sessionId },
+        },
+        OWNER,
+      );
+      const last = snap?.value?.messages?.findLast?.((m) => m.role === "user");
+      return !last || last.text?.trim() === prompt.trim();
+    } catch {
+      return true;
+    }
+  }
+  async function interruptAndWait(workspaceId, sessionId, prompt, signal) {
     const timeout = {
       result: "timeout",
       reason: "제한 시간(2시간) 안에 끝나지 않아 중단했습니다.",
     };
+    if (!(await ownsTurn(workspaceId, sessionId, prompt)))
+      return { result: "timeout", reason: "사용자가 이어서 사용 중" };
     try {
       await send({ type: "session.interrupt", workspaceId, sessionId });
     } catch {

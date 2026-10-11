@@ -18,8 +18,8 @@ const fail = (code) => Object.assign(new Error(code), { automationCode: code });
 export function createAutomationHost({
   storeFile,
   run,
-  archive = async () => {},
-  isIdle = async () => true,
+  archive = run.archive ?? (async () => {}),
+  isIdle = run.isIdle ?? (async () => true),
   now = Date.now,
   tickMs = 30000,
   setTimer = setInterval,
@@ -31,6 +31,7 @@ export function createAutomationHost({
   let startup = true;
   let timer;
   const running = new Set();
+  const inflight = new Set();
   let queue = Promise.resolve();
   const serial = (fn) => {
     const r = queue.then(fn, fn);
@@ -85,9 +86,9 @@ export function createAutomationHost({
         jobs: jobs.filter(Boolean).slice(0, AUTOMATION_LIMITS.jobs),
       };
     })());
-  const save = () =>
+  const save = (force = false) =>
     serial(async () => {
-      if (stopped || blocked) return;
+      if ((stopped && !force) || blocked) return;
       const file = storeFile();
       await mkdir(dirname(file), { recursive: true });
       await writeFile(`${file}.tmp`, JSON.stringify(state));
@@ -115,7 +116,14 @@ export function createAutomationHost({
     history: j.history.slice().reverse(),
   });
 
-  async function execute(job, scheduledAt) {
+  const execute = (job, scheduledAt) => {
+    const p = executeJob(job, scheduledAt);
+    inflight.add(p);
+    const done = () => inflight.delete(p);
+    p.then(done, done);
+    return p;
+  };
+  async function executeJob(job, scheduledAt) {
     if (running.has(job.id)) {
       record(job, {
         scheduledAt,
@@ -127,16 +135,17 @@ export function createAutomationHost({
     }
     // A retained session that is still working (e.g. a timed-out run) blocks a new prompt run.
     if (job.target.kind === "prompt") {
-      for (const s of job.sessionIds ?? [])
-        if (!(await isIdle(s.sessionId, s.workspaceId))) {
-          record(job, {
-            scheduledAt,
-            startedAt: null,
-            result: "skipped",
-            reason: "이전 세션이 아직 실행 중",
-          });
-          return save();
-        }
+      // Only the latest run's session counts: one the user adopted earlier must not block forever.
+      const s = job.sessionIds?.at(-1);
+      if (s && !(await isIdle(s.sessionId, s.workspaceId))) {
+        record(job, {
+          scheduledAt,
+          startedAt: null,
+          result: "skipped",
+          reason: "이전 세션이 아직 실행 중",
+        });
+        return save();
+      }
     }
     running.add(job.id);
     const startedAt = now();
@@ -148,7 +157,17 @@ export function createAutomationHost({
     } finally {
       running.delete(job.id);
     }
-    if (stopped) return;
+    if (stopped) {
+      // Keep the session reachable for later archiving; no archiving or history while shutting down.
+      if (outcome.sessionId) {
+        job.sessionIds = [
+          ...(job.sessionIds ?? []),
+          { sessionId: outcome.sessionId, workspaceId: job.target.workspaceId },
+        ];
+        return save(true);
+      }
+      return;
+    }
     if (outcome.sessionId) {
       job.sessionIds = [
         ...(job.sessionIds ?? []),
@@ -193,6 +212,8 @@ export function createAutomationHost({
             reason: "시스템 시계가 과거로 이동해 기준 시각을 재설정했습니다.",
           });
     }
+    for (const job of state.jobs)
+      if (job.anchor > t + AUTOMATION_LIMITS.clockBackMs) job.anchor = t;
     const wasStartup = startup;
     startup = false;
     const due = [];
@@ -240,6 +261,13 @@ export function createAutomationHost({
       abort.abort();
       clearTimer(timer);
       timer = undefined;
+      // Runners notice the abort within one poll; bounded so a stuck runner cannot hang quit.
+      await Promise.race([
+        Promise.allSettled([...inflight]),
+        new Promise((r) => {
+          setTimeout(r, 3000).unref();
+        }),
+      ]);
       await queue;
     },
     tick,

@@ -53,7 +53,12 @@ export function jobNoticeMark(
   jobs: { history: { recordedAt: number }[] }[],
   seenAt?: number,
 ): number;
-export function unionNotices(a: Notice[], b: Notice[]): Notice[];
+export const NOTIFICATIONS_CLEARED_KEY: string;
+export function unionNotices(
+  a: Notice[],
+  b: Notice[],
+  clearedAt?: number,
+): Notice[];
 export function mergeNotices(
   list: Notice[],
   notices: NoticeSpec[],
