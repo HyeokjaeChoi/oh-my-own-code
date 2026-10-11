@@ -348,7 +348,6 @@ export type WorkbenchAgentRuntimeRow = WorkbenchAgentRuntimeIdentity & {
   permissions: [
     { action: "*"; resource: "*"; effect: "ask" },
     { action: "external_directory"; resource: "*"; effect: "deny" },
-    { action: "subagent"; resource: "*"; effect: "deny" },
   ];
   description?: string;
   color?: string;

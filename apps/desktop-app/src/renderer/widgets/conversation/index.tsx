@@ -21,6 +21,7 @@ import {
 } from "@assistant-ui/react";
 import { ArrowUp, Plus, Square, X } from "lucide-react";
 import { mapMessages } from "../../shared/projection/index.js";
+import { parseSubagentResult } from "../../shared/subagents/index.js";
 import {
   selectors,
   useWorkbenchSelector,
@@ -83,6 +84,7 @@ function ToolDetail({ toolName, args, result }: ToolCallMessagePartProps) {
   } catch {
     /* General escaped output below. */
   }
+  const subagent = toolName === "subagent" ? parseSubagentResult(output) : null;
   const preview = state === "completed" ? parseSafeLinkPreview(decoded) : null;
   return (
     <div className={`tool-detail ${styles.toolDetail}`}>
@@ -97,6 +99,14 @@ function ToolDetail({ toolName, args, result }: ToolCallMessagePartProps) {
           locale="ko-KR"
           className={styles.linkPreview ?? ""}
         />
+      ) : null}
+      {subagent && state === "completed" ? (
+        <div className="subagent-result">
+          <p className={styles.muted}>
+            하위 세션 최종 응답 ({subagent.sessionId})
+          </p>
+          <pre>{subagent.text}</pre>
+        </div>
       ) : null}
       <details>
         <summary>도구 입력과 결과</summary>

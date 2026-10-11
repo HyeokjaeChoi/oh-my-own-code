@@ -1,0 +1,57 @@
+.root {
+  font-size: 13px;
+  line-height: 1.5;
+  min-width: 0;
+}
+.root h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 24px 0 12px;
+}
+.root button {
+  border: 0;
+  border-radius: 8px;
+  min-height: var(--omoc-component-size-control-hit-target);
+  padding: 8px 12px;
+  background: var(--omoc-semantic-color-surface-subtle);
+  cursor: pointer;
+}
+.root button:hover:not(:disabled) {
+  background: var(--omoc-semantic-color-selection-background);
+}
+.muted {
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.row > span:first-child {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.form {
+  display: grid;
+  gap: 8px;
+}
+.form label {
+  display: grid;
+  gap: 4px;
+}
+.form input,
+.form textarea {
+  font: inherit;
+  min-width: 0;
+}

@@ -7,7 +7,6 @@ export const BASELINE_POLICY = Object.freeze([
     resource: "*",
     effect: "deny",
   }),
-  Object.freeze({ action: "subagent", resource: "*", effect: "deny" }),
 ]);
 export function policyMatches(rules) {
   if (!Array.isArray(rules) || rules.length !== BASELINE_POLICY.length)

@@ -28,10 +28,20 @@ test("unknown tools ask; explicit deny floor is last in every mode", () => {
     const r = compileModeRules(mode);
     assert.equal(r[0].effect, "ask");
     assert.equal(eff(r, "some_new_tool"), "ask");
-    assert.deepEqual(r.slice(-2), BASELINE_POLICY.slice(1));
+    assert.deepEqual(r.slice(-1), BASELINE_POLICY.slice(1));
     assert.equal(eff(r, "external_directory"), "deny");
-    assert.equal(eff(r, "subagent"), "deny");
   }
+});
+test("subagent is not in the deny floor; it follows the mode", () => {
+  assert.equal(
+    BASELINE_POLICY.some((r) => r.action === "subagent"),
+    false,
+  );
+  assert.equal(eff(compileModeRules("ask"), "subagent"), "ask");
+  assert.equal(eff(compileModeRules("scoped_edit"), "subagent"), "allow");
+  assert.equal(eff(compileModeRules("read_plan"), "subagent"), "allow");
+  for (const mode of ["ask", "scoped_edit", "read_plan"])
+    assert.equal(eff(compileModeRules(mode), "external_directory"), "deny");
 });
 test("invalid mode rejected", () => {
   assert.equal(validPermissionMode("custom"), false);

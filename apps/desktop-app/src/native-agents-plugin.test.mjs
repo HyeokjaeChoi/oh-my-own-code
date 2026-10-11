@@ -233,7 +233,7 @@ test("post-config global deny stays on builtins while lazy owned rows keep exact
   const result = await h.call("register", request);
   assert.equal(result.status, "registered");
   assert.deepEqual(h.state.native.get(request.record.id), request.record);
-  assert.equal(h.state.native.get(request.record.id).permissions.length, 3);
+  assert.equal(h.state.native.get(request.record.id).permissions.length, 2);
   assert.deepEqual(h.state.native.get("actual-default"), builtin);
   assert.equal(result.defaultAgentId, "actual-default");
   const second = register("second", "second");
