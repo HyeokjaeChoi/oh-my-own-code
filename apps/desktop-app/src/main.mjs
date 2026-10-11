@@ -693,7 +693,15 @@ app.whenReady().then(async () => {
     });
   })();
   startupPromise.catch(() => {});
-  void automation.start().catch(() => {});
+  // Automation writes under namespace.metadata; start only after owner.acquire
+  // (inside registryPromise) so it cannot race the owner's storage scan.
+  void registryPromise
+    .then((store) =>
+      store.readView().recovery.store.state === "ready"
+        ? automation.start()
+        : undefined,
+    )
+    .catch(() => {});
   workbench = createWorkbenchService({
     contextIO: createConversationContextIO({
       validateImage: (bytes) => !nativeImage.createFromBuffer(bytes).isEmpty(),
