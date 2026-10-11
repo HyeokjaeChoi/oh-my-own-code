@@ -179,13 +179,13 @@ Status: `done` = implemented end to end; `partial` = some of the clause exists; 
 
 ## F-17 Recovery/data
 
-| Clause                                   | Status  | Evidence                                                 |
-| ---------------------------------------- | ------- | -------------------------------------------------------- |
-| Reconnect, runtime exit, partial failure | done    | `operation.lookup`, sidecar-supervisor, recovery journal |
-| Abort vs confirmed stop                  | done    | `session.interrupt` + status                             |
-| Resubscribe + re-snapshot, gap marked    | partial | `snapshot`; gap UI unverified                            |
-| Session/history export/import            | missing | none                                                     |
-| Retention settings, app-data deletion    | missing | none                                                     |
+| Clause                                   | Status  | Evidence                                                                                                    |
+| ---------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| Reconnect, runtime exit, partial failure | done    | `operation.lookup`, sidecar-supervisor, recovery journal                                                    |
+| Abort vs confirmed stop                  | done    | `session.interrupt` + status                                                                                |
+| Resubscribe + re-snapshot, gap marked    | partial | `snapshot`; projection has no gap marker, so no divider                                                     |
+| Session/history export/import            | partial | `host/data-host.mjs`, `features/data-transfer` (current session; archive view only)                         |
+| Retention settings, app-data deletion    | partial | imported archives only; wipe in `data-host.mjs`; native archived-session retention not done (no timestamps) |
 
 ## F-18 Convenience/automation
 

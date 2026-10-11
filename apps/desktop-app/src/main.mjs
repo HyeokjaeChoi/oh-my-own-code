@@ -33,6 +33,8 @@ import { createTerminalHost } from "./host/terminal-host.mjs";
 import { bindTerminalIpc } from "./host/terminal-ipc.mjs";
 import { createPlansHost } from "./host/plans-host.mjs";
 import { bindPlansIpc } from "./host/plans-ipc.mjs";
+import { createDataHost, wipeAppDataSync } from "./host/data-host.mjs";
+import { bindDataIpc } from "./host/data-ipc.mjs";
 import { createPreviewHost } from "./host/preview-host.mjs";
 import { bindPreviewIpc } from "./host/preview-ipc.mjs";
 import { createPreviewViewFactory } from "./host/preview-view.mjs";
@@ -63,6 +65,12 @@ const plans = createPlansHost({
   resolveWorkspace: (id) => workbench?.terminalRoot(id),
   storeFile: () => join(namespace.metadata, "plans.json"),
   terminals: (owner, workspaceId) => terminals.list(owner, workspaceId),
+});
+// Set by the confirmed "앱 데이터 삭제"; executed in will-quit after storage is released.
+let wipeOnQuit = false;
+const dataHost = createDataHost({
+  metadataDir: () => namespace.metadata,
+  appVersion: app.getVersion(),
 });
 const previews = createPreviewHost({
   createView: createPreviewViewFactory({ getWindow: () => mainWindow }),
@@ -286,6 +294,53 @@ function bindIpc() {
   bindTerminalIpc({ ipcMain, admit, host: terminals });
   bindPlansIpc({ ipcMain, admit, host: plans });
   bindPreviewIpc({ ipcMain, admit, host: previews });
+  bindDataIpc({
+    ipcMain,
+    admit,
+    host: dataHost,
+    appDataRoot: () => namespace?.root,
+    dialogs: {
+      async saveFile(defaultPath) {
+        const r = await dialog.showSaveDialog(mainWindow, {
+          title: "세션 내보내기",
+          defaultPath,
+          filters: [{ name: "JSON", extensions: ["json"] }],
+        });
+        return r.canceled ? undefined : r.filePath;
+      },
+      async openFile() {
+        const r = await dialog.showOpenDialog(mainWindow, {
+          title: "내보낸 기록 가져오기",
+          properties: ["openFile"],
+          filters: [{ name: "JSON", extensions: ["json"] }],
+        });
+        return r.canceled ? undefined : r.filePaths[0];
+      },
+      async confirmWipe() {
+        const r = await dialog.showMessageBox(mainWindow, {
+          type: "warning",
+          title: "앱 데이터 삭제",
+          message: "앱 데이터를 모두 삭제하고 앱을 종료하시겠습니까?",
+          detail: `${namespace?.root}\n\n이 폴더의 내용(워크스페이스 목록, 저널, 계획, 워크트리 링크, 가져온 기록, Native 대화 기록 데이터)이 삭제되며 되돌릴 수 없습니다.\n프로젝트 폴더와 Git 저장소, 외부 제공자에 이미 전송된 데이터는 삭제되지 않습니다.`,
+          buttons: ["취소", "삭제 후 종료"],
+          defaultId: 0,
+          cancelId: 0,
+          noLink: true,
+        });
+        return r.response === 1;
+      },
+      wipe() {
+        wipeOnQuit = true;
+        void requestQuit();
+      },
+    },
+  });
+  // Retention for imported archives: at start, then daily.
+  void dataHost.sweep().catch(() => undefined);
+  setInterval(
+    () => void dataHost.sweep().catch(() => undefined),
+    86400000,
+  ).unref();
   bindWorktreeIpc({
     ipcMain,
     admit,
@@ -846,6 +901,20 @@ app.on("window-all-closed", () => {
 
 app.on("will-quit", () => {
   terminals.killAllSync();
+  if (wipeOnQuit) {
+    let result = { ok: false, reason: "STORAGE_NOT_RELEASED" };
+    try {
+      if (storageShutdown && namespace)
+        result = wipeAppDataSync(namespace.root);
+    } catch {
+      result = { ok: false, reason: "REMOVE_FAILED" };
+    }
+    if (!result.ok)
+      dialog.showErrorBox(
+        "App data deletion failed",
+        `앱 데이터를 삭제하지 못했습니다 (${result.reason}). 앱 종료 후 직접 삭제하세요:\n${namespace?.root}`,
+      );
+  }
   try {
     if (storageShutdown) ephemeralProfile.cleanup();
   } catch {
