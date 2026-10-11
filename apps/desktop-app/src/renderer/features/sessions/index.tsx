@@ -1,5 +1,11 @@
 import type { MutationRequest } from "../../shared/transport/index.js";
-import { useEffect, useId, useRef, useState } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { ActionMenu } from "@workbench/ui";
 import {
   CircleAlert,
@@ -9,7 +15,13 @@ import {
   Search,
 } from "lucide-react";
 import type { WorkbenchSession } from "../../shared/api/index.js";
-import { visibleSessions, validSessionTitle } from "./navigation.js";
+import {
+  emptyActivity,
+  trackSessions,
+  visibleSessions,
+  validSessionTitle,
+  type SessionActivity,
+} from "./navigation.js";
 import styles from "./sessions.module.css";
 export {
   visibleSessions,
@@ -35,7 +47,30 @@ const labels = {
   unknown: "상태 불명",
   unavailable: "사용 불가",
 };
+// Module-level so unread/recent survive the navigation unmounting or a workspace switch.
+let activity: SessionActivity = emptyActivity;
+const listeners = new Set<() => void>();
+function track(sessions: WorkbenchSession[], selectedId?: string) {
+  const next = trackSessions(activity, sessions, selectedId);
+  if (JSON.stringify(next) === JSON.stringify(activity)) return;
+  activity = next;
+  for (const listener of listeners) listener();
+}
+function useSessionActivity(sessions: WorkbenchSession[], selectedId?: string) {
+  useEffect(() => track(sessions, selectedId), [sessions, selectedId]);
+  return useSyncExternalStore(
+    (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    () => activity,
+  );
+}
 export function SessionNavigation(props: Props) {
+  const { unread, recent } = useSessionActivity(
+    props.sessions,
+    props.selectedId,
+  );
   const [query, setQuery] = useState("");
   const [archived, setArchived] = useState(false);
   const search = useRef<HTMLInputElement>(null);
@@ -66,12 +101,43 @@ export function SessionNavigation(props: Props) {
           보관된 세션
         </button>
       </div>
+      {!archived && !query && (
+        <div className={styles.views} aria-label="최근 연 세션">
+          {recent
+            .map((id) =>
+              props.sessions.find(
+                (s) =>
+                  s.id === id &&
+                  s.workspaceId === props.workspaceId &&
+                  !s.archived &&
+                  s.id !== props.selectedId,
+              ),
+            )
+            .filter((s): s is WorkbenchSession => Boolean(s))
+            .map((s) => (
+              <button
+                key={s.id}
+                title={s.title}
+                disabled={
+                  props.disabled ||
+                  props.pending ||
+                  s.status !== "idle" ||
+                  props.unknownIds.includes(s.id)
+                }
+                onClick={() => props.select(s.id)}
+              >
+                {s.title.length > 14 ? `${s.title.slice(0, 14)}…` : s.title}
+              </button>
+            ))}
+        </div>
+      )}
       <ul className={`${styles.list} session-list`}>
         {sessions.map((session) => (
           <SessionRow
             key={session.id}
             session={session}
             selected={session.id === props.selectedId}
+            unread={unread.includes(session.id)}
             disabled={
               props.disabled ||
               props.pending ||
@@ -100,6 +166,7 @@ export function SessionNavigation(props: Props) {
 function SessionRow({
   session,
   selected,
+  unread,
   disabled,
   select,
   mutate,
@@ -107,6 +174,7 @@ function SessionRow({
 }: {
   session: WorkbenchSession;
   selected: boolean;
+  unread: boolean;
   disabled: boolean;
   select(): void;
   mutate(operation: MutationRequest, navigate?: boolean): Promise<boolean>;
@@ -178,6 +246,16 @@ function SessionRow({
           title={session.title}
         >
           <span className={styles.title}>{session.title}</span>
+          {unread && (
+            <span
+              className={styles.indicator}
+              role="img"
+              aria-label="읽지 않은 응답"
+              data-session-unread
+            >
+              ●
+            </span>
+          )}
           {session.pinned && (
             <span className={styles.indicator} role="img" aria-label="고정">
               <Pin size={13} />

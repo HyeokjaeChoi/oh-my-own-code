@@ -63,3 +63,22 @@ test("confirmed removed IDs cannot be retained or picked from a stale successor 
     undefined,
   );
 });
+test("trackSessions marks finished background runs unread and keeps recent opens", async () => {
+  const { trackSessions, emptyActivity } = await import(
+    "./renderer/features/sessions/navigation.ts"
+  );
+  const s = (id, status) => ({ id, workspaceId: "w", title: id, status });
+  let a = trackSessions(
+    emptyActivity,
+    [s("a", "idle"), s("b", "running")],
+    "a",
+  );
+  assert.deepEqual(a.unread, []);
+  a = trackSessions(a, [s("a", "idle"), s("b", "idle")], "a");
+  assert.deepEqual(a.unread, ["b"]);
+  a = trackSessions(a, [s("a", "idle"), s("b", "idle")], "b");
+  assert.deepEqual(a.unread, []);
+  assert.deepEqual(a.recent, ["b", "a"]);
+  a = trackSessions(a, [s("a", "idle")], "a");
+  assert.deepEqual(a.recent, ["a"]);
+});
