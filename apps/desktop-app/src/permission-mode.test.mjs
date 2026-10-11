@@ -78,3 +78,18 @@ test("legacy 3-rule baseline and legacy mode rules stay accepted as stricter", a
     );
   }
 });
+
+test("broad read allow does not override .env ask", () => {
+  for (const mode of ["scoped_edit", "read_plan"]) {
+    const r = compileModeRules(mode);
+    const read = r.findIndex((x) => x.action === "read" && x.resource === "*");
+    assert.deepEqual(
+      r.slice(read + 1, read + 4).map((x) => [x.resource, x.effect]),
+      [
+        ["*.env", "ask"],
+        ["*.env.*", "ask"],
+        ["*.env.example", "allow"],
+      ],
+    );
+  }
+});
