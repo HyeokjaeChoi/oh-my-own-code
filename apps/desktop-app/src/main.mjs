@@ -1,5 +1,12 @@
 import { createConversationContextIO } from "./host/conversation-context-io.mjs";
-import { app, BrowserWindow, dialog, ipcMain, nativeImage } from "electron";
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  nativeImage,
+  shell,
+} from "electron";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
@@ -23,6 +30,9 @@ import { bindWorkbenchIpc } from "./host/workbench-ipc.mjs";
 import { setInterval } from "node:timers";
 import { createTerminalHost } from "./host/terminal-host.mjs";
 import { bindTerminalIpc } from "./host/terminal-ipc.mjs";
+import { createPreviewHost } from "./host/preview-host.mjs";
+import { bindPreviewIpc } from "./host/preview-ipc.mjs";
+import { createPreviewViewFactory } from "./host/preview-view.mjs";
 import {
   createStorageOwner,
   createElectronOwnerKernel,
@@ -37,6 +47,11 @@ import { mkdir } from "node:fs/promises";
 let workbench;
 const terminals = createTerminalHost({
   resolveWorkspace: (id) => workbench?.terminalRoot(id),
+});
+const previews = createPreviewHost({
+  createView: createPreviewViewFactory({ getWindow: () => mainWindow }),
+  resolveWorkspace: (id) => workbench?.terminalRoot(id),
+  openExternal: (url) => shell.openExternal(url),
 });
 const here = dirname(fileURLToPath(import.meta.url));
 const developmentUrl = process.env.OMOC_DESKTOP_DEV_URL;
@@ -204,6 +219,7 @@ let storageShutdown = false;
 let nativePreflight;
 async function finishStorage() {
   if (storageShutdown) return;
+  previews.closeAll();
   await terminals.closeAll();
   await workbench?.drain();
   const inspection = await nativePreflight?.close();
@@ -252,6 +268,7 @@ function admit(event) {
 function bindIpc() {
   bindWorkbenchIpc({ ipcMain, admit, service: () => workbench });
   bindTerminalIpc({ ipcMain, admit, host: terminals });
+  bindPreviewIpc({ ipcMain, admit, host: previews });
   // Workspace removal/untrust has no hook; sweep so its terminals never outlive it.
   setInterval(() => void terminals.reap(), 2000).unref();
   ipcMain.handle("desktop:v1:runtime-snapshot", (event, ...args) => {
@@ -287,14 +304,17 @@ function createWindow() {
   mainWindow.webContents.once("destroyed", () => {
     workbench?.closeSender(senderScope);
     void terminals.closeOwner(senderScope);
+    previews.closeOwner(senderScope);
   });
   mainWindow.webContents.on("render-process-gone", () => {
     workbench?.closeSender(senderScope);
     void terminals.closeOwner(senderScope);
+    previews.closeOwner(senderScope);
   });
   mainWindow.on("closed", () => {
     workbench?.closeSender(senderScope);
     void terminals.closeOwner(senderScope);
+    previews.closeOwner(senderScope);
     mainWindow = undefined;
   });
   if (developmentUrl && !app.isPackaged) {

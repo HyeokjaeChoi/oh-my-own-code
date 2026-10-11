@@ -18,6 +18,7 @@ import {
 import { PreferencesButton } from "../../features/preferences/index.js";
 import { Conversation } from "../../widgets/conversation/index.js";
 import { TerminalPanel } from "../../widgets/terminal/index.js";
+import { PreviewPanel } from "../../widgets/preview/index.js";
 import { CatalogPanel, FileExplorer } from "../../widgets/explorer/index.js";
 import {
   selectors,
@@ -34,6 +35,7 @@ const panelLabels = {
   catalog: "확장·명령",
   activity: "활동",
   terminal: "터미널",
+  preview: "미리보기",
 };
 const states: Record<string, string> = {
   loading: "런타임 확인 중…",
@@ -389,6 +391,12 @@ export function Workbench() {
         ) : panel === "terminal" ? (
           selection.workspaceId ? (
             <TerminalPanel key={key} workspaceId={selection.workspaceId} />
+          ) : (
+            <p className={styles.muted}>작업 공간을 선택하세요.</p>
+          )
+        ) : panel === "preview" ? (
+          selection.workspaceId ? (
+            <PreviewPanel key={key} workspaceId={selection.workspaceId} />
           ) : (
             <p className={styles.muted}>작업 공간을 선택하세요.</p>
           )
