@@ -759,3 +759,30 @@ test("permission.mode.set validates strictly and does not approve or touch pendi
   );
   assert.deepEqual(rules.slice(-1), BASELINE_POLICY.slice(1));
 });
+
+test("mode change reaches Native subagent descendants, never leaving them broader", async (t) => {
+  const f = await fixture(t);
+  const broad = [{ action: "*", resource: "*", effect: "allow" }];
+  f.records.set("sdk-native-child", {
+    ...f.records.get("sdk-parent"),
+    id: "sdk-native-child",
+    parentID: "sdk-parent",
+    permissions: broad,
+  });
+  f.records.set("sdk-native-grandchild", {
+    ...f.records.get("sdk-parent"),
+    id: "sdk-native-grandchild",
+    parentID: "sdk-native-child",
+    permissions: broad,
+  });
+  await f.service.handle(
+    f.request("permission.mode.set", { mode: "read_plan" }),
+  );
+  await f.service.handle(
+    f.request("session.inbox.cancel", { inboxId: "none" }),
+  );
+  const parent = f.records.get("sdk-parent").permissions;
+  assert.deepEqual(f.records.get("sdk-native-child").permissions, parent);
+  assert.deepEqual(f.records.get("sdk-native-grandchild").permissions, parent);
+  assert.equal(parent.find((r) => r.action === "subagent")?.effect, "allow");
+});

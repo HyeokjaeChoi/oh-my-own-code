@@ -29,6 +29,16 @@ const capabilities = BUILTIN.map(([action, category]) => ({
 
 export const validPermissionMode = (mode) => PERMISSION_MODES.includes(mode);
 
+// Rules a pre-F-07 build wrote for this mode: no subagent capability rule and
+// a trailing subagent deny. Used only to accept persisted sessions as stricter.
+export function legacyModeRules(mode = "ask") {
+  const current = compileModeRules(mode);
+  return [
+    ...current.filter((rule) => rule.action !== "subagent"),
+    { action: "subagent", resource: "*", effect: "deny" },
+  ];
+}
+
 export function compileModeRules(mode = "ask") {
   if (!validPermissionMode(mode)) throw new Error("permission_mode_invalid");
   return compilePermissionRules({

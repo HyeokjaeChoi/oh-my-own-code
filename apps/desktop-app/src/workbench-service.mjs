@@ -2,7 +2,7 @@ import {
   matchesOrderedPermissionRules,
   matchesAuthenticatedFloor,
 } from "./permission-policy-compiler.mjs";
-import { compileModeRules } from "./permission-mode.mjs";
+import { compileModeRules, legacyModeRules } from "./permission-mode.mjs";
 import { permissionPromptInputDigest } from "./permission-input-digest.mjs";
 import { projectPermissionPolicy } from "./renderer/shared/configuration-draft/permission-policy.mjs";
 import { createConversationContextIO } from "./host/conversation-context-io.mjs";
@@ -408,7 +408,8 @@ export function createWorkbenchService({
   const permissionModes = new Map();
   const modeOf = (s) => permissionModes.get(s.id) ?? "ask";
   const policyOk = (s, rules) =>
-    matchesOrderedPermissionRules(compileModeRules(modeOf(s)), rules);
+    matchesOrderedPermissionRules(compileModeRules(modeOf(s)), rules) ||
+    matchesOrderedPermissionRules(legacyModeRules(modeOf(s)), rules);
   const diagnostics = {
     startedAt: Date.now(),
     observedOperations: 0,
@@ -1983,6 +1984,40 @@ export function createWorkbenchService({
     };
     return owner.reservation;
   }
+  // Native copies the parent's session permissions into a subagent child only
+  // at creation, so a later mode change would leave children broader. Rewrite
+  // every Native-owned descendant to the parent's compiled ruleset; any failure
+  // fails the policy write closed. Skipped for clients without session.list.
+  async function propagateToChildren(parentSdkId, expected) {
+    if (typeof client?.session?.list !== "function") return;
+    let frontier = [parentSdkId];
+    const done = new Set(frontier);
+    for (let depth = 0; depth < 4 && frontier.length; depth++) {
+      const next = [];
+      for (const id of frontier)
+        await scanSessions(
+          { parentID: id },
+          (data) => {
+            for (const child of data)
+              if (child.parentID === id && !done.has(child.id)) {
+                done.add(child.id);
+                next.push(child.id);
+              }
+          },
+          "POLICY_UNVERIFIED",
+        );
+      for (const id of next) {
+        await call(client.session.update, {
+          sessionID: id,
+          permissions: expected.map((rule) => ({ ...rule })),
+        });
+        const info = await call(client.session.get, { sessionID: id });
+        if (!matchesOrderedPermissionRules(expected, info?.permissions))
+          fail("POLICY_UNVERIFIED");
+      }
+      frontier = next;
+    }
+  }
   async function policy(s, step = "native.policy") {
     try {
       // A persisted mode needs its exact compiler inputs and generation readback.
@@ -2003,6 +2038,7 @@ export function createWorkbenchService({
         !matchesOrderedPermissionRules(expected, info.permissions)
       )
         fail("POLICY_UNVERIFIED");
+      await propagateToChildren(s.sdkId, expected);
       s.policyError = false;
       return info;
     } catch {

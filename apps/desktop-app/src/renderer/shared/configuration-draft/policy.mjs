@@ -8,9 +8,17 @@ export const BASELINE_POLICY = Object.freeze([
     effect: "deny",
   }),
 ]);
-export function policyMatches(rules) {
-  if (!Array.isArray(rules) || rules.length !== BASELINE_POLICY.length)
-    return false;
+// Pre-F-07 baseline: also denied subagent. Strictly stricter than the current
+// one, so persisted sessions/agents carrying it stay valid until rewritten.
+export const LEGACY_BASELINE_POLICY = Object.freeze([
+  ...BASELINE_POLICY,
+  Object.freeze({ action: "subagent", resource: "*", effect: "deny" }),
+]);
+export const policyMatches = (rules) =>
+  matchesBaseline(rules, BASELINE_POLICY) ||
+  matchesBaseline(rules, LEGACY_BASELINE_POLICY);
+function matchesBaseline(rules, baseline) {
+  if (!Array.isArray(rules) || rules.length !== baseline.length) return false;
   for (let index = 0; index < rules.length; index++) {
     const slot = Object.getOwnPropertyDescriptor(rules, String(index));
     if (!slot || !Object.hasOwn(slot, "value")) return false;
@@ -26,7 +34,7 @@ export function policyMatches(rules) {
       if (
         !field ||
         !Object.hasOwn(field, "value") ||
-        field.value !== BASELINE_POLICY[index][key]
+        field.value !== baseline[index][key]
       )
         return false;
     }

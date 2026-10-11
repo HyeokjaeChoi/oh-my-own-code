@@ -193,7 +193,7 @@ export const FIXED_PLUGIN_FILES = Object.freeze({
   "renderer/shared/configuration-draft/extensions.mjs":
     "1a51f9776ba1ef179f1fcdb3367a021ec20b881e74cc686faae0db7af3db8a04",
   "renderer/shared/configuration-draft/policy.mjs":
-    "aa87ad83f10873e640e3a4cbdb66a949ff062abf009cf56c9fb7b7cc09953abc",
+    "576de7fde39b5486f473ded6102156232d37bffd680357f0be75d67727500142",
   "renderer/shared/configuration-draft/skill.mjs":
     "b30cf77b1967c83758a87203548e97331916e92536f5cda64e9e6c4a7ae8719a",
 });
