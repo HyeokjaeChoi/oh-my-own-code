@@ -47,3 +47,34 @@ test("invalid mode rejected", () => {
   assert.equal(validPermissionMode("custom"), false);
   assert.throws(() => compileModeRules("custom"));
 });
+test("legacy 3-rule baseline and legacy mode rules stay accepted as stricter", async () => {
+  const { LEGACY_BASELINE_POLICY, policyMatches } = await import(
+    "./renderer/shared/configuration-draft/policy.mjs"
+  );
+  const { legacyModeRules } = await import("./permission-mode.mjs");
+  const { matchesOrderedPermissionRules } = await import(
+    "./permission-policy-compiler.mjs"
+  );
+  assert.equal(policyMatches(BASELINE_POLICY), true);
+  assert.equal(
+    policyMatches(LEGACY_BASELINE_POLICY.map((r) => ({ ...r }))),
+    true,
+  );
+  assert.equal(policyMatches([...BASELINE_POLICY].reverse()), false);
+  assert.equal(
+    policyMatches([
+      ...LEGACY_BASELINE_POLICY.slice(0, 2),
+      { action: "subagent", resource: "*", effect: "allow" },
+    ]),
+    false,
+  );
+  assert.deepEqual(legacyModeRules("ask"), LEGACY_BASELINE_POLICY);
+  for (const mode of ["ask", "scoped_edit", "read_plan"]) {
+    const legacy = legacyModeRules(mode);
+    assert.equal(eff(legacy, "subagent"), "deny");
+    assert.equal(
+      matchesOrderedPermissionRules(legacy, compileModeRules(mode)),
+      false,
+    );
+  }
+});
