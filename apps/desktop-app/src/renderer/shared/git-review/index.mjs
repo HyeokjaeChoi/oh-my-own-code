@@ -172,7 +172,13 @@ export function validateGitReviewObservation(value) {
       "workspacePath",
       "status",
       ...(available
-        ? ["observationId", "repository", "branches", "files"]
+        ? [
+            "observationId",
+            "repository",
+            "branches",
+            "files",
+            ...(Object.hasOwn(value, "contentDigest") ? ["contentDigest"] : []),
+          ]
         : ["reason"]),
     ])
   )
@@ -188,6 +194,9 @@ export function validateGitReviewObservation(value) {
   const repo = value.repository;
   if (
     !validGitDigest(value.observationId) ||
+    !(
+      value.contentDigest === undefined || validGitDigest(value.contentDigest)
+    ) ||
     !closed(repo, [
       "worktreePath",
       "gitDirectory",

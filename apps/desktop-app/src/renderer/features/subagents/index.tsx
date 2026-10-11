@@ -1,4 +1,4 @@
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   selectors,
   useWindowWorkbench,
@@ -73,6 +73,7 @@ export function SubagentPanel({
   const [brief, setBrief] = useState<Brief>({});
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+  const unlinked = useRef(false);
   const rows = deriveChildTree({
     rootId: sessionId,
     sessions: snapshot?.sessions ?? [],
@@ -145,6 +146,7 @@ export function SubagentPanel({
         ...(store.getState().snapshot?.sessions ?? []).map((x) => x.id),
       ]);
     const before = known();
+    unlinked.current = false;
     if (
       !(await actions.mutate(
         { type: "session.create", workspaceId, title: item.title },
@@ -156,7 +158,10 @@ export function SubagentPanel({
     const added = [...known()].filter((x) => !before.has(x));
     // mutate() returns no result, so an ambiguous diff fails instead of guessing.
     const child = added.length === 1 ? added[0] : undefined;
-    if (!child || child === item.parentId) return false;
+    if (!child || child === item.parentId) {
+      unlinked.current = true;
+      return false;
+    }
     link(child, item.parentId);
     if (!(await settle(child))) return false;
     // The child must never be broader than its parent: apply the parent's mode
@@ -196,7 +201,10 @@ export function SubagentPanel({
       });
       setQueue(rest);
       for (const item of now)
-        if (!(await start(item))) setNote(`위임 시작 실패: ${item.title}`);
+        if (!(await start(item)))
+          setNote(
+            `위임 시작 실패: ${item.title}${unlinked.current ? " (새로 만들어진 세션이 있다면 부모와 연결되지 않은 채 남아 있습니다)" : ""}`,
+          );
     } finally {
       setBusy(false);
     }

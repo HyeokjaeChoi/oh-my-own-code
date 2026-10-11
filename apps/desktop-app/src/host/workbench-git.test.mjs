@@ -75,6 +75,22 @@ test("actual inert reader separates HEAD-index and index-worktree", async (t) =>
   assert.equal(Object.hasOwn(observed, "revision"), false);
 });
 
+test("contentDigest changes when an already-modified file is edited again", async (t) => {
+  const f = await fixture(t);
+  const reader = createWorkbenchGitReader();
+  t.after(() => reader.close());
+  await fs.writeFile(join(f.root, "a.txt"), "one\n");
+  const first = await reader.review(f.workspace, scope());
+  if (first.status !== "available") return t.diagnostic(first.reason);
+  assert.match(first.contentDigest, /^[a-f0-9]{64}$/);
+  const same = await reader.review(f.workspace, scope());
+  assert.equal(same.contentDigest, first.contentDigest);
+  await fs.writeFile(join(f.root, "a.txt"), "two\n");
+  const second = await reader.review(f.workspace, scope());
+  assert.deepEqual(second.files, first.files);
+  assert.notEqual(second.contentDigest, first.contentDigest);
+});
+
 // Fully scripted process adapter: no Git executable is run by these unit cases.
 // These tests establish parser/lifecycle behavior, never actual no-helper safety.
 import { EventEmitter } from "node:events";

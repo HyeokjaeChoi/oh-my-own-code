@@ -329,6 +329,7 @@ export function createWorkbenchGitAccess(options = {}) {
             repository: observed.repository,
             branches: observed.branches,
             files: observed.files,
+            contentDigest: observed.contentDigest,
           };
           validateGitReviewObservation({
             runtimeEpoch: scope.runtimeEpoch,

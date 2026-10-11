@@ -226,10 +226,9 @@ export function checkStatusFromTerminal(term) {
 export function checkStale(check, current) {
   if (check.status !== "passed" && check.status !== "failed") return false;
   if (check.planSha !== current.planSha) return true;
+  if (!check.fingerprint) return true;
   return Boolean(
-    check.fingerprint &&
-      current.fingerprint &&
-      check.fingerprint !== current.fingerprint,
+    current.fingerprint && check.fingerprint !== current.fingerprint,
   );
 }
 export function verificationSummary(checks, current) {
@@ -240,17 +239,19 @@ export function verificationSummary(checks, current) {
   if (checks.every((c) => c.status === "passed")) return "passed";
   return "pending";
 }
-export function workspaceFingerprint(repository, files) {
-  if (!repository) return undefined;
-  // ponytail: the git observation has no per-file content identity, so a further
-  // edit to an already-dirty file keeps the same fingerprint (not detected).
-  // Plan files are excluded: editing the plan is tracked by planSha instead.
+// contentDigest: host-computed digest of the bytes of status-listed files (plan
+// files excluded host-side), so re-editing an already-modified file changes it.
+// Without one (cap exceeded / git unavailable) there is no fingerprint, and a
+// finished check without a fingerprint is stale: never a plain pass.
+// Plan files are excluded from the status part: plan edits are tracked by planSha.
+export function workspaceFingerprint(repository, files, contentDigest) {
+  if (!repository || !contentDigest) return undefined;
   const dirty = [...(files ?? [])]
     .filter((f) => !f.path.startsWith(`${PLAN_DIR}/`))
     .map((f) => `${f.path}:${f.index}:${f.worktree}`)
     .sort()
     .join("\n");
-  return `${repository.head ?? "-"}\n${dirty}`;
+  return `${repository.head ?? "-"}\n${dirty}\n${contentDigest}`;
 }
 export async function sha256Hex(text) {
   const digest = await globalThis.crypto.subtle.digest(

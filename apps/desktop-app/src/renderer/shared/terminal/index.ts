@@ -23,14 +23,19 @@ export async function callTerminal<T>(
 // Panels listen for this to pick up terminals started elsewhere (e.g. the command palette).
 export const TERMINAL_STARTED_EVENT = "omoc:terminal-started";
 // Last terminal started outside the panel; a panel mounting later selects it.
-let lastStarted: string | undefined;
-// Consuming: cleared on read so a later remount does not re-select a stale terminal.
-export function lastStartedTerminal() {
-  const id = lastStarted;
+let lastStarted: { workspaceId: string; terminalId: string } | undefined;
+// Consuming only for the matching workspace, so another workspace's panel does
+// not take it; cleared on read so a later remount does not re-select a stale terminal.
+export function lastStartedTerminal(workspaceId: string) {
+  if (lastStarted?.workspaceId !== workspaceId) return undefined;
+  const id = lastStarted.terminalId;
   lastStarted = undefined;
   return id;
 }
-export function announceTerminalStarted(terminalId: string) {
-  lastStarted = terminalId;
+export function announceTerminalStarted(
+  workspaceId: string,
+  terminalId: string,
+) {
+  lastStarted = { workspaceId, terminalId };
   window.dispatchEvent(new CustomEvent(TERMINAL_STARTED_EVENT));
 }

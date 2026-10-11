@@ -1557,7 +1557,28 @@ async function observe(ctx) {
     ]);
   const files = statusRows(await execute(ctx, "status"), ctx.limits);
   await ctx.sources.verify();
-  return { ...snap, files, fingerprint: ctx.sources.digest() };
+  // Per-file content digest of status-listed files, reusing the digests the
+  // snapshot already took of every worktree file (regular files only, no
+  // symlinks, bounded by the snapshot's own file/byte caps). Plan files are
+  // excluded: plan edits are tracked by planSha.
+  const contentDigest = hash(
+    JSON.stringify(
+      files
+        .filter((f) => !f.path.startsWith(".omoc/plans/"))
+        .map((f) => [
+          f.path,
+          ctx.sources.manifest.get(
+            `file:${join(ctx.layout.root, f.path)}`,
+          )?.[1] ?? "absent",
+        ]),
+    ),
+  );
+  return {
+    ...snap,
+    files,
+    contentDigest,
+    fingerprint: ctx.sources.digest(),
+  };
 }
 
 async function treeEntry(ctx, oid, path) {
