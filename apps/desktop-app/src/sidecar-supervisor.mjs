@@ -21,7 +21,9 @@ import {
 import { OpenCode } from "@opencode/client";
 
 export const OPEN_CODE_VERSION = "2.0.18";
-const STARTUP_TIMEOUT_MS = 20_000;
+// Event host re-verifies its ~35k-file (~485MB) resource tree itself (~14s per
+// pass, at least two passes), so startup needs far more than 20s.
+const STARTUP_TIMEOUT_MS = 90_000;
 const REQUEST_TIMEOUT_MS = 5_000;
 const STOP_TIMEOUT_MS = 5_000;
 const MAX_STARTUP_OUTPUT = 32 * 1024;
