@@ -23,8 +23,13 @@ export function createAutomationRunner({
   interruptGraceMs = 2 * 60 * 1000,
 }) {
   let epoch;
-  async function send(operation, retries = busyRetries) {
+  // `closed` aborts once the host has given up on us: nothing may reach the service after that.
+  async function send(operation, closed, retries = busyRetries) {
+    const gate = () => {
+      if (closed?.aborted) throw new Error("CLOSED");
+    };
     for (let i = 0; ; i++) {
+      gate();
       if (!epoch) {
         const snap = await service().handle(
           { version: 2, readId: randomUUID(), operation: { type: "snapshot" } },
@@ -33,6 +38,7 @@ export function createAutomationRunner({
         epoch = snap?.value?.runtimeEpoch;
         if (!epoch) throw new Error("UNAVAILABLE");
       }
+      gate();
       const operationId = randomUUID();
       const op =
         "requestId" in operation
@@ -48,33 +54,48 @@ export function createAutomationRunner({
         throw new Error(res?.code ?? "RUNTIME_ERROR");
       if (i >= retries) throw new Error(res?.code ?? "RUNTIME_ERROR");
       await wait(1000);
+      gate();
     }
   }
-  async function runPrompt(job, signal) {
+  async function runPrompt(job, signal, closed) {
     const { workspaceId, prompt } = job.target;
-    const created = await send({
-      type: "session.create",
-      workspaceId,
-      title: `자동화: ${job.name}`.slice(0, 120),
-    });
+    let messageId;
+    const created = await send(
+      {
+        type: "session.create",
+        workspaceId,
+        title: `자동화: ${job.name}`.slice(0, 120),
+      },
+      closed,
+    );
     const sessionId =
       created.receipt?.result?.sessionId ?? created.value?.selectedSessionId;
     if (!sessionId) throw new Error("NO_SESSION");
     try {
-      await send({
-        type: "permission.mode.set",
-        workspaceId,
-        sessionId,
-        requestId: "",
-        mode: job.permissionMode,
-      });
-      await send({
-        type: "message.send",
-        workspaceId,
-        sessionId,
-        requestId: "",
-        text: prompt,
-      });
+      await send(
+        {
+          type: "permission.mode.set",
+          workspaceId,
+          sessionId,
+          requestId: "",
+          mode: job.permissionMode,
+        },
+        closed,
+      );
+      const sent = await send(
+        {
+          type: "message.send",
+          workspaceId,
+          sessionId,
+          requestId: "",
+          text: prompt,
+        },
+        closed,
+      );
+      // The job's own user message id, when the service reports it; ownsTurn falls back to text.
+      messageId =
+        sent.receipt?.result?.messageId ??
+        sent.value?.messages?.findLast?.((m) => m.role === "user")?.id;
     } catch (e) {
       throw Object.assign(e, { sessionId }); // still retained/archived later
     }
@@ -85,17 +106,26 @@ export function createAutomationRunner({
     const done = (r) => ({ ...r, sessionId });
     for (;;) {
       if (signal?.aborted) {
-        if (await ownsTurn(workspaceId, sessionId, prompt))
-          await send({
-            type: "session.interrupt",
-            workspaceId,
-            sessionId,
-          }).catch(() => {});
+        if (
+          !closed?.aborted &&
+          (await ownsTurn(workspaceId, sessionId, prompt, messageId, closed))
+        )
+          await send(
+            { type: "session.interrupt", workspaceId, sessionId },
+            closed,
+          ).catch(() => {});
         return done({ result: "failed", reason: "앱 종료로 중단되었습니다." });
       }
       if (now() > deadline)
         return done(
-          await interruptAndWait(workspaceId, sessionId, prompt, signal),
+          await interruptAndWait(
+            workspaceId,
+            sessionId,
+            prompt,
+            messageId,
+            signal,
+            closed,
+          ),
         );
       await wait(pollMs);
       let status;
@@ -129,8 +159,9 @@ export function createAutomationRunner({
   // occurrence cannot overlap and the session is never archived while still working.
   // False only when the session's last user message is no longer the job's prompt (the user
   // continued it); unreadable counts as ours.
-  async function ownsTurn(workspaceId, sessionId, prompt) {
+  async function ownsTurn(workspaceId, sessionId, prompt, messageId, closed) {
     try {
+      if (closed?.aborted) return false;
       const snap = await service().handle(
         {
           version: 2,
@@ -140,25 +171,35 @@ export function createAutomationRunner({
         OWNER,
       );
       const last = snap?.value?.messages?.findLast?.((m) => m.role === "user");
-      return !last || last.text?.trim() === prompt.trim();
+      if (!last) return true;
+      return messageId && last.id
+        ? last.id === messageId
+        : last.text?.trim() === prompt.trim();
     } catch {
       return true;
     }
   }
-  async function interruptAndWait(workspaceId, sessionId, prompt, signal) {
+  async function interruptAndWait(
+    workspaceId,
+    sessionId,
+    prompt,
+    messageId,
+    signal,
+    closed,
+  ) {
     const timeout = {
       result: "timeout",
       reason: "제한 시간(2시간) 안에 끝나지 않아 중단했습니다.",
     };
-    if (!(await ownsTurn(workspaceId, sessionId, prompt)))
+    if (!(await ownsTurn(workspaceId, sessionId, prompt, messageId, closed)))
       return { result: "timeout", reason: "사용자가 이어서 사용 중" };
     try {
-      await send({ type: "session.interrupt", workspaceId, sessionId });
+      await send({ type: "session.interrupt", workspaceId, sessionId }, closed);
     } catch {
       // Best effort; the idle check below decides.
     }
     const until = now() + interruptGraceMs;
-    while (now() <= until && !signal?.aborted) {
+    while (now() <= until && !signal?.aborted && !closed?.aborted) {
       await wait(pollMs);
       try {
         if (!BUSY.has(await sessionStatus(sessionId))) return timeout;
@@ -181,13 +222,16 @@ export function createAutomationRunner({
   }
   // Archives (never deletes) an old automation session.
   async function archive(job, sessionId, workspaceId = job.target.workspaceId) {
-    await send({
-      type: "session.archive",
-      workspaceId,
-      sessionId,
-      requestId: "",
-      archived: true,
-    });
+    await send(
+      {
+        type: "session.archive",
+        workspaceId,
+        sessionId,
+        requestId: "",
+        archived: true,
+      },
+      undefined,
+    );
   }
   async function runScript(job, signal) {
     const { workspaceId, script } = job.target;
@@ -221,7 +265,7 @@ export function createAutomationRunner({
       await terminals.close(OWNER, t.terminalId).catch(() => {});
     }
   }
-  async function run(job, signal) {
+  async function run(job, signal, closed) {
     if (!terminalRoot(job.target.workspaceId))
       return {
         result: "failed",
@@ -229,7 +273,7 @@ export function createAutomationRunner({
       };
     try {
       return job.target.kind === "prompt"
-        ? await runPrompt(job, signal)
+        ? await runPrompt(job, signal, closed)
         : await runScript(job, signal);
     } catch (e) {
       return {

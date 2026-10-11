@@ -6,6 +6,7 @@ export function createNotifyHost({
   focusWindow,
   now = Date.now,
   dedupeMs = 10000,
+  sessionDedupeMs = 3000,
 }) {
   let failed = false;
   let clicked;
@@ -23,14 +24,15 @@ export function createNotifyHost({
     show({ id, text, workspaceId, sessionId }) {
       // done/error ids carry a per-window timestamp; those dedupe by (kind, session) instead.
       const kind = id?.split(":", 1)[0];
-      const key =
-        sessionId && (kind === "done" || kind === "error")
-          ? `${kind}:${sessionId}`
-          : (id ?? JSON.stringify([text, workspaceId, sessionId]));
+      const bySession = sessionId && (kind === "done" || kind === "error");
+      const key = bySession
+        ? `${kind}:${sessionId}`
+        : (id ?? JSON.stringify([text, workspaceId, sessionId]));
+      const ms = bySession ? sessionDedupeMs : dedupeMs;
       const t = now();
-      for (const [k, at] of recent) if (t - at >= dedupeMs) recent.delete(k);
+      for (const [k, e] of recent) if (t - e.at >= e.ms) recent.delete(k);
       if (recent.has(key)) return { shown: false };
-      recent.set(key, t);
+      recent.set(key, { at: t, ms });
       if (!supported() || isFocused()) return { shown: false };
       try {
         const n = new Notification({

@@ -45,6 +45,8 @@ export function createAutomationHost({
   let blocked = false;
   let recovered;
   let abort = new AbortController();
+  // Set once stop() has settled: nothing may touch the service or the store after that.
+  let closed = new AbortController();
   // Corrupt data is moved aside, never overwritten; if that fails, saving is refused.
   const quarantine = async (content) => {
     try {
@@ -88,7 +90,7 @@ export function createAutomationHost({
     })());
   const save = (force = false) =>
     serial(async () => {
-      if ((stopped && !force) || blocked) return;
+      if (closed.signal.aborted || (stopped && !force) || blocked) return;
       const file = storeFile();
       await mkdir(dirname(file), { recursive: true });
       await writeFile(`${file}.tmp`, JSON.stringify(state));
@@ -151,7 +153,11 @@ export function createAutomationHost({
     const startedAt = now();
     let outcome;
     try {
-      outcome = await run(globalThis.structuredClone(job), abort.signal);
+      outcome = await run(
+        globalThis.structuredClone(job),
+        abort.signal,
+        closed.signal,
+      );
     } catch {
       outcome = { result: "failed", reason: "실행 중 오류가 발생했습니다." };
     } finally {
@@ -247,7 +253,10 @@ export function createAutomationHost({
   return {
     async start() {
       stopped = false;
-      if (abort.signal.aborted) abort = new AbortController();
+      if (abort.signal.aborted) {
+        abort = new AbortController();
+        closed = new AbortController();
+      }
       startedAt = now();
       startup = true;
       await tick();
@@ -268,6 +277,7 @@ export function createAutomationHost({
           setTimeout(r, 3000).unref();
         }),
       ]);
+      closed.abort();
       await queue;
     },
     tick,
