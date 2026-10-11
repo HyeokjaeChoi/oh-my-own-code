@@ -86,6 +86,19 @@ export function createDataHost({
     messages: a.doc.sessions.reduce((n, s) => n + s.messages.length, 0),
     title: a.doc.sessions[0]?.meta.title ?? "",
   });
+  async function readOne(name) {
+    const id = name.replace(/\.json$/, "");
+    if (!name.endsWith(".json") || !ARCHIVE_ID.test(id)) return undefined;
+    try {
+      const v = JSON.parse(await readFile(join(archiveDir(), name), "utf8"));
+      const parsed = parseImport(JSON.stringify(v.doc));
+      if (v.id === id && parsed.doc && typeof v.importedAt === "string")
+        return { id, importedAt: v.importedAt, doc: parsed.doc };
+    } catch {
+      // Unreadable archive files are skipped, not repaired.
+    }
+    return undefined;
+  }
   async function readAll() {
     let names = [];
     try {
@@ -95,16 +108,8 @@ export function createDataHost({
     }
     const out = [];
     for (const name of names) {
-      const id = name.replace(/\.json$/, "");
-      if (!name.endsWith(".json") || !ARCHIVE_ID.test(id)) continue;
-      try {
-        const v = JSON.parse(await readFile(join(archiveDir(), name), "utf8"));
-        const parsed = parseImport(JSON.stringify(v.doc));
-        if (v.id === id && parsed.doc && typeof v.importedAt === "string")
-          out.push({ id, importedAt: v.importedAt, doc: parsed.doc });
-      } catch {
-        // Unreadable archive files are skipped, not repaired.
-      }
+      const a = await readOne(name);
+      if (a) out.push(a);
     }
     return out.sort((a, b) => b.importedAt.localeCompare(a.importedAt));
   }
@@ -152,7 +157,8 @@ export function createDataHost({
     list: () => serial(async () => (await readAll()).map(info)),
     get: (id) =>
       serial(async () => {
-        const a = (await readAll()).find((x) => x.id === id);
+        if (!ARCHIVE_ID.test(id)) throw fail("INVALID_REQUEST");
+        const a = await readOne(`${id}.json`);
         if (!a) throw fail("NOT_FOUND");
         return { ...info(a), doc: a.doc };
       }),

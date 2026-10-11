@@ -39,7 +39,6 @@ export function bindWorktreeIpc({
   host,
   info,
   confirmDelete,
-  stageImport,
 }) {
   ipcMain.handle("desktop:v1:worktree", async (event, ...args) => {
     if (!admit(event) || args.length !== 1) return err("INVALID_REQUEST");
@@ -55,7 +54,6 @@ export function bindWorktreeIpc({
           base: r.base,
           dest: r.path,
         });
-        stageImport(made.path);
         return ok(made);
       }
       if (r.type === "worktree.inspect") return ok(await host.inspect(w));

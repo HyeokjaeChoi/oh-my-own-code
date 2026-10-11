@@ -212,8 +212,9 @@ export function Workbench() {
     setWorktreeOpen(false);
     setWorktreeBranch("");
     setWorktreePath("");
-    // The host staged the new path; this import registers it without a dialog.
-    void mutate({ type: "workspace.import" }, true);
+    // Typed-path import registers the new worktree without a dialog.
+    if (result.value.path)
+      void mutate({ type: "workspace.import", path: result.value.path }, true);
   };
   const physicalDelete = async (force: boolean) => {
     if (!workspace) return;
