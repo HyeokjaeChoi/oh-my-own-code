@@ -10,7 +10,6 @@ import {
   approvalState,
   callPlans,
   checkStale,
-  checkUnverified,
   scanPlanLines,
   executionMessage,
   parseChecklist,
@@ -58,7 +57,6 @@ const summaryLabels = {
   stale: "재검증 필요",
   failed: "검증 실패",
   passed: "검증 통과",
-  unverified: "통과 · 변경 파일 내용 확인 불가, 재검증 필요",
   pending: "검증 미완료",
 };
 const clock = (iso: string) =>
@@ -104,9 +102,6 @@ export function PlansPanel({
     git?.status === "available"
       ? workspaceFingerprint(git.repository, git.files)
       : undefined;
-  // Status letters cannot tell whether a changed file was edited again, so a
-  // dirty tree never counts as verified by a past run.
-  const dirtyTree = git?.status === "available" && git.files.length > 0;
   useEffect(() => {
     let live = true;
     if (!fingerprint) setFp(undefined);
@@ -129,13 +124,16 @@ export function PlansPanel({
   useEffect(() => {
     const timer = setInterval(
       () => {
+        if (document.hidden) return;
         void refresh();
-        void actions.observeGitReview();
+        // observeGitReview cancels an in-flight review, so skip while one runs.
+        if (!store.getState().gitReview.request)
+          void actions.observeGitReview();
       },
       running ? POLL_MS : IDLE_POLL_MS,
     );
     return () => clearInterval(timer);
-  }, [running, refresh, actions]);
+  }, [running, refresh, actions, store]);
 
   const open = async (next: string) => {
     setPath(next);
@@ -160,7 +158,6 @@ export function PlansPanel({
   const current = {
     planSha: plan?.sha256 ?? "",
     fingerprint: fp,
-    dirty: dirtyTree,
   };
   const checklist = parseChecklist(text);
   const findings = parseFindings(text);
@@ -497,12 +494,6 @@ export function PlansPanel({
                         {checkLabels[c.status]}
                         {(c.status === "passed" || c.status === "failed") &&
                           ` (${clock(c.finishedAt ?? c.startedAt)} 기준)`}
-                        {checkUnverified(c, current) && (
-                          <span className={styles.warn}>
-                            {" "}
-                            · 재검증 필요 (변경 파일 내용 확인 불가)
-                          </span>
-                        )}
                         {c.status === "failed" &&
                           ` (종료 코드 ${c.exitCode ?? "신호"})`}
                         {checkStale(c, current) && (

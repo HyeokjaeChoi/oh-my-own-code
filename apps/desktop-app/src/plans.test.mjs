@@ -21,7 +21,6 @@ import {
   nextApprovalVersion,
   checkStatusFromTerminal,
   checkStale,
-  checkUnverified,
   verificationSummary,
   workspaceFingerprint,
   sha256Hex,
@@ -454,17 +453,19 @@ test("fences follow CommonMark: same char, length >= opener", () => {
   );
 });
 
-test("dirty tree never yields a bare current pass", () => {
-  const pass = { status: "passed", planSha: "p", fingerprint: "f" };
-  const dirty = { planSha: "p", fingerprint: "f", dirty: true };
-  assert.equal(checkUnverified(pass, dirty), true);
-  assert.equal(
-    checkUnverified(pass, { planSha: "p", fingerprint: "f" }),
-    false,
-  );
-  assert.equal(verificationSummary([pass], dirty), "unverified");
-  assert.equal(
-    verificationSummary([pass], { planSha: "p", fingerprint: "f" }),
-    "passed",
-  );
+test("dirty tree: fresh check is a plain pass; plan dir ignored; status change goes stale", async () => {
+  const repo = { head: "h" };
+  const dirty = [{ path: "src/a.ts", index: ".", worktree: "M" }];
+  const plan = { path: ".omoc/plans/p.md", index: ".", worktree: "?" };
+  const fp = workspaceFingerprint(repo, dirty);
+  assert.equal(workspaceFingerprint(repo, [...dirty, plan]), fp);
+  const pass = { status: "passed", planSha: "p", fingerprint: fp };
+  const cur = { planSha: "p", fingerprint: fp };
+  assert.equal(checkStale(pass, cur), false);
+  assert.equal(verificationSummary([pass], cur), "passed");
+  const changed = workspaceFingerprint(repo, [
+    ...dirty,
+    { path: "b.ts", index: ".", worktree: "?" },
+  ]);
+  assert.equal(checkStale(pass, { planSha: "p", fingerprint: changed }), true);
 });

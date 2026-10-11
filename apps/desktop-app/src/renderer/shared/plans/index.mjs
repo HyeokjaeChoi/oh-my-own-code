@@ -232,27 +232,21 @@ export function checkStale(check, current) {
       check.fingerprint !== current.fingerprint,
   );
 }
-// current.dirty: the tree has uncommitted changes whose content the fingerprint
-// (HEAD + status letters) cannot identify, so a finished check may not describe
-// the current bytes. Such results are never shown as a bare current pass.
-export const checkUnverified = (check, current) =>
-  Boolean(
-    current.dirty &&
-      (check.status === "passed" || check.status === "failed") &&
-      !checkStale(check, current),
-  );
 export function verificationSummary(checks, current) {
   if (checks.length === 0) return "none";
   if (checks.some((c) => c.status === "running")) return "running";
   if (checks.some((c) => checkStale(c, current))) return "stale";
   if (checks.some((c) => c.status === "failed")) return "failed";
-  if (checks.every((c) => c.status === "passed"))
-    return current.dirty ? "unverified" : "passed";
+  if (checks.every((c) => c.status === "passed")) return "passed";
   return "pending";
 }
 export function workspaceFingerprint(repository, files) {
   if (!repository) return undefined;
+  // ponytail: the git observation has no per-file content identity, so a further
+  // edit to an already-dirty file keeps the same fingerprint (not detected).
+  // Plan files are excluded: editing the plan is tracked by planSha instead.
   const dirty = [...(files ?? [])]
+    .filter((f) => !f.path.startsWith(`${PLAN_DIR}/`))
     .map((f) => `${f.path}:${f.index}:${f.worktree}`)
     .sort()
     .join("\n");

@@ -42,9 +42,11 @@ function Export({
     }),
     [session, messages, outputs],
   );
+  // Streaming grows the last message's text without changing its id.
+  const lastLength = messages.at(-1)?.text.length;
   useEffect(() => {
     setSummary(undefined);
-  }, [session?.id, outputs, messages.length, messages.at(-1)?.id]);
+  }, [session?.id, outputs, messages.length, messages.at(-1)?.id, lastLength]);
   const preview = async () => {
     const r = await callData<ExportSummary>({
       type: "export.preview",

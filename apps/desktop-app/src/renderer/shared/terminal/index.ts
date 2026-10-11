@@ -24,7 +24,12 @@ export async function callTerminal<T>(
 export const TERMINAL_STARTED_EVENT = "omoc:terminal-started";
 // Last terminal started outside the panel; a panel mounting later selects it.
 let lastStarted: string | undefined;
-export const lastStartedTerminal = () => lastStarted;
+// Consuming: cleared on read so a later remount does not re-select a stale terminal.
+export function lastStartedTerminal() {
+  const id = lastStarted;
+  lastStarted = undefined;
+  return id;
+}
 export function announceTerminalStarted(terminalId: string) {
   lastStarted = terminalId;
   window.dispatchEvent(new CustomEvent(TERMINAL_STARTED_EVENT));

@@ -154,10 +154,8 @@ export function SubagentPanel({
       return false;
     // The new id comes from the session list diff, not from the (movable) selection.
     const added = [...known()].filter((x) => !before.has(x));
-    const child =
-      added.length === 1
-        ? added[0]
-        : added.find((x) => x === store.getState().selection.sessionId);
+    // mutate() returns no result, so an ambiguous diff fails instead of guessing.
+    const child = added.length === 1 ? added[0] : undefined;
     if (!child || child === item.parentId) return false;
     link(child, item.parentId);
     if (!(await settle(child))) return false;
