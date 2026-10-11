@@ -174,6 +174,7 @@ export function createTerminalHost({
   }
 
   // spawnSpec overrides the interactive shell: argv is passed as-is, never through a shell string.
+  let closedAll = false;
   function launch(owner, { workspaceId, cwd } = {}, spawnSpec, meta = {}) {
     const root = resolveWorkspace(workspaceId);
     if (typeof root !== "string") throw fail("NOT_FOUND");
@@ -263,6 +264,7 @@ export function createTerminalHost({
     },
     // Script must exist in the workspace's package.json right now; package manager comes from its lockfile.
     async startScript(owner, { workspaceId, script }) {
+      if (closedAll) throw fail("CLOSED");
       const root = resolveWorkspace(workspaceId);
       if (typeof root !== "string") throw fail("NOT_FOUND");
       const e = epochs.get(owner) ?? 0;
@@ -338,6 +340,7 @@ export function createTerminalHost({
       ),
     // Bounded: a terminal that never settles must not hang app quit.
     async closeAll() {
+      closedAll = true;
       let timer;
       await Promise.race([
         Promise.all([...terminals.values()].map(remove)),
