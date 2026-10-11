@@ -27,7 +27,9 @@ export function createAutomationRunner({
       }
       const operationId = randomUUID();
       const op =
-        "requestId" in operation ? { ...operation, requestId: operationId } : operation;
+        "requestId" in operation
+          ? { ...operation, requestId: operationId }
+          : operation;
       const res = await service().handle(
         { version: 2, runtimeEpoch: epoch, operationId, operation: op },
         OWNER,
@@ -74,11 +76,15 @@ export function createAutomationRunner({
         const cur = terminals
           .list(OWNER, workspaceId)
           .find((x) => x.terminalId === t.terminalId);
-        if (!cur) return { result: "failed", reason: "터미널을 찾을 수 없습니다." };
+        if (!cur)
+          return { result: "failed", reason: "터미널을 찾을 수 없습니다." };
         if (cur.status === "exited")
           return cur.exitCode === 0
             ? { result: "ok", reason: "종료 코드 0" }
-            : { result: "failed", reason: `종료 코드 ${cur.exitCode ?? "없음"}` };
+            : {
+                result: "failed",
+                reason: `종료 코드 ${cur.exitCode ?? "없음"}`,
+              };
         if (Date.now() > deadline) {
           await terminals.stop(OWNER, t.terminalId);
           return { result: "failed", reason: "제한 시간 초과로 중지했습니다." };
@@ -100,7 +106,10 @@ export function createAutomationRunner({
         ? await runPrompt(job)
         : await runScript(job);
     } catch (e) {
-      return { result: "failed", reason: `실행 실패 (${e?.terminalCode ?? e?.message ?? "오류"})` };
+      return {
+        result: "failed",
+        reason: `실행 실패 (${e?.terminalCode ?? e?.message ?? "오류"})`,
+      };
     }
   };
 }

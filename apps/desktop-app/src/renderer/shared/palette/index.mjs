@@ -27,6 +27,8 @@ export function buildPaletteEntries(ctx) {
     });
   const busy = ctx.pending ? "요청을 확인 중입니다." : undefined;
   app("app:settings", "설정·단축키 열기", { type: "settings" });
+  app("app:notifications", "알림 센터 열기", { type: "notifications" });
+  app("app:automation", "자동화(반복 작업) 열기", { type: "automation" });
   for (const [panel, label] of PANELS)
     app(
       `app:panel:${panel}`,

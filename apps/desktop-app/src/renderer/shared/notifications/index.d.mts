@@ -35,7 +35,12 @@ export function deriveJobNotices(
   jobs: {
     name: string;
     target: { workspaceId: string };
-    history: { id: string; recordedAt: number; result: string; count?: number }[];
+    history: {
+      id: string;
+      recordedAt: number;
+      result: string;
+      count?: number;
+    }[];
   }[],
   startedAt: number,
 ): NoticeSpec[];

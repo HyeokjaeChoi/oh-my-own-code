@@ -4,7 +4,7 @@ export const NOTIFICATION_LIMIT = 100;
 export const NOTIFICATIONS_STORAGE_KEY = "omoc.notifications.v1";
 const clean = (s, n = 40) => {
   const t = String(s ?? "")
-    .replace(/[\u0000-\u001f\u007f]+/g, " ")
+    .replaceAll(/\p{Cc}+/gu, " ")
     .trim();
   return t.length > n ? `${t.slice(0, n)}…` : t || "제목 없음";
 };
@@ -26,9 +26,19 @@ export function deriveSessionNotices(prev, next, now) {
     const active = p && (p.status === "running" || p.status === "stopping");
     const base = { workspaceId: s.workspaceId, sessionId: s.id };
     if (active && s.status === "idle")
-      out.push({ ...base, id: `done:${s.id}:${now}`, kind: "done", text: sessionText("done", s.title) });
+      out.push({
+        ...base,
+        id: `done:${s.id}:${now}`,
+        kind: "done",
+        text: sessionText("done", s.title),
+      });
     else if (active && (s.status === "unavailable" || s.status === "unknown"))
-      out.push({ ...base, id: `error:${s.id}:${now}`, kind: "error", text: sessionText("error", s.title) });
+      out.push({
+        ...base,
+        id: `error:${s.id}:${now}`,
+        kind: "error",
+        text: sessionText("error", s.title),
+      });
   }
   const seen = new Set(prev.permissions.map((p) => p.id));
   const titles = new Map(next.sessions.map((s) => [s.id, s]));

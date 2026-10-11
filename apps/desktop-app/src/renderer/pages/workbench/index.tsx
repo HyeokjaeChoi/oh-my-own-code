@@ -17,6 +17,8 @@ import {
 } from "../../features/sessions/index.js";
 import { PreferencesButton } from "../../features/preferences/index.js";
 import { DataButton } from "../../features/data-transfer/index.js";
+import { NotificationCenter } from "../../features/notifications/index.js";
+import { AutomationButton } from "../../features/automation/index.js";
 import { CommandPalette } from "../../features/palette/index.js";
 import { Conversation } from "../../widgets/conversation/index.js";
 import { TerminalPanel } from "../../widgets/terminal/index.js";
@@ -750,6 +752,8 @@ export function Workbench() {
             session={session && { id: session.id, title: session.title }}
             messages={snapshot?.messages ?? []}
           />
+          <NotificationCenter />
+          <AutomationButton />
           <PreferencesButton />
           <Button
             ref={panelButton}

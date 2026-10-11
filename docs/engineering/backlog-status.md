@@ -189,15 +189,15 @@ Status: `done` = implemented end to end; `partial` = some of the clause exists; 
 
 ## F-18 Convenience/automation
 
-| Clause                                         | Status  | Evidence                                      |
-| ---------------------------------------------- | ------- | --------------------------------------------- |
-| Shortcut help                                  | done    | `features/preferences/index.tsx:97`           |
-| Command palette (keyboard global)              | partial | slash menu only                               |
-| Theme, font size, density                      | done    | `shared/preferences/index.mjs` (localStorage) |
-| Layout setting                                 | missing | none                                          |
-| Accessibility                                  | partial | aria labels present; no audit evidence        |
-| Notifications (done/error/approval), redaction | missing | none                                          |
-| Local recurring jobs                           | missing | none                                          |
+| Clause                                         | Status  | Evidence                                                                                                                                |
+| ---------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Shortcut help                                  | done    | `features/preferences/index.tsx:97`                                                                                                     |
+| Command palette (keyboard global)              | partial | slash menu only                                                                                                                         |
+| Theme, font size, density                      | done    | `shared/preferences/index.mjs` (localStorage)                                                                                           |
+| Layout setting                                 | partial | detail panel width already user-resizable; no persisted layout preference                                                               |
+| Accessibility                                  | partial | aria labels present; no audit evidence                                                                                                  |
+| Notifications (done/error/approval), redaction | done    | `features/notifications`, `shared/notifications` (generic text; OS opt-in, `host/notify-host.mjs`); approval only for selected session  |
+| Local recurring jobs                           | done    | `host/automation-host.mjs`, `automation-runners.mjs`, `features/automation` (missed shown, not backfilled; runs only while app is open) |
 
 ## Remaining work, ordered
 

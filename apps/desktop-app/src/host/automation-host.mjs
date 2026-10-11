@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
+import { clearInterval, setInterval } from "node:timers";
 import {
   AUTOMATION_LIMITS,
   nextOccurrence,
@@ -91,7 +92,7 @@ export function createAutomationHost({
     const startedAt = now();
     let outcome;
     try {
-      outcome = await run(structuredClone(job));
+      outcome = await run(globalThis.structuredClone(job));
     } catch {
       outcome = { result: "failed", reason: "실행 중 오류가 발생했습니다." };
     } finally {
@@ -126,7 +127,8 @@ export function createAutomationHost({
           scheduledAt: plan.missed.first,
           startedAt: null,
           result: "missed",
-          reason: "앱이 꺼져 있어 실행되지 않았습니다. 자동으로 다시 실행하지 않습니다.",
+          reason:
+            "앱이 꺼져 있어 실행되지 않았습니다. 자동으로 다시 실행하지 않습니다.",
           count: plan.missed.count,
           last: plan.missed.last,
         });
@@ -157,7 +159,8 @@ export function createAutomationHost({
     },
     async create(input) {
       await load();
-      if (state.jobs.length >= AUTOMATION_LIMITS.jobs) throw fail("LIMIT_REACHED");
+      if (state.jobs.length >= AUTOMATION_LIMITS.jobs)
+        throw fail("LIMIT_REACHED");
       const job = {
         id: randomUUID(),
         ...input,
