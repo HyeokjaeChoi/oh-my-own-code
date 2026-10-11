@@ -23,6 +23,12 @@ import { ArrowUp, Plus, Square, X } from "lucide-react";
 import { mapMessages } from "../../shared/projection/index.js";
 import { parseSubagentResult } from "../../shared/subagents/index.js";
 import {
+  deriveToolView,
+  effectiveToolStatus,
+  permissionsForTool,
+} from "../../shared/tool-ui/index.js";
+import { ToolBody, ToolContext, useToolContext } from "./tool-views.js";
+import {
   selectors,
   useWorkbenchSelector,
   useWindowWorkbench,
@@ -69,9 +75,18 @@ const labels: Record<string, string> = {
   running: "실행 중",
   completed: "완료",
   error: "오류",
+  "needs-permission": "권한 대기",
 };
-function ToolDetail({ toolName, args, result }: ToolCallMessagePartProps) {
-  const state = typeof args.state === "string" ? args.state : "pending";
+function ToolDetail({
+  toolName,
+  toolCallId,
+  args,
+  result,
+}: ToolCallMessagePartProps) {
+  const ctx = useToolContext();
+  const rawState = typeof args.state === "string" ? args.state : "pending";
+  const pendingPermissions = permissionsForTool(ctx.permissions, toolCallId);
+  const state = effectiveToolStatus(rawState, pendingPermissions);
   const output =
     typeof result === "string"
       ? result
@@ -86,12 +101,27 @@ function ToolDetail({ toolName, args, result }: ToolCallMessagePartProps) {
   }
   const subagent = toolName === "subagent" ? parseSubagentResult(output) : null;
   const preview = state === "completed" ? parseSafeLinkPreview(decoded) : null;
+  const view = deriveToolView({
+    name: toolName,
+    input: typeof args.input === "string" ? args.input : "",
+    output,
+    status: rawState,
+  });
   return (
     <div className={`tool-detail ${styles.toolDetail}`}>
       <div className={`tool-heading ${styles.toolHeading}`}>
         <strong>{toolName}</strong>
         <span>{labels[state] ?? "상태 확인 불가"}</span>
       </div>
+      <ToolBody view={view} />
+      {pendingPermissions.map((p) => (
+        <div className={styles.toolPermission} key={p.id}>
+          <strong>{p.title}</strong>
+          <p className={styles.muted}>
+            {p.detail} · 아래 권한 요청에서 응답하세요.
+          </p>
+        </div>
+      ))}
       {preview ? (
         <LinkPreview
           {...preview}
@@ -275,6 +305,14 @@ export function Conversation(props: Props) {
   const permissions = props.permissions.filter(
     (permission) => permission.sessionId === props.sessionId,
   );
+  const toolContext = useMemo(
+    () => ({
+      permissions,
+      openFile: (path: string) => actions.openFiles(path, "file"),
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- permissions is derived from props each render
+    [props.permissions, props.sessionId, actions],
+  );
   const closeMenu = () => {
     setMenu(false);
     if (menuOpenedFromInput.current) input.current?.focus();
@@ -414,565 +452,579 @@ export function Conversation(props: Props) {
     return () => document.removeEventListener("pointerdown", dismiss);
   }, [menu]);
   return (
-    <AssistantRuntimeProvider runtime={runtime}>
-      <ThreadPrimitive.Root
-        className={`conversation ${styles.conversation} ${messages.length === 0 ? styles.emptyConversation : ""}`}
-      >
-        <ThreadPrimitive.Viewport className={`transcript ${styles.transcript}`}>
-          <span
-            className={styles.speaker}
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
+    <ToolContext.Provider value={toolContext}>
+      <AssistantRuntimeProvider runtime={runtime}>
+        <ThreadPrimitive.Root
+          className={`conversation ${styles.conversation} ${messages.length === 0 ? styles.emptyConversation : ""}`}
+        >
+          <ThreadPrimitive.Viewport
+            className={`transcript ${styles.transcript}`}
           >
-            {progress}
-          </span>
-          {/* Only the short status announces changes, never tokens or history. */}
-          <div
-            className={styles.readingColumn}
-            role="log"
-            aria-label="현재 세션 대화 기록"
-            aria-live="off"
-            aria-atomic="false"
-            aria-relevant="additions"
-            aria-busy={running}
-          >
-            {props.messages.length > 300 && (
-              <p className={styles.muted}>최근 300개 메시지를 표시합니다.</p>
-            )}
-            <ThreadPrimitive.Messages>
-              {({ message }) => (
-                <MessageView
-                  key={message.id}
-                  role={message.role === "user" ? "user" : "assistant"}
-                  messageId={message.id}
-                  runtime={message.metadata?.custom.runtime}
-                  original={props.messages.find((m) => m.id === message.id)}
-                />
-              )}
-            </ThreadPrimitive.Messages>
-          </div>
-        </ThreadPrimitive.Viewport>
-        <div className={`compose-region ${styles.composeRegion}`}>
-          {messages.length === 0 && (
-            <div className={styles.empty}>
-              <h1>무엇을 함께 만들까요?</h1>
-            </div>
-          )}
-          {props.archived && (
-            <p className={styles.muted} role="status">
-              보관된 세션입니다. 대화를 계속하려면 세션을 복원하세요.
-            </p>
-          )}
-          {permissions.length > 0 && (
+            <span
+              className={styles.speaker}
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {progress}
+            </span>
+            {/* Only the short status announces changes, never tokens or history. */}
             <div
-              className={styles.permissionQueue}
-              aria-label="대기 중인 권한 요청"
+              className={styles.readingColumn}
+              role="log"
+              aria-label="현재 세션 대화 기록"
+              aria-live="off"
+              aria-atomic="false"
+              aria-relevant="additions"
+              aria-busy={running}
             >
-              {permissions.map((permission) => (
-                <section
-                  className={styles.permission}
-                  aria-label="실행 권한 요청"
-                  data-permission-id={permission.id}
-                  key={permission.id}
-                >
-                  <strong className={styles.permissionTitle}>
-                    {permission.title}
-                  </strong>
-                  <p className={styles.permissionDetail}>{permission.detail}</p>
-                  <p className={styles.muted}>
-                    거절하면 이 세션의 다른 대기 중 권한 요청도 취소됩니다.
-                  </p>
-                  <div className={styles.actions}>
-                    <Button
-                      intent="primary"
-                      type="button"
-                      className={styles.permissionAllow}
-                      disabled={props.pending || props.disabled}
-                      onClick={() =>
-                        void props.mutate({
-                          type: "permission.respond",
-                          workspaceId: props.workspaceId,
-                          sessionId: props.sessionId,
-                          requestId: permission.id,
-                          decision: "once",
-                        })
-                      }
-                    >
-                      이번만 허용
-                    </Button>
-                    <Button
-                      type="button"
-                      disabled={props.pending || props.disabled}
-                      onClick={() =>
-                        void props.mutate({
-                          type: "permission.respond",
-                          workspaceId: props.workspaceId,
-                          sessionId: props.sessionId,
-                          requestId: permission.id,
-                          decision: "reject",
-                        })
-                      }
-                    >
-                      거절
-                    </Button>
-                  </div>
-                </section>
-              ))}
-            </div>
-          )}
-          <ConversationContextControls />
-          <div
-            className={styles.adjacentTasks}
-            onKeyDown={(event) => {
-              if (
-                event.key !== "Escape" ||
-                event.nativeEvent.isComposing ||
-                event.keyCode === 229
-              )
-                return;
-              const task = (
-                event.target as HTMLElement
-              ).closest<HTMLDetailsElement>(
-                "details[data-runtime-task], details[data-runtime-source='session']",
-              );
-              if (task?.open) {
-                event.preventDefault();
-                event.stopPropagation();
-                closeDisclosure(task);
-              }
-            }}
-          >
-            <details
-              ref={requestedTask}
-              className={styles.runtimeReport}
-              hidden={branchActive}
-              data-runtime-task="requested"
-            >
-              <summary>다음 전송 설정</summary>
-              <fieldset
-                className={styles.runtimeRequests}
-                disabled={optionsHeld}
-                data-runtime-source="requested"
-              >
-                <legend>다음 전송에 요청</legend>
-                <div className={styles.runtimeFields}>
-                  <label>
-                    Agent 요청
-                    <select
-                      className={styles.select}
-                      aria-label="Agent 요청"
-                      value={agent}
-                      onChange={(event) => setAgent(event.target.value)}
-                    >
-                      <option value="">Native에서 결정 · 요청 안 함</option>
-                      {agent &&
-                        !props.catalog?.agents.entries.some(
-                          (entry) => entry.id === agent,
-                        ) && <option value={agent}>{agent} (사용 불가)</option>}
-                      {props.catalog?.agents.status === "available" &&
-                        props.catalog.agents.entries.map((entry) => (
-                          <option key={entry.id} value={entry.id}>
-                            {entry.name}
-                          </option>
-                        ))}
-                    </select>
-                  </label>
-                  <label>
-                    모델 요청
-                    <select
-                      className={styles.select}
-                      aria-label="모델 요청"
-                      value={model}
-                      onChange={(event) => setModel(event.target.value)}
-                    >
-                      <option value="">Native에서 결정 · 요청 안 함</option>
-                      {model && !selectedModel && (
-                        <option value={model}>{model} (사용 불가)</option>
-                      )}
-                      {props.catalog?.models.status === "available" &&
-                        props.catalog.models.entries.map((entry) => (
-                          <option key={entry.id} value={entry.id}>
-                            {entry.name}
-                          </option>
-                        ))}
-                    </select>
-                  </label>
-                  <label>
-                    Variant 요청
-                    <select
-                      className={styles.select}
-                      aria-label="Variant 요청"
-                      value={variant}
-                      disabled={!model && !variant}
-                      onChange={(event) => setVariant(event.target.value)}
-                    >
-                      <option value="">Native에서 결정 · 요청 안 함</option>
-                      {variant &&
-                        (variants?.status !== "available" ||
-                          !variants.ids.includes(variant)) && (
-                          <option value={variant}>{variant} (사용 불가)</option>
-                        )}
-                      {variants?.status === "available" &&
-                        variants.ids.map((value) => (
-                          <option key={value} value={value}>
-                            {value}
-                          </option>
-                        ))}
-                    </select>
-                  </label>
-                </div>
-                <p className={styles.runtimeHint}>
-                  선택은 다음 전송에만 요청합니다. 빈 선택은 값을 요청하지
-                  않습니다. 실제 설정은 Native 보고에서 확인하세요.
-                </p>
-                {model && variants?.status !== "available" && (
-                  <p className={styles.runtimeHint}>
-                    Variant 목록을 확인할 수 없습니다. Variant 요청 없이 모델을
-                    사용할 수 있습니다.
-                  </p>
-                )}
-                {variantCleared && (
-                  <p
-                    className={styles.runtimeHint}
-                    role="status"
-                    data-variant-cleared="true"
-                  >
-                    모델을 바꿔 이전 Variant 요청을 지웠습니다.
-                  </p>
-                )}
-              </fieldset>
-              <Button
-                size="compact"
-                onClick={() => closeDisclosure(requestedTask.current)}
-                data-runtime-task-close
-              >
-                전송 설정 닫기
-              </Button>
-            </details>
-            <details
-              ref={nativeReport}
-              hidden={branchActive}
-              className={styles.runtimeReport}
-              data-runtime-source="session"
-            >
-              <summary>Native 세션 설정</summary>
-              {sessionSetting ? (
-                <dl>
-                  <dt>Agent</dt>
-                  <dd>{sessionSetting.agent ?? "보고 없음"}</dd>
-                  {sessionSetting.model ? (
-                    <ReportedModel model={sessionSetting.model} />
-                  ) : (
-                    <>
-                      <dt>모델</dt>
-                      <dd>보고 없음</dd>
-                    </>
-                  )}
-                </dl>
-              ) : (
-                <p>현재 세션 설정 보고가 없습니다.</p>
+              {props.messages.length > 300 && (
+                <p className={styles.muted}>최근 300개 메시지를 표시합니다.</p>
               )}
-              <p>
-                Native가 보고한 설정입니다. 다음 전송 요청과 다를 수 있습니다.
+              <ThreadPrimitive.Messages>
+                {({ message }) => (
+                  <MessageView
+                    key={message.id}
+                    role={message.role === "user" ? "user" : "assistant"}
+                    messageId={message.id}
+                    runtime={message.metadata?.custom.runtime}
+                    original={props.messages.find((m) => m.id === message.id)}
+                  />
+                )}
+              </ThreadPrimitive.Messages>
+            </div>
+          </ThreadPrimitive.Viewport>
+          <div className={`compose-region ${styles.composeRegion}`}>
+            {messages.length === 0 && (
+              <div className={styles.empty}>
+                <h1>무엇을 함께 만들까요?</h1>
+              </div>
+            )}
+            {props.archived && (
+              <p className={styles.muted} role="status">
+                보관된 세션입니다. 대화를 계속하려면 세션을 복원하세요.
               </p>
-              <Button
-                size="compact"
-                onClick={() => closeDisclosure(nativeReport.current)}
-                data-runtime-report-close
+            )}
+            {permissions.length > 0 && (
+              <div
+                className={styles.permissionQueue}
+                aria-label="대기 중인 권한 요청"
               >
-                Native 설정 닫기
-              </Button>
-            </details>
-            <label className={styles.permissionMode} hidden={branchActive}>
-              <span>권한 모드</span>
-              <select
-                aria-label="권한 모드"
-                value={props.permissionMode ?? "ask"}
-                disabled={props.pending || props.disabled}
-                onChange={(event) =>
-                  void props.mutate({
-                    type: "permission.mode.set",
-                    workspaceId: props.workspaceId,
-                    sessionId: props.sessionId,
-                    requestId: crypto.randomUUID(),
-                    mode: event.target.value as
-                      | "ask"
-                      | "scoped_edit"
-                      | "read_plan",
-                  })
-                }
-              >
-                <option value="ask">요청마다 확인</option>
-                <option value="scoped_edit">범위 내 편집 허용</option>
-                <option value="read_plan">읽기/계획</option>
-              </select>
-              <small>
-                다음 요청부터 적용됩니다. 대기 중인 요청은 바뀌지 않습니다.
-              </small>
-            </label>
-            <PermissionPolicy
-              className={styles.runtimeReport}
-              hidden={branchActive}
-            />
-          </div>
-          <ComposerPrimitive.Root
-            className={styles.composer}
-            hidden={branchActive}
-            data-composer-state={branchActive ? "branch-retained" : "message"}
-          >
-            <ComposerPrimitive.Input
-              ref={input}
-              onChange={(event) => actions.draft(event.target.value)}
-              className={styles.input}
-              aria-label="메시지 작성"
-              aria-describedby={`${hintId} ${requestedSummaryId}`}
-              aria-controls={menu ? commandMenuId : undefined}
-              readOnly={Boolean(props.archived)}
-              placeholder="작업을 요청하세요. /로 명령 보기"
-              maxLength={32000}
-              minRows={3}
-              maxRows={shortViewport ? 3 : 6}
-              submitMode="enter"
-              cancelOnEscape={false}
-              onCompositionStart={() => {
-                composing.current = true;
-              }}
-              onCompositionEnd={() => {
-                composing.current = false;
-              }}
+                {permissions.map((permission) => (
+                  <section
+                    className={styles.permission}
+                    aria-label="실행 권한 요청"
+                    data-permission-id={permission.id}
+                    key={permission.id}
+                  >
+                    <strong className={styles.permissionTitle}>
+                      {permission.title}
+                    </strong>
+                    <p className={styles.permissionDetail}>
+                      {permission.detail}
+                    </p>
+                    <p className={styles.muted}>
+                      거절하면 이 세션의 다른 대기 중 권한 요청도 취소됩니다.
+                    </p>
+                    <div className={styles.actions}>
+                      <Button
+                        intent="primary"
+                        type="button"
+                        className={styles.permissionAllow}
+                        disabled={props.pending || props.disabled}
+                        onClick={() =>
+                          void props.mutate({
+                            type: "permission.respond",
+                            workspaceId: props.workspaceId,
+                            sessionId: props.sessionId,
+                            requestId: permission.id,
+                            decision: "once",
+                          })
+                        }
+                      >
+                        이번만 허용
+                      </Button>
+                      <Button
+                        type="button"
+                        disabled={props.pending || props.disabled}
+                        onClick={() =>
+                          void props.mutate({
+                            type: "permission.respond",
+                            workspaceId: props.workspaceId,
+                            sessionId: props.sessionId,
+                            requestId: permission.id,
+                            decision: "reject",
+                          })
+                        }
+                      >
+                        거절
+                      </Button>
+                    </div>
+                  </section>
+                ))}
+              </div>
+            )}
+            <ConversationContextControls />
+            <div
+              className={styles.adjacentTasks}
               onKeyDown={(event) => {
                 if (
-                  event.key === "Enter" &&
-                  (composing.current ||
-                    event.nativeEvent.isComposing ||
-                    event.keyCode === 229)
-                ) {
-                  event.preventDefault();
-                  return;
-                }
-                if (
-                  composing.current ||
+                  event.key !== "Escape" ||
                   event.nativeEvent.isComposing ||
                   event.keyCode === 229
                 )
                   return;
-                if (event.key === "Escape" && menu) {
+                const task = (
+                  event.target as HTMLElement
+                ).closest<HTMLDetailsElement>(
+                  "details[data-runtime-task], details[data-runtime-source='session']",
+                );
+                if (task?.open) {
                   event.preventDefault();
-                  closeMenu();
-                }
-                if (
-                  menu &&
-                  (event.key === "ArrowDown" || event.key === "ArrowUp")
-                ) {
-                  const buttons = menuButtons();
-                  const button =
-                    event.key === "ArrowDown" ? buttons[0] : buttons.at(-1);
-                  if (button) {
-                    event.preventDefault();
-                    button.focus();
-                  }
-                }
-                if (event.key === "/" && !draft) {
-                  menuOpenedFromInput.current = true;
-                  setMenu(true);
+                  event.stopPropagation();
+                  closeDisclosure(task);
                 }
               }}
-            />
-            {menu && (
-              <div
-                className={`slash-menu ${styles.commandMenu}`}
-                id={commandMenuId}
-                ref={commandMenu}
-                popover="manual"
-                role="region"
-                aria-label="앱 동작 및 런타임 명령"
+            >
+              <details
+                ref={requestedTask}
+                className={styles.runtimeReport}
+                hidden={branchActive}
+                data-runtime-task="requested"
+              >
+                <summary>다음 전송 설정</summary>
+                <fieldset
+                  className={styles.runtimeRequests}
+                  disabled={optionsHeld}
+                  data-runtime-source="requested"
+                >
+                  <legend>다음 전송에 요청</legend>
+                  <div className={styles.runtimeFields}>
+                    <label>
+                      Agent 요청
+                      <select
+                        className={styles.select}
+                        aria-label="Agent 요청"
+                        value={agent}
+                        onChange={(event) => setAgent(event.target.value)}
+                      >
+                        <option value="">Native에서 결정 · 요청 안 함</option>
+                        {agent &&
+                          !props.catalog?.agents.entries.some(
+                            (entry) => entry.id === agent,
+                          ) && (
+                            <option value={agent}>{agent} (사용 불가)</option>
+                          )}
+                        {props.catalog?.agents.status === "available" &&
+                          props.catalog.agents.entries.map((entry) => (
+                            <option key={entry.id} value={entry.id}>
+                              {entry.name}
+                            </option>
+                          ))}
+                      </select>
+                    </label>
+                    <label>
+                      모델 요청
+                      <select
+                        className={styles.select}
+                        aria-label="모델 요청"
+                        value={model}
+                        onChange={(event) => setModel(event.target.value)}
+                      >
+                        <option value="">Native에서 결정 · 요청 안 함</option>
+                        {model && !selectedModel && (
+                          <option value={model}>{model} (사용 불가)</option>
+                        )}
+                        {props.catalog?.models.status === "available" &&
+                          props.catalog.models.entries.map((entry) => (
+                            <option key={entry.id} value={entry.id}>
+                              {entry.name}
+                            </option>
+                          ))}
+                      </select>
+                    </label>
+                    <label>
+                      Variant 요청
+                      <select
+                        className={styles.select}
+                        aria-label="Variant 요청"
+                        value={variant}
+                        disabled={!model && !variant}
+                        onChange={(event) => setVariant(event.target.value)}
+                      >
+                        <option value="">Native에서 결정 · 요청 안 함</option>
+                        {variant &&
+                          (variants?.status !== "available" ||
+                            !variants.ids.includes(variant)) && (
+                            <option value={variant}>
+                              {variant} (사용 불가)
+                            </option>
+                          )}
+                        {variants?.status === "available" &&
+                          variants.ids.map((value) => (
+                            <option key={value} value={value}>
+                              {value}
+                            </option>
+                          ))}
+                      </select>
+                    </label>
+                  </div>
+                  <p className={styles.runtimeHint}>
+                    선택은 다음 전송에만 요청합니다. 빈 선택은 값을 요청하지
+                    않습니다. 실제 설정은 Native 보고에서 확인하세요.
+                  </p>
+                  {model && variants?.status !== "available" && (
+                    <p className={styles.runtimeHint}>
+                      Variant 목록을 확인할 수 없습니다. Variant 요청 없이
+                      모델을 사용할 수 있습니다.
+                    </p>
+                  )}
+                  {variantCleared && (
+                    <p
+                      className={styles.runtimeHint}
+                      role="status"
+                      data-variant-cleared="true"
+                    >
+                      모델을 바꿔 이전 Variant 요청을 지웠습니다.
+                    </p>
+                  )}
+                </fieldset>
+                <Button
+                  size="compact"
+                  onClick={() => closeDisclosure(requestedTask.current)}
+                  data-runtime-task-close
+                >
+                  전송 설정 닫기
+                </Button>
+              </details>
+              <details
+                ref={nativeReport}
+                hidden={branchActive}
+                className={styles.runtimeReport}
+                data-runtime-source="session"
+              >
+                <summary>Native 세션 설정</summary>
+                {sessionSetting ? (
+                  <dl>
+                    <dt>Agent</dt>
+                    <dd>{sessionSetting.agent ?? "보고 없음"}</dd>
+                    {sessionSetting.model ? (
+                      <ReportedModel model={sessionSetting.model} />
+                    ) : (
+                      <>
+                        <dt>모델</dt>
+                        <dd>보고 없음</dd>
+                      </>
+                    )}
+                  </dl>
+                ) : (
+                  <p>현재 세션 설정 보고가 없습니다.</p>
+                )}
+                <p>
+                  Native가 보고한 설정입니다. 다음 전송 요청과 다를 수 있습니다.
+                </p>
+                <Button
+                  size="compact"
+                  onClick={() => closeDisclosure(nativeReport.current)}
+                  data-runtime-report-close
+                >
+                  Native 설정 닫기
+                </Button>
+              </details>
+              <label className={styles.permissionMode} hidden={branchActive}>
+                <span>권한 모드</span>
+                <select
+                  aria-label="권한 모드"
+                  value={props.permissionMode ?? "ask"}
+                  disabled={props.pending || props.disabled}
+                  onChange={(event) =>
+                    void props.mutate({
+                      type: "permission.mode.set",
+                      workspaceId: props.workspaceId,
+                      sessionId: props.sessionId,
+                      requestId: crypto.randomUUID(),
+                      mode: event.target.value as
+                        | "ask"
+                        | "scoped_edit"
+                        | "read_plan",
+                    })
+                  }
+                >
+                  <option value="ask">요청마다 확인</option>
+                  <option value="scoped_edit">범위 내 편집 허용</option>
+                  <option value="read_plan">읽기/계획</option>
+                </select>
+                <small>
+                  다음 요청부터 적용됩니다. 대기 중인 요청은 바뀌지 않습니다.
+                </small>
+              </label>
+              <PermissionPolicy
+                className={styles.runtimeReport}
+                hidden={branchActive}
+              />
+            </div>
+            <ComposerPrimitive.Root
+              className={styles.composer}
+              hidden={branchActive}
+              data-composer-state={branchActive ? "branch-retained" : "message"}
+            >
+              <ComposerPrimitive.Input
+                ref={input}
+                onChange={(event) => actions.draft(event.target.value)}
+                className={styles.input}
+                aria-label="메시지 작성"
+                aria-describedby={`${hintId} ${requestedSummaryId}`}
+                aria-controls={menu ? commandMenuId : undefined}
+                readOnly={Boolean(props.archived)}
+                placeholder="작업을 요청하세요. /로 명령 보기"
+                maxLength={32000}
+                minRows={3}
+                maxRows={shortViewport ? 3 : 6}
+                submitMode="enter"
+                cancelOnEscape={false}
+                onCompositionStart={() => {
+                  composing.current = true;
+                }}
+                onCompositionEnd={() => {
+                  composing.current = false;
+                }}
                 onKeyDown={(event) => {
-                  if (event.key === "Escape") {
+                  if (
+                    event.key === "Enter" &&
+                    (composing.current ||
+                      event.nativeEvent.isComposing ||
+                      event.keyCode === 229)
+                  ) {
+                    event.preventDefault();
+                    return;
+                  }
+                  if (
+                    composing.current ||
+                    event.nativeEvent.isComposing ||
+                    event.keyCode === 229
+                  )
+                    return;
+                  if (event.key === "Escape" && menu) {
                     event.preventDefault();
                     closeMenu();
                   }
                   if (
-                    ["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)
+                    menu &&
+                    (event.key === "ArrowDown" || event.key === "ArrowUp")
                   ) {
                     const buttons = menuButtons();
-                    if (!buttons.length) return;
-                    event.preventDefault();
-                    const index = buttons.indexOf(
-                      event.target as HTMLButtonElement,
-                    );
-                    const next =
-                      event.key === "Home"
-                        ? 0
-                        : event.key === "End"
-                          ? buttons.length - 1
-                          : (index +
-                              (event.key === "ArrowUp" ? -1 : 1) +
-                              buttons.length) %
-                            buttons.length;
-                    buttons[next]?.focus();
+                    const button =
+                      event.key === "ArrowDown" ? buttons[0] : buttons.at(-1);
+                    if (button) {
+                      event.preventDefault();
+                      button.focus();
+                    }
+                  }
+                  if (event.key === "/" && !draft) {
+                    menuOpenedFromInput.current = true;
+                    setMenu(true);
                   }
                 }}
-              >
-                <div className={styles.menuHeading}>
-                  <strong>앱 동작</strong>
+              />
+              {menu && (
+                <div
+                  className={`slash-menu ${styles.commandMenu}`}
+                  id={commandMenuId}
+                  ref={commandMenu}
+                  popover="manual"
+                  role="region"
+                  aria-label="앱 동작 및 런타임 명령"
+                  onKeyDown={(event) => {
+                    if (event.key === "Escape") {
+                      event.preventDefault();
+                      closeMenu();
+                    }
+                    if (
+                      ["ArrowDown", "ArrowUp", "Home", "End"].includes(
+                        event.key,
+                      )
+                    ) {
+                      const buttons = menuButtons();
+                      if (!buttons.length) return;
+                      event.preventDefault();
+                      const index = buttons.indexOf(
+                        event.target as HTMLButtonElement,
+                      );
+                      const next =
+                        event.key === "Home"
+                          ? 0
+                          : event.key === "End"
+                            ? buttons.length - 1
+                            : (index +
+                                (event.key === "ArrowUp" ? -1 : 1) +
+                                buttons.length) %
+                              buttons.length;
+                      buttons[next]?.focus();
+                    }
+                  }}
+                >
+                  <div className={styles.menuHeading}>
+                    <strong>앱 동작</strong>
+                    <Button
+                      type="button"
+                      onClick={closeMenu}
+                      aria-label="명령 목록 닫기"
+                    >
+                      <X size={18} aria-hidden="true" />
+                    </Button>
+                  </div>
                   <Button
                     type="button"
-                    onClick={closeMenu}
-                    aria-label="명령 목록 닫기"
+                    data-command
+                    disabled={
+                      props.newSessionDisabled || props.pending || running
+                    }
+                    onClick={() => {
+                      closeMenu();
+                      props.newSession();
+                    }}
                   >
-                    <X size={18} aria-hidden="true" />
+                    새 세션 만들기
                   </Button>
+                  <Button
+                    type="button"
+                    data-command
+                    onClick={() => {
+                      closeMenu();
+                      props.openPanel("files");
+                    }}
+                  >
+                    파일 보기
+                  </Button>
+                  <Button
+                    type="button"
+                    data-command
+                    onClick={() => {
+                      closeMenu();
+                      props.openPanel("catalog");
+                    }}
+                  >
+                    확장 목록 보기
+                  </Button>
+                  <strong>런타임 명령</strong>
+                  {props.catalog?.commands.status === "available" ? (
+                    props.catalog.commands.entries.length ? (
+                      props.catalog.commands.entries.map((entry) => (
+                        <Button
+                          type="button"
+                          data-command
+                          key={entry.id}
+                          onClick={() => insert(`/${entry.name} `)}
+                        >
+                          <span>/{entry.name}</span>
+                          <small>{entry.description}</small>
+                        </Button>
+                      ))
+                    ) : (
+                      <p>등록된 명령이 없습니다.</p>
+                    )
+                  ) : (
+                    <p>명령 목록을 사용할 수 없습니다.</p>
+                  )}
+                  <strong>스킬 언급</strong>
+                  <p className={styles.muted}>
+                    메시지에 스킬 이름을 추가합니다.
+                  </p>
+                  {props.catalog?.skills.status === "available" ? (
+                    props.catalog.skills.entries.length ? (
+                      props.catalog.skills.entries.map((entry) => (
+                        <Button
+                          type="button"
+                          data-command
+                          key={entry.id}
+                          onClick={() =>
+                            insert(
+                              `${draft === "/" ? "" : draft}${draft && draft !== "/" ? "\n" : ""}스킬 ${entry.name}을 참고해 주세요. `,
+                            )
+                          }
+                        >
+                          {entry.name}
+                        </Button>
+                      ))
+                    ) : (
+                      <p>등록된 스킬이 없습니다.</p>
+                    )
+                  ) : (
+                    <p>스킬 목록을 사용할 수 없습니다.</p>
+                  )}
                 </div>
+              )}
+              <p
+                className={styles.requestedSummary}
+                id={requestedSummaryId}
+                data-runtime-summary="requested"
+              >
+                Agent: {agent || "Native에서 결정"} · 모델:{" "}
+                {model || "Native에서 결정"} · Variant:{" "}
+                {variant || "Native에서 결정"}
+              </p>
+              <div className={styles.toolbar}>
                 <Button
                   type="button"
-                  data-command
-                  disabled={
-                    props.newSessionDisabled || props.pending || running
-                  }
+                  className={styles.commandTrigger}
+                  title="추가 동작"
+                  ref={slashButton}
+                  aria-label="앱 동작과 명령 열기"
+                  aria-expanded={menu}
+                  aria-controls={commandMenuId}
                   onClick={() => {
-                    closeMenu();
-                    props.newSession();
+                    if (menu) closeMenu();
+                    else {
+                      menuOpenedFromInput.current = false;
+                      setMenu(true);
+                    }
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Escape" && menu) {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      closeMenu();
+                    } else if (event.key === "ArrowDown") {
+                      event.preventDefault();
+                      menuOpenedFromInput.current = false;
+                      setMenu(true);
+                      requestAnimationFrame(() => menuButtons()[0]?.focus());
+                    }
                   }}
                 >
-                  새 세션 만들기
+                  <Plus size={20} aria-hidden="true" />
                 </Button>
-                <Button
-                  type="button"
-                  data-command
-                  onClick={() => {
-                    closeMenu();
-                    props.openPanel("files");
-                  }}
-                >
-                  파일 보기
-                </Button>
-                <Button
-                  type="button"
-                  data-command
-                  onClick={() => {
-                    closeMenu();
-                    props.openPanel("catalog");
-                  }}
-                >
-                  확장 목록 보기
-                </Button>
-                <strong>런타임 명령</strong>
-                {props.catalog?.commands.status === "available" ? (
-                  props.catalog.commands.entries.length ? (
-                    props.catalog.commands.entries.map((entry) => (
-                      <Button
-                        type="button"
-                        data-command
-                        key={entry.id}
-                        onClick={() => insert(`/${entry.name} `)}
-                      >
-                        <span>/{entry.name}</span>
-                        <small>{entry.description}</small>
-                      </Button>
-                    ))
-                  ) : (
-                    <p>등록된 명령이 없습니다.</p>
-                  )
+                {running ? (
+                  <ComposerPrimitive.Cancel
+                    disabled={!canInterrupt}
+                    className={styles.primary}
+                    aria-label="현재 세션 실행 중단"
+                  >
+                    <Square size={16} fill="currentColor" aria-hidden="true" />
+                  </ComposerPrimitive.Cancel>
                 ) : (
-                  <p>명령 목록을 사용할 수 없습니다.</p>
-                )}
-                <strong>스킬 언급</strong>
-                <p className={styles.muted}>메시지에 스킬 이름을 추가합니다.</p>
-                {props.catalog?.skills.status === "available" ? (
-                  props.catalog.skills.entries.length ? (
-                    props.catalog.skills.entries.map((entry) => (
-                      <Button
-                        type="button"
-                        data-command
-                        key={entry.id}
-                        onClick={() =>
-                          insert(
-                            `${draft === "/" ? "" : draft}${draft && draft !== "/" ? "\n" : ""}스킬 ${entry.name}을 참고해 주세요. `,
-                          )
-                        }
-                      >
-                        {entry.name}
-                      </Button>
-                    ))
-                  ) : (
-                    <p>등록된 스킬이 없습니다.</p>
-                  )
-                ) : (
-                  <p>스킬 목록을 사용할 수 없습니다.</p>
+                  <ComposerPrimitive.Send
+                    className={styles.primary}
+                    aria-label="메시지 보내기"
+                    disabled={blocked}
+                  >
+                    <ArrowUp size={18} aria-hidden="true" />
+                  </ComposerPrimitive.Send>
                 )}
               </div>
+            </ComposerPrimitive.Root>
+            {invalidSelection && (
+              <p className={styles.selectionError} role="alert">
+                선택한 Agent, 모델 또는 Variant를 사용할 수 없습니다. 다시
+                선택하거나 요청 안 함을 선택하세요.
+              </p>
             )}
-            <p
-              className={styles.requestedSummary}
-              id={requestedSummaryId}
-              data-runtime-summary="requested"
-            >
-              Agent: {agent || "Native에서 결정"} · 모델:{" "}
-              {model || "Native에서 결정"} · Variant:{" "}
-              {variant || "Native에서 결정"}
+            <p className={styles.hint} id={hintId} hidden={branchActive}>
+              Enter 전송 · Shift+Enter 줄바꿈
             </p>
-            <div className={styles.toolbar}>
-              <Button
-                type="button"
-                className={styles.commandTrigger}
-                title="추가 동작"
-                ref={slashButton}
-                aria-label="앱 동작과 명령 열기"
-                aria-expanded={menu}
-                aria-controls={commandMenuId}
-                onClick={() => {
-                  if (menu) closeMenu();
-                  else {
-                    menuOpenedFromInput.current = false;
-                    setMenu(true);
-                  }
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Escape" && menu) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    closeMenu();
-                  } else if (event.key === "ArrowDown") {
-                    event.preventDefault();
-                    menuOpenedFromInput.current = false;
-                    setMenu(true);
-                    requestAnimationFrame(() => menuButtons()[0]?.focus());
-                  }
-                }}
-              >
-                <Plus size={20} aria-hidden="true" />
-              </Button>
-              {running ? (
-                <ComposerPrimitive.Cancel
-                  disabled={!canInterrupt}
-                  className={styles.primary}
-                  aria-label="현재 세션 실행 중단"
-                >
-                  <Square size={16} fill="currentColor" aria-hidden="true" />
-                </ComposerPrimitive.Cancel>
-              ) : (
-                <ComposerPrimitive.Send
-                  className={styles.primary}
-                  aria-label="메시지 보내기"
-                  disabled={blocked}
-                >
-                  <ArrowUp size={18} aria-hidden="true" />
-                </ComposerPrimitive.Send>
-              )}
-            </div>
-          </ComposerPrimitive.Root>
-          {invalidSelection && (
-            <p className={styles.selectionError} role="alert">
-              선택한 Agent, 모델 또는 Variant를 사용할 수 없습니다. 다시
-              선택하거나 요청 안 함을 선택하세요.
-            </p>
-          )}
-          <p className={styles.hint} id={hintId} hidden={branchActive}>
-            Enter 전송 · Shift+Enter 줄바꿈
-          </p>
-        </div>
-      </ThreadPrimitive.Root>
-    </AssistantRuntimeProvider>
+          </div>
+        </ThreadPrimitive.Root>
+      </AssistantRuntimeProvider>
+    </ToolContext.Provider>
   );
 }

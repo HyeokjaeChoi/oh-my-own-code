@@ -2496,6 +2496,9 @@ export function createWorkbenchService({
             id: p.id,
             sessionId: s.id,
             title: clip(p.action, 128),
+            ...(p.source?.type === "tool" && opaque(p.source.id)
+              ? { toolId: p.source.id }
+              : {}),
             detail: clip(
               Array.isArray(p.resources)
                 ? p.resources.filter((x) => typeof x === "string").join("\n")
