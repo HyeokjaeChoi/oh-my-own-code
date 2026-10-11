@@ -188,6 +188,10 @@ async function fixture(t, { contextIO, deadlineMs = 5000 } = {}) {
     ...(contextIO && { contextIO }),
     runtime,
     pickDirectory: async () => state.pick,
+    probeWorkspace: async (path) => ({
+      branch: "main",
+      writable: path !== "x",
+    }),
     confirmTrust: async () => state.trust,
   });
   t.after(() => service.close());
@@ -280,6 +284,33 @@ test("extension read rejects foreign response and untrusted workspace without ef
   });
   assert.equal(result.ok, false);
   assert.equal(f.calls.length, 0);
+});
+test("typed-path import uses the picker's validation and publishes workspace meta", async (t) => {
+  const f = await fixture(t);
+  const dir = join(f.root, "typed");
+  await mkdir(dir);
+  f.state.pick = undefined; // picker must not be consulted
+  assert.equal(
+    (await f.service.handle({ type: "workspace.import", path: "relative" })).ok,
+    false,
+  );
+  assert.equal(
+    (
+      await f.service.handle({
+        type: "workspace.import",
+        path: join(dir, "nope"),
+      })
+    ).ok,
+    false,
+  );
+  const imported = await f.service.handle({
+    type: "workspace.import",
+    path: dir,
+  });
+  assert.equal(imported.ok, true);
+  const w = imported.value.workspaces.find((x) => x.path.endsWith("typed"));
+  assert.equal(w.branch, "main");
+  assert.equal(w.writable, true);
 });
 test("extension read discards a pending observation after a workspace mutation", async (t) => {
   const f = await fixture(t);

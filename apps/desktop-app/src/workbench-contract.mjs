@@ -165,7 +165,7 @@ const schemas = {
     [],
   ],
   "session.remove": [["workspaceId", "sessionId", "requestId"], []],
-  "workspace.import": [[], []],
+  "workspace.import": [[], ["path"]],
   "workspace.create": [[], ["name"]],
   "workspace.remove": [["workspaceId"], []],
   "session.create": [["workspaceId"], ["title"]],
@@ -686,17 +686,15 @@ export function validateSnapshot(value) {
   ])
     needDTO(Array.isArray(value[name]) && value[name].length <= limit);
   for (const w of value.workspaces) {
-    requiredObject(w, [
-      "id",
-      "name",
-      "path",
-      "kind",
-      "trusted",
-      "trustRevision",
-      "temporary",
-    ]);
+    requiredObject(
+      w,
+      ["id", "name", "path", "kind", "trusted", "trustRevision", "temporary"],
+      ["branch", "writable"],
+    );
     needDTO(
-      resourceId(w.id) &&
+      (w.branch === undefined || boundedText(w.branch, 256)) &&
+        (w.writable === undefined || typeof w.writable === "boolean") &&
+        resourceId(w.id) &&
         boundedText(w.name, 256) &&
         boundedText(w.path, 4096) &&
         ["folder", "repository", "worktree"].includes(w.kind) &&

@@ -136,7 +136,7 @@ test("closed requests reject extra fields, cross-selection, malformed values and
     [],
     { type: "toString" },
     { type: "snapshot", sessionId: "s" },
-    { type: "workspace.import", path: "/tmp" },
+    { type: "workspace.import", extra: "/tmp" },
     {
       type: "message.send",
       workspaceId: "w",

@@ -126,6 +126,8 @@ export function Workbench() {
   const [worktreeMessage, setWorktreeMessage] = useState("");
   // Physical delete: reasons are shown first; force needs a second explicit click.
   const [deleteReasons, setDeleteReasons] = useState<string[] | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importPath, setImportPath] = useState("");
   const navigationButton = useRef<HTMLButtonElement>(null);
   const panelButton = useRef<HTMLButtonElement>(null);
   const createInput = useRef<HTMLInputElement>(null);
@@ -268,6 +270,7 @@ export function Workbench() {
           {lists?.workspaces.map((item) => (
             <option key={item.id} value={item.id}>
               {item.name}
+              {item.branch ? ` · ${item.branch}` : ""}
             </option>
           ))}
         </select>
@@ -435,6 +438,56 @@ export function Workbench() {
           </div>
         </form>
       )}
+      {workspace && (workspace.branch || workspace.writable === false) && (
+        <p className={styles.muted} aria-label="작업 공간 상태">
+          {workspace.branch ? `브랜치 ${workspace.branch}` : ""}
+          {workspace.branch && workspace.writable === false ? " · " : ""}
+          {workspace.writable === false ? "읽기 전용" : ""}
+        </p>
+      )}
+      {importOpen && (
+        <form
+          className={styles.createFolder}
+          onSubmit={(event) => {
+            event.preventDefault();
+            void mutate(
+              { type: "workspace.import", path: importPath.trim() },
+              true,
+            ).then((ok) => {
+              if (ok) {
+                setImportOpen(false);
+                setImportPath("");
+              }
+            });
+          }}
+        >
+          <label>
+            폴더 경로
+            <input
+              value={importPath}
+              maxLength={2048}
+              onChange={(event) => setImportPath(event.target.value)}
+              placeholder="/Users/me/project"
+              autoFocus
+            />
+          </label>
+          <p>선택기와 같은 신뢰 확인을 거칩니다.</p>
+          <div className={styles.formActions}>
+            <Button
+              intent="primary"
+              type="submit"
+              disabled={
+                pending || globalDisabled || !importPath.trim().startsWith("/")
+              }
+            >
+              경로로 가져오기
+            </Button>
+            <Button type="button" onClick={() => setImportOpen(false)}>
+              취소
+            </Button>
+          </div>
+        </form>
+      )}
       {createOpen && (
         <form
           className={styles.createFolder}
@@ -517,6 +570,13 @@ export function Workbench() {
           onClick={() => void mutate({ type: "workspace.import" }, true)}
         >
           <Folder size={16} aria-hidden="true" /> 폴더 가져오기
+        </Button>
+        <Button
+          size="compact"
+          disabled={pending || globalDisabled}
+          onClick={() => setImportOpen((open) => !open)}
+        >
+          경로 입력
         </Button>
         <Button
           size="compact"

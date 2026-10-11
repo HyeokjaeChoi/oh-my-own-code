@@ -142,6 +142,9 @@ export interface WorkbenchWorkspace {
   trusted: boolean;
   trustRevision: number;
   temporary: boolean;
+  /** Read-only display metadata; absent for non-git folders or when unprobed. */
+  branch?: string;
+  writable?: boolean;
 }
 export interface WorkbenchSession {
   id: string;
@@ -772,7 +775,7 @@ export type WorkbenchRequest =
   | ({ type: "session.inbox.cancel"; inboxId: string } & SessionLifecycleTarget)
   | { type: "diagnostics.list"; workspaceId?: string; sessionId?: string }
   | { type: "snapshot"; workspaceId?: string; sessionId?: string }
-  | { type: "workspace.import" }
+  | { type: "workspace.import"; path?: string }
   | { type: "workspace.create"; name?: string }
   | { type: "workspace.remove"; workspaceId: string }
   | { type: "session.create"; workspaceId: string; title?: string }
