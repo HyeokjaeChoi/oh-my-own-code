@@ -4,6 +4,7 @@ import { pathToFileURL } from "node:url";
 import { types } from "node:util";
 import { verifyEventHostResources } from "./event-host-resources.mjs";
 import { createBuiltinDeclarationProjector } from "./native-permission-tool-data.mjs";
+import { NATIVE_PERMISSION_OVERLAY_RECEIPT } from "./native-permission-overlay-contract.mjs";
 import { nativeSkillsConfig } from "./native-skills-config.mjs";
 import {
   initialization,
@@ -85,17 +86,22 @@ export async function createNativePermissionGraph(input) {
       "694e68cfbc64c520478a98074c0b7e53a5a60f555a5ada934f08635c37e6f9ee"
   )
     throw new Error("native_permission_graph_unverified");
-  // The converter is not an overlay edit. Pin its approved original bytes as
-  // well as verifying the resource tree, before importing any Native module.
+  // The converter is an overlay output: the verified manifest holds the
+  // post-overlay bytes. Bind the approved original (28f8e167...) to the
+  // overlay contract's deterministic output hash before importing any Native module.
   const converter = manifest.entries.find(
     (entry) =>
       entry.path ===
       "node_modules/@opencode/core/dist/chunks/config-3w5fmr99.js",
   );
+  const converterOverlay = NATIVE_PERMISSION_OVERLAY_RECEIPT.files.find(
+    (file) => file.path === converter?.path,
+  );
   if (
     converter?.type !== "file" ||
-    converter.sha256 !==
-      "28f8e167d496e3469ce4d1532b003b6adbc03c6641734be66a9e7b02fad1584d"
+    converterOverlay?.beforeSha256 !==
+      "28f8e167d496e3469ce4d1532b003b6adbc03c6641734be66a9e7b02fad1584d" ||
+    converter.sha256 !== converterOverlay.afterSha256
   )
     throw new Error("native_permission_graph_unverified");
   // Fixed config shields literal resource paths before this original raw-text

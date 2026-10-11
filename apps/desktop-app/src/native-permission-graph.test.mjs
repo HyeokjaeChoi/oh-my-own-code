@@ -9,6 +9,7 @@ import {
 } from "./native-permission-inventory.mjs";
 import { EVENT_HOST_CODE_ASSETS } from "./event-host-resources.mjs";
 import * as graph from "./native-permission-graph.mjs";
+import { NATIVE_PERMISSION_OVERLAY_RECEIPT } from "./native-permission-overlay-contract.mjs";
 test("graph factory refuses unverified resource roots before any Native import", async () => {
   assert.equal(typeof graph.createNativePermissionGraph, "function");
   for (const input of [
@@ -641,7 +642,7 @@ async function actualFactory(t, changeManifest = () => {}, onLoad = () => {}) {
         path: "node_modules/@opencode/core/dist/chunks/config-3w5fmr99.js",
         type: "file",
         sha256:
-          "28f8e167d496e3469ce4d1532b003b6adbc03c6641734be66a9e7b02fad1584d",
+          "2b374f48f4be331e06419fb43f30dfab5b2fa72d45b1cc8500d633ab3e6f0a6b",
       },
       {
         path: "node_modules/@opencode/core/dist/chunks/config-2synrjax.js",
@@ -744,6 +745,7 @@ async function actualFactory(t, changeManifest = () => {}, onLoad = () => {}) {
     "initialization",
     "taskPreparation",
     "verifyEventHostResources",
+    "NATIVE_PERMISSION_OVERLAY_RECEIPT",
     "nativeSkillsConfig",
     "createBuiltinDeclarationProjector",
     "load",
@@ -760,6 +762,7 @@ async function actualFactory(t, changeManifest = () => {}, onLoad = () => {}) {
       verified = true;
       return manifest;
     },
+    NATIVE_PERMISSION_OVERLAY_RECEIPT,
     () => ({}),
     createBuiltinDeclarationProjector,
     load,
