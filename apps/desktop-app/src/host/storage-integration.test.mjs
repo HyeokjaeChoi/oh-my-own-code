@@ -5594,6 +5594,42 @@ test("instruction apply with a drifted other session re-applies policy in its ow
   assert.ok((await modeSetOps(f)).length > 0);
 });
 
+test("instruction apply on an idle session with a drifted running session is never POLICY_UNVERIFIED from sync", async (t) => {
+  const f = await instructionFixture(t);
+  const other = await driftOther(f, f.scope.workspaceId);
+  f.state.active = { [other]: { type: "running" } };
+  const result = await f.mutate(f.apply, "instructions-busy-other");
+  assert.notEqual(result.code, "POLICY_UNVERIFIED", JSON.stringify(result));
+});
+
+test("a BUSY mode.set during policy sync surfaces BUSY, not POLICY_UNVERIFIED", async (t) => {
+  const f = await instructionFixture(t);
+  f.records.get(f.nativeId).permissions = compileModeRules("scoped_edit");
+  f.state.active = { [f.nativeId]: { type: "running" } };
+  const result = await f.mutate(f.apply, "instructions-busy-self");
+  assert.equal(result.ok, false, JSON.stringify(result));
+  assert.notEqual(result.code, "POLICY_UNVERIFIED", JSON.stringify(result));
+});
+
+test("mode.set native.policy dispatch for a sibling-tracked native id is rejected", async (t) => {
+  const f = await instructionFixture(t);
+  const other = await driftOther(f, f.scope.workspaceId);
+  const original = f.registry.dispatch;
+  f.registry.dispatch = (input) =>
+    original(
+      input.step === "native.policy"
+        ? { ...input, nativeSessionId: other }
+        : input,
+    );
+  const result = await f.mutate(
+    { type: "permission.mode.set", ...f.scope, mode: "ask", requestId: "sib" },
+    "sibling-native",
+  );
+  f.registry.dispatch = original;
+  assert.equal(result.ok, false, JSON.stringify(result));
+  assert.ok(!f.records.get(other).permissions.some((r) => r.effect === "x"));
+});
+
 test("skill save with a drifted session re-applies policy in its own journaled op and completes", async (t) => {
   const f = await skillServiceFixture(t);
   const other = await driftOther(f, f.workspaceId);

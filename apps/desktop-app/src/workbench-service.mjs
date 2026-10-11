@@ -3757,11 +3757,20 @@ export function createWorkbenchService({
           await ready;
           if (!client || runtime.snapshot().state !== "connected") return [];
           const out = [];
+          const locked = [...committed.sessions.values()].some(
+            (item) => item.workspaceId === operation.workspaceId && item.lock,
+          );
+          if (locked || committed.workspaces.get(operation.workspaceId)?.lock)
+            return out;
           for (const target of committed.sessions.values()) {
+            // Skip what mode.set would refuse; the in-op policyOk check then
+            // fails closed instead of an unrelated op being rejected here.
             if (
               target.workspaceId !== operation.workspaceId ||
-              target.lock ||
-              target.unavailable
+              target.unavailable ||
+              target.status !== "idle" ||
+              target.unknown ||
+              target.awaiting
             )
               continue;
             const info = await call(client.session.get, {
@@ -3793,7 +3802,8 @@ export function createWorkbenchService({
         },
         sender,
       );
-      if (!result.ok) return "POLICY_UNVERIFIED";
+      if (!result.ok)
+        return result.code === "BUSY" ? "BUSY" : "POLICY_UNVERIFIED";
     }
     if (targets.length && (await drifted()).length) return "POLICY_UNVERIFIED";
     return undefined;

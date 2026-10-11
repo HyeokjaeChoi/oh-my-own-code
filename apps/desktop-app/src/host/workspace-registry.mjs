@@ -2057,6 +2057,16 @@ export async function openWorkspaceRegistry({
         );
         validatePermissionDispatch(operation, request);
       }
+      if (isModePolicyWrite(operation.identity.type, request))
+        // Own Native id, or a descendant not owned by another tracked session.
+        need(
+          [...root.sessions.values()].every(
+            (entry) =>
+              entry.nativeSessionId !== request.nativeSessionId ||
+              entry.appSessionId === operation.identity.sessionId,
+          ),
+          "identity_conflict",
+        );
       const prior =
         !isPermissionControl(operation.identity.type) &&
         !isModePolicyWrite(operation.identity.type, request) &&
