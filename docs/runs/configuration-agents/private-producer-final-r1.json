@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a11ab7-f778-76c3-99c3-9b34de9d7d05": {
+      "completed": "허용된 **4개 파일만 구현·수정**했습니다. `setupNativeAgents(ctx)`와 server disposal 연결을 완료했습니다. Frozen API 3개 파일의 해시는 유지됩니다.\n\n| 변경 파일 | 최종 SHA-256 |\n|---|---|\n| [agents.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/builtins/workbench-skills/agents.mjs) — 신규 | `e50661f67dcefffb44b82f7028c0f73f82dc50e0fb406feed7f4d64a29871e0f` |\n| [server.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/builtins/workbench-skills/server.mjs) | `d12faa258b72f08a9ef0576946d90a97041f3b92b63f7d18001170abfa4f97fa` |\n| [native-agents-plugin.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-agents-plugin.test.mjs) — 신규 | `d033850a931e5850721996845a494502b3289b84546aa9c0878bd188efc2ba16` |\n| [native-skills-plugin.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-plugin.test.mjs) | `a1c426b9d4f460f358152a53564a9195ea74850706ddfa160398049ff804cb57` |\n\n검사 결과:\n\n- Node 테스트 **62/62 통과**: 위 테스트 2개와 `configuration-agent.test.mjs`, `native-skills-host.test.mjs`.\n- 4개 파일의 ESLint·Prettier·`node --check` 통과.\n- 실제 export와 금지 API 정적 검사 통과.\n\n소스 체크포인트는 앞서 보고했습니다. 검사는 합성·inert 범위입니다. **Main의 실제 Native prerequisite, remove 직전 global session-reference 검사, 독립 CODE review가 남아 있습니다.** 자체 승인은 하지 않았습니다."
+    }
+  },
+  "timed_out": false
+}

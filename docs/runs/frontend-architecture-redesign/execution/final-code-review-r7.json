@@ -1,0 +1,178 @@
+{
+  "schema_version": 2,
+  "run": "frontend-architecture-redesign",
+  "gate": "code",
+  "reviewer": "reviewer",
+  "verdict": "pass",
+  "summary": "지정한 routine 최종 CODE 범위에서 수정이 필요한 결함을 찾지 못했습니다. SSR fixture 수정, 증거 연속성 검사, 현재 resource byte 검사와 A1–A4/A7 연결을 독립 검토했습니다. 변경 없는 production의 기존 승인은 원래 실행 시각과 범위로 재사용할 수 있습니다. 이 CODE PASS는 A5/A6의 최종 rendered 판정이나 전체 product 완료를 대신하지 않습니다.",
+  "open_findings": [],
+  "reviewed": {
+    "contract_sha256": "cc6bc1059113aafbb1ee2f88750c0330c7fdb11714e6c22289c44ec951c374b1",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "code",
+    "plan_sha256": "e398fa5540199f91681a50309a7ee49fdc448a3a8852d33c814ad60666e0ccd6",
+    "schema_version": 2,
+    "source_sha256": "f48537341385759b230d48129447e850051d03642964a9bbb10dd111b2314a5e",
+    "verification_sha256": "31d2b372150ffa5a0c3f2f6176727ad4a9d7e56d5de9fa9464539eb58d48c28d",
+    "work_class_sha256": "a689ca7a6db18c7b48715faac9c0a20a4da419e2aae8f1fab492c2f586f929d6"
+  },
+  "provenance": {
+    "child_task_id": "01a1188e-7c57-7151-a487-fe79f07283c9",
+    "author_task_id": "main-continuation",
+    "child_task_id_source": "현재 CODEX_THREAD_ID",
+    "fresh_independent_report_only": true,
+    "implementation_or_repairs_authored": false,
+    "recursive_delegation": false,
+    "tests_runtime_build_provider_private_or_foreground_execution": false,
+    "source_or_ledger_edits": false,
+    "only_written_path": "docs/runs/frontend-architecture-redesign/execution/final-code-review-r7.json",
+    "sandbox_enforcement_claimed": false
+  },
+  "scope": {
+    "plan_revision": 7,
+    "architecture_version": 4,
+    "current_increment": [
+      "apps/desktop-app/src/workbench-projection.test.mjs"
+    ],
+    "full_original_parent_changed_paths": 270,
+    "full_original_parent_deleted_paths": 8,
+    "full_270_path_line_audit_performed": false,
+    "method": "Spec compliance와 code quality를 나누어 검토했습니다. 기존 focused 승인 보고서를 읽고 byte 연속성을 확인했습니다. 현재 Main, IPC, preload, admission, service, transport, controller, store와 assistant-ui/Tool UI caller를 필요한 범위에서 직접 확인했습니다.",
+    "direct_source_paths": [
+      "apps/desktop-app/src/workbench-projection.test.mjs",
+      "apps/desktop-app/src/main.mjs",
+      "apps/desktop-app/src/preload.cjs",
+      "apps/desktop-app/src/host/workbench-ipc.mjs",
+      "apps/desktop-app/src/host/workbench-admission.mjs",
+      "apps/desktop-app/src/workbench-service.mjs",
+      "apps/desktop-app/src/host/native-preflight.mjs",
+      "apps/desktop-app/src/renderer/app/index.tsx",
+      "apps/desktop-app/src/renderer/shared/transport/index.ts",
+      "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+      "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+      "apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx",
+      "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+      "apps/desktop-app/scripts/check-renderer-boundaries.mjs",
+      "apps/desktop-app/scripts/build-provenance.mjs",
+      "apps/desktop-app/src/event-host-resources.mjs",
+      "apps/desktop-app/src/owner-lifetime-resources.mjs",
+      "apps/desktop-app/scripts/p6-performance.mjs",
+      "docs/runs/frontend-architecture-redesign/execution/verify-current-evidence-r1.py",
+      "docs/runs/frontend-architecture-redesign/execution/verify-current-resources-r1.mjs"
+    ]
+  },
+  "authority": {
+    "selected_a": "selected-a-desktop-adoption의 현재 plan은 revision3입니다. revision2의 기존32 desktop/44 coarse/36 permission 기준과 toolbar32를 그대로 유지합니다. composer-room/amendment.md와 Selected A plan/contract 및 후속 code 승인도 읽었습니다. 최신 사용자 설명에 따라 A Quiet Dock의 승인된 geometry가 해당 parent v4 geometry보다 우선합니다. 이를 코드 결함으로 보고하지 않습니다.",
+    "unchanged_requirements": "Selected A는 focus 3:1, 안전한 keyboard/focus 동작이나 P7 recovery의 reflow 요구를 면제하지 않습니다.",
+    "packet_binding": "final-code-packet-r7.json의 contract metadata는 c434ec84…입니다. 현재 최종 input과 실제 contract는 cc6bc105…로 일치합니다. packet을 현재 acceptance binding으로 사용하지 않았습니다. reviewed는 final-code-input-r7.json의 객체를 그대로 복사했습니다."
+  },
+  "review_passes": [
+    {
+      "mode": "spec_compliance",
+      "result": "pass_for_assigned_code_scope",
+      "assessment": "A1–A4/A7에 대한 현재 코드와 정확한 predecessor 승인 범위를 확인했습니다. 검사 방법의 대체는 보존된 예전 명령과 명시된 background/functions 범위로 제한됩니다. 원래 production Main E2E 실행을 새로 했다는 주장으로 사용하지 않습니다."
+    },
+    {
+      "mode": "code_quality",
+      "result": "pass",
+      "assessment": "SSR fixture의 세 필수 필드와 렌더링 전 snapshot 수용 assertion만 추가됐습니다. 네 줄을 읽기 중 제거해 계산한 hash가 correction baseline과 정확히 일치합니다. production validation은 완화되지 않았습니다. 실제 assistant-ui/Tool UI, unsafe link 거부와 escaping 검사는 유지됩니다. Main의 IPC sender 검증, closeSender, registry owner fence, copied preflight와 startup/shutdown 연결에 이번 integration이 놓친 새 결함을 찾지 못했습니다. controller는 timeout 이후 lookup만 수행하고 operation을 replay하지 않습니다. 단일 window Zustand, resource generation과 dispose 경로를 확인했습니다."
+    }
+  ],
+  "acceptance_assessment": {
+    "A1": {
+      "status": "pass_for_code_scope",
+      "evidence": "기존 boundaries/build/bundle 기록과 현재 source 연속성, 실제 resolver와 root/public API 제한, desktop/UI 설정을 확인했습니다."
+    },
+    "A2": {
+      "status": "pass_for_code_scope",
+      "evidence": "window별 Zustand 생성, 순수 atomic snapshot/receipt transition, selector/provider 및 controller 경로를 직접 확인했습니다. 현재 parent unit과 기존 renderer-unit 기록을 재사용합니다."
+    },
+    "A3": {
+      "status": "pass_for_code_scope",
+      "evidence": "Main→closed IPC→service→admission과 renderer transport/controller를 확인했습니다. logical read timeout은 실제 종료 전 capacity를 해제하지 않습니다. receipt lookup은 별도 lane이며 mutation timeout은 draft/identity를 보존합니다. 기존 storage/preflight/lifetime findings closure를 현재 변경 없는 bytes에 한정해 재사용합니다."
+    },
+    "A4": {
+      "status": "pass_for_scoped_integration",
+      "evidence": "현재 parent unit, 실제 built renderer의 hidden UI와 production-function Native restart 증거가 서로 다른 계층을 담당합니다. source caller 점검에서 연결 누락을 찾지 못했습니다.",
+      "missing_proof": "production Main 전체 GUI 실행, 실제 native dialog와 전체 사용자 흐름의 end-to-end 동작은 미검증입니다. 이 PASS는 그 증거를 만들지 않습니다."
+    },
+    "A5": {
+      "status": "outside_assigned_code_verdict_pending_rendered_gate",
+      "missing_proof": "저장된 다섯 focus contrast 항목은 모두 unverified입니다. focus 3:1을 검증 완료로 인정하지 않습니다. OS IME와 Screen Reader도 미검증입니다."
+    },
+    "A6": {
+      "status": "outside_assigned_code_verdict_pending_rendered_gate",
+      "missing_proof": "P7의 새 recovery 화면은 normal1440x928에서만 관찰됐습니다. P6 narrow/200% 화면을 P7 새 recovery 문구와 control reflow의 증거로 확대하지 않습니다."
+    },
+    "A7": {
+      "status": "pass_for_background_measurement_scope",
+      "evidence": "현재 renderer의 실제 저장 측정에서 input/menu/panel 각20표본과100 switches를 확인했습니다. 표본에서 p95를 독립 계산했고 보고 값과 일치합니다. 준비60 및 전환100의 resource criterion과 종료 기록을 확인했습니다.",
+      "qualification": "전체160 heap 증가는13.012%이며 별도 경고로 유지됩니다. 준비60 6.793%, 전환100 5.824%와 각 last-batch 기준이 통과합니다. zero growth나 leak 부재를 뜻하지 않습니다. Foreground/provider latency와 production Main cold startup 및 Windows readiness는 미검증입니다."
+    }
+  },
+  "evidence_reuse": {
+    "predecessor_reports": [
+      "docs/runs/projection-fixture-v5/code-review.json",
+      "docs/runs/durable-workbench-storage/execution/final-code-review-r8.json",
+      "docs/runs/durable-native-preflight/final-code-review-r1.json",
+      "docs/runs/durable-workbench-storage/execution/render-review-r4.json"
+    ],
+    "scope": "predecessor findings closure는 각 보고서의 원래 scoped 승인만 재사용합니다. storage r8이 연결한 owner-lifetime r4 승인을 전체 GUI 승인으로 확대하지 않습니다. rendered r4는 과거 pixel 판정 참고자료이며 이번 CODE reviewer는 새 pixel 판정을 하지 않았습니다.",
+    "source_baseline": "3770a81d225bf29ea36016e03d602660986aa002b0c0710d20ee79698f441e8f",
+    "current_source": "f48537341385759b230d48129447e850051d03642964a9bbb10dd111b2314a5e",
+    "only_changed_path": "apps/desktop-app/src/workbench-projection.test.mjs",
+    "prior_check_count": 21,
+    "all_latest_prior_records_match_argv_environment_contract_plan": true,
+    "prior_execution_times_preserved": true,
+    "fresh_parent_static_count": 4,
+    "pinned_file_count": 63,
+    "pinned_capture_count": 46,
+    "pin_mismatches": []
+  },
+  "independent_read_only_validation": {
+    "binding_initial_and_final_match": true,
+    "registered_artifacts": 18,
+    "current_build_input_artifact_and_selected_script_files_checked": 111,
+    "build_hash_size_mode_mismatches": [],
+    "event_host_entries_checked": 38393,
+    "event_host_regular_files_hashed": 35122,
+    "event_host_bytes_hashed": 399279792,
+    "event_host_metadata_hash_extra_missing_mismatches": [],
+    "event_host_manifest_matches_performance_identity": true,
+    "owner_manifest_executable_and_source_match": true,
+    "performance_script_hash_matches_before_and_after": true,
+    "performance_before_after_equal": true,
+    "p95_recomputed_from_saved_samples": {
+      "input": 8.699999988079071,
+      "menu": 8.299999952316284,
+      "panel": 9,
+      "shell": 9.200000047683716,
+      "projection": 9.699999988079071
+    },
+    "switches_correct": 100,
+    "reported_old_transcript_observations": 0,
+    "resource_pending_returned_to_baseline_at_all_five_switch_boundaries": true,
+    "production_checks_reexecuted": false,
+    "method": "저장된 JSON과 현재 파일을 읽어 hash·mode·size를 비교했습니다. 제품 process는 시작하지 않았습니다."
+  },
+  "cross_gate_minimum_proof": [
+    {
+      "concern": "focus3:1",
+      "owner": "final rendered reviewer",
+      "minimum": "현재 keyboard focus가 실제로 보이는 composer container 및 사용 중인 control/overlay의 ring을 해당 인접 배경과 비교한 근거가 필요합니다. textarea의 outline:none만 측정한 unverified 결과나 CSS token 지정만으로 actual focus 검증을 완료하지 않습니다. 전체 OS Screen Reader 실행을 이 좁은 proof의 전제조건으로 새로 요구하지 않습니다."
+    },
+    {
+      "concern": "P7 narrow/200%",
+      "owner": "final rendered reviewer",
+      "minimum": "global recovery, resource recovery와 retained-operation 경고가 추가되는 실제 P7 화면에서 좁은200% 상태의 경고·draft·주요 control 접근성과 scrolling/reflow를 확인해야 합니다. 정확한 최소 대표 상태와 blocking 여부는 독립 rendered reviewer가 판단합니다. CODE PASS로 이 빈 proof를 면제하지 않습니다."
+    }
+  ],
+  "limitations": [
+    "새 test/runtime/build/package/Native/provider/GUI 실행을 하지 않았습니다. 저장된 실행 기록과 현재 파일 bytes만 확인했습니다.",
+    "계약의 continuity/resource-byte 명령은 검사기이며 제품 acceptance 전체의 독립 proof가 아닙니다. 특히 A5/A6는 최종 rendered gate에 남습니다.",
+    "Production Main 전체/foreground/private data/Windows/signing/power-loss/migration cutover와 전체 F01–18 완료를 승인하지 않습니다.",
+    "실제 OS IME/Screen Reader, 완전한 WCAG와 모든 상태의 viewport 조합은 미검증입니다.",
+    "파일 hash 관찰은 filesystem isolation 또는 관찰 사이 change-and-restore 방어를 증명하지 않습니다.",
+    "최종 input 이후 ledger나 outcome이 바뀌면 verification binding을 다시 생성하고 새 현재 binding을 사용해야 합니다."
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "run": "bridge-browser-security-implementation",
+  "reviewer_role": "plan_reviewer",
+  "verdict": "pass",
+  "summary": "Revision 11 preserves explicit owner, required behavior and regression evidence for all five earlier P2 findings. It prospectively addresses both additional findings: pair-body decoding must preserve the UTF-8 BOM so strict JSON parsing rejects the body without consuming the code, verified by subsequent successful pairing with that same code; the client must validate SyntheticSnapshotSchema before overlaying separately validated events, with missing, null and malformed snapshot events producing recoverable read failure even when the separate events response is valid. The plan and contract retain explicit partial-evidence boundaries relative to parent BB-01..10 and its handler/effect-counter requirements.",
+  "open_findings": [],
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "4e4e9c2b57ee58dc6bb3f7128f5160377aeb3ec6cc7e7b752dfbc837c9f6bac5",
+    "contract_sha256": "4373086c90a451902647d00b330b4d50e1c6ad576de47b3c494df250bbab7cd7",
+    "source_sha256": "683e85be8ec624e269bb9d763fbf020d519582319e5dd930b9a828a3e4c382f1"
+  },
+  "review_boundary": "Independent read-only review of plan revision 11, its current acceptance/check contract and code-review-r2.json for finding traceability. The plan binding was obtained before review and confirmed unchanged afterward. This approves prospective requirements and verification scope, not implementation correctness or runtime completion.",
+  "evidence_limits": [
+    "No edits, tests, services, browser sessions or additional agents were initiated; no report file was written.",
+    "Earlier implementation closures are retained as explicit regression requirements; their runtime evidence was not independently reproduced in this plan review.",
+    "The two new P2 findings are addressed prospectively and still require implementation, registered checks and fresh code review.",
+    "Synthetic-state equality and static absence of SDK, filesystem and process-execution call sites are bounded evidence only. Parent BB-01..10 scenarios, runtime handler/effect counters including BB-02 and BB-09, production/browser scenarios and OS isolation remain unproven by this increment.",
+    "Requested Astra/high settings do not attest runtime model identity."
+  ],
+  "provenance": {
+    "child_task_id": "/root/bridge_plan_review_r11",
+    "author_task_id": "/root"
+  },
+  "requested_model": "gpt-6-astra",
+  "requested_effort": "high",
+  "runtime_identity_verified": false
+}

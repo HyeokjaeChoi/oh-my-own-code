@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "9f9b32e839bc19d41aec80492f961e6e437cf0c3cfe3a346d5af5667de3e2a5c",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "design",
+    "plan_sha256": "1c14619e6f0dd09f5099d3255b5671486a501155958b823d0e44e6aa7bf25b10",
+    "schema_version": 2,
+    "source_sha256": "ea185ed5224608d768af22886b3a7c954621417a28d2f8a3a8b608f66642df80",
+    "verification_sha256": "1b441002c3619bdea1fef10e409724ae2d7814e3e84b2744ef173aeaeb451c76",
+    "work_class_sha256": "25a8187266c9d5637a609c846d588e662d7aeb346617005569a0e5a1b36f0037"
+  },
+  "verdict": "pass",
+  "summary": "RENDER PASS: plan revision4 / design v2의 명시적 파일 불러오기와 마지막 관찰 파일 비교 범위에서 수정이 필요한 화면 결함을 찾지 못했다. F14 전체 완료 판정은 아니다.\n직접 확인: evidence/hidden-r1/ui-states/ 아래 원본 PNG 7장을 view_image(detail=original)로 열었다. 신규 5장: desktop-configuration-file-loaded-synthetic.png, desktop-configuration-file-comparison-synthetic.png, desktop-configuration-file-unsupported-synthetic.png, desktop-configuration-file-narrow200-synthetic.png, desktop-configuration-file-narrow200-load-synthetic.png. 기존 회귀 2장: desktop-configuration-draft-mcp-unsupported-synthetic.png, desktop-configuration-normal-synthetic.png. 각 파일 경로, PNG IHDR 크기, report의 viewport/state와 manifest 등록을 직접 대조했다. 일반 5장은 원본 2880×1856, CSS viewport 1440×928, pixelRatio2, zoom1이다. narrow200 2장은 원본 1520×1136, CSS viewport 380×284, pixelRatio4, zoom2, contentBounds 760×568이다.\n원본 화면 관찰: 파일 불러오기 버튼과 AGENTS.md 읽기 경로, 불러옴 상태, 초안 revision과 미검증 표시가 읽힌다. 비교 화면에서 마지막으로 불러온 파일 기준, 파일 경로, hex64 관찰 버전, 추가·삭제·문맥 diff, 외부 변경 미감시 경고가 읽힌다. Native 활성 상태와 현재 디스크 상태를 확정하지 않는 설명이 있다. unsupported 화면은 고정 오류 안내와 기존 MCP 초안의 보이는 부분을 유지한다. 기존 normal 화면은 파일 발견과 적용 여부 미확인을 구분하며 경로 선택 표시가 보인다. 기존 MCP 초안 화면은 파일 미읽음 상태와 편집 내용을 구분한다.\nnarrow200 원본에서는 한국어 경고와 경로가 패널 폭 안에서 줄바꿈된다. load 화면의 버튼과 파란 focus outline, 불러옴 상태가 보인다. 스크롤 중인 두 캡처의 상·하단 일부는 viewport 밖이다. 좁은 캡처에 baseline 제목·관찰 버전·diff 전체가 보인다고 주장하지 않는다.\n별도 DOM/자동화 근거: ui-states-evidence.json의 configurationFileStates는 Enter 불러오기, validation 해제, supported MCP 불러오기, duplicate/credential canary 비표시, unsupported/missing 후 초안 유지, narrow200 수평 넘침 없음, Escape의 opener focus 복귀, mutation 불변을 기록한다. 좁은 file flow의 이동은 scrollIntoViewIfNeeded이며 실제 휠 스크롤은 configurationDraftStates.narrow200의 별도 기록이다. textarea Enter 편집, diff 선택, 종류·workspace 격리와 패널 재개 유지도 별도 assertion이다. 이 reviewer가 직접 키보드나 스크롤을 실행한 결과로 취급하지 않는다.\n근거 일치: verification-summary-r1.json의 69개 pins와 manifest의 build-input 107개 및 script/fixture 4개 파일 hash를 현재 파일과 대조했고 불일치가 없다. 현재 harness review-input은 assigned input과 정확히 같다. 저장된 hidden report는 67 captures PASS, teardown exited=true/code0이며 manifest exitCode0/wrapperExitCode0/provenanceVerifiedAfter=true다. 직접 픽셀을 본 범위는 위 7장이다. actual-checks-r1.json은 8개 check의 exit0/inputs_changed=false를 기록한다. 이 reviewer는 해당 check를 재실행하지 않았다.\n실행 구분과 한계: 원본은 실제 저장된 built renderer/preload와 test-only synthetic Main/DTO의 hidden capture다. 실제 host FD IO는 별도 Node integration 근거이며 이 UI 캡처는 production Main과 디스크 파일을 연결한 end-to-end 증거가 아니다. desktop32/coarse44/permission36 기준을 유지한다. 선택 원본에서 load 버튼 focus를 확인했으며 coarse/permission 치수는 기존 DOM 기록이다. 모든 제어에 44px을 요구하거나 물리 touch, OS IME, screen reader, 모든 상태의 contrast/focus를 확인했다고 주장하지 않는다. file save/apply, Native 활성화·reload, provider, private store, Windows, power-loss, F14 전체 완료는 미검증이다. 코드 gate와 ledger 기록은 Main의 별도 책임이다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a118ef-fce3-7152-afe8-692317d83706",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

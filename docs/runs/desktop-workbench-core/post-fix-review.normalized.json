@@ -1,0 +1,40 @@
+{
+  "code": {
+    "schema_version": 2,
+    "reviewed": {
+      "contract_sha256": "ffe855df3b3c4295dfecc9f03950fc01e0933a350823d32c3093eabf9136a70a",
+      "environment_sha256": "c90a1847cab588816cd06cd329515b3326131b367ca573894c74b18f2757f34c",
+      "gate": "code",
+      "plan_sha256": "a9a9c09e41b2d4d030fec8141663bd16b942a07a61c5ee8b2c25ceb1538cc0bb",
+      "schema_version": 2,
+      "source_sha256": "a43b573d8cebecb5dcb2cb5605f84bcbe69e11143cde2c27e1242e81dd24c687",
+      "verification_sha256": "c27d460282aed1a2a84caf18c968bc350dac3bc7180a4c92643a95ed8ce0dc1f"
+    },
+    "verdict": "pass",
+    "summary": "Post-fix affected-path review found no remaining actionable defect in this bounded increment. In workbench-service.mjs an omitted model no longer calls switchModel, while an explicit model is resolved through the catalog to the SDK {id, providerID} shape; baseline policy is applied/read back again before prompt dispatch. The added regression tests cover three omitted-model states plus explicit mapping and the post-switch policy update/get sequence, and the saved current verification evidence records the unit check as passing. The retained trust behavior is consistent with the reviewed scope: imported folders and ordinary directories created beneath a user-selected parent remain untrusted until native confirmation before SDK activation, while only the app-owned isolated temporary workspace is pre-trusted. Interface v2 explicitly requires confirmation for imported paths but does not require ordinary user-selected new directories to be automatically trusted, so widening automatic trust is not justified. Relevant affected source/test/renderer/E2E fixture SHA-256 values inspected directly match integration-files.json. Saved evidence also records current source/environment bindings for the required checks, real-sidecar Electron E2E, dev and packaged lifecycle passes, and package-source comparison; these results were read from the frozen evidence and were not re-executed in this review. Provider-authenticated execution and native Windows runtime/package behavior remain outside the evidence and no full F-01-18 release conclusion is made. child_task_id is the explicit task label cli:desktop-workbench-core:post-fix-independent because a fresh CLI identity ID was not exposed; it is a task label, not an identity attestation.",
+    "open_findings": [],
+    "provenance": {
+      "child_task_id": "cli:desktop-workbench-core:post-fix-independent",
+      "author_task_id": "coordinator"
+    }
+  },
+  "design": {
+    "schema_version": 2,
+    "reviewed": {
+      "contract_sha256": "ffe855df3b3c4295dfecc9f03950fc01e0933a350823d32c3093eabf9136a70a",
+      "environment_sha256": "c90a1847cab588816cd06cd329515b3326131b367ca573894c74b18f2757f34c",
+      "gate": "design",
+      "plan_sha256": "a9a9c09e41b2d4d030fec8141663bd16b942a07a61c5ee8b2c25ceb1538cc0bb",
+      "schema_version": 2,
+      "source_sha256": "a43b573d8cebecb5dcb2cb5605f84bcbe69e11143cde2c27e1242e81dd24c687",
+      "verification_sha256": "c27d460282aed1a2a84caf18c968bc350dac3bc7180a4c92643a95ed8ce0dc1f"
+    },
+    "verdict": "pass",
+    "summary": "Direct inspection of the supplied current captures found the prior rendered blockers resolved. Actual PNG dimensions were independently confirmed as 2360x1576 for desktop-permission-synthetic, 896x212 for desktop-link-preview-synthetic, 1600x1336 for desktop-workbench-narrow, and 2360x1576 for both real-sidecar file-preview and catalog captures, matching capture-manifest.json. In the permission capture the composer and interruption control remain fully available beneath the bounded permission area; saved synthetic-renderer evidence independently asserts two permission regions together with ratio-1 viewport visibility for both textarea and cancel control, addressing the earlier 0.3456 reproduction. The navigation capture and current CSS/source show visibility controlled by navigation-open at desktop and narrow widths, with the synthetic renderer test exercising actual close/open behavior at the 1180 CSS-pixel viewport. The supplied real-sidecar file and catalog captures directly show both detail panels open without clipping or overlap; panel restoration and focus return are supported by source inspection. The stopping notice is reconciled away when authoritative session state reaches idle. The isolated Tool UI capture is visually contained and readable, while source and synthetic evidence show schema-gated link rendering, inert escaped unknown output and scoped desktop styling. Provenance remains separated: file/catalog/narrow captures are actual packaged-source renderer with the owned sidecar, while permission and Tool UI states use the production renderer/preload with a clearly synthetic test-only main and do not prove provider execution. No provider-authenticated, Windows, or full-release design claim is made. child_task_id is the explicit task label cli:desktop-workbench-core:post-fix-independent because a fresh CLI identity ID was not exposed; it is a task label, not an identity attestation.",
+    "open_findings": [],
+    "provenance": {
+      "child_task_id": "cli:desktop-workbench-core:post-fix-independent",
+      "author_task_id": "coordinator"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+✖ recipe ConfigDiscovery fixed flags: successful empty result before any FS or path factory (9.603667ms)
+ℹ observed setup calls=[["path.brand","/scripted/config"],["path.brand","/scripted/home/.agents"],["path.brand","/scripted/home/.claude"],["FS.resolve.construct","/scripted/config"]]
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 880.474125
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-metadata-startup.test.mjs:2141:1
+✖ recipe ConfigDiscovery fixed flags: successful empty result before any FS or path factory (9.603667ms)
+  Error: external_refused:FS.resolve:/scripted/config
+      at Object.resolve (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-metadata-startup.test.mjs:2039:25)
+      at eval (eval at compile (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-metadata-startup.test.mjs:250:10), <anonymous>:10:123)
+      at Object.body (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:1989:17)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:1951:25)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2286:9
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2338:19
+      at Module.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2349:31)
+      at run (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-metadata-startup.test.mjs:401:32)

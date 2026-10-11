@@ -1,0 +1,103 @@
+{
+  "schema_version": 2,
+  "run": "permission-control-design",
+  "reviewer": "design_spec_reviewer",
+  "verdict": "changes_requested",
+  "summary": "수정안은 lease·lock·move 절차와 floor/compiler·두 policy 단계를 구체화했습니다. 그러나 신규 grant의 사전 digest 생성과 미완료 intent의 boot 복구 경로에 구현 계약 충돌이 남습니다. runtime 근거 부재 자체는 결함으로 판정하지 않았습니다. 정확한 경로 명확화 문서의 독립 PRODUCT PASS를 확인했으며, 채택된 규범적 보충 명세로 반영합니다. 이는 사용자 승인이나 구현 정확성의 증거가 아닙니다.",
+  "reviewed": {
+    "contract_sha256": "bf8bf8d04d17d264072c5b24ad26456026958928343f50bb6ab220a722009cc1",
+    "document_requirement_epoch": 1,
+    "documents_sha256": "8cc4c7985c82765b0e7117012f7d5d405149394997bea9f269ca48b3cbe67a53",
+    "gate": "design_spec",
+    "plan_sha256": "de263d947b000568d0e1de2af58f48ba6d44a5a467f6ca944887ae3ed2593d64",
+    "schema_version": 2,
+    "work_class_sha256": "e52a40450aab62593988ef0bf9d39c6504837c8a4914a1062d4fa95545e7273a"
+  },
+  "open_findings": [
+    {
+      "id": "DS-04-R3-01",
+      "severity": "high",
+      "location": {
+        "path": "docs/runs/permission-control-design/schema-contract-r2.md",
+        "lines": [
+          94,
+          104,
+          108,
+          124,
+          129
+        ]
+      },
+      "affected_consumer": "remember admission, immutable journal target, saved readback와 receipt 검증",
+      "evidence": [
+        "94행의 ruleDigest는 savedId, createdAt, updatedAt을 포함합니다. 104·108행은 grant 효과 전에 저장하는 immutable target과 ruleBindings에 그 digest를 요구합니다.",
+        "신규 grant는 preview 시점에 기존 savedId가 없습니다. 고정된 Native config-7scxvj8s.js:56-64의 PermissionSaved.add는 실제 insert에서 ID7.create()를 호출하며 ID 예약 입력을 받지 않습니다. permission-saved.d.ts의 Info는 생성·수정 시각을 저장 행의 속성으로 정의합니다.",
+        "따라서 신규 grant의 사전 target digest를 현재 정의대로 만들 수 없습니다. 효과 뒤 실제 행으로 digest를 바꾸면 ORIGINAL target 불변 규칙과 충돌합니다. 기존 ID dedup도 이 신규 grant 경로를 해결하지 않습니다."
+      ],
+      "precise_correction": "사전에 알려진 project/action/resource/effect를 묶는 grant-intent digest와 실제 saved 행의 ruleDigest를 분리하십시오. Target·ruleBindings는 전자를 사용하고, progress/result는 동일 intent에 대응하는 실제 savedId와 후자의 digest를 검증하도록 정확한 필드와 상관 규칙을 고정하십시오. 기존 saved 행의 revoke digest는 유지할 수 있습니다."
+    },
+    {
+      "id": "DS-03-R3-01",
+      "severity": "high",
+      "location": {
+        "path": "docs/runs/permission-control-design/design-contract-r3.md",
+        "lines": [
+          209,
+          213,
+          217,
+          224
+        ]
+      },
+      "affected_consumer": "미완료 permission intent를 가진 재시작의 preflight·boot hold·reconciliation",
+      "evidence": [
+        "209·213행은 현재 production preflight를 유지한 뒤 graph를 boot_held로 획득하고 미완료 intent를 대조하도록 정합니다.",
+        "현재 apps/desktop-app/src/host/native-preflight.mjs:51-61의 viewBinding은 retainedOperations가 하나라도 있으면 실패합니다. 이 검사는 652-655행에서 fresh 분기보다 먼저 실행됩니다.",
+        "workspace-registry.mjs:146 및 1114-1118은 terminal이 아닌 operation을 retainedOperations에 포함합니다. dispatch 뒤 completion 전에 중단된 intent가 해당합니다.",
+        "그러므로 계약의 복구 대상 중 하나가 graph 획득 전 preflight에서 차단됩니다. graph를 이용한 대조가 그 차단을 해제하는 현재 절차는 없습니다. 현재 preflight는 fresh-only도 아닙니다. 659-699행은 기존 namespace의 read-only 검사 경로를 제공합니다."
+      ],
+      "precise_correction": "미완료 permission intent의 preflight 진입 절차를 선택하여 고정하십시오. 예를 들어 기존 read-only inspector에서 닫힌 permission target과 이전 process 종료를 대조하고, 원래 unknown 결과와 실행 차단을 유지하는 durable recovery 상태를 만든 뒤에만 boot_held graph를 허용할 수 있습니다. 일반 실행 허가와 복구용 graph 허가를 구분하고, retained intent를 삭제하거나 confirmed로 바꾸지 않는 정확한 상태 전이를 정의하십시오."
+    }
+  ],
+  "boundary": {
+    "root": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "gate": "design_spec",
+    "scope": "변경된 DS02 lease/lock/move, DS03 boot/reconciliation, DS04 closed schema/digest/journal/progress/once/reject, DS05 floor/compiler/two-policy-stage 계약의 집중 검토",
+    "binding": "reviewed는 design-spec-input-r3.json의 최상위 객체 전체를 그대로 사용했습니다.",
+    "plan": "revision1을 읽었습니다. 기존 entry plan 판정은 재검토하지 않았습니다.",
+    "run_status": "active",
+    "selected_source_count": 46,
+    "source_provenance": "source-inputs-expanded-r3.json의 files 항목은 정확히 46개입니다. 필요한 현재 production 소스와 고정된 Native 소스만 직접 읽었습니다. 전체 byte/SHA256 재검증은 수행하지 않았으며 Main의 source-integrity 책임을 대신하지 않습니다.",
+    "product_gate_dependency": {
+      "report_path": "docs/runs/permission-control-design/product-review-r2.json",
+      "verdict": "pass",
+      "subject_path": "docs/runs/permission-control-design/path-scope-clarification-r2.md",
+      "subject_sha256": "76775f8c5e658dd22f2e86116b67f16dbeb5ce31b2b28864fb2c5afb355fcaf4",
+      "assessment": "독립 PRODUCT 보고서의 PASS와 정확한 대상 hash를 직접 확인했습니다. Main이 현재 등록된 product 문서를 통해 규범적 보충 명세로 채택하고 product gate handoff가 준비되었다고 알렸습니다. 이를 사용자 직접 승인으로 해석하지 않습니다. 제안된 object-scoped path 의미는 descriptor의 외부 relocation 잔여 위험을 명시하며, 그 한계를 strict-path 보장으로 표시하지 않는 기술적 방향은 일관됩니다. PRODUCT PASS는 DS02~05 또는 구현 정확성을 판정하지 않으며, 이 DESIGN 보고서도 PRODUCT 판정을 대체하지 않습니다."
+    },
+    "implementation_authorization": false
+  },
+  "evidence_limits": [
+    "AGENTS, solo_reader, solo-specialist, solo-design-spec-review, r3 packet/input, revision1 plan, immutable r1 findings와 등록된 수정 문서를 읽었습니다.",
+    "문서와 소스의 정적 검사만 수행했습니다. tests, build, runtime, Native, provider, UI 또는 network를 실행하지 않았습니다.",
+    "수정 문서를 독립 승인된 DESIGN 계약으로 취급하지 않았습니다. 실제 patch·validator·효과 검증과 최종 CODE/RENDER 판정은 별도입니다.",
+    "PRODUCT 보고서 확인 뒤 기존 DESIGN verdict, reviewed binding과 두 finding을 변경하지 않았습니다.",
+    "파일과 ledger를 변경하지 않았으며 위임하지 않았습니다.",
+    "이번 반환은 기존 전체 보고서의 재전달입니다. 새 검토나 새 작업을 수행하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a120a6-7b19-7bc1-bb75-ed1d4847cc4e",
+    "identity_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "implementation_authored": false,
+    "report_only": true,
+    "delegation": false,
+    "files_modified": false,
+    "ledger_modified": false,
+    "tests_executed": false,
+    "build_executed": false,
+    "product_runtime_executed": false,
+    "native_executed": false,
+    "provider_invoked": false,
+    "ui_invoked": false,
+    "network_invoked": false
+  }
+}

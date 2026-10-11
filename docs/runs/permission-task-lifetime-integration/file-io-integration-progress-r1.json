@@ -1,0 +1,102 @@
+{
+  "schema_version": 2,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-task-observer.mjs",
+      "sha256": "d874e47f57c210407343fdafc7db23fc305a8930ce45b12f668bf6ee0faf4330",
+      "bytes": 11164
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-observer.test.mjs",
+      "sha256": "261b59636c65bd432daae0fd2c0b56b334f04cfbeb47159ea4de1d0c358841d4",
+      "bytes": 34100
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-leases.mjs",
+      "sha256": "48e99b962348b104e7ab947d8f01c980e4a5c01aea3edee958ed0229cbabc9cc",
+      "bytes": 11732
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-leases.test.mjs",
+      "sha256": "8829612ef88d67bfe87f9b6be411c52863a0474f22dcdfd77d9c8d4b0e9788ef",
+      "bytes": 55890
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-workspace-file-io.mjs",
+      "sha256": "d97ef6a0837e20ca85f025594411a7a9bbfe0b0d6898acb36a6398007bdce835",
+      "bytes": 5348
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-workspace-file-io.test.mjs",
+      "sha256": "75a80cbd3619dd080c5101d4b8721a57336ea407fb55d54c0875b4313de0e25b",
+      "bytes": 19768
+    },
+    {
+      "path": "apps/desktop-app/src/workbench-errors.mjs",
+      "sha256": "e063ae6d7f5db546be2abc79f3ebe13634b95c6114ec1cd02be501baac236344",
+      "bytes": 3270
+    },
+    {
+      "path": "apps/desktop-app/src/workbench-contract.mjs",
+      "sha256": "d4a5621e27bebba94778f6345bef7100c8796da8fb8469262f439f4ece5c27be",
+      "bytes": 26166
+    },
+    {
+      "path": "apps/desktop-app/src/host/workbench-file-edit.mjs",
+      "sha256": "0a564f780024e814875d8265dbb03371a1d0f2044410bbc56151e2a95f67634e",
+      "bytes": 10421
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-resources.mjs",
+      "sha256": "390706a204fffec6c114e4784c687fd80a0e5fa442006d9e7d298a01df1dfae6",
+      "bytes": 17749
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-test-fixture.mjs",
+      "sha256": "49f47297c46d96fd196b3158232a591af42b2b813f78cde736a991399185670e",
+      "bytes": 1804
+    }
+  ],
+  "checks": [
+    {
+      "log": "file-io-observer-green-r3.log",
+      "passed": 82,
+      "scope": "Actual Node fixed read resource and pinned Effect observer/lease/RPC scope tests"
+    },
+    {
+      "log": "file-io-control-coherent-r1.log",
+      "passed": 82,
+      "scope": "Actual Control and extracted Native location/tool/session/inventory plus exact overlay; no subsequent production change to those source inputs"
+    },
+    {
+      "log": "file-io-stage-closure-r1.log",
+      "passed": 1,
+      "scope": "Actual current source closure copied into inert staged fixture and manifest verified"
+    },
+    {
+      "log": "wire-errors-extraction-r1.log",
+      "passed": 84,
+      "scope": "Existing contract/file-observation/conversation-context API and byte regressions after extraction"
+    }
+  ],
+  "static": {
+    "eslint": "pass nine Main paths",
+    "prettier": "pass nine Main paths"
+  },
+  "implementation": [
+    "Actual fixed file read completion token, one-use claim before first IO, original Node FileHandles remain private",
+    "bindFileIO is an Effect owned by captured original Fiber; sibling/forged/late/duplicate bindings refuse",
+    "Physical IO closes remain held after Fiber interruption; injected IO always incomplete",
+    "Sessionless workspace RPC can own actual file IO and settle without creating a session execution scope",
+    "No arbitrary Promise/status/ACK can provide file closure proof",
+    "Minimal error exports preserve full DTO API while removing Main DTO dependency from child primitive",
+    "Shared test source helper traverses actual imports inside staged closed allowlist"
+  ],
+  "limits": [
+    "Native Read/Write/Edit/Patch callback adapter still not implemented/verified",
+    "Complete inventory, stored mode owner, positive task handoff, bootstrap/recovery remain incomplete",
+    "Node original identities in lease tests synthetic; no journal authority or Native execution claim",
+    "No Native/Bun/Electron/build/provider/GUI/network/private originals run",
+    "Fresh independent CODE pending; full18/F09 not complete"
+  ]
+}

@@ -1,0 +1,26 @@
+✔ actual child and fixed Skill plugin transitive source closure stage together without engine execution (2309.607583ms)
+✖ resource import syntax ignores recipe strings/comments but checks real imports and reexports (0.185166ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2520.723625
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/stage-event-host.test.mjs:849:1
+✖ resource import syntax ignores recipe strings/comments but checks real imports and reexports (0.185166ms)
+  SyntaxError [Error]: Expected ',' or '}' after property value in JSON at position 17 (line 1 column 18)
+      at JSON.parse (<anonymous>)
+      at localResourceImports (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.mjs:41:10)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.test.mjs:851:5)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at node:internal/test_runner/test:1305:31
+      at node:internal/process/task_queues:158:7
+      at AsyncResource.runInAsyncScope (node:async_hooks:226:14)

@@ -1,0 +1,101 @@
+{
+  "schema_version": 2,
+  "run": "permission-control-design",
+  "reviewer": "reviewer",
+  "reviewed": {
+    "contract_sha256": "214b54175c005a3c84049d82b8578f5469d158470bc4d08701ea69175a0753d0",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "de263d947b000568d0e1de2af58f48ba6d44a5a467f6ca944887ae3ed2593d64",
+    "schema_version": 2,
+    "source_sha256": "d7f93c69322b81eb4beaa77bcc9d868b243108df77fe454e9d25860930463b97",
+    "verification_sha256": "a79e8c936c9e8d3b161f34fce33c5eb1e9f22cc4af10454c7519e690e22f18b6",
+    "work_class_sha256": "e52a40450aab62593988ef0bf9d39c6504837c8a4914a1062d4fa95545e7273a"
+  },
+  "verdict": "pass",
+  "summary": "지정 범위에서 수정이 필요한 결함을 찾지 못했습니다. 설치된 네 지침 파일과 managed metadata가 일치합니다. 최종 CODE input 전체 binding을 독립 계산으로 재현했습니다.",
+  "open_findings": [],
+  "review_boundary": {
+    "root": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_revision": 1,
+    "scope": "baseline 대비 설치 지침 네 파일과 managed.json 변경, 최종 증거와 기록의 일치 여부",
+    "initial_plan_rereviewed": false,
+    "product_design_rereviewed": false,
+    "full_product_code_rereviewed": false,
+    "implementation_authorization": false,
+    "full_f09_complete": false
+  },
+  "verification_assessment": {
+    "whole_final_code_input_matches": true,
+    "source_delta_exactly_five_paths": true,
+    "product_mutation_source_unchanged": true,
+    "selected_static_inputs": {
+      "count": 46,
+      "all_bytes_and_hashes_match": true,
+      "recorded_source_inputs_check": "exit_code 0이며 현재 source, plan, contract, environment 및 명령과 일치합니다."
+    },
+    "installed_sync": {
+      "four_files_match_canonical_and_prior_review_evidence": true,
+      "all_67_managed_file_hashes_match": true,
+      "managed_agents_block_matches_canonical": true,
+      "managed_serialization_matches_canonical_algorithm": true,
+      "baseline_managed_hash_reproduced_by_restoring_only_four_old_hashes": true,
+      "unfinished_transaction_absent": true
+    },
+    "records": {
+      "all_registered_artifact_hashes_match": true,
+      "outcome_hash_matches": true,
+      "outcome_changed_and_deleted_paths_match": true,
+      "acceptance_ids_artifacts_and_checks_match": true,
+      "document_hashes_and_review_epochs_match": true,
+      "product_and_design_pass_reports_match_saved_inputs": true,
+      "document_gate_reuse_conditions_match_current_harness": true,
+      "routing_hashes_match": true,
+      "packet_and_contract_decisions_match": true,
+      "unresolved_decision_blocks": [],
+      "user_approvals": []
+    },
+    "contract_hash_explanation": "packet은 contract 파일의 원본 바이트를, CODE input은 정규화한 JSON 의미를 hash합니다. 두 값은 각 생성 규칙과 일치합니다."
+  },
+  "acceptance_assessment": {
+    "D1": "현재 문서와 기존 독립 검토에 연결됩니다. source 증거는 정적 출처 확인으로 제한됩니다.",
+    "D2": "현재 design/schema, 규범적 보충 명세와 채택 기록이 정확한 hash로 연결됩니다. 구현과 runtime 검증은 향후 작업으로 남아 있습니다.",
+    "D3": "기존 entry plan 및 PRODUCT/집중 DESIGN 판단을 재사용합니다. 현재 문서 binding과 gate 재사용 조건을 확인했습니다. 초기 검토는 반복하지 않았습니다."
+  },
+  "reused_independent_judgments": [
+    {
+      "path": "/Users/hyukjaechoi/Solopreneur/docs/runs/review-finding-authority/code-review-registration-r3.json",
+      "sha256": "2b79d9911b3740855127c5461c0c2359917ecb54e778e43a78442dc5ef7a91d6",
+      "verdict": "pass"
+    },
+    {
+      "path": "/Users/hyukjaechoi/Solopreneur/docs/runs/review-finding-authority/code-review-final-r2.json",
+      "sha256": "25940ed8a2c0dff1d3bdaeeecd3e5a7f7361df4e5dcae1ce4945709dfde47448",
+      "verdict": "pass"
+    }
+  ],
+  "evidence_limits": [
+    "기존 CODE 판단은 정확히 일치하는 네 지침 파일에만 재사용했습니다.",
+    "파일 읽기, diff 비교와 hash 계산만 수행했습니다. harness 명령과 sync는 재실행하지 않았습니다.",
+    "실제 handoff 명령은 실행하지 않았습니다. 현재 기록으로 문서 gate 재사용 조건을 확인했습니다.",
+    "이 PASS는 구현 완료, runtime 동작, 사용자 직접 승인 또는 작성자의 자기 승인을 뜻하지 않습니다.",
+    "별도 routine overlay 구현과 이후 변경은 검토 범위에 포함하지 않습니다. 기존 설계 파일은 변경하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a120b2-29dd-7703-8b5e-7d74810b22e8",
+    "identity_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "implementation_authored": false,
+    "report_only": true,
+    "files_modified": false,
+    "ledger_modified": false,
+    "tests_executed": false,
+    "build_executed": false,
+    "product_runtime_executed": false,
+    "native_executed": false,
+    "ui_invoked": false,
+    "network_invoked": false,
+    "delegation": false,
+    "identity_or_os_sandbox_attested": false
+  }
+}

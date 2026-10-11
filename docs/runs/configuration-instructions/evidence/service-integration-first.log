@@ -1,0 +1,107 @@
+✔ instruction apply/remove confirms exact Native entry, committed direct origin and scoped redacted receipt (83.419958ms)
+✔ instruction deny fails before Native effect (36.843542ms)
+✔ instruction file-conflict fails before Native effect (45.783458ms)
+✔ instruction baseline-conflict fails before Native effect (33.242709ms)
+✔ instruction confirmation-race fails before Native effect (51.180708ms)
+✔ instruction unowned fails before Native effect (29.24825ms)
+✔ instruction malformed fails before Native effect (32.026542ms)
+✔ instruction pending fails before Native effect (40.925917ms)
+✔ instruction policy fails before Native effect (31.082458ms)
+✖ unowned and owned drift block send/command/fork before policy or selection effects; explicit owned repair is allowed (76.26475ms)
+✔ instruction fork inherits verified immediate origin; identical child apply records direct; parent change does not relabel child (105.847667ms)
+✔ instruction ACK with wrong post-list is unknown and duplicate never replays or projects ownership (38.13725ms)
+✔ instruction completion failed has no speculative success metadata/result (40.74375ms)
+✔ instruction completion delayed has no speculative success metadata/result (2037.399959ms)
+✔ managed bootstrap reserves stable UUID before mkdir/create; observations do not append (36.19375ms)
+✔ paused admission flush preserves committed snapshot/lookup and actual call order (42.2355ms)
+✔ paused dispatch flush preserves committed snapshot/lookup and actual call order (37.90775ms)
+✔ paused completion flush preserves committed snapshot/lookup and actual call order (42.6385ms)
+✔ admission failure poisons writer globally and later effects have zero calls (30.726208ms)
+✔ dispatch failure poisons writer globally and later effects have zero calls (35.481208ms)
+✔ completion failure poisons writer globally and later effects have zero calls (37.810709ms)
+✔ BUSY rejection rebase survives concurrent atomic completion; digest conflict never dispatches (47.13875ms)
+✔ verified create with later policy failure publishes unavailable partial mapping and unknown hold (41.844625ms)
+✔ owner_conflict facade remains readable before native ready with zero start/effect calls (5.328541ms)
+✔ corrupt_journal facade remains readable before native ready with zero start/effect calls (4.467291ms)
+✔ unconfirmed_tail facade remains readable before native ready with zero start/effect calls (3.18425ms)
+✔ pending_inbox facade remains readable before native ready with zero start/effect calls (4.86125ms)
+✔ native_startup_unverified facade remains readable before native ready with zero start/effect calls (5.159625ms)
+✔ complete valid but unconfirmed tail never automatically adopts mapping or success at restart (26.224625ms)
+✔ every native.policy.before_selection dispatch flush precedes actual effect and poison retains earlier ambiguity (30.937083ms)
+✔ every native.agent dispatch flush precedes actual effect and poison retains earlier ambiguity (32.177ms)
+✔ every native.model dispatch flush precedes actual effect and poison retains earlier ambiguity (37.703584ms)
+✔ every native.policy.after_selection dispatch flush precedes actual effect and poison retains earlier ambiguity (35.044583ms)
+✔ every native.send dispatch flush precedes actual effect and poison retains earlier ambiguity (46.630084ms)
+✔ late native settlement retains mutation slot and durable original receipt identity (43.327042ms)
+✔ explicit checkpoint reopen uses exact original identity+digest without create; mismatch=false (47.948833ms)
+✔ explicit checkpoint reopen uses exact original identity+digest without create; mismatch=true (44.793583ms)
+✔ confirmed inherited-metadata fork checkpoint reopen validates 1 lineage links without replay (71.174084ms)
+✔ confirmed inherited-metadata fork checkpoint reopen validates 2 lineage links without replay (85.632791ms)
+✔ fork checkpoint reopen rejects native child id without effects or receipt promotion (84.026375ms)
+✔ fork checkpoint reopen rejects native path without effects or receipt promotion (87.412459ms)
+✔ fork checkpoint reopen rejects native fork parent without effects or receipt promotion (84.023459ms)
+✔ fork checkpoint reopen rejects missing native fork without effects or receipt promotion (86.781834ms)
+✔ fork checkpoint reopen rejects parentID cannot replace fork.sessionID without effects or receipt promotion (88.833167ms)
+✔ fork checkpoint reopen rejects inherited metadata digest without effects or receipt promotion (88.168459ms)
+✔ fork checkpoint reopen rejects inherited metadata app id without effects or receipt promotion (83.771375ms)
+✔ fork checkpoint reopen rejects inherited metadata extra field without effects or receipt promotion (88.562333ms)
+✔ fork checkpoint reopen rejects missing inherited metadata without effects or receipt promotion (78.415584ms)
+✔ fork checkpoint reopen rejects missing fork identity without effects or receipt promotion (83.169209ms)
+✔ fork checkpoint reopen rejects fork identity digest without effects or receipt promotion (86.395ms)
+✔ fork checkpoint reopen rejects fork identity parent without effects or receipt promotion (79.225125ms)
+✔ fork checkpoint reopen rejects fork receipt missing without effects or receipt promotion (80.549875ms)
+✔ fork checkpoint reopen rejects fork receipt unknown without effects or receipt promotion (78.215916ms)
+✔ fork checkpoint reopen rejects fork receipt type without effects or receipt promotion (75.70625ms)
+✔ fork checkpoint reopen rejects fork receipt operation key without effects or receipt promotion (73.198167ms)
+✔ fork checkpoint reopen rejects fork receipt result kind without effects or receipt promotion (69.754583ms)
+✔ fork checkpoint reopen rejects fork receipt parent without effects or receipt promotion (68.071333ms)
+✔ fork checkpoint reopen rejects fork receipt child without effects or receipt promotion (76.143083ms)
+✔ fork checkpoint reopen rejects fork receipt native id without effects or receipt promotion (77.794667ms)
+✔ fork checkpoint reopen rejects fork receipt workspace without effects or receipt promotion (75.798208ms)
+✔ fork checkpoint reopen rejects ancestor receipt missing without effects or receipt promotion (74.180292ms)
+✔ fork checkpoint reopen rejects ancestor metadata digest without effects or receipt promotion (71.212709ms)
+✔ fork checkpoint reopen rejects missing parent mapping without effects or receipt promotion (74.540292ms)
+✔ fork checkpoint reopen rejects unavailable parent mapping without effects or receipt promotion (75.211708ms)
+✔ fork checkpoint reopen rejects parent outside workspace without effects or receipt promotion (66.016916ms)
+✔ fork checkpoint reopen rejects cyclic parent mapping without effects or receipt promotion (73.909791ms)
+✔ confirmed fork lookup never authorizes blocked startup (71.619958ms)
+✔ retained key bootstrap resolves original epoch through current-envelope lookup without native (52.724ms)
+✔ session.create completion flush never exposes uncommitted mapping/tombstone (34.155458ms)
+✔ session.remove completion flush never exposes uncommitted mapping/tombstone (44.11925ms)
+✔ unavailable shared workspace blocks descendants but permits unrelated registered resource (74.780542ms)
+✔ read invalidation uses touched workspace generation; independent workspace completion preserves slow read (60.179583ms)
+✔ staged managed workspace uses reserved folderSessionId for its first actual session (66.880334ms)
+✔ partial completion bytes after native success remain corrupt evidence; checkpoint recovery never promotes success (38.228375ms)
+✔ native read metadata never mutates committed title, permissions or durable revision (17.340584ms)
+✔ durable exact typed-empty fork rejection retains flushed intent as unknown with no confirmed mapping (36.266333ms)
+✔ configuration denial and post-confirm external conflict have no target effect or kernel call (38.181333ms)
+✔ configuration staged uncertainty retains original key, no publication/replay and only matching resource hold (46.783542ms)
+✔ configuration completion failure never projects speculative saved result (36.659333ms)
+✔ configuration completion delay never projects speculative saved result (2035.558ms)
+ℹ tests 80
+ℹ suites 0
+ℹ pass 79
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8412.564916
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:169:1
+✖ unowned and owned drift block send/command/fork before policy or selection effects; explicit owned repair is allowed (76.26475ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:217:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

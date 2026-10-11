@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "997e21f49fcd9fa5cd4ae2248a24cfc8167438e58e1dc2f482a1020f00c82ff2",
+    "contract_sha256": "d0017f6e5114ef5e7a33d9635f363740f7a91681d4e284276c12a89f39fc3999",
+    "source_sha256": "b918bf66d3d2176942232a2aa09d73af75f55a577a47ca521195750769874a0b",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "verification_sha256": "743b46e81b9870f61d4d6ac39acb9c8ace2ed9c822e11f2865dfb25c9d88ba41"
+  },
+  "verdict": "pass",
+  "summary": "Independent Astra/high review found no actionable findings. Canonical and product copies match; phase gates validate both handoff preparation and dispatch; dispatch revalidates the reviewed plan and contract. No new network, external-service, or model-calling hook was found.",
+  "open_findings": [],
+  "validation": "The reviewer inspected current source, existing passing check receipts (8 canonical tests and 9 product tests), syntax checks, contract parsing, template parity, managed-file drift, 12 canonical-manifest hashes, and 32 registered artifact hashes. The outcome covers H-1 through H-4 and exactly the 19 changed paths with no deletions. Checks were not rerun. The source fingerprint does not include the external canonical source; that source was directly compared with its current manifest, so future canonical edits require a fresh manifest/parity check.",
+  "provenance": {
+    "child_task_id": "/root/desktop_plan_review_r4",
+    "author_task_id": "/root",
+    "review_mode": "Independent read-only current-bound code review",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false,
+    "files_modified": false
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "gate": "design",
+  "role": "design_qa",
+  "run": "build-delivery",
+  "reviewed": {
+    "contract_sha256": "1a5b79ccd693e06ae42c169818e444f63bbaa5eaa3a80f5207f5fd217b838386",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "design",
+    "plan_sha256": "7bcacee7766d65c157a9b1e8b402f9a77e792f6907c89a045b084a62546999d3",
+    "schema_version": 2,
+    "source_sha256": "e9fb6e590350972c6d23515bd1bd1a3ea57ba8d1dcd5e73923bcc62ac42cd095",
+    "verification_sha256": "7b44d2d318dc53fc915d87e5224e9b4d8dc399361db4409589c7a17f7c226541"
+  },
+  "verdict": "blocked",
+  "scope": "Fresh independent rendered-UI judgment for plan revision 7's bridge-owned runtime-info validator and synthetic SDK probe. The assigned change does not include renderer or UI source changes. This review does not assess SDK behavior or approve the full PRD journey.",
+  "summary": "No fresh rendered-UI judgment is possible: the existing synthetic workbench at http://127.0.0.1:4200/ refused a loopback connection, and this run has no accessible implementation capture. Prior design reviews describe a readable synthetic shell, but their observations cannot be promoted to current viewport or state evidence.",
+  "observed_evidence": {
+    "origin": "Read-only local inspection on 2026-09-28. A curl request to http://127.0.0.1:4200/ failed immediately with connection refused (curl exit 7, HTTP 000). No service was started and no browser tab was navigated. The build-delivery run contains no PNG, JPEG, or WebP capture of the implementation.",
+    "route": "/",
+    "state": "Unavailable; the synthetic fixture did not render during this review.",
+    "viewports_checked": [],
+    "observations": [
+      "The current plan revision 7 limits this increment to the bridge runtime-info boundary and SDK synthetic probe, with no UI source changes assigned.",
+      "The previous design-qa-r1 report records a synthetic, Korean, light-theme read-only LinkPreview shell at 320×844, 600×844, 900×844, and 1280×720 on 2026-09-27. It had no exported capture and is historical context only; none of those states or dimensions were independently observed here."
+    ]
+  },
+  "open_findings": [],
+  "verification_gap": {
+    "severity": "gate_blocking",
+    "location": "Synthetic workbench route /",
+    "user_impact": "Current visual hierarchy, responsive layout, rendered state, keyboard semantics, and console behavior cannot be independently judged against the PRD and UX specification.",
+    "required_evidence": "Make the existing implementation available for a fresh read-only review, or provide accessible captures with origin, application state, viewport, and checked pixel dimensions. Recheck the relevant synthetic shell widths and states before recording a design pass."
+  },
+  "not_retested": [
+    "Any viewport, including 320, 390, 600, 900, and 1280 px",
+    "Synthetic default, loading, error, and malformed-result states",
+    "Keyboard focus, accessibility tree, screen-reader behavior, zoom, dark theme, and reduced motion",
+    "Real SDK streaming, permissions, project navigation, recovery, and PRD AC-01–18 flows",
+    "Running-bundle identity relative to the current source fingerprint"
+  ],
+  "limits": [
+    "This is a verification gap, not an observed visual defect. No current rendered state, screenshot, viewport dimension, or console result was observed.",
+    "Prior reports and source references cannot establish current visual parity; the runtime-info implementation and SDK probe are outside this role's verification scope."
+  ],
+  "next_handoff": "Coordinator should retain the design gate as blocked for this source binding until a fresh independent design_qa review can inspect the running synthetic workbench or a traceable implementation capture. Do not infer full product readiness from a later bounded synthetic-shell pass.",
+  "provenance": {
+    "child_task_id": "/root/runtime_info_design_qa_r2",
+    "author_task_id": "/root",
+    "report_only": true,
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "medium",
+    "runtime_identity_verified": false
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "verdict": "PASS",
+  "findings": [],
+  "scope": "Bounded independent Main owner facade and exact extracted Node closure tests only",
+  "reviewer": {
+    "childRef": "01a1267f-b121-7e82-8835-2f595a91b41b",
+    "cleanContext": true,
+    "provenance": "Coordinator-recorded native child result, not runtime identity attestation"
+  },
+  "planRevision": 6,
+  "sources": [
+    {
+      "path": "apps/desktop-app/src/main.mjs",
+      "bytes": 28782,
+      "sha256": "06ed521362b6b5ab4146ef5bcf0e56366392f9a28afcca90e12eb4d53c9ba2eb"
+    },
+    {
+      "path": "apps/desktop-app/src/host/main-task-owner-fence.test.mjs",
+      "bytes": 4497,
+      "sha256": "a22c28b8d8e42367b5ec6cfa5be7d7a46bf4cff5e18ce4bcaa497075dca6d609"
+    }
+  ],
+  "verification": {
+    "node": "9/9 PASS independently rerun",
+    "beforeManifest": "edc15038597b04f0afbf8c87ae9ed72e8d5d742c83274225bd8879083e55154a",
+    "sourceStartEndStable": true,
+    "actualStorageLockStickyLossChecked": true,
+    "packetPlanRoutingHashesMatched": true,
+    "parentScopedEslintPrettier": "PASS"
+  },
+  "limits": [
+    "No Main/Electron import, scripted owner/storage only",
+    "No actual journal/Task execution; production taskAuthoritySource not yet wired",
+    "Not full18 final CODE or runtime/preexecution approval"
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "source_exists": true,
+  "not_final_source_freeze": true,
+  "observation": "Main read actual source after implementation appeared; worker still extending tests/formatting. Do not treat hashes as final acceptance.",
+  "actions": [
+    "selectLineFeedbackSource(kind:file|git)",
+    "resumeLineFeedback(id:string)",
+    "editLineFeedback({side?,start?,end?,comment?})",
+    "discardLineFeedback()",
+    "appendLineFeedback():boolean"
+  ],
+  "selectors": [
+    "lineFeedback",
+    "lineFeedbackDraft",
+    "lineFeedbackReason",
+    "lineFeedbackPreview",
+    "canAppendLineFeedback"
+  ],
+  "region": "section[aria-label=\"파일·diff 줄 피드백\"]",
+  "hooks": [
+    "data-line-feedback-state",
+    "data-line-feedback-source",
+    "data-line-feedback-history",
+    "data-line-feedback-session",
+    "data-line-feedback-side",
+    "data-line-feedback-start",
+    "data-line-feedback-end",
+    "data-line-feedback-range=start|end",
+    "data-line-feedback-comment",
+    "data-line-feedback-preview",
+    "data-line-feedback-append",
+    "data-line-feedback-discard",
+    "data-line-feedback-status"
+  ],
+  "labels": [
+    "피드백 출처",
+    "읽은 파일 기준 내용",
+    "현재 Git 차이",
+    "보관 피드백 초안",
+    "추가 대상 세션",
+    "줄 피드백 의견",
+    "선택한 줄 발췌문",
+    "작성기 초안에 추가",
+    "피드백 초안 버리기"
+  ],
+  "status_codes": [
+    "MISSING_SOURCE",
+    "MISSING_SESSION",
+    "UNTRUSTED",
+    "HELD",
+    "STALE_SOURCE",
+    "STALE_TARGET",
+    "INVALID_LINE_RANGE",
+    "UNSUPPORTED_DIFF",
+    "INVALID_FEEDBACK_SOURCE",
+    "INVALID_FEEDBACK_COMMENT",
+    "INVALID_FEEDBACK_TEXT",
+    "FEEDBACK_TOO_LARGE",
+    "DRAFT_TOO_LARGE",
+    "CACHE_FULL",
+    "ADDED",
+    "DISCARDED"
+  ],
+  "sources_observed": {
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts": "0bca45bdf8dc0786b76a5c155a86af8a90133bd6f2bb3b3c191edf05a7157225",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts": "9fb7747c40c57f3919766611e90bcf23ce513a4106bfdddff81200e7bcbe3c83",
+    "apps/desktop-app/src/renderer/features/line-feedback/index.tsx": "2d1fe3b7fbb253802062c79d08e094806d635f208f2437057d23677d1c342465"
+  }
+}

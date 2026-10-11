@@ -1,0 +1,34 @@
+✔ MCP inactive registration and explicit connection lifecycle are durable, scoped and status-observed (122.617708ms)
+✔ MCP denied is rejected before any effect (46.363125ms)
+✔ MCP collision is rejected before any effect (39.93425ms)
+✔ MCP file-changed is rejected before any effect (44.85625ms)
+✔ MCP observation is workspace-scoped, read-only and rejects a different Native location (30.331666ms)
+✔ MCP file changed during confirmation is rejected before SDK mutation (36.458833ms)
+✔ MCP catalog changed during confirmation is rejected before SDK mutation (39.305458ms)
+✔ MCP permissions changed during confirmation is rejected before SDK mutation (42.009166ms)
+✔ MCP policy changed during confirmation is rejected before SDK mutation (43.909375ms)
+✔ MCP inbox changed during confirmation is rejected before SDK mutation (39.085458ms)
+✔ MCP checks busy in another session of the same workspace (52.960959ms)
+✔ MCP checks permissions in another session of the same workspace (53.713917ms)
+✔ MCP checks policy in another session of the same workspace (49.054125ms)
+✔ MCP checks correlation in another session of the same workspace (41.654583ms)
+✔ MCP checks inbox in another session of the same workspace (43.973708ms)
+✔ MCP observed failed confirms only the connection attempt (48.456042ms)
+✔ MCP observed needs_auth confirms only the connection attempt (52.122667ms)
+✔ MCP owned already absent remove has no SDK effect and clears live ownership only after completion (48.745292ms)
+✔ MCP ACK with wrong-status stays unknown and keeps an original workspace-wide hold (62.506083ms)
+✔ MCP ACK with malformed stays unknown and keeps an original workspace-wide hold (55.841ms)
+✔ MCP ACK with other-drift stays unknown and keeps an original workspace-wide hold (53.02925ms)
+✔ MCP ACK with policy-after-effect stays unknown and keeps an original workspace-wide hold (60.202084ms)
+✔ MCP completion failure never publishes speculative receipt or live ownership (34.262958ms)
+✔ MCP completion delay never publishes speculative receipt or live ownership (2034.052041ms)
+✔ MCP dispatch must flush before SDK; independent workspace reads remain available (79.717833ms)
+✔ MCP restart forgets live authority, performs no automatic mutation, and keeps old receipts historical (106.025209ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3427.594583

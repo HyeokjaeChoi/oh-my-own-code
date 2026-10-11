@@ -1,0 +1,46 @@
+✖ MCP connect refuses cwd symlink replacement before-confirmation before SDK dispatch (90.574709ms)
+✖ MCP connect refuses cwd symlink replacement during-confirmation before SDK dispatch (68.04275ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 225.873167
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2779:3
+✖ MCP connect refuses cwd symlink replacement before-confirmation before SDK dispatch (90.574709ms)
+  AssertionError [ERR_ASSERTION]: {"ok":true,"value":{"requestId":"cwd-connect-before-confirmation","status":"connection_status","action":"connect","sourceName":"sample","nativeName":"omoc-mcp-9d76e3c6af1f756e9b21b0bf35ba86a9a3d3c341","connectionStatus":"connected"},"receipt":{"runtimeEpoch":"epoch","operationId":"cwd-connect-before-confirmation","type":"configuration.mcp.connect","workspaceId":"b4b8804d-7893-4139-8273-289129a7fcc8","admission":"dispatched","delivery":"accepted","effect":"confirmed","revision":14,"evidence":[{"kind":"host-registry","id":"b4b8804d-7893-4139-8273-289129a7fcc8"}],"result":{"kind":"mcp_connection","workspaceId":"b4b8804d-7893-4139-8273-289129a7fcc8","sourceName":"sample","nativeName":"omoc-mcp-9d76e3c6af1f756e9b21b0bf35ba86a9a3d3c341","action":"connect","connectionStatus":"connected"}}}
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2814:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2779:3
+✖ MCP connect refuses cwd symlink replacement during-confirmation before SDK dispatch (68.04275ms)
+  AssertionError [ERR_ASSERTION]: {"ok":true,"value":{"requestId":"cwd-connect-during-confirmation","status":"connection_status","action":"connect","sourceName":"sample","nativeName":"omoc-mcp-0c97e02d87cda0da4e3b25e1a6b739be4a184438","connectionStatus":"connected"},"receipt":{"runtimeEpoch":"epoch","operationId":"cwd-connect-during-confirmation","type":"configuration.mcp.connect","workspaceId":"384272ef-fa59-4618-b8a2-73aa7c23a64b","admission":"dispatched","delivery":"accepted","effect":"confirmed","revision":14,"evidence":[{"kind":"host-registry","id":"384272ef-fa59-4618-b8a2-73aa7c23a64b"}],"result":{"kind":"mcp_connection","workspaceId":"384272ef-fa59-4618-b8a2-73aa7c23a64b","sourceName":"sample","nativeName":"omoc-mcp-0c97e02d87cda0da4e3b25e1a6b739be4a184438","action":"connect","connectionStatus":"connected"}}}
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2814:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

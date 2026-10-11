@@ -1,0 +1,1819 @@
+{
+  "schema_version": 1,
+  "phase": "Actual fresh r13 corrections checks PASS; fresh focused independent final CODE/RENDER remain",
+  "source_sha256": "4c77540b8bee2dc299e3a80f92e2877264d9fb8f3a9953aa5dfc118054d301a0",
+  "changed_path_count": 34,
+  "checks": [
+    "mcp",
+    "native",
+    "hidden-ui",
+    "build",
+    "typecheck",
+    "boundaries",
+    "bundle",
+    "lint",
+    "format"
+  ],
+  "native_cases": [
+    {
+      "name": "default-denied-then-register-disabled-zero-synthetic-starts",
+      "result": "pass"
+    },
+    {
+      "name": "current-owned-collision-and-changed-token-zero-effects",
+      "result": "pass"
+    },
+    {
+      "name": "original-composite-receipt-lookup-no-replay",
+      "result": "pass",
+      "key": {
+        "runtimeEpoch": "configuration-mcp-one",
+        "operationId": "bc7fa2df-1919-4a3f-8c9d-f4d32c80367b"
+      }
+    },
+    {
+      "name": "actual-connect-disconnect-exact-live-synthetic-kernel-exit",
+      "result": "pass",
+      "identity": {
+        "pid": 62161,
+        "platform": "darwin",
+        "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+        "startToken": "e2e74b77fabd34aee10fc895bab72f5a2dff7da0bf8f6f3509838afdf29b17ff"
+      },
+      "event": {
+        "event": "NOTE_EXIT",
+        "pid": 62161,
+        "filter": "EVFILT_PROC"
+      },
+      "observerExit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "name": "actual-connect-remove-exact-live-synthetic-kernel-exit",
+      "result": "pass",
+      "identity": {
+        "pid": 62173,
+        "platform": "darwin",
+        "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+        "startToken": "0052810ef11938db5a93b19c07fdf8e944714e792d604f69eaa017b81a8cc232"
+      },
+      "event": {
+        "event": "NOTE_EXIT",
+        "pid": 62173,
+        "filter": "EVFILT_PROC"
+      },
+      "observerExit": {
+        "code": 0,
+        "signal": null
+      }
+    },
+    {
+      "name": "supported-full-file-byte-preserved-no-durable-command-config-copies",
+      "result": "pass"
+    },
+    {
+      "name": "restart-live-authority-expires-historical-only-no-automatic-MCP-effects",
+      "result": "pass",
+      "oldEpoch": "configuration-mcp-one",
+      "newEpoch": "configuration-mcp-reopen",
+      "explicitTrustEffect": "session.create",
+      "catalog": {
+        "workspaceId": "76bae669-ad1d-47f9-bbff-d493c76746db",
+        "status": "observed",
+        "version": "860709e06c62f1bbb6d516183a196732767eaf9e500d39baeaaf0ad7abd846e4",
+        "servers": []
+      }
+    },
+    {
+      "name": "controlled-actual-service-unknown-original-key-lookup-workspace-hold-no-replay",
+      "result": "pass",
+      "authority": "explicit post-add read failure injection; not Native behavior",
+      "key": {
+        "runtimeEpoch": "configuration-mcp-reopen",
+        "operationId": "14526fab-54a6-4866-9ab2-f4f0c8432349"
+      }
+    },
+    {
+      "name": "actual-immutable-old-parser-refuses-MCP-feature-checkpoint-byte-preserved",
+      "result": "pass"
+    }
+  ],
+  "native_cleanup": [
+    {
+      "namespace": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-mcp/evidence/native-r5/synthetic-eP9QrH",
+      "identity": {
+        "pid": 61850,
+        "platform": "darwin",
+        "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+        "startToken": "5ec131ae84448b648d4ef8172999495bade33119a4bdc6b7ead0ab3a5ce56551"
+      },
+      "exited": true,
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "nativeExitConfirmed": true,
+      "nativeStopResult": {
+        "exited": true,
+        "cleanup": "not_started",
+        "nativeStarted": true,
+        "nativeIdentity": {
+          "pid": 62094,
+          "platform": "darwin",
+          "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+          "startToken": "e539e4497e801bb8a663c21fba01bc314e7022df6944bf7c04ba7eb85ab75a25"
+        },
+        "nativeExit": {
+          "code": 0,
+          "signal": null
+        },
+        "preflightClose": {
+          "exited": true,
+          "cleanup": "complete"
+        },
+        "windows": 0,
+        "activationPolicy": "prohibited"
+      },
+      "cleanup": {
+        "explicitStopConfirmed": true,
+        "fallbackDisconnect": false,
+        "helperExitConfirmed": true
+      }
+    },
+    {
+      "namespace": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-mcp/evidence/native-r5/synthetic-eP9QrH",
+      "identity": {
+        "pid": 62184,
+        "platform": "darwin",
+        "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+        "startToken": "68c84ef92d2a5e2a5707972e7a48c17218b558e095fe20fc7e698b8edec7e176"
+      },
+      "exited": true,
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "nativeExitConfirmed": true,
+      "nativeStopResult": {
+        "exited": true,
+        "cleanup": "not_started",
+        "nativeStarted": true,
+        "nativeIdentity": {
+          "pid": 63362,
+          "platform": "darwin",
+          "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+          "startToken": "bd0ce23a4a4e73ed38a52f9b7badcf6dbf008a0fad200c6018c05314ef7d14e5"
+        },
+        "nativeExit": {
+          "code": 0,
+          "signal": null
+        },
+        "preflightClose": {
+          "exited": true,
+          "cleanup": "complete"
+        },
+        "windows": 0,
+        "activationPolicy": "prohibited"
+      },
+      "cleanup": {
+        "explicitStopConfirmed": true,
+        "fallbackDisconnect": false,
+        "helperExitConfirmed": true
+      }
+    }
+  ],
+  "synthetic_exact_kernel_observers": [
+    {
+      "role": "synthetic-MCP-kernel-observer",
+      "pid": 62167,
+      "target": {
+        "pid": 62161,
+        "platform": "darwin",
+        "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+        "startToken": "e2e74b77fabd34aee10fc895bab72f5a2dff7da0bf8f6f3509838afdf29b17ff"
+      },
+      "exited": true,
+      "attached": {
+        "pid": 62161,
+        "platform": "darwin",
+        "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+        "startToken": "e2e74b77fabd34aee10fc895bab72f5a2dff7da0bf8f6f3509838afdf29b17ff"
+      },
+      "observerIdentity": {
+        "pid": 62167,
+        "platform": "darwin",
+        "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+        "startToken": "73efc884039e729b3efbba2861e1f5989a25626f3b7749dfd2d7b7a6cfa7a69f"
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "event": {
+        "event": "NOTE_EXIT",
+        "pid": 62161,
+        "filter": "EVFILT_PROC"
+      }
+    },
+    {
+      "role": "synthetic-MCP-kernel-observer",
+      "pid": 62176,
+      "target": {
+        "pid": 62173,
+        "platform": "darwin",
+        "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+        "startToken": "0052810ef11938db5a93b19c07fdf8e944714e792d604f69eaa017b81a8cc232"
+      },
+      "exited": true,
+      "attached": {
+        "pid": 62173,
+        "platform": "darwin",
+        "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+        "startToken": "0052810ef11938db5a93b19c07fdf8e944714e792d604f69eaa017b81a8cc232"
+      },
+      "observerIdentity": {
+        "pid": 62176,
+        "platform": "darwin",
+        "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+        "startToken": "dfe55e9bf35435ad0ee6dbc499851500f1f242bd3b666b4c07322a4f93d5c394"
+      },
+      "exit": {
+        "code": 0,
+        "signal": null
+      },
+      "event": {
+        "event": "NOTE_EXIT",
+        "pid": 62173,
+        "filter": "EVFILT_PROC"
+      }
+    }
+  ],
+  "native_legacy": {
+    "legacySha": "7337542c0bb7b49e447188c75b762227ea250d9302df97dfe2534ee2f0efcc92",
+    "before": [
+      "0d56ad290ca4ec10d0993d910e3180b3786839465ffd35c7723f03b8dd5d2004",
+      "a8cabaf50c16d59f5433c75232ae38409a0145d3fd74d2acb3d64256f3a8cef0"
+    ],
+    "after": [
+      "0d56ad290ca4ec10d0993d910e3180b3786839465ffd35c7723f03b8dd5d2004",
+      "a8cabaf50c16d59f5433c75232ae38409a0145d3fd74d2acb3d64256f3a8cef0"
+    ],
+    "reason": "unsupported_version"
+  },
+  "hidden_capture_count": 240,
+  "hidden_MCP_evidence": {
+    "configurationMcpStates": [
+      {
+        "state": "currentdisabled-desktop",
+        "observation": "observed",
+        "action": null,
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-desktop-removal-prerequisite-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 457.3359375,
+              "width": 304,
+              "height": 57.5859375,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc791\uc5c5 \uacf5\uac04\uc744 \ubaa9\ub85d\uc5d0\uc11c \uc81c\uac70\ud558\ub824\uba74 \uc774 \uc571\uc774 \ub4f1\ub85d\ud55c MCP \ud56d\ubaa9\uc744 \uba3c\uc800 \uc81c\uac70\ud558\uc138\uc694. \u2018MCP \uc0c1\ud0dc \ud655\uc778\u2019 \ud6c4 \uc544\ub798 \uc571 \uc18c\uc720 \ud56d\ubaa9\uc758 \u2018\ub4f1\ub85d \uc81c\uac70\u2019\ub97c \uac01\uac01 \uc120\ud0dd\ud558\uc138\uc694. \ud30c\uc77c\uc740 \uc720\uc9c0\ub429\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-desktop-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 469.203125,
+              "width": 95.6171875,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-desktop-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 470.0625,
+              "width": 304,
+              "height": 32,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-desktop-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 469.625,
+              "width": 149.5703125,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-desktop-control-3-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1140,
+              "y": 469.2734375,
+              "width": 40.0859375,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc5f0\uacb0"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-desktop-control-4-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1186.0859375,
+              "y": 469.2734375,
+              "width": 65.5390625,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uc5f0\uacb0 \ud574\uc81c"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-desktop-control-5-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1257.625,
+              "y": 469.2734375,
+              "width": 65.5390625,
+              "height": 33.1953125,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\ub4f1\ub85d \uc81c\uac70"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-desktop-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 1120,
+              "y": 410.8984375,
+              "width": 304,
+              "height": 150.3671875,
+              "viewport": {
+                "width": 1440,
+                "height": 928
+              },
+              "text": "\uad00\ucc30 \uc2dc\uc810\uc758 Native MCP \uc0c1\ud0dc\uc785\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.Native \uad00\ucc30 \ubc84\uc804: 57f3dffa078f72065a6bfb8d00d214b533462ddb084ecd27aca35976ae52454a"
+            }
+          }
+        ]
+      },
+      {
+        "state": "currentdisabled",
+        "observation": "observed",
+        "action": null,
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-removal-prerequisite-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 241.29296875,
+              "width": 303,
+              "height": 57.59765625,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc791\uc5c5 \uacf5\uac04\uc744 \ubaa9\ub85d\uc5d0\uc11c \uc81c\uac70\ud558\ub824\uba74 \uc774 \uc571\uc774 \ub4f1\ub85d\ud55c MCP \ud56d\ubaa9\uc744 \uba3c\uc800 \uc81c\uac70\ud558\uc138\uc694. \u2018MCP \uc0c1\ud0dc \ud655\uc778\u2019 \ud6c4 \uc544\ub798 \uc571 \uc18c\uc720 \ud56d\ubaa9\uc758 \u2018\ub4f1\ub85d \uc81c\uac70\u2019\ub97c \uac01\uac01 \uc120\ud0dd\ud558\uc138\uc694. \ud30c\uc77c\uc740 \uc720\uc9c0\ub429\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.4375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 254.078125,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.421875,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-control-3-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 253.36328125,
+              "width": 40.08203125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc5f0\uacb0"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-control-4-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 127.08203125,
+              "y": 253.36328125,
+              "width": 65.53515625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc5f0\uacb0 \ud574\uc81c"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-control-5-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 198.6171875,
+              "y": 253.36328125,
+              "width": 65.53515625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ub4f1\ub85d \uc81c\uac70"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 194.88671875,
+              "width": 303,
+              "height": 150.39453125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uad00\ucc30 \uc2dc\uc810\uc758 Native MCP \uc0c1\ud0dc\uc785\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.Native \uad00\ucc30 \ubc84\uc804: 57f3dffa078f72065a6bfb8d00d214b533462ddb084ecd27aca35976ae52454a"
+            }
+          }
+        ]
+      },
+      {
+        "state": "connected",
+        "observation": "observed",
+        "action": null,
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-connected-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.4375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-connected-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 254.078125,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-connected-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.421875,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-connected-control-3-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 253.36328125,
+              "width": 40.08203125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc5f0\uacb0"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-connected-control-4-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 127.08203125,
+              "y": 253.36328125,
+              "width": 65.53515625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc5f0\uacb0 \ud574\uc81c"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-connected-control-5-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 198.6171875,
+              "y": 253.36328125,
+              "width": 65.53515625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ub4f1\ub85d \uc81c\uac70"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-connected-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 194.88671875,
+              "width": 303,
+              "height": 150.39453125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uad00\ucc30 \uc2dc\uc810\uc758 Native MCP \uc0c1\ud0dc\uc785\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.Native \uad00\ucc30 \ubc84\uc804: a235fc80d3be871919515549b3c53524425950763aea51935ded6c535f94c176"
+            }
+          }
+        ]
+      },
+      {
+        "state": "failed",
+        "observation": "observed",
+        "action": null,
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-failed-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.4375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-failed-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 254.078125,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-failed-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.421875,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-failed-control-3-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 253.4140625,
+              "width": 40.08203125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc5f0\uacb0"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-failed-control-4-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 127.08203125,
+              "y": 253.4140625,
+              "width": 65.53515625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc5f0\uacb0 \ud574\uc81c"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-failed-control-5-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 198.6171875,
+              "y": 253.4140625,
+              "width": 65.53515625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ub4f1\ub85d \uc81c\uac70"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-failed-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 194.88671875,
+              "width": 303,
+              "height": 150.39453125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uad00\ucc30 \uc2dc\uc810\uc758 Native MCP \uc0c1\ud0dc\uc785\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.Native \uad00\ucc30 \ubc84\uc804: 7531fffc9cef9c8ef95fa56daf1db0a0012759bf7af866c4ee86b59efd7edb30"
+            }
+          }
+        ]
+      },
+      {
+        "state": "needs_auth",
+        "observation": "observed",
+        "action": null,
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-needs_auth-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.4375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-needs_auth-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 254.078125,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-needs_auth-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.421875,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-needs_auth-control-3-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 81,
+              "y": 253.36328125,
+              "width": 40.08203125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc5f0\uacb0"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-needs_auth-control-4-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 127.08203125,
+              "y": 253.36328125,
+              "width": 65.53515625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc5f0\uacb0 \ud574\uc81c"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-needs_auth-control-5-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 198.6171875,
+              "y": 253.36328125,
+              "width": 65.53515625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ub4f1\ub85d \uc81c\uac70"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-needs_auth-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 194.88671875,
+              "width": 303,
+              "height": 150.39453125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uad00\ucc30 \uc2dc\uc810\uc758 Native MCP \uc0c1\ud0dc\uc785\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.Native \uad00\ucc30 \ubc84\uc804: aac974fba7d458f4416fbc48baf7c358fa3b7be04476bb911971afb55f0cf80e"
+            }
+          }
+        ]
+      },
+      {
+        "state": "unowned",
+        "observation": "observed",
+        "action": null,
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-unowned-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.4375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-unowned-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 254.078125,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-unowned-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.421875,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-unowned-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 194.88671875,
+              "width": 303,
+              "height": 150.39453125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uad00\ucc30 \uc2dc\uc810\uc758 Native MCP \uc0c1\ud0dc\uc785\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.Native \uad00\ucc30 \ubc84\uc804: fd84eaa0d964d345b682ec5403474c6e6935611d1ef3d8c76304b6ee5ffd1cb3"
+            }
+          }
+        ]
+      },
+      {
+        "state": "collision",
+        "observation": "observed",
+        "action": null,
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-collision-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.4375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-collision-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 254.078125,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-collision-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.421875,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-collision-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 194.88671875,
+              "width": 303,
+              "height": 150.39453125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uad00\ucc30 \uc2dc\uc810\uc758 Native MCP \uc0c1\ud0dc\uc785\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.Native \uad00\ucc30 \ubc84\uc804: 8cd58452ce2c105640a231aa01456c25ef65fa6d439555bcafc12893f5679db7"
+            }
+          }
+        ]
+      },
+      {
+        "state": "restart",
+        "observation": "observed",
+        "action": null,
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-restart-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.4375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-restart-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 254.078125,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-restart-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.421875,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-restart-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 194.88671875,
+              "width": 303,
+              "height": 150.39453125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uad00\ucc30 \uc2dc\uc810\uc758 Native MCP \uc0c1\ud0dc\uc785\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.Native \uad00\ucc30 \ubc84\uc804: 8cd58452ce2c105640a231aa01456c25ef65fa6d439555bcafc12893f5679db7"
+            }
+          }
+        ],
+        "historicalOriginalEpoch": "fixture-MCP-original-epoch"
+      },
+      {
+        "state": "unsupported-omitted-oauth",
+        "observation": "observed",
+        "action": null,
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-unsupported-omitted-oauth-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.3359375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-unsupported-omitted-oauth-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.9765625,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694.demo"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-unsupported-omitted-oauth-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.46875,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-unsupported-omitted-oauth-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 194.78515625,
+              "width": 303,
+              "height": 150.39453125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uad00\ucc30 \uc2dc\uc810\uc758 Native MCP \uc0c1\ud0dc\uc785\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.Native \uad00\ucc30 \ubc84\uc804: f30a8ab054b31350a901f44ed3def8fa0111be3f3110caa2979363dd2e29fa92"
+            }
+          }
+        ]
+      },
+      {
+        "state": "untrusted",
+        "observation": "not_observed",
+        "action": null,
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-untrusted-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.43359375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-untrusted-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.9765625,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-untrusted-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.3203125,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-untrusted-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 227.6328125,
+              "width": 303,
+              "height": 84.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc544\uc9c1 MCP \uc0c1\ud0dc\ub97c \ud655\uc778\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ]
+      },
+      {
+        "state": "keyboard-register-retired-read",
+        "observation": "not_observed",
+        "action": "registered_disabled",
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-keyboard-register-retired-read-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.3359375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-keyboard-register-retired-read-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.87890625,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694.demo"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-keyboard-register-retired-read-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.37109375,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-keyboard-register-retired-read-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 227.53515625,
+              "width": 303,
+              "height": 84.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc544\uc9c1 MCP \uc0c1\ud0dc\ub97c \ud655\uc778\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-keyboard-register-retired-read-action-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 227.5703125,
+              "width": 303,
+              "height": 84.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ube44\ud65c\uc131 \uc0c1\ud0dc\ub85c \ub4f1\ub85d\ud588\uc2b5\ub2c8\ub2e4. \uc5f0\uacb0\ud558\ub824\uba74 \ucd5c\uc2e0 MCP \uc0c1\ud0dc\ub97c \ud655\uc778\ud55c \ub4a4 \uc5f0\uacb0\uc744 \uc120\ud0dd\ud558\uc138\uc694.\uc694\uccad \ub300\uc0c1: demo \u00b7 Native \uc774\ub984: omoc-mcp-1ab113153bea6384648f19573494f5fbf39285d2"
+            }
+          }
+        ]
+      },
+      {
+        "state": "full-explicit-lifecycle",
+        "observation": "observed",
+        "action": null,
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-full-explicit-lifecycle-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.3359375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-full-explicit-lifecycle-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.9765625,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694.demo"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-full-explicit-lifecycle-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.3203125,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-full-explicit-lifecycle-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 194.78515625,
+              "width": 303,
+              "height": 150.39453125,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uad00\ucc30 \uc2dc\uc810\uc758 Native MCP \uc0c1\ud0dc\uc785\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.Native \uad00\ucc30 \ubc84\uc804: f30a8ab054b31350a901f44ed3def8fa0111be3f3110caa2979363dd2e29fa92"
+            }
+          }
+        ]
+      },
+      {
+        "state": "denied",
+        "observation": "not_observed",
+        "action": "denied",
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-denied-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.3359375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-denied-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.87890625,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694.demo"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-denied-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.37109375,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-denied-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 227.53515625,
+              "width": 303,
+              "height": 84.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc544\uc9c1 MCP \uc0c1\ud0dc\ub97c \ud655\uc778\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-denied-action-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 214.0703125,
+              "width": 303,
+              "height": 111.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc694\uccad\uc774 \uac70\ubd80\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\uc694\uccad \ub300\uc0c1: demo \u00b7 Native \uc774\ub984: omoc-mcp-1ab113153bea6384648f19573494f5fbf39285d2\uc694\uccad\uc744 \ucde8\uc18c\ud588\uc2b5\ub2c8\ub2e4. \ub2e4\uc2dc \uc2e4\ud589\ud558\ub824\uba74 MCP \uc0c1\ud0dc \ud655\uc778\uc744 \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          }
+        ]
+      },
+      {
+        "state": "changed",
+        "observation": "not_observed",
+        "action": "changed",
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-changed-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.3359375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-changed-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.87890625,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694.demo"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-changed-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.37109375,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-changed-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 227.53515625,
+              "width": 303,
+              "height": 84.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc544\uc9c1 MCP \uc0c1\ud0dc\ub97c \ud655\uc778\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-changed-action-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 214.0703125,
+              "width": 303,
+              "height": 111.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\ud655\uc778\ud55c \ud30c\uc77c \ub610\ub294 Native \uc0c1\ud0dc\uac00 \ubc14\ub00c\uc5c8\uc2b5\ub2c8\ub2e4.\uc694\uccad \ub300\uc0c1: demo \u00b7 Native \uc774\ub984: omoc-mcp-1ab113153bea6384648f19573494f5fbf39285d2\ud30c\uc77c \ub610\ub294 Native \uc0c1\ud0dc\uac00 \ubc14\ub00c\uc5c8\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uc744 \ub2e4\uc2dc \ubd88\ub7ec\uc624\uace0 MCP \uc0c1\ud0dc \ud655\uc778\uc744 \ub2e4\uc2dc \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          }
+        ]
+      },
+      {
+        "state": "unknown",
+        "observation": "not_observed",
+        "action": "unknown",
+        "workspaceId": "fixture-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-unknown-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.484375,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-unknown-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 254.02734375,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694.demo"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-unknown-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.51953125,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-unknown-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 227.68359375,
+              "width": 303,
+              "height": 84.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc544\uc9c1 MCP \uc0c1\ud0dc\ub97c \ud655\uc778\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-unknown-action-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 217.96875,
+              "width": 303,
+              "height": 103.99609375,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc694\uccad \uacb0\uacfc\ub97c \ud655\uc778\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4. \uc6d0\ub798 \uc694\uccad \ud0a4\ub85c \uacb0\uacfc\ub9cc \uc870\ud68c\ud569\ub2c8\ub2e4. \uc790\ub3d9 \uc7ac\uc804\uc1a1\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ucd08\uc548\uc740 \uacc4\uc18d \ud3b8\uc9d1\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\uc694\uccad \ub300\uc0c1: demo \u00b7 Native \uc774\ub984: omoc-mcp-1ab113153bea6384648f19573494f5fbf39285d2"
+            }
+          }
+        ],
+        "originalKeys": [
+          {
+            "runtimeEpoch": "fixture-runtime-v2",
+            "operationId": "1159f912-5c9a-4764-8c2a-3c776830c72c",
+            "workspaceId": "fixture-w",
+            "hasSession": false
+          }
+        ],
+        "editableDraft": true,
+        "noReplay": true
+      },
+      {
+        "state": "late-workspace-isolation",
+        "observation": "not_observed",
+        "action": null,
+        "workspaceId": "fixture-mcp-other-w",
+        "syntheticOnly": true,
+        "keyboardFocus": true,
+        "contentWidth": 760,
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "explicitUiReselectionAfterPanelRemount": true,
+        "reselectionNativeRequestsUnchanged": true,
+        "frames": [
+          {
+            "filename": "desktop-configuration-mcp-late-workspace-isolation-control-0-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.48828125,
+              "width": 95.61328125,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "MCP \uc0c1\ud0dc \ud655\uc778"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-late-workspace-isolation-control-1-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 254.03125,
+              "width": 303,
+              "height": 32,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc815\uc758\ub97c \uc120\ud0dd\ud558\uc138\uc694."
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-late-workspace-isolation-control-2-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 253.375,
+              "width": 149.56640625,
+              "height": 33.19921875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc120\ud0dd\ud55c \uc815\uc758\ub97c \ube44\ud65c\uc131 \ub4f1\ub85d"
+            }
+          },
+          {
+            "filename": "desktop-configuration-mcp-late-workspace-isolation-status-synthetic.png",
+            "fullyVisible": true,
+            "geometry": {
+              "x": 61,
+              "y": 227.6875,
+              "width": 303,
+              "height": 84.796875,
+              "viewport": {
+                "width": 380,
+                "height": 484
+              },
+              "text": "\uc544\uc9c1 MCP \uc0c1\ud0dc\ub97c \ud655\uc778\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.Native \ubaa9\ub85d\uc740 \uc0c1\ud0dc\ub9cc \ubcf4\uace0\ud569\ub2c8\ub2e4. \uc804\uccb4 \uc124\uc815, \uc778\uc99d \uc815\ubcf4, PID, \uc815\ud655\ud55c \ud504\ub85c\uc138\uc2a4 \uc885\ub8cc\uc640 \ubaa8\ub378\uc758 \ub3c4\uad6c \uc0ac\uc6a9\uc744 \uc99d\uba85\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."
+            }
+          }
+        ],
+        "keyboardEscape": true
+      }
+    ]
+  },
+  "limits": [
+    "No provider, real network, auth UI, model consumption or foreground UI evidence.",
+    "Exact synthetic MCP child only: macOS EVFILT_PROC/NOTE_EXIT; no arbitrary descendant/Windows exit proof.",
+    "Native status alone is not process exit or configuration/CAS proof.",
+    "All namespaces and failed evidence retained; no durable config or command copies in app metadata.",
+    "Reopen trust uses existing explicit session.create and has that Native effect."
+  ],
+  "failure_history": [
+    "Meaningful helper/closedrequest/service RED preserved",
+    "Expandedservice r4/r5/r6 expectation failures preserved: actual resourcehold deniesconfigurationreads; drain is shutdown fence; paused serializedrejection awaited only afterrelease. Safety rules unchanged.",
+    "Workspace removal authority loss RED\u2192GREEN guard; explicitMCPremove first.",
+    "Hidden launch r8 refused missing MCP evidence root before any Electron/capture; exactsingle-root addition + boundary/exclusive claim regression RED\u2192GREEN. Actual Native-r4 reusedonlyread-only unchanged product/probe/helper/observer/resources verification with exact wrapper root allowlist.",
+    "Native-r1/r2 coarse startup/readiness phases failed because the probe supplied unsupported BOM-prefixed MCP JSON. Redacted r2 readiness confirmed bootstrap healthy; original readiness hypothesis insufficient. Pure supported plainJSON builder and actual file reader regression fixed probe only, all failure reports/namespaces retained.",
+    "Native-r3 passed first3 MCP cases and actual connect, then test-only Python observer failed because select.kqueue lacks context-manager protocol. Generic actual owned-child observer RED reproduced, contextlib.closing fix GREEN8/8; no production/exit authority weakening. Native/helper exits0 and r3 namespace/report retained."
+  ],
+  "additional_failure_history": [
+    "Hidden-r1 actual156captures/ownedexit0: existing responsive remount resets local UI kind/definition; explicit reselection now checked with unchanged MCPread/mutation counts.",
+    "Hidden-r2 actual163captures/ownedexit0: empty live action region before any action has no visible pixels. Capture conditional on real action-status attribute; absent action remains null."
+  ],
+  "synthetic_receipt_correction": "Hidden-r3 actual211captures/ownedexit0 first10MCPstates passed; synthetic confirmed receipt lacked proof so actual renderer held unknown. Fixture evidence corrected only, lifecycle Node RED\u2192GREEN and actual fixture+renderer/controller/store integration PASS; production unchanged.",
+  "responsive_capture_limit": "Existing local editor kind/definition choices reset on responsive panel remount; test explicitly reselects UI with zero additional MCPreads/mutations. No persistence claim.",
+  "completion_scope": "Explicit supported workspace MCP controls. Full F14 and wholeF01-18 Goal remainACTIVE.",
+  "review_corrections": {
+    "CODE": "MCP-R12-CODE-01 local cwd exact filesystem symlink replacement before/during confirmation RED2 then GREEN3 with normal internal cwd, no SDK connect or intent on rejected attempts",
+    "RENDER": "MCP-RENDER-R12-01 direct workspace unregister prerequisite/control location in explorer and MCP section, fresh desktop/narrow200 rendered captures",
+    "actual_runtime": "Fresh production build and Native-r5/hidden-r5; r12 checks and previous build/Native/UI remain history, not current proof"
+  }
+}

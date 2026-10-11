@@ -1,0 +1,70 @@
+{
+  "revision": 20,
+  "scope": "actual Native Read service -> same running Task handle -> existing execution hold -> fixed already-claimed original descriptor owner; no positive execution grant",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-leases.mjs",
+      "bytes": 13582,
+      "sha256": "69b8b29c275f98d7132ea8adf613595460c629a2a1bbb11cee064309bc961e83"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-read.test.mjs",
+      "bytes": 26426,
+      "sha256": "9e2cf1915a5e4cb7c2356f830ab8fb175f2632eec8e61c4585e82205f5b0aa79"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "bytes": 67021,
+      "sha256": "c59554a90852319ce6401e777968822e9dffe04a9900e467321589c5961441d5"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.test.mjs",
+      "bytes": 70542,
+      "sha256": "7136cd6f939f989c2b9116a30862f85ed4b77dd42573e9cb1e3c318aa4057a09"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 21537,
+      "sha256": "4faa56c0e1976e202eacda0bb39c437727f9af6ee23a543ecb644e81ddcc776e"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "bytes": 37768,
+      "sha256": "b79fb920968fed46519413fd062234df9a3156d2ca90dceed3eeec8e472b27e7"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "bytes": 276799,
+      "sha256": "ee0d9f7ce188ec3eeb0f695ed824061856c0561ea3b7394df4fd4a8feab1882e"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-read-layer.test.mjs",
+      "bytes": 3717,
+      "sha256": "ead375a732bb3797ac9a141165690e235b0a620c5fab9319e60864a36f2d31a0"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-provider-sdk-declaration.test.mjs",
+      "bytes": 16733,
+      "sha256": "87b173d09214ea3a4173173c0afdc5a5ce5660762a5d9e4d321fd6a4d67c2064"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "bytes": 29606,
+      "sha256": "107532e90be354425df8cb9476c0196f6e26b2bf2e2f2777c6011e96da8f7088"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+      "bytes": 18516,
+      "sha256": "365fe73f0f607a9d359c3bdbdc096d62e1d144d1849b398c997d055fc503601f"
+    }
+  ],
+  "before_manifest": "prechange/read-runtime-source-before-r1/manifest.json",
+  "additional_before_manifest": "prechange/read-runtime-sdk-test-before-r1/manifest.json",
+  "worker_report": "read-runtime-worker-handoff-r1.json",
+  "limits": [
+    "assertExecution remains held; compiler/inventory/current method handoff not connected",
+    "Node inert source and pinned Effect only; no Native/Bun/provider/Main/build/GUI/physical execution",
+    "full18/F09 incomplete"
+  ],
+  "test_correction": "SDK slice limited to its exact four additions; original first50+full recipe preservation/closed recipe checks retained; later unrelated recipe addition no longer fails SDK test"
+}

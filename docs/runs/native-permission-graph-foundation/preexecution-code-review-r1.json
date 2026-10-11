@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "2eb64dfd2e7afd9f61abc0e9ffb46ad2743b3748618dacedf5a98f0355f9cea2",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "b56b0a935c4d830b67586b53ff66c8a5126e56b9ed0dc51684f92c3b504de963",
+    "schema_version": 2,
+    "source_sha256": "5ef8556102512bba6ebb4401506e51358606d4d772b16637f02764b055a45ca5",
+    "verification_sha256": "0c2d468036db3757e01548af4d994d09f1359abbe67547752d12d189b59e082a",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "지정한 변경 경로 7개를 before-paths 기준으로 독립 검토했습니다. 7개 파일의 해시는 source-freeze와 일치합니다. 요구사항 준수와 코드 품질을 별도로 검토했으며, 조치가 필요한 결함은 발견하지 못했습니다. 필수 overlay 검증 후 graph import, 고정 Config와 plugin source, SDK 등록 거부, inert WellKnown을 확인했습니다. 저장된 parent와 child는 새 synthetic namespace, pinned Bun, 격리된 환경과 DB, loopback fetch, lifecycle·transform·DB tap 검사에 적합합니다. pinned server가 config.directory를 Global에 적용하므로 global canary 위치도 맞습니다. 정확한 protocol, 종료 상태, 실행 전후 source·install·stage·child 동일성 검사와 실패 증거 보존을 확인했습니다. 기록된 Node 검사 58/58 및 lint·format 성공을 확인했습니다. Finding authority를 적용했으며 새 요구사항을 추가하지 않았습니다. 테스트, stage, Native, 네트워크 접근, 파일 수정, delegation은 하지 않았습니다. 이 판단은 실행 전 승인입니다. Native 결과와 최종 수락은 아직 확인하지 않았습니다.",
+  "open_findings": [],
+  "execution_authorization": {
+    "approved": true,
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/native-permission-graph-probe.mjs",
+      "--out",
+      "docs/runs/native-permission-graph-foundation/evidence/native-r1"
+    ],
+    "scope": "cwd=/Users/hyukjaechoi/Projects/oh-my-own-code. 검토한 frozen source의 정확한 명령에 한정합니다. 새 user-temp resources에 stageEventHost를 적용하고 필수 overlay receipt를 검증한 뒤, pinned Bun child를 격리된 HOME/XDG/cwd와 synthetic DB에서 실행합니다. 허용 범위는 저장된 다섯 canary와 loopback 통신, 지정된 evidence 출력, retained namespace입니다. 원본 vendor install은 변경하지 않습니다. provider 호출, session.send, private store 접근, production Main, Electron, GUI, controls/modes 및 최종 permission enforcement는 승인 범위에 포함하지 않습니다. 관련 입력이 바뀌면 재검토해야 합니다."
+  },
+  "provenance": {
+    "child_task_id": "01a120d9-eedf-7da1-b969-294e31583e31",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

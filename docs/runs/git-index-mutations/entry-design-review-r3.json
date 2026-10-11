@@ -1,0 +1,144 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "12d28294fb86554deb25381cfa306746954092d462afdf6321e736a526aebf40",
+    "documents_sha256": "3bc4d966e20e1ca0c5baa0c1d452d65942c4b064df0bbe43896ff2cda6ee0610",
+    "gate": "design_spec",
+    "plan_sha256": "a444efbcdcafb1f56635da42ab16c516561785bcd870d1d8143a1f336a04f975",
+    "schema_version": 2,
+    "work_class_sha256": "6229d9f55383c513255c61dda184c5f24ad6b52c55417bcf63c8c643028ec83c"
+  },
+  "run_id": "git-index-mutations",
+  "reviewer_role": "design_spec_reviewer",
+  "verdict": "pass",
+  "summary": "DESIGN v3의 수정된 문서 계약을 통과합니다. DS1과 DS2는 해결되었습니다. 지정된 변경 범위에서 구현을 막는 문서 문제는 발견하지 못했습니다. 이 판정은 구현 또는 runtime 검증의 통과를 뜻하지 않습니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "DS1",
+      "status": "resolved",
+      "location": {
+        "path": "docs/runs/git-index-mutations/design.md",
+        "lines": [9, 10, 16, 25, 31, 47]
+      },
+      "resolution": "nextIndexDigest는 선택하지 않은 항목도 포함한 canonical proposal 전체 bytes의 SHA256입니다. preview, apply, immutable gitIndexTarget과 previewDigest에 이 값을 포함합니다. Kernel의 artifact 및 최종 index 검사와 journal completion 및 receipt 검사는 같은 승인 값을 요구합니다.",
+      "evidence": [
+        "gitIndexTarget의 정확한 필드 집합과 동기 admission 입력이 line 10에 정의되어 있습니다.",
+        "Layout, source fingerprint, sender, root, trust, expiry는 host-held preview에 유지하고 previewDigest로 연결합니다. Admission 이후 별도 target 권한을 만들지 않습니다.",
+        "실제 workbench-admission.mjs:551–582는 service execute 전에 registry.begin을 호출합니다. 수정된 target은 이 순서에서 요청 metadata만으로 만들 수 있습니다.",
+        "Lines 25와 31은 receipt.indexDigest === admittedTarget.nextIndexDigest를 요구합니다. 결과의 hex 형식 검사만으로 완료를 승인하지 않습니다."
+      ]
+    },
+    {
+      "id": "DS2",
+      "status": "resolved",
+      "location": {
+        "path": "docs/runs/git-index-mutations/design.md",
+        "lines": [9, 10, 24, 25, 31, 47]
+      },
+      "resolution": "indexExists를 preview, apply와 immutable target에 포함합니다. 실제 index 부재에는 SHA256(UTF8(\"omoc-absent-git-index-v1\"))를 사용합니다. headOid=null과 index 부재를 구분합니다. 기존 index에는 original operation key 기반 backupId를 요구하고, 실제 부재에는 backupId=null을 요구합니다.",
+      "evidence": [
+        "기존 index에는 RENAME_SWAP, 부재에는 RENAME_EXCL을 사용합니다.",
+        "부재 경로의 post-verification은 새 index 생성과 renamed stagebackup 이름의 부재를 확인합니다. UI는 원본 backup이 있다고 표시하지 않습니다.",
+        "실제 configuration-save-kernel.mjs:758–798도 원본 파일이 있을 때만 backupId를 반환합니다.",
+        "descriptor-probe-r2.mjs와 보관된 descriptor-report-r2.json은 SHA1/SHA256 각각에서 absent index와 unborn HEAD의 existing index를 구분한 네 경우를 다룹니다. 직접 실행하지 않았습니다."
+      ]
+    }
+  ],
+  "review_scope": {
+    "document": "docs/runs/git-index-mutations/design.md",
+    "version": "3",
+    "document_sha256": "79e10e767d9361e0e6610a22b28f0dce200b21d378ca619690470bbb566c43f0",
+    "plan_revision": "3",
+    "packet": "docs/runs/git-index-mutations/entry-design-packet-r3b.json",
+    "boundary": "초기 DESIGN_SPEC의 DS1/DS2 수정과 관련 source 통합 계약을 독립적으로 검토했습니다. 기존 PLAN의 승인 범위를 다시 검토하지 않았습니다.",
+    "integration_conclusions": [
+      {
+        "concern": "semantic no-op",
+        "status": "pass",
+        "evidence": "Line 47은 선택 항목의 mode/OID/absence가 모두 같으면 no_changes로 거부합니다. zero-stat canonical bytes 차이만으로 쓰기를 허용하지 않습니다. 혼합 선택에는 하나 이상의 의미 있는 변경을 요구합니다."
+      },
+      {
+        "concern": "preview revision",
+        "status": "pass",
+        "evidence": "Line 10은 expectedRevision=preview.revision을 명시합니다. 실제 service의 Git 응답도 authoritative revision을 덧붙입니다. 별도 public floor 필드를 만들지 않습니다."
+      },
+      {
+        "concern": "private engine ownership",
+        "status": "pass",
+        "evidence": "Line 49는 하나의 createWorkbenchGitAccess가 공유 observation/sender/epoch/trust table과 snapshot executor 위에서 reader와 index manager를 만들도록 정의합니다. 실제 reader의 closure 내부 observations 및 closeSender/close 수명과 연결할 계약이 명확합니다."
+      },
+      {
+        "concern": "legacy reader injection",
+        "status": "pass",
+        "evidence": "기존 createWorkbenchGitReader API와 options를 유지합니다. legacy read-only gitReader 주입만으로 mutation 권한을 부여하지 않습니다. 별도 private gitIndexManager 주입을 검증하도록 명시합니다."
+      }
+    ],
+    "regression_assessment": "수정된 계약에서 기존 artifact 전송 제한, 실제 settlement까지의 보존, frozen expected-delta 검사, original-key unknown/no replay 규칙과 충돌하는 변경은 발견하지 못했습니다.",
+    "authority": "원본 쓰기는 index와 검증된 immutable loose blobs로 제한됩니다. 원본 Git process, refs, HEAD, config, worktree 쓰기는 허용하지 않습니다. commit, branch, restore는 후속 필수 작업으로 유지합니다."
+  },
+  "checks": {
+    "method": "파일 읽기, source 대조, JSON 및 SHA256의 읽기 전용 계산을 수행했습니다. Product code, harness 명령, probe, build, test는 실행하지 않았습니다.",
+    "exact_binding": {
+      "status": "pass",
+      "result": "현재 plan bytes, 정규화한 contract, 등록된 document set과 work_class history에서 계산한 binding이 entry-design-input-r3.json 전체와 정확히 일치합니다."
+    },
+    "packet_freshness": {
+      "status": "pass",
+      "packet_sha256": "c3632b7e3109c2d47ed931091192694c995343b71e8e5d4f6afba6af4acf80cc",
+      "result": "r3b의 plan, raw contract, document, work_class와 routing input hashes가 현재 파일과 일치합니다. run.json의 dispatch 기록도 같은 packet hash와 제공된 child reference를 사용합니다.",
+      "superseded_packet": "entry-design-packet-r3.json은 최종 검토 입력으로 사용하지 않았습니다."
+    },
+    "run_state": {
+      "status": "active",
+      "work_class": "routine",
+      "current_reviews": {},
+      "result": "초기 major PLAN pass 이후 수정 준비 상태이며, initial DESIGN_SPEC review가 요구됩니다. Ledger를 변경하지 않았습니다."
+    },
+    "source_facts": {
+      "status": "pass",
+      "files_checked": 13,
+      "result": "source-facts.json에 기록된 13개 현재 파일의 SHA256과 mode가 모두 일치합니다."
+    },
+    "actual_sources_inspected": [
+      "apps/desktop-app/src/host/workbench-git.mjs",
+      "apps/desktop-app/src/workbench-service.mjs",
+      "apps/desktop-app/src/host/workbench-admission.mjs",
+      "apps/desktop-app/src/host/workbench-file-storage.mjs",
+      "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+      "apps/desktop-app/src/host/storage-journal.mjs",
+      "apps/desktop-app/src/host/workspace-registry.mjs",
+      "apps/desktop-app/src/host/workbench-receipts.mjs",
+      "apps/desktop-app/src/event-host-protocol.mjs",
+      "apps/desktop-app/src/renderer/shared/git-review/index.mjs"
+    ],
+    "archived_descriptor_evidence": {
+      "status": "inspected_not_executed",
+      "probe": "docs/runs/git-index-mutations/evidence/prechange/descriptor-probe-r2.mjs",
+      "probe_sha256": "e6f20eb6d1578b99e23def0638a7d626a445eaf16215bc6d18eedf5bc6b489dc",
+      "report": "docs/runs/git-index-mutations/evidence/prechange/descriptor-report-r2.json",
+      "report_sha256": "bd4d80196f0e8e9c4d825146cf5655dd24088a7ff5ad11e21bb6a4f4cd2b87d3",
+      "result": "보관된 report의 네 경우와 probe의 분기 및 assertions가 대응합니다. 이는 syscall 구현 가능성 근거입니다."
+    }
+  },
+  "limits": [
+    "파일 수정, ledger 기록, delegation, build, test, product runtime, provider, private project 또는 foreground 조작을 하지 않았습니다.",
+    "보관된 descriptor probe는 production publisher, artifact IPC, owner fencing, journal, full source manifest, linked-worktree 또는 crash recovery의 통과 근거가 아닙니다.",
+    "구버전 parser closure의 보관은 실제 marker 거부 및 bytes 보존 검사의 통과 근거가 아닙니다. 해당 실행 검사는 구현 단계에 남아 있습니다.",
+    "DS1/DS2 resolved는 문서 계약의 해결을 뜻합니다. Target forgery, receipt mismatch, absent backup 및 no_changes의 실제 거부 동작은 아직 검증하지 않았습니다.",
+    "이 판정은 구현된 UI, 접근성, publication 또는 전체 AC11 완료를 승인하지 않습니다.",
+    "Native task identity를 독립적으로 관측하지 않았습니다. 제공된 coordinator reference와 ledger 기록의 일치만 확인했습니다."
+  ],
+  "next_dependency": "Main이 이 보고서를 저장·등록하고 design_spec handoff를 확인합니다. 이후 실제 DTO/helper/private engine/kernel producer 계약을 확정하여 소비자에게 전달합니다.",
+  "provenance": {
+    "child_task_id": "01a11c9c-a420-7b42-8622-66e5b9858333",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "identity_basis": "Coordinator-reported native spawn/dispatch reference, not runtime identity attestation",
+    "child_spawn_identity_verified": false,
+    "coordinator_reference_matches_recorded_dispatch": true,
+    "independent_from_author": true,
+    "authored_plan_or_design": false,
+    "reviewer_origin": "새 독립 reviewer의 초기 DESIGN_SPEC 수정 검토",
+    "report_persistence_owner": "Main"
+  }
+}

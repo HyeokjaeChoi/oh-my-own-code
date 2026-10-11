@@ -1,0 +1,46 @@
+✖ boot-held admission allocates no leases, including after invalidation (1.506375ms)
+✔ default global node fails closed without explicit configuration (3.309417ms)
+✔ configured global node replacement shares one kernel across actual graph consumers (3.423959ms)
+✔ configured rejects malformed closed inputs synchronously without getter or proxy traps (0.647792ms)
+✔ boot holds are copied, sorted, deduplicated, deeply frozen and remain held (1.213167ms)
+✔ initialization accepts exact UTF8 and count boundaries (58.021459ms)
+✔ transaction rejects invalid inputs before callbacks and does not execute getters (0.699042ms)
+✔ capabilities reject forgery, copies, uncovered projects, child fibers and escaped reuse (7.529833ms)
+✔ same-fiber public reentry fails before acquiring even disjoint projects (0.561959ms)
+✔ inherited child transaction reentry rejects before parent-held or disjoint locks (3.750625ms)
+✔ same projects serialize; disjoint projects continue; reversed duplicate inputs cannot deadlock (4.282667ms)
+✔ reverse inputs acquire the sorted first project before touching the second (5.507083ms)
+✔ callback throw, failed Effect and interruption release all gates and expire capabilities (2.123291ms)
+✔ 32 waiters exclude the holder; overflow never enters; cancellation restores every project slot (173.5285ms)
+✔ invalidation proceeds while gates are held and is permanent for existing and new projects (3.268417ms)
+✔ invalid invalidation reasons fail without changing runtime state (0.895375ms)
+✔ each acquisition of the same configured Layer owns an independent kernel (0.304708ms)
+✔ location owner retains building, ready and finalizing incarnations without settlement claims (0.948875ms)
+✔ location metadata excludes active project transactions without holding across Native effects (4.761291ms)
+✔ queued metadata precedes later shared admissions with staggered overlapping readers (21.986541ms)
+✔ metadata admission bounds and cancellation reopen readers only after the last writer leaves (444.802458ms)
+✔ failed queued metadata releases admission and inherited lifecycle reentry fails before waiting (5.952917ms)
+✔ location handles reject forgery, cross owner use, identity rebinding and reentrant lifecycle mutation (3.045375ms)
+✔ location capacity retains all thirty-two unknown entries and refuses another before effects (0.900334ms)
+✔ location identity validation never invokes caller accessors or Proxy traps (0.313083ms)
+✔ cancelled exclusive metadata waiter releases graph permits and does not leak an unknown build (2.64175ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 25
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1142.71375
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-control.test.mjs:111:1
+✖ boot-held admission allocates no leases, including after invalidation (1.506375ms)
+  Error: native_permission_origin_input
+      at fail (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-control-test-uLapqd/native-permission-origin-scopes.mjs:17:9)
+      at copyBinding (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-control-test-uLapqd/native-permission-origin-scopes.mjs:57:59)
+      at Object.admit (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-control-test-uLapqd/native-permission-origin-scopes.mjs:201:21)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control.test.mjs:118:26)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

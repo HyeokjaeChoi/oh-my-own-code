@@ -1,0 +1,131 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "201ce22deb24667bf0602a8d89d2bfbdbe36bef49bc56284514fdf2e946a0e59",
+    "documents_sha256": "590b6a5e1e87ba401a3fc2e61cec3b34814612706ef7537d9146c01d0a17700c",
+    "gate": "design_spec",
+    "plan_sha256": "e33179ee53a9473b8a403962d2f20b807d8973c2091c85d07eb76e036ed76e91",
+    "schema_version": 2
+  },
+  "verdict": "changes_requested",
+  "summary": "Independent design_spec_reviewer review of build-delivery plan revision 3 and the current nine-document packet. All supplied document, plan, contract, approval-evidence and approval-target hashes match current bytes; the design_spec documents digest also matches the exact review-input binding and registered artifact records. DSR-01 is substantially addressed by the authoritative 163-token / 44-variant foundation and DSR-02 by runtimeStateMap receipt/cause/reconciliation rules, but contradictory legacy wording remains in the UX contract and the machine-readable PermissionRequest variants. Resolve these small source-contract inconsistencies before dependent implementation. Product scope, bridge authority, no-replay recovery, local-only diagnostics, ADR ownership and staged runtime holds otherwise remain coherent within this static review. Requested route was gpt-6-astra/high; actual runtime model/effort identity was not verified.",
+  "open_findings": [
+    {
+      "id": "DSR-01",
+      "severity": "medium",
+      "artifact_location": "docs/design/specs/workbench-ux.md:155-156; docs/design/system.md:47,90",
+      "affected_journey_or_consumer": "Renderer responsive layout and motion implementation consuming the UX contract.",
+      "finding": "The reconciliation section now correctly binds the approved visual foundation, but the keyboard/responsive/motion section still says specific duration/easing and responsive width values will be decided by a later visual system. The current system already fixes motion at 120/180/240ms and responsive ranges at 320–599, 600–899 and 900px+. This preserves part of the exact DSR-01 contradiction that revision 3 is intended to remove.",
+      "evidence": "UX lines 155–156: 구체적인 지속 시간·easing과 반응형 폭 값은 후속 시각 시스템에서 정한다. The same UX document later says typography, responsive widths and motion decisions exist in the 163-token foundation. Token CSS lines 54–56 contains the three duration values; design/system.md specifies the breakpoints and motion behavior.",
+      "required_change": "Replace the deferred-values sentence with an explicit reference to the current system/manifest for the already fixed durations and responsive widths. If easing remains undecided, isolate only easing as a remaining implementation choice without reopening established token or breakpoint values. Refresh affected hashes/review input."
+    },
+    {
+      "id": "DSR-02",
+      "severity": "medium",
+      "artifact_location": "docs/design/components.json:1185,1293-1314,1332; componentContracts.PermissionRequest.runtimeStateMap at 1561-1653",
+      "affected_journey_or_consumer": "PermissionRequest renderer or generated component consumer applying runtime receipts and selected allow/deny decisions.",
+      "finding": "The new runtimeStateMap correctly requires a matching applied receipt and decision-specific labels, but the same manifest retains conflicting variant semantics: approved behavior says Decision delivered only and its properties.statusLabel and visual.statusBadge.label both say 승인 전달됨. Pending/denied behavior also defines approved as decision delivered. A consumer using the declared variant properties/badge mapping can therefore display transport delivery as approval and can label an applied denial as approval, despite the new map requiring 허용 결정 적용 확인 or 거절 결정 적용 확인.",
+      "evidence": "The approved variant at lines 1293–1314 supplies delivery-only behavior and two fixed approval-delivery labels; runtimeStateMap.applied at lines 1582–1596 instead requires matching-applied-receipt and labelByDecision. system.md declares runtimeStateMap authoritative, but the variant behavior simultaneously states that its badge label/state are mapped here. These are contradictory production source descriptions, not missing UI screenshots.",
+      "required_change": "Make PermissionRequest variant behavior explicitly require confirmed application, and declare runtimeStateMap as the required source of all runtime status labels/actions before instantiating the five visual variants. Replace or explicitly mark fixed preview labels as non-runtime samples, including both approved label fields and generic denied/stale labels, so runtime allow/deny, refusal/policy denial and expiry/cancellation/unknown copy cannot fall back to them. Keep 202/accepted excluded and preserve existing read-only reconciliation and no-resend rules. Refresh affected hashes/review input."
+    }
+  ],
+  "review_evidence": {
+    "run": "build-delivery",
+    "role": "design_spec_reviewer",
+    "plan": {
+      "path": "docs/runs/build-delivery/plan.md",
+      "revision": 3,
+      "sha256": "e33179ee53a9473b8a403962d2f20b807d8973c2091c85d07eb76e036ed76e91"
+    },
+    "documents": [
+      {
+        "gate": "product",
+        "path": "docs/product/prd.md",
+        "sha256": "597e64d100ea67b878762fde160b3a6d5c2f1275662661094dadfe0dad270dfb",
+        "version": "0.2"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/design/specs/workbench-ux.md",
+        "sha256": "0a2dfb1faa4d7ea126387c2c6af7e2b1e8288ab4044e375e98b8a22170c7efc3",
+        "version": "0.2"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/engineering/workbench-architecture.md",
+        "sha256": "4a031f5c8cd194c315b92df8ac468600d5b769387c2271d8c04810fbc4959cba",
+        "version": "0.1"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/engineering/verification.md",
+        "sha256": "dba31b7266df9dcd93f6477342e07f77bef9897c42578048c4c38c024f62feee",
+        "version": "0.1"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/operations/local-release-monitoring.md",
+        "sha256": "f0d88e1836f230da09f7afe093d4320298d8d191845abae69ad4a0d4ef17263b",
+        "version": "0.1"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/engineering/spec-index.md",
+        "sha256": "bd155762de999b4224a51a3d8d77786e2a7e115680052030c2cdb61bc400e59b",
+        "version": "0.2"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/design/system.md",
+        "sha256": "888cef098c8b1bf2bf53e7881c5c02a76279d5352cb37e489c587343a57b2308",
+        "version": "2026-09-27"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/decisions/0001-workbench-platform.md",
+        "sha256": "70988369fdc37f29ce41f7a34a6ea8a32ad6bc058c62f6cfb34a09defd3a72cb",
+        "version": "0001"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/design/components.json",
+        "sha256": "eb9e2c3bd6142569d311ec9ac8c2176340a9bbfa512c9a773c35b4b294850ef1",
+        "version": "component-contract-v2"
+      }
+    ],
+    "approval_records": [
+      {
+        "evidence": {
+          "path": "docs/runs/build-delivery/user-approval.json",
+          "sha256": "a1743f4192f2c6477532138bd65d00a103cfe3bf5b943a7bd5c32bed5fc2a701"
+        },
+        "id": "approval-current-spec-bundle",
+        "target": {
+          "path": "docs/engineering/spec-index.md",
+          "sha256": "bd155762de999b4224a51a3d8d77786e2a7e115680052030c2cdb61bc400e59b"
+        },
+        "version": "0.2"
+      }
+    ],
+    "supplemental_sources": [
+      {
+        "path": "docs/design/tokens/manifest.json",
+        "sha256": "84a1ecac6ef5e6dd51f9d7a1a9a959751a3a05731fe8cb3ff4ca3379957e0498"
+      },
+      {
+        "path": "docs/design/tokens/tokens.css",
+        "sha256": "c6cedf264821dc9df98a44c16a24b00403783d5ab84bb19b0176ea5a3d3c61f3"
+      }
+    ],
+    "hash_binding_result": "All packet hashes, current run plan/contract records, registered design artifacts and canonical design_spec document digest match. Supplemental token files were read and hashed but are not separately included in the design_spec documents digest.",
+    "limits": "Static document/source review and hash comparison only. No project validation scripts, tests, builds, package/runtime probes, browser/Figma/device interaction, live service or accessibility checks were executed. User authorization assessed from recorded metadata; no independent conversation identity attestation. No product/runtime completion, UI design QA, Figma synchronization or OS-level enforcement is established. Only this assigned review report was written; source artifacts and ledger were not changed.",
+    "next_handoff": "Coordinator resolves the two residual contradictions, refreshes exact affected document/approval bindings, obtains a fresh review and records/passes the design_spec handoff before assigning dependent implementation."
+  },
+  "provenance": {
+    "child_task_id": "/root/design_spec_review_r2",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "runtime_identity_verified": false
+  }
+}

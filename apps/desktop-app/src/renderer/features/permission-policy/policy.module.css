@@ -1,0 +1,49 @@
+.policy {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.policy h4 {
+  margin-block: 12px 4px;
+  color: var(--omoc-semantic-color-text-primary);
+  font-size: inherit;
+}
+.mismatch {
+  color: var(--omoc-semantic-color-text-primary);
+  font-weight: 600;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+.actions button {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.rules {
+  min-width: 0;
+  max-width: 100%;
+  padding-inline-start: 24px;
+}
+.rules li,
+.rules dl,
+.rules dd {
+  min-width: 0;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.rules dd {
+  font-family: var(--omoc-semantic-type-family-code);
+  color: var(--omoc-semantic-color-text-primary);
+}
+.status:focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: var(--omoc-semantic-size-focus-gap);
+}

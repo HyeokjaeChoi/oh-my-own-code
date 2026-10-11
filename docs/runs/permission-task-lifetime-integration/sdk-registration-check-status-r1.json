@@ -1,0 +1,81 @@
+{
+  "run": "permission-task-lifetime-integration",
+  "checks": {
+    "native-metadata": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T20:54:48+00:00",
+      "source_sha256": "6c001417ea125c48accd1b9c7b42c0b8b847f5540ea6540a0d29dde0f78f385d",
+      "input_binding_sha256": "55314342151e644b691af4829582ffbcaf0de01733f2506da295848145f735b0",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src",
+          "apps/desktop-app/scripts",
+          "package.json",
+          "pnpm-lock.yaml",
+          "apps/desktop-app/package.json"
+        ],
+        "reason": "All product source plus script fixtures/planner and dependency manifests cover the static/transitive imports of these named Node suites. Original pinned Native input/output bytes are rechecked by the overlay recipe test. This scope does not make a whole final CODE or runtime claim."
+      }
+    },
+    "native-descriptor-read": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "native-descriptor-bun-probe": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "native-descriptor-probe-diagnostics": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "main-task-owner-fence": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "native-read-auxiliary": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T20:54:51+00:00",
+      "source_sha256": "6c001417ea125c48accd1b9c7b42c0b8b847f5540ea6540a0d29dde0f78f385d",
+      "input_binding_sha256": "434e8a7c6a96029b0599954c02c4df38792b333f94a4ff47cef45d6e62a5e453",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src/host/native-read-auxiliary.mjs",
+          "apps/desktop-app/src/host/native-read-auxiliary.test.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read.mjs",
+          "apps/desktop-app/src/host/workspace-root-authority.mjs",
+          "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs",
+          "apps/desktop-app/src/host/darwin-directory-entry.mjs",
+          "apps/desktop-app/src/renderer/shared/workspace-file",
+          "apps/desktop-app/src/native-permission-read-instructions.test.mjs",
+          "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+          "apps/desktop-app/scripts/native-permission-overlay.mjs"
+        ],
+        "reason": "Exact test/import/copied-source closure and actual resource/root helpers; pinned original Native bytes are hash-asserted before inert extraction. Scripted private kernel not physical acceptance."
+      }
+    },
+    "native-read-effect": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "native-task-read": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    }
+  }
+}

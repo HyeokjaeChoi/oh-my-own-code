@@ -1,0 +1,162 @@
+{
+  "schema_version": 2,
+  "run": "git-explicit-commit",
+  "gate": "design_spec",
+  "reviewer": "design_spec_reviewer",
+  "report_scope": "fresh_independent_changed_concern_initial_design_spec_correction",
+  "reviewed": {
+    "contract_sha256": "c1c5e987f8fe043f4a2b3e5f9373bab6d60789e2a75f8c2cc57d9d084088c00e",
+    "documents_sha256": "ce428a9e74093b4de35a0156787042d7c3af5c9b3c345491d8ae16313e008466",
+    "gate": "design_spec",
+    "plan_sha256": "1538ec68dd5434603a0ffec396293452bdb7416f84ef3b2e9fb825c4d11ee6c9",
+    "schema_version": 2,
+    "work_class_sha256": "ae478e9c4d1bef657cf7951c15a327d5fa9d7d4379653257922675630e5d2ade"
+  },
+  "verdict": "pass",
+  "summary": "DS1–DS4의 설계 수정이 이전 지적을 해결합니다. 변경된 규칙과 기존 consumer 경계 사이에서 새로운 중대 설계 결함을 발견하지 않았습니다. 이 판정은 plan2/designv2에 결합된 초기 DESIGN_SPEC 수정 검토입니다. PLAN을 반복 승인하거나 최종 CODE/RENDER를 승인하지 않습니다.",
+  "open_findings": [],
+  "finding_resolutions": [
+    {
+      "id": "DS1",
+      "status": "resolved",
+      "resolution_scope": "design_contract",
+      "locations": [
+        "docs/runs/git-explicit-commit/design.md:21",
+        "docs/runs/git-explicit-commit/design.md:26",
+        "docs/runs/git-explicit-commit/design.md:30",
+        "docs/runs/git-explicit-commit/design.md:32"
+      ],
+      "evidence": "현재 worktree의 gitDirectory에서 검사할 11개 marker를 정확히 고정했습니다. 모든 종류의 presence를 거부하며 오류를 absence로 처리하지 않습니다. 같은 missing set을 source fingerprint와 artifact authority에 결합하고 kernel이 원본 효과 직전에 독립 검사합니다. Resolved stage0 merge와 preview 이후 marker 생성도 거부합니다. Linked worktree에서 commonDirectory로 대체하지 않으며 기존 read/index 범위와 상태 파일을 보존합니다.",
+      "remaining_verification": "구현 후 resolved merge, marker별 presence, preview 이후 생성, linked gitDirectory 구분과 거부 시 원본 보존을 검증해야 합니다."
+    },
+    {
+      "id": "DS2",
+      "status": "resolved",
+      "resolution_scope": "design_contract",
+      "locations": [
+        "docs/runs/git-explicit-commit/design.md:24",
+        "docs/runs/git-explicit-commit/design.md:26",
+        "docs/runs/git-explicit-commit/design.md:28",
+        "docs/runs/git-explicit-commit/design.md:30",
+        "docs/runs/git-explicit-commit/design.md:32"
+      ],
+      "evidence": "Durable stage intent → 기존 parent의 index/HEAD locks → 검증된 ancestor에서 유한 ref-parent 생성 → fail-fast branch.lock 순서를 고정했습니다. 모든 필수 lock 확보 뒤에만 log parents, objects, proposals와 backups를 준비합니다. 부분 mkdir, branch-lock 충돌과 실패한 재검사는 생성 효과를 보존한 unknown입니다. 생성별 dev/ino/listing delta만 허용하며 source 전체 재수집을 금지합니다. Root backups와 same-device cross-parent-fd SWAP/EXCL도 유지합니다. 변경하지 않는 index에는 읽기와 동일성 검사만 요구합니다.",
+      "remaining_verification": "구현 후 중첩 unborn branch, packed logical ref의 loose-parent absence, 부분 mkdir, branch-lock 충돌, 외부 source 변경과 readonly index를 검증해야 합니다."
+    },
+    {
+      "id": "DS3",
+      "status": "resolved",
+      "resolution_scope": "design_contract",
+      "locations": [
+        "docs/runs/git-explicit-commit/design.md:11",
+        "docs/runs/git-explicit-commit/design.md:16",
+        "docs/runs/git-explicit-commit/design.md:35"
+      ],
+      "evidence": "모든 input, object format과 log role에 exact constant -m \"commit: explicit local app commit\"을 적용합니다. 기존 prefix는 empty 또는 LF-terminated여야 합니다. Proposal은 원래 prefix bytes와 정확한 old/new OID, 원래 committer ident/time, TAB, constant reason, LF로 된 새 line 하나를 독립 비교합니다. 사용자 message의 argv/journal/receipt/report 전달을 금지합니다. Immutable target의 proposal digest 계약과 일치합니다.",
+      "remaining_verification": "구현 후 서로 다른 message의 동일 reason, SHA1/SHA256, applicable log roles, prefix 보존과 잘못된 append boundary 거부를 검증해야 합니다."
+    },
+    {
+      "id": "DS4",
+      "status": "resolved",
+      "resolution_scope": "design_contract",
+      "locations": [
+        "docs/runs/git-explicit-commit/design.md:9",
+        "docs/runs/git-explicit-commit/design.md:16",
+        "docs/runs/git-explicit-commit/design.md:18"
+      ],
+      "evidence": "원래 UTF8 input을 trim, Unicode normalization 또는 punctuation 제거 없이 보존합니다. Invalid Unicode, ASCII controls, header delimiters와 Git boundary crud를 preview 전에 거부합니다. Native author/committer ident, raw commit headers와 reflog ident를 원래 input 및 고정 UTC seconds/+0000에서 만든 기대 bytes에 독립 비교합니다. Boundary 목록은 [Git v2.50.1 ident.c](https://raw.githubusercontent.com/git/git/v2.50.1/ident.c)의 crud 규칙과 일치합니다. 보존된 synthetic report의 세 변환 사례와 정상 사례도 확인했습니다.",
+      "remaining_verification": "실제 validator, Korean name과 내부 spaces/punctuation 보존, boundary 조합 거부, SHA1/SHA256 raw headers/reflog 비교 및 mismatch 거부는 구현 후 검증해야 합니다."
+    }
+  ],
+  "inspected_scope": {
+    "assignment_and_rules": [
+      "/Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/git-commit-entry-design-assignment-r2.md",
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-design-spec-review/SKILL.md"
+    ],
+    "reviewed_documents": [
+      "docs/runs/git-explicit-commit/plan.md",
+      "docs/runs/git-explicit-commit/design.md",
+      "docs/runs/git-explicit-commit/contract.json",
+      "docs/runs/git-explicit-commit/run.json",
+      "docs/runs/git-explicit-commit/entry-design-input-r2.json",
+      "docs/runs/git-explicit-commit/entry-design-packet-r2.json",
+      "docs/runs/git-explicit-commit/entry-design-review-r1.json",
+      "docs/runs/git-explicit-commit/entry-design-supplement-r1-1.json",
+      "docs/runs/git-explicit-commit/entry-design-supplement-r1-2.json",
+      "docs/runs/git-explicit-commit/source-facts.json",
+      "docs/runs/git-explicit-commit/prechange-inventory.json",
+      "docs/product/prd.md의 F-11/AC-11",
+      "docs/engineering/architecture-entry.md",
+      "docs/decisions/0001-workbench-platform.md의 관련 architecture 경계"
+    ],
+    "selected_existing_source": [
+      "apps/desktop-app/src/host/workbench-git-snapshot.mjs의 Sources, missing authority와 repository layout",
+      "apps/desktop-app/src/host/workbench-git-index.mjs의 preview/source 검증",
+      "apps/desktop-app/src/host/git-index-kernel.mjs의 descriptor, missing, delta, source 검증과 index write probe",
+      "apps/desktop-app/src/host/workbench-git.mjs의 manager 연결",
+      "apps/desktop-app/src/workbench-service.mjs의 confirmation 및 stage/publish 호출 순서",
+      "apps/desktop-app/src/renderer/features/git-review/index.tsx의 기존 index consumer",
+      ".solopreneur/harness.py의 binding 계산과 report 수용 조건"
+    ],
+    "preparatory_evidence": [
+      "Private Git 및 layout scripts와 4개 사례 report",
+      "Descriptor script, 4개 사례 report와 execution record",
+      "Synthetic ident 4개 사례 report",
+      "Legacy parser closure 21개 파일과 124166-byte bundle"
+    ]
+  },
+  "checks": [
+    {
+      "name": "exact_design_binding",
+      "result": "pass",
+      "details": "읽기 전용 review-input 계산이 entry-design-input-r2.json의 전체 top-level 6필드 object와 일치합니다. Packet의 raw contract hash와 review binding의 semantic contract hash도 각각 확인했습니다."
+    },
+    {
+      "name": "frozen_packet_and_artifacts",
+      "result": "pass",
+      "details": "Packet의 plan/document/routing input hashes와 현재 등록된 모든 artifact hashes가 일치합니다. Design SHA256은 06c92dd3d0d140638110515067a354547cdb0d8c18f195db3549735f6552533a입니다."
+    },
+    {
+      "name": "source_baseline_integrity",
+      "result": "pass",
+      "details": "현재 source inventory 657개가 prechange inventory와 일치하며 changed_paths는 비어 있습니다. Source SHA256은 35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f입니다."
+    },
+    {
+      "name": "legacy_and_descriptor_evidence_integrity",
+      "result": "pass",
+      "details": "Legacy archive 21개 파일의 크기/hash와 현재 대응 source hashes가 일치합니다. Bundle은 124166 bytes이며 hash가 일치합니다. Descriptor script/report hashes도 execution record와 일치합니다. Owned child exit 0은 기존 기록입니다."
+    },
+    {
+      "name": "changed_concern_compatibility",
+      "result": "pass",
+      "details": "DS1–DS4 수정이 기존 index facade, immutable target, full-tree/body proof, partial unknown, original-key correlation과 privacy 경계를 유지합니다. Nonempty parent의 전체 staged deletion은 유효하며 unchanged tree와 unborn empty tree만 no_changes로 거부합니다."
+    },
+    {
+      "name": "downstream_verification_boundary",
+      "result": "pass",
+      "details": "현재 11개 required checks와 shared read/index/configuration 회귀 요구를 확인했습니다. 이번 검토에서는 실행하지 않았습니다. 실제 DTO/private contract freeze, 구현 검증과 별도 CODE/RENDER가 남아 있습니다."
+    }
+  ],
+  "limits": [
+    "파일 읽기, 정적 source 분석, hash 계산과 읽기 전용 harness binding 확인만 수행했습니다. 파일·ledger 수정, product runtime, build, tests 또는 delegation은 하지 않았습니다.",
+    "보존된 private Git, descriptor와 ident 관찰을 이번 검토에서 재실행하지 않았습니다. 이 기록은 production publisher, locking, crash safety 또는 Event Host lifecycle 증거가 아닙니다.",
+    "DS1–DS4는 설계 계약에서 해결되었습니다. 실제 validator, kernel, raw-header 검증과 렌더링 완료를 뜻하지 않습니다.",
+    "확인한 run.json에는 현재 child ID의 dispatch 연결이 아직 없습니다. 실제 child ID는 CODEX_THREAD_ID에서 확인했으며 coordinator dispatch 일치를 주장하지 않습니다.",
+    "초기 PLAN r1의 수용 상태를 전제로 변경 concern만 검토했습니다. Full-product, 최종 CODE 또는 RENDER 판정은 하지 않았습니다."
+  ],
+  "next_dependency": "Main이 현재 child provenance와 보고서를 저장·등록하고 DESIGN_SPEC handoff를 확인해야 합니다. 그 뒤 실제 public DTO/helper/private artifact 계약을 source에 고정하고 dependent implementation을 진행할 수 있습니다.",
+  "provenance": {
+    "child_task_id": "01a11cf8-df56-70a3-807a-0ef43a054e79",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "child_task_id_source": "CODEX_THREAD_ID",
+    "mode": "fresh_independent_changed_concern_initial_design_spec_correction_report_only",
+    "independent_from_author": true,
+    "authored_or_repaired_reviewed_artifacts": false,
+    "coordinator_dispatch_matches": false,
+    "delegated": false,
+    "report_persistence_owner": "Main"
+  }
+}

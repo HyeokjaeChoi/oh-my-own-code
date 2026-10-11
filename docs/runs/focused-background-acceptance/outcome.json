@@ -1,0 +1,78 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "M1": {
+      "status": "verified",
+      "checks": [
+        "build",
+        "bundle",
+        "performance"
+      ],
+      "artifacts": [
+        "docs/runs/frontend-architecture-redesign/execution/p6-performance-native-r2/ui-states/performance-evidence.json",
+        "docs/runs/frontend-architecture-redesign/execution/p6-performance-native-r2/ui-states/performance-manifest.json"
+      ]
+    },
+    "M2": {
+      "status": "verified",
+      "checks": [
+        "performance"
+      ],
+      "artifacts": [
+        "docs/runs/frontend-architecture-redesign/execution/p6-performance-native-r2/ui-states/performance-evidence.json"
+      ]
+    },
+    "M3": {
+      "status": "verified",
+      "checks": [
+        "unit",
+        "bundle",
+        "performance"
+      ],
+      "artifacts": [
+        "docs/runs/frontend-architecture-redesign/execution/p6-performance-native-r2/ui-states/performance-evidence.json",
+        "docs/runs/focused-background-acceptance/acceptance-summary-r1.md"
+      ]
+    },
+    "M4": {
+      "status": "verified",
+      "checks": [
+        "unit",
+        "hidden-ui",
+        "performance"
+      ],
+      "artifacts": [
+        "docs/runs/frontend-architecture-redesign/execution/p6-acceptance-native-r3/ui-states/ui-states-evidence.json",
+        "docs/runs/frontend-architecture-redesign/execution/p6-acceptance-native-r3/ui-states/manifest.json"
+      ]
+    },
+    "M5": {
+      "status": "verified",
+      "checks": [
+        "typecheck",
+        "lint",
+        "boundaries",
+        "build",
+        "bundle",
+        "hidden-ui"
+      ],
+      "artifacts": [
+        "docs/runs/frontend-architecture-redesign/execution/p6-acceptance-native-r3/ui-states/manifest.json",
+        "docs/runs/focused-background-acceptance/acceptance-summary-r1.md"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/p6-performance.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+    "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+    "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "deleted_paths": []
+}

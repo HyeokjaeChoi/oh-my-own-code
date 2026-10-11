@@ -1,0 +1,125 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "A1": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-agents/source-freeze-r1.json",
+        "docs/runs/configuration-agents/verification-summary-r1.json"
+      ],
+      "checks": [
+        "agents",
+        "kernel",
+        "native"
+      ]
+    },
+    "A2": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-agents/source-freeze-r1.json",
+        "docs/runs/configuration-agents/verification-summary-r1.json"
+      ],
+      "checks": [
+        "agents",
+        "native"
+      ]
+    },
+    "A3": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-agents/source-freeze-r1.json",
+        "docs/runs/configuration-agents/verification-summary-r1.json"
+      ],
+      "checks": [
+        "agents",
+        "hidden-ui"
+      ]
+    },
+    "A4": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-agents/source-freeze-r1.json",
+        "docs/runs/configuration-agents/verification-summary-r1.json"
+      ],
+      "checks": [
+        "agents",
+        "boundaries",
+        "build",
+        "bundle",
+        "format",
+        "hidden-ui",
+        "kernel",
+        "lint",
+        "native",
+        "typecheck"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/scripts/configuration-agent-probe.mjs",
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/fixtures/native-agents-prerequisite.mjs",
+    "apps/desktop-app/scripts/fixtures/native-agents-public.mjs",
+    "apps/desktop-app/scripts/fixtures/native-agents-public.test.mjs",
+    "apps/desktop-app/scripts/fixtures/p7-storage-owner-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/p7-storage-probe.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/scripts/run-evidence.test.mjs",
+    "apps/desktop-app/src/builtins/workbench-skills/agents.mjs",
+    "apps/desktop-app/src/builtins/workbench-skills/server.mjs",
+    "apps/desktop-app/src/configuration-agent-runtime-api.test.mjs",
+    "apps/desktop-app/src/configuration-agent.test.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/event-host-protocol.mjs",
+    "apps/desktop-app/src/event-host-resources.mjs",
+    "apps/desktop-app/src/event-host-supervisor.mjs",
+    "apps/desktop-app/src/event-host-supervisor.test.mjs",
+    "apps/desktop-app/src/host/configuration-file-observation.mjs",
+    "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+    "apps/desktop-app/src/host/configuration-save-kernel.test.mjs",
+    "apps/desktop-app/src/host/configuration-source-files.mjs",
+    "apps/desktop-app/src/host/storage-integration.test.mjs",
+    "apps/desktop-app/src/host/storage-journal.mjs",
+    "apps/desktop-app/src/host/storage-journal.test.mjs",
+    "apps/desktop-app/src/host/workbench-admission.mjs",
+    "apps/desktop-app/src/host/workbench-admission.test.mjs",
+    "apps/desktop-app/src/host/workbench-agent-storage.mjs",
+    "apps/desktop-app/src/host/workbench-agent-storage.test.mjs",
+    "apps/desktop-app/src/host/workbench-agents.mjs",
+    "apps/desktop-app/src/host/workbench-agents.test.mjs",
+    "apps/desktop-app/src/host/workbench-native-agents.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+    "apps/desktop-app/src/host/workbench-skills.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/native-agents-client.mjs",
+    "apps/desktop-app/src/native-agents-host.test.mjs",
+    "apps/desktop-app/src/native-agents-plugin.test.mjs",
+    "apps/desktop-app/src/native-agents-protocol.mjs",
+    "apps/desktop-app/src/native-skills-plugin.test.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/agent-files.tsx",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+    "apps/desktop-app/src/renderer/shared/api/index.ts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/agent-runtime.d.mts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/agent-runtime.mjs",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/agent.d.mts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/agent.mjs",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/policy.d.mts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts",
+    "apps/desktop-app/src/workbench-contract.mjs",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "deleted_paths": [],
+  "completion_scope": "Explicit guarded Agent files and workspace-owned Native registration/removal only; whole F14/product unfinished"
+}

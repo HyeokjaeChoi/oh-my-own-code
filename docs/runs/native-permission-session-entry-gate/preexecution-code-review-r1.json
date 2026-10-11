@@ -1,0 +1,79 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "86e925a0d9a90ceca2b0716bca62de066eb0fa435d227378c965c6bfab9e92a5",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "a5b1dd9a8cce70ee5bbc4410ec7702bab51c93968c9d36201fd99eddd87747f2",
+    "schema_version": 2,
+    "source_sha256": "af2ac557cf2c7de82871f5acdd1207db0fbe7918c0df9d4f21148207eeaf619f",
+    "verification_sha256": "f48dfada4979bfcf6f1c9f216199d1f3d52cc4c490f647a59302e4ba340c84d7",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "현재 boot_held 범위에서 수정이 필요한 결함을 찾지 못했습니다. 지정된 saved command의 실행을 승인합니다. 실제 Native 실행 결과의 최종 승인은 아닙니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a1217a-5947-71d3-8859-d72462f3e9ee",
+    "identity_source": "현재 프로세스의 CODEX_THREAD_ID",
+    "mode": "fresh_independent_preexecution_code_review",
+    "implementation_authored_by_this_child": false,
+    "delegation_used": false,
+    "files_written": false,
+    "skills_applied": [
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-code-review/SKILL.md"
+    ],
+    "prior_judgment_reused_from": "docs/runs/native-permission-coordinator-gate/final-code-review-r1.json",
+    "reuse_basis": "기존 coordinator admission, Control, input validator, leases, task observer의 현재 hash가 이전 승인 실행 보고서의 source pin과 일치합니다. 기존 6개 Native recipe 항목은 edits와 output pin까지 동일합니다. 이전 11개 Native 실행 증거를 현재 전체 source의 실행 증거로 취급하지 않았습니다."
+  },
+  "verification": {
+    "spec_compliance": {
+      "S1": "Session.make의 18개 mutation 선언은 guard로 감쌉니다. 실제 Store identity 확인과 project transaction의 assertExecution이 먼저 실행됩니다. 원래 Effect는 짧은 admission이 끝난 뒤 Effect.suspend에서 생성됩니다. 현재 assertExecution은 항상 held로 실패하므로 preparation과 mutation에 도달하지 않습니다.",
+      "factory_entries": "fork, remove, generate, command, background, move와 environment 쓰기는 원래 함수보다 먼저 admission을 검사합니다. environment 읽기, 기존 read-only 함수, interrupt의 원래 동작은 유지됩니다.",
+      "direct_shell": "SessionShell.start는 실제 Store에서 session을 확인한 뒤 Instance와 Shell을 획득하도록 구성됩니다. location, cwd와 metadata에는 확인한 session을 사용합니다. caller location은 실행 권한으로 사용하지 않습니다.",
+      "control_dependency": "Session provider는 같은 WorkbenchControl node를 명시적으로 의존합니다. 기존 dependency 목록은 보존됩니다. Session.make에서 직접 Shell로 전달하는 Control과 Store도 확인했습니다.",
+      "S2": "9개 Native 입력의 before pin, 각 edit의 단일 일치, 메모리에서 계산한 after pin을 확인했습니다. child는 기존 11개 case를 유지하고 지정된 6개 그룹을 추가합니다. 실제 Session service, Store, DB와 Control을 사용하는 assertion과 상태 비교를 읽었습니다."
+    },
+    "code_quality": {
+      "callers": "실제 Native Session.make, Session factory, SessionShell.start의 원본 함수와 호출 인자를 대조했습니다. configured Layer의 pipe와 Layer.tap의 Context callback 방식은 유지됩니다.",
+      "node_regression": "저장된 RED는 preparation 1회를 기록합니다. 현재 테스트는 정확한 checked Session.make를 추출하고 pinned Effect와 명시적 inert dependency를 사용합니다. held 상태에서 preparation과 mutation 0회를 검사합니다. direct Shell 테스트는 Instance와 Shell을 제공하지 않고 typed held 실패와 Store 읽기 2회를 검사합니다.",
+      "native_child": "synthetic session 생성은 실제 SDK를 통한 setup으로 남습니다. 새 그룹은 info, messages, inbox, environment의 불변 상태를 비교합니다. provider나 shell command 실행을 요구하지 않습니다.",
+      "parent_probe": "실행 전후 source, original, staged identity와 복사한 child hash를 검사합니다. 전용 output 경로는 단독 생성하며 report는 wx로 작성합니다. 정확한 17개 case의 이름·순서·결과와 정상 child exit를 모두 요구합니다. timeout, signal, spawn failure, overflow와 identity drift는 PASS를 막습니다.",
+      "actionable_defects": []
+    },
+    "read_only_checks": {
+      "whole_binding": "harness review-input 결과가 preexecution-code-input-r1.json 전체 객체와 검토 시작 및 종료 시 일치합니다.",
+      "source_delta": "baseline 대비 변경은 지정된 6개 파일뿐입니다.",
+      "freeze": "현재 6개 파일의 hash와 크기가 source-freeze-preexecution-r1.json과 일치합니다.",
+      "before_archive": "보존된 기존 5개 파일의 hash와 크기가 before-manifest.json과 일치합니다. 새 테스트의 before 부재 기록도 확인했습니다.",
+      "routing": "reviewer packet의 instruction 및 profile pin이 현재 파일과 일치합니다.",
+      "recipe": "기존 6개 recipe 항목은 정확히 동일합니다. 전체 9개 입력과 변환 결과의 pin이 일치합니다."
+    },
+    "existing_checks": {
+      "unit": "저장된 현재 binding의 결과는 132/132 PASS, exit_code 0입니다.",
+      "lint": "저장된 현재 binding의 결과는 PASS, exit_code 0입니다.",
+      "format": "저장된 현재 binding의 결과는 PASS, exit_code 0입니다.",
+      "checks_rerun": false,
+      "native_executed_by_this_reviewer": false
+    }
+  },
+  "saved_command_judgment": {
+    "command": "node apps/desktop-app/scripts/native-permission-graph-probe.mjs --out docs/runs/native-permission-session-entry-gate/evidence/native-r1",
+    "may_execute": true,
+    "scope": "검토한 전체 binding과 동일한 source에서 수행하는 synthetic boot_held Native 17-case probe",
+    "final_actual_runtime_acceptance": false
+  },
+  "verification_limits": [
+    "이번 검토에서는 Native, Bun, 테스트, provider, GUI와 build를 실행하지 않았습니다. source, docs와 ledger를 작성하지 않았습니다.",
+    "현재 17-case Native 실행은 아직 승인된 결과가 없습니다. Main이 실행 증거와 최종 binding을 확인해야 합니다.",
+    "Node의 실제 함수 추출 테스트는 inert dependency를 사용합니다. 실제 Native DB 실행 증거를 대신하지 않습니다.",
+    "positive execution, production wiring과 full F09를 승인하지 않습니다.",
+    "mutable method 인자와 fork의 inherited scope는 활성화 전에 완전한 OriginalOperationScope, leases와 generation 검증이 필요합니다. 현재 첫 guard의 무조건 거부를 우회하는 경로로 판단하지 않았습니다.",
+    "create/import bootstrap authority, raw internal Move, 직접 inbox/tool 경로와 lifecycle의 전체 적용은 향후 범위입니다.",
+    "raw lease case는 runtime component 호환성 범위입니다. Native 실행 권한이나 descendant settlement의 증거가 아닙니다.",
+    "OS sandbox, change-and-restore 부재와 power-loss recovery를 증명하지 않습니다.",
+    "보고서 저장과 gate 등록은 Main이 수행합니다."
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs",
+      "bytes": 2083,
+      "sha256": "5506ba6e6497e082eb40a8d883af9cc658e730a9234ff9100f89bb997bdd737a"
+    },
+    {
+      "path": "apps/desktop-app/src/host/darwin-descriptor-ffi.test.mjs",
+      "bytes": 2793,
+      "sha256": "4db7bd472561e6df2e69a5ef573b6991932cfe83332e0dce7d5475d764688278"
+    },
+    {
+      "path": "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+      "bytes": 26629,
+      "sha256": "137b86921877f45e48d942e2177d6b5a016c35f35a569e46e67e9d6767ac7d1c"
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read.mjs",
+      "bytes": 10493,
+      "sha256": "2b0ed94ea5b47efa670a513c338763faef718e24dd83709285c66fb48d2f9586"
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read.test.mjs",
+      "bytes": 24683,
+      "sha256": "7bc76588649fcbf57e5876adf24d65e02e147e40f116a96c0cb5f0146aa4673b"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workspace-root-authority.mjs",
+      "bytes": 6572,
+      "sha256": "a8f977e5b8458eb8b51ed1c47ab4fa515e35b78e72f9303f79f724fa9eac0fd0"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workspace-root-authority.test.mjs",
+      "bytes": 22077,
+      "sha256": "67091d0580fd5f3dd273a408fae4c572306d54367f9fd50656f9438ba992dd0a"
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+      "bytes": 5236,
+      "sha256": "4a1866d6e29cac442cdcebc65ed6f706aa9f51ef63b6ee27f649ff5386dabc83"
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs",
+      "bytes": 20344,
+      "sha256": "72b8e76e99d38957d2e1093e3e3b843e9dacecfa435bf332a53a81df6f8bf68c"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-observer.mjs",
+      "bytes": 11402,
+      "sha256": "625fac099f98618e29e57ac01394ff24140cce97171f283f9d263f89268985fe"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-observer.test.mjs",
+      "bytes": 36817,
+      "sha256": "297ae7cab3f9b55e7c697cab82172701b5370481921a56e4f5b30bdf8faebf0b"
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-resources.mjs",
+      "bytes": 17909,
+      "sha256": "4f993cb019080b47ba5287866744edba6f55764b8442dbee5572bf81e1a8f5ab"
+    }
+  ],
+  "before": [
+    "prechange/descriptor-ffi-before-r1/manifest.json",
+    "prechange/descriptor-read-before-r1/manifest.json",
+    "prechange/descriptor-root-revocation-before-r1/manifest.json",
+    "prechange/descriptor-read-resource-before-r1/manifest.json"
+  ],
+  "finding": "READ-ROOT-01 meaningful RED then GREEN; actualshared factory guard irreversibly revoked on root/ancestor identity failure; revocation does not claim physical close.",
+  "checks": {
+    "native-descriptor-read": 146,
+    "native-metadata": 105,
+    "failed": 0,
+    "checkStatus": "both reusable at 0c31c142c78005a4c0241a6b7396cd25e16dde35c37e443d18647d4f90c648d6",
+    "stage": "descriptor-resource-stage-r1.log 1PASS",
+    "static": "exact12 eslint/prettier PASS"
+  },
+  "scope": "Bounded sharedABI/physical-file read/resource lifetime and actual Effect observer integration; not wholeCODE/full18/runtime approval.",
+  "limits": "Synthetic openat/scripted kernel tests in owned copies; real Node rootguard and original Effect observer. No actual Bun/Darwin/Native/Electron/build/provider/GUI. Directories/instruction IO/native tool activation pending."
+}

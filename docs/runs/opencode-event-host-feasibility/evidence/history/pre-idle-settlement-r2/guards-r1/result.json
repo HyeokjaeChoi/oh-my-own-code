@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "case": "guards",
+  "status": "PASS",
+  "namespace": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/8cf41ad9-b0ac-458b-92d8-ce809aeef5d7",
+  "namespace_retained": true,
+  "before": {
+    "input_manifest_sha256": "be8bbef0155fdbf711dc37e169d4ddd50848090e97d3148571ae8b08f06fe0d7",
+    "runtime_manifest_sha256": "314b1bb4a24b765fa6934a36dfd69d85205195b4e6ab304a3b24c4484a7cb02a",
+    "inventory_sha256": "54cf24f046e5f66b0755b24d20b68b03bf770b64ffede97a26645a4892632559"
+  },
+  "after": {
+    "input_manifest_sha256": "be8bbef0155fdbf711dc37e169d4ddd50848090e97d3148571ae8b08f06fe0d7",
+    "runtime_manifest_sha256": "314b1bb4a24b765fa6934a36dfd69d85205195b4e6ab304a3b24c4484a7cb02a",
+    "inventory_sha256": "54cf24f046e5f66b0755b24d20b68b03bf770b64ffede97a26645a4892632559"
+  },
+  "journal": [
+    {
+      "type": "api-ack",
+      "method": "server.info"
+    },
+    {
+      "type": "authenticated-ready",
+      "pid": 98655,
+      "engine": "1.4.2"
+    },
+    {
+      "type": "scope-closed",
+      "pid": 98655,
+      "reason": "requested",
+      "observation": {
+        "scope": "direct JS ChildProcess/Bun handles only; not arbitrary native/OS descendants",
+        "observerGap": false,
+        "handles": [],
+        "live": 0
+      }
+    },
+    {
+      "pid": 98655,
+      "code": 0,
+      "signal": null,
+      "observed": "ChildProcess.exit"
+    }
+  ],
+  "diagnostic": null,
+  "result": {
+    "negative": {
+      "paths": [
+        {
+          "label": "parent-traversal",
+          "rejected": true,
+          "native_calls": 0,
+          "spawns": 0
+        },
+        {
+          "label": "outside-root",
+          "rejected": true,
+          "native_calls": 0,
+          "spawns": 0
+        },
+        {
+          "label": "uri",
+          "rejected": true,
+          "native_calls": 0,
+          "spawns": 0
+        },
+        {
+          "label": "symlink",
+          "rejected": true,
+          "native_calls": 0,
+          "spawns": 0
+        },
+        {
+          "label": "dangling-symlink",
+          "rejected": true,
+          "native_calls": 0,
+          "spawns": 0
+        },
+        {
+          "label": "hard-link",
+          "rejected": true,
+          "native_calls": 0,
+          "spawns": 0
+        },
+        {
+          "label": "wrong-mode",
+          "rejected": true,
+          "native_calls": 0,
+          "spawns": 0
+        }
+      ],
+      "closed_api_rejected": 11,
+      "rejected_native_calls": 0,
+      "rejected_spawns": 0,
+      "fixtures_retained": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/1ce6c69d-7309-424a-a96e-80268b3fb447"
+    },
+    "auth": [
+      {
+        "label": "missing-basic",
+        "status": 401,
+        "allow_origin_match": false
+      },
+      {
+        "label": "wrong-basic",
+        "status": 401,
+        "allow_origin_match": false
+      },
+      {
+        "label": "valid-no-origin",
+        "status": 200,
+        "allow_origin_match": false
+      },
+      {
+        "label": "valid-controlled-origin",
+        "status": 200,
+        "allow_origin_match": true
+      },
+      {
+        "label": "valid-rejected-origin",
+        "status": 200,
+        "allow_origin_match": false
+      }
+    ]
+  },
+  "limitation": "Direct JS handles only; no OS confinement, queued recovery, provider safety, pairing/PTY, power-loss, production adoption or P7 completion proof."
+}

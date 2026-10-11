@@ -1,0 +1,109 @@
+{
+  "schema_version": 2,
+  "run": "durable-workbench-storage",
+  "reviewer": "plan_reviewer",
+  "plan_revision": 6,
+  "reviewed": {
+    "contract_sha256": "b92ef6b7b7e22f64151402a357e908a73799a1815e38c75448f8601f32159b0d",
+    "gate": "plan",
+    "plan_sha256": "640b6c072bc358cce8e0d5e44b2998ce3be06d57526f21a2320a17c0ef241212",
+    "schema_version": 2,
+    "source_sha256": "be44a6f2c01f67d53d80bb278722b2b39e1864fbbc609247b674167942241989"
+  },
+  "verdict": "pass",
+  "summary": "Plan revision 6의 ENTRY 검토를 통과합니다. Storage-contract v5의 recovery 계약과 구현 순서, 파일 소유권, 검증 책임이 연결되어 있습니다. 기존 architecture와 F-01–18 범위, autonomous local 승인, background-only OS 및 synthetic fixture 조건을 유지합니다. 추가 ENTRY 차단 사항을 찾지 못했습니다. 별도 design_spec 검토는 계속 필요합니다.",
+  "open_findings": [],
+  "changed_concern_judgment": {
+    "id": "P7-DS-V4-1",
+    "result": "ENTRY 관점에서 해소되었습니다.",
+    "reason": "Section 12가 closed recovery DTO, native ready 이전 facade, original-epoch retained key reconciliation, global/resource 차단 범위와 atomic clock 검증을 정의합니다. Host·renderer·fixture 담당자와 acceptance가 지정되어 있습니다. 최종 design_spec 판정은 별도 독립 검토의 책임입니다."
+  },
+  "assessments": [
+    {
+      "concern": "Recovery facade와 closed DTO",
+      "result": "필수 recovery·retainedOperations, boolean temporary, unavailable session status와 bounded reason을 정의합니다. Native startup이 차단되어도 metadata snapshot과 lookup을 제공합니다. Transport UNAVAILABLE과 storage recovery를 구분하며 owner conflict에서는 live journal을 읽지 않습니다."
+    },
+    {
+      "concern": "Retained key reconciliation",
+      "result": "빈 renderer가 original runtimeEpoch와 operationId를 복원하고 current transport epoch로 조회할 수 있습니다. Key는 실행 요청이 아니며 payload나 permission을 복원하지 않습니다. 초과·손상 상태에서도 host hold를 보존하고 전역 차단합니다."
+    },
+    {
+      "concern": "Mutation 차단 범위",
+      "result": "Store recovery는 모든 mutation과 native launch를 차단합니다. Resource recovery는 해당 resource, descendants와 shared workspace에 영향을 주는 작업을 차단합니다. Cross-resource 작업과 host enforcement 순서도 명시되어 있습니다."
+    },
+    {
+      "concern": "Clock과 hold 유지",
+      "result": "Recovery와 retained key를 snapshot의 동일한 atomic acceptance에 포함합니다. 낮은 revision, 오래된 sequence와 epoch를 거절합니다. Connected/idle이나 interrupt ACK만으로 recovery 또는 unknown hold를 해제하지 않습니다."
+    },
+    {
+      "concern": "Acceptance와 구현 책임",
+      "result": "단일 host integration writer가 facade·DTO·admission·receipt와 storage-integration tests를 소유합니다. DTO freeze 뒤 renderer 담당자가 sole store/controller와 renderer tests를 변경합니다. 별도 fixture 담당자가 hidden UI evidence를 준비합니다. 변경 concern의 acceptance는 storage-unit, renderer-unit과 hidden-ui에 연결되어 있습니다."
+    },
+    {
+      "concern": "설계와 구현의 구분",
+      "result": "아직 구현하지 않은 source를 결함으로 판정하지 않았습니다. Journal/owner API checkpoint, host DTO freeze, 독립 design_spec 및 handoff가 source consumer보다 먼저 진행됩니다. Runtime compatibility와 migration cutover의 기존 hold를 유지합니다."
+    }
+  ],
+  "checks": [
+    {
+      "check": "Exact reviewed binding",
+      "result": "지정된 plan-review-r6.input.json을 reviewed에 그대로 복사했습니다. 실제 plan SHA256과 normalized contract SHA256이 binding과 일치합니다. 종료 시 다시 확인했습니다."
+    },
+    {
+      "check": "Document registration",
+      "result": "Storage-contract v5의 실제 SHA256이 contract documents 등록값 c58a79f5c62840873e5a2cededc67e9d381006926365fecf07728c5f484fdab7과 일치합니다."
+    },
+    {
+      "check": "Required acceptance",
+      "result": "11개 check가 모두 required입니다. 이번 검토에서는 실행하지 않았습니다."
+    },
+    {
+      "check": "Source binding 한계",
+      "result": "Source SHA256은 지정된 binding에서 정확히 복사했습니다. Source fingerprint는 독립 재계산하지 않았습니다."
+    }
+  ],
+  "review_boundary": {
+    "mode": "fresh_independent_direct_bootstrap_entry_review",
+    "input_path": "docs/runs/durable-workbench-storage/execution/plan-review-r6.input.json",
+    "packet_path": null,
+    "prepared_dispatch_claimed": false,
+    "plan_path": "docs/runs/durable-workbench-storage/plan.md",
+    "plan_revision": 6,
+    "contract_path": "docs/runs/durable-workbench-storage/contract.json",
+    "storage_contract_path": "docs/runs/durable-workbench-storage/storage-contract.md",
+    "storage_contract_version": 5,
+    "changed_concern_source": "docs/runs/durable-workbench-storage/design-spec-review-v4.json",
+    "limits": "읽기 전용 문서 검토와 hash 확인입니다. 구현 완료, OS enforcement, packaged runtime, Windows runtime, provider 실행 또는 migration 성공을 입증하지 않습니다.",
+    "next_dependency": "Main이 보고서를 저장하고 ENTRY를 등록합니다. 이후 정확한 v5 binding의 독립 design_spec 검토와 handoff를 완료한 뒤 source consumers를 진행합니다. 추가 사용자 승인은 필요하지 않습니다."
+  },
+  "provenance": {
+    "child_task_id": "01a10691-4dbf-7641-be0e-dc56721bb494",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-plan-review"
+    ],
+    "mode": "report_only",
+    "runtime_identity_attested": false,
+    "sandbox_enforcement_attested": false,
+    "delegated": false,
+    "files_changed": [],
+    "report_written": false,
+    "ledger_changed": false,
+    "tests_run": false,
+    "lint_run": false,
+    "builds_run": false,
+    "native_launches": false,
+    "gui_launches": false,
+    "computer_use_used": false,
+    "foreground_actions": false,
+    "provider_calls": false,
+    "private_migrations": false,
+    "read_only_hashing_performed": true,
+    "plan_contract_binding_verified_twice": true,
+    "source_fingerprint_recomputed": false,
+    "persistence_owner": "main"
+  }
+}

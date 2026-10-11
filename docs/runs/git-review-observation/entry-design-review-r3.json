@@ -1,0 +1,126 @@
+{
+  "schema_version": 2,
+  "run_id": "git-review-observation",
+  "reviewer_role": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "ef4a986a365c4eb8ed3ca06ab9c577b1bda0b51f264d084cb414918b149437c7",
+    "documents_sha256": "606ac26570f533e6b63690c5db09e753641e90bf5ccb26c097277f87f910bcb1",
+    "gate": "design_spec",
+    "plan_sha256": "9cfd286b82535b15771b148cf1a7122b0968cbe59fa006231ed156928e3252f5",
+    "schema_version": 2,
+    "work_class_sha256": "201d17492a4cefb963a6b8a5a34a68dfbb1017ac43c833a6fd460efa9ffcd387"
+  },
+  "verdict": "pass",
+  "summary": "지정한 두 finding은 design version3에서 문서 수준으로 해결됐습니다. 수정으로 생긴 중대한 계약 충돌은 발견하지 못했습니다. 이 판정은 한정된 DESIGN_SPEC 검토이며 구현, runtime 또는 rendered UI 통과를 뜻하지 않습니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "DESIGN-GIT-R2-01",
+      "status": "resolved_in_spec",
+      "locations": [
+        {
+          "path": "docs/runs/git-review-observation/design.md",
+          "lines": [14, 16, 58, 67]
+        },
+        {
+          "path": "docs/runs/git-review-observation/plan.md",
+          "lines": [40]
+        }
+      ],
+      "assessment": "Checked config bytes는 bounded memory와 stdin pipe로만 처리합니다. 고정된 trusted Git builtin 명령은 git config --file - --no-includes --null --list입니다. Raw input과 parser stdout/stderr는 파일, argv, 로그, 보고서 또는 retained evidence에 저장하지 않습니다. Scratch에는 whitelist로 생성한 최소 config만 기록합니다. 따라서 child 종료 미확인 시 namespace를 보존하는 기존 규칙이 raw config credential 파일을 남기는 경로는 제거됐습니다.",
+      "compatibility": "Upstream v2.54.0의 location_options_init은 --file -를 use_stdin으로 변환합니다. 그 뒤 source.file이 NULL이므로 기본 include 판단에 의존하면 안 됩니다. 명시적 --no-includes를 유지하는 현재 설계는 이 동작과 맞습니다. 근거: [Git v2.54.0 builtin/config.c](https://github.com/git/git/blob/v2.54.0/builtin/config.c).",
+      "acceptance_still_required": "설치된 고정 Git의 정확한 flag 지원과 no-includes 동작은 matching DESIGN_SPEC pass 뒤 실제 preflight로 확인해야 합니다. Credential canary의 정상, parse 실패, timeout, 취소, 종료 미확인, controlled host-crash 사례도 후속 수용 조건입니다."
+    },
+    {
+      "id": "DESIGN-GIT-R2-02",
+      "status": "resolved_in_spec",
+      "locations": [
+        {
+          "path": "docs/runs/git-review-observation/design.md",
+          "lines": [37, 39, 41, 42, 43, 45, 56, 67]
+        },
+        {
+          "path": "docs/runs/git-review-observation/plan.md",
+          "lines": [40]
+        }
+      ],
+      "assessment": "Untracked 처리가 mode별로 분리됐습니다. Staged는 not_staged를 반환합니다. Unstaged는 empty에서 guarded current file로 비교합니다. Base는 실제 selected baseOid의 해당 blob에서 current file로 비교하며, 해당 base tree에 경로가 실제로 없을 때만 empty를 사용합니다. Base blob과 같은 내용은 성공한 empty patch이고, 다른 내용은 base-to-current patch입니다.",
+      "compatibility": "Direct TIP 비교 정의, baseRef와 baseOid 응답, 비교 bytes/OIDs/modes를 묶는 sourceDigest, 기존 source 제한과 unavailable 계약을 유지합니다. 공통 untracked 처리가 base를 전체 추가 patch로 바꾸던 충돌은 제거됐습니다.",
+      "acceptance_still_required": "Base에만 존재하고 HEAD/index에는 없는 경로를 현재 untracked로 만든 equal/different 사례가 명시됐습니다. 실제 기대값과 Renderer의 base label 및 비교 OID 일치는 후속 검사에서 확인해야 합니다."
+    }
+  ],
+  "review_boundary": {
+    "mode": "report_only",
+    "scope": [
+      "DESIGN-GIT-R2-01 수정의 충분성과 호환성",
+      "DESIGN-GIT-R2-02 수정의 충분성과 호환성",
+      "두 수정으로 생긴 계약 회귀"
+    ],
+    "inspected": [
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-design-spec-review/SKILL.md",
+      "docs/runs/git-review-observation/entry-design-packet-r3.json",
+      "docs/runs/git-review-observation/entry-design-input-r3.json",
+      "docs/runs/git-review-observation/entry-design-review-r2.json",
+      "docs/runs/git-review-observation/plan.md revision3",
+      "docs/runs/git-review-observation/design.md version3",
+      "docs/runs/git-review-observation/contract.json",
+      "docs/runs/git-review-observation/run.json",
+      "docs/runs/git-review-observation/source-facts.json",
+      "docs/product/prd.md credential 관련 부분",
+      ".solopreneur/harness.py binding 관련 부분",
+      "Upstream Git v2.54.0 builtin/config.c의 stdin/include 처리"
+    ],
+    "performed": [
+      "문서와 JSON 정적 읽기",
+      "독립적인 파일 SHA256 및 semantic binding 계산",
+      "Source-facts의 기존 문서·소스 pin 대조",
+      "실제 child ID와 등록된 dispatch 대조"
+    ],
+    "not_performed": [
+      "파일, report 또는 ledger 변경",
+      "Git repo 명령 또는 Git executable 실행",
+      "테스트, build 또는 제품 runtime 실행",
+      "Native, Bun, Electron, provider 또는 foreground 작업",
+      "Harness 명령 실행",
+      "재위임"
+    ]
+  },
+  "evidence": {
+    "reviewed_equals_entire_parsed_input": true,
+    "plan_hash_matches_input_packet_and_registration": true,
+    "raw_contract_hash_matches_packet_and_registration": true,
+    "semantic_contract_hash_matches_input": true,
+    "documents_binding_matches_input": true,
+    "design_hash_and_current_artifact_registration_match": true,
+    "routing_hashes_match": true,
+    "packet_and_contract_decision_register_match": true,
+    "source_facts_file_pins_match": true,
+    "installed_source_pins_match": true,
+    "child_dispatch_matches_packet": true,
+    "run_status": "active",
+    "work_class": "routine",
+    "explicit_required_review": "design_spec",
+    "initial_plan_revision2_pass": "historical",
+    "hash_difference_explanation": "Packet의 contract_sha256는 파일 해시입니다. reviewed의 contract_sha256는 Harness 규칙으로 계산한 semantic 해시입니다. 두 값 모두 각 binding과 일치합니다."
+  },
+  "limits": [
+    "Initial PLAN revision2 pass는 과거 근거로만 취급했습니다. PLAN 검토를 반복하지 않았으며, 현재 명시적 DESIGN_SPEC 요구는 유지했습니다.",
+    "변경하지 않은 설계 전체를 다시 조사하거나 재승인하지 않았습니다. 기존 source-facts pin의 현재 일치를 확인했습니다.",
+    "Upstream 소스 확인은 설치된 Git의 runtime 호환성 증거가 아닙니다. 실제 preflight는 이번에 실행하지 않았습니다.",
+    "후속 credential canary와 base equal/different 검사는 수용 조건이며, 실제 통과 결과가 아닙니다.",
+    "Create-then-unlink, secure heap erasure, OS swap/core-dump 방지 또는 copied object-store crash cleanup을 보장하지 않습니다.",
+    "전체 source_fingerprint는 재계산하지 않았습니다.",
+    "Rendered UI, runtime 보안, Windows 수용 또는 전체 AC11 완료를 승인하지 않습니다.",
+    "Main이 실제 보고서 저장과 gate 등록 및 후속 handoff를 담당합니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11be8-6bac-70c0-8b8f-35d53f42bcbb",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "reviewer": "design_spec_reviewer",
+    "prior_reviewer_child_task_id": "01a11be1-83db-77c3-a684-36bdd742f996",
+    "basis": "현재 CODEX_THREAD_ID와 CODEX_SESSION_ID에서 ID를 읽었습니다. 현재 child ID는 r3 packet의 등록된 dispatch와 일치하며 author 및 이전 reviewer와 다릅니다. Profile 이름을 실제 OS sandbox enforcement 증거로 사용하지 않았습니다."
+  }
+}

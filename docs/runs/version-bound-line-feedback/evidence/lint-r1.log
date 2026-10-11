@@ -1,0 +1,27 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+1 !== 0
+
+    at file:///Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/check-changed.mjs:71:8 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.14.1
+
+
+/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/line-feedback/index.d.mts
+  2:33  error  'GitDiffMode' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 1 problem (1 error, 0 warnings)
+
+{"mode":"lint","paths":["apps/desktop-app/scripts/build-provenance.mjs","apps/desktop-app/scripts/build-provenance.test.mjs","apps/desktop-app/scripts/e2e-line-feedback.mjs","apps/desktop-app/scripts/fixtures/workbench-host.mjs","apps/desktop-app/scripts/fixtures/workbench-host.test.mjs","apps/desktop-app/scripts/run-evidence.mjs","apps/desktop-app/scripts/run-evidence.test.mjs","apps/desktop-app/src/line-feedback.test.mjs","apps/desktop-app/src/renderer/entities/workbench/index.ts","apps/desktop-app/src/renderer/entities/workbench/model/controller.ts","apps/desktop-app/src/renderer/entities/workbench/model/store.ts","apps/desktop-app/src/renderer/features/line-feedback/index.tsx","apps/desktop-app/src/renderer/shared/api/index.ts","apps/desktop-app/src/renderer/shared/line-feedback/index.d.mts","apps/desktop-app/src/renderer/shared/line-feedback/index.mjs","apps/desktop-app/src/renderer/shared/line-feedback/index.ts","apps/desktop-app/src/renderer/widgets/explorer/index.tsx","apps/desktop-app/src/workbench-store.test.mjs"],"exit":1}
+

@@ -1,0 +1,23 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "ef561556c9047742361bf1290437a6122bab248e914df95957b7ae71f928c195",
+    "gate": "plan",
+    "plan_sha256": "430c609602eeb5f37412a9e85e63210afe81c59879ee6e11e30ebc139f64a1ec",
+    "schema_version": 2,
+    "source_sha256": "1263cd81f21106e99c6d5b3bbb04519c398068e78d7a010cb5790d01f60111d0"
+  },
+  "verdict": "pass",
+  "summary": "이미 통과한 docs/runs/prd/plan.md 리비전 1은 변경되지 않았으며, 최종 계약의 유일한 실질 변경은 docs/product/prd.md v0.1의 정확한 SHA256을 제품 검토 대상으로 바인딩하는 것이다. 기존 승인 범위, 독립 제품 검토, 후속 명세 전 사용자 승인, 기술 검증 보류 조건은 유지된다. 계획·계약·PRD·원페이저·승인 기록의 실제 SHA256이 제공된 값과 일치하며, 이 바인딩 변경에 수정이 필요한 사항은 없다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/own_code_prd_final_review",
+    "author_task_id": "/root"
+  },
+  "verification_limits": [
+    "최종 문서 바인딩으로 바뀐 우려사항만 독립적으로 검토했다. 기존 통과 계획 전체와 승인된 원페이저의 제품 판단을 재수행하지 않았다.",
+    "배정된 지침·계획·초기 및 최종 계약·초기 검토·승인 기록·검토 입력을 읽고 파일 해시를 확인했다. 파일과 원장은 변경하지 않았다.",
+    "source_sha256은 helper가 제공한 검토 입력의 바인딩이며 전체 저장소에서 독립적으로 재산출하지 않았다.",
+    "이 계획 통과는 PRD 의미론, SDK 및 어댑터 동작, 사용자 승인 또는 런타임 실행의 증거가 아니다. 별도의 정확한 버전 제품 검토가 필요하다."
+  ]
+}

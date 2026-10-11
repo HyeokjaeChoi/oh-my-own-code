@@ -1,0 +1,139 @@
+{
+  "schema_version": 2,
+  "run": "permission-control-design",
+  "reviewer": "design_spec_reviewer",
+  "verdict": "changes_requested",
+  "summary": "기존 engine, service/admission/registry/journal 소유권을 유지하는 방향은 소스와 맞습니다. 기존 session.wait 재사용, module load 전 source 검사, 프로젝트 전체 remember 범위, 오래된 실행 closure 차단도 적절합니다. 그러나 경로 보장, lease와 transaction 경계, 재시작 복구, 닫힌 API와 receipt, 기존 baseline과 새 모드의 결합 규칙이 아직 확정되지 않았습니다. 전체 F09 구현 계약으로 PASS할 수 없습니다. runtime 근거가 아직 없다는 사실 자체는 결함으로 판정하지 않았습니다.",
+  "reviewed": {
+    "contract_sha256": "cf9a9a9b7ce49cec136caf1fddb841b20671edb5686f528ba660e8a21fde00c9",
+    "document_requirement_epoch": 1,
+    "documents_sha256": "095d9fce03b1bb9f25eb8f4d0c17bc6dd749cb6a487088feb28752d9bf9bbade",
+    "gate": "design_spec",
+    "plan_sha256": "de263d947b000568d0e1de2af58f48ba6d44a5a467f6ca944887ae3ed2593d64",
+    "schema_version": 2,
+    "work_class_sha256": "e52a40450aab62593988ef0bf9d39c6504837c8a4914a1062d4fa95545e7273a"
+  },
+  "open_findings": [
+    {
+      "id": "DS-01",
+      "severity": "blocking",
+      "location": {
+        "path": "docs/runs/permission-control-design/design-draft-r1.md",
+        "lines": [110, 120, 181, 189]
+      },
+      "affected_consumer": "scoped_edit, Write/Edit/Patch broker와 경로 범위 표시",
+      "evidence": [
+        "114행은 권한을 현재 pathname 범위가 아닌 held filesystem object로 정의합니다. 동시에 strict current-path confinement의 필요 여부를 미확정으로 남깁니다.",
+        "configuration-save-kernel.mjs의 rootStable은 named directory와 held descriptor의 identity를 검사합니다. publish는 검사 뒤 descriptor-relative renameatx_np를 실행하고 다시 검사합니다. 검사와 syscall 사이 외부 rename을 막는 경계는 없습니다.",
+        "PRD는 허용 경로를 실행 경계에서 강제하도록 요구합니다. 사후 unknown은 이미 범위 밖에서 발생한 변경을 방지하지 못합니다."
+      ],
+      "precise_correction": "현재 허용 경로 의미를 약화하지 않은 상태에서 외부 rename 경쟁까지 처리할 강제 전략을 선택하고, 플랫폼 범위·실패 조건·실제 mutation 경계를 명시하십시오. descriptor broker만으로 이 보장을 충족한다고 판정하지 마십시오. held-object 의미로 변경하려면 별도의 명시적 요구사항 변경이 필요합니다. unavailable 표시는 안전한 보류이지만 전체 F09 설계 완료를 대신하지 못합니다."
+    },
+    {
+      "id": "DS-02",
+      "severity": "high",
+      "location": {
+        "path": "docs/runs/permission-control-design/design-draft-r1.md",
+        "lines": [65, 104]
+      },
+      "affected_consumer": "Native project control, SessionInbox, direct Shell, move, transition owner",
+      "evidence": [
+        "87행은 긴 작업을 tracked lease로 처리한다고만 정합니다. lease 생성·종료·취소·background 전환·소유권 이동의 계약과 activation 조건은 없습니다.",
+        "config-9qsysn39.js:151-180의 direct Session.shell은 별도 scope에 fiber를 시작합니다. Session.wait:206-208은 coordinator.awaitIdle만 기다립니다.",
+        "config-6jrj4a7s.js:137-160은 inbox serialized 구간에서 직접 Moved를 publish하거나 admission.admit을 호출합니다. config-7stqpyhf.js:87은 별도 inbox lock을 사용합니다.",
+        "89행은 move 바깥에서 gate를 얻는 방법과 내부 transaction capability 방법을 선택지로 남깁니다. 실제 runner move commit과 lease identity 이전 절차도 닫혀 있지 않습니다."
+      ],
+      "precise_correction": "하나의 transaction/lease 프로토콜을 선택하십시오. 각 entrypoint의 실제 모듈, gate 획득 위치, 내부 호출 권한, lease 식별자와 generation, 종료 판정, background·move 이전 규칙을 표로 고정하십시오. transition activation은 session.wait 완료와 대상 범위의 모든 실제-effect lease 종료를 함께 요구해야 합니다. cross-project move의 두 gate, identity 재검사, commit과 lease 이전 순서를 하나로 정하고 역순 lock 획득을 금지하십시오."
+    },
+    {
+      "id": "DS-03",
+      "severity": "high",
+      "location": {
+        "path": "docs/runs/permission-control-design/design-draft-r1.md",
+        "lines": [97, 104, 159, 167]
+      },
+      "affected_consumer": "EventHost boot, Native restart continuity, partial-effect reconciliation",
+      "evidence": [
+        "설계는 unknown 작업의 hold 유지와 original-key lookup-only를 요구하지만, 재시작 뒤 hold를 재구성하는 시점과 해제 조건을 정하지 않습니다.",
+        "@opencode/server/dist/process.js:116은 restart continuity를 설치하고, 196-197행은 resumeSuspendedSessions를 fork합니다.",
+        "core/dist/session/execution/restart.js:261-347은 Synthetic 기록, background 복구, child 실행과 suspended session의 execution.resume을 수행합니다.",
+        "saved DB write, 여러 Deferred release, 여러 session policy 변경은 하나의 rollback transaction이 아닙니다. 설계는 부분 결과를 unknown으로 남기지만, 그 뒤 안전한 새 실행을 허용하는 대조 절차가 없습니다."
+      ],
+      "precise_correction": "boot는 기본 hold 상태에서 시작하도록 정하십시오. 기존 journal의 미완료 intent와 scope를 복구하고 Native identity·policy·saved 상태 및 실제 잔존 작업을 대조한 뒤에만 restart continuity와 신규 실행을 허용하십시오. 기존 restart 경로의 Synthetic·background·child 작업도 이 순서에 포함하십시오. 각 부분 실패에 대해 보존할 기록, 조회만 가능한 동작, hold 해제 근거와 계속 차단할 조건을 명시하십시오. 이전 효과를 자동 재실행하거나 rollback 완료로 표시하지 마십시오."
+    },
+    {
+      "id": "DS-04",
+      "severity": "high",
+      "location": {
+        "path": "docs/runs/permission-control-design/design-draft-r1.md",
+        "lines": [122, 161]
+      },
+      "affected_consumer": "private RPC, host API, storage-journal, renderer preview와 receipt",
+      "evidence": [
+        "124행은 닫힌 DTO와 digest 규칙을 후속 checkpoint로 미룹니다. 157행도 status별 reason과 receipt 상관관계를 후속 schema로 미룹니다.",
+        "입력 필드는 일부 닫혀 있지만 scope, impact, capability, before/after policy, pending identity와 부분 결과의 정확한 응답 구조는 없습니다. digest의 canonical ordering과 포함 필드도 정하지 않습니다.",
+        "once/reject는 collateral 검사 추가만 언급합니다. 현재 workbench-service.mjs:4729-4771은 session pending을 조회한 뒤 reply하며 reject의 대상 목록을 immutable preview에 묶지 않습니다.",
+        "현재 registry와 journal은 operation type, target, dispatch step을 닫힌 목록으로 검증합니다. 새로운 여러 대상·여러 효과를 기록할 구조는 이 설계에서 확정되지 않았습니다."
+      ],
+      "precise_correction": "이 문서에 구현 독립적인 정확한 schema checkpoint를 포함하십시오. 요청·응답·preview·receipt·부분 결과·journal target와 step을 닫힌 구조로 정의하고 status/reason 조합, bounds, digest canonicalization, 중복 요청과 expiry 규칙을 고정하십시오. once/reject도 정확한 영향 대상과 generation에 묶고, apply 직전 전체 대상 비교 및 대상 추가 시 zero-effect 거부 규칙을 명시하십시오. 실제 validator 코드와 export 구현은 이후 작업으로 남겨도 됩니다."
+    },
+    {
+      "id": "DS-05",
+      "severity": "high",
+      "location": {
+        "path": "docs/runs/permission-control-design/design-draft-r1.md",
+        "lines": [48, 63, 102, 159]
+      },
+      "affected_consumer": "기존 baseline policy 단계, 모드 유지, Agent/model 변경, readback와 reopen",
+      "evidence": [
+        "설계는 authenticated upper deny와 두 baseline 단계를 유지하고 새 정책을 intersection으로 적용하도록 요구합니다. 그러나 기존 검사와 새 모드를 어떻게 함께 유지할지는 정하지 않습니다.",
+        "workbench-service.mjs:1954-1977의 policy는 항상 BASELINE_POLICY를 session.update에 쓰고 policyMatches로 정확한 일치를 검사합니다.",
+        "configuration-draft/policy.mjs의 policyMatches는 baseline과 동일한 길이·순서·필드만 허용합니다. 현재 전송·취소·fork와 일부 identity 검사도 이 검사를 사용합니다.",
+        "기존 helper를 그대로 쓰면 새 모드의 Native rules가 덮어써집니다. mode rules를 저장하면 기존 exact-baseline 검사와 충돌할 수 있습니다."
+      ],
+      "precise_correction": "authenticated floor, 선택한 mode, Native effective rules의 소유권과 결합 함수를 정하십시오. 두 기존 policy 단계가 같은 검증된 effective policy를 재확인하도록 변경할 계약과, floor 검사·effective-rule 검사·readback을 구분하는 규칙을 명시하십시오. Agent/model 변경, fork/import, reopen과 새 실행에도 같은 mode generation을 유지하도록 정하고 saved allow나 last-match 규칙이 floor를 덮지 못하게 하십시오."
+    }
+  ],
+  "boundary": {
+    "root": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "gate": "design_spec",
+    "scope": "등록된 design-draft-r1.md 전체의 F09 architecture/security/API/UI 구현 준비성 검토",
+    "native_source_root": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode",
+    "binding": "read-only harness review-input 결과가 design-spec-input-r1.json 전체와 일치했습니다.",
+    "source_provenance": "source-inputs-expanded-r2.json의 40개 파일 모두 byte 수와 SHA256이 일치했습니다. 설계에 명시된 추가 graph·hook·move·inbox·restart 모듈도 현재 설치 소스에서 직접 읽었습니다. 추가 모듈은 해당 manifest의 40개 파일에 포함된 것으로 주장하지 않습니다.",
+    "confirmed_strengths": [
+      "기존 engine과 location cache를 유지하며 새 executor, cache 또는 permission DB를 추가하지 않습니다.",
+      "session.wait는 coordinator 종료를 기다리며 실행을 wake/resume하지 않습니다.",
+      "PluginSupervisor의 modules.load가 activate보다 앞섭니다. 설계는 load 전 source 검사 필요성을 정확히 기록합니다.",
+      "remember의 프로젝트 전체 future scope와 선택 location의 즉시 sweep을 구분합니다.",
+      "saved ID dedup, 정확한 ID revoke, 오래된 closure, child와 fork 구분, upper deny와 부분 효과 위험을 인식합니다.",
+      "UI는 기존 foundation과 Plus popover를 유지하며 unavailable과 unknown을 활성 모드로 표시하지 않습니다."
+    ],
+    "implementation_holds": "contract의 inventory, settlement, paths, remember 네 결정은 모두 open이며 implementation을 계속 차단합니다.",
+    "history": "기존 major entry plan PASS는 변경하거나 재검토하지 않았습니다. routine 분류는 문서 등록과 근거 준비에만 적용했습니다. 명시적 design_spec gate는 유지됩니다."
+  },
+  "evidence_limits": [
+    "technical-analysis-result-r1.json과 native-integration-result-r1.json은 소스 관찰 및 PROPOSALS로 읽었습니다. 승인으로 취급하지 않았습니다.",
+    "정적 소스 검사와 hash 비교만 수행했습니다. Native, provider, product runtime, UI, network, tests 또는 build는 실행하지 않았습니다.",
+    "추가 Native patch의 실제 import 가능성, syscall containment, 실제-call settlement, deadlock 부재, 접근성과 화면 동작은 확인하지 않았습니다.",
+    "runtime 근거 대기는 별도 구현 검증 사항입니다. 이번 changes_requested는 미확정 설계 계약과 구현 경계에 근거합니다.",
+    "이 보고서는 최종 CODE 또는 RENDER 승인도, mutation consumer 시작 허가도 아닙니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a1207b-78b6-7441-b3f3-e0e08b6a2fc4",
+    "identity_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "implementation_authored": false,
+    "report_only": true,
+    "delegation": false,
+    "files_modified": false,
+    "ledger_modified": false,
+    "tests_executed": false,
+    "build_executed": false,
+    "product_runtime_executed": false,
+    "native_executed": false,
+    "provider_invoked": false,
+    "ui_invoked": false,
+    "network_invoked": false
+  }
+}

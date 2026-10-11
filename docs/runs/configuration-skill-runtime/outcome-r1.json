@@ -1,0 +1,112 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "R1": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-skill-runtime/source-freeze-r1.json",
+        "docs/runs/configuration-skill-runtime/verification-summary-r1.json"
+      ],
+      "checks": [
+        "runtime",
+        "native"
+      ]
+    },
+    "R2": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-skill-runtime/source-freeze-r1.json",
+        "docs/runs/configuration-skill-runtime/verification-summary-r1.json"
+      ],
+      "checks": [
+        "runtime",
+        "native"
+      ]
+    },
+    "R3": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-skill-runtime/source-freeze-r1.json",
+        "docs/runs/configuration-skill-runtime/verification-summary-r1.json"
+      ],
+      "checks": [
+        "runtime",
+        "hidden-ui"
+      ]
+    },
+    "R4": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-skill-runtime/source-freeze-r1.json",
+        "docs/runs/configuration-skill-runtime/verification-summary-r1.json"
+      ],
+      "checks": [
+        "runtime",
+        "native",
+        "hidden-ui",
+        "build",
+        "typecheck",
+        "boundaries",
+        "bundle",
+        "lint",
+        "format"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/scripts/configuration-skill-runtime-probe.mjs",
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/fixtures/native-skills-prerequisite.mjs",
+    "apps/desktop-app/scripts/fixtures/native-skills-prerequisite.test.mjs",
+    "apps/desktop-app/scripts/fixtures/p7-storage-owner-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/p7-storage-probe.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/scripts/stage-event-host.mjs",
+    "apps/desktop-app/scripts/stage-event-host.test.mjs",
+    "apps/desktop-app/src/builtins/workbench-skills/package.json",
+    "apps/desktop-app/src/builtins/workbench-skills/server.mjs",
+    "apps/desktop-app/src/configuration-skill-runtime-api.test.mjs",
+    "apps/desktop-app/src/configuration-skill-runtime.test.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/event-host-child.mjs",
+    "apps/desktop-app/src/event-host-resources.mjs",
+    "apps/desktop-app/src/event-host-supervisor.mjs",
+    "apps/desktop-app/src/event-host-supervisor.test.mjs",
+    "apps/desktop-app/src/host/storage-integration.test.mjs",
+    "apps/desktop-app/src/host/storage-journal.mjs",
+    "apps/desktop-app/src/host/storage-journal.test.mjs",
+    "apps/desktop-app/src/host/workbench-admission.mjs",
+    "apps/desktop-app/src/host/workbench-admission.test.mjs",
+    "apps/desktop-app/src/host/workbench-native-skills.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+    "apps/desktop-app/src/host/workbench-skill-runtime-storage.mjs",
+    "apps/desktop-app/src/host/workbench-skill-runtime-storage.test.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/native-skills-client.mjs",
+    "apps/desktop-app/src/native-skills-config.mjs",
+    "apps/desktop-app/src/native-skills-host.test.mjs",
+    "apps/desktop-app/src/native-skills-plugin.test.mjs",
+    "apps/desktop-app/src/native-skills-protocol.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/skill-files.tsx",
+    "apps/desktop-app/src/renderer/shared/api/index.ts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.d.mts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.mjs",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts",
+    "apps/desktop-app/src/workbench-contract.mjs",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "deleted_paths": [],
+  "completion_scope": "Explicit inactive Native Skill registration/owned removal/selected-session record only; whole product Goal unfinished"
+}

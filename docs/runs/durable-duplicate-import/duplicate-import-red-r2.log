@@ -1,0 +1,19 @@
+{"retainedSyntheticRoot":"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-duplicate-import-repro-JlItkm","report":"/Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/duplicate-import-red-r2.json"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: {"ok":false,"code":"RUNTIME_ERROR","message":"The runtime operation failed.","receipt":{"runtimeEpoch":"epoch","operationId":"second","type":"workspace.import","admission":"rejected","delivery":"pending","effect":"none","revision":6,"evidence":[],"result":{"kind":"rejected","code":"RUNTIME_ERROR"}}}
+
+false !== true
+
+    at file:///Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/reproduce-duplicate-import-r2.mjs:29:9 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.14.1

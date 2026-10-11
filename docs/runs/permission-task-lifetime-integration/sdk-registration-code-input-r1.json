@@ -1,0 +1,90 @@
+{
+  "revision": 24,
+  "source_component": {
+    "scope": "Fixed source-pinned actual SDK metadata register after original source/Scope publication; all callback replay and execution stay held",
+    "files": [
+      {
+        "path": "apps/desktop-app/src/native-permission-control.mjs",
+        "bytes": 67787,
+        "sha256": "8f76ae3899d24307c91e7701e26e92a943e06836bb5ce24067ce37606eb5f02b"
+      },
+      {
+        "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+        "bytes": 18502,
+        "sha256": "8f621ad89d127a1552a5f3bbafd6e84b2997f0512c233569ef4c8910252ff0f9"
+      },
+      {
+        "path": "apps/desktop-app/src/native-permission-graph.mjs",
+        "bytes": 22839,
+        "sha256": "9ea6ab63ffd12bb5ea47d85b9e4d652ddeabd956f9a81639b111376e41cd77a7"
+      },
+      {
+        "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+        "bytes": 40872,
+        "sha256": "0e368c14796f64d10776d6cec6a79c911f325ec99e1ce2e79a915ef2308d9341"
+      },
+      {
+        "path": "apps/desktop-app/src/native-permission-sdk-host.test.mjs",
+        "bytes": 32595,
+        "sha256": "55458a0e4d11fdc7f03caaf993fc16de6302206ab5bf8e3b877002d188b2474b"
+      },
+      {
+        "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+        "bytes": 18698,
+        "sha256": "8487dac5663163206bfba2a066adff5c2ea18470f60ef1957a1223a6902c728d"
+      }
+    ],
+    "before_manifest": "prechange/sdk-registration-source-before-r1/manifest.json",
+    "checkpoint": "sdk-registration-main-checkpoint-r1.json",
+    "worker_report": "sdk-registration-worker-final-r1.json",
+    "logs": [
+      "sdk-registration-metadata-red-r1.log",
+      "sdk-registration-metadata-green-r1.log",
+      "sdk-registration-graph-red-r1.log",
+      "sdk-registration-graph-green-r1.log",
+      "sdk-registration-metadata-coherent-r1.log",
+      "sdk-registration-auxiliary-r1.log"
+    ]
+  },
+  "harness_docs_component": {
+    "class": "routine",
+    "finding": "worker commentary is not delivered by completion-only wait; waiting for Main response can deadlock when ancestor messaging unavailable",
+    "before_manifest": "prechange/dependency-checkpoint-docs-before-r1/manifest.json",
+    "files": [
+      {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/.agents/skills/solo-orchestrate/references/run-protocol.md",
+        "bytes": 23769,
+        "sha256": "c92def84a4d70c5567fde22adf064f99655664468cd4980a779186c0522a8dc2"
+      },
+      {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/.agents/skills/solo-specialist/SKILL.md",
+        "bytes": 3827,
+        "sha256": "35acbf3a8a9b8d9a36197eb4d6dda1cc83139460d6b14c7d10e4e2a629976d2f"
+      },
+      {
+        "path": "/Users/hyukjaechoi/Solopreneur/.agents/skills/solo-orchestrate/references/run-protocol.md",
+        "bytes": 23769,
+        "sha256": "c92def84a4d70c5567fde22adf064f99655664468cd4980a779186c0522a8dc2"
+      },
+      {
+        "path": "/Users/hyukjaechoi/Solopreneur/.agents/skills/solo-specialist/SKILL.md",
+        "bytes": 3827,
+        "sha256": "35acbf3a8a9b8d9a36197eb4d6dda1cc83139460d6b14c7d10e4e2a629976d2f"
+      }
+    ],
+    "procedure": "worker final partial checkpoint -> Main persists evidence and completes prerequisite -> supported follow-up resumes same unfinished assignment -> final handoff then close",
+    "observed_application": "sdk-registration-worker-early-r1.json; Main saved focused RED2, fixed helper and resumed same worker with sdk-registration-main-checkpoint-r1.json",
+    "limits": [
+      "Does not authorize external messages or recursive delegation",
+      "Does not change fresh correction/re-review independence",
+      "Partial checkpoint is not feature completion or approval",
+      "Documentation fix only; no wait tool or harness executable altered"
+    ]
+  },
+  "limits": [
+    "Control assertExecution remains held, inventorySnapshot.complete remains false",
+    "No callback SDK/provider execution permission or startup acceptance",
+    "eager/shared services audit partial; compiler/Main handoff/actual lifetime/full18 unfinished",
+    "No Native/Main/Bun/browser/server/network/build/GUI/physical execution"
+  ]
+}

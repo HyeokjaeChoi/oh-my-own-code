@@ -1,0 +1,37 @@
+{
+  "scope": "revision30 read-only startup prerequisites, no new runtime or permission authority",
+  "sources": [
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-9b1g8vzp.js",
+      "bytes": 12173,
+      "sha256": "28b29cab6feed7de88d6f0828be712d0f37bcbb6d501584f1db1d07e93ce2966"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-gh5tebn4.js",
+      "bytes": 3102,
+      "sha256": "3fd56d8e579c116c8e766b080295d35dc0af3ac04a276834fa4649b7bfe29cef"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-ersz45vm.js",
+      "bytes": 2057,
+      "sha256": "009c2290d49d245552fd27e98d6cc6aa9580c073373156c66e7cf57f021bc4ef"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-qsdy395h.js",
+      "bytes": 826,
+      "sha256": "8e9698a19c34b64dd75b6e5cb7c9cf8b464e31a7172e7f238a0963240fae61e0"
+    }
+  ],
+  "facts": [
+    "Graph config override already sets project:false/global:false and fixed app content, WellKnown entries empty.",
+    "Original ConfigDiscovery.discover STILL reaches FS.resolve for three global roots, location directory and two global file names with both options false. Those options prevent upward scan/supplementary load, not all IO.",
+    "Original Config layer acquires watcher/credentials and starts subscription/reload Fibers even with fixed content; exact acquisition dependency proof remains separate.",
+    "Original Worktree Git make12 acquisition returns closures after service capture; its create/remove/list closures remain uninvoked and require independent authority.",
+    "Original Config entries returns cached configs after layer load; Config plugin standin tests alone do not prove initial load isolation."
+  ],
+  "constraints": [
+    "No config flag is treated as a zero-IO startup guarantee.",
+    "No production source change or positive execution grant from this note.",
+    "Prove exact app-owned namespace/bootstrap boundaries before any constructor release."
+  ]
+}

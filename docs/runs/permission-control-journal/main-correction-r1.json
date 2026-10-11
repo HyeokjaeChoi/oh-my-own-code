@@ -1,0 +1,42 @@
+{
+  "finding": "CODE-R1-02",
+  "author": "Main",
+  "change": "Use Object.hasOwn for existingSaved presence at target and grant progress correlation, so falsy values cannot behave as omitted",
+  "red": {
+    "command": "node --test --test-name-pattern='permission existingSaved presence' apps/desktop-app/src/host/workbench-permission-storage.test.mjs",
+    "exit_code": 1,
+    "tests": 7,
+    "pass": 2,
+    "fail": 5,
+    "detail": "null,false,0,empty string missing expected rejection; parent failed; arrays/empty objects rejected"
+  },
+  "green": {
+    "command": "node --test --test-name-pattern='permission existingSaved presence|permission grant readback' apps/desktop-app/src/host/workbench-permission-storage.test.mjs",
+    "exit_code": 0,
+    "tests": 8,
+    "pass": 8
+  },
+  "boundaries": [
+    "target validator",
+    "actual admission validator",
+    "actual journal parser payload validator"
+  ],
+  "positive": [
+    "omitted existingSaved",
+    "exact savedId/ruleDigest object",
+    "prior changed saved identity progress rejection retained"
+  ],
+  "files": [
+    {
+      "path": "apps/desktop-app/src/host/workbench-permission-storage.mjs",
+      "bytes": 29915,
+      "sha256": "8bd7feb47858efad21927d653ec04f2a6c02c0377c9e75c6e9bd0f7c59bb66d9"
+    },
+    {
+      "path": "apps/desktop-app/src/host/workbench-permission-storage.test.mjs",
+      "bytes": 20070,
+      "sha256": "d97bc90bb9296fa832f77a3e664bff2c5a528ca9423a98f3e407b1d35b5d7c68"
+    }
+  ],
+  "limit": "Node data validation only, no Native readback or settlement proof"
+}

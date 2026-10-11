@@ -1,0 +1,275 @@
+{
+  "checks": {
+    "boundaries": [
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+        ],
+        "contract_sha256": "c1b3412577432f63a2462dcb746dcc24345dc67960d18d94d90e1ca795cf49f5",
+        "cwd": ".",
+        "environment_sha256": "d0c2c9798a71ecdf928da3b911c3c91e971fcb8ca80000884e487a38ba7a714f",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "cb3b5cf76286debd60eb7a040c3f220c3ab17c1b046a431d17dd410fbd6c48e3",
+        "recorded_at": "2026-10-09T00:24:46+00:00",
+        "scope": "Browser/server and FSD public API boundaries.",
+        "source_sha256": "526b9f2a63ceae0a9c72dc514a8c25f66b5bbb3bc75ea9c288b2e25e6b6ff202",
+        "stderr": "",
+        "stdout": "{\"result\":\"pass\",\"sourceFiles\":90,\"boundaryFixtures\":68,\"positiveFixtures\":16}\n",
+        "timed_out": false
+      }
+    ],
+    "build": [
+      {
+        "argv": [
+          "node",
+          "docs/runs/conversation-markdown/verify-build-r4.mjs"
+        ],
+        "contract_sha256": "c1b3412577432f63a2462dcb746dcc24345dc67960d18d94d90e1ca795cf49f5",
+        "cwd": ".",
+        "environment_sha256": "d0c2c9798a71ecdf928da3b911c3c91e971fcb8ca80000884e487a38ba7a714f",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "cb3b5cf76286debd60eb7a040c3f220c3ab17c1b046a431d17dd410fbd6c48e3",
+        "recorded_at": "2026-10-09T00:25:06+00:00",
+        "scope": "Read-only exact byte verification of actual coherent build r3 (48.4s); runner readiness-only change, production/build/resources unchanged. No new build or productionMain execution.",
+        "source_sha256": "526b9f2a63ceae0a9c72dc514a8c25f66b5bbb3bc75ea9c288b2e25e6b6ff202",
+        "stderr": "",
+        "stdout": "{\"pass\":true,\"scope\":\"Read-only exact-byte reuse of actual r3 build. Runner-only initial navigation readiness fix does not affect production source/build/resource bytes.\",\"actualBuildLog\":\"check-build-r3.log\",\"baselineSha256\":\"e1908d172cc5106cdaa9a32341c3dcfbc62d65e99736b99898c7d6a8e9d4a0df\",\"buildStampSha256\":\"82fe132f0deba6cef21d50691778d2a6bfcde518c8c04b3b91e658689e8a29f6\",\"buildInputsSha256\":\"e37197f6e8ded0a3880284aa628aabef4d89ff7f3dc0ecfd342d2fcf99d11f66\",\"launchArtifactsSha256\":\"2e4de4f61f880f6c654c5fa1054ea24770552f3dd6eb36ac0f15ca0561395d2d\",\"changedSelectedScripts\":[\"apps/desktop-app/scripts/e2e-conversation-markdown.mjs\"]}\n",
+        "timed_out": false
+      }
+    ],
+    "bundle": [
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+        ],
+        "contract_sha256": "c1b3412577432f63a2462dcb746dcc24345dc67960d18d94d90e1ca795cf49f5",
+        "cwd": ".",
+        "environment_sha256": "d0c2c9798a71ecdf928da3b911c3c91e971fcb8ca80000884e487a38ba7a714f",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "cb3b5cf76286debd60eb7a040c3f220c3ab17c1b046a431d17dd410fbd6c48e3",
+        "recorded_at": "2026-10-09T00:25:08+00:00",
+        "scope": "Actual browser bundle inspection after coherent build.",
+        "source_sha256": "526b9f2a63ceae0a9c72dc514a8c25f66b5bbb3bc75ea9c288b2e25e6b6ff202",
+        "stderr": "",
+        "stdout": "{\n  \"result\": \"pass\",\n  \"rendererFiles\": [\n    {\n      \"file\": \"assets/index-BHI1JIX4.js\",\n      \"sha256\": \"4a3b69d767c46414b0b929e11b719eb11a6c3332253cf45815befd3d0dd8dbcd\"\n    },\n    {\n      \"file\": \"assets/index-YECrNHon.css\",\n      \"sha256\": \"51a2a0aaecd7c7840ab0cb5efa1d41dd0e1602b0712d6ce6c68ae40d577b890d\"\n    },\n    {\n      \"file\": \"index.html\",\n      \"sha256\": \"0aa452fc962a3d5f2f915e86f08a3531d132c9484d302792ed75b80ce095854e\"\n    }\n  ]\n}\n",
+        "timed_out": false
+      }
+    ],
+    "format": [
+      {
+        "argv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--check",
+          "apps/desktop-app/package.json",
+          "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+          "apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css",
+          "apps/desktop-app/src/renderer/widgets/conversation/markdown.tsx",
+          "apps/desktop-app/src/workbench-markdown.test.mjs",
+          "apps/desktop-app/scripts/e2e-conversation-markdown.mjs",
+          "apps/desktop-app/scripts/run-evidence.mjs",
+          "apps/desktop-app/scripts/run-evidence.test.mjs",
+          "apps/desktop-app/scripts/build-provenance.mjs",
+          "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+        ],
+        "contract_sha256": "c1b3412577432f63a2462dcb746dcc24345dc67960d18d94d90e1ca795cf49f5",
+        "cwd": ".",
+        "environment_sha256": "d0c2c9798a71ecdf928da3b911c3c91e971fcb8ca80000884e487a38ba7a714f",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "cb3b5cf76286debd60eb7a040c3f220c3ab17c1b046a431d17dd410fbd6c48e3",
+        "recorded_at": "2026-10-09T00:24:51+00:00",
+        "scope": "Exact changed app source/test/manifest paths; pnpm lockfile is generated and verified by pnpm and parsed semantic diff.",
+        "source_sha256": "526b9f2a63ceae0a9c72dc514a8c25f66b5bbb3bc75ea9c288b2e25e6b6ff202",
+        "stderr": "",
+        "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+        "timed_out": false
+      }
+    ],
+    "hidden": [
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/run-evidence.mjs",
+          "--out",
+          "docs/runs/conversation-markdown/evidence/hidden-r4",
+          "--script",
+          "conversation-markdown"
+        ],
+        "contract_sha256": "c1b3412577432f63a2462dcb746dcc24345dc67960d18d94d90e1ca795cf49f5",
+        "cwd": ".",
+        "environment_sha256": "d0c2c9798a71ecdf928da3b911c3c91e971fcb8ca80000884e487a38ba7a714f",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "cb3b5cf76286debd60eb7a040c3f220c3ab17c1b046a431d17dd410fbd6c48e3",
+        "recorded_at": "2026-10-09T00:26:18+00:00",
+        "scope": "Production renderer/preload with synthetic main, hidden nonfocusable Electron/copy adapters/fullnative PNG/owned exit.",
+        "source_sha256": "526b9f2a63ceae0a9c72dc514a8c25f66b5bbb3bc75ea9c288b2e25e6b6ff202",
+        "stderr": "",
+        "stdout": "{\"script\":\"conversation-markdown\",\"mode\":null,\"platform\":\"darwin\",\"runnerPlatform\":\"darwin\",\"runnerArch\":\"arm64\",\"runnerNode\":\"v26.8.2\",\"destination\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/conversation-markdown/evidence/hidden-r4/conversation-markdown\",\"command\":[\"/opt/homebrew/Cellar/node/26.8.2/bin/node\",\"/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-conversation-markdown.mjs\"],\"startedAt\":\"2026-10-09T00:25:09.678Z\",\"status\":\"pass\",\"exitCode\":0,\"signal\":null,\"evidence\":[\"conversation-markdown-evidence.json\",\"000-code-copy-keyboard.png\",\"001-message-copy.png\",\"002-light-1440-zoom1-prose.png\",\"003-light-1440-zoom1-code.png\",\"004-light-1440-zoom1-table.png\",\"005-light-760-zoom1-prose.png\",\"006-light-760-zoom1-code.png\",\"007-light-760-zoom1-table.png\",\"008-light-760-zoom2-prose.png\",\"009-light-760-zoom2-code.png\",\"010-light-760-zoom2-table.png\",\"011-light-320-zoom1-prose.png\",\"012-light-320-zoom1-code.png\",\"013-light-320-zoom1-table.png\",\"014-dark-1440-zoom1-prose.png\",\"015-dark-1440-zoom1-code.png\",\"016-dark-1440-zoom1-table.png\",\"017-dark-760-zoom1-prose.png\",\"018-dark-760-zoom1-code.png\",\"019-dark-760-zoom1-table.png\",\"020-dark-760-zoom2-prose.png\",\"021-dark-760-zoom2-code.png\",\"022-dark-760-zoom2-table.png\",\"023-dark-320-zoom1-prose.png\",\"024-dark-320-zoom1-code.png\",\"025-dark-320-zoom1-table.png\",\"026-clipboard-reject.png\",\"027-clipboard-absent.png\",\"028-clipboard-throw.png\",\"029-clipboard-pending.png\",\"030-late-copy-after-text-change.png\",\"031-late-copy-after-session-switch.png\",\"032-partial-stream.png\",\"033-completed-stream.png\",\"034-literal-user.png\",\"035-late-copy-after-code-change.png\",\"036-untrusted-read-only-copy.png\",\"037-retained-global-operation-copy.png\"],\"provenance\":{\"schemaVersion\":1,\"buildStampPath\":\"apps/desktop-app/dist/build-provenance.json\",\"buildStampSha256\":\"82fe132f0deba6cef21d50691778d2a6bfcde518c8c04b3b91e658689e8a29f6\",\"buildStamp\":{\"schemaVersion\":1,\"kind\":\"desktop-build-byte-provenance\",\"createdAt\":\"2026-10-09T00:17:35.835Z\",\"builder\":{\"node\":\"v26.8.2\",\"platform\":\"darwin\",\"arch\":\"arm64\"},\"inputs\":{\"algorithm\":\"scoped-file-inventory-sha256-v1\",\"scopes\":[{\"path\":\"package.json\",\"present\":true},{\"path\":\"pnpm-lock.yaml\",\"present\":true},{\"path\":\"pnpm-workspace.yaml\",\"present\":true},{\"path\":\"tsconfig.base.json\",\"present\":true},{\"path\":\"nx.json\",\"present\":true},{\"path\":\"apps/desktop-app/package.json\",\"present\":true},{\"path\":\"apps/desktop-app/project.json\",\"present\":true},{\"path\":\"apps/desktop-app/index.html\",\"present\":true},{\"path\":\"apps/desktop-app/vite.config.ts\",\"present\":true},{\"path\":\"apps/desktop-app/tsconfig.json\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/build.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/build-provenance.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/prepare-event-host.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/stage-event-host.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/stage-owner-lifetime.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/native/owner-lifetime/witness.c\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/package.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/package.json\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/package-lock.json\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/installer-pins.json\",\"present\":true},{\"path\":\"apps/desktop-app/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"apps/desktop-app/public\",\"tree\":true,\"source\":true,\"optional\":true,\"present\":false},{\"path\":\"packages/ui/package.json\",\"present\":true},{\"path\":\"packages/ui/project.json\",\"present\":true},{\"path\":\"packages/ui/tsconfig.json\",\"present\":true},{\"path\":\"packages/ui/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"packages/contracts/package.json\",\"present\":true},{\"path\":\"packages/contracts/project.json\",\"present\":true},{\"path\":\"packages/contracts/tsconfig.json\",\"present\":true},{\"path\":\"packages/contracts/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"packages/contracts/tsconfig.build.json\",\"present\":true},{\"path\":\"docs/design/tokens\",\"tree\":true,\"source\":true,\"present\":true}],\"selection\":{\"excludedDirectories\":[\"node_modules\",\"dist\",\"exports\",\"captures\",\"credentials\",\"runtime-data\"],\"excludedNames\":\"hidden names and *.test.* / *.spec.*\",\"allowedFileExtensions\":\"\\\\.(?:c|[cm]?js|[cm]?ts|jsx|tsx|css|html|json|svg|png|jpe?g|webp|gif|ico|woff2?|ttf)$\"},\"limits\":{\"files\":4096,\"depth\":24,\"bytes\":1073741824},\"files\":[{\"path\":\"apps/desktop-app/index.html\",\"size\":584,\"mode\":420,\"sha256\":\"973680da1eadd48eb58ff47aaaca46a10e33c0da3a31e97662f3ddea9fddc9ae\"},{\"path\":\"apps/desktop-app/native/owner-lifetime/witness.c\",\"size\":16279,\"mode\":420,\"sha256\":\"4eb42efefdef1970d48bd19368b94bae689b10fbeacc96cd1adc83a9cf996951\"},{\"path\":\"apps/desktop-app/package.json\",\"size\":1395,\"mode\":420,\"sha256\":\"98617384d1d6afaf78c7124ec10bc50141bcea6441b21fcda75349655d586425\"},{\"path\":\"apps/desktop-app/project.json\",\"size\":4323,\"mode\":420,\"sha256\":\"0f90164352dbc9df946e3578eb604d3216dc2fdd82e35b2e126d31c2acefb622\"},{\"path\":\"apps/desktop-app/runtime-event-host/installer-pins.json\",\"size\":6700,\"mode\":420,\"sha256\":\"2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41\"},{\"path\":\"apps/desktop-app/runtime-event-host/package-lock.json\",\"size\":232329,\"mode\":420,\"sha256\":\"34f04622903ba6c3c14ba5729e0e406f1ed245307acea049c637cbdac2e64e9c\"},{\"path\":\"apps/desktop-app/runtime-event-host/package.json\",\"size\":276,\"mode\":420,\"sha256\":\"86992a64cd87494b080f2efd47dae2e2d6ae46b7958c7a063e2ed54b3e1dd0e5\"},{\"path\":\"apps/desktop-app/scripts/build-provenance.mjs\",\"size\":19779,\"mode\":420,\"sha256\":\"98132b1a62aab4836d5e2a2a0c5efde314d401f58bc51a5bbc8dae9652626c66\"},{\"path\":\"apps/desktop-app/scripts/build.mjs\",\"size\":2496,\"mode\":420,\"sha256\":\"e906fbe156109e737228c20b59f6e47952a27adb09a7d90fbfa695bcb366529d\"},{\"path\":\"apps/desktop-app/scripts/package.mjs\",\"size\":4176,\"mode\":420,\"sha256\":\"3c9c9e9a65b91996025f4e95abc533c8799fd12385aae8a7f01153a2df14faaf\"},{\"path\":\"apps/desktop-app/scripts/prepare-event-host.mjs\",\"size\":13241,\"mode\":420,\"sha256\":\"9970d480610c93628587fb97c62ff393e3515d6d87f6362542aa79456a2d1cff\"},{\"path\":\"apps/desktop-app/scripts/stage-event-host.mjs\",\"size\":13451,\"mode\":420,\"sha256\":\"c5962f23c4f33c26c7728732a5d0b4a04cb0bfd5adad2ddefd9b4f0d30d70853\"},{\"path\":\"apps/desktop-app/scripts/stage-owner-lifetime.mjs\",\"size\":6917,\"mode\":420,\"sha256\":\"d1d46210d36c321650cb1cb99e7a47de29ee924a8b72d7e81febdfacca5def65\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/agents.mjs\",\"size\":16865,\"mode\":420,\"sha256\":\"1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/extensions.mjs\",\"size\":7951,\"mode\":420,\"sha256\":\"05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/package.json\",\"size\":110,\"mode\":420,\"sha256\":\"1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/server.mjs\",\"size\":13606,\"mode\":420,\"sha256\":\"b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d\"},{\"path\":\"apps/desktop-app/src/css-modules.d.ts\",\"size\":111,\"mode\":420,\"sha256\":\"00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4\"},{\"path\":\"apps/desktop-app/src/desktop-bridge.d.ts\",\"size\":36164,\"mode\":420,\"sha256\":\"4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5\"},{\"path\":\"apps/desktop-app/src/ephemeral-profile.mjs\",\"size\":2527,\"mode\":420,\"sha256\":\"d58944c6cd050087d4dc5e8b786dd1d0d2bc98e6eb883de907a72b5615c19765\"},{\"path\":\"apps/desktop-app/src/event-host-child.mjs\",\"size\":16199,\"mode\":420,\"sha256\":\"11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875\"},{\"path\":\"apps/desktop-app/src/event-host-protocol.mjs\",\"size\":10749,\"mode\":420,\"sha256\":\"18fd006fa963e84015b81ac2338a5680d072aa9f8c5cf7ef5f85fd3d3eba2ed6\"},{\"path\":\"apps/desktop-app/src/event-host-resources.mjs\",\"size\":15942,\"mode\":420,\"sha256\":\"f900de7bb9b08144fc9774c9c801b74589bac6d965d9f09e310e4a3f2d0bcaf8\"},{\"path\":\"apps/desktop-app/src/event-host-supervisor.mjs\",\"size\":30405,\"mode\":420,\"sha256\":\"46cf4c7dc4f002ae45386\n[truncated]",
+        "timed_out": false
+      }
+    ],
+    "lint": [
+      {
+        "argv": [
+          "node",
+          "node_modules/eslint/bin/eslint.js",
+          "--config",
+          "apps/desktop-app/eslint.config.mjs",
+          "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+          "apps/desktop-app/src/renderer/widgets/conversation/markdown.tsx",
+          "apps/desktop-app/src/workbench-markdown.test.mjs",
+          "apps/desktop-app/scripts/e2e-conversation-markdown.mjs",
+          "apps/desktop-app/scripts/run-evidence.mjs",
+          "apps/desktop-app/scripts/run-evidence.test.mjs",
+          "apps/desktop-app/scripts/build-provenance.mjs",
+          "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+        ],
+        "contract_sha256": "c1b3412577432f63a2462dcb746dcc24345dc67960d18d94d90e1ca795cf49f5",
+        "cwd": ".",
+        "environment_sha256": "d0c2c9798a71ecdf928da3b911c3c91e971fcb8ca80000884e487a38ba7a714f",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "cb3b5cf76286debd60eb7a040c3f220c3ab17c1b046a431d17dd410fbd6c48e3",
+        "recorded_at": "2026-10-09T00:24:49+00:00",
+        "scope": "Exact changed TSX/MJS paths.",
+        "source_sha256": "526b9f2a63ceae0a9c72dc514a8c25f66b5bbb3bc75ea9c288b2e25e6b6ff202",
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      }
+    ],
+    "typecheck": [
+      {
+        "argv": [
+          "node",
+          "node_modules/typescript/bin/tsc",
+          "-p",
+          "apps/desktop-app/tsconfig.json",
+          "--noEmit"
+        ],
+        "contract_sha256": "c1b3412577432f63a2462dcb746dcc24345dc67960d18d94d90e1ca795cf49f5",
+        "cwd": ".",
+        "environment_sha256": "d0c2c9798a71ecdf928da3b911c3c91e971fcb8ca80000884e487a38ba7a714f",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "cb3b5cf76286debd60eb7a040c3f220c3ab17c1b046a431d17dd410fbd6c48e3",
+        "recorded_at": "2026-10-09T00:24:44+00:00",
+        "scope": "Actual app types and installed pinned peers.",
+        "source_sha256": "526b9f2a63ceae0a9c72dc514a8c25f66b5bbb3bc75ea9c288b2e25e6b6ff202",
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      }
+    ],
+    "unit": [
+      {
+        "argv": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          "--test-reporter=dot",
+          "apps/desktop-app/src/workbench-projection.test.mjs",
+          "apps/desktop-app/src/workbench-markdown.test.mjs",
+          "apps/desktop-app/src/workbench-store.test.mjs",
+          "apps/desktop-app/scripts/run-evidence.test.mjs"
+        ],
+        "contract_sha256": "c1b3412577432f63a2462dcb746dcc24345dc67960d18d94d90e1ca795cf49f5",
+        "cwd": ".",
+        "environment_sha256": "d0c2c9798a71ecdf928da3b911c3c91e971fcb8ca80000884e487a38ba7a714f",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "cb3b5cf76286debd60eb7a040c3f220c3ab17c1b046a431d17dd410fbd6c48e3",
+        "recorded_at": "2026-10-09T00:24:40+00:00",
+        "scope": "Actual projection/Conversation SSR, existing store and evidence wrapper regressions. Synthetic only.",
+        "source_sha256": "526b9f2a63ceae0a9c72dc514a8c25f66b5bbb3bc75ea9c288b2e25e6b6ff202",
+        "stderr": "",
+        "stdout": "....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n................\n",
+        "timed_out": false
+      }
+    ]
+  },
+  "initialRED": "unit-red-r1.log:5fail1pass before production implementation; raw HTML refusal already safe.",
+  "currentScope": "Actual production Conversation/assistant-ui SSR and existing projection/store/evidence wrapper regressions; production browser build/bundle; hidden nonfocusable Electron with existing synthetic Main and production preload/renderer.",
+  "hidden": {
+    "states": [
+      "code-copy-keyboard",
+      "message-copy",
+      "light-1440-zoom1-prose",
+      "light-1440-zoom1-code",
+      "light-1440-zoom1-table",
+      "light-760-zoom1-prose",
+      "light-760-zoom1-code",
+      "light-760-zoom1-table",
+      "light-760-zoom2-prose",
+      "light-760-zoom2-code",
+      "light-760-zoom2-table",
+      "light-320-zoom1-prose",
+      "light-320-zoom1-code",
+      "light-320-zoom1-table",
+      "dark-1440-zoom1-prose",
+      "dark-1440-zoom1-code",
+      "dark-1440-zoom1-table",
+      "dark-760-zoom1-prose",
+      "dark-760-zoom1-code",
+      "dark-760-zoom1-table",
+      "dark-760-zoom2-prose",
+      "dark-760-zoom2-code",
+      "dark-760-zoom2-table",
+      "dark-320-zoom1-prose",
+      "dark-320-zoom1-code",
+      "dark-320-zoom1-table",
+      "clipboard-reject",
+      "clipboard-absent",
+      "clipboard-throw",
+      "clipboard-pending",
+      "late-copy-after-text-change",
+      "late-copy-after-session-switch",
+      "partial-stream",
+      "completed-stream",
+      "literal-user",
+      "late-copy-after-code-change",
+      "untrusted-read-only-copy",
+      "retained-global-operation-copy"
+    ],
+    "captures": 38,
+    "teardown": {
+      "exited": true,
+      "code": 0,
+      "signal": null,
+      "retainedRoot": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-markdown-ui-JekP0w"
+    },
+    "pageErrors": [],
+    "externalRequests": []
+  },
+  "compatibility": "evidence/compatibility-r1/verification.json: isolated clean pinned installation/type/build/actual runtime SSR; external package runtime resolution, not browser proof.",
+  "dependency": "dependency-diff-r1.json:alloriginal616packages/snapshots preserved, exact two app additions; pnpm generated YAML not Prettier style-rewritten.",
+  "failureHistory": [
+    "Initial shared boundary rejected two unlisted dependencies; exact allowlist entries added, all existing negative fixtures preserved.",
+    "Preflight strict optional props corrected to accept undefined; no casting unsafe DOM data.",
+    "Saved runner lint globals corrected; original failing logs retained.",
+    "hidden-r1 initial-load interruption exit1 and hidden-r2 invalid store recovery fixture failure retained.",
+    "hidden-r3 retained scenario lacked durable projection; final runner explicitly requires retained count1 and blocked new-session control in hidden-r4."
+  ],
+  "limits": [
+    "Real OS clipboard was not read or modified; controlled navigator.clipboard adapters establish renderer promise/status and exact projected-source behavior only.",
+    "No Native/provider/productionMain/Windows/private-store/power-loss acceptance.",
+    "F05 attachment/context/branch/retry/queue and all other full18 backlog obligations remain.",
+    "Screen-reader hardware interaction not established; role/status/keyboard source and hidden renderer behavior checked."
+  ]
+}

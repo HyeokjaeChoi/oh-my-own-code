@@ -1,0 +1,136 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewer": "reviewer",
+  "verdict": "changes_requested",
+  "summary": "P7 remains incomplete. Production standalone restart is blocked by two independent implementation gaps. Renderer startup polling and fork recovery have correctness defects. Ten contracted checks passed; required hidden-ui failed before invocation.",
+  "reviewed": {
+    "contract_sha256": "b6a360a1f2901ebe2073f15bb29d9e8633231a4f27d20dc6fca53130d3982538",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "code",
+    "plan_sha256": "595f9a0c369808547b3f8c6e709e8de841b7654046c3a6ab3eccedbe4cc81f8f",
+    "schema_version": 2,
+    "source_sha256": "040cc165b64b3af5a3e15a0cdd1f644183e8c1dd1b5807d57338870388b3c006",
+    "verification_sha256": "50bd9c0e89f85897616b02ba2db3b7e3cc622c6d8174e82af2dbe1dfd0eac4c6",
+    "work_class_sha256": "4f0672eaedcbeccf2b6e189dfee8b1d0ea01dbf003d7039973e55d03d8f8aa02"
+  },
+  "provenance": {
+    "child_task_id": "01a116a1-11a5-7053-bf13-90c47ecf84c8",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "scope": {
+    "method": "Independent spec-compliance and code-quality passes. Used run.json.baseline, exact current source inventory, and freeze artifacts because the checkout is untracked.",
+    "inspected": [
+      "Registry, journal, owner lock, manifest and namespace",
+      "Production Main, sidecar and event-host callers",
+      "Service, admission, receipts and recovery facade",
+      "Renderer store, controller and mutation controls",
+      "Native storage probe, owner fixture, migration fixture and UI fixture",
+      "Relevant test source and recorded check evidence"
+    ],
+    "binding_validation": "Source, plan, contract, environment and verification digests match the supplied final input. The actual reviewer dispatch is recorded. All 39 captured relevant file hashes remained unchanged."
+  },
+  "open_findings": [
+    {
+      "id": "P7-R7-CODE-1",
+      "severity": "P1",
+      "title": "Production startup rejects every existing native store",
+      "file": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/sidecar-supervisor.mjs",
+      "start": 609,
+      "end": 614,
+      "acceptance_ids": [
+        "S2"
+      ],
+      "trigger": "Restart after a successful first launch, including a clean shutdown with no retained operations.",
+      "defect": "freshNativePreflight requires namespace.fresh === true. prepareDurableNamespace sets fresh only when it creates storage-v1. Production Main rejects the existing store at main.mjs:392-395 and passes the same guard to startSidecar.",
+      "impact": "Saved sessions and native transcript cannot reopen through production Main. Fixing owner acquisition alone does not fix this separate startup block.",
+      "evidence": "Native r3 explicitly records confirmed-app-receipt-zero-retained-nonfresh-native-held with zero native launches. Controlled reopen uses the fixture's explicit synthetic startup override.",
+      "smallest_useful_correction": "Keep the safety block until a reviewed production preflight can prove safe nonfresh startup without replay, resume or permission approval. Wire that adapter into Main and verify clean standalone reopen with exact original mappings. Do not substitute registry idleness or synthetic startup authorization.",
+      "classification": "Missing core behavior; the current preservation hold is safe but is not completed restart support."
+    },
+    {
+      "id": "P7-R7-CODE-2",
+      "severity": "P1",
+      "title": "A new process cannot verify the previous same-boot owner exited",
+      "file": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-lock.mjs",
+      "start": 244,
+      "end": 246,
+      "acceptance_ids": [
+        "S2",
+        "S4"
+      ],
+      "trigger": "Launch a new app process during the same OS boot after the previous app and child exited.",
+      "defect": "Acquisition requires exact exited proof for the recorded app and child. The production identity adapter retains owned exit observations only in process memory. A new process has no such observations; sidecar-supervisor.mjs:594-597 returns unverified for PID absence or identity_conflict for PID replacement. The cleanShutdown record does not supply the required lifetime proof.",
+      "impact": "The new process cannot acquire writable ownership or launch the sidecar, even after normal shutdown.",
+      "evidence": "Native r3 records standalone-same-boot-historical-owner as owner_unverified. The controlled fixture supplies parent-observed exact exit identities through fixtureProcessVerifier; production Main has no equivalent caller.",
+      "smallest_useful_correction": "Complete the separately reviewed lifetime-witness or authoritative historical process-lifetime mechanism and connect it to production acquisition. Preserve the current refusal until then. Do not treat cleanShutdown, ESRCH, elapsed time or PID replacement as exit proof.",
+      "classification": "Missing production capability. The draft lifetime-witness increment does not change the reviewed source or resolve this finding."
+    },
+    {
+      "id": "P7-R7-CODE-3",
+      "severity": "P2",
+      "title": "Early metadata snapshots can stop renderer startup polling",
+      "file": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+      "start": 110,
+      "end": 114,
+      "acceptance_ids": [
+        "S5"
+      ],
+      "trigger": "The initial snapshot and the immediate epoch-change snapshot both return before native/service initialization finishes.",
+      "defect": "workbench-service.mjs:1710-1725 intentionally returns an unavailable metadata snapshot during initialization. The controller schedules subsequent polling only for connected state or READ_BUSY. After an unavailable snapshot, no readiness callback schedules another snapshot. Catalog completion does not update connection state.",
+      "impact": "The host can finish startup while the renderer remains unavailable until a separate refresh, focus or visibility event.",
+      "smallest_useful_correction": "Schedule bounded snapshot retries for the initialization projection, or add a reliable readiness notification that triggers a snapshot. Preserve recovery blocks and existing freshness checks. Add a delayed-start regression that reaches connected without user interaction."
+    },
+    {
+      "id": "P7-R7-CODE-4",
+      "severity": "P2",
+      "title": "Fork sessions fail the create-only reopen correlation check",
+      "file": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-service.mjs",
+      "start": 815,
+      "end": 823,
+      "acceptance_ids": [
+        "S2"
+      ],
+      "trigger": "Complete a fork, checkpoint its mapping, and reopen the service after independently verified startup.",
+      "defect": "The reopen loop requires every native session's metadata to contain that session's own appSessionId and a receipt whose result.nativeSessionId matches it. The actual packaged OpenCode fork projector copies parent.metadata. The app calls session.fork with the parent ID at line 1601 and does not establish child-specific metadata.",
+      "impact": "A valid saved fork fails identity validation and sets store-wide identity_conflict, blocking otherwise valid sessions too.",
+      "evidence": "Packaged @opencode/core projectFork assigns metadata: parent.metadata in config-hs7fxsaf.js:140. App addSession accepts exact fork lineage during creation, but the reopen loop does not apply that lineage-specific rule.",
+      "smallest_useful_correction": "Add a fork-specific reopen validator using the committed fork receipt, exact native child ID, recorded parent mapping, native fork lineage and inherited parent correlation. Retain unknown status when exact evidence is absent. Add positive checkpoint/reopen coverage for a real fork and a lineage-mismatch case. Do not rewrite native tables."
+    },
+    {
+      "id": "P7-R7-CODE-5",
+      "severity": "P2",
+      "title": "The evidence runner rejects the contracted P7 output root",
+      "file": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.mjs",
+      "start": 24,
+      "end": 27,
+      "acceptance_ids": [
+        "S5"
+      ],
+      "trigger": "Run the registered hidden-ui command with docs/runs/durable-workbench-storage/evidence/hidden-ui-r2.",
+      "defect": "The runner allowlist contains only frontend-architecture-redesign and event-host-app-integration evidence roots. evidenceRootForOutput rejects the contracted durable-workbench-storage destination before invoking the UI script.",
+      "impact": "The required hidden-ui check cannot execute. Its recorded exit code is 1, with Evidence path outside registered run roots.",
+      "smallest_useful_correction": "Add the narrow durable-workbench-storage/evidence root while preserving containment, symlink and fresh-destination guards. Then execute the contracted check at a fresh valid destination and complete the independent rendered review. The direct observation under another run root is not a replacement harness pass."
+    }
+  ],
+  "acceptance_assessment": {
+    "S1": "Bounded managed identity, stable folder naming and sentinel-preserving removal behavior are implemented. Recorded synthetic evidence supports these paths.",
+    "S2": "Not met for production standalone restart. Controlled normal/SIGKILL reopen proves bounded persistence only. Findings 1, 2 and 4 remain.",
+    "S3": "The inspected source implements flushed admission/dispatch, closed completion publication, writer poisoning, original-epoch lookup and conservative retained holds. No additional confirmed defect is reported in these paths.",
+    "S4": "Exclusive-owner refusal is implemented, but safe standalone owner reacquisition is incomplete. Migration staging/rollback evidence is synthetic; native transfer and cutover remain held. No migration completion claim is supported.",
+    "S5": "Incomplete. Ten contracted checks passed, but required hidden-ui failed before invocation. Startup polling also has an actionable renderer defect. This code review does not replace an independent rendered review."
+  },
+  "verification": {
+    "reviewer_execution": "Read-only source/spec inspection and digest comparison. No tests, Native runtime, GUI, provider access, private data access, delegation, edits or ledger writes.",
+    "recorded_parent_checks": "10 passed; hidden-ui failed before invocation.",
+    "native_r3": "Recorded pass with no failed requirements. Evidence remains authentication-free and controlled; it does not prove production standalone restart.",
+    "direct_hidden_ui": "Separate coordinator-reported observation under frontend-architecture-redesign/execution/p7-storage-hidden-r2. Not counted as the required check or independently reviewed rendered evidence."
+  },
+  "limits": [
+    "Production standalone normal and crash restart are not enabled.",
+    "Provider-compatible pending-inbox startup remains unproved and blocked.",
+    "Migration cutover remains held.",
+    "Windows runtime and power-loss durability are not verified.",
+    "A passing bounded event-host run cannot satisfy missing whole-P7 behavior."
+  ]
+}

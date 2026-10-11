@@ -1,0 +1,17 @@
+{
+  "finding": "Pending selected known message.send incorrectly blocks local append of an already loaded file baseline.",
+  "author": "Main",
+  "source_changes": {
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts": "0954cbf43d49d96ca42f0c886341f68e31b8d17721472075df2ed85126073162",
+    "apps/desktop-app/src/workbench-store.test.mjs": "533d6c66c7cb90120e0557f9ee2cff8a84b00555e59ba21ac91c0e2b9009b5ad"
+  },
+  "correction": "Private local-feedback predicate view omits only current selected-session/epoch known pending Send. Real operations unchanged; all read/mutation predicates still see pending, unknown/hostHeld/lookupOnly remain blocked. Git transition still retires invalidated detail and cannot revive historical scope.",
+  "actual_evidence": [
+    "evidence/pending-send-red-r1.log",
+    "evidence/pending-send-store-red-r1.log",
+    "evidence/pending-send-green-r1.log",
+    "evidence/pending-send-store-green-r2.log"
+  ],
+  "preserved_nonpassing_attempt": "evidence/pending-send-store-green-r1.log recorded initial additional Git test with incorrect expectation; corrected test verifies existing Git retirement must remain.",
+  "follow_up": "Coherent8checks and fresh independent CODE/RENDER required."
+}

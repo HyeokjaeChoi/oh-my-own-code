@@ -1,0 +1,207 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toBeVisible() failed
+
+Locator:  getByRole('region', { name: '설정 초안', exact: true }).locator('[data-mcp-workspace]').getByRole('status', { name: '작업 공간 MCP 요청 상태', exact: true })
+Expected: visible
+Received: hidden
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeVisible" getByRole('region', { name: '설정 초안', exact: true }).locator('[data-mcp-workspace]').getByRole('status', { name: '작업 공간 MCP 요청 상태', exact: true }) with timeout 5000ms
+  - waiting for getByRole('region', { name: '설정 초안', exact: true }).locator('[data-mcp-workspace]').getByRole('status', { name: '작업 공간 MCP 요청 상태', exact: true })
+    14 × locator resolved to <div role="status" aria-atomic="true" aria-label="작업 공간 MCP 요청 상태" data-mcp-action-current="false"></div>
+       - unexpected value "hidden"
+
+    at captureRawStack (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright-core@1.63.0/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toBeVisible (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at captureSaveElement (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:3184:27)
+    at async captureMcp (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:4027:9)
+    at async file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:4075:37 {
+  matcherResult: {
+    message: 'expect(locator).toBeVisible() failed\n' +
+      '\n' +
+      "Locator:  getByRole('region', { name: '설정 초안', exact: true }).locator('[data-mcp-workspace]').getByRole('status', { name: '작업 공간 MCP 요청 상태', exact: true })\n" +
+      'Expected: visible\n' +
+      'Received: hidden\n' +
+      'Timeout:  5000ms\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeVisible" getByRole('region', { name: '설정 초안', exact: true }).locator('[data-mcp-workspace]').getByRole('status', { name: '작업 공간 MCP 요청 상태', exact: true }) with timeout 5000ms\n` +
+      "  - waiting for getByRole('region', { name: '설정 초안', exact: true }).locator('[data-mcp-workspace]').getByRole('status', { name: '작업 공간 MCP 요청 상태', exact: true })\n" +
+      '    14 × locator resolved to <div role="status" aria-atomic="true" aria-label="작업 공간 MCP 요청 상태" data-mcp-action-current="false"></div>\n' +
+      '       - unexpected value "hidden"\n',
+    pass: false,
+    actual: 'hidden',
+    name: 'toBeVisible',
+    expected: 'visible',
+    log: [
+      `  - Expect "toBeVisible" getByRole('region', { name: '설정 초안', exact: true }).locator('[data-mcp-workspace]').getByRole('status', { name: '작업 공간 MCP 요청 상태', exact: true }) with timeout 5000ms`,
+      "  - waiting for getByRole('region', { name: '설정 초안', exact: true }).locator('[data-mcp-workspace]').getByRole('status', { name: '작업 공간 MCP 요청 상태', exact: true })",
+      '    14 × locator resolved to <div role="status" aria-atomic="true" aria-label="작업 공간 MCP 요청 상태" data-mcp-action-current="false"></div>',
+      '       - unexpected value "hidden"'
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- main:\n' +
+      '  - complementary "작업 공간과 세션":\n' +
+      '    - button "탐색 닫기":\n' +
+      '      - img\n' +
+      '    - text: 작업 공간\n' +
+      '    - combobox "작업 공간":\n' +
+      '      - option "긴 한국어 작업 공간 이름과 탐색 영역의 정렬을 확인하는 프로젝트" [selected]\n' +
+      '    - button "작업 공간 작업":\n' +
+      '      - img\n' +
+      '    - button "새 세션"\n' +
+      '    - text: 세션 검색\n' +
+      '    - searchbox "세션 검색"\n' +
+      '    - button "활성 세션" [pressed]\n' +
+      '    - button "보관된 세션"\n' +
+      '    - list:\n' +
+      '      - listitem:\n' +
+      '        - button "긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다 긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다"\n' +
+      '        - button "긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다 긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다 세션 작업":\n' +
+      '          - img\n' +
+      '    - button "작업 공간 위치·보관 정보"\n' +
+      '  - region "대화 작업 공간":\n' +
+      '    - button "작업 공간 탐색 열기" [expanded]:\n' +
+      '      - img\n' +
+      '    - strong: 긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다 긴 한국어 세션 제목으로 줄바꿈과 생략 표시와 접근성 이름을 확인합니다\n' +
+      '    - text: 로컬 연결됨\n' +
+      '    - button "파일·확장" [expanded]:\n' +
+      '      - img\n' +
+      '    - status: 현재 세션은 실행 대기 상태입니다.\n' +
+      '    - log "현재 세션 대화 기록"\n' +
+      '    - heading "무엇을 함께 만들까요?" [level=1]\n' +
+      '    - textbox "메시지 작성":\n' +
+      '      - /placeholder: 작업을 요청하세요. /로 명령 보기\n' +
+      '    - button "앱 동작과 명령 열기"\n' +
+      '    - combobox "실행 에이전트":\n' +
+      '      - option "기본 에이전트" [selected]\n' +
+      '      - option "Test agent"\n' +
+      '    - combobox "실행 모델":\n' +
+      '      - option "기본 모델" [selected]\n' +
+      '      - option "Test model"\n' +
+      '    - button "메시지 보내기" [disabled]\n' +
+      '    - paragraph: Enter 전송 · Shift+Enter 줄바꿈\n' +
+      '  - separator "상세 패널 너비"\n' +
+      '  - complementary "파일, 확장 및 활동":\n' +
+      '    - button "파일"\n' +
+      '    - button "확장·명령" [pressed]\n' +
+      '    - button "활동"\n' +
+      '    - button "상세 패널 너비 초기화":\n' +
+      '      - img\n' +
+      '    - button "상세 패널 닫기":\n' +
+      '      - img\n' +
+      '    - region "런타임 확장 목록":\n' +
+      '      - paragraph: 현재 작업 공간의 런타임 목록\n' +
+      '      - button "새로고침"\n' +
+      '      - paragraph: 설정 출처와 런타임 목록을 확인하고, 창 안의 임시 초안을 작성할 수 있습니다. 파일을 불러와 비교한 뒤 저장할 수 있습니다. AGENTS.md는 선택한 세션에 별도로 등록·제거할 수 있습니다. MCP는 작업 공간의 모든 세션을 대상으로 비활성 등록·연결·연결 해제·등록 제거할 수 있습니다. 다른 설정의 런타임 적용은 아직 제공하지 않습니다.\n' +
+      '      - region "설정 출처":\n' +
+      '        - heading "설정 출처" [level=3]\n' +
+      '        - paragraph: 파일 발견과 실제 적용 상태는 다릅니다.\n' +
+      '        - paragraph: 런타임 설정 문서의 적용 상태는 아직 확인하지 않습니다.\n' +
+      '        - list:\n' +
+      '          - listitem:\n' +
+      '            - strong: 지침\n' +
+      '            - paragraph: "출처: 작업 공간 범위: 작업 공간"\n' +
+      '            - paragraph: /synthetic/configuration-workspace/AGENTS.md\n' +
+      '            - paragraph: 파일 발견 · 적용 여부 미확인\n' +
+      '      - region "설정 초안":\n' +
+      '        - heading "설정 초안" [level=3]\n' +
+      '        - paragraph: 저장 전 수정 내용은 이 창의 임시 초안입니다. 파일에 저장을 선택하면 확인 창에서 저장을 승인합니다. 런타임 적용과 연결은 별도입니다.\n' +
+      '        - paragraph: 패널을 닫거나 작업 공간을 바꿔도 이 창에서는 유지합니다. 창을 닫으면 저장하지 않은 내용은 사라집니다. 새 창에서는 초안을 복원하지 않습니다.\n' +
+      '        - paragraph: "작업 공간: /synthetic/configuration-workspace"\n' +
+      '        - text: 초안 종류\n' +
+      '        - combobox "초안 종류":\n' +
+      '          - option "AGENTS.md"\n' +
+      '          - option "OpenCode MCP" [selected]\n' +
+      '        - paragraph: "대상: opencode.json · JSON의 mcp.servers 형식 중 앱이 지원하는 항목만 검사합니다."\n' +
+      '        - paragraph: "읽기 대상: /synthetic/configuration-workspace/opencode.json"\n' +
+      '        - paragraph: 파일 불러오기는 위에 표시한 파일 하나만 읽습니다. 읽기에 성공하면 선택한 초안 내용을 파일 내용으로 대체하고, 형식 검증 결과를 지웁니다. 읽는 동안 초안을 변경하면 불러오기를 취소합니다.\n' +
+      '        - button "파일 불러오기"\n' +
+      '        - status "설정 파일 읽기 상태":\n' +
+      '          - paragraph: 아직 파일을 읽지 않았습니다. 파일 불러오기를 선택하면 읽습니다.\n' +
+      '        - paragraph: 파일 상태는 마지막 읽기 또는 저장 완료 시점의 관찰입니다. Native 활성 상태를 뜻하지 않습니다. 이후 외부 변경은 자동으로 확인하지 않습니다.\n' +
+      '        - paragraph: "저장 대상: /synthetic/configuration-workspace/opencode.json"\n' +
+      '        - paragraph: 파일을 먼저 불러와 비교한 뒤 저장하세요. 저장은 위 파일을 변경합니다. 파일이 없으면 확인 창에서 새 파일 만들기를 승인합니다. 빈 AGENTS.md도 저장할 수 있으며, 확인 창에서 기존 지침 지우기를 승인합니다. 형식 검증은 저장 확인과 별도입니다.\n' +
+      '        - button "파일에 저장" [disabled]\n' +
+      '        - status "설정 파일 저장 상태":\n' +
+      '          - paragraph: 아직 파일에 저장하지 않았습니다.\n' +
+      '        - region "작업 공간 MCP 제어":\n' +
+      '          - heading "작업 공간 MCP" [level=4]\n' +
+      '          - paragraph: "작업 공간 경로: /synthetic/configuration-workspace"\n' +
+      '          - paragraph: MCP는 이 작업 공간의 모든 세션과 앞으로 만들 세션에 영향을 줍니다. 세션을 선택할 필요는 없습니다. 파일 저장, 비활성 등록, 연결과 모델의 도구 사용은 서로 다른 단계입니다.\n' +
+      '          - paragraph: 관찰은 선택할 때만 실행합니다. 파일 저장, 선택 변경, 창 재활성화와 앱 재시작은 MCP를 자동 등록하거나 연결하지 않습니다. 이전 요청 기록은 과거 결과입니다. 앱을 재시작하면 현재 runtime 소유권은 만료됩니다.\n' +
+      '          - button "MCP 상태 확인"\n' +
+      '          - status "작업 공간 MCP 관찰 상태":\n' +
+      '            - paragraph: 관찰 시점의 Native MCP 상태입니다.\n' +
+      '            - paragraph: Native 목록은 상태만 보고합니다. 전체 설정, 인증 정보, PID, 정확한 프로세스 종료와 모델의 도구 사용을 증명하지 않습니다.\n' +
+      '            - paragraph: "Native 관찰 버전: 57f3dffa078f72065a6bfb8d00d214b533462ddb084ecd27aca35976ae52454a"\n' +
+      '          - text: 등록할 파일 정의\n' +
+      '          - combobox "등록할 파일 정의":\n' +
+      '            - option "정의를 선택하세요." [selected]\n' +
+      '          - paragraph: 등록은 불러오거나 저장한 opencode.json의 원본 내용과 파일 버전이 현재 초안 및 관찰 기준에 맞을 때 가능합니다. 원본의 disabled:false 또는 disabled 생략과 관계없이 항상 disabled:true로 등록합니다. 등록만으로 연결하거나 local 프로세스를 시작하지 않습니다.\n' +
+      '          - paragraph: 지원하는 파일을 불러온 뒤 기존 정의 하나를 선택하세요. 지원하지 않는 env, headers와 인증 정보는 등록할 수 없습니다.\n' +
+      '          - button "선택한 정의를 비활성 등록" [disabled]\n' +
+      '          - list "Native MCP 항목":\n' +
+      '            - listitem:\n' +
+      '              - paragraph: "demo · Native 이름: omoc-mcp-1ab113153bea6384648f19573494f5fbf39285d2"\n' +
+      '              - paragraph: "관찰 상태: disabled · 현재 runtime에서 앱이 등록한 항목"\n' +
+      '              - paragraph: "등록 시 제출한 정의 digest: 610eec2419c909a3d276a05b4f5ba47b03ea735024e02f846f7089b0719058e7"\n' +
+      '              - paragraph: 이 digest는 제출한 데이터의 기록입니다. 현재 Native 전체 설정의 증명이 아닙니다.\n' +
+      '              - button "연결"\n' +
+      '              - button "연결 해제" [disabled]\n' +
+      '              - button "등록 제거"\n' +
+      '          - status "작업 공간 MCP 요청 상태"\n' +
+      '        - text: 설정 초안 내용\n' +
+      '        - textbox "설정 초안 내용"\n' +
+      '        - paragraph: UTF-8 기준 최대 32KiB · 이 창에 최대 16개 초안\n' +
+      '        - button "형식 검증"\n' +
+      '        - button "현재 초안을 비교 기준으로"\n' +
+      '        - button "이 초안 버리기"\n' +
+      '        - status:\n' +
+      '          - paragraph: "현재 초안 버전: 0 · 현재 버전 미검증 · 내용 변경 후 다시 검증하세요."\n' +
+      '        - paragraph: 검증 통과는 앱이 지원하는 형식이라는 뜻입니다. Native의 수용이나 서버 연결을 확인한 결과가 아닙니다. 편집과 형식 검증은 파일이나 활성 상태를 바꾸지 않습니다.\n' +
+      '        - region "초안 변경 비교":\n' +
+      '          - heading "초안 변경 비교" [level=4]\n' +
+      '          - paragraph: 새 초안 기준 · 실제 파일과 비교하지 않음\n' +
+      '          - paragraph: 비교 기준 변경과 초안 버리기는 선택한 초안에만 적용합니다. 파일을 변경하지 않습니다.\n' +
+      '          - paragraph: 비교 기준과 다른 내용이 없습니다.\n' +
+      '      - heading "명령" [level=3]\n' +
+      '      - list:\n' +
+      '        - listitem:\n' +
+      '          - strong: inspect\n' +
+      '          - paragraph: Synthetic command for UI testing\n' +
+      '      - heading "스킬" [level=3]\n' +
+      '      - list:\n' +
+      '        - listitem:\n' +
+      '          - strong: 출처 확인 Skill\n' +
+      '          - paragraph: 합성 읽기 전용 목록\n' +
+      '          - paragraph: 런타임 보고 · 실행 여부 미확인\n' +
+      '          - paragraph: "출처: 런타임 범위: 작업 공간"\n' +
+      '          - paragraph: /synthetic/configuration-workspace/.agents/skills/review/SKILL.md\n' +
+      '      - heading "MCP" [level=3]\n' +
+      '      - list:\n' +
+      '        - listitem:\n' +
+      '          - strong: 합성 인증 대기 MCP\n' +
+      '          - text: "상태: 외부 인증 설정 필요"\n' +
+      '          - paragraph: 기존 MCP 구성에서 외부 인증 설정을 확인하세요.\n' +
+      '        - listitem:\n' +
+      '          - strong: 합성 관측 MCP\n' +
+      '          - text: "상태: 연결됨 · 런타임 관측"\n' +
+      '      - heading "에이전트" [level=3]\n' +
+      '      - list:\n' +
+      '        - listitem:\n' +
+      '          - strong: Test agent\n' +
+      '      - heading "모델" [level=3]\n' +
+      '      - list:\n' +
+      '        - listitem:\n' +
+      '          - strong: Test model\n' +
+      '      - paragraph: 명령 실행과 스킬 언급은 작성기의 명령 목록에서 선택하세요.'
+  }
+}
+
+Node.js v24.14.1

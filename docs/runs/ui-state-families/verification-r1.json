@@ -1,0 +1,105 @@
+{
+  "scope": "Routine independent UI-family execution; no product renderer/main/native changes",
+  "source_sha256": {
+    "apps/desktop-app/scripts/run-evidence.mjs": "4a850f90339cf5338bf7f7fec4024b708519f902d3f09182984d524484afb264",
+    "apps/desktop-app/scripts/run-evidence.test.mjs": "b89e3d640b4e6d50144ec61e96ec818b9c024b554eb1be40c7c5ce4cb9d6070d",
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs": "3fe174a54eb0999bda3010e9eba8ec77a7088c333f7be9f1e15abd326e93f3bc"
+  },
+  "runtime": [
+    {
+      "family": "extensions",
+      "states": 27,
+      "captures": 323,
+      "report": "docs/runs/ui-state-families/evidence/extensions-r1/ui-states/ui-states-evidence.json",
+      "manifest": "docs/runs/ui-state-families/evidence/extensions-r1/ui-states/manifest.json",
+      "executed": [
+        "extensions"
+      ],
+      "omitted": [
+        "legacy",
+        "workspace-files",
+        "git-review"
+      ],
+      "exitCode": 0,
+      "provenanceVerifiedAfter": true
+    },
+    {
+      "family": "workspace-files",
+      "states": 25,
+      "captures": 159,
+      "report": "docs/runs/ui-state-families/evidence/workspace-files-r1/ui-states/ui-states-evidence.json",
+      "manifest": "docs/runs/ui-state-families/evidence/workspace-files-r1/ui-states/manifest.json",
+      "executed": [
+        "workspace-files"
+      ],
+      "omitted": [
+        "legacy",
+        "extensions",
+        "git-review"
+      ],
+      "exitCode": 0,
+      "provenanceVerifiedAfter": true
+    },
+    {
+      "family": "git-review",
+      "states": 44,
+      "captures": 654,
+      "report": "docs/runs/ui-state-families/evidence/git-review-r1/ui-states/ui-states-evidence.json",
+      "manifest": "docs/runs/ui-state-families/evidence/git-review-r1/ui-states/manifest.json",
+      "executed": [
+        "git-review"
+      ],
+      "omitted": [
+        "legacy",
+        "extensions",
+        "workspace-files"
+      ],
+      "exitCode": 0,
+      "provenanceVerifiedAfter": true
+    }
+  ],
+  "capture_count": 1136,
+  "capture_inventory_sha256": "4ef59f41de8ac35cbf9546228846fa9628afec4ba8271927708cfb3daab97154",
+  "ast": {
+    "originalTopLevelStatements": 1051,
+    "preserved": 1051,
+    "missing": [],
+    "families": [
+      {
+        "name": "legacy",
+        "statements": 898
+      },
+      {
+        "name": "extensions",
+        "statements": 27
+      },
+      {
+        "name": "workspace-files",
+        "statements": 39
+      },
+      {
+        "name": "git-review",
+        "statements": 67
+      }
+    ],
+    "note": "AST structures, literal/identifier text, operators and declaration flags preserved. Not legacy runtime evidence."
+  },
+  "dependencies": {
+    "crossFamilyReferences": [],
+    "scope": "Compiler-resolved same-module declarations, common bootstrap allowed; not runtime proof"
+  },
+  "checks": [
+    "unit",
+    "lint",
+    "format",
+    "hidden-extensions",
+    "hidden-workspace-files",
+    "hidden-git-review"
+  ],
+  "build": "Actual existing build verified by production captureProvenance before/after every focused invocation; no rebuild needed",
+  "limitations": [
+    "legacy/all hidden runtime not rerun; default ordering unit-tested and 1051 original statements preserved structurally",
+    "Synthetic fixture main only; no provider, real native Git G2, real stores or OS clipboard validation",
+    "Families execute independently but remain in one source file; future per-file input_scope must include shared runner, not invent statement-level hash reuse"
+  ]
+}

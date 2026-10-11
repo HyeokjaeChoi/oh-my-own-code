@@ -1,0 +1,2757 @@
+--- before/apps/desktop-app/package.json
++++ apps/desktop-app/package.json
+@@ -20,12 +20,14 @@
+   },
+   "dependencies": {
+     "@assistant-ui/react": "0.15.22",
++    "@assistant-ui/react-markdown": "0.14.19",
+     "@opencode/client": "2.0.18",
+     "@workbench/contracts": "workspace:*",
+     "@workbench/ui": "workspace:*",
+     "lucide-react": "0.468.0",
+     "react": "19.2.4",
+     "react-dom": "19.2.4",
++    "remark-gfm": "4.0.1",
+     "zustand": "5.0.15"
+   },
+   "optionalDependencies": {
+--- before/pnpm-lock.yaml
++++ pnpm-lock.yaml
+@@ -59,6 +59,9 @@
+       '@assistant-ui/react':
+         specifier: 0.15.22
+         version: 0.15.22(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
++      '@assistant-ui/react-markdown':
++        specifier: 0.14.19
++        version: 0.14.19(@assistant-ui/react@0.15.22(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@7.2.0)
+       '@opencode/client':
+         specifier: 2.0.18
+         version: 2.0.18(effect@4.0.0-rc.112)
+@@ -77,6 +80,9 @@
+       react-dom:
+         specifier: 19.2.4
+         version: 19.2.4(react@19.2.4)
++      remark-gfm:
++        specifier: 4.0.1
++        version: 4.0.1(supports-color@7.2.0)
+       zustand:
+         specifier: 5.0.15
+         version: 5.0.15(@types/react@19.2.14)(react@19.2.4)
+@@ -161,6 +167,16 @@
+       react:
+         optional: true
+ 
++  '@assistant-ui/react-markdown@0.14.19':
++    resolution: {integrity: sha512-OO1DbDkLNE+sjqlSW5MxP+KjI0w8QJtOpyfe9ARVfROfuhIalmv64FMGcuUXVCJN0i9axdj+xyz1fJhSM3OUNQ==}
++    peerDependencies:
++      '@assistant-ui/react': ^0.15.0
++      '@types/react': '*'
++      react: ^18 || ^19
++    peerDependenciesMeta:
++      '@types/react':
++        optional: true
++
+   '@assistant-ui/react@0.15.22':
+     resolution: {integrity: sha512-xSLdwMiuw/tVmfZpXBrcs9sdH2e5UJECSi4gQY1eRWdG8/xYykzn81HLmuIQQvIDVSMQo9nNRAO3u2AAFrDq/Q==}
+     peerDependencies:
+@@ -2006,15 +2022,30 @@
+   '@tybys/wasm-util@0.9.0':
+     resolution: {integrity: sha512-6+7nlbMVX/PVDCwaIQ8nTOPveOcFLSt8GcXdx8hD0bt39uWxYT88uXzqTd4fTvqta7oeUJqudepapKNt2DYJFw==}
+ 
++  '@types/debug@4.1.13':
++    resolution: {integrity: sha512-KSVgmQmzMwPlmtljOomayoR89W4FynCAi3E8PPs7vmDVPe84hT+vGPKkJfThkmXs0x0jAaa9U8uW8bbfyS2fWw==}
++
+   '@types/esquery@1.5.4':
+     resolution: {integrity: sha512-yYO4Q8H+KJHKW1rEeSzHxcZi90durqYgWVfnh5K6ZADVBjBv2e1NEveYX5yT2bffgN7RqzH3k9930m+i2yBoMA==}
+ 
++  '@types/estree-jsx@1.0.5':
++    resolution: {integrity: sha512-52CcUVNFyfb1A2ALocQw/Dd1BQFNmSdkuC3BkZ6iqhdMfQz7JWOFRuJFloOzjk+6WijU56m9oKXFAXc7o3Towg==}
++
+   '@types/estree@1.0.9':
+     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
+ 
++  '@types/hast@3.0.5':
++    resolution: {integrity: sha512-rp/ezSWaD1m44dPKICGhiskI13nVr7qTloFwDa/IYkhhf5nzwP+zIQcIJh3WIFSBOy/H1PzB40jPjMDksN4F+g==}
++
+   '@types/json-schema@7.0.15':
+     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+ 
++  '@types/mdast@4.0.4':
++    resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
++
++  '@types/ms@2.1.0':
++    resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
++
+   '@types/node@24.10.0':
+     resolution: {integrity: sha512-qzQZRBqkFsYyaSWXuEHc2WR9c0a0CXwiE5FWUvn7ZM+vdy1uZLfCunD38UzhuB7YN/J11ndbDBcTmOdxJo9Q7A==}
+ 
+@@ -2028,6 +2059,12 @@
+ 
+   '@types/react@19.2.14':
+     resolution: {integrity: sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w==}
++
++  '@types/unist@2.0.11':
++    resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
++
++  '@types/unist@3.0.3':
++    resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
+ 
+   '@typescript-eslint/eslint-plugin@8.50.0':
+     resolution: {integrity: sha512-O7QnmOXYKVtPrfYzMolrCTfkezCJS9+ljLdKW/+DCvRsc3UAz+sbH6Xcsv7p30+0OwUbeWfUDAQE0vpabZ3QLg==}
+@@ -2087,6 +2124,9 @@
+   '@typescript-eslint/visitor-keys@8.50.0':
+     resolution: {integrity: sha512-Xzmnb58+Db78gT/CCj/PVCvK+zxbnsw6F+O1oheYszJbBSdEjVhQi3C/Xttzxgi/GLmpvOggRs1RFpiJ8+c34Q==}
+     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
++
++  '@ungap/structured-clone@1.4.0':
++    resolution: {integrity: sha512-1mEZtMKPM09vDmQt5y7YvmN2+DFTP7Tg0EWXdic8/C6VRnpb33e4ghisCIE3WZjsE2N8mf+QV1Zqh7ZFYLWInQ==}
+ 
+   '@vitejs/plugin-react@6.1.1':
+     resolution: {integrity: sha512-yxLaQV9gkhS8ezJqCM6+ndU7mDY6gqAg75NQ+0IjwEI8IYOmQCgkRwHKVSfWXW076DsqMo0Dk+0FK1U+M5RgFw==}
+@@ -2226,6 +2266,9 @@
+       '@babel/traverse':
+         optional: true
+ 
++  bail@2.0.2:
++    resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
++
+   balanced-match@1.0.2:
+     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
+ 
+@@ -2280,10 +2323,28 @@
+   caniuse-lite@1.0.30001812:
+     resolution: {integrity: sha512-qN+QNNBr93TCmFrmte0bBCjSDMuRvt78VlHT99qIGPszm4QsqCX8lnyWUFkHi8B7ZBAPq8SH+UqyXNy/odMdng==}
+ 
++  ccount@2.0.1:
++    resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
++
+   chalk@4.1.2:
+     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
+     engines: {node: '>=10'}
+ 
++  character-entities-html4@2.1.0:
++    resolution: {integrity: sha512-1v7fgQRj6hnSwFpq1Eu0ynr/CDEw0rXo2B61qXrLNdHZmPKgb7fqS1a2JwF0rISo9q77jDI8VMEHoApn8qDoZA==}
++
++  character-entities-legacy@3.0.0:
++    resolution: {integrity: sha512-RpPp0asT/6ufRm//AJVwpViZbGM/MkjQFxJccQRHmISF/22NBtsHqAWmL+/pmkPWoIUJdWyeVleTl1wydHATVQ==}
++
++  character-entities@2.0.2:
++    resolution: {integrity: sha512-shx7oQ0Awen/BRIdkjkvz54PnEEI/EjwXDSIZp86/KKdbafHh1Df/RYGBhn4hbe2+uKC9FnT5UCEdyPz3ai9hQ==}
++
++  character-reference-invalid@2.0.1:
++    resolution: {integrity: sha512-iBZ4F4wRbyORVsu0jPV7gXkOsGYjGHPmAyv+HiHG8gi5PtC9KI2j1+v8/tlibRvjoWX027ypmG/n0HtO5t7unw==}
++
++  classnames@2.5.1:
++    resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
++
+   cli-cursor@3.1.0:
+     resolution: {integrity: sha512-I/zHAwsKf9FqGoXM4WWRACob9+SNukZTd94DWF57E4toouRulbCxcUh6RKUEOQlYTHJnzkPMySvPNaaSLNfLZw==}
+     engines: {node: '>=8'}
+@@ -2315,6 +2376,9 @@
+     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
+     engines: {node: '>= 0.8'}
+ 
++  comma-separated-tokens@2.0.3:
++    resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
++
+   commander@9.5.0:
+     resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
+     engines: {node: ^12.20.0 || >=14}
+@@ -2349,6 +2413,9 @@
+       supports-color:
+         optional: true
+ 
++  decode-named-character-reference@1.3.0:
++    resolution: {integrity: sha512-GtpQYB283KrPp6nRw50q3U9/VfOutZOe103qlN7BPP6Ad27xYnOIWv4lPzo8HCAL+mMZofJ9KEy30fq6MfaK6Q==}
++
+   deep-is@0.1.4:
+     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
+ 
+@@ -2370,6 +2437,10 @@
+   delayed-stream@1.0.0:
+     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
+     engines: {node: '>=0.4.0'}
++
++  dequal@2.0.3:
++    resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
++    engines: {node: '>=6'}
+ 
+   detect-libc@2.1.2:
+     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
+@@ -2383,6 +2454,9 @@
+     engines: {node: '>= 16.0.0'}
+     hasBin: true
+ 
++  devlop@1.1.0:
++    resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
++
+   dotenv-expand@12.0.3:
+     resolution: {integrity: sha512-uc47g4b+4k/M/SeaW1y4OApx+mtLWl92l5LMPP0GNXctZqELk+YGgOPIIC5elYmUH4OuoK3JLhuRUYegeySiFA==}
+     engines: {node: '>=12'}
+@@ -2459,6 +2533,10 @@
+   escape-string-regexp@4.0.0:
+     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
+     engines: {node: '>=10'}
++
++  escape-string-regexp@5.0.0:
++    resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
++    engines: {node: '>=12'}
+ 
+   eslint-scope@8.4.0:
+     resolution: {integrity: sha512-sNXOfKCn74rt8RICKMvJS7XKV/Xk9kA7DyJr8mJik3S7Cwgy3qlkkmyS2uQB3jiJg6VNdZd/pDBJu0nvG2NlTg==}
+@@ -2499,9 +2577,15 @@
+     resolution: {integrity: sha512-MMdARuVEQziNTeJD8DgMqmhwR11BRQ/cBP+pLtYdSTnf3MIO8fFeiINEbX36ZdNlfU/7A9f3gUw49B3oQsvwBA==}
+     engines: {node: '>=4.0'}
+ 
++  estree-util-is-identifier-name@3.0.0:
++    resolution: {integrity: sha512-hFtqIDZTIUZ9BXLb8y4pYGyk6+wekIivNVTcmvk8NoOh+VeRn5y6cEHzbURrWbfp1fIqdVipilzj+lfaadNZmg==}
++
+   esutils@2.0.3:
+     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
+     engines: {node: '>=0.10.0'}
++
++  extend@3.0.2:
++    resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
+ 
+   fast-check@4.10.2:
+     resolution: {integrity: sha512-iK2f+YrcmoeGqk6fA0ea2bptcu/itMIm4NfEozq6N25+aG6h7s5HZbB/k1aV7b5w5sFLMCbbtRUsTVR+BgC3xw==}
+@@ -2658,6 +2742,15 @@
+     resolution: {integrity: sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==}
+     engines: {node: '>= 0.4'}
+ 
++  hast-util-to-jsx-runtime@2.3.6:
++    resolution: {integrity: sha512-zl6s8LwNyo1P9uw+XJGvZtdFF1GdAkOg8ujOw+4Pyb76874fLps4ueHXDhXWdk6YHQ6OgUtinliG7RsYvCbbBg==}
++
++  hast-util-whitespace@3.0.0:
++    resolution: {integrity: sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw==}
++
++  html-url-attributes@3.0.1:
++    resolution: {integrity: sha512-ol6UPyBWqsrO6EJySPz2O7ZSr856WDrEzM5zMqp+FJJLGMW35cLYmmZnl0vztAZxRUoNZJFTCohfjuIJ8I4QBQ==}
++
+   https-proxy-agent@5.0.1:
+     resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
+     engines: {node: '>= 6'}
+@@ -2688,12 +2781,24 @@
+   inherits@2.0.4:
+     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
+ 
++  inline-style-parser@0.2.7:
++    resolution: {integrity: sha512-Nb2ctOyNR8DqQoR0OwRG95uNWIC0C1lCgf5Naz5H6Ji72KZ8OcFZLz2P5sNgwlyoJ8Yif11oMuYs5pBQa86csA==}
++
++  is-alphabetical@2.0.1:
++    resolution: {integrity: sha512-FWyyY60MeTNyeSRpkM2Iry0G9hpr7/9kD40mD/cGQEuilcZYS4okz8SN2Q6rLCJ8gbCt6fN+rC+6tMGS99LaxQ==}
++
++  is-alphanumerical@2.0.1:
++    resolution: {integrity: sha512-hmbYhX/9MUMF5uh7tOXyK/n0ZvWpad5caBA17GsC6vyuCqaWliRG5K1qS9inmUhEMaOBIW7/whAnSwveW/LtZw==}
++
+   is-arrayish@0.2.1:
+     resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
+ 
+   is-core-module@2.17.0:
+     resolution: {integrity: sha512-J/vG0zBCbIKOQFfufSwyXdMrsohyJIUNkrnmo6WZGzoM7tr/lsbfW5b2BvisL6zsyMzK9UxV9L6c7AoFbyXHOA==}
+     engines: {node: '>= 0.4'}
++
++  is-decimal@2.0.1:
++    resolution: {integrity: sha512-AAB9hiomQs5DXWcRB1rqsxGUstbRroFOPPVAomNk/3XHR5JyEZChOyTWe2oayKnsSsr/kcGqF+z6yuH6HHpN0A==}
+ 
+   is-docker@3.0.0:
+     resolution: {integrity: sha512-eljcgEDlEns/7AXFosB5K/2nCM4P7FQPkGc/DWLy5rmFEWvZayGrik1d9/QIY5nJ4f9YsVvBkA6kJpHn9rISdQ==}
+@@ -2712,6 +2817,9 @@
+     resolution: {integrity: sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg==}
+     engines: {node: '>=0.10.0'}
+ 
++  is-hexadecimal@2.0.1:
++    resolution: {integrity: sha512-DgZQp241c8oO6cA1SbTEWiXeoxV42vlcJxgH+B3hi1AiqqKruZR3ZGF8In3fj4+/y/7rHvlOZLZtgJ/4ttYGZg==}
++
+   is-inside-container@1.0.0:
+     resolution: {integrity: sha512-KIYLCCJghfHZxqjYBE7rEy0OBuTd5xCHS7tHVgvCLkx7StIoaxwNW3hCALgEUjFfeRk+MG/Qxmp/vtETEF3tRA==}
+     engines: {node: '>=14.16'}
+@@ -2720,6 +2828,10 @@
+   is-interactive@1.0.0:
+     resolution: {integrity: sha512-2HvIEKRoqS62guEC+qBjpvRubdX910WCMuJTZ+I9yvqKU2/12eSL549HMwtabb4oupdj2sMP50k+XJfB/8JE6w==}
+     engines: {node: '>=8'}
++
++  is-plain-obj@4.1.0:
++    resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
++    engines: {node: '>=12'}
+ 
+   is-unicode-supported@0.1.0:
+     resolution: {integrity: sha512-knxG2q4UC3u8stRGyAVJCOdxFmv5DZiRcdlIaAQXAbSfJya+OhopNotLQrstBhququ4ZpuKbDc/8S6mgXgPFPw==}
+@@ -2877,6 +2989,9 @@
+     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
+     engines: {node: '>=10'}
+ 
++  longest-streak@3.1.0:
++    resolution: {integrity: sha512-9Ri+o0JYgehTaVBBDoMqIl8GXtbWg711O3srftcHhZ0dqnETqLaoIK0x17fUw9rFSlK/0NlsKe0Ahhyl5pXE2g==}
++
+   lru-cache@11.5.3:
+     resolution: {integrity: sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==}
+     engines: {node: 20 || >=22}
+@@ -2889,9 +3004,144 @@
+     peerDependencies:
+       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0-rc
+ 
++  markdown-table@3.0.4:
++    resolution: {integrity: sha512-wiYz4+JrLyb/DqW2hkFJxP7Vd7JuTDm77fvbM8VfEQdmSMqcImWeeRbHwZjBjIFki/VaMK2BhFi7oUUZeM5bqw==}
++
+   math-intrinsics@1.1.0:
+     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
+     engines: {node: '>= 0.4'}
++
++  mdast-util-find-and-replace@3.0.3:
++    resolution: {integrity: sha512-xPgpDNl0/OXHsI7TlaIs22lWnH3KlpvZdXG1ET/m/YT2Hhdkx8lJV4kLphE6l9simyM4KPDFBwas08BgEob6Jw==}
++
++  mdast-util-from-markdown@2.1.0:
++    resolution: {integrity: sha512-KRLgmPaP2H1ul2bpoJkOS+9pAcDAAj9Nu1mqLnh8NLeJG5tlvj42TH80PIGBpROWlRXLk0lDrWNuZCFy/tsB4A==}
++
++  mdast-util-gfm-autolink-literal@2.0.1:
++    resolution: {integrity: sha512-5HVP2MKaP6L+G6YaxPNjuL0BPrq9orG3TsrZ9YXbA3vDw/ACI4MEsnoDpn6ZNm7GnZgtAcONJyPhOP8tNJQavQ==}
++
++  mdast-util-gfm-footnote@2.1.0:
++    resolution: {integrity: sha512-sqpDWlsHn7Ac9GNZQMeUzPQSMzR6Wv0WKRNvQRg0KqHh02fpTz69Qc1QSseNX29bhz1ROIyNyxExfawVKTm1GQ==}
++
++  mdast-util-gfm-strikethrough@2.0.1:
++    resolution: {integrity: sha512-OuJHqvr455pwu2OaOrir7dbzqs4jlWKOtlu9L6GjcIjjQwNyw02VntQsr/Ek6/A13vgnXfUhBekWRUP1OkNivw==}
++
++  mdast-util-gfm-table@2.0.0:
++    resolution: {integrity: sha512-78UEvebzz/rJIxLvE7ZtDd/vIQ0RHv+3Mh5DR96p7cS7HsBhYIICDBCu8csTNWNO6tBWfqXPWekRuj2FNOGOZg==}
++
++  mdast-util-gfm-task-list-item@2.0.0:
++    resolution: {integrity: sha512-IrtvNvjxC1o06taBAVJznEnkiHxLFTzgonUdy8hzFVeDun0uTjxxrRGVaNFqkU1wJR3RBPEfsxmU6jDWPofrTQ==}
++
++  mdast-util-gfm@3.1.0:
++    resolution: {integrity: sha512-0ulfdQOM3ysHhCJ1p06l0b0VKlhU0wuQs3thxZQagjcjPrlFRqY215uZGHHJan9GEAXd9MbfPjFJz+qMkVR6zQ==}
++
++  mdast-util-mdx-expression@2.0.1:
++    resolution: {integrity: sha512-J6f+9hUp+ldTZqKRSg7Vw5V6MqjATc+3E4gf3CFNcuZNWD8XdyI6zQ8GqH7f8169MM6P7hMBRDVGnn7oHB9kXQ==}
++
++  mdast-util-mdx-jsx@3.2.0:
++    resolution: {integrity: sha512-lj/z8v0r6ZtsN/cGNNtemmmfoLAFZnjMbNyLzBafjzikOM+glrjNHPlf6lQDOTccj9n5b0PPihEBbhneMyGs1Q==}
++
++  mdast-util-mdxjs-esm@2.0.1:
++    resolution: {integrity: sha512-EcmOpxsZ96CvlP03NghtH1EsLtr0n9Tm4lPUJUBccV9RwUOneqSycg19n5HGzCf+10LozMRSObtVr3ee1WoHtg==}
++
++  mdast-util-phrasing@4.1.0:
++    resolution: {integrity: sha512-TqICwyvJJpBwvGAMZjj4J2n0X8QWp21b9l0o7eXyVJ25YNWYbJDVIyD1bZXE6WtV6RmKJVYmQAKWa0zWOABz2w==}
++
++  mdast-util-to-hast@13.2.1:
++    resolution: {integrity: sha512-cctsq2wp5vTsLIcaymblUriiTcZd0CwWtCbLvrOzYCDZoWyMNV8sZ7krj09FSnsiJi3WVsHLM4k6Dq/yaPyCXA==}
++
++  mdast-util-to-markdown@2.2.0:
++    resolution: {integrity: sha512-2Jn/ADrHFFyyniBMi0bncTbJqU78K3/TEYvzvwrWWzD9MYPUa/Gm4r3nOeKFQg/PDM5BsbDYdc8ackW4NTY6NA==}
++
++  mdast-util-to-string@4.0.0:
++    resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
++
++  micromark-core-commonmark@2.0.4:
++    resolution: {integrity: sha512-wxEeE8v8XVvOrxn1TZj74qYhAtTQsSqufHVS3uNVyT1MupXxhyaHk8/9xDNPh9BmL77QNDgWTkZ3RsYHB2ry7w==}
++
++  micromark-extension-gfm-autolink-literal@2.1.0:
++    resolution: {integrity: sha512-oOg7knzhicgQ3t4QCjCWgTmfNhvQbDDnJeVu9v81r7NltNCVmhPy1fJRX27pISafdjL+SVc4d3l48Gb6pbRypw==}
++
++  micromark-extension-gfm-footnote@2.1.0:
++    resolution: {integrity: sha512-/yPhxI1ntnDNsiHtzLKYnE3vf9JZ6cAisqVDauhp4CEHxlb4uoOTxOCJ+9s51bIB8U1N1FJ1RXOKTIlD5B/gqw==}
++
++  micromark-extension-gfm-strikethrough@2.1.0:
++    resolution: {integrity: sha512-ADVjpOOkjz1hhkZLlBiYA9cR2Anf8F4HqZUO6e5eDcPQd0Txw5fxLzzxnEkSkfnD0wziSGiv7sYhk/ktvbf1uw==}
++
++  micromark-extension-gfm-table@2.1.2:
++    resolution: {integrity: sha512-pRzm4kDTu0MjlmBkxmS9yYhw60nncfcEwu9NNdPFSQEFXS95ZKyIIyTSHu/o3ReBUrLKYEq+7YaXCRn/bPB4MA==}
++
++  micromark-extension-gfm-tagfilter@2.0.0:
++    resolution: {integrity: sha512-xHlTOmuCSotIA8TW1mDIM6X2O1SiX5P9IuDtqGonFhEK0qgRI4yeC6vMxEV2dgyr2TiD+2PQ10o+cOhdVAcwfg==}
++
++  micromark-extension-gfm-task-list-item@2.1.0:
++    resolution: {integrity: sha512-qIBZhqxqI6fjLDYFTBIa4eivDMnP+OZqsNwmQ3xNLE4Cxwc+zfQEfbs6tzAo2Hjq+bh6q5F+Z8/cksrLFYWQQw==}
++
++  micromark-extension-gfm@3.0.0:
++    resolution: {integrity: sha512-vsKArQsicm7t0z2GugkCKtZehqUm31oeGBV/KVSorWSy8ZlNAv7ytjFhvaryUiCUJYqs+NoE6AFhpQvBTM6Q4w==}
++
++  micromark-factory-destination@2.0.1:
++    resolution: {integrity: sha512-Xe6rDdJlkmbFRExpTOmRj9N3MaWmbAgdpSrBQvCFqhezUn4AHqJHbaEnfbVYYiexVSs//tqOdY/DxhjdCiJnIA==}
++
++  micromark-factory-label@2.0.1:
++    resolution: {integrity: sha512-VFMekyQExqIW7xIChcXn4ok29YE3rnuyveW3wZQWWqF4Nv9Wk5rgJ99KzPvHjkmPXF93FXIbBp6YdW3t71/7Vg==}
++
++  micromark-factory-space@2.1.0:
++    resolution: {integrity: sha512-fS8hnLIjnjvdQIj39Geug8wWsR0HrYZ43KShKxNfwT7t2LOHo/LbWZEzEaSOjwtjdCsjoE6syHhonEzW0zv0+Q==}
++
++  micromark-factory-title@2.0.1:
++    resolution: {integrity: sha512-5bZ+3CjhAd9eChYTHsjy6TGxpOFSKgKKJPJxr293jTbfry2KDoWkhBb6TcPVB4NmzaPhMs1Frm9AZH7OD4Cjzw==}
++
++  micromark-factory-whitespace@2.0.1:
++    resolution: {integrity: sha512-Ob0nuZ3PKt/n0hORHyvoD9uZhr+Za8sFoP+OnMcnWK5lngSzALgQYKMr9RJVOWLqQYuyn6ulqGWSXdwf6F80lQ==}
++
++  micromark-util-character@2.1.1:
++    resolution: {integrity: sha512-wv8tdUTJ3thSFFFJKtpYKOYiGP2+v96Hvk4Tu8KpCAsTMs6yi+nVmGh1syvSCsaxz45J6Jbw+9DD6g97+NV67Q==}
++
++  micromark-util-chunked@2.0.1:
++    resolution: {integrity: sha512-QUNFEOPELfmvv+4xiNg2sRYeS/P84pTW0TCgP5zc9FpXetHY0ab7SxKyAQCNCc1eK0459uoLI1y5oO5Vc1dbhA==}
++
++  micromark-util-classify-character@2.0.1:
++    resolution: {integrity: sha512-K0kHzM6afW/MbeWYWLjoHQv1sgg2Q9EccHEDzSkxiP/EaagNzCm7T/WMKZ3rjMbvIpvBiZgwR3dKMygtA4mG1Q==}
++
++  micromark-util-combine-extensions@2.0.1:
++    resolution: {integrity: sha512-OnAnH8Ujmy59JcyZw8JSbK9cGpdVY44NKgSM7E9Eh7DiLS2E9RNQf0dONaGDzEG9yjEl5hcqeIsj4hfRkLH/Bg==}
++
++  micromark-util-decode-numeric-character-reference@2.0.2:
++    resolution: {integrity: sha512-ccUbYk6CwVdkmCQMyr64dXz42EfHGkPQlBj5p7YVGzq8I7CtjXZJrubAYezf7Rp+bjPseiROqe7G6foFd+lEuw==}
++
++  micromark-util-decode-string@2.0.1:
++    resolution: {integrity: sha512-nDV/77Fj6eH1ynwscYTOsbK7rR//Uj0bZXBwJZRfaLEJ1iGBR6kIfNmlNqaqJf649EP0F3NWNdeJi03elllNUQ==}
++
++  micromark-util-edit-map@1.0.0:
++    resolution: {integrity: sha512-Pa2ljlsEL6sVwFaYeyrOLSYbQt73JvGbPOYFq+9AElXiSnfI5Q4465RRZ1sHv7lDjDOnGRDDaqPXqClqWK/q1Q==}
++
++  micromark-util-encode@2.0.1:
++    resolution: {integrity: sha512-c3cVx2y4KqUnwopcO9b/SCdo2O67LwJJ/UyqGfbigahfegL9myoEFoDYZgkT7f36T0bLrM9hZTAaAyH+PCAXjw==}
++
++  micromark-util-html-tag-name@2.0.1:
++    resolution: {integrity: sha512-2cNEiYDhCWKI+Gs9T0Tiysk136SnR13hhO8yW6BGNyhOC4qYFnwF1nKfD3HFAIXA5c45RrIG1ub11GiXeYd1xA==}
++
++  micromark-util-normalize-identifier@2.0.1:
++    resolution: {integrity: sha512-sxPqmo70LyARJs0w2UclACPUUEqltCkJ6PhKdMIDuJ3gSf/Q+/GIe3WKl0Ijb/GyH9lOpUkRAO2wp0GVkLvS9Q==}
++
++  micromark-util-resolve-all@2.0.1:
++    resolution: {integrity: sha512-VdQyxFWFT2/FGJgwQnJYbe1jjQoNTS4RjglmSjTUlpUMa95Htx9NHeYW4rGDJzbjvCsl9eLjMQwGeElsqmzcHg==}
++
++  micromark-util-sanitize-uri@2.0.1:
++    resolution: {integrity: sha512-9N9IomZ/YuGGZZmQec1MbgxtlgougxTodVwDzzEouPKo3qFWvymFHWcnDi2vzV1ff6kas9ucW+o3yzJK9YB1AQ==}
++
++  micromark-util-subtokenize@2.1.0:
++    resolution: {integrity: sha512-XQLu552iSctvnEcgXw6+Sx75GflAPNED1qx7eBJ+wydBb2KCbRZe+NwvIEEMM83uml1+2WSXpBAcp9IUCgCYWA==}
++
++  micromark-util-symbol@2.0.1:
++    resolution: {integrity: sha512-vs5t8Apaud9N28kgCrRUdEed4UJ+wWNvicHLPxCa9ENlYuAY31M0ETy5y1vA33YoNPDFTghEbnh6efaE8h4x0Q==}
++
++  micromark-util-types@2.0.3:
++    resolution: {integrity: sha512-oxB2Ik03hI0gv+VNn9tnh1t1YEe9MDPptViAEgfdf3YQHsn0pzGTgCdlSCJXcwhqm8phaEuM7zeEu3QQzVBrPg==}
++
++  micromark@4.0.3:
++    resolution: {integrity: sha512-oGYfQzHSG5dOMovQcJ3fyTmZlWAWpi0XA0sJwJs+i6OT88o1+Jtw/8z0CmdowSLxGhhFK89rQ/oXph/wN02PNw==}
+ 
+   mime-db@1.52.0:
+     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
+@@ -3001,6 +3251,9 @@
+     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
+     engines: {node: '>=6'}
+ 
++  parse-entities@4.0.2:
++    resolution: {integrity: sha512-GG2AQYWoLgL877gQIKeRPGO1xF9+eG1ujIb5soS5gPvLQ1y2o8FL90w2QWNdf9I361Mpp7726c+lj3U0qK1uGw==}
++
+   parse-json@5.2.0:
+     resolution: {integrity: sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg==}
+     engines: {node: '>=8'}
+@@ -3079,6 +3332,9 @@
+     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
+     engines: {node: '>=10'}
+ 
++  property-information@7.2.0:
++    resolution: {integrity: sha512-IAtzIB6sUiWaJYrX9smp3V46pBGbBeLFRGdh25kg1334VcBlD8HzhPeNIWQH9zhGmo2itIe25EHt9dQP7G5hmg==}
++
+   proxy-from-env@2.1.0:
+     resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
+     engines: {node: '>=10'}
+@@ -3108,6 +3364,12 @@
+     peerDependencies:
+       react: ^19.2.4
+ 
++  react-markdown@10.1.0:
++    resolution: {integrity: sha512-qKxVopLT/TyA6BX3Ue5NwabOsAzm0Q7kAPwq6L+wWDwisYs7R8vZ0nRXqq6rkueboxpkjvLGU9fWifiX/ZZFxQ==}
++    peerDependencies:
++      '@types/react': '>=18'
++      react: '>=18'
++
+   react-remove-scroll-bar@2.3.8:
+     resolution: {integrity: sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q==}
+     engines: {node: '>=10'}
+@@ -3169,6 +3431,18 @@
+   regjsparser@0.13.3:
+     resolution: {integrity: sha512-ycwFAS14Jw4mppvmK4GR/J6u3WpWpjkEApehuHtLc/8VpPNpDMbQ4WjqwplXifGeyKOzHSFLmSPqzksDQE2Sfg==}
+     hasBin: true
++
++  remark-gfm@4.0.1:
++    resolution: {integrity: sha512-1quofZ2RQ9EWdeN34S79+KExV1764+wCUGop5CPL1WGdD0ocPpu91lzPGbwWMECpEpd42kJGQwzRfyov9j4yNg==}
++
++  remark-parse@11.0.0:
++    resolution: {integrity: sha512-FCxlKLNGknS5ba/1lmpYijMUzX2esxW5xQqjWxw2eHFfS2MSdaHVINFmhjo+qN1WhZhNimq0dZATN9pH0IDrpA==}
++
++  remark-rehype@11.1.2:
++    resolution: {integrity: sha512-Dh7l57ianaEoIpzbp0PC9UKAdCSVklD8E5Rpw7ETfbTl3FqcOOgq5q2LVDhgGCkaBv7p24JXikPdvhhmHvKMsw==}
++
++  remark-stringify@11.0.0:
++    resolution: {integrity: sha512-1OSmLd3awB/t8qdoEOMazZkNsfVTeY4fTsgzcQFdXNq8ToTN4ZGwrMnlda4K6smTFKD+GRV6O48i6Z4iKgPPpw==}
+ 
+   require-directory@2.1.1:
+     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
+@@ -3270,6 +3544,9 @@
+     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
+     engines: {node: '>=0.10.0'}
+ 
++  space-separated-tokens@2.0.2:
++    resolution: {integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==}
++
+   string-width@4.2.3:
+     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
+     engines: {node: '>=8'}
+@@ -3277,6 +3554,9 @@
+   string_decoder@1.3.0:
+     resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==}
+ 
++  stringify-entities@4.0.4:
++    resolution: {integrity: sha512-IwfBptatlO+QCJUo19AqvrPNqlVMpW9YEL2LIVY+Rpv2qsjCGxaDLNRgeGsQWJhfItebuJhsGSLjaBbNSQ+ieg==}
++
+   strip-ansi@6.0.1:
+     resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==}
+     engines: {node: '>=8'}
+@@ -3289,6 +3569,12 @@
+     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
+     engines: {node: '>=8'}
+ 
++  style-to-js@1.1.21:
++    resolution: {integrity: sha512-RjQetxJrrUJLQPHbLku6U/ocGtzyjbJMP9lCNK7Ag0CNh690nSH8woqWH9u16nMjYBAok+i7JO1NP2pOy8IsPQ==}
++
++  style-to-object@1.0.14:
++    resolution: {integrity: sha512-LIN7rULI0jBscWQYaSswptyderlarFkjQ+t79nzty8tcIAceVomEVlLzH5VP4Cmsv6MtKhs7qaAiwlcp+Mgaxw==}
++
+   sumchecker@3.0.1:
+     resolution: {integrity: sha512-MvjXzkz/BOfyVDkG0oFOtBxHX2u3gKbMHIF/dXblZsgD3BWOFLmHovIpZY7BykJdAjcqRCBi1WYBNdEC9yI7vg==}
+     engines: {node: '>= 8.0'}
+@@ -3312,6 +3598,12 @@
+   tmp@0.2.7:
+     resolution: {integrity: sha512-e0votIpp4Uo2AJYSzVHV6xCcawuiez3DzqDAbrTc3YxBkplN6e+dM13ZeIcZnDg/QpSuU2zfZ3rzwY8ukEnaXw==}
+     engines: {node: '>=14.14'}
++
++  trim-lines@3.0.1:
++    resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
++
++  trough@2.2.0:
++    resolution: {integrity: sha512-tmMpK00BjZiUyVyvrBK7knerNgmgvcV/KLVyuma/SC+TQN167GrMRciANTz09+k3zW8L8t60jWO1GpfkZdjTaw==}
+ 
+   ts-api-utils@2.5.0:
+     resolution: {integrity: sha512-OJ/ibxhPlqrMM0UiNHJ/0CKQkoKF243/AEmplt3qpRgkW8VG7IfOS41h7V8TjITqdByHzrjcS/2si+y4lIh8NA==}
+@@ -3363,6 +3655,24 @@
+     resolution: {integrity: sha512-hpbDzxUY9BFwX+UeBnxv3Sh1q7HFxj48DTmXchNgRa46lO8uj3/1iEn3MiNUYTg1g9ctIqXCCERn8gYZhHC5lQ==}
+     engines: {node: '>=4'}
+ 
++  unified@11.0.5:
++    resolution: {integrity: sha512-xKvGhPWw3k84Qjh8bI3ZeJjqnyadK+GEFtazSfZv/rKeTkTjOJho6mFqh2SM96iIcZokxiOpg78GazTSg8+KHA==}
++
++  unist-util-is@6.0.1:
++    resolution: {integrity: sha512-LsiILbtBETkDz8I9p1dQ0uyRUWuaQzd/cuEeS1hoRSyW5E5XGmTzlwY1OrNzzakGowI9Dr/I8HVaw4hTtnxy8g==}
++
++  unist-util-position@5.0.0:
++    resolution: {integrity: sha512-fucsC7HjXvkB5R3kTCO7kUjRdrS0BJt3M/FPxmHMBOm8JQi2BsHAHFsy27E0EolP8rp0NzXsJ+jNPyDWvOJZPA==}
++
++  unist-util-stringify-position@4.0.0:
++    resolution: {integrity: sha512-0ASV06AAoKCDkS2+xw5RXJywruurpbC4JZSm7nr7MOt1ojAzvyyaO+UxZf18j8FCF6kmzCZKcAgN/yu2gm2XgQ==}
++
++  unist-util-visit-parents@6.0.2:
++    resolution: {integrity: sha512-goh1s1TBrqSqukSc8wrjwWhL0hiJxgA8m4kFxGlQ+8FYQ3C/m11FcTs4YYem7V664AhHVvgoQLk890Ssdsr2IQ==}
++
++  unist-util-visit@5.1.0:
++    resolution: {integrity: sha512-m+vIdyeCOpdr/QeQCu2EzxX/ohgS8KbnPDgFni4dQsfSCtpz8UqDyY5GjRru8PDKuYn7Fq19j1CQ+nJSsGKOzg==}
++
+   update-browserslist-db@1.3.3:
+     resolution: {integrity: sha512-pJ2sYawQS0R/WI928Gj5GlPhTGzbMelq0+4INtSYNDV9ErKJcX6xjGWkoG/VnB3dpUm00zALaqkrUD77pO5TDQ==}
+     hasBin: true
+@@ -3421,6 +3731,12 @@
+ 
+   util-deprecate@1.0.2:
+     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
++
++  vfile-message@4.0.3:
++    resolution: {integrity: sha512-QTHzsGd1EhbZs4AsQ20JX1rC3cOlt/IWJruk893DfLRr57lcnOeMaWG4K0JrRta4mIJZKth2Au3mM3u03/JWKw==}
++
++  vfile@6.0.3:
++    resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
+ 
+   vite@8.3.0:
+     resolution: {integrity: sha512-lhZBVvEHefgE+HQZC9O7EBJgCU/nVzFNl7vkS4RE0APtWLP02/8QVIkQtzBxPquh7lq5/78NHipTj7ODQ6XuyQ==}
+@@ -3546,6 +3862,9 @@
+       use-sync-external-store:
+         optional: true
+ 
++  zwitch@2.0.4:
++    resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
++
+ snapshots:
+ 
+   '@assistant-ui/core@0.3.21(@assistant-ui/store@0.3.15(@assistant-ui/tap@0.9.19(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@assistant-ui/tap@0.9.19(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(assistant-cloud@0.2.3)(react@19.2.4)':
+@@ -3561,6 +3880,23 @@
+     transitivePeerDependencies:
+       - ioredis
+       - redis
++
++  '@assistant-ui/react-markdown@0.14.19(@assistant-ui/react@0.15.22(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@7.2.0)':
++    dependencies:
++      '@assistant-ui/react': 0.15.22(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
++      '@radix-ui/react-primitive': 2.1.10(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
++      '@radix-ui/react-use-callback-ref': 1.1.4(@types/react@19.2.14)(react@19.2.4)
++      '@types/hast': 3.0.5
++      classnames: 2.5.1
++      micromark-util-html-tag-name: 2.0.1
++      react: 19.2.4
++      react-markdown: 10.1.0(@types/react@19.2.14)(react@19.2.4)(supports-color@7.2.0)
++    optionalDependencies:
++      '@types/react': 19.2.14
++    transitivePeerDependencies:
++      - '@types/react-dom'
++      - react-dom
++      - supports-color
+ 
+   '@assistant-ui/react@0.15.22(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+     dependencies:
+@@ -5596,14 +5932,32 @@
+     dependencies:
+       tslib: 2.8.1
+ 
++  '@types/debug@4.1.13':
++    dependencies:
++      '@types/ms': 2.1.0
++
+   '@types/esquery@1.5.4':
+     dependencies:
+       '@types/estree': 1.0.9
+ 
++  '@types/estree-jsx@1.0.5':
++    dependencies:
++      '@types/estree': 1.0.9
++
+   '@types/estree@1.0.9': {}
+ 
++  '@types/hast@3.0.5':
++    dependencies:
++      '@types/unist': 3.0.3
++
+   '@types/json-schema@7.0.15': {}
+ 
++  '@types/mdast@4.0.4':
++    dependencies:
++      '@types/unist': 3.0.3
++
++  '@types/ms@2.1.0': {}
++
+   '@types/node@24.10.0':
+     dependencies:
+       undici-types: 7.16.0
+@@ -5617,6 +5971,10 @@
+   '@types/react@19.2.14':
+     dependencies:
+       csstype: 3.2.3
++
++  '@types/unist@2.0.11': {}
++
++  '@types/unist@3.0.3': {}
+ 
+   '@typescript-eslint/eslint-plugin@8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.1(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@9.39.1(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)':
+     dependencies:
+@@ -5709,6 +6067,8 @@
+       '@typescript-eslint/types': 8.50.0
+       eslint-visitor-keys: 4.2.1
+ 
++  '@ungap/structured-clone@1.4.0': {}
++
+   '@vitejs/plugin-react@6.1.1(vite@8.3.0(@types/node@24.10.0)(tsx@4.20.5)(yaml@2.9.0))':
+     dependencies:
+       '@rolldown/pluginutils': 1.0.1
+@@ -5841,6 +6201,8 @@
+       '@babel/helper-plugin-utils': 7.29.7
+     optionalDependencies:
+       '@babel/traverse': 7.29.8(supports-color@7.2.0)
++
++  bail@2.0.2: {}
+ 
+   balanced-match@1.0.2: {}
+ 
+@@ -5897,10 +6259,22 @@
+ 
+   caniuse-lite@1.0.30001812: {}
+ 
++  ccount@2.0.1: {}
++
+   chalk@4.1.2:
+     dependencies:
+       ansi-styles: 4.3.0
+       supports-color: 7.2.0
++
++  character-entities-html4@2.1.0: {}
++
++  character-entities-legacy@3.0.0: {}
++
++  character-entities@2.0.2: {}
++
++  character-reference-invalid@2.0.1: {}
++
++  classnames@2.5.1: {}
+ 
+   cli-cursor@3.1.0:
+     dependencies:
+@@ -5930,6 +6304,8 @@
+   combined-stream@1.0.8:
+     dependencies:
+       delayed-stream: 1.0.0
++
++  comma-separated-tokens@2.0.3: {}
+ 
+   commander@9.5.0: {}
+ 
+@@ -5963,6 +6339,10 @@
+     optionalDependencies:
+       supports-color: 7.2.0
+ 
++  decode-named-character-reference@1.3.0:
++    dependencies:
++      character-entities: 2.0.2
++
+   deep-is@0.1.4: {}
+ 
+   default-browser-id@5.0.0: {}
+@@ -5980,6 +6360,8 @@
+ 
+   delayed-stream@1.0.0: {}
+ 
++  dequal@2.0.3: {}
++
+   detect-libc@2.1.2: {}
+ 
+   detect-node-es@1.1.0: {}
+@@ -5987,6 +6369,10 @@
+   detect-port@2.1.0:
+     dependencies:
+       address: 2.0.3
++
++  devlop@1.1.0:
++    dependencies:
++      dequal: 2.0.3
+ 
+   dotenv-expand@12.0.3:
+     dependencies:
+@@ -6080,6 +6466,8 @@
+   escape-string-regexp@1.0.5: {}
+ 
+   escape-string-regexp@4.0.0: {}
++
++  escape-string-regexp@5.0.0: {}
+ 
+   eslint-scope@8.4.0:
+     dependencies:
+@@ -6145,7 +6533,11 @@
+ 
+   estraverse@5.3.0: {}
+ 
++  estree-util-is-identifier-name@3.0.0: {}
++
+   esutils@2.0.3: {}
++
++  extend@3.0.2: {}
+ 
+   fast-check@4.10.2:
+     dependencies:
+@@ -6289,6 +6681,32 @@
+     dependencies:
+       function-bind: 1.1.2
+ 
++  hast-util-to-jsx-runtime@2.3.6(supports-color@7.2.0):
++    dependencies:
++      '@types/estree': 1.0.9
++      '@types/hast': 3.0.5
++      '@types/unist': 3.0.3
++      comma-separated-tokens: 2.0.3
++      devlop: 1.1.0
++      estree-util-is-identifier-name: 3.0.0
++      hast-util-whitespace: 3.0.0
++      mdast-util-mdx-expression: 2.0.1(supports-color@7.2.0)
++      mdast-util-mdx-jsx: 3.2.0(supports-color@7.2.0)
++      mdast-util-mdxjs-esm: 2.0.1(supports-color@7.2.0)
++      property-information: 7.2.0
++      space-separated-tokens: 2.0.2
++      style-to-js: 1.1.21
++      unist-util-position: 5.0.0
++      vfile-message: 4.0.3
++    transitivePeerDependencies:
++      - supports-color
++
++  hast-util-whitespace@3.0.0:
++    dependencies:
++      '@types/hast': 3.0.5
++
++  html-url-attributes@3.0.1: {}
++
+   https-proxy-agent@5.0.1(supports-color@7.2.0):
+     dependencies:
+       agent-base: 6.0.2(supports-color@7.2.0)
+@@ -6313,12 +6731,23 @@
+ 
+   inherits@2.0.4: {}
+ 
++  inline-style-parser@0.2.7: {}
++
++  is-alphabetical@2.0.1: {}
++
++  is-alphanumerical@2.0.1:
++    dependencies:
++      is-alphabetical: 2.0.1
++      is-decimal: 2.0.1
++
+   is-arrayish@0.2.1: {}
+ 
+   is-core-module@2.17.0:
+     dependencies:
+       hasown: 2.0.4
+ 
++  is-decimal@2.0.1: {}
++
+   is-docker@3.0.0: {}
+ 
+   is-extglob@2.1.1: {}
+@@ -6329,11 +6758,15 @@
+     dependencies:
+       is-extglob: 2.1.1
+ 
++  is-hexadecimal@2.0.1: {}
++
+   is-inside-container@1.0.0:
+     dependencies:
+       is-docker: 3.0.0
+ 
+   is-interactive@1.0.0: {}
++
++  is-plain-obj@4.1.0: {}
+ 
+   is-unicode-supported@0.1.0: {}
+ 
+@@ -6444,6 +6877,8 @@
+       chalk: 4.1.2
+       is-unicode-supported: 0.1.0
+ 
++  longest-streak@3.1.0: {}
++
+   lru-cache@11.5.3: {}
+ 
+   lru-cache@5.1.1:
+@@ -6454,7 +6889,361 @@
+     dependencies:
+       react: 19.2.4
+ 
++  markdown-table@3.0.4: {}
++
+   math-intrinsics@1.1.0: {}
++
++  mdast-util-find-and-replace@3.0.3:
++    dependencies:
++      '@types/mdast': 4.0.4
++      escape-string-regexp: 5.0.0
++      unist-util-is: 6.0.1
++      unist-util-visit-parents: 6.0.2
++
++  mdast-util-from-markdown@2.1.0(supports-color@7.2.0):
++    dependencies:
++      '@types/mdast': 4.0.4
++      '@types/unist': 3.0.3
++      decode-named-character-reference: 1.3.0
++      devlop: 1.1.0
++      mdast-util-to-string: 4.0.0
++      micromark: 4.0.3(supports-color@7.2.0)
++      micromark-util-decode-numeric-character-reference: 2.0.2
++      micromark-util-decode-string: 2.0.1
++      micromark-util-normalize-identifier: 2.0.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++      unist-util-stringify-position: 4.0.0
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-gfm-autolink-literal@2.0.1:
++    dependencies:
++      '@types/mdast': 4.0.4
++      ccount: 2.0.1
++      devlop: 1.1.0
++      mdast-util-find-and-replace: 3.0.3
++      micromark-util-character: 2.1.1
++
++  mdast-util-gfm-footnote@2.1.0(supports-color@7.2.0):
++    dependencies:
++      '@types/mdast': 4.0.4
++      devlop: 1.1.0
++      mdast-util-from-markdown: 2.1.0(supports-color@7.2.0)
++      mdast-util-to-markdown: 2.2.0
++      micromark-util-normalize-identifier: 2.0.1
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-gfm-strikethrough@2.0.1(supports-color@7.2.0):
++    dependencies:
++      '@types/mdast': 4.0.4
++      mdast-util-from-markdown: 2.1.0(supports-color@7.2.0)
++      mdast-util-to-markdown: 2.2.0
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-gfm-table@2.0.0(supports-color@7.2.0):
++    dependencies:
++      '@types/mdast': 4.0.4
++      devlop: 1.1.0
++      markdown-table: 3.0.4
++      mdast-util-from-markdown: 2.1.0(supports-color@7.2.0)
++      mdast-util-to-markdown: 2.2.0
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-gfm-task-list-item@2.0.0(supports-color@7.2.0):
++    dependencies:
++      '@types/mdast': 4.0.4
++      devlop: 1.1.0
++      mdast-util-from-markdown: 2.1.0(supports-color@7.2.0)
++      mdast-util-to-markdown: 2.2.0
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-gfm@3.1.0(supports-color@7.2.0):
++    dependencies:
++      mdast-util-from-markdown: 2.1.0(supports-color@7.2.0)
++      mdast-util-gfm-autolink-literal: 2.0.1
++      mdast-util-gfm-footnote: 2.1.0(supports-color@7.2.0)
++      mdast-util-gfm-strikethrough: 2.0.1(supports-color@7.2.0)
++      mdast-util-gfm-table: 2.0.0(supports-color@7.2.0)
++      mdast-util-gfm-task-list-item: 2.0.0(supports-color@7.2.0)
++      mdast-util-to-markdown: 2.2.0
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-mdx-expression@2.0.1(supports-color@7.2.0):
++    dependencies:
++      '@types/estree-jsx': 1.0.5
++      '@types/hast': 3.0.5
++      '@types/mdast': 4.0.4
++      devlop: 1.1.0
++      mdast-util-from-markdown: 2.1.0(supports-color@7.2.0)
++      mdast-util-to-markdown: 2.2.0
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-mdx-jsx@3.2.0(supports-color@7.2.0):
++    dependencies:
++      '@types/estree-jsx': 1.0.5
++      '@types/hast': 3.0.5
++      '@types/mdast': 4.0.4
++      '@types/unist': 3.0.3
++      ccount: 2.0.1
++      devlop: 1.1.0
++      mdast-util-from-markdown: 2.1.0(supports-color@7.2.0)
++      mdast-util-to-markdown: 2.2.0
++      parse-entities: 4.0.2
++      stringify-entities: 4.0.4
++      unist-util-stringify-position: 4.0.0
++      vfile-message: 4.0.3
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-mdxjs-esm@2.0.1(supports-color@7.2.0):
++    dependencies:
++      '@types/estree-jsx': 1.0.5
++      '@types/hast': 3.0.5
++      '@types/mdast': 4.0.4
++      devlop: 1.1.0
++      mdast-util-from-markdown: 2.1.0(supports-color@7.2.0)
++      mdast-util-to-markdown: 2.2.0
++    transitivePeerDependencies:
++      - supports-color
++
++  mdast-util-phrasing@4.1.0:
++    dependencies:
++      '@types/mdast': 4.0.4
++      unist-util-is: 6.0.1
++
++  mdast-util-to-hast@13.2.1:
++    dependencies:
++      '@types/hast': 3.0.5
++      '@types/mdast': 4.0.4
++      '@ungap/structured-clone': 1.4.0
++      devlop: 1.1.0
++      micromark-util-sanitize-uri: 2.0.1
++      trim-lines: 3.0.1
++      unist-util-position: 5.0.0
++      unist-util-visit: 5.1.0
++      vfile: 6.0.3
++
++  mdast-util-to-markdown@2.2.0:
++    dependencies:
++      '@types/mdast': 4.0.4
++      '@types/unist': 3.0.3
++      longest-streak: 3.1.0
++      mdast-util-phrasing: 4.1.0
++      mdast-util-to-string: 4.0.0
++      micromark-util-character: 2.1.1
++      micromark-util-classify-character: 2.0.1
++      micromark-util-decode-string: 2.0.1
++      micromark-util-html-tag-name: 2.0.1
++      unist-util-visit: 5.1.0
++      zwitch: 2.0.4
++
++  mdast-util-to-string@4.0.0:
++    dependencies:
++      '@types/mdast': 4.0.4
++
++  micromark-core-commonmark@2.0.4:
++    dependencies:
++      decode-named-character-reference: 1.3.0
++      devlop: 1.1.0
++      micromark-factory-destination: 2.0.1
++      micromark-factory-label: 2.0.1
++      micromark-factory-space: 2.1.0
++      micromark-factory-title: 2.0.1
++      micromark-factory-whitespace: 2.0.1
++      micromark-util-character: 2.1.1
++      micromark-util-chunked: 2.0.1
++      micromark-util-classify-character: 2.0.1
++      micromark-util-edit-map: 1.0.0
++      micromark-util-html-tag-name: 2.0.1
++      micromark-util-normalize-identifier: 2.0.1
++      micromark-util-resolve-all: 2.0.1
++      micromark-util-subtokenize: 2.1.0
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-extension-gfm-autolink-literal@2.1.0:
++    dependencies:
++      micromark-util-character: 2.1.1
++      micromark-util-sanitize-uri: 2.0.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-extension-gfm-footnote@2.1.0:
++    dependencies:
++      devlop: 1.1.0
++      micromark-core-commonmark: 2.0.4
++      micromark-factory-space: 2.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-normalize-identifier: 2.0.1
++      micromark-util-sanitize-uri: 2.0.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-extension-gfm-strikethrough@2.1.0:
++    dependencies:
++      devlop: 1.1.0
++      micromark-util-chunked: 2.0.1
++      micromark-util-classify-character: 2.0.1
++      micromark-util-resolve-all: 2.0.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-extension-gfm-table@2.1.2:
++    dependencies:
++      devlop: 1.1.0
++      micromark-factory-space: 2.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-extension-gfm-tagfilter@2.0.0:
++    dependencies:
++      micromark-util-types: 2.0.3
++
++  micromark-extension-gfm-task-list-item@2.1.0:
++    dependencies:
++      devlop: 1.1.0
++      micromark-factory-space: 2.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-extension-gfm@3.0.0:
++    dependencies:
++      micromark-extension-gfm-autolink-literal: 2.1.0
++      micromark-extension-gfm-footnote: 2.1.0
++      micromark-extension-gfm-strikethrough: 2.1.0
++      micromark-extension-gfm-table: 2.1.2
++      micromark-extension-gfm-tagfilter: 2.0.0
++      micromark-extension-gfm-task-list-item: 2.1.0
++      micromark-util-combine-extensions: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-factory-destination@2.0.1:
++    dependencies:
++      micromark-util-character: 2.1.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-factory-label@2.0.1:
++    dependencies:
++      devlop: 1.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-factory-space@2.1.0:
++    dependencies:
++      micromark-util-character: 2.1.1
++      micromark-util-types: 2.0.3
++
++  micromark-factory-title@2.0.1:
++    dependencies:
++      micromark-factory-space: 2.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-factory-whitespace@2.0.1:
++    dependencies:
++      micromark-factory-space: 2.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-util-character@2.1.1:
++    dependencies:
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-util-chunked@2.0.1:
++    dependencies:
++      micromark-util-symbol: 2.0.1
++
++  micromark-util-classify-character@2.0.1:
++    dependencies:
++      micromark-util-character: 2.1.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-util-combine-extensions@2.0.1:
++    dependencies:
++      micromark-util-chunked: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-util-decode-numeric-character-reference@2.0.2:
++    dependencies:
++      micromark-util-symbol: 2.0.1
++
++  micromark-util-decode-string@2.0.1:
++    dependencies:
++      decode-named-character-reference: 1.3.0
++      micromark-util-character: 2.1.1
++      micromark-util-decode-numeric-character-reference: 2.0.2
++      micromark-util-symbol: 2.0.1
++
++  micromark-util-edit-map@1.0.0:
++    dependencies:
++      micromark-util-types: 2.0.3
++
++  micromark-util-encode@2.0.1: {}
++
++  micromark-util-html-tag-name@2.0.1: {}
++
++  micromark-util-normalize-identifier@2.0.1:
++    dependencies:
++      micromark-util-symbol: 2.0.1
++
++  micromark-util-resolve-all@2.0.1:
++    dependencies:
++      micromark-util-types: 2.0.3
++
++  micromark-util-sanitize-uri@2.0.1:
++    dependencies:
++      micromark-util-character: 2.1.1
++      micromark-util-encode: 2.0.1
++      micromark-util-symbol: 2.0.1
++
++  micromark-util-subtokenize@2.1.0:
++    dependencies:
++      devlop: 1.1.0
++      micromark-util-chunked: 2.0.1
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++
++  micromark-util-symbol@2.0.1: {}
++
++  micromark-util-types@2.0.3: {}
++
++  micromark@4.0.3(supports-color@7.2.0):
++    dependencies:
++      '@types/debug': 4.1.13
++      debug: 4.4.3(supports-color@7.2.0)
++      decode-named-character-reference: 1.3.0
++      devlop: 1.1.0
++      micromark-core-commonmark: 2.0.4
++      micromark-factory-space: 2.1.0
++      micromark-util-character: 2.1.1
++      micromark-util-chunked: 2.0.1
++      micromark-util-combine-extensions: 2.0.1
++      micromark-util-decode-numeric-character-reference: 2.0.2
++      micromark-util-edit-map: 1.0.0
++      micromark-util-encode: 2.0.1
++      micromark-util-normalize-identifier: 2.0.1
++      micromark-util-resolve-all: 2.0.1
++      micromark-util-sanitize-uri: 2.0.1
++      micromark-util-subtokenize: 2.1.0
++      micromark-util-symbol: 2.0.1
++      micromark-util-types: 2.0.3
++    transitivePeerDependencies:
++      - supports-color
+ 
+   mime-db@1.52.0: {}
+ 
+@@ -6701,6 +7490,16 @@
+     dependencies:
+       callsites: 3.1.0
+ 
++  parse-entities@4.0.2:
++    dependencies:
++      '@types/unist': 2.0.11
++      character-entities-legacy: 3.0.0
++      character-reference-invalid: 2.0.1
++      decode-named-character-reference: 1.3.0
++      is-alphanumerical: 2.0.1
++      is-decimal: 2.0.1
++      is-hexadecimal: 2.0.1
++
+   parse-json@5.2.0:
+     dependencies:
+       '@babel/code-frame': 7.29.7
+@@ -6761,6 +7560,8 @@
+     dependencies:
+       err-code: 2.0.3
+       retry: 0.12.0
++
++  property-information@7.2.0: {}
+ 
+   proxy-from-env@2.1.0: {}
+ 
+@@ -6836,6 +7637,24 @@
+       react: 19.2.4
+       scheduler: 0.27.0
+ 
++  react-markdown@10.1.0(@types/react@19.2.14)(react@19.2.4)(supports-color@7.2.0):
++    dependencies:
++      '@types/hast': 3.0.5
++      '@types/mdast': 4.0.4
++      '@types/react': 19.2.14
++      devlop: 1.1.0
++      hast-util-to-jsx-runtime: 2.3.6(supports-color@7.2.0)
++      html-url-attributes: 3.0.1
++      mdast-util-to-hast: 13.2.1
++      react: 19.2.4
++      remark-parse: 11.0.0(supports-color@7.2.0)
++      remark-rehype: 11.1.2
++      unified: 11.0.5
++      unist-util-visit: 5.1.0
++      vfile: 6.0.3
++    transitivePeerDependencies:
++      - supports-color
++
+   react-remove-scroll-bar@2.3.8(@types/react@19.2.14)(react@19.2.4):
+     dependencies:
+       react: 19.2.4
+@@ -6900,6 +7719,40 @@
+   regjsparser@0.13.3:
+     dependencies:
+       jsesc: 3.1.0
++
++  remark-gfm@4.0.1(supports-color@7.2.0):
++    dependencies:
++      '@types/mdast': 4.0.4
++      mdast-util-gfm: 3.1.0(supports-color@7.2.0)
++      micromark-extension-gfm: 3.0.0
++      remark-parse: 11.0.0(supports-color@7.2.0)
++      remark-stringify: 11.0.0
++      unified: 11.0.5
++    transitivePeerDependencies:
++      - supports-color
++
++  remark-parse@11.0.0(supports-color@7.2.0):
++    dependencies:
++      '@types/mdast': 4.0.4
++      mdast-util-from-markdown: 2.1.0(supports-color@7.2.0)
++      micromark-util-types: 2.0.3
++      unified: 11.0.5
++    transitivePeerDependencies:
++      - supports-color
++
++  remark-rehype@11.1.2:
++    dependencies:
++      '@types/hast': 3.0.5
++      '@types/mdast': 4.0.4
++      mdast-util-to-hast: 13.2.1
++      unified: 11.0.5
++      vfile: 6.0.3
++
++  remark-stringify@11.0.0:
++    dependencies:
++      '@types/mdast': 4.0.4
++      mdast-util-to-markdown: 2.2.0
++      unified: 11.0.5
+ 
+   require-directory@2.1.1: {}
+ 
+@@ -6987,6 +7840,8 @@
+ 
+   source-map@0.6.1: {}
+ 
++  space-separated-tokens@2.0.2: {}
++
+   string-width@4.2.3:
+     dependencies:
+       emoji-regex: 8.0.0
+@@ -6997,6 +7852,11 @@
+     dependencies:
+       safe-buffer: 5.2.1
+ 
++  stringify-entities@4.0.4:
++    dependencies:
++      character-entities-html4: 2.1.0
++      character-entities-legacy: 3.0.0
++
+   strip-ansi@6.0.1:
+     dependencies:
+       ansi-regex: 5.0.1
+@@ -7004,6 +7864,14 @@
+   strip-bom@3.0.0: {}
+ 
+   strip-json-comments@3.1.1: {}
++
++  style-to-js@1.1.21:
++    dependencies:
++      style-to-object: 1.0.14
++
++  style-to-object@1.0.14:
++    dependencies:
++      inline-style-parser: 0.2.7
+ 
+   sumchecker@3.0.1(supports-color@7.2.0):
+     dependencies:
+@@ -7032,6 +7900,10 @@
+ 
+   tmp@0.2.7: {}
+ 
++  trim-lines@3.0.1: {}
++
++  trough@2.2.0: {}
++
+   ts-api-utils@2.5.0(typescript@5.9.3):
+     dependencies:
+       typescript: 5.9.3
+@@ -7073,6 +7945,39 @@
+ 
+   unicode-property-aliases-ecmascript@2.2.0: {}
+ 
++  unified@11.0.5:
++    dependencies:
++      '@types/unist': 3.0.3
++      bail: 2.0.2
++      devlop: 1.1.0
++      extend: 3.0.2
++      is-plain-obj: 4.1.0
++      trough: 2.2.0
++      vfile: 6.0.3
++
++  unist-util-is@6.0.1:
++    dependencies:
++      '@types/unist': 3.0.3
++
++  unist-util-position@5.0.0:
++    dependencies:
++      '@types/unist': 3.0.3
++
++  unist-util-stringify-position@4.0.0:
++    dependencies:
++      '@types/unist': 3.0.3
++
++  unist-util-visit-parents@6.0.2:
++    dependencies:
++      '@types/unist': 3.0.3
++      unist-util-is: 6.0.1
++
++  unist-util-visit@5.1.0:
++    dependencies:
++      '@types/unist': 3.0.3
++      unist-util-is: 6.0.1
++      unist-util-visit-parents: 6.0.2
++
+   update-browserslist-db@1.3.3(browserslist@4.29.1):
+     dependencies:
+       browserslist: 4.29.1
+@@ -7118,6 +8023,16 @@
+       '@types/react': 19.2.14
+ 
+   util-deprecate@1.0.2: {}
++
++  vfile-message@4.0.3:
++    dependencies:
++      '@types/unist': 3.0.3
++      unist-util-stringify-position: 4.0.0
++
++  vfile@6.0.3:
++    dependencies:
++      '@types/unist': 3.0.3
++      vfile-message: 4.0.3
+ 
+   vite@8.3.0(@types/node@24.10.0)(tsx@4.20.5)(yaml@2.9.0):
+     dependencies:
+@@ -7186,3 +8101,5 @@
+     optionalDependencies:
+       '@types/react': 19.2.14
+       react: 19.2.4
++
++  zwitch@2.0.4: {}
+--- before/apps/desktop-app/src/renderer/widgets/conversation/index.tsx
++++ apps/desktop-app/src/renderer/widgets/conversation/index.tsx
+@@ -24,6 +24,7 @@
+ import { useComposerDraft } from "../../features/composer/index.js";
+ import type { MutationRequest } from "../../shared/transport/index.js";
+ import styles from "./conversation.module.css";
++import { AssistantText, LiteralText } from "./markdown.js";
+ import { parseSafeLinkPreview } from "@workbench/contracts";
+ import { LinkPreview } from "@workbench/ui";
+ import {
+@@ -106,6 +107,7 @@
+ function MessageView({ role }: { role: "user" | "assistant" }) {
+   return (
+     <MessagePrimitive.Root
++      data-message-role={role}
+       className={`${styles.message} ${role === "user" ? styles.userMessage : styles.assistantMessage}`}
+     >
+       <span className={styles.speaker}>
+@@ -113,7 +115,7 @@
+       </span>
+       <MessagePrimitive.Parts
+         components={{
+-          Text: ({ text }) => <div className={styles.messageText}>{text}</div>,
++          Text: role === "assistant" ? AssistantText : LiteralText,
+           tools: { Fallback: ToolDetail },
+         }}
+       />
+--- before/apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css
++++ apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css
+@@ -81,6 +81,146 @@
+ 
+ .assistantMessage {
+   padding-block: 0;
++}
++
++.markdown {
++  min-width: 0;
++  overflow-wrap: anywhere;
++  user-select: text;
++}
++
++.markdown > :first-child {
++  margin-top: 0;
++}
++.markdown p,
++.markdown ul,
++.markdown ol,
++.markdown blockquote {
++  margin-block: 12px;
++}
++.markdown h1,
++.markdown h2,
++.markdown h3,
++.markdown h4,
++.markdown h5,
++.markdown h6 {
++  margin-block: 24px 12px;
++  font-size: 1.15em;
++  line-height: 1.4;
++  font-weight: 600;
++}
++.markdown h1 {
++  font-size: 1.4em;
++}
++.markdown h2 {
++  font-size: 1.25em;
++}
++.markdown ul,
++.markdown ol {
++  padding-inline-start: 24px;
++}
++.markdown blockquote {
++  margin-inline: 0;
++  padding-inline-start: 16px;
++  border-inline-start: 2px solid var(--omoc-semantic-color-border-default);
++  color: var(--omoc-semantic-color-text-secondary);
++}
++.markdown code {
++  font:
++    0.9em/1.6 ui-monospace,
++    SFMono-Regular,
++    Consolas,
++    monospace;
++}
++.markdown :not(pre) > code {
++  padding: 2px 4px;
++  border-radius: 4px;
++  background: var(--omoc-semantic-color-surface-subtle);
++}
++.markdownLink,
++.markdownImage {
++  overflow-wrap: anywhere;
++  user-select: text;
++}
++.markdownLink > span,
++.markdownImage {
++  color: var(--omoc-semantic-color-text-secondary);
++}
++
++.codeHeader,
++.copyControl {
++  display: flex;
++  flex-wrap: wrap;
++  align-items: center;
++  gap: 4px 12px;
++  min-width: 0;
++}
++.codeHeader {
++  justify-content: space-between;
++  margin-top: 16px;
++  padding: 6px 12px;
++  border-radius: 8px 8px 0 0;
++  background: var(--omoc-semantic-color-surface-subtle);
++  font-size: 12px;
++}
++.codeHeader > span {
++  overflow-wrap: anywhere;
++}
++.copyControl {
++  margin-top: 4px;
++  font-size: 12px;
++  color: var(--omoc-semantic-color-text-secondary);
++}
++.codeHeader .copyControl {
++  margin-top: 0;
++}
++.copyControl button {
++  min-height: var(--omoc-component-size-control-hit-target);
++  padding: 6px 8px;
++  border: 0;
++  border-radius: 6px;
++  background: transparent;
++  color: var(--omoc-semantic-color-text-secondary);
++  font: inherit;
++  cursor: pointer;
++}
++.copyControl button:hover:not(:disabled) {
++  background: var(--omoc-component-color-button-quiet-hover);
++}
++.copyControl [role="status"] {
++  overflow-wrap: anywhere;
++}
++
++.markdownCode {
++  max-width: 100%;
++  margin: 0 0 16px;
++  padding: 12px;
++  overflow: auto;
++  border-radius: 0 0 8px 8px;
++  background: var(--omoc-semantic-color-surface-subtle);
++  white-space: pre;
++  user-select: text;
++}
++.markdownTable {
++  max-width: 100%;
++  margin-block: 16px;
++  overflow-x: auto;
++  user-select: text;
++}
++.markdownTable table {
++  border-collapse: collapse;
++}
++.markdownTable th,
++.markdownTable td {
++  min-width: 96px;
++  padding: 8px 12px;
++  border-bottom: 1px solid var(--omoc-semantic-color-border-default);
++  text-align: start;
++}
++.markdownCode:focus-visible,
++.markdownTable:focus-visible {
++  outline: 2px solid var(--omoc-semantic-color-focus);
++  outline-offset: 2px;
+ }
+ 
+ .composeRegion {
+--- before/apps/desktop-app/src/renderer/widgets/conversation/markdown.tsx
++++ apps/desktop-app/src/renderer/widgets/conversation/markdown.tsx
+@@ -0,0 +1,160 @@
++import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
++import { useMessagePartText } from "@assistant-ui/react";
++import {
++  MarkdownTextPrimitive,
++  type CodeHeaderProps,
++} from "@assistant-ui/react-markdown";
++import remarkGfm from "remark-gfm";
++import styles from "./conversation.module.css";
++
++type CopyStatus = "idle" | "pending" | "success" | "error";
++const copyMessages: Record<CopyStatus, string> = {
++  idle: "",
++  pending: "복사 중입니다.",
++  success: "복사했습니다.",
++  error: "복사하지 못했습니다. 텍스트를 선택해 복사해 주세요.",
++};
++
++function CopyButton({
++  text,
++  kind,
++}: {
++  text: string;
++  kind: "code" | "message";
++}) {
++  const [result, setResult] = useState<{ source: string; status: CopyStatus }>({
++    source: text,
++    status: "idle",
++  });
++  const generation = useRef(0);
++  const pending = useRef(false);
++  // The conversation's existing workspace/session key owns scope. Text changes
++  // and unmount retire only status authority; an OS write already sent cannot
++  // be cancelled or reported as cancelled.
++  useLayoutEffect(() => {
++    generation.current++;
++    pending.current = false;
++    setResult({ source: text, status: "idle" });
++    return () => {
++      generation.current++;
++    };
++  }, [text]);
++  const status = result.source === text ? result.status : "idle";
++  const copy = async () => {
++    if (pending.current) return;
++    pending.current = true;
++    const current = generation.current;
++    setResult({ source: text, status: "pending" });
++    try {
++      const clipboard = globalThis.navigator?.clipboard;
++      if (typeof clipboard?.writeText !== "function")
++        throw new Error("Clipboard unavailable");
++      await clipboard.writeText(text);
++      if (generation.current === current)
++        setResult({ source: text, status: "success" });
++    } catch {
++      if (generation.current === current)
++        setResult({ source: text, status: "error" });
++    } finally {
++      if (generation.current === current) pending.current = false;
++    }
++  };
++  return (
++    <div className={styles.copyControl} data-copy-control={kind}>
++      <button type="button" disabled={status === "pending"} onClick={copy}>
++        {kind === "code" ? "코드 복사" : "표시된 메시지 복사"}
++      </button>
++      <span role="status" data-copy-status={status}>
++        {copyMessages[status]}
++      </span>
++    </div>
++  );
++}
++
++function CodeHeader({ language, code }: CodeHeaderProps) {
++  return (
++    <div className={styles.codeHeader}>
++      <span>{language || "코드"}</span>
++      <CopyButton text={code} kind="code" />
++    </div>
++  );
++}
++
++// Semantic data only: no node props, raw HTML, image src or navigation action
++// reaches the DOM. Keep the parser's default escaped-HTML behavior.
++const components = {
++  CodeHeader,
++  a: ({
++    children,
++    href,
++  }: {
++    children?: ReactNode;
++    href?: string | undefined;
++  }) => (
++    <span className={styles.markdownLink} data-markdown-link>
++      {children}
++      {href ? <span> ({href})</span> : null}
++    </span>
++  ),
++  img: ({ alt }: { alt?: string | undefined }) => (
++    <span className={styles.markdownImage} data-markdown-image>
++      이미지: {alt || "설명 없음"}
++    </span>
++  ),
++  pre: ({ children }: { children?: ReactNode }) => (
++    <pre
++      className={styles.markdownCode}
++      data-markdown-code
++      tabIndex={0}
++      role="region"
++      aria-label="코드 블록"
++    >
++      {children}
++    </pre>
++  ),
++  table: ({ children }: { children?: ReactNode }) => (
++    <div
++      className={styles.markdownTable}
++      data-markdown-table
++      tabIndex={0}
++      role="region"
++      aria-label="Markdown 표"
++    >
++      <table>{children}</table>
++    </div>
++  ),
++};
++const remarkPlugins = [remarkGfm];
++const containerProps = {
++  "data-markdown-text": "",
++  "aria-label": "도우미 메시지",
++};
++
++export function AssistantText() {
++  const { text } = useMessagePartText();
++  return (
++    <div>
++      <MarkdownTextPrimitive
++        className={styles.markdown}
++        containerProps={containerProps}
++        smooth={false}
++        defer={true}
++        remarkPlugins={remarkPlugins}
++        components={components}
++      />
++      <CopyButton text={text} kind="message" />
++    </div>
++  );
++}
++
++export function LiteralText() {
++  const { text } = useMessagePartText();
++  return (
++    <div>
++      <div className={styles.messageText} data-literal-text>
++        {text}
++      </div>
++      <CopyButton text={text} kind="message" />
++    </div>
++  );
++}
+--- before/apps/desktop-app/src/workbench-markdown.test.mjs
++++ apps/desktop-app/src/workbench-markdown.test.mjs
+@@ -0,0 +1,206 @@
++import test from "node:test";
++import assert from "node:assert/strict";
++import { pathToFileURL, fileURLToPath } from "node:url";
++import { build } from "esbuild";
++import { createElement } from "react";
++import { renderToStaticMarkup } from "react-dom/server";
++
++const actual = await build({
++  stdin: {
++    contents:
++      'export {Conversation} from "./renderer/widgets/conversation/index.tsx"; export {createWindowWorkbench,WorkbenchProvider} from "./renderer/entities/workbench/index.ts";',
++    resolveDir: fileURLToPath(new URL(".", import.meta.url)),
++    loader: "tsx",
++  },
++  bundle: true,
++  write: false,
++  outfile: "actual-conversation.mjs",
++  format: "esm",
++  platform: "node",
++  jsx: "automatic",
++  loader: { ".css": "text" },
++  plugins: [
++    {
++      name: "actual-dependencies",
++      setup(builder) {
++        builder.onResolve({ filter: /^[^./]/ }, async (args) => {
++          if (
++            args.path.startsWith("@workbench/") ||
++            args.pluginData?.actualDependency
++          )
++            return;
++          const resolved = await builder.resolve(args.path, {
++            resolveDir: args.resolveDir,
++            kind: args.kind,
++            pluginData: { actualDependency: true },
++          });
++          if (resolved.errors.length) return { errors: resolved.errors };
++          return { path: pathToFileURL(resolved.path).href, external: true };
++        });
++      },
++    },
++  ],
++});
++const { Conversation, createWindowWorkbench, WorkbenchProvider } = await import(
++  `data:text/javascript;base64,${Buffer.from(actual.outputFiles.find((f) => f.path.endsWith(".mjs")).text).toString("base64")}`
++);
++
++function render(messages, status = "idle") {
++  const oldWindow = globalThis.window;
++  globalThis.window = { matchMedia: () => ({ matches: false }) };
++  let mutations = 0;
++  const api = createWindowWorkbench({
++    workbench: async () => {
++      mutations++;
++      throw Error("No SSR transport");
++    },
++  });
++  const snapshot = {
++    runtimeEpoch: "markdown-ssr",
++    revision: 1,
++    observationSequence: 1,
++    state: "connected",
++    temporary: true,
++    recovery: { store: { state: "ready" }, resources: [] },
++    retainedOperations: [],
++    workspaces: [
++      {
++        id: "w",
++        name: "Synthetic",
++        path: "/synthetic",
++        trusted: true,
++        trustRevision: 1,
++        kind: "folder",
++        temporary: true,
++      },
++    ],
++    sessions: [{ id: "s", workspaceId: "w", title: "Synthetic", status }],
++    selectedWorkspaceId: "w",
++    selectedSessionId: "s",
++    messages,
++    permissions: [],
++  };
++  api.store.dispatch({
++    type: "snapshot",
++    scope: { epoch: undefined, generation: 0 },
++    value: snapshot,
++  });
++  try {
++    assert.equal(api.store.getState().snapshot?.runtimeEpoch, "markdown-ssr");
++    const html = renderToStaticMarkup(
++      createElement(
++        WorkbenchProvider,
++        { value: api },
++        createElement(Conversation, {
++          workspaceId: "w",
++          sessionId: "s",
++          messages,
++          permissions: [],
++          catalog: null,
++          status,
++          disabled: false,
++          executionAvailable: true,
++          pending: false,
++          mutate: api.actions.mutate,
++          openPanel: () => {},
++          newSession: () => {},
++        }),
++      ),
++    );
++    assert.equal(mutations, 0);
++    return html;
++  } finally {
++    api.dispose();
++    if (oldWindow === undefined) delete globalThis.window;
++    else globalThis.window = oldWindow;
++  }
++}
++const message = (text, role = "assistant", extra = {}) => ({
++  id: "m",
++  role,
++  text,
++  tools: [],
++  ...extra,
++});
++
++test("Markdown actual Conversation renders prose/code/GFM from its existing part context", () => {
++  const text =
++    '# 제목\n\n**굵게** *기울임* ~~이전~~ `inline`\n\n> 인용\n\n1. 첫째\n2. 둘째\n\n- [x] 확인\n- [ ] 대기\n\n| 이름 | 값 |\n| --- | --- |\n| alpha | 1 |\n\n```typescript\nconst 한글 = "값";\n```';
++  const html = render([message(text)]);
++  for (const part of [
++    "<h1>제목</h1>",
++    "<strong>굵게</strong>",
++    "<em>기울임</em>",
++    "<del>이전</del>",
++    "<blockquote>",
++    "<ol>",
++    "<table>",
++    "language-typescript",
++    "const 한글 = &quot;값&quot;;",
++    "코드 복사",
++    "표시된 메시지 복사",
++  ])
++    assert.ok(html.includes(part), part);
++  const inputs = html.match(/<input[^>]*type="checkbox"[^>]*>/g) ?? [];
++  assert.equal(inputs.length, 2);
++  for (const input of inputs) assert.match(input, /disabled=""/);
++});
++test("Markdown actual Conversation keeps user source literal", () => {
++  const html = render([
++    message("# 나의 원문\n**문자**\n```sh\necho x\n```", "user"),
++  ]);
++  assert.ok(html.includes("# 나의 원문"));
++  assert.ok(html.includes("**문자**"));
++  assert.ok(!html.includes("<h1>"));
++  assert.ok(!html.includes("<strong>문자</strong>"));
++  assert.ok(html.includes("표시된 메시지 복사"));
++  assert.ok(!html.includes("코드 복사"));
++});
++test("Markdown raw HTML remains readable and links/images cannot execute or fetch", () => {
++  const html = render([
++    message(
++      '<script>bad()</script>\n\n<img src="https://remote.invalid/tracker" onerror="bad()">\n\n[주소](https://example.invalid/path?secret=synthetic) ![대체 설명](https://remote.invalid/image)\n\n[위험](javascript:bad)\n\n<iframe src="https://remote.invalid/frame"></iframe>',
++    ),
++  ]);
++  assert.ok(html.includes("&lt;script&gt;bad()&lt;/script&gt;"));
++  assert.ok(html.includes("대체 설명"));
++  assert.ok(html.includes("https://example.invalid/path?secret=synthetic"));
++  assert.ok(!/<(?:script|img|iframe|object|embed)\b/i.test(html));
++  assert.ok(!/href="(?:https?:|javascript:|data:)/i.test(html));
++});
++test("Markdown partial streaming fence keeps plain code and actual running state", () => {
++  const html = render(
++    [message('처리 중\n\n```js\nconst partial = "아직')],
++    "running",
++  );
++  assert.ok(html.includes("language-js"));
++  assert.ok(html.includes("const partial = &quot;아직"));
++  assert.ok(html.includes("코드 복사"));
++  assert.ok(html.includes("현재 세션 실행 중입니다."));
++});
++test("Markdown generic tool output stays escaped and is not reinterpreted as Markdown", () => {
++  const html = render([
++    message("**실제 메시지**", "assistant", {
++      tools: [
++        {
++          id: "tool",
++          name: "unknown",
++          status: "completed",
++          input: "{}",
++          output: "<img onerror=bad()>\n# raw tool",
++        },
++      ],
++    }),
++  ]);
++  assert.ok(html.includes("<strong>실제 메시지</strong>"));
++  assert.ok(html.includes("&lt;img onerror=bad()&gt;"));
++  assert.ok(html.includes("# raw tool"));
++  assert.ok(!html.includes("<h1>raw tool</h1>"));
++});
++test("Markdown copy labels describe bounded displayed source, not Native history", () => {
++  const html = render([message("x".repeat(70000))]);
++  assert.ok(html.includes("… 표시 길이 제한"));
++  assert.ok(html.includes("표시된 메시지 복사"));
++  assert.ok(!html.includes("전체 기록 복사"));
++  assert.ok(html.length < 100000);
++});
+--- before/apps/desktop-app/scripts/e2e-conversation-markdown.mjs
++++ apps/desktop-app/scripts/e2e-conversation-markdown.mjs
+@@ -0,0 +1,624 @@
++// Execute only through the fixed conversation-markdown evidence wrapper.
++import assert from "node:assert/strict";
++import { createHash } from "node:crypto";
++import { lstat, mkdtemp, realpath, writeFile } from "node:fs/promises";
++import { createRequire } from "node:module";
++import { tmpdir } from "node:os";
++import { dirname, join, resolve } from "node:path";
++import { fileURLToPath } from "node:url";
++import { _electron as electron, expect } from "@playwright/test";
++import { captureProvenance } from "./build-provenance.mjs";
++const desktop = resolve(dirname(fileURLToPath(import.meta.url)), "..");
++const root = resolve(desktop, "../..");
++if (!process.env.OMOC_EVIDENCE_DIR)
++  throw Error("Use fixed conversation-markdown run-evidence selector");
++const run = await realpath(process.env.OMOC_EVIDENCE_DIR);
++const claim = await lstat(join(run, ".run-evidence-claim"));
++assert.ok(claim.isFile() && !claim.isSymbolicLink());
++const fixtureRoot = await realpath(
++  await mkdtemp(join(tmpdir(), "omoc-markdown-ui-")),
++);
++const require = createRequire(import.meta.url);
++const screenshots = [],
++  states = [],
++  errors = [],
++  externalRequests = [];
++let application,
++  processHandle,
++  page,
++  failure,
++  before,
++  after,
++  currentState = "launch";
++let teardown = { exited: false, retainedRoot: fixtureRoot };
++const bounded = (e) => String(e).slice(0, 2000);
++async function capture(page, name, state) {
++  const path = join(run, name);
++  // CDP page.screenshot clips Electron's zoomed viewport on macOS. Capture the
++  // complete native content surface without a CSS-coordinate clip rectangle.
++  const native = await application.evaluate(
++    async ({ BrowserWindow, screen }) => {
++      const windows = BrowserWindow.getAllWindows();
++      if (windows.length !== 1)
++        throw new Error("Exactly one background host window required");
++      const window = windows[0];
++      const before = {
++        visible: window.isVisible(),
++        focused: window.isFocused(),
++        focusable: window.isFocusable(),
++      };
++      if (before.visible || before.focused || before.focusable)
++        throw new Error(
++          "Verification window must be hidden and nonfocusable before capture",
++        );
++      const image = await window.webContents.capturePage(undefined, {
++        stayHidden: true,
++        stayAwake: true,
++      });
++      return {
++        before,
++        png: image.toPNG().toString("base64"),
++        contentBounds: window.getContentBounds(),
++        windowBounds: window.getBounds(),
++        displayScaleFactor: screen.getDisplayMatching(window.getBounds())
++          .scaleFactor,
++        zoomFactor: window.webContents.getZoomFactor(),
++        osWindowVisible: window.isVisible(),
++        osWindowFocused: window.isFocused(),
++        osWindowFocusable: window.isFocusable(),
++      };
++    },
++  );
++  assert.equal(
++    native.osWindowVisible,
++    false,
++    "Verification window must stay hidden",
++  );
++  assert.equal(
++    native.osWindowFocused,
++    false,
++    "Verification window must not take OS focus",
++  );
++  assert.equal(
++    native.osWindowFocusable,
++    false,
++    "Verification window must stay nonfocusable after capture",
++  );
++  assert.deepEqual(native.before, {
++    visible: false,
++    focused: false,
++    focusable: false,
++  });
++  const png = Buffer.from(native.png, "base64");
++  await writeFile(path, png, { flag: "wx" });
++  assert.equal(png.subarray(1, 4).toString(), "PNG");
++  const pixelDimensions = {
++    width: png.readUInt32BE(16),
++    height: png.readUInt32BE(20),
++  };
++  for (const dimension of ["width", "height"])
++    assert.ok(
++      Math.abs(
++        pixelDimensions[dimension] -
++          native.contentBounds[dimension] * native.displayScaleFactor,
++      ) <= 1,
++      `Native capture does not cover the complete content ${dimension}`,
++    );
++  screenshots.push({
++    pixelDimensions,
++    pngSha256: createHash("sha256").update(png).digest("hex"),
++    geometrySha256: createHash("sha256")
++      .update(
++        JSON.stringify({
++          pixelDimensions,
++          contentBounds: native.contentBounds,
++          windowBounds: native.windowBounds,
++          zoomFactor: native.zoomFactor,
++        }),
++      )
++      .digest("hex"),
++    path,
++    state,
++    viewport: await page.evaluate(() => ({
++      width: window.innerWidth,
++      height: window.innerHeight,
++      pixelRatio: window.devicePixelRatio,
++    })),
++    contentBounds: native.contentBounds,
++    windowBounds: native.windowBounds,
++    displayScaleFactor: native.displayScaleFactor,
++    zoomFactor: native.zoomFactor,
++    beforeCapture: native.before,
++    afterCapture: {
++      visible: native.osWindowVisible,
++      focused: native.osWindowFocused,
++      focusable: native.osWindowFocusable,
++    },
++    osWindowFocusable: native.osWindowFocusable,
++    osWindowVisible: native.osWindowVisible,
++    osWindowFocused: native.osWindowFocused,
++    captureMethod: "BrowserWindow.webContents.capturePage().toPNG()",
++    provenance:
++      "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution",
++  });
++}
++
++async function setDisplay(page, width, height, zoomFactor = 1) {
++  const contentWidth = await application.evaluate(
++    ({ BrowserWindow }, display) => {
++      const window = BrowserWindow.getAllWindows()[0];
++      window.setSize(display.width, display.height);
++      window.webContents.setZoomFactor(display.zoomFactor);
++      return window.getContentSize()[0];
++    },
++    { width, height, zoomFactor },
++  );
++  await expect
++    .poll(() =>
++      page.evaluate(
++        (expected) => Math.abs(window.innerWidth - expected),
++        contentWidth / zoomFactor,
++      ),
++    )
++    .toBeLessThanOrEqual(1);
++}
++
++const code = 'const 한글 = "값";\n' + "x".repeat(240) + "\n";
++const rich =
++  "# Markdown 표시\n\n**굵게** *기울임* ~~이전~~ `inline`\n\n> 인용문\n\n1. 순서 하나\n2. 순서 둘\n\n- [x] 확인\n- [ ] 대기\n\n[합성 주소](https://example.invalid/long/" +
++  "segment/".repeat(8) +
++  ")\n\n![대체 이미지](https://remote.invalid/tracker.png)\n\n<script>globalThis.__unsafe=true</script>\n\n```typescript\n" +
++  code +
++  "```\n\n| 이름 | 긴 내용 |\n| --- | --- |\n| SYNTHETIC | " +
++  "tablevalue".repeat(50) +
++  " |";
++async function messages(text, status = "idle", role = "assistant") {
++  await application.evaluate(
++    (_e, { text, status, role }) => {
++      const f = globalThis.__omocUiFixture;
++      f.snapshot.sessions[0].status = status;
++      const m = { id: "markdown-a", role, text, tools: [] };
++      f.snapshot.messages = [m];
++      f.sessionMessages.set("fixture-s", [m]);
++      f.snapshot.revision++;
++      f.snapshot.observationSequence++;
++    },
++    { text, status, role },
++  );
++}
++async function clipboard(mode = "success") {
++  await page.evaluate((mode) => {
++    const control = { mode, writes: [], settle: undefined };
++    globalThis.__markdownClipboard = control;
++    Object.defineProperty(globalThis.navigator, "clipboard", {
++      configurable: true,
++      value:
++        mode === "absent"
++          ? undefined
++          : {
++              writeText(text) {
++                control.writes.push(text);
++                if (control.mode === "reject")
++                  return Promise.reject(Error("synthetic denied"));
++                if (control.mode === "throw") throw Error("synthetic thrown");
++                if (control.mode === "pending")
++                  return new Promise((resolve, reject) => {
++                    control.settle = { resolve, reject };
++                  });
++                return Promise.resolve();
++              },
++            },
++    });
++  }, mode);
++}
++const copies = () =>
++  page.getByRole("button", { name: "표시된 메시지 복사", exact: true });
++const codeCopy = () =>
++  page.getByRole("button", { name: "코드 복사", exact: true });
++const status = () =>
++  page.locator("[data-copy-control=message] [data-copy-status]");
++async function enter(button) {
++  await button.scrollIntoViewIfNeeded();
++  await button.focus();
++  await expect(button).toBeFocused();
++  await page.keyboard.press("Enter");
++}
++async function shot(name) {
++  currentState = name;
++  await capture(
++    page,
++    `${String(screenshots.length).padStart(3, "0")}-${name}.png`,
++    name,
++  );
++  states.push(name);
++}
++async function reveal(locator, ratio = 0.9) {
++  await page.evaluate(
++    () =>
++      new Promise((resolve) =>
++        globalThis.requestAnimationFrame(() =>
++          globalThis.requestAnimationFrame(resolve),
++        ),
++      ),
++  );
++  await locator.evaluate((e) =>
++    e.scrollIntoView({
++      block: "center",
++      inline: "nearest",
++      behavior: "instant",
++    }),
++  );
++  await page.evaluate(
++    () =>
++      new Promise((resolve) =>
++        globalThis.requestAnimationFrame(() =>
++          globalThis.requestAnimationFrame(resolve),
++        ),
++      ),
++  );
++  await expect(locator).toBeInViewport({ ratio });
++}
++async function noOverflow() {
++  const geometry = await page.evaluate(() => ({
++    page: globalThis.document.documentElement.scrollWidth,
++    width: window.innerWidth,
++    conversation: globalThis.document
++      .querySelector("[data-conversation]")
++      ?.getBoundingClientRect().width,
++    code: [...globalThis.document.querySelectorAll("[data-markdown-code]")].map(
++      (e) => ({
++        client: e.clientWidth,
++        scroll: e.scrollWidth,
++        selection: globalThis.getComputedStyle(e).userSelect,
++      }),
++    ),
++    tables: [
++      ...globalThis.document.querySelectorAll("[data-markdown-table]"),
++    ].map((e) => ({ client: e.clientWidth, scroll: e.scrollWidth })),
++  }));
++  assert.ok(geometry.page <= geometry.width + 1, JSON.stringify(geometry));
++  assert.ok(geometry.code.length);
++  return geometry;
++}
++try {
++  before = await captureProvenance(root, { script: "conversation-markdown" });
++  application = await electron.launch({
++    timeout: 20000,
++    executablePath: require("electron"),
++    args: [
++      join(desktop, "scripts/fixtures/workbench-host.mjs"),
++      "--user-data-dir=" + join(fixtureRoot, "bootstrap"),
++    ],
++    env: {
++      PATH: "/usr/bin:/bin:/usr/sbin:/sbin",
++      HOME: fixtureRoot,
++      TMPDIR: fixtureRoot,
++      TMP: fixtureRoot,
++      TEMP: fixtureRoot,
++      OMOC_UI_TEST_ROOT: fixtureRoot,
++    },
++  });
++  processHandle = application.process();
++  for (const stream of ["stdout", "stderr"])
++    processHandle[stream]?.on("data", () => {});
++  page = await application.firstWindow();
++  page.on("pageerror", (e) => errors.push(bounded(e)));
++  page.on("request", (request) => {
++    if (/^https?:/i.test(request.url())) externalRequests.push(request.url());
++  });
++  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
++    "data-state",
++    "connected",
++  );
++  await application.evaluate(() => {
++    const f = globalThis.__omocUiFixture;
++    f.enablePerformanceSessions();
++    f.snapshot.permissions = [];
++    f.sessionMessages.set("fixture-p6-b", [
++      {
++        id: "markdown-a",
++        role: "assistant",
++        text: "다른 세션의 같은 ID",
++        tools: [],
++      },
++    ]);
++  });
++  await messages(rich);
++  await page.reload();
++  await expect(
++    page.getByRole("heading", { name: "Markdown 표시", exact: true }),
++  ).toBeVisible();
++  assert.equal(
++    await page
++      .locator(
++        ".transcript img,.transcript iframe,.transcript script,.transcript a[href]",
++      )
++      .count(),
++    0,
++  );
++  assert.equal(await page.evaluate(() => globalThis.__unsafe === true), false);
++  await expect(page.locator("[data-markdown-image]")).toContainText(
++    "대체 이미지",
++  );
++  await expect(page.locator("[data-markdown-link]")).toContainText(
++    "https://example.invalid/long/",
++  );
++  for (const input of await page
++    .locator(".transcript input[type=checkbox]")
++    .all())
++    await expect(input).toBeDisabled();
++  await clipboard();
++  await enter(codeCopy());
++  await expect(
++    page.locator("[data-copy-control=code] [data-copy-status]"),
++  ).toHaveText("복사했습니다.");
++  assert.deepEqual(
++    await page.evaluate(() => globalThis.__markdownClipboard.writes),
++    [code],
++  );
++  await page.keyboard.press("Tab");
++  assert.equal(
++    await codeCopy().evaluate((e) => e === globalThis.document.activeElement),
++    false,
++  );
++  await page.keyboard.press("Shift+Tab");
++  await expect(codeCopy()).toBeFocused();
++  await shot("code-copy-keyboard");
++  await clipboard();
++  await enter(copies());
++  assert.deepEqual(
++    await page.evaluate(() => globalThis.__markdownClipboard.writes),
++    [rich],
++  );
++  await shot("message-copy");
++  for (const theme of ["light", "dark"])
++    for (const [width, zoom] of [
++      [1440, 1],
++      [760, 1],
++      [760, 2],
++      [320, 1],
++    ]) {
++      await setDisplay(page, width, 1000, zoom);
++      await page.evaluate((theme) => {
++        globalThis.document.documentElement.dataset.theme = theme;
++        globalThis.document.documentElement.style.colorScheme = theme;
++      }, theme);
++      await reveal(
++        page.getByRole("heading", { name: "Markdown 표시", exact: true }),
++      );
++      await noOverflow();
++      await shot(`${theme}-${width}-zoom${zoom}-prose`);
++      await reveal(codeCopy());
++      await expect(page.locator("[data-markdown-code]")).toBeInViewport({
++        ratio: 0.5,
++      });
++      const selected = await page
++        .locator("[data-markdown-code] code")
++        .evaluate((e) => {
++          const range = globalThis.document.createRange();
++          range.selectNodeContents(e);
++          const selection = globalThis.getSelection();
++          selection.removeAllRanges();
++          selection.addRange(range);
++          const value = selection.getRangeAt(0).cloneContents().textContent;
++          selection.removeAllRanges();
++          return value;
++        });
++      assert.equal(selected, code);
++      await shot(`${theme}-${width}-zoom${zoom}-code`);
++      await reveal(page.locator("[data-markdown-table] th").first());
++      await shot(`${theme}-${width}-zoom${zoom}-table`);
++    }
++  await setDisplay(page, 1440, 1000, 1);
++  for (const mode of ["reject", "absent", "throw"]) {
++    await clipboard(mode);
++    await enter(copies());
++    await expect(status().first()).toHaveText(
++      "복사하지 못했습니다. 텍스트를 선택해 복사해 주세요.",
++    );
++    await shot(`clipboard-${mode}`);
++  }
++  await clipboard("pending");
++  await enter(copies());
++  await expect(copies()).toBeDisabled();
++  await expect(status().first()).toHaveText("복사 중입니다.");
++  await shot("clipboard-pending");
++  assert.equal(
++    await page.evaluate(() => globalThis.__markdownClipboard.writes.length),
++    1,
++  );
++  await messages("변경된 메시지");
++  await expect(page.locator("[data-markdown-text]")).toContainText(
++    "변경된 메시지",
++  );
++  await expect(copies()).toBeEnabled();
++  await page.evaluate(() => globalThis.__markdownClipboard.settle.resolve());
++  await expect(page.locator("[data-copy-status]")).not.toHaveText(
++    "복사했습니다.",
++  );
++  await shot("late-copy-after-text-change");
++  await clipboard("pending");
++  await enter(copies());
++  await page.getByRole("button", { name: "P6 Session B", exact: true }).click();
++  await expect(page.locator("[data-markdown-text]")).toContainText(
++    "다른 세션의 같은 ID",
++  );
++  await page.evaluate(() => globalThis.__markdownClipboard.settle.resolve());
++  await expect(page.locator("[data-copy-status]")).not.toHaveText(
++    "복사했습니다.",
++  );
++  await shot("late-copy-after-session-switch");
++  await page.getByRole("button", { name: "P6 Session A", exact: true }).click();
++  await messages('부분 수신\n\n```js\nconst partial = "아직', "running");
++  await expect(page.locator("[data-markdown-code]")).toContainText(
++    "const partial",
++  );
++  await expect(page.locator("[data-markdown-text]")).toHaveAttribute(
++    "data-status",
++    "running",
++  );
++  await shot("partial-stream");
++  await messages('완료된 수신\n\n```js\nconst partial = "완료";\n```', "idle");
++  await expect(page.locator("[data-markdown-code]")).toContainText("완료");
++  await shot("completed-stream");
++  await messages("# 사용자 원문\n**문자**\n```sh\necho x\n```", "idle", "user");
++  await expect(page.locator("[data-literal-text]")).toContainText("**문자**");
++  assert.equal(await codeCopy().count(), 0);
++  await shot("literal-user");
++  await messages("원래 코드\n\n```js\nconst old = 1;\n```");
++  await expect(codeCopy()).toBeVisible();
++  await clipboard("pending");
++  await enter(codeCopy());
++  await expect(codeCopy()).toBeDisabled();
++  await messages("새 코드\n\n```js\nconst changed = 2;\n```");
++  await expect(page.locator("[data-markdown-code]")).toContainText(
++    "const changed = 2;",
++  );
++  await page.evaluate(() => globalThis.__markdownClipboard.settle.resolve());
++  await expect(
++    page.locator("[data-copy-control=code] [data-copy-status]"),
++  ).not.toHaveText("복사했습니다.");
++  await shot("late-copy-after-code-change");
++  await messages("보관된 표시 · 복사 가능");
++  await application.evaluate(() => {
++    const f = globalThis.__omocUiFixture;
++    f.snapshot.workspaces[0].trusted = false;
++    f.snapshot.revision++;
++    f.snapshot.observationSequence++;
++  });
++  await page.reload();
++  await clipboard();
++  await expect(copies()).toBeEnabled();
++  await enter(copies());
++  await expect(status().first()).toHaveText("복사했습니다.");
++  await shot("untrusted-read-only-copy");
++  await application.evaluate(() => {
++    const f = globalThis.__omocUiFixture;
++    f.snapshot.temporary = false;
++    f.snapshot.workspaces[0].temporary = false;
++    f.snapshot.workspaces[0].trusted = true;
++    f.snapshot.workspaces[0].trustRevision++;
++    // Store recovery intentionally contains no transcript under validateSnapshot.
++    // Exercise the actual connected global operation hold with retained metadata.
++    const receipt = {
++      runtimeEpoch: "fixture-original-epoch",
++      operationId: "synthetic-unresolved-import",
++      type: "workspace.import",
++      admission: "dispatched",
++      delivery: "unknown",
++      effect: "unknown",
++      revision: f.snapshot.revision,
++      evidence: [],
++    };
++    f.retainedReceipts.set(
++      JSON.stringify([receipt.runtimeEpoch, receipt.operationId]),
++      {
++        digest: "synthetic-no-replay-payload",
++        receipt,
++      },
++    );
++    f.snapshot.revision++;
++    f.snapshot.observationSequence++;
++  });
++  await page.reload();
++  await clipboard();
++  await expect(copies()).toBeEnabled();
++  await enter(copies());
++  await expect(status()).toHaveText("복사했습니다.");
++  await expect(
++    page.getByRole("status", { name: "보관된 요청 확인", exact: true }),
++  ).toHaveAttribute("data-retained-count", "1");
++  await expect(
++    page.getByRole("button", { name: "새 세션", exact: true }).first(),
++  ).toBeDisabled();
++  await shot("retained-global-operation-copy");
++  assert.deepEqual(externalRequests, []);
++  assert.deepEqual(errors, []);
++  assert.equal(
++    await application.evaluate(
++      () => globalThis.__omocUiFixture.requests.length,
++    ),
++    0,
++  );
++} catch (error) {
++  failure = error;
++  if (page)
++    try {
++      await shot("failure");
++    } catch (captureError) {
++      errors.push(bounded(captureError));
++    }
++} finally {
++  let timer, listener;
++  try {
++    if (processHandle) {
++      const exited =
++        processHandle.exitCode !== null || processHandle.signalCode !== null
++          ? Promise.resolve([processHandle.exitCode, processHandle.signalCode])
++          : new Promise((resolve) => {
++              listener = (code, signal) => resolve([code, signal]);
++              processHandle.once("exit", listener);
++            });
++      const deadline = new Promise((_resolve, reject) => {
++        timer = setTimeout(
++          () => reject(Error("Owned Electron exit unproved")),
++          15000,
++        );
++      });
++      await Promise.race([
++        application.evaluate(({ app }) => app.quit()).catch(() => {}),
++        deadline,
++      ]);
++      const [code, signal] = await Promise.race([exited, deadline]);
++      teardown = { exited: true, code, signal, retainedRoot: fixtureRoot };
++      assert.equal(code, 0);
++    }
++  } catch (error) {
++    failure ??= error;
++    teardown.error = bounded(error);
++  } finally {
++    clearTimeout(timer);
++    if (listener) processHandle?.removeListener("exit", listener);
++  }
++  try {
++    after = await captureProvenance(root, { script: "conversation-markdown" });
++    assert.deepEqual(after, before);
++  } catch (error) {
++    failure ??= error;
++  }
++}
++await writeFile(
++  join(run, "conversation-markdown-evidence.json"),
++  JSON.stringify(
++    {
++      result: failure ? "fail" : "pass",
++      state: currentState,
++      platform: process.platform,
++      states,
++      screenshots,
++      pageErrors: errors,
++      externalRequests,
++      teardown,
++      sourceBuildProvenance: { before, after },
++      clipboard:
++        "Controlled renderer writeText adapter only; real OS clipboard untouched",
++      providerExecution: "not performed",
++      productionMain: "not performed",
++      ...(failure && { error: bounded(failure) }),
++    },
++    null,
++    2,
++  ) + "\n",
++  { flag: "wx" },
++);
++if (failure) {
++  console.error(bounded(failure));
++  process.exitCode = 1;
++} else
++  console.log(
++    JSON.stringify({
++      result: "pass",
++      states: states.length,
++      captures: screenshots.length,
++    }),
++  );
+--- before/apps/desktop-app/scripts/run-evidence.mjs
++++ apps/desktop-app/scripts/run-evidence.mjs
+@@ -39,6 +39,7 @@
+   "docs/runs/git-index-mutations/evidence",
+   "docs/runs/git-explicit-commit/evidence",
+   "docs/runs/git-branch-restore/evidence",
++  "docs/runs/conversation-markdown/evidence",
+   "docs/runs/event-host-app-integration/evidence",
+   "docs/runs/durable-workbench-storage/evidence",
+ ];
+@@ -60,6 +61,10 @@
+   return root;
+ }
+ const scripts = {
++  "conversation-markdown": [
++    "e2e-conversation-markdown.mjs",
++    "conversation-markdown-evidence.json",
++  ],
+   sessions: ["e2e-session-lifecycle.mjs", "session-lifecycle-evidence.json"],
+   "ui-states": ["e2e-workbench-states.mjs", "ui-states-evidence.json"],
+   feedback: ["e2e-line-feedback.mjs", "line-feedback-evidence.json"],
+@@ -85,7 +90,7 @@
+       Object.hasOwn(parsed, key)
+     ) {
+       throw new Error(
+-        "Usage: run-evidence.mjs --out <fresh-run-directory> --script <sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|workbench|smoke> [--mode dev|packaged --platform darwin|win32]",
++        "Usage: run-evidence.mjs --out <fresh-run-directory> --script <sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|conversation-markdown|workbench|smoke> [--mode dev|packaged --platform darwin|win32]",
+       );
+     }
+     parsed[key] = value;
+@@ -142,7 +147,7 @@
+   const output = resolve(out);
+   assertWithin(root, output);
+   if (
+-    !/^(sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|workbench|smoke-(dev|packaged)-(darwin|win32))$/.test(
++    !/^(sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|conversation-markdown|workbench|smoke-(dev|packaged)-(darwin|win32))$/.test(
+       selector,
+     )
+   )
+@@ -184,9 +189,13 @@
+   )
+     throw new Error("Evidence report must pass and list captures");
+   if (
+-    ["feedback", "git-index", "git-commit", "git-branch-restore"].includes(
+-      script,
+-    ) &&
++    [
++      "feedback",
++      "git-index",
++      "git-commit",
++      "git-branch-restore",
++      "conversation-markdown",
++    ].includes(script) &&
+     (report.teardown?.exited !== true || report.teardown?.code !== 0)
+   )
+     throw new Error("Feedback requires confirmed owned Electron exit zero");
+@@ -203,9 +212,13 @@
+     const handle = await open(absolute, "r");
+     try {
+       const header = Buffer.alloc(
+-        ["feedback", "git-index", "git-commit", "git-branch-restore"].includes(
+-          script,
+-        )
++        [
++          "feedback",
++          "git-index",
++          "git-commit",
++          "git-branch-restore",
++          "conversation-markdown",
++        ].includes(script)
+           ? 24
+           : 8,
+       );
+@@ -216,9 +229,13 @@
+       )
+         throw new Error("Capture is not a PNG");
+       if (
+-        ["feedback", "git-index", "git-commit", "git-branch-restore"].includes(
+-          script,
+-        )
++        [
++          "feedback",
++          "git-index",
++          "git-commit",
++          "git-branch-restore",
++          "conversation-markdown",
++        ].includes(script)
+       ) {
+         if (
+           typeof capture !== "object" ||
+--- before/apps/desktop-app/scripts/run-evidence.test.mjs
++++ apps/desktop-app/scripts/run-evidence.test.mjs
+@@ -541,3 +541,69 @@
+     parseArgs(["--out", "x", "--script", "../git-branch-restore"]),
+   );
+ });
++
++test("conversation Markdown requires owned exit and hidden full capture proof", async (t) => {
++  const root = await fixture(t);
++  await put(
++    root,
++    "apps/desktop-app/scripts/e2e-conversation-markdown.mjs",
++    "synthetic feedback runner\n",
++  );
++  const capture = {
++    state: "synthetic validation only",
++    pixelDimensions: { width: 1, height: 1 },
++    contentBounds: { width: 1, height: 1 },
++    viewport: { width: 1, height: 1, pixelRatio: 1 },
++    displayScaleFactor: 1,
++    zoomFactor: 1,
++    beforeCapture: { visible: false, focused: false, focusable: false },
++    osWindowVisible: false,
++    osWindowFocused: false,
++    osWindowFocusable: false,
++    captureMethod: "BrowserWindow.webContents.capturePage().toPNG()",
++  };
++  const cases = [
++    ["good", { exited: true, code: 0 }, capture, 0],
++    ["unproved-exit", { exited: false, code: 0 }, capture, 1],
++    ["failed-exit", { exited: true, code: 1 }, capture, 1],
++    [
++      "visible",
++      { exited: true, code: 0 },
++      { ...capture, osWindowVisible: true },
++      1,
++    ],
++    [
++      "focused",
++      { exited: true, code: 0 },
++      {
++        ...capture,
++        beforeCapture: { ...capture.beforeCapture, focused: true },
++      },
++      1,
++    ],
++    [
++      "wrong-dimensions",
++      { exited: true, code: 0 },
++      { ...capture, pixelDimensions: { width: 2, height: 1 } },
++      1,
++    ],
++  ];
++  for (const [name, teardown, frame, expected] of cases) {
++    const report = { result: "pass", teardown, screenshots: [frame] };
++    const code = `const fs=require('node:fs'),path=require('node:path');const dir=process.env.OMOC_EVIDENCE_DIR,png=path.join(dir,'capture.png');fs.writeFileSync(png,Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2cYkAAAAASUVORK5CYII=','base64'));const report=${JSON.stringify(report)};report.screenshots[0].path=png;fs.writeFileSync(path.join(dir,'conversation-markdown-evidence.json'),JSON.stringify(report));`;
++    const result = await runEvidence(
++      { out: join(root, name), script: "conversation-markdown" },
++      {
++        runRoot: root,
++        repoRoot: root,
++        spawnChild: helper(code, (_exe, argv, options) => {
++          assert.ok(argv[0].endsWith("/e2e-conversation-markdown.mjs"));
++          assert.equal(options.shell, false);
++        }),
++      },
++    );
++    assert.equal(result.exitCode, expected, name);
++    if (expected === 0)
++      assert.equal(result.manifest.provenanceVerifiedAfter, true);
++  }
++});
+--- before/apps/desktop-app/scripts/build-provenance.mjs
++++ apps/desktop-app/scripts/build-provenance.mjs
+@@ -71,6 +71,10 @@
+   { path: "docs/design/tokens", tree: true, source: true },
+ ];
+ const selectedPaths = {
++  "conversation-markdown": [
++    "e2e-conversation-markdown.mjs",
++    "fixtures/workbench-host.mjs",
++  ],
+   sessions: ["e2e-session-lifecycle.mjs", "fixtures/session-history-probe.mjs"],
+   "ui-states": ["e2e-workbench-states.mjs", "fixtures/workbench-host.mjs"],
+   feedback: ["e2e-line-feedback.mjs", "fixtures/workbench-host.mjs"],
+--- before/apps/desktop-app/scripts/check-renderer-boundaries.mjs
++++ apps/desktop-app/scripts/check-renderer-boundaries.mjs
+@@ -29,6 +29,8 @@
+   "react/jsx-dev-runtime",
+   "react-dom/client",
+   "@assistant-ui/react",
++  "@assistant-ui/react-markdown",
++  "remark-gfm",
+   "lucide-react",
+   "zod",
+ ]);

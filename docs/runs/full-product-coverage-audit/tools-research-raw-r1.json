@@ -1,0 +1,1050 @@
+{
+  "schemaVersion": 2,
+  "scope": ["F-10", "F-11", "F-12", "F-13", "F-14", "F-15"],
+  "reportType": "factual_coverage_recommendations",
+  "acceptanceVerdict": null,
+  "bindings": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan": "docs/runs/full-product-coverage-audit/plan.md",
+    "planRevision": 1,
+    "packet": "docs/runs/full-product-coverage-audit/research-packet-r1.json",
+    "sourceFreeze": "docs/runs/git-branch-restore/source-freeze-r1.json",
+    "sourceSha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "freezeVerification": "all_sources의 688개 항목에서 파일 hash와 mode 변경 없음. apps/desktop-app/src 및 packages에 freeze 밖 파일 없음. 마지막 hash 재검사에서도 변경 없음.",
+    "prd": "docs/product/prd.md",
+    "prdSha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3",
+    "prdHashVerified": true,
+    "predecessor": {
+      "path": "docs/runs/git-branch-restore/run.json",
+      "status": "complete",
+      "completedAt": "2026-10-08T23:40:31+00:00",
+      "code": "현재 source pin에 연결된 final-code-review-r1.json pass",
+      "render": "현재 source pin에 연결된 final-render-review-r1.json pass",
+      "limits": "해당 branch/restore 범위의 최종 검토다. 전체 F11 또는 F01–18 완료 근거가 아니다."
+    }
+  },
+  "executionLimits": [
+    "이번 조사에서는 소스와 저장된 보고서만 읽었다. 파일 쓰기, run 시작·종료, 테스트, build, Native, provider, UI 실행은 하지 않았다.",
+    "source_missing은 현재 renderer 진입점, preload, 닫힌 request 계약, service dispatch와 runtime 연결을 추적한 결과다.",
+    "이전 보고서의 실제 실행과 현재 소스의 전체 동등성은 구분했다. 이전 구성·파일·줄 피드백 보고서를 현재 전체 제품 실행으로 승격하지 않았다.",
+    "지원 대상은 macOS와 Windows다. 아래 실제 실행 보고서는 제한된 macOS 환경의 증거이며 Windows 근거가 아니다.",
+    "frozen v5/P7의 과거 상태 문구는 현재 상태 판정에 사용하지 않았다."
+  ],
+  "sharedTraces": {
+    "closedProductSurface": {
+      "trace": "renderer/app Workbench → pages/workbench → conversation/files/catalog/activity → controller → transport → preload desktopBridge.workbench → bindWorkbenchIpc → createWorkbenchService.handle → validateRequest → execute",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/renderer/app/index.tsx",
+          "line": 7,
+          "observation": "단일 window workbench를 만들고 WorkbenchPage를 렌더링한다."
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "line": 30,
+          "observation": "우측 패널 종류는 files, catalog, activity다. 350행의 분기도 이 세 화면으로 닫힌다."
+        },
+        {
+          "path": "apps/desktop-app/src/preload.cjs",
+          "line": 4,
+          "observation": "노출 API는 workbench, cancelRead, runtimeSnapshot이다."
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-ipc.mjs",
+          "line": 4,
+          "observation": "승인된 sender의 단일 payload만 service.handle로 전달한다."
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-contract.mjs",
+          "line": 249,
+          "observation": "Git 전용 validator 또는 schemas에 없는 request는 INVALID_REQUEST로 거절한다."
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 3904,
+          "observation": "execute의 현재 dispatch는 workspace/session/message/command/file/configuration/Git/permission 경로다. 브라우저·dev server·터미널·계획·독립 리뷰용 dispatch는 없다."
+        }
+      ]
+    },
+    "currentNativeStartup": {
+      "trace": "Main registry 초기화 → createStorageOwner(lifetimeWitness) → owner.acquire → retained operation 검사 → createNativePreflight.check → startSidecar(eventHost) → startEventHost",
+      "sourceRefs": [
+        {
+          "path": "apps/desktop-app/src/main.mjs",
+          "line": 69,
+          "observation": "현재 Main은 createLifetimeWitness를 storage owner에 주입한다."
+        },
+        {
+          "path": "apps/desktop-app/src/main.mjs",
+          "line": 397,
+          "observation": "미해결 operation이 있으면 Native startup을 막고, 407행에서 Native preflight를 만든다."
+        },
+        {
+          "path": "apps/desktop-app/src/host/native-preflight.mjs",
+          "line": 655,
+          "observation": "fresh 분기 외에 nonfresh mapping 검사, 복사본 inspector, 입력 불변성·pending/inbox/migration 검사가 있다."
+        },
+        {
+          "path": "apps/desktop-app/src/sidecar-supervisor.mjs",
+          "line": 118,
+          "observation": "현재 eventHost descriptor가 있으면 startEventHost 경로를 사용한다."
+        }
+      ],
+      "limits": "현재 소스는 과거 fresh-only hold보다 확장됐다. 이 연결 자체는 production Main 실행 또는 전체 프로세스 정리의 실증이 아니다."
+    }
+  },
+  "groups": [
+    {
+      "id": "F-10",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 45},
+      "clauses": [
+        {
+          "clauseIndex": 0,
+          "exactClause": "로컬 dev server, URL, HTML/Markdown, 이미지/PDF 등 산출물을 탭으로 연다.",
+          "status": "source_partial",
+          "trace": "FileExplorer.load → actions.openFiles → controller.files → file.list/file.read → service → listFiles/readFilePreview → React pre",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+              "line": 21,
+              "observation": "단일 파일·디렉터리 선택 경로다. 108행에서 내용을 pre로 표시한다. 산출물 탭 또는 URL 프리뷰는 없다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+              "line": 3180,
+              "observation": "file.list 후 선택 파일의 file.read를 요청한다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 4306,
+              "observation": "file.read는 readFilePreview로 연결된다."
+            },
+            {
+              "path": "apps/desktop-app/src/host/workbench-files.mjs",
+              "line": 80,
+              "observation": "이미지·PDF를 FILE_UNSUPPORTED로 거절한다. HTML/Markdown도 UTF-8 텍스트로 읽는다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["실제 로컬 앱 브라우저, URL 탐색, HTML/Markdown 렌더링, 이미지/PDF 프리뷰와 산출물 탭이 연결되지 않았다."]
+        },
+        {
+          "clauseIndex": 1,
+          "exactClause": "주소·로딩·실패·새로고침·앞뒤 이동·크기 조절·외부 브라우저 열기를 제공한다.",
+          "status": "source_partial",
+          "trace": "Workbench panelWidth → 상세 패널 크기; FileExplorer → 파일 로딩·오류·새로고침. closedProductSurface에는 브라우저 탐색·외부 열기 API가 없다.",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+              "line": 159,
+              "observation": "상세 패널 너비를 300–420으로 제한한다. 브라우저 viewport 크기 조절은 아니다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+              "line": 51,
+              "observation": "파일 새로고침, 로딩, 오류 상태를 제공한다."
+            },
+            {
+              "path": "apps/desktop-app/src/main.mjs",
+              "line": 247,
+              "observation": "새 창 열기를 deny하고 허용된 renderer URL 밖 navigation을 막는다. 브라우저용 예외나 외부 열기 dispatch가 없다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["주소 입력, 브라우저 history, 외부 브라우저 열기와 해당 실패 처리가 없다."]
+        },
+        {
+          "clauseIndex": 2,
+          "exactClause": "임베드 불가 사이트는 이유와 외부 열기를 제공하되 로컬 앱 프리뷰의 실제 동작을 대체하지 않는다.",
+          "status": "source_missing",
+          "trace": "closedProductSurface → URL/embed request 없음; Main → popup deny; conversation Tool UI → 비대화형 LinkPreview",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+              "line": 77,
+              "observation": "검증된 도구 결과를 LinkPreview 카드로 표시하며 interactive=false다. 임베드 브라우저가 아니다."
+            },
+            {
+              "path": "apps/desktop-app/src/main.mjs",
+              "line": 247,
+              "observation": "현재 popup/navigation 제한 뒤에 embed 실패 사유나 외부 열기 경로가 없다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["임베드 가능 여부 검사, 실패 이유, 외부 열기와 실제 로컬 프리뷰 성공 증거가 없다."]
+        },
+        {
+          "clauseIndex": 3,
+          "exactClause": "dev server 시작/중단·포트·로그를 작업과 연결한다.",
+          "status": "source_missing",
+          "trace": "closedProductSurface → dev server operation 없음; Main startup → 앱 소유 OpenCode EventHost만 시작",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/workbench-contract.mjs",
+              "line": 90,
+              "observation": "닫힌 operation 계약에 프로젝트 dev server 시작·중단·포트·로그 요청이 없다."
+            },
+            {
+              "path": "apps/desktop-app/src/main.mjs",
+              "line": 426,
+              "observation": "startSidecar는 앱 runtime 시작이다. 프로젝트 dev server 실행 액션이 아니다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["작업별 server 프로세스·포트·로그 소유 관계와 종료 확인이 없다."]
+        },
+        {
+          "clauseIndex": 4,
+          "exactClause": "프리뷰 콘텐츠에 로컬 실행 권한을 주지 않는다.",
+          "status": "runtime_unverified",
+          "trace": "file.read → UTF-8 text → React pre; Main window → contextIsolation/sandbox + closed preload",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+              "line": 108,
+              "observation": "현재 파일 내용은 React text로 표시한다."
+            },
+            {
+              "path": "apps/desktop-app/src/main.mjs",
+              "line": 237,
+              "observation": "sandbox=true, contextIsolation=true, nodeIntegration=false, webviewTag=false다."
+            },
+            {
+              "path": "apps/desktop-app/src/preload.cjs",
+              "line": 1,
+              "observation": "desktopBridge는 main frame에만 노출한다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["실제 비신뢰 HTML/URL 프리뷰가 아직 연결되지 않았다. 해당 콘텐츠의 bridge 접근·navigation·popup 차단 실행 증거가 필요하다."]
+        }
+      ]
+    },
+    {
+      "id": "F-11",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 46},
+      "clauses": [
+        {
+          "clauseIndex": 0,
+          "exactClause": "파일 트리/검색, 텍스트 열기·수정·저장, 외부 변경 충돌, 변경 파일 목록, staged/unstaged/기준 브랜치 diff와 줄 단위 피드백을 지원한다.",
+          "status": "source_partial",
+          "trace": "FileExplorer → file.list/read; WorkspaceFileEditor → controller.readWorkspaceFile/saveWorkspaceFile → file.edit.read/file.save → service → descriptor publisher; GitReviewPanel → git.review.read/git.diff.read → gitReader; LineFeedbackPanel → line.feedback.append → 선택 세션 composer",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+              "line": 16,
+              "observation": "폴더 목록 이동과 파일 열기를 제공한다. 현재 화면에는 파일 검색 입력·검색 API 연결이 없다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/features/workspace-file-editor/index.tsx",
+              "line": 64,
+              "observation": "편집 기준, 초안, saved/conflict/unknown 상태를 분리한다. 지원 파일은 기존 일반 UTF-8 파일이다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+              "line": 1475,
+              "observation": "file.edit.read로 저장 기준을 받고, 1526행의 saveWorkspaceFile이 file.save를 만든다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/features/git-review/index.tsx",
+              "line": 437,
+              "observation": "변경 목록·staged/unstaged/base diff와 별도 Git mutation 화면을 구성한다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+              "line": 3990,
+              "observation": "줄 피드백은 원래 source와 선택 workspace/session key를 가진 composer append다. 자동 전송하지 않는다."
+            }
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/workspace-file-editing/evidence/publication-r3/publication-evidence.json",
+              "observation": "실제 staged Bun publisher에서 정확한 bytes/mode/backup, 외부 교체·in-place 변경, 파일 소실, 취소 등을 검사했다. exit 0.",
+              "applicability": "당시 source d9289ae4cc3d77928cb317dcdeada402183eae2ae482ae5729c2eb8bf2e566e5의 macOS arm64 합성 일반 파일 범위.",
+              "limits": "현재 전체 소스 동등성, production Main, Windows 또는 실제 사용자 프로젝트의 근거는 아니다."
+            },
+            {
+              "path": "docs/runs/git-branch-restore/evidence/reader-regression-r1/report.json",
+              "observation": "현재 reader의 실제 fixed Git 합성 matrix 51개 결과 pass. 원본 및 두 linked worktree, staged/unstaged와 direct base-tip diff를 포함한다.",
+              "applicability": "현재 Git predecessor의 reader regression. Darwin Node v24.14.1.",
+              "limits": "전체 IDE 검색, 실제 앱 전체 흐름 또는 Windows 근거가 아니다. 기준은 merge-base가 아닌 선택 branch tip이다."
+            },
+            {
+              "path": "docs/runs/version-bound-line-feedback/evidence/hidden-r9/feedback/line-feedback-evidence.json",
+              "observation": "실제 built renderer/preload에서 파일·diff의 version/line 피드백과 composer 연결 상태를 확인했다. result pass.",
+              "applicability": "당시 source 8e519498df8e0598cb7d2c4e2ec25c900b16cd486e7c362625d9abdc092899b6의 Darwin synthetic Main UI.",
+              "limits": "provider 실행과 실제 Git G2는 not established다. 현재 전체 source equivalence는 별도 확인이 필요하다."
+            }
+          ],
+          "gaps": ["파일 검색 연결이 없다.", "기존 파일 편집·diff·줄 피드백의 현재 통합 회귀와 Windows 실행이 미검증이다.", "지원 제한으로 거절하는 파일·저장소 사례를 전체 요구사항 충족으로 처리하면 안 된다."]
+        },
+        {
+          "clauseIndex": 1,
+          "exactClause": "선택 stage/unstage, 명시적 commit, branch 선택/생성, 변경 복원을 제공한다.",
+          "status": "verified_scoped",
+          "trace": "GitReviewPanel → controller preview/apply → git.index/commit/branch/restore request → service confirmation+idle 검사 → manager.apply → typed adapter.prepare/publish → 공통 Git metadata descriptor kernel",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/features/git-review/index.tsx",
+              "line": 587,
+              "observation": "선택 경로 Stage/Unstage를 제공한다. 107행의 Commit 화면은 전체 staged tree를 명시적으로 commit한다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/features/git-review/index.tsx",
+              "line": 1,
+              "observation": "GitBranchRestoreSection을 같은 Git 화면에 구성한다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 3957,
+              "observation": "branch/restore, index, commit apply를 각각 전용 처리기로 연결한다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 1512,
+              "observation": "branch/restore manager가 만든 operation만 adapter.prepare/publish로 전달한다."
+            }
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/git-branch-restore/evidence/index-regression-r1/publication-evidence.json",
+              "observation": "현재 predecessor에서 stage/unstage 합성 14개 사례 pass. 실제 staged Bun kernel과 service/registry를 사용했고 exit 0.",
+              "applicability": "현재 freeze에 연결된 Darwin arm64 bounded Git regression.",
+              "limits": "SyntheticSDK/direct typed adapter다. 실제 EventHost OS IPC와 production Main 확인창을 입증하지 않는다."
+            },
+            {
+              "path": "docs/runs/git-branch-restore/evidence/commit-regression-r1/publication-evidence.json",
+              "observation": "명시적 all-staged commit 합성 33개 사례 pass. attached/unborn/detached/packed/linked와 SHA1/SHA256 사례를 포함한다. exit 0.",
+              "applicability": "현재 predecessor에서 실제 실행한 bounded regression.",
+              "limits": "Windows·provider·전체 시나리오2 완료 근거는 아니다."
+            },
+            {
+              "path": "docs/runs/git-branch-restore/evidence/publication-r3/publication-evidence.json",
+              "observation": "branch create/select와 tracked worktree INDEX/HEAD restore의 실제 publication 34개 사례 pass. exit 0.",
+              "applicability": "최종 freeze에서는 UI 변경 네 경로만 허용한 byte/runtime proof로 이 실제 실행을 재사용했다. 최종 source에서 새 publication을 실행했다고 주장하지 않는다.",
+              "limits": "지원되는 local branch와 tracked restore 범위다. Windows, arbitrary repository 형식, production Main Native dialog는 미검증이다."
+            }
+          ],
+          "gaps": ["현재 제품의 실제 EventHost OS-channel 연결과 production Main 확인창 실행이 미검증이다.", "Windows 실행 및 전체 F11 통합 검증이 남아 있다."]
+        },
+        {
+          "clauseIndex": 2,
+          "exactClause": "복원 전 대상과 손실을 확인하고 원본 저장소나 다른 worktree를 잘못 변경하지 않는다.",
+          "status": "verified_scoped",
+          "trace": "branch/restore preview → service.confirmGitBranchRestore → Main 대상·before/after·손실·backup 확인 → idle 재검사 → manager proposal 재생성·target 동등성 검사 → descriptor publication",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/main.mjs",
+              "line": 603,
+              "observation": "절대 workspace 경로, INDEX/HEAD 복원 기준, 대체될 파일 상태·mode, metadata, backup, 부분 변경 위험을 확인창에 전달한다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 1471,
+              "observation": "확인 전후 workspace idle과 경로를 재검사한다."
+            },
+            {
+              "path": "apps/desktop-app/src/host/workbench-git-branch-restore.mjs",
+              "line": 115,
+              "observation": "linked worktree의 branch 점유를 검사한다."
+            },
+            {
+              "path": "apps/desktop-app/src/host/workbench-git-branch-restore.mjs",
+              "line": 855,
+              "observation": "sender/epoch/workspace/preview에 묶인 apply만 받고 proposal target을 재검사한다. publication 불명은 unknown으로 남긴다."
+            }
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/git-branch-restore/evidence/publication-r3/publication-evidence.json",
+              "observation": "SHA1/SHA256 복원·branch 사례에서 unaffected inventory 보존, backup, helper 미호출과 실패·unknown 경로를 검사했다.",
+              "applicability": "34개 bounded synthetic 사례. 최종 UI 변경 후 제한된 적용성 proof로 재사용.",
+              "limits": "비협조적인 동일 사용자 writer에 대한 전역 배타성이나 전체 원자성을 보장하지 않는다. 깊은 경로의 10초 초과 unknown 사례가 있다."
+            },
+            {
+              "path": "docs/runs/git-branch-restore/evidence/hidden-r4/git-branch-restore/git-branch-restore-evidence.json",
+              "observation": "현재 built renderer/preload에서 preview·취소·held·unknown·late scope와 keyboard/light/dark/760px 200% 상태 pass.",
+              "applicability": "현재 source의 Darwin hidden UI, synthetic Main.",
+              "limits": "보고서가 actualPublication, actualMainConfirmation, actualEventHostOSLifetime을 각각 not established로 명시한다."
+            }
+          ],
+          "gaps": ["실제 production Main 확인창과 OS IPC 실행 근거가 필요하다.", "Windows와 지원 범위 밖 저장소의 제품 처리 범위는 Main이 연결해야 한다."]
+        },
+        {
+          "clauseIndex": 3,
+          "exactClause": "이 앱은 전체 IDE 언어 서버 대체를 목표로 하지 않는다.",
+          "status": "verified_scoped",
+          "trace": "PRD 비목표 → bounded text editor/Git review 기능",
+          "sourceRefs": [
+            {
+              "path": "docs/product/prd.md",
+              "line": 46,
+              "observation": "원문에 전체 IDE 언어 서버 대체가 비목표라고 명시돼 있다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/features/workspace-file-editor/index.tsx",
+              "line": 147,
+              "observation": "현재 제품 표면은 명시적 텍스트 파일 편집이다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["비목표 문구 확인이다. 실행 기능 완료 판정으로 사용하면 안 된다."]
+        }
+      ]
+    },
+    {
+      "id": "F-12",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 47},
+      "clauses": [
+        {
+          "clauseIndex": 0,
+          "exactClause": "작업 디렉터리에 연결한 실제 터미널, 여러 탭, 입력·리사이즈·종료·종료 코드·출력을 지원한다.",
+          "status": "source_missing",
+          "trace": "closedProductSurface → terminal/PTY 요청 없음; currentNativeStartup → OpenCode runtime 소유만 수행",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+              "line": 350,
+              "observation": "상세 화면 분기에 터미널이 없다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-contract.mjs",
+              "line": 90,
+              "observation": "터미널 생성·입력·리사이즈·종료 request가 없다."
+            },
+            {
+              "path": "apps/desktop-app/src/sidecar-supervisor.mjs",
+              "line": 118,
+              "observation": "실행 경로는 앱 EventHost supervisor다. 사용자 작업 터미널로 노출하지 않는다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["작업별 PTY와 탭·입출력·리사이즈·종료 코드 UI/API가 연결되지 않았다."]
+        },
+        {
+          "clauseIndex": 1,
+          "exactClause": "프로젝트별 build/lint/test/dev 액션과 최근 실행을 제공한다.",
+          "status": "source_missing",
+          "trace": "Workbench/FileExplorer/CatalogPanel → 닫힌 request 계약 → service dispatch; project action 정의·실행·최근 결과 도메인 없음",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+              "line": 7,
+              "observation": "앱 operation의 상태·시간·ID 기록이다. 프로젝트 build/lint/test/dev 액션 목록이 아니다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 3904,
+              "observation": "project action 실행 또는 최근 실행 조회 dispatch가 없다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["개발 중 harness/Nx 실행 기록은 제품의 프로젝트 액션 UI 근거가 아니다."]
+        },
+        {
+          "clauseIndex": 2,
+          "exactClause": "사용자 직접 명령과 에이전트 명령의 주체·권한 경계를 명시한다.",
+          "status": "source_missing",
+          "trace": "conversation slash → session.command; assistant tools → projectMessages; 직접 터미널 명령 경로 없음",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 2595,
+              "observation": "사용자가 고른 runtime command를 session.command로 보낸다. 사용자 직접 terminal shell API는 아니다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 206,
+              "observation": "assistant tool 이름·상태·입력·출력을 투영한다. 직접 terminal 실행 주체와의 경계 모델은 없다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["사용자 터미널 명령과 agent shell 호출을 함께 구분하는 제품 연결 및 실행 정책 증거가 없다."]
+        },
+        {
+          "clauseIndex": 3,
+          "exactClause": "탭을 닫는 것과 프로세스 중단을 구분하고 고아 프로세스를 확인한다.",
+          "status": "source_missing",
+          "trace": "Main window close → closeSender; app quit → workbench.drain/close → runtime.stop; terminal tab lifecycle 없음",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/main.mjs",
+              "line": 252,
+              "observation": "창·renderer 종료는 sender 정리로 연결된다."
+            },
+            {
+              "path": "apps/desktop-app/src/main.mjs",
+              "line": 276,
+              "observation": "앱 runtime 종료는 drain/close 뒤 stop 결과를 확인한다. 터미널 탭 닫기와 구분하는 기능은 아니다."
+            },
+            {
+              "path": "apps/desktop-app/src/event-host-child.mjs",
+              "line": 14,
+              "observation": "direct handle observer는 정확한 JS handle exit를 관찰하며 OS descendants 전체 열거가 아니라고 명시한다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["터미널 탭 닫기·중단 선택과 작업 프로세스 고아 확인 UI/API가 없다.", "현재 lifetime witness를 일반 터미널의 모든 descendant 정리 증거로 확대하면 안 된다."]
+        }
+      ]
+    },
+    {
+      "id": "F-13",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 48},
+      "clauses": [
+        {
+          "clauseIndex": 0,
+          "exactClause": "`/` 입력으로 런타임 내장/프로젝트 커맨드·스킬과 앱 커맨드를 검색한다.",
+          "status": "source_partial",
+          "trace": "composer '/' key → popup → catalog commands/skills 목록; app buttons → newSession/openPanel",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+              "line": 484,
+              "observation": "빈 draft의 '/' 입력으로 popup을 연다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+              "line": 568,
+              "observation": "runtime command 전체 목록을 표시한다. query 기반 필터나 내장/프로젝트 출처 선택이 없다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+              "line": 588,
+              "observation": "Skill 선택은 메시지에 이름을 추가한다. 명시적 Native Skill 적용과 다르다."
+            }
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/configuration-extensions/evidence/hidden-r1/ui-states/ui-states-evidence.json",
+              "observation": "실제 built renderer/preload의 slash popup과 literal command.run 전달을 관찰했다. result pass, owned exit 0.",
+              "applicability": "당시 source 113fb104a12bf9be836b150a821d2e0b598f097832351b77e3b5cb6fe4172878, Darwin synthetic Main.",
+              "limits": "검색·출처 분류·전체 palette 또는 실제 Native command 실행 근거는 아니다."
+            }
+          ],
+          "gaps": ["명령 검색·필터, 내장/프로젝트 출처 구분과 전역 팔레트 연결이 없다."]
+        },
+        {
+          "clauseIndex": 1,
+          "exactClause": "인자 도움말, 실행 대상, 출처, 사용 불가 이유를 제공한다.",
+          "status": "source_partial",
+          "trace": "client.command.list → catalog simple(name) → popup name/description",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 2419,
+              "observation": "command DTO는 id/name/description으로 축소한다. command 인자 schema·출처 metadata는 전달하지 않는다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+              "line": 577,
+              "observation": "이름과 description을 표시한다. 목록 불가 문구는 있으나 command별 인자 도움말·target·불가 이유는 없다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["command별 인자 도움말·실행 대상·출처·사용 불가 이유 연결이 필요하다."]
+        },
+        {
+          "clauseIndex": 2,
+          "exactClause": "런타임 목록과 실행을 실제 연동한다.",
+          "status": "runtime_unverified",
+          "trace": "catalog.list → client.command.list; composer listed slash → command.run → send → 현재 inventory 재검사 → client.session.command(sessionID,name,text)",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 2412,
+              "observation": "현재 SDK client.command.list를 호출한다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+              "line": 200,
+              "observation": "목록에 일치한 slash만 command.run으로 보낸다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 2554,
+              "observation": "서버에서도 command 이름을 현재 inventory에 대조한다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 2595,
+              "observation": "일치한 command를 SDK session.command에 literal text 인자로 보낸다."
+            }
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/configuration-extensions/evidence/hidden-r1/ui-states/ui-states-evidence.json",
+              "observation": "listed slash의 command.run/literal arguments UI 전달은 관찰됐다.",
+              "applicability": "실제 renderer/preload와 synthetic Main 범위.",
+              "limits": "providerExecution=not performed다. SDK 실제 command 실행까지 입증하지 않는다."
+            }
+          ],
+          "gaps": ["현재 staged Native 목록→실제 command 실행→결과의 실행 증거가 필요하다. mock test와 UI 전달 성공만으로 실제 연동 완료를 표시하면 안 된다."]
+        },
+        {
+          "clauseIndex": 3,
+          "exactClause": "앱의 new/open/worktree/model/permissions/plan/review/compact/status/mcp/help에 해당하는 조작을 팔레트와 연결한다.",
+          "status": "source_partial",
+          "trace": "slash app section → 새 세션, 파일 보기, 확장 목록 보기; 나머지 기능은 별도 UI 또는 제품 경로 없음",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+              "line": 524,
+              "observation": "앱 popup의 실제 버튼은 새 세션 만들기, 파일 보기, 확장 목록 보기다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+              "line": 350,
+              "observation": "별도 files/catalog/activity 패널이다. 계획·독립 review palette 경로가 없다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["요구된 앱 조작 전체와 전역 팔레트가 연결되지 않았다.", "SDK에서 review라는 command가 보고될 수 있다는 사실은 앱의 독립 review 기능 완료 근거가 아니다."]
+        },
+        {
+          "clauseIndex": 4,
+          "exactClause": "이름 충돌·인자 오류·busy·취소를 처리하며 슬래시 문자열을 임의 셸 명령으로 해석하지 않는다.",
+          "status": "source_partial",
+          "trace": "popup Escape→closeMenu; listed name find→command.run; unknown slash→message.send; service active/inbox→BUSY; command arguments→SDK text",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+              "line": 200,
+              "observation": "첫 name 일치를 선택한다. 출처별 이름 충돌 선택이 없다. 미등록 slash는 일반 메시지로 보낸다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+              "line": 498,
+              "observation": "Escape로 popup을 닫고 focus를 복원한다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 2535,
+              "observation": "active/inbox가 있으면 BUSY로 거절한다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 2595,
+              "observation": "arguments를 SDK command text로 전달한다. 임의 shell 실행 호출은 아니다."
+            }
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/configuration-extensions/evidence/hidden-r1/ui-states/ui-states-evidence.json",
+              "observation": "popup 밖 클릭·Escape·focus 복원과 literal command 인자 전달을 관찰했다.",
+              "applicability": "Darwin synthetic Main의 UI 동작.",
+              "limits": "실제 Native 인자 오류, 중단 효과, 중복 이름 처리를 입증하지 않는다."
+            }
+          ],
+          "gaps": ["출처별 이름 충돌 처리와 command별 인자 검증이 없다.", "메뉴 취소와 실제 실행 취소의 결과를 별도로 검증해야 한다."]
+        }
+      ]
+    },
+    {
+      "id": "F-14",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 49},
+      "clauses": [
+        {
+          "clauseIndex": 0,
+          "exactClause": "프로젝트별 instructions/AGENTS, skills, agents, hooks, tools, MCP 및 플러그인의 위치·출처·활성 상태·적용 범위를 확인한다.",
+          "status": "source_partial",
+          "trace": "CatalogPanel → catalog.list/discoverConfiguration; 명시적 instructions/MCP/Skill/Agent read → SDK/private adapter; ConfigurationExtensions.observe → closed RPC → plugin.list + tool registry; Hooks→not_reported",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/host/workbench-configuration.mjs",
+              "line": 55,
+              "observation": "프로젝트 marker의 위치·출처를 metadata로 발견한다. runtimeStatus는 not_reported다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+              "line": 195,
+              "observation": "파일 저장, 세션 instructions, workspace MCP, Skill/Agent Native 등록과 확장 조회를 구분한다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 1728,
+              "observation": "명시적 확장 조회에서 workspace/epoch/trust/revision을 검사하고 nativeExtensions.observe를 호출한다."
+            },
+            {
+              "path": "apps/desktop-app/src/builtins/workbench-skills/extensions.mjs",
+              "line": 209,
+              "observation": "Plugin·Tools를 별도 관찰한다. 223행에서 Hooks는 inventory_not_supported로 반환한다."
+            }
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/configuration-extensions/evidence/native-r3/extension-evidence.json",
+              "observation": "실제 owner/preflight/fixed plugin/public read의 6개 사례 pass. Plugin·Tool presence, repeat-read 보존, inert project plugin sentinel, Hooks not_reported를 검사했다.",
+              "applicability": "당시 source 113fb104a12bf9be836b150a821d2e0b598f097832351b77e3b5cb6fe4172878의 contained macOS Native 실행.",
+              "limits": "도구 presence는 권한·실행 성공이 아니다. Hooks inventory는 미지원이다. 현재 전체 source equivalence와 Windows는 미검증이다."
+            }
+          ],
+          "gaps": ["Hooks의 실제 목록·활성 상태·적용 범위가 제공되지 않는다.", "metadata 발견과 Native 활성 상태를 하나의 완료 상태로 합치면 안 된다."]
+        },
+        {
+          "clauseIndex": 1,
+          "exactClause": "로컬 구성 편집·검증·미리보기·적용/재로딩과 MCP 등록·연결/해제를 제공한다.",
+          "status": "source_partial",
+          "trace": "draft editor → 형식 검증·diff → 전용 save; instructions → entry.put/remove/list; MCP → disabled add/connect/disconnect/remove/list; Skill/Agent → 전용 파일 save + 확인 후 private registration/reload; extensions → observe-only",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+              "line": 1257,
+              "observation": "현재 초안의 형식 검증을 제공한다. 1309행은 검증·저장·Native 수용을 구분한다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 3566,
+              "observation": "instructions를 선택 세션의 entry.put/remove로 적용하고 list 관찰로 확인한다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 3399,
+              "observation": "MCP add/connect/disconnect/remove 뒤 list에서 결과를 확인한다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 2835,
+              "observation": "Agent 등록은 전용 nativeAgents.register다. Skill은 3130행 registerDisabled와 3150행 session.skill로 분리한다."
+            },
+            {
+              "path": "apps/desktop-app/src/builtins/workbench-skills/extensions.mjs",
+              "line": 1,
+              "observation": "Plugin/Tools/Hooks producer는 observe-only이며 loader, transform, reload, hook callback을 제공하지 않는다."
+            }
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/configuration-instructions/evidence/native-r4/configuration-instructions-evidence.json",
+              "observation": "실제 instructions 12개 사례 pass. 명시 등록·제거, fork origin, drift, reopen, 기존 기록 보존을 포함한다.",
+              "applicability": "당시 source 04abe5bca8f8b9dba1179736422dc82abf0a1a34a3bca5a5cfdae6e8274c9911에 연결된 제한적 재사용 보고서.",
+              "limits": "production Main, provider/model 소비, CAS, Windows는 입증하지 않는다."
+            },
+            {
+              "path": "docs/runs/configuration-mcp/evidence/native-r5/configuration-mcp-evidence.json",
+              "observation": "실제 MCP 9개 사례 pass. disabled 등록, connect/disconnect/remove, 원래 receipt lookup, restart의 자동 효과 없음과 정확한 synthetic child exit를 포함한다.",
+              "applicability": "당시 source 4c77540b8bee2dc299e3a80f92e2877264d9fb8f3a9953aa5dfc118054d301a0의 contained macOS 실행.",
+              "limits": "실제 원격 network/auth, 임의 descendant, Windows 또는 현재 전체 source equivalence 증거는 아니다."
+            },
+            {
+              "path": "docs/runs/configuration-skill-runtime/evidence/native-r7/skill-runtime-evidence.json",
+              "observation": "실제 Skill 15개 사례 pass. disabled 등록, reload, resume:false 기록, fork 상속, remove, unknown/reopen을 포함한다.",
+              "applicability": "당시 source 5052c067b46b620c4594c391a75e11d7ee05713f3774e3d14717aafd1fec09ae의 Native/public durable service.",
+              "limits": "모델 소비나 현재 전체 source equivalence는 입증하지 않는다."
+            },
+            {
+              "path": "docs/runs/configuration-agents/evidence/native-r11/agent-evidence.json",
+              "observation": "실제 Agent 14개 사례 pass. 파일 save, 확인 취소/등록, reload, foreign reference 차단, remove, clean restart, lost ACK를 포함한다.",
+              "applicability": "당시 source 9142fed9eaf8a4bacc37b9332ed1672fd659d8f3a4a805372c9d944826af1521의 contained Native/public durable service.",
+              "limits": "archived reference는 Node+source 증거다. provider, production Main, Windows, 현재 전체 source equivalence는 미검증이다."
+            }
+          ],
+          "gaps": ["전체 구성 종류의 편집·적용/재로딩이 연결된 것은 아니다. Plugin·Tools는 조회만 있고 Hooks inventory는 없다.", "기존 narrow 실행 보고서의 현재 변경 영향 확인과 UI→실제 Native 통합 증거가 필요하다."]
+        },
+        {
+          "clauseIndex": 2,
+          "exactClause": "설치/업데이트·프로세스 실행은 명시적 사용자 동작으로만 한다.",
+          "status": "verified_scoped",
+          "trace": "MCP 버튼 → controller mutation → service.confirmMcp → 취소 시 중단 → disabled add 또는 명시적 connect; Skill/Agent 등록도 전용 확인 후 dispatch",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/host/workbench-mcp.mjs",
+              "line": 108,
+              "observation": "MCP 등록 정의를 disabled:true로 만든다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 3374,
+              "observation": "confirmMcp가 false면 CANCELLED로 끝내고 Native 호출하지 않는다."
+            },
+            {
+              "path": "apps/desktop-app/src/main.mjs",
+              "line": 537,
+              "observation": "MCP 영향·명령·cwd·workspace 전체 범위를 보여주고 취소를 기본값으로 둔다."
+            },
+            {
+              "path": "apps/desktop-app/src/builtins/workbench-skills/extensions.mjs",
+              "line": 1,
+              "observation": "확장 상태 조회는 install/update/load 기능을 호출하지 않는 observe-only producer다."
+            }
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/configuration-mcp/evidence/native-r5/configuration-mcp-evidence.json",
+              "observation": "기본 거절과 disabled 등록에서 synthetic MCP 시작 0회, 명시 connect 후 시작, disconnect/remove 후 정확한 child exit를 검사했다.",
+              "applicability": "현재 코드와 대응하는 기존 MCP narrow macOS 실행 증거.",
+              "limits": "현재 전체 source 동등성은 미확정이다. 일반 installer/updater나 임의 process 실행까지 검증한 것은 아니다."
+            }
+          ],
+          "gaps": ["제품 installer/updater 기능은 연결되지 않았다. 이 상태를 설치·업데이트 기능 완료로 해석하면 안 된다.", "production Main 확인창의 실제 실행과 Windows 증거가 필요하다."]
+        },
+        {
+          "clauseIndex": 3,
+          "exactClause": "호환되지 않는 벤더 포맷은 그대로 실행하지 않고 변환 미지원으로 표시한다.",
+          "status": "source_partial",
+          "trace": "metadata marker 발견 → 전용 editor closed validator → unsupported 결과 → Native 등록 전 normalize/refusal",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/host/workbench-configuration.mjs",
+              "line": 6,
+              "observation": "CLAUDE.md, .claude, .codex/config.toml을 metadata로만 발견한다. 실행하거나 자동 변환하지 않는다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs",
+              "line": 78,
+              "observation": "지원하는 instructions/MCP 형태 외에는 unsupported를 반환한다. JSONC와 추가 인증 필드를 거절한다."
+            },
+            {
+              "path": "apps/desktop-app/src/host/workbench-mcp.mjs",
+              "line": 84,
+              "observation": "Native 등록 전 지원 형식으로 정규화한다. remote oauth:false가 없으면 MCP_UNSUPPORTED다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+              "line": 524,
+              "observation": "지원하지 않는 MCP 변환과 등록 불가 이유를 표시한다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["MCP의 변환 미지원 처리는 명확하다. 발견한 모든 벤더 포맷에 대한 호환성 분류·변환 미지원 UI와 실행 부작용 검사는 확인되지 않았다."]
+        },
+        {
+          "clauseIndex": 4,
+          "exactClause": "인증이 필요한 연결은 기존 외부 설정을 안내하며 인증 UI를 만들지 않는다.",
+          "status": "runtime_unverified",
+          "trace": "Native MCP list needs_auth → DTO → MCP status UI 외부 설정 안내; remote 등록은 oauth:false만 허용",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+              "line": 364,
+              "observation": "needs_auth를 외부 인증 설정 필요로 표시하고 앱에서 인증창을 열지 않는다고 안내한다."
+            },
+            {
+              "path": "apps/desktop-app/src/main.mjs",
+              "line": 534,
+              "observation": "remote MCP 확인창은 인증을 기존 외부 설정에서 관리한다고 안내한다."
+            },
+            {
+              "path": "apps/desktop-app/src/host/workbench-mcp.mjs",
+              "line": 115,
+              "observation": "oauth:false가 아닌 remote 정의는 등록 전에 거절한다."
+            }
+          ],
+          "runtimeRefs": [
+            {
+              "path": "docs/runs/configuration-mcp/evidence/native-r5/configuration-mcp-evidence.json",
+              "observation": "제한에 real network/auth UI/model 소비 증거가 없다고 명시한다.",
+              "applicability": "인증 없는 합성 MCP 실행 범위.",
+              "limits": "실제 needs_auth 연결과 외부 설정 복구가 성공했다는 증거는 아니다."
+            }
+          ],
+          "gaps": ["실제 인증 필요 상태→정확한 외부 설정 안내→재연결의 증거가 필요하다. 일반 안내 문구를 연결 성공으로 표시하면 안 된다."]
+        }
+      ]
+    },
+    {
+      "id": "F-15",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 50},
+      "clauses": [
+        {
+          "clauseIndex": 0,
+          "exactClause": "계획과 체크리스트를 대화 옆에서 보고 수정/승인/진행 확인한다.",
+          "status": "source_missing",
+          "trace": "closedProductSurface → files/catalog/activity만 구성; conversation → text/tools; plan/checklist UI·request·service 도메인 없음",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+              "line": 350,
+              "observation": "우측 화면 구성에 계획·체크리스트가 없다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 185,
+              "observation": "메시지 투영은 text/tools다. 편집·승인 가능한 plan/checklist 모델을 투영하지 않는다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-contract.mjs",
+              "line": 249,
+              "observation": "닫힌 request 계약에 plan/checklist 읽기·수정·승인 요청이 없다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["docs/runs의 구현 ledger·plan은 제품 안의 계획 UI가 아니다."]
+        },
+        {
+          "clauseIndex": 1,
+          "exactClause": "승인 문서 버전과 실행을 연결한다.",
+          "status": "source_missing",
+          "trace": "제품 mutation receipt는 request/operation 기준; 승인된 plan 문서 version을 받는 제품 API와 실행 연결 없음",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/workbench-contract.mjs",
+              "line": 211,
+              "observation": "message.send는 text와 선택 agent/model을 받고 plan approval/version을 받지 않는다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 2581,
+              "observation": "prompt/command 실행 경로에 승인 plan 문서 버전 연결이 없다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["구성 파일 version·Git preview digest·개발 harness approval binding은 제품의 승인 계획 문서 연결을 대체하지 않는다."]
+        },
+        {
+          "clauseIndex": 2,
+          "exactClause": "구현자와 독립 리뷰어의 결과·미해결 지적을 구분하며 수정 후 재검증 상태를 표시한다.",
+          "status": "source_missing",
+          "trace": "GitReviewPanel은 파일/Git 변경 검토; ActivityPanel은 operation diagnostics; conversation은 일반 메시지/tool 결과; 독립 reviewer outcome 도메인 없음",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/renderer/features/git-review/index.tsx",
+              "line": 437,
+              "observation": "Git status/diff와 mutation UI다. 구현자·독립 리뷰어 결과 모델이 아니다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+              "line": 99,
+              "observation": "operation 상태·시간·ID를 표시하며 reviewer identity/findings/reverification 상태를 표시하지 않는다."
+            },
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 185,
+              "observation": "현재 메시지 투영에 독립 review 결과·미해결 지적 연결이 없다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["개발 run의 독립 CODE/RENDER pass는 이 제품 기능의 실행 증거가 아니다."]
+        },
+        {
+          "clauseIndex": 3,
+          "exactClause": "에이전트의 ‘완료’ 주장만으로 lint/test/review 통과를 표시하지 않는다.",
+          "status": "source_partial",
+          "trace": "assistant 완료는 메시지/tool 상태로 표시; ActivityPanel ok는 앱 operation 완료; 독립 lint/test/review 증거 모델 없음",
+          "sourceRefs": [
+            {
+              "path": "apps/desktop-app/src/workbench-service.mjs",
+              "line": 214,
+              "observation": "runtime tool status를 투영한다. 별도의 lint/test/review 수용 판정은 만들지 않는다."
+            },
+            {
+              "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+              "line": 22,
+              "observation": "ok를 완료로 표시하지만 operation 진단 상태다. 검증 통과 증거 UI는 아니다."
+            }
+          ],
+          "runtimeRefs": [],
+          "gaps": ["현재 소스에서 agent 발화만으로 검증 pass를 만드는 연결은 확인되지 않았다.", "검증 결과 기능 자체가 없어, 실제 명령·exit code·source version과 리뷰 결과를 연결한 상태 표시 및 허위 완료 방지 검증은 남아 있다."]
+        }
+      ]
+    }
+  ],
+  "crossCutting": [
+    {
+      "id": "section4-assigned-tools",
+      "status": "source_partial",
+      "sourceRefs": [
+        {"path": "docs/product/prd.md", "line": 67, "observation": "활성 작업·자식·터미널/server 종료 확인과 다른 세션의 경로 보호를 요구한다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 1471, "observation": "Git mutation 전후 workspace idle 및 경로 재검사가 있다."},
+        {"path": "apps/desktop-app/src/host/workbench-git-branch-restore.mjs", "line": 115, "observation": "linked worktree branch 점유를 검사한다."}
+      ],
+      "gaps": ["터미널·dev server 도메인이 없으므로 이들의 활성 상태가 Git·삭제 보호에 통합됐다는 근거가 없다."]
+    },
+    {
+      "id": "section5-assigned-tools",
+      "status": "source_partial",
+      "sourceRefs": [
+        {"path": "docs/product/prd.md", "line": 81, "observation": "action을 원래 session/request에 묶고 실행 계층에서 재검증해야 한다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3374, "observation": "MCP 확인 후 관찰 기준과 정의를 재검사한다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 855, "observation": "mutation 예약·receipt 처리는 제품 operation 기준이다. 새로운 plan/review/terminal 정책을 대신하지 않는다."}
+      ],
+      "gaps": ["확장 조회·등록·연결과 일반 tool 실행 권한은 다르다.", "F12/F15의 아직 없는 실행 경계와 통합 권한 처리는 미검증이다."]
+    },
+    {
+      "id": "section7-scenario1",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 105},
+      "status": "source_partial",
+      "gaps": ["파일 편집의 bounded 증거는 있으나 결과 브라우저/산출물 프리뷰가 없다.", "신규 작업부터 대화·도구·프리뷰·재시작 재열기까지 현재 소스의 전체 실행은 입증되지 않았다."]
+    },
+    {
+      "id": "section7-scenario2",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 106},
+      "status": "source_partial",
+      "runtimeRefs": [
+        {
+          "path": "docs/runs/git-branch-restore/evidence/reader-regression-r1/report.json",
+          "observation": "원본과 두 linked worktree의 실제 Git reader 사례가 있다.",
+          "applicability": "합성 Git reader 범위.",
+          "limits": "앱의 두 병렬 세션·자식 위임·테스트·독립 리뷰·commit 전체 흐름은 아니다."
+        }
+      ],
+      "gaps": ["Git 조각의 pass를 두 worktree 병렬 작업→두 자식→diff/test/review→commit 전체 통과로 확대하면 안 된다."]
+    },
+    {
+      "id": "section7-scenario4",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 108},
+      "status": "source_partial",
+      "gaps": ["slash→command.run의 synthetic UI 증거는 있다.", "실제 Native command 실행, 인자/schema 오류, terminal/dev server, 우측 브라우저·미디어 프리뷰 연결이 남아 있다."]
+    },
+    {
+      "id": "section7-scenario7",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 111},
+      "status": "source_partial",
+      "gaps": ["구성 변경·MCP 연결/해제는 각 narrow Native 보고서가 있다.", "제품 내 계획·검증 결과 화면이 없다. 전체 시나리오의 나머지 연결은 Main 담당 F16–18 증거와 통합해야 한다."]
+    },
+    {
+      "id": "section8-assigned-connections",
+      "status": "source_partial",
+      "sourceRefs": [
+        {"path": "docs/product/prd.md", "line": 121, "observation": "비밀을 bundle·도구 카드·export·로그에 넣지 않고 외부 호출 가능성을 확인해야 한다."},
+        {"path": "apps/desktop-app/src/host/workbench-files.mjs", "line": 8, "observation": "민감 파일명과 credential 계열 경로를 text preview에서 제외한다."},
+        {"path": "apps/desktop-app/src/host/workbench-mcp.mjs", "line": 84, "observation": "닫힌 MCP 형식만 Native 등록으로 변환한다."}
+      ],
+      "gaps": ["지원되는 합성 설정·파일 경로의 보호를 모든 프리뷰·확장·로그·실제 프로젝트의 비밀 비노출 증거로 확대하면 안 된다."]
+    }
+  ],
+  "prioritizedNextBoundedEvidenceChecks": [
+    {
+      "priority": 1,
+      "scope": "현재 F11 및 F14 증거 적용성",
+      "check": "Main이 각 실제 보고서의 실행 입력 closure를 현재 freeze와 대조한다. 변경된 공통 service/controller/protocol/kernel 영향을 확인하고, 기존 pass를 재사용할 수 있는 정확한 범위와 새 실행이 필요한 연결을 기록한다.",
+      "reason": "이전 구성·파일·줄 피드백 source pin은 현재 pin과 다르다. ledger 완료만으로 현재 적용성을 확정할 수 없다."
+    },
+    {
+      "priority": 2,
+      "scope": "F11 실제 제품 경계",
+      "check": "허용된 합성 저장소에서 renderer/preload→production Main 확인→실제 EventHost OS IPC→descriptor publication→receipt 흐름을 한 mutation씩 확인한다. 취소·외부 변경·unknown 후 무재실행을 포함한다.",
+      "reason": "현재 Git publication과 UI 증거는 분리돼 있으며 실제 Main 확인창·OS channel은 명시적 미검증이다."
+    },
+    {
+      "priority": 3,
+      "scope": "F13 runtime command",
+      "check": "실제 고정 Native command 목록→인자 전달→실행 결과를 bounded 사례로 확인한다. 중복 이름·잘못된 인자·busy·중단을 각각 구분한다.",
+      "reason": "현재 확보한 slash 실행 증거는 synthetic Main 전달까지다."
+    },
+    {
+      "priority": 4,
+      "scope": "F10/F12 및 section4/5",
+      "check": "Main이 미연결 UI/API 경계를 구현한 뒤 terminal/dev server 시작·종료·탭 닫기·작업 경로·포트·로그를 한 흐름으로 확인한다. 이어 실제 로컬 프리뷰와 비신뢰 콘텐츠의 bridge 접근 차단을 확인한다.",
+      "reason": "현재 앱 runtime supervisor와 텍스트 preview는 요구된 개발 도구 연결을 제공하지 않는다."
+    },
+    {
+      "priority": 5,
+      "scope": "F14 Hooks·편집 범위·외부 인증 안내",
+      "check": "Hooks inventory와 확장 편집/적용의 미연결 범위를 Main이 처리한다. 기존 Native 등록과 모델 소비를 구분하고, needs_auth 안내를 연결 성공으로 표시하지 않는지 확인한다.",
+      "reason": "Hooks not_reported와 observe-only extensions는 전체 F14 수용 기준 충족이 아니다."
+    },
+    {
+      "priority": 6,
+      "scope": "F15 제품 내 계획·독립 리뷰",
+      "check": "계획/체크리스트 수정·승인 버전→실행, 구현자·독립 reviewer 결과→미해결 지적→수정 후 재검증을 제품 화면과 API에서 연결해 확인한다.",
+      "reason": "개발 harness ledger는 이 제품 기능을 대체하지 않는다."
+    },
+    {
+      "priority": 7,
+      "scope": "플랫폼 및 통합 시나리오",
+      "check": "해당 기능 연결 후 macOS와 Windows에서 시나리오1/2/4/7을 별도로 실행한다. UI E2E와 실제 부작용·종료 관찰을 함께 기록한다.",
+      "reason": "macOS의 합성 narrow pass를 Windows 또는 전체 제품 완료로 일반화할 수 없다."
+    }
+  ]
+}

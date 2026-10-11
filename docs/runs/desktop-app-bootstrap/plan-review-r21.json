@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "reviewer": "plan_reviewer",
+  "plan_path": "docs/workplans/desktop-app-bootstrap/plan.md",
+  "plan_revision": 20,
+  "reviewed": {
+    "contract_sha256": "07883e1c75f235db4f2b90d9fd6778d416fa5f7b8d33ea1ef15fa7996eb39701",
+    "gate": "plan",
+    "plan_sha256": "b881fc85abb27e5f8c892acb1ffbdd81904bcaef168f9bf7e37ec5a71da89a4f",
+    "schema_version": 2,
+    "source_sha256": "b2529ccfcc76dfbce086a43423c806a4f57d1dc2c3bce89eb7157306031e5f0d"
+  },
+  "verdict": "changes_requested",
+  "summary": "Focused plan prose is reconciled and exact approval hashes remain valid, but the active contract still contains the previously reported implementation-hold wording.",
+  "open_findings": [
+    {
+      "id": "EAPR21-01",
+      "priority": "P2",
+      "title": "Finish reconciling the active DESKTOP-SHELL contract resolution",
+      "locations": [
+        {
+          "path": "docs/workplans/desktop-app-bootstrap/contract.json",
+          "line": 29
+        }
+      ],
+      "finding": "The focused plan revision 20 marks exact-set review/approval complete and authorizes bounded probes/bootstrap, but its registered DESKTOP-SHELL.resolution still says implementation remains held until reconciliation, fresh reviews and explicit exact-set approval. This is the contract portion of prior finding EAPR-01 and remains unchanged in the current CLI binding.",
+      "impact": "The active decision register contradicts the completed approval state and can cause a downstream owner to re-request an already-given approval or hold authorized bounded work.",
+      "required_correction": "Update the resolution to record that packet r1 and its receipt complete the exact-set approval and that the bounded synthetic-data Electron/OpenCode probes/bootstrap are authorized, subject to current independent review/handoff registration and the existing exclusions. Re-register/review the changed contract; retain packet, receipt and document bytes/hashes unchanged and do not ask for another user approval."
+    }
+  ],
+  "observations": [
+    "Approval packet r1 SHA-256 9d45be0146846ed0cf3e4bf91995b7dff3e858fc355794bdae2af272ef401ecd and receipt SHA-256 deb1ebf40030d5855821af2f3a6a3bb0a8e94304b04492e0f0217921a1a7b885 match current bytes and the focused contract. The receipt explicitly authorizes bounded Electron/OpenCode probes and bootstrap; no repeated user approval is needed.",
+    "All nine focused document paths, versions and hashes match current bytes, the immutable packet table and parent registrations. The parent has two additional registered documents outside this nine-file approval. Electron main ownership, typed renderer admission, preview isolation and both macOS/Windows targets remain preserved.",
+    "Persistent personal data/storage/retention, user/global configuration and credentials, ambient services, public release, signing/notarization, app stores, auto-update and external telemetry remain held or excluded. Windows behavior still requires Windows execution; no package compatibility or runtime evidence is certified here.",
+    "All explicit active focused-plan revision references in the parent plan and contract now say revision 20. Packet r1 remains an immutable pre-approval snapshot at focused revision 18/parent revision 15; historical reports and change-history entries retain older revisions.",
+    "The broader claim that every reference outside history says revision 20 is not literally true: approved frozen UX line 5 and verification line 5 retain revision 18, and UX retains pre-review wording. Those exact approved document bytes must not be silently rewritten. Current execution authority is the focused plan revision 20 plus approval receipt; preserve the snapshot digests and distinguish their pre-approval labels from current gate status.",
+    "Independent product-review-r5 and design-spec-review-r5 reports pass for the unchanged nine document hashes, but bind focused plan revision 18. Both current ledgers have empty active reviews after plan re-registration. Read-only CLI handoff attempts for product/design_spec on both runs fail with: Obtain and record an independent pass for the current plan and contract first. After resolving the focused finding and recording current plan passes, the coordinator must obtain/register valid current downstream bindings and pass matching handoffs before dispatch. Historical semantic passes alone do not establish current CLI handoff readiness."
+  ],
+  "validation": "Independent static linked-plan review using exact CLI review-input bindings. Verified file digests, contract registrations, approval scope, current ledger status, existing independent review reports and read-only document handoff results. No tests, installs, Electron/OpenCode processes or runtime probes were executed. Only the two assigned reports were written.",
+  "provenance": {
+    "child_task_id": "/root/electron_approval_plan_review_final",
+    "author_task_id": "/root",
+    "role": "plan_reviewer",
+    "review_mode": "Fresh independent linked-plan review with separately bound verdicts",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false,
+    "files_modified": [
+      "docs/runs/desktop-app-bootstrap/plan-review-r21.json"
+    ]
+  }
+}

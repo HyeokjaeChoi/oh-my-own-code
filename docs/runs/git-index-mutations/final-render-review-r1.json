@@ -1,0 +1,157 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "2552ac5985470a78d5af214ec99baac40205d8457751d31b46ba42a9c2e806f6",
+    "environment_sha256": "bf6cbdd7f28e745d6669f7eec086ebfe25c2f75737abde462a10d7456b171b0c",
+    "gate": "design",
+    "plan_sha256": "cb00cf0b39fe91417a0bdc5410936f7ab02dabd410e792558a6ea727d92308e3",
+    "schema_version": 2,
+    "source_sha256": "35da889dd361d064a67c6340b2f4d15b71385ec8317240dc62c0669cff79a38f",
+    "verification_sha256": "2f6de26bff3bfac4a416ff0dfd417e0e382b791f18ac5272e9935f9313123180",
+    "work_class_sha256": "6229d9f55383c513255c61dda184c5f24ad6b52c55417bcf63c8c643028ec83c"
+  },
+  "verdict": "pass",
+  "summary": "plan8과 designv3의 선택 경로 Stage/Unstage UI 범위에서 통과입니다. 고정된 구현 캡처 27개를 직접 검토했습니다. 작업 이름, 선택 경로, staged 내용 손실 경고, 전체 metadata 줄바꿈, 성공·unknown·historical 상태와 적용 불가 안내에서 수정이 필요한 구체적 화면 결함을 찾지 못했습니다. 직접 화면 판단, 저장된 자동 관찰, source 근거를 구분했습니다.",
+  "open_findings": [],
+  "directly_inspected_captures": {
+    "directory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-index-mutations/evidence/hidden-r2/git-index",
+    "count": 27,
+    "origin": "실제 built Renderer와 preload를 synthetic Main에 연결한 BrowserWindow.webContents.capturePage().toPNG() 캡처",
+    "dimension_basis": "각 PNG의 실제 IHDR 크기를 evidence metadata와 대조했습니다.",
+    "desktop": {
+      "viewport_css": {
+        "width": 1440,
+        "height": 968
+      },
+      "zoom_factor": 1,
+      "pixel_dimensions": {
+        "width": 2880,
+        "height": 1936
+      },
+      "files": [
+        "git-index-1-ready-stage-preview-light-desktop.png",
+        "git-index-6-ready-stage-preview-metadata-light-desktop.png",
+        "git-index-8-ready-stage-preview-metadata-light-desktop.png",
+        "git-index-10-ready-stage-preview-metadata-light-desktop.png",
+        "git-index-12-ready-preview-dark-desktop-dark-desktop.png",
+        "git-index-26-ready-unstage-preview-dark-desktop.png",
+        "git-index-78-absent-stage-preview-metadata-light-desktop.png",
+        "git-index-99-unborn-existing-stage-preview-light-desktop.png"
+      ]
+    },
+    "narrow_760_at_200_percent": {
+      "content_bounds": {
+        "width": 760,
+        "height": 968
+      },
+      "viewport_css": {
+        "width": 380,
+        "height": 484
+      },
+      "zoom_factor": 2,
+      "pixel_dimensions": {
+        "width": 1520,
+        "height": 1936
+      },
+      "files": [
+        "git-index-17-ready-stage-applied-dark-760px200.png",
+        "git-index-25-ready-stage-applied-metadata-dark-760px200.png",
+        "git-index-42-sha256-stage-preview-light-760px200.png",
+        "git-index-49-sha256-stage-preview-metadata-light-760px200.png",
+        "git-index-51-sha256-stage-preview-metadata-light-760px200.png",
+        "git-index-91-absent-stage-applied-metadata-dark-760px200.png",
+        "git-index-117-refused-no_changes-dark-760px200.png",
+        "git-index-122-refused-stale_observation-dark-760px200.png",
+        "git-index-127-refused-expired_observation-dark-760px200.png",
+        "git-index-132-refused-lock_conflict-dark-760px200.png",
+        "git-index-137-refused-unsupported_index_mutation-dark-760px200.png",
+        "git-index-142-apply-denied-light-760px200.png",
+        "git-index-147-apply-unknown-light-760px200.png",
+        "git-index-153-apply-unknown-metadata-light-760px200.png",
+        "git-index-175-pending-preview-dark-760px200.png",
+        "git-index-180-historical-held-dark-760px200.png",
+        "git-index-185-historical-global-held-dark-760px200.png",
+        "git-index-190-historical-untrusted-dark-760px200.png",
+        "git-index-205-retained-original-key-light-760px200.png"
+      ]
+    }
+  },
+  "checks": [
+    {
+      "name": "current_review_binding",
+      "basis": "이 검토에서 실행한 읽기 전용 확인",
+      "result": "pass",
+      "details": "harness review-input의 현재 design binding이 final-render-input-r1.json의 최상위 8개 필드와 정확히 일치합니다. plan8, designv3, contract와 final-render-packet-r1.json의 파일 hash도 대조했습니다."
+    },
+    {
+      "name": "source_freeze",
+      "basis": "이 검토에서 실행한 읽기 전용 hash 확인",
+      "result": "pass",
+      "details": "source-freeze-r1.json의 46개 source 파일 hash가 현재 파일과 일치합니다."
+    },
+    {
+      "name": "capture_integrity_and_origin",
+      "basis": "이 검토의 파일 확인과 저장된 실행 기록",
+      "result": "pass",
+      "details": "209개 PNG 모두 실제 크기가 기록과 일치합니다. manifest는 pass, exitCode 0, wrapperExitCode 0, provenanceVerifiedAfter true입니다. 모든 캡처의 전후 기록은 visible false, focused false, focusable false입니다. hidden runner의 teardown은 exited true, code 0입니다. 캡처 전후 sourceBuildProvenance도 일치합니다."
+    },
+    {
+      "name": "direct_render_judgment",
+      "basis": "명시한 27개 이미지의 직접 판단",
+      "result": "pass",
+      "details": "light/dark에서 작업 이름과 focus 표시를 읽을 수 있습니다. 경로 checkbox, Stage/Unstage 선택, Preview와 Apply가 구분됩니다. 기존 staged 내용 손실 경고가 표시됩니다. 전체 작업 공간 경로, SHA1/SHA256 OID, index digest, Preview ID와 backup 이름은 줄바꿈됩니다. Unborn HEAD와 원래 index 없음은 별도로 표시됩니다. 성공 뒤 historical Preview와 재조회 안내가 표시됩니다. unknown은 원래 작업 조회와 자동 재전송 금지를 명시합니다. no_changes, lock_conflict, unsupported 상태는 적용 불가 이유를 표시합니다."
+    },
+    {
+      "name": "saved_interaction_observations",
+      "basis": "git-index-evidence.json과 e2e-git-index.mjs 검토",
+      "result": "pass",
+      "details": "34개 저장 상태에서 레이아웃·theme·keyboard·refocus·poll 전후 요청 및 효과 counter가 같습니다. metadata 선택 검사도 모두 complete입니다. 저장된 runner는 활성 control의 Tab/Shift+Tab 복귀, Enter를 통한 명시적 Preview/Apply, 취소 후 늦은 응답 무시, 원래 epoch/operation ID 조회, 실제 호출 보류 유지, 다른 작업 공간의 새 초안 유지를 확인합니다. pending 적용과 초안 유지 결과는 직접 이미지 판단이 아닌 자동 관찰입니다."
+    },
+    {
+      "name": "source_accessibility_and_state_contract",
+      "basis": "source 검토",
+      "result": "pass",
+      "details": "label이 있는 native checkbox/select/button, disabled 조건, role=status와 aria-live, 상태로의 명시적 focus 이동을 확인했습니다. CSS는 semantic token, overflow-wrap, pre-wrap, user-select:text를 사용합니다. held·untrusted 설명은 상위 Git 영역에 있습니다. historical Preview는 현재 적용 권한을 갖지 않습니다. Escape 취소는 별도 index 계약이 없으며 저장된 검사는 명시적 취소 control을 사용합니다."
+    },
+    {
+      "name": "prior_execution_reuse",
+      "basis": "읽기 전용 verifier 실행과 proof·ledger 검토",
+      "result": "pass",
+      "details": "PYTHONDONTWRITEBYTECODE=1 GIT_OPTIONAL_LOCKS=0 python3 -B docs/runs/git-index-mutations/verify-prior-check.py hidden-index가 exit 0으로 통과했습니다. 현재 source, 원래 environment, 213개 evidence 파일, build/resource/script provenance, fixed Git bytes와 component metadata를 검증합니다. 원래 10개 execution은 check_history에 정확히 보존되어 있습니다. 원래 argv/cwd/scope와 성공 조건도 대조했습니다. 현재 10개 check는 verified_prior_actual_check이며 new_test_execution false입니다. build는 기존 current build 재사용이며 새 rebuild로 보고하지 않습니다. 이전 publication과 hidden 실패 기록도 보존되어 있습니다."
+    },
+    {
+      "name": "separate_publication_and_reader_evidence",
+      "basis": "저장된 보고서 검토",
+      "result": "pass",
+      "details": "publication-r3는 실제 paired manager/service/registry와 app-staged Bun kernel을 synthetic repository에서 사용한 14개 case의 기록입니다. owned exit status는 0이고 전후 보존 기록은 일치합니다. reader-regression-r1은 실제 production reader와 fixed Git의 51개 case 통과 및 source/executable 안정성을 기록합니다. 이 검토에서는 이를 다시 실행하지 않았습니다."
+    },
+    {
+      "name": "run_status",
+      "basis": "읽기 전용 harness status",
+      "result": "pass",
+      "details": "run은 active입니다. 현재 ledger에는 독립 code와 design 최종 검토가 아직 등록되지 않았습니다. 이 보고서는 RENDER 판단만 제공합니다."
+    }
+  ],
+  "limits": [
+    "애플리케이션, build, 제품 테스트, provider, production Main을 시작하지 않았습니다. 파일 수정, ledger 기록, 위임도 하지 않았습니다.",
+    "209개 PNG의 파일 크기를 검증했지만 직접 시각 검토한 이미지는 명시한 27개입니다.",
+    "키보드 동작, 전체 문자열 선택, 자동 재전송 금지, pending 적용과 초안 유지는 저장된 자동 관찰과 source로 평가했습니다. 직접 조작하지 않았습니다.",
+    "held·untrusted 캡처의 index 영역은 일반 historical 안내를 표시합니다. 구체적 상위 설명은 source로 확인했으며 해당 설명 전체를 직접 본 것으로 주장하지 않습니다.",
+    "실제 Main 확인 창, assistive technology 출력, 새 index 채널의 실제 Event Host process lifetime은 이 UI evidence로 입증되지 않습니다.",
+    "publication-r3는 synthetic 파일에 대한 실제 production module 실행입니다. UI synthetic host 결과와 구분해야 합니다.",
+    "선택 경로 Stage/Unstage만 검토했습니다. commit, branch select/create, restore와 전체 제품 완료는 이 판정 범위에 없습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11cdd-a38e-7310-ac36-6547a7c15a59",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "identity_basis": "현재 검토 프로세스의 CODEX_THREAD_ID",
+    "independent_from_author": true,
+    "authored_or_repaired_reviewed_source": false,
+    "delegated": false,
+    "report_only": true,
+    "assignment": "/Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/git-index-final-render-assignment-r1.md",
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_revision": 8,
+    "design_version": 3
+  }
+}

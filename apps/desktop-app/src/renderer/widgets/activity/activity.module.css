@@ -1,0 +1,115 @@
+.panel {
+  font-size: 13px;
+  line-height: 1.5;
+  min-width: 0;
+}
+.panel h2 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+.panel h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 24px 0 12px;
+}
+.panel p {
+  margin: 8px 0;
+}
+.panel button {
+  border: 0;
+  border-radius: 8px;
+  min-height: var(--omoc-component-size-control-hit-target);
+  padding: 8px 12px;
+  background: var(--omoc-semantic-color-surface-subtle);
+  cursor: pointer;
+}
+.panel button:hover {
+  background: var(--omoc-semantic-color-selection-background);
+}
+.muted {
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--omoc-component-size-control-hit-target);
+  cursor: pointer;
+}
+.filter input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--omoc-semantic-color-text-primary);
+}
+.counts {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.counts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.counts dt {
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.counts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.events {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.events li {
+  padding: 12px 0;
+  overflow-wrap: anywhere;
+}
+.events li > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.events strong {
+  font-weight: 500;
+  font-size: 13px;
+}
+.events li > div > span {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.events p {
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.details {
+  font-size: 12px;
+}
+.details summary {
+  min-height: var(--omoc-component-size-control-hit-target);
+  display: list-item;
+  align-content: center;
+  cursor: pointer;
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.details dl {
+  margin: 0;
+  padding: 8px 12px;
+  background: var(--omoc-semantic-color-surface-subtle);
+  border-radius: 8px;
+}
+.details dt {
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.details dd {
+  margin: 0 0 8px;
+  font-family: var(--omoc-semantic-type-family-code);
+  overflow-wrap: anywhere;
+}

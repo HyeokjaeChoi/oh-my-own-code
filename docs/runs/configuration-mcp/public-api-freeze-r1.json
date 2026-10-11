@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "authority": "Actual Main producer source before disjoint consumers; no final acceptance",
+  "plan_revision": 3,
+  "actual_source_sha256": {
+    "apps/desktop-app/src/desktop-bridge.d.ts": "471972d9be3e58c013a34aca265ded7cebb8fb51f5fb345f12387542f6a6736d",
+    "apps/desktop-app/src/workbench-contract.mjs": "91431c5ba0a157061a8c3362557ebcba7b50ea88256f3902099786097c36acf3",
+    "apps/desktop-app/src/host/workbench-mcp.mjs": "601ab78536584803e80912cfa6d2131ed8ea60e56f96cc39ee055918385ef140"
+  },
+  "source_shapes": "Actual d.ts WorkbenchMcpObservation/Mutation/Request/ReceiptResult; actual helper exports MCP_FEATURE/MCP_STATUSES/mcpDigest/mcpNativeName/mcpStep/validMcpNativeName/validMcpSourceName/normalizeMcpDefinition/observeMcpCatalog",
+  "targeted_checks": "2 helper +7 contract top-level cases pass, scoped lint and desktop tsc pass. No Native/MCP/UI execution",
+  "coordinated_storage_producer_assignment": {
+    "status": "Not yet implemented; storage writer supplies actual checkpoint before host consumption",
+    "begin": "Add optional nativeServerName to begin input, required only for configuration.mcp.* mutations. Remove from identity before validate/store identity; store as separate admission payload/operation target. lookupIdentity shape remains unchanged. Non-MCP admission disallows nativeServerName. Duplicate compares same target as well as identity. Initial receipts must not leak private target.",
+    "dispatch": "Add optional nativeServerName field required only native.mcp.* steps. Exactly compare stored admission target, require identity.workspaceId and no sessionId, no nativeSessionId. Steps exact mcpStep(identity.type); no unrelated operation may dispatch MCP step.",
+    "completion": "mcp_registered/mcp_connection/mcp_removed as actual DTO; compare result.nativeName===admission target and mcpNativeName(workspaceId,result.sourceName), exact allowed action/status/type/step combination, no delta, no speculative result on unknown. Allow verified no-effect absent remove only zero dispatch/no delta/admitted none with mcp_removed. Marker before admission. No config/text/ownership metadata persisted.",
+    "feature": "configuration_mcp_v1"
+  },
+  "factory": "Existing createWorkbenchService injection shape unchanged at this checkpoint; confirmMcp injection will be implemented and separately frozen by Main before fixture consumption. Do not guess factory options."
+}

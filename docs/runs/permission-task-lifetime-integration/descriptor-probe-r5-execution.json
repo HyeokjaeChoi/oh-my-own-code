@@ -1,0 +1,105 @@
+{
+  "passed": true,
+  "pid": 60056,
+  "exitCode": 0,
+  "signal": null,
+  "sourceStable": true,
+  "engineStable": true,
+  "result": {
+    "passed": true,
+    "bunVersion": "1.4.2",
+    "cases": [
+      {
+        "name": "warmup",
+        "passed": true,
+        "descriptorsReturnedToBaseline": true,
+        "ownerDescriptors": 1,
+        "baselineFDs": 4,
+        "finalFDs": 4
+      },
+      {
+        "name": "exact byte pages and immutable original identity",
+        "passed": true,
+        "descriptorsReturnedToBaseline": true,
+        "ownerDescriptors": 1,
+        "baselineFDs": 4,
+        "finalFDs": 4
+      },
+      {
+        "name": "root and nested directory records preserve names/kinds",
+        "passed": true,
+        "descriptorsReturnedToBaseline": true,
+        "ownerDescriptors": 1,
+        "baselineFDs": 4,
+        "finalFDs": 4
+      },
+      {
+        "name": "wrong kind is privately classified after original cleanup",
+        "passed": true,
+        "descriptorsReturnedToBaseline": true,
+        "ownerDescriptors": 1,
+        "baselineFDs": 4,
+        "finalFDs": 4
+      },
+      {
+        "name": "traversal/symlink/hardlink have no outside content effect",
+        "passed": true,
+        "descriptorsReturnedToBaseline": true,
+        "ownerDescriptors": 1,
+        "baselineFDs": 4,
+        "finalFDs": 4
+      },
+      {
+        "name": "observed root replacement cannot resurrect any shared authority",
+        "passed": true,
+        "descriptorsReturnedToBaseline": true,
+        "ownerDescriptors": 1,
+        "baselineFDs": 4,
+        "finalFDs": 4
+      },
+      {
+        "name": "directory changed after stream close cannot publish old rows",
+        "passed": true,
+        "descriptorsReturnedToBaseline": true,
+        "ownerDescriptors": 1,
+        "baselineFDs": 4,
+        "finalFDs": 4
+      },
+      {
+        "name": "whole directory budget refuses instead of returning a partial list",
+        "passed": true,
+        "descriptorsReturnedToBaseline": true,
+        "ownerDescriptors": 1,
+        "baselineFDs": 4,
+        "finalFDs": 4
+      },
+      {
+        "name": "actual resource retains original file IO through reentrant cancellation",
+        "passed": true,
+        "descriptorsReturnedToBaseline": true,
+        "ownerDescriptors": 1,
+        "baselineFDs": 4,
+        "finalFDs": 4
+      },
+      {
+        "name": "actual resource owns directory stream through its final close",
+        "passed": true,
+        "descriptorsReturnedToBaseline": true,
+        "ownerDescriptors": 1,
+        "baselineFDs": 4,
+        "finalFDs": 4
+      },
+      {
+        "name": "actual Native files view preserves identity across bounded and whole reads",
+        "passed": true,
+        "descriptorsReturnedToBaseline": true,
+        "ownerDescriptors": 1,
+        "baselineFDs": 4,
+        "finalFDs": 4
+      }
+    ],
+    "limits": "Owned physical file/directory smoke only; not Native execution, task authority, OS sandbox, power-loss or same-user change-and-restore proof. No provider/server/private originals. Node scripted tests supply failure-injection timing evidence separately."
+  },
+  "namespaceRetained": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG",
+  "limits": "Source/engine before-after hashes are not an OS sandbox or change-and-restore proof. Synthetic namespaces retained. No Native/provider/server or task execution approval."
+}

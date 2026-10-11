@@ -1,0 +1,187 @@
+{
+  "schema_version": 2,
+  "run": "configuration-skill-runtime",
+  "reviewer": "design_qa",
+  "reviewed": {
+    "contract_sha256": "c9122d0a8418ff50c5e1c3e85cc745c29548143d34cb0c9d07958973e9bde41f",
+    "environment_sha256": "6ea57967c10c02df833eb39b003e733545ede90659bb190ed75b482a4a1ac686",
+    "gate": "design",
+    "plan_sha256": "a54bb057914f7f0e69d25eb8101d6abae7a53c091fafef2a81078cbfd65a17b6",
+    "schema_version": 2,
+    "source_sha256": "5052c067b46b620c4594c391a75e11d7ee05713f3774e3d14717aafd1fec09ae",
+    "verification_sha256": "13713b446d6f95da7f38d72b1b0575c00ba2590faec4c8b64845f4ae82d53ea3",
+    "work_class_sha256": "de123056130a1f34e7ec8be5df11de14cc43bc19e46f8841ce1f93f23aa69925"
+  },
+  "verdict": "pass",
+  "summary": "현재 hidden-r4의 실제 PNG 18개를 직접 검토했습니다. Native Skills 화면은 design v1에 맞게 파일 저장, Native 등록, 세션 기록을 구분합니다. desktop과 760px·200% 화면에서 필수 수정 사항을 찾지 못했습니다.",
+  "open_findings": [],
+  "review_boundary": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_revision": 1,
+    "design_version": "1",
+    "gate": "RENDER",
+    "mode": "accessible_implementation_captures",
+    "locale": "ko",
+    "theme": "light",
+    "scope": "Native Skills의 명시적 상태 확인, 자동 호출 없는 등록, 소유 등록 제거, 선택한 세션에 적용 및 오류·보류·복원 상태",
+    "code_gate_performed": false,
+    "whole_product_completion": false
+  },
+  "capture_evidence": {
+    "root": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-skill-runtime/evidence/hidden-r4/ui-states",
+    "report": "ui-states-evidence.json",
+    "manifest": "manifest.json",
+    "origin": "실제 빌드된 Electron renderer/preload와 synthetic Main fixtures",
+    "capture_method": "BrowserWindow.webContents.capturePage().toPNG()",
+    "os_window_visible": false,
+    "os_window_focused": false,
+    "directly_inspected_png_count": 18,
+    "png_header_dimensions_checked": 391,
+    "png_header_dimension_mismatches": 0,
+    "groups": [
+      {
+        "viewport_css": {
+          "width": 1440,
+          "height": 928
+        },
+        "content_bounds_size": {
+          "width": 1440,
+          "height": 928
+        },
+        "pixel_dimensions": {
+          "width": 2880,
+          "height": 1856
+        },
+        "display_scale_factor": 2,
+        "zoom_factor": 1,
+        "pixel_ratio": 2,
+        "directly_inspected_files": [
+          "desktop-configuration-skill-runtime-empty-registered-action-synthetic.png",
+          "desktop-configuration-skill-runtime-unavailable-status-synthetic.png",
+          "desktop-configuration-skill-runtime-already-present-control-4-synthetic.png",
+          "desktop-configuration-skill-runtime-denied-action-synthetic.png",
+          "desktop-configuration-skill-runtime-changed-action-synthetic.png"
+        ]
+      },
+      {
+        "viewport_css": {
+          "width": 380,
+          "height": 484
+        },
+        "content_bounds_size": {
+          "width": 760,
+          "height": 968
+        },
+        "pixel_dimensions": {
+          "width": 1520,
+          "height": 1936
+        },
+        "display_scale_factor": 2,
+        "zoom_factor": 2,
+        "pixel_ratio": 4,
+        "directly_inspected_files": [
+          "desktop-configuration-skill-runtime-empty-applied-body-0-synthetic.png",
+          "desktop-configuration-skill-runtime-owned-control-4-synthetic.png",
+          "desktop-configuration-skill-runtime-history-unavailable-history-synthetic.png",
+          "desktop-configuration-skill-runtime-empty-removed-history-synthetic.png",
+          "desktop-configuration-skill-runtime-foreign-history-synthetic.png",
+          "desktop-configuration-skill-runtime-restart-status-synthetic.png",
+          "desktop-configuration-skill-runtime-untrusted-status-synthetic.png",
+          "desktop-configuration-skill-runtime-unknown-action-synthetic.png",
+          "desktop-configuration-skill-runtime-pending-action-synthetic.png",
+          "desktop-configuration-skill-runtime-restoredoldkey-status-synthetic.png",
+          "desktop-configuration-skill-runtime-cancelled-status-synthetic.png",
+          "desktop-configuration-skill-runtime-inherited-history-synthetic.png",
+          "desktop-configuration-skill-runtime-owned-status-synthetic.png"
+        ]
+      }
+    ],
+    "state_metadata_note": "empty-registered, empty-applied, empty-removed, cancelled 파일의 screenshots.state는 공통으로 'Skill runtime empty'입니다. 세부 상태는 파일명, configurationSkillRuntimeStates, 실제 화면 문구를 함께 확인했습니다."
+  },
+  "observations": [
+    {
+      "concern": "상태와 실행 의미",
+      "verification": "direct_png_inspection",
+      "result": "파일 저장, Native 등록, 세션 기록을 별도로 설명합니다. autoinvoke:false, resume:false 및 모델 사용 여부를 증명하지 않는다는 안내가 보입니다. 등록 완료 뒤에는 새 상태 확인이 필요하다고 표시합니다."
+    },
+    {
+      "concern": "적용 대상과 본문",
+      "verification": "direct_png_inspection",
+      "result": "긴 작업 공간·세션 이름, 파일 경로와 본문이 줄바꿈됩니다. owned 화면의 적용 버튼과 포커스 링을 확인했습니다. 이미 기록된 Native ID는 재적용 버튼이 비활성화됩니다."
+    },
+    {
+      "concern": "제거와 소유권",
+      "verification": "direct_png_inspection",
+      "result": "제거 뒤 소유 등록은 0개로 표시되고 기존 세션 기록은 남습니다. foreign 항목은 읽기 전용으로 표시됩니다."
+    },
+    {
+      "concern": "불완전한 기록과 fork",
+      "verification": "direct_png_inspection",
+      "result": "history_truncated는 기록 없음으로 표시하지 않습니다. 적용 버튼은 비활성화됩니다. inherited 기록은 관찰한 사실로 표시하며 직접 적용 또는 fork 출처를 추정하지 않습니다."
+    },
+    {
+      "concern": "오류와 복구",
+      "verification": "direct_png_inspection",
+      "result": "runtime_error, SKILL_CHANGED, CANCELLED를 확인했습니다. pending은 처리 중임을 표시합니다. unknown은 자동 재전송하지 않으며 보류 해제 전 변경할 수 없다고 설명합니다. untrusted 안내에는 ‘새 세션’에서 신뢰를 확인하면 새 대화도 생성된다는 설명이 있습니다."
+    },
+    {
+      "concern": "디자인과 반응형",
+      "verification": "direct_png_inspection_and_source_reference",
+      "result": "중립색 화면, 보조 설명, 코드 본문 영역, 파란 포커스 링이 저장소 디자인 계약과 일치합니다. 직접 본 760px·200% 화면에서 핵심 버튼·상태·본문의 가로 잘림을 찾지 못했습니다. CSS는 기존 semantic tokens를 사용합니다."
+    },
+    {
+      "concern": "키보드, 선택, 보류 초안, 자동 읽기와 재전송",
+      "verification": "recorded_execution_evidence_and_runner_source_inspection",
+      "result": "기존 hidden-r4 기록과 해당 runner assertions를 대조했습니다. 키보드 포커스, 전체 대상·본문 선택, unknown 상태의 초안 편집·선택, 재선택 뒤 자동 읽기·효과 없음, 원래 요청 키 조회 및 reload 뒤 재전송 없음 검사가 있습니다. 이를 이번 검토에서 직접 재실행한 것으로 주장하지 않습니다."
+    }
+  ],
+  "freshness_checks": {
+    "method": "파일을 읽고 SHA-256 및 PNG IHDR을 대조했습니다.",
+    "frozen_source_files_checked": 52,
+    "frozen_source_mismatches": 0,
+    "manifest_current_build_input_files_checked": 125,
+    "manifest_selected_script_and_fixture_files_checked": 4,
+    "manifest_launch_artifact_files_checked": 7,
+    "manifest_inventory_file_hash_mismatches": 0,
+    "build_stamp_hash_matches": true,
+    "existing_required_check_records": {
+      "count": 9,
+      "all_exit_code_zero": true,
+      "all_inputs_changed_false": true,
+      "all_interrupted_false": true,
+      "all_timed_out_false": true
+    },
+    "existing_hidden_execution": {
+      "result": "pass",
+      "captures": 391,
+      "runtime_states": 20,
+      "provenance_verified_after": true,
+      "owned_exit": {
+        "exited": true,
+        "code": 0
+      }
+    }
+  },
+  "limits": [
+    "직접 시각 검토한 PNG는 18개입니다. 391개 전체를 시각 검토했다고 주장하지 않습니다.",
+    "UI 동작 근거는 실제 renderer/preload와 synthetic Main fixtures의 기존 실행 기록입니다.",
+    "이번 검토에서는 앱, Native runtime, provider, 테스트 또는 build를 실행하지 않았습니다.",
+    "키보드 상호작용과 초안 편집은 기존 실행 기록을 검토했습니다. 직접 조작하거나 screen reader를 검증하지 않았습니다.",
+    "Dark theme와 Windows 화면은 이번 검토 범위에 없습니다.",
+    "이 판정은 Native Skills의 RENDER gate에만 적용됩니다. CODE gate, 전체 F14 또는 제품 완료 판정은 포함하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11aa3-5779-7333-a75b-13dd85e30756",
+    "author_task_id": null,
+    "identity_evidence": "현재 환경의 CODEX_THREAD_ID를 읽었습니다. author_task_id는 제공되지 않았습니다.",
+    "independent": true,
+    "authored_plan": false,
+    "authored_design": false,
+    "modified_source": false,
+    "modified_artifacts": false,
+    "modified_ledger": false,
+    "recursively_delegated": false,
+    "report_persisted": false,
+    "gate_registered": false
+  }
+}

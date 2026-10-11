@@ -1,0 +1,10 @@
+--- before/apps/desktop-app/scripts/e2e-git-branch-restore.mjs
++++ after/apps/desktop-app/scripts/e2e-git-branch-restore.mjs
+@@ -948,6 +948,7 @@
+   state: currentState,
+   states,
+   observations,
++  pageErrors: errors,
+   screenshots,
+   teardown,
+   sourceBuildProvenance: { before: provenanceBefore, after: provenanceAfter },

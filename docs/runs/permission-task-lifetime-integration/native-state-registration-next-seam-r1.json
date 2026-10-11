@@ -1,0 +1,34 @@
+{
+  "scope": "read-only actual registration seam, not approval or selected replacement architecture",
+  "sources": [
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-gk30pdy3.js",
+      "sha256": "3e6a9601868a860703d8fb99a2b10558a4450f9046077ce70d904d3c8c37e1ca",
+      "bytes": 1470
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-k1qb6em6.js",
+      "sha256": "dc81c5bdef2b2b06ae3dd10c7d2d7643a7d20963481b8f1d088ba89ae545b7c3",
+      "bytes": 1855
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-rdw6cm16.js",
+      "sha256": "8627e8ffcac2bfc7225c3d4731b0d180c86dc1cf9b445e7f2f74fb436328288c",
+      "bytes": 4933
+    }
+  ],
+  "findings": [
+    "Second original builtin opencode.config.worktree calls native Worktree.transform directly; current Host ctx transform decorator does not observe it.",
+    "ConfigMCP register2 calls native MCP.transform directly and starts a config.updated subscription; opening Host MCP transform does not capture this registration.",
+    "Native State.create owns transforms/replay/Scope finalization already; any correction must preserve this sole owner and actual original activation Scope/Fiber rather than a second mutable callback registry.",
+    "Current unknown original plugin activation fails before factory; this is safe but prevents complete builtin startup.",
+    "Recipe62files249edits has7 remaining under current256 bound. Do not raise or consolidate solely to bypass the bound."
+  ],
+  "candidate_to_evaluate": "Extend same existing Control source/parent/Scope registration tracking at original native State.transform for source-verified original constructor families, using actual original activation identity and closed domain/callback membership; keep other setup effects held. This is not accepted or implemented. Review any changed provenance/security boundary independently before use.",
+  "constraints": [
+    "Do not infer callback purity from an ID or execute unknown callback to test it.",
+    "Source owner must be actual fixed original plugin/effect object, same activation Fiber and original Scope; copies/foreign contexts/ended fibers must refuse.",
+    "Preserve original State replay/batch/notifications/disposal and existing Host/SDK/tool producer identity checks.",
+    "No positive grant or complete inventory claim from this note."
+  ]
+}

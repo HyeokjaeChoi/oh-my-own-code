@@ -1,0 +1,33 @@
+# Current P7 checkpoint
+Plan6/storage-contract5 entry+design_spec pass.
+Owner frozen63 synthetic Main pass+independent checkpoint pass. No production OS restart lifetime guarantee.
+Registry v5-r3 Main93/93 pass and source hashes verified. Independent review preserved prior scope/policy/digest fixes but found JR-V5-R3-01 no-effect first-session retry consumes reserved folder ID. Fresh repair completed101/101 writer pass; v5-r4 actual hashes Main matched; author closed. Independent reviewer01a106e4-e635-7651-ab62-fc6b2a72f048 PASS preserved in first-session-retry-review-v5-r4.json; reviewer closed. Main targeted101/101 exit0. API unchanged; no final gate yet.
+Host original12-file checkpoint104/104 preserved; author closed. Main found missing quit/drain admission fence. Fresh worker01a106e3-996e-7333-aacf-0657d334d934 owns ONLY main.mjs + workbench-admission.mjs/test. No DTO/API shape edits. Original Host freeze superseded only for these repair paths; other9 paths remain frozen.
+Renderer complete/frozen10 hashes Main matched, exact Main runner126/126 pass; author closed.
+Fixture/probe complete six hashes Main verified; Main Node37/37 pass (original30+new7 preserved), author closed. No runtime invocation. Full11 checks await shutdown3-source freeze and r4 independent review.
+OS lifetime analyst result saved+author closed. Actual separate-witness kqueue NOTE_EXIT primitive observed on owned synthetic process only; future design needs reviewed contextual hook/evidence/helper. Production nonfresh Native preflight independently blocked (zero app retained not inbox proof).
+Durable typed-empty fork retains unknown after flushed fork intent, no confirmed mapping, no replay. Existing P4 memory typed proof tests remain.
+Shutdown correction completed87/87 writer checks; merged host-source-freeze-v5-r2.json and coherent-source-freeze-v5-r1.json bind current35 source files. All previous specialists closed. Final independent review still required.
+Global storage-unit first attempt exit124 timeout300, inputs unchanged; failed record retained. Fresh engineer01a106fb-7829-7f32-9ff4-d4f75d4033c6 diagnosing bounded Node-only hang with narrow host ownership. No safety weakening authorized.
+Global coherent r2 nine Node/static/build/package checks exit0. First hidden copy failure retained as p7-storage-native-r1-failed-copy. Second hidden run reaches P7 durable/imported states, then recovery draft expected readonly contradicts accepted enabled/selectable draft contract. Fresh script-only correction01a10705-76f9-7bc1-8a1b-896d1e087718 in progress. Owned hidden host exit0 confirmed.
+First Native setup failed before runtime because registered evidence parent absent; Main prepared it. Actual packaged probe then failed on singleton native list cursor assertion. Native failure evidence retained, all Host exits observed, but parent did not confirm exact Native child exit on disconnect (historical PID absence is not proof). Fresh probe/fixture correction01a10703-d5e2-7f20-902b-3eba93983ac6 diagnoses bounded pagination and explicit connected cleanup before disconnect. No durable namespace cleanup or guessed PID signals.
+Node26 intermittent timeout remains unresolved despite current registered pass; one fresh read-only QA diagnostic01a10706-5ee3-7343-8a07-78cd9595851c checks bounded individual Node26 runs. Previous Node24 passes cannot be substituted for Node26 evidence. Final independent code/design gates/outcome remain outstanding. No user approval needed for current local work.
+
+Latest: all specialist source authors/QA above completed and closed. Hidden UI exact retry PASS46 captures/nine P7 states; earlier copy/draft failures preserved. Source-changed during that hidden check, so collect final coherent evidence after current scripts freeze. Node26 diagnostic eight individual passes+one272 pass; no proven hang cause. Main explicitly selects Node24.14.1 for final literal-contract-argv sequence, tooling stamp saved; Node26 limitation retained.
+Coherent source r4 verified35 hashes. Metadata fixture corrected46 Node tests; latest actual Native passed original five-field metadata/digest/create receipt and synthetic history verification, then stopped at nonempty durable log assumption after SDK export/remove/import. SessionTransferData local pinned SDK contains info+messages, not event log. Fresh script worker01a1071b-44e1-71e2-9b38-734053701a0f adds a real service/journaled distinct-title rename after history import and requires authentic durable Native rename event before normal/SIGKILL preservation checks. No fabricated events/empty-pass/SQLite edits; production sources unchanged. Latest Native cleanup all owned exits confirmed; earlier41795 remains historical unverified. Final gate still absent.
+
+## 2026-10-04 Native 이벤트 조회 확인
+
+고정 Native 실행에서 after=0, follow=false 조회는 log.synced 한 건만 반환했습니다. 제목 변경과 원래 위치·메타데이터 검사는 통과했지만, 과거 이벤트 기록 검사는 실패했습니다. 이번 시도의 소유 프로세스 종료를 확인했습니다. 이전 PID41795의 종료 증명 부족은 별도로 유지합니다.
+
+OpenCode v2.0.18 고정 commit 소스에서 Bus의 persist 기본값 false를 확인했습니다. 실제 CLI가 이를 설정할 수 있는지 별도 새 조사 담당자가 확인합니다. 검증 담당자는 이벤트 기록 미지원 상태를 실패로 유지하면서 독립된 대화·재시작·강제 종료 검사를 더 관찰할 수 있도록 검사 흐름을 보완합니다. P7 전체 완료 또는 이벤트 복구 지원을 주장하지 않습니다.
+
+## Tooling reconciliation
+
+The earlier Node26-only diagnostic sentence is historical. Main subsequently selected installed Node24.14.1 through PATH for contracted literal argv, recorded in final-tooling-r3.json. Nine contracted checks passed under that exact runtime before later probe-script corrections. This is separate Node24 evidence, not a claim that the intermittent Node26 timeout was repaired. Final current-source checks must use one recorded runtime consistently.
+
+## Coherent r8 actual checks
+
+All11 checks share source SHA 343e17fe5bdb3dcecf1371933644103751d15c403030df0839865c8671fe6547. Ten pass; Native remains exit1 NATIVE_EVENT_HISTORY_UNSUPPORTED. Independent native owner/history/normal controlled reopen/SIGKILL/pending hold/journal/partial mapping/inert migration scopes complete with no stepFailures. All17 current owned processes exited; six namespaces retained. Controlled exit proof is not standalone production restart; historical41795 remains unverified. Current hidden UI46 captures/9 states pass without input drift. Final code/design/outcome gates not claimed. Official server event-enabled host feasibility is the next changed architecture concern.
+
+Coordinator correction: packageSha256 denotes aggregate launch inventory, not app.asar filehash. An incorrect standalone scratch comparison triggered an unnecessary extra Native attempt; retained earlier attempt native-r1-event-unsupported-pre-rebuild-r8 name is historical, not proof of package drift. Per-file current comparison confirms all launch files match.

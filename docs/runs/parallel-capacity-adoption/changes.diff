@@ -1,0 +1,123 @@
+--- before/.agents/skills/solo-orchestrate/SKILL.md
++++ after/.agents/skills/solo-orchestrate/SKILL.md
+@@ -19,7 +19,7 @@
+ 
+ Before implementation, request an independent `plan_reviewer` in a fresh child routed under the shared adaptive-routing reference. Give it the user outcome, current evidence, constraints, proposed plan, and open choices. Resolve material findings and record the reviewed plan. This is peer review, not a new user approval requirement. Research may precede it; artifact implementation follows it. A typo- or label-only change may use a compact plan and review; see run-protocol.md.
+ 
+-Dispatch only needed roles with the current plan path and revision/hash, bounded outcome, input paths, owned files, acceptance criteria, and report path under `docs/runs/<run-id>`. Route `code_explorer` and `web_researcher` to factual retrieval; send recommendations, architecture choices, and other judgment to the appropriate judgment role. Use `qa_runner` for specified observation-only checklists and browser/device evidence, then send its report to `design_qa`, `reviewer`, or another required final reviewer; `qa_runner` cannot issue or satisfy a final gate. Keep dependencies ordered; cap parallel specialists at three. After capacity failure, reconcile task state and diagnose requirements, approach, capability, and transport before retrying; failure alone does not justify upgrading. Route unspecified settings under adaptive-routing.md, preserve exact user choices and explicit inheritance requests, and record authority and observation separately. Before assigning implementation that consumes product/design documents, register them, obtain independent `product_reviewer`/`design_spec_reviewer` passes, and run the matching `handoff` check. Document changes require renewed review. Read-only reviewers return reports for the coordinator to persist; authors do not approve their own independent review. Compatible independent judgments may share one bounded handoff only when each verdict remains separately identified.
++Dispatch only needed roles with the current plan path and revision/hash, bounded outcome, input paths, owned files, acceptance criteria, and report path under `docs/runs/<run-id>`. Route `code_explorer` and `web_researcher` to factual retrieval; send recommendations, architecture choices, and other judgment to the appropriate judgment role. Use `qa_runner` for specified observation-only checklists and browser/device evidence, then send its report to `design_qa`, `reviewer`, or another required final reviewer; `qa_runner` cannot issue or satisfy a final gate. Keep dependencies ordered; configure up to eight open specialist threads beside the coordinator, subject to any lower capacity advertised by the active client. Use only independent tasks with disjoint writer ownership. A completed child may remain open and occupy a slot; preserve its results before closing it if supported, and do not assume completion or interruption frees capacity. After capacity failure, reconcile task state and diagnose requirements, approach, capability, and transport before retrying; failure alone does not justify upgrading. Route unspecified settings under adaptive-routing.md, preserve exact user choices and explicit inheritance requests, and record authority and observation separately. Before assigning implementation that consumes product/design documents, register them, obtain independent `product_reviewer`/`design_spec_reviewer` passes, and run the matching `handoff` check. Document changes require renewed review. Read-only reviewers return reports for the coordinator to persist; authors do not approve their own independent review. Compatible independent judgments may share one bounded handoff only when each verdict remains separately identified.
+ 
+ Every feature or bugfix needs an independent code gate regardless of size; scale depth to risk. Final reviewers return fixes to implementers and cannot approve their own repairs.
+ 
+--- before/.agents/skills/solo-orchestrate/references/run-protocol.md
++++ after/.agents/skills/solo-orchestrate/references/run-protocol.md
+@@ -1,6 +1,8 @@
+ # Run protocol (schema v2)
+ 
+ The primary coordinator is the sole ledger writer. Run commands from a product root with `python3 .solopreneur/harness.py`; in this toolkit use `python3 scripts/harness.py`. A per-run lock rejects overlapping commands. Every specialist receives the current `docs/runs/<run-id>/plan.md` path and revision/hash, relevant artifacts, owned files, acceptance IDs, authorized scope, and report path. Fresh children receive a bounded handoff, not the primary transcript. Corrections use a new clean child with the prior report by path. `task_name` is a label, not proof of a role, clean context, or runtime settings.
++
++The library config allows up to eight open specialist threads, excluding the primary, as a ceiling. Use the lower of that setting and the active client's actual capacity; configuration edits do not live-update an existing session. In this session on 2026-09-26, the active host reported four total slots; that observation is not a reusable host limit. Dispatch only the independent work needed, with disjoint writer ownership. A completed child can remain open and occupy capacity: preserve its outputs before closing it if the client supports closing, and never assume completion or interruption releases a slot.
+ 
+ ## Runtime route
+ 
+--- before/.codex/config.toml
++++ after/.codex/config.toml
+@@ -5,7 +5,7 @@
+ 
+ [agents]
+ enabled = true
+-max_concurrent_threads_per_session = 3
++max_concurrent_threads_per_session = 8
+ 
+ # Lifecycle hooks are declared only in hooks.json to avoid duplicate execution.
+ # Additional MCP servers are selected per project from the integration catalog.
+--- before/.solopreneur/docs/agent-catalog.md
++++ after/.solopreneur/docs/agent-catalog.md
+@@ -2,7 +2,7 @@
+ 
+ The primary conversation is the coordinator. The 26 roles are capabilities selected by task outcome, not a batch to launch together. The coordinator routes unspecified specialist model and effort under the [adaptive-routing reference](../../.agents/skills/solo-orchestrate/references/adaptive-routing.md); exact user choices and explicit inheritance/default instructions take precedence. Role TOMLs, the role manifest, and launcher contain no permanent model or effort pins. [Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+ 
+-Up to three independent specialists may run beside the coordinator. Use a fresh child and a path-based handoff; `task_name` alone is a label, not proof of role selection or clean context. The coordinator integrates and writes the run ledger.
++The project config allows up to eight open specialist threads beside the coordinator, subject to any lower capacity in the active client. Use only independent tasks with disjoint writer ownership. Use a fresh child and a path-based handoff; `task_name` alone is a label, not proof of role selection or clean context. Completed children may remain open and occupy slots; preserve their results before closing them if supported. The coordinator integrates and writes the run ledger.
+ 
+ | Role | Workflow | Assigned outcome |
+ | --- | --- | --- |
+--- before/.solopreneur/docs/codex-runtime.md
++++ after/.solopreneur/docs/codex-runtime.md
+@@ -39,6 +39,8 @@
+ 
+ ## Connections and current-session limits
+ 
++The project config allows up to eight open specialist threads per session, excluding the primary, but it cannot raise a lower limit enforced by the active client. Use the lower actual capacity; in this session on 2026-09-26, the active host advertised four total slots. That observed value can vary by host and session. Editing this file does not hot-reload an existing session: start a fresh session or reload settings as the client supports, then confirm its effective capacity. A completed child may still occupy an open-thread slot. Preserve its results before closing it if that action is supported; do not assume completion or interruption frees capacity.
++
+ The public `openaiDeveloperDocs` MCP is enabled by default at `https://developers.openai.com/mcp`. Seven account-based services remain per-product opt-in. Authenticate only the needed server and verify access with `/mcp`; identifiers may be committed, token values may not. `codex mcp add` ordinarily edits personal settings; this toolkit manages project TOML instead. [MCP setup](mcp.md)
+ 
+ Project config queries before trust may not expose project servers. The initial source probe discovered this project's configuration layer but found it untrusted in persisted user settings. No global trust was changed. Check `/skills`, `/mcp`, and `/hooks` in a fresh trusted product session.
+--- before/.solopreneur/docs/harness.md
++++ after/.solopreneur/docs/harness.md
+@@ -36,7 +36,7 @@
+ | ASO/marketing | aso_specialist, store_assets, marketing_specialist | Metadata, actual capture/export manifest, landing page/campaign and measured CTA |
+ | Release and operations | release_engineer, reliability_engineer | Release evidence, rollout/recovery record, error triage, runbook, next improvement |
+ 
+-Parallelize only independent work. Up to three spawned specialists may run alongside the primary. Code writers own disjoint files. A read-only reviewer returns findings; the primary persists them. Review must be a separate invocation from the author, including growth/release review. The planner can request specialist analysis before the plan reviewer integrates the final plan.
++Parallelize only independent work. The project config permits up to eight open spawned specialists alongside the primary, subject to any lower capacity in the active client. Code writers own disjoint files. Completed children may still occupy slots; preserve results before closing a child if supported, and do not assume completion or interruption frees capacity. A read-only reviewer returns findings; the primary persists them. Review must be a separate invocation from the author, including growth/release review. The planner can request specialist analysis before the plan reviewer integrates the final plan.
+ 
+ Use named custom agents only when the callable client creates a separate clean specialist context. Some collaboration tools expose model/effort but no custom-role selector; read the chosen TOML and pass its instructions, authorization, plan SSOT, and bounded task to a fresh child instead. Route unspecified settings under the adaptive-routing reference, preserving exact user choices and explicit inheritance/default instructions. Every specialist is a clean-context worker and the primary remains the sole orchestrator and ledger writer. Never pretend that a `task_name` alone selects a role or that a named role automatically means a clean context. Read `.agents/skills/solo-orchestrate/references/run-protocol.md` from the toolkit or applied product root.
+ 
+--- before/.solopreneur/managed.json
++++ after/.solopreneur/managed.json
+@@ -1,5 +1,5 @@
+ {
+-  "agents_hash": "be0dc871e6983cab895852c09abe1e50f6eeabb1ce8fe059990814521210281f",
++  "agents_hash": "336d01386cb6fb29364aa2ee9f495f6ac54d4c9195b8db2275abfe812432ee97",
+   "files": {
+     ".agents/skills/solo-analytics-experiment/SKILL.md": "8f3e60723c567bf48f6b12c6ab5655cf359a3c90e8a34c6f7178da15ffdc302e",
+     ".agents/skills/solo-analytics-instrumentation/SKILL.md": "43bc7a98b519c6a5b91a7c395852ec136f04c115fbb3387de9342224f6206d9b",
+@@ -21,14 +21,14 @@
+     ".agents/skills/solo-marketing/SKILL.md": "aa32583f1384fa67ed967a6efe25d20ae15f814ab5b5e4d081b67c5bf278af3f",
+     ".agents/skills/solo-marketing/references/landing-workflow.md": "eda7b70e493914abd9074c3dc9d0ec2584517d5baad981d5779d3c43e23377a3",
+     ".agents/skills/solo-monitoring/SKILL.md": "df22dc728991b1b0f6df4a83bc5eef21ef1d92e1b6c270ae20312a328ed7684e",
+-    ".agents/skills/solo-orchestrate/SKILL.md": "745ba5d47a553ef6b844c1b3d5d96ebb14968679bc1b99eab3108cd10dc89196",
++    ".agents/skills/solo-orchestrate/SKILL.md": "1b71f4d317adde4ec3a93a01df37b71332bae0c4999127b383d08ccbbb71e98d",
+     ".agents/skills/solo-orchestrate/evals/PROTOCOL.md": "58d233180d57637365ad2f2b456881d2a4d0e5fb82ab83d40529948ca717d7f5",
+     ".agents/skills/solo-orchestrate/evals/requests.json": "b83bb03883e1e569672be69d6b60f39243a224620f0d2aec3c5c53ff4d37bda7",
+     ".agents/skills/solo-orchestrate/evals/rubric.json": "95ca5b7d1a52bab750e04a02fee5a98ae908e36b2cba8b0e5107a50307b735ce",
+     ".agents/skills/solo-orchestrate/references/adaptive-routing.md": "0e4f2a4e437fac0ba2e218f551a952acc12c7ae9a73783d1c5b0f895175e93b0",
+     ".agents/skills/solo-orchestrate/references/effort-and-feedback.md": "7a8da6ff7a0a7c029010aeeae6ba8d9166ee6726dfa6d945e7e887d0c6f355bc",
+     ".agents/skills/solo-orchestrate/references/planning-contract.md": "8b2fc1de4aefaa4ecfc64dec575714e5c5f34cdcf8ada9346bc448db4edf0972",
+-    ".agents/skills/solo-orchestrate/references/run-protocol.md": "ec5cfaf527ceb2c2cf6a0faa6fb4f89aef9d705702e2cc89d7a05a7178602b3a",
++    ".agents/skills/solo-orchestrate/references/run-protocol.md": "eedd3635259c601c75b7d610af2e0ea3e6aa17a26eee0254c6fdd2655a877b82",
+     ".agents/skills/solo-plan-review/SKILL.md": "9e634f2f6e72aa3b9f4933d2d5af420d45a8b2cca7f7fa3f80944e2af5f605b8",
+     ".agents/skills/solo-product-review/SKILL.md": "0cea16a9d9c06711e5e81b13e88a6720bc0bc8a4b4be197b558621033a0c198c",
+     ".agents/skills/solo-product-spec/SKILL.md": "2ced970c3bfa67757d21bcb7cdfbf59fd0e72b713745704ac24b563059c64782",
+@@ -69,15 +69,15 @@
+     ".codex/agents/store_assets.toml": "53f0e9e2ce6a282fa852749e7072f6fdc4b16693d4d21182806fe5978d7624ab",
+     ".codex/agents/test_engineer.toml": "cf9a6062f420c69fc32abacf37b7cfcbe617b199e51e9e11c00a76db23bc9343",
+     ".codex/agents/web_researcher.toml": "1d83e6ee476888714c083f2b0ad66cd4e8acced2986ef4982794d2048f82b055",
+-    ".codex/config.toml": "016ec5e07d3a0b926431f905ee1215e313f1f1c1cd15698b5b4db9ed7deb5b45",
++    ".codex/config.toml": "fbdbcc827fc6b6817151861eb4f97577f4c29c20425b037c16510b77f8adc965",
+     ".codex/hooks.json": "18fcd89f9ddf60e9e3da149162d0d50249ea663618a8cf956821215fbba4b6f6",
+     ".codex/hooks/check_diff.py": "fee6d10b8eee617bd79eb04fa92c777835ae553324c32c1181559f46a8035c9e",
+     ".codex/hooks/lifecycle.py": "b6b6d845b900185d9dacb2bae976c4c9993a5613277dc0961ff3acf22ca498f9",
+-    ".solopreneur/docs/agent-catalog.md": "7c337596bb09a0d482f35f97a76b7d90e9a6281a0617e6402fe9a51cbda19840",
+-    ".solopreneur/docs/codex-runtime.md": "e152773875df581b1488aa2338c9f2d271c948f24af47a641c0d172b61363b31",
++    ".solopreneur/docs/agent-catalog.md": "b94d54970a97e96caab7e7058e5b1e9e350eab70f9d3038a392e78caca5216d9",
++    ".solopreneur/docs/codex-runtime.md": "454f4df79d2fb06c40640bbf8a7c81b03fd9f9e919a7b7e2e073ca63d14e8b31",
+     ".solopreneur/docs/computer-use.md": "ddc05a5a9c55517da16dd0c7c801cb4c25a80b31b9361033c46b2dbf5fa3a9ae",
+     ".solopreneur/docs/handoff-coverage.md": "e5b85ff76abd5421fa77182145918bfafce72b4e7d6a1cde9944ccfe7ff25dd7",
+-    ".solopreneur/docs/harness.md": "fcc4486aaf1ab2e82430a7278c61b754606c3556e85bdbc79230d2b010d4f867",
++    ".solopreneur/docs/harness.md": "a41f3e19a5666f9101142bd0e65fd19c3e2ece98259ae149f61750a1898ad6e4",
+     ".solopreneur/docs/mcp.md": "1ede0561811918966106dde1e653517f529f9a2e5c57e95b6eb1a4bda699e48c",
+     ".solopreneur/docs/research-sources.md": "194ceee68e43d3088387fdcc0a05fe5bee225c4aa88862898eb41c5bc1864350",
+     ".solopreneur/docs/research/agent-routing-and-verification.md": "2dc9c128b6cd673b86af5fe6795d0889100e2cfa3fadeaaea481a8a71fdb527d",
+--- before/AGENTS.md
++++ after/AGENTS.md
+@@ -11,7 +11,7 @@
+ - Default to Next.js, React Native/Expo, Hono, and pnpm/Turborepo; build only needed platforms. Read `.solopreneur/docs/stack.md` when choosing the stack or adding services.
+ - Share types, validation, API contracts, business rules, design tokens, and analytics events. Keep web/mobile UI and navigation platform-specific.
+ - Use `.agents/skills/solo-*` for matching workflows. Follow `.solopreneur/docs/skill-catalog.md` when selecting or adapting external skills. Project instructions define local commands and exceptions. Read only relevant skills and documents.
+-- Run at most three specialists concurrently, plus the primary coordinator. Keep dependent work sequential. The coordinator owns integration, recorded evidence, and final completion; specialists do not recursively fan out.
++- Configure a ceiling of eight open specialist threads, plus the primary coordinator, but use the lower limit advertised by the active client. Keep dependent work sequential and parallelize only independent tasks with disjoint writer ownership. The coordinator owns integration, recorded evidence, and final completion; specialists do not recursively fan out. A completed child may still occupy an open-thread slot; preserve its results before closing it if the client supports that action, and do not assume completion or interruption frees capacity.
+ - Inspect existing answers first, then ask focused follow-up questions until execution-relevant requirements are clear. Hold implementation that depends on unresolved scope, data, or behavior choices; continue independent discovery. Record confirmed answers and user-delegated decisions in the plan. Silence is not confirmation; do not re-ask settled questions or require repeated approval for authorized work.
+ - Use a written-specification → bounded implementation → feedback → verification loop. Review a meaningful increment before expanding it. Distinguish missing requirements, a wrong approach, missed edge cases, and tool failures before retrying; more effort cannot resolve every cause. Keep required checks and independent review even for fast iterations. Apply the effort-and-feedback reference in `solo-orchestrate`; it does not override the model/effort selection rule above.
+ - Prefer the simplest implementation meeting current requirements. Avoid speculative features, abstractions, or options; retain necessary validation, security, and error handling.

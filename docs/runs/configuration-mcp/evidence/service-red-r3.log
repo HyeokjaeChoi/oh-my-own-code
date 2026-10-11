@@ -1,0 +1,86 @@
+✖ MCP inactive registration and explicit connection lifecycle are durable, scoped and status-observed (47.235708ms)
+✖ MCP denied is rejected before any effect (29.139542ms)
+✖ MCP collision is rejected before any effect (31.285541ms)
+✖ MCP file-changed is rejected before any effect (27.562292ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 195.831417
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2151:1
+✖ MCP inactive registration and explicit connection lifecycle are durable, scoped and status-observed (47.235708ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"INVALID_REQUEST","message":"Invalid workbench request."}
+  
+  false !== true
+  
+      at mcpFixture (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2146:41)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2152:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2172:62
+✖ MCP denied is rejected before any effect (29.139542ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"INVALID_REQUEST","message":"Invalid workbench request."}
+  
+  false !== true
+  
+      at mcpFixture (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2146:41)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2173:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2172:62
+✖ MCP collision is rejected before any effect (31.285541ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"INVALID_REQUEST","message":"Invalid workbench request."}
+  
+  false !== true
+  
+      at mcpFixture (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2146:41)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2173:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:2172:62
+✖ MCP file-changed is rejected before any effect (27.562292ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"INVALID_REQUEST","message":"Invalid workbench request."}
+  
+  false !== true
+  
+      at mcpFixture (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2146:41)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2173:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

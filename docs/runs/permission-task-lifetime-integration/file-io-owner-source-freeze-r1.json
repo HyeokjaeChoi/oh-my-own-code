@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "worker": "01a12586-6203-7c91-b649-4e487fac7c72",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/host/native-workspace-file-io.mjs",
+      "sha256": "d97ef6a0837e20ca85f025594411a7a9bbfe0b0d6898acb36a6398007bdce835",
+      "bytes": 5348
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-workspace-file-io.test.mjs",
+      "sha256": "75a80cbd3619dd080c5101d4b8721a57336ea407fb55d54c0875b4313de0e25b",
+      "bytes": 19768
+    }
+  ],
+  "checks": {
+    "node_passed": 18,
+    "eslint": "pass",
+    "prettier": "pass"
+  },
+  "api": "createNativeWorkspaceFileRead(workspace,path,{checkRoot,check,io?}) -> {resource,result,cancel}; observeNativeWorkspaceFileRead(resource) synchronous one-use pre-effect claim -> Promise<{complete,handleCount}>",
+  "limits": [
+    "Node resource provenance only",
+    "Injected IO always incomplete",
+    "No Native adapter or final CODE acceptance"
+  ]
+}

@@ -1,0 +1,166 @@
+.review {
+  min-width: 0;
+  max-width: 100%;
+  margin-block: 24px;
+  padding-block: 16px;
+  border-block: 1px solid var(--omoc-semantic-color-border-default);
+  color: var(--omoc-semantic-color-text-primary);
+  background: var(--omoc-semantic-color-surface);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.review :is(h3, h4, h5, legend) {
+  font-size: 13px;
+  font-weight: 600;
+}
+.metadata {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  max-width: 100%;
+  margin-block: 12px;
+}
+.metadata dt {
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.metadata dd {
+  min-width: 0;
+  margin: 0 0 6px;
+  font: 12px/1.6 var(--omoc-semantic-type-family-code);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+.review :is(button, select) {
+  min-width: var(--omoc-component-size-control-hit-target);
+  min-height: var(--omoc-component-size-control-hit-target);
+  max-width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--omoc-semantic-color-border-default);
+  border-radius: var(--omoc-component-size-navigation-radius);
+  background: var(--omoc-component-color-input-background);
+  color: var(--omoc-component-color-input-foreground);
+  font: inherit;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.review button:hover:enabled {
+  background: var(--omoc-semantic-color-surface-subtle);
+}
+.review button[aria-pressed="true"] {
+  border-color: var(--omoc-semantic-color-focus);
+}
+.review :disabled {
+  opacity: 0.5;
+}
+.review :is(button, select, input, .status, .patch):focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: var(--omoc-semantic-size-focus-gap);
+}
+.rows {
+  min-width: 0;
+  max-width: 100%;
+  padding-inline-start: 20px;
+}
+.rows li {
+  min-width: 0;
+  max-width: 100%;
+}
+.selection {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  margin: 12px 0;
+  padding: 8px;
+  border: 1px solid var(--omoc-semantic-color-border-default);
+}
+.selection select {
+  width: 100%;
+  min-width: 0;
+}
+.patch {
+  min-width: 0;
+  max-width: 100%;
+  max-height: 480px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 12px/1.6 var(--omoc-semantic-type-family-code);
+  tab-size: 4;
+}
+@media (pointer: coarse) {
+  .review :is(button, select) {
+    min-height: 44px;
+  }
+}
+
+.indexPath {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+  padding-block: 6px;
+  overflow-wrap: anywhere;
+}
+.indexPath input {
+  flex: 0 0 auto;
+  margin-block-start: 4px;
+  accent-color: var(--omoc-semantic-color-focus);
+}
+.indexPath span {
+  min-width: 0;
+  user-select: text;
+}
+
+.selection :is(input:not([type="checkbox"]), textarea) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  border: 1px solid var(--omoc-semantic-color-border-default);
+  border-radius: var(--omoc-component-size-navigation-radius);
+  color: var(--omoc-component-color-input-foreground);
+  background: var(--omoc-component-color-input-background);
+  font: inherit;
+  user-select: text;
+}
+.selection input:not([type="checkbox"]) {
+  min-height: var(--omoc-component-size-control-hit-target);
+}
+.selection textarea {
+  resize: vertical;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.commitMessage {
+  min-width: 0;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 12px/1.6 var(--omoc-semantic-type-family-code);
+  user-select: text;
+}
+.review :is(textarea, .commitMessage):focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: var(--omoc-semantic-size-focus-gap);
+}
+
+.review [data-git-branch-restore-preview],
+.review [data-git-branch-restore-result] {
+  border-inline-start: 2px solid var(--omoc-semantic-color-border-default);
+  padding-inline-start: 10px;
+}

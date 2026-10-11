@@ -1,0 +1,15 @@
+# Fixed Agent metadata notification adapter
+
+Revision27 routine implementation detail. No execution permission or new pending/task owner.
+
+The original Agent callback/editor/default factory proof is available in agent-metadata-worker-early-r1.json. The original ephemeral Bus branch proof is agent-notification-proof-r1.json. These prove neither arbitrary listeners nor actual startup. Tool.notify is not a Bus precedent.
+
+Before allowing Agent State publication, install a fixed-source notification adapter:
+
+1. Patch only the original LocationLifecycle listener declaration. Preserve its exact arrow/body. A module-private WeakSet brands that actual constructor-created callback; export only a synchronous predicate. No caller-supplied callback can acquire this brand. It always returns Effect.void for agent.updated because the event is not a Session event. Scope/removal semantics remain original; source branding is not scope or execution authority.
+2. Graph verifies the patched lifecycle source and unchanged Agent/Session schema/Agent constructor identities before importing or binding the predicate. Bind once to the SAME acquired Control, before any Plugin acquisition. Missing/changed/function-shape failures keep metadata held.
+3. Control private bindAgentNotificationSource({accepts,sourceSha256}) installs that one source predicate. captureAgentNotificationListeners(listeners) rejects unbound/poisoned state, proxy/accessor/non-array/oversize data, unknown callback or non-true source response; returns a detached frozen list. Maximum32 matches the current location bound. No public IPC or renderer authority accepts executable values.
+4. Original Bus requires exact original Agent.Event.Updated identity for agent.updated publication. Its Agent notify path captures the actual private listener list, then rechecks the current list immediately before constructing EACH original listener Effect and before PubSub disclosure. Unknown late registration cannot pass an earlier check. Keep original behavior for every other event. Known source callback only declines this Agent event. PubSub enqueue is metadata transport, not permission to execute a subscriber; existing unknown-plugin activation and callback gates stay held.
+5. Only after these adapters and proof tests exist may the SAME existing parent/source/Scope/token owner allow opencode.agent/agent.transform metadata registration and each synchronous replay. Other transform domains remain held. Raw Native default allow rows remain observations, never final permission grants. assertExecution stays held and complete=false.
+
+Test substituted definition/source/function, unbound/late-bind/unknown/extra listener, registration during a prior listener yield, disposal/closed/finalizing and poisoning. Capture is not a complete live inventory or task proof. Source pins and original expression preservation are required; no Native/core import or runtime launch is authorized by this document. One coherent affected check and separate independent CODE cover the complete batch.

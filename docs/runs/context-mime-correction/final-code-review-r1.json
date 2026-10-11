@@ -1,0 +1,57 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "verdict": "pass",
+  "summary": "지정된 CODE 검토를 완료했습니다. CODE-01은 해결됐습니다. 이 결함으로 둔 source 소비 보류를 해제할 수 있습니다. MIME 변경 3개와 공통 기반 변경 8개에서 조치가 필요한 correctness·privacy·architecture 회귀를 찾지 못했습니다. 실제 UI와 RENDER는 별도 검토 대상입니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11f3b-4b37-7072-9bff-f68ce22f3642"
+  },
+  "reviewed": {
+    "contract_sha256": "1677c3e32c8df5ba1176b5fcc1282a82bc2681ef01aeaff1a11c5976b5dde446",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "1a305316eae06c4463b8529ef46f20f92b7b2ab21398c533c78d3506bcdc7821",
+    "schema_version": 2,
+    "source_sha256": "49be8040253dd310d52de0baf8b89dab339676e47b28419869003dc85e0deff2",
+    "verification_sha256": "bbdbac4da0dbbf90702ad45cbb838dcd022d205c0d4df6158e95e463aaacc84d",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "resolved_findings": [
+    {
+      "id": "CODE-01",
+      "status": "resolved",
+      "evidence": [
+        "host의 media signature 순서와 바이트 비교가 실제 pinned Native detector와 일치합니다. GIF8, BMP, AVIF/AVIS와 WebP 비교를 확인했습니다.",
+        "BMP와 AVIF는 descriptor 발급 전에 거절합니다. 텍스트 선택 후 최종 바이트가 media로 분류되면 거절합니다.",
+        "GIF8은 image/gif로 분류합니다. 기존 decoder 주입과 복사본 검증을 유지합니다. production Main의 nativeImage 검증 연결도 확인했습니다.",
+        "production service 테스트는 거절 상태와 descriptor 부재를 확인합니다. 위조 capability 전송은 INVALID_SELECTION이며 switchModel과 prompt 호출이 없습니다.",
+        "정상 입력 대조군은 파일 삭제 후에도 보관한 BOM·CRLF·Unicode 바이트를 그대로 prompt에 전달합니다."
+      ]
+    }
+  ],
+  "evidence_inspected": {
+    "scope": "plan revision 1, 원래 Context CODE-01, final.patch의 실제 11개 변경 경로, source-inventory, verification, inbound-foundation",
+    "integrity": {
+      "source_entries_verified": 712,
+      "mime_originals_verified": 3,
+      "inbound_freeze_files_verified": 8,
+      "patch_sections_reconstructed_in_memory": 11,
+      "mismatches": 0,
+      "live_code_binding_matches_exact_input": true
+    },
+    "acceptance": {
+      "MIME1": "최종 바이트 분류, 지원하지 않는 형식 거절, 선택 후 재분류와 prompt 차단을 코드 및 테스트에서 확인했습니다.",
+      "MIME2": "descriptor 형식, sender·epoch·root·digest 권한 검사, cache·expiry·pin·release 경로가 보존됐습니다."
+    },
+    "recorded_checks": "현재 source binding의 scoped Node 검사 66개, lint, format은 모두 exit 0입니다. inputs_changed=false이며 재실행하지 않았습니다.",
+    "inbound_foundation": "Button은 native props/ref/type/disabled를 전달하며 새 상태나 효과 소유자를 만들지 않습니다. 토큰 223개의 참조와 관련 CSS 변수에 누락이 없습니다. 기존 component 데이터와 permission runtimeStateMap은 보존됐습니다. 승인된 foundation 계약과 공통 변경 사이에 명백한 회귀를 찾지 못했습니다."
+  },
+  "limits": [
+    "소스·문서·ledger를 수정하지 않았고 위임하지 않았습니다.",
+    "테스트 재실행, runtime·build·provider·UI 실행을 하지 않았습니다. service 실행 근거는 기록된 Native stub 검사입니다.",
+    "이 판정은 지정된 변경 범위의 CODE 승인입니다. 전체 Context나 Full18 완료를 뜻하지 않습니다.",
+    "Foundation 실제 UI, pixels, 접근성 동작과 원래 RENDER-D1은 후속 foundation 검토 대상입니다.",
+    "폐기된 빈 design input을 사용하지 않았고 별도 DESIGN_SPEC 승인을 발급하지 않았습니다."
+  ]
+}

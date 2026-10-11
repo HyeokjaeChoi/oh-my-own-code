@@ -1,0 +1,65 @@
+{
+  "revision": 32,
+  "verdict": "PASS",
+  "scope": "exact5 component CODE only",
+  "reviewer": "01a12813-b5ce-7be3-ac99-413b661be47d",
+  "report": "config-literal-code-review-r1.json",
+  "input": "config-literal-code-input-r1.json",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-skills-config.mjs",
+      "bytes": 1863,
+      "sha256": "a3257a63f89d18b654a70e9e397ce3cb3250f7139cf7ca93a3c852b1dcb5a650"
+    },
+    {
+      "path": "apps/desktop-app/src/native-skills-config.test.mjs",
+      "bytes": 5322,
+      "sha256": "bbcd539223c3acb9bcb2c59eda3b847d7833c0a397e1954c74b65f888c927169"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 27504,
+      "sha256": "b8b7c23ee08c14f50d488d2f2d3303d1e77cb43ebf6d638e7373d5eba01bd9cf"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "bytes": 49489,
+      "sha256": "723d3aa6bdfaa55dd75b760b151f09a10e9623f6bd5e7e4e35346c1349abb84e"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+      "bytes": 21236,
+      "sha256": "8dbf8089cc45c6cae7f97629f3bbc30619b9bc993ecd4665b4778806cf0c0331"
+    }
+  ],
+  "checks": {
+    "coherent": {
+      "log": "config-literal-coherent-r1.log",
+      "pass": 577,
+      "exit": 0
+    },
+    "focused": {
+      "log": "config-literal-focused-green-r1.log",
+      "pass": 29,
+      "exit": 0
+    },
+    "eslint": "config-literal-eslint-r1.log",
+    "prettier": "config-literal-prettier-r1.log",
+    "check_status": "config-literal-check-status-r1.json"
+  },
+  "independent_actual_checks": {
+    "focused": 29,
+    "js_eslint": 4,
+    "prettier_including_contract": 5,
+    "initial_eslint_config_lookup_failure": "retained in reviewer response; corrected explicit project context passed"
+  },
+  "all8_reusable_at_freeze": true,
+  "limits": [
+    "Exact pinned original ConfigVariable generator with explicit Effect.fn declaration adapter, synthetic process.env and file-continuation canary; pure source evidence, not Effect scheduling or Native runtime.",
+    "No actual external file read, Native/core/Main/Bun/provider/server/browser/network/build/GUI/privateoriginal or physical replay.",
+    "Node owned synthetic filesystem fixture only; initial external prototype noncanonical-temp refusal retained as fixture failure.",
+    "Parsed literal path/options/closed deny policy preserved; ordinary serialization bytes unchanged.",
+    "Other7 contracted checks unchanged and reusable; no replay or repeated auxiliary.",
+    "Recipe65files254edits unchanged; direct State source binding/inventory/compiler/handoff/full F09/full18 remain incomplete/held."
+  ]
+}

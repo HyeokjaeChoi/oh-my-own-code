@@ -1,0 +1,2158 @@
+2026-09-29T02:58:55.883923Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/hyukjaechoi/.codex/plugins/cache/codex-hud/codex-hud/0.9.6+codex.20260919062821/.codex-plugin/plugin.json
+2026-09-29T02:58:55.886060Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/hyukjaechoi/.codex/plugins/cache/codex-hud/codex-hud/0.9.6+codex.20260919062821/.codex-plugin/plugin.json
+2026-09-29T02:58:55.899229Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-09-29T02:58:55.899262Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-09-29T02:58:55.921655Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-09-29T02:58:55.923733Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-09-29T02:58:55.926448Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-09-29T02:58:55.928028Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-09-29T02:58:55.929171Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-09-29T02:58:55.956668Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+OpenAI Codex v0.154.0
+--------
+workdir: /Users/hyukjaechoi/Projects/oh-my-own-code
+model: chatgpt-web/gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a0eb19-dd08-7141-a08a-136d8d16596d
+--------
+user
+Fresh independent rendered-design review. Do not edit, execute tests, use
+personal browsing sessions, spawn children, or write the ledger.
+Root: /Users/hyukjaechoi/Projects/oh-my-own-code.
+Read .codex/agents/solo_reader.toml, .agents/skills/solo-specialist/SKILL.md,
+.agents/skills/solo-design-review/SKILL.md and its evidence-review reference,
+docs/runs/desktop-workbench-core/design-review.packet.json and plan.md revision 2.
+
+Directly inspect the four supplied PNG captures. The two desktop-workbench
+captures came from the actual Electron application with the owned OpenCode
+sidecar, no provider credentials, and disposable workspaces. The two named
+synthetic captures are of the same built production renderer and preload with
+a TEST-ONLY main-process fixture; they prove rendered UI states, not live model
+or tool execution. Read electron-evidence.json and ui-states-evidence.json for
+provenance, state and viewport dimensions. Verify image pixel dimensions with
+available read-only tools rather than assuming CSS pixels equal image pixels.
+
+The approved direction is ChatGPT-inspired, neutral white surfaces, restrained
+boundaries and existing tokens. Judge the bounded core workbench: hierarchy,
+spacing, transcript/composer, permission controls, tool results, responsive
+navigation, file/catalog panel affordances, readable state/error handling,
+keyboard/focus implications. Source inspection may clarify an inference but
+cannot replace rendered evidence. Do not demand unrelated unreleased F-01-18
+features as defects in this increment; they remain in the parent backlog.
+
+Return concise concrete findings with severity, affected view/component,
+direct evidence path or clearly labelled code inference, impact, and smallest
+useful correction. Distinguish preference from blocking usability defects.
+Do not approve source you change or invent final binding hashes. The coordinator
+will freeze evidence and request only affected follow-up review after repairs.
+
+2026-09-29T02:58:56.494783Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/hyukjaechoi/.codex/.tmp/marketplaces/codex-hud/plugins/codex-hud/.codex-plugin/plugin.json
+2026-09-29T02:58:56.662212Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/hyukjaechoi/.codex/plugins/cache/codex-hud/codex-hud/0.9.6+codex.20260919062821/.codex-plugin/plugin.json
+2026-09-29T02:58:56.663126Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/hyukjaechoi/.codex/plugins/cache/codex-hud/codex-hud/0.9.6+codex.20260919062821/.codex-plugin/plugin.json
+2026-09-29T02:58:56.689044Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-09-29T02:58:56.689067Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-09-29T02:58:57.137453Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 426 Upgrade Required, url: ws://127.0.0.1:17841/v1/responses
+2026-09-29T02:58:57.137575Z  WARN codex_core::client: falling back to HTTP
+warning: Skill descriptions were shortened to fit the skills context budget. Codex can still see every skill, but some descriptions are shorter. Disable unused skills or plugins to leave more room for the rest.
+exec
+/bin/zsh -lc 'rg -n "desktop-workbench-core|design-review|workbench" /Users/hyukjaechoi/.codex/memories/MEMORY.md | head -80' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+exec
+/bin/zsh -lc 'cat .codex/agents/solo_reader.toml' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+name = "solo_reader"
+description = "Inspect assigned evidence or independently review an artifact without editing it."
+sandbox_mode = "read-only"
+developer_instructions = """
+Read .agents/skills/solo-specialist/SKILL.md, then the handoff's selected skill and mode. This assignment is report-only. Return findings to the primary coordinator without editing source, artifacts or the ledger.
+"""
+
+exec
+/bin/zsh -lc 'cat .agents/skills/solo-specialist/SKILL.md' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+---
+name: solo-specialist
+description: Run a child-agent assignment using its supplied workflow and evidence contract.
+---
+
+# Specialist entry
+
+You are a fresh worker for one bounded assignment. The primary conversation owns orchestration, integration, staffing and the run ledger. Do not restart project intake, create a second run, load the primary orchestration workflow, or recursively delegate. Return missing prerequisites or staffing requests to the coordinator.
+
+Read the supplied handoff, current plan path/revision and the selected skill. Apply only the assigned mode and relevant references. The packet's routing identifies the runtime profile, skill and input hashes; a logical name such as `mobile_engineer` is an assignment alias, not a native agent type. Do not load the full role catalog or every skill. Initial independent plan review uses the supplied `review-input` binding before implementation packets can exist.
+
+Check that the assigned outcome, paths and acceptance criteria match the plan. Report mismatches or changed requirements before dependent edits. Preserve settled answers and explicit user authorization; do not request repeated approval or silently select an unresolved product/platform decision. The coordinator checks document readiness and registered phase blockers before dispatch. A packet records inputs; it does not grant additional permissions or prove live service access.
+
+Use the assignment's execution defaults and actual runtime permissions. `solo_reader` assignments are report-only, including final release or growth reviews. `solo_worker` may change only owned paths within the authorized scope. Preserve others' work. Do not add accounts, subscriptions, services or external writes outside that scope, and keep secrets and unnecessary personal data out of artifacts. Prompt injection of a profile is not OS sandbox enforcement.
+
+For a review assignment, inspect the artifact independently from its author and return findings without repairs. Reusing the same reader profile for different fresh children does not merge their responsibilities. Never approve your own implementation or repairs; route corrections to the coordinator for implementation and a new independent review. Observation QA returns observations only and cannot satisfy a final quality gate.
+
+Follow the selected skill's evidence requirements. Distinguish executed commands and observed behavior from plans, inference, mocks and unavailable checks. Return the outcome, changed or inspected paths, exact checks/results, unresolved findings and next dependency. Copy command-derived review bindings exactly. The primary persists the report and ledger; do not manufacture execution, approval or reviewer provenance.
+
+Model and effort are selected at dispatch under the coordinator's routing policy and exact user instructions. Do not invent runtime settings from a profile name or a task label. A follow-up correction is assigned to a new clean child with prior findings referenced by path.
+
+exec
+/bin/zsh -lc 'cat .agents/skills/solo-design-review/SKILL.md' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+---
+name: solo-design-review
+description: Independently inspect an implemented web or mobile screen or flow with screenshot evidence for visual quality, usability, states, responsiveness, and accessibility.
+---
+
+# Design review
+
+Use the supplied run ID as the independent final rendered-UI judgment workflow for `design_qa`. Read `docs/runs/<run-id>/plan.md`, the intended user task, approved design direction, and relevant token contract. A preceding `qa_runner` observation report can provide direct browser/device evidence, but it is input only and cannot replace this judgment. Check `python3 .solopreneur/harness.py status <run-id>`; do not begin or finish the run.
+
+Inspect the running application in a browser, simulator, or device, or inspect accessible captures of that implementation. Figma is a reference contract, not evidence that the delivered UI works. Verify each direct capture path and its viewport/device dimensions before judging it; do not inherit a screenshot or dimensions from long conversation history. For exported capture handoffs, require an accessible path, provenance/origin (a hash is optional), application state, viewport or device, and checked pixel dimensions; direct inspection remains acceptable. Read [references/evidence-review.md](references/evidence-review.md) before a multi-screen audit or a post-fix review. Do not treat source code, a mockup, or a successful build as proof of rendered behavior.
+
+Review only dimensions relevant to the flow: task hierarchy, information architecture, interaction and loading/empty/error/success states, design-token alignment, responsive layout, keyboard/focus/semantics/contrast on web, and safe areas/touch targets/text scaling/platform navigation on mobile. Separate directly observed defects from code inferences and subjective preferences.
+
+A final review is report-only. Route fixes to an implementer; after a fix, obtain a fresh independent final `design_qa` review of the delivered UI. Never claim a state, viewport, device, console result, or screenshot was inspected when it was not.
+
+Return findings with severity, location, user impact, evidence path, proposed correction, and verification status to the planner. If another independent judgment is bundled in the same handoff, keep this rendered-UI verdict separate. The planner persists the independent design-QA report and records the `design` gate.
+
+codex
+요청한 범위대로 읽기 전용 디자인 리뷰만 진행하겠습니다. 지정된 reviewer/skill/packet/plan/evidence를 먼저 확인한 뒤, 네 PNG를 실제 픽셀 기준으로 직접 검사하고 소스는 필요한 추론 보강에만 제한하겠습니다.
+exec
+/bin/zsh -lc 'cat .agents/skills/solo-design-review/references/evidence-review.md' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+# Implemented design evidence
+
+## Establish the target
+
+Record the run, revision or build, route or deep link, user state, locale, theme, viewport or device, and the user task being tested. Use demo data that exposes real layout conditions, including long text and empty/error states where relevant.
+
+For every finding capture:
+
+- exact screen and state;
+- action sequence needed to reach it;
+- expected and observed result;
+- screenshot or recording path;
+- console, runtime, or network evidence when it explains the defect;
+- whether the observation came from the running implementation or an accessible implementation capture; label Figma and source inference as references only.
+
+Screenshots should include enough surrounding UI to locate the problem. Avoid collecting unrelated tabs, credentials, tokens, personal data, or other private account content.
+
+## Audit passes
+
+Use only applicable passes:
+
+1. Can the user identify and complete the primary task?
+2. Are all reachable states intentional and recoverable?
+3. Does the visual hierarchy match the product's priority?
+4. Do semantic tokens and component states match the approved system?
+5. Does the flow work at the smallest and largest relevant sizes?
+6. Can keyboard, assistive technology, text scaling, and touch users operate it?
+7. Does the result look deliberately designed rather than assembled from generic defaults?
+
+## Fix verification by a fresh independent reviewer
+
+After the implementer corrects an issue, independently reproduce the original state. Capture the same viewport/device and action path, compare before and after, and check for new runtime errors. Classify the result as verified, partly verified with the missing condition named, or unresolved. A changed source file is not a verified fix.
+
+exec
+/bin/zsh -lc 'cat docs/runs/desktop-workbench-core/design-review.packet.json' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+{
+  "attestation": "Prepared input metadata; not a spawn or identity attestation",
+  "contract_sha256": "ca878897c2d610a3a1c709f9d59427df7e179eaae796e660c2be9591c2952923",
+  "decision_register": [
+    {
+      "blocks": [],
+      "id": "local-continuation",
+      "impact": "Local implementation and disposable validation, with no personal-project execution or external publication.",
+      "resolution": "Implement the reviewed core interface; retain the full F-01\u201318 parent scope.",
+      "source": "User requested continuing remaining oh-my-own-code work; prior explicit Electron/macOS/Windows/assistant-ui/Tool UI selections remain in effect.",
+      "statement": "Continue the selected Electron workbench with the app-owned sidecar and pinned packages.",
+      "status": "confirmed"
+    },
+    {
+      "blocks": [],
+      "id": "temporary-storage",
+      "impact": "No implicit persistent user-data directory; full restart/recovery acceptance remains unfinished in the parent.",
+      "resolution": "Reversible core increment with visible temporary-mode status; do not claim full persistence or release completion.",
+      "source": "Current isolated bootstrap and the unresolved persistent-data choice in the parent plan.",
+      "statement": "Keep session-scoped workspace registration until a durable storage and retention policy is selected.",
+      "status": "assumption"
+    }
+  ],
+  "documents": [
+    {
+      "gate": "design_spec",
+      "path": "docs/runs/desktop-workbench-core/interface.md",
+      "sha256": "f2f59fe78364c84009e4bd73a2ef308ebc3deb092159b5ce59aad6325ef628b4",
+      "version": "2"
+    }
+  ],
+  "phase": "review",
+  "plan_sha256": "a9a9c09e41b2d4d030fec8141663bd16b942a07a61c5ee8b2c25ceb1538cc0bb",
+  "prepared_at": "2026-09-29T02:58:25+00:00",
+  "role": "design_qa",
+  "routing": {
+    "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+    "input_sha256": {
+      ".agents/skills/solo-design-review/SKILL.md": "eaaebad0ca89cc39f59492e07bcda6bcf6f5ba7f70629652593e8ba7aa73cd1b",
+      ".agents/skills/solo-specialist/SKILL.md": "33378f790f39761948485f1f08617840579714dbb925aa177109a80ac4002c3b",
+      ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+    },
+    "mode": "default",
+    "phase": "review",
+    "profile": "solo_reader",
+    "profile_file": ".codex/agents/solo_reader.toml",
+    "references": [],
+    "role": "design_qa",
+    "schema_version": 2,
+    "skill": "solo-design-review",
+    "skill_file": ".agents/skills/solo-design-review/SKILL.md"
+  },
+  "run": "desktop-workbench-core",
+  "schema_version": 2,
+  "user_approvals": []
+}
+
+exec
+/bin/zsh -lc 'cat docs/runs/desktop-workbench-core/plan.md' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+# Desktop workbench core
+
+Revision: 2. Date: 2026-09-29. Parent outcome: `build-delivery` (still active).
+
+## Outcome and authority
+
+The user requested continuing the remaining oh-my-own-code implementation after the completed harness migration and supplementary skill validation. Implement the next usable desktop increment from the independently reviewed feature-landscape report. The current Electron renderer only shows temporary runtime information; its preload exposes only runtimeSnapshot. The existing app-owned OpenCode 2.0.18 sidecar, Electron choice, macOS/Windows targets, Nx boundaries, approved tokens, assistant-ui and Tool UI remain authoritative.
+
+This increment connects workspace selection, sessions, a real assistant-ui composer/transcript, sidecar-backed message/interrupt/permission operations, tool-result rendering, and bounded read-only file/extension panels. It is part of the full F-01–18 outcome, not a redefinition of release scope. Physical deletion, complete Git/worktree strategy handling, PTY/browser process control, persistent-data retention, extension installation, background automation and credential-dependent provider execution remain visible unfinished parent work. Do not represent a disabled button, fixture or local build as completing those requirements.
+
+## Decisions and limits
+
+- The current request authorizes local implementation, dependency reuse, synthetic tests, disposable sidecar/Electron checks and a local macOS build. No real personal project execution, credentials, external publication, payments or user-project deletion is required.
+- Preserve the app-owned isolated profile and sidecar supervision. Main owns the authenticated client; renderer receives only validated DTOs and closed IPC operations. Preview content gets no privileged preload or raw SDK access.
+- Import uses a native directory picker, canonical path validation and registration only. It must not start SDK project discovery or run setup. Opening a session in an imported location requires a separate explicit native trust confirmation before any project configuration/plugins can be activated. The app-created temporary workspace is already owned and trusted. Tests use owned disposable locations only.
+- New ordinary directories require an explicitly selected parent; no silent fallback to the app installation or home directory. Blank names use local yyyy-mm-dd plus a standard UUIDv7, exclusive creation and bounded collision retry. Remove-from-list does not remove files and is blocked for busy workspaces. Do not implement recursive user directory deletion in this increment.
+- Registry/UI state is session-scoped until a separate persistent-data choice is made. Display this limitation in the app. Do not pick a new persistent user-data location implicitly.
+- Use the exact installed @opencode/client contracts, not older @opencode-ai/sdk APIs. The authenticated client is internal to main. Unknown shapes fail safely. Preserve real AUTH_REQUIRED/unavailable states; no generated fake assistant responses in production.
+- Main owns session identity, operation receipts and busy state. The renderer owns selected IDs, drafts and panel layout. Session switching must discard stale results and preserve per-session drafts. Unknown transport outcomes are not automatically resent.
+- Before any prompt/command, apply the session rules `[{action:"*",resource:"*",effect:"ask"},{action:"external_directory",resource:"*",effect:"deny"},{action:"subagent",resource:"*",effect:"deny"}]` and read them back through the installed `session.get` contract. Apply this to the existing temporary session as well as new sessions. A missing, changed or unconfirmed policy blocks execution. Project trust is not per-tool approval. This increment exposes only the ask baseline; advanced modes and child execution remain parent work. Check policy before send and after agent/model changes; no renderer-supplied policy or remembered approval is accepted. Configuration metadata is not proof of OS sandboxing; disposable negative tests and the real sidecar read-back define the evidence boundary.
+- Keep selected model/agent values explicit and dynamically supplied by the runtime. No permanent model/effort assignments in product or harness.
+- Native collaboration spawn returned `agent thread limit reached`; no close_agent capability exists. A new `codex exec --ephemeral` invocation with explicit bounded instructions is an available fresh-context route. Do not reuse an implementation context for review, bypass sandbox/trust, or claim runtime identity from a label. Use one economical reader and disjoint implementation workers only if that route succeeds; the primary handles integration.
+
+## Architecture and interface
+
+The narrow contract in `interface.md` refines existing ADR-0001/0002 and product requirements without replacing them. Main owns the new service and the sidecar client. A closed typed request union travels through an admitted, top-frame-only IPC handler; each operation validates its exact arguments and resolves workspace/session IDs inside main. Unknown methods, raw paths for privileged operations, cross-session IDs, stale permission replies and arbitrary SDK passthrough are rejected.
+
+A main-owned event pump may emit coalesced invalidations. The renderer refreshes authoritative snapshots; it never treats an event label as proof of completion. Polling fallback must be bounded, stop on unmount/disconnect, and discard late results on session change. Use immutable message IDs, not arrival order alone. Render tool results as text or schema-validated existing Tool UI components; never render arbitrary HTML or model-selected callback code.
+
+Use existing assistant-ui 0.15.22 and @workbench/ui packages, declaring desktop workspace dependencies explicitly. Preserve lockfile versions and use the package-manager cache first. Do not introduce another execution engine, model loop, state framework, or backend project. Renderer modules use a small app/features/entities/shared structure with explicit public exports where new slices exist.
+
+The primary owns `apps/desktop-app/scripts/check-renderer-boundaries.mjs`: inspect all renderer entry/module imports with TypeScript resolution, including type imports, re-exports, dynamic imports, aliases and relative paths. Allow only the public bridge DTO declaration, renderer modules, approved CSS and browser-safe public package entrypoints. Reject Node/host/sidecar dependencies, upward or sibling feature/entity slice imports, and deep imports across a public package/slice API. The required boundary check includes negative disposable fixtures and a positive graph. The web-only checker and bundle substring scan do not substitute for this desktop check.
+
+## Acceptance for this increment
+
+- AC-1: Main service validates workspace/session identity, native import/create/list removal, busy transitions and operation inputs; ordinary-folder behavior has disposable filesystem tests.
+- AC-2: Actual Electron UI contains assistant-ui composer/transcript connected to main. Sending/interrupting addresses the selected session, preserves drafts, rejects stale responses and exposes authentic runtime/provider failures. Production has no success fixtures.
+- AC-3: Runtime-backed tool/permission DTOs have safe fallback rendering and checked response identity. Read-only file preview cannot escape the selected workspace or execute HTML. Dynamic command/skill/MCP/agent/model inventory distinguishes empty/unavailable states.
+- AC-4: Existing sandbox/preload/navigation and owned sidecar cleanup remain intact. Pure/unit/negative tests, typecheck, lint, format, build and renderer bundle inspection pass. Live Electron smoke uses only its disposable empty-config sidecar; provider-dependent behaviors remain unverified without credentials.
+- AC-5: A local macOS app is built with exact launch instructions, real observed UI evidence and an updated implementation backlog. Windows configuration remains intact; actual Windows runtime/package verification is not claimed on macOS. Fresh independent code and rendered-UI reviews have no unresolved blocking findings for this increment.
+
+## Ordered execution and ownership
+
+1. Primary persists this plan, its interface and exact check contract. A fresh reader reviews the plan. After the primary records that pass and registers the interface artifact, a fresh reader reviews its exact design-spec binding. The initial combined request could not obtain a design binding before plan registration; keep that failed report without fabricating a binding. No repeated user sign-off is needed for this authorized scope.
+2. Backend worker owns `apps/desktop-app/src/workbench-service.mjs`, its tests, IPC validation/types, `main.mjs`, `preload.cjs`, and the minimal internal client accessor in `sidecar-supervisor.mjs`. Inspect installed client declarations before implementation. The worker cannot change renderer/build/package files or the ledger.
+3. Renderer worker owns `renderer.tsx`, `renderer.css`, the new renderer modules/projection tests and meaningful integration fixtures. It consumes the shared interface, existing design tokens and existing Tool UI public exports. It cannot change host/service/package files or the ledger.
+4. Primary integrates declared dependency/build wiring and test scripts, resolves interface discrepancies, runs current affected checks, captures actual UI, builds the app and records remaining parent work. Only actual evidence is registered.
+5. Fresh independent final reader reviews code and rendered UI separately from authorship. Fix real findings and rerun only affected checks/reviews. Complete this increment only if its contract passes; keep parent full-product outcome active.
+
+## Verification and evidence
+
+Contract commands use the existing installed Node/pnpm/Python. Unit checks use injected fake clients and disposable directories and assert actual effects, including cross-session/stale-ID/duplicate-send rejection. UI fixtures are labelled synthetic and cannot prove live provider execution. Real Electron smoke checks owned startup, composer availability, missing-auth/error behavior and shutdown without sending real user content. macOS packaging is local only. If a required local runtime is unavailable, retain the exact failure and complete independent work rather than inventing a pass or changing platforms.
+
+Existing completed runs, the Solopreneur library, unrelated web fixture implementation and personal files remain unchanged. The repo is largely untracked; changed-path evidence comes from this run's baseline inventory rather than assuming the entire git status is this diff.
+
+No unresolved choice blocks this bounded increment. Persistent data policy and Windows-only evidence still block full product release and are retained in the parent backlog.
+
+Revision 2 addresses entry findings P-01/P-02/D-02/D-03: add a checked ask policy, desktop dependency-boundary fixtures, unambiguous legacy runtimeSnapshot compatibility and correctly ordered document review. The rejected gpt-6-sol CLI override was replaced by the effective CLI default; the completed reader reported gpt-6-astra with effort none. That is CLI-reported routing metadata, not parent inheritance or independent model identity attestation.
+
+exec
+/bin/zsh -lc 'cat docs/runs/desktop-workbench-core/electron-evidence.json && cat docs/runs/desktop-workbench-core/ui-states-evidence.json' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+{
+  "result": "pass",
+  "platform": "darwin",
+  "observations": [
+    "real Electron workbench and assistant-ui composer with owned OpenCode sidecar",
+    "closed IPC operations and unknown session rejected",
+    "untrusted import, actual bounded file listing/preview, secret and symlink/traversal rejection",
+    "two real sidecar sessions retain separate identity",
+    "actual session navigation preserves separate assistant-ui drafts",
+    "actual catalog groups and invalid-model send refusal without provider execution",
+    "IME composition Enter does not submit a message",
+    "real assistant-ui submission surfaces AUTH_REQUIRED, retains draft and does not fabricate messages",
+    "actual read-only file and extension panels render the selected workspace",
+    "actual full and narrow Electron screenshots; no horizontal page overflow",
+    "list removal preserves disk data; owned sidecar reaped and temporary Electron profile removed"
+  ],
+  "nativePickerInteraction": "test dialog substitution; OS picker not physically operated",
+  "providerExecution": "not run; existing credentials not loaded or sent",
+  "screenshots": [
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-workbench.png",
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-workbench-narrow.png"
+  ]
+}
+{
+  "result": "pass",
+  "platform": "darwin",
+  "provenance": "Synthetic main-process fixtures with actual built Electron renderer/preload",
+  "providerExecution": "not performed",
+  "observations": [
+    "Real assistant-ui onNew sends selected IDs, agent and model exactly once",
+    "Once/reject buttons send exact permission and session identity; obsolete permission UI disappears",
+    "Cancellation waits for authoritative state instead of fabricating stopped status",
+    "Actual Tool UI dispatch renders one schema-safe preview; unknown markup is inert escaped text",
+    "Listed slash command uses command.run with literal arguments",
+    "Unknown receipt blocks another submission and is never automatically replayed"
+  ],
+  "screenshots": [
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-permission-synthetic.png",
+      "state": "Running tool and two pending permission requests",
+      "viewport": {
+        "width": 1180,
+        "height": 788,
+        "pixelRatio": 2
+      },
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-tool-results-synthetic.png",
+      "state": "Schema-validated Tool UI link, escaped unknown output, and tool error",
+      "viewport": {
+        "width": 1180,
+        "height": 788,
+        "pixelRatio": 2
+      },
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    }
+  ]
+}
+
+exec
+/bin/zsh -lc 'python3 .solopreneur/harness.py status desktop-workbench-core' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 3805ms:
+python3: error: couldn't create cache file '/tmp/xcrun_db-MGaaxqiB' (errno=Operation not permitted)
+git: warning: confstr() failed with code 5: couldn't get path of DARWIN_USER_TEMP_DIR; using /tmp instead
+git: error: couldn't create cache file '/tmp/xcrun_db-dJYfX1oM' (errno=Operation not permitted)
+git: warning: confstr() failed with code 5: couldn't get path of DARWIN_USER_TEMP_DIR; using /tmp instead
+git: error: couldn't create cache file '/tmp/xcrun_db-zi0O5PCK' (errno=Operation not permitted)
+{
+  "run": "desktop-workbench-core",
+  "schema_version": 2,
+  "status": "active",
+  "required_gates": [
+    "plan",
+    "code",
+    "checks",
+    "design",
+    "design_spec"
+  ],
+  "gaps": [
+    "checks missing, failed, or stale",
+    "deliverable artifacts missing or changed",
+    "code review missing, unresolved, or stale",
+    "design review missing, unresolved, or stale",
+    "final outcome missing or changed"
+  ],
+  "dispatches": [
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "cli:01a0eadf-80a3-7600-ab88-78971b7d8326",
+      "context": "fresh",
+      "packet": {
+        "path": "docs/runs/desktop-workbench-core/backend.packet.json",
+        "sha256": "17e2cf4e523afc9b3789b14568ad790aee5143c39f0576125c2d46b5ff757ca7"
+      },
+      "phase": "implementation",
+      "recorded_at": "2026-09-29T01:55:50+00:00",
+      "role": "engineer",
+      "role_instruction_sha256": "2488c3a019261ec7c1acad6c6224545951ea3750f8664f23bb947f6634640d01",
+      "routing": {
+        "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+        "input_sha256": {
+          ".agents/skills/solo-implement/SKILL.md": "a4c62b99b8678c31a6cd20a598d1f0da7e6f8535bc9e6bd51b888964092fd7fa",
+          ".agents/skills/solo-specialist/SKILL.md": "33378f790f39761948485f1f08617840579714dbb925aa177109a80ac4002c3b",
+          ".codex/agents/solo_worker.toml": "2488c3a019261ec7c1acad6c6224545951ea3750f8664f23bb947f6634640d01",
+          ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+        },
+        "mode": "general",
+        "phase": "implementation",
+        "profile": "solo_worker",
+        "profile_file": ".codex/agents/solo_worker.toml",
+        "references": [],
+        "role": "engineer",
+        "schema_version": 2,
+        "skill": "solo-implement",
+        "skill_file": ".agents/skills/solo-implement/SKILL.md"
+      },
+      "routing_request": {
+        "basis": "client_defaults_requested"
+      }
+    },
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "cli:01a0eadf-ce5a-7f90-8d4a-d04cafa0fb06",
+      "context": "fresh",
+      "packet": {
+        "path": "docs/runs/desktop-workbench-core/renderer.packet.json",
+        "sha256": "090dc57908dcba44930572541efac58d13ed66b11c9023dac01fe5a6f2460957"
+      },
+      "phase": "implementation",
+      "recorded_at": "2026-09-29T02:09:45+00:00",
+      "role": "engineer",
+      "role_instruction_sha256": "2488c3a019261ec7c1acad6c6224545951ea3750f8664f23bb947f6634640d01",
+      "routing": {
+        "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+        "input_sha256": {
+          ".agents/skills/solo-implement/SKILL.md": "a4c62b99b8678c31a6cd20a598d1f0da7e6f8535bc9e6bd51b888964092fd7fa",
+          ".agents/skills/solo-specialist/SKILL.md": "33378f790f39761948485f1f08617840579714dbb925aa177109a80ac4002c3b",
+          ".codex/agents/solo_worker.toml": "2488c3a019261ec7c1acad6c6224545951ea3750f8664f23bb947f6634640d01",
+          ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+        },
+        "mode": "general",
+        "phase": "implementation",
+        "profile": "solo_worker",
+        "profile_file": ".codex/agents/solo_worker.toml",
+        "references": [],
+        "role": "engineer",
+        "schema_version": 2,
+        "skill": "solo-implement",
+        "skill_file": ".agents/skills/solo-implement/SKILL.md"
+      },
+      "routing_request": {
+        "basis": "client_defaults_requested"
+      }
+    },
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "cli:01a0eb10-7cba-7460-9533-f9b00742f12c",
+      "context": "fresh",
+      "packet": {
+        "path": "docs/runs/desktop-workbench-core/final-review.packet.json",
+        "sha256": "1829e9850d5dab0557e7d068c0ad7a4a978f1afc87e3e5998a508aa9879c4975"
+      },
+      "phase": "review",
+      "recorded_at": "2026-09-29T02:57:17+00:00",
+      "role": "reviewer",
+      "role_instruction_sha256": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      "routing": {
+        "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+        "input_sha256": {
+          ".agents/skills/solo-code-review/SKILL.md": "e461cb26baa50f1f496bdde0a2f1985b8a005404b751652db729e73cd9af5244",
+          ".agents/skills/solo-specialist/SKILL.md": "33378f790f39761948485f1f08617840579714dbb925aa177109a80ac4002c3b",
+          ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+          ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+        },
+        "mode": "default",
+        "phase": "review",
+        "profile": "solo_reader",
+        "profile_file": ".codex/agents/solo_reader.toml",
+        "references": [],
+        "role": "reviewer",
+        "schema_version": 2,
+        "skill": "solo-code-review",
+        "skill_file": ".agents/skills/solo-code-review/SKILL.md"
+      },
+      "routing_request": {
+        "basis": "coordinator_reported_explicit",
+        "effort": "high"
+      }
+    }
+  ]
+}
+
+codex
+기본 리뷰 계약을 확인했습니다. 이제 이 런의 revision 2 계획, 디자인 리뷰 패킷, 증거 provenance를 맞춰 보고, 캡처별 실제 이미지 크기와 선언된 viewport를 분리해 확인하겠습니다.
+exec
+/bin/zsh -lc "rg -n \"desktop-workbench(-narrow)?\\.png|viewport|pixelRatio|1180|788|1600|1000\" docs/runs/desktop-workbench-core" in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+docs/runs/desktop-workbench-core/backend.packet.json:3:  "contract_sha256": "ca878897c2d610a3a1c709f9d59427df7e179eaae796e660c2be9591c2952923",
+docs/runs/desktop-workbench-core/ui-states-layout-regression.log:8:Expected: in viewport
+docs/runs/desktop-workbench-core/ui-states-layout-regression.log:9:Received: viewport ratio 0.34558823704719543
+docs/runs/desktop-workbench-core/ui-states-layout-regression.log:16:       - unexpected value "viewport ratio 0.34558823704719543"
+docs/runs/desktop-workbench-core/ui-states-layout-regression.log:26:      'Expected: in viewport\n' +
+docs/runs/desktop-workbench-core/ui-states-layout-regression.log:27:      'Received: viewport ratio 0.34558823704719543\n' +
+docs/runs/desktop-workbench-core/ui-states-layout-regression.log:34:      '       - unexpected value "viewport ratio 0.34558823704719543"\n',
+docs/runs/desktop-workbench-core/ui-states-layout-regression.log:36:    actual: 'viewport ratio 0.34558823704719543',
+docs/runs/desktop-workbench-core/ui-states-layout-regression.log:38:    expected: 'in viewport',
+docs/runs/desktop-workbench-core/ui-states-layout-regression.log:43:      '       - unexpected value "viewport ratio 0.34558823704719543"'
+docs/runs/desktop-workbench-core/design-review-task.txt:14:provenance, state and viewport dimensions. Verify image pixel dimensions with
+docs/runs/desktop-workbench-core/final-review-cli.log:124:  "contract_sha256": "ca878897c2d610a3a1c709f9d59427df7e179eaae796e660c2be9591c2952923",
+docs/runs/desktop-workbench-core/final-review-cli.log:865:    54	    width: 1180,
+docs/runs/desktop-workbench-core/final-review-cli.log:1616:   403	                  ? { description: clip(i.description, 1000) }
+docs/runs/desktop-workbench-core/final-review-cli.log:2211:    82	      }, 10000);
+docs/runs/desktop-workbench-core/final-review-cli.log:2286:   157	      }, 10000);
+docs/runs/desktop-workbench-core/final-review-cli.log:7183:    54	        text: "x".repeat(100000),
+docs/runs/desktop-workbench-core/final-review-cli.log:7188:    59	    mapMessages([{ ...raw, text: "x".repeat(100000) }])[0].content[0].text
+docs/runs/desktop-workbench-core/final-review-cli.log:7636:   315	  await page.screenshot({ path: join(run, "desktop-workbench.png") });
+docs/runs/desktop-workbench-core/final-review-cli.log:7650:   329	  await page.screenshot({ path: join(run, "desktop-workbench-narrow.png") });
+docs/runs/desktop-workbench-core/final-review-cli.log:7696:   375	      join(run, "desktop-workbench.png"),
+docs/runs/desktop-workbench-core/final-review-cli.log:7697:   376	      join(run, "desktop-workbench-narrow.png"),
+docs/runs/desktop-workbench-core/final-review-cli.log:8264:6788:      '@radix-ui/react-navigation-menu': 1.2.22(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+docs/runs/desktop-workbench-core/renderer.packet.json:3:  "contract_sha256": "ca878897c2d610a3a1c709f9d59427df7e179eaae796e660c2be9591c2952923",
+docs/runs/desktop-workbench-core/ui-states-attempt2.log:1:{"result":"pass","platform":"darwin","provenance":"Synthetic main-process fixtures with actual built Electron renderer/preload","providerExecution":"not performed","observations":["Real assistant-ui onNew sends selected IDs, agent and model exactly once","Once/reject buttons send exact permission and session identity; obsolete permission UI disappears","Cancellation waits for authoritative state instead of fabricating stopped status","Actual Tool UI dispatch renders one schema-safe preview; unknown markup is inert escaped text","Listed slash command uses command.run with literal arguments","Unknown receipt blocks another submission and is never automatically replayed"],"screenshots":[{"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-permission-synthetic.png","state":"Running tool and two pending permission requests","viewport":{"width":1180,"height":788,"pixelRatio":2},"provenance":"Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"},{"path":"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-tool-results-synthetic.png","state":"Schema-validated Tool UI link, escaped unknown output, and tool error","viewport":{"width":1180,"height":788,"pixelRatio":2},"provenance":"Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"}]}
+docs/runs/desktop-workbench-core/run.json:412:      "sha256": "0d82378e01e700eb257c7eeb80df831d63e1180939fbd161c44b84a792aa257d",
+docs/runs/desktop-workbench-core/run.json:1007:      "sha256": "2ca598bef491bda2b2f0bf3ffb8bc8390ce6cdd110278825b3504808e9924895",
+docs/runs/desktop-workbench-core/run.json:1042:      "sha256": "5a5cdc46c7333db696694f042b14273eba99531098fc6bc96be31db727887438",
+docs/runs/desktop-workbench-core/run.json:1177:      "sha256": "0314678860a175549975bd38db74a68dcec52a405091c97d0588834de77aabf5",
+docs/runs/desktop-workbench-core/run.json:1322:      "sha256": "11febc9c33d8a696fb891dae7b5d8d74eac3c7cacdfe6394845f67885e2fddae",
+docs/runs/desktop-workbench-core/run.json:1921:        "stdout": "{\"result\":\"pass\",\"platform\":\"darwin\",\"observations\":[\"real Electron workbench and assistant-ui composer with owned OpenCode sidecar\",\"closed IPC operations and unknown session rejected\",\"untrusted import, actual bounded file listing/preview, secret [REDACTED] symlink/traversal rejection\",\"two real sidecar sessions retain separate identity\",\"actual session navigation preserves separate assistant-ui drafts\",\"actual catalog groups and invalid-model send refusal without provider execution\",\"IME composition Enter does not submit a message\",\"real assistant-ui submission surfaces AUTH_REQUIRED, retains draft and does not fabricate messages\",\"actual read-only file and extension panels render the selected workspace\",\"actual full and narrow Electron screenshots; no horizontal page overflow\",\"list removal preserves disk data; owned sidecar reaped and temporary Electron profile removed\"],\"nativePickerInteraction\":\"test dialog substitution; OS picker not physically operated\",\"providerExecution\":\"not run; existing credentials not loaded or sent\",\"screenshots\":[\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-workbench.png\",\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-workbench-narrow.png\"]}\n",
+docs/runs/desktop-workbench-core/run.json:2324:    "sha256": "ca878897c2d610a3a1c709f9d59427df7e179eaae796e660c2be9591c2952923"
+docs/runs/desktop-workbench-core/design-review-cli.log:36:provenance, state and viewport dimensions. Verify image pixel dimensions with
+docs/runs/desktop-workbench-core/design-review-cli.log:110:Inspect the running application in a browser, simulator, or device, or inspect accessible captures of that implementation. Figma is a reference contract, not evidence that the delivered UI works. Verify each direct capture path and its viewport/device dimensions before judging it; do not inherit a screenshot or dimensions from long conversation history. For exported capture handoffs, require an accessible path, provenance/origin (a hash is optional), application state, viewport or device, and checked pixel dimensions; direct inspection remains acceptable. Read [references/evidence-review.md](references/evidence-review.md) before a multi-screen audit or a post-fix review. Do not treat source code, a mockup, or a successful build as proof of rendered behavior.
+docs/runs/desktop-workbench-core/design-review-cli.log:114:A final review is report-only. Route fixes to an implementer; after a fix, obtain a fresh independent final `design_qa` review of the delivered UI. Never claim a state, viewport, device, console result, or screenshot was inspected when it was not.
+docs/runs/desktop-workbench-core/design-review-cli.log:127:Record the run, revision or build, route or deep link, user state, locale, theme, viewport or device, and the user task being tested. Use demo data that exposes real layout conditions, including long text and empty/error states where relevant.
+docs/runs/desktop-workbench-core/design-review-cli.log:154:After the implementer corrects an issue, independently reproduce the original state. Capture the same viewport/device and action path, compare before and after, and check for new runtime errors. Classify the result as verified, partly verified with the missing condition named, or unresolved. A changed source file is not a verified fix.
+docs/runs/desktop-workbench-core/design-review-cli.log:161:  "contract_sha256": "ca878897c2d610a3a1c709f9d59427df7e179eaae796e660c2be9591c2952923",
+docs/runs/desktop-workbench-core/design-review-cli.log:301:    "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-workbench.png",
+docs/runs/desktop-workbench-core/design-review-cli.log:302:    "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-workbench-narrow.png"
+docs/runs/desktop-workbench-core/design-review-cli.log:322:      "viewport": {
+docs/runs/desktop-workbench-core/design-review-cli.log:323:        "width": 1180,
+docs/runs/desktop-workbench-core/design-review-cli.log:324:        "height": 788,
+docs/runs/desktop-workbench-core/design-review-cli.log:325:        "pixelRatio": 2
+docs/runs/desktop-workbench-core/design-review-cli.log:332:      "viewport": {
+docs/runs/desktop-workbench-core/design-review-cli.log:333:        "width": 1180,
+docs/runs/desktop-workbench-core/design-review-cli.log:334:        "height": 788,
+docs/runs/desktop-workbench-core/design-review-cli.log:335:        "pixelRatio": 2
+docs/runs/desktop-workbench-core/design-review-cli.log:476:기본 리뷰 계약을 확인했습니다. 이제 이 런의 revision 2 계획, 디자인 리뷰 패킷, 증거 provenance를 맞춰 보고, 캡처별 실제 이미지 크기와 선언된 viewport를 분리해 확인하겠습니다.
+docs/runs/desktop-workbench-core/ui-states-evidence.json:13:      "viewport": {
+docs/runs/desktop-workbench-core/ui-states-evidence.json:14:        "width": 1180,
+docs/runs/desktop-workbench-core/ui-states-evidence.json:15:        "height": 788,
+docs/runs/desktop-workbench-core/ui-states-evidence.json:16:        "pixelRatio": 2
+docs/runs/desktop-workbench-core/ui-states-evidence.json:21:  "error": "Error: expect(locator).toBeInViewport() failed\n\nLocator:  getByRole('textbox', { name: '메시지 작성' })\nExpected: in viewport\nReceived: viewport ratio 0.34558823704719543\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeInViewport\" getByRole('textbox', { name: '메시지 작성' }) with timeout 5000ms\n  - waiting for getByRole('textbox', { name: '메시지 작성' })\n    14 × locator resolved to <textarea rows=\"2\" name=\"input\" maxlength=\"32000\" aria-label=\"메시지 작성\" placeholder=\"작업을 요청하세요. /로 명령 보기\"></textarea>\n       - unexpected value \"viewport ratio 0.34558823704719543\"\n"
+docs/runs/desktop-workbench-core/final-review.packet.json:3:  "contract_sha256": "ca878897c2d610a3a1c709f9d59427df7e179eaae796e660c2be9591c2952923",
+docs/runs/desktop-workbench-core/electron-evidence.json:20:    "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-workbench.png",
+docs/runs/desktop-workbench-core/electron-evidence.json:21:    "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-workbench-narrow.png"
+docs/runs/desktop-workbench-core/design-review.packet.json:3:  "contract_sha256": "ca878897c2d610a3a1c709f9d59427df7e179eaae796e660c2be9591c2952923",
+docs/runs/desktop-workbench-core/renderer-worker.log:221:  "contract_sha256": "ca878897c2d610a3a1c709f9d59427df7e179eaae796e660c2be9591c2952923",
+docs/runs/desktop-workbench-core/renderer-worker.log:309:    const timer = setInterval(refresh, 1000);
+docs/runs/desktop-workbench-core/renderer-worker.log:1629:  assert.ok(mapMessages(Array.from({length:600}, (_,i) => ({...raw,id:String(i),text:'x'.repeat(100000)}))).length <= 300);
+docs/runs/desktop-workbench-core/renderer-worker.log:1630:  assert.ok(mapMessages([{...raw,text:'x'.repeat(100000)}])[0].content[0].text.length < 66000);
+docs/runs/desktop-workbench-core/renderer-worker.log:2760:      }, 10000);
+docs/runs/desktop-workbench-core/renderer-worker.log:2778:      const watchdog = setTimeout(() => { expired = true; if(active) setCatalogError('"'목록 응답이 지연되고 있습니다.'); }, 10000);
+docs/runs/desktop-workbench-core/renderer-worker.log:2865:                  ? { description: clip(i.description, 1000) }
+docs/runs/desktop-workbench-core/backend-worker.log:203:  "contract_sha256": "ca878897c2d610a3a1c709f9d59427df7e179eaae796e660c2be9591c2952923",
+docs/runs/desktop-workbench-core/backend-worker.log:307:    width: 1180,
+docs/runs/desktop-workbench-core/backend-worker.log:1117:2788:export type SessionInfo = {
+docs/runs/desktop-workbench-core/backend-worker.log:2777:    const simple=(items,key="id")=>items===null?unavailable():available(items.filter(i=>opaque(i[key]) && typeof i.name==="string").map(i=>({id:i[key],name:clip(i.name,256),...(typeof i.description==="string"?{description:clip(i.description,1000)}:{})})));
+docs/runs/desktop-workbench-core/backend-worker.log:3289:                  ? { description: clip(i.description, 1000) }
+docs/runs/desktop-workbench-core/backend-worker.log:3873:    width: 1180,
+
+exec
+/bin/zsh -lc "rg -n -l \"desktop-workbench\\.png|desktop-workbench-narrow\\.png\" apps . | head -30" in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+apps/desktop-app/scripts/e2e-workbench.mjs
+./apps/desktop-app/scripts/e2e-workbench.mjs
+./docs/runs/desktop-workbench-core/design-review-cli.log
+./docs/runs/desktop-workbench-core/run.json
+./docs/runs/desktop-workbench-core/electron-evidence.json
+./docs/runs/desktop-workbench-core/final-review-cli.log
+
+exec
+/bin/zsh -lc 'cat docs/runs/desktop-workbench-core/interface.md' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+# Desktop workbench IPC interface
+
+Version: 2. This is the shared implementation contract for desktop-workbench-core revision 2.
+
+Keep `window.desktopBridge.runtimeSnapshot()` backward compatible. Add `workbench(request)` as a closed, typed discriminated request union, not an arbitrary channel/SDK dispatcher, and optional `onWorkbenchChanged(listener)` returning an unsubscribe function. Main admits the exact app top frame for every request. Main validates argument count, plain JSON object shape, allowed keys, bounded strings, IDs and operation-specific constraints before any effects.
+
+Every result is `{ok: true, value: T}` or `{ok: false, code: string, message: string}`. Errors use fixed app messages, never raw SDK errors, auth headers, endpoint/password or stack traces. Main-generated opaque IDs identify registered workspace/session records. Renderer selection is not authorization; every session must belong to the stated registered workspace.
+
+Before accepting any prompt or command, main applies and reads back the exact baseline rules `[{action:'*',resource:'*',effect:'ask'},{action:'external_directory',resource:'*',effect:'deny'},{action:'subagent',resource:'*',effect:'deny'}]`. The initial sidecar-created session is included. Missing/mismatched policy or failed read-back returns `POLICY_UNVERIFIED`; no prompt/command is attempted. Recheck after any agent/model selection and immediately before sending. User trust in a workspace is separate from per-tool authorization; no remembered/bulk approval or renderer-provided rule is accepted. Rejecting a request through OpenCode v2 also rejects the session's other pending requests; UI wording and invalidation must reflect that broader documented effect. Unit tests assert no send on unverified/changed policy and no reuse of rejected or obsolete request IDs.
+
+Do not invoke location-scoped SDK catalog APIs for an untrusted import: they may activate project configuration. Return explicit unavailable catalog state until session creation has obtained native trust confirmation. Direct bounded filesystem listing/preview remains independent of SDK discovery.
+
+## Requests
+
+- `{type: 'snapshot', workspaceId?: string, sessionId?: string}` returns a sanitized authoritative snapshot for the pair. A missing pair returns the workspace/session lists and temporary default. Do not make unknown IDs select another session.
+- `{type: 'workspace.import'}` invokes a native directory picker and registers its canonical location without SDK discovery; cancellation is an explicit cancelled result.
+- `{type: 'workspace.create', name?: string}` invokes a native parent picker and creates only an exclusive direct child. Names cannot contain separators, parent segments, controls or platform-reserved forms. Blank name uses yyyy-mm-dd-UUIDv7. No implicit git init.
+- `{type: 'workspace.remove', workspaceId: string}` removes app registration only, refuses active execution, and does not delete disk contents.
+- `{type: 'session.create', workspaceId: string, title?: string}` requires explicit native trust confirmation for imported paths before client session creation; bind the returned session to that workspace.
+- `{type: 'message.send', workspaceId: string, sessionId: string, requestId: string, text: string, agent?: string, model?: string}` sends once through the pinned session API. Validate supported catalog selections. `model` is an opaque ID returned by the catalog; main maps it to the SDK's actual shape. Keep a bounded request receipt cache; duplicates never repeat side effects, busy/unknown outcomes are explicit.
+- `{type: 'session.interrupt', workspaceId: string, sessionId: string}` requests cancellation through the exact supported API; stopping is not proof of stopped. Reconcile actual session status.
+- `{type: 'permission.respond', workspaceId: string, sessionId: string, requestId: string, decision: 'once'|'reject'}` validates the current pending request and ownership. No bulk/remembered approval in this increment.
+- `{type: 'catalog.list', workspaceId: string, sessionId?: string}` returns dynamic commands, skills, MCP, agents and models only through inspected available APIs. Each collection has status `available` or `unavailable` and entries; empty available arrays are not errors. Do not dump configs/secrets. Do not start a configured MCP merely to list it.
+- `{type: 'command.run', workspaceId: string, sessionId: string, requestId: string, name: string, arguments: string}` dispatches only a listed runtime command with checked arguments and the same request/busy rules. Slash text is never shell code. Local panel/new-session actions are handled explicitly by the renderer.
+- `{type: 'file.list', workspaceId: string, path?: string}` and `{type: 'file.read', workspaceId: string, path: string}` accept bounded relative paths only. Main revalidates canonical containment and symlinks; read only regular files with size limits. Deny sensitive configuration/credential names and binary formats in this text-first increment. Return actual file labels, content/entries and truncation/unsupported states. Never execute HTML.
+
+## Snapshot DTO
+
+Backend owns `src/desktop-bridge.d.ts` and the request validation module. Freeze this shared shape for the UI:
+
+```
+WorkbenchSnapshot {
+  revision: number;
+  state: 'connected'|'disconnected'|'unavailable';
+  temporary: true;
+  workspaces: {id, name, path, kind: 'folder'|'repository'|'worktree', trusted, temporary}[];
+  sessions: {id, workspaceId, title, status: 'idle'|'running'|'stopping'|'unknown'}[];
+  selectedWorkspaceId?: string;
+  selectedSessionId?: string;
+  messages: {id, role: 'user'|'assistant', text: string,
+    tools: {id, name, status: 'pending'|'running'|'completed'|'error', input: string, output: string}[]}[];
+  permissions: {id, sessionId, title, detail}[];
+  error?: {code, message};
+}
+```
+
+Catalog entries have `{id, name, description?, status?}`; the catalog is `{commands, skills, mcp, agents, models}`, each `{status, entries}`. File list returns `{path, entries: {name,path,type:'file'|'directory'}[]}`; file read returns `{path, content, truncated}`. Workspace import/create/remove and session creation return a new snapshot. Send/interrupt/permission/command return a receipt `{requestId?: string, status: 'accepted'|'duplicate'|'stopping'|'decided'|'unknown'}`; subsequent authoritative snapshots provide actual outcome.
+
+Default snapshot is for the app-created temporary workspace/session. Keep the legacy runtimeSnapshot sessionId as a non-authoritative identifier for compatibility with its existing consumers and smoke tests. New workbench requests use main-registered IDs and validate ownership; knowledge of either ID grants no capability. Expose the authenticated client only inside the trusted runtime object for main, never through either preload API. Do not change existing startup identity/version verification or process cleanup semantics.
+
+## Renderer and tests
+
+Use assistant-ui ExternalStoreRuntime with real onNew/onCancel callbacks and immutable server message IDs. Per-session drafts and a request generation token prevent cross-session leakage. Tool UI uses existing @workbench/ui public exports when its declared schema matches; otherwise provide an inert escaped detail view. Notifications may trigger coalesced refresh; bounded polling is an honest fallback and must not be called durable event replay. Retain partial message text and explicit error/unknown states rather than fabricate completion.
+
+Backend creates `workbench-service.test.mjs` and `workbench-contract.test.mjs`. Renderer creates a pure projection/selection helper and `workbench-projection.test.mjs`. Exact SDK wire calls are established from installed declarations and tested with representative fixture payloads; tests must not import/start a real host or use real user files. Primary owns `scripts/e2e-workbench.mjs`, dependency declarations, final validation and build evidence.
+
+Renderer implementation lives under `src/renderer/` plus the existing `renderer.tsx` entry. Host implementation stays in the existing main-side modules. Only the public `desktop-bridge.d.ts` DTO declaration may cross that source boundary as a type dependency. The primary's required `check-renderer-boundaries.mjs` covers resolved project/slice/public-API/host boundaries with positive and negative fixtures, including type-only imports and alias/relative bypasses.
+
+exec
+/bin/zsh -lc "nl -ba apps/desktop-app/scripts/e2e-workbench.mjs | sed -n '250,345p'" in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+   250	  observations.push("IME composition Enter does not submit a message");
+   251	
+   252	  // Exercise the actual assistant-ui onNew -> preload -> main -> sidecar catalog
+   253	  // path. The isolated runtime has no inherited provider credentials.
+   254	  await composer.fill("Synthetic composer check without provider credentials.");
+   255	  await page
+   256	    .getByRole("button", { name: "메시지 보내기", exact: true })
+   257	    .click();
+   258	  await expect(page.getByRole("alert")).toContainText("AUTH_REQUIRED", {
+   259	    timeout: 20000,
+   260	  });
+   261	  await expect(composer).toHaveValue(
+   262	    "Synthetic composer check without provider credentials.",
+   263	  );
+   264	  const noProviderSend = await bridge({
+   265	    type: "snapshot",
+   266	    workspaceId,
+   267	    sessionId,
+   268	  });
+   269	  assert.equal(noProviderSend.ok, true);
+   270	  assert.equal(
+   271	    noProviderSend.value.messages.some((item) =>
+   272	      item.text.includes("Synthetic composer check"),
+   273	    ),
+   274	    false,
+   275	  );
+   276	  await page.screenshot({
+   277	    path: join(run, "desktop-workbench-auth-required.png"),
+   278	  });
+   279	  observations.push(
+   280	    "real assistant-ui submission surfaces AUTH_REQUIRED, retains draft and does not fabricate messages",
+   281	  );
+   282	
+   283	  await page
+   284	    .getByRole("button", { name: "sample-project", exact: true })
+   285	    .click();
+   286	  await page.getByRole("button", { name: "파일·확장", exact: true }).click();
+   287	  await page.getByRole("button", { name: /notes\.md.*파일 미리보기/ }).click();
+   288	  await expect(page.getByRole("region", { name: "파일 내용" })).toContainText(
+   289	    "Disposable workbench validation",
+   290	  );
+   291	  await page.screenshot({
+   292	    path: join(run, "desktop-workbench-file-preview.png"),
+   293	  });
+   294	  await page.getByRole("button", { name: "확장·명령", exact: true }).click();
+   295	  await expect(
+   296	    page.getByRole("region", { name: "런타임 확장 목록" }),
+   297	  ).toContainText("MCP");
+   298	  await page.screenshot({ path: join(run, "desktop-workbench-catalog.png") });
+   299	  await page
+   300	    .getByRole("button", { name: "상세 패널 닫기", exact: true })
+   301	    .click();
+   302	  await page
+   303	    .getByRole("button", {
+   304	      name: initial.value.workspaces.find((item) => item.id === workspaceId)
+   305	        .name,
+   306	      exact: true,
+   307	    })
+   308	    .click();
+   309	  await expect(composer).toBeVisible();
+   310	  observations.push(
+   311	    "actual read-only file and extension panels render the selected workspace",
+   312	  );
+   313	
+   314	  await composer.fill("");
+   315	  await page.screenshot({ path: join(run, "desktop-workbench.png") });
+   316	  await application.evaluate(({ BrowserWindow }) =>
+   317	    BrowserWindow.getAllWindows()[0].setSize(800, 700),
+   318	  );
+   319	  await expect
+   320	    .poll(() => page.evaluate(() => window.innerWidth))
+   321	    .toBeLessThanOrEqual(800);
+   322	  await expect(composer).toBeVisible();
+   323	  assert.equal(
+   324	    await page.evaluate(
+   325	      () => window.document.documentElement.scrollWidth > window.innerWidth,
+   326	    ),
+   327	    false,
+   328	  );
+   329	  await page.screenshot({ path: join(run, "desktop-workbench-narrow.png") });
+   330	  observations.push(
+   331	    "actual full and narrow Electron screenshots; no horizontal page overflow",
+   332	  );
+   333	
+   334	  const removed = await bridge({
+   335	    type: "workspace.remove",
+   336	    workspaceId: importedWorkspace.id,
+   337	  });
+   338	  assert.equal(removed.ok, true);
+   339	  assert.equal(existsSync(join(project, "notes.md")), true);
+   340	  assert.equal(
+   341	    pageErrors.length,
+   342	    0,
+   343	    "Renderer must not report uncaught exceptions",
+   344	  );
+   345	  profile = await application.evaluate(({ app }) => app.getPath("userData"));
+
+exec
+/bin/zsh -lc "rg -n \"BrowserWindow|setSize\\(|width:|height:\" apps/desktop-app/src apps/desktop-app/scripts/e2e-workbench.mjs | head -80" in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+apps/desktop-app/scripts/e2e-workbench.mjs:316:  await application.evaluate(({ BrowserWindow }) =>
+apps/desktop-app/scripts/e2e-workbench.mjs:317:    BrowserWindow.getAllWindows()[0].setSize(800, 700),
+apps/desktop-app/src/main.mjs:1:import { app, BrowserWindow, dialog, ipcMain } from "electron";
+apps/desktop-app/src/main.mjs:53:  mainWindow = new BrowserWindow({
+apps/desktop-app/src/main.mjs:54:    width: 1180,
+apps/desktop-app/src/main.mjs:55:    height: 820,
+apps/desktop-app/src/main.mjs:236:    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+apps/desktop-app/src/renderer.css:22:  min-height: 44px;
+apps/desktop-app/src/renderer.css:47:  min-height: 40px;
+apps/desktop-app/src/renderer.css:48:  min-width: 0;
+apps/desktop-app/src/renderer.css:55:  line-height: 1.5;
+apps/desktop-app/src/renderer.css:59:  line-height: 1.3;
+apps/desktop-app/src/renderer.css:83:  height: 100dvh;
+apps/desktop-app/src/renderer.css:84:  min-height: 0;
+apps/desktop-app/src/renderer.css:90:  width: 250px;
+apps/desktop-app/src/renderer.css:100:  min-height: 44px;
+apps/desktop-app/src/renderer.css:126:  min-width: 0;
+apps/desktop-app/src/renderer.css:133:  width: 44px;
+apps/desktop-app/src/renderer.css:149:  width: 100%;
+apps/desktop-app/src/renderer.css:156:  min-width: 0;
+apps/desktop-app/src/renderer.css:181:  width: 100%;
+apps/desktop-app/src/renderer.css:187:  min-width: 0;
+apps/desktop-app/src/renderer.css:190:  min-height: 76px;
+apps/desktop-app/src/renderer.css:200:  min-width: 0;
+apps/desktop-app/src/renderer.css:233:  min-height: 0;
+apps/desktop-app/src/renderer.css:237:  min-height: 0;
+apps/desktop-app/src/renderer.css:243:  width: 100%;
+apps/desktop-app/src/renderer.css:244:  max-width: 770px;
+apps/desktop-app/src/renderer.css:258:  line-height: 1.65;
+apps/desktop-app/src/renderer.css:268:  max-width: 88%;
+apps/desktop-app/src/renderer.css:283:  max-height: 60%;
+apps/desktop-app/src/renderer.css:296:  width: 100%;
+apps/desktop-app/src/renderer.css:300:  min-height: 68px;
+apps/desktop-app/src/renderer.css:301:  max-height: 180px;
+apps/desktop-app/src/renderer.css:303:  line-height: 1.6;
+apps/desktop-app/src/renderer.css:319:  min-width: 85px;
+apps/desktop-app/src/renderer.css:320:  max-width: 180px;
+apps/desktop-app/src/renderer.css:326:  width: 100%;
+apps/desktop-app/src/renderer.css:384:  max-height: 320px;
+apps/desktop-app/src/renderer.css:393:  max-width: 100%;
+apps/desktop-app/src/renderer.css:396:  max-height: 240px;
+apps/desktop-app/src/renderer.css:411:  width: 100%;
+apps/desktop-app/src/renderer.css:424:  width: var(--detail-width);
+apps/desktop-app/src/renderer.css:425:  min-width: 260px;
+apps/desktop-app/src/renderer.css:426:  max-width: 38vw;
+apps/desktop-app/src/renderer.css:448:  width: 100%;
+apps/desktop-app/src/renderer.css:454:  min-height: 0;
+apps/desktop-app/src/renderer.css:465:  width: 100%;
+apps/desktop-app/src/renderer.css:489:  max-width: 500px;
+apps/desktop-app/src/renderer.css:498:  width: 1px;
+apps/desktop-app/src/renderer.css:499:  height: 1px;
+apps/desktop-app/src/renderer.css:507:@media (max-width: 1199px) {
+apps/desktop-app/src/renderer.css:509:    width: 220px;
+apps/desktop-app/src/renderer.css:525:@media (max-width: 899px) {
+apps/desktop-app/src/renderer.css:528:    width: 250px;
+apps/desktop-app/src/renderer.css:534:    width: 100%;
+apps/desktop-app/src/renderer.css:535:    max-width: none;
+apps/desktop-app/src/renderer.css:536:    min-width: 0;
+apps/desktop-app/src/renderer.css:551:@media (max-width: 599px) {
+apps/desktop-app/src/renderer.css:556:    width: 100%;
+apps/desktop-app/src/renderer.css:562:    max-width: 110px;
+
+exec
+/bin/zsh -lc 'xxd -l 24 docs/runs/desktop-workbench-core/desktop-workbench.png; xxd -l 24 docs/runs/desktop-workbench-core/desktop-workbench-narrow.png; xxd -l 24 docs/runs/desktop-workbench-core/desktop-permission-synthetic.png; xxd -l 24 docs/runs/desktop-workbench-core/desktop-tool-results-synthetic.png' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+00000000: 8950 4e47 0d0a 1a0a 0000 000d 4948 4452  .PNG........IHDR
+00000010: 0000 0938 0000 0628                      ...8...(
+00000000: 8950 4e47 0d0a 1a0a 0000 000d 4948 4452  .PNG........IHDR
+00000010: 0000 0640 0000 0538                      ...@...8
+00000000: 8950 4e47 0d0a 1a0a 0000 000d 4948 4452  .PNG........IHDR
+00000010: 0000 0938 0000 0628                      ...8...(
+00000000: 8950 4e47 0d0a 1a0a 0000 000d 4948 4452  .PNG........IHDR
+00000010: 0000 0938 0000 0628                      ...8...(
+
+codex
+네 캡처는 직접 확인했고, 첨부 PNG의 실제 픽셀 크기는 각각 1916×1280, 1600×1336, 1916×1280, 1916×1280입니다. 실제 Electron 두 캡처는 provenance JSON에 viewport 수치가 빠져 있어, 캡처를 만든 읽기 전용 스모크 스크립트에서 window/resize 값만 확인해 그 부분을 명시적으로 보완하겠습니다.
+exec
+/bin/zsh -lc "nl -ba docs/runs/desktop-workbench-core/ui-states-evidence.json | sed -n '1,90p'" in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+     1	{
+     2	  "result": "fail",
+     3	  "platform": "darwin",
+     4	  "provenance": "Synthetic main-process fixtures with actual built Electron renderer/preload",
+     5	  "providerExecution": "not performed",
+     6	  "observations": [
+     7	    "Real assistant-ui onNew sends selected IDs, agent and model exactly once"
+     8	  ],
+     9	  "screenshots": [
+    10	    {
+    11	      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/desktop-workbench-core/desktop-permission-synthetic.png",
+    12	      "state": "Running tool and two pending permission requests",
+    13	      "viewport": {
+    14	        "width": 1180,
+    15	        "height": 788,
+    16	        "pixelRatio": 2
+    17	      },
+    18	      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    19	    }
+    20	  ],
+    21	  "error": "Error: expect(locator).toBeInViewport() failed\n\nLocator:  getByRole('textbox', { name: '메시지 작성' })\nExpected: in viewport\nReceived: viewport ratio 0.34558823704719543\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toBeInViewport\" getByRole('textbox', { name: '메시지 작성' }) with timeout 5000ms\n  - waiting for getByRole('textbox', { name: '메시지 작성' })\n    14 × locator resolved to <textarea rows=\"2\" name=\"input\" maxlength=\"32000\" aria-label=\"메시지 작성\" placeholder=\"작업을 요청하세요. /로 명령 보기\"></textarea>\n       - unexpected value \"viewport ratio 0.34558823704719543\"\n"
+    22	}
+
+exec
+/bin/zsh -lc "nl -ba apps/desktop-app/src/renderer.css | sed -n '1,220p'; nl -ba apps/desktop-app/src/renderer.css | sed -n '230,590p'" in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+     1	:root {
+     2	  color-scheme: light;
+     3	  font-family: var(--omoc-semantic-type-family-body);
+     4	  color: var(--omoc-semantic-color-text-primary);
+     5	  background: var(--omoc-semantic-color-canvas);
+     6	  font-synthesis: none;
+     7	}
+     8	* {
+     9	  box-sizing: border-box;
+    10	}
+    11	body {
+    12	  margin: 0;
+    13	}
+    14	button,
+    15	input,
+    16	textarea,
+    17	select {
+    18	  font: inherit;
+    19	  color: inherit;
+    20	}
+    21	button {
+    22	  min-height: 44px;
+    23	  padding: 8px 12px;
+    24	  border: 0;
+    25	  border-radius: 10px;
+    26	  background: transparent;
+    27	  cursor: pointer;
+    28	}
+    29	button:hover:not(:disabled) {
+    30	  background: var(--omoc-component-color-navigation-hover-background);
+    31	}
+    32	button:disabled,
+    33	select:disabled {
+    34	  opacity: 0.5;
+    35	  cursor: not-allowed;
+    36	}
+    37	button:focus-visible,
+    38	input:focus-visible,
+    39	textarea:focus-visible,
+    40	select:focus-visible,
+    41	summary:focus-visible {
+    42	  outline: 2px solid var(--omoc-semantic-color-focus);
+    43	  outline-offset: 2px;
+    44	}
+    45	input,
+    46	select {
+    47	  min-height: 40px;
+    48	  min-width: 0;
+    49	  border: 1px solid var(--omoc-primitive-color-n3);
+    50	  border-radius: 8px;
+    51	  background: var(--omoc-semantic-color-surface);
+    52	  padding: 6px 8px;
+    53	}
+    54	p {
+    55	  line-height: 1.5;
+    56	}
+    57	h1 {
+    58	  font-size: 24px;
+    59	  line-height: 1.3;
+    60	  font-weight: 500;
+    61	}
+    62	h2,
+    63	h3 {
+    64	  font-size: 14px;
+    65	  font-weight: 600;
+    66	}
+    67	ul {
+    68	  padding: 0;
+    69	  margin: 0;
+    70	  list-style: none;
+    71	}
+    72	pre {
+    73	  white-space: pre-wrap;
+    74	  overflow-wrap: anywhere;
+    75	  font:
+    76	    13px/1.6 ui-monospace,
+    77	    SFMono-Regular,
+    78	    Consolas,
+    79	    monospace;
+    80	}
+    81	.workbench {
+    82	  display: flex;
+    83	  height: 100dvh;
+    84	  min-height: 0;
+    85	  overflow: hidden;
+    86	}
+    87	.navigation {
+    88	  display: flex;
+    89	  flex-direction: column;
+    90	  width: 250px;
+    91	  flex-shrink: 0;
+    92	  padding: 16px 12px;
+    93	  background: var(--omoc-semantic-color-surface-subtle);
+    94	  overflow-y: auto;
+    95	}
+    96	.brand-row {
+    97	  display: flex;
+    98	  align-items: center;
+    99	  justify-content: space-between;
+   100	  min-height: 44px;
+   101	  padding: 0 8px;
+   102	  font-size: 15px;
+   103	}
+   104	.workspace-actions {
+   105	  display: grid;
+   106	  gap: 4px;
+   107	  margin: 20px 0 8px;
+   108	}
+   109	.workspace-actions button {
+   110	  text-align: left;
+   111	}
+   112	.navigation h2 {
+   113	  margin: 24px 12px 8px;
+   114	  color: var(--omoc-semantic-color-text-secondary);
+   115	  font-size: 12px;
+   116	}
+   117	.workspace-list {
+   118	  flex: 1;
+   119	}
+   120	.workspace-row {
+   121	  display: flex;
+   122	  align-items: center;
+   123	}
+   124	.workspace-row > button:first-child {
+   125	  flex: 1;
+   126	  min-width: 0;
+   127	  text-align: left;
+   128	  overflow-wrap: anywhere;
+   129	  font-weight: 500;
+   130	}
+   131	.workspace-row > button:last-child {
+   132	  flex-shrink: 0;
+   133	  width: 44px;
+   134	}
+   135	button[aria-current],
+   136	button[aria-pressed="true"] {
+   137	  background: var(--omoc-semantic-color-selection-background);
+   138	}
+   139	.workspace-meta {
+   140	  font-size: 12px;
+   141	  margin: 4px 12px 8px;
+   142	  color: var(--omoc-semantic-color-text-secondary);
+   143	}
+   144	.session-list {
+   145	  margin: 4px 0 12px 12px;
+   146	}
+   147	.session-list button {
+   148	  display: flex;
+   149	  width: 100%;
+   150	  gap: 8px;
+   151	  text-align: left;
+   152	  align-items: center;
+   153	}
+   154	.session-list button span {
+   155	  overflow-wrap: anywhere;
+   156	  min-width: 0;
+   157	  flex: 1;
+   158	}
+   159	.session-list small {
+   160	  font-size: 11px;
+   161	  flex-shrink: 0;
+   162	}
+   163	.new-session {
+   164	  margin: 12px 0;
+   165	  text-align: left;
+   166	}
+   167	.temporary-note {
+   168	  font-size: 12px;
+   169	  margin: 12px 8px 0;
+   170	  color: var(--omoc-semantic-color-text-secondary);
+   171	}
+   172	.create-folder {
+   173	  padding: 8px;
+   174	}
+   175	.create-folder label {
+   176	  display: grid;
+   177	  gap: 8px;
+   178	  font-size: 13px;
+   179	}
+   180	.create-folder input {
+   181	  width: 100%;
+   182	}
+   183	.main-pane {
+   184	  display: flex;
+   185	  flex: 1;
+   186	  flex-direction: column;
+   187	  min-width: 0;
+   188	}
+   189	.workbench-header {
+   190	  min-height: 76px;
+   191	  padding: 12px 24px;
+   192	  display: flex;
+   193	  align-items: center;
+   194	  gap: 12px;
+   195	}
+   196	.session-heading {
+   197	  display: flex;
+   198	  flex-direction: column;
+   199	  flex: 1;
+   200	  min-width: 0;
+   201	  gap: 5px;
+   202	}
+   203	.session-heading strong {
+   204	  overflow: hidden;
+   205	  text-overflow: ellipsis;
+   206	  white-space: nowrap;
+   207	  font-weight: 500;
+   208	}
+   209	.runtime-state {
+   210	  color: var(--omoc-semantic-color-text-secondary);
+   211	  font-size: 12px;
+   212	}
+   213	.runtime-state[data-state="disconnected"],
+   214	.runtime-state[data-state="unavailable"] {
+   215	  color: var(--omoc-semantic-color-danger-foreground);
+   216	}
+   217	.status-line {
+   218	  display: flex;
+   219	  flex-wrap: wrap;
+   220	  align-items: center;
+   230	.conversation {
+   231	  display: flex;
+   232	  flex-direction: column;
+   233	  min-height: 0;
+   234	  flex: 1;
+   235	}
+   236	.transcript {
+   237	  min-height: 0;
+   238	  flex: 1;
+   239	  overflow-y: auto;
+   240	  padding: 16px 24px;
+   241	}
+   242	.reading-column {
+   243	  width: 100%;
+   244	  max-width: 770px;
+   245	  margin: 0 auto;
+   246	}
+   247	.conversation-empty {
+   248	  padding: clamp(40px, 14vh, 140px) 12px 40px;
+   249	  text-align: center;
+   250	}
+   251	.conversation-empty p {
+   252	  color: var(--omoc-semantic-color-text-secondary);
+   253	  font-size: 14px;
+   254	}
+   255	.message {
+   256	  padding: 20px 0;
+   257	  font-size: 16px;
+   258	  line-height: 1.65;
+   259	}
+   260	.speaker {
+   261	  display: block;
+   262	  font-size: 12px;
+   263	  font-weight: 500;
+   264	  color: var(--omoc-semantic-color-text-secondary);
+   265	  margin-bottom: 8px;
+   266	}
+   267	.message--user {
+   268	  max-width: 88%;
+   269	  margin-left: auto;
+   270	}
+   271	.message--user .message-text {
+   272	  background: var(--omoc-semantic-color-surface-subtle);
+   273	  border-radius: 16px;
+   274	  padding: 12px 16px;
+   275	}
+   276	.message-text {
+   277	  white-space: pre-wrap;
+   278	  overflow-wrap: anywhere;
+   279	}
+   280	.compose-region {
+   281	  flex-shrink: 0;
+   282	  padding: 16px 24px 8px;
+   283	  max-height: 60%;
+   284	  overflow-y: auto;
+   285	}
+   286	.composer {
+   287	  position: relative;
+   288	  border: 1px solid var(--omoc-primitive-color-n3);
+   289	  border-radius: 22px;
+   290	  padding: 16px;
+   291	  background: var(--omoc-semantic-color-surface);
+   292	}
+   293	.composer textarea {
+   294	  display: block;
+   295	  resize: none;
+   296	  width: 100%;
+   297	  border: none;
+   298	  background: transparent;
+   299	  padding: 4px;
+   300	  min-height: 68px;
+   301	  max-height: 180px;
+   302	  overflow-y: auto;
+   303	  line-height: 1.6;
+   304	}
+   305	.composer-toolbar {
+   306	  display: flex;
+   307	  align-items: end;
+   308	  flex-wrap: wrap;
+   309	  gap: 8px;
+   310	  margin-top: 12px;
+   311	}
+   312	.select-label {
+   313	  display: flex;
+   314	  flex-direction: column;
+   315	  gap: 4px;
+   316	  font-size: 11px;
+   317	  color: var(--omoc-semantic-color-text-secondary);
+   318	  flex: 1;
+   319	  min-width: 85px;
+   320	  max-width: 180px;
+   321	}
+   322	.select-label select {
+   323	  border: 0;
+   324	  font-size: 12px;
+   325	  padding-left: 0;
+   326	  width: 100%;
+   327	  text-overflow: ellipsis;
+   328	}
+   329	.primary {
+   330	  background: var(--omoc-semantic-color-action-background);
+   331	  color: var(--omoc-semantic-color-action-foreground);
+   332	  margin-left: auto;
+   333	}
+   334	.primary:hover:not(:disabled) {
+   335	  background: var(--omoc-semantic-color-action-hover);
+   336	}
+   337	.composer-hint {
+   338	  text-align: center;
+   339	  font-size: 11px;
+   340	  color: var(--omoc-semantic-color-text-secondary);
+   341	  margin: 8px 0;
+   342	}
+   343	.muted {
+   344	  color: var(--omoc-semantic-color-text-secondary);
+   345	  font-size: 12px;
+   346	}
+   347	.actions {
+   348	  display: flex;
+   349	  flex-wrap: wrap;
+   350	  gap: 4px;
+   351	}
+   352	.permission {
+   353	  padding: 16px 0;
+   354	  border-top: 1px solid var(--omoc-primitive-color-n3);
+   355	  margin-bottom: 12px;
+   356	  overflow-wrap: anywhere;
+   357	}
+   358	.permission p {
+   359	  margin: 8px 0;
+   360	  font-size: 13px;
+   361	}
+   362	.permission .actions button:first-child {
+   363	  background: var(--omoc-semantic-color-action-background);
+   364	  color: var(--omoc-semantic-color-action-foreground);
+   365	}
+   366	.tool-detail {
+   367	  margin: 16px 0;
+   368	  font-size: 13px;
+   369	  overflow-wrap: anywhere;
+   370	}
+   371	.tool-heading {
+   372	  display: flex;
+   373	  gap: 16px;
+   374	  align-items: baseline;
+   375	}
+   376	.tool-heading span {
+   377	  color: var(--omoc-semantic-color-text-secondary);
+   378	}
+   379	.tool-detail summary {
+   380	  cursor: pointer;
+   381	  padding: 12px 0;
+   382	}
+   383	.tool-detail pre {
+   384	  max-height: 320px;
+   385	  overflow-y: auto;
+   386	}
+   387	.omoc-link-preview {
+   388	  display: block;
+   389	  border: 1px solid var(--omoc-primitive-color-n3);
+   390	  border-radius: 12px;
+   391	  padding: 16px;
+   392	  margin-top: 12px;
+   393	  max-width: 100%;
+   394	}
+   395	.slash-menu {
+   396	  max-height: 240px;
+   397	  overflow-y: auto;
+   398	  margin: 8px 0;
+   399	  padding: 12px;
+   400	  border-radius: 12px;
+   401	  background: var(--omoc-semantic-color-surface-subtle);
+   402	}
+   403	.slash-menu > strong {
+   404	  display: block;
+   405	  margin-top: 12px;
+   406	  font-size: 12px;
+   407	}
+   408	.slash-menu > button {
+   409	  display: flex;
+   410	  flex-direction: column;
+   411	  width: 100%;
+   412	  text-align: left;
+   413	  overflow-wrap: anywhere;
+   414	}
+   415	.slash-menu small {
+   416	  color: var(--omoc-semantic-color-text-secondary);
+   417	}
+   418	.slash-menu p {
+   419	  font-size: 12px;
+   420	}
+   421	.detail-panel {
+   422	  display: flex;
+   423	  flex-direction: column;
+   424	  width: var(--detail-width);
+   425	  min-width: 260px;
+   426	  max-width: 38vw;
+   427	  flex-shrink: 0;
+   428	  background: var(--omoc-semantic-color-surface-subtle);
+   429	  padding: 12px 16px;
+   430	}
+   431	.panel-heading {
+   432	  display: flex;
+   433	  align-items: center;
+   434	  justify-content: space-between;
+   435	  gap: 8px;
+   436	}
+   437	.panel-tabs {
+   438	  display: flex;
+   439	}
+   440	.panel-resize {
+   441	  display: flex;
+   442	  align-items: center;
+   443	  gap: 12px;
+   444	  font-size: 11px;
+   445	  color: var(--omoc-semantic-color-text-secondary);
+   446	}
+   447	.panel-resize input {
+   448	  width: 100%;
+   449	  flex: 1;
+   450	}
+   451	.panel-content {
+   452	  overflow-y: auto;
+   453	  flex: 1;
+   454	  min-height: 0;
+   455	}
+   456	.file-path {
+   457	  font:
+   458	    12px/1.5 ui-monospace,
+   459	    monospace;
+   460	  overflow-wrap: anywhere;
+   461	}
+   462	.file-list button {
+   463	  display: flex;
+   464	  gap: 8px;
+   465	  width: 100%;
+   466	  text-align: left;
+   467	  align-items: baseline;
+   468	  overflow-wrap: anywhere;
+   469	  font-size: 13px;
+   470	}
+   471	.file-content {
+   472	  padding: 12px;
+   473	  background: var(--omoc-semantic-color-canvas);
+   474	}
+   475	.catalog-group {
+   476	  margin: 24px 0;
+   477	}
+   478	.catalog-group li {
+   479	  padding: 10px 0;
+   480	  overflow-wrap: anywhere;
+   481	  font-size: 13px;
+   482	}
+   483	.catalog-group li p {
+   484	  margin: 4px 0;
+   485	  color: var(--omoc-semantic-color-text-secondary);
+   486	}
+   487	.no-session {
+   488	  margin: auto;
+   489	  max-width: 500px;
+   490	  padding: 32px;
+   491	  text-align: center;
+   492	}
+   493	.narrow-only {
+   494	  display: none;
+   495	}
+   496	.sr-only {
+   497	  position: absolute;
+   498	  width: 1px;
+   499	  height: 1px;
+   500	  padding: 0;
+   501	  margin: -1px;
+   502	  overflow: hidden;
+   503	  clip: rect(0, 0, 0, 0);
+   504	  white-space: nowrap;
+   505	  border: 0;
+   506	}
+   507	@media (max-width: 1199px) {
+   508	  .navigation {
+   509	    width: 220px;
+   510	  }
+   511	  .detail-open .navigation {
+   512	    display: none;
+   513	  }
+   514	  .narrow-only {
+   515	    display: inline-flex;
+   516	    align-items: center;
+   517	  }
+   518	  .detail-open.navigation-open .navigation {
+   519	    display: flex;
+   520	  }
+   521	  .workbench-header {
+   522	    padding: 12px 16px;
+   523	  }
+   524	}
+   525	@media (max-width: 899px) {
+   526	  .navigation {
+   527	    display: none;
+   528	    width: 250px;
+   529	  }
+   530	  .navigation-open .navigation {
+   531	    display: flex;
+   532	  }
+   533	  .detail-panel {
+   534	    width: 100%;
+   535	    max-width: none;
+   536	    min-width: 0;
+   537	  }
+   538	  .detail-open .main-pane {
+   539	    display: none;
+   540	  }
+   541	  .panel-resize {
+   542	    display: none;
+   543	  }
+   544	  .compose-region {
+   545	    padding: 12px 16px 8px;
+   546	  }
+   547	  .transcript {
+   548	    padding: 12px 20px;
+   549	  }
+   550	}
+   551	@media (max-width: 599px) {
+   552	  .navigation-open .main-pane {
+   553	    display: none;
+   554	  }
+   555	  .navigation-open .navigation {
+   556	    width: 100%;
+   557	  }
+   558	  .composer-toolbar {
+   559	    gap: 4px;
+   560	  }
+   561	  .select-label {
+   562	    max-width: 110px;
+   563	  }
+   564	}
+   565	@media (prefers-reduced-motion: reduce) {
+   566	  *,
+   567	  *::before,
+   568	  *::after {
+   569	    scroll-behavior: auto !important;
+   570	    animation: none !important;
+   571	    transition: none !important;
+   572	  }
+   573	}
+
+exec
+/bin/zsh -lc 'rg -n "탐색|navigation-open|setNavigationOpen|aria-expanded|파일·확장|상세 패널 닫기" apps/desktop-app/src/renderer.tsx apps/desktop-app/src/renderer' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+apps/desktop-app/src/renderer/features/conversation/index.tsx:408:                aria-expanded={menu}
+apps/desktop-app/src/renderer/features/explorer/index.tsx:59:    <section className="file-explorer" aria-label="읽기 전용 파일 탐색">
+apps/desktop-app/src/renderer/app/index.tsx:74:      className={`workbench ${navigation ? "navigation-open" : ""} ${panel ? "detail-open" : ""}`}
+apps/desktop-app/src/renderer/app/index.tsx:90:            aria-label="탐색 닫기"
+apps/desktop-app/src/renderer/app/index.tsx:105:            aria-expanded={createOpen}
+apps/desktop-app/src/renderer/app/index.tsx:260:            aria-expanded={navigation}
+apps/desktop-app/src/renderer/app/index.tsx:261:            aria-label="작업 공간 탐색 열기"
+apps/desktop-app/src/renderer/app/index.tsx:263:            탐색
+apps/desktop-app/src/renderer/app/index.tsx:273:            aria-expanded={Boolean(panel)}
+apps/desktop-app/src/renderer/app/index.tsx:276:            파일·확장
+apps/desktop-app/src/renderer/app/index.tsx:384:              aria-label="상세 패널 닫기"
+
+exec
+/bin/zsh -lc "nl -ba apps/desktop-app/src/renderer/app/index.tsx | sed -n '60,125p'; nl -ba apps/desktop-app/src/renderer/app/index.tsx | sed -n '245,405p'" in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+    60	    navigationButton.current?.focus();
+    61	  };
+    62	  const openPanel = (next: "files" | "catalog") => {
+    63	    setNavigation(false);
+    64	    setPanel(next);
+    65	  };
+    66	  const states: Record<string, string> = {
+    67	    loading: "런타임 확인 중…",
+    68	    connected: "로컬 런타임 연결됨",
+    69	    disconnected: "런타임 연결 끊김",
+    70	    unavailable: "런타임 사용 불가",
+    71	  };
+    72	  return (
+    73	    <main
+    74	      className={`workbench ${navigation ? "navigation-open" : ""} ${panel ? "detail-open" : ""}`}
+    75	      style={{ "--detail-width": `${panelWidth}px` } as CSSProperties}
+    76	    >
+    77	      <aside
+    78	        className="navigation"
+    79	        aria-label="작업 공간과 세션"
+    80	        onKeyDown={(event) => {
+    81	          if (event.key === "Escape") closeNavigation();
+    82	        }}
+    83	      >
+    84	        <div className="brand-row">
+    85	          <strong>Oh My Own Code</strong>
+    86	          <button
+    87	            className="narrow-only"
+    88	            ref={navigationClose}
+    89	            onClick={closeNavigation}
+    90	            aria-label="탐색 닫기"
+    91	          >
+    92	            닫기
+    93	          </button>
+    94	        </div>
+    95	        <div className="workspace-actions">
+    96	          <button
+    97	            disabled={pending}
+    98	            onClick={() => void mutate({ type: "workspace.import" }, true)}
+    99	          >
+   100	            폴더 가져오기
+   101	          </button>
+   102	          <button
+   103	            ref={createButton}
+   104	            disabled={pending}
+   105	            aria-expanded={createOpen}
+   106	            onClick={() => setCreateOpen((value) => !value)}
+   107	          >
+   108	            새 작업 공간
+   109	          </button>
+   110	        </div>
+   111	        {createOpen && (
+   112	          <form
+   113	            className="create-folder"
+   114	            onSubmit={(event) => {
+   115	              event.preventDefault();
+   116	              void mutate(
+   117	                {
+   118	                  type: "workspace.create",
+   119	                  ...(folderName.trim() ? { name: folderName.trim() } : {}),
+   120	                },
+   121	                true,
+   122	              ).then((ok) => {
+   123	                if (ok) {
+   124	                  setCreateOpen(false);
+   125	                  setFolderName("");
+   245	        <p className="temporary-note">
+   246	          임시 · 이번 앱 실행에서만 유지됩니다.
+   247	          <br />
+   248	          가져오거나 생성한 폴더의 파일은 삭제하지 않습니다.
+   249	        </p>
+   250	      </aside>
+   251	      <section className="main-pane" aria-label="대화 작업 공간">
+   252	        <header className="workbench-header">
+   253	          <button
+   254	            ref={navigationButton}
+   255	            className="narrow-only"
+   256	            onClick={() => {
+   257	              setNavigation((value) => !value);
+   258	              setPanel(null);
+   259	            }}
+   260	            aria-expanded={navigation}
+   261	            aria-label="작업 공간 탐색 열기"
+   262	          >
+   263	            탐색
+   264	          </button>
+   265	          <div className="session-heading">
+   266	            <strong>{session?.title ?? workspace?.name ?? "작업 공간"}</strong>
+   267	            <span className="runtime-state" data-state={connection}>
+   268	              {states[connection]}
+   269	            </span>
+   270	          </div>
+   271	          <button
+   272	            ref={panelButton}
+   273	            aria-expanded={Boolean(panel)}
+   274	            onClick={() => (panel ? closePanel() : openPanel("files"))}
+   275	          >
+   276	            파일·확장
+   277	          </button>
+   278	        </header>
+   279	        {(workbench.error || snapshot?.error) && (
+   280	          <div className="status-line error" role="alert">
+   281	            {workbench.error ||
+   282	              `${snapshot?.error?.code}: ${snapshot?.error?.message}`}
+   283	          </div>
+   284	        )}
+   285	        {workbench.notice && (
+   286	          <div className="status-line" role="status">
+   287	            {workbench.notice}
+   288	          </div>
+   289	        )}
+   290	        {!connected && (
+   291	          <div className="status-line">
+   292	            <span>연결 확인은 실행 요청을 재전송하지 않습니다.</span>
+   293	            <button
+   294	              disabled={connection === "loading"}
+   295	              onClick={workbench.refresh}
+   296	            >
+   297	              연결 다시 확인
+   298	            </button>
+   299	          </div>
+   300	        )}
+   301	        {(workbench.unknown || session?.status === "unknown") && (
+   302	          <div className="status-line" role="status">
+   303	            요청 또는 실행 상태가 불명확하여 새 전송을 막았습니다. 실제 결과를
+   304	            확인하거나 새 세션을 만드세요.
+   305	          </div>
+   306	        )}
+   307	        {selection.workspaceId && selection.sessionId ? (
+   308	          <Conversation
+   309	            key={key}
+   310	            workspaceId={selection.workspaceId}
+   311	            sessionId={selection.sessionId}
+   312	            messages={snapshot?.messages ?? []}
+   313	            permissions={snapshot?.permissions ?? []}
+   314	            catalog={catalog}
+   315	            status={session?.status ?? "unknown"}
+   316	            disabled={
+   317	              !connected ||
+   318	              !session ||
+   319	              workbench.unknown ||
+   320	              session.status === "unknown"
+   321	            }
+   322	            pending={pending}
+   323	            initialDraft={drafts.current[key] ?? ""}
+   324	            saveDraft={(text) => {
+   325	              drafts.current = preserveDraft(drafts.current, key, text);
+   326	            }}
+   327	            restoreDraft={(text) => {
+   328	              if (!drafts.current[key])
+   329	                drafts.current = preserveDraft(drafts.current, key, text);
+   330	            }}
+   331	            mutate={mutate}
+   332	            openPanel={openPanel}
+   333	            newSession={newSession}
+   334	          />
+   335	        ) : (
+   336	          <div className="no-session">
+   337	            <h1>
+   338	              {workspace
+   339	                ? "새 세션을 시작하세요"
+   340	                : "작업 공간을 준비하고 있습니다"}
+   341	            </h1>
+   342	            <p>
+   343	              {workspace
+   344	                ? "가져온 폴더는 세션 생성 전에 운영체제 창에서 신뢰를 확인합니다."
+   345	                : "연결 후 임시 작업 공간이 표시됩니다."}
+   346	            </p>
+   347	            <button
+   348	              disabled={!workspace || pending || !connected}
+   349	              onClick={newSession}
+   350	            >
+   351	              새 세션
+   352	            </button>
+   353	          </div>
+   354	        )}
+   355	      </section>
+   356	      {panel && (
+   357	        <aside
+   358	          className="detail-panel"
+   359	          aria-label="파일 및 확장"
+   360	          onKeyDown={(event) => {
+   361	            if (event.key === "Escape") {
+   362	              event.preventDefault();
+   363	              closePanel();
+   364	            }
+   365	          }}
+   366	        >
+   367	          <div className="panel-heading">
+   368	            <div className="panel-tabs">
+   369	              <button
+   370	                aria-pressed={panel === "files"}
+   371	                onClick={() => setPanel("files")}
+   372	              >
+   373	                파일
+   374	              </button>
+   375	              <button
+   376	                aria-pressed={panel === "catalog"}
+   377	                onClick={() => setPanel("catalog")}
+   378	              >
+   379	                확장·명령
+   380	              </button>
+   381	            </div>
+   382	            <button
+   383	              ref={panelClose}
+   384	              aria-label="상세 패널 닫기"
+   385	              onClick={closePanel}
+   386	            >
+   387	              닫기
+   388	            </button>
+   389	          </div>
+   390	          <label className="panel-resize">
+   391	            패널 너비
+   392	            <input
+   393	              aria-label="상세 패널 너비"
+   394	              type="range"
+   395	              min={260}
+   396	              max={440}
+   397	              step={10}
+   398	              value={panelWidth}
+   399	              onChange={(event) => setPanelWidth(Number(event.target.value))}
+   400	            />
+   401	          </label>
+   402	          <div className="panel-content">
+   403	            {panel === "catalog" ? (
+   404	              <CatalogPanel
+   405	                catalog={catalog}
+
+exec
+/bin/zsh -lc "nl -ba apps/desktop-app/src/renderer/app/index.tsx | sed -n '1,70p'" in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+     1	import { useEffect, useRef, useState, type CSSProperties } from "react";
+     2	import { Conversation } from "../features/conversation/index.js";
+     3	import { CatalogPanel, FileExplorer } from "../features/explorer/index.js";
+     4	import { preserveDraft, type WorkbenchSnapshot } from "../shared/index.js";
+     5	import { useWorkbench } from "./useWorkbench.js";
+     6	
+     7	const sessionLabels: Record<string, string> = {
+     8	  idle: "대기",
+     9	  running: "실행 중",
+    10	  stopping: "중단 확인 중",
+    11	  unknown: "상태 불명",
+    12	};
+    13	export function Workbench() {
+    14	  const workbench = useWorkbench();
+    15	  const { snapshot, selection, key, catalog, connection, pending, mutate } =
+    16	    workbench;
+    17	  const drafts = useRef<Record<string, string>>({});
+    18	  const [navigation, setNavigation] = useState(false);
+    19	  const [panel, setPanel] = useState<"files" | "catalog" | null>(null);
+    20	  const [panelWidth, setPanelWidth] = useState(320);
+    21	  const [createOpen, setCreateOpen] = useState(false);
+    22	  const [folderName, setFolderName] = useState("");
+    23	  const navigationButton = useRef<HTMLButtonElement>(null);
+    24	  const panelButton = useRef<HTMLButtonElement>(null);
+    25	  const createButton = useRef<HTMLButtonElement>(null);
+    26	  const panelClose = useRef<HTMLButtonElement>(null);
+    27	  const navigationClose = useRef<HTMLButtonElement>(null);
+    28	  useEffect(() => {
+    29	    if (panel) panelClose.current?.focus();
+    30	  }, [panel]);
+    31	  useEffect(() => {
+    32	    if (navigation) navigationClose.current?.focus();
+    33	  }, [navigation]);
+    34	  // Navigation lists may stay visible while the selected pair refreshes; transcripts may not.
+    35	  const navigationSnapshot = useRef<WorkbenchSnapshot | null>(null);
+    36	  if (snapshot) navigationSnapshot.current = snapshot;
+    37	  const lists = snapshot ?? navigationSnapshot.current;
+    38	  const workspace = lists?.workspaces.find(
+    39	    (item) => item.id === selection.workspaceId,
+    40	  );
+    41	  const session = snapshot?.sessions.find(
+    42	    (item) =>
+    43	      item.id === selection.sessionId &&
+    44	      item.workspaceId === selection.workspaceId,
+    45	  );
+    46	  const connected = connection === "connected";
+    47	  const newSession = () => {
+    48	    if (selection.workspaceId)
+    49	      void mutate(
+    50	        { type: "session.create", workspaceId: selection.workspaceId },
+    51	        true,
+    52	      );
+    53	  };
+    54	  const closePanel = () => {
+    55	    setPanel(null);
+    56	    panelButton.current?.focus();
+    57	  };
+    58	  const closeNavigation = () => {
+    59	    setNavigation(false);
+    60	    navigationButton.current?.focus();
+    61	  };
+    62	  const openPanel = (next: "files" | "catalog") => {
+    63	    setNavigation(false);
+    64	    setPanel(next);
+    65	  };
+    66	  const states: Record<string, string> = {
+    67	    loading: "런타임 확인 중…",
+    68	    connected: "로컬 런타임 연결됨",
+    69	    disconnected: "런타임 연결 끊김",
+    70	    unavailable: "런타임 사용 불가",
+
+exec
+/bin/zsh -lc "nl -ba apps/desktop-app/src/renderer/features/conversation/index.tsx | sed -n '300,520p'" in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+   300	                if (event.key === "Escape" && menu) {
+   301	                  event.preventDefault();
+   302	                  closeMenu();
+   303	                }
+   304	                if (event.key === "/" && !draft) setMenu(true);
+   305	              }}
+   306	            />
+   307	            {menu && (
+   308	              <div
+   309	                className="slash-menu"
+   310	                role="region"
+   311	                aria-label="앱 동작 및 런타임 명령"
+   312	                onKeyDown={(event) => {
+   313	                  if (event.key === "Escape") {
+   314	                    event.preventDefault();
+   315	                    closeMenu();
+   316	                  }
+   317	                }}
+   318	              >
+   319	                <div className="panel-heading">
+   320	                  <strong>앱 동작</strong>
+   321	                  <button
+   322	                    type="button"
+   323	                    onClick={closeMenu}
+   324	                    aria-label="명령 목록 닫기"
+   325	                  >
+   326	                    닫기
+   327	                  </button>
+   328	                </div>
+   329	                <button
+   330	                  type="button"
+   331	                  disabled={props.pending || running}
+   332	                  onClick={() => {
+   333	                    closeMenu();
+   334	                    props.newSession();
+   335	                  }}
+   336	                >
+   337	                  새 세션 만들기
+   338	                </button>
+   339	                <button
+   340	                  type="button"
+   341	                  onClick={() => {
+   342	                    closeMenu();
+   343	                    props.openPanel("files");
+   344	                  }}
+   345	                >
+   346	                  파일 보기
+   347	                </button>
+   348	                <button
+   349	                  type="button"
+   350	                  onClick={() => {
+   351	                    closeMenu();
+   352	                    props.openPanel("catalog");
+   353	                  }}
+   354	                >
+   355	                  확장 목록 보기
+   356	                </button>
+   357	                <strong>런타임 명령</strong>
+   358	                {props.catalog?.commands.status === "available" ? (
+   359	                  props.catalog.commands.entries.length ? (
+   360	                    props.catalog.commands.entries.map((entry) => (
+   361	                      <button
+   362	                        type="button"
+   363	                        key={entry.id}
+   364	                        onClick={() => insert(`/${entry.name} `)}
+   365	                      >
+   366	                        <span>/{entry.name}</span>
+   367	                        <small>{entry.description}</small>
+   368	                      </button>
+   369	                    ))
+   370	                  ) : (
+   371	                    <p>등록된 명령이 없습니다.</p>
+   372	                  )
+   373	                ) : (
+   374	                  <p>명령 목록을 사용할 수 없습니다.</p>
+   375	                )}
+   376	                <strong>스킬 언급</strong>
+   377	                <p className="muted">
+   378	                  작성기에 이름을 넣습니다. 별도 실행 API는 없습니다.
+   379	                </p>
+   380	                {props.catalog?.skills.status === "available" ? (
+   381	                  props.catalog.skills.entries.length ? (
+   382	                    props.catalog.skills.entries.map((entry) => (
+   383	                      <button
+   384	                        type="button"
+   385	                        key={entry.id}
+   386	                        onClick={() =>
+   387	                          insert(
+   388	                            `${draft === "/" ? "" : draft}${draft && draft !== "/" ? "\n" : ""}스킬 ${entry.name}을 참고해 주세요. `,
+   389	                          )
+   390	                        }
+   391	                      >
+   392	                        {entry.name}
+   393	                      </button>
+   394	                    ))
+   395	                  ) : (
+   396	                    <p>등록된 스킬이 없습니다.</p>
+   397	                  )
+   398	                ) : (
+   399	                  <p>스킬 목록을 사용할 수 없습니다.</p>
+   400	                )}
+   401	              </div>
+   402	            )}
+   403	            <div className="composer-toolbar">
+   404	              <button
+   405	                type="button"
+   406	                ref={slashButton}
+   407	                aria-label="앱 동작과 명령 열기"
+   408	                aria-expanded={menu}
+   409	                onClick={() => setMenu((value) => !value)}
+   410	              >
+   411	                / 명령
+   412	              </button>
+   413	              <label className="select-label">
+   414	                에이전트
+   415	                <select
+   416	                  aria-label="실행 에이전트"
+   417	                  value={agent}
+   418	                  disabled={
+   419	                    running ||
+   420	                    props.pending ||
+   421	                    props.catalog?.agents.status !== "available"
+   422	                  }
+   423	                  onChange={(event) => chooseAgent(event.target.value)}
+   424	                >
+   425	                  <option value="">런타임 기본값</option>
+   426	                  {props.catalog?.agents.entries.map((entry) => (
+   427	                    <option key={entry.id} value={entry.id}>
+   428	                      {entry.name}
+   429	                    </option>
+   430	                  ))}
+   431	                </select>
+   432	              </label>
+   433	              <label className="select-label">
+   434	                모델
+   435	                <select
+   436	                  aria-label="실행 모델"
+   437	                  value={model}
+   438	                  disabled={
+   439	                    running ||
+   440	                    props.pending ||
+   441	                    props.catalog?.models.status !== "available"
+   442	                  }
+   443	                  onChange={(event) => setModel(event.target.value)}
+   444	                >
+   445	                  <option value="">런타임 기본값</option>
+   446	                  {props.catalog?.models.entries.map((entry) => (
+   447	                    <option key={entry.id} value={entry.id}>
+   448	                      {entry.name}
+   449	                    </option>
+   450	                  ))}
+   451	                </select>
+   452	              </label>
+   453	              {running ? (
+   454	                <ComposerPrimitive.Cancel
+   455	                  disabled={props.pending || props.status === "stopping"}
+   456	                  className="primary"
+   457	                  aria-label="현재 세션 실행 중단"
+   458	                >
+   459	                  중단
+   460	                </ComposerPrimitive.Cancel>
+   461	              ) : (
+   462	                <ComposerPrimitive.Send
+   463	                  className="primary"
+   464	                  aria-label="메시지 보내기"
+   465	                  disabled={blocked}
+   466	                >
+   467	                  보내기
+   468	                </ComposerPrimitive.Send>
+   469	              )}
+   470	            </div>
+   471	          </ComposerPrimitive.Root>
+   472	          {invalidSelection && (
+   473	            <p role="alert">
+   474	              선택한 모델 또는 에이전트가 더 이상 목록에 없습니다. 다시
+   475	              선택하세요.
+   476	            </p>
+   477	          )}
+   478	          <p className="composer-hint">
+   479	            Enter 전송 · Shift+Enter 줄바꿈 · 실행 결과와 권한을 확인하세요.
+   480	          </p>
+   481	        </div>
+   482	      </ThreadPrimitive.Root>
+   483	    </AssistantRuntimeProvider>
+   484	  );
+   485	}
+
+exec
+/bin/zsh -lc "nl -ba apps/desktop-app/src/renderer/features/conversation/index.tsx | sed -n '210,320p'" in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+   210	                <p>
+   211	                  현재 세션에 작업을 요청하세요. 도구 실행 권한은 별도로
+   212	                  확인합니다.
+   213	                </p>
+   214	              </div>
+   215	            )}
+   216	            {props.messages.length > 300 && (
+   217	              <p className="muted">최근 300개 메시지를 표시합니다.</p>
+   218	            )}
+   219	            <ThreadPrimitive.Messages>
+   220	              {({ message }) => (
+   221	                <MessageView
+   222	                  key={message.id}
+   223	                  role={message.role === "user" ? "user" : "assistant"}
+   224	                />
+   225	              )}
+   226	            </ThreadPrimitive.Messages>
+   227	          </div>
+   228	        </ThreadPrimitive.Viewport>
+   229	        <div className="compose-region reading-column">
+   230	          {props.permissions
+   231	            .filter((permission) => permission.sessionId === props.sessionId)
+   232	            .map((permission) => (
+   233	              <section
+   234	                className="permission"
+   235	                aria-label="실행 권한 요청"
+   236	                key={permission.id}
+   237	              >
+   238	                <strong>{permission.title}</strong>
+   239	                <p>{permission.detail}</p>
+   240	                <p className="muted">
+   241	                  거절하면 이 세션의 다른 대기 중 권한 요청도 취소됩니다.
+   242	                </p>
+   243	                <div className="actions">
+   244	                  <button
+   245	                    disabled={props.pending || props.disabled}
+   246	                    onClick={() =>
+   247	                      void props.mutate({
+   248	                        type: "permission.respond",
+   249	                        workspaceId: props.workspaceId,
+   250	                        sessionId: props.sessionId,
+   251	                        requestId: permission.id,
+   252	                        decision: "once",
+   253	                      })
+   254	                    }
+   255	                  >
+   256	                    이번만 허용
+   257	                  </button>
+   258	                  <button
+   259	                    disabled={props.pending || props.disabled}
+   260	                    onClick={() =>
+   261	                      void props.mutate({
+   262	                        type: "permission.respond",
+   263	                        workspaceId: props.workspaceId,
+   264	                        sessionId: props.sessionId,
+   265	                        requestId: permission.id,
+   266	                        decision: "reject",
+   267	                      })
+   268	                    }
+   269	                  >
+   270	                    거절
+   271	                  </button>
+   272	                </div>
+   273	              </section>
+   274	            ))}
+   275	          <ComposerPrimitive.Root className="composer">
+   276	            <ComposerPrimitive.Input
+   277	              ref={input}
+   278	              aria-label="메시지 작성"
+   279	              placeholder="작업을 요청하세요. /로 명령 보기"
+   280	              maxLength={32000}
+   281	              rows={2}
+   282	              submitMode="enter"
+   283	              cancelOnEscape={false}
+   284	              onCompositionStart={() => {
+   285	                composing.current = true;
+   286	              }}
+   287	              onCompositionEnd={() => {
+   288	                composing.current = false;
+   289	              }}
+   290	              onKeyDown={(event) => {
+   291	                if (
+   292	                  event.key === "Enter" &&
+   293	                  (composing.current ||
+   294	                    event.nativeEvent.isComposing ||
+   295	                    event.keyCode === 229)
+   296	                ) {
+   297	                  event.preventDefault();
+   298	                  return;
+   299	                }
+   300	                if (event.key === "Escape" && menu) {
+   301	                  event.preventDefault();
+   302	                  closeMenu();
+   303	                }
+   304	                if (event.key === "/" && !draft) setMenu(true);
+   305	              }}
+   306	            />
+   307	            {menu && (
+   308	              <div
+   309	                className="slash-menu"
+   310	                role="region"
+   311	                aria-label="앱 동작 및 런타임 명령"
+   312	                onKeyDown={(event) => {
+   313	                  if (event.key === "Escape") {
+   314	                    event.preventDefault();
+   315	                    closeMenu();
+   316	                  }
+   317	                }}
+   318	              >
+   319	                <div className="panel-heading">
+   320	                  <strong>앱 동작</strong>
+
+exec
+/bin/zsh -lc "nl -ba apps/desktop-app/src/renderer/features/conversation/index.tsx | sed -n '150,235p'; nl -ba apps/desktop-app/src/renderer.css | sed -n '217,245p'" in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+   150	          sessionId: props.sessionId,
+   151	          requestId,
+   152	          name: entry.name,
+   153	          arguments: command?.[2] ?? "",
+   154	        });
+   155	      } else {
+   156	        accepted = await props.mutate({
+   157	          type: "message.send",
+   158	          workspaceId: props.workspaceId,
+   159	          sessionId: props.sessionId,
+   160	          requestId,
+   161	          text,
+   162	          ...(agent ? { agent } : {}),
+   163	          ...(model ? { model } : {}),
+   164	        });
+   165	      }
+   166	      // Never resend after ambiguous transport. Keep failed text only as a draft.
+   167	      if (
+   168	        !accepted &&
+   169	        alive.current &&
+   170	        !runtime.thread.composer.getState().text
+   171	      )
+   172	        runtime.thread.composer.setText(text);
+   173	      if (!accepted && !alive.current) props.restoreDraft(text);
+   174	    },
+   175	    onCancel: async () => {
+   176	      await props.mutate({
+   177	        type: "session.interrupt",
+   178	        workspaceId: props.workspaceId,
+   179	        sessionId: props.sessionId,
+   180	      });
+   181	    },
+   182	  });
+   183	  useEffect(() => {
+   184	    alive.current = true;
+   185	    runtime.thread.composer.setText(initial.current);
+   186	    const unsubscribe = runtime.thread.composer.subscribe(() => {
+   187	      const text = runtime.thread.composer.getState().text;
+   188	      setDraft(text);
+   189	      save.current(text);
+   190	    });
+   191	    return () => {
+   192	      alive.current = false;
+   193	      unsubscribe();
+   194	    };
+   195	  }, [runtime]);
+   196	  const insert = (text: string) => {
+   197	    runtime.thread.composer.setText(text);
+   198	    setMenu(false);
+   199	    input.current?.focus();
+   200	  };
+   201	  const chooseAgent = (value: string) => setAgent(value);
+   202	  return (
+   203	    <AssistantRuntimeProvider runtime={runtime}>
+   204	      <ThreadPrimitive.Root className="conversation">
+   205	        <ThreadPrimitive.Viewport className="transcript">
+   206	          <div className="reading-column">
+   207	            {messages.length === 0 && (
+   208	              <div className="conversation-empty">
+   209	                <h1>무엇을 함께 만들까요?</h1>
+   210	                <p>
+   211	                  현재 세션에 작업을 요청하세요. 도구 실행 권한은 별도로
+   212	                  확인합니다.
+   213	                </p>
+   214	              </div>
+   215	            )}
+   216	            {props.messages.length > 300 && (
+   217	              <p className="muted">최근 300개 메시지를 표시합니다.</p>
+   218	            )}
+   219	            <ThreadPrimitive.Messages>
+   220	              {({ message }) => (
+   221	                <MessageView
+   222	                  key={message.id}
+   223	                  role={message.role === "user" ? "user" : "assistant"}
+   224	                />
+   225	              )}
+   226	            </ThreadPrimitive.Messages>
+   227	          </div>
+   228	        </ThreadPrimitive.Viewport>
+   229	        <div className="compose-region reading-column">
+   230	          {props.permissions
+   231	            .filter((permission) => permission.sessionId === props.sessionId)
+   232	            .map((permission) => (
+   233	              <section
+   234	                className="permission"
+   235	                aria-label="실행 권한 요청"
+   217	.status-line {
+   218	  display: flex;
+   219	  flex-wrap: wrap;
+   220	  align-items: center;
+   221	  gap: 12px;
+   222	  padding: 8px 24px;
+   223	  font-size: 13px;
+   224	  overflow-wrap: anywhere;
+   225	  background: var(--omoc-semantic-color-surface-subtle);
+   226	}
+   227	.error {
+   228	  color: var(--omoc-semantic-color-danger-foreground);
+   229	}
+   230	.conversation {
+   231	  display: flex;
+   232	  flex-direction: column;
+   233	  min-height: 0;
+   234	  flex: 1;
+   235	}
+   236	.transcript {
+   237	  min-height: 0;
+   238	  flex: 1;
+   239	  overflow-y: auto;
+   240	  padding: 16px 24px;
+   241	}
+   242	.reading-column {
+   243	  width: 100%;
+   244	  max-width: 770px;
+   245	  margin: 0 auto;
+
+codex
+현재 rendered-design gate는 통과시키기 어렵습니다. 직접 확인한 범위에서 **blocking finding 1건, medium finding 1건**이 있습니다.
+
+- **High — 권한 요청 상태에서 composer/중단 컨트롤이 viewport 밖으로 밀림.** 영향 화면은 Running tool + two pending permission requests입니다. desktop-permission-synthetic.png에서 composer 상단만 보이고 대부분이 잘립니다. 현재 evidence도 textbox가 viewport에 **34.56%만 노출**되어 실패했다고 기록합니다. ui-states-evidence.json (line 21) 코드상 permission queue와 composer가 같은 .compose-region 안에 쌓여 있습니다. conversation/index.tsx (line 229) 실행 중에는 composer toolbar의 핵심 액션이 중단이므로, 단순 미관 문제가 아니라 실행 제어 접근성이 떨어집니다. 가장 작은 수정은 **composer를 항상 하단에 완전히 고정하고, pending permission 목록만 별도 스크롤 영역으로 제한**하는 것입니다.
+- **Medium — 1180px 기본 폭에서 탐색 토글이 실제 레이아웃 동작과 맞지 않습니다.** desktop-workbench.png과 synthetic captures에서 사이드바가 이미 열린 상태인데 헤더에 탐색, 사이드바에 닫기가 동시에 표시됩니다. 코드 추론상 narrow-only는 <=1199px에서 나타나지만, navigation 자체가 실제로 기본 숨김이 되는 것은 <=899px입니다. renderer.css (line 507) 따라서 900–1199px에서는 닫기를 눌러도 일반 상태의 sidebar가 사라지지 않는 구조입니다. 가장 작은 수정은 이 폭에서 navigation이 실제로 숨겨지는 상태에만 토글을 노출하거나, 이 구간에서도 토글 state가 실제 visibility를 제어하도록 맞추는 것입니다.
+
+그 외 직접 관찰 범위에서는 narrow 800px 레이아웃의 composer/control wrapping과 가로 overflow는 괜찮고, focus-visible outline, 44px button target, panel open/close focus 반환 및 Escape 처리는 소스상 갖춰져 있습니다. 파일/카탈로그 **패널 내부의 시각적 완성도는 이번 네 캡처에 열린 패널 상태가 없어 직접 판정하지 않았습니다**. 상단 파일·확장 진입 affordance와 keyboard/focus 처리는 확인했습니다.
+
+원본 PNG의 실제 픽셀 크기도 헤더에서 읽어 확인했습니다. desktop-workbench.png, 두 synthetic 이미지는 **2360×1576 px**, narrow는 **1600×1336 px**입니다. Synthetic provenance의 viewport는 **1180×788 @2x**이고, narrow는 Electron window를 800×700으로 resize한 뒤 content capture가 **800×668 @2x**가 된 상태입니다. 따라서 CSS viewport 크기와 PNG 픽셀 크기를 동일하게 취급하지 않았습니다.
+tokens used
+2,348,470
+현재 rendered-design gate는 통과시키기 어렵습니다. 직접 확인한 범위에서 **blocking finding 1건, medium finding 1건**이 있습니다.
+
+- **High — 권한 요청 상태에서 composer/중단 컨트롤이 viewport 밖으로 밀림.** 영향 화면은 Running tool + two pending permission requests입니다. desktop-permission-synthetic.png에서 composer 상단만 보이고 대부분이 잘립니다. 현재 evidence도 textbox가 viewport에 **34.56%만 노출**되어 실패했다고 기록합니다. ui-states-evidence.json (line 21) 코드상 permission queue와 composer가 같은 .compose-region 안에 쌓여 있습니다. conversation/index.tsx (line 229) 실행 중에는 composer toolbar의 핵심 액션이 중단이므로, 단순 미관 문제가 아니라 실행 제어 접근성이 떨어집니다. 가장 작은 수정은 **composer를 항상 하단에 완전히 고정하고, pending permission 목록만 별도 스크롤 영역으로 제한**하는 것입니다.
+- **Medium — 1180px 기본 폭에서 탐색 토글이 실제 레이아웃 동작과 맞지 않습니다.** desktop-workbench.png과 synthetic captures에서 사이드바가 이미 열린 상태인데 헤더에 탐색, 사이드바에 닫기가 동시에 표시됩니다. 코드 추론상 narrow-only는 <=1199px에서 나타나지만, navigation 자체가 실제로 기본 숨김이 되는 것은 <=899px입니다. renderer.css (line 507) 따라서 900–1199px에서는 닫기를 눌러도 일반 상태의 sidebar가 사라지지 않는 구조입니다. 가장 작은 수정은 이 폭에서 navigation이 실제로 숨겨지는 상태에만 토글을 노출하거나, 이 구간에서도 토글 state가 실제 visibility를 제어하도록 맞추는 것입니다.
+
+그 외 직접 관찰 범위에서는 narrow 800px 레이아웃의 composer/control wrapping과 가로 overflow는 괜찮고, focus-visible outline, 44px button target, panel open/close focus 반환 및 Escape 처리는 소스상 갖춰져 있습니다. 파일/카탈로그 **패널 내부의 시각적 완성도는 이번 네 캡처에 열린 패널 상태가 없어 직접 판정하지 않았습니다**. 상단 파일·확장 진입 affordance와 keyboard/focus 처리는 확인했습니다.
+
+원본 PNG의 실제 픽셀 크기도 헤더에서 읽어 확인했습니다. desktop-workbench.png, 두 synthetic 이미지는 **2360×1576 px**, narrow는 **1600×1336 px**입니다. Synthetic provenance의 viewport는 **1180×788 @2x**이고, narrow는 Electron window를 800×700으로 resize한 뒤 content capture가 **800×668 @2x**가 된 상태입니다. 따라서 CSS viewport 크기와 PNG 픽셀 크기를 동일하게 취급하지 않았습니다.

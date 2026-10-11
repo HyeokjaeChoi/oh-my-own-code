@@ -1,0 +1,82 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 32px;
+  min-height: 32px;
+  padding: var(--omoc-primitive-space-2);
+  border: 0;
+  border-radius: var(--omoc-component-size-navigation-radius);
+  background: transparent;
+  color: var(--omoc-component-color-button-quiet-foreground);
+  font: inherit;
+  cursor: pointer;
+}
+
+.trigger:hover,
+.trigger[data-state="open"] {
+  background: var(--omoc-component-color-navigation-hover-background);
+}
+
+.trigger:focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: var(--omoc-semantic-size-focus-gap);
+}
+
+.content {
+  z-index: 90;
+  min-width: 180px;
+  max-width: min(320px, calc(100vw - 24px));
+  max-height: var(--radix-dropdown-menu-content-available-height);
+  overflow-y: auto;
+  padding: 2px;
+  border: 1px solid var(--omoc-semantic-color-border-default);
+  border-radius: var(--omoc-component-size-navigation-radius);
+  background: var(--omoc-semantic-color-surface-raised);
+  color: var(--omoc-semantic-color-text-primary);
+  font-family: var(--omoc-semantic-type-family-body);
+  font-size: var(--omoc-component-type-navigation-size);
+  line-height: var(--omoc-component-type-navigation-line);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 8px;
+  border-radius: var(--omoc-primitive-radius-sm);
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  user-select: none;
+}
+
+.item[data-highlighted] {
+  background: var(--omoc-component-color-navigation-hover-background);
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: -2px;
+}
+
+.item[data-danger] {
+  color: var(--omoc-semantic-color-danger-foreground);
+}
+
+.item[data-disabled] {
+  color: var(--omoc-component-color-button-disabled-foreground);
+  cursor: default;
+}
+
+.trigger svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (pointer: coarse) {
+  .trigger,
+  .item {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

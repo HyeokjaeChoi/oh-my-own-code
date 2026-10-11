@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "gate": "design",
+  "verdict": "pass",
+  "summary": "Independent final rendered UI review passed. Actual Electron synthetic captures cover empty, permission, durable and imported locations, all recovery states, narrow viewports, 200 percent zoom, Korean labels, keyboard focus, menus and dialogs without horizontal clipping.",
+  "open_findings": [],
+  "reviewed": {
+    "contract_sha256": "f197e2e4941715be87239ecd69ce987c49d8ee08127c7142542d57596abc3b02",
+    "environment_sha256": "1ea575d1ab6efa22596584f5032ee4e25c9f48f8013502720e575459c950abf6",
+    "gate": "design",
+    "plan_sha256": "35ba14f484f5ba77f28fd7e10cbf99e5fbe3ab2e66c5d11119e1bcfee1ac9d87",
+    "schema_version": 2,
+    "source_sha256": "040cc165b64b3af5a3e15a0cdd1f644183e8c1dd1b5807d57338870388b3c006",
+    "verification_sha256": "728576c6635ee3003659f29df8203a344d1da77091bcbb0c897348ca27b0e192",
+    "work_class_sha256": "e4ef3a4bef17e3fe843a960878e8e410bce718a899fa4da930303aa216313b57"
+  },
+  "reviewer": "design_qa",
+  "provenance": {
+    "child_task_id": "01a10a2a-7693-7142-987f-5c6f8efb9dd3",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "evidence": {
+    "manifest": "docs/runs/event-host-app-integration/evidence/hidden-ui-r1/ui-states/manifest.json",
+    "report": "docs/runs/event-host-app-integration/evidence/hidden-ui-r1/ui-states/ui-states-evidence.json",
+    "capture_count": 46
+  },
+  "limits": [
+    "Captures use a synthetic Main process; provider execution and real transport remain unverified.",
+    "Screen-reader announcements and physical IME remain unverified.",
+    "The link-preview image is a component crop, so full-page placement was not judged."
+  ]
+}

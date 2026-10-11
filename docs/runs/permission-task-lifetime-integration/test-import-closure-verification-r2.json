@@ -1,0 +1,33 @@
+{
+  "scope": "rev17 correction verification; component only",
+  "checks": {
+    "descriptor": {
+      "pass": 226,
+      "log": "test-import-closure-descriptor-r2.log",
+      "sha256": "503e2678b826029f53d902b65e7e7e451b1d8b7a2979bfd6fa50f42024425b98"
+    },
+    "task": {
+      "pass": 15,
+      "log": "test-import-closure-task-r2.log",
+      "sha256": "d339186b08903132f52f2ac2a26d76d55d3f7a1eb96f09ee64063e45fa9dd693"
+    },
+    "metadata_prior_to_selector_fix": {
+      "pass": 255,
+      "log": "test-import-closure-metadata-r1.log",
+      "current_gate": false,
+      "reason": "whole-source binding stale after selfcheck source change; defer rerun to next coherent source freeze",
+      "sha256": "e0efa82181104a4a99661292552736d9b69fb3780d17a6e7e150801793e38ea7"
+    },
+    "synthetic_staging": {
+      "pass": 50,
+      "log": "test-import-closure-stage-r2.log",
+      "fake_engine_executed": false,
+      "sha256": "62890e2ea341d438205f314d0932effbc7466a86aab70829db12684628791b57"
+    }
+  },
+  "independent_review": "fresh Linnaeus correction CODE pending",
+  "limits": [
+    "no Native/core/provider/Main/server/browser/Bun/network/build/GUI/physical runtime invoked",
+    "final full18/F09 incomplete"
+  ]
+}

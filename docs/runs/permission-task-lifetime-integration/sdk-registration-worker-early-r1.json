@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a12792-509d-7f22-bc27-5cb1028f9db0": {
+      "completed": "**Early RED checkpoint 완료. Main은 helper 수정을 진행할 수 있습니다.**\n\n- 수정 파일: [native-permission-sdk-host.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-sdk-host.test.mjs:649)만.\n- 명령: `node --test --test-name-pattern='metadata registers' apps/desktop-app/src/native-permission-sdk-host.test.mjs`\n- 결과: **2개 실패, exit 1**. `sdk`·`language` 모두 실제 branded source와 현재 Scope의 publication 성공을 확인했습니다. 이후 현재 helper guard가 등록을 거부했습니다.\n- 실패: 기대 `Success`, 실제 `Failure`; 원인 `native_permission_inventory_unverified`, copied Control `inventoryGuard` 경로.\n- 로그: 도구 출력에 보존했습니다. 별도 로그 파일은 만들지 않았습니다.\n\n테스트 SHA-256, 32,069 bytes:\n```text\n2c4dd24151e8bdf6a34b6351465fc672e31bec2fc3184cafa1f1ea80160f8bcb\n```\n\n현재 helper SHA-256은 prechange와 같습니다:\n```text\n82583553e1903231215cdeb92b37cec9e39e258f920a89a5c2068f66179314f0\n```\n\nNode v26.11.0에서 syntax·Prettier·ESLint 통과. Scripted replay guard 및 기존 negative/fault 검사 조정은 저장했습니다. **최종 suite와 GREEN은 helper freeze checkpoint 이후에 확인해야 합니다.**\n\n실제 original AISDK list/register/run 표현식과 copied Control만 사용했습니다. Native/SDK/network 실행은 없습니다. 실행 권한·inventory 완료·startup safety를 입증하지 않습니다."
+    }
+  },
+  "timed_out": false
+}

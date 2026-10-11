@@ -1,0 +1,116 @@
+✔ boot-held admission allocates no leases, including after invalidation (7.084ms)
+✔ default global node fails closed without explicit configuration (0.749459ms)
+✔ configured global node replacement shares one kernel across actual graph consumers (1.257458ms)
+✔ configured rejects malformed closed inputs synchronously without getter or proxy traps (0.477167ms)
+✔ boot holds are copied, sorted, deduplicated, deeply frozen and remain held (0.641167ms)
+✔ initialization accepts exact UTF8 and count boundaries (43.034375ms)
+✔ transaction rejects invalid inputs before callbacks and does not execute getters (0.725667ms)
+✔ capabilities reject forgery, copies, uncovered projects, child fibers and escaped reuse (3.840625ms)
+✔ same-fiber public reentry fails before acquiring even disjoint projects (0.471375ms)
+✔ inherited child transaction reentry rejects before parent-held or disjoint locks (0.640541ms)
+✔ same projects serialize; disjoint projects continue; reversed duplicate inputs cannot deadlock (2.768458ms)
+✔ reverse inputs acquire the sorted first project before touching the second (3.524708ms)
+✔ callback throw, failed Effect and interruption release all gates and expire capabilities (0.656042ms)
+✔ 32 waiters exclude the holder; overflow never enters; cancellation restores every project slot (61.098292ms)
+✔ invalidation proceeds while gates are held and is permanent for existing and new projects (0.555209ms)
+✔ invalid invalidation reasons fail without changing runtime state (0.408292ms)
+✔ each acquisition of the same configured Layer owns an independent kernel (0.230417ms)
+✔ location owner retains building, ready and finalizing incarnations without settlement claims (1.046125ms)
+✔ location metadata excludes active project transactions without holding across Native effects (1.428666ms)
+✔ queued metadata precedes later shared admissions with staggered overlapping readers (5.100292ms)
+✔ metadata admission bounds and cancellation reopen readers only after the last writer leaves (61.417208ms)
+✔ failed queued metadata releases admission and inherited lifecycle reentry fails before waiting (2.464375ms)
+✔ location handles reject forgery, cross owner use, identity rebinding and reentrant lifecycle mutation (0.506125ms)
+✔ location capacity retains all thirty-two unknown entries and refuses another before effects (0.717084ms)
+✔ location identity validation never invokes caller accessors or Proxy traps (0.246ms)
+✔ cancelled exclusive metadata waiter releases graph permits and does not leak an unknown build (1.481041ms)
+✔ actual acquired Control prepareTask holds without allocating authority (0.510625ms)
+✔ prepare captures entry metadata and observes runtime loss before deferred execution (0.359167ms)
+✔ trusted configured callback runs only at acquisition and receives the actual shared Service (0.207167ms)
+✔ real Control owns inventory counters and refuses caller completeness and old registration closures (0.954375ms)
+✔ location root pins actual directory before services and closes only at observed scope exit (3.478583ms)
+✔ location root replacement cannot be blessed by a current transaction or rename-back (2.302292ms)
+✔ location root capture refuses missing roots and cannot turn failure into a ready pin (0.555625ms)
+✔ location root changed during Native service construction cannot become ready (2.09775ms)
+✔ transaction owner is the actual Fiber object even if a child copies its id (0.403834ms)
+✔ bootstrap preparation observes actual candidate and closes retained root before held reply (5.370875ms)
+✔ runtime close waits for original bootstrap open and descriptor close, with no new preparation IO (2.55025ms)
+✔ bootstrap candidate rejection closes original root without inventing location or poisoning clean runtime (1.689667ms)
+✔ location project candidate API exists on the actual acquired Control (0.173167ms)
+✔ location candidate retains real pins, returns detached NONVCS metadata and preserves holds (8.582542ms)
+✔ location candidate refuses actual root .git and physically cleans construction (2.120917ms)
+✔ location candidate refuses actual ancestor .git and physically cleans construction (1.801292ms)
+✔ location candidate refuses actual root .hg and physically cleans construction (1.874458ms)
+✔ location candidate refuses actual ancestor .hg and physically cleans construction (1.621083ms)
+✔ location candidate ready rechecks actual ancestor marker and permanently refuses stale owner (4.925708ms)
+✔ location candidate check rechecks actual ancestor marker and permanently refuses stale owner (9.887542ms)
+✔ location candidate cannot bless replacement of the original pin (1.5025ms)
+✔ location candidate close during original open prevents result and waits for cleanup (2.654ms)
+✔ location candidate scope during original open prevents result and waits for cleanup (2.1825ms)
+✔ location candidate finalizing during original open prevents result and waits for cleanup (2.255792ms)
+✔ location candidate invalidate during original open prevents result and waits for cleanup (2.134125ms)
+✔ location candidate rejects foreign, forged and inherited transaction handles without IO (1.232083ms)
+✔ location candidate interruption waits for original acquisition and scope physically closes both pins (5.351708ms)
+✖ location candidate physical close failure escapes scope cleanup and remains failed on runtime cleanup (6.925792ms)
+✔ location candidate physical close failure escapes failed construction and remains failed on runtime cleanup (2.037708ms)
+✔ Native Read runtime binding is private, single-use and cannot enter consumer/resource factory without current Task authority (0.56525ms)
+✔ Native Read rejects accessor/Proxy/page extras before any caller access or Task dispatch (0.225875ms)
+✔ graph factory refuses unverified resource roots before any Native import (2.68525ms)
+✔ graph factory rejects accessor options without invoking authority getters (0.111ms)
+✔ legacy resource manifest is refused before loading its inert Native placeholders (20.268834ms)
+✔ closed options reject proxies, hidden properties, symbols and inherited authority (0.258ms)
+✔ exact four initialization fields reach resource verification only when valid (2.951042ms)
+✔ malformed initialization is refused before resource verification (1.024625ms)
+✔ initialization rejects accessors and proxies without invoking their code (0.311958ms)
+✔ graph disables automatic model discovery with original layer and preserves dependency acquisition (151.387625ms)
+✔ actual graph facade binds the same acquired Control once and observes its invalidation (47.725667ms)
+✔ graph close revokes synchronously even with deferred invalidation and pending prepare (34.298375ms)
+✔ closing before acquisition refuses later acquisition of that graph (30.802709ms)
+✔ staged graph closure includes its declaration projector (0.087791ms)
+✔ unapproved original schema converter hash refuses before any pinned import (61.644959ms)
+✔ unapproved ModelsDev source refuses before pinned service import (61.774ms)
+✔ graph refuses missing or invalid exact transformed source hashes (90.556916ms)
+✔ each fixed Provider source requires its own exact transformed manifest entry (171.201167ms)
+✔ shared SDK factory callers require exact original source hashes before pinned imports (207.949167ms)
+ℹ tests 74
+ℹ suites 0
+ℹ pass 73
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1119.905
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-control.test.mjs:1966:3
+✖ location candidate physical close failure escapes scope cleanup and remains failed on runtime cleanup (6.925792ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /root_close_unverified/. Input:
+  
+  'AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n' +
+    '\n' +
+    '  assert.ok(Exit.isSuccess(acquired))\n'
+  
+      at async file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control.test.mjs:1989:9
+      at async candidateFixture (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control.test.mjs:1651:5)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control.test.mjs:1967:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+    
+      assert.ok(Exit.isSuccess(acquired))
+    
+        at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control.test.mjs:1998:48)
+        at Generator.next (<anonymous>)
+        at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+        at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/core.js:297:30)
+        at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+        at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:781:15
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:742:75,
+    expected: /root_close_unverified/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

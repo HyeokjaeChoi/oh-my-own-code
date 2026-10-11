@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a1214a-bab1-79a3-9195-2b23d1d03e2c": {
+      "completed": "허용된 3개 파일 수정 완료했습니다.\n\n- Recipe: 정확히 6개 파일과 새 ID 검사. 기존 4개 output pin 유지.\n- Parent: 기존 8개 + 새 3개 case 검사.\n- provenance·containment·exclusivity·실패·종료 검사 유지. helper/Control closure 검사 추가.\n\n**검증:** Node 12 PASS / 3 RED. Main 소스가 아직 기존 recipe ID·4개 파일·8개 child case이므로 발생한 RED입니다. scoped lint·format PASS.\n\nNative/Bun 실행, 저장된 probe 명령, docs/ledger 수정, self-approval은 하지 않았습니다. Main 소스 완료 후 Node 검사 재실행이 필요합니다.\n\nSHA-256 pins (`apps/desktop-app/scripts/`):\n\n```text\nnative-permission-overlay-recipe.test.mjs\ne49a5402cb75e5c3eb0d01758cc5fd7dd7816a31d12d9cadac0988350809e0d0\n\nnative-permission-graph-probe.mjs\ne51dc28b43ea8800a7235f639adf4a53e5af09343b5b574be45fadc956b0719e\n\nnative-permission-graph-probe.test.mjs\nf437c03faf49c6869de567cc8c27dad0bfabee23be217f045efdb8b70595f9ce\n```"
+    }
+  },
+  "timed_out": false
+}

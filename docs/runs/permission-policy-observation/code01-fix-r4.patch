@@ -1,0 +1,60 @@
+--- a/apps/desktop-app/src/renderer/shared/configuration-draft/permission-policy.mjs
++++ b/apps/desktop-app/src/renderer/shared/configuration-draft/permission-policy.mjs
+@@ -27,6 +27,7 @@
+ export function validPermissionPolicyRules(value) {
+   if (
+     !Array.isArray(value) ||
++    Object.getPrototypeOf(value) !== Array.prototype ||
+     value.length > 128 ||
+     Reflect.ownKeys(value).length !== value.length + 1
+   )
+@@ -90,6 +91,7 @@
+     !["absent", "present"].includes(value.sessionRulesState) ||
+     !validPermissionPolicyRules(value.sessionRules) ||
+     (value.sessionRulesState === "absent" && value.sessionRules.length !== 0) ||
++    !validPermissionPolicyRules(value.requiredBaselineRules) ||
+     !policyMatches(value.requiredBaselineRules) ||
+     value.baselineMatches !==
+       (value.sessionRulesState === "present" &&
+--- a/apps/desktop-app/src/permission-policy.test.mjs
++++ b/apps/desktop-app/src/permission-policy.test.mjs
+@@ -121,6 +121,39 @@
+       appCode: "INVALID_REQUEST",
+     });
+ });
++for (const kind of [
++  "string",
++  "symbol",
++  "getter",
++  "index getter",
++  "prototype getter",
++])
++  test(`policy baseline array refuses ${kind} without executing accessors`, () => {
++    const result = projectPermissionPolicy(scope, {
++      permissions: BASELINE_POLICY,
++    });
++    let calls = 0;
++    const getter = () => {
++      calls++;
++      return "not allowed";
++    };
++    const rules = result.requiredBaselineRules;
++    if (kind === "string") rules.secret = "not allowed";
++    if (kind === "symbol") rules[Symbol("secret")] = "not allowed";
++    if (kind === "getter")
++      Object.defineProperty(rules, "secret", { enumerable: true, get: getter });
++    if (kind === "index getter")
++      Object.defineProperty(rules, "0", { enumerable: true, get: getter });
++    if (kind === "prototype getter") {
++      const prototype = Object.create(Array.prototype);
++      Object.defineProperty(prototype, "every", { get: getter });
++      Object.setPrototypeOf(rules, prototype);
++    }
++    assert.throws(() => validatePermissionPolicyObservation(result), {
++      appCode: "INVALID_REQUEST",
++    });
++    assert.equal(calls, 0);
++  });
+ test("policy uses original v2 read envelope and refuses mutation/outer requestId", () => {
+   const operation = {
+     type: "permission.policy.read",

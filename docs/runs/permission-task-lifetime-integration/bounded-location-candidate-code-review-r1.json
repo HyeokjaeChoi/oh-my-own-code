@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "verdict": "pass",
+  "scope": "bounded CODE exact7 readonly Location candidate, retained physical ownership and ordinary-mutation stability",
+  "reviewed_checkpoint": {
+    "path": "docs/runs/permission-task-lifetime-integration/location-candidate-native-source-checkpoint-r1.json",
+    "sha256": "ab2754fa50addc93c578545f6d410e3790f0edc0157adc23068fa481ca59a590"
+  },
+  "open_findings": [],
+  "summary": "Independent reviewer validated same registered Location/root and retained candidate; both original acquisition/physical closes including late owner and factory failure proof; no mutating Project.resolve/fallback/provider dependency; actual LocationMap/Instance/Scope retained. Persistent chain dev/ino/mode/uid/gid and canonical path plus full each-observation stat/final sweep/VCS checks match accepted object-scoped authority; ordinary directory listing changes must not freeze authority.",
+  "checks_read": {
+    "coherent": 98,
+    "native_entries": 35,
+    "identity_red_failures": 2
+  },
+  "reviewer_reran_tests": false,
+  "source_pins_before_after": "exact7 match",
+  "provenance": {
+    "child_task_id": "01a125e2-496f-70e3-af21-dbef88686975",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "limits": [
+    "No atomic exclusion of external namespace change",
+    "Not whole final CODE/full18/F09",
+    "Execution/mode/inventory complete/positivehandoff held",
+    "No runtime invocation"
+  ]
+}

@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "run": "configuration-mcp",
+  "gate": "design",
+  "verdict": "changes_requested",
+  "summary": "독립 RENDER r12 검토를 완료했습니다. workspace 제거 전에 MCP 등록을 먼저 제거하라는 안내가 없는 P2 결함 1건입니다. 직접 본 capture 24개에서는 추가 결함을 찾지 못했습니다. CODE finding은 이 판단에 포함하지 않았습니다.",
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "design",
+    "plan_sha256": "c60741ec50c4b26f8b763bc2ce91197526cbf44e699f43321d221827fc92c34b",
+    "contract_sha256": "b276411b8c3f7153221fd4f710f0407a114e94edc87d295c4764fa9c89902ea4",
+    "source_sha256": "99329c268e5e1d22c3efa0a90848dfe3230cd450670a92a2fbf384a4cbaf6c2f",
+    "environment_sha256": "5aeb2a2ecc308f991252752fa57d9f1603444a261f84c423260f43cb0652b0c8",
+    "verification_sha256": "5ee36dbbd22e1cfa54c205293eaacb00fe9fe428a8d4d5a420bf5a4e6b7cecc5",
+    "work_class_sha256": "fb440b14b39523b5a964d9a49f6775baa09c69c408f2ecff205b50787a83e333"
+  },
+  "provenance": {
+    "child_task_id": "01a119e4-847e-70f1-8f57-c71ebb71fb4f",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "role": "design_qa",
+    "profile": "solo_reader",
+    "skill": "solo-design-review",
+    "context": "fresh",
+    "independent_of_implementation": true,
+    "identity_evidence": "harness status의 final-render-packet-r12.json design_qa dispatch 연결입니다. coordinator 기록이며 runtime identity attestation은 아닙니다.",
+    "report_only": true,
+    "files_written": [],
+    "ledger_edited": false,
+    "delegation_performed": false,
+    "runtime_rerun": false,
+    "code_finding_reviewed": false
+  },
+  "open_findings": [
+    {
+      "id": "MCP-RENDER-R12-01",
+      "severity": "P2",
+      "title": "workspace 제거 전에 필요한 MCP 등록 제거를 안내하지 않습니다.",
+      "location": {
+        "path": "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+        "line": 187,
+        "related": [
+          "apps/desktop-app/src/renderer/pages/workbench/index.tsx:214",
+          "apps/desktop-app/src/renderer/pages/workbench/index.tsx:463",
+          "apps/desktop-app/src/workbench-service.mjs:2391"
+        ]
+      },
+      "state": "현재 runtime의 앱 소유 MCP 등록이 남아 있고, workspace의 모든 세션이 idle인 상태",
+      "action_sequence": [
+        "MCP를 비활성 등록합니다.",
+        "workspace 작업에서 ‘목록에서 제거 · 파일 유지’를 선택합니다."
+      ],
+      "expected": "workspace 제거 전에 앱 소유 MCP의 등록 제거를 먼저 수행하도록 안내해야 합니다.",
+      "observed": "host는 liveMcp 등록이 남으면 BUSY를 반환합니다. UI의 제거 메뉴에는 이 조건의 설명이 없습니다. 일반 실패 문구는 연결과 현재 상태를 확인하라고 안내합니다. explorer와 MCP 제어에도 선행 제거 안내가 없습니다.",
+      "impact": "정상 연결과 idle 상태에서도 제거가 반복해서 거부됩니다. 사용자는 필요한 선행 동작을 알 수 없습니다.",
+      "evidence_type": "source_inference_with_rendered_context",
+      "evidence": [
+        "docs/runs/configuration-mcp/plan.md:42",
+        "apps/desktop-app/src/workbench-service.mjs:2391",
+        "apps/desktop-app/src/host/storage-integration.test.mjs:2694",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx:214",
+        "apps/desktop-app/src/renderer/pages/workbench/index.tsx:463",
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx:187",
+        "docs/runs/configuration-mcp/evidence/hidden-r4/ui-states/desktop-configuration-normal-synthetic.png",
+        "docs/runs/configuration-mcp/evidence/hidden-r4/ui-states/desktop-configuration-mcp-currentdisabled-desktop-control-5-synthetic.png"
+      ],
+      "smallest_fix": "explorer 또는 MCP 제어에 ‘작업 공간을 목록에서 제거하려면 이 앱이 등록한 MCP 항목의 등록 제거를 먼저 선택하세요’라는 안내와 제어 위치를 추가하세요. host의 BUSY 보호는 유지하세요.",
+      "verification_status": "partly_verified",
+      "verification_detail": "현재 source의 보호 조건과 안내 누락을 확인했습니다. 정상 intro와 현재 소유 등록 제어는 직접 봤습니다. 해당 workspace 제거 실패 화면은 저장된 capture로 확인하지 않았으며 실행하지 않았습니다.",
+      "required_verification": "수정 후 synthetic 현재 소유 MCP 상태에서 선행 제거 안내를 desktop 및 760/200%로 확인하고 새 독립 rendered review를 수행하세요."
+    }
+  ],
+  "directly_viewed_captures": {
+    "capture_root": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-mcp/evidence/hidden-r4/ui-states",
+    "path_rule": "capture_root와 각 filename을 연결한 경로를 직접 열었습니다.",
+    "origin": "실제 built production Electron renderer/preload와 synthetic main-process fixtures",
+    "capture_method": "BrowserWindow.webContents.capturePage().toPNG()",
+    "platform": "darwin",
+    "locale": "ko",
+    "theme": "light",
+    "os_window_visible": false,
+    "groups": [
+      {
+        "viewport_css": [1440, 928],
+        "pixel_ratio": 2,
+        "zoom_factor": 1,
+        "checked_png_pixels": [2880, 1856],
+        "captures": [
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-desktop-control-0-synthetic.png",
+            "state": "Workspace MCP currentdisabled"
+          },
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-desktop-control-5-synthetic.png",
+            "state": "Workspace MCP currentdisabled"
+          },
+          {
+            "filename": "desktop-configuration-normal-synthetic.png",
+            "state": "Configuration provenance normal"
+          }
+        ]
+      },
+      {
+        "content_width": 760,
+        "viewport_css": [380, 484],
+        "pixel_ratio": 4,
+        "zoom_factor": 2,
+        "checked_png_pixels": [1520, 1936],
+        "captures": [
+          {
+            "filename": "desktop-configuration-mcp-currentdisabled-control-3-synthetic.png",
+            "state": "Workspace MCP currentdisabled"
+          },
+          {
+            "filename": "desktop-configuration-mcp-connected-control-4-synthetic.png",
+            "state": "Workspace MCP connected"
+          },
+          {
+            "filename": "desktop-configuration-mcp-failed-control-3-synthetic.png",
+            "state": "Workspace MCP failed"
+          },
+          {
+            "filename": "desktop-configuration-mcp-needs_auth-control-3-synthetic.png",
+            "state": "Workspace MCP needs_auth"
+          },
+          {
+            "filename": "desktop-configuration-mcp-unowned-control-2-synthetic.png",
+            "state": "Workspace MCP unowned"
+          },
+          {
+            "filename": "desktop-configuration-mcp-collision-control-2-synthetic.png",
+            "state": "Workspace MCP collision"
+          },
+          {
+            "filename": "desktop-configuration-mcp-restart-control-2-synthetic.png",
+            "state": "Workspace MCP restart"
+          },
+          {
+            "filename": "desktop-configuration-mcp-unsupported-omitted-oauth-control-2-synthetic.png",
+            "state": "Workspace MCP missing",
+            "checkpoint": "unsupported-omitted-oauth"
+          },
+          {
+            "filename": "desktop-configuration-mcp-untrusted-control-0-synthetic.png",
+            "state": "Workspace MCP untrusted"
+          },
+          {
+            "filename": "desktop-configuration-mcp-keyboard-register-retired-read-control-0-synthetic.png",
+            "state": "Workspace MCP missing",
+            "checkpoint": "keyboard-register-retired-read"
+          },
+          {
+            "filename": "desktop-configuration-mcp-keyboard-register-retired-read-control-1-synthetic.png",
+            "state": "Workspace MCP missing",
+            "checkpoint": "keyboard-register-retired-read"
+          },
+          {
+            "filename": "desktop-configuration-mcp-keyboard-register-retired-read-action-synthetic.png",
+            "state": "Workspace MCP missing",
+            "checkpoint": "registered_disabled"
+          },
+          {
+            "filename": "desktop-configuration-mcp-full-explicit-lifecycle-control-2-synthetic.png",
+            "state": "Workspace MCP missing",
+            "checkpoint": "full-explicit-lifecycle"
+          },
+          {
+            "filename": "desktop-configuration-mcp-denied-action-synthetic.png",
+            "state": "Workspace MCP denied"
+          },
+          {
+            "filename": "desktop-configuration-mcp-changed-action-synthetic.png",
+            "state": "Workspace MCP changed"
+          },
+          {
+            "filename": "desktop-configuration-mcp-unknown-control-1-synthetic.png",
+            "state": "Workspace MCP unknown"
+          },
+          {
+            "filename": "desktop-configuration-mcp-unknown-action-synthetic.png",
+            "state": "Workspace MCP unknown"
+          },
+          {
+            "filename": "desktop-configuration-mcp-late-workspace-isolation-control-0-synthetic.png",
+            "state": "Workspace MCP lateworkspace",
+            "checkpoint": "late-workspace-isolation"
+          },
+          {
+            "filename": "desktop-configuration-instructions-registered-direct-narrow200-remove-synthetic.png",
+            "state": "Instructions registered-direct-narrow200 remove"
+          }
+        ]
+      },
+      {
+        "viewport_css": [380, 284],
+        "pixel_ratio": 4,
+        "zoom_factor": 2,
+        "checked_png_pixels": [1520, 1136],
+        "captures": [
+          {
+            "filename": "desktop-configuration-file-narrow200-synthetic.png",
+            "state": "Configuration file narrow200 observed baseline and keyboard"
+          },
+          {
+            "filename": "desktop-configuration-file-narrow200-load-synthetic.png",
+            "state": "Configuration file narrow200 observed baseline and keyboard"
+          }
+        ]
+      }
+    ]
+  },
+  "assessment": {
+    "rendered_scope_and_controls": "intro와 workspace 전체·미래 세션 영향, 명시적 상태 확인, 비활성 등록, 연결·연결 해제·등록 제거를 확인했습니다. 기본 정의 선택은 비어 있습니다.",
+    "truthfulness": "파일 저장·runtime 등록·연결·모델 사용을 구분합니다. Native 목록과 제출 digest를 전체 설정 또는 정확한 process 종료의 증명으로 표시하지 않습니다.",
+    "ownership_and_trust": "외부 소유 항목은 읽기 전용입니다. restart 소유권 만료와 과거 기록의 한계를 설명합니다. 신뢰 확인 경로가 실제 새 세션을 추가한다는 안내를 확인했습니다.",
+    "argv_cwd_and_inactive_override": "선택한 정의의 전체 argv, 파일 cwd, canonical cwd 확인 안내와 disabled:true override를 확인했습니다. host confirmation dialog는 source만 확인했으며 pixels는 직접 확인하지 않았습니다.",
+    "failed_and_needs_auth": "관찰 상태의 failed/needs_auth는 직접 확인했습니다. 완료된 연결 시도의 failed/needs_auth 안내는 source와 저장된 검사 자료에 근거합니다. 해당 완료 action 화면은 직접 확인하지 않았습니다.",
+    "unknown_and_late_workspace": "원래 키 조회·자동 재전송 금지·편집 가능 안내를 직접 확인했습니다. 실제 편집, original key 유지, noReplay와 late ACK 격리는 saved JSON/assertions에 근거합니다.",
+    "keyboard_focus_reflow": "긴 값과 안내의 줄바꿈 및 select focus ring을 직접 확인했습니다. 해당 PNG의 주요 파란색을 sRGB로 계산한 흰 배경 대비는 약 6.10:1입니다. Enter와 Escape 동작은 saved assertions에 근거합니다.",
+    "tokens": "desktop32 기준을 적용했습니다. 83개 MCP frame metadata의 제어 최소 높이는 32 CSS px입니다. coarse44 분기와 기존 permission36 token은 source로 확인했습니다. coarse pointer의 실제 MCP 화면은 미검증입니다.",
+    "responsive_remount": "kind/definition 초기화와 명시적 재선택을 구분했습니다. runner는 재선택 시 추가 MCP read/mutation이 없음을 검사합니다. UI 선택 유지로 보고하지 않았습니다.",
+    "existing_states": "파일 불러오기·비교와 instruction 등록·제거의 표본 화면을 확인했습니다. 나머지 기존 상태는 saved metadata/assertions를 사용했습니다."
+  },
+  "evidence_checks": {
+    "source_inventory_hashes_checked": 551,
+    "source_hash_mismatches": [],
+    "png_header_dimensions_checked": 238,
+    "png_dimension_mismatches": [],
+    "directly_viewed": 24,
+    "all_pngs_visually_inspected": false,
+    "hidden_r4": "PASS238captures/16MCPstates/ownedexit0",
+    "readonly_native_verifier": "verify-native-r10.mjs PASS, nativeReexecuted=false",
+    "readonly_build_verifier": "verify-build-r1.mjs PASS, build 재실행 없음",
+    "historical_failures": "Native-r1/r2/r3와 hidden-r1/r2/r3를 실패로 유지했습니다. current plainJSON probe, contextlib.closing observer, fixture receipt 수정과 wrapper의 sole root addition을 확인했습니다. 이전 worker hash는 현재 authority로 사용하지 않았습니다.",
+    "native_process_report": "배경 증거로만 사용했습니다. pixels 또는 모델 사용의 증명으로 사용하지 않았습니다."
+  },
+  "review_limits": [
+    "Native/Electron/UI/build/provider/private-content runtime을 실행하지 않았습니다.",
+    "host confirmation dialog, 완료 failed/needs_auth action과 MCP 등록으로 인한 workspace 제거 실패 화면은 직접 확인하지 않았습니다.",
+    "physical OS input, IME, screen reader, Windows, model consumption과 real remote 동작은 미검증입니다.",
+    "NOTE_EXIT 증거는 지정된 synthetic child에 한정됩니다.",
+    "MCP-R12-CODE-01은 별도 CODE 판단입니다. 이번 RENDER 검토 범위를 확장하지 않았습니다."
+  ],
+  "next_dependency": "Main이 이 raw report를 final-render-review-r12.json으로 보존해야 합니다. 별도 CODE 수정만으로 이 RENDER finding이 해결되지는 않습니다.",
+  "completion_scope": "bounded MCP increment의 독립 RENDER 검토 완료. 전체 F14와 Goal은 ACTIVE로 유지합니다."
+}

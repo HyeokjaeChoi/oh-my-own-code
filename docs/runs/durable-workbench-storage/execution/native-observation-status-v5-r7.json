@@ -1,0 +1,85 @@
+{
+  "source_freeze": "coherent-source-freeze-v5-r7.json",
+  "result": "fail",
+  "error": {
+    "name": "Error",
+    "code": "PROBE_ASSERTION",
+    "message": "Native historical log stream rejected"
+  },
+  "nativeProgress": {
+    "phase": "history-event-log",
+    "logDiagnostic": {
+      "after": 0,
+      "follow": false,
+      "count": 1,
+      "events": [
+        {
+          "keys": [
+            "type",
+            "aggregateID",
+            "seq"
+          ],
+          "unknownKeyCount": 0,
+          "type": "log.synced",
+          "sequence": 2,
+          "aggregateMatches": true,
+          "dataSessionMatches": false
+        }
+      ],
+      "head": {
+        "seen": true,
+        "aggregateMatches": true,
+        "sequence": 2
+      },
+      "completed": false
+    }
+  },
+  "observations": [
+    {
+      "case": "kernel-collision",
+      "reason": "owner_conflict",
+      "metadataSnapshot": true,
+      "blockedMutation": true,
+      "nativeLaunches": 0
+    },
+    {
+      "case": "dirty-live-child",
+      "reason": "owner_unverified",
+      "metadataSnapshot": true,
+      "blockedMutation": true,
+      "nativeLaunches": 0,
+      "bytesPreserved": true,
+      "provenance": "actual Electron kernel/owner; exact controlled app exit; live owned Node sentinel or explicit unverifiable adapter"
+    },
+    {
+      "case": "dirty-unverifiable-child",
+      "reason": "owner_unverified",
+      "metadataSnapshot": true,
+      "blockedMutation": true,
+      "nativeLaunches": 0,
+      "bytesPreserved": true,
+      "provenance": "actual Electron kernel/owner; exact controlled app exit; live owned Node sentinel or explicit unverifiable adapter"
+    },
+    {
+      "case": "spawn-intent-gap",
+      "reason": "owner_unverified",
+      "metadataSnapshot": true,
+      "blockedMutation": true,
+      "nativeLaunches": 0,
+      "bytesPreserved": true,
+      "provenance": "actual Electron kernel/owner; exact controlled app exit; live owned Node sentinel or explicit unverifiable adapter"
+    }
+  ],
+  "owned_current_processes_exited": true,
+  "owned_current_native_exit_confirmed": true,
+  "namespaces_retained": 5,
+  "historical_unverified_native_pid": 41795,
+  "not_reached": [
+    "normal_native_reopen",
+    "sigkill_native_reopen",
+    "pending_native_inbox_original_key",
+    "native_history_after_reopen",
+    "fault_copy_and_migration_native_sequences"
+  ],
+  "final_acceptance": false
+}

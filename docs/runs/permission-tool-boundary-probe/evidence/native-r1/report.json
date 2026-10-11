@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "result": "pass",
+  "phase": "complete",
+  "cases": [
+    {
+      "name": "once",
+      "result": "pass",
+      "pendingSeen": true,
+      "beforeSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+      "afterSha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+      "requestedSha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+      "nativeAssertion": "success",
+      "settled": true
+    },
+    {
+      "name": "reject",
+      "result": "pass",
+      "pendingSeen": true,
+      "beforeSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+      "afterSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+      "requestedSha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+      "nativeAssertion": "Permission.DeclinedError",
+      "settled": true
+    },
+    {
+      "name": "policy_deny",
+      "result": "pass",
+      "pendingSeen": false,
+      "beforeSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+      "afterSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+      "requestedSha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+      "nativeAssertion": "Permission.BlockedError",
+      "settled": true
+    }
+  ],
+  "limits": [
+    "Pinned Native built-in tool and synthetic namespace only; not provider, production Main, UI or full F09 acceptance.",
+    "No OS sandbox or absence of all possible filesystem/network access is claimed.",
+    "Namespaces are retained; owned process exit is not descendant enumeration or power-loss evidence."
+  ],
+  "before": {
+    "manifest": "3056a869509ad240f17fb6e2a40595729d15425c95b5bf60010b94cf5e5358a0",
+    "engine": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+    "sources": {
+      "apps/desktop-app/scripts/permission-tool-probe.mjs": "731e7a0605e38bb7dd20b8499a3f6a92f4672e78749cb44a651804a30dce19d4",
+      "apps/desktop-app/scripts/fixtures/permission-tool-native.mjs": "490a1d60008c1c3d5b23440bdc4e1ab0eb5a9b87b1879af40a1ad9099b915327",
+      "apps/desktop-app/src/event-host-resources.mjs": "f900de7bb9b08144fc9774c9c801b74589bac6d965d9f09e310e4a3f2d0bcaf8"
+    }
+  },
+  "retainedRoot": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-tool-PwDf2d",
+  "child": {
+    "pid": 62397,
+    "code": 0,
+    "signal": null,
+    "exited": true,
+    "timedOut": false,
+    "spawnFailed": false,
+    "protocolOverflow": false,
+    "signals": [],
+    "report": {
+      "schema_version": 1,
+      "result": "pass",
+      "cases": [
+        {
+          "name": "once",
+          "result": "pass",
+          "pendingSeen": true,
+          "beforeSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+          "afterSha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+          "requestedSha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+          "nativeAssertion": "success",
+          "settled": true
+        },
+        {
+          "name": "reject",
+          "result": "pass",
+          "pendingSeen": true,
+          "beforeSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+          "afterSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+          "requestedSha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+          "nativeAssertion": "Permission.DeclinedError",
+          "settled": true
+        },
+        {
+          "name": "policy_deny",
+          "result": "pass",
+          "pendingSeen": false,
+          "beforeSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+          "afterSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+          "requestedSha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+          "nativeAssertion": "Permission.BlockedError",
+          "settled": true
+        }
+      ],
+      "phase": "complete"
+    }
+  },
+  "after": {
+    "manifest": "3056a869509ad240f17fb6e2a40595729d15425c95b5bf60010b94cf5e5358a0",
+    "engine": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+    "sources": {
+      "apps/desktop-app/scripts/permission-tool-probe.mjs": "731e7a0605e38bb7dd20b8499a3f6a92f4672e78749cb44a651804a30dce19d4",
+      "apps/desktop-app/scripts/fixtures/permission-tool-native.mjs": "490a1d60008c1c3d5b23440bdc4e1ab0eb5a9b87b1879af40a1ad9099b915327",
+      "apps/desktop-app/src/event-host-resources.mjs": "f900de7bb9b08144fc9774c9c801b74589bac6d965d9f09e310e4a3f2d0bcaf8"
+    }
+  }
+}

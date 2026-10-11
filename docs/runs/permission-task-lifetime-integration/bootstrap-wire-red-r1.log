@@ -1,0 +1,38 @@
+✖ private bootstrap preparation transmits only reserved metadata and remains held (8.464958ms)
+✖ bootstrap wire captures a reserved create or fork without fabricating a bound session (0.575625ms)
+✔ bootstrap wire binds its original operation, stage and closed reservation (0.459917ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 101.642042
+
+✖ failing tests:
+
+test at apps/desktop-app/src/event-host-supervisor.test.mjs:1520:1
+✖ private bootstrap preparation transmits only reserved metadata and remains held (8.464958ms)
+  Error: native_permission_input
+      at error (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control-input.mjs:5:25)
+      at reject (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control-input.mjs:7:9)
+      at record (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control-input.mjs:23:5)
+      at taskPreparation (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control-input.mjs:108:19)
+      at Object.prepare (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/event-host-supervisor.mjs:649:25)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/event-host-supervisor.test.mjs:1524:32)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/desktop-app/src/native-permission-control-input.test.mjs:185:1
+✖ bootstrap wire captures a reserved create or fork without fabricating a bound session (0.575625ms)
+  Error: native_permission_input
+      at error (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control-input.mjs:5:25)
+      at reject (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control-input.mjs:7:9)
+      at record (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control-input.mjs:23:5)
+      at taskPreparation (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control-input.mjs:108:19)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control-input.test.mjs:187:52)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)

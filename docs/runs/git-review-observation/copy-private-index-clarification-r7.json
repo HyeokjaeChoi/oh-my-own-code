@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "run": "git-review-observation",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "dea8b663dc6fd45e6ac370de067b4adece872958c2188669f2af1404f3e836da",
+    "documents_sha256": "cfc0ba1e00ab5ba12353e1eb77b7c46ffbf7b3b9c3648e5c4ae94ae77e0c0133",
+    "gate": "design_spec",
+    "plan_sha256": "f83b220e4725bc5b8db573b5486146fcd2cb744a701d2ae6f826178a2fbf4e42",
+    "schema_version": 2,
+    "work_class_sha256": "201d17492a4cefb963a6b8a5a34a68dfbb1017ac43c833a6fd460efa9ffcd387"
+  },
+  "verdict": "pass",
+  "summary": "제공된 구현 설명은 v7의 metadata 중첩 해결 규칙과 직접 충돌하지 않습니다. 앱이 생성하는 private comparison index와 empty-blob object bytes는 원본 metadata 복사와 구분됩니다. 기존 중첩 검사는 worktree 복사 전에 적용해야 합니다. 생성된 private bytes에도 예산과 cleanup 규칙을 적용하고 원본 manifest/fingerprint를 유지한다는 조건에서 기존 제한된 pass를 유지합니다.",
+  "review_boundary": "추가 설명과 DESIGN-GIT-R6-01 해결 규칙 사이의 직접 충돌만 판단했습니다. 문서 변경이나 binding 갱신으로 취급하지 않았습니다.",
+  "open_findings": [],
+  "evidence_limits": [
+    "추가 설명을 기준으로 판단했습니다. 새 도구 실행이나 파일 변경은 없습니다.",
+    "comparison index의 정확성, attribute 보존, builtin text/eol/ident 처리, 실제 diff 결과는 검증하지 않았습니다. 전체 구현이나 G2 runtime 통과를 승인하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11c04-5eef-7783-8846-39fc677a653f",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

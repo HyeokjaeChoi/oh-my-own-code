@@ -1,0 +1,137 @@
+{
+  "verdict": "changes_requested",
+  "scope": {
+    "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_revision": 14,
+    "review": "solo-code-review/default",
+    "files": 11,
+    "source_or_document_edits": false,
+    "delegation": false
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "P1",
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "line_start": 818,
+      "line_end": 823,
+      "title": "원본 State.batch에서 정상 builtin 등록을 거부함",
+      "trigger": "원본 Plugin.activate가 State.batch 안에서 fixed Tool plugin을 로드한다.",
+      "failure_path": [
+        "원본 State.transform은 callback을 등록하지만, inventoryTools 통지는 batch 종료까지 미룬다.",
+        "PluginInternal wrapper는 batch 종료 전에 inventoryToolResult를 호출한다.",
+        "새 검사는 아직 갱신되지 않은 entry.inventoryTools에서 toolId를 찾는다.",
+        "정상 declaration도 inventory_unverified로 거부된다. Loader는 activation Scope를 닫고 plugin 로드 실패로 처리한다."
+      ],
+      "impact": "최초 활성화에서 fixed builtin Tool의 정상 publication이 실패한다. 이 배치의 통합 목적을 충족하지 못한다.",
+      "evidence": {
+        "original_loader": "config-48y8hbvk.js:128의 batch2 경계",
+        "original_state": "config-rdw6cm16.js:125-126의 지연 notification",
+        "focused_reproduction": "원본 State.batch + 현재 Control/observer/editor: 정확한 declaration 반환이 거부됨. batch 종료 후 editor에는 동일 Tool 1개가 존재함.",
+        "loader_reproduction": "기존 추출 loader fixture에 원본 batch2와 inherit2를 적용하자 ordinary/saturated loader 검사 모두 실패함.",
+        "coverage_gap": "native-permission-read-metadata.test.mjs:430은 inherit2를 대체하고, 458은 batch 없이 load를 직접 호출한다."
+      },
+      "smallest_useful_correction": "원본 batch 경계를 유지하면서 현재 editor 목록의 확인 시점을 notification 이후로 맞춘다. 목록 누락 검사는 유지한다. 원본 batch2와 inherit2를 포함한 loader 회귀 검사를 추가한다."
+    }
+  ],
+  "passes": {
+    "spec_compliance": {
+      "result": "changes_requested",
+      "verified": [
+        "14 families의 declaration factory 본문이 이전과 동일함",
+        "원본 transform 위치에서 source-owned callback을 publication함",
+        "Graph가 private getter를 네 번째 인자로 연결함",
+        "unknown callback을 register 전에 거부함",
+        "complete=false, unsupported, capabilities=[] 유지"
+      ],
+      "failure": "원본 activation batch와 현재 목록 검사의 실행 순서가 맞지 않음"
+    },
+    "correctness": {
+      "result": "changes_requested",
+      "inspected": [
+        "원본 State, Tool editor, Plugin loader 및 호출 경로",
+        "declaration·Scope 상관관계",
+        "replay, disposal, failure, stale parent, reentry",
+        "현재 editor clone·options 비교와 metadata 중복 방지"
+      ],
+      "additional_confirmed_findings": 0
+    }
+  },
+  "start_end_sha": {
+    "git_head": null,
+    "git_head_reason": "저장소에 HEAD commit이 없음",
+    "binding_file": "docs/runs/permission-task-lifetime-integration/builtin-publication-code-input-r1.json",
+    "binding_file_sha256": "27ab12008124ae50149a1a213c38fcef4eeff3304510887bc296dca7d5aef849",
+    "start_source_set_sha256": "7c247ded4558f82b48838366d51ea58615cf3129ebbed94d7ff348cb5eafa4d8",
+    "end_source_set_sha256": "7c247ded4558f82b48838366d51ea58615cf3129ebbed94d7ff348cb5eafa4d8",
+    "source_set_encoding": "UTF-8; path순 정렬; 각 행은 path + NUL + sha256 + LF",
+    "all_11_match_declared_hashes_at_start_and_end": true,
+    "before_10_hashes_and_new_test_absence_verified": true,
+    "plan_sha256": "19bab23f5104bc2ccb008ea5827df4aba9a83ecf8db841c2b5e4a31e47026f21"
+  },
+  "actual_checks": [
+    {
+      "name": "native-metadata",
+      "passed": 218,
+      "exit_code": 0
+    },
+    {
+      "name": "native-descriptor-read",
+      "passed": 223,
+      "exit_code": 0
+    },
+    {
+      "name": "native-read-auxiliary",
+      "passed": 23,
+      "exit_code": 0
+    },
+    {
+      "name": "native-task-read",
+      "passed": 12,
+      "exit_code": 0
+    },
+    {
+      "name": "exact11 Prettier",
+      "exit_code": 0
+    },
+    {
+      "name": "exact11 ESLint",
+      "cwd": "apps/desktop-app",
+      "exit_code": 0
+    },
+    {
+      "name": "ESLint 초기 실행",
+      "exit_code": 2,
+      "reason": "repo root에 설정 파일이 없음. desktop-app cwd에서 재실행하여 통과함."
+    },
+    {
+      "name": "원본 batch 경계를 복원한 추출 loader 검사",
+      "exit_code": 1,
+      "failed_subtests": 2,
+      "result": "정상 activation 실패를 재현함"
+    },
+    {
+      "name": "독립 focused batch 재현",
+      "exit_code": 0,
+      "result": "inventoryToolResult 거부와 batch 종료 후 Tool 1개 존재를 확인함"
+    },
+    {
+      "name": "recipe 원본 비교",
+      "unchanged_non_family_files": 23,
+      "unchanged_factory_bodies": 14
+    }
+  ],
+  "limits": [
+    "Node와 추출 fixture의 결과이다. Native runtime 검증은 아니다.",
+    "publication fixture의 schema validator는 scripted이다.",
+    "Native/core/provider/Main/server 모듈 실행, Bun, network, build, GUI, 물리 probe 명령은 수행하지 않았다.",
+    "full F09/full18은 수행하지 않았으며 이 검토의 gate가 아니다.",
+    "positive authority 또는 실행 허용을 입증하지 않는다.",
+    "기존 RED artifacts를 확인하고 보존했다. 보고서와 ledger는 작성하지 않았다."
+  ],
+  "provenance": {
+    "agent_id": "01a12702-7d6d-7723-a49f-02c2ff64fe93",
+    "saved_by": "Main",
+    "source": "actual wait_agent completed result"
+  }
+}

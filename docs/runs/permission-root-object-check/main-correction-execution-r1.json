@@ -1,0 +1,12 @@
+{
+  "focused_green": {
+    "chunk_id": "175b13",
+    "wall_time_seconds": 0.027536334,
+    "exit_code": 0,
+    "original_token_count": 266,
+    "output": "✔ private root guard refuses unowned or malformed functions before IO (5.165792ms)\n✔ owned root guard permits exact object read and preserves ordinary appCode (10.887166ms)\n✔ protected sources perform no IO with an owned root guard (2.716542ms)\n✔ root owner binds actual opened directory identity and close revokes immediately (4.584459ms)\n✔ observer refuses a replacement at the same pathname before opening any descendant (4.145833ms)\n✔ observer checks retained owner after reentrant authority checks and keeps bytes private (5.408083ms)\n✔ root owner refuses malformed descriptor inputs and cleans failed acquisition (1.934083ms)\n✔ root replacement during acquisition is refused and the opened replacement FD is closed (2.398167ms)\n✔ a symlink root is refused before open and revocation does not reopen the path (1.663916ms)\n✔ final owned guard inspection never invokes supplied lookalikes, wrappers or proxies (1.323625ms)\nℹ tests 10\nℹ suites 0\nℹ pass 10\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 107.852291\n"
+  },
+  "actual_red_artifact": "docs/runs/permission-root-object-check/last-callback-read-red-r1.json",
+  "correction": "Factory-issued guards inspected through private WeakMap without invoking a supplied callback, ordinary check then pure assertion.",
+  "scope": "Node original observer actual synthetic read-after-revocation RED and corrected scope tests; not Native/tool/broker execution"
+}

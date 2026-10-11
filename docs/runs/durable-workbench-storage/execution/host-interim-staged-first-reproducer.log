@@ -1,0 +1,30 @@
+✖ staged managed workspace uses reserved folderSessionId for its first actual session (66.056542ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 123.645375
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:884:1
+✖ staged managed workspace uses reserved folderSessionId for its first actual session (66.056542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '66b721d4-e9a3-495f-b605-0d4c3978c2b1'
+  - '3edef662-9159-4d40-abc8-c7050ef1260d'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:889:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '66b721d4-e9a3-495f-b605-0d4c3978c2b1',
+    expected: '3edef662-9159-4d40-abc8-c7050ef1260d',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

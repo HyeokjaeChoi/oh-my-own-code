@@ -1,0 +1,131 @@
+{
+  "schema_version": 2,
+  "run_id": "git-review-observation",
+  "reviewer_role": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "2c28f1c713a0a6cebd8a348317551b4ab766493c86c2f5195ebf8e4543ecb8d8",
+    "documents_sha256": "d7f37c863fcba0e763308689550bd92db9cbf690242a1e21c502afc6d3dbda9c",
+    "gate": "design_spec",
+    "plan_sha256": "a633da28a9111fd3a2c85960d4d3e008e8461602878a66dac4b8c7b3100a79f0",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "changes_requested",
+  "summary": "design v2의 경계와 한도는 검토 가능한 수준입니다. 그러나 raw config의 credential 사본이 종료 미확인 또는 crash 뒤 남을 수 있습니다. 또한 untracked diff의 공통 규칙이 base diff 정의와 충돌합니다. 구현 전에 두 계약을 수정해야 합니다. 이번 판단은 문서 검토이며 runtime 구현 승인이나 전체 AC11 완료 판정이 아닙니다.",
+  "open_findings": [
+    {
+      "id": "DESIGN-GIT-R2-01",
+      "severity": "high",
+      "priority": "P1",
+      "concern": "Raw config의 credential 사본에 보존 한도가 없습니다.",
+      "locations": [
+        {
+          "path": "docs/runs/git-review-observation/design.md",
+          "lines": [7, 14, 16]
+        },
+        {
+          "path": "docs/product/prd.md",
+          "lines": [121]
+        }
+      ],
+      "affected_consumer": "Git inspector의 config parser, private scratch lifecycle, failure evidence 처리",
+      "evidence": "14행은 관측한 config 원문 전체를 private 파일에 복사한 뒤 해석하도록 합니다. remote URL이나 HTTP header 설정에는 credential이 들어갈 수 있습니다. 해석 결과의 whitelist는 이미 디스크에 기록한 원문을 제거하지 않습니다. 16행은 실제 종료를 확인하지 못하면 namespace를 보존하고, crash 뒤 정리도 보장하지 않습니다. 따라서 credential 사본이 보존 기간 없이 남는 경로가 설계에 있습니다. 이는 7행의 original config를 복사하지 않는다는 설명과도 일치하지 않습니다. mode0700은 다른 사용자에 대한 접근 제한이며, 사본의 보존 기간을 제한하지 않습니다.",
+      "impact": "단순 status 읽기가 credential을 포함한 추가 디스크 사본을 만들 수 있습니다. 정상 종료 시 삭제만으로는 종료 미확인과 crash 경로를 처리할 수 없습니다. 실제 유출이나 외부 전송을 확인했다는 뜻은 아닙니다.",
+      "smallest_correction": "Raw config는 bounded detached memory bytes로만 취급하십시오. 고정된 trusted Git parser에 stdin 또는 검증된 비파일 입력으로 전달하고, whitelist로 생성한 최소 config만 scratch에 기록하십시오. 원문과 parser의 raw stdout/stderr를 로그, 보고서, retained evidence에 저장하지 않는 규칙을 명시하십시오. create 후 unlink하는 방식만으로 crash 문제를 해결했다고 주장하지 마십시오. 기존의 실제 exit 확인과 namespace 보존 규칙은 유지할 수 있습니다.",
+      "required_verification": "후속 합성 검사에 URL credential과 HTTP header credential 표식을 넣으십시오. 정상, parse 실패, timeout, 취소, 종료 미확인, crash 경로에서 scratch와 보존 보고서에 표식이 남지 않는지 확인하십시오. 입력 방식의 정확한 Git 지원과 no-helper 경계도 실행 검증해야 합니다.",
+      "scope_limit": "이 수정은 raw config 사본의 문제를 해결합니다. 복사된 object store 전체의 crash 보존이나 모든 민감 자료의 보존 정책을 해결했다는 주장은 아닙니다."
+    },
+    {
+      "id": "DESIGN-GIT-R2-02",
+      "severity": "medium",
+      "priority": "P2",
+      "concern": "Untracked 파일의 diff 기준을 mode별로 정의해야 합니다.",
+      "locations": [
+        {
+          "path": "docs/runs/git-review-observation/design.md",
+          "lines": [37, 44, 48, 59]
+        }
+      ],
+      "affected_consumer": "Git detail adapter와 base diff를 표시하는 Renderer",
+      "evidence": "37행은 base diff를 선택한 local branch TIP OID에서 현재 worktree로의 비교로 정의합니다. 같은 행은 mode 제한 없이 untracked diff를 empty에서 현재 파일로의 비교라고 정의하며, staged만 별도로 거절합니다. 현재 HEAD/index에는 없지만 선택한 base에는 있는 경로를 worktree에 untracked 파일로 만들면 두 규칙이 충돌합니다. 예를 들어 현재 파일이 base blob과 같아도 empty 기준을 적용하면 전체 추가 patch가 됩니다.",
+      "impact": "구현자가 untracked 공통 처리를 base에도 적용하면 선택한 baseOid와 다른 기준의 patch를 표시할 수 있습니다. 이는 문서 계약의 충돌이며 실행으로 확인한 구현 결함은 아닙니다.",
+      "smallest_correction": "Untracked 처리 표를 mode별로 명시하십시오. staged는 not_staged, unstaged는 empty에서 현재 guarded file, base는 선택한 baseOid의 해당 blob 또는 실제 부재에서 현재 guarded file로 비교하도록 정의하십시오. 이 base 조합을 지원하지 않기로 하면 명시적인 unavailable 결과를 정의하십시오. empty 기준으로 조용히 대체하면 안 됩니다.",
+      "required_verification": "Base에는 경로가 있고 HEAD/index에는 없는 합성 사례를 추가하십시오. 현재 untracked 내용이 base와 같은 경우와 다른 경우를 각각 독립 기대값으로 검사하십시오. Renderer의 base label과 실제 비교 OID도 대조하십시오."
+    }
+  ],
+  "assessment": {
+    "security_config_objects_rootFD": "원본 objects와 alternates를 Git에 직접 연결하지 않고, checked descriptor로 제한 복사하는 선택은 명확합니다. 원본 config와 executable driver를 command 설정에 전달하지 않는 경계도 정의됐습니다. 다만 raw config scratch 문제는 위 지적대로 남습니다. rootFD와 /dev/fd/3은 설계된 후보입니다. 실제 Git의 descriptor 유지, descendant path 처리와 교체 거절은 아직 증명되지 않았습니다. unchecked path fallback 금지와 실패 시 거절 조건을 유지해야 합니다.",
+    "no_original_writes_or_helpers": "고정 read command, clean environment, optional lock 비활성화, no-ext-diff, no-textconv, helper와 mutation command 금지가 문서에 있습니다. 설치 SDK 소스에서는 XY 정보 축약, HEAD 기반 working diff, inherited environment와 patch의 no-textconv 누락을 직접 확인했습니다. 따라서 SDK를 그대로 사용하지 않는 근거는 타당합니다. 새 adapter의 무실행과 원본 보존은 후속 실제 probe가 필요합니다.",
+    "public_api_and_limits": "Workspace 전용 요청, observation/detail 관계, sender와 epoch 결합, TTL, closed reason, count·byte·time·JSON escaping 한도가 명시됐습니다. 현재 파일 grammar와 read lane 구조도 확인했습니다. 구현의 shared validator와 전체 envelope 한도 적용은 검증하지 않았습니다.",
+    "lifecycle_cleanup": "정확한 child handle, TERM/KILL 순서, 실제 exit 확인, settlement 전 slot 유지, 종료 미확인 시 보존과 reader 비활성화가 구분됩니다. 보존을 cleanup 성공으로 표시하지 않는 점은 적절합니다. Raw config의 crash 보존은 별도 수정이 필요합니다.",
+    "status_and_direct_base": "HEAD→index와 index→worktree 분리, direct TIP 비교, unborn·detached·conflict·rename 비활성화 표시는 정의됐습니다. Untracked와 base의 교차 규칙은 위 지적대로 수정해야 합니다.",
+    "consumer_ui_states": "Sole window Zustand owner, explicit refresh, 자동 Git query 금지, 독립 generation, ABA와 늦은 응답 거절, stale·held·unsupported·empty·error 상태와 재관측 경로가 정의됐습니다. 기존 UX의 keyboard·focus·상태 안내·전체 경로 접근 계약도 적용됩니다. 실제 화면과 접근성 통과는 판단하지 않았습니다.",
+    "scope": "이 증분은 읽기 전용 Git 검토입니다. Git mutation, line feedback, Windows 실제 수용과 전체 AC11은 후속 작업으로 유지됩니다."
+  },
+  "review_boundary": {
+    "mode": "report_only",
+    "inspected": [
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-design-spec-review/SKILL.md",
+      "docs/runs/git-review-observation/entry-design-packet-r2.json",
+      "docs/runs/git-review-observation/entry-design-input-r2.json",
+      "docs/runs/git-review-observation/plan.md revision 2",
+      "docs/runs/git-review-observation/design.md version 2",
+      "docs/runs/git-review-observation/contract.json",
+      "docs/runs/git-review-observation/run.json",
+      "docs/runs/git-review-observation/entry-plan-review-r1.json",
+      "docs/runs/git-review-observation/entry-plan-review-r2.json",
+      "docs/runs/git-review-observation/source-facts.json",
+      "docs/runs/git-review-observation/evidence/git-executable-discovery-r1.json",
+      "관련 PRD, UX, architecture, architecture-entry, ADR-0001, verification 부분",
+      "기존 workspace-file grammar와 descriptor observer, service read 경로, Renderer transport, 설치된 pinned SDK Git 소스"
+    ],
+    "performed": [
+      "파일과 JSON의 정적 읽기",
+      "Python으로 plan, contract, design, routing, source-facts와 설치 소스의 SHA256 대조",
+      "Harness 소스의 semantic contract와 document binding 규칙을 읽고 입력 해시 대조",
+      "현재 design artifact 등록과 initial PLAN pass 등록 확인",
+      "직접 Git executable의 현재 파일 SHA256와 경로 구성요소 metadata를 discovery 기록과 대조",
+      "CODEX_THREAD_ID에서 실제 child ID 확인"
+    ],
+    "not_performed": [
+      "구현, 수정, report 파일 또는 ledger 쓰기",
+      "Git repo 명령 또는 Git executable 실행",
+      "테스트, build, runtime, Bun, Electron, Native, provider 또는 foreground 작업",
+      "Harness 명령 실행",
+      "재위임"
+    ]
+  },
+  "evidence": {
+    "reviewed_equals_entire_parsed_input": true,
+    "plan_hash_matches_input_packet_and_registration": true,
+    "raw_contract_hash_matches_packet_and_registration": true,
+    "semantic_contract_hash_matches_input": true,
+    "documents_binding_matches_input": true,
+    "design_hash_and_current_artifact_registration_match": true,
+    "routing_hashes_match": true,
+    "source_facts_file_pins_match": true,
+    "installed_source_pins_match": true,
+    "packet_and_contract_decision_register_match": true,
+    "executable_discovery_file_hash_and_components_current_match": true,
+    "run_status": "active",
+    "registered_initial_plan_verdict": "pass",
+    "hash_difference_explanation": "Packet의 contract_sha256는 파일 해시입니다. reviewed의 contract_sha256는 harness 규칙의 의미 해시입니다. 둘의 차이는 불일치가 아닙니다."
+  },
+  "evidence_limits": [
+    "문서의 의도와 정적 소스를 검토했습니다. 저자의 실행·보안 주장을 runtime 증거로 채택하지 않았습니다.",
+    "직접 Git의 실제 version과 flag preflight, rootFD 동작, no-helper, no-original-write, cancellation과 exit는 실행 검증하지 않았습니다.",
+    "합성 probe의 향후 기대값을 실제 통과 결과로 표시하지 않았습니다.",
+    "전체 source_fingerprint는 재계산하지 않았습니다.",
+    "OS sandbox, Windows, same-UID malware, root compromise, crash/orphan/power-loss 해결이나 전체 제품 완료를 입증하지 않습니다.",
+    "Main이 보고서 저장, 수정 통합, 재검토와 최종 gate를 소유합니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11be1-83db-77c3-a684-36bdd742f996",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "reviewer": "design_spec_reviewer",
+    "basis": "child_task_id는 현재 실행 환경의 CODEX_THREAD_ID에서 읽었습니다. author_task_id는 현재 CODEX_SESSION_ID 및 등록된 Main provenance와 일치합니다. Profile 이름을 실제 sandbox enforcement 증거로 사용하지 않았습니다."
+  }
+}

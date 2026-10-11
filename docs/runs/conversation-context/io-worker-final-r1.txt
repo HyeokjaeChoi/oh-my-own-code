@@ -1,0 +1,30 @@
+할당된 **4개 파일 구현을 완료했습니다.** 독립 CODE review와 통합은 Main 단계로 남아 있습니다.
+
+- `observe`, 동기 `acquire`, `closeSender`, `close` 구현.
+- 기존 `readWorkspaceFile`, `version`, `directoryVersion` 유지.
+- reentrant accessor 문제를 RED로 재현한 뒤 수정.
+- 최종 Node 테스트 **55/55 통과**, scoped ESLint·Prettier 통과.
+
+`validateImage(bytes, mime)`는 복사한 `Buffer`와 확인된 MIME을 받습니다. 동기·비동기를 지원하며, 정확히 `true`여야 통과합니다.
+
+한도는 text 64KiB, media 8MiB, 전송 8개·16MiB, sender별 cache 64개·64MiB raw bytes, inactivity TTL 10분입니다. TTL 정리는 `observe`·`acquire` 시 수행합니다. `close`는 재사용을 차단하며, 실제 호출의 pin은 `release()`까지 유지합니다.
+
+Native·Electron·Bun·build·GUI·provider·private store는 실행하지 않았습니다. Decoder 검증은 Main의 callback 주입이 필요합니다.
+
+최종 SHA256:
+
+```text
+workbench-file-edit.mjs
+d949e0162c3c7684575c0874fac4fcc3f91a04cce770e22d23e1ea807e7d5756
+
+workbench-file-edit.test.mjs
+84fcc6640a803f01e45a2f121d296e6c113779d4e9ee182cf6cd85056e9006d2
+
+conversation-context-io.mjs
+d0456306720a28e805498145ffa58e387e88c5bae4ae9144675702f1c3231c62
+
+conversation-context-io.test.mjs
+2b98a16e4d4af646075d93af40747c137ed3cfd4d4bf4dc2b0cac863799b1ef2
+```
+
+파일 위치: `/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/`

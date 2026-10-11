@@ -1,0 +1,57 @@
+{  
+"core\_code": {  
+"schema\_version": 2,  
+"reviewed": {  
+"contract\_sha256": "ffe855df3b3c4295dfecc9f03950fc01e0933a350823d32c3093eabf9136a70a",  
+"environment\_sha256": "c90a1847cab588816cd06cd329515b3326131b367ca573894c74b18f2757f34c",  
+"gate": "code",  
+"plan\_sha256": "a9a9c09e41b2d4d030fec8141663bd16b942a07a61c5ee8b2c25ceb1538cc0bb",  
+"schema\_version": 2,  
+"source\_sha256": "a43b573d8cebecb5dcb2cb5605f84bcbe69e11143cde2c27e1242e81dd24c687",  
+"verification\_sha256": "c3940a56be24a79e559d65f24b639b873f372c9604a7800ed0de4cc690d6104e"  
+},  
+"verdict": "pass",  
+"summary": "Evidence-only reconciliation preserves the prior passing code conclusion. The reconciled binding differs from the final binding only in verification\_sha256. The actual packaged app.asar independently hashes to dc75706349b3eaed92e50cf08099503b27bc045075a63303ba2bad03d7a12c49, matching the corrected run artifact registration and the unchanged package-source-match.json, package-inspection.json and supplementary-verification.json; those evidence files also match their registered file hashes. No source, tests, captures or recorded outcomes changed. This is evidence reconciliation, not a new full code review, new visual observation, provider-authenticated execution, Windows validation or a full-release conclusion.",  
+"open\_findings": \[\],  
+"provenance": {  
+"child\_task\_id": "cli:session-lifecycle-entry-independent",  
+"author\_task\_id": "coordinator"  
+}  
+},  
+"core\_design": {  
+"schema\_version": 2,  
+"reviewed": {  
+"contract\_sha256": "ffe855df3b3c4295dfecc9f03950fc01e0933a350823d32c3093eabf9136a70a",  
+"environment\_sha256": "c90a1847cab588816cd06cd329515b3326131b367ca573894c74b18f2757f34c",  
+"gate": "design",  
+"plan\_sha256": "a9a9c09e41b2d4d030fec8141663bd16b942a07a61c5ee8b2c25ceb1538cc0bb",  
+"schema\_version": 2,  
+"source\_sha256": "a43b573d8cebecb5dcb2cb5605f84bcbe69e11143cde2c27e1242e81dd24c687",  
+"verification\_sha256": "c3940a56be24a79e559d65f24b639b873f372c9604a7800ed0de4cc690d6104e"  
+},  
+"verdict": "pass",  
+"summary": "The artifact-registration correction does not invalidate the prior passing design judgment: the reconciled binding changes only verification\_sha256, while the reviewed source, plan, contract, environment, captures and outcomes remain unchanged and the corrected app.asar identity is independently confirmed. This verdict reconciles existing evidence; it does not add a new visual observation. The prior independent post-fix review remains the visual evidence source. It also does not establish provider execution, native Windows behavior or full release readiness.",  
+"open\_findings": \[\],  
+"provenance": {  
+"child\_task\_id": "cli:session-lifecycle-entry-independent",  
+"author\_task\_id": "coordinator"  
+}  
+},  
+"plan": {  
+"schema\_version": 2,  
+"reviewed": {  
+"contract\_sha256": "a088fda9a0f9b3837c5cab2589db8a930b655dbed299131e027820ed265d2a3f",  
+"gate": "plan",  
+"plan\_sha256": "ca754d84873240fbee60690fcec33546642a114de5e47413acd7338e42afaf89",  
+"schema\_version": 2,  
+"source\_sha256": "a43b573d8cebecb5dcb2cb5605f84bcbe69e11143cde2c27e1242e81dd24c687"  
+},  
+"verdict": "pass",  
+"summary": "The execution plan fits the approved Electron desktop scope and contains no concrete blocking flaw. Installed @opencode/client 2.0.18 declarations support the required session.get, session.update, session.fork and session.remove shapes, including title/permissions updates and SessionInfo location/parent data. Main-process ownership, explicitly temporary pin/archive/diagnostic state, archive execution guards, idle/known/locked checks, unknown-outcome handling, non-evicting idempotency receipts, native-confirmed conversation deletion with project-file preservation, bounded redacted diagnostics, regression/native/package checks, sequencing and disjoint backend/renderer ownership are specified. Permanent retention and native Windows evidence remain parent limits. This verdict approves the execution plan only; the separately bound design-spec gate for interface.md still follows registration.",  
+"open\_findings": \[\],  
+"provenance": {  
+"child\_task\_id": "cli:session-lifecycle-entry-independent",  
+"author\_task\_id": "coordinator"  
+}  
+}  
+}

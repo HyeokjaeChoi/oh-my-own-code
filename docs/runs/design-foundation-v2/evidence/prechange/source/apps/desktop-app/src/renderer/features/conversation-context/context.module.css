@@ -1,0 +1,137 @@
+.section {
+  min-width: 0;
+  color: var(--omoc-semantic-color-text-primary);
+  font-size: 12px;
+  line-height: 1.6;
+  border-block-start: 1px solid var(--omoc-semantic-color-border-default);
+}
+.section > summary {
+  padding-block: 6px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.body {
+  display: grid;
+  gap: 8px;
+  max-height: min(42vh, 360px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 4px 4px 8px;
+}
+.body p,
+.messageActions p {
+  margin-block: 4px;
+  overflow-wrap: anywhere;
+}
+.controls {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.section input,
+.section textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--omoc-semantic-color-border-default);
+  border-radius: 6px;
+  background: var(--omoc-semantic-color-canvas);
+  color: inherit;
+  font: inherit;
+}
+.section textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+.section button,
+.messageActions button {
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid var(--omoc-semantic-color-border-default);
+  border-radius: 6px;
+  background: var(--omoc-semantic-color-surface-subtle);
+  color: var(--omoc-semantic-color-text-primary);
+  font: inherit;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.section button:disabled,
+.messageActions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.section :focus-visible,
+.messageActions :focus-visible {
+  outline: 2px solid var(--omoc-semantic-color-focus);
+  outline-offset: 2px;
+}
+.list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.list li,
+.preview {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--omoc-semantic-color-border-default);
+  border-radius: 6px;
+}
+.section dl {
+  margin: 0;
+}
+.section dd {
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.section strong,
+.list span {
+  overflow-wrap: anywhere;
+}
+.section pre {
+  min-width: 0;
+  max-height: 180px;
+  overflow: auto;
+  margin: 4px 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+  font:
+    12px/1.6 ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
+}
+.preview img {
+  display: block;
+  max-width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+}
+.actions,
+.messageActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+.messageActions {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.messageActions p {
+  flex-basis: 100%;
+}
+@media (max-height: 440px) {
+  .body {
+    max-height: 100px;
+  }
+}

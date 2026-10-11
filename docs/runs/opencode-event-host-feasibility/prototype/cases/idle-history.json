@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "title": "phase1-owned-idle",
+  "renamed_title": "phase1-owned-idle-acknowledged",
+  "metadata": {
+    "fixture": "closed-idle-v1",
+    "scope": "phase1"
+  },
+  "permissions": [
+    {
+      "action": "*",
+      "resource": "*",
+      "effect": "deny"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg_phase1_closed_0001",
+      "type": "synthetic",
+      "time": {
+        "created": 1791158400000
+      },
+      "text": "Closed synthetic transcript. No tools or provider requests.",
+      "metadata": {
+        "fixture": "closed-idle-v1"
+      }
+    }
+  ],
+  "max_messages": 4,
+  "max_text_bytes": 2048,
+  "sentinel": "phase1-owned-sentinel\n",
+  "import_sequence_gap": {
+    "rule": "SessionTransfer.import reserves one sequence per settled imported message without synthesizing durable events",
+    "source": "@opencode/core@2.0.18/dist/session/transfer.js"
+  }
+}

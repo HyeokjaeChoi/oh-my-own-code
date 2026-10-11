@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "a01cfe87380e2fe330a06b37ef5d69c2c11aba4376e13156b72a387f5286d4d3",
+    "gate": "plan",
+    "plan_sha256": "64c4aee4918fa071ccd08a7cae1b3ff7e769628c14a4c7fd4230c05aab0d2f93",
+    "schema_version": 2,
+    "source_sha256": "5325595327d33ee1daff55fd680e6bf73ea839dfaf66be7c02866fca936f1cbe"
+  },
+  "verdict": "pass",
+  "summary": "Revision 5 keeps the authorized five-family scope, accepted Button definitions, source-first design-spec gate, and later rendered Light/Dark checks. The registered plan, contract, and design-document hashes match the current files. NavigationItem's four per-variant behavior records now agree: default, hover, and unselected focus use weight 500; selected uses 700; focus preserves the underlying state's weight. The per-variant selectedCue describes the 700-versus-500 cue, and the family contract specifies the same numeric weights. The Dark hover alias resolves to canvas and selected to surface.subtle; actual distinction against the current Figma parent and selected+focus presentation still require the planned visual check. This plan pass does not approve Figma work by itself: the current source bundle needs a fresh independent design-spec pass and successful handoff before projection. Runtime interaction and accessibility claims remain outside this document review.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/astra_plan_review_rev5",
+    "author_task_id": "/root"
+  }
+}

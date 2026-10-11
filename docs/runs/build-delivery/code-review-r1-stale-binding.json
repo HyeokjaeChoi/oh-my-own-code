@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "code",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "source_sha256": "f00763ecb6d62c99b52fdc8a4795b70031ccb0c7380b7a5b25b4f441d8b8f3ef",
+    "verification_sha256": "dd17105afa30651a36997bee0a6f85ee8ff0713b361956d07bbe85ce1101f363"
+  },
+  "verdict": "changes_requested",
+  "summary": "Independent code review found two renderer state/projection mismatches, a malformed known-tool result that disappears, and a boundary checker that can be bypassed with relative imports. The reviewer confirmed source-level loopback binding, deny responses, and credential-free reads; the clean install, production bundle isolation, and browser E2E were not verified.",
+  "open_findings": [
+    {
+      "id": "CR-01",
+      "severity": "P1",
+      "path": "apps/workbench-web/scripts/check-boundaries.mjs",
+      "line": 17,
+      "trigger": "Import bridge code via a relative path such as ../../../../local-bridge/src/server.js.",
+      "impact": "The required boundary check passes despite bridge code entering the browser graph, and no rule enforces FSD/workspace dependency direction.",
+      "suggested_correction": "Resolve import targets or use enforceable Nx/ESLint rules; add forbidden-import fixtures."
+    },
+    {
+      "id": "CR-02",
+      "severity": "P2",
+      "path": "apps/workbench-web/src/widgets/session-workspace/ui/AssistantTranscript.tsx",
+      "line": 53,
+      "trigger": "A valid snapshot has run.status=running while its ordered run.status event is complete.",
+      "impact": "The projection and assistant-ui runtime disagree about whether the run is still active; the page also displays the raw snapshot state.",
+      "suggested_correction": "Project once and use the projected result for runtime state and page status."
+    },
+    {
+      "id": "CR-03",
+      "severity": "P2",
+      "path": "apps/workbench-web/src/entities/session/model/assistant-thread.ts",
+      "line": 48,
+      "trigger": "A valid message.appended event references a different run.",
+      "impact": "A message from another run/session is inserted into the current transcript.",
+      "suggested_correction": "Filter appended messages by current run/session identity and test cross-run isolation."
+    },
+    {
+      "id": "CR-04",
+      "severity": "P2",
+      "path": "apps/workbench-web/src/widgets/session-workspace/ui/AssistantTranscript.tsx",
+      "line": 19,
+      "trigger": "A registered previewLink tool has malformed, oversized, or otherwise schema-invalid result data.",
+      "impact": "The known renderer returns null, suppressing both the card and useful result/error context; the generic tool fallback is bypassed.",
+      "suggested_correction": "Render an inert general-result fallback for invalid known-tool data and test the registered renderer path."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/bootstrap_code_review_r1",
+    "author_task_id": "/root/bootstrap_engineer_r2"
+  }
+}

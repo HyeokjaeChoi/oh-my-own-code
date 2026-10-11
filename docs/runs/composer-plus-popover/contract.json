@@ -1,0 +1,131 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "P1",
+      "description": "Plus icon and anchored top-layer popover without Composer reflow"
+    },
+    {
+      "id": "P2",
+      "description": "Pointer, keyboard, focus, dismissal and viewport safety preserved"
+    },
+    {
+      "id": "P3",
+      "description": "Actual corrected build and independent CODE/RENDER verification"
+    }
+  ],
+  "checks": {
+    "typecheck": {
+      "argv": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Composer plus popover correction; production renderer with synthetic Main, not provider evidence",
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+        "apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css",
+        "apps/desktop-app/scripts/e2e-design-foundation.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Composer plus popover correction; production renderer with synthetic Main, not provider evidence",
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+        "apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css",
+        "apps/desktop-app/scripts/e2e-design-foundation.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Composer plus popover correction; production renderer with synthetic Main, not provider evidence",
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "nx",
+        "run",
+        "desktop-app:build",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Composer plus popover correction; production renderer with synthetic Main, not provider evidence",
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Composer plus popover correction; production renderer with synthetic Main, not provider evidence",
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "required": true
+    },
+    "hidden": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--out",
+        "docs/runs/design-foundation-v2/evidence/plus-popover-r2",
+        "--script",
+        "design-foundation"
+      ],
+      "cwd": ".",
+      "scope": "Composer plus popover correction; production renderer with synthetic Main, not provider evidence",
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ],
+  "decision_register": []
+}

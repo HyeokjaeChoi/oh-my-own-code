@@ -1,0 +1,40 @@
+✖ branch preview validates explicit identity without implicit switching (0.496416ms)
+✖ restore preview requires explicit index or HEAD and tracked path selection (0.069125ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 53.913167
+
+✖ failing tests:
+
+test at apps/desktop-app/src/git-branch-restore.test.mjs:5:1
+✖ branch preview validates explicit identity without implicit switching (0.496416ms)
+  Error: Invalid workbench request.
+      at fail (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:78:17)
+      at validateRequest (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:263:16)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/git-branch-restore.test.mjs:7:16)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    appCode: 'INVALID_REQUEST'
+  }
+
+test at apps/desktop-app/src/git-branch-restore.test.mjs:9:1
+✖ restore preview requires explicit index or HEAD and tracked path selection (0.069125ms)
+  Error: Invalid workbench request.
+      at fail (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:78:17)
+      at validateRequest (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-contract.mjs:263:16)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/git-branch-restore.test.mjs:11:16)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    appCode: 'INVALID_REQUEST'
+  }

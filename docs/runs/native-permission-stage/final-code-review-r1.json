@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "318885885a1d9c9f781d84ed9811f99befad56e60caf9789494a600de33ec963",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "689551ab106968720e219c35fd29ec6601caa17bebd80ff8e4d645e30fb8fe92",
+    "schema_version": 2,
+    "source_sha256": "b158c193303b60417d753484fc9171eefcfcf2838c0b930c3c6f029cf1227c8b",
+    "verification_sha256": "b2a169f253d1ba12eb292c6663bbbdcae668653f7ff4f84007725ec2c84eec87",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "지정한 변경 소스 6개를 독립 검토했습니다. 요구사항 준수와 코드 품질을 나누어 확인했으며, 조치가 필요한 결함은 발견하지 못했습니다. recipe와 pin의 단일 소유, 닫힌 선택적 receipt, requirePermissionOverlay:true의 legacy 거부를 확인했습니다. stage 디렉터리 생성 전 원본 해시 검증과 overlay 계획, 복사한 dependency closure 검증, 출력 해시와 전체 예상 경로 검사, 원본 보존을 확인했습니다. 기존 overlay stage 재사용, 검증한 legacy stage의 업그레이드와 이전 트리 보존, package 복사 전후 동일성도 확인했습니다. recipe 테스트는 dist 출력 대신 원본 prepared install을 읽습니다. 현재 소스 6개의 해시는 source-freeze와 일치하며, 관련 증거 파일의 해시도 일치합니다. 현재 review-input 객체 전체가 final-code-input-r1.json과 일치합니다. 기록된 테스트 67/67, 호환성 검사 2/2, lint·format 성공을 확인했습니다. Finding authority를 적용했으며 추가 요구사항을 도입하지 않았습니다. 파일 수정, delegation, 테스트 재실행, Native·Bun·Electron·build·stage CLI·network 실행은 하지 않았습니다. 통과 범위는 synthetic Node staging입니다. 실제 packaged/Native 실행과 권한 집행은 검증하지 않았습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a120c9-cb45-7be3-b991-51bce8d11783",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

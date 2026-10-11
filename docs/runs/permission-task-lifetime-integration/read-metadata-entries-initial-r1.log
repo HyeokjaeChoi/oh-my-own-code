@@ -1,0 +1,149 @@
+✔ boot-held admission allocates no leases, including after invalidation (5.816416ms)
+✔ default global node fails closed without explicit configuration (0.726833ms)
+✔ configured global node replacement shares one kernel across actual graph consumers (1.148541ms)
+✔ configured rejects malformed closed inputs synchronously without getter or proxy traps (0.4585ms)
+✔ boot holds are copied, sorted, deduplicated, deeply frozen and remain held (0.583042ms)
+✔ initialization accepts exact UTF8 and count boundaries (41.420917ms)
+✔ transaction rejects invalid inputs before callbacks and does not execute getters (0.556334ms)
+✔ capabilities reject forgery, copies, uncovered projects, child fibers and escaped reuse (3.734583ms)
+✔ same-fiber public reentry fails before acquiring even disjoint projects (0.366125ms)
+✔ inherited child transaction reentry rejects before parent-held or disjoint locks (0.491167ms)
+✔ same projects serialize; disjoint projects continue; reversed duplicate inputs cannot deadlock (1.783834ms)
+✔ reverse inputs acquire the sorted first project before touching the second (1.552375ms)
+✔ callback throw, failed Effect and interruption release all gates and expire capabilities (0.576416ms)
+✔ 32 waiters exclude the holder; overflow never enters; cancellation restores every project slot (58.816125ms)
+✔ invalidation proceeds while gates are held and is permanent for existing and new projects (0.438708ms)
+✔ invalid invalidation reasons fail without changing runtime state (0.387042ms)
+✔ each acquisition of the same configured Layer owns an independent kernel (0.223ms)
+✔ location owner retains building, ready and finalizing incarnations without settlement claims (0.981333ms)
+✔ location metadata excludes active project transactions without holding across Native effects (1.448375ms)
+✔ queued metadata precedes later shared admissions with staggered overlapping readers (4.97775ms)
+✔ metadata admission bounds and cancellation reopen readers only after the last writer leaves (61.930125ms)
+✔ failed queued metadata releases admission and inherited lifecycle reentry fails before waiting (2.169167ms)
+✔ location handles reject forgery, cross owner use, identity rebinding and reentrant lifecycle mutation (0.39375ms)
+✔ location capacity retains all thirty-two unknown entries and refuses another before effects (0.646459ms)
+✔ location identity validation never invokes caller accessors or Proxy traps (0.216875ms)
+✔ cancelled exclusive metadata waiter releases graph permits and does not leak an unknown build (1.435417ms)
+✔ actual acquired Control prepareTask holds without allocating authority (0.467042ms)
+✔ prepare captures entry metadata and observes runtime loss before deferred execution (0.33175ms)
+✔ trusted configured callback runs only at acquisition and receives the actual shared Service (0.204083ms)
+✔ real Control owns inventory counters and refuses caller completeness and old registration closures (0.728375ms)
+✔ location root pins actual directory before services and closes only at observed scope exit (3.058833ms)
+✔ location root replacement cannot be blessed by a current transaction or rename-back (1.9855ms)
+✔ location root capture refuses missing roots and cannot turn failure into a ready pin (0.52025ms)
+✔ location root changed during Native service construction cannot become ready (1.441208ms)
+✔ transaction owner is the actual Fiber object even if a child copies its id (0.321167ms)
+✔ bootstrap preparation observes actual candidate and closes retained root before held reply (5.90075ms)
+✔ runtime close waits for original bootstrap open and descriptor close, with no new preparation IO (2.2745ms)
+✔ bootstrap candidate rejection closes original root without inventing location or poisoning clean runtime (1.789166ms)
+✔ location project candidate API exists on the actual acquired Control (0.134625ms)
+✔ location candidate retains real pins, returns detached NONVCS metadata and preserves holds (6.219334ms)
+✔ location candidate refuses actual root .git and physically cleans construction (1.996959ms)
+✔ location candidate refuses actual ancestor .git and physically cleans construction (1.8655ms)
+✔ location candidate refuses actual root .hg and physically cleans construction (1.361ms)
+✔ location candidate refuses actual ancestor .hg and physically cleans construction (1.437667ms)
+✔ location candidate ready rechecks actual ancestor marker and permanently refuses stale owner (4.834292ms)
+✔ location candidate check rechecks actual ancestor marker and permanently refuses stale owner (9.948125ms)
+✔ location candidate cannot bless replacement of the original pin (1.258709ms)
+✔ location candidate close during original open prevents result and waits for cleanup (2.1155ms)
+✔ location candidate scope during original open prevents result and waits for cleanup (1.818917ms)
+✔ location candidate finalizing during original open prevents result and waits for cleanup (1.935209ms)
+✔ location candidate invalidate during original open prevents result and waits for cleanup (1.988916ms)
+✔ location candidate rejects foreign, forged and inherited transaction handles without IO (0.91725ms)
+✔ location candidate interruption waits for original acquisition and scope physically closes both pins (4.064125ms)
+✔ location candidate physical close failure escapes scope cleanup and remains failed on runtime cleanup (4.281917ms)
+✔ location candidate physical close failure escapes failed construction and remains failed on runtime cleanup (2.126875ms)
+✔ graph factory refuses unverified resource roots before any Native import (0.748083ms)
+✔ graph factory rejects accessor options without invoking authority getters (0.078333ms)
+✔ legacy resource manifest is refused before loading its inert Native placeholders (15.160708ms)
+✔ closed options reject proxies, hidden properties, symbols and inherited authority (0.186625ms)
+✔ exact four initialization fields reach resource verification only when valid (2.605084ms)
+✔ malformed initialization is refused before resource verification (0.666792ms)
+✔ initialization rejects accessors and proxies without invoking their code (0.229833ms)
+✖ actual graph facade binds the same acquired Control once and observes its invalidation (121.872416ms)
+✖ graph close revokes synchronously even with deferred invalidation and pending prepare (27.042375ms)
+✖ closing before acquisition refuses later acquisition of that graph (23.018667ms)
+✔ fixed producer pins the actual complete relative module closure before load (10.204875ms)
+✔ unknown source is refused by actual extracted PluginSupervisor.resolve BEFORE modules.load (8.795ms)
+✔ actual extracted hook layer observes register/finalizer and blocks retained callback before effects (1.89225ms)
+✔ actual pinned State refuses unverified tool transforms before effects on registration and replay (1.450916ms)
+✔ ordered builtin plan rejects missing/duplicate/reordered plugins before activation (1.035458ms)
+✔ actual extracted Tool layer refuses unverified metadata callbacks before publication (1.81025ms)
+✔ actual extracted Plugin.load records successful registration and actual scope disposal on the same Control (1.186208ms)
+✔ inert owned tool declarations preserve exact unsupported actions without executing callbacks (0.415459ms)
+✔ held raw actual execute refuses before decode, tool callback and output schema (6.141458ms)
+✔ held actual Tool.snapshot refuses before catalog and definition schema callbacks (1.419416ms)
+✔ held actual direct entry refuses before hook construction (0.826333ms)
+✔ held actual nested entry refuses before hook construction (0.54725ms)
+✔ held actual direct-accessor entry refuses before hook construction (0.479875ms)
+✔ raw entry with missing store service cannot call schema or callback (0.566625ms)
+✔ raw actual execution refuses accessor scope without callback access (0.306416ms)
+✔ raw actual execution refuses proxy scope without callback access (0.213083ms)
+✔ raw actual execution refuses missing scope without callback access (0.221208ms)
+✔ raw actual execution refuses mismatch scope without callback access (0.291917ms)
+✔ raw actual execution refuses changed scope without callback access (0.255416ms)
+✔ raw Tool guard does not hold project gate across callback effects (0.318667ms)
+ℹ tests 85
+ℹ suites 0
+ℹ pass 82
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1675.255958
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-graph.test.mjs:355:1
+✖ actual graph facade binds the same acquired Control once and observes its invalidation (121.872416ms)
+  AssertionError [ERR_ASSERTION]: unexpected pinned module: file:///missing-native-permission-test/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-kcmnw9z9.js
+      at load (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:302:12)
+      at pinned (eval at actualFactory (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:305:18), <anonymous>:69:5)
+      at createNativePermissionGraph (eval at actualFactory (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:305:18), <anonymous>:85:5)
+      at async actualFactory (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:329:18)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:356:49)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-graph.test.mjs:407:1
+✖ graph close revokes synchronously even with deferred invalidation and pending prepare (27.042375ms)
+  AssertionError [ERR_ASSERTION]: unexpected pinned module: file:///missing-native-permission-test/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-kcmnw9z9.js
+      at load (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:302:12)
+      at pinned (eval at actualFactory (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:305:18), <anonymous>:69:5)
+      at createNativePermissionGraph (eval at actualFactory (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:305:18), <anonymous>:85:5)
+      at async actualFactory (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:329:18)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:408:49)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-graph.test.mjs:449:1
+✖ closing before acquisition refuses later acquisition of that graph (23.018667ms)
+  AssertionError [ERR_ASSERTION]: unexpected pinned module: file:///missing-native-permission-test/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-kcmnw9z9.js
+      at load (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:302:12)
+      at pinned (eval at actualFactory (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:305:18), <anonymous>:69:5)
+      at createNativePermissionGraph (eval at actualFactory (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:305:18), <anonymous>:85:5)
+      at async actualFactory (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:329:18)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:450:49)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

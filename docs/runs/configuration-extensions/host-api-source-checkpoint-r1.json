@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "scope": "Main current implementation checkpoint, no runtime/final acceptance",
+  "exports": {
+    "privateClient": "createNativeExtensionsClient({client,nonce,assertLive,timeoutMs?})->{observe({workspaceId,workspacePath})}",
+    "context": "workbenchContext().nativeExtensions.observe",
+    "publicRead": "configuration.extensions.read {workspaceId}; clocks appended only after original epoch/path/trust/generation/revision rechecks",
+    "assets": "NATIVE_EXTENSIONS_ASSETS; stage uses existing asset list"
+  },
+  "checks": {
+    "mainNode": "354/354 PASS extensions-main-host-r2.log before subsequent probe-only empty-registry assertion clarification",
+    "producerNode": "97/97 PASS extensions-producer-main-r1.log at initial producer freeze; Native Location.Info correction pending"
+  },
+  "paths": {
+    "apps/desktop-app/src/native-extensions-client.mjs": "7075d68c7f81b99fbc320b94fd32630a91e50e86dc1f5a7735ea144e15dbf33a",
+    "apps/desktop-app/src/native-extensions-host.test.mjs": "3844c35b2e77c95f34d833814d9a3b6090ad33625eb8a364ca589c330c1974c7",
+    "apps/desktop-app/src/event-host-resources.mjs": "1225480b7b545a89df741de158d4292dc85618fba5aa733db8cc3361cdd585a4",
+    "apps/desktop-app/src/event-host-supervisor.mjs": "190426d5791dfb0376c9dd55b9827728faa76363d216fb6831d63ca061f63439",
+    "apps/desktop-app/src/host/workbench-admission.mjs": "bd7fa28c7caad80d6878e2964167e6ddb7d5983c7c1ecc8be0e14a1473f70873",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts": "fc13d85d2a65f8f6631dee6fb665e73c22453b67d24184bc6221d2816de049f6",
+    "apps/desktop-app/src/workbench-service.mjs": "7db45e0017fa2655afa85ea149b80cc8ce5b201a561c18d232c87d490b735f32",
+    "apps/desktop-app/src/workbench-service.test.mjs": "a96d7ef216bf79d4459e9cfadfedf54da59bef4e4f8dbb1cf8631c19c80b548f",
+    "apps/desktop-app/src/host/storage-integration.test.mjs": "e3b7501e4bf9d517e932f9594a90187f79c42beacad3a98008160d304d1beb9d",
+    "apps/desktop-app/scripts/configuration-extensions-probe.mjs": "ac2d02060dcf017b288531544a7df52372019ae7625983086e863b9da83075ba",
+    "apps/desktop-app/scripts/fixtures/native-extensions-public.mjs": "23b12a50f2445b578dbbe815e68e574a5e2b4fa2a3b32e6d11761b5b270e0318",
+    "apps/desktop-app/scripts/fixtures/native-extensions-public.test.mjs": "af3f2cad2546ac648c54f95c83c69594b2f9b5a7971d20103e50c5626ccda41e",
+    "apps/desktop-app/scripts/p7-storage-probe.mjs": "cdc608050ecc24209265d4fe6f2c33daad39b18668660cee86fda60dd6794a35",
+    "apps/desktop-app/scripts/fixtures/p7-storage-owner-host.mjs": "21c54634f3f476e1991aaffc84b7df7f94998b630990add9b87eda840af9192d",
+    "apps/desktop-app/scripts/run-evidence.mjs": "469b4898a98c39376890534f5d717dcef5ca8980f6edf26ec8d257deebcb8b2c",
+    "apps/desktop-app/scripts/run-evidence.test.mjs": "4cb86099700910dc2c7a9eddf506d2d6d67eb6b8c1ae82b0545937ec5abfef2c"
+  }
+}

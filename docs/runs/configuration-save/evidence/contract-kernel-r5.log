@@ -1,0 +1,34 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Values have same structure but are not reference-equal:
+
+{
+  enginePath: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/runtime/bun',
+  hostPath: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/host.mjs',
+  manifestPath: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/manifest.json',
+  root: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64'
+}
+
+    at file:///Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-save/verify-native-evidence-r5.mjs:47:8 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: {
+    root: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64',
+    enginePath: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/runtime/bun',
+    hostPath: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/host.mjs',
+    manifestPath: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/manifest.json'
+  },
+  expected: {
+    root: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64',
+    enginePath: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/runtime/bun',
+    hostPath: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/host.mjs',
+    manifestPath: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/manifest.json'
+  },
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.8.2
+

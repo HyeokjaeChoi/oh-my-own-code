@@ -1,0 +1,94 @@
+{
+  "schema_version": 2,
+  "run": "configuration-provenance",
+  "reviewer": "design_spec_reviewer",
+  "plan_path": "docs/runs/configuration-provenance/plan.md",
+  "plan_revision": 2,
+  "design_version": 2,
+  "reviewed": {
+    "contract_sha256": "b19bbd0ff4717e6767bcc2d85b248ca28d2e5397ec90d7151fbd69c1b00f9074",
+    "documents_sha256": "c35912a9120d0633815c2ff8ab87e1e6b44dda57ae3fed8ee2a68ddb90930e7a",
+    "gate": "design_spec",
+    "plan_sha256": "04b08288e35eb2ae26d0add19bdb48a2bb2096a5267b33047801603c4b1be718",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "첫 읽기 전용 increment의 설계 Version 2는 구현 가능하며 plan Revision 2 및 계약과 일치합니다. 필수 수정 사항은 없습니다. 새 config.get 및 SDK method를 제외하고 configuration runtimeStatus를 not_reported로 고정합니다. 파일 발견, 기존 trusted skill.list의 출처, MCP 관측 상태를 구분합니다. 이 판정은 설계 문서에만 적용하며 구현 검증이나 전체 F14 완료를 뜻하지 않습니다.",
+  "open_findings": [],
+  "review_boundary": {
+    "kind": "fresh_independent_initial_design_spec_review",
+    "scope": "작은 첫 increment의 구현 가능성, DTO/API·보안·상태·오류 계약, 기존 소비자 호환성, UX 및 접근성 계약 일관성",
+    "authority": [
+      "사용자 handoff",
+      "docs/runs/configuration-provenance/design-spec-packet-r2.json",
+      "docs/runs/configuration-provenance/design.md",
+      "docs/runs/configuration-provenance/plan.md",
+      "docs/runs/configuration-provenance/contract.json",
+      "docs/product/prd.md F-14/AC-14",
+      "docs/design/specs/workbench-ux.md section 6 및 키보드·반응형 계약"
+    ],
+    "parent_status": "사용자 handoff의 parent COMPLETE 및 source a33 유지. parent 270 baseline을 재감사하지 않았습니다.",
+    "implementation_authorization": "이 보고서는 design_spec 판정입니다. Main의 등록 및 design_spec handoff 확인을 대신하지 않습니다."
+  },
+  "review_notes": [
+    "구현 경계: 기존 catalog.list의 admission, deadline, cancellation과 controller generation/epoch/workspace identity를 재사용합니다. 새 transport, persistent store, Native dispatch, preload capability 또는 arbitrary path open을 추가하지 않습니다. metadata 부재는 unavailable/unknown으로 표시하므로 기존 fixture와 호환됩니다.",
+    "초기화 경계: configuration 문서·디렉터리·category count의 runtimeStatus는 not_reported입니다. config.get, 새 SDK method, location 생성, activation, reload 또는 watcher를 추가하지 않습니다. trusted skill.list의 기존 결과에서 허용된 path/source/scope만 추가하고 MCP는 기존 관측 상태를 유지합니다. trust나 실행 중인 process를 초기화 증거로 사용하지 않습니다.",
+    "보안 계약: entries 최대 40, path 최대 4096 및 control character 금지, closed kind/source/scope/state/reason과 bounded integer를 지정합니다. raw config, Skill content, secret, header, environment, command/template, URL 및 raw error는 전달하지 않습니다. command count를 tools count로 표시하지 않으며 미보고 hooks/tools를 0 또는 활성으로 추정하지 않습니다.",
+    "파일 경계: 선택 workspace의 고정 root file/directory marker만 metadata로 발견합니다. canonical root 전후 확인과 중간 경로 lstat를 요구하며 symlink, recursion, file content read, home/global scan, 임의 path action을 제외합니다. missing과 denied/malformed/root change를 구분하고 partial/unavailable이 마지막 identity를 지우거나 성공을 주장하지 않습니다. 외부 race 전체에 대한 보장은 없습니다.",
+    "호환성 계약: handoff와 현재 문서의 pinned OpenCode 2.0.18을 기준으로 읽었습니다. .agents/.claude compatibility를 보존하며 vendor 이름만으로 unsupported_format을 만들지 않습니다. .codex/config.toml 발견은 실행·변환 지원의 근거가 아닙니다. 이번 검토에서는 설치된 SDK source를 다시 읽거나 실행하지 않았습니다.",
+    "UX 계약: 기존 extension panel과 단일 catalog 상태 소유자를 유지합니다. 파일 발견/런타임 보고/미확인 및 MCP observed status를 한국어로 구분합니다. selectable full path, native refresh button, 승인된 desktop32/coarse44 token, focus ring과 narrow scroll을 유지합니다. generic 과거 문서의 치수로 승인된 현재 desktop 기준을 바꾸지 않습니다. 오래된 workspace 응답은 현재 identity로 제외합니다.",
+    "검증 계약: secret canary, config.get zero-call, 명시적 connect/update/install/execute zero-call, untrusted discovery, malformed/bounded path, symlink/root replacement, late response 및 hidden renderer proof는 구현 후 계획입니다. App mock counter는 앱의 명시적 호출과 secret projection만 확인하며 Native 내부 전체의 부작용 없음은 증명하지 않습니다.",
+    "출력 경계: configuration-provenance/evidence를 위한 outputs root wrapper 변경 및 regression은 예정된 작업입니다. 현재 wrapper 실행 가능 또는 해당 check 통과로 처리하지 않습니다.",
+    "전체 F14: 편집·validate·diff·apply/reload 및 explicit MCP 등록/연결/해제·설치/업데이트와 지원되지 않는 format 처리는 후속 필수 작업으로 남습니다. 첫 increment와 미래 initialization boundary를 완료로 처리하지 않습니다."
+  ],
+  "evidence_limits": [
+    "문서 읽기 및 SHA-256 확인만 수행했습니다. 제품 source, ledger 변경, tests, build, runtime, Native invocation, network 및 private data 작업은 수행하지 않았습니다.",
+    "hidden macOS 및 synthetic host/renderer proof는 계획이며 현재 실행 결과가 아닙니다. production Main, foreground UI, 실제 provider, Windows, OS IME/Screen Reader 및 full WCAG는 검증하지 않았습니다.",
+    "향후 configuration read의 initialization boundary와 Native 내부 전체의 부작용은 미검증입니다."
+  ],
+  "verification": {
+    "method": "지정 문서 읽기 및 읽기 전용 SHA-256 계산",
+    "reviewed_binding_source": "docs/runs/configuration-provenance/design-spec-input-r2.json",
+    "reviewed_binding_copied_exactly": true,
+    "plan_sha256_matches": true,
+    "packet_raw_contract_sha256_matches": true,
+    "design_document_sha256_matches": true,
+    "packet_profile_and_skill_sha256_matches": true,
+    "packet_work_class_binding_matches": true,
+    "semantic_contract_hash_recomputed": false,
+    "documents_aggregate_hash_recomputed": false,
+    "work_class_hash_recomputed": false,
+    "source_hash_recomputed": false,
+    "run_status_read": "active",
+    "product_source_inspected": false,
+    "planned_source_checks_run": false,
+    "tests_run": false,
+    "builds_run": false,
+    "runtime_checks_run": false,
+    "native_invocations_run": false,
+    "network_used": false,
+    "private_invocations_run": false
+  },
+  "provenance": {
+    "child_task_id": "01a118ad-18d0-70e2-944d-0c8a18be32c1",
+    "child_id_source": "CODEX_THREAD_ID",
+    "author_task_id": "main-continuation",
+    "profile": "solo_reader",
+    "skills": [
+      "solo-specialist",
+      "solo-design-spec-review"
+    ],
+    "mode": "report_only",
+    "runtime_identity_attested": false,
+    "os_read_only_sandbox_attested": false,
+    "delegated": false,
+    "ledger_changed": false,
+    "product_source_changed": false,
+    "repairs_authored": false,
+    "files_changed": [
+      "docs/runs/configuration-provenance/design-spec-review-r2.json"
+    ],
+    "report_write_authority": "사용자가 이 JSON 한 파일의 작성을 명시적으로 허용했습니다."
+  }
+}

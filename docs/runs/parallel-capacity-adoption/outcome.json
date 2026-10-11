@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "AC-1": {
+      "status": "verified",
+      "artifacts": [
+        "AGENTS.md",
+        ".codex/config.toml",
+        ".solopreneur/managed.json"
+      ],
+      "checks": [
+        "managed"
+      ]
+    },
+    "AC-2": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/parallel-capacity-adoption/plan.md",
+        "docs/runs/parallel-capacity-adoption/change-evidence.json",
+        "docs/runs/parallel-capacity-adoption/git-before.json"
+      ],
+      "checks": []
+    },
+    "AC-3": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/parallel-capacity-adoption/changes.diff",
+        "docs/runs/parallel-capacity-adoption/sync-evidence.json"
+      ],
+      "checks": [
+        "managed"
+      ]
+    }
+  },
+  "changed_paths": [
+    ".agents/skills/solo-orchestrate/SKILL.md",
+    ".agents/skills/solo-orchestrate/references/run-protocol.md",
+    ".codex/config.toml",
+    ".solopreneur/docs/agent-catalog.md",
+    ".solopreneur/docs/codex-runtime.md",
+    ".solopreneur/docs/harness.md",
+    ".solopreneur/managed.json",
+    "AGENTS.md"
+  ],
+  "deleted_paths": []
+}

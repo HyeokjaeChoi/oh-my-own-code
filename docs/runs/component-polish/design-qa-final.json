@@ -1,0 +1,136 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "eacf6d247318575f5e86d9e6f73a364daedc1d4e6ba89747a6423c03cb93305f",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "design",
+    "plan_sha256": "f708386620e5139e13ffd304979ee0a6fd98b9cbfbac298956cc46620712e356",
+    "schema_version": 2,
+    "source_sha256": "1c414c72232dc8cb91910a3da65313b6e8ab5e89dbcca1d6b3d33eb4c6299f28",
+    "verification_sha256": "ccd9191b5bb26d653980b336033689042a6ed97b45c4281bccd97bc9ee5837b7"
+  },
+  "verdict": "changes_requested",
+  "summary": "Fresh independent review of the current Figma component-library deliverable against component-polish plan revision 6. Direct current Light/Dark screenshots and live node geometry confirm improved Input feedback/focus, text-hug StatusBadge geometry, distinct navigation states, borderless ToolCall summaries, existing Button/StatusBadge composition in PermissionRequest, and legible 280px/720px permission examples. Two ToolCall defects remain: queued/success content extends beyond fixed component bounds, and the displayed target disagrees with the input path across all six states. The verdict applies only to the Figma library itself; no product runtime or interactive accessibility pass is claimed.",
+  "open_findings": [
+    {
+      "id": "DQ-1",
+      "severity": "P2",
+      "finding": "ToolCall queued and success variants retain a fixed 292px height although their final explanatory note or result-navigation label ends at y=302. Both have 16px declared bottom padding, so the final child overflows the component by 10px and the intended bottom space is absent. The same overflow is inherited by Dark examples. Direct individual screenshots include the overflowing content at the bottom edge; in the Dark stack the trailing line sits noticeably closer to the next tool heading than rows without that extra line.",
+      "location": {
+        "page": "ToolCall (5:9)",
+        "components": ["7:130", "7:133"],
+        "dark_instances": ["7:178", "7:199"],
+        "overflowing_children": ["50:41", "50:51"],
+        "canvas_component_size": [400, 292],
+        "final_child_bounds": [16, 286, 300, 16],
+        "success_final_child_bounds": [16, 286, 67, 16]
+      },
+      "user_impact": "The reusable component reports a height smaller than its rendered contents. Consumers arranging instances by their actual bounds cannot preserve the designed spacing; clipping parents or tighter compositions can cut off the explanatory note or evidence action. The current Dark showcase already exposes uneven inter-item rhythm.",
+      "reproduction": "Open ToolCall set 7:136 and Dark examples 7:176. Inspect queued and success instances and their final line. Read each instance height and the final child's y plus height: 292 versus 286+16=302; primaryAxisSizingMode and layoutSizingVertical are FIXED, clipsContent is false.",
+      "evidence": [
+        "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-130",
+        "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-133",
+        "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-176"
+      ],
+      "observation_type": "Direct current Figma render plus live node geometry; no runtime inference presented as observed behavior",
+      "required_correction": "Make the ToolCall vertical extent hug all visible content and retain the documented bottom padding, including the optional result navigation/absent-target note. At the current content dimensions queued and success require at least 318px (302px content bottom plus 16px padding). Reflow the set and Dark showcase from actual heights and capture both again.",
+      "verification_status": "Observed and unresolved; requires a fresh independent visual review after correction."
+    },
+    {
+      "id": "DQ-2",
+      "severity": "P2",
+      "finding": "Every ToolCall example names packages/desktop/src/features/permissions/PermissionRequest.ts as the target, while its input block still contains path: src/workbench/session.ts. The success example then says reading completed without reconciling which file was read.",
+      "location": {
+        "page": "ToolCall (5:9)",
+        "light_set": "7:136",
+        "dark_examples": "7:176",
+        "states": ["queued", "running", "waiting", "success", "error", "unknown"],
+        "representative_target_node": "7:158",
+        "representative_input_node": "7:159"
+      },
+      "user_impact": "The library's evidence presentation teaches an internally contradictory source/target record. A reader cannot tell which path the status and result describe, undermining the exact-target clarity this component is intended to provide.",
+      "reproduction": "Inspect any expanded ToolCall in Light set 7:136 or Dark examples 7:176 and compare the visible 대상 row with the visible input path. Both values are fully legible and unequal.",
+      "evidence": [
+        "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-136",
+        "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-176",
+        "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-133"
+      ],
+      "observation_type": "Directly observed content inconsistency in current Light/Dark renders, confirmed by live text values",
+      "required_correction": "Use one coherent sample path for target and input in every ToolCall state. Preserve a realistic long-path case, allow its input text to wrap, and recompute component heights after that change. Recheck success/result wording and inherited Dark instances.",
+      "verification_status": "Observed and unresolved; requires a fresh independent visual review after correction."
+    }
+  ],
+  "verified_observations": [
+    {
+      "family": "Input",
+      "result": "Light/Dark fields retain a 40px shell. Default/hover/focus/disabled bounds are 280x70; error is 280x98 with a single error message at y=78. Current Dark examples have no feedback overlap. Separate Light/Dark error+focus examples retain a visible error boundary plus external focus ring. Focus overlay is 284x44, while the field remains 280x40."
+    },
+    {
+      "family": "StatusBadge",
+      "result": "All six base badges are HUG width and 24px high. Widths 64,64,79,79,46,97 equal respective text widths 48,48,63,63,30,81 plus 16px; text is positioned at x=8,y=1 with height 22. Text and semantic tones remain legible in both inspected modes. Live ToolCall and PermissionRequest descendants are actual StatusBadge instances with semantic state/label mappings."
+    },
+    {
+      "family": "NavigationItem",
+      "result": "All four displayed rows measure 220x40 with labels at a shared 12px start inset. Selected labels use weight 700 versus 500 for default/hover/focus. Dark parent/default resolve to #262626, hover to #171717, selected to #3d3d3d; all three can be distinguished in the same current capture. Light default/hover/selected also differ. Both 228x48 selected+focus composites preserve selected fill/bold text and an external focus ring. These observations do not prove aria-current or keyboard behavior."
+    },
+      {
+      "family": "ToolCall",
+      "result": "All six summaries have no outer strokes and compose the corresponding StatusBadge. Title/status, expanded source/target, input/output, and result are legible in Light/Dark. A separate underlined 근거 보기 action is shown for the success sample; queued shows a non-actionable absent-target explanation. Disclosure and result-navigation labels are visually separate. The result text node has hyperlink=null, so this review verifies only the designed appearance/conditional example, not target validity or navigability. Overflow and content inconsistency remain DQ-1/DQ-2."
+    },
+    {
+      "family": "PermissionRequest",
+      "result": "All five states keep scope and status readable in Light/Dark. Pending composes Button 6:2 primary allow and 6:8 quiet deny. Sending retains disabled Button 6:6/6:12 in the same arrangement. Approved/denied contain no decision buttons; stale contains only quiet refresh. Approved uses an info-tone StatusBadge with 승인 전달됨 and text explicitly distinguishing decision delivery from execution completion. Components hug their content with 16px bottom space. Existing buttons measure 136x40 within documented 136x44 allocation frames."
+    },
+    {
+      "family": "PermissionRequest responsive examples",
+      "result": "Current frames 56:62 and 56:75 measure exactly 280x326 and 720x242. The full example target remains visible and wraps at 280px without ellipsis or clipping. Narrow actions stack at 248px width in 44px allocation frames with an 8px frame gap; wide actions remain inline at 136px width with an 8px gap. These are composed Figma example frames containing actual Button and StatusBadge instances, not evidence that the 400px PermissionRequest master or a running application automatically adapts to either width."
+    }
+  ],
+  "evidence": {
+    "file_key": "e6QYqEsmA3FHB6A2ohNr2o",
+    "capture_origin": "Current Figma MCP get_screenshot calls made directly by this independent reviewer; images were inspected inline. Live get_metadata and read-only use_figma calls verified node bounds and instance composition.",
+    "capture_transport": "Inline image fallback used after shell curl could not resolve www.figma.com. Short-lived screenshot URLs are intentionally not persisted. The tool conversation retains the directly reviewed images; Figma node links identify their origin.",
+    "coordinate_system": "Figma canvas pixels and screenshot raster pixels; these are not browser viewport dimensions.",
+    "captures": [
+      {"node_id":"7:7","state":"Input Light variants","node_size":[1008,426],"raster_size":[1008,426]},
+      {"node_id":"7:28","state":"Input Dark variants and error+focus","node_size":[800,640],"raster_size":[800,640]},
+      {"node_id":"38:26","state":"Input Light error+focus","node_size":[288,98],"raster_size":[288,98]},
+      {"node_id":"7:82","state":"StatusBadge Light variants","node_size":[576,250],"raster_size":[576,250]},
+      {"node_id":"7:92","state":"StatusBadge Dark variants","node_size":[800,308],"raster_size":[800,308]},
+      {"node_id":"7:110","state":"NavigationItem Light variants","node_size":[828,264],"raster_size":[828,264]},
+      {"node_id":"7:116","state":"NavigationItem Light documentation and selected+focus","node_size":[828,300],"raster_size":[828,300]},
+      {"node_id":"7:119","state":"NavigationItem Dark variants and selected+focus","node_size":[800,388],"raster_size":[800,388]},
+      {"node_id":"48:9","state":"NavigationItem Light selected+focus","node_size":[228,48],"raster_size":[228,48]},
+      {"node_id":"48:14","state":"NavigationItem Dark selected+focus","node_size":[228,48],"raster_size":[228,48]},
+      {"node_id":"7:136","state":"ToolCall Light variants","node_size":[928,966],"raster_size":[928,966]},
+      {"node_id":"7:176","state":"ToolCall Dark variants","node_size":[460,1916],"raster_size":[460,1916]},
+      {"node_id":"7:130","state":"ToolCall Light queued","node_size":[400,292],"raster_size":[400,301],"screenshot_reported_original_size":[400,300],"note":"Rendered extent includes content outside actual fixed component bounds."},
+      {"node_id":"7:133","state":"ToolCall Light success","node_size":[400,292],"raster_size":[400,302],"screenshot_reported_original_size":[400,302],"note":"Rendered extent includes content outside actual fixed component bounds."},
+      {"node_id":"8:7","state":"PermissionRequest Light variants","node_size":[928,1371],"raster_size":[928,1371]},
+      {"node_id":"8:42","state":"PermissionRequest Dark variants","node_size":[460,1840],"raster_size":[460,1840]},
+      {"node_id":"56:60","state":"PermissionRequest responsive examples","node_size":[928,667],"raster_size":[928,667]},
+      {"node_id":"56:62","state":"PermissionRequest 280px example","node_size":[280,326],"raster_size":[280,326]},
+      {"node_id":"56:75","state":"PermissionRequest 720px example","node_size":[720,242],"raster_size":[720,242]}
+    ]
+  },
+  "limitations": [
+    "The actual deliverable is a Figma library. Figma renders are implementation evidence for that library only, not proof of a product application's behavior or visual parity.",
+    "No browser, runtime, keyboard, screen-reader, hit-testing, touch, zoom, or operating-system accessibility verification was performed.",
+    "Focus rings and current-state styling were visually inspected; their programmatic semantics and focus behavior were not tested.",
+    "No interactive disclosure, result navigation, real target validity, request submission, or permission execution behavior was tested.",
+    "Responsive examples were inspected at their existing measured sizes. Masters were not resized or edited; automatic responsive behavior is not claimed. No separate Dark 280px/720px examples were supplied or inspected.",
+    "Visual legibility was inspected, but numerical contrast compliance was not independently recalculated in this review.",
+    "Button composition was inspected, but this reviewer did not independently revalidate byte-equivalence of the Button source contract or all 44 canonical variants; those remain source/check gate evidence.",
+    "Supplied exact source/verification review binding identifies this review target. The mutable remote Figma file has no immutable revision hash in this report."
+  ],
+  "next_handoff": "Return DQ-1 and DQ-2 to the implementation owner, update affected ToolCall geometry/content and evidence, then obtain a fresh independent rendered-design review bound to the corrected artifacts. Do not mark the design gate passed from this report.",
+  "provenance": {
+    "child_task_id": "/root/design_qa_final",
+    "author_task_id": "/root",
+    "role": "design_qa",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "routing_attestation": "Requested routing recorded from handoff; not independent runtime model/effort attestation.",
+    "independence": "Fresh child reviewed current captures and read-only node properties. It did not author or modify the Figma library. Only this requested review report was written."
+  }
+}

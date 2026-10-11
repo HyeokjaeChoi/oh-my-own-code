@@ -1,0 +1,54 @@
+{
+  "schema_version": 2,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/host/workbench-file-edit.mjs",
+      "sha256": "74df6ea0f47c6a0bdde70b109b1085e76e3270de1723dcf84088099296ae0b46",
+      "bytes": 10595
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-workspace-file-io.test.mjs",
+      "sha256": "14bb7c1ec3220f3f19e26e05427465341ec80baefc7813dee4152d34e48da75d",
+      "bytes": 20895
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "sha256": "1fd5df56855a1c2f7c19071c57c099db90fd8b86e83f77f31260ea4627959e75",
+      "bytes": 30706
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.test.mjs",
+      "sha256": "b8ec13fb62316c89675622a74042c77cac4737b04d928a3dc16274b49ef6eda3",
+      "bytes": 48870
+    }
+  ],
+  "findings": "bounded-root-io-findings-r1.json",
+  "checks": [
+    {
+      "log": "root-io-review-fixes-red-r1.log",
+      "failed": 2,
+      "reason": "actual root revocation return and actual copied Fiber.id transaction attacks reproduced"
+    },
+    {
+      "log": "root-io-review-fixes-green-r1.log",
+      "passed": 2
+    },
+    {
+      "log": "root-io-review-fixes-suite-r1.log",
+      "passed": 203,
+      "scope": "root/file/context IO, actual pinned Control/location/observer/leases"
+    }
+  ],
+  "static": {
+    "eslint": "pass exact4",
+    "prettier": "pass exact4"
+  },
+  "repairs": [
+    "Final descriptor close callback followed by pure root guard before bytes disclosure; cleanup still visits all handles",
+    "Transactions bind actual captured Fiber object for capability checks, owner lookup, reentry and finalizer deletion; mutable id irrelevant"
+  ],
+  "limits": [
+    "Final whole-run CODE and Native activation remain unfinished",
+    "No Native/Bun/Electron/build/provider/server/UI invocation"
+  ]
+}

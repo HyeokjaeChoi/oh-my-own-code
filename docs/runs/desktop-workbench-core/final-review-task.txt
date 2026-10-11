@@ -1,0 +1,24 @@
+Perform a fresh independent report-only code review of the desktop workbench core.
+Root: /Users/hyukjaechoi/Projects/oh-my-own-code.
+Read .codex/agents/solo_reader.toml, .agents/skills/solo-specialist/SKILL.md,
+.agents/skills/solo-code-review/SKILL.md, and this run's final-review.packet.json.
+The current plan is docs/runs/desktop-workbench-core/plan.md revision 2 and
+interface.md version 2. The full F-01-18 parent release remains unfinished.
+
+Review the actual 28 changed paths in integration-files.json, prioritizing
+workbench-service.mjs, workbench-contract.mjs, host/workbench-files.mjs,
+main.mjs/preload.cjs, renderer/app/useWorkbench.ts, and conversation/index.tsx.
+Read relevant installed @opencode/client declarations and tests as needed to
+check a suspected issue. Do not read full worker logs or the entire run.json.
+The latest e2e-workbench.mjs normalizes the owned temporary fixture path.
+Actual Electron workbench E2E passed after that test fix. Development and
+packaged lifecycle checks are being reconciled separately by the coordinator.
+
+Do not edit anything, spawn children, run tests, read credentials or personal
+projects, or write ledger entries. Inspect code, callers and guards before
+asserting a defect. Return a concise report: spec compliance, concrete findings
+with severity/path/line/trigger/impact/smallest correction, and verification
+limits. Report no actionable defects if that is the evidence-based result.
+Do not manufacture final gate hashes, runtime identity, or execution evidence.
+The coordinator will freeze final evidence and request only affected follow-up
+review if repairs change the source. This invocation is independent of authorship.

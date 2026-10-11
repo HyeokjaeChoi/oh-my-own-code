@@ -1,0 +1,13 @@
+Error: expect(locator).toBeFocused() failed
+
+Locator:  getByRole('textbox', { name: '메시지 작성', exact: true })
+Expected: focused
+Received: inactive
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeFocused" getByRole('textbox', { name: '메시지 작성', exact: true }) with timeout 5000ms
+  - waiting for getByRole('textbox', { name: '메시지 작성', exact: true })
+    14 × locator resolved to <textarea name="input" maxlength="32000" aria-label="메시지 작성" class="_input_t7zsi_271" aria-describedby="_r_c_ _r_d_" placeholder="작업을 요청하세요. /로 명령 보기">SYNTHETIC Foundation · 긴 한국어 입력 · 다음 요청을 편집합니다.</textarea>
+       - unexpected value "inactive"
+

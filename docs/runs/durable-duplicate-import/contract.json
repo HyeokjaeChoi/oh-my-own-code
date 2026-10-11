@@ -1,0 +1,83 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "DUP1",
+      "description": "Repeat canonical path and alias, duplicate key, checkpoint/reopen preserve one original workspace, receipts and bytes without Native activation."
+    },
+    {
+      "id": "DUP2",
+      "description": "Keep existing ownership/trust/managed first-session ID, capacity behavior, digest conflicts and unresolved-resource holds."
+    },
+    {
+      "id": "DUP3",
+      "description": "Affected existing regression suites and changed-path lint/format pass at frozen source; fresh independent CODE review."
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Affected actual registry/journal/admission/receipts/service and durable integration Node regression including new duplicate import cases. Synthetic Native only; no Native/provider acceptance.",
+      "acceptance_ids": [
+        "DUP1",
+        "DUP2",
+        "DUP3"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Exact4 changed JavaScript source/test paths.",
+      "acceptance_ids": [
+        "DUP3"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Exact4 changed JavaScript source/test paths.",
+      "acceptance_ids": [
+        "DUP3"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/eslint.config.mjs"
+  ],
+  "decision_register": []
+}

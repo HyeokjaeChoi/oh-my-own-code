@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "A1": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/scripts/native-permission-overlay.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay.test.mjs"
+      ],
+      "checks": [
+        "unit-overlay"
+      ]
+    },
+    "A2": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+        "docs/runs/native-permission-overlay/pinned-inputs-r1.json"
+      ],
+      "checks": [
+        "unit-overlay"
+      ]
+    },
+    "A3": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/scripts/native-permission-overlay.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay.test.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs"
+      ],
+      "checks": [
+        "lint-overlay",
+        "format-overlay"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/scripts/native-permission-overlay.mjs",
+    "apps/desktop-app/scripts/native-permission-overlay.test.mjs",
+    "apps/desktop-app/scripts/native-permission-overlay-recipe.mjs",
+    "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs"
+  ],
+  "deleted_paths": []
+}

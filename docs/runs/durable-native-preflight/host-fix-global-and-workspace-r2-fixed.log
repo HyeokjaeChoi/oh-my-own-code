@@ -1,0 +1,34 @@
+✔ copied-set proof preserves originals, keeps stdin live, closes exact child and never inherits secrets (27.952042ms)
+✔ fresh proof has zero inspector calls; retained/resource recovery denies both namespaces (3.467292ms)
+✔ each invocation repeats inspection after startup journal revision; observation-only sequence is excluded (28.36875ms)
+✔ fork admission uses its own original identity/receipt separately from inherited root metadata (37.188334ms)
+✔ digest drift or invalid authority denies; no stale decision authorizes launch (16.014167ms)
+✔ receipt drift or invalid authority denies; no stale decision authorizes launch (13.381708ms)
+✔ revision drift or invalid authority denies; no stale decision authorizes launch (14.763333ms)
+✔ owner drift or invalid authority denies; no stale decision authorizes launch (13.311875ms)
+✔ resources drift or invalid authority denies; no stale decision authorizes launch (15.179ms)
+✔ original drift or invalid authority denies; no stale decision authorizes launch (14.073583ms)
+✔ optional drift or invalid authority denies; no stale decision authorizes launch (14.041292ms)
+✔ config drift or invalid authority denies; no stale decision authorizes launch (3.582083ms)
+✔ config-extra drift or invalid authority denies; no stale decision authorizes launch (3.064584ms)
+✔ symlink drift or invalid authority denies; no stale decision authorizes launch (4.554541ms)
+✔ hardlink drift or invalid authority denies; no stale decision authorizes launch (4.318833ms)
+✔ mode drift or invalid authority denies; no stale decision authorizes launch (4.009833ms)
+✔ nonce drift or invalid authority denies; no stale decision authorizes launch (15.981416ms)
+✔ extra-output drift or invalid authority denies; no stale decision authorizes launch (12.493958ms)
+✔ oversized-output drift or invalid authority denies; no stale decision authorizes launch (15.390708ms)
+✔ pending closed result preserves bytes and exact recovery reason (14.712708ms)
+✔ single-flight rejects competing lookup and close cancels only the exact owned handle (15.330125ms)
+✔ deadline exit uncertainty retains copied root and prevents every later proof (40.631709ms)
+✔ cleanup cannot publish a receipt proof for a later registry revision (13.577417ms)
+✔ pinned Native global shell directory is inert only when it stays empty (20.269708ms)
+✔ workspace removal during inspection rejects the original path binding (10.288792ms)
+✔ ordinary imported workspace directory edits preserve directory identity (19.909375ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 455.518375

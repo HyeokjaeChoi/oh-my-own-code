@@ -1,0 +1,112 @@
+{
+  "status": "preparatory_behavior_only",
+  "cases": [
+    {
+      "case": "create-current-head-sha1",
+      "pass": true,
+      "changed_paths": [
+        ".git/logs/refs/heads/created",
+        ".git/refs/heads/created"
+      ],
+      "head_index_worktree_unchanged": true
+    },
+    {
+      "case": "clean-switch-sha1",
+      "pass": true,
+      "changed_paths": [
+        ".git/HEAD",
+        ".git/index",
+        ".git/logs/HEAD",
+        "added.txt",
+        "deleted.txt",
+        "ordinary.txt"
+      ],
+      "preserved_untracked_ignored_empty_directory": true
+    },
+    {
+      "case": "conflicting-dirty-switch-sha1",
+      "pass": true,
+      "exit": 1,
+      "all_bytes_modes_unchanged": true
+    },
+    {
+      "case": "untracked-target-collision-sha1",
+      "pass": true,
+      "exit": 1,
+      "all_bytes_modes_unchanged": true
+    },
+    {
+      "case": "restore-index-versus-head-sha1",
+      "pass": true,
+      "index_bytes_preserved_by_native": false,
+      "source_contents_differ": true
+    },
+    {
+      "case": "other-worktree-target-occupied-sha1",
+      "pass": true,
+      "exit": 128,
+      "all_bytes_modes_unchanged": true,
+      "occupancy_head_relative": ".git/worktrees/linked-sha1/HEAD"
+    },
+    {
+      "case": "create-current-head-sha256",
+      "pass": true,
+      "changed_paths": [
+        ".git/logs/refs/heads/created",
+        ".git/refs/heads/created"
+      ],
+      "head_index_worktree_unchanged": true
+    },
+    {
+      "case": "clean-switch-sha256",
+      "pass": true,
+      "changed_paths": [
+        ".git/HEAD",
+        ".git/index",
+        ".git/logs/HEAD",
+        "added.txt",
+        "deleted.txt",
+        "ordinary.txt"
+      ],
+      "preserved_untracked_ignored_empty_directory": true
+    },
+    {
+      "case": "conflicting-dirty-switch-sha256",
+      "pass": true,
+      "exit": 1,
+      "all_bytes_modes_unchanged": true
+    },
+    {
+      "case": "untracked-target-collision-sha256",
+      "pass": true,
+      "exit": 1,
+      "all_bytes_modes_unchanged": true
+    },
+    {
+      "case": "restore-index-versus-head-sha256",
+      "pass": true,
+      "index_bytes_preserved_by_native": false,
+      "source_contents_differ": true
+    },
+    {
+      "case": "other-worktree-target-occupied-sha256",
+      "pass": true,
+      "exit": 128,
+      "all_bytes_modes_unchanged": true,
+      "occupancy_head_relative": ".git/worktrees/linked-sha256/HEAD"
+    }
+  ],
+  "count": 12,
+  "fixed_git": {
+    "path": "/Library/Developer/CommandLineTools/usr/bin/git",
+    "sha256": "738d0159292a08341abe63a7decd0715ff34d67d532e17349902a6dc42f60ae7",
+    "version": "git version 2.50.1 (Apple Git-155)"
+  },
+  "retained_synthetic_root": "/private/tmp/omoc-branch-restore-prep-kjeabnig",
+  "limits": [
+    "Known-byte app-owned synthetic Git commands only, not production private snapshot/publisher/kernel/admission/receipt/UI proof.",
+    "No original project, credential, provider, productionMain, Electron or Bun invocation.",
+    "No accepted branch/restore design/API/implementation or independent approval.",
+    "File identity/ctime changes beyond content/mode inventory are not proved absent."
+  ]
+}

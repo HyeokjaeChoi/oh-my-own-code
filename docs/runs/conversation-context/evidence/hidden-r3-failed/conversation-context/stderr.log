@@ -1,0 +1,13 @@
+Error: expect(locator).toBeDisabled() failed
+
+Locator:  getByRole('button', { name: '메시지 보내기', exact: true })
+Expected: disabled
+Received: enabled
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeDisabled" getByRole('button', { name: '메시지 보내기', exact: true }) with timeout 5000ms
+  - waiting for getByRole('button', { name: '메시지 보내기', exact: true })
+    14 × locator resolved to <button type="button" aria-label="메시지 보내기" class="_primary_19ysy_343">…</button>
+       - unexpected value "enabled"
+

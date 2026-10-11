@@ -1,0 +1,86 @@
+{
+  "revision": 31,
+  "verdict": "PASS",
+  "scope": "exact7 component CODE only",
+  "reviewer": "01a12809-4650-7b01-8ec4-cfb64ad6ee10",
+  "report": "config-discovery-code-review-r1.json",
+  "input": "config-discovery-code-input-r1.json",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "bytes": 310053,
+      "sha256": "cdbb74001d5b74b4446562cffdc522c0dd6c62fcc6418b57f1e809c172ad9d55"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "bytes": 34513,
+      "sha256": "dcde821389b9feea88484129eae9f7175477dfb6b51d9d60a1920df55a7226fd"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 26975,
+      "sha256": "e2592b1f2424be4481c9cc35ee3a4e012c3bfe09f482f1bc1217c4ed4cdaafce"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "bytes": 48484,
+      "sha256": "df3c032beb49360446ce403f81ed9ab7108d857bad9b415265e3fb9b18f44bfe"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-startup-maintenance.test.mjs",
+      "bytes": 10593,
+      "sha256": "ceadad133a45020b1fd736a59ddb25a92c5d4f69dadcb7e719696e25f21d8192"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-metadata-startup.test.mjs",
+      "bytes": 76669,
+      "sha256": "b558dc361fabd28e0b69eadd9d4f8a4b6c6b6a2e8deed1fc43185b2e74d94929"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+      "bytes": 21062,
+      "sha256": "8ce0ac50fa803764c865ddc1cecff15a2b41bb62ace6df22946b9b440047f7e2"
+    }
+  ],
+  "checks": {
+    "metadata": {
+      "log": "config-discovery-coherent-r1.log",
+      "pass": 572,
+      "exit": 0
+    },
+    "auxiliary": {
+      "log": "config-discovery-auxiliary-r1.log",
+      "pass": 23,
+      "exit": 0
+    },
+    "targeted": {
+      "log": "config-discovery-targeted-r1.log",
+      "pass": 47,
+      "exit": 0
+    },
+    "worker": {
+      "report": "direct-state-worker-final-r1.json",
+      "pass": 39,
+      "exit": 0
+    },
+    "eslint": "config-discovery-eslint-r1.log",
+    "prettier": "config-discovery-prettier-r1.log",
+    "check_status": "config-discovery-check-status-r1.json"
+  },
+  "independent_actual_checks": {
+    "worker_test": 39,
+    "js_static_files": 6,
+    "original_red": true,
+    "graph_source_loop_old_vs_current": true
+  },
+  "contract_prettier": "reviewer reports nonblocking warning; not claimed passed",
+  "all8_reusable": true,
+  "limits": [
+    "No Native/core/Main/Bun/provider/server/browser/network/build/GUI/private-originals/physical replay.",
+    "Source proof is receipt-pinned extracted original functions/real Effect with explicit dependency standins.",
+    "Fastpath removes only6 unnecessary discovery resolves for exact false/false/undefined; not all Config/service acquisition IO.",
+    "Existing20 worker test AST preserved;14direct State proofs+5discovery cases.",
+    "65files254edits; original64 recipe objects preserved.",
+    "Same-Control direct State provenance, complete inventory/compiler/handoff and full F09/full18 remain unfinished/held."
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": 2,
+  "gate": "plan",
+  "verdict": "pass",
+  "summary": "plan revision1은 요청한 제품 목표와 맞는다. copied readonly inspector는 기존 executor owner와 분리된다. 2.0.18 source에 한정한 migration ledger coupling은 제한과 실패 조건이 명확하다. N1–N5의 증거 계획은 달성 가능한 범위다. plan 수준의 차단 사유는 없다. 구현 전 독립 design review가 필요하다. 실제 production preflight 증거가 확보될 때까지 nonfresh production hold는 유지한다.",
+  "open_findings": [],
+  "reviewed": {
+    "contract_sha256": "e24f366b0ecd153561eadc970f8218ef958a6bda62e70487c76c35bc79d4ff00",
+    "gate": "plan",
+    "plan_sha256": "96afd3e51426c0147ef8de4fa8ea13c5b142c859d09ab6b3219fb96b5fcc94f9",
+    "schema_version": 2,
+    "source_sha256": "1480e75229c3eb9e6d13c55b03bbe1bb28baa01e9bd46e1f82ddfec730f1e864",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "provenance": {
+    "child_task_id": "01a116f7-cdfa-75d2-bd86-458a5e5e08c4",
+    "child_task_id_source": "현재 실행 환경의 CODEX_THREAD_ID. run dispatch의 child_ref와 일치한다.",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "author_task_id_source": "parent run의 author provenance와 상속된 CODEX_SESSION_ID가 일치한다.",
+    "distinct_from_author": true,
+    "authored_or_repaired_reviewed_artifacts": false,
+    "recursive_delegation": false,
+    "profile_sandbox_enforcement_claimed": false
+  },
+  "binding_verification": {
+    "command": "python3 -B .solopreneur/harness.py review-input durable-native-preflight --gate plan",
+    "start_matches_supplied_input": true,
+    "end_matches_start": true,
+    "current_source_matches_reviewed_source": true,
+    "packet_skill_profile_hashes_match": true,
+    "plan": {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-native-preflight/plan.md",
+      "revision": "1"
+    },
+    "design": {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-native-preflight/design.md",
+      "version": "2",
+      "sha256": "5789a770366f785445af24d9f251908d87c7e97a037a51cbd6df5a0b19b6fae3"
+    },
+    "contract_file_sha256": "a7c6890689174f713baf629949f4168729f34b47db1d2935703875b9c3413d57",
+    "contract_hash_explanation": "packet은 파일 bytes의 hash를 사용한다. review-input은 정규화한 contract 의미의 hash를 사용한다. 두 값의 차이는 stale binding이 아니다."
+  },
+  "assessment": {
+    "product_fit": "기존 mapped idle session의 보수적인 재시작 허용이라는 목표를 유지한다. retry, resume, approval, inbox mutation, migration cutover를 추가하지 않는다.",
+    "architecture": "복사본만 읽는 별도 process와 기존 supervisor preflight callback을 사용한다. owner, journal, registry, DTO 형식을 바꾸지 않는다. lookupIdentity와 lookupForkIdentity는 현재 source에 존재한다.",
+    "coupling": "공식 migrator source의 migration(id, time_completed) 정의와 48개 public migration.gen ID를 대조하는 접근은 가능하다. ID 집합 일치는 pinned migrator의 up skip 판단을 뒷받침한다. inspector에서 apply/up/run 또는 default Database 서비스를 실행할 필요가 없다.",
+    "alternatives": "기존 hold 유지와 공식 readonly compatibility API 대기를 대안으로 기록했다. DTO 조회와 readonly apply 접근의 누락 및 credential 읽기 위험도 기록했다. 현재 선택은 사용자에게 위임받은 범위 안에 있다.",
+    "scope_control": "하나의 initial major boundary로 검토하는 것이 적절하다. 승인된 범위 안의 일반 수정은 routine 절차와 별도 code review를 사용한다."
+  },
+  "planned_proof": {
+    "N1": "실제 copied readonly 조회와 원본 file set, owner, registry, resource binding을 함께 확인한다. unit 증거만으로 원본 보존을 확정하지 않는다.",
+    "N2": "global raw 조회, 정확한 NULL 검사, ledger 집합 대조, MessageSchema 검사와 경계 fault injection으로 거부 조건을 확인할 수 있다.",
+    "N3": "별도 owner generation의 normal/SIGKILL/fork reopen에서 production lifetime verifier와 production preflight를 모두 사용한다. 과거 synthetic override PASS는 이 증거를 대신하지 않는다.",
+    "N4": "정확한 ChildProcess handle, deadline, cancellation, drift 검사와 종료 확인으로 실패를 처리한다. 종료가 불확실하면 copy를 보존하고 startup을 막는다.",
+    "N5": "고정된 import/acquisition/startup graph 검토, build/package inventory, 실제 Native probe와 독립 final code review가 필요하다. 현재 source 검토는 실행 성공의 증거가 아니다."
+  },
+  "accepted_support_limits": [
+    "ledger 검사는 전체 SQLite schema, index, constraint 또는 모든 데이터의 무결성을 보장하지 않는다.",
+    "KV가 있거나 legacy 상태, partial transcript, bounds 초과가 있으면 정상적인 과거 store도 보수적으로 거부할 수 있다.",
+    "공개 producer로 만들 수 없는 orphan 또는 ledger 손상 사례는 unit/closed fixture 증거와 구분해야 한다. 실제 public API 생성 증거로 표현할 수 없다.",
+    "import와 service acquisition은 다르다. addon 차단 변수와 제한된 service context는 OS sandbox 증거가 아니다.",
+    "server startup은 기본 서비스와 migration 검사 경로를 구성한다. 모든 초기화가 무효과라는 주장은 허용되지 않는다.",
+    "provider 인증, private store, Windows, power-loss, hostile same-user 격리는 이번 검증 범위 밖이다."
+  ],
+  "execution": {
+    "inspection": "문서와 설치된 pinned 2.0.18 source를 읽었다. read-only review-input과 hash 계산을 수행했다.",
+    "tests_native_bun_node_ui_build_executed": false,
+    "files_or_ledger_written": false,
+    "production_admission_authorized": false
+  },
+  "next_dependency": "design2의 독립 initial design review. 그 review와 handoff가 통과한 뒤에만 inspector/host 구현을 시작한다."
+}

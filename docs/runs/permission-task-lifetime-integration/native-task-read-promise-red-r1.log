@@ -1,0 +1,32 @@
+✖ reentrant authority loss consumes a rejected Promise before failing closed (6.761ms)
+✖ /Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-task-read.test.mjs (3.325208ms)
+ℹ Error: Test "reentrant authority loss consumes a rejected Promise before failing closed" at apps/desktop-app/src/native-permission-task-read.test.mjs:425:1 generated asynchronous activity after the test ended. This activity created the error "Error: synthetic rejected authority" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+ℹ Error: Test "reentrant authority loss consumes a rejected Promise before failing closed" at apps/desktop-app/src/native-permission-task-read.test.mjs:425:1 generated asynchronous activity after the test ended. This activity created the error "Error: synthetic rejected authority" and would have caused the test to fail, but instead triggered an unhandledRejection event.
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 367.240708
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-task-read.test.mjs:425:1
+✖ reentrant authority loss consumes a rejected Promise before failing closed (6.761ms)
+  Error: synthetic rejected authority
+      at Object.check (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-task-read.test.mjs:437:33)
+      at Object.check (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-task-read-sZF77j/native-permission-leases.mjs:309:35)
+      at Object.check (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-task-read-sZF77j/host/native-descriptor-read-resource.mjs:111:33)
+      at check (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-task-read-sZF77j/host/task-read-scripted-kernel.mjs:12:77)
+      at Object.list (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-task-read-sZF77j/host/task-read-scripted-kernel.mjs:18:14)
+      at invoke (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-task-read-sZF77j/host/native-descriptor-read-resource.mjs:126:32)
+      at Object.list (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-task-read-sZF77j/host/native-descriptor-read-resource.mjs:147:16)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-task-read.test.mjs:445:32
+      at getActual (node:assert:580:5)
+      at strict.throws (node:assert:728:24)
+
+test at apps/desktop-app/src/native-permission-task-read.test.mjs:24:1
+✖ /Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-task-read.test.mjs (3.325208ms)
+  [Error: ENOTEMPTY: directory not empty, rmdir '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-task-read-sZF77j'] { errno: -66, code: 'ENOTEMPTY', syscall: 'rmdir', path: '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-task-read-sZF77j' }

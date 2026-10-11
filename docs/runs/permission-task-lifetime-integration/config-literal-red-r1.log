@@ -1,0 +1,68 @@
+✖ literal config env token cannot replace the checked resource path (5.731417ms)
+✖ literal config file token cannot construct the original file continuation (3.244166ms)
+✖ literal config keeps mixed tokens, Unicode, quotes and backslashes byte-exact after decode (2.929167ms)
+✔ ordinary config serialization and closed deny policy remain unchanged (3.175833ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 258.2915
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-skills-config.test.mjs:51:1
+✖ literal config env token cannot replace the checked resource path (5.731417ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      instructions: [],
+      mcp: {},
+      permissions: [
+        {
+  ...
+          },
+  +       package: '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-config-literal-test-mnzEgB/SYNTHETIC_REPLACEMENT/opencode/event-host/darwin-arm64/builtins/workbench-skills'
+  -       package: '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-config-literal-test-mnzEgB/{env:OMOC_LITERAL}/opencode/event-host/darwin-arm64/builtins/workbench-skills'
+        }
+      ],
+      providers: {},
+      share: 'disabled',
+      update: 'disable'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-config.test.mjs:55:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { plugins: [ [Object] ], mcp: {}, providers: {}, instructions: [], permissions: [ [Object] ], update: 'disable', share: 'disabled' },
+    expected: { plugins: [ [Object] ], mcp: {}, providers: {}, instructions: [], permissions: [ [Object] ], update: 'disable', share: 'disabled' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-skills-config.test.mjs:58:1
+✖ literal config file token cannot construct the original file continuation (3.244166ms)
+  Error: synthetic_file_factory_reached
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-config.test.mjs:33:19
+      at eval (eval at <anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-config.test.mjs:28:22), <anonymous>:7:17)
+      at Generator.next (<anonymous>)
+      at decodeThroughOriginal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-config.test.mjs:35:82)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-config.test.mjs:62:20)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/native-skills-config.test.mjs:65:1
+✖ literal config keeps mixed tokens, Unicode, quotes and backslashes byte-exact after decode (2.929167ms)
+  Error: synthetic_file_factory_reached
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-config.test.mjs:33:19
+      at eval (eval at <anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-config.test.mjs:28:22), <anonymous>:7:17)
+      at Generator.next (<anonymous>)
+      at decodeThroughOriginal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-config.test.mjs:35:82)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-config.test.mjs:69:20)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

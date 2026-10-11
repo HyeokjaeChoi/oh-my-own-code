@@ -1,0 +1,190 @@
+{
+  "schema_version": 2,
+  "status": "completed",
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "0a54fd1c03c739af5b27d9c630016cfde69490353f8503f55779275dd7d82223",
+    "environment_sha256": "c8a7382e511aced11b3dafdea0c323ad164a97c03b3f6e2f392b7b230d2c127a",
+    "gate": "code",
+    "plan_sha256": "af84a80b8f44508239cad1986fb1f3c1d716d9c5d61fae43436da422fe8de02d",
+    "schema_version": 2,
+    "source_sha256": "1d24e9a62d94c161c01a45f835b9887142633a2a984007d51b1496938c8240c5",
+    "verification_sha256": "1a53872304b107efded2fb22fcf8e94727569190903e4b1af932525230c8f35c",
+    "work_class_sha256": "201d17492a4cefb963a6b8a5a34a68dfbb1017ac43c833a6fd460efa9ffcd387"
+  },
+  "verdict": "changes_requested",
+  "summary": "Plan revision8과 design version7을 기준으로 spec-compliance와 code-quality 검토를 완료했습니다. 변경된 26개 파일의 현재 해시가 source-freeze와 일치합니다. 기록된 9개 검사는 PASS입니다. 그러나 원본 Git config 복사 금지와 observation 신뢰 상태 고정에서 결함 2개를 확인했습니다.",
+  "open_findings": [
+    {
+      "id": "CODE-GIT-R1-01",
+      "severity": "P1",
+      "title": "대소문자가 다른 Git marker가 원본 config 복사 금지를 우회합니다",
+      "path": "apps/desktop-app/src/host/workbench-git.mjs",
+      "line": 1149,
+      "related_locations": [
+        {
+          "path": "apps/desktop-app/src/host/workbench-git.mjs",
+          "line": 1159
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git.mjs",
+          "line": 1167
+        },
+        {
+          "path": "docs/runs/git-review-observation/design.md",
+          "line": 9
+        }
+      ],
+      "trigger": "대소문자를 구분하지 않는 Darwin 파일 시스템에서 하위 저장소의 marker 이름이 nested/.GIT 또는 nested/.GiT이고, 그 안의 config에 credential이 있는 경우입니다.",
+      "impact": "walker는 이 디렉터리를 일반 source로 처리합니다. 원본 nested Git config가 private worktree에 파일로 복사됩니다. 이후 observation이 거부되더라도 이미 복사가 발생합니다. 복사 후 host crash 또는 종료 미확인이 발생하면 credential이 포함된 config가 남을 수 있습니다. 이는 일반 source 복사본의 잔존 허용과 별개인 원본 Git config 영속화 금지 위반입니다.",
+      "evidence": [
+        "1149행은 name === '.git'만 검사합니다. validWorkspaceFilePath는 '.GIT'를 허용합니다.",
+        "1159행부터 일반 디렉터리로 재귀 탐색하고, 1167행부터 내부 파일의 원본 bytes를 private worktree에 씁니다. 하위 저장소 marker를 다시 검사하는 guard는 없습니다.",
+        "기존 git-r2 synthetic fixture의 reject-nested-git/nested에서 '.git', '.GIT', '.GiT'를 읽기만 하여 확인했습니다. 세 경로의 device는 16777234, inode는 18793960으로 같았습니다.",
+        "기존 nested-git probe는 소문자 '.git'만 생성합니다. 대소문자 변형은 검사하지 않습니다.",
+        "이 결함은 정적 호출 경로로 확인했습니다. 변형 입력으로 production reader를 새로 실행하지 않았습니다."
+      ],
+      "smallest_correction": "복사 전에 Git marker의 대소문자 변형도 보수적으로 거부하세요. 선택한 최상위 metadata 제외 규칙과 하위 marker 거부 규칙에 같은 판정을 적용하세요. '.GIT'와 '.GiT' 안에 config canary를 둔 회귀 검사를 추가하고, nested config bytes가 scratch에 한 번도 기록되지 않는지 확인하세요."
+    },
+    {
+      "id": "CODE-GIT-R1-02",
+      "severity": "P2",
+      "title": "보관한 observation이 원래 신뢰 상태에 고정되지 않습니다",
+      "path": "apps/desktop-app/src/host/workbench-git.mjs",
+      "line": 1584,
+      "related_locations": [
+        {
+          "path": "apps/desktop-app/src/host/workbench-git.mjs",
+          "line": 1615
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 1035
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 1052
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 3617
+        }
+      ],
+      "trigger": "같은 sender가 untrusted workspace의 observation ID를 받은 뒤, session.create 등으로 trusted와 trustRevision이 바뀝니다. 원본 저장소 bytes가 그대로이고 TTL 안일 때, 같은 sender가 이전 ID로 git.diff.read를 직접 요청하는 경우입니다.",
+      "impact": "이전 신뢰 상태에서 만든 observation이 새 신뢰 상태에서도 사용될 수 있습니다. service는 결과에 새 요청의 revision을 붙입니다. 정상 renderer는 자체 guard로 이 사용을 막지만, host는 계약에서 요구한 observation 폐기를 강제하지 않습니다. 이 결함은 쓰기 권한 상승을 뜻하지 않습니다.",
+      "evidence": [
+        "service의 original은 요청마다 현재 trusted, trustRevision, generation, revision을 새로 캡처합니다. verify는 해당 요청 도중의 변경만 검사합니다.",
+        "1035행의 reader options에는 runtimeEpoch, sender, signal, check만 있습니다. 원래 observation의 신뢰 상태를 다음 요청과 비교할 값은 전달하지 않습니다.",
+        "1584행의 observation record에는 trusted와 trustRevision이 없습니다. 1615행의 재사용 검사는 sender, epoch, workspace ID, root만 비교합니다.",
+        "저장소 bytes가 같으면 fingerprint 비교도 통과할 수 있습니다. 원래 신뢰 상태와의 비교 없이 detail을 만들고, service 1052행에서 현재 요청 revision을 붙입니다.",
+        "synthetic fixture는 trusted와 trustRevision을 record에 보관하고 재사용 때 비교합니다. 해당 fixture 검사는 production reader의 이 누락을 검증하지 못합니다.",
+        "정적 호출 경로로 확인했습니다. 신뢰 상태 변경 시나리오를 새로 실행하지 않았습니다."
+      ],
+      "smallest_correction": "service가 만든 불변 authority 값에 trusted와 trustRevision을 포함하세요. reader가 observation과 함께 이를 보관하고, diff 시작 전에 현재 authority와 비교하도록 하세요. 값이 바뀌면 이전 ID를 폐기하고 새 status 관찰을 요구하세요. 실제 service 경로에서 신뢰 상태 변경 후 이전 ID가 새 reader IO 전에 거부되는 회귀 검사를 추가하세요."
+    }
+  ],
+  "inspected_scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "run": "git-review-observation",
+    "plan_revision": 8,
+    "design_version": 7,
+    "range_authority": "prechange-inventory.json 및 run.json baseline과 source-freeze-r1.json changed_paths를 대조했습니다. Git diff를 전체 범위 근거로 사용하지 않았습니다.",
+    "baseline_validation": "기존 파일 17개 중 16개는 보존된 prechange-source bytes의 SHA256이 baseline과 일치했습니다. workbench-admission.mjs는 세 변경을 메모리에서 역적용한 bytes의 SHA256이 baseline f4c3a714af9a57c2e58b39953f80af06022f29e04cd97722cd2388c5e754340c와 일치했습니다. 신규 파일은 9개입니다.",
+    "changed_paths": [
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+      "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+      "apps/desktop-app/scripts/git-review-probe.mjs",
+      "apps/desktop-app/scripts/run-evidence.mjs",
+      "apps/desktop-app/scripts/run-evidence.test.mjs",
+      "apps/desktop-app/src/desktop-bridge.d.ts",
+      "apps/desktop-app/src/git-review.test.mjs",
+      "apps/desktop-app/src/host/workbench-admission.mjs",
+      "apps/desktop-app/src/host/workbench-git.mjs",
+      "apps/desktop-app/src/host/workbench-git.test.mjs",
+      "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+      "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+      "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+      "apps/desktop-app/src/renderer/features/git-review/index.tsx",
+      "apps/desktop-app/src/renderer/features/git-review/review.module.css",
+      "apps/desktop-app/src/renderer/shared/api/index.ts",
+      "apps/desktop-app/src/renderer/shared/git-review/index.d.mts",
+      "apps/desktop-app/src/renderer/shared/git-review/index.mjs",
+      "apps/desktop-app/src/renderer/shared/git-review/index.ts",
+      "apps/desktop-app/src/renderer/shared/transport/index.ts",
+      "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+      "apps/desktop-app/src/workbench-contract.mjs",
+      "apps/desktop-app/src/workbench-service.mjs",
+      "apps/desktop-app/src/workbench-service.test.mjs",
+      "apps/desktop-app/src/workbench-store.test.mjs"
+    ],
+    "additional_callers": [
+      "apps/desktop-app/src/main.mjs",
+      "apps/desktop-app/src/host/workbench-file-edit.mjs",
+      "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs"
+    ],
+    "passes": {
+      "spec_compliance": "G1–G4와 design version7을 구현 및 검사 근거에 대조했습니다. 위 두 finding은 observation authority와 원본 config 보호 요구에 해당합니다.",
+      "code_quality": "고정 CLT executor, clean environment, config stdin 처리, private index와 source 복사, manifest 검사, Git 비교 의미, DTO 제한, sender와 취소 처리, close/drain, Zustand generation과 ABA 처리, 기존 기능 연결을 검토했습니다."
+    }
+  },
+  "checks": [
+    {
+      "name": "current_source_binding",
+      "result": "pass",
+      "method": "읽기 전용 SHA256 대조",
+      "details": "검토 시작과 종료 때 26개 changed source 모두 source-freeze와 일치했습니다. plan.md와 design.md 해시도 packet binding과 일치했습니다."
+    },
+    {
+      "name": "recorded_nine_checks",
+      "result": "pass",
+      "method": "actual-checks-r1.json 검사 기록 검토",
+      "details": "files, build, typecheck, boundaries, bundle, lint, format, git-probe, hidden-ui 모두 exit_code 0이며 같은 source/environment binding을 사용합니다. 이 reviewer는 검사를 재실행하지 않았습니다."
+    },
+    {
+      "name": "production_git_probe_evidence",
+      "result": "pass_with_coverage_limits",
+      "method": "git-r2/report.json과 probe source 대조",
+      "details": "49개 기록된 case가 PASS입니다. sourceHashes와 sourceHashesAfter, executableBefore와 executableAfter가 일치합니다. 실제 executor는 direct CLT Git 2.50.1 Apple Git-155입니다. 대소문자 marker 변형과 observation의 요청 간 신뢰 상태 변경은 포함하지 않습니다."
+    },
+    {
+      "name": "temporary_parent_guard",
+      "result": "pass",
+      "method": "구현 및 회귀 테스트 정적 검토",
+      "details": "worktree와 git/common layout을 mkdtemp 및 spawn 전에 읽습니다. 원본 tree 내부의 temporary parent를 거부합니다. root, descendant, external git/common 경우의 테스트는 zero-mkdtemp, zero-spawn 및 원본 inventory 보존을 확인합니다."
+    },
+    {
+      "name": "child_lifecycle_and_service_settlement",
+      "result": "pass_with_limits",
+      "method": "구현, 테스트 및 기존 probe 근거 검토",
+      "details": "실제 close event, TERM/KILL, timeout, 정확한 취소, 종료 미확인 시 namespace 유지와 workspace 비활성화, asynchronous reader close를 기다리는 service drain을 확인했습니다. crash orphan settlement 근거로 해석하지 않았습니다."
+    },
+    {
+      "name": "hidden_ui_failure_and_current_evidence",
+      "result": "pass",
+      "method": "보존된 hidden-r1과 현재 hidden-r2 근거 검토",
+      "details": "hidden-r1 manifest는 fail로 보존되어 있습니다. 현재 selector는 direct aria-live=polite status paragraph를 선택합니다. hidden-r2 manifest는 pass, exitCode 0, provenanceVerifiedAfter true이며 UI teardown은 exited true, code 0입니다. UI 근거를 production Git 안전성 증명으로 사용하지 않았습니다."
+    },
+    {
+      "name": "filesystem_case_alias",
+      "result": "confirmed",
+      "method": "기존 synthetic fixture의 읽기 전용 stat",
+      "details": "'.git', '.GIT', '.GiT' 경로가 같은 device/inode를 가리킵니다. 파일 생성, 이름 변경 또는 Git 실행은 하지 않았습니다."
+    }
+  ],
+  "limits": [
+    "파일, ledger, 보고서 또는 memory를 쓰지 않았습니다. 위임, build, test, Git process, 앱 runtime 또는 UI를 새로 실행하지 않았습니다.",
+    "두 finding의 실패 경로는 source inspection으로 확인했습니다. 새 실행 재현을 수행했다고 주장하지 않습니다.",
+    "기존 실행 근거는 Darwin의 synthetic repository 및 hidden renderer/preload 범위입니다. Windows, packaged Git, 실제 사용자 repository, provider, private store 또는 production Main 검증을 뜻하지 않습니다.",
+    "private ordinary-source 및 history 복사본은 host crash 또는 종료 미확인 후 남을 수 있습니다. secure erasure, OS isolation 또는 crash orphan settlement를 주장하지 않습니다.",
+    "검토 범위는 read-only status와 staged/unstaged/direct-base diff입니다. Git mutations, version-bound feedback, 전체 AC11 및 제품 완료는 포함하지 않습니다.",
+    "이 보고서는 독립 CODE 판단입니다. 수정 또는 구현 승인에 해당하지 않습니다. Main이 결과를 저장하고 등록해야 합니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11c2c-7804-7820-9b5f-f6a169581a1a",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "independent_invocation": true,
+    "report_only": true,
+    "persistence_owner": "Main"
+  }
+}

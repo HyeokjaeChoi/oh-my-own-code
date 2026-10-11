@@ -1,0 +1,119 @@
+✖ actual Main recordTask refuses a lost owner before storage invocation (1.170875ms)
+✖ actual Main recordTask rechecks ownership after original async storage completion (2.030292ms)
+✖ actual Main recordPermissionReconciled refuses a lost owner before storage invocation (0.208458ms)
+✖ actual Main recordPermissionReconciled rechecks ownership after original async storage completion (0.490459ms)
+✖ actual Main permissionProgress refuses a lost owner before storage invocation (0.152875ms)
+✖ actual Main permissionProgress rechecks ownership after original async storage completion (0.422667ms)
+✖ actual Main owner verifier throw revokes task authority without storage IO (0.513625ms)
+✔ actual Main original dispatch retains both fences and detached task result (0.443584ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 1
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 78.364292
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/main-task-owner-fence.test.mjs:30:3
+✖ actual Main recordTask refuses a lost owner before storage invocation (1.170875ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/main-task-owner-fence.test.mjs:32:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/main-task-owner-fence.test.mjs:37:3
+✖ actual Main recordTask rechecks ownership after original async storage completion (2.030292ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/main-task-owner-fence.test.mjs:43:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/main-task-owner-fence.test.mjs:30:3
+✖ actual Main recordPermissionReconciled refuses a lost owner before storage invocation (0.208458ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/main-task-owner-fence.test.mjs:32:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/main-task-owner-fence.test.mjs:37:3
+✖ actual Main recordPermissionReconciled rechecks ownership after original async storage completion (0.490459ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/main-task-owner-fence.test.mjs:43:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/main-task-owner-fence.test.mjs:30:3
+✖ actual Main permissionProgress refuses a lost owner before storage invocation (0.152875ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/main-task-owner-fence.test.mjs:32:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/main-task-owner-fence.test.mjs:37:3
+✖ actual Main permissionProgress rechecks ownership after original async storage completion (0.422667ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/main-task-owner-fence.test.mjs:43:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/main-task-owner-fence.test.mjs:49:1
+✖ actual Main owner verifier throw revokes task authority without storage IO (0.513625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/main-task-owner-fence.test.mjs:52:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

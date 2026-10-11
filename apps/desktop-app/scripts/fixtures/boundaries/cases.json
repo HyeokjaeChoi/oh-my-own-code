@@ -1,0 +1,354 @@
+[
+  {
+    "name": "public-alias",
+    "entry": "apps/desktop-app/src/renderer/features/send/public-alias.ts",
+    "issues": []
+  },
+  {
+    "name": "public-dynamic",
+    "entry": "apps/desktop-app/src/renderer/features/send/public-dynamic.ts",
+    "issues": []
+  },
+  {
+    "name": "public-type",
+    "entry": "apps/desktop-app/src/renderer/features/send/public-type.ts",
+    "issues": []
+  },
+  {
+    "name": "bridge-inline-type",
+    "entry": "apps/desktop-app/src/renderer/features/send/bridge-inline-type.ts",
+    "issues": []
+  },
+  {
+    "name": "nested-public-bypass",
+    "entry": "apps/desktop-app/src/renderer/features/send/nested-public-bypass.ts",
+    "issues": ["slice deep import bypasses its public API"]
+  },
+  {
+    "name": "deep-type",
+    "entry": "apps/desktop-app/src/renderer/features/send/deep-type.ts",
+    "issues": ["slice deep import bypasses its public API"]
+  },
+  {
+    "name": "deep-dynamic",
+    "entry": "apps/desktop-app/src/renderer/features/send/deep-dynamic.ts",
+    "issues": ["slice deep import bypasses its public API"]
+  },
+  {
+    "name": "sibling",
+    "entry": "apps/desktop-app/src/renderer/features/send/sibling.ts",
+    "issues": ["sibling slice import"]
+  },
+  {
+    "name": "upward",
+    "entry": "apps/desktop-app/src/renderer/entities/session/upward.ts",
+    "issues": ["upward renderer layer import"]
+  },
+  {
+    "name": "unknown-target",
+    "entry": "apps/desktop-app/src/renderer/features/send/unknown-target.ts",
+    "issues": ["unknown renderer layer or segment"]
+  },
+  {
+    "name": "unknown-source",
+    "entry": "apps/desktop-app/src/renderer/unknown/source.ts",
+    "issues": ["unknown renderer layer or segment"]
+  },
+  {
+    "name": "host-alias",
+    "entry": "apps/desktop-app/src/renderer/features/send/host-alias.ts",
+    "issues": ["renderer reaches host or another application"]
+  },
+  {
+    "name": "host-dynamic",
+    "entry": "apps/desktop-app/src/renderer/features/send/host-dynamic.ts",
+    "issues": ["renderer reaches host or another application"]
+  },
+  {
+    "name": "host-type",
+    "entry": "apps/desktop-app/src/renderer/features/send/host-type.ts",
+    "issues": ["renderer reaches host or another application"]
+  },
+  {
+    "name": "transitive-host",
+    "entry": "apps/desktop-app/src/renderer/features/send/transitive-host.ts",
+    "issues": ["renderer reaches host or another application"]
+  },
+  {
+    "name": "bridge-runtime",
+    "entry": "apps/desktop-app/src/renderer/features/send/bridge-runtime.ts",
+    "issues": ["bridge DTOs must be type-only"]
+  },
+  {
+    "name": "bridge-inline-export",
+    "entry": "apps/desktop-app/src/renderer/features/send/bridge-inline-export.ts",
+    "issues": []
+  },
+  {
+    "name": "node-type",
+    "entry": "apps/desktop-app/src/renderer/features/send/node-type.ts",
+    "issues": ["Node builtin in renderer graph"]
+  },
+  {
+    "name": "computed",
+    "entry": "apps/desktop-app/src/renderer/features/send/computed.ts",
+    "issues": ["computed import/require is not an inspectable dependency"]
+  },
+  {
+    "name": "commonjs",
+    "entry": "apps/desktop-app/src/renderer/features/send/commonjs.ts",
+    "issues": ["renderer reaches host or another application"]
+  },
+  {
+    "name": "import-equals",
+    "entry": "apps/desktop-app/src/renderer/features/send/import-equals.ts",
+    "issues": ["renderer reaches host or another application"]
+  },
+  {
+    "name": "query-loader",
+    "entry": "apps/desktop-app/src/renderer/features/send/query-loader.ts",
+    "issues": ["query-based module loader is not approved"]
+  },
+  {
+    "name": "package-public",
+    "entry": "apps/desktop-app/src/renderer/features/send/package-public.ts",
+    "issues": []
+  },
+  {
+    "name": "package-deep-alias",
+    "entry": "apps/desktop-app/src/renderer/features/send/package-deep-alias.ts",
+    "issues": ["stylesheet crosses ownership boundary"]
+  },
+  {
+    "name": "package-source-deep",
+    "entry": "apps/desktop-app/src/renderer/features/send/package-source-deep.ts",
+    "issues": ["shared package deep import bypasses its public API"]
+  },
+  {
+    "name": "shared-public",
+    "entry": "apps/desktop-app/src/renderer/features/send/shared-public.ts",
+    "issues": []
+  },
+  {
+    "name": "shared-private",
+    "entry": "apps/desktop-app/src/renderer/features/send/shared-private.ts",
+    "issues": ["shared segment deep import bypasses its public API"]
+  },
+  {
+    "name": "shared-baseline",
+    "entry": "apps/desktop-app/src/renderer/features/send/shared-baseline.ts",
+    "issues": []
+  },
+  {
+    "name": "shared-unregistered",
+    "entry": "apps/desktop-app/src/renderer/features/send/shared-unregistered.ts",
+    "issues": ["unknown renderer layer or segment"]
+  },
+  {
+    "name": "own-module",
+    "entry": "apps/desktop-app/src/renderer/features/send/own-module.ts",
+    "issues": []
+  },
+  {
+    "name": "sibling-module",
+    "entry": "apps/desktop-app/src/renderer/features/send/sibling-module.ts",
+    "issues": ["stylesheet crosses ownership boundary"]
+  },
+  {
+    "name": "downward-module",
+    "entry": "apps/desktop-app/src/renderer/features/send/downward-module.ts",
+    "issues": ["stylesheet crosses ownership boundary"]
+  },
+  {
+    "name": "non-module",
+    "entry": "apps/desktop-app/src/renderer/entities/session/non-module.ts",
+    "issues": ["component styles must use CSS Modules"]
+  },
+  {
+    "name": "global-feature",
+    "entry": "apps/desktop-app/src/renderer/features/send/global-feature.ts",
+    "issues": ["global styles may only be loaded by renderer bootstrap"]
+  },
+  {
+    "name": "css-import",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-import.ts",
+    "issues": ["stylesheet crosses ownership boundary"]
+  },
+  {
+    "name": "css-composes",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-composes.ts",
+    "issues": ["stylesheet crosses ownership boundary"]
+  },
+  {
+    "name": "css-host",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-host.ts",
+    "issues": ["unapproved stylesheet source"]
+  },
+  {
+    "name": "css-own-chain",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-own-chain.ts",
+    "issues": []
+  },
+  {
+    "name": "css-remote",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-remote.ts",
+    "issues": ["external stylesheet dependency is not approved"]
+  },
+  {
+    "name": "css-escaped",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-escaped.ts",
+    "issues": ["stylesheet crosses ownership boundary"]
+  },
+  {
+    "name": "css-transitive",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-transitive.ts",
+    "issues": ["unapproved stylesheet source"]
+  },
+  {
+    "name": "css-global-compose",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-global-compose.ts",
+    "issues": ["global CSS composition is not approved"]
+  },
+  {
+    "name": "package-own-style",
+    "entry": "packages/ui/src/tool-ui/link/own.ts",
+    "issues": []
+  },
+  {
+    "name": "package-sibling-style",
+    "entry": "packages/ui/src/tool-ui/link/sibling.ts",
+    "issues": ["stylesheet crosses ownership boundary"]
+  },
+  {
+    "name": "package-non-module",
+    "entry": "packages/ui/src/tool-ui/link/non-module.ts",
+    "issues": ["component styles must use CSS Modules"]
+  },
+  {
+    "name": "package-radix",
+    "entry": "packages/ui/src/primitives/dialog.ts",
+    "issues": []
+  },
+  {
+    "name": "feature-radix",
+    "entry": "apps/desktop-app/src/renderer/features/send/radix.ts",
+    "issues": ["radix-ui is restricted to UI primitive implementation"]
+  },
+  {
+    "name": "tool-ui-radix",
+    "entry": "packages/ui/src/tool-ui/link/radix.ts",
+    "issues": ["radix-ui is restricted to UI primitive implementation"]
+  },
+  {
+    "name": "model-zustand",
+    "entry": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "issues": []
+  },
+  {
+    "name": "feature-store",
+    "entry": "apps/desktop-app/src/renderer/features/send/store.ts",
+    "issues": ["zustand/vanilla is restricted to the workbench model"]
+  },
+  {
+    "name": "other-entity-store",
+    "entry": "apps/desktop-app/src/renderer/entities/session/store.ts",
+    "issues": ["zustand/vanilla is restricted to the workbench model"]
+  },
+  {
+    "name": "react-selector",
+    "entry": "apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx",
+    "issues": []
+  },
+  {
+    "name": "feature-selector",
+    "entry": "apps/desktop-app/src/renderer/features/send/selector.ts",
+    "issues": ["Zustand React selectors are restricted to store-selector.tsx"]
+  },
+  {
+    "name": "model-other-selector",
+    "entry": "apps/desktop-app/src/renderer/entities/workbench/model/other-selector.ts",
+    "issues": ["Zustand React selectors are restricted to store-selector.tsx"]
+  },
+  {
+    "name": "zustand-middleware",
+    "entry": "apps/desktop-app/src/renderer/entities/workbench/model/middleware.ts",
+    "issues": ["unapproved Zustand entry"]
+  },
+  {
+    "name": "contracts-ui",
+    "entry": "packages/contracts/src/ui.ts",
+    "issues": ["contracts cannot import UI"]
+  },
+  {
+    "name": "package-app",
+    "entry": "packages/ui/src/application.ts",
+    "issues": ["shared package imports application"]
+  },
+  {
+    "name": "package-bridge-type",
+    "entry": "packages/ui/src/bridge-type.ts",
+    "issues": ["shared package imports application"]
+  },
+  {
+    "name": "css-icss",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-icss.ts",
+    "issues": ["stylesheet crosses ownership boundary"]
+  },
+  {
+    "name": "css-value",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-value.ts",
+    "issues": ["stylesheet crosses ownership boundary"]
+  },
+  {
+    "name": "css-composes-escaped",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-composes-escaped.ts",
+    "issues": ["stylesheet crosses ownership boundary"]
+  },
+  {
+    "name": "css-comment",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-comment.ts",
+    "issues": []
+  },
+  {
+    "name": "css-cycle",
+    "entry": "apps/desktop-app/src/renderer/features/send/css-cycle.ts",
+    "issues": []
+  },
+  {
+    "name": "nested-primitives-style",
+    "entry": "packages/ui/src/primitives/dialog/implementation.ts",
+    "issues": ["stylesheet crosses ownership boundary"]
+  },
+  {
+    "name": "selector-create",
+    "project": "selector-create",
+    "entry": "apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx",
+    "issues": [
+      "store-selector.tsx may only import named useStore from Zustand React"
+    ]
+  },
+  {
+    "name": "selector-namespace",
+    "project": "selector-namespace",
+    "entry": "apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx",
+    "issues": [
+      "store-selector.tsx may only import named useStore from Zustand React"
+    ]
+  },
+  {
+    "name": "selector-dynamic",
+    "project": "selector-dynamic",
+    "entry": "apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx",
+    "issues": [
+      "store-selector.tsx may only import named useStore from Zustand React"
+    ]
+  },
+  {
+    "name": "selector-reexport",
+    "project": "selector-reexport",
+    "entry": "apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx",
+    "issues": [
+      "store-selector.tsx may only import named useStore from Zustand React"
+    ]
+  }
+]

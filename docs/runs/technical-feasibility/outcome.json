@@ -1,0 +1,78 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "AC-1": {
+      "status": "verified",
+      "artifacts": [
+        "docs/design/preparation.md"
+      ],
+      "checks": [
+        "approved-inputs"
+      ]
+    },
+    "AC-2": {
+      "status": "verified",
+      "artifacts": [
+        "docs/research/sdk-ui-feasibility.md",
+        "spikes/sdk-ui/package.json",
+        "spikes/sdk-ui/pnpm-lock.yaml"
+      ],
+      "checks": [
+        "compatibility"
+      ]
+    },
+    "AC-3": {
+      "status": "verified",
+      "artifacts": [
+        "docs/research/sdk-ui-feasibility.md",
+        "spikes/sdk-ui/verify.mjs",
+        "spikes/sdk-ui/probe.tsx",
+        "spikes/sdk-ui/client-probe.mjs"
+      ],
+      "checks": [
+        "compatibility"
+      ]
+    },
+    "AC-4": {
+      "status": "verified",
+      "artifacts": [
+        "docs/research/sdk-ui-feasibility.md",
+        "docs/design/preparation.md"
+      ],
+      "checks": [
+        "compatibility"
+      ]
+    }
+  },
+  "changed_paths": [
+    "docs/design/preparation.md",
+    "docs/research/sdk-ui-feasibility.md",
+    "spikes/sdk-ui/.gitignore",
+    "spikes/sdk-ui/client-probe.mjs",
+    "spikes/sdk-ui/lib/utils.ts",
+    "spikes/sdk-ui/package.json",
+    "spikes/sdk-ui/pnpm-lock.yaml",
+    "spikes/sdk-ui/pnpm-workspace.yaml",
+    "spikes/sdk-ui/probe.tsx",
+    "spikes/sdk-ui/tsconfig.json",
+    "spikes/sdk-ui/vendor/tool-ui/LICENSE.md",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/link-preview/README.md",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/link-preview/_adapter.tsx",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/link-preview/index.ts",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/link-preview/link-preview.tsx",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/link-preview/schema.ts",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/contract.ts",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/media/aspect-ratio.ts",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/media/format-utils.ts",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/media/index.ts",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/media/overlay-gradient.ts",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/media/safe-navigation.ts",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/media/sanitize-href.ts",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/parse.ts",
+    "spikes/sdk-ui/vendor/tool-ui/components/tool-ui/shared/schema.ts",
+    "spikes/sdk-ui/vendor/tool-ui/link-preview.registry.json",
+    "spikes/sdk-ui/vendor/tool-ui/provenance.json",
+    "spikes/sdk-ui/verify.mjs"
+  ],
+  "deleted_paths": []
+}

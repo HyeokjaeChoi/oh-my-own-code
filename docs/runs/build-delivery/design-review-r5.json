@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "design",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "source_sha256": "6609f8a53501a3d49d14a024509da030521eb1934a415ef4dfda7685e6b34492",
+    "verification_sha256": "1f2d5a710403531546c91e84b0af380a10bed71dfc2a7c7d83f9d77bdb291a2e",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "verdict": "changes_requested",
+  "summary": "The live synthetic preview is readable at 320×844, 390×844, 600×844, 900×844, and 1280×844, with no visible clipping. Spacing, restrained borders, status hierarchy, Korean conversation copy, and the inert link preview are sound. Source inspection shows loading, error, and malformed-result fallbacks. One static interface label and the browser title remain in English despite the Korean UI contract.",
+  "open_findings": [
+    {
+      "severity": "minor",
+      "location": "apps/workbench-web/src/pages/workbench/ui/WorkbenchPage.tsx:36; apps/workbench-web/index.html:7",
+      "finding": "“LOCAL WORKBENCH” and “Workbench · Synthetic preview” are static English interface labels. Localize them for the Korean UI. The fixture workspace name “Demo project” is sample data and is outside this finding."
+    }
+  ],
+  "tested_viewports": ["320×844", "390×844", "600×844", "900×844", "1280×844"],
+  "limits": "Live review used a synthetic fixture. Loading, error, and malformed-result states were inspected in source and existing test coverage, not reproduced visually in this review. Real SDK streaming, permission flows, dark mode, 200% zoom, and screen-reader output were not tested. The requested gpt-6-sol/high route and runtime identity were not independently verified.",
+  "provenance": {
+    "child_task_id": "/root/final_design_qa_r5",
+    "author_task_id": "/root",
+    "observed_runtime_identity": "unverified",
+    "report_only": true
+  }
+}

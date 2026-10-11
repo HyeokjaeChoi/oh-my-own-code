@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "run": "desktop-app-bootstrap",
+  "role": "plan_reviewer",
+  "phase": "review",
+  "plan_path": "docs/workplans/desktop-app-bootstrap/plan.md",
+  "contract_path": "docs/workplans/desktop-app-bootstrap/contract.json",
+  "review_input": {
+    "contract_sha256": "c1f893854b5fbd46dcac1364b05af64e3c9215a9f1485aedb70193e6dbd1fccb",
+    "gate": "plan",
+    "plan_sha256": "4db129da031fff640269eee40a9da2b12c01b51daa8423448768eef6db0dbe78",
+    "schema_version": 2,
+    "source_sha256": "1a25c8ae2572a3b5e8b7237ab77f1c1224d14bdba03187376837859eca16a45a"
+  },
+  "scope": "Independently assess plan revision 21 and contract reconciliation of review finding CR3-4: whether the bootstrap acceptance can require absence of preview surface/subframe preload while preserving the approved product/design-set preview requirement for later; validate that packaged/development checks match observable behavior, and check no other scope drift.",
+  "constraints": [
+    "Do not modify files.",
+    "Do not run app, tests, or GUI.",
+    "Approved nine product/design documents and approval packet remain unchanged.",
+    "Windows and macOS runtime gaps remain explicit."
+  ]
+}

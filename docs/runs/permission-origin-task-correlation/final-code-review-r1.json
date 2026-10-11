@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "41d22c6047571894974424d4c550a1af6f284786866a5d466dbc086fa8202cfc",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "4402a327208124a5c0974207e16a522a3730d6f3e796fe97afbba9f0dc6e315b",
+    "schema_version": 2,
+    "source_sha256": "e6662db9e1a8964606ad07c19d027f29c04cabf6f5c1719aa27c6303f790e045",
+    "verification_sha256": "3c38445f6606b90cc402ddb0020565b270bbe4bd76ca0909f9ba01a142906c0e",
+    "work_class_sha256": "9f6c0255fbce21afd2c503ba434dab40f202cda7a6eaaa85c6ca717a0fb89243"
+  },
+  "verdict": "pass",
+  "summary": "독립적인 spec compliance와 code quality 검토에서 수정이 필요한 결함을 찾지 못했습니다. 검토 종료 시 전체 binding은 final-code-input-r1.json과 정확히 일치합니다. 소유 파일 11개와 상속 파일 3개의 freeze 해시, 기존 파일 9개의 보존 사본, canonical predecessor의 독립 승인 근거를 확인했습니다. 닫힌 입력과 detached 데이터, opaque handle 소유권, 중복·충돌 original 거부, 다른 scope 재사용 차단, origin 유지, batch 실패의 원자성, owner·constraint 일치, revoke·close와 용량 제한을 확인했습니다. Root만 version을 올릴 수 있고 기존 child는 최초 version을 유지합니다. 새 child는 현재 parent version을 사용합니다. 실제 Fiber 소유권과 종료 증거는 유지되며 origin revoke 후에도 실제 settlement가 가능합니다. Control admitLease는 allocation 전에 항상 held로 거부하고 기존 boot-hold original keys를 유지합니다. 저장된 Node 149/149, lint, format PASS는 현재 전체 소스에 재사용 가능합니다. 테스트 재실행, Native/Bun/UI/build/provider 실행·import, 위임, 파일·ledger 변경은 하지 않았습니다. Native fixture는 synthetic raw component용 수정이며 실행하지 않았습니다. source closure 50개에 대한 Node 근거는 Native 호환성, positive RPC, activation, provider 또는 전체 F09 완료를 증명하지 않습니다. 이 component는 bookkeeping 전용입니다. 해시는 완전한 preview authority, journal 또는 Main admission을 증명하지 않으며 향후 Native 통합 gate가 남아 있습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a121a7-8ffc-7e73-aa62-5d0b07197e68"
+  }
+}

@@ -1,0 +1,26 @@
+✖ scripted: Native files view preserves original identity for whole reread (7.235583ms)
+✖ scripted: Native files scope and range refuse before actual read (3.496917ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 88.072208
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs:24:1
+✖ scripted: Native files view preserves original identity for whole reread (7.235583ms)
+  TypeError [Error]: f.api.createNativeDescriptorFiles is not a function
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs:27:23)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs:43:1
+✖ scripted: Native files scope and range refuse before actual read (3.496917ms)
+  TypeError [Error]: f.api.createNativeDescriptorFiles is not a function
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs:46:23)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

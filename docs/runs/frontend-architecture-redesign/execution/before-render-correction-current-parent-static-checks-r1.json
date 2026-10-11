@@ -1,0 +1,99 @@
+{
+  "unit": {
+    "argv": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "apps/desktop-app/src/workbench-service.test.mjs",
+      "apps/desktop-app/src/workbench-contract.test.mjs",
+      "apps/desktop-app/src/workbench-projection.test.mjs",
+      "apps/desktop-app/src/sidecar-supervisor.test.mjs",
+      "apps/desktop-app/src/renderer-admission.test.mjs",
+      "apps/desktop-app/src/ephemeral-profile.test.mjs",
+      "apps/desktop-app/src/workbench-session.test.mjs",
+      "apps/desktop-app/src/session-navigation.test.mjs"
+    ],
+    "contract_sha256": "8f38de5405ead22bb06d76bc1e23272dc5f7ed9c7474d8c0c3a38f0a43c7d8c4",
+    "cwd": ".",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "d94e9d2d07e6f7b215fa79301836087b70d24500e0da7f233ae6887c321d7560",
+    "recorded_at": "2026-10-07T22:42:56+00:00",
+    "scope": "Session lifecycle, receipt safety, diagnostics redaction, navigation projection and existing core regressions",
+    "source_sha256": "f48537341385759b230d48129447e850051d03642964a9bbb10dd111b2314a5e",
+    "stderr": "",
+    "stdout": "(node:10066) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\u2714 confines Electron profile, session, log, and crash paths to removable temp storage (4.329291ms)\n\u2714 native Documents/appData resolution and sync canonical kernel precede ephemeral override (4.221417ms)\n(node:10067) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\u2714 admits only the allowed top-level frame of the main web contents (0.424417ms)\n\u2714 accepts no arguments and rejects malformed IPC payloads (0.0845ms)\n(node:10068) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\u2714 search, ownership, archive filter and stable pinned ordering compose without mutating authority (0.740209ms)\n\u2714 selection stays by ID and successors cannot cross workspace or select archives (0.100041ms)\n\u2714 rename rejects blank, controls and oversized titles (0.078ms)\n\u2714 confirmed removed IDs cannot be retained or picked from a stale successor list (0.059584ms)\n(node:10069) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\u2714 accepts only a loopback HTTP endpoint with a server password [REDACTED]\n\u2714 creates a minimal sidecar environment without inherited credentials (0.148708ms)\n\u2714 redirects Windows-native profiles and app-data paths into the owned root (0.149834ms)\n\u2714 resolves the same sidecar directory layout used by development and packaged apps (0.126834ms)\n\u2714 maps Windows runtime naming to the pinned npm package name (0.060708ms)\n\u2714 starts an authenticated synthetic session and reaps only its owned child (58.642458ms)\n\u2714 rejects a sidecar port outside the valid TCP range before setup (0.390583ms)\n\u2714 reports disconnection when the exact owned sidecar exits after readiness (53.510208ms)\n\u2714 removes an owned root when setup fails before spawn (1.816667ms)\n\u2714 removes an owned root when the first setup directory fails (0.464208ms)\n\u2714 preserves and identifies the exact owned root when cleanup fails (2.248458ms)\n\u2714 rejects a sidecar identity mismatch and waits for the owned process before cleanup (74.411417ms)\n\u2714 aborts a stalled session request and reaps its sidecar (53.325083ms)\n\u2714 allows cleanup to be retried until the owned process exits (62.959375ms)\n\u2714 does not treat a process error as proof that an owned PID exited (63.154459ms)\n\u2714 returns a recoverable cleanup failure after exit and permits one retry (52.043584ms)\n\u2714 does not terminate a ready sidecar after ordinary runtime output (52.679375ms)\n\u2714 durable startup requires callable verified preflight before any setup or spawn (0.291083ms)\n\u2714 owned durable child stop preserves config/data/state/WAL, then clean owner release and controlled reacquire (88.39675ms)\n\u2714 kernel binds the same canonical root synchronously before readiness and profile override (0.180459ms)\n\u2714 OS adapter uses boot and microsecond birth identity, never PID absence or random tokens as exit proof (0.405166ms)\n\u2714 zero retained app keys cannot prove safe existing native inbox startup (0.11275ms)\n\u2714 event host database path is durably bound and incompatible manifest stays byte identical (5.695625ms)\n\u2714 legacy durable manifest is never silently changed to the event host database (3.129792ms)\n(node:10070) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\u2714 closed requests reject extra fields, cross-selection, malformed values and bulk permissions (2.342208ms)\n\u2714 portable folder names and exact ask policy (0.793291ms)\n\u2714 v5 snapshot clocks and closed recovery validate before publication (0.772833ms)\n(node:10071) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\u2714 mapping bounds content and removes duplicate IDs without executable content parts (9.699375ms)\n\u2714 tool completion comes from tool status, never an accepted request receipt (0.077917ms)\n\u2714 actual assistant-ui transcript dispatches validated LinkPreview and escaped fallback (670.48575ms)\n(node:10072) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\u2714 normal initial policy, real inbox receipt, transcript and duplicate fingerprint (12.636084ms)\n\u2714 untrusted import is deduplicated without SDK activation; native trust precedes creation (5.602125ms)\n\u2714 policy mismatch and read failure block sends; unavailable models skip provider execution (3.859166ms)\n\u2714 atomic busy state, pending duplicate and unknown outcome never resend (2.887333ms)\n\u2714 reject invalidates all pending permissions even if runtime list is stale (2.180792ms)\n\u2714 owned filesystem preview denies traversal, symlinks, sensitive, binary and oversize files (19.953584ms)\n\u2714 native cancellation, exclusive folder create, UUIDv7 fallback and registration-only removal (2.705375ms)\n\u2714 wrong IDs and unknown command never reach execution; listed command uses text API (3.497209ms)\n\u2714 transport rejection and service cancellation retain unknown execution receipts (4.65425ms)\n\u2714 snapshot reads coalesce and provider auth errors are fixed safe messages (1.694875ms)\n\u2714 request timeout is bounded and a timed-out prompt is never replayed (5007.563875ms)\n\u2714 selection-triggered policy drift is blocked immediately before dispatch (4.595708ms)\n\u2714 available empty inventories differ from unavailable inventories (3.038333ms)\n\u25b6 preserves runtime model resolution when the user leaves the default selected\n  \u2714 runtime-resolved (2.121792ms)\n  \u2714 model-a (1.432375ms)\n  \u2714 different-default (1.661334ms)\n\u2714 preserves runtime model resolution when the user leaves the default selected (5.563792ms)\n\u2714 explicit model selection uses the catalog mapping and is rechecked before send (3.054375ms)\n(node:10073) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n\u2714 lifecycle validates strict booleans, normalized titles and bounded request IDs (1.113625ms)\n\u2714 rename verification, pin, archive/read/restore and foreign ownership (14.64575ms)\n\u2714 workspace lock rejects existing mutations while native removal waits; cancellation is remembered (3.063291ms)\n\u25b6 active/inbox checks and post-dialog races block effects\n  \u2714 active (1.506959ms)\n  \u2714 inbox (2.07825ms)\n  \u2714 dialog (4.129542ms)\n\u2714 active/inbox checks and post-dialog races block effects (8.13775ms)\n\u2714 fork applies policy and title, links parent, and exact duplicates never fork again (3.919375ms)\n\u2714 typed empty-session fork rejection is a saved fixed failure and leaves parent idle (2.516ms)\n\u25b6 empty-session lookalikes and errors after fork remain unknown\n  \u2714 message only (1.694833ms)\n  \u2714 missing tag (1.642209ms)\n  \u2714 wrong tag (3.395541ms)\n  \u2714 wrong kind (2.799167ms)\n  \u2714 missing kind (1.32675ms)\n  \u2714 policy rejection (1.684166ms)\n\u2714 empty-session lookalikes and errors after fork remain unknown (13.042791ms)\n\u25b6 fork transport, identity, policy and title failures remain unknown and cannot replay\n  \u2714 transport (1.206125ms)\n  \u2714 identity (1.527417ms)\n  \u2714 policy (2.57775ms)\n  \u2714 title (1.281958ms)\n\u2714 fork transport, identity, policy and title failures remain unknown and cannot replay (6.905292ms)\n\u2714 authoritative descendants include unregistered children and empty-page pagination (1.126291ms)\n\u25b6 invalid/repeated/exhausted cursors and malformed pages fail closed\n  \u2714 repeated (1.313958ms)\n  \u2714 invalid (0.912875ms)\n  \u2714 exhausted (2.979833ms)\n  \u2714 malformed (1.134083ms)\n[truncated]",
+    "timed_out": false
+  },
+  "ui-typecheck": {
+    "argv": [
+      "pnpm",
+      "exec",
+      "tsc",
+      "-p",
+      "packages/ui/tsconfig.json",
+      "--noEmit"
+    ],
+    "contract_sha256": "8f38de5405ead22bb06d76bc1e23272dc5f7ed9c7474d8c0c3a38f0a43c7d8c4",
+    "cwd": ".",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "d94e9d2d07e6f7b215fa79301836087b70d24500e0da7f233ae6887c321d7560",
+    "recorded_at": "2026-10-07T22:43:48+00:00",
+    "scope": "Changed UI package source and scoped styles; runtime evidence remains separate.",
+    "source_sha256": "f48537341385759b230d48129447e850051d03642964a9bbb10dd111b2314a5e",
+    "stderr": "",
+    "stdout": "",
+    "timed_out": false
+  },
+  "ui-lint": {
+    "argv": [
+      "pnpm",
+      "exec",
+      "eslint",
+      "--config",
+      "packages/ui/eslint.config.mjs",
+      "packages/ui/src"
+    ],
+    "contract_sha256": "8f38de5405ead22bb06d76bc1e23272dc5f7ed9c7474d8c0c3a38f0a43c7d8c4",
+    "cwd": ".",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "d94e9d2d07e6f7b215fa79301836087b70d24500e0da7f233ae6887c321d7560",
+    "recorded_at": "2026-10-07T22:43:50+00:00",
+    "scope": "Changed UI package source and scoped styles; runtime evidence remains separate.",
+    "source_sha256": "f48537341385759b230d48129447e850051d03642964a9bbb10dd111b2314a5e",
+    "stderr": "",
+    "stdout": "",
+    "timed_out": false
+  },
+  "ui-format": {
+    "argv": [
+      "pnpm",
+      "exec",
+      "prettier",
+      "--check",
+      "packages/ui"
+    ],
+    "contract_sha256": "8f38de5405ead22bb06d76bc1e23272dc5f7ed9c7474d8c0c3a38f0a43c7d8c4",
+    "cwd": ".",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "d94e9d2d07e6f7b215fa79301836087b70d24500e0da7f233ae6887c321d7560",
+    "recorded_at": "2026-10-07T22:43:51+00:00",
+    "scope": "Changed UI package source and scoped styles; runtime evidence remains separate.",
+    "source_sha256": "f48537341385759b230d48129447e850051d03642964a9bbb10dd111b2314a5e",
+    "stderr": "",
+    "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+    "timed_out": false
+  }
+}

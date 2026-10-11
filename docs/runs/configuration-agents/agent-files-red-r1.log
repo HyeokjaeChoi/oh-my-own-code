@@ -1,0 +1,64 @@
+✖ agent reader lists only flat regular safe Markdown files without reading content (0.739875ms)
+✖ agent reads require existing ancestors and exact stable single-link leaf (0.6495ms)
+✖ agent listing retains every accepted leaf identity throughout later directory enumeration (0.23425ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 51.061708
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/workbench-agents.test.mjs:16:1
+✖ agent reader lists only flat regular safe Markdown files without reading content (0.739875ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-agents.mjs' imported from /Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-agents.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+      at moduleResolve (node:internal/modules/esm/resolve:879:10)
+      at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:708:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:728:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:766:56)
+      at #resolve (node:internal/modules/esm/loader:690:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:610:35)
+      at node:internal/modules/esm/loader:639:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:547:22) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-agents.mjs'
+  }
+
+test at apps/desktop-app/src/host/workbench-agents.test.mjs:42:1
+✖ agent reads require existing ancestors and exact stable single-link leaf (0.6495ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-agents.mjs' imported from /Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-agents.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+      at moduleResolve (node:internal/modules/esm/resolve:879:10)
+      at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:708:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:728:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:766:56)
+      at #resolve (node:internal/modules/esm/loader:690:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:610:35)
+      at node:internal/modules/esm/loader:639:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:547:22) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-agents.mjs'
+  }
+
+test at apps/desktop-app/src/host/workbench-agents.test.mjs:66:1
+✖ agent listing retains every accepted leaf identity throughout later directory enumeration (0.23425ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-agents.mjs' imported from /Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-agents.test.mjs
+      at finalizeResolution (node:internal/modules/esm/resolve:272:11)
+      at moduleResolve (node:internal/modules/esm/resolve:879:10)
+      at defaultResolve (node:internal/modules/esm/resolve:1006:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:708:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:728:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:766:56)
+      at #resolve (node:internal/modules/esm/loader:690:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:610:35)
+      at node:internal/modules/esm/loader:639:32
+      at TracingChannel.tracePromise (node:diagnostics_channel:547:22) {
+    code: 'ERR_MODULE_NOT_FOUND',
+    url: 'file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-agents.mjs'
+  }

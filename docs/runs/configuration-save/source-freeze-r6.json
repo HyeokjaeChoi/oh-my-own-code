@@ -1,0 +1,274 @@
+{
+  "schema_version": 1,
+  "source_sha256": "98f8c758f463783736f7b7503d01602717afbb875a6955b7c0dc0d5db9e978f6",
+  "changed_paths": [
+    "apps/desktop-app/scripts/configuration-save-probe.mjs",
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/fixtures/p7-storage-owner-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/p7-storage-probe.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/scripts/run-evidence.test.mjs",
+    "apps/desktop-app/scripts/stage-event-host.mjs",
+    "apps/desktop-app/scripts/stage-event-host.test.mjs",
+    "apps/desktop-app/src/configuration-draft.test.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/event-host-child.mjs",
+    "apps/desktop-app/src/event-host-protocol.mjs",
+    "apps/desktop-app/src/event-host-resources.mjs",
+    "apps/desktop-app/src/event-host-supervisor.mjs",
+    "apps/desktop-app/src/event-host-supervisor.test.mjs",
+    "apps/desktop-app/src/host/configuration-file-observation.mjs",
+    "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+    "apps/desktop-app/src/host/configuration-save-kernel.test.mjs",
+    "apps/desktop-app/src/host/storage-integration.test.mjs",
+    "apps/desktop-app/src/host/storage-journal.mjs",
+    "apps/desktop-app/src/host/storage-journal.test.mjs",
+    "apps/desktop-app/src/host/workbench-admission.mjs",
+    "apps/desktop-app/src/host/workbench-configuration-files.mjs",
+    "apps/desktop-app/src/host/workbench-files.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+    "apps/desktop-app/src/renderer/shared/api/index.ts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.d.mts",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs",
+    "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+    "apps/desktop-app/src/workbench-contract.mjs",
+    "apps/desktop-app/src/workbench-contract.test.mjs",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-service.test.mjs",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "deleted_paths": [],
+  "paths": {
+    "apps/desktop-app/scripts/configuration-save-probe.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "751f233610aa0ea81e381316715a7d92bba2ebaaa13e0134ee766194984cc91f"
+    },
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "a4202550626a841a04a90de5e0a4c2acc0019c9fc249bbc2ffe60eb0e6f14999"
+    },
+    "apps/desktop-app/scripts/fixtures/p7-storage-owner-host.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "27e76d7026203354338d51aee0aeaa4b238c7643b7c2eef25672438c2442daf7"
+    },
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "0fd627d8736c5c5c8e43b81015e1dde8da7b113e60bedd48c3dba907b4a59a0d"
+    },
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "93d153426de586eeac9f3b82a4056fdbcff587dd16e04dd19fbb9ec6ab836876"
+    },
+    "apps/desktop-app/scripts/p7-storage-probe.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "279ccd452fdfe1bb8d322ed483f2a2dbef70578de93d38390c39255a65869a98"
+    },
+    "apps/desktop-app/scripts/run-evidence.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "0d5569e6f2394448289b320eabc2a5f2cd4bb1f629a80e628922f37f4fed6b4b"
+    },
+    "apps/desktop-app/scripts/run-evidence.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "8eee4bbc5aa9d16820ef5fb057049d602409f01964ed0608160efb28e9c78ee1"
+    },
+    "apps/desktop-app/scripts/stage-event-host.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "5333d8d431099cb39e26fda0f149c6a20fda0813cea2151c6f7fd3fc85775ecf"
+    },
+    "apps/desktop-app/scripts/stage-event-host.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "4233235f5fc9e5dd1e1ec808513efdd745999504e18c5d6f4eb036df71ca5c05"
+    },
+    "apps/desktop-app/src/configuration-draft.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "a976a8d59ecdaf12eba8211276bf91a1db430211051166c173bfd81a953d8253"
+    },
+    "apps/desktop-app/src/desktop-bridge.d.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "633f69d7c3cbcfae250f2a1059344af55e41e793cc1891b1ed4439939417e652"
+    },
+    "apps/desktop-app/src/event-host-child.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "baeb84e477f56afba37bc575f6d598b3ea781a227215bc7d1e23f68ecb94f55e"
+    },
+    "apps/desktop-app/src/event-host-protocol.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "a985b0f8d866b70a96f6d38ee2a5326cf58b0fff168a662392e0e224843d3b61"
+    },
+    "apps/desktop-app/src/event-host-resources.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "e853f7806f5953f9d73fe08d817876549bb99428c36f528d13191b016fb3a438"
+    },
+    "apps/desktop-app/src/event-host-supervisor.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "36caf0cbf47055fe475ecfd1ba2de6adb4e17b7ef468f55026fad46cb0b77bc1"
+    },
+    "apps/desktop-app/src/event-host-supervisor.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "0169089775a2c4d0578a03da9e70adb53098939ae024e62e1529c46be7fdb9ec"
+    },
+    "apps/desktop-app/src/host/configuration-file-observation.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "9d8b9b8a9fa8c8b9e5f41daded538d8759d2aca79ea9969e42c72f981890596d"
+    },
+    "apps/desktop-app/src/host/configuration-save-kernel.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "7d115e0328509a6f90a22aefa40d9a51cd2f498ef9f7773d6d7b599585f8ec57"
+    },
+    "apps/desktop-app/src/host/configuration-save-kernel.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "a75f2cc988cdb2d88d09b6060e643044201918db630d0093beceea0659794360"
+    },
+    "apps/desktop-app/src/host/storage-integration.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "06b300e753f55901bec336b047fde1b509dc052dabcb7f3dbfb3888c6ccb737e"
+    },
+    "apps/desktop-app/src/host/storage-journal.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "faaad9a8eb53d19eafa00c1a473ec8b326982540da8639eae1f0c331ae34ea9d"
+    },
+    "apps/desktop-app/src/host/storage-journal.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "d2c415a0946c3f83e9154fe9572cd1a3b9780d446e88d315493f111861b790c3"
+    },
+    "apps/desktop-app/src/host/workbench-admission.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "baae44b2527438500f71530361417db535bc548dced24a44b7b8fecb49006683"
+    },
+    "apps/desktop-app/src/host/workbench-configuration-files.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "1afc3895d4256cb27ba8a4a6342dd98ac42c5bd72a5556b8d590a70ed34ce22b"
+    },
+    "apps/desktop-app/src/host/workbench-files.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "afa3cd76c465d68aac695ab204b38806e9ff1c69451e92830903378195e49cbf"
+    },
+    "apps/desktop-app/src/host/workbench-receipts.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "ee5d67aec729da976fac0a1fc45c7d87cb7ef190b491a713f826c872015e136f"
+    },
+    "apps/desktop-app/src/host/workspace-registry.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "ee9ebc30989c86269ae8ea078604fefa95d21e1b13bf6416d96853081303a9e9"
+    },
+    "apps/desktop-app/src/host/workspace-registry.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "b0622ba128d05380bf6f388ad665b4c31a86d1cbf05563418bcbac6160f9f940"
+    },
+    "apps/desktop-app/src/main.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "ff4435c62cbc2220d18576b809430fefc3f5fbf2e8414af742672584b864bf59"
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "6e74426d2120bda435bd2cdf8da4b11fe66a2500e07f7f0905a3fe23618d80fb"
+    },
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "ca67c02d74366a6039055ac54c06a02233b81c91b7e127c9fd21cdabd921313a"
+    },
+    "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "59db247350d59a8618b7d9a7bcfbd1454aeef671a84b77f9fa13a8da8fa8c844"
+    },
+    "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "4b0240dac7e9252aa9f861272600842ac7b18fda61cadcffd481a640e2f9fae2"
+    },
+    "apps/desktop-app/src/renderer/shared/api/index.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "65e7de54f74c22393cf7cd9274c50460b0ecff042528eba3f34c3034959af535"
+    },
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "f6316254dbb2a2ff437f7ecd7b0e339fb4e5e8009d92be41c566a691152aa326"
+    },
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.d.mts": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "259ad492a1aa4159af8eba9bb86faaf2de30c1a6298da6b7fed40b29eb46f5c3"
+    },
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157"
+    },
+    "apps/desktop-app/src/renderer/widgets/explorer/index.tsx": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "6f0cf2313a413f87a3befb1f9c0d0d0bf63fe81b412e7199a3b4afcde3ab36e6"
+    },
+    "apps/desktop-app/src/workbench-contract.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "58b6e06e67c42cdc14c04cb0effcc0ac712d92e486b6d7b0ea197912121efee6"
+    },
+    "apps/desktop-app/src/workbench-contract.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "f84303cd6d7d1c21dac9b2e161bd88a9ef427839a306c097aedf02feeea49694"
+    },
+    "apps/desktop-app/src/workbench-service.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "a60f2dd145e31af026e0ed95408faf659aa44d85de025354cfa5b684aa2e72e8"
+    },
+    "apps/desktop-app/src/workbench-service.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "8cbceb470c76eb0b989c5c02c749c503f9e1d7cf31e0635e310b330f4d2a34eb"
+    },
+    "apps/desktop-app/src/workbench-store.test.mjs": {
+      "type": "file",
+      "mode": 420,
+      "sha256": "4555e83a5c9b881c6c7939722581ebfecaaa28f86782e84cccc3902e846df8d8"
+    }
+  },
+  "authority": "Actual current included-file inventory versus run baseline, not Git diff. r5 independent reports preserved; only correction concerns need fresh final review."
+}

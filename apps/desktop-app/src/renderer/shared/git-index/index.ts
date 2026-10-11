@@ -1,0 +1,27 @@
+export {
+  GIT_INDEX_FEATURE,
+  GIT_INDEX_STEPS,
+  GIT_ABSENT_INDEX_DIGEST,
+  GIT_INDEX_LIMITS,
+  GIT_INDEX_REASONS,
+  GIT_INDEX_TARGET_FIELDS,
+  validGitIndexPaths,
+  validGitIndexTarget,
+  validateGitIndexRequest,
+  gitIndexTargetFromApply,
+  validateGitIndexPreview,
+  validGitIndexBackupId,
+  validateGitIndexMutationResult,
+  validateGitIndexReceiptResult,
+} from "./index.mjs";
+export type {
+  GitIndexAction,
+  GitIndexReason,
+  GitIndexTarget,
+  GitIndexEntry,
+  GitIndexPreviewRequest,
+  GitIndexApplyRequest,
+  WorkbenchGitIndexPreview,
+  WorkbenchGitIndexApply,
+  GitIndexReceiptResult,
+} from "./index.mjs";

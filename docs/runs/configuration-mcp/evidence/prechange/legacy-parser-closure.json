@@ -1,0 +1,74 @@
+{
+  "authority": "Actual pre-MCP parser closure bundled before implementation; existing installed esbuild, Node-only, no Native/provider",
+  "node": "v26.8.2",
+  "output": "docs/runs/configuration-mcp/evidence/prechange/legacy-storage-journal.bundle.mjs",
+  "sha256": "7337542c0bb7b49e447188c75b762227ea250d9302df97dfe2534ee2f0efcc92",
+  "inputs": {
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157",
+    "apps/desktop-app/src/host/workbench-instructions.mjs": "41f04ecf2b3ad00dad8a96ad8dcc99397b42179a05468620b6eae82e5cd40812",
+    "apps/desktop-app/src/workbench-contract.mjs": "1b730ac3ec6adf1daa613552240feb586507549fb9e7df03a528329b8d77533e",
+    "apps/desktop-app/src/host/storage-journal.mjs": "96003d08f4500175f14584bc4db8fb6c23778d692e9ffb3a3b6ca7f6736eb45e"
+  },
+  "outputs": {
+    "docs/runs/configuration-mcp/evidence/prechange/legacy-storage-journal.bundle.mjs": {
+      "imports": [
+        {
+          "path": "node:fs/promises",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:fs",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:crypto",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:path",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:util",
+          "kind": "import-statement",
+          "external": true
+        }
+      ],
+      "exports": [
+        "DISPATCH_STEPS",
+        "RESOURCE_RECOVERY_REASONS",
+        "STORAGE_LIMITS",
+        "STORE_RECOVERY_REASONS",
+        "instructionStep",
+        "openStorageJournal",
+        "storageError",
+        "validateInstructionCompletion",
+        "validateInstructionDispatch",
+        "validateJournalPayload",
+        "validateRegistryDelta",
+        "validateStorageIdentity",
+        "validateStorageReceipt"
+      ],
+      "entryPoint": "apps/desktop-app/src/host/storage-journal.mjs",
+      "inputs": {
+        "apps/desktop-app/src/host/storage-journal.mjs": {
+          "bytesInOutput": 35137
+        },
+        "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": {
+          "bytesInOutput": 211
+        },
+        "apps/desktop-app/src/host/workbench-instructions.mjs": {
+          "bytesInOutput": 1534
+        },
+        "apps/desktop-app/src/workbench-contract.mjs": {
+          "bytesInOutput": 2938
+        }
+      },
+      "bytes": 40484
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "status": "Main source checkpoint; worker overlay/graph still pending",
+  "plan_revision": 11,
+  "api": "same inventoryTool* methods, fixed14family metadataarrays17tools; no execution authority",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "bytes": 46631,
+      "sha256": "b171c9b9e05bb48ca820a822bf0e3be90de2d68a09cfc78867d3e44653fc0c84"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+      "bytes": 9523,
+      "sha256": "af1cdbc0eeabcb5767d5eba4bf42c6190ece9bc5a08455d8ec9eee95cbb4f73f"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-builtin-metadata.test.mjs",
+      "bytes": 15851,
+      "sha256": "2a16504f07b0ba20fe0013d45c78adf4d42c9ec7a1abfc7f79582d112edae66d"
+    }
+  ],
+  "checks": {
+    "red": "builtin-all-tools-metadata-red-r1.log:11pass9fail",
+    "green_combined": "builtin-all-tools-metadata-green-r1.log:75pass",
+    "green_expanded_concurrency": "builtin-all-tools-metadata-green-r2.log:20pass",
+    "eslint": "builtin-all-tools-metadata-eslint-r2.log actual exit0"
+  }
+}

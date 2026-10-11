@@ -1,0 +1,75 @@
+{
+  "schema_version": 2,
+  "report_type": "CODE",
+  "reviewed": {
+    "contract_sha256": "e9ce9f37a54eefa95d0d844414a9845fa60a134504ed0ee5cd2188478b54e3e4",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "420f5b81e718791df92f741dd85771c33448302a9c2a219b5e0f58f357606ed5",
+    "schema_version": 2,
+    "source_sha256": "3faa928ac42db98e4ac63ce797b4b5b8a43d4093d846c8592b71b7fd5eeb14aa",
+    "verification_sha256": "c0664ecb9d74c7ff6845e8dd7c0145f69308270a19875991c7b297eded054f85",
+    "work_class_sha256": "ba16432c80da2b47bb752cb44e06f079cb2f2912df38745c1f3378038adbe968"
+  },
+  "verdict": "changes_requested",
+  "summary": "요구사항 준수와 코드 품질을 별도로 검토했습니다. 명시적 읽기, Native ID·canonical root·durable original receipt 검증, 늦은 응답 차단, 무변경 경로와 renderer 수명 관리는 확인했습니다. requiredBaselineRules 배열의 추가 필드와 accessor를 거부하지 않는 DTO 검증 결함 1건이 남습니다.",
+  "open_findings": [
+    {
+      "id": "CODE-01",
+      "severity": "medium",
+      "path": "apps/desktop-app/src/renderer/shared/configuration-draft/permission-policy.mjs",
+      "line": 93,
+      "trigger": "정상 BASELINE 규칙 3개를 가진 requiredBaselineRules 배열에 enumerable secret 필드 또는 enumerable getter를 추가한 public DTO를 전달합니다.",
+      "evidence": [
+        "requiredBaselineRules에는 policyMatches만 적용합니다. sessionRules에 적용하는 validPermissionPolicyRules 검사가 없습니다.",
+        "renderer/shared/configuration-draft/policy.mjs:12의 policyMatches는 배열 길이와 각 규칙만 검사합니다. 배열 자체의 추가 own key를 거부하지 않습니다.",
+        "renderer/entities/workbench/model/controller.ts:2859와 model/store.ts:6780 부근은 검증 후 structuredClone을 호출합니다."
+      ],
+      "impact": "잘못된 DTO가 검증을 통과합니다. 추가 enumerable 데이터가 복사되거나 accessor가 복사 중 실행될 수 있습니다. 따라서 closed DTO와 accessor refusal 계약을 충족하지 못합니다. 현재 producer는 baseline 배열을 직접 생성하므로, 이 결함만으로 Native 비밀 노출이나 권한 상승이 발생한다고 판단하지는 않습니다.",
+      "correction": "policyMatches 전에 validPermissionPolicyRules(value.requiredBaselineRules)를 적용하십시오. 배열의 추가 문자열·Symbol 필드와 getter를 거부하고 getter 호출 횟수가 0인지 확인하는 focused regression test를 추가하십시오.",
+      "verification_status": "소스와 호출 경로에서 확인했습니다. 실행 재현과 테스트 재실행은 하지 않았습니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a12055-2eef-7d70-af61-611eddf65843",
+    "independent_review": true,
+    "implementation_authored": false,
+    "delegation": false,
+    "report_only": true
+  },
+  "inspected_evidence": {
+    "requirements": [
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-code-review/SKILL.md",
+      "docs/runs/permission-policy-observation/plan.md",
+      "docs/runs/permission-policy-observation/design.md",
+      "docs/runs/permission-policy-observation/contract.json",
+      "docs/runs/permission-policy-observation/final-reviewer-packet-r3.json",
+      "docs/runs/permission-policy-observation/final-code-input-r3.json"
+    ],
+    "source": "final-change.patch의 23개 변경 파일과 실제 helper, service, admission, transport, controller, store, UI 및 관련 호출 경로를 읽었습니다.",
+    "integrity": "diff-provenance-r3.json의 23개 current SHA가 실제 파일 및 source-freeze-r3.json과 일치합니다. 존재하는 모든 before_path의 SHA도 baseline SHA와 일치합니다.",
+    "baseline_origin": "fixture 관련 3개 원본은 수정 후 복원되었습니다. immutable baseline SHA 일치는 확인했습니다. 수정 전 capture로 판단하지 않았습니다.",
+    "verification": [
+      "verification-r3.json의 9개 check는 동일 source binding, exit_code 0, inputs_changed false입니다.",
+      "check-host-final-r3.log: 75 pass.",
+      "renderer-unit-r3.log: 1560 pass.",
+      "helper-r1.log: 15 pass.",
+      "durable-r2.log: 5 pass.",
+      "hidden report SHA가 verification-r3.json의 SHA와 일치합니다.",
+      "hidden sourceBuildProvenance의 before와 after가 일치합니다."
+    ],
+    "review_passes": {
+      "spec_compliance": "P1과 P2의 주요 동작을 확인했습니다. CODE-01은 closed response 검증의 예외입니다. P3는 별도 DESIGN 보고서로 판단했습니다.",
+      "code_quality": "durable receipt correlation, 읽기 취소·timeout, disconnect·generation 변경, epoch·root·trust·floor·ABA 격리, no-auto-IO와 기존 UI 통합을 검토했습니다."
+    }
+  },
+  "limitations": [
+    "일부 contracted check 로그는 잘려 있습니다. fixture 615 수치는 verification 기록에서 확인했으며, 해당 로그 끝의 합계를 직접 확인하지 못했습니다.",
+    "build, 전체 check, application runtime, provider와 foreground invocation을 실행하지 않았습니다.",
+    "Full F09/full18, mode/apply/remember/revoke 및 OS sandbox는 이 increment의 제공 범위가 아닙니다.",
+    "파일, 문서, 보고서와 ledger를 수정하지 않았습니다. run을 시작하거나 종료하지 않았습니다."
+  ]
+}

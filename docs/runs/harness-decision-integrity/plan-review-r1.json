@@ -1,0 +1,19 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "a598984bcfc76a3b5cf9f4872c12c8de281b215dc5c5a039d0e3a8b1ad701e98",
+    "contract_sha256": "27228ba1705405ad5f762b616d980734a1224a95c1d2d3ea8b8d31724ae9d189",
+    "source_sha256": "0c9bb68bff90c67784eef89dd5e42f0946e62e5b86f1c78e20d164bbfa3bb501"
+  },
+  "verdict": "changes_requested",
+  "summary": "The bounded harness change addresses the right failure modes and preserves compatibility by making the register optional. Two decisions need definition before implementation: exact state and phase semantics for the gate, and the order of desktop shell selection versus final document review. The test plan also needs to exercise dispatch with a changed decision state.",
+  "open_findings": [
+    {"id":"HDI-01","priority":"P1","title":"Define the decision-state and per-phase blocking rules","description":"The plan did not define valid states, what distinguishes assumptions from explicit delegation, whether each phase blocks, or what evidence permits resolution.","required_correction":"Define entry shape and state transitions, require resolution authority, preserve omitted-register compatibility, test every phase, and state the gate cannot find decisions that are omitted."},
+    {"id":"HDI-02","priority":"P1","title":"Register the open shell decision and sequence its review before final architecture handoff","description":"The plan did not put shell selection in the desktop decision register and scheduled final document reviews before the shell comparison/decision.","required_correction":"Record shell as open/implementation-blocking; compare and review ADR, then reconcile dependent documents and refresh reviews/handoffs."},
+    {"id":"HDI-03","priority":"P2","title":"Test dispatch recheck and stale packet behavior","description":"Tests did not cover a decision change between packet preparation and dispatch.","required_correction":"Add tests that stale/changed packets cannot dispatch and current resolved packets can."}
+  ],
+  "validation":"Read-only plan/harness review; no source changes or runtime checks.",
+  "provenance":{"child_task_id":"/root/harness_plan_review","author_task_id":"/root","review_mode":"Fresh independent read-only plan review","runtime_executed":false,"tests_executed":false,"ledger_modified":false,"files_modified":false}
+}

@@ -1,0 +1,13 @@
+Feedback evidence failed in file-protected: Error: expect(locator).toBeEnabled() failed
+
+Locator:  locator('[data-workspace-file-editor="true"]').locator('[data-workspace-file-open]')
+Expected: enabled
+Received: disabled
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeEnabled" locator('[data-workspace-file-editor="true"]').locator('[data-workspace-file-open]') with timeout 5000ms
+  - waiting for locator('[data-workspace-file-editor="true"]').locator('[data-workspace-file-open]')
+    14 × locator resolved to <button disabled data-workspace-file-open="true">편집용으로 열기</button>
+       - unexpected value "disabled"
+

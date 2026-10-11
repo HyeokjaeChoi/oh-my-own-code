@@ -1,0 +1,66 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "607872e9a6149806f9933528426a44b75aa843f5ed14276244d288ac27f72c14",
+    "contract_sha256": "6bd0d6fde9ac2baf611dd37edebdc2107d1f77bf9c7e0cf21edccf373275ee6a",
+    "source_sha256": "e9fb6e590350972c6d23515bd1bd1a3ea57ba8d1dcd5e73923bcc62ac42cd095"
+  },
+  "verdict": "changes_requested",
+  "summary": "Revision 1 correctly prohibits real SDK execution and supports a bounded local preflight, but the canary design does not yet guarantee its declared safe failure scope or establish all advertised controls. Revise the network probe, required operation/evidence matrix, pre-execution review order, and NO-RUN completion branch before implementation/execution proceeds. This review does not approve any real host execution.",
+  "open_findings": [
+    {
+      "id": "HPI-PR1-01",
+      "priority": "P1",
+      "title": "The reserved-IP negative probe can emit external traffic when the control under test fails",
+      "location": "docs/runs/host-probe-isolation/plan.md:19,47; contract.json checks.isolation-canaries.scope",
+      "impact": "A documentation address is not an independently enforced local-only destination. Attempting a connection can send packets through the host network stack if the sandbox is absent, misconfigured, or bypassed. Therefore the test's failure branch violates the stated no-external-request scope before it can report NO-RUN. A refusal, timeout, or unreachable error also does not establish sandbox denial.",
+      "required_correction": "Remove routed destination attempts from this preflight. Use only demonstrably local synthetic socket operations with no application payload and an explicit safe unexpected-success cleanup path, and narrow the reported evidence to those operations. If general egress denial requires a separate independently established containment mechanism that is unavailable here, mark that control unverified and the future host NO-RUN. Do not infer external egress enforcement from documentation-address routing failure."
+    },
+    {
+      "id": "HPI-PR1-02",
+      "priority": "P1",
+      "title": "Four unnamed negative canaries are insufficiently specified for the advertised boundary",
+      "location": "docs/runs/host-probe-isolation/plan.md:19,31-34,48",
+      "impact": "The plan claims denied filesystem reads and writes, socket/listener absence, and child execution, but it does not require separate attributable checks for these operations. A single filesystem failure cannot prove both read and write controls; a connection failure cannot prove bind/listen denial; and a spawn failure cannot by itself demonstrate the intended fork/exec distinction. Missing files, ordinary permissions, unused ports, and an invalid child executable could yield false positives. Unexpected successful child/socket operations have no specified safe ownership/termination design.",
+      "required_correction": "Specify a bounded required-operation matrix before implementation: independently accessible synthetic denied-read and denied-write targets outside the child's allowed roots but inside the parent's owned fixture; allowed input read and scratch write; each socket operation/family actually claimed, including listener creation if that claim remains; and a valid harmless exact-runtime child attempt. Require attributable sandbox-denial outcomes rather than generic failure and separate launcher-startup permission from subsequent child-creation denial. Define independently bounded cleanup for unexpected child/socket success and timeout/output exhaustion. Narrow unsupported claims and return NO-RUN for any control needed by the future host that cannot be exercised safely."
+    },
+    {
+      "id": "HPI-PR1-03",
+      "priority": "P2",
+      "title": "The completion rule excludes the intended unsupported-platform NO-RUN outcome",
+      "location": "docs/runs/host-probe-isolation/plan.md:21,33,58; contract.json HPI-4 and required check",
+      "impact": "Missing sandbox support, a denied positive control, or a failed negative control must produce NO-RUN, yet completion requires isolation-canaries to pass and every denial criterion to be satisfied. This conflates successful investigation with successful containment and leaves the valid unsupported-control outcome unable to complete honestly.",
+      "required_correction": "Define two terminal branches. READY_FOR_REVIEW requires every required positive/negative containment control to pass. NO-RUN may complete the bounded investigation with the actual unavailable/failed/unverified controls recorded, successful containment criteria left unsatisfied, cleanup outcome recorded, and the real-host dependency held. Define report fields and check/exit semantics so the ledger never records a failed containment check as passed merely because the harness reported NO-RUN correctly; keep unresolved cleanup failure explicitly unresolved."
+    },
+    {
+      "id": "HPI-PR1-04",
+      "priority": "P2",
+      "title": "Independent review is not explicitly ordered before the first canary execution",
+      "location": "docs/runs/host-probe-isolation/plan.md:37-50",
+      "impact": "The canary runner performs unsandboxed fixture creation/cleanup and launches operations whose policy may fail. The current independent code gate could occur only after actual execution because it is tied to source/evidence hashes. That would leave the first execution's exact profile, destinations, cleanup scope, and limits unreviewed.",
+      "required_correction": "Require an independent static code/security review of the concrete runner, profile, canary bodies, exact runtime invocation, and failure-effect manifest before the first canary execution. Then run only those reviewed hashes and perform a separate review of resulting evidence. This is a sequencing gate within already authorized local work, not a request for new user approval."
+    }
+  ],
+  "observations": [
+    "Read only the assigned role, matching skill, plan revision 1, contract, static research report, and planner handoff packet. No repository implementation, runtime SDK, user configuration, secret, or network was accessed.",
+    "The plan and contract SHA-256 values were independently confirmed with shasum and match the reviewed binding. The source_sha256 is preserved from the coordinator-supplied binding; the underlying source digest was not independently recomputed within this artifact-only assignment.",
+    "The provided planner packet is an assignment rather than the planner's final proposal. The coordinator's assignment separately attests that the delivered planner result recommends NO-RUN for the real SDK; this review does not claim to have inspected that result.",
+    "The SDK-free restriction, preservation of the broader build-delivery SSOT, exact-hash re-review expectation, clean child environment intent, and prohibition on treating application-level fetch controls as OS containment are appropriate.",
+    "Existing local implementation authorization is sufficient for preparation after plan corrections. No repeated user approval is requested by this review.",
+    "Unavailable or unsupported enforcement, ambiguous denials, and incomplete evidence must remain NO-RUN for the future SDK. Even a successful corrected preflight provides only evidence for the tested operations and cannot authorize or certify real host execution.",
+    "The plan identifies revision, owners, scope, and dependencies. Add an explicit initial-revision change-history entry and identify the concrete planner-result artifact in the next revision for traceability; these are optional documentation improvements rather than separate blocking findings."
+  ],
+  "provenance": {
+    "child_task_id": "/root/host_probe_isolation_plan_review",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "runtime_identity_verified": false,
+    "review_mode": "read-only independent plan review",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false
+  }
+}

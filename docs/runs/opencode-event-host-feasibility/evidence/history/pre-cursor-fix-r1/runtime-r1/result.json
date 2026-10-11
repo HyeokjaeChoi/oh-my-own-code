@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "case": "runtime",
+  "status": "PASS",
+  "namespace": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/c3b1e492-4660-4fb3-ba18-d6da34b36df1",
+  "namespace_retained": true,
+  "before": {
+    "input_manifest_sha256": "523902a8eb03c76129290354119d88b1584288b1764c59f05425569ede323508",
+    "runtime_manifest_sha256": "7e5aa4c28b60e3a7415602ec1358d445889e64a23f15f8c8a32573779fc0c062",
+    "inventory_sha256": "f658af1676e70dd0af98c02b545256e13351fef1061307c9c998901891d06d7f"
+  },
+  "after": {
+    "input_manifest_sha256": "523902a8eb03c76129290354119d88b1584288b1764c59f05425569ede323508",
+    "runtime_manifest_sha256": "7e5aa4c28b60e3a7415602ec1358d445889e64a23f15f8c8a32573779fc0c062",
+    "inventory_sha256": "f658af1676e70dd0af98c02b545256e13351fef1061307c9c998901891d06d7f"
+  },
+  "journal": [
+    {
+      "type": "authenticated-ready",
+      "pid": 95037,
+      "engine": "1.4.2"
+    },
+    {
+      "type": "scope-closed",
+      "pid": 95037,
+      "reason": "requested",
+      "observation": {
+        "scope": "direct JS ChildProcess/Bun handles only; not arbitrary native/OS descendants",
+        "observerGap": false,
+        "handles": [],
+        "live": 0
+      }
+    },
+    {
+      "pid": 95037,
+      "code": 0,
+      "signal": null,
+      "observed": "ChildProcess.exit"
+    }
+  ],
+  "result": {
+    "scoped_start": true,
+    "authenticated_ready": true
+  },
+  "limitation": "Direct JS handles only; no OS confinement, queued recovery, provider safety, pairing/PTY, power-loss, production adoption or P7 completion proof."
+}

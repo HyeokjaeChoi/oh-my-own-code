@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "a088fda9a0f9b3837c5cab2589db8a930b655dbed299131e027820ed265d2a3f",
+    "gate": "plan",
+    "plan_sha256": "ca754d84873240fbee60690fcec33546642a114de5e47413acd7338e42afaf89",
+    "schema_version": 2,
+    "source_sha256": "a43b573d8cebecb5dcb2cb5605f84bcbe69e11143cde2c27e1242e81dd24c687"
+  },
+  "verdict": "pass",
+  "summary": "The execution plan fits the approved Electron desktop scope and contains no concrete blocking flaw. Installed @opencode/client 2.0.18 declarations support the required session.get, session.update, session.fork and session.remove shapes, including title/permissions updates and SessionInfo location/parent data. Main-process ownership, explicitly temporary pin/archive/diagnostic state, archive execution guards, idle/known/locked checks, unknown-outcome handling, non-evicting idempotency receipts, native-confirmed conversation deletion with project-file preservation, bounded redacted diagnostics, regression/native/package checks, sequencing and disjoint backend/renderer ownership are specified. Permanent retention and native Windows evidence remain parent limits. This verdict approves the execution plan only; the separately bound design-spec gate for interface.md still follows registration.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "cli:session-lifecycle-entry-independent",
+    "author_task_id": "coordinator"
+  }
+}

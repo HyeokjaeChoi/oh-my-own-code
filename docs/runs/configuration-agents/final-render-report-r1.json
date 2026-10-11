@@ -1,0 +1,236 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "20a566999f36ef78e74bd448ede13b15511201298bab6692d922143b448bf463",
+    "environment_sha256": "584149098e33f7d9d7dc5ef21c3dabc6d7fc8e9afe2d6b4d3fa0a1ff743199a1",
+    "gate": "design",
+    "plan_sha256": "a25af87d3e99f3e7ebc5787e5957f02c023face0f718a6e5443d2b453137e1e4",
+    "schema_version": 2,
+    "source_sha256": "9142fed9eaf8a4bacc37b9332ed1672fd659d8f3a4a805372c9d944826af1521",
+    "verification_sha256": "fb759b79c2518cd0ac8ece970865b011823ae4f48780a9837b14819a1f6cb244",
+    "work_class_sha256": "1b18ca5c5d0ef5f2f35c239dec199742a508414688a257db319ed4a44f529e9b"
+  },
+  "verdict": "pass",
+  "summary": "Agent 변경 범위의 독립 RENDER 검토를 완료했습니다. 실제 built renderer/preload의 PNG 50개를 직접 보고, Agent 파일 21개 상태와 Native 16개 상태의 자동 상호작용 증거를 확인했습니다. 검사 범위에서 필수 수정이 필요한 제품 결함은 확인하지 못했습니다. 512개 capture 기록은 서로 다른 PNG 510개를 가리킵니다. 이 증거 제한을 아래에 기록합니다. 이 verdict는 design gate에만 적용합니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11b24-3fce-7fd0-9f72-27b6d5c16f3e",
+    "role": "design_qa",
+    "run": "configuration-agents",
+    "binding_file": "docs/runs/configuration-agents/final-render-input-r1.json",
+    "skill": ".agents/skills/solo-design-review/SKILL.md",
+    "report_only": true,
+    "independence": "구현과 수리에 참여하지 않은 별도 reviewer입니다.",
+    "method": "문서·현재 source·기존 실행 기록을 읽고, PNG를 view_image로 직접 검사했습니다. 파일 수정, report 저장, ledger 등록, runtime 실행, test 재실행, 재위임은 하지 않았습니다."
+  },
+  "inspected_paths": {
+    "repository_root": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "instructions": [
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-design-review/SKILL.md",
+      ".agents/skills/solo-design-review/references/evidence-review.md"
+    ],
+    "contracts_and_records": [
+      "docs/runs/configuration-agents/plan.md",
+      "docs/runs/configuration-agents/design.md",
+      "docs/runs/configuration-agents/design-clarification-r1.md",
+      "docs/runs/configuration-agents/contract.json",
+      "docs/runs/configuration-agents/source-freeze-r1.json",
+      "docs/runs/configuration-agents/prechange-source.json",
+      "docs/runs/configuration-agents/verification-summary-r1.json",
+      "docs/runs/configuration-agents/final-review-scope-r1.md",
+      "docs/runs/configuration-agents/final-render-input-r1.json",
+      "docs/runs/configuration-agents/final-render-packet-r1.json",
+      "docs/runs/configuration-agents/run.json",
+      "docs/runs/configuration-agents/consumer-build-executed-r3.json",
+      "docs/runs/configuration-agents/evidence/native-r11/agent-evidence.json",
+      "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json",
+      "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/manifest.json",
+      "apps/desktop-app/dist/build-provenance.json"
+    ],
+    "ui_and_verification_source": [
+      "apps/desktop-app/src/renderer/features/configuration-drafts/agent-files.tsx",
+      "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css",
+      "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+      "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "docs/design/specs/workbench-ux.md",
+      "docs/design/tokens/tokens.css",
+      "packages/ui/src/primitives/modal-sheet.module.css"
+    ],
+    "source_integrity": "source-freeze-r1.json의 63개 경로 모두 현재 bytes의 SHA256과 비교했습니다. 불일치는 없습니다. 63개 source 전체의 독립 code review를 했다는 뜻은 아닙니다."
+  },
+  "evidence": {
+    "direct_image_inspection": {
+      "root": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-agents/evidence/hidden-r2/ui-states",
+      "filename_rule": "아래 suffix 각각에 desktop-configuration-agent- 접두사와 -synthetic.png 접미사를 붙이면 직접 검사한 정확한 파일명입니다.",
+      "unique_png_count": 50,
+      "inspected_suffixes": [
+        "list-available-status",
+        "file-supportedbom-status",
+        "file-rawunsupportedgrammar-status",
+        "dirtyvalid-status",
+        "confirmed-saved-before-reread-status",
+        "confirmed-status",
+        "savecancel-status",
+        "saveunknown-status",
+        "notobserved-runtime-status",
+        "currentregistered-runtime-status",
+        "currentregistered-targets-0",
+        "currentregistered-policies-0",
+        "currentregistered-systems-0",
+        "globalforeigninuse-policies-0",
+        "unowned-runtime-status",
+        "references-unavailable-runtime-status",
+        "unowned-policy-help",
+        "removed-runtime-status",
+        "unknownheld-action",
+        "restartuntrusted-runtime-status",
+        "historicalreceipt-runtime-status",
+        "restoredoldkey-status",
+        "untrusted-path",
+        "untrusted-status",
+        "list-unread-path",
+        "list-truncated-status",
+        "list-missingparent-status",
+        "list-denied-status",
+        "file-unread-status",
+        "file-available-status",
+        "file-missingleaf-saved-before-reread-status",
+        "file-missingleaf-status",
+        "file-unsafeunsupported-status",
+        "file-changed-status",
+        "file-oversize-status",
+        "confirmationcancel-action",
+        "unavailable-runtime-status",
+        "pending-before-ack-action",
+        "pending-policies-0",
+        "registered-before-remove-policies-0",
+        "restoredoldkey-runtime-status",
+        "latecancel-runtime-status",
+        "restartuntrusted-policy-help",
+        "historicalreceipt-policy-help",
+        "currentregistered-path",
+        "file-supportedbom-path",
+        "pending-runtime-status",
+        "unknownheld-runtime-status",
+        "removed-policy-help",
+        "globalforeigninuse-runtime-status"
+      ],
+      "dimension_groups": [
+        {
+          "inspected_png_count": 13,
+          "png_pixels": {
+            "width": 2880,
+            "height": 1856
+          },
+          "css_viewport": {
+            "width": 1440,
+            "height": 928
+          },
+          "zoom_factor": 1,
+          "display_scale_factor": 2
+        },
+        {
+          "inspected_png_count": 37,
+          "png_pixels": {
+            "width": 1520,
+            "height": 1936
+          },
+          "native_content_bounds": {
+            "width": 760,
+            "height": 968
+          },
+          "css_viewport": {
+            "width": 380,
+            "height": 484
+          },
+          "zoom_factor": 2,
+          "display_scale_factor": 2
+        }
+      ],
+      "target": "Darwin arm64, 한국어 Light UI, 파일·확장 > 확장·명령 > Agents. 긴 synthetic 경로와 Agent 내용을 사용한 실제 production renderer/preload capture입니다.",
+      "direct_observations": [
+        "목록 확인, 파일 선택, 원본 읽기, 초안 검증·저장, Native 상태 확인·등록이 별도 작업으로 표시됩니다.",
+        "폴더 없음, 접근 거부, 변경된 파일, 크기 초과, 안전하게 읽을 수 없는 내용, 지원하지 않는 grammar가 서로 다른 안내로 표시됩니다.",
+        "760px·200%에서 검사한 긴 경로, Native ID, system과 policy는 줄바꿈됩니다. 검사한 대상에서 가로 잘림으로 핵심 값이 사라지는 결함은 확인하지 못했습니다.",
+        "Native 화면에 primary, hidden: false, 정확한 권한 3개, 빈 request settings·headers·body, model override 없음, 기본 Agent와 현재 세션 유지가 표시됩니다.",
+        "currentregistered-runtime-status 및 targets·systems·policies capture를 Native 등록 판단에 사용했습니다. currentregistered의 파일 화면을 Native 상태 증거로 사용하지 않았습니다.",
+        "전체 Native 세션 참조와 archived·다른 작업 공간 참조를 포함한다는 안내가 있습니다. 사용 중인 등록의 제거 제한이 표시됩니다.",
+        "unknown 요청 결과는 자동 재전송하지 않는다고 설명합니다. 이전 대상의 요청 결과와 현재 Native 관찰을 구분합니다.",
+        "재시작·historical·retained 상태에서 과거 receipt를 현재 소유권이나 자동 등록 성공으로 표시하지 않습니다.",
+        "검사한 focus 화면에 파란 focus 표시가 있습니다. 오류와 거부 이유는 텍스트로도 전달됩니다."
+      ]
+    },
+    "capture_integrity": {
+      "screenshot_records": 512,
+      "unique_png_paths": 510,
+      "legacy_records": 391,
+      "agent_records": 121,
+      "unique_agent_png_paths": 119,
+      "checks": [
+        "512개 기록의 모든 경로에 접근했습니다. PNG signature와 IHDR pixel 크기가 기록과 일치합니다.",
+        "모든 capture 파일명이 manifest의 evidence 목록에 있습니다.",
+        "Agent 121개 기록 모두 capture 전후 visible=false, focused=false, focusable=false입니다.",
+        "Agent 기록의 PNG 크기, contentBounds, displayScaleFactor, CSS viewport와 zoom 관계를 확인했습니다.",
+        "captureMethod는 BrowserWindow.webContents.capturePage().toPNG()입니다.",
+        "manifest의 buildStampSha256은 현재 dist/build-provenance.json과 일치합니다. provenanceVerifiedAfter=true입니다.",
+        "hidden UI manifest와 wrapper의 exitCode는 0이며, Electron teardown은 exited=true, code=0입니다."
+      ],
+      "nonblocking_evidence_limits": [
+        {
+          "paths": [
+            "desktop-configuration-agent-restoredoldkey-path-synthetic.png",
+            "desktop-configuration-agent-restoredoldkey-status-synthetic.png"
+          ],
+          "observation": "파일 상태와 runtime 상태 capture가 이 두 파일명을 재사용합니다. 별도 원본 PNG 두 쌍이 보존되었다고 주장할 수 없습니다.",
+          "impact": "512개 기록을 512개 독립 PNG로 세지 않았습니다. runtime 전용 restoredoldkey capture와 다른 파일 상태 capture가 있어 이번 변경 범위의 rendered 판단은 가능합니다. 제품 동작 결함으로 분류하지 않았습니다."
+        }
+      ]
+    },
+    "automated_interaction_evidence": {
+      "file_state_records": 21,
+      "runtime_state_records": 16,
+      "explicit_narrow_200_percent_state_records": 23,
+      "inspected_assertions": [
+        "37개 Agent 상태 모두 keyboardForwardBackward=true입니다. script는 enabled control에 focus한 뒤 Tab·Shift+Tab과 focus 복귀를 검사합니다.",
+        "목록 확인·읽기·검증·등록·제거의 일부 작업은 programmatic focus 후 Enter로 실행됩니다.",
+        "latecancel은 Native 읽기 취소 후 지연 결과를 반환해도 현재 row와 등록 가능 상태가 생기지 않는지 검사합니다. Escape로 dialog가 닫히는지도 검사합니다.",
+        "DOM Range로 전체 경로·system·policy·target 문자열이 textContent와 일치하고 userSelect가 none이 아닌지 검사합니다.",
+        "좁은 화면의 dialog와 Agent panel에 horizontal overflow가 없는지 검사합니다.",
+        "resize, Agents 재선택과 refocus 전후 bridge metrics가 같고, 파일 선택이 파일이나 Native를 자동으로 읽지 않는지 검사합니다.",
+        "unowned는 읽기 전용이며 제거 control이 없는지 검사합니다.",
+        "globalforeigninuse는 참조 2개와 disabled 제거 control을 검사합니다. references-unavailable은 등록과 제거를 허용하지 않습니다.",
+        "신뢰 안내에 기존 새 세션 경로와 새 대화 생성 효과가 포함되는지 검사합니다.",
+        "unknown·retained·historical 상태에서 reload 후 payload 복원이나 자동 재전송이 없는지 검사합니다.",
+        "모든 Agent 상태 기록의 sends는 0입니다."
+      ],
+      "verification_status": "기존 실행 결과와 assertion source를 교차 확인했습니다. 수동 keyboard 조작, 전체 Tab 순서의 수동 검사 또는 screen reader 검사로 보고하지 않습니다."
+    },
+    "source_and_record_checks": {
+      "source_freeze_matches": true,
+      "scoped_source_paths": 63,
+      "source_hash_mismatches": 0,
+      "plan_binding_matches": true,
+      "contract_binding": "packet의 contract hash는 파일 bytes hash이고, exact review-input의 contract hash는 canonical JSON hash입니다. 두 값의 계산 기준을 직접 확인했습니다.",
+      "latest_contracted_checks": "run.json의 agents, boundaries, build, bundle, format, hidden-ui, kernel, lint, native, typecheck 모두 exit_code=0입니다. 각 기록의 plan·contract·environment·source binding이 exact review-input과 일치합니다. inputs_changed, interrupted, timed_out은 모두 false입니다.",
+      "build": "기존 actual build-r3 PASS 기록을 읽었습니다. build를 실행하지 않았습니다.",
+      "native": "기존 Native-r11의 14개 case가 모두 PASS입니다. before와 after가 같으며, helper 3개가 exit 0으로 종료되었습니다. 시작된 Native 2개의 exit 0도 기록되어 있습니다. 이는 별도 runtime 증거이며 UI capture의 Main은 synthetic입니다.",
+      "failure_history": "이전 실패를 현재 PASS로 덮어 해석하지 않았습니다. Agent backup IPC와 Controller original operation ID 수정의 RED/GREEN 회귀 증거는 기존 실행 기록으로 취급했습니다.",
+      "harness_status": "read-only status를 확인했습니다. run은 active이며 독립 code/design report의 등록은 Main의 후속 작업입니다."
+    }
+  },
+  "important_limits": [
+    "직접 본 PNG는 위에 정확히 열거한 50개입니다. 서로 다른 PNG 510개 전체를 시각 검사했다고 주장하지 않습니다.",
+    "일부 capture는 특정 요소로 scroll된 화면입니다. unowned의 실제 목록 행과 신뢰 안내 전체는 검사한 이미지에서 완전히 보이지 않습니다. 이 부분의 읽기 전용·제거 불가·새 대화 생성 판단은 자동 assertion과 source를 함께 사용했습니다.",
+    "재사용된 restoredoldkey 파일명 2개는 독립 capture 보존 범위를 제한합니다.",
+    "Light UI와 기록된 desktop·760px/200% 조건을 검사했습니다. Dark UI, Windows runtime, touch, OS text scaling과 screen reader 동작은 직접 검증하지 않았습니다.",
+    "수동 keyboard 조작을 하지 않았습니다. 자동 focus·Enter·Tab·Shift+Tab·Escape 증거의 범위만 보고합니다.",
+    "UI capture는 synthetic Main과 실제 built renderer/preload를 사용합니다. 실제 Native provider 또는 모델 소비를 UI에서 증명하지 않습니다.",
+    "63개 경로의 hash 일치는 전체 source의 correctness나 전체 Git diff 검토를 뜻하지 않습니다. repository baseline은 untracked이며 prechange-source.json은 원래 hash inventory입니다.",
+    "이 report는 Agent 변경 범위의 독립 design 판단입니다. 별도 code gate, 전체 F14 완료, 제품 전체 완료 또는 release 승인을 대신하지 않습니다.",
+    "파일·source·증거·ledger를 변경하지 않았고, Native·Bun·Electron·build·package·provider·UI를 실행하지 않았습니다."
+  ]
+}

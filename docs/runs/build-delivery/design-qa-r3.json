@@ -1,0 +1,61 @@
+{
+  "schema_version": 2,
+  "gate": "design",
+  "role": "design_qa",
+  "run": "build-delivery",
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "design",
+    "plan_sha256": "7bcacee7766d65c157a9b1e8b402f9a77e792f6907c89a045b084a62546999d3",
+    "contract_sha256": "1a5b79ccd693e06ae42c169818e444f63bbaa5eaa3a80f5207f5fd217b838386",
+    "source_sha256": "e9fb6e590350972c6d23515bd1bd1a3ea57ba8d1dcd5e73923bcc62ac42cd095",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "verification_sha256": "7b44d2d318dc53fc915d87e5224e9b4d8dc399361db4409589c7a17f7c226541"
+  },
+  "verdict": "pass",
+  "scope": "Independent rendered-UI judgment of the existing Korean, light-theme, read-only synthetic root shell for plan revision 7. AC-8 changes only the bridge runtime-info boundary and synthetic SDK probe; this report does not assess real SDK behavior or approve the full PRD journey.",
+  "summary": "The existing synthetic LinkPreview shell rendered coherently at 320×844, 600×844, and 1280×720. Its task and synthetic provenance labels, conversation order, result status, and preview card remained visible and readable without horizontal document overflow. The browser accessibility representation exposed a main landmark, ordered headings, a named synthetic conversation region, status text, and an article. No user-impacting defect was observed in this bounded static shell.",
+  "observed_evidence": {
+    "origin": "Direct read-only inspection of http://127.0.0.1:4200/ in the Codex in-app browser on 2026-09-28. At each stated viewport, the browser rendered a fresh full-page screenshot; DOM viewport and document dimensions were read from that rendered page. Screenshots were viewed in the browser tool result and were not exported to a repository file.",
+    "route": "/",
+    "state": "Synthetic completed LinkPreview conversation, Korean locale, light theme, read-only; Demo project and example.invalid fixture data only.",
+    "viewports_checked": [
+      {"width": 320, "height": 844, "document_scroll_width": 320, "document_scroll_height": 928},
+      {"width": 600, "height": 844, "document_scroll_width": 600, "document_scroll_height": 844},
+      {"width": 1280, "height": 720, "document_scroll_width": 1280, "document_scroll_height": 792}
+    ],
+    "observations": [
+      "At 320 px, the header, fixture warning, user and assistant messages, tool result, preview card, and synthetic event appeared in vertical reading order. The page scrolled vertically, and its document width equaled the viewport width.",
+      "At 600 px, the named conversation section measured 560 px and the preview article measured 448 px. The same content was visible without document-level horizontal overflow.",
+      "At 1280 px, the main landmark measured 1040 px, centered at x=120 px. The conversation remained a readable column, and the document width equaled the viewport width.",
+      "The rendered accessibility snapshot contained main, h1/h2/h3 headings, region named 합성 대화, status 합성 완료, a preview article, and the labelled assistant-ui conversation and previewLink call. No focusable controls appeared in this intentionally read-only shell."
+    ]
+  },
+  "open_findings": [],
+  "verification_gap": {
+    "severity": "scope_limited",
+    "location": "Routes and states beyond the synthetic root shell",
+    "user_impact": "This static fixture cannot establish keyboard operation of future controls, loading/error/recovery states, permission decisions, real project navigation, actual SDK streaming, or complete PRD acceptance.",
+    "required_evidence": "Review those flows independently when implemented and reachable; retain separate real-runtime and accessibility evidence before a full product pass."
+  },
+  "not_retested": [
+    "Loading, error, malformed-result, and recovery states",
+    "Keyboard focus on interactive controls, screen-reader operation, zoom, dark theme, and reduced motion",
+    "Real SDK streaming, permissions, project navigation, persistence, and PRD AC-01–18 flows",
+    "Console and network diagnostics, and running-bundle identity relative to the current source fingerprint"
+  ],
+  "limits": [
+    "Pass applies only to the directly rendered synthetic completed root shell at the three stated viewport sizes; no real service or user data was inspected.",
+    "Accessibility judgment is limited to the browser's semantic representation of this static state; assistive-technology behavior was not tested.",
+    "The bridge runtime-info implementation and SDK probe are outside this role's verification scope."
+  ],
+  "next_handoff": "Coordinator may record a bounded design gate pass for the current source binding. Preserve the distinct holds on real SDK, unrendered PRD flows, and final product readiness.",
+  "provenance": {
+    "child_task_id": "/root/runtime_info_design_qa_r3",
+    "author_task_id": "/root",
+    "report_only": true,
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "medium",
+    "runtime_identity_verified": false
+  }
+}

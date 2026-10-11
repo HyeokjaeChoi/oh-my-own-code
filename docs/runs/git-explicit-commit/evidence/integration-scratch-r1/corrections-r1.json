@@ -1,0 +1,20 @@
+{
+  "Main_artifact": {
+    "missing": "Existing reflog parent listings",
+    "correction": "Record all held existing publication-parent listings before preview digest/artifact freeze",
+    "focused_RED": "Each existing publication parent needs a frozen listing: .git/logs",
+    "focused_GREEN": true,
+    "first_four_actual_source_only_publications": [
+      "sha1-attached",
+      "sha1-unborn",
+      "sha1-nested-unborn",
+      "sha1-detached"
+    ]
+  },
+  "probe_setup": {
+    "refusal": "gc emitted nonempty objects/info, outside existing reader closed ordinary pack support",
+    "correction": "Owned synthetic git -c repack.updateServerInfo=false repack -ad, pack-refs retained. No reader or kernel version/path/format relaxation.",
+    "independent_setup_namespace": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-commit-pack-c5n1bb12",
+    "observed_objects_info": []
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "628e61ac228f7b3c21bb84b816520e064d41e9ddcae6cf1f60256a957a2c69b5",
+    "gate": "plan",
+    "plan_sha256": "d0326774cf3b47dce1387e06e56ecdedca664e5b605444333a9ca6df13f1c6e7",
+    "schema_version": 2,
+    "source_sha256": "7d6925081b78dbc6729b55ea079638bcd4a224fb033156ac1f2afeb62930b84a"
+  },
+  "verdict": "pass",
+  "summary": "Revision 3 addresses the prior P2 shared-badge composition gap. AC-2 and the Figma sequence require actual nested StatusBadge instances with shared 24px text-hug geometry and badge-owned color bindings. The registered components.json contract now gives every ToolCall and PermissionRequest parent variant a StatusBadge child, semantic state, and visible label; ToolCall tones follow the referenced StatusBadge state bindings, while PermissionRequest specifies per-state tone overrides, including execution-neutral approved. Parent status color bindings were removed, and system.md repeats the composition rule. The five-family scope, unchanged Button variants and 44-variant inventory, source-first design-spec gate, per-page Light/Dark verification, and separate runtime evidence boundary remain coherent. This is a plan judgment; actual Figma instances and rendered behavior require subsequent design-spec handoff and implementation verification.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "sol_plan_review_rev3",
+    "author_task_id": "/root"
+  }
+}

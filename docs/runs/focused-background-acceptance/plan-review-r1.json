@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "51ee31de74aa40c8dbb9c183b5b937910f95cc1a1c7cb98c006c5547f53d999b",
+    "gate": "plan",
+    "plan_sha256": "79763021eeca09468b83bc68dfd77665e39a73bf00a81a557c7e88019dfddafc",
+    "schema_version": 2,
+    "source_sha256": "1a0ac26bbba8ddb094246eb124da2cb138898fbfbd6b503fbc2ed5543cb43216"
+  },
+  "verdict": "changes_requested",
+  "summary": "revision1의 독립 읽기 전용 검토입니다. Foundation 완료 → P6 → P7 순서, 100회 실제 session switch, browser-local timestamp, CDP와 store listener 검사의 구분, metadata-only 출력, fresh output guards, hidden/provider/Windows 한계는 적절합니다. 실행 전 수정할 사항은 2개입니다. 플랫폼 설계나 사용자 승인을 다시 요구하지 않습니다. 파일 수정, 테스트, GUI 실행, provider 호출, 위임은 하지 않았습니다. 최종 code/design 판정은 아닙니다.",
+  "open_findings": [
+    {
+      "id": "P6-ENTRY-1",
+      "severity": "medium",
+      "path": "docs/runs/focused-background-acceptance/plan.md",
+      "line": 8,
+      "summary": "Production renderer 수정 허용 조건이 현재 작업 범위보다 넓습니다.",
+      "impact": "'unless measured need'는 측정 결과만으로 production renderer 수정을 허용할 수 있습니다. 현재 지시는 tests/performance/fixture/scripts로 범위를 제한합니다.",
+      "required_change": "측정 실패는 기록하고 원인을 분석하도록 명시하십시오. Production renderer/store 수정이 필요하면 별도 amendment를 등록하고 독립 검토한 뒤 진행하도록 명시하십시오. 기존 metadata-only instrumentation amendment 규칙도 유지하십시오."
+    },
+    {
+      "id": "P6-ENTRY-2",
+      "severity": "medium",
+      "path": "docs/runs/focused-background-acceptance/plan.md",
+      "line": 6,
+      "summary": "상위 성능 기준 일부가 acceptance와 contract에 빠져 있습니다.",
+      "impact": "architecture-and-ui v4는 cold startup 기록을 요구합니다. 상위 P6는 반복되는 50ms 초과 typing task를 검사합니다. 현재 계획은 long-task 관찰만 명시하며, cold startup과 이 판정 기준을 완료 조건으로 연결하지 않습니다. 100ms/150ms 목표가 p95에 적용되는지도 명확하지 않습니다.",
+      "required_change": "M1/M2와 performance check에 숨김 synthetic host의 cold startup 측정 구간 및 한계를 추가하십시오. 100ms/150ms 목표를 p95로 명시하십시오. Typing/scroll 표본에서 50ms 초과 long task의 수와 반복 여부를 기록하고, 반복 시 분석·수정 또는 명시적 미해결 결과를 요구하십시오. Observer 미지원은 미검증으로 기록하십시오. Production main이나 foreground 실행은 필요하지 않습니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a1027c-62b0-7e32-a0ef-7aa2fa7b003a"
+  }
+}

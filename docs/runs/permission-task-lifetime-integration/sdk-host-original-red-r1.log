@@ -1,0 +1,40 @@
+✖ patched Host sdk: guard failure precedes SDK effect construction, original token cleanup (1.729167ms)
+✖ patched Host language: guard failure precedes SDK effect construction, original token cleanup (0.183708ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 338.815875
+
+✖ failing tests:
+
+test at ../../../../private/tmp/omoc-sdk-host-original-red-r1.test.mjs:343:5
+✖ patched Host sdk: guard failure precedes SDK effect construction, original token cleanup (1.729167ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///private/tmp/omoc-sdk-host-original-red-r1.test.mjs:354:9)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /inventory_unverified/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at ../../../../private/tmp/omoc-sdk-host-original-red-r1.test.mjs:343:5
+✖ patched Host language: guard failure precedes SDK effect construction, original token cleanup (0.183708ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///private/tmp/omoc-sdk-host-original-red-r1.test.mjs:354:9)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /inventory_unverified/u,
+    operator: 'rejects',
+    diff: 'simple'
+  }

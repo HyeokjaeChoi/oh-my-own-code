@@ -1,0 +1,13 @@
+Index evidence failed in stale_observation: Error: expect(locator).toHaveAttribute(expected) failed
+
+Locator:  getByRole('region', { name: '선택한 Git index 변경', exact: true })
+Expected: "unavailable"
+Received: "stale"
+Timeout:  5000ms
+
+Call log:
+  - Expect "toHaveAttribute" getByRole('region', { name: '선택한 Git index 변경', exact: true }) with timeout 5000ms
+  - waiting for getByRole('region', { name: '선택한 Git index 변경', exact: true })
+    14 × locator resolved to <section data-git-index-state="stale" aria-label="선택한 Git index 변경">…</section>
+       - unexpected value "stale"
+

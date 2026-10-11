@@ -1,0 +1,44 @@
+{
+  "schema_version": 2,
+  "run": "workspace-file-editing",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "481352840763187579a1c52e554157c2da577d9d1a7fb10f8798514d411d05c6",
+    "documents_sha256": "b70178168efb7dc7c548afa4bcc9df32827b22fa3bcfd1546356802368e52eee",
+    "gate": "design_spec",
+    "plan_sha256": "de7e9d7aa573ae8ebe86198a22fd9e2a227713e04bf3dacedb7aefc0208a3a9b",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "changes_requested",
+  "summary": "저장 권한의 판정 기준을 명시하는 문서 수정 1건이 필요합니다. 그 외 주요 미해결 설계 결정은 발견하지 못했습니다.",
+  "open_findings": [
+    {
+      "id": "DS-01",
+      "severity": "medium",
+      "location": "docs/runs/workspace-file-editing/design.md:12-16",
+      "consumer": "generic file publisher와 Renderer의 저장 허용·권한 거절 상태",
+      "finding": "원본 파일의 쓰기 권한과 부모 디렉터리의 교체 권한 중 무엇으로 저장을 허용하는지 정하지 않았습니다. 따라서 mode 0444 파일의 저장 가능 여부와 읽기 전용 안내가 구현자 판단에 따라 달라질 수 있습니다.",
+      "evidence": [
+        "configuration-save-kernel.mjs:141,555-558은 원본을 O_RDONLY로 엽니다.",
+        "같은 파일:216-224의 metadata 검사는 원본 쓰기 비트를 요구하지 않습니다.",
+        "같은 파일:584-635는 별도 stage 파일에 쓰고 원본 mode를 복사합니다. 697-702는 renameatx_np로 교체합니다. 부모 디렉터리 교체 권한이 허용되면 mode 0444만으로 교체를 막을 수 없습니다."
+      ],
+      "smallest_correction": "generic file 저장에는 원본 쓰기 권한도 필요하다고 명시하는 방식을 권장합니다. stage 파일 생성 전에, 보유한 부모 descriptor 기준으로 원본을 O_RDWR|O_NOFOLLOW|O_NONBLOCK|O_CLOEXEC로 열고 baseline identity를 확인하도록 정하십시오. 원본에는 쓰지 않으며 O_CREAT/O_TRUNC를 사용하지 않습니다. baseline read는 O_RDONLY를 유지합니다. 실패 처리는 기존 dispatch 전 거절·dispatch 후 unknown 계약을 유지합니다. 디렉터리 교체 권한만 사용하는 방식을 선택한다면 mode 0444도 교체 가능하다는 정책과 그에 맞는 UI 안내를 명시해야 합니다."
+    }
+  ],
+  "evidence": {
+    "exact_design_binding_matches": true,
+    "source_pins_verified": 10,
+    "legacy_capture_files_verified": 18,
+    "legacy_capture_matches_current_source": true
+  },
+  "limits": [
+    "initial DESIGN_SPEC 문서 검토만 수행했습니다. 파일·ledger 수정, test, build, runtime 실행, delegation은 하지 않았습니다.",
+    "실제 UI와 최종 CODE·RENDER 검토는 이후 단계입니다. 전체 PRD와 Git 작업은 미완료입니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11b85-2cd3-7f81-8f72-a8115c867b48",
+    "basis": "현재 환경의 CODEX_THREAD_ID에서 읽었습니다."
+  }
+}

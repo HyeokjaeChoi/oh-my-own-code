@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "design",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "source_sha256": "e8343287ec1948f2a0f4025da03a737c9cc699081fde5afce332eeca62dd8352",
+    "verification_sha256": "ba8419a587ad57beec8c40c7aa47aaacfd33163f172822f0289ab108bf02f698",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "verdict": "pass",
+  "scope": "Rendered design QA for the current synthetic, read-only vertical slice only.",
+  "summary": "The current live fixture resolves the prior rendered design findings. The transcript distinguishes user, assistant, and assistant event; the ToolCall shows its name, target, and shared 24px 확인 완료 badge without a summary border; the result preview has its own boundary and declares ko-KR. No horizontal overflow or content clipping was observed at the three requested widths.",
+  "evidence": [
+    {
+      "origin": "Direct live browser inspection",
+      "url": "http://127.0.0.1:4200/",
+      "state": "Workbench · Synthetic preview; fixed local fixture; read-only",
+      "viewports": ["1280×720", "390×844", "320×720"],
+      "observations": [
+        "Screenshots at all three widths showed the intended hierarchy and legible wrapping; the 320px full-page capture included the preview and event.",
+        "At 320px, window.innerWidth and document scrollWidth were both 320px; at 390px both were 390px. The preview remained inside the viewport.",
+        "Rendered message metadata showed 사용자, 도우미, and 도우미 이벤트 with event provenance in the DOM.",
+        "The ToolCall summary computed border was zero; the shared status badge measured 24px tall. The preview’s own visible border computed to 1px.",
+        "The preview article declared lang=ko-KR and data-interactive=false. It had no link role or tab stop; the fixture contained no focusable controls.",
+        "No browser error logs were returned for the inspected tab."
+      ]
+    }
+  ],
+  "prior_finding_verification": [
+    {
+      "source": "design-review-r1.json",
+      "finding": "Speaker and event provenance, ToolCall context, narrow heading, and inert fixture preview",
+      "status": "verified_resolved_in_live_render"
+    },
+    {
+      "source": "design-review-r2.json",
+      "finding": "Borderless ToolCall with shared 24px completion badge and Korean preview language",
+      "status": "verified_resolved_in_live_render"
+    }
+  ],
+  "open_findings": [],
+  "limits": "This pass covers one static synthetic fixture. It does not verify live streaming, permission cards, error/recovery states, dark mode, 200% zoom, screen-reader pronunciation, real SDK effects, or overall product and release readiness. The running server’s bundle hash was not independently attested to the review-input source hash.",
+  "provenance": {
+    "child_task_id": "/root/final_design_qa_r3",
+    "author_task_id": "/root",
+    "requested_route": "gpt-6-sol/high",
+    "observed_runtime_identity": "unverified",
+    "report_only": true
+  }
+}

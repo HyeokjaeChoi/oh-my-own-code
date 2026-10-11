@@ -1,0 +1,92 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "description": "Approved immutable PRD provenance"
+    },
+    {
+      "id": "AC-2",
+      "description": "Complete UX and UI composition contracts"
+    },
+    {
+      "id": "AC-3",
+      "description": "Engineering state data security and compatibility contracts"
+    },
+    {
+      "id": "AC-4",
+      "description": "Full verification and local operations coverage"
+    },
+    {
+      "id": "AC-5",
+      "description": "Integrated consistent independently reviewed spec set"
+    }
+  ],
+  "checks": {
+    "spec-integrity": {
+      "argv": [
+        "python3",
+        "docs/runs/domain-specs/check_specs.py"
+      ],
+      "cwd": ".",
+      "scope": "Exact approved PRD, spec hashes, local links, 18 acceptance IDs and source change boundary. Static only.",
+      "acceptance_ids": [
+        "AC-1",
+        "AC-2",
+        "AC-3",
+        "AC-4",
+        "AC-5"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/design/specs/workbench-ux.md",
+      "gate": "design_spec",
+      "version": "0.1",
+      "sha256": "bfe3425f8334b91f882368e3e6670ec965dfd6361cf4cd71ee7af76890f61d43"
+    },
+    {
+      "path": "docs/engineering/workbench-architecture.md",
+      "gate": "design_spec",
+      "version": "0.1",
+      "sha256": "4a031f5c8cd194c315b92df8ac468600d5b769387c2271d8c04810fbc4959cba"
+    },
+    {
+      "path": "docs/engineering/verification.md",
+      "gate": "design_spec",
+      "version": "0.1",
+      "sha256": "dba31b7266df9dcd93f6477342e07f77bef9897c42578048c4c38c024f62feee"
+    },
+    {
+      "path": "docs/operations/local-release-monitoring.md",
+      "gate": "design_spec",
+      "version": "0.1",
+      "sha256": "f0d88e1836f230da09f7afe093d4320298d8d191845abae69ad4a0d4ef17263b"
+    },
+    {
+      "path": "docs/engineering/spec-index.md",
+      "gate": "design_spec",
+      "version": "0.1",
+      "sha256": "771c023836af77cdc8633d05729caef176ef62b4804f9aafbd762679d1d1db93"
+    }
+  ],
+  "user_approvals": [
+    {
+      "id": "prd-v02",
+      "version": "0.2",
+      "target": {
+        "path": "docs/product/prd.md",
+        "sha256": "597e64d100ea67b878762fde160b3a6d5c2f1275662661094dadfe0dad270dfb"
+      },
+      "evidence": {
+        "path": "docs/runs/domain-specs/prd-approval.json",
+        "sha256": "c378f8061726b6ff9940ff4fd3b1f111a62b4d1c6f8144e2d0562a314a19f4ba"
+      }
+    }
+  ],
+  "environment_files": [
+    "docs/runs/domain-specs/check_specs.py"
+  ]
+}

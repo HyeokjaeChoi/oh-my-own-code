@@ -1,0 +1,49 @@
+{
+  "authority": "Design proposal before initial entry acceptance; no source implementation or freeze claimed",
+  "request": {
+    "type": "configuration.read",
+    "workspaceId": "registered id",
+    "kind": [
+      "instructions",
+      "mcp"
+    ]
+  },
+  "response": {
+    "workspaceId": "exact registered id",
+    "workspacePath": "exact canonical registered root",
+    "kind": [
+      "instructions",
+      "mcp"
+    ],
+    "path": "derived AGENTS.md or opencode.json",
+    "status": [
+      "available",
+      "missing",
+      "unsupported",
+      "unavailable"
+    ],
+    "content": "available only, bounded UTF8 supported text",
+    "version": "available only, hex64 observed byte/identity version",
+    "reason": [
+      "missing_file",
+      "path_denied",
+      "file_changed",
+      "too_large",
+      "unsupported_content"
+    ]
+  },
+  "actions": [
+    "loadConfigurationDraft(kind)",
+    "cancelConfigurationLoad(kind?)"
+  ],
+  "state_owner": "Existing ConfigurationDraft entries in sole window store; optional file observation/read identity and baseline source. No separate store/cache or persistent write",
+  "host": "New narrow host/workbench-configuration-files.mjs + existing request/service admission; classify read in files lane. Shared browser-compatible validation function; no SDK call",
+  "future_not_authorized_by_read_design": [
+    "No unchecked write/CAS success claim",
+    "No Native project:true or filewatcher:true",
+    "No config.update generic reload",
+    "No automatic MCP add/connect",
+    "No secret/unsupported file body projection",
+    "No late response replacement after draft revision/kind/path/workspace/epoch/request change"
+  ]
+}

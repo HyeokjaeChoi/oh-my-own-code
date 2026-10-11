@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "interpretation": "Coordinator verified bounded actual evidence; independent final judgment pending",
+  "actual_report": "docs/runs/native-permission-gated-graph/evidence/native-r1/report.json",
+  "actual_report_sha256": "eec64909cab73988d354394c6d9bb13159d8b4b8061cf4ea1846e17a4f79de0e",
+  "source_preexecution_binding": "docs/runs/native-permission-gated-graph/preexecution-code-input-r1.json",
+  "cases": [
+    {
+      "name": "overlay_forwarding",
+      "result": "pass"
+    },
+    {
+      "name": "fixed_config",
+      "result": "pass"
+    },
+    {
+      "name": "fixed_plugin_source",
+      "result": "pass"
+    },
+    {
+      "name": "sdk_registration_denied",
+      "result": "pass"
+    },
+    {
+      "name": "inert_wellknown",
+      "result": "pass"
+    },
+    {
+      "name": "control_boot",
+      "result": "pass"
+    },
+    {
+      "name": "permission_held",
+      "result": "pass"
+    },
+    {
+      "name": "saved_held",
+      "result": "pass"
+    }
+  ],
+  "owned_child": {
+    "pid": 52753,
+    "code": 0,
+    "signal": null,
+    "exited": true,
+    "timedOut": false,
+    "spawnFailed": false,
+    "protocolOverflow": false,
+    "signals": []
+  },
+  "identityStable": true,
+  "exact_before_after_equality": true,
+  "retainedRoot": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-graph-8GjUiE",
+  "copiedChild": {
+    "before": "1a4107806938ec4d2ac8013f0815a82521676b6e0ef292bdb2ac5a31c0b4d1dd",
+    "after": "1a4107806938ec4d2ac8013f0815a82521676b6e0ef292bdb2ac5a31c0b4d1dd"
+  },
+  "before_keys": [
+    "source",
+    "original",
+    "child",
+    "staged"
+  ],
+  "limits": [
+    "Synthetic fixed Native graph only; not full F09, provider, UI or production Main acceptance.",
+    "No OS filesystem/network sandbox or descendant enumeration is claimed.",
+    "Retained namespaces and before-after hashes do not prove change-and-restore absence or power-loss recovery.",
+    "Mandatory gated stage requires production child initialization before production build/launch/release; current production child unchanged and fails uninitialized control.",
+    "No successful pending sweep, remembered grant, release/activation, lease settlement, Shell/coordinator/tool coverage or fullF09 acceptance."
+  ]
+}

@@ -1,0 +1,219 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "F1",
+      "description": "Closed existing-only exact file/ancestor baseline"
+    },
+    {
+      "id": "F2",
+      "description": "One descriptor publisher and exact durable conflict/unknown safety"
+    },
+    {
+      "id": "F3",
+      "description": "Explicit sole-owner accessible file drafts"
+    },
+    {
+      "id": "F4",
+      "description": "Current actual filesystem/build/UI and independent gates"
+    }
+  ],
+  "checks": {
+    "files": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/workspace-file.test.mjs",
+        "apps/desktop-app/src/host/workbench-file-edit.test.mjs",
+        "apps/desktop-app/src/host/workbench-file-storage.test.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+        "apps/desktop-app/src/workbench-contract.test.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/src/configuration-draft.test.mjs",
+        "apps/desktop-app/src/configuration-agent.test.mjs",
+        "apps/desktop-app/src/configuration-skill-draft.test.mjs",
+        "apps/desktop-app/src/host/workbench-configuration-files.test.mjs",
+        "apps/desktop-app/src/host/workbench-skills.test.mjs",
+        "apps/desktop-app/src/host/workbench-agents.test.mjs",
+        "apps/desktop-app/src/event-host-supervisor.test.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Closed file grammar/baseline/registry/service/Renderer plus affected configuration regression",
+      "acceptance_ids": [
+        "F1",
+        "F2",
+        "F3",
+        "F4"
+      ],
+      "required": true
+    },
+    "kernel": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/host/configuration-save-kernel.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Actual existing descriptor-kernel and generic-target safety regression",
+      "acceptance_ids": [
+        "F1",
+        "F2",
+        "F4"
+      ],
+      "required": true
+    },
+    "publication": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/workspace-file-edit-probe.mjs",
+        "--out",
+        "docs/runs/workspace-file-editing/evidence/publication-r3"
+      ],
+      "cwd": ".",
+      "scope": "Actual contained staged-Bun existing-only descriptor publication and owned exit/current bytes",
+      "acceptance_ids": [
+        "F1",
+        "F2",
+        "F4"
+      ],
+      "required": true
+    },
+    "hidden-ui": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--script",
+        "ui-states",
+        "--out",
+        "docs/runs/workspace-file-editing/evidence/hidden-r3"
+      ],
+      "cwd": ".",
+      "scope": "Actual built hidden file editor explicit states/keyboard/760px200 plus existing matrix",
+      "acceptance_ids": [
+        "F3",
+        "F4"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "nx",
+        "run",
+        "desktop-app:build",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Actual coherent generic-file helper/kernel/host/Renderer build",
+      "acceptance_ids": [
+        "F4"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Closed public/private/Renderer types",
+      "acceptance_ids": [
+        "F4"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Enforced FSD/browser boundaries",
+      "acceptance_ids": [
+        "F4"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Actual browser/server build closure",
+      "acceptance_ids": [
+        "F4"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "docs/runs/workspace-file-editing/check-changed.mjs",
+        "lint"
+      ],
+      "cwd": ".",
+      "scope": "Affected current source lint",
+      "acceptance_ids": [
+        "F4"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "docs/runs/workspace-file-editing/check-changed.mjs",
+        "format"
+      ],
+      "cwd": ".",
+      "scope": "Affected current source format",
+      "acceptance_ids": [
+        "F4"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/workspace-file-editing/design.md",
+      "gate": "design_spec",
+      "version": "3",
+      "sha256": "92548cbea0fc62c9cac6d39c02686480959b41938b32a869bf7e78f782127873"
+    }
+  ],
+  "environment_files": [
+    "pnpm-lock.yaml",
+    "docs/runs/workspace-file-editing/source-facts.json",
+    "docs/runs/workspace-file-editing/prechange-inventory.json",
+    "docs/runs/workspace-file-editing/check-changed.mjs"
+  ],
+  "user_approvals": [],
+  "decision_register": [
+    {
+      "id": "existing-file-descriptor-publication",
+      "statement": "Add existing-only generic target through existing publisher and original durable feature gate; no Native mutation/new runtime/second writer",
+      "status": "delegated",
+      "source": "Authorized ongoing remaining product work, PRD AC11 and current accepted architecture",
+      "impact": "New bounded filesystem target/public API/Renderer draft authority requires initial major entry; routine fixes afterward",
+      "blocks": [],
+      "resolution": "Initial fresh PLAN and DESIGN_SPEC once, actual producer checkpoint before consumers, coherent descriptor publication/hidden UI plus independent CODE/RENDER"
+    }
+  ]
+}

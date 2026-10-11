@@ -1,0 +1,53 @@
+재실행·수정 없이 기존 최종 보고를 전달합니다. Main의 storage 수정으로 Renderer shape 변경은 없습니다.
+
+Repository: `/Users/hyukjaechoi/Projects/oh-my-own-code`
+
+```text
+apps/desktop-app/src/renderer/entities/workbench/model/store.ts
+d133b152d5be0612f96984f025a2716c7a35d9f14b308879ca9be026da2bef9d
+
+apps/desktop-app/src/renderer/entities/workbench/model/controller.ts
+5f3196e5b21bd70ad58ade341e23ce1c372dac7d6a520a1b6a5794f4fdfef6c5
+
+apps/desktop-app/src/renderer/entities/workbench/index.ts
+7239e382f4bdc16c7ebfbf1085ad1436f2b06fb16f863acbcac4e7752730cbb0
+
+apps/desktop-app/src/renderer/shared/api/index.ts
+b5d0208ee23646c8c059c1a220d517dd54908c852671136d1618b894a6812839
+
+apps/desktop-app/src/renderer/widgets/conversation/index.tsx
+f4e810e42437b1593260e794551c0f391b5e1f526570e20cfa18f0aa3bb3e6ad
+
+apps/desktop-app/src/renderer/features/conversation-context/index.tsx
+62dcbf624891a0a0064f00a9fb9d826875b7c8daf111c723b6f3d0aa5f48c6fc
+
+apps/desktop-app/src/renderer/features/conversation-context/context.module.css
+f8589d320ec9c0847cc54bf049254f07f3360e79decd5fb2d3b45f288a622200
+
+apps/desktop-app/src/workbench-store.test.mjs
+73e5c821d7223d47d00dec44b19107b76f9e52e67bdb9f531ff236e111bf680a
+```
+
+기존 최종 검사 명령과 결과입니다. 모두 위 Repository에서 실행했습니다.
+
+```sh
+# PASS: 1502/1502, fail 0, cancelled 0, skipped 0
+node --import tsx --test apps/desktop-app/src/workbench-store.test.mjs
+
+# PASS: 65/65, fail 0
+node --import tsx --test --test-name-pattern='conversation context:' apps/desktop-app/src/workbench-store.test.mjs
+
+# PASS: exit 0
+node node_modules/typescript/bin/tsc -p apps/desktop-app/tsconfig.json --noEmit
+
+# PASS: exit 0
+node node_modules/eslint/bin/eslint.js --config apps/desktop-app/eslint.config.mjs apps/desktop-app/src/renderer/entities/workbench/model/store.ts apps/desktop-app/src/renderer/entities/workbench/model/controller.ts apps/desktop-app/src/renderer/entities/workbench/index.ts apps/desktop-app/src/renderer/shared/api/index.ts apps/desktop-app/src/renderer/widgets/conversation/index.tsx apps/desktop-app/src/renderer/features/conversation-context/index.tsx apps/desktop-app/src/workbench-store.test.mjs
+
+# PASS: All matched files use Prettier code style!
+node node_modules/prettier/bin/prettier.cjs --check apps/desktop-app/src/renderer/entities/workbench/model/store.ts apps/desktop-app/src/renderer/entities/workbench/model/controller.ts apps/desktop-app/src/renderer/entities/workbench/index.ts apps/desktop-app/src/renderer/shared/api/index.ts apps/desktop-app/src/renderer/widgets/conversation/index.tsx apps/desktop-app/src/renderer/features/conversation-context/index.tsx apps/desktop-app/src/renderer/features/conversation-context/context.module.css apps/desktop-app/src/workbench-store.test.mjs
+
+# PASS: {"result":"pass","sourceFiles":98,"boundaryFixtures":68,"positiveFixtures":16}
+node apps/desktop-app/scripts/check-renderer-boundaries.mjs
+```
+
+최종 확인 당시 공개 producer **7/7**, IO **4/4**, storage **9/9** freeze hash가 일치했습니다. Runtime·build·Native·GUI·provider는 실행하지 않았습니다. Selfapproval은 하지 않았습니다.

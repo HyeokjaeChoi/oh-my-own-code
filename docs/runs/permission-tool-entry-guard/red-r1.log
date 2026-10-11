@@ -1,0 +1,73 @@
+✖ held raw actual execute refuses before decode, tool callback and output schema (0.836625ms)
+✖ held actual Tool.snapshot refuses before catalog and definition schema callbacks (0.284209ms)
+✖ held actual direct entry refuses before hook construction (0.123292ms)
+✖ held actual nested entry refuses before hook construction (0.080959ms)
+✖ raw entry with missing store service cannot call schema or callback (0.093792ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 244.921292
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:77:1
+✖ held raw actual execute refuses before decode, tool callback and output schema (0.836625ms)
+  TypeError [Error]: Control.layer is not a function
+      at run (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:69:35)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:80:17)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:84:1
+✖ held actual Tool.snapshot refuses before catalog and definition schema callbacks (0.284209ms)
+  TypeError [Error]: Control.layer is not a function
+      at run (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:69:35)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:87:20)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:92:2
+✖ held actual direct entry refuses before hook construction (0.123292ms)
+  TypeError [Error]: Control.layer is not a function
+      at run (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:69:35)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:95:20)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:92:2
+✖ held actual nested entry refuses before hook construction (0.080959ms)
+  TypeError [Error]: Control.layer is not a function
+      at run (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:69:35)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:95:20)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/native-permission-tool-entry.test.mjs:105:1
+✖ raw entry with missing store service cannot call schema or callback (0.093792ms)
+  TypeError [Error]: Control.layer is not a function
+      at run (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:69:35)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-entry.test.mjs:106:39)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

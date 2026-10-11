@@ -1,0 +1,31 @@
+{
+  "revision": 15,
+  "checks": {
+    "native-metadata": 233,
+    "native-descriptor-read": 223,
+    "native-read-auxiliary": 23,
+    "native-task-read": 12
+  },
+  "affected_total": 491,
+  "focused": 58,
+  "source_input": "browser-code-input-r1.json",
+  "check_status": "browser-check-status-final-r1.json",
+  "static": {
+    "main_exact7_eslint": "exit0",
+    "main_exact7_prettier": "exit0",
+    "worker_exact4_eslint": "reported exit0",
+    "worker_exact4_prettier": "reported exit0"
+  },
+  "reused_unchanged": [
+    "native-descriptor-bun-probe r5",
+    "native-descriptor-probe-diagnostics",
+    "main-task-owner-fence",
+    "native-read-effect"
+  ],
+  "limits": [
+    "Node/extracted pinned Effect/scripted IO only",
+    "complete=false unsupported capabilities=[]",
+    "no Native/provider/browser/network/Main/server/build/GUI/physical invocation"
+  ],
+  "independent_code": "bounded-browser-source-code-review-r1.json PASS, actual fresh Kant report"
+}

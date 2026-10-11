@@ -1,0 +1,239 @@
+TAP version 13
+# Subtest: MCP inactive registration and explicit connection lifecycle are durable, scoped and status-observed
+ok 1 - MCP inactive registration and explicit connection lifecycle are durable, scoped and status-observed
+  ---
+  duration_ms: 120.151833
+  type: 'test'
+  ...
+# Subtest: MCP denied is rejected before any effect
+ok 2 - MCP denied is rejected before any effect
+  ---
+  duration_ms: 41.5725
+  type: 'test'
+  ...
+# Subtest: MCP collision is rejected before any effect
+ok 3 - MCP collision is rejected before any effect
+  ---
+  duration_ms: 38.584875
+  type: 'test'
+  ...
+# Subtest: MCP file-changed is rejected before any effect
+ok 4 - MCP file-changed is rejected before any effect
+  ---
+  duration_ms: 44.781334
+  type: 'test'
+  ...
+# Subtest: MCP observation is workspace-scoped, read-only and rejects a different Native location
+ok 5 - MCP observation is workspace-scoped, read-only and rejects a different Native location
+  ---
+  duration_ms: 26.497792
+  type: 'test'
+  ...
+# Subtest: MCP file changed during confirmation is rejected before SDK mutation
+ok 6 - MCP file changed during confirmation is rejected before SDK mutation
+  ---
+  duration_ms: 42.561
+  type: 'test'
+  ...
+# Subtest: MCP catalog changed during confirmation is rejected before SDK mutation
+ok 7 - MCP catalog changed during confirmation is rejected before SDK mutation
+  ---
+  duration_ms: 43.890542
+  type: 'test'
+  ...
+# Subtest: MCP permissions changed during confirmation is rejected before SDK mutation
+ok 8 - MCP permissions changed during confirmation is rejected before SDK mutation
+  ---
+  duration_ms: 35.939042
+  type: 'test'
+  ...
+# Subtest: MCP policy changed during confirmation is rejected before SDK mutation
+ok 9 - MCP policy changed during confirmation is rejected before SDK mutation
+  ---
+  duration_ms: 38.092959
+  type: 'test'
+  ...
+# Subtest: MCP inbox changed during confirmation is rejected before SDK mutation
+ok 10 - MCP inbox changed during confirmation is rejected before SDK mutation
+  ---
+  duration_ms: 34.933583
+  type: 'test'
+  ...
+# Subtest: MCP checks busy in another session of the same workspace
+ok 11 - MCP checks busy in another session of the same workspace
+  ---
+  duration_ms: 48.004
+  type: 'test'
+  ...
+# Subtest: MCP checks permissions in another session of the same workspace
+ok 12 - MCP checks permissions in another session of the same workspace
+  ---
+  duration_ms: 53.003583
+  type: 'test'
+  ...
+# Subtest: MCP checks policy in another session of the same workspace
+ok 13 - MCP checks policy in another session of the same workspace
+  ---
+  duration_ms: 60.817542
+  type: 'test'
+  ...
+# Subtest: MCP checks correlation in another session of the same workspace
+ok 14 - MCP checks correlation in another session of the same workspace
+  ---
+  duration_ms: 53.125625
+  type: 'test'
+  ...
+# Subtest: MCP checks inbox in another session of the same workspace
+ok 15 - MCP checks inbox in another session of the same workspace
+  ---
+  duration_ms: 55.136167
+  type: 'test'
+  ...
+# Subtest: MCP observed failed confirms only the connection attempt
+ok 16 - MCP observed failed confirms only the connection attempt
+  ---
+  duration_ms: 65.243709
+  type: 'test'
+  ...
+# Subtest: MCP observed needs_auth confirms only the connection attempt
+ok 17 - MCP observed needs_auth confirms only the connection attempt
+  ---
+  duration_ms: 69.63725
+  type: 'test'
+  ...
+# Subtest: MCP owned already absent remove has no SDK effect and clears live ownership only after completion
+ok 18 - MCP owned already absent remove has no SDK effect and clears live ownership only after completion
+  ---
+  duration_ms: 62.12525
+  type: 'test'
+  ...
+# Subtest: MCP ACK with wrong-status stays unknown and keeps an original workspace-wide hold
+not ok 19 - MCP ACK with wrong-status stays unknown and keeps an original workspace-wide hold
+  ---
+  duration_ms: 76.739667
+  type: 'test'
+  location: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2422:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2491:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: MCP ACK with malformed stays unknown and keeps an original workspace-wide hold
+not ok 20 - MCP ACK with malformed stays unknown and keeps an original workspace-wide hold
+  ---
+  duration_ms: 75.772875
+  type: 'test'
+  location: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2422:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2491:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: MCP ACK with other-drift stays unknown and keeps an original workspace-wide hold
+not ok 21 - MCP ACK with other-drift stays unknown and keeps an original workspace-wide hold
+  ---
+  duration_ms: 68.043875
+  type: 'test'
+  location: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2422:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2491:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: MCP ACK with policy-after-effect stays unknown and keeps an original workspace-wide hold
+not ok 22 - MCP ACK with policy-after-effect stays unknown and keeps an original workspace-wide hold
+  ---
+  duration_ms: 70.019917
+  type: 'test'
+  location: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2422:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2491:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: MCP completion failure never publishes speculative receipt or live ownership
+ok 23 - MCP completion failure never publishes speculative receipt or live ownership
+  ---
+  duration_ms: 46.985
+  type: 'test'
+  ...
+# Subtest: MCP completion delay never publishes speculative receipt or live ownership
+not ok 24 - MCP completion delay never publishes speculative receipt or live ownership
+  ---
+  duration_ms: 2038.791459
+  type: 'test'
+  location: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2498:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'servers')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2531:35)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: MCP dispatch must flush before SDK; independent workspace reads remain available
+ok 25 - MCP dispatch must flush before SDK; independent workspace reads remain available
+  ---
+  duration_ms: 77.634875
+  type: 'test'
+  ...
+# Subtest: MCP restart forgets live authority, performs no automatic mutation, and keeps old receipts historical
+ok 26 - MCP restart forgets live authority, performs no automatic mutation, and keeps old receipts historical
+  ---
+  duration_ms: 104.827834
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 21
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3560.016375

@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "eb99a82eab90228956308cca7bb58621e69c2e5e197e12defaa9c414cc3a797a",
+    "environment_sha256": "a768b935b68bced02a848ba606c0256ee223732d0800f5b2f99e553189a6322d",
+    "gate": "code",
+    "plan_sha256": "ce0b6110a0c29fe57b11f7b0e4c7689ba56c509cbd1a5ecf585c121e1d2d8664",
+    "schema_version": 2,
+    "source_sha256": "6401814e676f13783d3ecb0b106a1e08eddd9f422899b3877e420e88729d8f68",
+    "verification_sha256": "2b5092bef25c13bb6956a6a0224e7a323594af86a854a1ec1a9e0388eebbdd97",
+    "work_class_sha256": "e607760a80d9b949d27d76cab2f4026ba62d2c79bf1cd2a4c60b36c77755a99e"
+  },
+  "verdict": "changes_requested",
+  "summary": "명세 준수와 코드 품질을 별도로 검토했습니다. variant의 원래 요청 digest, 양쪽 policy 단계, omission 유지, 닫힌 public projection, 서로 다른 session/assistant 보고, 늦은 결과 차단, unknown 원래 키 조회 경로에서 추가 결함은 확인하지 못했습니다. 소스 696개와 입력 hash 6개, 변경 경로 35개, beforebytes와 27개 경로의 patch가 일치합니다. inbound managed 경로 8개의 hash, UI runner의 이전 보존본과 selector 교체 9개, line-feedback 교체 2개를 확인했습니다. 이전 UI review의 evidence hash와 입력도 일치합니다. 저장소 밖 check-input-reuse run 원본은 직접 검증하지 않았습니다. 기록된 검사 8개는 모두 통과했고, scoped binding 6개를 독립 계산했습니다. PNG 41개의 hash·치수와 캡처 전후·현재 build provenance도 일치합니다. 아래 2개 수정이 필요합니다. 파일 변경, ledger 명령, 위임, runtime 실행, 광범위한 suite 재실행은 하지 않았습니다. provider·production Main·private store·Windows 동작은 검증하지 않았으며, full18 또는 release 승인도 아닙니다.",
+  "open_findings": [
+    {
+      "id": "F1",
+      "severity": "P2",
+      "path": "docs/runs/conversation-runtime-options/contract.json",
+      "line": 99,
+      "trigger": "boundaries 통과 후 docs/design/tokens/tokens.css만 변경하고 이전 검사 결과를 재사용할 때.",
+      "impact": "실제 boundary 검사 결과가 달라져도 input_binding_sha256가 유지되어 이전 통과 결과를 재사용할 수 있습니다.",
+      "evidence": "renderer.tsx:3이 token CSS를 import하고, check-renderer-boundaries.mjs:511 및 :566이 해당 파일을 읽고 dependency를 순회합니다. 이 경로는 boundaries.input_scope, 자동 guards, environment_files에 없습니다. 파일을 쓰지 않고 token CSS에 금지된 외부 @import를 추가한 메모리 검증에서 실제 checker는 오류를 반환했습니다. 그러나 독립 계산한 boundaries binding은 e2673d24376a9dfccce9d877a57e6f779fad9713b889728da9b9d975ddb30e6e로 그대로였습니다. 현재 소스의 통과 결과 자체는 유효합니다.",
+      "correction": "boundaries.input_scope에 docs/design/tokens를 포함하고, 해당 검사 binding과 영향받는 최종 review 입력을 갱신하세요."
+    },
+    {
+      "id": "F2",
+      "severity": "P2",
+      "path": "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "line": 635,
+      "trigger": "현재 renderer로 legacy 또는 기본 all family를 실행하여 assertComposerGeometry에 도달할 때.",
+      "impact": "새 입력 구조를 이전 geometry 기준으로 측정하므로 runner가 시작 단계에서 실패하고 이후 legacy 검증을 진행하지 못합니다.",
+      "evidence": "selector 교체 후 parentElement는 toolbar가 아니라 conversation/index.tsx:710의 Agent label입니다. conversation.module.css:725는 이 label을 세로 flex로 배치하므로 label 높이는 20px 텍스트와 32px select를 포함합니다. 그러나 runner:647은 이를 32px toolbar로 검사합니다. 또한 새 fieldset과 안내문이 composer 내부에 추가됐지만 runner:645는 전체 높이를 계속 120px로 검사합니다. 보존된 000-requested-keyboard.png에서도 확장된 composer를 확인했습니다. legacy/all GUI는 실행하지 않았습니다.",
+      "correction": "실제 toolbar를 직접 선택하고, accepted F06 구조에 맞게 composer geometry 조건을 갱신하세요. 수정한 geometry 검사를 별도로 검증하세요."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a11eb3-3c2a-74e1-a7d7-996076cd34c7",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "status": "implemented_and_targeted_checks_passed",
+  "work_class": "routine",
+  "run": "configuration-save",
+  "plan_revision": 2,
+  "design_version": 1,
+  "mode": "solo-implement/general",
+  "recursive_delegation": false,
+  "authority": {
+    "packet": "docs/runs/configuration-save/kernel-worker-packet-r1.json",
+    "plan_sha256": "96fafc56733dd6f37229f28cac9e6bc20df31e4051852e14c7c1dc8eded5d96c",
+    "design_sha256": "6767951711becc0ffafc56e765d5c12aba55afb80279296a21f7dc2c82a85c2e",
+    "helperFreeze": "docs/runs/configuration-save/kernel-helper-freeze-r1.json",
+    "helperHashesMatch": true
+  },
+  "owned_source_paths": [
+    "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+    "apps/desktop-app/src/host/configuration-save-kernel.test.mjs"
+  ],
+  "sourceHashes": {
+    "apps/desktop-app/src/host/configuration-save-kernel.mjs": "7d115e0328509a6f90a22aefa40d9a51cd2f498ef9f7773d6d7b599585f8ec57",
+    "apps/desktop-app/src/host/configuration-save-kernel.test.mjs": "a75f2cc988cdb2d88d09b6060e643044201918db630d0093beceea0659794360"
+  },
+  "helperHashes": {
+    "apps/desktop-app/src/host/configuration-file-observation.mjs": "9d8b9b8a9fa8c8b9e5f41daded538d8759d2aca79ea9969e42c72f981890596d",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157"
+  },
+  "actual_api": {
+    "export": "createConfigurationSaveKernel",
+    "factory": "async ({check = () => {}, timeoutMs = 10000} = {}) -> frozen {prepare,publish,abort,close}; timeoutMs integer 1..10000; no io option",
+    "runtime": "Darwin/arm64/Bun 1.4.2 only; Node import inert; bun:ffi loaded only inside factory",
+    "prepare": "synchronous closed own-data {runtimeEpoch,operationId,workspaceId,workspacePath,kind,text,expectation,version?} -> {status:staged,token:hex64} | {status:unknown,reason}; caller must already have flushed stage intent",
+    "publish": "synchronous {token} -> {status:saved,version:hex64,backupId?} | {status:unknown,reason}; caller must first flush publish intent; token consumed before checks/effect; existing SWAP/missing EXCL",
+    "abort": "synchronous {token} -> {status:aborted} | {status:unknown,reason}; closes matching active preparation, retains named stage",
+    "close": "synchronous idempotent close of preparation and FFI library; returns undefined, throws fixed io_failed on cleanup failure/busy during reentrant operation",
+    "private_reasons": [
+      "invalid_request",
+      "unsupported_runtime",
+      "busy",
+      "path_denied",
+      "file_changed",
+      "unsupported_content",
+      "unsupported_metadata",
+      "stage_collision",
+      "io_failed",
+      "expired",
+      "invalid_token",
+      "closed"
+    ],
+    "helpers_consumed": [
+      "configurationFileVersion",
+      "configurationBackupId",
+      "configurationFileWriteFits"
+    ],
+    "names": "AGENTS.md or opencode.json; operation-derived reserved basename from actual configurationBackupId",
+    "bounds": "32768 exact UTF8 body bytes; full source read <=32769; xattr names <=32 and aggregate names+values <=32768; fixed-cap buffers; one active preparation and one terminal token record",
+    "retention": "no named cleanup, automatic retry/replay, rollback, body logging, live bulk xattr copy, or public path/metadata projection",
+    "identity": "held root/source/stage descriptors; openat NOFOLLOW/NONBLOCK/CLOEXEC; initial stage mode0600 verified before any body write; regular nlink1/current uid+gid/non-executable ordinary modes/no extended ACL/flags0",
+    "metadata": "bounded flistxattr/fgetxattr opaque snapshots; stage-only known bounded fremovexattr/fsetxattr; exact buffer equality; actual acl_get_fd_np null+ENOENT and fgetattrlist flags0; mode preserved",
+    "versions": "expected observation before own stage directory timestamp changes; subsequent root identity checks; ignore rename-induced ctime only in post-publication comparison; final version verified against actual Node reader for replacement and missing creation"
+  },
+  "actual_api_defect_and_repair": {
+    "defect": "The supplied fixed-four-argument FFI declaration of Darwin variadic openat created a retained stage with mode0000 despite mode0600 requested. Observed in owned production execution, not inferred from primitive success.",
+    "notification": "Reported in commentary before repair.",
+    "repair": "Darwin arm64-specific FFI declaration occupies x3..x7 and puts mode in ninth fixed argument at stack[0]; creation is verified as0600 before writing. O_CLOEXEC uses Darwin fcntl.h value0x1000000 because Node/Bun omit the exported constant. Actual active descriptor F_GETFD tests assert FD_CLOEXEC.",
+    "primarySource": "https://developer.apple.com/documentation/apple-silicon/addressing-architectural-differences-in-your-macos-code",
+    "initialFailureEvidence": "docs/runs/configuration-save/evidence/kernel-worker-r1/synthetic-mWlXYt",
+    "remainingContractDefects": []
+  },
+  "runtime_evidence": {
+    "engineSha256": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+    "manifestSha256": "006b5463174bf6bc843f7d7fdfcffa59c6d5398b806dc87ca72f3ce037809864",
+    "resourceValidation": "Actual app-staged full manifest/inventory/locked packages validated before Bun execution; engine and frozen helper hashes checked again afterward. Owned kernel imported from source, no staging writes.",
+    "retainedSyntheticRoot": "docs/runs/configuration-save/evidence/kernel-worker-r1/synthetic-UoEwiH",
+    "verification": "docs/runs/configuration-save/evidence/kernel-worker-r1/synthetic-UoEwiH/verification.json",
+    "checks": [
+      {
+        "name": "owned-node-tests",
+        "argv": [
+          "node",
+          "--test",
+          "apps/desktop-app/src/host/configuration-save-kernel.test.mjs"
+        ],
+        "exitCode": 0,
+        "tests": 33,
+        "passed": 33,
+        "failed": 0,
+        "skipped": 0,
+        "syntheticCases": 29,
+        "actualNodeReaderParity": 2,
+        "evidence": "docs/runs/configuration-save/evidence/kernel-worker-r1/synthetic-UoEwiH/verification.json"
+      },
+      {
+        "name": "owned-eslint",
+        "argv": [
+          "./node_modules/.bin/eslint",
+          "--config",
+          "apps/desktop-app/eslint.config.mjs",
+          "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+          "apps/desktop-app/src/host/configuration-save-kernel.test.mjs"
+        ],
+        "exitCode": 0,
+        "stdout": ""
+      },
+      {
+        "name": "owned-format",
+        "argv": [
+          "./node_modules/.bin/prettier",
+          "--check",
+          "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+          "apps/desktop-app/src/host/configuration-save-kernel.test.mjs"
+        ],
+        "exitCode": 0,
+        "stdout": "Checking formatting...\nAll matched files use Prettier code style!"
+      }
+    ],
+    "observations": [
+      {
+        "name": "matching-swap-original-mode-opaque-xattrs-reader-version",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "missing-exclusive-create-and-exact32768-byte-bound",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "stage-collision-retains-existing-entry",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "stale-version-before-stage",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "prepared-in-place-unknown-no-publication",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "prepared-replacement-unknown-no-publication",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "prepared-symlink-unknown-no-publication",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "prepared-root-move-unknown-no-publication",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "prepared-stage-replacement-unknown-no-publication",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "prepared-metadata-change-unknown-no-publication",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "post-precheck-replacement-retention-no-rollback-replay",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "post-precheck-in-place-retention-no-rollback-replay",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "post-precheck-symlink-retention-no-rollback-replay",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "post-precheck-root-move-retention-no-rollback-replay",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "post-precheck-missing-collision-retention-no-rollback-replay",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "initial-symlink-hardlink-executable-unsupported-profile",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "actual-ACL-and-BSD-flags-refused",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "actual-stage-inherited-ACL-refused-before-publication",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "metadata32-name-and32768-aggregate-bounds",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "stage-inherited-metadata-rechecked",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "source-full-content-invalid-UTF8-MCP-controls-size",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "MCP-supported-whole-text-and-empty-instructions",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "request-closed-own-data-body-bound-surrogates",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "active-token-bounded-abort-invalid-token-and-retention",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "deadline-timer-expiry-closes-all-FDs-without-publish",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "deadline-before-event-loop-tick-no-replay",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "check-failure-sanitized-stage-retained-and-FDs-closed",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "reentrant-check-cannot-close-or-prepare-during-publication",
+        "status": "pass",
+        "fdCleanup": true
+      },
+      {
+        "name": "close-active-preparation-retains-stage-and-closes-FDs",
+        "status": "pass",
+        "fdCleanup": true
+      }
+    ]
+  },
+  "failed_iterations_retained": [
+    {
+      "path": "docs/runs/configuration-save/evidence/kernel-worker-r1/synthetic-NaQZ9F",
+      "reason": "First actual production fixture failed; original retained."
+    },
+    {
+      "path": "docs/runs/configuration-save/evidence/kernel-worker-r1/synthetic-mWlXYt",
+      "reason": "Confirmed stage failure and initial0000 creation mode under incorrect variadic declaration."
+    },
+    {
+      "path": "docs/runs/configuration-save/evidence/kernel-worker-r1/synthetic-h4Xctd",
+      "reason": "First16 kernel cases passed; test FD baseline omitted lazily initialized Bun spawn/event-loop descriptors. Test warmup corrected; no kernel leak conclusion from this result."
+    }
+  ],
+  "limits_and_handoff": [
+    "Independent CODE review is not performed by this worker; coordinator must assign a fresh reviewer and register the gate.",
+    "Main retains all DTO/durable/IPC/staging/shared-helper integration and ledger ownership. This report does not claim full app integration or build success.",
+    "Actual synthetic synchronous IO/metadata/sync behavior tested; short-read/write loops inspected, but forced short-IO/fsync/close syscall failures were not injected.",
+    "No filesystem isolation/CAS/future stability, power-loss durability, Windows, Native activation, provider, private store, Electron, or production Main claim.",
+    "Post-precheck external changes may already publish new bytes; unknown preserves the displaced entry, never rollback/replay.",
+    "Malformed/foreign-token requests do not cancel a separate active preparation; corresponding admitted operation errors, abort, expiry and close release all task descriptors.",
+    "Source and evidence paths remain disjoint from concurrent Main work; no shared helper, dependency, DTO, staging, renderer or ledger writes."
+  ]
+}

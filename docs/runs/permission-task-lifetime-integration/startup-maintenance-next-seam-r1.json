@@ -1,0 +1,34 @@
+{
+  "scope": "read-only next-seam source audit during rev27 independent CODE; no implementation or gate change",
+  "source_identity": [
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-g4xer9vd.js",
+      "bytes": 4753,
+      "sha256": "0b78f3dbd0899a168d980f6946490c7763b37005fe6d3bd9518cc161f1c97029"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-hbtt76ya.js",
+      "bytes": 13303,
+      "sha256": "8afa7591a9f6c71e2c3169b0b55a2429ad578705ca32a67b35fe992dc8b76198"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-gd4qta3r.js",
+      "bytes": 840,
+      "sha256": "89c5db7b2a8dac6d7383745186270354317edab7c3771410532923cd32422982"
+    }
+  ],
+  "facts": [
+    "ToolOutput config-g4xer9vd.js cleanupLayer immediately forks cleanup with hourly repeat when cleanupNode is acquired; node46 lists cleanupNode as dependency.",
+    "Shell config-hbtt76ya.js cleanupLayer immediately forks cleanup2 with hourly repeat; node44 lists cleanupNode as dependency.",
+    "Both branches read original FSUtil/Global services and FileRetention.cleanup may stat/remove matching generated output files; Tool execution/callback gate is too late for acquisition.",
+    "Stopping later is insufficient for no-effect startup; gate maintenance node acquisition before original cleanup effect starts.",
+    "Explicit Service cleanup methods remain separate call paths and cannot become task authority merely because acquisition cleanup is disabled."
+  ],
+  "next_bounded_outcome": "Source-preserving startup cleanup control using SAME existing Control/Scope, original service dependencies and explicit no-maintenance startup policy where accepted. Prove original Layer acquisition and cancellation with real pinned Effect + scripted FS/Global/retention before any production correction. Do not fabricate maintenance Task/lease or silently claim source-only audit as live inventory.",
+  "unresolved": [
+    "Review accepted design policy for disabling maintenance until a genuine maintenance owner exists, rather than adding a parallel task registry.",
+    "Check all exact cleanup call sites and service exported methods before choosing a patch seam.",
+    "Current recipe has245/256 edits; do not raise bound or remove existing entries merely to fit new work."
+  ],
+  "runtime": "not invoked; no Native/core imports, filesystem cleanup, provider/Main/Bun/server/browser/network/GUI/build/physical run"
+}

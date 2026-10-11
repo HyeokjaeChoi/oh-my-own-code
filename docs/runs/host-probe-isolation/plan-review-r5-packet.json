@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "run": "host-probe-isolation",
+  "phase": "review",
+  "role": "plan_reviewer",
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "96b45f3904b1abbf7d2cbf4bfda268d6220e7eafcd5d9eeffa8a7f77dea615dd",
+    "contract_sha256": "f2d4c4894c99966b7bfc2e8c8d398a0cfba6323406e9a8354f38bea66903be68",
+    "source_sha256": "83a5f247fed8bcbb2f511a6388a43e16f92736ad49dc1d7cc3467411d2d1b2b6"
+  },
+  "inputs": [
+    "docs/runs/host-probe-isolation/plan.md",
+    "docs/runs/host-probe-isolation/contract.json",
+    "docs/runs/build-delivery/host-lifecycle-static-research-r1.md",
+    "docs/runs/build-delivery/host-lifecycle-plan-assessment-r1.md",
+    "docs/runs/host-probe-isolation/pre-canary-review-r1.json"
+  ],
+  "constraints": [
+    "Read-only review. Do not execute code, tests, canaries, SDKs, network, or configuration access.",
+    "Review revision 4 changes and feasibility of stopping before any canary when exact runtime dependencies are not audited.",
+    "Check that external watchdog/output bounds and cleanup claims are sufficiently concrete and consistent across plan and contract.",
+    "Check the acceptance model permits truthful NO-RUN with all controls unverified before canary effects; keep real SDK separately unapproved."
+  ],
+  "attestation": "Prepared plan review input metadata; not spawn or runtime identity attestation"
+}

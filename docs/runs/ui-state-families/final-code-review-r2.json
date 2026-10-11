@@ -1,0 +1,157 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "a71e3d61c95047b41bb497ebcef6c3e99b14b87fab18c97914db527c573b4649",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "68d991058b5c1da7097fbbfc2cb666454476a725d3d21d5642211fa4bda3c44a",
+    "schema_version": 2,
+    "source_sha256": "07763f083a8e75cc08033e76e8101b9d506f850b846841379f1df6d781591b7a",
+    "verification_sha256": "6ce37ff4369039f3f5ecfe0fa7d50f8b5ff74028a730fb8185d9b782f9c31d49",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "이전 F1 correction을 확인했습니다. Tool UI crop은 별도 native frame에 연결된 auxiliary 증거로 처리됩니다. 지정한 3개 소스와 baseline을 검토한 결과, 수정이 필요한 결함은 없습니다. 기존 focused 실행 증거의 재사용도 revision2 계약 범위에서 타당합니다.",
+  "open_findings": [],
+  "verification": {
+    "review_binding": {
+      "exact_input_object_copied": true,
+      "current_review_input_matches": true,
+      "checked_immediately_before_report": true,
+      "packet_routing_and_document_hashes_match": true
+    },
+    "scope": {
+      "plan_revision": 2,
+      "changed_paths": [
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs"
+      ],
+      "before_files_match_baseline_hashes": true,
+      "other_source_changes": false,
+      "review_passes": [
+        "요구사항과 acceptance criteria 대조",
+        "변경 코드, 호출 경로, 테스트와 증거 검토"
+      ]
+    },
+    "F1": {
+      "status": "resolved",
+      "production_change": "실제 crop 객체에 family, evidenceType=auxiliary-crop, nativePath가 추가됐습니다. 별도 native capture 호출이 같은 경로의 부모 frame을 생성합니다.",
+      "targeted_node_regression": {
+        "result": "pass",
+        "method": "현재 production module과 실제 crop 객체를 추출하는 테스트 callback을 메모리 filesystem fixture로 실행했습니다.",
+        "accepted_reports": [
+          "all",
+          "legacy"
+        ],
+        "rejected_cases": [
+          "부모 frame 누락",
+          "crop 자신을 부모로 지정",
+          "알 수 없는 evidenceType",
+          "다른 family의 crop",
+          "표시된 창에서 얻은 crop",
+          "위조된 crop 치수",
+          "crop만 있는 보고서",
+          "표시된 부모 창",
+          "부모의 숨김 증거 누락",
+          "잘못된 부모 scale",
+          "허용 오차를 넘는 부모 viewport 치수",
+          "위조된 부모 PNG 치수",
+          "중복 부모 frame"
+        ],
+        "filesystem_writes": 0,
+        "gui_launches": 0
+      },
+      "native_proof": "auxiliary crop은 family의 native 증거를 대신할 수 없습니다. 연결된 부모 frame도 숨김·비집중·비포커스 가능 상태, PNG 치수, scale, 전체 viewport 검증을 통과해야 합니다."
+    },
+    "preservation": {
+      "original_try_statements": 1051,
+      "r1_preserved": 1051,
+      "r2_preserved": 1050,
+      "intentional_change": "기존 legacy crop 기록 1개에 분류와 부모 경로를 추가했습니다.",
+      "original_assertion_call_subtrees": 1815,
+      "preserved_assertion_call_subtrees": 1815,
+      "non_hoisted_original_statement_order_preserved": true,
+      "original_wrapper_test_statements_preserved": 27,
+      "cross_family_declaration_references": [],
+      "default_family_order": [
+        "legacy",
+        "extensions",
+        "workspace-files",
+        "git-review"
+      ]
+    },
+    "required_checks": {
+      "recorded_current_source_passes": [
+        "unit",
+        "lint",
+        "format",
+        "revalidate-extensions",
+        "revalidate-workspace-files",
+        "revalidate-git-review"
+      ],
+      "check_status": "필수 check 6개 모두 reusable입니다. 현재 source, plan, contract, environment binding과 일치합니다.",
+      "full_suite_rerun_performed": false
+    },
+    "historical_focused_runs": [
+      {
+        "family": "extensions",
+        "states": 27,
+        "pngs": 323,
+        "original_started_at": "2026-10-09T02:07:50.362Z",
+        "wrapper_exit": 0,
+        "owned_exit": 0
+      },
+      {
+        "family": "workspace-files",
+        "states": 25,
+        "pngs": 159,
+        "original_started_at": "2026-10-09T02:09:36.108Z",
+        "wrapper_exit": 0,
+        "owned_exit": 0
+      },
+      {
+        "family": "git-review",
+        "states": 44,
+        "pngs": 654,
+        "original_started_at": "2026-10-09T02:11:06.995Z",
+        "wrapper_exit": 0,
+        "owned_exit": 0
+      }
+    ],
+    "reuse_applicability": {
+      "decision": "accepted",
+      "reason": "correction은 legacy crop과 validator에 한정됩니다. 공통 capture/bootstrap과 focused family 본문, report, teardown은 manifest에 연결된 r1 runner와 바이트가 같습니다. 현재 validator로 기존 증거를 다시 확인할 수 있으므로 focused GUI 재실행을 생략한 결정은 타당합니다.",
+      "independently_executed": [
+        "계약에 포함된 읽기 전용 revalidate check 3개",
+        "PNG 1136개의 크기와 SHA-256 대조",
+        "현재 production captureProvenance의 build/runtime 바이트 대조",
+        "공통 capture/bootstrap과 focused 본문의 바이트 동등성 확인"
+      ],
+      "inventory_sha256": "4ef59f41de8ac35cbf9546228846fa9628afec4ba8271927708cfb3daab97154",
+      "original_runner_sha256": "3fe174a54eb0999bda3010e9eba8ec77a7088c333f7be9f1e15abd326e93f3bc",
+      "new_gui_execution": false,
+      "historical_source_and_times_preserved": true,
+      "historical_launch_checks": "현재 필수 check가 아닌 optional history로 보존됐습니다."
+    }
+  },
+  "limitations": [
+    "legacy/all GUI는 실행하지 않았습니다. 새 legacy native-parent capture 호출의 GUI 동작은 검증되지 않았습니다.",
+    "crop 회귀검증은 실제 production 객체와 validator의 schema 동작을 확인합니다. 메모리의 synthetic PNG는 GUI 증거가 아닙니다.",
+    "전체 passing suite, build, provider, Native/Git G2 실행은 수행하지 않았습니다.",
+    "기존 focused 실행은 synthetic main과 실제 renderer/preload의 증거입니다. 실제 provider나 private store 검증을 뜻하지 않습니다.",
+    "family는 한 파일에 남아 있습니다. 향후 per-file input_scope에는 shared runner가 필요하며, statement 수준 자동 재사용은 입증되지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11e7c-76ab-7bb0-9f3b-b751899d4fde",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "child_id_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "report_only": true,
+    "correction_authored_by_reviewer": false,
+    "delegation_performed": false,
+    "file_edits_performed": false,
+    "ledger_writes_performed": false,
+    "gui_execution_performed": false
+  }
+}

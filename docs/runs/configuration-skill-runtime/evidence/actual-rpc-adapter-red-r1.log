@@ -1,0 +1,26 @@
+✖ actual pinned RPC adapter accepts schemas and preserves rejection of extra fields (91.604542ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 148.068583
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-skills-host.test.mjs:18:1
+✖ actual pinned RPC adapter accepts schemas and preserves rejection of extra fields (91.604542ms)
+  Error: Pattern encountered while patterns is set to "error"
+    at ["schema"]["properties"]["nonce"]["pattern"]
+      at errorWithPath (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/effect/dist/internal/errors.js:7:10)
+      at importPatternChecks (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/effect/dist/internal/schema/fromJsonSchemaDocument.js:784:15)
+      at collectStringChecks (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/effect/dist/internal/schema/fromJsonSchemaDocument.js:799:22)
+      at on (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/effect/dist/internal/schema/fromJsonSchemaDocument.js:742:19)
+      at recur (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/effect/dist/internal/schema/fromJsonSchemaDocument.js:658:26)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/effect/dist/internal/schema/fromJsonSchemaDocument.js:831:53
+      at Array.from (<anonymous>)
+      at collectObjectScope (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/effect/dist/internal/schema/fromJsonSchemaDocument.js:830:38)
+      at on (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/effect/dist/internal/schema/fromJsonSchemaDocument.js:774:25)
+      at recur (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/effect/dist/internal/schema/fromJsonSchemaDocument.js:658:26)

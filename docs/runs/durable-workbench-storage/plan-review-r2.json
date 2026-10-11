@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "13b90ce5a68fccddc451436aa384aefe6756556c8a4ee6d8b347d7e160061963",
+    "gate": "plan",
+    "plan_sha256": "517b5739ec14bd816bfbeabb9ee3f3654a0d3aa59ccd18f7f7d4c19d72694f5a",
+    "schema_version": 2,
+    "source_sha256": "6b708712f5519cb2141621901a64b8b24286ec2e5e6ddcace9e7bbe8978e94c9"
+  },
+  "verdict": "pass",
+  "summary": "plan rev2와 storage-contract v2에서 변경된 P7 지적 3개만 재검토했습니다. P7-PLAN-1: host worker에 storage-integration.test.mjs를 배정했고 필수 storage-unit 명령에 등록했습니다. admission·dispatch flush 실패의 native effect 호출 0회, digest 충돌 거부, 재시작 후 원래 receipt key 조회, unknown scope hold 유지, 중복 dispatch 1회 검증을 명시했습니다. lookup의 nested runtimeEpoch는 read-receipt-contract v3와 일치합니다. P7-PLAN-2: fixture worker에 e2e-workbench-states.mjs와 fixtures/workbench-host.mjs 변경을 배정했습니다. durable Documents·imported 위치, missing/unavailable 경로, corrupt journal, owner conflict, pending-inbox recovery와 정확한 복구 메시지·mutation 비활성화 assertions를 명시했습니다. 기존 hidden/unfocused capture와 OS focus assertions를 유지하며 synthetic UI와 native recovery 증거를 구분합니다. P7-PLAN-3: build 후 package.mjs darwin arm64, inspect-packaged-bundle.mjs darwin, p7-storage-probe.mjs --out docs/runs/durable-workbench-storage/evidence/native-r1 --mode packaged --platform darwin을 필수 명령으로 등록했습니다. inspection은 packaged sidecar와 pinned binary의 SHA256 일치를 검사합니다. 계획은 동일 package의 hashed sidecar를 사용하는 isolated storage fixture를 요구하며 normal production-window launch 증거를 주장하지 않습니다. 기존 safety/storage 결정과 P4/P5 dependency holds를 유지했습니다. 새로운 platform scope는 검토하지 않았습니다. harness binding을 두 번 확인했고 storage-contract의 등록 hash도 일치했습니다. 이 판정은 검증 계획에 대한 승인입니다. 구현 또는 runtime 검증 완료를 뜻하지 않습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a10233-cf1f-7db1-a32f-5cb740d1f2d4",
+    "requested_model": "Sol",
+    "requested_effort": "medium",
+    "runtime_identity_attested": false,
+    "profile": "solo_reader",
+    "profile_application": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-plan-review"
+    ],
+    "mode": "report_only",
+    "review_scope": [
+      "P7-PLAN-1",
+      "P7-PLAN-2",
+      "P7-PLAN-3"
+    ],
+    "delegated": false,
+    "files_changed": [],
+    "tests_run": false,
+    "native_launches": false,
+    "binding_verified_twice": true,
+    "persistence_owner": "primary"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "schema_version": 2,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "sha256": "5cb4454ffa675b76fd6648ea68bc4ddf9007a0b6c8794a9e23f2698794f121bb",
+      "bytes": 43888
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "sha256": "79ac78b01c1d2188031e1e0e1030e563c9f83d89139180d7d66fabbb4f587c2d",
+      "bytes": 5424
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "sha256": "67ed534809b246d97f0274062634d685398c0e4862a8203946e256f30f05f790",
+      "bytes": 15845
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "sha256": "77c2665e814a1350d2d48d32691a87e8fe250d10a404450f64362a2afc90694d",
+      "bytes": 80790
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "sha256": "222a01c500fe42e39097b086954aab8a1333d032f25a630bcb971846eb76ea71",
+      "bytes": 18733
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-read-declaration.test.mjs",
+      "sha256": "022b2a152cd0fb906123e105d10a3e5957d3b041a0c3f6e84e154bbf3b935593",
+      "bytes": 6312
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-read-metadata.test.mjs",
+      "sha256": "2748bb65a7535a14011988d38bbafe0036bc356d7cfa4c410e4eaec606d57532",
+      "bytes": 14887
+    }
+  ],
+  "scope": "Actual Read metadata-only activation provenance, no executor/schema publication",
+  "api": [
+    "Resource-verified Graph captures actual frozen Plugin37 + private WeakSet checker; Control does not import Native",
+    "Actual PluginInternal captures original effect and frozen descriptor; actual supervisor/loader exact copy sites preserve private descriptor identity",
+    "Read producer returns its exact declaration after helper initialization; no transform/schema/IO/execute callback",
+    "Original activation Scope and token record exactly that result once; Control projects fixed unsupported row and never retains/publishes schema or execute in snapshot; dispose/failure/reload clear metadata"
+  ],
+  "checks": {
+    "contract_native_metadata": {
+      "passed": 101,
+      "status": {
+        "status": "reusable",
+        "reasons": [],
+        "recorded_at": "2026-10-10T13:32:02+00:00",
+        "source_sha256": "7a9109761be5dc53be78aec9031b5bd1b6c2fa204f46d30f1ef25a5d7fc55b0c",
+        "input_binding_sha256": "d9f552acd0202351ce567e3e1c4ba4c320ce97ec099a8581b8c686785ce4ea34",
+        "input_scope": {
+          "paths": [
+            "apps/desktop-app/src",
+            "apps/desktop-app/scripts",
+            "package.json",
+            "pnpm-lock.yaml",
+            "apps/desktop-app/package.json"
+          ],
+          "reason": "All product source plus script fixtures/planner and dependency manifests cover the static/transitive imports of these seven named Node suites. Original pinned Native input/output bytes are rechecked by the overlay recipe test. This scope does not make a whole final CODE or runtime claim."
+        }
+      }
+    },
+    "stage": {
+      "passed": 1,
+      "log": "read-metadata-stage-r1.log"
+    },
+    "meaningful_red": [
+      {
+        "log": "read-metadata-red-r1.log",
+        "failures": 3,
+        "reason": "missing source/activation metadata API"
+      },
+      {
+        "log": "read-metadata-producer-red-r1.log",
+        "failures": 1,
+        "reason": "actual archived producer invoked editor callback1 instead of0"
+      },
+      {
+        "log": "read-source-async-red-r1.log",
+        "failures": 1,
+        "reason": "async verifier accepted before source capture"
+      }
+    ]
+  },
+  "static": {
+    "eslint": "pass exact7",
+    "prettier": "pass exact7"
+  },
+  "limits": [
+    "Synthetic source-identity tests are explicitly inert; actual chain uses extracted pinned source + Effect under Node, not Native runtime",
+    "complete:false, capabilities empty, no adapter execution",
+    "Main creation/task prep still held",
+    "Original Native install unchanged",
+    "No Native/Bun/Electron/build/package/server/provider/GUI/private originals invoked",
+    "Not final whole CODE/full18/F09"
+  ],
+  "baseline": "prechange/read-metadata-registration-before-r1/manifest.json binds captured prior files. Graph test update reviewed as current full file; it was not in that captured manifest."
+}

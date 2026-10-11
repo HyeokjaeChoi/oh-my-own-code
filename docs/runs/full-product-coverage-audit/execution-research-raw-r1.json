@@ -1,0 +1,724 @@
+{
+  "schemaVersion": 2,
+  "reportOnly": true,
+  "scope": {
+    "features": ["F-05", "F-06", "F-07", "F-08", "F-09"],
+    "sections": ["5", "7.1", "7.2", "7.3", "7.4"],
+    "meaning": "현재 앱의 공개 진입점과 연결된 source·실행 증거에 대한 사실 보고입니다. 최종 수용 판정이나 범위 변경 승인이 아닙니다.",
+    "writes": 0,
+    "newRuntimeExecutions": 0,
+    "webAccess": false,
+    "runsStartedOrFinished": 0
+  },
+  "bindings": {
+    "plan": "docs/runs/full-product-coverage-audit/plan.md",
+    "planRevision": 1,
+    "packet": "docs/runs/full-product-coverage-audit/research-packet-r1.json",
+    "input": "docs/runs/full-product-coverage-audit/input.json",
+    "sourceFreeze": "docs/runs/git-branch-restore/source-freeze-r1.json",
+    "sourceSha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "freezeVerification": {
+      "filesChecked": 688,
+      "sha256Mismatches": [],
+      "modeOrTypeMismatches": [],
+      "recheckedAfterResearch": true
+    },
+    "prd": {
+      "path": "docs/product/prd.md",
+      "version": "0.6",
+      "sha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3",
+      "matches": true
+    },
+    "predecessor": {
+      "path": "docs/runs/git-branch-restore/run.json",
+      "status": "complete",
+      "code": "pass",
+      "render": "pass",
+      "reviewEvidenceHashesMatch": true,
+      "reviewSourcePinsMatch": true,
+      "reviewPlanHashesMatch": true,
+      "reviewCanonicalContractHashMatches": true,
+      "limit": "이 terminal 기록은 bounded branch/restore 범위입니다. 전체 F-11이나 F-01..18 완료를 뜻하지 않습니다."
+    }
+  },
+  "sharedCallTrace": [
+    "WorkbenchPage → Conversation: apps/desktop-app/src/renderer/pages/workbench/index.tsx:490",
+    "Conversation.onNew/onCancel/permission buttons → props.mutate: apps/desktop-app/src/renderer/widgets/conversation/index.tsx:188",
+    "submitMutation → transport.mutate: apps/desktop-app/src/renderer/entities/workbench/model/controller.ts:3355",
+    "transport.mutate → version2 envelope → desktopBridge.workbench: apps/desktop-app/src/renderer/shared/transport/index.ts:167",
+    "preload → desktop:v2:workbench: apps/desktop-app/src/preload.cjs:5",
+    "sender/frame admission → service.handle: apps/desktop-app/src/host/workbench-ipc.mjs:4",
+    "closed request schema → durable operation admission → service dispatch: apps/desktop-app/src/workbench-contract.mjs:272; apps/desktop-app/src/host/workbench-admission.mjs:456; apps/desktop-app/src/workbench-service.mjs:4388",
+    "main → nativePreflight → startSidecar → createWorkbenchService: apps/desktop-app/src/main.mjs:407",
+    "SDK client → OpenCode.make: apps/desktop-app/src/sidecar-supervisor.mjs:96",
+    "Native host → @opencode/server/process.start: apps/desktop-app/src/event-host-child.mjs:323",
+    "selected-session snapshot polling → message.list/permission.list → projectMessages → mapMessages → assistant-ui: apps/desktop-app/src/renderer/entities/workbench/model/controller.ts:3089; apps/desktop-app/src/workbench-service.mjs:2257; apps/desktop-app/src/renderer/shared/projection/projection.mjs:8"
+  ],
+  "evidenceApplicability": [
+    {
+      "path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json",
+      "sha256": "7ffaada6e3c73329485626138d671844c8a8160ca1aae81e9b09b51d502bf432",
+      "manifest": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/manifest.json",
+      "observation": "실제 built Electron Renderer/preload와 synthetic Main으로 onNew, once/reject, 중단 상태, slash dispatch, Tool UI fallback, unknown receipt 재전송 방지를 검사했습니다. manifest는 pass, exitCode0, provenanceVerifiedAfter=true입니다.",
+      "applicability": "manifest의 build input과 현재 파일을 대조했습니다. Conversation, composer hook, message projection, BASELINE_POLICY, LinkPreview parser/component bytes가 일치합니다.",
+      "limits": [
+        "현재 workbench-service.mjs 전체 bytes는 이 실행 때와 다릅니다.",
+        "Renderer 동작 증거를 현재 service의 실제 도구 효과 증거로 확장할 수 없습니다.",
+        "Provider/model 실행 없음. Windows 증거 없음."
+      ]
+    },
+    {
+      "path": "docs/runs/configuration-agents/evidence/native-r11/agent-evidence.json",
+      "sha256": "95dacfd7d68622f26445a0656b1ea5ebcc7e62cf243b6d8115101326013d77b3",
+      "observation": "실제 owner/preflight/supervisor/fixed plugin/public durable Agent service의 14개 case가 pass입니다. Agent 등록·제거, baseline 유지, controlled SDK agent selection, ACK loss와 no-replay를 검사했습니다.",
+      "applicability": "Agent 등록과 선택 경계의 과거 scoped 실행 증거입니다. 현재 parseAgentRuntimeRecord도 primary/visible/no-model-override/baseline을 생성합니다.",
+      "limits": [
+        "실제 모델의 Agent system/context 소비를 검사하지 않았습니다.",
+        "fresh child delegation 증거가 아닙니다.",
+        "contained synthetic auth-free Darwin arm64입니다.",
+        "현재 전체 service pin과 이 실행 pin은 다릅니다."
+      ]
+    },
+    {
+      "path": "docs/runs/version-bound-line-feedback/evidence/hidden-r9/feedback/line-feedback-evidence.json",
+      "sha256": "fed5ee9271b862a4acb08a572cfcba7c10307e259e8653d4a76d306a79c41fb1",
+      "observation": "실제 Renderer/preload와 synthetic Main에서 원본 파일 기준 내용, version/line/excerpt, unsaved 내용 제외, composer 추가와 별도 send1회를 검사했습니다.",
+      "applicability": "현재 LineFeedbackPanel bytes는 source-freeze-r2와 같습니다. 현재 store에도 source/target/revision 확인 후 text를 추가하는 경로가 있습니다.",
+      "limits": [
+        "Provider 실행 없음.",
+        "actualGitG2는 not established입니다.",
+        "일반 첨부나 모델 입력 지원 검사로 확장할 수 없습니다.",
+        "현재 전체 store/service pin의 재실행 증거는 아닙니다."
+      ]
+    },
+    {
+      "path": "docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+      "observation": "실제 production Native preflight로 fresh bootstrap, synthetic public SDK history seed, 정상 종료·SIGKILL 뒤 nonfresh reopen, Native-only pending 거절을 검사했습니다.",
+      "applicability": "현재 main.mjs:407에서 nativePreflight.check를 사용합니다. 오래된 fresh-only hold를 현재 동작으로 설명하면 안 됩니다.",
+      "limits": [
+        "Provider/credential 실행 없음.",
+        "production Main, 실제 UI, Windows 실행 없음.",
+        "정책 전환·fresh child·파일 도구 효과의 증거가 아닙니다."
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "id": "F-05",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 40},
+      "clauses": [
+        {
+          "groupId": "F-05",
+          "clauseIndex": 0,
+          "exactClause": "assistant-ui 기반 스트리밍, Markdown/code, 첨부, 파일·선택 영역 참조, 복사, 재시도, 메시지 편집 후 분기, 실행 중 추가 지시/대기열, 중단을 제공한다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 188, "observation": "assistant-ui external runtime에 messages/isRunning/onNew/onCancel을 연결합니다."},
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 114, "observation": "Text renderer는 일반 div입니다. 이 경로에 Markdown/code renderer, copy/retry/edit action이 없습니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 211, "observation": "message.send는 text와 선택적 agent/model만 받습니다. attachments, message edit/retry, queue payload는 받지 않습니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2520, "observation": "idle이 아니면 BUSY로 거절합니다. 실행 중 추가 지시를 queue에 넣는 경로가 아닙니다."},
+            {"path": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts", "line": 4977, "observation": "파일/diff 줄 피드백을 현재 composer text에 추가합니다."},
+            {"path": "apps/desktop-app/src/renderer/features/sessions/index.tsx", "line": 241, "observation": "분기 UI는 전체 대화 기록 fork입니다. 메시지 편집 후 분기가 아닙니다."}
+          ],
+          "callTrace": "snapshot polling → projectMessages → mapMessages → assistant-ui Parts; onNew → message.send → send → session.prompt; Cancel → session.interrupt; line.feedback.append → composer text",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "실제 assistant-ui onNew, synthetic streaming, 중단 상태 표시를 검사했습니다.", "applicability": "현재 Conversation/composer/projection bytes와 일치하는 Renderer 범위입니다.", "limits": ["synthetic Main", "Provider streaming 없음", "Markdown/code·첨부·copy/retry/edit-fork·queue 검사 없음"]},
+            {"path": "docs/runs/version-bound-line-feedback/evidence/hidden-r9/feedback/line-feedback-evidence.json", "observation": "version-bound line context를 composer에 추가하고 별도로 전송했습니다.", "applicability": "파일·선택 줄 참조의 bounded UI 경로입니다.", "limits": ["일반 첨부가 아님", "Provider 소비 없음", "actualGitG2 미확립"]}
+          ],
+          "gaps": ["Markdown/code 렌더링, 첨부, 복사, 메시지 재시도, edit-fork, 실행 중 추가 지시/대기열 연결이 없습니다.", "실제 Provider streaming과 tool 실행 중 interrupt 효과는 미검증입니다."]
+        },
+        {
+          "groupId": "F-05",
+          "clauseIndex": 1,
+          "exactClause": "첨부 크기·형식·경로 접근을 검증하고 전송할 컨텍스트를 확인할 수 있다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/features/line-feedback/index.tsx", "line": 75, "observation": "읽은 기준 내용과 unsaved 내용 제외를 설명하고 작성기 확인 뒤 별도 전송을 요구합니다."},
+            {"path": "apps/desktop-app/src/renderer/shared/line-feedback/index.mjs", "line": 12, "observation": "선택 줄, excerpt 문자/byte, comment, draft 길이 제한이 있습니다."},
+            {"path": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts", "line": 4983, "observation": "source/target/revision이 바뀌면 추가를 거절합니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 211, "observation": "공개 message.send schema에는 첨부 필드가 없습니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2582, "observation": "Native prompt에는 sessionID와 text만 전달합니다."}
+          ],
+          "callTrace": "직접 읽은 file/diff observation → LineFeedbackPanel → formatLineFeedback → draft append → 사용자 확인 → 기존 text send",
+          "runtimeRefs": [
+            {"path": "docs/runs/version-bound-line-feedback/evidence/hidden-r9/feedback/line-feedback-evidence.json", "observation": "원본 기준 내용·version·줄·excerpt와 별도 send를 검사했습니다.", "applicability": "선택 줄 text context에 한정합니다.", "limits": ["일반 파일/이미지 첨부 전송 없음", "모델 context 소비 없음"]}
+          ],
+          "gaps": ["첨부 선택→크기/형식/접근 검증→전송 payload의 전체 경로가 없습니다.", "현재 context 확인은 line-feedback text 범위입니다."]
+        },
+        {
+          "groupId": "F-05",
+          "clauseIndex": 2,
+          "exactClause": "모델 미지원 입력은 전송 전에 설명한다.",
+          "status": "source_missing",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 169, "observation": "현재 검사는 선택 ID가 catalog에 있는지입니다. 입력 modality 지원 검사가 아닙니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2434, "observation": "modelMap은 enabled/provider/auth 연결을 검사합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2494, "observation": "모델 DTO는 id/name/status입니다. 입력 지원 capability를 전달하지 않습니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2582, "observation": "text prompt dispatch 전에 modality/capability 설명 단계가 없습니다."}
+          ],
+          "callTrace": "catalog model list → id/name/status DTO → selection existence check → text-only send → session.prompt",
+          "runtimeRefs": [],
+          "gaps": ["현재 공개 입력 경로에 모델별 입력 지원 정보와 전송 전 설명이 연결되지 않았습니다."]
+        },
+        {
+          "groupId": "F-05",
+          "clauseIndex": 3,
+          "exactClause": "메시지 재시도가 도구 부작용을 자동 재실행하지 않는다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/shared/transport/index.ts", "line": 167, "observation": "mutation은 한 번 전송합니다. timeout은 UNKNOWN_OUTCOME으로 끝납니다."},
+            {"path": "apps/desktop-app/src/host/workbench-admission.mjs", "line": 456, "observation": "기존 operationId는 digest를 대조하고 durable receipt를 반환합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2507, "observation": "send receipt가 있으면 duplicate/unknown을 반환합니다."},
+            {"path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts", "line": 3259, "observation": "unknown 작업은 operation.lookup으로 조회합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.test.mjs", "line": 652, "observation": "mock prompt가 불명확한 결과를 반환해도 prompt 호출은 1회라는 source assertion이 있습니다."}
+          ],
+          "callTrace": "mutation timeout → unknown intent → operation.lookup; 동일 operationId/request receipt → duplicate/unknown, prompt 재호출 없음",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "unknown receipt가 새 submission을 막고 자동 replay하지 않는 Renderer 동작을 검사했습니다.", "applicability": "현재 동일 Renderer/transport 패턴의 scoped 증거입니다.", "limits": ["메시지 Retry 기능 없음", "실제 도구 부작용 후 retry/restart 검사 없음", "현재 service 전체 pin은 다름"]}
+          ],
+          "gaps": ["일반 operation no-replay는 구현되어 있으나 메시지 Retry 진입점이 없습니다.", "실제 도구 효과를 가진 메시지의 retry·분기·재시작 부작용 검사가 필요합니다."]
+        }
+      ]
+    },
+    {
+      "id": "F-06",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 41},
+      "clauses": [
+        {
+          "groupId": "F-06",
+          "clauseIndex": 0,
+          "exactClause": "현재 런타임이 제공하는 선택지와 실제 적용 값을 표시한다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2412, "observation": "런타임 command/skill/MCP/agent/model/provider/integration 목록을 조회합니다."},
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 643, "observation": "agent/model 선택 목록을 표시합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2560, "observation": "명시 선택은 switchAgent/switchModel에 전달합니다."},
+            {"path": "apps/desktop-app/src/desktop-bridge.d.ts", "line": 145, "observation": "메시지 projection에는 실제 적용 agent/model/effort 필드가 없습니다."}
+          ],
+          "callTrace": "catalog.list → runtime lists → UI select → message.send → switchAgent/switchModel → prompt; actual-effective option DTO 연결 없음",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "선택 agent/model ID를 onNew가 정확히 1회 전송했습니다.", "applicability": "현재 동일 Conversation bytes입니다.", "limits": ["synthetic Main", "실제 적용 모델/effort 표시와 소비는 미검증"]}
+          ],
+          "gaps": ["선택지는 있습니다. 실제 적용 agent/model/effort의 관측·표시 경로는 없습니다."]
+        },
+        {
+          "groupId": "F-06",
+          "clauseIndex": 1,
+          "exactClause": "요청값·기본값·관측값이 다르면 구별한다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 654, "observation": "빈 선택을 기본 에이전트/기본 모델로 표시합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2565, "observation": "model 생략 시 runtime/session/agent default와 variant를 유지합니다."},
+            {"path": "apps/desktop-app/src/desktop-bridge.d.ts", "line": 173, "observation": "catalog DTO에는 requested/default/observed의 별도 값이 없습니다."},
+            {"path": "apps/desktop-app/src/workbench-service.test.mjs", "line": 895, "observation": "기본 선택 때 switchModel을 호출하지 않는 mock 회귀 검사가 있습니다."}
+          ],
+          "callTrace": "빈 UI 선택 → model 필드 생략 → switchModel 생략 → Native 기본 해석; 기본 해석 결과를 Renderer로 되돌리는 연결 없음",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/native-r11/agent-evidence.json", "observation": "controlled SDK agent selection에서 baseline을 유지하고 model/inbox 실행을 하지 않았습니다.", "applicability": "Agent 선택의 bounded Native 증거입니다.", "limits": ["requested/default/observed 모델 비교 없음", "모델 소비 없음"]}
+          ],
+          "gaps": ["기본값을 보존하는 동작과 세 값의 구별 표시는 다릅니다.", "관측 agent/model/variant/effort를 요청·기본값과 연결한 기록이 없습니다."]
+        },
+        {
+          "groupId": "F-06",
+          "clauseIndex": 2,
+          "exactClause": "모델/effort 미지원 값을 조용히 다른 값으로 바꾸지 않는다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2552, "observation": "현재 modelMap에 없는 명시 model ID는 INVALID_SELECTION입니다."},
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 706, "observation": "사라진 model/agent 선택에 오류와 재선택 안내를 표시합니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 211, "observation": "message.send에는 effort 필드가 없습니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 275, "observation": "허용 필드 밖의 payload는 INVALID_REQUEST로 거절합니다."}
+          ],
+          "callTrace": "명시 model → 최신 catalog 검증 → INVALID_SELECTION 또는 정확한 provider/model 매핑; effort → 공개 schema 밖 필드",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "선택 ID 전송과 catalog/error 상태를 검사했습니다.", "applicability": "Renderer 선택 경로입니다.", "limits": ["실제 unsupported model/effort Native 실행 없음", "effort 선택 기능 없음"]}
+          ],
+          "gaps": ["model ID의 조용한 대체는 하지 않습니다. Native가 실제로 선택을 적용했는지의 관측 연결은 없습니다.", "effort 목록·선택·미지원 설명은 없습니다."]
+        },
+        {
+          "groupId": "F-06",
+          "clauseIndex": 3,
+          "exactClause": "실행 중 변경은 적용될 다음 경계를 표시한다.",
+          "status": "source_missing",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 647, "observation": "실행 중 agent/model select를 비활성화합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2520, "observation": "idle이 아니면 send를 거절합니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 211, "observation": "선택값은 message.send의 선택 필드입니다. 예약 변경/적용 경계 API가 없습니다."}
+          ],
+          "callTrace": "running → select disabled + send BUSY; idle 이후 다음 send에서 선택값 전달",
+          "runtimeRefs": [],
+          "gaps": ["실행 중 변경 요청과 다음 적용 경계를 표시하는 상태·API가 없습니다."]
+        },
+        {
+          "groupId": "F-06",
+          "clauseIndex": 4,
+          "exactClause": "제품에 특정 모델 티어·역할별 고정 모델을 하드코딩하지 않는다.",
+          "status": "runtime_unverified",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2434, "observation": "모델 ID는 runtime 목록의 providerID/modelID로 구성합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2565, "observation": "생략값은 Native 기본 해석을 사용합니다. catalog 첫 항목을 기본 모델로 고르지 않습니다."},
+            {"path": "apps/desktop-app/src/host/workbench-native-agents.mjs", "line": 16, "observation": "등록 Agent는 primary/visible이며 model override 없이 생성됩니다."},
+            {"path": "apps/desktop-app/src/workbench-service.test.mjs", "line": 926, "observation": "명시 선택은 catalog 매핑을 그대로 switchModel에 전달한다는 회귀 assertion이 있습니다."}
+          ],
+          "callTrace": "runtime catalog → opaque UI ID → 원래 providerID/modelID → switchModel; Agent 등록 → no-model-override record",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/native-r11/agent-evidence.json", "observation": "등록 Agent와 기본 Agent/session 선택을 보존했습니다.", "applicability": "현재 동일한 no-model-override 변환 규칙의 과거 scoped 증거입니다.", "limits": ["현재 전체 service pin과 다름", "여러 실제 모델/default/variant 소비 비교 없음"]}
+          ],
+          "gaps": ["검사한 제품 dispatch 경로에는 특정 tier/역할 모델 고정이 없습니다. 현재 pin에서 실제 runtime 기본값과 명시값의 소비는 미검증입니다."]
+        }
+      ]
+    },
+    {
+      "id": "F-07",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 42},
+      "clauses": [
+        {
+          "groupId": "F-07",
+          "clauseIndex": 0,
+          "exactClause": "부모의 위임과 사용자 직접 위임을 지원한다.",
+          "status": "source_missing",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 141, "observation": "새 세션 UI는 workspaceId로 session.create를 호출합니다. 부모 위임 payload가 없습니다."},
+            {"path": "apps/desktop-app/src/renderer/features/sessions/index.tsx", "line": 241, "observation": "다른 연결 동작은 전체 대화 기록 fork입니다."},
+            {"path": "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs", "line": 10, "observation": "Native baseline은 subagent를 deny합니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 205, "observation": "공개 schema는 session.fork/session.create이며 delegation operation이 없습니다."}
+          ],
+          "callTrace": "UI new session → session.create; UI full-history fork → session.fork; prompt 전 policy → subagent deny",
+          "runtimeRefs": [],
+          "gaps": ["현재 앱의 공개 UI/API/service 경로에 fresh child 위임이 없습니다.", "Agent 설정 등록은 위임 실행이 아닙니다."]
+        },
+        {
+          "groupId": "F-07",
+          "clauseIndex": 1,
+          "exactClause": "역할·목표·입력/참조·소유 경로·검증 조건을 전달하고 부모-자식 트리에서 실행/대기/승인/실패/완료를 본다.",
+          "status": "source_missing",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/desktop-bridge.d.ts", "line": 112, "observation": "session DTO에는 parentSessionId가 있으나 delegation 역할/목표/소유 경로/검증 조건이 없습니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3795, "observation": "parentSessionId는 history fork 뒤 설정합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2208, "observation": "session projection은 일반 session status와 parentSessionId를 전달합니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 210, "observation": "빈 session 생성 입력은 workspaceId/title입니다."}
+          ],
+          "callTrace": "history fork → addSession → parentSessionId → 일반 session projection; fresh delegation payload/state tree 연결 없음",
+          "runtimeRefs": [
+            {"path": "docs/runs/desktop-session-lifecycle/session-lifecycle-evidence.json", "observation": "실제 SDK의 synthetic history fork와 descendant 보호를 검사했습니다.", "applicability": "history lineage만 설명합니다.", "limits": ["과거 source", "Provider 실행 없음", "fresh child task tree가 아님"]}
+          ],
+          "gaps": ["parentSessionId 존재를 fresh delegation tree로 해석할 수 없습니다.", "위임 계약 전달과 child별 queued/approval/failed/completed 상태 연결이 없습니다."]
+        },
+        {
+          "groupId": "F-07",
+          "clauseIndex": 2,
+          "exactClause": "자식 기록 열기, 결과 회수, 개별/전체 중단, 동시성 한도와 대기열을 제공한다.",
+          "status": "source_missing",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 215, "observation": "중단 API는 단일 session.interrupt입니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4319, "observation": "선택 session의 SDK interrupt만 호출합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2520, "observation": "busy send를 queue에 넣지 않고 거절합니다."},
+            {"path": "apps/desktop-app/src/renderer/features/sessions/index.tsx", "line": 241, "observation": "session 목록의 fork 동작에 결과 회수나 child 전체 중단은 연결되지 않습니다."}
+          ],
+          "callTrace": "selected session → interrupt(sessionID); fresh child registry/result collection/concurrency queue 경로 없음",
+          "runtimeRefs": [],
+          "gaps": ["일반 session 열기/중단과 fresh child 관리 기능을 구분해야 합니다.", "결과 회수, child 전체 중단, 실제 실행 용량에 연결된 concurrency/FIFO queue가 없습니다."]
+        },
+        {
+          "groupId": "F-07",
+          "clauseIndex": 3,
+          "exactClause": "최소 두 독립 자식의 병렬 실행과 한 자식 실패를 검증한다.",
+          "status": "source_missing",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs", "line": 10, "observation": "subagent 호출은 deny입니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 1890, "observation": "실행 전 baseline을 write/read-back합니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 205, "observation": "fresh delegation 실행 API가 없습니다."}
+          ],
+          "callTrace": "send → policy write/read-back → subagent deny; 독립 child 실행/실패 관측 경로 없음",
+          "runtimeRefs": [],
+          "gaps": ["두 fresh child 병렬 실행과 독립 실패의 실제 실행 증거가 없습니다.", "연구 reader의 병렬 dispatch나 read-admission concurrency는 제품 child 실행 증거가 아닙니다."]
+        },
+        {
+          "groupId": "F-07",
+          "clauseIndex": 4,
+          "exactClause": "기본은 필요한 자료만 주는 새 컨텍스트이며 history fork와 구분한다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/features/sessions/index.tsx", "line": 241, "observation": "history fork는 전체 대화 기록으로 분기라고 표시합니다."},
+            {"path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx", "line": 141, "observation": "새 일반 session 생성은 별도 동작입니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3776, "observation": "fork는 SDK session.fork를 호출합니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 210, "observation": "새 session 생성에는 필요한 자료만 전달하는 delegation payload가 없습니다."}
+          ],
+          "callTrace": "blank session.create와 full-history session.fork는 분리됨; fresh delegated context 구성 연결 없음",
+          "runtimeRefs": [
+            {"path": "docs/runs/desktop-session-lifecycle/session-lifecycle-evidence.json", "observation": "empty-history fork 거절과 populated synthetic history fork를 검사했습니다.", "applicability": "history fork 경계의 과거 실행 증거입니다.", "limits": ["fresh child 아님", "현재 전체 pin 재실행 아님"]}
+          ],
+          "gaps": ["빈 일반 session과 history fork는 구분합니다. 필요한 자료만 주는 기본 fresh delegation은 없습니다."]
+        },
+        {
+          "groupId": "F-07",
+          "clauseIndex": 5,
+          "exactClause": "실제 격리 방식·권한 상속을 5절 기준으로 표시한다.",
+          "status": "source_missing",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3800, "observation": "history fork child에는 고정 baseline을 다시 적용합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3817, "observation": "instruction registration의 fork 출처를 기록합니다. fresh delegation 권한 교집합이나 OS 격리 기록이 아닙니다."},
+            {"path": "apps/desktop-app/src/desktop-bridge.d.ts", "line": 112, "observation": "session DTO에 child isolation/effective policy inheritance 필드가 없습니다."}
+          ],
+          "callTrace": "history fork → fixed policy(child) → instruction fork provenance; delegation isolation/policy propagation UI 연결 없음",
+          "runtimeRefs": [],
+          "gaps": ["fresh child의 실제 격리 방식, 권한·모델 snapshot 상속, 부모 축소 적용 결과 표시는 없습니다."]
+        }
+      ]
+    },
+    {
+      "id": "F-08",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 43},
+      "clauses": [
+        {
+          "groupId": "F-08",
+          "clauseIndex": 0,
+          "exactClause": "파일 읽기/검색/편집, 셸·테스트, 웹 조사, 연결된 MCP와 확장 도구를 같은 실행 흐름에서 지원한다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2582, "observation": "메시지를 Native session.prompt로 전달합니다."},
+            {"path": "apps/desktop-app/src/event-host-child.mjs", "line": 323, "observation": "Native server/process를 시작합니다. 설치 사실만으로 각 도구의 실행 성공을 증명하지 않습니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2412, "observation": "MCP/skill/command 목록을 조회합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 185, "observation": "Native assistant tool parts를 공통 message projection으로 변환합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 125, "observation": "앱의 file.save/Git/configuration mutation은 별도 명시 operation입니다. 이것만으로 모델 도구 흐름을 증명할 수 없습니다."}
+          ],
+          "callTrace": "message.send → Native prompt → Native message.list tool parts → common projection; 앱 file/Git/configuration operation은 별도 경로",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "synthetic tool parts와 slash command dispatch를 실제 Renderer에서 검사했습니다.", "applicability": "공통 tool 표시 경로입니다.", "limits": ["실제 read/search/edit/shell/test/web/MCP 도구 호출 없음", "Provider 실행 없음"]}
+          ],
+          "gaps": ["각 도구 종류의 실제 호출→권한→효과→기록 연결은 미검증입니다.", "MCP/확장 등록·목록이나 앱 직접 파일 편집을 모델의 해당 도구 실행으로 계산하면 안 됩니다."]
+        },
+        {
+          "groupId": "F-08",
+          "clauseIndex": 1,
+          "exactClause": "이름·호출자·입력·진행·결과·오류·권한 상태를 볼 수 있다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 211, "observation": "tool id/name/status/input/output을 projection합니다."},
+            {"path": "apps/desktop-app/src/desktop-bridge.d.ts", "line": 138, "observation": "WorkbenchTool에는 caller/session-child/permission 연결 필드가 없습니다."},
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 63, "observation": "ToolDetail은 이름·상태·입력·출력을 표시합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 227, "observation": "tool error 출력은 고정 TOOL_ERROR로 대체합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2317, "observation": "permission projection은 별도 id/sessionId/title/detail입니다."}
+          ],
+          "callTrace": "Native tool part → bounded tool DTO → assistant-ui tool-call → ToolDetail; permission.list → 별도 permission queue",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "tool running/result/error와 permission queue를 표시했습니다.", "applicability": "현재 동일 message projection/Conversation bytes입니다.", "limits": ["synthetic Main", "실제 caller-child-tool-permission 상관관계 없음"]}
+          ],
+          "gaps": ["도구별 호출자와 원래 permission request의 연결 표시가 없습니다.", "정책 거절·사용자 거절·일반 tool error의 원인 구별이 충분하지 않습니다."]
+        },
+        {
+          "groupId": "F-08",
+          "clauseIndex": 2,
+          "exactClause": "tool-ui로 구조화된 결과, diff, 진행·선택·승인 카드를 렌더링하고 알 수 없는 도구는 안전한 일반 표시로 보존한다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 71, "observation": "완료 출력 JSON을 parseSafeLinkPreview로 검사해 LinkPreview 하나를 렌더링합니다."},
+            {"path": "packages/contracts/src/index.ts", "line": 22, "observation": "LinkPreview는 strict schema, HTTP(S), text/byte 제한을 사용합니다."},
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 85, "observation": "LinkPreview는 interactive=false입니다."},
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 92, "observation": "일반 입력/출력은 React pre text로 표시합니다."},
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 77, "observation": "rich renderer 선택은 출력 schema 기준입니다. toolName/version registry를 확인하지 않습니다."}
+          ],
+          "callTrace": "assistant tool result → JSON parse → strict LinkPreview schema → inert Tool UI LinkPreview; 나머지 → escaped pre",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "schema-safe Tool UI preview와 unknown markup의 inert escaped 표시를 검사했습니다.", "applicability": "현재 parser/component/Conversation bytes와 일치합니다.", "limits": ["diff/질문/선택/승인 Tool UI renderer 없음", "실제 도구 실행 없음"]}
+          ],
+          "gaps": ["도구명+version+검증 schema에 묶인 rich renderer registry가 없습니다.", "Tool UI diff·진행·선택·질문·승인 카드 연결은 없습니다.", "별도 Git diff panel과 일반 permission 버튼은 해당 Tool UI 카드의 증거가 아닙니다."]
+        },
+        {
+          "groupId": "F-08",
+          "clauseIndex": 3,
+          "exactClause": "노출된 스키마가 있는 도구는 사용자가 인자를 확인해 직접 실행할 수 있다.",
+          "status": "source_missing",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/desktop-bridge.d.ts", "line": 173, "observation": "catalog entry에는 도구 input schema가 없습니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 220, "observation": "공개 경로는 catalog.list와 name/arguments 기반 command.run입니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 272, "observation": "등록하지 않은 operation과 extra fields를 거절합니다."},
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 200, "observation": "slash command는 command 이름과 literal argument text를 보냅니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2595, "observation": "command.run은 Native session.command입니다. 임의 도구 schema 실행 API가 아닙니다."}
+          ],
+          "callTrace": "slash menu → command.run(name, arguments) → session.command; tool schema form → direct tool dispatch 경로 없음",
+          "runtimeRefs": [],
+          "gaps": ["도구 schema 조회→인자 확인/검증→직접 호출의 공개 경로가 없습니다.", "command.run이나 내부 고정 plugin RPC를 일반 schema 기반 직접 도구 호출로 계산하면 안 됩니다."]
+        },
+        {
+          "groupId": "F-08",
+          "clauseIndex": 4,
+          "exactClause": "직접 호출에도 같은 권한·취소·기록 정책을 적용한다.",
+          "status": "source_missing",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4317, "observation": "message.send와 command.run은 같은 send 경로를 사용합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2534, "observation": "send는 Native baseline write/read-back을 거칩니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4319, "observation": "취소는 session 단위 interrupt입니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 272, "observation": "일반 direct tool operation이 등록되지 않았습니다."}
+          ],
+          "callTrace": "message/command → shared send/policy/receipt; 일반 direct tool 자체가 없어 동등 정책 경로 없음",
+          "runtimeRefs": [],
+          "gaps": ["일반 직접 도구 호출의 permission/cancel/record 연결이 없습니다.", "session interrupt를 개별 직접 도구의 실제 종료 확인으로 볼 수 없습니다."]
+        }
+      ]
+    },
+    {
+      "id": "F-09",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 44},
+      "clauses": [
+        {
+          "groupId": "F-09",
+          "clauseIndex": 0,
+          "exactClause": "기본 ‘요청마다 확인’, ‘범위 내 편집 허용’, ‘읽기/계획’, ‘사용자 정의’ 프리셋과 유효 규칙을 표시한다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs", "line": 3, "observation": "규칙은 */*/ask, external_directory/*/deny, subagent/*/deny의 고정 baseline입니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 1890, "observation": "baseline을 Native에 적용하고 다시 읽습니다."},
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 376, "observation": "permission queue는 있으나 preset 선택·현재 유효 규칙 패널은 없습니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 216, "observation": "권한 공개 operation은 request별 permission.respond입니다."}
+          ],
+          "callTrace": "send/create/fork → fixed BASELINE_POLICY; UI → pending once/reject만 표시",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/native-r11/agent-evidence.json", "observation": "등록/선택 Agent에 exact baseline을 적용·보존했습니다.", "applicability": "고정 규칙의 scoped Native 증거입니다.", "limits": ["네 preset 없음", "실제 read/plan 부작용 차단 검사 없음", "현재 전체 service pin은 다름"]}
+          ],
+          "gaps": ["네 preset과 effective rule 표시가 없습니다.", "고정 ask baseline을 사용자 정의 모드나 OS sandbox로 설명하면 안 됩니다."]
+        },
+        {
+          "groupId": "F-09",
+          "clauseIndex": 1,
+          "exactClause": "모드 변경, 요청별 허용·거절, 지원되는 제한적 기억, 저장 규칙 조회·취소를 제공한다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 399, "observation": "이번만 허용과 거절 버튼이 원래 session/request ID를 전달합니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 444, "observation": "decision은 once/reject만 허용합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4347, "observation": "Native pending list를 새로 조회하고 대상 request를 검사합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4369, "observation": "permission.reply를 호출합니다. 기억/저장 규칙 조회·취소 경로는 연결되지 않습니다."}
+          ],
+          "callTrace": "permission button → permission.respond → pending list recheck → reply(once|reject) → decided/unknown",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "once/reject의 정확한 session/request ID와 오래된 UI 제거를 검사했습니다.", "applicability": "현재 동일 Conversation bytes입니다.", "limits": ["synthetic permission", "실제 도구 실행 효과 없음", "remember/revoke/mode change 없음"]}
+          ],
+          "gaps": ["모드 변경과 제한적 기억·저장 규칙 조회·취소가 없습니다.", "Native reply 응답과 실제 파일 도구 효과를 연결한 증거가 없습니다."]
+        },
+        {
+          "groupId": "F-09",
+          "clauseIndex": 2,
+          "exactClause": "단순 프롬프트가 아니라 실행 경계에서 적용되어야 한다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 1893, "observation": "session.update permissions 뒤 session.get으로 ID/path/exact policy를 확인합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2534, "observation": "agent/model 선택 전 policy를 확인합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2574, "observation": "agent/model 선택 후 policy를 다시 확인합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.test.mjs", "line": 637, "observation": "policy mismatch/read failure 때 prompt가 실행되지 않는 mock assertion이 있습니다."}
+          ],
+          "callTrace": "Native policy update → get/read-back → selection → policy update/get → prompt; mismatch → POLICY_UNVERIFIED",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/native-r11/agent-evidence.json", "observation": "실제 Native Agent 변환·등록·선택에서 exact baseline 보존을 검사했습니다.", "applicability": "prompt 문구만 사용하는 구현은 아닙니다.", "limits": ["실제 파일/shell/MCP 도구 부작용 enforcement 미검증", "새 preset/child/direct tool enforcement 없음"]}
+          ],
+          "gaps": ["Native 설정 write/read-back은 있습니다. 같은 파일 도구의 ask/once/reject/policy deny 실제 효과 검사는 없습니다.", "모든 앱 직접 action·Native 도구·child에 같은 정책이 적용됨은 미확립입니다."]
+        },
+        {
+          "groupId": "F-09",
+          "clauseIndex": 3,
+          "exactClause": "5절의 실행 중 전환·자식·일괄 승인·만료·중복 응답 기준을 통과한다.",
+          "status": "source_partial",
+          "sourceRefs": [
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4350, "observation": "pending 여부와 invalidPermissions로 오래된 요청을 거절합니다."},
+            {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4361, "observation": "reject는 그 session의 조회된 pending 요청을 모두 무효화합니다."},
+            {"path": "apps/desktop-app/src/host/workbench-admission.mjs", "line": 456, "observation": "operation ID/digest 중복을 durable receipt로 처리합니다."},
+            {"path": "apps/desktop-app/src/desktop-bridge.d.ts", "line": 151, "observation": "permission DTO는 id/sessionId/title/detail입니다. expiresAt/policyRevision/toolCallId/고정 batch 목록이 없습니다."},
+            {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 216, "observation": "request별 응답 외 transition/batch/child policy operation이 없습니다."}
+          ],
+          "callTrace": "duplicate operation → saved receipt; 새 permission response → fresh pending + invalid ID check → reply; transition/child/batch/expiry state path 없음",
+          "runtimeRefs": [
+            {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "중복 UI 제출 방지와 obsolete permission UI 제거를 검사했습니다.", "applicability": "Renderer 범위입니다.", "limits": ["실제 만료/재접속 pending/부작용 검사 없음", "mode transition·child·batch 없음"]}
+          ],
+          "gaps": ["operation 중복과 stale pending 방지는 일부 있습니다.", "명시적 만료, 정책 revision 기반 재평가, 고정 대상 batch approval, 실행 중 전환, child별 축소 적용은 없습니다."]
+        }
+      ]
+    }
+  ],
+  "crossCutting": [
+    {
+      "section": "authorityDelegation",
+      "paragraphIndex": 0,
+      "requirementRef": {"path": "docs/product/prd.md", "line": 73},
+      "requirementFragment": "각 모드는 파일 읽기/쓰기, 셸, 네트워크/MCP, 허용 경로와 확인 조건을 보여준다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {"path": "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs", "line": 3, "observation": "고정 ask/external-directory-deny/subagent-deny 규칙입니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 1890, "observation": "Native write/read-back으로 baseline을 확인합니다."},
+        {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 216, "observation": "preset/transition 공개 API가 없습니다."}
+      ],
+      "runtimeRefs": [
+        {"path": "docs/runs/configuration-agents/evidence/native-r11/agent-evidence.json", "observation": "Native baseline 보존을 검사했습니다.", "applicability": "고정 정책 설정 경계입니다.", "limits": ["OS sandbox 증거 아님", "read/plan 실제 부작용 차단 미검증"]}
+      ],
+      "gaps": ["네 preset·effective rule 표시, 읽기/계획 enforcement, 시스템 deny 부작용 검사가 필요합니다."]
+    },
+    {
+      "section": "authorityDelegation",
+      "paragraphIndex": 1,
+      "requirementRef": {"path": "docs/product/prd.md", "line": 75},
+      "requirementFragment": "기본은 이번 요청에만 허용이다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 376, "observation": "once/reject 카드이며 reject의 다른 pending 취소 범위를 설명합니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2317, "observation": "카드는 action/resource 문자열만 projection합니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4347, "observation": "fresh pending 확인 뒤 한 번 reply합니다."}
+      ],
+      "runtimeRefs": [
+        {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "once/reject ID 전달과 obsolete 카드 제거를 검사했습니다.", "applicability": "현재 Renderer bytes입니다.", "limits": ["synthetic Main", "실제 pending 결정 적용·부작용 없음"]}
+      ],
+      "gaps": ["호출자/child/정확한 args/지속 범위 DTO, 제한적 기억과 revoke, 고정 batch, 실제 적용 확인·만료 경로가 부족합니다."]
+    },
+    {
+      "section": "authorityDelegation",
+      "paragraphIndex": 2,
+      "requirementRef": {"path": "docs/product/prd.md", "line": 77},
+      "requirementFragment": "변경 요청 → 대기/중단 확인 → 규칙 적용 확인 → 후속 실행",
+      "status": "source_missing",
+      "sourceRefs": [
+        {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 216, "observation": "권한 transition operation이 없습니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 1890, "observation": "policy 함수는 고정 baseline 재적용입니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4319, "observation": "interrupt는 단일 session의 stopping/unknown 처리입니다."}
+      ],
+      "runtimeRefs": [],
+      "gaps": ["축소 admission hold/drain, pending 재평가, 확대 확인, 실패 때 이전 유효 정책 유지의 연결된 상태 경로가 없습니다."]
+    },
+    {
+      "section": "authorityDelegation",
+      "paragraphIndex": 3,
+      "requirementRef": {"path": "docs/product/prd.md", "line": 79},
+      "requirementFragment": "새 자식은 위임 시점의 적용 가능한 권한·컨텍스트·모델 설정을 받는다.",
+      "status": "source_missing",
+      "sourceRefs": [
+        {"path": "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs", "line": 10, "observation": "subagent deny입니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3795, "observation": "현재 child lineage는 history fork입니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3800, "observation": "fork child에 fixed baseline을 적용합니다."},
+        {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 210, "observation": "fresh delegation payload/concurrency operation이 없습니다."}
+      ],
+      "runtimeRefs": [],
+      "gaps": ["fresh child snapshot 상속·권한 교집합·부모 축소 전파·재위임 통제·실제 capacity 기반 queue가 없습니다."]
+    },
+    {
+      "section": "authorityDelegation",
+      "paragraphIndex": 4,
+      "requirementRef": {"path": "docs/product/prd.md", "line": 81},
+      "requirementFragment": "도구 이름과 검증된 스키마에 연결한다.",
+      "status": "source_partial",
+      "sourceRefs": [
+        {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 77, "observation": "LinkPreview는 출력 schema로 선택되며 toolName/version 검사는 없습니다."},
+        {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 87, "observation": "rich preview는 interactive=false로 임의 callback을 실행하지 않습니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4347, "observation": "실제 permission action은 session/request pending을 다시 확인합니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4328, "observation": "interrupt ACK 뒤에도 stopping이며 즉시 종료로 표시하지 않습니다."}
+      ],
+      "runtimeRefs": [
+        {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "inert unknown markup과 authoritative cancel 상태를 검사했습니다.", "applicability": "현재 동일 Renderer bytes입니다.", "limits": ["실제 tool callback/종료 효과 없음", "질문·선택·승인 Tool UI 미구현"]}
+      ],
+      "gaps": ["도구명+version registry, tool 질문/선택 response와 원래 policy/request 결합, 취소 불가능한 개별 도구의 한계 표시가 없습니다.", "clip은 비밀 마스킹을 증명하지 않습니다."]
+    }
+  ],
+  "integratedScenarios": [
+    {
+      "id": 1,
+      "exactClause": "이름·경로를 비운 신규 작업 → 올바른 루트와 이름 생성 → 대화 → 파일/도구 작업 → 결과 프리뷰 → 재시작 후 재열기.",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 105},
+      "status": "source_partial",
+      "sourceRefs": [
+        {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 188, "observation": "대화와 interrupt 경로가 있습니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2582, "observation": "Native prompt 진입점입니다."},
+        {"path": "apps/desktop-app/src/main.mjs", "line": 407, "observation": "현재 restart 경로는 production Native preflight를 사용합니다."}
+      ],
+      "runtimeRefs": [
+        {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "대화·Tool UI 부분을 synthetic Main으로 검사했습니다.", "applicability": "F05/F08 표시 부분입니다.", "limits": ["실제 Provider/도구 효과 없음", "scenario 전체 연속 실행 아님"]},
+        {"path": "docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json", "observation": "synthetic history와 정상/SIGKILL 뒤 nonfresh reopen을 검사했습니다.", "applicability": "restart 기반의 bounded 증거입니다.", "limits": ["UI/Provider 실행 없음", "scenario 전체 연속 실행 아님"]}
+      ],
+      "gaps": ["신규 작업→실제 대화→도구 효과→프리뷰→재시작 재열기의 한 흐름 증거가 없습니다."],
+      "limits": ["F01..04/F10의 전체 판정은 이 reader 범위 밖입니다."]
+    },
+    {
+      "id": 2,
+      "exactClause": "기존 저장소와 외부 worktree import → 새 worktree 두 개에서 병렬 세션 → 두 자식 위임 → 결과 회수 → diff/테스트/리뷰 → 명시적 commit.",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 106},
+      "status": "source_missing",
+      "sourceRefs": [
+        {"path": "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs", "line": 10, "observation": "subagent deny입니다."},
+        {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 205, "observation": "history fork는 있으나 fresh delegation operation이 없습니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 3776, "observation": "현재 fork는 대화 기록 복사입니다."}
+      ],
+      "runtimeRefs": [
+        {"path": "docs/runs/desktop-session-lifecycle/session-lifecycle-evidence.json", "observation": "history fork와 descendant 보호를 검사했습니다.", "applicability": "fresh delegation과 구분할 근거입니다.", "limits": ["과거 bounded history 실행", "두 fresh child 병렬/실패/회수 없음"]}
+      ],
+      "gaps": ["두 fresh child 위임·결과 회수 단계가 연결되지 않았습니다.", "terminal branch/restore 및 commit 실행은 이 누락을 채우지 않습니다."],
+      "limits": ["Import/worktree/Git의 개별 coverage는 Main과 다른 reader가 담당합니다."]
+    },
+    {
+      "id": 3,
+      "exactClause": "같은 파일 도구에 확인 후 허용, 사용자 거절, 정책 deny, 기억 취소를 각각 적용 → 실행 효과 확인. 실행 중 모드 축소·대기 승인·자식까지 검증.",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 107},
+      "status": "source_partial",
+      "sourceRefs": [
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 1890, "observation": "baseline write/read-back이 있습니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 4341, "observation": "once/reject와 stale pending 거절이 있습니다."},
+        {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 444, "observation": "decision은 once/reject만 받습니다."},
+        {"path": "apps/desktop-app/src/renderer/shared/configuration-draft/policy.mjs", "line": 10, "observation": "현재 child 실행은 deny입니다."}
+      ],
+      "runtimeRefs": [
+        {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "once/reject UI와 stale 카드 제거를 검사했습니다.", "applicability": "권한 UI 일부입니다.", "limits": ["synthetic Main", "같은 파일 도구의 부작용 없음", "remember/revoke/transition/child 없음"]}
+      ],
+      "gaps": ["동일 파일 도구의 allow/reject/policy deny/revoke 효과 비교가 없습니다.", "실행 중 축소·pending 재평가·child 적용 경로가 없습니다."],
+      "limits": ["고정 baseline 설정 성공은 이 통합 scenario 통과가 아닙니다."]
+    },
+    {
+      "id": 4,
+      "exactClause": "내장 명령 검색/인자 입력/실행과 앱 slash 명령 → 도구 rich UI/질문 응답 → 터미널/dev server → 우측 브라우저와 파일 프리뷰. 잘못된 인자·스키마도 확인.",
+      "requirementRef": {"path": "docs/product/prd.md", "line": 108},
+      "status": "source_partial",
+      "sourceRefs": [
+        {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 200, "observation": "catalog command를 slash 입력으로 찾아 literal arguments를 보냅니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2554, "observation": "명령 이름이 현재 catalog에 있는지 검사합니다."},
+        {"path": "apps/desktop-app/src/workbench-service.mjs", "line": 2595, "observation": "Native session.command로 dispatch합니다."},
+        {"path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx", "line": 77, "observation": "rich UI는 inert LinkPreview이며 질문 response 연결은 없습니다."},
+        {"path": "apps/desktop-app/src/workbench-contract.mjs", "line": 221, "observation": "command arguments는 text입니다. 명령별 input schema를 받지 않습니다."}
+      ],
+      "runtimeRefs": [
+        {"path": "docs/runs/configuration-agents/evidence/hidden-r2/ui-states/ui-states-evidence.json", "observation": "slash command.run의 literal arguments와 schema-safe LinkPreview/unknown fallback을 검사했습니다.", "applicability": "현재 Renderer의 명령·카드 부분입니다.", "limits": ["synthetic Main", "실제 command tool/질문 응답/terminal/dev server 연속 실행 없음"]}
+      ],
+      "gaps": ["명령별 schema 검증과 Tool UI 질문 응답이 없습니다.", "명령→도구→terminal/dev server→preview의 통합 실행 증거가 없습니다."],
+      "limits": ["F10/F12의 전체 source 판정은 다른 담당 범위입니다."]
+    }
+  ],
+  "prioritizedNextBoundedEvidenceChecks": [
+    {
+      "priority": 0,
+      "clauses": ["F-09:2", "F-09:3", "section5", "scenario3"],
+      "check": "Main이 같은 합성 파일 도구의 ask→once, user reject, policy deny, 중복·stale 응답을 실제 효과와 원래 request/session ID로 묶을 수 있는지 확인해야 합니다.",
+      "decisionNeeded": "remember/revoke/transition/child 경로가 없는 부분은 미구현 항목으로 유지해야 합니다. 기존 baseline 증거로 대체할 수 없습니다."
+    },
+    {
+      "priority": 1,
+      "clauses": ["F-07:0..5", "scenario2"],
+      "check": "fresh delegation의 공개 진입점·payload·child 상태·동시성·결과 회수·취소 경로가 먼저 필요합니다. 그다음 두 독립 child와 한 child 실패를 검사해야 합니다.",
+      "decisionNeeded": "현재 subagent deny와 새로운 실행 경계의 관계는 Main이 처리해야 합니다. 이 보고서는 architecture 선택이나 deny 완화를 승인하지 않습니다."
+    },
+    {
+      "priority": 2,
+      "clauses": ["F-06:0..4", "F-05:2"],
+      "check": "현재 runtime의 agent/model/variant/effort·입력 capability와 요청/기본/관측 값을 같은 실행에 연결하는 bounded 증거가 필요합니다.",
+      "decisionNeeded": "Agent 등록·선택과 실제 모델 소비를 분리해야 합니다. Provider 실행 범위는 Main이 기존 승인과 조건을 확인해야 합니다."
+    },
+    {
+      "priority": 3,
+      "clauses": ["F-05:0..3"],
+      "check": "Markdown/code, copy/retry/edit-fork, 첨부 검증, 실행 중 지시/queue를 각각 공개 UI→API→service→Native 경로에 연결한 뒤 실제 실패 경로를 검사해야 합니다.",
+      "decisionNeeded": "현재 line-feedback와 history fork의 bounded 증거를 해당 전체 기능의 완료로 확대하면 안 됩니다."
+    },
+    {
+      "priority": 4,
+      "clauses": ["F-08:0..4", "scenario4"],
+      "check": "도구명+version+schema에 따른 rich renderer, 질문/선택 response, schema 기반 직접 실행을 원래 session/tool/request/policy와 연결하는 증거가 필요합니다.",
+      "decisionNeeded": "slash command, 내부 고정 RPC, 일반 직접 도구 호출을 구분해야 합니다."
+    },
+    {
+      "priority": 5,
+      "clauses": ["scenario1", "scenario2", "scenario3", "scenario4"],
+      "check": "구성 요소 증거가 준비되면 지원 환경별 실제 연속 UI 실행을 기록해야 합니다.",
+      "decisionNeeded": "검사한 실행 자료는 Darwin 중심입니다. Windows와 실제 Provider·도구 효과의 적용 가능성은 미확립입니다."
+    }
+  ]
+}

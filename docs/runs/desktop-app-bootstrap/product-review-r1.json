@@ -1,0 +1,94 @@
+{
+  "schema_version": 2,
+  "run_id": "desktop-app-bootstrap",
+  "reviewer_role": "product_reviewer",
+  "reviewed": {
+    "contract_sha256": "c945fb6edaa9b0544b7bac342a98e23135b5744c6a25cc5e3ccfbc929722c2ff",
+    "documents_sha256": "4e647156eac0bb975eca2d4ed96900c0bfe7240c031dad7eb48cf1db0131c13b",
+    "gate": "product",
+    "plan_sha256": "905ce4a9a5c67874c0101e46fbdd1e96998226399c6ea7acbfa1667bc3de5471",
+    "schema_version": 2
+  },
+  "plan": {
+    "path": "docs/workplans/desktop-app-bootstrap/plan.md",
+    "revision": 3,
+    "sha256": "905ce4a9a5c67874c0101e46fbdd1e96998226399c6ea7acbfa1667bc3de5471"
+  },
+  "contract": {
+    "path": "docs/workplans/desktop-app-bootstrap/contract.json",
+    "sha256": "c945fb6edaa9b0544b7bac342a98e23135b5744c6a25cc5e3ccfbc929722c2ff"
+  },
+  "reviewed_artifacts": [
+    {
+      "path": "docs/product/prd.md",
+      "version": "0.3",
+      "sha256": "425d5179744350033128cd8b376e76986c527b63164ce0bcb65d63aead97440b"
+    }
+  ],
+  "supporting_artifacts": [
+    {
+      "path": "docs/runs/build-delivery/user-approval.json",
+      "sha256": "2a105068f51c08f14636311d03417145170650250423da0d7e68993439733a4e"
+    },
+    {
+      "path": "docs/runs/domain-specs/prd-approval.json",
+      "sha256": "c378f8061726b6ff9940ff4fd3b1f111a62b4d1c6f8144e2d0562a314a19f4ba"
+    },
+    {
+      "path": "docs/engineering/spec-index.md",
+      "sha256": "dbec77f42986751e641c23d500d44969eabce64ea72b0ba830cc297ec624c111"
+    },
+    {
+      "path": "docs/decisions/0002-desktop-runtime.md",
+      "sha256": "52f0a0f9ef46a5a5c269a5e456b0691d26625b5c277e4f45554b63ac524251a2"
+    },
+    {
+      "path": "docs/research/workbench-expansion.md",
+      "sha256": "8441bce6d51587cc4803b7d15211581194bc5e159367b9f34e2ab64366679824"
+    },
+    {
+      "path": "docs/runs/prd-expansion/product-review.json",
+      "sha256": "0c90f96296a165b83cebaa4c7ab67db5e3e3a210d84470dc8df43a8d4cba43f9"
+    },
+    {
+      "path": "docs/runs/build-delivery/product-review-r7.json",
+      "sha256": "c574f56e0874a63c3b03aedc96f1aa5cfcd71bea4ba9e3085dec786a5d94c2d7"
+    }
+  ],
+  "verdict": "pass",
+  "summary": "PRD v0.3 reflects the direct desktop-app correction as an installed local application whose shell owns its window and local execution-layer lifecycle. It retains all F-01–18 groups and their observable acceptance criteria, integrated scenarios, full-scope release gate, exclusions, permission/path/recovery safeguards, and personal-use/learning outcomes. The revision 3 plan and ADR-0002 explicitly limit the first runnable macOS synthetic shell to an implementation milestone while the complete workbench remains active. No material product ambiguity, scope reduction, or unsupported completion claim blocks this document handoff.",
+  "open_findings": [],
+  "optional_improvements": [
+    {
+      "id": "DPR-N1",
+      "severity": "P3",
+      "path": "docs/product/prd.md",
+      "line": 97,
+      "title": "Remove leftover conditional platform wording",
+      "evidence": "The operations/packaging row still says to decide local-browser versus installed delivery and uses the conditional installed-selection wording, while lines 5, 13 and 137 already settle installed desktop delivery.",
+      "impact": "Editorial inconsistency only: the explicit product boundary, current approval, plan and ADR settle the delivery target, so this does not make browser delivery an allowed implementation option.",
+      "correction": "Replace the browser-versus-installed decision and conditional language with wording that desktop delivery is confirmed and only desktop runtime lifecycle, notifications/automation, storage and separately scoped distribution requirements need specification."
+    }
+  ],
+  "review_boundary": "Fresh independent read-only semantic product review of registered PRD v0.3 against the exact desktop-app-bootstrap revision 3 plan/contract, recorded desktop correction, prior approved scope and relevant platform decisions. Product-document pass only; not a design-spec, implementation, security, runtime or release pass.",
+  "verification_limits": [
+    "Ran only read-only harness review-input/status, local document inspection and SHA-256 checks. All nine packet document hashes, plan/contract hashes and approval target/evidence hashes matched disk. Only the product document was semantically approved by this product gate; hash checking other documents does not constitute their design review.",
+    "F-01–18 were inspected individually in current PRD and cross-checked against prior product-review scope and spec-index traceability. The repository has no commits and no v0.2 source snapshot was established in this bounded review; exact byte-for-byte preservation of historical prose is not independently attested.",
+    "The direct user wording is evidenced by the coordinator-recorded approval file, not an independently fetched conversation transcript. macOS-first remains a stated working assumption; other OS support, public distribution, signing/notarization, auto-update service, provider authentication and external release are not authorized by this review.",
+    "The assigned .solopreneur/agents/roles/product_reviewer.md does not exist. Applied the actual .codex/agents/product_reviewer.toml and .agents/skills/solo-product-review/SKILL.md. Reviewed the registered docs/workplans path rather than the generic skill example docs/runs path.",
+    "No application runtime, tests, install, SDK/provider service, credential access or ledger mutation occurred. Only this explicitly requested report was created; files_modified=false refers to reviewed documents, plan, contract, implementation and ledger and excludes the assigned report output.",
+    "Runtime provenance identifiers are assignment metadata, not independently attested runtime identity."
+  ],
+  "next_handoff": "Coordinator registers this report with the product gate and checks the exact product handoff. Design-spec review and compatibility probes remain required before dependent desktop implementation; full PRD acceptance remains outstanding.",
+  "provenance": {
+    "child_task_id": "/root/desktop_product_review_r1",
+    "author_task_id": "/root",
+    "review_mode": "Fresh independent read-only product review",
+    "runtime_identity_verified": false,
+    "runtime_executed": false,
+    "tests_executed": false,
+    "tests_run": false,
+    "ledger_modified": false,
+    "files_modified": false
+  }
+}

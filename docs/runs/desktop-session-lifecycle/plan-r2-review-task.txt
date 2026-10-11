@@ -1,0 +1,25 @@
+Fresh independent reader. Read .codex/agents/solo_reader.toml,
+.agents/skills/solo-specialist/SKILL.md and solo-plan-review/SKILL.md.
+Do not edit, run tests, read logs/credentials, start services or delegate.
+
+Bounded changed-concern plan review ONLY. Read these five files under
+docs/runs/desktop-session-lifecycle: plan.md revision 2, interface.md version 2,
+plan-binding.json, plan-review.json (previous revision pass), and
+design-spec-review.normalized.json (two subsequent contract findings).
+Use contract.json only if needed to confirm unchanged check scope. Do not
+repeat repository exploration or installed SDK discovery: the prior review
+established session.list({parentID,limit,cursor}) and cursor.next pagination.
+
+Judge whether revision 2 resolves the two findings without changing scope:
+authoritative descendant/absence proof and unknown-receipt-specific duplicate
+failure. Current local intent, Electron/platform/storage limits and all checks
+remain as previously approved. The plan allows a linked sequential review,
+but this invocation reviews the plan only: the public ledger requires current
+plan pass before re-registering the updated design artifact. Separate narrow
+design-spec verification will follow, then implementation. No extra ceremony.
+
+Return ONLY JSON (no Markdown escapes/fence): schema_version:2,
+reviewed:<exact plan-binding.json>, verdict:pass|changes_requested|blocked,
+summary, open_findings:[], provenance:{child_task_id:
+"cli:session-lifecycle-plan-r2-independent",author_task_id:"coordinator"}.
+The child ID is a task label, not a runtime attestation. Concrete blockers only.

@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "481352840763187579a1c52e554157c2da577d9d1a7fb10f8798514d411d05c6",
+    "gate": "plan",
+    "plan_sha256": "de7e9d7aa573ae8ebe86198a22fd9e2a227713e04bf3dacedb7aefc0208a3a9b",
+    "schema_version": 2,
+    "source_sha256": "113fb104a12bf9be836b150a821d2e0b598f097832351b77e3b5cb6fe4172878",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "plan revision 2와 design v2는 initial PLAN 기준을 충족합니다. 편집 한도 64KiB, 기존 preview 256KiB, 변경 없는 IPC 한도 262144 bytes를 구분했습니다. shared write-fit과 전체 메시지의 최악 조건 경계 검증을 명시하여 이전 크기 문제를 해소했습니다. 필수 수정 사항이나 미해결 주요 결정은 없습니다.",
+  "open_findings": [],
+  "assessment": {
+    "authority_and_scope": "기존 로컬 제품 작업 승인이 적용됩니다. 기존 일반 텍스트 파일의 편집·저장만 다룹니다. Git과 전체 AC11·PRD는 계속 열려 있습니다. routine 수정에 반복 entry 검토나 추가 사용자 승인은 필요하지 않습니다.",
+    "contracts_and_security": "별도 baseline read, protected source 거절, 전체 ancestor/source version, 정확한 original operation identity와 digest, feature gate와 legacy refusal을 유지합니다. identity-only trust/idle/permission 확인은 policy update나 Native mutation을 요구하지 않습니다. conflict 시 draft를 보존하고 postdispatch unknown은 replay하지 않습니다.",
+    "feasibility_and_ownership": "기존 publisher 하나, durable owner 하나, window draft owner 하나를 재사용할 수 있습니다. 최대 3명의 분리된 writer와 실제 producer 확정 후 consumer 작업 순서는 타당합니다.",
+    "verification": "통합 후보의 최종 build/publication/hidden UI와 독립 CODE/RENDER 범위는 적절합니다. 전체 prepare 메시지 검증은 text escaping, root 4096 bytes, relative path 2048 bytes, key 128 한도를 함께 확인하도록 명시되어 있습니다. 기존 kernel의 32KiB 제한도 generic file 계약에 맞추는 구현 범위에 포함됩니다."
+  },
+  "evidence": {
+    "r2_binding_and_packet_match": true,
+    "registered_design_v2_hash_matches": true,
+    "routing_hashes_match": true,
+    "actual_source_pins_verified": 10,
+    "prechange_files_verified_unchanged": 614,
+    "existing_contract_check_paths_exist": true,
+    "planned_new_paths": "첫 3개 테스트와 publication probe는 예정된 새 파일입니다. 현재 실행 증거가 아닙니다. 최종 checks 전에 예정된 fail-closed 경로 preflight를 적용합니다."
+  },
+  "limits": [
+    "같은 initial PLAN 검토의 r2 판정입니다. r1 바인딩은 이력으로 남습니다.",
+    "파일 읽기와 해시 비교만 수행했습니다. 파일·ledger 수정, 재위임, build, test 또는 제품 runtime 실행은 하지 않았습니다.",
+    "실제 IPC 경계, publication, UI 동작은 아직 실행으로 확인하지 않았습니다. 이 판정은 DESIGN_SPEC, 최종 CODE/RENDER, Windows 또는 제품 완료 승인이 아닙니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11b7e-93a6-7342-8e6a-afa58d4f5614",
+    "basis": "현재 환경의 CODEX_THREAD_ID에서 읽었습니다."
+  }
+}

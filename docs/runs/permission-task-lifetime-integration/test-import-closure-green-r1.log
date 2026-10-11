@@ -1,0 +1,25 @@
+✔ source-copy fixture has no staging, preparation, overlay or verifier import dependency (9.46675ms)
+✖ resource parser preserves actual syntax and fail-closed malformed/template handling (0.89125ms)
+✔ resource public constants share one frozen source and include their staged pure module (2.269375ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 223.08225
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/resource-import-closure.test.mjs:14:1
+✖ resource parser preserves actual syntax and fail-closed malformed/template handling (0.89125ms)
+  Error: Invalid resource module syntax
+      at localResourceImports (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/local-resource-imports.mjs:17:11)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/resource-import-closure.test.mjs:16:20)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

@@ -1,0 +1,138 @@
+{
+  "schema_version": 2,
+  "run": "durable-workbench-storage",
+  "reviewer": "plan_reviewer",
+  "plan_revision": 4,
+  "reviewed": {
+    "contract_sha256": "28d99ceecf9596158f2917fe4c6a137658a891e286e50d9c435fef9940ea3720",
+    "gate": "plan",
+    "plan_sha256": "8b584e88eacd629f30c685a713b78965322ef7484d550777dfb560b0d4dcb9b6",
+    "schema_version": 2,
+    "source_sha256": "be44a6f2c01f67d53d80bb278722b2b39e1864fbbc609247b674167942241989"
+  },
+  "verdict": "changes_requested",
+  "summary": "필수 lint 명령에 desktop ESLint config 지정이 빠져 있습니다. 이 명령을 수정해야 ENTRY를 통과할 수 있습니다. 그 외에는 전체 로컬 durability 수용 기준, 작업 순서, 분리된 worker 소유권, API checkpoint, exact packaged native probe, safe owner, flush poison, atomic publication 및 durable/observation clock 분리에서 추가 ENTRY 차단 사항을 찾지 못했습니다. P6 완료와 현재 source에 대한 8개 check 및 독립 code/render pass를 확인했습니다. 이 보고서는 design_spec 판정이 아닙니다.",
+  "open_findings": [
+    {
+      "id": "P7-ENTRY-R4-1",
+      "priority": "P2",
+      "path": "docs/runs/durable-workbench-storage/contract.json",
+      "line": 171,
+      "title": "필수 lint 명령에 config 경로가 없습니다",
+      "finding": "checks.lint는 repository root에서 pnpm exec eslint apps/desktop-app/src apps/desktop-app/scripts를 실행하도록 지정합니다. 해당 root와 모든 상위 경로에는 eslint.config.*가 없습니다. 설치된 ESLint의 기본 config 탐색은 cwd에서 상위 경로로 진행합니다. 하위 경로에 있는 apps/desktop-app/eslint.config.mjs를 이 명령으로 선택할 수 없습니다.",
+      "evidence": [
+        "contract.json:171-178의 argv와 cwd를 직접 읽었습니다.",
+        "repository root 및 모든 상위 경로의 eslint.config.* 부재를 읽기 전용으로 확인했습니다.",
+        "설치된 node_modules/eslint/lib/config/config-loader.js의 cwd 기반 상위 탐색을 확인했습니다.",
+        "apps/desktop-app/project.json과 완료된 P6 contract는 --config apps/desktop-app/eslint.config.mjs를 명시합니다."
+      ],
+      "impact": "필수 11개 check 중 lint가 source 검사 전에 config 탐색에서 실패합니다. 현재 contract로 S5의 필수 검증을 완료할 수 없습니다.",
+      "required_correction": {
+        "argv": [
+          "pnpm",
+          "exec",
+          "eslint",
+          "--config",
+          "apps/desktop-app/eslint.config.mjs",
+          "apps/desktop-app/src",
+          "apps/desktop-app/scripts"
+        ],
+        "cwd": ".",
+        "follow_up": "Main이 contract를 수정하고 등록한 뒤 새 review-input을 생성해야 합니다. 수정된 binding에 대해 독립 ENTRY 재검토를 받아야 합니다. 이번 reviewer는 lint를 실행하지 않았습니다."
+      }
+    }
+  ],
+  "review_boundary": {
+    "input_path": "docs/runs/durable-workbench-storage/execution/plan-review-r4.input.json",
+    "plan_path": "docs/runs/durable-workbench-storage/plan.md",
+    "plan_revision": 4,
+    "contract_path": "docs/runs/durable-workbench-storage/contract.json",
+    "storage_contract_path": "docs/runs/durable-workbench-storage/storage-contract.md",
+    "storage_contract_version": 4,
+    "comparison_inputs": [
+      "docs/runs/durable-workbench-storage/execution/canonical-v3-plan.md",
+      "docs/runs/durable-workbench-storage/execution/canonical-v3-contract.json",
+      "docs/runs/durable-workbench-storage/execution/canonical-v3-storage-contract.md",
+      "docs/runs/durable-workbench-storage/execution/transaction-analysis-result.md",
+      "docs/runs/durable-workbench-storage/execution/observation-clock-integration-notes.md"
+    ],
+    "preserved_authority": "build-delivery rev19, frontend-architecture-redesign rev6, PRD v0.6 F-01–18 및 명시적 자율 로컬 실행 승인을 유지합니다. 새 intake나 추가 사용자 승인을 요구하지 않습니다.",
+    "next_dependency": "현재 ENTRY는 미통과입니다. Main은 finding을 수정하고 새 binding의 ENTRY pass를 등록해야 합니다. 그 뒤 변경된 storage-contract v4의 독립 design_spec packet 준비, review 및 handoff를 진행합니다. Source consumers는 계속 대기해야 합니다.",
+    "limits": "정적 ENTRY 계획 검토입니다. P7 구현, 테스트, build, native 실행, packaged runtime 동작, Windows runtime, authenticated provider, power-loss durability 또는 migration 성공을 검증하지 않았습니다."
+  },
+  "checks": [
+    {
+      "check": "정확한 review-input binding",
+      "result": "현재 파일에서 읽기 전용으로 두 번 계산했습니다. 두 결과 모두 지정한 plan-review-r4.input.json과 정확히 일치했습니다."
+    },
+    {
+      "check": "storage-contract v4 등록 hash",
+      "sha256": "cade7659ec526d3431795ca2b5781f1681502d65f8b7975068ce6844cb839f89",
+      "result": "실제 문서 hash가 contract.json의 등록값과 일치합니다."
+    },
+    {
+      "check": "P6 선행 조건과 inbound source",
+      "result": "P4/P5와 P6 run은 complete입니다. P6 baseline 대비 현재 source 변경은 10개입니다. P6의 8개 check는 모두 exit_code 0이며 inputs_changed, timed_out, interrupted는 false입니다. 독립 code/render report 파일 hash와 현재 review binding도 일치합니다. 과거 check를 재실행하지 않았습니다."
+    },
+    {
+      "check": "필수 검증 범위",
+      "required_checks": [
+        "storage-unit",
+        "native-storage",
+        "typecheck",
+        "build",
+        "boundaries",
+        "hidden-ui",
+        "package-macos",
+        "package-inspect",
+        "renderer-unit",
+        "lint",
+        "bundle"
+      ],
+      "result": "11개 모두 required입니다. Package 생성·검사 뒤 exact packaged sidecar hash를 사용하는 isolated probe와 별도 hidden renderer 검토가 계획에 있습니다. lint argv 결함은 open finding으로 남깁니다."
+    },
+    {
+      "check": "작업 순서와 API checkpoint",
+      "result": "Journal/registry와 owner worker의 경로가 분리되어 있습니다. Exported API checkpoint 뒤 단일 host integration writer가 작업합니다. DTO/clock/recovery interface를 고정한 뒤 renderer와 fixture consumers가 진행합니다. Reviewer는 구현을 수정하거나 승인하지 않습니다."
+    },
+    {
+      "check": "Durability 실패 경계",
+      "result": "Effect 전 admission/dispatch flush, service-wide writer poison, unknown hold 보존, 단일 completion record, candidate 비공개, 최신 root에 대한 delta rebase 및 atomic publication이 명시되어 있습니다. Partial mapping은 검증된 경우에만 unknown receipt와 unavailable 상태로 공개합니다. Unconfirmed flush tail은 자동 성공 승격이나 effect 재개를 허용하지 않습니다."
+    },
+    {
+      "check": "Durable clock과 observation clock",
+      "result": "Durable revision과 current-epoch observationSequence를 분리합니다. Clock 검증, metadata floor, duplicate sequence, old-epoch receipt, 느린 payload와 health의 별도 acceptance 및 interrupt notice retirement 검사가 명시되어 있습니다. Native transcript는 journal에 저장하지 않습니다."
+    },
+    {
+      "check": "외부 capability와 안전한 대기 조건",
+      "result": "Store owner binding과 pending inbox의 안전한 startup은 compatibility gate입니다. 미검증 owner 또는 child는 launch와 write를 차단합니다. Windows, authenticated provider, power-loss 및 lossless migration의 미검증 상태를 유지합니다. Background-only 및 OS focus 금지 조건도 유지합니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a104f2-62f4-74f3-b06b-6e683f753445",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-plan-review"
+    ],
+    "mode": "report_only",
+    "runtime_identity_attested": false,
+    "runtime_model_effort_attested": false,
+    "sandbox_enforcement_attested": false,
+    "delegated": false,
+    "files_changed": [],
+    "report_written": false,
+    "ledger_changed": false,
+    "tests_run": false,
+    "builds_run": false,
+    "native_launches": false,
+    "computer_use_used": false,
+    "foreground_actions": false,
+    "provider_calls": false,
+    "read_only_hashing_performed": true,
+    "binding_verified_twice": true,
+    "persistence_owner": "main"
+  }
+}

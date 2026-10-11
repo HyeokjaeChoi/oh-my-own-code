@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs",
+      "sha256": "5506ba6e6497e082eb40a8d883af9cc658e730a9234ff9100f89bb997bdd737a",
+      "bytes": 2083
+    },
+    {
+      "path": "apps/desktop-app/src/host/darwin-descriptor-ffi.test.mjs",
+      "sha256": "4db7bd472561e6df2e69a5ef573b6991932cfe83332e0dce7d5475d764688278",
+      "bytes": 2793
+    },
+    {
+      "path": "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+      "sha256": "137b86921877f45e48d942e2177d6b5a016c35f35a569e46e67e9d6767ac7d1c",
+      "bytes": 26629
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read.mjs",
+      "sha256": "b8f9b45c49eb50533eaaa1bdccccb35288e1f1a4d0ae87b7db62f390f3075dba",
+      "bytes": 10168
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-descriptor-read.test.mjs",
+      "sha256": "9981fde5355167f2a54912b82b7a9d3595ff441c05708c122314a54dd393a3aa",
+      "bytes": 23763
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-resources.mjs",
+      "sha256": "705a7ac573ce733614d7c1e9e05df83dbf13f1805e4320bfcc76eb12f1ebb86d",
+      "bytes": 17863
+    }
+  ],
+  "before": [
+    "prechange/descriptor-ffi-before-r1/manifest.json",
+    "prechange/descriptor-read-before-r1/manifest.json"
+  ],
+  "checks": {
+    "native-descriptor-read": "contracted Node 30PASS",
+    "static": "exact6 ESLint and Prettier PASS",
+    "stage": "descriptor-read-stage-r1.log inert staged closure PASS"
+  },
+  "limits": "Synthetic openat path emulation in test copies only; actual Darwin/Bun/Native/IO-task settlement not executed or approved. Existing Node metadata check stale broad source binding pending final coherent integration."
+}

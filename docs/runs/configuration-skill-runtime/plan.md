@@ -1,0 +1,35 @@
+# Explicit Native Skills — plan
+Revision: 1. Date: 2026-10-08. Status: initial major entry; no implementation before PLAN and DESIGN_SPEC pass.
+
+## Outcome and authority
+Continue the authorized local product remainder under PRD F14/AC14, ADR-0001 and existing trust/owner/admission/recovery contracts. configuration-skill-files is COMPLETE. Add explicit workspace Native Skill observation, inactive registration from an exact loaded existing SKILL.md, owned registration removal, and selected-session application through actual session.skill with resume:false. Show actual Native registry and Skill-message evidence separately from saved files and model execution. This does not finish whole F14/product. No directory creation/deletion, arbitrary plugins, project auto-discovery, provider/model execution, credentials/private stores, production Main foreground, signing or external publication.
+
+## Selected approach and prerequisite
+Use one fixed app-bundled trusted local DIRECTORY plugin through pinned config.plugins; keep project:false, filewatcher:false and all other startup restrictions. Pinned config source drops file targets. PluginModule has a real local path branch avoiding npm; supported Context has skill.transform/reload and rpc.register. Public global skill namespace is list only; never invent register/remove SDK methods or use AGENTS instructions as Skills. Initial real contained production-helper probe must prove exact bundled-directory loading, closed authenticated scoped RPC and Native transform/reload/list under unchanged isolation before consumers proceed. Failure is an approach issue: stop dependent implementation and change/review the affected approach, never enable project discovery or package install as fallback.
+
+## Safety and semantics
+Main retains credentials, nonce, file access, durable operation authority and Native client. Renderer supplies closed IDs and expected observations only. App-bundled plugin accepts only fixed closed RPC methods from the app authority; no arbitrary method/path/module names, code evaluation, shell or network. Per-instance canonical ctx.location must match requested workspace. Manifest verifies all fixed plugin directory assets and the resource closure. Never load user config plugins or install packages.
+
+Registration uses a fresh Native ID bound to epoch/workspace/sourceName/original registration operation. Always set Native autoinvoke:false, including file true. Native Info has no arbitrary metadata: ownership requires exact trusted plugin-held original identity plus exact public Native record, never an ID prefix alone. Persistent app metadata retains only identity/digests/IDs, not file body. No automatic Native registrations on startup/reopen, poll, save, selection or refocus. Removal changes the global registry only; existing session Skill messages remain.
+
+Application is explicit to an idle trusted selected session after exact mapping/root/policy checks. session.skill({sessionID,id,resume:false}) appends a Native type:skill message; it does not start a model. Public API lacks caller messageID. Require complete bounded type:skill history and absence of this registration's unique Native ID before dispatch, then exactly one new matching id/name/text-digest message afterward. If already present, show observed existing record and do not call activation. If pagination/inbox/race/correlation is uncertain, refuse before effects or retain unknown afterward. Do not infer absence from a truncated page. Inherited fork records are observed records, not relabelled as a new direct application. Removing registry entries does not undo recorded session context.
+
+Every actual effect needs flushed original-key intent. New feature marker before admission/checkpoint; original sourceName/registration reference/mapping and result proof bind journal/registry/receipt. Unknown is lookup-only without replay and blocks relevant mutations. Reuse existing single writer and canonical operation digest. Keep both send policy stages and checkpoint modules' existing invariants. Existing file/instruction/MCP operations stay compatible.
+
+## Acceptance
+R1: fixed bundled local directory plugin/closed private RPC works in actual contained Native startup without user discovery/install/provider activity, exact owned cleanup and current provenance.
+R2: exact explicit observation/register-disabled/remove and selected-session Skill-record application with original identity, postconditions, unknown no replay and legacy byte-preserving refusal.
+R3: sole-owner scope/floor/trust/draft-safe UI with explicit reads, actual file vs Native vs message facts, untrusted and restart guidance, editable held drafts, keyboard/760px/200%.
+R4: affected checks, actual Native synthetic evidence and hidden UI, fresh independent CODE and RENDER; no whole-product completion claim.
+
+## Order, ownership and feedback
+1. Main records current pinned source facts and this initial major PLAN/DESIGN_SPEC; fresh independent entry reviews once.
+2. Main first proves the local directory/RPC route using production startup/owner/preflight/resources, synthetic contained stores, no model/provider. Freeze actual producer shape after successful prerequisite. No renderer/storage consumers guess API.
+3. Main owns shared DTO/protocol/pure helpers/plugin/host service and all ledger/docs. Fresh disjoint worker may own storage/admission/receipt/tests; another renderer/store/controller/UI/tests; fixture/probe worker follows actual producer and UI checkpoint. At most3 writers, no recursive delegation. Main alone launches Native/Electron/build and final gates.
+4. Routine fixes inside this accepted boundary use plan-edit-affected checks-separate code review-integrate, no repeated initial gates. Preserve all failed attempts, source/asset hashes, actual owned process exits and retained synthetic namespaces. Do not repeat unchanged tests/builds only to change a fingerprint; current read-only exact-byte evidence reuse is valid.
+5. Finish only this run with all acceptance gaps closed, then continue remaining approved product. Native plugin route failure, wrong workspace, automatic registration/execution, ID-only ownership, unconfirmed message correlation or bypass of unknown admission blocks dependent work.
+
+## Reversal and references
+No new state framework, process manager, alternate journal or general plugin installer. Before stores consume the feature, revert new support safely; afterward older readers must refuse feature markers without writing. Pinned runtime is Darwin arm64/Bun1.4.2/OpenCode2.0.18; Windows behavior remains separately unverified and unsupported runtime must fail closed. Same-UID hostile mutation and power-loss durability are not newly claimed.
+
+References: [PRD](../../product/prd.md), [ADR](../../decisions/0001-workbench-platform.md), [architecture](../../engineering/workbench-architecture.md), [UX](../../design/specs/workbench-ux.md), [design](design.md), source-facts.json. Prior completed file/MCP/P7 evidence is linked history, not new Native Skills acceptance.

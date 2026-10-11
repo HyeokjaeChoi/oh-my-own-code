@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "worker": "01a125ac-8857-7923-8879-f540dada21f9",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/host/native-bootstrap-workspace.mjs",
+      "sha256": "70f1a144457d6c41a3ae0ae165395af06da390283da7043c5671b0dfafd893eb",
+      "bytes": 6447
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-bootstrap-workspace.test.mjs",
+      "sha256": "c55e959c3ae393d2ac225e81cad2736df44437f3c6e007f92af95a45b226af99",
+      "bytes": 18519
+    }
+  ],
+  "worker_checks": {
+    "Node": 19,
+    "eslint": "pass exact2",
+    "prettier": "pass exact2",
+    "red": "final observation removal produced three behavioral failures"
+  },
+  "api": "createNativeBootstrapWorkspace({id,path},{check?}) -> frozen {inspect,assertCurrent,close}",
+  "limits": [
+    "Metadata-only non-VCS candidate; no Native persistence/task/execution grant",
+    "Actual producer/protocol/controller integration and independent CODE remain Main work",
+    "No Native/Bun/Electron/build/server/provider/network/private originals/UI executed"
+  ]
+}

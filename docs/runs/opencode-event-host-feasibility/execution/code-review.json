@@ -1,0 +1,147 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "8908db0f97bc34f0550ffdd68f940f0e5a078ac3ab93a90c07b4c979e669e4c2",
+    "environment_sha256": "4b5d1304b3304715adbee93a9e8b924c76e3ed82cc8811aa5ad1d520c56f9d59",
+    "gate": "code",
+    "plan_sha256": "bd05b57d54efc29d23094bf8ec9dfeb9407561b2549457df8f296206dd1e7c7e",
+    "schema_version": 2,
+    "source_sha256": "a75fd49a01211ef78a324cab7d829de4ea71bbd6018317be34bbea4330885840",
+    "verification_sha256": "4c7c520165e75ef0ff971ad931cc1ecc06f4dd74b5c548893dbdda86c1e6e70c",
+    "work_class_sha256": "0bbdfdad9b2c8e3de3c999d4b44dec00d1ae208eb188b17ad565bc1cc418d6be"
+  },
+  "verdict": "pass",
+  "summary": "사양 준수와 코드 품질을 별도로 검토했습니다. 현재 Phase1 범위에서 수정이 필요한 결함을 발견하지 못했습니다. 정확한 review binding, 실제 코드, 보존된 runtime 결과 5개, run check 7개를 대조했습니다. 이 판정은 production 적용이나 P7 완료를 승인하지 않습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a109c3-f77b-7201-8a75-794b253967a6",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "profile": "solo_reader",
+    "independent_report_only": true,
+    "profile_instructions_read": ".codex/agents/solo_reader.toml",
+    "skills_read": [
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-code-review/SKILL.md"
+    ],
+    "recursive_delegation": false,
+    "files_written": false,
+    "runtime_native_provider_ui_invoked": false,
+    "os_sandbox_attested": false
+  },
+  "passes": {
+    "spec_compliance": {
+      "result": "pass",
+      "basis": "plan rev4 routine, accepted design3, contract EH-01–EH-07",
+      "checks": [
+        {
+          "acceptance": "EH-01",
+          "result": "pass",
+          "evidence": "scope의 prototype 파일 16개 hash가 현재 파일과 일치합니다. input inventory, dependency 파일 35,113개와 link 31개, engine asset, controller asset, preparation asset을 직접 검증했습니다. P7 source35와 packaged launch3도 기준 bytes와 일치합니다."
+        },
+        {
+          "acceptance": "EH-02",
+          "result": "pass",
+          "evidence": "고정 Bun1.4.2, Node24.14.1, official server/client2.0.18, Effect Scope의 start/stop 경로를 확인했습니다. 보존된 결과에는 authenticated-ready, scope-closed, 실제 ChildProcess.exit가 있습니다."
+        },
+        {
+          "acceptance": "EH-03",
+          "result": "pass",
+          "evidence": "path guard와 closed API 검사가 spawn 또는 transport 전에 실행됩니다. import는 소유 session, 위치, metadata, deny permissions, bounded synthetic transcript를 검사합니다. Basic/CORS 결과는 fixture의 5개 행과 일치합니다."
+        },
+        {
+          "acceptance": "EH-04",
+          "result": "pass",
+          "evidence": "실제 HTTP log에 session.created seq0, session.renamed seq2, session.metadata.updated seq3, session.permissions seq4가 있습니다. marker는 동일 aggregate와 head4에 연결됩니다. after0 결과는 seq>0인 정확한 tail과 같습니다. official bus 코드의 gt(seq, after) 및 기본 cursor -1과 일치합니다."
+        },
+        {
+          "acceptance": "EH-05",
+          "result": "pass",
+          "evidence": "normal-reopen 전후 전체 snapshot이 canonical 비교에서 같습니다. transcript, message page, event payload와 hash, session/location/project mapping, sentinel이 보존됩니다. 이전 engine의 실제 exit 이후 같은 namespace를 다시 엽니다."
+        },
+        {
+          "acceptance": "EH-06",
+          "result": "pass",
+          "evidence": "owned-sigkill-reopen 전후 snapshot이 정확히 같습니다. SIGKILL 전에 pending call이 없고 observer gap이 없으며, 기록된 direct handle 28개 모두 exit 증거를 갖습니다. SIGKILL과 reopened engine의 실제 exit도 기록되어 있습니다."
+        },
+        {
+          "acceptance": "EH-07",
+          "result": "pass",
+          "evidence": "현재 결과 5개를 verifyEvidence로 직접 재검증했습니다. 계약 check 7개 모두 exit_code0, inputs_changed=false이며 현재 binding과 일치합니다. final verifier는 필수 결과, 종료, retained namespace, sentinel, event와 reopen equality를 검사합니다."
+        }
+      ]
+    },
+    "code_quality": {
+      "result": "pass",
+      "checks": [
+        "host/probe/freeze/verify, installer preparation, config, fixtures, lock, manifests, static-tests를 실제로 읽었습니다.",
+        "synthetic message 1개가 남기는 sequence gap1은 official SessionTransfer.import의 reserveSequence(seq + messages.length)와 일치합니다.",
+        "message.list cursor의 존재를 불완전 transcript로 판단하지 않습니다. 정확한 전체 export와 fixture equality로 완전성을 확인합니다.",
+        "Main의 bounded direct-handle settlement 수정은 observer deadline 안에서 반복 관찰합니다. gap 또는 미확인 exit는 HOLD이며 idle SIGKILL 조건을 통과하지 못합니다.",
+        "실패 경로는 bounded scope-stop 후 필요한 경우 정확한 소유 ChildProcess handle만 강제 종료합니다. 불확실한 상태는 PASS로 바꾸지 않고 namespace를 보존합니다. namespace 삭제나 미확인 namespace 재사용 경로는 없습니다.",
+        "runtime event는 official API와 HTTP log에서 가져옵니다. static parser용 fabricated event는 runtime 증거로 사용하지 않습니다."
+      ]
+    }
+  },
+  "binding_validation": {
+    "reviewed_object_exactly_copied": true,
+    "current_binding_recomputed_exact": true,
+    "packet_routing_hashes_match": true,
+    "scope_hashes_match": true,
+    "registered_artifact_hashes_match": true,
+    "final_verification_binding_unchanged": true
+  },
+  "installer_review": {
+    "result": "pass",
+    "evidence": [
+      "prepare.py는 metadata/lock/install/download 전에 environment를 allowlist로 교체합니다.",
+      "전용 HOME/cache/tmp와 project/user/global npm config를 사용합니다. ambient auth, proxy, NODE_OPTIONS, NODE_PATH, custom CA 설정을 전달하지 않습니다.",
+      "public npm registry, ignore-scripts=true, audit=false, fund=false, workspaces=false가 적용됩니다.",
+      "현재 lock의 resolved origin과 SHA512 integrity, Bun archive integrity, archive path/link 검사, install receipt와 frozen asset hash를 확인했습니다."
+    ],
+    "limit": "설치를 다시 실행하지 않았습니다. 당시 network 동작은 보존된 preparation 자료와 현재 코드로 검토했습니다."
+  },
+  "inherited_governance": {
+    "result": "pass",
+    "review": "/Users/hyukjaechoi/Solopreneur/docs/runs/work-class-policy/code-review.json",
+    "adoption_result": "/Users/hyukjaechoi/Solopreneur/docs/runs/work-class-policy/adoption-result.json",
+    "checks": [
+      "실제 source baseline 차이는 지정된 inherited13과 정확히 같습니다.",
+      "product helper는 canonical scripts/harness.py와 byte 단위로 같습니다. SHA256은 69fa59d147517ad4e28d34b32052e7d98db6098329c3f8cd6b10a4c639d670ba입니다.",
+      "공유 skill 9개는 canonical 파일과 정확히 같습니다. installed harness 문서는 canonical link 변환 결과와 같습니다.",
+      "managed 파일 67개 hash가 모두 일치합니다. managed AGENTS 부분도 canonical 내용 및 agents_hash와 일치합니다.",
+      "project-specific AGENTS 부분은 보존된 adoption 전 baseline과 정확히 같습니다."
+    ],
+    "duplicate_full_review_performed": false,
+    "synthetic_harness_suite_rerun": false
+  },
+  "fresh_static_validation": {
+    "runtime": "/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node",
+    "result": "pass",
+    "checks_passed": 19,
+    "scope": "현재 evidence 5개, import 제한, prohibited API, transcript cursor, marker-only rejection, sequence gap, marker head, bounded settlement, observer gap와 timeout HOLD",
+    "immutable_inventory_verified_before_after": true,
+    "files_written": 0,
+    "server_imported": false,
+    "bun_started": false,
+    "attempt_history": [
+      "첫 read-only static 시도는 reviewer가 만든 import 입력에 session.get의 추가 필드를 포함하여 Closed payload key denied로 실패했습니다. 이것은 source 결함이 아닙니다.",
+      "실제 seed와 같은 허용 필드로 입력을 수정한 두 번째 시도는 19개 검사를 통과했습니다."
+    ]
+  },
+  "preserved_failure_history": {
+    "modified": false,
+    "evidence": [
+      "evidence/history/pre-cursor-fix-r1/events-r1/result.json의 HOLD와 check_history의 exit_code1을 확인했습니다.",
+      "evidence/history/pre-idle-settlement-r2/owned-sigkill-reopen-r1/result.json의 HOLD와 check_history의 exit_code1을 확인했습니다.",
+      "현재 r1 PASS 결과는 수정된 frozen input에 연결됩니다. 이전 실패를 현재 PASS로 재표기하지 않았습니다."
+    ]
+  },
+  "unverified_limits": [
+    "이번 검토에서는 Bun/server/native runtime을 다시 실행하지 않았습니다. runtime 판정은 보존된 결과와 실제 구현에 대한 독립 검토입니다.",
+    "startup timeout, IPC loss, request failure, scope-close failure 경로는 정적으로 검토했습니다. 해당 실패를 실제 engine에 주입하여 실행하지 않았습니다.",
+    "direct JS ChildProcess/Bun handle 관찰은 임의의 native 또는 OS descendant 전체를 증명하지 않습니다. path guard와 profile injection도 OS confinement의 증명이 아닙니다.",
+    "provider 요청이 없도록 API 범위를 제한한 코드는 확인했습니다. engine 전체의 outbound network 또는 provider 동작을 독립 계측하지 않았습니다.",
+    "검증된 cursor 경계는 현재 fixture의 after0입니다. 대규모 history, 여러 page, 모든 cursor 값과 동시 writer는 검증하지 않았습니다.",
+    "power-loss, historical ownership, queued/suspended recovery, shell/PTY/subagent, pairing/ticket, migration, Windows, production 적용과 P7 완료는 검증 범위 밖입니다."
+  ]
+}

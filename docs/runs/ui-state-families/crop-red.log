@@ -1,0 +1,30 @@
+✖ actual legacy Tool UI crop is auxiliary to a native frame in all and legacy reports (116.421333ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 171.433334
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/run-evidence.test.mjs:788:1
+✖ actual legacy Tool UI crop is auxiliary to a native frame in all and legacy reports (116.421333ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'legacy'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/run-evidence.test.mjs:802:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'legacy',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

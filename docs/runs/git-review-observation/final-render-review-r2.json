@@ -1,0 +1,235 @@
+{
+  "schema_version": 2,
+  "status": "completed",
+  "reviewed": {
+    "contract_sha256": "71fba6497564041133ab9ce26cedd3b9e69fe931a0987f6f107d3c1d8c689d87",
+    "environment_sha256": "c8a7382e511aced11b3dafdea0c323ad164a97c03b3f6e2f392b7b230d2c127a",
+    "gate": "design",
+    "plan_sha256": "3d11812decb522032b3614685be47c711f17e4b1dbf067f6f2720d71eb56f932",
+    "schema_version": 2,
+    "source_sha256": "51788ffd5f48d5bd73d7e383028a925e1e4ed4d4e3d008788032282bd218f387",
+    "verification_sha256": "7b24e44155c70fc1df2b5dc158b4417042dbcc19f64620168991ec791d3f7881",
+    "work_class_sha256": "201d17492a4cefb963a6b8a5a34a68dfbb1017ac43c833a6fd460efa9ffcd387"
+  },
+  "verdict": "pass",
+  "summary": "현재 hidden-r3 PNG 15개를 직접 검토했습니다. 이전 PASS 이후 Renderer와 fixture의 byte 동일성, 현재 source/build provenance, keyboard assertion 기록을 확인했습니다. 지정된 Git status·diff 수정 검토 범위에서 수정이 필요한 결함을 찾지 못했습니다.",
+  "open_findings": [],
+  "inspected": {
+    "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "run": "git-review-observation",
+    "plan_revision": 9,
+    "design_version": 7,
+    "capture_root": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-review-observation/evidence/hidden-r3/ui-states",
+    "method": "view_image로 현재 원본 PNG를 직접 열었습니다. 아래 파일명은 capture_root 기준입니다.",
+    "direct_image_count": 15,
+    "capture_groups": [
+      {
+        "viewport": {
+          "width": 1440,
+          "height": 968,
+          "pixelRatio": 2
+        },
+        "zoomFactor": 1,
+        "pixelDimensions": {
+          "width": 2880,
+          "height": 1936
+        },
+        "captures": [
+          {
+            "file": "desktop-git-review-1-staged-light-desktop-patch-synthetic.png",
+            "state": "staged",
+            "theme": "light"
+          },
+          {
+            "file": "desktop-git-review-3-staged-dark-desktop-status-synthetic.png",
+            "state": "staged",
+            "theme": "dark"
+          }
+        ]
+      },
+      {
+        "content_width": 760,
+        "viewport": {
+          "width": 380,
+          "height": 484,
+          "pixelRatio": 4
+        },
+        "zoomFactor": 2,
+        "pixelDimensions": {
+          "width": 1520,
+          "height": 1936
+        },
+        "captures": [
+          {
+            "file": "desktop-git-review-8-unstaged-dark-760px200-patch-synthetic.png",
+            "state": "unstaged",
+            "theme": "dark"
+          },
+          {
+            "file": "desktop-git-review-26-status-loading-dark-760px200-cancel-status-synthetic.png",
+            "state": "status-loading",
+            "theme": "dark"
+          },
+          {
+            "file": "desktop-git-review-22-diverged-base-light-760px200-metadata-41-synthetic.png",
+            "state": "diverged-base",
+            "theme": "light"
+          },
+          {
+            "file": "desktop-git-review-23-expired-original-base-oid-dark-760px200-read-synthetic.png",
+            "state": "expired-original-base-oid",
+            "theme": "dark"
+          },
+          {
+            "file": "desktop-git-review-41-held-editable-dark-760px200-refresh-synthetic.png",
+            "state": "held-editable",
+            "theme": "dark"
+          },
+          {
+            "file": "desktop-git-review-42-untrusted-editable-dark-760px200-refresh-synthetic.png",
+            "state": "untrusted-editable",
+            "theme": "dark"
+          },
+          {
+            "file": "desktop-git-review-30-status-read-busy-ready-light-760px200-status-synthetic.png",
+            "state": "status-read-busy-ready",
+            "theme": "light"
+          },
+          {
+            "file": "desktop-git-review-12-protected-refusal-dark-760px200-detail-status-synthetic.png",
+            "state": "protected-refusal",
+            "theme": "dark"
+          },
+          {
+            "file": "desktop-workspace-file-hold-retained-draft-narrow200-text-synthetic.png",
+            "state": "hold-retained-draft",
+            "theme": "light"
+          },
+          {
+            "file": "desktop-git-review-2-staged-light-760px200-metadata-8-synthetic.png",
+            "state": "staged",
+            "theme": "light"
+          },
+          {
+            "file": "desktop-git-review-23-expired-original-base-oid-dark-760px200-metadata-41-synthetic.png",
+            "state": "expired-original-base-oid",
+            "theme": "dark"
+          },
+          {
+            "file": "desktop-git-review-16-unsupported-light-760px200-status-synthetic.png",
+            "state": "unsupported",
+            "theme": "light"
+          },
+          {
+            "file": "desktop-git-review-29-diff-cancel-late-inert-light-760px200-detail-status-synthetic.png",
+            "state": "diff-cancel-late-inert",
+            "theme": "light"
+          }
+        ]
+      }
+    ],
+    "metadata_validation": {
+      "capture_records": 1618,
+      "unique_png_files": 1618,
+      "accessible_png_files_checked": 1618,
+      "png_header_dimensions_checked": 1618,
+      "git_state_records": 44,
+      "git_unique_png_files": 624,
+      "git_frame_references_checked": 624,
+      "git_frames_fully_visible": true,
+      "git_state_viewport_zoom_matches": true,
+      "manifest_evidence_matches_capture_inventory": true,
+      "metadata_errors": 0,
+      "declared_crop": "desktop-link-preview-synthetic.png는 locator.screenshot()으로 캡처한 448×104 CSS px 영역입니다. 실제 896×208 pixel 크기가 기록과 일치합니다."
+    }
+  },
+  "judgment": {
+    "directly_observed": [
+      "Staged patch는 HEAD → index를, Unstaged patch는 index → worktree를 표시합니다. Patch의 script 문자열은 일반 텍스트로 보입니다.",
+      "Worktree, Git directory, Common directory, HEAD와 Branch를 구분합니다. 긴 경로와 Observation ID는 좁은 화면에서 줄바꿈됩니다.",
+      "Local branch TIP 비교는 선택한 branch와 원래 OID를 표시합니다. 만료 뒤에도 원래 OID가 남으며, 현재 차이 읽기는 비활성으로 표시됩니다.",
+      "Loading, 취소, READ_BUSY, 보호 파일과 지원하지 않는 저장소의 안내를 읽을 수 있습니다. 확인할 수 없는 결과를 clean으로 표시하지 않습니다.",
+      "760px·200% 대표 캡처에서 주요 컨트롤과 patch를 읽을 수 있습니다. Loading 취소 버튼과 READ_BUSY 재시도 버튼의 focus 표시가 보입니다.",
+      "Held 상태는 Git 읽기 보류와 초안 편집 가능을 안내합니다. 인접 파일 편집기 캡처에는 유지된 초안과 선택 표시가 보입니다.",
+      "Untrusted 상태는 실행 신뢰 부재와 구성 실행 금지를 안내합니다. 이는 design version7에서 허용한 inert Git 읽기와 일치합니다."
+    ],
+    "recorded_runtime_evidence": {
+      "source": "evidence/hidden-r3/ui-states/ui-states-evidence.json",
+      "keyboard_forward_backward_records": 44,
+      "keyboard_forward_backward_all_true": true,
+      "metadata_text_selection_matches_all_records": true,
+      "assertion_implementation": "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "reviewed_assertions": [
+        "Enter로 상태·차이 읽기를 시작하고 결과 status로 focus를 옮깁니다.",
+        "활성 컨트롤에서 Tab 후 Shift+Tab으로 원래 focus에 돌아옵니다.",
+        "Enter로 읽기를 취소하고 status로 focus를 옮깁니다. 늦은 응답은 현재 결과를 바꾸지 않습니다.",
+        "Mount, poll, explorer 선택, theme, resize, refocus와 비교 선택은 자동 Git IO를 만들지 않습니다.",
+        "READ_BUSY 준비 완료는 자동 재시도를 만들지 않습니다.",
+        "Path·mode·base ABA와 epoch·root·trust·hold·floor·refresh 변경 뒤 늦은 detail은 표시되지 않습니다.",
+        "Git scope 변경과 hold 중에도 파일 초안을 유지하고 편집합니다.",
+        "Git 패널의 가로 overflow를 검사하고, patch의 HTML 요소와 Git mutation 버튼이 없음을 검사합니다."
+      ],
+      "direct_interaction_performed_by_reviewer": false
+    },
+    "historical_context": "final-render-review-r1.json의 PASS와 직접 검토 43개 기록을 읽었습니다. 이번 직접 검토 수에 포함하지 않았습니다."
+  },
+  "provenance": {
+    "child_task_id": "01a11c44-ba99-7bd0-b6fe-1e4a37f3f29d",
+    "child_task_id_source": "현재 process의 CODEX_THREAD_ID",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "independent_of_implementers": true,
+    "review_mode": "report-only correction review",
+    "files_written": false,
+    "ledger_modified": false,
+    "delegation_performed": false,
+    "application_runtime_launched": false,
+    "input_path": "docs/runs/git-review-observation/final-render-input-r2.json",
+    "input_file_sha256": "39cad989f91c919b51baee2eeedddcfeef8e694008b0a2ff3288b5bb8246daa3",
+    "reviewed_is_entire_parsed_input_object": true,
+    "current_harness_review_input_matches_entire_reviewed_object": true,
+    "frozen_source_files_checked": 26,
+    "frozen_source_hash_mismatches": 0,
+    "changed_since_prior_review": [
+      "apps/desktop-app/scripts/git-review-probe.mjs",
+      "apps/desktop-app/src/git-review.test.mjs",
+      "apps/desktop-app/src/host/workbench-git.mjs",
+      "apps/desktop-app/src/host/workbench-git.test.mjs",
+      "apps/desktop-app/src/workbench-service.mjs"
+    ],
+    "renderer_build_input_files_unchanged_from_prior_capture": 53,
+    "frozen_renderer_files_unchanged": 11,
+    "fixture_and_ui_runner_files_unchanged": 3,
+    "built_renderer_and_preload_byte_identical_to_prior_capture": true,
+    "build_and_launch_inventory_file_checks": 336,
+    "build_and_launch_inventory_hash_mismatches": 0,
+    "build_stamp_sha256": "e2122df106edfea5c857697b1b4b86f3e543d5ef32c82098b190db1da48006fe",
+    "build_stamp_matches_current_file": true,
+    "build_inputs_match_stamp": true,
+    "hidden_r3": {
+      "manifest": "evidence/hidden-r3/ui-states/manifest.json",
+      "status": "pass",
+      "exitCode": 0,
+      "wrapperExitCode": 0,
+      "owned_electron_exit": {
+        "exited": true,
+        "code": 0
+      },
+      "provenance_verified_after": true,
+      "before_after_check": "Wrapper는 종료 뒤 provenance를 다시 계산하고 시작 기록과 전체 JSON 동일성을 검사합니다.",
+      "verification_summary_matches_current_capture_records": true
+    },
+    "preserved_hidden_r1_failure": {
+      "manifest_status": "fail",
+      "exitCode": 1,
+      "stderr_inspected": true,
+      "cause": "기존 status selector가 hold 안내와 현재 aria-live status 두 요소에 일치했습니다.",
+      "current_selector": ":scope > p[role=status][aria-live=\"polite\"]"
+    }
+  },
+  "limits": [
+    "PNG 15개를 직접 보았습니다. 나머지는 파일과 metadata를 검사했습니다.",
+    "Keyboard, focus 이동, 선택, 자동 IO 부재와 늦은 응답 처리는 저장된 runtime assertion을 검토했습니다. 이번 검토에서 직접 실행하지 않았습니다.",
+    "판정은 synthetic host와 실제 built Electron Renderer/preload의 Darwin 렌더링 범위입니다. 실제 Git backend 안전성, Windows, provider 또는 production Main의 독립 판정은 포함하지 않습니다.",
+    "읽기 전용 Git status·diff 증가분에 대한 판정입니다. 전체 AC11과 제품 완료 판정은 포함하지 않습니다."
+  ]
+}

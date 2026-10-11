@@ -1,0 +1,36 @@
+{
+  "result": "failed_probe_recovery",
+  "action": "SIGKILL exact owned helper after failed IPC cleanup; Native child already observed zombie",
+  "identity": {
+    "pid": 12718,
+    "platform": "darwin",
+    "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+    "startToken": "1dcb81973d071939b6a80868d4ecb929dc6bf3dcd08279744339dbb5885c42c4"
+  },
+  "child": {
+    "pid": 13897,
+    "platform": "darwin",
+    "bootId": "ef2656ffe43028a3d99065854cc580e1599c444f2aa8983f87271be8283f4f6a",
+    "startToken": "bf65c939de86e7278cafef7b30c1ab18d2b49c7af415a7ea9fbac1381cddf7bf"
+  },
+  "childObservedState": "Z",
+  "ownedChildren": [
+    {
+      "pid": 12719,
+      "command": "/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/electron@44.4.4_supports-color@7.2.0/node_modules/electron/dist/Electron.app/Contents/Frameworks/Electron Helper.app/Contents/MacOS/Electron Helper"
+    },
+    {
+      "pid": 12720,
+      "command": "/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/electron@44.4.4_supports-color@7.2.0/node_modules/electron/dist/Electron.app/Contents/Frameworks/Electron Helper.app/Contents/MacOS/Electron Helper"
+    },
+    {
+      "pid": 12750,
+      "command": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/resources/owner-lifetime/darwin-arm64/witness"
+    },
+    {
+      "pid": 13897,
+      "command": "<defunct>"
+    }
+  ],
+  "originalReportUnchanged": true
+}

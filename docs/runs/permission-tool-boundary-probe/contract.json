@@ -1,0 +1,113 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "T1",
+      "description": "Actual built-in write once/reject/configured-deny effect evidence"
+    },
+    {
+      "id": "T2",
+      "description": "Contained isolated namespace, pinned runtime and bounded owned lifecycle"
+    },
+    {
+      "id": "T3",
+      "description": "Node/static checks, independent source and execution review"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "apps/desktop-app/scripts/permission-tool-probe.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Saved permission Native prerequisite probe; Node/static only, no provider or private data",
+      "acceptance_ids": [
+        "T2",
+        "T3"
+      ],
+      "required": true,
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/scripts",
+          "apps/desktop-app/src/event-host-resources.mjs"
+        ],
+        "reason": "Saved probe/test and production resource-verifier closure; Native execution is separately bound to exact pinned resource manifest"
+      }
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/scripts/permission-tool-probe.mjs",
+        "apps/desktop-app/scripts/permission-tool-probe.test.mjs",
+        "apps/desktop-app/scripts/fixtures/permission-tool-native.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Saved permission Native prerequisite probe; Node/static only, no provider or private data",
+      "acceptance_ids": [
+        "T2",
+        "T3"
+      ],
+      "required": true,
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/scripts",
+          "apps/desktop-app/src/event-host-resources.mjs"
+        ],
+        "reason": "Saved probe/test and production resource-verifier closure; Native execution is separately bound to exact pinned resource manifest"
+      }
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/scripts/permission-tool-probe.mjs",
+        "apps/desktop-app/scripts/permission-tool-probe.test.mjs",
+        "apps/desktop-app/scripts/fixtures/permission-tool-native.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Saved permission Native prerequisite probe; Node/static only, no provider or private data",
+      "acceptance_ids": [
+        "T2",
+        "T3"
+      ],
+      "required": true,
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/scripts",
+          "apps/desktop-app/src/event-host-resources.mjs"
+        ],
+        "reason": "Saved probe/test and production resource-verifier closure; Native execution is separately bound to exact pinned resource manifest"
+      }
+    },
+    "native": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/permission-tool-probe.mjs",
+        "--out",
+        "docs/runs/permission-tool-boundary-probe/evidence/native-r1"
+      ],
+      "cwd": ".",
+      "scope": "Pinned Native built-in write once/reject/configured-deny actual effects, fresh isolated namespace; execute only AFTER saved source/invocation CODE pass",
+      "acceptance_ids": [
+        "T1",
+        "T2",
+        "T3"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ],
+  "decision_register": []
+}

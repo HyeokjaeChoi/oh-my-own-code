@@ -1,0 +1,48 @@
+✖ case variant nested Git markers never copy config canaries (395.496208ms)
+✖ changed trust authority retires observation before new reader IO (785.25275ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1237.186291
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/workbench-git.test.mjs:665:1
+✖ case variant nested Git markers never copy config canaries (395.496208ms)
+  AssertionError [ERR_ASSERTION]: .GIT config was copied
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-git.test.mjs:690:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/workbench-git.test.mjs:695:1
+✖ changed trust authority retires observation before new reader IO (785.25275ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'stale_observation'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-git.test.mjs:707:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'stale_observation',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

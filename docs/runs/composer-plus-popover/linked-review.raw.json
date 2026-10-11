@@ -1,0 +1,111 @@
+{
+  "code": {
+    "schema_version": 2,
+    "reviewed": {
+      "contract_sha256": "eaf87e67d04313af7b8ac6023f8ee8e761ba467e0aece9b78b7bfe817ed5a3a0",
+      "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+      "gate": "code",
+      "plan_sha256": "4690f03e730324f4dedd36e4c52436fe7c5b99dbae3dee8f2005fe57dec12cf5",
+      "schema_version": 2,
+      "source_sha256": "df4cc84327d9788572b39a1ea3e26ae651550911d11c18f4e63a69a66fdce8f7",
+      "verification_sha256": "858910997a313a34ce0d7eb69a2be1131185136d49d745a6e5dcdb0a099dc7de",
+      "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+    },
+    "verdict": "pass",
+    "summary": "변경된 세 파일과 관련 호출 코드를 독립 검토했습니다. 수정이 필요한 실제 결함을 찾지 못했습니다.",
+    "open_findings": [],
+    "provenance": {
+      "child_task_id": "01a11f80-c816-7982-bcff-d42993e71a68",
+      "independent_reviewer": true,
+      "report_only": true
+    },
+    "resolved_coverage": [
+      "보존된 before 파일의 크기와 SHA-256이 일치합니다. 현재 파일에서 계산한 diff가 change.patch와 정확히 일치합니다.",
+      "source-inventory의 713개 파일이 현재 파일과 일치합니다. baseline과 비교한 변경 경로는 지정된 세 경로뿐입니다.",
+      "Plus 아이콘, manual popover의 native top layer, trigger 기준 위치 계산, 화면 경계 제한을 확인했습니다.",
+      "기존 action 권한 조건, draft 소유권, slash 진입, 키보드 탐색, focus 복귀, 외부 pointer dismissal이 유지됩니다.",
+      "ResizeObserver 해제, resize 및 scroll listener 제거, popover 종료 코드가 있습니다.",
+      "기존 실행 기록에서 Composer 위치와 크기 유지, 첫·마지막 항목 hit test, Home/End/Escape, focus 복귀, 좁은 화면과 200% 경계 검사가 통과했습니다.",
+      "r1 실패는 popover 아래 textarea를 클릭한 검사에서 발생했습니다. 해당 프로세스는 exit 0으로 종료했습니다. r2는 실제 외부 좌표 (1,1)를 force 없이 클릭하여 통과했습니다.",
+      "여섯 검사의 exit code는 모두 0입니다. check-status는 모두 reusable이며, 현재 review-input은 제출된 전체 입력 객체와 일치합니다.",
+      "캡처 전후 build provenance가 같습니다. 현재 build 입력, 검사 script, renderer와 preload의 hash도 일치합니다."
+    ],
+    "directly_inspected_png_paths": [
+      "docs/runs/design-foundation-v2/evidence/plus-popover-r2/design-foundation/000-collapsed-command-menu-first-items.png",
+      "docs/runs/design-foundation-v2/evidence/plus-popover-r2/design-foundation/001-narrow-command-menu-last-item.png"
+    ],
+    "limits": [
+      "검사를 재실행하지 않았습니다. 기존 실행 증거와 현재 파일을 대조했습니다.",
+      "ESLint는 CSS 파일을 검사하지 않았다는 warning을 기록했습니다. 오류는 없습니다.",
+      "production renderer/preload와 synthetic Main 범위입니다. production Main, Native 또는 provider 실행을 검증하지 않았습니다.",
+      "파일 수정, build, 앱 실행, 위임, ledger 등록을 수행하지 않았습니다."
+    ]
+  },
+  "render": {
+    "schema_version": 2,
+    "reviewed": {
+      "contract_sha256": "eaf87e67d04313af7b8ac6023f8ee8e761ba467e0aece9b78b7bfe817ed5a3a0",
+      "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+      "gate": "design",
+      "plan_sha256": "4690f03e730324f4dedd36e4c52436fe7c5b99dbae3dee8f2005fe57dec12cf5",
+      "schema_version": 2,
+      "source_sha256": "df4cc84327d9788572b39a1ea3e26ae651550911d11c18f4e63a69a66fdce8f7",
+      "verification_sha256": "858910997a313a34ce0d7eb69a2be1131185136d49d745a6e5dcdb0a099dc7de",
+      "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+    },
+    "verdict": "pass",
+    "summary": "현재 원본 PNG 8개를 직접 확인했습니다. + 버튼과 anchored popover가 요구에 맞으며, 확인한 화면에서 수정이 필요한 시각·사용성 결함을 찾지 못했습니다.",
+    "open_findings": [],
+    "provenance": {
+      "child_task_id": "01a11f80-c816-7982-bcff-d42993e71a68",
+      "independent_reviewer": true,
+      "capture_method": "BrowserWindow.webContents.capturePage().toPNG()",
+      "origin": "production Electron renderer/preload + synthetic Main",
+      "report_only": true
+    },
+    "directly_inspected_png_paths": [
+      "docs/runs/design-foundation-v2/evidence/plus-popover-r2/design-foundation/000-collapsed-command-menu-first-items.png",
+      "docs/runs/design-foundation-v2/evidence/plus-popover-r2/design-foundation/001-narrow-command-menu-last-item.png",
+      "docs/runs/design-foundation-v2/evidence/plus-popover-r2/design-foundation/002-light-1440-zoom1-collapsed-idle.png",
+      "docs/runs/design-foundation-v2/evidence/plus-popover-r2/design-foundation/011-light-760-zoom2-collapsed-idle.png",
+      "docs/runs/design-foundation-v2/evidence/plus-popover-r2/design-foundation/020-dark-320-zoom1-collapsed-idle.png",
+      "docs/runs/design-foundation-v2/evidence/plus-popover-r2/design-foundation/023-dark-760-zoom2-collapsed-idle.png",
+      "docs/runs/design-foundation-v2/evidence/plus-popover-r2/design-foundation/038-expired-200-outside-closed-task.png",
+      "docs/runs/design-foundation-v2/evidence/plus-popover-r2/design-foundation/042-untrusted-visible-outside-closed-task.png"
+    ],
+    "metadata_verification": {
+      "all_47_pngs": "PNG signature, 실제 pixel dimensions, bytes, SHA-256이 captures.json과 모두 일치합니다.",
+      "000_002": {
+        "viewport": [1440, 968],
+        "pixels": [2880, 1936],
+        "zoom_factor": 1
+      },
+      "001_020_042": {
+        "viewport": [320, 968],
+        "pixels": [640, 1936],
+        "zoom_factor": 1
+      },
+      "011_023_038": {
+        "viewport": [380, 484],
+        "pixels": [1520, 1936],
+        "zoom_factor": 2
+      },
+      "window_state": "확인한 캡처는 모두 hidden이며 OS focus가 없습니다."
+    },
+    "resolved_coverage": [
+      "000에서 + trigger 위에 배치된 popover와 첫 항목을 직접 확인했습니다.",
+      "001에서 화면 경계 안의 popover, scroll 영역, 마지막 항목의 focus 표시를 직접 확인했습니다.",
+      "light 기본 화면, dark 320 화면, light/dark 200% 화면에서 Composer와 + 버튼이 표시됩니다.",
+      "expired 200%와 untrusted 320 화면에서 중요 상태 문구가 닫힌 disclosure 밖에 표시됩니다.",
+      "키보드, pointer 도달, 외부 dismissal, Composer reflow 여부는 현재 검사 코드와 통과한 실행 기록을 함께 대조했습니다.",
+      "현재 실행 기록의 pageErrors와 externalRequests는 비어 있으며, 소유한 Electron 프로세스는 exit 0으로 종료했습니다."
+    ],
+    "limits": [
+      "47개 PNG의 무결성을 확인했지만, 직접 시각 검토한 PNG는 나열한 8개입니다.",
+      "dark 및 200%의 열린 popover는 별도 PNG로 직접 확인하지 못했습니다. 해당 상태의 경계와 상호작용은 실행 기록으로 확인했습니다.",
+      "실시간 앱 조작, assistive technology, OS focus 동작은 직접 검증하지 않았습니다.",
+      "production Main, Native, provider 또는 release 검증을 의미하지 않습니다. 저장과 등록은 Main이 수행해야 합니다."
+    ]
+  }
+}
+

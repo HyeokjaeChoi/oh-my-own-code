@@ -1,0 +1,96 @@
+--- before/apps/desktop-app/scripts/fixtures/workbench-host.test.mjs
++++ after/apps/desktop-app/scripts/fixtures/workbench-host.test.mjs
+@@ -10725,3 +10725,93 @@
+     h.client.dispose();
+   }
+ });
++
++test("Branch/restore capture reuses only complete unoccluded native surfaces", async () => {
++  const source = await readFile(
++    new URL("../e2e-git-branch-restore.mjs", import.meta.url),
++    "utf8",
++  );
++  const marker = "      await item.evaluate((e) => {";
++  const start = source.indexOf(marker);
++  assert.ok(start >= 0);
++  const end = source.indexOf("\n      });", start);
++  assert.ok(end > start);
++  const place = new Function(
++    "globalThis",
++    "e",
++    source.slice(start + marker.length, end),
++  );
++  for (const scenario of ["complete", "outside", "occluded"]) {
++    const scrolls = [];
++    const element = {
++      getBoundingClientRect: () => ({
++        left: 10,
++        right: 90,
++        top: scenario === "outside" ? -10 : 10,
++        bottom: 90,
++        width: 80,
++        height: 80,
++      }),
++      contains: (hit) => hit === element,
++      ownerDocument: {
++        elementFromPoint: (x, y) =>
++          scenario === "occluded" && x === 11 && y === 11 ? {} : element,
++      },
++      scrollIntoView: (options) => scrolls.push(options),
++    };
++    place({ innerWidth: 100, innerHeight: 100 }, element);
++    assert.deepEqual(
++      scrolls,
++      scenario === "complete"
++        ? []
++        : [{ block: "center", inline: "nearest", behavior: "instant" }],
++      scenario,
++    );
++  }
++});
++
++test("Branch/restore runner distinguishes actual rejected receipt from dispatched apply", async () => {
++  const source = await readFile(
++    new URL("../e2e-git-branch-restore.mjs", import.meta.url),
++    "utf8",
++  );
++  const metricSource = source.match(
++    /async function metrics\(\) \{[\s\S]*?\n\}/u,
++  )?.[0];
++  assert.ok(metricSource);
++  for (const outcome of ["denied", "unknown"]) {
++    const h = setup();
++    h.fixture.setGitBranchRestoreState(outcome);
++    const preview = (await branchRestorePreviewWire(h)).value;
++    const request = branchRestoreApplyWire(preview, `accounting-${outcome}`);
++    const result = await h.transport.handle(h.event, request);
++    assert.equal(
++      result.receipt.effect,
++      outcome === "denied" ? "none" : "unknown",
++    );
++    assert.equal(
++      result.receipt.admission,
++      outcome === "denied" ? "rejected" : "dispatched",
++    );
++    const metrics = new Function("application", `return (${metricSource});`)({
++      evaluate(callback) {
++        const previous = globalThis.__omocUiFixture;
++        globalThis.__omocUiFixture = h.fixture;
++        try {
++          return callback();
++        } finally {
++          if (previous === undefined) delete globalThis.__omocUiFixture;
++          else globalThis.__omocUiFixture = previous;
++        }
++      },
++    });
++    const observed = await metrics();
++    assert.equal(observed.effects, 0);
++    assert.equal(observed.applies, outcome === "denied" ? 0 : 1);
++    assert.equal(observed.rejectedApplies, outcome === "denied" ? 1 : 0);
++    const original = h.fixture.retainedReceipts.get(
++      JSON.stringify([preview.runtimeEpoch, request.operationId]),
++    );
++    assert.deepEqual(original.receipt, result.receipt);
++  }
++});

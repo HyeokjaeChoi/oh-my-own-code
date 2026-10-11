@@ -1,0 +1,138 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "BR1": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/git-branch-restore/source-freeze-r1.json",
+        "docs/runs/git-branch-restore/verification-summary-r1.json"
+      ],
+      "checks": [
+        "unit",
+        "kernel",
+        "publication",
+        "reader-regression",
+        "index-regression",
+        "commit-regression"
+      ]
+    },
+    "BR2": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/git-branch-restore/source-freeze-r1.json",
+        "docs/runs/git-branch-restore/verification-summary-r1.json"
+      ],
+      "checks": [
+        "unit",
+        "kernel",
+        "publication",
+        "reader-regression",
+        "index-regression",
+        "commit-regression"
+      ]
+    },
+    "BR3": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/git-branch-restore/source-freeze-r1.json",
+        "docs/runs/git-branch-restore/verification-summary-r1.json"
+      ],
+      "checks": [
+        "unit",
+        "kernel",
+        "publication",
+        "index-regression",
+        "commit-regression"
+      ]
+    },
+    "BR4": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/git-branch-restore/source-freeze-r1.json",
+        "docs/runs/git-branch-restore/verification-summary-r1.json"
+      ],
+      "checks": [
+        "unit",
+        "publication",
+        "hidden"
+      ]
+    },
+    "BR5": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/git-branch-restore/source-freeze-r1.json",
+        "docs/runs/git-branch-restore/verification-summary-r1.json"
+      ],
+      "checks": [
+        "unit",
+        "kernel",
+        "typecheck",
+        "boundaries",
+        "lint",
+        "format",
+        "build",
+        "bundle",
+        "publication",
+        "hidden",
+        "reader-regression",
+        "index-regression",
+        "commit-regression"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/scripts/build-provenance.mjs",
+    "apps/desktop-app/scripts/build-provenance.test.mjs",
+    "apps/desktop-app/scripts/e2e-git-branch-restore.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/git-branch-restore-probe.mjs",
+    "apps/desktop-app/scripts/git-commit-probe.mjs",
+    "apps/desktop-app/scripts/git-index-probe.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/scripts/run-evidence.test.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/event-host-child.mjs",
+    "apps/desktop-app/src/event-host-protocol.mjs",
+    "apps/desktop-app/src/event-host-protocol.test.mjs",
+    "apps/desktop-app/src/event-host-resources.mjs",
+    "apps/desktop-app/src/event-host-supervisor.mjs",
+    "apps/desktop-app/src/event-host-supervisor.test.mjs",
+    "apps/desktop-app/src/git-branch-restore.test.mjs",
+    "apps/desktop-app/src/host/git-branch-restore-contract.mjs",
+    "apps/desktop-app/src/host/git-branch-restore-contract.test.mjs",
+    "apps/desktop-app/src/host/git-branch-restore-kernel.mjs",
+    "apps/desktop-app/src/host/git-branch-restore-kernel.test.mjs",
+    "apps/desktop-app/src/host/git-metadata-kernel.mjs",
+    "apps/desktop-app/src/host/storage-journal.mjs",
+    "apps/desktop-app/src/host/storage-journal.test.mjs",
+    "apps/desktop-app/src/host/workbench-admission.mjs",
+    "apps/desktop-app/src/host/workbench-git-branch-restore-storage.mjs",
+    "apps/desktop-app/src/host/workbench-git-branch-restore-storage.test.mjs",
+    "apps/desktop-app/src/host/workbench-git-branch-restore.mjs",
+    "apps/desktop-app/src/host/workbench-git-branch-restore.test.mjs",
+    "apps/desktop-app/src/host/workbench-git-index.test.mjs",
+    "apps/desktop-app/src/host/workbench-git-snapshot.mjs",
+    "apps/desktop-app/src/host/workbench-git.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx",
+    "apps/desktop-app/src/renderer/features/git-review/index.tsx",
+    "apps/desktop-app/src/renderer/features/git-review/review.module.css",
+    "apps/desktop-app/src/renderer/shared/api/index.ts",
+    "apps/desktop-app/src/renderer/shared/git-branch-restore/index.d.mts",
+    "apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs",
+    "apps/desktop-app/src/renderer/shared/git-branch-restore/index.ts",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts",
+    "apps/desktop-app/src/workbench-contract.mjs",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "deleted_paths": [],
+  "completion_scope": "Bounded local branch create/select/tracked worktree INDEX/HEAD restore only; independent final verdicts and full product follow-up remain required."
+}

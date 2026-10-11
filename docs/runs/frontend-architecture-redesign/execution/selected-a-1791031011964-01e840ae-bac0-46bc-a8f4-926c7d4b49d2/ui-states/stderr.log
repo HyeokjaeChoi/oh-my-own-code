@@ -1,0 +1,61 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toBeHidden() failed
+
+Locator:  getByRole('region', { name: '앱 동작 및 런타임 명령', exact: true })
+Expected: hidden
+Received: visible
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeHidden" getByRole('region', { name: '앱 동작 및 런타임 명령', exact: true }) with timeout 5000ms
+  - waiting for getByRole('region', { name: '앱 동작 및 런타임 명령', exact: true })
+    14 × locator resolved to <div id="_r_5_" role="region" aria-label="앱 동작 및 런타임 명령" class="slash-menu _commandMenu_14ggl_165">…</div>
+       - unexpected value "visible"
+
+    at captureRawStack (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright-core@1.63.0/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toBeHidden (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at assertSlashOutside (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:489:22)
+    at async file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:697:3 {
+  matcherResult: {
+    message: 'expect(locator).toBeHidden() failed\n' +
+      '\n' +
+      "Locator:  getByRole('region', { name: '앱 동작 및 런타임 명령', exact: true })\n" +
+      'Expected: hidden\n' +
+      'Received: visible\n' +
+      'Timeout:  5000ms\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeHidden" getByRole('region', { name: '앱 동작 및 런타임 명령', exact: true }) with timeout 5000ms\n` +
+      "  - waiting for getByRole('region', { name: '앱 동작 및 런타임 명령', exact: true })\n" +
+      '    14 × locator resolved to <div id="_r_5_" role="region" aria-label="앱 동작 및 런타임 명령" class="slash-menu _commandMenu_14ggl_165">…</div>\n' +
+      '       - unexpected value "visible"\n',
+    pass: false,
+    actual: 'visible',
+    name: 'toBeHidden',
+    expected: 'hidden',
+    log: [
+      `  - Expect "toBeHidden" getByRole('region', { name: '앱 동작 및 런타임 명령', exact: true }) with timeout 5000ms`,
+      "  - waiting for getByRole('region', { name: '앱 동작 및 런타임 명령', exact: true })",
+      '    14 × locator resolved to <div id="_r_5_" role="region" aria-label="앱 동작 및 런타임 명령" class="slash-menu _commandMenu_14ggl_165">…</div>',
+      '       - unexpected value "visible"'
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- region "앱 동작 및 런타임 명령":\n' +
+      '  - strong: 앱 동작\n' +
+      '  - button "명령 목록 닫기"\n' +
+      '  - button "새 세션 만들기"\n' +
+      '  - button "파일 보기"\n' +
+      '  - button "확장 목록 보기"\n' +
+      '  - strong: 런타임 명령\n' +
+      '  - button "/inspect Synthetic command for UI testing"\n' +
+      '  - strong: 스킬 언급\n' +
+      '  - paragraph: 메시지에 스킬 이름을 추가합니다.\n' +
+      '  - button "code-review"'
+  }
+}
+
+Node.js v26.8.2

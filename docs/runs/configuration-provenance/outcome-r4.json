@@ -1,0 +1,95 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "C1": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-provenance/source-freeze-r4.json",
+        "docs/runs/configuration-provenance/actual-checks-r4.json",
+        "docs/runs/configuration-provenance/verification-summary-r4.json",
+        "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/ui-states-evidence.json"
+      ],
+      "checks": [
+        "host",
+        "hidden-ui"
+      ]
+    },
+    "C2": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-provenance/source-freeze-r4.json",
+        "docs/runs/configuration-provenance/actual-checks-r4.json",
+        "docs/runs/configuration-provenance/verification-summary-r4.json",
+        "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/ui-states-evidence.json"
+      ],
+      "checks": [
+        "host",
+        "bundle"
+      ]
+    },
+    "C3": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-provenance/source-freeze-r4.json",
+        "docs/runs/configuration-provenance/actual-checks-r4.json",
+        "docs/runs/configuration-provenance/verification-summary-r4.json",
+        "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/ui-states-evidence.json"
+      ],
+      "checks": [
+        "host",
+        "hidden-ui"
+      ]
+    },
+    "C4": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-provenance/source-freeze-r4.json",
+        "docs/runs/configuration-provenance/actual-checks-r4.json",
+        "docs/runs/configuration-provenance/verification-summary-r4.json",
+        "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/ui-states-evidence.json"
+      ],
+      "checks": [
+        "renderer",
+        "hidden-ui",
+        "boundaries"
+      ]
+    },
+    "C5": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-provenance/source-freeze-r4.json",
+        "docs/runs/configuration-provenance/actual-checks-r4.json",
+        "docs/runs/configuration-provenance/verification-summary-r4.json",
+        "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/ui-states-evidence.json"
+      ],
+      "checks": [
+        "boundaries",
+        "build",
+        "bundle",
+        "format",
+        "hidden-ui",
+        "host",
+        "lint",
+        "renderer",
+        "typecheck"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/scripts/run-evidence.test.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/host/workbench-configuration.mjs",
+    "apps/desktop-app/src/host/workbench-configuration.test.mjs",
+    "apps/desktop-app/src/renderer/widgets/explorer/explorer.module.css",
+    "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-service.test.mjs",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "deleted_paths": [],
+  "completion_scope": "First read-only configuration provenance; final independent verdicts pending; not full F14 or F01-18"
+}

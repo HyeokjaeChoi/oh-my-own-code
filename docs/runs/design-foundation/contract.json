@@ -1,0 +1,103 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "description": "New dedicated project/file and source ownership"
+    },
+    {
+      "id": "AC-2",
+      "description": "Validated layered tokens and contracts"
+    },
+    {
+      "id": "AC-3",
+      "description": "Verified Figma parity and legible components"
+    },
+    {
+      "id": "AC-4",
+      "description": "Independent review and clear handoff"
+    }
+  ],
+  "checks": {
+    "tokens": {
+      "argv": [
+        "python3",
+        "docs/design/validate_system.py"
+      ],
+      "cwd": ".",
+      "scope": "Token graph, Light/Dark, CSS, contrast and component contracts",
+      "acceptance_ids": [
+        "AC-2"
+      ],
+      "required": true
+    },
+    "figma-parity": {
+      "argv": [
+        "python3",
+        "docs/runs/design-foundation/check_figma.py"
+      ],
+      "cwd": ".",
+      "scope": "Actual recorded target placement, live inventory, bindings and screenshot evidence against frozen manifest",
+      "acceptance_ids": [
+        "AC-1",
+        "AC-3",
+        "AC-4"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/design/system.md",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "62970864615aa26c90328d4075ac1b179631ad7c2ebc6815c34f7cef8258da11"
+    },
+    {
+      "path": "docs/design/tokens/manifest.json",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "5d23e89703bd23e0d130abed74519683d8ad9933d84f6b803c9a199ac941db9e"
+    },
+    {
+      "path": "docs/design/components.json",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "141487ebdd39422a7e4acb5d586b5d1872495e5064a2516482940742c938d645"
+    },
+    {
+      "path": "docs/design/tokens/tokens.css",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "03fd82541214c1ddceb72a3979b1f6a7923af254ca52f4e606644cd68227636e"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": [
+    "docs/runs/design-foundation/figma-Button.json",
+    "docs/runs/design-foundation/figma-Input.json",
+    "docs/runs/design-foundation/figma-NavigationItem.json",
+    "docs/runs/design-foundation/figma-PermissionRequest.json",
+    "docs/runs/design-foundation/figma-StatusBadge.json",
+    "docs/runs/design-foundation/figma-ToolCall.json",
+    "docs/runs/design-foundation/figma-doc-Cover.json",
+    "docs/runs/design-foundation/figma-doc-Foundations.json",
+    "docs/runs/design-foundation/figma-doc-Getting-Started.json",
+    "docs/runs/design-foundation/figma-doc-Utilities.json",
+    "docs/runs/design-foundation/figma-final-audit.json",
+    "docs/runs/design-foundation/figma-foundations.json",
+    "docs/runs/design-foundation/figma-initial.json",
+    "docs/runs/design-foundation/figma-pages.json",
+    "docs/runs/design-foundation/Button.png",
+    "docs/runs/design-foundation/DarkPermission.png",
+    "docs/runs/design-foundation/Input.png",
+    "docs/runs/design-foundation/NavigationItem.png",
+    "docs/runs/design-foundation/PermissionRequest.png",
+    "docs/runs/design-foundation/StatusBadge.png",
+    "docs/runs/design-foundation/ToolCall.png",
+    "docs/runs/design-foundation/foundations.png",
+    "docs/runs/design-foundation/check_figma.py",
+    "docs/runs/design-foundation/visual-evidence.json",
+    "docs/runs/design-foundation/project-evidence.json"
+  ]
+}

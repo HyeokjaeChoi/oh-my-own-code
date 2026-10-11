@@ -1,0 +1,53 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "673fbc042d5e8bb3dbddc575121203a141299edf49729745d746816e0bb62777",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "1c48e49bc9ad3e5bca5ba0ab005c49c6ba28f1da32b70c92452332addfca16a2",
+    "schema_version": 2,
+    "source_sha256": "ca423af7573e7fcfce209f8796637d49b663cbb05996556fecc20e299d55f5cd",
+    "verification_sha256": "aae314b415b9230467d53a0fbf695acd10ac5aac2882aae13c479d02515c8b6d",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "changes_requested",
+  "summary": "독립 정적 검토에서 lifecycle 진행과 실패 cleanup 순서에 결함 2개를 확인했습니다. 검토 전후 binding과 source-freeze 8개 hash는 일치합니다. 원본 7개 사본, 새 파일의 원래 부재, worker freeze, 새 overlay 3개의 변환 hash를 확인했습니다. 기존 output pin 11개와 closed protocol 19개는 유지됩니다. 저장된 Node 120개 검사, lint, format 통과 기록을 확인했습니다. 검사는 재실행하지 않았습니다. Native는 실행하지 않았으며 보고서를 저장하지 않았습니다.",
+  "open_findings": [
+    {
+      "id": "CODE-01",
+      "severity": "P2",
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "line": 198,
+      "title": "대기 중인 lifecycle metadata가 새 transaction에 계속 밀릴 수 있습니다",
+      "trigger": "서로 다른 project의 유한한 transaction이 계속 겹쳐 실행되어 shared permit을 항상 하나 이상 사용합니다.",
+      "impact": "metadata는 1024개 permit이 모두 반환될 때까지 진행하지 못합니다. 새 transaction은 계속 들어갈 수 있으므로 locationBegin, locationReady, invalidate 및 Scope cleanup이 무기한 대기할 수 있습니다. invalidate는 uninterruptible 경로이므로 종료도 멈출 수 있습니다.",
+      "evidence": "transaction은 147행에서 shared permit 1개를 얻습니다. metadataQueued는 metadata 개수만 제한하며 새 transaction 진입을 막지 않습니다. 실제 pinned effect/dist/Semaphore.js의 withPermits는 free >= n만 확인합니다. 대기 중인 큰 요청을 위해 permit을 예약하지 않습니다. 따라서 유한한 transaction 두 흐름이 번갈아 겹치기만 해도 metadata의 진행을 막을 수 있습니다.",
+      "requirement": "L2의 graph membership 갱신과 L3의 lifecycle 종료 경로가 진행할 수 있어야 합니다.",
+      "smallest_correction": "metadata 요청이 대기하면 이후 shared 진입을 잠시 제한하는 공정한 admission 처리를 추가하십시오. 이미 진입한 transaction은 완료하게 하고, metadata 대기가 없을 때는 독립 project의 병렬 진행을 유지하십시오.",
+      "validation_needed": "각 transaction은 종료하지만 두 project 흐름이 계속 겹치는 조건에서, 먼저 대기한 metadata가 후속 transaction보다 앞서 진행하는지 확인하십시오.",
+      "basis": "정적 소스 추적. runtime 재현은 실행하지 않았습니다."
+    },
+    {
+      "id": "CODE-02",
+      "severity": "P2",
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "line": 559,
+      "title": "부분 Layer build 실패 시 Native finalizer가 finalizing 기록보다 먼저 실행됩니다",
+      "trigger": "Native Layer가 일부 서비스를 획득한 뒤 후속 서비스 build가 실패하거나 interrupt됩니다.",
+      "impact": "이미 획득한 서비스의 finalizer가 실행될 때 해당 location은 아직 building 상태일 수 있습니다. 그 finalizer가 대기하면 실패 후 finalizing 기록도 지연됩니다. 이는 실패 cleanup 전에 보수적으로 finalizing을 기록한다는 현재 lifecycle 계약을 충족하지 않습니다.",
+      "evidence": "559행의 finalizing finalizer는 Layer.buildWithMemoMap이 성공한 뒤에만 등록됩니다. 실패 경로의 guardedFinish는 574행에서 바깥 onExit에 배치됩니다. 실제 pinned effect/dist/Layer.js 92~94행의 fromBuild는 내부 build 실패 시 자신의 child Scope를 닫은 뒤 실패를 반환합니다. 따라서 내부 Layer의 cleanup은 바깥 guardedFinish보다 먼저 실행됩니다. 처음 등록한 locationScopeObserved callback도 이후 획득한 Native child Scope의 cleanup보다 늦습니다. 현재 실패 검사는 반환 후 상태만 확인합니다.",
+      "requirement": "L1과 L3: build 실패 및 관련 cleanup 효과 전에 finalizing을 기록해야 합니다.",
+      "smallest_correction": "실제 부분 build 실패의 내부 Scope cleanup 경계에서 finalizing을 먼저 기록하도록 연결하십시오. 바깥 onExit만으로 순서를 보장하지 마십시오. metadata gate는 Native finalizer 실행 전에 반환하십시오.",
+      "validation_needed": "서비스 획득 후 후속 build를 실패시키고, 획득한 서비스의 finalizer 안에서 locationSnapshot이 이미 finalizing인지 확인하십시오.",
+      "basis": "실제 pinned Layer 구현과 overlay의 정적 호출 순서 추적. Native는 실행하지 않았습니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a1240e-7385-7e83-b377-1d9af83d201c",
+    "binding_before_after": "identical",
+    "source_edits": false,
+    "report_saved": false,
+    "tests_rerun": false,
+    "native_executed": false
+  }
+}

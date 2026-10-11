@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a12792-509d-7f22-bc27-5cb1028f9db0": {
+      "completed": "**완료: SDK 테스트 34/34 통과, exit 0.**\n\n수정 파일은 [native-permission-sdk-host.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-sdk-host.test.mjs) 하나입니다.\n\n- 실제 branded source·현재 Scope publication 후 original AISDK private list 등록을 확인했습니다.\n- 실제 original `run`과 직접 wrapper replay가 매번 real `inventoryGuard`에서 거부됩니다. 폐기 후 저장된 wrapper도 거부됩니다.\n- Original Scope cleanup, 반복 dispose, 빈 list를 확인했습니다.\n- Foreign callback/source/options, same-shape, cross/closed Scope 및 begin/publication/publish 실패 검사를 보존했습니다.\n- Syntax·Prettier·ESLint 통과. Invocation source 안정성 검사 통과. Main freeze 3개 파일의 bytes·SHA-256 일치.\n\n실행 명령: `node --test apps/desktop-app/src/native-permission-sdk-host.test.mjs`  \n환경: Node v26.11.0  \n최종 크기: **32,595 bytes**\n\n```text\nSHA-256\n55458a0e4d11fdc7f03caaf993fc16de6302206ab5bf8e3b877002d188b2474b\n```\n\nProduction helper 수정·위임·다른 파일 쓰기는 없습니다. Native/SDK/provider/network/build/GUI 실행도 없습니다. Permissive synthetic 검사는 명시적으로 표시했습니다. 이 결과는 metadata 등록 범위이며, 실행 권한·전체 inventory 완료·startup safety를 입증하지 않습니다."
+    }
+  },
+  "timed_out": false
+}

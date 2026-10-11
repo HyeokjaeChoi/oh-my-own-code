@@ -1,0 +1,53 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "DUP1": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "docs/runs/durable-duplicate-import/verification-r1.json"
+      ],
+      "checks": [
+        "unit"
+      ]
+    },
+    "DUP2": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "docs/runs/durable-duplicate-import/verification-r1.json"
+      ],
+      "checks": [
+        "unit"
+      ]
+    },
+    "DUP3": {
+      "status": "verified",
+      "artifacts": [
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "docs/runs/durable-duplicate-import/verification-r1.json"
+      ],
+      "checks": [
+        "unit",
+        "lint",
+        "format"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/src/host/storage-integration.test.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs",
+    "apps/desktop-app/src/workbench-service.mjs"
+  ],
+  "deleted_paths": []
+}

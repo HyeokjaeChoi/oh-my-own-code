@@ -1,0 +1,22 @@
+{
+  "schema_version": 2,
+  "run": "conversation-markdown",
+  "reviewer_role": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "9b245f737a929fe3de35e258f3292123756f7099fed82cbe03153af45e96890a",
+    "documents_sha256": "7215ddaa39436696b83e1f2e544b154cded03a590b063291a0474a1371dc5d92",
+    "gate": "design_spec",
+    "plan_sha256": "2a38131ab6c049de32cac9674a8fcdc128b55ee3885f435f9ea541ab60c847a4",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "design-v1은 plan revision 2, PRD F-05, 기존 ADR과 UX 경계에 부합하며 구현에 필요한 결정을 정의한다. assistant-ui의 기존 part context와 단일 projection을 유지한다. assistant Markdown, literal user text, escaped HTML, 비활성 링크·이미지, disabled task input과 실행 금지 조건이 명확하다. 복사 범위, Promise 기반 상태, 중복 요청 차단, text·scope 변경과 unmount 이후 늦은 결과 처리도 정의한다. 기존 tokens·CSS Modules, 키보드 조작, focus, 긴 코드·표의 스크롤, 두 theme과 확대 검증은 이번 범위에 적합하다. 고정 package source와 저장된 호환성 자료를 확인했고, 파일 해시와 DESIGN_SPEC binding이 일치한다. 중대한 미해결 설계 지적은 없다.",
+  "review_boundary": "초기 Markdown·코드·복사 설계 문서의 일관성, 안전 조건, 의존성 선택, 상태 수명, 접근성과 layout 계약을 검토했다. 전체 18개 기능의 범위는 유지한다.",
+  "evidence_limits": "저장된 clean install·tsc·esbuild·실제 external-runtime SSR 결과는 모두 exit 0이다. tsc는 skipLibCheck를 사용했고 esbuild는 Node 대상으로 packages를 external 처리했다. 이 근거는 앱의 browser bundle, clipboard 상호작용, streaming layout 또는 실제 OS clipboard를 검증하지 않는다. 구현 후 계약된 검사와 별도의 독립 CODE·RENDER 검토가 필요하다. 이번 검토에서는 파일·ledger 변경, 설치, runtime 실행, 의존성 도입 또는 위임을 수행하지 않았다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11dfe-22eb-7d81-8614-034d7ad3dada",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

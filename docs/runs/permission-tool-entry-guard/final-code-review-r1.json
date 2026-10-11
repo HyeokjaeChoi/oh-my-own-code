@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "343e22237088e3ef9d9582802557e552b0d2708cbd72accc3b1cd6808d5017e6",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "ace8dccbce2877e0ab8b9b7732568e4c9755d26437bf25a0eee5071380baa017",
+    "schema_version": 2,
+    "source_sha256": "5e2a7ea2bf0bc526efdf4a141e9a93551546c08b5572002fe29d5546591fea9e",
+    "verification_sha256": "f0ab9a2a1992802ce14a7c19fcc69f9ab9f8b0c97ce0f5c6570dd5a642721fb0",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "지정된 5개 소스를 보존 원본과 비교하고, 요구사항 준수와 코드 정확성을 각각 검토했습니다. 현재 boot-held 범위에서 수정이 필요한 결함을 찾지 못했습니다. direct 진입은 input.call 접근 전에 차단됩니다. direct·nested beforeExecute는 hook 구성 전에 차단됩니다. raw 실행은 tool 접근과 schema 처리 전에 독립적으로 차단됩니다. snapshot도 catalog·schema 변환 전에 차단됩니다.",
+  "open_findings": [],
+  "inspected_source_paths": [
+    "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+    "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+    "apps/desktop-app/src/native-permission-coordinator-admission.mjs",
+    "apps/desktop-app/src/native-permission-coordinator-admission.test.mjs",
+    "apps/desktop-app/src/native-permission-tool-entry.test.mjs"
+  ],
+  "verification": {
+    "source_bindings_before_after": "검토 전후 5개 파일의 크기와 SHA256이 source-freeze-r1.json과 일치했습니다.",
+    "preserved_baseline": "보존 원본 4개의 SHA256과 새 파일의 원본 부재를 확인했습니다.",
+    "overlay": "기존 9개 recipe 항목의 바이트가 그대로 유지됩니다. 추가된 pinned 원본 2개의 SHA256과 정적 문자열 치환 결과의 afterSha256을 확인했습니다.",
+    "service_boundary": "descriptor-safe sessionID 캡처, Store identity 재확인, raw 실행에 대한 Control·Store 명시적 제공, Tool node의 실제 Control·Store·Location dependencies를 확인했습니다. callback은 admission transaction 밖에서 실행됩니다.",
+    "closed_staging": "변경은 고정 import 문자열의 구성 방식을 사용합니다. staging allowlist 확대나 validation 완화는 없습니다.",
+    "final_input_bindings": "plan·contract·environment·verification·work_class digest가 일치합니다. 기록된 baseline에 현재 5개 파일을 반영하여 재구성한 source digest도 일치합니다.",
+    "recorded_checks": "run.json의 최신 Node 81개·lint·format 성공 기록은 reviewed의 source binding과 일치합니다. 재실행하지 않았습니다.",
+    "execution": "파일 읽기와 정적 비교·해시 계산만 수행했습니다. 소스 수정, 보고서 저장, 재귀 위임, 테스트 또는 Native·build·provider·Electron 실행은 하지 않았습니다."
+  },
+  "limitations": [
+    "실제 Native 실행과 positive authority는 검증하지 않았습니다.",
+    "registration callbacks, complete inventory generation, positive origin leases, physical root broker는 다음 범위로 유지됩니다.",
+    "synthetic allowance를 사용한 callback lock 해제 검사는 production 실행 허가의 증거가 아닙니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a123fb-79a5-7bd3-a7cf-298253ca7a7f",
+    "child_task_id_source": "현재 invocation의 CODEX_THREAD_ID",
+    "implementation_author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "independent_review": true,
+    "read_only": true
+  }
+}

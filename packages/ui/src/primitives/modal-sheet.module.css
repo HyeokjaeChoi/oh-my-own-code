@@ -1,0 +1,104 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: color-mix(
+    in srgb,
+    var(--omoc-semantic-color-overlay) 28%,
+    transparent
+  );
+}
+
+.content {
+  position: fixed;
+  inset-block: 0;
+  z-index: 71;
+  display: flex;
+  flex-direction: column;
+  width: min(336px, calc(100vw - 24px));
+  max-height: 100dvh;
+  overflow: hidden;
+  background: var(--omoc-semantic-color-surface);
+  color: var(--omoc-semantic-color-text-primary);
+  font-family: var(--omoc-semantic-type-family-body);
+  font-size: var(--omoc-component-type-navigation-size);
+  line-height: var(--omoc-component-type-navigation-line);
+}
+
+.content[data-side="left"] {
+  inset-inline-start: 0;
+  width: min(var(--omoc-component-size-sidebar-width), calc(100vw - 24px));
+  border-inline-end: 1px solid var(--omoc-semantic-color-border-default);
+}
+
+.content[data-side="right"] {
+  inset-inline-end: 0;
+  border-inline-start: 1px solid var(--omoc-semantic-color-border-default);
+}
+
+.content:focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: -2px;
+}
+
+.header {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--omoc-primitive-space-2);
+  min-height: 44px;
+  padding-inline: var(--omoc-primitive-space-3);
+}
+
+.title {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: var(--omoc-component-type-navigation-size);
+  font-weight: var(--omoc-semantic-type-weight-label);
+  line-height: var(--omoc-component-type-navigation-line);
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--omoc-component-size-navigation-radius);
+  background: transparent;
+  color: var(--omoc-component-color-button-quiet-foreground);
+  font: inherit;
+  cursor: pointer;
+}
+
+.close:hover {
+  background: var(--omoc-component-color-navigation-hover-background);
+}
+
+.close:focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: var(--omoc-semantic-size-focus-gap);
+}
+
+.body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+@media (pointer: coarse) {
+  .close {
+    width: 44px;
+    height: 44px;
+  }
+}

@@ -1,0 +1,741 @@
+{
+  "scope": "Current design foundation plus carried MIME correction; synthetic hidden production renderer/preload only",
+  "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+  "checks": {
+    "boundaries": [
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "input_binding_sha256": "1c6c0872bf9414c7d7f91cd64007afa31961a06206cdf1e908c8fba0f756c8a5",
+        "input_scope": {
+          "paths": [
+            "apps/desktop-app/src",
+            "packages/ui",
+            "packages/contracts",
+            "apps/desktop-app/scripts/check-renderer-boundaries.mjs",
+            "apps/desktop-app/scripts/fixtures/boundaries",
+            "docs/design/tokens"
+          ],
+          "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+        },
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:21:35+00:00",
+        "scope": "Actual affected design foundation boundaries verification; synthetic hidden Main is not Native/provider evidence",
+        "source_after_sha256": "38758ab90e155eafac8c073c2491961ec94f5387044d4fe1950ea8b13f634da9",
+        "source_sha256": "38758ab90e155eafac8c073c2491961ec94f5387044d4fe1950ea8b13f634da9",
+        "stderr": "",
+        "stdout": "{\"result\":\"pass\",\"sourceFiles\":100,\"boundaryFixtures\":68,\"positiveFixtures\":16}\n",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "input_binding_sha256": "188ca2483157dc7ed7a9d1ea70d454bc1d9cbee9c2ef3a9769b3cbafa8777f30",
+        "input_scope": {
+          "paths": [
+            "apps/desktop-app/src",
+            "packages/ui",
+            "packages/contracts",
+            "apps/desktop-app/scripts/check-renderer-boundaries.mjs",
+            "apps/desktop-app/scripts/fixtures/boundaries",
+            "docs/design/tokens"
+          ],
+          "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+        },
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:29:08+00:00",
+        "scope": "Actual affected design foundation boundaries verification; synthetic hidden Main is not Native/provider evidence",
+        "source_after_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "stderr": "",
+        "stdout": "{\"result\":\"pass\",\"sourceFiles\":100,\"boundaryFixtures\":68,\"positiveFixtures\":16}\n",
+        "timed_out": false
+      }
+    ],
+    "build": [
+      {
+        "argv": [
+          "pnpm",
+          "exec",
+          "nx",
+          "run",
+          "desktop-app:build",
+          "--skip-nx-cache"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "input_binding_sha256": "2369f38328660fa7e6d39f6b7e3c3e5043921d45a5e7061cf313ae9cc82d32d2",
+        "input_scope": {
+          "paths": [
+            "apps/desktop-app/src",
+            "packages/ui",
+            "packages/contracts",
+            "apps/desktop-app/public",
+            "docs/design/tokens",
+            "apps/desktop-app/package.json",
+            "apps/desktop-app/project.json",
+            "apps/desktop-app/index.html",
+            "apps/desktop-app/vite.config.ts",
+            "apps/desktop-app/tsconfig.json",
+            "apps/desktop-app/native/owner-lifetime/witness.c",
+            "apps/desktop-app/scripts/build.mjs",
+            "apps/desktop-app/scripts/build-provenance.mjs",
+            "apps/desktop-app/scripts/prepare-event-host.mjs",
+            "apps/desktop-app/scripts/stage-event-host.mjs",
+            "apps/desktop-app/scripts/stage-owner-lifetime.mjs",
+            "apps/desktop-app/scripts/package.mjs",
+            "apps/desktop-app/runtime-event-host/package.json",
+            "apps/desktop-app/runtime-event-host/package-lock.json",
+            "apps/desktop-app/runtime-event-host/installer-pins.json"
+          ],
+          "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+        },
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:23:26+00:00",
+        "scope": "Actual affected design foundation build verification; synthetic hidden Main is not Native/provider evidence",
+        "source_after_sha256": "38758ab90e155eafac8c073c2491961ec94f5387044d4fe1950ea8b13f634da9",
+        "source_sha256": "38758ab90e155eafac8c073c2491961ec94f5387044d4fe1950ea8b13f634da9",
+        "stderr": "(node:62663) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n[plugin builtin:vite-reporter] \u001b[33;1m\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\u001b[0m\n",
+        "stdout": "\n> nx run desktop-app:build\n\n> node apps/desktop-app/scripts/build.mjs\r\n\r\nvite v8.3.0 building client environment for production...\ntransforming...\n\u001b[32m\u2713\u001b[0m 2713 modules transformed.\nrendering chunks...\ncomputing gzip size...\n\u001b[2mapps/desktop-app/dist/app/renderer/\u001b[0m\u001b[32mindex.html                 \u001b[0m\u001b[1;2m    0.68 kB\u001b[0m\u001b[2m \u2502 gzip:   0.41 kB\u001b[0m\n\u001b[2mapps/desktop-app/dist/app/renderer/\u001b[0m\u001b[2massets/\u001b[0m\u001b[35mindex-srnbVZiv.css  \u001b[0m\u001b[1;2m   82.01 kB\u001b[0m\u001b[2m \u2502 gzip:  10.98 kB\u001b[0m\n\u001b[2mapps/desktop-app/dist/app/renderer/\u001b[0m\u001b[2massets/\u001b[0m\u001b[36mindex-PTbcS2UF.js   \u001b[0m\u001b[33;1m1,311.84 kB\u001b[0m\u001b[2m \u2502 gzip: 364.41 kB\u001b[0m\n\n\u2713 built in 347ms\n\n\n\n NX   Successfully ran target build for project desktop-app\n\n\n  Run duration:      53.9s\n  Cache:             Skipped (--skip-nx-cache)\n  Critical path:     53.8s (1 task)\n  Recoverable time:  <1ms\n\n  Recommendations:\n    - Cache: drop --skip-nx-cache to restore unchanged tasks instantly.\n    - Speed up or split the longest tasks on the critical path:\n        desktop-app:build    53.8s\n",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "pnpm",
+          "exec",
+          "nx",
+          "run",
+          "desktop-app:build",
+          "--skip-nx-cache"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "input_binding_sha256": "620201ffdf32a042a8e47d059a313944bee8c6ef9092a95b5b8b010b397523e4",
+        "input_scope": {
+          "paths": [
+            "apps/desktop-app/src",
+            "packages/ui",
+            "packages/contracts",
+            "apps/desktop-app/public",
+            "docs/design/tokens",
+            "apps/desktop-app/package.json",
+            "apps/desktop-app/project.json",
+            "apps/desktop-app/index.html",
+            "apps/desktop-app/vite.config.ts",
+            "apps/desktop-app/tsconfig.json",
+            "apps/desktop-app/native/owner-lifetime/witness.c",
+            "apps/desktop-app/scripts/build.mjs",
+            "apps/desktop-app/scripts/build-provenance.mjs",
+            "apps/desktop-app/scripts/prepare-event-host.mjs",
+            "apps/desktop-app/scripts/stage-event-host.mjs",
+            "apps/desktop-app/scripts/stage-owner-lifetime.mjs",
+            "apps/desktop-app/scripts/package.mjs",
+            "apps/desktop-app/runtime-event-host/package.json",
+            "apps/desktop-app/runtime-event-host/package-lock.json",
+            "apps/desktop-app/runtime-event-host/installer-pins.json"
+          ],
+          "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+        },
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:30:58+00:00",
+        "scope": "Actual affected design foundation build verification; synthetic hidden Main is not Native/provider evidence",
+        "source_after_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "stderr": "(node:65491) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.\n(Use `node --trace-warnings ...` to show where the warning was created)\n[plugin builtin:vite-reporter] \u001b[33;1m\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\u001b[0m\n",
+        "stdout": "\n> nx run desktop-app:build\n\n> node apps/desktop-app/scripts/build.mjs\r\n\r\nvite v8.3.0 building client environment for production...\ntransforming...\n\u001b[32m\u2713\u001b[0m 2713 modules transformed.\nrendering chunks...\ncomputing gzip size...\n\u001b[2mapps/desktop-app/dist/app/renderer/\u001b[0m\u001b[32mindex.html                 \u001b[0m\u001b[1;2m    0.68 kB\u001b[0m\u001b[2m \u2502 gzip:   0.41 kB\u001b[0m\n\u001b[2mapps/desktop-app/dist/app/renderer/\u001b[0m\u001b[2massets/\u001b[0m\u001b[35mindex-srnbVZiv.css  \u001b[0m\u001b[1;2m   82.01 kB\u001b[0m\u001b[2m \u2502 gzip:  10.98 kB\u001b[0m\n\u001b[2mapps/desktop-app/dist/app/renderer/\u001b[0m\u001b[2massets/\u001b[0m\u001b[36mindex-Dt-W1bI2.js   \u001b[0m\u001b[33;1m1,312.00 kB\u001b[0m\u001b[2m \u2502 gzip: 364.46 kB\u001b[0m\n\n\u2713 built in 344ms\n\n\n\n NX   Successfully ran target build for project desktop-app\n\n\n  Run duration:      53.9s\n  Cache:             Skipped (--skip-nx-cache)\n  Critical path:     53.8s (1 task)\n  Recoverable time:  <1ms\n\n  Recommendations:\n    - Cache: drop --skip-nx-cache to restore unchanged tasks instantly.\n    - Speed up or split the longest tasks on the critical path:\n        desktop-app:build    53.8s\n",
+        "timed_out": false
+      }
+    ],
+    "bundle": [
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:23:27+00:00",
+        "scope": "Actual affected design foundation bundle verification; synthetic hidden Main is not Native/provider evidence",
+        "source_sha256": "38758ab90e155eafac8c073c2491961ec94f5387044d4fe1950ea8b13f634da9",
+        "stderr": "",
+        "stdout": "{\n  \"result\": \"pass\",\n  \"rendererFiles\": [\n    {\n      \"file\": \"assets/index-PTbcS2UF.js\",\n      \"sha256\": \"80cdaa4c5c6d4d5e2482b8f6f7395ec0878dea71f3343c9c6e4ddba282e80a71\"\n    },\n    {\n      \"file\": \"assets/index-srnbVZiv.css\",\n      \"sha256\": \"2ae5e7833ad05847ba16a38ef277b1445b6f27205caad730c19b2a8876690dd2\"\n    },\n    {\n      \"file\": \"index.html\",\n      \"sha256\": \"30a98641b36a927bffdfc9d77f92856625a2b12555747810c7b4d532bc829a85\"\n    }\n  ]\n}\n",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:26:27+00:00",
+        "scope": "Actual affected design foundation bundle verification; synthetic hidden Main is not Native/provider evidence",
+        "source_sha256": "35a4b85122c01cc0b60483a4f015edd9404c00252d2ec5289810d8a38baa72a4",
+        "stderr": "",
+        "stdout": "{\n  \"result\": \"pass\",\n  \"rendererFiles\": [\n    {\n      \"file\": \"assets/index-PTbcS2UF.js\",\n      \"sha256\": \"80cdaa4c5c6d4d5e2482b8f6f7395ec0878dea71f3343c9c6e4ddba282e80a71\"\n    },\n    {\n      \"file\": \"assets/index-srnbVZiv.css\",\n      \"sha256\": \"2ae5e7833ad05847ba16a38ef277b1445b6f27205caad730c19b2a8876690dd2\"\n    },\n    {\n      \"file\": \"index.html\",\n      \"sha256\": \"30a98641b36a927bffdfc9d77f92856625a2b12555747810c7b4d532bc829a85\"\n    }\n  ]\n}\n",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:31:00+00:00",
+        "scope": "Actual affected design foundation bundle verification; synthetic hidden Main is not Native/provider evidence",
+        "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "stderr": "",
+        "stdout": "{\n  \"result\": \"pass\",\n  \"rendererFiles\": [\n    {\n      \"file\": \"assets/index-Dt-W1bI2.js\",\n      \"sha256\": \"e6684e3a41f647903195ed29f98f14b610471407d736da578116996a789011ca\"\n    },\n    {\n      \"file\": \"assets/index-srnbVZiv.css\",\n      \"sha256\": \"2ae5e7833ad05847ba16a38ef277b1445b6f27205caad730c19b2a8876690dd2\"\n    },\n    {\n      \"file\": \"index.html\",\n      \"sha256\": \"8c5b773a307b27530d970f3fe3223ef0375f4586d4f025aa123b29f2b7abaf79\"\n    }\n  ]\n}\n",
+        "timed_out": false
+      }
+    ],
+    "context-hidden": [
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/run-evidence.mjs",
+          "--out",
+          "docs/runs/design-foundation-v2/evidence/context-r1",
+          "--script",
+          "conversation-context"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:33:38+00:00",
+        "scope": "Existing actual Context renderer assertions retained and executed after intentional disclosure changes: immutable payload, branch/queue/cancel/expired/unknown/no-replay",
+        "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "stderr": "",
+        "stdout": "{\"script\":\"conversation-context\",\"family\":null,\"mode\":null,\"platform\":\"darwin\",\"runnerPlatform\":\"darwin\",\"runnerArch\":\"arm64\",\"runnerNode\":\"v24.14.1\",\"destination\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/design-foundation-v2/evidence/context-r1/conversation-context\",\"command\":[\"/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node\",\"/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-conversation-context.mjs\"],\"startedAt\":\"2026-10-09T06:32:10.683Z\",\"status\":\"pass\",\"exitCode\":0,\"signal\":null,\"evidence\":[\"conversation-context-evidence.json\",\"000-light-1440-zoom1-values-0.png\",\"001-light-1440-zoom1-values-1.png\",\"002-light-1440-zoom1-final-send-control.png\",\"003-light-760-zoom1-values-3.png\",\"004-light-760-zoom1-values-4.png\",\"005-light-760-zoom1-final-send-control.png\",\"006-light-320-zoom1-values-6.png\",\"007-light-320-zoom1-values-7.png\",\"008-light-320-zoom1-values-8.png\",\"009-light-320-zoom1-final-send-control.png\",\"010-light-760-zoom2-values-10.png\",\"011-light-760-zoom2-values-11.png\",\"012-light-760-zoom2-values-12.png\",\"013-light-760-zoom2-values-13.png\",\"014-light-760-zoom2-values-14.png\",\"015-light-760-zoom2-values-15.png\",\"016-light-760-zoom2-final-send-control.png\",\"017-dark-1440-zoom1-values-17.png\",\"018-dark-1440-zoom1-values-18.png\",\"019-dark-1440-zoom1-final-send-control.png\",\"020-dark-760-zoom1-values-20.png\",\"021-dark-760-zoom1-values-21.png\",\"022-dark-760-zoom1-final-send-control.png\",\"023-dark-320-zoom1-values-23.png\",\"024-dark-320-zoom1-values-24.png\",\"025-dark-320-zoom1-values-25.png\",\"026-dark-320-zoom1-final-send-control.png\",\"027-dark-760-zoom2-values-27.png\",\"028-dark-760-zoom2-values-28.png\",\"029-dark-760-zoom2-values-29.png\",\"030-dark-760-zoom2-values-30.png\",\"031-dark-760-zoom2-values-31.png\",\"032-dark-760-zoom2-values-32.png\",\"033-dark-760-zoom2-final-send-control.png\",\"034-captured-selection-reference.png\",\"035-normal-context-pending-ACK.png\",\"036-known-request-admission-next-draft.png\",\"037-image-captured-preview.png\",\"038-image-light-320-zoom1-values-38.png\",\"039-image-light-320-zoom1-values-39.png\",\"040-image-light-760-zoom1-values-40.png\",\"041-image-light-760-zoom2-values-41.png\",\"042-image-light-760-zoom2-values-42.png\",\"043-image-light-760-zoom2-values-43.png\",\"044-image-light-760-zoom2-values-44.png\",\"045-image-dark-320-zoom1-values-45.png\",\"046-image-dark-320-zoom1-values-46.png\",\"047-image-dark-760-zoom1-values-47.png\",\"048-image-dark-760-zoom2-values-48.png\",\"049-image-dark-760-zoom2-values-49.png\",\"050-image-dark-760-zoom2-values-50.png\",\"051-image-dark-760-zoom2-values-51.png\",\"052-pdf-captured-preview.png\",\"053-pdf-light-320-zoom1-values-53.png\",\"054-pdf-light-320-zoom1-values-54.png\",\"055-pdf-light-760-zoom1-values-55.png\",\"056-pdf-light-760-zoom2-values-56.png\",\"057-pdf-light-760-zoom2-values-57.png\",\"058-pdf-light-760-zoom2-values-58.png\",\"059-pdf-light-760-zoom2-values-59.png\",\"060-pdf-dark-320-zoom1-values-60.png\",\"061-pdf-dark-320-zoom1-values-61.png\",\"062-pdf-dark-760-zoom1-values-62.png\",\"063-pdf-dark-760-zoom2-values-63.png\",\"064-pdf-dark-760-zoom2-values-64.png\",\"065-pdf-dark-760-zoom2-values-65.png\",\"066-pdf-dark-760-zoom2-values-66.png\",\"067-missing-explicit-refusal.png\",\"068-missing-light-320-zoom1-values-68.png\",\"069-missing-light-760-zoom1-values-69.png\",\"070-missing-light-760-zoom2-values-70.png\",\"071-missing-dark-320-zoom1-values-71.png\",\"072-missing-dark-760-zoom1-values-72.png\",\"073-missing-dark-760-zoom2-values-73.png\",\"074-denied-explicit-refusal.png\",\"075-denied-light-320-zoom1-values-75.png\",\"076-denied-light-760-zoom1-values-76.png\",\"077-denied-light-760-zoom2-values-77.png\",\"078-denied-dark-320-zoom1-values-78.png\",\"079-denied-dark-760-zoom1-values-79.png\",\"080-denied-dark-760-zoom2-values-80.png\",\"081-protected-explicit-refusal.png\",\"082-protected-light-320-zoom1-values-82.png\",\"083-protected-light-760-zoom1-values-83.png\",\"084-protected-light-760-zoom2-values-84.png\",\"085-protected-dark-320-zoom1-values-85.png\",\"086-protected-dark-760-zoom1-values-86.png\",\"087-protected-dark-760-zoom2-values-87.png\",\"088-oversized-explicit-refusal.png\",\"089-oversized-light-320-zoom1-values-89.png\",\"090-oversized-light-760-zoom1-values-90.png\",\"091-oversized-light-760-zoom2-values-91.png\",\"092-oversized-dark-320-zoom1-values-92.png\",\"093-oversized-dark-760-zoom1-values-93.png\",\"094-oversized-dark-760-zoom2-values-94.png\",\"095-changed-explicit-refusal.png\",\"096-changed-light-320-zoom1-values-96.png\",\"097-changed-light-760-zoom1-values-97.png\",\"098-changed-light-760-zoom2-values-98.png\",\"099-changed-dark-320-zoom1-values-99.png\",\"100-changed-dark-760-zoom1-values-100.png\",\"101-changed-dark-760-zoom2-values-101.png\",\"102-unsupported-explicit-refusal.png\",\"103-unsupported-light-320-zoom1-values-103.png\",\"104-unsupported-light-760-zoom1-values-104.png\",\"105-unsupported-light-760-zoom2-values-105.png\",\"106-unsupported-dark-320-zoom1-values-106.png\",\"107-unsupported-dark-760-zoom1-values-107.png\",\"108-unsupported-dark-760-zoom2-values-108.png\",\"109-unsupported-model-no-text-substitution.png\",\"110-unsupported-model-light-320-zoom1-values-110.png\",\"111-unsupported-model-light-320-zoom1-values-111.png\",\"112-unsupported-model-light-760-zoom1-values-112.png\",\"113-unsupported-model-light-760-zoom1-values-113.png\",\"114-unsupported-model-light-760-zoom2-values-114.png\",\"115-unsupported-model-light-760-zoom2-values-115.png\",\"116-unsupported-model-dark-320-zoom1-values-116.png\",\"117-unsupported-model-dark-320-zoom1-values-117.png\",\"118-unsupported-model-dark-760-zoom1-values-118.png\",\"119-unsupported-model-dark-760-zoom1-values-119.png\",\"120-unsupported-model-dark-760-zoom2-values-120.png\",\"121-unsupported-model-dark-760-zoom2-values-121.png\",\"122-missing-capabilities-no-text-substitution.png\",\"123-missing-capabilities-light-320-zoom1-values-123.png\",\"124-missing-capabilities-light-320-zoom1-values-124.png\",\"125-missing-capabilities-light-760-zoom1-values-125.png\",\"126-missing-capabilities-light-760-zoom1-values-126.png\",\"127-missing-capabilities-light-760-zoom2-values-127.png\",\"128-missing-capabilities-light-760-zoom2-values-128.png\",\"129-missing-capabilities-dark-320-zoom1-values-129.png\",\"130-missing-capabilities-dark-320-zoom1-values-130.png\",\"131-missing-capabilities-dark-760-zoom1-values-131.png\",\"132-missing-capabilities-dark-760-zoom1-values-132.png\",\"133-missing-capabilities-dark-760-zoom2-values-133.png\",\"134-missing-capabilities-dark-760-zoom2-values-134.png\",\"135-expired-no-automatic-reread.png\",\"136-expired-light-320-zoom1-values-136.png\",\"137-expired-light-320-zoom1-values-137.png\",\"138-expired-light-760-zoom1-values-138.png\",\"139-expired-light-760-zoom1-values-139.png\",\"140-expired-light-760-zoom2-values-140.png\",\"141-expired-light-760-zoom2-values-141.png\",\"142-expired-dark-320-zoom1-values-142.png\",\"143-expired-dark-320-zoom1-values-143.png\",\"144-expired-dark-760-zoom1-values-144.png\",\"145-expired-dark-760-zoom1-values-145.png\",\"146-expired-dark-760-zoom2-values-146.png\",\"147-expired-dark-760-zoom2-values-147.png\",\"148-branch-light-320-zoom1-values-148.png\",\"149-branch-light-760-zoom1-values-149.png\",\"150-branch-light-760-zoom2-values-150.png\",\"151-branch-dark-320-zoom1-values-151.png\",\"152-branch-dark-760-zoom1-values-152.png\",\"153-branch-dark-760-zoom2-values-153.png\",\"154-branch-only-pending.png\",\"155-confirmed-branch-explicit-send-required.png\",\"156-steer-scoped-inbox.png\",\"157-queue-scoped-inbox.png\",\"158-inbox-light-320-zoom1-values-158.png\",\"159-inbox-light-760-zoom1-values-159.png\",\"160-inbox-light-760-zoom2-values-160.png\",\"161-inbox-dark-320-zoom1-values-161.png\",\"162-inbox-dark-760-zoom1-values-162.png\",\"163-inbox-dark-760-zoom2-values-163.png\",\"164-inbox-dark-760-zoom2-values-164.png\",\"165-cancel-request-ACK-not-cancelled.png\",\"166-cancel-request-ACK-light-320-zoom1-values-166.png\",\"167-cancel-request-ACK-light-760-zoom1-values-167.png\",\"168-cancel-request-ACK-light-760-zoom2-values-168.png\",\"169-cancel-request-ACK-light-760-zoom2-values-169.png\",\"170-cancel-request-ACK-dark-320-zoom1-values-170.png\",\"171-cancel-request-ACK-dark-760-zoom1-values-171.png\",\"172-cancel-request-ACK-dark-760-zoom2-values-172.png\",\"173-cancel-request-ACK-dark-760-zoo\n[truncated]",
+        "timed_out": false
+      }
+    ],
+    "format": [
+      {
+        "argv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--check",
+          "apps/desktop-app/src",
+          "apps/desktop-app/scripts",
+          "packages/ui/src"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:21:28+00:00",
+        "scope": "Actual affected design foundation format verification; synthetic hidden Main is not Native/provider evidence",
+        "source_sha256": "38758ab90e155eafac8c073c2491961ec94f5387044d4fe1950ea8b13f634da9",
+        "stderr": "",
+        "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--check",
+          "apps/desktop-app/src",
+          "apps/desktop-app/scripts",
+          "packages/ui/src"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:25:32+00:00",
+        "scope": "Actual affected design foundation format verification; synthetic hidden Main is not Native/provider evidence",
+        "source_sha256": "35a4b85122c01cc0b60483a4f015edd9404c00252d2ec5289810d8a38baa72a4",
+        "stderr": "",
+        "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--check",
+          "apps/desktop-app/src",
+          "apps/desktop-app/scripts",
+          "packages/ui/src"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:29:01+00:00",
+        "scope": "Actual affected design foundation format verification; synthetic hidden Main is not Native/provider evidence",
+        "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "stderr": "",
+        "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+        "timed_out": false
+      }
+    ],
+    "foundation": [
+      {
+        "argv": [
+          "python3",
+          "docs/design/validate_system.py"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "input_binding_sha256": "cd472130bfc9c83a31f7c6495f5bfcbea9b1275f18a020d2f295d6ab2fee7829",
+        "input_scope": {
+          "paths": [
+            "docs/design",
+            "packages/ui"
+          ],
+          "reason": "Foundation validator and its complete design/component source dependencies"
+        },
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "17bd0413301f015e5a01a9bd011753ca6ce4c446d20671cd31b5e1dec7a00a8f",
+        "recorded_at": "2026-10-09T06:16:31+00:00",
+        "scope": "Token aliases, exact CSS generation, component semantics and contrast",
+        "source_after_sha256": "3241a2951066bd4343f80495abd81fd35f592ab9932aa4311e68c738de2df649",
+        "source_sha256": "3241a2951066bd4343f80495abd81fd35f592ab9932aa4311e68c738de2df649",
+        "stderr": "",
+        "stdout": "PASS: 223 tokens, 44 exact variants, two modes, CSS parity, contrast, aliases\n",
+        "timed_out": false
+      }
+    ],
+    "hidden": [
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/run-evidence.mjs",
+          "--out",
+          "docs/runs/design-foundation-v2/evidence/hidden-r1",
+          "--script",
+          "design-foundation"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 1,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:24:38+00:00",
+        "scope": "Actual affected design foundation hidden verification; synthetic hidden Main is not Native/provider evidence",
+        "source_sha256": "38758ab90e155eafac8c073c2491961ec94f5387044d4fe1950ea8b13f634da9",
+        "stderr": "",
+        "stdout": "{\"script\":\"design-foundation\",\"family\":null,\"mode\":null,\"platform\":\"darwin\",\"runnerPlatform\":\"darwin\",\"runnerArch\":\"arm64\",\"runnerNode\":\"v24.14.1\",\"destination\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation\",\"command\":[\"/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node\",\"/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-design-foundation.mjs\"],\"startedAt\":\"2026-10-09T06:23:28.895Z\",\"status\":\"fail\",\"exitCode\":1,\"signal\":null,\"evidence\":[],\"provenance\":{\"schemaVersion\":1,\"buildStampPath\":\"apps/desktop-app/dist/build-provenance.json\",\"buildStampSha256\":\"613398807640669742c932519ae0976d68f6842d5e86ff4a2297d60a8001770a\",\"buildStamp\":{\"schemaVersion\":1,\"kind\":\"desktop-build-byte-provenance\",\"createdAt\":\"2026-10-09T06:23:24.895Z\",\"builder\":{\"node\":\"v24.14.1\",\"platform\":\"darwin\",\"arch\":\"arm64\"},\"inputs\":{\"algorithm\":\"scoped-file-inventory-sha256-v1\",\"scopes\":[{\"path\":\"package.json\",\"present\":true},{\"path\":\"pnpm-lock.yaml\",\"present\":true},{\"path\":\"pnpm-workspace.yaml\",\"present\":true},{\"path\":\"tsconfig.base.json\",\"present\":true},{\"path\":\"nx.json\",\"present\":true},{\"path\":\"apps/desktop-app/package.json\",\"present\":true},{\"path\":\"apps/desktop-app/project.json\",\"present\":true},{\"path\":\"apps/desktop-app/index.html\",\"present\":true},{\"path\":\"apps/desktop-app/vite.config.ts\",\"present\":true},{\"path\":\"apps/desktop-app/tsconfig.json\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/build.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/build-provenance.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/prepare-event-host.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/stage-event-host.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/stage-owner-lifetime.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/native/owner-lifetime/witness.c\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/package.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/package.json\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/package-lock.json\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/installer-pins.json\",\"present\":true},{\"path\":\"apps/desktop-app/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"apps/desktop-app/public\",\"tree\":true,\"source\":true,\"optional\":true,\"present\":false},{\"path\":\"packages/ui/package.json\",\"present\":true},{\"path\":\"packages/ui/project.json\",\"present\":true},{\"path\":\"packages/ui/tsconfig.json\",\"present\":true},{\"path\":\"packages/ui/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"packages/contracts/package.json\",\"present\":true},{\"path\":\"packages/contracts/project.json\",\"present\":true},{\"path\":\"packages/contracts/tsconfig.json\",\"present\":true},{\"path\":\"packages/contracts/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"packages/contracts/tsconfig.build.json\",\"present\":true},{\"path\":\"docs/design/tokens\",\"tree\":true,\"source\":true,\"present\":true}],\"selection\":{\"excludedDirectories\":[\"node_modules\",\"dist\",\"exports\",\"captures\",\"credentials\",\"runtime-data\"],\"excludedNames\":\"hidden names and *.test.* / *.spec.*\",\"allowedFileExtensions\":\"\\\\.(?:c|[cm]?js|[cm]?ts|jsx|tsx|css|html|json|svg|png|jpe?g|webp|gif|ico|woff2?|ttf)$\"},\"limits\":{\"files\":4096,\"depth\":24,\"bytes\":1073741824},\"files\":[{\"path\":\"apps/desktop-app/index.html\",\"size\":584,\"mode\":420,\"sha256\":\"973680da1eadd48eb58ff47aaaca46a10e33c0da3a31e97662f3ddea9fddc9ae\"},{\"path\":\"apps/desktop-app/native/owner-lifetime/witness.c\",\"size\":16279,\"mode\":420,\"sha256\":\"4eb42efefdef1970d48bd19368b94bae689b10fbeacc96cd1adc83a9cf996951\"},{\"path\":\"apps/desktop-app/package.json\",\"size\":1395,\"mode\":420,\"sha256\":\"98617384d1d6afaf78c7124ec10bc50141bcea6441b21fcda75349655d586425\"},{\"path\":\"apps/desktop-app/project.json\",\"size\":4323,\"mode\":420,\"sha256\":\"0f90164352dbc9df946e3578eb604d3216dc2fdd82e35b2e126d31c2acefb622\"},{\"path\":\"apps/desktop-app/runtime-event-host/installer-pins.json\",\"size\":6700,\"mode\":420,\"sha256\":\"2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41\"},{\"path\":\"apps/desktop-app/runtime-event-host/package-lock.json\",\"size\":232329,\"mode\":420,\"sha256\":\"34f04622903ba6c3c14ba5729e0e406f1ed245307acea049c637cbdac2e64e9c\"},{\"path\":\"apps/desktop-app/runtime-event-host/package.json\",\"size\":276,\"mode\":420,\"sha256\":\"86992a64cd87494b080f2efd47dae2e2d6ae46b7958c7a063e2ed54b3e1dd0e5\"},{\"path\":\"apps/desktop-app/scripts/build-provenance.mjs\",\"size\":20094,\"mode\":420,\"sha256\":\"a5dfebae9bb9e5d449b767cbf6320062d544105b0d6a1f21115a5cac5a46af75\"},{\"path\":\"apps/desktop-app/scripts/build.mjs\",\"size\":2496,\"mode\":420,\"sha256\":\"e906fbe156109e737228c20b59f6e47952a27adb09a7d90fbfa695bcb366529d\"},{\"path\":\"apps/desktop-app/scripts/package.mjs\",\"size\":4176,\"mode\":420,\"sha256\":\"3c9c9e9a65b91996025f4e95abc533c8799fd12385aae8a7f01153a2df14faaf\"},{\"path\":\"apps/desktop-app/scripts/prepare-event-host.mjs\",\"size\":13241,\"mode\":420,\"sha256\":\"9970d480610c93628587fb97c62ff393e3515d6d87f6362542aa79456a2d1cff\"},{\"path\":\"apps/desktop-app/scripts/stage-event-host.mjs\",\"size\":13451,\"mode\":420,\"sha256\":\"c5962f23c4f33c26c7728732a5d0b4a04cb0bfd5adad2ddefd9b4f0d30d70853\"},{\"path\":\"apps/desktop-app/scripts/stage-owner-lifetime.mjs\",\"size\":6917,\"mode\":420,\"sha256\":\"d1d46210d36c321650cb1cb99e7a47de29ee924a8b72d7e81febdfacca5def65\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/agents.mjs\",\"size\":16865,\"mode\":420,\"sha256\":\"1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/extensions.mjs\",\"size\":7951,\"mode\":420,\"sha256\":\"05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/package.json\",\"size\":110,\"mode\":420,\"sha256\":\"1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/server.mjs\",\"size\":13606,\"mode\":420,\"sha256\":\"b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d\"},{\"path\":\"apps/desktop-app/src/css-modules.d.ts\",\"size\":111,\"mode\":420,\"sha256\":\"00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4\"},{\"path\":\"apps/desktop-app/src/desktop-bridge.d.ts\",\"size\":39140,\"mode\":420,\"sha256\":\"bf4e61af6041db92bd63ac89a5e4c78b438da55a5ba29e73096d106012feea9f\"},{\"path\":\"apps/desktop-app/src/ephemeral-profile.mjs\",\"size\":2527,\"mode\":420,\"sha256\":\"d58944c6cd050087d4dc5e8b786dd1d0d2bc98e6eb883de907a72b5615c19765\"},{\"path\":\"apps/desktop-app/src/event-host-child.mjs\",\"size\":16199,\"mode\":420,\"sha256\":\"11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875\"},{\"path\":\"apps/desktop-app/src/event-host-protocol.mjs\",\"size\":10749,\"mode\":420,\"sha256\":\"18fd006fa963e84015b81ac2338a5680d072aa9f8c5cf7ef5f85fd3d3eba2ed6\"},{\"path\":\"apps/desktop-app/src/event-host-resources.mjs\",\"size\":15942,\"mode\":420,\"sha256\":\"f900de7bb9b08144fc9774c9c801b74589bac6d965d9f09e310e4a3f2d0bcaf8\"},{\"path\":\"apps/desktop-app/src/event-host-supervisor.mjs\",\"size\":30405,\"mode\":420,\"sha256\":\"46cf4c7dc4f002ae4538603b2f858d3e3c500247277c751c83af2cccee18a5b8\"},{\"path\":\"apps/desktop-app/src/host/configuration-file-observation.mjs\",\"size\":1997,\"mode\":420,\"sha256\":\"83419028f952d647a23bf06b908649c97cc343b2247c15b9e1ae427acc7a9587\"},{\"path\":\"apps/desktop-app/src/host/configuration-save-kernel.mjs\",\"size\":26847,\"mode\":420,\"sha256\":\"cca5de5aa358d1ecba8209b2c7c8af457503c1717945cba1f825245c2974fd54\"},{\"path\":\"apps/desktop-app/src/host/configuration-source-files.mjs\",\"size\":13095,\"mode\":420,\"sha256\":\"ad94c3adc982fb5b8052bdee90a34cbd1ae8b3a2179b6325f35973c6db8ff7da\"},{\"path\":\"apps/desktop-app/src/host/conversation-context-branch-storage.mjs\",\"size\":3927,\"mode\":420,\"sha256\":\"f8e4f81d756eff597bd2d896927cc036d6ba5e0aaa83e6ef15c95498f75262b6\"},{\"path\":\"apps/desktop-app/src/host/conversation-context-io.mjs\",\"size\":13618,\"mode\":420,\"sha256\":\"1ebac912b89f858f6a8b9230ef21b0b37f619c45f9d6c47c601023b2350b627e\"},{\"path\":\"apps/desktop-app/src/host/conversation-context-native.mjs\",\"size\":2771,\"mode\":420,\"sha256\":\"a36a290a952b26d5c2edf028e8507ee5d7ea369d8ffcb388e914e55b690abf2a\"},{\"path\":\"apps/desktop-app/src/host/conversation-context-storage.mjs\",\"size\":7439,\"mode\":420,\"sha256\":\"11670f7c17b540ad7b54ee2f0c52bdfeceff2eb\n[truncated]",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/run-evidence.mjs",
+          "--out",
+          "docs/runs/design-foundation-v2/evidence/hidden-r1",
+          "--script",
+          "design-foundation"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 1,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:27:37+00:00",
+        "scope": "Actual affected design foundation hidden verification; synthetic hidden Main is not Native/provider evidence",
+        "source_sha256": "35a4b85122c01cc0b60483a4f015edd9404c00252d2ec5289810d8a38baa72a4",
+        "stderr": "",
+        "stdout": "{\"script\":\"design-foundation\",\"family\":null,\"mode\":null,\"platform\":\"darwin\",\"runnerPlatform\":\"darwin\",\"runnerArch\":\"arm64\",\"runnerNode\":\"v24.14.1\",\"destination\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation\",\"command\":[\"/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node\",\"/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-design-foundation.mjs\"],\"startedAt\":\"2026-10-09T06:26:28.929Z\",\"status\":\"fail\",\"exitCode\":1,\"signal\":null,\"evidence\":[],\"provenance\":{\"schemaVersion\":1,\"buildStampPath\":\"apps/desktop-app/dist/build-provenance.json\",\"buildStampSha256\":\"613398807640669742c932519ae0976d68f6842d5e86ff4a2297d60a8001770a\",\"buildStamp\":{\"schemaVersion\":1,\"kind\":\"desktop-build-byte-provenance\",\"createdAt\":\"2026-10-09T06:23:24.895Z\",\"builder\":{\"node\":\"v24.14.1\",\"platform\":\"darwin\",\"arch\":\"arm64\"},\"inputs\":{\"algorithm\":\"scoped-file-inventory-sha256-v1\",\"scopes\":[{\"path\":\"package.json\",\"present\":true},{\"path\":\"pnpm-lock.yaml\",\"present\":true},{\"path\":\"pnpm-workspace.yaml\",\"present\":true},{\"path\":\"tsconfig.base.json\",\"present\":true},{\"path\":\"nx.json\",\"present\":true},{\"path\":\"apps/desktop-app/package.json\",\"present\":true},{\"path\":\"apps/desktop-app/project.json\",\"present\":true},{\"path\":\"apps/desktop-app/index.html\",\"present\":true},{\"path\":\"apps/desktop-app/vite.config.ts\",\"present\":true},{\"path\":\"apps/desktop-app/tsconfig.json\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/build.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/build-provenance.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/prepare-event-host.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/stage-event-host.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/stage-owner-lifetime.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/native/owner-lifetime/witness.c\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/package.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/package.json\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/package-lock.json\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/installer-pins.json\",\"present\":true},{\"path\":\"apps/desktop-app/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"apps/desktop-app/public\",\"tree\":true,\"source\":true,\"optional\":true,\"present\":false},{\"path\":\"packages/ui/package.json\",\"present\":true},{\"path\":\"packages/ui/project.json\",\"present\":true},{\"path\":\"packages/ui/tsconfig.json\",\"present\":true},{\"path\":\"packages/ui/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"packages/contracts/package.json\",\"present\":true},{\"path\":\"packages/contracts/project.json\",\"present\":true},{\"path\":\"packages/contracts/tsconfig.json\",\"present\":true},{\"path\":\"packages/contracts/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"packages/contracts/tsconfig.build.json\",\"present\":true},{\"path\":\"docs/design/tokens\",\"tree\":true,\"source\":true,\"present\":true}],\"selection\":{\"excludedDirectories\":[\"node_modules\",\"dist\",\"exports\",\"captures\",\"credentials\",\"runtime-data\"],\"excludedNames\":\"hidden names and *.test.* / *.spec.*\",\"allowedFileExtensions\":\"\\\\.(?:c|[cm]?js|[cm]?ts|jsx|tsx|css|html|json|svg|png|jpe?g|webp|gif|ico|woff2?|ttf)$\"},\"limits\":{\"files\":4096,\"depth\":24,\"bytes\":1073741824},\"files\":[{\"path\":\"apps/desktop-app/index.html\",\"size\":584,\"mode\":420,\"sha256\":\"973680da1eadd48eb58ff47aaaca46a10e33c0da3a31e97662f3ddea9fddc9ae\"},{\"path\":\"apps/desktop-app/native/owner-lifetime/witness.c\",\"size\":16279,\"mode\":420,\"sha256\":\"4eb42efefdef1970d48bd19368b94bae689b10fbeacc96cd1adc83a9cf996951\"},{\"path\":\"apps/desktop-app/package.json\",\"size\":1395,\"mode\":420,\"sha256\":\"98617384d1d6afaf78c7124ec10bc50141bcea6441b21fcda75349655d586425\"},{\"path\":\"apps/desktop-app/project.json\",\"size\":4323,\"mode\":420,\"sha256\":\"0f90164352dbc9df946e3578eb604d3216dc2fdd82e35b2e126d31c2acefb622\"},{\"path\":\"apps/desktop-app/runtime-event-host/installer-pins.json\",\"size\":6700,\"mode\":420,\"sha256\":\"2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41\"},{\"path\":\"apps/desktop-app/runtime-event-host/package-lock.json\",\"size\":232329,\"mode\":420,\"sha256\":\"34f04622903ba6c3c14ba5729e0e406f1ed245307acea049c637cbdac2e64e9c\"},{\"path\":\"apps/desktop-app/runtime-event-host/package.json\",\"size\":276,\"mode\":420,\"sha256\":\"86992a64cd87494b080f2efd47dae2e2d6ae46b7958c7a063e2ed54b3e1dd0e5\"},{\"path\":\"apps/desktop-app/scripts/build-provenance.mjs\",\"size\":20094,\"mode\":420,\"sha256\":\"a5dfebae9bb9e5d449b767cbf6320062d544105b0d6a1f21115a5cac5a46af75\"},{\"path\":\"apps/desktop-app/scripts/build.mjs\",\"size\":2496,\"mode\":420,\"sha256\":\"e906fbe156109e737228c20b59f6e47952a27adb09a7d90fbfa695bcb366529d\"},{\"path\":\"apps/desktop-app/scripts/package.mjs\",\"size\":4176,\"mode\":420,\"sha256\":\"3c9c9e9a65b91996025f4e95abc533c8799fd12385aae8a7f01153a2df14faaf\"},{\"path\":\"apps/desktop-app/scripts/prepare-event-host.mjs\",\"size\":13241,\"mode\":420,\"sha256\":\"9970d480610c93628587fb97c62ff393e3515d6d87f6362542aa79456a2d1cff\"},{\"path\":\"apps/desktop-app/scripts/stage-event-host.mjs\",\"size\":13451,\"mode\":420,\"sha256\":\"c5962f23c4f33c26c7728732a5d0b4a04cb0bfd5adad2ddefd9b4f0d30d70853\"},{\"path\":\"apps/desktop-app/scripts/stage-owner-lifetime.mjs\",\"size\":6917,\"mode\":420,\"sha256\":\"d1d46210d36c321650cb1cb99e7a47de29ee924a8b72d7e81febdfacca5def65\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/agents.mjs\",\"size\":16865,\"mode\":420,\"sha256\":\"1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/extensions.mjs\",\"size\":7951,\"mode\":420,\"sha256\":\"05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/package.json\",\"size\":110,\"mode\":420,\"sha256\":\"1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/server.mjs\",\"size\":13606,\"mode\":420,\"sha256\":\"b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d\"},{\"path\":\"apps/desktop-app/src/css-modules.d.ts\",\"size\":111,\"mode\":420,\"sha256\":\"00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4\"},{\"path\":\"apps/desktop-app/src/desktop-bridge.d.ts\",\"size\":39140,\"mode\":420,\"sha256\":\"bf4e61af6041db92bd63ac89a5e4c78b438da55a5ba29e73096d106012feea9f\"},{\"path\":\"apps/desktop-app/src/ephemeral-profile.mjs\",\"size\":2527,\"mode\":420,\"sha256\":\"d58944c6cd050087d4dc5e8b786dd1d0d2bc98e6eb883de907a72b5615c19765\"},{\"path\":\"apps/desktop-app/src/event-host-child.mjs\",\"size\":16199,\"mode\":420,\"sha256\":\"11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875\"},{\"path\":\"apps/desktop-app/src/event-host-protocol.mjs\",\"size\":10749,\"mode\":420,\"sha256\":\"18fd006fa963e84015b81ac2338a5680d072aa9f8c5cf7ef5f85fd3d3eba2ed6\"},{\"path\":\"apps/desktop-app/src/event-host-resources.mjs\",\"size\":15942,\"mode\":420,\"sha256\":\"f900de7bb9b08144fc9774c9c801b74589bac6d965d9f09e310e4a3f2d0bcaf8\"},{\"path\":\"apps/desktop-app/src/event-host-supervisor.mjs\",\"size\":30405,\"mode\":420,\"sha256\":\"46cf4c7dc4f002ae4538603b2f858d3e3c500247277c751c83af2cccee18a5b8\"},{\"path\":\"apps/desktop-app/src/host/configuration-file-observation.mjs\",\"size\":1997,\"mode\":420,\"sha256\":\"83419028f952d647a23bf06b908649c97cc343b2247c15b9e1ae427acc7a9587\"},{\"path\":\"apps/desktop-app/src/host/configuration-save-kernel.mjs\",\"size\":26847,\"mode\":420,\"sha256\":\"cca5de5aa358d1ecba8209b2c7c8af457503c1717945cba1f825245c2974fd54\"},{\"path\":\"apps/desktop-app/src/host/configuration-source-files.mjs\",\"size\":13095,\"mode\":420,\"sha256\":\"ad94c3adc982fb5b8052bdee90a34cbd1ae8b3a2179b6325f35973c6db8ff7da\"},{\"path\":\"apps/desktop-app/src/host/conversation-context-branch-storage.mjs\",\"size\":3927,\"mode\":420,\"sha256\":\"f8e4f81d756eff597bd2d896927cc036d6ba5e0aaa83e6ef15c95498f75262b6\"},{\"path\":\"apps/desktop-app/src/host/conversation-context-io.mjs\",\"size\":13618,\"mode\":420,\"sha256\":\"1ebac912b89f858f6a8b9230ef21b0b37f619c45f9d6c47c601023b2350b627e\"},{\"path\":\"apps/desktop-app/src/host/conversation-context-native.mjs\",\"size\":2771,\"mode\":420,\"sha256\":\"a36a290a952b26d5c2edf028e8507ee5d7ea369d8ffcb388e914e55b690abf2a\"},{\"path\":\"apps/desktop-app/src/host/conversation-context-storage.mjs\",\"size\":7439,\"mode\":420,\"sha256\":\"11670f7c17b540ad7b54ee2f0c52bdfeceff2eb\n[truncated]",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/run-evidence.mjs",
+          "--out",
+          "docs/runs/design-foundation-v2/evidence/hidden-r1",
+          "--script",
+          "design-foundation"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:32:09+00:00",
+        "scope": "Actual affected design foundation hidden verification; synthetic hidden Main is not Native/provider evidence",
+        "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "stderr": "",
+        "stdout": "{\"script\":\"design-foundation\",\"family\":null,\"mode\":null,\"platform\":\"darwin\",\"runnerPlatform\":\"darwin\",\"runnerArch\":\"arm64\",\"runnerNode\":\"v24.14.1\",\"destination\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation\",\"command\":[\"/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node\",\"/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-design-foundation.mjs\"],\"startedAt\":\"2026-10-09T06:31:01.764Z\",\"status\":\"pass\",\"exitCode\":0,\"signal\":null,\"evidence\":[\"design-foundation-evidence.json\",\"000-light-1440-zoom1-collapsed-idle.png\",\"001-light-1440-zoom1-expanded-requested.png\",\"002-light-1440-zoom1-selected-summary-final-action.png\",\"003-light-760-zoom1-collapsed-idle.png\",\"004-light-760-zoom1-expanded-requested.png\",\"005-light-760-zoom1-selected-summary-final-action.png\",\"006-light-320-zoom1-collapsed-idle.png\",\"007-light-320-zoom1-expanded-requested.png\",\"008-light-320-zoom1-selected-summary-final-action.png\",\"009-light-760-zoom2-collapsed-idle.png\",\"010-light-760-zoom2-expanded-requested.png\",\"011-light-760-zoom2-selected-summary-final-action.png\",\"012-dark-1440-zoom1-collapsed-idle.png\",\"013-dark-1440-zoom1-expanded-requested.png\",\"014-dark-1440-zoom1-selected-summary-final-action.png\",\"015-dark-760-zoom1-collapsed-idle.png\",\"016-dark-760-zoom1-expanded-requested.png\",\"017-dark-760-zoom1-selected-summary-final-action.png\",\"018-dark-320-zoom1-collapsed-idle.png\",\"019-dark-320-zoom1-expanded-requested.png\",\"020-dark-320-zoom1-selected-summary-final-action.png\",\"021-dark-760-zoom2-collapsed-idle.png\",\"022-dark-760-zoom2-expanded-requested.png\",\"023-dark-760-zoom2-selected-summary-final-action.png\",\"024-attachment-compact-collapsed.png\",\"025-attachment-expanded-original-metadata.png\",\"026-attachment-200-long-source-path.png\",\"027-attachment-200-original-sha256.png\",\"028-attachment-explicit-reobserve-preview.png\",\"029-branch-first-task-boundary.png\",\"030-branch-200-edit-confirm-close.png\",\"031-branch-confirmed-separate-send-required.png\",\"032-running-current-run-task.png\",\"033-running-native-report-separate-from-request.png\",\"034-unsupported-outside-closed-task.png\",\"035-unsupported-model-outside-closed-task.png\",\"036-expired-200-outside-closed-task.png\",\"037-unknown-visible-outside-closed-task.png\",\"038-held-visible-outside-closed-task.png\",\"039-global-held-visible-outside-closed-task.png\",\"040-untrusted-visible-outside-closed-task.png\",\"041-wide-navigation-side-task.png\",\"042-narrow-navigation.png\",\"043-narrow-side-task-return.png\",\"044-reduced-motion-narrow-collapsed.png\"],\"provenance\":{\"schemaVersion\":1,\"buildStampPath\":\"apps/desktop-app/dist/build-provenance.json\",\"buildStampSha256\":\"2e5039ab13c0a084190250beb0370442ccdac27d83f5ac2205aa09be12a5c6d7\",\"buildStamp\":{\"schemaVersion\":1,\"kind\":\"desktop-build-byte-provenance\",\"createdAt\":\"2026-10-09T06:30:57.364Z\",\"builder\":{\"node\":\"v24.14.1\",\"platform\":\"darwin\",\"arch\":\"arm64\"},\"inputs\":{\"algorithm\":\"scoped-file-inventory-sha256-v1\",\"scopes\":[{\"path\":\"package.json\",\"present\":true},{\"path\":\"pnpm-lock.yaml\",\"present\":true},{\"path\":\"pnpm-workspace.yaml\",\"present\":true},{\"path\":\"tsconfig.base.json\",\"present\":true},{\"path\":\"nx.json\",\"present\":true},{\"path\":\"apps/desktop-app/package.json\",\"present\":true},{\"path\":\"apps/desktop-app/project.json\",\"present\":true},{\"path\":\"apps/desktop-app/index.html\",\"present\":true},{\"path\":\"apps/desktop-app/vite.config.ts\",\"present\":true},{\"path\":\"apps/desktop-app/tsconfig.json\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/build.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/build-provenance.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/prepare-event-host.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/stage-event-host.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/stage-owner-lifetime.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/native/owner-lifetime/witness.c\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/package.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/package.json\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/package-lock.json\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/installer-pins.json\",\"present\":true},{\"path\":\"apps/desktop-app/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"apps/desktop-app/public\",\"tree\":true,\"source\":true,\"optional\":true,\"present\":false},{\"path\":\"packages/ui/package.json\",\"present\":true},{\"path\":\"packages/ui/project.json\",\"present\":true},{\"path\":\"packages/ui/tsconfig.json\",\"present\":true},{\"path\":\"packages/ui/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"packages/contracts/package.json\",\"present\":true},{\"path\":\"packages/contracts/project.json\",\"present\":true},{\"path\":\"packages/contracts/tsconfig.json\",\"present\":true},{\"path\":\"packages/contracts/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"packages/contracts/tsconfig.build.json\",\"present\":true},{\"path\":\"docs/design/tokens\",\"tree\":true,\"source\":true,\"present\":true}],\"selection\":{\"excludedDirectories\":[\"node_modules\",\"dist\",\"exports\",\"captures\",\"credentials\",\"runtime-data\"],\"excludedNames\":\"hidden names and *.test.* / *.spec.*\",\"allowedFileExtensions\":\"\\\\.(?:c|[cm]?js|[cm]?ts|jsx|tsx|css|html|json|svg|png|jpe?g|webp|gif|ico|woff2?|ttf)$\"},\"limits\":{\"files\":4096,\"depth\":24,\"bytes\":1073741824},\"files\":[{\"path\":\"apps/desktop-app/index.html\",\"size\":584,\"mode\":420,\"sha256\":\"973680da1eadd48eb58ff47aaaca46a10e33c0da3a31e97662f3ddea9fddc9ae\"},{\"path\":\"apps/desktop-app/native/owner-lifetime/witness.c\",\"size\":16279,\"mode\":420,\"sha256\":\"4eb42efefdef1970d48bd19368b94bae689b10fbeacc96cd1adc83a9cf996951\"},{\"path\":\"apps/desktop-app/package.json\",\"size\":1395,\"mode\":420,\"sha256\":\"98617384d1d6afaf78c7124ec10bc50141bcea6441b21fcda75349655d586425\"},{\"path\":\"apps/desktop-app/project.json\",\"size\":4323,\"mode\":420,\"sha256\":\"0f90164352dbc9df946e3578eb604d3216dc2fdd82e35b2e126d31c2acefb622\"},{\"path\":\"apps/desktop-app/runtime-event-host/installer-pins.json\",\"size\":6700,\"mode\":420,\"sha256\":\"2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41\"},{\"path\":\"apps/desktop-app/runtime-event-host/package-lock.json\",\"size\":232329,\"mode\":420,\"sha256\":\"34f04622903ba6c3c14ba5729e0e406f1ed245307acea049c637cbdac2e64e9c\"},{\"path\":\"apps/desktop-app/runtime-event-host/package.json\",\"size\":276,\"mode\":420,\"sha256\":\"86992a64cd87494b080f2efd47dae2e2d6ae46b7958c7a063e2ed54b3e1dd0e5\"},{\"path\":\"apps/desktop-app/scripts/build-provenance.mjs\",\"size\":20094,\"mode\":420,\"sha256\":\"a5dfebae9bb9e5d449b767cbf6320062d544105b0d6a1f21115a5cac5a46af75\"},{\"path\":\"apps/desktop-app/scripts/build.mjs\",\"size\":2496,\"mode\":420,\"sha256\":\"e906fbe156109e737228c20b59f6e47952a27adb09a7d90fbfa695bcb366529d\"},{\"path\":\"apps/desktop-app/scripts/package.mjs\",\"size\":4176,\"mode\":420,\"sha256\":\"3c9c9e9a65b91996025f4e95abc533c8799fd12385aae8a7f01153a2df14faaf\"},{\"path\":\"apps/desktop-app/scripts/prepare-event-host.mjs\",\"size\":13241,\"mode\":420,\"sha256\":\"9970d480610c93628587fb97c62ff393e3515d6d87f6362542aa79456a2d1cff\"},{\"path\":\"apps/desktop-app/scripts/stage-event-host.mjs\",\"size\":13451,\"mode\":420,\"sha256\":\"c5962f23c4f33c26c7728732a5d0b4a04cb0bfd5adad2ddefd9b4f0d30d70853\"},{\"path\":\"apps/desktop-app/scripts/stage-owner-lifetime.mjs\",\"size\":6917,\"mode\":420,\"sha256\":\"d1d46210d36c321650cb1cb99e7a47de29ee924a8b72d7e81febdfacca5def65\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/agents.mjs\",\"size\":16865,\"mode\":420,\"sha256\":\"1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/extensions.mjs\",\"size\":7951,\"mode\":420,\"sha256\":\"05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/package.json\",\"size\":110,\"mode\":420,\"sha256\":\"1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/server.mjs\",\"size\":13606,\"mode\":420,\"sha256\":\"b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d\"},{\"path\":\"apps/desktop-app/src/css-modules.d.ts\",\"size\":111,\"mode\":420,\"sha256\":\"00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4\"},{\"path\":\"apps/desktop-app/src\n[truncated]",
+        "timed_out": false
+      }
+    ],
+    "lint": [
+      {
+        "argv": [
+          "node",
+          "node_modules/eslint/bin/eslint.js",
+          "--config",
+          "apps/desktop-app/eslint.config.mjs",
+          "apps/desktop-app/src",
+          "apps/desktop-app/scripts",
+          "packages/ui/src"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:21:22+00:00",
+        "scope": "Actual affected design foundation lint verification; synthetic hidden Main is not Native/provider evidence",
+        "source_sha256": "38758ab90e155eafac8c073c2491961ec94f5387044d4fe1950ea8b13f634da9",
+        "stderr": "",
+        "stdout": "\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/desktop-bridge.d.ts\n  975:9  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n  981:9  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\n  86:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx\n  1:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/store.ts\n  5228:3  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/features/sessions/index.tsx\n  19:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n  99:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/pages/workbench/index.tsx\n  1:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/transport/index.ts\n  1:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/widgets/conversation/index.tsx\n  42:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n\u2716 10 problems (0 errors, 10 warnings)\n  0 errors and 10 warnings potentially fixable with the `--fix` option.\n\n",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "node",
+          "node_modules/eslint/bin/eslint.js",
+          "--config",
+          "apps/desktop-app/eslint.config.mjs",
+          "apps/desktop-app/src",
+          "apps/desktop-app/scripts",
+          "packages/ui/src"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:25:26+00:00",
+        "scope": "Actual affected design foundation lint verification; synthetic hidden Main is not Native/provider evidence",
+        "source_sha256": "35a4b85122c01cc0b60483a4f015edd9404c00252d2ec5289810d8a38baa72a4",
+        "stderr": "",
+        "stdout": "\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/desktop-bridge.d.ts\n  975:9  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n  981:9  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\n  86:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx\n  1:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/store.ts\n  5228:3  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/features/sessions/index.tsx\n  19:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n  99:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/pages/workbench/index.tsx\n  1:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/transport/index.ts\n  1:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/widgets/conversation/index.tsx\n  42:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n\u2716 10 problems (0 errors, 10 warnings)\n  0 errors and 10 warnings potentially fixable with the `--fix` option.\n\n",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "node",
+          "node_modules/eslint/bin/eslint.js",
+          "--config",
+          "apps/desktop-app/eslint.config.mjs",
+          "apps/desktop-app/src",
+          "apps/desktop-app/scripts",
+          "packages/ui/src"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:28:55+00:00",
+        "scope": "Actual affected design foundation lint verification; synthetic hidden Main is not Native/provider evidence",
+        "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "stderr": "",
+        "stdout": "\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/desktop-bridge.d.ts\n  975:9  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n  981:9  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\n  86:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx\n  1:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/store.ts\n  5228:3  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/features/sessions/index.tsx\n  19:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n  99:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/pages/workbench/index.tsx\n  1:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/transport/index.ts\n  1:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/widgets/conversation/index.tsx\n  42:1  warning  Unused eslint-disable directive (no problems were reported from 'no-unused-vars')\n\n\u2716 10 problems (0 errors, 10 warnings)\n  0 errors and 10 warnings potentially fixable with the `--fix` option.\n\n",
+        "timed_out": false
+      }
+    ],
+    "runtime-hidden": [
+      {
+        "argv": [
+          "node",
+          "apps/desktop-app/scripts/run-evidence.mjs",
+          "--out",
+          "docs/runs/design-foundation-v2/evidence/runtime-r1",
+          "--script",
+          "runtime-options"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:34:45+00:00",
+        "scope": "Existing requested/runtime-reported distinction and payload/zoom assertions retained and executed against shared final build",
+        "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "stderr": "",
+        "stdout": "{\"script\":\"runtime-options\",\"family\":null,\"mode\":null,\"platform\":\"darwin\",\"runnerPlatform\":\"darwin\",\"runnerArch\":\"arm64\",\"runnerNode\":\"v24.14.1\",\"destination\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/design-foundation-v2/evidence/runtime-r1/runtime-options\",\"command\":[\"/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node\",\"/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-runtime-options.mjs\"],\"startedAt\":\"2026-10-09T06:33:39.974Z\",\"status\":\"pass\",\"exitCode\":0,\"signal\":null,\"evidence\":[\"runtime-options-evidence.json\",\"000-requested-keyboard.png\",\"001-light-1440-zoom1-requested.png\",\"002-light-1440-zoom1-session.png\",\"003-light-1440-zoom1-response.png\",\"004-light-760-zoom1-requested.png\",\"005-light-760-zoom1-session.png\",\"006-light-760-zoom1-response.png\",\"007-light-760-zoom2-requested.png\",\"008-light-760-zoom2-session.png\",\"009-light-760-zoom2-response.png\",\"010-light-200-response-value-0.png\",\"011-light-200-response-value-1.png\",\"012-light-200-response-value-2.png\",\"013-light-200-response-value-3.png\",\"014-light-200-composer-guidance.png\",\"015-light-200-send-keyboard-access.png\",\"016-light-320-zoom1-requested.png\",\"017-light-320-zoom1-session.png\",\"018-light-320-zoom1-response.png\",\"019-dark-1440-zoom1-requested.png\",\"020-dark-1440-zoom1-session.png\",\"021-dark-1440-zoom1-response.png\",\"022-dark-760-zoom1-requested.png\",\"023-dark-760-zoom1-session.png\",\"024-dark-760-zoom1-response.png\",\"025-dark-760-zoom2-requested.png\",\"026-dark-760-zoom2-session.png\",\"027-dark-760-zoom2-response.png\",\"028-dark-200-response-value-0.png\",\"029-dark-200-response-value-1.png\",\"030-dark-200-response-value-2.png\",\"031-dark-200-response-value-3.png\",\"032-dark-200-composer-guidance.png\",\"033-dark-200-send-keyboard-access.png\",\"034-dark-320-zoom1-requested.png\",\"035-dark-320-zoom1-session.png\",\"036-dark-320-zoom1-response.png\",\"037-removed-variant-retained-blocked.png\",\"038-model-change-clears-variant.png\",\"039-missing-variants-unavailable.png\",\"040-malformed-variants-unavailable.png\",\"041-duplicate-variants-unavailable.png\",\"042-session-no-report.png\",\"043-response-no-report.png\",\"044-failed-session-refresh.png\",\"045-failed-session-independent-response.png\",\"046-historical-response-read-only.png\",\"047-explicit-request-pending-ack.png\",\"048-running-next-draft.png\",\"049-running-distinct-session-setting.png\",\"050-running-distinct-response-report.png\",\"051-omitted-request-preserves-observed-variant.png\",\"052-unknown-original-key-no-replay.png\"],\"provenance\":{\"schemaVersion\":1,\"buildStampPath\":\"apps/desktop-app/dist/build-provenance.json\",\"buildStampSha256\":\"2e5039ab13c0a084190250beb0370442ccdac27d83f5ac2205aa09be12a5c6d7\",\"buildStamp\":{\"schemaVersion\":1,\"kind\":\"desktop-build-byte-provenance\",\"createdAt\":\"2026-10-09T06:30:57.364Z\",\"builder\":{\"node\":\"v24.14.1\",\"platform\":\"darwin\",\"arch\":\"arm64\"},\"inputs\":{\"algorithm\":\"scoped-file-inventory-sha256-v1\",\"scopes\":[{\"path\":\"package.json\",\"present\":true},{\"path\":\"pnpm-lock.yaml\",\"present\":true},{\"path\":\"pnpm-workspace.yaml\",\"present\":true},{\"path\":\"tsconfig.base.json\",\"present\":true},{\"path\":\"nx.json\",\"present\":true},{\"path\":\"apps/desktop-app/package.json\",\"present\":true},{\"path\":\"apps/desktop-app/project.json\",\"present\":true},{\"path\":\"apps/desktop-app/index.html\",\"present\":true},{\"path\":\"apps/desktop-app/vite.config.ts\",\"present\":true},{\"path\":\"apps/desktop-app/tsconfig.json\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/build.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/build-provenance.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/prepare-event-host.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/stage-event-host.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/stage-owner-lifetime.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/native/owner-lifetime/witness.c\",\"present\":true},{\"path\":\"apps/desktop-app/scripts/package.mjs\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/package.json\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/package-lock.json\",\"present\":true},{\"path\":\"apps/desktop-app/runtime-event-host/installer-pins.json\",\"present\":true},{\"path\":\"apps/desktop-app/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"apps/desktop-app/public\",\"tree\":true,\"source\":true,\"optional\":true,\"present\":false},{\"path\":\"packages/ui/package.json\",\"present\":true},{\"path\":\"packages/ui/project.json\",\"present\":true},{\"path\":\"packages/ui/tsconfig.json\",\"present\":true},{\"path\":\"packages/ui/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"packages/contracts/package.json\",\"present\":true},{\"path\":\"packages/contracts/project.json\",\"present\":true},{\"path\":\"packages/contracts/tsconfig.json\",\"present\":true},{\"path\":\"packages/contracts/src\",\"tree\":true,\"source\":true,\"present\":true},{\"path\":\"packages/contracts/tsconfig.build.json\",\"present\":true},{\"path\":\"docs/design/tokens\",\"tree\":true,\"source\":true,\"present\":true}],\"selection\":{\"excludedDirectories\":[\"node_modules\",\"dist\",\"exports\",\"captures\",\"credentials\",\"runtime-data\"],\"excludedNames\":\"hidden names and *.test.* / *.spec.*\",\"allowedFileExtensions\":\"\\\\.(?:c|[cm]?js|[cm]?ts|jsx|tsx|css|html|json|svg|png|jpe?g|webp|gif|ico|woff2?|ttf)$\"},\"limits\":{\"files\":4096,\"depth\":24,\"bytes\":1073741824},\"files\":[{\"path\":\"apps/desktop-app/index.html\",\"size\":584,\"mode\":420,\"sha256\":\"973680da1eadd48eb58ff47aaaca46a10e33c0da3a31e97662f3ddea9fddc9ae\"},{\"path\":\"apps/desktop-app/native/owner-lifetime/witness.c\",\"size\":16279,\"mode\":420,\"sha256\":\"4eb42efefdef1970d48bd19368b94bae689b10fbeacc96cd1adc83a9cf996951\"},{\"path\":\"apps/desktop-app/package.json\",\"size\":1395,\"mode\":420,\"sha256\":\"98617384d1d6afaf78c7124ec10bc50141bcea6441b21fcda75349655d586425\"},{\"path\":\"apps/desktop-app/project.json\",\"size\":4323,\"mode\":420,\"sha256\":\"0f90164352dbc9df946e3578eb604d3216dc2fdd82e35b2e126d31c2acefb622\"},{\"path\":\"apps/desktop-app/runtime-event-host/installer-pins.json\",\"size\":6700,\"mode\":420,\"sha256\":\"2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41\"},{\"path\":\"apps/desktop-app/runtime-event-host/package-lock.json\",\"size\":232329,\"mode\":420,\"sha256\":\"34f04622903ba6c3c14ba5729e0e406f1ed245307acea049c637cbdac2e64e9c\"},{\"path\":\"apps/desktop-app/runtime-event-host/package.json\",\"size\":276,\"mode\":420,\"sha256\":\"86992a64cd87494b080f2efd47dae2e2d6ae46b7958c7a063e2ed54b3e1dd0e5\"},{\"path\":\"apps/desktop-app/scripts/build-provenance.mjs\",\"size\":20094,\"mode\":420,\"sha256\":\"a5dfebae9bb9e5d449b767cbf6320062d544105b0d6a1f21115a5cac5a46af75\"},{\"path\":\"apps/desktop-app/scripts/build.mjs\",\"size\":2496,\"mode\":420,\"sha256\":\"e906fbe156109e737228c20b59f6e47952a27adb09a7d90fbfa695bcb366529d\"},{\"path\":\"apps/desktop-app/scripts/package.mjs\",\"size\":4176,\"mode\":420,\"sha256\":\"3c9c9e9a65b91996025f4e95abc533c8799fd12385aae8a7f01153a2df14faaf\"},{\"path\":\"apps/desktop-app/scripts/prepare-event-host.mjs\",\"size\":13241,\"mode\":420,\"sha256\":\"9970d480610c93628587fb97c62ff393e3515d6d87f6362542aa79456a2d1cff\"},{\"path\":\"apps/desktop-app/scripts/stage-event-host.mjs\",\"size\":13451,\"mode\":420,\"sha256\":\"c5962f23c4f33c26c7728732a5d0b4a04cb0bfd5adad2ddefd9b4f0d30d70853\"},{\"path\":\"apps/desktop-app/scripts/stage-owner-lifetime.mjs\",\"size\":6917,\"mode\":420,\"sha256\":\"d1d46210d36c321650cb1cb99e7a47de29ee924a8b72d7e81febdfacca5def65\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/agents.mjs\",\"size\":16865,\"mode\":420,\"sha256\":\"1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/extensions.mjs\",\"size\":7951,\"mode\":420,\"sha256\":\"05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/package.json\",\"size\":110,\"mode\":420,\"sha256\":\"1bc6c28af3eef0fc880a4583011977e7a30c5dd09bb63c037fecb59a978fa120\"},{\"path\":\"apps/desktop-app/src/builtins/workbench-skills/server.mjs\",\"size\":13606,\"mode\":420,\"sha256\":\"b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d\"},{\"path\":\"apps/desktop-app/src/css-modules.d.ts\",\"size\":111,\"mode\":420,\"sha256\":\"00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4\"},{\"path\":\"apps/desktop-app/src/desktop-bridge.d.ts\",\"size\":39140,\"mode\":420,\"sha256\":\"bf4e61af6041db92bd63ac89a5e4c78b438da\n[truncated]",
+        "timed_out": false
+      }
+    ],
+    "typecheck": [
+      {
+        "argv": [
+          "node",
+          "node_modules/typescript/bin/tsc",
+          "-p",
+          "apps/desktop-app/tsconfig.json",
+          "--noEmit"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "input_binding_sha256": "841ed9f22de97109f7c9a779892ed821b00b106b44330d5384c51477e375ad38",
+        "input_scope": {
+          "paths": [
+            "apps/desktop-app/src",
+            "packages/ui",
+            "packages/contracts",
+            "apps/desktop-app/tsconfig.json"
+          ],
+          "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+        },
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:21:33+00:00",
+        "scope": "Actual affected design foundation typecheck verification; synthetic hidden Main is not Native/provider evidence",
+        "source_after_sha256": "38758ab90e155eafac8c073c2491961ec94f5387044d4fe1950ea8b13f634da9",
+        "source_sha256": "38758ab90e155eafac8c073c2491961ec94f5387044d4fe1950ea8b13f634da9",
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "node",
+          "node_modules/typescript/bin/tsc",
+          "-p",
+          "apps/desktop-app/tsconfig.json",
+          "--noEmit"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "input_binding_sha256": "82928f942cc965c51680a3d2989970e826fb092020419a860d781b6615e93666",
+        "input_scope": {
+          "paths": [
+            "apps/desktop-app/src",
+            "packages/ui",
+            "packages/contracts",
+            "apps/desktop-app/tsconfig.json"
+          ],
+          "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+        },
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:29:06+00:00",
+        "scope": "Actual affected design foundation typecheck verification; synthetic hidden Main is not Native/provider evidence",
+        "source_after_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      }
+    ],
+    "unit": [
+      {
+        "argv": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          "--test-reporter=dot",
+          "apps/desktop-app/src/workbench-store.test.mjs",
+          "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+          "apps/desktop-app/scripts/run-evidence.test.mjs",
+          "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+          "apps/desktop-app/src/conversation-context.test.mjs"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "input_binding_sha256": "1732aac456f9db596071eb6a3ed902facac0fa02de371f28d7be92e9f2f127d3",
+        "input_scope": {
+          "paths": [
+            "apps/desktop-app/src",
+            "packages/ui",
+            "packages/contracts",
+            "apps/desktop-app/scripts",
+            "docs/design/tokens"
+          ],
+          "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+        },
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:22:29+00:00",
+        "scope": "Actual affected design foundation unit verification; synthetic hidden Main is not Native/provider evidence",
+        "source_after_sha256": "38758ab90e155eafac8c073c2491961ec94f5387044d4fe1950ea8b13f634da9",
+        "source_sha256": "38758ab90e155eafac8c073c2491961ec94f5387044d4fe1950ea8b13f634da9",
+        "stderr": "",
+        "stdout": "....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n..\n",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          "--test-reporter=dot",
+          "apps/desktop-app/src/workbench-store.test.mjs",
+          "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+          "apps/desktop-app/scripts/run-evidence.test.mjs",
+          "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+          "apps/desktop-app/src/conversation-context.test.mjs"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "input_binding_sha256": "11165290afbaa0508e43990dafa99c434188d967d678c61be238d8a61ad4a0aa",
+        "input_scope": {
+          "paths": [
+            "apps/desktop-app/src",
+            "packages/ui",
+            "packages/contracts",
+            "apps/desktop-app/scripts",
+            "docs/design/tokens"
+          ],
+          "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+        },
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:26:26+00:00",
+        "scope": "Actual affected design foundation unit verification; synthetic hidden Main is not Native/provider evidence",
+        "source_after_sha256": "35a4b85122c01cc0b60483a4f015edd9404c00252d2ec5289810d8a38baa72a4",
+        "source_sha256": "35a4b85122c01cc0b60483a4f015edd9404c00252d2ec5289810d8a38baa72a4",
+        "stderr": "",
+        "stdout": "....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n..\n",
+        "timed_out": false
+      },
+      {
+        "argv": [
+          "node",
+          "--import",
+          "tsx",
+          "--test",
+          "--test-reporter=dot",
+          "apps/desktop-app/src/workbench-store.test.mjs",
+          "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+          "apps/desktop-app/scripts/run-evidence.test.mjs",
+          "apps/desktop-app/src/host/conversation-context-io.test.mjs",
+          "apps/desktop-app/src/conversation-context.test.mjs"
+        ],
+        "contract_sha256": "2cc6765f20267d7f60c8a282efb2199a0a0465e62a8b1dabe607eea57950ac41",
+        "cwd": ".",
+        "environment_sha256": "51cd4dc50a03b1e000b6495af0bf80dcfd7f9f86d604daad2b9ac6e5761d7b74",
+        "exit_code": 0,
+        "input_binding_sha256": "f4b2d8d77184946337915c800df9c5de4b7a44f9b417cce3bc0ab55fabc8120e",
+        "input_scope": {
+          "paths": [
+            "apps/desktop-app/src",
+            "packages/ui",
+            "packages/contracts",
+            "apps/desktop-app/scripts",
+            "docs/design/tokens"
+          ],
+          "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+        },
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "3662fa0fbc709b8fb0cc02b16565205186a2ccc74dbc483a33b82bf636ca6c91",
+        "recorded_at": "2026-10-09T06:30:01+00:00",
+        "scope": "Actual affected design foundation unit verification; synthetic hidden Main is not Native/provider evidence",
+        "source_after_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "source_sha256": "ab38e4e46d6e8bbf395f1e83a45d39c6496c38e33945a7daa20ba99c3d7c1bd7",
+        "stderr": "",
+        "stdout": "....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n..\n",
+        "timed_out": false
+      }
+    ]
+  },
+  "reports": [
+    "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/design-foundation-evidence.json",
+    "docs/runs/design-foundation-v2/evidence/context-r1/conversation-context/conversation-context-evidence.json",
+    "docs/runs/design-foundation-v2/evidence/runtime-r1/runtime-options/runtime-options-evidence.json"
+  ],
+  "wrappers": [
+    "docs/runs/design-foundation-v2/evidence/hidden-r1/design-foundation/manifest.json",
+    "docs/runs/design-foundation-v2/evidence/context-r1/conversation-context/manifest.json",
+    "docs/runs/design-foundation-v2/evidence/runtime-r1/runtime-options/manifest.json"
+  ],
+  "capture_count": 287,
+  "capture_manifest": "capture-inventory-r1.json",
+  "limits": [
+    "No Native/provider/productionMain/private store/Windows/release acceptance",
+    "Ten unused legacy eslint-disable warnings remain; no lint errors",
+    "Original Context and correction runs superseded, not relabelled passed",
+    "Legacy runner and managed metadata exact baseline bytes reconstructed after edit, explicitly labelled"
+  ],
+  "failure_preservation": [
+    "coherent-lint-r1.log",
+    "coherent-unit-r2.log",
+    "hidden-r1-failure-relocation.json",
+    "hidden-r2-failure-relocation.json",
+    "hidden-r3-failure-relocation.json"
+  ]
+}

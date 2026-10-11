@@ -1,0 +1,138 @@
+{
+  "revision": 22,
+  "kind": "source-only prerequisite audit",
+  "sources": [
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-76n1dez8.js",
+      "bytes": 21879,
+      "sha256": "d287ae519253b75a2b350a53b4b5c5eef01b819afcf64e79c66566daccbe361b"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-48y8hbvk.js",
+      "bytes": 8972,
+      "sha256": "618d0d178a428d7a7ec96671edefb11f8cf3c811505e7fae56e7c15d6937dcf0"
+    },
+    {
+      "path": "node_modules/@opencode/core/dist/chunks/config-ppzgkaaq.js",
+      "bytes": 32542,
+      "sha256": "070409f56769cf4bd845dc6adc94c51a51f4818947a6b821809b21e367c5acc5"
+    }
+  ],
+  "eagerServices": [
+    {
+      "local": "app",
+      "service": "Metadata2"
+    },
+    {
+      "local": "agents",
+      "service": "Service62"
+    },
+    {
+      "local": "aisdk",
+      "service": "Service70"
+    },
+    {
+      "local": "providers",
+      "service": "Service71"
+    },
+    {
+      "local": "models",
+      "service": "Service68"
+    },
+    {
+      "local": "commands",
+      "service": "Service55"
+    },
+    {
+      "local": "bus",
+      "service": "Service83"
+    },
+    {
+      "local": "integration",
+      "service": "Service72"
+    },
+    {
+      "local": "kv",
+      "service": "Service67"
+    },
+    {
+      "local": "mcp",
+      "service": "Service32"
+    },
+    {
+      "local": "location",
+      "service": "Service80"
+    },
+    {
+      "local": "reference",
+      "service": "Service57"
+    },
+    {
+      "local": "rpc",
+      "service": "Service23"
+    },
+    {
+      "local": "skill",
+      "service": "Service40"
+    },
+    {
+      "local": "tools",
+      "service": "Service59"
+    },
+    {
+      "local": "vcs",
+      "service": "Service24"
+    },
+    {
+      "local": "websearch",
+      "service": "Service19"
+    },
+    {
+      "local": "generate",
+      "service": "Service26"
+    },
+    {
+      "local": "permission",
+      "service": "Service49"
+    },
+    {
+      "local": "hooks",
+      "service": "Service61"
+    },
+    {
+      "local": "sessions",
+      "service": "Service27"
+    },
+    {
+      "local": "persistentPty",
+      "service": "Service25"
+    },
+    {
+      "local": "locations",
+      "service": "Service52"
+    },
+    {
+      "local": "worktrees",
+      "service": "Service16"
+    },
+    {
+      "local": "worktreeStrategies",
+      "service": "Service17"
+    }
+  ],
+  "hostRequirementsCount": 25,
+  "sdkHookRoutes": [
+    "sdk",
+    "language"
+  ],
+  "facts": [
+    "Plugin service layer constructs shared Host before its load/activation guard",
+    "Host requirements layer acquires dependencies before Host.make starts; guarding only make cannot isolate dependency effects",
+    "Host aisdk wrapper creates a new callback before underlying AISDK register; original private producer callback identity is lost unless correlated in Host",
+    "AISDK owns sdkHooks/languageHooks; it does not use PluginHooks.register",
+    "Original AISDK registration installs callback and original Scope finalizer; preserve both",
+    "No Native imports/effects executed for this audit"
+  ],
+  "next": "Bridge original SDK callback before wrapper construction/registration using same Control parent/source/Scope; retain held gate before actual SDK registration. Audit eager dependency effects independently before startup acceptance.",
+  "sdkHookSourceSha256": "314f5c1dc3dab35a7efd9a9033a60494421b65bc74c37d3233da4021ec0208a7"
+}

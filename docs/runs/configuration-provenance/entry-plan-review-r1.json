@@ -1,0 +1,76 @@
+{
+  "schema_version": 2,
+  "run": "configuration-provenance",
+  "reviewer": "plan_reviewer",
+  "plan_path": "docs/runs/configuration-provenance/plan.md",
+  "plan_revision": 1,
+  "reviewed": {
+    "contract_sha256": "3154c5fb04006129a73eecacce17ffc36ff3096755430697a91df081ee36cdde",
+    "gate": "plan",
+    "plan_sha256": "07e74320e697ea251d55c76edcdc917d7503668138e2016263af322a49ebfebf",
+    "schema_version": 2,
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "changes_requested",
+  "summary": "Revision 1은 전체 F14를 유지하는 유용한 읽기 첫 단계입니다. 입력 binding과 현재 source hash는 일치합니다. 다만 config.get의 Native 초기화 경계와 검증 범위를 명시해야 합니다. SDK mock의 zero-call 결과만으로 C3의 Native 부작용 없음까지 입증할 수 없습니다. 새 framework나 전체 제품 intake는 필요하지 않습니다. 이 보고서는 plan 판정만 제공합니다.",
+  "open_findings": [
+    {
+      "id": "F14-PLAN-R1-01",
+      "severity": "high",
+      "path": "docs/runs/configuration-provenance/plan.md",
+      "line": 21,
+      "related_lines": [22, 28],
+      "finding": "C2는 trusted already-running runtime을 SDK 읽기의 조건으로 쓰고, C3는 프로세스 실행·reload·MCP 연결 등의 부작용이 없다고 요구합니다. 검증 계획은 synthetic workspace와 호출 counter만 명시합니다. 그러나 실행 중인 프로세스는 선택 location의 서비스가 이미 준비됐다는 증거가 아닙니다. 설치된 2.0.18의 LocationMiddleware는 locations.get으로 location layer를 얻습니다. LocationServiceMap은 미생성 location에서 layer를 만듭니다. Config layer는 생성 시 discover/load와 watcher 구독을 수행합니다. 초기화 뒤 entries() 자체는 저장된 configs를 반환합니다. 따라서 이 두 경계를 구분해야 합니다.",
+      "impact": "추가 config.get이 준비된 상태만 읽는다는 조건 없이 C3를 통과 처리하면, 앱 mock counter를 Native 초기화·reload·연결 없음의 증거로 잘못 사용할 수 있습니다. 현재 제품 코드를 실행해 이런 부작용이 발생했다고 주장하는 finding은 아닙니다.",
+      "required_correction": "계획과 C2/C3 검증 범위에 작은 수정이 필요합니다. 같은 epoch와 선택 location의 기존 catalog 경로에서 config.get이 이미 준비된 Config 상태만 읽는다는 근거를 pinned SDK call chain과 현재 host 옵션으로 고정하십시오. trust 또는 connected 상태만을 그 근거로 쓰지 마십시오. 근거가 없으면 새 location 초기화·activation·reload를 시도하지 말고 해당 runtime metadata를 partial/unavailable로 표시하십시오. inert root inventory는 계속 제공할 수 있습니다. Mock counter는 앱의 명시적 connect/update/install/execute 호출과 DTO 비밀 차단만 입증한다고 적으십시오. Native 전체 부작용 없음은 별도 실제 근거가 없으면 미검증으로 남기십시오. 이번 수정에 새 Native invocation, lifecycle/transport/store 변경, 제품 범위 축소는 필요하지 않습니다.",
+      "source_evidence": [
+        "apps/desktop-app/src/workbench-service.mjs:1237 — 기존 catalog는 trust/recheck 뒤 선택 location에서 SDK list를 호출합니다.",
+        "apps/desktop-app/src/event-host-child.mjs:309 — 현재 host는 project:false, models.fetch:false, filewatcher:false 옵션을 사용합니다. 이 옵션을 유지해야 합니다.",
+        "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/server/dist/chunks/service-status-0ar9gf7q.js:47 — middleware는 요청 location의 services를 제공합니다.",
+        "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-zs6xvgsc.js:25 — location layer는 필요 시 생성됩니다.",
+        "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/core/dist/chunks/config-9b1g8vzp.js:194 — Config 생성 시 load와 watch 준비를 수행합니다. 254행의 entries는 이후 configs를 반환합니다.",
+        "apps/desktop-app/runtime-event-host/.generated/install/node_modules/@opencode/server/dist/chunks/service-status-xpxp1sqb.js:10 — config.get은 Config.Service의 entries를 사용합니다."
+      ]
+    }
+  ],
+  "review_notes": [
+    "전체 PRD F-14/AC-14와 workbench-ux section 6의 편집·검증·diff·적용/재로딩·MCP 등록/연결/해제·설치/업데이트는 후속 필수 작업으로 남습니다. 첫 increment를 F14 완료로 승인하지 않습니다.",
+    "실제 pinned 2.0.18의 ConfigEntry는 document(info,path?)와 directory(path)의 union입니다. SkillInfo에는 path와 content가 있습니다. config.update 입력은 shell뿐입니다. .agents/.claude compatibility가 있습니다. 원문 content와 credential은 DTO에서 제외해야 합니다.",
+    "design.md 11행의 commands count는 closed kind enum에 대응 항목이 없습니다. 이를 tools count로 승인하지 않습니다. 후속 design gate에서 첫 increment의 commands count를 제외하는 작은 수정이 가능합니다. hooks/tools metadata 부재는 unknown/not_reported이며 0 또는 활성 상태가 아닙니다. 이 보고서는 design verdict를 제공하지 않습니다.",
+    "기존 catalog.list admission, SDK signal/deadline, 취소, renderer scope와 단일 Zustand owner를 재사용하는 접근은 현재 코드와 맞습니다. 새 metadata에도 그 경계를 적용해야 합니다.",
+    "현재 evidenceRoots에는 configuration-provenance/evidence가 없습니다. 계약은 run-evidence.mjs와 run-evidence.test.mjs 변경 및 회귀 검증을 포함합니다. 따라서 예정된 allowlist 추가와 경계 테스트를 구현한 뒤 hidden-ui를 실행할 수 있습니다. 현재 실행 가능 또는 통과로 처리하지 않습니다.",
+    "새 workbench-configuration.test.mjs는 아직 없습니다. 계약의 Node/type/lint/format/boundary/build/bundle/hidden-ui 명령은 구현 후 검증 계획입니다. 이번 리뷰에서 실행하지 않았습니다.",
+    "최신 Main 전달에 따르면 parent revision 9는 독립 CODE/RENDER PASS, gaps=[], finish complete이며 source a33은 유지됩니다. parent 진행 상태를 이 plan의 blocker로 쓰지 않습니다. Main은 host/types/fixture/evidence-wrapper/test 통합을 소유하고, renderer worker를 쓸 경우 DTO freeze 뒤 explorer source/CSS와 지정 test만 분리해 배정해야 합니다. 공용 test/fixture에는 동시 writer를 배정하지 마십시오.",
+    "현재 plan 등록은 design artifact 등록과 별개입니다. plan 승인 뒤 design 문서 등록·독립 design_spec 판정·handoff가 필요합니다. 구현 후 독립 code/render gate도 유지합니다."
+  ],
+  "verification": {
+    "method": "파일 읽기와 읽기 전용 hash 계산. 앱 또는 SDK 실행 없음.",
+    "plan_sha256_matches": true,
+    "semantic_contract_sha256_matches": true,
+    "packet_raw_contract_sha256_matches": true,
+    "work_class_sha256_matches": true,
+    "source_sha256_matches": true,
+    "design_document_sha256_matches": true,
+    "packet_routing_sha256_matches": true,
+    "runtime_checks_run": false,
+    "tests_run": false,
+    "builds_run": false,
+    "network_used": false,
+    "private_invocations_run": false
+  },
+  "provenance": {
+    "child_task_id": "01a118a8-02ca-7cd2-9dd8-c80a6ac402d0",
+    "child_id_source": "CODEX_THREAD_ID",
+    "author_task_id": "main-continuation",
+    "profile": "solo_reader",
+    "skills": ["solo-specialist", "solo-plan-review"],
+    "mode": "report_only",
+    "runtime_identity_attested": false,
+    "os_read_only_sandbox_attested": false,
+    "delegated": false,
+    "ledger_changed": false,
+    "product_source_changed": false,
+    "files_changed": ["docs/runs/configuration-provenance/entry-plan-review-r1.json"]
+  }
+}

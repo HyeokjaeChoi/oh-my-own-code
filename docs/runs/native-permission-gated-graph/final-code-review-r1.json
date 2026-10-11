@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "36f371c45953653719a7629fccb494b47aacb6cf9a25d1f2595fb9fbd9788b45",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "02c52fa875facb809f991cf942b6412a7d75ee05cb2195e1857e240debcc9e3b",
+    "schema_version": 2,
+    "source_sha256": "8dfd989187b83f75e7edb027c68c98e0a5c70ca9d3c6a4b311cbd53b4a8ad2c5",
+    "verification_sha256": "00c390299204e598e470dcb96b3f1802428f728e75cc4ac2728499090ff9a46f",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "N1/N2의 Permission/Saved 부분 subtree에 한해 PASS다. 조치가 필요한 결함을 찾지 못했다. 검토 전후 11개 파일의 byte 수와 SHA-256이 source-freeze-preexecution-r1.json과 모두 일치했다. 기존 독립 preexecution 보고서의 reviewed는 해당 input 전체와 일치한다. 전체 source_sha256도 같다. 따라서 기존 source 판단을 재사용했다. 이전 input과 최종 input에서 달라진 binding은 verification_sha256뿐이다. 최종 binding은 검토 전후 읽기 전용 harness 재계산 결과와 정확히 일치한다.\n\n새 실행 증거는 coordinator 요약에 의존하지 않고 원본 report, 실제 harness 기록, parent/child 검사 코드와 보존된 파일을 대조했다. report의 8개 case와 child report가 모두 PASS다. 기존 overlay_forwarding, fixed_config, fixed_plugin_source, sdk_registration_denied, inert_wellknown 5개 case도 유지된다. 실제 native-r1 harness 명령은 exit 0이며 입력 변경, timeout, interruption 기록이 없다. 소유 Bun child 52753은 exit 0으로 종료했다. signal은 null이고 전송 signal은 없다. spawn failure와 protocol overflow도 없다.\n\n추가 3개 case는 production factory가 만든 override와 동일한 Control node를 사용한다. 실제 patched Native Permission/Saved, synthetic SQLite, 고정 Location으로 구성한 scope에서 같은 Fiber의 transaction owner로 locked read가 성공했다. boot_held 상태와 bootHolds를 확인했다. assertExecution, ask, assert, reply, saved.add, saved.addLocked는 native_permission_held로 거부됐다. pending과 해당 project의 saved grant는 비어 있다. absent-ID remove 후에도 scoped saved 목록은 비어 있다. 이 결과는 held 경로의 증거다. 성공한 permission 결정이나 기존 grant 삭제를 증명하지 않는다.\n\n실행 report의 before/after는 source, original, staged, child 전체에서 동일하다. copied child hash도 같다. 현재 source closure 45개 파일도 report와 일치한다. 보존된 staged inventory 38,436개와 original inventory 38,386개의 파일 hash, 크기, mode, link 정보를 대조했고 차이가 없었다. Bun, manifest, staged asset, copied child, 4개 Native 원본 및 출력 pin도 일치한다. retainedRoot는 그대로 남아 있다.\n\n기록된 Node 82/82, lint, format PASS는 현재 source에 재사용 가능하다. 최초 81/82 closure 실패 기록도 보존됐다. import-data 오탐을 피한 표현 수정 이후 recipe SHA와 Native 출력 4개 pin은 유지됐다. reviewer는 재시험하지 않았다.\n\nProduction 호환성 제한은 남아 있다. 새 mandatory gated stage에 대해 production child는 변경되지 않았고 configured Control 초기화를 제공하지 않는다. 따라서 production graph acquisition은 native_permission_uninitialized로 실패한다. fallback은 없다. Production build/launch/release 전에 초기화와 graph 연결을 일관되게 완료해야 한다. 이 PASS는 production 사용 승인이 아니다.\n\nfullF09/full18, activation/reconcile, 성공한 pending sweep/grant, leases, Shell/coordinator/tool/lifecycle, production Main/provider/UI는 미검증이며 다음 작업으로 남는다. OS filesystem/network sandbox, descendant 전체 종료, 변경 후 원상복구의 부재, power-loss recovery도 이 증거로 입증하지 않는다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a12108-7fac-72f3-99bc-88f2a88fd237",
+    "identity_source": "현재 invocation의 CODEX_THREAD_ID",
+    "role": "reviewer",
+    "mode": "fresh independent final CODE+execution, report-only",
+    "reused_source_review_child_task_id": "01a12100-e8ca-7e51-bb82-cd819921efa5",
+    "implementation_child_task_id": "01a120f5-b417-7b43-8db7-d51e01fe69ff",
+    "delegation": false,
+    "writes": false,
+    "binding_recomputed_before_and_after": true,
+    "binding_exact_final_input": true,
+    "actual_report_sha256": "eec64909cab73988d354394c6d9bb13159d8b4b8061cf4ea1846e17a4f79de0e",
+    "retained_root": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-graph-8GjUiE",
+    "reviewer_execution": "원본 파일 읽기, SHA-256 및 inventory 대조, Python 기반 읽기 전용 harness review-input/check-status만 수행했다. Native/Bun/Electron/build/provider/test 실행은 하지 않았다. Source, evidence, ledger와 retainedRoot를 수정하지 않았다."
+  }
+}

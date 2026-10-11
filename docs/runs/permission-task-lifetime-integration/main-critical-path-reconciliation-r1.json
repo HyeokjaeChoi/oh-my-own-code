@@ -1,0 +1,80 @@
+{
+  "scope": "Main readonly critical-path reconciliation revision29; not implementation or approval",
+  "sources": [
+    {
+      "path": "apps/desktop-app/src/workbench-service.mjs",
+      "sha256": "b259363d22ddabbdfc6ae6629bd47a5e9e43925b0a8282da38d19ccfc1765359",
+      "bytes": 166664
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "sha256": "9deb9fdc17c6c798358efb93f25ca01d885b8f4c4c26a81ebf2d4feee26f153b",
+      "bytes": 71255
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "sha256": "64fe6ffe417303aaaa97e3452aaf32b9c6ceb352aa0d12d4e06c0ffdbdd46c9d",
+      "bytes": 26510
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-supervisor.mjs",
+      "sha256": "94b7ea1167aaf2e09d31900ca629c5bd251b65e0fd1206f1024d51543714b217",
+      "bytes": 34439
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-child.mjs",
+      "sha256": "9732da796190f6efb74ec83c6246ce58b736916ee8a739bf7de9173ec5ab8343",
+      "bytes": 19222
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-handoff.mjs",
+      "sha256": "ffafb59f15ecab7fef260f70e652a3a17a11710b3229f16aabcacbb4a4b0feef",
+      "bytes": 5860
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-request.mjs",
+      "sha256": "d2e37ecd2c22552a5495c00faca800e5e9364aaf503ad1834ac43ae6531310db",
+      "bytes": 2894
+    },
+    {
+      "path": "apps/desktop-app/src/permission-policy-compiler.mjs",
+      "sha256": "9d443c96964d4174e224e2db4b6a2f8de7855c26e01c39bf617025b063aba180",
+      "bytes": 7445
+    },
+    {
+      "path": "apps/desktop-app/src/host/workbench-task-storage.mjs",
+      "sha256": "4589e970c9510e099d013cc7fce36bad4982d8224c4d32c219b30406b6657936",
+      "bytes": 24434
+    },
+    {
+      "path": "apps/desktop-app/src/host/workspace-registry.mjs",
+      "sha256": "5eeb5459fde0c3a16bb5e2c726a822caad62585621227a7ecd24ce00aff4caf8",
+      "bytes": 96980
+    }
+  ],
+  "existing_implemented": [
+    "Pure compiler and exact ordered/floor/mode validators; actual original last-match evaluator test already exists and must not be duplicated.",
+    "Main preserves stored permissionControl and refuses legacy reset. Both before/after policy stages remain.",
+    "Task handoff bounded one-use child factory and Main request context exist. Disk replay cannot restore execution authority.",
+    "Registry serialized task append/private taskAuthoritySource and permission reconciliation exist."
+  ],
+  "missing_actual_links": [
+    "Native inventorySnapshot is unconditional complete:false and capabilities empty; inventoryLookup and assertExecution always refuse.",
+    "Graph taskControl exposes prepare/close only; prepareTask returns held. No positive current task identity/compiler generation is issued.",
+    "Main prompt prepare result is followed by unconditional POLICY_UNVERIFIED; no durable task prepare/arm/consume/observation issuance.",
+    "No production constructor passes taskAuthoritySource to registry; factory is exercised in tests only.",
+    "Original coordinator/promoted input/title/child/RPC/IO lineage must bind same task owner before grants."
+  ],
+  "ordering": [
+    "Finish current linked metadata/startup constructor notification proof and corrections without weakening holds.",
+    "Complete current live source/Scope inventory and exact action/adapter mapping; use common edit adapter for edit/write/patch only if every path is verified, never pretend duplicate actions are independent grants.",
+    "Bind persisted mode generation/current Agent/floor/inventory to exact Native compiled readback and final per-effect verifier.",
+    "Connect actual durable stage append -> authenticated one-use child handoff -> exact earliest method/task -> original lifetime observations; all four origin families remain required.",
+    "Fresh coherent CODE then separately approved contained runtime/render acceptance; existing physical evidence reuse only."
+  ],
+  "limits": [
+    "No product source change or grant from this reconciliation.",
+    "Existing helper tests are not proof their production call sites are connected.",
+    "Full F09/full18 unfinished; UI foundation and Composer Plus preserved."
+  ]
+}

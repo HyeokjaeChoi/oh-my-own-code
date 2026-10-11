@@ -1,0 +1,39 @@
+(node:9525) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[plugin builtin:vite-reporter] [33;1m
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[0m
+
+
+> nx run desktop-app:build
+
+> node apps/desktop-app/scripts/build.mjs
+
+vite v8.3.0 building client environment for production...
+transforming...
+[32m✓[0m 2411 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mapps/desktop-app/dist/app/renderer/[0m[32mindex.html                 [0m[1;2m  0.68 kB[0m[2m │ gzip:   0.41 kB[0m
+[2mapps/desktop-app/dist/app/renderer/[0m[2massets/[0m[35mindex-Bmkx7rTk.css  [0m[1;2m 59.62 kB[0m[2m │ gzip:   8.23 kB[0m
+[2mapps/desktop-app/dist/app/renderer/[0m[2massets/[0m[36mindex-Cz0mYIsz.js   [0m[33;1m808.61 kB[0m[2m │ gzip: 242.72 kB[0m
+
+✓ built in 255ms
+
+
+
+ NX   Successfully ran target build for project desktop-app
+
+
+  Run duration:      49.1s
+  Cache:             0/1 hit (0%)
+  Critical path:     49.0s (1 task)
+  Recoverable time:  <1ms
+
+  Recommendations:
+    - Drastically reduce your run duration by sharing a cache across your team and CI → https://cloud.nx.app/get-started?utm_source=nx-cli&utm_medium=cli&utm_campaign=performance-report&utm_content=remote-cache.
+    - Speed up or split the longest tasks on the critical path:
+        desktop-app:build    49.0s
+

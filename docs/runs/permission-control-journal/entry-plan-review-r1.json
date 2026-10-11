@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "report_type": "ENTRY_PLAN",
+  "reviewed": {
+    "contract_sha256": "9fc55a78295c90ebf16788a8e1572f20ff9da2b2e14f9cecbdc28cf3d5fc7019",
+    "gate": "plan",
+    "plan_sha256": "473944c50b4a284f5294e4379128febeab9b75e88d7f7eb21a3e10198a803052",
+    "schema_version": 2,
+    "source_sha256": "eea5886578814f79f2d7dadfe0edee7c0f039c700fce350b788e7d5b2272d011",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "docs/runs/permission-control-journal/plan.md revision1의 ENTRY PLAN은 통과입니다. 실제로 누락된 private persisted project/policy digest binding을 보완하므로, 이 변경에 한정한 major 분류와 독립 DESIGN_SPEC 검토는 타당합니다. 해당 entry 검토들이 통과하면 같은 설계의 구현은 routine으로 진행할 수 있습니다. 전체 F09 초기 설계 검토를 반복할 필요는 없습니다.",
+  "open_findings": [],
+  "assessment": [
+    "원래 schema-contract-r3 sections5–7의 grant/rule hash는 projectIdentityDigest를 요구합니다. 기존 exact target과 registry/journal에는 이를 복원할 저장 입력이 없습니다. scopeDigest로 대체하면 원래 hash 계약을 위반합니다.",
+    "mode target의 afterPolicyDigest만으로 result와 delta의 mode/generation/settings/floor/compiler를 검증할 수 없습니다. 제안한 policyBindings는 실제 permissionPolicyDigest의 기존 전체 입력과 일치합니다. public compiled policy, raw Native project ID 또는 추가 DB는 필요하지 않습니다.",
+    "P1–P3는 binding, 기존 journal의 ordinal/progress/completion, 실제 legacy parser 거부를 구분합니다. 구현은 지정한 8개 파일로 제한됩니다. Main은 plan/ledger/archive를 소유하고, 별도 storage engineer가 구현하며, 독립 CODE 검토가 뒤따릅니다.",
+    "편집 전에 기존 6개 파일과 실제 parser import closure 전체를 archive하고 hash/length를 검증하도록 요구합니다. 실제 old parser로 marker/journal/checkpoint의 unsupported_version 거부와 byte 보존을 확인하므로, 모조 parser로 검증을 대체하지 않습니다.",
+    "계약은 affected Node suites와 lint/format을 요구합니다. replay, target substitution, ordinal/progress 위반, completion upgrade 및 flush failure를 검증하는 범위는 이번 저장 계층 작업에 적절합니다.",
+    "Main service/admission/DTO/Native/UI/activation은 이번 구현 범위 밖에 있으며 종속 실행은 계속 차단됩니다. verified current policy bootstrap, 실제 effect/readback/settlement 및 recovery는 후속 통합 조건으로 유지됩니다. storage progress만으로 실행 권한이나 실제 효과를 주장하지 않습니다."
+  ],
+  "limitations": [
+    "판정은 entry-plan-input-r1.json의 최상위 객체 전체와 plan revision1에 한정됩니다.",
+    "DESIGN_SPEC 통과, 구현 완료 또는 runtime 동작을 판정하지 않았습니다.",
+    "문서와 소스를 정적으로 읽고 packet의 파일 hash를 확인했습니다. runtime import, 테스트, build 및 Native 실행은 하지 않았습니다.",
+    "파일, ledger 및 product source를 수정하지 않았고 위임하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a1238b-205e-7db1-a542-6b1b7233cbf4",
+    "identity_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "implementation_authored": false,
+    "delegation": false,
+    "report_only": true,
+    "files_modified": false,
+    "ledger_modified": false,
+    "product_runtime_executed": false,
+    "tests_executed": false,
+    "build_executed": false
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "schema_version": 2,
+  "run": "bounded-workbench-foundation",
+  "reviewer": "reviewer",
+  "verdict": "changes_requested",
+  "reviewed": {
+    "contract_sha256": "2f1912340a82a7b8bf6aa10f33f4e4e45443a48ca1ae9780077a92b009d6895b",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "code",
+    "plan_sha256": "743593ca74cb41eeca7a19aee5570736c24425fb6a09fc57a5c9a1468f6a81ce",
+    "schema_version": 2,
+    "source_sha256": "78cb020ce68f9e620afaf0e123aa036e4ed04fc3859a09aaf526d2a9e43a352e",
+    "verification_sha256": "3b9f5104d7788ae8a48096e98bafa990dcb437590f09f94d116ee0975cbd1bc7"
+  },
+  "summary": "spec compliance와 code quality를 각각 검토했습니다. 수정이 필요한 state race 2건이 있습니다. 현재 binding, 변경 파일 hash, 삭제 목록, 등록 artifacts와 outcome은 일치합니다. 7개 contracted check의 기록은 모두 같은 binding에서 exit 0입니다. 이 기록은 아래 두 응답 순서를 검증하지 않습니다.",
+  "open_findings": [
+    {
+      "id": "CODE-1",
+      "severity": "P2",
+      "path": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+      "line": 543,
+      "title": "확정된 삭제의 revision을 snapshot 거부 기준에 반영하십시오",
+      "trigger": "현재 선택이 B인 상태에서 A 삭제 receipt를 받습니다. receipt.revision은 10이며 A 제거가 confirmed입니다. 그 뒤 같은 epoch와 B selection generation의 삭제 전 snapshot이 도착합니다. snapshot.revision이 9이고 기존 state.revision이 1이면 이 snapshot은 승인됩니다.",
+      "impact": "삭제한 A가 탐색 목록에 다시 나타납니다. 사용자는 제거된 ID를 다시 선택할 수 있으며 이후 host 요청은 NOT_FOUND로 실패합니다. confirmed deletion의 대상 정리가 유지되지 않습니다.",
+      "evidence": [
+        "receipt 처리의 481–491행은 receipt를 operations에 저장하지만 state.revision을 갱신하지 않습니다.",
+        "543행과 558–562행은 삭제 대상을 lists와 snapshot에서 제거하지만 snapshot revision도 유지합니다.",
+        "snapshot 처리의 266–270행은 state와 snapshot revision만 비교합니다. 325행은 들어온 목록을 그대로 적용합니다.",
+        "workbench-store.test.mjs의 365–431행은 A-B-A 삭제와 draft 보존을 검사하지만 삭제 receipt 이후의 삭제 전 snapshot은 검사하지 않습니다."
+      ],
+      "smallest_fix": "현재 epoch의 검증된 confirmed receipt를 적용할 때 authoritative revision 하한을 함께 올리십시오. snapshot은 그 하한보다 낮으면 거부하십시오. 이전 epoch receipt로 현재 epoch의 하한을 변경하지 마십시오.",
+      "necessary_check": "store에 B 선택과 A/B 목록을 넣습니다. A 삭제 confirmed receipt revision 10을 적용한 뒤 A가 포함된 B snapshot revision 9를 전달합니다. A가 다시 나타나지 않고 B 선택과 B draft가 유지되는지 확인하십시오. 이 검사는 실행하지 않았습니다."
+    },
+    {
+      "id": "CODE-2",
+      "severity": "P2",
+      "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+      "line": 428,
+      "title": "활동 응답을 현재 필터와 요청 generation에 연결하십시오",
+      "trigger": "전체 활동 요청이 대기 중일 때 사용자가 '선택한 세션만 보기'를 켭니다. 새 filtered 요청은 다른 identity로 같은 snapshot lane을 사용하므로 READ_BUSY를 받습니다. 이후 이전 전체 활동 응답이 도착합니다.",
+      "impact": "필터가 켜진 화면에 다른 세션의 활동이 표시됩니다. 이전 요청이 현재 필터의 결과와 오류를 덮어씁니다.",
+      "evidence": [
+        "widgets/activity/index.tsx의 40–51행에서 cleanup은 이전 poll의 다음 timer만 막습니다. 대기 중인 응답의 store 반영은 막지 않습니다.",
+        "controller.ts의 416–432행은 filtered 값을 요청에만 사용합니다. 응답 event에는 필터 identity와 요청 generation이 없습니다.",
+        "store.ts의 677–684행은 selection scope만 비교하므로 필터 변경 전 응답도 승인합니다.",
+        "shared/transport/index.ts의 83–85행은 같은 lane의 다른 read identity를 READ_BUSY로 거부합니다."
+      ],
+      "smallest_fix": "활동 요청의 필터와 generation을 controller가 관리하십시오. 필터 변경이나 패널 종료 시 이전 요청을 detach하고 이전 generation의 응답을 거부하십시오. READ_BUSY 이후에는 현재 필터로 bounded read를 다시 예약하십시오. 활동 polling도 controller로 옮기면 controller-only scheduling 계약을 충족합니다.",
+      "necessary_check": "fake bridge에서 전체 활동 응답을 보류합니다. 필터를 켠 뒤 이전 응답을 완료합니다. 이전 전체 데이터가 반영되지 않고 현재 세션의 filtered 결과만 표시되는지 확인하십시오. 이 검사는 실행하지 않았습니다."
+    }
+  ],
+  "passes": {
+    "spec_compliance": "A1/A2의 admission, SDK capacity, quarantine, service-owned ready, immutable receipt와 lookup-only recovery 경로를 확인했습니다. A3/A4에는 CODE-1과 CODE-2가 남습니다. A5의 현재 build와 native evidence binding을 확인했습니다.",
+    "code_quality": "main/preload/types/service/state와 테스트를 계약에 대조했습니다. 실제 SDK lane 해제, subscriber cancellation, late create/fork finalization, duplicate no-dispatch, draft revision 보존, file generation과 unknown blocker를 검토했습니다. 위 2건 외의 수정 필요 결함은 찾지 못했습니다."
+  },
+  "verification": {
+    "checks": {
+      "unit": 0,
+      "typecheck": 0,
+      "lint": 0,
+      "boundaries": 0,
+      "build": 0,
+      "bundle": 0,
+      "hidden-ui": 0
+    },
+    "basis": "기존 current run.checks를 읽었습니다. check를 다시 실행하지 않았습니다.",
+    "native_evidence": "docs/runs/frontend-architecture-redesign/execution/p4-p5-foundation-native-r2/ui-states",
+    "capture_count": 26,
+    "native_result": "pass",
+    "provenanceVerifiedAfter": true,
+    "evidence_validation": "등록 evidence hash, build stamp, source/fixture/launch artifact hash가 일치합니다. 26개 capture의 beforeCapture는 hidden, unfocused, nonfocusable입니다.",
+    "final_binding_verified": true
+  },
+  "review_boundary": {
+    "input": "docs/runs/bounded-workbench-foundation/execution/final-reviewer.input.json",
+    "packet": "docs/runs/bounded-workbench-foundation/execution/final-reviewer.packet.json",
+    "source_freeze": "docs/runs/bounded-workbench-foundation/execution/final-source-freeze.json",
+    "baseline": "/Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/p4-p5-baseline.tar.gz",
+    "baseline_method": "tarfile로 메모리에서 읽고 비교했습니다. 파일을 추출하지 않았으며 Git HEAD를 사용하지 않았습니다.",
+    "limits": "P4/P5 runtime-lifetime 범위입니다. P7 durable receipt/storage, P6 측정과 나머지 F01–18은 선언된 미완료 범위로 유지합니다. real provider, native Windows, physical IME와 foreground performance는 검증하지 않았습니다."
+  },
+  "provenance": {
+    "child_task_id": "01a1028a-e910-75e0-8eb3-6bbe036d4edb",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-code-review"
+    ],
+    "runtime_identity_attested": false,
+    "files_changed": [],
+    "tests_run": false,
+    "gui_launches": false,
+    "cua_used": false,
+    "provider_calls": false,
+    "delegated": false,
+    "persistence_owner": "coordinator"
+  }
+}

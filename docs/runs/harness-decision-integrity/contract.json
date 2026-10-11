@@ -1,0 +1,189 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "H-1",
+      "description": "The optional decision_register contract field is validated and existing v2 contracts without it remain compatible."
+    },
+    {
+      "id": "H-2",
+      "description": "Preparation and dispatch are mechanically blocked for every phase named by an unresolved decision; dispatch also requires the current independently reviewed plan. Confirmed or delegated decisions require recorded authority and resolution, with safe error messages."
+    },
+    {
+      "id": "H-3",
+      "description": "Shared coordinator, planning, plan-review, engineering-plan template, and operator guidance enforce latest-user-outcome fidelity, decision provenance/holds, credible architecture alternatives before consequential platform-specific work, evidence matched to runtime/OS/security boundaries, and reassessment after non-advancing retries."
+    },
+    {
+      "id": "H-4",
+      "description": "Canonical Solopreneur source and focused tests verify the phase gate, legacy compatibility, and prepare-to-dispatch freshness; only the active product is synchronized, clean managed-file drift and source/product template parity are confirmed, and an independent code review confirms there are no external side effects or model-calling hooks."
+    }
+  ],
+  "checks": {
+    "python-tests": {
+      "argv": [
+        "python3",
+        "-c",
+        "import sys,unittest; s=unittest.defaultTestLoader.discover('.solopreneur', pattern='test_harness.py'); n=s.countTestCases(); print(str(n) + ' tests discovered'); sys.exit(2 if n == 0 else (0 if unittest.TextTestRunner().run(s).wasSuccessful() else 1))"
+      ],
+      "cwd": ".",
+      "scope": "Focused contract-validation and phase-specific handoff-gate tests in the synchronized product copy; fails closed if no tests are discovered",
+      "acceptance_ids": [
+        "H-1",
+        "H-2",
+        "H-4"
+      ],
+      "required": true
+    },
+    "canonical-tests": {
+      "argv": [
+        "python3",
+        "-c",
+        "import sys,unittest; s=unittest.defaultTestLoader.discover('/Users/hyukjaechoi/Solopreneur/tests', pattern='test_harness_decision_register.py'); n=s.countTestCases(); print(str(n) + ' tests discovered'); sys.exit(2 if n == 0 else (0 if unittest.TextTestRunner().run(s).wasSuccessful() else 1))"
+      ],
+      "cwd": ".",
+      "scope": "Focused decision-register regression suite for the canonical reusable Solopreneur harness source; fails closed if no tests are discovered",
+      "acceptance_ids": [
+        "H-1",
+        "H-2",
+        "H-4"
+      ],
+      "required": true
+    },
+    "python-syntax": {
+      "argv": [
+        "python3",
+        "-m",
+        "py_compile",
+        ".solopreneur/harness.py",
+        ".solopreneur/test_harness.py"
+      ],
+      "cwd": ".",
+      "scope": "Python syntax validation for synchronized harness and product-local focused integration tests",
+      "acceptance_ids": [
+        "H-1",
+        "H-2",
+        "H-4"
+      ],
+      "required": true
+    },
+    "canonical-syntax": {
+      "argv": [
+        "python3",
+        "-m",
+        "py_compile",
+        "/Users/hyukjaechoi/Solopreneur/scripts/harness.py",
+        "/Users/hyukjaechoi/Solopreneur/tests/test_harness_decision_register.py"
+      ],
+      "cwd": ".",
+      "scope": "Python syntax validation for the canonical reusable harness source and regression tests before product synchronization",
+      "acceptance_ids": [
+        "H-1",
+        "H-2",
+        "H-4"
+      ],
+      "required": true
+    },
+    "managed-drift": {
+      "argv": [
+        "python3",
+        "/Users/hyukjaechoi/Solopreneur/scripts/solo.py",
+        "check",
+        "/Users/hyukjaechoi/Projects/oh-my-own-code"
+      ],
+      "cwd": ".",
+      "scope": "Verify the synchronized active product matches canonical managed harness files without modifying other registered products",
+      "acceptance_ids": [
+        "H-3",
+        "H-4"
+      ],
+      "required": true
+    },
+    "plan-template-parity": {
+      "argv": [
+        "cmp",
+        "--silent",
+        "/Users/hyukjaechoi/Solopreneur/templates/project/docs/engineering/plan-template.md",
+        "docs/engineering/plan-template.md"
+      ],
+      "cwd": ".",
+      "scope": "Verify the existing product-local planning template matches the reviewed canonical template after intentional reconciliation",
+      "acceptance_ids": [
+        "H-3",
+        "H-4"
+      ],
+      "required": true
+    },
+    "contract-json": {
+      "argv": [
+        "python3",
+        "-m",
+        "json.tool",
+        "docs/runs/harness-decision-integrity/contract.json"
+      ],
+      "cwd": ".",
+      "scope": "Run contract JSON parse",
+      "acceptance_ids": [
+        "H-1"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/product/prd.md",
+      "gate": "product",
+      "version": "0.5",
+      "sha256": "d1cd469b2d3e6a057296c611a1665a2337b957b77800afb402ba442fd30a37a0"
+    },
+    {
+      "path": "docs/design/specs/workbench-ux.md",
+      "gate": "design_spec",
+      "version": "0.5",
+      "sha256": "87ba96ce240f627e66220e5d6a67d7d118b1cae7b3ac36a3bbf333199a14608e"
+    },
+    {
+      "path": "docs/engineering/workbench-architecture.md",
+      "gate": "design_spec",
+      "version": "0.5",
+      "sha256": "f551acdd7b46b5e5d14f924f2178baf9a63abf6205b58d1ac49fca8f1f53ef79"
+    },
+    {
+      "path": "docs/engineering/verification.md",
+      "gate": "design_spec",
+      "version": "0.4",
+      "sha256": "c6b6385f5bb97231b488c057ee0c621f1a64e4a9fa993767e53aa725f6a78d64"
+    },
+    {
+      "path": "docs/operations/local-release-monitoring.md",
+      "gate": "design_spec",
+      "version": "0.3",
+      "sha256": "19a16a91b679c69c7af5d018f814500e9107925cbbd4aa7c52ca1b7e8b8864cd"
+    },
+    {
+      "path": "docs/engineering/spec-index.md",
+      "gate": "design_spec",
+      "version": "0.10",
+      "sha256": "71435b640146a8a7a1ee91c5565266db0a2da64ee502ad047713894f787bb0fd"
+    },
+    {
+      "path": "docs/decisions/0002-desktop-runtime.md",
+      "gate": "design_spec",
+      "version": "0002",
+      "sha256": "7f1711954a474de64fac9a2d8dc3a5fd41ff0b4d58b4c042e4fef211991d6b73"
+    },
+    {
+      "path": "docs/design/system.md",
+      "gate": "design_spec",
+      "version": "2026-09-27",
+      "sha256": "4697eb4961952ee85a4732ed77e5addbb17058a8b3d12485aa56158324f661a5"
+    },
+    {
+      "path": "docs/design/components.json",
+      "gate": "design_spec",
+      "version": "component-contract-v3",
+      "sha256": "76460f0cc7099ef6b628ce654994d89fc75e5e863d33c103daae8049493f2ed2"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": []
+}

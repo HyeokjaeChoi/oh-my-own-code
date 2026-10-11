@@ -1,0 +1,63 @@
+{
+  "revision": 28,
+  "scope": "exact6 startup maintenance component; acquisition cleanup held before original IO/factory; original closures and preceding60 recipe objects preserved",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "bytes": 307702,
+      "sha256": "99e3624fe19376ba6fb6bed604a90c9a8f60e4347f55d96a93c096a9681a785d"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "bytes": 32637,
+      "sha256": "cbc37f096952611c94ebc5f9958044800907cec5061781b0babf7ce8b1cc023d"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 26510,
+      "sha256": "64fe6ffe417303aaaa97e3452aaf32b9c6ceb352aa0d12d4e06c0ffdbdd46c9d"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "bytes": 46909,
+      "sha256": "9c26d878748647707482627caf246c2cf08a9e0ac6831ed750a5aa6fd1bc61de"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-startup-maintenance.test.mjs",
+      "bytes": 10593,
+      "sha256": "1b60f1be8dea94af7189f51a8d88e1e53b697b23d53cebcfa027477ca562ffb3"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+      "bytes": 20312,
+      "sha256": "db75a3aebb93e480e809a8039fdfcb06d815adb6d9401f48ac82b97c7510720c"
+    }
+  ],
+  "before_manifest": "prechange/startup-maintenance-before-r1/manifest.json",
+  "checks": {
+    "metadata": {
+      "log": "startup-maintenance-metadata-r1.log",
+      "pass": 530,
+      "exit": 0
+    },
+    "auxiliary": {
+      "log": "startup-maintenance-auxiliary-r1.log",
+      "pass": 23,
+      "exit": 0
+    },
+    "targeted": {
+      "log": "startup-maintenance-targeted-r1.log",
+      "pass": 44,
+      "exit": 0
+    },
+    "static": "startup-maintenance-static-r1.json",
+    "check_status": "startup-maintenance-check-status-r1.json"
+  },
+  "meaningful_red": "startup-maintenance-red-r1.log: original ToolOutput/Shell cleanup acquisition starts synthetic FS without Task",
+  "limits": [
+    "Real pinned Effect and extracted original source; FSUtil/Global/makeGlobalNode standins.",
+    "No actual Native/core/Main/Bun/browser/server/provider/network/GUI/build/private original execution or physical replay.",
+    "Control execution held, live inventory incomplete; component only, no full CODE gate.",
+    "Recipe62files249edits; preceding60 preserved; explicit cleanup unsupported until SAME Control Task/Scope authority exists."
+  ]
+}

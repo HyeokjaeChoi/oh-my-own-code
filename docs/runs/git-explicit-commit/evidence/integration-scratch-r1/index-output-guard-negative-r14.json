@@ -1,0 +1,17 @@
+{
+  "result": "pass",
+  "case": "Outside allowed evidence roots refuses before output creation",
+  "argv": [
+    "node",
+    "apps/desktop-app/scripts/git-index-probe.mjs",
+    "--out",
+    "/private/tmp/omoc-index-guard-negative-c032349a-79ab-4531-85dc-bd4c8948483e",
+    "--platform",
+    "darwin"
+  ],
+  "actual_exit": 1,
+  "output_created": false,
+  "source_before": "a953d164b5b48ed085fa6522301993d8ec2a07a193515e30f9b5b18cabbe6b35",
+  "source_after": "a953d164b5b48ed085fa6522301993d8ec2a07a193515e30f9b5b18cabbe6b35",
+  "diagnostic": "AssertionError at claim; no native/runtime setup reached"
+}

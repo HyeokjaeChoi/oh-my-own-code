@@ -1,0 +1,26 @@
+{
+  "finding": "L1-R1-01",
+  "changed_since_review": [
+    "apps/desktop-app/src/native-permission-leases.mjs",
+    "apps/desktop-app/src/native-permission-leases.test.mjs",
+    "apps/desktop-app/src/native-permission-task-observer.mjs",
+    "apps/desktop-app/src/native-permission-task-observer.test.mjs"
+  ],
+  "unchanged_since_review": [
+    "apps/desktop-app/src/event-host-resources.mjs",
+    "apps/desktop-app/src/native-permission-control-input.mjs",
+    "apps/desktop-app/src/native-permission-control.mjs",
+    "apps/desktop-app/src/native-permission-control.test.mjs"
+  ],
+  "correction": "Runtime Effect.withFiber identity registration before first effect, private original identity required by observe/start; end callback at capture. No new executor.",
+  "evidence": "Original actual f87... observer reproduced clone success while real Fiber remained live, per fresh worker. Current descriptor/prototype clone observer+registry regressions pass; real finalizer/IO wait preserved.",
+  "actual_end_callback_correction": {
+    "red": "Main executed caller-written actual Fiber._exit regression: true!==false, exit1; original task live.",
+    "fix": "Wait actual end callback privately installed at capture as well as Fiber.await; complete requires taskDone; close cannot bypass Fiber.await.",
+    "green": "Scoped observer22+lease12 =34/34 pass, final contracted96 unit pass; no Native/Bun/provider/build.",
+    "source_files": [
+      "apps/desktop-app/src/native-permission-task-observer.mjs",
+      "apps/desktop-app/src/native-permission-leases.test.mjs"
+    ]
+  }
+}

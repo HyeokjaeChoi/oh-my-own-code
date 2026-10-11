@@ -1,0 +1,22 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "design",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "source_sha256": "7a622ea223a2495933ee641ff476abde0efdea553210b42ec4eb47e6408d0476",
+    "verification_sha256": "6dabc8097b0fb39a5090b68f05a9f282c6f265121d8461ec274d052376fc96da",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "verdict": "pass",
+  "summary": "The live synthetic Workbench preview resolves both prior design findings. The ToolCall summary has no border and uses the shared 24px success badge; the result preview retains its own 1px boundary and declares ko-KR. Layout and wrapping remained legible without horizontal overflow at 320×720, 390×800, 600×800, 900×800, and 1280×800. The inert preview has no link role or keyboard stop. Speaker and event provenance, loading/error copy, and malformed-result fallback were also inspected in source.",
+  "open_findings": [],
+  "limits": "Review covers a static synthetic fixture and source inspection. Live streaming, permission cards, real SDK behavior, runtime error and recovery states, dark mode, 200% zoom, and screen-reader output were not tested. The running server bundle was not independently attested to the source hash.",
+  "provenance": {
+    "child_task_id": "/root/final_design_qa_r4",
+    "author_task_id": "/root",
+    "observed_runtime_identity": "unverified",
+    "report_only": true
+  }
+}

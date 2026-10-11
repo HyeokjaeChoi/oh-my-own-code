@@ -1,0 +1,8 @@
+# Actual host DTO/factory checkpoint
+Plan revision6 / storage-contract version5. Main verified actual source SHA256 matches the integration writer's returned checkpoint; see host-dto-freeze-v5.json. Host implementation remains in progress, no full source hash freeze yet.
+
+Snapshot requires observationSequence positive safe integer, revision nonnegative safe integer, recovery {store:{state:'ready'}|{state:'recovery_required',reason},resources:[{workspaceId,sessionId?,state:'unavailable',reason}]}, retainedOperations [{runtimeEpoch,operationId,type,workspaceId?,sessionId?}], temporary boolean. Session.status adds unavailable. Envelope unchanged. validateSnapshot(snapshot) returns same validated snapshot or INVALID_REQUEST; exact section12 reason exports in workbench-contract.mjs.
+
+Factory shape frozen: createWorkbenchService({runtime?,pickDirectory?,confirmTrust?,confirmSessionRemoval?,deadlineMs?,trustedTestAdapter?,registry?:RegistryHandle|Promise<RegistryHandle>,runtimeReady?:Promise<Runtime>,runtimeEpoch?:string,recoveryReason?:StoreRecoveryReason,bootstrap?:boolean}). Bootstrap defaults false and Main passes true only for a fresh empty durable store. Facade installs before registry/runtime promises settle; registry epoch matches injected host epoch. Runtime-ready rejection preserves recovery facade. Existing handle/cancelRead/closeSender/close remain. No further DTO/factory shape changes without coordinator handoff.
+
+Host writer reported contract tests3/3 pass. Main did not rerun full contract yet; actual APIs/readiness are distinct from full host runtime acceptance. Renderer and fixture consumers can implement disjoint source paths now; Main runs coherent11 checks after all source writers stop.

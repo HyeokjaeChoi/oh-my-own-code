@@ -1,0 +1,155 @@
+{
+  "schema_version": 2,
+  "run": "durable-workbench-storage",
+  "reviewer": "design_spec_reviewer",
+  "plan_revision": 6,
+  "reviewed": {
+    "contract_sha256": "b92ef6b7b7e22f64151402a357e908a73799a1815e38c75448f8601f32159b0d",
+    "documents_sha256": "12869374016a95129243a92ed6cb258cdef15a0f5d0089b1495b453d14a2d912",
+    "gate": "design_spec",
+    "plan_sha256": "640b6c072bc358cce8e0d5e44b2998ce3be06d57526f21a2320a17c0ef241212",
+    "schema_version": 2
+  },
+  "verdict": "pass",
+  "summary": "Plan revision 6과 storage-contract version 5의 design_spec 검토를 통과합니다. Section 12가 P7-DS-V4-1의 recovery 전달 계약을 해소합니다. Original-epoch receipt key, current transport, native ready 이전 facade, global/resource 차단, unavailable partial mapping과 clock 규칙이 sections 9·10과 일관됩니다. 구현 전에 필요한 추가 계약 공백을 찾지 못했습니다.",
+  "open_findings": [],
+  "changed_concern_judgment": {
+    "id": "P7-DS-V4-1",
+    "result": "resolved",
+    "evidence": [
+      {
+        "path": "docs/runs/durable-workbench-storage/storage-contract.md",
+        "lines": [
+          135,
+          140,
+          170,
+          172
+        ],
+        "result": "필수 recovery와 retainedOperations, closed reason 목록, unavailable session 상태, 원래 mutation kind와 scope를 정의합니다. 정상 ready 목록은 완전해야 합니다. 초과 상태는 retained_limit로 전역 차단하며 표시하지 못한 hold도 host가 유지합니다."
+      },
+      {
+        "path": "docs/runs/durable-workbench-storage/storage-contract.md",
+        "lines": [
+          174,
+          176
+        ],
+        "result": "Native ready 이전 metadata-only facade가 snapshot과 lookup을 제공합니다. Bootstrap은 현재 transport epoch를 수립합니다. Lookup envelope는 현재 epoch를 사용하고 nested key는 원래 receipt epoch와 operationId를 보존합니다. Payload 재구성, 자동 resend와 permission hydration을 금지합니다."
+      },
+      {
+        "path": "docs/runs/durable-workbench-storage/storage-contract.md",
+        "lines": [
+          178,
+          180,
+          182
+        ],
+        "result": "전역 및 resource 차단 범위, 기존 UNAVAILABLE 응답, atomic snapshot acceptance와 host reconciliation 조건을 정의합니다. 필요한 host·renderer·fixture acceptance도 지정합니다."
+      }
+    ]
+  },
+  "assessments": [
+    {
+      "concern": "Recovery facade와 transport failure",
+      "result": "Startup 차단은 ok:true recovery snapshot으로 전달합니다. 실제 IPC/facade 부재는 기존 UNAVAILABLE로 구분합니다. Owner conflict에서는 journal을 열지 않고 revision 0의 빈 검증 projection을 반환합니다. 다른 owner의 live journal을 읽지 않는 규칙과 일관됩니다."
+    },
+    {
+      "concern": "Retained receipt와 unknown hold",
+      "result": "빈 renderer가 retained key로 operation projection을 구성할 수 있습니다. Missing lookup은 hold를 해제하지 않습니다. Historical receipt는 현재 revision floor를 높이지 않습니다. Confirmed receipt만으로 미해결 native-execution hold를 해제하지 않는 규칙도 명확합니다."
+    },
+    {
+      "concern": "Global/resource mutation 차단",
+      "result": "Store recovery는 모든 mutation, admission append와 native launch를 차단합니다. Resource recovery는 해당 resource, descendants 및 shared workspace를 건드리는 작업을 차단합니다. Cross-resource 작업은 대상 중 하나라도 unavailable이면 차단합니다. Host enforcement와 renderer control 비활성화의 책임이 연결됩니다."
+    },
+    {
+      "concern": "Partial mapping과 atomic publication",
+      "result": "Section 9의 exact verified partial mapping은 unknown receipt와 같은 completion record로 공개합니다. Section 12는 이를 partial_native_mapping 및 session unavailable로 전달합니다. Completion flush 실패 시 prior committed root와 unknown hold를 유지하므로 candidate mapping을 성공으로 노출하지 않습니다."
+    },
+    {
+      "concern": "Clock와 freshness",
+      "result": "Recovery·retained key·lists·health에 같은 atomic acceptance를 적용합니다. 낮은 durable revision, 오래된 sequence와 잘못된 epoch를 먼저 거절합니다. Metadata-only observation은 journal append 없이 sequence를 증가시킵니다. Connected/idle, 늦은 callback 또는 interrupt ACK만으로 recovery와 unknown hold를 해제할 수 없습니다."
+    },
+    {
+      "concern": "Sections 9·10의 기존 소비 규칙",
+      "result": "Committed-root publication, receipt floor와 observation order 분리, bootstrap-only epoch reset, slow payload의 독립 freshness 및 interrupt notice 규칙을 유지합니다. Section 12가 이 규칙을 우회하는 별도 상태 저장소나 clock를 추가하지 않습니다."
+    },
+    {
+      "concern": "구현 순서와 범위",
+      "result": "Journal/owner API checkpoint 뒤 단일 host writer가 facade와 DTO를 확정합니다. Renderer와 fixture는 그 이후 소비합니다. F-01–18, Electron, OpenCode v2, macOS+Windows 및 sole Zustand store를 유지합니다. 아직 없는 구현을 결함으로 판정하지 않았습니다."
+    }
+  ],
+  "checks": [
+    {
+      "check": "Exact reviewed binding",
+      "result": "읽기 전용 review-input을 두 번 실행했습니다. 두 결과 모두 지정된 design-spec-review-v5.input.json과 정확히 일치합니다."
+    },
+    {
+      "check": "Packet SHA256",
+      "result": "Plan, raw contract.json, storage-contract v5, solo_reader.toml, 두 selected skill과 roles.json의 실제 SHA256이 packet 값과 모두 일치합니다. Raw contract hash와 reviewed의 normalized contract hash는 각 용도에 맞게 확인했습니다."
+    },
+    {
+      "check": "Run status",
+      "result": "Run은 active입니다. 현재 plan ENTRY는 review-input의 선행 검증을 통과했습니다. 아직 없는 implementation checks와 code/design gate는 이 design-before-source 검토의 결함으로 처리하지 않았습니다."
+    },
+    {
+      "check": "Acceptance registration",
+      "result": "Contract의 11개 check와 host·renderer·hidden UI acceptance 연결을 읽었습니다. 어떤 check도 실행하지 않았습니다."
+    }
+  ],
+  "review_boundary": {
+    "mode": "fresh_independent_changed_concern_design_spec_review",
+    "plan_revision": 6,
+    "document_version": 5,
+    "input_path": "docs/runs/durable-workbench-storage/execution/design-spec-review-v5.input.json",
+    "packet_path": "docs/runs/durable-workbench-storage/execution/design-spec-review-v5.packet.json",
+    "prior_review_path": "docs/runs/durable-workbench-storage/design-spec-review-v4.json",
+    "plan_review_path": "docs/runs/durable-workbench-storage/plan-review-r6.json",
+    "focus_sections": [
+      9,
+      10,
+      12
+    ],
+    "retained_boundaries": [
+      "Main은 app metadata와 receipts를 소유하고 OpenCode는 native database·transcript·inbox를 소유합니다.",
+      "Native SQLite와 app journal은 별도 commit domain입니다. Exactly-once와 power-loss durability를 주장하지 않습니다.",
+      "기존 데이터, imported paths, unresolved holds와 migration source를 보존합니다.",
+      "Autonomous local authorization과 background-only OS synthetic fixture 조건을 유지합니다."
+    ],
+    "evidence_limits": [
+      "정적 문서 검토, 기존 DTO의 소비 경계 확인과 읽기 전용 hash 검증만 수행했습니다.",
+      "구현 완료, rendered UI, OS enforcement, Windows runtime, authenticated provider 또는 migration 성공을 입증하지 않습니다.",
+      "Native pending-inbox 안전성과 lossless migration의 기존 compatibility hold를 유지합니다."
+    ],
+    "next_dependency": "Main이 이 JSON을 저장하고 design_spec review를 등록합니다. 정확한 binding의 handoff 확인 뒤 plan 순서에 따라 source consumers를 진행합니다. 추가 사용자 승인은 필요하지 않습니다."
+  },
+  "provenance": {
+    "child_task_id": "01a10694-b1f5-7623-99a8-95310a7e9ce3",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-design-spec-review"
+    ],
+    "mode": "report_only",
+    "runtime_identity_attested": false,
+    "runtime_model_effort_attested": false,
+    "sandbox_enforcement_attested": false,
+    "os_runtime_proof": false,
+    "delegated": false,
+    "files_changed": [],
+    "report_written": false,
+    "ledger_changed": false,
+    "tests_run": false,
+    "lint_run": false,
+    "builds_run": false,
+    "native_launches": false,
+    "gui_launches": false,
+    "computer_use_used": false,
+    "foreground_actions": false,
+    "provider_calls": false,
+    "private_migrations": false,
+    "read_only_hashing_performed": true,
+    "binding_verified_twice": true,
+    "packet_and_document_hashes_verified": true,
+    "persistence_owner": "main"
+  }
+}

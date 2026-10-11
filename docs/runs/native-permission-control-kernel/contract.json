@@ -1,0 +1,69 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "K1",
+      "description": "Explicit boot-held global service and bounded sorted Fiber-scoped transactions"
+    },
+    {
+      "id": "K2",
+      "description": "Meaningful Node checks and genuine independent CODE; no execution enforcement claim"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "apps/desktop-app/src/native-permission-control.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Private boot-held Effect transaction kernel only; no Native or production integration",
+      "acceptance_ids": [
+        "K1",
+        "K2"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/native-permission-control.mjs",
+        "apps/desktop-app/src/native-permission-control.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Private boot-held Effect transaction kernel only; no Native or production integration",
+      "acceptance_ids": [
+        "K1",
+        "K2"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/native-permission-control.mjs",
+        "apps/desktop-app/src/native-permission-control.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Private boot-held Effect transaction kernel only; no Native or production integration",
+      "acceptance_ids": [
+        "K1",
+        "K2"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

@@ -1,0 +1,438 @@
+2026-09-29T04:03:59.819535Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/hyukjaechoi/.codex/plugins/cache/codex-hud/codex-hud/0.9.6+codex.20260919062821/.codex-plugin/plugin.json
+2026-09-29T04:03:59.821913Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/hyukjaechoi/.codex/plugins/cache/codex-hud/codex-hud/0.9.6+codex.20260919062821/.codex-plugin/plugin.json
+2026-09-29T04:03:59.838904Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-09-29T04:03:59.838957Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-09-29T04:03:59.860517Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-09-29T04:03:59.862955Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-09-29T04:03:59.865081Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-09-29T04:03:59.867317Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-09-29T04:03:59.868726Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-09-29T04:03:59.870210Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-09-29T04:03:59.889625Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/hyukjaechoi/.codex/.tmp/marketplaces/codex-hud/plugins/codex-hud/.codex-plugin/plugin.json
+OpenAI Codex v0.154.0
+--------
+workdir: /Users/hyukjaechoi/Projects/oh-my-own-code
+model: chatgpt-web/gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a0eb55-6ec5-76b1-a305-59190ba281a1
+--------
+user
+Fresh independent reader. Read .codex/agents/solo_reader.toml,
+.agents/skills/solo-specialist/SKILL.md and solo-plan-review/SKILL.md.
+Do not edit, run tests, read logs/credentials, start services or delegate.
+
+Bounded changed-concern plan review ONLY. Read these five files under
+docs/runs/desktop-session-lifecycle: plan.md revision 2, interface.md version 2,
+plan-binding.json, plan-review.json (previous revision pass), and
+design-spec-review.normalized.json (two subsequent contract findings).
+Use contract.json only if needed to confirm unchanged check scope. Do not
+repeat repository exploration or installed SDK discovery: the prior review
+established session.list({parentID,limit,cursor}) and cursor.next pagination.
+
+Judge whether revision 2 resolves the two findings without changing scope:
+authoritative descendant/absence proof and unknown-receipt-specific duplicate
+failure. Current local intent, Electron/platform/storage limits and all checks
+remain as previously approved. The plan allows a linked sequential review,
+but this invocation reviews the plan only: the public ledger requires current
+plan pass before re-registering the updated design artifact. Separate narrow
+design-spec verification will follow, then implementation. No extra ceremony.
+
+Return ONLY JSON (no Markdown escapes/fence): schema_version:2,
+reviewed:<exact plan-binding.json>, verdict:pass|changes_requested|blocked,
+summary, open_findings:[], provenance:{child_task_id:
+"cli:session-lifecycle-plan-r2-independent",author_task_id:"coordinator"}.
+The child ID is a task label, not a runtime attestation. Concrete blockers only.
+
+2026-09-29T04:04:00.139161Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/hyukjaechoi/.codex/plugins/cache/codex-hud/codex-hud/0.9.6+codex.20260919062821/.codex-plugin/plugin.json
+2026-09-29T04:04:00.140086Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/hyukjaechoi/.codex/plugins/cache/codex-hud/codex-hud/0.9.6+codex.20260919062821/.codex-plugin/plugin.json
+2026-09-29T04:04:00.162820Z  WARN codex_skills::interface: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-09-29T04:04:00.162845Z  WARN codex_skills::interface: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-09-29T04:04:01.083873Z ERROR codex_api::endpoint::responses_websocket: failed to connect to websocket: HTTP error: 426 Upgrade Required, url: ws://127.0.0.1:17841/v1/responses
+2026-09-29T04:04:01.083992Z  WARN codex_core::client: falling back to HTTP
+warning: Skill descriptions were shortened to fit the skills context budget. Codex can still see every skill, but some descriptions are shorter. Disable unused skills or plugins to leave more room for the rest.
+exec
+/bin/zsh -lc 'cat .codex/agents/solo_reader.toml
+cat .agents/skills/solo-specialist/SKILL.md
+cat .agents/skills/solo-plan-review/SKILL.md
+cat docs/runs/desktop-session-lifecycle/plan.md
+cat docs/runs/desktop-session-lifecycle/interface.md
+cat docs/runs/desktop-session-lifecycle/plan-binding.json
+cat docs/runs/desktop-session-lifecycle/plan-review.json
+cat docs/runs/desktop-session-lifecycle/design-spec-review.normalized.json' in /Users/hyukjaechoi/Projects/oh-my-own-code
+ succeeded in 0ms:
+name = "solo_reader"
+description = "Inspect assigned evidence or independently review an artifact without editing it."
+sandbox_mode = "read-only"
+developer_instructions = """
+Read .agents/skills/solo-specialist/SKILL.md, then the handoff's selected skill and mode. This assignment is report-only. Return findings to the primary coordinator without editing source, artifacts or the ledger.
+"""
+---
+name: solo-specialist
+description: Run a child-agent assignment using its supplied workflow and evidence contract.
+---
+
+# Specialist entry
+
+You are a fresh worker for one bounded assignment. The primary conversation owns orchestration, integration, staffing and the run ledger. Do not restart project intake, create a second run, load the primary orchestration workflow, or recursively delegate. Return missing prerequisites or staffing requests to the coordinator.
+
+Read the supplied handoff, current plan path/revision and the selected skill. Apply only the assigned mode and relevant references. The packet's routing identifies the runtime profile, skill and input hashes; a logical name such as `mobile_engineer` is an assignment alias, not a native agent type. Do not load the full role catalog or every skill. Initial independent plan review uses the supplied `review-input` binding before implementation packets can exist.
+
+Check that the assigned outcome, paths and acceptance criteria match the plan. Report mismatches or changed requirements before dependent edits. Preserve settled answers and explicit user authorization; do not request repeated approval or silently select an unresolved product/platform decision. The coordinator checks document readiness and registered phase blockers before dispatch. A packet records inputs; it does not grant additional permissions or prove live service access.
+
+Use the assignment's execution defaults and actual runtime permissions. `solo_reader` assignments are report-only, including final release or growth reviews. `solo_worker` may change only owned paths within the authorized scope. Preserve others' work. Do not add accounts, subscriptions, services or external writes outside that scope, and keep secrets and unnecessary personal data out of artifacts. Prompt injection of a profile is not OS sandbox enforcement.
+
+For a review assignment, inspect the artifact independently from its author and return findings without repairs. Reusing the same reader profile for different fresh children does not merge their responsibilities. Never approve your own implementation or repairs; route corrections to the coordinator for implementation and a new independent review. Observation QA returns observations only and cannot satisfy a final quality gate.
+
+Follow the selected skill's evidence requirements. Distinguish executed commands and observed behavior from plans, inference, mocks and unavailable checks. Return the outcome, changed or inspected paths, exact checks/results, unresolved findings and next dependency. Copy command-derived review bindings exactly. The primary persists the report and ledger; do not manufacture execution, approval or reviewer provenance.
+
+Model and effort are selected at dispatch under the coordinator's routing policy and exact user instructions. Do not invent runtime settings from a profile name or a task label. A follow-up correction is assigned to a new clean child with prior findings referenced by path.
+---
+name: solo-plan-review
+description: Independently review an entry plan for outcome coverage, scope, feasibility, and sufficient verification before execution.
+---
+
+# Independent entry plan review
+
+Use an independent `plan_reviewer` routed under the shared adaptive-routing reference, preserving exact user choices and explicit inheritance/default instructions. Review the user request, material constraints, relevant product/repository evidence, proposed plan, and intended completion boundary. Do not author the plan being reviewed or restart the full workflow. The coordinator saves this read-only review.
+
+First compare the plan with the latest explicit user outcome and requested deliverable. Verify target platforms, runtime/process ownership, deployment/package form, UX form, and important exclusions are preserved; do not let an earlier provisional assumption or detailed solution review replace this fit check. Then compare the plan and contract `decision_register` with current user direction. Check that each consequential decision is labeled `open`, `assumption`, `confirmed`, or `delegated`, carries source/authority and impact, and blocks dependent phases while unresolved. Confirm that a choice was not silently promoted because a research report exists, specialists agreed, or implementation has begun. The register is an enforcement aid, not proof of completeness: identify consequential decisions from the user request even when they are omitted. A user's explicit correction supersedes the prior plan and requires an updated plan, register, and review before dependent work.
+
+Only after goal and decision fit, check acceptance criteria, supported assumptions, appropriate release scope, and a feasible smaller alternative where relevant. For consequential platform/runtime/security-boundary choices, require credible alternatives compared against explicit criteria and tradeoffs, a reasoned recommendation or an open decision with dependent work held, and user delegation when the coordinator is to choose. A technology list or successful prototype alone is not an ADR or authorization. Routine decisions within an approved architecture need no duplicate analysis. Then inspect affected concerns: user states and accessibility for design; contracts, dependencies, migrations, and failures for engineering; entitlement lifecycle for monetization; evidence and denominators for analytics/growth; artifact, target, recovery, and observation for releases. Verify that each claimed test or evidence source actually covers the runtime, OS, security boundary, and target behavior being claimed. A browser bridge probe cannot prove desktop sidecar ownership or process cleanup; static compatibility review cannot prove packaging or runtime enforcement.
+
+Verify the task-plan SSOT at `docs/runs/<run-id>/plan.md`: current revision, confirmed requirements and decisions, source/delegation for consequential assumptions, open questions and dependency holds, and change history. Questions that affect the next implementation step must be answered or explicitly delegated before that work starts; silence is not confirmation. Check current user direction against the document and every handoff's plan path/version. Avoid requiring further user approval for an already authorized, sufficiently clear task.
+
+Each assignment needs an owner, inputs, bounded outputs/files, dependencies, and evidence that can establish completion. Confirm that code/design review is independent of implementation, tests exercise the intended behavior, and the plan distinguishes local preparation from authorized external actions. Identify missing access without turning it into approval for unrelated work.
+
+PRD delivery needs independent `product_reviewer` review. Design documents need `design_spec_reviewer` review before dependent implementation. Require document registration and the corresponding `handoff` check before assigning consumers; preserve separate actual-UI QA and fresh final reviews after implementation/checks.
+
+When `NO-RUN`, missing capability, or repeated non-advancing corrections occur, require classification of requirement uncertainty, wrong approach, implementation defect, and tool/access failure before another retry. Additional effort alone is not a corrective strategy.
+
+Return one of `pass`, `changes_requested`, or `blocked`, with concrete findings, impact, and required corrections. A small task needs only a short review. Mark preferences as optional; do not invent blockers to fill a checklist. Revised plans need review of their changed concerns. Record the exact plan path/version and do not reuse a verdict after its scope changes. For the compact micro-change path, confirm the 1–2 file, no-behavior-change criteria; otherwise return `changes_requested`.
+
+The coordinator registers the actual report using the harness `review` command with gate `plan` and reviewer `plan_reviewer`. A model verdict is not user authorization to purchase, publish, communicate externally, or change production data.
+# Desktop session lifecycle and local execution records
+
+Revision 2. Date 2026-09-29. Parent: build-delivery, full PRD v0.6 F-01–18.
+
+## Outcome and authority
+
+Continue the user's explicit autonomous desktop work following the core
+workbench integration. Preserve Electron, macOS/Windows targets, the owned
+OpenCode v2 sidecar, assistant-ui, Tool UI, existing tokens and module boundaries.
+This increment adds session search, rename, pin, archive/restore, history fork,
+explicit conversation deletion and a bounded local activity/diagnostics panel.
+It advances F-04/F-16 and does not reduce the full product/release scope.
+
+The current user instruction authorizes local development, disposable tests,
+native app execution and packaging. It does not select a permanent data path,
+authorize use of personal provider credentials, or waive project-file safety.
+Session organization remains within the existing temporary runtime. Persistent
+storage/retention, full worktree deletion, browser/PTY/Git, extension management
+and remaining parent acceptance continue separately. Do not call app archive
+state a durable SDK archive or the local activity view a provider billing log.
+
+## Decisions and scope
+
+- Extend the existing closed IPC union; the renderer never chooses a raw SDK
+  session ID or executes an arbitrary method. Main validates workspace/session
+  ownership, exact keys and bounded values for every request.
+- Native confirmation occurs immediately before conversation removal. The
+  dialog explains that app/session conversation history is removed while
+  project files remain. Never implement folder or worktree deletion here.
+  A session with descendants cannot be removed through this bounded operation;
+  check both the app registry and the authoritative paginated SDK child list
+  before confirmation and immediately before removal. Unknown or incomplete
+  child-list state also blocks removal. Do not assume SDK cascade safety.
+- Rename and history fork use the installed SDK's exact APIs. Fork retains
+  history and is labelled distinctly from an empty new session. Reapply and
+  read back the existing ask/deny policy on the child before exposing execution.
+  No model/provider call is needed to create, inspect or organize sessions.
+- Pin and archive are application presentation metadata in the temporary
+  registry, not a new persistent store. Archived conversations remain readable
+  and can be restored; main refuses sends/commands to them until restored.
+- All lifecycle changes require an idle, known target and lock their workspace
+  during the operation. Read active/inbox status before destructive or history
+  mutation; UI disabled states alone are insufficient. Unknown transport
+  outcomes are recorded and never automatically retried.
+- Lifecycle requests have bounded request IDs and receipt/fingerprint handling.
+  Duplicate submission must not create a second fork or repeat deletion. A
+  conflicting reuse fails. Unknown duplicates return UNKNOWN_OUTCOME, known
+  failures return their saved fixed failure, and only known-success duplicates
+  return a current safe snapshot. Keep removal receipts after deleting app
+  session registration. Receipt exhaustion fails explicitly rather than
+  silently evicting and replaying old effects.
+- Record only bounded local operation metadata: main-created event ID, time,
+  operation, known app IDs, duration, fixed result/error code. Exclude prompt,
+  tool output, path, credentials, raw SDK errors and provider payloads. Polls
+  do not flood the event list. Expose dropped-record counts honestly.
+
+## Architecture
+
+The existing ADR-0001/0002 still governs module and state ownership. No new
+framework, package, runtime process or build system is needed. Main owns
+authoritative sessions, lifecycle receipts and operation observations. Renderer
+owns search/filter/menu/form state and renders snapshots; it cannot establish
+completion from an action click. Add focused host helpers only when they reduce
+service coupling. New renderer features use public FSD slice entrypoints.
+
+Alternatives: using a second browser store for session truth was rejected
+because stale permission/ownership state would diverge; writing organization
+state to an arbitrary permanent file was rejected because data location and
+retention are unresolved. The reversible app-session registry preserves current
+behavior and leaves an explicit seam for later storage selection.
+
+The typed contract in interface.md is the design-spec SSOT for these additions.
+Source changes start only after core final review settles and this plan plus
+the interface receive independent passes. Reviews do not replace native tests.
+
+## Acceptance
+
+- AC-1: Closed lifecycle requests enforce ownership, bounds, idle/known state,
+  duplicate/conflicting IDs, cancellation, and no project-file deletion. Rename
+  and fork use representative installed SDK shapes; fork policy is checked.
+- AC-2: Actual desktop UI supports search, pinned ordering, rename, archive
+  filter/restore, clearly labelled history fork and native-confirmed deletion.
+  Selection/drafts/transcripts stay attached to the right session; archived
+  sessions cannot execute. Menu/form keyboard/focus behavior is usable.
+- AC-3: Local activity view shows actual main-process observations with bounded
+  retention, a dropped count, session filter, duration/status and empty/error
+  states. Tests prove prompt/path/auth payloads never appear in this DTO.
+- AC-4: Existing core behavior, host/preload/security/lifecycle, safe preview,
+  assistant-ui/Tool UI and module boundaries keep passing. Unit, type, lint,
+  format, build, bundle, boundary and actual Electron scenarios pass.
+- AC-5: Local macOS package matches the tested build and runs; current captures
+  support independent code/design final reviews. Remaining Windows/provider/
+  permanent-storage/full-release limits stay explicit in the outcome.
+
+## Execution and ownership
+
+1. Primary registers plan, checks and interface; a fresh reader reviews plan,
+   followed by a separately bound design-spec pass. For the linked contract
+   clarifications in revision 2, one fresh bounded reader may judge the plan
+   first, then the interface only if its plan verdict passes, returning separate
+   exact-bound reports. The coordinator registers plan before design-spec and
+   before implementation, recording the actual invocation and ordering.
+   The completed core increment remains the implementation baseline.
+2. Backend worker: workbench-service.mjs, workbench-contract.mjs,
+   desktop-bridge.d.ts, main.mjs native confirmation, a focused host lifecycle
+   helper if justified, and new workbench-session.test.mjs. Preserve all prior
+   safeguards and existing test semantics. No renderer edits or ledger writes.
+3. Renderer worker: renderer/app, new renderer/features/sessions and activity
+   slices, necessary conversation archive disable state, renderer.css, and
+   focused projection tests. Consume frozen DTOs. No host/package/ledger edits.
+4. Primary integrates, adds e2e-session-lifecycle.mjs using disposable real
+   sidecar sessions/native-dialog substitution and extends test-only renderer
+   fixtures only as required. Capture actual UI and correct failures before
+   final checks, local packaging and frozen independent code/design reviews.
+
+Use disjoint fresh worker contexts and one bounded independent reader per
+changed concern. Supported CLI routes are acceptable when native agent slots
+are unavailable; record observed routing rather than claiming profile labels
+attest model identity. Corrections use a new independent review invocation.
+
+The first useful feedback is a real desktop session renamed/forked/archived,
+with a preserved sentinel project file after confirmed conversation removal.
+If the SDK produces different fork/location/removal behavior, stop that path,
+inspect its installed contract and revise the affected design; do not loosen
+ownership checks or hide failed outcomes.
+
+## Dependency holds and verification limits
+
+No unresolved user choice blocks temporary session organization or local
+diagnostics. Permanent data path/retention and native Windows evidence still
+block their own parent outcomes. Existing provider authentication stays outside
+this increment. All filesystem effects in tests use owned disposable fixtures.
+The actual application presents native confirmation before any user-triggered
+history deletion; development never deletes real user project files.
+
+History: revision 1 defines the next independent desktop increment after core
+runtime/layout corrections, retaining prior user selections and full scope.
+Revision 2 resolves the independent contract review's descendant/pagination and
+unknown-duplicate findings. No product scope, platform, storage decision or
+acceptance check was removed. Linked changed-concern review is consolidated
+without combining authorship and judgment or skipping either bound gate.
+# Desktop session lifecycle contract
+
+Version 2. Additions to desktop-workbench-core interface v2; existing request
+and security contracts remain in force. Preload continues forwarding only the
+same closed workbench operation entrypoint and compatible runtimeSnapshot.
+
+## Requests and results
+
+All five lifecycle mutations include workspaceId, sessionId and requestId, using
+the existing opaque app-ID syntax. Unknown/extra keys and invalid primitives
+fail before effects. requestId is 1–128 bounded identifier characters. Each
+result is WorkbenchResult<WorkbenchSnapshot> on known success, or a fixed
+failure, including CANCELLED/BUSY/UNKNOWN_OUTCOME. Unknown outcomes never imply
+an accepted fork/delete. No automatic replay.
+
+- session.rename: also title, trimmed nonempty string, at most120 characters,
+  no control characters. Calls session.update({sessionID,title}), then get to
+  verify identity, location and title. The actual snapshot is authoritative.
+- session.pin: also pinned:boolean. Main changes its app registry field.
+- session.archive: also archived:boolean. Main changes app presentation state;
+  true hides the session from ordinary navigation. It remains readable.
+- session.fork: optional title with the same validation; no arbitrary before
+  message ID in this increment. Calls session.fork({sessionID}) for a complete
+  history fork, validates the returned new ID and location, registers a new
+  opaque ID, applies/read-backs baseline permissions and optional rename.
+  Return the child selection; retain parent linkage as an opaque app ID.
+- session.remove: no extra fields. Native confirmation defaults to cancellation
+  and identifies the session title plus affected workspace. After confirmation,
+  recheck identity/path/active inbox; only then call session.remove({sessionID}).
+  In addition to refusing registered descendants, query the authoritative SDK
+  session.list({parentID: targetSdkId, limit:100, cursor?}) before confirmation
+  and again immediately before remove. Use no directory/search filter that
+  could hide children. Any child blocks removal with HAS_DESCENDANTS. Proving
+  no children requires exhausting cursor.next, including empty pages with a
+  next cursor. Malformed pages, repeated/invalid cursors, read failures or a
+  defensive limit of 100 pages fail closed with DESCENDANTS_UNVERIFIED. An
+  unknown fork can have created a child not present in the app registry.
+  Verify absence only through the installed typed SessionNotFoundError from
+  session.get for that exact target, or an exhaustive validated SDK list scan
+  with the same bounded cursor rules. A generic get error or one-page list
+  absence never proves deletion. If absence cannot be verified after dispatch,
+  retain an UNKNOWN_OUTCOME receipt and block replay; do not erase registration.
+  Never remove workspace folders or other registered sessions. Return the same
+  workspace and an existing nonarchived session or no selected session.
+- diagnostics.list: workspaceId?:string, sessionId?:string. A supplied session
+  requires its workspace; validate current registration and ownership. This
+  read is not a lifecycle mutation and has no requestId.
+
+The five lifecycle mutation types (rename/pin/archive/fork/remove) are distinct
+from diagnostics.list. Both target and workspace are locked during a mutation;
+reject active, stopping, unknown or locked sessions. Re-read active/inbox before
+SDK mutations, and again after native confirmation. Archived sessions must be
+restored before message.send/command.run; a fixed ARCHIVED_SESSION code conveys
+that condition. No change to permission modes, subagent policy or auth.
+
+Store bounded lifecycle receipts independently of live session records so
+removal does not erase duplicate protection. Fingerprint the full normalized
+operation. An exact duplicate of a known-success receipt returns a current safe
+snapshot without another effect. An exact duplicate of a known failure or
+cancellation returns the same fixed failure without another effect or dialog.
+An in-flight duplicate returns BUSY. An exact duplicate of an unknown receipt
+returns the fixed UNKNOWN_OUTCOME failure, never an ordinary successful
+snapshot. No deterministic reconciliation is introduced in this increment, so
+that unknown receipt remains unknown for the runtime lifetime. Different
+content under the same request ID fails DUPLICATE_CONFLICT. Fail with
+LIMIT_REACHED at capacity, rather than evicting receipt IDs and permitting
+re-execution. A request for a removed/foreign session cannot use a receipt from
+another target. The renderer creates a new ID only for a new user action.
+
+## DTO additions
+
+WorkbenchSession adds optional pinned:boolean, archived:boolean and
+parentSessionId:string. The production host supplies booleans; optional fields
+keep existing fixture/consumer compatibility. Missing fields mean false/no
+known parent. App organization is explicitly temporary, not SDK persistence.
+
+WorkbenchDiagnostics is:
+
+```
+{
+  startedAt: number,
+  observedOperations: number,
+  errors: number,
+  unknownOutcomes: number,
+  droppedEvents: number,
+  events: {
+    id: string, timestamp: number, operation: string,
+    workspaceId?: string, sessionId?: string,
+    status: 'ok'|'error'|'unknown'|'cancelled',
+    durationMs: number, code?: string
+  }[]
+}
+```
+
+Retain at most500 mutation observations, plus aggregate counts and a visible
+dropped-record count. A session-filtered read returns matching events but
+clearly labels aggregate counters as app-wide. Use a monotonic duration clock
+and bounded finite values. No prompt/body/tool result, raw path, URL, auth,
+credential, stack or SDK error text may enter this DTO. Malformed/unowned
+requests are not permitted to inject arbitrary IDs/operation strings into
+records. This is local app observation, not durable event replay, actual model
+token usage or estimated provider billing.
+
+## Renderer interaction
+
+Navigation provides a labelled text search and active/archived view. Pinning
+orders sessions before unpinned entries without changing selected IDs. Session
+actions are accessible buttons/menu with Escape close and focus return; rename
+uses a labelled form and nonempty validation. Avoid nested interactive buttons.
+Distinguish history fork from +new empty session. A restored session can be
+selected; archive/remove picks a valid same-workspace successor, clears stale
+projection and does not leak the previous draft into another session.
+
+Archived selection is read-only; main enforces this even for stale UI requests.
+Busy/unknown sessions show unavailable actions. Removal's dialog comes from
+main and is never represented as complete until authoritative success. Failed
+fork/removal does not optimistically erase or create sessions. Local activity is
+a separate right-panel feature with filter, empty, loading and error states,
+mapped through the public typed bridge API. Existing file/catalog behavior,
+safe Tool UI, composer visibility and keyboard navigation remain intact.
+{
+  "contract_sha256": "fd522f10ce568f5d41176e257d146541ee63e32e02a8a6bd523dfeb5e3a86137",
+  "gate": "plan",
+  "plan_sha256": "e1e45230b7f6dcab8b28ac8e29d0ca2c4e037814fbe825b8f56f1ed3eea3e7a1",
+  "schema_version": 2,
+  "source_sha256": "a43b573d8cebecb5dcb2cb5605f84bcbe69e11143cde2c27e1242e81dd24c687"
+}
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "a088fda9a0f9b3837c5cab2589db8a930b655dbed299131e027820ed265d2a3f",
+    "gate": "plan",
+    "plan_sha256": "ca754d84873240fbee60690fcec33546642a114de5e47413acd7338e42afaf89",
+    "schema_version": 2,
+    "source_sha256": "a43b573d8cebecb5dcb2cb5605f84bcbe69e11143cde2c27e1242e81dd24c687"
+  },
+  "verdict": "pass",
+  "summary": "The execution plan fits the approved Electron desktop scope and contains no concrete blocking flaw. Installed @opencode/client 2.0.18 declarations support the required session.get, session.update, session.fork and session.remove shapes, including title/permissions updates and SessionInfo location/parent data. Main-process ownership, explicitly temporary pin/archive/diagnostic state, archive execution guards, idle/known/locked checks, unknown-outcome handling, non-evicting idempotency receipts, native-confirmed conversation deletion with project-file preservation, bounded redacted diagnostics, regression/native/package checks, sequencing and disjoint backend/renderer ownership are specified. Permanent retention and native Windows evidence remain parent limits. This verdict approves the execution plan only; the separately bound design-spec gate for interface.md still follows registration.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "cli:session-lifecycle-entry-independent",
+    "author_task_id": "coordinator"
+  }
+}
+{  
+"schema_version": 2,  
+"reviewed": {  
+"contract_sha256": "a088fda9a0f9b3837c5cab2589db8a930b655dbed299131e027820ed265d2a3f",  
+"documents_sha256": "9ac99b9491820183db6d65fb932ce2ae6b06bca7b86231fb95a68a09f9551434",  
+"gate": "design_spec",  
+"plan_sha256": "ca754d84873240fbee60690fcec33546642a114de5e47413acd7338e42afaf89",  
+"schema_version": 2  
+},  
+"verdict": "changes_requested",  
+"summary": "The closed lifecycle IPC, ownership/locking, validation, archive execution guards, native confirmation, diagnostics redaction, renderer behavior and FSD boundaries are substantially specified and align with the installed @opencode/client 2.0.18 update/fork/remove declarations. Two deletion/idempotency ambiguities remain blocking because they permit an implementation that cannot prove descendant safety or preserve UNKNOWN_OUTCOME semantics.",  
+"open_findings": [  
+{  
+"severity": "blocking",  
+"artifact_location": "docs/runs/desktop-session-lifecycle/interface.md — session.remove descendant guard and removal verification",  
+"affected_journey_or_consumer": "Host session removal after a fork, especially after an UNKNOWN_OUTCOME fork",  
+"evidence": "The contract refuses only sessions with registered descendants. A timed-out session.fork can have created an SDK child without returning enough information for the app to register it. The installed 2.0.18 SDK exposes SessionInfo.parentID, session.list({ parentID, cursor, ... }) and a paginated SessionsResponse, so registered-app state alone cannot prove descendant absence. The same pagination issue applies if list membership is used to prove post-remove absence.",  
+"correction": "Before confirmation and again immediately before session.remove, require an authoritative SDK descendant check for the target, exhausting pagination and rejecting removal if any descendant exists or descendant state cannot be established. For post-remove verification, require either the installed typed SessionNotFoundError result from session.get or an explicitly exhaustive paginated list check; a single-page absence must never count as proof."  
+},  
+{  
+"severity": "blocking",  
+"artifact_location": "docs/runs/desktop-session-lifecycle/interface.md — lifecycle receipt semantics",  
+"affected_journey_or_consumer": "Duplicate fork/remove requests after transport timeout or other UNKNOWN_OUTCOME",  
+"evidence": "The contract says exact duplicates return a current safe snapshot, while also stating that unknown effects retain an unknown receipt, cannot be replayed, and must never imply an accepted fork/delete. Returning an ordinary successful snapshot for an exact duplicate whose stored receipt is unknown does not preserve that distinction and can make an uncertain destructive/history mutation appear successful.",  
+"correction": "Define receipt-state-specific duplicate behavior: an exact duplicate of a known-success receipt may return the authoritative current snapshot; an exact duplicate of an UNKNOWN_OUTCOME receipt must return the fixed UNKNOWN_OUTCOME failure without replay until an explicitly specified deterministic reconciliation changes that receipt state. Conflicting fingerprints remain DUPLICATE_CONFLICT."  
+}  
+],  
+"provenance": {  
+"child_task_id": "cli:session-lifecycle-design-spec-independent",  
+"author_task_id": "coordinator"  
+}  
+}
+codex
+{"schema\_version":2,"reviewed":{"contract\_sha256":"fd522f10ce568f5d41176e257d146541ee63e32e02a8a6bd523dfeb5e3a86137","gate":"plan","plan\_sha256":"e1e45230b7f6dcab8b28ac8e29d0ca2c4e037814fbe825b8f56f1ed3eea3e7a1","schema\_version":2,"source\_sha256":"a43b573d8cebecb5dcb2cb5605f84bcbe69e11143cde2c27e1242e81dd24c687"},"verdict":"pass","summary":"Revision 2 resolves both changed concerns without expanding scope. The plan now requires authoritative paginated SDK descendant checks before confirmation and immediately before removal, treats unknown or incomplete child-list state as blocking, and requires authoritative absence verification rather than single-page inference. It also defines receipt-state-specific duplicate behavior: UNKNOWN\_OUTCOME duplicates return UNKNOWN\_OUTCOME without replay, known failures return the saved failure, and only known-success duplicates may return a current safe snapshot. Existing Electron/platform/storage limits, acceptance scope, and review sequencing remain intact.","open\_findings":\[\],"provenance":{"child\_task\_id":"cli:session-lifecycle-plan-r2-independent","author\_task\_id":"coordinator"}}
+tokens used
+57,280
+{"schema\_version":2,"reviewed":{"contract\_sha256":"fd522f10ce568f5d41176e257d146541ee63e32e02a8a6bd523dfeb5e3a86137","gate":"plan","plan\_sha256":"e1e45230b7f6dcab8b28ac8e29d0ca2c4e037814fbe825b8f56f1ed3eea3e7a1","schema\_version":2,"source\_sha256":"a43b573d8cebecb5dcb2cb5605f84bcbe69e11143cde2c27e1242e81dd24c687"},"verdict":"pass","summary":"Revision 2 resolves both changed concerns without expanding scope. The plan now requires authoritative paginated SDK descendant checks before confirmation and immediately before removal, treats unknown or incomplete child-list state as blocking, and requires authoritative absence verification rather than single-page inference. It also defines receipt-state-specific duplicate behavior: UNKNOWN\_OUTCOME duplicates return UNKNOWN\_OUTCOME without replay, known failures return the saved failure, and only known-success duplicates may return a current safe snapshot. Existing Electron/platform/storage limits, acceptance scope, and review sequencing remain intact.","open\_findings":\[\],"provenance":{"child\_task\_id":"cli:session-lifecycle-plan-r2-independent","author\_task\_id":"coordinator"}}

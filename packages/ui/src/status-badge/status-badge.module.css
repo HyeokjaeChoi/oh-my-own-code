@@ -1,0 +1,34 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  padding: 2px var(--omoc-component-size-badge-padding-x);
+  border-radius: var(--omoc-semantic-radius-badge);
+  background: var(--omoc-semantic-color-surface-subtle);
+  color: var(--omoc-semantic-color-text-secondary);
+  font-family: var(--omoc-semantic-type-family-caption);
+  font-size: var(--omoc-semantic-type-size-caption);
+  font-weight: var(--omoc-semantic-type-weight-caption);
+  line-height: var(--omoc-semantic-type-line-caption);
+  overflow-wrap: anywhere;
+}
+
+.badge[data-tone="info"] {
+  background: var(--omoc-semantic-color-info-background);
+  color: var(--omoc-semantic-color-info-foreground);
+}
+
+.badge[data-tone="warning"] {
+  background: var(--omoc-semantic-color-warning-background);
+  color: var(--omoc-semantic-color-warning-foreground);
+}
+
+.badge[data-tone="success"] {
+  background: var(--omoc-semantic-color-success-background);
+  color: var(--omoc-semantic-color-success-foreground);
+}
+
+.badge[data-tone="error"] {
+  background: var(--omoc-semantic-color-danger-background);
+  color: var(--omoc-semantic-color-danger-foreground);
+}

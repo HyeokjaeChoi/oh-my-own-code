@@ -1,0 +1,33 @@
+소유한 3개 파일의 구현 checkpoint를 완료했습니다. **승인 또는 최종 freeze는 아닙니다.**
+
+- producer freeze: **6/6 hash 일치**
+- RED: fixture **13개 실패**, runner capture **2개 실패** 확인 후 구현
+- GREEN: runtime scoped test **33/33**, 전체 fixture test **538/538**
+- lint, format, 3개 파일 `node --check`: 통과
+- boundary: source 93개, negative fixture 68개, positive fixture 16개 통과
+- 기존 fixture test의 원본 byte prefix 보존
+
+실행한 test 명령:
+
+```sh
+node --test --test-name-pattern='Runtime options' apps/desktop-app/scripts/fixtures/workbench-host.test.mjs
+node --test apps/desktop-app/scripts/fixtures/workbench-host.test.mjs
+```
+
+수집한 stdout SHA-256:
+
+```text
+scoped33: a27b4f653f3a0c78623fef1e2af524478fc8f485453ba17051520c8d0d7b7233
+full538:  166d9cf8c294f0854293fbcc1e876184800de17e120ad45225fcaad42b45d850
+```
+
+최종 파일 SHA-256:
+
+- [workbench-host.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/workbench-host.mjs)
+  `c636affc6800bcb0092b55547c84903fae3eea3e2df91fbac8cf3206dbe22618`
+- [workbench-host.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/workbench-host.test.mjs)
+  `1c6f33fb0a5b02a3c6d7848c91bb4cdd5647c03b4b81bf3d1295a8a201b7c986`
+- [e2e-runtime-options.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-runtime-options.mjs)
+  `385585931e1cc7e31517df4c983a6a954d7a7b053a7d83fef26106acd6e1ece7`
+
+runner는 현재 renderer hook에 맞췄습니다. full native capture, post-paint 대기, hidden/nonfocusable 검사, owned process 종료 및 오류 보고를 포함합니다. **runner/Electron/Native/build는 실행하지 않았습니다.** Main의 coherent build, hidden 실행, 독립 CODE/RENDER 검증이 남아 있습니다.

@@ -1,0 +1,96 @@
+{
+  "status": "Actual public DTO/helper and private producer API freeze after actual prerequisite PASS",
+  "sources": {
+    "apps/desktop-app/src/desktop-bridge.d.ts": "2bb126aadc3c34e0ed5cff17ac062859d440bbc9713665843bf6cfa17ab0d823",
+    "apps/desktop-app/src/workbench-contract.mjs": "aeab94ef1a7667f7314015adb66d1e929ed9f75e5daae459482cf50a3653aa91",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.mjs": "5a45184a11bbb16070237aaf97d1dda57acb1965d08c325deb4a4b39c59c6f9e",
+    "apps/desktop-app/src/native-skills-protocol.mjs": "b0ceaed5814060ea4460e9b13de3db210c0fdfbfeddc22fd232372f6f5935dd3",
+    "apps/desktop-app/src/native-skills-client.mjs": "f4df2e04e0fc5f1b8eab04003df5f6e38439adc4c802593e7db947e7ca9dbdc8",
+    "apps/desktop-app/src/native-skills-config.mjs": "c2760a03fef4b59bb3c8cc633f4ed3b65d612bad76d8f3dfb74c19afb9987940",
+    "apps/desktop-app/src/builtins/workbench-skills/server.mjs": "4faef4e0dc51f645c753c8240260381e4e39998ae1396005210d2d6265aa1841",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts": "131bd00fe2a3b1362ad8c499071c5001de461551ab91fcb10d6944702082436a"
+  },
+  "prerequisite": "prerequisite-pass-r1.json",
+  "node": "public-api-green-r2.log; API+private+contract tests pass; tsc pass",
+  "publicRead": "configuration.skill.runtime.read workspaceId + optional sessionId/sourceName; files lane; explicit only. sourceName binds exact selected file baseline.",
+  "mutation": "register/remove workspace-wide with no sessionId; apply selected session. requestId equals envelope original operationId via existing admission. No arbitrary text or registration identity from renderer.",
+  "ownedRow": "Exact current private plugin owner + Native record correlation; public flat fields in d.ts and closed validator; registrationRuntimeEpoch must equal observation runtimeEpoch. Digest is exact full file SHA256, nativeDigest is private nativeSkillDigest, bodyDigest is SHA256 of exact Native content.",
+  "receiptFields": {
+    "skill_registered": [
+      "workspaceId",
+      "sourceName",
+      "nativeId",
+      "digest",
+      "nativeDigest",
+      "registrationRuntimeEpoch",
+      "registrationOperationId",
+      "version",
+      "directoryVersion",
+      "bodyDigest"
+    ],
+    "skill_removed": [
+      "workspaceId",
+      "sourceName",
+      "nativeId",
+      "digest",
+      "nativeDigest",
+      "registrationRuntimeEpoch",
+      "registrationOperationId"
+    ],
+    "skill_applied": [
+      "workspaceId",
+      "sourceName",
+      "nativeId",
+      "digest",
+      "nativeDigest",
+      "registrationRuntimeEpoch",
+      "registrationOperationId",
+      "sessionId",
+      "nativeSessionId",
+      "nativeMessageId",
+      "bodyDigest"
+    ]
+  },
+  "receiptAuthority": "register registration epoch/op exactly record original key; remove/apply Native ID computed from original registration epoch/op/workspace/source; match admitted nativeId. All require delivery accepted, admission dispatched, effect confirmed, effect-specific flushed dispatch; zero topology delta. Registered canonical request digest/file versions/full-byte digest must match admitted source. No body/path persisted. No confirmed-none apply; already-present predispatch SKILL_ALREADY_APPLIED rejection, zero SDK.",
+  "dispatchShape": "Main and storage coordinate actual closed dispatch payload via worker early checkpoint. Do not guess new fields without reporting actual proposed shape. Existing step repetition rules unchanged.",
+  "feature": "configuration_skill_runtime_v1 before operation admission/checkpoint; legacy actual parser/checkpoint refusal with exact original bytes preserved.",
+  "factoryAdditionPlanned": "Main will add optional confirmSkillRuntime async function default false; Main dialogs, actual service integration tests use it. Not yet in source.",
+  "noFurtherShapeEdits": "Coordinate defects with Main before consuming changed API.",
+  "storageAPI": {
+    "admissionExtra": "skillRuntime",
+    "admissionRegisterFields": [
+      "sourceName",
+      "nativeId",
+      "digest",
+      "version",
+      "directoryVersion"
+    ],
+    "admissionRemoveApplyFields": [
+      "nativeId"
+    ],
+    "dispatchExtra": "skillRuntime",
+    "dispatchFields": [
+      "sourceName",
+      "nativeId",
+      "digest",
+      "nativeDigest",
+      "registrationRuntimeEpoch",
+      "registrationOperationId",
+      "bodyDigest"
+    ],
+    "steps": [
+      "native.skill.register",
+      "native.skill.remove",
+      "native.skill.apply"
+    ],
+    "nativeSessionId": "apply required equal mapped selected session; register/remove forbidden",
+    "semantics": [
+      "register admission Native ID computed from original envelope key/workspace/source; exact canonical request source/file versions/digest",
+      "all dispatch Native ID computed from referenced registration key/workspace/source; match admitted target ID/source",
+      "register dispatch registration key equals current original operation key",
+      "remove/apply referenced original register must be confirmed accepted same workspace and all target/file/Native/body digests match; fail closed if no exact original receipt",
+      "completion zero topology delta; exact dispatch/result and admission/register versions; bodyDigest required register/apply",
+      "feature gate before admission/checkpoint; pending/unknown original key no replay; bare durable sender forbidden"
+    ]
+  }
+}

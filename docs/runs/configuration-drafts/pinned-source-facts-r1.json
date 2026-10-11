@@ -1,0 +1,20 @@
+{
+  "scope": "Actual installed app-owned OpenCode2.0.18 source only; no execution",
+  "files": {
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/mcp.js": "9fce551f2227c299f4dfd37249a755d37333adb75d2b49d15079ee4a44834efa",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/config/mcp.js": "9bc8254a4b4f412db881484494f1da7549a2b72e359c8d545e8342eb20661f98",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/config.js": "97f8a1092b881153bd9fae742192a932715d6b6bebee745021bd60500692710e"
+  },
+  "facts": [
+    "Config.Info.mcp is ConfigMCP.Info; servers record maps to LocalConfig/RemoteConfig union.",
+    "Local command array and cwd/disabled/codemode/protocol are actual supported fields. App draft subset deliberately excludes environment/timeout here.",
+    "Remote url/disabled/codemode/protocol/oauth:false are actual supported fields. App draft excludes headers, OAuth credentials and query/userinfo URLs.",
+    "Config.Patch is shell:null|string only; no generic update/reload is claimed.",
+    "Instructions draft is user-authored plain text with bounded structural checks, not a Native instruction validator."
+  ],
+  "remaining": [
+    "Real file editing and compare-and-set apply/reload",
+    "Skills/agents/hooks/tools/plugins editing/provenance validation",
+    "Explicit durable MCP lifecycle with actual post-observation; no void-ACK success inference"
+  ]
+}

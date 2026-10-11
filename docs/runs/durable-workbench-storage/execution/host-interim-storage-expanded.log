@@ -1,0 +1,53 @@
+✔ managed bootstrap reserves stable UUID before mkdir/create; observations do not append (75.85275ms)
+✔ paused admission flush preserves committed snapshot/lookup and actual call order (60.863958ms)
+✔ paused dispatch flush preserves committed snapshot/lookup and actual call order (47.589ms)
+✔ paused completion flush preserves committed snapshot/lookup and actual call order (38.001ms)
+✔ admission failure poisons writer globally and later effects have zero calls (46.969208ms)
+✔ dispatch failure poisons writer globally and later effects have zero calls (42.196375ms)
+✔ completion failure poisons writer globally and later effects have zero calls (33.801ms)
+✔ BUSY rejection rebase survives concurrent atomic completion; digest conflict never dispatches (35.694125ms)
+✔ verified create with later policy failure publishes unavailable partial mapping and unknown hold (47.388334ms)
+✔ owner_conflict facade remains readable before native ready with zero start/effect calls (5.504583ms)
+✔ corrupt_journal facade remains readable before native ready with zero start/effect calls (2.622875ms)
+✔ unconfirmed_tail facade remains readable before native ready with zero start/effect calls (2.60225ms)
+✔ pending_inbox facade remains readable before native ready with zero start/effect calls (4.500958ms)
+✔ native_startup_unverified facade remains readable before native ready with zero start/effect calls (3.051875ms)
+✔ complete valid but unconfirmed tail never automatically adopts mapping or success at restart (28.268833ms)
+✖ every native.policy.before_selection dispatch flush precedes actual effect and poison retains earlier ambiguity (38.377166ms)
+✔ every native.agent dispatch flush precedes actual effect and poison retains earlier ambiguity (37.439042ms)
+✔ every native.model dispatch flush precedes actual effect and poison retains earlier ambiguity (30.673042ms)
+✔ every native.policy.after_selection dispatch flush precedes actual effect and poison retains earlier ambiguity (41.877583ms)
+✔ every native.send dispatch flush precedes actual effect and poison retains earlier ambiguity (45.029959ms)
+✔ late native settlement retains mutation slot and durable original receipt identity (33.641083ms)
+✔ explicit checkpoint reopen uses exact original identity+digest without create; mismatch=false (37.441708ms)
+✔ explicit checkpoint reopen uses exact original identity+digest without create; mismatch=true (39.592208ms)
+✔ retained key bootstrap resolves original epoch through current-envelope lookup without native (53.644ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 23
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 917.039958
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:144:132
+✖ every native.policy.before_selection dispatch flush precedes actual effect and poison retains earlier ambiguity (38.377166ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'none'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:156:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'none',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,6 @@
+{
+  "status": "planned routine fixture correction after current owned UI exit",
+  "observation": "Controlled Electron owner helper set app paths inside synthetic namespace after asynchronous startup; OS process arguments for its early Chromium utility children still showed default Electron user-data-dir. This does not establish private store reads; Native roots remained synthetic and exact owned exits passed.",
+  "correction": "Pass an explicit contained --user-data-dir at process launch for both existing owner helper and hidden UI; retain per-process app.setPath calls. No new runtime capability or production behavior.",
+  "verification": "Fresh bounded saved chain/hidden UI after source/script identity binding; no provider or private-store inspection."
+}

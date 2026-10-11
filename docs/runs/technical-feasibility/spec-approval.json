@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-26",
+  "user_message": "승인.",
+  "responds_to": "이 스펙을 로컬 브라우저 앱 기준으로 승인할까요? 승인 후 기술 검증과 디자인 준비로 넘어갑니다.",
+  "decision": "Approve integrated spec set v0.1 and local-browser platform; proceed with bounded synthetic technical validation and design preparation.",
+  "documents": [
+    {
+      "path": "docs/design/specs/workbench-ux.md",
+      "gate": "design_spec",
+      "version": "0.1",
+      "sha256": "bfe3425f8334b91f882368e3e6670ec965dfd6361cf4cd71ee7af76890f61d43"
+    },
+    {
+      "path": "docs/engineering/workbench-architecture.md",
+      "gate": "design_spec",
+      "version": "0.1",
+      "sha256": "4a031f5c8cd194c315b92df8ac468600d5b769387c2271d8c04810fbc4959cba"
+    },
+    {
+      "path": "docs/engineering/verification.md",
+      "gate": "design_spec",
+      "version": "0.1",
+      "sha256": "dba31b7266df9dcd93f6477342e07f77bef9897c42578048c4c38c024f62feee"
+    },
+    {
+      "path": "docs/operations/local-release-monitoring.md",
+      "gate": "design_spec",
+      "version": "0.1",
+      "sha256": "f0d88e1836f230da09f7afe093d4320298d8d191845abae69ad4a0d4ef17263b"
+    },
+    {
+      "path": "docs/engineering/spec-index.md",
+      "gate": "design_spec",
+      "version": "0.1",
+      "sha256": "771c023836af77cdc8633d05729caef176ef62b4804f9aafbd762679d1d1db93"
+    }
+  ],
+  "platform": "local-browser",
+  "limits": [
+    "Not proof of implementation or SDK compatibility",
+    "Design file/system selection remains pending",
+    "No vendor authentication UI or external telemetry"
+  ]
+}

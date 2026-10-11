@@ -1,0 +1,34 @@
+✖ assertCurrent refuses revoked caller authority before its first metadata IO (5.871542ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 87.561
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/workspace-root-authority.test.mjs:582:1
+✖ assertCurrent refuses revoked caller authority before its first metadata IO (5.871542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'stat',
+  +   'lstat',
+  +   'realpath'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-root-authority.test.mjs:592:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'stat', 'lstat', 'realpath' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

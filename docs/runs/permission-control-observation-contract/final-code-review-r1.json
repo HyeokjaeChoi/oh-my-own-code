@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "4df3f96210af1ddb48d3e47855d604d2b9e0c6c6e691a5adf3d9e2411306b42b",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "045a883ca72a9edaefcf6792b3801cc94a4613893afcbd916def1742d0352b14",
+    "schema_version": 2,
+    "source_sha256": "c499d2f894bf8df33dd95a107660f6fcac159590b137da795b21fce4935292cc",
+    "verification_sha256": "a6c6f610e69ce895e4ef910609770e18369a38eb93760b9dad28892f41ec64fd",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "changes_requested",
+  "summary": "신규 두 파일 전체를 독립 검토했습니다. 전체 현재 source binding과 source-freeze-r1의 hash·크기가 일치합니다. closed shape, detached deep freeze, composite membership, ancestry cycle, root policy, 안전한 입력 순회와 bounds에서 추가 결함은 확인하지 못했습니다. 다만 schema-contract-r3 §5의 set 정렬 규칙이 누락되었습니다. 기존 Node 66개·lint·format PASS는 현재 소스와 일치하므로 재사용했으며 재실행하지 않았습니다. 데이터 형식 검증은 실제 Native identity, digest 정확성, ownership, policy compilation 또는 실행 권한을 증명하지 않습니다.",
+  "open_findings": [
+    {
+      "id": "CODE-R2-01",
+      "severity": "medium",
+      "title": "Set 목록의 canonical 정렬 규칙을 검사해야 합니다",
+      "path": "apps/desktop-app/src/permission-control-observations.mjs",
+      "line": 250,
+      "requirement": "schema-contract-r3.md §5는 locations, sessions, pending, saved, settings, capabilities를 지정된 identity의 canonicalJSON UTF-8 순서로 정렬하도록 요구합니다. 이는 producer 데이터의 정렬 규칙이며, 실제 권한 검증이나 policy compiler 구현을 요구하는 항목은 아닙니다.",
+      "trigger": "유효하고 중복 없는 capabilities를 capabilityId z, a 순서로 입력하면 통과합니다. locations, sessions, pending, saved도 순서 검사 없이 통과합니다.",
+      "evidence": [
+        "control()과 checkMembership()은 capabilities, locations, sessions, pending의 중복과 관계만 검사합니다. saved()도 savedId 중복만 검사합니다.",
+        "permissionCanonicalJSON()은 object key를 정렬하지만 array 순서는 보존합니다. validate()에는 set 목록의 별도 정렬이나 순서 검사가 없습니다.",
+        "테스트의 custom()은 capabilities를 z, a 순서로 생성하며 정상 입력으로 승인합니다. ancestry 테스트도 sessions를 reverse한 상태 그대로 승인합니다.",
+        "기존 permissionScopeDigest()는 set 정렬을 producer의 책임으로 명시하고 입력 순서를 보존합니다."
+      ],
+      "impact": "계약상 비정규 순서의 데이터가 검증 완료 결과로 반환됩니다. 동일한 set의 순열이 서로 다른 직렬화 바이트를 만들 수 있어 §5의 canonical ordering 전제를 충족하지 못합니다. 현재 모듈은 연결되지 않았으므로 실제 권한 우회나 실행 실패가 발생했다고 판단하지는 않습니다.",
+      "smallest_useful_correction": "중복 검사 후 locations [locationId,incarnation], sessions [workspaceId,sessionId], pending [locationId,sessionId,permissionId], saved savedId, capabilities capabilityId의 canonicalJSON UTF-8 순서를 검사하고 비정규 입력을 거부하십시오. 기존 settings 검사와 함께 회귀 테스트를 추가하고, 역순 set을 정상으로 승인하는 테스트를 수정하십시오. rules, resources, savePatterns의 원래 순서는 보존하십시오."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a1237f-cf4f-78f1-a142-f3b42f41ce72",
+    "changed_paths": [
+      "apps/desktop-app/src/permission-control-observations.mjs",
+      "apps/desktop-app/src/permission-control-observations.test.mjs"
+    ],
+    "review_method": "계약 준수와 코드 품질을 별도 검토했습니다. 변경 범위는 before-manifest-r1의 absent 기준과 전체 source inventory로 확인했습니다. 결함은 정적 코드 및 기존 테스트에서 확인했습니다.",
+    "writes": false,
+    "delegation": false,
+    "product_runtime_execution": false
+  }
+}

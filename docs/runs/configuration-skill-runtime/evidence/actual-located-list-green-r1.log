@@ -1,0 +1,35 @@
+✔ fixed DIRECTORY package has only the closed local metadata (0.778458ms)
+✔ setup registers the closed producer with no Skill or reload; lifecycle is explicit (2.462833ms)
+✔ setup rejects noncanonical location and closed-option violations before registration (0.474542ms)
+✔ all handlers manually reject wrong nonce, extra fields and cross-root input without effects (0.459917ms)
+✔ same-source replacement requires expected original Native ID and removes only old generation (0.944458ms)
+✔ foreign IDs, including prefix and exact-record collisions, never establish ownership (0.5615ms)
+✔ ownership requires original registration, workspace and exact public record (0.639416ms)
+✔ original-key cache returns immutable results and rejects same-key method or payload conflicts (0.629125ms)
+✔ slow handlers serialize observe and mutations; inputs are cloned before the first await (0.670167ms)
+✔ reload failure caches unknown, retains desired state and never replays or rolls back (0.606125ms)
+✔ foreign base collision during reload is refused even for an identical record (0.27825ms)
+✔ Native State.group swallowing a collision cannot turn foreign exact bytes into owned success (0.357875ms)
+✔ missing/changed new records and retained old IDs fail registration postconditions (1.022875ms)
+✔ remove verifies Native absence and never claims to remove session history (0.325708ms)
+✔ observe requires actual located Native list and refuses malformed or oversized output (0.191292ms)
+✔ owned and native limits are checked before a mutation (11.7435ms)
+✔ cache capacity is reserved before mutation and old keys are never evicted (8.620917ms)
+✔ cleanup closes in-flight work and queued handlers before any late Native effects (0.196042ms)
+✔ pending duplicate and conflict lookup precede bounded queue admission (12.622625ms)
+✔ nested extra fields, accessors and wrong record digests are denied before Native reads (0.349375ms)
+✔ workspace and original registration digests cannot be changed for replacement or removal (0.44475ms)
+✔ canonical key digest ignores property insertion order and preserves original denials (0.360417ms)
+✔ remove reload failures remain original unknown and do not restore or replay desired rows (0.339416ms)
+✔ Native read failures are safe before effects and cached unknown after effects (0.260375ms)
+✔ context drift while awaiting Native reads refuses before effects or stays unknown afterward (0.253625ms)
+✔ partial setup failure disposes transform without raw diagnostics (0.131833ms)
+✔ closed scope releases owned records; a new instance does not restore prior registrations (0.191583ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 100.345333

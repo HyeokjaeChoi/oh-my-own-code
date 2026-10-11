@@ -1,0 +1,178 @@
+{
+  "schema_version": 2,
+  "run": "durable-native-preflight",
+  "gate": "code",
+  "reviewer": "reviewer",
+  "verdict": "pass",
+  "summary": "현재 plan revision1과 design3의 제한된 범위에서 수정이 필요한 코드 결함을 찾지 못했습니다. copied-read 경계, 실제 pinned startup graph, 현재 native-r3와 lifecycle-r2 evidence를 독립적으로 확인했습니다. FINAL binding은 현재 계산 결과와 일치합니다.",
+  "reviewed": {
+    "contract_sha256": "8a4204bf2c4dd1d278973b315e66bfece9013099c6f5c91c8e76ffeb55df3edb",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "code",
+    "plan_sha256": "96afd3e51426c0147ef8de4fa8ea13c5b142c859d09ab6b3219fb96b5fcc94f9",
+    "schema_version": 2,
+    "source_sha256": "3770a81d225bf29ea36016e03d602660986aa002b0c0710d20ee79698f441e8f",
+    "verification_sha256": "63045c318a308b05408ee94f6031fd4c36dee0d28837ae43652f08a86ad9c654",
+    "work_class_sha256": "0cf67befd6c644a6564e2c1228c00b9137ee9ef45d27e89fb0cf1de7e760e671"
+  },
+  "provenance": {
+    "child_task_id": "01a1172e-3def-7271-84b5-7e67cd74f216",
+    "child_task_id_source": "현재 실행 환경의 CODEX_THREAD_ID",
+    "independent_from_implementation_author": true,
+    "reviewer_authored_implementation_or_repairs": false,
+    "report_only": true,
+    "delegation": false,
+    "recursive_agents": false,
+    "source_artifact_or_ledger_writes": false,
+    "tests_build_package_or_native_execution": false,
+    "gui_provider_or_private_execution": false,
+    "report_saved_or_registered": false,
+    "sandbox_attestation": "solo_reader의 행동 제한을 준수했습니다. profile 이름으로 OS sandbox를 증명하지 않습니다."
+  },
+  "binding_checks": {
+    "supplied_input": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-native-preflight/final-code-review-r1.input.json",
+    "supplied_input_sha256": "faa5c2eec94a75df8b757d26d13cd5391df73894e7e7fa6375e1aaedd6184c1f",
+    "method": "읽기 전용 harness review-input 계산 결과를 supplied object와 비교했습니다. 검토 종료 시 다시 계산했습니다.",
+    "initial_match": true,
+    "final_match": true,
+    "registered_artifact_hashes_match": true,
+    "registered_outcome_hash_matches": true,
+    "source_freeze_file_count": 18,
+    "source_freeze_hash_mismatches": []
+  },
+  "scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "method": "Spec compliance와 code quality를 별도로 검토했습니다. source freeze, baseline delta, 실제 source, callers, tests, configuration, 저장된 runtime evidence를 비교했습니다.",
+    "plan_revision": 1,
+    "design_revision": 3,
+    "changed_path_count": 18,
+    "deleted_path_count": 0,
+    "exact_path_inventory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-native-preflight/source-freeze-current-r3.json",
+    "delta_inventory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-native-preflight/current-changed-paths-r3.json",
+    "inspected_boundaries": [
+      "DB/WAL/SHM/journal 원본 descriptor, metadata, SHA256, companion 존재 상태와 private copy",
+      "copied reader의 public SqlClient/Drizzle/table/schema/legacy-status dependency closure",
+      "protocol framing, nonce, bounds, cancellation, physical exit와 copy disposal",
+      "Main startup, 반복 supervisor preflight, owner intent와 shutdown 순서",
+      "registry admission, root/fork receipt correlation, renderer readiness callers",
+      "pinned public server startup graph와 추가 durable/provider/credential/migration/legacy selectors",
+      "saved probe, optional observer bound, staging과 package inspection"
+    ],
+    "prior_evidence_reuse": "owner-lifetime r4의 27개 경로 중 현재 bytes가 같은 24개 경로에서만 기존 독립 증거를 재사용했습니다. 변경된 Main, package inspector, Python observer는 직접 검토했습니다."
+  },
+  "acceptance_assessment": {
+    "N1": {
+      "status": "pass",
+      "assessment": "원본은 read-only descriptor로 확인합니다. 완전한 SQLite companion set을 별도 private copy로 읽습니다. owner, registry, resources와 원본 metadata/bytes를 반복 확인합니다. 불확실한 inspector 종료는 copy 삭제와 startup 허용을 막습니다.",
+      "evidence": "host implementation과 boundary tests, native-r3의 production preflight, pending denial 전후 original complete-set equality."
+    },
+    "N2": {
+      "status": "pass",
+      "assessment": "global pending/inbox, 모든 KV row, raw claim/parent 상태, unmapped session, 불완전한 transcript/fork, ledger 불일치, legacy-required 상태와 bounds 초과는 startup을 막습니다. pending data를 지우거나 재실행하지 않습니다.",
+      "evidence": "raw typed reads와 pure predicates, 현재 46개 focused unit 결과, 실제 public Native-only pending producer 뒤 executorSpawns=0.",
+      "qualification": "모든 negative state를 실제 Native process에서 각각 생성한 것은 아닙니다. 해당 edge cases는 코드와 unit evidence로 확인했습니다."
+    },
+    "N3": {
+      "status": "pass",
+      "assessment": "native-r3의 별도 owner process가 production owner verifier와 production copied preflight로 nonfresh store를 다시 열었습니다. normal 종료 후와 idle Native executor SIGKILL 후 모두 두 session, root admission, original receipts, fork lineage와 history가 일치했습니다.",
+      "evidence": "normal-production-preflight-reopen과 sigkill-production-preflight-reopen의 productionAuthority=true. SIGKILL 후 fullWalSetObserved=true.",
+      "qualification": "synthetic history를 사용하는 zero-window fixture입니다. production Main 전체 실행을 증명하지 않습니다."
+    },
+    "N4": {
+      "status": "pass",
+      "assessment": "crash, timeout, drift, resource 오류와 cancellation은 fail closed입니다. host는 소유한 ChildProcess handle의 종료를 확인합니다. 현재 lifecycle-r2는 stdin EOF, extra frame, 독립 deadline, 실제 parent loss에서 positive output 없이 physical exit를 확인했습니다.",
+      "evidence": "lifecycle-r2의 네 observation, actual-parent-loss의 EVFILT_PROC:NOTE_EXIT, native-r3 cleanup.complete=true.",
+      "qualification": "lifecycle-r2는 pre-import cancellation과 종료 증거입니다. 실행 중인 SQL query의 취소를 관찰한 증거는 아닙니다."
+    },
+    "N5": {
+      "status": "pass",
+      "assessment": "실제 pinned public dependency/startup graph를 검토했습니다. 현재 source, build/package, registered checks, actual runtime artifacts와 FINAL binding이 일치합니다.",
+      "evidence": "현재 10개 contracted check의 exit_code=0, inputs_changed=false. packaged manifest의 전체 inventory 및 현재 source hash 확인."
+    }
+  },
+  "startup_graph_review": {
+    "resource_root": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/packages/OhMyOwnCode-darwin-arm64/OhMyOwnCode.app/Contents/Resources/opencode/event-host/darwin-arm64",
+    "pins": {
+      "bun": "1.4.2",
+      "server_and_core": "2.0.18",
+      "effect": "4.0.0-rc.112"
+    },
+    "assessment": [
+      "reader는 default Database와 ServerProcess를 구성하지 않습니다. readonly SqlClient와 제한된 Database select/get adapter만 사용합니다.",
+      "실제 host의 ServerProcess.start 호출에는 lifecycle adapter가 없습니다. resumeSuspendedSessions의 조건부 설치 경로를 확인했습니다.",
+      "server Database startup은 SQLite tuning과 migration apply 경로를 갖습니다. exact 48개 completed migration ID 조건이 migration up 실행을 막는지 확인했습니다.",
+      "legacy status/run과 auth.json import 경로를 확인했습니다. completed ledger와 허용된 namespace policy 밖 상태는 preflight에서 차단됩니다.",
+      "Job 및 WellKnown/config의 durable 선택 경로는 KV 상태에 의존합니다. 모든 KV row를 차단하는 규칙이 이 경로를 포함합니다.",
+      "Credential, provider/plugin location services, Workspace connections와 PersistentPty는 검토한 startup acquisition에서 과거 작업을 자동 실행하지 않습니다. request 시 실행되는 경로는 별도 범위입니다.",
+      "shell/tool-output cleanup의 파일 선택 경로도 확인했습니다. 허용된 empty directory policy에 삭제할 기존 파일이 없습니다."
+    ],
+    "conclusion": "검토한 pinned graph와 허용된 초기 상태에서 추가로 빠진 durable 자동 실행 selector를 찾지 못했습니다.",
+    "qualification": "executor startup에는 정상 SQLite tuning과 managed directory 생성이 있습니다. 이 판단은 startup의 모든 write가 없다는 뜻이 아닙니다.",
+    "resource_byte_validation": {
+      "manifest_entries": 38393,
+      "regular_files": 35122,
+      "regular_file_bytes": 399279792,
+      "content_or_metadata_mismatches": [],
+      "extra_paths": [],
+      "missing_paths": [],
+      "dist_and_packaged_manifests_equal": true
+    }
+  },
+  "code_quality_assessment": {
+    "status": "pass",
+    "assessment": "복사 경계, closed protocol, public API coupling, cancellation, shutdown 순서와 반복 startup guard에서 수정이 필요한 결함을 찾지 못했습니다.",
+    "probe_only_correction": "observer의 기본 120초는 유지됩니다. optional argument는 1~1200초로 제한됩니다. saved probe의 start RPC는 480초입니다. 실패 진단은 닫힌 값만 기록하며, cleanup과 identity equality가 pass 조건으로 유지됩니다. production inspector의 20초 deadline과 guard 정책은 그대로입니다."
+  },
+  "verification": {
+    "checks": {
+      "count": 10,
+      "all_current_source": true,
+      "all_exit_code_zero": true,
+      "all_inputs_changed_false": true,
+      "focused_unit_tests": 46,
+      "reviewer_reexecuted": false
+    },
+    "native_r3": {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-native-preflight/evidence/native-r3/native-preflight-evidence.json",
+      "sha256": "0d068305316fb576ab4d00cf2bab304ce0d0a0b0b06ea4558e1fa86f1fb6a0f3",
+      "result": "pass",
+      "unmet_proof": [],
+      "cleanup_complete": true,
+      "identities_unchanged": true,
+      "before_after_identities_independently_equal": true,
+      "recorded_current_file_hashes_checked": 111,
+      "hash_mismatches": [],
+      "owned_apps": 5,
+      "witness_observers": 5,
+      "descendants": 18,
+      "all_recorded_descendants_exited": true,
+      "pending_denial_original_set_independently_equal": true
+    },
+    "lifecycle_r2": {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-native-preflight/evidence/lifecycle-r2/reader-lifecycle-evidence.json",
+      "sha256": "d38bbae034f55e41949bd5186fe10bee7e27ad05b8916d7246da6bfb75804f7f",
+      "result": "pass",
+      "physical_exit_observations": 4,
+      "cleanup_complete": true,
+      "identities_unchanged": true,
+      "recorded_current_file_hashes_checked": 104,
+      "hash_mismatches": [],
+      "active_sql_cancellation_observed": false
+    },
+    "outcome": {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-native-preflight/outcome-current-r3.json",
+      "sha256": "76410efca07eac9ac39c40a209b26cca87f73376e5a40468f9aa7a3eb2b722aa"
+    }
+  },
+  "open_findings": [],
+  "limits": [
+    "이 verdict는 현재 contract의 제한된 code gate에만 적용됩니다.",
+    "runtime과 tests는 저장된 결과를 검토했습니다. reviewer가 실행하지 않았습니다.",
+    "production Main, visible GUI, provider, credentials, private store, Windows와 power-loss는 검증하지 않았습니다.",
+    "migration cutover, pending replay/drain과 permission approval은 허용 범위 밖입니다.",
+    "migration ledger reader는 Native 2.0.18에 결합된 compatibility descriptor입니다. 임의 SQLite format의 호환성이나 무결성을 보장하지 않습니다.",
+    "before/after identity와 hash는 관찰 사이의 change-and-restore 또는 hostile same-user 접근을 배제하지 않습니다.",
+    "native-r2의 실패와 미확인 witness 종료는 그대로 유지됩니다. native-r3의 pass가 과거 run의 cleanup을 확인해 주지는 않습니다.",
+    "SIGKILL 후 보존된 dirty namespace는 의도적으로 유지됩니다. cleanup.complete는 기록된 소유 process 종료를 뜻합니다."
+  ]
+}

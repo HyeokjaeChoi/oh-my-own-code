@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "description": "Managed capacity policy synchronization"
+    },
+    {
+      "id": "AC-2",
+      "description": "Preserve product state and approval boundary"
+    },
+    {
+      "id": "AC-3",
+      "description": "Current independent evidence with runtime limits"
+    }
+  ],
+  "checks": {
+    "managed": {
+      "argv": [
+        "python3",
+        "/Users/hyukjaechoi/Solopreneur/scripts/solo.py",
+        "check",
+        "."
+      ],
+      "cwd": ".",
+      "scope": "Managed copied assets match library",
+      "acceptance_ids": [
+        "AC-1",
+        "AC-3"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": []
+}

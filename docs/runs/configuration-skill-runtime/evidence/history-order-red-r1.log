@@ -1,0 +1,35 @@
+✖ pinned last data-page cursor requires reading the empty terminal page (0.760041ms)
+▶ incomplete, repeated, malformed and duplicate history is not absence
+  ✔ repeated cursor (2.252375ms)
+  ✔ page bound (0.221459ms)
+  ✔ invalid cursor (0.202208ms)
+  ✔ missing cursor (0.119042ms)
+  ✔ duplicate ID (0.123083ms)
+  ✔ wrong type (0.096084ms)
+✔ incomplete, repeated, malformed and duplicate history is not absence (3.470917ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 55.488208
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/fixtures/native-skills-prerequisite.test.mjs:11:1
+✖ pinned last data-page cursor requires reading the empty terminal page (0.760041ms)
+  AssertionError [ERR_ASSERTION]: pinned endpoint rejects cursor combined with order
+      at Object.list (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/native-skills-prerequisite.test.mjs:17:14)
+      at readNativeSkillHistory (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/native-skills-prerequisite.mjs:20:41)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/native-skills-prerequisite.test.mjs:24:20)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

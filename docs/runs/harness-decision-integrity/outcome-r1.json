@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "H-1": {
+      "status": "verified",
+      "checks": ["canonical-tests", "python-tests", "contract-json"],
+      "artifacts": [".solopreneur/harness.py", ".solopreneur/test_harness.py"]
+    },
+    "H-2": {
+      "status": "verified",
+      "checks": ["canonical-tests", "python-tests", "canonical-syntax", "python-syntax"],
+      "artifacts": [".solopreneur/harness.py", ".solopreneur/test_harness.py"]
+    },
+    "H-3": {
+      "status": "verified",
+      "checks": ["plan-template-parity", "managed-drift"],
+      "artifacts": ["AGENTS.md", ".agents/skills/solo-orchestrate/references/planning-contract.md", ".agents/skills/solo-orchestrate/references/run-protocol.md", ".agents/skills/solo-plan-review/SKILL.md", ".codex/agents/plan_reviewer.toml", "docs/engineering/plan-template.md", ".solopreneur/docs/harness.md"]
+    },
+    "H-4": {
+      "status": "verified",
+      "checks": ["canonical-tests", "canonical-syntax", "python-tests", "python-syntax", "plan-template-parity", "managed-drift"],
+      "artifacts": [".solopreneur/harness.py", ".solopreneur/test_harness.py", "docs/runs/harness-decision-integrity/canonical-source-manifest.json"]
+    }
+  },
+  "changed_paths": [
+    ".agents/skills/solo-orchestrate/references/planning-contract.md",
+    ".agents/skills/solo-orchestrate/references/run-protocol.md",
+    ".agents/skills/solo-plan-review/SKILL.md",
+    ".codex/agents/plan_reviewer.toml",
+    ".solopreneur/docs/harness.md",
+    ".solopreneur/harness.py",
+    ".solopreneur/managed.json",
+    ".solopreneur/test_harness.py",
+    "AGENTS.md",
+    "docs/decisions/0002-desktop-runtime.md",
+    "docs/design/specs/workbench-ux.md",
+    "docs/engineering/plan-template.md",
+    "docs/engineering/spec-index.md",
+    "docs/engineering/verification.md",
+    "docs/engineering/workbench-architecture.md",
+    "docs/operations/local-release-monitoring.md",
+    "docs/product/prd.md",
+    "docs/workplans/desktop-app-bootstrap/contract.json",
+    "docs/workplans/desktop-app-bootstrap/plan.md"
+  ],
+  "deleted_paths": []
+}

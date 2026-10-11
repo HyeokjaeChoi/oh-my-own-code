@@ -1,0 +1,1221 @@
+--- before/apps/desktop-app/src/renderer/entities/workbench/model/store.ts
++++ apps/desktop-app/src/renderer/entities/workbench/model/store.ts
+@@ -1,3 +1,7 @@
++import {
++  validatePermissionPolicyObservation,
++  type WorkbenchPermissionPolicyObservation,
++} from "../../../shared/api/index.js";
+ import {
+   validContextList,
+   validateContextObservation,
+@@ -1561,6 +1565,90 @@
+   | { lookupOnly?: false; operation: MutationRequest & OperationIdentity }
+   | { lookupOnly: true; operation: OperationIdentity }
+ );
++export type PermissionPolicyIdentity = Readonly<{
++  epoch: string;
++  workspaceId: string;
++  sessionId: string;
++  workspacePath: string;
++  trustRevision: number;
++  selectionGeneration: number;
++  generation: number;
++  floor: number;
++}>;
++export type PermissionPolicy = {
++  generation: number;
++  request?: PermissionPolicyIdentity | undefined;
++  observationIdentity?: PermissionPolicyIdentity;
++  observation?: WorkbenchPermissionPolicyObservation;
++  error?:
++    | "CANCELLED"
++    | "STALE"
++    | "POLICY_UNVERIFIED"
++    | "READ_TIMEOUT"
++    | "READ_BUSY"
++    | "UNAVAILABLE"
++    | undefined;
++};
++function permissionPolicyTargetReady(state: State): boolean {
++  return instructionTargetReady(state) && !extensionsHeld(state);
++}
++export function currentPermissionPolicyScope(
++  state: State,
++  identity: PermissionPolicyIdentity,
++): boolean {
++  return (
++    state.epoch === identity.epoch &&
++    state.selection.workspaceId === identity.workspaceId &&
++    state.selection.sessionId === identity.sessionId &&
++    state.selection.generation === identity.selectionGeneration &&
++    state.permissionPolicy.generation === identity.generation &&
++    state.revision === identity.floor &&
++    state.lists.workspaces.some(
++      (w) =>
++        w.id === identity.workspaceId &&
++        w.path === identity.workspacePath &&
++        w.trusted &&
++        w.trustRevision === identity.trustRevision,
++    )
++  );
++}
++export function currentPermissionPolicyObservation(
++  state: State,
++): WorkbenchPermissionPolicyObservation | undefined {
++  const entry = state.permissionPolicy;
++  return !entry.request &&
++    !entry.error &&
++    entry.observationIdentity &&
++    permissionPolicyTargetReady(state) &&
++    currentPermissionPolicyScope(state, entry.observationIdentity)
++    ? entry.observation
++    : undefined;
++}
++export function canObservePermissionPolicy(state: State): boolean {
++  return permissionPolicyTargetReady(state) && !state.permissionPolicy.request;
++}
++function retirePermissionPolicy(state: State, next: State): State {
++  if (state === next) return next;
++  const entry = next.permissionPolicy,
++    identity = entry.request ?? entry.observationIdentity;
++  if (
++    !identity ||
++    identity.generation !== entry.generation ||
++    (currentPermissionPolicyScope(next, identity) &&
++      permissionPolicyTargetReady(next))
++  )
++    return next;
++  // Keep one inert historical projection. Returning to an old scope cannot revive it.
++  return {
++    ...next,
++    permissionPolicy: {
++      ...entry,
++      generation: entry.generation + 1,
++      request: undefined,
++      error: "STALE",
++    },
++  };
++}
+ export type ExtensionIdentity = Readonly<{
+   epoch: string;
+   workspaceId: string;
+@@ -2099,6 +2187,7 @@
+   agentFiles: AgentFiles;
+   agentRuntime: AgentRuntime;
+   agentDrafts: Record<string, AgentDraft>;
++  permissionPolicy: PermissionPolicy;
+   extensions: Record<string, Extensions>;
+   extensionsGeneration: number;
+   mcp: Record<string, Mcp>;
+@@ -5085,6 +5174,13 @@
+       action: "edit" | "validate" | "discard";
+       text?: string;
+     }
++  | { type: "permission.policy.read"; identity: PermissionPolicyIdentity }
++  | {
++      type: "permission.policy.observed";
++      identity: PermissionPolicyIdentity;
++      value?: WorkbenchPermissionPolicyObservation;
++      error?: PermissionPolicy["error"];
++    }
+   | { type: "extensions.read"; identity: ExtensionIdentity }
+   | {
+       type: "extensions.observed";
+@@ -6645,6 +6741,56 @@
+       };
+     }
+ 
++    case "permission.policy.read": {
++      if (
++        !canObservePermissionPolicy(state) ||
++        !currentPermissionPolicyScope(state, event.identity)
++      )
++        return state;
++      return {
++        ...state,
++        permissionPolicy: {
++          generation: state.permissionPolicy.generation,
++          request: event.identity,
++        },
++      };
++    }
++    case "permission.policy.observed": {
++      const { identity } = event;
++      if (state.permissionPolicy.request !== identity) return state;
++      let value: WorkbenchPermissionPolicyObservation | undefined;
++      try {
++        if (event.value)
++          value = validatePermissionPolicyObservation(event.value);
++        if (
++          !value ||
++          !permissionPolicyTargetReady(state) ||
++          !currentPermissionPolicyScope(state, identity) ||
++          value.runtimeEpoch !== identity.epoch ||
++          value.workspaceId !== identity.workspaceId ||
++          value.workspacePath !== identity.workspacePath ||
++          value.sessionId !== identity.sessionId ||
++          value.revision !== identity.floor
++        )
++          value = undefined;
++        if (value) value = structuredClone(value);
++      } catch {
++        value = undefined;
++      }
++      return {
++        ...state,
++        permissionPolicy: value
++          ? {
++              generation: state.permissionPolicy.generation,
++              observationIdentity: identity,
++              observation: value,
++            }
++          : {
++              generation: state.permissionPolicy.generation + 1,
++              error: event.error ?? "POLICY_UNVERIFIED",
++            },
++      };
++    }
+     case "extensions.read": {
+       if (
+         !canObserveExtensions(state) ||
+@@ -9344,6 +9490,7 @@
+     }
+   }
+   next = retireConversationContext(state, next);
++  next = retirePermissionPolicy(state, next);
+   if (next === state) return state;
+   const entry = selectedExtensions(state);
+   const identity = entry.request ?? entry.observationIdentity;
+@@ -9397,6 +9544,7 @@
+     agentRuntime: {},
+     agentFiles: { generation: 0 },
+     agentDrafts: {},
++    permissionPolicy: { generation: 0 },
+     extensions: {},
+     extensionsGeneration: 0,
+     mcp: {},
+@@ -9507,6 +9655,9 @@
+   },
+   canReadWorkspaceFile,
+   canSaveWorkspaceFile,
++  permissionPolicy: (s: State) => s.permissionPolicy,
++  currentPermissionPolicyObservation,
++  canObservePermissionPolicy,
+   extensions: selectedExtensions,
+   extensionReadBlockReason,
+   currentExtensionObservation,
+--- before/apps/desktop-app/src/renderer/entities/workbench/model/controller.ts
++++ apps/desktop-app/src/renderer/entities/workbench/model/controller.ts
+@@ -1,3 +1,13 @@
++import {
++  validatePermissionPolicyObservation,
++  type WorkbenchPermissionPolicyObservation,
++} from "../../../shared/api/index.js";
++import {
++  canObservePermissionPolicy,
++  currentPermissionPolicyScope,
++  type PermissionPolicyIdentity,
++  type PermissionPolicy,
++} from "./store.js";
+ import {
+   validContextSelection,
+   type ContextSelection,
+@@ -2782,6 +2792,92 @@
+         BASELINE_POLICY.map((r) => [r.action, r.resource, r.effect]),
+       ]),
+     );
++  let permissionPolicyFlight:
++    | { identity: PermissionPolicyIdentity; abort: AbortController }
++    | undefined;
++  function cancelPermissionPolicyObservation(
++    error: PermissionPolicy["error"] = "CANCELLED",
++  ) {
++    const flight = permissionPolicyFlight;
++    if (!flight) return;
++    permissionPolicyFlight = undefined;
++    flight.abort.abort();
++    dispatch({
++      type: "permission.policy.observed",
++      identity: flight.identity,
++      error,
++    });
++  }
++  const unsubscribePermissionPolicy = store.subscribe((next) => {
++    const flight = permissionPolicyFlight;
++    if (
++      flight &&
++      (!currentPermissionPolicyScope(next, flight.identity) ||
++        next.permissionPolicy.request !== flight.identity)
++    )
++      cancelPermissionPolicyObservation("STALE");
++  });
++  async function observePermissionPolicy(): Promise<boolean> {
++    const state = store.getState();
++    if (disposed || !canObservePermissionPolicy(state)) return false;
++    const workspace = state.lists.workspaces.find(
++      (w) => w.id === state.selection.workspaceId,
++    )!;
++    const identity: PermissionPolicyIdentity = Object.freeze({
++      epoch: state.epoch!,
++      workspaceId: workspace.id,
++      workspacePath: workspace.path,
++      sessionId: state.selection.sessionId!,
++      trustRevision: workspace.trustRevision,
++      selectionGeneration: state.selection.generation,
++      generation: state.permissionPolicy.generation,
++      floor: state.revision,
++    });
++    const abort = new AbortController();
++    dispatch({ type: "permission.policy.read", identity });
++    if (store.getState().permissionPolicy.request !== identity) return false;
++    permissionPolicyFlight = { identity, abort };
++    const result = await transport.read<WorkbenchPermissionPolicyObservation>(
++      {
++        type: "permission.policy.read",
++        workspaceId: identity.workspaceId,
++        sessionId: identity.sessionId,
++      },
++      identity.epoch,
++      abort.signal,
++    );
++    if (
++      disposed ||
++      abort.signal.aborted ||
++      permissionPolicyFlight?.identity !== identity
++    )
++      return false;
++    let value: WorkbenchPermissionPolicyObservation | undefined,
++      error: PermissionPolicy["error"];
++    try {
++      if (result.ok)
++        value = structuredClone(
++          validatePermissionPolicyObservation(result.value),
++        );
++      else
++        error =
++          result.code === "READ_TIMEOUT" || result.code === "READ_BUSY"
++            ? result.code
++            : "UNAVAILABLE";
++    } catch {
++      error = "POLICY_UNVERIFIED";
++    }
++    permissionPolicyFlight = undefined;
++    dispatch({
++      type: "permission.policy.observed",
++      identity,
++      ...(value ? { value } : { error: error ?? "POLICY_UNVERIFIED" }),
++    });
++    return (
++      selectors.currentPermissionPolicyObservation(store.getState()) !==
++      undefined
++    );
++  }
+   let extensionFlight:
+     | { identity: ExtensionIdentity; abort: AbortController }
+     | undefined;
+@@ -4403,6 +4499,9 @@
+     }
+   });
+   const actions = {
++    observePermissionPolicy,
++    cancelPermissionPolicyObservation: () =>
++      cancelPermissionPolicyObservation(),
+     observeContext: (path: string, selection?: ContextSelection) =>
+       observeConversation(path, selection),
+     cancelContextObservation,
+@@ -4753,6 +4852,8 @@
+       void snapshot();
+     },
+     dispose() {
++      cancelPermissionPolicyObservation();
++      unsubscribePermissionPolicy();
+       cancelContextObservation();
+       unsubscribeContext();
+       clock.clearTimeout(contextExpiryTimer);
+--- before/apps/desktop-app/src/renderer/entities/workbench/index.ts
++++ apps/desktop-app/src/renderer/entities/workbench/index.ts
+@@ -174,3 +174,12 @@
+   ContextBranch,
+   ConversationContext,
+ } from "./model/store.js";
++
++export {
++  canObservePermissionPolicy,
++  currentPermissionPolicyObservation,
++} from "./model/store.js";
++export type {
++  PermissionPolicy,
++  PermissionPolicyIdentity,
++} from "./model/store.js";
+--- before/apps/desktop-app/src/renderer/features/permission-policy/index.tsx
++++ apps/desktop-app/src/renderer/features/permission-policy/index.tsx
+@@ -0,0 +1,177 @@
++import { useRef } from "react";
++import { Button } from "@workbench/ui";
++import {
++  selectors,
++  useWindowWorkbench,
++  useWorkbenchSelector,
++} from "../../entities/workbench/index.js";
++import type { WorkbenchPermissionPolicyObservation } from "../../shared/api/index.js";
++import styles from "./policy.module.css";
++
++type Available = Extract<
++  WorkbenchPermissionPolicyObservation,
++  { status: "available" }
++>;
++function Rules({
++  source,
++  rows,
++}: {
++  source: "session" | "required";
++  rows: Available["sessionRules"];
++}) {
++  return (
++    <ol className={styles.rules} data-permission-policy-source={source}>
++      {rows.map((row, index) => (
++        <li key={index}>
++          <dl>
++            <dt>action</dt>
++            <dd>{row.action}</dd>
++            <dt>resource</dt>
++            <dd>{row.resource}</dd>
++            <dt>effect</dt>
++            <dd>{row.effect}</dd>
++          </dl>
++        </li>
++      ))}
++    </ol>
++  );
++}
++const labels = {
++  not_observed: "아직 확인하지 않았습니다.",
++  checking: "Native 세션 규칙 확인 중…",
++  observed: "세션 규칙을 확인했습니다.",
++  unavailable:
++    "Native 세션 규칙을 확인할 수 없습니다. 규칙이 없다는 뜻은 아닙니다.",
++  stale: "이전 결과는 현재 상태가 아닙니다. 다시 확인하세요.",
++  error: "세션 규칙을 확인하지 못했습니다. 다시 확인하세요.",
++} as const;
++
++export function PermissionPolicy({
++  className,
++  hidden,
++}: {
++  className?: string | undefined;
++  hidden?: boolean;
++}) {
++  const { actions } = useWindowWorkbench();
++  const entry = useWorkbenchSelector(selectors.permissionPolicy);
++  const current = useWorkbenchSelector(
++    selectors.currentPermissionPolicyObservation,
++  );
++  const canObserve = useWorkbenchSelector(selectors.canObservePermissionPolicy);
++  const details = useRef<HTMLDetailsElement>(null);
++  const statusRef = useRef<HTMLParagraphElement>(null);
++  const status = entry.request
++    ? "checking"
++    : current
++      ? current.status === "available"
++        ? "observed"
++        : "unavailable"
++      : entry.error === "STALE" || entry.observation
++        ? "stale"
++        : entry.error === "CANCELLED"
++          ? "not_observed"
++          : entry.error
++            ? "error"
++            : "not_observed";
++  const available = current?.status === "available" ? current : undefined;
++  const cancel = () => {
++    actions.cancelPermissionPolicyObservation();
++    statusRef.current?.focus();
++  };
++  const close = () => {
++    if (entry.request) actions.cancelPermissionPolicyObservation();
++    if (details.current) {
++      details.current.open = false;
++      details.current.querySelector("summary")?.focus();
++    }
++  };
++  return (
++    <details
++      ref={details}
++      className={`${className ?? ""} ${styles.policy}`}
++      hidden={hidden}
++      data-runtime-task="permission"
++      data-permission-policy-status={status}
++      data-permission-policy-baseline={
++        available
++          ? available.baselineMatches
++            ? "matches"
++            : "mismatch"
++          : undefined
++      }
++      onKeyDown={(event) => {
++        if (
++          event.key === "Escape" &&
++          !event.nativeEvent.isComposing &&
++          event.keyCode !== 229 &&
++          entry.request
++        )
++          actions.cancelPermissionPolicyObservation();
++      }}
++    >
++      <summary>
++        권한 규칙
++        {available && !available.baselineMatches && (
++          <span className={styles.mismatch}> · 앱 필수 규칙과 다름</span>
++        )}
++      </summary>
++      <p>
++        세션에 저장된 규칙입니다. Agent 규칙·저장된 허용·hook을 합친 최종 실행
++        판단은 아닙니다.
++      </p>
++      <p>도구 수준 규칙이며 OS sandbox가 아닙니다.</p>
++      <p ref={statusRef} tabIndex={-1} role="status" className={styles.status}>
++        {entry.error === "CANCELLED"
++          ? "확인을 취소했습니다. 이전 결과는 현재 상태가 아닙니다."
++          : labels[status]}
++      </p>
++      <div className={styles.actions}>
++        {entry.request ? (
++          <Button
++            size="compact"
++            data-permission-policy-action="cancel"
++            onClick={cancel}
++          >
++            확인 취소
++          </Button>
++        ) : (
++          <Button
++            size="compact"
++            data-permission-policy-action="observe"
++            disabled={!canObserve}
++            onClick={() => void actions.observePermissionPolicy()}
++          >
++            Native 세션 규칙 확인
++          </Button>
++        )}
++        <Button size="compact" data-runtime-task-close onClick={close}>
++          권한 규칙 닫기
++        </Button>
++      </div>
++      {!canObserve && !entry.request && (
++        <p>현재 선택의 연결·신뢰·복구 상태와 새 세션 상태 확인이 필요합니다.</p>
++      )}
++      {available && (
++        <>
++          <h4>세션에 저장된 규칙</h4>
++          <p>
++            {available.sessionRulesState === "absent"
++              ? "규칙 필드 없음 (absent)"
++              : available.sessionRules.length === 0
++                ? "규칙 필드 있음 · 빈 목록 (present)"
++                : "규칙 필드 있음 (present)"}
++          </p>
++          <Rules source="session" rows={available.sessionRules} />
++          <h4>앱 필수 규칙</h4>
++          <p>
++            {available.baselineMatches
++              ? "세션 규칙이 앱 필수 규칙과 같습니다."
++              : "세션 규칙이 앱 필수 규칙과 다릅니다."}
++          </p>
++          <Rules source="required" rows={available.requiredBaselineRules} />
++        </>
++      )}
++    </details>
++  );
++}
+--- before/apps/desktop-app/src/renderer/features/permission-policy/policy.module.css
++++ apps/desktop-app/src/renderer/features/permission-policy/policy.module.css
+@@ -0,0 +1,49 @@
++.policy {
++  min-width: 0;
++  max-width: 100%;
++  overflow-wrap: anywhere;
++  user-select: text;
++}
++.policy h4 {
++  margin-block: 12px 4px;
++  color: var(--omoc-semantic-color-text-primary);
++  font-size: inherit;
++}
++.mismatch {
++  color: var(--omoc-semantic-color-text-primary);
++  font-weight: 600;
++}
++.actions {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 6px;
++  min-width: 0;
++}
++.actions button {
++  max-width: 100%;
++  white-space: normal;
++  overflow-wrap: anywhere;
++}
++.rules {
++  min-width: 0;
++  max-width: 100%;
++  padding-inline-start: 24px;
++}
++.rules li,
++.rules dl,
++.rules dd {
++  min-width: 0;
++  max-width: 100%;
++  white-space: pre-wrap;
++  overflow-wrap: anywhere;
++  user-select: text;
++}
++.rules dd {
++  font-family: var(--omoc-semantic-type-family-code);
++  color: var(--omoc-semantic-color-text-primary);
++}
++.status:focus-visible {
++  outline: var(--omoc-semantic-stroke-focus) solid
++    var(--omoc-semantic-color-focus);
++  outline-offset: var(--omoc-semantic-size-focus-gap);
++}
+--- before/apps/desktop-app/src/renderer/widgets/conversation/index.tsx
++++ apps/desktop-app/src/renderer/widgets/conversation/index.tsx
+@@ -1,3 +1,4 @@
++import { PermissionPolicy } from "../../features/permission-policy/index.js";
+ import {
+   ConversationContextControls,
+   ContextMessageActions,
+@@ -671,6 +672,10 @@
+                 Native 설정 닫기
+               </Button>
+             </details>
++            <PermissionPolicy
++              className={styles.runtimeReport}
++              hidden={branchActive}
++            />
+           </div>
+           <ComposerPrimitive.Root
+             className={styles.composer}
+--- before/apps/desktop-app/src/workbench-store.test.mjs
++++ apps/desktop-app/src/workbench-store.test.mjs
+@@ -19172,3 +19172,619 @@
+     noRead.resolve({ ok: false, code: "CANCELLED" });
+   }
+ });
++
++// Permission-policy renderer contract: explicit reads, never permission authority.
++import { BASELINE_POLICY as permissionBaseline } from "./renderer/shared/configuration-draft/policy.mjs";
++const permissionObservation = (extra = {}) => ({
++  runtimeEpoch: "epoch-a",
++  revision: 1,
++  workspaceId: "w",
++  workspacePath: "/fixture",
++  sessionId: "a",
++  status: "available",
++  sessionRulesState: "present",
++  sessionRules: permissionBaseline.map((row) => ({ ...row })),
++  requiredBaselineRules: permissionBaseline.map((row) => ({ ...row })),
++  baselineMatches: true,
++  evaluation: "not_evaluated",
++  ...extra,
++});
++function permissionHarness({
++  observe = () => ({ ok: true, value: permissionObservation() }),
++  ...options
++} = {}) {
++  const h = bridgeHarness((e) =>
++    e.operation.type === "permission.policy.read"
++      ? observe(e)
++      : readFallback(e),
++  );
++  const clock = fakeClock();
++  const client = createWindowWorkbench(h.bridge, { clock, id, ...options });
++  seed(client.store);
++  return { client, clock, ...h };
++}
++test("Permission policy explicit public API reads frozen envelope and detaches ordered original rules", async () => {
++  const value = permissionObservation({
++    sessionRules: [
++      { action: "custom", resource: "original/*", effect: "ask" },
++      { action: "custom", resource: "original/*", effect: "deny" },
++    ],
++    baselineMatches: false,
++  });
++  const { client, calls } = permissionHarness({
++    observe: () => ({ ok: true, value }),
++  });
++  try {
++    assert.equal(typeof client.actions.observePermissionPolicy, "function");
++    assert.equal(
++      typeof client.actions.cancelPermissionPolicyObservation,
++      "function",
++    );
++    assert.equal(
++      selectors.canObservePermissionPolicy(client.store.getState()),
++      true,
++    );
++    client.actions.draft("still editable");
++    assert.equal(calls.length, 0);
++    assert.equal(await client.actions.observePermissionPolicy(), true);
++    assert.deepEqual(calls[0].operation, {
++      type: "permission.policy.read",
++      workspaceId: "w",
++      sessionId: "a",
++    });
++    assert.equal(calls[0].version, 2);
++    assert.equal(calls[0].runtimeEpoch, "epoch-a");
++    assert.ok(calls[0].readId);
++    const current = selectors.currentPermissionPolicyObservation(
++      client.store.getState(),
++    );
++    assert.deepEqual(current, value);
++    value.sessionRules[0].resource = "changed outside";
++    assert.equal(current.sessionRules[0].resource, "original/*");
++    assert.equal(
++      selectors.draft(client.store.getState()).text,
++      "still editable",
++    );
++  } finally {
++    client.dispose();
++  }
++});
++
++test("Permission policy malformed and miscorrelated responses never become current", async (t) => {
++  const cases = [
++    { unexpected: true },
++    { sessionId: "b" },
++    { workspaceId: "other" },
++    { workspacePath: "/other" },
++    { runtimeEpoch: "epoch-b" },
++    { revision: 0 },
++    { revision: 2 },
++    { baselineMatches: false },
++    { evaluation: "effective" },
++    { sessionRulesState: "absent" },
++    { sessionRules: [{ action: "read", resource: "*", effect: "grant" }] },
++  ];
++  for (const [i, extra] of cases.entries())
++    await t.test(String(i), async () => {
++      const { client } = permissionHarness({
++        observe: () => ({ ok: true, value: permissionObservation(extra) }),
++      });
++      try {
++        assert.equal(await client.actions.observePermissionPolicy(), false);
++        assert.equal(
++          selectors.currentPermissionPolicyObservation(client.store.getState()),
++          undefined,
++        );
++        assert.equal(
++          selectors.permissionPolicy(client.store.getState()).error,
++          "POLICY_UNVERIFIED",
++        );
++      } finally {
++        client.dispose();
++      }
++    });
++});
++
++test("Permission policy absent, present empty and unavailable remain distinct", async (t) => {
++  for (const extra of [
++    { sessionRulesState: "absent", sessionRules: [], baselineMatches: false },
++    { sessionRules: [], baselineMatches: false },
++    { status: "unavailable", reason: "native_policy_unverified" },
++  ])
++    await t.test(
++      extra.sessionRulesState ?? extra.status ?? "empty",
++      async () => {
++        const value = permissionObservation(extra);
++        if (value.status === "unavailable")
++          for (const key of [
++            "sessionRulesState",
++            "sessionRules",
++            "requiredBaselineRules",
++            "baselineMatches",
++            "evaluation",
++          ])
++            delete value[key];
++        const { client } = permissionHarness({
++          observe: () => ({ ok: true, value }),
++        });
++        try {
++          assert.equal(await client.actions.observePermissionPolicy(), true);
++          assert.deepEqual(
++            selectors.currentPermissionPolicyObservation(
++              client.store.getState(),
++            ),
++            value,
++          );
++        } finally {
++          client.dispose();
++        }
++      },
++    );
++});
++
++test("Permission policy cancellation and reentry reject late and copied request identities", async () => {
++  const old = deferred(),
++    fresh = deferred();
++  let n = 0;
++  const { client, cancellations } = permissionHarness({
++    observe: () => (++n === 1 ? old.promise : fresh.promise),
++  });
++  try {
++    const first = client.actions.observePermissionPolicy();
++    await flush();
++    assert.equal(await client.actions.observePermissionPolicy(), false);
++    const original = selectors.permissionPolicy(
++      client.store.getState(),
++    ).request;
++    assert.equal(Object.isFrozen(original), true);
++    client.actions.cancelPermissionPolicyObservation();
++    await flush();
++    assert.equal(await first, false);
++    assert.equal(cancellations.length, 1);
++    assert.equal(
++      selectors.permissionPolicy(client.store.getState()).error,
++      "CANCELLED",
++    );
++    assert.equal(await client.actions.observePermissionPolicy(), false);
++    old.resolve({ ok: true, value: permissionObservation() });
++    await flush();
++    assert.equal(
++      selectors.currentPermissionPolicyObservation(client.store.getState()),
++      undefined,
++    );
++    const second = client.actions.observePermissionPolicy();
++    await flush();
++    const identity = selectors.permissionPolicy(
++      client.store.getState(),
++    ).request;
++    client.store.dispatch({
++      type: "permission.policy.observed",
++      identity: { ...identity },
++      value: permissionObservation(),
++    });
++    client.store.dispatch({
++      type: "permission.policy.observed",
++      identity: original,
++      value: permissionObservation(),
++    });
++    assert.equal(
++      selectors.permissionPolicy(client.store.getState()).request,
++      identity,
++    );
++    fresh.resolve({ ok: true, value: permissionObservation() });
++    assert.equal(await second, true);
++  } finally {
++    client.dispose();
++  }
++});
++
++const permissionChanges = {
++  epoch: (s) =>
++    s.dispatch({
++      type: "snapshot",
++      scope: { ...scopeOf(s.getState()), bootstrap: true },
++      value: snapshot(1, "a", { runtimeEpoch: "epoch-b" }),
++    }),
++  trust: (s) => seed(s, snapshot(1, "a", { workspaces: [workspace("w", 2)] })),
++  untrusted: (s) =>
++    seed(
++      s,
++      snapshot(1, "a", { workspaces: [{ ...workspace(), trusted: false }] }),
++    ),
++  rootABA: (s) => {
++    seed(
++      s,
++      snapshot(1, "a", {
++        workspaces: [{ ...workspace(), path: "/different" }],
++      }),
++    );
++    seed(s);
++  },
++  sessionABA: (s) => {
++    s.dispatch({ type: "select", workspaceId: "w", sessionId: "b" });
++    s.dispatch({ type: "select", workspaceId: "w", sessionId: "a" });
++    seed(s);
++  },
++  workspaceABA: (s) => {
++    s.dispatch({ type: "select", workspaceId: "other" });
++    s.dispatch({ type: "select", workspaceId: "w", sessionId: "a" });
++    seed(s);
++  },
++  floor: (s) => seed(s, snapshot(2)),
++  disconnect: (s) => {
++    s.dispatch({
++      type: "health",
++      scope: scopeOf(s.getState()),
++      code: "UNAVAILABLE",
++    });
++    seed(s);
++  },
++  hold: (s) => {
++    seed(
++      s,
++      snapshot(1, "a", {
++        state: "unavailable",
++        recovery: {
++          store: { state: "recovery_required", reason: "owner_unverified" },
++          resources: [],
++        },
++      }),
++    );
++    seed(s);
++  },
++  resourceHold: (s) =>
++    seed(
++      s,
++      snapshot(1, "a", {
++        recovery: {
++          store: { state: "ready" },
++          resources: [
++            {
++              workspaceId: "w",
++              state: "unavailable",
++              reason: "unresolved_operation",
++            },
++          ],
++        },
++      }),
++    ),
++  activeSession: (s) =>
++    seed(
++      s,
++      snapshot(1, "a", {
++        sessions: [session("a", "w", { status: "running" }), session("b")],
++      }),
++    ),
++};
++test("Permission policy pending and completed observations retire on authority races without revival", async (t) => {
++  for (const [name, change] of Object.entries(permissionChanges))
++    for (const pendingRead of [true, false])
++      await t.test(
++        `${name}/${pendingRead ? "pending" : "observed"}`,
++        async () => {
++          const pending = deferred();
++          const { client, cancellations } = permissionHarness({
++            observe: () =>
++              pendingRead
++                ? pending.promise
++                : { ok: true, value: permissionObservation() },
++          });
++          try {
++            const read = client.actions.observePermissionPolicy();
++            await flush();
++            if (!pendingRead) assert.equal(await read, true);
++            change(client.store);
++            await flush();
++            pending.resolve({ ok: true, value: permissionObservation() });
++            if (pendingRead) {
++              assert.equal(await read, false);
++              assert.equal(cancellations.length, 1);
++            }
++            assert.equal(
++              selectors.currentPermissionPolicyObservation(
++                client.store.getState(),
++              ),
++              undefined,
++            );
++            assert.equal(
++              selectors.permissionPolicy(client.store.getState()).request,
++              undefined,
++            );
++            assert.equal(
++              selectors.permissionPolicy(client.store.getState()).error,
++              "STALE",
++            );
++          } finally {
++            client.dispose();
++          }
++        },
++      );
++});
++
++test("Permission policy never auto reads on start, polling, focus, selection, draft, send or decision", async () => {
++  let focus, visible;
++  const { client, clock, calls } = permissionHarness({
++    onRefocus: (f) => {
++      focus = f;
++      return () => {};
++    },
++    onVisibility: (f) => {
++      visible = f;
++      return () => {};
++    },
++  });
++  try {
++    client.start();
++    await flush();
++    await clock.advance(5000);
++    await flush();
++    focus();
++    visible();
++    await flush();
++    client.store.dispatch({ type: "select", workspaceId: "w", sessionId: "b" });
++    await flush();
++    client.store.dispatch({ type: "select", workspaceId: "w", sessionId: "a" });
++    seed(client.store);
++    await flush();
++    client.actions.draft("keep composer");
++    await client.actions.mutate(send());
++    await flush();
++    await client.actions.mutate({
++      type: "permission.respond",
++      workspaceId: "w",
++      sessionId: "a",
++      requestId: "missing",
++      decision: "reject",
++    });
++    await flush();
++    assert.equal(
++      calls.filter((e) => e.operation.type === "permission.policy.read").length,
++      0,
++    );
++  } finally {
++    client.dispose();
++  }
++});
++
++test("Permission policy missing, stale, held and untrusted authority performs zero read IO", async (t) => {
++  const cases = {
++    empty: (s) =>
++      s.dispatch({
++        type: "select",
++        workspaceId: "missing",
++        sessionId: "missing",
++      }),
++    staleSnapshot: (s) =>
++      s.dispatch({ type: "select", workspaceId: "w", sessionId: "b" }),
++    untrusted: permissionChanges.untrusted,
++    resourceHold: permissionChanges.resourceHold,
++    activeSession: permissionChanges.activeSession,
++    disconnected: (s) =>
++      s.dispatch({
++        type: "health",
++        scope: scopeOf(s.getState()),
++        code: "UNAVAILABLE",
++      }),
++    archived: (s) =>
++      seed(
++        s,
++        snapshot(1, "a", {
++          sessions: [session("a", "w", { archived: true }), session("b")],
++        }),
++      ),
++  };
++  for (const [name, change] of Object.entries(cases))
++    await t.test(name, async () => {
++      const { client, calls } = permissionHarness();
++      try {
++        change(client.store);
++        assert.equal(
++          selectors.canObservePermissionPolicy(client.store.getState()),
++          false,
++        );
++        assert.equal(await client.actions.observePermissionPolicy(), false);
++        assert.equal(calls.length, 0);
++      } finally {
++        client.dispose();
++      }
++    });
++});
++
++test("Permission policy reducer independently refuses malformed raw response and copied request identity", async () => {
++  const pending = deferred();
++  const { client } = permissionHarness({ observe: () => pending.promise });
++  try {
++    const read = client.actions.observePermissionPolicy();
++    await flush();
++    const identity = selectors.permissionPolicy(
++      client.store.getState(),
++    ).request;
++    client.store.dispatch({
++      type: "permission.policy.observed",
++      identity: { ...identity },
++      value: permissionObservation(),
++    });
++    assert.equal(
++      selectors.permissionPolicy(client.store.getState()).request,
++      identity,
++    );
++    client.store.dispatch({
++      type: "permission.policy.observed",
++      identity,
++      value: permissionObservation({ evaluation: "effective" }),
++    });
++    assert.equal(
++      selectors.currentPermissionPolicyObservation(client.store.getState()),
++      undefined,
++    );
++    assert.equal(
++      selectors.permissionPolicy(client.store.getState()).error,
++      "POLICY_UNVERIFIED",
++    );
++    pending.resolve({ ok: true, value: permissionObservation() });
++    assert.equal(await read, false);
++  } finally {
++    client.dispose();
++  }
++});
++
++test("Permission policy original receipt advances floor and cannot revive old observation", async () => {
++  const { client } = permissionHarness();
++  try {
++    assert.equal(await client.actions.observePermissionPolicy(), true);
++    const operation = send();
++    client.store.dispatch({
++      type: "intent",
++      intent: {
++        id: "permission-floor",
++        epoch: "epoch-a",
++        origin: client.store.getState().selection,
++        key: selectionKey("w", "a"),
++        operation,
++        status: "pending",
++        navigate: false,
++      },
++    });
++    client.store.dispatch({
++      type: "receipt",
++      id: "permission-floor",
++      receipt: receipt({
++        runtimeEpoch: "epoch-a",
++        operationId: "permission-floor",
++        operation,
++      }),
++    });
++    assert.equal(client.store.getState().revision, 2);
++    assert.equal(
++      selectors.currentPermissionPolicyObservation(client.store.getState()),
++      undefined,
++    );
++    assert.equal(await client.actions.observePermissionPolicy(), false);
++    seed(client.store, snapshot(2));
++    assert.equal(
++      selectors.currentPermissionPolicyObservation(client.store.getState()),
++      undefined,
++    );
++  } finally {
++    client.dispose();
++  }
++});
++
++test("Permission policy timeout cannot publish late result or change draft", async () => {
++  const pending = deferred();
++  const { client, clock, cancellations } = permissionHarness({
++    observe: () => pending.promise,
++    timeoutMs: 30,
++  });
++  try {
++    const read = client.actions.observePermissionPolicy();
++    await flush();
++    client.actions.draft("editable during read");
++    await clock.advance(31);
++    assert.equal(await read, false);
++    assert.equal(
++      selectors.permissionPolicy(client.store.getState()).error,
++      "READ_TIMEOUT",
++    );
++    assert.equal(cancellations.length, 1);
++    pending.resolve({ ok: true, value: permissionObservation() });
++    await flush();
++    assert.equal(
++      selectors.currentPermissionPolicyObservation(client.store.getState()),
++      undefined,
++    );
++    assert.equal(
++      selectors.draft(client.store.getState()).text,
++      "editable during read",
++    );
++  } finally {
++    client.dispose();
++  }
++});
++
++test("Permission policy cancellation affects only its read and uses the frozen cancel key", async () => {
++  const pending = deferred();
++  const { client, calls, cancellations } = permissionHarness({
++    observe: () => pending.promise,
++  });
++  try {
++    client.actions.draft("keep text");
++    const read = client.actions.observePermissionPolicy();
++    await flush();
++    client.actions.cancelPermissionPolicyObservation();
++    await flush();
++    assert.equal(await read, false);
++    assert.deepEqual(cancellations, [
++      {
++        version: 2,
++        runtimeEpoch: calls[0].runtimeEpoch,
++        readId: calls[0].readId,
++      },
++    ]);
++    assert.deepEqual(
++      calls.map((e) => e.operation.type),
++      ["permission.policy.read"],
++    );
++    assert.equal(selectors.draft(client.store.getState()).text, "keep text");
++    pending.resolve({ ok: true, value: permissionObservation() });
++    await flush();
++  } finally {
++    client.dispose();
++  }
++});
++
++test("Permission policy accepted send and decision paths never schedule a policy read", async (t) => {
++  for (const operation of [
++    send(),
++    {
++      type: "permission.respond",
++      workspaceId: "w",
++      sessionId: "a",
++      requestId: "permission",
++      decision: "reject",
++    },
++  ])
++    await t.test(operation.type, async () => {
++      const h = bridgeHarness((e) =>
++        e.operationId ? { ok: true, value: receipt(e) } : readFallback(e),
++      );
++      const client = createWindowWorkbench(h.bridge, {
++        clock: fakeClock(),
++        id,
++      });
++      try {
++        seed(
++          client.store,
++          snapshot(
++            1,
++            "a",
++            operation.type === "permission.respond"
++              ? {
++                  permissions: [
++                    {
++                      id: "permission",
++                      sessionId: "a",
++                      title: "Tool",
++                      detail: "Original request",
++                    },
++                  ],
++                }
++              : {},
++          ),
++        );
++        await client.actions.mutate(operation);
++        await flush();
++        assert.equal(
++          h.calls.filter((e) => e.operation.type === operation.type).length,
++          1,
++        );
++        assert.equal(
++          h.calls.filter((e) => e.operation.type === "permission.policy.read")
++            .length,
++          0,
++        );
++      } finally {
++        client.dispose();
++      }
++    });
++});

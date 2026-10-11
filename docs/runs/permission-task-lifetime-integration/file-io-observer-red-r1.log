@@ -1,0 +1,37 @@
+✖ actual checked file IO is bound before effects and waits physical descriptor closure (10.126459ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 377.800667
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-task-observer.test.mjs:846:1
+✖ actual checked file IO is bound before effects and waits physical descriptor closure (10.126459ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   complete: false,
+  -   complete: true,
+      ioCount: 1,
+      processCount: 0,
+      runtimeEpoch: 'test_epoch-1',
+  +   taskOutcome: 'failure'
+  -   taskOutcome: 'success'
+    }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-task-observer.test.mjs:863:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { runtimeEpoch: 'test_epoch-1', taskOutcome: 'failure', complete: false, processCount: 0, ioCount: 1 },
+    expected: { runtimeEpoch: 'test_epoch-1', taskOutcome: 'success', complete: true, processCount: 0, ioCount: 1 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

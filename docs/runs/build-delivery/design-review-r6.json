@@ -1,0 +1,24 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "design",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "source_sha256": "fde27e141cb7907a9a6cbedd6e7e575db043f8b7a87b9ef53823428776c10d2d",
+    "verification_sha256": "3f08fa8ab5c2d803883fca27e6000b808e0ff73f8052e25980ccba24b70bbcd5",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "verdict": "pass",
+  "summary": "The live preview renders the prior English labels as “로컬 워크벤치” and “워크벤치 · 합성 미리보기.” Copy and spacing remain readable at all five widths, with no horizontal overflow. The ToolCall summary has no border, its success badge is 24px tall, and the preview retains a 1px boundary. The preview is Korean-language and keyboard-inert; no browser errors were recorded. Loading, error, and malformed-result fallback copy was inspected in source.",
+  "open_findings": [],
+  "tested_viewports": ["320×844", "390×844", "600×844", "900×844", "1280×844"],
+  "limits": "Live review used only a synthetic fixture. Loading, error, and malformed-result states were inspected in source rather than reproduced visually. Real SDK behavior, dark mode, 200% zoom, and screen-reader output were not tested. The running bundle was not independently attested to the source hash.",
+  "provenance": {
+    "child_task_id": "/root/final_design_qa_r6",
+    "author_task_id": "/root",
+    "requested_route": {"model": "gpt-6-sol", "effort": "high"},
+    "observed_runtime_identity": "unverified",
+    "report_only": true
+  }
+}

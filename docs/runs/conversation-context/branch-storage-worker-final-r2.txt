@@ -1,0 +1,35 @@
+소유 **8개 파일 수정 완료**. API shape을 고정했습니다. 아래 SHA-256을 최종 `freeze-r2` 값으로 사용할 수 있습니다.
+
+- `forkTarget={beforeMessageId}`: 명시적 before fork에만 저장·전달.
+- `lookupForkBoundary({appSessionId})`: 검증된 복사본 또는 `undefined`.
+- `lookupForkIdentity` shape 유지. Unknown/reopen/tail의 재실행·확정 승격 차단.
+
+검증: **focused 45/45**, **전체 affected Node 536/536**, ESLint·Prettier·syntax 통과. Archived parser 79개 hash 일치 및 byte 보존 확인. 전체 테스트 중 owned8 hash 변경 없음. 독립 CODE gate와 build는 Main 담당입니다.
+
+파일 기준 경로: `/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/`
+
+```text
+workspace-registry.mjs
+7bd86068fcb0001c1a0477a385f9919a54a99573a76a1a023a5c76fa06e3e1aa
+workspace-registry.test.mjs
+4ba5a149043a83e6cd7d68bc22345d2aa408ef90f1e9b558bb19f3d3124d98ac
+storage-journal.mjs
+2856c1beca6b28ddd16ad2016fe0d314544a824f0566d24e555fcdec7cb54d84
+storage-journal.test.mjs
+60e830f6b8872ca01cd67811479042818256a68c4376ba199892d1f790359acb
+workbench-admission.mjs
+76063fb21036fd65df0a87aac7fbbb3088fe47e5c4d24a8cc615c41d238b8e0c
+workbench-admission.test.mjs
+31da8b1e80dd6944226212d371a6de7ab034794449fe0b8b1d152160f90c891a
+conversation-context-branch-storage.mjs
+f8e4f81d756eff597bd2d896927cc036d6ba5e0aaa83e6ef15c95498f75262b6
+conversation-context-branch-storage.test.mjs
+66fa2e0a4c2658db3a21dc65b61c17a0721ca8d913da8d47f092ac424f65efec
+```
+
+전체 Node 검증 명령:
+```sh
+node --test apps/desktop-app/src/host/{workspace-registry,storage-journal,workbench-admission,conversation-context-branch-storage,conversation-context-storage}.test.mjs
+```
+
+기존 cancel/receipt 3개 hash와 역사적 `freeze-r1`은 보존했습니다. 추가 수정은 없습니다.

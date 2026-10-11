@@ -1,0 +1,182 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "P1",
+      "description": "Closed correlated explicit Native session rules read with no mutation"
+    },
+    {
+      "id": "P2",
+      "description": "Atomic renderer observation identity, no auto IO or stale authority"
+    },
+    {
+      "id": "P3",
+      "description": "Truthful accessible rendered foundation task surface"
+    },
+    {
+      "id": "P4",
+      "description": "Current affected checks and independent CODE/RENDER"
+    }
+  ],
+  "checks": {
+    "host": {
+      "argv": [
+        "node",
+        "--test",
+        "apps/desktop-app/src/workbench-service.test.mjs",
+        "apps/desktop-app/src/workbench-contract.test.mjs",
+        "apps/desktop-app/src/permission-policy.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Permission policy observation additive read-only increment",
+      "acceptance_ids": [
+        "P1",
+        "P4"
+      ],
+      "required": true
+    },
+    "renderer": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "apps/desktop-app/src/workbench-store.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Permission policy observation additive read-only increment",
+      "acceptance_ids": [
+        "P2",
+        "P4"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Permission policy observation additive read-only increment",
+      "acceptance_ids": [
+        "P2",
+        "P4"
+      ],
+      "required": true
+    },
+    "type": {
+      "argv": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Permission policy observation additive read-only increment",
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P4"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "nx",
+        "run",
+        "desktop-app:build",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Permission policy observation additive read-only increment",
+      "acceptance_ids": [
+        "P3",
+        "P4"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src",
+        "apps/desktop-app/scripts/e2e-design-foundation.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Read-only permission policy observation; hidden synthetic Main, no provider or production Main",
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P4"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Read-only permission policy observation; hidden synthetic Main, no provider or production Main",
+      "acceptance_ids": [
+        "P3",
+        "P4"
+      ],
+      "required": true
+    },
+    "fixture": {
+      "argv": [
+        "node",
+        "--test",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Read-only permission policy observation; hidden synthetic Main, no provider or production Main",
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P4"
+      ],
+      "required": true
+    },
+    "hidden": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--out",
+        "docs/runs/design-foundation-v2/evidence/permission-policy-r4",
+        "--script",
+        "design-foundation"
+      ],
+      "cwd": ".",
+      "scope": "Read-only permission policy observation; hidden synthetic Main, no provider or production Main",
+      "acceptance_ids": [
+        "P3",
+        "P4"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/permission-policy-observation/design.md",
+      "gate": "design_spec",
+      "version": "v1",
+      "sha256": "45216777a8ff6cdbf91e081326dfaa37deb1c0acfe86c50a4fc528869dc0e32d"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ],
+  "decision_register": []
+}

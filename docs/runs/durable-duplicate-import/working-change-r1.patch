@@ -1,0 +1,428 @@
+--- before/apps/desktop-app/src/workbench-service.mjs
++++ apps/desktop-app/src/workbench-service.mjs
+@@ -4025,7 +4025,11 @@
+       request.type === "workspace.import" ||
+       request.type === "workspace.create"
+     ) {
+-      if (tables().workspaces.size >= 100) fail("LIMIT_REACHED");
++      if (
++        request.type === "workspace.create" &&
++        tables().workspaces.size >= 100
++      )
++        fail("LIMIT_REACHED");
+       if (request.name?.trim() && !portableName(request.name))
+         fail("INVALID_REQUEST");
+       if (registry && request.type === "workspace.create") {
+@@ -4054,6 +4058,13 @@
+         request.type === "workspace.create"
+           ? await createFolder(picked, request.name)
+           : await canonicalDirectory(picked);
++      if (
++        tables().workspaces.size >= 100 &&
++        ![...tables().workspaces.values()].some(
++          (existing) => existing.path === path,
++        )
++      )
++        fail("LIMIT_REACHED");
+       // Both ordinary new directories and imports require native trust before SDK activation.
+       const reservation = registry
+         ? await reserveSession(undefined, "imported", path)
+
+--- before/apps/desktop-app/src/host/workspace-registry.mjs
++++ apps/desktop-app/src/host/workspace-registry.mjs
+@@ -190,11 +190,24 @@
+         entry.registrationState === "registered" &&
+         sameWorkspace(entry, workspace),
+     ) &&
+-    // Keep every prior identity/reservation. Only a committed zero-dispatch
+-    // rejection in this exact lineage leaves the first actual session ID free.
++    // Re-import only confirms the existing registration. It must not consume
++    // the first managed session identity or create a Native session.
+     reservations.every(
+       (entry) =>
+         entry === creator ||
++        (entry.terminal &&
++          entry.identity.type === "workspace.import" &&
++          sameWorkspace(entry.reservation.workspace, workspace) &&
++          entry.receipt.effect === "confirmed" &&
++          entry.receipt.result?.kind === "created" &&
++          entry.receipt.result.workspaceId === workspace.workspaceId &&
++          !entry.receipt.result.sessionId &&
++          !entry.receipt.result.nativeSessionId &&
++          entry.dispatches.length === 1 &&
++          entry.dispatches[0].step === "registry.metadata" &&
++          entry.completedDelta?.workspaces.length === 0 &&
++          entry.completedDelta.sessions.length === 0 &&
++          entry.completedDelta.tombstones.length === 0) ||
+         (entry.terminal &&
+           entry.identity.type === "session.create" &&
+           entry.identity.workspaceId === workspace.workspaceId &&
+@@ -1463,7 +1476,10 @@
+             ? request.workspaceId === operation.identity.workspaceId &&
+                 request.workspaceId === prior.workspace.workspaceId
+             : !operation.identity.workspaceId &&
+-                request.ownership === prior.workspace.ownership,
++                (request.ownership === prior.workspace.ownership ||
++                  (operation.identity.type === "workspace.import" &&
++                    request.ownership === "imported" &&
++                    request.canonicalPath !== undefined)),
+           "DUPLICATE_CONFLICT",
+         );
+         if (request.name !== undefined)
+@@ -1538,16 +1554,36 @@
+         } catch (error) {
+           throw storageError(pathReason(error));
+         }
+-        workspace = {
+-          workspaceId: randomUUID(),
+-          ownership: request.ownership,
+-          canonicalPath,
+-          registrationState: "reserved",
+-          ...(request.ownership === "managed" && {
+-            folderSessionId: appSessionId,
+-          }),
+-          ...(request.name !== undefined && { name: request.name }),
+-        };
++        const existing = [...root.workspaces.values()].find(
++          (entry) => entry.canonicalPath === canonicalPath,
++        );
++        if (existing) {
++          need(
++            operation.identity.type === "workspace.import",
++            "identity_conflict",
++          );
++          need(existing.registrationState === "registered", "UNAVAILABLE");
++          need(
++            !scopeBlocked(
++              { workspaceId: existing.workspaceId },
++              key(operation.identity),
++            ),
++            "UNAVAILABLE",
++          );
++          workspace = { ...existing, registrationState: "reserved" };
++          delete workspace.revision;
++        } else {
++          workspace = {
++            workspaceId: randomUUID(),
++            ownership: request.ownership,
++            canonicalPath,
++            registrationState: "reserved",
++            ...(request.ownership === "managed" && {
++              folderSessionId: appSessionId,
++            }),
++            ...(request.name !== undefined && { name: request.name }),
++          };
++        }
+       }
+       const payload = {
+         kind: "reservation",
+
+--- before/apps/desktop-app/src/host/storage-integration.test.mjs
++++ apps/desktop-app/src/host/storage-integration.test.mjs
+@@ -561,6 +561,7 @@
+   {
+     io = {},
+     bootstrap = true,
++    pickDirectory,
+     runtimeReady,
+     recoveryReason,
+     configurationSave,
+@@ -751,6 +752,7 @@
+     runtimeReady: runtimeReady ?? Promise.resolve(runtime),
+     runtimeEpoch: "epoch",
+     bootstrap,
++    pickDirectory,
+     recoveryReason,
+     confirmTrust: async () => true,
+     confirmConfigurationSave,
+@@ -4597,3 +4599,223 @@
+   assert.deepEqual(calls, ["stage", "abort"]);
+   assert.equal(await fs.readFile(f.target, "utf8"), "\uFEFFOriginal\r\n");
+ });
++
++test("durable duplicate import reuses canonical workspace across alias, duplicate key and checkpoint reopen", async (t) => {
++  let selected;
++  let picks = 0;
++  const f = await fixture(t, {
++    bootstrap: false,
++    pickDirectory: async () => {
++      picks++;
++      return selected;
++    },
++  });
++  await f.ready();
++  selected = join(f.root, "imported");
++  await fs.mkdir(selected);
++  const sentinel = join(selected, "sentinel");
++  const bytes = Buffer.from("synthetic original\r\n");
++  await fs.writeFile(sentinel, bytes);
++  const first = await f.mutate({ type: "workspace.import" }, "import-first");
++  assert.equal(first.ok, true, JSON.stringify(first));
++  const wid = first.value.selectedWorkspaceId;
++  const original = globalThis.structuredClone(
++    f.registry.readView().workspaces[0],
++  );
++  const alias = join(f.root, "import-alias");
++  await fs.symlink(selected, alias);
++  selected = alias;
++  const again = await f.mutate({ type: "workspace.import" }, "import-alias");
++  assert.equal(again.ok, true, JSON.stringify(again));
++  assert.equal(again.value.selectedWorkspaceId, wid);
++  assert.equal(again.value.workspaces.length, 1);
++  assert.equal(again.receipt.effect, "confirmed");
++  assert.equal(again.receipt.result.workspaceId, wid);
++  assert.deepEqual(f.registry.readView().workspaces[0], original);
++  assert.deepEqual(f.registry.readView().sessions, []);
++  assert.deepEqual(f.registry.readView().retainedOperations, []);
++  assert.deepEqual(f.state.calls, []);
++  const duplicate = await f.mutate(
++    { type: "workspace.import" },
++    "import-alias",
++  );
++  assert.deepEqual(duplicate.receipt, again.receipt);
++  assert.equal(picks, 2);
++  assert.deepEqual(
++    (await f.lookup("import-alias")).value.receipt,
++    again.receipt,
++  );
++  assert.deepEqual(await fs.readFile(sentinel), bytes);
++  f.service.close();
++  await f.service.drain();
++  await f.registry.checkpoint();
++  await f.registry.close();
++  const reopened = await openWorkspaceRegistry({
++    ...f.options,
++    runtimeEpoch: "reopened",
++  });
++  const service = createWorkbenchService({
++    registry: reopened,
++    runtimeReady: Promise.resolve(f.runtime),
++    runtimeEpoch: "reopened",
++    bootstrap: false,
++    pickDirectory: async () => alias,
++  });
++  t.after(async () => {
++    service.close();
++    await service.drain();
++    await reopened.close();
++  });
++  const after = await service.handle(
++    {
++      version: 2,
++      runtimeEpoch: "reopened",
++      readId: "ready",
++      operation: { type: "snapshot" },
++    },
++    "sender",
++  );
++  assert.equal(after.ok, true);
++  let reopenedReadId = 0;
++  await until(async () => {
++    const snapshot = await service.handle(
++      {
++        version: 2,
++        runtimeEpoch: "reopened",
++        readId: `ready-${++reopenedReadId}`,
++        operation: { type: "snapshot" },
++      },
++      "sender",
++    );
++    assert.equal(snapshot.ok, true, JSON.stringify(snapshot));
++    return snapshot.value.state === "connected";
++  });
++  const result = await service.handle(
++    {
++      version: 2,
++      runtimeEpoch: "reopened",
++      operationId: "import-reopened",
++      operation: { type: "workspace.import" },
++    },
++    "sender",
++  );
++  assert.equal(result.ok, true, JSON.stringify(result));
++  assert.equal(result.value.selectedWorkspaceId, wid);
++  assert.deepEqual(reopened.readView().workspaces[0], original);
++  assert.deepEqual(await fs.readFile(sentinel), bytes);
++  assert.deepEqual(f.state.calls, []);
++});
++
++test("durable reimport preserves managed ownership and reserved first-session identity", async (t) => {
++  let selected;
++  const f = await fixture(t, {
++    bootstrap: false,
++    pickDirectory: async () => selected,
++  });
++  await f.ready();
++  const made = await f.mutate(
++    { type: "workspace.create", name: "Original" },
++    "managed-original",
++  );
++  assert.equal(made.ok, true, JSON.stringify(made));
++  const wid = made.value.selectedWorkspaceId;
++  const original = globalThis.structuredClone(
++    f.registry.readView().workspaces[0],
++  );
++  selected = original.canonicalPath;
++  const result = await f.mutate({ type: "workspace.import" }, "managed-import");
++  assert.equal(result.ok, true, JSON.stringify(result));
++  assert.equal(result.value.selectedWorkspaceId, wid);
++  assert.deepEqual(f.registry.readView().workspaces[0], original);
++  assert.equal(f.state.calls.length, 0);
++  const first = await f.mutate(
++    { type: "session.create", workspaceId: wid, title: "First" },
++    "managed-first",
++  );
++  assert.equal(first.ok, true, JSON.stringify(first));
++  assert.equal(first.value.selectedSessionId, original.folderSessionId);
++  const before = globalThis.structuredClone(f.registry.readView().sessions);
++  const trusted = await f.mutate(
++    { type: "workspace.import" },
++    "managed-trusted-import",
++  );
++  assert.equal(trusted.ok, true, JSON.stringify(trusted));
++  assert.equal(
++    trusted.value.workspaces.find((w) => w.id === wid).trusted,
++    true,
++  );
++  assert.deepEqual(f.registry.readView().sessions, before);
++  assert.equal(f.state.calls.filter((c) => c === "create").length, 1);
++});
++
++test("durable import at100 registrations opens an existing target and refuses a101st distinct path", async (t) => {
++  let selected;
++  const f = await fixture(t, {
++    bootstrap: false,
++    pickDirectory: async () => selected,
++  });
++  await f.ready();
++  let original;
++  for (let n = 0; n < 100; n++) {
++    selected = join(f.root, `import-${n}`);
++    await fs.mkdir(selected);
++    const result = await f.mutate(
++      { type: "workspace.import" },
++      `capacity-${n}`,
++    );
++    assert.equal(result.ok, true, JSON.stringify(result));
++    if (n === 0) original = result.value.selectedWorkspaceId;
++  }
++  selected = join(f.root, "import-0");
++  const existing = await f.mutate(
++    { type: "workspace.import" },
++    "capacity-existing",
++  );
++  assert.equal(existing.ok, true, JSON.stringify(existing));
++  assert.equal(existing.value.selectedWorkspaceId, original);
++  selected = join(f.root, "import-over-limit");
++  await fs.mkdir(selected);
++  const rejected = await f.mutate(
++    { type: "workspace.import" },
++    "capacity-distinct",
++  );
++  assert.equal(rejected.code, "LIMIT_REACHED", JSON.stringify(rejected));
++  assert.equal(rejected.receipt.effect, "none");
++  assert.equal(f.registry.readView().workspaces.length, 100);
++  assert.equal(f.state.calls.length, 0);
++});
++
++test("durable duplicate import cannot clear an existing unresolved resource hold", async (t) => {
++  let selected;
++  const f = await fixture(t, {
++    bootstrap: false,
++    pickDirectory: async () => selected,
++  });
++  await f.ready();
++  selected = join(f.root, "held-import");
++  await fs.mkdir(selected);
++  const first = await f.mutate({ type: "workspace.import" }, "held-original");
++  assert.equal(first.ok, true, JSON.stringify(first));
++  const wid = first.value.selectedWorkspaceId;
++  const original = globalThis.structuredClone(
++    f.registry.readView().workspaces[0],
++  );
++  await f.registry.begin({
++    runtimeEpoch: "epoch",
++    operationId: "held-operation",
++    type: "session.create",
++    workspaceId: wid,
++    digest: "a".repeat(64),
++  });
++  const result = await f.mutate({ type: "workspace.import" }, "held-repeat");
++  assert.equal(result.ok, false, JSON.stringify(result));
++  assert.equal(result.receipt.effect, "none");
++  assert.deepEqual(f.registry.readView().workspaces[0], original);
++  assert.equal(
++    f.registry
++      .readView()
++      .retainedOperations.some((r) => r.operationId === "held-operation"),
++    true,
++  );
++  assert.equal(f.state.calls.length, 0);
++});
+
+--- before/apps/desktop-app/src/host/workspace-registry.test.mjs
++++ apps/desktop-app/src/host/workspace-registry.test.mjs
+@@ -9455,3 +9455,63 @@
+     );
+     assert.deepEqual(saved.gitBranchRestoreTarget, expected);
+   });
++
++test("duplicate import reservation preserves an existing managed identity and replays its original key", async (t) => {
++  const f = await fixture(t);
++  const made = await createManaged(f, "managed");
++  const original = globalThis.structuredClone(
++    f.registry.readView().workspaces[0],
++  );
++  const sessions = globalThis.structuredClone(f.registry.readView().sessions);
++  const op = identity("reimport", { type: "workspace.import" });
++  await f.registry.begin(op);
++  const request = {
++    runtimeEpoch: "old",
++    operationId: "reimport",
++    ownership: "imported",
++    canonicalPath: original.canonicalPath,
++    plannedNativeSessionId: "unused-native",
++  };
++  const reserved = await f.registry.reserve(request);
++  assert.equal(reserved.workspace.workspaceId, original.workspaceId);
++  assert.equal(reserved.workspace.ownership, "managed");
++  assert.equal(reserved.workspace.folderSessionId, made.appSessionId);
++  assert.deepEqual(
++    (await f.registry.reserve(request)).workspace,
++    reserved.workspace,
++  );
++  const other = join(f.root, "other");
++  await fs.mkdir(other);
++  await assert.rejects(
++    f.registry.reserve({ ...request, canonicalPath: other }),
++    { code: "DUPLICATE_CONFLICT" },
++  );
++  await assert.rejects(f.registry.begin({ ...op, digest: "b".repeat(64) }), {
++    code: "DUPLICATE_CONFLICT",
++  });
++  await f.registry.dispatch({
++    runtimeEpoch: "old",
++    operationId: "reimport",
++    step: "registry.metadata",
++  });
++  const done = await f.registry.complete({
++    runtimeEpoch: "old",
++    operationId: "reimport",
++    receipt: receipt("reimport", {
++      type: "workspace.import",
++      result: { kind: "created", workspaceId: original.workspaceId },
++    }),
++    delta: { workspaces: [], sessions: [], tombstones: [] },
++  });
++  assert.deepEqual(f.registry.readView().workspaces[0], original);
++  assert.deepEqual(f.registry.readView().sessions, sessions);
++  await f.registry.checkpoint();
++  const next = await reopened(t, f);
++  assert.equal(next.status().state, "ready");
++  assert.deepEqual(next.readView().workspaces[0], original);
++  assert.deepEqual(next.readView().sessions, sessions);
++  assert.deepEqual(
++    next.lookup({ runtimeEpoch: "old", operationId: "reimport" }).receipt,
++    done.receipt,
++  );
++});

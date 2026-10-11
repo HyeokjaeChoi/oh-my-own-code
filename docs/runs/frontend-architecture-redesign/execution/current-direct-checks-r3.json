@@ -1,0 +1,139 @@
+[
+  {
+    "name": "projection",
+    "argv": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "apps/desktop-app/src/workbench-projection.test.mjs"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "execution": "actual direct tool execution, not ledger import",
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "stdout_stderr_path": "docs/runs/frontend-architecture-redesign/execution/projection-r3.log",
+    "log_sha256": "33136b5241258daa7efafa87d3154ffbce6229a2ba98cb309ea079bf8065af10"
+  },
+  {
+    "name": "boundaries",
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "execution": "actual direct tool execution, not ledger import",
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "stdout_stderr_path": "docs/runs/frontend-architecture-redesign/execution/boundaries-r3.log",
+    "log_sha256": "00307846deff55c240ae6edd43b80a0f240795a38eef0af5c3e57931530735e3"
+  },
+  {
+    "name": "typecheck",
+    "argv": [
+      "pnpm",
+      "exec",
+      "tsc",
+      "-p",
+      "apps/desktop-app/tsconfig.json",
+      "--noEmit"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "execution": "actual direct tool execution, not ledger import",
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "stdout_stderr_path": "docs/runs/frontend-architecture-redesign/execution/typecheck-r3.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "format",
+    "argv": [
+      "pnpm",
+      "exec",
+      "prettier",
+      "--check",
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "apps/desktop-app/src/renderer/pages/workbench/shell.module.css",
+      "apps/desktop-app/src/workbench-projection.test.mjs"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "execution": "actual direct tool execution, not ledger import",
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "stdout_stderr_path": "docs/runs/frontend-architecture-redesign/execution/format-r3.log",
+    "log_sha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20"
+  },
+  {
+    "name": "lint",
+    "argv": [
+      "pnpm",
+      "exec",
+      "eslint",
+      "--config",
+      "apps/desktop-app/eslint.config.mjs",
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "apps/desktop-app/src/workbench-projection.test.mjs"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "execution": "actual direct tool execution, not ledger import",
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "stdout_stderr_path": "docs/runs/frontend-architecture-redesign/execution/lint-r3.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "build",
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/build.mjs"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "execution": "actual direct tool execution, not ledger import",
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "stdout_stderr_path": "docs/runs/frontend-architecture-redesign/execution/build-r3.log",
+    "log_sha256": "da5b63f08d83fd50cc0306381ad20826cf1e2c0b08548c51aa1526a9fbc72cac"
+  },
+  {
+    "name": "bundle",
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "execution": "actual direct tool execution, not ledger import",
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "stdout_stderr_path": "docs/runs/frontend-architecture-redesign/execution/bundle-r3.log",
+    "log_sha256": "3310147964e74e00e1ca105c711f8c893e0088b9ddd32d7ee61087bf724294fd"
+  },
+  {
+    "name": "package",
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/package.mjs",
+      "darwin",
+      "arm64"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "execution": "actual direct tool execution; set-e chain returned0",
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "stdout_stderr_path": "docs/runs/frontend-architecture-redesign/execution/package-r3.log",
+    "log_sha256": "5d4ac1a5a06e1393008a75c2614aeae90c5427227de2a44697824e3a7b9b7625"
+  },
+  {
+    "name": "package-inspect",
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/inspect-packaged-bundle.mjs",
+      "darwin"
+    ],
+    "cwd": ".",
+    "exit_code": 0,
+    "execution": "actual direct tool execution; set-e chain returned0",
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "stdout_stderr_path": "docs/runs/frontend-architecture-redesign/execution/package-inspect-r3.log",
+    "log_sha256": "3277c19f0c4f74694ebb57519378c3fc8decbbaf5c508b4cf9d6a5727438487f"
+  }
+]

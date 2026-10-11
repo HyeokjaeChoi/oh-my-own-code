@@ -1,0 +1,73 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "a3f73c7dd59b09e083e04bf16b7eabf233fb8b0dee2d47bd17d80098250c52f0",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "d04870f04f733b635a69c6608b24acc0849d398bcc8a3becdc69008c39cfc939",
+    "schema_version": 2,
+    "source_sha256": "a5d782b38aaf3d9a2d81a637ffd84383a9482455c39fb4da78d520438867d80a",
+    "verification_sha256": "8b6786d67f30694413c2aa0e8d1a6b1c63dcc5c2ca1a523228892caf8fe5e172",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "CODE-R1 수정과 연결 경로를 독립 검토했습니다. 지정된 범위에서 수정이 필요한 결함을 찾지 못했습니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "CODE-R1",
+      "status": "resolved",
+      "assessment": "factory가 발급한 assertOpened만 허용합니다. isWorkspaceRootGuard와 assertWorkspaceRootGuard는 private WeakMap의 identity와 closed 상태를 직접 읽습니다. supplied function을 호출하지 않습니다. observer와 kernel은 일반 check() 뒤에 이 검사를 수행합니다. 임의 callback을 번갈아 호출하던 마지막 callback 경로가 제거됐습니다.",
+      "regression_assessment": "wrapper, Proxy, async function과 lookalike는 호출 전에 거부됩니다. owner.close()는 동기적으로 취소합니다. 마지막 일반 check()의 owner 취소, descriptor/path 재검사, reentrant kernel close와 기존 cleanup 경로를 확인했습니다."
+    }
+  ],
+  "contract_compliance": {
+    "R1": "충족. 이전 독립 검토의 변경 없는 owner acquisition·legacy 평가를 재사용했습니다. 이번 private state 변경에서도 exact identity, retained FileHandle, 동기 취소와 실제 close Promise를 유지합니다.",
+    "R2": "충족. observer는 guard 소유권을 IO 전에 확인합니다. 실제 열린 root identity를 검사하고, 일반 check() 뒤 pure assertion을 수행합니다. protected-source zero IO와 기존 cleanup을 유지합니다.",
+    "R3": "충족. 기존 writer에 같은 root-owner helper를 연결했습니다. stage와 publish 전에 일반 check(), pure assertion, descriptor/path 검사를 수행합니다. token 소비와 backup 처리를 유지합니다.",
+    "R4": "충족. 현재 소스에 결합된 검증 기록과 별도 독립 CODE 검토를 확인했습니다.",
+    "scope": "routine plan revision 2와 기존 채택된 DS01 object scope를 적용했습니다. 추가 writer, request field, DTO 또는 storage 변경은 없습니다."
+  },
+  "integration_assessment": {
+    "root_asset": "CONFIGURATION_SAVE_ASSETS에 host/workspace-root-authority.mjs 1개가 추가됐습니다.",
+    "dependency_closure": "root-owner의 workbench-contract import를 제거했습니다. 기존 private ASCII ID 검사와 같은 grammar를 사용하며, workspace-file root grammar를 재사용합니다.",
+    "child_staging": "이미 fixed assets인 native-permission-graph와 native-permission-control-input을 child allowlist에 추가했습니다. 실제 현재 production child bytes, 전체 fixed asset 복사, unknown import 거부를 검사하는 stageFixture를 확인했습니다."
+  },
+  "verification": {
+    "performed": [
+      "read-only review-input 결과 2회가 final-code-input-r2.json 전체 parsed object와 일치했습니다.",
+      "검토 전후 source-freeze-r2의 정확한 9개 파일 SHA-256과 byte 수가 일치했습니다. outcome-r2의 changed_paths와도 일치합니다.",
+      "original before 4개와 신규 2개 부재 기록을 run baseline과 대조했습니다.",
+      "before-correction 9개 보존 파일의 hash와 크기를 확인했습니다. 추가 3개도 run baseline hash와 일치합니다.",
+      "등록된 artifact 38개의 hash와 plan·contract·outcome hash가 일치합니다.",
+      "focused·coherent verification의 helper·kernel·test hash가 현재 소스와 일치합니다. execution observations도 일치합니다.",
+      "coherent retained 원본 execution·verification과 저장된 사본이 byte 단위로 일치합니다. engine·manifest hash도 일치합니다."
+    ],
+    "recorded_evidence": {
+      "observer_red": "기존 callback #131 뒤 readsAfterRevocation=1인 실제 RED 기록을 확인했습니다.",
+      "kernel_red": "기존 r1 stage 생성과 publish 실행을 보여 주는 failed-case 및 exit 1 execution 기록을 확인했습니다.",
+      "focused_green": "12/12 PASS, 모든 case fdCleanup=true.",
+      "coherent_kernel": "manifest-pinned Bun 1.4.2에서 86/86 PASS, 모든 case fdCleanup=true. Node reader parity 7개.",
+      "whole_contract": "현재 binding의 Node 집계 174개, exit 0. lint·format도 exit 0.",
+      "staging": "실제 production child와 fixed asset 복사, unknown import 거부를 포함한 contained Node staging 1/1 PASS."
+    },
+    "new_runtime_executions": 0
+  },
+  "limitations": [
+    "제품 runtime과 테스트를 새로 실행하지 않았습니다. 실행 결과는 보존된 증거를 검토한 것입니다.",
+    "Native, server, build, Electron, provider와 production Main을 실행하지 않았습니다.",
+    "private root seam은 full broker, grant 또는 완성된 F09 연결을 입증하지 않습니다.",
+    "채택된 object scope의 외부 concurrent relocation 잔여 한계를 유지합니다.",
+    "파일·report·ledger 수정, repair와 위임은 하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a123eb-e1bb-7c32-bc08-fb8db21757d6",
+    "identity_source": "현재 invocation의 CODEX_THREAD_ID",
+    "role": "reviewer",
+    "skill": "solo-code-review",
+    "mode": "report-only",
+    "packet": "docs/runs/permission-root-object-check/code-reviewer-packet-r2.json",
+    "independence": "현재 invocation은 구현·수정을 수행하지 않은 별도 독립 검토입니다. profile 이름을 runtime sandbox 증명으로 사용하지 않았습니다."
+  }
+}

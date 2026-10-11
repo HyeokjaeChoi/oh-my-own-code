@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "source_exists": true,
+  "sources": {
+    "apps/desktop-app/src/renderer/shared/line-feedback/index.mjs": {
+      "sha256": "c2355cdf6a8ece022baf6215b5e84d3dee0020050362261c14a622f24f7232e3",
+      "bytes": 8480
+    },
+    "apps/desktop-app/src/renderer/shared/line-feedback/index.d.mts": {
+      "sha256": "335f362b90c41e5292e49632c167b9db7e8a2978f406ec17f35702f108d324b8",
+      "bytes": 1744
+    },
+    "apps/desktop-app/src/renderer/shared/line-feedback/index.ts": {
+      "sha256": "3b47b657433800da52f96fbc3264474680795881b42f8eb8223d2a4d6f1a32ea",
+      "bytes": 223
+    },
+    "apps/desktop-app/src/line-feedback.test.mjs": {
+      "sha256": "02fa6d25789fb77cf8dde30525fa7bfb28de08670d03bc6874c771e397705eef",
+      "bytes": 12830
+    }
+  },
+  "consumed_unchanged_contract_pins": {
+    "apps/desktop-app/src/desktop-bridge.d.ts": "d875e9af04eefdec496273fc9dd82ccc51532227e8093a8a23df90cf82af57ae",
+    "apps/desktop-app/src/workbench-contract.mjs": "0f73aaae5af070a1936924d6681d2d190b98c85c234d7f8ba5a80808f2fba38b",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts": "8e2460128e3fc3578519f1bb0116c2f15ca878dcd44e3127fd884bed5b0dc7e9",
+    "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68",
+    "apps/desktop-app/src/renderer/shared/workspace-file/index.d.mts": "e8adb840874c14ef2a7109243cced9acb165e12de1a826acac6c23ae97e1e8cc",
+    "apps/desktop-app/src/renderer/shared/git-review/index.mjs": "8cad8a846ec1965249b3bb26718370214d9239b6a90b27f2fd25934d9c88a913",
+    "apps/desktop-app/src/renderer/shared/git-review/index.d.mts": "c94015e4962bd0ac7504d09cad6671abb893658c0c3fbebdcec2e2a37aab95f9"
+  },
+  "exports": [
+    "LINE_FEEDBACK_LIMITS",
+    "formatLineFeedback(source,selection,comment)",
+    "appendLineFeedback(existingText,formattedText)"
+  ],
+  "source_type": "{kind:file|git,observation:actual corresponding closed DTO}; available ordinary source only",
+  "selection_type": "{side:file|old|new,start:positive safeinteger,end:positive safeinteger}; <=200lines",
+  "output": "frozen {reference,excerpt,comment,text}; original scope/path/version/directoryVersion or observationId/sourceDigest/mode/baseRef/baseOid, side/start/end; JSON-escaped context, no IO or authority",
+  "limits": {
+    "lines": 200,
+    "excerptCharacters": 8192,
+    "excerptBytes": 32768,
+    "commentCharacters": 2000,
+    "draftCharacters": 32000
+  },
+  "errors": [
+    "INVALID_FEEDBACK_SOURCE",
+    "INVALID_LINE_RANGE",
+    "UNSUPPORTED_DIFF",
+    "INVALID_FEEDBACK_COMMENT",
+    "FEEDBACK_TOO_LARGE",
+    "INVALID_FEEDBACK_TEXT",
+    "DRAFT_TOO_LARGE"
+  ],
+  "line_semantics": "File exact CRLF/LF/CR/BOM/final-no-newline baseline. Git exact old/new LF coordinates, CR content and EOF marker preserved; all requested coordinates must exist, no inferred gaps. Empty/modeonly no selectable lines.",
+  "checks": {
+    "tests": 28,
+    "pass": 28,
+    "fail": 0,
+    "log": "evidence/helper-final-r2.log",
+    "tsc": "pass",
+    "eslint": "pass",
+    "FSD": "pass77/68/16"
+  },
+  "notes": [
+    "These helpers do not establish current store source/target authority. Entity must check original object identity, scope, source generation and composer draft revision synchronously in reducer.",
+    "No public bridge/API/host/storage/transport changes. No contract-source edits allowed without Main coordination.",
+    "r2 coordinates malformed /dev/null nonzero side and duplicate/one-sided file-header refusal. Same exports/type/API shape. Meaningful header RED preserved, final28PASS. CR-only file separators also supported exactly."
+  ]
+}

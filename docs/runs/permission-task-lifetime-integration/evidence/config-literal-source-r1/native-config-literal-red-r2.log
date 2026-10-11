@@ -1,0 +1,48 @@
+{"retained":"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-config-literal-K70jgB","consumerSourceSha256":"164d7b54c26bec17fc4291f61569c602598b63f66c90052650ac80be2d079cdf","scope":"Node synthetic directories plus exact original pure generator expression; scripted Effect.fn adapter/process/file canary; no original Native import or external file read"}
+✖ app resource path remains literal under original ConfigVariable env substitution (0.782625ms)
+✖ app resource path cannot enter original ConfigVariable file continuation (0.070583ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 192.447417
+
+✖ failing tests:
+
+test at work/native-config-literal-probe.mjs:29:1
+✖ app resource path remains literal under original ConfigVariable env substitution (0.782625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-config-literal-K70jgB/SYNTHETIC_REPLACEMENT/opencode/event-host/darwin-arm64/builtins/workbench-skills'
+  - '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-config-literal-K70jgB/{env:OMOC_LITERAL}/opencode/event-host/darwin-arm64/builtins/workbench-skills'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/native-config-literal-probe.mjs:29:350)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-config-literal-K70jgB/SYNTHETIC_REPLACEMENT/opencode/event-host/darwin-arm64/builtins/workbench-skills',
+    expected: '/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-config-literal-K70jgB/{env:OMOC_LITERAL}/opencode/event-host/darwin-arm64/builtins/workbench-skills',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at work/native-config-literal-probe.mjs:30:1
+✖ app resource path cannot enter original ConfigVariable file continuation (0.070583ms)
+  Error: synthetic_file_factory_reached
+      at file:///Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/native-config-literal-probe.mjs:30:138
+      at eval (eval at <anonymous> (file:///Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/native-config-literal-probe.mjs:23:15), <anonymous>:7:17)
+      at Generator.next (<anonymous>)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/native-config-literal-probe.mjs:30:269)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)

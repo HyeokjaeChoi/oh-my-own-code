@@ -1,0 +1,115 @@
+{
+  "schema_version": 2,
+  "run": "configuration-skill-runtime",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "f83447dca1b99fb30ea4b85e76b93119725564ec643c73e7e2b26105f3a25db5",
+    "documents_sha256": "1668947403111c228f780a093099854d2f2a848681d3d2bf57f5d02b8ffa1b1b",
+    "gate": "design_spec",
+    "plan_sha256": "a54bb057914f7f0e69d25eb8101d6abae7a53c091fafef2a81078cbfd65a17b6",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "design.md v1은 PLAN revision 1과 기존 architecture·trust·storage·UI 계약에 맞습니다. 필수 설계 수정 사항은 없습니다. Global config poison 우회는 확인되지 않았습니다. 기존 preflight와 fresh 생성 경계가 해당 경로를 제한합니다. 후속 consumer 작업은 poison sentinel 거절을 포함한 첫 실제 production-helper 검증이 성공한 뒤에만 시작해야 합니다.",
+  "open_findings": [],
+  "review_boundary": {
+    "artifact": "docs/runs/configuration-skill-runtime/design.md",
+    "version": "1",
+    "scope": "초기 DESIGN_SPEC의 architecture, trust, authentication, lifetime, serialization, ownership, Native ID, digest, unknown, legacy, fork, restart 및 UI 상태 경계",
+    "implementation_review": false
+  },
+  "evidence": [
+    {
+      "concern": "입력과 등록 상태",
+      "result": "제공된 reviewed binding을 독립 계산한 값과 비교했으며 모두 일치합니다. packet의 design·plan·contract 바이트 해시와 routing 입력 4개도 일치합니다. source-facts의 소스 30개와 prechange 소스 252개에 해시 차이가 없습니다. run은 active이며 실제 PLANr1 pass가 등록돼 있습니다. 실행 check 기록은 없습니다."
+    },
+    {
+      "concern": "Global config 소스 경로",
+      "paths": [
+        "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-gh5tebn4.js:35",
+        "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-9b1g8vzp.js:174",
+        "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-knjpra5n.js:96",
+        "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/server/dist/chunks/service-status-74x861p1.js:117"
+      ],
+      "result": "Global discovery는 기본으로 켜집니다. Config.load는 global directory/document와 inline content를 반환하며, ConfigPluginSource는 전체 entry의 plugin 항목을 검사합니다. 따라서 inline plugins allowlist만으로 기존 global plugin을 제외할 수 없습니다. ServerProcess.start의 공개 config 옵션과 실제 전달 코드에는 global:false가 없습니다. 이는 실제 소스 특성이며, 생산 startup guard를 통과하는 우회가 확인됐다는 뜻은 아닙니다."
+    },
+    {
+      "concern": "기존 NONFRESH 배제 검사",
+      "paths": [
+        "apps/desktop-app/src/host/native-preflight.mjs:376",
+        "apps/desktop-app/src/host/native-preflight.mjs:300",
+        "apps/desktop-app/src/host/native-preflight.mjs:659",
+        "apps/desktop-app/src/event-host-supervisor.mjs:317"
+      ],
+      "result": "prepare는 namespace.config 목록이 정확히 ['opencode'], 하위 목록이 정확히 ['opencode.json'], 파일 내용이 정확히 '{}\\n'인지 검사합니다. held handle의 stat, 경로, 목록과 파일 hash도 재검사합니다. 이 검사는 inspector 호출 전에 수행됩니다. supervisor는 spawn intent 전에 preflight를 다시 호출합니다. 기존 poison config·추가 항목 거절 test 정의도 확인했으나 실행하지 않았습니다."
+    },
+    {
+      "concern": "FRESH 생성 권한",
+      "paths": [
+        "apps/desktop-app/src/ephemeral-profile.mjs:46",
+        "apps/desktop-app/src/sidecar-supervisor.mjs:410",
+        "apps/desktop-app/src/event-host-supervisor.mjs:250",
+        "apps/desktop-app/src/event-host-supervisor.mjs:275"
+      ],
+      "result": "fresh는 storage root의 mkdir가 실제 성공한 경우에만 설정되며 반환 namespace는 frozen입니다. 기존 root는 fresh가 되지 않습니다. Main은 owner와 manifest 경계를 거쳐 이 namespace를 사용합니다. 새 profile의 global config는 wx로 '{}\\n'을 생성합니다. EEXIST 분기 자체는 내용 검사가 아니지만, 기존 profile의 배제 근거는 NONFRESH preflight입니다. 현재 app-owned 경계와 명시된 same-UID hostile mutation 제외 범위에서 확인된 우회는 없습니다."
+    },
+    {
+      "concern": "지원 API와 경로 증거",
+      "result": "실제 ConfigPluginSource는 configured FILE을 제외하고 DIRECTORY entrypoint의 containment를 검사합니다. PluginModule의 absolute-local 분기는 npm 설치 경로를 사용하지 않습니다. Context.skill.transform/reload와 rpc.register는 선언에 존재합니다. 공개 global Skill API는 list이며 register/remove SDK setter를 제공하지 않습니다. 설계는 선언과 소스 검사를 실행 성공으로 취급하지 않고 첫 실제 production-helper 검증으로 consumer 작업을 제한합니다."
+    },
+    {
+      "concern": "권한·직렬화·수명",
+      "result": "Main이 Native client, 파일, nonce와 durable operation 권한을 소유합니다. 고정 plugin resource closure, 닫힌 RPC, canonical Context.location, 원래 operation identity와 digest를 요구합니다. plugin instance의 bounded serialized handler와 synchronous transform snapshot은 reload callback의 lock 교착을 피하도록 정의돼 있습니다. 임의 method/path/module, package 설치와 project discovery를 허용하지 않습니다."
+    },
+    {
+      "concern": "Native 소유권과 기록",
+      "result": "Skill.Info의 실제 필드는 id/name/description?/autoinvoke?/path/content이며 generic metadata는 없습니다. 설계는 원래 등록 identity와 plugin-held map 및 정확한 public readback으로 소유권을 확인합니다. prefix만으로 판단하지 않습니다. 등록별 Native ID, autoinvoke:false, 충돌 거절과 identity/digest만의 durable 저장이 일관됩니다."
+    },
+    {
+      "concern": "Session 적용과 상관관계",
+      "result": "공개 session.skill 입력에는 sessionID/id/resume만 있으며 caller messageID는 없습니다. 실제 core는 Skill.Activated를 발행하고 resume !== false일 때 실행을 재개합니다. projection은 event ID에서 별도 type:skill message를 만듭니다. 설계의 완전한 bounded history, 적용 전 Native ID 부재, 적용 후 정확히 한 개의 새 messageID·name·text digest 확인이 이 API에 맞습니다. history 불완전은 거절하고 효과 후 불확실성은 unknown으로 유지합니다."
+    },
+    {
+      "concern": "Unknown·legacy·fork·restart",
+      "result": "효과 전 original-key intent flush, 기존 single writer와 canonical digest, admission/checkpoint 전 feature marker, legacy byte-preserving refusal을 요구합니다. unknown은 lookup-only이며 replay하지 않습니다. restart는 Native 등록을 자동 복원하지 않습니다. fork의 기존 Skill message를 새 직접 적용으로 표시하지 않습니다. 등록 제거는 session 기록을 제거하지 않으며 public undo API를 가정하지 않습니다."
+    },
+    {
+      "concern": "UI 상태와 recovery",
+      "paths": [
+        "docs/runs/configuration-skill-runtime/design.md:28",
+        "apps/desktop-app/src/workbench-service.mjs:1099"
+      ],
+      "result": "파일 저장, Native 비활성 등록과 session Skill 기록을 분리합니다. scope/floor/draft/session identity, stale 응답 폐기, 명시적 재조회와 hold 중 draft 편집을 유지합니다. pending/unknown/untrusted/history-truncated/restart 상태와 keyboard·760px·200% 기준을 정의합니다. 기존 service는 Native startup 거절 후 같은 facade와 transport epoch를 유지합니다. 렌더링과 접근성의 실제 검증은 후속 RENDER gate에 남습니다."
+    }
+  ],
+  "prerequisite_gate": {
+    "status": "required_before_consumers",
+    "requirements": [
+      "기존 production startup, owner fence와 native-preflight를 사용한다. persistent global opencode.json은 정확히 '{}\\n'으로 유지하고 trusted plugin 설정은 inline content에만 둔다.",
+      "실제 고정 DIRECTORY 로딩, authenticated closed RPC, nonce·extra-field·unknown-method·cross-location 거절, transform/reload/public list 일치와 소유 process cleanup을 입증한다.",
+      "실제 NONFRESH 경로의 synthetic poison fixture에 변경된 opencode.json, 추가 opencode.jsonc 및 plugin/plugins sentinel 항목을 포함한다. 각 거절에서 inspector/Native spawn, plugin handler, npm와 provider 호출이 0인지 확인한다.",
+      "poison 파일의 원래 바이트와 경로가 보존되고 startup 거절 후 기존 recovery facade가 유지되는지 확인한다. 별도 정상 FRESH 경로에서는 생성된 빈 global config와 고정 inline plugin 경로를 확인한다.",
+      "fixture가 임의 fresh:true 주입을 생산 생성 권한의 증거로 사용하면 안 된다. 기존 검사를 약화하거나 durable profile을 바꾸거나 지원하지 않는 config.global:false를 추가하면 안 된다.",
+      "검증 실패 시 dependent consumer 작업을 보류한다. 실패가 실제로 드러낸 접근법 문제만 수정·검토하며 완료된 P7의 초기 gate를 반복하지 않는다."
+    ]
+  },
+  "limits": [
+    "이 pass는 제공된 design.md v1의 초기 문서 검토 판정입니다. Native 경로 또는 제품 구현 성공을 뜻하지 않습니다.",
+    "파일 읽기와 해시 계산만 수행했습니다. 파일·artifact·ledger 수정, 위임, runtime·build·test·provider 실행과 private content 접근은 하지 않았습니다.",
+    "새 plugin의 실제 RPC 인증, reload, cleanup과 Skill-message proof는 아직 실행 증거가 없습니다.",
+    "보고서 보존·등록·child 종료는 Main이 수행합니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11a38-fc8e-74e1-a068-45a2f3938ffa",
+    "author_task_id": null,
+    "identity_evidence": "현재 CODEX_THREAD_ID로 확인했으며 run.json의 DESIGN_SPEC dispatch child_ref와 일치합니다. author_task_id는 제공되지 않았습니다.",
+    "independent": true,
+    "authored_plan": false,
+    "authored_design": false,
+    "modified_source": false,
+    "modified_artifacts": false,
+    "modified_ledger": false,
+    "recursively_delegated": false
+  }
+}

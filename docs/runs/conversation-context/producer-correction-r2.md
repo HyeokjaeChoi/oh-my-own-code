@@ -1,0 +1,1 @@
+Private Native inbox projector corrected bounded UTF-16 clipping at a surrogate-pair boundary. Public DTO/helper/transport six sources are unchanged, API shape unchanged. Actual malformed preview RED -> GREEN in main-unicode-preview logs. Historical producer-r1 remains untouched.

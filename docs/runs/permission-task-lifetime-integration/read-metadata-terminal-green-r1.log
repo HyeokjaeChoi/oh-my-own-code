@@ -1,0 +1,18 @@
+✔ actual Control retains only unsupported metadata from the same source/activation and clears it on dispose (5.840292ms)
+✔ source-like IDs, undeclared copies, changed effects and reused activation results cannot mint metadata (0.755625ms)
+✔ read metadata cannot cross Location incarnation or survive reload (0.717375ms)
+▶ actual Read → PluginInternal → supervisor copies → loader retains inert metadata on the original activation Scope
+  ✔ ordinary actual loader disposal (2.482584ms)
+  ✔ 32 queued writers during actual loader disposal (32.435458ms)
+✔ actual Read → PluginInternal → supervisor copies → loader retains inert metadata on the original activation Scope (44.231167ms)
+✔ graph-owned Read source rejects getters, proxies, asynchronous verifier and reconfiguration before callbacks (0.33925ms)
+✔ terminal cleanup joins duplicates once at saturation and does not open ordinary admission (30.962208ms)
+✔ reentrant terminal cleanup cannot cache a failure or deadlock later actual disposal (0.604208ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 415.016125

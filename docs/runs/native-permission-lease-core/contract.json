@@ -1,0 +1,84 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "L1",
+      "description": "Bounded opaque lease lineage and actual task/IO observations with conservative process hold"
+    },
+    {
+      "id": "L2",
+      "description": "Single boot-held Control ledger and source asset closure, no activation or Native entry claim"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "apps/desktop-app/src/native-permission-task-observer.test.mjs",
+        "apps/desktop-app/src/native-permission-leases.test.mjs",
+        "apps/desktop-app/src/native-permission-control.test.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Private lease core and changed packaged source closure, no Native execution",
+      "acceptance_ids": [
+        "L1",
+        "L2"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/native-permission-task-observer.mjs",
+        "apps/desktop-app/src/native-permission-task-observer.test.mjs",
+        "apps/desktop-app/src/native-permission-leases.mjs",
+        "apps/desktop-app/src/native-permission-leases.test.mjs",
+        "apps/desktop-app/src/native-permission-control.mjs",
+        "apps/desktop-app/src/native-permission-control.test.mjs",
+        "apps/desktop-app/src/native-permission-control-input.mjs",
+        "apps/desktop-app/src/event-host-resources.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Changed private lease source/tests",
+      "acceptance_ids": [
+        "L1",
+        "L2"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/native-permission-task-observer.mjs",
+        "apps/desktop-app/src/native-permission-task-observer.test.mjs",
+        "apps/desktop-app/src/native-permission-leases.mjs",
+        "apps/desktop-app/src/native-permission-leases.test.mjs",
+        "apps/desktop-app/src/native-permission-control.mjs",
+        "apps/desktop-app/src/native-permission-control.test.mjs",
+        "apps/desktop-app/src/native-permission-control-input.mjs",
+        "apps/desktop-app/src/event-host-resources.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Changed private lease source/tests",
+      "acceptance_ids": [
+        "L1",
+        "L2"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

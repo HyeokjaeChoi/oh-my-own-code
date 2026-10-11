@@ -1,0 +1,53 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toBeInViewport() failed
+
+Locator:  getByRole('textbox', { name: '메시지 작성' })
+Expected: in viewport
+Received: viewport ratio 0.53125
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeInViewport" getByRole('textbox', { name: '메시지 작성' }) with timeout 5000ms
+  - waiting for getByRole('textbox', { name: '메시지 작성' })
+    14 × locator resolved to <textarea name="input" maxlength="32000" aria-label="메시지 작성" class="_input_w2kzr_128" aria-describedby="_r_6_" placeholder="작업을 요청하세요. /로 명령 보기">긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 …</textarea>
+       - unexpected value "viewport ratio 0.53125"
+
+    at captureRawStack (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright-core@1.63.0/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toBeInViewport (/Users/hyukjaechoi/Projects/oh-my-own-code/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at captureMatrix (/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:143:7)
+    at async file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs:741:3 {
+  matcherResult: {
+    message: 'expect(locator).toBeInViewport() failed\n' +
+      '\n' +
+      "Locator:  getByRole('textbox', { name: '메시지 작성' })\n" +
+      'Expected: in viewport\n' +
+      'Received: viewport ratio 0.53125\n' +
+      'Timeout:  5000ms\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeInViewport" getByRole('textbox', { name: '메시지 작성' }) with timeout 5000ms\n` +
+      "  - waiting for getByRole('textbox', { name: '메시지 작성' })\n" +
+      '    14 × locator resolved to <textarea name="input" maxlength="32000" aria-label="메시지 작성" class="_input_w2kzr_128" aria-describedby="_r_6_" placeholder="작업을 요청하세요. /로 명령 보기">긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 …</textarea>\n' +
+      '       - unexpected value "viewport ratio 0.53125"\n',
+    pass: false,
+    actual: 'viewport ratio 0.53125',
+    name: 'toBeInViewport',
+    expected: 'in viewport',
+    log: [
+      `  - Expect "toBeInViewport" getByRole('textbox', { name: '메시지 작성' }) with timeout 5000ms`,
+      "  - waiting for getByRole('textbox', { name: '메시지 작성' })",
+      '    14 × locator resolved to <textarea name="input" maxlength="32000" aria-label="메시지 작성" class="_input_w2kzr_128" aria-describedby="_r_6_" placeholder="작업을 요청하세요. /로 명령 보기">긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 …</textarea>',
+      '       - unexpected value "viewport ratio 0.53125"'
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- textbox "메시지 작성":\n' +
+      '  - /placeholder: 작업을 요청하세요. /로 명령 보기\n' +
+      '  - text: 긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다. 긴 한국어 초안을 작성하면서 파일 읽기 권한과 중단 버튼을 함께 확인합니다.'
+  }
+}
+
+Node.js v26.8.2

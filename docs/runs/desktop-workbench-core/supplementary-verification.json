@@ -1,0 +1,79 @@
+{
+  "source_sha256": "a43b573d8cebecb5dcb2cb5605f84bcbe69e11143cde2c27e1242e81dd24c687",
+  "ui_states": {
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs"
+    ],
+    "exit_code": 0,
+    "evidence": "docs/runs/desktop-workbench-core/ui-states-evidence.json",
+    "provider_execution": false
+  },
+  "development_lifecycle": {
+    "mode": "dev",
+    "result": "pass",
+    "sidecarCount": 1,
+    "appExitCode": 0,
+    "temporaryProfileRemoved": true,
+    "screenshotPath": "/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/oh-my-own-code-desktop-dev.png"
+  },
+  "packaged_lifecycle": {
+    "mode": "packaged",
+    "result": "pass",
+    "sidecarCount": 1,
+    "appExitCode": 0,
+    "temporaryProfileRemoved": true,
+    "screenshotPath": "/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/oh-my-own-code-desktop-packaged.png",
+    "appTreeSha256": "621b645eeed5e8d4887f05dc87640ff47e41b9ac89e5b5c8c7372cb672ed0024",
+    "appExecutableSha256": "60dbb0f7c649404f61c987a0ddcd8a051c8268aee502f44da2ffdd0ede03bd0e",
+    "appAsarSha256": "dc75706349b3eaed92e50cf08099503b27bc045075a63303ba2bad03d7a12c49",
+    "sidecarSha256": "6759c7f86f807d63d3984ca1970f9fa663ee303a35bb344eb223c71e200a96bf",
+    "securityScenarios": [
+      "foreign_sender_malformed_payload",
+      "no_subframe_preload_bridge",
+      "trusted_main_frame_malformed_payload",
+      "no_preview_surface_in_bootstrap"
+    ],
+    "lifecycleScenarios": [
+      "quit",
+      "child_crash_disconnect",
+      "restart",
+      "window_close_or_quit",
+      "startup_failure",
+      "startup_timeout",
+      "service_collision"
+    ]
+  },
+  "package_source_match": {
+    "result": "pass",
+    "archive": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/dist/packages/OhMyOwnCode-darwin-arm64/OhMyOwnCode.app/Contents/Resources/app.asar",
+    "appAsarSha256": "dc75706349b3eaed92e50cf08099503b27bc045075a63303ba2bad03d7a12c49",
+    "matchedFiles": 6,
+    "files": [
+      {
+        "path": "main.mjs",
+        "sha256": "fad1cf0afaad4f9c102eed5fd84bf647942a7a9516b6fc375cc651f659802ab8"
+      },
+      {
+        "path": "package.json",
+        "sha256": "9867ef3f45c3dc320d820cb11c32a526065d610dca2f15856aa27db6a6ffc8dd"
+      },
+      {
+        "path": "preload.cjs",
+        "sha256": "3f82f95244823d9716c0c5d39a06580e5608bea8fcc13ffb959545d870934b48"
+      },
+      {
+        "path": "renderer/assets/index-MMr9TZsE.js",
+        "sha256": "dd19a11b0600476eb1a0235721ca49de1f03181c16f9f6e636ea6c6d89a95304"
+      },
+      {
+        "path": "renderer/assets/index-cCtVZgAP.css",
+        "sha256": "f168316243a6a8a2cc7f0ed5193c9ea9a8f97ce853017fdf45ff5ddc0a933dd0"
+      },
+      {
+        "path": "renderer/index.html",
+        "sha256": "2fa9536b2cf34deb1a19fa32d14d1e865b87fddd1e12002651da9bed4babe7dd"
+      }
+    ]
+  }
+}

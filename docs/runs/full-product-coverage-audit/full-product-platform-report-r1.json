@@ -1,0 +1,111 @@
+[
+  {
+    "platform": "macOS",
+    "status": "source_partial",
+    "sourceRefs": [
+      {
+        "path": "apps/desktop-app/src/event-host-resources.mjs",
+        "line": 81,
+        "sha256": "f900de7bb9b08144fc9774c9c801b74589bac6d965d9f09e310e4a3f2d0bcaf8",
+        "observation": "assertEventHostTarget accepts only darwin arm64 and rejects other targets before resolving packaged host."
+      },
+      {
+        "path": "apps/desktop-app/src/host/owner-lifetime.mjs",
+        "line": 149,
+        "sha256": "ce552061e68aa2cb1bb52cfece777e8f55c33de0e8b13b94b86a7d5f9ccabc95",
+        "observation": "Kernel lifetime witness supports only macOS arm64."
+      },
+      {
+        "path": "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+        "line": 103,
+        "sha256": "cca5de5aa358d1ecba8209b2c7c8af457503c1717945cba1f825245c2974fd54",
+        "observation": "Descriptor publication runtime checks require darwin arm64."
+      },
+      {
+        "path": "apps/desktop-app/src/host/git-metadata-kernel.mjs",
+        "line": 231,
+        "sha256": "7c68c8587593ebe938dd3727392eda8c9e96220f66c615a269388291fd18645d",
+        "observation": "Git descriptor kernel verifies darwin target and fixed ABI/runtime before original effects."
+      },
+      {
+        "path": "apps/desktop-app/src/host/workbench-git.mjs",
+        "line": 148,
+        "sha256": "d28d0ae3da4ef5ab35f2c7b40d0dcb096207a7636ad409e03cdce591f1cc22b7",
+        "observation": "Production reader returns platform_unavailable for non-darwin before native Git observation."
+      },
+      {
+        "path": "apps/desktop-app/scripts/package.mjs",
+        "line": 16,
+        "sha256": "3c9c9e9a65b91996025f4e95abc533c8799fd12385aae8a7f01153a2df14faaf",
+        "observation": "Package command requires native host platform+arch; package:windows script is not evidence of installed functional Windows app."
+      }
+    ],
+    "runtimeRefs": [
+      {
+        "path": "docs/runs/git-branch-restore/evidence/hidden-r4/git-branch-restore/git-branch-restore-evidence.json",
+        "sha256": "821050ac1f75feb7665124f53f9328533338aa4080566cdc03d1ac32de24dc78",
+        "observation": "Current built Renderer/preload in hidden synthetic Main:44states/1283nativePNG/pageErrors[]/ownedElectronexit0.",
+        "applicability": "Frozen source eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1; local macOS synthetic branch/restore scope only.",
+        "limits": [
+          "Not productionMain/real OS IPC/dialog/provider or all18 product flow acceptance."
+        ]
+      }
+    ],
+    "gaps": [
+      "Actual macOS arm64 bounded evidence exists, but all18 groups/seven integrated normal+failure flows and product-level independent release acceptance remain incomplete."
+    ],
+    "limits": [
+      "Do not generalize arm64 tests to all macOS architectures."
+    ]
+  },
+  {
+    "platform": "Windows",
+    "status": "source_missing",
+    "sourceRefs": [
+      {
+        "path": "apps/desktop-app/src/event-host-resources.mjs",
+        "line": 81,
+        "sha256": "f900de7bb9b08144fc9774c9c801b74589bac6d965d9f09e310e4a3f2d0bcaf8",
+        "observation": "assertEventHostTarget accepts only darwin arm64 and rejects other targets before resolving packaged host."
+      },
+      {
+        "path": "apps/desktop-app/src/host/owner-lifetime.mjs",
+        "line": 149,
+        "sha256": "ce552061e68aa2cb1bb52cfece777e8f55c33de0e8b13b94b86a7d5f9ccabc95",
+        "observation": "Kernel lifetime witness supports only macOS arm64."
+      },
+      {
+        "path": "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+        "line": 103,
+        "sha256": "cca5de5aa358d1ecba8209b2c7c8af457503c1717945cba1f825245c2974fd54",
+        "observation": "Descriptor publication runtime checks require darwin arm64."
+      },
+      {
+        "path": "apps/desktop-app/src/host/git-metadata-kernel.mjs",
+        "line": 231,
+        "sha256": "7c68c8587593ebe938dd3727392eda8c9e96220f66c615a269388291fd18645d",
+        "observation": "Git descriptor kernel verifies darwin target and fixed ABI/runtime before original effects."
+      },
+      {
+        "path": "apps/desktop-app/src/host/workbench-git.mjs",
+        "line": 148,
+        "sha256": "d28d0ae3da4ef5ab35f2c7b40d0dcb096207a7636ad409e03cdce591f1cc22b7",
+        "observation": "Production reader returns platform_unavailable for non-darwin before native Git observation."
+      },
+      {
+        "path": "apps/desktop-app/scripts/package.mjs",
+        "line": 16,
+        "sha256": "3c9c9e9a65b91996025f4e95abc533c8799fd12385aae8a7f01153a2df14faaf",
+        "observation": "Package command requires native host platform+arch; package:windows script is not evidence of installed functional Windows app."
+      }
+    ],
+    "runtimeRefs": [],
+    "gaps": [
+      "Required event-host, lifetime witness, descriptor publication and checked Git adapters explicitly reject or do not implement Windows; native Windows execution and all product scenarios also remain unverified."
+    ],
+    "limits": [
+      "Packaging option or optional opencode.exe dependency does not establish platform support.",
+      "No Windows host is available in this current local execution context; code support and actual Windows acceptance are separate remaining work."
+    ]
+  }
+]

@@ -1,0 +1,140 @@
+{
+  "schema_version": 2,
+  "run": "permission-task-lifetime-integration",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "325ef00fb8bfc377b2b71477de2003ed90da6f8f99cec231bd684201ec9e2e03",
+    "documents_sha256": "c9b376ff40ded39af0a0f8e7fe79132b25f82bca74b6bc41961bd3d5be08d5a8",
+    "gate": "design_spec",
+    "plan_sha256": "d140e2bfb262ab393d3fd7d8c70213dc30c44d5185c547a060beae5c7283adbe",
+    "schema_version": 2,
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "workspace mutation 변경 설계에 차단 사항이 없습니다. session/workspace의 닫힌 변형, 정확한 원본 operation 연결, 완전한 affected set과 거부 조건, 기존 저장 형식의 거부 및 prompt 권한 제한이 정의되어 있습니다. 판정은 후보 문서에만 적용됩니다. 검토 중 source fingerprint가 바뀌었으므로 현재 전체 source나 consumer 구현을 승인하지 않습니다.",
+  "open_findings": [],
+  "review_boundary": {
+    "candidate": "docs/runs/permission-task-lifetime-integration/workspace-mutation-supplement-r1.md",
+    "plan": "docs/runs/permission-task-lifetime-integration/plan.md",
+    "plan_revision": 2,
+    "parent": "docs/runs/permission-task-lifetime-design/design-contract-r2.md",
+    "scope": "workspace-only mutation identity 변경과 부모 계약 호환성만 검토했습니다. 완료된 부모 plan/design 검토는 반복하지 않았습니다."
+  },
+  "assessments": [
+    {
+      "topic": "closed variants",
+      "location": "docs/runs/permission-task-lifetime-integration/workspace-mutation-supplement-r1.md:10-16",
+      "result": "mutation에만 targetKind를 추가합니다. session 변형은 두 session ID를 요구합니다. workspace 변형은 두 필드를 금지하고 원본 workspaceId와 sessionId 부재를 요구합니다. UI 선택 session으로 대체할 수 없습니다.",
+      "evidence": [
+        "apps/desktop-app/src/workbench-contract.mjs:117-207",
+        "apps/desktop-app/src/host/workbench-task-storage.mjs:155-195",
+        "apps/desktop-app/src/native-permission-origin-scopes.mjs:43-64"
+      ]
+    },
+    {
+      "topic": "actual workspace-only operations",
+      "result": "configuration.agent.register/remove/save, configuration.skill.register/remove/save, configuration.mcp.register/connect/disconnect/remove, configuration.save, file.save와 workspace.remove는 session 없는 실제 계약입니다. Git apply 계열도 admission에서 sessionId를 제외합니다. configuration.skill.apply와 instructions 변경은 session 경로를 유지합니다. workspace/session create 및 fork는 기존 bootstrap 범위입니다. 이 보충 문서는 각 작업의 실행 지원을 일괄 승인하지 않습니다.",
+      "evidence": [
+        "apps/desktop-app/src/workbench-contract.mjs:101-207",
+        "apps/desktop-app/src/workbench-contract.mjs:227-273",
+        "apps/desktop-app/src/host/workbench-admission.mjs:510-578",
+        "apps/desktop-app/src/workbench-service.mjs:141-172"
+      ]
+    },
+    {
+      "topic": "original identity and binding",
+      "location": "docs/runs/permission-task-lifetime-integration/workspace-mutation-supplement-r1.md:12-19",
+      "result": "Main은 immutable admitted operation에서 targetKind를 정합니다. 부모의 original key/digest, registry revision, sequence, stage flush 및 immutable ACK를 유지합니다. persisted mutation binding의 targetKind/step/targetDigest/stageArgumentDigest/두 집합을 shared taskBindingDigest로 묶고 Native admission 및 실제 인자와 대조합니다. 기존 storage가 session 없는 원본에 가짜 session을 거부하는 동작은 완화 대상이 아닙니다.",
+      "evidence": [
+        "apps/desktop-app/src/host/workbench-admission.mjs:435-438",
+        "apps/desktop-app/src/host/workbench-task-storage.mjs:237-255",
+        "apps/desktop-app/src/host/workbench-task-storage.mjs:483-526",
+        "docs/runs/permission-task-lifetime-design/design-contract-r2.md:23-55"
+      ]
+    },
+    {
+      "topic": "affected-set completeness and refusal",
+      "location": "docs/runs/permission-task-lifetime-integration/workspace-mutation-supplement-r1.md:14-21",
+      "result": "각 집합은 detached·unique·최대 256개입니다. project 집합은 실제 projectId를 포함하고 비어 있지 않아야 합니다. session 집합의 공백은 workspace 변형에만 허용됩니다. 실제 method 범위의 완전성, 현재 mapping 및 membership을 확인하지 못하거나 한도를 넘으면 effect 전에 거부합니다. 빈 집합은 no_effect 증거가 아닙니다. service의 workspace 전체 순회와 Native의 현재 비어 있지 않은 집합 요구를 함께 수정할 계약입니다.",
+      "evidence": [
+        "apps/desktop-app/src/native-permission-origin-scopes.mjs:131-138",
+        "apps/desktop-app/src/workbench-service.mjs:3584-3613",
+        "apps/desktop-app/src/workbench-service.mjs:4454-4489"
+      ]
+    },
+    {
+      "topic": "compatibility and authority",
+      "location": "docs/runs/permission-task-lifetime-integration/workspace-mutation-supplement-r1.md:21-27",
+      "result": "같은 journal/checkpoint/replay/registry와 Native typed origin을 함께 변경합니다. 이전 개발 mutation record는 누락 필드를 추정하거나 원본 bytes를 바꾸지 않고 거부합니다. pre-feature parser의 byte 보존, receipt/lookup, authorityHold, 부모 recovery 제한을 유지합니다. mutation은 input을 promote하지 않습니다. session을 요구하는 execution lease와 미추적 callback은 계속 거부합니다. prompt/tool 권한, 새 공개 method 또는 feature enablement를 부여하지 않습니다.",
+      "evidence": [
+        "apps/desktop-app/src/native-permission-leases.mjs:22-32",
+        "apps/desktop-app/src/native-permission-leases.mjs:82-100",
+        "docs/runs/permission-task-lifetime-design/design-contract-r2.md:35-55",
+        "docs/runs/permission-task-lifetime-design/design-contract-r2.md:77-99"
+      ]
+    }
+  ],
+  "consumer_acceptance": [
+    "Main이 이 독립 보고서를 등록하고 design_spec handoff를 확인한 뒤 dependent consumer를 진행합니다. reviewer는 ledger나 자기 승인을 수행하지 않습니다.",
+    "동일한 targetKind, 원본 key/digest, 실제 method 인자, 완전한 Native session/project 집합을 producer와 consumer에서 함께 검증합니다. stale membership·mapping 실패·oversize는 effect 전에 거부합니다.",
+    "후보 문서 27행의 RED→GREEN, 두 policy stage flush, 잘못된 변형/ID/집합 거부, 동일 journal reopen 및 구형 parser byte 보존을 구현 증거로 제출합니다. 현재 session 필수 validator는 아직 새 설계의 구현 완료 증거가 아닙니다.",
+    "최종 독립 CODE 검토가 필요합니다. 실제 Native 실행은 별도 pre-execution 검토와 기존 prerequisite 충족 전까지 보류합니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a12494-395e-7512-bb80-54115c2774d8",
+    "identity_source": "현재 프로세스의 CODEX_THREAD_ID",
+    "binding_input": "docs/runs/permission-task-lifetime-integration/workspace-design-input-r1.json",
+    "routing_packet": "docs/runs/permission-task-lifetime-integration/workspace-design-packet-r1.json",
+    "review_mode": "fresh bounded independent static design-spec review",
+    "run_status": "active",
+    "delegation": false,
+    "ledger_edits": false,
+    "source_edits": false,
+    "report_only_write": true
+  },
+  "verification": {
+    "input_copied_entire": true,
+    "input_matches_current_harness_binding": true,
+    "packet_contract_file_hash_matches": true,
+    "routing_input_hashes_match": true,
+    "candidate_hash_matches_packet": true,
+    "inspected_file_sha256_at_checkpoint": {
+      "apps/desktop-app/src/workbench-contract.mjs": "538eb4a39e11f07ef0ae3d8a00a5ffc33ee88f40ad5149914a7046cad3daa474",
+      "apps/desktop-app/src/workbench-service.mjs": "2988d5aa66f43903e0a2360779b02b9bb79b6050ff6a6a548d5a7397d2d19856",
+      "apps/desktop-app/src/host/workbench-admission.mjs": "6ae71c1303fb7304200ee9e9c5072c74e07279dced2cc369da0607cbc3cb5794",
+      "apps/desktop-app/src/host/workbench-task-storage.mjs": "507d92a1d893ecb31cb46602aeb794a093101d5c5ebcc6e27c0e5a408584e012",
+      "apps/desktop-app/src/native-permission-origin-scopes.mjs": "54fe8ea780dbfd8791fabb65d48902cbde97093cdc363d7f7794e03f9c401f32",
+      "docs/runs/permission-task-lifetime-design/design-contract-r2.md": "84f33f0af612d3d9abe0de9a8e8163790c0837bc11073d062e6ca7bbe862bd68",
+      "docs/runs/permission-task-lifetime-integration/plan.md": "d140e2bfb262ab393d3fd7d8c70213dc30c44d5185c547a060beae5c7283adbe",
+      "docs/runs/permission-task-lifetime-integration/workspace-mutation-supplement-r1.md": "69a949ae0b4053f811cd8843c972fd7387436138d4565d3f71304a557fae0979",
+      ".agents/skills/solo-design-spec-review/SKILL.md": "cdb838c9d94a50ed5eaaa072f1bf9f5e55c9d487f98c084fb766043c02109c5e",
+      ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+      ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+    }
+  },
+  "source_freshness": {
+    "source_fingerprint_at_first_checkpoint": "31e3fd411ef6b86b3dd7cc28d59ea1ac5ff122a769fe3031e1b8ea50c7f8c2cc",
+    "source_fingerprint_at_second_checkpoint": "ecadf75b1b4fc02beb50c17399f607a7a4bea7f5960901843f9b09a0ca2bf4b3",
+    "source_fingerprint_at_last_inventory": "4c195a1258e6c0ae3009a7f42a3783bf5c884ca36396dbefa588c7b1e0518d47",
+    "source_changed_during_review": true,
+    "confirmed_changed_scope": "apps/desktop-app/src/workbench-service.mjs",
+    "confirmed_service_sha256_before": "2988d5aa66f43903e0a2360779b02b9bb79b6050ff6a6a548d5a7397d2d19856",
+    "confirmed_service_sha256_after": "982b5d97ea0c7b84e240f35584863be789bb3e882a5a45fed7ea309a49d0ec0d",
+    "scope_limit": "최초 checkpoint에서 전체 inventory를 보관하지 않았습니다. 따라서 전체 변경 파일 목록은 확정하지 않습니다. 명시한 파일 변경은 개별 SHA256 비교로 확인했습니다. service의 mutation 목록, agent 경로, workspaceIdleIdentity, MCP 및 workspace.remove 관련 경로를 다시 읽었습니다. 이 보고서는 전체 source의 현재 binding이나 CODE verdict를 주장하지 않습니다.",
+    "document_binding_scope": "design_spec binding은 문서·plan·semantic contract·work class에 한정됩니다. report.reviewed에는 입력 JSON 전체를 그대로 복사했습니다.",
+    "selected_files_changed_at_save": [
+      {
+        "path": "apps/desktop-app/src/workbench-service.mjs",
+        "before": "2988d5aa66f43903e0a2360779b02b9bb79b6050ff6a6a548d5a7397d2d19856",
+        "after": "982b5d97ea0c7b84e240f35584863be789bb3e882a5a45fed7ea309a49d0ec0d"
+      }
+    ],
+    "source_fingerprint_at_save": "9071052ef53c9b5364ae2379fc5c5352cfa5b73981d09aea579bee0a0386e0ab"
+  },
+  "limits": [
+    "정적 문서·source 검토와 read-only hash/binding 계산만 수행했습니다. 제품 코드, 테스트, Native, server, build, UI 또는 network를 실행하지 않았습니다.",
+    "실제 affected-set enumeration의 원자성, IO/Fiber 종료 추적, parser reopen 및 consumer 적합성은 실행 검증하지 않았습니다.",
+    "최종 report 저장만 사용자 지시에 따라 수행합니다. Main이 유일한 ledger writer입니다."
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "schema_version": 2,
+  "status": "completed",
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "71fba6497564041133ab9ce26cedd3b9e69fe931a0987f6f107d3c1d8c689d87",
+    "environment_sha256": "c8a7382e511aced11b3dafdea0c323ad164a97c03b3f6e2f392b7b230d2c127a",
+    "gate": "code",
+    "plan_sha256": "3d11812decb522032b3614685be47c711f17e4b1dbf067f6f2720d71eb56f932",
+    "schema_version": 2,
+    "source_sha256": "51788ffd5f48d5bd73d7e383028a925e1e4ed4d4e3d008788032282bd218f387",
+    "verification_sha256": "7b24e44155c70fc1df2b5dc158b4417042dbcc19f64620168991ec791d3f7881",
+    "work_class_sha256": "201d17492a4cefb963a6b8a5a34a68dfbb1017ac43c833a6fd460efa9ffcd387"
+  },
+  "verdict": "pass",
+  "summary": "이전 지적 사항 2개와 관련 경로를 독립적으로 재검토했습니다. 두 결함은 수정됐습니다. 검토 범위에서 남은 구체적 결함이나 새 회귀 결함을 찾지 못했습니다.",
+  "open_findings": [],
+  "addressed_findings": [
+    {
+      "id": "CODE-GIT-R1-01",
+      "status": "addressed",
+      "summary": "같은 대소문자 무시 판정으로 최상위 Git marker를 제외하고 하위 Git marker를 거부합니다. 하위 marker 내부를 탐색하거나 config bytes를 복사하기 전에 거부합니다.",
+      "evidence": [
+        {
+          "path": "apps/desktop-app/src/host/workbench-git.mjs",
+          "line": 1145,
+          "details": "walk 예산 계산과 marker 처리 모두 name.toLowerCase()를 사용합니다. 1150행의 하위 marker 거부는 재귀 탐색과 파일 복사보다 앞에 있습니다."
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git.test.mjs",
+          "line": 669,
+          "details": ".GIT와 .GiT 안에 config canary를 둡니다. 실제 FileHandle.write를 감싸 쓰기 횟수 0과 unsupported_repository를 검사합니다."
+        },
+        {
+          "path": "apps/desktop-app/scripts/git-review-probe.mjs",
+          "line": 743,
+          "details": "실제 production reader와 고정 Git을 사용하는 probe가 .git, .GIT, .GiT를 생성합니다. 783행부터 실제 FileHandle.write를 계측합니다."
+        },
+        {
+          "path": "docs/runs/git-review-observation/evidence/git-r3/report.json",
+          "details": "whole-observation-nested-git, whole-observation-nested-git-upper, whole-observation-nested-git-mixed 모두 PASS이며 nestedConfigWrites는 0입니다."
+        }
+      ]
+    },
+    {
+      "id": "CODE-GIT-R1-02",
+      "status": "addressed",
+      "summary": "service가 원래 trusted와 trustRevision을 private scope로 전달합니다. reader는 원래 primitive 값을 보관합니다. 현재 authority가 다르면 새 reader IO 전에 observation을 무효화합니다. 원래 값을 복원해도 무효 상태가 유지됩니다.",
+      "evidence": [
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "line": 1035,
+          "details": "요청 시작 때 캡처한 original.trusted와 original.trustRevision을 reader에 전달합니다. 기존 요청 중 authority 재검사도 유지됩니다."
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git.mjs",
+          "line": 1384,
+          "details": "trusted는 boolean이어야 합니다. trustRevision은 0 이상의 safe integer여야 합니다."
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git.mjs",
+          "line": 1555,
+          "details": "비동기 관찰 전에 authority primitive 값을 캡처하고 1597행에서 observation record에 보관합니다."
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git.mjs",
+          "line": 1655,
+          "details": "authority 불일치는 original.invalidated를 설정합니다. run 호출 전에 stale_observation을 반환합니다."
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-git.test.mjs",
+          "line": 705,
+          "details": "신뢰 변경 후 lstat와 spawn 횟수가 증가하지 않는지 검사합니다. 원래 scope로 돌아가도 stale_observation인지 검사합니다."
+        },
+        {
+          "path": "apps/desktop-app/src/git-review.test.mjs",
+          "line": 538,
+          "details": "실제 service, durable registry, production reader와 고정 Git을 사용합니다. session.create 후 trusted가 false에서 true로 바뀌는지 확인합니다. 이전 ID의 diff는 stale_observation이며 production reader의 lstat와 spawn 횟수는 그대로입니다. Native session client는 synthetic입니다."
+        }
+      ]
+    }
+  ],
+  "inspected_scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "run": "git-review-observation",
+    "plan_revision": 9,
+    "design_version": 7,
+    "range_authority": "source-freeze-r1.json, source-freeze-r2.json과 code-corrections-r1.json의 경로별 SHA256을 대조했습니다. 이전 검토 이후 변경은 아래 5개 경로와 정확히 일치합니다.",
+    "changed_paths": [
+      "apps/desktop-app/scripts/git-review-probe.mjs",
+      "apps/desktop-app/src/git-review.test.mjs",
+      "apps/desktop-app/src/host/workbench-git.mjs",
+      "apps/desktop-app/src/host/workbench-git.test.mjs",
+      "apps/desktop-app/src/workbench-service.mjs"
+    ],
+    "passes": {
+      "spec_compliance": "두 지적 사항을 plan revision9 및 design version7의 config 보호와 observation authority 요구에 대조했습니다.",
+      "code_quality": "marker 분기와 복사 순서, authority 캡처와 무효화, 관련 service 호출, sender/epoch/workspace/root/TTL 검사, metadata alias 및 tempRoot guard, 복사 예산과 실패 정리를 확인했습니다. public DTO와 Renderer 경로는 이전 freeze와 동일합니다."
+    }
+  },
+  "checks": [
+    {
+      "name": "current_source_binding",
+      "result": "pass",
+      "method": "이 reviewer의 읽기 전용 SHA256 및 mode 대조",
+      "details": "검토 시작과 종료 때 26개 source 모두 source-freeze-r2.json과 일치했습니다. 변경된 5개 경로의 이전·현재 해시도 correction record와 일치했습니다. plan과 design 해시가 현재 binding과 일치합니다."
+    },
+    {
+      "name": "recorded_nine_checks",
+      "result": "pass",
+      "method": "actual-checks-r2.json 기록 검토",
+      "details": "files, build, typecheck, boundaries, bundle, lint, format, git-probe, hidden-ui 모두 exit_code 0입니다. 모든 기록의 source/environment/plan/contract binding이 현재 input과 일치합니다. inputs_changed, interrupted, timed_out은 모두 false입니다."
+    },
+    {
+      "name": "meaningful_red_green",
+      "result": "pass",
+      "method": "보존된 RED/GREEN 로그와 현재 검사 source 대조",
+      "details": "marker RED는 .GIT config 쓰기 1회를 기록합니다. trust RED는 stale_observation 기대 실패를 기록합니다. 두 수정의 GREEN은 2/2 PASS입니다. 실제 service trust 검사도 RED 실패와 GREEN 1/1 PASS가 있습니다. scoped 검사는 36/36 PASS입니다."
+    },
+    {
+      "name": "actual_git_evidence",
+      "result": "pass",
+      "method": "git-r3/report.json 및 probe 계측 source 검토",
+      "details": "기록된 51개 case 모두 PASS입니다. probe의 sourceHashes와 sourceHashesAfter, executableBefore와 executableAfter가 일치합니다. 실제 executor 기록은 direct CLT Git 2.50.1 Apple Git-155입니다. 하위 marker 세 변형 모두 config 쓰기 0회입니다."
+    }
+  ],
+  "limits": [
+    "이 reviewer는 source와 기존 근거만 읽었습니다. 파일·ledger·보고서 쓰기, 구현, 위임, test/build/Git process/app/UI 실행은 하지 않았습니다.",
+    "실행 결과는 보존된 기록에 근거합니다. 이 reviewer가 검사를 새로 실행한 결과는 아닙니다.",
+    "실제 Git 근거는 Darwin의 synthetic repository 범위입니다. Windows, packaged Git, 실제 사용자 repository, provider 또는 production Main의 검증은 포함하지 않습니다.",
+    "private ordinary-source와 history 복사본은 host crash 또는 child 종료 미확인 후 남을 수 있습니다. secure erasure, OS isolation 또는 crash orphan settlement를 주장하지 않습니다.",
+    "이번 판단은 두 수정 사항과 관련 경로의 CODE 재검토입니다. 별도 RENDER 판단, Git mutations, version-bound feedback, 전체 AC11 및 제품 완료를 뜻하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11c44-bb00-7522-a9a7-2a948581a0cf",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "child_task_id_source": "현재 invocation의 CODEX_THREAD_ID",
+    "independent_invocation": true,
+    "report_only": true,
+    "persistence_owner": "Main"
+  }
+}

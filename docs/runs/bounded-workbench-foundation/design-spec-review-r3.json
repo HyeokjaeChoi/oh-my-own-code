@@ -1,0 +1,66 @@
+{
+  "schema_version": 2,
+  "run": "bounded-workbench-foundation",
+  "reviewer": "design_spec_reviewer",
+  "verdict": "pass",
+  "reviewed": {
+    "contract_sha256": "ca99d91353a805318e3163efbee10541fd14add35fa54b72ac58065989edabc1",
+    "documents_sha256": "602fb979444c8f448a2e04e72af800e727ef26591f937e6d4af3623230ab2a65",
+    "gate": "design_spec",
+    "plan_sha256": "ed823b94923089e1b3de3df927ddad23b79dadefcb6cef7e6a3cf163ee8b8be0",
+    "schema_version": 2
+  },
+  "summary": "plan rev4의 변경 범위를 독립 검토했습니다. read-receipt-contract v3와 documents binding은 이전 design-spec-review-r2 통과 입력과 같습니다. Node store test 경로 수정과 IPC·sender/frame·fixture 검증 추가는 기존 계약과 일치합니다. 추가 설계 수정 요구는 없습니다. 이 판정은 설계 문서 게이트에만 적용됩니다.",
+  "open_findings": [],
+  "review_boundary": {
+    "plan_revision": 4,
+    "document_version": 3,
+    "prior_report": "docs/runs/bounded-workbench-foundation/design-spec-review-r2.json",
+    "input": "docs/runs/bounded-workbench-foundation/execution/design-spec-current.input.json",
+    "packet": "docs/runs/bounded-workbench-foundation/execution/design-spec-current.packet.json",
+    "scope": [
+      "Node store test 경로와 검증 실행 목록의 정합성",
+      "IPC·sender/frame·fixture 검증 범위와 기존 wire 계약의 정합성",
+      "변경되지 않은 설계 문서의 현재 입력 연결"
+    ],
+    "settled_concerns": "기존 architecture와 DS-1·DS-2·DS-3의 통과 판정을 유지했습니다.",
+    "evidence_limits": [
+      "관련 test와 IPC 연결을 정적으로 읽었습니다. 테스트를 실행하지 않았습니다.",
+      "최종 code·render 판정과 interrupt notice 수정 검토는 포함하지 않습니다."
+    ]
+  },
+  "checks": [
+    {
+      "check": "입력과 등록 상태",
+      "result": "run은 active입니다. 현재 plan-review-r4는 pass로 등록되어 있습니다. 검토 시작과 종료의 review-input 출력은 지정한 input JSON과 정확히 같습니다."
+    },
+    {
+      "check": "문서와 packet hash",
+      "result": "plan·contract·문서·profile·skill의 실제 SHA256이 packet과 일치합니다. 문서 SHA256과 documents binding은 이전 통과 보고서와 같습니다."
+    },
+    {
+      "check": "변경된 검증 범위",
+      "result": "unit 실행 목록은 src/workbench-store.test.mjs를 사용합니다. IPC·renderer admission·fixture test도 포함합니다. 관련 test는 sender와 main frame의 선행 검증, v2 전용 preload, duplicate/conflict, redacted lookup, unknown 유지와 cancellation을 다룹니다. 이는 정적 범위 확인이며 실행 통과 증거는 아닙니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a10270-3e7f-7722-b21b-631205f8fb7b",
+    "child_id_source": "CODEX_THREAD_ID 및 두 run의 dispatch 기록",
+    "runtime_identity_attested": false,
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-design-spec-review"
+    ],
+    "mode": "report_only",
+    "delegated": false,
+    "files_changed": [],
+    "tests_run": false,
+    "native_launches": false,
+    "gui_launches": false,
+    "binding_verified_twice": true,
+    "packet_and_document_hashes_verified": true,
+    "persistence_owner": "coordinator"
+  }
+}

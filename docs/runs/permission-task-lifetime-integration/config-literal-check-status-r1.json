@@ -1,0 +1,207 @@
+{
+  "run": "permission-task-lifetime-integration",
+  "checks": {
+    "native-metadata": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T23:07:37+00:00",
+      "source_sha256": "5f6eb5e9416f4a16a4201c32ab4d058c3b55d67643a43a4a0c26be1272e896ab",
+      "input_binding_sha256": "1d87d478a0f45827cbe24ec460c2b68a8ca84075b9f49e055cf0a712b5ce61d6",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src",
+          "apps/desktop-app/scripts",
+          "package.json",
+          "pnpm-lock.yaml",
+          "apps/desktop-app/package.json"
+        ],
+        "reason": "All product source plus script fixtures/planner and dependency manifests cover the static/transitive imports of these named Node suites. Original pinned Native input/output bytes are rechecked by the overlay recipe test. This scope does not make a whole final CODE or runtime claim."
+      }
+    },
+    "native-descriptor-read": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T21:06:21+00:00",
+      "source_sha256": "8b35616735712b1f7c423a98e3e7383e7ae17cda0654eea02527e149c70ffbc8",
+      "input_binding_sha256": "45da5e6467b5589a04a0c45589ed2fa82b6513f073f38fd200e64847653e1621",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/package.json",
+          "apps/desktop-app/scripts/local-resource-imports.mjs",
+          "apps/desktop-app/scripts/native-permission-test-fixture.mjs",
+          "apps/desktop-app/scripts/permission-test-input-closure.mjs",
+          "apps/desktop-app/scripts/permission-test-inputs.json",
+          "apps/desktop-app/scripts/resource-import-closure.test.mjs",
+          "apps/desktop-app/src/event-host-code-assets.mjs",
+          "apps/desktop-app/src/host",
+          "apps/desktop-app/src/host/configuration-file-observation.mjs",
+          "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+          "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs",
+          "apps/desktop-app/src/host/darwin-descriptor-ffi.test.mjs",
+          "apps/desktop-app/src/host/darwin-directory-entry.mjs",
+          "apps/desktop-app/src/host/darwin-directory-entry.test.mjs",
+          "apps/desktop-app/src/host/native-descriptor-directory.test.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read.test.mjs",
+          "apps/desktop-app/src/host/native-workspace-file-io.mjs",
+          "apps/desktop-app/src/host/workbench-file-edit.mjs",
+          "apps/desktop-app/src/host/workbench-task-storage.mjs",
+          "apps/desktop-app/src/host/workspace-root-authority.mjs",
+          "apps/desktop-app/src/host/workspace-root-authority.test.mjs",
+          "apps/desktop-app/src/native-permission-control-input.mjs",
+          "apps/desktop-app/src/native-permission-leases.mjs",
+          "apps/desktop-app/src/native-permission-leases.test.mjs",
+          "apps/desktop-app/src/native-permission-origin-scopes.mjs",
+          "apps/desktop-app/src/native-permission-task-observer.mjs",
+          "apps/desktop-app/src/native-permission-task-observer.test.mjs",
+          "apps/desktop-app/src/permission-control-canonical.mjs",
+          "apps/desktop-app/src/renderer/shared/configuration-draft/agent.mjs",
+          "apps/desktop-app/src/renderer/shared/configuration-draft/skill.mjs",
+          "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs",
+          "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs",
+          "apps/desktop-app/src/wire-id.mjs",
+          "apps/desktop-app/src/workbench-errors.mjs",
+          "package.json",
+          "pnpm-lock.yaml"
+        ],
+        "reason": "Checked actual static local imports, literal copy roots and local source URL targets of these named Node tests. Pure allowlist/parser replace unrelated staging/recipe dependency. Required self-check verifies present argv/seeds/import+copy closure and declared paths every run; changed dependency graph refuses until reviewed manifest/scope update. Entire host directory conservatively covers scripted dynamic kernel/resource reads. Pinned installed Effect/archive sources retain environment-file/hash verification. This is scoped test freshness, not execution or whole-source final CODE. The harness itself binds the selected check spec/acceptance/environment before and after execution; the self-check reads only selected check argv/scope, so unrelated check definition changes do not invalidate this unit."
+      }
+    },
+    "native-descriptor-bun-probe": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T21:09:52+00:00",
+      "source_sha256": "8b35616735712b1f7c423a98e3e7383e7ae17cda0654eea02527e149c70ffbc8",
+      "input_binding_sha256": "5898f1598b15d7c8593e8bbb6325daeb6c0578ba3b2b7f0bbb79be003530313c",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src/host/native-descriptor-read.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+          "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs",
+          "apps/desktop-app/src/host/darwin-directory-entry.mjs",
+          "apps/desktop-app/src/host/workspace-root-authority.mjs",
+          "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs",
+          "apps/desktop-app/scripts/native-descriptor-probe.mjs",
+          "apps/desktop-app/runtime-event-host/installer-pins.json",
+          "apps/desktop-app/scripts/native-descriptor-evidence.mjs",
+          "apps/desktop-app/scripts/native-descriptor-evidence.test.mjs"
+        ],
+        "reason": "Exact original physical r5 source/import closure plus current read-only verifier/unit tests. Input and registered execution/fixture hashes are literal argv bindings; copied immutable input/intent/results and current pinned engine are environment-file bindings. Node-only verifier checks actual data+current source/engine without subprocess/native import. Global safeguards unchanged. Any source/artifact drift refuses; no guard or check freshness bypass. Does not claim a new physical run or full Native/task acceptance."
+      }
+    },
+    "native-descriptor-probe-diagnostics": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T21:06:23+00:00",
+      "source_sha256": "8b35616735712b1f7c423a98e3e7383e7ae17cda0654eea02527e149c70ffbc8",
+      "input_binding_sha256": "1214248d89076f20fdd9b3f95b7c01f20fa25c8acfdcfb1488cc7b987725595d",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/scripts/native-descriptor-probe.mjs",
+          "apps/desktop-app/scripts/native-descriptor-probe.test.mjs"
+        ],
+        "reason": "Exact extracted probe inventory function, actual Node fs and scripted descriptor-path refusal. Archived before source separately environment-bound."
+      }
+    },
+    "main-task-owner-fence": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T21:06:26+00:00",
+      "source_sha256": "8b35616735712b1f7c423a98e3e7383e7ae17cda0654eea02527e149c70ffbc8",
+      "input_binding_sha256": "563a10b159c1c417664a11f81102924d3d42e07d8d9b7792293b25482903909b",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src/main.mjs",
+          "apps/desktop-app/src/host/main-task-owner-fence.test.mjs"
+        ],
+        "reason": "Exact actual Main requireOwner and forwarded-method loop executed inert with scripted private dependencies; static extraction bounds unique anchors, Node builtins only."
+      }
+    },
+    "native-read-auxiliary": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T22:57:20+00:00",
+      "source_sha256": "6253538979b48170dd22fcf0734a8bcd217c38b8c22671f3fb84a8798a6b5d4d",
+      "input_binding_sha256": "2e78c79ef944838c183958d524c56a3383dd530ecf97dd7cd61c8c2a6525243d",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src/host/native-read-auxiliary.mjs",
+          "apps/desktop-app/src/host/native-read-auxiliary.test.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read.mjs",
+          "apps/desktop-app/src/host/workspace-root-authority.mjs",
+          "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs",
+          "apps/desktop-app/src/host/darwin-directory-entry.mjs",
+          "apps/desktop-app/src/renderer/shared/workspace-file",
+          "apps/desktop-app/src/native-permission-read-instructions.test.mjs",
+          "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+          "apps/desktop-app/scripts/native-permission-overlay.mjs"
+        ],
+        "reason": "Exact test/import/copied-source closure and actual resource/root helpers; pinned original Native bytes are hash-asserted before inert extraction. Scripted private kernel not physical acceptance."
+      }
+    },
+    "native-read-effect": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T21:06:32+00:00",
+      "source_sha256": "8b35616735712b1f7c423a98e3e7383e7ae17cda0654eea02527e149c70ffbc8",
+      "input_binding_sha256": "43d72d62f40c8bf6679184767f84161f6a45361d8b7a60c873630163316c3648",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src/native-permission-read-effect.mjs",
+          "apps/desktop-app/src/native-permission-read-effect.test.mjs",
+          "apps/desktop-app/src/native-permission-control-input.mjs",
+          "apps/desktop-app/src/host/workbench-task-storage.mjs",
+          "apps/desktop-app/src/wire-id.mjs",
+          "apps/desktop-app/src/permission-control-canonical.mjs",
+          "apps/desktop-app/src/host/native-read-auxiliary.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read.mjs"
+        ],
+        "reason": "Effect runner/current authority/input capture/error conversion closure; original Native tagged error bytes hash-asserted before inert extraction. Scripted producer standins never physical or Task proof."
+      }
+    },
+    "native-task-read": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-10T21:06:35+00:00",
+      "source_sha256": "8b35616735712b1f7c423a98e3e7383e7ae17cda0654eea02527e149c70ffbc8",
+      "input_binding_sha256": "a88591249c9322bd7bb978fa2f6be349bc6e10412b80320c3247da68224753bf",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/package.json",
+          "apps/desktop-app/scripts/local-resource-imports.mjs",
+          "apps/desktop-app/scripts/native-permission-test-fixture.mjs",
+          "apps/desktop-app/scripts/permission-test-input-closure.mjs",
+          "apps/desktop-app/scripts/permission-test-inputs.json",
+          "apps/desktop-app/scripts/resource-import-closure.test.mjs",
+          "apps/desktop-app/src/event-host-code-assets.mjs",
+          "apps/desktop-app/src/host",
+          "apps/desktop-app/src/host/configuration-file-observation.mjs",
+          "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs",
+          "apps/desktop-app/src/host/darwin-directory-entry.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+          "apps/desktop-app/src/host/native-descriptor-read.mjs",
+          "apps/desktop-app/src/host/native-workspace-file-io.mjs",
+          "apps/desktop-app/src/host/workbench-file-edit.mjs",
+          "apps/desktop-app/src/host/workbench-task-storage.mjs",
+          "apps/desktop-app/src/host/workspace-root-authority.mjs",
+          "apps/desktop-app/src/native-permission-control-input.mjs",
+          "apps/desktop-app/src/native-permission-leases.mjs",
+          "apps/desktop-app/src/native-permission-origin-scopes.mjs",
+          "apps/desktop-app/src/native-permission-task-observer.mjs",
+          "apps/desktop-app/src/native-permission-task-read.test.mjs",
+          "apps/desktop-app/src/permission-control-canonical.mjs",
+          "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs",
+          "apps/desktop-app/src/wire-id.mjs",
+          "apps/desktop-app/src/workbench-errors.mjs",
+          "package.json",
+          "pnpm-lock.yaml"
+        ],
+        "reason": "Checked actual static local imports, literal copy roots and local source URL targets of these named Node tests. Pure allowlist/parser replace unrelated staging/recipe dependency. Required self-check verifies present argv/seeds/import+copy closure and declared paths every run; changed dependency graph refuses until reviewed manifest/scope update. Entire host directory conservatively covers scripted dynamic kernel/resource reads. Pinned installed Effect/archive sources retain environment-file/hash verification. This is scoped test freshness, not execution or whole-source final CODE. The harness itself binds the selected check spec/acceptance/environment before and after execution; the self-check reads only selected check argv/scope, so unrelated check definition changes do not invalidate this unit."
+      }
+    }
+  }
+}

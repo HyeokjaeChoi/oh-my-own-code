@@ -1,0 +1,9 @@
+# First actual production probe correction
+
+native-r1 is failed evidence and remains unchanged. Fresh bootstrap, public SDK history seed, normal Native/app/helper exit and exact kernel terminal were observed. The second owner never spawned Native or an inspector, and all actual processes were confirmed exited.
+
+The retained synthetic native/data/opencode/shell directory contains an empty `global` directory. The host's initial closed-directory rule admitted only40hex project directories, so it rejected this valid pinned empty directory before inspector creation. Official2.0.18 Shell source config-hbtt76ya.js:103-106 creates outputDir from global.data/DIRECTORY/location.project.id and mkdir; global is a known location graph. The correction accepts only the literal global or40hex directory names and still requires every such directory to be private, canonical and empty. Any shell output file or unknown directory remains held; no cleanup/migration/executor is invoked by this check.
+
+Main also closed a local path-binding gap: committed mapping strings must refer to accessible canonical workspace directories before and after asynchronous inspection. Bind directory device/inode/uid/gid/mode through readonly descriptors. Ordinary directory content/time changes are permitted; replacement, removal, permission or canonical-path drift denies. Imported workspace directories do not need private store permissions. No workspace file contents are read.
+
+The saved probe now records bounded normal/SIGKILL attempted-start decisions before asserting success, so a hold is preserved rather than reduced to the outer phase. Added regression cases cover empty global directory, nonempty denial, workspace removal and ordinary imported directory edits. This is routine correction inside accepted design3; initial plan/design are not repeated. Build/package and actual Native evidence must be refreshed for the changed host bytes.

@@ -1,0 +1,719 @@
+import {
+  useEffect,
+  useLayoutEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  AssistantRuntimeProvider,
+  ComposerPrimitive,
+  MessagePrimitive,
+  ThreadPrimitive,
+  useExternalStoreRuntime,
+  type ToolCallMessagePartProps,
+} from "@assistant-ui/react";
+import { ArrowUp, Slash, Square, X } from "lucide-react";
+import { mapMessages } from "../../shared/projection/index.js";
+import {
+  selectors,
+  useWorkbenchSelector,
+  useWindowWorkbench,
+} from "../../entities/workbench/index.js";
+import { useComposerDraft } from "../../features/composer/index.js";
+import type { MutationRequest } from "../../shared/transport/index.js";
+import styles from "./conversation.module.css";
+import { parseSafeLinkPreview } from "@workbench/contracts";
+import { LinkPreview } from "@workbench/ui";
+import {
+  type WorkbenchCatalog,
+  type WorkbenchMessage,
+  type WorkbenchPermission,
+} from "../../shared/api/index.js";
+
+/* eslint-disable no-unused-vars -- Names document type-only callback parameters. */
+type Props = {
+  workspaceId: string;
+  sessionId: string;
+  messages: WorkbenchMessage[];
+  permissions: WorkbenchPermission[];
+  catalog: WorkbenchCatalog | null;
+  status: string;
+  disabled: boolean;
+  executionAvailable: boolean;
+  newSessionDisabled?: boolean;
+  archived?: boolean;
+  pending: boolean;
+  mutate(
+    _operation: MutationRequest,
+    _navigate?: boolean,
+    _submittedText?: string,
+  ): Promise<boolean>;
+  openPanel(_panel: "files" | "catalog"): void;
+  newSession(): void;
+};
+/* eslint-enable no-unused-vars */
+const labels: Record<string, string> = {
+  pending: "대기 중",
+  running: "실행 중",
+  completed: "완료",
+  error: "오류",
+};
+function ToolDetail({ toolName, args, result }: ToolCallMessagePartProps) {
+  const state = typeof args.state === "string" ? args.state : "pending";
+  const output =
+    typeof result === "string"
+      ? result
+      : typeof args.output === "string"
+        ? args.output
+        : "";
+  let decoded: unknown = null;
+  try {
+    if (output.length <= 8192) decoded = JSON.parse(output);
+  } catch {
+    /* General escaped output below. */
+  }
+  const preview = state === "completed" ? parseSafeLinkPreview(decoded) : null;
+  return (
+    <div className={`tool-detail ${styles.toolDetail}`}>
+      <div className={`tool-heading ${styles.toolHeading}`}>
+        <strong>{toolName}</strong>
+        <span>{labels[state] ?? "상태 확인 불가"}</span>
+      </div>
+      {preview ? (
+        <LinkPreview
+          {...preview}
+          interactive={false}
+          locale="ko-KR"
+          className={styles.linkPreview ?? ""}
+        />
+      ) : null}
+      <details>
+        <summary>도구 입력과 결과</summary>
+        <p className={styles.muted}>입력</p>
+        <pre>{typeof args.input === "string" ? args.input : ""}</pre>
+        <p className={styles.muted}>
+          {state === "completed" || state === "error"
+            ? "결과"
+            : "현재까지 받은 출력 · 완료되지 않음"}
+        </p>
+        <pre>{output || "아직 출력이 없습니다."}</pre>
+      </details>
+    </div>
+  );
+}
+function MessageView({ role }: { role: "user" | "assistant" }) {
+  return (
+    <MessagePrimitive.Root
+      className={`${styles.message} ${role === "user" ? styles.userMessage : styles.assistantMessage}`}
+    >
+      <span className={styles.speaker}>
+        {role === "user" ? "나" : "도우미"}
+      </span>
+      <MessagePrimitive.Parts
+        components={{
+          Text: ({ text }) => <div className={styles.messageText}>{text}</div>,
+          tools: { Fallback: ToolDetail },
+        }}
+      />
+    </MessagePrimitive.Root>
+  );
+}
+
+export function Conversation(props: Props) {
+  const { actions } = useWindowWorkbench();
+  const { text: draft, agent, model } = useWorkbenchSelector(selectors.draft);
+  const setAgent = (agent: string) => actions.options({ agent });
+  const setModel = (model: string) => actions.options({ model });
+  const [menu, setMenu] = useState(false);
+  const [shortViewport, setShortViewport] = useState(
+    () => window.matchMedia("(max-height: 440px)").matches,
+  );
+  const input = useRef<HTMLTextAreaElement>(null);
+  const slashButton = useRef<HTMLButtonElement>(null);
+  const commandMenu = useRef<HTMLDivElement>(null);
+  const menuOpenedFromInput = useRef(false);
+  const commandMenuId = useId();
+  const hintId = useId();
+  const composing = useRef(false);
+  useEffect(() => {
+    const viewport = window.matchMedia("(max-height: 440px)");
+    const update = () => setShortViewport(viewport.matches);
+    update();
+    viewport.addEventListener("change", update);
+    return () => viewport.removeEventListener("change", update);
+  }, []);
+  const messages = useMemo(() => mapMessages(props.messages), [props.messages]);
+  const running = props.status === "running" || props.status === "stopping";
+  // Sending may be blocked by an unknown receipt while interruption is needed.
+  const canInterrupt =
+    props.executionAvailable &&
+    Boolean(props.workspaceId && props.sessionId) &&
+    !props.archived &&
+    !props.pending &&
+    props.status === "running";
+  const progress = !props.executionAvailable
+    ? "현재 세션 실행 상태를 확인할 수 없습니다."
+    : props.archived
+      ? "보관된 세션입니다."
+      : props.status === "stopping"
+        ? "현재 세션 실행 중단을 확인 중입니다."
+        : props.status === "running"
+          ? "현재 세션 실행 중입니다."
+          : props.pending
+            ? "요청을 확인 중입니다."
+            : props.status === "idle"
+              ? "현재 세션은 실행 대기 상태입니다."
+              : "현재 세션 실행 상태가 불명확합니다.";
+  const invalidSelection = Boolean(
+    (agent &&
+      !props.catalog?.agents.entries.some((entry) => entry.id === agent)) ||
+      (model &&
+        !props.catalog?.models.entries.some((entry) => entry.id === model)),
+  );
+  const blocked =
+    props.disabled ||
+    props.pending ||
+    Boolean(props.archived) ||
+    invalidSelection;
+  const permissions = props.permissions.filter(
+    (permission) => permission.sessionId === props.sessionId,
+  );
+  const closeMenu = () => {
+    setMenu(false);
+    if (menuOpenedFromInput.current) input.current?.focus();
+    else slashButton.current?.focus();
+  };
+  const runtime = useExternalStoreRuntime({
+    messages,
+    convertMessage: (message) => message,
+    isRunning: running,
+    isSendDisabled: blocked,
+    onNew: async (message) => {
+      const text = message.content
+        .filter((part) => part.type === "text")
+        .map((part) => part.text)
+        .join("\n");
+      if (!text.trim() || blocked) return;
+      const requestId = crypto.randomUUID();
+      const command = /^\/([^\s]+)(?:\s+([\s\S]*))?$/.exec(text.trim());
+      const entry =
+        command && props.catalog?.commands.status === "available"
+          ? props.catalog.commands.entries.find(
+              (item) => item.name === command[1],
+            )
+          : undefined;
+
+      if (entry) {
+        await props.mutate(
+          {
+            type: "command.run",
+            workspaceId: props.workspaceId,
+            sessionId: props.sessionId,
+            requestId,
+            name: entry.name,
+            arguments: command?.[2] ?? "",
+          },
+          false,
+          text,
+        );
+      } else {
+        await props.mutate(
+          {
+            type: "message.send",
+            workspaceId: props.workspaceId,
+            sessionId: props.sessionId,
+            requestId,
+            text,
+            ...(agent ? { agent } : {}),
+            ...(model ? { model } : {}),
+          },
+          false,
+          text,
+        );
+      }
+    },
+    onCancel: async () => {
+      if (!canInterrupt) return;
+      await props.mutate({
+        type: "session.interrupt",
+        workspaceId: props.workspaceId,
+        sessionId: props.sessionId,
+      });
+    },
+  });
+  useComposerDraft(runtime, props.workspaceId, props.sessionId);
+  const insert = (text: string) => {
+    actions.draft(text);
+    runtime.thread.composer.setText(text);
+    setMenu(false);
+    input.current?.focus();
+  };
+  useLayoutEffect(() => {
+    if (!menu) return;
+    const place = () => {
+      const popup = commandMenu.current;
+      const form = input.current?.closest("form");
+      if (!popup || !form) return;
+      const bounds = form.getBoundingClientRect();
+      const header =
+        parseFloat(
+          getComputedStyle(form).getPropertyValue(
+            "--omoc-component-size-header-height",
+          ),
+        ) || 44;
+      const above = Math.max(0, bounds.top - header - 8);
+      const below = Math.max(0, window.innerHeight - bounds.bottom - 8);
+      const useAbove =
+        above >= Math.min(320, popup.scrollHeight) || above >= below;
+      popup.style.maxHeight = `${Math.min(320, useAbove ? above : below)}px`;
+      popup.style.bottom = useAbove ? "calc(100% + 8px)" : "auto";
+      popup.style.top = useAbove ? "auto" : "calc(100% + 8px)";
+    };
+    place();
+    const observer = new ResizeObserver(place);
+    if (input.current) observer.observe(input.current);
+    window.addEventListener("resize", place);
+    document.addEventListener("scroll", place, true);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", place);
+      document.removeEventListener("scroll", place, true);
+    };
+  }, [menu]);
+  // Native buttons keep Tab navigation; arrows offer quick command selection.
+  const menuButtons = () =>
+    Array.from(
+      commandMenu.current?.querySelectorAll<HTMLButtonElement>(
+        "button[data-command]:not(:disabled)",
+      ) ?? [],
+    );
+  useEffect(() => {
+    if (!menu) return;
+    const dismiss = (event: PointerEvent) => {
+      if (!(event.target instanceof Node)) return;
+      // A Radix layer above this custom menu owns its own outside dismissal.
+      if (
+        document.querySelector(
+          '[role="dialog"][data-state="open"], [role="menu"][data-state="open"]',
+        )
+      )
+        return;
+      const target = event.target;
+      if (
+        commandMenu.current?.contains(target) ||
+        slashButton.current?.contains(target)
+      )
+        return;
+      const hadMenuFocus = commandMenu.current?.contains(
+        document.activeElement,
+      );
+      setMenu(false);
+      if (hadMenuFocus) {
+        requestAnimationFrame(() => {
+          if (
+            !document.activeElement ||
+            document.activeElement === document.body
+          ) {
+            if (menuOpenedFromInput.current) input.current?.focus();
+            else slashButton.current?.focus();
+          }
+        });
+      }
+    };
+    document.addEventListener("pointerdown", dismiss);
+    return () => document.removeEventListener("pointerdown", dismiss);
+  }, [menu]);
+  return (
+    <AssistantRuntimeProvider runtime={runtime}>
+      <ThreadPrimitive.Root
+        className={`conversation ${styles.conversation} ${messages.length === 0 ? styles.emptyConversation : ""}`}
+      >
+        <ThreadPrimitive.Viewport className={`transcript ${styles.transcript}`}>
+          <span
+            className={styles.speaker}
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {progress}
+          </span>
+          {/* Only the short status announces changes, never tokens or history. */}
+          <div
+            className={styles.readingColumn}
+            role="log"
+            aria-label="현재 세션 대화 기록"
+            aria-live="off"
+            aria-atomic="false"
+            aria-relevant="additions"
+            aria-busy={running}
+          >
+            {props.messages.length > 300 && (
+              <p className={styles.muted}>최근 300개 메시지를 표시합니다.</p>
+            )}
+            <ThreadPrimitive.Messages>
+              {({ message }) => (
+                <MessageView
+                  key={message.id}
+                  role={message.role === "user" ? "user" : "assistant"}
+                />
+              )}
+            </ThreadPrimitive.Messages>
+          </div>
+        </ThreadPrimitive.Viewport>
+        <div className={`compose-region ${styles.composeRegion}`}>
+          {messages.length === 0 && (
+            <div className={styles.empty}>
+              <h1>무엇을 함께 만들까요?</h1>
+            </div>
+          )}
+          {props.archived && (
+            <p className={styles.muted} role="status">
+              보관된 세션입니다. 대화를 계속하려면 세션을 복원하세요.
+            </p>
+          )}
+          {permissions.length > 0 && (
+            <div
+              className={styles.permissionQueue}
+              aria-label="대기 중인 권한 요청"
+            >
+              {permissions.map((permission) => (
+                <section
+                  className={styles.permission}
+                  aria-label="실행 권한 요청"
+                  key={permission.id}
+                >
+                  <strong className={styles.permissionTitle}>
+                    {permission.title}
+                  </strong>
+                  <p className={styles.permissionDetail}>{permission.detail}</p>
+                  <p className={styles.muted}>
+                    거절하면 이 세션의 다른 대기 중 권한 요청도 취소됩니다.
+                  </p>
+                  <div className={styles.actions}>
+                    <button
+                      type="button"
+                      className={styles.permissionAllow}
+                      disabled={props.pending || props.disabled}
+                      onClick={() =>
+                        void props.mutate({
+                          type: "permission.respond",
+                          workspaceId: props.workspaceId,
+                          sessionId: props.sessionId,
+                          requestId: permission.id,
+                          decision: "once",
+                        })
+                      }
+                    >
+                      이번만 허용
+                    </button>
+                    <button
+                      type="button"
+                      disabled={props.pending || props.disabled}
+                      onClick={() =>
+                        void props.mutate({
+                          type: "permission.respond",
+                          workspaceId: props.workspaceId,
+                          sessionId: props.sessionId,
+                          requestId: permission.id,
+                          decision: "reject",
+                        })
+                      }
+                    >
+                      거절
+                    </button>
+                  </div>
+                </section>
+              ))}
+            </div>
+          )}
+          <ComposerPrimitive.Root className={styles.composer}>
+            <ComposerPrimitive.Input
+              ref={input}
+              onChange={(event) => actions.draft(event.target.value)}
+              className={styles.input}
+              aria-label="메시지 작성"
+              aria-describedby={hintId}
+              aria-controls={menu ? commandMenuId : undefined}
+              readOnly={Boolean(props.archived)}
+              placeholder="작업을 요청하세요. /로 명령 보기"
+              maxLength={32000}
+              minRows={3}
+              maxRows={shortViewport ? 3 : 6}
+              submitMode="enter"
+              cancelOnEscape={false}
+              onCompositionStart={() => {
+                composing.current = true;
+              }}
+              onCompositionEnd={() => {
+                composing.current = false;
+              }}
+              onKeyDown={(event) => {
+                if (
+                  event.key === "Enter" &&
+                  (composing.current ||
+                    event.nativeEvent.isComposing ||
+                    event.keyCode === 229)
+                ) {
+                  event.preventDefault();
+                  return;
+                }
+                if (
+                  composing.current ||
+                  event.nativeEvent.isComposing ||
+                  event.keyCode === 229
+                )
+                  return;
+                if (event.key === "Escape" && menu) {
+                  event.preventDefault();
+                  closeMenu();
+                }
+                if (
+                  menu &&
+                  (event.key === "ArrowDown" || event.key === "ArrowUp")
+                ) {
+                  const buttons = menuButtons();
+                  const button =
+                    event.key === "ArrowDown" ? buttons[0] : buttons.at(-1);
+                  if (button) {
+                    event.preventDefault();
+                    button.focus();
+                  }
+                }
+                if (event.key === "/" && !draft) {
+                  menuOpenedFromInput.current = true;
+                  setMenu(true);
+                }
+              }}
+            />
+            {menu && (
+              <div
+                className={`slash-menu ${styles.commandMenu}`}
+                id={commandMenuId}
+                ref={commandMenu}
+                role="region"
+                aria-label="앱 동작 및 런타임 명령"
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    event.preventDefault();
+                    closeMenu();
+                  }
+                  if (
+                    ["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)
+                  ) {
+                    const buttons = menuButtons();
+                    if (!buttons.length) return;
+                    event.preventDefault();
+                    const index = buttons.indexOf(
+                      event.target as HTMLButtonElement,
+                    );
+                    const next =
+                      event.key === "Home"
+                        ? 0
+                        : event.key === "End"
+                          ? buttons.length - 1
+                          : (index +
+                              (event.key === "ArrowUp" ? -1 : 1) +
+                              buttons.length) %
+                            buttons.length;
+                    buttons[next]?.focus();
+                  }
+                }}
+              >
+                <div className={styles.menuHeading}>
+                  <strong>앱 동작</strong>
+                  <button
+                    type="button"
+                    onClick={closeMenu}
+                    aria-label="명령 목록 닫기"
+                  >
+                    <X size={18} aria-hidden="true" />
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  data-command
+                  disabled={
+                    props.newSessionDisabled || props.pending || running
+                  }
+                  onClick={() => {
+                    closeMenu();
+                    props.newSession();
+                  }}
+                >
+                  새 세션 만들기
+                </button>
+                <button
+                  type="button"
+                  data-command
+                  onClick={() => {
+                    closeMenu();
+                    props.openPanel("files");
+                  }}
+                >
+                  파일 보기
+                </button>
+                <button
+                  type="button"
+                  data-command
+                  onClick={() => {
+                    closeMenu();
+                    props.openPanel("catalog");
+                  }}
+                >
+                  확장 목록 보기
+                </button>
+                <strong>런타임 명령</strong>
+                {props.catalog?.commands.status === "available" ? (
+                  props.catalog.commands.entries.length ? (
+                    props.catalog.commands.entries.map((entry) => (
+                      <button
+                        type="button"
+                        data-command
+                        key={entry.id}
+                        onClick={() => insert(`/${entry.name} `)}
+                      >
+                        <span>/{entry.name}</span>
+                        <small>{entry.description}</small>
+                      </button>
+                    ))
+                  ) : (
+                    <p>등록된 명령이 없습니다.</p>
+                  )
+                ) : (
+                  <p>명령 목록을 사용할 수 없습니다.</p>
+                )}
+                <strong>스킬 언급</strong>
+                <p className={styles.muted}>메시지에 스킬 이름을 추가합니다.</p>
+                {props.catalog?.skills.status === "available" ? (
+                  props.catalog.skills.entries.length ? (
+                    props.catalog.skills.entries.map((entry) => (
+                      <button
+                        type="button"
+                        data-command
+                        key={entry.id}
+                        onClick={() =>
+                          insert(
+                            `${draft === "/" ? "" : draft}${draft && draft !== "/" ? "\n" : ""}스킬 ${entry.name}을 참고해 주세요. `,
+                          )
+                        }
+                      >
+                        {entry.name}
+                      </button>
+                    ))
+                  ) : (
+                    <p>등록된 스킬이 없습니다.</p>
+                  )
+                ) : (
+                  <p>스킬 목록을 사용할 수 없습니다.</p>
+                )}
+              </div>
+            )}
+            <div className={styles.toolbar}>
+              <button
+                type="button"
+                className={styles.commandTrigger}
+                ref={slashButton}
+                aria-label="앱 동작과 명령 열기"
+                aria-expanded={menu}
+                aria-controls={commandMenuId}
+                onClick={() => {
+                  if (menu) closeMenu();
+                  else {
+                    menuOpenedFromInput.current = false;
+                    setMenu(true);
+                  }
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape" && menu) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    closeMenu();
+                  } else if (event.key === "ArrowDown") {
+                    event.preventDefault();
+                    menuOpenedFromInput.current = false;
+                    setMenu(true);
+                    requestAnimationFrame(() => menuButtons()[0]?.focus());
+                  }
+                }}
+              >
+                <Slash size={18} aria-hidden="true" />
+              </button>
+              <select
+                className={`${styles.select} ${styles.agentSelect}`}
+                aria-label="실행 에이전트"
+                value={agent}
+                disabled={
+                  running ||
+                  props.pending ||
+                  props.catalog?.agents.status !== "available"
+                }
+                onChange={(event) => setAgent(event.target.value)}
+              >
+                <option value="">기본 에이전트</option>
+                {agent &&
+                  !props.catalog?.agents.entries.some(
+                    (entry) => entry.id === agent,
+                  ) && <option value={agent}>{agent} (사용 불가)</option>}
+                {props.catalog?.agents.entries.map((entry) => (
+                  <option key={entry.id} value={entry.id}>
+                    {entry.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                className={styles.select}
+                aria-label="실행 모델"
+                value={model}
+                disabled={
+                  running ||
+                  props.pending ||
+                  props.catalog?.models.status !== "available"
+                }
+                onChange={(event) => setModel(event.target.value)}
+              >
+                <option value="">기본 모델</option>
+                {model &&
+                  !props.catalog?.models.entries.some(
+                    (entry) => entry.id === model,
+                  ) && <option value={model}>{model} (사용 불가)</option>}
+                {props.catalog?.models.entries.map((entry) => (
+                  <option key={entry.id} value={entry.id}>
+                    {entry.name}
+                  </option>
+                ))}
+              </select>
+              {running ? (
+                <ComposerPrimitive.Cancel
+                  disabled={!canInterrupt}
+                  className={styles.primary}
+                  aria-label="현재 세션 실행 중단"
+                >
+                  <Square size={16} fill="currentColor" aria-hidden="true" />
+                </ComposerPrimitive.Cancel>
+              ) : (
+                <ComposerPrimitive.Send
+                  className={styles.primary}
+                  aria-label="메시지 보내기"
+                  disabled={blocked}
+                >
+                  <ArrowUp size={18} aria-hidden="true" />
+                </ComposerPrimitive.Send>
+              )}
+            </div>
+          </ComposerPrimitive.Root>
+          {invalidSelection && (
+            <p className={styles.selectionError} role="alert">
+              선택한 모델 또는 에이전트가 더 이상 목록에 없습니다. 다시
+              선택하세요.
+            </p>
+          )}
+          <p className={styles.hint} id={hintId}>
+            Enter 전송 · Shift+Enter 줄바꿈
+          </p>
+        </div>
+      </ThreadPrimitive.Root>
+    </AssistantRuntimeProvider>
+  );
+}

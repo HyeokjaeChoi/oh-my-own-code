@@ -1,0 +1,4843 @@
+{
+  "result": "pass",
+  "platform": "darwin",
+  "provenance": "Synthetic main-process fixtures with actual built Electron renderer/preload",
+  "providerExecution": "not performed",
+  "observations": [
+    {
+      "check": "Approved A initial desktop composer geometry",
+      "geometry": {
+        "composer": 120,
+        "input": 72,
+        "toolbar": 32
+      }
+    },
+    "CDP coarse-pointer emulation: composer controls are 44px and remain visible; no physical touch-device claim",
+    "Navigation open and close controls work at the desktop viewport",
+    "Workspace ActionMenu keyboard navigation and dismissal cause no host mutation",
+    "menu: inside click preserved layer; outside mouse pointer dismissed it without host mutation; pointer focus remained on a connected visible target or body",
+    "menu: inside click preserved layer; outside CDP synthetic touch (not physical touch) dismissed it without host mutation; pointer focus remained on a connected visible target or body",
+    "Session ActionMenu keyboard opening, arrow navigation and Escape focus return",
+    "Docked inspector separator resizes by keyboard and restores its initial width",
+    "dialog: inside click preserved layer; outside mouse pointer dismissed it without host mutation; modal focus returned to opener",
+    "dialog: inside click preserved layer; outside CDP synthetic touch (not physical touch) dismissed it without host mutation; modal focus returned to opener",
+    "dialog: inside click preserved layer; outside mouse pointer dismissed it without host mutation; modal focus returned to opener",
+    "dialog: inside click preserved layer; outside CDP synthetic touch (not physical touch) dismissed it without host mutation; modal focus returned to opener",
+    "Nested ActionMenu in navigation sheet: inside click retained both layers; outside pointer dismissed only menu and kept focus in parent modal; first Escape returned focus to menu trigger; second Escape dismissed sheet and returned focus to sheet opener; no host mutation",
+    {
+      "check": "Slash outside target probe",
+      "touch": false,
+      "point": {
+        "x": 64,
+        "y": 368
+      },
+      "active": "메시지 작성",
+      "hit": "<textarea name=\"input\" class=\"_input_l02bk_128\" aria-label=\"메시지 작성\" aria-describedby=\"_r_9_\" placeholder=\"작업을 요청하세요. /로 명령 보기\" maxlength=\"32000\" style=\"height: 72px !important;\"></textarea>",
+      "upperLayers": []
+    },
+    {
+      "check": "Slash outside target probe",
+      "touch": true,
+      "point": {
+        "x": 64,
+        "y": 368
+      },
+      "active": "메시지 작성",
+      "hit": "<textarea name=\"input\" class=\"_input_l02bk_128\" aria-label=\"메시지 작성\" aria-describedby=\"_r_9_\" placeholder=\"작업을 요청하세요. /로 명령 보기\" maxlength=\"32000\" style=\"height: 72px !important;\"></textarea>",
+      "upperLayers": []
+    },
+    "Custom slash popup: inside preserved; outside mouse/CDP synthetic touch closed, textarea focus preserved, Escape restored opener, no command executed",
+    "Narrow navigation and inspector sheets contain forward/backward keyboard focus, hide background, dismiss with Escape and restore each trigger",
+    "Synthetic compositionstart/Enter/compositionend guard dispatches no request and preserves the Korean draft; physical OS IME verification remains separate",
+    "Real assistant-ui onNew sends selected IDs, agent and model exactly once",
+    "Long Korean draft and two permissions at every display: full composer/send-stop viewport intersection, 32px composer and 36px permission controls, complete paths/warnings/actions inspectable through queue scrolling, and forward/backward permission action keyboard focus",
+    "Once/reject buttons send exact permission and session identity; obsolete permission UI disappears",
+    "Cancellation waits for authoritative state instead of fabricating stopped status",
+    "Actual Tool UI dispatch renders one schema-safe preview; unknown markup is inert escaped text",
+    "Empty, populated and long Korean title states captured in normal/narrow windows at 100% and actual Electron 200% zoom; composer visible and no horizontal page overflow",
+    "Listed slash command uses command.run with literal arguments",
+    "Unknown receipt blocks another submission and is never automatically replayed",
+    "Deferred all-activity response cannot overwrite selected-session filter; read-only effect count unchanged; closing the activity panel detaches its view",
+    "P6 synthetic streaming/disconnected/archived/inspector captures supplement existing unknown state; computed contrast, reduced-motion and live-region observations have explicit limits.",
+    "P6 measured contrast failures: 0; focus failures: 0. Missing focus/live-region evidence is unverified, not a pass."
+  ],
+  "p6Accessibility": [
+    {
+      "state": "unknown",
+      "contrast": {
+        "samples": [
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "label",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "select",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "input",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 14.631717314253036,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "div",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "textarea",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "select",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "select",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          }
+        ],
+        "totalSamples": 60,
+        "truncated": false,
+        "excluded": {
+          "disabled": 1,
+          "unsupportedColorOrBackground": 15,
+          "transparentControlBoundary": 29,
+          "offscreenOrHidden": 1
+        },
+        "focus": {
+          "status": "unverified",
+          "reason": "No measurable computed outline; box shadows/pseudo-elements need rendered review"
+        },
+        "limits": "Computed sRGB solid backgrounds and visible elements only; clipping, gradients, pseudo-elements, antialiasing and screen-reader output require separate rendered review. Transparent border absence does not establish control contrast failure."
+      },
+      "reducedMotion": {
+        "mediaMatches": true,
+        "computed": [],
+        "runningAnimations": 0,
+        "sampledElements": 266,
+        "limits": "Computed CSS and active Web Animations in this state; no claim about future motion or perceived movement."
+      },
+      "normalMotion": {
+        "runningAnimations": 0,
+        "mediaMatches": false
+      }
+    },
+    {
+      "state": "streaming",
+      "liveRegion": {
+        "tokenUpdatesObserved": 3,
+        "mutations": [
+          {
+            "role": "status",
+            "live": "polite",
+            "type": "characterData",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          },
+          {
+            "role": "log",
+            "live": "off",
+            "type": "childList",
+            "inTranscript": true
+          }
+        ],
+        "transcriptAncestorLive": null,
+        "transcriptLiveDescendants": 2,
+        "currentSessionLog": {
+          "role": "log",
+          "live": "off",
+          "busy": "true"
+        },
+        "statusUnchangedAcrossTokens": true,
+        "limits": "Snapshot-polled synthetic token changes, not provider stream. Current-session log suppresses token/history speech; concise polite status remains unchanged across three tokens. DOM attributes/mutations do not prove OS screen-reader announcements."
+      }
+    },
+    {
+      "state": "streaming",
+      "contrast": {
+        "samples": [
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "label",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "select",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "input",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 14.631717314253036,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 14.631717314253036,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "div",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "div",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "textarea",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 10.862246544121685,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          }
+        ],
+        "totalSamples": 61,
+        "truncated": false,
+        "excluded": {
+          "disabled": 2,
+          "unsupportedColorOrBackground": 15,
+          "transparentControlBoundary": 28,
+          "offscreenOrHidden": 2
+        },
+        "focus": {
+          "status": "unverified",
+          "reason": "No measurable computed outline; box shadows/pseudo-elements need rendered review"
+        },
+        "limits": "Computed sRGB solid backgrounds and visible elements only; clipping, gradients, pseudo-elements, antialiasing and screen-reader output require separate rendered review. Transparent border absence does not establish control contrast failure."
+      },
+      "reducedMotion": {
+        "mediaMatches": true,
+        "computed": [],
+        "runningAnimations": 0,
+        "sampledElements": 273,
+        "limits": "Computed CSS and active Web Animations in this state; no claim about future motion or perceived movement."
+      },
+      "normalMotion": {
+        "runningAnimations": 0,
+        "mediaMatches": false
+      }
+    },
+    {
+      "state": "disconnected",
+      "contrast": {
+        "samples": [
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "label",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "select",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "input",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 14.631717314253036,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 14.631717314253036,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 6.725474466816425,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "div",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "textarea",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          }
+        ],
+        "totalSamples": 59,
+        "truncated": false,
+        "excluded": {
+          "disabled": 4,
+          "unsupportedColorOrBackground": 15,
+          "transparentControlBoundary": 27,
+          "offscreenOrHidden": 2
+        },
+        "focus": {
+          "status": "unverified",
+          "reason": "No measurable computed outline; box shadows/pseudo-elements need rendered review"
+        },
+        "limits": "Computed sRGB solid backgrounds and visible elements only; clipping, gradients, pseudo-elements, antialiasing and screen-reader output require separate rendered review. Transparent border absence does not establish control contrast failure."
+      },
+      "reducedMotion": {
+        "mediaMatches": true,
+        "computed": [],
+        "runningAnimations": 0,
+        "sampledElements": 275,
+        "limits": "Computed CSS and active Web Animations in this state; no claim about future motion or perceived movement."
+      },
+      "normalMotion": {
+        "runningAnimations": 0,
+        "mediaMatches": false
+      }
+    },
+    {
+      "state": "archived",
+      "contrast": {
+        "samples": [
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "label",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "select",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "input",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "div",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "textarea",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          }
+        ],
+        "totalSamples": 57,
+        "truncated": false,
+        "excluded": {
+          "disabled": 3,
+          "unsupportedColorOrBackground": 14,
+          "transparentControlBoundary": 26,
+          "offscreenOrHidden": 3
+        },
+        "focus": {
+          "status": "unverified",
+          "reason": "No measurable computed outline; box shadows/pseudo-elements need rendered review"
+        },
+        "limits": "Computed sRGB solid backgrounds and visible elements only; clipping, gradients, pseudo-elements, antialiasing and screen-reader output require separate rendered review. Transparent border absence does not establish control contrast failure."
+      },
+      "reducedMotion": {
+        "mediaMatches": true,
+        "computed": [],
+        "runningAnimations": 0,
+        "sampledElements": 261,
+        "limits": "Computed CSS and active Web Animations in this state; no claim about future motion or perceived movement."
+      },
+      "normalMotion": {
+        "runningAnimations": 0,
+        "mediaMatches": false
+      }
+    },
+    {
+      "state": "inspector",
+      "contrast": {
+        "samples": [
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "label",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "select",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "input",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 7.142581162900542,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "div",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "strong",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "span",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "textarea",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "select",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "select",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.176123405576867,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "controlIcon",
+            "tag": "button",
+            "ratio": 17.9278402530276,
+            "goal": 3,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 17.9278402530276,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          },
+          {
+            "kind": "text",
+            "tag": "p",
+            "ratio": 7.455177810447525,
+            "goal": 4.5,
+            "largeTextException": false,
+            "meetsGoal": true
+          }
+        ],
+        "totalSamples": 69,
+        "truncated": false,
+        "excluded": {
+          "disabled": 2,
+          "unsupportedColorOrBackground": 14,
+          "transparentControlBoundary": 35,
+          "offscreenOrHidden": 3
+        },
+        "focus": {
+          "status": "unverified",
+          "reason": "No measurable computed outline; box shadows/pseudo-elements need rendered review"
+        },
+        "limits": "Computed sRGB solid backgrounds and visible elements only; clipping, gradients, pseudo-elements, antialiasing and screen-reader output require separate rendered review. Transparent border absence does not establish control contrast failure."
+      },
+      "reducedMotion": {
+        "mediaMatches": true,
+        "computed": [],
+        "runningAnimations": 0,
+        "sampledElements": 297,
+        "limits": "Computed CSS and active Web Animations in this state; no claim about future motion or perceived movement."
+      },
+      "normalMotion": {
+        "runningAnimations": 0,
+        "mediaMatches": false
+      }
+    }
+  ],
+  "p6StateFindings": [
+    {
+      "state": "connected-running-unknown",
+      "interruptAdmitted": true,
+      "unknownReceiptPreserved": true,
+      "needsReview": false
+    },
+    {
+      "state": "disconnected",
+      "stopDisabled": true,
+      "mutationAttemptsUnchanged": true,
+      "needsReview": false
+    },
+    {
+      "state": "archived",
+      "manualReconnectObserved": true,
+      "readOnlyDraftSelectable": true,
+      "stopDisabled": true,
+      "mutationAttemptsUnchanged": true,
+      "needsReview": false
+    }
+  ],
+  "p7StorageStates": [
+    {
+      "state": "durable-documents",
+      "scope": "durable-location",
+      "retainedOriginalKeyLookup": false,
+      "provenance": "synthetic host DTO; actual built hidden renderer"
+    },
+    {
+      "state": "imported",
+      "scope": "durable-location",
+      "retainedOriginalKeyLookup": false,
+      "provenance": "synthetic host DTO; actual built hidden renderer"
+    },
+    {
+      "state": "missing-path",
+      "reason": "path_missing",
+      "exactKoreanText": "작업 공간 폴더를 찾을 수 없습니다. 변경할 수 없습니다.",
+      "mutationAttemptsUnchanged": true,
+      "editableDraftSelectable": true,
+      "scope": "resource",
+      "retainedOriginalKeyLookup": false,
+      "provenance": "synthetic host DTO; actual built hidden renderer"
+    },
+    {
+      "state": "denied-path",
+      "reason": "path_denied",
+      "exactKoreanText": "작업 공간 폴더에 접근할 수 없습니다. 변경할 수 없습니다.",
+      "mutationAttemptsUnchanged": true,
+      "editableDraftSelectable": true,
+      "scope": "resource",
+      "retainedOriginalKeyLookup": false,
+      "provenance": "synthetic host DTO; actual built hidden renderer"
+    },
+    {
+      "state": "corrupt-journal",
+      "reason": "corrupt_journal",
+      "exactKoreanText": "저장 기록이 손상되었습니다. 복구가 필요합니다.",
+      "mutationAttemptsUnchanged": true,
+      "editableDraftSelectable": true,
+      "scope": "global",
+      "retainedOriginalKeyLookup": false,
+      "provenance": "synthetic host DTO; actual built hidden renderer"
+    },
+    {
+      "state": "owner-conflict",
+      "reason": "owner_conflict",
+      "exactKoreanText": "다른 앱이 저장소를 사용 중입니다. 변경할 수 없습니다.",
+      "mutationAttemptsUnchanged": true,
+      "editableDraftSelectable": true,
+      "scope": "global",
+      "retainedOriginalKeyLookup": false,
+      "provenance": "synthetic host DTO; actual built hidden renderer"
+    },
+    {
+      "state": "pending-inbox",
+      "reason": "pending_inbox",
+      "exactKoreanText": "처리 중이던 요청이 남아 있습니다. 자동으로 실행하지 않습니다.",
+      "mutationAttemptsUnchanged": true,
+      "editableDraftSelectable": true,
+      "scope": "global",
+      "retainedOriginalKeyLookup": true,
+      "provenance": "synthetic host DTO; actual built hidden renderer"
+    },
+    {
+      "state": "unconfirmed-tail",
+      "reason": "unconfirmed_tail",
+      "exactKoreanText": "마지막 저장 결과를 확인할 수 없습니다. 복구가 필요합니다.",
+      "mutationAttemptsUnchanged": true,
+      "editableDraftSelectable": true,
+      "scope": "global",
+      "retainedOriginalKeyLookup": true,
+      "provenance": "synthetic host DTO; actual built hidden renderer"
+    },
+    {
+      "state": "partial-mapping",
+      "reason": "partial_native_mapping",
+      "exactKoreanText": "세션 연결을 완료하지 못했습니다. 사용할 수 없습니다.",
+      "mutationAttemptsUnchanged": true,
+      "editableDraftSelectable": true,
+      "scope": "resource",
+      "retainedOriginalKeyLookup": true,
+      "provenance": "synthetic host DTO; actual built hidden renderer"
+    }
+  ],
+  "teardown": {
+    "exited": true,
+    "code": 0
+  },
+  "screenshots": [
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-empty-conversation-normal-1280-synthetic.png",
+      "state": "empty-conversation; normal-1280",
+      "viewport": {
+        "width": 1280,
+        "height": 768,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2360,
+        "height": 1576
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-empty-conversation-normal-1180-synthetic.png",
+      "state": "empty-conversation; normal-1180",
+      "viewport": {
+        "width": 1180,
+        "height": 788,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1180,
+        "height": 788
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1180,
+        "height": 820
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-empty-conversation-narrow-synthetic.png",
+      "state": "empty-conversation; narrow",
+      "viewport": {
+        "width": 760,
+        "height": 568,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-empty-conversation-normal-200-percent-synthetic.png",
+      "state": "empty-conversation; normal-200-percent",
+      "viewport": {
+        "width": 640,
+        "height": 384,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-empty-conversation-narrow-200-percent-synthetic.png",
+      "state": "empty-conversation; narrow-200-percent",
+      "viewport": {
+        "width": 380,
+        "height": 284,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-permission-synthetic.png",
+      "state": "Running tool and two pending permission requests",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-permission-long-korean-draft-normal-1280-synthetic.png",
+      "state": "permission-long-korean-draft; normal-1280",
+      "viewport": {
+        "width": 1280,
+        "height": 768,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2360,
+        "height": 1576
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-permission-long-korean-draft-normal-1180-synthetic.png",
+      "state": "permission-long-korean-draft; normal-1180",
+      "viewport": {
+        "width": 1180,
+        "height": 788,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1180,
+        "height": 788
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1180,
+        "height": 820
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-permission-long-korean-draft-narrow-synthetic.png",
+      "state": "permission-long-korean-draft; narrow",
+      "viewport": {
+        "width": 760,
+        "height": 568,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-permission-long-korean-draft-normal-200-percent-synthetic.png",
+      "state": "permission-long-korean-draft; normal-200-percent",
+      "viewport": {
+        "width": 640,
+        "height": 384,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-permission-long-korean-draft-narrow-200-percent-synthetic.png",
+      "state": "permission-long-korean-draft; narrow-200-percent",
+      "viewport": {
+        "width": 380,
+        "height": 284,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "afterCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "pixelDimensions": {
+        "width": 896,
+        "height": 208
+      },
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "zoomFactor": 1,
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-link-preview-synthetic.png",
+      "state": "Isolated schema-validated Tool UI component from the actual renderer",
+      "provenance": "Built production Electron renderer with test-only tool output",
+      "captureMethod": "Playwright locator.screenshot() at 100% Electron zoom",
+      "bounds": {
+        "x": 468,
+        "y": 332,
+        "width": 448,
+        "height": 104
+      }
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-tool-results-synthetic.png",
+      "state": "Schema-validated Tool UI link, escaped unknown output, and tool error",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-populated-conversation-normal-1280-synthetic.png",
+      "state": "populated-conversation; normal-1280",
+      "viewport": {
+        "width": 1280,
+        "height": 768,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2360,
+        "height": 1576
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-populated-conversation-normal-1180-synthetic.png",
+      "state": "populated-conversation; normal-1180",
+      "viewport": {
+        "width": 1180,
+        "height": 788,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1180,
+        "height": 788
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1180,
+        "height": 820
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-populated-conversation-narrow-synthetic.png",
+      "state": "populated-conversation; narrow",
+      "viewport": {
+        "width": 760,
+        "height": 568,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-populated-conversation-normal-200-percent-synthetic.png",
+      "state": "populated-conversation; normal-200-percent",
+      "viewport": {
+        "width": 640,
+        "height": 384,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-populated-conversation-narrow-200-percent-synthetic.png",
+      "state": "populated-conversation; narrow-200-percent",
+      "viewport": {
+        "width": 380,
+        "height": 284,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-long-korean-titles-normal-1280-synthetic.png",
+      "state": "long-korean-titles; normal-1280",
+      "viewport": {
+        "width": 1280,
+        "height": 768,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2360,
+        "height": 1576
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-long-korean-titles-normal-1180-synthetic.png",
+      "state": "long-korean-titles; normal-1180",
+      "viewport": {
+        "width": 1180,
+        "height": 788,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1180,
+        "height": 788
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1180,
+        "height": 820
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-long-korean-titles-narrow-synthetic.png",
+      "state": "long-korean-titles; narrow",
+      "viewport": {
+        "width": 760,
+        "height": 568,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-long-korean-titles-narrow-navigation-synthetic.png",
+      "state": "long-korean-titles; narrow; navigation sheet",
+      "viewport": {
+        "width": 760,
+        "height": 568,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-long-korean-titles-normal-200-percent-synthetic.png",
+      "state": "long-korean-titles; normal-200-percent",
+      "viewport": {
+        "width": 640,
+        "height": 384,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-long-korean-titles-normal-200-percent-navigation-synthetic.png",
+      "state": "long-korean-titles; normal-200-percent; navigation sheet",
+      "viewport": {
+        "width": 640,
+        "height": 384,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1280,
+        "height": 800
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-long-korean-titles-narrow-200-percent-synthetic.png",
+      "state": "long-korean-titles; narrow-200-percent",
+      "viewport": {
+        "width": 380,
+        "height": 284,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-long-korean-titles-narrow-200-percent-navigation-synthetic.png",
+      "state": "long-korean-titles; narrow-200-percent; navigation sheet",
+      "viewport": {
+        "width": 380,
+        "height": 284,
+        "pixelRatio": 4
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 760,
+        "height": 600
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 2,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-unknown-synthetic.png",
+      "state": "Unknown receipt blocks send and preserves draft",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-activity-filtered-synthetic.png",
+      "state": "Filtered activity rejects the deferred all-session result",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p6-streaming-synthetic.png",
+      "state": "Synthetic running session with three observed token changes",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p6-disconnected-synthetic.png",
+      "state": "Disconnected snapshot with observed execution-control state",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p6-archived-synthetic.png",
+      "state": "Archived selected conversation is read-only",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p6-inspector-synthetic.png",
+      "state": "Read-only inspector while selected session is archived",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-durable-documents-location-synthetic.png",
+      "state": "P7 durable-documents selectable durable location",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-durable-documents-synthetic.png",
+      "state": "P7 durable-documents; unchanged draft and synthetic storage projection",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-imported-location-synthetic.png",
+      "state": "P7 imported selectable durable location",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-imported-synthetic.png",
+      "state": "P7 imported; unchanged draft and synthetic storage projection",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-missing-path-synthetic.png",
+      "state": "P7 missing-path; unchanged draft and synthetic storage projection",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-denied-path-synthetic.png",
+      "state": "P7 denied-path; unchanged draft and synthetic storage projection",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-corrupt-journal-synthetic.png",
+      "state": "P7 corrupt-journal; unchanged draft and synthetic storage projection",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-owner-conflict-synthetic.png",
+      "state": "P7 owner-conflict; unchanged draft and synthetic storage projection",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-pending-inbox-synthetic.png",
+      "state": "P7 pending-inbox; unchanged draft and synthetic storage projection",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-pending-inbox-bootstrap-synthetic.png",
+      "state": "P7 pending-inbox; empty renderer consumes original retained key without resend",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-unconfirmed-tail-synthetic.png",
+      "state": "P7 unconfirmed-tail; unchanged draft and synthetic storage projection",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-unconfirmed-tail-bootstrap-synthetic.png",
+      "state": "P7 unconfirmed-tail; empty renderer consumes original retained key without resend",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-partial-mapping-synthetic.png",
+      "state": "P7 partial-mapping; unchanged draft and synthetic storage projection",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    },
+    {
+      "pixelDimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/durable-workbench-storage/evidence/hidden-ui-r4/ui-states/desktop-p7-partial-mapping-bootstrap-synthetic.png",
+      "state": "P7 partial-mapping; empty renderer consumes original retained key without resend",
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "contentBounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "windowBounds": {
+        "x": 274,
+        "y": 149,
+        "width": 1440,
+        "height": 960
+      },
+      "displayScaleFactor": 2,
+      "zoomFactor": 1,
+      "beforeCapture": {
+        "visible": false,
+        "focused": false,
+        "focusable": false
+      },
+      "osWindowFocusable": false,
+      "osWindowVisible": false,
+      "osWindowFocused": false,
+      "captureMethod": "BrowserWindow.webContents.capturePage().toPNG()",
+      "provenance": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution"
+    }
+  ]
+}

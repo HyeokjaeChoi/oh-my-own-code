@@ -1,0 +1,70 @@
+{
+  "revision": 29,
+  "scope": "exact7 metadata State owner lifetime correction; no new execution authority",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "bytes": 309355,
+      "sha256": "0c9ee8a91a4cdd55eb8318889e62a914018e9d21e6836b8ca27699a274b1cb53"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "bytes": 33579,
+      "sha256": "61e72b27345167cc50b8646732245f7ada3b4b9a92331ec6ae64a65ed915f57a"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 26820,
+      "sha256": "1799ca1dd05a8f3d501c71ba2323f59a808b19e34d81849df81c42257090082c"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "bytes": 48349,
+      "sha256": "9533659f88c0b180306405606b45b99b05d42912257eae3a9767e9242485346d"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-startup-maintenance.test.mjs",
+      "bytes": 10593,
+      "sha256": "361fd5e50c2f158b6f4749afec7d8e0d27b8c3e7fe54260227760e049bec1644"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-metadata-startup.test.mjs",
+      "bytes": 41550,
+      "sha256": "c93f85eea2f5b1a8283903074ecc79e08e20719962d0e9fe2c537e188757d809"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+      "bytes": 20734,
+      "sha256": "477dcb253eabd2c5d19009979e30e99af7af8a1d1508970fb08236f3ee338476"
+    }
+  ],
+  "before_manifest": "prechange/metadata-startup-before-r1/manifest.json",
+  "checks": {
+    "metadata": {
+      "log": "metadata-startup-coherent-r1.log",
+      "pass": 552,
+      "exit": 0
+    },
+    "auxiliary": {
+      "pass": 23,
+      "exit": 0,
+      "ledger": "native-read-auxiliary latest attempt"
+    },
+    "prettier": "metadata-startup-prettier-r1.log",
+    "eslint": "metadata-startup-eslint-r1.log",
+    "check_status": "metadata-startup-check-status-r1.json"
+  },
+  "meaningful_red": [
+    "metadata-startup-lifetime-red-r1.log:3fail; shell readonly status error after tests",
+    "metadata-startup-lifetime-red-r2.log:4fail1pass using corrected actual original owner fixtures"
+  ],
+  "green": "metadata-startup-lifetime-green-r2.log:5pass",
+  "limits": [
+    "Real pinned Effect with receipt-verified extracted expressions and explicit dependency standins, no actual Native/core imports.",
+    "Does not settle already-constructed or in-flight notifications.",
+    "No Native/Main/Bun/browser/server/provider/network/build/GUI/private originals or physical replay.",
+    "Component only; live inventory incomplete and execution held.",
+    "64files253edits, previous62 recipe objects preserved.",
+    "Worker final31 included16 imported existing tests; coherent test removes duplicate import and adds5 new tests, giving20 unique tests."
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "schema_version": 2,
+  "run": "permission-control-design",
+  "reviewer": "product_reviewer",
+  "verdict": "pass",
+  "summary": "제안은 승인된 경로 요구사항의 합리적인 명확화입니다. 도구가 선택한 폴더와 확인된 하위 대상에만 권한을 행사하도록 유지합니다. 외부 same-user 프로세스의 동시 폴더 이동까지 원자적으로 배제한다는 보장은 기존 요구사항에 명시되어 있지 않습니다. 이 잔여 위험을 공개하는 것은 이번 검토 범위에서 제품 요구사항의 중대한 축소가 아닙니다.",
+  "reviewed": {
+    "contract_sha256": "bf8bf8d04d17d264072c5b24ad26456026958928343f50bb6ab220a722009cc1",
+    "document_requirement_epoch": 1,
+    "documents_sha256": "c91cdfec281c15adf073ffee89809ea40781c20b24bf3541b40d3142ee68f749",
+    "gate": "product",
+    "plan_sha256": "de263d947b000568d0e1de2af58f48ba6d44a5a467f6ca944887ae3ed2593d64",
+    "schema_version": 2,
+    "work_class_sha256": "e52a40450aab62593988ef0bf9d39c6504837c8a4914a1062d4fa95545e7273a"
+  },
+  "review_boundary": {
+    "subject": "path-scope-clarification-r2.md의 제품 요구사항 충실성만 검토",
+    "plan_revision": 1,
+    "run_status_observed": "active",
+    "excluded": [
+      "DS-02~05 판정",
+      "corrected design/schema 전체 무결성 판정",
+      "초기 계획 재검토",
+      "구현 및 출시 승인"
+    ]
+  },
+  "plan": {
+    "path": "docs/runs/permission-control-design/plan.md",
+    "sha256": "de263d947b000568d0e1de2af58f48ba6d44a5a467f6ca944887ae3ed2593d64"
+  },
+  "artifacts": [
+    {
+      "path": "docs/runs/permission-control-design/path-scope-clarification-r2.md",
+      "sha256": "76775f8c5e658dd22f2e86116b67f16dbeb5ce31b2b28864fb2c5afb355fcaf4",
+      "role": "product_review_subject"
+    },
+    {
+      "path": "docs/runs/permission-control-design/product-input-r2.json",
+      "sha256": "729a84b3638f52486f8f1fb21de1787e6526619a40467de5c881cc4a51e6acde",
+      "role": "exact_review_binding"
+    },
+    {
+      "path": "docs/runs/permission-control-design/product-packet-r2.json",
+      "sha256": "01a2f1694d928c43727f34265a3b9467d9027d227933e0bc94c0d13f4b737046",
+      "role": "prepared_handoff"
+    }
+  ],
+  "source_evidence": [
+    {
+      "path": "docs/product/prd.md",
+      "sha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3",
+      "locations": [
+        "section4, lines59-69",
+        "section5, lines73-81",
+        "section8, lines121-125"
+      ],
+      "assessment": "section4는 실제 대상 확인과 효과 전 경로 제약을 요구하며, 결과 후 경로 검사만으로는 부족하다고 명시합니다. section5는 실행 계층의 권한 강제와 OS Sandbox의 구분을 요구합니다. section8의 개인용 로컬 제품 경계도 외부 same-user 프로세스 격리를 추가하지 않습니다. 제안은 이 의무들을 유지합니다."
+    },
+    {
+      "path": "docs/engineering/verification.md",
+      "sha256": "4c1e60680cf7b20b02efb35230e8af1588b558b80adab8c15442639c49ead696",
+      "locations": [
+        "line36, AC-09"
+      ],
+      "assessment": "허용 경로 안팎 marker, 실제 부작용, shell/plugin 우회 차단과 강제 불가능한 preset 비활성을 요구합니다. 제안의 일반 위협 검증은 이를 유지합니다. 외부 이동 중 unknown은 차단 성공으로 계산하지 않습니다."
+    },
+    {
+      "path": "docs/runs/permission-control-design/design-spec-review-r1.json",
+      "sha256": "475f2ef56c1e22122621d9fa5888c2b386cec233b9e6fd07853ae2a7986f12bd",
+      "locations": [
+        "open_findings[id=DS-01]"
+      ],
+      "assessment": "descriptor와 사후 unknown만으로 strict current-path confinement을 주장할 수 없다는 지적은 유효합니다. 외부 rename 경쟁까지 반드시 배제해야 한다는 조건은 reviewer의 해석입니다. 이번 제안은 더 강한 보장을 주장하지 않고 권한 의미를 별도로 명시합니다."
+    },
+    {
+      "path": "docs/runs/permission-control-design/path-enforcement-attribution-correction-r2.json",
+      "sha256": "cd0807478620053396681f05bfa6e14e833baed74a3b95297f0dbba0c957d93b",
+      "locations": [
+        "status"
+      ],
+      "assessment": "외부 namespace race 조건의 출처를 사용자 직접 요구에서 reviewer 해석과 Main assignment로 정정합니다. 이는 현재 사용자 지시와 일치합니다."
+    },
+    {
+      "path": "docs/runs/permission-control-design/design-contract-r3.md",
+      "sha256": "7fbc0150978a76b45f07940fb44a468adcfd3c53ddbafb9bc27aa8a5ea779578",
+      "locations": [
+        "section7, lines112-118"
+      ],
+      "assessment": "문맥 확인만 수행했습니다. 제품 명확화의 독립 판정을 요구하고, 교체 객체로의 권한 이전과 미검증 간접 쓰기를 금지하며 외부 이동 잔여 위험을 명시합니다. 전체 설계 PASS를 부여하지 않습니다."
+    },
+    {
+      "path": "docs/runs/permission-control-design/schema-contract-r2.md",
+      "sha256": "783f23227f599086e73fb63811dbfd51e1475a8056176b318800fa880f669696",
+      "locations": [
+        "status",
+        "section4, handle binding"
+      ],
+      "assessment": "문맥 확인만 수행했습니다. root object와 named path identity의 binding은 제안과 양립합니다. schema의 구현 가능성이나 전체 정확성은 이번 판정 대상이 아닙니다."
+    }
+  ],
+  "judgment": {
+    "requirement_fidelity": "faithful_reasonable_clarification",
+    "material_weakening": false,
+    "reasoning": [
+      "선택한 폴더 객체와 확인된 하위 대상에 권한을 묶습니다. 같은 pathname에 들어온 교체 객체에는 권한을 주지 않습니다.",
+      "모델·저장소·plugin이 유발하는 traversal, symlink/hardlink, stale grant, 직접·중첩 도구 우회는 계속 차단 대상입니다.",
+      "도구 자체의 root 또는 ancestor 이동은 허용하지 않습니다. 외부 이동을 관측하면 후속 권한을 보류하고 새 위치는 다시 선택해야 합니다.",
+      "잔여 위험은 마지막 identity 검사 뒤 외부 프로세스가 수행한 이동으로 한정됩니다. 이를 일반적인 범위 밖 쓰기 허용이나 strict current-path 검증 통과로 바꾸지 않습니다.",
+      "사용자 지시에는 해당 외부 경쟁의 원자적 배제 요구가 없습니다. 이 판정은 새로운 사용자 승인을 만들어 내지 않습니다."
+    ],
+    "specification_action": "채택 전에 이 정확한 문서를 PRD에 결합되는 규범적 보충 명세로 기록해야 합니다. PRD 본문 재작성이나 별도의 제품 범위 축소 승인은 필요하지 않습니다. 보충 명세 없이 기존 문구만으로 object-scoped 의미가 이미 승인되었다고 처리해서는 안 됩니다.",
+    "scope_limit": "이 판정은 local tool의 allowed-folder 의미에 한정됩니다. section4의 생성·삭제 보호를 면제하거나, 도구가 외부 이동을 유발한 뒤 잔여 위험 예외를 적용하도록 허용하지 않습니다.",
+    "ds01_effect": "DS-01의 제품 의미에 관한 쟁점은 이 명시적 계약으로 수용할 수 있습니다. descriptor 구현의 정확성과 focused design correction 판정은 별도로 남습니다.",
+    "full_f09_complete": false
+  },
+  "open_findings": [],
+  "optional_improvements": [],
+  "evidence_limits": [
+    "문서 읽기와 SHA256 비교만 수행했습니다.",
+    "기술적 불가능성이나 특정 OS 보장의 진위를 독립적으로 입증한 보고서가 아닙니다.",
+    "runtime, tests, build, Native, provider, network 또는 UI를 실행하지 않았습니다.",
+    "제품 문서 PASS는 구현의 경로 강제, 실제 효과 차단 또는 출시 준비를 입증하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a120a6-3a37-7cd3-b353-098467f6ae85",
+    "identity_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "implementation_authored": false,
+    "report_only": true,
+    "delegation": false,
+    "files_modified": false,
+    "ledger_modified": false,
+    "tests_executed": false,
+    "build_executed": false,
+    "product_runtime_executed": false,
+    "native_executed": false,
+    "provider_invoked": false,
+    "network_invoked": false,
+    "private_data_written": false
+  }
+}

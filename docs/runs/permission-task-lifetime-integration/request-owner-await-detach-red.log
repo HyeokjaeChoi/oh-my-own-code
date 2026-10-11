@@ -1,0 +1,25 @@
+✖ actual supervisor fetch refuses lost owner and stop during asynchronous ownership check (13.145833ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 102.865291
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-task-request.test.mjs:109:1
+✖ actual supervisor fetch refuses lost owner and stop during asynchronous ownership check (13.145833ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-task-request.test.mjs:181:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /native_permission_task_request/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

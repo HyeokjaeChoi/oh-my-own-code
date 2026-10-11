@@ -1,0 +1,85 @@
+{
+  "schema_version": 2,
+  "run": "durable-workbench-storage",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "13b90ce5a68fccddc451436aa384aefe6756556c8a4ee6d8b347d7e160061963",
+    "documents_sha256": "a14880f107757202bba7e11e89df4e33de034607efe4ac7bf5b4c021d6d55292",
+    "gate": "design_spec",
+    "plan_sha256": "517b5739ec14bd816bfbeabb9ee3f3654a0d3aa59ccd18f7f7d4c19d72694f5a",
+    "schema_version": 2
+  },
+  "verdict": "changes_requested",
+  "summary": "plan rev2와 storage-contract v2를 독립 검토했습니다. native database/WAL 보존, Main의 registry·receipt 소유권, Documents의 고정 session ID, import 원본 보존, 명시적 migration·retention·rollback 방향은 일관됩니다. P4의 nested runtimeEpoch는 현재 envelope를 통해 원래 receipt key를 선택합니다. 새 wire DTO는 필요하지 않습니다. host·renderer·fixture 수정 소유권과 P4/P5 대기도 명시되어 있습니다. 다만 journal 쓰기 실패 후 전체 변경 차단 규칙과 registry·receipt·tombstone의 논리적 commit 단위가 확정되지 않았습니다. 두 항목을 수정한 뒤 설계 재검토가 필요합니다.",
+  "open_findings": [
+    {
+      "id": "P7-DS-1",
+      "severity": "high",
+      "status": "confirmed_design_gap",
+      "artifact_location": {
+        "path": "docs/runs/durable-workbench-storage/storage-contract.md",
+        "lines": [36, 38, 68, 88]
+      },
+      "affected_consumer": "storage-journal.mjs와 workbench-service.mjs의 모든 mutation",
+      "evidence": "계약은 effect 전에 flush하고 손상된 journal에서는 변경을 차단하도록 요구합니다. 그러나 실행 중 partial write 또는 flush 실패가 발생했을 때 writer와 host가 어떤 상태로 전환하는지는 정하지 않습니다. plan.md:21의 명시적 flush 실패 검증도 admission·dispatch 단계의 native 호출 0회에 집중합니다. 현재 workbench-service.mjs:650-670과 930-950은 오류 처리 뒤 일반 lock을 해제합니다. 이 구조에 journal await만 추가하면 손상 가능성이 있는 tail 뒤로 다음 작업을 계속 append할 수 있습니다. native effect 뒤 결과 flush가 실패하는 경우도 별도 규칙이 필요합니다.",
+      "smallest_precise_correction": "append 또는 flush 실패 시 storage writer를 recovery-required 상태로 전환하고 이후 모든 mutation·effect·append를 차단한다고 명시하십시오. 실패한 bytes와 기존 journal을 보존하십시오. 첫 effect 전 실패는 호출 0회를 유지하고, 이미 effect가 있었으면 이전 dispatch intent와 unknown hold를 유지하십시오. 메모리 결과를 durable success로 승격하지 마십시오. 기존 storage-unit 검증 범위에 partial write, admission·중간 dispatch·결과 flush 실패, 실패 뒤 다음 mutation 차단을 명시하십시오."
+    },
+    {
+      "id": "P7-DS-2",
+      "severity": "high",
+      "status": "confirmed_design_gap",
+      "artifact_location": {
+        "path": "docs/runs/durable-workbench-storage/storage-contract.md",
+        "lines": [22, 24, 26, 28, 36, 38, 92]
+      },
+      "affected_consumer": "workspace-registry.mjs, receipt lookup, snapshot, create/remove 복구",
+      "evidence": "하나의 journal에 registry 변경과 receipt 전환 및 tombstone을 기록하지만, 이들을 같은 완료 상태로 확정하는 record 또는 commit 순서는 정하지 않습니다. 따라서 완료 receipt가 먼저 저장되고 session mapping이나 tombstone이 저장되기 전에 crash가 나면 lookup과 registry 복구가 서로 다른 결과를 낼 수 있습니다. 현재 workbench-service.mjs:919-929도 native 삭제, 메모리 registry 변경, receipt 생성을 별도 단계로 수행합니다. 이는 현재 구현의 P7 결함 판정이 아니라 consumer가 따라야 할 commit 규칙의 공백입니다.",
+      "smallest_precise_correction": "하나의 검증 가능한 completion record에 필요한 registry delta, mapping 또는 tombstone, 최종 redacted receipt와 revision을 함께 기록하는 규칙을 정하십시오. 이 record의 flush 뒤에만 authoritative 메모리 상태와 snapshot을 확정하십시오. 완전한 completion record가 없으면 reservation·dispatch intent와 unknown hold를 유지하고 native effect를 재실행하지 않는다고 명시하십시오. create/remove/metadata commit 경계에서 crash 후 registry와 lookup의 일치를 기존 storage-unit 검증 범위에 추가하십시오. 이 변경은 내부 journal 계약이며 P4 wire DTO 변경을 요구하지 않습니다."
+    }
+  ],
+  "review_boundary": {
+    "scope": [
+      "AGENTS.md와 solo_reader 실행 지침",
+      "solo-specialist와 solo-design-spec-review",
+      "durable-workbench-storage plan rev2, storage-contract v2, contract.json, storage-spec.packet.json, plan-review-r2.json",
+      "frontend-architecture-redesign plan rev6 P7와 p7-storage-analysis.md",
+      "P4 read-receipt-contract v3",
+      "관련 main, ephemeral-profile, sidecar-supervisor, workbench-service, filesystem adapter와 설치된 SDK 선언"
+    ],
+    "accepted_compatibility_holds": [
+      "canonical store와 Electron single-instance ownership의 실제 연결이 검증되지 않으면 sidecar와 쓰기를 차단해야 합니다. fixture owner API만으로 실제 소유권을 증명할 수 없습니다.",
+      "pending inbox의 안전한 startup preflight가 지원되지 않거나 검증되지 않으면 원본 native store를 실행하지 않고 recovery-required를 유지해야 합니다.",
+      "완전한 native transfer가 검증되기 전에는 migration cutover를 보류하고 source retention을 유지해야 합니다."
+    ],
+    "evidence_limits": [
+      "저장되지 않은 native restart·SIGKILL probe는 분석 근거이며 최종 acceptance가 아닙니다.",
+      "이번 검토는 native database 내용이나 runtime 동작을 직접 검증하지 않았습니다.",
+      "process-crash 검증은 power-loss durability를 증명하지 않습니다.",
+      "macOS 증거는 Windows 경로·권한·lock·flush·replacement 동작을 증명하지 않습니다.",
+      "인증 없는 synthetic inbox는 provider-configured startup의 자동 실행 방지를 증명하지 않습니다."
+    ]
+  },
+  "provenance": {
+    "child_task_id": "01a10236-0fa5-7c22-9fcd-7278ae828ec7",
+    "child_id_source": "CODEX_THREAD_ID 및 run dispatch 기록",
+    "requested_model": "Sol",
+    "requested_effort": "high",
+    "runtime_identity_attested": false,
+    "profile": "solo_reader",
+    "profile_application": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-design-spec-review"
+    ],
+    "mode": "report_only",
+    "delegated": false,
+    "files_changed": [],
+    "tests_run": false,
+    "app_launches": false,
+    "native_launches": false,
+    "binding_verified_twice": true,
+    "packet_and_document_hashes_verified": true,
+    "run_status_observed": "active",
+    "persistence_owner": "primary"
+  }
+}

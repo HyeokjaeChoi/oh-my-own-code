@@ -1,0 +1,149 @@
+{
+  "schema_version": 2,
+  "run": "permission-control-design",
+  "reviewer": "design_spec_reviewer",
+  "verdict": "pass",
+  "summary": "집중 검토 범위에서 기존 지적 2건을 해소했습니다. grant의 사전 의도와 실제 저장 결과가 분리되었습니다. 복구 ticket은 boot_held graph 획득만 허용하며, 실행 재개에는 별도의 durable reconciliation과 host 권한 해제가 필요합니다. 변경된 계약에서 차단할 구체적 모순을 발견하지 못했습니다. 이 판정은 구현 검증이나 full F09 완료를 뜻하지 않습니다.",
+  "reviewed": {
+    "contract_sha256": "cebff38fd5b7381255ba9bfcee91e200516daa237f0ec1c52c59a6a7637e3b17",
+    "document_requirement_epoch": 1,
+    "documents_sha256": "0392872365250ec969d4c6b887edf04dd8b0ac570edea89c32db697edc55d84a",
+    "gate": "design_spec",
+    "plan_sha256": "de263d947b000568d0e1de2af58f48ba6d44a5a467f6ca944887ae3ed2593d64",
+    "schema_version": 2,
+    "work_class_sha256": "e52a40450aab62593988ef0bf9d39c6504837c8a4914a1062d4fa95545e7273a"
+  },
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "DS-04-R3-01",
+      "status": "resolved_in_design",
+      "location": {
+        "path": "docs/runs/permission-control-design/schema-contract-r3.md",
+        "sections": [
+          "4",
+          "5",
+          "6",
+          "7"
+        ]
+      },
+      "assessment": "grantDigest는 project/action/resource/effect만 묶으므로 신규 savedId와 timestamps 없이 생성할 수 있습니다. immutable target과 ruleBindings가 이 digest를 보존합니다. verified grant progress는 실제 savedId, createdAt, updatedAt과 재계산한 ruleDigest를 기록합니다. 완료 결과는 같은 admitted grant target과 persisted progress에 대응해야 합니다. 기존 grant의 dedup은 existingSaved의 정확한 identity를 유지해야 합니다. 효과 후 target을 바꿀 필요가 없습니다."
+    },
+    {
+      "id": "DS-03-R3-01",
+      "status": "resolved_in_design",
+      "location": {
+        "paths": [
+          "docs/runs/permission-control-design/design-contract-r4.md",
+          "docs/runs/permission-control-design/schema-contract-r3.md"
+        ],
+        "sections": [
+          "DS-03",
+          "7",
+          "9"
+        ]
+      },
+      "assessment": "현재 Main과 native-preflight의 무조건 retained 차단을 함께 변경하도록 명시했습니다. private copy-only 준비 단계가 전체 retained key와 원래 process/child settlement를 확인한 경우에만 일회성 RecoveryTicket을 발급합니다. ticket은 정확한 boot_held 예외이며 실행 허가가 아닙니다. nonpermission retained, 해석 불가 target, 불완전 identity, pending inbox, writer poison과 settlement 미확인은 계속 zero-start입니다. graph 획득 후 전체 상태를 다시 비교하고 permission_reconciled generation을 durable 기록해야 합니다. 원래 unknown receipt와 lookup-only key는 유지하며 재실행하지 않습니다. host의 authorityHold:false와 recovery-resource 변경은 같은 observation/revision에서 반영됩니다. renderer는 이 host 관측만으로 기존 unknown 항목의 차단을 해제하며 실제 in-flight hold는 별도로 유지합니다."
+    }
+  ],
+  "boundary": {
+    "root": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "gate": "design_spec",
+    "scope": "r3 지적 2건의 r4/r3 문서 수정과 직접 연결된 digest, progress/result correlation, startup recovery, durable reconciliation, host/renderer admission 계약",
+    "binding": "reviewed는 design-spec-input-r4.json의 최상위 객체 전체와 같습니다.",
+    "plan_path": "docs/runs/permission-control-design/plan.md",
+    "plan_revision": 1,
+    "run_status_observed": "active",
+    "independent_judgment": true,
+    "initial_plan_rereviewed": false,
+    "prior_threat_definition_rereviewed": false,
+    "implementation_authorization": false,
+    "full_f09_complete": false,
+    "canonical_harness_review_owner": "Main",
+    "implementation_packet_planning_owner": "Main",
+    "product_gate_dependency": {
+      "report_path": "docs/runs/permission-control-design/product-review-r2.json",
+      "verdict": "pass",
+      "subject_path": "docs/runs/permission-control-design/path-scope-clarification-r2.md",
+      "subject_sha256": "76775f8c5e658dd22f2e86116b67f16dbeb5ce31b2b28864fb2c5afb355fcaf4",
+      "subject_hash_verified": true,
+      "adoption_path": "docs/runs/permission-control-design/path-scope-adoption-r2.json",
+      "normative_adoption_verified": true,
+      "assessment": "기존 독립 PRODUCT PASS와 정확한 문서 hash, 규범적 보충 명세 채택 기록을 확인했습니다. 제품 경로 의미를 다시 판정하지 않았습니다. PRODUCT PASS를 사용자 직접 승인이나 구현 정확성의 증거로 사용하지 않았습니다.",
+      "handoff_readiness": "문서 업데이트 후 handoff가 준비되었다는 assignment 진술을 입력으로 받았습니다. 실제 harness handoff는 실행하지 않았으며 Main의 최종 확인 범위로 남깁니다."
+    }
+  },
+  "artifacts_verified": [
+    {
+      "path": "docs/runs/permission-control-design/design-contract-r4.md",
+      "sha256": "8747f6a01336837b1ccce2a983f8045c446b13aaba0ef1ee12b9fa989c6b1095"
+    },
+    {
+      "path": "docs/runs/permission-control-design/schema-contract-r3.md",
+      "sha256": "17c00fca2d188bfb6026216458766a553b03310798704b94ddecc65f7c3d2906"
+    },
+    {
+      "path": "docs/runs/permission-control-design/path-scope-clarification-r2.md",
+      "sha256": "76775f8c5e658dd22f2e86116b67f16dbeb5ce31b2b28864fb2c5afb355fcaf4"
+    },
+    {
+      "path": "docs/runs/permission-control-design/plan.md",
+      "sha256": "de263d947b000568d0e1de2af58f48ba6d44a5a467f6ca944887ae3ed2593d64"
+    }
+  ],
+  "source_evidence": [
+    {
+      "path": "apps/desktop-app/src/main.mjs",
+      "lines": [
+        399
+      ],
+      "assessment": "현재 retainedOperations 차단을 직접 확인했습니다. 수정 계약은 이 Main 차단을 명시적으로 포함합니다."
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-preflight.mjs",
+      "lines": [
+        51,
+        58,
+        653,
+        657,
+        680,
+        695
+      ],
+      "assessment": "현재 viewBinding의 retained/resources 차단과 반복 검증을 확인했습니다. 수정 계약은 graph 내부 복구만으로 이 차단을 해결한다고 주장하지 않습니다. 두 startup gate와 ticket 검증을 함께 변경해야 합니다."
+    },
+    {
+      "path": "apps/desktop-app/src/host/workspace-registry.mjs",
+      "lines": [
+        1114,
+        1136
+      ],
+      "assessment": "현재 retained projection을 확인했습니다. authorityHold와 reconciliation에 따른 resource 해제는 향후 공유 checkpoint의 필수 변경이며, 현재 구현된 필드로 취급하지 않았습니다."
+    }
+  ],
+  "evidence_limits": [
+    "AGENTS, solo_reader, solo-specialist, solo-design-spec-review와 Finding authority를 읽었습니다.",
+    "r4 packet/input, revision1 plan, prior r3 보고서, 현재 design/schema 계약과 관련 PRODUCT 보고서 및 채택 기록을 읽었습니다.",
+    "문서 읽기, 필요한 production 소스 읽기와 지정 문서 SHA256 비교만 수행했습니다.",
+    "전체 selected-source manifest와 canonical harness binding을 재검증하지 않았습니다. packet과 review-input의 서로 다른 contract hash를 같다고 취급하지 않았습니다.",
+    "구현 전 runtime 증거 부재를 결함으로 판정하지 않았습니다. 실제 patch, validator, journal migration, process settlement와 admission 차단은 구현 후 검증해야 합니다.",
+    "tests, build, Native, provider, UI와 network를 실행하지 않았습니다.",
+    "파일과 ledger를 변경하지 않았으며 위임하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a120ad-d5c8-7630-b4ba-383f76cb6fa9",
+    "identity_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "implementation_authored": false,
+    "report_only": true,
+    "delegation": false,
+    "files_modified": false,
+    "ledger_modified": false,
+    "tests_executed": false,
+    "build_executed": false,
+    "product_runtime_executed": false,
+    "native_executed": false,
+    "provider_invoked": false,
+    "ui_invoked": false,
+    "network_invoked": false
+  }
+}

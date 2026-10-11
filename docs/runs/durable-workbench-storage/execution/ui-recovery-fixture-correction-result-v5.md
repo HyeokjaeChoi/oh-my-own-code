@@ -1,0 +1,4 @@
+# Recovery UI fixture correction
+Fresh author01a10705-76f9-7bc1-8a1b-896d1e087718 changed only e2e-workbench-states.mjs. Recovery drafts tested enabled/editable/selectable with existing draft preservation; unavailable session tests disabled Send and absence of Stop. Existing archived readonly P6 assertions preserved. All recovery disabled-mutation, attempts unchanged, original retained-key lookup and no-resend assertions retained.
+Node syntax, scoped ESLint/Prettier pass. No runtime or fixture37 invocation by this author, no self approval. Actual hidden retry remains Main. SHA25621af43fc2825071c1b3fac66e771e54ad80744d9de4e100d42eef202f30d9ffb.
+Second failed hidden evidence retained in frontend-architecture-redesign/execution/p7-storage-native-r1-failed-recovery-draft/ui-states. Owned test Host exit0 recorded. Two P7 durable/imported states reached before recovery draft assertion.

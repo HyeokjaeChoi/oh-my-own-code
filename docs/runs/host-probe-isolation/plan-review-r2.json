@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "7161af56dda7a8b5a30955b42e1eb7012253169252299738601f4ecfa64322e1",
+    "contract_sha256": "194e91b6d5b31915039dc3b45e13e5676e8df817f6172888b8bc023c2a352ddc",
+    "source_sha256": "e9fb6e590350972c6d23515bd1bd1a3ea57ba8d1dcd5e73923bcc62ac42cd095"
+  },
+  "verdict": "changes_requested",
+  "summary": "Plan revision 2 resolves the unsafe routed probe, specifies operation-specific canaries and unexpected-success cleanup, and orders independent static review before execution and a fresh final review afterward. Its completed NO-RUN investigation branch is sound, but the exact current contract still requires demonstrated containment and expected canary outcomes, contradicting that branch. Align the acceptance descriptions before implementation. This review authorizes no real SDK import or host execution.",
+  "open_findings": [
+    {
+      "id": "HPI-PR2-01",
+      "priority": "P2",
+      "title": "The acceptance contract still requires containment success for a completed NO-RUN investigation",
+      "location": "docs/runs/host-probe-isolation/contract.json:10,14,32-38; plan.md Acceptance criteria HPI-2/HPI-3/HPI-5 and Completion",
+      "impact": "The revised plan correctly allows an unsupported, unavailable, ambiguous, or failed containment control to conclude as NO-RUN after verified cleanup. The check scope likewise permits exit 0 for truthful NO-RUN, while mapping that check to every HPI acceptance ID. However, contract HPI-2 still requires that the profile demonstrably enforces the boundaries, and HPI-3 still requires attributable expected outcomes from four negative canaries. A safely evaluated failed control cannot satisfy those descriptions. Completion therefore either remains impossible for the intended NO-RUN branch or risks representing failed containment as accepted. The canary count also disagrees with the revised plan's two positive and five negative operations.",
+      "required_correction": "Update contract HPI-2 and HPI-3 to require truthful bounded evaluation and explicit per-control verified/unavailable/failed/unverified outcomes, rather than unconditional enforcement success. Enumerate or reference the current two-positive/five-negative matrix. Make the acceptance contract explicit that READY_FOR_REVIEW requires every required control to pass, whereas NO-RUN can complete only the investigation with containment failures or uncertainty retained and the real-host dependency held. Preserve unresolved cleanup as a blocking failure. Evidence and outcome mapping must distinguish investigation/check success from containment status, so an exit-0 NO-RUN never represents a failed control as passed. Rebind and re-review the resulting exact contract hash."
+    }
+  ],
+  "observations": [
+    "Reviewed only the assigned plan-reviewer role, matching solo-plan-review skill, plan revision 2, exact current contract, prior review, static research, and planning assessment. No implementation, SDK runtime, user configuration, secrets, or network was accessed; no tests or canaries were executed. Only this requested review artifact was written, and the ledger was not modified.",
+    "Independently confirmed plan and contract SHA-256 values with shasum; both match the supplied binding. The source_sha256 is the coordinator-supplied value and was not independently recomputed within this artifact-only assignment.",
+    "HPI-PR1-01 is resolved at plan level: all routed/public/documentation-range/DNS destinations are prohibited; the connection target is one supervisor-owned 127.0.0.1 listener with no application payload, immediate exact-handle cleanup, and no inference of general egress containment from local TCP denial.",
+    "HPI-PR1-02 is resolved at plan level: separate positive input-read and scratch-write controls, denied outside-read and outside-write controls, bind/listen denial, connection denial, and exact-runtime child execution denial are specified. Targets must be accessible independently, generic failures are unverified, and unexpected successes require owned-resource cleanup under external time/output bounds. The concrete profile, denial attribution, launcher-startup versus subsequent child-execution permissions, and timeout cleanup still require the mandated static implementation review before execution.",
+    "HPI-PR1-03 is resolved in the plan and required-check scope, but remains partially open in the acceptance contract as HPI-PR2-01. The plan expressly distinguishes a successful investigation from a containment pass and correctly keeps cleanup failure unresolved/blocked.",
+    "HPI-PR1-04 is resolved: a fresh independent static code/security review must pass before the first canary, execution is restricted to reviewed hashes, and a second fresh reviewer assesses exact source and resulting evidence afterward.",
+    "The provided planning assessment substantiates the earlier NO-RUN recommendation and identifies broader resource, native, IPC, process, and platform uncertainty. The revision appropriately preserves those limits and cannot turn the narrow SDK-free matrix into certification of the future real host.",
+    "No further user approval is needed for already authorized local preparation once the plan/contract gate passes. Neither READY_FOR_REVIEW nor this review permits real SDK execution. That remains a separate dependency requiring adequate containment evidence and explicit approval of the concrete real-host effect manifest."
+  ],
+  "provenance": {
+    "child_task_id": "/root/host_probe_isolation_plan_review_r2",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "runtime_identity_verified": false,
+    "review_mode": "read-only independent plan re-review; requested review artifact only",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false
+  }
+}

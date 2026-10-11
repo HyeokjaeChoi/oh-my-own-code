@@ -1,0 +1,143 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "documents_sha256": "b2dda914c31c7ff2ffa97c03e8e47c9b5ca318e8c0076f348d388d4e7b3695a4",
+    "gate": "design_spec",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "schema_version": 2
+  },
+  "verdict": "pass",
+  "summary": "Independent design_spec_reviewer review of active build-delivery plan revision 4 and the exact current nine-document packet. DSR-01 and DSR-02 are resolved with no remaining material contradiction in the reviewed contracts: UX preserves the established responsive ranges and 120/180/240ms motion; PermissionRequest requires runtimeStateMap for runtime labels, visual state and actions, binds applied allow/deny labels to a matching receipt, and explicitly limits every fixed variant label to static previews. Product scope, bridge authority, no-replay recovery, local diagnostics, ADR state ownership and staged implementation holds remain coherent. Individual source hashes, plan/contract records, registered documents, canonical design_spec document digest and recorded scope-approval bindings match. This is a static specification pass, not implementation or runtime verification. Requested route was gpt-6-astra/high; runtime model/effort identity was not verified.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "DSR-01",
+      "resolution": "workbench-ux.md now explicitly uses 320–599px, 600–899px and 900px+ ranges and fast 120ms, standard 180ms, panel 240ms. Only easing remains an implementation choice. These match system.md and manifest/CSS motion tokens; the 163-token, 44-variant foundation remains intact.",
+      "evidence": [
+        "docs/design/specs/workbench-ux.md:155",
+        "docs/design/system.md:47",
+        "docs/design/system.md:90",
+        "docs/design/tokens/tokens.css:54"
+      ]
+    },
+    {
+      "id": "DSR-02",
+      "resolution": "runtimeStatusContract makes runtimeStateMap mandatory before composing visual variants. Approved behavior requires a matching current-request/current-policy applied receipt and labelByDecision distinguishes allow and deny. USER_DENY and POLICY_DENY use separate labels; expired/cancelled/unknown retain read-only reconciliation; uncertain dispatch never resends. All five variants use previewSampleStatusLabel with static-preview-only markers and mark nested badge labels likewise. Delivery-only approval wording and runtime statusLabel fallback fields are absent. The validator source now checks runtime map authority, preview-only markers and receipt/decision-specific applied labels.",
+      "evidence": [
+        "docs/design/components.json:1185",
+        "docs/design/components.json:1297",
+        "docs/design/components.json:1570",
+        "docs/design/components.json:1605",
+        "docs/design/components.json:1675",
+        "docs/design/specs/workbench-ux.md:165",
+        "docs/design/validate_system.py:314"
+      ]
+    }
+  ],
+  "review_evidence": {
+    "run": "build-delivery",
+    "role": "design_spec_reviewer",
+    "run_status_observed": "active",
+    "plan": {
+      "path": "docs/runs/build-delivery/plan.md",
+      "revision": 4,
+      "sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985"
+    },
+    "documents": [
+      {
+        "gate": "product",
+        "path": "docs/product/prd.md",
+        "sha256": "597e64d100ea67b878762fde160b3a6d5c2f1275662661094dadfe0dad270dfb",
+        "version": "0.2"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/design/specs/workbench-ux.md",
+        "sha256": "80dd5ec3d6f3a93d00b737703e9ee80318f0ba335c55c345a4c7235c4ca5e4fc",
+        "version": "0.3"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/engineering/workbench-architecture.md",
+        "sha256": "4a031f5c8cd194c315b92df8ac468600d5b769387c2271d8c04810fbc4959cba",
+        "version": "0.1"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/engineering/verification.md",
+        "sha256": "dba31b7266df9dcd93f6477342e07f77bef9897c42578048c4c38c024f62feee",
+        "version": "0.1"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/operations/local-release-monitoring.md",
+        "sha256": "f0d88e1836f230da09f7afe093d4320298d8d191845abae69ad4a0d4ef17263b",
+        "version": "0.1"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/engineering/spec-index.md",
+        "sha256": "e7d419c72b6f2794e00fc0e96a9fbe677363ee051a58b23a52759995acf996e1",
+        "version": "0.3"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/design/system.md",
+        "sha256": "4697eb4961952ee85a4732ed77e5addbb17058a8b3d12485aa56158324f661a5",
+        "version": "2026-09-27"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/decisions/0001-workbench-platform.md",
+        "sha256": "70988369fdc37f29ce41f7a34a6ea8a32ad6bc058c62f6cfb34a09defd3a72cb",
+        "version": "0001"
+      },
+      {
+        "gate": "design_spec",
+        "path": "docs/design/components.json",
+        "sha256": "76460f0cc7099ef6b628ce654994d89fc75e5e863d33c103daae8049493f2ed2",
+        "version": "component-contract-v3"
+      }
+    ],
+    "approval_records": [
+      {
+        "evidence": {
+          "path": "docs/runs/build-delivery/user-approval.json",
+          "sha256": "02ae6a4de1071e07e1bf67df8873cf7af8940a28a5d1c042e6fb70550a450b6d"
+        },
+        "id": "approval-current-spec-bundle",
+        "target": {
+          "path": "docs/engineering/spec-index.md",
+          "sha256": "e7d419c72b6f2794e00fc0e96a9fbe677363ee051a58b23a52759995acf996e1"
+        },
+        "version": "0.3"
+      }
+    ],
+    "supplemental_sources": [
+      {
+        "path": "docs/design/tokens/manifest.json",
+        "sha256": "84a1ecac6ef5e6dd51f9d7a1a9a959751a3a05731fe8cb3ff4ca3379957e0498"
+      },
+      {
+        "path": "docs/design/tokens/tokens.css",
+        "sha256": "c6cedf264821dc9df98a44c16a24b00403783d5ab84bb19b0176ea5a3d3c61f3"
+      },
+      {
+        "path": "docs/design/validate_system.py",
+        "sha256": "bb711cd37704f84030706d0d0de8d281e7f8910468593939be1c71c60305de46"
+      }
+    ],
+    "hash_binding_result": "All packet document hashes match current bytes and registered artifact records. Contract document/approval records match the packet. Plan and contract hashes match both input and current run metadata. The design_spec document digest matches the ordered contract subset using canonical sorted-key compact JSON. Approval evidence and target hashes match current bytes. Token manifest/CSS and validator were inspected and hashed as supplemental sources; they are not separately included in the design_spec documents digest.",
+    "approval_boundary": "Recorded user continuation authorizes correction and implementation within approved scope; the approval record explicitly does not claim separate user review of each revised sentence. This review checks recorded scope/target consistency and does not independently attest the underlying conversation identity.",
+    "limits": "Static document/source review, JSON inspection and SHA256 comparison only. No project validation script, harness command, test, build, package probe, browser/Figma/device interaction, live service call or accessibility execution was performed. Validator behavior was inspected, not executed. This pass proves neither runtime permission/path isolation, SDK compatibility, UI quality, Figma synchronization nor product/release completion. Persistent data location/retention and actual runtime/platform evidence remain held as specified in the plan. No source artifact or run ledger was edited; only this explicitly assigned report file was saved.",
+    "next_handoff": "Coordinator registers this independent report and obtains the current design_spec handoff, alongside the required plan and product handoffs, before assigning dependent implementation. Keep the staged security, runtime and data-persistence holds in the reviewed plan."
+  },
+  "provenance": {
+    "child_task_id": "/root/design_spec_review_r3",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "runtime_identity_verified": false
+  }
+}

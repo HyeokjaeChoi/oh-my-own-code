@@ -1,0 +1,133 @@
+{
+  "verdict": "pass",
+  "summary": "지정한 exact8 범위에서 수정이 필요한 결함을 발견하지 않았습니다.",
+  "scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_revision": 13,
+    "mode": "solo_reader / solo-code-review default",
+    "report_only": true,
+    "recursive_delegation": false,
+    "files_edited": [],
+    "final_F09_or_full18_gate": false
+  },
+  "review_passes": [
+    {
+      "pass": "spec_compliance",
+      "verdict": "pass",
+      "verified": [
+        "ModelsDev 원본 SHA를 Native import 전에 확인합니다.",
+        "원본 ModelsDev.layer({fetch:false,snapshot:true})를 node.mapLayer와 node.replace로 연결합니다.",
+        "SDKfactory 동적 file/npm 경로는 add/resolve/import 전에 거부합니다.",
+        "Provider.loadPackage2의 fixed builtin 분기는 유지합니다. 그 외 경로는 resolver/install/import 전에 거부합니다.",
+        "Planner는 MAX_FILES=MAX_EDITS=256이며, 파일별 최소 1개 edit를 요구합니다.",
+        "총 256 edits, 입력·출력 합계 32MiB, exact source-set/hash, unique anchor 제한을 유지합니다.",
+        "이번 diff는 실행 allowlist를 늘리지 않습니다. complete=false, unsupported, no activation 상태를 유지합니다."
+      ]
+    },
+    {
+      "pass": "correctness",
+      "verdict": "pass",
+      "verified": [
+        "실제 원본 소스와 호출자, SDK 간접 호출 경로, 오류 전달을 검토했습니다.",
+        "Provider.LoadError는 호출자의 mapError 경로로 전달됩니다. SDKfactory 거부는 Effect defect로 전달됩니다.",
+        "Fixed builtin 분기와 그 import 목록은 원본과 같습니다.",
+        "Graph compiler의 dependency 연결과 Scope 전달을 확인했습니다.",
+        "별도 추출 검사에서 성공·실패 모두 dependency 획득 1회와 해제 1회를 확인했습니다. 기존 layer 획득은 0회입니다.",
+        "37개 원본 파일의 변환, 역변환, 원본 보존, 변환 전후 syntax 검사가 통과했습니다."
+      ]
+    }
+  ],
+  "findings": [],
+  "bindings": {
+    "prepared_input_exact8": "시작·종료 SHA 모두 일치",
+    "packet_plan_routing_document_hashes": "pass",
+    "prechange_manifest_six_existing_files": "pass",
+    "recipe_files": 37,
+    "recipe_edits": 194,
+    "recipe_sha256": "c7e9fdcf66d757f5d4a137f6ce70098d95177ff214dfb26291c6bc038553a8cb"
+  },
+  "reviewed_files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "start_sha256": "b254824c61f5a1f4099cab021366b098b9dc4dbce43ce0bc1579c947df113bfd",
+      "end_sha256": "b254824c61f5a1f4099cab021366b098b9dc4dbce43ce0bc1579c947df113bfd"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "start_sha256": "ec3f4bcdb3a2ffc1077e5f98d01179b480cce375408aa7b347710fd2ecc5bb7c",
+      "end_sha256": "ec3f4bcdb3a2ffc1077e5f98d01179b480cce375408aa7b347710fd2ecc5bb7c"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-startup-models.test.mjs",
+      "start_sha256": "548f117f39e5d2b721213bfecf10bfa8d69ab7a7911e9aa34d8b8143207f187b",
+      "end_sha256": "548f117f39e5d2b721213bfecf10bfa8d69ab7a7911e9aa34d8b8143207f187b"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "start_sha256": "f917441c0ce4fbce5612ac9c8a557d561c1851939c653a34141f7fdd4efc057d",
+      "end_sha256": "f917441c0ce4fbce5612ac9c8a557d561c1851939c653a34141f7fdd4efc057d"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-provider-load.test.mjs",
+      "start_sha256": "a7087a97f9c1d2f8b0e124a6f7478ab2ef7a920ad862a6453babf5148686b4c6",
+      "end_sha256": "a7087a97f9c1d2f8b0e124a6f7478ab2ef7a920ad862a6453babf5148686b4c6"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay.mjs",
+      "start_sha256": "bc72dbfa7b9ad8c8a6ab84f4dc01bf1d9231fbc6d84258d40447b45bf2bd691e",
+      "end_sha256": "bc72dbfa7b9ad8c8a6ab84f4dc01bf1d9231fbc6d84258d40447b45bf2bd691e"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay.test.mjs",
+      "start_sha256": "cb542164a4a4490006cff3fef0cd49618bc72991ade8e02a62c0a73646282b31",
+      "end_sha256": "cb542164a4a4490006cff3fef0cd49618bc72991ade8e02a62c0a73646282b31"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "start_sha256": "fb2a6e62e10668f3db50386798dc7b4a58b68cc1d4db5afbbc3905784ca89eb7",
+      "end_sha256": "fb2a6e62e10668f3db50386798dc7b4a58b68cc1d4db5afbbc3905784ca89eb7"
+    }
+  ],
+  "own_executed_checks": [
+    {
+      "command": "node --test --test-reporter=spec apps/desktop-app/src/native-permission-graph.test.mjs apps/desktop-app/src/native-permission-startup-models.test.mjs apps/desktop-app/src/native-permission-provider-load.test.mjs apps/desktop-app/scripts/native-permission-overlay.test.mjs apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "runtime": "Node v26.11.0",
+      "passed": 59,
+      "failed": 0,
+      "skipped": 0,
+      "exit_code": 0
+    },
+    {
+      "check": "실제 graph replacement 구문과 pinned Effect/compiler를 사용한 Scope 검사",
+      "result": "pass",
+      "dependency_acquisitions": 2,
+      "dependency_releases": 2,
+      "original_layer_acquisitions": 0,
+      "cases": [
+        "성공",
+        "실패"
+      ]
+    },
+    {
+      "check": "Recipe 37 files / 194 edits / 고정 SHA 및 불완전 receipt 거부",
+      "result": "pass"
+    },
+    {
+      "check": "입력 binding, prechange manifest, exact8 시작·종료 hash",
+      "result": "pass"
+    }
+  ],
+  "limits": [
+    "자동 ModelsDev refresh 중지만 검증했습니다. 전체 network deny를 의미하지 않습니다.",
+    "Explicit refresh/cache/catalog는 scripted fixture로 일부 동작을 확인했습니다. 실제 IO와 다른 provider effects는 검증하지 않았습니다.",
+    "Native/core/provider/Main/Bun/server 실행·import, build, UI, 실제 network 및 physical kernel probe는 수행하지 않았습니다.",
+    "검사 fixture는 임시 디렉터리를 만들고 정리합니다. 저장소 source/docs/ledger는 수정하지 않았습니다.",
+    "Metadata204, descriptor223, task12, auxiliary23, lint/format 및 과거 RED 결과는 이번에 재실행하지 않았습니다.",
+    "이 판정은 exact8 CODE 범위에만 적용합니다. 전체 F09/full18 승인이나 실행 허가는 아닙니다."
+  ],
+  "provenance": {
+    "agent_id": "01a126ee-a0be-73c0-84e2-833186ca10c7",
+    "saved_by": "Main",
+    "source": "actual wait_agent completed result"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "source_sha256": "dbb51546a3cb0b857f67ca4f253e4a1e4afc08d185871ad4a9f9403e7ddab2e2",
+    "verification_sha256": "61506031130723e930c218c5615989ef8e459dbadc2bb903dd4c54af133dbf60",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  "verdict": "changes_requested",
+  "summary": "Earlier isolation, stale status, package edge, invalid-result fallback and missing-test issues are fixed. Remaining concerns are out-of-order event gap handling, Node builtins from browser-reachable packages, and lack of a compiled bridge build.",
+  "open_findings": [
+    {
+      "severity": "medium",
+      "path": "apps/workbench-web/src/entities/session/model/assistant-thread.ts:63",
+      "trigger": "Sequence 1 and 3 arrive before delayed sequence 2.",
+      "impact": "Cursor advances to 3 and permanently discards sequence 2, which may omit a message/status update.",
+      "correction": "Advance only through contiguous sequence numbers, or record a gap and reconcile from a new snapshot; test delayed/missing sequence cases."
+    },
+    {
+      "severity": "medium",
+      "path": "apps/workbench-web/scripts/boundary-policy.mjs:231",
+      "trigger": "A browser-reachable UI/contracts package imports node:fs.",
+      "impact": "The boundary check permits Node builtins in package source that the browser can bundle.",
+      "correction": "Reject Node builtins for UI/contracts browser-reachable source and add a negative package fixture."
+    },
+    {
+      "severity": "medium",
+      "path": "apps/local-bridge/project.json:1",
+      "trigger": "The recorded run-many build target executes.",
+      "impact": "The target only builds contracts and workbench-web; the bridge still runs through tsx without a compiled build/launch check.",
+      "correction": "Add a clean compiled bridge build and launch check before describing reproducible bridge delivery."
+    }
+  ],
+  "verification_limits": "Frozen install, format, lint, typecheck, tests, browser build and boundary checks pass at this source binding. Reviewer inspected ledger and ran one read-only boundary-policy probe; it did not rerun project tests. Browser E2E, compiled bridge launch, and actual OpenCode SDK/control-channel security remain unverified.",
+  "provenance": {
+    "child_task_id": "/root/bootstrap_code_review_r3",
+    "author_task_id": "/root",
+    "requested_route": "gpt-6-sol/high",
+    "observed_runtime_identity": "unverified"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "revision": 24,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+      "bytes": 18502,
+      "sha256": "8f621ad89d127a1552a5f3bbafd6e84b2997f0512c233569ef4c8910252ff0f9"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 22839,
+      "sha256": "9ea6ab63ffd12bb5ea47d85b9e4d652ddeabd956f9a81639b111376e41cd77a7"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "bytes": 40872,
+      "sha256": "0e368c14796f64d10776d6cec6a79c911f325ec99e1ce2e79a915ef2308d9341"
+    }
+  ],
+  "api": "unchanged observeNativeSdkRegistration signature",
+  "change": "Only SDK helper pre-publish guard removed after exact source publication; guarded callback still inventoryGuard first. Native graph requires reviewed original AISDK SHA before imports; Control execution hold and inventory complete=false unchanged.",
+  "tests": {
+    "focused_metadata_red": 2,
+    "focused_metadata_green": 2,
+    "graph_green": 20
+  },
+  "logs": [
+    "sdk-registration-metadata-red-r1.log",
+    "sdk-registration-metadata-green-r1.log",
+    "sdk-registration-graph-red-r1.log",
+    "sdk-registration-graph-green-r1.log"
+  ]
+}

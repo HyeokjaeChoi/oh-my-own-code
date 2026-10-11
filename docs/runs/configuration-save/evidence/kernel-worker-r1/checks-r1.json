@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-10-08T01:31:27.365748+00:00",
+  "sourceHashes": {
+    "apps/desktop-app/src/host/configuration-save-kernel.mjs": "7d115e0328509a6f90a22aefa40d9a51cd2f498ef9f7773d6d7b599585f8ec57",
+    "apps/desktop-app/src/host/configuration-save-kernel.test.mjs": "a75f2cc988cdb2d88d09b6060e643044201918db630d0093beceea0659794360"
+  },
+  "checks": [
+    {
+      "name": "owned-node-tests",
+      "argv": [
+        "node",
+        "--test",
+        "apps/desktop-app/src/host/configuration-save-kernel.test.mjs"
+      ],
+      "exitCode": 0,
+      "tests": 33,
+      "passed": 33,
+      "failed": 0,
+      "skipped": 0,
+      "syntheticCases": 29,
+      "actualNodeReaderParity": 2,
+      "evidence": "docs/runs/configuration-save/evidence/kernel-worker-r1/synthetic-UoEwiH/verification.json"
+    },
+    {
+      "name": "owned-eslint",
+      "argv": [
+        "./node_modules/.bin/eslint",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+        "apps/desktop-app/src/host/configuration-save-kernel.test.mjs"
+      ],
+      "exitCode": 0,
+      "stdout": ""
+    },
+    {
+      "name": "owned-format",
+      "argv": [
+        "./node_modules/.bin/prettier",
+        "--check",
+        "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+        "apps/desktop-app/src/host/configuration-save-kernel.test.mjs"
+      ],
+      "exitCode": 0,
+      "stdout": "Checking formatting...\nAll matched files use Prettier code style!"
+    }
+  ]
+}

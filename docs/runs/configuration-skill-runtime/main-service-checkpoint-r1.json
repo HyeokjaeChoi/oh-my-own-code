@@ -1,0 +1,27 @@
+{
+  "status": "Implementation checkpoint only; storage/renderer in progress, no final acceptance",
+  "sources": {
+    "apps/desktop-app/src/workbench-service.mjs": "e6a8b5c9a414c8b6850301ecb04c866cb4ff90b210e524ccb5631de092b4f79c",
+    "apps/desktop-app/src/main.mjs": "3815f13225c91d0de9d9b1f00b6fd22efb1b9578a1381ff5759f11a29ec3d2c4",
+    "apps/desktop-app/src/host/workbench-native-skills.mjs": "b39fb0277dda3143b1ce3486d084d2c7f36a1d5a6b6fe40c9c7f86474094d6a8",
+    "apps/desktop-app/src/configuration-skill-runtime.test.mjs": "3dadb706bb55408c91750fe5bf6dda877292329e9ac6e47afb0c5dfc97bab1ff",
+    "apps/desktop-app/src/host/storage-integration.test.mjs": "9852cf478d33b2edf257370416a5b06d05d84b46cfe3b47d0014a3681ef52b4a",
+    "apps/desktop-app/scripts/configuration-skill-runtime-probe.mjs": "1189cdcaea061085cb393c5a6e30ed715e90c0fec37959ef2ada8dcef43d708c",
+    "apps/desktop-app/scripts/fixtures/p7-storage-owner-host.mjs": "c37603648df7a86eef5cb37134b4fce0f6c88af31d4a44c5d7940a67d085a57f",
+    "apps/desktop-app/scripts/fixtures/native-skills-prerequisite.test.mjs": "848f2c7a3f978fd0a576759d94225dc85350351290995cfe26be1dd0f3e34ec9"
+  },
+  "checks": {
+    "serviceBaseline": "34PASS main-service-baseline-r1.log",
+    "conversionAndHistory": "4PASS conversion-history-r1.log including actual pinned inert parser semantics",
+    "probeObserver": "9PASS service-probe-observer-r1.log",
+    "scopedMainLint": "main-service-lint-r1.log/main-integration-lint-r1.log/service-probe-lint-r1.log exit0"
+  },
+  "integration": "4initial INVALID_REQUEST failures at new mutations preserved until actual storage worker API checkpoint; reads passed; moving source not final evidence",
+  "publicNativeProbe": "Saved public durable service cancellation/register/duplicate/resume:false/exact messages/already-present zero SDK/remove/history+file preservation added after prerequisite route; NOT RUN, waits coherent source/build/storage",
+  "remaining": [
+    "Finish actual durable integration and Main adversarial tests",
+    "Renderer actual early hooks then fixture implementation",
+    "Coherent required checks/fresh build/current Native public-service+reopen/fork/unknown compatibility/hidden states",
+    "Independent CODE and RENDER, outcome, finish only this feature"
+  ]
+}

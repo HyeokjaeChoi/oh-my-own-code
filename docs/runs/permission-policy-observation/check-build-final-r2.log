@@ -1,0 +1,39 @@
+(node:76539) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[plugin builtin:vite-reporter] [33;1m
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[0m
+
+
+> nx run desktop-app:build
+
+> node apps/desktop-app/scripts/build.mjs
+
+vite v8.3.0 building client environment for production...
+transforming...
+[32m✓[0m 2716 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mapps/desktop-app/dist/app/renderer/[0m[32mindex.html                 [0m[1;2m    0.68 kB[0m[2m │ gzip:   0.41 kB[0m
+[2mapps/desktop-app/dist/app/renderer/[0m[2massets/[0m[35mindex-BJn7_Hlf.css  [0m[1;2m   82.94 kB[0m[2m │ gzip:  11.05 kB[0m
+[2mapps/desktop-app/dist/app/renderer/[0m[2massets/[0m[36mindex-D5sXQAjy.js   [0m[33;1m1,320.42 kB[0m[2m │ gzip: 366.26 kB[0m
+
+✓ built in 309ms
+
+
+
+ NX   Successfully ran target build for project desktop-app
+
+
+  Run duration:      51.7s
+  Cache:             Skipped (--skip-nx-cache)
+  Critical path:     51.5s (1 task)
+  Recoverable time:  <1ms
+
+  Recommendations:
+    - Cache: drop --skip-nx-cache to restore unchanged tasks instantly.
+    - Speed up or split the longest tasks on the critical path:
+        desktop-app:build    51.5s
+

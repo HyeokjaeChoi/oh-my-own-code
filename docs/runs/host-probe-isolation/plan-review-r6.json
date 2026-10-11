@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "b833017322ce9804c43f660de4175bab101453fa271c751518df0d6b5131ddd2",
+    "contract_sha256": "2bb0715d60cedba46b9cd37b0a2dae4dfaecea1f13cfb7cdc213038e06569280",
+    "source_sha256": "83a5f247fed8bcbb2f511a6388a43e16f92736ad49dc1d7cc3467411d2d1b2b6"
+  },
+  "verdict": "pass",
+  "summary": "Revision 5 conditional HPI-1 and early NO-RUN acceptance are coherent. Exact runtime identity remains required; unaudited dependency closure stops before fixture, listener, child environment or canary effects, and all seven controls stay unverified. Cleanup and watchdog obligations remain active. SDK execution remains separately unapproved.",
+  "open_findings": [],
+  "observations": [
+    "The r5 packet references the actual static research and assessment artifacts under build-delivery/.",
+    "The earlier r4 implementation-review findings remain open and are not resolved by this plan review.",
+    "The independent outer harness timeout, per-stream output cap, source-pinning worker deadline, aggregate output cap and reap window remain consistent across plan and contract."
+  ],
+  "verification_limits": [
+    "Read-only plan review and plan/contract hash verification only; source fingerprint was not independently recomputed.",
+    "No implementation execution, test, canary, SDK, network, user configuration, secret access, edit, or delegation.",
+    "Review verdict is not an execution authorization or runtime model identity attestation."
+  ],
+  "provenance": {
+    "child_task_id": "/root/plan_review_rev5_fresh",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "runtime_identity_verified": false,
+    "review_mode": "fresh-context independent read-only plan review"
+  }
+}

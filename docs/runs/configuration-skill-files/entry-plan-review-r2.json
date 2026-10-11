@@ -1,0 +1,51 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "ce19e8c15826dfc2c4713e683124e874e0edace5ed4ac34a9da782dfe6b7b51c",
+    "gate": "plan",
+    "plan_sha256": "2a80f254964df9dfd53ba36afd74d83671dfff706ac7b7aaf3551df4675bb58f",
+    "schema_version": 2,
+    "source_sha256": "4c77540b8bee2dc299e3a80f92e2877264d9fb8f3a9953aa5dfc118054d301a0",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "PLAN revision 2는 지정한 기존 디렉터리의 SKILL.md 목록·읽기·편집·확인 후 저장 범위에 충분합니다. missing baseline의 ancestor binding 누락은 directoryVersion 요구로 해결되었습니다. 초기 PLAN의 추가 수정 사항은 없습니다. 구현은 별도 DESIGN_SPEC 통과까지 보류해야 합니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "missing-directory-binding",
+      "resolution": "available/missing 읽기 모두 directoryVersion을 반환하고 모든 저장이 이를 요구합니다. service는 확인 전후, kernel은 staging 전에 원래 ancestor identity와 비교합니다.",
+      "evidence": [
+        "docs/runs/configuration-skill-files/plan.md:8",
+        "docs/runs/configuration-skill-files/design.md의 API 및 Target resolution and IO"
+      ]
+    }
+  ],
+  "evidence": [
+    "r2 plan, contract 원문·semantic digest, design v2, work_class 및 등록 baseline digest가 새 입력과 일치합니다. source-facts의 22개 소스와 routing의 4개 입력 해시도 일치합니다.",
+    "계획은 기존 디렉터리와 고정 sourceName만 허용합니다. 디렉터리 생성, 삭제, Native 활성화, plugin 설치 및 provider 호출을 제외하며 F14 전체 완료를 주장하지 않습니다.",
+    "실제 configuration-save-kernel은 Darwin arm64/Bun 1.4.2와 instructions|mcp에 제한됩니다. 계획은 기존 writer를 확장하면서 ancestor FD, backup, stage/publish 및 최종 reread를 검증 대상으로 둡니다.",
+    "현재 kernel observe는 write validator를 사용합니다. 계획은 안전한 원문 읽기와 저장 문법 검증을 분리하므로 unsupported grammar의 명시적 변환 요구를 포함합니다. 구현에서는 이 분리를 확인해야 합니다.",
+    "실제 storage-journal과 workspace-registry는 feature, operation, dispatch 및 receipt 관계를 검증합니다. 계획은 새 marker의 admission 이전 기록, checkpoint 보존, 구버전 거절 및 unknown 재실행 금지를 요구합니다.",
+    "prechange closure 입력 5개의 현재 해시와 bundle 해시 6ccadc0c97bf67345da0bcb2dfe07174678177c744098c321d22df25ddb68b68가 manifest와 일치합니다. 등록 baseline의 기존 551개 경로에도 변경이 없습니다.",
+    "실제 event-host-child의 project:false/filewatcher:false와 public SDK의 skill.list를 확인했습니다. 파일 저장과 Native 등록·활성화를 구분하는 계획은 이 소스와 일치합니다.",
+    "단일 window 상태 소유자, per-file draft, generation·floor·정확한 draft identity, 명시적 읽기 및 unknown lookup을 요구합니다. Node/Bun filesystem, legacy 호환성, 실제 UI와 독립 CODE/RENDER 검증도 계획과 contract에 포함되어 있습니다."
+  ],
+  "limits": [
+    "이번 판정은 r2 초기 PLAN에만 적용합니다. r1 판정과 DESIGN_SPEC 승인을 대신하지 않습니다.",
+    "shell을 통한 파일 읽기와 해시 계산만 수행했습니다. 파일·artifact·ledger 쓰기, 위임, 앱/Native/provider/UI/build/test 실행은 하지 않았습니다.",
+    "directoryVersion 검사, publication, 구버전 거절 및 UI 상태의 실제 동작은 아직 실행 검증하지 않았습니다. 새 경로를 포함한 전체 source inventory 재산출도 하지 않았습니다.",
+    "보고서 저장과 ledger 등록은 Main이 수행해야 합니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11a01-d7d0-7d20-8a2e-c46288f4fd88",
+    "author_task_id": null,
+    "identity_evidence": "현재 실행 환경의 CODEX_THREAD_ID를 읽어 확인했습니다. author task ID는 제공되지 않았습니다.",
+    "independent": true,
+    "authored_plan": false,
+    "modified_source": false,
+    "modified_artifacts": false,
+    "modified_ledger": false,
+    "recursively_delegated": false
+  }
+}

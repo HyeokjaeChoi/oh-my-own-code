@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "83a5408a985b389f98fa1984b231da0cf538d23ccea6f1186cfc9c37d14f2cef",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "design",
+    "plan_sha256": "851130e852664a1ceb154a16be26d74c0186e36d469e98bca8b3a9dc50f75a27",
+    "schema_version": 2,
+    "source_sha256": "9e48c96ec1a3518302d576a7b00b297191eae35b33016f1c37995d9af05e40e3",
+    "verification_sha256": "cc2e46c3467ea36f5a7e87eb27bc1b61ee69ce0d6c1644631b1d25cd1093fe7d"
+  },
+  "verdict": "pass",
+  "summary": "Independent Astra review confirms both bounded findings resolved. Selected A editable static Figma draft passes plan revision2 scope; prior accepted screens, Composer, Foundations and structural evidence retained without claiming rerun.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "F1-menu",
+      "verification_status": "verified",
+      "result": "Actual Light/Dark images show16px Check source83:205 and destructive separators. Six openvariants,60rows32px and2pxinsetfocus verified from readback; no inspected clipping/overlap."
+    },
+    {
+      "id": "F2-color-alias-audit",
+      "verification_status": "verified",
+      "result": "Comparator checks VARIABLE_ALIAS type/id first; RGBA tolerance literal-only. Independently compared274mode records for153COLOR paths against prepared contract:242alias targets+32literal values all match; six comparator cases match."
+    }
+  ],
+  "verification": [
+    "Original251 frozen hashes and20supplemental frozen hashes match.",
+    "Two Menu PNG hashes and1248x532 pixel dimensions match1x1216x512 frame plus shadows; transparent areas not interpreted as theme canvas.",
+    "Outcome F1/F2/F3 supplemental coverage verified; final exact binding re-read before verdict."
+  ],
+  "limitations": [
+    "Approval only editable static selected-A Figma draft; not fullapp or Production.",
+    "Allfamilies structurally present, not everyfamily separately inspected at normal scale.",
+    "Keyboard, IME, screen reader, execution, permissionfreshness, Production mapping, CodeConnect and publication excluded."
+  ],
+  "provenance": {
+    "child_task_id": "/root/compact_delivery_repaired_review",
+    "author_task_id": "/root/selected_a_menu_alias_repair",
+    "original_author_task_id": "/root/compact_figma_execution",
+    "coordinator_task_id": "/root"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "status": "preparatory_behavior_only",
+  "count": 8,
+  "cases": [
+    {
+      "case": "ignored-target-collision-sha1",
+      "pass": true,
+      "exit": 1,
+      "all_bytes_modes_unchanged": true
+    },
+    {
+      "case": "restore-native-index-stat-only-sha1",
+      "pass": true,
+      "native_index_bytes_changed": true,
+      "staged_semantics_unchanged": true,
+      "design_implication": "Private native computation can refresh private stat-cache; worktree-only original publisher must not adopt the changed private index."
+    },
+    {
+      "case": "restore-head-absence-deletes-tracked-worktree-only-sha1",
+      "pass": true,
+      "staged_semantics_unchanged": true,
+      "worktree_target_absent": true
+    },
+    {
+      "case": "builtin-eol-ident-executable-normalization-sha1",
+      "pass": true,
+      "expected_crlf_ident_expansion": true,
+      "owner_execute_bit_preserved": true,
+      "design_implication": "Checkout bytes must come from verified private native behavior, not raw blob bytes."
+    },
+    {
+      "case": "ignored-target-collision-sha256",
+      "pass": true,
+      "exit": 1,
+      "all_bytes_modes_unchanged": true
+    },
+    {
+      "case": "restore-native-index-stat-only-sha256",
+      "pass": true,
+      "native_index_bytes_changed": true,
+      "staged_semantics_unchanged": true,
+      "design_implication": "Private native computation can refresh private stat-cache; worktree-only original publisher must not adopt the changed private index."
+    },
+    {
+      "case": "restore-head-absence-deletes-tracked-worktree-only-sha256",
+      "pass": true,
+      "staged_semantics_unchanged": true,
+      "worktree_target_absent": true
+    },
+    {
+      "case": "builtin-eol-ident-executable-normalization-sha256",
+      "pass": true,
+      "expected_crlf_ident_expansion": true,
+      "owner_execute_bit_preserved": true,
+      "design_implication": "Checkout bytes must come from verified private native behavior, not raw blob bytes."
+    }
+  ],
+  "fixed_git": {
+    "path": "/Library/Developer/CommandLineTools/usr/bin/git",
+    "sha256": "738d0159292a08341abe63a7decd0715ff34d67d532e17349902a6dc42f60ae7"
+  },
+  "retained_synthetic_root": "/private/tmp/omoc-branch-restore-prep-2geqkusr",
+  "limits": [
+    "New known-byte synthetic native behavior cases only, no previous passing matrix repeated.",
+    "No production publisher/kernel/admission/UI, no private project/credential/provider/Electron/Bun.",
+    "Content/mode inventory does not establish unchanged inode/times.",
+    "No accepted design/API or implementation/final approval."
+  ]
+}

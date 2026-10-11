@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "run": "git-review-observation",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "b989881c8d154c83feca973b9f63e244d2258bba0711df406010028aa295c2f3",
+    "documents_sha256": "73676a3f6c4cce0ee9504cfedcd736184a309997bb60c6d104e04ed0254469d2",
+    "gate": "design_spec",
+    "plan_sha256": "17077d9ef4928bd928823b785ce7ab46cccc9c5dfdfd24a4a16605d27dab000d",
+    "schema_version": 2,
+    "work_class_sha256": "201d17492a4cefb963a6b8a5a34a68dfbb1017ac43c833a6fd460efa9ffcd387"
+  },
+  "verdict": "changes_requested",
+  "summary": "plan revision6/design version6의 private worktree copy 변경만 검토했습니다. reviewed는 copy-design-input-r6.json 전체 parsed input 및 현재 review-input 결과와 일치합니다. Nested .git 거부, 전체 복사·탐색 제한, manifest 재검사, mode와 rehash 요구, 실패 시 전체 결과 폐기, owned exit 후 cleanup, 민감한 현재 파일의 crash 잔존 한계는 일관됩니다. 다만 원본 Git metadata가 복사 대상 worktree 안의 다른 이름 디렉터리에 있을 때의 거부 규칙이 빠져 있습니다. 이 경로에서는 전체 복사와 raw config 비영속화 요구가 충돌합니다.",
+  "review_boundary": "Darwin root-FD 대안인 checked private worktree copy의 정합성, privacy, failure semantics, 구현 전 필요한 최소 결정. 기존 UI, 전체 PLAN, version policy는 재심사하지 않았습니다.",
+  "open_findings": [
+    {
+      "id": "DESIGN-GIT-R6-01",
+      "severity": "high",
+      "location": {
+        "path": "docs/runs/git-review-observation/design.md",
+        "line": 9
+      },
+      "affected_consumer": "원본 worktree 복사기와 raw Git config 비영속화 경계",
+      "finding": "gitDirectory 또는 commonDirectory가 top-level .git 밖이면서 worktree 안에 있는 경우를 명시적으로 거부해야 합니다.",
+      "evidence": "line9는 top-level .git만 제외하고 나머지 regular files를 복사하도록 요구합니다. 그러나 top-level .git 파일이 'gitdir: .meta'를 가리키면 실제 config는 worktree의 .meta/config에 있습니다. 이 트리는 descendant .git 없이도 성립합니다. 현재 모듈의 apps/desktop-app/src/host/workbench-git.mjs:658-673도 marker와 commondir의 상대 경로를 resolve하며, 이 위치 관계를 거부하지 않습니다. 따라서 명시된 walk 규칙은 raw config를 private worktree에 복사할 수 있습니다. 이는 같은 line9와 lines14,73의 memory/stdin-only 요구에 어긋납니다. 이는 설계 규칙의 충돌이며, 실행으로 재현한 결과는 아닙니다.",
+      "minimal_correction": "Git metadata 위치를 확인한 뒤, worktree 복사를 시작하기 전에 위치 관계를 검사하십시오. 원본 gitDirectory 또는 commonDirectory가 제외된 top-level .git 영역 밖의 복사 대상 subtree와 겹치면 전체 observation을 unsupported_repository로 거부하십시오. 해당 디렉터리만 조용히 생략하지 마십시오. G2에 '.git -> .meta' synthetic fixture를 추가하고, metadata/config가 private worktree에 생성되지 않는지 확인하십시오. 기존 normal/error/cancel/timeout/unproved-exit/crash 재귀 canary 검사에도 이 배치를 포함하십시오."
+    }
+  ],
+  "evidence_limits": [
+    "AGENTS.md, solo_reader, solo-specialist, solo-design-spec-review와 현재 r6 plan/design/contract/input/packet을 읽었습니다.",
+    "Harness status와 review-input을 실행하고 plan/design/packet contract 해시 및 r6 dispatch를 확인했습니다.",
+    "현재 Git 모듈은 metadata 경로 발견 규칙만 읽었습니다. 이동 중인 구현 전체를 승인하지 않았습니다.",
+    "파일·ledger 쓰기, 구현, 재위임, 새 Git·Native·Bun·Electron·provider·UI 실행은 하지 않았습니다.",
+    "G2와 runtime 통과는 판정하지 않았습니다. 제공된 capability probe 결과도 독립 재실행하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11c01-3ca1-7fd0-8911-e969b18726d1",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "attestation": "r6 dispatch의 coordinator-reported assignment metadata이며 runtime identity 증명은 아닙니다."
+  }
+}

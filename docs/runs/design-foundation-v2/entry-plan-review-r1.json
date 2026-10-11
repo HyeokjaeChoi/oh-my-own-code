@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "6f27ac433be6af36d3fddba17d815155a279f1b2e5351186986e2c6f9eb84ecf",
+    "gate": "plan",
+    "plan_sha256": "529e4429777537976f697aef476757969015ed78f8d14b42565d519c524866b8",
+    "schema_version": 2,
+    "source_sha256": "0f42402e9110cd1c420552a38ef5e2f55c27926df0bdbf252fe2ba702be11b12",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "changes_requested",
+  "summary": "entry-plan-packet-r2를 확인하고 entry-plan-input-r2 전체에 판정을 연결했습니다. 동일한 plan revision 1의 initial review입니다. 실제 token source의 reading720/navigation216을 선택값 reading768/navigation256으로 변경한다는 문구와 Composer radius24는 명확합니다. 문서 hash도 일치합니다. 재설계 범위, foundation 우선순위, 이후 full18 자율 진행과 독립 review 구성은 적절합니다. 기존 두 finding은 해결되지 않았습니다. 이 판정은 PLAN만 대상으로 하며 DESIGN_SPEC, 시각 품질 또는 제품 완료 승인이 아닙니다. 파일 변경이나 runtime/build/UI/provider 실행은 하지 않았습니다.",
+  "open_findings": [
+    {
+      "id": "PLAN-01",
+      "severity": "high",
+      "title": "Context finding 수정 전 source 소비를 막는 조건이 없습니다",
+      "evidence": [
+        "docs/runs/design-foundation-v2/plan.md:11은 보고서를 보존하지만 unresolved relevant findings를 implementation으로 넘깁니다.",
+        "docs/runs/design-foundation-v2/plan.md:29는 현재 unchanged Context source를 baseline으로 사용합니다."
+      ],
+      "impact": "보고서 보존만으로는 관련 실제 finding을 수정한 뒤 foundation이 source를 사용한다는 지시를 충족하지 못합니다.",
+      "required_change": "PLAN 및 DESIGN_SPEC pass와 별도로 Context 의존 조건을 명시하세요. 최종 CODE/RENDER 보고서를 보존하고 관련 실제 finding을 분류한 뒤, 수정과 필요한 독립 확인을 완료해야 해당 source를 foundation 구현에 사용할 수 있도록 하세요. 수정으로 입력이 바뀌면 해당 binding을 갱신하세요. 문서 준비는 계속할 수 있으며 추가 사용자 승인은 필요하지 않습니다."
+    },
+    {
+      "id": "PLAN-02",
+      "severity": "medium",
+      "title": "기존 renderer assertion의 실행 조건이 빠져 있습니다",
+      "evidence": [
+        "docs/runs/design-foundation-v2/plan.md:14는 기존 Context/runtime-options runner의 selector 변경을 허용합니다.",
+        "contract.json의 unit check는 해당 두 e2e runner를 실행하지 않으며 hidden check는 새 design-foundation selector만 실행합니다.",
+        "기존 runner는 요청 payload와 Native 보고의 구분, branch, queue, expired 및 unknown/no-replay 동작을 검사합니다."
+      ],
+      "impact": "기존 assertion을 파일에 남겨도 실행하지 않으면 화면 재구성 후 동작 보존을 확인할 수 없습니다.",
+      "required_change": "변경한 기존 runner의 관련 검사를 required check로 등록하거나 새 foundation runner가 실행할 기존 assertion의 대응 목록을 명시하세요. 요청 payload, requested/reported 구분, branch의 별도 전송, queue/cancel 및 unknown/no-replay를 포함하세요. 최종 build를 공유하고 영향받은 검사만 실행하면 됩니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a11f30-eafd-78e0-ae4c-37a8be35ce91"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "verdict": "pass",
+  "summary": "Independent review found no actionable defects in the current revision-22 desktop bootstrap. The main-frame preload guard and srcdoc regression probe address subframe bridge exposure. Prior available review findings and Windows dynamic-import corrections remain resolved in source. This verdict does not complete the desktop milestone.",
+  "open_findings": [],
+  "reviewed": {
+    "contract_sha256": "c0e1cd700cafe06d62137f864c7df7fd42fc9040e7526f706b2cf7b2e180b946",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "code",
+    "plan_sha256": "ca8e5d9ccbe1257758a403cabc15f7e6a38bda65d6e5ff8c1aa44c96be6ba5ce",
+    "schema_version": 2,
+    "source_sha256": "507893e217f56cc24d6162593a456b4636ecee1119d75c22fb669304ab88141c",
+    "verification_sha256": "6417536dd387ff18e19e42d7b3ddee4e2613eac2433741d8892437843fbd9c04"
+  },
+  "provenance": {
+    "child_task_id": "/root/desktop_code_review_r7",
+    "author_task_id": "/root",
+    "model": "gpt-6-astra",
+    "effort": "high"
+  },
+  "method": {
+    "spec_compliance": "Compared implementation and recorded checks with revision-22 plan, current acceptance contract and final-code-review-packet-r7.json.",
+    "code_quality": "Inspected preload, IPC admission and callers, renderer polling, sidecar startup/identity/cleanup, packaging, E2E scenarios, tests and configuration. Rechecked available prior findings and Windows file-URL dynamic imports.",
+    "execution_evidence": "Read current-source ledger receipts for workspace checks, desktop tests, macOS development and packaged E2E, packaging and packaged renderer inspection; matching package and sidecar hashes were recorded.",
+    "files_modified_by_reviewer": false,
+    "tests_executed_by_reviewer": false,
+    "app_executed_by_reviewer": false,
+    "gui_used_by_reviewer": false
+  },
+  "resolved_findings": {
+    "subframe_bridge": "process.isMainFrame guards bridge exposure. The E2E bypasses CSP only for the probe, creates a srcdoc frame, verifies about:srcdoc and confirms desktopBridge is undefined, then removes the frame and restores CSP. Main-process admission independently requires the exact main frame.",
+    "windows_dynamic_imports": "package.mjs and inspect-packaged-bundle.mjs convert resolved module paths with pathToFileURL before dynamic import.",
+    "prior_findings": "Malformed-payload rejection, disconnect visibility and restart recovery, packaged startup/timeout/collision scenarios, artifact binding, setup-failure cleanup, Windows profile redirection, and recovery-path reporting remain in source."
+  },
+  "limits": [
+    "Reviewer did not run tests, build, application or GUI; execution conclusions are limited to coordinator-recorded receipts.",
+    "Windows runtime, packaging and filesystem behavior remain unverified on Windows.",
+    "The srcdoc probe verifies direct subframe bridge absence, not future preview-content isolation.",
+    "No independent visual or accessibility assessment was performed.",
+    "This pass does not establish full product completion, signing, public-release readiness or persistent personal-data behavior."
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "A1",
+      "description": "Closed family routing and default ordering"
+    },
+    {
+      "id": "A2",
+      "description": "Isolated original bodies and truthful report/capture coverage"
+    },
+    {
+      "id": "A3",
+      "description": "Focused hidden runtime, owned exit, independent review"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/scripts/run-evidence.test.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Wrapper routing/refusal/evidence and existing synthetic host regressions",
+      "acceptance_ids": [
+        "A1",
+        "A2"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs",
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Three changed scripts",
+      "acceptance_ids": [
+        "A1",
+        "A2"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs",
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Three changed scripts",
+      "acceptance_ids": [
+        "A1",
+        "A2"
+      ],
+      "required": true
+    },
+    "hidden-extensions": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--script",
+        "ui-states",
+        "--family",
+        "extensions",
+        "--out",
+        "docs/runs/ui-state-families/evidence/extensions-r1"
+      ],
+      "cwd": ".",
+      "scope": "Actual isolated hidden extensions, synthetic main, no provider",
+      "acceptance_ids": [
+        "A2",
+        "A3"
+      ],
+      "required": false
+    },
+    "hidden-workspace-files": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--script",
+        "ui-states",
+        "--family",
+        "workspace-files",
+        "--out",
+        "docs/runs/ui-state-families/evidence/workspace-files-r1"
+      ],
+      "cwd": ".",
+      "scope": "Actual isolated hidden workspace-files, synthetic main, no provider",
+      "acceptance_ids": [
+        "A2",
+        "A3"
+      ],
+      "required": false
+    },
+    "hidden-git-review": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--script",
+        "ui-states",
+        "--family",
+        "git-review",
+        "--out",
+        "docs/runs/ui-state-families/evidence/git-review-r1"
+      ],
+      "cwd": ".",
+      "scope": "Actual isolated hidden git-review, synthetic main, no provider",
+      "acceptance_ids": [
+        "A2",
+        "A3"
+      ],
+      "required": false
+    },
+    "revalidate-extensions": {
+      "argv": [
+        "node",
+        "--input-type=module",
+        "--eval",
+        "import assert from 'node:assert/strict';\nimport {readFile} from 'node:fs/promises';\nimport {createHash} from 'node:crypto';\nimport {resolve,join} from 'node:path';\nimport {validateEvidence} from './apps/desktop-app/scripts/run-evidence.mjs';\nimport {captureProvenance} from './apps/desktop-app/scripts/build-provenance.mjs';\nconst family=process.argv[1], root=process.cwd(), run='docs/runs/ui-state-families';\nconst hash=b=>createHash('sha256').update(b).digest('hex');\nconst old=await readFile(join(run,'pre-correction-runner.mjs'),'utf8');\nconst current=await readFile('apps/desktop-app/scripts/e2e-workbench-states.mjs','utf8');\nassert.equal(current.slice(0,current.indexOf('  const familyTasks = {')),old.slice(0,old.indexOf('  const familyTasks = {')),'shared capture/bootstrap unchanged');\nassert.equal(current.slice(current.indexOf('    extensions: async () => {')),old.slice(old.indexOf('    extensions: async () => {')),'all focused family bodies/report/teardown unchanged');\nconst destination=resolve(run,'evidence',family+'-r1','ui-states');\nconst manifest=JSON.parse(await readFile(join(destination,'manifest.json')));\nassert.equal(manifest.status,'pass'); assert.equal(manifest.exitCode,0); assert.equal(manifest.provenanceVerifiedAfter,true);\nassert.equal(hash(old),manifest.provenance.selectedScriptsAndFixtures.files.find(f=>f.path.endsWith('/e2e-workbench-states.mjs')).sha256);\nconst provenance=await captureProvenance(root,{script:'ui-states',family});\nfor(const key of ['schemaVersion','buildStampPath','buildStampSha256','buildStamp','currentBuildInputs','launchArtifacts']) assert.deepEqual(provenance[key],manifest.provenance[key],key);\nconst changed=new Set(['apps/desktop-app/scripts/run-evidence.mjs','apps/desktop-app/scripts/e2e-workbench-states.mjs']);\nassert.deepEqual(provenance.selectedScriptsAndFixtures.files.filter(f=>!changed.has(f.path)),manifest.provenance.selectedScriptsAndFixtures.files.filter(f=>!changed.has(f.path)));\nconst inventoryBytes=await readFile(join(run,'capture-inventory.json'));\nassert.equal(hash(inventoryBytes),'4ef59f41de8ac35cbf9546228846fa9628afec4ba8271927708cfb3daab97154');\nconst inventory=JSON.parse(inventoryBytes).filter(f=>f.family===family);\nconst evidence=await validateEvidence(destination,'ui-states',family);\nassert.equal(evidence.length-1,inventory.length);\nfor(const item of inventory){const bytes=await readFile(item.path);assert.equal(bytes.length,item.bytes);assert.equal(hash(bytes),item.sha256);assert.ok(evidence.includes(item.path.slice(item.path.indexOf('/ui-states/')+'/ui-states/'.length)));}\nconsole.log(JSON.stringify({family,originalStartedAt:manifest.startedAt,captures:inventory.length,currentParser:'pass',buildBytes:'unchanged',focusedBodies:'unchanged',runtimeReexecuted:false}));",
+        "extensions"
+      ],
+      "cwd": ".",
+      "scope": "Read-only revalidation of original hidden extensions evidence with current parser, exact PNG hashes, unchanged focused bodies/common capture/build/runtime artifacts; not a new Electron execution",
+      "acceptance_ids": [
+        "A2",
+        "A3"
+      ],
+      "required": true
+    },
+    "revalidate-workspace-files": {
+      "argv": [
+        "node",
+        "--input-type=module",
+        "--eval",
+        "import assert from 'node:assert/strict';\nimport {readFile} from 'node:fs/promises';\nimport {createHash} from 'node:crypto';\nimport {resolve,join} from 'node:path';\nimport {validateEvidence} from './apps/desktop-app/scripts/run-evidence.mjs';\nimport {captureProvenance} from './apps/desktop-app/scripts/build-provenance.mjs';\nconst family=process.argv[1], root=process.cwd(), run='docs/runs/ui-state-families';\nconst hash=b=>createHash('sha256').update(b).digest('hex');\nconst old=await readFile(join(run,'pre-correction-runner.mjs'),'utf8');\nconst current=await readFile('apps/desktop-app/scripts/e2e-workbench-states.mjs','utf8');\nassert.equal(current.slice(0,current.indexOf('  const familyTasks = {')),old.slice(0,old.indexOf('  const familyTasks = {')),'shared capture/bootstrap unchanged');\nassert.equal(current.slice(current.indexOf('    extensions: async () => {')),old.slice(old.indexOf('    extensions: async () => {')),'all focused family bodies/report/teardown unchanged');\nconst destination=resolve(run,'evidence',family+'-r1','ui-states');\nconst manifest=JSON.parse(await readFile(join(destination,'manifest.json')));\nassert.equal(manifest.status,'pass'); assert.equal(manifest.exitCode,0); assert.equal(manifest.provenanceVerifiedAfter,true);\nassert.equal(hash(old),manifest.provenance.selectedScriptsAndFixtures.files.find(f=>f.path.endsWith('/e2e-workbench-states.mjs')).sha256);\nconst provenance=await captureProvenance(root,{script:'ui-states',family});\nfor(const key of ['schemaVersion','buildStampPath','buildStampSha256','buildStamp','currentBuildInputs','launchArtifacts']) assert.deepEqual(provenance[key],manifest.provenance[key],key);\nconst changed=new Set(['apps/desktop-app/scripts/run-evidence.mjs','apps/desktop-app/scripts/e2e-workbench-states.mjs']);\nassert.deepEqual(provenance.selectedScriptsAndFixtures.files.filter(f=>!changed.has(f.path)),manifest.provenance.selectedScriptsAndFixtures.files.filter(f=>!changed.has(f.path)));\nconst inventoryBytes=await readFile(join(run,'capture-inventory.json'));\nassert.equal(hash(inventoryBytes),'4ef59f41de8ac35cbf9546228846fa9628afec4ba8271927708cfb3daab97154');\nconst inventory=JSON.parse(inventoryBytes).filter(f=>f.family===family);\nconst evidence=await validateEvidence(destination,'ui-states',family);\nassert.equal(evidence.length-1,inventory.length);\nfor(const item of inventory){const bytes=await readFile(item.path);assert.equal(bytes.length,item.bytes);assert.equal(hash(bytes),item.sha256);assert.ok(evidence.includes(item.path.slice(item.path.indexOf('/ui-states/')+'/ui-states/'.length)));}\nconsole.log(JSON.stringify({family,originalStartedAt:manifest.startedAt,captures:inventory.length,currentParser:'pass',buildBytes:'unchanged',focusedBodies:'unchanged',runtimeReexecuted:false}));",
+        "workspace-files"
+      ],
+      "cwd": ".",
+      "scope": "Read-only revalidation of original hidden workspace-files evidence with current parser, exact PNG hashes, unchanged focused bodies/common capture/build/runtime artifacts; not a new Electron execution",
+      "acceptance_ids": [
+        "A2",
+        "A3"
+      ],
+      "required": true
+    },
+    "revalidate-git-review": {
+      "argv": [
+        "node",
+        "--input-type=module",
+        "--eval",
+        "import assert from 'node:assert/strict';\nimport {readFile} from 'node:fs/promises';\nimport {createHash} from 'node:crypto';\nimport {resolve,join} from 'node:path';\nimport {validateEvidence} from './apps/desktop-app/scripts/run-evidence.mjs';\nimport {captureProvenance} from './apps/desktop-app/scripts/build-provenance.mjs';\nconst family=process.argv[1], root=process.cwd(), run='docs/runs/ui-state-families';\nconst hash=b=>createHash('sha256').update(b).digest('hex');\nconst old=await readFile(join(run,'pre-correction-runner.mjs'),'utf8');\nconst current=await readFile('apps/desktop-app/scripts/e2e-workbench-states.mjs','utf8');\nassert.equal(current.slice(0,current.indexOf('  const familyTasks = {')),old.slice(0,old.indexOf('  const familyTasks = {')),'shared capture/bootstrap unchanged');\nassert.equal(current.slice(current.indexOf('    extensions: async () => {')),old.slice(old.indexOf('    extensions: async () => {')),'all focused family bodies/report/teardown unchanged');\nconst destination=resolve(run,'evidence',family+'-r1','ui-states');\nconst manifest=JSON.parse(await readFile(join(destination,'manifest.json')));\nassert.equal(manifest.status,'pass'); assert.equal(manifest.exitCode,0); assert.equal(manifest.provenanceVerifiedAfter,true);\nassert.equal(hash(old),manifest.provenance.selectedScriptsAndFixtures.files.find(f=>f.path.endsWith('/e2e-workbench-states.mjs')).sha256);\nconst provenance=await captureProvenance(root,{script:'ui-states',family});\nfor(const key of ['schemaVersion','buildStampPath','buildStampSha256','buildStamp','currentBuildInputs','launchArtifacts']) assert.deepEqual(provenance[key],manifest.provenance[key],key);\nconst changed=new Set(['apps/desktop-app/scripts/run-evidence.mjs','apps/desktop-app/scripts/e2e-workbench-states.mjs']);\nassert.deepEqual(provenance.selectedScriptsAndFixtures.files.filter(f=>!changed.has(f.path)),manifest.provenance.selectedScriptsAndFixtures.files.filter(f=>!changed.has(f.path)));\nconst inventoryBytes=await readFile(join(run,'capture-inventory.json'));\nassert.equal(hash(inventoryBytes),'4ef59f41de8ac35cbf9546228846fa9628afec4ba8271927708cfb3daab97154');\nconst inventory=JSON.parse(inventoryBytes).filter(f=>f.family===family);\nconst evidence=await validateEvidence(destination,'ui-states',family);\nassert.equal(evidence.length-1,inventory.length);\nfor(const item of inventory){const bytes=await readFile(item.path);assert.equal(bytes.length,item.bytes);assert.equal(hash(bytes),item.sha256);assert.ok(evidence.includes(item.path.slice(item.path.indexOf('/ui-states/')+'/ui-states/'.length)));}\nconsole.log(JSON.stringify({family,originalStartedAt:manifest.startedAt,captures:inventory.length,currentParser:'pass',buildBytes:'unchanged',focusedBodies:'unchanged',runtimeReexecuted:false}));",
+        "git-review"
+      ],
+      "cwd": ".",
+      "scope": "Read-only revalidation of original hidden git-review evidence with current parser, exact PNG hashes, unchanged focused bodies/common capture/build/runtime artifacts; not a new Electron execution",
+      "acceptance_ids": [
+        "A2",
+        "A3"
+      ],
+      "required": true
+    }
+  },
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "83a5408a985b389f98fa1984b231da0cf538d23ccea6f1186cfc9c37d14f2cef",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "design",
+    "plan_sha256": "851130e852664a1ceb154a16be26d74c0186e36d469e98bca8b3a9dc50f75a27",
+    "schema_version": 2,
+    "source_sha256": "9e48c96ec1a3518302d576a7b00b297191eae35b33016f1c37995d9af05e40e3",
+    "verification_sha256": "b4e0e1597e550ecc283fe27bdd55cb9e57903b0b74de17cddff67e4975fa5f8e"
+  },
+  "verdict": "changes_requested",
+  "summary": "Independent Astra review finds selected-A representative screens and Composer acceptable; two bounded findings remain: missing Menu selected Check/destructive separator, and COLOR alias audit compares absent RGBA channels rather than alias IDs.",
+  "open_findings": [
+    {
+      "id": "F1-menu",
+      "severity": "P2",
+      "figma_node": "85:636",
+      "path": "docs/runs/compact-figma-library/execution/evidence/A-menu-dark.png",
+      "observed": "Selected pin row has background but no 16px Check instance; destructive delete has no preceding separator.",
+      "correction": "Restore actual Check instance in 16px slot and one separator before delete. Preserve32px rows and2px inset focus; capture changed Menu Light/Dark."
+    },
+    {
+      "id": "F2-color-alias-audit",
+      "severity": "P2",
+      "path": "docs/runs/compact-figma-library/execution/next-selected-audit.js",
+      "line": 37,
+      "observed": "COLOR aliases enter RGBA comparison; absent channels default to1 and different alias IDs can pass. No actual wrong alias asserted.",
+      "correction": "Compare VARIABLE_ALIAS type/id first; RGBA tolerance only literal COLOR. Read-only selected A COLOR alias verification."
+    }
+  ],
+  "verified": [
+    "251 frozen hashes and13 final PNG hashes/dimensions match;6representative normal screens directly inspected.",
+    "Compact geometry, Agent full label/icons, permission warning/actions, multiline/state helpers and effective modes acceptable.",
+    "32sets218variants and Light/Dark218instances structurally present; not everyfamily visually inspected."
+  ],
+  "limitations": [
+    "Static Figma draft only; no Production/runtime/IME/accessibility certification.",
+    "COLOR alias target exactness not proven by prior audit."
+  ],
+  "provenance": {
+    "child_task_id": "/root/compact_delivery_repaired_review",
+    "author_task_id": "/root/compact_figma_execution",
+    "coordinator_task_id": "/root"
+  }
+}

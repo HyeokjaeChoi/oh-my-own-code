@@ -1,0 +1,100 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "P1",
+      "description": "Closed immutable project and policy digest intent binding"
+    },
+    {
+      "id": "P2",
+      "description": "Existing journal ordinal progress completion fail closed no replay"
+    },
+    {
+      "id": "P3",
+      "description": "Actual archived old parser closure unsupported version and byte preservation"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/host/workbench-permission-storage.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Existing permission journal marker targets ordinals progress completion and actual old-parser refusal; no runtime activation",
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/host/workbench-permission-storage.mjs",
+        "apps/desktop-app/src/host/workbench-permission-storage.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/storage-journal.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Existing permission journal marker targets ordinals progress completion and actual old-parser refusal; no runtime activation",
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/host/workbench-permission-storage.mjs",
+        "apps/desktop-app/src/host/workbench-permission-storage.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/storage-journal.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Existing permission journal marker targets ordinals progress completion and actual old-parser refusal; no runtime activation",
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/permission-control-journal/design-supplement-r1.md",
+      "gate": "design_spec",
+      "version": "focused-r1",
+      "sha256": "e2b4aa742e4bc4a2ca08db8ae57c5591dc769e1dca87cb798cd14014b01e1323"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

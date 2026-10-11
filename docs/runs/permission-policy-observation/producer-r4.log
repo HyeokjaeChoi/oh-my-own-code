@@ -1,0 +1,20 @@
+✔ permission policy explicit read preserves observed rules without mutations (9.42325ms)
+✔ permission policy read absent never installs baseline (1.765792ms)
+✔ permission policy read present empty never installs baseline (2.011166ms)
+✔ permission policy read invalid rules never installs baseline (2.713709ms)
+✔ permission policy wrong Native identity is rejected without raw data (1.268375ms)
+✔ permission policy SDK error cannot leak secrets or mutate rules (1.172042ms)
+✔ permission policy v2 read and cancellation preserve original read identity (1.810709ms)
+✔ permission policy v2 read deadline does not release a late observation (22.749667ms)
+✔ permission policy mismatched epoch makes zero Native calls (1.322833ms)
+✔ permission policy changed canonical Native location cannot produce rules (1.195417ms)
+✔ permission policy disconnected runtime makes zero Native calls (0.960542ms)
+✔ permission policy runtime disconnect during get retires the observation (0.87925ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 135.952958

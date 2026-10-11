@@ -1,0 +1,39 @@
+✔ managed bootstrap reserves stable UUID before mkdir/create; observations do not append (42.111208ms)
+✔ paused admission flush preserves committed snapshot/lookup and actual call order (36.10575ms)
+✔ paused dispatch flush preserves committed snapshot/lookup and actual call order (34.247167ms)
+✔ paused completion flush preserves committed snapshot/lookup and actual call order (38.733167ms)
+✔ admission failure poisons writer globally and later effects have zero calls (27.011291ms)
+✔ dispatch failure poisons writer globally and later effects have zero calls (34.270875ms)
+✔ completion failure poisons writer globally and later effects have zero calls (30.285291ms)
+✔ BUSY rejection rebase survives concurrent atomic completion; digest conflict never dispatches (40.094666ms)
+✔ verified create with later policy failure publishes unavailable partial mapping and unknown hold (42.579833ms)
+✔ owner_conflict facade remains readable before native ready with zero start/effect calls (4.754041ms)
+✔ corrupt_journal facade remains readable before native ready with zero start/effect calls (4.221667ms)
+✔ unconfirmed_tail facade remains readable before native ready with zero start/effect calls (4.985792ms)
+✔ pending_inbox facade remains readable before native ready with zero start/effect calls (4.866542ms)
+✔ native_startup_unverified facade remains readable before native ready with zero start/effect calls (4.013291ms)
+✔ complete valid but unconfirmed tail never automatically adopts mapping or success at restart (28.999166ms)
+✔ every native.policy.before_selection dispatch flush precedes actual effect and poison retains earlier ambiguity (32.856334ms)
+✔ every native.agent dispatch flush precedes actual effect and poison retains earlier ambiguity (47.356ms)
+✔ every native.model dispatch flush precedes actual effect and poison retains earlier ambiguity (40.277917ms)
+✔ every native.policy.after_selection dispatch flush precedes actual effect and poison retains earlier ambiguity (45.246042ms)
+✔ every native.send dispatch flush precedes actual effect and poison retains earlier ambiguity (55.348667ms)
+✔ late native settlement retains mutation slot and durable original receipt identity (46.133083ms)
+✔ explicit checkpoint reopen uses exact original identity+digest without create; mismatch=false (50.141333ms)
+✔ explicit checkpoint reopen uses exact original identity+digest without create; mismatch=true (55.139417ms)
+✔ retained key bootstrap resolves original epoch through current-envelope lookup without native (68.220584ms)
+✔ session.create completion flush never exposes uncommitted mapping/tombstone (54.739875ms)
+✔ session.remove completion flush never exposes uncommitted mapping/tombstone (55.005ms)
+✔ unavailable shared workspace blocks descendants but permits unrelated registered resource (95.361875ms)
+✔ read invalidation uses touched workspace generation; independent workspace completion preserves slow read (81.533625ms)
+✔ staged managed workspace uses reserved folderSessionId for its first actual session (67.722625ms)
+✔ partial completion bytes after native success remain corrupt evidence; checkpoint recovery never promotes success (42.303958ms)
+✔ native read metadata never mutates committed title, permissions or durable revision (27.356541ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1307.250792

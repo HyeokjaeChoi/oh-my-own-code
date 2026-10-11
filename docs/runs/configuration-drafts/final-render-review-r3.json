@@ -1,0 +1,380 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "8fbdc87a25e3bf12df65cfffa9ca8c136af80e7faea33a524d7810c6ac3d86d8",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "design",
+    "plan_sha256": "2096c596d684f315ef82aeafc9799d47ce152c52b3359a9d81de56d4684d1f41",
+    "schema_version": 2,
+    "source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd",
+    "verification_sha256": "34f545b2e124a703e8e93b132642d30496c8b60a5a35b26bcc503771412bc383",
+    "work_class_sha256": "b2e5a218f0f97cac1bfc406ac6848299534b9e83e5dd34cd7d94795a12e3eac7"
+  },
+  "verdict": "pass",
+  "summary": "plan revision 3와 승인된 design v1 범위의 임시 configuration draft UI를 독립 검토했습니다. 새 draft PNG 5개와 대표 regression PNG 2개를 원본으로 직접 확인했습니다. label, 상태·비교 의미, native 입력 제어, textarea focus 및 좁은 화면의 본문을 읽을 수 있습니다. 저장된 실제 keyboard·retention·wheel·overflow·mutation 결과를 함께 검토했습니다. 이 범위에서 필수 수정 사항은 발견하지 못했습니다. 직접 본 pixels와 DOM assertion의 증거 한계를 아래에 구분했습니다. 전체 F14 또는 Goal 완료 판정은 아닙니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a118d3-8dbd-7590-abd7-8021f87f5fef",
+    "author_task_id": "main-continuation"
+  },
+  "review_context": {
+    "run": "configuration-drafts",
+    "plan_revision": 3,
+    "design_version": 1,
+    "skill": "solo-design-review",
+    "profile": "solo_reader",
+    "mode": "default",
+    "reviewed_at": "2026-10-08T00:07:10.544687+00:00",
+    "repository_root": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "input_path": "docs/runs/configuration-drafts/final-design-input-r3.json",
+    "packet_path": "docs/runs/configuration-drafts/final-design-packet-r3.json",
+    "scope": "F14 temporary user-authored in-window instructions and MCP drafts only",
+    "locale": "ko-KR labels observed",
+    "theme": "light pixels observed",
+    "platform": "darwin arm64",
+    "runtime_origin": "Synthetic main-process fixtures with actual built Electron renderer/preload",
+    "independence": "새 reviewer invocation입니다. 구현이나 runner 수정을 작성하지 않았습니다. 재위임하지 않았습니다. 지정 report만 저장합니다."
+  },
+  "pixel_inspection": [
+    {
+      "path": "docs/runs/configuration-drafts/evidence/hidden-r2/ui-states/desktop-configuration-draft-instructions-synthetic.png",
+      "sha256": "4ec1209eed3bfb6ea4c7a1d24ba3ff693cf8b59c6dcda9a3358140a7eaf18e59",
+      "state": "Configuration draft edit and comparison",
+      "pixel_dimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "content_bounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "display_scale_factor": 2,
+      "zoom_factor": 1,
+      "capture_method": "BrowserWindow.webContents.capturePage().toPNG()",
+      "origin": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution",
+      "original_pixels_directly_inspected": true,
+      "inspection_note": "AGENTS.md 대상과 설정 초안 내용 label이 읽힙니다. textarea의 파란 focus outline이 보입니다. 현재 버전 2는 미검증이며, 내용 변경 후 다시 검증하라는 안내가 보입니다. 메모리 기준과 실제 파일 비교의 구분, 추가 1줄·삭제 1줄 및 diff legend가 보입니다."
+    },
+    {
+      "path": "docs/runs/configuration-drafts/evidence/hidden-r2/ui-states/desktop-configuration-draft-mcp-unsupported-synthetic.png",
+      "sha256": "fe884d0da0a16af93dcfded52fb0d4fcc9af8c47919f74291ea9fffd35ff7fe3",
+      "state": "Configuration draft MCP invalid and supported subset",
+      "pixel_dimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "content_bounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "display_scale_factor": 2,
+      "zoom_factor": 1,
+      "capture_method": "BrowserWindow.webContents.capturePage().toPNG()",
+      "origin": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution",
+      "original_pixels_directly_inspected": true,
+      "inspection_note": "OpenCode MCP 선택, mcp.servers 지원 범위, 기존 구성 미읽기 안내와 unsupported 입력이 보입니다. 실제 pixels의 상태는 현재 버전 1 미검증입니다. 이 PNG에서 지원하지 않는 형식 진단이나 invalid border를 직접 확인했다고 판정하지 않습니다. 실행 보고서와 실행된 runner assertion은 unsupported 판정을 확인합니다."
+    },
+    {
+      "path": "docs/runs/configuration-drafts/evidence/hidden-r2/ui-states/desktop-configuration-draft-mcp-valid-synthetic.png",
+      "sha256": "66036909efb8547f91bb096d18cfd004800f3c1b079019abd5d09c98ddaac52d",
+      "state": "Configuration draft MCP invalid and supported subset",
+      "pixel_dimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "content_bounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "display_scale_factor": 2,
+      "zoom_factor": 1,
+      "capture_method": "BrowserWindow.webContents.capturePage().toPNG()",
+      "origin": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution",
+      "original_pixels_directly_inspected": true,
+      "inspection_note": "현재 버전 2·검증 버전 2·형식 검증 통과가 보입니다. disabled:true 예시, 앱 지원 형식과 Native 수용·서버 연결의 구분이 읽힙니다. 비교는 새 초안 기준이며 실제 파일과 비교하지 않는다고 표시합니다. apply/connect/install 제어는 보이지 않습니다."
+    },
+    {
+      "path": "docs/runs/configuration-drafts/evidence/hidden-r2/ui-states/desktop-configuration-draft-narrow200-synthetic.png",
+      "sha256": "3c2d967bb43a916ca46627ca061f4ee3d17c1dce807952e716ce6a42e8c21896",
+      "state": "Configuration draft narrow200 and bounded comparison",
+      "pixel_dimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "viewport": {
+        "width": 380,
+        "height": 284,
+        "pixelRatio": 4
+      },
+      "content_bounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "display_scale_factor": 2,
+      "zoom_factor": 2,
+      "capture_method": "BrowserWindow.webContents.capturePage().toPNG()",
+      "origin": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution",
+      "original_pixels_directly_inspected": true,
+      "inspection_note": "200%의 좁은 modal에서 diff 본문, 줄 번호, 삭제 기호와 한국어가 읽힙니다. 가로 잘림은 보이지 않습니다. 파일·확장·활동 header, 닫기, 대화로 돌아가기와 세로 scroll 상태를 확인했습니다. 80줄·120줄 생략 표시는 이 pixels에 보이지 않으며 실행 보고서와 assertion으로 확인합니다."
+    },
+    {
+      "path": "docs/runs/configuration-drafts/evidence/hidden-r2/ui-states/desktop-configuration-draft-narrow200-controls-synthetic.png",
+      "sha256": "fbb79704d58c1e14ffde6dd77dd46655a66d9a81e95191f15cc101ef1e3f3bdf",
+      "state": "Configuration draft narrow200 and bounded comparison",
+      "pixel_dimensions": {
+        "width": 1520,
+        "height": 1136
+      },
+      "viewport": {
+        "width": 380,
+        "height": 284,
+        "pixelRatio": 4
+      },
+      "content_bounds": {
+        "x": 274,
+        "y": 181,
+        "width": 760,
+        "height": 568
+      },
+      "display_scale_factor": 2,
+      "zoom_factor": 2,
+      "capture_method": "BrowserWindow.webContents.capturePage().toPNG()",
+      "origin": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution",
+      "original_pixels_directly_inspected": true,
+      "inspection_note": "좁은 modal의 textarea 하단과 파란 focus outline, 수정한 줄 92–99 및 마지막 빈 줄의 caret이 보입니다. 이 frame에서 형식 검증 button이나 검증 상태는 화면 밖입니다. 이 PNG를 검증 button의 focus·전체 action wrap 증거로 사용하지 않습니다."
+    },
+    {
+      "path": "docs/runs/configuration-drafts/evidence/hidden-r2/ui-states/desktop-configuration-normal-synthetic.png",
+      "sha256": "c0459bbee65bf5793a90ed8f1d1338e6dd7ba96f445fb7e0dbd5af8b1ee096b1",
+      "state": "Configuration provenance normal",
+      "pixel_dimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "viewport": {
+        "width": 1440,
+        "height": 928,
+        "pixelRatio": 2
+      },
+      "content_bounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1440,
+        "height": 928
+      },
+      "display_scale_factor": 2,
+      "zoom_factor": 1,
+      "capture_method": "BrowserWindow.webContents.capturePage().toPNG()",
+      "origin": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution",
+      "original_pixels_directly_inspected": true,
+      "inspection_note": "설정 출처와 임시 draft를 경계선 및 별도 제목으로 구분합니다. 파일 발견·적용 여부 미확인과 런타임 적용 상태 미확인 안내가 읽힙니다. 선택된 AGENTS.md 경로, 창 안 유지·창 종료 시 소실, 파일 저장·적용·연결 없음 안내, 초안 종류 및 textarea label이 보입니다."
+    },
+    {
+      "path": "docs/runs/configuration-drafts/evidence/hidden-r2/ui-states/desktop-populated-conversation-normal-1280-synthetic.png",
+      "sha256": "a86211fb3b121b4cad1da86161b2f4163ce7cdb719fd459decb37d1742b4b500",
+      "state": "populated-conversation; normal-1280",
+      "pixel_dimensions": {
+        "width": 2560,
+        "height": 1536
+      },
+      "viewport": {
+        "width": 1280,
+        "height": 768,
+        "pixelRatio": 2
+      },
+      "content_bounds": {
+        "x": 274,
+        "y": 181,
+        "width": 1280,
+        "height": 768
+      },
+      "display_scale_factor": 2,
+      "zoom_factor": 1,
+      "capture_method": "BrowserWindow.webContents.capturePage().toPNG()",
+      "origin": "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution",
+      "original_pixels_directly_inspected": true,
+      "inspection_note": "대표 regression frame의 세션 탐색, conversation, tool 결과, 오류 상태, 입력 영역이 읽힙니다. HTML 형태의 합성 tool 결과는 본문 text로 표시됩니다. 이 frame의 시각 상태만 판단했으며 provider 실행을 뜻하지 않습니다."
+    }
+  ],
+  "render_judgment": {
+    "hierarchy_and_labels": "설정 출처, 설정 초안, 초안 종류, 설정 초안 내용, 형식 검증, 비교 기준 지정, 선택 초안 버리기의 목적이 구분됩니다. 일반 desktop에서 button text가 읽히며 action row가 세로로 나뉩니다. 좁은 화면에서는 textarea와 diff 본문을 직접 확인했습니다.",
+    "baseline_disk_and_effective_state": "instructions frame은 이 창에서 선택한 메모리 기준을 표시합니다. MCP frame은 새 초안 기준을 표시합니다. 둘 다 실제 파일과 비교하지 않음을 명시합니다. configuration-normal은 발견된 파일과 적용 여부 미확인 상태를 별도로 표시합니다. temporary draft를 disk 또는 effective configuration으로 오인하게 만드는 표시를 발견하지 못했습니다.",
+    "validation_scope": "MCP valid frame은 앱이 지원하는 형식의 통과를 표시하고 Native 수용이나 서버 연결을 뜻하지 않는다고 설명합니다. instructions는 텍스트 형식·크기 검사와 정책·실행 안전성의 한계를 표시합니다. instructions 수정 frame에서 기존 pass가 유지되지 않습니다. unsupported frame 자체의 오류 진단 pixels는 확인되지 않았습니다.",
+    "native_controls_and_focus": "원본 pixels에서 native select·textarea·button을 확인했습니다. instructions, unsupported 입력, narrow-controls의 textarea focus outline이 보입니다. source 보조 확인에서 연결된 label, aria-describedby, revision status, native button type 및 shared focus token 사용을 확인했습니다. 실제 Enter validation과 Escape focus 복귀는 저장된 실행 증거입니다. native select popup 또는 OS focus 동작 전체를 직접 검증하지 않았습니다.",
+    "narrow_wrap_and_scroll": "narrow PNG는 실제 1520×1136 pixels이며 CSS viewport는 380×284, zoomFactor=2, displayScaleFactor=2입니다. 한국어 textarea와 diff 본문이 panel 안에 보입니다. 실제 runner는 dialog·comparison의 scrollWidth 범위, 실제 wheel 후 panel scroll 증가, Escape 후 opener focus를 확인했습니다. 두 narrow PNG는 scroll 위치가 다릅니다. 전체 action button row의 좁은 화면 pixels는 보이지 않습니다.",
+    "target_contract": "승인된 desktop32/coarse44 기준을 적용합니다. token의 desktop hit target은 32px이고 draft CSS는 pointer:coarse에서 44px를 사용합니다. 일반 desktop button pixels는 이 방향과 맞습니다. 새 draft controls의 coarse geometry를 별도로 실행·측정했다고 주장하지 않습니다. 모든 desktop control에 44px를 요구하지 않습니다.",
+    "regression_sample": "configuration-normal과 populated-conversation-normal-1280의 현재 pixels에서 관련 hierarchy나 본문 읽기를 막는 시각 결함을 발견하지 못했습니다. 62개 전체 pixels 또는 모든 상태·viewport 조합을 검토했다고 주장하지 않습니다."
+  },
+  "stored_execution_evidence": {
+    "report_path": "docs/runs/configuration-drafts/evidence/hidden-r2/ui-states/ui-states-evidence.json",
+    "manifest_path": "docs/runs/configuration-drafts/evidence/hidden-r2/ui-states/manifest.json",
+    "report_result": "pass",
+    "capture_count": 62,
+    "direct_pixel_review_count": 7,
+    "configuration_draft_states": [
+      {
+        "state": "instructions",
+        "edited": true,
+        "keyboardValidation": true,
+        "editInvalidatesValidation": true,
+        "explicitMemoryBaseline": true,
+        "noDiskComparisonClaim": true
+      },
+      {
+        "state": "mcp",
+        "unsupportedFormat": true,
+        "supportedDisabledSubset": true,
+        "kindIsolation": true,
+        "panelReopenRetains": true,
+        "workspaceSwitchIsolates": true
+      },
+      {
+        "state": "narrow200",
+        "zoomFactor": 2,
+        "horizontalOverflow": false,
+        "diffRows": 80,
+        "omittedRows": 120,
+        "diffSelectable": true,
+        "textareaEnterIsEdit": true,
+        "keyboardValidation": true,
+        "actualWheelScroll": true,
+        "escapeReturnsFocus": true,
+        "mutationAttemptsUnchanged": true
+      }
+    ],
+    "interpretation": "이 reviewer가 새로 실행한 검사가 아닙니다. 기존 실제 report를 읽었고 관련 runner assertion을 source에서 대조했습니다. instructions는 button focus 후 실제 Enter validation, 편집 후 valid status 제거, 명시적 baseline 비교를 확인합니다. MCP는 unsupported status와 disabled supported subset의 valid status, kind 분리, panel 재개 유지, workspace 전환 분리를 확인합니다. narrow200은 80 rows와 120 omitted rows, Range로 text 선택, actual Enter 편집, actual Enter validation, 실제 wheel, Escape 후 opener focus 및 mutation metrics 전체 불변을 확인합니다.",
+    "caret_precondition": "runner가 setSelectionRange(value.length,value.length)로 caret을 먼저 지정했습니다. 이후 실제 keyboard Enter가 정확히 한 newline을 추가했음을 확인합니다. native End navigation은 입증하지 않습니다.",
+    "owned_process_exit": {
+      "exited": true,
+      "code": 0
+    },
+    "runner_exit_code": 0,
+    "wrapper_exit_code": 0,
+    "provenance_verified_after": true,
+    "stderr_empty": true,
+    "no_effect_claim": "mutation metrics unchanged는 합성 host에서의 검사 결과입니다. private configuration, Native activation, provider 또는 network 동작의 실행 증거로 확대하지 않습니다."
+  },
+  "required_checks_review": {
+    "path": "docs/runs/configuration-drafts/actual-checks-r3.json",
+    "results": {
+      "boundaries": {
+        "exit_code": 0,
+        "inputs_changed": false,
+        "timed_out": false,
+        "interrupted": false,
+        "source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd"
+      },
+      "build": {
+        "exit_code": 0,
+        "inputs_changed": false,
+        "timed_out": false,
+        "interrupted": false,
+        "source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd"
+      },
+      "bundle": {
+        "exit_code": 0,
+        "inputs_changed": false,
+        "timed_out": false,
+        "interrupted": false,
+        "source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd"
+      },
+      "format": {
+        "exit_code": 0,
+        "inputs_changed": false,
+        "timed_out": false,
+        "interrupted": false,
+        "source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd"
+      },
+      "hidden-ui": {
+        "exit_code": 0,
+        "inputs_changed": false,
+        "timed_out": false,
+        "interrupted": false,
+        "source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd"
+      },
+      "lint": {
+        "exit_code": 0,
+        "inputs_changed": false,
+        "timed_out": false,
+        "interrupted": false,
+        "source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd"
+      },
+      "renderer": {
+        "exit_code": 0,
+        "inputs_changed": false,
+        "timed_out": false,
+        "interrupted": false,
+        "source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd"
+      },
+      "typecheck": {
+        "exit_code": 0,
+        "inputs_changed": false,
+        "timed_out": false,
+        "interrupted": false,
+        "source_sha256": "aa8d1c0c046c1a3d0baa5c5a2fc276f7e317ebaa5a0b9f12b4ac1f37d9047bdd"
+      }
+    },
+    "interpretation": "8개 required check record는 exit0이며 frozen source에 결합됩니다. build record는 실제 r2 build의 현재 입력·산출물 byte 확인과 재사용입니다. r3에서 새 build·package·Native 실행을 했다는 뜻이 아닙니다. 이 report는 별도 CODE gate를 대체하지 않습니다."
+  },
+  "freshness": {
+    "plan_bytes_hash_matches_input": true,
+    "canonical_contract_hash_matches_exact_input": true,
+    "accepted_design_bytes_hash_matches_packet": true,
+    "all_11_source_freeze_files_hash_and_mode_match": true,
+    "selected_7_pngs_and_2_evidence_json_pins_match": true,
+    "binding_note": "reviewed는 final-design-input-r3.json 객체를 그대로 복사했습니다. prepared packet에 있는 이전 contract hash로 대체하지 않았습니다.",
+    "capture_build_stamp_sha256": "b1fa0220dc7eae3a93b108462729492b0468d025b6860181925d45ad7cbb5256",
+    "capture_build_inputs_sha256": "793a13db7fe8bd3ea6d1112ee12ca96d459fc75a3cb68279e9ae244b62b7cb8a",
+    "capture_selected_runner_and_fixtures_sha256": "df8e4934ba34c2fecf628189cbf67067d61b985eb94e27182a551f73226acb8b",
+    "capture_launch_artifacts_sha256": "bff41a0bbf5442e9d7ba0dfe2036ff8f3a066eb855131b382e5a046348bcae2b",
+    "run_status_observation": "read-only harness status에서 run active, routine 및 initial design-spec accepted 상태를 확인했습니다. 당시 code/render final gate는 미등록 상태였습니다. ledger를 변경하지 않았습니다."
+  },
+  "preserved_failed_attempt": {
+    "report_path": "docs/runs/configuration-drafts/evidence/hidden-r1/ui-states/ui-states-evidence.json",
+    "manifest_path": "docs/runs/configuration-drafts/evidence/hidden-r1/ui-states/manifest.json",
+    "stderr_path": "docs/runs/configuration-drafts/evidence/hidden-r1/ui-states/stderr.log",
+    "result": "fail",
+    "runner_and_wrapper_exit_code": 1,
+    "owned_process_exit": {
+      "exited": true,
+      "code": 0
+    },
+    "capture_count_including_failure": 62,
+    "provenance_verified_after": true,
+    "interpretation": "r1의 leading Enter 및 caret-end 가정 실패는 보존되어 있습니다. plan revision3는 runner의 caret precondition만 수정했다고 명시합니다. 현재 source freeze와 capture의 selected runner hash를 확인했습니다. r1 실패를 제품 수정 성공이나 native End 동작 입증으로 해석하지 않습니다."
+  },
+  "limits": [
+    "지정된 원본 PNG 7개만 직접 inspected했습니다. 나머지 55개의 pixels나 전체 Cartesian matrix를 확인하지 않았습니다.",
+    "mcp-unsupported PNG는 미검증 상태를 보여줍니다. unsupported 판정은 실행 report와 DOM assertion으로 확인했으며 오류 진단·invalid border의 최종 pixels를 확인하지 않았습니다. capture와 DOM 상태 차이의 원인은 확정하지 않았습니다.",
+    "narrow200-controls PNG는 textarea 하단 focus와 빈 줄 caret을 보여줍니다. 검증 button·status·전체 action wrap은 그 PNG에 보이지 않습니다. keyboard validation 동작은 실행 report와 assertion으로 확인했습니다.",
+    "80 displayed rows·120 omitted rows와 diff selectable 결과는 실행 증거입니다. 생략 안내가 지정된 narrow pixels에 보인다고 주장하지 않습니다.",
+    "새 draft controls에 대한 별도 정량 contrast 측정, native select popup, physical touch, OS Screen Reader, OS IME 또는 Windows 동작은 검증하지 않았습니다. 관련 추가 실행을 요구하지 않습니다.",
+    "실제 built renderer/preload와 synthetic main evidence입니다. production Main·Native acceptance·MCP connection·process safety·provider·network·private stores 또는 configuration을 검증하지 않았습니다.",
+    "현재 disk file 읽기·편집·apply/reload는 이 임시 draft 단계에 없습니다. fresh package·performance·unchanged Native startup 검사는 이 review 범위에 없습니다.",
+    "새 tests, apps, Native, provider, network 또는 private config 실행·접근을 하지 않았습니다. source repairs와 ledger writes도 하지 않았습니다."
+  ],
+  "remaining_required_work": "전체 F14의 실제 파일 기반 편집·apply/reload, 나머지 F14 categories, 명시적 MCP lifecycle 및 나머지 F01–18와 Goal은 계속 필요합니다. 이 PASS는 temporary draft stage의 독립 RENDER gate에만 적용합니다."
+}

@@ -1,0 +1,126 @@
+{
+  "schema_version": 2,
+  "run": "durable-workbench-storage",
+  "reviewer": "plan_reviewer",
+  "plan_revision": 5,
+  "reviewed": {
+    "contract_sha256": "4a64e40fe4d4574304ad731d9c485c8625eb87ba633ce4951361d83b9d7fb11e",
+    "gate": "plan",
+    "plan_sha256": "387850d22f6c2ec2d57b4b55c4a330baa91ead86c47cab7cbb2ad0df2cb66aaa",
+    "schema_version": 2,
+    "source_sha256": "be44a6f2c01f67d53d80bb278722b2b39e1864fbbc609247b674167942241989"
+  },
+  "verdict": "pass",
+  "summary": "ENTRY 통과입니다. P7-ENTRY-R4-1의 ESLint config 경로 누락이 수정되었습니다. 현재 argv, cwd, config 파일과 로컬 설치 경로를 확인했습니다. 실제 r4 binding과 비교한 contract 변경은 lint config 지정뿐입니다. Source와 storage-contract v4 hash는 유지되었습니다. 나머지 ENTRY 제약에서 추가 차단 사항이나 회귀를 찾지 못했습니다. 이 판정은 design_spec 승인이나 runtime 검증이 아닙니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "P7-ENTRY-R4-1",
+      "resolution": "필수 lint argv에 --config apps/desktop-app/eslint.config.mjs가 추가되었습니다.",
+      "argv": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src",
+        "apps/desktop-app/scripts"
+      ],
+      "cwd": "."
+    }
+  ],
+  "checks": [
+    {
+      "check": "정확한 현재 review-input binding",
+      "result": "읽기 전용 harness review-input 결과가 execution/plan-review-r5.input.json과 일치합니다. 현재 plan, contract 등록값과 실제 source fingerprint도 확인했습니다. 마지막 확인에서도 binding과 source가 일치했습니다."
+    },
+    {
+      "check": "실제 r4 대비 변경 범위",
+      "result": "현재 contract에서 추가된 lint config 인자 두 개만 제거하면 실제 plan-review-r4.json의 contract_sha256과 일치합니다. 이전 draft는 r4 binding과 달라 비교 기준으로 사용하지 않았습니다."
+    },
+    {
+      "check": "현재 lint 실행 조건",
+      "result": "cwd는 repository root입니다. 두 검사 대상 디렉터리와 명시된 config 파일이 존재합니다. argv는 apps/desktop-app/project.json의 lint 명령과 일치합니다. 설치된 ESLint config loader는 명시된 config 경로를 cwd 기준으로 해석합니다. lint는 실행하지 않았습니다."
+    },
+    {
+      "check": "로컬 설치 경로",
+      "installed_versions": {
+        "eslint": "9.39.1",
+        "@eslint/js": "9.39.1",
+        "@typescript-eslint/parser": "8.50.0",
+        "@typescript-eslint/eslint-plugin": "8.50.0"
+      },
+      "result": "pnpm 실행 파일과 repository-local node_modules/.bin/eslint가 존재합니다. ESLint shim의 로컬 대상 경로를 읽었습니다. config 위치에서 세 import의 설치 경로를 resolve했습니다. config 로드나 lint 성공을 주장하지 않습니다."
+    },
+    {
+      "check": "storage-contract v4",
+      "sha256": "cade7659ec526d3431795ca2b5781f1681502d65f8b7975068ce6844cb839f89",
+      "result": "실제 문서 hash가 현재 contract 등록값과 실제 r4 보고서의 문서 hash에 일치합니다."
+    },
+    {
+      "check": "P6 선행 조건",
+      "result": "P6 run은 complete입니다. 저장된 8개 check는 모두 exit_code 0이고 inputs_changed, timed_out, interrupted는 false입니다. 독립 code와 design 보고서의 pass 및 등록된 파일 hash를 확인했습니다. 과거 검증을 재실행하지 않았습니다."
+    },
+    {
+      "check": "필수 검증 범위",
+      "required_checks": [
+        "storage-unit",
+        "native-storage",
+        "typecheck",
+        "build",
+        "boundaries",
+        "hidden-ui",
+        "package-macos",
+        "package-inspect",
+        "renderer-unit",
+        "lint",
+        "bundle"
+      ],
+      "result": "11개 모두 required입니다. Package 생성과 검사 뒤 exact packaged sidecar hash를 사용하는 isolated probe 순서가 유지됩니다. 실제 hidden renderer 검토는 별도 gate로 유지됩니다."
+    },
+    {
+      "check": "나머지 ENTRY 제약",
+      "result": "전체 로컬 F-01–18 승인과 기존 플랫폼 결정을 유지합니다. 분리된 worker 경로, exported API checkpoint, 단일 host integration writer, DTO 고정 뒤 renderer consumer 순서가 유지됩니다. Safe owner, service-wide flush poison, 단일 completion record, atomic publication, delta rebase와 durable/observation clock 분리도 유지됩니다. Native inbox, owner/store binding, migration cutover의 미검증 조건은 dependent work를 차단합니다. 추가 ENTRY 회귀를 찾지 못했습니다."
+    }
+  ],
+  "review_boundary": {
+    "input_path": "docs/runs/durable-workbench-storage/execution/plan-review-r5.input.json",
+    "prior_review_path": "docs/runs/durable-workbench-storage/plan-review-r4.json",
+    "plan_path": "docs/runs/durable-workbench-storage/plan.md",
+    "plan_revision": 5,
+    "contract_path": "docs/runs/durable-workbench-storage/contract.json",
+    "storage_contract_path": "docs/runs/durable-workbench-storage/storage-contract.md",
+    "storage_contract_version": 4,
+    "mode": "changed_concern_entry_review",
+    "next_dependency": "Main이 이 ENTRY pass를 저장하고 등록합니다. 이후 현재 storage-contract v4의 독립 design_spec 검토와 handoff가 필요합니다. 그 조건을 충족할 때까지 source consumers는 대기합니다.",
+    "limits": "정적 ENTRY 검토입니다. P7 lint, 테스트, build, native 실행, foreground 작업을 수행하지 않았습니다. Packaged runtime, Windows runtime, authenticated provider, power-loss durability와 migration 성공을 검증하지 않았습니다."
+  },
+  "provenance": {
+    "child_task_id": "01a104f6-cf8c-7c73-b403-aca12d223291",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": [
+      "solo-specialist",
+      "solo-plan-review"
+    ],
+    "mode": "report_only",
+    "runtime_identity_attested": false,
+    "runtime_model_effort_attested": false,
+    "sandbox_enforcement_attested": false,
+    "delegated": false,
+    "files_changed": [],
+    "report_written": false,
+    "ledger_changed": false,
+    "tests_run": false,
+    "lint_run": false,
+    "builds_run": false,
+    "native_launches": false,
+    "computer_use_used": false,
+    "foreground_actions": false,
+    "provider_calls": false,
+    "read_only_hashing_performed": true,
+    "binding_verified_twice": true,
+    "persistence_owner": "main"
+  }
+}

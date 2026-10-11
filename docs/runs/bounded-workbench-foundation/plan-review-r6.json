@@ -1,0 +1,56 @@
+{
+  "schema_version": 2,
+  "run": "bounded-workbench-foundation",
+  "reviewer": "plan_reviewer",
+  "reviewed": {
+    "contract_sha256": "5035ea4ccdff1f92bc90e8d4507d388b102310238946b1d67be4508c8e77c1c7",
+    "gate": "plan",
+    "plan_sha256": "71892fb6dd191dddd3c0759e4639d25736aaca1812ca928e4fa6918afed4617c",
+    "schema_version": 2,
+    "source_sha256": "856cdbc8cdb1bb7dc06693857b47d5d90635491b38b6a5664e95210eb9900756"
+  },
+  "verdict": "changes_requested",
+  "summary": "Revision6의 변경 사항을 검토했습니다. CODE-1의 receipt revision 하한과 CODE-2의 diagnostics filter/generation, cancellation, controller polling, READ_BUSY retry 검증 범위는 적절합니다. 기존 wire/design 범위와 background-only 제약은 유지됩니다. Plan, contract, source hash는 입력과 일치합니다. 다만 hidden-ui 계약 명령의 인자가 잘못되어 필수 r3 검증을 실행할 수 없습니다. r3 경로는 아직 없습니다. 이 판정은 plan/contract 검토이며 수정의 정확성이나 최종 code/render gate 통과를 확정하지 않습니다.",
+  "open_findings": [
+    {
+      "id": "PLAN-1",
+      "severity": "P1",
+      "path": "docs/runs/bounded-workbench-foundation/contract.json",
+      "line": 129,
+      "title": "hidden-ui 명령을 새 r3 경로와 --script 인자로 수정하십시오",
+      "evidence": [
+        "checks.hidden-ui.argv에는 --out 뒤에 기존 r2 경로가 있고, 다음 인자에 r3 경로가 있습니다. --script 인자는 없습니다.",
+        "apps/desktop-app/scripts/run-evidence.mjs의 parseArgs는 인자를 옵션과 값의 쌍으로 읽습니다. r3 경로를 옵션으로 읽으면 Usage 오류를 발생시킵니다.",
+        "execution/next-binding-notes.md와 plan revision6은 기존 증거를 보존하고 새 r3 경로를 사용하도록 요구합니다."
+      ],
+      "impact": "필수 hidden-ui check가 native 실행 전에 실패합니다. 따라서 현재 contract로는 A4/A5의 새 capture 증거를 생성하거나 등록할 수 없습니다.",
+      "required_correction": "argv를 [\"node\", \"apps/desktop-app/scripts/run-evidence.mjs\", \"--out\", \"docs/runs/frontend-architecture-redesign/execution/p4-p5-foundation-native-r3\", \"--script\", \"ui-states\"]로 수정하십시오. 기존 r2 증거는 보존하십시오. Coordinator가 변경된 contract를 등록하고 새 exact review input을 준비해야 합니다.",
+      "required_verification": "Native 실행 전에 수정한 argv의 parser 호환성과 정확한 r3 destination admission을 확인하십시오. 새 binding의 변경 사항 검토 후 background-only check를 실행하고, CODE-1/CODE-2 및 unknown/filtered activity 증거에 대해 독립 code/render gate를 유지하십시오."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a1047f-9a4a-7290-a573-4476e1baf950",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "runtime_identity_attested": false,
+    "skills": [
+      "solo-specialist",
+      "solo-plan-review"
+    ],
+    "mode": "report_only",
+    "review_scope": "revision6_changed_concerns",
+    "requested_model": "Sol",
+    "requested_reasoning_effort": "medium",
+    "files_changed": [],
+    "ledger_changed": false,
+    "report_written": false,
+    "tests_run": false,
+    "gui_launches": false,
+    "cua_used": false,
+    "provider_calls": false,
+    "delegated": false,
+    "binding_hashes_verified": true,
+    "persistence_owner": "coordinator"
+  }
+}

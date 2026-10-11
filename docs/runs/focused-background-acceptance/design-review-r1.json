@@ -1,0 +1,204 @@
+{
+  "schema_version": 2,
+  "run": "focused-background-acceptance",
+  "reviewer": "design_qa",
+  "plan_path": "docs/runs/focused-background-acceptance/plan.md",
+  "plan_revision": 6,
+  "reviewed": {
+    "contract_sha256": "07d1d1fdab06bdd6bb8d685c4fd973cb393e330ad6560f4b72931decaabcce02",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "design",
+    "plan_sha256": "fdffb7770b3112e5d0ca7309ec21fb80e2fd27a192a1d2dac5c8e754aac83e04",
+    "schema_version": 2,
+    "source_sha256": "be44a6f2c01f67d53d80bb278722b2b39e1864fbbc609247b674167942241989",
+    "verification_sha256": "a8084481afc7beb7e876db7b0fa4e77566b75f83fada41e49f4c0c9ee9a303fa"
+  },
+  "verdict": "pass",
+  "summary": "현재 구현 PNG 16장을 직접 검토했습니다. 승인된 A Quiet Dock과 P6 범위에서 수정이 필요한 시각적 결함을 발견하지 못했습니다. review input은 검토 시작과 종료 시점의 실제 파일 계산값과 정확히 일치합니다. 이 판정은 저장된 macOS synthetic 구현 캡처에 한정됩니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a104eb-16c9-73b1-9037-7f00c800eb72",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "attestation": "instruction_only",
+    "runtime_identity_attested": false,
+    "sandbox_enforcement_attested": false,
+    "method": "읽기 전용 파일 검토와 현재 PNG 직접 관찰",
+    "files_modified": false,
+    "reports_saved": false,
+    "ledger_mutated": false,
+    "tests_or_builds_executed": false,
+    "native_or_browser_launched": false,
+    "delegation_performed": false
+  },
+  "binding_verification": {
+    "current_review_input_exact_match": true,
+    "routing_file_hashes_match": true,
+    "manifest_inventory_file_hashes_checked": 174,
+    "manifest_inventory_mismatches": [],
+    "current_build_stamp_hash_matches": true,
+    "embedded_build_stamp_matches_current_file": true,
+    "current_relevant_source_sha256": "5d52d7184e641c97c1791a4f57963343a21e5d19481b7132fc91797a6d4d51a6",
+    "launch_artifacts_sha256": "7844ee113d30a37602081aa0ed443febd98e60ad64cdc67dc15b1dfeb2efff8d",
+    "registered_artifact_count": 52,
+    "registered_check_latest_exit_codes": {
+      "boundaries": 0,
+      "build": 0,
+      "bundle": 0,
+      "hidden-ui": 0,
+      "lint": 0,
+      "performance": 0,
+      "typecheck": 0,
+      "unit": 0
+    }
+  },
+  "capture_verification": {
+    "root": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/execution/p6-acceptance-native-r3/ui-states",
+    "manifest_capture_count": 32,
+    "png_headers_checked": 32,
+    "pixel_dimension_mismatches": [],
+    "capture_origin": "현재 built production Electron renderer/preload와 test-only synthetic main process",
+    "capture_methods": [
+      "BrowserWindow.webContents.capturePage().toPNG()",
+      "Tool UI 단일 컴포넌트의 Playwright locator.screenshot()"
+    ],
+    "recorded_before_capture": {
+      "visible": false,
+      "focused": false,
+      "focusable": false
+    },
+    "window_fact_limit": "저장된 캡처 메타데이터와 runner assertion에서 확인했습니다. 이번 검토에서 OS 상태를 직접 실행 관찰하지 않았습니다.",
+    "dimension_groups": [
+      {
+        "viewport_css": [
+          1440,
+          928
+        ],
+        "pixel_ratio": 2,
+        "zoom_factor": 1,
+        "png_pixels": [
+          2880,
+          1856
+        ]
+      },
+      {
+        "viewport_css": [
+          1280,
+          768
+        ],
+        "pixel_ratio": 2,
+        "zoom_factor": 1,
+        "png_pixels": [
+          2560,
+          1536
+        ]
+      },
+      {
+        "viewport_css": [
+          1180,
+          788
+        ],
+        "pixel_ratio": 2,
+        "zoom_factor": 1,
+        "png_pixels": [
+          2360,
+          1576
+        ]
+      },
+      {
+        "viewport_css": [
+          760,
+          568
+        ],
+        "pixel_ratio": 2,
+        "zoom_factor": 1,
+        "png_pixels": [
+          1520,
+          1136
+        ]
+      },
+      {
+        "viewport_css": [
+          640,
+          384
+        ],
+        "pixel_ratio": 4,
+        "zoom_factor": 2,
+        "png_pixels": [
+          2560,
+          1536
+        ]
+      },
+      {
+        "viewport_css": [
+          380,
+          284
+        ],
+        "pixel_ratio": 4,
+        "zoom_factor": 2,
+        "png_pixels": [
+          1520,
+          1136
+        ]
+      },
+      {
+        "capture": "단일 Tool UI 컴포넌트",
+        "png_pixels": [
+          896,
+          208
+        ]
+      }
+    ]
+  },
+  "assessment": [
+    {
+      "topic": "승인된 디자인",
+      "result": "흰 대화 영역, 중립색 navigation, 간결한 toolbar, 절제된 primary action을 확인했습니다. 기존 architecture 문서의 크기와 다른 부분은 이후 승인된 Selected A 기준으로 판단했습니다. 해당 기준은 Composer 120px, input 72px, toolbar 32px, normal pointer controls 32px, permission actions 36px, coarse pointer controls 44px입니다."
+    },
+    {
+      "topic": "unknown 및 실행 상태",
+      "result": "unknown 안내와 보존된 draft가 보입니다. streaming 캡처는 중단 접수와 실제 상태 확인을 구분합니다. disconnected 캡처는 재연결 확인이 재전송을 하지 않는다고 설명합니다. archived 캡처는 복원 안내와 선택 가능한 draft를 표시합니다."
+    },
+    {
+      "topic": "중단 action",
+      "result": "저장된 p6StateFindings는 connected-running-unknown에서 중단 허용과 원래 unknown receipt 보존을 기록합니다. disconnected와 archived에서는 stopDisabled와 mutationAttemptsUnchanged를 기록합니다. 이번 검토에서 버튼을 직접 실행하지 않았습니다."
+    },
+    {
+      "topic": "좁은 화면과 200% zoom",
+      "result": "navigation이 modal sheet로 전환되고, 긴 제목은 생략 표시를 사용합니다. Composer와 toolbar가 화면 안에 유지됩니다. 작은 화면에서는 권한 내용 일부만 보이지만 스크롤 영역이 있습니다. 저장된 실행 증거와 runner는 두 권한의 경로·경고·action에 대한 스크롤 및 양방향 keyboard 접근을 확인합니다. 정지 이미지의 부분 노출을 접근 불가로 판정하지 않았습니다."
+    },
+    {
+      "topic": "focus와 inspector",
+      "result": "draft Composer, navigation opener, modal close의 파란 focus 표시를 직접 확인했습니다. docked inspector는 대화와 분리되고 파일·활동 내용을 읽을 수 있습니다. 모든 control의 focus 상태를 직접 관찰한 것은 아닙니다."
+    },
+    {
+      "topic": "접근성 증거",
+      "result": "computed contrast와 reduced motion 자료를 검토했습니다. 일부 항목은 제외되거나 unverified입니다. streaming 자료는 세 token 갱신 동안 간결한 status가 유지되고 transcript log의 live가 off임을 기록합니다. 이를 OS Screen Reader 출력 검증으로 확대하지 않았습니다."
+    }
+  ],
+  "limits": [
+    "OS Screen Reader, 실제 한국어 IME, physical touch는 검증하지 않았습니다.",
+    "full WCAG 적합성, provider 실행, Windows runtime 준비 상태를 승인하지 않습니다.",
+    "정지 PNG는 motion과 foreground 체감 지연을 증명하지 않습니다.",
+    "8개 check의 기존 결과를 읽었습니다. 이번 검토에서 재실행하지 않았습니다.",
+    "이 design 판정은 code gate, 전체 run 완료, P7 또는 F01-18 완료를 대신하지 않습니다."
+  ],
+  "captures_actually_visually_inspected": [
+    "desktop-unknown-synthetic.png",
+    "desktop-p6-streaming-synthetic.png",
+    "desktop-p6-disconnected-synthetic.png",
+    "desktop-p6-archived-synthetic.png",
+    "desktop-p6-inspector-synthetic.png",
+    "desktop-permission-long-korean-draft-narrow-synthetic.png",
+    "desktop-permission-long-korean-draft-narrow-200-percent-synthetic.png",
+    "desktop-permission-long-korean-draft-normal-200-percent-synthetic.png",
+    "desktop-long-korean-titles-narrow-200-percent-navigation-synthetic.png",
+    "desktop-long-korean-titles-normal-200-percent-navigation-synthetic.png",
+    "desktop-long-korean-titles-narrow-200-percent-synthetic.png",
+    "desktop-long-korean-titles-normal-1180-synthetic.png",
+    "desktop-empty-conversation-normal-1280-synthetic.png",
+    "desktop-empty-conversation-narrow-200-percent-synthetic.png",
+    "desktop-populated-conversation-narrow-200-percent-synthetic.png",
+    "desktop-activity-filtered-synthetic.png"
+  ]
+}

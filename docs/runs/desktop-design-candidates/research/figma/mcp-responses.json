@@ -1,0 +1,104 @@
+{
+  "inventory": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"fileKey\":\"e6QYqEsmA3FHB6A2ohNr2o\",\"pages\":[{\"id\":\"0:1\",\"name\":\"Cover\"},{\"id\":\"5:2\",\"name\":\"Getting Started\"},{\"id\":\"5:3\",\"name\":\"Foundations\"},{\"id\":\"5:4\",\"name\":\"—— Components ——\"},{\"id\":\"5:5\",\"name\":\"Button\"},{\"id\":\"5:6\",\"name\":\"Input\"},{\"id\":\"5:7\",\"name\":\"StatusBadge\"},{\"id\":\"5:8\",\"name\":\"NavigationItem\"},{\"id\":\"5:9\",\"name\":\"ToolCall\"},{\"id\":\"5:10\",\"name\":\"PermissionRequest\"},{\"id\":\"5:11\",\"name\":\"—— Utilities ——\"},{\"id\":\"5:12\",\"name\":\"Utilities\"}],\"collections\":[{\"name\":\"Primitives\",\"count\":61,\"modes\":[\"Value\"]},{\"name\":\"Semantic\",\"count\":65,\"modes\":[\"Light\",\"Dark\"]},{\"name\":\"Component\",\"count\":37,\"modes\":[\"Light\",\"Dark\"]}]}"
+      }
+    ],
+    "isError": false
+  },
+  "search": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"warning\":\"Batch was clamped from 3 to 1 queries by the current server limit. 2 queries were not processed.\",\"results\":[{\"entity\":\"component\",\"query\":\"Input\",\"components\":[]}]}"
+      }
+    ],
+    "isError": false
+  },
+  "pages": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[{\"id\":\"7:7\",\"name\":\"Input\",\"width\":1008,\"height\":426},{\"id\":\"7:2\",\"name\":\"State=default\",\"width\":280,\"height\":70},{\"id\":\"7:3\",\"name\":\"State=hover\",\"width\":280,\"height\":70},{\"id\":\"7:4\",\"name\":\"State=focus\",\"width\":280,\"height\":70},{\"id\":\"7:5\",\"name\":\"State=disabled\",\"width\":280,\"height\":70},{\"id\":\"7:6\",\"name\":\"State=error\",\"width\":280,\"height\":98}]"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[{\"id\":\"7:110\",\"name\":\"NavigationItem\",\"width\":828,\"height\":264},{\"id\":\"7:106\",\"name\":\"State=default\",\"width\":220,\"height\":40},{\"id\":\"7:107\",\"name\":\"State=hover\",\"width\":220,\"height\":40},{\"id\":\"7:108\",\"name\":\"State=selected\",\"width\":220,\"height\":40},{\"id\":\"7:109\",\"name\":\"State=focus\",\"width\":220,\"height\":40}]"
+          }
+        ],
+        "isError": false
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type InputProps = {\n  className?: string;\n  label?: string;\n  state?: \"default\";\n  value?: string;\n};\n\nfunction Input({ className, label = \"경로\", state = \"default\", value = \"src/workbench/session.ts\" }: InputProps) {\n  return (\n    <div className={className || \"content-stretch flex flex-col gap-[var(--omoc-semantic-space-control-gap,8px)] items-start relative w-[280px]\"} data-node-id=\"7:2\">\n      <p className=\"[word-break:break-word] font-[family-name:var(--omoc-semantic-type-family-label,'Noto_Sans_KR:Medium')] font-[var(--omoc-semantic-type-weight-label,500)] leading-[var(--omoc-semantic-type-line-label,22px)] relative shrink-0 text-[color:var(--omoc-semantic-color-text-primary,#171717)] text-[length:var(--omoc-semantic-type-size-label,16px)] whitespace-nowrap\" data-node-id=\"7:8\">\n        {label}\n      </p>\n      <div className=\"bg-[var(--omoc-component-color-input-background,white)] border border-[var(--omoc-component-color-input-border,#767676)] border-solid content-stretch flex gap-[var(--omoc-semantic-space-control-gap,8px)] h-[40px] items-center overflow-clip px-[var(--omoc-semantic-space-card-gap,12px)] relative rounded-[var(--omoc-component-size-control-radius,12px)] shrink-0 w-[280px]\" data-node-id=\"7:9\" data-name=\"Field\">\n        <p className=\"[word-break:break-word] font-[family-name:var(--omoc-semantic-type-family-body,'Noto_Sans_KR:Regular')] font-[var(--omoc-semantic-type-weight-body,400)] leading-[var(--omoc-semantic-type-line-body,24px)] relative shrink-0 text-[color:var(--omoc-component-color-input-foreground,#171717)] text-[length:var(--omoc-semantic-type-size-body,16px)] w-[250px]\" data-node-id=\"7:10\">\n          {value}\n        </p>\n      </div>\n    </div>\n  );\n}"
+          },
+          {
+            "type": "text",
+            "text": "SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.\n1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens\n2. Convert React syntax to the target framework/library\n3. Transform all Tailwind classes to the target styling system while preserving exact visual design\n4. Follow the project's existing patterns and conventions\nDO NOT install any Tailwind as a dependency unless the user instructs you to do so.\n"
+          },
+          {
+            "type": "text",
+            "text": "Node ids have been added to the code as data attributes, e.g. `data-node-id=\"1:2\"`."
+          },
+          {
+            "type": "text",
+            "text": "These styles are contained in the design: Type/Label: Font(family: \"var(--omoc-semantic-type-family-label)\", style: Medium, size: var(--omoc-semantic-type-size-label), weight: var(--omoc-semantic-type-weight-label), lineHeight: var(--omoc-semantic-type-line-label), letterSpacing: 0), Type/Body: Font(family: \"var(--omoc-semantic-type-family-body)\", style: Regular, size: var(--omoc-semantic-type-size-body), weight: var(--omoc-semantic-type-weight-body), lineHeight: var(--omoc-semantic-type-line-body), letterSpacing: 0)."
+          },
+          {
+            "type": "text",
+            "text": "Component descriptions: The following components have usage descriptions or documentation links defined in Figma. These descriptions provide important context about the intended usage, best practices, and any constraints for each component. Follow these guidelines when implementing or using these components.\n\n## State=default\n**Node ID:** 7:2\n\nVisible label, optional hint, error text; long paths selectable and horizontally scrollable. Error includes text tied by description; disabled uses native disabled semantics; focus is focus-visible. Error + focus-visible compose: retain error text, aria-invalid, and error stroke while adding a separate outer focus ring with a 2 px gap; do not replace the error cue with focus color.\n\n## Input\n**Node ID:** 7:7\n\nInput states with a visible label, 40px control, and at most one contextual feedback message. Error replaces help. The focus ring is an outside overlay and preserves error semantics without shifting layout."
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "type NavigationItemProps = {\n  className?: string;\n  label?: string;\n  state?: \"default\";\n};\n\nfunction NavigationItem({ className, label = \"작업\", state = \"default\" }: NavigationItemProps) {\n  return (\n    <div className={className || \"bg-[var(--omoc-component-color-navigation-background,#fafafa)] content-stretch flex gap-[var(--omoc-semantic-space-control-gap,8px)] h-[var(--omoc-component-size-navigation-height,40px)] items-center px-[var(--omoc-semantic-space-card-gap,12px)] relative rounded-[var(--omoc-semantic-radius-control,12px)] w-[220px]\"} data-node-id=\"7:106\">\n      <p className=\"[word-break:break-word] font-[family-name:var(--omoc-semantic-type-family-label,'Noto_Sans_KR:Medium')] font-[var(--omoc-semantic-type-weight-label,500)] leading-[var(--omoc-semantic-type-line-label,22px)] relative shrink-0 text-[color:var(--omoc-component-color-navigation-foreground,#555)] text-[length:var(--omoc-semantic-type-size-label,16px)] whitespace-nowrap\" data-node-id=\"7:111\">\n        {label}\n      </p>\n    </div>\n  );\n}"
+          },
+          {
+            "type": "text",
+            "text": "SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.\n1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens\n2. Convert React syntax to the target framework/library\n3. Transform all Tailwind classes to the target styling system while preserving exact visual design\n4. Follow the project's existing patterns and conventions\nDO NOT install any Tailwind as a dependency unless the user instructs you to do so.\n"
+          },
+          {
+            "type": "text",
+            "text": "Node ids have been added to the code as data attributes, e.g. `data-node-id=\"1:2\"`."
+          },
+          {
+            "type": "text",
+            "text": "These styles are contained in the design: Type/Label: Font(family: \"var(--omoc-semantic-type-family-label)\", style: Medium, size: var(--omoc-semantic-type-size-label), weight: var(--omoc-semantic-type-weight-label), lineHeight: var(--omoc-semantic-type-line-label), letterSpacing: 0)."
+          },
+          {
+            "type": "text",
+            "text": "Component descriptions: The following components have usage descriptions or documentation links defined in Figma. These descriptions provide important context about the intended usage, best practices, and any constraints for each component. Follow these guidelines when implementing or using these components.\n\n## State=default\n**Node ID:** 7:106\n\n40px full-width row, 12px start inset, start aligned. Default and hover use 500 label weight; selected uses 700. Focus preserves the underlying fill and label weight and does not affect layout.\n\n## NavigationItem\n**Node ID:** 7:110\n\nNavigationItem: 40px start-aligned row, 12px inset, 500 default/hover label and 700 selected label. Dark parent/default uses surface, hover canvas, selected surface.subtle. Focus overlays the underlying state without changing layout; current destination uses aria-current."
+          }
+        ],
+        "isError": false
+      }
+    }
+  ]
+}

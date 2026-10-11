@@ -1,0 +1,314 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "8f0e1cca9153db6a9006a83629b5810657689724580cd72eeabf572186c413da",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "code",
+    "plan_sha256": "211e3aafa641a5cf938212beb7c205e502868ea7a5a131ecea719bee361fcf66",
+    "schema_version": 2,
+    "source_sha256": "52490cfb1316635ca655ec880a41e4932c47952c168996ca4fb0246bc1574a1d",
+    "verification_sha256": "908abed25275f8785b0f538d80a3abbb603b829ee02e7ea3022b1d3d42b68b5f",
+    "work_class_sha256": "c76116575ea4a2ed832c572e9eaa0f98837cd8b1b7c2ff1a6e3328f4ef67005d"
+  },
+  "verdict": "pass",
+  "summary": "r4의 첫 읽기 전용 configuration provenance 기능을 독립적으로 검토했습니다. 지정된 13개 파일의 관련 코드와 호출자, 보안 사례, 저장된 검사 증거에서 수정이 필요한 구체적 결함을 발견하지 못했습니다. 현재 소스와 review binding이 일치하며, 저장된 9개 검사는 모두 해당 r4 입력에 연결됩니다. 이 code verdict의 범위는 첫 F14 기능입니다. 전체 F14 완료와 별도 rendered-implementation 승인은 다음 작업으로 남습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a118bf-255c-7753-a3cc-9b5e1b916916",
+    "child_id_source": "CODEX_THREAD_ID",
+    "author_task_id": "main-continuation",
+    "role": "reviewer",
+    "profile_read": ".codex/agents/solo_reader.toml",
+    "skill": "solo-code-review",
+    "mode": "default",
+    "fresh_independent_invocation": true,
+    "implementation_authored": false,
+    "repairs_authored": false,
+    "independence_check": "현재 child ID는 run의 implementation dispatch ID와 다릅니다. Main이 host/types/tests/scripts를 구현했고, renderer worker의 소유 범위는 explorer의 두 파일입니다. 검토자는 이 코드를 수정하지 않았습니다.",
+    "report_write_authority": "사용자가 final-code-review-r4.json 한 파일의 작성을 명시적으로 허용했습니다.",
+    "files_changed": [
+      "docs/runs/configuration-provenance/final-code-review-r4.json"
+    ],
+    "tests_executed": false,
+    "app_build_native_provider_private_network_actions_performed": false,
+    "recursive_delegation_performed": false,
+    "ledger_modified": false,
+    "runtime_model_and_effort": "관측하지 않았습니다. profile이나 packet에서 추정하지 않았습니다.",
+    "recorded_at": "2026-10-07T23:45:45.678064+00:00"
+  },
+  "review_scope": {
+    "input_packet": "docs/runs/configuration-provenance/final-code-packet-r4.json",
+    "input_binding": "docs/runs/configuration-provenance/final-code-input-r4.json",
+    "plan_revision": "4",
+    "work_class": "routine",
+    "accepted_design_version": "2",
+    "current_contract": "docs/runs/configuration-provenance/contract.json",
+    "current_outcome": "docs/runs/configuration-provenance/outcome-r4.json",
+    "source_freeze": "docs/runs/configuration-provenance/source-freeze-r4.json",
+    "source_sha256": "52490cfb1316635ca655ec880a41e4932c47952c168996ca4fb0246bc1574a1d",
+    "changed_paths": [
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+      "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+      "apps/desktop-app/scripts/run-evidence.mjs",
+      "apps/desktop-app/scripts/run-evidence.test.mjs",
+      "apps/desktop-app/src/desktop-bridge.d.ts",
+      "apps/desktop-app/src/host/workbench-configuration.mjs",
+      "apps/desktop-app/src/host/workbench-configuration.test.mjs",
+      "apps/desktop-app/src/renderer/widgets/explorer/explorer.module.css",
+      "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+      "apps/desktop-app/src/workbench-service.mjs",
+      "apps/desktop-app/src/workbench-service.test.mjs",
+      "apps/desktop-app/src/workbench-store.test.mjs"
+    ],
+    "source_review_method": "13개 지정 파일의 변경 기능을 중심으로 현재 소스를 직접 읽었습니다. 필요한 기존 service/admission/store/controller 소비자도 읽었습니다. 저장소에는 Git commit이 없고 Git diff는 비어 있습니다. 따라서 base-to-head diff 검토로 표시하지 않습니다. baseline과 freeze의 경로 및 해시, 현재 파일의 해시를 사용했습니다. 이전 전체 parent audit는 반복하지 않았습니다.",
+    "passes": [
+      "spec compliance",
+      "code quality"
+    ],
+    "render_gate": "별도 독립 rendered-implementation verdict가 필요합니다. 이 보고서는 code gate만 판정합니다."
+  },
+  "spec_compliance": [
+    {
+      "acceptance_id": "C1",
+      "assessment": "충족하는 코드와 저장된 증거를 확인했습니다.",
+      "evidence": [
+        "apps/desktop-app/src/host/workbench-configuration.mjs:6",
+        "apps/desktop-app/src/workbench-service.mjs:1241",
+        "apps/desktop-app/src/desktop-bridge.d.ts:95",
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx"
+      ],
+      "reason": "고정된 8개 marker만 생성합니다. 최대 40개 DTO 요구 범위 안에 있습니다. discovered 상태와 runtime 보고 상태를 구분하며 문서 적용 여부를 추정하지 않습니다. 경로 길이와 control 문자를 제한합니다."
+    },
+    {
+      "acceptance_id": "C2",
+      "assessment": "충족하는 코드와 저장된 증거를 확인했습니다.",
+      "evidence": [
+        "apps/desktop-app/src/host/workbench-configuration.mjs:37",
+        "apps/desktop-app/src/workbench-service.mjs:1241",
+        "apps/desktop-app/src/workbench-service.test.mjs:192"
+      ],
+      "reason": "Skill path는 own data descriptor만 복사합니다. content/env/options를 복사하지 않고 accessor를 호출하지 않습니다. 기존 Skill 300개 한도를 유지합니다. untrusted workspace는 inert metadata만 반환하고 SDK catalog discovery를 호출하지 않습니다. config.get 호출과 새 SDK method가 없습니다. runtimeStatus는 not_reported입니다."
+    },
+    {
+      "acceptance_id": "C3",
+      "assessment": "충족하는 코드와 저장된 증거를 확인했습니다.",
+      "evidence": [
+        "apps/desktop-app/src/host/workbench-configuration.mjs:55",
+        "apps/desktop-app/src/host/workbench-configuration.test.mjs",
+        "apps/desktop-app/scripts/run-evidence.mjs:23",
+        "apps/desktop-app/scripts/run-evidence.test.mjs:378"
+      ],
+      "reason": "lstat로 root와 marker의 중간 경로를 확인합니다. canonical root와 dev/ino를 전후에 확인합니다. caller check가 deadline/shutdown 오류를 전달합니다. symlink/잘못된 형식/root 교체는 available로 표시하지 않습니다. 파일 내용 읽기, 재귀 탐색, 일반 filesystem editor, 활성화 동작을 추가하지 않았습니다. wrapper는 새 등록 evidence root 안의 비어 있는 nonsymlink 목적지만 독점 생성합니다."
+    },
+    {
+      "acceptance_id": "C4",
+      "assessment": "기존 상태 소유와 관련 코드 및 저장된 증거를 확인했습니다.",
+      "evidence": [
+        "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts:121",
+        "apps/desktop-app/src/renderer/entities/workbench/model/store.ts:720",
+        "apps/desktop-app/src/workbench-store.test.mjs:2958",
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs:2304",
+        "apps/desktop-app/src/renderer/widgets/explorer/explorer.module.css"
+      ],
+      "reason": "optional catalog DTO를 기존 window store/controller로 전달합니다. epoch, selection generation, catalog generation, trustRevision 검사가 늦은 응답을 거절합니다. 기존 stale test는 실제 configuration path를 포함합니다. source panel은 native refresh button, 선택 가능한 전체 경로, 경로 줄바꿈을 사용합니다. MCP 상태는 runtime observation으로 표시합니다. 저장된 hidden 증거에 keyboard refresh와 narrow 200% scroll/focus 결과가 있습니다."
+    },
+    {
+      "acceptance_id": "C5",
+      "assessment": "code gate의 범위에서 저장된 9개 current check와 증거 연결을 확인했습니다.",
+      "evidence": [
+        "docs/runs/configuration-provenance/actual-checks-r4.json",
+        "docs/runs/configuration-provenance/verification-summary-r4.json",
+        "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/manifest.json"
+      ],
+      "reason": "9개 결과는 계약 argv와 현재 plan/contract/source/environment 해시가 일치하고 exit_code 0이며 inputs_changed/interrupted/timed_out이 false입니다. 별도 rendered-implementation 승인 및 Main의 등록과 통합은 계속 필요합니다."
+    }
+  ],
+  "code_quality_review": [
+    {
+      "paths": [
+        "apps/desktop-app/src/host/workbench-configuration.mjs",
+        "apps/desktop-app/src/host/workbench-configuration.test.mjs"
+      ],
+      "inspected": "고정 marker 목록, metadataPath, lexical scope, Skill descriptor, lstat/realpath, caller check, root dev/ino 전후 비교를 읽었습니다. actual synthetic file, linked root/marker/intermediate directory, root 교체, deadline, missing/malformed root, secret canary, getter 회피, prefix escape/URL/control/oversize 사례를 확인했습니다."
+    },
+    {
+      "paths": [
+        "apps/desktop-app/src/workbench-service.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs",
+        "apps/desktop-app/src/desktop-bridge.d.ts"
+      ],
+      "inspected": "catalog 호출자, trust/recheck, SDK call admission, bounded simple projection, model map, direct catalog.list와 send/command 경로를 읽었습니다. direct catalog.list만 provenance=true를 사용합니다. send/command는 기본 false를 사용합니다. v2 read의 config.get canary와 untrusted zero-SDK 사례를 확인했습니다. DTO의 추가 필드는 optional이며 새로운 envelope/snapshot 요청 종류를 추가하지 않았습니다."
+    },
+    {
+      "paths": [
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+        "apps/desktop-app/src/renderer/widgets/explorer/explorer.module.css",
+        "apps/desktop-app/src/workbench-store.test.mjs"
+      ],
+      "inspected": "configuration 상태와 reason, 누락 metadata, Skill source/path/scope, MCP labels, selectable path, native refresh, wrapping/focus CSS를 읽었습니다. 기존 store/controller의 identity 검사를 읽고 실제 path가 포함된 stale response test를 확인했습니다."
+    },
+    {
+      "paths": [
+        "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs"
+      ],
+      "inspected": "다섯 configuration fixture 상태, untrusted unavailable groups, fixed synthetic inputs와 거절 사례를 읽었습니다. ElectronApplication.evaluate의 첫 Electron namespace 인수와 두 번째 state 인수를 확인했습니다. 신규 6개 capture, keyboard refresh, narrow scroll/selectability, mutation counters, exact owned exit 처리와 저장된 51개 기존 matrix 보존을 확인했습니다. 기존 전체 UI matrix를 새로 실행하거나 다시 전체 검토하지 않았습니다."
+    },
+    {
+      "paths": [
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs"
+      ],
+      "inspected": "새 configuration-provenance/evidence root 등록과 기존 containment/component lstat/fresh destination/exclusive claim/provenance 전후 비교/exit propagation을 읽었습니다. registered root 밖의 경로, 중복 생성, retained evidence 보존, symlink 거절 사례를 확인했습니다."
+    }
+  ],
+  "binding_validation": {
+    "method": "읽기 전용 JSON/파일 SHA-256 비교를 수행했습니다. harness, 테스트, 앱, 빌드 또는 Native 명령을 실행하지 않았습니다.",
+    "current_source_fingerprint_matches_input": true,
+    "all_13_frozen_file_hashes_match_current": true,
+    "plan_file_sha256_matches": true,
+    "contract_file_and_review_semantic_sha256_match": true,
+    "environment_sha256_matches": true,
+    "work_class_sha256_matches": true,
+    "verification_sha256_matches_current_saved_checks_artifacts_outcome": true,
+    "outcome_file_sha256_matches": true,
+    "routing_input_hashes_match": true,
+    "accepted_design_file_sha256_matches": true,
+    "saved_checks_match_latest_run_records": true,
+    "saved_check_argv_match_contract": true,
+    "verification_summary_pins_verified": 59,
+    "unchanged_baseline_boundaries": [
+      "apps/desktop-app/src/workbench-contract.mjs",
+      "apps/desktop-app/src/renderer-admission.mjs",
+      "apps/desktop-app/src/host/workbench-admission.mjs",
+      "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+      "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+      "apps/desktop-app/src/host/native-preflight.mjs",
+      "apps/desktop-app/src/main.mjs",
+      "apps/desktop-app/package.json",
+      "package.json",
+      "pnpm-lock.yaml"
+    ],
+    "boundary_statement": "위 paths의 baseline/current hash가 일치합니다. changed DTO와 service 코드를 함께 검토한 범위에서 factory/request envelope/snapshot/engine dependency와 Native policy의 새 shape나 effect method를 추가한 증거가 없습니다."
+  },
+  "verification_evidence": {
+    "execution_owner": "Main의 저장된 실행 결과를 검토했습니다. 이 reviewer는 재실행하지 않았습니다.",
+    "checks": [
+      {
+        "name": "boundaries",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "timed_out": false,
+        "recorded_at": "2026-10-07T23:38:22+00:00"
+      },
+      {
+        "name": "build",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "timed_out": false,
+        "recorded_at": "2026-10-07T23:39:14+00:00"
+      },
+      {
+        "name": "bundle",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "timed_out": false,
+        "recorded_at": "2026-10-07T23:39:15+00:00"
+      },
+      {
+        "name": "format",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "timed_out": false,
+        "recorded_at": "2026-10-07T23:38:21+00:00"
+      },
+      {
+        "name": "hidden-ui",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "timed_out": false,
+        "recorded_at": "2026-10-07T23:40:34+00:00"
+      },
+      {
+        "name": "host",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "timed_out": false,
+        "recorded_at": "2026-10-07T23:38:13+00:00"
+      },
+      {
+        "name": "lint",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "timed_out": false,
+        "recorded_at": "2026-10-07T23:38:20+00:00"
+      },
+      {
+        "name": "renderer",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "timed_out": false,
+        "recorded_at": "2026-10-07T23:38:15+00:00"
+      },
+      {
+        "name": "typecheck",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "timed_out": false,
+        "recorded_at": "2026-10-07T23:38:18+00:00"
+      }
+    ],
+    "stdout_limit": "host/renderer/hidden-ui의 저장된 stdout 일부는 잘려 있습니다. 전체 test 개수를 추정하지 않았습니다. exit 결과와 binding, 관련 실제 test source, 별도 manifest/report를 확인했습니다.",
+    "hidden_r2": {
+      "report": "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/ui-states-evidence.json",
+      "manifest": "docs/runs/configuration-provenance/evidence/hidden-r2/ui-states/manifest.json",
+      "result": "pass",
+      "captures": 57,
+      "original_matrix_captures_preserved": 51,
+      "new_configuration_captures": 6,
+      "exact_owned_exit": {
+        "exited": true,
+        "code": 0
+      },
+      "wrapper_exit_code": 0,
+      "provenance_verified_before_after": true,
+      "current_selected_scripts_fixture_hashes_match_manifest": true,
+      "current_build_inputs_launch_artifacts_and_build_stamp_match_manifest": true,
+      "scope": "synthetic host와 실제 built renderer/preload의 저장된 결과입니다. production Main이나 Native initialization 검증이 아닙니다."
+    },
+    "hidden_r1": {
+      "result": "fail",
+      "captures": 52,
+      "original_matrix_captures": 51,
+      "failure_capture": 1,
+      "exact_owned_exit": {
+        "exited": true,
+        "code": 0
+      },
+      "wrapper_exit_code": 1,
+      "provenance_verified_before_after": true,
+      "failure": "ElectronApplication.evaluate가 Electron namespace를 fixture state로 전달하여 Unknown closed configuration fixture state 오류가 났습니다. 현재 callback은 (_electron, state)를 사용합니다. r1 실패 보고서와 manifest가 보존되어 있습니다."
+    }
+  },
+  "limits": [
+    "이 판정은 첫 F14 읽기 전용 increment만 다룹니다. editing/validation/diff/apply/reload, MCP lifecycle actions, 설치 및 unsupported-format conversion은 후속 작업입니다. 전체 F14 또는 F01–18 완료를 주장하지 않습니다.",
+    "Native initialization은 의도적으로 검증하지 않았습니다. 런타임 configuration 문서/디렉터리/count는 not_reported입니다. 파일 발견, lexical scope, Skill/MCP 보고는 실제 적용이나 실행 안전성의 증명이 아닙니다.",
+    "App mock의 zero-action/unchanged mutation counter는 검사한 명시적 App 호출 범위의 증거입니다. 모든 Native 내부 effect가 없다는 보장이 아닙니다.",
+    "Stable known root의 lstat/realpath/dev/ino 검사는 검토했습니다. lexical scope는 symlink 대상의 실제 Native/global 소유를 증명하지 않으며, 모든 외부 filesystem race 저항성을 주장하지 않습니다.",
+    "현재 검토에서 tests/app/build/Native/private/provider/network actions를 수행하지 않았습니다. 새 performance 측정, package 검증 또는 Native configuration invocation 결과가 없습니다.",
+    "Windows, production Main, 실제 provider/private data, OS IME, Screen Reader, 전체 WCAG 적합성은 이 증거로 검증하지 않았습니다.",
+    "독립 rendered-implementation gate의 판정은 별도로 필요합니다. 이 reviewer는 렌더 승인을 면제하거나 자신의 작업을 승인하지 않았습니다."
+  ],
+  "next_dependency": "Main이 이 보고서를 code gate에 등록하고, 별도 독립 rendered-implementation verdict를 확인한 뒤 통합해야 합니다."
+}

@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+  "summary": "한정된 CODE exact7과 정확한 r4 preExec 모두 pass입니다. 수정이 필요한 결함을 찾지 못했습니다. r4는 실행하지 않았습니다.",
+  "independence": {
+    "implementationAuthored": false,
+    "delegation": false,
+    "filesWritten": [],
+    "testsExecuted": false,
+    "prepareOrExecuteInvoked": false,
+    "bunExecuted": false,
+    "nativeExecuted": false,
+    "persistenceOwner": "Main",
+    "runtimeIdentityOrOSSandboxAttested": false
+  },
+  "bindingConvention": "상대 경로는 repo 기준입니다. 아래 SHA-256은 검토 시작과 종료에 확인한 동일 바이트를 식별합니다.",
+  "sharedBindings": {
+    "planRevision": 5,
+    "workClass": "routine",
+    "plan": {
+      "path": "docs/runs/permission-task-lifetime-integration/plan.md",
+      "sha256": "0681f52ec6ebf225ab81c509481b8195f2eff2f54fd73b51c194e358045a653c"
+    },
+    "contract": {
+      "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+      "sha256": "af2f89b7e0402da28534f829aa84c3483b3c385f21684a24d06aa83361aa38aa"
+    },
+    "packet": {
+      "path": "docs/runs/permission-task-lifetime-integration/native-read-files-code-review-packet-r1.json",
+      "sha256": "c66c2ab934b61a598bf01942cc53f3d6af603f3585b3ae4ec76b3d12a7d75258"
+    },
+    "checkpoint": {
+      "path": "docs/runs/permission-task-lifetime-integration/native-read-files-source-checkpoint-r1.json",
+      "sha256": "9bf9cc9ab02a16c38cc5323de4076e072188dcf0f9de1a02fd5473651c9c3eb6"
+    },
+    "routingPins": {
+      ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+      ".agents/skills/solo-code-review/SKILL.md": "95f470f4f81520f23436a1d650a25b3054ec3251121ad8cc7ed0f5fe0d09ac19",
+      ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+    },
+    "packetPlanContractAndRoutingMatched": true
+  },
+  "CODE": {
+    "verdict": "pass",
+    "scope": "checkpoint의 정확한 7개 파일과 해당 before 변경 경로에 한정합니다.",
+    "acceptanceIds": [
+      "I2",
+      "I4"
+    ],
+    "passesCompleted": [
+      "spec_compliance",
+      "code_quality"
+    ],
+    "findings": [],
+    "files": [
+      {
+        "path": "apps/desktop-app/src/host/native-descriptor-read-resource.mjs",
+        "bytes": 8755,
+        "sha256": "f90dfdeb7c559289a05030929cdd15fa7fee475f013ae5b98f4fd38733f2ceaf",
+        "beforeSha256": "82aed4ebbb7bf21e8cf69994b954c6b7248cad735c32fff0abae12e7bcf9a4dc"
+      },
+      {
+        "path": "apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs",
+        "bytes": 37840,
+        "sha256": "ddf92b90cb73d5d934198c2619d1b1c7a050f0f3da2eedfb84d98b04db719e66",
+        "beforeSha256": "5a336f62c5b9335c05e82b4217980f615967a44e62df12c051781487d8769f5a"
+      },
+      {
+        "path": "apps/desktop-app/src/host/native-descriptor-read.mjs",
+        "bytes": 16050,
+        "sha256": "227d08e792e28df575c1b6d5c677d610dc1856aed3411324100f4bc9fccfd934",
+        "beforeSha256": "71e5f0106dceb4b2584a7658536251859bf9d14a90f88fcb94456a90552eee54"
+      },
+      {
+        "path": "apps/desktop-app/src/host/native-descriptor-read.test.mjs",
+        "bytes": 25057,
+        "sha256": "49eb610169482301ca3d4f25e2081cea958eeafcaf35c04cd4f1b499c5a63977",
+        "beforeSha256": "fdebcc51299ba49326ebe13d454f93af542eb6582ce3fcbbd800ff105e8eb4c7"
+      },
+      {
+        "path": "apps/desktop-app/src/native-permission-read-consumer.test.mjs",
+        "bytes": 18103,
+        "sha256": "626897ffc9f70781f8cb9891c77374c5346145489a024d74a6c79adb364cc2dd",
+        "beforeSha256": null,
+        "beforeBasis": "새 파일이며 제공된 before manifest에는 없습니다."
+      },
+      {
+        "path": "apps/desktop-app/scripts/native-descriptor-probe.mjs",
+        "bytes": 23243,
+        "sha256": "bba4a0b8c6ecef7cffa2f8bb1761a60d35965f8c9cde8aff101267a5a6f9aa34",
+        "beforeSha256": "77d8481f224024ccf4998e1bae433d43dae820e337c06cf5855c6eb80305ab1a"
+      },
+      {
+        "path": "apps/desktop-app/scripts/native-descriptor-probe.test.mjs",
+        "bytes": 2335,
+        "sha256": "b79d55aca57c4fa7b2679cd477f06df806ec4b9a1b5b520d06b98fd8e49f268a",
+        "beforeSha256": "b79d55aca57c4fa7b2679cd477f06df806ec4b9a1b5b520d06b98fd8e49f268a",
+        "beforeBasis": "before manifest에는 없으며 이전 probe2 검토의 동일 바이트와 일치합니다."
+      }
+    ],
+    "beforeArchive": {
+      "manifest": "docs/runs/permission-task-lifetime-integration/prechange/native-read-files-before-r1/manifest.json",
+      "manifestSha256": "c43a64f0d277c2ed883de4d4c0ca09929b94db4f1c0b8ce8487dc8039de159fb",
+      "allSixArchivedPinsVerified": true,
+      "extraEventHostResourcesArchive": "archive 해시만 확인했습니다. 현재 event-host-resources.mjs는 exact7 CODE 판정 밖입니다.",
+      "probeArchiveProvenance": "정확한 reverse로 재구성한 archive입니다. 이전 독립 검토 SHA와 일치하며 편집 전 직접 캡처로 주장하지 않습니다."
+    },
+    "reviewedBehavior": [
+      "이미 claim한 genuine opaque resource만 한 번 files view로 만들 수 있습니다. caller identity 입력은 거부합니다.",
+      "첫 성공 읽기의 private identity를 경로별로 저장하고 ranged 및 whole 재읽기에 재사용합니다.",
+      "range와 whole 조건을 await 전에 고정합니다. pending 호출 중 추가 read/list는 거부합니다.",
+      "절대 경로, lexical canonical 형태, root 포함 여부와 trailing separator를 물리 IO 전에 검사합니다.",
+      "256 calls, 256 paths, 요청한 32MiB 및 반환 directory rows 8192 한도를 적용합니다. 실패한 읽기의 요청량도 유지합니다.",
+      "whole read에서 20MiB 초과 파일은 거부하고 받은 buffer를 지웁니다. 잘린 결과를 whole content로 반환하지 않습니다.",
+      "물리 읽기 직후 취소를 확인하면 반환 전 buffer를 지웁니다.",
+      "empty relative read는 held root에서 dot descriptor를 엽니다. 임시 FD 정리와 최종 authority/path 검사 후 genuine private directory kind를 반환합니다.",
+      "고정된 실제 read2, Content Schema 및 MIME detector 추출을 확인했습니다. consumer 원본 4개 SHA가 일치합니다.",
+      "새 consumer tests 14개는 실제 consumer 호출과 scripted kernel 연결을 확인합니다. Darwin 실행 증거로 취급하지 않습니다.",
+      "r4 probe는 root-kind와 실제 files view의 media ranged/whole 읽기 및 identity 변경 거부를 검사하도록 추가되었습니다."
+    ],
+    "priorReviewsReused": {
+      "directoryFoundation": "docs/runs/permission-task-lifetime-integration/bounded-directory-code-and-preexecution-review-r1.json",
+      "probeDiagnostics": "docs/runs/permission-task-lifetime-integration/bounded-probe-diagnostic-code-and-preexecution-review-r1.json",
+      "unchangedHelperAndInstallerPinsMatched": "5/5",
+      "whole16Repeated": false
+    }
+  },
+  "preExec": {
+    "verdict": "pass",
+    "eligibleAtReviewEnd": true,
+    "executed": false,
+    "scope": "정확한 preparation-r4 parent 명령과 input-r4의 Bun child 명령으로 실행하는 단일 owned physical kernel unit probe에 한정합니다.",
+    "preparation": {
+      "path": "docs/runs/permission-task-lifetime-integration/descriptor-probe-preparation-r4.json",
+      "sha256": "b39a83f258236c9c4aece289af68bc3021d57ab88ce91d072c5527c80585b0c2"
+    },
+    "input": {
+      "projectCopy": "docs/runs/permission-task-lifetime-integration/descriptor-probe-input-r4.json",
+      "externalPath": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-YoQBGa/input.json",
+      "sha256": "ee92428e982ce4c147c8a32a891f0e05a478052f805d5bbdbefe58a9cd95b94f",
+      "copiesByteIdentical": true
+    },
+    "parentCwd": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "parentArgv": [
+      "/opt/homebrew/Cellar/node/26.11.0_1/bin/node",
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-descriptor-probe.mjs",
+      "--execute",
+      "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-YoQBGa/input.json",
+      "--input-sha256",
+      "ee92428e982ce4c147c8a32a891f0e05a478052f805d5bbdbefe58a9cd95b94f"
+    ],
+    "parentNodeSha256": "849e5785bd5b3ac68516f105d617c4a7ddcc3de1d7a89ba696d5dab271ab0164",
+    "contractArgvMatchesPreparation": true,
+    "childCwd": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-YoQBGa",
+    "childArgv": [
+      "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-YoQBGa/bun",
+      "--no-install",
+      "--no-env-file",
+      "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-descriptor-probe.mjs",
+      "--fixture",
+      "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-YoQBGa"
+    ],
+    "childEnvironment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-YoQBGa/home",
+      "TMPDIR": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-YoQBGa/tmp",
+      "XDG_CONFIG_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-YoQBGa/config",
+      "XDG_CACHE_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-YoQBGa/cache",
+      "XDG_DATA_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-YoQBGa/data",
+      "XDG_STATE_HOME": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-YoQBGa/state",
+      "BUN_INSTALL_CACHE_DIR": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-YoQBGa/cache",
+      "OMOC_DESCRIPTOR_PROBE_NONCE": "95e97d4e-f398-4925-b166-c161ced3ea13"
+    },
+    "engine": {
+      "versionPin": "1.4.2",
+      "observedHost": "Darwin arm64",
+      "sha256": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+      "copiedAndStagedBytesMatch": true,
+      "versionExecuted": false
+    },
+    "sourceHashes": {
+      "apps/desktop-app/scripts/native-descriptor-probe.mjs": "bba4a0b8c6ecef7cffa2f8bb1761a60d35965f8c9cde8aff101267a5a6f9aa34",
+      "apps/desktop-app/src/host/native-descriptor-read.mjs": "227d08e792e28df575c1b6d5c677d610dc1856aed3411324100f4bc9fccfd934",
+      "apps/desktop-app/src/host/native-descriptor-read-resource.mjs": "f90dfdeb7c559289a05030929cdd15fa7fee475f013ae5b98f4fd38733f2ceaf",
+      "apps/desktop-app/src/host/darwin-descriptor-ffi.mjs": "1af173e00c9e095f265dad1e6a6509d7f45521d4e6fa9ba5c37ed65a499f2117",
+      "apps/desktop-app/src/host/darwin-directory-entry.mjs": "994d968244f511d0b4c43fd2b93c345334a0c9b0306065485513200c3817a132",
+      "apps/desktop-app/src/host/workspace-root-authority.mjs": "a8f977e5b8458eb8b51ed1c47ab4fa515e35b78e72f9303f79f724fa9eac0fd0",
+      "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs": "7b3a01c86300d2ee40817828d155e93d0b12384ef7fbae4d0ad503c0f4e8cc68",
+      "apps/desktop-app/runtime-event-host/installer-pins.json": "2c9619a44a75ba525acb885a33ce0d7872d2ee22016c8404d8a0dfded9171e41"
+    },
+    "namespace": {
+      "ownerUid": 501,
+      "rootCanonicalAndNotSymlink": true,
+      "rootMode": "0700",
+      "inputAndMarkerMode": "0600",
+      "inputAndMarkerLinkCount": 1,
+      "engineMode": "0500",
+      "engineLinkCount": 1,
+      "sixEnvironmentDirectories": "canonical, symlink 아님, UID 501, mode 0700, 모두 비어 있음",
+      "markerRootAndNonceMatch": true,
+      "markerSha256": "431f7c8411f749fc27250ab8329624cfd6f88d24c9928b6464da0fa78b6ee3b2",
+      "executionIntentAbsent": true,
+      "executionReportAbsent": true,
+      "fixtureResultAbsent": true,
+      "unexpectedEntries": []
+    },
+    "timeoutMs": 30000,
+    "killSignal": "SIGKILL",
+    "findings": [],
+    "containmentAndReporting": [
+      "spawn 전에 external input raw SHA, source/helper, engine, argv, 환경과 namespace를 검사합니다.",
+      "child에는 지정된 환경만 전달합니다. stdio는 ignore입니다.",
+      "fixture와 outside sentinel은 모두 owned synthetic namespace 안에 있습니다.",
+      "import closure는 physical helpers와 builtins로 한정됩니다. original Native modules는 import하지 않습니다.",
+      "exclusive execution-intent로 중단 또는 불명확한 종료 후 namespace 재사용을 막습니다.",
+      "정상 child 종료, signal/error 부재, source/engine 사후 일치, fixture passed:true를 모두 만족해야 성공입니다.",
+      "실패 또는 보고 누락을 성공으로 바꾸지 않습니다."
+    ],
+    "validityConditions": [
+      "검토한 argv, input, source/helper, engine 바이트와 namespace 상태를 유지해야 합니다.",
+      "기존 필수 preflight를 그대로 통과해야 합니다.",
+      "검토 환경에서 없었던 NODE_OPTIONS, NODE_PATH, DYLD_INSERT_LIBRARIES, DYLD_LIBRARY_PATH, BUN_OPTIONS를 parent에 추가하지 않아야 합니다.",
+      "intent 기록 후에는 결과와 관계없이 같은 namespace를 재사용하지 않아야 합니다."
+    ],
+    "scopeAdjustment": "이전 검토의 external input scope 조정은 유지됩니다. 정확한 contracted argv SHA와 spawn 전 필수 raw-byte SHA 검사가 external input을 계속 구속합니다."
+  },
+  "pinVerification": {
+    "beforeAt": "2026-10-10T15:26:19.516756+00:00",
+    "afterAt": "2026-10-10T15:27:46.570212+00:00",
+    "exactSevenBytesAndHashesMatchedBeforeAndAfter": true,
+    "allSixArchiveHashesMatchedBeforeAndAfter": true,
+    "sourceHelperPinsMatchedBeforeAndAfter": "8/8",
+    "planContractPacketCheckpointPreparationInputUnchanged": true,
+    "routingPinsUnchanged": true,
+    "copiedEngineStagedEngineAndParentNodeUnchanged": true,
+    "namespaceStillUnusedAtFinalCheck": true
+  },
+  "verificationEvidence": {
+    "reviewerPerformed": [
+      "읽기 전용 source, diff, archive, 원본 consumer, SDK 선언, namespace metadata 및 SHA-256 검사"
+    ],
+    "savedEvidenceRead": {
+      "descriptorNode": "217 PASS",
+      "metadataNode": "119 PASS",
+      "probeDiagnosticsNode": "2 PASS",
+      "stage": "1 PASS",
+      "exactSevenLintAndFormat": "제공된 PASS 기록을 읽었습니다. 재실행하지 않았습니다."
+    },
+    "redEvidence": {
+      "missingAPI": "createNativeDescriptorFiles 부재를 확인한 RED",
+      "wholeMutation": "whole 요청 변경으로 예상 거부가 누락된 RED",
+      "rootKindR2": "empty relative read가 invalid_request를 반환한 product RED",
+      "rootKindR1": "test fixture TypeError이며 product RED가 아닙니다."
+    },
+    "historicalActualR3": {
+      "path": "docs/runs/permission-task-lifetime-integration/descriptor-probe-r3-execution.json",
+      "sha256": "52848413e0eda83db848fd2bc4c137bb9df60fd3f0b570e743db85998661ae4d",
+      "savedResult": "10 PASS, exitCode 0, sourceStable:true, engineStable:true",
+      "provesCurrentR4Bytes": false
+    }
+  },
+  "limits": {
+    "currentActualBunBehaviorVerified": false,
+    "nodeScriptedTestsProveDarwinConfinement": false,
+    "osSandboxOrChangeAndRestoreProtectionProved": false,
+    "fullCodeApproval": false,
+    "full18Approval": false,
+    "nativeActivationApproval": false,
+    "permissionOrTaskExecutionGrant": false,
+    "auxiliaryFileAccessAGENTSInstructionBusIntegrationReviewed": false,
+    "excluded": "original Native, Main, server, provider, build, GUI, private originals 및 전체 Task 통합",
+    "nextStep": "Main이 이 보고서를 저장합니다. 동일 바인딩과 필수 preflight 조건에서 정확한 r4 unit probe를 실행할 수 있습니다. 별도 auxiliary 통합 검토는 계속 필요합니다."
+  },
+  "provenance": {
+    "child_task_id": "01a1266b-8a72-7390-9416-2f038ab5e5ee",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

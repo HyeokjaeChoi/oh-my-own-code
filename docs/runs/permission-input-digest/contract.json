@@ -1,0 +1,84 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "P1",
+      "description": "Exact focused input digest contract without broadening control budgets"
+    },
+    {
+      "id": "P2",
+      "description": "Closed bounded pure actual prompt digest, no authority"
+    },
+    {
+      "id": "P3",
+      "description": "Adversarial boundary and digest validation"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/permission-input-digest.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Pure bounded prompt input digest only, no Native execution",
+      "required": true,
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P3"
+      ]
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/permission-input-digest.mjs",
+        "apps/desktop-app/src/permission-input-digest.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Pure bounded prompt input digest only, no Native execution",
+      "required": true,
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P3"
+      ]
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/permission-input-digest.mjs",
+        "apps/desktop-app/src/permission-input-digest.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Pure bounded prompt input digest only, no Native execution",
+      "required": true,
+      "acceptance_ids": [
+        "P1",
+        "P2",
+        "P3"
+      ]
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/permission-input-digest/design-supplement-r1.md",
+      "gate": "design_spec",
+      "version": "focused-input-r1",
+      "sha256": "ca7a22ea69931ea4de927ce6ae48b5e908a7d027ce94cb29f779f0b9f9e4f33d"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

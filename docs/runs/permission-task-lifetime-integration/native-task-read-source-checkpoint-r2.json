@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "planRevision": 9,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-task-observer.mjs",
+      "bytes": 12662,
+      "sha256": "3b19b6ee2f53db9be19d4db02fbd7481479e6b7529ce3e0e9e764d7754a3d3e9"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-observer.test.mjs",
+      "bytes": 36846,
+      "sha256": "50c8df8c80ea512b3e414eec09babaaa9d0703bda3b9b32b07319d5dec51f935"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-leases.mjs",
+      "bytes": 13013,
+      "sha256": "3c6ab21b76644807a54c42612a773ad8a35fdb1cecc385d6e9e32924028d1303"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-read.test.mjs",
+      "bytes": 19636,
+      "sha256": "5ddf80f3265ff603b69fcd839a1ad869bfd67ef6217ce736c2d01fbaa607bf3b"
+    }
+  ],
+  "changesSinceR1": "Promise handler before reentrant post-authority check; actual combined cancel/revoke/close regression12PASS",
+  "limits": [
+    "No Task grant or Control activation",
+    "No actual Native/Bun in Node checks",
+    "Independent correction CODE and separate r5 preExec pending"
+  ]
+}

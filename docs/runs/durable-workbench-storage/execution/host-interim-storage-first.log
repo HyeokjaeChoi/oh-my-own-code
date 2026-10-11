@@ -1,0 +1,54 @@
+✔ managed bootstrap reserves stable UUID before mkdir/create; observations do not append (44.27475ms)
+✖ paused admission flush preserves committed snapshot/lookup and actual call order (39.800541ms)
+✖ paused dispatch flush preserves committed snapshot/lookup and actual call order (35.988875ms)
+
+Interrupted while running:
+
+⚠ apps/desktop-app/src/host/storage-integration.test.mjs (apps/desktop-app/src/host/storage-integration.test.mjs:1:1)
+✖ apps/desktop-app/src/host/storage-integration.test.mjs (80897.114917ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 1
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 80900.553375
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:69:58
+✖ paused admission flush preserves committed snapshot/lookup and actual call order (39.800541ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable.","receipt":{"runtimeEpoch":"epoch","operationId":"operation","type":"session.rename","workspaceId":"42b730e6-b9a9-4ea7-b02f-649222b5f3ec","sessionId":"f1670ed0-e6dd-4195-9c3f-421b457dad4b","admission":"rejected","delivery":"pending","effect":"none","revision":9,"evidence":[],"result":{"kind":"rejected","code":"UNAVAILABLE"}}}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:80:55)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:69:58
+✖ paused dispatch flush preserves committed snapshot/lookup and actual call order (35.988875ms)
+  AssertionError [ERR_ASSERTION]: bounded condition not reached
+      at until (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:13:95)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:74:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'fail',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:1:1
+✖ apps/desktop-app/src/host/storage-integration.test.mjs (80897.114917ms)
+  'Promise resolution is still pending but the event loop has already resolved'

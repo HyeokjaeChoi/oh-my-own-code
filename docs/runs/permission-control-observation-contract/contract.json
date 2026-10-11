@@ -1,0 +1,78 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "O1",
+      "description": "Closed detached bounded read observations"
+    },
+    {
+      "id": "O2",
+      "description": "Composite membership ancestry and mode consistency"
+    },
+    {
+      "id": "O3",
+      "description": "No unsafe input hooks executed"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "apps/desktop-app/src/permission-control-observations.test.mjs",
+        "apps/desktop-app/src/permission-control-canonical.test.mjs",
+        "apps/desktop-app/src/permission-control-digests.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Accepted inert closed permission observations only",
+      "acceptance_ids": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/permission-control-observations.mjs",
+        "apps/desktop-app/src/permission-control-observations.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Accepted inert closed permission observations only",
+      "acceptance_ids": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/permission-control-observations.mjs",
+        "apps/desktop-app/src/permission-control-observations.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Accepted inert closed permission observations only",
+      "acceptance_ids": [
+        "O1",
+        "O2",
+        "O3"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

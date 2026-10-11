@@ -1,0 +1,66 @@
+{
+  "description": "Solopreneur planning, scoped handoffs, run recovery, and completion reminders. Review exact helper hashes in /hooks.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/lifecycle.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'41b7aea16cd5c26832949be4887df0541415487b930da0a5e2ebc97c6c815b5f'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
+            "timeout": 5,
+            "statusMessage": "Loading Solopreneur run context",
+            "additionalContextLimit": 350
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/lifecycle.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'41b7aea16cd5c26832949be4887df0541415487b930da0a5e2ebc97c6c815b5f'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
+            "timeout": 5,
+            "statusMessage": "Loading Solopreneur run context",
+            "additionalContextLimit": 350
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/lifecycle.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'41b7aea16cd5c26832949be4887df0541415487b930da0a5e2ebc97c6c815b5f'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
+            "timeout": 5,
+            "statusMessage": "Loading Solopreneur run context",
+            "additionalContextLimit": 350
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/lifecycle.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'41b7aea16cd5c26832949be4887df0541415487b930da0a5e2ebc97c6c815b5f'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
+            "timeout": 5,
+            "statusMessage": "Loading Solopreneur run context"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I -c 'import hashlib\nfrom pathlib import Path\nfor root in [Path.cwd(), *Path.cwd().parents]:\n    path = root / '\"'\"'.codex/hooks/check_diff.py'\"'\"'\n    if not path.is_file() or path.is_symlink():\n        continue\n    data = path.read_bytes()\n    if hashlib.sha256(data).hexdigest() != '\"'\"'fee6d10b8eee617bd79eb04fa92c777835ae553324c32c1181559f46a8035c9e'\"'\"':\n        continue\n    exec(compile(data, str(path), '\"'\"'exec'\"'\"'), {'\"'\"'__name__'\"'\"': '\"'\"'__main__'\"'\"', '\"'\"'__file__'\"'\"': str(path)})\n    break\n'",
+            "timeout": 10,
+            "statusMessage": "Checking whitespace in local changes"
+          }
+        ]
+      }
+    ]
+  }
+}

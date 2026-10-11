@@ -1,0 +1,67 @@
+✖ SKILL journal requires feature before private admission and forbids name on other types (17.889125ms)
+✖ SKILL receipt exposes only exact private source and original key bound success (1.899667ms)
+✖ SKILL admission binds private name without public identity expansion (17.569708ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 79.499084
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-journal.test.mjs:1242:1
+✖ SKILL journal requires feature before private admission and forbids name on other types (17.889125ms)
+  Error: invalid_record
+      at storageError (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-journal.mjs:105:17)
+      at need (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-journal.mjs:110:25)
+      at closed (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-journal.mjs:118:3)
+      at validateJournalPayload (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-journal.mjs:479:7)
+      at Object.append (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-journal.mjs:1303:20)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-journal.test.mjs:1250:34)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'invalid_record'
+  }
+
+test at apps/desktop-app/src/host/workbench-receipts.test.mjs:11:1
+✖ SKILL receipt exposes only exact private source and original key bound success (1.899667ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - {
+  -   backupId: '.omoc-configuration-6ea37dc0496a43a302e7c9f600fa00915eb869d40b765bf9f6a6369ab49352e7.skill.backup',
+  -   kind: 'skill_file_saved',
+  -   sourceName: 'review',
+  -   version: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+  -   workspaceId: 'ws'
+  - }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-receipts.test.mjs:13:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { kind: 'skill_file_saved', workspaceId: 'ws', sourceName: 'review', version: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', backupId: '.omoc-configuration-6ea37dc0496a43a302e7c9f600fa00915eb869d40b765bf9f6a6369ab49352e7.skill.backup' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/workspace-registry.test.mjs:4539:1
+✖ SKILL admission binds private name without public identity expansion (17.569708ms)
+  Error: invalid_record
+      at storageError (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-journal.mjs:105:17)
+      at need (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.mjs:30:25)
+      at closed (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.mjs:33:3)
+      at Object.begin (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.mjs:929:5)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.test.mjs:4543:34)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'invalid_record'
+  }

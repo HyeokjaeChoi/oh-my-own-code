@@ -1,0 +1,525 @@
+{
+  "schema_version": 1,
+  "captured_after_implementation": true,
+  "sha256": "300347656947f015e3d4fa15b876a25fdb1a8af1a35c5b9ef8f35a836367d901",
+  "figma_component_set_id": "6:20",
+  "button": {
+    "componentContract": null,
+    "variants": [
+      {
+        "family": "Button",
+        "name": "primary/default",
+        "bindings": {
+          "background": "component.color.button.primary.background",
+          "foreground": "component.color.button.primary.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "primary",
+          "state": "default",
+          "label": "계속",
+          "enabled": true,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "none"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "primary/hover",
+        "bindings": {
+          "background": "component.color.button.primary.hover",
+          "foreground": "component.color.button.primary.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "primary",
+          "state": "hover",
+          "label": "계속",
+          "enabled": true,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "none"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "primary/pressed",
+        "bindings": {
+          "background": "component.color.button.primary.pressed",
+          "foreground": "component.color.button.primary.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "primary",
+          "state": "pressed",
+          "label": "계속",
+          "enabled": true,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "none"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "primary/focus",
+        "bindings": {
+          "background": "component.color.button.primary.background",
+          "foreground": "component.color.button.primary.foreground",
+          "focusRing": "semantic.color.focus",
+          "focusWidth": "semantic.stroke.focus",
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height",
+          "focusGapBackground": "semantic.color.surface",
+          "focusGapWidth": "semantic.size.focus-gap"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "primary",
+          "state": "focus",
+          "label": "계속",
+          "enabled": true,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 2,
+          "loadingIndicator": "none",
+          "focusOffsetPx": 2
+        }
+      },
+      {
+        "family": "Button",
+        "name": "primary/disabled",
+        "bindings": {
+          "background": "component.color.button.disabled.background",
+          "foreground": "component.color.button.disabled.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "primary",
+          "state": "disabled",
+          "label": "계속",
+          "enabled": false,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "none"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "primary/loading",
+        "bindings": {
+          "background": "component.color.button.primary.background",
+          "foreground": "component.color.button.primary.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Keep the same action label; append 진행 중 for screen reader. Avoid changing width; suppress duplicate activation.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "primary",
+          "state": "loading",
+          "label": "계속",
+          "enabled": false,
+          "busy": true
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "small spinner plus retained action label"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "quiet/default",
+        "bindings": {
+          "background": "component.color.button.quiet.background",
+          "foreground": "component.color.button.quiet.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "quiet",
+          "state": "default",
+          "label": "계속",
+          "enabled": true,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "none"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "quiet/hover",
+        "bindings": {
+          "background": "component.color.button.quiet.hover",
+          "foreground": "component.color.button.quiet.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "quiet",
+          "state": "hover",
+          "label": "계속",
+          "enabled": true,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "none"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "quiet/pressed",
+        "bindings": {
+          "background": "component.color.button.quiet.pressed",
+          "foreground": "component.color.button.quiet.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "quiet",
+          "state": "pressed",
+          "label": "계속",
+          "enabled": true,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "none"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "quiet/focus",
+        "bindings": {
+          "background": "component.color.button.quiet.background",
+          "foreground": "component.color.button.quiet.foreground",
+          "focusRing": "semantic.color.focus",
+          "focusWidth": "semantic.stroke.focus",
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height",
+          "focusGapBackground": "semantic.color.surface",
+          "focusGapWidth": "semantic.size.focus-gap"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "quiet",
+          "state": "focus",
+          "label": "계속",
+          "enabled": true,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 2,
+          "loadingIndicator": "none",
+          "focusOffsetPx": 2
+        }
+      },
+      {
+        "family": "Button",
+        "name": "quiet/disabled",
+        "bindings": {
+          "background": "component.color.button.disabled.background",
+          "foreground": "component.color.button.disabled.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "quiet",
+          "state": "disabled",
+          "label": "계속",
+          "enabled": false,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "none"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "quiet/loading",
+        "bindings": {
+          "background": "component.color.button.quiet.background",
+          "foreground": "component.color.button.quiet.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Keep the same action label; append 진행 중 for screen reader. Avoid changing width; suppress duplicate activation.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "quiet",
+          "state": "loading",
+          "label": "계속",
+          "enabled": false,
+          "busy": true
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "small spinner plus retained action label"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "danger/default",
+        "bindings": {
+          "background": "component.color.button.danger.background",
+          "foreground": "component.color.button.danger.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "danger",
+          "state": "default",
+          "label": "계속",
+          "enabled": true,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "none"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "danger/hover",
+        "bindings": {
+          "background": "component.color.button.danger.hover",
+          "foreground": "component.color.button.danger.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "danger",
+          "state": "hover",
+          "label": "계속",
+          "enabled": true,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "none"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "danger/pressed",
+        "bindings": {
+          "background": "component.color.button.danger.pressed",
+          "foreground": "component.color.button.danger.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "danger",
+          "state": "pressed",
+          "label": "계속",
+          "enabled": true,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "none"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "danger/focus",
+        "bindings": {
+          "background": "component.color.button.danger.background",
+          "foreground": "component.color.button.danger.foreground",
+          "focusRing": "semantic.color.focus",
+          "focusWidth": "semantic.stroke.focus",
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height",
+          "focusGapBackground": "semantic.color.surface",
+          "focusGapWidth": "semantic.size.focus-gap"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "danger",
+          "state": "focus",
+          "label": "계속",
+          "enabled": true,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 2,
+          "loadingIndicator": "none",
+          "focusOffsetPx": 2
+        }
+      },
+      {
+        "family": "Button",
+        "name": "danger/disabled",
+        "bindings": {
+          "background": "component.color.button.disabled.background",
+          "foreground": "component.color.button.disabled.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "danger",
+          "state": "disabled",
+          "label": "계속",
+          "enabled": false,
+          "busy": false
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "none"
+        }
+      },
+      {
+        "family": "Button",
+        "name": "danger/loading",
+        "bindings": {
+          "background": "component.color.button.danger.background",
+          "foreground": "component.color.button.danger.foreground",
+          "focusRing": null,
+          "focusWidth": null,
+          "radius": "component.size.control.radius",
+          "height": "component.size.button.height"
+        },
+        "content": "Keep the same action label; append 진행 중 for screen reader. Avoid changing width; suppress duplicate activation.",
+        "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+        "properties": {
+          "intent": "danger",
+          "state": "loading",
+          "label": "계속",
+          "enabled": false,
+          "busy": true
+        },
+        "visual": {
+          "heightPx": 40,
+          "minWidthPx": 88,
+          "horizontalPaddingPx": 16,
+          "focusStrokePx": 0,
+          "loadingIndicator": "small spinner plus retained action label"
+        }
+      }
+    ]
+  },
+  "note": "The Button family was not edited in canonical sources or Figma during this run. This post-run baseline protects future edits; it is not a pre-run cryptographic comparison."
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "worker": "01a1276a-7ed0-7ab0-875c-6bf8b241737b",
+  "actual_wait_result": {
+    "status": {
+      "01a1276a-7ed0-7ab0-875c-6bf8b241737b": {
+        "completed": "**구현과 검증을 완료했습니다. Main이 사용할 source/API checkpoint는 확정됐습니다.** 지정한 3개 파일만 수정했습니다.\n\n- 기존 Cerebras private API 패턴을 그대로 사용했습니다.\n- 원본 callback 표현식, prompt/helper bytes, import/export를 보존했습니다.\n- 기존 55개 recipe entry와 canonical digest를 보존했습니다.\n- 최종 recipe: **57 files / 225 edits**, ceiling 256.\n\n검증 결과:\n\n- **RED:** 새 declaration test — missing API/bundle로 3/3 실패.\n- **GREEN:** 새 declaration test + whole recipe — 14/14 통과.\n- 최종 exact3 ESLint와 Prettier check — 통과.\n\n실제 RED 명령과 GREEN 명령은 repo root에서 실행했습니다.\n\n```sh\nnode --test apps/desktop-app/src/native-permission-transform-declaration.test.mjs\n\nnode --test apps/desktop-app/src/native-permission-transform-declaration.test.mjs apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs\n```\n\n최종 3개 파일을 고정했습니다.\n\n| 파일 | Bytes | SHA-256 |\n|---|---:|---|\n| `native-permission-overlay-contract.mjs` | 288343 | `768497de103036c08330a8b6bfd960fb0db064431cbc71bd5f03ec127ef3b0e5` |\n| `native-permission-overlay-recipe.test.mjs` | 31439 | `64d545f62fa6c392db46f932b26af69ecca7e570fa60731c46a63da26a4df8a1` |\n| `native-permission-transform-declaration.test.mjs` | 14190 | `1926ad0ba984fcb5ffbeb572d4dc44a42f7f94efead325eaaeab812301a4bbb6` |\n\nPinned Effect와 선택한 원본 declaration만 추출해 검증했습니다. Callback, Native/core 모듈, Main suite, build, Bun, server, UI는 실행하지 않았습니다. Docs/ledger도 수정하지 않았습니다. 독립 CODE review와 통합은 Main에 남아 있으며, 자체 승인은 하지 않았습니다."
+      }
+    },
+    "timed_out": false
+  }
+}

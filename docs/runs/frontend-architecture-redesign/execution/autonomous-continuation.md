@@ -1,0 +1,51 @@
+# Autonomous continuation handoff
+Date: 2026-10-03 | Status: next execution handoff; no implementation claim
+
+## User authority
+The user authorizes autonomous completion of all remaining approved plans, economical role-specific model/effort selection and parallel independent work. Preserve fresh specialist contexts and a coordinating primary. All computer verification must run in the background without taking OS focus. Do not automatically launch a visible app, activate Chrome, or open new visible tabs. Current approved design is A Quiet Dock with the120px Composer/72px input/32px toolbar, responsive compact toolbar, outside dismissal and no ornamental borders. Do not restart ideation, design selection or platform comparison.
+
+## Current verified delivery
+`selected-a-desktop-adoption` finished with current code/design pass and four contracted checks. Real renderer source adopts A; outside dismissal/topmost/focus/no-click-through are covered. Native fixture stays hidden/nonfocusable and asserts hidden/unfocused captures. Latest evidence and macOS personal-use package receipts are in that run. P1 deletion correctness and P2 prerequisites were integrated; P3 design adoption is complete. These facts do not close P4-P7 or product F-01-18. The parent frontend run remains active with missing final acceptance/checks.
+
+## Authorities and source map
+- `docs/runs/frontend-architecture-redesign/plan.md` revision6 and `architecture-and-ui.md` version4: approved engineering authority, P4-P7 sequence.
+- `docs/product/prd.md`: all F-01-18; no silent MVP reduction.
+- `docs/runs/selected-a-desktop-adoption/report.md`, `outcome.json`, `code-review-r2.json`, `design-review-r2.json`: latest focused delivery.
+- `docs/decisions/0001-workbench-platform.md`, `0002-desktop-runtime.md`: Electron macOS/Windows, OpenCode SDK v2 app-owned sidecar.
+- `apps/desktop-app/src/{main.mjs,preload.cjs,workbench-service.mjs,workbench-contract.mjs,desktop-bridge.d.ts}`: host/IPC/DTO seam.
+- `renderer/app/{useWorkbench.ts,index.tsx}`, `renderer/shared/{request.ts,projection.mjs}`, `renderer/features/explorer/index.tsx`: existing duplicated owners, unbounded read gates and file lifecycle.
+
+## Next bounded delivery: P4 then P5
+Freeze a reviewed read/receipt amendment before changing callers. Avoid a duplicate platform ADR: approved stack remains pnpm/Nx, Vite/esbuild, CSS Modules, native basic controls, Radix complex primitives, assistant-ui plus owned Tool UI, one window Zustand5.0.15 store. Query/XState remain deferred.
+
+P4 closed wire contract must bind version, readId versus operationId, runtimeEpoch, optional expectedRevision and the exact typed operation. Bootstrap snapshot discovers the epoch; this must not permit mutation before host identity is available. Main validates sender/frame before envelope admission. Cancellation is sender-owned and names only the admitted read/epoch. `operation.lookup` is read-only, reserved from snapshot exhaustion and returns redacted authoritative operation identity/admission/delivery/effect/revision/evidence. Missing or wrong-epoch records cannot establish no effect. Native requestId remains distinct from operationId.
+
+Read policy:10s whole request deadline including ready/aggregate work; at most four logical read classes (snapshot, catalog, files, receipt lookup). Coalesce identical identity; no unbounded pending queue; retain underlying ignored-abort work in quarantined capacity until actual completion or proven teardown. Audit existing `call()` Promise.race: logical timeout alone is not actual SDK cancellation. Audit `refresh()` five-way parallel reads and catalog fan-out; cap internal calls and propagate remaining deadline. Renderer settles and drops late responses without freeing host capacity by assumption. Runtime health and snapshot acceptance are one atomic decision.
+
+Mutation policy: record `(runtimeEpoch,operationId)` with immutable type/scope/canonical digest before effects; cap2048 records, preserve unresolved/tombstones; same identity returns receipt without dispatch, changed digest rejects. Apply to every mutation including import/create/remove, lifecycle, send, command, interrupt, permission reply. Unknown delivery performs lookup only; never replay. Positive evidence must correlate the original operation. Accepted request/interrupt/permission delivery is not execution completion. Preserve original draft and later edits; reconcile only authoritative matching evidence.
+
+Suggested coherent ownership after contract review: one host/transport worker owns host internals, main/preload/DTO/service and corresponding tests; renderer worker starts only after DTO freeze and owns shared transport/controller plus window store/FSD migration and corresponding state tests. Coordinator alone owns canonical docs, run contract, integration and ledger. Test/fixture writer runs after coherent interfaces land. No parallel overlapping renderer writers. An independent reader reviews current code and actual captures after required checks, with distinct gate bindings.
+
+P5 single owner: window-scoped Zustand vanilla store `entities/workbench/model`, pure transitions and public selectors; eliminate legacy hook/ref canonical owners rather than wrapping them with a second store. Store owns projection/lists/catalog/files/drafts/shared selection-layout. Controllers own scheduling only. assistant-ui derives messages from this store. Local menu/search/rename remains local. Migrate coherent vertical slices through pages/widgets/features/entities/shared, exact root public APIs; preserve deletion reconciliation and target-only draft cleanup.
+
+Files: scope by runtime epoch/workspace/trust revision/path/resource/generation. Reopen reads again; refresh listing and current preview; clear old file before new selection. On known mutation coalesce fresh visible reads. Refocus/foreground revalidate; five-second single-flight visible timer handles external edits, stops hidden/disconnected. Last-observed content must be labelled, failed/deleted reads stale/cleared, late A-B-A responses discarded. No second payload cache, no write conflict claims from fresh reads.
+
+Meaningful tests: never-settling read, ignored abort and bounded actual count, late completion, coalescing, reserved lookup under exhaustion, cross-sender/malformed cancel, old epoch, aggregate timeout, dedup changed digest, lookup after timeout, no replay, stale snapshot cannot change health, independent drafts, confirmed deletion after A-B-A, stale/repeated permissions, file reopen/edit/delete/recreation/delayed selection, selector stability and independent window stores. Reuse node:test/tsx and existing native evidence runner.
+
+## P6 and P7
+P6 measures actual input/menu/panel/switch/store-to-visible latency separately from polling/provider latency, listeners/requests/heap after100 switches and bundle delta. Record environment, samples and native hidden captures; numbers are targets until measured. Preserve approved A reflow/IME/permissions/unknown states. Background-only fixture may be adjusted; do not weaken production window behavior to make tests quiet.
+
+P7 requires a separately reviewed durable registry/journal/crash-recovery contract before host implementation. Resolve native Documents on each OS. Stable app session IDs name `~/Documents/OhMyOwnCode/{session-id}`; rename never moves folders. Imports remain in place, unregister/session removal never deletes imported files. Persist registry/history/native mappings, receipt journal/tombstones and sidecar storage before restart claims. Existing sidecar/profile are temporary and cleanup-owned: do not merely persist renderer lists while deleting the native transcript database. Separate durable ownership from disposable process/profile/cache cleanup; lock one active owner, validate corruption/version/permissions and fail safely. No implicit migration/delete of current ephemeral/imported content. Explicit migration record, crash-point tests and rollback preserve both source and destination.
+
+## Remaining product completion map
+After foundations, continue PRD F-01-18 with concrete capability decisions and bounded runs:
+1. Workspace/worktree import/create/unregister/guarded physical deletion; durable parallel sessions/search/unread/reopen.
+2. Conversation context/attachments/edit-fork/queue/retry safety and supported agent/model/effort values.
+3. Subagents, direct tool calls, execution-boundary permission presets, command palette, harness config/skills/MCP management; no fabricated isolation or unsupported formats.
+4. Isolated right-side browser/artifact previews, managed dev servers, file edit/conflict/diff/Git, real terminal processes and teardown.
+5. Plans/review/version bindings, truthful timeline/usage/learning, export/import/retention/recovery, preferences/notifications/local scheduled tasks.
+6. Current full regression, accessibility, local monitoring foundation, macOS build and native Windows CI. macOS/cross-build never establishes Windows runtime pass. Signing/notarization/publication/credentials require their real external capability and authorization; prepare local outputs first.
+
+## Staffing and infrastructure
+Choose least expensive supported model/effort for each bounded outcome; Sol/high for safety contracts/complex state or independent judgment, Sol/medium for well-defined integration, cheaper mechanical worker if available. No permanent pins. Record requested settings separately from observed identity.
+This parent session has nine occupied agent slots including completed children. A new spawn failed with agent thread limit. No supported close-agent tool is exposed. Two independent read-only ephemeral CLI attempts were rejected by ChatGPT-account model support (`gpt-6.1-sol`, fallback `gpt-5.4`). This is infrastructure failure, not permission auto-review rejection or task correctness. No CLI plan result exists. Never register a failed spawn/CLI as successful dispatch or independent pass. User was asked whether to continue in a new Codex task (fresh context preferred) or permit existing-child context reuse. Await that choice before dependent specialist handoff. This file is coordinator preparation, not entry review approval.

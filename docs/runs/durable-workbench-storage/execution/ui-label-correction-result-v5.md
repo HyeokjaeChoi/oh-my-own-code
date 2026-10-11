@@ -1,0 +1,4 @@
+# UI fixture correction
+Author01a106fe-9c6f-7ab2-acba-274776e03d2a fresh engineer. One expected exact unknown-status string corrected to current Renderer text in scripts/e2e-workbench-states.mjs. No product source change. Exact matching and P6/P7 behavior assertions retained. No other old copy consumers found. Fixture host/test unchanged. Writer Node37/37, syntax, scoped ESLint/Prettier pass. Actual hidden retry remains Main responsibility, not final approval.
+Current script SHA256 d5331f2f1acc81e16d2d033a5646e24241de36bab3cdff14b4cb6f05ebd59c21.
+First hidden-ui failed evidence retained under frontend-architecture-redesign/execution/p7-storage-native-r1-failed-copy/ui-states. Owned test host exited code0; captured window hidden/nonfocused/nonfocusable. No provider/productionMain invocation.

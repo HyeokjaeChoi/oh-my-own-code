@@ -1,0 +1,97 @@
+{
+  "checks": {
+    "format": [
+      {
+        "argv": [
+          "node",
+          "node_modules/prettier/bin/prettier.cjs",
+          "--check",
+          "apps/desktop-app/src/workbench-service.mjs",
+          "apps/desktop-app/src/host/workspace-registry.mjs",
+          "apps/desktop-app/src/host/storage-integration.test.mjs",
+          "apps/desktop-app/src/host/workspace-registry.test.mjs"
+        ],
+        "contract_sha256": "6ebf1c4b6d6ad79ca5a4fa3dd6cc093b908695fbbfdadf47a8cc6a1e6b57215b",
+        "cwd": ".",
+        "environment_sha256": "1263d32858ddb8a526da6bb5493b8b5a6d9eaec4b580f9d99cf558e7311fcb08",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "0c5a3af2b8448a771b31643873172d7c0ccc177b9d579d286d2d15eb6e2deb3f",
+        "recorded_at": "2026-10-09T00:02:38+00:00",
+        "scope": "Exact4 changed JavaScript source/test paths.",
+        "source_sha256": "e592cb2ea327ab50ea9d50a96c092c3e1c9102795d37d1754b744cf5a2ea9e8b",
+        "stderr": "",
+        "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n",
+        "timed_out": false
+      }
+    ],
+    "lint": [
+      {
+        "argv": [
+          "node",
+          "node_modules/eslint/bin/eslint.js",
+          "--config",
+          "apps/desktop-app/eslint.config.mjs",
+          "apps/desktop-app/src/workbench-service.mjs",
+          "apps/desktop-app/src/host/workspace-registry.mjs",
+          "apps/desktop-app/src/host/storage-integration.test.mjs",
+          "apps/desktop-app/src/host/workspace-registry.test.mjs"
+        ],
+        "contract_sha256": "6ebf1c4b6d6ad79ca5a4fa3dd6cc093b908695fbbfdadf47a8cc6a1e6b57215b",
+        "cwd": ".",
+        "environment_sha256": "1263d32858ddb8a526da6bb5493b8b5a6d9eaec4b580f9d99cf558e7311fcb08",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "0c5a3af2b8448a771b31643873172d7c0ccc177b9d579d286d2d15eb6e2deb3f",
+        "recorded_at": "2026-10-09T00:02:36+00:00",
+        "scope": "Exact4 changed JavaScript source/test paths.",
+        "source_sha256": "e592cb2ea327ab50ea9d50a96c092c3e1c9102795d37d1754b744cf5a2ea9e8b",
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      }
+    ],
+    "unit": [
+      {
+        "argv": [
+          "node",
+          "--test",
+          "--test-reporter=dot",
+          "apps/desktop-app/src/host/workspace-registry.test.mjs",
+          "apps/desktop-app/src/host/storage-journal.test.mjs",
+          "apps/desktop-app/src/host/workbench-admission.test.mjs",
+          "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+          "apps/desktop-app/src/host/storage-integration.test.mjs",
+          "apps/desktop-app/src/workbench-service.test.mjs"
+        ],
+        "contract_sha256": "6ebf1c4b6d6ad79ca5a4fa3dd6cc093b908695fbbfdadf47a8cc6a1e6b57215b",
+        "cwd": ".",
+        "environment_sha256": "1263d32858ddb8a526da6bb5493b8b5a6d9eaec4b580f9d99cf558e7311fcb08",
+        "exit_code": 0,
+        "inputs_changed": false,
+        "interrupted": false,
+        "plan_sha256": "0c5a3af2b8448a771b31643873172d7c0ccc177b9d579d286d2d15eb6e2deb3f",
+        "recorded_at": "2026-10-09T00:02:33+00:00",
+        "scope": "Affected actual registry/journal/admission/receipts/service and durable integration Node regression including new duplicate import cases. Synthetic Native only; no Native/provider acceptance.",
+        "source_sha256": "e592cb2ea327ab50ea9d50a96c092c3e1c9102795d37d1754b744cf5a2ea9e8b",
+        "stderr": "",
+        "stdout": "....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n....................\n............\n",
+        "timed_out": false
+      }
+    ]
+  },
+  "focusedCases": 5,
+  "actualScope": "Production registry/service filesystem Node tests; Native client is synthetic, no provider/Bun/Electron/productionMain/build or OS IPC execution.",
+  "history": [
+    "integration-red-r1.log:4fail1pass meaningful canonical/managed/capacity failure before correction.",
+    "integration-green-r1.log:4pass1fail due reopened fixture mutation before initialization settled; test-only readiness barrier fixed.",
+    "integration-green-r2.log:5pass at current production bytes."
+  ],
+  "untouchedContracts": "Public DTO/API and journal shapes unchanged. Existing operation identity/dispatch/completion preserved; per-request reservation references existing workspace rather than bypassing durable bookkeeping.",
+  "limits": [
+    "Actual production Native or Electron restart not verified by Node checkpoint/reopen.",
+    "Existing conservative retention/session bounds remain; no Windows/power-loss guarantee."
+  ]
+}

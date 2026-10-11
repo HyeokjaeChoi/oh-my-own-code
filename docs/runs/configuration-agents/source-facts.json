@@ -1,0 +1,63 @@
+{
+  "status": "Read-only current pinned implementation facts for initial agents entry; source is not runtime proof",
+  "sources": {
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/plugin/dist/promise/agent.d.ts": "462ccafdb0e1809f775366f0a4cf4f4ed195add0d15ecfb8fc1b56b6a49b24a1",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/plugin/dist/promise/tool.d.ts": "14ead93a2c03136af9768f9f02447c5fb357d1bce12a4b38a5e9fe31a0e91eff",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/client/dist/promise/generated/client.d.ts": "22589f1c0f305239a9621cc725767bcbff46dff057fcc4b9cb2190518f1b1e7c",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/agent.js": "c18ebdc0462ffb0625c286b6ab8a1f6f25081f395ca06b53553ba3d3147dd25e",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/config.js": "97f8a1092b881153bd9fae742192a932715d6b6bebee745021bd60500692710e",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/config/agent.js": "286b36260ef84454077c5c1e2756101e3668239a922fe32bd62a639c4b76525a",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/config/plugin.js": "f087fb63ab4ca8ccd5dfc6b7c9bf8cc64760b37859c46e2b990fd23efa65bc54",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-tats7t1r.js": "30003b4f011a368aa4e3f9a8c86e95e6994b1f889b21a70a531297b6c79cad64",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-76n1dez8.js": "d287ae519253b75a2b350a53b4b5c5eef01b819afcf64e79c66566daccbe361b",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-569zmx9y.js": "e2dbf9dbd1fcb9fc602cad946aeef34c28d121bf46d05ac96a19ae2d332cf216",
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-2zzff5mh.js": "cbcc3dc1085121b4a5c02cef3570a059d5f3fb2c3d166d089ee64b4f1f176a46",
+    "apps/desktop-app/src/workbench-service.mjs": "0118165e4c9c0686a162e9d043c1cf83bae4c6146a42b7788a619e9212b7abb8",
+    "apps/desktop-app/src/host/workbench-configuration.mjs": "45fe37e79dec410444f5bb07b50aeaae2721b000fe0f2f7aa9536f0b6010a13b",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157"
+  },
+  "facts": [
+    {
+      "source": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-tats7t1r.js",
+      "lines": "52-73",
+      "fact": "AgentEditor.update creates missing ID from Agent.Info.default then callback; not an existing-only edit API."
+    },
+    {
+      "source": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/agent.js",
+      "lines": "28-42",
+      "fact": "Default agent grants wildcard allow plus specific asks; future custom agent must explicitly keep app permission boundary and inspect effective session rules."
+    },
+    {
+      "source": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-76n1dez8.js",
+      "lines": "200-226",
+      "fact": "Plugin AgentDomain transform wraps actual agent editor; public client agent has list/get only."
+    },
+    {
+      "source": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/chunks/config-569zmx9y.js",
+      "lines": "38-40,75-116,145-168",
+      "fact": "Pinned built-in config plugin discovers agent/agents/**/*.md under config source dirs; parsed Markdown body becomes system, native and legacy metadata conversion distinct. project:false must remain; local file discovery is inert app-side only."
+    },
+    {
+      "source": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/plugin/dist/promise/tool.d.ts",
+      "lines": "ToolEditor/ToolHooks",
+      "fact": "ToolEditor.add exists; update ignores missing IDs. Hooks are fixed code callbacks, not arbitrary JSON shell execution support."
+    },
+    {
+      "source": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/schema/dist/config.js",
+      "lines": "55,97",
+      "fact": "Config.Info agents/plugins supported; no general config hooks/tools schema members. Config.Patch shell only, cannot use public config.update to apply these sections."
+    },
+    {
+      "source": "apps/desktop-app/src/workbench-service.mjs",
+      "lines": "930-951,1574,1614",
+      "fact": "Existing send enforces baseline before and after agent/model selection; preserve both stages."
+    }
+  ],
+  "next_candidate": "Major initial agents file/registry boundary, bounded existing directory Markdown editor + explicit fixed trusted agent transform; no arbitrary hook/tool/plugin code loading. Other unsupported vendor formats truthful inactive metadata/drafts require separate supported conversion design.",
+  "unresolved": [
+    "Exact narrow agent Markdown accepted schema and source naming; no path inference or legacy coercion",
+    "Custom agent effective permissions/native defaults; owned registry removal while session references ID",
+    "Whether next increment files only or combined registry; no implementation decision yet",
+    "Hooks/tools/plugins executable-code confirmation and supported fixed adapter boundaries; no generic installer/autoload fallback"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "case": "runtime",
+  "status": "PASS",
+  "namespace": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/b41a3ce3-dbf0-4949-8bdb-efa32203dfcc",
+  "namespace_retained": true,
+  "before": {
+    "input_manifest_sha256": "4913a77349b57c89d96166c2403fdc601d94bff70eeaea39cba21197f02836ae",
+    "runtime_manifest_sha256": "79df045e1e6e1382d48ed3baabfcb00db55a57c14ee8f22a4038b2decb31c782",
+    "inventory_sha256": "e2dc4a961416c48f4b1e123d27bca367bfd5b4b3dcbc0bf589b499514070a0ef"
+  },
+  "after": {
+    "input_manifest_sha256": "4913a77349b57c89d96166c2403fdc601d94bff70eeaea39cba21197f02836ae",
+    "runtime_manifest_sha256": "79df045e1e6e1382d48ed3baabfcb00db55a57c14ee8f22a4038b2decb31c782",
+    "inventory_sha256": "e2dc4a961416c48f4b1e123d27bca367bfd5b4b3dcbc0bf589b499514070a0ef"
+  },
+  "journal": [
+    {
+      "type": "api-ack",
+      "method": "server.info"
+    },
+    {
+      "type": "authenticated-ready",
+      "pid": 99446,
+      "engine": "1.4.2"
+    },
+    {
+      "type": "scope-closed",
+      "pid": 99446,
+      "reason": "requested",
+      "observation": {
+        "scope": "direct JS ChildProcess/Bun handles only; not arbitrary native/OS descendants",
+        "observerGap": false,
+        "handles": [],
+        "live": 0
+      }
+    },
+    {
+      "pid": 99446,
+      "code": 0,
+      "signal": null,
+      "observed": "ChildProcess.exit"
+    }
+  ],
+  "diagnostic": null,
+  "result": {
+    "scoped_start": true,
+    "authenticated_ready": true
+  },
+  "limitation": "Direct JS handles only; no OS confinement, queued recovery, provider safety, pairing/PTY, power-loss, production adoption or P7 completion proof."
+}

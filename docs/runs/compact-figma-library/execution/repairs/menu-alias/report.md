@@ -1,0 +1,15 @@
+# Menu and COLOR alias repair evidence
+
+Status: repaired; independent review pending. Plan revision2. Figma file e6QYqEsmA3FHB6A2ohNr2o; Components page81:3; Menu set85:636. Scope only F1-menu and F2-color-alias-audit.
+
+F1: Real Check instance99:6319 references existing Lucide Check component83:205. It occupies16x16px at8,8 in selected pin row85:575;8px gap; label begins at32px. Six opened variants now contain exactly one1px separator immediately before delete, with existing decorative-border alias VariableID:82:15. All30main row heights and60Light/Dark specimen row heights remain32px. Separator adds1px to menu height168->169. Existing focus remains x2,y2,width228,height28,stroke2,INSIDE. Twelve existing opened showcase instances resize to169px. Auto-layout family heights become512px. Closed variants stay32px.
+
+Both Light/Dark inherited selected instances reference actual Check83:205 with16px bounds and correct semantic modes82:0/82:1. Specimen menu component modes are82:2/82:3. Both family PNGs are actual Figma1x exports: frame1216x512; PNG1248x532 includes existing shadow extent. Worker inspected both PNGs; Check, separator and inset focus are visible; row labels fit. Transparent family export backgrounds are preserved; captions need the intended theme backing surface. Worker evidence is not independent approval.
+
+F2: Supplemental color-alias-audit.js compares VARIABLE_ALIAS type/id before any COLOR channels. If either value is an alias, both must be aliases with exactly matching type/id. RGBA tolerance0.00001 applies only to literals; RGB channels must exist and be finite. Source is unchanged prepared-contract.json, the authoritative475-token projection.153COLOR variables,274mode comparisons:242exact alias comparisons;32literal comparisons;0failures. Six comparator regression cases pass, including different alias IDs, alias/literal mismatch and missing RGB channels. Full274actual records with IDs, modes and expected source paths are in color-alias-readback.json. No Figma variable or collection was mutated. Historical next-selected-audit.js stays frozen; supplemental comparator supersedes its COLOR concern only.
+
+Only this new repairs/menu-alias directory was written. All251historical frozen file hashes still match. No product code, production tests, plan, ledger, originalstate, oldcapture, or other component family was edited.
+
+Execution limits: one separator name lookup failed before mutation; the existing decorative variable was discovered and reused. One oversized audit request was rejected by connector maxLength before execution; the input was narrowed toCOLOR tokens. Full readback was split into two bounded responses to avoid20KB output truncation. figma.io.write did not expose a JSON artifact, so full readback was reconstructed from exact response records. Successful tool responses expose no standalone response ID; payloads are retained.
+
+Static Figma draft evidence only. No Production/runtime/keyboard/IME/accessibility certification, full-file audit, publication or unrelated gate is claimed. Independent review must bind this new evidence before approval.

@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "A1",
+      "description": "Managed product adopts exact reviewed utility only and retains bounded redacted terminal summaries"
+    }
+  ],
+  "checks": {
+    "adoption": {
+      "argv": [
+        "/opt/homebrew/bin/python3.12",
+        "-c",
+        "import hashlib,importlib.util,json,pathlib,sys\np=pathlib.Path('.solopreneur/harness.py');expected='714d3758eb2d7dc309374c0b0ddba7556ac858d449d35582eda4c8f3c0367044'\nassert hashlib.sha256(p.read_bytes()).hexdigest()==expected\nmanaged=json.loads(pathlib.Path('.solopreneur/managed.json').read_text());before=json.loads(pathlib.Path('docs/runs/harness-output-adoption/before/.solopreneur/managed.json').read_text());before['files']['.solopreneur/harness.py']=expected\nassert managed==before\nspec=importlib.util.spec_from_file_location('applied_output',p);h=importlib.util.module_from_spec(spec);spec.loader.exec_module(h)\nraw=b'HEAD\\n'+b'x'*20000+b'abc'*1350+b'\\nFINAL: 73 passed\\n'\nscript='import os; os.write(1,'+repr(raw)+'); os.write(2,'+repr(raw)+')'\nr=h.execute_check([sys.executable,'-c',script],pathlib.Path.cwd(),5,secrets=('abc',))\nassert r[0]==0 and not r[3] and not r[4]\nfor text in r[1:3]:\n assert text.startswith('HEAD\\n') and text.endswith('\\nFINAL: 73 passed\\n') and 'abc' not in text and '[truncated]' in text\nassert h.execute_check([sys.executable,'-c',\"print('short')\"],pathlib.Path.cwd(),5)==(0,'short\\n','',False,False)\nprint('managed reviewed hash, metadata, bounded summary, redaction and short output PASS')\n"
+      ],
+      "cwd": ".",
+      "scope": "Exact reviewed hash +managed metadata only +actual synthetic output regression; no product Native behavior changes",
+      "acceptance_ids": [
+        "A1"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": []
+}

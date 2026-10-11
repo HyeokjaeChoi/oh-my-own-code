@@ -1,0 +1,83 @@
+[
+  {
+    "path": "node_modules/@opencode/core/dist/chunks/config-zs6xvgsc.js",
+    "beforeSha256": "ef0790ce1b69287aa37e1983835e3aa4e67c030451cd0d8f394a6068636db695",
+    "afterSha256": "465c5e0a314fbe8b4dac2cc99a0bc2a633b2118aaea3315e57e8f5d7e519f319",
+    "edits": [
+      {
+        "find": "// src/location-services.ts",
+        "replace": "import { Service as WorkbenchControl, node as workbenchControlNode, LocationBuildScope } from \"../../../../../native-permission-control.mjs\";\n// src/location-services.ts"
+      },
+      {
+        "find": "import { Context, Duration, Effect, Exit, Layer, LayerMap, MutableHashMap, Option } from \"effect\";",
+        "replace": "import { Context, Duration, Effect, Exit, Layer, LayerMap, MutableHashMap, Option, Scope } from \"effect\";"
+      },
+      {
+        "find": "    const owner = yield* Effect.scope;",
+        "replace": "    const owner = yield* Effect.scope;\n    const control = yield* WorkbenchControl;\n    const tracked = (effect) => effect.pipe(Effect.onExit((exit) => Exit.isFailure(exit) ? control.invalidate(\"location_lifecycle_unverified\") : Effect.void));"
+      },
+      {
+        "find": "      return Layer.fromBuild((memoMap, scope) => Effect.suspend(() => Layer.buildWithMemoMap(layer2(ref, { replacements: bindings }), memoMap, scope)).pipe(Effect.onExit((exit) => {",
+        "replace": "      return Layer.fromBuild((memoMap, scope) => Effect.gen(function* () {\n        yield* Scope.addFinalizer(scope, () => build.handle ? tracked(control.locationScopeObserved(build.handle)) : Effect.void);\n        build.handle = yield* tracked(control.locationBegin(ref));\n        if (Option.getOrUndefined(MutableHashMap.get(builds, ref)) !== build) {\n          yield* tracked(control.locationFinalizing(build.handle));\n          return yield* Effect.fail(new Error(\"native_permission_location_invalidated\"));\n        }\n        const context = yield* Layer.buildWithMemoMap(layer2(ref, { replacements: bindings }), memoMap, scope).pipe(Effect.provideService(LocationBuildScope, build.handle));\n        yield* Scope.addFinalizer(scope, () => tracked(control.locationFinalizing(build.handle)));\n        return context;\n      }).pipe(Effect.onExit((exit) => {"
+      },
+      {
+        "find": "              build.close = lifecycle.shutdown;",
+        "replace": "              yield* tracked(control.locationReady(build.handle));\n              build.close = tracked(control.locationFinalizing(build.handle)).pipe(Effect.andThen(lifecycle.shutdown));"
+      },
+      {
+        "find": "                return yield* lifecycle.shutdown;",
+        "replace": "                return yield* tracked(control.locationFinalizing(build.handle)).pipe(Effect.andThen(lifecycle.shutdown));"
+      },
+      {
+        "find": "        return Exit.isFailure(exit) ? finish.pipe",
+        "replace": "        const guardedFinish = build.handle && Exit.isFailure(exit) ? tracked(control.locationFinalizing(build.handle)).pipe(Effect.andThen(finish)) : finish;\n        return Exit.isFailure(exit) ? guardedFinish.pipe"
+      },
+      {
+        "find": "Effect.asVoid) : finish;",
+        "replace": "Effect.asVoid) : guardedFinish;"
+      },
+      {
+        "find": "        MutableHashMap.remove(builds, key);\n        return inner.invalidate(key).pipe(Effect.andThen(build?.close ?? Effect.void));",
+        "replace": "        const finalize = build?.handle ? tracked(control.locationFinalizing(build.handle)) : Effect.void;\n        return finalize.pipe(Effect.andThen(Effect.suspend(() => {\n          MutableHashMap.remove(builds, key);\n          return inner.invalidate(key).pipe(Effect.andThen(build?.close ?? Effect.void));\n        })));"
+      }
+    ]
+  },
+  {
+    "path": "node_modules/@opencode/core/dist/chunks/config-vyy061a2.js",
+    "beforeSha256": "5f1e4661eaee95de66c6ea2442985a5ebb4601ad2e2dba4235a50bbb8f72bd19",
+    "afterSha256": "912d6a88a8c0be08ec0bfb183cfc0cc96c38e6b346ee8347f1b84641303acf36",
+    "edits": [
+      {
+        "find": "// src/location.ts",
+        "replace": "import { Service as WorkbenchControl, node as workbenchControlNode, LocationBuildScope } from \"../../../../../native-permission-control.mjs\";\n// src/location.ts"
+      },
+      {
+        "find": "  const project = yield* Service81;",
+        "replace": "  const control = yield* WorkbenchControl;\n  const handle = yield* LocationBuildScope;\n  const project = yield* Service81;"
+      },
+      {
+        "find": "  return Service80.of({",
+        "replace": "  yield* control.locationBind(handle, { directory: ref.directory, workspaceID: ref.workspaceID, project: { id: resolved.id } });\n  return Service80.of({"
+      },
+      {
+        "find": "  deps: [node85]",
+        "replace": "  deps: [node85, workbenchControlNode]"
+      }
+    ]
+  },
+  {
+    "path": "node_modules/@opencode/core/dist/effect/app-node-builder.js",
+    "beforeSha256": "b77347256dd0c0193319dd0d5ca7c9cb576f6585ad9ebd3f3575d91739669df6",
+    "afterSha256": "cee18a3e9ad7a1d5bc611821875f528a676bad6f51f16a8e0225dd95551b46d1",
+    "edits": [
+      {
+        "find": "// src/effect/app-node-builder.ts",
+        "replace": "import { Service as WorkbenchControl, node as workbenchControlNode, LocationBuildScope } from \"../../../../../native-permission-control.mjs\";\n// src/effect/app-node-builder.ts"
+      },
+      {
+        "find": "replacements: [node54.replace(buildLocationServiceMap2(bindings)), ...bindings]",
+        "replace": "replacements: [node54.replace(makeGlobalNode({ service: Service52, layer: buildLocationServiceMap2(bindings), deps: [workbenchControlNode] })), ...bindings]"
+      }
+    ]
+  }
+]

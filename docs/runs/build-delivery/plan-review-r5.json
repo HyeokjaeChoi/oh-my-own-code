@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "d3c5060b2c416c46b007cd549281fe1523a41b7d0d04b52fa1d5f8af92911178",
+    "contract_sha256": "064248d8e9743d7823753cef30c2e95a1644feec1dbbaa69ccdc83b7a491d8fd",
+    "source_sha256": "fde27e141cb7907a9a6cbedd6e7e575db043f8b7a87b9ef53823428776c10d2d"
+  },
+  "verdict": "changes_requested",
+  "summary": "Extending the existing client-probe.mjs is an appropriate smallest increment and fits user authorization. The check mapping to AC-2/AC-4/AC-7 is sound, and the runtime/network/data/persistence/mutation holds are clear. The plan omits AC-7 in its own acceptance section, does not bind the exact owned files and executable verification path, and does not clearly separate future actual-runtime research from this synthetic-only increment. The local lockfile and installed @opencode/sdk@2.0.18 manifest do not prove current fresh registry availability; the npm default version being reserved is not inconsistent with a cached local version.",
+  "open_findings": [
+    {"id":"PR5-01","priority":"medium","file":"docs/runs/build-delivery/plan.md","finding":"Add AC-7 to plan acceptance criteria and explicitly bind the sdk-client-probe check to AC-2/AC-4/AC-7 without implying actual runtime or full product completion."},
+    {"id":"PR5-02","priority":"medium","file":"docs/runs/build-delivery/plan.md","finding":"Specify exact owned files, TypeScript config inclusion, verify.mjs wiring, unchanged package/lock/dependency versions, and that the command fails on any TS or runtime-case failure. Existing host/UI checks are regressions only, not runtime proof. If cache is missing, do not install or access network."},
+    {"id":"PR5-03","priority":"medium","file":"docs/runs/build-delivery/next-increment-research-r1.md","finding":"Mark actual runtime/service/event/network probe as a future candidate requiring its own plan and review, with package availability, isolation and lifecycle effects unresolved. This increment grants no host start/discovery/network/file access/write/persistence authority."}
+  ],
+  "provenance": {
+    "child_task_id": "/root/plan_review_r5",
+    "author_task_id": "/root",
+    "requested_route": "gpt-6-astra/high",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "runtime_identity_verified": false
+  }
+}

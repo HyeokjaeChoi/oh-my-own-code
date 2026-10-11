@@ -1,0 +1,24 @@
+---
+name: solo-implement
+description: Implement and verify a scoped code change or an existing engineering plan in the current project.
+---
+
+# Implementation
+
+Deliver the requested behavior within the supplied spec, plan, file ownership, and project conventions. This workflow also owns bounded, explicitly approved test coding when `test_engineer` has selected the strategy and judgment; do not turn implementation into an independent test-policy decision. The executor follows the shared adaptive-routing reference and any exact user instruction. Coordinator-reported routing metadata is not runtime identity attestation. Read the current task-plan SSOT at `docs/runs/<run-id>/plan.md` and verify the assigned revision/hash; a small change uses its compact confirmed criteria. Read the relevant task and binding interfaces rather than unrelated plan history. If implementation consumes product/design contracts, require the coordinator's matching current document-review and `handoff` evidence before dependent edits. Return mismatches or changed requirements to the coordinator to update and re-review the plan; do not execute an obsolete chat plan or silently decide a blocking product question. Task size changes the scope and verification plan, not an implicit model choice. More effort is not a substitute for resolved requirements.
+
+Inspect the affected execution path and a nearby working pattern before editing. Preserve shared contracts and domain logic while keeping web and mobile UI and navigation platform-specific. Reuse current dependencies when they satisfy the requirement; research a maintained alternative before adding a new package or abstraction.
+
+Implement the plan's first coherent increment and return a reviewable artifact before expanding uncertain scope. Use [the feedback loop](../solo-orchestrate/references/effort-and-feedback.md) when iteration or failure diagnosis is needed. Confirm intended behavior, not merely that something was produced. Lower requested effort changes deliberation, not acceptance criteria, error handling or required checks. Surface missing requirements and wrong-approach evidence to the coordinator instead of compensating with speculative features or blind retries.
+
+Choose the development loop by risk:
+
+- For a bug, risky behavior change, domain rule, parser, state transition, authorization boundary, or stable API contract, add a meaningful reproducer or test first and verify that it fails for the intended reason.
+- For low-impact copy, configuration, generated output, or mechanical wiring, use direct inspection and the smallest relevant check; do not add a test that restates the implementation.
+- Keep edits focused. Do not bundle unrelated cleanup or create checkpoint commits unless the user or repository workflow requests them.
+
+Run the narrow check that proves the changed behavior, then the required project checks affected by the change. Classify format, lint, typecheck, unit, integration, and browser E2E checks in the plan as selected, not applicable, manual coverage, or a blocker; do not call an observation-only browser pass automated E2E. After a capacity failure, reconcile task state and completed outputs before retrying. A transport stall alone does not justify changing models or effort. Inspect the final diff for scope, accidental files, secrets, and missing error paths. Evidence belongs to the exact revision and environment tested; do not reuse results after relevant code or configuration changes.
+
+Every feature or bugfix run needs an independent code review, regardless of diff size. Scale review depth to the change's risk. Freeze artifact registration and selected checks before final review, and rerun all recorded checks after a source fingerprint change; keep valid checks when only run reports change. Give the reviewer the acceptance criteria and exact diff range or working-tree diff. Keep implementation self-review distinct from that review. Role definitions have no model or effort defaults; follow the shared adaptive-routing reference and do not treat coordinator-reported invocation metadata as runtime identity.
+
+Use the active run for mutating artifact work. The coordinator executes a named check from the reviewed contract through `python3 .solopreneur/harness.py check <run-id> --name <name>`; it runs the exact contracted argv and records the result. Give durable output paths to the coordinator for registration with `artifact <run-id> --file <path>`. The primary agent saves read-only reviewer output and registers the code gate with `review <run-id> --gate code --reviewer reviewer --verdict ... --evidence <review-path>`. Resolve required findings, rerun all recorded checks when a fix changes the project source fingerprint, and use `status <run-id>` before handoff. Do not describe an unrun check or an agent report as proof.

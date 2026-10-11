@@ -1,0 +1,73 @@
+{
+  "revision": 18,
+  "scope": "six service-free Provider fixed source callbacks + unknown builtin activation pre-construction refusal; no grant",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "bytes": 259396,
+      "sha256": "b11e522e54426120bbb564450e1b6d01fa799efe0451be2e1f91da5ff40be92e"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "bytes": 28868,
+      "sha256": "f0541ceb8fc1434e432ed36f771aed308f164ce3fd9776c264ee772390a57c46"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-provider-declaration.test.mjs",
+      "bytes": 13552,
+      "sha256": "fe680b61f1b24527501d47aa5b3605ad0c6f06e4f354141b3cecddfa0838da48"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+      "bytes": 13427,
+      "sha256": "216baf39b7731580d426aaf4950ab5af6beb404f0b4189682e3f54ccd630f274"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 16468,
+      "sha256": "58241b2549dea1952abaab194e2074c541c26deaaac2a40ac1f887efc3d663f1"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "bytes": 32290,
+      "sha256": "2a0747a3155685632c2c37d47a739b6735c67e50c6761cca19aed415a76049c9"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-hook-publication.test.mjs",
+      "bytes": 18817,
+      "sha256": "725cf040be4fbeb6b49066dc69f103bfdb4d741117df5f5cebbbf57d175102b9"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "bytes": 61515,
+      "sha256": "196ab2b05abff45cce5791d5b670bfddeeaa448df2abd8fd3433985d816a8055"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.test.mjs",
+      "bytes": 17386,
+      "sha256": "c2fafc10bec346d4a4b4394048d6ea0b651a50c8113e02966dc1df493bfaa222"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-hook-declaration.test.mjs",
+      "bytes": 27410,
+      "sha256": "bff90de9d53e4b9a2989906da16e51c3e623dee79f3616d2699bce1d7a47b251"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+      "bytes": 18362,
+      "sha256": "a0c6d7e0574106c8bbd80ac5a4be0329892cb91415d0d32be286bdd41b04fc2b"
+    }
+  ],
+  "before_manifest": "prechange/provider-transform-source-before-r1/manifest.json",
+  "red_evidence": [
+    "provider-transform-main-red-r1.log (8 actual hook sources, expected14)",
+    "provider-transform-acquisition-red-r1.log (unknown factory incorrectly executes)"
+  ],
+  "limits": [
+    "Node/inert extracted pinned Effect only",
+    "source-owned callback bodies never executed",
+    "full18/F09 incomplete"
+  ],
+  "worker_report": "provider-transform-worker-handoff-r1.json",
+  "integration_correction": "old hook baseline preservation test retains exact original40 comparison; expected total now50, new6 already exact recipe source verified; first integrated metadata275/276 one stale total assertion only"
+}

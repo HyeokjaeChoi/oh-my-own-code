@@ -1,0 +1,45 @@
+✖ permission overlay is mandatory in newly staged resources with exact output and original preservation (1634.267375ms)
+✖ legacy resources remain verifiable but cannot satisfy required permission overlay (17.935167ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1732.185958
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/stage-event-host.test.mjs:632:1
+✖ permission overlay is mandatory in newly staged resources with exact output and original preservation (1634.267375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - '0d23b55d3acb28c69a1c15005ad494834c0e9a7368c91aba998bdf848fb367de'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.test.mjs:639:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: '0d23b55d3acb28c69a1c15005ad494834c0e9a7368c91aba998bdf848fb367de',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/scripts/stage-event-host.test.mjs:644:1
+✖ legacy resources remain verifiable but cannot satisfy required permission overlay (17.935167ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/stage-event-host.test.mjs:647:2)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /overlay/i,
+    operator: 'rejects',
+    diff: 'simple'
+  }

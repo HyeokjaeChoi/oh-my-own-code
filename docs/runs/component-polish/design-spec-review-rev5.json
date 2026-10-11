@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "6aba776d2a233dc66ad2d4f24d85347b32d623e85dba9621231e7accb96ed066",
+    "documents_sha256": "e117cb0d8f798567b0c03d32e894bdb2a44dad48a7d636b6dcf10606e2afb612",
+    "gate": "design_spec",
+    "plan_sha256": "f1394dff1232453425e0811cf666188aa6d1bb5ad5aa589454c85e48d382a2c4",
+    "schema_version": 2
+  },
+  "verdict": "pass",
+  "summary": "Independent document-only design-spec review for run component-polish. Reviewed docs/design/components.json (SHA-256 c2eccfc549399c957734da0afd87ff29fb69cf12c61177fc9899718347026184), docs/design/system.md (SHA-256 863cd6da5098b8009bb1fc82e9538f731a57a38b382ec11536fc887dcab558c4), and docs/design/tokens/manifest.json (SHA-256 84a1ecac6ef5e6dd51f9d7a1a9a959751a3a05731fe8cb3ff4ca3379957e0498) against docs/runs/component-polish/plan.md (SHA-256 f1394dff1232453425e0811cf666188aa6d1bb5ad5aa589454c85e48d382a2c4). The ToolCall contract applies hug-visible-content vertical sizing and 16px bottom padding to all six states, requires exact displayed-target/input-path equality across Light and Dark examples, and requires long paths to wrap without truncation. These requirements agree with the system guide, the 16px component card padding token, and the plan's ToolCall-only continuation. Per-state labels and nested StatusBadge mappings cover queued, running, waiting, success, error, and unknown. Borderless summaries, conditional runtime-target navigation, separate keyboard disclosure, non-actionable absent-target text, masked detail, and unknown-schema plain text preserve coherent state and evidence semantics. This pass approves source-contract implementation readiness. It does not verify Figma frame bounds, content-hug behavior, actual target/input values, wrapping, Light/Dark captures, runtime interactions, or assistive-technology behavior; those require the planned implementation and rendered-design review.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/design_spec_reviewer_rev5",
+    "author_task_id": "/root"
+  }
+}

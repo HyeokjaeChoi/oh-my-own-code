@@ -1,0 +1,179 @@
+{
+  "$metadata": {
+    "generator": "designlang",
+    "version": "7.0.0",
+    "spec": "https://design-tokens.github.io/community-group/format/",
+    "source": "https://chatgpt.com",
+    "generatedAt": "2026-09-26T07:07:03.495Z"
+  },
+  "primitive": {
+    "color": {
+      "brand": {
+        "primary": {
+          "$value": "#8e8ea0",
+          "$type": "color"
+        }
+      },
+      "neutral": {
+        "n100": {
+          "$value": "#8e8ea0",
+          "$type": "color"
+        },
+        "n200": {
+          "$value": "#000000",
+          "$type": "color"
+        }
+      },
+      "background": {},
+      "text": {
+        "text0": {
+          "$value": "#000000",
+          "$type": "color"
+        },
+        "text1": {
+          "$value": "#8e8ea0",
+          "$type": "color"
+        }
+      },
+      "ramp": {
+        "neutral": {
+          "50": {
+            "$value": "#f4f4ff",
+            "$type": "color"
+          },
+          "100": {
+            "$value": "#e8e8f5",
+            "$type": "color"
+          },
+          "200": {
+            "$value": "#d7d8e6",
+            "$type": "color"
+          },
+          "300": {
+            "$value": "#bebecf",
+            "$type": "color"
+          },
+          "400": {
+            "$value": "#9e9eaf",
+            "$type": "color"
+          },
+          "500": {
+            "$value": "#8e8ea0",
+            "$type": "color"
+          },
+          "600": {
+            "$value": "#6a6a7b",
+            "$type": "color"
+          },
+          "700": {
+            "$value": "#555563",
+            "$type": "color"
+          },
+          "800": {
+            "$value": "#454552",
+            "$type": "color"
+          },
+          "900": {
+            "$value": "#383743",
+            "$type": "color"
+          },
+          "950": {
+            "$value": "#1e1e25",
+            "$type": "color"
+          }
+        }
+      }
+    },
+    "spacing": {
+      "s0": {
+        "$value": "8px",
+        "$type": "dimension"
+      },
+      "s1": {
+        "$value": "32px",
+        "$type": "dimension"
+      }
+    },
+    "radius": {
+      "r0": {
+        "$value": "5px",
+        "$type": "dimension"
+      }
+    },
+    "shadow": {},
+    "fontFamily": {
+      "f0": {
+        "$value": "Arial",
+        "$type": "fontFamily"
+      }
+    },
+    "fontSize": {
+      "h2": {
+        "$value": "24px",
+        "$type": "dimension"
+      },
+      "body": {
+        "$value": "16px",
+        "$type": "dimension"
+      },
+      "body-sm": {
+        "$value": "13.3333px",
+        "$type": "dimension"
+      }
+    }
+  },
+  "semantic": {
+    "color": {
+      "action": {
+        "primary": {
+          "$value": "{primitive.color.brand.primary}",
+          "$type": "color"
+        }
+      },
+      "surface": {
+        "default": {
+          "$value": "{primitive.color.background.bg0}",
+          "$type": "color"
+        }
+      },
+      "text": {
+        "body": {
+          "$value": "{primitive.color.text.text0}",
+          "$type": "color"
+        }
+      }
+    },
+    "typography": {
+      "body": {
+        "$value": {
+          "fontFamily": "Arial",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "lineHeight": "normal"
+        },
+        "$type": "typography"
+      },
+      "heading": {
+        "$value": {
+          "fontFamily": "Arial",
+          "fontSize": "24px",
+          "fontWeight": "700",
+          "lineHeight": "normal"
+        },
+        "$type": "typography"
+      }
+    },
+    "radius": {
+      "control": {
+        "$value": "{primitive.radius.r0}",
+        "$type": "dimension"
+      }
+    },
+    "shadow": {
+      "elevated": {
+        "$value": "{primitive.shadow.sh0}",
+        "$type": "shadow"
+      }
+    }
+  }
+}

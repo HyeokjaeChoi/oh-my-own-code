@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "retainedSyntheticRoot": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/production-patch-r1/synthetic-eTEF4o",
+  "sourceAndExecutableBefore": {
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-git.mjs": "6903233dd4e7492fd8a876ba46c09967e62c813eb0f01f342e97e7ea96f3629a",
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/line-feedback/index.mjs": "c2355cdf6a8ece022baf6215b5e84d3dee0020050362261c14a622f24f7232e3",
+    "/Library/Developer/CommandLineTools/usr/bin/git": "738d0159292a08341abe63a7decd0715ff34d67d532e17349902a6dc42f60ae7"
+  },
+  "results": [
+    {
+      "id": "real-production-CRLF-function-context",
+      "path": "sample.c",
+      "patchBytes": 314,
+      "functionContextPresent": true,
+      "expectedExcerptConfirmed": true,
+      "sourceDigestPreserved": true
+    },
+    {
+      "id": "real-production-no-newline",
+      "path": "sample.c",
+      "patchBytes": 701,
+      "functionContextPresent": false,
+      "expectedExcerptConfirmed": true,
+      "sourceDigestPreserved": true
+    },
+    {
+      "id": "real-production-mode-only-no-lines",
+      "path": "sample.c",
+      "patchBytes": 65,
+      "functionContextPresent": false,
+      "expectedExcerptConfirmed": true,
+      "sourceDigestPreserved": true
+    },
+    {
+      "id": "real-production-quoted-UTF8-path",
+      "path": "한글 이름.txt",
+      "patchBytes": 305,
+      "functionContextPresent": false,
+      "expectedExcerptConfirmed": true,
+      "sourceDigestPreserved": true
+    }
+  ],
+  "limits": [
+    "Standalone production reader + actual fixed Git + formatter on owned synthetic source only.",
+    "Clock fields are explicit synthetic standalone values, not durable service clock acceptance.",
+    "No Electron/provider/private project or production Main invocation; not a new independent CODE/G2 verdict."
+  ],
+  "readerCloseAwaited": true,
+  "sourceAndExecutableAfter": {
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-git.mjs": "6903233dd4e7492fd8a876ba46c09967e62c813eb0f01f342e97e7ea96f3629a",
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/line-feedback/index.mjs": "c2355cdf6a8ece022baf6215b5e84d3dee0020050362261c14a622f24f7232e3",
+    "/Library/Developer/CommandLineTools/usr/bin/git": "738d0159292a08341abe63a7decd0715ff34d67d532e17349902a6dc42f60ae7"
+  },
+  "sourceAndExecutableStable": true
+}

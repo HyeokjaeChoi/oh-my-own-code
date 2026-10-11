@@ -1,0 +1,32 @@
+✖ durable duplicate import reuses canonical workspace across alias, duplicate key and checkpoint reopen (83.063042ms)
+✔ durable reimport preserves managed ownership and reserved first-session identity (57.0135ms)
+✔ durable import at100 registrations opens an existing target and refuses a101st distinct path (1269.642917ms)
+✔ durable duplicate import cannot clear an existing unresolved resource hold (28.02125ms)
+✔ duplicate import reservation preserves an existing managed identity and replays its original key (84.088083ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1517.542125
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:4603:1
+✖ durable duplicate import reuses canonical workspace across alias, duplicate key and checkpoint reopen (83.063042ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:4689:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

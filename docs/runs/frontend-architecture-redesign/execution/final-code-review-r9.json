@@ -1,0 +1,223 @@
+{
+  "schema_version": 2,
+  "run": "frontend-architecture-redesign",
+  "gate": "code",
+  "reviewer": "reviewer",
+  "verdict": "pass",
+  "summary": "독립 correction CODE 검토에서 수정이 필요한 결함을 찾지 못했습니다. 변경은 SSR fixture 네 줄, mainPane의 overflow-y:auto 한 줄, 두 narrow 200% 시나리오 213줄입니다. 현재 source, 증거, build와 package bytes가 일치합니다. 과거 기록 21개와 재사용 검사 7개를 구분합니다. 이 PASS는 별도 rendered gate를 대신하지 않습니다.",
+  "open_findings": [],
+  "reviewed": {
+    "contract_sha256": "3d5f6ef625de20eee10dbea90362fdbcd4f2770213eb0acac65d85be07168b15",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "code",
+    "plan_sha256": "1e3ac54c890778b6a0c0f21cdb3c52abfa6a4e811fabe53870dae2ffc4758eb2",
+    "schema_version": 2,
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "verification_sha256": "68ba4112a2293378ded5dfd9c1cb1da4611b0b1671deb697ef6ca36cb1edcf6e",
+    "work_class_sha256": "a689ca7a6db18c7b48715faac9c0a20a4da419e2aae8f1fab492c2f586f929d6"
+  },
+  "provenance": {
+    "child_task_id": "01a118a5-2a61-7e52-8665-98507134b96c",
+    "author_task_id": "main-continuation",
+    "child_task_id_source": "현재 CODEX_THREAD_ID",
+    "fresh_independent_report_only": true,
+    "implementation_or_repairs_authored": false,
+    "recursive_delegation": false,
+    "source_or_ledger_edits": false,
+    "tests_app_build_provider_private_store_or_native_execution": false,
+    "read_only_evidence_and_resource_validators_executed": true,
+    "only_written_path": "docs/runs/frontend-architecture-redesign/execution/final-code-review-r9.json",
+    "sandbox_enforcement_claimed": false
+  },
+  "scope": {
+    "plan_revision": 9,
+    "work_class": "routine",
+    "architecture_version": 4,
+    "completed_p7_baseline": "3770a81d225bf29ea36016e03d602660986aa002b0c0710d20ee79698f441e8f",
+    "current_source": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "changed_from_completed_p7": [
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "apps/desktop-app/src/renderer/pages/workbench/shell.module.css",
+      "apps/desktop-app/src/workbench-projection.test.mjs"
+    ],
+    "original_parent_changed_paths": 270,
+    "original_parent_deleted_paths": 8,
+    "full_270_path_fresh_line_audit_performed": false,
+    "method": "Spec compliance와 code quality를 따로 검토했습니다. 세 파일의 추가 부분을 읽기 중 제거해 원래 baseline hash와 대조했습니다. production caller와 fixture의 read/mutation 경계를 필요한 범위에서 확인했습니다. 나머지 부모 범위는 원래 focused 승인과 byte 연속성에 한정해 연결합니다."
+  },
+  "binding_validation": {
+    "actual_current_binding_equals_input_at_report_write": true,
+    "reviewed_copied_from": "docs/runs/frontend-architecture-redesign/execution/final-code-input-r9.json",
+    "registered_artifacts_checked": 29,
+    "registered_artifact_hash_mismatches": [],
+    "packet_contract_sha256": "4b5886500b66b09307ab9d475fc59aed20862e73eb74fc93e7a2dffa49ba7c24",
+    "actual_contract_file_sha256": "4b5886500b66b09307ab9d475fc59aed20862e73eb74fc93e7a2dffa49ba7c24",
+    "review_contract_semantic_sha256": "3d5f6ef625de20eee10dbea90362fdbcd4f2770213eb0acac65d85be07168b15",
+    "authority": "최종 acceptance binding은 input의 reviewed 객체입니다. packet은 준비 metadata이며 실제 reviewer 신원이나 추가 실행 권한의 증거가 아닙니다."
+  },
+  "review_passes": [
+    {
+      "mode": "spec_compliance",
+      "result": "pass_for_assigned_code_scope",
+      "assessment": "A1–A4의 production 경계와 recovery 권한은 변경되지 않았습니다. A5/A6 보완 증거는 pending-inbox bootstrap과 Documents dialog의 대표 narrow 200% 상태입니다. A7은 현재 hidden renderer 측정과 package/source binding으로 확인했습니다. 초기 entry review를 반복하지 않았습니다."
+    },
+    {
+      "mode": "code_quality",
+      "result": "pass",
+      "assessment": "CSS 추가는 fixed-height main pane에 사용자 scroll을 허용합니다. warning, draft, 전송 차단과 authority는 유지됩니다. runner의 추가 213줄을 제거한 hash는 P7 baseline과 같습니다. 기존 assertion 삭제나 production validator 완화가 없습니다. 오류는 failure로 기록되고 정확한 owned process exit가 확인돼야 pass입니다."
+    }
+  ],
+  "change_assessment": [
+    {
+      "path": "apps/desktop-app/src/workbench-projection.test.mjs",
+      "lines": [
+        122,
+        125,
+        126,
+        193
+      ],
+      "assessment": "필수 v5 fixture 필드 세 개와 render 전 snapshot 수용 assertion 한 개입니다. 네 줄 제거 후 baseline hash가 일치합니다. 독립 projection-fixture-v5 CODE PASS의 범위를 유지합니다. 현재 저장된 projection 로그는 tests3/pass3/fail0/skipped0입니다."
+    },
+    {
+      "path": "apps/desktop-app/src/renderer/pages/workbench/shell.module.css",
+      "line": 150,
+      "assessment": "overflow-y:auto 한 줄을 제거하면 baseline hash가 일치합니다. r2의 복구 영역 viewport ratio0 실패를 실제로 보존했습니다. 현재 runner는 draft focus 후 scrollTop>0을 확인하고 mouse.wheel(0,-1000)으로 scrollTop0과 warning의 viewport ratio1을 확인합니다."
+    },
+    {
+      "path": "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "line": 2088,
+      "assessment": "기존 runner에 두 대표 시나리오만 추가했습니다. 현재 envelope와 원래 epoch/operationId의 lookup을 대조합니다. editable/selectable draft, Tab으로 도달한 retry focus, Enter, draft 불변, retained count1, send disabled, mutation attempted/dispatched/rejected counter 불변, 가로 overflow 부재를 확인합니다. retry의 production onClick은 refresh이며 controller의 retained recovery는 read-only lookup입니다."
+    },
+    {
+      "path": "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "line": 2229,
+      "assessment": "Documents 전체 경로의 선택 문자열을 원래 값과 대조합니다. path의 실제 bounds에서 mouse.wheel(0,400)을 보내고 durable 안내의 viewport ratio1을 확인합니다. 두 Escape로 dialog 종료, storage trigger와 navigation opener의 focus return을 확인합니다. wheel 전 경로 PNG와 wheel 후 안내 PNG에서도 서로 다른 scroll 위치를 직접 확인했습니다. 경로 선택 자체는 DOM Range 방식이며 물리적인 drag 또는 OS clipboard 검증이 아닙니다."
+    }
+  ],
+  "evidence_reuse": {
+    "historical_check_records_validated": 21,
+    "unchanged_algorithm_checks_reused": 7,
+    "reused_checks": {
+      "durable-workbench-storage": [
+        "storage-unit",
+        "renderer-unit"
+      ],
+      "durable-native-preflight": [
+        "preflight-unit",
+        "host-regression",
+        "packaging-unit",
+        "preflight-native",
+        "reader-lifecycle"
+      ]
+    },
+    "prior_execution_times_preserved": true,
+    "new_native_execution_claimed": false,
+    "historical_renderer_build_package_rows_used_as_current": false,
+    "historical_note": "current-evidence-reuse-r1.json의 f485/SSR-only 설명은 r7 당시 기록입니다. r9의 source 및 재사용 판정은 현재 r3 검증기, freeze와 최종 input을 사용합니다.",
+    "predecessor_reports": [
+      "docs/runs/frontend-architecture-redesign/execution/final-code-review-r7.json",
+      "docs/runs/projection-fixture-v5/code-review.json",
+      "docs/runs/durable-workbench-storage/execution/final-code-review-r8.json",
+      "docs/runs/durable-native-preflight/final-code-review-r1.json",
+      "docs/runs/durable-workbench-storage/execution/render-review-r4.json"
+    ],
+    "qualification": "각 보고서의 원래 focused 범위를 연결합니다. storage r8과 preflight r1의 source3770 CODE PASS, 기존 rendered r4의 제한을 확인했습니다. 전체270 경로의 새로운 독립 승인을 주장하지 않습니다."
+  },
+  "independent_read_only_validation": {
+    "commands": [
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 docs/runs/frontend-architecture-redesign/execution/verify-current-evidence-r3.py",
+        "exit_code": 0
+      },
+      {
+        "command": "node docs/runs/frontend-architecture-redesign/execution/verify-current-resources-r3.mjs",
+        "exit_code": 0
+      }
+    ],
+    "product_processes_started": 0,
+    "pin_count": 77,
+    "capture_count": 51,
+    "pin_mismatches": [],
+    "ui_result": "pass",
+    "ui_teardown": {
+      "exited": true,
+      "code": 0
+    },
+    "ui_manifest_started_at": "2026-10-07T23:03:13.623Z",
+    "ui_manifest_finished_at": "2026-10-07T23:04:30.811Z",
+    "ui_wrapper_exit_code": 0,
+    "ui_provenance_verified_after": true,
+    "ui_provenance_equals_performance_before_and_after": true,
+    "narrow_css_viewport": {
+      "width": 380,
+      "height": 284,
+      "zoom_factor": 2
+    },
+    "narrow_png_dimensions": {
+      "width": 1520,
+      "height": 1136
+    },
+    "narrow_captures_directly_viewed": 5,
+    "all_51_captures_fresh_pixel_audit_performed": false,
+    "direct_check_log_count": 9,
+    "direct_check_log_hash_mismatches": [],
+    "fresh_recorded_checks": [
+      "projection",
+      "boundaries",
+      "typecheck",
+      "format",
+      "lint",
+      "build",
+      "bundle",
+      "package",
+      "package-inspect"
+    ],
+    "boundary_fixtures": 68,
+    "current_performance_result": "pass",
+    "p95_recomputed_from_saved_samples_ms": {
+      "input": 8.699999988079071,
+      "menu": 8.600000023841858,
+      "panel": 9,
+      "shell": 9.199999988079071,
+      "projection": 9.399999976158142
+    },
+    "performance_sample_counts": {
+      "input": 20,
+      "menu": 20,
+      "panel": 20,
+      "shell": 100,
+      "projection": 100
+    },
+    "correct_switches": 100,
+    "old_transcript_observations": 0,
+    "resource_phase_heap_growth_percent": {
+      "preparation60": 6.800038126411367,
+      "switch100": 5.833680273855935
+    },
+    "combined160_heap_growth_percent": 13.030410883062448,
+    "resource_qualification": "원래 두 phase 기준은 통과합니다. combined160의 heap 증가13.03%는 경고로 유지합니다. leak 부재나 zero growth의 증거가 아닙니다.",
+    "performance_script_before_after_hash_equal_and_current": true,
+    "package_validation": "captureProvenance의 packaged read 경로로 현재 app.asar, executable, sidecar와 full event-host/owner resource bytes를 검사했습니다. 저장된 package-inspect-r3.log의 SHA-256과 일치합니다. package command와 앱은 실행하지 않았습니다.",
+    "packaged_app_asar_sha256": "8ea279925a6c801435fafaa9963de7e2e2c292bd479df30a0841c4032a3868b6",
+    "packaged_executable_sha256": "60dbb0f7c649404f61c987a0ddcd8a051c8268aee502f44da2ffdd0ede03bd0e",
+    "event_host_resource_entries": 38393,
+    "event_host_regular_files": 35122,
+    "event_host_regular_bytes": 399279792
+  },
+  "cross_gate_status": {
+    "prior_finding": "RENDER-R7-1",
+    "code_assessment": "r7의 required evidence gap에 대응하는 두 시나리오와 현재 다섯 PNG가 추가됐습니다. CODE 범위에서 실행 결과나 source binding의 결함을 찾지 못했습니다.",
+    "rendered_gate_waived": false,
+    "rendered_finding_closed_by_this_report": false,
+    "next_dependency": "별도 독립 rendered reviewer가 현재 narrow capture와 normal 회귀를 판단하고 RENDER-R7-1의 closure를 결정해야 합니다."
+  },
+  "limitations": [
+    "앱, build, package, 제품 tests, Native/provider/private-store 명령은 실행하지 않았습니다. 실행 성공 판단은 저장된 기록과 현재 bytes의 대조 결과입니다.",
+    "Production Main 전체 GUI, foreground, 실제 provider/credentials/private data, Windows, signing, power-loss와 migration cutover는 미검증입니다.",
+    "OS IME, Screen Reader, 완전한 WCAG와 모든 P7 상태의 viewport 조합은 미검증입니다. 좁은200% proof는 두 대표 상태입니다.",
+    "actual hidden renderer의 Playwright keyboard/wheel과 DOM focus를 확인했습니다. 물리 입력 장치 또는 OS focus의 증거로 확대하지 않습니다.",
+    "full F01–18 완료를 승인하지 않습니다. A5/A6의 최종 rendered gate와 부모 integration은 coordinator 책임입니다.",
+    "before/after hash 검사는 filesystem isolation 또는 관찰 사이 변경 후 복원 방어를 증명하지 않습니다.",
+    "최종 input 이후 ledger/outcome이 바뀌면 현재 verification binding을 다시 확인해야 합니다."
+  ]
+}

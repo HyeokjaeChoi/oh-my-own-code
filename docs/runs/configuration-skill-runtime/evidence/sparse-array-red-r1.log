@@ -1,0 +1,27 @@
+✔ Native Skills closed public read and mutation inputs (1.080792ms)
+✔ Native Skills observed shapes reject authority and correlation defects (0.398208ms)
+✖ Native Skills observations reject sparse and accessor array slots (0.123041ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 47.835
+
+✖ failing tests:
+
+test at apps/desktop-app/src/configuration-skill-runtime-api.test.mjs:118:2
+✖ Native Skills observations reject sparse and accessor array slots (0.123041ms)
+  TypeError: Cannot read properties of undefined (reading 'nativeId')
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.mjs:195:53
+      at Array.map (<anonymous>)
+      at validSkillRuntimeObservation (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/shared/configuration-draft/skill-runtime.mjs:195:40)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/configuration-skill-runtime-api.test.mjs:123:18)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

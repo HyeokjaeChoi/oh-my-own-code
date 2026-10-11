@@ -1,0 +1,79 @@
+{
+  "schema_version": 2,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-control-input.mjs",
+      "sha256": "68e20933c4ecb6dd08f519ae450d08082bb1dba28e48c360c1abb598f3049db2",
+      "bytes": 6112
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control-input.test.mjs",
+      "sha256": "8fc4d90e215eb371a3867ca348e660c47b498fa8c162e6505f907b74a32727a1",
+      "bytes": 9095
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-supervisor.test.mjs",
+      "sha256": "b86b1004c64a9144971009cfcc1d4063158acf32f7fd3a0403ff45bc2236f6bb",
+      "bytes": 50684
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "sha256": "329b1bfe9efabadec6943b3416004c3ffa3ca4ee358c8a38b5cbc05d3df65236",
+      "bytes": 15549
+    }
+  ],
+  "checks": [
+    {
+      "log": "bootstrap-wire-red-r1.log",
+      "result": "meaningful two failures: missing actual reserved bootstrap input branch/channel support"
+    },
+    {
+      "log": "bootstrap-wire-coherent-r1.log",
+      "result": "preserved failure: parentless-create parent digest accepted and manual graph fixture missing transitive dependency; repaired"
+    },
+    {
+      "log": "bootstrap-wire-coherent-r2.log",
+      "passed": 145,
+      "scope": "actual private input/protocol/child/supervisor/graph and pinned Control"
+    },
+    {
+      "log": "bootstrap-wire-stage-r1.log",
+      "passed": 1,
+      "scope": "actual transitive child source closure in inert staged fixture"
+    }
+  ],
+  "static": {
+    "eslint": "pass exact4",
+    "prettier": "pass exact4"
+  },
+  "api": {
+    "create": [
+      "originKind",
+      "origin",
+      "workspaceId",
+      "workspacePath",
+      "appSessionId",
+      "metadataDigest",
+      "reservation",
+      "plannedNativeSessionId"
+    ],
+    "fork": [
+      "originKind",
+      "origin",
+      "workspaceId",
+      "workspacePath",
+      "appSessionId",
+      "metadataDigest",
+      "reservation",
+      "parentNativeSessionId"
+    ],
+    "reservation": "actual validateTaskBinding bootstrap variant; create parent digest null, fork nonnull",
+    "response": "still held only; no new prepared/authority response"
+  },
+  "limits": [
+    "Main production bootstrap remains blocked; no positive Native call or inventory/mode grant",
+    "Candidate owner implementation pending separate two-path worker",
+    "Full coherent CODE and full18/F09 unfinished",
+    "No Native/Bun/Electron/build/provider/server/network/UI/private originals executed"
+  ]
+}

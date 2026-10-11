@@ -1,0 +1,57 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "8f38de5405ead22bb06d76bc1e23272dc5f7ed9c7474d8c0c3a38f0a43c7d8c4",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "design",
+    "plan_sha256": "d94e9d2d07e6f7b215fa79301836087b70d24500e0da7f233ae6887c321d7560",
+    "schema_version": 2,
+    "source_sha256": "b598d57bdbda119044aab03350de5765ac7b928a2ddf6232059cd1cfc115a8f6",
+    "verification_sha256": "41d19ff7c495a4e393e4ada7a3a4505894c133279f84c27f91f7065cd6587330"
+  },
+  "verdict": "pass",
+  "summary": "The actual P3 captures meet the first-visible-increment goal: restrained white conversation canvas, compact single-line navigation, quiet header, one composer toolbar, readable tool/permission content and usable narrow/200-percent reflow. No blocking rendered defect was identified in the directly inspected states. This is separate from the code cleanup findings and is not whole-product or platform-readiness approval.",
+  "open_findings": [],
+  "capture_validation": {
+    "manifest": "docs/runs/frontend-architecture-redesign/evidence/p3-r7/ui-states/ui-states-evidence.json",
+    "validated_png_headers": 26,
+    "result": "All26 accessible PNG IHDR dimensions match recorded pixelDimensions.",
+    "origin": "Actual built Electron renderer/preload with synthetic main; no provider execution."
+  },
+  "directly_inspected_captures": {
+    "p3-r7/ui-states": [
+      "desktop-empty-conversation-normal-1280-synthetic.png",
+      "desktop-empty-conversation-narrow-synthetic.png",
+      "desktop-populated-conversation-normal-1180-synthetic.png",
+      "desktop-populated-conversation-narrow-200-percent-synthetic.png",
+      "desktop-permission-long-korean-draft-normal-1280-synthetic.png",
+      "desktop-permission-long-korean-draft-normal-200-percent-synthetic.png",
+      "desktop-permission-long-korean-draft-narrow-200-percent-synthetic.png",
+      "desktop-long-korean-titles-normal-1280-synthetic.png",
+      "desktop-long-korean-titles-narrow-200-percent-navigation-synthetic.png"
+    ],
+    "p3-r2/sessions": [
+      "desktop-session-lifecycle.png",
+      "desktop-session-activity.png",
+      "desktop-session-activity-narrow.png"
+    ],
+    "p3-r7/workbench": [
+      "desktop-workbench-file-preview.png",
+      "desktop-workbench-catalog.png",
+      "desktop-workbench-auth-required.png"
+    ]
+  },
+  "scope": "P3 first visible UI increment; no whole-product or platform-readiness approval.",
+  "limitations": [
+    "Reviewer viewed accessible captures and did not operate a new live session.",
+    "All26 dimensions validated; only explicitly listed images visually inspected.",
+    "Physical OS IME, provider execution, Windows, screen-reader, contrast measurement and performance not verified.",
+    "Exported-evidence fingerprint code finding remains a separate repair."
+  ],
+  "provenance": {
+    "child_task_id": "/root/p3_astra_delivery_review",
+    "author_task_id": "/root",
+    "context": "fresh independent bounded invocation",
+    "independence": "Reviewer did not implement or repair the reviewed changes."
+  }
+}

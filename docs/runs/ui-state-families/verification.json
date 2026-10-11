@@ -1,0 +1,106 @@
+{
+  "scope": "Routine independent UI-family execution; no product renderer/main/native changes",
+  "source_sha256": {
+    "apps/desktop-app/scripts/run-evidence.mjs": "1c0f021de4f924224511abd7441b5f82a10295868c5b63085d0514aa7ebd281e",
+    "apps/desktop-app/scripts/run-evidence.test.mjs": "3476db6de9c17ba3d935c6904f58a0675864ca1aaffb3d57df6918d3ff779535",
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs": "336b7870302439a72ddca45da6491b7a22cfa0291da190cef39afa27690122d2"
+  },
+  "runtime": [
+    {
+      "family": "extensions",
+      "states": 27,
+      "captures": 323,
+      "report": "docs/runs/ui-state-families/evidence/extensions-r1/ui-states/ui-states-evidence.json",
+      "manifest": "docs/runs/ui-state-families/evidence/extensions-r1/ui-states/manifest.json",
+      "executed": [
+        "extensions"
+      ],
+      "omitted": [
+        "legacy",
+        "workspace-files",
+        "git-review"
+      ],
+      "exitCode": 0,
+      "provenanceVerifiedAfter": true
+    },
+    {
+      "family": "workspace-files",
+      "states": 25,
+      "captures": 159,
+      "report": "docs/runs/ui-state-families/evidence/workspace-files-r1/ui-states/ui-states-evidence.json",
+      "manifest": "docs/runs/ui-state-families/evidence/workspace-files-r1/ui-states/manifest.json",
+      "executed": [
+        "workspace-files"
+      ],
+      "omitted": [
+        "legacy",
+        "extensions",
+        "git-review"
+      ],
+      "exitCode": 0,
+      "provenanceVerifiedAfter": true
+    },
+    {
+      "family": "git-review",
+      "states": 44,
+      "captures": 654,
+      "report": "docs/runs/ui-state-families/evidence/git-review-r1/ui-states/ui-states-evidence.json",
+      "manifest": "docs/runs/ui-state-families/evidence/git-review-r1/ui-states/manifest.json",
+      "executed": [
+        "git-review"
+      ],
+      "omitted": [
+        "legacy",
+        "extensions",
+        "workspace-files"
+      ],
+      "exitCode": 0,
+      "provenanceVerifiedAfter": true
+    }
+  ],
+  "capture_count": 1136,
+  "capture_inventory_sha256": "4ef59f41de8ac35cbf9546228846fa9628afec4ba8271927708cfb3daab97154",
+  "ast": {
+    "originalTopLevelStatements": 1051,
+    "preserved": 1050,
+    "intentionallyChanged": [
+      {
+        "line": 1316,
+        "before": "[245,null,null,[[214,null,null,[[212,null,null,[[80,\"screenshots\",null,[]],[80,\"push\",null,[]]]],[211,null,null,[[304,null,null,[[80,\"beforeCapture\",null,[]],[80,\"beforePreviewCapture\",null,[]]]],[304,null,null,[[80,\"afterCapture\",null,[]],[80,\"afterPreviewCapture\",null,[]]]],[304,null,null,[[80,\"pixelDimensions\",null,[]],[211,null,null,[[304,null,null,[[80,\"width\",null,[]],[214,null,null,[[212,null,null,[[80,\"previewPng\",null,[]],[80,\"readUInt32BE\",null,[]]]],[9,\"16\",null,[]]]]]],[304,null,null,[[80,\"height\",null,[]],[214,null,null,[[212,null,null,[[80,\"previewPng\",null,[]],[80,\"readUInt32BE\",null,[]]]],[9,\"20\",null,[]]]]]]]]]],[304,null,null,[[80,\"viewport\",null,[]],[224,null,null,[[214,null,null,[[212,null,null,[[80,\"page\",null,[]],[80,\"evaluate\",null,[]]]],[220,null,null,[[39,null,null,[]],[218,null,null,[[211,null,null,[[304,null,null,[[80,\"width\",null,[]],[212,null,null,[[80,\"window\",null,[]],[80,\"innerWidth\",null,[]]]]]],[304,null,null,[[80,\"height\",null,[]],[212,null,null,[[80,\"window\",null,[]],[80,\"innerHeight\",null,[]]]]]],[304,null,null,[[80,\"pixelRatio\",null,[]],[212,null,null,[[80,\"window\",null,[]],[80,\"devicePixelRatio\",null,[]]]]]]]]]]]]]]]]]],[304,null,null,[[80,\"zoomFactor\",null,[]],[224,null,null,[[214,null,null,[[212,null,null,[[80,\"application\",null,[]],[80,\"evaluate\",null,[]]]],[220,null,null,[[170,null,null,[[207,null,null,[[209,null,null,[[80,\"BrowserWindow\",null,[]]]]]]]],[39,null,null,[]],[214,null,null,[[212,null,null,[[212,null,null,[[213,null,null,[[214,null,null,[[212,null,null,[[80,\"BrowserWindow\",null,[]],[80,\"getAllWindows\",null,[]]]]]],[9,\"0\",null,[]]]],[80,\"webContents\",null,[]]]],[80,\"getZoomFactor\",null,[]]]]]]]]]]]]]],[304,null,null,[[80,\"path\",null,[]],[80,\"previewPath\",null,[]]]],[304,null,null,[[80,\"state\",null,[]],[11,\"Isolated schema-validated Tool UI component from the actual renderer\",null,[]]]],[304,null,null,[[80,\"provenance\",null,[]],[11,\"Built production Electron renderer with test-only tool output\",null,[]]]],[304,null,null,[[80,\"captureMethod\",null,[]],[11,\"Playwright locator.screenshot() at 100% Electron zoom\",null,[]]]],[304,null,null,[[80,\"bounds\",null,[]],[224,null,null,[[214,null,null,[[212,null,null,[[80,\"preview\",null,[]],[80,\"boundingBox\",null,[]]]]]]]]]]]]]]]]"
+      }
+    ],
+    "note": "Initial 1051/1051 r1 structural proof retained in verification-r1.json. Correction intentionally adds family/type/native-parent fields to one legacy crop record and a separate native capture. All other original statements remain structurally equal; this is not legacy runtime evidence."
+  },
+  "dependencies": {
+    "crossFamilyReferences": [],
+    "scope": "Compiler-resolved same-module declarations, common bootstrap allowed; not runtime proof"
+  },
+  "checks": [
+    "unit",
+    "lint",
+    "format",
+    "revalidate-extensions",
+    "revalidate-workspace-files",
+    "revalidate-git-review"
+  ],
+  "build": "Original actual focused launch manifests preserve before/after production byte provenance. Current read-only checks assert exact same build inputs/artifacts and unchanged non-corrected selected scripts; no rebuild/new Electron launch.",
+  "limitations": [
+    "legacy/all GUI not run; default routing/order and actual crop producer report schema Node-tested. New legacy native-parent capture call not GUI-executed.",
+    "Synthetic fixture main only; no provider, real native Git G2, real stores or OS clipboard validation",
+    "Families execute independently but remain in one source file; future per-file input_scope must include shared runner, not invent statement-level hash reuse"
+  ],
+  "runtime_revision": "Original focused GUI executions use r1 source hashes and original times. Current r2 source is not relabeled as a new GUI execution.",
+  "correction": {
+    "finding": "CODE r1 F1",
+    "scope": "One legacy crop record now declares family/evidenceType/nativePath; added separate native full viewport capture; current parser distinguishes bounded auxiliary crops from full native evidence. Every auxiliary parent remains subject to full native proof.",
+    "regression": "Actual production crop object extracted and evaluated by Node; all/legacy report acceptance and missing parent/foreign family/visible capture/forged dimensions/unknown type/crop-only refusals pass. Synthetic PNGs are test data, not GUI evidence.",
+    "red": "docs/runs/ui-state-families/crop-red.log",
+    "legacy_gui_executed": false
+  },
+  "reuse": {
+    "decision": "Required read-only revalidation replaces repeat GUI launches after this legacy-only correction. Prior launch checks preserved as optional history.",
+    "proof": "Byte-equal shared capture/bootstrap and focused families/report/teardown against manifest-bound r1 runner; actual current production captureProvenance confirms same build/runtime artifacts; all 1136 original PNG hashes and current parser proof validated. Contract embeds exact revalidation code.",
+    "first_review": "docs/runs/ui-state-families/final-code-review-r1.json",
+    "current_parser": "Current validator validates original native evidence without bypassing native proof; auxiliary branch has separate tests."
+  }
+}

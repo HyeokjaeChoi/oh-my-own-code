@@ -1,0 +1,96 @@
+{
+  "schema_version": 2,
+  "report_type": "DESIGN",
+  "reviewed": {
+    "contract_sha256": "357e805a5606c55931dea63b48f6dea2422b969cba7359cb0f03aacd55ffb43e",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "design",
+    "plan_sha256": "420f5b81e718791df92f741dd85771c33448302a9c2a219b5e0f58f357606ed5",
+    "schema_version": 2,
+    "source_sha256": "519779e6bcbb8161db80c50716a78777da20bde9dcd6342ce7e1935dd6fde861",
+    "verification_sha256": "8f1655b0a6d5aa1cf2b7a27c3887247a1970e979022a71028accdd37b545e2b0",
+    "work_class_sha256": "ba16432c80da2b47bb752cb44e06f079cb2f2912df38745c1f3378038adbe968"
+  },
+  "verdict": "pass",
+  "summary": "현재 r4 원본 047·048·049·000을 직접 확인했습니다. session rules의 한계 설명, baseline 불일치 표시, 긴 값의 줄바꿈, focus 표시와 Composer + 메뉴에서 수정이 필요한 결함을 찾지 못했습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a1205e-e681-7f03-9b4b-b668efb8b521",
+    "identity_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "implementation_authored": false,
+    "delegation": false,
+    "report_only": true,
+    "files_modified": false,
+    "ledger_modified": false,
+    "product_runtime_executed": false
+  },
+  "inspected_evidence": {
+    "requirements": [
+      ".agents/skills/solo-design-review/SKILL.md",
+      ".agents/skills/solo-design-review/references/evidence-review.md",
+      "docs/runs/permission-policy-observation/plan.md",
+      "docs/runs/permission-policy-observation/design.md",
+      "docs/runs/permission-policy-observation/entry-design-review-r2.json",
+      "docs/runs/permission-policy-observation/final-design_qa-packet-r4.json",
+      "docs/runs/permission-policy-observation/final-design-input-r4.json"
+    ],
+    "binding_integrity": "현재 전체 design binding이 final-design-input-r4.json과 정확히 일치합니다. reviewed에는 해당 최상위 객체 전체를 복사했습니다.",
+    "capture_root": "docs/runs/design-foundation-v2/evidence/permission-policy-r4/design-foundation",
+    "originals_opened": [
+      {
+        "file": "047-permission-policy-light-1440-100.png",
+        "png_pixels": [2880, 1936],
+        "css_viewport": [1440, 968],
+        "zoom_factor": 1,
+        "sha256": "d91485a9f87c4494cf9fd4a1bdc81d4e4c1c595f45538318513e5ce3d1188fe9"
+      },
+      {
+        "file": "048-permission-policy-dark-760-100.png",
+        "png_pixels": [1520, 1936],
+        "css_viewport": [760, 968],
+        "zoom_factor": 1,
+        "sha256": "1d6564cc9ad0827161da9ff8aff1747dbdc798c4bf30bbc32c79c009f26b1cb6"
+      },
+      {
+        "file": "049-permission-policy-dark-1440-200.png",
+        "png_pixels": [2880, 1936],
+        "css_viewport": [720, 484],
+        "zoom_factor": 2,
+        "sha256": "22690d6d55d1ba151d771f273529c28b523acfa1f86ba2a14f010997d0c20fd4"
+      },
+      {
+        "file": "000-collapsed-command-menu-first-items.png",
+        "png_pixels": [2880, 1936],
+        "css_viewport": [1440, 968],
+        "zoom_factor": 1,
+        "sha256": "93ef0a30c6d0d8f57f811801551286151386a26fe1fba6b5269b2e1d5868c741"
+      }
+    ],
+    "capture_integrity": "capture-index-r4.json의 50개 파일 모두에서 PNG dimensions와 SHA를 실제 bytes로 확인했습니다. 직접 시각 검토한 원본은 위의 4개입니다.",
+    "visual_judgment": "light와 dark 화면에서 제목, 읽기 버튼, 닫기 버튼 및 규칙 목록의 위계가 구분됩니다. 최종 실행 판단과 OS sandbox에 대한 한계 설명이 보입니다. baseline 불일치를 제목과 본문에서 표시합니다. 긴 action/resource는 줄바꿈되며 focus 표시가 명확합니다. 000에서 Composer +와 앱 동작 메뉴를 확인했습니다.",
+    "interaction_proof": "현재 e2e-design-foundation.mjs의 Enter 읽기, Tab 이동, 취소 후 status focus, Escape 후 summary focus, 취소 뒤 늦은 응답 차단, stale 제거, absent/empty/unavailable 구분, held/untrusted 차단 및 no-auto-read assertions를 읽었습니다. 같은 runner의 r4 hidden 결과는 pass입니다. interaction 기록에서 읽기는 증가하고 effects, intents, mutation counters는 유지됩니다.",
+    "full_values": "현재 valueCoverage는 세 policy 화면마다 action 128자와 resource 2048자의 전체 선택을 기록합니다. userSelect=text, overflowWrap=anywhere이며 각 값의 scrollWidth와 clientWidth가 같습니다. 화면 밖의 전체 값은 이 DOM 증거로 확인했습니다.",
+    "runtime_provenance": "darwin의 실제 built production renderer/preload와 synthetic Main에서 얻은 원본입니다. 선택한 네 capture의 전후 visible, focused, focusable은 모두 false입니다. source/resource를 포함한 sourceBuildProvenance의 before/after 전체 객체가 같습니다.",
+    "actual_exit": {
+      "pid": 82751,
+      "exited": true,
+      "code": 0,
+      "signal": null,
+      "signals": []
+    },
+    "runtime_errors": {
+      "pageErrors": [],
+      "externalRequests": []
+    },
+    "prior_review_handling": "r3 DESIGN PASS는 별도 과거 증거로만 읽었습니다. 이번 판정은 직접 연 r4 원본과 현재 interaction 증거에 근거합니다. r3/r4 inventory 비교에서 UI/layout 소스 변경은 없습니다.",
+    "harness_status": "read-only status를 확인했습니다. run은 active이며 최종 CODE/DESIGN 등록은 미완료 상태입니다."
+  },
+  "limitations": [
+    "50개 전체 이미지를 직접 열지는 않았습니다.",
+    "키보드 동작은 저장된 실행 증거와 현재 assertion 검토에 근거합니다. 직접 재실행하지 않았습니다.",
+    "screen reader, Windows, production Main, provider 및 release 환경은 검증하지 않았습니다.",
+    "저장된 session rules 표시만 검토했습니다. 최종 effective policy, OS sandbox 및 full F09/full18 통과를 뜻하지 않습니다.",
+    "파일, 문서와 ledger를 수정하지 않았으며 보고서를 등록하거나 run을 종료하지 않았습니다."
+  ]
+}

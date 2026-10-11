@@ -1,0 +1,26 @@
+{
+  "revision": 22,
+  "component": "actual PluginHost transform routing",
+  "constructor_correction": "direct opaque LocationBuildScope handle, permanent actual prefix RED->GREEN",
+  "tests": {
+    "focused_host_recipe": 85,
+    "contracted_native_metadata": 382,
+    "contracted_native_read_auxiliary": 23,
+    "scoped_eslint": "pass",
+    "scoped_prettier": "pass"
+  },
+  "logs": [
+    "plugin-host-constructor-permanent-red-r1.log",
+    "plugin-host-correction-green-r2.log",
+    "plugin-host-metadata-r3.log",
+    "plugin-host-auxiliary-r3.log"
+  ],
+  "check_status": "plugin-host-check-status-r3.json",
+  "independent_review": "r1 changes_requested saved; focused r2 pending",
+  "limits": [
+    "all execution and State/replay guards held",
+    "eager service acquisition and SDK original callback wrapper bridge remain",
+    "no Native/Main/Bun/provider/server/browser/build/GUI runtime execution",
+    "full18/F09 unfinished"
+  ]
+}

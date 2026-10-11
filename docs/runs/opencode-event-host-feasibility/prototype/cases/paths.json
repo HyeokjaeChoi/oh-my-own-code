@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "mutable": [
+    "home",
+    "config",
+    "data",
+    "state",
+    "cache",
+    "tmp",
+    "workspace"
+  ],
+  "negative": [
+    "parent-traversal",
+    "outside-root",
+    "uri",
+    "symlink",
+    "dangling-symlink",
+    "hard-link",
+    "wrong-mode"
+  ],
+  "methods": [
+    "server.info",
+    "session.create",
+    "session.get",
+    "session.update",
+    "session.export",
+    "session.import",
+    "session.log",
+    "message.list"
+  ],
+  "prohibited": [
+    "session.prompt",
+    "session.command",
+    "session.synthetic",
+    "session.skill",
+    "session.shell",
+    "session.generate",
+    "pty",
+    "provider",
+    "mcp",
+    "pairing"
+  ],
+  "max_events": 256,
+  "request_timeout_ms": 15000,
+  "startup_timeout_ms": 30000,
+  "stop_timeout_ms": 10000,
+  "observer_timeout_ms": 3000,
+  "namespace_retained": true,
+  "guard_boundary": "caller guard; not OS confinement"
+}

@@ -1,0 +1,171 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "LF1",
+      "description": "Exact original validated file/Git line feedback"
+    },
+    {
+      "id": "LF2",
+      "description": "Atomic scoped explicit local composer append, no IO"
+    },
+    {
+      "id": "LF3",
+      "description": "Actual focused accessible hidden Renderer flow"
+    },
+    {
+      "id": "LF4",
+      "description": "Current affected checks plus independent CODE/RENDER"
+    }
+  ],
+  "checks": {
+    "files": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/line-feedback.test.mjs",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs",
+        "apps/desktop-app/scripts/build-provenance.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Pure mapping/source/bounds, atomic owner lifecycle/no IO and actual evidence wrapper/provenance regressions",
+      "acceptance_ids": [
+        "LF1",
+        "LF2",
+        "LF4"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Current TS declarations and consumers",
+      "acceptance_ids": [
+        "LF4"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "FSD/browser import boundaries",
+      "acceptance_ids": [
+        "LF4"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "docs/runs/version-bound-line-feedback/check-changed.mjs",
+        "lint"
+      ],
+      "cwd": ".",
+      "scope": "Affected current source lint",
+      "acceptance_ids": [
+        "LF4"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "docs/runs/version-bound-line-feedback/check-changed.mjs",
+        "format"
+      ],
+      "cwd": ".",
+      "scope": "Affected current source format",
+      "acceptance_ids": [
+        "LF4"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "nx",
+        "run",
+        "desktop-app:build",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Coherent real desktop build",
+      "acceptance_ids": [
+        "LF4"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Browser bundle isolation",
+      "acceptance_ids": [
+        "LF4"
+      ],
+      "required": true
+    },
+    "hidden-feedback": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--script",
+        "feedback",
+        "--out",
+        "docs/runs/version-bound-line-feedback/evidence/hidden-r9"
+      ],
+      "cwd": ".",
+      "scope": "Focused real hidden Renderer/preload feedback and adjacent composer/editor/Git, keyboard760px200 and exact owned exit",
+      "acceptance_ids": [
+        "LF3",
+        "LF4"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "environment_files": [
+    "pnpm-lock.yaml",
+    "docs/runs/version-bound-line-feedback/source-facts.json",
+    "docs/runs/version-bound-line-feedback/prechange-inventory.json",
+    "docs/runs/version-bound-line-feedback/check-changed.mjs"
+  ],
+  "decision_register": [
+    {
+      "id": "local-feedback-only",
+      "statement": "Implement existing F05/F11 line feedback as local composer text, no new bridge or execution authority",
+      "status": "delegated",
+      "source": "User repeated continuation authorization and approved PRD F05/F11/UX5.3",
+      "impact": "Routine implementation under accepted read/compose architecture",
+      "blocks": [],
+      "resolution": "Strict original source identities, bounded exact excerpt and explicit append; separate existing Send."
+    },
+    {
+      "id": "focused-render-evidence",
+      "statement": "Preserve full UI matrix and run affected feedback/adjacent scenarios through same fixed provenance wrapper",
+      "status": "delegated",
+      "source": "User requested proportionate daily plan-edit-independent review-integrate; unchanged existing evidence containment",
+      "impact": "No unnecessary1618capture unrelated rerun",
+      "blocks": [],
+      "resolution": "New fixed feedback selector/runner with actual negative wrapper/provenance tests and exact hidden/exited proof."
+    }
+  ]
+}

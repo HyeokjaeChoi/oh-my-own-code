@@ -1,0 +1,30 @@
+✖ durable send prepares original prompt identity before either policy mutation (128.8425ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 319.353208
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:5315:1
+✖ durable send prepares original prompt identity before either policy mutation (128.8425ms)
+  AssertionError [ERR_ASSERTION]: {"ok":true,"value":{"requestId":"task-held","status":"accepted"},"receipt":{"runtimeEpoch":"epoch","operationId":"task-held","type":"message.send","workspaceId":"7f491e20-321f-4a9d-9753-1475ee7c0911","sessionId":"e61ebc75-d509-4cb5-8c62-fd0cffc95672","admission":"dispatched","delivery":"accepted","effect":"confirmed","revision":12,"evidence":[{"kind":"native-ack","id":"inbox-1"}],"result":{"kind":"delivery","status":"accepted","nativeInboxId":"inbox-1"}}}
+  + actual - expected
+  
+  + undefined
+  - 'POLICY_UNVERIFIED'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:5322:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'POLICY_UNVERIFIED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

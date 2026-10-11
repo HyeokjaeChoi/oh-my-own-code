@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-task-handoff.mjs",
+      "sha256": "ffafb59f15ecab7fef260f70e652a3a17a11710b3229f16aabcacbb4a4b0feef",
+      "bytes": 5860
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-handoff.test.mjs",
+      "sha256": "a72f9060f47f242a3a5835afd6d6f9d7c6b32f840075d483ee85d98fb77995d7",
+      "bytes": 10307
+    }
+  ],
+  "api": "createNativeTaskHandoffs unchanged methods; targetIdentity now exact validateTaskIdentity producer shape. Closed original key, digest and taskScopeId must match outer handoff; native.create/fork require bootstrap origin. Bootstrap/workspace targets do not fabricate session IDs. Old partial target rejected; no active production invocation exists.",
+  "checks": [
+    {
+      "log": "handoff-task-identity-red-r1.log",
+      "result": "two actual new bootstrap/workspace targets refused by old session-only shape"
+    },
+    {
+      "log": "handoff-task-identity-coherent-r2.log",
+      "passed": 42,
+      "scope": "handoff and actual shared storage helper"
+    }
+  ],
+  "static": {
+    "eslint": "pass exact2 after fixing bare structuredClone test lint diagnostic",
+    "prettier": "pass exact2"
+  },
+  "limits": [
+    "This helper alone proves no durable flush, mode/inventory permission or Native method authority",
+    "No private arm/consume IPC or positive Native wiring activated",
+    "No Native/Bun/Electron/build/package/GUI/provider invocation",
+    "Full18/F09 and final whole-source CODE unfinished"
+  ]
+}

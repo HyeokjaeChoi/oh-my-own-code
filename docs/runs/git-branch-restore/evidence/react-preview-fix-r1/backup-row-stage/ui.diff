@@ -1,0 +1,67 @@
+--- before/apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx
++++ after/apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx
+@@ -1,13 +1,15 @@
+-import { useId, useRef } from "react";
++import { Fragment, useId, useRef } from "react";
+ import {
+   selectors,
+   useWindowWorkbench,
+   useWorkbenchSelector,
+ } from "../../entities/workbench/index.js";
+ import {
++  GIT_BRANCH_RESTORE_TARGET_FIELDS,
+   gitBranchRestoreBackupRoles,
+   type GitBranchRestoreAction,
+   type GitBranchRestoreSource,
++  type GitBranchRestoreTarget,
+ } from "../../shared/api/index.js";
+ import styles from "./review.module.css";
+ 
+@@ -384,7 +386,14 @@
+               </dd>
+               <dt>Backup 계획</dt>
+               <dd>
+-                {gitBranchRestoreBackupRoles(preview)
++                {gitBranchRestoreBackupRoles(
++                  Object.fromEntries(
++                    GIT_BRANCH_RESTORE_TARGET_FIELDS.map((key) => [
++                      key,
++                      preview[key],
++                    ]),
++                  ) as GitBranchRestoreTarget,
++                )
+                   .map(
+                     (b) =>
+                       `${b.role} / ${b.path ?? "metadata"} / ${b.exists ? "원래 epoch·operation·role·path의 결정적 backup · 적용 요청 시 ID 확정" : "원래 없음 · backup null"}`,
+@@ -532,13 +541,25 @@
+             </dd>
+             <dt>원래 작업 Backup ID 계획 · confirmed 결과에서 검증</dt>
+             <dd>
+-              {mutation.identity.backups
+-                .map(
+-                  (b) =>
+-                    `${b.role} / ${b.path ?? "metadata"} / ${b.backupId ?? "null · 원래 없음"}`,
+-                )
+-                .join("\n")}
++              {mutation.identity.backups.length
++                ? `${mutation.identity.backups.length}개 · 아래 항목의 원래 경로와 ID를 확인하세요.`
++                : "없음"}
+             </dd>
++            {mutation.identity.backups.map((b) => (
++              <Fragment key={JSON.stringify([b.role, b.path])}>
++                <dt>
++                  Backup · {b.role} / {b.path ?? "metadata"}
++                </dt>
++                <dd
++                  data-git-branch-restore-backup={JSON.stringify([
++                    b.role,
++                    b.path,
++                  ])}
++                >
++                  {b.backupId ?? "null · 원래 없음"}
++                </dd>
++              </Fragment>
++            ))}
+           </dl>
+         );
+       })}

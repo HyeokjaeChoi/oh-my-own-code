@@ -1,0 +1,142 @@
+{
+  "schema_version": 2,
+  "run_id": "desktop-app-bootstrap",
+  "reviewer": "product_reviewer",
+  "plan_path": "docs/workplans/desktop-app-bootstrap/plan.md",
+  "plan_revision": 20,
+  "reviewed": {
+    "contract_sha256": "3500230beaf7416cb9c1874002c5935692b39f9e1f4b4e41485e7e666a01da81",
+    "documents_sha256": "13d5504cb9e7a5156cffd1ebcd6abf2a3dc9ef5ff4227699309dbff6caf315f6",
+    "gate": "product",
+    "plan_sha256": "b881fc85abb27e5f8c892acb1ffbdd81904bcaef168f9bf7e37ec5a71da89a4f",
+    "schema_version": 2
+  },
+  "verdict": "pass",
+  "summary": "Independent product review confirms PRD v0.6 remains the exact approved product artifact. Focused plan r20 and the current contract preserve F-01–18, AC-01–18, Electron/macOS/Windows and app-owned OpenCode v2 serve ownership without accidental product scope expansion or reduction. Packet r1 and its receipt match the unchanged nine-document set. No material product findings or renewed user approval are required.",
+  "open_findings": [],
+  "review_boundary": "Product semantics and approval-preserving contract re-binding. Full PRD reviewed against the active focused plan, current contract and exact approval packet/receipt. Other packet documents were checked for exact path/version/digest membership, not given a separate design-spec verdict.",
+  "artifacts": [
+    {
+      "path": "docs/product/prd.md",
+      "sha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3",
+      "review_scope": "Full product semantics; version 0.6"
+    },
+    {
+      "path": "docs/workplans/desktop-app-bootstrap/plan.md",
+      "sha256": "b881fc85abb27e5f8c892acb1ffbdd81904bcaef168f9bf7e37ec5a71da89a4f",
+      "review_scope": "Current execution authority; revision 20"
+    },
+    {
+      "path": "docs/workplans/desktop-app-bootstrap/contract.json",
+      "sha256": "97cafead7925fa98cd014fd9c9d9a044a85143875194bef556b7cc9a66358a61",
+      "review_scope": "Current scope, decision resolution, acceptance and document/approval registrations; this is raw file SHA-256, distinct from harness canonical contract binding"
+    },
+    {
+      "path": "docs/runs/desktop-app-bootstrap/exact-document-set-approval-r1.md",
+      "sha256": "9d45be0146846ed0cf3e4bf91995b7dff3e858fc355794bdae2af272ef401ecd",
+      "review_scope": "Immutable approved nine-document packet r1"
+    },
+    {
+      "path": "docs/runs/desktop-app-bootstrap/user-approval-r1.json",
+      "sha256": "deb1ebf40030d5855821af2f3a6a3bb0a8e94304b04492e0f0217921a1a7b885",
+      "review_scope": "Exact approval receipt and exclusions"
+    }
+  ],
+  "approved_document_integrity": [
+    {
+      "path": "docs/product/prd.md",
+      "gate": "product",
+      "version": "0.6",
+      "sha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3",
+      "current_sha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3",
+      "matches_packet_and_contract": true
+    },
+    {
+      "path": "docs/design/specs/workbench-ux.md",
+      "gate": "design_spec",
+      "version": "0.6",
+      "sha256": "1f59e6f83aca0c077a4db10cc8c65f7e27e5f177ae0aa32dc6508f4134c97525",
+      "current_sha256": "1f59e6f83aca0c077a4db10cc8c65f7e27e5f177ae0aa32dc6508f4134c97525",
+      "matches_packet_and_contract": true
+    },
+    {
+      "path": "docs/engineering/workbench-architecture.md",
+      "gate": "design_spec",
+      "version": "0.6",
+      "sha256": "d07aa9234632541056bbe3b96756f2fe7081214f4590397fe0260fd01c31ccae",
+      "current_sha256": "d07aa9234632541056bbe3b96756f2fe7081214f4590397fe0260fd01c31ccae",
+      "matches_packet_and_contract": true
+    },
+    {
+      "path": "docs/engineering/verification.md",
+      "gate": "design_spec",
+      "version": "0.5",
+      "sha256": "4c1e60680cf7b20b02efb35230e8af1588b558b80adab8c15442639c49ead696",
+      "current_sha256": "4c1e60680cf7b20b02efb35230e8af1588b558b80adab8c15442639c49ead696",
+      "matches_packet_and_contract": true
+    },
+    {
+      "path": "docs/operations/local-release-monitoring.md",
+      "gate": "design_spec",
+      "version": "0.4",
+      "sha256": "fe97cb8a4c69e2331b74e3c8263387132ae466150a721e9838a107a95a60e163",
+      "current_sha256": "fe97cb8a4c69e2331b74e3c8263387132ae466150a721e9838a107a95a60e163",
+      "matches_packet_and_contract": true
+    },
+    {
+      "path": "docs/engineering/spec-index.md",
+      "gate": "design_spec",
+      "version": "0.12",
+      "sha256": "5d63ccc5304887e83f5d16092fd67a5b9cb4cc7eca724e8536e44665f9e31dc9",
+      "current_sha256": "5d63ccc5304887e83f5d16092fd67a5b9cb4cc7eca724e8536e44665f9e31dc9",
+      "matches_packet_and_contract": true
+    },
+    {
+      "path": "docs/decisions/0002-desktop-runtime.md",
+      "gate": "design_spec",
+      "version": "0002",
+      "sha256": "1ebaa6585f7e56e1361d174fec25a7cdd080fd4f283067c72ca1d5111f7dcb65",
+      "current_sha256": "1ebaa6585f7e56e1361d174fec25a7cdd080fd4f283067c72ca1d5111f7dcb65",
+      "matches_packet_and_contract": true
+    },
+    {
+      "path": "docs/design/system.md",
+      "gate": "design_spec",
+      "version": "2026-09-27",
+      "sha256": "4697eb4961952ee85a4732ed77e5addbb17058a8b3d12485aa56158324f661a5",
+      "current_sha256": "4697eb4961952ee85a4732ed77e5addbb17058a8b3d12485aa56158324f661a5",
+      "matches_packet_and_contract": true
+    },
+    {
+      "path": "docs/design/components.json",
+      "gate": "design_spec",
+      "version": "component-contract-v3",
+      "sha256": "76460f0cc7099ef6b628ce654994d89fc75e5e863d33c103daae8049493f2ed2",
+      "current_sha256": "76460f0cc7099ef6b628ce654994d89fc75e5e863d33c103daae8049493f2ed2",
+      "matches_packet_and_contract": true
+    }
+  ],
+  "observations": [
+    "All eighteen functional rows and their observable acceptance criteria remain present, including project/worktree operations, parallel sessions, conversation/context, model selection, subagents, tools, permissions, previews, Git/diff, terminals, commands, harness configuration, plans/reviews, records/learning, recovery/local data, and local automation. Sections 4–7 retain deletion protection, permission transition and inheritance, duplicate-effect prevention, recovery gaps and integrated acceptance scenarios.",
+    "The single-user development/learning problem, lack of measured demand or time-saving baseline, operational success scenarios 1–4, and learning threshold of at least 3/4 with mandatory permission evidence remain explicit. A document pass does not establish demand, implementation or measured success.",
+    "The minimal desktop bootstrap is explicitly an intermediate runtime milestone. It does not satisfy full AC-01–18 or defer required features out of the final product. SDK limitations require an adapter or reviewed alternative, not fake controls or automatic scope reduction.",
+    "The current DESKTOP-SHELL resolution records Electron selection and the completed exact-set approval while conditioning dependent execution on current independent gates and matching handoffs. The earlier contract-hold finding is absent from the reviewed current bytes.",
+    "The immutable PRD and approval packet retain pre-approval wording and historical revision references. Their current authorization is established by the receipt and focused plan r20; changing the frozen documents or asking for approval again is unnecessary for this binding refresh.",
+    "Approval remains bounded to synthetic disposable workspace/config compatibility/lifecycle probes and the planned bootstrap. Persistent personal data remains held pending storage/retention decisions; user/global configuration, credentials, ambient OpenCode services, external telemetry, public release, signing/notarization, stores and auto-update remain excluded. The full PRD ability to use externally configured services is not permission to access them during this increment.",
+    "All nine path/version/hash entries match current bytes, the exact packet table and the contract. The packet hash and receipt hash also match the contract approval registration. No document bytes or approval target were changed.",
+    "Electron/package/client compatibility and actual macOS/Windows lifecycle/security behavior remain unverified by this review. Windows execution is still separately required. The coordinator must register this actual report and obtain the matching product handoff before dependent dispatch."
+  ],
+  "validation": "Read-only document and digest inspection plus read-only harness review-input/status. No tests, installs, app/server execution, runtime probes, external source refresh, approval request or ledger mutation. Only the explicitly assigned review-report output was written.",
+  "provenance": {
+    "child_task_id": "/root/electron_product_review_r6",
+    "author_task_id": "/root",
+    "role": "product_reviewer",
+    "review_mode": "Fresh independent product review and exact approval-preserving contract re-binding",
+    "tests_executed": false,
+    "runtime_executed": false,
+    "ledger_modified": false,
+    "files_modified": [
+      "docs/runs/desktop-app-bootstrap/product-review-r6.json"
+    ]
+  }
+}

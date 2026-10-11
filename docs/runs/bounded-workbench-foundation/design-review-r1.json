@@ -1,0 +1,241 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "2f1912340a82a7b8bf6aa10f33f4e4e45443a48ca1ae9780077a92b009d6895b",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "design",
+    "plan_sha256": "743593ca74cb41eeca7a19aee5570736c24425fb6a09fc57a5c9a1468f6a81ce",
+    "schema_version": 2,
+    "source_sha256": "78cb020ce68f9e620afaf0e123aa036e4ed04fc3859a09aaf526d2a9e43a352e",
+    "verification_sha256": "3b9f5104d7788ae8a48096e98bafa990dcb437590f09f94d116ee0975cbd1bc7"
+  },
+  "verdict": "pass",
+  "summary": "P4/P5 화면 보존 범위에서 통과입니다. 현재 빌드의 PNG 18개를 view_image로 직접 확인했습니다. A Quiet Dock의 기본 composer, 대화 구조, 긴 제목 처리, Tool UI와 좁은 200% 화면의 핵심 조작이 유지됩니다. 이 범위를 막는 화면 결함은 발견하지 않았습니다.",
+  "open_findings": [],
+  "scope": {
+    "run": "bounded-workbench-foundation",
+    "plan_revision": 5,
+    "architecture_version": 4,
+    "selected_design": "A Quiet Dock",
+    "review_type": "independent rendered design_qa",
+    "method": "accessible implementation captures only",
+    "product_release_approved": false
+  },
+  "evidence": {
+    "base_path": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/execution/p4-p5-foundation-native-r2/ui-states",
+    "manifest": "manifest.json",
+    "report": "ui-states-evidence.json",
+    "capture_path_rule": "각 files 항목의 전체 경로는 base_path + '/' + 파일명입니다.",
+    "registered_png_count": 26,
+    "directly_viewed_png_count": 18,
+    "dimension_verification": "등록된 26개 파일의 PNG signature와 IHDR 크기를 읽었습니다. 보고된 pixelDimensions 및 logical viewport × DPR과 모두 일치합니다. Tool UI crop은 bounds × DPR과 일치합니다.",
+    "viewed_capture_groups": [
+      {
+        "png_pixels": [
+          2560,
+          1536
+        ],
+        "logical_viewport": [
+          1280,
+          768
+        ],
+        "dpr": 2,
+        "zoom_factor": 1,
+        "files": [
+          "desktop-empty-conversation-normal-1280-synthetic.png",
+          "desktop-populated-conversation-normal-1280-synthetic.png",
+          "desktop-long-korean-titles-normal-1280-synthetic.png",
+          "desktop-permission-long-korean-draft-normal-1280-synthetic.png"
+        ]
+      },
+      {
+        "png_pixels": [
+          2560,
+          1536
+        ],
+        "logical_viewport": [
+          640,
+          384
+        ],
+        "dpr": 4,
+        "zoom_factor": 2,
+        "files": [
+          "desktop-populated-conversation-normal-200-percent-synthetic.png",
+          "desktop-permission-long-korean-draft-normal-200-percent-synthetic.png",
+          "desktop-long-korean-titles-normal-200-percent-navigation-synthetic.png"
+        ]
+      },
+      {
+        "png_pixels": [
+          1520,
+          1136
+        ],
+        "logical_viewport": [
+          760,
+          568
+        ],
+        "dpr": 2,
+        "zoom_factor": 1,
+        "files": [
+          "desktop-empty-conversation-narrow-synthetic.png",
+          "desktop-populated-conversation-narrow-synthetic.png",
+          "desktop-permission-long-korean-draft-narrow-synthetic.png",
+          "desktop-long-korean-titles-narrow-navigation-synthetic.png"
+        ]
+      },
+      {
+        "png_pixels": [
+          1520,
+          1136
+        ],
+        "logical_viewport": [
+          380,
+          284
+        ],
+        "dpr": 4,
+        "zoom_factor": 2,
+        "files": [
+          "desktop-empty-conversation-narrow-200-percent-synthetic.png",
+          "desktop-populated-conversation-narrow-200-percent-synthetic.png",
+          "desktop-long-korean-titles-narrow-200-percent-synthetic.png",
+          "desktop-long-korean-titles-narrow-200-percent-navigation-synthetic.png",
+          "desktop-permission-long-korean-draft-narrow-200-percent-synthetic.png"
+        ]
+      },
+      {
+        "png_pixels": [
+          2880,
+          1856
+        ],
+        "logical_viewport": [
+          1440,
+          928
+        ],
+        "dpr": 2,
+        "zoom_factor": 1,
+        "files": [
+          "desktop-tool-results-synthetic.png"
+        ]
+      },
+      {
+        "png_pixels": [
+          896,
+          208
+        ],
+        "logical_viewport": [
+          1440,
+          928
+        ],
+        "crop_bounds_css": {
+          "x": 468,
+          "y": 332,
+          "width": 448,
+          "height": 104
+        },
+        "dpr": 2,
+        "zoom_factor": 1,
+        "files": [
+          "desktop-link-preview-synthetic.png"
+        ]
+      }
+    ],
+    "build_provenance": {
+      "origin": "실제 built Electron renderer/preload와 test-only synthetic main process",
+      "platform": "darwin arm64",
+      "build_stamp_sha256": "b644e62cc627dc3ed3c7c8e301135f3d781a51efbf3250c88e765156d2b75b81",
+      "current_relevant_source_sha256": "9ab47173517b4067490ab8e90ac6dc330ef96d086f7c0e4eb8ba02bab24c2c11",
+      "provenance_verified_after": true,
+      "independent_file_hash_comparison": {
+        "current_build_inputs": "78개 일치",
+        "selected_scripts_and_fixtures": "4개 일치",
+        "launch_artifacts": "7개 일치",
+        "build_stamp": "일치",
+        "plan": "reviewed binding과 일치"
+      },
+      "capture_window_state": "26개 모두 before/after 기록에서 visible=false, focused=false, focusable=false입니다. 전체 화면 25개는 after 상태를 osWindowVisible/osWindowFocused/osWindowFocusable 필드에 기록합니다. Tool UI crop 1개는 afterCapture에 기록합니다."
+    },
+    "existing_check_records": {
+      "source": "docs/runs/bounded-workbench-foundation/run.json",
+      "checks": [
+        "unit",
+        "typecheck",
+        "lint",
+        "boundaries",
+        "build",
+        "bundle",
+        "hidden-ui"
+      ],
+      "result": "7개 모두 exit_code=0, inputs_changed=false",
+      "rerun_by_reviewer": false
+    }
+  },
+  "assessment": [
+    {
+      "location": "empty conversation / composer",
+      "impact": "사용자는 입력 위치와 agent/model 선택을 바로 찾을 수 있습니다.",
+      "evidence": "normal-1280 및 narrow empty PNG 직접 관찰. 현재 실행 보고서의 composer=120, input=72, toolbar=32 측정.",
+      "result": "기본 composer의 단일 표면과 단일 toolbar가 유지됩니다. 정확한 CSS 치수는 실행 측정 기록으로 확인했습니다.",
+      "correction": null
+    },
+    {
+      "location": "populated conversation / long Korean titles",
+      "impact": "대화 내용과 도구 상태를 구분할 수 있고, 긴 제목이 핵심 버튼을 밀어내지 않습니다.",
+      "evidence": "populated normal/narrow/200% 및 long-title normal/navigation PNG 직접 관찰.",
+      "result": "흰 대화 영역, 절제된 sidebar, 도구 상태와 상세 disclosure가 유지됩니다. 긴 목록 제목은 생략됩니다. 좁은 화면은 navigation sheet로 전환합니다.",
+      "correction": null
+    },
+    {
+      "location": "permission queue / expanded Korean draft",
+      "impact": "긴 초안을 유지하면서 실행 중단과 권한 판단에 접근할 수 있습니다.",
+      "evidence": "permission-long-korean-draft normal/narrow/200% PNG 직접 관찰. 현재 보고서와 capture script의 경로·경고·행동별 scrolling 및 Tab/Shift+Tab 관찰 기록.",
+      "result": "composer와 중단 버튼은 전체가 보입니다. 380×284에서는 권한 경로와 결정 버튼이 현재 scroll 위치 밖에 있습니다. 전체 접근은 기존 실행의 queue scrolling 및 keyboard focus 기록이 뒷받침합니다. 한 PNG에 모두 보인다고 판단하지 않았습니다.",
+      "correction": null
+    },
+    {
+      "location": "Tool UI preview / malformed tool output",
+      "impact": "도구 자료와 오류를 구분하고, 임의 markup을 실행 가능한 UI로 오인하지 않습니다.",
+      "evidence": "desktop-link-preview-synthetic.png 및 desktop-tool-results-synthetic.png 직접 관찰. 현재 실행의 escaped-output 관찰 기록.",
+      "result": "schema-safe preview는 도메인·제목·설명을 표시합니다. unknown markup은 문자로 보입니다. 도구 오류는 별도 오류 상태로 표시됩니다. 실행되지 않았다는 판단은 기존 실행 기록에 근거합니다.",
+      "correction": null
+    },
+    {
+      "location": "keyboard focus / menu / modal / reflow",
+      "impact": "좁은 화면에서도 탐색을 닫고 대화로 돌아갈 수 있습니다.",
+      "evidence": "navigation sheet 닫기 버튼과 opener의 파란 focus ring PNG 직접 관찰. 현재 보고서의 menu arrow/Escape, nested layer dismissal, modal focus containment/return, inspector keyboard resize 기록.",
+      "result": "focus 표시와 modal 배경 구분은 PNG에서 확인했습니다. 동적 keyboard/menu/modal 동작은 현재 실행 기록으로 확인했으며, reviewer가 재실행하지 않았습니다.",
+      "correction": null
+    },
+    {
+      "location": "unknown receipt / submission blocker",
+      "impact": "불명확한 전송 뒤 중복 제출을 막고 초안을 유지합니다.",
+      "evidence": "ui-states-evidence.json의 unknown 관찰 및 현재 e2e script의 visible blocker, disabled send, draft retention, correlated lookup, unchanged effect-count assertions.",
+      "result": "현재 성공한 실행 기록이 보존 동작을 뒷받침합니다. 등록된 PNG에는 unknown 전용 화면이 없으므로 해당 화면의 시각적 품질은 직접 판정하지 않았습니다.",
+      "correction": null
+    }
+  ],
+  "limits": [
+    "PNG 18개를 직접 보았습니다. 나머지 8개는 파일·크기·등록 정보만 확인했습니다.",
+    "일부 큰 PNG는 view_image 표시 과정에서 축소되었습니다. 원본 PNG 크기는 IHDR로 별도 확인했습니다.",
+    "물리적 OS IME, 실제 touch device, 실제 provider 실행, Windows native runtime은 검증하지 않았습니다.",
+    "synthetic composition guard와 CDP touch 기록은 물리적 IME 또는 touch 검증을 뜻하지 않습니다.",
+    "캡처 시점의 hidden/unfocused/nonfocusable 기록은 확인했습니다. 전체 실행 동안 OS activation이 전혀 없었다는 독립 관찰은 수행하지 않았습니다.",
+    "P6 contrast, performance, 전체 state 확장은 이번 판정에 포함하지 않습니다.",
+    "P7 durable storage와 restart recovery는 이번 판정에 포함하지 않습니다.",
+    "과거 selected-A 보고서는 디자인 참고로만 사용했습니다. 현재 화면 증거로 사용하지 않았습니다.",
+    "수정, ledger 기록, 테스트 실행, delegation, GUI/browser/CUA/native app launch, OS focus 작업을 수행하지 않았습니다.",
+    "이 판정은 P4/P5의 제한된 design gate입니다. 최종 제품 출시 승인이 아닙니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a1028a-e95e-7c80-8e61-d61c011cfd11",
+    "identity_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_application": "explicit instruction injection; OS sandbox enforcement claim 없음",
+    "skill": "solo-design-review",
+    "mode": "default",
+    "packet": "docs/runs/bounded-workbench-foundation/execution/final-design_qa.packet.json",
+    "input": "docs/runs/bounded-workbench-foundation/execution/final-design_qa.input.json",
+    "report_only": true,
+    "saved_by_reviewer": false,
+    "coordinator_save_target": "docs/runs/bounded-workbench-foundation/design-review-r1.json"
+  }
+}

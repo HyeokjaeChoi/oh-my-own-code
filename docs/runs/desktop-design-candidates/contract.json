@@ -1,0 +1,51 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "D1",
+      "description": "Traceable observed reference evidence and honest MCP limits"
+    },
+    {
+      "id": "D2",
+      "description": "Three compact app-scale preview candidates"
+    },
+    {
+      "id": "D3",
+      "description": "Complete draft systems and Astra max final design plan"
+    }
+  ],
+  "checks": {},
+  "documents": [
+    {
+      "path": "docs/runs/desktop-design-candidates/synthesis/design-systems.json",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "4c19952a19c909230d81af721184bd6b06dcec777c73137e36d5c34bb8963798"
+    },
+    {
+      "path": "docs/runs/desktop-design-candidates/synthesis/design-plan.md",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "790c7c11aaabc989d578d614e2d977186b264721f181895bb7f1be5ae8bdbe78"
+    },
+    {
+      "path": "docs/runs/desktop-design-candidates/synthesis/preview-brief.md",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "341cc812281cd5c3093d852d26d2058eb9620156bfbe2285ca980c1c82ef9dd6"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": [],
+  "decision_register": [
+    {
+      "id": "candidate-selection",
+      "statement": "Production design adoption requires user selection after three concrete candidates",
+      "status": "assumption",
+      "source": "Latest user requests candidates to inspect",
+      "impact": "This run creates reversible proposal artifacts only; no production restyling",
+      "blocks": [],
+      "resolution": "Keep all candidates proposals; hold production adoption in parent run"
+    }
+  ]
+}

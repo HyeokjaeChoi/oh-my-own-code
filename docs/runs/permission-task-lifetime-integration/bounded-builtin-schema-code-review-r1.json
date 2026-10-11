@@ -1,0 +1,75 @@
+{
+  "verdict": "pass",
+  "scope": "Revision 12, exact7 독립 CODE 검토",
+  "findings": [],
+  "passes": {
+    "compliance": "pass",
+    "correctness": "pass"
+  },
+  "bindings": {
+    "plan_sha256": "6ff976050b34c8a5d8af08230f07ef5eebc76d2b177424a728b71fbc869845dd",
+    "baseline_manifest": "6개 보존 파일의 SHA256 일치",
+    "routing_hashes": "시작과 종료 모두 일치",
+    "reviewed7_start_end": "모두 입력 SHA256과 일치"
+  },
+  "reviewed7hashes": [
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-control.mjs",
+      "sha256": "d8e27fedb61fe724d6ee3c9df80c8cc1644a838cb8ef8e9dc0406f7a5160f7ac"
+    },
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-builtin-metadata.test.mjs",
+      "sha256": "e974d714d05aae663b31710f8564f4b5842eb3ca63653f9d1f1ca0f03530b7b2"
+    },
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-data.mjs",
+      "sha256": "20ac2e0a02ccdd8755d07e4a5c33b2986bf5b49548cc83fefd3c58bc6609ad0a"
+    },
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-tool-data.test.mjs",
+      "sha256": "23942adc4c811f7e7c9ada38b34fb2a449de3e92b96705780da6014b9c412057"
+    },
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.mjs",
+      "sha256": "9ee529928da76f4d6e1cb0a70088f042c488af122fee501622fa84acab46d039"
+    },
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs",
+      "sha256": "b3d88029f3a6454f707f6db0b62138d7f3389932a80133a09b27fd8aad272ef3"
+    },
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/event-host-resources.mjs",
+      "sha256": "8a227c95e8f678992edbbd9a85aa5a2b24437357849f759a8d08e066d2546598"
+    }
+  ],
+  "evidence": {
+    "inspection": [
+      "14 families와 17 declarations를 유지한다.",
+      "private brand, sameScope, 원본 결과 확인 뒤 projection을 수행한다.",
+      "projection을 복사하고 동결한다. 실패, dispose, reload에서 제거한다.",
+      "잘못된 ID, 추가 필드, 실패한 결과의 재사용을 차단한다.",
+      "원본 converter SHA256을 Native import 전에 확인한다.",
+      "각 family의 sourceSha256은 검증된 manifest의 afterSha256에서 가져온다.",
+      "호출 지점과 패키지 자산 목록에 projector 연결을 확인했다.",
+      "모든 행은 unsupported이고 complete=false이다. 실행 권한은 추가하지 않는다."
+    ],
+    "executed": [
+      "tool-data Node 테스트: 5 PASS",
+      "선택한 Control projection Node 테스트: 5 PASS",
+      "선택한 graph Node 테스트: 3 PASS",
+      "독립 JSON 경계 검사: 13 PASS"
+    ],
+    "json_boundaries": "음수·소수, 키 순서, depth32, 16384 keys, 1MiB, getter, Proxy, cycle, sparse array, callback, Infinity를 검사했다. getter·Proxy callback과 execute 호출은 0회였다."
+  },
+  "limits": [
+    "원본 converter 검사는 추출한 순수 함수와 pinned Effect schema에 한정한다. 모든 원본 factory schema의 수용 여부는 검증하지 않았다.",
+    "전체 suite, lint, prettier, 기존 contract checks와 physical r5는 재실행하지 않았다.",
+    "Native/core/Main/provider/Bun/server/build/UI/physical 실행 또는 import는 수행하지 않았다.",
+    "source, docs, ledger는 수정하지 않았다. 재위임하지 않았다.",
+    "이 판정은 final whole F09 또는 full18 gate가 아니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a126e1-74ff-73a0-957d-602112617893",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "description": "Mandatory entry rule"
+    },
+    {
+      "id": "AC-2",
+      "description": "Staff-level sourced decisions"
+    },
+    {
+      "id": "AC-3",
+      "description": "Concrete implementation validation"
+    },
+    {
+      "id": "AC-4",
+      "description": "Preservation and independent review"
+    }
+  ],
+  "checks": {
+    "docs": {
+      "argv": [
+        "python3",
+        "docs/runs/staff-architecture/check_docs.py"
+      ],
+      "cwd": ".",
+      "scope": "Document links, mandatory entry, and frozen baseline preservation; no app tests",
+      "acceptance_ids": [
+        "AC-1",
+        "AC-2",
+        "AC-3",
+        "AC-4"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/decisions/0001-workbench-platform.md",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "70988369fdc37f29ce41f7a34a6ea8a32ad6bc058c62f6cfb34a09defd3a72cb"
+    },
+    {
+      "path": "docs/engineering/architecture-entry.md",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "2da064ac4fe3f9f40f286ea7aa0e3630aa0e30ef907214f176dfe319f5c9ad61"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": [
+    "docs/runs/staff-architecture/check_docs.py",
+    "docs/runs/staff-architecture/preserved-baseline.json",
+    "docs/runs/staff-architecture/managed-block.sha256",
+    "docs/runs/staff-architecture/official-sources.md",
+    "docs/runs/staff-architecture/dependency-observations.json"
+  ]
+}

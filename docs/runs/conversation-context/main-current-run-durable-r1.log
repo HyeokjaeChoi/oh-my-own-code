@@ -1,0 +1,28 @@
+✖ context durable explicit current-run queue preserves original acknowledged request and no switches (78.942ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 166.388458
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:4992:1
+✖ context durable explicit current-run queue preserves original acknowledged request and no switches (78.942ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable.","receipt":{"runtimeEpoch":"epoch","operationId":"queue-run","type":"message.send","workspaceId":"ce76a5d7-0484-4a86-a3cb-e41e004106d5","sessionId":"73a162e1-8d66-454a-8cc6-69852d35b57d","admission":"rejected","delivery":"pending","effect":"none","revision":13,"evidence":[],"result":{"kind":"rejected","code":"UNAVAILABLE"}}}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:4997:142)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

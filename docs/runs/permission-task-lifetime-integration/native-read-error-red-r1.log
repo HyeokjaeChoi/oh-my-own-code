@@ -1,0 +1,89 @@
+✖ synthetic: missing classifications require original errno observation and completed cleanup (10.395792ms)
+✖ synthetic: authority refusal after a missing open cannot become a missing observation (5.569875ms)
+✖ synthetic: missing-path parent cleanup failure never publishes a typed missing result (4.359958ms)
+✖ synthetic: rethrowing an earlier observed error from authority cannot retain its classification (5.702125ms)
+✔ synthetic: Native root file-read reports genuine directory kind after cleanup (4.586292ms)
+✔ synthetic: observed root replacement permanently revokes kernel and shared root guard after restoration (4.502083ms)
+✔ real module refuses Node before invoking the authority callback (2.242ms)
+✔ factory accepts only exact data objects and a real root guard with a synchronous check (2.570916ms)
+✔ synthetic: frozen synchronous paged reads retain the root and use only relative child opens (5.686542ms)
+✔ synthetic: default page is 256 KiB; empty files and exact 20 MiB bound work (5.212458ms)
+✔ synthetic: lexical path and closed page validation reject without child IO or getter execution (3.830792ms)
+✔ synthetic: issued tokens bind the original object, kernel, path and full file stat (7.775084ms)
+✔ synthetic: symlink ancestors/leaves, hard links and directories cannot return bytes (4.0015ms)
+✔ synthetic: throw failure closes temporary FDs and discloses no bytes (3.504625ms)
+✔ synthetic: zero failure closes temporary FDs and discloses no bytes (3.578083ms)
+✔ synthetic: changedStat failure closes temporary FDs and discloses no bytes (3.152583ms)
+✔ synthetic: crossDevice failure closes temporary FDs and discloses no bytes (3.153334ms)
+✔ synthetic: final authority leafReplacement after temporary close prevents byte disclosure (3.584083ms)
+✔ synthetic: final authority ancestorReplacement after temporary close prevents byte disclosure (3.643958ms)
+✔ synthetic: final authority rootReplacement after temporary close prevents byte disclosure (4.127084ms)
+✔ synthetic: final authority leafSymlink after temporary close prevents byte disclosure (3.317875ms)
+✔ synthetic: final authority revokeOwner after temporary close prevents byte disclosure (5.00725ms)
+✔ synthetic: final authority throwCheck after temporary close prevents byte disclosure (3.145917ms)
+✔ synthetic: final authority closeKernel after temporary close prevents byte disclosure (3.063166ms)
+✔ synthetic: read reentry from the final authority callback refuses; final named checks follow it (3.273375ms)
+✔ synthetic: temporary close failure erases bytes, attempts every FD and prevents successful close (3.257ms)
+✔ synthetic: rootClose revokes first and cannot report successful close (2.811ms)
+✔ synthetic: libraryClose revokes first and cannot report successful close (3.242666ms)
+✔ real runtime gate with instrumented fs rejects Node with no kernel IO (2.418334ms)
+✔ synthetic: identity compares every full-stat field, even if file bytes stay unchanged (5.029417ms)
+✔ synthetic: callback returning an object or Promise fails closed during read (9.075791ms)
+✔ synthetic: explicit null and undefined page numbers cannot use omitted-field defaults (2.980458ms)
+✔ synthetic: a close failure that retains a leaf FD still attempts other cleanup and poisons reads (3.169042ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 29
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 220.769542
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:16:1
+✖ synthetic: missing classifications require original errno observation and completed cleanup (10.395792ms)
+  TypeError [Error]: f.module.nativeDescriptorFailureKind is not a function
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read.test.mjs:22:27)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:29:1
+✖ synthetic: authority refusal after a missing open cannot become a missing observation (5.569875ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: path_missing
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read.test.mjs:36:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: path_missing
+        at fail (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-test-m2A71m/adapter/kernel.mjs:19:9)
+        at Object.read (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-test-m2A71m/adapter/kernel.mjs:290:11)
+        at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read.test.mjs:36:32
+        at getActual (node:assert:580:5)
+        at strict.throws (node:assert:728:24)
+        at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read.test.mjs:36:10)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7),
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:41:1
+✖ synthetic: missing-path parent cleanup failure never publishes a typed missing result (4.359958ms)
+  TypeError [Error]: f.module.nativeDescriptorFailureKind is not a function
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read.test.mjs:47:25)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:50:1
+✖ synthetic: rethrowing an earlier observed error from authority cannot retain its classification (5.702125ms)
+  TypeError [Error]: f.module.nativeDescriptorFailureKind is not a function
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read.test.mjs:54:25)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

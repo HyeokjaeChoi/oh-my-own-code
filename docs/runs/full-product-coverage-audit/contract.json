@@ -1,0 +1,16 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {"id":"COV1","description":"Trace all18 exact PRD acceptance groups and sections4/5/7/8 to current source, scoped runtime evidence or explicit missing/unverified connections; no scope deletion or silent deferral."},
+    {"id":"COV2","description":"Separate source presence, actual execution, platform coverage and seven integrated release scenarios; completed narrow runs do not become whole-product approval."},
+    {"id":"COV3","description":"Produce an ordered remaining implementation backlog with concrete dependencies and exact evidence, while preserving the full approved scope and current source pin."}
+  ],
+  "checks": {
+    "coverage-inputs": {"argv":["python3","docs/runs/full-product-coverage-audit/check-coverage.py","inputs"],"cwd":".","scope":"Exact PRD18/crosscutting inputs and current source/predecessor terminal proof.","acceptance_ids":["COV1","COV2"],"required":true},
+    "coverage-matrix": {"argv":["python3","docs/runs/full-product-coverage-audit/check-coverage.py","matrix"],"cwd":".","scope":"Every clause traced with factual source/evidence status, exact references, platform limits and remaining backlog; this validates audit records, not implemented feature acceptance.","acceptance_ids":["COV1","COV2","COV3"],"required":true}
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": ["docs/product/prd.md","docs/runs/full-product-coverage-audit/input.json","docs/runs/full-product-coverage-audit/check-coverage.py"],
+  "decision_register": []
+}

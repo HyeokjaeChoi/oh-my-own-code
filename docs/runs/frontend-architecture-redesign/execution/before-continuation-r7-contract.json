@@ -1,0 +1,343 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "A1",
+      "description": "Enforced module boundaries"
+    },
+    {
+      "id": "A2",
+      "description": "Single state ownership and navigation correctness"
+    },
+    {
+      "id": "A3",
+      "description": "Bounded read recovery without mutation replay"
+    },
+    {
+      "id": "A4",
+      "description": "Existing behavior preserved"
+    },
+    {
+      "id": "A5",
+      "description": "Accessible localized interaction"
+    },
+    {
+      "id": "A6",
+      "description": "Actual production-quality desktop layout"
+    },
+    {
+      "id": "A7",
+      "description": "Measured performance and honest platform evidence"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "apps/desktop-app/src/workbench-service.test.mjs",
+        "apps/desktop-app/src/workbench-contract.test.mjs",
+        "apps/desktop-app/src/workbench-projection.test.mjs",
+        "apps/desktop-app/src/sidecar-supervisor.test.mjs",
+        "apps/desktop-app/src/renderer-admission.test.mjs",
+        "apps/desktop-app/src/ephemeral-profile.test.mjs",
+        "apps/desktop-app/src/workbench-session.test.mjs",
+        "apps/desktop-app/src/session-navigation.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Session lifecycle, receipt safety, diagnostics redaction, navigation projection and existing core regressions",
+      "acceptance_ids": [
+        "A2",
+        "A3",
+        "A4"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Desktop renderer and typed preload contract",
+      "acceptance_ids": [
+        "A1",
+        "A2",
+        "A4"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src",
+        "apps/desktop-app/scripts"
+      ],
+      "cwd": ".",
+      "scope": "Desktop host, renderer and scripts",
+      "acceptance_ids": [
+        "A1",
+        "A4"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "prettier",
+        "--check",
+        "apps/desktop-app"
+      ],
+      "cwd": ".",
+      "scope": "Desktop source and build definitions",
+      "acceptance_ids": [
+        "A4"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/build.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Real Electron host/preload/renderer build",
+      "acceptance_ids": [
+        "A4",
+        "A7"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Renderer excludes privileged host and sidecar modules",
+      "acceptance_ids": [
+        "A1",
+        "A7"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Desktop resolved imports, public APIs, FSD directions and browser/host separation with positive and negative fixtures",
+      "acceptance_ids": [
+        "A1"
+      ],
+      "required": true
+    },
+    "electron-e2e": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--out",
+        "docs/runs/frontend-architecture-redesign/evidence/contract-r3",
+        "--script",
+        "workbench"
+      ],
+      "cwd": ".",
+      "scope": "Disposable actual Electron startup, UI controls, authentic unavailable-provider behavior and shutdown",
+      "acceptance_ids": [
+        "A4"
+      ],
+      "required": true
+    },
+    "package-macos": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/package.mjs",
+        "darwin",
+        "arm64"
+      ],
+      "cwd": ".",
+      "scope": "Local macOS app package with pinned sidecar resources; no publication",
+      "acceptance_ids": [
+        "A7"
+      ],
+      "required": true
+    },
+    "electron-session-e2e": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--out",
+        "docs/runs/frontend-architecture-redesign/evidence/contract-r3",
+        "--script",
+        "sessions"
+      ],
+      "cwd": ".",
+      "scope": "Actual Electron session organization/fork/delete and local diagnostics with disposable sidecar data and project-file sentinels",
+      "acceptance_ids": [
+        "A2",
+        "A4"
+      ],
+      "required": true
+    },
+    "electron-ui-states": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--out",
+        "docs/runs/frontend-architecture-redesign/evidence/contract-r3",
+        "--script",
+        "ui-states"
+      ],
+      "cwd": ".",
+      "scope": "Existing actual-renderer synthetic tool/permission/unknown-state and layout regressions",
+      "acceptance_ids": [
+        "A4",
+        "A5",
+        "A6"
+      ],
+      "required": true
+    },
+    "packaged-lifecycle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--out",
+        "docs/runs/frontend-architecture-redesign/evidence/contract-r3",
+        "--script",
+        "smoke",
+        "--mode",
+        "packaged",
+        "--platform",
+        "darwin"
+      ],
+      "cwd": ".",
+      "scope": "Current native macOS package launch, sender isolation, sidecar crash/restart and owned cleanup",
+      "acceptance_ids": [
+        "A4",
+        "A7"
+      ],
+      "required": true
+    },
+    "ui-typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "packages/ui/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Changed UI package source and scoped styles; runtime evidence remains separate.",
+      "acceptance_ids": [
+        "A1",
+        "A4"
+      ],
+      "required": true
+    },
+    "ui-lint": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "--config",
+        "packages/ui/eslint.config.mjs",
+        "packages/ui/src"
+      ],
+      "cwd": ".",
+      "scope": "Changed UI package source and scoped styles; runtime evidence remains separate.",
+      "acceptance_ids": [
+        "A1",
+        "A4"
+      ],
+      "required": true
+    },
+    "ui-format": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "prettier",
+        "--check",
+        "packages/ui"
+      ],
+      "cwd": ".",
+      "scope": "Changed UI package source and scoped styles; runtime evidence remains separate.",
+      "acceptance_ids": [
+        "A1",
+        "A4"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/frontend-architecture-redesign/architecture-and-ui.md",
+      "gate": "design_spec",
+      "version": "4",
+      "sha256": "b252e8c99e9394ab471c094f528f5a6902375b2ecd39790b20dfd2ca787387f6"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": [
+    "pnpm-lock.yaml"
+  ],
+  "decision_register": [
+    {
+      "id": "replan",
+      "statement": "Prioritize architecture and actual UI quality before feature expansion",
+      "status": "confirmed",
+      "source": "Latest user request",
+      "impact": "Changes sequencing, retains all product scope",
+      "blocks": [],
+      "resolution": "First visible slice followed by state foundation and hardening"
+    },
+    {
+      "id": "storage",
+      "statement": "Managed workspaces persist in ~/Documents/OhMyOwnCode/{session-id}",
+      "status": "confirmed",
+      "source": "Explicit user storage answer",
+      "impact": "Supersedes temporary-storage assumption for target product",
+      "blocks": [],
+      "resolution": "Separate durable host increment; imports remain untouched"
+    },
+    {
+      "id": "stack",
+      "statement": "CSS Modules only; native basic controls and Radix complex primitives; explicit Zustand sole app/domain state store; bounded fresh reads without Query/XState; pnpm/Nx retained.",
+      "status": "delegated",
+      "source": "User explicitly delegates fit-for-purpose selection and prohibits same-responsibility duplication; Astra/high proposal grounded in actual dependencies.",
+      "impact": "Incremental library changes after compatible versions and contracts checked",
+      "blocks": [],
+      "resolution": "Replace custom canonical external store with window-scoped Zustand; assistant-ui gets derived projection. No same-value duplicated store/cache."
+    },
+    {
+      "id": "no-overlapping-libraries",
+      "statement": "No competing app libraries/stores/caches for the same responsibility.",
+      "status": "confirmed",
+      "source": "Latest explicit user instruction",
+      "impact": "Dependency decisions require ownership and replacement rationale.",
+      "blocks": [],
+      "resolution": "CSS Modules only; Nx only task orchestrator; one projection and one read owner per resource; upstream internals disclosed."
+    },
+    {
+      "id": "app-domain-zustand",
+      "statement": "Explicitly adopt Zustand for app-wide and domain-specific state outside assistant-ui.",
+      "status": "confirmed",
+      "source": "Latest user correction: upstream assistant-ui Zustand does not obviate app state needs.",
+      "impact": "Changes app-domain owner mechanism, preserves main authority and one owner per value.",
+      "blocks": [],
+      "resolution": "Window-scoped vanilla Zustand store with pure domain transitions; no custom competing canonical store; direct version alignment and compatibility probe required."
+    }
+  ]
+}

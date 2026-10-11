@@ -1,0 +1,54 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "c1b3412577432f63a2462dcb746dcc24345dc67960d18d94d90e1ca795cf49f5",
+    "environment_sha256": "d0c2c9798a71ecdf928da3b911c3c91e971fcb8ca80000884e487a38ba7a714f",
+    "gate": "code",
+    "plan_sha256": "cb3b5cf76286debd60eb7a040c3f220c3ab17c1b046a431d17dd410fbd6c48e3",
+    "schema_version": 2,
+    "source_sha256": "526b9f2a63ceae0a9c72dc514a8c25f66b5bbb3bc75ea9c288b2e25e6b6ff202",
+    "verification_sha256": "595773664c4f7789406edf59860d931254103fb5db5e7ac84a488f3ec1b0d207",
+    "work_class_sha256": "2e17126b31d8fa5c6c959c6574bfa41485568e70b239ceb95740d3d44a1e0dde"
+  },
+  "verdict": "pass",
+  "summary": "plan revision 6과 design-v1을 기준으로 요구사항 준수와 코드 품질을 각각 검토했습니다. 고정된 11개 변경 경로에서 수정이 필요한 결함을 찾지 못했습니다. 현재 소스, patch, review 입력과 실행 증거의 일치 여부를 독립적으로 확인했습니다.",
+  "open_findings": [],
+  "optional_preferences": [],
+  "scope": "F05의 Markdown/code/copy와 이에 필요한 dependency, boundary, evidence runner 변경만 검토했습니다.",
+  "spec_compliance": {
+    "MD1": "실제 assistant-ui part context에서 Markdown/GFM과 미완성 code fence를 렌더링합니다. 사용자 원문은 literal text로 유지합니다. 기존 projection cap, tool fallback, permission과 status 처리는 유지됩니다.",
+    "MD2": "Raw HTML은 escaped text로 표시됩니다. Markdown 링크와 이미지는 inert text로 표시됩니다. Code는 plain text이며 실행 경로가 없습니다. GFM checkbox는 disabled입니다. DOM으로 untrusted props를 펼치지 않습니다.",
+    "MD3": "명시적 버튼이 해당 projected source 또는 code를 복사합니다. Clipboard promise가 pending/success/error를 결정합니다. Pending 중 중복 호출을 막습니다. Text 변경과 unmount는 generation을 무효화하고, 기존 workspace/session key는 scope를 분리합니다. 이전 promise 완료가 새 상태를 덮어쓰지 않습니다.",
+    "MD4": "현재 입력에 연결된 unit/typecheck/lint/format/boundaries/build/bundle/hidden 결과를 확인했습니다. Build 결과는 실제 r3 build의 exact-byte 재사용입니다. 최종 hidden-r4 증거는 38 states, 38 native PNG, owned Electron exit 0을 기록합니다."
+  },
+  "code_quality": {
+    "result": "수정이 필요한 correctness, security, concurrency 또는 regression 결함을 찾지 못했습니다.",
+    "architecture": "CSS Modules와 기존 token을 사용합니다. Copy 상태는 local component 상태입니다. 두 번째 message store나 새로운 host/transport/domain authority를 추가하지 않습니다.",
+    "dependencies": "@assistant-ui/react-markdown 0.14.19와 remark-gfm 4.0.1만 직접 추가했습니다. 기존 616 packages와 616 snapshots가 모두 동일합니다. 다른 importer와 기존 직접 dependency는 변경되지 않았습니다.",
+    "supporting_changes": "Boundary allowlist는 두 package 이름만 추가합니다. Build provenance selector와 evidence wrapper 변경은 새 runner 등록 및 기존 hidden capture/exit 검증 적용으로 제한됩니다."
+  },
+  "verification": {
+    "freshness": "현재 전체 source inventory가 source-freeze-r1.json과 일치합니다. Baseline 대비 변경은 정확히 11개입니다. Before originals의 hash와 크기가 일치하고, working-change-r1.patch는 현재 bytes로 재구성한 diff와 일치합니다. 등록된 artifact 209개가 모두 최신입니다.",
+    "binding": "현재 ledger에서 읽기 전용으로 계산한 code review binding이 final-code-input-r1.json 전체와 일치합니다. Packet의 design 및 routing input hash도 일치합니다.",
+    "build": "저장 파일을 쓰는 verify-build-r4.mjs는 실행하지 않았습니다. 동일한 읽기 전용 비교로 현재 build inputs, build stamp, artifacts와 resource bytes가 r3 baseline과 일치함을 확인했습니다. 선택된 script 중 변경은 e2e-conversation-markdown.mjs 하나입니다. 현재 provenance는 hidden-r4의 실행 전후 provenance와도 일치합니다.",
+    "hidden": "38개 PNG의 hash, CRC, IEND, dimensions와 hidden/nonfocusable capture metadata를 확인했습니다. Page errors와 external requests는 빈 배열입니다. 마지막 retained case의 소스는 durable snapshot, retained count 1과 disabled 새 세션 버튼을 명시적으로 검사합니다. 해당 PNG에서도 hold와 복사 성공을 확인했습니다.",
+    "history": "hidden-r1 초기 navigation 실패와 hidden-r2 마지막 fixture 실패가 보존되어 있습니다. hidden-r3의 마지막 case는 temporary snapshot 때문에 retained hold를 증명하지 못합니다. 최종 판단에는 수정된 hidden-r4를 사용했습니다.",
+    "compatibility": "격리된 pinned package install/type/build/실제 assistant-ui SSR 증거와 각 파일 hash를 확인했습니다. 설치된 package source에서 part context, plain code와 deferred rendering 동작도 확인했습니다.",
+    "executed_focused_test": {
+      "command": "node --import tsx --test --test-reporter=spec apps/desktop-app/src/workbench-markdown.test.mjs",
+      "exit_code": 0,
+      "passed": 6,
+      "failed": 0
+    }
+  },
+  "limitations": [
+    "기존 broad passing checks는 다시 실행하지 않았습니다. Electron 또는 UI를 새로 실행하지 않았습니다.",
+    "실제 OS clipboard, Native/provider, productionMain, Windows와 screen-reader hardware 동작은 검증하지 않았습니다.",
+    "이 verdict는 whole F05, full18 완료 또는 release 승인이 아닙니다.",
+    "소스, 보고서와 ledger를 수정하거나 저장하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11e3a-f25b-75f1-96f3-56ea3cebaadf",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

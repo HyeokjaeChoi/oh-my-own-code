@@ -1,0 +1,199 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "R1",
+      "description": "Actual fixed trusted plugin/RPC startup without discovery/install"
+    },
+    {
+      "id": "R2",
+      "description": "Exact durable explicit Native Skills and session-record semantics"
+    },
+    {
+      "id": "R3",
+      "description": "Scoped explicit truthful accessible runtime UI"
+    },
+    {
+      "id": "R4",
+      "description": "Current checks/proofs and independent gates"
+    }
+  ],
+  "checks": {
+    "runtime": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/configuration-skill-runtime.test.mjs",
+        "apps/desktop-app/src/native-skills-host.test.mjs",
+        "apps/desktop-app/src/native-skills-plugin.test.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+        "apps/desktop-app/src/workbench-contract.test.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs",
+        "apps/desktop-app/src/event-host-supervisor.test.mjs",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs",
+        "apps/desktop-app/src/configuration-skill-runtime-api.test.mjs",
+        "apps/desktop-app/scripts/fixtures/native-skills-prerequisite.test.mjs",
+        "apps/desktop-app/src/host/workbench-skill-runtime-storage.test.mjs",
+        "apps/desktop-app/src/configuration-draft.test.mjs",
+        "apps/desktop-app/src/configuration-skill-draft.test.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Affected closed Skill runtime/plugin/service/storage/renderer/fixture tests",
+      "acceptance_ids": [
+        "R1",
+        "R2",
+        "R3",
+        "R4"
+      ],
+      "required": true
+    },
+    "native": {
+      "argv": [
+        "node",
+        "docs/runs/configuration-skill-runtime/verify-executed-r1.mjs",
+        "native"
+      ],
+      "cwd": ".",
+      "scope": "Actual contained production helper Native Skills, no model/provider; read-only exact current proof of actual consumer-build-r1/native-r7/hidden-r1, no redundant execution",
+      "acceptance_ids": [
+        "R1",
+        "R2",
+        "R4"
+      ],
+      "required": true
+    },
+    "hidden-ui": {
+      "argv": [
+        "node",
+        "docs/runs/configuration-skill-runtime/verify-executed-r1.mjs",
+        "hidden-ui"
+      ],
+      "cwd": ".",
+      "scope": "Actual built synthetic Skills runtime UI desktop/narrow/keyboard; read-only exact current proof of actual consumer-build-r1/native-r7/hidden-r4, no redundant execution",
+      "acceptance_ids": [
+        "R3",
+        "R4"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "node",
+        "docs/runs/configuration-skill-runtime/verify-executed-r1.mjs",
+        "build"
+      ],
+      "cwd": ".",
+      "scope": "Production resources and renderer build; read-only exact current proof of actual consumer-build-r1/native-r7/hidden-r1, no redundant execution",
+      "acceptance_ids": [
+        "R4"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Closed shared and renderer types",
+      "acceptance_ids": [
+        "R4"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Renderer slice/runtime boundaries",
+      "acceptance_ids": [
+        "R4"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Browser bundle closure",
+      "acceptance_ids": [
+        "R4"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "docs/runs/configuration-skill-runtime/check-changed.mjs",
+        "lint"
+      ],
+      "cwd": ".",
+      "scope": "Exact changed supported source/scripts lint",
+      "acceptance_ids": [
+        "R4"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "docs/runs/configuration-skill-runtime/check-changed.mjs",
+        "format"
+      ],
+      "cwd": ".",
+      "scope": "Exact changed source/scripts formatting",
+      "acceptance_ids": [
+        "R4"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/configuration-skill-runtime/design.md",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "b6b8b971422d56e0d8a233777affc5f87c98120dda0e2c2313b99e5777c86c0d"
+    }
+  ],
+  "environment_files": [
+    "pnpm-lock.yaml",
+    "docs/runs/configuration-skill-runtime/source-facts.json",
+    "docs/runs/configuration-skill-runtime/check-changed.mjs",
+    "docs/runs/configuration-skill-runtime/prechange-source.json",
+    "docs/runs/configuration-skill-runtime/evidence/prechange/legacy-storage-journal.bundle.mjs",
+    "docs/runs/configuration-skill-runtime/evidence/prechange/legacy-parser-closure.json",
+    "docs/runs/configuration-skill-runtime/verify-executed-r1.mjs",
+    "docs/runs/configuration-skill-runtime/executed-proof-pins-r1.json"
+  ],
+  "user_approvals": [],
+  "decision_register": [
+    {
+      "id": "trusted-native-skills",
+      "statement": "Fixed app-bundled directory plugin with closed private RPC and explicit resume:false session Skill application",
+      "status": "delegated",
+      "source": "Ongoing user local completion instruction and PRD F14/AC14, pinned read-only source facts",
+      "impact": "New trusted Native runtime/security/data/UI boundary; no arbitrary plugin/package discovery",
+      "blocks": [],
+      "resolution": "Initial PLAN/DESIGN_SPEC then actual contained prerequisite route proof before downstream consumers; abort approach if unsupported, no unsafe fallback"
+    }
+  ]
+}

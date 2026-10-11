@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a11b0d-1f2a-7722-b743-0b2ed700c26c": {
+      "completed": "**두 경로를 현재 bytes로 동결합니다. GREEN freeze는 아닙니다. 추가 수정은 하지 않겠습니다.**\n\n원인: [controller.ts:638](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/renderer/entities/workbench/model/controller.ts:638)가 서로 다른 `operationId`와 `requestId`를 생성합니다. fixture와 production admission 모두 `INVALID_REQUEST`로 거부합니다. fixture 검사 제거는 production 불일치를 숨기므로 적용하지 않았습니다.\n\nRED checkpoint:\n\n- 실제 Controller 연결 test 4개 실패: missing leaf, existing file, BOM/CRLF, grammar repair.\n- 기존 124개와 새 admission 비교 test 1개 통과.\n- scoped lint·format·parse 통과.\n- `register/remove`는 이미 같은 ID를 사용합니다.\n\n확인한 SHA-256:\n\n```text\napps/desktop-app/scripts/fixtures/workbench-host.mjs\nfc4673cda6f1973421bc06f79253ae44325f2e4020e4da9a6859c7a8ca9bbbef\n\napps/desktop-app/scripts/fixtures/workbench-host.test.mjs\n688d7ec3445c1475cce9a7ee9cbdc72604e958e9c68115f56898c3b082ce5428\n```\n\ntest 파일만 변경했습니다. product·Native·UI runner는 수정하지 않았습니다. **소유 범위 밖의 Renderer 불일치가 남아 있어, hidden-r2 진행용 수정 완료 상태로 보고할 수 없습니다.**"
+    }
+  },
+  "timed_out": false
+}

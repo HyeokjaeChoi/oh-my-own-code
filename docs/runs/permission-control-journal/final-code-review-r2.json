@@ -1,0 +1,78 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "9fc55a78295c90ebf16788a8e1572f20ff9da2b2e14f9cecbdc28cf3d5fc7019",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "5f22c075593eb7959b2606f2bf23fa9dd5178d40691060c93385effc89cf5dd4",
+    "schema_version": 2,
+    "source_sha256": "55dfca772b7ca2d48da4beafd96f46af3a435f5ba197549f07d6a6c8fd3fae54",
+    "verification_sha256": "fcf827574c931ee54608b68257fc37a8f36815d71c9cb37cadbade5427d6ac74",
+    "work_class_sha256": "979946a64d8aecb7b4a3b5ce381998e724eea8be1de6de2b598975b574efe45e"
+  },
+  "verdict": "pass",
+  "summary": "이전 결함 2개의 수정을 확인했습니다. 전체 source binding에 연결된 최종 CODE 검토에서 추가로 보고할 중대한 결함은 없었습니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "CODE-R1-01",
+      "assessment": "기존 작업과 새 작업의 workspace 범위를 비교합니다. 기존 작업의 identity, 전체 permissionTarget, reservation fallback을 포함합니다. recoveryResources는 permission target의 전체 workspace hold를 표시합니다.",
+      "evidence": [
+        "live, unknown, journal reopen, checkpoint reopen의 추가 workspace 일반 admission 차단 테스트를 확인했습니다.",
+        "실제 parser로 복원한 중첩 admission 이력에서 queued dispatch 차단과 journal byte 보존 assertion을 확인했습니다.",
+        "독립 workspace의 admission과 dispatch 허용 테스트를 확인했습니다.",
+        "실제 scopeBlocked 함수 본문을 메모리에서 실행하여 양쪽 target 범위, reservation fallback, 자기 작업 제외, 독립 workspace 동작을 확인했습니다."
+      ]
+    },
+    {
+      "id": "CODE-R1-02",
+      "assessment": "target과 grant progress 검증이 Object.hasOwn으로 existingSaved의 존재를 확인합니다. 기존 grant identity와 ruleDigest 검증은 유지됩니다.",
+      "evidence": [
+        "실제 validator 호출에서 null, false, 0, 빈 문자열을 target, admission, parser 경계 모두에서 거부했습니다. 12개 assertion이 통과했습니다.",
+        "existingSaved 생략과 정확한 객체의 grant progress를 허용했습니다.",
+        "다른 saved identity의 progress를 거부했습니다."
+      ]
+    }
+  ],
+  "verification": {
+    "plan_revision": 3,
+    "actual_binding_equals_entire_parsed_input": true,
+    "routing_plan_supplement_hashes_verified": true,
+    "frozen_source_files_verified": 8,
+    "corrected_files_since_r1": 4,
+    "unchanged_files_since_r1": 4,
+    "before_archive_files_verified": 6,
+    "new_files_absent_from_before_archive": 2,
+    "legacy_files_verified": 33,
+    "legacy_bytes_verified": 401729,
+    "registered_prior_code_and_design_report_hashes_verified": true,
+    "inherited_managed_files_and_adoption_report_verified": true,
+    "prior_unchanged_source_assessment_reused": true,
+    "actual_archived_parser_evidence_reused": true,
+    "inherited_utility_review_repeated": false,
+    "recorded_checks": "Main의 unit 650, lint, format PASS 기록을 확인했습니다. check-status는 모두 현재 source에서 reusable로 판정했습니다.",
+    "full_suites_rerun": false,
+    "independent_in_memory_probes_passed": true,
+    "source8_still_frozen_at_end": true
+  },
+  "limitations": [
+    "이 판정은 전체 source binding에 연결된 CODE 검토입니다. runtime activation 또는 전체 F09 승인이 아닙니다.",
+    "synthetic storage 검증은 실제 Native readback이나 settlement 증거가 아닙니다.",
+    "unknown은 계속 held 상태입니다. reconciliation release는 없습니다.",
+    "persisted BEFORE policy가 없는 mode는 계속 거부됩니다.",
+    "Native, Bun, Electron, build, provider를 실행하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a123b2-bece-7403-923c-a6cfde3ba387",
+    "identity_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "implementation_authored": false,
+    "delegation": false,
+    "report_only": true,
+    "files_modified": false,
+    "ledger_modified": false,
+    "report_persisted": false,
+    "recipient": "Main"
+  }
+}

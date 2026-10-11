@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "design_spec",
+    "plan_sha256": "7bcacee7766d65c157a9b1e8b402f9a77e792f6907c89a045b084a62546999d3",
+    "contract_sha256": "1a5b79ccd693e06ae42c169818e444f63bbaa5eaa3a80f5207f5fd217b838386",
+    "documents_sha256": "bc6eb672952214aa20d21af8bcc7553565270793e150e9e9b2461d82bfc763dc"
+  },
+  "verdict": "pass",
+  "summary": "Independent design_spec_reviewer review of the active build-delivery revision 7 plan and all ten documents in design-spec-review-r6-packet.json. The new runtime-info contract admits unknown input through explicit own-property, nested-shape and bounded-value rules, returns only a fresh version value or fixed redacted failure, and confines its injected reader to one invocation without retry, client creation or activation. Its three outcomes do not assert host health, compatibility, authentication, sourceHealth availability or mutation authority. Synthetic provenance remains explicit in probe diagnostics, while PID, URLs, paths, unknown fields, raw errors and the accepted version are excluded from general diagnostics. The boundary preserves the synthetic snapshot marker and agrees with the PRD, architecture, verification and local-monitoring contracts on local privacy, evidence, recovery and production holds. Current plan, contract and all packet document SHA-256 values match; the harness design_spec review-input binding matches the reviewed object exactly. No material specification contradiction or unresolved consumer decision was found.",
+  "open_findings": [],
+  "limits": "Read-only document and hash review. No code, tests, build, services, SDK host, browser, Figma or device behavior was executed or verified. The synthetic injected-client contract does not prove a live OpenCode host, network or process isolation, authentication, version compatibility, sourceHealth, persistence, operational incidents, S-01/S-08/S-09, or PRD AC-01–18 completion. The coordinator must register this report and obtain the current design_spec handoff before dependent implementation; final code, runtime and rendered-UI judgments remain separate.",
+  "review_evidence": {
+    "run": "build-delivery",
+    "role": "design_spec_reviewer",
+    "run_status_observed": "active",
+    "plan": {
+      "path": "docs/runs/build-delivery/plan.md",
+      "revision": 7,
+      "sha256": "7bcacee7766d65c157a9b1e8b402f9a77e792f6907c89a045b084a62546999d3"
+    },
+    "packet": "docs/runs/build-delivery/design-spec-review-r6-packet.json",
+    "registered_documents": [
+      "docs/product/prd.md",
+      "docs/design/specs/workbench-ux.md",
+      "docs/engineering/workbench-architecture.md",
+      "docs/engineering/verification.md",
+      "docs/operations/local-release-monitoring.md",
+      "docs/engineering/spec-index.md",
+      "docs/design/system.md",
+      "docs/decisions/0001-workbench-platform.md",
+      "docs/design/components.json",
+      "docs/engineering/runtime-info-boundary.md"
+    ],
+    "runtime_info_sha256": "653138d736c32d94efba2580d0d6fa07b0cc31034fb7f78ef5387eb114cea7a7",
+    "binding_check": "All ten packet document SHA-256 values, plan SHA-256 and contract SHA-256 match current files; python3 .solopreneur/harness.py review-input build-delivery --gate design_spec returned the exact reviewed binding."
+  },
+  "provenance": {
+    "child_task_id": "/root/design_spec_review_r6",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "high",
+    "runtime_identity_verified": false,
+    "report_only": true
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "status": "Source hashes verified; worker scoped evidence has Main manager select raw-proof failure; no independent approval or final runtime acceptance",
+  "files": {
+    "apps/desktop-app/src/host/git-metadata-kernel.mjs": {
+      "bytes": 110149,
+      "sha256": "7c68c8587593ebe938dd3727392eda8c9e96220f66c615a269388291fd18645d"
+    },
+    "apps/desktop-app/src/host/git-metadata-kernel.test.mjs": {
+      "bytes": 729,
+      "sha256": "c10e2ce131c8eb72198685dae2eab2c5a4aab0af724cbdd80256dce4dbe05d7b"
+    },
+    "apps/desktop-app/src/host/git-index-kernel.test.mjs": {
+      "bytes": 30987,
+      "sha256": "aa0270748863e57fc903f660f196e5ac250eb2503eb4bbefe417988255d88f1c"
+    },
+    "apps/desktop-app/src/host/git-commit-kernel.test.mjs": {
+      "bytes": 42327,
+      "sha256": "57b9002793643a1ca4192e49f35c5b749e3d727f9872199a22740db8cb73f9b9"
+    },
+    "apps/desktop-app/src/host/git-branch-restore-kernel.mjs": {
+      "bytes": 277,
+      "sha256": "f8402c66a0cc450c3e1027157de948797d4148d7225e0caa24c2faaeadbf4419"
+    },
+    "apps/desktop-app/src/host/git-branch-restore-kernel.test.mjs": {
+      "bytes": 49402,
+      "sha256": "201b5cf788ec06ef70f5db86484054232366b114ae922aba54e5ac428e8ecde6"
+    }
+  },
+  "checkpoint": "/private/tmp/omoc-kernel-final-checkpoint-ih5mtjja/checkpoint.json",
+  "workerReport": "/Users/hyukjaechoi/Documents/Codex/2026-10-03/oh-my-own-code-continuation/work/branch-restore-kernel-worker-report-r1.md",
+  "checks": {
+    "prettier": "PASS 6 paths",
+    "eslint": "PASS 6 paths",
+    "oldKernelNodeTests": "7/7 PASS, exit 0",
+    "branchRestoreNodeTests": "1 PASS 1 FAIL, exit 1; missing raw prior blob proof in actual manager select",
+    "reports": {
+      "commit": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-git-commit-kernel-OQwTz0/report.json",
+      "index": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-git-index-kernel-pl40z1/report.json",
+      "branchRestore": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-git-branch-restore-kernel-llN6tu/report.json",
+      "boundedPattern": "/private/tmp/omoc-kernel-pattern-DsC0mG/report.json"
+    },
+    "retainedCaseCounts": {
+      "commit": 82,
+      "index": 52,
+      "branchRestore": 102,
+      "boundedPattern": 1
+    },
+    "manualBranchRestoreCases": 101,
+    "managerCreate": "PASS",
+    "managerSelect": "unknown/object_conflict before publication",
+    "boundedPattern": "PASS separate focused run"
+  }
+}

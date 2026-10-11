@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "d37eab3f25704784ec35fbea95adb660481da0896d3a2a6060f1fae53fd234d0",
+    "gate": "plan",
+    "plan_sha256": "0f9d084716a6f9225b337a1e549fa47a439187dbd0e64590d65a44b891eb0eb8",
+    "schema_version": 2,
+    "source_sha256": "9ed0d599560052472ed500821a979ca545e1e28a8a8f1d2350f415293555b420",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "blocked",
+  "summary": "계획 내용과 계약에는 추가 결함이 없습니다. 기존의 제한된 설계 전용 평가를 재사용합니다. 다만 plan-input-r2.json은 이전 전체 소스 hash를 유지합니다. 현재 harness는 이 상태에서 plan review 등록을 거부하므로 바인딩 갱신이 필요합니다. 두 gate 완료 전에는 후속 구현을 시작할 수 없습니다.",
+  "open_findings": [
+    {
+      "id": "PLAN-BIND-01",
+      "severity": "P2",
+      "path": "docs/runs/permission-task-lifetime-design/plan-input-r2.json",
+      "line": 6,
+      "title": "현재 소스에 대한 plan gate 등록이 차단됩니다",
+      "trigger": "현재 planReport를 harness review 명령으로 등록합니다.",
+      "evidence": [
+        "plan-input-r2.json 전체 객체는 plan-review-r1.json의 reviewed와 동일합니다.",
+        "run.json의 plan.source_sha256도 이전 hash 9ed0d599560052472ed500821a979ca545e1e28a8a8f1d2350f415293555b420을 유지합니다.",
+        "현재 전체 소스 hash는 c7e7d9f0ecee850ac66abfe6c3bfb807b2da0588b292717f5d5d3ca4101959d8입니다.",
+        ".solopreneur/harness.py:1226의 plan 등록 검사는 등록 당시 소스 hash와 현재 source_fingerprint가 다르면 거부합니다. review-input 출력은 등록 당시 hash를 반환하므로 출력 일치만으로 이 조건을 통과하지 못합니다."
+      ],
+      "impact": "계획의 실질 평가가 통과해도 현재 입력으로는 독립 plan gate를 등록할 수 없습니다.",
+      "smallest_correction": "Main이 변경 없는 plan/contract를 현재 소스에 다시 등록하고 새 plan input을 생성하십시오. 기존 실질 평가를 유지하고 새 바인딩만 확인하면 됩니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a12456-9fa6-7920-b2f6-98adc73a6d86",
+    "binding_input": "docs/runs/permission-task-lifetime-design/plan-input-r2.json",
+    "binding_before_after": "입력 전체 객체와 harness 출력은 검토 전후 일치하지만, 등록 당시 소스 hash는 현재 전체 소스 hash와 다름",
+    "plan_contract_unchanged": true,
+    "selected_source_hashes_verified": 20,
+    "prior_assessment_reused": "plan-review-r1.json의 변경 없는 설계 전용 실질 평가",
+    "substantive_assessment": "immutable receipt, no replay, one journal, 두 policy 단계, 최초 효과 전 genuine Native ID와 raw-input 바인딩, 실제 task/IO/child settlement, live/recovered 구분, metadata IPC 16KiB 제한 및 prompt digest 비조작 요구를 유지합니다. 독립 design-spec 승인과 location CODE 완료 후에만 후속 구현이 가능합니다.",
+    "full_f09_source_review_repeated": false,
+    "runtime_executed": false,
+    "delegation": false,
+    "source_edits": false,
+    "report_saved": false,
+    "ledger_edits": false
+  }
+}

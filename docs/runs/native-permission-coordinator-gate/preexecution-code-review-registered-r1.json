@@ -1,0 +1,106 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "96f6c8c1cdcaa7321a8f6a99da2b00e67f530997f8459825917a3a8b430c43a3",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "4fc037618db7b39258fb3df0ad15eac272d1587ef9ae2959de3f6de0fe43b7bf",
+    "schema_version": 2,
+    "source_sha256": "0fc268a8c3980d73856a7f4aa03f52e9a501e9e7745640ca4114755f739e25ff",
+    "verification_sha256": "9255236d50d3e11c3577b1644f4a0041d5aa385156964019d4631f724fe194de",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "changes_requested",
+  "summary": "현재 held entry 범위에서 실행 허용 우회는 찾지 못했습니다. 그러나 Native child에 확정적인 API 오류 2개가 있습니다. 저장 명령은 11개 case 검증에 도달할 수 없으므로 현재 동결 소스에서는 실행 승인하지 않습니다.",
+  "open_findings": [
+    {
+      "id": "PREEXEC-R1-01",
+      "severity": "medium",
+      "priority": "P2",
+      "path": "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs",
+      "line": 150,
+      "title": "Effect Layer에 없는 mapLayer 호출",
+      "requirement": "현재 plan revision1과 C2는 실제 Native coordinator 및 SessionExecution을 획득하여 11개 case를 검사하도록 요구합니다.",
+      "trigger": "Native child가 ControlRuntime.configured({...}).mapLayer(...)를 평가합니다.",
+      "impact": "configured()는 Effect Layer를 반환합니다. mapLayer()가 없으므로 server 시작 전에 TypeError가 발생합니다. coordinator, SessionExecution 및 lease runtime case가 실행되지 않습니다.",
+      "evidence": [
+        "native-permission-control.mjs:215-220의 configured()는 Layer.effect(...)를 반환합니다.",
+        "설치된 effect/dist/Layer.js:44-58의 Layer 객체에는 pipe와 build가 있으며 mapLayer가 없습니다.",
+        "mapLayer는 설치된 @opencode/util/dist/effect/layer-node.js:35-42의 ProviderNode 메서드입니다."
+      ],
+      "smallest_correction": "configured()가 반환한 Layer를 pipe로 장식하고 ControlRuntime.node.replace()에 전달하십시오. 아래 capture 오류도 함께 수정해야 합니다.",
+      "verification_basis": "소스 및 설치된 API 정의를 읽어 확인했습니다. Native 실행은 하지 않았습니다."
+    },
+    {
+      "id": "PREEXEC-R1-02",
+      "severity": "medium",
+      "priority": "P2",
+      "path": "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs",
+      "line": 141,
+      "title": "Layer.tap에 callback 대신 Effect 객체 전달",
+      "requirement": "현재 plan revision1과 C2는 실제 Control, SessionStore 및 SessionExecution service를 포착하여 held 동작을 검사하도록 요구합니다.",
+      "trigger": "첫 번째 오류를 수정한 뒤 capture()로 장식한 Layer를 획득합니다. 같은 helper가 Control, SessionStore 및 SessionExecution에 사용됩니다.",
+      "impact": "Layer.tap은 전달받은 값을 f(context)로 호출합니다. 현재 값은 Effect.map(...) 객체이므로 service 획득이 실패합니다. 첫 번째 오류만 수정해도 실제 held case 검증은 진행되지 않습니다.",
+      "evidence": [
+        "child의 capture()는 Layer.tap(Effect.map(service, assign))을 반환합니다.",
+        "설치된 effect/dist/Layer.js:1181의 Layer.tap 구현은 f(context)를 호출합니다.",
+        "해당 API의 callback 인자는 Layer가 생성한 Context입니다."
+      ],
+      "smallest_correction": "Context를 받는 callback을 전달하십시오. 예: Layer.tap((context) => Effect.sync(() => assign(Context.get(context, service)))). 설치된 Effect의 Context를 사용하십시오.",
+      "verification_basis": "소스 및 pinned Effect 구현을 대조했습니다. 재현 실행이나 테스트 실행은 하지 않았습니다."
+    }
+  ],
+  "provenance": {
+    "actual_child_id": "01a12158-1423-7910-891b-2494edf4b61b",
+    "identity_source": "현재 프로세스의 CODEX_THREAD_ID",
+    "mode": "fresh_independent_report_only",
+    "delegation_used": false,
+    "files_written": false,
+    "worker_report_usage": "검토 단서로만 사용했습니다. 구현과 API를 독립적으로 읽었습니다.",
+    "child_task_id": "01a12158-1423-7910-891b-2494edf4b61b",
+    "coordinator_transport_note": "child_task_id copies actual_child_id from raw independent report; tool returned ID matches. No judgment changes."
+  },
+  "verification": {
+    "spec_compliance_pass": {
+      "C1": "실제 Store identity를 gate 전후로 읽고 id, projectID, directory 및 workspaceID를 비교합니다. 동일 Control의 assertExecution은 항상 거부합니다. start, run, wake, stopping 재진입, loop 및 pendingWake restart 경로를 검토했습니다.",
+      "C2": "6개 checked recipe와 helper packaging은 확인했습니다. 그러나 Native child 준비 및 service 포착 오류 때문에 실행 전 code gate는 통과하지 못합니다."
+    },
+    "code_quality_pass": {
+      "result": "위 결함 2개를 확인했습니다.",
+      "output_containment": "고정 evidence 하위의 native-rN 경로, 실제 parent 경로 및 배타적 생성 검사를 확인했습니다.",
+      "source_before_after": "source closure, original install, engine, staged manifest/assets 및 복사한 child의 실행 전후 검사를 확인했습니다.",
+      "child_exit": "실제 child exit, code, signal, timeout, spawn failure 및 protocol overflow 판정을 확인했습니다.",
+      "closed_11_case_sanitization": "정확한 case 수·순서·이름·필드·결과 검증과 raw stdout/stderr 배제를 확인했습니다."
+    },
+    "read_only_checks": {
+      "exact_run_baseline_delta": "동결 목록과 동일한 정확히 8개 파일입니다.",
+      "frozen_file_hashes_and_sizes": "8개 모두 검토 시작과 종료 시 일치했습니다.",
+      "whole_review_binding": "harness의 읽기 전용 binding 재계산 결과가 저장된 전체 입력 객체와 일치했습니다.",
+      "original_vendor_pins": "6개 원본 파일의 SHA-256이 recipe beforeSha256과 일치했습니다.",
+      "existing_four_output_pins": "기존 4개 output pin이 유지됩니다.",
+      "saved_output_namespace": "evidence/native-r1은 아직 존재하지 않습니다."
+    },
+    "existing_check_evidence": {
+      "unit": "현재 source binding의 저장된 exit_code 0을 확인했습니다.",
+      "lint": "현재 source binding의 저장된 exit_code 0을 확인했습니다.",
+      "format": "현재 source binding의 저장된 exit_code 0을 확인했습니다.",
+      "independently_rerun": false,
+      "coverage_limit": "Node scripted child 및 Node guard 검사는 위 Native service 획득 오류를 검증하지 않습니다."
+    },
+    "saved_command_judgment": {
+      "command": "node apps/desktop-app/scripts/native-permission-graph-probe.mjs --out docs/runs/native-permission-coordinator-gate/evidence/native-r1",
+      "may_execute_at_frozen_source": false,
+      "reason": "C2의 실제 11개 case 검증을 막는 확정적인 API 오류 2개를 먼저 수정해야 합니다.",
+      "actual_runtime_acceptance": false
+    }
+  },
+  "limits": [
+    "Native, Bun, GUI, provider, build 및 테스트를 실행하지 않았습니다. 소스나 보고서 파일을 쓰지 않았습니다.",
+    "이번 판정은 현재 boot_held 구현의 실행 전 검토입니다. 실제 runtime 합격 판정이 아닙니다.",
+    "positive original operation/task binding, lease admission 및 production wiring은 명시적으로 미완료입니다.",
+    "fork가 TransactionScope를 상속하면 향후 실행 허용 시 재진입 거부가 발생할 수 있습니다. 현재는 assertExecution이 먼저 거부하므로 held 계약 위반으로 판정하지 않았습니다.",
+    "raw lease case는 synthetic identity를 사용하는 component compatibility 검사입니다. Native 실행 권한이나 descendant settlement 증거가 아닙니다.",
+    "승인된 path clarification 범위를 적용했습니다. 더 강한 외부 same-user filesystem 위협 모델은 추가하지 않았습니다."
+  ]
+}

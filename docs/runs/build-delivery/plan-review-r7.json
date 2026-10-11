@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "cd7d81250a6877fefb57872c1e969b8a84c27af982c2c7fa9ad990e2f4a12301",
+    "gate": "plan",
+    "plan_sha256": "3f6aa2aba5ab9af559ae75b9153777974e367eb57daeab3dbe7096c81f95e28e",
+    "schema_version": 2,
+    "source_sha256": "15c4f3a092de964e4b816d36a3a903f552d82fb48e98d19e504f281a56bccd8d"
+  },
+  "verdict": "changes_requested",
+  "summary": "Revision 6 has exact current plan, contract, source, document and approval bindings and a sound bounded AC-8 design. One execution-scope contradiction must be corrected before dependent dispatch: the increment prohibits all service/network activity while directing every retained check to run, although several checks intentionally start synthetic local services, perform loopback requests or may install from a registry. This review does not authorize a real SDK host or attest implementation behavior.",
+  "open_findings": [
+    {
+      "id": "PR7-01",
+      "priority": "P2",
+      "severity": "medium",
+      "title": "Reconcile the blanket effect prohibition with the retained check commands",
+      "location": {
+        "path": "docs/runs/build-delivery/plan.md",
+        "start_line": 34,
+        "end_line": 36
+      },
+      "evidence": [
+        "plan.md:34 says not to start a service or make network requests; line 36 requires all 12 existing checks plus the new focused check against the settled fingerprint.",
+        "contract.json retains install = pnpm install --frozen-lockfile, which can mutate dependency state/contact a registry and does not itself establish a clean installation.",
+        "apps/workbench-web/playwright.config.ts starts the fixture bridge on 127.0.0.1:5318 and Vite on 127.0.0.1:5420; its E2E check therefore necessarily starts services and uses loopback requests.",
+        "apps/local-bridge/scripts/operations-drill.mjs starts loopback bridge listeners, fetches their endpoints, creates a synthetic child process, and writes owned temporary markers.",
+        "next-runtime-proposal-r1.md already distinguishes these existing-check effects, but runtime-info-boundary.md:3 explicitly says that proposal does not amend the plan; the executable SSOT has not adopted that distinction."
+      ],
+      "impact": "A clean-context implementer or check runner cannot satisfy both instructions as written. Treating the broad prohibition as an unstated exception could widen execution authority; treating it literally prevents required evidence. The no-install boundary in the new design contract also needs to remain distinct from the retained installation check.",
+      "required_correction": "Make the plan explicitly distinguish the pure AC-8 implementation and SDK probe prohibition from the already authorized existing regression commands. Adopt a concise exact check/effect table (the proposal supplies a suitable starting point), naming existing fixture processes, loopback requests, temporary writes and installation preconditions. Preserve all required checks, forbid new SDK host/ambient-service/config/credential effects, and keep absent spike dependencies as a blocker rather than permission to install or change packages. State that pnpm install --frozen-lockfile is clean-install evidence only when its clean starting condition is separately recorded. No new user approval is needed merely to document already authorized checks. Refresh the plan revision, the runtime-info document plan-hash reference, document/contract hashes, packet and independent changed-concern reviews together."
+    }
+  ],
+  "observations": [
+    "All packet hashes match disk: plan 3f6aa2aba5ab9af559ae75b9153777974e367eb57daeab3dbe7096c81f95e28e; contract cd7d81250a6877fefb57872c1e969b8a84c27af982c2c7fa9ad990e2f4a12301; source 15c4f3a092de964e4b816d36a3a903f552d82fb48e98d19e504f281a56bccd8d. Source inventory was independently recomputed using the harness v2 inclusion/mode/hash rules without invoking the harness.",
+    "All 10 registered document hashes and both approval target/evidence hashes match. The runtime-info design document currently cites exactly the revision-6 plan hash; there is no stale revision/hash reference in that document at review time.",
+    "Five implementation paths are exact and bounded; the three planned new files do not yet exist. Existing spike verify.mjs and its typecheck configuration can wire the new shared-source probe without package or topology changes. Root tsx and the pinned client dependency are present; no dependency installation was attempted.",
+    "The 13 required checks have literal argv and cwd values; existing Nx target names and spike check wiring resolve in static project files. The new runtime-info command intentionally awaits its planned test file. Existing checks remain partial synthetic evidence, not full product/runtime readiness.",
+    "The own-data-property admission rules, bounded primitive checks, fresh version-only copy, invalid-schema versus read-failure outcomes, discarded PID/URL/path authority, no-retry one-read wrapper, Proxy caveat, canary cases and diagnostic version omission are sufficient for this bounded implementation. Failure reports must preserve the stated redaction even when assertions fail; implementation review remains necessary.",
+    "The new boundary introduces no browser route, health claim, authentication classification, SDK production import, UI provenance change or new user-facing product feature. Existing permission state/action and receipt contracts remain authoritative.",
+    "Future host lifecycle, configuration/credential isolation, owned process/socket/temp-root effects, cleanup, storage/retention choices, S-08 security, real deny admission and S-09 recovery remain explicit holds. A plan/design pass would not authorize real host startup.",
+    "Minor consistency edit to make with the required plan correction: plan.md:38 groups the two checks under AC-2/4/6/8, whereas the contract assigns sdk-client-probe to AC-2/4/7/8 and runtime-info-boundary to AC-2/4/6/8. State the two exact mappings separately; retain the existing AC-7 mapping."
+  ],
+  "provenance": {
+    "child_task_id": "/root/plan_review_r7",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "runtime_identity_verified": false,
+    "review_mode": "Fresh independent read-only artifact review; sole written output is this assigned report.",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false
+  }
+}

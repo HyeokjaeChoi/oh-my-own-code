@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "gate": "design_spec",
+    "contract_sha256": "a01cfe87380e2fe330a06b37ef5d69c2c11aba4376e13156b72a387f5286d4d3",
+    "documents_sha256": "eb8342b36ef8dbe45710e9363af544a36a54f6c00ddc43b998add1517758e9d1",
+    "plan_sha256": "64c4aee4918fa071ccd08a7cae1b3ff7e769628c14a4c7fd4230c05aab0d2f93",
+    "schema_version": 2
+  },
+  "verdict": "changes_requested",
+  "summary": "Independent design-spec review for component-polish of docs/design/components.json (SHA-256 2c16f5965f2a678f3d0ba21432661da9388d4ef7a140b2de4f0a4a5674db474f), docs/design/system.md (SHA-256 f5209e56615c2872d4960cb5f038ceabf5bb141825b6066afa329c0612808a4a), and docs/design/tokens/manifest.json (SHA-256 4c1756f803c2dfb53f28b4cb0884dbcb7ceff257df9f670efd3d5500871f1209) against docs/runs/component-polish/plan.md (SHA-256 64c4aee4918fa071ccd08a7cae1b3ff7e769628c14a4c7fd4230c05aab0d2f93). The 44-variant inventory, explicit NavigationItem 500/700 weights, Input feedback and focus/error composition, shared StatusBadge instance mappings, ToolCall disclosure/result separation, and PermissionRequest Button/action and accessibility semantics are internally coherent. One confirmed dark navigation surface contradiction prevents a reliable source-to-Figma handoff. This document review did not inspect current Figma nodes or examples, rendered Light/Dark captures, actual variable bindings, browser interaction, hit regions, zoom, or assistive-technology behavior; those remain separate implementation and design-QA evidence.",
+  "open_findings": [
+    {
+      "severity": "P2",
+      "location": "docs/design/tokens/manifest.json:1535 and :1562; docs/design/system.md:25 and :64; docs/runs/component-polish/plan.md:26",
+      "affected_consumer": "NavigationItem Dark examples and Figma variable binding for default and selected states",
+      "evidence": "The system guide names semantic.color.surface.subtle (#3d3d3d in Dark) as the navigation-area surface. Both component.color.navigation.background and component.color.navigation.selected-background resolve to that same surface.subtle token in Dark. The selected row therefore has no fill distinction from the documented parent or default row, while AC-3 requires dark selected and hover aliases to resolve to surfaces distinct from the actual parent. The selected label's 700 weight supplies a separate cue but does not satisfy the stated surface condition.",
+      "correction": "Reconcile the documented Dark navigation parent and the component aliases before Figma projection. If the navigation parent remains surface.subtle, bind selected to an existing, contrasting component-local semantic surface such as semantic.color.selection.background, then verify default, hover, and selected together on that parent. If the actual parent is surface instead, document that exact parent and its example binding, and verify the three rows against it. Keep the 500/700 weight and selected+focus semantics."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/design_spec_review_rev3",
+    "author_task_id": "/root"
+  }
+}

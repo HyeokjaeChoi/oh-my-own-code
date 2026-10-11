@@ -1,0 +1,100 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "96f6c8c1cdcaa7321a8f6a99da2b00e67f530997f8459825917a3a8b430c43a3",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "4fc037618db7b39258fb3df0ad15eac272d1587ef9ae2959de3f6de0fe43b7bf",
+    "schema_version": 2,
+    "source_sha256": "b392238f951c39663f5dd35661b929cb3618da447cfa7080d18d2508018b1c85",
+    "verification_sha256": "bcc928a90136c4801f21ed796360eb9a2e4c353799122a38cc94a564ee4cb68b",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "PREEXEC-R1-01과 PREEXEC-R1-02는 해결되었습니다. 수정 범위에서 추가 결함을 찾지 못했습니다. 저장 명령은 frozen r2에서 실행할 수 있습니다. 이 판정은 실행 전 CODE gate에만 적용됩니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "PREEXEC-R1-01",
+      "path": "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs",
+      "resolution": "ControlRuntime.configured()가 반환하는 Effect Layer에 pipe()를 사용합니다.",
+      "evidence": [
+        "native-permission-control.mjs의 configured()는 Layer.effect()를 반환합니다.",
+        "고정된 effect/dist/Layer.js의 LayerProto는 pipe()를 제공합니다.",
+        "ControlRuntime.node.replace(actualControlNode)는 Layer를 받는 pinned NodeValue.replace() 계약과 일치합니다."
+      ]
+    },
+    {
+      "id": "PREEXEC-R1-02",
+      "path": "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs",
+      "resolution": "Layer.tap에 Context callback을 전달합니다. callback은 Context.get(context, service)로 service를 읽고 Effect.sync로 저장합니다.",
+      "evidence": [
+        "고정된 Layer.tap 구현은 Layer의 출력 Context로 f(context)를 호출합니다.",
+        "고정된 Context.get은 Context와 service key를 받습니다.",
+        "Control, SessionStore, SessionExecution 포착이 같은 수정 helper를 사용합니다."
+      ]
+    }
+  ],
+  "verification": {
+    "scope": {
+      "correction_files": [
+        "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs",
+        "apps/desktop-app/src/native-permission-coordinator-admission.test.mjs"
+      ],
+      "unchanged_source_reuse": "r1/r2에서 같은 hash와 크기를 가진 6개 파일은 원래 독립 검토의 판정을 재사용했습니다. 전체 알고리즘 검토는 반복하지 않았습니다.",
+      "prior_report": "docs/runs/native-permission-coordinator-gate/preexecution-code-review-r1.json",
+      "registered_alias": "provenance의 등록용 필드 외에 원래 보고서와 같습니다."
+    },
+    "spec_compliance_pass": {
+      "C1": "변경되지 않은 held coordinator 계약에 대한 기존 판정을 유지합니다.",
+      "C2": "service 획득을 막던 두 API 오류가 해결되었습니다. 실제 11개 case의 runtime 결과는 아직 없습니다."
+    },
+    "code_quality_pass": {
+      "pinned_effect": "설치된 Effect와 lock의 버전은 모두 4.0.0-rc.112입니다.",
+      "capture_integration": "실제 server start의 네 번째 인자로 replacement를 전달합니다. checked overlay가 이를 routes graph로 전달합니다. routes는 overrides를 AppNodeBuilder에 전달합니다.",
+      "dependency_preservation": "SessionStore.node와 SessionExecution.node의 mapLayer는 ProviderNode API입니다. 기존 dependency wiring을 유지합니다. Control은 configured Layer를 직접 replace합니다.",
+      "service_identity": "포착한 실제 Store와 Control을 coordinator에 제공합니다. 포착한 SessionExecution의 resume/wake도 직접 검사하도록 구성되어 있습니다.",
+      "additional_actionable_defects": []
+    },
+    "read_only_checks": {
+      "frozen_r2_files": "8개 파일 모두 검토 시작과 종료에 hash와 크기가 일치했습니다.",
+      "whole_review_binding": "읽기 전용 harness 재계산 결과가 preexecution-code-input-r2.json의 전체 객체와 일치했습니다.",
+      "original_vendor_pins": "6개 원본 파일 모두 recipe beforeSha256과 일치했습니다.",
+      "saved_output_namespace": "evidence/native-r1은 존재하지 않습니다."
+    },
+    "existing_check_evidence": {
+      "red": "capture-api-red-r1.txt에서 새 회귀 테스트의 mapLayer TypeError를 확인했습니다.",
+      "green": "현재 source binding의 저장된 unit 결과에 같은 회귀 테스트의 PASS가 있습니다.",
+      "regression_scope": "저장된 child에서 capture와 configured Control Layer 표현식을 추출합니다. pinned Effect 아래에서 실제 Layer를 획득하고 포착한 Control identity와 boot_held 상태를 검사합니다.",
+      "unit": "현재 source binding에서 exit_code 0입니다.",
+      "lint": "현재 source binding에서 exit_code 0입니다.",
+      "format": "현재 source binding에서 exit_code 0입니다.",
+      "independently_rerun": false
+    },
+    "saved_command_judgment": {
+      "command": "node apps/desktop-app/scripts/native-permission-graph-probe.mjs --out docs/runs/native-permission-coordinator-gate/evidence/native-r1",
+      "may_execute_at_frozen_source": true,
+      "source_freeze": "docs/runs/native-permission-coordinator-gate/source-freeze-preexecution-r2.json",
+      "reason": "확정된 API 오류 두 개가 해결되었고 현재 전체 review binding과 frozen r2가 일치합니다.",
+      "actual_runtime_acceptance": false
+    }
+  },
+  "limits": [
+    "Native, Bun, 테스트, GUI, build 및 provider를 실행하지 않았습니다. 파일 작성과 delegation도 하지 않았습니다.",
+    "Node 회귀 테스트의 저장된 결과는 실제 Native server graph 실행 결과가 아닙니다.",
+    "positive OriginalOperationScope, task binding, lease admission 및 production wiring은 미완료입니다. full F09 또는 production readiness를 승인하지 않습니다.",
+    "fork가 TransactionScope를 상속하는 경로는 향후 positive execution에 대해 미완료입니다. 현재 held 경로에서는 assertExecution이 먼저 거부한다는 기존 제한을 유지합니다.",
+    "raw lease Bun case는 synthetic identity를 사용하는 component compatibility 검사입니다. Native 실행 권한이나 descendant settlement를 증명하지 않습니다.",
+    "보고서 저장과 등록은 Main이 수행해야 합니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a1215d-d02f-7321-9f01-de872e3245ef",
+    "identity_source": "현재 프로세스의 CODEX_THREAD_ID이며 run.json의 r2 reviewer dispatch와 일치합니다.",
+    "mode": "fresh_independent_bounded_correction_report_only",
+    "implementation_authored_by_this_child": false,
+    "distinct_from_prior_reviewer": true,
+    "delegation_used": false,
+    "files_written": false
+  }
+}

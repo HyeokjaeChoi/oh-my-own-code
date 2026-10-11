@@ -1,0 +1,31 @@
+✔ durable send prepares original prompt identity before either policy mutation (57.603958ms)
+✖ stored permission mode is retained and never reset to baseline by send (38.461625ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 213.220541
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:5374:1
+✖ stored permission mode is retained and never reset to baseline by send (38.461625ms)
+  AssertionError [ERR_ASSERTION]: {"ok":true,"value":{"requestId":"mode-no-reset","status":"accepted"},"receipt":{"runtimeEpoch":"epoch","operationId":"mode-no-reset","type":"message.send","workspaceId":"5e2182af-2879-40fb-b85d-87d436aec9e8","sessionId":"1c4ec771-c585-4630-a374-8db280042c45","admission":"dispatched","delivery":"accepted","effect":"confirmed","revision":12,"evidence":[{"kind":"native-ack","id":"inbox-1"}],"result":{"kind":"delivery","status":"accepted","nativeInboxId":"inbox-1"}}}
+  + actual - expected
+  
+  + undefined
+  - 'POLICY_UNVERIFIED'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:5413:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'POLICY_UNVERIFIED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

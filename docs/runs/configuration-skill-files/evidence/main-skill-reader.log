@@ -1,0 +1,26 @@
+✔ exact raw unsupported grammar and canonical identity shape (23.474ms)
+✔ only missing leaf has directoryVersion; missing ancestors are unavailable (9.469ms)
+✔ denied traversal never reports missing (2.385958ms)
+✔ read rejects ancestor .opencode directory; closes all FDs (7.796375ms)
+✔ read rejects ancestor .opencode symlink; closes all FDs (7.324208ms)
+✔ read rejects ancestor .opencode missing; closes all FDs (6.763375ms)
+✔ read rejects ancestor .opencode/skills directory; closes all FDs (7.395708ms)
+✔ read rejects ancestor .opencode/skills symlink; closes all FDs (9.726083ms)
+✔ read rejects ancestor .opencode/skills missing; closes all FDs (8.938916ms)
+✔ read rejects ancestor .opencode/skills/example directory; closes all FDs (7.037541ms)
+✔ read rejects ancestor .opencode/skills/example symlink; closes all FDs (7.170291ms)
+✔ read rejects ancestor .opencode/skills/example missing; closes all FDs (6.401708ms)
+✔ safe bounded byte read, encoding, links and file replacement (40.654ms)
+✔ list is metadata-only, bounded to 64 scans and 16 rows (126.470708ms)
+✔ invalid names, accessors and cancellation do not leak acquired handles (1.931875ms)
+✔ list scan budget includes invalid names and skips symlink aliases (24.06825ms)
+✔ list keeps accepted child identities through enumeration; closes every handle once (4.542334ms)
+✔ list cancellation after child close never closes the same FD twice (5.492166ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 354.835583

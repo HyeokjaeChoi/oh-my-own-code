@@ -1,0 +1,8 @@
+{
+  "status": {
+    "01a11ad1-150b-7a91-92fd-976ceeda0a0c": {
+      "completed": "**수정을 완료하고 소스를 동결했습니다.** 허용된 4개 경로 중 3개를 수정했습니다. `server.mjs`는 그대로 유지했습니다.\n\n- 첫 승인된 register에서 hook을 한 번만 설치합니다.\n- builtin의 global deny와 custom row의 정확한 3개 baseline 규칙을 유지합니다.\n- observe·사전 거부는 hook을 설치하지 않습니다.\n- 늦은 등록은 close 후 즉시 dispose합니다.\n- 등록·reload 불확실성은 `unknown`으로 보존하고 후속 mutation을 차단합니다.\n\n검사 결과: 초기 **RED 2개** 확인 → 최종 **66/66 PASS**. 4개 파일의 ESLint, Prettier, `node --check` 및 정적 계약 검사도 통과했습니다. private API r2 해시는 유지됩니다.\n\n```sh\nnode --test apps/desktop-app/src/native-agents-plugin.test.mjs apps/desktop-app/src/native-skills-plugin.test.mjs apps/desktop-app/src/configuration-agent.test.mjs\n```\n\n최종 SHA-256 checkpoint:\n\n| 파일 | SHA-256 |\n|---|---|\n| [agents.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/builtins/workbench-skills/agents.mjs) | `1c1ac67836b8ad1d8ffbaf1f8641bfb6e8debfc847f27a81a7ea7cddd6237305` |\n| [server.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/builtins/workbench-skills/server.mjs) — 변경 없음 | `d12faa258b72f08a9ef0576946d90a97041f3b92b63f7d18001170abfa4f97fa` |\n| [native-agents-plugin.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-agents-plugin.test.mjs) | `df49ec35b13fc31d02d1bd22b988f45bdfeb63bdf7c8e128e9b199066053a99a` |\n| [native-skills-plugin.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-skills-plugin.test.mjs) | `4900ac5dc66063eb15ec7351116df6ada500d9e644503f14f43add30cc814fe7` |\n\n검증은 Node·합성 host·정적 검사 범위입니다. **실제 Native 실행, 통합, ledger, 독립 review는 Main에 남겨 두었습니다.** 자체 승인은 하지 않았습니다."
+    }
+  },
+  "timed_out": false
+}

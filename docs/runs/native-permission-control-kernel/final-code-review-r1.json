@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "35778d428cf1b2456cfe91510fcc8cb091024341f5cdfa064cac6f9125b09274",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "cb4d301885b4b46b3aec8ca764eb070a5ac1603ad892cf4b38cb937e0d375ffc",
+    "schema_version": 2,
+    "source_sha256": "3e9779ccf8ff890056a01d969250a4ea847a5ece1b49ca4028d235109da3a059",
+    "verification_sha256": "190da62448068e7e0c4287033eedc8c872ecb3351965b30f52074549db635e02",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "지정된 신규 소스 두 파일 전체를 독립 검토했습니다. 현재 boot-held 내부 transaction 범위에서 수정이 필요한 결함은 없습니다. 기본 초기화 거부, 불변 epoch와 boot holds, 정렬된 lock 획득, 프로젝트별 32개 대기 제한, Fiber와 transaction 수명에 따른 capability 검사, 재진입 거부, 취소와 defect 이후 정리, 영구 runtime invalidation을 확인했습니다. 실제 pinned Effect 4.0.0-rc.112와 @opencode/util 2.0.18의 Semaphore, finalizer, LayerNode 구현을 확인했습니다. 두 파일의 SHA-256은 source-freeze와 일치합니다. 검토 전후의 전체 binding은 final-code-input-r1.json과 일치합니다. 현재 16/16 unit, lint, format PASS 기록은 check-status에서 reusable입니다. 변경 없는 검사는 재실행하지 않았습니다. 최초 모듈 부재 RED와 이전 typed Die 실패 기록도 확인했습니다. 이 판정은 현재 제한된 구현에만 적용됩니다. activation, leases, Native patch, production 연결, F09 전체 완료 또는 Native/Bun provider 수용을 검증한 결과는 아닙니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a120ef-8b93-7420-a95d-d84e03801330",
+    "invocation_id": "01a120ef-8b93-7420-a95d-d84e03801330",
+    "role": "reviewer",
+    "mode": "report-only",
+    "independent": true,
+    "authored_reviewed_changes": false,
+    "files_modified": false,
+    "delegated": false,
+    "native_bun_electron_build_provider_executed": false
+  }
+}

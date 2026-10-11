@@ -1,0 +1,49 @@
+✔ graph factory refuses unverified resource roots before any Native import (0.935125ms)
+✔ graph factory rejects accessor options without invoking authority getters (0.092667ms)
+✔ legacy resource manifest is refused before loading its inert Native placeholders (22.696125ms)
+✔ closed options reject proxies, hidden properties, symbols and inherited authority (0.257833ms)
+✔ exact four initialization fields reach resource verification only when valid (2.205084ms)
+✔ malformed initialization is refused before resource verification (0.856667ms)
+✔ initialization rejects accessors and proxies without invoking their code (0.328417ms)
+✔ graph disables automatic model discovery with original layer and preserves dependency acquisition (259.731125ms)
+✖ actual graph facade binds the same acquired Control once and observes its invalidation (133.723875ms)
+✔ graph close revokes synchronously even with deferred invalidation and pending prepare (63.9745ms)
+✔ closing before acquisition refuses later acquisition of that graph (52.728208ms)
+✔ staged graph closure includes its declaration projector (0.107334ms)
+✔ unapproved original schema converter hash refuses before any pinned import (67.248708ms)
+✔ unapproved ModelsDev source refuses before pinned service import (55.14475ms)
+✔ graph refuses missing or invalid exact transformed source hashes (87.601542ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 14
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 980.97375
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-graph.test.mjs:685:1
+✖ actual graph facade binds the same acquired Control once and observes its invalidation (133.723875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 8
+  
+      at assertSources (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:627:12)
+      at Array.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-graph.test.mjs:699:9)
+      at Generator.next (<anonymous>)
+      at ~effect/Effect/successCont (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:928:26)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/core.js:297:30)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at forkUnsafe (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:2238:11)
+      at MixedScheduler.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:1017:19)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:777:22) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 8,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

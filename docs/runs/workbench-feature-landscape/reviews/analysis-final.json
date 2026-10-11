@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "analysis",
+    "plan_sha256": "a22761fdd6a8c1f9a959cfcbe3122af11dacb35e512494d0ca18ab7f4a070d5c",
+    "contract_sha256": "c0c53b9bdad432628ef90eeec945932dd0b5dd0555380fc15781156b2e3e7378",
+    "source_sha256": "3de8cd6968c1a88fba8e737f01dacc5d3be0301ed1470e0fed5f36e5abfc1ff6",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "verification_sha256": "dcce113b0551de7b98705ff7c3db1e612bf6f6164cddd20bdbac6f410b98f07d"
+  },
+  "verdict": "pass",
+  "summary": "정성 공식 문서 근거 분석으로 AC-1~4를 충족한다. 네 제품군의 import, 일반 폴더/Git worktree create, 목록 제거/archive, 물리 삭제를 구분하며 아티팩트 패널·도구 상호작용·skill/MCP/plugin 비교를 보존한다. 문서 사실, 미확인 범위, 제품 적합성 판단과 구현 상태의 경계를 유지하고 실행 가능한 후속 순서를 권고한다. 정확한 분석 binding과 등록 deliverable 해시가 현재 파일에 일치한다. 차단 지적 없음.",
+  "open_findings": [],
+  "review_notes": [
+    "analytics_analyst 프로필과 solo-analytics-experiment 스킬의 출처·불확실성·판단 근거 원칙을 적용했다. 이번 corpus는 조사일 2026-09-28의 first-party 공개 문서와 정적 저장소 증거이며, telemetry/KPI/cohort/실험 자료가 아니다. 계량 사용자 지표, 효과 크기, 인과성, 통계적 유의성을 만들거나 공급자 앱 실행을 추정하지 않는다.",
+    "현재 plan, contract, 보고서 전체를 직접 읽었다. harness v2_review_binding을 읽기 전용으로 호출해 plan, canonical contract, source fingerprint, environment, verification의 다섯 해시를 재산출했고 배정된 exact binding과 일치했다. 등록 보고서와 직접 계산한 SHA256은 모두 cd60d3826ccc298b4d6fc5e310f6fc81cd67573373dd894b73f919a4a507ab21이다.",
+    "벤더 비교는 8개 본문 행에 네 제품군을 모두 포함한다. 일반 폴더 생성의 미확인과 Git worktree 생성 근거를 분리하고, Claude 세션 archive의 worktree 제거 효과를 단순 목록 숨김으로 바꾸지 않는다. Codex/OpenCode/Cursor의 미확인 범위를 기능 부재로 단정하지 않는다.",
+    "Claude Code Desktop 공식 문서의 작업 폴더 선택, worktree archive/제거, 패널과 브라우저 승인 동작을 표본 확인했다. Code와 Desktop chat은 별도 표면으로 유지된다. https://code.claude.com/docs/en/desktop",
+    "OpenCode SDK 공식 문서에서 worktree create/remove, projectID, canonical checkout, recorded strategy, force 및 이벤트 구독을 대조했다. SDK를 완성된 Desktop UI나 임의 폴더 삭제 보장으로 승격하지 않는다. https://opencode.ai/v2/docs/build/sdk",
+    "Cursor worktree 문서의 /delete-worktree와 Customize 문서의 확장 목록·scope 관리를 대조했다. https://cursor.com/docs/configuration/worktrees ; https://cursor.com/docs/customize-cursor",
+    "Codex 공식 업데이트의 다중 터미널, 파일 미리보기, 계획·출처·artifact 요약 패널이 비교표의 해당 주장을 뒷받침한다. https://openai.com/ca-ES/index/codex-for-almost-everything/",
+    "Electron DesktopBootstrap, runtimeSnapshot 전용 preload/type 및 main IPC를 직접 확인했다. 웹 AssistantTranscript의 onNew no-op와 interactive=false, syntheticSnapshot 및 WorkbenchPage의 읽기 전용 fixture 표시도 확인했다. 미구현 판단은 실제 사용자 프로젝트 워크벤치 기능에 한정되며 임시 sidecar bootstrap과 구분된다.",
+    "보고서 본문은 한국어이며 제품 권고를 분석자의 판단으로 명시한다. workspace identity부터 session binding, 실제 대화/도구 권한, artifact, 확장 관리로 이어지는 순서는 구체적인 의사결정에 유용하다. 현재 PRD/UX 수정본의 review-required 상태와 보존된 승인 범위를 구분하고, 조사 결과를 승인된 릴리스 계획 변경으로 취급하지 않는다.",
+    "계획 헤더 Revision 4와 변경 이력 R5의 표기 차이는 존재하지만 이번 판정은 정확한 plan hash에 결합되어 있다. 연구 범위나 승인 경계에 영향을 주는 새 분석 차단 사유는 아니다."
+  ],
+  "review_boundary": "Fresh analytics_analyst qualitative evidence review of the exact report and current plan/contract, selected live official source pages, referenced bootstrap/fixture code, and recomputed schema-v2 binding. No telemetry access, quantitative analysis, vendor app execution, SDK/runtime validation, application tests, packaging tests, or OS security verification. No report, product contract, application code, or run ledger edits. Only this requested review artifact was written.",
+  "deliverable": {
+    "path": "docs/research/workbench-feature-landscape.md",
+    "sha256": "cd60d3826ccc298b4d6fc5e310f6fc81cd67573373dd894b73f919a4a507ab21"
+  },
+  "provenance": {
+    "child_task_id": "/root/workbench_feature_evidence_analysis",
+    "author_task_id": "/root"
+  }
+}

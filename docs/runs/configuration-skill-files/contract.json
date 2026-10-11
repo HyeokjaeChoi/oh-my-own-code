@@ -1,0 +1,179 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "S1",
+      "description": "Closed bounded exact Skill file selection/read"
+    },
+    {
+      "id": "S2",
+      "description": "Confirmed nested publication, compatibility and unknown recovery"
+    },
+    {
+      "id": "S3",
+      "description": "Race-safe explicit accessible per-file UI and truthful inert state"
+    },
+    {
+      "id": "S4",
+      "description": "Actual affected checks and independent gates"
+    }
+  ],
+  "checks": {
+    "skills": {
+      "argv": [
+        "python3",
+        "docs/runs/configuration-skill-files/verify-unaffected-r2.py",
+        "skills"
+      ],
+      "cwd": ".",
+      "scope": "Read-only exact input verification of actual r1 skills PASS after sole e2e runner initial-metrics fix; no original execution rerun",
+      "acceptance_ids": [
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "required": true
+    },
+    "publication": {
+      "argv": [
+        "python3",
+        "docs/runs/configuration-skill-files/verify-unaffected-r2.py",
+        "publication"
+      ],
+      "cwd": ".",
+      "scope": "Read-only exact input verification of actual r1 publication PASS after sole e2e runner initial-metrics fix; no original execution rerun",
+      "acceptance_ids": [
+        "S1",
+        "S2",
+        "S4"
+      ],
+      "required": true
+    },
+    "hidden-ui": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--out",
+        "docs/runs/configuration-skill-files/evidence/hidden-r2",
+        "--script",
+        "ui-states"
+      ],
+      "cwd": ".",
+      "scope": "Actual built hidden Skill state/desktop/narrow/keyboard evidence",
+      "acceptance_ids": [
+        "S3",
+        "S4"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "python3",
+        "docs/runs/configuration-skill-files/verify-unaffected-r2.py",
+        "build"
+      ],
+      "cwd": ".",
+      "scope": "Read-only exact input verification of actual r1 build PASS after sole e2e runner initial-metrics fix; no original execution rerun",
+      "acceptance_ids": [
+        "S4"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "python3",
+        "docs/runs/configuration-skill-files/verify-unaffected-r2.py",
+        "typecheck"
+      ],
+      "cwd": ".",
+      "scope": "Read-only exact input verification of actual r1 typecheck PASS after sole e2e runner initial-metrics fix; no original execution rerun",
+      "acceptance_ids": [
+        "S4"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "python3",
+        "docs/runs/configuration-skill-files/verify-unaffected-r2.py",
+        "boundaries"
+      ],
+      "cwd": ".",
+      "scope": "Read-only exact input verification of actual r1 boundaries PASS after sole e2e runner initial-metrics fix; no original execution rerun",
+      "acceptance_ids": [
+        "S4"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "python3",
+        "docs/runs/configuration-skill-files/verify-unaffected-r2.py",
+        "bundle"
+      ],
+      "cwd": ".",
+      "scope": "Read-only exact input verification of actual r1 bundle PASS after sole e2e runner initial-metrics fix; no original execution rerun",
+      "acceptance_ids": [
+        "S4"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "python3",
+        "docs/runs/configuration-skill-files/verify-unaffected-r2.py",
+        "lint"
+      ],
+      "cwd": ".",
+      "scope": "Read-only exact input verification of actual r1 lint PASS after sole e2e runner initial-metrics fix; no original execution rerun",
+      "acceptance_ids": [
+        "S4"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "python3",
+        "docs/runs/configuration-skill-files/verify-unaffected-r2.py",
+        "format"
+      ],
+      "cwd": ".",
+      "scope": "Read-only exact input verification of actual r1 format PASS after sole e2e runner initial-metrics fix; no original execution rerun",
+      "acceptance_ids": [
+        "S4"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/configuration-skill-files/design.md",
+      "gate": "design_spec",
+      "version": "2",
+      "sha256": "0e08bb059d08d5a8609a276f0164872dd47198f26b2f0bf6e24937d66fcf5463"
+    }
+  ],
+  "environment_files": [
+    "pnpm-lock.yaml",
+    "docs/runs/configuration-skill-files/source-facts.json",
+    "docs/runs/configuration-skill-files/evidence/prechange/legacy-storage-journal.bundle.mjs",
+    "docs/runs/configuration-skill-files/evidence/prechange/legacy-parser-closure.json",
+    "docs/runs/configuration-skill-files/check-changed.mjs",
+    "docs/runs/configuration-skill-files/prechange-source.json",
+    "docs/runs/configuration-skill-files/verify-unaffected-r2.py",
+    "docs/runs/configuration-skill-files/actual-unaffected-checks-r1.json"
+  ],
+  "user_approvals": [],
+  "decision_register": [
+    {
+      "id": "skill-files-boundary",
+      "statement": "Existing-directory inert Skill file list/read/edit/confirmed save; defer directory creation and Native registry/activation",
+      "status": "delegated",
+      "source": "Ongoing user local completion authorization and PRD F14/AC14; pinned public read-only registry and disabled project discovery",
+      "impact": "Nested file security and durable operation API, no process/plugin/provider activation",
+      "blocks": [],
+      "resolution": "Initial independent PLAN and DESIGN_SPEC; fixed sourceName, shared descriptor writer, exact ancestor binding and explicit UI limits"
+    }
+  ]
+}

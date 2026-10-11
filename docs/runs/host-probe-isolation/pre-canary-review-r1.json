@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "e0564da54b3a4faac03aa6ee6915b94298db5615bde1731c1284b2cef503bb6d",
+    "contract_sha256": "82ad680f69e34c2abb849149e04ef0074d983d8e19ae90d36a61b21e13b56247",
+    "source_sha256": "b618bb5490f29e187bd57bddab9dbe369fa6403a65dc29f2d96095364209f5e4",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "verification_sha256": "7f4ab8c4c3c6cf4dad9eeba1107578bab28b5cec835b5993db91599a6a0fdaf4"
+  },
+  "verdict": "changes_requested",
+  "summary": "Do not execute the first SDK-free canary with the reviewed hashes. The static review found attribution, cleanup, decision-integrity, policy-breadth, and external-supervision defects.",
+  "open_findings": [
+    {
+      "severity": "high",
+      "path": "spikes/host-probe-isolation/canaries.mjs:82",
+      "issue": "The child-exec denial is not attributable: spawn uses cwd=/ and ignored stdio, while the profile does not clearly permit those accesses; generic EPERM/EACCES on spawn is counted as a verified process denial.",
+      "correction": "Use the established safe working directory and stdio, then require evidence attributable specifically to the process-control denial."
+    },
+    {
+      "severity": "high",
+      "path": "spikes/host-probe-isolation/canaries.mjs:97",
+      "issue": "If the exact child starts unexpectedly, the code sends SIGKILL and resolves immediately without checking the kill result or waiting for close; supervisor reaping does not cover this nested process.",
+      "correction": "Wait for that child's exit within a short deadline; terminate and reap the owned process group on timeout, and block on failed cleanup."
+    },
+    {
+      "severity": "high",
+      "path": "spikes/host-probe-isolation/verify.mjs:304",
+      "issue": "Any nonzero exit, including a signal with code=null, can become NO-RUN without a valid canary packet; setup errors before launch can also become NO-RUN after cleanup.",
+      "correction": "Reserve NO-RUN for attributable unsupported conditions or a valid completed evaluation. Classify signals, malformed evidence, and setup/integrity errors as BLOCKED."
+    },
+    {
+      "severity": "medium",
+      "path": "spikes/host-probe-isolation/profile.sb.in:19",
+      "issue": "The profile allows reads across all of /opt/homebrew, broader than the narrow runtime boundary.",
+      "correction": "Use an audited runtime dependency allowlist or keep containment unverified and report NO-RUN."
+    },
+    {
+      "severity": "high",
+      "path": "spikes/host-probe-isolation/verify.mjs:128",
+      "issue": "The sandbox child has local timers/output accounting, but no independent supervisor bounds setup, hashing, cleanup, or aggregate output of the verifier process.",
+      "correction": "Add an external supervisor with strict wall-clock and output caps, termination and reaping, then bind execution to reviewed source hashes."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/precanary_code_reviewer",
+    "author_task_id": "/root",
+    "fresh_context": true,
+    "review_scope": "read-only static review; exact source hashes recorded in the run transcript and prior revision report"
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "verdict": "pass",
+  "conclusion": "지정한 범위에서 수정이 필요한 결함을 찾지 못했습니다.",
+  "scope": {
+    "repo": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_revision": 16,
+    "gate": "bounded component CODE",
+    "source_files": 10,
+    "original_hook_roots": 8,
+    "original_registrations": 23
+  },
+  "binding": {
+    "plan_sha256": "0a27dc952288e17d73d40b04351381304da77c40a03568c7ae1b86c39c99a0de",
+    "packet_sha256": "517f03f2c23660ba28285e334a1a011c8397df683e6ba7c31932bd5975af04d6",
+    "input_sha256": "922f508af89a295ce199e336b45c6385d288b2b1f88d9c0b7d0e630badf8e1ca",
+    "api_sha256": "b74a889a984abfd2ee6749b93f2a30b7f82f50c47f92f22cdd3db5dd087771ed",
+    "before_manifest_sha256": "7daa5fb3436fd30ac62cfa8e3698cf9d59e7c10f78a109a1107bb4bbb0937867",
+    "source_set_sha256": "02a8796dc58b287b8597a5cc4bd0e0d7698727a3e5f723bcbc4c22caab4d3def",
+    "source_set_encoding": "path 정렬, 각 행 path + NUL + sha256 + LF, UTF-8",
+    "start_and_end_exact10_match": true,
+    "archived_before8_match": true,
+    "before2_absent": true,
+    "plan_and_routing_hashes_match": true
+  },
+  "reviewed_exact10_hashes": [
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "sha256": "8757fde3db8f0a66e25aa63854a5a7b250c41c36ff12d18d96048df2951d82b3"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+      "sha256": "adfc46e6e8725fd6e7e26faa82027149ce70201cd3b54786369da6c4b27ef760"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "sha256": "af7eec00a00be6def3e64e25513cc43663378e48b97ad92042ce9d10738ebead"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "sha256": "4e6274525b29cd98abf46e18bbab7ee8fb4d3cef17f0854246e174ced87cae46"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.test.mjs",
+      "sha256": "26ec787d0c054c0a9b2ec83ce406351050947ff35036999ce5b972305bdb3804"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-builtin-metadata.test.mjs",
+      "sha256": "63422470bfe4f34fee2b91dee891841d20f7e09a5d1565aceb7945520e27cf22"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "sha256": "00732d934f99c7035d4ba2640297c061f4eac599a99a4db2f20cf59b6f5b3abd"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "sha256": "8cce3fd55b9d53df910f466c02cba31531ecb375a695b980eac14c8b858158e7"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-hook-declaration.test.mjs",
+      "sha256": "e135b0e7567a726d3abbb8e3cf074b4d105bb0925c043fd90417b7777b04ba4b"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-hook-publication.test.mjs",
+      "sha256": "aab7d8379b0e1eb75390b41f91777f3a52804cd25aecf74a8fb8dad82703415b"
+    }
+  ],
+  "findings": [],
+  "passes": {
+    "spec_compliance": [
+      "8개 원래 pluginId에 연결된 private WeakMap brand와 callback getter를 확인했습니다.",
+      "23개 등록의 이름, options, 개수와 원래 producer 등록 순서를 보존합니다.",
+      "graph는 원래 frozen plugin, predicate, getter와 변환된 source hash를 연결합니다.",
+      "원래 descriptor와 승인된 copy, activation Scope, 정확한 반환값과 one-use 검사를 재사용합니다.",
+      "등록 전에 callback provenance를 검사합니다. foreign·duplicate·incomplete publication은 거부합니다.",
+      "원래 callback은 inventoryGuard에 의해 계속 보류됩니다. dispose는 parent hook metadata를 제거합니다."
+    ],
+    "code_quality": [
+      "공유 Tool publication에서 hook producer를 제외하며, 기존 Tool metadata 비교 경로를 유지합니다.",
+      "같은 callback을 여러 event에 등록하는 원래 동작을 유지합니다.",
+      "원래 Plugin loader의 Scope 전달, result 연결과 finalizer 순서를 검토했습니다.",
+      "기존 recipe 40개 항목은 Browser baseline과 같습니다.",
+      "complete=false, unsupported와 capabilities=[]는 의도된 상태로 유지됩니다."
+    ]
+  },
+  "tests": {
+    "independent": [
+      {
+        "method": "node --test apps/desktop-app/src/native-permission-hook-declaration.test.mjs",
+        "passed": 11,
+        "failed": 0,
+        "exit_code": 0,
+        "coverage": "고정 source hash, inert factory, private brand, 원래 callback closure, 등록 순서, 반환값과 scripted Scope 정리"
+      },
+      {
+        "method": "hook-publication.test.mjs를 파일 생성 없이 메모리 안에서 실행",
+        "passed": 11,
+        "failed": 0,
+        "exit_code": 0,
+        "coverage": "원래 registry, 등록 전 거부, Scope 일치, duplicate·foreign·incomplete 거부, parent metadata 정리, 실제 변환된 repair producer 연결",
+        "dependency_limit": "Control 코드는 import/export 구문을 조정하여 추출했습니다. pinned Effect와 원래 registry 코드를 사용했습니다. 검토 밖의 lease·root·app-node 의존성은 대체했습니다."
+      }
+    ],
+    "main_evidence": {
+      "file": "docs/runs/permission-task-lifetime-integration/hook-verification-r1.json",
+      "sha256": "9e22252e014530b1fe9c9d6b070ca68c9295dfa374ad0f6f643552683a846c51",
+      "affected_passes": {
+        "native-metadata": 255,
+        "native-descriptor-read": 223,
+        "native-read-auxiliary": 23,
+        "native-task-read": 12,
+        "total": 513
+      },
+      "check_status": "저장된 all8 reusable 결과를 읽었습니다.",
+      "static": "Main exact7 ESLint·Prettier exit0, worker exact3은 보고된 exit0입니다.",
+      "distinction": "Main 결과는 이번 독립 실행 결과와 구분합니다. 전체 suite와 physical/kernel 검사는 반복하지 않았습니다."
+    }
+  },
+  "limits": [
+    "Node, 추출한 pinned source와 Effect, scripted context 범위의 검토입니다.",
+    "Native/core/provider/browser/Main/server 모듈을 import하거나 실행하지 않았습니다. 허용된 원래 source 일부만 추출하여 검사했습니다.",
+    "Bun, network, socket, build, GUI와 physical 모듈·probe를 실행하지 않았습니다.",
+    "실제 runtime graph의 동작이나 positive execution grant를 검증하지 않았습니다.",
+    "이 판정은 component CODE에만 적용됩니다. full F09·full18 완료 또는 runtime 승인이 아닙니다."
+  ],
+  "provenance": {
+    "mode": "fresh independent report-only bounded review",
+    "skills": [
+      "solo-specialist",
+      "solo-code-review default"
+    ],
+    "baseline": "bounded-browser-source-code-review-r1.json을 참고하고, 보관된 원본과 현재 변경을 직접 비교했습니다.",
+    "writes": false,
+    "delegation": false,
+    "report_and_ledger_owner": "Main",
+    "identity_attestation": "profile 설정을 실제 runtime identity나 OS sandbox 증거로 사용하지 않았습니다.",
+    "agent_id": "01a12725-ea5f-72f2-8b97-46f4e428ca7e",
+    "nickname": "Aristotle",
+    "delivery": "actual wait_agent completed output"
+  }
+}

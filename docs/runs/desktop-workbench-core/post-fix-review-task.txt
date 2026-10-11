@@ -1,0 +1,49 @@
+Fresh independent post-fix CODE and RENDERED DESIGN final review. Report only.
+Root /Users/hyukjaechoi/Projects/oh-my-own-code.
+Read .codex/agents/solo_reader.toml and .agents/skills/solo-specialist/SKILL.md,
+then solo-code-review and solo-design-review (and the design evidence reference).
+Use docs/runs/desktop-workbench-core/post-fix-review.packet.json, plan.md rev2,
+interface.md v2, and the exact final-code-binding.json/final-design-binding.json.
+
+Scope is the bounded desktop-workbench-core increment, not the full F-01-18
+release. All current source and registered evidence are frozen. No edits, tests,
+credentials, personal projects, shell/network services, recursive agents or
+ledger writes. Do not scan or dump worker logs or run.json. Read the concise
+integration-files.json, verification-summary.json, supplementary-verification.json,
+report.md, outcome.json and capture-manifest.json instead.
+
+Prior independent findings and primary repairs are in final-code-review-cli.md,
+design-review-cli.md and review-resolutions.md. Focus the re-review on affected
+code and consumers, without repeating a whole-repository exploration:
+- workbench-service.mjs send(): omitted model must not switch, explicit model
+  must map correctly and recheck policy; relevant added workbench-service tests.
+- Adjudicate the low-severity new-folder trust finding against the actual
+  interface wording and the scope: direct user-selected ordinary directories
+  are distinct from the app-owned isolated temporary workspace. Never recommend
+  widening automatic trust merely to manufacture a passing verdict.
+- renderer/app/index.tsx, useWorkbench.ts, features/conversation/index.tsx and
+  renderer.css: bounded permission queue/composer, actual navigation visibility,
+  panel restoration/focus, stopping notice reconciliation, safe Tool UI layout.
+- e2e-workbench-states.mjs and fixtures/workbench-host.mjs: actual renderer UI
+  assertions with clearly synthetic host; not packaged production behavior.
+
+Directly inspect the attached current captured images. Real-sidecar Electron
+captures and synthetic-main renderer captures have separate provenance in
+capture-manifest.json. File and catalog panels are open in the supplied real
+captures. Confirm actual PNG dimensions, and distinguish code inference from
+direct observation. Prior high design finding had a reproducing viewport ratio
+0.3456; the fixed tests assert full textarea/cancel visibility with two requests.
+Real-sidecar E2E, synthetic state E2E, dev/packaged lifecycle and package-source
+hash comparison now passed. Read actual saved evidence, not only this statement.
+
+Return ONLY JSON with keys code and design. Each is an independent report:
+{"schema_version":2,"reviewed":<copy exact corresponding binding>,
+ "verdict":"pass|changes_requested|blocked","summary":"specific evidence and limitations",
+ "open_findings":[<concrete findings if any>],
+ "provenance":{"child_task_id":"<your actual fresh CLI session/task ID>","author_task_id":"coordinator"}}
+If your session ID is unavailable use a unique explicit label
+cli:desktop-workbench-core:post-fix-independent, and say it is a task label,
+not an identity attestation, in the summary. Do not invent a runtime ID.
+No code/model/provider/auth/Windows/full-release claims beyond the evidence.
+The same fresh reader may return both separately bound reports. You authored
+none of these fixes; if more repairs are needed, report them for a new author.

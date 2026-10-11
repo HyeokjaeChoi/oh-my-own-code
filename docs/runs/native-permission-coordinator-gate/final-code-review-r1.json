@@ -1,0 +1,104 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "96f6c8c1cdcaa7321a8f6a99da2b00e67f530997f8459825917a3a8b430c43a3",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "4fc037618db7b39258fb3df0ad15eac272d1587ef9ae2959de3f6de0fe43b7bf",
+    "schema_version": 2,
+    "source_sha256": "b392238f951c39663f5dd35661b929cb3618da447cfa7080d18d2508018b1c85",
+    "verification_sha256": "5d523a6f524ef73cb0b27c89b64c64cd943a5e23ca248a055eb12f0dda63ca8b",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "변경되지 않은 source에서 저장된 실제 실행 결과를 승인합니다. held coordinator, held SessionExecution, raw lease runtime 호환성 범위에서 추가 결함을 찾지 못했습니다. 전체 입력 binding과 보존된 실행 증거를 읽기 전용으로 대조했습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a12164-f80a-7330-a5c8-29603278d8de",
+    "identity_source": "현재 프로세스의 CODEX_THREAD_ID입니다. run.json의 final reviewer dispatch와 일치합니다.",
+    "mode": "fresh_independent_final_code_and_actual_execution_review",
+    "implementation_authored_by_this_child": false,
+    "distinct_from_prior_reviewers": true,
+    "delegation_used": false,
+    "files_written": false,
+    "source_judgment_reused_from": [
+      "docs/runs/native-permission-coordinator-gate/preexecution-code-review-r1.json",
+      "docs/runs/native-permission-coordinator-gate/preexecution-code-review-r2.json"
+    ],
+    "reuse_basis": "r1의 결함 2개는 독립 r2 검토에서 해결되었습니다. r2와 현재 source, environment, plan, contract, work_class binding이 일치합니다. 동결된 8개 파일의 hash와 크기도 일치합니다."
+  },
+  "verification": {
+    "spec_compliance_pass": {
+      "C1": "기존 source 판정을 유지합니다. 실제 Native Store identity와 같은 Control을 사용하는 coordinator run/wake 및 SessionExecution resume/wake가 native_permission_held로 거부됩니다. coordinator callback은 0이며 active 목록과 leaseSnapshot은 비어 있습니다. interrupt는 false이고 awaitIdle은 완료됩니다.",
+      "C2": "고정 Bun 1.4.2에서 실행한 11개 case가 모두 PASS입니다. source, original, staged, 복사한 child, engine의 실행 전후 값과 현재 보존 파일을 대조했습니다."
+    },
+    "code_quality_pass": {
+      "source_review": "정확한 pin 일치 후 기존 독립 source 판정을 재사용했습니다. 전체 알고리즘 검토와 성공한 테스트를 반복하지 않았습니다.",
+      "execution_evidence_review": "실제 child의 assertion, parent의 닫힌 protocol 검증, 정상 종료 조건, identity 재검사와 실패 처리를 읽었습니다.",
+      "additional_actionable_defects": []
+    },
+    "read_only_checks": {
+      "whole_review_binding": "harness로 다시 계산한 객체가 final-code-input-r1.json 전체 객체와 정확히 일치합니다. 검토 종료 시에도 일치합니다.",
+      "routing_pins": "final reviewer packet의 profile, skill, roles 파일 hash가 일치합니다.",
+      "source_freeze": "preexecution-r2와 final-r1의 파일 목록이 같습니다. 8개 파일 모두 hash와 크기가 검토 시작 및 종료 시 일치합니다.",
+      "baseline_inventory_delta": "변경 목록은 정확히 동결된 8개 파일입니다. 새 helper와 해당 테스트는 baseline에 없습니다.",
+      "registered_artifacts": "등록된 artifact와 outcome의 실제 파일 hash가 일치합니다.",
+      "source_closure": "48개 파일의 현재 hash가 보고서의 before 및 after와 일치합니다.",
+      "original_install": "현재 inventory 38,386개가 원본 receipt와 일치합니다. inventory digest, 입력 4개, engine hash도 보고서와 일치합니다.",
+      "staged_resources": "현재 inventory 38,439개가 manifest와 일치합니다. manifest hash, manifest digest, packaged asset 41개와 engine hash가 보고서와 일치합니다.",
+      "recipe_pins": "원본 6개 파일은 beforeSha256과 일치합니다. staged 6개 파일은 afterSha256과 일치합니다.",
+      "copied_child": "보존된 native-child.mjs의 hash가 동결된 source와 copiedChild.before 및 copiedChild.after에 일치합니다.",
+      "retained_namespace": "소유 marker, private directory mode, 실제 SQLite header를 확인했습니다. unapproved-plugin-ran marker는 없습니다."
+    },
+    "actual_execution": {
+      "report_path": "docs/runs/native-permission-coordinator-gate/evidence/native-r1/report.json",
+      "report_sha256": "ebfd38bdf543eef161c7787789a04e01cea2ac64c8406a44a7ae21e32f721a0b",
+      "runtime": "Bun 1.4.2 / Effect 4.0.0-rc.112 / darwin-arm64",
+      "child_pid": 91856,
+      "code": 0,
+      "signal": null,
+      "exited": true,
+      "timedOut": false,
+      "spawnFailed": false,
+      "protocolOverflow": false,
+      "signals": [],
+      "identityStable": true,
+      "before_after_equal": true,
+      "case_count": 11,
+      "retainedRoot": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-graph-kIQwdJ",
+      "case_behavior": {
+        "overlay_forwarding": "실제 server graph에서 replacement 획득, onListen, transform이 각각 1회입니다.",
+        "fixed_config": "고정 plugin과 nonce만 보입니다. unapproved model과 plugin 실행 marker는 없습니다.",
+        "fixed_plugin_source": "고정 operations를 반환합니다. 반환값 변경이 다음 읽기에 영향을 주지 않으며 changes는 방출하지 않습니다.",
+        "sdk_registration_denied": "등록을 거부합니다. 전달한 effect는 실행되지 않고 등록 목록은 비어 있습니다.",
+        "inert_wellknown": "조회는 비어 있고 refresh는 false입니다. add와 remove를 거부합니다.",
+        "control_boot": "runtimeEpoch, boot_held, bootHolds와 같은 transaction의 locked read를 검사합니다. 실행을 거부합니다.",
+        "permission_held": "ask, assert, reply를 거부합니다. pending 목록은 비어 있습니다.",
+        "saved_held": "add와 addLocked를 거부합니다. 없는 항목 remove 후에도 목록은 비어 있습니다.",
+        "coordinator_held": "실제 Native session identity로 run과 wake를 거부합니다. callback 0, active 없음, interrupt false, awaitIdle 완료를 검사합니다.",
+        "session_execution_held": "포착한 실제 service의 resume과 wake를 거부합니다. active 없음, interrupt false, awaitIdle 완료와 빈 leaseSnapshot을 검사합니다.",
+        "lease_component_runtime": "synthetic identity와 실제 PassThrough를 사용합니다. cancelling 상태, 위조 proof 거부, Fiber 및 IO 종료 후 실제 proof에 의한 settlement를 검사합니다."
+      },
+      "same_source_actual_execution_accepted": true
+    },
+    "existing_checks": {
+      "unit": "현재 source와 environment에서 저장된 exit_code 0이며 reusable입니다.",
+      "lint": "현재 source와 environment에서 저장된 exit_code 0이며 reusable입니다.",
+      "format": "현재 source와 environment에서 저장된 exit_code 0이며 reusable입니다.",
+      "native-r1": "현재 source와 environment에서 저장된 exit_code 0이며 reusable입니다.",
+      "checks_rerun": false
+    }
+  },
+  "limits": [
+    "baseline-preservation-limit-r1.json을 적용합니다. 변경 전 앱 전체 byte archive가 없습니다. 정확한 baseline hash/mode inventory와 기존 전체 current-source 검토는 있지만, 완전한 변경 전후 byte-diff 증거는 아닙니다.",
+    "이번 PASS는 boot_held 범위입니다. positive execution activation을 승인하지 않습니다.",
+    "실제 original app key/nativeInbox와 기존 parked task를 연결하는 OriginalOperationScope 및 원래 task scope는 미완료입니다.",
+    "production wiring과 full F09는 미완료입니다. Session/CoreShell/tool/location/move 전체 경계 적용이나 production readiness를 승인하지 않습니다.",
+    "raw lease case는 runtime component 호환성 증거입니다. Native 실행 admission이나 descendant settlement 증거가 아닙니다.",
+    "향후 positive execution에서 fork의 TransactionScope 상속 경로는 별도 검증이 필요합니다.",
+    "OS filesystem/network sandbox, descendant enumeration, change-and-restore 부재, power-loss recovery는 증명하지 않습니다.",
+    "이번 검토에서는 Native, Bun, 테스트, provider, GUI, build를 실행하지 않았습니다. 파일 작성과 delegation도 하지 않았습니다.",
+    "보고서 저장, gate 등록, run finish는 Main이 수행합니다."
+  ]
+}

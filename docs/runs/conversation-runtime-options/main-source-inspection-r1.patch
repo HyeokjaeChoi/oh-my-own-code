@@ -1,0 +1,343 @@
+--- before/apps/desktop-app/src/workbench-service.mjs
++++ apps/desktop-app/src/workbench-service.mjs
+@@ -1,3 +1,8 @@
++import {
++  projectModelOptions,
++  projectAssistantRuntime,
++  projectSessionSelection,
++} from "./renderer/shared/runtime-options/index.mjs";
+ import {
+   validateGitBranchRestorePreview,
+   validateGitBranchRestoreMutationResult,
+@@ -193,6 +198,9 @@
+     .map((message) => ({
+       id: message.id,
+       role: message.type,
++      ...(projectAssistantRuntime(message)
++        ? { runtime: projectAssistantRuntime(message) }
++        : {}),
+       text:
+         message.type === "user"
+           ? clip(message.text, 32000)
+@@ -2238,6 +2246,15 @@
+         blocked || initializing || selectedBlocked || s?.unavailable
+           ? []
+           : (projected?.messages ?? []),
++      ...(!blocked &&
++      !initializing &&
++      !selectedBlocked &&
++      !s?.unavailable &&
++      w?.trusted &&
++      runtime?.snapshot().state === "connected" &&
++      projection?.sessionSelection
++        ? { sessionSelection: projection.sessionSelection }
++        : {}),
+       permissions:
+         blocked || initializing || selectedBlocked || s?.unavailable
+           ? []
+@@ -2305,6 +2322,7 @@
+           !currentResourceMatches()
+         )
+           fail("READ_BUSY");
++        s.sessionSelection = projectSessionSelection(info, s.id);
+         s.messages = projectMessages([...messages.data].reverse());
+         s.permissions = pending
+           .filter(
+@@ -2358,6 +2376,7 @@
+               : undefined;
+         s.error = code ? { code, message: ERRORS[code] } : undefined;
+       } catch {
++        delete s.sessionSelection;
+         checkLive();
+         if (
+           (resourceGenerations.get(s.workspaceId) ?? 0) !== generation ||
+@@ -2432,7 +2451,17 @@
+               })),
+           );
+     const modelMap = new Map();
++    const seenModels = new Set();
+     for (const model of models ?? []) {
++      if (!opaque(model?.id) || !opaque(model?.providerID)) continue;
++      const id = createHash("sha256")
++        .update(JSON.stringify([model.providerID, model.id]))
++        .digest("hex");
++      if (seenModels.has(id)) {
++        modelMap.delete(id);
++        continue;
++      }
++      seenModels.add(id);
+       const provider = providers?.find(
+         (p) => p.id === model.providerID && p.activation !== "disabled",
+       );
+@@ -2449,9 +2478,6 @@
+         provider &&
+         authenticated
+       ) {
+-        const id = createHash("sha256")
+-          .update(JSON.stringify([model.providerID, model.id]))
+-          .digest("hex");
+         modelMap.set(id, model);
+       }
+     }
+@@ -2495,6 +2521,7 @@
+                   id,
+                   name: clip(m.name, 256),
+                   status: clip(m.status, 32),
++                  ...projectModelOptions(m),
+                 })),
+               ),
+       },
+@@ -2556,6 +2583,14 @@
+         !inventory.dto.commands.entries.some((c) => c.id === request.name)
+       )
+         fail("INVALID_SELECTION");
++      if (
++        request.variant &&
++        (!request.model ||
++          !projectModelOptions(
++            inventory.models.get(request.model),
++          ).variants.ids.includes(request.variant))
++      )
++        fail("INVALID_SELECTION");
+       switching = true;
+       if (request.agent)
+         await call(client.session.switchAgent, {
+@@ -2568,7 +2603,13 @@
+         const selected = inventory.models.get(request.model);
+         await call(client.session.switchModel, {
+           sessionID: s.sdkId,
+-          model: { id: selected.id, providerID: selected.providerID },
++          model: {
++            id: selected.id,
++            providerID: selected.providerID,
++            ...(Object.hasOwn(request, "variant")
++              ? { variant: request.variant }
++              : {}),
++          },
+         });
+       }
+       await policy(s, "native.policy.after_selection");
+--- before/apps/desktop-app/src/workbench-contract.mjs
++++ apps/desktop-app/src/workbench-contract.mjs
+@@ -1,3 +1,8 @@
++import {
++  validRuntimeText,
++  validAssistantRuntime,
++  validSessionSelection,
++} from "./renderer/shared/runtime-options/index.mjs";
+ import { validateGitBranchRestoreRequest } from "./renderer/shared/git-branch-restore/index.mjs";
+ import { validateGitCommitRequest } from "./renderer/shared/git-commit/index.mjs";
+ import { validateGitReviewRequest } from "./renderer/shared/git-review/index.mjs";
+@@ -210,7 +215,7 @@
+   "session.create": [["workspaceId"], ["title"]],
+   "message.send": [
+     ["workspaceId", "sessionId", "requestId", "text"],
+-    ["agent", "model"],
++    ["agent", "model", "variant"],
+   ],
+   "session.interrupt": [["workspaceId", "sessionId"], []],
+   "permission.respond": [
+@@ -438,6 +443,12 @@
+         : Object.hasOwn(value, "version")))
+   )
+     fail("INVALID_REQUEST");
++  if (
++    value.type === "message.send" &&
++    Object.hasOwn(value, "variant") &&
++    (!Object.hasOwn(value, "model") || !validRuntimeText(value.variant))
++  )
++    fail("INVALID_REQUEST");
+   if (value.type === "message.send" && !value.text.trim())
+     fail("INVALID_REQUEST");
+   if (
+@@ -649,7 +660,7 @@
+       "messages",
+       "permissions",
+     ],
+-    ["selectedWorkspaceId", "selectedSessionId", "error"],
++    ["selectedWorkspaceId", "selectedSessionId", "sessionSelection", "error"],
+   );
+   needDTO(
+     validWireId(value.runtimeEpoch) &&
+@@ -780,7 +791,9 @@
+     JSON.stringify([k.runtimeEpoch, k.operationId]),
+   );
+   for (const m of value.messages) {
+-    requiredObject(m, ["id", "role", "text", "tools"]);
++    requiredObject(m, ["id", "role", "text", "tools"], ["runtime"]);
++    if (Object.hasOwn(m, "runtime"))
++      needDTO(m.role === "assistant" && validAssistantRuntime(m.runtime));
+     needDTO(
+       boundedText(m.id, 256) &&
+         m.id.length > 0 &&
+@@ -801,6 +814,25 @@
+       );
+     }
+   }
++  if (Object.hasOwn(value, "sessionSelection")) {
++    needDTO(
++      validSessionSelection(value.sessionSelection) &&
++        value.sessionSelection.sessionId === value.selectedSessionId &&
++        value.sessions.some(
++          (s) => s.id === value.selectedSessionId && s.status !== "unavailable",
++        ) &&
++        value.state === "connected" &&
++        value.recovery.store.state === "ready" &&
++        !value.recovery.resources.some(
++          (r) =>
++            r.workspaceId === value.selectedWorkspaceId &&
++            (!r.sessionId || r.sessionId === value.selectedSessionId),
++        ) &&
++        value.workspaces.some(
++          (w) => w.id === value.selectedWorkspaceId && w.trusted,
++        ),
++    );
++  }
+   for (const p of value.permissions) {
+     requiredObject(p, ["id", "sessionId", "title", "detail"]);
+     needDTO(
+--- before/apps/desktop-app/src/desktop-bridge.d.ts
++++ apps/desktop-app/src/desktop-bridge.d.ts
+@@ -1,3 +1,14 @@
++import type {
++  AssistantRuntime,
++  SessionSelection,
++  ModelOptions,
++} from "./renderer/shared/runtime-options/index.js";
++export type {
++  RuntimeModel,
++  AssistantRuntime,
++  SessionSelection,
++  ModelOptions,
++} from "./renderer/shared/runtime-options/index.js";
+ import type {
+   GitBranchPreviewRequest,
+   GitRestorePreviewRequest,
+@@ -143,6 +154,7 @@
+   output: string;
+ }
+ export interface WorkbenchMessage {
++  runtime?: AssistantRuntime;
+   id: string;
+   role: "user" | "assistant";
+   text: string;
+@@ -166,6 +178,7 @@
+   sessions: WorkbenchSession[];
+   selectedWorkspaceId?: string;
+   selectedSessionId?: string;
++  sessionSelection?: SessionSelection;
+   messages: WorkbenchMessage[];
+   permissions: WorkbenchPermission[];
+   error?: { code: string; message: string };
+@@ -183,12 +196,19 @@
+   status: "available" | "unavailable";
+   entries: WorkbenchCatalogEntry[];
+ }
++export interface WorkbenchModelEntry
++  extends WorkbenchCatalogEntry,
++    ModelOptions {}
++export interface WorkbenchModelCatalogGroup {
++  status: "available" | "unavailable";
++  entries: WorkbenchModelEntry[];
++}
+ export interface WorkbenchCatalog {
+   commands: WorkbenchCatalogGroup;
+   skills: WorkbenchCatalogGroup;
+   mcp: WorkbenchCatalogGroup;
+   agents: WorkbenchCatalogGroup;
+-  models: WorkbenchCatalogGroup;
++  models: WorkbenchModelCatalogGroup;
+   configuration?: WorkbenchConfiguration;
+ }
+ export interface WorkbenchConfiguration {
+@@ -716,6 +736,7 @@
+       text: string;
+       agent?: string;
+       model?: string;
++      variant?: string;
+     }
+   | { type: "session.interrupt"; workspaceId: string; sessionId: string }
+   | {
+--- before/apps/desktop-app/src/renderer/shared/projection/projection.mjs
++++ apps/desktop-app/src/renderer/shared/projection/projection.mjs
+@@ -1,3 +1,4 @@
++import { validAssistantRuntime } from "../runtime-options/index.mjs";
+ // Pure renderer projection: no host access, executable markup, or optimistic results.
+ export const selectionKey = (workspaceId = "", sessionId = "") =>
+   JSON.stringify([workspaceId, sessionId]);
+@@ -17,6 +18,18 @@
+     .map((message) => ({
+       id: message.id,
+       role: message.role,
++      ...(message.role === "assistant" && validAssistantRuntime(message.runtime)
++        ? {
++            metadata: {
++              custom: {
++                runtime: {
++                  agent: message.runtime.agent,
++                  model: { ...message.runtime.model },
++                },
++              },
++            },
++          }
++        : {}),
+       content: [
+         { type: "text", text: bounded(message.text) },
+         ...(message.role === "assistant"
+--- before/apps/desktop-app/scripts/run-evidence.mjs
++++ apps/desktop-app/scripts/run-evidence.mjs
+@@ -40,6 +40,7 @@
+   "docs/runs/git-explicit-commit/evidence",
+   "docs/runs/git-branch-restore/evidence",
+   "docs/runs/conversation-markdown/evidence",
++  "docs/runs/conversation-runtime-options/evidence",
+   "docs/runs/ui-state-families/evidence",
+   "docs/runs/event-host-app-integration/evidence",
+   "docs/runs/durable-workbench-storage/evidence",
+@@ -62,6 +63,10 @@
+   return root;
+ }
+ const scripts = {
++  "runtime-options": [
++    "e2e-runtime-options.mjs",
++    "runtime-options-evidence.json",
++  ],
+   "conversation-markdown": [
+     "e2e-conversation-markdown.mjs",
+     "conversation-markdown-evidence.json",
+@@ -179,7 +184,7 @@
+       Object.hasOwn(parsed, key)
+     ) {
+       throw new Error(
+-        "Usage: run-evidence.mjs --out <fresh-run-directory> --script <sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|conversation-markdown|workbench|smoke> [--family all|legacy|extensions|workspace-files|git-review] [--mode dev|packaged --platform darwin|win32]",
++        "Usage: run-evidence.mjs --out <fresh-run-directory> --script <sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|conversation-markdown|runtime-options|workbench|smoke> [--family all|legacy|extensions|workspace-files|git-review] [--mode dev|packaged --platform darwin|win32]",
+       );
+     }
+     parsed[key] = value;
+@@ -241,7 +246,7 @@
+   const output = resolve(out);
+   assertWithin(root, output);
+   if (
+-    !/^(sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|conversation-markdown|workbench|smoke-(dev|packaged)-(darwin|win32))$/.test(
++    !/^(sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|conversation-markdown|runtime-options|workbench|smoke-(dev|packaged)-(darwin|win32))$/.test(
+       selector,
+     )
+   )
+@@ -293,6 +298,7 @@
+       "git-commit",
+       "git-branch-restore",
+       "conversation-markdown",
++      "runtime-options",
+     ].includes(script);
+   if (
+     strictCapture &&
+--- before/apps/desktop-app/scripts/build-provenance.mjs
++++ apps/desktop-app/scripts/build-provenance.mjs
+@@ -71,6 +71,7 @@
+   { path: "docs/design/tokens", tree: true, source: true },
+ ];
+ const selectedPaths = {
++  "runtime-options": ["e2e-runtime-options.mjs", "fixtures/workbench-host.mjs"],
+   "conversation-markdown": [
+     "e2e-conversation-markdown.mjs",
+     "fixtures/workbench-host.mjs",

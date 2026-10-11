@@ -1,0 +1,27 @@
+....................
+........X..
+
+Failed tests:
+
+✖ runtime options model variants are closed public IDs and selected before native model switch (2.824ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + undefined
+  - {
+  -   ids: [
+  -     'custom/effort#x'
+  -   ],
+  -   status: 'available'
+  - }
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-service.test.mjs:967:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { status: 'available', ids: [ 'custom/effort#x' ] },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

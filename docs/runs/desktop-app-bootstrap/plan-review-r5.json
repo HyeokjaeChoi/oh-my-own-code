@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "5c69af3b86d1d2fbf65ae5bf70dc81641f976793abb31007fe409cdae18d4e19",
+    "contract_sha256": "0514434fd433eeb5a5ab500cc912a527854c0676ae59cdac197b905833e4e249",
+    "source_sha256": "0c9bb68bff90c67784eef89dd5e42f0946e62e5b86f1c78e20d164bbfa3bb501"
+  },
+  "verdict": "pass",
+  "open_findings": [],
+  "closed_findings": [
+    {
+      "id": "DP4-01",
+      "resolution": "Plan steps 2–3 and completion criterion 1 require reconciliation of the ADR, PRD, UX, architecture, verification, operations, and spec index, followed by refreshed reviews and handoffs before implementation. The currently registered documents still contain older assumptions; their correction is an explicit dependency, not an accomplished result."
+    },
+    {
+      "id": "DP4-02",
+      "resolution": "The contract now requires separate macOS and Windows development E2E, package builds, packaged E2E, and bundle inspections. The Windows packaged check includes the admission, navigation, privilege, failure, and lifecycle assertions previously missing. Plan completion criteria require OS-specific receipts bound to exact app and sidecar hashes."
+    }
+  ],
+  "resolved_findings": [
+    {
+      "id": "DP4-01",
+      "resolution": "Plan steps 2–3 and completion criterion 1 require reconciliation of the ADR, PRD, UX, architecture, verification, operations, and spec index, followed by refreshed reviews and handoffs before implementation. The currently registered documents still contain older assumptions; their correction is an explicit dependency, not an accomplished result."
+    },
+    {
+      "id": "DP4-02",
+      "resolution": "The contract now requires separate macOS and Windows development E2E, package builds, packaged E2E, and bundle inspections. The Windows packaged check includes the admission, navigation, privilege, failure, and lifecycle assertions previously missing. Plan completion criteria require OS-specific receipts bound to exact app and sidecar hashes."
+    }
+  ],
+  "summary": "Revision 5 covers the installed macOS and Windows app, an app-owned foreground OpenCode v2 serve process, and an Electron–Tauri 2–Neutralinojs comparison before shell selection. It keeps browser loopback tests scoped to the synthetic browser bridge and requires desktop-specific sidecar evidence.",
+  "validation": "Read-only inspection of the plan, contract, prior review, research, registered documents, and run ledger. Computed plan and contract SHA-256 hashes; parsed the contract and ledger; confirmed required-check parity and all registered document and approval-evidence hashes. The source hash matches the ledger binding but was not independently recomputed. No app, sidecar, tests, or Windows runtime were executed.",
+  "verification_limits": [
+    "No app, sidecar, tests, package build, or Windows runtime was executed.",
+    "The source inventory hash matches the run's registered binding but was not independently recomputed by the reviewer."
+  ],
+  "confidence": "high for plan and contract coverage; runtime feasibility remains unverified",
+  "provenance": {
+    "child_task_id": "/root/desktop_plan_review_r5",
+    "author_task_id": "/root",
+    "review_mode": "Fresh independent read-only plan and contract review",
+    "runtime_identity_verified": false,
+    "runtime_executed": false,
+    "tests_executed": false,
+    "tests_run": false,
+    "ledger_modified": false,
+    "files_modified": false
+  }
+}

@@ -1,0 +1,42 @@
+Fresh independent reader assignment. Read .codex/agents/solo_reader.toml,
+.agents/skills/solo-specialist/SKILL.md, solo-plan-review/SKILL.md, and the
+bounded code/design workflows only for the evidence reconciliation below.
+Do not edit files, run tests/services, read credentials/private projects, write
+the ledger or recursively delegate. Root is the current working directory.
+
+Return three separate bound verdicts as JSON: core_code, core_design, plan.
+Each report: schema_version:2, reviewed:<exact supplied binding>,
+verdict:pass|changes_requested|blocked, summary, open_findings:[],
+provenance:{child_task_id:"cli:session-lifecycle-entry-independent",
+author_task_id:"coordinator"}. This ID is a task label, not runtime attestation.
+Use literal JSON keys without Markdown escapes/fences. No writing block.
+
+1. Core evidence-only reconciliation:
+Read docs/runs/desktop-workbench-core/post-fix-review.normalized.json and
+reconciled-code-binding.json/reconciled-design-binding.json; compare with
+final-code-binding.json/final-design-binding.json. The code/source, tests,
+captures and outcomes remain unchanged. The sole ledger correction registers
+the already-tested app.asar hash dc75706349b3eaed92e50cf08099503b27bc045075a63303ba2bad03d7a12c49
+instead of a stale previous package hash. Independently verify the actual
+archive hash and the existing package-source-match.json, package-inspection.json
+and supplementary-verification.json. Read only bounded relevant run fields;
+do not dump run.json or worker/review logs. The independent post-fix review
+already examined actual images and affected source and passed both gates.
+Judge whether the artifact registration correction preserves those conclusions
+under the new exact bindings; no redundant full code/design review is needed.
+Your summary must explicitly distinguish evidence reconciliation from new
+visual observation, provider execution, Windows validation or full release.
+
+2. Next plan entry review:
+Read docs/runs/desktop-session-lifecycle/{plan.md,interface.md,contract.json,
+plan-binding.json} and docs/engineering/architecture-entry.md.
+Check fit to approved desktop scope, exact installed SDK feasibility, ownership,
+temporary storage semantics, archive guards, idle/unknown/receipt behavior,
+native-confirmed history deletion that preserves project files, bounded
+redacted diagnostics, test coverage, sequencing and disjoint worker ownership.
+Inspect installed @opencode/client declarations or bounded source when needed.
+Do not restart discovery of settled Electron, assistant-ui/Tool UI or platform
+choices. No user approval is missing for this reversible local increment.
+Permanent data retention and native Windows evidence remain parent limits.
+This verdict approves the execution plan only; a separately bound design-spec
+gate follows after registration. Report only concrete blocking flaws.

@@ -1,0 +1,13 @@
+Branch/restore evidence failed in success-select: Error: expect(locator).toBeInViewport() failed
+
+Locator:  getByRole('region', { name: 'Branch 생성·선택과 파일 복원', exact: true }).locator('h4,p,legend,label,select,input,textarea,button,dl dt,dl dd').nth(100)
+Expected: in viewport
+Received: viewport ratio 0.7899627089500427
+Timeout:  5000ms
+
+Call log:
+  - Expect "toBeInViewport" getByRole('region', { name: 'Branch 생성·선택과 파일 복원', exact: true }).locator('h4,p,legend,label,select,input,textarea,button,dl dt,dl dd').nth(100) with timeout 5000ms
+  - waiting for getByRole('region', { name: 'Branch 생성·선택과 파일 복원', exact: true }).locator('h4,p,legend,label,select,input,textarea,button,dl dt,dl dd').nth(100)
+    14 × locator resolved to <dd>worktree / notes/SYNTHETIC-editor.txt / .omoc-git…</dd>
+       - unexpected value "viewport ratio 0.7899627089500427"
+

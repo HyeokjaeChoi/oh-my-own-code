@@ -1,0 +1,29 @@
+✔ context durable checked bytes remain original after external edit and journal retains no bytes (76.008375ms)
+✖ context durable cancel confirms request ACK with exact original target and both flushed policies (32.496625ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 189.095791
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:4836:1
+✖ context durable cancel confirms request ACK with exact original target and both flushed policies (32.496625ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"BUSY","message":"The session is busy or its outcome is unconfirmed.","receipt":{"runtimeEpoch":"epoch","operationId":"cancel-context","type":"session.inbox.cancel","workspaceId":"0180b8f3-513b-4abf-bfa5-71ff8e9876f9","sessionId":"99427a9a-0ea0-4c91-8685-c15fbaf4ea8a","admission":"rejected","delivery":"pending","effect":"none","revision":10,"evidence":[],"result":{"kind":"rejected","code":"BUSY"}}}
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:4841:9)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

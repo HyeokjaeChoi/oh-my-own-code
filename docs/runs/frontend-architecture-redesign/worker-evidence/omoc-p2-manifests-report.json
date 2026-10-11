@@ -1,0 +1,57 @@
+{
+  "scope": "P2 manifest, dependency, Nx and CSS Module declaration implementation",
+  "plan_revision": 6,
+  "spec_version": 4,
+  "changed": [
+    "package.json",
+    "nx.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json",
+    "apps/desktop-app/project.json",
+    "packages/ui/package.json",
+    "apps/desktop-app/src/css-modules.d.ts",
+    "packages/ui/src/css-modules.d.ts"
+  ],
+  "unchanged_owned": [
+    "packages/ui/project.json"
+  ],
+  "checks": [
+    {
+      "command": "pnpm install --lockfile-only --ignore-scripts --fetch-retries=0",
+      "result": "PASS; registry metadata permitted, pinned snapshots unchanged"
+    },
+    {
+      "command": "pnpm install --frozen-lockfile --offline --ignore-scripts --fetch-retries=0",
+      "result": "PASS; Already up to date"
+    },
+    {
+      "command": "NX_DAEMON=false NX_ISOLATE_PLUGINS=false pnpm exec nx run-many -t typecheck --projects=ui,desktop-app --skip-nx-cache",
+      "result": "PASS; 2 projects"
+    },
+    {
+      "command": "NX_DAEMON=false NX_ISOLATE_PLUGINS=false pnpm exec nx graph --file=/tmp/omoc-p2-project-graph-after.json",
+      "result": "PASS; desktop/web each depend on ui/contracts; native/package/E2E/probe cache:false including package-json inferred colon targets"
+    },
+    {
+      "command": "node node_modules/prettier/bin/prettier.cjs --check package.json nx.json apps/desktop-app/package.json apps/desktop-app/project.json packages/ui/package.json packages/ui/project.json apps/desktop-app/src/css-modules.d.ts packages/ui/src/css-modules.d.ts",
+      "result": "PASS"
+    },
+    {
+      "command": "Node createRequire/realpath static dependency resolution",
+      "result": "PASS; direct zustand/vanilla, zustand and radix-ui resolve; desktop/ui/assistant-ui share React and ReactDOM 19.2.4 identities; Zustand and Radix MIT, installed peers accept React19"
+    },
+    {
+      "command": "TypeScript createProgram in-memory fixtures with actual CSS declarations and project compiler options",
+      "result": "PASS; Zustand vanilla+selector, Radix Dialog/DropdownMenu TSX plus CSS Module class props; declarations included by both existing tsconfig include globs"
+    },
+    {
+      "command": "baseline source.tar.gz vs current pnpm-lock.yaml diff",
+      "result": "Only importer additions: desktop zustand; ui radix-ui and react-dom peer. No package/snapshot resolution changes"
+    }
+  ],
+  "limitations": [
+    "No native/package/E2E/build execution requested in this slice; runtime primitive behavior and bundle delta remain later integration checks",
+    "First offline lockfile attempt failed with ENOTFOUND during policy metadata check; permitted metadata retry then failed ERR_PNPM_NO_OFFLINE_META for existing OpenCode optional packages; online lockfile-only retry succeeded without changing policies",
+    "Prettier check including generated pnpm-lock.yaml reports its generated YAML style; lockfile was intentionally kept pnpm-generated without broad formatting churn"
+  ]
+}

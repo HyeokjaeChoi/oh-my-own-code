@@ -1,0 +1,252 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "GC1",
+      "description": "Exact all-staged commit and untouched resource preservation"
+    },
+    {
+      "id": "GC2",
+      "description": "Current preview and descriptor-only bounded authority"
+    },
+    {
+      "id": "GC3",
+      "description": "Durable intent/receipt/compatibility/unknown no replay"
+    },
+    {
+      "id": "GC4",
+      "description": "Accessible explicit commit/confirmation and async scope retention"
+    },
+    {
+      "id": "GC5",
+      "description": "Current coherent evidence and independent final gates"
+    }
+  ],
+  "checks": {
+    "files": {
+      "argv": [
+        "node",
+        "docs/runs/git-explicit-commit/check-files.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Verify unchanged actual native kernel82/52 proof, then newly execute current affected Node tests when source behavior changes; exact format-only prior execution reuse only on matching complete proof.",
+      "acceptance_ids": [
+        "GC1",
+        "GC2",
+        "GC3",
+        "GC4",
+        "GC5"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Current DTO and consumers",
+      "acceptance_ids": [
+        "GC5"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "FSD/browser dependency boundaries",
+      "acceptance_ids": [
+        "GC5"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "docs/runs/git-explicit-commit/check-changed.mjs",
+        "lint"
+      ],
+      "cwd": ".",
+      "scope": "Exact changed-path lint",
+      "acceptance_ids": [
+        "GC5"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "docs/runs/git-explicit-commit/check-changed.mjs",
+        "format"
+      ],
+      "cwd": ".",
+      "scope": "Exact changed-path format",
+      "acceptance_ids": [
+        "GC5"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "node",
+        "docs/runs/git-explicit-commit/ensure-current-build.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Verified current build or exact Nx rebuild on stale input/artifact",
+      "acceptance_ids": [
+        "GC5"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Browser bundle isolation",
+      "acceptance_ids": [
+        "GC5"
+      ],
+      "required": true
+    },
+    "commit-publication": {
+      "argv": [
+        "node",
+        "docs/runs/git-explicit-commit/verify-publication-ui-only.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Verify actual prior publication33/full unchanged application and runtime, permitting only exact pinned UI-runner corrections/scope/wait bytes; no newly executed publication claim.",
+      "acceptance_ids": [
+        "GC1",
+        "GC2",
+        "GC3",
+        "GC5"
+      ],
+      "required": true
+    },
+    "hidden-commit": {
+      "argv": [
+        "node",
+        "docs/runs/git-explicit-commit/check-hidden-current.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Verify completed prior43prefix plus actual successful8settlement states/current exact app-build/pixels and ownedexit0; only unrelated index-probe output guard changes, no new UI run claimed.",
+      "acceptance_ids": [
+        "GC4",
+        "GC5"
+      ],
+      "required": true
+    },
+    "reader-regression": {
+      "argv": [
+        "node",
+        "docs/runs/git-explicit-commit/verify-reader-current.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Verify prior actual51reader cases, exact current reader/probe source/dependencies/Git/build; only unrelated index-probe output guard changes, no new reader run claimed.",
+      "acceptance_ids": [
+        "GC2",
+        "GC5"
+      ],
+      "required": true
+    },
+    "index-regression": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/git-index-probe.mjs",
+        "--out",
+        "docs/runs/git-explicit-commit/evidence/index-regression-r1",
+        "--platform",
+        "darwin"
+      ],
+      "cwd": ".",
+      "scope": "Actual saved selected index publication matrix after shared kernel/engine changes",
+      "acceptance_ids": [
+        "GC1",
+        "GC2",
+        "GC5"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/git-explicit-commit/design.md",
+      "gate": "design_spec",
+      "version": "2",
+      "sha256": "06c92dd3d0d140638110515067a354547cdb0d8c18f195db3549735f6552533a"
+    }
+  ],
+  "environment_files": [
+    "pnpm-lock.yaml",
+    "docs/runs/git-explicit-commit/source-facts.json",
+    "docs/runs/git-explicit-commit/prechange-inventory.json",
+    "docs/runs/git-explicit-commit/check-changed.mjs",
+    "docs/runs/git-explicit-commit/ensure-current-build.mjs",
+    "docs/runs/git-explicit-commit/files-argv-r1.json",
+    "docs/runs/git-explicit-commit/check-files.mjs",
+    "docs/runs/git-explicit-commit/kernel-proof-r1.json",
+    "docs/runs/git-explicit-commit/evidence/kernel-owned-r1/commit-shared-report.json",
+    "docs/runs/git-explicit-commit/evidence/kernel-owned-r1/index-report.json",
+    "docs/runs/git-explicit-commit/node-files-format-proof-r1.json",
+    "docs/runs/git-explicit-commit/evidence/integration-scratch-r1/files-pass-before-format-r6.json",
+    "docs/runs/git-explicit-commit/evidence/integration-scratch-r1/index-test-before-format-r6.mjs",
+    "docs/runs/git-explicit-commit/publication-ui-only-proof-r1.json",
+    "docs/runs/git-explicit-commit/verify-publication-ui-only.mjs",
+    "docs/runs/git-explicit-commit/evidence/integration-scratch-r1/commit-publication-pass-before-ui-r8.json",
+    "docs/runs/git-explicit-commit/evidence/integration-scratch-r1/commit-ui-runner-before-center-r8.mjs",
+    "docs/runs/git-explicit-commit/check-hidden-current.mjs",
+    "docs/runs/git-explicit-commit/hidden-prefix-proof-r1.json",
+    "docs/runs/git-explicit-commit/evidence/integration-scratch-r1/commit-ui-runner-before-settlement-r10.mjs",
+    "docs/runs/git-explicit-commit/verify-reader-current.mjs",
+    "docs/runs/git-explicit-commit/regression-input-only-proof-r1.json",
+    "docs/runs/git-explicit-commit/evidence/integration-scratch-r1/reader-regression-pass-r13.json",
+    "docs/runs/git-explicit-commit/evidence/integration-scratch-r1/index-probe-before-namespace-r13.mjs"
+  ],
+  "decision_register": [
+    {
+      "id": "bounded-delivery",
+      "statement": "Explicit commit now, branch select/create and restore remain required",
+      "status": "delegated",
+      "source": "PRD F11/AC11 and repeated user instructions to complete remaining work; accepted current architecture and exact synthetic feasibility",
+      "impact": "Original reference/reflog publication only after initial independent major reviews",
+      "blocks": [],
+      "resolution": "Initial major ref/log authority review once, then routine implementation/fixes; bounded finish only."
+    },
+    {
+      "id": "private-computation",
+      "statement": "Trusted Git operates only on owned checked copies; original writes descriptor-only",
+      "status": "delegated",
+      "source": "PRD F11/AC11 and repeated user instructions to complete remaining work; accepted current architecture and exact synthetic feasibility",
+      "impact": "Original reference/reflog publication only after initial independent major reviews",
+      "blocks": [],
+      "resolution": "Same supported platform/runtime, no native launcher or unchecked original-path fallback."
+    },
+    {
+      "id": "explicit-identity",
+      "statement": "Never infer real author identity or use synthetic test defaults",
+      "status": "delegated",
+      "source": "PRD F11/AC11 and repeated user instructions to complete remaining work; accepted current architecture and exact synthetic feasibility",
+      "impact": "Original reference/reflog publication only after initial independent major reviews",
+      "blocks": [],
+      "resolution": "User-entered bounded identity/message and exact unsigned/no-hooks preview before default-cancel confirmation."
+    },
+    {
+      "id": "partial-publication",
+      "statement": "Reference plus reflogs are not globally atomic",
+      "status": "delegated",
+      "source": "PRD F11/AC11 and repeated user instructions to complete remaining work; accepted current architecture and exact synthetic feasibility",
+      "impact": "Original reference/reflog publication only after initial independent major reviews",
+      "blocks": [],
+      "resolution": "Closed targets/deterministic root backups, logs first/ref last, unknown retained no rollback/replay on partial effect."
+    }
+  ]
+}

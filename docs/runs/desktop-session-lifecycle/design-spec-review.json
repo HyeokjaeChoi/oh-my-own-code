@@ -1,0 +1,32 @@
+{  
+"schema\_version": 2,  
+"reviewed": {  
+"contract\_sha256": "a088fda9a0f9b3837c5cab2589db8a930b655dbed299131e027820ed265d2a3f",  
+"documents\_sha256": "9ac99b9491820183db6d65fb932ce2ae6b06bca7b86231fb95a68a09f9551434",  
+"gate": "design\_spec",  
+"plan\_sha256": "ca754d84873240fbee60690fcec33546642a114de5e47413acd7338e42afaf89",  
+"schema\_version": 2  
+},  
+"verdict": "changes\_requested",  
+"summary": "The closed lifecycle IPC, ownership/locking, validation, archive execution guards, native confirmation, diagnostics redaction, renderer behavior and FSD boundaries are substantially specified and align with the installed @opencode/client 2.0.18 update/fork/remove declarations. Two deletion/idempotency ambiguities remain blocking because they permit an implementation that cannot prove descendant safety or preserve UNKNOWN\_OUTCOME semantics.",  
+"open\_findings": \[  
+{  
+"severity": "blocking",  
+"artifact\_location": "docs/runs/desktop-session-lifecycle/interface.md — session.remove descendant guard and removal verification",  
+"affected\_journey\_or\_consumer": "Host session removal after a fork, especially after an UNKNOWN\_OUTCOME fork",  
+"evidence": "The contract refuses only sessions with registered descendants. A timed-out session.fork can have created an SDK child without returning enough information for the app to register it. The installed 2.0.18 SDK exposes SessionInfo.parentID, session.list({ parentID, cursor, ... }) and a paginated SessionsResponse, so registered-app state alone cannot prove descendant absence. The same pagination issue applies if list membership is used to prove post-remove absence.",  
+"correction": "Before confirmation and again immediately before session.remove, require an authoritative SDK descendant check for the target, exhausting pagination and rejecting removal if any descendant exists or descendant state cannot be established. For post-remove verification, require either the installed typed SessionNotFoundError result from session.get or an explicitly exhaustive paginated list check; a single-page absence must never count as proof."  
+},  
+{  
+"severity": "blocking",  
+"artifact\_location": "docs/runs/desktop-session-lifecycle/interface.md — lifecycle receipt semantics",  
+"affected\_journey\_or\_consumer": "Duplicate fork/remove requests after transport timeout or other UNKNOWN\_OUTCOME",  
+"evidence": "The contract says exact duplicates return a current safe snapshot, while also stating that unknown effects retain an unknown receipt, cannot be replayed, and must never imply an accepted fork/delete. Returning an ordinary successful snapshot for an exact duplicate whose stored receipt is unknown does not preserve that distinction and can make an uncertain destructive/history mutation appear successful.",  
+"correction": "Define receipt-state-specific duplicate behavior: an exact duplicate of a known-success receipt may return the authoritative current snapshot; an exact duplicate of an UNKNOWN\_OUTCOME receipt must return the fixed UNKNOWN\_OUTCOME failure without replay until an explicitly specified deterministic reconciliation changes that receipt state. Conflicting fingerprints remain DUPLICATE\_CONFLICT."  
+}  
+\],  
+"provenance": {  
+"child\_task\_id": "cli:session-lifecycle-design-spec-independent",  
+"author\_task\_id": "coordinator"  
+}  
+}

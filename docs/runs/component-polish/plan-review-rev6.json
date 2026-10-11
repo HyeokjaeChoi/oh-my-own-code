@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "f708386620e5139e13ffd304979ee0a6fd98b9cbfbac298956cc46620712e356",
+    "contract_sha256": "eacf6d247318575f5e86d9e6f73a364daedc1d4e6ba89747a6423c03cb93305f",
+    "source_sha256": "9f69d8448212045125bb0befd751436bcbaf3edb537f23c312913d18ba7c06f7"
+  },
+  "verdict": "pass",
+  "summary": "Revision 6 resolves the previously identified Dark NavigationItem surface conflict in the registered source contract. The documented navigation parent and default row bind to semantic.color.surface (#262626), hover to semantic.color.canvas (#171717), and selected to semantic.color.surface.subtle (#3d3d3d), while all four variant records retain 500 for default/hover/unselected focus and 700 for selected. The plan requires actual Figma parent fill and resolved variable-binding inspection plus side-by-side Light/Dark visual verification of default, hover, selected, and selected+focus; token values alone are not treated as rendered proof. The five-family scope, existing Button preservation, source-first design-spec review and handoff, targeted checks, independent code and rendered-design reviews, and runtime-evidence limits remain explicit. This plan verdict does not replace the fresh design-spec pass and handoff required before further Figma projection or claim current Figma implementation has been verified.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/plan_review_rev6",
+    "author_task_id": "/root"
+  }
+}

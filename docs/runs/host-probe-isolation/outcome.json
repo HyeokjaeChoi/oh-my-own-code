@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "decision": "NO-RUN",
+  "summary": "The exact Node runtime identity and hash-bound verifier completed the approved preflight check. The runtime dependency closure remains unaudited, so no sandbox fixture, listener, or canary child was created. All seven containment controls remain unverified. This completes the bounded investigation only; it does not establish isolation or authorize OpenCode SDK startup.",
+  "acceptance": {
+    "HPI-1": {
+      "status": "verified",
+      "artifacts": ["docs/runs/host-probe-isolation/final-code-review-r1.json"],
+      "checks": ["isolation-canaries"]
+    },
+    "HPI-2": {
+      "status": "verified",
+      "artifacts": ["docs/runs/host-probe-isolation/runtime-dependency-audit-r1.md"],
+      "checks": ["isolation-canaries"]
+    },
+    "HPI-3": {
+      "status": "verified",
+      "artifacts": ["docs/runs/host-probe-isolation/final-code-review-r1.json"],
+      "checks": ["isolation-canaries"]
+    },
+    "HPI-4": {
+      "status": "verified",
+      "artifacts": ["docs/runs/host-probe-isolation/precanary-code-review-r3.json", "docs/runs/host-probe-isolation/final-code-review-r1.json"],
+      "checks": ["isolation-canaries"]
+    },
+    "HPI-5": {
+      "status": "verified",
+      "artifacts": ["docs/runs/host-probe-isolation/final-code-review-r1.json"],
+      "checks": ["isolation-canaries"]
+    }
+  },
+  "changed_paths": [
+    "spikes/host-probe-isolation/canaries.mjs",
+    "spikes/host-probe-isolation/preflight-worker.mjs",
+    "spikes/host-probe-isolation/profile.sb.in",
+    "spikes/host-probe-isolation/verify.mjs"
+  ],
+  "deleted_paths": []
+}

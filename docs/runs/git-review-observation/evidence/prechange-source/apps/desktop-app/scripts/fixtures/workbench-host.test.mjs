@@ -1,0 +1,7040 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { createHash } from "node:crypto";
+import {
+  WORKSPACE_FILE_UI_STATES,
+  WORKSPACE_FILE_RETAINED_KEY,
+} from "./workbench-host.mjs";
+import {
+  validateWorkspaceFileObservation,
+  validateWorkspaceFileSave,
+} from "../../src/renderer/shared/workspace-file/index.mjs";
+import {
+  validateFileReceipt,
+  validFileSavedResult,
+  fileBackupId,
+} from "../../src/host/workbench-file-storage.mjs";
+import { EventEmitter } from "node:events";
+import {
+  mkdtemp,
+  mkdir,
+  realpath,
+  readFile,
+  rm,
+  symlink,
+  writeFile,
+} from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import {
+  createUiFixture,
+  createFixtureTransport,
+  applyConfigurationState,
+  SKILL_UI_STATES,
+  EXTENSIONS_UI_STATES,
+} from "./workbench-host.mjs";
+import { validateExtensionsObservation } from "../../src/renderer/shared/configuration-draft/extensions.mjs";
+
+function extensionWire(h, readId = "extension-read", operation = {}) {
+  return {
+    version: 2,
+    runtimeEpoch: h.fixture.snapshot.runtimeEpoch,
+    readId,
+    operation: {
+      type: "configuration.extensions.read",
+      workspaceId: "fixture-w",
+      ...operation,
+    },
+  };
+}
+
+const extensionFlush = async () => {
+  for (let n = 0; n < 80; n++) await Promise.resolve();
+};
+async function extensionController(name = "populated", options = {}) {
+  const { tsImport } = await import("tsx/esm/api");
+  const { createWindowWorkbench } = await tsImport(
+    "../../src/renderer/entities/workbench/model/controller.ts",
+    import.meta.url,
+  );
+  const { scopeOf, selectors } = await tsImport(
+    "../../src/renderer/entities/workbench/model/store.ts",
+    import.meta.url,
+  );
+  const { existing, ...transportOptions } = options;
+  const h = existing ?? setup(transportOptions);
+  const scope = existing
+    ? {
+        workspaceId: h.fixture.snapshot.workspaces[0].id,
+        workspacePath: h.fixture.snapshot.workspaces[0].path,
+      }
+    : h.fixture.setExtensionsState(name);
+  let serial = 0,
+    refocus;
+  const timers = new Map(),
+    calls = [],
+    cancellations = [];
+  const clock = {
+    setTimeout(callback, delay) {
+      const key = ++serial;
+      timers.set(key, { callback, delay });
+      return key;
+    },
+    clearTimeout(key) {
+      timers.delete(key);
+    },
+  };
+  const client = createWindowWorkbench(
+    {
+      workbench(envelope) {
+        calls.push(envelope);
+        return h.transport.handle(h.event, envelope);
+      },
+      cancelRead(envelope) {
+        cancellations.push(envelope);
+        return h.transport.cancel(h.event, envelope);
+      },
+    },
+    {
+      clock,
+      id: () => `extensions-controller-${++serial}`,
+      onRefocus(listener) {
+        refocus = listener;
+        return () => {
+          refocus = undefined;
+        };
+      },
+    },
+  );
+  const seed = (bootstrap = false) => {
+    h.fixture.snapshot.observationSequence++;
+    client.store.dispatch({
+      type: "snapshot",
+      scope: {
+        ...scopeOf(client.store.getState()),
+        ...(bootstrap && { bootstrap: true }),
+      },
+      value: globalThis.structuredClone(h.fixture.snapshot),
+    });
+  };
+  seed();
+  return {
+    ...h,
+    scope,
+    client,
+    selectors,
+    seed,
+    calls,
+    cancellations,
+    timers,
+    refocus: () => refocus?.(),
+  };
+}
+
+test("Extensions actual controller start, polling, catalog, selection, refocus and file actions never auto-observe", async () => {
+  const h = await extensionController();
+  try {
+    h.client.start();
+    await extensionFlush();
+    h.client.actions.refresh();
+    h.refocus();
+    h.client.actions.select("fixture-w", "fixture-s");
+    h.client.actions.editConfigurationDraft(
+      "instructions",
+      "# SYNTHETIC LOCAL DRAFT\n",
+    );
+    h.client.actions.validateConfigurationDraft("instructions");
+    await h.client.actions.loadConfigurationDraft("instructions");
+    await extensionFlush();
+    for (const [key, timer] of [...h.timers]) {
+      if (timer.delay === 1200) {
+        h.timers.delete(key);
+        timer.callback();
+      }
+    }
+    await extensionFlush();
+    h.fixture.snapshot.workspaces[0].trustRevision++;
+    h.seed();
+    await extensionFlush();
+    assert.equal(h.fixture.extensionReads.length, 0);
+    assert.equal(
+      h.calls.some((e) => e.operation.type === "configuration.extensions.read"),
+      false,
+    );
+    assert.equal(
+      h.selectors.currentExtensionObservation(h.client.store.getState()),
+      undefined,
+    );
+    assert.equal(await h.client.actions.observeExtensions(), true);
+    assert.equal(h.fixture.extensionReads.length, 1);
+    assert.deepEqual(h.fixture.extensionReads[0].operation, {
+      type: "configuration.extensions.read",
+      workspaceId: "fixture-w",
+    });
+    assert.equal(h.fixture.requests.length, 0);
+  } finally {
+    h.client.dispose();
+  }
+  assert.equal(h.timers.size, 0);
+});
+
+test("Extensions real helper redacts unsupported source and Native private fields before public read", async () => {
+  const h = await extensionController("unsupported-source");
+  try {
+    assert.equal(await h.client.actions.observeExtensions(), true);
+    const current = h.selectors.currentExtensionObservation(
+      h.client.store.getState(),
+    );
+    assert.deepEqual(current.plugins.rows[0].source, {
+      type: "local",
+      reason: "unsupported_source",
+    });
+    assert.deepEqual(current.plugins.rows[1].source, {
+      type: "package",
+      reason: "unsupported_source",
+    });
+    assert.equal(current.plugins.rows[1].reason, "native_failed");
+    assert.equal(JSON.stringify(current).includes("SYNTHETIC_PRIVATE"), false);
+    assert.deepEqual(current.plugins.rows[1].features, {
+      server: false,
+      tui: false,
+      rpc: false,
+    });
+    assert.equal(h.transport.mutationMetrics().attempted, 0);
+  } finally {
+    h.client.dispose();
+  }
+});
+
+test("Extensions actual controller refuses malformed wire rather than displaying an empty success", async (t) => {
+  const malformed = {
+    extra: (value) => {
+      value.secret = "SYNTHETIC_PRIVATE";
+    },
+    sparse: (value) => {
+      value.plugins.rows = new Array(1);
+    },
+    duplicate: (value) => {
+      value.tools.rows.push({ ...value.tools.rows[0] });
+    },
+    zeroHooks: (value) => {
+      value.hooks = { status: "available", rows: [] };
+    },
+    wrongFloor: (value) => {
+      value.revision++;
+    },
+    wrongRoot: (value) => {
+      value.workspacePath = "/synthetic/different";
+    },
+    wrongEpoch: (value) => {
+      value.runtimeEpoch = "different-epoch";
+    },
+  };
+  for (const [name, corrupt] of Object.entries(malformed))
+    await t.test(name, async () => {
+      const source = setup();
+      source.fixture.setExtensionsState("populated");
+      const response = await source.transport.handle(
+        source.event,
+        extensionWire(source),
+      );
+      corrupt(response.value);
+      const h = await extensionController("populated", {
+        read: () => response,
+      });
+      try {
+        assert.equal(await h.client.actions.observeExtensions(), false);
+        assert.equal(
+          h.selectors.extensions(h.client.store.getState()).error,
+          "EXTENSIONS_UNVERIFIED",
+        );
+        assert.equal(
+          h.selectors.currentExtensionObservation(h.client.store.getState()),
+          undefined,
+        );
+        assert.equal(
+          h.client.store.getState().revision,
+          h.fixture.snapshot.revision,
+        );
+        assert.equal(h.fixture.requests.length, 0);
+      } finally {
+        h.client.dispose();
+      }
+    });
+});
+
+test("Extensions actual controller pending cancel retires late result and permits a new explicit read", async () => {
+  const h = await extensionController("cancel");
+  try {
+    const pending = h.client.actions.observeExtensions();
+    await extensionFlush();
+    assert.ok(h.selectors.extensions(h.client.store.getState()).request);
+    assert.equal(h.fixture.extensionReads.length, 1);
+    assert.equal(await h.client.actions.observeExtensions(), false);
+    h.client.actions.cancelExtensionObservation();
+    assert.equal(await pending, false);
+    h.fixture.releaseExtensionReads();
+    await extensionFlush();
+    assert.equal(
+      h.selectors.extensions(h.client.store.getState()).error,
+      "CANCELLED",
+    );
+    assert.equal(
+      h.selectors.currentExtensionObservation(h.client.store.getState()),
+      undefined,
+    );
+    assert.equal(h.cancellations.length, 1);
+    assert.equal(h.transport.metrics().active, 0);
+    assert.equal(await h.client.actions.observeExtensions(), true);
+    assert.equal(h.fixture.extensionReads.length, 2);
+    assert.equal(h.fixture.retainedReceipts.size, 0);
+  } finally {
+    h.client.dispose();
+  }
+});
+
+test("Extensions pending producer rechecks original epoch, root, trust, revision and reset generation", async (t) => {
+  const changes = {
+    epoch: (h) => {
+      h.fixture.snapshot.runtimeEpoch = "extensions-next-epoch";
+    },
+    root: (h) => {
+      h.fixture.snapshot.workspaces[0].path = "/synthetic/changed-root";
+    },
+    trust: (h) => {
+      h.fixture.snapshot.workspaces[0].trustRevision++;
+    },
+    revokeTrust: (h) => {
+      h.fixture.snapshot.workspaces[0].trusted = false;
+    },
+    floor: (h) => {
+      h.fixture.snapshot.revision++;
+    },
+    disconnected: (h) => {
+      h.fixture.snapshot.state = "disconnected";
+    },
+    newHold: (h) => {
+      h.fixture.retainedReceipts.set("original-late-hold", {
+        receipt: {
+          runtimeEpoch: "fixture-original-epoch",
+          operationId: "original-late-hold",
+          workspaceId: "fixture-w",
+          effect: "unknown",
+        },
+      });
+    },
+    reset: (h) => {
+      h.fixture.setExtensionsState("empty");
+    },
+  };
+  for (const [name, change] of Object.entries(changes))
+    await t.test(name, async () => {
+      const h = setup();
+      h.fixture.setExtensionsState("pending");
+      const pending = h.transport.handle(h.event, extensionWire(h));
+      change(h);
+      const retained = globalThis.structuredClone([
+        ...h.fixture.retainedReceipts,
+      ]);
+      h.fixture.releaseExtensionReads();
+      assert.equal((await pending).code, "UNAVAILABLE");
+      assert.equal(h.transport.metrics().active, 0);
+      assert.equal(h.fixture.requests.length, 0);
+      assert.deepEqual([...h.fixture.retainedReceipts], retained);
+    });
+});
+
+test("Extensions actual controller late workspace ABA, epoch and floor never revive current rows", async (t) => {
+  for (const name of ["late-workspace", "late-epoch", "late-floor"])
+    await t.test(name, async () => {
+      const h = await extensionController(name);
+      try {
+        h.client.start();
+        await extensionFlush();
+        const pending = h.client.actions.observeExtensions();
+        await extensionFlush();
+        if (name === "late-workspace") {
+          h.client.actions.select(
+            "fixture-extensions-other-w",
+            "fixture-extensions-other-s",
+          );
+          h.client.actions.select("fixture-w", "fixture-s");
+          h.seed();
+        } else {
+          if (name === "late-epoch")
+            h.fixture.snapshot.runtimeEpoch = "extensions-next-epoch";
+          else h.fixture.snapshot.revision++;
+          h.client.actions.refresh();
+          await extensionFlush();
+        }
+        h.fixture.releaseExtensionReads();
+        assert.equal(await pending, false);
+        await extensionFlush();
+        assert.equal(
+          h.selectors.currentExtensionObservation(h.client.store.getState()),
+          undefined,
+        );
+        assert.equal(
+          h.selectors.extensions(h.client.store.getState()).request,
+          undefined,
+        );
+        assert.equal(h.fixture.extensionReads.length, 1);
+        assert.equal(
+          h.cancellations.filter(
+            (e) => e.readId === h.fixture.extensionReads[0].readId,
+          ).length,
+          1,
+        );
+        assert.equal(h.fixture.requests.length, 0);
+        assert.equal(await h.client.actions.observeExtensions(), true);
+        const current = h.selectors.currentExtensionObservation(
+          h.client.store.getState(),
+        );
+        assert.equal(current.runtimeEpoch, h.fixture.snapshot.runtimeEpoch);
+        assert.equal(current.revision, h.fixture.snapshot.revision);
+      } finally {
+        h.client.dispose();
+      }
+    });
+});
+
+test("Extensions held original key stays held through lookup and reload with no replay or read", async () => {
+  const { P7_RETAINED_KEY } = await import("./workbench-host.mjs");
+  const h = await extensionController("held");
+  const before = globalThis.structuredClone([...h.fixture.retainedReceipts]);
+  try {
+    h.client.start();
+    await extensionFlush();
+    assert.equal(
+      h.selectors.extensionReadBlockReason(h.client.store.getState()),
+      "held",
+    );
+    assert.equal(await h.client.actions.observeExtensions(), false);
+    h.client.actions.editConfigurationDraft(
+      "instructions",
+      "# SYNTHETIC HELD DRAFT\n",
+    );
+    assert.equal(
+      h.selectors.configurationDraft("instructions")(h.client.store.getState())
+        .text,
+      "# SYNTHETIC HELD DRAFT\n",
+    );
+    const lookup = h.fixture.lookupEnvelopes.find(
+      (e) => e.operation.operationId === P7_RETAINED_KEY.operationId,
+    );
+    assert.ok(lookup);
+    assert.equal(lookup.runtimeEpoch, h.fixture.snapshot.runtimeEpoch);
+    assert.equal(lookup.operation.runtimeEpoch, P7_RETAINED_KEY.runtimeEpoch);
+    h.client.dispose();
+    const reopened = await extensionController("held", { existing: h });
+    try {
+      assert.equal(await reopened.client.actions.observeExtensions(), false);
+      assert.equal(reopened.fixture.extensionReads.length, 0);
+      assert.equal(reopened.fixture.requests.length, 0);
+    } finally {
+      reopened.client.dispose();
+    }
+    assert.equal(h.fixture.extensionReads.length, 0);
+    assert.equal(h.fixture.requests.length, 0);
+    assert.deepEqual([...h.fixture.retainedReceipts], before);
+  } finally {
+    h.client.dispose();
+  }
+});
+
+test("UI capture actual writer refuses duplicate PNG names without overwriting earlier evidence", async (t) => {
+  const source = await readFile(
+    new URL("../e2e-workbench-states.mjs", import.meta.url),
+    "utf8",
+  );
+  const captureSource = source.match(
+    /async function capture\(page, name, state\) \{[\s\S]*?\n\}/u,
+  )?.[0];
+  assert.ok(captureSource);
+  const root = await realpath(
+    await mkdtemp(join(tmpdir(), "omoc-exclusive-capture-")),
+  );
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const png = Buffer.alloc(24);
+  Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]).copy(png);
+  png.writeUInt32BE(100, 16);
+  png.writeUInt32BE(100, 20);
+  const native = {
+    png: png.toString("base64"),
+    before: { visible: false, focused: false, focusable: false },
+    osWindowVisible: false,
+    osWindowFocused: false,
+    osWindowFocusable: false,
+    contentBounds: { width: 100, height: 100 },
+    windowBounds: { width: 100, height: 100 },
+    displayScaleFactor: 1,
+    zoomFactor: 1,
+  };
+  const screenshots = [];
+  // Evaluate only the actual capture function against Node fakes. The UI
+  // runner's module and Electron entry are never imported or launched here.
+  const capture = new Function(
+    "application",
+    "assert",
+    "join",
+    "run",
+    "writeFile",
+    "screenshots",
+    `return (${captureSource});`,
+  )(
+    { evaluate: async () => native },
+    assert,
+    join,
+    root,
+    writeFile,
+    screenshots,
+  );
+  const page = {
+    evaluate: async () => ({ width: 100, height: 100, pixelRatio: 1 }),
+  };
+  await capture(page, "agent-file-restoredoldkey.png", "first");
+  await assert.rejects(
+    capture(page, "agent-file-restoredoldkey.png", "duplicate"),
+    { code: "EEXIST" },
+  );
+  assert.deepEqual(
+    await readFile(join(root, "agent-file-restoredoldkey.png")),
+    png,
+  );
+  assert.equal(screenshots.length, 1);
+  await capture(page, "agent-runtime-restoredoldkey.png", "runtime");
+  assert.equal(screenshots.length, 2);
+});
+
+test("Extensions closed reset inventory produces fresh scoped state and refuses guessed state", async (t) => {
+  const h = setup();
+  for (const name of EXTENSIONS_UI_STATES)
+    await t.test(name, async () => {
+      const scope = h.fixture.setConfigurationState(`extensions-${name}`);
+      assert.equal(h.fixture.extensionsState, name);
+      assert.equal(h.fixture.snapshot.workspaces[0].path, scope.workspacePath);
+      assert.equal(h.fixture.extensionReads.length, 0);
+      assert.equal(h.fixture.heldExtensionReads.length, 0);
+      assert.equal(h.fixture.requests.length, 0);
+      if (["held", "untrusted", "disconnected"].includes(name)) {
+        assert.equal(
+          (await h.transport.handle(h.event, extensionWire(h, `reset-${name}`)))
+            .code,
+          name === "untrusted" ? "INVALID_SELECTION" : "UNAVAILABLE",
+        );
+      } else {
+        const read = h.transport.handle(
+          h.event,
+          extensionWire(h, `reset-${name}`),
+        );
+        h.fixture.releaseExtensionReads();
+        const result = await read;
+        validateExtensionsObservation(result.value);
+        assert.equal(result.value.workspacePath, scope.workspacePath);
+      }
+    });
+  assert.throws(
+    () => h.fixture.setExtensionsState("inactive"),
+    /Unknown closed Extensions/,
+  );
+});
+
+test("Extensions untrusted, disconnected and non-idle snapshots block real controller reads", async (t) => {
+  for (const name of ["untrusted", "disconnected", "snapshot-required"])
+    await t.test(name, async () => {
+      const h = await extensionController(name);
+      try {
+        assert.equal(
+          h.selectors.extensionReadBlockReason(h.client.store.getState()),
+          name === "snapshot-required" ? "snapshot_required" : name,
+        );
+        assert.equal(await h.client.actions.observeExtensions(), false);
+        assert.equal(h.fixture.extensionReads.length, 0);
+        assert.equal(h.fixture.requests.length, 0);
+      } finally {
+        h.client.dispose();
+      }
+    });
+});
+
+test("Extensions fixture uses the closed workspace-only read and never mints effect authority", async () => {
+  const h = setup();
+  h.fixture.setExtensionsState("populated");
+  const before = globalThis.structuredClone(h.fixture.snapshot);
+  assert.deepEqual(h.fixture.extensionReads, []);
+  const result = await h.transport.handle(h.event, extensionWire(h));
+  assert.equal(result.ok, true);
+  assert.equal(validateExtensionsObservation(result.value), result.value);
+  assert.equal(result.value.runtimeEpoch, before.runtimeEpoch);
+  assert.equal(result.value.revision, before.revision);
+  assert.equal(result.value.workspacePath, before.workspaces[0].path);
+  assert.deepEqual(
+    result.value.plugins.rows.map((r) => r.state),
+    ["active", "failed", "active", "active"],
+  );
+  assert.deepEqual(
+    result.value.tools.rows.map((r) => Object.keys(r)),
+    [["id", "name"]],
+  );
+  assert.deepEqual(result.value.hooks, {
+    status: "not_reported",
+    reason: "inventory_not_supported",
+  });
+  assert.equal(Object.hasOwn(result, "receipt"), false);
+  assert.deepEqual(h.fixture.snapshot, before);
+  assert.equal(h.fixture.requests.length, 0);
+  assert.equal(h.fixture.retainedReceipts.size, 0);
+  assert.deepEqual(h.transport.mutationMetrics(), {
+    attempted: 0,
+    dispatched: 0,
+    rejected: 0,
+  });
+  for (const extra of [
+    { sessionId: "fixture-s" },
+    { execute: true },
+    { requestId: "extra" },
+  ])
+    assert.equal(
+      (
+        await h.transport.handle(
+          h.event,
+          extensionWire(h, "invalid-extra", extra),
+        )
+      ).code,
+      "INVALID_REQUEST",
+    );
+  assert.equal(h.fixture.extensionReads.length, 1);
+});
+
+test("Extensions fixture available empty is distinct from independently failed or bounded groups", async (t) => {
+  for (const [name, overall, plugin, tool] of [
+    ["empty", "available", "available", "available"],
+    ["plugins-unavailable", "partial", "runtime_unavailable", "available"],
+    ["tools-unavailable", "partial", "available", "runtime_unavailable"],
+    [
+      "unavailable",
+      "unavailable",
+      "runtime_unavailable",
+      "runtime_unavailable",
+    ],
+    ["invalid-response", "unavailable", "invalid_response", "invalid_response"],
+    ["limit-reached", "unavailable", "limit_reached", "limit_reached"],
+  ])
+    await t.test(name, async () => {
+      const h = setup();
+      h.fixture.setExtensionsState(name);
+      const result = await h.transport.handle(h.event, extensionWire(h));
+      validateExtensionsObservation(result.value);
+      assert.equal(result.value.status, overall);
+      for (const [key, expected] of [
+        ["plugins", plugin],
+        ["tools", tool],
+      ]) {
+        const group = result.value[key];
+        assert.equal(
+          group.status === "available" ? group.status : group.reason,
+          expected,
+        );
+        if (group.status === "unavailable")
+          assert.equal(Object.hasOwn(group, "rows"), false);
+        else if (name === "empty") assert.deepEqual(group.rows, []);
+      }
+      assert.equal(result.value.hooks.status, "not_reported");
+    });
+});
+
+test("instruction fixture reset removes discarded parent lineage before DTO validation", () => {
+  const fixture = createUiFixture();
+  fixture.setInstructionState("inherited");
+  assert.equal(
+    fixture.snapshot.sessions[0].parentSessionId,
+    "fixture-instruction-parent",
+  );
+  for (const state of [
+    "registered",
+    "late-selection",
+    "removed",
+    "untrusted",
+  ]) {
+    fixture.setInstructionState(state);
+    assert.equal(fixture.snapshot.sessions[0].parentSessionId, undefined);
+    assert.equal(
+      fixture.snapshot.sessions.some(
+        (s) => s.id === "fixture-instruction-parent",
+      ),
+      false,
+    );
+    fixture.setInstructionState("inherited");
+  }
+});
+
+test("untrusted instruction fixture retains stored metadata but refuses observation and mutation", async () => {
+  const { fixture, event, transport, epoch } = setup();
+  const scope = fixture.setInstructionState("untrusted");
+  const before = globalThis.structuredClone(
+    fixture.instructionRegistrations.get(scope.sessionId),
+  );
+  assert.equal(fixture.snapshot.workspaces[0].trusted, false);
+  const read = await transport.handle(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    readId: "untrusted-read",
+    operation: {
+      type: "configuration.instructions.read",
+      workspaceId: scope.workspaceId,
+      sessionId: scope.sessionId,
+    },
+  });
+  assert.equal(read.code, "INVALID_SELECTION");
+  const refused = await transport.handle(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    operationId: "untrusted-apply",
+    operation: {
+      type: "configuration.instructions.apply",
+      workspaceId: scope.workspaceId,
+      sessionId: scope.sessionId,
+      requestId: "untrusted-apply",
+      text: scope.text,
+      fileVersion: scope.sourceVersion,
+      expectedRegistrationVersion: "a".repeat(64),
+    },
+  });
+  assert.equal(refused.code, "INVALID_SELECTION");
+  assert.equal(refused.receipt.effect, "none");
+  assert.deepEqual(
+    fixture.instructionRegistrations.get(scope.sessionId),
+    before,
+  );
+  assert.equal(transport.mutationMetrics().dispatched, 0);
+  assert.equal(fixture.requests.length, 0);
+});
+
+test("instruction probe claims fresh native attempts, rejects redirects and retains prior output", async (t) => {
+  const { claimInstructionProbeOutput } = await import(
+    "../configuration-instructions-probe.mjs"
+  );
+  const root = await realpath(
+    await mkdtemp(join(tmpdir(), "omoc-instruction-claim-")),
+  );
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const base = join(root, "docs/runs/configuration-instructions/evidence");
+  const first = await claimInstructionProbeOutput(
+    root,
+    join(base, "native-r1"),
+  );
+  await writeFile(join(first, "failed-attempt.json"), "retain");
+  await assert.rejects(claimInstructionProbeOutput(root, first));
+  const { readFile } = await import("node:fs/promises");
+  assert.equal(
+    await readFile(join(first, "failed-attempt.json"), "utf8"),
+    "retain",
+  );
+  assert.equal(
+    await claimInstructionProbeOutput(root, join(base, "native-r2")),
+    join(base, "native-r2"),
+  );
+  for (const suffix of [
+    "native-r0",
+    "native-r01",
+    "native-r1/nested",
+    "hidden-ui-r1",
+    "../escape",
+  ])
+    await assert.rejects(claimInstructionProbeOutput(root, join(base, suffix)));
+  await symlink(first, join(base, "native-r3"), "dir");
+  await assert.rejects(
+    claimInstructionProbeOutput(root, join(base, "native-r3")),
+  );
+  await symlink(base, join(root, "alias"), "dir");
+  await assert.rejects(
+    claimInstructionProbeOutput(root, join(root, "alias/native-r4")),
+  );
+});
+
+test("synthetic confirmation consumes the closed frozen production request and defaults false", async () => {
+  const { createSyntheticInstructionConfirmation, observeInstructionClient } =
+    await import("./p7-storage-owner-host.mjs");
+  const state = { requests: [], enabled: false };
+  const confirm = createSyntheticInstructionConfirmation("/synthetic", state);
+  const request = Object.freeze({
+    action: "apply",
+    workspaceId: "w",
+    sessionId: "s",
+    sessionTitle: "Synthetic",
+    workspacePath: "/synthetic/workspace",
+    expectedRegistrationVersion: "a".repeat(64),
+    targetPath: "/synthetic/workspace/AGENTS.md",
+    digest: "b".repeat(64),
+    sourceVersion: "c".repeat(64),
+    empty: false,
+  });
+  assert.equal(await confirm(request), false);
+  state.enabled = true;
+  assert.equal(await confirm(request), true);
+  assert.deepEqual(state.requests[0], request);
+  await assert.rejects(confirm({ ...request }));
+  await assert.rejects(confirm(Object.freeze({ ...request, approved: true })));
+  await assert.rejects(
+    confirm(Object.freeze({ ...request, workspacePath: "/outside" })),
+  );
+  const counts = { list: 0, put: 0, remove: 0 };
+  const calls = [];
+  const entries = [{ key: "omoc.project-instructions", value: "SYNTHETIC" }];
+  const client = {
+    session: {
+      instructions: {
+        entry: Object.fromEntries(
+          ["list", "put", "remove"].map((method) => [
+            method,
+            async (input) => {
+              calls.push({ method, input });
+              return method === "list" ? entries : undefined;
+            },
+          ]),
+        ),
+      },
+    },
+  };
+  assert.equal(observeInstructionClient(client, counts), client);
+  assert.equal(
+    await client.session.instructions.entry.list({ sessionID: "s" }),
+    entries,
+  );
+  assert.equal(
+    await client.session.instructions.entry.put({
+      sessionID: "s",
+      key: "omoc.project-instructions",
+      value: "SYNTHETIC",
+    }),
+    undefined,
+  );
+  assert.equal(
+    await client.session.instructions.entry.remove({
+      sessionID: "s",
+      key: "omoc.project-instructions",
+    }),
+    undefined,
+  );
+  assert.deepEqual(counts, { list: 1, put: 1, remove: 1 });
+  assert.equal(calls.length, 3);
+});
+
+test("same-bytes child fixture apply becomes direct while parent later changes preserve fork fact", async () => {
+  const { fixture, event, transport, epoch } = setup();
+  const seeded = fixture.setInstructionState("inherited");
+  const read = async (id) =>
+    (
+      await transport.handle(event, {
+        version: 2,
+        runtimeEpoch: epoch,
+        readId: id,
+        operation: {
+          type: "configuration.instructions.read",
+          workspaceId: seeded.workspaceId,
+          sessionId: seeded.sessionId,
+        },
+      })
+    ).value;
+  const inherited = await read("fork-read");
+  assert.equal(inherited.origin, "fork");
+  fixture.instructionRegistrations.set("fixture-instruction-parent", {
+    state: "registered",
+    key: "omoc.project-instructions",
+    digest: (
+      await import("../../src/host/workbench-instructions.mjs")
+    ).instructionDigest("PARENT LATER BYTES"),
+    sourceVersion: seeded.sourceVersion,
+    origin: "direct",
+  });
+  fixture.instructionEntries.set("fixture-instruction-parent", [
+    { key: "omoc.project-instructions", value: "PARENT LATER BYTES" },
+  ]);
+  assert.deepEqual(await read("parent-later"), inherited);
+  const response = await transport.handle(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    operationId: "same-bytes",
+    operation: {
+      type: "configuration.instructions.apply",
+      workspaceId: seeded.workspaceId,
+      sessionId: seeded.sessionId,
+      requestId: "same-bytes",
+      text: seeded.text,
+      fileVersion: seeded.sourceVersion,
+      expectedRegistrationVersion: inherited.version,
+    },
+  });
+  assert.equal(response.receipt.effect, "confirmed");
+  const direct = await read("direct-read");
+  assert.equal(direct.origin, "direct");
+  assert.equal(direct.inheritedFromSessionId, undefined);
+  assert.equal(direct.digest, inherited.digest);
+  assert.equal(direct.sourceVersion, inherited.sourceVersion);
+  assert.notEqual(direct.version, inherited.version);
+});
+
+test("instruction fixture uses actual projection, preserves file/history and refuses takeover", async () => {
+  const { fixture, event, transport, epoch } = setup();
+  const wire = (operation, id) =>
+    transport.handle(event, {
+      version: 2,
+      runtimeEpoch: epoch,
+      [operation.type.endsWith(".read") ? "readId" : "operationId"]: id,
+      operation,
+    });
+  const scope = { workspaceId: "fixture-w", sessionId: "fixture-s" };
+  fixture.configurationFiles.set(
+    JSON.stringify([scope.workspaceId, "instructions"]),
+    "SYNTHETIC INSTRUCTIONS",
+  );
+  const file = (
+    await wire(
+      {
+        type: "configuration.read",
+        workspaceId: scope.workspaceId,
+        kind: "instructions",
+      },
+      "file",
+    )
+  ).value;
+  const observe = async (id) =>
+    (await wire({ type: "configuration.instructions.read", ...scope }, id))
+      .value;
+  const baseline = await observe("missing");
+  assert.equal(baseline.status, "missing");
+  const request = {
+    type: "configuration.instructions.apply",
+    ...scope,
+    requestId: "apply",
+    text: file.content,
+    fileVersion: file.version,
+    expectedRegistrationVersion: baseline.version,
+  };
+  fixture.nextInstructions = "denied";
+  assert.equal((await wire(request, "deny")).code, "CANCELLED");
+  assert.equal(fixture.instructionEntries.size, 0);
+  const applied = await wire(request, "apply");
+  assert.equal(applied.receipt.result.kind, "instruction_registered");
+  assert.deepEqual(applied.receipt.evidence, [
+    { kind: "host-registry", id: scope.sessionId },
+  ]);
+  assert.equal((await observe("registered")).origin, "direct");
+  assert.deepEqual((await wire(request, "apply")).receipt, applied.receipt);
+  fixture.instructionEntries.set(scope.sessionId, [
+    { key: "omoc.project-instructions", value: "DRIFT" },
+  ]);
+  const drift = await observe("drift");
+  assert.equal(drift.status, "changed");
+  assert.equal(
+    (await wire({ ...request, requestId: "stale" }, "stale")).code,
+    "INSTRUCTIONS_CHANGED",
+  );
+  const removed = await wire(
+    {
+      type: "configuration.instructions.remove",
+      ...scope,
+      requestId: "remove",
+      expectedRegistrationVersion: drift.version,
+    },
+    "remove",
+  );
+  assert.deepEqual(removed.receipt.evidence, [
+    { kind: "host-registry", id: scope.sessionId },
+  ]);
+  assert.equal(removed.receipt.result.kind, "instruction_removed");
+  assert.equal((await observe("removed")).status, "missing");
+  assert.equal(
+    fixture.configurationFiles.get(
+      JSON.stringify([scope.workspaceId, "instructions"]),
+    ),
+    file.content,
+  );
+  assert.deepEqual(fixture.snapshot.messages, []);
+  fixture.instructionRegistrations.delete(scope.sessionId);
+  fixture.instructionEntries.set(scope.sessionId, [
+    { key: "omoc.project-instructions", value: file.content },
+  ]);
+  assert.equal((await observe("unowned")).reason, "ownership_conflict");
+  assert.equal(
+    (await wire({ ...request, requestId: "takeover" }, "takeover")).code,
+    "INSTRUCTIONS_UNVERIFIED",
+  );
+});
+
+test("held instruction ACK retains original scope, unknown key and committed fork origin", async () => {
+  const { fixture, event, transport, epoch } = setup();
+  fixture.setInstructionState("inherited");
+  const scope = { workspaceId: "fixture-w", sessionId: "fixture-s" };
+  const read = (type, id) =>
+    transport.handle(event, {
+      version: 2,
+      runtimeEpoch: epoch,
+      readId: id,
+      operation: {
+        type,
+        workspaceId: scope.workspaceId,
+        ...(type === "configuration.read"
+          ? { kind: "instructions" }
+          : { sessionId: scope.sessionId }),
+      },
+    });
+  const observed = (await read("configuration.instructions.read", "observe"))
+    .value;
+  const file = (await read("configuration.read", "file")).value;
+  const prior = globalThis.structuredClone(
+    fixture.instructionRegistrations.get(scope.sessionId),
+  );
+  fixture.holdInstructions = true;
+  fixture.nextInstructions = "unknown";
+  const envelope = {
+    version: 2,
+    runtimeEpoch: epoch,
+    operationId: "unknown-instruction",
+    operation: {
+      type: "configuration.instructions.apply",
+      ...scope,
+      requestId: "unknown",
+      text: file.content,
+      fileVersion: file.version,
+      expectedRegistrationVersion: observed.version,
+    },
+  };
+  const pending = transport.handle(event, envelope);
+  assert.equal(fixture.heldInstructions.length, 1);
+  fixture.snapshot.sessions.push({
+    id: "fixture-other",
+    workspaceId: scope.workspaceId,
+    title: "Synthetic other session",
+    status: "idle",
+  });
+  fixture.snapshot.selectedSessionId = "fixture-other";
+  fixture.releaseInstructions();
+  const result = await pending;
+  assert.equal(result.receipt.effect, "unknown");
+  assert.equal(result.receipt.sessionId, scope.sessionId);
+  assert.deepEqual(
+    fixture.instructionRegistrations.get(scope.sessionId),
+    prior,
+  );
+  assert.equal(
+    fixture.snapshot.recovery.resources[0].sessionId,
+    scope.sessionId,
+  );
+  assert.equal(
+    (await transport.handle(event, envelope)).receipt.effect,
+    "unknown",
+  );
+  assert.equal(transport.mutationMetrics().dispatched, 1);
+});
+
+test("configuration UI fixture keeps discovered/reported/unknown and untrusted states distinct", () => {
+  const fixture = createUiFixture();
+  const normal = applyConfigurationState(fixture, "normal");
+  assert.equal(normal.configuration.runtimeStatus, "not_reported");
+  assert.equal(normal.configuration.entries[0].state, "discovered");
+  assert.equal(normal.skills.entries[0].source, "runtime");
+  assert.equal(normal.mcp.entries[0].status, "needs_auth");
+  const untrusted = applyConfigurationState(fixture, "untrusted");
+  assert.equal(fixture.snapshot.workspaces[0].trusted, false);
+  assert.equal(untrusted.configuration.reason, "untrusted_workspace");
+  assert.ok(
+    ["skills", "mcp", "agents", "models", "commands"].every(
+      (name) =>
+        untrusted[name].status === "unavailable" &&
+        !untrusted[name].entries.length,
+    ),
+  );
+  assert.equal(
+    applyConfigurationState(fixture, "partial").configuration.status,
+    "partial",
+  );
+  assert.equal(
+    applyConfigurationState(fixture, "missing").configuration,
+    undefined,
+  );
+  assert.ok(
+    applyConfigurationState(fixture, "long-path").configuration.entries[0].path
+      .length > 250,
+  );
+  assert.throws(
+    () => applyConfigurationState(fixture, "execute"),
+    /closed configuration/,
+  );
+});
+import {
+  captureSyntheticHeap,
+  parsePerformanceOptions,
+  summarizeSyntheticHeap,
+  validatePhaseTaskReport,
+  readPhaseTaskReport,
+  assertPhaseTaskUnchanged,
+  runPhaseDiagnostic,
+  summarizeResourceScopes,
+} from "../p6-performance.mjs";
+
+test("saved Native fork reads its original receipt key and rejects changed lineage or admission", async () => {
+  const { assertNativeForkCheckpoint } = await import(
+    "../p7-storage-probe.mjs"
+  );
+  const expected = {
+    key: { runtimeEpoch: "fork-original", operationId: "fork-operation" },
+    identity: { type: "session.fork", digest: "original-digest" },
+    receipt: { effect: "confirmed", result: { kind: "forked" } },
+    appSessionId: "fork-child",
+    nativeSessionId: "native-child",
+    parentAppSessionId: "fork-parent",
+    parentNativeSessionId: "native-parent",
+    workspaceId: "workspace-one",
+    directory: "/synthetic/fork-workspace",
+    inheritedMetadata: { digest: "parent-digest" },
+  };
+  const fixture = createUiFixture();
+  fixture.snapshot.runtimeEpoch = "fork-current";
+  fixture.snapshot.sessions = [
+    { ...fixture.snapshot.sessions[0], id: expected.parentAppSessionId },
+    { ...fixture.snapshot.sessions[0], id: expected.appSessionId },
+  ];
+  fixture.snapshot.selectedSessionId = expected.parentAppSessionId;
+  const baseline = {
+    lookup: { status: "found", receipt: expected.receipt },
+    identity: expected.identity,
+    mapping: {
+      appSessionId: expected.appSessionId,
+      nativeSessionId: expected.nativeSessionId,
+      parentSessionId: expected.parentAppSessionId,
+      workspaceId: expected.workspaceId,
+    },
+    native: {
+      id: expected.nativeSessionId,
+      location: { directory: expected.directory },
+      fork: { sessionID: expected.parentNativeSessionId },
+      metadata: expected.inheritedMetadata,
+    },
+  };
+  const run = (corrupt = () => {}) => {
+    const current = globalThis.structuredClone(baseline);
+    corrupt(current);
+    const calls = [];
+    const host = {
+      async request(command, input) {
+        calls.push({ command, input });
+        if (command === "identity") return current.identity;
+        if (command === "view") return { sessions: [current.mapping] };
+        if (command === "native")
+          return input.operation === "get"
+            ? current.native
+            : [{ text: "P7 synthetic durable history" }];
+        assert.equal(command, "handle");
+        return {
+          ok: true,
+          value:
+            input.envelope.operation.type === "operation.lookup"
+              ? current.lookup
+              : fixture.snapshot,
+        };
+      },
+    };
+    return {
+      calls,
+      result: assertNativeForkCheckpoint(host, "fork-current", expected),
+    };
+  };
+  const valid = run();
+  assert.equal((await valid.result).exactLineage, true);
+  const read = valid.calls[0].input.envelope;
+  assert.equal(read.runtimeEpoch, "fork-current");
+  assert.equal(read.operation.runtimeEpoch, "fork-original");
+  assert.equal(read.operation.operationId, "fork-operation");
+  assert.ok(
+    valid.calls.every(
+      ({ command, input }) =>
+        command !== "handle" ||
+        ["operation.lookup", "snapshot"].includes(
+          input.envelope.operation.type,
+        ),
+    ),
+  );
+  for (const corrupt of [
+    (state) => {
+      state.lookup.receipt.effect = "unknown";
+    },
+    (state) => {
+      state.identity.digest = "replaced-digest";
+    },
+    (state) => {
+      state.mapping.parentSessionId = "wrong-parent";
+    },
+    (state) => {
+      state.native.fork.sessionID = "wrong-native-parent";
+    },
+    (state) => {
+      state.native.metadata.digest = "child-digest";
+    },
+    (state) => {
+      state.native.location.directory = "/different-location";
+    },
+  ])
+    await assert.rejects(run(corrupt).result);
+});
+
+function setup(options = {}) {
+  const fixture = createUiFixture();
+  const frame = { url: "file:///fixture/index.html" };
+  const webContents = { mainFrame: frame };
+  const event = { sender: webContents, senderFrame: frame };
+  const transport = createFixtureTransport(fixture, {
+    webContents,
+    allowedUrl: (url) => url === "file:///fixture/index.html",
+    ...options,
+  });
+  const epoch = fixture.snapshot.runtimeEpoch;
+  const send = {
+    version: 2,
+    runtimeEpoch: epoch,
+    operationId: "operation-one",
+    operation: {
+      type: "message.send",
+      workspaceId: "fixture-w",
+      sessionId: "fixture-s",
+      requestId: "send-one",
+      text: "private prompt",
+    },
+  };
+  return { fixture, event, transport, epoch, send };
+}
+
+test("synthetic configuration read projects only supported files and never enters mutation lane", async () => {
+  const { fixture, event, transport, epoch } = setup();
+  const send = (kind, readId) =>
+    transport.handle(event, {
+      version: 2,
+      runtimeEpoch: epoch,
+      readId,
+      operation: { type: "configuration.read", workspaceId: "fixture-w", kind },
+    });
+  fixture.configurationFiles.set(
+    JSON.stringify(["fixture-w", "instructions"]),
+    "# Synthetic file",
+  );
+  const before = transport.mutationMetrics();
+  const first = await send("instructions", "read-config-one");
+  assert.equal(first.value.content, "# Synthetic file");
+  for (const [index, content] of ["", " \n\t", "\ufeff"].entries()) {
+    fixture.configurationFiles.set(
+      JSON.stringify(["fixture-w", "instructions"]),
+      content,
+    );
+    const blank = await send("instructions", `read-config-blank-${index}`);
+    assert.equal(blank.value.status, "available");
+    assert.equal(blank.value.content, content);
+  }
+  fixture.configurationFiles.set(
+    JSON.stringify(["fixture-w", "mcp"]),
+    '{"mcp":{"servers":{"s":{"type":"local","command":["node"],"environment":{"TOKEN":"SYNTHETIC-CANARY"}},"s":{"type":"local","command":["node"]}}}}',
+  );
+  const blocked = await send("mcp", "read-config-two");
+  assert.equal(blocked.value.status, "unsupported");
+  assert.equal(Object.hasOwn(blocked.value, "content"), false);
+  assert.doesNotMatch(JSON.stringify(blocked), /SYNTHETIC-CANARY/);
+  fixture.configurationFiles.delete(JSON.stringify(["fixture-w", "mcp"]));
+  assert.equal(
+    (await send("mcp", "read-config-three")).value.status,
+    "missing",
+  );
+  assert.deepEqual(transport.mutationMetrics(), before);
+});
+test("v2 bootstrap and exact sender/frame admission reject legacy and malformed wire", async () => {
+  const { fixture, event, transport, send } = setup();
+  const boot = await transport.handle(event, {
+    version: 2,
+    readId: "bootstrap",
+    operation: { type: "snapshot" },
+  });
+  assert.equal(boot.value.runtimeEpoch, fixture.snapshot.runtimeEpoch);
+  assert.equal(boot.value.workspaces[0].trustRevision, 1);
+  for (const invalid of [
+    { ...event, sender: {} },
+    { ...event, senderFrame: { ...event.senderFrame } },
+    { ...event, senderFrame: { url: "file:///foreign" } },
+  ])
+    assert.equal(
+      (await transport.handle(invalid, send)).code,
+      "INVALID_REQUEST",
+    );
+  for (const wire of [
+    { type: "snapshot" },
+    { ...send, readId: "bad" },
+    { ...send, extra: true },
+  ])
+    assert.equal((await transport.handle(event, wire)).code, "INVALID_REQUEST");
+  assert.equal(
+    (await transport.handle(event, send, send)).code,
+    "INVALID_REQUEST",
+  );
+  assert.equal(fixture.requests.length, 0);
+});
+
+test("duplicate and conflict cannot dispatch twice; lookup is redacted and read-only", async () => {
+  const { fixture, event, transport, epoch, send } = setup();
+  const first = await transport.handle(event, send);
+  assert.equal(first.value.status, "accepted");
+  assert.equal(first.receipt.operationId, send.operationId);
+  assert.equal(first.receipt.effect, "pending");
+  const duplicate = await transport.handle(event, send);
+  assert.deepEqual(duplicate, {
+    ok: true,
+    value: { status: "duplicate" },
+    receipt: first.receipt,
+  });
+  assert.equal(
+    (
+      await transport.handle(event, {
+        ...send,
+        operation: { ...send.operation, text: "changed" },
+      })
+    ).code,
+    "DUPLICATE_CONFLICT",
+  );
+  const lookup = (targetEpoch, operationId) =>
+    transport.handle(event, {
+      version: 2,
+      runtimeEpoch: epoch,
+      readId: `lookup-${operationId}`,
+      operation: {
+        type: "operation.lookup",
+        runtimeEpoch: targetEpoch,
+        operationId,
+      },
+    });
+  assert.deepEqual(
+    (await lookup(epoch, send.operationId)).value.receipt,
+    first.receipt,
+  );
+  assert.equal(JSON.stringify(first.receipt).includes("private prompt"), false);
+  assert.equal(JSON.stringify(first.receipt).includes("/synthetic"), false);
+  for (const [target, id, status] of [
+    [epoch, "absent", "missing"],
+    ["retired", "absent", "wrong_epoch"],
+  ])
+    assert.deepEqual((await lookup(target, id)).value, {
+      status,
+      runtimeEpoch: target,
+      operationId: id,
+      effect: "unknown",
+    });
+  assert.equal(fixture.requests.length, 1);
+});
+
+test("unknown stays unknown after duplicate, lookup and successful snapshot", async () => {
+  const { fixture, event, transport, epoch, send } = setup();
+  fixture.nextSendUnknown = true;
+  const unknown = await transport.handle(event, send);
+  assert.equal(unknown.value.status, "unknown");
+  assert.equal(unknown.receipt.effect, "unknown");
+  await transport.handle(event, {
+    version: 2,
+    readId: "refresh",
+    operation: { type: "snapshot" },
+  });
+  const found = await transport.handle(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    readId: "lookup",
+    operation: {
+      type: "operation.lookup",
+      runtimeEpoch: epoch,
+      operationId: send.operationId,
+    },
+  });
+  assert.deepEqual(found.value.receipt, unknown.receipt);
+  assert.deepEqual(
+    (await transport.handle(event, send)).receipt,
+    unknown.receipt,
+  );
+  assert.equal(fixture.requests.length, 1);
+});
+
+test("native permission ID is separate; stale revision/epoch cannot perform effects", async () => {
+  const { fixture, event, transport, epoch, send } = setup();
+  assert.equal(
+    (await transport.handle(event, { ...send, runtimeEpoch: "retired" })).code,
+    "STALE_EPOCH",
+  );
+  assert.equal(
+    (await transport.handle(event, { ...send, expectedRevision: 0 })).code,
+    "STALE_REVISION",
+  );
+  fixture.snapshot.permissions = [
+    { id: "native-permission", sessionId: "fixture-s" },
+  ];
+  const result = await transport.handle(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    operationId: "permission-intent",
+    operation: {
+      type: "permission.respond",
+      workspaceId: "fixture-w",
+      sessionId: "fixture-s",
+      requestId: "native-permission",
+      decision: "once",
+    },
+  });
+  assert.equal(result.value.requestId, "native-permission");
+  assert.equal(result.receipt.operationId, "permission-intent");
+  assert.equal(result.receipt.result.nativeRequestId, "native-permission");
+  assert.equal(fixture.snapshot.permissions.length, 0);
+  assert.equal(fixture.requests.length, 1);
+});
+
+test("cancel owns sender/frame, current epoch and admitted read; late read never projects", async () => {
+  let finish;
+  const { fixture, event, transport, epoch } = setup({
+    read: () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  });
+  const wire = {
+    version: 2,
+    runtimeEpoch: epoch,
+    readId: "owned",
+    operation: { type: "snapshot" },
+  };
+  const pending = transport.handle(event, wire);
+  assert.equal(transport.handle(event, wire), pending);
+  assert.equal(
+    (
+      await transport.handle(event, {
+        ...wire,
+        operation: { type: "file.list", workspaceId: "fixture-w" },
+      })
+    ).code,
+    "INVALID_REQUEST",
+  );
+  const cancel = { version: 2, runtimeEpoch: epoch, readId: "owned" };
+  assert.equal(
+    transport.cancel({ ...event, sender: {} }, cancel).code,
+    "INVALID_REQUEST",
+  );
+  assert.equal(
+    transport.cancel({ ...event, senderFrame: {} }, cancel).code,
+    "INVALID_REQUEST",
+  );
+  assert.equal(
+    transport.cancel(event, { ...cancel, runtimeEpoch: "old" }).code,
+    "STALE_EPOCH",
+  );
+  assert.equal(
+    transport.cancel(event, { ...cancel, extra: true }).code,
+    "INVALID_REQUEST",
+  );
+  assert.equal(transport.cancel(event, cancel).value.status, "cancelled");
+  assert.equal((await pending).code, "CANCELLED");
+  finish({ ok: true, value: { revision: 999 } });
+  await Promise.resolve();
+  assert.equal(fixture.snapshot.revision, 1);
+  assert.equal(transport.cancel(event, cancel).value.status, "missing");
+});
+
+test("sender/service teardown settles admitted reads", async () => {
+  for (const method of ["senderClosed", "close"]) {
+    const { event, transport, epoch } = setup({
+      read: () => new Promise(() => {}),
+    });
+    const pending = transport.handle(event, {
+      version: 2,
+      runtimeEpoch: epoch,
+      readId: "closing",
+      operation: { type: "snapshot" },
+    });
+    transport[method]();
+    assert.equal((await pending).code, "CANCELLED");
+  }
+});
+
+test("approved main frame at a foreign URL is refused before parsing", async () => {
+  const { fixture, event, transport, send } = setup();
+  event.sender.mainFrame.url = "file:///foreign/index.html";
+  assert.equal((await transport.handle(event, send)).code, "INVALID_REQUEST");
+  assert.equal(fixture.requests.length, 0);
+});
+
+test("permission rejection cancels only its session queue; interrupt is acceptance only", async () => {
+  const { fixture, event, transport, epoch } = setup();
+  fixture.snapshot.permissions = [
+    { id: "permission-one", sessionId: "fixture-s" },
+    { id: "permission-two", sessionId: "fixture-s" },
+    { id: "other-session", sessionId: "other" },
+  ];
+  const permission = {
+    version: 2,
+    runtimeEpoch: epoch,
+    operationId: "reject-intent",
+    operation: {
+      type: "permission.respond",
+      workspaceId: "fixture-w",
+      sessionId: "fixture-s",
+      requestId: "permission-one",
+      decision: "reject",
+    },
+  };
+  const rejected = await transport.handle(event, permission);
+  assert.equal(rejected.value.status, "decided");
+  assert.deepEqual(fixture.snapshot.permissions, [
+    { id: "other-session", sessionId: "other" },
+  ]);
+  await transport.handle(event, permission);
+  const interrupted = await transport.handle(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    operationId: "interrupt-intent",
+    operation: {
+      type: "session.interrupt",
+      workspaceId: "fixture-w",
+      sessionId: "fixture-s",
+    },
+  });
+  assert.equal(interrupted.value.status, "stopping");
+  assert.equal(interrupted.receipt.effect, "pending");
+  assert.equal(interrupted.receipt.result.kind, "delivery");
+  assert.equal(fixture.requests.length, 2);
+});
+
+test("deferred diagnostics cancellation preserves only the current filtered read without effects", async () => {
+  const { fixture, event, transport, epoch } = setup();
+  fixture.diagnostics.observedOperations = 2;
+  fixture.diagnostics.events = [
+    { id: "selected", workspaceId: "fixture-w", sessionId: "fixture-s" },
+    { id: "foreign", workspaceId: "fixture-w", sessionId: "other" },
+  ];
+  fixture.holdDiagnostics = true;
+  const all = transport.handle(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    readId: "all-diagnostics",
+    operation: { type: "diagnostics.list" },
+  });
+  assert.equal(fixture.heldDiagnostics.length, 1);
+  const filtered = await transport.handle(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    readId: "filtered-diagnostics",
+    operation: {
+      type: "diagnostics.list",
+      workspaceId: "fixture-w",
+      sessionId: "fixture-s",
+    },
+  });
+  assert.deepEqual(
+    filtered.value.events.map((entry) => entry.id),
+    ["selected"],
+  );
+  assert.equal(filtered.value.observedOperations, 2);
+  transport.cancel(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    readId: "all-diagnostics",
+  });
+  fixture.releaseDiagnostics();
+  assert.equal((await all).code, "CANCELLED");
+  assert.equal(fixture.heldDiagnostics.length, 0);
+  assert.equal(fixture.diagnosticReads.length, 2);
+  assert.equal(fixture.requests.length, 0);
+  assert.equal(fixture.intents.length, 0);
+});
+
+test("performance scope returns distinct registered transcripts and rejects foreign scope", async () => {
+  const { fixture, event, transport, epoch } = setup();
+  fixture.enablePerformanceSessions();
+  const get = (id, sessionId, workspaceId = "fixture-w") =>
+    transport.handle(event, {
+      version: 2,
+      runtimeEpoch: epoch,
+      readId: id,
+      operation: { type: "snapshot", workspaceId, sessionId },
+    });
+  const a = await get("a", "fixture-s");
+  const b = await get("b", "fixture-p6-b");
+  assert.equal(a.value.selectedSessionId, "fixture-s");
+  assert.equal(b.value.selectedSessionId, "fixture-p6-b");
+  assert.notDeepEqual(a.value.messages, b.value.messages);
+  assert.equal(
+    a.value.messages.some((m) => m.text.includes("P6_MARKER_B")),
+    false,
+  );
+  assert.equal(
+    b.value.messages.some((m) => m.text.includes("P6_MARKER_A")),
+    false,
+  );
+  assert.equal((await get("bad", "absent")).code, "NOT_FOUND");
+  assert.equal((await get("foreign", "fixture-s", "other")).code, "NOT_FOUND");
+  assert.equal(fixture.snapshot.selectedSessionId, "fixture-s");
+  assert.equal(transport.metrics().pending, 0);
+});
+
+test("count-only metrics distinguish read deduplication, cancellation and late settlement", async () => {
+  let finish;
+  const { event, transport, epoch } = setup({
+    read: () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  });
+  const wire = {
+    version: 2,
+    runtimeEpoch: epoch,
+    readId: "metrics-read",
+    operation: { type: "snapshot" },
+  };
+  const first = transport.handle(event, wire);
+  assert.equal(transport.handle(event, wire), first);
+  assert.deepEqual(transport.metrics(), {
+    requests: 2,
+    active: 1,
+    pending: 1,
+    admitted: 1,
+    max: 1,
+    settled: 0,
+    deduplicated: 1,
+    cancelled: 0,
+  });
+  transport.cancel(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    readId: "metrics-read",
+  });
+  assert.equal((await first).code, "CANCELLED");
+  finish({ ok: true, value: {} });
+  await Promise.resolve();
+  assert.deepEqual(transport.metrics(), {
+    requests: 2,
+    active: 0,
+    pending: 0,
+    admitted: 1,
+    max: 1,
+    settled: 1,
+    deduplicated: 1,
+    cancelled: 1,
+  });
+  assert.ok(Object.values(transport.metrics()).every(Number.isInteger));
+});
+
+test("scoped snapshot is detached and sends update only the registered target", async () => {
+  const { fixture, event, transport, epoch, send } = setup();
+  fixture.enablePerformanceSessions();
+  const get = (readId, sessionId) =>
+    transport.handle(event, {
+      version: 2,
+      runtimeEpoch: epoch,
+      readId,
+      operation: { type: "snapshot", workspaceId: "fixture-w", sessionId },
+    });
+  const a = await get("before-a", "fixture-s");
+  const b = await get("before-b", "fixture-p6-b");
+  b.value.messages[0].text = "modified returned clone";
+  await transport.handle(event, {
+    ...send,
+    operation: { ...send.operation, sessionId: "fixture-p6-b" },
+  });
+  const freshA = await get("after-a", "fixture-s");
+  const freshB = await get("after-b", "fixture-p6-b");
+  assert.deepEqual(freshA.value.messages, a.value.messages);
+  assert.equal(freshB.value.messages.length, 25);
+  assert.equal(freshB.value.messages[0].text.includes("P6_MARKER_B"), true);
+  assert.equal(freshB.value.messages.at(-1).text, "private prompt");
+  assert.equal(fixture.snapshot.messages.length, 0);
+  assert.equal(fixture.snapshot.selectedSessionId, "fixture-s");
+});
+
+test("logical request peak is counted once and teardown cannot settle twice", async () => {
+  const { event, transport, epoch } = setup({
+    read: () => new Promise(() => {}),
+  });
+  const get = (readId) =>
+    transport.handle(event, {
+      version: 2,
+      runtimeEpoch: epoch,
+      readId,
+      operation: { type: "snapshot" },
+    });
+  const a = get("peak-a"),
+    b = get("peak-b");
+  assert.equal(transport.metrics().max, 2);
+  assert.equal(transport.metrics().active, 2);
+  transport.close();
+  assert.equal((await a).code, "CANCELLED");
+  assert.equal((await b).code, "CANCELLED");
+  transport.close();
+  assert.deepEqual(transport.metrics(), {
+    requests: 2,
+    active: 0,
+    pending: 0,
+    admitted: 2,
+    max: 2,
+    settled: 2,
+    deduplicated: 0,
+    cancelled: 2,
+  });
+});
+
+test("mutation attempts are observable separately from disconnected/archived effects", async () => {
+  for (const state of ["disconnected", "archived"]) {
+    const { fixture, event, transport, epoch } = setup();
+    fixture.snapshot.sessions[0].status = "running";
+    if (state === "disconnected") fixture.snapshot.state = state;
+    else fixture.snapshot.sessions[0].archived = true;
+    assert.deepEqual(transport.mutationMetrics(), {
+      attempted: 0,
+      dispatched: 0,
+      rejected: 0,
+    });
+    const result = await transport.handle(event, {
+      version: 2,
+      runtimeEpoch: epoch,
+      operationId: "unavailable-stop",
+      operation: {
+        type: "session.interrupt",
+        workspaceId: "fixture-w",
+        sessionId: "fixture-s",
+      },
+    });
+    assert.equal(
+      result.code,
+      state === "disconnected" ? "UNAVAILABLE" : "ARCHIVED_SESSION",
+    );
+    assert.equal(result.receipt.effect, "none");
+    assert.equal(result.receipt.admission, "rejected");
+    assert.deepEqual(transport.mutationMetrics(), {
+      attempted: 1,
+      dispatched: 0,
+      rejected: 1,
+    });
+    assert.equal(fixture.requests.length, 0);
+    assert.equal(fixture.intents.length, 0);
+    assert.equal(fixture.snapshot.sessions[0].status, "running");
+  }
+});
+
+test("connected running can interrupt with unknown receipt without changing its evidence", async () => {
+  const { fixture, event, transport, epoch, send } = setup();
+  fixture.nextSendUnknown = true;
+  const unknown = await transport.handle(event, send);
+  fixture.snapshot.sessions[0].status = "running";
+  const stop = await transport.handle(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    operationId: "stop-with-unknown",
+    operation: {
+      type: "session.interrupt",
+      workspaceId: "fixture-w",
+      sessionId: "fixture-s",
+    },
+  });
+  assert.equal(stop.value.status, "stopping");
+  assert.equal(stop.receipt.effect, "pending");
+  const lookup = await transport.handle(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    readId: "unchanged-unknown",
+    operation: {
+      type: "operation.lookup",
+      runtimeEpoch: epoch,
+      operationId: send.operationId,
+    },
+  });
+  assert.deepEqual(lookup.value.receipt, unknown.receipt);
+  assert.deepEqual(transport.mutationMetrics(), {
+    attempted: 2,
+    dispatched: 2,
+    rejected: 0,
+  });
+});
+
+// Tiny isolated V8-shaped graphs. All names/edge values below are synthetic;
+// assertions ensure they cannot escape through the exported metadata summary.
+function heapFixture(extra = [], ownerEdges = [], rootEdges = []) {
+  const descriptors = [
+    {
+      id: 1,
+      type: 0,
+      name: "synthetic-root",
+      bytes: 0,
+      edges: [[0, 1], ...rootEdges],
+    },
+    {
+      id: 3,
+      type: 1,
+      name: "private synthetic /path/owner",
+      bytes: 16,
+      edges: ownerEdges,
+    },
+    ...extra,
+  ];
+  const strings = [
+    "property-private-payload",
+    ...descriptors.map((n) => n.name),
+  ];
+  return {
+    snapshot: {
+      meta: {
+        node_fields: ["type", "name", "id", "self_size", "edge_count"],
+        node_types: [
+          ["synthetic", "object", "array", "string"],
+          "string",
+          "number",
+          "number",
+          "number",
+        ],
+        edge_fields: ["type", "name_or_index", "to_node"],
+        edge_types: [
+          ["internal", "property", "weak"],
+          "string_or_number",
+          "node",
+        ],
+      },
+    },
+    nodes: descriptors.flatMap((n, i) => [
+      n.type,
+      i + 1,
+      n.id,
+      n.bytes,
+      n.edges.length,
+    ]),
+    edges: descriptors.flatMap((n) =>
+      n.edges.flatMap(([type, target]) => [type, 0, target * 5]),
+    ),
+    strings,
+  };
+}
+
+test("heap deltas prove ID survival/removal and strong references without exporting names", () => {
+  const baseline = summarizeSyntheticHeap(heapFixture());
+  const extra = [
+    {
+      id: 5,
+      type: 2,
+      name: "private prompt bytes",
+      bytes: 64,
+      edges: [[1, 1]],
+    },
+    { id: 7, type: 3, name: "private tool output", bytes: 32, edges: [] },
+  ];
+  const first = summarizeSyntheticHeap(
+    heapFixture(extra, [
+      [1, 2],
+      [2, 3],
+    ]),
+    baseline.graph,
+    baseline.graph,
+  );
+  const second = summarizeSyntheticHeap(
+    heapFixture(extra.slice(0, 1), [[1, 2]]),
+    baseline.graph,
+    first.graph,
+  );
+  assert.equal(first.publicSummary.addedSinceBaselineCount, 2);
+  assert.equal(first.publicSummary.addedSinceBaselineSelfBytes, 96);
+  assert.equal(first.publicSummary.strongRootReachableNodes, 3);
+  assert.equal(first.publicSummary.persistentAddedCount, 0);
+  assert.equal(
+    first.publicSummary.strongIncomingReferencesToAdded.groups.length,
+    1,
+  );
+  assert.equal(
+    first.publicSummary.strongIncomingReferencesToAdded.groups[0].edgeType,
+    "property",
+  );
+  assert.equal(second.publicSummary.persistentAddedCount, 1);
+  assert.equal(second.publicSummary.persistentAddedSelfBytes, 64);
+  assert.equal(
+    second.publicSummary.strongIncomingReferencesToAdded.groups[0]
+      .persistentTargetEdgeCount,
+    1,
+  );
+  assert.deepEqual(
+    second.publicSummary.strongRootPathsToAdded.groups[0].chain.map(
+      (n) => n.type,
+    ),
+    ["synthetic", "object", "array"],
+  );
+  const removed = summarizeSyntheticHeap(
+    heapFixture(),
+    first.graph,
+    second.graph,
+  );
+  assert.equal(removed.publicSummary.removedSinceBaselineCount, 2);
+  assert.equal(removed.publicSummary.removedSinceBaselineSelfBytes, 96);
+  for (const summary of [baseline, first, second, removed]) {
+    const text = JSON.stringify(summary.publicSummary);
+    for (const secret of [
+      "private prompt bytes",
+      "private tool output",
+      "/path/owner",
+      "property-private-payload",
+    ])
+      assert.equal(text.includes(secret), false);
+    assert.equal(text.includes('"id"'), false);
+  }
+});
+
+test("heap schema follows field indexes and rejects invalid graph metadata", () => {
+  const reordered = heapFixture();
+  reordered.snapshot.meta.node_fields = [
+    "id",
+    "name",
+    "type",
+    "self_size",
+    "edge_count",
+  ];
+  reordered.snapshot.meta.node_types = [
+    "number",
+    "string",
+    ["synthetic", "object", "array", "string"],
+    "number",
+    "number",
+  ];
+  for (let i = 0; i < reordered.nodes.length; i += 5)
+    [reordered.nodes[i], reordered.nodes[i + 2]] = [
+      reordered.nodes[i + 2],
+      reordered.nodes[i],
+    ];
+  assert.equal(summarizeSyntheticHeap(reordered).publicSummary.nodes, 2);
+  for (const corrupt of [
+    (s) => {
+      s.nodes[7] = 1;
+    }, // duplicate stable ID
+    (s) => {
+      s.edges[2] = 11;
+    }, // unaligned target
+    (s) => {
+      s.edges[0] = 999;
+    }, // unknown edge semantics cannot be reported as strong
+    (s) => {
+      s.nodes[4] = 99;
+    }, // invalid adjacency
+    (s) => {
+      s.nodes[3] = -1;
+    },
+    (s) => {
+      s.snapshot.meta.node_fields[0] = "missing-type";
+    },
+  ]) {
+    const snapshot = heapFixture();
+    corrupt(snapshot);
+    assert.throws(() => summarizeSyntheticHeap(snapshot));
+  }
+});
+
+test("heap group/path bounds disclose omissions and never label a truncated chain complete", () => {
+  const baseline = summarizeSyntheticHeap(heapFixture());
+  const extra = Array.from({ length: 40 }, (_, i) => ({
+    id: 5 + i * 2,
+    type: 2,
+    name: `synthetic-class-${i}`,
+    bytes: 64,
+    edges: i < 39 ? [[1, i + 3]] : [],
+  }));
+  const result = summarizeSyntheticHeap(
+    heapFixture(extra, [[1, 2]]),
+    baseline.graph,
+    baseline.graph,
+  );
+  assert.equal(result.publicSummary.classes.groups.length, 32);
+  assert.equal(result.publicSummary.classes.omittedGroupCount, 10);
+  assert.equal(result.publicSummary.strongRootReachableNodes, 42);
+  const deep = result.publicSummary.strongRootPathsToAdded.groups.filter(
+    (p) => p.chain.length === 16,
+  );
+  assert.ok(deep.some((p) => p.truncated));
+  assert.ok(deep.some((p) => !p.truncated && p.chain[0].type === "synthetic"));
+});
+
+test("heap capture streams in memory and always detaches listener; errors are redacted", async () => {
+  for (const malformed of [false, true]) {
+    const cdp = new EventEmitter();
+    cdp.send = async (method, options) => {
+      assert.equal(method, "HeapProfiler.takeHeapSnapshot");
+      assert.deepEqual(options, {
+        reportProgress: false,
+        captureNumericValue: false,
+      });
+      const raw = malformed
+        ? "private invalid payload /path"
+        : JSON.stringify(heapFixture());
+      cdp.emit("HeapProfiler.addHeapSnapshotChunk", {
+        chunk: raw.slice(0, 20),
+      });
+      cdp.emit("HeapProfiler.addHeapSnapshotChunk", { chunk: raw.slice(20) });
+    };
+    if (malformed)
+      await assert.rejects(captureSyntheticHeap(cdp), /analysis incomplete/);
+    else {
+      const capture = await captureSyntheticHeap(cdp);
+      assert.equal(capture.publicSummary.nodes, 2);
+      assert.equal(capture.publicSummary.snapshotSha256.length, 64);
+    }
+    assert.equal(cdp.listenerCount("HeapProfiler.addHeapSnapshotChunk"), 0);
+  }
+});
+
+test("heap stream byte limit refuses oversized capture and cleans its listener", async () => {
+  const cdp = new EventEmitter();
+  cdp.send = async () => {
+    // The same synthetic chunk is reused, rather than allocating a huge graph.
+    const chunk = "x".repeat(1024 * 1024);
+    for (let i = 0; i < 65; i++)
+      cdp.emit("HeapProfiler.addHeapSnapshotChunk", { chunk });
+  };
+  await assert.rejects(captureSyntheticHeap(cdp), /analysis incomplete/);
+  assert.equal(cdp.listenerCount("HeapProfiler.addHeapSnapshotChunk"), 0);
+});
+
+test("analysis selectors require isolated worker outputs and preserve primary CLI", () => {
+  assert.equal(
+    parsePerformanceOptions([
+      "--out",
+      "docs/runs/frontend-architecture-redesign/execution/p6-performance-native-r2",
+    ]).analysis,
+    null,
+  );
+  for (const mode of ["repeat-retainers", "repeat-retainers-no-observer"])
+    assert.equal(
+      parsePerformanceOptions([
+        "--out",
+        "docs/runs/frontend-architecture-redesign/execution/p6-worker-unit",
+        "--analysis",
+        mode,
+      ]).analysis,
+      mode,
+    );
+  for (const argv of [
+    [],
+    ["--out", "--analysis"],
+    [
+      "--out",
+      "docs/runs/frontend-architecture-redesign/execution/p6-performance-native-r2",
+      "--analysis",
+      "repeat-retainers",
+    ],
+    [
+      "--out",
+      "docs/runs/frontend-architecture-redesign/execution/p6-worker-unit/ui-states",
+      "--analysis",
+      "repeat-retainers",
+    ],
+    [
+      "--out",
+      "docs/runs/frontend-architecture-redesign/execution/p6-worker-unit",
+      "--analysis",
+      "unknown",
+    ],
+  ])
+    assert.throws(() => parsePerformanceOptions(argv));
+});
+
+test("phase selectors keep the original CLI and require a control-only task input", () => {
+  const out =
+    "docs/runs/frontend-architecture-redesign/execution/p6-worker-phase-unit";
+  assert.deepEqual(
+    parsePerformanceOptions(["--out", out, "--analysis", "phase-task"]),
+    {
+      out: parsePerformanceOptions(["--out", out]).out,
+      analysis: "phase-task",
+    },
+  );
+  const input = `${out}/ui-states/performance-evidence.json`;
+  assert.equal(
+    parsePerformanceOptions([
+      "--out",
+      out,
+      "--analysis",
+      "phase-control",
+      "--task-report",
+      input,
+    ]).taskReport.endsWith("performance-evidence.json"),
+    true,
+  );
+  for (const argv of [
+    ["--out", out, "--analysis", "phase-control"],
+    ["--out", out, "--analysis", "phase-task", "--task-report", input],
+    ["--out", out, "--analysis", "repeat-retainers", "--task-report", input],
+    ["--out", out, "--analysis", "phase-control", "--task-report", "--out"],
+    [
+      "--out",
+      out,
+      "--analysis",
+      "phase-control",
+      "--task-report",
+      input,
+      "--task-report",
+      input,
+    ],
+    [
+      "--out",
+      "docs/runs/frontend-architecture-redesign/execution/p6-performance-native-r2",
+      "--analysis",
+      "phase-task",
+    ],
+  ])
+    assert.throws(() => parsePerformanceOptions(argv));
+});
+
+const phaseIdentityFixture = () =>
+  Object.fromEntries(
+    [
+      "performanceScriptSha256",
+      "buildStampSha256",
+      "buildInputsSha256",
+      "selectedScriptsAndFixturesSha256",
+      "launchArtifactsSha256",
+      "relevantSourceSha256",
+    ].map((key, index) => [key, String(index + 1).repeat(64)]),
+  );
+const phaseNames = [
+  "initial",
+  "after20input",
+  "after20menu",
+  "after20panel",
+  "after25switch",
+  "after50switch",
+  "after75switch",
+  "after100switch",
+];
+function phaseResource(switches, metadata) {
+  const window = { count: 1, visible: false, focused: false, focusable: false };
+  return {
+    switches,
+    ...metadata,
+    gc: "CDP HeapProfiler.collectGarbage completed",
+    metrics: {
+      JSHeapUsedSize: 1000,
+      JSHeapTotalSize: 2000,
+      Nodes: 100,
+      JSEventListeners: 10,
+    },
+    requests: Array.from({ length: 3 }, () => ({
+      requests: 100,
+      active: 0,
+      pending: 0,
+      admitted: 80,
+      max: 2,
+      settled: 80,
+      deduplicated: 0,
+      cancelled: 0,
+    })),
+    pendingReturnedToBaseline: true,
+    beforeCapture: { ...window },
+    afterCapture: { ...window },
+  };
+}
+
+function resourceScopesFixture(
+  preparation = [100, 102, 104, 106],
+  switches = [106, 108, 110, 112, 113],
+) {
+  const resource = (value, metadata) => ({
+    ...phaseResource(metadata.switches ?? 0, metadata),
+    metrics: {
+      JSHeapUsedSize: value * 100,
+      JSHeapTotalSize: value * 200,
+      Nodes: value * 10,
+      JSEventListeners: value,
+    },
+  });
+  return {
+    preparationResources: preparation.map((value, index) =>
+      resource(value, { preparationOperations: index * 20 }),
+    ),
+    switchResources: switches.map((value, index) =>
+      resource(value, { switches: index * 25, preparationOperations: 60 }),
+    ),
+  };
+}
+
+test("resource scopes preserve mixed160 >10% flags while preparation60 and switch100 pass independently", () => {
+  const raw = resourceScopesFixture();
+  const saved = globalThis.structuredClone(raw);
+  const summary = summarizeResourceScopes(raw);
+  assert.deepEqual(raw, saved, "raw observations are preserved");
+  assert.deepEqual(summary.failures, []);
+  assert.equal(summary.preparation60.operations, 60);
+  assert.equal(summary.switch100.operations, 100);
+  assert.equal(summary.combined160.operations, 160);
+  assert.deepEqual(
+    summary.combined160.resources.map(
+      (resource) => resource.combinedOperations,
+    ),
+    [0, 20, 40, 60, 85, 110, 135, 160],
+  );
+  assert.deepEqual(
+    summary.combined160.resources[0].metrics,
+    raw.preparationResources[0].metrics,
+  );
+  assert.deepEqual(
+    summary.combined160.resources.at(-1).metrics,
+    raw.switchResources.at(-1).metrics,
+  );
+  for (const key of Object.keys(raw.preparationResources[0].metrics)) {
+    const preparation = summary.preparation60.metrics[key];
+    const switches = summary.switch100.metrics[key];
+    const combined = summary.combined160.metrics[key];
+    assert.equal(preparation.final, switches.baseline);
+    assert.equal(
+      preparation.lastBatchBaseline,
+      raw.preparationResources[2].metrics[key],
+    );
+    assert.equal(
+      switches.lastBatchBaseline,
+      raw.switchResources[3].metrics[key],
+    );
+    assert.ok(Math.abs(preparation.growthPercent - 6) < 1e-10);
+    assert.ok(Math.abs(switches.growthPercent - 100 * (113 / 106 - 1)) < 1e-10);
+    assert.ok(Math.abs(combined.growthPercent - 13) < 1e-10);
+    assert.equal(combined.exceeds10Percent, true);
+  }
+  assert.deepEqual(
+    summary.preparation60.batches.map((batch) => batch.operations),
+    [20, 40, 60],
+  );
+});
+
+test("each resource metric keeps preparation/switch phase and last-batch failures despite a later or total decline", () => {
+  for (const key of Object.keys(
+    resourceScopesFixture().preparationResources[0].metrics,
+  )) {
+    for (const { preparation, switches, scope, reason } of [
+      {
+        preparation: [100, 104, 108, 112],
+        switches: [112, 108, 104, 100, 96],
+        scope: "preparation60",
+        reason: "growth",
+      },
+      {
+        preparation: [100, 95, 85, 80],
+        switches: [80, 83, 86, 89, 92],
+        scope: "switch100",
+        reason: "growth",
+      },
+      {
+        preparation: [100, 95, 80, 90],
+        switches: [90, 90, 90, 90, 90],
+        scope: "preparation60",
+        reason: "last batch",
+      },
+      {
+        preparation: [100, 100, 100, 100],
+        switches: [100, 95, 90, 80, 90],
+        scope: "switch100",
+        reason: "last batch",
+      },
+      {
+        preparation: [100, 112, 104, 100],
+        switches: [100, 100, 100, 100, 100],
+        scope: "preparation60 batch20",
+        reason: "growth",
+      },
+      {
+        preparation: [100, 80, 90, 90],
+        switches: [90, 90, 90, 90, 90],
+        scope: "preparation60 batch40",
+        reason: "last batch",
+      },
+    ]) {
+      const raw = resourceScopesFixture();
+      raw.preparationResources.forEach((resource, index) => {
+        resource.metrics[key] =
+          preparation[index] * (key === "JSHeapTotalSize" ? 200 : 1);
+      });
+      raw.switchResources.forEach((resource, index) => {
+        resource.metrics[key] =
+          switches[index] * (key === "JSHeapTotalSize" ? 200 : 1);
+      });
+      // Keep heap allocation internally valid when varying the used-heap metric.
+      if (key === "JSHeapUsedSize") {
+        for (const resource of [
+          ...raw.preparationResources,
+          ...raw.switchResources,
+        ])
+          resource.metrics.JSHeapTotalSize = 100000;
+      }
+      const summary = summarizeResourceScopes(raw);
+      assert.ok(
+        summary.failures.some((failure) =>
+          failure.includes(`${scope} ${key} ${reason}`),
+        ),
+        `${scope} ${key} ${reason} must survive`,
+      );
+    }
+  }
+});
+
+test("resource scopes fail closed for incomplete boundaries, invalid metrics and unsettled captures", () => {
+  const corruptions = [
+    (raw) => {
+      raw.preparationResources = null;
+    },
+    (raw) => {
+      raw.switchResources = undefined;
+    },
+    (raw) => {
+      delete raw.preparationResources[1];
+    },
+    (raw) => {
+      delete raw.switchResources[1];
+    },
+    (raw) => {
+      raw.preparationResources.pop();
+    },
+    (raw) => {
+      raw.switchResources.pop();
+    },
+    (raw) => {
+      raw.preparationResources[1].preparationOperations = 40;
+    },
+    (raw) => {
+      raw.switchResources[2].switches = 51;
+    },
+    (raw) => {
+      raw.switchResources[0].metrics.Nodes++;
+    },
+  ];
+  for (const collection of ["preparationResources", "switchResources"]) {
+    for (
+      let index = 0;
+      index < (collection === "preparationResources" ? 4 : 5);
+      index++
+    ) {
+      for (const key of Object.keys(
+        resourceScopesFixture().preparationResources[0].metrics,
+      )) {
+        for (const value of [undefined, 0, -1, NaN, Infinity, "100"])
+          corruptions.push((raw) => {
+            raw[collection][index].metrics[key] = value;
+          });
+      }
+      corruptions.push(
+        (raw) => {
+          delete raw[collection][index].metrics;
+        },
+        (raw) => {
+          raw[collection][index].gc = "unsupported";
+        },
+        (raw) => {
+          raw[collection][index].pendingReturnedToBaseline = false;
+        },
+        (raw) => {
+          raw[collection][index].requests[1].pending = 1;
+        },
+        (raw) => {
+          raw[collection][index].requests[1].active = 1;
+        },
+        (raw) => {
+          raw[collection][index].requests[1].settled--;
+        },
+        (raw) => {
+          raw[collection][index].requests.pop();
+        },
+      );
+    }
+  }
+  for (const corrupt of corruptions) {
+    const raw = resourceScopesFixture();
+    corrupt(raw);
+    const summary = summarizeResourceScopes(raw);
+    assert.ok(
+      summary.failures.length > 0,
+      "incomplete observations cannot pass",
+    );
+  }
+});
+
+// Execute the actual frame-only control callback on a deterministic browser
+// clock. Reading document is forbidden; no Electron/real DOM/build is involved.
+function phaseRuntime({ evaluationMs = 2, corruptResource = () => {} } = {}) {
+  let clock = 0;
+  const calls = [],
+    actions = [],
+    captures = [],
+    waits = [],
+    frames = [];
+  const page = {
+    evaluate: async (fn, arg) => {
+      calls.push(arg);
+      clock += evaluationMs;
+      const saved = Object.fromEntries(
+        ["performance", "requestAnimationFrame", "setTimeout", "document"].map(
+          (key) => [key, Object.getOwnPropertyDescriptor(globalThis, key)],
+        ),
+      );
+      Object.defineProperties(globalThis, {
+        performance: { configurable: true, value: { now: () => clock } },
+        requestAnimationFrame: {
+          configurable: true,
+          value: (resolve) => {
+            clock += 10;
+            frames.push(clock);
+            resolve(clock);
+          },
+        },
+        setTimeout: {
+          configurable: true,
+          value: (resolve, ms) => {
+            waits.push(ms);
+            clock += ms;
+            resolve();
+          },
+        },
+        document: {
+          configurable: true,
+          get: () => {
+            throw new Error("Control touched target UI");
+          },
+        },
+      });
+      try {
+        return await fn(arg);
+      } finally {
+        for (const [key, descriptor] of Object.entries(saved)) {
+          if (descriptor) Object.defineProperty(globalThis, key, descriptor);
+          else delete globalThis[key];
+        }
+        clock += evaluationMs;
+      }
+    },
+  };
+  const measureAction = async (page, kind, index) => {
+    actions.push({ kind, index });
+    return page.evaluate(
+      async (count) => {
+        const start = globalThis.performance.now();
+        for (let i = 0; i < count; i++)
+          await new Promise((resolve) =>
+            globalThis.requestAnimationFrame(resolve),
+          );
+        // Handler/render work gives control a real remainder to pad.
+        await new Promise((resolve) => globalThis.setTimeout(resolve, 12));
+        return {
+          correct: true,
+          observedFrames: count - 1,
+          ms: globalThis.performance.now() - start,
+        };
+      },
+      2 + (index % 3),
+    );
+  };
+  const resources = async (switches, target, metadata) => {
+    captures.push({ switches, ...metadata, actionCount: actions.length });
+    clock += 200; // capture overhead must not become an action stage duration
+    const resource = phaseResource(switches, metadata);
+    corruptResource(resource, captures.length - 1);
+    target.push(resource);
+  };
+  return {
+    page,
+    measureAction,
+    resources,
+    calls,
+    actions,
+    captures,
+    waits,
+    frames,
+  };
+}
+async function phaseTaskFixture() {
+  const identity = phaseIdentityFixture();
+  const runtime = phaseRuntime();
+  const phaseDiagnostic = await runPhaseDiagnostic({ ...runtime, identity });
+  const provenance = {
+    buildStampSha256: identity.buildStampSha256,
+    currentBuildInputs: { sha256: identity.buildInputsSha256 },
+    selectedScriptsAndFixtures: {
+      sha256: identity.selectedScriptsAndFixturesSha256,
+    },
+    launchArtifacts: { sha256: identity.launchArtifactsSha256 },
+    currentRelevantSource: { sha256: identity.relevantSourceSha256 },
+  };
+  return {
+    identity,
+    runtime,
+    report: {
+      schemaVersion: 1,
+      kind: "p6-background-performance",
+      result: "fail",
+      failures: ["JSHeapUsedSize growth >10%; primary remains failed"],
+      acceptance: {
+        eligible: false,
+        reason: "phase-diagnostic",
+        primaryBaselinePerturbed: true,
+      },
+      phaseDiagnostic,
+      teardown: "test process exit confirmed",
+      rendererErrors: [],
+      provenance: {
+        before: provenance,
+        after: globalThis.structuredClone(provenance),
+        performanceScriptSha256Before: identity.performanceScriptSha256,
+        performanceScriptSha256After: identity.performanceScriptSha256,
+      },
+    },
+  };
+}
+
+test("phase task captures initial/auxiliary/quarter-switch boundaries outside ordinary samples", async () => {
+  const { report, runtime, identity } = await phaseTaskFixture();
+  const plan = validatePhaseTaskReport(report, identity);
+  assert.equal(report.phaseDiagnostic.status, "captured-not-causal-verdict");
+  assert.deepEqual(
+    plan.stages.map((stage) => stage.name),
+    phaseNames,
+  );
+  assert.deepEqual(
+    runtime.captures.map((capture) => capture.actionCount),
+    [0, 20, 40, 60, 85, 110, 135, 160],
+  );
+  assert.deepEqual(
+    runtime.captures.map((capture) => capture.switches),
+    [0, 0, 0, 0, 25, 50, 75, 100],
+  );
+  assert.deepEqual(
+    runtime.actions
+      .filter((action) => action.kind === "switch")
+      .map((action) => action.index),
+    Array.from({ length: 100 }, (_, i) => i),
+  );
+  assert.equal(runtime.calls.length, 174); //160 actions +14 stage clock calls
+  assert.equal(
+    runtime.frames.length,
+    plan.stages
+      .flatMap((stage) => stage.frameCounts)
+      .reduce((sum, count) => sum + count, 0),
+  );
+  assert.ok(plan.stages.slice(1).every((stage) => stage.elapsedMs < 1600));
+  plan.stages[1].elapsedMs = 0;
+  assert.ok(
+    report.phaseDiagnostic.controlPlan.stages[1].elapsedMs > 0,
+    "admitted plan is detached",
+  );
+  assert.equal(Object.hasOwn(report, "samples"), false);
+});
+
+test("matched control runs real frame callback without UI access, matches calls/captures and pads elapsed remainder", async () => {
+  const { report, identity, runtime: task } = await phaseTaskFixture();
+  const control = phaseRuntime();
+  const phase = await runPhaseDiagnostic({
+    ...control,
+    identity,
+    controlInput: {
+      plan: validatePhaseTaskReport(report, identity),
+      sha256: "a".repeat(64),
+    },
+    measureAction: () => {
+      throw new Error("Control invoked UI mutation");
+    },
+  });
+  assert.equal(phase.status, "captured-not-causal-verdict");
+  assert.equal(phase.selector, "phase-control");
+  assert.equal(control.actions.length, 0);
+  assert.equal(control.calls.length, task.calls.length);
+  assert.equal(control.frames.length, task.frames.length);
+  assert.equal(control.captures.length, task.captures.length);
+  assert.equal(control.waits.length, 7);
+  assert.ok(control.waits.every((ms) => ms > 0));
+  assert.ok(
+    phase.comparison.every(
+      (row) =>
+        row.deltaMs === 0 &&
+        row.evaluateCallsMatch &&
+        row.frameCountsMatch &&
+        row.matchedWithinTolerance,
+    ),
+  );
+  assert.deepEqual(
+    phase.resources.map((resource) => resource.requests),
+    report.phaseDiagnostic.resources.map((resource) => resource.requests),
+  );
+  const slow = phaseRuntime({ evaluationMs: 100 });
+  const mismatch = await runPhaseDiagnostic({
+    ...slow,
+    identity,
+    controlInput: {
+      plan: validatePhaseTaskReport(report, identity),
+      sha256: "a".repeat(64),
+    },
+  });
+  assert.equal(mismatch.status, "captured-not-causal-verdict");
+  assert.ok(
+    mismatch.comparison
+      .slice(1)
+      .every((row) => row.deltaMs > 50 && !row.matchedWithinTolerance),
+  );
+
+  // A bounded-but-hostile schedule must stop at the live browser deadline,
+  // rather than running all 20*4096 frames before checking elapsed time.
+  const excessiveFrames = validatePhaseTaskReport(report, identity);
+  excessiveFrames.stages[1].frameCounts.fill(4096);
+  const boundedControl = phaseRuntime();
+  const incomplete = await runPhaseDiagnostic({
+    ...boundedControl,
+    identity,
+    controlInput: { plan: excessiveFrames, sha256: "a".repeat(64) },
+  });
+  assert.equal(incomplete.status, "incomplete");
+  assert.equal(boundedControl.captures.length, 1);
+  assert.ok(boundedControl.frames.length < 3 * 4096);
+});
+
+test("phase input rejects schema/count/duration/frame/payload/identity and moving provenance; failed primary is preserved", async () => {
+  const { report, identity } = await phaseTaskFixture();
+  assert.equal(
+    validatePhaseTaskReport(report, identity).selector,
+    "phase-task",
+  );
+  for (const corrupt of [
+    (r) => {
+      r.result = "pass";
+    },
+    (r) => {
+      r.schemaVersion = 2;
+    },
+    (r) => {
+      r.acceptance.eligible = true;
+    },
+    (r) => {
+      r.phaseDiagnostic.status = "incomplete";
+    },
+    (r) => {
+      r.phaseDiagnostic.selector = "phase-control";
+    },
+    (r) => {
+      r.phaseDiagnostic.rawPayload = "private";
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.selector = "repeat-retainers";
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.identity.privatePath = "private";
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.identity.performanceScriptSha256 =
+        "invalid";
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages.pop();
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages.reverse();
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages[1].operations = 21;
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages[1].evaluateCalls++;
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages[1].elapsedMs = NaN;
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages[1].elapsedMs = Infinity;
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages[1].elapsedMs = -1;
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages[1].elapsedMs = 120001;
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages[0].elapsedMs = 1;
+    },
+    (r) => {
+      for (const stage of r.phaseDiagnostic.controlPlan.stages.slice(1))
+        stage.elapsedMs = 100000;
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages[1].frameCounts.pop();
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages[1].frameCounts[0] = 4097;
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages[1].frameCounts[0] = 1;
+    },
+    (r) => {
+      r.phaseDiagnostic.controlPlan.stages[1].frameCounts[0] = 2.5;
+    },
+    (r) => {
+      r.phaseDiagnostic.resources[0].gc = "unsupported/unavailable";
+    },
+    (r) => {
+      delete r.phaseDiagnostic.resources[0].metrics.Nodes;
+    },
+    (r) => {
+      r.phaseDiagnostic.resources[0].metrics.JSHeapUsedSize = 0;
+    },
+    (r) => {
+      r.phaseDiagnostic.resources[0].requests[0].pending = 1;
+    },
+    (r) => {
+      r.phaseDiagnostic.resources[0].requests[0].settled--;
+    },
+    (r) => {
+      r.phaseDiagnostic.resources[0].requests[0].payload = "private";
+    },
+    (r) => {
+      r.phaseDiagnostic.resources[0].beforeCapture.visible = true;
+    },
+    (r) => {
+      r.rendererErrors.push("redacted renderer error");
+    },
+    (r) => {
+      r.teardown = "unconfirmed";
+    },
+    (r) => {
+      delete r.provenance.after;
+    },
+    (r) => {
+      r.provenance.after.buildStampSha256 = "f".repeat(64);
+    },
+    (r) => {
+      r.provenance.performanceScriptSha256After = "f".repeat(64);
+    },
+  ]) {
+    const invalid = globalThis.structuredClone(report);
+    corrupt(invalid);
+    assert.throws(() => validatePhaseTaskReport(invalid, identity));
+  }
+  for (const key of Object.keys(identity))
+    assert.throws(
+      () =>
+        validatePhaseTaskReport(report, { ...identity, [key]: "f".repeat(64) }),
+      `mismatched ${key}`,
+    );
+});
+
+test("control file admission checks containment, regular files, symlink parents, bytes, redaction and input freshness", async (t) => {
+  const { report, identity } = await phaseTaskFixture();
+  const allowedRoot = await realpath(
+    await mkdtemp(join(tmpdir(), "omoc-phase-unit-")),
+  );
+  t.after(() => rm(allowedRoot, { recursive: true, force: true }));
+  const taskDirectory = join(allowedRoot, "p6-worker-task", "ui-states");
+  await mkdir(taskDirectory, { recursive: true });
+  const input = join(taskDirectory, "performance-evidence.json");
+  const raw = JSON.stringify(report);
+  await writeFile(input, raw);
+  const admitted = await readPhaseTaskReport(input, identity, allowedRoot);
+  assert.deepEqual(admitted.plan, report.phaseDiagnostic.controlPlan);
+  assert.match(admitted.sha256, /^[a-f0-9]{64}$/);
+  await assertPhaseTaskUnchanged(input, identity, admitted.sha256, allowedRoot);
+  await writeFile(input, `${raw}\n`);
+  await assert.rejects(
+    assertPhaseTaskUnchanged(input, identity, admitted.sha256, allowedRoot),
+    /changed after validation/,
+  );
+  const invalidInputs = [
+    join(
+      allowedRoot,
+      "..",
+      "p6-worker-escape",
+      "ui-states",
+      "performance-evidence.json",
+    ),
+    join(allowedRoot, "p6-normal", "ui-states", "performance-evidence.json"),
+    join(taskDirectory, "different.json"),
+    taskDirectory,
+  ];
+  const redirected = join(allowedRoot, "p6-worker-redirect");
+  await symlink(join(allowedRoot, "p6-worker-task"), redirected, "dir");
+  invalidInputs.push(
+    join(redirected, "ui-states", "performance-evidence.json"),
+  );
+  const linkDir = join(allowedRoot, "p6-worker-link", "ui-states");
+  await mkdir(linkDir, { recursive: true });
+  const link = join(linkDir, "performance-evidence.json");
+  await symlink(input, link);
+  invalidInputs.push(link);
+  for (const invalid of invalidInputs)
+    await assert.rejects(
+      readPhaseTaskReport(invalid, identity, allowedRoot),
+      /diagnostic incomplete/,
+    );
+  for (const invalid of [
+    "",
+    "private malformed /path",
+    "x".repeat(4 * 1024 * 1024 + 1),
+    JSON.stringify({ ...report, schemaVersion: 9 }),
+  ]) {
+    await writeFile(input, invalid);
+    await assert.rejects(
+      readPhaseTaskReport(input, identity, allowedRoot),
+      (error) =>
+        error.message ===
+        "Phase task input/path/schema/bounds/identity invalid; diagnostic incomplete",
+    );
+  }
+  await writeFile(input, raw);
+  await assert.rejects(
+    readPhaseTaskReport(
+      input,
+      { ...identity, buildStampSha256: "f".repeat(64) },
+      allowedRoot,
+    ),
+    /diagnostic incomplete/,
+  );
+});
+
+test("invalid phase baseline/action/frame/duration never yields a captured diagnostic", async () => {
+  const identity = phaseIdentityFixture();
+  for (const corruptResource of [
+    (resource) => {
+      resource.gc = "unsupported";
+    },
+    (resource) => {
+      resource.requests[0].pending = 1;
+    },
+    (resource) => {
+      resource.metrics.JSHeapUsedSize = 0;
+    },
+    (resource) => {
+      resource.metrics.Nodes = NaN;
+    },
+  ]) {
+    const runtime = phaseRuntime({ corruptResource });
+    const phase = await runPhaseDiagnostic({ ...runtime, identity });
+    assert.equal(phase.status, "incomplete");
+    assert.equal(
+      runtime.actions.length,
+      0,
+      "invalid initial capture prevents mutations",
+    );
+  }
+  for (const sample of [
+    { correct: false, observedFrames: 1, ms: 1 },
+    { correct: true, observedFrames: 4096, ms: 1 },
+    { correct: true, observedFrames: 1, ms: Infinity },
+  ]) {
+    const runtime = phaseRuntime();
+    const phase = await runPhaseDiagnostic({
+      ...runtime,
+      identity,
+      measureAction: async () => sample,
+    });
+    assert.equal(phase.status, "incomplete");
+    assert.equal(runtime.captures.length, 1);
+  }
+  const slow = phaseRuntime({ evaluationMs: 4000 });
+  const phase = await runPhaseDiagnostic({ ...slow, identity });
+  assert.equal(phase.status, "incomplete");
+});
+
+test("v5 producers publish monotone observations without inventing registry writes", async () => {
+  const { fixture, transport, event } = setup();
+  const read = (id) =>
+    transport.handle(event, {
+      version: 2,
+      readId: id,
+      operation: { type: "snapshot" },
+    });
+  const a = (await read("p7-a")).value;
+  const b = (await read("p7-b")).value;
+  assert.equal(a.revision, b.revision);
+  assert.ok(b.observationSequence > a.observationSequence);
+  assert.deepEqual(b.recovery, { store: { state: "ready" }, resources: [] });
+  for (const invalid of [
+    (s) => delete s.observationSequence,
+    (s) => {
+      s.observationSequence = 0;
+    },
+    (s) => delete s.recovery,
+    (s) => {
+      s.retainedOperations = [
+        { runtimeEpoch: "old", operationId: "bad", type: "snapshot" },
+      ];
+    },
+    (s) => {
+      s.extra = true;
+    },
+  ]) {
+    const original = globalThis.structuredClone(fixture.snapshot);
+    invalid(fixture.snapshot);
+    assert.equal((await read("p7-invalid")).code, "INVALID_REQUEST");
+    fixture.snapshot = original;
+  }
+  transport.close();
+});
+
+test("closed P7 synthetic storage states validate, scope blocks all mutations and retains exact old keys", async () => {
+  const { P7_UI_STATES, P7_RETAINED_KEY } = await import(
+    "./workbench-host.mjs"
+  );
+  const { validateSnapshot } = await import("../../src/workbench-contract.mjs");
+  for (const [name, state] of Object.entries(P7_UI_STATES)) {
+    const { fixture, event, transport, epoch, send } = setup();
+    fixture.setStorageState(name);
+    const snapshot = (
+      await transport.handle(event, {
+        version: 2,
+        readId: `snapshot-${name}`,
+        operation: { type: "snapshot" },
+      })
+    ).value;
+    assert.equal(validateSnapshot(snapshot), snapshot);
+    assert.equal(snapshot.temporary, false);
+    assert.equal(snapshot.workspaces[0].temporary, false);
+    if (state.path) assert.equal(snapshot.workspaces[0].path, state.path);
+    if (state.store || state.resource) {
+      const before = JSON.stringify(fixture.snapshot);
+      for (const operation of [
+        send.operation,
+        {
+          type: "session.interrupt",
+          workspaceId: "fixture-w",
+          sessionId: "fixture-s",
+        },
+        {
+          type: "session.rename",
+          workspaceId: "fixture-w",
+          sessionId: "fixture-s",
+          requestId: "r",
+          title: "Changed",
+        },
+        {
+          type: "permission.respond",
+          workspaceId: "fixture-w",
+          sessionId: "fixture-s",
+          requestId: "r",
+          decision: "once",
+        },
+        ...(state.store
+          ? [{ type: "workspace.create" }, { type: "workspace.import" }]
+          : []),
+      ])
+        assert.equal(
+          (
+            await transport.handle(event, {
+              version: 2,
+              runtimeEpoch: epoch,
+              operationId: `blocked-${operation.type}`,
+              operation,
+            })
+          ).code,
+          "UNAVAILABLE",
+        );
+      assert.equal(JSON.stringify(fixture.snapshot), before);
+      assert.equal(fixture.requests.length, 0);
+      assert.equal(transport.mutationMetrics().dispatched, 0);
+      assert.equal(
+        (
+          await transport.handle(event, {
+            version: 2,
+            runtimeEpoch: epoch,
+            readId: "blocked-file",
+            operation: { type: "file.list", workspaceId: "fixture-w" },
+          })
+        ).code,
+        "UNAVAILABLE",
+      );
+    }
+    if (state.retained) {
+      assert.deepEqual(snapshot.retainedOperations, [{ ...P7_RETAINED_KEY }]);
+      const metrics = transport.mutationMetrics();
+      const result = await transport.handle(event, {
+        version: 2,
+        runtimeEpoch: epoch,
+        readId: "old-lookup",
+        operation: {
+          type: "operation.lookup",
+          runtimeEpoch: P7_RETAINED_KEY.runtimeEpoch,
+          operationId: P7_RETAINED_KEY.operationId,
+        },
+      });
+      assert.equal(result.value.status, "found");
+      assert.equal(result.value.runtimeEpoch, P7_RETAINED_KEY.runtimeEpoch);
+      assert.equal(result.value.receipt.effect, "unknown");
+      assert.deepEqual(transport.mutationMetrics(), metrics);
+      assert.equal(
+        (
+          await transport.handle(event, {
+            ...send,
+            runtimeEpoch: P7_RETAINED_KEY.runtimeEpoch,
+          })
+        ).code,
+        "STALE_EPOCH",
+      );
+    }
+    assert.throws(() => fixture.setStorageState("guessed-recovery"));
+    transport.close();
+  }
+});
+
+test("P7 saved probe argv/output admission is closed, fresh, contained and symlink-safe without runtime launch", async (t) => {
+  const { parseProbeOptions, claimProbeOutput } = await import(
+    "../p7-storage-probe.mjs"
+  );
+  const root = await realpath(await mkdtemp(join(tmpdir(), "p7-probe-node-")));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const evidence = join(root, "docs/runs/durable-workbench-storage/evidence");
+  await mkdir(evidence, { recursive: true });
+  const exact = [
+    "--out",
+    "docs/runs/durable-workbench-storage/evidence/native-r1",
+    "--mode",
+    "packaged",
+    "--platform",
+    "darwin",
+  ];
+  assert.deepEqual(parseProbeOptions(exact), {
+    out: exact[1],
+    mode: "packaged",
+    platform: "darwin",
+  });
+  for (const invalid of [
+    [],
+    [...exact, "--visible", "true"],
+    ["--out", "fresh", "--mode", "dev", "--platform", "darwin"],
+    ["--out", "fresh", "--mode", "packaged", "--platform", "linux"],
+    ["--mode", "packaged", "--mode", "packaged", "--platform", "darwin"],
+  ])
+    assert.throws(() => parseProbeOptions(invalid));
+  const destination = await claimProbeOutput(root, exact[1]);
+  assert.equal(destination, join(root, exact[1]));
+  await assert.rejects(claimProbeOutput(root, exact[1]), /Consumed\/nonempty/);
+  await assert.rejects(claimProbeOutput(root, "../escape"), /under registered/);
+  const redirect = join(evidence, "redirect");
+  await symlink(destination, redirect, "dir");
+  await assert.rejects(
+    claimProbeOutput(
+      root,
+      "docs/runs/durable-workbench-storage/evidence/redirect/nested",
+    ),
+    /Symlink/,
+  );
+  const raced = await Promise.allSettled([
+    claimProbeOutput(
+      root,
+      "docs/runs/durable-workbench-storage/evidence/native-race",
+    ),
+    claimProbeOutput(
+      root,
+      "docs/runs/durable-workbench-storage/evidence/native-race",
+    ),
+  ]);
+  assert.equal(raced.filter((r) => r.status === "fulfilled").length, 1);
+});
+
+test("P7 owned synthetic journal faults preserve corrupt/version/partial/checksum-valid unconfirmed bytes", async (t) => {
+  const { probeJournalFaults } = await import("../p7-storage-probe.mjs");
+  const root = await realpath(
+    await mkdtemp(join(tmpdir(), "p7-journal-probe-node-")),
+  );
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const result = await probeJournalFaults(root);
+  assert.equal(result.length, 4);
+  assert.ok(result.every((r) => r.bytesPreserved && r.appendBlocked));
+  const unconfirmed = result.find((r) => r.case === "unconfirmed-valid-tail");
+  assert.equal(unconfirmed.reason, "unconfirmed_tail");
+  assert.equal(unconfirmed.checkpointSequence, 1);
+});
+
+test("P7 explicit synthetic migration stages entire sentinel set, refuses collision and retains rollback data", async (t) => {
+  const { probeSyntheticMigration } = await import(
+    "./p7-storage-migration.mjs"
+  );
+  const root = await realpath(
+    await mkdtemp(join(tmpdir(), "p7-migration-probe-node-")),
+  );
+  t.after(() => rm(root, { recursive: true, force: true }));
+  await assert.rejects(
+    probeSyntheticMigration({ root }),
+    /explicit authorization/,
+  );
+  const result = await probeSyntheticMigration({
+    root,
+    explicitlyAuthorized: true,
+  });
+  assert.deepEqual(result.phases, [
+    "retained",
+    "quiesced",
+    "copied",
+    "verified",
+    "rollback",
+  ]);
+  assert.equal(result.sourceInventory.length, 5);
+  assert.equal(result.retainedDestinationInventory.length, 6);
+  assert.equal(result.collisionInventory.length, 1);
+  assert.match(result.cutover, /held/);
+});
+
+test("P7 partial mapping production consumer preserves original unknown key and refuses mutation without native execution", async (t) => {
+  const { probePartialMapping } = await import("../p7-storage-probe.mjs");
+  const root = await realpath(
+    await mkdtemp(join(tmpdir(), "p7-partial-probe-node-")),
+  );
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const result = await probePartialMapping(root);
+  assert.equal(result.recoveryReason, "partial_native_mapping");
+  assert.equal(result.originalKeyFound, true);
+  assert.equal(result.effect, "unknown");
+  assert.equal(result.mutationBlocked, true);
+  assert.equal(result.nativeCalls, 0);
+});
+
+test("actual freshNativePreflight denies nonfresh ready zero-retained storage before any native setup", async () => {
+  const { freshNativePreflight, startSidecar } = await import(
+    "../../src/sidecar-supervisor.mjs"
+  );
+  const registry = {
+    status: () => ({ state: "ready" }),
+    readView: () => ({ retainedOperations: [] }),
+  };
+  const namespace = { fresh: false };
+  assert.equal(freshNativePreflight(namespace, registry), false);
+  let setupCalls = 0;
+  let spawnCalls = 0;
+  await assert.rejects(
+    startSidecar({
+      namespace,
+      owner: {
+        getNonce: () => "test",
+        assertOwned: async () => ({ state: "ready" }),
+      },
+      preflight: async () => freshNativePreflight(namespace, registry),
+      createDirectory: async () => {
+        setupCalls++;
+      },
+      spawnProcess: () => {
+        spawnCalls++;
+        throw new Error("No native launch in Node fixture test");
+      },
+    }),
+    /native_startup_unverified/,
+  );
+  assert.equal(setupCalls, 0);
+  assert.equal(spawnCalls, 0);
+});
+
+test("P7 exact native inventory follows advertised next through an empty terminal page", async () => {
+  const { readExactNativeInventory } = await import("../p7-storage-probe.mjs");
+  const calls = [];
+  const result = await readExactNativeInventory(
+    async (input) => {
+      calls.push(input);
+      return input.cursor
+        ? { data: [], cursor: {} }
+        : { data: [{ id: "native-one" }], cursor: { next: "opaque-next" } };
+    },
+    ["native-one"],
+  );
+  assert.deepEqual(calls, [
+    { limit: 100 },
+    { limit: 100, cursor: "opaque-next" },
+  ]);
+  assert.deepEqual(result.ids, ["native-one"]);
+  assert.equal(result.pages, 2);
+});
+
+test("P7 native inventory rejects extra, missing, duplicate and malformed entries or cursors", async () => {
+  const { readExactNativeInventory } = await import("../p7-storage-probe.mjs");
+  for (const page of [
+    { data: [], cursor: {} },
+    { data: [{ id: "one" }, { id: "extra" }], cursor: {} },
+    { data: [{ id: "one" }, { id: "one" }], cursor: {} },
+    { data: [{}], cursor: {} },
+    { data: [{ id: "one" }], cursor: { next: 123 } },
+    { data: [{ id: "one" }], cursor: { next: "" } },
+    { data: [{ id: "one" }], cursor: { next: "x".repeat(4097) } },
+    { data: [{ id: "one" }] },
+  ])
+    await assert.rejects(readExactNativeInventory(async () => page, ["one"]));
+});
+
+test("P7 native inventory enforces cursor cycles, page/item bounds and one total deadline", async () => {
+  const { readExactNativeInventory } = await import("../p7-storage-probe.mjs");
+  let calls = 0;
+  await assert.rejects(
+    readExactNativeInventory(async () => {
+      calls++;
+      return { data: [], cursor: { next: "cycle" } };
+    }, []),
+    /cursor repeated/,
+  );
+  assert.equal(calls, 2);
+  calls = 0;
+  await assert.rejects(
+    readExactNativeInventory(
+      async () => ({
+        data: [],
+        cursor: { next: `page-${++calls}` },
+      }),
+      [],
+      { maxPages: 2 },
+    ),
+    /page bound/,
+  );
+  assert.equal(calls, 2);
+  await assert.rejects(
+    readExactNativeInventory(
+      async () => ({
+        data: [{ id: "one" }, { id: "two" }],
+        cursor: {},
+      }),
+      ["one", "two"],
+      { maxItems: 1 },
+    ),
+    /item bound/,
+  );
+  await assert.rejects(
+    readExactNativeInventory(() => new Promise(() => {}), [], {
+      timeoutMs: 5,
+    }),
+    /deadline/,
+  );
+});
+
+function cleanupRecord(request) {
+  return {
+    child: {
+      connected: true,
+      disconnect() {
+        this.connected = false;
+      },
+    },
+    exited: false,
+    nativeExitConfirmed: false,
+    nativeIdentity: {
+      pid: 123,
+      platform: "darwin",
+      startToken: "owned",
+      bootId: "boot",
+    },
+    request,
+    exit: undefined,
+    waitForExit: async function () {
+      this.exited = true;
+      this.exit = { code: 0, signal: null };
+    },
+  };
+}
+const ownedStop = () => ({
+  exited: true,
+  nativeStarted: true,
+  nativeIdentity: {
+    pid: 123,
+    platform: "darwin",
+    startToken: "owned",
+    bootId: "boot",
+  },
+  nativeExit: { code: 0, signal: null },
+});
+
+test("P7 connected cleanup gets exact owned native stop proof before helper exit", async () => {
+  const { cleanupOwnerHost } = await import("../p7-storage-probe.mjs");
+  const calls = [];
+  const record = cleanupRecord(async (command) => {
+    assert.equal(record.child.connected, true);
+    calls.push(command);
+    return command === "stop-native" ? ownedStop() : {};
+  });
+  await cleanupOwnerHost(record);
+  assert.deepEqual(calls, ["stop-native", "stop", "quit"]);
+  assert.equal(record.nativeExitConfirmed, true);
+  assert.deepEqual(record.nativeStopResult.nativeExit, {
+    code: 0,
+    signal: null,
+  });
+  assert.equal(record.cleanup.fallbackDisconnect, false);
+});
+
+test("P7 cleanup never promotes malformed/mismatched stop, timeout, disconnect or app exit to native proof", async () => {
+  const { cleanupOwnerHost } = await import("../p7-storage-probe.mjs");
+  for (const response of [
+    { exited: true },
+    { ...ownedStop(), nativeExit: undefined },
+    { ...ownedStop(), nativeIdentity: { pid: 999 } },
+    { ...ownedStop(), exited: false },
+    { ...ownedStop(), nativeStarted: false },
+    { ...ownedStop(), nativeExit: { code: null, signal: null } },
+    new Error("stop failed"),
+    "timeout",
+  ]) {
+    const record = cleanupRecord(async () => {
+      if (response === "timeout") return new Promise(() => {});
+      if (response instanceof Error) throw response;
+      return response;
+    });
+    await cleanupOwnerHost(record, { timeoutMs: 5, exitTimeoutMs: 5 });
+    assert.equal(record.nativeExitConfirmed, false);
+    assert.equal(record.exited, true);
+    assert.equal(record.cleanup.fallbackDisconnect, true);
+  }
+});
+
+test("P7 cleanup retains exact native proof when later stop fails and records unconfirmed helper exit", async () => {
+  const { cleanupOwnerHost } = await import("../p7-storage-probe.mjs");
+  const record = cleanupRecord(async (command) => {
+    if (command === "stop-native") return ownedStop();
+    throw new Error("metadata cleanup failed");
+  });
+  record.waitForExit = () => new Promise(() => {});
+  await cleanupOwnerHost(record, { timeoutMs: 5, exitTimeoutMs: 5 });
+  assert.equal(record.nativeExitConfirmed, true);
+  assert.equal(record.exited, false);
+  assert.equal(record.cleanup.fallbackDisconnect, true);
+  assert.equal(record.cleanup.helperExitConfirmed, false);
+});
+
+test("P7 exact inventory covers several pages and refuses a repeated ID across pages", async () => {
+  const { readExactNativeInventory } = await import("../p7-storage-probe.mjs");
+  const list = async ({ cursor }) =>
+    cursor
+      ? { data: [{ id: "two" }], cursor: { next: null } }
+      : { data: [{ id: "one" }], cursor: { next: "page-two" } };
+  assert.deepEqual(await readExactNativeInventory(list, ["two", "one"]), {
+    ids: ["one", "two"],
+    pages: 2,
+  });
+  await assert.rejects(
+    readExactNativeInventory(
+      async () => ({
+        data: [{ id: "one" }],
+        cursor: { next: "page-two" },
+      }),
+      ["one"],
+    ),
+    /duplicate ID/,
+  );
+  await assert.rejects(
+    readExactNativeInventory(
+      async () => ({
+        data: Array.from({ length: 101 }, (_, index) => ({
+          id: `id-${index}`,
+        })),
+        cursor: {},
+      }),
+      [],
+    ),
+    /page bound/,
+  );
+});
+
+test("P7 cleanup distinguishes owned no-start proof from an already disconnected helper", async () => {
+  const { cleanupOwnerHost } = await import("../p7-storage-probe.mjs");
+  const record = cleanupRecord(async (command) =>
+    command === "stop-native"
+      ? { exited: true, nativeStarted: false, cleanup: "not_started" }
+      : {},
+  );
+  record.nativeIdentity = undefined;
+  await cleanupOwnerHost(record);
+  assert.equal(record.nativeExitConfirmed, true);
+  const disconnected = cleanupRecord(() => {
+    throw new Error("must not request");
+  });
+  disconnected.child.connected = false;
+  await cleanupOwnerHost(disconnected);
+  assert.equal(disconnected.nativeExitConfirmed, false);
+  assert.equal(disconnected.cleanup.fallbackDisconnect, true);
+});
+
+test("P7 event fixture imports history before production rename and refuses an empty Native log", async () => {
+  const { prepareNativeEventFixture } = await import("../p7-storage-probe.mjs");
+  const calls = [];
+  const expected = {
+    runtimeEpoch: "native-one",
+    operationId: "create",
+    workspaceId: "workspace",
+    appSessionId: "app",
+    nativeSessionId: "ses_native",
+    directory: "/synthetic/Documents/OhMyOwnCode/app",
+  };
+  const identity = {
+    runtimeEpoch: expected.runtimeEpoch,
+    operationId: expected.operationId,
+    type: "workspace.create",
+    digest: "a".repeat(64),
+  };
+  const native = {
+    id: expected.nativeSessionId,
+    location: { directory: expected.directory },
+    title: "P7 renamed synthetic",
+    metadata: {
+      operationId: identity.operationId,
+      originalRuntimeEpoch: identity.runtimeEpoch,
+      appSessionId: expected.appSessionId,
+      workspaceId: expected.workspaceId,
+      digest: identity.digest,
+    },
+  };
+  const original = {
+    status: "found",
+    runtimeEpoch: identity.runtimeEpoch,
+    operationId: identity.operationId,
+    receipt: {
+      runtimeEpoch: identity.runtimeEpoch,
+      operationId: identity.operationId,
+      type: "workspace.create",
+      effect: "confirmed",
+      result: {
+        kind: "created",
+        workspaceId: expected.workspaceId,
+        sessionId: expected.appSessionId,
+        nativeSessionId: expected.nativeSessionId,
+      },
+    },
+  };
+  const progress = {};
+  let receiptOverride = {};
+  let logResponse = [];
+  const host = {
+    request: async (command, input) => {
+      const operation = input?.envelope?.operation;
+      calls.push(
+        command === "native" ? input.operation : (operation?.type ?? command),
+      );
+      if (command === "native") {
+        if (input.operation === "history") {
+          assert.deepEqual(input.location, native.location);
+          assert.deepEqual(input.metadata, native.metadata);
+          return { id: native.id };
+        }
+        if (input.operation === "messages")
+          return ["P7 synthetic durable history"];
+        if (input.operation === "get")
+          return globalThis.structuredClone(native);
+        if (input.operation === "log") {
+          if (logResponse instanceof Error) throw logResponse;
+          return logResponse;
+        }
+      }
+      if (command === "identity") return globalThis.structuredClone(identity);
+      if (operation?.type === "operation.lookup")
+        return { ok: true, value: globalThis.structuredClone(original) };
+      assert.equal(command, "handle");
+      assert.equal(input.envelope.version, 2);
+      assert.equal(input.envelope.runtimeEpoch, expected.runtimeEpoch);
+      assert.equal(operation.type, "session.rename");
+      assert.notEqual(operation.title, native.title);
+      native.title = operation.title;
+      return {
+        ok: true,
+        receipt: {
+          runtimeEpoch: input.envelope.runtimeEpoch,
+          operationId: input.envelope.operationId,
+          type: operation.type,
+          workspaceId: expected.workspaceId,
+          sessionId: expected.appSessionId,
+          effect: "confirmed",
+          result: {
+            kind: "metadata",
+            workspaceId: expected.workspaceId,
+            sessionId: expected.appSessionId,
+          },
+          ...receiptOverride,
+        },
+      };
+    },
+  };
+  await assert.rejects(
+    prepareNativeEventFixture(host, expected, original, progress),
+    /Native durable log rejected/,
+  );
+  assert.deepEqual(calls, [
+    "get",
+    "identity",
+    "history",
+    "messages",
+    "get",
+    "session.rename",
+    "get",
+    "identity",
+    "operation.lookup",
+    "log",
+  ]);
+  assert.equal(progress.phase, "history-event-log");
+  assert.deepEqual(progress.logDiagnostic, { responseArray: true, count: 0 });
+  assert.equal(identity.digest, "a".repeat(64));
+  const diagnostic = {
+    after: 0,
+    follow: false,
+    count: 1,
+    events: [],
+    head: { seen: true, aggregateMatches: true, sequence: 1 },
+    completed: true,
+  };
+  logResponse = {
+    events: [
+      {
+        type: "session.created",
+        aggregateID: expected.nativeSessionId,
+        version: 1,
+        sequence: 1,
+        sha256: "a".repeat(64),
+      },
+    ],
+    diagnostic,
+  };
+  native.title = "P7 renamed synthetic";
+  await assert.rejects(
+    prepareNativeEventFixture(host, expected, original, progress),
+    /Native durable log rejected/,
+  );
+  assert.deepEqual(progress.logDiagnostic, diagnostic);
+  const { createHash } = await import("node:crypto");
+  logResponse.events = [
+    {
+      type: "session.renamed",
+      aggregateID: expected.nativeSessionId,
+      dataSessionID: expected.nativeSessionId,
+      version: 1,
+      sequence: 1,
+      sha256: "a".repeat(64),
+      titleSha256: createHash("sha256")
+        .update("P7 durable event after history import")
+        .digest("hex"),
+    },
+  ];
+  native.title = "P7 renamed synthetic";
+  assert.deepEqual(
+    await prepareNativeEventFixture(host, expected, original, progress),
+    logResponse.events,
+  );
+  native.title = "P7 renamed synthetic";
+  logResponse = {
+    events: [],
+    diagnostic: {
+      after: null,
+      follow: false,
+      count: 1,
+      completed: true,
+      head: { seen: true, aggregateMatches: true, sequence: 2 },
+      events: [{ type: "log.synced", aggregateMatches: true, sequence: 2 }],
+    },
+  };
+  assert.deepEqual(
+    await prepareNativeEventFixture(host, expected, original, progress),
+    [],
+  );
+  assert.equal(progress.eventCapability.status, "unsupported");
+  assert.equal(progress.eventCapability.eventLogAcceptance, false);
+  const failedDiagnostic = { ...diagnostic, completed: false };
+  logResponse = Object.assign(
+    new Error("Native historical log stream rejected"),
+    { nativeLogDiagnostic: failedDiagnostic },
+  );
+  native.title = "P7 renamed synthetic";
+  await assert.rejects(
+    prepareNativeEventFixture(host, expected, original, progress),
+    /historical log stream rejected/,
+  );
+  assert.deepEqual(progress.logDiagnostic, failedDiagnostic);
+  for (receiptOverride of [
+    { runtimeEpoch: "other" },
+    { operationId: "other" },
+    { type: "workspace.create" },
+    { workspaceId: "other" },
+    { sessionId: "other" },
+    { effect: "unknown" },
+    {
+      result: {
+        kind: "metadata",
+        workspaceId: expected.workspaceId,
+        sessionId: "other",
+      },
+    },
+  ]) {
+    calls.length = 0;
+    native.title = "P7 renamed synthetic";
+    await assert.rejects(
+      prepareNativeEventFixture(host, expected, original, progress),
+      /rename receipt correlation rejected/,
+    );
+    assert.deepEqual(calls, [
+      "get",
+      "identity",
+      "history",
+      "messages",
+      "get",
+      "session.rename",
+    ]);
+    assert.equal(progress.phase, "history-event-rename");
+  }
+});
+
+test("P7 actual historical helper omits exclusive cursor and preserves authentic ordered event hashes and sync proof", async () => {
+  const { readNativeHistoricalLog } = await import(
+    "./p7-storage-owner-host.mjs"
+  );
+  const { assertNativeDurableLog, assertNativeEventsPreserved } = await import(
+    "../p7-storage-probe.mjs"
+  );
+  const { createHash } = await import("node:crypto");
+  const title = "P7 durable event after history import";
+  const event = {
+    type: "session.renamed",
+    durable: { aggregateID: "ses_native", version: 1, seq: 7 },
+    data: {
+      sessionID: "ses_native",
+      title,
+      metadata: { password: "DO-NOT-REPORT", body: "PRIVATE-BODY" },
+    },
+  };
+  let calls = 0;
+  const client = {
+    session: {
+      log: async function* (query, options) {
+        calls++;
+        assert.deepEqual(query, {
+          sessionID: "ses_native",
+          follow: false,
+        });
+        assert.ok(options.signal instanceof AbortSignal);
+        yield event;
+        yield { type: "log.synced", aggregateID: "ses_native", seq: 7 };
+      },
+    },
+  };
+  const result = await readNativeHistoricalLog(client, "ses_native");
+  assert.equal(calls, 1);
+  assertNativeDurableLog(result.events, "ses_native", title);
+  assertNativeEventsPreserved(result.events, result.events, "ses_native");
+  assert.equal(
+    result.events[0].sha256,
+    createHash("sha256").update(JSON.stringify(event)).digest("hex"),
+  );
+  assert.deepEqual(result.diagnostic.head, {
+    seen: true,
+    aggregateMatches: true,
+    sequence: 7,
+  });
+  assert.equal(result.diagnostic.completed, true);
+  assert.equal(result.diagnostic.count, 2);
+  assert.deepEqual(result.diagnostic.events[0], {
+    keys: ["type", "data", "durable"],
+    unknownKeyCount: 0,
+    type: "session.renamed",
+    sequence: 7,
+    aggregateMatches: true,
+    dataSessionMatches: true,
+  });
+  assert.ok(!JSON.stringify(result).includes("DO-NOT-REPORT"));
+  assert.ok(!JSON.stringify(result).includes("PRIVATE-BODY"));
+  const optionalHead = await readNativeHistoricalLog(
+    {
+      session: {
+        log: async function* () {
+          yield event;
+          yield { type: "log.synced", aggregateID: "ses_native" };
+        },
+      },
+    },
+    "ses_native",
+  );
+  assert.equal(optionalHead.diagnostic.completed, true);
+  assert.equal(optionalHead.diagnostic.head.sequence, null);
+});
+
+test("P7 actual historical helper rejects malformed, empty, incomplete and reordered streams with bounded redacted diagnostics", async () => {
+  const { readNativeHistoricalLog } = await import(
+    "./p7-storage-owner-host.mjs"
+  );
+  const event = {
+    type: "session.renamed",
+    durable: { aggregateID: "ses_native", version: 1, seq: 1 },
+    data: {
+      sessionID: "ses_native",
+      title: "PRIVATE-TITLE",
+      metadata: { password: "PRIVATE-PASSWORD" },
+    },
+  };
+  const head = { type: "log.synced", aggregateID: "ses_native", seq: 2 };
+  const malformed = [
+    [],
+    [event],
+    [head, head],
+    [head, event],
+    [{ ...head, aggregateID: "other" }],
+    [{ ...head, seq: -1 }],
+    [null],
+    [{ ...event, durable: undefined }, head],
+    [{ ...event, type: "invalid" }, head],
+    ...[-1, 0.5, Number.MAX_SAFE_INTEGER + 1].map((seq) => [
+      { ...event, durable: { ...event.durable, seq } },
+      head,
+    ]),
+    [{ ...event, durable: { ...event.durable, aggregateID: "other" } }, head],
+    [{ ...event, durable: { ...event.durable, version: 2 } }, head],
+    [{ ...event, data: { ...event.data, sessionID: "other" } }, head],
+    [{ ...event, data: { sessionID: "ses_native", title: null } }, head],
+    [event, event, head],
+    [{ ...event, durable: { ...event.durable, seq: 2 } }, event, head],
+    [event, { ...head, aggregateID: "other" }],
+    ...[-1, 0, 0.5, Number.MAX_SAFE_INTEGER + 1].map((seq) => [
+      event,
+      { ...head, seq },
+    ]),
+    [event, head, head],
+    [event, head, { ...event, durable: { ...event.durable, seq: 3 } }],
+    Array.from({ length: 130 }, (_, index) => ({
+      ...event,
+      durable: { ...event.durable, seq: index + 1 },
+    })),
+  ];
+  for (const stream of malformed) {
+    await assert.rejects(
+      readNativeHistoricalLog(
+        {
+          session: {
+            log: async function* (query) {
+              assert.equal(Object.hasOwn(query, "after"), false);
+              yield* stream;
+            },
+          },
+        },
+        "ses_native",
+      ),
+      (error) => {
+        assert.match(error.message, /Native historical log stream rejected/);
+        assert.equal(error.nativeLogDiagnostic.completed, false);
+        assert.ok(error.nativeLogDiagnostic.events.length <= 129);
+        assert.ok(
+          !JSON.stringify(error.nativeLogDiagnostic).includes("PRIVATE-"),
+        );
+        return true;
+      },
+    );
+  }
+  await assert.rejects(
+    readNativeHistoricalLog(
+      {
+        session: {
+          log: async function* () {
+            yield event;
+            throw new Error("PRIVATE-PASSWORD");
+          },
+        },
+      },
+      "ses_native",
+    ),
+    (error) => {
+      assert.equal(error.message, "Native historical log stream rejected");
+      assert.equal(error.nativeLogDiagnostic.count, 1);
+      assert.equal(error.nativeLogDiagnostic.completed, false);
+      return true;
+    },
+  );
+});
+
+test("P7 closed durable log summaries reject empty, wrong identity, version, sequence, hash and lost originals", async () => {
+  const { assertNativeDurableLog, assertNativeEventsPreserved } = await import(
+    "../p7-storage-probe.mjs"
+  );
+  const { createHash } = await import("node:crypto");
+  // Summary fixtures exercise validation only; they never enter Native or transfer data.
+  const title = "P7 durable event after history import";
+  const summary = {
+    type: "session.renamed",
+    aggregateID: "ses_native",
+    dataSessionID: "ses_native",
+    version: 1,
+    sequence: 1,
+    sha256: "a".repeat(64),
+    titleSha256: createHash("sha256").update(title).digest("hex"),
+  };
+  const original = [
+    summary,
+    { ...summary, sequence: 2, sha256: "b".repeat(64) },
+  ];
+  assertNativeDurableLog(original, "ses_native", title);
+  const nonRename = {
+    type: "session.created",
+    aggregateID: "ses_native",
+    version: 1,
+    sequence: 1,
+    sha256: "a".repeat(64),
+  };
+  assert.throws(
+    () => assertNativeDurableLog([nonRename], "ses_native", title),
+    /Native durable log rejected/,
+  );
+  for (const log of [
+    [],
+    [{ ...summary, aggregateID: "other" }],
+    [{ ...summary, dataSessionID: "other" }],
+    [{ ...summary, dataSessionID: undefined }],
+    [{ ...summary, version: 2 }],
+    [{ ...summary, sequence: -1 }],
+    [{ ...summary, sequence: 0.5 }],
+    [{ ...summary, sha256: "invalid" }],
+    [{ ...summary, titleSha256: "b".repeat(64) }],
+    [{ ...summary, extra: true }],
+    [summary, summary],
+    original.toReversed(),
+  ])
+    assert.throws(
+      () => assertNativeDurableLog(log, "ses_native", title),
+      /Native durable log rejected/,
+    );
+  assertNativeEventsPreserved(original, original, "ses_native");
+  for (const log of [
+    [],
+    [summary],
+    [summary, { ...original[1], sha256: "c".repeat(64) }],
+  ])
+    assert.throws(() =>
+      assertNativeEventsPreserved(original, log, "ses_native"),
+    );
+  assert.throws(() => assertNativeEventsPreserved([], original, "ses_native"));
+});
+
+test("P7 closed native metadata correlates exact defensive admitted identity and rejects every mismatch", async (t) => {
+  const { assertNativeMetadataCorrelation } = await import(
+    "../p7-storage-probe.mjs"
+  );
+  const { openWorkspaceRegistry } = await import(
+    "../../src/host/workspace-registry.mjs"
+  );
+  const root = await realpath(
+    await mkdtemp(join(tmpdir(), "p7-metadata-test-")),
+  );
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const documentsPath = join(root, "Documents");
+  await mkdir(documentsPath, { mode: 0o700 });
+  await mkdir(join(root, "registry"), { mode: 0o700 });
+  const registry = await openWorkspaceRegistry({
+    directory: join(root, "registry"),
+    documentsPath,
+    storeId: "metadata-store",
+    runtimeEpoch: "metadata-original",
+  });
+  t.after(() => registry.close());
+  const identity = {
+    runtimeEpoch: "metadata-original",
+    operationId: "metadata-create",
+    type: "workspace.create",
+    digest: "a".repeat(64),
+  };
+  await registry.begin(identity);
+  const key = {
+    runtimeEpoch: identity.runtimeEpoch,
+    operationId: identity.operationId,
+  };
+  const admitted = registry.lookupIdentity(key);
+  assert.deepEqual(admitted, identity);
+  admitted.digest = "b".repeat(64);
+  assert.deepEqual(registry.lookupIdentity(key), identity);
+  const expected = {
+    ...key,
+    appSessionId: "app-session",
+    workspaceId: "workspace",
+    nativeSessionId: "ses_native",
+  };
+  const metadata = {
+    operationId: identity.operationId,
+    originalRuntimeEpoch: identity.runtimeEpoch,
+    appSessionId: expected.appSessionId,
+    workspaceId: expected.workspaceId,
+    digest: identity.digest,
+  };
+  const native = { id: expected.nativeSessionId, metadata };
+  const check = (...args) =>
+    assertNativeMetadataCorrelation(
+      args.length ? args[0] : native,
+      args.length > 1 ? args[1] : registry.lookupIdentity(key),
+      args.length > 2 ? args[2] : expected,
+    );
+  assert.deepEqual(check(), key);
+  for (const field of Object.keys(metadata)) {
+    const missing = { ...metadata };
+    delete missing[field];
+    for (const changed of [
+      missing,
+      { ...metadata, [field]: "mismatch" },
+      { ...metadata, [field]: undefined },
+    ])
+      assert.throws(
+        () => check({ ...native, metadata: changed }),
+        /Native metadata correlation rejected/,
+      );
+  }
+  for (const changed of [
+    undefined,
+    null,
+    [],
+    { ...metadata, extra: "private-marker" },
+    {
+      omocAppSessionId: expected.appSessionId,
+      omocRuntimeEpoch: identity.runtimeEpoch,
+      omocStoreOperation: identity.operationId,
+      omocDigest: identity.digest,
+    },
+  ])
+    assert.throws(
+      () => check({ ...native, metadata: changed }),
+      /Native metadata correlation rejected/,
+    );
+  assert.throws(
+    () => check({ ...native, id: "other-native" }),
+    /Native metadata correlation rejected/,
+  );
+  for (const field of [
+    "runtimeEpoch",
+    "operationId",
+    "appSessionId",
+    "workspaceId",
+    "nativeSessionId",
+  ])
+    assert.throws(
+      () =>
+        check(native, registry.lookupIdentity(key), {
+          ...expected,
+          [field]: "other",
+        }),
+      /Native metadata correlation rejected/,
+    );
+  for (const authority of [
+    undefined,
+    admitted,
+    { ...identity, operationId: "other" },
+    { ...identity, runtimeEpoch: "other" },
+    { ...identity, type: "session.rename" },
+    { ...identity, digest: undefined },
+  ])
+    assert.throws(
+      () => check(native, authority),
+      /Native metadata correlation rejected/,
+    );
+  assert.equal(
+    registry.lookupIdentity({ ...key, operationId: "missing" }),
+    undefined,
+  );
+  assert.throws(
+    () =>
+      check(
+        native,
+        registry.lookupIdentity({ ...key, operationId: "missing" }),
+      ),
+    /Native metadata correlation rejected/,
+  );
+  try {
+    check({ ...native, metadata: { ...metadata, extra: "private-marker" } });
+  } catch (error) {
+    assert.equal(error.message.includes("private-marker"), false);
+  }
+  assert.deepEqual(registry.lookupIdentity(key), identity);
+});
+
+test("P7 real synthetic history helper preserves explicit original location and rejects mapping drift", async () => {
+  const { importSyntheticNativeHistory } = await import(
+    "./p7-storage-owner-host.mjs"
+  );
+  const original = {
+    id: "ses_native",
+    location: { directory: "/synthetic/Documents/OhMyOwnCode/app" },
+    metadata: {
+      operationId: "create",
+      originalRuntimeEpoch: "native-one",
+      appSessionId: "app",
+      workspaceId: "workspace",
+      digest: "a".repeat(64),
+    },
+  };
+  const expected = {
+    sessionId: original.id,
+    location: original.location,
+    metadata: original.metadata,
+  };
+  const options = { signal: AbortSignal.timeout(5000) };
+  async function run(stage, change) {
+    const calls = [];
+    let reads = 0;
+    const altered = () => ({
+      ...globalThis.structuredClone(original),
+      ...change,
+    });
+    const client = {
+      session: {
+        get: async (input, passedOptions) => {
+          calls.push("get");
+          assert.deepEqual(input, { sessionID: original.id });
+          assert.equal(passedOptions, options);
+          return (++reads === 1 && stage === "original") ||
+            (reads === 2 && stage === "reread")
+            ? altered()
+            : globalThis.structuredClone(original);
+        },
+        export: async (input, passedOptions) => {
+          calls.push("export");
+          assert.deepEqual(input, { sessionID: original.id });
+          assert.equal(passedOptions, options);
+          return {
+            info:
+              stage === "export"
+                ? altered()
+                : globalThis.structuredClone(original),
+            messages: [],
+          };
+        },
+        remove: async (input, passedOptions) => {
+          calls.push("remove");
+          assert.deepEqual(input, { sessionID: original.id });
+          assert.equal(passedOptions, options);
+        },
+        import: async (input, passedOptions) => {
+          calls.push("import");
+          // This exercises the actual helper, with server cwd deliberately different.
+          assert.deepEqual(
+            input.location,
+            original.location,
+            "Top-level import location required",
+          );
+          assert.deepEqual(input.info, original);
+          assert.equal(input.messages[0].text, "P7 synthetic durable history");
+          assert.equal(passedOptions, options);
+          return stage === "returned"
+            ? altered()
+            : {
+                ...globalThis.structuredClone(original),
+                location: input.location ?? {
+                  directory: "/synthetic/server-cwd",
+                },
+              };
+        },
+      },
+    };
+    if (stage) {
+      await assert.rejects(
+        importSyntheticNativeHistory(client, expected, options),
+        (error) => {
+          assert.match(error.message, /Native history mapping rejected/);
+          assert.equal(error.message.includes("private-marker"), false);
+          return true;
+        },
+      );
+      assert.deepEqual(
+        calls,
+        stage === "original"
+          ? ["get"]
+          : stage === "export"
+            ? ["get", "export"]
+            : stage === "returned"
+              ? ["get", "export", "remove", "import"]
+              : ["get", "export", "remove", "import", "get"],
+      );
+    } else {
+      assert.deepEqual(
+        await importSyntheticNativeHistory(client, expected, options),
+        { id: original.id, syntheticHistory: true },
+      );
+      assert.deepEqual(calls, ["get", "export", "remove", "import", "get"]);
+    }
+  }
+  await run();
+  for (const stage of ["original", "export", "returned", "reread"])
+    for (const change of [
+      { id: "ses_other" },
+      { location: { directory: "/synthetic/server-cwd" } },
+      { location: undefined },
+      { metadata: { ...original.metadata, digest: "b".repeat(64) } },
+      { metadata: { ...original.metadata, extra: "private-marker" } },
+      { metadata: undefined },
+      ...Object.keys(original.metadata).flatMap((field) => {
+        const missing = { ...original.metadata };
+        delete missing[field];
+        return [
+          { metadata: missing },
+          { metadata: { ...original.metadata, [field]: "mismatch" } },
+        ];
+      }),
+    ])
+      await run(stage, change);
+});
+
+test("P7 marker-only capability fails final report while independent observations continue", async () => {
+  const { readNativeHistoricalLog } = await import(
+    "./p7-storage-owner-host.mjs"
+  );
+  const {
+    assessNativeEventHistory,
+    runIndependentProbeSteps,
+    assertSavedProbeResult,
+  } = await import("../p7-storage-probe.mjs");
+  const report = { result: "fail", observations: [] };
+  const calls = [];
+  await runIndependentProbeSteps(report, [
+    {
+      name: "native",
+      run: async () => {
+        const result = await readNativeHistoricalLog(
+          {
+            session: {
+              log: async function* (query) {
+                assert.deepEqual(query, {
+                  sessionID: "ses_native",
+                  follow: false,
+                });
+                yield { type: "log.synced", aggregateID: "ses_native", seq: 2 };
+              },
+            },
+          },
+          "ses_native",
+        );
+        report.nativeEventCapability = assessNativeEventHistory(
+          result.events,
+          result.diagnostic,
+          "ses_native",
+        );
+        for (const step of ["transcript", "normal", "SIGKILL", "inbox"])
+          calls.push(step);
+      },
+    },
+    {
+      name: "owner",
+      run: async () => {
+        calls.push("owner");
+      },
+    },
+    {
+      name: "migration",
+      run: async () => {
+        calls.push("migration");
+      },
+    },
+  ]);
+  assert.deepEqual(calls, [
+    "transcript",
+    "normal",
+    "SIGKILL",
+    "inbox",
+    "owner",
+    "migration",
+  ]);
+  assert.equal(report.result, "fail");
+  assert.equal(report.nativeEventCapability.status, "unsupported");
+  assert.equal(
+    report.nativeEventCapability.nonemptyRequiredEventHistory,
+    false,
+  );
+  assert.equal(report.nativeEventCapability.eventLogAcceptance, false);
+  assert.deepEqual(report.failedRequirements, ["native-event-history"]);
+  assert.equal(report.stepFailures, undefined);
+  assert.throws(() => assertSavedProbeResult(report), /Saved P7 requirements/);
+  const previousError = new Error("Native historical log stream rejected");
+  assert.throws(
+    () => assertSavedProbeResult(report, previousError),
+    (error) => error === previousError,
+  );
+});
+
+test("P7 independent step failures remain failed and do not hide later observations", async () => {
+  const { runIndependentProbeSteps } = await import("../p7-storage-probe.mjs");
+  const report = {
+    nativeEventCapability: { eventLogAcceptance: true },
+    observations: [],
+  };
+  await runIndependentProbeSteps(report, [
+    {
+      name: "native",
+      run: async () => {
+        throw new Error("PRIVATE-BODY");
+      },
+    },
+    {
+      name: "migration",
+      run: async () => {
+        report.observations.push({ case: "migration" });
+      },
+    },
+  ]);
+  assert.equal(report.result, "fail");
+  assert.deepEqual(
+    report.stepFailures.map(({ step, code }) => ({ step, code })),
+    [{ step: "native", code: "PROBE_STEP_FAILED" }],
+  );
+  assert.ok(report.stepFailures[0].locations.length <= 4);
+  assert.ok(
+    report.stepFailures[0].locations.every((location) =>
+      /^apps\/desktop-app\/[A-Za-z0-9_./-]+:\d+:\d+$/.test(location),
+    ),
+  );
+  assert.deepEqual(report.observations, [{ case: "migration" }]);
+  assert.ok(!JSON.stringify(report).includes("PRIVATE-BODY"));
+  const malformedReport = {};
+  await runIndependentProbeSteps(malformedReport, [
+    {
+      name: "native",
+      run: async () => {
+        throw Object.assign(
+          new Error("Native historical log stream rejected"),
+          { code: "PROBE_ASSERTION" },
+        );
+      },
+    },
+    {
+      name: "migration",
+      run: async () => {
+        malformedReport.migrationObserved = true;
+      },
+    },
+  ]);
+  assert.equal(malformedReport.result, "fail");
+  assert.equal(malformedReport.error.code, "PROBE_ASSERTION");
+  assert.equal(
+    malformedReport.error.message,
+    "Native historical log stream rejected",
+  );
+  assert.equal(malformedReport.migrationObserved, true);
+});
+
+test("P7 full history includes seq0 and keeps nonempty replay hash and order failclosed", async () => {
+  const { readNativeHistoricalLog } = await import(
+    "./p7-storage-owner-host.mjs"
+  );
+  const {
+    assessNativeEventHistory,
+    assertNativeEventsPreserved,
+    runIndependentProbeSteps,
+  } = await import("../p7-storage-probe.mjs");
+  const stream = [0, 1].map((seq) => ({
+    type: "session.created",
+    durable: { aggregateID: "ses_native", version: 1, seq },
+    data: { sessionID: "ses_native" },
+  }));
+  const client = {
+    session: {
+      log: async function* (query) {
+        assert.equal(Object.hasOwn(query, "after"), false);
+        yield* stream;
+        yield { type: "log.synced", aggregateID: "ses_native", seq: 1 };
+      },
+    },
+  };
+  const result = await readNativeHistoricalLog(client, "ses_native");
+  const capability = assessNativeEventHistory(
+    result.events,
+    result.diagnostic,
+    "ses_native",
+  );
+  assert.equal(capability.nonemptyRequiredEventHistory, true);
+  assert.equal(capability.eventLogAcceptance, true);
+  assertNativeEventsPreserved(result.events, result.events, "ses_native");
+  for (const after of [
+    result.events.toReversed(),
+    result.events.slice(1),
+    [result.events[0], { ...result.events[1], sha256: "c".repeat(64) }],
+  ])
+    assert.throws(() =>
+      assertNativeEventsPreserved(result.events, after, "ses_native"),
+    );
+  const report = { nativeEventCapability: capability };
+  await runIndependentProbeSteps(report, [
+    {
+      name: "replay",
+      run: async () =>
+        assertNativeEventsPreserved(result.events, result.events, "ses_native"),
+    },
+  ]);
+  assert.equal(report.result, "pass");
+  assert.throws(() =>
+    assessNativeEventHistory(
+      [],
+      { ...result.diagnostic, completed: false },
+      "ses_native",
+    ),
+  );
+  assert.throws(() =>
+    assessNativeEventHistory([], result.diagnostic, "ses_native"),
+  );
+});
+
+test("P7 new integration output root admits only contained unused nonsymlink output", async (t) => {
+  const { claimProbeOutput } = await import("../p7-storage-probe.mjs");
+  const root = await realpath(
+    await mkdtemp(join(tmpdir(), "p7-integration-output-")),
+  );
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const base = join(root, "docs/runs/event-host-app-integration/evidence");
+  await mkdir(base, { recursive: true });
+  const out = join(base, "integration-native-r1");
+  assert.equal(await claimProbeOutput(root, out), out);
+  await assert.rejects(claimProbeOutput(root, out), /Consumed\/nonempty/);
+  await assert.rejects(
+    claimProbeOutput(
+      root,
+      join(root, "docs/runs/event-host-app-integration/design"),
+    ),
+    /under registered/,
+  );
+  await symlink(base, join(base, "redirect"), "dir");
+  await assert.rejects(
+    claimProbeOutput(root, join(base, "redirect/attempt")),
+    /Symlink/,
+  );
+});
+
+test("controlled event-host crash needs idle/identity/exact exit and retains dirty state", async () => {
+  const { stopIdleSyntheticEventHost } = await import(
+    "./p7-storage-owner-host.mjs"
+  );
+  const identity = {
+    pid: 321,
+    platform: "darwin",
+    bootId: "synthetic",
+    startToken: "owned",
+  };
+  const observation = {
+    observerGap: false,
+    live: 0,
+    allExited: true,
+    pendingHostRequests: 0,
+  };
+  const child = new EventEmitter();
+  child.pid = identity.pid;
+  let kills = 0;
+  child.kill = (signal) => {
+    kills++;
+    assert.equal(signal, "SIGKILL");
+    queueMicrotask(() => child.emit("exit", null, "SIGKILL"));
+    return true;
+  };
+  const input = {
+    runtime: {
+      eventHost: {},
+      workspace: "/synthetic/profile/workspace",
+      observeIdle: async () => observation,
+    },
+    nativeChild: child,
+    nativeIdentity: identity,
+    captureIdentity: async () => identity,
+  };
+  const result = await stopIdleSyntheticEventHost(input);
+  assert.equal(result.ownerCleanRelease, false);
+  assert.equal(result.cleanup, "incomplete");
+  assert.equal(result.recoveryPath, "/synthetic/profile");
+  assert.equal(kills, 1);
+  for (const bad of [
+    { ...observation, observerGap: true },
+    { ...observation, live: 1 },
+    { ...observation, allExited: false },
+    { ...observation, pendingHostRequests: 1 },
+  ])
+    await assert.rejects(
+      stopIdleSyntheticEventHost({
+        ...input,
+        runtime: { ...input.runtime, observeIdle: async () => bad },
+      }),
+    );
+  await assert.rejects(
+    stopIdleSyntheticEventHost({
+      ...input,
+      captureIdentity: async () => ({ ...identity, startToken: "foreign" }),
+    }),
+  );
+  assert.equal(kills, 1);
+});
+test("unconfirmed crash exit cannot become proof or leave an exit listener", async () => {
+  const { stopIdleSyntheticEventHost } = await import(
+    "./p7-storage-owner-host.mjs"
+  );
+  const identity = {
+    pid: 322,
+    platform: "darwin",
+    bootId: "synthetic",
+    startToken: "owned",
+  };
+  const child = new EventEmitter();
+  child.pid = identity.pid;
+  child.kill = () => true;
+  const input = {
+    runtime: {
+      eventHost: {},
+      workspace: "/synthetic/profile/workspace",
+      observeIdle: async () => ({
+        observerGap: false,
+        live: 0,
+        allExited: true,
+        pendingHostRequests: 0,
+      }),
+    },
+    nativeChild: child,
+    nativeIdentity: identity,
+    captureIdentity: async () => identity,
+    timeoutMs: 5,
+  };
+  await assert.rejects(stopIdleSyntheticEventHost(input), /exit unconfirmed/);
+  assert.equal(child.listenerCount("exit"), 0);
+  child.kill = () => false;
+  await assert.rejects(stopIdleSyntheticEventHost(input));
+  assert.equal(child.listenerCount("exit"), 0);
+});
+
+test("bootstrap SDK diagnostics retain only bounded codes and preserve original rejection", async () => {
+  const { observeBootstrapClient } = await import(
+    "./p7-storage-owner-host.mjs"
+  );
+  const failures = [];
+  const original = Object.assign(new Error("secret message"), {
+    name: "ClientError",
+    code: "CLIENT_ERROR",
+    status: 500,
+    body: "private body",
+    kind: "not safe/secret",
+  });
+  const client = observeBootstrapClient(
+    {
+      session: {
+        create: async () => {
+          throw original;
+        },
+        get: () => {
+          throw original;
+        },
+        update: async () => ({ id: "synthetic" }),
+      },
+    },
+    failures,
+  );
+  for (let i = 0; i < 10; i++)
+    await assert.rejects(
+      client.session.create(),
+      (error) => error === original,
+    );
+  assert.equal(failures.length, 8);
+  assert.deepEqual(failures[0], {
+    method: "create",
+    name: "ClientError",
+    code: "CLIENT_ERROR",
+    status: 500,
+  });
+  assert.deepEqual(await client.session.update(), { id: "synthetic" });
+});
+
+test("configuration save fixture confirms versioned replacement, backup, duplicate and current read", async () => {
+  const { fixture, event, transport, epoch } = setup();
+  const key = JSON.stringify(["fixture-w", "instructions"]);
+  fixture.configurationFiles.set(key, "SYNTHETIC ORIGINAL");
+  const read = (id) =>
+    transport.handle(event, {
+      version: 2,
+      runtimeEpoch: epoch,
+      readId: id,
+      operation: {
+        type: "configuration.read",
+        workspaceId: "fixture-w",
+        kind: "instructions",
+      },
+    });
+  const original = await read("save-read-one");
+  const wire = {
+    version: 2,
+    runtimeEpoch: epoch,
+    operationId: "save-operation",
+    expectedRevision: fixture.snapshot.revision,
+    operation: {
+      type: "configuration.save",
+      workspaceId: "fixture-w",
+      requestId: "save-request",
+      kind: "instructions",
+      expectation: "version",
+      version: original.value.version,
+      text: "SYNTHETIC NEW",
+    },
+  };
+  const saved = await transport.handle(event, wire);
+  assert.equal(saved.value.status, "saved");
+  assert.equal(saved.receipt.effect, "confirmed");
+  assert.equal(
+    fixture.configurationBackups.get(saved.value.backupId),
+    "SYNTHETIC ORIGINAL",
+  );
+  assert.equal(
+    (await read("save-read-two")).value.version,
+    saved.value.version,
+  );
+  assert.deepEqual(
+    (await transport.handle(event, wire)).receipt,
+    saved.receipt,
+  );
+  assert.equal(transport.mutationMetrics().dispatched, 1);
+  assert.equal(
+    (
+      await transport.handle(event, {
+        ...wire,
+        operation: { ...wire.operation, text: "CONFLICT" },
+      })
+    ).code,
+    "DUPLICATE_CONFLICT",
+  );
+});
+
+test("configuration save fixture denies and detects stale observations without effects", async () => {
+  const { fixture, event, transport, epoch } = setup();
+  const key = JSON.stringify(["fixture-w", "instructions"]);
+  const make = (id) => ({
+    version: 2,
+    runtimeEpoch: epoch,
+    operationId: id,
+    operation: {
+      type: "configuration.save",
+      workspaceId: "fixture-w",
+      requestId: id,
+      kind: "instructions",
+      expectation: "missing",
+      text: "SYNTHETIC",
+    },
+  });
+  fixture.nextConfigurationSave = "denied";
+  const denied = await transport.handle(event, make("save-denied"));
+  assert.equal(denied.code, "CANCELLED");
+  assert.ok(denied.receipt.revision > 1);
+  assert.equal(denied.receipt.effect, "none");
+  assert.equal(fixture.configurationFiles.has(key), false);
+  fixture.configurationFiles.set(key, "EXTERNAL");
+  const conflict = await transport.handle(event, make("save-conflict"));
+  assert.equal(conflict.code, "FILE_CHANGED");
+  assert.equal(conflict.receipt.effect, "none");
+  assert.equal(fixture.configurationFiles.get(key), "EXTERNAL");
+  assert.equal(transport.mutationMetrics().dispatched, 0);
+  assert.equal(fixture.configurationBackups.size, 0);
+});
+
+test("configuration save fixture holds actual pending request and retains unknown original key", async () => {
+  const { fixture, event, transport, epoch } = setup();
+  fixture.snapshot.temporary = false;
+  fixture.nextConfigurationSave = "unknown";
+  fixture.holdConfigurationSave = true;
+  const wire = {
+    version: 2,
+    runtimeEpoch: epoch,
+    operationId: "save-unknown",
+    operation: {
+      type: "configuration.save",
+      workspaceId: "fixture-w",
+      requestId: "save-unknown",
+      kind: "instructions",
+      expectation: "missing",
+      text: "SYNTHETIC",
+    },
+  };
+  const pending = transport.handle(event, wire);
+  assert.equal(fixture.heldConfigurationSaves.length, 1);
+  assert.equal(fixture.configurationFiles.size, 0);
+  fixture.releaseConfigurationSaves();
+  const result = await pending;
+  assert.equal(result.value.status, "unknown");
+  assert.equal(result.receipt.effect, "unknown");
+  const snapshot = await transport.handle(event, {
+    version: 2,
+    runtimeEpoch: epoch,
+    readId: "save-held-snapshot",
+    operation: { type: "snapshot" },
+  });
+  assert.deepEqual(snapshot.value.retainedOperations, [
+    {
+      runtimeEpoch: epoch,
+      operationId: "save-unknown",
+      type: "configuration.save",
+      workspaceId: "fixture-w",
+    },
+  ]);
+  assert.equal((await transport.handle(event, wire)).receipt.effect, "unknown");
+  assert.equal(transport.mutationMetrics().dispatched, 1);
+});
+
+async function mcpHarness(name = "missing") {
+  const { fixture, event, transport, epoch } = setup();
+  const scope = fixture.setMcpState(name);
+  let serial = 0;
+  const handle = (operation, id) =>
+    transport.handle(event, {
+      version: 2,
+      runtimeEpoch: epoch,
+      [operation.type.endsWith(".read") ||
+      operation.type === "snapshot" ||
+      operation.type === "operation.lookup"
+        ? "readId"
+        : "operationId"]: id ?? `mcp-${++serial}`,
+      operation,
+    });
+  const observe = async () =>
+    (
+      await handle({
+        type: "configuration.mcp.read",
+        workspaceId: scope.workspaceId,
+      })
+    ).value;
+  const mutate = async (action, id) =>
+    handle(
+      {
+        type: `configuration.mcp.${action}`,
+        workspaceId: scope.workspaceId,
+        sourceName: "demo",
+        requestId: id ?? `request-${++serial}`,
+        expectedObservationVersion: (await observe()).version,
+        ...(action === "register"
+          ? { text: scope.text, fileVersion: scope.sourceVersion }
+          : {}),
+      },
+      id,
+    );
+  return { fixture, transport, scope, handle, observe, mutate, epoch };
+}
+test("MCP fixture uses frozen production catalog projection and explicit inactive lifecycle", async () => {
+  const h = await mcpHarness();
+  assert.equal(h.fixture.mcpReads.length, 0);
+  assert.deepEqual((await h.observe()).servers, []);
+  const before = h.scope.text;
+  const registered = await h.mutate("register", "register-one");
+  assert.equal(registered.value.status, "registered_disabled");
+  assert.equal(registered.receipt.result.kind, "mcp_registered");
+  assert.deepEqual(registered.receipt.evidence, [
+    { kind: "host-registry", id: h.scope.workspaceId },
+  ]);
+  assert.equal((await h.observe()).servers[0].ownership, "current_runtime");
+  for (const [action, status] of [
+    ["connect", "connected"],
+    ["disconnect", "disabled"],
+    ["connect", "connected"],
+  ]) {
+    const result = await h.mutate(action);
+    assert.equal(result.value.connectionStatus, status);
+    assert.equal(result.receipt.result.kind, "mcp_connection");
+    assert.deepEqual(result.receipt.evidence, [
+      { kind: "host-registry", id: h.scope.workspaceId },
+    ]);
+  }
+  const removed = await h.mutate("remove");
+  assert.equal(removed.receipt.result.kind, "mcp_removed");
+  assert.deepEqual(removed.receipt.evidence, [
+    { kind: "host-registry", id: h.scope.workspaceId },
+  ]);
+  assert.deepEqual((await h.observe()).servers, []);
+  assert.equal(
+    h.fixture.configurationFiles.get(
+      JSON.stringify([h.scope.workspaceId, "mcp"]),
+    ),
+    before,
+  );
+});
+test("MCP fixture unknown keeps workspace hold and original composite lookup without replay", async () => {
+  const h = await mcpHarness("unknown");
+  const result = await h.mutate("register", "unknown-original");
+  assert.equal(result.receipt.effect, "unknown");
+  assert.equal(result.receipt.result, undefined);
+  assert.deepEqual(h.fixture.snapshot.recovery.resources, [
+    {
+      workspaceId: h.scope.workspaceId,
+      state: "unavailable",
+      reason: "unresolved_operation",
+    },
+  ]);
+  const counts = h.transport.mutationMetrics();
+  const lookup = await h.handle({
+    type: "operation.lookup",
+    runtimeEpoch: h.epoch,
+    operationId: "unknown-original",
+  });
+  assert.deepEqual(lookup.value.receipt, result.receipt);
+  const denied = await h.handle({
+    type: "message.send",
+    workspaceId: h.scope.workspaceId,
+    sessionId: "fixture-s",
+    requestId: "blocked",
+    text: "synthetic",
+  });
+  assert.equal(denied.code, "UNAVAILABLE");
+  assert.equal(h.transport.mutationMetrics().dispatched, counts.dispatched);
+  const reloaded = createFixtureTransport(h.fixture, {
+    webContents: {},
+    allowedUrl: () => true,
+  });
+  assert.ok(reloaded);
+});
+for (const [name, code] of [
+  ["collision", "MCP_OWNERSHIP_CONFLICT"],
+  ["denied", "CANCELLED"],
+  ["changed", "MCP_CHANGED"],
+  ["untrusted", "INVALID_SELECTION"],
+])
+  test(`MCP fixture ${name} has zero effects`, async () => {
+    const h = await mcpHarness(name);
+    const result = await h.handle({
+      type: "configuration.mcp.register",
+      workspaceId: h.scope.workspaceId,
+      sourceName: "demo",
+      requestId: "refused",
+      expectedObservationVersion: h.scope.observationVersion,
+      text: h.scope.text,
+      fileVersion: h.scope.sourceVersion,
+    });
+    assert.equal(result.code, code);
+    assert.equal(result.receipt.effect, "none");
+    assert.equal(h.transport.mutationMetrics().dispatched, 0);
+  });
+test("MCP fixture blocks mutation when another workspace session is busy", async () => {
+  const h = await mcpHarness();
+  h.fixture.snapshot.sessions.push({
+    id: "other-busy",
+    workspaceId: h.scope.workspaceId,
+    title: "Other",
+    status: "running",
+  });
+  const result = await h.mutate("register");
+  assert.equal(result.code, "BUSY");
+  assert.equal(h.transport.mutationMetrics().dispatched, 0);
+});
+
+for (const name of [
+  "currentdisabled",
+  "connected",
+  "failed",
+  "needs_auth",
+  "unowned",
+  "restart",
+])
+  test(`MCP fixture ${name} keeps read-only ownership semantics`, async () => {
+    const h = await mcpHarness(name);
+    const row = (await h.observe()).servers[0];
+    assert.equal(
+      row.status,
+      name === "currentdisabled" || name === "restart"
+        ? "disabled"
+        : name === "unowned"
+          ? "connected"
+          : name,
+    );
+    assert.equal(
+      row.ownership,
+      ["unowned", "restart"].includes(name) ? "unowned" : "current_runtime",
+    );
+    assert.equal(h.fixture.requests.length, 0);
+    assert.equal(h.transport.mutationMetrics().dispatched, 0);
+    if (name === "restart") {
+      const result = await h.handle({
+        type: "operation.lookup",
+        runtimeEpoch: "fixture-MCP-original-epoch",
+        operationId: "fixture-MCP-original-register",
+      });
+      assert.equal(result.value.receipt.effect, "confirmed");
+      assert.equal((await h.mutate("connect")).code, "MCP_OWNERSHIP_CONFLICT");
+    }
+  });
+test("MCP fixture held ACK preserves original workspace and blocks all its sessions", async () => {
+  const h = await mcpHarness("lateworkspace");
+  const pending = h.mutate("register");
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(h.fixture.pendingMcpWorkspaces.has(h.scope.workspaceId), true);
+  const blocked = await h.handle({
+    type: "message.send",
+    workspaceId: h.scope.workspaceId,
+    sessionId: "fixture-s",
+    requestId: "no-send",
+    text: "synthetic",
+  });
+  assert.equal(blocked.code, "BUSY");
+  const other = await h.handle({
+    type: "configuration.mcp.read",
+    workspaceId: "fixture-mcp-other-w",
+  });
+  assert.equal(other.value.status, "observed");
+  h.fixture.snapshot.selectedWorkspaceId = "fixture-mcp-other-w";
+  h.fixture.snapshot.selectedSessionId = "fixture-mcp-other-s";
+  h.fixture.releaseMcp();
+  const result = await pending;
+  assert.equal(result.receipt.workspaceId, h.scope.workspaceId);
+  assert.equal(Object.hasOwn(result.receipt, "sessionId"), false);
+  assert.equal(
+    (
+      await h.handle({
+        type: "configuration.mcp.read",
+        workspaceId: "fixture-mcp-other-w",
+      })
+    ).value.servers.length,
+    0,
+  );
+});
+
+async function skillHarness(name = "file-available") {
+  const { fixture, event, transport, epoch } = setup();
+  const scope = fixture.setSkillState(name);
+  let serial = 0;
+  const handle = (operation, id) =>
+    transport.handle(event, {
+      version: 2,
+      runtimeEpoch: epoch,
+      [operation.type === "configuration.skill.save" ||
+      operation.type === "message.send"
+        ? "operationId"
+        : "readId"]: id ?? `skill-${++serial}`,
+      operation,
+    });
+  const read = (sourceName = scope.sourceName) =>
+    handle({
+      type: "configuration.skill.read",
+      workspaceId: scope.workspaceId,
+      sourceName,
+    });
+  const saveWire = (file, id, text = "# SYNTHETIC UPDATED SKILL\n") => ({
+    type: "configuration.skill.save",
+    workspaceId: scope.workspaceId,
+    sourceName: file.sourceName,
+    requestId: id,
+    text,
+    directoryVersion: file.directoryVersion,
+    ...(file.status === "missing"
+      ? { expectation: "missing" }
+      : {
+          expectation: "version",
+          version: file.version,
+        }),
+  });
+  return { fixture, event, transport, epoch, scope, handle, read, saveWire };
+}
+
+test("Skill fixture closed list and read states keep exact safe bytes and required directory authority", async () => {
+  for (const name of SKILL_UI_STATES) {
+    const h = await skillHarness(name);
+    assert.equal(h.fixture.skillReads.length, 0);
+    const list = await h.handle({
+      type: "configuration.skill.list",
+      workspaceId: h.scope.workspaceId,
+    });
+    if (name === "untrusted") {
+      assert.equal(list.code, "INVALID_SELECTION");
+      assert.equal((await h.read()).code, "INVALID_SELECTION");
+      continue;
+    }
+    if (name === "restoredoldkey") {
+      assert.equal(list.code, "UNAVAILABLE");
+      continue;
+    }
+    const listing = list.value;
+    assert.equal(Object.hasOwn(listing, "content"), false);
+    if (name === "list-missingparent") {
+      assert.equal(listing.status, "missing");
+      assert.equal(listing.reason, "path_missing");
+      assert.equal((await h.read()).value.reason, "path_missing");
+    } else if (name === "list-denied") {
+      assert.equal(listing.status, "unavailable");
+      assert.equal(listing.reason, "path_denied");
+    } else {
+      assert.equal(listing.status, "available");
+      assert.equal(listing.truncated, name === "list-truncated");
+      assert.ok(listing.entries.length <= 16);
+      const file = (await h.read()).value;
+      assert.equal(
+        file.path,
+        `${h.scope.workspacePath}/.opencode/skills/${h.scope.sourceName}/SKILL.md`,
+      );
+      if (name === "file-missingleaf") {
+        assert.equal(file.status, "missing");
+        assert.equal(file.reason, "missing_file");
+        assert.match(file.directoryVersion, /^[a-f0-9]{64}$/);
+      } else if (name === "file-unsafeunsupported") {
+        assert.equal(file.status, "unsupported");
+        assert.equal(file.reason, "unsupported_content");
+        assert.equal(Object.hasOwn(file, "content"), false);
+      } else if (["file-changed", "file-oversize"].includes(name)) {
+        assert.equal(file.status, "unavailable");
+        assert.equal(
+          file.reason,
+          name === "file-changed" ? "file_changed" : "too_large",
+        );
+      } else {
+        assert.equal(file.status, "available");
+        assert.equal(file.content, h.scope.text);
+        assert.match(file.version, /^[a-f0-9]{64}$/);
+        assert.match(file.directoryVersion, /^[a-f0-9]{64}$/);
+      }
+    }
+    assert.equal(h.fixture.requests.length, 0);
+    assert.equal(h.transport.mutationMetrics().dispatched, 0);
+  }
+  assert.throws(
+    () => createUiFixture().setSkillState("guessed"),
+    /Unknown closed Skill/,
+  );
+});
+
+test("Skill fixture confirmed lifecycle binds exact source, backup and closed receipt without implicit reads", async () => {
+  const h = await skillHarness();
+  const original = (await h.read()).value;
+  const other = (await h.read(h.scope.otherSourceName)).value;
+  assert.notEqual(original.content, other.content);
+  assert.notEqual(original.version, other.version);
+  assert.notEqual(original.directoryVersion, other.directoryVersion);
+  const reads = h.fixture.skillReads.length;
+  const request = h.saveWire(original, "skill-save-original");
+  const result = await h.handle(request, "skill-save-original");
+  assert.equal(result.value.status, "saved");
+  assert.equal(result.receipt.admission, "dispatched");
+  assert.equal(result.receipt.delivery, "accepted");
+  assert.equal(result.receipt.effect, "confirmed");
+  assert.deepEqual(result.receipt.result, {
+    kind: "skill_file_saved",
+    workspaceId: h.scope.workspaceId,
+    sourceName: original.sourceName,
+    version: result.value.version,
+    backupId: result.value.backupId,
+  });
+  assert.deepEqual(result.receipt.evidence, [
+    { kind: "host-registry", id: h.scope.workspaceId },
+  ]);
+  assert.equal(Object.hasOwn(result.receipt, "sessionId"), false);
+  assert.match(
+    result.value.backupId,
+    /^\.omoc-configuration-[a-f0-9]{64}\.skill\.backup$/,
+  );
+  assert.equal(
+    h.fixture.skillBackups.get(result.value.backupId),
+    original.content,
+  );
+  assert.equal(h.fixture.skillReads.length, reads);
+  assert.deepEqual((await h.read(h.scope.otherSourceName)).value, other);
+  const fresh = (await h.read()).value;
+  assert.equal(fresh.version, result.value.version);
+  assert.equal(fresh.content, request.text);
+  assert.notEqual(fresh.version, original.version);
+  assert.equal(fresh.directoryVersion, original.directoryVersion);
+  assert.deepEqual(
+    (await h.handle(request, "skill-save-original")).receipt,
+    result.receipt,
+  );
+  assert.equal(
+    (
+      await h.handle(
+        { ...request, sourceName: h.scope.otherSourceName },
+        "skill-save-original",
+      )
+    ).code,
+    "DUPLICATE_CONFLICT",
+  );
+  assert.equal(h.transport.mutationMetrics().dispatched, 1);
+  const lookup = await h.handle({
+    type: "operation.lookup",
+    runtimeEpoch: h.epoch,
+    operationId: "skill-save-original",
+  });
+  assert.deepEqual(lookup.value.receipt, result.receipt);
+  await h.handle({ type: "snapshot" });
+  assert.equal(h.fixture.skillReads.length, reads + 2);
+});
+
+test("Skill fixture missing save requires the original directory and never creates a directory", async () => {
+  const h = await skillHarness("file-missingleaf");
+  const missing = (await h.read()).value;
+  const request = h.saveWire(missing, "missing-create");
+  const { directoryVersion: _directory, ...unbound } = request;
+  assert.equal((await h.handle(unbound)).code, "INVALID_REQUEST");
+  const key = h.fixture.skillKey(h.scope.workspaceId, h.scope.sourceName);
+  h.fixture.skillDirectories.set(key, "replaced-empty-directory");
+  assert.equal((await h.handle(request)).code, "FILE_CHANGED");
+  assert.equal(h.fixture.skillFiles.has(key), false);
+  const fresh = (await h.read()).value;
+  assert.notEqual(fresh.directoryVersion, missing.directoryVersion);
+  const saved = await h.handle(h.saveWire(fresh, "fresh-create"));
+  assert.equal(saved.value.status, "saved");
+  assert.equal(Object.hasOwn(saved.value, "backupId"), false);
+  assert.equal(h.fixture.skillBackups.size, 0);
+  h.fixture.skillDirectories.delete(key);
+  assert.equal((await h.read()).value.reason, "path_missing");
+  assert.equal(
+    (await h.handle(h.saveWire(fresh, "no-mkdir"))).code,
+    "FILE_CHANGED",
+  );
+  assert.equal(h.fixture.skillDirectories.has(key), false);
+});
+
+test("Skill fixture raw unsupported grammar is readable but cannot publish until explicitly repaired", async () => {
+  const h = await skillHarness("file-rawunsupportedgrammar");
+  const file = (await h.read()).value;
+  assert.match(file.content, /description: \|/);
+  const refused = await h.handle(
+    h.saveWire(file, "unsupported-save", file.content),
+  );
+  assert.equal(refused.code, "INVALID_REQUEST");
+  assert.equal(refused.receipt, undefined);
+  assert.equal(h.transport.mutationMetrics().dispatched, 0);
+  assert.equal(
+    (await h.handle(h.saveWire(file, "repaired-save"))).value.status,
+    "saved",
+  );
+});
+
+for (const name of ["unknown", "restoredoldkey"])
+  test(`Skill fixture ${name} retains original composite lookup only with no automatic call or payload restoration`, async () => {
+    const h = await skillHarness(name);
+    let receipt;
+    if (name === "unknown") {
+      const file = (await h.read()).value;
+      const wire = h.saveWire(file, "skill-unknown-original");
+      receipt = (await h.handle(wire, "skill-unknown-original")).receipt;
+      assert.equal(receipt.effect, "unknown");
+      assert.equal(Object.hasOwn(receipt, "result"), false);
+      assert.deepEqual(
+        (await h.handle(wire, "skill-unknown-original")).receipt,
+        receipt,
+      );
+    } else receipt = [...h.fixture.retainedReceipts.values()][0].receipt;
+    const before = h.transport.mutationMetrics();
+    const reads = h.fixture.skillReads.length;
+    const snapshot = (await h.handle({ type: "snapshot" })).value;
+    assert.deepEqual(snapshot.retainedOperations, [
+      {
+        runtimeEpoch: receipt.runtimeEpoch,
+        operationId: receipt.operationId,
+        type: "configuration.skill.save",
+        workspaceId: h.scope.workspaceId,
+      },
+    ]);
+    assert.equal(
+      Object.hasOwn(snapshot.retainedOperations[0], "sourceName"),
+      false,
+    );
+    assert.equal(Object.hasOwn(snapshot.retainedOperations[0], "text"), false);
+    const lookup = await h.handle({
+      type: "operation.lookup",
+      runtimeEpoch: receipt.runtimeEpoch,
+      operationId: receipt.operationId,
+    });
+    assert.deepEqual(lookup.value.receipt, receipt);
+    const wrong = await h.handle({
+      type: "operation.lookup",
+      runtimeEpoch: `${receipt.runtimeEpoch}-wrong`,
+      operationId: receipt.operationId,
+    });
+    assert.equal(wrong.value.status, "wrong_epoch");
+    assert.equal(h.fixture.skillReads.length, reads);
+    assert.deepEqual(h.transport.mutationMetrics(), before);
+    const blocked = await h.handle({
+      type: "message.send",
+      workspaceId: h.scope.workspaceId,
+      sessionId: "fixture-s",
+      requestId: "no-send",
+      text: "SYNTHETIC",
+    });
+    assert.equal(blocked.code, "UNAVAILABLE");
+    assert.equal(h.transport.mutationMetrics().dispatched, before.dispatched);
+    assert.equal(
+      h.fixture.requests.filter((r) => r.type === "message.send").length,
+      0,
+    );
+    assert.equal(h.fixture.skillBackups.size, 0);
+    // Recreating the transport simulates window reload, not replay of private payload.
+    const reloaded = createFixtureTransport(h.fixture, {
+      webContents: h.event.sender,
+      allowedUrl: () => true,
+    });
+    const again = await reloaded.handle(h.event, {
+      version: 2,
+      runtimeEpoch: h.epoch,
+      readId: "restored-lookup",
+      operation: {
+        type: "operation.lookup",
+        runtimeEpoch: receipt.runtimeEpoch,
+        operationId: receipt.operationId,
+      },
+    });
+    assert.deepEqual(again.value.receipt, receipt);
+    assert.equal(reloaded.mutationMetrics().dispatched, 0);
+    assert.equal(h.fixture.skillReads.length, reads);
+  });
+
+test("Skill fixture held save keeps original target and excludes all workspace sends", async () => {
+  const h = await skillHarness();
+  const file = (await h.read()).value;
+  h.fixture.holdSkillSave = true;
+  const pending = h.handle(h.saveWire(file, "held-skill-save"));
+  assert.equal(h.fixture.heldSkillSaves.length, 1);
+  assert.equal(
+    (
+      await h.handle({
+        type: "message.send",
+        workspaceId: h.scope.workspaceId,
+        sessionId: "fixture-s",
+        requestId: "held-no-send",
+        text: "SYNTHETIC",
+      })
+    ).code,
+    "BUSY",
+  );
+  h.fixture.releaseSkillSaves();
+  const result = await pending;
+  assert.equal(result.receipt.result.sourceName, file.sourceName);
+  assert.equal(
+    h.fixture.requests.filter((r) => r.type === "message.send").length,
+    0,
+  );
+  assert.equal(h.fixture.skillReads.length, 1);
+});
+
+test("Skill fixture wrong file baseline, refusal and workspace holds produce no write or send", async () => {
+  const h = await skillHarness();
+  const file = (await h.read()).value;
+  const other = (await h.read(h.scope.otherSourceName)).value;
+  const request = h.saveWire(file, "exact-scope");
+  const wrong = await h.handle(
+    { ...request, sourceName: other.sourceName },
+    "wrong-source-baseline",
+  );
+  assert.equal(wrong.code, "FILE_CHANGED");
+  assert.equal(wrong.receipt.effect, "none");
+  h.fixture.nextSkillSave = "denied";
+  const denied = await h.handle(request, "denied-save");
+  assert.equal(denied.code, "CANCELLED");
+  assert.equal(denied.receipt.effect, "none");
+  h.fixture.snapshot.workspaces[0].trusted = false;
+  assert.equal(
+    (await h.handle(request, "untrusted-save")).code,
+    "INVALID_SELECTION",
+  );
+  h.fixture.snapshot.workspaces[0].trusted = true;
+  h.fixture.snapshot.sessions.push({
+    id: "skill-other-busy",
+    workspaceId: h.scope.workspaceId,
+    title: "SYNTHETIC",
+    status: "running",
+  });
+  assert.equal((await h.handle(request, "workspace-busy-save")).code, "BUSY");
+  assert.equal(h.transport.mutationMetrics().dispatched, 0);
+  assert.equal(h.fixture.skillBackups.size, 0);
+  assert.equal(
+    h.fixture.skillFiles.get(
+      h.fixture.skillKey(h.scope.workspaceId, file.sourceName),
+    ),
+    file.content,
+  );
+  assert.equal(
+    h.fixture.skillFiles.get(
+      h.fixture.skillKey(h.scope.workspaceId, other.sourceName),
+    ),
+    other.content,
+  );
+});
+
+test("Skill fixture held confirmation rejects changed ancestors before publication", async () => {
+  const h = await skillHarness("file-missingleaf");
+  const file = (await h.read()).value;
+  const key = h.fixture.skillKey(h.scope.workspaceId, file.sourceName);
+  h.fixture.holdSkillSave = true;
+  const pending = h.handle(h.saveWire(file, "held-ancestor"));
+  assert.equal(h.fixture.heldSkillSaves.length, 1);
+  h.fixture.skillDirectories.set(key, "changed-during-confirmation");
+  h.fixture.releaseSkillSaves();
+  const refused = await pending;
+  assert.equal(refused.code, "FILE_CHANGED");
+  assert.equal(refused.receipt.effect, "none");
+  assert.equal(h.fixture.pendingSkillWorkspaces.size, 0);
+  assert.equal(h.fixture.skillFiles.has(key), false);
+  assert.equal(h.fixture.skillBackups.size, 0);
+  assert.equal(h.fixture.skillReads.length, 1);
+});
+
+async function skillRuntimeHarness(name = "empty") {
+  const h = setup();
+  const scope = h.fixture.setSkillRuntimeState(name);
+  let serial = 0;
+  const wire = (operation, operationId) =>
+    h.transport.handle(h.event, {
+      version: 2,
+      runtimeEpoch: h.epoch,
+      ...(operationId
+        ? { operationId }
+        : { readId: `runtime-read-${++serial}` }),
+      operation,
+    });
+  const observe = () =>
+    wire({
+      type: "configuration.skill.runtime.read",
+      workspaceId: scope.workspaceId,
+      sessionId: scope.sessionId,
+      sourceName: scope.sourceName,
+    });
+  const registration = (observation, operationId = "runtime-register") =>
+    wire(
+      {
+        type: "configuration.skill.register",
+        workspaceId: scope.workspaceId,
+        requestId: operationId,
+        observationId: observation.observationId,
+        sourceName: observation.file.sourceName,
+        digest: observation.file.digest,
+        version: observation.file.version,
+        directoryVersion: observation.file.directoryVersion,
+      },
+      operationId,
+    );
+  const act = (
+    action,
+    observation,
+    nativeId,
+    operationId = `runtime-${action}`,
+  ) =>
+    wire(
+      {
+        type: `configuration.skill.${action}`,
+        workspaceId: scope.workspaceId,
+        ...(action === "apply" ? { sessionId: scope.sessionId } : {}),
+        requestId: operationId,
+        observationId: observation.observationId,
+        nativeId,
+      },
+      operationId,
+    );
+  return { ...h, scope, wire, observe, registration, act };
+}
+
+test("Skill runtime fixture requires explicit read and original-key register/apply/remove; files and history stay separate", async () => {
+  const h = await skillRuntimeHarness();
+  const before = [...h.fixture.skillFiles];
+  await h.wire({ type: "snapshot" });
+  await h.wire({
+    type: "configuration.skill.read",
+    workspaceId: h.scope.workspaceId,
+    sourceName: h.scope.sourceName,
+  });
+  assert.equal(h.fixture.skillRuntimeReads.length, 0);
+  assert.equal(h.fixture.skillRuntimeRegistrations.size, 0);
+  const read = (await h.observe()).value;
+  const registered = await h.registration(read);
+  assert.equal(registered.value.status, "registered_disabled");
+  assert.equal(registered.receipt.result.kind, "skill_registered");
+  const {
+    skillRuntimeIdPayload,
+    validSkillRuntimeMutation,
+    validSkillRuntimeObservation,
+  } = await import(
+    "../../src/renderer/shared/configuration-draft/skill-runtime.mjs"
+  );
+  const { createHash } = await import("node:crypto");
+  assert.equal(
+    registered.value.nativeId,
+    "omoc-skill-" +
+      createHash("sha256")
+        .update(
+          skillRuntimeIdPayload({
+            runtimeEpoch: h.epoch,
+            workspaceId: h.scope.workspaceId,
+            sourceName: h.scope.sourceName,
+            operationId: "runtime-register",
+          }),
+        )
+        .digest("hex"),
+  );
+  assert.equal(validSkillRuntimeMutation(registered.value), true);
+  assert.equal(
+    (await h.act("apply", read, registered.value.nativeId)).code,
+    "SKILL_CHANGED",
+  );
+  const current = (await h.observe()).value;
+  assert.equal(validSkillRuntimeObservation(current), true);
+  assert.equal(current.owned[0].autoinvoke, false);
+  const applied = await h.act(
+    "apply",
+    current,
+    registered.value.nativeId,
+    "runtime-apply-fresh",
+  );
+  assert.equal(applied.value.status, "applied");
+  assert.equal(applied.receipt.result.kind, "skill_applied");
+  assert.equal(validSkillRuntimeMutation(applied.value), true);
+  const recorded = (await h.observe()).value;
+  assert.equal(
+    recorded.session.messages[0].messageId,
+    applied.value.nativeMessageId,
+  );
+  assert.equal(
+    (
+      await h.act(
+        "apply",
+        recorded,
+        registered.value.nativeId,
+        "runtime-duplicate-apply",
+      )
+    ).code,
+    "SKILL_ALREADY_APPLIED",
+  );
+  const removed = await h.act(
+    "remove",
+    (await h.observe()).value,
+    registered.value.nativeId,
+  );
+  assert.equal(removed.value.status, "removed");
+  assert.equal(validSkillRuntimeMutation(removed.value), true);
+  const final = (await h.observe()).value;
+  assert.deepEqual(final.owned, []);
+  assert.deepEqual(final.session.messages, recorded.session.messages);
+  assert.deepEqual([...h.fixture.skillFiles], before);
+  assert.equal(h.fixture.skillBackups.size, 0);
+  assert.equal(
+    h.fixture.requests.some((r) =>
+      ["message.send", "command.run"].includes(r.type),
+    ),
+    false,
+  );
+  assert.equal(h.transport.mutationMetrics().dispatched, 3);
+  assert.equal(
+    h.fixture.skillRuntimeEffects.filter((e) => e.action === "apply")[0].resume,
+    false,
+  );
+});
+
+test("Skill runtime fixture rejects malformed identity before counters and refuses foreign/unverified/history duplicate effects", async () => {
+  for (const name of [
+    "foreign",
+    "history-unavailable",
+    "already-present",
+    "untrusted",
+    "restart",
+  ]) {
+    const h = await skillRuntimeHarness(name);
+    const before = h.transport.mutationMetrics();
+    const bad = await h.wire(
+      {
+        type: "configuration.skill.remove",
+        workspaceId: h.scope.workspaceId,
+        nativeId: "omoc-skill-" + "a".repeat(64),
+        requestId: "different",
+        observationId: "obs",
+      },
+      "original",
+    );
+    assert.equal(bad.code, "INVALID_REQUEST");
+    assert.deepEqual(h.transport.mutationMetrics(), before);
+    const observed = await h.observe();
+    if (name === "untrusted") {
+      assert.equal(observed.code, "INVALID_SELECTION");
+      continue;
+    }
+    const observation = observed.value;
+    const target =
+      observation.owned[0]?.nativeId ??
+      observation.unowned[0]?.nativeId ??
+      h.scope.nativeId;
+    const refused = await h.act("apply", observation, target);
+    assert.equal(
+      refused.code,
+      name === "already-present"
+        ? "SKILL_ALREADY_APPLIED"
+        : name === "history-unavailable"
+          ? "SKILL_UNVERIFIED"
+          : "SKILL_OWNERSHIP_CONFLICT",
+    );
+    assert.equal(h.transport.mutationMetrics().dispatched, 0);
+    assert.deepEqual(h.fixture.skillRuntimeEffects, []);
+  }
+});
+
+test("Skill runtime fixture unknown retains only original lookup without replay across transport reload", async () => {
+  const h = await skillRuntimeHarness("unknown");
+  const observed = (await h.observe()).value;
+  const unknown = await h.registration(observed, "runtime-original-unknown");
+  assert.equal(unknown.value.status, "unknown");
+  assert.equal(unknown.receipt.effect, "unknown");
+  assert.equal(
+    (await h.registration(observed, "runtime-new-forbidden")).code,
+    "UNAVAILABLE",
+  );
+  const transport = createFixtureTransport(h.fixture, {
+    webContents: h.event.sender,
+    allowedUrl: () => true,
+  });
+  const lookup = await transport.handle(h.event, {
+    version: 2,
+    runtimeEpoch: h.epoch,
+    readId: "original-lookup",
+    operation: {
+      type: "operation.lookup",
+      runtimeEpoch: h.epoch,
+      operationId: "runtime-original-unknown",
+    },
+  });
+  assert.deepEqual(lookup.value.receipt, unknown.receipt);
+  assert.equal(transport.mutationMetrics().dispatched, 0);
+  assert.equal(h.fixture.skillRuntimeReads.length, 1);
+  assert.equal(h.fixture.skillRuntimeEffects.length, 1);
+  assert.equal(h.fixture.skillRuntimeRegistrations.size, 0);
+});
+
+test("Skill runtime fixture file save changes only bytes; explicit observation remains required", async () => {
+  const h = await skillRuntimeHarness();
+  const file = (
+    await h.wire({
+      type: "configuration.skill.read",
+      workspaceId: h.scope.workspaceId,
+      sourceName: h.scope.sourceName,
+    })
+  ).value;
+  const text = file.content + "File-only explicit save\n";
+  const saved = await h.wire(
+    {
+      type: "configuration.skill.save",
+      workspaceId: h.scope.workspaceId,
+      sourceName: h.scope.sourceName,
+      requestId: "runtime-file-save",
+      text,
+      expectation: "version",
+      version: file.version,
+      directoryVersion: file.directoryVersion,
+    },
+    "runtime-file-save",
+  );
+  assert.equal(saved.value.status, "saved");
+  await h.wire({ type: "snapshot" });
+  assert.equal(h.fixture.skillRuntimeReads.length, 0);
+  assert.equal(h.fixture.skillRuntimeRegistrations.size, 0);
+  assert.deepEqual(h.fixture.skillRuntimeEffects, []);
+  const unavailable = await h.registration({
+    observationId: "never-read",
+    file: { ...file, digest: "a".repeat(64) },
+  });
+  assert.equal(unavailable.code, "SKILL_CHANGED");
+  const observed = (await h.observe()).value;
+  assert.equal(
+    (await h.registration(observed, "register-saved-file")).value.status,
+    "registered_disabled",
+  );
+  assert.equal(
+    h.fixture.skillRuntimeRegistrations.values().next().value.content,
+    "# SYNTHETIC SKILL A\nFile-only explicit save\n",
+  );
+  assert.equal(
+    h.fixture.skillFiles.get(
+      h.fixture.skillKey(h.scope.workspaceId, h.scope.sourceName),
+    ),
+    text,
+  );
+});
+
+test("Skill runtime fixture cancellation drops late read and never dispatches effects", async () => {
+  const h = await skillRuntimeHarness();
+  h.fixture.holdSkillRuntimeReads = true;
+  const pending = h.wire({
+    type: "configuration.skill.runtime.read",
+    workspaceId: h.scope.workspaceId,
+  });
+  assert.equal(h.fixture.heldSkillRuntimeReads.length, 1);
+  assert.equal(
+    h.transport.cancel(h.event, {
+      version: 2,
+      runtimeEpoch: h.epoch,
+      readId: "runtime-read-1",
+    }).ok,
+    true,
+  );
+  assert.equal((await pending).code, "CANCELLED");
+  h.fixture.releaseSkillRuntimeReads();
+  await Promise.resolve();
+  assert.equal(h.transport.metrics().cancelled, 1);
+  assert.equal(h.transport.metrics().settled, 1);
+  assert.equal(h.transport.metrics().active, 0);
+  assert.deepEqual(h.fixture.skillRuntimeEffects, []);
+  assert.equal(h.transport.mutationMetrics().attempted, 0);
+});
+
+test("Skill runtime fixture held confirmation rechecks trust, file and scope before any effect", async () => {
+  for (const change of ["trust", "file", "path", "busy"]) {
+    const h = await skillRuntimeHarness("pending");
+    const observed = (await h.observe()).value;
+    const pending = h.registration(observed);
+    assert.equal(h.fixture.heldSkillRuntime.length, 1);
+    assert.equal(h.transport.mutationMetrics().dispatched, 0);
+    assert.deepEqual(h.fixture.skillRuntimeEffects, []);
+    if (change === "trust") h.fixture.snapshot.workspaces[0].trusted = false;
+    if (change === "file")
+      h.fixture.skillFiles.set(
+        h.fixture.skillKey(h.scope.workspaceId, h.scope.sourceName),
+        "# Changed while held\n",
+      );
+    if (change === "path")
+      h.fixture.snapshot.workspaces[0].path = "/synthetic/other-root";
+    if (change === "busy") h.fixture.snapshot.sessions[0].status = "running";
+    h.fixture.releaseSkillRuntime();
+    const refused = await pending;
+    assert.equal(
+      refused.code,
+      {
+        trust: "INVALID_SELECTION",
+        file: "FILE_CHANGED",
+        path: "SKILL_CHANGED",
+        busy: "BUSY",
+      }[change],
+    );
+    assert.equal(refused.receipt.effect, "none");
+    assert.equal(h.fixture.pendingSkillWorkspaces.size, 0);
+    assert.deepEqual(h.fixture.skillRuntimeEffects, []);
+    assert.equal(h.transport.mutationMetrics().dispatched, 0);
+  }
+});
+
+test("Skill runtime fixture inherited messages stay plain facts and old keys never gain ownership", async () => {
+  const h = await skillRuntimeHarness("inherited");
+  const observed = (await h.observe()).value;
+  const message = observed.session.messages[0];
+  assert.deepEqual(
+    Object.keys(message).sort(),
+    ["nativeId", "messageId", "name", "bodyDigest"].sort(),
+  );
+  assert.equal(
+    (await h.act("apply", observed, message.nativeId)).code,
+    "SKILL_ALREADY_APPLIED",
+  );
+  h.fixture.setSkillRuntimeState("owned");
+  assert.equal(h.fixture.snapshot.sessions[0].parentSessionId, undefined);
+  const restored = h.fixture.setSkillRuntimeState("restoredoldkey");
+  assert.equal(restored.workspaceId, h.scope.workspaceId);
+  const { SKILL_RUNTIME_RETAINED_KEY } = await import("./workbench-host.mjs");
+  const lookup = await h.wire({
+    type: "operation.lookup",
+    runtimeEpoch: SKILL_RUNTIME_RETAINED_KEY.runtimeEpoch,
+    operationId: SKILL_RUNTIME_RETAINED_KEY.operationId,
+  });
+  assert.equal(lookup.value.receipt.effect, "unknown");
+  assert.equal((await h.observe()).code, "UNAVAILABLE");
+  assert.deepEqual(h.fixture.skillRuntimeEffects, []);
+  assert.equal(h.fixture.skillRuntimeRegistrations.size, 0);
+});
+
+test("Skill runtime fixture refuses exact file drift, denied confirmation and observation scope drift", async () => {
+  for (const name of [
+    "denied",
+    "changed",
+    "file",
+    "trust-revision",
+    "wrong-source",
+  ]) {
+    const h = await skillRuntimeHarness(
+      ["denied", "changed"].includes(name) ? name : "empty",
+    );
+    const observed = (await h.observe()).value;
+    if (name === "file")
+      h.fixture.skillFiles.set(
+        h.fixture.skillKey(h.scope.workspaceId, h.scope.sourceName),
+        h.scope.text + "Drift\n",
+      );
+    if (name === "trust-revision")
+      h.fixture.snapshot.workspaces[0].trustRevision++;
+    if (name === "wrong-source")
+      observed.file.sourceName = h.scope.otherSourceName;
+    const refused = await h.registration(observed);
+    assert.equal(
+      refused.code,
+      name === "denied"
+        ? "CANCELLED"
+        : ["file", "wrong-source"].includes(name)
+          ? "FILE_CHANGED"
+          : "SKILL_CHANGED",
+    );
+    assert.equal(refused.receipt.effect, "none");
+    assert.equal(h.transport.mutationMetrics().dispatched, 0);
+    assert.deepEqual(h.fixture.skillRuntimeEffects, []);
+  }
+});
+
+test("Skill runtime fixture closed state inventory validates and bounds observations without extra effects", async () => {
+  const { SKILL_RUNTIME_UI_STATES } = await import("./workbench-host.mjs");
+  const { validSkillRuntimeObservation } = await import(
+    "../../src/renderer/shared/configuration-draft/skill-runtime.mjs"
+  );
+  for (const name of SKILL_RUNTIME_UI_STATES) {
+    const h = await skillRuntimeHarness(name);
+    const read = await h.observe();
+    if (read.ok)
+      assert.equal(validSkillRuntimeObservation(read.value), true, name);
+    else
+      assert.equal(
+        read.code,
+        name === "untrusted" ? "INVALID_SELECTION" : "UNAVAILABLE",
+      );
+    assert.equal(h.fixture.skillRuntimeEffects.length, 0);
+    assert.throws(() => h.fixture.setSkillRuntimeState("invented"));
+  }
+  const h = await skillRuntimeHarness();
+  for (let i = 0; i < 40; i++) await h.observe();
+  assert.equal(h.fixture.skillRuntimeObservations.size, 32);
+});
+
+for (const action of ["apply", "remove"]) {
+  test(`Skill runtime fixture unknown ${action} holds original target and refuses new effects`, async () => {
+    const h = await skillRuntimeHarness("owned");
+    const observed = (await h.observe()).value;
+    const nativeId = observed.owned[0].nativeId;
+    h.fixture.nextSkillRuntime = "unknown";
+    const original = await h.act(
+      action,
+      observed,
+      nativeId,
+      `unknown-${action}`,
+    );
+    assert.equal(original.value.status, "unknown");
+    assert.equal(original.receipt.operationId, `unknown-${action}`);
+    assert.equal(original.receipt.result, undefined);
+    assert.equal(
+      (await h.act(action, observed, nativeId, `forbidden-${action}`)).code,
+      "UNAVAILABLE",
+    );
+    const found = await h.wire({
+      type: "operation.lookup",
+      runtimeEpoch: h.epoch,
+      operationId: `unknown-${action}`,
+    });
+    assert.deepEqual(found.value.receipt, original.receipt);
+    assert.equal(h.fixture.skillRuntimeEffects.length, 1);
+    assert.equal(h.fixture.skillRuntimeHistory.size, 0);
+    assert.equal(h.fixture.skillRuntimeRegistrations.size, 1);
+    assert.equal(h.transport.mutationMetrics().dispatched, 1);
+  });
+}
+
+// Agent-only coverage. This uses the normal public v2 transport, never Native.
+async function agentHarness(name = "file-available", runtime = false) {
+  const h = setup();
+  const scope = runtime
+    ? h.fixture.setAgentRuntimeState(name)
+    : h.fixture.setAgentState(name);
+  let serial = 0;
+  const wire = (operation, operationId) =>
+    h.transport.handle(h.event, {
+      version: 2,
+      runtimeEpoch: h.epoch,
+      ...(operationId ? { operationId } : { readId: `agent-read-${++serial}` }),
+      operation,
+    });
+  const read = (sourceName = scope.sourceName) =>
+    wire({
+      type: "configuration.agent.read",
+      workspaceId: scope.workspaceId,
+      sourceName,
+    });
+  const observe = () =>
+    wire({
+      type: "configuration.agent.runtime.read",
+      workspaceId: scope.workspaceId,
+      sourceName: scope.sourceName,
+    });
+  const saveWire = (file, id, text = "# SYNTHETIC UPDATED AGENT\n") => ({
+    type: "configuration.agent.save",
+    workspaceId: scope.workspaceId,
+    sourceName: file.sourceName,
+    requestId: id,
+    text,
+    directoryVersion: file.directoryVersion,
+    ...(file.status === "missing"
+      ? { expectation: "missing" }
+      : { expectation: "version", version: file.version }),
+  });
+  const registerWire = (o, id) => ({
+    type: "configuration.agent.register",
+    workspaceId: scope.workspaceId,
+    requestId: id,
+    observationId: o.observationId,
+    sourceName: o.file.sourceName,
+    digest: o.file.digest,
+    version: o.file.version,
+    directoryVersion: o.file.directoryVersion,
+  });
+  const removeWire = (o, nativeId, id) => ({
+    type: "configuration.agent.remove",
+    workspaceId: scope.workspaceId,
+    requestId: id,
+    observationId: o.observationId,
+    nativeId,
+  });
+  return {
+    ...h,
+    scope,
+    wire,
+    read,
+    observe,
+    saveWire,
+    registerWire,
+    removeWire,
+  };
+}
+
+test("Agent fixture closed file inventory preserves BOM CRLF raw grammar and bounded listing", async () => {
+  const { AGENT_UI_STATES } = await import("./workbench-host.mjs");
+  assert.ok(AGENT_UI_STATES.length > 10);
+  for (const name of AGENT_UI_STATES) {
+    const h = await agentHarness(name);
+    assert.equal(h.fixture.agentReads.length, 0);
+    const list = await h.wire({
+      type: "configuration.agent.list",
+      workspaceId: h.scope.workspaceId,
+    });
+    if (["untrusted", "restoredoldkey"].includes(name)) {
+      assert.equal(
+        list.code,
+        name === "untrusted" ? "INVALID_SELECTION" : "UNAVAILABLE",
+      );
+      continue;
+    }
+    const file = (await h.read()).value;
+    assert.equal(
+      file.path,
+      `${h.scope.workspacePath}/.opencode/agents/${h.scope.sourceName}.md`,
+    );
+    if (name.startsWith("list-missing") || name === "list-denied") {
+      assert.equal(
+        list.value.reason,
+        name === "list-denied" ? "path_denied" : "path_missing",
+      );
+      assert.equal(file.status, "unavailable");
+    } else {
+      assert.equal(
+        list.value.entries.length,
+        name === "list-truncated" ? 16 : 3,
+      );
+      assert.equal(list.value.truncated, name === "list-truncated");
+      assert.equal("content" in list.value, false);
+      const statuses = {
+        "file-missingleaf": "missing",
+        "file-unsafeunsupported": "unsupported",
+        "file-changed": "unavailable",
+        "file-oversize": "unavailable",
+      };
+      assert.equal(file.status, statuses[name] ?? "available");
+      if (file.status === "available") assert.equal(file.content, h.scope.text);
+      else assert.equal("content" in file, false);
+    }
+    assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+    assert.equal(h.transport.mutationMetrics().dispatched, 0);
+  }
+  assert.throws(
+    () => createUiFixture().setAgentState("guessed"),
+    /Unknown closed Agent/,
+  );
+});
+
+test("Agent fixture save binds exact source directory and backup without implicit runtime reads", async () => {
+  const h = await agentHarness("file-supportedbom");
+  const file = (await h.read()).value;
+  assert.ok(file.content.startsWith("\uFEFF"));
+  assert.ok(file.content.includes("\r\n"));
+  const other = (await h.read(h.scope.otherSourceName)).value;
+  const text = file.content + "Explicit new line\r\n";
+  const request = h.saveWire(file, "agent-save", text);
+  const saved = await h.wire(request, request.requestId);
+  assert.equal(saved.value.status, "saved");
+  const { validAgentSavedResult } = await import(
+    "../../src/host/workbench-agent-storage.mjs"
+  );
+  assert.equal(validAgentSavedResult(saved.receipt, file.sourceName), true);
+  assert.equal(validAgentSavedResult(saved.receipt, other.sourceName), false);
+  assert.equal(h.fixture.agentBackups.get(saved.value.backupId), file.content);
+  assert.equal((await h.read()).value.content, text);
+  assert.equal(
+    (await h.read(h.scope.otherSourceName)).value.content,
+    other.content,
+  );
+  assert.equal(
+    (await h.wire(request, request.requestId)).value.status,
+    "duplicate",
+  );
+  assert.equal(
+    (await h.wire({ ...request, text: "changed" }, request.requestId)).code,
+    "DUPLICATE_CONFLICT",
+  );
+  assert.equal(h.fixture.agentRuntimeReads.length, 0);
+  assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+});
+
+test("Agent fixture missing leaf save cannot create or change directory authority", async () => {
+  const h = await agentHarness("file-missingleaf");
+  const file = (await h.read()).value;
+  const directories = [...h.fixture.agentDirectories];
+  const bad = h.saveWire(file, "agent-missing-bad");
+  assert.equal(
+    (await h.wire({ ...bad, directoryVersion: "0".repeat(64) }, bad.requestId))
+      .code,
+    "FILE_CHANGED",
+  );
+  const good = h.saveWire(file, "agent-missing-good");
+  const saved = await h.wire(good, good.requestId);
+  assert.equal(saved.value.status, "saved");
+  assert.equal("backupId" in saved.value, false);
+  assert.deepEqual([...h.fixture.agentDirectories], directories);
+});
+
+test("Agent fixture and production admission both refuse mismatched operation and request IDs before effects", async () => {
+  const { createHostAdmission } = await import(
+    "../../src/host/workbench-admission.mjs"
+  );
+  const { validateEnvelope } = await import("../../src/workbench-contract.mjs");
+  for (const type of ["save", "register", "remove"]) {
+    const h = await agentHarness("currentregistered", true);
+    const observed = (await h.observe()).value;
+    const requestId = `agent-${type}-request`;
+    const operation =
+      type === "save"
+        ? h.saveWire((await h.read()).value, requestId)
+        : type === "register"
+          ? h.registerWire(observed, requestId)
+          : h.removeWire(observed, observed.owned[0].nativeId, requestId);
+    const envelope = {
+      version: 2,
+      runtimeEpoch: h.epoch,
+      operationId: `agent-${type}-operation`,
+      operation,
+    };
+    validateEnvelope(envelope);
+    // Only exercise the pure admission guard, without a service or durable store.
+    const admission = createHostAdmission({
+      runtimeEpoch: h.epoch,
+      registry: () => ({ status: () => ({ state: "ready" }) }),
+      ready: () => assert.fail("Mismatched IDs must not reach the service"),
+      revision: () => h.fixture.snapshot.revision,
+      projectReceipt: (receipt) => receipt,
+    });
+    const before = [...h.fixture.agentFiles];
+    try {
+      const actual = await admission.handle(envelope, "fixture-window");
+      const synthetic = await h.transport.handle(h.event, envelope);
+      assert.equal(actual.code, "INVALID_REQUEST", type);
+      assert.deepEqual(synthetic, actual, type);
+      assert.deepEqual(h.transport.mutationMetrics(), {
+        attempted: 0,
+        dispatched: 0,
+        rejected: 0,
+      });
+      assert.deepEqual([...h.fixture.agentFiles], before);
+      assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+      assert.equal(h.fixture.agentBackups.size, 0);
+      assert.equal(h.fixture.retainedReceipts.size, 0);
+    } finally {
+      admission.close();
+    }
+  }
+});
+
+// Use the actual controller rather than hand-writing matching request/operation IDs.
+// Keep this reproducer RED until the renderer satisfies production admission.
+for (const name of [
+  "file-missingleaf",
+  "file-available",
+  "file-supportedbom",
+  "file-rawunsupportedgrammar",
+]) {
+  test(`Agent actual Renderer save reaches fixture publication: ${name}`, async () => {
+    const { tsImport } = await import("tsx/esm/api");
+    const { createWindowWorkbench } = await tsImport(
+      "../../src/renderer/entities/workbench/model/controller.ts",
+      import.meta.url,
+    );
+    const { scopeOf, selectors } = await tsImport(
+      "../../src/renderer/entities/workbench/model/store.ts",
+      import.meta.url,
+    );
+    const h = await agentHarness(name);
+    const calls = [];
+    let sequence = 0;
+    const client = createWindowWorkbench(
+      {
+        async workbench(envelope) {
+          const response = await h.transport.handle(h.event, envelope);
+          calls.push({ envelope, response });
+          return response;
+        },
+        cancelRead: (envelope) => h.transport.cancel(h.event, envelope),
+      },
+      { id: () => `agent-controller-${++sequence}` },
+    );
+    try {
+      client.store.dispatch({
+        type: "snapshot",
+        scope: scopeOf(client.store.getState()),
+        value: globalThis.structuredClone(h.fixture.snapshot),
+      });
+      assert.equal(await client.actions.listAgentFiles(), true);
+      client.actions.selectAgentFile(h.scope.sourceName);
+      assert.equal(await client.actions.readAgentFile(), true);
+      const before = [...h.fixture.agentDirectories];
+      const text = "# SYNTHETIC ACTUAL CONTROLLER SAVE\n";
+      client.actions.editAgentFile(text);
+      client.actions.validateAgentFile();
+      assert.equal(selectors.canSaveAgentFile(client.store.getState()), true);
+      const saved = await client.actions.saveAgentFile();
+      const call = calls.find(
+        ({ envelope }) =>
+          envelope.operation.type === "configuration.agent.save",
+      );
+      assert.ok(call, "The actual controller must submit its save request");
+      assert.equal(
+        saved,
+        true,
+        JSON.stringify({
+          operationId: call.envelope.operationId,
+          requestId: call.envelope.operation.requestId,
+          response: call.response,
+        }),
+      );
+      assert.equal(call.response.value.status, "saved");
+      assert.equal(
+        selectors.agentDraft(client.store.getState()).save.status,
+        "saved",
+      );
+      assert.equal((await h.read()).value.content, text);
+      assert.deepEqual([...h.fixture.agentDirectories], before);
+      assert.equal(h.fixture.agentRuntimeReads.length, 0);
+      assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+    } finally {
+      client.dispose();
+    }
+  });
+}
+
+test("Agent fixture readable unsupported frontmatter requires explicit repair", async () => {
+  const h = await agentHarness("file-rawunsupportedgrammar");
+  const file = (await h.read()).value;
+  assert.equal(file.status, "available");
+  const bad = h.saveWire(file, "agent-unsupported", file.content);
+  assert.equal((await h.wire(bad, bad.requestId)).code, "INVALID_REQUEST");
+  const good = h.saveWire(file, "agent-repair");
+  assert.equal((await h.wire(good, good.requestId)).value.status, "saved");
+});
+
+test("Agent fixture save cancellation and held directory race have no publication", async () => {
+  for (const mode of ["cancel", "directory", "trust"]) {
+    const h = await agentHarness(
+      mode === "cancel" ? "savecancel" : "file-available",
+    );
+    const file = (await h.read()).value;
+    const request = h.saveWire(file, `agent-${mode}`);
+    h.fixture.holdAgentSave = mode !== "cancel";
+    const pending = h.wire(request, request.requestId);
+    if (mode === "directory")
+      h.fixture.agentDirectories.set(
+        h.fixture.agentKey(h.scope.workspaceId),
+        "replaced-parent",
+      );
+    if (mode === "trust") h.fixture.snapshot.workspaces[0].trusted = false;
+    h.fixture.releaseAgentSaves();
+    assert.equal(
+      (await pending).code,
+      mode === "directory"
+        ? "FILE_CHANGED"
+        : mode === "trust"
+          ? "INVALID_SELECTION"
+          : "CANCELLED",
+    );
+    assert.equal(
+      h.fixture.agentFiles.get(
+        h.fixture.agentKey(h.scope.workspaceId, h.scope.sourceName),
+      ),
+      file.content,
+    );
+    assert.equal(h.fixture.agentBackups.size, 0);
+  }
+});
+
+test("Agent fixture unknown save retains original lookup with current envelope and no payload replay", async () => {
+  const h = await agentHarness("saveunknown");
+  const file = (await h.read()).value;
+  const request = h.saveWire(file, "agent-original-unknown");
+  const result = await h.wire(request, request.requestId);
+  assert.equal(result.receipt.effect, "unknown");
+  assert.equal(
+    (await h.wire(request, request.requestId)).value.status,
+    "duplicate",
+  );
+  assert.equal(
+    (await h.wire({ ...request, requestId: "agent-new-key" }, "agent-new-key"))
+      .code,
+    "UNAVAILABLE",
+  );
+  const lookup = await h.wire({
+    type: "operation.lookup",
+    runtimeEpoch: h.epoch,
+    operationId: request.requestId,
+  });
+  assert.equal(lookup.value.receipt.effect, "unknown");
+  assert.equal(JSON.stringify(lookup).includes(request.text), false);
+  assert.equal(h.fixture.agentBackups.size, 0);
+  assert.equal(h.transport.mutationMetrics().dispatched, 1);
+});
+
+test("Agent runtime fixture registration uses exact primary baseline and original shared identity", async () => {
+  const h = await agentHarness("notobserved", true);
+  const before = [...h.fixture.agentFiles];
+  const sessions = globalThis.structuredClone(h.fixture.snapshot.sessions);
+  await h.wire({ type: "snapshot" });
+  await h.wire({ type: "catalog.list", workspaceId: h.scope.workspaceId });
+  await h.read();
+  assert.equal(h.fixture.agentRuntimeReads.length, 0);
+  const observed = (await h.observe()).value;
+  const request = h.registerWire(observed, "agent-register");
+  const registered = await h.wire(request, request.requestId);
+  assert.equal(registered.value.status, "registered_primary");
+  const { nativeAgentRegistrationId } = await import(
+    "../../src/native-agents-protocol.mjs"
+  );
+  const { validAgentRuntimeMutation, validAgentRuntimeObservation } =
+    await import(
+      "../../src/renderer/shared/configuration-draft/agent-runtime.mjs"
+    );
+  const { validateAgentRuntimeReceipt } = await import(
+    "../../src/host/workbench-agent-storage.mjs"
+  );
+  const { BASELINE_POLICY } = await import(
+    "../../src/renderer/shared/configuration-draft/policy.mjs"
+  );
+  assert.equal(
+    registered.value.nativeId,
+    nativeAgentRegistrationId({
+      runtimeEpoch: h.epoch,
+      operationId: request.requestId,
+      workspaceId: h.scope.workspaceId,
+      sourceName: h.scope.sourceName,
+    }),
+  );
+  assert.equal(validAgentRuntimeMutation(registered.value), true);
+  validateAgentRuntimeReceipt(registered.receipt);
+  assert.equal("system" in registered.receipt.result, false);
+  const current = (await h.observe()).value;
+  assert.equal(validAgentRuntimeObservation(current), true);
+  assert.deepEqual(current.owned[0].permissions, BASELINE_POLICY);
+  assert.equal(current.owned[0].mode, "primary");
+  assert.equal(current.owned[0].hidden, false);
+  assert.equal(current.defaultAgentId, observed.defaultAgentId);
+  assert.deepEqual(h.fixture.agentRuntimeEffects[0].request, {
+    settings: {},
+    headers: {},
+    body: {},
+  });
+  assert.equal("model" in h.fixture.agentRuntimeEffects[0], false);
+  assert.deepEqual(h.fixture.snapshot.sessions, sessions);
+  assert.deepEqual([...h.fixture.agentFiles], before);
+  assert.equal(
+    h.fixture.requests.some((r) => "sessionId" in r),
+    false,
+  );
+  const removedRequest = h.removeWire(
+    current,
+    registered.value.nativeId,
+    "agent-remove",
+  );
+  const removed = await h.wire(removedRequest, removedRequest.requestId);
+  assert.equal(removed.value.status, "removed");
+  validateAgentRuntimeReceipt(removed.receipt);
+  assert.deepEqual((await h.observe()).value.owned, []);
+  assert.deepEqual([...h.fixture.agentFiles], before);
+  assert.deepEqual(h.fixture.snapshot.sessions, sessions);
+});
+
+test("Agent runtime fixture rejects foreign sender session scope and mismatched request identity before effects", async () => {
+  const h = await agentHarness("notobserved", true);
+  const request = h.registerWire((await h.observe()).value, "agent-wire");
+  const envelope = {
+    version: 2,
+    runtimeEpoch: h.epoch,
+    operationId: request.requestId,
+    operation: request,
+  };
+  assert.equal(
+    (
+      await h.transport.handle(
+        { ...h.event, senderFrame: { url: "file:///fixture/index.html" } },
+        envelope,
+      )
+    ).code,
+    "INVALID_REQUEST",
+  );
+  assert.equal(
+    (await h.wire({ ...request, sessionId: "fixture-s" }, request.requestId))
+      .code,
+    "INVALID_REQUEST",
+  );
+  assert.equal(
+    (await h.wire(request, "different-operation")).code,
+    "INVALID_REQUEST",
+  );
+  assert.equal(h.transport.mutationMetrics().attempted, 0);
+  assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+});
+
+test("Agent runtime fixture global archived foreign references and unowned rows block removal", async () => {
+  for (const name of [
+    "globalforeigninuse",
+    "unowned",
+    "references-unavailable",
+  ]) {
+    const h = await agentHarness(name, true);
+    if (name === "references-unavailable")
+      h.fixture.agentRuntimeState = "currentregistered";
+    const o = (await h.observe()).value;
+    if (name === "references-unavailable") h.fixture.agentRuntimeState = name;
+    const req = h.removeWire(o, h.scope.nativeId, `agent-remove-${name}`);
+    const removed = await h.wire(req, req.requestId);
+    assert.equal(
+      removed.code,
+      name === "globalforeigninuse"
+        ? "AGENT_IN_USE"
+        : name === "unowned"
+          ? "AGENT_OWNERSHIP_CONFLICT"
+          : "AGENT_UNVERIFIED",
+    );
+    assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+    if (name === "globalforeigninuse") {
+      assert.equal(o.owned[0].referenceCount, 2);
+      assert.ok(
+        h.fixture.agentRuntimeReferences.every(
+          (r) => r.workspaceId !== h.scope.workspaceId,
+        ),
+      );
+      assert.ok(h.fixture.agentRuntimeReferences.some((r) => r.archived));
+    }
+    if (name === "unowned")
+      assert.deepEqual(Object.keys(o.unowned.at(-1)).sort(), [
+        "hidden",
+        "mode",
+        "name",
+        "nativeId",
+      ]);
+  }
+});
+
+test("Agent runtime fixture confirmation cancellation and held rechecks refuse changed authority", async () => {
+  for (const mode of [
+    "confirmationcancel",
+    "file",
+    "trust",
+    "root",
+    "revision",
+    "default",
+  ]) {
+    const h = await agentHarness(
+      mode === "confirmationcancel" ? mode : "notobserved",
+      true,
+    );
+    const o = (await h.observe()).value;
+    const req = h.registerWire(o, `agent-held-${mode}`);
+    h.fixture.holdAgentRuntime = mode !== "confirmationcancel";
+    const pending = h.wire(req, req.requestId);
+    if (mode === "file")
+      h.fixture.agentFiles.set(
+        h.fixture.agentKey(h.scope.workspaceId, h.scope.sourceName),
+        "# CHANGED",
+      );
+    if (mode === "trust") h.fixture.snapshot.workspaces[0].trustRevision++;
+    if (mode === "root") h.fixture.snapshot.workspaces[0].path += "/changed";
+    if (mode === "revision") h.fixture.snapshot.revision++;
+    if (mode === "default") h.fixture.agentRuntimeDefaultId = "changed-default";
+    h.fixture.releaseAgentRuntime();
+    const result = await pending;
+    assert.equal(result.ok, false, mode);
+    assert.equal(result.receipt.effect, "none");
+    assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+  }
+});
+
+test("Agent runtime fixture rechecks new global reference after removal confirmation", async () => {
+  const h = await agentHarness("currentregistered", true);
+  const req = h.removeWire(
+    (await h.observe()).value,
+    h.scope.nativeId,
+    "agent-held-remove",
+  );
+  h.fixture.holdAgentRuntime = true;
+  const pending = h.wire(req, req.requestId);
+  h.fixture.agentRuntimeReferences.push({
+    nativeId: h.scope.nativeId,
+    sessionId: "foreign-late",
+    workspaceId: "other",
+    archived: true,
+  });
+  h.fixture.releaseAgentRuntime();
+  assert.equal((await pending).code, "AGENT_IN_USE");
+  assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+  assert.equal(h.fixture.agentRuntimeRegistrations.size, 1);
+});
+
+test("Agent runtime fixture old epoch receipts stay historical without current ownership or payload restore", async () => {
+  for (const name of [
+    "historicalreceipt",
+    "restartuntrusted",
+    "restoredoldkey",
+  ]) {
+    const h = await agentHarness(name, true);
+    const { AGENT_RUNTIME_RETAINED_KEY } = await import("./workbench-host.mjs");
+    const before = [...h.fixture.agentFiles];
+    const lookup = await h.wire({
+      type: "operation.lookup",
+      runtimeEpoch: AGENT_RUNTIME_RETAINED_KEY.runtimeEpoch,
+      operationId: AGENT_RUNTIME_RETAINED_KEY.operationId,
+    });
+    assert.equal(lookup.value.status, "found");
+    assert.equal(h.fixture.lookupEnvelopes.at(-1).runtimeEpoch, h.epoch);
+    assert.equal(h.fixture.agentRuntimeRegistrations.size, 0);
+    assert.equal(JSON.stringify(lookup).includes(h.scope.text), false);
+    assert.deepEqual([...h.fixture.agentFiles], before);
+    assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+  }
+});
+
+test("Agent runtime fixture unknown retained outcome deduplicates and lookup never replays", async () => {
+  const h = await agentHarness("unknownheld", true);
+  const req = h.registerWire(
+    (await h.observe()).value,
+    "agent-runtime-unknown",
+  );
+  const result = await h.wire(req, req.requestId);
+  assert.equal(result.value.status, "unknown");
+  assert.equal(result.receipt.effect, "unknown");
+  assert.equal((await h.wire(req, req.requestId)).value.status, "duplicate");
+  assert.equal(
+    (await h.wire({ ...req, requestId: "new-key" }, "new-key")).code,
+    "UNAVAILABLE",
+  );
+  const found = await h.wire({
+    type: "operation.lookup",
+    runtimeEpoch: h.epoch,
+    operationId: req.requestId,
+  });
+  assert.equal(found.value.receipt.effect, "unknown");
+  assert.equal(JSON.stringify(found).includes(h.scope.text), false);
+  assert.equal(h.fixture.agentRuntimeEffects.length, 1);
+});
+
+test("Agent runtime fixture late cancelled read cannot replace a newer explicit observation", async () => {
+  const h = await agentHarness("notobserved", true);
+  h.fixture.holdAgentRuntimeReads = true;
+  const pending = h.observe();
+  const readId = h.fixture.agentRuntimeReads.at(-1).readId;
+  assert.equal(
+    h.transport.cancel(h.event, { version: 2, runtimeEpoch: h.epoch, readId })
+      .value.status,
+    "cancelled",
+  );
+  assert.equal((await pending).code, "CANCELLED");
+  h.fixture.holdAgentRuntimeReads = false;
+  const current = (await h.observe()).value;
+  h.fixture.releaseAgentRuntimeReads();
+  await Promise.resolve();
+  assert.equal(current.owned.length, 0);
+  assert.equal(h.transport.metrics().active, 0);
+  assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+});
+
+test("Agent runtime fixture closed inventory validates observations and bounds retained read authority", async () => {
+  const { AGENT_RUNTIME_UI_STATES } = await import("./workbench-host.mjs");
+  const { validAgentRuntimeObservation } = await import(
+    "../../src/renderer/shared/configuration-draft/agent-runtime.mjs"
+  );
+  for (const name of AGENT_RUNTIME_UI_STATES) {
+    const h = await agentHarness(name, true);
+    const result = await h.observe();
+    if (["restartuntrusted", "restoredoldkey"].includes(name)) {
+      assert.equal(
+        result.code,
+        name === "restartuntrusted" ? "INVALID_SELECTION" : "UNAVAILABLE",
+      );
+    } else {
+      assert.equal(validAgentRuntimeObservation(result.value), true, name);
+      if (["unavailable", "references-unavailable"].includes(name))
+        assert.equal(result.value.status, "unavailable");
+    }
+    assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+  }
+  const h = await agentHarness("notobserved", true);
+  for (let n = 0; n < 40; n++) await h.observe();
+  assert.equal(h.fixture.agentRuntimeObservations.size, 32);
+  assert.equal(
+    h.fixture.agentRuntimeObservations.has("fixture-agent-observation-1"),
+    false,
+  );
+  assert.throws(
+    () => h.fixture.setAgentRuntimeState("inactive"),
+    /Unknown closed Agent runtime/,
+  );
+});
+
+test("Agent fixture pending confirmation locks all workspace sessions without changing unrelated sources", async () => {
+  const h = await agentHarness("file-available");
+  const file = (await h.read()).value;
+  const others = [...h.fixture.agentFiles].filter(
+    ([key]) =>
+      key !== h.fixture.agentKey(h.scope.workspaceId, h.scope.sourceName),
+  );
+  h.fixture.holdAgentSave = true;
+  const req = h.saveWire(file, "agent-pending-save");
+  const pending = h.wire(req, req.requestId);
+  assert.equal(h.fixture.pendingAgentWorkspaces.has(h.scope.workspaceId), true);
+  assert.equal(
+    (await h.wire(h.send.operation, "send-while-agent-pending")).code,
+    "BUSY",
+  );
+  h.fixture.releaseAgentSaves();
+  assert.equal((await pending).value.status, "saved");
+  assert.deepEqual(
+    [...h.fixture.agentFiles].filter(
+      ([key]) =>
+        key !== h.fixture.agentKey(h.scope.workspaceId, h.scope.sourceName),
+    ),
+    others,
+  );
+  assert.equal(
+    h.fixture.requests.some((r) => r.type === "message.send"),
+    false,
+  );
+});
+
+test("Agent fixture file save retires runtime authority but never registers or selects a session", async () => {
+  const h = await agentHarness("notobserved", true);
+  const file = (await h.read()).value,
+    o = (await h.observe()).value;
+  const sessions = globalThis.structuredClone(h.fixture.snapshot.sessions);
+  const req = h.saveWire(file, "agent-file-before-register");
+  assert.equal((await h.wire(req, req.requestId)).value.status, "saved");
+  const stale = h.registerWire(o, "agent-stale-register");
+  assert.equal((await h.wire(stale, stale.requestId)).code, "AGENT_CHANGED");
+  assert.equal(h.fixture.agentRuntimeReads.length, 1);
+  assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+  assert.deepEqual(h.fixture.snapshot.sessions, sessions);
+});
+
+test("Agent runtime fixture unknown removal retains original authority across current-epoch transport reopen", async () => {
+  const h = await agentHarness("currentregistered", true);
+  const req = h.removeWire(
+    (await h.observe()).value,
+    h.scope.nativeId,
+    "agent-unknown-remove",
+  );
+  h.fixture.nextAgentRuntime = "unknown";
+  const unknown = await h.wire(req, req.requestId);
+  assert.equal(unknown.receipt.effect, "unknown");
+  assert.equal(h.fixture.agentRuntimeRegistrations.size, 1);
+  h.fixture.snapshot.runtimeEpoch = "fixture-agent-reopened-epoch";
+  const reopened = createFixtureTransport(h.fixture, {
+    webContents: h.event.sender,
+    allowedUrl: (url) => url === "file:///fixture/index.html",
+  });
+  const lookup = await reopened.handle(h.event, {
+    version: 2,
+    runtimeEpoch: h.fixture.snapshot.runtimeEpoch,
+    readId: "agent-reopened-lookup",
+    operation: {
+      type: "operation.lookup",
+      runtimeEpoch: h.epoch,
+      operationId: req.requestId,
+    },
+  });
+  assert.equal(lookup.value.receipt.effect, "unknown");
+  assert.equal(lookup.value.receipt.runtimeEpoch, h.epoch);
+  const attempt = await reopened.handle(h.event, {
+    version: 2,
+    runtimeEpoch: h.fixture.snapshot.runtimeEpoch,
+    operationId: "agent-reopened-remove",
+    operation: { ...req, requestId: "agent-reopened-remove" },
+  });
+  assert.equal(attempt.code, "UNAVAILABLE");
+  assert.equal(h.fixture.agentRuntimeEffects.length, 1);
+  assert.equal(h.fixture.agentRuntimeEffects[0].action, "remove");
+});
+
+test("Agent fixture initial runtime observation has a valid default projection without state seeding", async () => {
+  const h = setup();
+  const result = await h.transport.handle(h.event, {
+    version: 2,
+    runtimeEpoch: h.epoch,
+    readId: "agent-initial-observe",
+    operation: {
+      type: "configuration.agent.runtime.read",
+      workspaceId: "fixture-w",
+    },
+  });
+  assert.equal(result.ok, true);
+  const { validAgentRuntimeObservation } = await import(
+    "../../src/renderer/shared/configuration-draft/agent-runtime.mjs"
+  );
+  assert.equal(validAgentRuntimeObservation(result.value), true);
+  assert.equal(result.value.defaultAgentId, "fixture-agent");
+  assert.deepEqual(result.value.owned, []);
+  assert.equal(h.fixture.agentRuntimeEffects.length, 0);
+});
+
+// Workspace editor fixtures use the actual closed wire and real window owner.
+async function workspaceFileHarness(name = "ready", options = {}) {
+  const h = setup(options);
+  const scope = h.fixture.setWorkspaceFileState(name);
+  const read = (path = scope.path, readId = "workspace-baseline") =>
+    h.transport.handle(h.event, {
+      version: 2,
+      runtimeEpoch: h.fixture.snapshot.runtimeEpoch,
+      readId,
+      operation: {
+        type: "file.edit.read",
+        workspaceId: scope.workspaceId,
+        path,
+      },
+    });
+  const save = (
+    baseline,
+    text,
+    operationId = "workspace-save",
+    overrides = {},
+  ) =>
+    h.transport.handle(h.event, {
+      version: 2,
+      runtimeEpoch: h.fixture.snapshot.runtimeEpoch,
+      operationId,
+      expectedRevision: baseline.revision,
+      operation: {
+        type: "file.save",
+        workspaceId: scope.workspaceId,
+        path: scope.path,
+        requestId: operationId,
+        expectation: "version",
+        version: baseline.version,
+        directoryVersion: baseline.directoryVersion,
+        text,
+        ...overrides,
+      },
+    });
+  return { ...h, scope, read, save };
+}
+
+test("Workspace fixture baseline is separate from inert preview and exact BOM/CRLF survives saved receipt", async () => {
+  const h = await workspaceFileHarness();
+  const preview = await h.transport.handle(h.event, {
+    version: 2,
+    runtimeEpoch: h.epoch,
+    readId: "preview",
+    operation: {
+      type: "file.read",
+      workspaceId: h.scope.workspaceId,
+      path: h.scope.path,
+    },
+  });
+  assert.equal(preview.ok, true);
+  assert.equal(preview.value.version, undefined);
+  assert.equal(h.fixture.workspaceFileReads.length, 0);
+  const baseline = await h.read();
+  assert.equal(baseline.ok, true);
+  assert.equal(baseline.value.content, h.scope.text);
+  const text = h.scope.text + "SYNTHETIC EDIT\r\n";
+  const result = await h.save(baseline.value, text);
+  assert.equal(result.ok, true);
+  assert.equal(result.value.status, "saved");
+  assert.equal(
+    h.fixture.workspaceFiles.get(
+      h.fixture.workspaceFileKey(h.scope.workspaceId, h.scope.path),
+    ),
+    text,
+  );
+  assert.equal(
+    h.fixture.workspaceFileBackups.get(result.value.backupId),
+    h.scope.text,
+  );
+  assert.equal(result.receipt.result.kind, "file_saved");
+});
+
+const fileFlush = async () => {
+  for (let n = 0; n < 15; n++)
+    await new Promise((resolve) => setImmediate(resolve));
+};
+async function workspaceFileController(name = "ready") {
+  const h = await workspaceFileHarness(name);
+  const c = await extensionController(undefined, { existing: h });
+  c.scope = h.scope;
+  c.client.actions.selectWorkspaceFile(h.scope.path);
+  return c;
+}
+const fileDraft = (h) =>
+  h.selectors.workspaceFileDraft(h.client.store.getState());
+const fileSave = (h) =>
+  h.selectors.workspaceFileSave(h.client.store.getState());
+const canFileSave = (h) =>
+  h.selectors.canSaveWorkspaceFile(h.client.store.getState());
+const editFile = (h, text = "SYNTHETIC WINDOW EDIT\r\n") => {
+  h.client.actions.editWorkspaceFile(text);
+  h.client.actions.validateWorkspaceFile();
+  return text;
+};
+
+for (const name of WORKSPACE_FILE_UI_STATES.filter(
+  (n) =>
+    !["pending-read", "held", "restored-original", "untrusted"].includes(n),
+)) {
+  test(`Workspace fixture closed baseline ${name} has exact truthful fields`, async () => {
+    const h = await workspaceFileHarness(name);
+    const result = await h.read();
+    assert.equal(result.ok, true);
+    assert.equal(validateWorkspaceFileObservation(result.value), result.value);
+    assert.equal(
+      result.value.targetPath,
+      h.scope.workspacePath + "/" + h.scope.path,
+    );
+    const reasons = {
+      missing: "missing_file",
+      denied: "path_denied",
+      unsupported: "unsupported_content",
+      oversize: "too_large",
+      protected: "protected_source",
+    };
+    if (reasons[name]) {
+      assert.equal(result.value.reason, reasons[name]);
+      for (const field of ["content", "version", "directoryVersion"])
+        assert.equal(Object.hasOwn(result.value, field), false);
+    } else assert.equal(result.value.content, h.scope.text);
+    assert.equal(h.fixture.requests.length, 0);
+    assert.equal(h.fixture.retainedReceipts.size, 0);
+  });
+}
+
+for (const name of ["blank", "limit"])
+  test(`Workspace fixture ${name} saves exact bytes and binds actual admission digest`, async () => {
+    const h = await workspaceFileHarness(name),
+      baseline = (await h.read()).value;
+    const text = name === "blank" ? "" : "\uFEFF" + "x".repeat(65533);
+    const result = await h.save(baseline, text);
+    assert.equal(result.ok, true);
+    assert.equal(validateWorkspaceFileSave(result.value), result.value);
+    validateFileReceipt(result.receipt);
+    const request = h.fixture.requests[0];
+    const admitted = { ...request, expectedRevision: baseline.revision };
+    const digest = createHash("sha256")
+      .update(
+        JSON.stringify(
+          Object.keys(admitted)
+            .sort()
+            .map((k) => [k, admitted[k]]),
+        ),
+      )
+      .digest("hex");
+    assert.equal(result.receipt.result.digest, digest);
+    assert.equal(result.receipt.operationId, request.requestId);
+    assert.equal(
+      result.value.backupId,
+      fileBackupId(h.epoch, request.requestId),
+    );
+    assert.equal(
+      validFileSavedResult(
+        result.receipt,
+        {
+          path: request.path,
+          version: request.version,
+          directoryVersion: request.directoryVersion,
+        },
+        digest,
+      ),
+      true,
+    );
+    assert.equal(
+      h.fixture.workspaceFiles.get(
+        h.fixture.workspaceFileKey(h.scope.workspaceId, h.scope.path),
+      ),
+      text,
+    );
+    assert.equal(
+      JSON.stringify(h.fixture.intents).includes(text === "" ? '"text"' : text),
+      false,
+    );
+    assert.equal(Object.hasOwn(h.fixture.intents[0], "text"), false);
+  });
+
+test("Workspace fixture rejects forged IDs, creation expectation, protected paths and overflow before dispatch", async () => {
+  for (const overrides of [
+    { requestId: "forged-id" },
+    { expectation: "missing" },
+    { expectation: undefined },
+    { text: "x".repeat(65537) },
+    { text: "NUL\u0000" },
+    { text: "\ud800" },
+    { path: "../escape" },
+    { path: "AGENTS.md" },
+  ]) {
+    const h = await workspaceFileHarness(),
+      baseline = (await h.read()).value;
+    const result = await h.save(
+      baseline,
+      "SYNTHETIC",
+      "invalid-save",
+      overrides,
+    );
+    assert.equal(result.ok, false);
+    assert.equal(result.code, "INVALID_REQUEST");
+    assert.equal(h.fixture.requests.length, 0);
+    assert.equal(h.fixture.workspaceFileBackups.size, 0);
+  }
+});
+
+for (const name of ["external-changed", "save-denied"])
+  test(`Workspace fixture ${name} refuses before dispatch and retains original bytes`, async () => {
+    const h = await workspaceFileHarness(name),
+      baseline = (await h.read()).value;
+    const result = await h.save(baseline, "SYNTHETIC UNSENT");
+    assert.equal(
+      result.code,
+      name === "external-changed" ? "FILE_CHANGED" : "FILE_DENIED",
+    );
+    validateFileReceipt(result.receipt);
+    assert.equal(result.receipt.admission, "rejected");
+    assert.equal(h.fixture.requests.length, 0);
+    assert.equal(h.fixture.workspaceFileBackups.size, 0);
+  });
+
+test("Workspace fixture complete ancestry change invalidates the baseline", async () => {
+  const h = await workspaceFileHarness(),
+    baseline = (await h.read()).value;
+  h.fixture.workspaceFileDirectories.set(
+    h.fixture.workspaceFileKey(h.scope.workspaceId, h.scope.path),
+    "SYNTHETIC REPLACED ANCESTOR",
+  );
+  assert.equal(
+    (await h.save(baseline, "SYNTHETIC UNSENT")).code,
+    "FILE_CHANGED",
+  );
+  assert.equal(h.fixture.requests.length, 0);
+});
+
+test("Workspace fixture original-key duplicate never replays and changed floor conflicts", async () => {
+  const h = await workspaceFileHarness(),
+    baseline = (await h.read()).value;
+  const first = await h.save(baseline, "SYNTHETIC ONCE");
+  const duplicate = await h.save(baseline, "SYNTHETIC ONCE");
+  assert.equal(duplicate.value.status, "duplicate");
+  assert.deepEqual(duplicate.receipt, first.receipt);
+  assert.equal(
+    (await h.save(baseline, "SYNTHETIC TWICE")).code,
+    "DUPLICATE_CONFLICT",
+  );
+  assert.equal(
+    (
+      await h.save(
+        { ...baseline, revision: h.fixture.snapshot.revision },
+        "SYNTHETIC ONCE",
+      )
+    ).code,
+    "DUPLICATE_CONFLICT",
+  );
+  assert.equal(h.fixture.requests.length, 1);
+  assert.equal(h.fixture.workspaceFileBackups.size, 1);
+});
+
+test("Workspace fixture cancelled baseline suppresses late producer success", async () => {
+  const h = await workspaceFileHarness("pending-read"),
+    pending = h.read();
+  const cancelled = h.transport.cancel(h.event, {
+    version: 2,
+    runtimeEpoch: h.epoch,
+    readId: "workspace-baseline",
+  });
+  assert.equal(cancelled.value.status, "cancelled");
+  assert.equal((await pending).code, "CANCELLED");
+  h.fixture.releaseWorkspaceFileReads();
+  await fileFlush();
+  assert.equal(h.transport.metrics().active, 0);
+  assert.equal(h.fixture.requests.length, 0);
+});
+
+test("Workspace actual controller mount, poll, selection, preview and refocus never read a baseline", async () => {
+  const h = await workspaceFileController();
+  try {
+    h.client.start();
+    await fileFlush();
+    h.client.actions.openFiles(h.scope.path, "file");
+    await fileFlush();
+    h.client.actions.selectWorkspaceFile(h.scope.otherPath);
+    h.client.actions.selectWorkspaceFile(h.scope.path);
+    h.refocus();
+    h.client.actions.refresh();
+    await fileFlush();
+    for (const [key, timer] of [...h.timers])
+      if ([1200, 1600].includes(timer.delay)) {
+        h.timers.delete(key);
+        timer.callback();
+      }
+    await fileFlush();
+    assert.equal(h.fixture.workspaceFileReads.length, 0);
+    assert.equal(canFileSave(h), false);
+    assert.equal(await h.client.actions.readWorkspaceFile(h.scope.path), true);
+    assert.equal(h.fixture.workspaceFileReads.length, 1);
+    assert.equal(fileDraft(h).text, h.scope.text);
+  } finally {
+    h.client.dispose();
+  }
+});
+
+test("Workspace actual controller confirmed receipt raises floor and requires explicit current snapshot then reread", async () => {
+  const h = await workspaceFileController();
+  try {
+    assert.equal(await h.client.actions.readWorkspaceFile(h.scope.path), true);
+    const text = editFile(h);
+    assert.equal(canFileSave(h), true);
+    assert.equal(await h.client.actions.saveWorkspaceFile(), true);
+    assert.equal(fileSave(h).status, "saved");
+    assert.equal(fileDraft(h).text, text);
+    assert.equal(canFileSave(h), false);
+    const reads = h.fixture.workspaceFileReads.length;
+    await h.client.actions.readWorkspaceFile(h.scope.path);
+    assert.equal(
+      h.fixture.workspaceFileReads.length,
+      reads,
+      "Receipt floor alone is not a new snapshot",
+    );
+    h.seed();
+    assert.equal(h.fixture.workspaceFileReads.length, reads);
+    assert.equal(await h.client.actions.readWorkspaceFile(h.scope.path), true);
+    assert.equal(fileDraft(h).baseline, text);
+    assert.equal(canFileSave(h), false);
+    assert.equal(h.fixture.requests.length, 1);
+  } finally {
+    h.client.dispose();
+  }
+});
+
+for (const name of ["external-changed", "save-denied", "unknown"])
+  test(`Workspace actual controller ${name} keeps editable drafts without replay`, async () => {
+    const h = await workspaceFileController(name);
+    try {
+      assert.equal(
+        await h.client.actions.readWorkspaceFile(h.scope.path),
+        true,
+      );
+      const text = editFile(h);
+      await h.client.actions.saveWorkspaceFile();
+      assert.equal(fileDraft(h).text, text);
+      assert.equal(
+        fileSave(h).status,
+        name === "external-changed"
+          ? "conflict"
+          : name === "save-denied"
+            ? "denied"
+            : "unknown",
+      );
+      const later = editFile(h, "SYNTHETIC NEWER EDIT");
+      assert.equal(fileDraft(h).text, later);
+      assert.equal(canFileSave(h), false);
+      const count = h.fixture.requests.length;
+      h.client.start();
+      h.refocus();
+      await fileFlush();
+      assert.equal(h.fixture.requests.length, count);
+      if (name === "unknown") {
+        assert.equal(h.fixture.workspaceFileBackups.size, 0);
+        assert.equal(
+          h.fixture.lookupEnvelopes.some(
+            (e) =>
+              e.runtimeEpoch === h.fixture.snapshot.runtimeEpoch &&
+              e.operation.runtimeEpoch === h.epoch &&
+              e.operation.operationId === h.fixture.requests[0].requestId,
+          ),
+          true,
+        );
+        assert.equal(await h.client.actions.saveWorkspaceFile(), false);
+      }
+    } finally {
+      h.client.dispose();
+    }
+  });
+
+for (const boundary of ["epoch", "root", "trust", "hold", "selection"])
+  test(`Workspace actual controller late read after ${boundary} cannot install a baseline`, async () => {
+    const h = await workspaceFileController("pending-read");
+    try {
+      const pending = h.client.actions.readWorkspaceFile(h.scope.path);
+      await fileFlush();
+      editFile(h, "SYNTHETIC DURING READ");
+      if (boundary === "epoch") {
+        h.fixture.snapshot.runtimeEpoch = "fixture-file-new-epoch";
+        h.seed(true);
+      }
+      if (boundary === "root") {
+        h.fixture.snapshot.workspaces[0].path = "/synthetic/replaced-root";
+        h.seed();
+      }
+      if (boundary === "trust") {
+        h.fixture.snapshot.workspaces[0].trusted = false;
+        h.fixture.snapshot.workspaces[0].trustRevision++;
+        h.seed();
+      }
+      if (boundary === "hold") {
+        h.fixture.snapshot.recovery.resources = [
+          {
+            workspaceId: h.scope.workspaceId,
+            state: "unavailable",
+            reason: "unresolved_operation",
+          },
+        ];
+        h.seed();
+      }
+      if (boundary === "selection") {
+        h.client.actions.selectWorkspaceFile(h.scope.otherPath);
+        h.client.actions.selectWorkspaceFile(h.scope.path);
+      }
+      h.fixture.releaseWorkspaceFileReads();
+      assert.equal(await pending, false);
+      assert.equal(fileDraft(h).observation, undefined);
+      assert.equal(h.fixture.requests.length, 0);
+    } finally {
+      h.client.dispose();
+    }
+  });
+
+for (const boundary of ["epoch", "root"])
+  test(`Workspace actual controller ${boundary} retained original draft is selectable and editable but inert`, async () => {
+    const h = await workspaceFileController();
+    try {
+      assert.equal(
+        await h.client.actions.readWorkspaceFile(h.scope.path),
+        true,
+      );
+      const text = editFile(h);
+      const originalKey = JSON.stringify([
+        h.epoch,
+        h.scope.workspaceId,
+        h.scope.workspacePath,
+        h.scope.path,
+      ]);
+      if (boundary === "epoch")
+        h.fixture.snapshot.runtimeEpoch = "fixture-file-retained-epoch";
+      else
+        h.fixture.snapshot.workspaces[0].path = "/synthetic/replaced-file-root";
+      h.seed(boundary === "epoch");
+      h.client.actions.selectWorkspaceFileDraft(originalKey);
+      assert.equal(fileDraft(h).text, text);
+      assert.equal(
+        h.selectors.workspaceFileTargetPath(h.client.store.getState()),
+        h.scope.workspacePath + "/" + h.scope.path,
+      );
+      editFile(h, "SYNTHETIC RETAINED EDIT");
+      assert.equal(fileDraft(h).text, "SYNTHETIC RETAINED EDIT");
+      assert.equal(
+        h.selectors.canReadWorkspaceFile(h.client.store.getState()),
+        false,
+      );
+      assert.equal(canFileSave(h), false);
+      assert.equal(await h.client.actions.saveWorkspaceFile(), false);
+      assert.equal(h.fixture.workspaceFileReads.length, 1);
+      assert.equal(h.fixture.requests.length, 0);
+    } finally {
+      h.client.dispose();
+    }
+  });
+
+for (const boundary of ["hold", "trust"])
+  test(`Workspace actual controller ${boundary} keeps current draft editable and selectable`, async () => {
+    const h = await workspaceFileController();
+    try {
+      await h.client.actions.readWorkspaceFile(h.scope.path);
+      editFile(h);
+      if (boundary === "hold")
+        h.fixture.snapshot.recovery.resources = [
+          {
+            workspaceId: h.scope.workspaceId,
+            state: "unavailable",
+            reason: "unresolved_operation",
+          },
+        ];
+      else {
+        h.fixture.snapshot.workspaces[0].trusted = false;
+        h.fixture.snapshot.workspaces[0].trustRevision++;
+      }
+      h.seed();
+      h.client.actions.selectWorkspaceFile(h.scope.otherPath);
+      editFile(h, "SYNTHETIC SECOND DRAFT");
+      h.client.actions.selectWorkspaceFile(h.scope.path);
+      editFile(h, "SYNTHETIC HELD EDIT");
+      assert.equal(fileDraft(h).text, "SYNTHETIC HELD EDIT");
+      assert.equal(
+        h.selectors.canReadWorkspaceFile(h.client.store.getState()),
+        false,
+      );
+      assert.equal(canFileSave(h), false);
+      assert.equal(h.fixture.requests.length, 0);
+    } finally {
+      h.client.dispose();
+    }
+  });
+
+test("Workspace actual controller late ACK preserves newer text and another selected draft", async () => {
+  const h = await workspaceFileController("pending-save");
+  try {
+    await h.client.actions.readWorkspaceFile(h.scope.path);
+    editFile(h);
+    const saving = h.client.actions.saveWorkspaceFile();
+    await fileFlush();
+    assert.equal(h.fixture.requests.length, 1);
+    const newer = editFile(h, "SYNTHETIC NEWER THAN ACK");
+    h.client.actions.selectWorkspaceFile(h.scope.otherPath);
+    editFile(h, "SYNTHETIC OTHER DRAFT");
+    h.fixture.releaseWorkspaceFileSaves();
+    await saving;
+    assert.equal(fileDraft(h).text, "SYNTHETIC OTHER DRAFT");
+    h.client.actions.selectWorkspaceFile(h.scope.path);
+    assert.equal(fileDraft(h).text, newer);
+    assert.equal(fileSave(h).status, "saved");
+    assert.equal(fileSave(h).current, false);
+    assert.equal(canFileSave(h), false);
+  } finally {
+    h.client.dispose();
+  }
+});
+
+test("Workspace actual controller restored original operation uses current envelope and original nested key only", async () => {
+  const h = await workspaceFileController("restored-original");
+  try {
+    h.client.start();
+    await fileFlush();
+    h.refocus();
+    await fileFlush();
+    assert.equal(
+      h.fixture.lookupEnvelopes.some(
+        (e) =>
+          e.runtimeEpoch === h.fixture.snapshot.runtimeEpoch &&
+          e.operation.runtimeEpoch ===
+            WORKSPACE_FILE_RETAINED_KEY.runtimeEpoch &&
+          e.operation.operationId === WORKSPACE_FILE_RETAINED_KEY.operationId,
+      ),
+      true,
+    );
+    assert.equal(h.fixture.requests.length, 0);
+    assert.equal(h.fixture.workspaceFileReads.length, 0);
+    assert.equal(h.fixture.snapshot.recovery.resources.length, 1);
+  } finally {
+    h.client.dispose();
+  }
+});
+
+test("Workspace fixture pending same-workspace baseline is blocked while independent workspace baseline remains available", async () => {
+  const h = await workspaceFileHarness("pending-save"),
+    baseline = (await h.read()).value;
+  const pending = h.save(baseline, "SYNTHETIC PENDING");
+  assert.equal(
+    (await h.read(h.scope.otherPath, "same-workspace-read")).code,
+    "BUSY",
+  );
+  const other = {
+    ...h.fixture.snapshot.workspaces[0],
+    id: "fixture-independent-w",
+    path: "/synthetic/independent",
+  };
+  h.fixture.snapshot.workspaces.push(other);
+  const key = h.fixture.workspaceFileKey(other.id, h.scope.path);
+  h.fixture.workspaceFiles.set(key, "SYNTHETIC INDEPENDENT");
+  h.fixture.workspaceFileDirectories.set(key, "synthetic-independent-parents");
+  const result = await h.transport.handle(h.event, {
+    version: 2,
+    runtimeEpoch: h.epoch,
+    readId: "independent-read",
+    operation: {
+      type: "file.edit.read",
+      workspaceId: other.id,
+      path: h.scope.path,
+    },
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.value.content, "SYNTHETIC INDEPENDENT");
+  h.fixture.releaseWorkspaceFileSaves();
+  await pending;
+});
+
+test("Workspace actual controller lookup-confirmed save keeps workspace IO held until original call finally", async () => {
+  const h = await workspaceFileController("pending-save");
+  try {
+    await h.client.actions.readWorkspaceFile(h.scope.path);
+    editFile(h);
+    const saving = h.client.actions.saveWorkspaceFile();
+    await fileFlush();
+    const intent = Object.values(h.client.store.getState().operations).find(
+      (i) => i.workspaceFileSave,
+    );
+    assert.ok(intent);
+    h.fixture.confirmWorkspaceFileSaves();
+    const receipt = [...h.fixture.retainedReceipts.values()][0].receipt;
+    assert.equal(receipt.effect, "confirmed");
+    // Simulate the original transport timeout while the producer's call remains
+    // unresolved. A subsequent original-key lookup may settle logical status.
+    h.client.store.dispatch({
+      type: "unknown",
+      id: JSON.stringify([intent.epoch, intent.id]),
+    });
+    h.seed();
+    h.client.start();
+    h.refocus();
+    await fileFlush();
+    assert.equal(fileSave(h).status, "saved");
+    assert.equal(
+      Object.values(h.client.store.getState().workspaceFileIO).includes(
+        h.scope.workspaceId,
+      ),
+      true,
+    );
+    assert.equal(
+      h.selectors.canReadWorkspaceFile(h.client.store.getState()),
+      false,
+    );
+    editFile(h, "SYNTHETIC AFTER LOOKUP");
+    h.fixture.releaseWorkspaceFileSaves();
+    await saving;
+    assert.equal(
+      Object.values(h.client.store.getState().workspaceFileIO).includes(
+        h.scope.workspaceId,
+      ),
+      false,
+    );
+    assert.equal(fileDraft(h).text, "SYNTHETIC AFTER LOOKUP");
+    assert.equal(h.fixture.requests.length, 1);
+  } finally {
+    h.fixture.releaseWorkspaceFileSaves();
+    h.client.dispose();
+  }
+});
+
+for (const name of ["held", "restored-original", "untrusted"])
+  test(`Workspace fixture ${name} permits inert navigation without baseline authority`, async () => {
+    const h = await workspaceFileHarness(name);
+    const result = await h.transport.handle(h.event, {
+      version: 2,
+      runtimeEpoch: h.epoch,
+      readId: "inert-list",
+      operation: { type: "file.list", workspaceId: h.scope.workspaceId },
+    });
+    assert.equal(result.ok, true);
+    assert.equal(
+      result.value.entries.some((entry) => entry.path === h.scope.path),
+      true,
+    );
+    assert.equal((await h.read()).ok, false);
+    assert.equal(h.fixture.requests.length, 0);
+  });
+
+for (const change of ["bytes", "ancestry", "epoch", "trust"])
+  test(`Workspace fixture postdispatch ${change} change remains original-key unknown without replay`, async () => {
+    const h = await workspaceFileHarness("pending-save"),
+      baseline = (await h.read()).value;
+    const pending = h.save(baseline, "SYNTHETIC DISPATCHED");
+    if (change === "bytes")
+      h.fixture.workspaceFiles.set(
+        h.fixture.workspaceFileKey(h.scope.workspaceId, h.scope.path),
+        "SYNTHETIC CONCURRENT BYTES",
+      );
+    if (change === "ancestry")
+      h.fixture.workspaceFileDirectories.set(
+        h.fixture.workspaceFileKey(h.scope.workspaceId, h.scope.path),
+        "SYNTHETIC CONCURRENT ANCESTRY",
+      );
+    if (change === "epoch")
+      h.fixture.snapshot.runtimeEpoch = "fixture-file-postdispatch-epoch";
+    if (change === "trust") h.fixture.snapshot.workspaces[0].trusted = false;
+    h.fixture.releaseWorkspaceFileSaves();
+    const result = await pending;
+    assert.equal(result.value.status, "unknown");
+    assert.equal(result.receipt.runtimeEpoch, h.epoch);
+    assert.equal(result.receipt.operationId, "workspace-save");
+    validateFileReceipt(result.receipt);
+    assert.equal(h.fixture.workspaceFileBackups.size, 0);
+    const lookup = await h.transport.handle(h.event, {
+      version: 2,
+      runtimeEpoch: h.fixture.snapshot.runtimeEpoch,
+      readId: "original-lookup",
+      operation: {
+        type: "operation.lookup",
+        runtimeEpoch: h.epoch,
+        operationId: "workspace-save",
+      },
+    });
+    assert.equal(lookup.value.status, "found");
+    assert.equal(lookup.value.receipt.effect, "unknown");
+    assert.equal(h.fixture.requests.length, 1);
+    assert.equal(h.fixture.snapshot.recovery.resources.length, 1);
+  });

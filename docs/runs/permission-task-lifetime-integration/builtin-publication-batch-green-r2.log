@@ -1,0 +1,32 @@
+✔ actual Control retains only unsupported metadata from the same source/activation and clears it on dispose (6.309208ms)
+✔ source-like IDs, undeclared copies, changed effects and reused activation results cannot mint metadata (0.742542ms)
+✔ read metadata cannot cross Location incarnation or survive reload (0.756792ms)
+▶ actual Read → PluginInternal → supervisor copies → loader retains inert metadata on the original activation Scope
+  ✔ ordinary actual loader disposal (3.510042ms)
+  ✔ 32 queued writers during actual loader disposal (33.705958ms)
+✔ actual Read → PluginInternal → supervisor copies → loader retains inert metadata on the original activation Scope (48.41075ms)
+✔ graph-owned Read source rejects getters, proxies, asynchronous verifier and reconfiguration before callbacks (0.376167ms)
+✔ terminal cleanup joins duplicates once at saturation and does not open ordinary admission (32.116333ms)
+✔ reentrant terminal cleanup cannot cache a failure or deadlock later actual disposal (0.723667ms)
+✔ source-owned publication API exists before original State registration (5.171209ms)
+✔ original State/editor publishes exact declaration, replays and retires original Scope (3.065375ms)
+✔ unowned callback is refused before original registration or callback effects (0.6325ms)
+✔ different activation Scope is refused before publication (0.536083ms)
+✔ returned declaration must be the exact originally published value (0.620125ms)
+✔ one original plugin activation cannot publish a second declaration (0.629834ms)
+✔ disposed publication callback cannot replay even when retained (0.725625ms)
+✔ closed original activation Scope cannot admit a late declaration result (0.636584ms)
+✔ failed underlying registration revokes its captured publisher before replay (0.5165ms)
+✔ closing plugin owner revokes publisher even before original tool dispose (0.621666ms)
+✔ actual published list joins source metadata once and refuses same-ID replacement (0.561625ms)
+✔ actual fixed Read publisher reaches original State and exact Control result (2.345666ms)
+✔ missing current editor row cannot be replaced by successful plugin result (0.430292ms)
+✔ original State.batch defers list notification until branded result is accepted (0.785375ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 457.712833

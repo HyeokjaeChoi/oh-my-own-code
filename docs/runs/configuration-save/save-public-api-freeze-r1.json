@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "authority": "Actual additive save DTO/request/response/receipt and safe write helper; tsc exit0, current closed contract/storage targeted test run exit0",
+  "paths": {
+    "apps/desktop-app/src/desktop-bridge.d.ts": "633f69d7c3cbcfae250f2a1059344af55e41e793cc1891b1ed4439939417e652",
+    "apps/desktop-app/src/workbench-contract.mjs": "58b6e06e67c42cdc14c04cb0effcc0ac712d92e486b6d7b0ea197912121efee6",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts": "f6316254dbb2a2ff437f7ecd7b0e339fb4e5e8009d92be41c566a691152aa326"
+  },
+  "request": "configuration.save fields workspaceId/requestId/kind/text and expectation version+versionhex64 OR missing withoutversion; normal mutation v2 envelope/sender/original epoch/id",
+  "response": "WorkbenchConfigurationSave saved requestId/version/backupId? OR unknown requestId; normal transport result also redacted receipt; actual callback defaults deny, no Native activation",
+  "receipt": "configuration_saved workspaceId/configurationKind/version/backupId? confirmed only; backup reserved fixed op-key-derived basename; do not expose arbitrary path",
+  "limits": "actual safe lossless shared configurationFileWriteFits, 32768bytes; supported instructions blank allowed though draft format empty-invalid; MCP closed whole supported document"
+}

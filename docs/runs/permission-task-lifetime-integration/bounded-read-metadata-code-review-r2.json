@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "verdict": "pass",
+  "scope": "bounded CODE exact7 metadata-only Read source/activation lifecycle and terminal cleanup correction",
+  "reviewed_checkpoint": {
+    "path": "docs/runs/permission-task-lifetime-integration/read-metadata-source-checkpoint-r2.json",
+    "sha256": "817669a63988d690cbd1ee6028551880568c44646f85ec5db391c70007453780"
+  },
+  "resolved_findings": [
+    "READ-META-01"
+  ],
+  "open_findings": [],
+  "source_pins_before_after": "exact7 match",
+  "checks_read": {
+    "contracted_node": 105,
+    "terminal": 9,
+    "stage": 1
+  },
+  "reviewer_reran_tests": false,
+  "summary": "Fresh reviewer independently verified one joinable uninterruptible cleanup per actual token, same exclusive permit, ordinary32 bound preserved, max32locations*256registrations, reentry before memoization, fields cleared before generation. Source provenance/unsupported-only/no schema IO execute callbacks and no reverse Native imports remain.",
+  "provenance": {
+    "child_task_id": "01a1260e-d594-78f3-9e47-2747f071b241",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "limits": [
+    "Not final wholeCODE/full18/F09",
+    "No Native runtime executed"
+  ]
+}

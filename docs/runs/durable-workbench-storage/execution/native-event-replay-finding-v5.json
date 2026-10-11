@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "source_tag": "v2.0.18",
+  "upstream_commit": "cd9a14a6b688d4021bee381dfd39d2cef9c0f862",
+  "source_files": [
+    {
+      "path": "packages/core/src/bus.ts",
+      "sha256": "1bf5e97b3c3618a79487d75adcfddc602d2068c7759d2018eb9ad7d08f4b57f9",
+      "url": "https://github.com/anomalyco/opencode/blob/cd9a14a6b688d4021bee381dfd39d2cef9c0f862/packages/core/src/bus.ts"
+    },
+    {
+      "path": "packages/core/test/session-log.test.ts",
+      "sha256": "a5e2a0f6980bbd224df96f989ee3c5761cc50c399a6ec497e2aa837b75cdcd8a",
+      "url": "https://github.com/anomalyco/opencode/blob/cd9a14a6b688d4021bee381dfd39d2cef9c0f862/packages/core/test/session-log.test.ts"
+    },
+    {
+      "path": "packages/cli/src/server-process.ts",
+      "sha256": "4d6cfc459c379010eef4e6d01ac819a3db22333f0e13487aabe42fc7d436f017",
+      "url": "https://github.com/anomalyco/opencode/blob/cd9a14a6b688d4021bee381dfd39d2cef9c0f862/packages/cli/src/server-process.ts"
+    },
+    {
+      "path": "packages/server/src/options.ts",
+      "sha256": "25126f84613f324b990ba446474d805f1c3986354f3850af1a90a31bc1794e63",
+      "url": "https://github.com/anomalyco/opencode/blob/cd9a14a6b688d4021bee381dfd39d2cef9c0f862/packages/server/src/options.ts"
+    }
+  ],
+  "actual_error": {
+    "name": "Error",
+    "code": "PROBE_ASSERTION",
+    "message": "Native historical log stream rejected"
+  },
+  "nativeProgress": {
+    "phase": "history-event-log",
+    "logDiagnostic": {
+      "after": 0,
+      "follow": false,
+      "count": 1,
+      "events": [
+        {
+          "keys": [
+            "type",
+            "aggregateID",
+            "seq"
+          ],
+          "unknownKeyCount": 0,
+          "type": "log.synced",
+          "sequence": 2,
+          "aggregateMatches": true,
+          "dataSessionMatches": false
+        }
+      ],
+      "head": {
+        "seen": true,
+        "aggregateMatches": true,
+        "sequence": 2
+      },
+      "completed": false
+    }
+  },
+  "interpretation": "Explicit after=0 query still returned only synced watermark. Missing payload persistence is a candidate confirmed in core default; full CLI route/options independent audit pending. Never a pass for event history.",
+  "historical_unverified_native_pid": 41795,
+  "current_attempt": "Owned current exit proof is separate from historical PID41795; do not retroactively upgrade historical cleanup."
+}

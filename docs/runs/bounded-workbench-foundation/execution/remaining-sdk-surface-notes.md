@@ -1,0 +1,16 @@
+# Additional installed SDK surface for later full-feature execution
+
+2026-10-04 read-only preparatory inspection by main. Not an implementation contract, adapter adoption, runtime probe, independent gate or feature completion. P7 entry/source hold remains. Installed @opencode/client2.0.18 generated declarations are primary local static evidence; types alone do not establish runtime behavior, permission enforcement, safe startup, signal termination or transactional conflict protection.
+
+Source: apps/desktop-app/node_modules/@opencode/client/dist/promise/generated/client.d.ts, declarations types.d.ts. Existing remaining-product-map and PRD F01–18 remain full scope; these surfaces can reduce later adapter work after saved pinned runtime probes.
+
+| Feature | Actual declared native surface | Remaining app-owned concern |
+|---|---|---|
+| F01/F02 worktrees | client.worktree list/create/remove/refresh; create takes projectID/from/branch/directory/name, remove takes projectID/directory/force | Exact workspace/repo/root ownership, source-preserving confirmation, stable app registration/receipts and actual collision/native behavior |
+| F11 text files | client.file write({location?,path,payload:Uint8Array}) returns location/data; read/list/find already known | Conflict-safe conditional save is not declared here. Workspace/trust/path identity, before/after hash and adversarial race proof remain; no arbitrary renderer FS |
+| F11 Git reads | client.vcs get/base/status/branch.list/diff; diff mode working/branch/committed, base/context | Staging, commit, branch creation/selection and destructive restore methods are not in this declared vcs namespace. Reviewed app-owned Git adapter may still be necessary; no shell string interpolation |
+| F12 terminal | client.pty list/create/get/update/remove/connect.token; create command/args/cwd/title/env, update title/rows/cols, token returns location/data | Main-owned token/socket boundary, no credentials or general socket capability to renderer, user-vs-agent permission/receipts, bounded output/backpressure, owned process exit/orphans and actual input/resize proof |
+| F12 alternate native surface | client.shell list/create/get/output/remove; experimental.persistentPty family also declared | Not adopted. Need compare applicable lifecycle/stream semantics; experimental presence is not durability proof. Do not silently add another execution engine |
+| F14 instructions/MCP | session.instructions.entry list/put/remove; existing mcp methods in declaration | App-specific per-project formats/validation/preview/reload and explicit install/process admission remain. Native config.update only accepts shell:string|null; it is not a general instructions/hooks/plugins config write API |
+
+Exact declaration locations: client.d.ts file methods near170, pty188–198, shell212–218, worktree222–227, vcs228–238, config251–255; types.d.ts FileWriteInput7780, PtyCreateInput7852, PtyUpdateInput7922, PtyConnectTokenInput7961, WorktreeCreateInput8273, WorktreeRemoveInput8311, VcsDiffInput8395, ConfigUpdateInput8497. Confirm those locations/bytes again at future consumer checkpoint; current notes are dated evidence. No native process or SDK request was executed for this inspection.

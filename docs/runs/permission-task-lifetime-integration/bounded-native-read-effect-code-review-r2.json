@@ -1,0 +1,48 @@
+{
+  "verdict": "pass",
+  "scope": "plan revision 8의 routine F1 correction. 현재 exact5와 이전 bounded-native-read-effect-code-review-r1.json에 한정.",
+  "findings": [],
+  "resolved": {
+    "id": "F1",
+    "severity": "P2",
+    "evidence": [
+      "native-descriptor-read.mjs:120-131에서 실제 check() 호출을 감싼다. 오류가 발생하면 pathFailures와 pathKinds를 모두 삭제하고 같은 오류를 다시 던진다.",
+      "임시 FD 정리 후 final authority check에도 적용된다.",
+      "새 테스트는 기존 파일 read와 없는 경로 list의 final check를 검증한다.",
+      "read 실패 시 byte 삭제와 임시 FD 정리 경로가 유지된다.",
+      "genuine errno 분류는 기존처럼 descriptor open 관찰, 정리 성공, 최종 authority 확인 이후에만 등록된다."
+    ]
+  },
+  "verification": {
+    "method": "독립 정적 검토와 저장된 로그 확인. runtime 실행 없음.",
+    "sourceStartEndStable": true,
+    "checkpoint": "native-read-effect-source-checkpoint-r2.json",
+    "routingAndPlanHashesMatch": true,
+    "savedLogs": {
+      "native-read-error-F1-red-r1.log": "2 RED",
+      "native-read-error-F1-green-r1.log": "35 GREEN",
+      "native-read-effect-contract-r1.log": "6 PASS",
+      "native-read-effect-descriptor-r2.log": "223 PASS",
+      "native-read-effect-auxiliary-r2.log": "23 PASS",
+      "native-read-effect-metadata-r2.log": "119 PASS",
+      "native-read-effect-stage-r1.log": "1 PASS"
+    },
+    "lintFormat": "exact kernel2 PASS는 사용자 제공 결과다. 이번 검토에서 재실행하지 않았다.",
+    "historical": "초기 오류 분류 4 RED와 33 GREEN은 F1 수정 전 기록이다."
+  },
+  "hashes": {
+    "apps/desktop-app/src/host/native-descriptor-read.mjs": "b9df06c0013576e4e5aa93544fd222980a49bdb374ec4f31c3f4722b888a877a",
+    "apps/desktop-app/src/host/native-descriptor-read.test.mjs": "4ee25d791d8ed646f694a9219089e155e1e65b47e78bfc9b31dd2d28e131d501",
+    "apps/desktop-app/src/native-permission-read-effect.mjs": "4f46b2ccbd8a7bb4f291d4fb626f323a1f24415a2a4df8f06974af9c74102171",
+    "apps/desktop-app/src/native-permission-read-effect.test.mjs": "f2e94d4379dc028d7e46f164e1bf77ba1feadc34a91f547f6ec14b88842fe739",
+    "apps/desktop-app/src/event-host-resources.mjs": "645bde197044fa6139cb029b824a32863462b1e3ec30e70124f3b6e523e4e039"
+  },
+  "limits": [
+    "변경 없는 Effect2와 assets는 이전 review 결과를 재사용했다.",
+    "Effect 6개 테스트의 producer unit stubs는 physical 동작 증거가 아니다.",
+    "현재 physical 실행 증거는 없다. r4 physical 결과는 과거 기록이다.",
+    "original Native module, Bun, GUI, Main 실행 및 permission grant, service install은 수행하지 않았다.",
+    "preExec 승인이 아니며 final full18 CODE도 아니다.",
+    "파일 수정과 위임은 하지 않았다. 결과 저장과 ledger 갱신은 parent가 담당한다."
+  ]
+}

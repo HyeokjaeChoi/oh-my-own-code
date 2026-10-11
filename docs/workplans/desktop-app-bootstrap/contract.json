@@ -1,0 +1,283 @@
+{
+  "schema_version": 2,
+  "decision_register": [
+    {
+      "id": "DESKTOP-PLATFORM",
+      "statement": "The product is an installed desktop application for macOS and Windows.",
+      "status": "confirmed",
+      "source": "Explicit user confirmation in the project conversation.",
+      "impact": "Architecture, packaging, security, and runtime verification must cover both operating systems independently.",
+      "blocks": [],
+      "resolution": "Treat macOS and Windows as required targets; Windows behavior must be observed on Windows."
+    },
+    {
+      "id": "OPENCODE-SIDECAR-OWNERSHIP",
+      "statement": "The desktop app owns and supervises an OpenCode v2 `serve` sidecar.",
+      "status": "confirmed",
+      "source": "Explicit user direction in the project conversation, including the correction that the server runs as a sidecar.",
+      "impact": "Do not use browser loopback evidence as desktop lifecycle/security evidence or silently adopt a shared ambient service.",
+      "blocks": [],
+      "resolution": "Package or provision the pinned server per platform; the selected app host must own startup, readiness, shutdown, and reaping."
+    },
+    {
+      "id": "DESKTOP-SHELL",
+      "statement": "Use Electron as the desktop host for the macOS and Windows app.",
+      "status": "confirmed",
+      "source": "Explicit user selection in the project conversation on 2026-09-28: 'electron으로 진행'.",
+      "impact": "Electron-specific host, renderer isolation, sidecar lifecycle, packaging and per-OS verification contracts govern the approved implementation increment.",
+      "blocks": [],
+      "resolution": "Electron is selected. Exact document-set packet r1 and its receipt are recorded; bounded synthetic-data Electron/OpenCode compatibility probes and bootstrap are authorized after current plan, product, design-spec and matching handoff gates are registered. Storage/retention, user/global config and credentials, ambient services, signing/public release/auto-update and external telemetry remain excluded or separately held."
+    },
+    {
+      "id": "PREVIEW-BOOTSTRAP-BOUNDARY",
+      "statement": "The current bootstrap exposes no preview surface; preview isolation is verified separately before preview implementation.",
+      "status": "assumption",
+      "source": "Revision 21 coordinator reconciliation of independent review finding CR3-4 against the current bootstrap renderer and approved product/design specs.",
+      "impact": "Prevents claiming preview isolation without a preview surface while preserving the later approved product capability.",
+      "blocks": [],
+      "resolution": "Require no iframe, webview, or preview surface and no subframe preload bridge in this bootstrap; add a separate reviewed preview-isolation gate before implementing preview."
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "D-1",
+      "description": "Electron, Tauri 2, and Neutralinojs are compared against the same macOS/Windows and app-owned OpenCode serve-sidecar requirements; Electron is explicitly selected by the user and recorded in a reviewed ADR before implementation."
+    },
+    {
+      "id": "D-2",
+      "description": "The selected desktop shell runs a macOS and Windows development build with the exact app-owned OpenCode v2 serve sidecar, typed least-authority renderer API, the absence of a preview-capable surface in this bootstrap, and verified startup/readiness/shutdown/reaping."
+    },
+    {
+      "id": "D-3",
+      "description": "Reproducible personal-use packages for macOS and Windows launch the OpenCode-backed workbench; exact app/sidecar hashes and platform-specific lifecycle evidence are recorded. This is a runtime milestone, not full PRD acceptance."
+    }
+  ],
+  "checks": {
+    "integrity": {
+      "argv": ["python3", "docs/design/validate_system.py"],
+      "cwd": ".",
+      "scope": "Validate current design token and component sources",
+      "acceptance_ids": ["D-1"],
+      "required": true
+    },
+    "install": {
+      "argv": ["pnpm", "install", "--frozen-lockfile"],
+      "cwd": ".",
+      "scope": "Frozen install; may change local dependency store and contact configured registry if cache is insufficient",
+      "acceptance_ids": ["D-1", "D-3"],
+      "required": true
+    },
+    "lint": {
+      "argv": ["pnpm", "nx", "run-many", "-t", "lint", "--skip-nx-cache"],
+      "cwd": ".",
+      "scope": "Uncached lint for all workspace projects including desktop shell",
+      "acceptance_ids": ["D-2", "D-3"],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run-many",
+        "-t",
+        "format-check",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Uncached format check for source projects",
+      "acceptance_ids": ["D-2", "D-3"],
+      "required": true
+    },
+    "typecheck": {
+      "argv": ["pnpm", "nx", "run-many", "-t", "typecheck", "--skip-nx-cache"],
+      "cwd": ".",
+      "scope": "Uncached typecheck for all workspace projects",
+      "acceptance_ids": ["D-2", "D-3"],
+      "required": true
+    },
+    "tests": {
+      "argv": ["pnpm", "nx", "run-many", "-t", "test", "--skip-nx-cache"],
+      "cwd": ".",
+      "scope": "Uncached unit/integration tests with a pinned app-owned OpenCode v2 sidecar and synthetic workspace/config only; no user configuration or data",
+      "acceptance_ids": ["D-2", "D-3"],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "workbench-web:boundaries",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Renderer/server/module boundary regression checks",
+      "acceptance_ids": ["D-2"],
+      "required": true
+    },
+    "desktop-app-test": {
+      "argv": ["pnpm", "nx", "run", "desktop-app:test", "--skip-nx-cache"],
+      "cwd": ".",
+      "scope": "Selected host/client admission and lifecycle tests using an owned disposable OpenCode sidecar; include exact server identity, readiness/authentication, event-gap handling, and process cleanup without user configuration",
+      "acceptance_ids": ["D-2"],
+      "required": true
+    },
+    "desktop-e2e-macos": {
+      "argv": ["pnpm", "nx", "run", "desktop-app:e2e-macos", "--skip-nx-cache"],
+      "cwd": ".",
+      "scope": "Development app E2E on macOS plus sender/frame/payload admission, navigation denial, privilege absence, absence of a preview surface and subframe preload in this bootstrap; actual preview isolation is a separate gate before preview implementation, sidecar readiness, visible disconnect followed by clean app-restart recovery, and owned-process lifecycle assertions.",
+      "acceptance_ids": ["D-2"],
+      "required": true
+    },
+    "desktop-e2e-windows": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:e2e-windows",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Equivalent development app E2E on Windows with sender/frame/payload admission, navigation denial, privilege absence, absence of a preview surface and subframe preload in this bootstrap; actual preview isolation is a separate gate before preview implementation, sidecar readiness, visible disconnect followed by clean app-restart recovery, and owned-process lifecycle assertions.",
+      "acceptance_ids": ["D-2"],
+      "required": true
+    },
+    "desktop-build": {
+      "argv": ["pnpm", "nx", "run", "desktop-app:package-macos"],
+      "cwd": ".",
+      "scope": "Build and hash the local macOS personal-use desktop artifact; no publication or signing. Cross-build output is not Windows runtime evidence.",
+      "acceptance_ids": ["D-3"],
+      "required": true
+    },
+    "desktop-build-windows": {
+      "argv": ["pnpm", "nx", "run", "desktop-app:package-windows"],
+      "cwd": ".",
+      "scope": "Build and hash the local Windows personal-use desktop artifact on Windows; no publication or signing. Record the actual runner OS.",
+      "acceptance_ids": ["D-3"],
+      "required": true
+    },
+    "desktop-packaged-e2e": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:packaged-e2e-macos",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "On the exact packaged macOS app and OpenCode sidecar, assert sidecar identity/readiness and the minimal client flow; reject malformed renderer messages/navigation/popups; inspect privilege absence and absence of a preview surface and subframe preload in this bootstrap; actual preview isolation is a separate gate before preview implementation; inject startup failure, crash, timeout, service collision, disconnect; verify clean app-restart recovery, close/quit, and exact child reaping; bind app and sidecar hashes to evidence.",
+      "acceptance_ids": ["D-2", "D-3"],
+      "required": true
+    },
+    "desktop-packaged-e2e-windows": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:packaged-e2e-windows",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "On Windows, run the exact packaged app and OpenCode sidecar; verify identity/readiness and the minimal client flow; reject malformed renderer messages/navigation/popups; inspect privilege absence and absence of a preview surface and subframe preload in this bootstrap; actual preview isolation is a separate gate before preview implementation; inject startup failure, crash, timeout, service collision, disconnect; verify clean app-restart recovery, close/quit, and exact child reaping; bind app and sidecar hashes. Match the macOS assertions or document an independently reviewed platform-specific equivalent.",
+      "acceptance_ids": ["D-2", "D-3"],
+      "required": true
+    },
+    "desktop-bundle-inspection-macos": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:bundle-inspection-macos",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Inspect the packaged macOS renderer for Node built-ins, secrets, bridge-only code, OpenCode server code/credentials and unsafe APIs; bind report to exact app and sidecar hashes and build evidence.",
+      "acceptance_ids": ["D-2", "D-3"],
+      "required": true
+    },
+    "desktop-bundle-inspection-windows": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:bundle-inspection-windows",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Inspect the packaged Windows renderer for Node built-ins, secrets, bridge-only code, OpenCode server code/credentials and unsafe APIs; bind report to exact app and sidecar hashes and build evidence.",
+      "acceptance_ids": ["D-2", "D-3"],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/product/prd.md",
+      "gate": "product",
+      "version": "0.6",
+      "sha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3"
+    },
+    {
+      "path": "docs/design/specs/workbench-ux.md",
+      "gate": "design_spec",
+      "version": "0.6",
+      "sha256": "1f59e6f83aca0c077a4db10cc8c65f7e27e5f177ae0aa32dc6508f4134c97525"
+    },
+    {
+      "path": "docs/engineering/workbench-architecture.md",
+      "gate": "design_spec",
+      "version": "0.6",
+      "sha256": "d07aa9234632541056bbe3b96756f2fe7081214f4590397fe0260fd01c31ccae"
+    },
+    {
+      "path": "docs/engineering/verification.md",
+      "gate": "design_spec",
+      "version": "0.5",
+      "sha256": "4c1e60680cf7b20b02efb35230e8af1588b558b80adab8c15442639c49ead696"
+    },
+    {
+      "path": "docs/operations/local-release-monitoring.md",
+      "gate": "design_spec",
+      "version": "0.4",
+      "sha256": "fe97cb8a4c69e2331b74e3c8263387132ae466150a721e9838a107a95a60e163"
+    },
+    {
+      "path": "docs/engineering/spec-index.md",
+      "gate": "design_spec",
+      "version": "0.12",
+      "sha256": "5d63ccc5304887e83f5d16092fd67a5b9cb4cc7eca724e8536e44665f9e31dc9"
+    },
+    {
+      "path": "docs/decisions/0002-desktop-runtime.md",
+      "gate": "design_spec",
+      "version": "0002",
+      "sha256": "1ebaa6585f7e56e1361d174fec25a7cdd080fd4f283067c72ca1d5111f7dcb65"
+    },
+    {
+      "path": "docs/design/system.md",
+      "gate": "design_spec",
+      "version": "2026-09-27",
+      "sha256": "4697eb4961952ee85a4732ed77e5addbb17058a8b3d12485aa56158324f661a5"
+    },
+    {
+      "path": "docs/design/components.json",
+      "gate": "design_spec",
+      "version": "component-contract-v3",
+      "sha256": "76460f0cc7099ef6b628ce654994d89fc75e5e863d33c103daae8049493f2ed2"
+    }
+  ],
+  "user_approvals": [
+    {
+      "id": "ELECTRON-DOC-SET-R1",
+      "version": "r1",
+      "target": {
+        "path": "docs/runs/desktop-app-bootstrap/exact-document-set-approval-r1.md",
+        "sha256": "9d45be0146846ed0cf3e4bf91995b7dff3e858fc355794bdae2af272ef401ecd"
+      },
+      "evidence": {
+        "path": "docs/runs/desktop-app-bootstrap/user-approval-r1.json",
+        "sha256": "deb1ebf40030d5855821af2f3a6a3bb0a8e94304b04492e0f0217921a1a7b885"
+      }
+    }
+  ],
+  "environment_files": []
+}

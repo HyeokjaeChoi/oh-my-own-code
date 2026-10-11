@@ -1,0 +1,60 @@
+{
+  "attestation": "Prepared input metadata; not a spawn or identity attestation",
+  "contract_sha256": "0a9217a9fec35e3cd2684363858459f6a0d8fc2654164be09f61ac53b3dc22c6",
+  "decision_register": [
+    {
+      "blocks": [],
+      "id": "candidate-selection",
+      "impact": "This run creates reversible proposal artifacts only; no production restyling",
+      "resolution": "Keep all candidates proposals; hold production adoption in parent run",
+      "source": "Latest user requests candidates to inspect",
+      "statement": "Production design adoption requires user selection after three concrete candidates",
+      "status": "assumption"
+    }
+  ],
+  "documents": [
+    {
+      "gate": "design_spec",
+      "path": "docs/runs/desktop-design-candidates/synthesis/design-systems.json",
+      "sha256": "4c19952a19c909230d81af721184bd6b06dcec777c73137e36d5c34bb8963798",
+      "version": "1"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/runs/desktop-design-candidates/synthesis/design-plan.md",
+      "sha256": "790c7c11aaabc989d578d614e2d977186b264721f181895bb7f1be5ae8bdbe78",
+      "version": "1"
+    },
+    {
+      "gate": "design_spec",
+      "path": "docs/runs/desktop-design-candidates/synthesis/preview-brief.md",
+      "sha256": "341cc812281cd5c3093d852d26d2058eb9620156bfbe2285ca980c1c82ef9dd6",
+      "version": "1"
+    }
+  ],
+  "phase": "review",
+  "plan_sha256": "59040c75d5d2226699704b74afce484ec976b251ed5546f3d67a89eabcb5858c",
+  "prepared_at": "2026-10-03T08:58:23+00:00",
+  "role": "design_qa",
+  "routing": {
+    "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+    "input_sha256": {
+      ".agents/skills/solo-design-review/SKILL.md": "eaaebad0ca89cc39f59492e07bcda6bcf6f5ba7f70629652593e8ba7aa73cd1b",
+      ".agents/skills/solo-specialist/SKILL.md": "33378f790f39761948485f1f08617840579714dbb925aa177109a80ac4002c3b",
+      ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+    },
+    "mode": "default",
+    "phase": "review",
+    "profile": "solo_reader",
+    "profile_file": ".codex/agents/solo_reader.toml",
+    "references": [],
+    "role": "design_qa",
+    "schema_version": 2,
+    "skill": "solo-design-review",
+    "skill_file": ".agents/skills/solo-design-review/SKILL.md"
+  },
+  "run": "desktop-design-candidates",
+  "schema_version": 2,
+  "user_approvals": []
+}

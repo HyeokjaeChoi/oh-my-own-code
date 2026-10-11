@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "provenance": {
+    "child_task_id": "01a125cf-b788-74e2-bf83-791002ff1220"
+  },
+  "scope": "static next-increment source analysis, no approval or runtime",
+  "actual_dependency": "Server.createRoutes -> AppNodeBuilder.build -> existing buildLocationServiceMap.contextEffect/get -> Instance.layer -> Location.boundNode -> Project.resolve -> persist",
+  "findings": [
+    "Instance.layer installs Location.boundNode after external replacements, so external graph override is insufficient",
+    "Project.resolve persists NONVCS and invokes discovery/processes for Git/Hg; readonly preparation must not call it",
+    "Location acquisition cannot run inside project transaction: locationBegin metadata gate rejects reentry",
+    "Current builtin Read declaration is created inside transform callback; readonly metadata capture needs a common pinned declaration factory, not fake editor/callback execution",
+    "Service7 reader layer creates functions but that alone does not prove all Native graph dependencies inert"
+  ],
+  "next_increment": "Actual retained checked NONVCS candidate -> same registered Location build handle; private no-persistence Location binding. Preserve existing LocationServiceMap and Scope finalizers. Full inventory and execution remain held. Exact bootstrap metadata persistence happens only in later original admitted stage.",
+  "recommended_tests": [
+    "Actual Project.resolve counter stays zero in candidate Location path",
+    "Root/marker/close/stale failures refuse",
+    "Actual same LocationMap handle and root close settlement preserved",
+    "No callback/execute when collecting metadata",
+    "Incomplete inventory cannot issue mode/positive handoff"
+  ],
+  "limits": [
+    "No source edits/delegation/tests/runtime invocation",
+    "No wholeCODE/full18 approval"
+  ]
+}

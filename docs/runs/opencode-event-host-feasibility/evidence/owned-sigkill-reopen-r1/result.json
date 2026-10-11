@@ -1,0 +1,801 @@
+{
+  "schema_version": 1,
+  "case": "owned-sigkill-reopen",
+  "status": "PASS",
+  "namespace": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152",
+  "namespace_retained": true,
+  "before": {
+    "input_manifest_sha256": "4913a77349b57c89d96166c2403fdc601d94bff70eeaea39cba21197f02836ae",
+    "runtime_manifest_sha256": "79df045e1e6e1382d48ed3baabfcb00db55a57c14ee8f22a4038b2decb31c782",
+    "inventory_sha256": "e2dc4a961416c48f4b1e123d27bca367bfd5b4b3dcbc0bf589b499514070a0ef"
+  },
+  "after": {
+    "input_manifest_sha256": "4913a77349b57c89d96166c2403fdc601d94bff70eeaea39cba21197f02836ae",
+    "runtime_manifest_sha256": "79df045e1e6e1382d48ed3baabfcb00db55a57c14ee8f22a4038b2decb31c782",
+    "inventory_sha256": "e2dc4a961416c48f4b1e123d27bca367bfd5b4b3dcbc0bf589b499514070a0ef"
+  },
+  "journal": [
+    {
+      "type": "api-ack",
+      "method": "server.info"
+    },
+    {
+      "type": "authenticated-ready",
+      "pid": 99758,
+      "engine": "1.4.2"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.create"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.export"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.import"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.update"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.get"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.export"
+    },
+    {
+      "type": "api-ack",
+      "method": "message.list"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.log"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.log"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.log"
+    },
+    {
+      "type": "idle-kill-eligible",
+      "pid": 99758,
+      "observation": {
+        "scope": "direct JS ChildProcess/Bun handles only; not arbitrary native/OS descendants",
+        "observerGap": false,
+        "handles": [
+          {
+            "id": 1,
+            "kind": "Bun.spawn",
+            "pid": 99761,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 2,
+            "kind": "node.spawn",
+            "pid": 99761,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 3,
+            "kind": "Bun.spawn",
+            "pid": 99763,
+            "exited": true,
+            "code": 2,
+            "signal": null
+          },
+          {
+            "id": 4,
+            "kind": "node.spawn",
+            "pid": 99763,
+            "exited": true,
+            "code": 2,
+            "signal": null
+          },
+          {
+            "id": 5,
+            "kind": "Bun.spawn",
+            "pid": 99764,
+            "exited": true,
+            "code": 128,
+            "signal": null
+          },
+          {
+            "id": 6,
+            "kind": "node.spawn",
+            "pid": 99764,
+            "exited": true,
+            "code": 128,
+            "signal": null
+          },
+          {
+            "id": 7,
+            "kind": "Bun.spawn",
+            "pid": 99766,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 8,
+            "kind": "node.spawn",
+            "pid": 99766,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 9,
+            "kind": "Bun.spawn",
+            "pid": 99768,
+            "exited": true,
+            "code": 2,
+            "signal": null
+          },
+          {
+            "id": 10,
+            "kind": "node.spawn",
+            "pid": 99768,
+            "exited": true,
+            "code": 2,
+            "signal": null
+          },
+          {
+            "id": 11,
+            "kind": "Bun.spawn",
+            "pid": 99777,
+            "exited": true,
+            "code": 128,
+            "signal": null
+          },
+          {
+            "id": 12,
+            "kind": "node.spawn",
+            "pid": 99777,
+            "exited": true,
+            "code": 128,
+            "signal": null
+          },
+          {
+            "id": 13,
+            "kind": "Bun.spawn",
+            "pid": 99778,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 14,
+            "kind": "node.spawn",
+            "pid": 99778,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 15,
+            "kind": "Bun.spawn",
+            "pid": 99780,
+            "exited": true,
+            "code": 2,
+            "signal": null
+          },
+          {
+            "id": 16,
+            "kind": "node.spawn",
+            "pid": 99780,
+            "exited": true,
+            "code": 2,
+            "signal": null
+          },
+          {
+            "id": 17,
+            "kind": "Bun.spawn",
+            "pid": 99782,
+            "exited": true,
+            "code": 128,
+            "signal": null
+          },
+          {
+            "id": 18,
+            "kind": "node.spawn",
+            "pid": 99782,
+            "exited": true,
+            "code": 128,
+            "signal": null
+          },
+          {
+            "id": 19,
+            "kind": "Bun.spawn",
+            "pid": 99787,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 20,
+            "kind": "node.spawn",
+            "pid": 99787,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 21,
+            "kind": "Bun.spawn",
+            "pid": 99788,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 22,
+            "kind": "node.spawn",
+            "pid": 99788,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 23,
+            "kind": "Bun.spawn",
+            "pid": 99789,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 24,
+            "kind": "node.spawn",
+            "pid": 99789,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 25,
+            "kind": "Bun.spawn",
+            "pid": 99790,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 26,
+            "kind": "node.spawn",
+            "pid": 99790,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 27,
+            "kind": "Bun.spawn",
+            "pid": 99791,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          },
+          {
+            "id": 28,
+            "kind": "node.spawn",
+            "pid": 99791,
+            "exited": true,
+            "code": 0,
+            "signal": null
+          }
+        ],
+        "live": 0
+      }
+    },
+    {
+      "pid": 99758,
+      "code": null,
+      "signal": "SIGKILL",
+      "observed": "ChildProcess.exit"
+    },
+    {
+      "type": "api-ack",
+      "method": "server.info"
+    },
+    {
+      "type": "authenticated-ready",
+      "pid": 99794,
+      "engine": "1.4.2"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.get"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.export"
+    },
+    {
+      "type": "api-ack",
+      "method": "message.list"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.log"
+    },
+    {
+      "type": "api-ack",
+      "method": "session.log"
+    },
+    {
+      "type": "scope-closed",
+      "pid": 99794,
+      "reason": "requested",
+      "observation": {
+        "scope": "direct JS ChildProcess/Bun handles only; not arbitrary native/OS descendants",
+        "observerGap": false,
+        "handles": [],
+        "live": 0
+      }
+    },
+    {
+      "pid": 99794,
+      "code": 0,
+      "signal": null,
+      "observed": "ChildProcess.exit"
+    }
+  ],
+  "diagnostic": null,
+  "result": {
+    "acknowledged": true,
+    "ids": {
+      "templateID": "ses_ae785ac5b159f53af4a202eecc6423e8",
+      "importedID": "ses_0bc84221268fca00d9c2cc9db8552a88"
+    },
+    "before": {
+      "info": {
+        "id": "ses_0bc84221268fca00d9c2cc9db8552a88",
+        "projectID": "global",
+        "cost": 0,
+        "tokens": {
+          "input": 0,
+          "output": 0,
+          "reasoning": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "outcome": "succeeded",
+        "time": {
+          "created": 1791158400000,
+          "updated": 1791165139016,
+          "idle": 1791158400000
+        },
+        "title": "phase1-owned-idle-acknowledged",
+        "subpath": "docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace",
+        "metadata": {
+          "fixture": "closed-idle-v1",
+          "scope": "phase1"
+        },
+        "permissions": [
+          {
+            "action": "*",
+            "resource": "*",
+            "effect": "deny"
+          }
+        ],
+        "location": {
+          "directory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace"
+        }
+      },
+      "transcript": {
+        "info": {
+          "id": "ses_0bc84221268fca00d9c2cc9db8552a88",
+          "projectID": "global",
+          "cost": 0,
+          "tokens": {
+            "input": 0,
+            "output": 0,
+            "reasoning": 0,
+            "cache": {
+              "read": 0,
+              "write": 0
+            }
+          },
+          "outcome": "succeeded",
+          "time": {
+            "created": 1791158400000,
+            "updated": 1791165139016,
+            "idle": 1791158400000
+          },
+          "title": "phase1-owned-idle-acknowledged",
+          "subpath": "docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace",
+          "metadata": {
+            "fixture": "closed-idle-v1",
+            "scope": "phase1"
+          },
+          "permissions": [
+            {
+              "action": "*",
+              "resource": "*",
+              "effect": "deny"
+            }
+          ],
+          "location": {
+            "directory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace"
+          }
+        },
+        "messages": [
+          {
+            "id": "msg_phase1_closed_0001",
+            "metadata": {
+              "fixture": "closed-idle-v1"
+            },
+            "time": {
+              "created": 1791158400000
+            },
+            "text": "Closed synthetic transcript. No tools or provider requests.",
+            "type": "synthetic"
+          }
+        ]
+      },
+      "messages": {
+        "data": [
+          {
+            "id": "msg_phase1_closed_0001",
+            "metadata": {
+              "fixture": "closed-idle-v1"
+            },
+            "time": {
+              "created": 1791158400000
+            },
+            "text": "Closed synthetic transcript. No tools or provider requests.",
+            "type": "synthetic"
+          }
+        ],
+        "cursor": {
+          "previous": "eyJpZCI6Im1zZ19waGFzZTFfY2xvc2VkXzAwMDEiLCJvcmRlciI6ImFzYyIsImRpcmVjdGlvbiI6InByZXZpb3VzIn0",
+          "next": "eyJpZCI6Im1zZ19waGFzZTFfY2xvc2VkXzAwMDEiLCJvcmRlciI6ImFzYyIsImRpcmVjdGlvbiI6Im5leHQifQ"
+        }
+      },
+      "log": {
+        "events": [
+          {
+            "id": "evt_109c307fe001FXrfT5bzdT07TL",
+            "created": 1791165138942,
+            "type": "session.created",
+            "durable": {
+              "aggregateID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "seq": 0,
+              "version": 1
+            },
+            "data": {
+              "sessionID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "projectID": "global",
+              "location": {
+                "directory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace"
+              },
+              "subpath": "docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace",
+              "slug": "brave-island",
+              "title": "phase1-owned-idle",
+              "metadata": {
+                "fixture": "closed-idle-v1",
+                "scope": "phase1"
+              },
+              "permissions": [
+                {
+                  "action": "*",
+                  "resource": "*",
+                  "effect": "deny"
+                }
+              ],
+              "version": "unknown"
+            }
+          },
+          {
+            "id": "evt_109c30846001A7z36bPHzUTiHW",
+            "created": 1791165139014,
+            "type": "session.renamed",
+            "durable": {
+              "aggregateID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "seq": 2,
+              "version": 1
+            },
+            "data": {
+              "sessionID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "title": "phase1-owned-idle-acknowledged"
+            }
+          },
+          {
+            "id": "evt_109c30847001lh7L587c73n9ao",
+            "created": 1791165139015,
+            "type": "session.metadata.updated",
+            "durable": {
+              "aggregateID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "seq": 3,
+              "version": 1
+            },
+            "data": {
+              "sessionID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "metadata": {
+                "fixture": "closed-idle-v1",
+                "scope": "phase1"
+              }
+            }
+          },
+          {
+            "id": "evt_109c30848001eP3oRxXcEjPUXr",
+            "created": 1791165139016,
+            "type": "session.permissions",
+            "durable": {
+              "aggregateID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "seq": 4,
+              "version": 1
+            },
+            "data": {
+              "sessionID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "permissions": [
+                {
+                  "action": "*",
+                  "resource": "*",
+                  "effect": "deny"
+                }
+              ]
+            }
+          }
+        ],
+        "marker": {
+          "type": "log.synced",
+          "aggregateID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+          "seq": 4
+        },
+        "hashes": [
+          "758076f5ca25a8ec49736794d085c578aa95632fb60542307a5fd226a1f166b7",
+          "a36e373432011793f94bf327da8352741af44bd77248af06f80258243e996083",
+          "9af0728671db70570ad3070dfa211336a8cc15d4ed22ef45b72ff6e9d83c860a",
+          "889b6b10094dc4b08b7610cbc63c59dd209d6cde4824089906aca5a22dafa613"
+        ],
+        "head": 4,
+        "gaps": 1
+      },
+      "sentinel_sha256": "f7ade2fc73b1ba557fee79d57ed086e20d0274b11bbc117cda24441249d63be2",
+      "mapping": {
+        "id": "ses_0bc84221268fca00d9c2cc9db8552a88",
+        "location": {
+          "directory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace"
+        },
+        "projectID": "global"
+      },
+      "exclusive_cursor_verified": true
+    },
+    "template_seq0": 0,
+    "after": {
+      "info": {
+        "id": "ses_0bc84221268fca00d9c2cc9db8552a88",
+        "projectID": "global",
+        "cost": 0,
+        "tokens": {
+          "input": 0,
+          "output": 0,
+          "reasoning": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "outcome": "succeeded",
+        "time": {
+          "created": 1791158400000,
+          "updated": 1791165139016,
+          "idle": 1791158400000
+        },
+        "title": "phase1-owned-idle-acknowledged",
+        "subpath": "docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace",
+        "metadata": {
+          "fixture": "closed-idle-v1",
+          "scope": "phase1"
+        },
+        "permissions": [
+          {
+            "action": "*",
+            "resource": "*",
+            "effect": "deny"
+          }
+        ],
+        "location": {
+          "directory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace"
+        }
+      },
+      "transcript": {
+        "info": {
+          "id": "ses_0bc84221268fca00d9c2cc9db8552a88",
+          "projectID": "global",
+          "cost": 0,
+          "tokens": {
+            "input": 0,
+            "output": 0,
+            "reasoning": 0,
+            "cache": {
+              "read": 0,
+              "write": 0
+            }
+          },
+          "outcome": "succeeded",
+          "time": {
+            "created": 1791158400000,
+            "updated": 1791165139016,
+            "idle": 1791158400000
+          },
+          "title": "phase1-owned-idle-acknowledged",
+          "subpath": "docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace",
+          "metadata": {
+            "fixture": "closed-idle-v1",
+            "scope": "phase1"
+          },
+          "permissions": [
+            {
+              "action": "*",
+              "resource": "*",
+              "effect": "deny"
+            }
+          ],
+          "location": {
+            "directory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace"
+          }
+        },
+        "messages": [
+          {
+            "id": "msg_phase1_closed_0001",
+            "metadata": {
+              "fixture": "closed-idle-v1"
+            },
+            "time": {
+              "created": 1791158400000
+            },
+            "text": "Closed synthetic transcript. No tools or provider requests.",
+            "type": "synthetic"
+          }
+        ]
+      },
+      "messages": {
+        "data": [
+          {
+            "id": "msg_phase1_closed_0001",
+            "metadata": {
+              "fixture": "closed-idle-v1"
+            },
+            "time": {
+              "created": 1791158400000
+            },
+            "text": "Closed synthetic transcript. No tools or provider requests.",
+            "type": "synthetic"
+          }
+        ],
+        "cursor": {
+          "previous": "eyJpZCI6Im1zZ19waGFzZTFfY2xvc2VkXzAwMDEiLCJvcmRlciI6ImFzYyIsImRpcmVjdGlvbiI6InByZXZpb3VzIn0",
+          "next": "eyJpZCI6Im1zZ19waGFzZTFfY2xvc2VkXzAwMDEiLCJvcmRlciI6ImFzYyIsImRpcmVjdGlvbiI6Im5leHQifQ"
+        }
+      },
+      "log": {
+        "events": [
+          {
+            "id": "evt_109c307fe001FXrfT5bzdT07TL",
+            "created": 1791165138942,
+            "type": "session.created",
+            "durable": {
+              "aggregateID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "seq": 0,
+              "version": 1
+            },
+            "data": {
+              "sessionID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "projectID": "global",
+              "location": {
+                "directory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace"
+              },
+              "subpath": "docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace",
+              "slug": "brave-island",
+              "title": "phase1-owned-idle",
+              "metadata": {
+                "fixture": "closed-idle-v1",
+                "scope": "phase1"
+              },
+              "permissions": [
+                {
+                  "action": "*",
+                  "resource": "*",
+                  "effect": "deny"
+                }
+              ],
+              "version": "unknown"
+            }
+          },
+          {
+            "id": "evt_109c30846001A7z36bPHzUTiHW",
+            "created": 1791165139014,
+            "type": "session.renamed",
+            "durable": {
+              "aggregateID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "seq": 2,
+              "version": 1
+            },
+            "data": {
+              "sessionID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "title": "phase1-owned-idle-acknowledged"
+            }
+          },
+          {
+            "id": "evt_109c30847001lh7L587c73n9ao",
+            "created": 1791165139015,
+            "type": "session.metadata.updated",
+            "durable": {
+              "aggregateID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "seq": 3,
+              "version": 1
+            },
+            "data": {
+              "sessionID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "metadata": {
+                "fixture": "closed-idle-v1",
+                "scope": "phase1"
+              }
+            }
+          },
+          {
+            "id": "evt_109c30848001eP3oRxXcEjPUXr",
+            "created": 1791165139016,
+            "type": "session.permissions",
+            "durable": {
+              "aggregateID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "seq": 4,
+              "version": 1
+            },
+            "data": {
+              "sessionID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+              "permissions": [
+                {
+                  "action": "*",
+                  "resource": "*",
+                  "effect": "deny"
+                }
+              ]
+            }
+          }
+        ],
+        "marker": {
+          "type": "log.synced",
+          "aggregateID": "ses_0bc84221268fca00d9c2cc9db8552a88",
+          "seq": 4
+        },
+        "hashes": [
+          "758076f5ca25a8ec49736794d085c578aa95632fb60542307a5fd226a1f166b7",
+          "a36e373432011793f94bf327da8352741af44bd77248af06f80258243e996083",
+          "9af0728671db70570ad3070dfa211336a8cc15d4ed22ef45b72ff6e9d83c860a",
+          "889b6b10094dc4b08b7610cbc63c59dd209d6cde4824089906aca5a22dafa613"
+        ],
+        "head": 4,
+        "gaps": 1
+      },
+      "sentinel_sha256": "f7ade2fc73b1ba557fee79d57ed086e20d0274b11bbc117cda24441249d63be2",
+      "mapping": {
+        "id": "ses_0bc84221268fca00d9c2cc9db8552a88",
+        "location": {
+          "directory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/opencode-event-host-feasibility/prototype/runtime-output/ddabf2b3-8928-4ddf-a7c1-e7c58b9c6152/workspace"
+        },
+        "projectID": "global"
+      },
+      "exclusive_cursor_verified": true
+    },
+    "committed_prefix_equal": true,
+    "no_bootstrap_duplicate": true
+  },
+  "limitation": "Direct JS handles only; no OS confinement, queued recovery, provider safety, pairing/PTY, power-loss, production adoption or P7 completion proof."
+}

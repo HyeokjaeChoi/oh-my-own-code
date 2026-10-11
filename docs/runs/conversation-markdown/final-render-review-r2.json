@@ -1,0 +1,44 @@
+{
+    "schema_version": 2,
+    "reviewed": {
+      "contract_sha256": "3ac9df6425c82eda03299dea31c8c8bee39a8a9582ca4164986fd07e5b1f1b00",
+      "environment_sha256": "d0c2c9798a71ecdf928da3b911c3c91e971fcb8ca80000884e487a38ba7a714f",
+      "gate": "design",
+      "plan_sha256": "08369ab39ff0e2cb419c14b6f52114b514d4c647036dd2dac5d68378720c68b7",
+      "schema_version": 2,
+      "source_sha256": "abe6078f67b9ca6d37e691be9901808022b1f5b19ac4caabc036589d57b5c3cc",
+      "verification_sha256": "7a6646772c1e0382e50cf99fe8a2da758f41f3a2103412a66be15ab9b0ddf312",
+      "work_class_sha256": "2e17126b31d8fa5c6c959c6574bfa41485568e70b239ceb95740d3d44a1e0dde"
+    },
+    "verdict": "pass",
+    "summary": "RENDER-01 수정을 원본 픽셀로 독립 검토했습니다. 현재 hidden-r5의 029에는 ‘복사 중입니다.’와 비활성 상태의 ‘표시된 메시지 복사’ 버튼이 함께 보입니다. 028과 보존한 hidden-r4의 029에 있는 실패 안내가 현재 pending 화면에 대입되지 않았습니다. RENDER-01은 해결되었습니다.\n현재 000/001에서 각각 코드·메시지 복사의 focus와 성공 안내를 확인했습니다. Light/Dark의 760px 200% code와 320px prose/table 표본에서 읽기와 콘텐츠 영역을 확인했습니다. 030/031/035에는 변경된 text/session/code에 낡은 성공 안내가 붙지 않습니다. 037에는 retained hold 안내, 차단된 새 세션 조작과 복사 성공이 함께 보입니다. 변경한 capture 방식으로 인해 검사한 화면이 무효가 된 증거는 없습니다. 변경하지 않은 디자인 항목은 이전 독립 검토와 현재 표본 확인을 함께 사용했습니다.\n이 판정은 현재 correction과 관련 증거에 한정됩니다. 저장된 실행 PASS나 작성자의 관찰을 픽셀 승인으로 사용하지 않았습니다. 정적 PNG는 실제 OS clipboard, screen reader 또는 모든 동적 동작을 증명하지 않습니다. whole F05/full18/Windows/release 승인은 포함하지 않습니다. 파일·보고서·ledger 수정, 위임 또는 새 runtime 실행은 하지 않았습니다.",
+    "open_findings": [],
+    "evidence": {
+      "inspection_method": "view_image, detail=original",
+      "integrity": "현재 PNG 38개의 실제 크기와 SHA-256이 render-navigation-r2.json 및 hidden-r5 report와 일치합니다. navigation은 현재 hidden-r5 프레임만 가리킵니다. 직접 픽셀을 검사한 범위는 아래 현재 15개와 과거 비교용 1개입니다.",
+      "pending_sha256": "eda3df9ab44d76802d4af962ce5b417cfb0e940593a5bf0fc88d3fdc647a9f67",
+      "previous_failure_sha256": "8fd71072c23a121a43cbdbee4859802de390c4a0c221cf5298d37a0281590e40",
+      "actual_images_inspected": [
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/029-clipboard-pending.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/028-clipboard-throw.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/000-code-copy-keyboard.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/001-message-copy.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/009-light-760-zoom2-code.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/021-dark-760-zoom2-code.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/011-light-320-zoom1-prose.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/013-light-320-zoom1-table.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/030-late-copy-after-text-change.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/031-late-copy-after-session-switch.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/035-late-copy-after-code-change.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/037-retained-global-operation-copy.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r4/conversation-markdown/029-clipboard-pending.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/023-dark-320-zoom1-prose.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/025-dark-320-zoom1-table.png",
+        "docs/runs/conversation-markdown/evidence/hidden-r5/conversation-markdown/033-completed-stream.png"
+      ]
+    },
+    "provenance": {
+      "child_task_id": "01a11e42-cb50-7810-b31c-2fccc9c1d49d",
+      "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+    }
+  }

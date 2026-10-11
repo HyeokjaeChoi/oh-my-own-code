@@ -1,0 +1,139 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "8444f5360dd8482250db79663ac4382f34c3e58a30b8051718908473939178a3",
+    "documents_sha256": "fb4af8179a9d991d5c94e5b0da22ececbecb0e50b533842fe13ca4cff629cc46",
+    "gate": "design_spec",
+    "plan_sha256": "29ff6b7e942b347d3cf0b1b3f1a0aae3d3551b808b889e909f6ab517c5d7f3bb",
+    "schema_version": 2,
+    "work_class_sha256": "bedc6ccdc1b1909a9b8b1de179e564ab2b82c47a24563c162af4476a693b86c9"
+  },
+  "verdict": "changes_requested",
+  "summary": "초기 DESIGN_SPEC는 수정이 필요합니다. 단일 private Git authority, shared metadata kernel, 원본 객체 무변경, 제한된 파일 효과와 unknown 복구 정책은 적합합니다. 그러나 진행 중 Git 상태의 거부 정책과 branch reflog의 독립 검증 규칙이 빠져 있습니다. 두 계약을 문서에 명시한 뒤 독립 검토를 받아야 합니다.",
+  "open_findings": [
+    {
+      "id": "BR-DS-01",
+      "severity": "high",
+      "location": "docs/runs/git-branch-restore/design.md:7",
+      "related_locations": [
+        "docs/runs/git-branch-restore/design.md:9",
+        "docs/runs/git-branch-restore/design.md:27",
+        "docs/runs/git-branch-restore/design.md:45"
+      ],
+      "consumer": "branchRestoreManager, branch-select kernel policy, 거부 상태 UI",
+      "title": "branch 선택에 진행 중 Git 상태의 거부 계약이 없습니다.",
+      "evidence": [
+        "설계는 clean tracked state를 요구하지만 MERGE_HEAD, rebase-merge, sequencer 같은 진행 중 상태의 부재를 요구하지 않습니다.",
+        "apps/desktop-app/src/host/workbench-git-commit.mjs:104의 부재 검사는 commit manager에만 있습니다.",
+        "apps/desktop-app/src/host/git-metadata-kernel.mjs:295의 commitState는 t.kind === \"commit\"일 때만 검사합니다. shared core를 재사용해도 새 kind에 자동 적용되지 않습니다.",
+        "apps/desktop-app/src/host/git-commit-contract.mjs:354에 기존 finite marker 집합이 있습니다. checked snapshot은 이 상태를 private Git에 복사하지 않습니다."
+      ],
+      "impact": "rebase가 edit 단계에서 멈춘 경우처럼 tracked state가 깨끗해도 진행 중 상태가 남을 수 있습니다. private checkout은 이를 보지 못한 채 통과할 수 있습니다. 원본 HEAD와 worktree만 바꾸면 기존 작업의 metadata와 실제 checkout이 서로 맞지 않을 수 있습니다. 이는 정적 분석에 따른 위험이며 실행으로 재현하지 않았습니다.",
+      "minimum_correction": "최소한 branch-select에는 기존 finite marker 집합의 부재를 선택된 gitDirectory에서 요구하십시오. preview, apply, kernel admission 및 각 효과 직전에 다시 확인하고 source manifest에 부재를 결합하십시오. marker를 읽거나 지우지 마십시오. create와 restore에도 적용할 상태 정책을 명시하십시오. 기존 reader/index의 지원 범위는 바꾸지 마십시오.",
+      "required_future_evidence": [
+        "clean tracked state와 진행 중 marker가 함께 있는 경우",
+        "preview 뒤 또는 효과 사이에 marker가 생기는 경우",
+        "linked worktree에서 선택된 gitDirectory와 다른 worktree 상태의 분리"
+      ]
+    },
+    {
+      "id": "BR-DS-02",
+      "severity": "medium",
+      "location": "docs/runs/git-branch-restore/design.md:31",
+      "related_locations": [
+        "docs/runs/git-branch-restore/design.md:7",
+        "docs/runs/git-branch-restore/design.md:12",
+        "docs/runs/git-branch-restore/design.md:45",
+        "docs/runs/git-branch-restore/design.md:47"
+      ],
+      "consumer": "private branch computation, branchRestore kernel의 log 검증, immutable target과 receipt",
+      "title": "branch reflog의 허용된 변경을 독립적으로 검증할 규칙이 없습니다.",
+      "evidence": [
+        "설계는 log proposal digest와 publication 순서를 정하지만 action별 예상 reflog line을 정의하지 않습니다.",
+        "identity lexical rules와 UTC timestamp만으로는 원본 prefix, old/new OID, reason 및 log 생성 여부를 검증할 수 없습니다.",
+        "기존 commit 계약은 docs/runs/git-explicit-commit/design.md:16에서 log policy, 원본 prefix 보존, 정확한 reason과 예상 line 비교를 명시합니다.",
+        "apps/desktop-app/src/host/git-metadata-kernel.mjs:1425는 log 존재 여부와 policy를 대조하고, 1451에서는 LF 경계를 검사하며, 1452에서는 예상 line을 직접 만들어 proposal 전체와 비교합니다. 이 검증은 commit 전용입니다."
+      ],
+      "impact": "새 kernel이 native proposal과 admitted digest의 일치만 검사하면, 해당 log bytes가 허용된 branch 동작인지는 독립적으로 입증하지 못합니다. disabled log policy와 기존 log의 처리도 구현자가 서로 다르게 해석할 수 있습니다.",
+      "minimum_correction": "create/select별 log role과 실제 경로, 기존 log 존재 여부와 logAllRefUpdates에 따른 생성·생략 규칙을 명시하십시오. 원본 prefix를 그대로 보존하고 LF 경계를 검사하도록 정하십시오. create의 zeroOID→현재 HEAD, select의 이전 HEAD→target OID, 명시적 identity/time 및 닫힌 reason 규칙으로 예상 line을 만들고 Main과 kernel이 각각 proposal 전체를 비교하도록 정하십시오. reason은 고정 문자열 또는 immutable 입력으로 결정되는 정확한 형식이어야 합니다. 실제 API 필드는 예정된 source checkpoint에서 동결하면 됩니다.",
+      "required_future_evidence": [
+        "log policy가 false이고 log가 있는 경우와 없는 경우",
+        "잘못된 prefix, OID, identity, timestamp 또는 reason의 거부",
+        "primary/linked 및 detached HEAD의 log 경로 분리"
+      ]
+    }
+  ],
+  "inspected_scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "run": "git-branch-restore",
+    "plan_revision": "2",
+    "design_version": "2",
+    "input_path": "docs/runs/git-branch-restore/entry-design-input-r1.json",
+    "packet_path": "docs/runs/git-branch-restore/entry-design-packet-r1.json",
+    "documents": [
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-design-spec-review/SKILL.md",
+      "docs/product/prd.md: F-11 / AC-11",
+      "docs/design/specs/workbench-ux.md: section 5 및 접근성 계약",
+      "docs/engineering/architecture-entry.md",
+      "docs/decisions/0001-workbench-platform.md",
+      "docs/runs/git-branch-restore/plan.md",
+      "docs/runs/git-branch-restore/design.md",
+      "docs/runs/git-branch-restore/contract.json",
+      "docs/runs/git-branch-restore/run.json",
+      "docs/runs/git-branch-restore/prechange-inventory.json",
+      "docs/runs/git-branch-restore/entry-plan-report-r1.json",
+      "docs/runs/git-branch-restore/evidence/prechange/branch-restore-normalization-resolution-r1.md",
+      "docs/runs/git-branch-restore/evidence/prechange/branch-restore-preparation-r1.json",
+      "docs/runs/git-branch-restore/evidence/prechange/branch-restore-preparation-r2.json",
+      "docs/runs/git-branch-restore/evidence/prechange/branch-restore-preparation-r3.json",
+      "docs/runs/git-branch-restore/evidence/prechange/probe-branch-restore-preparation-r1.py",
+      "docs/runs/git-branch-restore/evidence/prechange/probe-branch-restore-preparation-r2.py",
+      "docs/runs/git-branch-restore/evidence/prechange/probe-branch-restore-preparation-r3.py",
+      "docs/runs/git-explicit-commit/design.md"
+    ],
+    "static_source_scope": [
+      "workbench-git-snapshot.mjs의 Sources, minimalConfig, snapshotLayout, 전체 copy와 checkedAttributes",
+      "workbench-git.mjs의 공유 observation, manager와 retirement/lifetime",
+      "git-metadata-kernel.mjs의 source delta, descriptor 효과, lock, parent, object graph, log와 상태 검사",
+      "기존 index/commit facade, private contract, commit manager와 storage 계약",
+      "workbench-service.mjs 및 Event Host protocol/supervisor/child의 관련 경로",
+      "Renderer shared path/branch validator, workbench store와 GitReview consumer",
+      ".solopreneur/harness.py의 binding과 review provenance 규칙"
+    ],
+    "verification": [
+      "현재 파일을 읽어 binding을 독립 재계산했습니다. 실제 입력 JSON 전체와 정확히 일치합니다.",
+      "packet의 plan, contract 파일, design 문서와 routing hash가 일치합니다.",
+      "실제 CODEX_THREAD_ID와 DESIGN_SPEC dispatch child_ref 및 packet hash가 일치합니다.",
+      "기존 inventory 673개 항목의 내용·mode·type이 일치합니다. 누락과 변경은 없습니다.",
+      "inventory digest는 427b06f7f8c298c4c8ef156fd8b4ceaafc710e3d451ea29f5b330210f5721b16입니다.",
+      "13개 check가 모두 required이며 initial design_spec gate가 유지됩니다."
+    ],
+    "assessed_contracts": [
+      "원본 경로 Git 실행 없이 단일 checked private authority와 shared typed kernel을 확장하는 선택",
+      "raw commit/tree/blob OID chain, canonical index 및 INDEX/HEAD restore source와 absence 규칙",
+      "LF 제한, ident-only proof, private binary read와 기존 public text-diff의 분리",
+      "보수적인 foreign occupancy, case/ref-prefix 충돌과 protected path 제한",
+      "lock과 parent 순서, same-device SWAP/EXCL/delete-to-backup, 정확한 mode와 source allowed delta",
+      "partial unknown, no rollback/replay/upgrade, byte-free durable target와 실제 call hold",
+      "고정 budget, 단일 Renderer store, 명시적 loss 확인과 source/API freeze checkpoint"
+    ]
+  },
+  "limits": [
+    "파일 수정, 위임, 제품 runtime, build, test, Git 실행 또는 foreground launch는 하지 않았습니다.",
+    "기존 inventory 항목은 확인했습니다. 새 Git inventory를 생성하여 추가 파일까지 확인하지는 않았습니다.",
+    "26개 준비 사례와 관련 script를 읽었습니다. 실행하지 않았으며 production Bun/kernel/admission/UI 증거로 인정하지 않았습니다.",
+    "새 producer/API, 13개 check의 향후 파일과 실제 publication·rendered evidence는 구현 및 실행 대상입니다.",
+    "이 보고서는 초기 DESIGN_SPEC 검토입니다. 최종 CODE/RENDER, 실제 Event Host OS lifetime, production Native dialog, Windows, release 또는 전체 제품 완료를 승인하지 않습니다."
+  ],
+  "provenance": {
+    "role": "design_spec_reviewer",
+    "child_task_id": "01a11d74-ef6e-7733-a36d-dd0e40f71872",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "identity_evidence": "현재 환경의 CODEX_THREAD_ID가 run.json의 DESIGN_SPEC dispatch child_ref와 일치합니다.",
+    "independent": true,
+    "report_only": true
+  }
+}

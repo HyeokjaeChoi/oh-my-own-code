@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "path": "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs",
+      "bytes": 25191,
+      "sha256": "c3bf81378cedfdf08dbdb4a3531a54356ddb756923377e216784517e99bd177a"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-graph-probe.mjs",
+      "bytes": 14144,
+      "sha256": "f66b4b541607787ed4a6b226a8af6abdd6de313f60cbd6d20c0dd29d866cd21c"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-graph-probe.test.mjs",
+      "bytes": 15323,
+      "sha256": "66c6a60eed16d7e57077711313f2bcf3b4f80f10b08d4e261f4dbee63500e9fe"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "bytes": 16130,
+      "sha256": "1d4b3a5832e76d1c4a5cad8d12f772875f40654727d0d756e397c1f5c6def56a"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "bytes": 47762,
+      "sha256": "0f2cb50c26dc62263577dbb35c2d7a3bf6e5ddd6ced52e03624a92b947af824a"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-session-entry.test.mjs",
+      "bytes": 8837,
+      "sha256": "e7a5cd75d660e5a4233af508a1d3a9d3c01222de836a41fd78d7e9c201f72f58"
+    }
+  ],
+  "scope": "Existing-session mutation/direct Shell held only; no create/import bootstrap or positive execution authority",
+  "checks": "Node132/132 +lint+format PASS; allwritersfinished",
+  "runtime_invoked": false,
+  "saved_command": "node apps/desktop-app/scripts/native-permission-graph-probe.mjs --out docs/runs/native-permission-session-entry-gate/evidence/native-r1"
+}

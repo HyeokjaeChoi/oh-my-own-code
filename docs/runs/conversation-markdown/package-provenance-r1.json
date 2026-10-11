@@ -1,0 +1,49 @@
+{
+  "installed": [
+    {
+      "name": "@assistant-ui/react-markdown",
+      "version": "0.14.19",
+      "license": "MIT",
+      "repository": {
+        "type": "git",
+        "url": "git+https://github.com/assistant-ui/assistant-ui.git",
+        "directory": "packages/react-markdown"
+      },
+      "peerDependencies": {
+        "@assistant-ui/react": "^0.15.0",
+        "@types/react": "*",
+        "react": "^18 || ^19"
+      },
+      "dependencies": {
+        "@radix-ui/react-primitive": "^2.1.10",
+        "@radix-ui/react-use-callback-ref": "^1.1.4",
+        "@types/hast": "^3.0.5",
+        "classnames": "^2.5.1",
+        "micromark-util-html-tag-name": "^2.0.1",
+        "react-markdown": "^10.1.0"
+      }
+    },
+    {
+      "name": "remark-gfm",
+      "version": "4.0.1",
+      "license": "MIT",
+      "repository": "remarkjs/remark-gfm",
+      "peerDependencies": null,
+      "dependencies": {
+        "@types/mdast": "^4.0.0",
+        "mdast-util-gfm": "^3.0.0",
+        "micromark-extension-gfm": "^3.0.0",
+        "remark-parse": "^11.0.0",
+        "remark-stringify": "^11.0.0",
+        "unified": "^11.0.0"
+      }
+    }
+  ],
+  "referenceSources": [
+    "https://www.assistant-ui.com/elements/markdown-text",
+    "https://github.com/remarkjs/react-markdown",
+    "https://github.com/remarkjs/remark-gfm"
+  ],
+  "isolatedEvidence": "evidence/compatibility-r1/verification.json",
+  "scope": "Pinned public packages, no registry component/template installation or stack upgrade."
+}

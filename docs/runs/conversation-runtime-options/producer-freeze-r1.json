@@ -1,0 +1,43 @@
+{
+  "status": "Actual producer/public shape freeze r1; no consumer API edits without coordination. Host service behavior implemented, further Main tests ongoing. Not independent approval.",
+  "files": {
+    "apps/desktop-app/src/desktop-bridge.d.ts": {
+      "sha256": "4af4e9ad89ae3c7e824e8c137ef7d714d3f70e1da933be5adaac70133edbba9b",
+      "bytes": 36735
+    },
+    "apps/desktop-app/src/workbench-contract.mjs": {
+      "sha256": "7c230999354106ed672d6378a1e8e587d43c374bac4f03d4f14f22348fae4957",
+      "bytes": 27629
+    },
+    "apps/desktop-app/src/renderer/shared/runtime-options/index.mjs": {
+      "sha256": "588b7f3289e4d96c89477a905db53557ee14cb89c16ed60127a2530547d37f4e",
+      "bytes": 4674
+    },
+    "apps/desktop-app/src/renderer/shared/runtime-options/index.d.mts": {
+      "sha256": "6af476afec5fa9381a60e7de2629e4f2f18cfbcff9fea75d93ed6973f8df529d",
+      "bytes": 1251
+    },
+    "apps/desktop-app/src/renderer/shared/runtime-options/index.ts": {
+      "sha256": "08d6ba3b56cd82d298cbe035fb641d10575f2798d9e932b0d7ff79270c325b61",
+      "bytes": 354
+    },
+    "apps/desktop-app/src/renderer/shared/projection/projection.mjs": {
+      "sha256": "fbe46d4da555eacbce706010bf253d2ff3d809ee428a9931b352452b4f6a31cd",
+      "bytes": 1873
+    }
+  },
+  "shape": {
+    "message.send": "Optional variant:string requires explicit model; omitted stays omitted. Current model membership/variant IDs validated before Native switch; model switch forwards variant only if present. Canonical admission digest includes request variant automatically.",
+    "catalog.models.entries": "WorkbenchModelEntry extends WorkbenchCatalogEntry + required variants:{status:available|unavailable,ids:string[]} + optional capabilities:{tools:boolean,input:string[],output:string[]}. Native overlays never exported. Bad/missing/duplicate/too many variants=>unavailable ids[]. Blank request means Native resolution, not reset. Model may remain selectable with unavailable variants if variant omitted.",
+    "snapshot": "Optional sessionSelection:{sessionId,agent?,model?:{providerId,id,variant?}}. Only successful current Native session refresh selected scope/trusted/connected/ready/nonblocked. Missing/failed refresh clears, no mutation ACK/cached report inference.",
+    "messages": "Optional runtime:{agent,model:{providerId,id,variant?}} on assistant only, from that Native message. Pure mapMessages projects metadata.custom.runtime as detached closed copy; never infer from session/request/catalog.",
+    "helper": "Public shared/runtime-options/index.ts and index.mjs export RUNTIME_OPTIONS_LIMITS,validRuntimeText,validRuntimeModel,validAssistantRuntime,validSessionSelection,validModelOptions,projectModelOptions,projectAssistantRuntime,projectSessionSelection. Boolean validators; projection absent malformed fields omitted. Native project functions map providerID -> public providerId.",
+    "limits": "Runtime text256 wellformed no control characters; variants64 exact opaque original IDs; capability lists32 strings64 unique. Unknown capabilities are read-only display, no attachment authority."
+  },
+  "evidence": [
+    "producer-red-r1.log",
+    "producer-focused-r2.log",
+    "producer-lint-r2.log",
+    "producer-tsc-r1.log"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "summary": "Implemented accepted closed control/saved observation producer shape validation; detached deep freeze, complete structural membership and cycle/refusal/count tests. Pure disconnected Node component; no execution authority enabled.",
+  "changed_paths": [
+    "apps/desktop-app/src/permission-control-observations.mjs",
+    "apps/desktop-app/src/permission-control-observations.test.mjs"
+  ],
+  "evidence": {
+    "node_tests": 66,
+    "fail": 0,
+    "lint": "pass",
+    "format": "pass",
+    "initial_red": "initial-red-r1.json",
+    "test_worker": "worker-result-r1.json"
+  },
+  "limitations": [
+    "Not Native inventory completeness or identity/digest correctness",
+    "Not sender/epoch freshness or handle entropy/ownership",
+    "Not preview/compiler/runtime/producer wiring or F09 completion",
+    "No Native/Bun/Electron/UI/build/provider execution"
+  ]
+}

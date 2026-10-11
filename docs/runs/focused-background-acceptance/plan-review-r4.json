@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "run": "focused-background-acceptance",
+  "reviewer": "plan_reviewer",
+  "plan_path": "docs/runs/focused-background-acceptance/plan.md",
+  "plan_revision": 4,
+  "reviewed": {
+    "contract_sha256": "d5c55a18ad025db73f17241b46924717804790abe5a04755d68169020d2bfe53",
+    "gate": "plan",
+    "plan_sha256": "d4c9a8e05bcfc36ec73dd1cbd19f9baaba528f2a316a3a4d5558d54d3f2076d3",
+    "schema_version": 2,
+    "source_sha256": "95dc94ffa1d4f17bf4e1a2a727b7a2659a7182607495478507e4a60a3e7f821e"
+  },
+  "verdict": "changes_requested",
+  "summary": "revision4의 변경 범위를 독립 검토했습니다. Plan hash, contract semantic hash, source hash는 plan-review-r4.input.json과 모두 일치합니다. 실제 stderr.log는 중단 클릭 후 attempted/dispatched가 6에서 7로 증가하지 않은 실패를 기록합니다. controller.ts:245–268의 같은 scope unknown 차단과 일치합니다. 계획은 connected-running-unknown의 safety interrupt만 허용하며, unknown send/command/lifecycle/permission 차단, active target/epoch/pending/capacity 제한, receipt/draft 보존과 no automatic replay를 유지합니다. Memory >10%는 unresolved failure로 유지하며 baseline/threshold/warmup 변경을 허용하지 않습니다. r3 hidden destination과 performance r2는 미사용이고 경로 구성 요소에 symlink가 없습니다. 다만 hidden-ui의 literal argv가 잘못되어 수정이 필요합니다. 이번 판정은 entry review이며 기존 passing parent contracts와 final gates는 변경하지 않습니다.",
+  "open_findings": [
+    {
+      "id": "P6-ENTRY-R4-1",
+      "priority": "P1",
+      "path": "docs/runs/focused-background-acceptance/contract.json",
+      "line": 115,
+      "summary": "hidden-ui argv가 r2와 r3 경로를 함께 포함하고 필수 --script를 누락합니다.",
+      "evidence": [
+        "contract.json:119–122는 --out 다음에 r2 경로, r3 경로, ui-states를 지정합니다.",
+        "apps/desktop-app/scripts/run-evidence.mjs:32–50은 옵션과 값의 쌍을 요구하며 --script를 필수로 검사합니다.",
+        "현재 argv의 r3 경로는 허용된 옵션이 아니므로 native 실행 전에 Usage 오류가 발생합니다."
+      ],
+      "impact": "필수 hidden-ui check가 계획의 fresh r3 증거를 생성할 수 없습니다. M4/M5 검증을 진행할 수 없습니다.",
+      "required_correction": "Main이 hidden-ui argv를 아래 배열로 수정하고 contract를 다시 등록한 뒤, 새 exact review-input binding으로 독립 entry review를 받아야 합니다. 기존 r1/r2 실패 증거를 보존하십시오.",
+      "required_argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--out",
+        "docs/runs/frontend-architecture-redesign/execution/p6-acceptance-native-r3",
+        "--script",
+        "ui-states"
+      ]
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a104bb-e6c7-7760-bf43-829e6c2ab43d",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "runtime_identity_attested": false,
+    "skills": [
+      "solo-specialist",
+      "solo-plan-review"
+    ],
+    "mode": "report_only",
+    "files_changed": [],
+    "ledger_changed": false,
+    "report_saved": false,
+    "tests_run": false,
+    "native_checks_run": false,
+    "gui_launches": false,
+    "delegated": false,
+    "persistence_owner": "main"
+  }
+}

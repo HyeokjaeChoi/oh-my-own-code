@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"affectedNodeIds\":[],\"readOnly\":true,\"selectedCandidate\":\"A\",\"sourceTokenCount\":475,\"colorTokenCount\":153,\"modeComparisons\":274,\"exactAliasComparisons\":242,\"literalColorComparisons\":32,\"failures\":[],\"comparatorCases\":[{\"name\":\"same alias\",\"actual\":{\"type\":\"VARIABLE_ALIAS\",\"id\":\"a\"},\"wanted\":{\"type\":\"VARIABLE_ALIAS\",\"id\":\"a\"},\"expected\":true,\"observed\":true},{\"name\":\"different alias IDs\",\"actual\":{\"type\":\"VARIABLE_ALIAS\",\"id\":\"a\"},\"wanted\":{\"type\":\"VARIABLE_ALIAS\",\"id\":\"b\"},\"expected\":false,\"observed\":false},{\"name\":\"alias versus literal\",\"actual\":{\"type\":\"VARIABLE_ALIAS\",\"id\":\"a\"},\"wanted\":{\"r\":1,\"g\":1,\"b\":1,\"a\":1},\"expected\":false,\"observed\":false},{\"name\":\"missing literal RGB channels\",\"actual\":{},\"wanted\":{\"r\":1,\"g\":1,\"b\":1,\"a\":1},\"expected\":false,\"observed\":false},{\"name\":\"literal tolerance\",\"actual\":{\"r\":0.500001,\"g\":0,\"b\":0,\"a\":1},\"wanted\":{\"r\":0.5,\"g\":0,\"b\":0,\"a\":1},\"expected\":true,\"observed\":true},{\"name\":\"literal changed\",\"actual\":{\"r\":0.6,\"g\":0,\"b\":0,\"a\":1},\"wanted\":{\"r\":0.5,\"g\":0,\"b\":0,\"a\":1},\"expected\":false,\"observed\":false}],\"comparatorFailures\":[],\"resultCount\":274}"
+    }
+  ],
+  "isError": false
+}

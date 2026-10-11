@@ -1,0 +1,35 @@
+{
+  "class": "routine",
+  "finding": "worker commentary is not delivered by completion-only wait; waiting for Main response can deadlock when ancestor messaging unavailable",
+  "before_manifest": "prechange/dependency-checkpoint-docs-before-r1/manifest.json",
+  "files": [
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/.agents/skills/solo-orchestrate/references/run-protocol.md",
+      "bytes": 23769,
+      "sha256": "c92def84a4d70c5567fde22adf064f99655664468cd4980a779186c0522a8dc2"
+    },
+    {
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/.agents/skills/solo-specialist/SKILL.md",
+      "bytes": 3827,
+      "sha256": "35acbf3a8a9b8d9a36197eb4d6dda1cc83139460d6b14c7d10e4e2a629976d2f"
+    },
+    {
+      "path": "/Users/hyukjaechoi/Solopreneur/.agents/skills/solo-orchestrate/references/run-protocol.md",
+      "bytes": 23769,
+      "sha256": "c92def84a4d70c5567fde22adf064f99655664468cd4980a779186c0522a8dc2"
+    },
+    {
+      "path": "/Users/hyukjaechoi/Solopreneur/.agents/skills/solo-specialist/SKILL.md",
+      "bytes": 3827,
+      "sha256": "35acbf3a8a9b8d9a36197eb4d6dda1cc83139460d6b14c7d10e4e2a629976d2f"
+    }
+  ],
+  "procedure": "worker final partial checkpoint -> Main persists evidence and completes prerequisite -> supported follow-up resumes same unfinished assignment -> final handoff then close",
+  "observed_application": "sdk-registration-worker-early-r1.json; Main saved focused RED2, fixed helper and resumed same worker with sdk-registration-main-checkpoint-r1.json",
+  "limits": [
+    "Does not authorize external messages or recursive delegation",
+    "Does not change fresh correction/re-review independence",
+    "Partial checkpoint is not feature completion or approval",
+    "Documentation fix only; no wait tool or harness executable altered"
+  ]
+}

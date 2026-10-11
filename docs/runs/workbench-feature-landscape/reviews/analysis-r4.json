@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "analysis",
+    "plan_sha256": "a22761fdd6a8c1f9a959cfcbe3122af11dacb35e512494d0ca18ab7f4a070d5c",
+    "contract_sha256": "c0c53b9bdad432628ef90eeec945932dd0b5dd0555380fc15781156b2e3e7378",
+    "source_sha256": "3de8cd6968c1a88fba8e737f01dacc5d3be0301ed1470e0fed5f36e5abfc1ff6",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "verification_sha256": "18436c07efa74672de47535c92851a28af765e6d6d9a906342a1bf35d6fa7d71"
+  },
+  "verdict": "pass",
+  "summary": "최종 연구 보고서는 AC-1~4를 충족하며 새로운 중대한 지적이 없다. 8개 비교 항목, 벤더별 네 수명주기 동작, Electron/합성 웹 구현의 구분, 공식 근거와 제품 표면의 구분, 한국어 설명 및 제품 계약 비변경 경계가 유지된다. 등록 deliverable 해시는 현재 보고서와 일치하며 analysis-r3의 등록 해시 불일치 주의사항이 해소되었다.",
+  "open_findings": [],
+  "review_notes": [
+    "현재 보고서 SHA256은 cd60d3826ccc298b4d6fc5e310f6fc81cd67573373dd894b73f919a4a507ab21이며 run.json artifacts의 docs/research/workbench-feature-landscape.md 항목과 정확히 일치한다. analysis-r3에 기록된 직접 읽은 보고서 해시와도 같으므로 문서 내용은 그 리뷰 이후 변경되지 않았다. 이전 verdict를 복사하지 않고 현재 문서를 다시 읽었다.",
+    "현재 plan과 contract를 읽고 schema-v2 v2_review_binding 함수를 읽기 전용으로 호출해 plan, canonical contract, 전체 source fingerprint, environment 및 verification을 재산출했다. 다섯 해시 모두 전달받은 exact binding과 일치한다. verification digest는 갱신된 artifact 등록을 포함한다.",
+    "벤더 표는 프로젝트/작업공간 진입, Import, Create, Remove from app list/archive, Physical delete, 우측 아티팩트 패널, 도구 호출·승인·결과, Skills/MCP/plugin 목록의 8개 연속 행으로 구성된다. Codex, Claude, OpenCode, Cursor 각각에 네 수명주기 동작의 근거 또는 제한된 조사에서 확인되지 않았다는 설명이 있다. 일반 폴더 생성과 Git worktree 생성, 목록 보관과 디스크 삭제가 구분된다.",
+    "공식 출처를 다시 열어 핵심 수명주기와 패널 주장을 표본 대조했다. Claude Code Desktop은 작업 폴더 선택 및 archive에 따른 worktree 제거를 설명하고 Chat/Code를 분리한다. Cursor /delete-worktree는 격리 checkout 정리이며 단순 목록 숨김 증거로 쓰이지 않는다. OpenCode SDK의 worktree 생성/제거는 projectID, canonical checkout, 기록된 strategy 및 force 인자를 포함하며 보고서는 이를 Desktop 관리 UI로 승격하지 않는다. https://code.claude.com/docs/en/desktop ; https://cursor.com/docs/configuration/worktrees ; https://opencode.ai/v2/docs/build/sdk",
+    "Codex 공식 업데이트의 다중 terminal, 파일 미리보기, 계획·출처·artifact 요약 패널은 보고서의 패널 비교를 뒷받침한다. 전체 보고서에서 공식 출처 링크, 조사일, 사실/권고/문서상 미확인 구분이 유지된다. SDK·CLI·Desktop Code·Desktop Chat의 기능을 같은 표면으로 간주하지 않는다. https://openai.com/ca-ES/index/codex-for-almost-everything/",
+    "Electron renderer DesktopBootstrap, preload/desktop-bridge.d.ts의 runtimeSnapshot 전용 표면, main의 desktop:v1:runtime-snapshot IPC를 직접 확인했다. 웹 AssistantTranscript의 onNew no-op와 interactive=false, local-bridge syntheticSnapshot 및 WorkbenchPage의 읽기 전용 fixture 표기도 재확인했다. 보고서의 미구현 판단은 실제 사용자 프로젝트 기능에 관한 것이며 임시 sidecar 수명 관리와 혼동하지 않는다.",
+    "PRD/UX v0.6 및 spec-index v0.12의 review-required 상태와 구 승인 해시 한계를 현재 파일에서 확인했다. 보고서는 Electron/macOS/Windows라는 명시된 선택을 구현 승인과 구분하고, 후속 순서를 권고로 제한한다. 한국어 설명은 이해 가능하며 기술/API 식별자를 보존한다. 보고서의 로컬 Markdown 링크를 독립 추출한 결과 누락된 대상이 없었다."
+  ],
+  "review_boundary": "Fresh final documentation-based analysis review of docs/research/workbench-feature-landscape.md against the current plan/contract, selected live first-party documentation, referenced implementation paths, and product approval context. Exact schema-v2 binding and registered artifact hash were recomputed. No competitor runtime validation, SDK execution, application tests, packaging tests or OS security verification. No research report, product contract, app code or run ledger edits. Only this requested review JSON was written.",
+  "provenance": {
+    "child_task_id": "/root/workbench_analysis_review_r4",
+    "author_task_id": "/root"
+  }
+}

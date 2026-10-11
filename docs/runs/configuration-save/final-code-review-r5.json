@@ -1,0 +1,95 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "c22832445a0ae37355472ce1c8c5ec180bc7320e6f722cc837b4482ad5d91dde",
+    "environment_sha256": "76a2e1ac4028433ca2cffe57fcf8c453f92912b5b6b4de446bc57c3284224ac1",
+    "gate": "code",
+    "plan_sha256": "734e1d6e565cf626e7ee792538635431fcb3341db5318117414300a1e8214d44",
+    "schema_version": 2,
+    "source_sha256": "1cc00632a8878c0c907ecf2ecf25fab7e3606d9e794c59c38b9b9fb736ffdeef",
+    "verification_sha256": "53b65dfb3b80f14d85c842ee674b53a1703d2205b4bc6db09f0fedb983236205",
+    "work_class_sha256": "115fbe71d56e7138f356b9a6d0773987ea42790493b418152303638f5185bd07"
+  },
+  "verdict": "changes_requested",
+  "summary": "수정 요청 1건입니다. completion flush가 실패하면 unknown receipt에 configuration_saved 결과가 남습니다. 실제 service/admission/redactor를 사용하는 읽기 전용 재현에서 확인했습니다. 다른 검토 범위에서는 추가 수정 항목을 찾지 못했습니다.",
+  "open_findings": [
+    {
+      "id": "CS-R5-001",
+      "severity": "P2",
+      "path": "apps/desktop-app/src/host/workbench-receipts.mjs",
+      "line": 40,
+      "trigger": "kernel 저장과 최종 관찰이 성공한 뒤 registry.complete의 completion flush가 실패합니다. workbench-service.mjs의 projectReceiptFields는 flush 전에 record.result를 configuration_saved로 설정합니다. workbench-admission.mjs:490의 오류 처리에서 effect를 unknown으로 바꾸지만, Object.assign(record, durable.receipt)는 durable receipt에 없는 기존 result 필드를 삭제하지 않습니다.",
+      "impact": "공개 응답에 effect:unknown과 result.kind:configuration_saved가 함께 반환됩니다. 이는 S3의 'lost completion은 unknown이며 saved result가 없어야 한다'는 요구사항을 위반합니다. 실제 storage receipt validator와 renderer는 이 조합을 거부합니다. renderer의 방어 검사는 잘못된 성공 표시를 막지만, 생산자가 닫힌 receipt 계약을 위반하는 문제는 남습니다.",
+      "evidence": [
+        "workbench-service.mjs:394에서 configuration_saved 결과를 설정하고, :532에서 registry.complete를 기다립니다.",
+        "workspace-registry.mjs:769의 commit은 journal.append가 성공한 뒤에만 root를 교체합니다. flush 실패 시 durable lookup에는 이전 dispatch receipt가 남습니다.",
+        "workbench-admission.mjs:491-506은 unknown 상태와 durable 필드를 덮어쓰지만 기존 result를 삭제하지 않습니다.",
+        "workbench-receipts.mjs:40-55는 record.effect를 검사하지 않고 configuration_saved를 투영합니다.",
+        "제한된 재현은 실제 createWorkbenchService와 admission/redactor를 사용했습니다. registry completion 실패와 adapter 응답만 메모리에서 주입했습니다. 결과는 responseOk:false, code:UNAVAILABLE, effect:unknown, returnedResultKind:configuration_saved였습니다. durable receipt에는 result가 없었습니다.",
+        "반환된 receipt를 실제 validateStorageReceipt에 전달하자 invalid_record로 거부되었습니다. 기존 synthetic 대상의 byte는 전후에 같았습니다. Native 실행과 파일 쓰기는 없었습니다."
+      ],
+      "correction": "configuration_saved는 configuration.save의 dispatched/accepted/confirmed receipt에만 투영하십시오. completion 실패와 timeout 경로에서도 미확정 성공 결과가 남지 않도록 처리하십시오. 저장 성공 뒤 completion flush 실패·지연을 주입하는 회귀 검사를 추가하여 unknown receipt에 saved result가 없고 원래 key와 hold가 유지되는지 확인하십시오."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a11944-a635-7722-952c-d7d4ffea16c5",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "mode": "solo-code-review/general, 독립 report-only",
+    "plan_revision": 5,
+    "design_version": 1,
+    "changed_path_count": 42,
+    "scope_basis": "source-freeze-r5.json의 42개 경로와 hash/mode inventory입니다. Git diff에 근거한 검토라는 주장은 하지 않습니다.",
+    "review_passes": [
+      "S1-S5 요구사항과 구현·검증의 대응 확인",
+      "변경 경로와 직접 호출부의 correctness/security/state/concurrency/compatibility 확인"
+    ],
+    "inspected": [
+      "descriptor kernel, Darwin arm64 openat ABI, metadata bounds, race 판정, token과 FD 정리",
+      "service confirmation/reobserve, stage/publish intent flush, owner/IPC 종료 처리",
+      "save admission, receipt, feature marker, checkpoint와 legacy refusal",
+      "renderer의 immutable draft, 늦은 ACK, discard/workspace/path/epoch ABA, clock, retained lookup",
+      "staging closure, private backup preview 제외, 관련 tests와 evidence runner"
+    ],
+    "reviewer_checks": [
+      "42개 현재 경로의 hash와 mode가 source freeze와 모두 일치했습니다.",
+      "harness의 읽기 전용 binding 계산 결과가 final-code-input-r5.json과 정확히 일치했습니다.",
+      "staged host/protocol/resource module/kernel/observation/validation의 byte가 현재 source와 manifest에 모두 일치했습니다. Bun binary hash도 manifest와 일치했습니다.",
+      "CS-R5-001의 제한된 메모리 실패 주입 재현을 실행했습니다. 실제 receipt validator의 거부와 synthetic 대상 byte 불변을 확인했습니다."
+    ],
+    "edits": false,
+    "recursive_delegation": false
+  },
+  "passes": [
+    {
+      "criterion": "S1",
+      "result": "닫힌 v2 요청, 고정 대상, bounded text와 UTF16 검사, Main 확인, 확인 후 재관찰을 확인했습니다."
+    },
+    {
+      "criterion": "S2",
+      "result": "held FD, NOFOLLOW/NONBLOCK/EXCL, bounded IO/xattrs, ACL/flags 제한, SWAP/EXCL, 원본·충돌 entry 보관, unknown 시 rollback/replay 금지를 확인했습니다. 현재 kernel과 일치하는 worker 29개 실제 synthetic 사례 및 staged production chain 7개 사례의 증거를 읽었습니다."
+    },
+    {
+      "criterion": "S3",
+      "result": "feature marker 선행 flush, stage/publish 순서, 원래 epoch/key/digest, checkpoint/reopen, 실제 legacy parser의 unsupported_version 거부 증거는 확인했습니다. completion 실패 receipt는 CS-R5-001 수정이 필요합니다."
+    },
+    {
+      "criterion": "S4",
+      "result": "immutable 요청, revision/text 일치 검사, 늦은 ACK와 ABA 방어, unknown lookup-only hold, 확인된 backup 표시, 파일 저장과 runtime activation의 구분을 확인했습니다."
+    },
+    {
+      "criterion": "S5",
+      "result": "계약의 9개 검사는 현재 binding에서 exit_code 0으로 기록되어 있습니다. 실제 r3 build 로그, kernel-r2 실행·owned exit, hidden-r3의 78개 capture 및 Save 상태 기록을 대조했습니다. 전체 suite와 Native 실행을 반복하지 않았습니다."
+    }
+  ],
+  "limitations": [
+    "실제 Native/kernel 실행은 보존된 실행 증거로 검토했습니다. reviewer는 Native/provider/production Main을 실행하지 않았고 real store를 사용하지 않았습니다.",
+    "CS-R5-001 재현은 실제 service/admission/redactor의 오류 응답 경로를 확인합니다. 실제 kernel 쓰기나 OS fsync 실패의 실행 증거를 대신하지 않습니다.",
+    "worker가 명시한 forced short-IO/fsync/close syscall 실패 주입의 미실행 한계는 유지됩니다.",
+    "관찰 버전과 fsync는 CAS, filesystem isolation, 미래 안정성 또는 power-loss 내구성을 증명하지 않습니다. Windows는 검증되지 않았습니다.",
+    "이 보고서는 CODE 검토입니다. 별도 독립 RENDER gate를 승인하지 않습니다.",
+    "Full F14 Native activation, 다른 설정 범주, MCP lifecycle 및 wholeGoal은 이 저장 증분 밖에 있으며 완료되지 않았습니다."
+  ]
+}

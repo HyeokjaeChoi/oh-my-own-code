@@ -1,0 +1,65 @@
+{
+  "schema_version": 2,
+  "run": "permission-task-lifetime-design",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "b15083b396fb8ab82e77d29eb802a204387aa8699b1bed63e1fe814697c28ec1",
+    "documents_sha256": "07d6ee21e2ed12314f68aa4e5edb66b8bfacfda9f37402d640f0f8d9de8181a5",
+    "gate": "design_spec",
+    "plan_sha256": "70056362fe060ef9f278e02494f11e44150e3d4a772e8f1e0d8e7ff6784bd9eb",
+    "schema_version": 2,
+    "work_class_sha256": "cd6c9dd8295369c1153e39927bf24e04b360e4546daee8d98e86ebe3a7ffa93d"
+  },
+  "verdict": "pass",
+  "summary": "변경된 task/input/handoff/proof/recovery 계약에서 설계 차단 사항을 찾지 못했습니다. R1의 세 지적은 해결되었습니다. task_proof는 최종 settlement 전 crash 구간의 복구 근거를 영속화하며, 자체적으로 authority를 해제하지 않습니다. 실제 producer·consumer의 필요한 변경도 함께 지정되어 있습니다. 이 판정은 설계 문서에만 적용됩니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "TL-DS-01",
+      "assessment": "기존 permission-only RecoveryTicket과 authorityHold 규칙을 보존합니다. 별도 TaskRecoveryTicket은 정확한 task 집합, 영속 proof, 실제 이전 프로세스 종료, Native copy 검증과 양쪽 startup 검증을 요구합니다. proof 없는 crash는 계속 hold됩니다."
+    },
+    {
+      "id": "TL-DS-02",
+      "assessment": "기존 origin-scopes를 단일 input 소유자로 유지합니다. pending→promoted/cancelled와 promoted→settled 전이를 정의합니다. pending/promoted input, expansion, 미완료 handoff 및 원본 RPC는 root settlement를 막습니다. promotion과 cancellation은 같은 lock에서 경쟁합니다."
+    },
+    {
+      "id": "TL-DS-03",
+      "assessment": "prepared/bound의 no_effect 종료와 실제 실행 후 종료를 구분합니다. 존재하지 않는 scope/lease ID를 요구하지 않습니다. 모든 task record는 하나의 연속 sequence를 사용하며, 최종 settlement는 앞서 flush된 정확한 task_proof를 참조합니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a12466-1fab-7820-97b0-a6df2874bc76",
+    "identity_source": "현재 프로세스의 CODEX_THREAD_ID",
+    "binding_input": "docs/runs/permission-task-lifetime-design/design-input-r2.json",
+    "routing_packet": "docs/runs/permission-task-lifetime-design/design-packet-r3.json",
+    "review_boundary": "R2의 변경된 task lifetime, private handoff, 종료 증거, 복구 및 관련 producer·consumer 호환성을 독립 정적 검토했습니다. 전체 F09 검토는 반복하지 않았습니다.",
+    "source_comparison": [
+      "실제 Session.prompt는 reconcile→prepare2→revert commit→admit→wake 순서입니다. R2는 이 첫 effect 전에 정확한 handoff 소비를 요구합니다.",
+      "실제 inbox promotion은 현재 개수만 반환합니다. R2는 정확한 input ID 반환과 callback 전 lineage 연결을 함께 요구합니다.",
+      "실제 coordinator의 pendingWake 재시작과 title FiberMap 작업을 별도 추적 대상으로 지정합니다. callback이나 idle을 종료 증거로 사용하지 않습니다.",
+      "현재 registry와 renderer의 retained 판단은 새 task 계약에 충분하지 않습니다. R2는 parser/checkpoint, admission, host projection, DTO, renderer를 함께 수정하도록 요구하며 현재 구현의 적합성을 주장하지 않습니다.",
+      "일반 private IPC의 16KiB 제한과 기존 prompt digest 알고리즘을 유지합니다. raw attachment payload는 해당 IPC로 보내지 않습니다."
+    ],
+    "verification": {
+      "run_status": "active",
+      "entire_input_matches_current_harness_binding": true,
+      "packet_contract_file_hash_matches": true,
+      "packet_documents_match_contract": true,
+      "packet_plan_and_work_class_match": true,
+      "routing_input_hashes_match": true,
+      "registered_document_hash_matches": true,
+      "selected_source_manifest_entries": 20,
+      "selected_source_sizes_and_hashes_match": true
+    },
+    "limits": [
+      "CODE 검토나 runtime 승인으로 사용할 수 없습니다.",
+      "실제 Native task/IO/child 종료, parser migration 및 renderer 동작은 실행 검증하지 않았습니다.",
+      "proof 전에 중단된 task의 자동 복구는 지원 범위에 포함되지 않습니다.",
+      "제품 실행, 테스트, Native, Bun, Electron, build, server 또는 provider를 실행하지 않았습니다."
+    ],
+    "delegation": false,
+    "file_edits": false,
+    "report_saved": false,
+    "ledger_edits": false
+  }
+}

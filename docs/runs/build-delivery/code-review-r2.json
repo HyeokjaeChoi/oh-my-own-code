@@ -1,0 +1,56 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "code",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "schema_version": 2,
+    "source_sha256": "455ab035f53392e45d20e09dcc7b70b05c3d6dcce69d7cdf5f47e7ae46a5ce12",
+    "verification_sha256": "d9ab66fe5875c03787a77eacd2ae497720a9ad6fb8a82f33abb68fbc6a2336b2"
+  },
+  "verdict": "changes_requested",
+  "summary": "Three prior implementation findings are resolved. Remaining defects concern snapshot session isolation and stale event reconciliation, boundary enforcement of package direction/public APIs, raw unredacted invalid tool fallback, and one omitted test in the declared test target.",
+  "open_findings": [
+    {
+      "severity": "high",
+      "path": "apps/workbench-web/src/entities/session/model/assistant-thread.ts:59",
+      "trigger": "Valid snapshot contains a message from another session or run.",
+      "impact": "All baseline messages are accepted; appended-event filtering alone does not isolate session data and also drops prior runs in the same session.",
+      "correction": "Carry session identity in messages/events; filter snapshots and events by session, retaining earlier runs in that session. Add mixed-session regression coverage."
+    },
+    {
+      "severity": "medium",
+      "path": "apps/workbench-web/src/entities/session/model/assistant-thread.ts:64",
+      "trigger": "Completed snapshot plus older running event.",
+      "impact": "Projection rolls run status backward in both the page and assistant-ui runtime.",
+      "correction": "Bind snapshot state to event cursor/revision and only apply newer events; test stale ordering both ways."
+    },
+    {
+      "severity": "medium",
+      "path": "apps/workbench-web/scripts/check-boundaries.mjs:36",
+      "trigger": "Shared package imports renderer source or app deep-imports private @workbench/ui path.",
+      "impact": "Checker allows reverse package dependency and deep private imports contrary to public API direction.",
+      "correction": "Enforce importer-specific allowed project edges and public entries; constrain aliases and add negative fixtures."
+    },
+    {
+      "severity": "medium",
+      "path": "apps/workbench-web/src/widgets/session-workspace/ui/AssistantTranscript.tsx:45",
+      "trigger": "Invalid tool result contains secret-like values under size limit.",
+      "impact": "Raw serialized values are displayed without masking.",
+      "correction": "Render a bounded redacted summary or omit raw fields; add synthetic secret-canary test."
+    },
+    {
+      "severity": "low",
+      "path": "apps/workbench-web/project.json:38",
+      "trigger": "workbench-web:test target runs.",
+      "impact": "A fixture transport test is omitted from the actual recorded target.",
+      "correction": "Use recursive test discovery or include the omitted test file."
+    }
+  ],
+  "verification_limits": "Recorded frozen install, format, lint, typecheck, tests, build, and boundary checks pass. Reviewer did not execute tests. Browser-mounted renderer E2E and actual SDK/control-channel security remain unverified; all synthetic mutations stay denied.",
+  "provenance": {
+    "child_task_id": "/root/bootstrap_code_review_r2",
+    "author_task_id": "/root"
+  }
+}

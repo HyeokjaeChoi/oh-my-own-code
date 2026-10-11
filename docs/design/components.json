@@ -1,0 +1,1694 @@
+{
+  "schemaVersion": 1,
+  "count": 44,
+  "families": {
+    "Button": 18,
+    "Input": 5,
+    "StatusBadge": 6,
+    "NavigationItem": 4,
+    "ToolCall": 6,
+    "PermissionRequest": 5
+  },
+  "variants": [
+    {
+      "family": "Button",
+      "name": "primary/default",
+      "bindings": {
+        "background": "component.color.button.primary.background",
+        "foreground": "component.color.button.primary.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "primary",
+        "state": "default",
+        "label": "계속",
+        "enabled": true,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "none"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "primary/hover",
+      "bindings": {
+        "background": "component.color.button.primary.hover",
+        "foreground": "component.color.button.primary.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "primary",
+        "state": "hover",
+        "label": "계속",
+        "enabled": true,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "none"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "primary/pressed",
+      "bindings": {
+        "background": "component.color.button.primary.pressed",
+        "foreground": "component.color.button.primary.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "primary",
+        "state": "pressed",
+        "label": "계속",
+        "enabled": true,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "none"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "primary/focus",
+      "bindings": {
+        "background": "component.color.button.primary.background",
+        "foreground": "component.color.button.primary.foreground",
+        "focusRing": "semantic.color.focus",
+        "focusWidth": "semantic.stroke.focus",
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height",
+        "focusGapBackground": "semantic.color.surface",
+        "focusGapWidth": "semantic.size.focus-gap"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "primary",
+        "state": "focus",
+        "label": "계속",
+        "enabled": true,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 2,
+        "loadingIndicator": "none",
+        "focusOffsetPx": 2
+      }
+    },
+    {
+      "family": "Button",
+      "name": "primary/disabled",
+      "bindings": {
+        "background": "component.color.button.disabled.background",
+        "foreground": "component.color.button.disabled.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "primary",
+        "state": "disabled",
+        "label": "계속",
+        "enabled": false,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "none"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "primary/loading",
+      "bindings": {
+        "background": "component.color.button.primary.background",
+        "foreground": "component.color.button.primary.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Keep the same action label; append 진행 중 for screen reader. Avoid changing width; suppress duplicate activation.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "primary",
+        "state": "loading",
+        "label": "계속",
+        "enabled": false,
+        "busy": true
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "small spinner plus retained action label"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "quiet/default",
+      "bindings": {
+        "background": "component.color.button.quiet.background",
+        "foreground": "component.color.button.quiet.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "quiet",
+        "state": "default",
+        "label": "계속",
+        "enabled": true,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "none"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "quiet/hover",
+      "bindings": {
+        "background": "component.color.button.quiet.hover",
+        "foreground": "component.color.button.quiet.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "quiet",
+        "state": "hover",
+        "label": "계속",
+        "enabled": true,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "none"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "quiet/pressed",
+      "bindings": {
+        "background": "component.color.button.quiet.pressed",
+        "foreground": "component.color.button.quiet.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "quiet",
+        "state": "pressed",
+        "label": "계속",
+        "enabled": true,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "none"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "quiet/focus",
+      "bindings": {
+        "background": "component.color.button.quiet.background",
+        "foreground": "component.color.button.quiet.foreground",
+        "focusRing": "semantic.color.focus",
+        "focusWidth": "semantic.stroke.focus",
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height",
+        "focusGapBackground": "semantic.color.surface",
+        "focusGapWidth": "semantic.size.focus-gap"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "quiet",
+        "state": "focus",
+        "label": "계속",
+        "enabled": true,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 2,
+        "loadingIndicator": "none",
+        "focusOffsetPx": 2
+      }
+    },
+    {
+      "family": "Button",
+      "name": "quiet/disabled",
+      "bindings": {
+        "background": "component.color.button.disabled.background",
+        "foreground": "component.color.button.disabled.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "quiet",
+        "state": "disabled",
+        "label": "계속",
+        "enabled": false,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "none"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "quiet/loading",
+      "bindings": {
+        "background": "component.color.button.quiet.background",
+        "foreground": "component.color.button.quiet.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Keep the same action label; append 진행 중 for screen reader. Avoid changing width; suppress duplicate activation.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "quiet",
+        "state": "loading",
+        "label": "계속",
+        "enabled": false,
+        "busy": true
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "small spinner plus retained action label"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "danger/default",
+      "bindings": {
+        "background": "component.color.button.danger.background",
+        "foreground": "component.color.button.danger.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "danger",
+        "state": "default",
+        "label": "계속",
+        "enabled": true,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "none"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "danger/hover",
+      "bindings": {
+        "background": "component.color.button.danger.hover",
+        "foreground": "component.color.button.danger.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "danger",
+        "state": "hover",
+        "label": "계속",
+        "enabled": true,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "none"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "danger/pressed",
+      "bindings": {
+        "background": "component.color.button.danger.pressed",
+        "foreground": "component.color.button.danger.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "danger",
+        "state": "pressed",
+        "label": "계속",
+        "enabled": true,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "none"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "danger/focus",
+      "bindings": {
+        "background": "component.color.button.danger.background",
+        "foreground": "component.color.button.danger.foreground",
+        "focusRing": "semantic.color.focus",
+        "focusWidth": "semantic.stroke.focus",
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height",
+        "focusGapBackground": "semantic.color.surface",
+        "focusGapWidth": "semantic.size.focus-gap"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "danger",
+        "state": "focus",
+        "label": "계속",
+        "enabled": true,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 2,
+        "loadingIndicator": "none",
+        "focusOffsetPx": 2
+      }
+    },
+    {
+      "family": "Button",
+      "name": "danger/disabled",
+      "bindings": {
+        "background": "component.color.button.disabled.background",
+        "foreground": "component.color.button.disabled.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Short action label; Korean may wrap only outside fixed button; minimum width 88px.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "danger",
+        "state": "disabled",
+        "label": "계속",
+        "enabled": false,
+        "busy": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "none"
+      }
+    },
+    {
+      "family": "Button",
+      "name": "danger/loading",
+      "bindings": {
+        "background": "component.color.button.danger.background",
+        "foreground": "component.color.button.danger.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.button.height"
+      },
+      "content": "Keep the same action label; append 진행 중 for screen reader. Avoid changing width; suppress duplicate activation.",
+      "behavior": "Loading keeps action label and announces progress; disabled and loading suppress duplicate activation. Focus is focus-visible only.",
+      "properties": {
+        "intent": "danger",
+        "state": "loading",
+        "label": "계속",
+        "enabled": false,
+        "busy": true
+      },
+      "visual": {
+        "heightPx": 40,
+        "minWidthPx": 88,
+        "horizontalPaddingPx": 16,
+        "focusStrokePx": 0,
+        "loadingIndicator": "small spinner plus retained action label"
+      }
+    },
+    {
+      "family": "Input",
+      "name": "default",
+      "bindings": {
+        "background": "component.color.input.background",
+        "foreground": "component.color.input.foreground",
+        "border": "component.color.input.border",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.input.height",
+        "placeholder": "semantic.color.text.secondary"
+      },
+      "content": "Visible label, editable value or placeholder, and at most one optional feedback message.",
+      "behavior": "Reserve no fixed field-group height. Place label, 40px control and one feedback slot in a vertical auto-layout group; error replaces hint, placeholder is never duplicated as helper text, and disabled state shows no input-requesting hint. Focus ring is outside the control and does not shift layout.",
+      "properties": {
+        "state": "default",
+        "label": "경로",
+        "placeholder": "",
+        "required": false,
+        "enabled": true
+      },
+      "visual": {
+        "heightPx": 40,
+        "horizontalPaddingPx": 12,
+        "focusStrokePx": 0,
+        "errorText": null,
+        "groupLayout": "vertical-auto",
+        "controlHeightPx": 40,
+        "feedbackSlotCount": 1,
+        "feedbackPrecedence": "error-over-hint-over-none",
+        "focusRingAffectsLayout": false
+      }
+    },
+    {
+      "family": "Input",
+      "name": "hover",
+      "bindings": {
+        "background": "component.color.input.background",
+        "foreground": "component.color.input.foreground",
+        "border": "component.color.input.hover-border",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.input.height",
+        "placeholder": "semantic.color.text.secondary"
+      },
+      "content": "Visible label, editable value or placeholder, and at most one optional feedback message.",
+      "behavior": "Reserve no fixed field-group height. Place label, 40px control and one feedback slot in a vertical auto-layout group; error replaces hint, placeholder is never duplicated as helper text, and disabled state shows no input-requesting hint. Focus ring is outside the control and does not shift layout.",
+      "properties": {
+        "state": "hover",
+        "label": "경로",
+        "placeholder": "",
+        "required": false,
+        "enabled": true
+      },
+      "visual": {
+        "heightPx": 40,
+        "horizontalPaddingPx": 12,
+        "focusStrokePx": 0,
+        "errorText": null,
+        "groupLayout": "vertical-auto",
+        "controlHeightPx": 40,
+        "feedbackSlotCount": 1,
+        "feedbackPrecedence": "error-over-hint-over-none",
+        "focusRingAffectsLayout": false
+      }
+    },
+    {
+      "family": "Input",
+      "name": "focus",
+      "bindings": {
+        "background": "component.color.input.background",
+        "foreground": "component.color.input.foreground",
+        "border": "component.color.input.border",
+        "focusRing": "semantic.color.focus",
+        "focusWidth": "semantic.stroke.focus",
+        "radius": "component.size.control.radius",
+        "height": "component.size.input.height",
+        "placeholder": "semantic.color.text.secondary",
+        "focusGapBackground": "semantic.color.surface",
+        "focusGapWidth": "semantic.size.focus-gap"
+      },
+      "content": "Visible label, editable value or placeholder, and at most one optional feedback message.",
+      "behavior": "Reserve no fixed field-group height. Place label, 40px control and one feedback slot in a vertical auto-layout group; error replaces hint, placeholder is never duplicated as helper text, and disabled state shows no input-requesting hint. Focus ring is outside the control and does not shift layout.",
+      "properties": {
+        "state": "focus",
+        "label": "경로",
+        "placeholder": "",
+        "required": false,
+        "enabled": true
+      },
+      "visual": {
+        "heightPx": 40,
+        "horizontalPaddingPx": 12,
+        "focusStrokePx": 2,
+        "errorText": null,
+        "focusOffsetPx": 2,
+        "groupLayout": "vertical-auto",
+        "controlHeightPx": 40,
+        "feedbackSlotCount": 1,
+        "feedbackPrecedence": "error-over-hint-over-none",
+        "focusRingAffectsLayout": false
+      }
+    },
+    {
+      "family": "Input",
+      "name": "disabled",
+      "bindings": {
+        "background": "semantic.color.surface.subtle",
+        "foreground": "component.color.input.foreground",
+        "border": "component.color.input.border",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.input.height",
+        "placeholder": "semantic.color.text.secondary"
+      },
+      "content": "Visible label, editable value or placeholder, and at most one optional feedback message.",
+      "behavior": "Reserve no fixed field-group height. Place label, 40px control and one feedback slot in a vertical auto-layout group; error replaces hint, placeholder is never duplicated as helper text, and disabled state shows no input-requesting hint. Focus ring is outside the control and does not shift layout.",
+      "properties": {
+        "state": "disabled",
+        "label": "경로",
+        "placeholder": "",
+        "required": false,
+        "enabled": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "horizontalPaddingPx": 12,
+        "focusStrokePx": 0,
+        "errorText": null,
+        "groupLayout": "vertical-auto",
+        "controlHeightPx": 40,
+        "feedbackSlotCount": 1,
+        "feedbackPrecedence": "error-over-hint-over-none",
+        "focusRingAffectsLayout": false
+      }
+    },
+    {
+      "family": "Input",
+      "name": "error",
+      "bindings": {
+        "background": "component.color.input.background",
+        "foreground": "component.color.input.foreground",
+        "border": "component.color.input.error-border",
+        "focusRing": null,
+        "focusWidth": null,
+        "radius": "component.size.control.radius",
+        "height": "component.size.input.height",
+        "placeholder": "semantic.color.text.secondary"
+      },
+      "content": "Visible label, editable value, and one specific error message; ordinary hint is replaced.",
+      "behavior": "Keep the visible error border, one associated error message, and aria-invalid when focused; focus-visible adds the normal outer ring without shifting layout.",
+      "properties": {
+        "state": "error",
+        "label": "경로",
+        "placeholder": "",
+        "required": false,
+        "enabled": true
+      },
+      "visual": {
+        "heightPx": 40,
+        "horizontalPaddingPx": 12,
+        "focusStrokePx": 0,
+        "errorText": "경로를 확인하세요",
+        "groupLayout": "vertical-auto",
+        "controlHeightPx": 40,
+        "feedbackSlotCount": 1,
+        "feedbackPrecedence": "error-over-hint-over-none",
+        "focusRingAffectsLayout": false
+      }
+    },
+    {
+      "family": "StatusBadge",
+      "name": "queued",
+      "bindings": {
+        "background": "semantic.color.info.background",
+        "foreground": "semantic.color.info.foreground",
+        "radius": "semantic.radius.badge",
+        "paddingX": "component.size.badge.padding-x"
+      },
+      "content": "Single-line, vertically centered text label; width hugs text with 8px horizontal inset on both sides.",
+      "behavior": "Text label required; success only after authoritative execution confirmation.",
+      "properties": {
+        "state": "queued",
+        "label": "대기 중"
+      },
+      "visual": {
+        "heightPx": 24,
+        "horizontalPaddingPx": 8,
+        "colorOnly": false,
+        "widthMode": "hug",
+        "labelLines": 1,
+        "verticalAlignment": "center",
+        "widthFormula": "renderedLabelWidthPx + 16"
+      }
+    },
+    {
+      "family": "StatusBadge",
+      "name": "running",
+      "bindings": {
+        "background": "semantic.color.info.background",
+        "foreground": "semantic.color.info.foreground",
+        "radius": "semantic.radius.badge",
+        "paddingX": "component.size.badge.padding-x"
+      },
+      "content": "Single-line, vertically centered text label; width hugs text with 8px horizontal inset on both sides.",
+      "behavior": "Text label required; success only after authoritative execution confirmation.",
+      "properties": {
+        "state": "running",
+        "label": "실행 중"
+      },
+      "visual": {
+        "heightPx": 24,
+        "horizontalPaddingPx": 8,
+        "colorOnly": false,
+        "widthMode": "hug",
+        "labelLines": 1,
+        "verticalAlignment": "center",
+        "widthFormula": "renderedLabelWidthPx + 16"
+      }
+    },
+    {
+      "family": "StatusBadge",
+      "name": "waiting",
+      "bindings": {
+        "background": "semantic.color.warning.background",
+        "foreground": "semantic.color.warning.foreground",
+        "radius": "semantic.radius.badge",
+        "paddingX": "component.size.badge.padding-x"
+      },
+      "content": "Single-line, vertically centered text label; width hugs text with 8px horizontal inset on both sides.",
+      "behavior": "Text label required; success only after authoritative execution confirmation.",
+      "properties": {
+        "state": "waiting",
+        "label": "응답 대기"
+      },
+      "visual": {
+        "heightPx": 24,
+        "horizontalPaddingPx": 8,
+        "colorOnly": false,
+        "widthMode": "hug",
+        "labelLines": 1,
+        "verticalAlignment": "center",
+        "widthFormula": "renderedLabelWidthPx + 16"
+      }
+    },
+    {
+      "family": "StatusBadge",
+      "name": "success",
+      "bindings": {
+        "background": "semantic.color.success.background",
+        "foreground": "semantic.color.success.foreground",
+        "radius": "semantic.radius.badge",
+        "paddingX": "component.size.badge.padding-x"
+      },
+      "content": "Single-line, vertically centered text label; width hugs text with 8px horizontal inset on both sides.",
+      "behavior": "Text label required; success only after authoritative execution confirmation.",
+      "properties": {
+        "state": "success",
+        "label": "확인 완료"
+      },
+      "visual": {
+        "heightPx": 24,
+        "horizontalPaddingPx": 8,
+        "colorOnly": false,
+        "widthMode": "hug",
+        "labelLines": 1,
+        "verticalAlignment": "center",
+        "widthFormula": "renderedLabelWidthPx + 16"
+      }
+    },
+    {
+      "family": "StatusBadge",
+      "name": "error",
+      "bindings": {
+        "background": "semantic.color.danger.background",
+        "foreground": "semantic.color.danger.foreground",
+        "radius": "semantic.radius.badge",
+        "paddingX": "component.size.badge.padding-x"
+      },
+      "content": "Single-line, vertically centered text label; width hugs text with 8px horizontal inset on both sides.",
+      "behavior": "Text label required; success only after authoritative execution confirmation.",
+      "properties": {
+        "state": "error",
+        "label": "실패"
+      },
+      "visual": {
+        "heightPx": 24,
+        "horizontalPaddingPx": 8,
+        "colorOnly": false,
+        "widthMode": "hug",
+        "labelLines": 1,
+        "verticalAlignment": "center",
+        "widthFormula": "renderedLabelWidthPx + 16"
+      }
+    },
+    {
+      "family": "StatusBadge",
+      "name": "unknown",
+      "bindings": {
+        "background": "semantic.color.surface.subtle",
+        "foreground": "semantic.color.text.secondary",
+        "radius": "semantic.radius.badge",
+        "paddingX": "component.size.badge.padding-x"
+      },
+      "content": "Single-line, vertically centered text label; width hugs text with 8px horizontal inset on both sides.",
+      "behavior": "Text label required; success only after authoritative execution confirmation.",
+      "properties": {
+        "state": "unknown",
+        "label": "상태 확인 중"
+      },
+      "visual": {
+        "heightPx": 24,
+        "horizontalPaddingPx": 8,
+        "colorOnly": false,
+        "widthMode": "hug",
+        "labelLines": 1,
+        "verticalAlignment": "center",
+        "widthFormula": "renderedLabelWidthPx + 16"
+      }
+    },
+    {
+      "family": "NavigationItem",
+      "name": "default",
+      "bindings": {
+        "background": "component.color.navigation.background",
+        "foreground": "component.color.navigation.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "height": "component.size.navigation.height"
+      },
+      "content": "Start-aligned item label with optional trailing status; fills its parent width and exposes its full title when truncated.",
+      "behavior": "Use a 40px full-width row, 12px start inset, and start-aligned content. Default and hover use 500 label weight; selected/current uses 700. In Dark mode, the navigation parent and default row use semantic.color.surface; hover uses semantic.color.canvas and selected uses semantic.color.surface.subtle. Focus overlays the underlying default or selected state without changing layout and preserves that state’s fill and label weight. Current destination uses aria-current=page; selection never implies execution success.",
+      "properties": {
+        "state": "default",
+        "label": "작업",
+        "current": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "horizontalPaddingPx": 12,
+        "focusStrokePx": 0,
+        "widthMode": "fill",
+        "contentAlignment": "start",
+        "selectedCue": "selected-label-700-vs-default-500",
+        "focusRingAffectsLayout": false,
+        "labelFontWeight": 500
+      }
+    },
+    {
+      "family": "NavigationItem",
+      "name": "hover",
+      "bindings": {
+        "background": "component.color.navigation.hover-background",
+        "foreground": "component.color.navigation.foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "height": "component.size.navigation.height"
+      },
+      "content": "Start-aligned item label with optional trailing status; fills its parent width and exposes its full title when truncated.",
+      "behavior": "Use a 40px full-width row, 12px start inset, and start-aligned content. Default and hover use 500 label weight; selected/current uses 700. In Dark mode, the navigation parent and default row use semantic.color.surface; hover uses semantic.color.canvas and selected uses semantic.color.surface.subtle. Focus overlays the underlying default or selected state without changing layout and preserves that state’s fill and label weight. Current destination uses aria-current=page; selection never implies execution success.",
+      "properties": {
+        "state": "hover",
+        "label": "작업",
+        "current": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "horizontalPaddingPx": 12,
+        "focusStrokePx": 0,
+        "widthMode": "fill",
+        "contentAlignment": "start",
+        "selectedCue": "selected-label-700-vs-default-500",
+        "focusRingAffectsLayout": false,
+        "labelFontWeight": 500
+      }
+    },
+    {
+      "family": "NavigationItem",
+      "name": "selected",
+      "bindings": {
+        "background": "component.color.navigation.selected-background",
+        "foreground": "component.color.navigation.selected-foreground",
+        "focusRing": null,
+        "focusWidth": null,
+        "height": "component.size.navigation.height"
+      },
+      "content": "Start-aligned item label with optional trailing status; fills its parent width and exposes its full title when truncated.",
+      "behavior": "Use a 40px full-width row, 12px start inset, and start-aligned content. Default and hover use 500 label weight; selected/current uses 700. In Dark mode, the navigation parent and default row use semantic.color.surface; hover uses semantic.color.canvas and selected uses semantic.color.surface.subtle. Focus overlays the underlying default or selected state without changing layout and preserves that state’s fill and label weight. Current destination uses aria-current=page; selection never implies execution success.",
+      "properties": {
+        "state": "selected",
+        "label": "작업",
+        "current": true
+      },
+      "visual": {
+        "heightPx": 40,
+        "horizontalPaddingPx": 12,
+        "focusStrokePx": 0,
+        "widthMode": "fill",
+        "contentAlignment": "start",
+        "selectedCue": "selected-label-700-vs-default-500",
+        "focusRingAffectsLayout": false,
+        "labelFontWeight": 700
+      }
+    },
+    {
+      "family": "NavigationItem",
+      "name": "focus",
+      "bindings": {
+        "background": "component.color.navigation.background",
+        "foreground": "component.color.navigation.foreground",
+        "focusRing": "semantic.color.focus",
+        "focusWidth": "semantic.stroke.focus",
+        "height": "component.size.navigation.height",
+        "focusGapBackground": "semantic.color.surface",
+        "focusGapWidth": "semantic.size.focus-gap"
+      },
+      "content": "Start-aligned item label with optional trailing status; fills its parent width and exposes its full title when truncated.",
+      "behavior": "Use a 40px full-width row, 12px start inset, and start-aligned content. Default and hover use 500 label weight; selected/current uses 700. In Dark mode, the navigation parent and default row use semantic.color.surface; hover uses semantic.color.canvas and selected uses semantic.color.surface.subtle. Focus overlays the underlying default or selected state without changing layout and preserves that state’s fill and label weight. Current destination uses aria-current=page; selection never implies execution success.",
+      "properties": {
+        "state": "focus",
+        "label": "작업",
+        "current": false
+      },
+      "visual": {
+        "heightPx": 40,
+        "horizontalPaddingPx": 12,
+        "focusStrokePx": 2,
+        "focusOffsetPx": 2,
+        "widthMode": "fill",
+        "contentAlignment": "start",
+        "selectedCue": "selected-label-700-vs-default-500",
+        "focusRingAffectsLayout": false,
+        "labelFontWeight": 500
+      }
+    },
+    {
+      "family": "ToolCall",
+      "name": "queued",
+      "bindings": {
+        "background": "component.color.tool.background",
+        "foreground": "component.color.tool.foreground",
+        "border": "component.color.tool.border",
+        "radius": "component.size.card.radius",
+        "padding": "component.size.card.padding"
+      },
+      "content": "Quiet summary: tool and textual status, with source/target/result metadata when available. Optional expanded detail contains masked input/output, source and target; unknown schema uses plain text.",
+      "behavior": "Keep the summary borderless. Expanded details may use the functional detail boundary. Show “근거 보기” as a separate keyboard-operable disclosure only when local detail is available; a result-navigation action requires a valid runtime-supplied target. If no target exists, show non-actionable availability text. Never invent a URL or imply success optimistically; stale actions revalidate. Nested status uses the shared StatusBadge instance; its label/state are mapped here and its own background/foreground bindings are authoritative.",
+      "properties": {
+        "state": "queued",
+        "statusLabel": "대기 중"
+      },
+      "visual": {
+        "minWidthPx": 280,
+        "maxWidthPx": 720,
+        "statusTextRequired": true,
+        "maskedOutputRequired": true,
+        "summaryStroke": "none",
+        "detailBoundary": "functional-only-when-expanded",
+        "disclosureAction": "separate-keyboard-action",
+        "resultTarget": "runtime-provided-when-available",
+        "targetAbsent": "non-actionable-text",
+        "statusBadge": {
+          "component": "StatusBadge",
+          "state": "queued",
+          "label": "대기 중",
+          "size": "shared-24px-hug",
+          "bindingOwner": "StatusBadge-instance"
+        }
+      }
+    },
+    {
+      "family": "ToolCall",
+      "name": "running",
+      "bindings": {
+        "background": "component.color.tool.background",
+        "foreground": "component.color.tool.foreground",
+        "border": "component.color.tool.border",
+        "radius": "component.size.card.radius",
+        "padding": "component.size.card.padding"
+      },
+      "content": "Quiet summary: tool and textual status, with source/target/result metadata when available. Optional expanded detail contains masked input/output, source and target; unknown schema uses plain text.",
+      "behavior": "Keep the summary borderless. Expanded details may use the functional detail boundary. Show “근거 보기” as a separate keyboard-operable disclosure only when local detail is available; a result-navigation action requires a valid runtime-supplied target. If no target exists, show non-actionable availability text. Never invent a URL or imply success optimistically; stale actions revalidate. Nested status uses the shared StatusBadge instance; its label/state are mapped here and its own background/foreground bindings are authoritative.",
+      "properties": {
+        "state": "running",
+        "statusLabel": "실행 중"
+      },
+      "visual": {
+        "minWidthPx": 280,
+        "maxWidthPx": 720,
+        "statusTextRequired": true,
+        "maskedOutputRequired": true,
+        "summaryStroke": "none",
+        "detailBoundary": "functional-only-when-expanded",
+        "disclosureAction": "separate-keyboard-action",
+        "resultTarget": "runtime-provided-when-available",
+        "targetAbsent": "non-actionable-text",
+        "statusBadge": {
+          "component": "StatusBadge",
+          "state": "running",
+          "label": "실행 중",
+          "size": "shared-24px-hug",
+          "bindingOwner": "StatusBadge-instance"
+        }
+      }
+    },
+    {
+      "family": "ToolCall",
+      "name": "waiting",
+      "bindings": {
+        "background": "component.color.tool.background",
+        "foreground": "component.color.tool.foreground",
+        "border": "component.color.tool.border",
+        "radius": "component.size.card.radius",
+        "padding": "component.size.card.padding"
+      },
+      "content": "Quiet summary: tool and textual status, with source/target/result metadata when available. Optional expanded detail contains masked input/output, source and target; unknown schema uses plain text.",
+      "behavior": "Keep the summary borderless. Expanded details may use the functional detail boundary. Show “근거 보기” as a separate keyboard-operable disclosure only when local detail is available; a result-navigation action requires a valid runtime-supplied target. If no target exists, show non-actionable availability text. Never invent a URL or imply success optimistically; stale actions revalidate. Nested status uses the shared StatusBadge instance; its label/state are mapped here and its own background/foreground bindings are authoritative.",
+      "properties": {
+        "state": "waiting",
+        "statusLabel": "응답 대기"
+      },
+      "visual": {
+        "minWidthPx": 280,
+        "maxWidthPx": 720,
+        "statusTextRequired": true,
+        "maskedOutputRequired": true,
+        "summaryStroke": "none",
+        "detailBoundary": "functional-only-when-expanded",
+        "disclosureAction": "separate-keyboard-action",
+        "resultTarget": "runtime-provided-when-available",
+        "targetAbsent": "non-actionable-text",
+        "statusBadge": {
+          "component": "StatusBadge",
+          "state": "waiting",
+          "label": "응답 대기",
+          "size": "shared-24px-hug",
+          "bindingOwner": "StatusBadge-instance"
+        }
+      }
+    },
+    {
+      "family": "ToolCall",
+      "name": "success",
+      "bindings": {
+        "background": "component.color.tool.background",
+        "foreground": "component.color.tool.foreground",
+        "border": "component.color.tool.border",
+        "radius": "component.size.card.radius",
+        "padding": "component.size.card.padding"
+      },
+      "content": "Quiet summary: tool and textual status, with source/target/result metadata when available. Optional expanded detail contains masked input/output, source and target; unknown schema uses plain text.",
+      "behavior": "Keep the summary borderless. Expanded details may use the functional detail boundary. Show “근거 보기” as a separate keyboard-operable disclosure only when local detail is available; a result-navigation action requires a valid runtime-supplied target. If no target exists, show non-actionable availability text. Never invent a URL or imply success optimistically; stale actions revalidate. Nested status uses the shared StatusBadge instance; its label/state are mapped here and its own background/foreground bindings are authoritative.",
+      "properties": {
+        "state": "success",
+        "statusLabel": "확인 완료"
+      },
+      "visual": {
+        "minWidthPx": 280,
+        "maxWidthPx": 720,
+        "statusTextRequired": true,
+        "maskedOutputRequired": true,
+        "summaryStroke": "none",
+        "detailBoundary": "functional-only-when-expanded",
+        "disclosureAction": "separate-keyboard-action",
+        "resultTarget": "runtime-provided-when-available",
+        "targetAbsent": "non-actionable-text",
+        "statusBadge": {
+          "component": "StatusBadge",
+          "state": "success",
+          "label": "확인 완료",
+          "size": "shared-24px-hug",
+          "bindingOwner": "StatusBadge-instance"
+        }
+      }
+    },
+    {
+      "family": "ToolCall",
+      "name": "error",
+      "bindings": {
+        "background": "component.color.tool.background",
+        "foreground": "component.color.tool.foreground",
+        "border": "component.color.tool.border",
+        "radius": "component.size.card.radius",
+        "padding": "component.size.card.padding"
+      },
+      "content": "Quiet summary: tool and textual status, with source/target/result metadata when available. Optional expanded detail contains masked input/output, source and target; unknown schema uses plain text.",
+      "behavior": "Keep the summary borderless. Expanded details may use the functional detail boundary. Show “근거 보기” as a separate keyboard-operable disclosure only when local detail is available; a result-navigation action requires a valid runtime-supplied target. If no target exists, show non-actionable availability text. Never invent a URL or imply success optimistically; stale actions revalidate. Nested status uses the shared StatusBadge instance; its label/state are mapped here and its own background/foreground bindings are authoritative.",
+      "properties": {
+        "state": "error",
+        "statusLabel": "실패"
+      },
+      "visual": {
+        "minWidthPx": 280,
+        "maxWidthPx": 720,
+        "statusTextRequired": true,
+        "maskedOutputRequired": true,
+        "summaryStroke": "none",
+        "detailBoundary": "functional-only-when-expanded",
+        "disclosureAction": "separate-keyboard-action",
+        "resultTarget": "runtime-provided-when-available",
+        "targetAbsent": "non-actionable-text",
+        "statusBadge": {
+          "component": "StatusBadge",
+          "state": "error",
+          "label": "실패",
+          "size": "shared-24px-hug",
+          "bindingOwner": "StatusBadge-instance"
+        }
+      }
+    },
+    {
+      "family": "ToolCall",
+      "name": "unknown",
+      "bindings": {
+        "background": "component.color.tool.background",
+        "foreground": "component.color.tool.foreground",
+        "border": "component.color.tool.border",
+        "radius": "component.size.card.radius",
+        "padding": "component.size.card.padding"
+      },
+      "content": "Quiet summary: tool and textual status, with source/target/result metadata when available. Optional expanded detail contains masked input/output, source and target; unknown schema uses plain text.",
+      "behavior": "Keep the summary borderless. Expanded details may use the functional detail boundary. Show “근거 보기” as a separate keyboard-operable disclosure only when local detail is available; a result-navigation action requires a valid runtime-supplied target. If no target exists, show non-actionable availability text. Never invent a URL or imply success optimistically; stale actions revalidate. Nested status uses the shared StatusBadge instance; its label/state are mapped here and its own background/foreground bindings are authoritative.",
+      "properties": {
+        "state": "unknown",
+        "statusLabel": "상태 확인 중"
+      },
+      "visual": {
+        "minWidthPx": 280,
+        "maxWidthPx": 720,
+        "statusTextRequired": true,
+        "maskedOutputRequired": true,
+        "summaryStroke": "none",
+        "detailBoundary": "functional-only-when-expanded",
+        "disclosureAction": "separate-keyboard-action",
+        "resultTarget": "runtime-provided-when-available",
+        "targetAbsent": "non-actionable-text",
+        "statusBadge": {
+          "component": "StatusBadge",
+          "state": "unknown",
+          "label": "상태 확인 중",
+          "size": "shared-24px-hug",
+          "bindingOwner": "StatusBadge-instance"
+        }
+      }
+    },
+    {
+      "family": "PermissionRequest",
+      "name": "pending",
+      "bindings": {
+        "background": "component.color.permission.background",
+        "foreground": "component.color.permission.foreground",
+        "border": "component.color.permission.border",
+        "radius": "component.size.card.radius",
+        "padding": "component.size.card.padding"
+      },
+      "content": "Session/request identity, exact capability, complete scope/path or destination, duration, consequence and textual status; actions only as defined for this state.",
+      "behavior": "Render only when the current request, policy revision and native pending reference are verified. The runtimeStateMap supplies the status label and actions. Inline card stays in normal tab order and never traps focus.",
+      "properties": {
+        "state": "pending",
+        "approveEnabled": true,
+        "denyEnabled": true,
+        "refreshEnabled": false,
+        "previewSampleStatusLabel": "승인 대기 (시안)",
+        "statusLabelPurpose": "static-preview-only-not-runtime"
+      },
+      "visual": {
+        "minWidthPx": 280,
+        "maxWidthPx": 720,
+        "actions": [
+          {
+            "action": "approve",
+            "component": "Button",
+            "intent": "primary",
+            "state": "default",
+            "enabled": true
+          },
+          {
+            "action": "deny",
+            "component": "Button",
+            "intent": "quiet",
+            "state": "default",
+            "enabled": true
+          }
+        ],
+        "statusTextRequired": true,
+        "scopeNeverTruncated": true,
+        "actionTargetMinHeightPx": 44,
+        "actionTargetGapMinPx": 8,
+        "buttonVisualHeightPx": 40,
+        "narrowActionLayout": "stack-below-scope-when-needed",
+        "statusBadge": {
+          "component": "StatusBadge",
+          "state": "waiting",
+          "size": "shared-24px-hug",
+          "bindingOwner": "StatusBadge-instance",
+          "tone": "warning",
+          "labelPurpose": "static-preview-only-not-runtime",
+          "label": "승인 대기 (정적 시안)"
+        }
+      }
+    },
+    {
+      "family": "PermissionRequest",
+      "name": "sending",
+      "bindings": {
+        "background": "component.color.permission.background",
+        "foreground": "component.color.permission.foreground",
+        "border": "component.color.permission.border",
+        "radius": "component.size.card.radius",
+        "padding": "component.size.card.padding"
+      },
+      "content": "Session/request identity, exact capability, complete scope/path or destination, duration, consequence and textual status; actions only as defined for this state.",
+      "behavior": "Both decision buttons remain disabled after dispatch. Submission is not proof of application. The runtimeStateMap supplies the status label and actions. Inline card stays in normal tab order and never traps focus.",
+      "properties": {
+        "state": "sending",
+        "approveEnabled": false,
+        "denyEnabled": false,
+        "refreshEnabled": false,
+        "previewSampleStatusLabel": "결정 전송 중 (시안)",
+        "statusLabelPurpose": "static-preview-only-not-runtime"
+      },
+      "visual": {
+        "minWidthPx": 280,
+        "maxWidthPx": 720,
+        "actions": [
+          {
+            "action": "approve",
+            "component": "Button",
+            "intent": "primary",
+            "state": "disabled",
+            "enabled": false
+          },
+          {
+            "action": "deny",
+            "component": "Button",
+            "intent": "quiet",
+            "state": "disabled",
+            "enabled": false
+          }
+        ],
+        "statusTextRequired": true,
+        "scopeNeverTruncated": true,
+        "actionTargetMinHeightPx": 44,
+        "actionTargetGapMinPx": 8,
+        "buttonVisualHeightPx": 40,
+        "narrowActionLayout": "stack-below-scope-when-needed",
+        "statusBadge": {
+          "component": "StatusBadge",
+          "state": "running",
+          "size": "shared-24px-hug",
+          "bindingOwner": "StatusBadge-instance",
+          "tone": "info",
+          "labelPurpose": "static-preview-only-not-runtime",
+          "label": "결정 전송 중 (정적 시안)"
+        }
+      }
+    },
+    {
+      "family": "PermissionRequest",
+      "name": "approved",
+      "bindings": {
+        "background": "component.color.permission.background",
+        "foreground": "component.color.permission.foreground",
+        "border": "component.color.permission.border",
+        "radius": "component.size.card.radius",
+        "padding": "component.size.card.padding"
+      },
+      "content": "Session/request identity, exact capability, complete scope/path or destination, duration, consequence and textual status; actions only as defined for this state.",
+      "behavior": "Render only after a matching applied receipt for the current request and policy revision. The runtimeStateMap supplies the label for the selected allow or deny decision. Decision application is not operation completion. Inline card stays in normal tab order and never traps focus.",
+      "properties": {
+        "state": "approved",
+        "approveEnabled": false,
+        "denyEnabled": false,
+        "refreshEnabled": false,
+        "previewSampleStatusLabel": "선택한 결정 적용 확인 (시안)",
+        "statusLabelPurpose": "static-preview-only-not-runtime"
+      },
+      "visual": {
+        "minWidthPx": 280,
+        "maxWidthPx": 720,
+        "actions": [],
+        "statusTextRequired": true,
+        "scopeNeverTruncated": true,
+        "actionTargetMinHeightPx": 44,
+        "actionTargetGapMinPx": 8,
+        "buttonVisualHeightPx": 40,
+        "narrowActionLayout": "stack-below-scope-when-needed",
+        "statusBadge": {
+          "component": "StatusBadge",
+          "state": "unknown",
+          "size": "shared-24px-hug",
+          "bindingOwner": "StatusBadge-instance",
+          "tone": "info",
+          "labelPurpose": "static-preview-only-not-runtime",
+          "label": "선택한 결정 적용 확인 (정적 시안)"
+        }
+      }
+    },
+    {
+      "family": "PermissionRequest",
+      "name": "denied",
+      "bindings": {
+        "background": "component.color.permission.background",
+        "foreground": "component.color.permission.foreground",
+        "border": "component.color.permission.border",
+        "radius": "component.size.card.radius",
+        "padding": "component.size.card.padding"
+      },
+      "content": "Session/request identity, exact capability, complete scope/path or destination, duration, consequence and textual status; actions only as defined for this state.",
+      "behavior": "Render only when the denial reason is observed; runtimeStateMap supplies distinct copy for USER_DENY and POLICY_DENY. Policy denial never offers approval. Inline card stays in normal tab order and never traps focus.",
+      "properties": {
+        "state": "denied",
+        "approveEnabled": false,
+        "denyEnabled": false,
+        "refreshEnabled": false,
+        "previewSampleStatusLabel": "거절 상태 (시안)",
+        "statusLabelPurpose": "static-preview-only-not-runtime"
+      },
+      "visual": {
+        "minWidthPx": 280,
+        "maxWidthPx": 720,
+        "actions": [],
+        "statusTextRequired": true,
+        "scopeNeverTruncated": true,
+        "actionTargetMinHeightPx": 44,
+        "actionTargetGapMinPx": 8,
+        "buttonVisualHeightPx": 40,
+        "narrowActionLayout": "stack-below-scope-when-needed",
+        "statusBadge": {
+          "component": "StatusBadge",
+          "state": "error",
+          "size": "shared-24px-hug",
+          "bindingOwner": "StatusBadge-instance",
+          "tone": "error",
+          "labelPurpose": "static-preview-only-not-runtime",
+          "label": "거절 상태 (정적 시안)"
+        }
+      }
+    },
+    {
+      "family": "PermissionRequest",
+      "name": "stale",
+      "bindings": {
+        "background": "component.color.permission.background",
+        "foreground": "component.color.permission.foreground",
+        "border": "component.color.permission.border",
+        "radius": "component.size.card.radius",
+        "padding": "component.size.card.padding"
+      },
+      "content": "Session/request identity, exact capability, complete scope/path or destination, duration, consequence and textual status; actions only as defined for this state.",
+      "behavior": "Old approve/deny actions are inactive; only read-only refresh is available. runtimeStateMap supplies the reason-specific label for expired, cancelled, unknown or uncertain transport outcomes. Inline card stays in normal tab order and never traps focus.",
+      "properties": {
+        "state": "stale",
+        "approveEnabled": false,
+        "denyEnabled": false,
+        "refreshEnabled": true,
+        "previewSampleStatusLabel": "요청 종료 상태 (시안)",
+        "statusLabelPurpose": "static-preview-only-not-runtime"
+      },
+      "visual": {
+        "minWidthPx": 280,
+        "maxWidthPx": 720,
+        "actions": [
+          {
+            "action": "refresh",
+            "component": "Button",
+            "intent": "quiet",
+            "state": "default",
+            "enabled": true
+          }
+        ],
+        "statusTextRequired": true,
+        "scopeNeverTruncated": true,
+        "actionTargetMinHeightPx": 44,
+        "actionTargetGapMinPx": 8,
+        "buttonVisualHeightPx": 40,
+        "narrowActionLayout": "stack-below-scope-when-needed",
+        "statusBadge": {
+          "component": "StatusBadge",
+          "state": "unknown",
+          "size": "shared-24px-hug",
+          "bindingOwner": "StatusBadge-instance",
+          "tone": "neutral",
+          "labelPurpose": "static-preview-only-not-runtime",
+          "label": "요청 종료 상태 (정적 시안)"
+        }
+      }
+    }
+  ],
+  "layout": {
+    "controlMinHeightPx": 40,
+    "touchTargetMinPx": 44,
+    "cardMinWidthPx": 280,
+    "cardMaxWidthPx": 720,
+    "contentMaxWidthPx": 1200,
+    "permissionNarrowLayout": "Stack actions below untruncated scope and target; long path wraps at delimiters with full-value reveal."
+  },
+  "composedStates": [
+    {
+      "family": "Input",
+      "base": "error",
+      "overlay": "focus-visible",
+      "preserve": ["border", "errorText", "aria-invalid"],
+      "add": [
+        "semantic.color.focus",
+        "semantic.stroke.focus",
+        "semantic.size.focus-gap"
+      ],
+      "expected": "Invalid input keeps the error border and described error text while the outer keyboard focus ring is visible."
+    },
+    {
+      "family": "NavigationItem",
+      "base": "selected",
+      "overlay": "focus-visible",
+      "preserve": ["background", "foreground", "aria-current=page"],
+      "add": [
+        "semantic.color.focus",
+        "semantic.stroke.focus",
+        "semantic.size.focus-gap"
+      ],
+      "expected": "Current navigation keeps selected fill/text and aria-current while the outer keyboard focus ring is visible."
+    }
+  ],
+  "componentContracts": {
+    "Input": {
+      "group": {
+        "layout": "vertical-auto",
+        "children": ["label", "control", "feedback"],
+        "height": "content-driven"
+      },
+      "control": {
+        "heightPx": 40,
+        "focusRing": "outside-overlay",
+        "focusRingAffectsLayout": false
+      },
+      "feedback": {
+        "slots": 1,
+        "precedence": ["error", "hint", "none"],
+        "placeholderIsNotHint": true,
+        "disabledGenericHint": false
+      }
+    },
+    "StatusBadge": {
+      "heightPx": 24,
+      "width": "hug",
+      "horizontalPaddingPx": 8,
+      "widthFormula": "renderedLabelWidthPx + 16",
+      "lines": 1,
+      "verticalAlignment": "center",
+      "sharedBy": ["ToolCall", "PermissionRequest"],
+      "instanceOverrides": {
+        "label": "required-visible-text",
+        "tone": ["info", "warning", "success", "error", "neutral"]
+      },
+      "bindingOwnership": "StatusBadge instance owns its background and foreground bindings; consuming components do not repaint an independent status frame."
+    },
+    "NavigationItem": {
+      "heightPx": 40,
+      "width": "fill-parent",
+      "contentAlignment": "start",
+      "startInsetPx": 12,
+      "selectedCue": "bold-label",
+      "focusRingAffectsLayout": false,
+      "selectedLabelFontWeight": 700,
+      "defaultLabelFontWeight": 500,
+      "darkStateSurfaces": {
+        "parent": "semantic.color.surface",
+        "default": "semantic.color.surface",
+        "hover": "semantic.color.canvas",
+        "selected": "semantic.color.surface.subtle"
+      },
+      "darkParentSurface": "semantic.color.surface"
+    },
+    "ToolCall": {
+      "summaryStroke": "none",
+      "detailStroke": "functional-only-when-expanded",
+      "evidenceDisclosure": "separate-keyboard-action",
+      "resultNavigation": "requires-runtime-target",
+      "missingTarget": "non-actionable-text",
+      "verticalSizing": "hug-visible-content",
+      "bottomPaddingPx": 16,
+      "targetInputPath": "must-match-exactly",
+      "longPath": "wrap-without-truncation",
+      "statusBadge": {
+        "component": "StatusBadge",
+        "perVariantProperty": "visual.statusBadge",
+        "ownsGeometryAndTokenBindings": true
+      }
+    },
+    "PermissionRequest": {
+      "boundary": "scope-and-target-only",
+      "buttonVisualHeightPx": 40,
+      "actionTargetMinHeightPx": 44,
+      "actionTargetGapMinPx": 8,
+      "actions": {
+        "pending": [
+          "approve:Button.primary/default",
+          "deny:Button.quiet/default"
+        ],
+        "sending": [
+          "approve:Button.primary/disabled",
+          "deny:Button.quiet/disabled"
+        ],
+        "approved": [],
+        "denied": [],
+        "stale": ["refresh:Button.quiet/default"]
+      },
+      "narrowActionLayout": "stack-below-scope-when-needed",
+      "runtimeHitTesting": "not-proven-by-figma",
+      "statusBadge": {
+        "component": "StatusBadge",
+        "perVariantProperty": "visual.statusBadge",
+        "ownsGeometryAndTokenBindings": true,
+        "approvalUsesExecutionNeutralTone": true,
+        "runtimeLabelSource": "runtimeStateMap",
+        "variantLabelPurpose": "static-preview-only-not-runtime",
+        "previewOnlyMarker": "labelPurpose=static-preview-only-not-runtime"
+      },
+      "runtimeStateMap": {
+        "pending": {
+          "visualState": "pending",
+          "label": "승인 대기",
+          "actionsKey": "pending",
+          "preconditions": [
+            "request-id-current",
+            "policy-revision-current",
+            "native-pending-ref-current"
+          ],
+          "meaning": "A decision is not yet recorded.",
+          "labelSource": "runtimeStateMap"
+        },
+        "decision_sending": {
+          "visualState": "sending",
+          "label": "결정 전송 중",
+          "actionsKey": "sending",
+          "preconditions": ["decision-dispatched"],
+          "meaning": "Both decision buttons stay disabled; request submission is not proof of application.",
+          "labelSource": "runtimeStateMap"
+        },
+        "applied": {
+          "visualState": "approved",
+          "labelByDecision": {
+            "allow": "허용 결정 적용 확인",
+            "deny": "거절 결정 적용 확인"
+          },
+          "actionsKey": "approved",
+          "preconditions": [
+            "matching-applied-receipt",
+            "request-id-current",
+            "policy-revision-current"
+          ],
+          "meaning": "The selected permission decision is applied; the tool or session may still be running.",
+          "labelSource": "labelByDecision-only-after-matching-applied-receipt"
+        },
+        "denied": {
+          "visualState": "denied",
+          "labelByReason": {
+            "USER_DENY": "사용자가 거절함",
+            "POLICY_DENY": "정책에서 차단함"
+          },
+          "actionsKey": "denied",
+          "preconditions": ["denial-reason-observed"],
+          "meaning": "User refusal and system policy denial are distinct; policy denial never offers approval.",
+          "labelSource": "labelByReason-only-after-observed-denial-reason"
+        },
+        "expired": {
+          "visualState": "stale",
+          "label": "요청 만료됨",
+          "actionsKey": "stale",
+          "preconditions": ["terminal-request-state-observed"],
+          "meaning": "A terminal request cannot be answered again; refresh is read-only.",
+          "labelSource": "runtimeStateMap"
+        },
+        "cancelled": {
+          "visualState": "stale",
+          "label": "요청 취소됨",
+          "actionsKey": "stale",
+          "preconditions": ["terminal-request-state-observed"],
+          "meaning": "Show cancellation actor when available; refresh is read-only.",
+          "labelSource": "runtimeStateMap"
+        },
+        "unknown": {
+          "visualState": "stale",
+          "label": "결정 상태 확인 필요",
+          "actionsKey": "stale",
+          "preconditions": ["effect-or-response-uncertain"],
+          "meaning": "Read-only reconciliation only; never resend the same decision after dispatch.",
+          "labelSource": "runtimeStateMap"
+        },
+        "transport_failure": {
+          "visualStateByEvidence": {
+            "confirmed-no-effect-and-current-pending": "pending",
+            "otherwise": "stale"
+          },
+          "labelByEvidence": {
+            "confirmed-no-effect-and-current-pending": "승인 대기",
+            "otherwise": "결정 상태 확인 필요"
+          },
+          "actionsKeyByEvidence": {
+            "confirmed-no-effect-and-current-pending": "pending",
+            "otherwise": "stale"
+          },
+          "preconditions": ["re-read-same-request-and-policy-revision"],
+          "meaning": "A send error alone does not prove whether a decision was applied; enable a decision only after current pending is confirmed.",
+          "labelSource": "runtimeStateMap"
+        }
+      },
+      "runtimeStatusContract": "runtimeStateMap is required for every runtime label, visualState and action decision before composing the five visual variants. Never render preview sample labels as runtime status."
+    }
+  },
+  "compositionContracts": {
+    "version": 2,
+    "authority": "docs/runs/design-foundation-v2/design-v2.md",
+    "ControlButton": {
+      "implementation": "packages/ui/src/primitives/button.tsx",
+      "intents": ["primary", "secondary", "quiet", "danger"],
+      "sizes": {
+        "compact": "component.size.control.hit-target",
+        "standard": "component.size.standard-control-height",
+        "coarse": "component.size.coarse-target"
+      },
+      "defaultType": "button",
+      "stateOwnership": "none; native event/ref/disabled props retained",
+      "accessibility": "Visible label or caller-provided accessible name; focus-visible and native disabled; no side-effect orchestration"
+    },
+    "Composer": {
+      "owns": [
+        "message draft",
+        "compact requested/context summaries",
+        "send or interrupt"
+      ],
+      "excludes": [
+        "settings fields",
+        "file investigation form",
+        "branch confirmation",
+        "current-run queue management"
+      ],
+      "readingWidth": "component.size.reading-width"
+    },
+    "TaskDisclosure": {
+      "default": "closed unless explicit task action opens it",
+      "persistentStatus": [
+        "error",
+        "expired",
+        "unknown",
+        "held",
+        "trust/recovery blocker"
+      ],
+      "focus": "Explicit task focus and Escape trigger return; no draft loss or automatic IO"
+    },
+    "AttachmentRow": {
+      "summary": ["name/path", "type/source", "availability"],
+      "details": ["exact bytes", "version", "digest", "selectable full source"],
+      "layout": "Flat compact rows; one separate preview surface"
+    },
+    "Navigation": {
+      "groups": [
+        "Workspace identity",
+        "create/search",
+        "recent sessions",
+        "secondary management"
+      ],
+      "selected": "One current session; no success inference"
+    }
+  }
+}

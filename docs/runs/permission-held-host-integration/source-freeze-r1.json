@@ -1,0 +1,65 @@
+{
+  "files": [
+    {
+      "path": "apps/desktop-app/src/main.mjs",
+      "bytes": 28073,
+      "sha256": "285a02f92bd88a9d237187a70464773a5be2dc13a50cafd506397c6c46ed4cf9"
+    },
+    {
+      "path": "apps/desktop-app/src/sidecar-supervisor.mjs",
+      "bytes": 19008,
+      "sha256": "a495ff78698959247593dab8a4f8452dddde7d090e9894161c9e816a11bb621b"
+    },
+    {
+      "path": "apps/desktop-app/src/sidecar-supervisor.test.mjs",
+      "bytes": 26203,
+      "sha256": "90e54bf994dd4256779538b7f21e6bd987dd941f11f3fadbab2e757304d1e6d4"
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-supervisor.mjs",
+      "bytes": 30877,
+      "sha256": "a3751c94256ec427215b4c40caeb87d99576c012857da8d02efe2f41cdc2aa53"
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-supervisor.test.mjs",
+      "bytes": 45130,
+      "sha256": "195ec4ab19fc132bee4808a647c9cd31bbc76540fdf1f612b13cf41399d4ae30"
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-protocol.mjs",
+      "bytes": 10988,
+      "sha256": "b8688ef63ad33f06553fcc5c60ded4005c37eb61b225f8d617244e44d79d4e9e"
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-protocol.test.mjs",
+      "bytes": 6988,
+      "sha256": "36bbae8ea6a32703c4eb68ea6207ed2452d1836920073400e2e5b55742dbe19f"
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-child.mjs",
+      "bytes": 17457,
+      "sha256": "39b0975fdcd3ee6a96e5e2db5ce78d46b8247c772be9151331b87a03a72643ef"
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-child.test.mjs",
+      "bytes": 3792,
+      "sha256": "953a6f099c001e2c3f4e1d753a1ab9d10857a46d233b0ac8d1a6e4fed4669d0a"
+    }
+  ],
+  "changed_paths": [
+    "apps/desktop-app/src/event-host-child.mjs",
+    "apps/desktop-app/src/event-host-child.test.mjs",
+    "apps/desktop-app/src/event-host-protocol.mjs",
+    "apps/desktop-app/src/event-host-protocol.test.mjs",
+    "apps/desktop-app/src/event-host-supervisor.mjs",
+    "apps/desktop-app/src/event-host-supervisor.test.mjs",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/sidecar-supervisor.mjs",
+    "apps/desktop-app/src/sidecar-supervisor.test.mjs"
+  ],
+  "deleted_paths": [],
+  "wire": "Existing closed init gains mandatory runtimeEpoch ONLY. No caller supplied bootHolds/overrides/control object. Parent and child use existing initialization validator. Child empty bootHolds relies on unchanged Main+preflight ALL-retained zero-start fence, and does NOT release any graph execution.",
+  "production_order": "resource overlay verification -> pinned Effect Scope -> checked graph builder -> fixed server module import -> fourth-argument graph overrides -> Fiber start; closing checks across async boundaries",
+  "meaning": "Existing accepted boot-held graph is connected; no effective mode/compiler/input/task/broker/reconciliation or positive lease activation",
+  "runtime_execution": "none; Node scripted graph/server only; real Native acceptance deferred"
+}

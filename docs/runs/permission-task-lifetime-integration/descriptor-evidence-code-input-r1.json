@@ -1,0 +1,64 @@
+{
+  "revision": 25,
+  "scope": "Read-only reuse/verification of immutable actual physical r5 evidence after agent safeguard docs changed. No guard normalization or ledger restore; preserved historical input/engine/argv/source/results and current exact source8+engine are hashed. Required physical check now explicitly validates historical evidence, not fresh execution.",
+  "files": [
+    {
+      "path": "apps/desktop-app/scripts/native-descriptor-evidence.mjs",
+      "bytes": 8572,
+      "sha256": "cdefc60f9bc9ae702e426b8293fe594548e4f8aa2f847a8bc471743a602cf91a"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-descriptor-evidence.test.mjs",
+      "bytes": 6262,
+      "sha256": "88fa5c76cf6749fc943a076ec0eee970e98d730becccf505e99b4add6f1e480f"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+      "bytes": 19423,
+      "sha256": "36f4bda87e8391dbc227242f3a8f2835c58f239441d38bf079dca5d39edc764a"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/descriptor-probe-input-r5.json",
+      "bytes": 2880,
+      "sha256": "e3a7c482e7aadf4e671014509bfab75571a49b8d5179c36debc56d215d7e4686"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/descriptor-probe-r5-execution.json",
+      "bytes": 3447,
+      "sha256": "52b2ce51cbb164c816d5eb95f64f73bb4dde33c63bff82caa4c4a9c4acdf057b"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/descriptor-probe-r5-fixture-result.json",
+      "bytes": 2829,
+      "sha256": "5abaa5be1dcab226d6d2524928190b64a93e20a69e2e7eedd42443c77e7669d1"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/descriptor-probe-r5-execution-intent.json",
+      "bytes": 1611,
+      "sha256": "61a726bff0a058da65eb70e3f4d640423439832ca342420688850bef95a22d97"
+    }
+  ],
+  "before_manifest": "prechange/descriptor-evidence-before-r1/manifest.json",
+  "prior_registered_artifacts": {
+    "execution": "52b2ce51cbb164c816d5eb95f64f73bb4dde33c63bff82caa4c4a9c4acdf057b",
+    "fixture": "5abaa5be1dcab226d6d2524928190b64a93e20a69e2e7eedd42443c77e7669d1"
+  },
+  "prior_input_sha256": "e3a7c482e7aadf4e671014509bfab75571a49b8d5179c36debc56d215d7e4686",
+  "actual_prior_root": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG",
+  "logs": [
+    "descriptor-evidence-unit-r1.log",
+    "descriptor-evidence-readonly-r1.json",
+    "descriptor-evidence-eslint-r1.log",
+    "descriptor-evidence-prettier-r1.log"
+  ],
+  "tests": {
+    "synthetic_adversarial_unit": 22,
+    "readonly_actual_r5": "pass, executedProbe=false; standalone evidence inspection only, required check adoption waits CODE"
+  },
+  "limits": [
+    "No Native/Main/Bun/provider/network/server/browser/GUI/physical execution",
+    "No current OS execution/FS isolation/power-loss proof",
+    "Not whole-feature or new physical/runtime acceptance",
+    "Other scopes remain unfinished; code/environment checks must be current before final feature gate"
+  ]
+}

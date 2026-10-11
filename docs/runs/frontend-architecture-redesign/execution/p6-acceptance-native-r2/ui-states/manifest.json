@@ -1,0 +1,1432 @@
+{
+  "script": "ui-states",
+  "mode": null,
+  "platform": "darwin",
+  "runnerPlatform": "darwin",
+  "runnerArch": "arm64",
+  "runnerNode": "v26.8.2",
+  "destination": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/frontend-architecture-redesign/execution/p6-acceptance-native-r2/ui-states",
+  "command": [
+    "/opt/homebrew/Cellar/node/26.8.2/bin/node",
+    "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-workbench-states.mjs"
+  ],
+  "startedAt": "2026-10-04T02:20:24.379Z",
+  "status": "fail",
+  "exitCode": 1,
+  "signal": null,
+  "evidence": [],
+  "provenance": {
+    "schemaVersion": 1,
+    "buildStampPath": "apps/desktop-app/dist/build-provenance.json",
+    "buildStampSha256": "b639018fcb68bef3ef35512291b38bc41ebe83540d7f90c00f626815855d915f",
+    "buildStamp": {
+      "schemaVersion": 1,
+      "kind": "desktop-build-byte-provenance",
+      "createdAt": "2026-10-04T02:19:51.723Z",
+      "builder": {
+        "node": "v26.8.2",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "inputs": {
+        "algorithm": "scoped-file-inventory-sha256-v1",
+        "scopes": [
+          {
+            "path": "package.json",
+            "present": true
+          },
+          {
+            "path": "pnpm-lock.yaml",
+            "present": true
+          },
+          {
+            "path": "pnpm-workspace.yaml",
+            "present": true
+          },
+          {
+            "path": "tsconfig.base.json",
+            "present": true
+          },
+          {
+            "path": "nx.json",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/package.json",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/project.json",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/index.html",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/vite.config.ts",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/tsconfig.json",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/scripts/build.mjs",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/scripts/build-provenance.mjs",
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/src",
+            "tree": true,
+            "source": true,
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/public",
+            "tree": true,
+            "source": true,
+            "optional": true,
+            "present": false
+          },
+          {
+            "path": "packages/ui/package.json",
+            "present": true
+          },
+          {
+            "path": "packages/ui/project.json",
+            "present": true
+          },
+          {
+            "path": "packages/ui/tsconfig.json",
+            "present": true
+          },
+          {
+            "path": "packages/ui/src",
+            "tree": true,
+            "source": true,
+            "present": true
+          },
+          {
+            "path": "packages/contracts/package.json",
+            "present": true
+          },
+          {
+            "path": "packages/contracts/project.json",
+            "present": true
+          },
+          {
+            "path": "packages/contracts/tsconfig.json",
+            "present": true
+          },
+          {
+            "path": "packages/contracts/src",
+            "tree": true,
+            "source": true,
+            "present": true
+          },
+          {
+            "path": "packages/contracts/tsconfig.build.json",
+            "present": true
+          },
+          {
+            "path": "docs/design/tokens",
+            "tree": true,
+            "source": true,
+            "present": true
+          }
+        ],
+        "selection": {
+          "excludedDirectories": [
+            "node_modules",
+            "dist",
+            "exports",
+            "captures",
+            "credentials",
+            "runtime-data"
+          ],
+          "excludedNames": "hidden names and *.test.* / *.spec.*",
+          "allowedFileExtensions": "\\.(?:[cm]?js|[cm]?ts|jsx|tsx|css|html|json|svg|png|jpe?g|webp|gif|ico|woff2?|ttf)$"
+        },
+        "limits": {
+          "files": 4096,
+          "depth": 24,
+          "bytes": 1073741824
+        },
+        "files": [
+          {
+            "path": "apps/desktop-app/index.html",
+            "size": 584,
+            "mode": 420,
+            "sha256": "973680da1eadd48eb58ff47aaaca46a10e33c0da3a31e97662f3ddea9fddc9ae"
+          },
+          {
+            "path": "apps/desktop-app/package.json",
+            "size": 1321,
+            "mode": 420,
+            "sha256": "04ce567af16e2e04ae7abc44c9c6e9c1ba890d5677ece35fffcca1e162521418"
+          },
+          {
+            "path": "apps/desktop-app/project.json",
+            "size": 4323,
+            "mode": 420,
+            "sha256": "0f90164352dbc9df946e3578eb604d3216dc2fdd82e35b2e126d31c2acefb622"
+          },
+          {
+            "path": "apps/desktop-app/scripts/build-provenance.mjs",
+            "size": 13654,
+            "mode": 420,
+            "sha256": "8ea6032a5f20e90a77fc296792948b355f910a88d9ce8b3423166d99412d8b15"
+          },
+          {
+            "path": "apps/desktop-app/scripts/build.mjs",
+            "size": 2295,
+            "mode": 420,
+            "sha256": "038c9bd604efcc97b1421270ade5d923569300e55e1384effb2a9fb5c6ead5b4"
+          },
+          {
+            "path": "apps/desktop-app/src/css-modules.d.ts",
+            "size": 111,
+            "mode": 420,
+            "sha256": "00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4"
+          },
+          {
+            "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+            "size": 8442,
+            "mode": 420,
+            "sha256": "7b02627472cc5abeb2409295628cda8d1226c19a1694f2a75e6ce8bb2600bdf1"
+          },
+          {
+            "path": "apps/desktop-app/src/ephemeral-profile.mjs",
+            "size": 777,
+            "mode": 420,
+            "sha256": "dc161c3b1da5832af479e6bb9cdd25c20b748ee59343ba5e79543bc7ab39444d"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-admission.mjs",
+            "size": 13620,
+            "mode": 420,
+            "sha256": "49cb6cf21b9a091a5da7fbf6682799a248c35d6ee63b1503cdc5768dc92dac7e"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-files.mjs",
+            "size": 5455,
+            "mode": 420,
+            "sha256": "36a6408553c0944f54346604b1a78c6f08fa8e4e4baeb2ed64373b9e338de202"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-ipc.mjs",
+            "size": 726,
+            "mode": 420,
+            "sha256": "7fffc482083fa9ce6acd75f7536150cdd263dcc03bf25b295498bc36b7aed8ca"
+          },
+          {
+            "path": "apps/desktop-app/src/host/workbench-receipts.mjs",
+            "size": 2787,
+            "mode": 420,
+            "sha256": "5101547831cdad0c5e2650bf1a92ab123e0ba368a75f7b511600ce7cbe3bea18"
+          },
+          {
+            "path": "apps/desktop-app/src/main.mjs",
+            "size": 8403,
+            "mode": 420,
+            "sha256": "6dac35945017b130cc3a81d4f17cc21696613d8733b48b12eee4f6fd0699f64e"
+          },
+          {
+            "path": "apps/desktop-app/src/preload.cjs",
+            "size": 1059,
+            "mode": 420,
+            "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer-admission.mjs",
+            "size": 319,
+            "mode": 420,
+            "sha256": "dd5d8e52c4b230dfa4ca65693e301b6c0847b8a84c18e9cc23028c18f5e2a44c"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer.css",
+            "size": 713,
+            "mode": 420,
+            "sha256": "10ebc2c146b3ed0abab023d7c50eb1089d317356a3da78146b6857e36f5beaff"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer.tsx",
+            "size": 325,
+            "mode": 420,
+            "sha256": "f2fe7997af98730fefdf9b9fe1bf42d64603c06fab75d5ae6ab2b2d7b9e323f6"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/app/index.tsx",
+            "size": 991,
+            "mode": 420,
+            "sha256": "272929824e7736a9e5e1da490da9a9272c5802ec26b7c2003fc4ea5ade7d8aa4"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+            "size": 455,
+            "mode": 420,
+            "sha256": "7179f57fff140f7fa46baf95f588f1f837fa0ee926ff6e574da8883cd9359187"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+            "size": 17519,
+            "mode": 420,
+            "sha256": "dd05d00e6366ba8dea94b4ccab905b53907835286161f7a8bf30489184bcbe8b"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx",
+            "size": 913,
+            "mode": 420,
+            "sha256": "87e2ad8cc85de7fdef43d9b58d6801774ba09335c63ed64385b3438e98ecb2d1"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+            "size": 24924,
+            "mode": 420,
+            "sha256": "ae8eb29d2d58843cd5b359c3266cb8c3bfbd9d5df2fab48d6adbcafbd87474f7"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/composer/index.ts",
+            "size": 1161,
+            "mode": 420,
+            "sha256": "e7e0bce0125bd06d29578e9c4c6a7374823ce47d57a21eb10eb06a5004f1db17"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/sessions/index.tsx",
+            "size": 9209,
+            "mode": 420,
+            "sha256": "68363895c37a2e10fd2e64ce10194fdc9b42b360b63f035c421541394859ff80"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/sessions/navigation.ts",
+            "size": 1162,
+            "mode": 420,
+            "sha256": "c4df82a89c92e591a1a369f936dd5ca14aef832ab6291af73a2c472fd1b74bbe"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/features/sessions/sessions.module.css",
+            "size": 3410,
+            "mode": 420,
+            "sha256": "57fa9e0cdf40a077e725b3328472fd89a6c2676b30f0af4c3907e954aac3de52"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+            "size": 19242,
+            "mode": 420,
+            "sha256": "ab4e90633360e47e0a889606f8ec85e7df0f75d25da20de75aecb89daadfb80c"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/pages/workbench/shell.module.css",
+            "size": 7370,
+            "mode": 420,
+            "sha256": "8d2731f126383977cbe3b20433294d7841c8289befb4e5b78863abd369867096"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/api/index.ts",
+            "size": 441,
+            "mode": 420,
+            "sha256": "b6a94c5f8f0ee00c93ac9d2bef81e76beab64c14f54abdf1a9876e1ae81cd62c"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/projection/index.ts",
+            "size": 62,
+            "mode": 420,
+            "sha256": "217eb4dbe3972fef503112ed8ef476d2073260b90904aea0ffb322a96e5717d4"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/projection/projection.d.mts",
+            "size": 290,
+            "mode": 420,
+            "sha256": "6f8a7e83685561138daf317f003a330726eb0394d8eda7d77dafac324ee4280c"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/projection/projection.mjs",
+            "size": 1454,
+            "mode": 420,
+            "sha256": "eea0af2254d3e448528a069fff7f3fc90893e113104c3a28de32ed05eae98cfc"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/shared/transport/index.ts",
+            "size": 5828,
+            "mode": 420,
+            "sha256": "560ff60bda5c3cba234698ceb0da8f001fc828e9235300077860c0abdd05993b"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/activity/activity.module.css",
+            "size": 2183,
+            "mode": 420,
+            "sha256": "0099e650bd162c3c9a6e50c52625ad444ea45e3981ab355814bb08a90d3c1f58"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+            "size": 5265,
+            "mode": 420,
+            "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css",
+            "size": 10403,
+            "mode": 420,
+            "sha256": "b50faf5bffa466ed79dfd78e971c498bfdf190a247418be69cc9d807bb2b07fe"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+            "size": 25860,
+            "mode": 420,
+            "sha256": "caace202bdcef1170b8e85bcd8f9b1a7af8b42b1e924b216b851877c35cad6c8"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/explorer/explorer.module.css",
+            "size": 2808,
+            "mode": 420,
+            "sha256": "4ba68a5b5f9286ee0540464ee95d10d69204c196597aad774c42c42c02ca177d"
+          },
+          {
+            "path": "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+            "size": 5843,
+            "mode": 420,
+            "sha256": "10adfe9a8bcc82c61fc1cdd392d68eeb4eb61f5e1063d37c8203e8839255f5b9"
+          },
+          {
+            "path": "apps/desktop-app/src/sidecar-package.mjs",
+            "size": 195,
+            "mode": 420,
+            "sha256": "7d3e8cb1ec0522862f7c301eceb0dde317c542d4891bff40aa29839b967999dd"
+          },
+          {
+            "path": "apps/desktop-app/src/sidecar-supervisor.mjs",
+            "size": 8437,
+            "mode": 420,
+            "sha256": "77f308017673ba0dae39772949c86c368f623ec24a895d5eef07f1358ef43ae4"
+          },
+          {
+            "path": "apps/desktop-app/src/workbench-contract.mjs",
+            "size": 8400,
+            "mode": 420,
+            "sha256": "903774834354d6eb7f7f2c660603272530ad2bf29adcd379511305af2c2c1c81"
+          },
+          {
+            "path": "apps/desktop-app/src/workbench-service.mjs",
+            "size": 42414,
+            "mode": 420,
+            "sha256": "f9870cfb1919b801e4d0180938b6c36a052c6d4d91ad0b3786979282f132704e"
+          },
+          {
+            "path": "apps/desktop-app/tsconfig.json",
+            "size": 246,
+            "mode": 420,
+            "sha256": "e38ba12303e14c6c1e9413990260c2ff07e21789530295af097ad3f743f3f5ac"
+          },
+          {
+            "path": "apps/desktop-app/vite.config.ts",
+            "size": 365,
+            "mode": 420,
+            "sha256": "1d02271112ce18d2e77b2a94aff3e9de15fc6cc3903e17ed3a5126b6e5dbe052"
+          },
+          {
+            "path": "docs/design/tokens/manifest.json",
+            "size": 62036,
+            "mode": 420,
+            "sha256": "7c3d3468665a1f8f161c855fa15e52f014c885944fa65e3f4b6d1f30330ceef0"
+          },
+          {
+            "path": "docs/design/tokens/tokens.css",
+            "size": 25928,
+            "mode": 420,
+            "sha256": "32d2f584a05ba8f211196220e3532bd73acaeace1867e4c61654ff822c490f72"
+          },
+          {
+            "path": "nx.json",
+            "size": 1782,
+            "mode": 420,
+            "sha256": "9d2a5e2fce5f862ad1226a023f9b00de6ba3f876491bee9a59a4490ed64996dc"
+          },
+          {
+            "path": "package.json",
+            "size": 1073,
+            "mode": 420,
+            "sha256": "553a56da39dcc79ba9f24d7ee687e2870efb8340bb5efaff028e8b65ca7d40ea"
+          },
+          {
+            "path": "packages/contracts/package.json",
+            "size": 261,
+            "mode": 420,
+            "sha256": "c556b0f6a485c10703ad59fe4603f704f4cfce89a46e54ee9ddc2b3f8c46e566"
+          },
+          {
+            "path": "packages/contracts/project.json",
+            "size": 1147,
+            "mode": 420,
+            "sha256": "3306d3453bd3367fbb170d87f354b700dcc41aa1597be43acfee2ba8fcf2f6d3"
+          },
+          {
+            "path": "packages/contracts/src/index.ts",
+            "size": 3965,
+            "mode": 420,
+            "sha256": "900ca3e0469a4295f6f5dcd0bc93a8e15449bb0f3bf373079e01759be7833c3c"
+          },
+          {
+            "path": "packages/contracts/tsconfig.build.json",
+            "size": 270,
+            "mode": 420,
+            "sha256": "c2000fc5adfd56edd59a39b1d9eead09c865d0e3f5f828331287a2a2770b05c5"
+          },
+          {
+            "path": "packages/contracts/tsconfig.json",
+            "size": 206,
+            "mode": 420,
+            "sha256": "a7ab513b8f39295633629f837dec141c5dcc17df7d8ce5d0f3049e1b7f1ff366"
+          },
+          {
+            "path": "packages/ui/package.json",
+            "size": 330,
+            "mode": 420,
+            "sha256": "941e6538386984a3bc924606c361492616b312c560a3f830c3e1cc4796b92619"
+          },
+          {
+            "path": "packages/ui/project.json",
+            "size": 628,
+            "mode": 420,
+            "sha256": "f2f7bdcdcc97963fd0975bcdd861b9dc571752a03a3b4121e354dd5c526c6ea4"
+          },
+          {
+            "path": "packages/ui/src/css-modules.d.ts",
+            "size": 111,
+            "mode": 420,
+            "sha256": "00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4"
+          },
+          {
+            "path": "packages/ui/src/index.ts",
+            "size": 558,
+            "mode": 420,
+            "sha256": "8b8b4dd74f61ecca64536848844af32544407d95f535c1d554d1cca8451fbffd"
+          },
+          {
+            "path": "packages/ui/src/primitives/action-menu.module.css",
+            "size": 2037,
+            "mode": 420,
+            "sha256": "0dd05f4334d76335a8ba20fa9d68c76935602410c2d9ba64b588b53f30cea904"
+          },
+          {
+            "path": "packages/ui/src/primitives/action-menu.tsx",
+            "size": 1443,
+            "mode": 420,
+            "sha256": "589d256e7edee69fd4fb8d0126587099df5895f506d3b8ba3ccb1d0e74062a5b"
+          },
+          {
+            "path": "packages/ui/src/primitives/modal-sheet.module.css",
+            "size": 2348,
+            "mode": 420,
+            "sha256": "05a1c743c5cab77dd4212b97c82fef06572285d94e4fde09377b1a22a3789ab0"
+          },
+          {
+            "path": "packages/ui/src/primitives/modal-sheet.tsx",
+            "size": 1980,
+            "mode": 420,
+            "sha256": "9a9ff1a99c601cf7f6d168845e231a968d92e2cb343234316eff3f69807c97c5"
+          },
+          {
+            "path": "packages/ui/src/status-badge/status-badge.module.css",
+            "size": 1133,
+            "mode": 420,
+            "sha256": "db6d168db045ed7422d8af6ca3a5724165894c76f1ea7501644a79fbecd7a4e5"
+          },
+          {
+            "path": "packages/ui/src/status-badge/status-badge.tsx",
+            "size": 414,
+            "mode": 420,
+            "sha256": "e6a6543a9f44e37702db7af12a22090320d97783826c32da14f9b57c9e4bc4dd"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/link-preview/_adapter.tsx",
+            "size": 128,
+            "mode": 420,
+            "sha256": "ac238c9b043920b082f8a3bee5efbcb68da5ef7001febc06ecc499d4d24d99d0"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/link-preview/index.ts",
+            "size": 108,
+            "mode": 420,
+            "sha256": "ec0becf6ccf9332e38da390e96dda3c5068df0ab1a27d4de5e7f18ce9956786c"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/link-preview/link-preview.module.css",
+            "size": 2427,
+            "mode": 420,
+            "sha256": "4e0e40b82a677a855ea117502f3743f6dd6801019056708abd23e5dbc6fba254"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/link-preview/link-preview.tsx",
+            "size": 3838,
+            "mode": 420,
+            "sha256": "a3da0c336b53cae282595e12136d8b0ee4452f2525d90044a1c3371782e0d599"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/link-preview/schema.ts",
+            "size": 370,
+            "mode": 420,
+            "sha256": "c13c516eab2d59870accd3f8949846be566fd6ae3e964766d02f0086907bb583"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/shared/media/aspect-ratio.module.css",
+            "size": 247,
+            "mode": 420,
+            "sha256": "8ca5cd2d43a3d5b8ac6cb7d455d0655eab6062cb5b82b0b9e550795140dc46e9"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/shared/media/aspect-ratio.ts",
+            "size": 469,
+            "mode": 420,
+            "sha256": "50dcf7be37fe1a53a6473f7caada45a08525c9dc513a17a2f34ccb64b642cb59"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/shared/media/index.ts",
+            "size": 180,
+            "mode": 420,
+            "sha256": "36d4c6b837b70bdd6c23b61f1a9c9aeeec3c62f78743511a346137354a417070"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/shared/media/safe-navigation.ts",
+            "size": 306,
+            "mode": 420,
+            "sha256": "22d9d7aabea228eb45fb1604d0c442ee515eceaf1e3aa93385305e699c95e020"
+          },
+          {
+            "path": "packages/ui/src/tool-ui/shared/media/sanitize-href.ts",
+            "size": 981,
+            "mode": 420,
+            "sha256": "a81cb3cdd2fad7c73cedb620c9e21923d2e4ed959293b9ddf03f85b5698ff724"
+          },
+          {
+            "path": "packages/ui/tsconfig.json",
+            "size": 220,
+            "mode": 420,
+            "sha256": "c01db62bbfdb7eb397473fae06abdafed3e494c0eeba25be707f693dca561e6d"
+          },
+          {
+            "path": "pnpm-lock.yaml",
+            "size": 289316,
+            "mode": 420,
+            "sha256": "4f934b6eee81de8189c30e4e1efca5d227fa757a3e225a21263a97b9aed1b502"
+          },
+          {
+            "path": "pnpm-workspace.yaml",
+            "size": 616,
+            "mode": 420,
+            "sha256": "4d3db65848ea506ea21477408bfc430cd73aa81ac77e2f52c441a9589b2acb0b"
+          },
+          {
+            "path": "tsconfig.base.json",
+            "size": 550,
+            "mode": 420,
+            "sha256": "dc40c4449b29877bde000346ae28f50721076e0f60296163716a0a5a0e04bdf9"
+          }
+        ],
+        "sha256": "8933f69191b17dfd53dce036f0e68a17524ff4f3ae03d8d21f3afcabafade218"
+      },
+      "artifacts": {
+        "algorithm": "scoped-file-inventory-sha256-v1",
+        "scopes": [
+          {
+            "path": "apps/desktop-app/dist/app",
+            "tree": true,
+            "present": true
+          },
+          {
+            "path": "apps/desktop-app/dist/resources/opencode/darwin-arm64/opencode",
+            "present": true
+          }
+        ],
+        "selection": "all files in the listed scopes",
+        "limits": {
+          "files": 4096,
+          "depth": 24,
+          "bytes": 1073741824
+        },
+        "files": [
+          {
+            "path": "apps/desktop-app/dist/app/main.mjs",
+            "size": 146504,
+            "mode": 420,
+            "sha256": "7813896661caa32f905667bafe4909f170516c11705803e534149316eacbc37d"
+          },
+          {
+            "path": "apps/desktop-app/dist/app/package.json",
+            "size": 99,
+            "mode": 420,
+            "sha256": "9867ef3f45c3dc320d820cb11c32a526065d610dca2f15856aa27db6a6ffc8dd"
+          },
+          {
+            "path": "apps/desktop-app/dist/app/preload.cjs",
+            "size": 1059,
+            "mode": 420,
+            "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3"
+          },
+          {
+            "path": "apps/desktop-app/dist/app/renderer/assets/index-CM_XZxsx.js",
+            "size": 737782,
+            "mode": 420,
+            "sha256": "5ac3778dc3a5dfd66d0a2fe99ff79fae4454e0581a169dc341ed676c57b287a3"
+          },
+          {
+            "path": "apps/desktop-app/dist/app/renderer/assets/index-lBpGVZxG.css",
+            "size": 55761,
+            "mode": 420,
+            "sha256": "b154d37993caebfcfcb50da62343f35e39d0e1415f246ad494b2dfc456600669"
+          },
+          {
+            "path": "apps/desktop-app/dist/app/renderer/index.html",
+            "size": 680,
+            "mode": 420,
+            "sha256": "7a268720e2ddd27f0847806f665f308f770970b46ad6037e08b643258ce01ea4"
+          },
+          {
+            "path": "apps/desktop-app/dist/resources/opencode/darwin-arm64/opencode",
+            "size": 178946960,
+            "mode": 493,
+            "sha256": "6759c7f86f807d63d3984ca1970f9fa663ee303a35bb344eb223c71e200a96bf"
+          }
+        ],
+        "sha256": "b258f66612a4e46c9003c5b4489b25aa6934cae2d306b9cf7132152b88fa5ea5"
+      },
+      "limitations": [
+        "Scoped local byte inventory, not the harness source fingerprint or a signed attestation.",
+        "Build source scope follows the exported extension/name/directory selection policy. Known credential and runtime/export/capture directories and repository paths outside the scopes are excluded; selected capture scripts/fixtures are recorded separately.",
+        "Lockfiles identify declared dependency resolution; installed dependency trees, compiler binaries and Electron runtime are not independently inventoried.",
+        "Before/after comparisons detect observed changes; they are not filesystem isolation and cannot detect change-and-restore between observations."
+      ]
+    },
+    "currentBuildInputs": {
+      "algorithm": "scoped-file-inventory-sha256-v1",
+      "scopes": [
+        {
+          "path": "package.json",
+          "present": true
+        },
+        {
+          "path": "pnpm-lock.yaml",
+          "present": true
+        },
+        {
+          "path": "pnpm-workspace.yaml",
+          "present": true
+        },
+        {
+          "path": "tsconfig.base.json",
+          "present": true
+        },
+        {
+          "path": "nx.json",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/package.json",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/project.json",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/index.html",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/vite.config.ts",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/tsconfig.json",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/build.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/build-provenance.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/src",
+          "tree": true,
+          "source": true,
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/public",
+          "tree": true,
+          "source": true,
+          "optional": true,
+          "present": false
+        },
+        {
+          "path": "packages/ui/package.json",
+          "present": true
+        },
+        {
+          "path": "packages/ui/project.json",
+          "present": true
+        },
+        {
+          "path": "packages/ui/tsconfig.json",
+          "present": true
+        },
+        {
+          "path": "packages/ui/src",
+          "tree": true,
+          "source": true,
+          "present": true
+        },
+        {
+          "path": "packages/contracts/package.json",
+          "present": true
+        },
+        {
+          "path": "packages/contracts/project.json",
+          "present": true
+        },
+        {
+          "path": "packages/contracts/tsconfig.json",
+          "present": true
+        },
+        {
+          "path": "packages/contracts/src",
+          "tree": true,
+          "source": true,
+          "present": true
+        },
+        {
+          "path": "packages/contracts/tsconfig.build.json",
+          "present": true
+        },
+        {
+          "path": "docs/design/tokens",
+          "tree": true,
+          "source": true,
+          "present": true
+        }
+      ],
+      "selection": {
+        "excludedDirectories": [
+          "node_modules",
+          "dist",
+          "exports",
+          "captures",
+          "credentials",
+          "runtime-data"
+        ],
+        "excludedNames": "hidden names and *.test.* / *.spec.*",
+        "allowedFileExtensions": "\\.(?:[cm]?js|[cm]?ts|jsx|tsx|css|html|json|svg|png|jpe?g|webp|gif|ico|woff2?|ttf)$"
+      },
+      "limits": {
+        "files": 4096,
+        "depth": 24,
+        "bytes": 1073741824
+      },
+      "files": [
+        {
+          "path": "apps/desktop-app/index.html",
+          "size": 584,
+          "mode": 420,
+          "sha256": "973680da1eadd48eb58ff47aaaca46a10e33c0da3a31e97662f3ddea9fddc9ae"
+        },
+        {
+          "path": "apps/desktop-app/package.json",
+          "size": 1321,
+          "mode": 420,
+          "sha256": "04ce567af16e2e04ae7abc44c9c6e9c1ba890d5677ece35fffcca1e162521418"
+        },
+        {
+          "path": "apps/desktop-app/project.json",
+          "size": 4323,
+          "mode": 420,
+          "sha256": "0f90164352dbc9df946e3578eb604d3216dc2fdd82e35b2e126d31c2acefb622"
+        },
+        {
+          "path": "apps/desktop-app/scripts/build-provenance.mjs",
+          "size": 13654,
+          "mode": 420,
+          "sha256": "8ea6032a5f20e90a77fc296792948b355f910a88d9ce8b3423166d99412d8b15"
+        },
+        {
+          "path": "apps/desktop-app/scripts/build.mjs",
+          "size": 2295,
+          "mode": 420,
+          "sha256": "038c9bd604efcc97b1421270ade5d923569300e55e1384effb2a9fb5c6ead5b4"
+        },
+        {
+          "path": "apps/desktop-app/src/css-modules.d.ts",
+          "size": 111,
+          "mode": 420,
+          "sha256": "00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4"
+        },
+        {
+          "path": "apps/desktop-app/src/desktop-bridge.d.ts",
+          "size": 8442,
+          "mode": 420,
+          "sha256": "7b02627472cc5abeb2409295628cda8d1226c19a1694f2a75e6ce8bb2600bdf1"
+        },
+        {
+          "path": "apps/desktop-app/src/ephemeral-profile.mjs",
+          "size": 777,
+          "mode": 420,
+          "sha256": "dc161c3b1da5832af479e6bb9cdd25c20b748ee59343ba5e79543bc7ab39444d"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-admission.mjs",
+          "size": 13620,
+          "mode": 420,
+          "sha256": "49cb6cf21b9a091a5da7fbf6682799a248c35d6ee63b1503cdc5768dc92dac7e"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-files.mjs",
+          "size": 5455,
+          "mode": 420,
+          "sha256": "36a6408553c0944f54346604b1a78c6f08fa8e4e4baeb2ed64373b9e338de202"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-ipc.mjs",
+          "size": 726,
+          "mode": 420,
+          "sha256": "7fffc482083fa9ce6acd75f7536150cdd263dcc03bf25b295498bc36b7aed8ca"
+        },
+        {
+          "path": "apps/desktop-app/src/host/workbench-receipts.mjs",
+          "size": 2787,
+          "mode": 420,
+          "sha256": "5101547831cdad0c5e2650bf1a92ab123e0ba368a75f7b511600ce7cbe3bea18"
+        },
+        {
+          "path": "apps/desktop-app/src/main.mjs",
+          "size": 8403,
+          "mode": 420,
+          "sha256": "6dac35945017b130cc3a81d4f17cc21696613d8733b48b12eee4f6fd0699f64e"
+        },
+        {
+          "path": "apps/desktop-app/src/preload.cjs",
+          "size": 1059,
+          "mode": 420,
+          "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer-admission.mjs",
+          "size": 319,
+          "mode": 420,
+          "sha256": "dd5d8e52c4b230dfa4ca65693e301b6c0847b8a84c18e9cc23028c18f5e2a44c"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer.css",
+          "size": 713,
+          "mode": 420,
+          "sha256": "10ebc2c146b3ed0abab023d7c50eb1089d317356a3da78146b6857e36f5beaff"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer.tsx",
+          "size": 325,
+          "mode": 420,
+          "sha256": "f2fe7997af98730fefdf9b9fe1bf42d64603c06fab75d5ae6ab2b2d7b9e323f6"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/app/index.tsx",
+          "size": 991,
+          "mode": 420,
+          "sha256": "272929824e7736a9e5e1da490da9a9272c5802ec26b7c2003fc4ea5ade7d8aa4"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+          "size": 455,
+          "mode": 420,
+          "sha256": "7179f57fff140f7fa46baf95f588f1f837fa0ee926ff6e574da8883cd9359187"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+          "size": 17519,
+          "mode": 420,
+          "sha256": "dd05d00e6366ba8dea94b4ccab905b53907835286161f7a8bf30489184bcbe8b"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/entities/workbench/model/store-selector.tsx",
+          "size": 913,
+          "mode": 420,
+          "sha256": "87e2ad8cc85de7fdef43d9b58d6801774ba09335c63ed64385b3438e98ecb2d1"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+          "size": 24924,
+          "mode": 420,
+          "sha256": "ae8eb29d2d58843cd5b359c3266cb8c3bfbd9d5df2fab48d6adbcafbd87474f7"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/composer/index.ts",
+          "size": 1161,
+          "mode": 420,
+          "sha256": "e7e0bce0125bd06d29578e9c4c6a7374823ce47d57a21eb10eb06a5004f1db17"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/sessions/index.tsx",
+          "size": 9209,
+          "mode": 420,
+          "sha256": "68363895c37a2e10fd2e64ce10194fdc9b42b360b63f035c421541394859ff80"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/sessions/navigation.ts",
+          "size": 1162,
+          "mode": 420,
+          "sha256": "c4df82a89c92e591a1a369f936dd5ca14aef832ab6291af73a2c472fd1b74bbe"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/features/sessions/sessions.module.css",
+          "size": 3410,
+          "mode": 420,
+          "sha256": "57fa9e0cdf40a077e725b3328472fd89a6c2676b30f0af4c3907e954aac3de52"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+          "size": 19242,
+          "mode": 420,
+          "sha256": "ab4e90633360e47e0a889606f8ec85e7df0f75d25da20de75aecb89daadfb80c"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/pages/workbench/shell.module.css",
+          "size": 7370,
+          "mode": 420,
+          "sha256": "8d2731f126383977cbe3b20433294d7841c8289befb4e5b78863abd369867096"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/api/index.ts",
+          "size": 441,
+          "mode": 420,
+          "sha256": "b6a94c5f8f0ee00c93ac9d2bef81e76beab64c14f54abdf1a9876e1ae81cd62c"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/projection/index.ts",
+          "size": 62,
+          "mode": 420,
+          "sha256": "217eb4dbe3972fef503112ed8ef476d2073260b90904aea0ffb322a96e5717d4"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/projection/projection.d.mts",
+          "size": 290,
+          "mode": 420,
+          "sha256": "6f8a7e83685561138daf317f003a330726eb0394d8eda7d77dafac324ee4280c"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/projection/projection.mjs",
+          "size": 1454,
+          "mode": 420,
+          "sha256": "eea0af2254d3e448528a069fff7f3fc90893e113104c3a28de32ed05eae98cfc"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/shared/transport/index.ts",
+          "size": 5828,
+          "mode": 420,
+          "sha256": "560ff60bda5c3cba234698ceb0da8f001fc828e9235300077860c0abdd05993b"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/activity/activity.module.css",
+          "size": 2183,
+          "mode": 420,
+          "sha256": "0099e650bd162c3c9a6e50c52625ad444ea45e3981ab355814bb08a90d3c1f58"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/activity/index.tsx",
+          "size": 5265,
+          "mode": 420,
+          "sha256": "498bab8af0e27156d594b2977d02b281d830fd82bf896d1d8b2ec30bc5b66688"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css",
+          "size": 10403,
+          "mode": 420,
+          "sha256": "b50faf5bffa466ed79dfd78e971c498bfdf190a247418be69cc9d807bb2b07fe"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+          "size": 25860,
+          "mode": 420,
+          "sha256": "caace202bdcef1170b8e85bcd8f9b1a7af8b42b1e924b216b851877c35cad6c8"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/explorer/explorer.module.css",
+          "size": 2808,
+          "mode": 420,
+          "sha256": "4ba68a5b5f9286ee0540464ee95d10d69204c196597aad774c42c42c02ca177d"
+        },
+        {
+          "path": "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+          "size": 5843,
+          "mode": 420,
+          "sha256": "10adfe9a8bcc82c61fc1cdd392d68eeb4eb61f5e1063d37c8203e8839255f5b9"
+        },
+        {
+          "path": "apps/desktop-app/src/sidecar-package.mjs",
+          "size": 195,
+          "mode": 420,
+          "sha256": "7d3e8cb1ec0522862f7c301eceb0dde317c542d4891bff40aa29839b967999dd"
+        },
+        {
+          "path": "apps/desktop-app/src/sidecar-supervisor.mjs",
+          "size": 8437,
+          "mode": 420,
+          "sha256": "77f308017673ba0dae39772949c86c368f623ec24a895d5eef07f1358ef43ae4"
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-contract.mjs",
+          "size": 8400,
+          "mode": 420,
+          "sha256": "903774834354d6eb7f7f2c660603272530ad2bf29adcd379511305af2c2c1c81"
+        },
+        {
+          "path": "apps/desktop-app/src/workbench-service.mjs",
+          "size": 42414,
+          "mode": 420,
+          "sha256": "f9870cfb1919b801e4d0180938b6c36a052c6d4d91ad0b3786979282f132704e"
+        },
+        {
+          "path": "apps/desktop-app/tsconfig.json",
+          "size": 246,
+          "mode": 420,
+          "sha256": "e38ba12303e14c6c1e9413990260c2ff07e21789530295af097ad3f743f3f5ac"
+        },
+        {
+          "path": "apps/desktop-app/vite.config.ts",
+          "size": 365,
+          "mode": 420,
+          "sha256": "1d02271112ce18d2e77b2a94aff3e9de15fc6cc3903e17ed3a5126b6e5dbe052"
+        },
+        {
+          "path": "docs/design/tokens/manifest.json",
+          "size": 62036,
+          "mode": 420,
+          "sha256": "7c3d3468665a1f8f161c855fa15e52f014c885944fa65e3f4b6d1f30330ceef0"
+        },
+        {
+          "path": "docs/design/tokens/tokens.css",
+          "size": 25928,
+          "mode": 420,
+          "sha256": "32d2f584a05ba8f211196220e3532bd73acaeace1867e4c61654ff822c490f72"
+        },
+        {
+          "path": "nx.json",
+          "size": 1782,
+          "mode": 420,
+          "sha256": "9d2a5e2fce5f862ad1226a023f9b00de6ba3f876491bee9a59a4490ed64996dc"
+        },
+        {
+          "path": "package.json",
+          "size": 1073,
+          "mode": 420,
+          "sha256": "553a56da39dcc79ba9f24d7ee687e2870efb8340bb5efaff028e8b65ca7d40ea"
+        },
+        {
+          "path": "packages/contracts/package.json",
+          "size": 261,
+          "mode": 420,
+          "sha256": "c556b0f6a485c10703ad59fe4603f704f4cfce89a46e54ee9ddc2b3f8c46e566"
+        },
+        {
+          "path": "packages/contracts/project.json",
+          "size": 1147,
+          "mode": 420,
+          "sha256": "3306d3453bd3367fbb170d87f354b700dcc41aa1597be43acfee2ba8fcf2f6d3"
+        },
+        {
+          "path": "packages/contracts/src/index.ts",
+          "size": 3965,
+          "mode": 420,
+          "sha256": "900ca3e0469a4295f6f5dcd0bc93a8e15449bb0f3bf373079e01759be7833c3c"
+        },
+        {
+          "path": "packages/contracts/tsconfig.build.json",
+          "size": 270,
+          "mode": 420,
+          "sha256": "c2000fc5adfd56edd59a39b1d9eead09c865d0e3f5f828331287a2a2770b05c5"
+        },
+        {
+          "path": "packages/contracts/tsconfig.json",
+          "size": 206,
+          "mode": 420,
+          "sha256": "a7ab513b8f39295633629f837dec141c5dcc17df7d8ce5d0f3049e1b7f1ff366"
+        },
+        {
+          "path": "packages/ui/package.json",
+          "size": 330,
+          "mode": 420,
+          "sha256": "941e6538386984a3bc924606c361492616b312c560a3f830c3e1cc4796b92619"
+        },
+        {
+          "path": "packages/ui/project.json",
+          "size": 628,
+          "mode": 420,
+          "sha256": "f2f7bdcdcc97963fd0975bcdd861b9dc571752a03a3b4121e354dd5c526c6ea4"
+        },
+        {
+          "path": "packages/ui/src/css-modules.d.ts",
+          "size": 111,
+          "mode": 420,
+          "sha256": "00a558ca41e878c67239d4026b1d53eca70a77ab92c0cc5c5240b4fea185e4d4"
+        },
+        {
+          "path": "packages/ui/src/index.ts",
+          "size": 558,
+          "mode": 420,
+          "sha256": "8b8b4dd74f61ecca64536848844af32544407d95f535c1d554d1cca8451fbffd"
+        },
+        {
+          "path": "packages/ui/src/primitives/action-menu.module.css",
+          "size": 2037,
+          "mode": 420,
+          "sha256": "0dd05f4334d76335a8ba20fa9d68c76935602410c2d9ba64b588b53f30cea904"
+        },
+        {
+          "path": "packages/ui/src/primitives/action-menu.tsx",
+          "size": 1443,
+          "mode": 420,
+          "sha256": "589d256e7edee69fd4fb8d0126587099df5895f506d3b8ba3ccb1d0e74062a5b"
+        },
+        {
+          "path": "packages/ui/src/primitives/modal-sheet.module.css",
+          "size": 2348,
+          "mode": 420,
+          "sha256": "05a1c743c5cab77dd4212b97c82fef06572285d94e4fde09377b1a22a3789ab0"
+        },
+        {
+          "path": "packages/ui/src/primitives/modal-sheet.tsx",
+          "size": 1980,
+          "mode": 420,
+          "sha256": "9a9ff1a99c601cf7f6d168845e231a968d92e2cb343234316eff3f69807c97c5"
+        },
+        {
+          "path": "packages/ui/src/status-badge/status-badge.module.css",
+          "size": 1133,
+          "mode": 420,
+          "sha256": "db6d168db045ed7422d8af6ca3a5724165894c76f1ea7501644a79fbecd7a4e5"
+        },
+        {
+          "path": "packages/ui/src/status-badge/status-badge.tsx",
+          "size": 414,
+          "mode": 420,
+          "sha256": "e6a6543a9f44e37702db7af12a22090320d97783826c32da14f9b57c9e4bc4dd"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/link-preview/_adapter.tsx",
+          "size": 128,
+          "mode": 420,
+          "sha256": "ac238c9b043920b082f8a3bee5efbcb68da5ef7001febc06ecc499d4d24d99d0"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/link-preview/index.ts",
+          "size": 108,
+          "mode": 420,
+          "sha256": "ec0becf6ccf9332e38da390e96dda3c5068df0ab1a27d4de5e7f18ce9956786c"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/link-preview/link-preview.module.css",
+          "size": 2427,
+          "mode": 420,
+          "sha256": "4e0e40b82a677a855ea117502f3743f6dd6801019056708abd23e5dbc6fba254"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/link-preview/link-preview.tsx",
+          "size": 3838,
+          "mode": 420,
+          "sha256": "a3da0c336b53cae282595e12136d8b0ee4452f2525d90044a1c3371782e0d599"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/link-preview/schema.ts",
+          "size": 370,
+          "mode": 420,
+          "sha256": "c13c516eab2d59870accd3f8949846be566fd6ae3e964766d02f0086907bb583"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/shared/media/aspect-ratio.module.css",
+          "size": 247,
+          "mode": 420,
+          "sha256": "8ca5cd2d43a3d5b8ac6cb7d455d0655eab6062cb5b82b0b9e550795140dc46e9"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/shared/media/aspect-ratio.ts",
+          "size": 469,
+          "mode": 420,
+          "sha256": "50dcf7be37fe1a53a6473f7caada45a08525c9dc513a17a2f34ccb64b642cb59"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/shared/media/index.ts",
+          "size": 180,
+          "mode": 420,
+          "sha256": "36d4c6b837b70bdd6c23b61f1a9c9aeeec3c62f78743511a346137354a417070"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/shared/media/safe-navigation.ts",
+          "size": 306,
+          "mode": 420,
+          "sha256": "22d9d7aabea228eb45fb1604d0c442ee515eceaf1e3aa93385305e699c95e020"
+        },
+        {
+          "path": "packages/ui/src/tool-ui/shared/media/sanitize-href.ts",
+          "size": 981,
+          "mode": 420,
+          "sha256": "a81cb3cdd2fad7c73cedb620c9e21923d2e4ed959293b9ddf03f85b5698ff724"
+        },
+        {
+          "path": "packages/ui/tsconfig.json",
+          "size": 220,
+          "mode": 420,
+          "sha256": "c01db62bbfdb7eb397473fae06abdafed3e494c0eeba25be707f693dca561e6d"
+        },
+        {
+          "path": "pnpm-lock.yaml",
+          "size": 289316,
+          "mode": 420,
+          "sha256": "4f934b6eee81de8189c30e4e1efca5d227fa757a3e225a21263a97b9aed1b502"
+        },
+        {
+          "path": "pnpm-workspace.yaml",
+          "size": 616,
+          "mode": 420,
+          "sha256": "4d3db65848ea506ea21477408bfc430cd73aa81ac77e2f52c441a9589b2acb0b"
+        },
+        {
+          "path": "tsconfig.base.json",
+          "size": 550,
+          "mode": 420,
+          "sha256": "dc40c4449b29877bde000346ae28f50721076e0f60296163716a0a5a0e04bdf9"
+        }
+      ],
+      "sha256": "8933f69191b17dfd53dce036f0e68a17524ff4f3ae03d8d21f3afcabafade218"
+    },
+    "selectedScriptsAndFixtures": {
+      "algorithm": "scoped-file-inventory-sha256-v1",
+      "scopes": [
+        {
+          "path": "apps/desktop-app/scripts/run-evidence.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/build-provenance.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+          "present": true
+        }
+      ],
+      "selection": "all files in the listed scopes",
+      "limits": {
+        "files": 4096,
+        "depth": 24,
+        "bytes": 1073741824
+      },
+      "files": [
+        {
+          "path": "apps/desktop-app/scripts/build-provenance.mjs",
+          "size": 13654,
+          "mode": 420,
+          "sha256": "8ea6032a5f20e90a77fc296792948b355f910a88d9ce8b3423166d99412d8b15"
+        },
+        {
+          "path": "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+          "size": 64883,
+          "mode": 420,
+          "sha256": "d8f0a2d2be2746ecbab87e09177c7d0246554030e9ad4057b0d769f1bd8f0653"
+        },
+        {
+          "path": "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+          "size": 17513,
+          "mode": 420,
+          "sha256": "7e518ff2661bc1329537c0d10206b499c126213ca1c7f8be081d6b588004c243"
+        },
+        {
+          "path": "apps/desktop-app/scripts/run-evidence.mjs",
+          "size": 9645,
+          "mode": 420,
+          "sha256": "8f4d9f3a52fcac92fe459d961e01137b286efe66f8d278a5d98879d02d45afb6"
+        }
+      ],
+      "sha256": "732d2708ef351d912a1211377a053046a8ac675b5d72df3bc859df4f6ae25b50"
+    },
+    "currentRelevantSource": {
+      "algorithm": "sha256-of-build-input-and-selected-script-inventory-digests-v1",
+      "buildInputsSha256": "8933f69191b17dfd53dce036f0e68a17524ff4f3ae03d8d21f3afcabafade218",
+      "selectedScriptsAndFixturesSha256": "732d2708ef351d912a1211377a053046a8ac675b5d72df3bc859df4f6ae25b50",
+      "sha256": "2464ca3aa3c19b94dec147c14e7975a55dbe831a6a4e0132c8f3f7597a154c68"
+    },
+    "launchArtifacts": {
+      "algorithm": "scoped-file-inventory-sha256-v1",
+      "scopes": [
+        {
+          "path": "apps/desktop-app/dist/app",
+          "tree": true,
+          "present": true
+        },
+        {
+          "path": "apps/desktop-app/dist/resources/opencode/darwin-arm64/opencode",
+          "present": true
+        }
+      ],
+      "selection": "all files in the listed scopes",
+      "limits": {
+        "files": 4096,
+        "depth": 24,
+        "bytes": 1073741824
+      },
+      "files": [
+        {
+          "path": "apps/desktop-app/dist/app/main.mjs",
+          "size": 146504,
+          "mode": 420,
+          "sha256": "7813896661caa32f905667bafe4909f170516c11705803e534149316eacbc37d"
+        },
+        {
+          "path": "apps/desktop-app/dist/app/package.json",
+          "size": 99,
+          "mode": 420,
+          "sha256": "9867ef3f45c3dc320d820cb11c32a526065d610dca2f15856aa27db6a6ffc8dd"
+        },
+        {
+          "path": "apps/desktop-app/dist/app/preload.cjs",
+          "size": 1059,
+          "mode": 420,
+          "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3"
+        },
+        {
+          "path": "apps/desktop-app/dist/app/renderer/assets/index-CM_XZxsx.js",
+          "size": 737782,
+          "mode": 420,
+          "sha256": "5ac3778dc3a5dfd66d0a2fe99ff79fae4454e0581a169dc341ed676c57b287a3"
+        },
+        {
+          "path": "apps/desktop-app/dist/app/renderer/assets/index-lBpGVZxG.css",
+          "size": 55761,
+          "mode": 420,
+          "sha256": "b154d37993caebfcfcb50da62343f35e39d0e1415f246ad494b2dfc456600669"
+        },
+        {
+          "path": "apps/desktop-app/dist/app/renderer/index.html",
+          "size": 680,
+          "mode": 420,
+          "sha256": "7a268720e2ddd27f0847806f665f308f770970b46ad6037e08b643258ce01ea4"
+        },
+        {
+          "path": "apps/desktop-app/dist/resources/opencode/darwin-arm64/opencode",
+          "size": 178946960,
+          "mode": 493,
+          "sha256": "6759c7f86f807d63d3984ca1970f9fa663ee303a35bb344eb223c71e200a96bf"
+        }
+      ],
+      "sha256": "b258f66612a4e46c9003c5b4489b25aa6934cae2d306b9cf7132152b88fa5ea5"
+    }
+  },
+  "provenanceVerifiedAfter": true,
+  "wrapperExitCode": 1,
+  "finishedAt": "2026-10-04T02:20:32.008Z"
+}

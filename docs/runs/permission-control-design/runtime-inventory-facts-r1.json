@@ -1,0 +1,64 @@
+{
+  "kind": "Observed static production graph and inventory API facts, not final trust/all-tool effect proof",
+  "files": {
+    "apps/desktop-app/src/event-host-child.mjs": {
+      "sha256": "11b2ddf561de6b2f278c27cca097ec1ecb26bec8a78061b8126feb28be688875",
+      "bytes": 16199
+    },
+    "apps/desktop-app/src/native-skills-config.mjs": {
+      "sha256": "c2760a03fef4b59bb3c8cc633f4ed3b65d612bad76d8f3dfb74c19afb9987940",
+      "bytes": 1625
+    },
+    "apps/desktop-app/src/builtins/workbench-skills/server.mjs": {
+      "sha256": "b8f325bd97eef7be6eb7e16e166247d27d1496eaf06fbd6cd4dddfaef582869d",
+      "bytes": 13606
+    },
+    "apps/desktop-app/src/builtins/workbench-skills/extensions.mjs": {
+      "sha256": "05403d6541072d4c566f18dc7d0606cd30270ec66bc0ed95a8ad645aec1dd962",
+      "bytes": 7951
+    },
+    "apps/desktop-app/src/native-extensions-client.mjs": {
+      "sha256": "3109b26306fc60da5313f5b7987a06e0bd42d5c67ebcb1027743de04ba3d9796",
+      "bytes": 2556
+    },
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/plugin/dist/promise/tool.d.ts": {
+      "sha256": "14ead93a2c03136af9768f9f02447c5fb357d1bce12a4b38a5e9fe31a0e91eff",
+      "bytes": 2510
+    },
+    "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/types/plugin/internal.d.ts": {
+      "sha256": "159f4aee427d6a6406ca103637acb6ae91f5bd6991bd18dac7f687accf1c17f5",
+      "bytes": 5206
+    }
+  },
+  "facts": [
+    {
+      "path": "apps/desktop-app/src/event-host-child.mjs",
+      "lines": "327-347",
+      "fact": "Production child starts fixed server with config.project:false, private config directory, nativeSkillsConfig content, models.fetch:false; existing supervisor tracks runtime calls and owned exits."
+    },
+    {
+      "path": "apps/desktop-app/src/native-skills-config.mjs",
+      "lines": "55-61",
+      "fact": "Native config content selects fixed contained app-owned workbench-skills plugin with in-memory nonce; selected resource manifest validated before child imports."
+    },
+    {
+      "path": "apps/desktop-app/src/builtins/workbench-skills/server.mjs",
+      "lines": "377-384",
+      "fact": "Existing trusted plugin registers private RPC and setupNativeAgents/setupNativeExtensions; no new parallel runtime owner required for future private observation guard."
+    },
+    {
+      "path": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/plugin/dist/promise/tool.d.ts",
+      "lines": "53-62",
+      "fact": "ToolDomain.list explicitly returns currently registered tools after every transform, with effective IDs and options plus live callbacks. Callbacks must never cross public DTO; metadata generation alone cannot prove callback purity."
+    },
+    {
+      "path": "apps/desktop-app/dist/resources/opencode/event-host/darwin-arm64/node_modules/@opencode/core/dist/types/plugin/internal.d.ts",
+      "fact": "Native internal plugin requirements include Session/Tool/Permission services; public promise plugin Context exposes SessionDomain. Prefer existing SDK session.wait over undocumented access to internal graph services."
+    }
+  ],
+  "open_trust_checks": [
+    "Confirm private namespace config-file precedence cannot activate untrusted plugins; fixed content alone is not proof of all merge semantics.",
+    "Enumerate trusted builtin hooks and dynamic owned MCP definitions; reject incomplete/unexpected inventory before preset activation.",
+    "Read-only mutation-deny proof must cover direct/CodeMode, before-execute hooks, saved grants and current configured-deny semantics."
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "revision": 27,
+  "scope": "exact11 component: fixed Agent metadata through SAME Control source/parent/Scope owner, original notification listener source branding + source-verified Bus predispatch guards; no execution grant, complete live inventory or startup/runtime approval",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "bytes": 71255,
+      "sha256": "9deb9fdc17c6c798358efb93f25ca01d885b8f4c4c26a81ebf2d4feee26f153b"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.test.mjs",
+      "bytes": 73314,
+      "sha256": "0a3020c4d4b9af9efe59ba527c255f0b1fdfc2f5622573621ff78923a2d10bd0"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-inventory.mjs",
+      "bytes": 18512,
+      "sha256": "e9bc3805633b7f39b03dadaa32daf4165e8471f11c41d05a989a27cd3cd48557"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 25998,
+      "sha256": "04c0e30fec6851838f7f397fc71b3b4c3545ddb4a3088bd57c041e53c43ad4af"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "bytes": 45265,
+      "sha256": "216adfcd88874b21b22cecfcb3ba6ab8ed224dfa0863439f0943b814471d1ed8"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-plugin-host.test.mjs",
+      "bytes": 31716,
+      "sha256": "dc518eda4da82b8573aaa4232b69dd941bf02a719941e5691aced59bcf4dc71f"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-agent-notification.test.mjs",
+      "bytes": 14473,
+      "sha256": "181ae33ee1df9691df9e0c607542597368f64a4a9cba1f64dadcd72ad3096a79"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-agent-metadata.test.mjs",
+      "bytes": 35136,
+      "sha256": "bcd81783c89b39da31e5bb1094b75d79f27d80211138bc0cd32781e03134f684"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "bytes": 304772,
+      "sha256": "ea47d2c4679116e1a35ad81b5bef8b75e5cef5462cefe5ed34de4dccf23ad3ab"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "bytes": 32625,
+      "sha256": "6f68ba7645e054d15bf23fd9f6e446b359e3aa2c9795e543b34938d80df21998"
+    },
+    {
+      "path": "docs/runs/permission-task-lifetime-integration/contract.json",
+      "bytes": 20005,
+      "sha256": "dfd7bf80e8909a601e2da7d2284626011b3520a072073a818e1fb21b1dce3f43"
+    }
+  ],
+  "before_manifest": "prechange/agent-metadata-before-r1/manifest.json",
+  "worker_final": "agent-metadata-worker-final-r1.json",
+  "worker_scope_red": "agent-metadata-worker-scope-checkpoint-r1.json",
+  "adapter": "agent-notification-adapter-r1.md",
+  "checks": {
+    "coherent_metadata": {
+      "log": "agent-metadata-coherent-r2.log",
+      "pass": 520,
+      "fail": 0,
+      "skip": 0,
+      "exit": 0
+    },
+    "auxiliary": {
+      "log": "agent-metadata-auxiliary-r1.log",
+      "pass": 23,
+      "exit": 0
+    },
+    "static": [
+      "agent-metadata-eslint-r1.log",
+      "agent-metadata-prettier-r1.log"
+    ],
+    "check_status": "agent-metadata-check-status-r2.json",
+    "fix_static": [
+      "agent-metadata-fix-eslint-r1.log",
+      "agent-metadata-fix-prettier-r1.log"
+    ]
+  },
+  "meaningful_red": [
+    "agent-notification-control-red-r1.log: missing API2fail",
+    "agent-notification-recheck-red-r2.log: real scheduler late listener within32, recheck-removed mutation actualSuccess expectedFailure",
+    "agent-metadata-worker-scope-checkpoint-r1.json: real Scope Closed before finalizers, synchronous State.get replay accepted; Main actual Scope descriptor check fixes both metadata boundaries",
+    "agent-metadata-source-pin-red-r1.log: actual missing expected rejection at three direct dependency source identities",
+    "agent-metadata-source-pin-green-r1.log: malformed/missing/different source rows rejected before import"
+  ],
+  "limits": [
+    "Original Agent callback/editor/default factory/State/Host expressions with real pinned Effect; Bus predicate/Global/schema identity standins in worker.",
+    "Separate Main notification test evaluates original/patched Bus publish/publishEvent/notify and original source-identical lifecycle listener with genuine Control/Effect; original constructor acquisition and complete subscriber/startup inventory unproved.",
+    "Only fixed Agent defaults metadata allowed; provider/model/integration/mcp State routes remain held; SDK/tool executable callbacks still held.",
+    "Control.assertExecution remains held, inventory.complete=false; pure source branding adds no mode/lease/task/handoff authority.",
+    "No Native/core actual module imports, Main/server/Bun/provider/network/browser/GUI/build/private-original or new physical probe invocation.",
+    "Recipe60files245edits<=256; preceding58 recipe objects exact; Native State source remains original."
+  ],
+  "review_round": 2,
+  "correction_scope": [
+    "apps/desktop-app/src/native-permission-graph.mjs",
+    "apps/desktop-app/src/native-permission-graph.test.mjs"
+  ],
+  "prior_review": "agent-metadata-code-review-r1.json",
+  "prior_input": "agent-metadata-code-input-r1.json",
+  "fix_before_manifest": "prechange/agent-metadata-code-r1-fix/manifest.json",
+  "correction": "Add exact original receipt SHA256 for Session alias config-ec1grn59.js and event/schema before any Native import; extend negative missing/digest/type cases. No other source changes."
+}

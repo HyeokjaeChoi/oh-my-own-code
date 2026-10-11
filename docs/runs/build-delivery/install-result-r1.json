@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "check": "install",
+  "argv": [
+    "pnpm",
+    "install",
+    "--frozen-lockfile"
+  ],
+  "observed_at": "2026-09-27T15:16:52Z",
+  "exit_code": 0,
+  "reported_output": "Scope: all 5 workspace projects; Already up to date; Done using pnpm v11.17.0.",
+  "starting_condition": {
+    "schema_version": 1,
+    "observed_at": "2026-09-27T15:13:55Z",
+    "workspace_root_node_modules_exists": true,
+    "spike_node_modules_exists": true,
+    "preexisting_install_is_clean": false,
+    "reason": "Both dependency directories already exist before the revision-7 frozen-lockfile check; the check cannot establish a clean initial install.",
+    "package_json_sha256": "96eed945858b2540ccdf46e61ce5b76858ae1f341bb07df05406d2e1e8f81d31",
+    "lockfile_sha256": "a5dacf6413782c808d4bcbb185787e19f26ae91c63a83259259b348fd1a5004b",
+    "pnpm_version": "11.17.0",
+    "registry_access_expected_for_ac8": false,
+    "scope_note": "No dependency changes are in AC-8. Run the existing frozen-lockfile contract command; if dependencies are not available without package/lock changes, stop and report."
+  },
+  "post_package_json_sha256": "96eed945858b2540ccdf46e61ce5b76858ae1f341bb07df05406d2e1e8f81d31",
+  "post_lockfile_sha256": "a5dacf6413782c808d4bcbb185787e19f26ae91c63a83259259b348fd1a5004b",
+  "manifest_unchanged": true,
+  "lockfile_unchanged": true,
+  "clean_install_claim": false,
+  "limits": "node_modules existed before the command, so this is frozen-lockfile consistency evidence, not a clean checkout install. The output does not attest registry traffic beyond the recorded command/result."
+}

@@ -1,0 +1,22 @@
+할당된 **3개 script 구현을 완료했습니다.**
+
+- [Fixture](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/workbench-host.mjs): opt-in Context 상태, deferred read/ACK, scope·digest 검증.
+- [테스트](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/fixtures/workbench-host.test.mjs): **RED → GREEN, 590/590 통과**. 기존 matrix 포함.
+- [Saved runner](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-conversation-context.mjs:266): focused hidden 검증과 명령 저장. **실행하지 않았습니다.**
+
+Syntax·ESLint·Prettier 통과. Producer/IO/storage **20개 pin hash 일치**.
+
+최종 SHA-256:
+
+```text
+workbench-host.mjs
+86ca4d154b0fb79c37ba99dae401a060ee85ca4d024fe8a148ea5721155cd7bb
+
+workbench-host.test.mjs
+9da70f64f425a0a9619b55cfc3de57f6cd4f74c2be7411325bf29099367e21bc
+
+e2e-conversation-context.mjs
+a3a7cfd34996bb15956e29088bfe1baf4838cb77f3edc5b03418bc308b8f1226
+```
+
+Main에 남은 작업: `build-provenance.mjs`의 Context family 등록, 통합 runtime 실행, 독립 CODE/RENDER review. Self-approval은 하지 않았습니다.

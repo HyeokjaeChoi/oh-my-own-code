@@ -1,0 +1,23 @@
+{
+  "finding": "CODE-R2-01",
+  "red": {
+    "command": [
+      "node",
+      "--test",
+      "--test-name-pattern=canonical set order:",
+      "apps/desktop-app/src/permission-control-observations.test.mjs"
+    ],
+    "exit_code": 1,
+    "observed": "Missing expected exception before production correction"
+  },
+  "green": {
+    "focused": 1,
+    "observation_suite": 54,
+    "contracted_with_canonical_digest": 67,
+    "fail": 0,
+    "lint": "pass",
+    "format": "pass"
+  },
+  "behavior": "Reject noncanonical UTF8 canonicalJSON identity sets; preserve rules/resources/savePatterns exact order. Correct valid test fixture set order, maintain parent-after-child coverage and cycle tests with sorted sets. No source beyond exact2 changed.",
+  "limitations": "Private disconnected producer shape only; no Native/effect/compiler/identity/handle authority"
+}

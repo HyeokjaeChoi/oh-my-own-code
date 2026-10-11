@@ -1,0 +1,30 @@
+--- before/apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx
++++ after/apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx
+@@ -5,9 +5,11 @@
+   useWorkbenchSelector,
+ } from "../../entities/workbench/index.js";
+ import {
++  GIT_BRANCH_RESTORE_TARGET_FIELDS,
+   gitBranchRestoreBackupRoles,
+   type GitBranchRestoreAction,
+   type GitBranchRestoreSource,
++  type GitBranchRestoreTarget,
+ } from "../../shared/api/index.js";
+ import styles from "./review.module.css";
+ 
+@@ -384,7 +386,14 @@
+               </dd>
+               <dt>Backup 계획</dt>
+               <dd>
+-                {gitBranchRestoreBackupRoles(preview)
++                {gitBranchRestoreBackupRoles(
++                  Object.fromEntries(
++                    GIT_BRANCH_RESTORE_TARGET_FIELDS.map((key) => [
++                      key,
++                      preview[key],
++                    ]),
++                  ) as GitBranchRestoreTarget,
++                )
+                   .map(
+                     (b) =>
+                       `${b.role} / ${b.path ?? "metadata"} / ${b.exists ? "원래 epoch·operation·role·path의 결정적 backup · 적용 요청 시 ID 확정" : "원래 없음 · backup null"}`,

@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "dcefab7c27d0b8f2b1180aacc1b1ea2baef86cb2d644024a0ceebdf66b4e7425",
+    "gate": "plan",
+    "plan_sha256": "128de080fda72b98f4608de575be01da2d03e4f01d8d7ebca730868185d59dec",
+    "schema_version": 2,
+    "source_sha256": "507893e217f56cc24d6162593a456b4636ecee1119d75c22fb669304ab88141c"
+  },
+  "verdict": "changes_requested",
+  "summary": "The research deliverable fits the latest outcome: a first-party vendor capability matrix plus a file/symbol-based gap analysis of actual Electron implementation, followed by recommendations without changing product scope or code. One evidence-provenance correction is required: distinguish the explicitly selected Electron runtime from the pending approval/review status of the amended PRD/UX set, and fix the ADR path. No new user approval is needed to conduct this research.",
+  "open_findings": [
+    {
+      "id": "WFL-PLAN-01",
+      "priority": "P2",
+      "title": "Do not promote the amended PRD/UX set to approved research authority",
+      "file": "docs/runs/workbench-feature-landscape/plan.md",
+      "start": 33,
+      "end": 33,
+      "description": "The plan calls PRD v0.6 user-approved and cites docs/decisions/0002-electron-runtime.md, which does not exist. Contract DR-1 repeats approved PRD v0.6. The current PRD and UX headers say review required, the UX explicitly calls the Electron amendment pending independent review, and spec-index v0.12 says prior approval covers old document hashes. The real ADR is docs/decisions/0002-desktop-runtime.md and confirms the Electron choice while explicitly separating implementation-input approval. Treating these statuses as equivalent risks carrying a false approval claim into the report and next-slice handoff.",
+      "requested_change": "Correct the plan and DR-1 to distinguish preserved approved feature scope, the user-selected Electron/macOS/Windows/app-owned-sidecar target, and current PRD/UX amendments as research comparison context with their stated pending review/approval status. Use docs/decisions/0002-desktop-runtime.md. If a newer exact-version approval receipt exists, cite that concrete receipt instead. Re-register and re-review only these changed concerns; do not request new approval or block independent evidence collection.",
+      "validation_basis": "Read-only comparison of plan R1 and contract DR-1 against docs/product/prd.md header, docs/design/specs/workbench-ux.md header, docs/engineering/spec-index.md, and the accepted ADR-0002."
+    }
+  ],
+  "review_notes": [
+    "The four research groups cover the requested outcome. In the final matrix, explicitly enumerate import/create/remove-from-list/physical-delete, artifact formats, and registration/inventory/connection state; do not let a generic lifecycle or configuration cell hide requested behaviors.",
+    "Keep Claude Code, Claude Desktop, and vendor app/CLI surfaces attributable within family rows so documentation about one surface does not establish another surface feature.",
+    "The registered section/link-count check is a structural smoke check only. Citation entailment, complete matrix coverage, status classification and actionable implementation gaps must be established by coordinator source verification and the planned independent analysis review.",
+    "The static repository audit may establish implemented code paths and integration gaps, not successful Electron execution, macOS/Windows packaging or process/security enforcement. No runtime tests or browser benchmark are required for this bounded research deliverable."
+  ],
+  "review_boundary": "Independent plan review only. No vendor research, application source audit, runtime tests or product edits were performed. The formal review file is the only artifact written.",
+  "provenance": {
+    "child_task_id": "/root/workbench_plan_review",
+    "author_task_id": "/root"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "phase": "early_actual_public_ui_checkpoint",
+  "ownership": [
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/workbench-store.test.mjs",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.d.mts"
+  ],
+  "public_ui_checkpoint": {
+    "actions": [
+      "actions.saveConfigurationDraft(kind): Promise<boolean>",
+      "actions.canSaveConfigurationDraft(kind): boolean"
+    ],
+    "selector": "selectors.canSaveConfigurationDraft(kind)(state): boolean",
+    "draft_selector": "selectors.configurationDraft(kind)(state)",
+    "fileSave": {
+      "status": [
+        "pending",
+        "saved",
+        "denied",
+        "conflict",
+        "unknown"
+      ],
+      "current": "boolean; true only when identity.revision and captured text match this draft; only show current draft saved/denied/conflict label when true",
+      "identity": "immutable operationId/epoch/workspaceId/path/kind/revision/floor/request reference and optional expected backupId",
+      "version": "optional; confirmed saved observation only",
+      "backupId": "optional; verified confirmed saved reference only; identity.backupId is a plan, never a verified backup",
+      "code": "optional refusal code"
+    },
+    "flags": {
+      "save_enabled": "actions.canSaveConfigurationDraft(kind) (or selector)",
+      "saving": "draft.fileSave?.status === 'pending'",
+      "saved_current": "draft.fileSave?.status === 'saved' && draft.fileSave.current",
+      "saved_previous_revision": "draft.fileSave?.status === 'saved' && !draft.fileSave.current; newer edits remain unsaved",
+      "denied": "draft.fileSave?.status === 'denied'; code explains no confirmed save; explicit reload required",
+      "conflict": "draft.fileSave?.status === 'conflict'; preserve text; explicit reload required",
+      "unknown": "draft.fileSave?.status === 'unknown'; may have changed original; preserve draft; no retry/reload/content polling",
+      "loading": "draft.fileRead?.status === 'loading'",
+      "editing": "allowed during save; captured identity remains original",
+      "discard": "allowed during save; ends draft binding only; operation still settles",
+      "backup": "display draft.fileSave.backupId only for saved and current workspace/path/epoch; never identity.backupId",
+      "runtime_activation": "save never reports runtime activation"
+    },
+    "eligibility": "connected selected registered workspace; current epoch/path loaded version or explicit missing_file observation; shared configurationFileWriteFits; dirty available text or missing-create; no global/resource hold, pending operations, actual file read/save, logical configuration read, unknown save or capacity exhaustion; blank instructions do not need valid draft format, Host confirms actual clear"
+  },
+  "freeze_hashes_verified": {
+    "apps/desktop-app/src/desktop-bridge.d.ts": "633f69d7c3cbcfae250f2a1059344af55e41e793cc1891b1ed4439939417e652",
+    "apps/desktop-app/src/workbench-contract.mjs": "58b6e06e67c42cdc14c04cb0effcc0ac712d92e486b6d7b0ea197912121efee6",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157",
+    "apps/desktop-app/src/renderer/shared/configuration-draft/index.ts": "f6316254dbb2a2ff437f7ecd7b0e339fb4e5e8009d92be41c566a691152aa326"
+  },
+  "early_evidence": "Matching actual v2 save targeted test passes. Remaining races/checks in progress; this checkpoint is not a final implementation or review pass."
+}

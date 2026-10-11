@@ -1,0 +1,34 @@
+{
+  "revision": 28,
+  "component": "startup maintenance",
+  "independent_code": "PASS",
+  "review": "startup-maintenance-code-review-r1.json",
+  "checks": {
+    "metadata": {
+      "log": "startup-maintenance-metadata-r1.log",
+      "pass": 530,
+      "exit": 0
+    },
+    "auxiliary": {
+      "log": "startup-maintenance-auxiliary-r1.log",
+      "pass": 23,
+      "exit": 0
+    },
+    "targeted": {
+      "log": "startup-maintenance-targeted-r1.log",
+      "pass": 44,
+      "exit": 0
+    },
+    "static": "startup-maintenance-static-r1.json",
+    "check_status": "startup-maintenance-check-status-r1.json"
+  },
+  "source_input": "startup-maintenance-code-input-r1.json",
+  "full_feature_complete": false,
+  "execution_authorized": false,
+  "limits": [
+    "Real pinned Effect and extracted original source; FSUtil/Global/makeGlobalNode standins.",
+    "No actual Native/core/Main/Bun/browser/server/provider/network/GUI/build/private original execution or physical replay.",
+    "Control execution held, live inventory incomplete; component only, no full CODE gate.",
+    "Recipe62files249edits; preceding60 preserved; explicit cleanup unsupported until SAME Control Task/Scope authority exists."
+  ]
+}

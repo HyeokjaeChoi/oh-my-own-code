@@ -1,0 +1,89 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "R1",
+      "description": "Exact fixed eleven-chunk held tool overlays"
+    },
+    {
+      "id": "R2",
+      "description": "Safe session identity capture and original scope correlation"
+    },
+    {
+      "id": "R3",
+      "description": "Meaningful refusal checks and preserved original source"
+    }
+  ],
+  "checks": {
+    "unit": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/native-permission-coordinator-admission.test.mjs",
+        "apps/desktop-app/src/native-permission-tool-entry.test.mjs",
+        "apps/desktop-app/src/native-permission-session-entry.test.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+        "apps/desktop-app/src/native-permission-graph.test.mjs",
+        "apps/desktop-app/src/event-host-resources.test.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Fixed Native tool entry overlays and actual extracted functions, Node stand-ins only",
+      "acceptance_ids": [
+        "R1",
+        "R2",
+        "R3"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "--config",
+        "apps/desktop-app/eslint.config.mjs",
+        "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+        "apps/desktop-app/src/native-permission-coordinator-admission.mjs",
+        "apps/desktop-app/src/native-permission-coordinator-admission.test.mjs",
+        "apps/desktop-app/src/native-permission-tool-entry.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Fixed Native tool entry overlays and actual extracted functions, Node stand-ins only",
+      "acceptance_ids": [
+        "R1",
+        "R2",
+        "R3"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+        "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+        "apps/desktop-app/src/native-permission-coordinator-admission.mjs",
+        "apps/desktop-app/src/native-permission-coordinator-admission.test.mjs",
+        "apps/desktop-app/src/native-permission-tool-entry.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Fixed Native tool entry overlays and actual extracted functions, Node stand-ins only",
+      "acceptance_ids": [
+        "R1",
+        "R2",
+        "R3"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

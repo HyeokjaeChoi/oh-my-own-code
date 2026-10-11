@@ -1,0 +1,118 @@
+{
+  "schema_version": 2,
+  "run": "conversation-markdown",
+  "reviewer_role": "design_reviewer",
+  "reviewed": {
+    "contract_sha256": "c1b3412577432f63a2462dcb746dcc24345dc67960d18d94d90e1ca795cf49f5",
+    "environment_sha256": "d0c2c9798a71ecdf928da3b911c3c91e971fcb8ca80000884e487a38ba7a714f",
+    "gate": "design",
+    "plan_sha256": "cb3b5cf76286debd60eb7a040c3f220c3ab17c1b046a431d17dd410fbd6c48e3",
+    "schema_version": 2,
+    "source_sha256": "526b9f2a63ceae0a9c72dc514a8c25f66b5bbb3bc75ea9c288b2e25e6b6ff202",
+    "verification_sha256": "595773664c4f7789406edf59860d931254103fb5db5e7ac84a488f3ec1b0d207",
+    "work_class_sha256": "2e17126b31d8fa5c6c959c6574bfa41485568e70b239ceb95740d3d44a1e0dde"
+  },
+  "verdict": "changes_requested",
+  "summary": "최신 native PNG 38개를 원본 크기로 확인했습니다. Markdown 가독성, 조용한 Light/Dark 대화 화면, 좁은 화면과 확대 시 콘텐츠 containment, 복사 focus와 성공·실패 안내는 이번 증분에 적합합니다. 그러나 029-clipboard-pending.png는 대기 상태 대신 앞선 실패 화면을 그대로 표시합니다. MD3의 pending 렌더 증거를 수정해야 design gate를 통과할 수 있습니다. 이 지적은 캡처 증거의 문제이며, 제품의 pending 동작 결함을 확정하지 않습니다.",
+  "open_findings": [
+    {
+      "id": "RENDER-01",
+      "severity": "medium",
+      "acceptance": ["MD3", "MD4"],
+      "title": "pending으로 지정한 PNG가 실패 상태를 표시합니다.",
+      "location": {
+        "image": "docs/runs/conversation-markdown/evidence/hidden-r4/conversation-markdown/029-clipboard-pending.png",
+        "native_dimensions": [2880, 1936],
+        "region": "대화 본문 하단 ‘표시된 메시지 복사’ 버튼과 오른쪽 status. 대략 native x=928–1720, y=1468–1556."
+      },
+      "observed": "status는 ‘복사하지 못했습니다. 텍스트를 선택해 복사해 주세요.’입니다. ‘복사 중입니다.’는 보이지 않습니다. 이 PNG의 SHA-256은 026-clipboard-reject.png, 027-clipboard-absent.png, 028-clipboard-throw.png와 같습니다.",
+      "evidence_sha256": "8fd71072c23a121a43cbdbee4859802de390c4a0c221cf5298d37a0281590e40",
+      "user_impact": "현재 증거로는 미완료 복사 요청의 대기 안내와 비활성 버튼이 실제 화면에 표시되는지 판정할 수 없습니다. 저장된 DOM assertion의 PASS만으로 이 시각 검증을 대신할 수 없습니다.",
+      "requested_change": "controlled renderer adapter의 Promise를 미완료 상태로 유지하고, pending 상태가 실제 paint된 뒤 native PNG를 캡처하세요. status ‘복사 중입니다.’와 비활성 복사 버튼이 함께 보여야 합니다. navigation과 관련 provenance를 갱신하세요.",
+      "verification_expectation": "교체한 원본 PNG에서 pending 문구와 버튼 상태를 직접 확인할 수 있어야 합니다. 앞선 실패 이미지와 동일한 프레임이면 안 됩니다. 실제 OS clipboard 접근은 필요하지 않습니다.",
+      "verification_status": "원본 픽셀과 파일 해시로 증거 불일치를 확인했습니다. 캡처 지연 또는 제품 동작 중 어느 것이 원인인지는 확정하지 않았습니다."
+    }
+  ],
+  "acceptance_assessment": {
+    "MD1": "본문 위계, 강조, 목록, 인용문, inline code, code block과 table은 읽을 수 있습니다. 032/033에서 partial/final stream을, 034에서 사용자 Markdown 문법의 literal 표시를 확인했습니다.",
+    "MD2": "raw HTML은 문자열로 보입니다. destination은 본문 안에 표시되며 좁은 화면에서 줄바꿈됩니다. 이미지는 alt 문구로 표시됩니다. 픽셀 자체는 비실행·비탐색 동작을 증명하지 않으며, 저장된 externalRequests=[]를 보조 근거로만 사용했습니다.",
+    "MD3": "코드·메시지 복사 조작, 보이는 focus, 성공 안내, 실패 시 수동 선택 안내를 확인했습니다. 030/031/035에는 변경된 text/session/code에 낡은 성공 안내가 붙어 있지 않습니다. 036/037에서는 보관된 텍스트 복사가 가능합니다. pending 시각 증거는 RENDER-01로 미충족입니다.",
+    "MD4": "두 theme의 desktop, 320px, 760px 및 760px 200% 확대 표본을 확인했습니다. 본문과 긴 주소는 줄바꿈되고, 긴 코드는 코드 영역 안에 머물며, 긴 table 값은 열 안에서 줄바꿈됩니다. 저장된 keyboard·selection·geometry 검사와 종료 기록은 보조 근거입니다. 전체 승인에는 pending 캡처 수정이 필요합니다."
+  },
+  "design_assessment": {
+    "workbench": "중립적인 면, 제한된 경계, 읽기 중심 대화 폭과 분명한 focus 표시는 승인된 workbench 방향에 맞습니다. 이번 화면에서 새 장식 체계나 별도 시각 권위는 발견하지 않았습니다.",
+    "authority": "037의 retained-global-operation hold는 결과 확인 필요, 자동 재실행 없음, 새 전송 차단을 문구로 알립니다. 복사 성공을 실행 성공으로 표시하지 않습니다. inspected frames에서 새 실행·권한 부여 조작은 발견하지 않았습니다.",
+    "composer_tools_permissions": "관찰한 화면에서는 기존 composer와 선택 조작이 유지됩니다. 모든 tool·permission 상태의 불변성은 이 정적 프레임 범위로 확정하지 않습니다.",
+    "tokens_css_modules": "승인된 UX와 token 문서를 비교 기준으로 사용했습니다. 픽셀의 시각 일관성을 검토했으며, CSS Modules 사용이나 전체 token binding을 픽셀만으로 인증하지 않습니다."
+  },
+  "evidence": {
+    "image_root": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/conversation-markdown/evidence/hidden-r4/conversation-markdown",
+    "inspection_method": "view_image, detail=original",
+    "actual_images_inspected": [
+      "000-code-copy-keyboard.png",
+      "001-message-copy.png",
+      "002-light-1440-zoom1-prose.png",
+      "003-light-1440-zoom1-code.png",
+      "004-light-1440-zoom1-table.png",
+      "005-light-760-zoom1-prose.png",
+      "006-light-760-zoom1-code.png",
+      "007-light-760-zoom1-table.png",
+      "008-light-760-zoom2-prose.png",
+      "009-light-760-zoom2-code.png",
+      "010-light-760-zoom2-table.png",
+      "011-light-320-zoom1-prose.png",
+      "012-light-320-zoom1-code.png",
+      "013-light-320-zoom1-table.png",
+      "014-dark-1440-zoom1-prose.png",
+      "015-dark-1440-zoom1-code.png",
+      "016-dark-1440-zoom1-table.png",
+      "017-dark-760-zoom1-prose.png",
+      "018-dark-760-zoom1-code.png",
+      "019-dark-760-zoom1-table.png",
+      "020-dark-760-zoom2-prose.png",
+      "021-dark-760-zoom2-code.png",
+      "022-dark-760-zoom2-table.png",
+      "023-dark-320-zoom1-prose.png",
+      "024-dark-320-zoom1-code.png",
+      "025-dark-320-zoom1-table.png",
+      "026-clipboard-reject.png",
+      "027-clipboard-absent.png",
+      "028-clipboard-throw.png",
+      "029-clipboard-pending.png",
+      "030-late-copy-after-text-change.png",
+      "031-late-copy-after-session-switch.png",
+      "032-partial-stream.png",
+      "033-completed-stream.png",
+      "034-literal-user.png",
+      "035-late-copy-after-code-change.png",
+      "036-untrusted-read-only-copy.png",
+      "037-retained-global-operation-copy.png"
+    ],
+    "integrity": "38개 PNG의 크기와 SHA-256이 render-navigation-r1.json 기록과 일치합니다. 일치는 상태 이름과 픽셀 내용의 일치까지 보장하지 않습니다.",
+    "saved_run": {
+      "result": "pass",
+      "state_count": 38,
+      "pageErrors": [],
+      "externalRequests": [],
+      "owned_exit_code": 0,
+      "capture": "BrowserWindow 전체 content의 native PNG",
+      "window_state": "저장된 before/after 기록은 hidden, unfocused, nonfocusable입니다.",
+      "clipboard": "controlled renderer adapter만 사용했습니다. 실제 OS clipboard는 검증하지 않았습니다."
+    }
+  },
+  "review_boundary": "plan revision 6/design-v1에 따른 bounded rendered Markdown increment의 design gate입니다. 전체 18개 기능, 전체 F-05, Windows 또는 release 승인이 아닙니다.",
+  "evidence_limits": [
+    "새 runtime, build, Electron, Native, provider, network 또는 foreground 실행을 하지 않았습니다. 저장된 실행 기록을 직접 재현하지 않았습니다.",
+    "정적 PNG는 키 입력 순서, 실제 clipboard 내용, 동적 선택, scroll 조작, screen reader 알림 또는 비실행 동작 전체를 증명하지 않습니다. 저장된 검사를 보조 근거로 구분했습니다.",
+    "selection은 저장된 Range 검사로 확인한 범위입니다. 현재 PNG에는 선택 highlight가 유지되지 않습니다.",
+    "001-message-copy.png는 000-code-copy-keyboard.png와 같습니다. 메시지 복사 focus와 성공 안내는 003/004/007 및 015/016/019의 현재 픽셀에서 별도로 확인했습니다.",
+    "source-freeze, verification, dependency, provenance와 build reuse 자료는 범위 및 추적 근거입니다. 시각 증거를 대신하지 않습니다.",
+    "파일, 보고서, ledger를 변경하지 않았습니다. 위임하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11e3b-6e29-79b3-a4ad-a1275dcae57e",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "independent": true,
+    "report_only": true
+  }
+}

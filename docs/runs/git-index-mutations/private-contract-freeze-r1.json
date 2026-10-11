@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "checkpoint": "actual private artifact contract r1",
+  "plan_revision": 3,
+  "source": [
+    {
+      "path": "apps/desktop-app/src/host/git-index-contract.mjs",
+      "bytes": 8951,
+      "sha256": "87cccae8dcb53a84a80fc4b7a73a30942aa2c9b9b37f6f203debf0e9dd2d66d7"
+    },
+    {
+      "path": "apps/desktop-app/src/host/git-index-contract.test.mjs",
+      "bytes": 4808,
+      "sha256": "2a5991c4b06ef8db55550c7c2b5f792818562a7f0ebbd7585bf27bfce63ff07b"
+    },
+    {
+      "path": "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+      "bytes": 26738,
+      "sha256": "a28494b17da259462229f0c15dadb8c01f7bf0425f007a026ec68324cfd3f84d"
+    }
+  ],
+  "checks": {
+    "node": "3/3 PASS",
+    "eslint": "exit0",
+    "prettier": "written/check pending final coherent"
+  },
+  "kernel_factory": "createGitIndexKernel({check?,timeoutMs?}={}) async -> {prepare(request),publish({token}),abort({token}),close()}",
+  "limits": "No actual publisher implemented or runtime acceptance yet"
+}

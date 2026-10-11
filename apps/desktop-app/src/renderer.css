@@ -1,0 +1,36 @@
+/* Global reset only. Component geometry and states belong to CSS Modules. */
+:root {
+  color-scheme: light;
+  font-family: var(--omoc-semantic-type-family-body);
+  color: var(--omoc-semantic-color-text-primary);
+  background: var(--omoc-semantic-color-canvas);
+  font-synthesis: none;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+:focus-visible {
+  outline: 2px solid var(--omoc-semantic-color-focus);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}

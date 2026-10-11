@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "T1",
+      "description": "Source-grounded ACK versus actual task and original operation boundary"
+    },
+    {
+      "id": "T2",
+      "description": "Closed one-journal task lifetime/private IPC recovery supplement"
+    },
+    {
+      "id": "T3",
+      "description": "Independent initial plan and final design-spec decisions before consumers"
+    }
+  ],
+  "checks": {
+    "source-inputs": {
+      "argv": [
+        "python3",
+        "-c",
+        "import json,hashlib,pathlib; d=json.loads(pathlib.Path('docs/runs/permission-task-lifetime-design/source-inputs-r1.json').read_text()); assert all(pathlib.Path(p).stat().st_size==v['bytes'] and hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==v['sha256'] for p,v in d['files'].items()); print('selected task-lifetime static inputs match')"
+      ],
+      "cwd": ".",
+      "scope": "Selected source provenance only; no Native execution",
+      "acceptance_ids": [
+        "T1",
+        "T2"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/permission-task-lifetime-design/design-contract-r2.md",
+      "gate": "design_spec",
+      "version": "candidate-r2",
+      "sha256": "84f33f0af612d3d9abe0de9a8e8163790c0837bc11073d062e6ca7bbe862bd68"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ]
+}

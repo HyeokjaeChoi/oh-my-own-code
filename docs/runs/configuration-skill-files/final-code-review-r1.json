@@ -1,0 +1,57 @@
+{
+  "schema_version": 2,
+  "run": "configuration-skill-files",
+  "reviewer": "reviewer",
+  "reviewed": {
+    "contract_sha256": "9da9812d76893d212dff6698374d927e2b5818fcba2d4ee601ab13b93654f74f",
+    "environment_sha256": "0212a4df14efccf9cf20b7d8406362ff4c8c6aee90482da1a643f37f87b02a55",
+    "gate": "code",
+    "plan_sha256": "2a80f254964df9dfd53ba36afd74d83671dfff706ac7b7aaf3551df4675bb58f",
+    "schema_version": 2,
+    "source_sha256": "fe860cac1d5c3b256dfce7033549771e046ff8747927edb6f710a9e00d67c68e",
+    "verification_sha256": "48b80e559f0fca4c5b0a0b92b172362fb2e2bf21159605748824405773ca0edd",
+    "work_class_sha256": "35dcc45e02285185d9a4c21e229c0d87599cfb83b474dbb2eb9e0bd7fcab9fae"
+  },
+  "verdict": "pass",
+  "summary": "지정한 범위의 독립 CODE 검토를 통과했습니다. 요구사항 충족 여부와 코드 품질을 별도로 검토했습니다. 수정이 필요한 구체적 결함은 찾지 못했습니다.",
+  "review_boundary": "plan revision 2와 design version 2에 따른 기존 디렉터리의 inert SKILL.md 목록·읽기·편집·확인 후 저장입니다. 고정된 39개 변경 경로와 관련 호출부, 테스트, 검증 기록을 검토했습니다.",
+  "open_findings": [],
+  "evidence": [
+    {
+      "location": "docs/runs/configuration-skill-files/source-freeze-r1.json; actual-unaffected-checks-r1.json; run.json",
+      "observation": "현재 파일의 해시와 mode를 읽어 inventory를 재계산했습니다. source_sha256이 supplied binding과 일치합니다. run baseline 대비 변경 경로는 정확히 39개입니다. 보존된 actual r1 inventory와의 차이는 e2e-workbench-states.mjs 하나입니다."
+    },
+    {
+      "location": "apps/desktop-app/src/host/workbench-skills.mjs; configuration-file-observation.mjs; configuration-save-kernel.mjs; apps/desktop-app/src/workbench-service.mjs",
+      "observation": "closed sourceName, bounded list/read, canonical 동일-device ancestor 검사, missing leaf의 directoryVersion, 저장 확인 전후 재검사, 기존 descriptor writer 재사용, backup 및 최종 exact reread 연결을 확인했습니다."
+    },
+    {
+      "location": "apps/desktop-app/src/host/workbench-skill-storage.mjs; storage-journal.mjs; workspace-registry.mjs; workbench-admission.mjs; workbench-receipts.mjs",
+      "observation": "admission 전 feature marker, 원래 sourceName 연결, stage/publish 순서, zero delta completion, receipt correlation, unknown 원래 key 조회와 재실행 차단을 확인했습니다. old parser의 journal/checkpoint 거부 및 byte 보존 테스트도 검토했습니다."
+    },
+    {
+      "location": "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts; store.ts; apps/desktop-app/src/renderer/features/configuration-drafts/skill-files.tsx",
+      "observation": "단일 상태 소유자, workspace/root/sourceName별 draft, epoch/trust/floor/generation 검사, 늦은 read·hash·ACK 및 selection ABA 차단을 확인했습니다. 목록과 읽기는 명시적 동작이며, 저장 receipt는 새 read authority를 부여하지 않습니다."
+    },
+    {
+      "location": "docs/runs/configuration-skill-files/actual-checks-r1.json; actual-unaffected-checks-r1.json; evidence/publication-r1/publication-evidence.json; evidence/hidden-r2/ui-states/ui-states-evidence.json",
+      "observation": "현재 9개 check의 성공 기록과 기존 8개 실행 결과의 재사용 근거를 확인했습니다. staged Bun kernel의 6개 publication case는 PASS이며 owned exit는 0입니다. 현재 staged asset 4개의 해시도 일치합니다. 최종 hidden-r2는 PASS, 291개 capture, 17개 Skill state, 종료 코드 0입니다."
+    }
+  ],
+  "limits": [
+    "직접 runtime·build·test를 실행하지 않았습니다. 소스와 기존 실행 기록을 읽고 해시를 확인했습니다.",
+    "publication 근거는 synthetic filesystem이며, hidden UI 근거는 synthetic host와 실제 built renderer/preload입니다. 전체 production Native bridge 실행을 입증하지 않습니다.",
+    "Native registry·activation, 디렉터리 생성·삭제, provider, private store, production Main 및 별도 RENDER gate는 이 승인 범위에 포함하지 않습니다.",
+    "전체 제품 Goal, F14 및 Skills Native runtime의 완료를 승인하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11a29-96ef-7620-abc0-058ad5af4b69",
+    "author_task_id": null,
+    "identity_evidence": "현재 CODEX_THREAD_ID를 확인했습니다. 사용자가 구현 작성자들과 분리된 독립 검토자로 지정했습니다.",
+    "independent": true,
+    "modified_source": false,
+    "modified_artifacts": false,
+    "modified_ledger": false,
+    "recursively_delegated": false
+  }
+}

@@ -1,0 +1,11 @@
+# Native tool entry guard
+Revision: 1
+Class: routine implementation within accepted permission-control-design DS02 actual entry matrix. No positive authority, public DTO or journal changes.
+
+R1: Extend fixed Native overlay from nine to eleven exact pinned chunks, preserving all prior nine outputs. Tool service yields existing WorkbenchControl/SessionStore/location services and adds actual node dependencies. Snapshot first asserts project execution before catalog/schema conversion. Every beforeExecute (direct and CodeMode nested) checks actual stored session identity through existing coordinator admission BEFORE constructing hook effects. executeTool explicitly provides control/store for guarded raw runtime. Raw execute3 independently checks actual store+control before input decode, tool access/callback and output encoding. No gate held across callbacks. Current assertExecution is always boot-held; no claim positive task authority or complete registration/inventory generation coverage. Tool.transform registration callbacks are a separate existing inventory concern, explicitly not accepted execution authority.
+
+R2: Add descriptor-safe private toolSessionID(context) to existing coordinator helper. Reject Proxy/accessor/missing/nondata sessionID without invoking callbacks. Read session ID only once before asynchronous checks. Existing helper shape/semantics unchanged. Guard cannot trust request pathname/nonce/permissions as authority. Missing services fail closed.
+
+R3: Actual pinned extracted raw execute and Tool layer under real pinned Effect and explicit inert dependency stand-ins: meaningful RED before patch; held direct/raw/nested/snapshot zero hooks, schema callbacks, tool callbacks, progress and image normalization. Malformed/changed store scope fails; missing context services fails. Prior nine output hashes unchanged; eleven source pins/syntax/original bytes unchanged. No Native/server/provider/build invocation. A later coherent Native batch requires fresh preexec CODE.
+
+Main owns exact five paths in before-manifest. Run affected Node coordinator/tool/session/recipe/graph/resource/staging tests once after source freeze; lint/format exact five. Fresh independent CODE before integration. No duplicate initial design review or repeated unaffected full product checks.

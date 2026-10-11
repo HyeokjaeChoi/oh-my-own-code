@@ -1,0 +1,79 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "defaultBase": "main",
+  "cacheDirectory": ".nx/cache",
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "production": [
+      "default",
+      "!{projectRoot}/**/*.test.ts",
+      "!{projectRoot}/**/*.spec.ts"
+    ],
+    "sharedGlobals": [
+      "{workspaceRoot}/pnpm-lock.yaml",
+      "{workspaceRoot}/tsconfig.base.json"
+    ],
+    "frontendSources": [
+      "{workspaceRoot}/docs/design/tokens/**/*",
+      "{workspaceRoot}/packages/ui/src/**/*",
+      "{workspaceRoot}/packages/ui/package.json",
+      "{workspaceRoot}/packages/contracts/src/**/*",
+      "{workspaceRoot}/packages/contracts/package.json"
+    ]
+  },
+  "targetDefaults": {
+    "lint": {
+      "cache": true,
+      "inputs": ["default", "^production"]
+    },
+    "format-check": {
+      "cache": true,
+      "inputs": ["default"]
+    },
+    "typecheck": {
+      "cache": true,
+      "inputs": ["default", "^production"]
+    },
+    "test": {
+      "cache": false,
+      "inputs": ["default", "^production"]
+    },
+    "build": {
+      "cache": true,
+      "inputs": ["production", "^production", "frontendSources"],
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "dev": {
+      "cache": false,
+      "continuous": true
+    },
+    "e2e": {
+      "cache": false,
+      "inputs": ["default", "^production"]
+    },
+    "package:macos": {
+      "cache": false
+    },
+    "package:windows": {
+      "cache": false
+    },
+    "e2e:dev": {
+      "cache": false
+    },
+    "e2e:packaged": {
+      "cache": false
+    },
+    "e2e:sessions": {
+      "cache": false
+    },
+    "e2e:ui-states": {
+      "cache": false
+    },
+    "e2e:workbench": {
+      "cache": false
+    },
+    "inspect:bundle": {
+      "cache": false
+    }
+  }
+}

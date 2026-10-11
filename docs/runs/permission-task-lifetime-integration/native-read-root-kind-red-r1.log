@@ -1,0 +1,22 @@
+✖ synthetic: Native root file-read reports genuine directory kind after cleanup (8.542791ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 83.197333
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:16:1
+✖ synthetic: Native root file-read reports genuine directory kind after cleanup (8.542791ms)
+  TypeError [Error]: Cannot read properties of undefined (reading 'nativeDescriptorPathKind')
+      at Object.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read.test.mjs:18:59)
+      at expectedException (node:assert:547:17)
+      at expectsError (node:assert:672:21)
+      at strict.throws (node:assert:728:3)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read.test.mjs:18:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

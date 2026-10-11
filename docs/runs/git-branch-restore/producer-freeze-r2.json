@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "status": "Actual source API checkpoint; implementations beyond helpers are pending. Not independent CODE/runtime acceptance.",
+  "files": {
+    "apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs": {
+      "bytes": 15359,
+      "sha256": "0d5fe8eeb8e7f05089cd993b30a504e0089fbe769c0930394b69145420215441"
+    },
+    "apps/desktop-app/src/renderer/shared/git-branch-restore/index.d.mts": {
+      "bytes": 5400,
+      "sha256": "848d6f88fb12c69a1849baa4b6d6d7a6e8c98f5f9a8ee42496eb1e8d35eda7fa"
+    },
+    "apps/desktop-app/src/renderer/shared/git-branch-restore/index.ts": {
+      "bytes": 1104,
+      "sha256": "ea53b87a772d04d4326577edc0ccd487176b5b9c4d33676d411349642571fa15"
+    },
+    "apps/desktop-app/src/git-branch-restore.test.mjs": {
+      "bytes": 8434,
+      "sha256": "5f7af119580693520d1721c87d7286c7b429a90d0dcf2caac76eb7ec0e148b2d"
+    },
+    "apps/desktop-app/src/desktop-bridge.d.ts": {
+      "bytes": 36164,
+      "sha256": "4f8a9d58e9992e54eb5ed358228c31ba6e5a5f1cb818d5a0549e194a77b7b6a5"
+    },
+    "apps/desktop-app/src/workbench-contract.mjs": {
+      "bytes": 26430,
+      "sha256": "bec2c493d72b749aae05a47e19ea14306e78f6e919900be8ab35bea616b75702"
+    },
+    "apps/desktop-app/src/renderer/shared/transport/index.ts": {
+      "bytes": 7232,
+      "sha256": "91a903e38983079c6a7c83281ec4299e159d02c31a5f012315c9bbfaf535dd97"
+    },
+    "apps/desktop-app/src/host/git-branch-restore-contract.mjs": {
+      "bytes": 14144,
+      "sha256": "75cf0478da330b3b9fa6937be415abbcd7fb50473ba1418b913197fdfc1b21a3"
+    },
+    "apps/desktop-app/src/host/git-branch-restore-contract.test.mjs": {
+      "bytes": 6698,
+      "sha256": "6f4fa5403fa1edc59b19c2a3355fe84f94c31d58983add2dfa53d7268829bdce"
+    }
+  },
+  "checks": {
+    "Node": "39/39 pass producer-green-r2.log; initial actual request RED and private accessor RED preserved",
+    "typecheck": "exit0",
+    "scopedESLint": "exit0",
+    "boundaries": "88sources/68negative/16positive PASS",
+    "Prettier": "formatted exact files; final comprehensive check later"
+  },
+  "semantics": {
+    "publicOperations": [
+      "git.branch.preview.read",
+      "git.branch.apply",
+      "git.restore.preview.read",
+      "git.restore.apply"
+    ],
+    "branchName": "full refs/heads/name; preview action create|select with explicit author; apply includes target fields/previewId/requestId only, no author text",
+    "restore": "preview source index|head, canonical sorted paths; apply target.action restore, source explicit, no author identity",
+    "target": "Exact fields from GIT_BRANCH_RESTORE_TARGET_FIELDS; paths before/after actual raw bytes/digest/mode, beforeEntry original index or null, afterEntry chosen source entry or null, ident desired conversion. Metadata roles in publication order. No raw content/root/author in target.",
+    "treeOid": "Verified target branch tree for select; verified current HEAD tree for create and restore. INDEX restore source authority is original index entries, not an invented commit/tree.",
+    "privateEntries": "currentEntries complete original index; desiredEntries chosen target tree for select, HEAD tree for restore-head, original index for restore-index and create. Kernel independently parses raw graphs/index.",
+    "objects": "Raw cryptographically verified object payload files objects/<oid>, rawBytes=bytes, install:false ALWAYS. No new original objects. Metadata/worktree proposals typed and hash-bound.",
+    "occupancyRows": "Canonical byte-sorted [gitDirectory,HEADdigest,gitdirdigest|null,commondirdigest|null,lockeddigest|null]; full common primary plus every child; kernel must independently derive and verify actual records/listings.",
+    "identity": "gitBranchRestoreIdentityDigest(author,timestamp) from [name,email,timestamp]; private artifact may retain explicit author under accepted residual, never journal/request apply.",
+    "dispatch": "Both stage/publish require gitBranchRestoreTarget exact admission. No dispatch on reopen/unknown or duplicate.",
+    "receipt": "kind git_branch_restore_applied with action/previewDigest/exact after path states/metadata digests/deterministic original-key role+path backups/digest. Empty registry delta.",
+    "backup": "gitBranchRestoreExpectedBackups target + original epoch/op; nullable only originally absent targets; worktree backups live checked metadata root never sourceworktree/refs/logs.",
+    "sharedKernel": "Same core adds branchRestore; prepared token and applied/aborted/unknown result; old facets unchanged.",
+    "limits": "Public128paths/32768pathbytes/old+new16MiB; private wire262144,manifest16MiB,artifact128MiB/files16384/kernel10s. No raising."
+  },
+  "formatOnlyCorrection": {
+    "path": "apps/desktop-app/src/renderer/shared/git-branch-restore/index.d.mts",
+    "priorFreeze": "producer-freeze-r1.json",
+    "proof": "evidence/declaration-format-r1/proof.json",
+    "APIShape": "unchanged"
+  }
+}

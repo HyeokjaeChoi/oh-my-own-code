@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "96b45f3904b1abbf7d2cbf4bfda268d6220e7eafcd5d9eeffa8a7f77dea615dd",
+    "contract_sha256": "f2d4c4894c99966b7bfc2e8c8d398a0cfba6323406e9a8354f38bea66903be68",
+    "source_sha256": "83a5f247fed8bcbb2f511a6388a43e16f92736ad49dc1d7cc3467411d2d1b2b6"
+  },
+  "verdict": "changes_requested",
+  "summary": "Revision 4 introduced a coherent dependency gate and watchdog model but left HPI-1 unconditional despite the zero-effect early NO-RUN path, and its review packet referenced nonexistent research paths.",
+  "open_findings": [
+    {
+      "severity": "medium",
+      "path": "docs/runs/host-probe-isolation/plan.md:34",
+      "issue": "HPI-1 and completion required fixture/root creation even when the plan explicitly forbids those effects for an unaudited dependency closure.",
+      "correction": "Make fixture/root/environment requirements conditional. Early NO-RUN must record runtime identity, prerequisite failure, all seven controls unverified, zero fixture/listener/canary effects, and verified absence of resources requiring cleanup."
+    },
+    {
+      "severity": "low",
+      "path": "docs/runs/host-probe-isolation/plan-review-r5-packet.json:16-17",
+      "issue": "The packet referenced static research and assessment files under the wrong run directory.",
+      "correction": "Use the files under docs/runs/build-delivery/."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/plan_review_rev4_fresh",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "runtime_identity_verified": false,
+    "review_mode": "read-only document review and hash check",
+    "execution": "No implementation, code, tests, canaries, SDK, network, user configuration, secrets, edits, or delegation."
+  }
+}

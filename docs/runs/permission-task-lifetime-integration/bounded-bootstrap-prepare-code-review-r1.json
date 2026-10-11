@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "verdict": "pass",
+  "scope": "bounded code inspection only: bootstrap candidate cleanup, actual acquired Control metadata IO/settlement and later Tool transform callback denial",
+  "reviewed_checkpoint": {
+    "path": "docs/runs/permission-task-lifetime-integration/bootstrap-prepare-io-source-checkpoint-r1.json",
+    "sha256": "2e9cad66f981aff596ea45fd9cfec4336190e5b0e29874c73623759b984f9426"
+  },
+  "open_findings": [],
+  "summary": "Fresh independent reviewer confirmed factory-only cleanup facts, refusal of forged/reused errors and failed close; original candidate IO retained through uninterruptible physical cleanup; runtime revocation precedes waiting; no execution grant; unverified Tool callbacks reject before body. Source pins checked before and after.",
+  "checks_read": {
+    "cleanup": 21,
+    "bootstrap_io": 59,
+    "coherent": 25,
+    "tool_guard": 8,
+    "tool_coherent": 77
+  },
+  "reviewer_reran_tests": false,
+  "provenance": {
+    "child_task_id": "01a125c9-1cf0-7ae2-8254-9a7cadd5d14c",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "limits": [
+    "Not whole final CODE or full18/F09",
+    "No positive task handoff or Native method authority",
+    "No Native/Bun/Electron/build/server/provider/UI/private originals invocation"
+  ]
+}

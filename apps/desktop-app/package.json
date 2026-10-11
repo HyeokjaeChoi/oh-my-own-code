@@ -1,0 +1,42 @@
+{
+  "name": "@workbench/desktop",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "main.mjs",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "pnpm exec electron dist/app",
+    "package:macos": "node scripts/package.mjs darwin arm64",
+    "package:windows": "node scripts/package.mjs win32 x64",
+    "test": "node --test src/*.test.mjs",
+    "inspect:bundle": "node scripts/inspect-renderer-bundle.mjs",
+    "check:boundaries": "node scripts/check-renderer-boundaries.mjs",
+    "e2e:workbench": "node scripts/e2e-workbench.mjs",
+    "e2e:dev": "node scripts/e2e-smoke.mjs dev",
+    "e2e:packaged": "node scripts/e2e-smoke.mjs packaged",
+    "e2e:sessions": "node scripts/e2e-session-lifecycle.mjs",
+    "e2e:ui-states": "node scripts/e2e-workbench-states.mjs"
+  },
+  "dependencies": {
+    "@assistant-ui/react": "0.15.22",
+    "@assistant-ui/react-markdown": "0.14.19",
+    "@opencode/client": "2.0.18",
+    "@workbench/contracts": "workspace:*",
+    "@workbench/ui": "workspace:*",
+    "lucide-react": "0.468.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "remark-gfm": "4.0.1",
+    "zustand": "5.0.15"
+  },
+  "optionalDependencies": {
+    "@opencode/cli-darwin-arm64": "2.0.18",
+    "@opencode/cli-windows-x64": "2.0.18"
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "electron": "44.4.4",
+    "esbuild": "0.25.12"
+  }
+}

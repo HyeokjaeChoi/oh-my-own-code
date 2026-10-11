@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "apps/desktop-app/scripts/native-descriptor-probe.mjs",
+      "bytes": 21629,
+      "sha256": "77d8481f224024ccf4998e1bae433d43dae820e337c06cf5855c6eb80305ab1a"
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-descriptor-probe.test.mjs",
+      "bytes": 2335,
+      "sha256": "b79d55aca57c4fa7b2679cd477f06df806ec4b9a1b5b520d06b98fd8e49f268a"
+    }
+  ],
+  "before": "prechange/descriptor-probe-diagnostic-before-r1/manifest.json",
+  "preparation": "descriptor-probe-preparation-r3.json",
+  "firstFailure": "descriptor-probe-first-execution.json",
+  "checks": "diagnostic RED1 then GREEN2; scoped lint/format PASS",
+  "scope": "Probe-only diagnostic correction; unchanged kernel independently passed previous bounded CODE; actual physical kernel result still unverified"
+}

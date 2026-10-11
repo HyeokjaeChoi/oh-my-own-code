@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "report_type": "DESIGN_SPEC",
+  "run": "permission-input-digest",
+  "reviewer": "design_spec_reviewer",
+  "gate": "design_spec",
+  "reviewed": {
+    "contract_sha256": "03e47be0915f174eb6019ea66b900e3414a51bbae012e4d3709d1b4bc44000ee",
+    "documents_sha256": "c0f02025b052ebd55300eef8048f00b7b826264aec77e182568225c89c7e2a0a",
+    "gate": "design_spec",
+    "plan_sha256": "e4c89b2727112aba053a4b855495696bfcbff538415f5b9843e491ad9ede0298",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "새 actual OriginBinding.inputDigest 계약의 DESIGN_SPEC 검토를 통과합니다. 구현을 막는 구체적 설계 문제는 발견하지 못했습니다.",
+  "open_findings": [],
+  "assessment": [
+    "검토 범위는 plan revision 1과 design-supplement-r1의 새 digest 계약입니다. 기존 fullF09 설계를 반복 검토하지 않았습니다. entry-plan-review-r2의 PLAN pass와 metadata를 확인했습니다.",
+    "입력은 sessionID, text, 선택적 delivery와 files로 닫혀 있습니다. 전달받은 현재 Main submit 계약과 일치합니다. 추가 필드, inherited 필드, accessor, Proxy, sparse array, symbol과 custom prototype을 거부하고 동기적으로 값을 분리하는 요구가 있습니다.",
+    "공식은 SHA256(UTF8('omoc.permission.input.v1\\n' + permissionCanonicalJSON(metadataBody)))입니다. text는 정확한 UTF-8 bytes의 leaf hash로, URI는 정확한 ASCII 문자열의 leaf hash로 결합합니다. metadata는 sessionID, text 길이, delivery 존재 여부와 값, files 존재 여부, 파일 순서, name, MIME, decoded 길이를 결합합니다.",
+    "선택적 필드가 존재하면 선언된 타입을 만족해야 합니다. delivery의 null 또는 undefined와 빈 files 배열은 허용 입력이 아닙니다. delivery 기본값 steer는 필드 생략과 명시적 steer의 존재 여부를 합치지 않습니다.",
+    "filename은 기존 validWorkspaceFilePath의 SINGLE segment 조건을 함께 만족해야 합니다. 따라서 실제 component 상한 255 UTF-8 bytes가 적용됩니다. 문서의 2048-byte 조건은 root path 한도를 확대하거나 256-byte component를 허용하지 않습니다.",
+    "text는 최대 32000 UTF-16 code units이며 well-formed Unicode, NUL-free, trim 후 비어 있지 않아야 합니다. hash에는 원문을 사용합니다. BOM, CRLF와 Unicode를 정규화하거나 lone surrogate를 대체하지 않습니다.",
+    "URI는 canonical ASCII data URI와 지정된 6개 MIME만 허용합니다. text/plain 64KiB, 기타 파일 각각 8MiB, 합계 16MiB, 최대 8개 제한이 있습니다. encoded 길이, padding으로 계산한 정확한 decoded 길이와 합계를 decode 전에 검사해야 합니다. encoded 길이 제한만으로 decoded 제한 검사를 대체할 수 없습니다.",
+    "compact metadata만 기존 canonical JSON에 전달합니다. 기존 1MiB 한도, digest domain allowlist와 original operation digest는 변경하지 않습니다. raw text와 URI는 journal metadata에 저장하지 않습니다.",
+    "inputDigest는 payload identity만 제공합니다. current generation 검사와 durable original native.send intent 증명은 별도로 유지됩니다. 기존 OriginBinding 권한 계약은 변경하지 않습니다.",
+    "Native image preparation은 데이터를 변환할 수 있습니다. 후속 연결은 genuine generated inbox ID와 immutable original binding으로 correlation을 유지해야 합니다. normalized output에서 raw inputDigest를 재구성하지 않는 계약이 명시되어 있습니다.",
+    "구현 소유권은 새 helper와 test 두 파일뿐입니다. 실제 Native consumer, activation, DTO 또는 public protocol 변경은 포함하지 않습니다."
+  ],
+  "verification": [
+    "design-input-r1.json 전체를 parse하고 reviewed 객체에 그대로 포함했습니다.",
+    "plan과 design supplement의 SHA256이 prepared packet의 값과 일치했습니다.",
+    "known-vectors-r1의 합성 벡터 4개를 Python hashlib와 compact sorted JSON으로 독립 재계산했습니다. 모든 compact body, canonical body와 expected digest가 일치했습니다.",
+    "permission-input-digest.mjs와 permission-input-digest.test.mjs가 모두 없음을 확인했습니다.",
+    "run 상태 active와 기록된 PLAN pass를 확인했습니다."
+  ],
+  "limitations": [
+    "현재 Main payload와 기존 validator 조건은 제공된 계약 및 PLAN 보고서를 기준으로 평가했습니다. 제품 source는 읽지 않았습니다.",
+    "제품 runtime, 테스트, Bun, Native, Electron, build 또는 provider를 실행하지 않았습니다. Python 실행은 합성 벡터와 문서 hash 검증에 한정했습니다.",
+    "credentials 또는 private original payload를 열지 않았습니다.",
+    "이 판정은 CODE, Native 동작, activation 또는 fullgoal 완료를 승인하지 않습니다.",
+    "파일과 ledger를 수정하지 않았습니다. Main이 이 raw report를 저장해야 합니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a123c5-6ff3-7eb2-bda5-666519ca3b51",
+    "identity_source": "CODEX_THREAD_ID",
+    "independent_review": true,
+    "reportonly": true,
+    "report_only": true,
+    "writes": false,
+    "delegation": false,
+    "implementation_authored": false,
+    "files_modified": false,
+    "ledger_modified": false,
+    "product_source_read": false,
+    "product_runtime_executed": false,
+    "tests_executed": false,
+    "build_executed": false,
+    "synthetic_vector_verification_executed": true
+  }
+}

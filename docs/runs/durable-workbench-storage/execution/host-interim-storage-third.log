@@ -1,0 +1,41 @@
+✔ managed bootstrap reserves stable UUID before mkdir/create; observations do not append (41.274708ms)
+✔ paused admission flush preserves committed snapshot/lookup and actual call order (39.59525ms)
+✔ paused dispatch flush preserves committed snapshot/lookup and actual call order (35.664541ms)
+✔ paused completion flush preserves committed snapshot/lookup and actual call order (35.826125ms)
+✔ admission failure poisons writer globally and later effects have zero calls (27.617667ms)
+✔ dispatch failure poisons writer globally and later effects have zero calls (29.637458ms)
+✖ completion failure poisons writer globally and later effects have zero calls (36.329334ms)
+✔ BUSY rejection rebase survives concurrent atomic completion; digest conflict never dispatches (40.077292ms)
+✔ verified create with later policy failure publishes unavailable partial mapping and unknown hold (45.921458ms)
+✔ owner_conflict facade remains readable before native ready with zero start/effect calls (4.089875ms)
+✔ corrupt_journal facade remains readable before native ready with zero start/effect calls (3.544083ms)
+✔ unconfirmed_tail facade remains readable before native ready with zero start/effect calls (4.032ms)
+✔ pending_inbox facade remains readable before native ready with zero start/effect calls (3.952958ms)
+✔ native_startup_unverified facade remains readable before native ready with zero start/effect calls (2.307792ms)
+✔ complete valid but unconfirmed tail never automatically adopts mapping or success at restart (24.73275ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 14
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 435.668541
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:85:58
+✖ completion failure poisons writer globally and later effects have zero calls (36.329334ms)
+  AssertionError [ERR_ASSERTION]: bounded condition not reached
+      at until (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:13:95)
+      at async Object.ready (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:51:31)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:88:17)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'fail',
+    diff: 'simple'
+  }

@@ -1,0 +1,84 @@
+{
+  "schema_version": 2,
+  "files": [
+    {
+      "path": "apps/desktop-app/src/host/native-bootstrap-workspace.mjs",
+      "sha256": "f819f8fcf67fe3747a292e608ba9112860136bbc485236ce0c638673dc158ea3",
+      "bytes": 7945
+    },
+    {
+      "path": "apps/desktop-app/src/host/native-bootstrap-workspace.test.mjs",
+      "sha256": "df16c85fb99ddc3b19caedac83f98ab435bae847d1b13845afffdf76067004c3",
+      "bytes": 22070
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "sha256": "279ba6991c77b12801d9ca019d4832f7386bc18b5de45df5c7419feb690d3b73",
+      "bytes": 37081
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-control.test.mjs",
+      "sha256": "8e874a02be5ca78cbf3cf5699b8edf79025defa943044cd8db5feeb9e776c3bd",
+      "bytes": 67958
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "sha256": "9ba265d63a2ebde7dd83ff83f43c04d91f0841719a978de8ec6de8708faa849f",
+      "bytes": 67695
+    },
+    {
+      "path": "apps/desktop-app/scripts/native-permission-overlay-recipe.test.mjs",
+      "sha256": "2281ddcb3fa33339c1ca5e1e6cb896722aa5cf42eb226d159a2812382f2f8c16",
+      "bytes": 18297
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-location-lifecycle.test.mjs",
+      "sha256": "7021a392716d8b57eb37e611f478be294c9335db37720133859a3a9cc0c9402d",
+      "bytes": 22156
+    }
+  ],
+  "api": "locationProjectCandidate(handle) -> Effect<frozen readonly NONVCS {id,directory,canonical,vcs:undefined}>. Actual Native Location layer now consumes it before locationBind and has no Project.resolve call or Project provider dependency. No Native metadata persistence/execution release.",
+  "checks": [
+    {
+      "log": "location-candidate-native-red-r1.log",
+      "result": "actual extracted Native Location body invoked mutating resolver1 instead of0"
+    },
+    {
+      "log": "location-candidate-native-green-r1.log",
+      "passed": 1
+    },
+    {
+      "log": "candidate-identity-stability-red-r1.log",
+      "result": "ordinary inside-root and sibling mutations permanently refused current original object; 2 actual failures"
+    },
+    {
+      "log": "location-candidate-coherent-r2.log",
+      "passed": 98,
+      "scope": "candidate helper, actual Control, exact Native LocationMap/Instance/AppNodeBuilder extracted lifecycle, recipe output/syntax"
+    },
+    {
+      "log": "location-candidate-native-entries-r1.log",
+      "passed": 35,
+      "scope": "actual graph/inventory/Tool/Session extracted entries"
+    }
+  ],
+  "static": {
+    "eslint": "pass exact7",
+    "prettier": "pass exact7"
+  },
+  "identity_rule": "Across retained observations compare original chain path, dev/ino/mode/uid/gid. Ordinary file additions change directory size/nlink/timestamps without replacing authority. Every individual observation still compares ALL stat fields before/after and final synchronous sweep; canonical paths and all ancestor .git/.hg absence rechecked; no identity/mode/ownership adoption. Root replacement/chmod/transient marker late callback regressions unchanged.",
+  "fixture_changes": "Original synthetic Project.resolve constant project alias replaced by actual directory SHA1 project IDs; test-only aggregate reads known synthetic projects under one actual transaction. Timing hooks now observe candidate construction; original resolver counter must remain0. Real Native cache/LayerMap/compiled provider/Scope tests preserved.",
+  "recipe": {
+    "file_count": 19,
+    "recipeSha256": "cc4572eef9feae7d554860d83f21e174e5e0a80523be58b7aa72470dde4373d5",
+    "locationAfterSha256": "16b123da6ae163a2902c5121dc08509040e3da0c1494e1f00b48933f7078bbe0"
+  },
+  "limits": [
+    "Original Native install unchanged; pure memory transformations/extracted functions only",
+    "No positive task prepare/mode/inventory/handoff; all execution held",
+    "VCS path unavailable until real verified branch, no mutating resolver fallback",
+    "Full18/F09 and final whole-source CODE unfinished",
+    "Physical ancestor tests serialized to avoid inter-test namespace interference; this is not a production guarantee of no concurrent namespace changes",
+    "No Native/Bun/Electron/build/package/provider/server/GUI/private originals invoked"
+  ]
+}

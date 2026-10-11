@@ -1,0 +1,542 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "AC-1",
+      "description": "Current Electron product/design contracts and the exact integrated document set are registered and independently reviewed; user approval and matching handoffs are recorded before implementation."
+    },
+    {
+      "id": "AC-2",
+      "description": "The reviewed monorepo/runtime/state/UI architecture, Electron main/preload/renderer/preview boundaries, app-owned OpenCode sidecar, and required SDK/UI probes have reproducible evidence."
+    },
+    {
+      "id": "AC-3",
+      "description": "PRD acceptance groups AC-01–18 and integrated scenarios work with verified failure and recovery semantics."
+    },
+    {
+      "id": "AC-4",
+      "description": "Required automated/manual safety and quality evidence passes, including desktop lifecycle/E2E, with fresh independent code and UI reviews."
+    },
+    {
+      "id": "AC-5",
+      "description": "A locked, reproducible local Electron desktop build succeeds for macOS and Windows on their respective platforms; output, source revision, runtime/toolchain, artifact hash, and launch instructions are recorded."
+    },
+    {
+      "id": "AC-6",
+      "description": "Local redacted monitoring, diagnostics, recovery and personal-use measurement are implemented and exercised inside the desktop app without external telemetry, with operational-drill evidence."
+    },
+    {
+      "id": "AC-7",
+      "description": "The pinned OpenCode client synthetic transport probe validates public types and observed request/failure behavior without network access or user data."
+    },
+    {
+      "id": "AC-8",
+      "description": "A bridge-owned, side-effect-free single-read runtime-info boundary validates unknown SDK responses, returns minimal metadata or fixed redacted failure outcomes, and is exercised through the pinned client synthetic probe; it does not establish live host readiness or compatibility."
+    },
+    {
+      "id": "AC-9",
+      "description": "The installed Electron app owns its window, packaged renderer, and exact app-launched OpenCode v2 `serve` sidecar lifecycle through a typed/narrow preload API. Renderer and preview have no general Node, shell, filesystem, child-process, or sidecar-credential access. Packaged lifecycle evidence passes independently on macOS and Windows."
+    }
+  ],
+  "checks": {
+    "integrity": {
+      "argv": [
+        "python3",
+        "docs/design/validate_system.py"
+      ],
+      "cwd": ".",
+      "scope": "Token aliases, component references and light/dark design system integrity",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-3"
+      ],
+      "required": true
+    },
+    "install": {
+      "argv": [
+        "pnpm",
+        "install",
+        "--frozen-lockfile"
+      ],
+      "cwd": ".",
+      "scope": "Frozen-lockfile workspace install; may change local dependency/store state and contact the configured registry when cache is insufficient; clean-install claims require a separately recorded clean starting state",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-5"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run-many",
+        "-t",
+        "lint",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Actual lint and module-boundary targets for all inventoried workspace projects",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-3",
+        "AC-4"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run-many",
+        "-t",
+        "format-check",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Formatting checks for all projects owning formatter-supported source",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-4"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run-many",
+        "-t",
+        "typecheck",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Actual TypeScript checks for all inventoried workspace projects",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-3",
+        "AC-5"
+      ],
+      "required": true
+    },
+    "tests": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run-many",
+        "-t",
+        "test",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Actual uncached unit and integration targets for every inventoried product project",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-3",
+        "AC-4"
+      ],
+      "required": true
+    },
+    "e2e": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "workbench-web:e2e",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Actual browser end-to-end integrated flows and permission/error UI using synthetic fixtures",
+      "acceptance_ids": [
+        "AC-3",
+        "AC-4"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "workbench-web:boundaries",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Resolved module/import graph and negative fixtures for desktop shell, renderer, preview and bridge separation; inspect emitted desktop and renderer bundles for forbidden dependencies and secrets.",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-4",
+        "AC-5"
+      ],
+      "required": true
+    },
+    "operational-drills": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "local-bridge:operations-drill",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Historical synthetic local-bridge fixture only: redaction allowlist, loopback bridge loss, owned synthetic child effect-then-crash, temporary marker/checksum recovery model, and missed/paused/duplicate schedule model. Partial AC-4 evidence only; not AC-6 production diagnostics, journal, durable recovery, DB migration, rollback, or scheduler evidence.",
+      "acceptance_ids": [
+        "AC-4"
+      ],
+      "required": true
+    },
+    "hooks": {
+      "argv": [
+        "python3",
+        "docs/runs/build-delivery/check_hooks.py"
+      ],
+      "cwd": ".",
+      "scope": "Lifecycle-hook fixture behavior and repository hook applicability evidence",
+      "acceptance_ids": [
+        "AC-4"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run-many",
+        "-t",
+        "build",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Actual uncached production builds for the inventoried desktop shell, renderer, bridge and packages.",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-5"
+      ],
+      "required": true
+    },
+    "sdk-client-probe": {
+      "argv": [
+        "pnpm",
+        "--dir",
+        "spikes/sdk-ui",
+        "run",
+        "check"
+      ],
+      "cwd": ".",
+      "scope": "Pinned @opencode/client public type boundary and synthetic fetch success/failure responses passed through the shared bridge validator; no network or real service lifecycle",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-4",
+        "AC-7",
+        "AC-8"
+      ],
+      "required": true
+    },
+    "runtime-info-boundary": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "apps/local-bridge/src/runtime-info.test.ts"
+      ],
+      "cwd": ".",
+      "scope": "Pure bridge-owned unknown-input validation, one-read outcome mapping, and redaction tests; no sockets or persistent data",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-4",
+        "AC-6",
+        "AC-8"
+      ],
+      "required": true
+    },
+    "desktop-app-test": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:test",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Selected host/client admission and lifecycle tests using an owned disposable OpenCode sidecar; include exact server identity, readiness/authentication, event-gap handling, and process cleanup without user configuration",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-4",
+        "AC-9"
+      ],
+      "required": true
+    },
+    "desktop-e2e-macos": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:e2e-macos",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Development app E2E on macOS plus sender/frame/payload admission, navigation denial, privilege absence, preview isolation, sidecar readiness, disconnect/reconnect visibility, and owned-process lifecycle assertions.",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-4",
+        "AC-9"
+      ],
+      "required": true
+    },
+    "desktop-e2e-windows": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:e2e-windows",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Equivalent development app E2E on Windows with sender/frame/payload admission, navigation denial, privilege absence, preview isolation, sidecar readiness, disconnect/reconnect visibility, and owned-process lifecycle assertions.",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-4",
+        "AC-9"
+      ],
+      "required": true
+    },
+    "desktop-build": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:package-macos"
+      ],
+      "cwd": ".",
+      "scope": "Build and hash the local macOS personal-use desktop artifact; no publication or signing. Cross-build output is not Windows runtime evidence.",
+      "acceptance_ids": [
+        "AC-5",
+        "AC-9"
+      ],
+      "required": true
+    },
+    "desktop-build-windows": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:package-windows"
+      ],
+      "cwd": ".",
+      "scope": "Build and hash the local Windows personal-use desktop artifact on Windows; no publication or signing. Record the actual runner OS.",
+      "acceptance_ids": [
+        "AC-5",
+        "AC-9"
+      ],
+      "required": true
+    },
+    "desktop-packaged-e2e": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:packaged-e2e-macos",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "On the exact packaged macOS app and OpenCode sidecar, assert sidecar identity/readiness and the minimal client flow; reject malformed renderer messages/navigation/popups; inspect privilege absence and preview isolation; inject startup failure, crash, timeout, service collision, disconnect, close/quit/restart; observe exact child reaping; bind app and sidecar hashes to evidence.",
+      "acceptance_ids": [
+        "AC-4",
+        "AC-5",
+        "AC-9"
+      ],
+      "required": true
+    },
+    "desktop-packaged-e2e-windows": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:packaged-e2e-windows",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "On Windows, run the exact packaged app and OpenCode sidecar; verify identity/readiness and the minimal client flow; reject malformed renderer messages/navigation/popups; inspect privilege absence and preview isolation; inject startup failure, crash, timeout, service collision, disconnect, close/quit/restart; observe exact child reaping; bind app and sidecar hashes. Match the macOS assertions or document an independently reviewed platform-specific equivalent.",
+      "acceptance_ids": [
+        "AC-4",
+        "AC-5",
+        "AC-9"
+      ],
+      "required": true
+    },
+    "desktop-bundle-inspection-macos": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:bundle-inspection-macos",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Inspect the packaged macOS renderer for Node built-ins, secrets, bridge-only code, OpenCode server code/credentials and unsafe APIs; bind report to exact app and sidecar hashes and build evidence.",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-4",
+        "AC-5",
+        "AC-9"
+      ],
+      "required": true
+    },
+    "desktop-bundle-inspection-windows": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:bundle-inspection-windows",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Inspect the packaged Windows renderer for Node built-ins, secrets, bridge-only code, OpenCode server code/credentials and unsafe APIs; bind report to exact app and sidecar hashes and build evidence.",
+      "acceptance_ids": [
+        "AC-2",
+        "AC-4",
+        "AC-5",
+        "AC-9"
+      ],
+      "required": true
+    },
+    "desktop-operations-recovery": {
+      "argv": [
+        "pnpm",
+        "nx",
+        "run",
+        "desktop-app:operations-drill",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Planned Electron-app operations evidence on controlled synthetic state: local redacted health/diagnostics, durable recovery, backup/export verification, migration and rollback failure/success behavior, and missed/paused/duplicate schedule handling. Must record actual app and data effects, recovery outcomes, and cleanup. Persistent-data cases remain held until storage location and retention are confirmed; this planned target is not implemented yet.",
+      "acceptance_ids": [
+        "AC-4",
+        "AC-6"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/product/prd.md",
+      "gate": "product",
+      "version": "0.6",
+      "sha256": "1fc42c79ced241772b77fb06c38e6e855fbfbf2308d09ace51f0eaf7a0c2bbe3"
+    },
+    {
+      "path": "docs/design/specs/workbench-ux.md",
+      "gate": "design_spec",
+      "version": "0.6",
+      "sha256": "1f59e6f83aca0c077a4db10cc8c65f7e27e5f177ae0aa32dc6508f4134c97525"
+    },
+    {
+      "path": "docs/engineering/workbench-architecture.md",
+      "gate": "design_spec",
+      "version": "0.6",
+      "sha256": "d07aa9234632541056bbe3b96756f2fe7081214f4590397fe0260fd01c31ccae"
+    },
+    {
+      "path": "docs/engineering/verification.md",
+      "gate": "design_spec",
+      "version": "0.5",
+      "sha256": "4c1e60680cf7b20b02efb35230e8af1588b558b80adab8c15442639c49ead696"
+    },
+    {
+      "path": "docs/operations/local-release-monitoring.md",
+      "gate": "design_spec",
+      "version": "0.4",
+      "sha256": "fe97cb8a4c69e2331b74e3c8263387132ae466150a721e9838a107a95a60e163"
+    },
+    {
+      "path": "docs/engineering/spec-index.md",
+      "gate": "design_spec",
+      "version": "0.12",
+      "sha256": "5d63ccc5304887e83f5d16092fd67a5b9cb4cc7eca724e8536e44665f9e31dc9"
+    },
+    {
+      "path": "docs/design/system.md",
+      "gate": "design_spec",
+      "version": "2026-09-27",
+      "sha256": "4697eb4961952ee85a4732ed77e5addbb17058a8b3d12485aa56158324f661a5"
+    },
+    {
+      "path": "docs/decisions/0001-workbench-platform.md",
+      "gate": "design_spec",
+      "version": "0001",
+      "sha256": "70988369fdc37f29ce41f7a34a6ea8a32ad6bc058c62f6cfb34a09defd3a72cb"
+    },
+    {
+      "path": "docs/decisions/0002-desktop-runtime.md",
+      "gate": "design_spec",
+      "version": "0002",
+      "sha256": "1ebaa6585f7e56e1361d174fec25a7cdd080fd4f283067c72ca1d5111f7dcb65"
+    },
+    {
+      "path": "docs/design/components.json",
+      "gate": "design_spec",
+      "version": "component-contract-v3",
+      "sha256": "76460f0cc7099ef6b628ce654994d89fc75e5e863d33c103daae8049493f2ed2"
+    },
+    {
+      "path": "docs/engineering/runtime-info-boundary.md",
+      "gate": "design_spec",
+      "version": "0.1",
+      "sha256": "653138d736c32d94efba2580d0d6fa07b0cc31034fb7f78ef5387eb114cea7a7"
+    }
+  ],
+  "user_approvals": [],
+  "environment_files": [],
+  "decision_register": [
+    {
+      "id": "DESKTOP-PLATFORM",
+      "statement": "The product is an installed Electron desktop app for macOS and Windows.",
+      "status": "confirmed",
+      "source": "Explicit user confirmations in the project conversation: macOS + Windows, followed by Electron selection on 2026-09-28.",
+      "impact": "Architecture, packaging, security, and runtime verification must cover both operating systems independently.",
+      "blocks": [],
+      "resolution": "Electron is the selected shell; actual per-OS package and sidecar behavior still requires evidence."
+    },
+    {
+      "id": "OPENCODE-SIDECAR-OWNERSHIP",
+      "statement": "The Electron app owns and supervises an OpenCode v2 `serve` sidecar.",
+      "status": "confirmed",
+      "source": "Explicit user direction in the project conversation that OpenCode server runs as an app-owned sidecar.",
+      "impact": "Do not use browser loopback or a synthetic bridge as desktop sidecar evidence; do not attach to an ambient service.",
+      "blocks": [],
+      "resolution": "Electron main starts and supervises the exact packaged child; it keeps client credentials outside renderer and preview."
+    },
+    {
+      "id": "DESKTOP-SHELL",
+      "statement": "Use Electron as the desktop host.",
+      "status": "confirmed",
+      "source": "Explicit user selection in the project conversation on 2026-09-28: \"electron으로 진행\".",
+      "impact": "Electron-specific host, renderer isolation, sidecar lifecycle, packaging, and per-OS evidence govern implementation.",
+      "blocks": [],
+      "resolution": "Electron is selected. The focused desktop-app-bootstrap milestone is revision 20; its exact document-set packet r1 is approved and recorded in that run. Only the bounded synthetic-data probes and bootstrap described there may proceed; full-product and persistent-data decisions remain separately gated."
+    },
+    {
+      "id": "USER-DATA-LOCATION",
+      "statement": "Select the persistent local location and separation strategy for app-owned user data.",
+      "status": "open",
+      "source": "Not yet explicitly selected by the user; identified as unresolved in the current full-product plan.",
+      "impact": "Database, local objects, backups, privacy, export/import, and recovery must not assume a path or migrate existing data before this decision.",
+      "blocks": [
+        "implementation"
+      ],
+      "resolution": null
+    },
+    {
+      "id": "USER-DATA-RETENTION",
+      "statement": "Select retention and deletion behavior for persistent conversation, evidence, and diagnostic records.",
+      "status": "open",
+      "source": "Not yet explicitly selected by the user; identified as unresolved in the current full-product plan.",
+      "impact": "Persistence-dependent implementation and lifecycle tests must not infer retention defaults or claim deletion completeness.",
+      "blocks": [
+        "implementation"
+      ],
+      "resolution": null
+    }
+  ]
+}

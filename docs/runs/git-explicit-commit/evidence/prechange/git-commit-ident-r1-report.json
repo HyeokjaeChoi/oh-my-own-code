@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "results": [
+    {
+      "input_name": " Synthetic User ",
+      "input_email": "synthetic@example.invalid",
+      "actual_synthetic_ident": "Synthetic User <synthetic@example.invalid> 1700000000 +0000",
+      "input_preserved": false
+    },
+    {
+      "input_name": ",Synthetic User,",
+      "input_email": "synthetic@example.invalid",
+      "actual_synthetic_ident": "Synthetic User <synthetic@example.invalid> 1700000000 +0000",
+      "input_preserved": false
+    },
+    {
+      "input_name": "Synthetic User",
+      "input_email": ":synthetic@example.invalid:",
+      "actual_synthetic_ident": "Synthetic User <synthetic@example.invalid> 1700000000 +0000",
+      "input_preserved": false
+    },
+    {
+      "input_name": "Synthetic User",
+      "input_email": "synthetic@example.invalid",
+      "actual_synthetic_ident": "Synthetic User <synthetic@example.invalid> 1700000000 +0000",
+      "input_preserved": true
+    }
+  ],
+  "git_sha256_before": "738d0159292a08341abe63a7decd0715ff34d67d532e17349902a6dc42f60ae7",
+  "git_sha256_after": "738d0159292a08341abe63a7decd0715ff34d67d532e17349902a6dc42f60ae7",
+  "limits": [
+    "Synthetic identity normalization observation only, not product/API implementation."
+  ]
+}

@@ -1,0 +1,50 @@
+--- before/apps/desktop-app/scripts/fixtures/workbench-host.test.mjs
++++ after/apps/desktop-app/scripts/fixtures/workbench-host.test.mjs
+@@ -10725,3 +10725,47 @@
+     h.client.dispose();
+   }
+ });
++
++test("Branch/restore capture reuses only complete unoccluded native surfaces", async () => {
++  const source = await readFile(
++    new URL("../e2e-git-branch-restore.mjs", import.meta.url),
++    "utf8",
++  );
++  const marker = "      await item.evaluate((e) => {";
++  const start = source.indexOf(marker);
++  assert.ok(start >= 0);
++  const end = source.indexOf("\n      });", start);
++  assert.ok(end > start);
++  const place = new Function(
++    "globalThis",
++    "e",
++    source.slice(start + marker.length, end),
++  );
++  for (const scenario of ["complete", "outside", "occluded"]) {
++    const scrolls = [];
++    const element = {
++      getBoundingClientRect: () => ({
++        left: 10,
++        right: 90,
++        top: scenario === "outside" ? -10 : 10,
++        bottom: 90,
++        width: 80,
++        height: 80,
++      }),
++      contains: (hit) => hit === element,
++      ownerDocument: {
++        elementFromPoint: (x, y) =>
++          scenario === "occluded" && x === 11 && y === 11 ? {} : element,
++      },
++      scrollIntoView: (options) => scrolls.push(options),
++    };
++    place({ innerWidth: 100, innerHeight: 100 }, element);
++    assert.deepEqual(
++      scrolls,
++      scenario === "complete"
++        ? []
++        : [{ block: "center", inline: "nearest", behavior: "instant" }],
++      scenario,
++    );
++  }
++});

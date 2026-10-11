@@ -1,0 +1,21 @@
+{
+  "scope": "Read-only original-source/real pinned Effect with explicitly scripted Control/Worktree/Build. No production edit, Native/core import or runtime grant.",
+  "files": [
+    {
+      "path": "state-graph-wiring-probe.mjs",
+      "bytes": 8192,
+      "sha256": "380667e11bcfcb3b039499330fdb50418099b41d3d9e8ae08a8a1527ed862824"
+    },
+    {
+      "path": "state-graph-wiring-probe-r4.json",
+      "bytes": 882,
+      "sha256": "eabbd1e666d3ffa77475cfc07141657f7ae541c3eb42f49fd829f15c3b30e308"
+    }
+  ],
+  "failed_hypotheses": [
+    "Layer.die is absent in pinned Layer; corrected fixture before build.",
+    "Earlier root DOES propagate output through ordered provideMerge; explicit dependencies selected to avoid relying on root order.",
+    "Effect.provide merges Context, does not drop activation key; updateContext replacement does drop it."
+  ],
+  "singleAndTwoLocationsPassed": true
+}

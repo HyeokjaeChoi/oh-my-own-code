@@ -1,0 +1,10 @@
+apps/desktop-app/src/renderer/widgets/conversation/markdown.tsx(137,9): error TS2322: Type '{ CodeHeader: ({ language, code }: CodeHeaderProps) => JSX.Element; a: ({ children, href }: { children?: React.ReactNode; href?: string; }) => JSX.Element; img: ({ alt }: { alt?: string; }) => JSX.Element; pre: ({ children }: { children?: React.ReactNode; }) => JSX.Element; table: ({ children }: { children?: React.R...' is not assignable to type 'Components & { SyntaxHighlighter?: ComponentType<SyntaxHighlighterProps> | undefined; CodeHeader?: ComponentType<CodeHeaderProps> | undefined; }'.
+  Type '{ CodeHeader: ({ language, code }: CodeHeaderProps) => JSX.Element; a: ({ children, href }: { children?: React.ReactNode; href?: string; }) => JSX.Element; img: ({ alt }: { alt?: string; }) => JSX.Element; pre: ({ children }: { children?: React.ReactNode; }) => JSX.Element; table: ({ children }: { children?: React.R...' is not assignable to type 'Components'.
+    Types of property 'a' are incompatible.
+      Type '({ children, href }: { children?: React.ReactNode; href?: string; }) => JSX.Element' is not assignable to type 'keyof IntrinsicElements | ComponentType<ClassAttributes<HTMLAnchorElement> & AnchorHTMLAttributes<HTMLAnchorElement> & ExtraProps>'.
+        Type '({ children, href }: { children?: React.ReactNode; href?: string; }) => JSX.Element' is not assignable to type 'FunctionComponent<ClassAttributes<HTMLAnchorElement> & AnchorHTMLAttributes<HTMLAnchorElement> & ExtraProps>'.
+          Types of parameters '__0' and 'props' are incompatible.
+            Type 'ClassAttributes<HTMLAnchorElement> & AnchorHTMLAttributes<HTMLAnchorElement> & ExtraProps' is not assignable to type '{ children?: ReactNode; href?: string; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+              Types of property 'href' are incompatible.
+                Type 'string | undefined' is not assignable to type 'string'.
+                  Type 'undefined' is not assignable to type 'string'.

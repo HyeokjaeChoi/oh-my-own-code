@@ -1,0 +1,25 @@
+✖ 35 recipe files are accepted; 36 recipe or source files refuse before planning (1.169125ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 78.482833
+
+✖ failing tests:
+
+test at apps/desktop-app/scripts/native-permission-overlay.test.mjs:488:1
+✖ 35 recipe files are accepted; 36 recipe or source files refuse before planning (1.169125ms)
+  TypeError [Error]: Invalid permission overlay: count limit
+      at requireValid (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-overlay.mjs:18:25)
+      at array (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-overlay.mjs:55:3)
+      at detachRecipe (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-overlay.mjs:134:18)
+      at planNativePermissionOverlay (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-overlay.mjs:201:26)
+      at plan (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-overlay.test.mjs:29:37)
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/native-permission-overlay.test.mjs:495:16)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)

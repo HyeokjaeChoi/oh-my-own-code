@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "gate": "code",
+  "reviewed": {
+    "contract_sha256": "a3c0c4cc8bcfa26da2a4e818c57a28cc9ca74efaac66d4ad0fe14c944c549ce6",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "code",
+    "plan_sha256": "cbe54434bad888b1b1392dc0f3b7006c605aaeb86eefebfe2df84c359f32a47d",
+    "schema_version": 2,
+    "source_sha256": "93c7e49865c13b2c2542fad15b30a5c93aee23aa7ffa859f8ef6efdb667ee296",
+    "verification_sha256": "6c409415f2fc0e4d0636087a48e2f0082336fa96afb6ff943897fe4b13823632",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "두 파일의 managed integration에서 조치가 필요한 결함을 찾지 못했습니다. 적용된 harness.py는 기존 독립 검토의 SHA와 일치합니다. managed.json은 해당 파일의 hash만 변경됐습니다.",
+  "findings": [],
+  "verification": {
+    "spec_compliance": "적용 전 두 사본의 크기와 SHA가 before-manifest.json과 일치합니다. 현재 harness.py의 SHA는 714d3758eb2d7dc309374c0b0ddba7556ac858d449d35582eda4c8f3c0367044입니다.",
+    "code_quality": "metadata diff는 harness.py hash 한 항목뿐입니다. 다른 managed 선언은 동일합니다. 복사된 upstream review와 source freeze는 원본 bytes와 일치하며 upstream run은 complete입니다. 이에 따라 기존 algorithm 판단을 재사용합니다.",
+    "adoption": "저장된 실제 Python subprocess check는 exit_code=0, inputs_changed=false입니다. stdout과 stderr 모두 반복 secret 제거, head와 terminal summary 보존, truncation 표시를 검사했습니다. short output의 정확한 반환값도 검사했습니다. 현재 check-status는 reusable이며 사유는 없습니다.",
+    "binding": "이번 read-only review-input 결과 전체가 final-code-input-r1.json과 일치합니다."
+  },
+  "verification_limits": [
+    "이번 검토에서는 algorithm 검토와 통과한 subprocess test를 반복하지 않았습니다. 현재 파일 identity와 저장된 실행 증거의 binding을 확인했습니다.",
+    "Native, Bun, provider, GUI, build를 실행하지 않았습니다. 이전 Native 증거는 이전 전체 source에 대한 기록이며 현재 증거로 재분류하지 않습니다.",
+    "제품 runtime 동작을 새로 검증하지 않았습니다. 검토 범위는 두 파일의 utility 적용과 metadata 일치 여부입니다.",
+    "파일과 ledger를 수정하지 않았습니다. 보고서 저장, 등록, finish는 Main의 작업입니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a1216a-654f-7172-b6ba-5d95cb086628",
+    "identity_source": "현재 CODEX_THREAD_ID가 run.json의 reviewer dispatch child_ref와 일치합니다.",
+    "independence": "이번 invocation은 구현과 수정에 참여하지 않은 독립 검토입니다.",
+    "mode": "read-only managed integration review",
+    "scope": [
+      ".solopreneur/harness.py",
+      ".solopreneur/managed.json"
+    ]
+  }
+}

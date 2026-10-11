@@ -1,0 +1,155 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "2eb64dfd2e7afd9f61abc0e9ffb46ad2743b3748618dacedf5a98f0355f9cea2",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "b56b0a935c4d830b67586b53ff66c8a5126e56b9ed0dc51684f92c3b504de963",
+    "schema_version": 2,
+    "source_sha256": "5ef8556102512bba6ebb4401506e51358606d4d772b16637f02764b055a45ca5",
+    "verification_sha256": "e1969a749a5985fc06503db1d6f555914c0a5e441c66448aee8ab8e03d5a85ec",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "고정 Config/plugin foundation과 새 실제 실행 증거를 독립 검토했습니다. 조치가 필요한 결함은 발견하지 못했습니다. 현재 입력에서 재계산한 전체 review binding은 final-code-input-r1.json과 일치합니다. 실제 canary는 G1–G3의 제한된 범위를 뒷받침합니다. 이 판정은 full F09 또는 전체 제품 승인이 아닙니다.",
+  "open_findings": [],
+  "reused_source_judgment": {
+    "report_path": "docs/runs/native-permission-graph-foundation/preexecution-code-review-r1.json",
+    "report_sha256": "f17af62a6f545fec910ef78b53503abf07a767b1f07a1f82f6ddec65cf6dfdfe",
+    "reviewer_task_id": "01a120d9-eedf-7da1-b969-294e31583e31",
+    "verdict": "pass",
+    "source_sha256": "5ef8556102512bba6ebb4401506e51358606d4d772b16637f02764b055a45ca5",
+    "freeze_path": "docs/runs/native-permission-graph-foundation/source-freeze-preexecution-r1.json",
+    "freeze_sha256": "2b908da5d26eed7e959376c2d37c713bf90160c62ae59c7cdb17b4adb7ebcb25",
+    "exact_changed_files_verified": 7,
+    "all_bytes_and_hashes_match": true,
+    "scope": "일치하는 7개 파일의 기존 요구사항 준수와 코드 품질 판단을 재사용했습니다. 새 runtime 증거와 assertion의 관계는 이번 검토에서 별도로 평가했습니다."
+  },
+  "execution_assessment": {
+    "evidence_path": "docs/runs/native-permission-graph-foundation/evidence/native-r1/report.json",
+    "evidence_sha256": "662378125ff3ea6cf116b322ff9918f00a6f35740f87d94e5338ecae8fdd62f2",
+    "execution_result_path": "docs/runs/native-permission-graph-foundation/execution-result-r1.json",
+    "execution_result_sha256": "17638b99a884213d07e6f11d097138e1f75d34781158e6c931b03b7d69d9802b",
+    "recorded_check": {
+      "name": "native-r1",
+      "recorded_at": "2026-10-09T13:33:39+00:00",
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/native-permission-graph-probe.mjs",
+        "--out",
+        "docs/runs/native-permission-graph-foundation/evidence/native-r1"
+      ],
+      "cwd": ".",
+      "exit_code": 0,
+      "interrupted": false,
+      "timed_out": false,
+      "inputs_changed": false,
+      "current_status": "reusable"
+    },
+    "actual_child": {
+      "pid": 32954,
+      "runtime": "Bun 1.4.2",
+      "platform": "darwin-arm64",
+      "code": 0,
+      "signal": null,
+      "exited": true,
+      "timedOut": false,
+      "spawnFailed": false,
+      "protocolOverflow": false,
+      "signals": [],
+      "result": "pass",
+      "phase": "complete"
+    },
+    "canaries": [
+      {
+        "name": "overlay_forwarding",
+        "result": "pass",
+        "source": "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs:147",
+        "assessment": "실제 ServerProcess.start의 네 번째 인자로 graph.overrides와 Database tap을 전달합니다. Database 획득, onListen, transform이 각각 1회임을 확인합니다. Scope 종료 후 cleanup 1회도 확인합니다."
+      },
+      {
+        "name": "fixed_config",
+        "result": "pass",
+        "source": "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs:195",
+        "assessment": "실제 loopback client.config.get 결과는 고정 workbench-skills package와 nonce만 포함합니다. synthetic project/global 설정의 model은 없고, 비승인 plugin marker도 없습니다."
+      },
+      {
+        "name": "fixed_plugin_source",
+        "result": "pass",
+        "source": "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs:213",
+        "assessment": "별도 최소 LayerNode graph에서 고정 operations와 반환값 변경의 비전파를 확인합니다. changes stream은 20ms 관찰 중 값을 내보내지 않았습니다. 무기한 무출력 판단은 일치하는 source의 Stream.never 구현에 근거합니다."
+      },
+      {
+        "name": "sdk_registration_denied",
+        "result": "pass",
+        "source": "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs:243",
+        "assessment": "최소 graph에서 비승인 SDK 등록이 실패하고, 제공한 effect는 실행되지 않으며 inventory는 비어 있음을 확인합니다."
+      },
+      {
+        "name": "inert_wellknown",
+        "result": "pass",
+        "source": "apps/desktop-app/scripts/fixtures/native-permission-graph-native.mjs:257",
+        "assessment": "최소 graph에서 entries/snapshot/resolve는 비어 있고 refresh는 false이며 add/remove는 실패함을 확인합니다."
+      }
+    ],
+    "identity_assessment": {
+      "source_closure_files": 43,
+      "current_source_closure_matches": true,
+      "before_after_source_equal": true,
+      "before_after_original_install_equal": true,
+      "before_after_staged_equal": true,
+      "before_after_engine_equal": true,
+      "before_after_copied_child_equal": true,
+      "production_event_host_child_matches_baseline": true,
+      "assessment": "report의 before/after 전체 객체는 같습니다. 현재 43개 source 파일의 hash도 기록과 같습니다. parent는 실행 전과 종료 후 identity를 검사하고, 불일치 시 PASS를 거부합니다."
+    },
+    "acceptance": {
+      "G1": {
+        "status": "supported",
+        "assessment": "검증한 staged resource의 실제 server Config 경로와 최소 graph의 source 교체 동작을 함께 입증합니다. 전체 production graph의 permission enforcement를 입증하지는 않습니다."
+      },
+      "G2": {
+        "status": "supported",
+        "assessment": "고정 Bun 경로, synthetic HOME/XDG/cwd/DB, 정확한 다섯 case protocol, owned child 정상 종료, 실행 전후 identity 기록이 저장된 명령과 일치합니다."
+      },
+      "G3": {
+        "status": "supported",
+        "assessment": "저장된 unit 58/58, lint, format, Native check는 현재 입력에서 모두 reusable입니다. 기존 독립 pre-execution CODE와 이번 독립 final CODE를 구분했습니다. 이번 보고서의 저장과 ledger 등록은 coordinator가 수행해야 합니다."
+      }
+    },
+    "limits": [
+      "gate, modes, leases, recovery, physical file adaptors는 이번 구현과 실행 검증 범위에 없습니다.",
+      "production event-host-child는 변경되지 않았습니다. production Main 통합이나 전체 제품 동작을 승인하지 않습니다.",
+      "provider, session.send, GUI, private store는 검증하지 않았습니다.",
+      "fetch wrapper의 차단 횟수 0은 해당 wrapper의 관찰 결과입니다. OS network/filesystem sandbox를 입증하지 않습니다.",
+      "owned child 종료는 descendant 전체 종료를 입증하지 않습니다.",
+      "실행 전후 hash 일치는 중간 변경 후 복원 부재나 power-loss recovery를 입증하지 않습니다.",
+      "runtime 증거는 저장된 기록을 source assertion과 대조하여 평가했습니다. 이번 reviewer는 Native를 재실행하지 않았습니다."
+    ]
+  },
+  "artifact_validation": {
+    "outcome_path": "docs/runs/native-permission-graph-foundation/outcome-r1.json",
+    "outcome_current": true,
+    "outcome_referenced_artifact_count": 7,
+    "all_outcome_artifacts_registered": true,
+    "all_outcome_artifact_hashes_current": true,
+    "all_14_registered_artifacts_current": true,
+    "entire_final_input_binding_recomputed_and_matched": true
+  },
+  "review_constraints": {
+    "report_only": true,
+    "delegation_performed": false,
+    "files_or_ledger_modified": false,
+    "tests_build_native_gui_provider_or_network_invoked": false,
+    "initial_product_or_design_review_repeated": false,
+    "self_approval": false,
+    "full_F09_approval": false,
+    "full_product_approval": false
+  },
+  "provenance": {
+    "child_task_id": "01a120e0-a863-7043-bc83-62c8fdf6233f",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "identity_source": "현재 실행 환경의 CODEX_THREAD_ID와 run.json dispatch 기록이 일치합니다.",
+    "independent_invocation": true
+  }
+}

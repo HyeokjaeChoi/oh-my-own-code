@@ -1,0 +1,35 @@
+--- before-r1/apps/desktop-app/scripts/e2e-conversation-markdown.mjs
++++ apps/desktop-app/scripts/e2e-conversation-markdown.mjs
+@@ -225,6 +225,18 @@
+ }
+ async function shot(name) {
+   currentState = name;
++  // DOM assertions can resolve before Chromium paints the new copy status.
++  // Let two animation frames finish, then yield past the last pre-paint callback.
++  await page.evaluate(
++    () =>
++      new Promise((resolve) =>
++        globalThis.requestAnimationFrame(() =>
++          globalThis.requestAnimationFrame(() =>
++            globalThis.setTimeout(resolve, 0),
++          ),
++        ),
++      ),
++  );
+   await capture(
+     page,
+     `${String(screenshots.length).padStart(3, "0")}-${name}.png`,
+@@ -422,7 +434,13 @@
+   await enter(copies());
+   await expect(copies()).toBeDisabled();
+   await expect(status().first()).toHaveText("복사 중입니다.");
++  await reveal(status().first());
+   await shot("clipboard-pending");
++  assert.notEqual(
++    screenshots.at(-1).pngSha256,
++    screenshots.at(-2).pngSha256,
++    "Pending native frame must differ from the preceding failure frame",
++  );
+   assert.equal(
+     await page.evaluate(() => globalThis.__markdownClipboard.writes.length),
+     1,

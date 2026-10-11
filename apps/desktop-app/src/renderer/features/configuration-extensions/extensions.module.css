@@ -1,0 +1,78 @@
+.extensions {
+  min-width: 0;
+  max-width: 100%;
+  margin-block: 24px;
+  padding-block: 16px;
+  border-block: 1px solid var(--omoc-semantic-color-border-default);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.extensions h3,
+.extensions h4 {
+  font-size: 13px;
+  font-weight: 600;
+}
+.muted {
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+}
+.path {
+  min-width: 0;
+  max-width: 100%;
+  font: 12px/1.6 var(--omoc-semantic-type-family-code);
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+.actions button {
+  min-width: var(--omoc-component-size-control-hit-target);
+  min-height: var(--omoc-component-size-control-hit-target);
+  max-width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--omoc-semantic-color-border-default);
+  border-radius: var(--omoc-component-size-navigation-radius);
+  background: var(--omoc-semantic-color-surface);
+  color: var(--omoc-semantic-color-text-primary);
+  font-size: 12px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.actions button:hover:enabled {
+  background: var(--omoc-semantic-color-surface-subtle);
+}
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.actions button:focus-visible,
+.status:focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: var(--omoc-semantic-size-focus-gap);
+}
+.rows {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  max-width: 100%;
+  padding-inline-start: 20px;
+}
+.rows li {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+@media (pointer: coarse) {
+  .actions button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "gate": "plan",
+  "reviewed": {
+    "contract_sha256": "655db89bb8b02da9ad53db45c7a8ae4ec23fc2e20f8e4fa0e21eeacae9640590",
+    "gate": "plan",
+    "plan_sha256": "a4cbf48ad180c34addcc8df85cef8b22df3ef674f843a746f81811f591a26b91",
+    "schema_version": 2,
+    "source_sha256": "d4c8831b60c3d12191fd8502fc8e1b3ed2b4c9941c38fc453d14c4fd177c076b",
+    "work_class_sha256": "4784cfc38914b5fec65dd722cdaab8803c0e7f68aaa1934f968be06e28803d32"
+  },
+  "verdict": "pass",
+  "summary": "revision2의 ENTRY PLAN은 지정된 변경 범위에서 통과합니다. planner-result-r1.json의 sameFiber 혼합 입력 문제에 대응하며, 선택한 versioned multi-origin scope는 기존 단일 executor와 단일 task 소유권을 유지합니다. 사용자 지시는 자율 진행을 허용합니다. 계획은 PLAN과 별도 DESIGN gate 통과 전 소스 변경을 금지합니다. 이후 Control을 alwaysheld로 유지하는 component 단계와 RPC·batch·task 통합 단계를 구분합니다. 구현 전 정확한 source paths·checks 등록과 API freeze를 요구하며, 실제 Native 증거와 독립 CODE 검토도 후속 의존성으로 남깁니다. 현재 단계의 feasibility·authority·coverage·staging에 필수 수정 사항은 없습니다. 상세 설계 승인, 구현 준비 완료 또는 전체 F09 수용을 뜻하지 않습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a12193-e8a7-76b3-8b7e-9b59e1dd5a59"
+  }
+}

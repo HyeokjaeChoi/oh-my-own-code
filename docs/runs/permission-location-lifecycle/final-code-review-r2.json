@@ -1,0 +1,68 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "673fbc042d5e8bb3dbddc575121203a141299edf49729745d746816e0bb62777",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "83c8dbeddf0fb7c0bcfbb7414a078725e775f10c86b1ada0f3c4611a473c7a70",
+    "schema_version": 2,
+    "source_sha256": "9ed0d599560052472ed500821a979ca545e1e28a8a8f1d2350f415293555b420",
+    "verification_sha256": "2fa889d4cb8244557bee784f7fe033e28d6e2621d01c12e94bb9823c2029784c",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "changes_requested",
+  "summary": "CODE-01 수정은 대기 중인 metadata보다 후속 transaction이 먼저 진입하는 경로를 차단합니다. 취소와 실패 시 admission 해제도 확인했습니다. CODE-02는 실제 LayerNode.compile이 생성하는 local MemoMap을 관찰하지 못합니다. Node 전용 재현에서 acquired finalizer가 여전히 building을 관찰했습니다. r3 binding은 검토 전후 일치합니다. 저장된 Node 124개 검사, lint, format은 모두 reusable입니다.",
+  "open_findings": [
+    {
+      "id": "CODE-02",
+      "severity": "P2",
+      "path": "apps/desktop-app/src/native-permission-overlay-contract.mjs",
+      "line": 559,
+      "title": "실제 location graph의 local MemoMap이 실패 관찰을 우회합니다",
+      "trigger": "location graph의 local Layer가 자원을 획득한 뒤 build가 실패합니다. 실제 layer2는 LayerNode.compile에 shared: Node.tags.values.global을 전달합니다.",
+      "evidence": [
+        "559행의 observedMemoMap은 전달받은 MemoMap의 getOrElseMemoize만 감쌉니다. 기존 map과 observer/finalizer 소유권을 위임하는 방식 자체는 유지됩니다.",
+        "실제 pinned @opencode/util/dist/effect/layer-node.js 134행은 shared가 지정되면 별도의 local MemoMap을 생성합니다. 144행은 local node를 이 map으로 build합니다. 따라서 해당 constructor는 observedMemoMap을 통과하지 않습니다.",
+        "실제 pinned effect/dist/Layer.js 92~94행의 fromBuild는 실패 반환 전에 child Scope를 닫습니다. 관찰되지 않은 local constructor의 finalizer는 바깥 guardedFinish보다 먼저 실행될 수 있습니다.",
+        "현재 acquired-finalizer regression의 layer2는 직접 조합한 Effect Layer입니다. 실제 LayerNode.compile의 local MemoMap 분기를 사용하지 않습니다.",
+        "파일 저장 없이 Node 전용 재현을 실행했습니다. 현재 recipe로 추출한 factory와 bound Location, 실제 pinned Effect 및 LayerNode.compile, 동일 Control service, inert local Layer를 사용했습니다. 결과는 exit=Failure, acquiredFinalizerCalls=1, stateDuringCleanup=building, stateAfterReturn=finalizing, unknownBuilding=0입니다."
+      ],
+      "impact": "실제 Native location Layer의 부분 실패 cleanup 전에 finalizing을 기록한다는 L1/L3 계약이 충족되지 않습니다. finalizer가 대기하면 location은 cleanup 동안 building 상태로 남을 수 있습니다.",
+      "smallest_correction": "실제 LayerNode.compile이 선택하는 local MemoMap의 constructor 실패도 내부 Scope cleanup 전에 관찰하도록 연결하십시오. 기존 shared/local cache 분리와 Scope 소유권은 유지하십시오.",
+      "validation_needed": "현재 acquired-finalizer regression에 실제 LayerNode.compile의 shared global/local node 경로를 적용하십시오. local Layer 실패 시 acquired finalizer 안에서 finalizing을 확인하면 됩니다.",
+      "basis": "실제 pinned 소스 추적과 Node 전용 재현으로 확인했습니다. Native는 실행하지 않았습니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a1241b-c8c0-71b2-94f5-03efea9dfe74",
+    "binding_input": "docs/runs/permission-location-lifecycle/final-code-input-r3.json",
+    "binding_before_after": "identical",
+    "source_freeze_before_after": "source-freeze-r2의 8개 파일 모두 일치",
+    "baseline_verification": "before-manifest-r2의 원본 7개와 새 파일의 원래 부재, before-correction-manifest-r1의 사본 8개를 확인했습니다.",
+    "overlay_verification": {
+      "prior_outputs_preserved": 11,
+      "new_overlay_pins": "new-overlay-pins-r3.json의 3개 항목과 일치",
+      "transformed_outputs_verified": 14,
+      "recipe_sha256": "183d4c3ed7d0b8c7a96a9f624706878f57c332d305e08f48fbd03e8c87c40c08"
+    },
+    "prior_assessment_reused": "final-code-review-r1.json의 변경되지 않은 범위 평가를 재사용했습니다. 두 correction과 통합 경로는 독립 검토했습니다.",
+    "checks": {
+      "worker_control_26": "저장된 worker handoff와 현재 regression 소스를 확인했습니다.",
+      "coherent_node_124": "최종 plan과 현재 source에 연결된 exit_code=0 기록을 확인했습니다.",
+      "check_status": {
+        "unit": "reusable",
+        "lint": "reusable",
+        "format": "reusable"
+      },
+      "saved_checks_rerun": false,
+      "narrow_node_reproducer_executed": true
+    },
+    "native_scope": "저장된 Native probe는 NOT RUN입니다. 19개 case protocol과 Tool canary의 소스 검토만 재사용했습니다. 실제 Native held 동작, positive execution, 전체 task/IO/process settlement는 검증하지 않았습니다.",
+    "native_executed": false,
+    "bun_server_electron_build_provider_main_launched": false,
+    "delegation": false,
+    "source_edits": false,
+    "report_saved": false,
+    "ledger_edits": false
+  }
+}

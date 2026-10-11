@@ -1,0 +1,118 @@
+{
+  "schema_version": 2,
+  "run": "opencode-event-host-feasibility",
+  "reviewer": "design_spec_reviewer",
+  "plan_revision": 2,
+  "design_version": 2,
+  "reviewed": {
+    "contract_sha256": "a09ba6cfb771fa5d763d1e4686b8dbe6d2a3ffeb498a92716cdb18e5b2c910ed",
+    "documents_sha256": "d8e905036009d16583c957068afb23ea7434f76e13602b22c3e694fc31d6343c",
+    "gate": "design_spec",
+    "plan_sha256": "edab37705619d563c277ae81435e5dcbb26611e28ecbb924ca100d9cdae26dda",
+    "schema_version": 2
+  },
+  "verdict": "changes_requested",
+  "summary": "구조와 단계별 gate는 일치합니다. 그러나 안전한 prototype 구현에 필요한 다섯 가지 설계 기준이 빠져 있습니다. 현재 구현이나 runtime 증거를 요구하지 않습니다. 아래 기준을 문서에 추가하고 새 독립 design review를 받아야 합니다.",
+  "open_findings": [
+    {
+      "id": "EH-DESIGN-V2-01",
+      "severity": "high",
+      "artifact_location": "design.txt:8 Security; plan.md Execution and isolation; contract.json EH-03",
+      "affected_consumer": "host.mjs와 isolation case 구현자",
+      "evidence": "contained 경로와 환경을 요구하지만 허용 경로 목록, 경로 검사 위치, symlink 처리와 config 입력 정책은 없습니다. config.project=false는 HTTP location, PTY cwd 또는 모든 파일 접근의 경로 제한을 정의하지 않습니다. 공식 PTY handler는 요청 cwd를 사용합니다. https://github.com/anomalyco/opencode/blob/cd9a14a6b688d4021bee381dfd39d2cef9c0f862/packages/server/src/handlers/pty.ts#L38-L52",
+      "impact": "서버가 파일을 연 뒤 경로 이탈을 발견하는 구현도 현재 문구를 충족했다고 해석할 수 있습니다. synthetic 환경이라는 사실만으로 개인 파일 접근을 막을 수는 없습니다.",
+      "smallest_precise_correction": "허용 namespace와 cwd/config/database/tmp 경로를 명시하십시오. 외부 경로는 API 호출이나 spawn 전에 차단하도록 정하십시오. symlink와 상위 경로 이탈, config/ENV 입력, plugin/MCP 금지의 적용 위치를 정의하십시오. 음성 case는 disposable synthetic 경로만 사용하십시오. 실제 case 파일은 생성 후 environment_files에 등록하고 refreshed ENTRY를 받도록 명시하십시오."
+    },
+    {
+      "id": "EH-DESIGN-V2-02",
+      "severity": "high",
+      "artifact_location": "design.txt:8 Security; contract.json EH-03",
+      "affected_consumer": "auth/Origin/pairing/ticket 검사 구현자",
+      "evidence": "actual handling 검증만 요구하며 요청별 기대 결과가 없습니다. 공식 middleware는 pairing과 ticket 경로를 일반 credential 검사에서 제외합니다. Origin 기본 허용 목록도 존재합니다. 따라서 모든 경로에 같은 401 또는 Origin 거절 기준을 적용할 수 없습니다. https://github.com/anomalyco/opencode/blob/cd9a14a6b688d4021bee381dfd39d2cef9c0f862/packages/server/src/middleware/authorization.ts#L63-L85 ; https://github.com/anomalyco/opencode/blob/cd9a14a6b688d4021bee381dfd39d2cef9c0f862/packages/server/src/cors.ts",
+      "impact": "일반 Basic authentication 성공만으로 별도 인증 경로까지 통과 처리하거나, 공식 지원 동작을 우회로 잘못 판정할 수 있습니다.",
+      "smallest_precise_correction": "검사표를 추가하십시오. 일반 API의 missing/wrong/valid credential, Origin 없음/허용/거절, pairing 발급과 invalid/used/expired code, 일반·persistent PTY ticket의 발급 권한과 invalid/used/expired/wrong-scope 값을 구분하십시오. API 거절과 CORS header 부재를 구분하고 각 기대 결과를 적으십시오. password뿐 아니라 auth_token, cookie, pairing code, ticket도 로그·URL 보고서에서 제거하십시오. 양성 case에 필요한 실행은 등록된 contained seed 범위로 제한하십시오."
+    },
+    {
+      "id": "EH-DESIGN-V2-03",
+      "severity": "high",
+      "artifact_location": "design.txt:8 Security, :11 Pending-state adversaries; plan.md EH-08; prototype-input-policy.json",
+      "affected_consumer": "startup-adversarial case 작성자와 최종 verifier",
+      "evidence": "provider/tool attempt가 없어야 한다고 요구하지만 이를 관찰할 방법과 관찰 실패 기준은 없습니다. supported API seed의 준비 상태 확인, 허용 read 목록, bounded idle 길이와 seed 종료 시점도 정하지 않았습니다. 저장된 plan analysis는 이 관찰 방식과 seed 가능 범위를 미결 결정으로 남겼습니다.",
+      "impact": "credentials 없음, fixture 요청 0개 또는 sentinel 불변만으로 실행 시도 없음이 통과할 수 있습니다. 실패한 seed를 빈 pending case로 검사할 위험도 있습니다.",
+      "smallest_precise_correction": "case 계약을 정의하십시오. queued/steer/suspended/shell/subagent별 supported seed API, exact 허용 action, seed 상태 확인 API, 원본 보존과 종료 확인 후 copy 순서, 허용 read, 시간 한도와 관찰 구간을 포함하십시오. provider 요청 시도·tool spawn·resume·inbox 소비·완료·승인의 관찰 수단과 사각지대를 적으십시오. 관찰 장치는 startup 전에 준비하고 shutdown 종료까지 유지하십시오. 관찰 누락이나 필수 상태 확인 불가는 coverage 실패로 처리하십시오. 구체 case와 loopback fixture는 생성 후 binding과 refreshed ENTRY를 받아야 합니다."
+    },
+    {
+      "id": "EH-DESIGN-V2-04",
+      "severity": "high",
+      "artifact_location": "design.txt:9 Lifecycle; plan.md Execution and isolation, EH-04/EH-07/EH-08",
+      "affected_consumer": "controller의 종료·SIGKILL·namespace 재사용 처리",
+      "evidence": "정확한 server ChildProcess exit는 요구하지만 seed나 PTY 검사에서 생성할 tool/PTY child의 종료 기준은 없습니다. 공식 PTY teardown은 kill을 호출하고 listener를 제거합니다. 이 경로 자체는 실제 PTY exit 확인을 제공하지 않습니다. https://github.com/anomalyco/opencode/blob/cd9a14a6b688d4021bee381dfd39d2cef9c0f862/packages/core/src/pty.ts#L104-L121",
+      "impact": "server exit 뒤에도 별도 child가 남으면 cleanup이나 같은 namespace 재사용이 안전하지 않을 수 있습니다. SIGKILL에서는 scope finalizer 완료를 기대할 수 없습니다.",
+      "smallest_precise_correction": "소유한 server와 허용된 tool/PTY child의 identity·exit 증거를 분리하십시오. 정상 stop, startup 실패, timeout, IPC 단절과 controlled SIGKILL의 순서를 정의하십시오. cleanup과 namespace 재사용은 해당 child 종료가 모두 확인된 뒤에만 허용하십시오. 확인 수단이 없는 case는 hold로 보존하십시오. 임의 PID 탐색이나 unknown process kill로 대체하지 마십시오."
+    },
+    {
+      "id": "EH-DESIGN-V2-05",
+      "severity": "high",
+      "artifact_location": "plan.md:16 Preparation and evidence, :19 Execution and isolation; design.txt:8 Security, :12 Packaging; prototype-input-policy.json",
+      "affected_consumer": "package 준비·lockfile 생성·native hook 실행 담당자",
+      "evidence": "ignore-scripts와 workspaces=false는 명시되어 있습니다. 그러나 installer 전용 env, npm user/global config, public registry와 audit/fund 정책은 없습니다. contained HOME과 cleared credentials 문구는 server 실행 문맥에 있습니다. npm은 환경 변수와 project/user/global/builtin npmrc에서 설정을 읽습니다. https://docs.npmjs.com/cli/v11/configuring-npm/npmrc/",
+      "impact": "engine child를 격리해도 앞선 package 준비가 ambient registry credential이나 외부 설정을 사용할 수 있습니다. 실제 credential 상속이나 전송을 관찰했다는 뜻은 아닙니다.",
+      "smallest_precise_correction": [
+        "첫 metadata 조회·lockfile 생성·download·install 전에 installer 전용 allowlist env를 적용하십시오. credential, npm 설정 override, proxy와 NODE_OPTIONS를 상속하지 않도록 명시하십시오.",
+        "installer의 HOME/cache/tmp와 npm userconfig/globalconfig를 contained 경로로 고정하십시오. project config도 명시적으로 통제하고 root 또는 개인 npmrc를 사용하지 않도록 정하십시오. 개인 npmrc를 읽어 검사하지 마십시오.",
+        "registry를 https://registry.npmjs.org/로 고정하십시오. scoped registry와 lockfile resolved URL도 검사하십시오. 다른 registry나 credential 포함 URL은 거절하십시오.",
+        "준비 단계 전체에 audit=false, fund=false, ignore-scripts=true, workspaces=false를 명시하십시오. npm/runtime 버전, package-lock과 integrity 검증을 기록하십시오. npm ci는 고정 lockfile을 사용해야 합니다. https://docs.npmjs.com/cli/v11/commands/npm-ci/",
+        "필요한 native hook은 exact package/version/script/output과 network 정책을 먼저 등록하십시오. hook도 같은 contained installer 환경을 사용해야 합니다. ignore-scripts를 전체 해제하지 마십시오.",
+        "실제 installer config와 준비 입력은 생성 후 environment_files와 inventory에 등록하십시오. counted checks 전에 refreshed ENTRY를 받으십시오."
+      ]
+    }
+  ],
+  "assessments": {
+    "runtime_and_inputs": "Bun1.4.2 선택 → 실제 입력 준비·freeze → refreshed ENTRY → counted checks 순서가 일치합니다. Node24.14.1은 controller이며 Node26.8.2 diagnostic은 이전할 수 없습니다. 아직 prototype 파일이 없다는 사실은 결함으로 판정하지 않았습니다.",
+    "effect_scope": "서버 수명 동안 Scope 유지와 정상 종료 시 Scope close는 적절합니다. lifecycle 생략은 managed sweep 경로만 피합니다. read-only 보장이나 production preflight 완화를 뜻하지 않습니다.",
+    "events": "실제 payload, sequence0, full-history cursor 생략, exclusive cursor, marker 분리, correlation과 canonical hash, acknowledged committed prefix 요구는 적절합니다. 가짜 event와 미확정 요청의 성공 처리를 허용하지 않습니다.",
+    "dependencies_and_staging": "npm ignore-scripts, 필요한 hook의 사전 등록, native/WASM/migration inventory와 실제 byte 검사를 요구합니다. Installer 환경의 별도 제한은 EH-DESIGN-V2-05로 보완해야 합니다. staged runtime 결과는 Electron·Windows·production integration 증거로 이전할 수 없습니다.",
+    "product_and_p7": "PRD v0.6 F01–18을 유지합니다. 저장된 P7 결과는 10/11 PASS이며 native-event-history는 unsupported입니다. fresh-only preflight, historical owner proof와 mapping/cutover hold는 유지됩니다."
+  },
+  "checks": [
+    "검토 중 run.json에서 active 상태와 실제 등록된 plan-review-v2.json PASS 및 보고서 hash를 확인했습니다.",
+    "harness의 정적 digest 규칙으로 reviewed binding을 재계산했습니다. 지정 design-review-input-v2.json과 정확히 일치하며 supplemental 검토에서도 동일했습니다.",
+    "검토 중 packet의 plan/contract/document hash와 routing 입력 hash가 현재 bytes와 일치했습니다.",
+    "검토 중 coherent-source-freeze-v5-r8.json의 source 35개 hash가 모두 일치했습니다.",
+    "coherent-check-observations-v5-r8.json과 current-byte-binding-v5-r8.json을 읽었습니다. packaged executable bytes는 이번 검토에서 재검사하지 않았습니다.",
+    "공식 고정 commit의 process/routes/auth/Origin/pairing/PTY/ticket 소스와 npm 공식 설정·ci 문서를 읽었습니다. 구현이나 runtime 검사는 수행하지 않았습니다.",
+    "원래 지적 네 개와 추가 지적 한 개를 통합했습니다. Artifact location의 design.txt 줄 번호만 실제 위치에 맞게 정정했습니다."
+  ],
+  "review_boundary": {
+    "mode": "fresh_independent_static_design_spec_review",
+    "packet_path": "docs/runs/opencode-event-host-feasibility/design-review-v2.packet.json",
+    "input_path": "docs/runs/opencode-event-host-feasibility/design-review-input-v2.json",
+    "report_delivery": "consolidated_report_written_at_explicit_user_request",
+    "implementation_accepted": false,
+    "production_accepted": false,
+    "P7_complete": false,
+    "next_dependency": "Main이 이 전체 보고서를 등록하고 설계 기준을 수정한 뒤 새 binding으로 독립 design review를 받습니다. 초기 PASS 후 prototype 생성은 가능합니다. Counted runtime checks는 모든 실제 입력 등록과 refreshed ENTRY 뒤에만 가능합니다."
+  },
+  "provenance": {
+    "child_task_id": "01a10775-59f4-7492-bb74-f9d4f69152d9",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "child_id_source": "CODEX_THREAD_ID",
+    "profile": "solo_reader",
+    "profile_injection": "instruction_only",
+    "skills": ["solo-specialist", "solo-design-spec-review"],
+    "delegated": false,
+    "runtime_identity_attested": false,
+    "sandbox_enforcement_attested": false,
+    "source_edits": false,
+    "ledger_edits": false,
+    "runtime_checks_run": false,
+    "install_run": false,
+    "native_launches": false,
+    "electron_launches": false,
+    "gui_launches": false,
+    "provider_calls": false,
+    "private_data_access": false,
+    "private_npmrc_read": false,
+    "files_changed": ["docs/runs/opencode-event-host-feasibility/design-review-v2.json"]
+  }
+}

@@ -1,0 +1,161 @@
+[
+  {
+    "section": "dataExternalBoundaries",
+    "paragraphIndex": 0,
+    "exactParagraph": "실제 프로젝트는 합성 자료와 다르다. 실행 전에 활성 provider/model, 선택 경로·첨부, 외부 호출 가능성을 확인할 수 있어야 한다. 원격 모델에 전송될 컨텍스트와 로컬 기록을 구분한다. API key/token·환경 변수 비밀·자격 증명 원문은 대화, 브라우저 bundle, 도구 카드, export, 로그에 넣지 않는다. 로컬 저장 위치·보존 기간·삭제 범위는 설정에서 보인다. 기록 내 민감 자료 최소화·마스킹·export 확인을 설계한다. 외부 telemetry/자동 업로드는 기본 사용하지 않는다.",
+    "status": "source_partial",
+    "sourceRefs": [
+      {
+        "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+        "line": 644,
+        "sha256": "104a6fd335ab351855524f4ba1ec4695a6cc13faa384b2cbc8bcd161a8f73df7",
+        "observation": "Runtime-provided agent/model controls exist; exact future outgoing attachment/context manifest is not present in this send path."
+      },
+      {
+        "path": "apps/desktop-app/src/workbench-service.mjs",
+        "line": 185,
+        "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+        "observation": "Transcript projection clips text/tool input and output; no universal sensitive-content mask or user export confirmation exists in this projection."
+      },
+      {
+        "path": "apps/desktop-app/src/event-host-supervisor.mjs",
+        "line": 105,
+        "sha256": "46cf4c7dc4f002ae4538603b2f858d3e3c500247277c751c83af2cccee18a5b8",
+        "observation": "Generated server password is Main-side; client Basic auth at489, not public Renderer bridge."
+      },
+      {
+        "path": "apps/desktop-app/src/preload.cjs",
+        "line": 4,
+        "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3",
+        "observation": "Allowlisted Main-frame bridge contains workbench, cancelRead and filtered runtimeSnapshot only."
+      },
+      {
+        "path": "apps/desktop-app/src/host/workbench-receipts.mjs",
+        "line": 16,
+        "sha256": "4da23c5027c1496c3cc26904cd3af5b99ef691e833f828ff58a297b0d1ea4a28",
+        "observation": "Closed receipt projection deliberately excludes raw errors/payloads/snapshots/titles and admission digest; validated feature results can expose their approved paths."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "line": 608,
+        "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+        "observation": "Storage location dialog shows actual workspace path and durability; no user retention or complete deletion scope settings here."
+      }
+    ],
+    "runtimeRefs": [],
+    "gaps": [
+      "Outgoing remote-context disclosure, sensitive-content minimization/masking and export confirmation plus retention/deletion settings need full source/runtime completion; closed receipt secrecy does not prove all transcript/tool content secrecy."
+    ],
+    "limits": [
+      "Source trace and execution boundary record only; not a privacy guarantee or permission for external operations."
+    ]
+  },
+  {
+    "section": "dataExternalBoundaries",
+    "paragraphIndex": 1,
+    "exactParagraph": "로그인/OAuth·계정 관리·구독·결제·벤더별 rate-limit 대시보드·독점 클라우드 동기화·provider 전용 도구는 제외한다. 기존에 설정된 런타임/모델 자격 증명을 사용하며 없거나 만료됐으면 외부 설정 경로를 안내한다. 잘못된 자격 증명 때문에 실행 실패한 상태를 연결 성공으로 표시하지 않는다. 일반 MCP나 사용자 도구 지원은 포함하지만 모든 제3자 도구의 의미·안전·UI 전용 구현을 보장하지 않는다.",
+    "status": "runtime_unverified",
+    "sourceRefs": [
+      {
+        "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+        "line": 644,
+        "sha256": "104a6fd335ab351855524f4ba1ec4695a6cc13faa384b2cbc8bcd161a8f73df7",
+        "observation": "Runtime-provided agent/model controls exist; exact future outgoing attachment/context manifest is not present in this send path."
+      },
+      {
+        "path": "apps/desktop-app/src/workbench-service.mjs",
+        "line": 185,
+        "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+        "observation": "Transcript projection clips text/tool input and output; no universal sensitive-content mask or user export confirmation exists in this projection."
+      },
+      {
+        "path": "apps/desktop-app/src/event-host-supervisor.mjs",
+        "line": 105,
+        "sha256": "46cf4c7dc4f002ae4538603b2f858d3e3c500247277c751c83af2cccee18a5b8",
+        "observation": "Generated server password is Main-side; client Basic auth at489, not public Renderer bridge."
+      },
+      {
+        "path": "apps/desktop-app/src/preload.cjs",
+        "line": 4,
+        "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3",
+        "observation": "Allowlisted Main-frame bridge contains workbench, cancelRead and filtered runtimeSnapshot only."
+      },
+      {
+        "path": "apps/desktop-app/src/host/workbench-receipts.mjs",
+        "line": 16,
+        "sha256": "4da23c5027c1496c3cc26904cd3af5b99ef691e833f828ff58a297b0d1ea4a28",
+        "observation": "Closed receipt projection deliberately excludes raw errors/payloads/snapshots/titles and admission digest; validated feature results can expose their approved paths."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "line": 608,
+        "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+        "observation": "Storage location dialog shows actual workspace path and durability; no user retention or complete deletion scope settings here."
+      },
+      {
+        "path": "apps/desktop-app/src/workbench-service.mjs",
+        "line": 178,
+        "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+        "observation": "Structured auth errors map401/403/ProviderAuthError to AUTH_REQUIRED. No real provider invocation was authorized or executed in this audit."
+      }
+    ],
+    "runtimeRefs": [],
+    "gaps": [
+      "Runtime auth failure is mapped to AUTH_REQUIRED, but actual existing-provider/expired-credential UX and exclusion compliance need coherent scoped verification. Do not implement OAuth/billing/account UI as a substitute."
+    ],
+    "limits": [
+      "Source trace and execution boundary record only; not a privacy guarantee or permission for external operations."
+    ]
+  },
+  {
+    "section": "dataExternalBoundaries",
+    "paragraphIndex": 2,
+    "exactParagraph": "개인용 로컬 출시이며 팀/RBAC·멀티테넌트·상용 SLA·공개 호스팅을 추가하지 않는다. 공개 배포, 전송, 결제, 실제 프로젝트 삭제는 이 PRD 작성 요청으로 실행하지 않는다. 후속 제품이 그러한 동작을 지원하더라도 사용자의 구체적인 실행 의사를 따라야 한다.",
+    "status": "runtime_unverified",
+    "sourceRefs": [
+      {
+        "path": "apps/desktop-app/src/renderer/widgets/conversation/index.tsx",
+        "line": 644,
+        "sha256": "104a6fd335ab351855524f4ba1ec4695a6cc13faa384b2cbc8bcd161a8f73df7",
+        "observation": "Runtime-provided agent/model controls exist; exact future outgoing attachment/context manifest is not present in this send path."
+      },
+      {
+        "path": "apps/desktop-app/src/workbench-service.mjs",
+        "line": 185,
+        "sha256": "6fd5f3a3c4fd31eecd9bdcdba4d6987341f87c5851a0700c5c69887508ed5d48",
+        "observation": "Transcript projection clips text/tool input and output; no universal sensitive-content mask or user export confirmation exists in this projection."
+      },
+      {
+        "path": "apps/desktop-app/src/event-host-supervisor.mjs",
+        "line": 105,
+        "sha256": "46cf4c7dc4f002ae4538603b2f858d3e3c500247277c751c83af2cccee18a5b8",
+        "observation": "Generated server password is Main-side; client Basic auth at489, not public Renderer bridge."
+      },
+      {
+        "path": "apps/desktop-app/src/preload.cjs",
+        "line": 4,
+        "sha256": "eed6324481a12d1bcdcbdb4777b3ed4b0c0e8681d59000c092b020869eb5f8b3",
+        "observation": "Allowlisted Main-frame bridge contains workbench, cancelRead and filtered runtimeSnapshot only."
+      },
+      {
+        "path": "apps/desktop-app/src/host/workbench-receipts.mjs",
+        "line": 16,
+        "sha256": "4da23c5027c1496c3cc26904cd3af5b99ef691e833f828ff58a297b0d1ea4a28",
+        "observation": "Closed receipt projection deliberately excludes raw errors/payloads/snapshots/titles and admission digest; validated feature results can expose their approved paths."
+      },
+      {
+        "path": "apps/desktop-app/src/renderer/pages/workbench/index.tsx",
+        "line": 608,
+        "sha256": "681dd0545e18a3d85de35940b3e04b02da2d01f9c9b4c13b9a0e4b45d854572d",
+        "observation": "Storage location dialog shows actual workspace path and durability; no user retention or complete deletion scope settings here."
+      }
+    ],
+    "runtimeRefs": [],
+    "gaps": [
+      "Local contained synthetic development is authorized; public publication/transmission/billing/real project deletion remains outside current execution authorization. No release/platform acceptance has been claimed."
+    ],
+    "limits": [
+      "Source trace and execution boundary record only; not a privacy guarantee or permission for external operations."
+    ]
+  }
+]

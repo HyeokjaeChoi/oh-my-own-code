@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "b15083b396fb8ab82e77d29eb802a204387aa8699b1bed63e1fe814697c28ec1",
+    "gate": "plan",
+    "plan_sha256": "70056362fe060ef9f278e02494f11e44150e3d4a772e8f1e0d8e7ff6784bd9eb",
+    "schema_version": 2,
+    "source_sha256": "1ab65d7bc0818d4c8f1903bc47171f97ae3361db4d2944d7065ddce58b1d18ef",
+    "work_class_sha256": "cd6c9dd8295369c1153e39927bf24e04b360e4546daee8d98e86ebe3a7ffa93d"
+  },
+  "verdict": "pass",
+  "summary": "r7 전체 입력과 현재 packet을 확인했습니다. r6 대비 바인딩 변경은 source_sha256뿐입니다. 계획, 계약, candidate-r2와 선택된 소스 20개의 해시는 유지됩니다. 기존 T1–T3 실질 판정을 유지하며 현재 바인딩으로 PASS를 반환합니다. 별도 design-spec PASS 전 구현 차단 조건도 유지됩니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a12466-1fab-7820-97b0-a6df2874bc76",
+    "identity_source": "현재 프로세스의 CODEX_THREAD_ID",
+    "binding_input": "docs/runs/permission-task-lifetime-design/plan-input-r7.json",
+    "routing_packet": "docs/runs/permission-task-lifetime-design/plan-packet-r7.json",
+    "substantive_assessment_reused_from": "동일 검토자의 r6 계획 판정",
+    "verification": {
+      "entire_input_matches_current_harness_binding": true,
+      "registered_source_matches_current_fingerprint": true,
+      "packet_contract_file_hash_matches": true,
+      "packet_plan_and_work_class_match": true,
+      "routing_input_hashes_match": true,
+      "candidate_document_hash_matches": true,
+      "selected_source_manifest_entries": 20,
+      "selected_source_sizes_and_hashes_match": true,
+      "changed_binding_fields_from_r6": [
+        "source_sha256"
+      ],
+      "plan_and_design_spec_gates_retained": true
+    },
+    "design_spec_review_performed": false,
+    "implementation_authorized": false,
+    "product_runtime_launched": false,
+    "tests_or_builds_run": false,
+    "delegation": false,
+    "file_edits": false,
+    "report_saved": false,
+    "ledger_edits": false
+  }
+}

@@ -1,0 +1,122 @@
+✔ v2 closed identity rejects legacy, extra fields, prototypes and malformed cancellation (1.359708ms)
+✔ production service rejects direct legacy renderer requests (1.019166ms)
+✔ actual snapshot SDK call stays quarantined after timeout; expired projection never commits (110.000709ms)
+✔ coalesced subscribers are bounded8 with immutable IDs and sender-owned cancel (4.625042ms)
+✔ last subscriber cancel and sender close retain actual lane until ignored abort settles (5.335875ms)
+✔ ready is service-owned; one mutation waiter admitted before ready and never dispatches after expiry (64.711ms)
+✔ mutation identity, admission1, no late ready dispatch and reserved lookup independent of ready (51.642625ms)
+✔ late native create finalizes SAME host registry and evidence receipt; no duplicate replay (84.306292ms)
+✖ all mutation types are pre-effect deduplicated, receipts closed and first normal DTO separate (6.565042ms)
+✔ receipt cap2048 keeps rejected identities; missing and old epoch never imply no effect (56.538083ms)
+✔ redactor never retains raw DTO, private digest or nested payload (0.206125ms)
+✔ shared startup/mutation lane and read classes bound actual SDK4 without fanout or queue; lookup8 reserved (168.397875ms)
+✔ epoch and revision rejection occurs before effects; closed service cannot resurrect native creation (16.58025ms)
+✔ whole catalog deadline stops sequential siblings, without aggregate fanout (79.465084ms)
+✔ read cancellation detaches from ready and does not abort service-owned startup (10.265292ms)
+▶ late send, fork, rename and permission acknowledgements reconcile only their original operation
+  ✖ message.send (75.09425ms)
+  ✔ session.fork (74.753ms)
+  ✔ session.rename (72.508417ms)
+  ✖ permission.respond (73.591209ms)
+✖ late send, fork, rename and permission acknowledgements reconcile only their original operation (297.390291ms)
+✔ a late native dialog never starts a new filesystem effect or SDK dispatch (77.848208ms)
+▶ only exact typed empty-session fork rejection proves none; lookalike remains unknown
+  ✔ exact rejection (3.9745ms)
+  ✔ lookalike (5.161459ms)
+✔ only exact typed empty-session fork rejection proves none; lookalike remains unknown (9.466917ms)
+✔ normal initial policy, real inbox receipt, transcript and duplicate fingerprint (10.004125ms)
+✔ untrusted import is deduplicated without SDK activation; native trust precedes creation (2.675042ms)
+✔ policy mismatch and read failure block sends; unavailable models skip provider execution (3.217291ms)
+✖ atomic busy state, pending duplicate and unknown outcome never resend (1.941125ms)
+✔ reject invalidates all pending permissions even if runtime list is stale (1.800791ms)
+✔ owned filesystem preview denies traversal, symlinks, sensitive, binary and oversize files (14.649791ms)
+✔ native cancellation, exclusive folder create, UUIDv7 fallback and registration-only removal (2.675083ms)
+✔ wrong IDs and unknown command never reach execution; listed command uses text API (4.15075ms)
+✔ transport rejection and service cancellation retain unknown execution receipts (3.158875ms)
+✔ snapshot reads coalesce and provider auth errors are fixed safe messages (2.200375ms)
+✔ request timeout is bounded and a timed-out prompt is never replayed (5003.56625ms)
+✔ selection-triggered policy drift is blocked immediately before dispatch (3.05025ms)
+✔ available empty inventories differ from unavailable inventories (3.257958ms)
+▶ preserves runtime model resolution when the user leaves the default selected
+  ✔ runtime-resolved (2.557375ms)
+  ✔ model-a (2.031625ms)
+  ✔ different-default (1.438959ms)
+✔ preserves runtime model resolution when the user leaves the default selected (6.438708ms)
+✔ explicit model selection uses the catalog mapping and is rechecked before send (1.658542ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 37
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5125.310708
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/workbench-admission.test.mjs:493:1
+✖ all mutation types are pre-effect deduplicated, receipts closed and first normal DTO separate (6.565042ms)
+  AssertionError [ERR_ASSERTION]: {"ok":false,"code":"RUNTIME_ERROR","message":"The runtime operation failed.","receipt":{"runtimeEpoch":"0d2f28d2-95ab-486f-8b90-c6a78deeb44f","operationId":"all-5","type":"message.send","workspaceId":"9fb9a4ff-8e66-47af-8a3c-ea549f30ff87","sessionId":"86f754b2-e60c-49ce-b2be-953404dfe2dd","admission":"dispatched","delivery":"unknown","effect":"unknown","revision":4,"evidence":[]}}
+  
+  false !== true
+  
+      at exercise (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-admission.test.mjs:508:12)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-admission.test.mjs:569:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/workbench-admission.test.mjs:880:13
+✖ message.send (75.09425ms)
+  AssertionError [ERR_ASSERTION]: {"ok":true,"value":{"runtimeEpoch":"86fbd7ac-3e20-417f-8610-56f6163cd24f","operationId":"late-intent","status":"found","receipt":{"runtimeEpoch":"86fbd7ac-3e20-417f-8610-56f6163cd24f","operationId":"late-intent","type":"message.send","workspaceId":"d02c65bc-0246-4d47-82c7-36cf965280ee","sessionId":"8c31a374-fc2f-4590-a069-660c2bcc76b0","admission":"dispatched","delivery":"unknown","effect":"unknown","revision":3,"evidence":[]}}}
+  + actual - expected
+  
+  + 'unknown'
+  - 'accepted'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-admission.test.mjs:943:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-admission.test.mjs:880:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'unknown',
+    expected: 'accepted',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/workbench-admission.test.mjs:880:13
+✖ permission.respond (73.591209ms)
+  AssertionError [ERR_ASSERTION]: {"ok":true,"value":{"runtimeEpoch":"5e0ef8c4-ba20-4492-a051-c36b81479ab3","operationId":"late-intent","status":"found","receipt":{"runtimeEpoch":"5e0ef8c4-ba20-4492-a051-c36b81479ab3","operationId":"late-intent","type":"permission.respond","workspaceId":"e6d4d464-acba-4550-a9ff-ed2ac00361f9","sessionId":"290458f3-e198-43c9-8b10-21e4eb520eb1","admission":"dispatched","delivery":"unknown","effect":"unknown","revision":2,"evidence":[]}}}
+  + actual - expected
+  
+  + 'unknown'
+  - 'accepted'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-admission.test.mjs:943:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workbench-admission.test.mjs:880:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'unknown',
+    expected: 'accepted',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/workbench-service.test.mjs:300:1
+✖ atomic busy state, pending duplicate and unknown outcome never resend (1.941125ms)
+  TypeError: Cannot read properties of undefined (reading 'status')
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-service.test.mjs:309:39)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

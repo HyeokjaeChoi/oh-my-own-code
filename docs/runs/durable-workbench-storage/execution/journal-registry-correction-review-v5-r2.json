@@ -1,0 +1,163 @@
+{
+  "verdict": "changes_requested",
+  "review_kind": "journal_registry_correction_interim",
+  "final_gate": false,
+  "whole_P7_approved": false,
+  "repository_root": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+  "plan_revision": 6,
+  "storage_contract_version": 5,
+  "summary": "JR-V5-01..04와 lookupIdentity 수정은 요구 사항을 충족합니다. 관련 session metadata 범위 검증에 P2 결함 한 건이 남아 있습니다.",
+  "provenance": {
+    "reviewer_id": "184b21e9-4b8a-4b75-badc-e76cfe861463",
+    "reviewer_id_origin": "이 검토에서 생성한 식별자",
+    "thread_id": "01a106c0-876b-7850-9ed8-4768ad960a7a",
+    "thread_id_origin": "CODEX_THREAD_ID",
+    "profile_read": "solo_reader",
+    "bootstrap_read": "solo-specialist",
+    "selected_skill": "solo-code-review",
+    "method": "독립 정적 검토. 요구 사항 준수와 관련 결함 검토를 별도 pass로 수행했습니다.",
+    "reviewed_range": "freeze v5-r2에 고정된 네 파일 전체",
+    "source_hashes_match_freeze": true,
+    "source_hashes_unchanged_at_end": true,
+    "packet_plan_and_document_hashes_match": true,
+    "packet_routing_hashes_match": true,
+    "files_modified": [],
+    "reports_or_ledger_written": false,
+    "tests_run": false,
+    "delegation_used": false,
+    "native_gui_or_provider_invoked": false,
+    "moving_host_renderer_or_script_sources_inspected": false
+  },
+  "correction_checks": [
+    {
+      "id": "JR-V5-01",
+      "status": "pass",
+      "evidence": [
+        "storage-journal.mjs:61-65는 기존 native.policy와 두 selection 단계를 허용합니다.",
+        "workspace-registry.mjs:874-897은 단계별 duplicate를 처리하고 flush 완료 후 dispatched를 반환합니다.",
+        "workspace-registry.test.mjs:292-393은 두 번째 flush 대기·실패와 duplicate의 effect 차단을 검사합니다."
+      ]
+    },
+    {
+      "id": "JR-V5-02",
+      "status": "pass",
+      "evidence": [
+        "workspace-registry.mjs:189-207은 session.remove tombstone을 admitted sessionId에 결합합니다.",
+        "workspace.remove의 workspace 범위 삭제는 유지됩니다.",
+        "workspace-registry.test.mjs:395-486은 다른 session 삭제 거부, 원래 대상 삭제, checkpoint/reopen과 workspace 삭제를 검사합니다."
+      ]
+    },
+    {
+      "id": "JR-V5-03",
+      "status": "pass",
+      "evidence": [
+        "workspace-registry.mjs:63-68은 committed session과 unresolved reservation을 appSessionId 기준으로 한 번씩 계산합니다.",
+        "workspace-registry.mjs:131은 reservation append 전에 200개 한도를 검사합니다.",
+        "workspace-registry.mjs:884-892는 create/fork/import의 dispatch 전에 reservation을 요구합니다.",
+        "workspace-registry.test.mjs:488-710은 full capacity, 서로 다른 workspace의 동시 예약, duplicate, 거부 후 슬롯 반환, reopen과 partial mapping의 중복 계산 방지를 검사합니다."
+      ]
+    },
+    {
+      "id": "JR-V5-04",
+      "status": "pass",
+      "evidence": [
+        "storage-journal.mjs:166과 197은 Object.hasOwn으로 optional property 존재를 검사합니다.",
+        "storage-journal.test.mjs:107-225는 falsy 값과 명시적 undefined 거부, checksum-valid 잘못된 값의 reopen 거부, 생략과 정상 배열 허용을 검사합니다."
+      ]
+    },
+    {
+      "id": "lookupIdentity",
+      "status": "pass",
+      "evidence": [
+        "workspace-registry.mjs:32-35는 닫힌 original runtimeEpoch+operationId key를 검사합니다.",
+        "workspace-registry.mjs:681-685는 원래 admitted identity의 defensive copy를 반환합니다.",
+        "validatedAdmissionKeys는 checkpoint 적용 후, 성공한 admission flush 후, 명시적 recovery 성공 후에만 갱신됩니다.",
+        "Conservative uncertain tail identity는 자동 공개되지 않습니다.",
+        "메서드에는 journal append, filesystem/native effect 또는 observationSequence 증가가 없습니다.",
+        "lookup와 readView에 digest를 추가하지 않습니다.",
+        "workspace-registry.test.mjs:712-839는 복사, original epoch, 잘못된 key, flush 전 비공개, uncertain tail 비공개, 명시적 adoption과 owner conflict를 검사합니다."
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "JR-V5-R2-01",
+      "severity": "P2",
+      "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/workspace-registry.mjs",
+      "line": 187,
+      "end_line": 188,
+      "title": "Session metadata delta가 admitted sessionId 밖의 session을 변경할 수 있음",
+      "trigger": "등록된 같은 workspace에 active Session A와 B가 있습니다. session.pin의 identity와 receipt는 A를 가리킵니다. native.pin dispatch 뒤 complete()에 B의 기존 identity·mapping·parent를 유지하고 pinned만 true로 바꾼 delta.sessions를 전달합니다.",
+      "impact": "B의 metadata가 변경되고 A의 receipt는 confirmed로 저장됩니다. Checkpoint와 reopen도 이 잘못된 결합을 유지합니다.",
+      "evidence": [
+        "165-175는 receipt와 admission identity가 같은지만 검사합니다.",
+        "187-188은 delta session의 workspaceId만 검사합니다. appSessionId와 admitted sessionId를 비교하지 않습니다.",
+        "274-280의 existing session guard는 B의 기존 workspace/native mapping/parent를 유지하면 통과합니다.",
+        "321-325의 active guard도 confirmed receipt와 등록된 workspace가 있으면 통과합니다.",
+        "328-331은 B의 변경을 저장하고 373-375는 A의 confirmed receipt를 저장합니다.",
+        "604-609의 commit()과 486-488의 checkpoint replay가 같은 apply()를 사용합니다.",
+        "storage-contract §3은 metadata delta와 해당 operation의 correlated receipt를 함께 결합하도록 요구합니다."
+      ],
+      "required_correction": "Session metadata operation의 delta.sessions를 admitted sessionId에 결합하십시오. 새 session mapping은 해당 operation의 reservation.appSessionId에 결합하십시오. workspace.remove의 허용된 전체 삭제 범위는 유지하십시오.",
+      "required_regression": "같은 workspace의 A를 대상으로 admission한 뒤 B의 pin/rename/archive delta를 전달하면 append 전에 거부되는 테스트를 추가하십시오. Journal bytes와 두 session의 metadata가 그대로인지 확인하고, 정상 A 변경과 checkpoint/reopen도 확인하십시오.",
+      "verification": "정적 실행 경로로 확인했습니다. 실행 reproducer는 수행하지 않았습니다.",
+      "relationship": "JR-V5-02의 tombstone 수정과 연결된 metadata 범위 검증 결함입니다. 이번 수정이 새로 만든 결함이라고 단정하지 않습니다."
+    }
+  ],
+  "preserved_behavior": [
+    "Flush 실패 후 writer poison과 후속 쓰기 차단",
+    "Flush 전 candidate mapping·metadata·tombstone 비공개",
+    "최신 root에 대한 serialized delta 적용과 defensive copy",
+    "Uncertain tail에서 confirmed completion 자동 공개 금지",
+    "Original epoch receipt와 unknown hold 유지",
+    "손상된 journal bytes 보존과 명시적 recovery",
+    "Owner conflict에서 journal 비개방",
+    "Wire 조회와 readView에서 digest 제외"
+  ],
+  "test_evidence": {
+    "path": "docs/runs/durable-workbench-storage/execution/journal-registry-correction-main-unit-v5.log",
+    "observed_log_summary": {
+      "tests": 77,
+      "pass": 77,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "exit_code": 0,
+    "exit_code_provenance": "사용자가 제공한 Main 재실행 결과입니다. 저장된 log에는 별도 exit-code 표기가 없습니다.",
+    "reviewer_rerun": false,
+    "coverage_limit": "77개 테스트에는 위 finding의 다른 session metadata 변경 거부 사례가 없습니다."
+  },
+  "limits": [
+    "검토 대상 source/test는 지정된 네 파일뿐입니다.",
+    "네 파일은 Git에서 untracked입니다. 고정된 전체 파일을 검토했으며, 원래 수정 전 source와의 정확한 diff는 재구성하지 않았습니다.",
+    "이동 중인 host/renderer/script source와 imported helper 구현은 읽지 않았습니다. 호출자 통합은 검증하지 않았습니다.",
+    "Native, GUI, provider, OS compatibility, Windows flush와 power-loss durability는 검증하지 않았습니다.",
+    "이 결과는 중간 검토입니다. P7 전체 또는 final gate를 승인하지 않습니다.",
+    "Main이 실제 보고서를 저장해야 합니다."
+  ],
+  "inspected_sha256": {
+    "AGENTS.md": "cf8b55daec926fff916fdec83a0e0b81822f1105fd3347ece4ba4f13b3b32b55",
+    ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+    ".agents/skills/solo-specialist/SKILL.md": "33378f790f39761948485f1f08617840579714dbb925aa177109a80ac4002c3b",
+    ".agents/skills/solo-code-review/SKILL.md": "e461cb26baa50f1f496bdde0a2f1985b8a005404b751652db729e73cd9af5244",
+    "docs/runs/durable-workbench-storage/plan.md": "640b6c072bc358cce8e0d5e44b2998ce3be06d57526f21a2320a17c0ef241212",
+    "docs/runs/durable-workbench-storage/storage-contract.md": "c58a79f5c62840873e5a2cededc67e9d381006926365fecf07728c5f484fdab7",
+    "docs/runs/durable-workbench-storage/execution/journal-registry-correction-review-v5.packet.json": "6ae7bfe8de4b259b17f58989b0ec68c5f946b9a8db6dd206aa2c43b9c9f0cb66",
+    "docs/runs/durable-workbench-storage/execution/storage-api-freeze-v5-r2.json": "39beabca593739c6bd3b0de9db9926db874c8e6554be5938a755aa88d96252d7",
+    "docs/runs/durable-workbench-storage/execution/journal-registry-checkpoint-review-v5.json": "3055c594caa8b7a254c9c38528b5fbee5c5296323f17205029aa88d3c3558c14",
+    "docs/runs/durable-workbench-storage/execution/journal-registry-correction-result-v5.md": "4f1f0da716ba182eccd04f0f133f5301a1706e75bf6e93a74f75a62ec10df184",
+    "docs/runs/durable-workbench-storage/execution/journal-registry-correction-main-unit-v5.log": "4d4a62cace44f47082041ea8685250f9f29bde8fb4e084dc41d1cfb96e2c832e",
+    "apps/desktop-app/src/host/storage-journal.mjs": "3040d498efd42f80f14b2c9509baea3d27a692e53ee9ccceabb13261627d8e9d",
+    "apps/desktop-app/src/host/storage-journal.test.mjs": "74222ef71960bf5c3bcec1862edce788248ba53e43d110c08e4b2b38c12a4776",
+    "apps/desktop-app/src/host/workspace-registry.mjs": "2314b38de9f57e60a64063f99a9c08777a4d8a84bb527d693b8f799ca34528c2",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs": "6afb7f67fe9c4de7c325416cd96488e3c068ba5f4e5b475e24f40256c726f58c"
+  },
+  "additional_binding_check": {
+    ".solopreneur/roles.json": {
+      "sha256": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0",
+      "matches_packet": true,
+      "inspection": "해시만 확인했습니다. Role catalog 내용은 읽지 않았습니다."
+    }
+  }
+}

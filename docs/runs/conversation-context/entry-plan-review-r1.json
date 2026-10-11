@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "7d183214da970d65f91ec7db59486208063c5a60946781f740623c451359c223",
+    "gate": "plan",
+    "plan_sha256": "2769202ad6febc1f6a7f62abca1ffbbc39daa71245229a9fc0a19a5bb3e8c5b5",
+    "schema_version": 2,
+    "source_sha256": "d1bb3eca2f0706b522dd5d618ef03609a50b68e464cc21b3148fa605743f497f",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "docs/runs/conversation-context/plan.md revision 1은 최신 full18 방향과 PRD AC05에 맞습니다. 첨부·참조, 명시적 retry/edit branch, running steer/queue를 하나의 major 범위로 다루며 완료 범위를 제한합니다. IO·cache·scope·model capability, 원본 digest·policy·unknown 처리, 자동 replay·retry·filesystem restore 금지 조건이 충분합니다. Queue는 Native 설정을 사용하고 F06의 다음 전송 옵션과 구분합니다. 실제 API 확정과 storage 변경 조정은 소비자 구현보다 먼저 수행합니다. Source-facts의 15개 파일 hash가 일치했습니다. 8개 check는 실행 전 계획이며 정확한 경로를 확정해야 합니다. Native compatibility probe는 저장된 정확한 source의 별도 검토 후 fresh synthetic·resume:false·no-active·no-provider 조건에서만 가능합니다. PLAN 통과 후 별도 DESIGN_SPEC binding과 통과가 필요합니다. 이번 검토에서는 파일 수정, 테스트 또는 제품 runtime 실행을 하지 않았습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11ed5-9b5e-7783-9ed5-3365d96c4d9c",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

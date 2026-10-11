@@ -1,0 +1,29 @@
+{
+  "schema_version": 2,
+  "run": "git-review-observation",
+  "reviewer": "design_spec_reviewer",
+  "reviewed": {
+    "contract_sha256": "dea8b663dc6fd45e6ac370de067b4adece872958c2188669f2af1404f3e836da",
+    "documents_sha256": "cfc0ba1e00ab5ba12353e1eb77b7c46ffbf7b3b9c3648e5c4ae94ae77e0c0133",
+    "gate": "design_spec",
+    "plan_sha256": "f83b220e4725bc5b8db573b5486146fcd2cb744a701d2ae6f826178a2fbf4e42",
+    "schema_version": 2,
+    "work_class_sha256": "201d17492a4cefb963a6b8a5a34a68dfbb1017ac43c833a6fd460efa9ffcd387"
+  },
+  "verdict": "pass",
+  "summary": "plan revision7/design version7은 DESIGN-GIT-R6-01의 설계 충돌을 해결합니다. design.md:9는 checked canonical gitDirectory/commonDirectory 발견 후, worktree 복사 전에 중첩을 검사하도록 명시합니다. 제외된 top-level .git 밖의 복사 대상과 metadata가 겹치거나 metadata가 workspace의 ancestor이면 전체 observation을 unsupported_repository로 거부합니다. 따라서 .git -> .meta의 raw config 복사 경로를 설계상 차단합니다. 디렉터리만 조용히 생략하는 방식도 금지합니다. 외부의 분리된 linked-worktree metadata는 계속 허용합니다. 직접 연결된 미해결 privacy 충돌은 발견하지 못했습니다.",
+  "review_boundary": "DESIGN-GIT-R6-01의 metadata 중첩 거부 규칙과 직접 연결된 privacy 및 G2 요구만 검토했습니다. 기존 PLAN의 전체 승인, public DTO/UI, 변경 없는 private-copy 경계는 재심사하지 않았습니다.",
+  "open_findings": [],
+  "evidence_limits": [
+    "AGENTS.md, solo_reader profile, solo-specialist, solo-design-spec-review, r6 finding, 현재 r7 plan/design/contract/packet/input을 읽었습니다.",
+    "reviewed는 top-level copy-design-input-r7.json 전체 parsed object와 같습니다. 현재 harness review-input 결과와의 일치도 확인했습니다. packet의 문서·plan·routing 해시, contract와 dispatch 해시도 일치합니다. run.json의 상태는 active입니다.",
+    "design.md:77은 실제 synthetic .git -> .meta fixture, credential canary, private metadata/config 미생성을 G2에 요구합니다. normal/error/cancel/timeout/unproved-exit/controlled-crash의 재귀 canary 검사에도 이 배치를 포함합니다. 이는 필수 검증 요구이며 실행 결과가 아닙니다.",
+    "이 pass는 제한된 DESIGN_SPEC correction 판정입니다. 구현, G2, installed Git capability 또는 runtime 통과를 승인하지 않습니다. Darwin FD 경로의 대안 사용이나 fallback을 승인하지 않습니다.",
+    "파일·ledger 쓰기, 수정, 재위임, 새 Git·Native·Bun·Electron·provider·UI 실행을 하지 않았습니다. harness status는 Git inventory를 실행하므로 사용하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11c04-5eef-7783-8846-39fc677a653f",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "attestation": "현재 CODEX_THREAD_ID와 기록된 r7 dispatch의 child_ref가 일치합니다. profile 이름이나 dispatch 기록은 OS sandbox 또는 runtime 승인 증명이 아닙니다."
+  }
+}

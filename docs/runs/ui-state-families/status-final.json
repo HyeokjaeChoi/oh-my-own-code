@@ -1,0 +1,81 @@
+{
+  "run": "ui-state-families",
+  "schema_version": 2,
+  "status": "active",
+  "work_class": "routine",
+  "required_gates": [
+    "code",
+    "checks"
+  ],
+  "gaps": [],
+  "dispatches": [
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "01a11e71-374b-7f81-bb5e-5cb9f36f194e",
+      "context": "fresh",
+      "packet": {
+        "path": "docs/runs/ui-state-families/final-code-packet.json",
+        "sha256": "2eae0679f459d099ca5821e7a7a9377b40be7a5752e40fa15372b37b088e6a97"
+      },
+      "phase": "review",
+      "recorded_at": "2026-10-09T02:14:58+00:00",
+      "role": "reviewer",
+      "role_instruction_sha256": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      "routing": {
+        "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+        "input_sha256": {
+          ".agents/skills/solo-code-review/SKILL.md": "e461cb26baa50f1f496bdde0a2f1985b8a005404b751652db729e73cd9af5244",
+          ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+          ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+          ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+        },
+        "mode": "default",
+        "phase": "review",
+        "profile": "solo_reader",
+        "profile_file": ".codex/agents/solo_reader.toml",
+        "references": [],
+        "role": "reviewer",
+        "schema_version": 2,
+        "skill": "solo-code-review",
+        "skill_file": ".agents/skills/solo-code-review/SKILL.md"
+      },
+      "routing_request": {
+        "basis": "client_defaults_requested"
+      }
+    },
+    {
+      "attestation": "Coordinator-reported link; not runtime identity attestation",
+      "child_ref": "01a11e7c-76ab-7bb0-9f3b-b751899d4fde",
+      "context": "fresh",
+      "packet": {
+        "path": "docs/runs/ui-state-families/final-code-packet-r2.json",
+        "sha256": "db027011e30e7bc2ecc44e291388b4ed734ed44267035d49baf9f8ea2c71261b"
+      },
+      "phase": "review",
+      "recorded_at": "2026-10-09T02:27:15+00:00",
+      "role": "reviewer",
+      "role_instruction_sha256": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+      "routing": {
+        "bootstrap": ".agents/skills/solo-specialist/SKILL.md",
+        "input_sha256": {
+          ".agents/skills/solo-code-review/SKILL.md": "e461cb26baa50f1f496bdde0a2f1985b8a005404b751652db729e73cd9af5244",
+          ".agents/skills/solo-specialist/SKILL.md": "5f7c9dbdd7ee87f543116acaf9d5c9d68b0182f9ffad7bac6948a857ff5a5c82",
+          ".codex/agents/solo_reader.toml": "9cb9e5cbf4ddb6e76f8172f64467935ca28383907f5b99b91bbe471b98d6adab",
+          ".solopreneur/roles.json": "07676cc0488eba2e4855cc6446009dac54979af30a49829002700eb2929fb7b0"
+        },
+        "mode": "default",
+        "phase": "review",
+        "profile": "solo_reader",
+        "profile_file": ".codex/agents/solo_reader.toml",
+        "references": [],
+        "role": "reviewer",
+        "schema_version": 2,
+        "skill": "solo-code-review",
+        "skill_file": ".agents/skills/solo-code-review/SKILL.md"
+      },
+      "routing_request": {
+        "basis": "client_defaults_requested"
+      }
+    }
+  ]
+}

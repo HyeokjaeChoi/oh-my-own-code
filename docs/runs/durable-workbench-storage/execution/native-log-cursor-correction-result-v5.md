@@ -1,0 +1,4 @@
+# Native log cursor correction
+Fresh author01a10735-cef4-72f1-b6c9-b2451d70d542 owns probe/helper/test only. Explicit historical query after0/followfalse per local pinned SDK contract. Validates synced aggregate/completion, bounds redacted count/keys/type/seq/ID/head diagnostic. Retains nonempty rename/type/ID/version/seq/hash/order/original-event checks. Cursor omission as actual failure cause remains unverified until Main runtime. No production/API/SQL changes or fabricated events.
+Writer51/51 Node(original49+2) pass; Prettier WRITE+CHECK, ESLint and three syntax checks pass, including structuredClone lint correction. No Native/Electron/UI/provider runtime/selfapproval. Failure roots retained; historical41795 unverified.
+SHA probe79d1198b770d195e4ab5dadc2c8ceda46ac1355c4e4aede723bf59afe788569c; helper96f3e01145f222d287781e37ca4a76f60854f1b8606783257af7b38aa21ce32e; testc9b107201333c9bba0d68c699b8440c727c143602ac313e86529bd137849bc13.

@@ -1,0 +1,68 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "3fdfd387a1ae9c32d244d4b17634b5054b71ba0b7ab5e6665051524c6fbf85a1",
+    "document_requirement_epoch": 1,
+    "documents_sha256": "60fde95f2736a665888588c0bd3052fa1b201ef3e1c9791268fe80426c0bbe46",
+    "gate": "design_spec",
+    "plan_sha256": "420f5b81e718791df92f741dd85771c33448302a9c2a219b5e0f58f357606ed5",
+    "schema_version": 2,
+    "work_class_sha256": "ba16432c80da2b47bb752cb44e06f079cb2f2912df38745c1f3378038adbe968"
+  },
+  "verdict": "pass",
+  "summary": "DS1 수정은 통과입니다. design.md v1의 runtimeEpoch/readId와 cancel identity가 현재 v2 contract, DTO, admission 및 transport에 맞습니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "DS1",
+      "location": "docs/runs/permission-policy-observation/design.md:9",
+      "resolution": "기존 v2 read envelope의 정확한 필드명을 명시했습니다. 취소는 같은 runtimeEpoch/readId를 사용하며 outer requestId를 추가하지 않습니다.",
+      "evidence": [
+        "apps/desktop-app/src/workbench-contract.mjs:593 — validateEnvelope의 closed schema는 runtimeEpoch/readId를 허용하며 outer epoch/requestId를 허용하지 않습니다.",
+        "apps/desktop-app/src/workbench-contract.mjs:644 — validateCancel은 version:2, runtimeEpoch, readId를 요구합니다.",
+        "apps/desktop-app/src/desktop-bridge.d.ts:1014 — WorkbenchEnvelope와 WorkbenchCancel도 같은 필드를 사용합니다.",
+        "apps/desktop-app/src/host/workbench-admission.mjs:262 — read subscriber key는 sender, epoch, envelope.readId입니다.",
+        "apps/desktop-app/src/host/workbench-admission.mjs:793 — cancel은 runtimeEpoch를 확인한 후 같은 sender, epoch, readId로 subscriber를 찾습니다.",
+        "apps/desktop-app/src/renderer/shared/transport/index.ts:105 — 요청과 취소에 같은 readId와 runtimeEpoch를 전달합니다."
+      ]
+    }
+  ],
+  "review_boundary": {
+    "run": "permission-policy-observation",
+    "plan_revision": 1,
+    "design_version": "v1",
+    "active_work_class": "routine",
+    "scope": "DS1의 outer envelope 필드명, cancel identity 및 관련 r2 binding만 검토했습니다.",
+    "historical_plan_review": "entry-plan-review-r1.json의 초기 major plan PASS를 확인했습니다. 새 plan 판정은 하지 않았습니다.",
+    "unchanged_design": "이전 design review의 변경 없는 평가를 재검토하지 않았습니다.",
+    "limits": "permission.policy.read의 구현, READ_TYPES 등록, runtime 동작, resource, 테스트 및 실제 UI는 이번 판정 범위 밖입니다."
+  },
+  "provenance": {
+    "run": "permission-policy-observation",
+    "reviewer_role": "design_spec_reviewer",
+    "child_task_id": "01a12037-86ea-7381-9b43-9edc29a9490d",
+    "identity_source": "현재 환경의 CODEX_THREAD_ID",
+    "independent_review": true,
+    "design_authored_by_reviewer": false,
+    "prior_reviewer_reused": false,
+    "report_only": true,
+    "files_modified": false,
+    "delegation_performed": false,
+    "probe_or_tests_executed": false,
+    "product_runtime_executed": false,
+    "run_status": "active",
+    "skills_applied": [
+      "solo-specialist",
+      "solo-design-spec-review"
+    ],
+    "method": "지정 문서와 현재 protocol·DTO·admission·transport 소스를 읽고 대조했습니다. design 및 plan의 SHA256을 확인했습니다.",
+    "binding_copy": "entry-design-input-r2.json의 전체 객체를 reviewed에 그대로 복사했습니다.",
+    "binding_verification": "python3 .solopreneur/harness.py review-input permission-policy-observation --gate design_spec의 현재 출력이 r2 input 전체와 일치합니다.",
+    "registered_design_sha256_matches": true,
+    "plan_sha256_matches": true,
+    "full_source_fingerprint_recomputed": false,
+    "runtime_model_or_os_sandbox_attested": false,
+    "evidence_limits": "문서 수정에 대한 정적 검토입니다. 제품 구현이나 runtime 검증 통과를 증명하지 않습니다."
+  },
+  "next_dependency": "Main이 이 독립 보고서를 등록하고 design_spec handoff를 확인한 후 제품 소스 구현을 진행할 수 있습니다."
+}

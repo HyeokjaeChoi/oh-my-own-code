@@ -1,0 +1,72 @@
+(node:71552) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Permission policy explicit public API reads frozen envelope and detaches ordered original rules (6.797792ms)
+▶ Permission policy malformed and miscorrelated responses never become current
+  ✔ 0 (0.4265ms)
+  ✔ 1 (0.301667ms)
+  ✔ 2 (0.295667ms)
+  ✔ 3 (0.265834ms)
+  ✔ 4 (0.230125ms)
+  ✔ 5 (0.217292ms)
+  ✔ 6 (0.196625ms)
+  ✔ 7 (0.428458ms)
+  ✔ 8 (0.354167ms)
+  ✔ 9 (0.205791ms)
+  ✔ 10 (0.162875ms)
+✔ Permission policy malformed and miscorrelated responses never become current (3.6405ms)
+▶ Permission policy absent, present empty and unavailable remain distinct
+  ✔ absent (0.244625ms)
+  ✔ empty (0.1535ms)
+  ✔ unavailable (0.143458ms)
+✔ Permission policy absent, present empty and unavailable remain distinct (0.686916ms)
+✔ Permission policy cancellation and reentry reject late and copied request identities (0.485208ms)
+▶ Permission policy pending and completed observations retire on authority races without revival
+  ✔ epoch/pending (0.314458ms)
+  ✔ epoch/observed (0.309333ms)
+  ✔ trust/pending (0.216334ms)
+  ✔ trust/observed (0.251375ms)
+  ✔ untrusted/pending (0.23275ms)
+  ✔ untrusted/observed (0.199667ms)
+  ✔ rootABA/pending (0.228208ms)
+  ✔ rootABA/observed (0.227667ms)
+  ✔ sessionABA/pending (0.230625ms)
+  ✔ sessionABA/observed (0.209834ms)
+  ✔ workspaceABA/pending (0.229209ms)
+  ✔ workspaceABA/observed (0.270042ms)
+  ✔ floor/pending (0.213459ms)
+  ✔ floor/observed (0.300834ms)
+  ✔ disconnect/pending (0.204125ms)
+  ✔ disconnect/observed (0.246709ms)
+  ✔ hold/pending (0.21375ms)
+  ✔ hold/observed (0.907083ms)
+  ✔ resourceHold/pending (0.242542ms)
+  ✔ resourceHold/observed (0.210625ms)
+  ✔ activeSession/pending (0.17925ms)
+  ✔ activeSession/observed (0.235875ms)
+✔ Permission policy pending and completed observations retire on authority races without revival (6.515541ms)
+✔ Permission policy never auto reads on start, polling, focus, selection, draft, send or decision (2.300333ms)
+▶ Permission policy missing, stale, held and untrusted authority performs zero read IO
+  ✔ empty (0.125125ms)
+  ✔ staleSnapshot (0.085917ms)
+  ✔ untrusted (0.090917ms)
+  ✔ resourceHold (0.089625ms)
+  ✔ activeSession (0.073625ms)
+  ✔ disconnected (0.080917ms)
+  ✔ archived (0.093417ms)
+✔ Permission policy missing, stale, held and untrusted authority performs zero read IO (0.864334ms)
+✔ Permission policy reducer independently refuses malformed raw response and copied request identity (0.249792ms)
+✔ Permission policy original receipt advances floor and cannot revive old observation (0.295959ms)
+✔ Permission policy timeout cannot publish late result or change draft (0.218583ms)
+✔ Permission policy cancellation affects only its read and uses the frozen cancel key (0.178125ms)
+▶ Permission policy accepted send and decision paths never schedule a policy read
+  ✔ message.send (0.22775ms)
+  ✔ permission.respond (0.181167ms)
+✔ Permission policy accepted send and decision paths never schedule a policy read (0.495875ms)
+ℹ tests 57
+ℹ suites 0
+ℹ pass 57
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 292.668875

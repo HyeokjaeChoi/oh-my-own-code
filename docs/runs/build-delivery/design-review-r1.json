@@ -1,0 +1,49 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "4d942fcc591a3dae5a400923651ee51d27b43d4bf10307bd12699b0ce6906dd1",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "design",
+    "plan_sha256": "4e25a999734766c825fee8a549e35fd1db83f7be886dfff12a2998d31bad6985",
+    "schema_version": 2,
+    "source_sha256": "455ab035f53392e45d20e09dcc7b70b05c3d6dcce69d7cdf5f47e7ae46a5ce12",
+    "verification_sha256": "d9ab66fe5875c03787a77eacd2ae497720a9ad6fb8a82f33abb68fbc6a2336b2"
+  },
+  "verdict": "changes_requested",
+  "summary": "At desktop and narrow widths the synthetic transcript renders without clipping, and keyboard focus is visible. The current slice still obscures speaker/tool provenance, presents a non-actionable fixture preview as a focusable link, and compresses its heading at 320px.",
+  "open_findings": [
+    {
+      "severity": "major",
+      "path": "apps/workbench-web/src/widgets/session-workspace/ui/AssistantTranscript.tsx:67",
+      "trigger": "Initial transcript at 1280px and 390px",
+      "impact": "User and assistant text, tool result and appended event read as one stream with no clear source/speaker distinction.",
+      "correction": "Add restrained speaker and event provenance while preserving the quiet transcript."
+    },
+    {
+      "severity": "major",
+      "path": "apps/workbench-web/src/widgets/session-workspace/ui/AssistantTranscript.tsx:20",
+      "trigger": "Initial LinkPreview render",
+      "impact": "Tool name, call state and target/result are hidden; preview may be mistaken for assistant-authored content.",
+      "correction": "Add a compact ToolCall summary showing the tool, state and target; keep the validated result subordinate."
+    },
+    {
+      "severity": "moderate",
+      "path": "apps/workbench-web/src/workbench.css:38",
+      "trigger": "320x720 viewport",
+      "impact": "Synthetic badge compresses the heading into three short lines and weakens scan hierarchy.",
+      "correction": "Stack badge and heading at the narrow breakpoint and give the heading full width."
+    },
+    {
+      "severity": "moderate",
+      "path": "packages/ui/src/tool-ui/link-preview/link-preview.tsx:64",
+      "trigger": "Keyboard focus at 390px",
+      "impact": "A DIV with role=link and tabindex=0 has no href; the example.invalid fixture offers no useful navigation and no native link behavior.",
+      "correction": "Make the fixture preview non-actionable, or use a native anchor only when a meaningful validated destination exists."
+    }
+  ],
+  "limits": "Reviewed static synthetic fixture only. No live stream, permission card, dark mode, zoom, screen reader or real SDK behavior verified.",
+  "provenance": {
+    "child_task_id": "/root/bootstrap_design_qa_r1",
+    "author_task_id": "/root"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "d6d41070184bbc58fedc5ac337926a46ffb31d84767b76ee04da17474a2668b5",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "0999e215f16c747e4d6d3953e43ad595341324a99394edfabe4ec408ebe041ee",
+    "schema_version": 2,
+    "source_sha256": "98778051eecedf75d492bea2a04f703d2f8f508b6861de5672a8b985befa9dbf",
+    "verification_sha256": "8a9fe0740f73fe13fefb5d0d98b5c0cdc28aff8d0ae97ed3fa2272c2d4fd69f2",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "pass",
+  "summary": "제한된 prerequisite probe의 최종 코드와 실제 실행 증거를 통과로 판정합니다. 수정이 필요한 구체적 결함은 없습니다. 이 보고서의 독립 실행 분석으로 plan rev1의 T3를 충족합니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a1202e-36ff-7d53-a6bb-e7bd36861f56",
+    "identity_source": "현재 환경의 CODEX_THREAD_ID",
+    "independent_review": true,
+    "report_only": true,
+    "files_modified": false,
+    "delegation_performed": false,
+    "probe_or_tests_executed": false,
+    "method": "파일 읽기, 소스 대조, 저장된 증거 분석, 해시 계산만 수행했습니다.",
+    "runtime_model_or_os_sandbox_attested": false
+  },
+  "scope": {
+    "run": "permission-tool-boundary-probe",
+    "plan_revision": 1,
+    "work_class": "routine",
+    "passes": [
+      "T1~T3 요구사항과 구현·증거를 대조했습니다.",
+      "실제 Tool·Permission 경로, 파일 효과, 격리 조건, 종료 처리와 실패 판정을 검토했습니다."
+    ],
+    "source_paths": [
+      "apps/desktop-app/scripts/permission-tool-probe.mjs",
+      "apps/desktop-app/scripts/fixtures/permission-tool-native.mjs",
+      "apps/desktop-app/scripts/permission-tool-probe.test.mjs"
+    ],
+    "judgment": "고정된 Native runtime에서 수행한 auth-free synthetic prerequisite만 승인합니다."
+  },
+  "verification": {
+    "review_binding_hashes_match": true,
+    "registered_artifact_hashes_match": true,
+    "frozen_source_files_checked": 716,
+    "frozen_source_mismatches": [],
+    "changed_source_paths_exactly_three": true,
+    "all_three_absent_at_baseline": true,
+    "deleted_source_paths": [],
+    "source_unchanged_since_pre_execution_code_pass": true,
+    "saved_checks": {
+      "unit": "7/7 PASS",
+      "lint": "PASS",
+      "format": "PASS",
+      "native": "PASS",
+      "assessment": "저장된 실행 기록은 검토 대상 소스에 연결됩니다. 종료 코드는 모두 0이며 timeout, interruption, 입력 변경 기록이 없습니다."
+    },
+    "resource_verification": {
+      "manifest_sha256": "3056a869509ad240f17fb6e2a40595729d15425c95b5bf60010b94cf5e5358a0",
+      "engine_sha256": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+      "current_manifest_and_engine_match_evidence": true,
+      "critical_module_and_implementation_chunk_hashes_match_manifest": true,
+      "full_resource_inventory_repeated": false,
+      "basis": "동일한 manifest의 38432개 항목은 pre-code reviewer가 검증했습니다. 이번에는 현재 manifest, engine 및 실제 호출 경로의 모듈·구현 chunk를 대조했습니다. 재검증을 요구할 불일치는 없습니다."
+    }
+  },
+  "actual_child_provenance": {
+    "evidence": "docs/runs/permission-tool-boundary-probe/evidence/native-r1/report.json",
+    "report_sha256": "6c7f450640487afbfd2275a1006935a78b643ffba13dbbd95497a01bc7be8900",
+    "pid": 62397,
+    "code": 0,
+    "signal": null,
+    "exited": true,
+    "timedOut": false,
+    "spawnFailed": false,
+    "protocolOverflow": false,
+    "signals": [],
+    "retained_root": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-permission-tool-PwDf2d",
+    "retained_root_exists": true,
+    "retained_root_mode": "0700",
+    "retained_child_matches_frozen_source": true,
+    "assessment": "parent는 실제 자식의 exit 이벤트에서 종료 정보를 기록합니다. 저장된 성공 protocol, 정상 종료, 복사된 child 해시와 보존된 namespace가 일치합니다."
+  },
+  "runtime_evidence_assessment": {
+    "actual_path": "WriteTool.Plugin.effect → Tool snapshot.execute → 원래 Permission.assert → FileMutation.writeTextPreservingBom → Native local filesystem driver",
+    "permission_observer": "Effect.onExit로 원래 assertion 결과를 기록합니다. 정책 판단과 파일 쓰기를 추가하지 않습니다.",
+    "same_target_and_payload_all_cases": true,
+    "baseline_reset_and_exact_byte_comparison_each_case": true,
+    "baseline_sha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+    "requested_sha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+    "cases": [
+      {
+        "name": "once",
+        "verdict": "pass",
+        "assessment": "pending 요청의 action, resource와 tool source를 확인합니다. 응답 전에는 기준 바이트가 유지됩니다. once 응답 후 실제 assertion이 성공하고 파일 바이트가 요청 내용과 정확히 일치합니다."
+      },
+      {
+        "name": "reject",
+        "verdict": "pass",
+        "assessment": "pending 상태에서 기준 바이트를 확인합니다. reject 응답 후 원래 assertion에서 Permission.DeclinedError를 확인하고 파일 바이트가 유지됩니다."
+      },
+      {
+        "name": "policy_deny",
+        "verdict": "pass",
+        "assessment": "session의 configured deny로 원래 assertion에서 Permission.BlockedError를 확인합니다. pendingSeen은 false이며 파일 바이트가 유지됩니다."
+      }
+    ],
+    "settlement": "각 tool fiber가 완료되고 session 및 전체 pending 요청이 0인지 확인합니다. Permission.close와 Effect.scoped 종료 후에만 child 성공 보고서를 만듭니다.",
+    "retained_final_target_matches_baseline": true,
+    "source_resource_engine_before_after_stable": true,
+    "T1": "충족",
+    "T2": "충족",
+    "T3": "저장된 Node·static 검사, 별도 pre-execution CODE PASS와 이번 독립 실행 분석으로 충족"
+  },
+  "limits": [
+    "제품 F09, full18, provider, UI 또는 production Main의 acceptance를 승인하지 않습니다.",
+    "session 준비는 production upsertProject와 Session.Created projector를 사용합니다. production Session.Service.create는 검증하지 않았습니다.",
+    "Tool snapshot의 CodeMode execute 경로는 호출하지 않았습니다.",
+    "OS sandbox, 가능한 모든 파일·network 접근의 차단, descendant 부재 또는 power-loss 복구를 증명하지 않습니다.",
+    "성공 실행은 실제 scoped 종료를 뒷받침합니다. 모든 실패 시점의 복구를 검증한 것은 아닙니다.",
+    "이번 검토에서는 probe와 검사를 재실행하지 않았습니다. 중간 파일 효과는 저장된 report와 해시가 일치하는 assertion 코드로 평가했습니다.",
+    "후속 B06 설계 준비와 제품 구현은 이번 판정 범위 밖입니다. 이 prerequisite에 추가 검토 절차는 필요하지 않습니다."
+  ]
+}

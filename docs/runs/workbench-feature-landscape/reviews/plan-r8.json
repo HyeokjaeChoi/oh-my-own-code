@@ -1,0 +1,44 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "plan",
+    "plan_sha256": "a22761fdd6a8c1f9a959cfcbe3122af11dacb35e512494d0ca18ab7f4a070d5c",
+    "contract_sha256": "c0c53b9bdad432628ef90eeec945932dd0b5dd0555380fc15781156b2e3e7378",
+    "source_sha256": "3de8cd6968c1a88fba8e737f01dacc5d3be0301ed1470e0fed5f36e5abfc1ff6"
+  },
+  "verdict": "pass",
+  "summary": "벤더 비교표는 작업공간 진입, import, 일반 폴더/Git worktree create, 앱 목록 제거/archive, 물리 삭제, 우측 아티팩트 패널, 도구 호출·승인·결과, skills/MCP/plugin 목록의 8개 범주를 네 제품군에 대해 포함한다. 이전 누락 세 범주가 복원되고 등록 구조 검사에도 추가되었다. 네 수명주기 동작의 벤더별 확인 결과와 조사·권고·승인 경계가 유지되어 이번 계획 재검토에 차단 지적은 없다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "WFL-PLAN-03",
+      "resolution": "보고서 벤더 비교표에 우측 아티팩트 패널, 도구 호출·승인·결과, Skills / MCP / plugin 목록 행이 복원되었으며 각 행은 네 제품군별 근거와 해당 문서 공백을 설명한다. contract report-structure의 required 목록에도 세 행이 추가되어 이번 범위 축소의 반복을 검출한다."
+    },
+    {
+      "id": "WFL-ANALYSIS-01",
+      "resolution": "네 수명주기 질문을 별도 행으로 유지한다. Create 행은 네 벤더 모두 일반 폴더 생성과 Git worktree 생성을 구분하며 Codex의 문서화된 격리 worktree 지원을 포함한다. Claude의 기존 폴더 선택과 영속 등록 미확인, archive와 worktree 제거의 연계가 보존된다. Cursor와 OpenCode의 독립적인 앱 목록 제거는 각각 명시적으로 확인되지 않았다고 표시한다. 이는 수정 반영의 계획 수준 확인이며 최종 analysis gate를 대신하지 않는다."
+    },
+    {
+      "id": "WFL-PLAN-01",
+      "resolution": "계획 Confirmed outcome 및 Decisions, 계약 DR-1, 보고서 구현 범위 설명은 보존된 승인 제품 범위와 현재 PRD/UX v0.6 수정본의 검토·정확한 해시 승인 대기를 구분한다. Electron/macOS/Windows/app-owned OpenCode v2 sidecar는 사용자 선택으로 유지되며 ADR Accepted를 구현 승인이나 런타임 검증으로 해석하지 않는다."
+    },
+    {
+      "id": "WFL-PLAN-02",
+      "resolution": "계획 및 계약 AC-1/AC-3의 import, create, 목록 제거/archive, 물리 삭제 분리 요구가 보고서의 벤더 비교와 저장소 구현 표에 유지된다. 네 기능군과 네 제품군, 사실·추론·문서 공백 구분, 코드 근거, 위험과 후속 순서 권고도 유지된다."
+    }
+  ],
+  "review_notes": [
+    "현재 plan/contract 및 보고서, 이전 plan-r7과 analysis-r2, PRD/UX v0.6 헤더, spec-index v0.12 및 ADR-0002의 승인 경계를 대조했다. 보고서 벤더 비교표의 본문 행은 8개이며 각 행에 네 제품군의 결과가 있다.",
+    "계획 SHA256 및 ASCII canonical JSON 계약 SHA256을 독립 계산하여 요청 binding과 일치함을 확인했다. source_sha256은 현재 run.json plan.source_sha256 등록값과 대조했으며 전체 소스 지문은 독립 재생성하지 않았다. 검토한 보고서 SHA256은 cd60d3826ccc298b4d6fc5e310f6fc81cd67573373dd894b73f919a4a507ab21이다.",
+    "구조 검사는 필요한 행·섹션·출처 존재를 확인하는 보조 수단이다. 벤더 사실 정확성, 인용 충실도와 최종 보고서 품질은 별도의 독립 analysis review가 담당한다. 이번 검토는 외부 출처나 앱 코드를 재조사하지 않았다.",
+    "권장 전달 순서는 권고이며 승인된 릴리스 계획의 개정이 아니라고 명시한다. 조사 전용 범위, 제품 계약·앱 코드 변경 금지, 정적 점검과 패키징·실제 SDK 실행·OS 보안 증거의 구분은 유지된다.",
+    "계획 헤더 Revision 4와 변경 이력 R5는 표시상 불일치한다. 판정은 요청된 정확한 plan SHA256에 한정하며 이 표기 자체는 범위나 승인 경계의 차단 사유가 아니다.",
+    "이 pass는 해당 plan gate에 한정한다. 최종 analysis 승인, 현재 제품/설계 문서 승인, 구현 승인 또는 런타임 검증을 대신하지 않는다."
+  ],
+  "review_boundary": "Fresh-context narrow independent plan re-review of restored eight-category vendor coverage, four separately stated lifecycle outcomes, registered structural coverage, recommendations, and scope/approval boundaries. No external vendor re-research, application code inspection or edits, runtime tests, plan/contract/report edits, or ledger edits. Only the requested schema-v2 review artifact was written.",
+  "provenance": {
+    "child_task_id": "/root/workbench_plan_review_r8",
+    "author_task_id": "/root"
+  }
+}

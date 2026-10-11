@@ -1,0 +1,65 @@
+{
+  "schema_version": 2,
+  "run_id": "build-delivery",
+  "reviewer_role": "product_reviewer",
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "product",
+    "plan_sha256": "7bcacee7766d65c157a9b1e8b402f9a77e792f6907c89a045b084a62546999d3",
+    "contract_sha256": "1a5b79ccd693e06ae42c169818e444f63bbaa5eaa3a80f5207f5fd217b838386",
+    "documents_sha256": "ee775f27a38cbbb9c3353831d3e4337ae165307ebfd619986fdf2cd9091f906a"
+  },
+  "plan": {
+    "path": "docs/runs/build-delivery/plan.md",
+    "revision": 7,
+    "sha256": "7bcacee7766d65c157a9b1e8b402f9a77e792f6907c89a045b084a62546999d3"
+  },
+  "contract": {
+    "path": "docs/runs/build-delivery/contract.json",
+    "sha256": "1a5b79ccd693e06ae42c169818e444f63bbaa5eaa3a80f5207f5fd217b838386"
+  },
+  "reviewed_artifacts": [
+    {
+      "path": "docs/product/prd.md",
+      "version": "0.2",
+      "sha256": "597e64d100ea67b878762fde160b3a6d5c2f1275662661094dadfe0dad270dfb"
+    }
+  ],
+  "supporting_artifacts": [
+    {
+      "path": "docs/engineering/runtime-info-boundary.md",
+      "sha256": "653138d736c32d94efba2580d0d6fa07b0cc31034fb7f78ef5387eb114cea7a7"
+    },
+    {
+      "path": "docs/runs/build-delivery/user-approval.json",
+      "sha256": "02ae6a4de1071e07e1bf67df8873cf7af8940a28a5d1c042e6fb70550a450b6d"
+    },
+    {
+      "path": "docs/runs/domain-specs/prd-approval.json",
+      "sha256": "c378f8061726b6ff9940ff4fd3b1f111a62b4d1c6f8144e2d0562a314a19f4ba"
+    }
+  ],
+  "verdict": "pass",
+  "summary": "Plan revision 7 and contract AC-8 preserve approved PRD v0.2 product scope. The bridge-owned runtime-info validator and one-read wrapper are internal evidence and data-minimization work supporting the existing runtime, verification, and local diagnostics objectives. Fixed redacted invalid-schema and read-failure outcomes do not add a user-facing feature, browser route, authentication classification, host-health claim, or new execution authority. The plan retains all PRD AC-01–18 and full release criteria. No material product contradiction or unsupported scope addition was found.",
+  "open_findings": [],
+  "review_boundary": "Fresh read-only product-scope review of the registered PRD v0.2 against the current build-delivery revision 7 plan, AC-8 contract, runtime-info design boundary, and recorded user approvals. This verdict concerns document coherence and scope only.",
+  "verification_limits": [
+    "The prior approval binds PRD v0.2 and the continuation approval binds spec-index v0.3 for implementation, technical probes, local-browser build, verification, and local monitoring within that PRD. Neither approval establishes that the new AC-8 code or runtime behavior works.",
+    "The pinned-client probe uses injected synthetic fetch. Its one-request and zero-ambient-fetch observations can support validator behavior for those fixtures, but do not prove OS network isolation, a live SDK host, ownership, availability, version compatibility, authentication, control-channel security, recovery, or product readiness.",
+    "The two new AC-8 checks are partial evidence mapped in the plan and contract to AC-2/4/6/8 and AC-2/4/7/8 respectively. Existing E2E and operational drills use synthetic local fixtures and cannot complete PRD AC-01–18 or actual monitoring obligations by themselves.",
+    "All 10 packet document hashes, plan and contract hashes, and approval target/evidence hashes matched disk. No implementation, app tests, service, or live SDK host was run for this review."
+  ],
+  "next_handoff": "Coordinator registers this independent product review and checks the current product handoff; design-spec and plan reviews remain separate gates before dependent implementation.",
+  "provenance": {
+    "child_task_id": "/root/product_review_r7",
+    "author_task_id": "/root",
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "high",
+    "requested_route": "gpt-6-sol/high",
+    "runtime_identity_verified": false,
+    "review_mode": "Fresh independent read-only product-scope artifact review; sole written output is this assigned report.",
+    "runtime_executed": false,
+    "tests_executed": false,
+    "ledger_modified": false
+  }
+}

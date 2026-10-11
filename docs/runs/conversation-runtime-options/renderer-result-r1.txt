@@ -1,0 +1,27 @@
+허용된 **7개 파일 구현을 완료했습니다. 승인 결과는 아닙니다.**
+
+- model별 Variant, 실행 중 NEXT draft 편집, immutable send를 구현했습니다.
+- 사라진 선택은 유지하고 전송을 막습니다. 늦은 snapshot/ACK는 현재 draft와 설정을 바꾸지 않습니다.
+- 요청값·Native 세션 설정·같은 assistant 응답의 runtime을 분리했습니다.
+
+검증 결과:
+
+- 실제 RED 확인 후 GREEN.
+- 전체 store 테스트 **1,437/1,437 통과**. 기존 테스트 원본 bytes 보존.
+- `tsc --noEmit`, scoped ESLint, Prettier 모두 exit `0`.
+- boundary 통과: source `93`, negative fixture `68`, positive fixture `16`.
+- producer freeze **6/6 hash 유지**.
+
+fixture label은 `Agent 요청`, `모델 요청`, `Variant 요청`입니다. hook은 `data-runtime-source`, `data-response-runtime`, `data-message-id`, `data-variant-cleared`입니다. 실제 320/760/200% 화면 검증과 독립 CODE/RENDER는 Main 후속 작업입니다.
+
+최종 SHA-256입니다. 경로 기준은 `/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/`입니다.
+
+```text
+4076602b971cb26c11077b7802304a5fe334085f86c7a2cec24e08d48e968100  renderer/entities/workbench/model/store.ts
+b16128276377a2305b18ed8ad07b3f9ba5b8e411a78d1c6242247a97bec0814b  renderer/entities/workbench/model/controller.ts
+5cec4dec4b310d94b86dc2cee6a760c065b7ee9a69f9ace5bd0cc0726bece6df  renderer/entities/workbench/index.ts
+0781427c09e932cb91bcc0df48b668430841672a379c6231b5172729ada1469b  renderer/shared/api/index.ts
+6ec95ce0cad41d54e9b73ab013f88a56b1c8d20c511824b9f2e217d3d3feeb42  renderer/widgets/conversation/index.tsx
+854eadf153bc47061b8802964c0d87cccce1df18aee0f24c745c973ae8b2aef7  renderer/widgets/conversation/conversation.module.css
+d1f2dfa8fbcbdd5706244f9f3ae2e6eae5d223a51959fa16cc0901d4e3c57379  workbench-store.test.mjs
+```

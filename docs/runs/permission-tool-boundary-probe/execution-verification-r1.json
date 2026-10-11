@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "native": "PASS",
+  "cases": [
+    {
+      "name": "once",
+      "result": "pass",
+      "pendingSeen": true,
+      "beforeSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+      "afterSha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+      "requestedSha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+      "nativeAssertion": "success",
+      "settled": true
+    },
+    {
+      "name": "reject",
+      "result": "pass",
+      "pendingSeen": true,
+      "beforeSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+      "afterSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+      "requestedSha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+      "nativeAssertion": "Permission.DeclinedError",
+      "settled": true
+    },
+    {
+      "name": "policy_deny",
+      "result": "pass",
+      "pendingSeen": false,
+      "beforeSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+      "afterSha256": "5c54b1cd9216cc16d115830d82d34728ddf4a9b4386f638c013d73e9092313df",
+      "requestedSha256": "5d4e38736387ae69c7b5eeeb62745cb40d792f52ccfc155285dab2b9e96cb8df",
+      "nativeAssertion": "Permission.BlockedError",
+      "settled": true
+    }
+  ],
+  "actual_child_exit": {
+    "pid": 62397,
+    "code": 0,
+    "signal": null,
+    "exited": true,
+    "timedOut": false,
+    "signals": []
+  },
+  "source_resources_engine_stable": true,
+  "report_sha256": "6c7f450640487afbfd2275a1006935a78b643ffba13dbbd95497a01bc7be8900",
+  "unit": "7/7 PASS",
+  "lint": "PASS",
+  "format": "PASS",
+  "limits": [
+    "Pinned Native built-in tool and synthetic namespace only; not provider, production Main, UI or full F09 acceptance.",
+    "No OS sandbox or absence of all possible filesystem/network access is claimed.",
+    "Namespaces are retained; owned process exit is not descendant enumeration or power-loss evidence."
+  ]
+}

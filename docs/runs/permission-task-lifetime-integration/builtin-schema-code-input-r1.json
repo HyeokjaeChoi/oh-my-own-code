@@ -1,0 +1,62 @@
+{
+  "scope": "revision12 bounded exact7 schema/options projection CODE input, no wholefeature approval",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/native-permission-control.mjs",
+      "bytes": 48278,
+      "sha256": "d8e27fedb61fe724d6ee3c9df80c8cc1644a838cb8ef8e9dc0406f7a5160f7ac"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-builtin-metadata.test.mjs",
+      "bytes": 18685,
+      "sha256": "e974d714d05aae663b31710f8564f4b5842eb3ca63653f9d1f1ca0f03530b7b2"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-tool-data.mjs",
+      "bytes": 6226,
+      "sha256": "20ac2e0a02ccdd8755d07e4a5c33b2986bf5b49548cc83fefd3c58bc6609ad0a"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-tool-data.test.mjs",
+      "bytes": 7172,
+      "sha256": "23942adc4c811f7e7c9ada38b34fb2a449de3e92b96705780da6014b9c412057"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.mjs",
+      "bytes": 9594,
+      "sha256": "9ee529928da76f4d6e1cb0a70088f042c488af122fee501622fa84acab46d039"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-graph.test.mjs",
+      "bytes": 24505,
+      "sha256": "b3d88029f3a6454f707f6db0b62138d7f3389932a80133a09b27fd8aad272ef3"
+    },
+    {
+      "path": "apps/desktop-app/src/event-host-resources.mjs",
+      "bytes": 18058,
+      "sha256": "8a227c95e8f678992edbbd9a85aa5a2b24437357849f759a8d08e066d2546598"
+    }
+  ],
+  "before": "prechange/builtin-schema-before-r1/manifest.json",
+  "new_files": [
+    "apps/desktop-app/src/native-permission-tool-data.mjs",
+    "apps/desktop-app/src/native-permission-tool-data.test.mjs"
+  ],
+  "checks": {
+    "coherent_first": 97,
+    "projector_and_Control": 30,
+    "lint": "exact7 exit0",
+    "prettier": "exact7 exit0",
+    "native-metadata": 184,
+    "converter_pin_regression": "RED missing rejection -> GREEN13 graph tests",
+    "scoped_lint": "exact7 final exit0",
+    "scoped_prettier": "exact7 final exit0",
+    "native-descriptor-read": 223
+  },
+  "limits": [
+    "No Native core/Main/server/provider/Bun/build/GUI execution",
+    "Converter test extracts pure original functions over actual pinned Effect schemas; no all-original-schema acceptance claim",
+    "Actual registry publication/hook/provider setup/mode/Main handoff/lifetime remain unfinished",
+    "complete=false, all rowsunsupported, no grant"
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "70365e6cb7c3bcdb8828f9720f8aef8ac7f5315633b0e795d036c554af20d245",
+    "documents_sha256": "80e5a57bbcbfb0ecad1a04a87f348013570e89e06b51457e1f5d1d81b90cf190",
+    "gate": "design_spec",
+    "plan_sha256": "faef62146cddbaeae21a8eabd7e18193cabf680997891591738d5a365df26a4a",
+    "schema_version": 2,
+    "work_class_sha256": "6229d9f55383c513255c61dda184c5f24ad6b52c55417bcf63c8c643028ec83c"
+  },
+  "run_id": "git-index-mutations",
+  "reviewer_role": "design_spec_reviewer",
+  "verdict": "changes_requested",
+  "summary": "DESIGN v2의 전송, 경로 권한, snapshot 수명 및 unknown/no replay 방향은 일관됩니다. 다만 durable completion을 새 index 전체 hash에 연결하는 계약과 원본 index 부재 시 backup 계약을 수정해야 합니다. 이는 초기 DESIGN 계약의 수정이며, 통과한 PLAN의 재검토 사유는 아닙니다.",
+  "open_findings": [
+    {
+      "id": "DS1",
+      "severity": "high",
+      "location": {
+        "path": "docs/runs/git-index-mutations/design.md",
+        "lines": [9, 10, 16, 31]
+      },
+      "affected_consumers": [
+        "preview/apply DTO",
+        "admission target",
+        "publisher",
+        "journal completion 및 receipt projection"
+      ],
+      "finding": "예상하는 새 index 전체 digest가 durable admission target에 명시되어 있지 않습니다. indexDigest는 원본 index를 가리킵니다. previewDigest의 명시된 입력에도 새 canonical index bytes의 hash가 없습니다. 따라서 journal이 receipt.indexDigest를 원래 승인한 새 index와 직접 비교할 계약이 없습니다.",
+      "evidence": [
+        "DESIGN line 10의 apply와 persisted target에는 nextIndexDigest가 없습니다.",
+        "DESIGN line 16은 선택 before/after 항목과 원본 fingerprint를 previewDigest에 포함하지만, canonical proposal 전체 hash는 명시하지 않습니다.",
+        "실제 workbench-admission.mjs:551–582에서 registry.begin이 service execute보다 먼저 실행됩니다.",
+        "실제 workbench-file-storage.mjs의 validateFileCompletion은 보관된 admission target과 original digest를 사용합니다. 새 Git completion에도 결과가 스스로 권한을 만들지 않는 명시적 비교가 필요합니다."
+      ],
+      "impact": "Service의 실행 중 검증과 별개로, durable completion 및 이후 receipt 검증이 잘못된 새 index digest를 거부할 근거가 불완전합니다. 소비자가 각자 target 의미를 결정하면 계약이 달라질 수 있습니다.",
+      "smallest_correction": [
+        "preview와 apply, immutable gitIndexTarget에 nextIndexDigest를 추가합니다. 값은 실제 canonical proposal index bytes의 SHA256으로 정의합니다.",
+        "previewDigest와 canonical operation digest가 nextIndexDigest를 포함하도록 명시합니다. Service는 host-held preview와 정확히 비교하고, kernel은 artifact 및 최종 index bytes를 이 값과 비교합니다.",
+        "Journal completion과 receipt projection은 receipt.indexDigest === admittedTarget.nextIndexDigest를 요구합니다. 새 hex 값이라는 검사만으로 통과시키지 않습니다.",
+        "동기 admission에서 만들 수 있는 closed target 필드를 확정합니다. 요청에 없는 layout/source fingerprint는 host-held preview에 유지하고 previewDigest로 결합하는지 명시합니다. 별도 필드로 영속화하려면 그 필드의 admission 입력을 정의해야 합니다. 새 async pre-admission callback은 필요하지 않습니다.",
+        "nextIndexDigest 변조, target 불일치 및 receipt digest 불일치를 거부하는 검사를 예정된 storage/service 검사에 포함합니다."
+      ]
+    },
+    {
+      "id": "DS2",
+      "severity": "medium",
+      "location": {
+        "path": "docs/runs/git-index-mutations/design.md",
+        "lines": [9, 10, 20, 22, 24, 25, 28]
+      },
+      "affected_consumers": [
+        "원본 index가 없는 저장소의 첫 stage",
+        "publisher 결과",
+        "durable receipt",
+        "backup 안내 및 복구 상태"
+      ],
+      "finding": "원본 index 부재를 지원하면서 confirmed receipt에는 backupId를 항상 요구하고 backup 보존을 약속합니다. 부재 경로에서 stagebackup을 index로 RENAME_EXCL하면 그 backup 이름에는 원본 파일이 남지 않습니다.",
+      "evidence": [
+        "DESIGN line 24는 기존 index에는 RENAME_SWAP, 부재 시에는 RENAME_EXCL을 사용합니다.",
+        "DESIGN lines 10, 25, 28에는 부재 경로의 backup 예외가 없습니다.",
+        "실제 configuration-save-kernel.mjs:758–798은 같은 rename 분기를 사용하며, 원본이 있을 때만 backupId를 반환합니다.",
+        "보관된 descriptor probe는 먼저 git add로 index를 만든 뒤 swap합니다. index 부재 분기는 입증하지 않습니다."
+      ],
+      "impact": "첫 stage가 존재하지 않는 backup을 receipt에 기록하거나, 정상 publication 이후 검증에서 실패할 수 있습니다. unborn HEAD만으로 index 부재를 판단하면 이미 staged entries가 있는 unborn 저장소도 잘못 처리할 수 있습니다.",
+      "smallest_correction": [
+        "preview/apply/immutable target에 실제 원본 index 존재 여부인 indexExists를 명시하고, 원본 indexDigest의 부재 표현도 확정합니다. HEAD 부재와 index 부재는 구분합니다.",
+        "confirmed backupId는 indexExists=true일 때 original operation key에서 정한 deterministic 이름이어야 합니다. indexExists=false일 때만 null을 허용합니다.",
+        "부재 분기의 최종 delta 검증은 새 index 생성과 backup 부재를 확인합니다. UI는 이 경우 원본 index backup이 있다고 표시하지 않습니다.",
+        "SHA1/SHA256 각각에서 index 부재와 unborn이지만 index가 존재하는 경우를 구분하여 검증합니다."
+      ]
+    }
+  ],
+  "review_scope": {
+    "document": "docs/runs/git-index-mutations/design.md",
+    "version": "2",
+    "plan_revision": "2",
+    "plan_fit": "기존 PLAN pass를 유지합니다.",
+    "assessed": [
+      "selected index 및 immutable blob publication",
+      "private snapshot 추출과 frozen expected-delta 검증",
+      "IPC 262144-byte 제한과 16MiB artifact manifest",
+      "artifact 경로·소유권·hash 검증 및 실제 settlement까지의 보존",
+      "service 이전 admission과 host-held preview 권한",
+      "linked-worktree layout, lock, backup 및 실패 상태",
+      "unknown/no replay, 구버전 parser 거부",
+      "명시적 UI 확인, workspace hold 및 기존 접근성 계약"
+    ],
+    "other_conclusions": [
+      "Bulk bytes를 IPC 밖의 checked private artifact로 전달하는 방식은 기존 wire cap과 맞습니다.",
+      "전체 baseline을 새로 수집하지 않고 정확한 operation delta만 허용하는 규칙은 기존 Sources.verify의 엄격한 검증을 유지하는 방향입니다.",
+      "Descriptor publication, cooperative index.lock, 실제 종료까지의 hold 및 자동 rollback/replay 금지는 서로 일관됩니다.",
+      "UI의 명시적 선택·preview·native confirmation·fresh revalidation과 inert historical state는 기존 UX 계약과 충돌하지 않습니다."
+    ]
+  },
+  "checks": {
+    "binding": "plan, 정규화한 contract, document set, 실제 design 파일 및 work_class hash가 entry-design-input-r2와 모두 일치합니다.",
+    "run": "run 상태는 active이며 work_class는 routine입니다. 초기 DESIGN_SPEC 검토는 아직 필요합니다.",
+    "source_facts": "지정된 13개 source 파일의 현재 hash가 source-facts.json과 일치합니다.",
+    "actual_sources_inspected": [
+      "apps/desktop-app/src/host/workbench-git.mjs",
+      "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+      "apps/desktop-app/src/host/workbench-admission.mjs",
+      "apps/desktop-app/src/host/workspace-registry.mjs",
+      "apps/desktop-app/src/host/storage-journal.mjs",
+      "apps/desktop-app/src/host/workbench-file-storage.mjs",
+      "apps/desktop-app/src/event-host-protocol.mjs",
+      "apps/desktop-app/src/event-host-supervisor.mjs",
+      "apps/desktop-app/src/event-host-child.mjs",
+      "apps/desktop-app/src/renderer/features/git-review/index.tsx"
+    ],
+    "evidence": "기존 plumbing 및 descriptor probe 소스와 보관된 결과를 읽었습니다. 직접 실행하지 않았습니다."
+  },
+  "limits": [
+    "파일 수정, delegation, ledger 기록, build, test 또는 product runtime 실행을 하지 않았습니다.",
+    "보관된 probe는 구현 가능성 근거입니다. Production publisher, artifact IPC, journal, crash recovery 또는 linked-worktree 안전성의 통과 근거가 아닙니다.",
+    "구버전 parser archive를 실제 compatibility 검사 통과로 취급하지 않았습니다.",
+    "이 검토는 문서 계약을 대상으로 합니다. 실제 UI, 접근성 및 publication 완료 판정은 포함하지 않습니다.",
+    "수정 요청은 위 DESIGN 계약 문제에 한정합니다. 일반 구현 수정마다 entry gate를 반복하도록 요구하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11c91-e0c5-7cc1-b33f-ae7fabb410bf",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "identity_basis": "Coordinator-reported native spawn/dispatch reference, not runtime identity attestation",
+    "child_spawn_identity_verified": false,
+    "independent_from_author": true,
+    "authored_plan_or_design": false,
+    "reviewer_origin": "기존 독립 reader 대화의 초기 DESIGN_SPEC 검토",
+    "report_persistence_owner": "Main"
+  }
+}

@@ -1,0 +1,489 @@
+file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/darwin-descriptor-ffi.mjs:78
+  const options = Object.fromEntries(
+        ^
+
+SyntaxError: Identifier 'options' has already been declared
+    at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+    at #translate (node:internal/modules/esm/loader:441:20)
+    at afterLoad (node:internal/modules/esm/loader:509:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+    at afterResolve (node:internal/modules/esm/loader:614:52)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+Node.js v26.11.0
+✖ apps/desktop-app/src/host/darwin-descriptor-ffi.test.mjs (87.148792ms)
+✔ inode64 dirent fields decode only the bounded name and type (2.604542ms)
+✔ malformed size, kind, UTF8 and paths refuse the entire entry (0.756292ms)
+file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/darwin-descriptor-ffi.mjs:78
+  const options = Object.fromEntries(
+        ^
+
+SyntaxError: Identifier 'options' has already been declared
+    at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+    at #translate (node:internal/modules/esm/loader:441:20)
+    at afterLoad (node:internal/modules/esm/loader:509:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+    at afterResolve (node:internal/modules/esm/loader:614:52)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+Node.js v26.11.0
+✖ apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs (87.149875ms)
+✖ synthetic: observed root replacement permanently revokes kernel and shared root guard after restoration (11.939292ms)
+✖ real module refuses Node before invoking the authority callback (1.305666ms)
+✖ factory accepts only exact data objects and a real root guard with a synchronous check (0.415625ms)
+✖ synthetic: frozen synchronous paged reads retain the root and use only relative child opens (4.323708ms)
+✖ synthetic: default page is 256 KiB; empty files and exact 20 MiB bound work (3.656ms)
+✖ synthetic: lexical path and closed page validation reject without child IO or getter execution (3.521ms)
+✖ synthetic: issued tokens bind the original object, kernel, path and full file stat (4.478333ms)
+✖ synthetic: symlink ancestors/leaves, hard links and directories cannot return bytes (5.628625ms)
+✖ synthetic: throw failure closes temporary FDs and discloses no bytes (4.649167ms)
+✖ synthetic: zero failure closes temporary FDs and discloses no bytes (4.937667ms)
+✖ synthetic: changedStat failure closes temporary FDs and discloses no bytes (5.274417ms)
+✖ synthetic: crossDevice failure closes temporary FDs and discloses no bytes (3.880417ms)
+✖ synthetic: final authority leafReplacement after temporary close prevents byte disclosure (4.223792ms)
+✖ synthetic: final authority ancestorReplacement after temporary close prevents byte disclosure (5.546584ms)
+✖ synthetic: final authority rootReplacement after temporary close prevents byte disclosure (6.9345ms)
+✖ synthetic: final authority leafSymlink after temporary close prevents byte disclosure (7.156042ms)
+✖ synthetic: final authority revokeOwner after temporary close prevents byte disclosure (5.790834ms)
+✖ synthetic: final authority throwCheck after temporary close prevents byte disclosure (5.2215ms)
+✖ synthetic: final authority closeKernel after temporary close prevents byte disclosure (3.620209ms)
+✖ synthetic: read reentry from the final authority callback refuses; final named checks follow it (7.380334ms)
+✖ synthetic: temporary close failure erases bytes, attempts every FD and prevents successful close (20.823416ms)
+✖ synthetic: rootClose revokes first and cannot report successful close (11.437125ms)
+✖ synthetic: libraryClose revokes first and cannot report successful close (14.441792ms)
+✖ real runtime gate with instrumented fs rejects Node with no kernel IO (26.292666ms)
+✖ synthetic: identity compares every full-stat field, even if file bytes stay unchanged (5.872541ms)
+✖ synthetic: callback returning an object or Promise fails closed during read (5.674709ms)
+✖ synthetic: explicit null and undefined page numbers cannot use omitted-field defaults (5.795417ms)
+✖ synthetic: a close failure that retains a leaf FD still attempts other cleanup and poisons reads (5.237625ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 2
+ℹ fail 30
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 292.951792
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/darwin-descriptor-ffi.test.mjs:1:1
+✖ apps/desktop-app/src/host/darwin-descriptor-ffi.test.mjs (87.148792ms)
+  'test failed'
+
+test at apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs:1:1
+✖ apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs (87.149875ms)
+  'test failed'
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:16:1
+✖ synthetic: observed root replacement permanently revokes kernel and shared root guard after restoration (11.939292ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:62:1
+✖ real module refuses Node before invoking the authority callback (1.305666ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:79:1
+✖ factory accepts only exact data objects and a real root guard with a synchronous check (0.415625ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:281:1
+✖ synthetic: frozen synchronous paged reads retain the root and use only relative child opens (4.323708ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:330:1
+✖ synthetic: default page is 256 KiB; empty files and exact 20 MiB bound work (3.656ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:352:1
+✖ synthetic: lexical path and closed page validation reject without child IO or getter execution (3.521ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:419:1
+✖ synthetic: issued tokens bind the original object, kernel, path and full file stat (4.478333ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:438:1
+✖ synthetic: symlink ancestors/leaves, hard links and directories cannot return bytes (5.628625ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:455:3
+✖ synthetic: throw failure closes temporary FDs and discloses no bytes (4.649167ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:455:3
+✖ synthetic: zero failure closes temporary FDs and discloses no bytes (4.937667ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:455:3
+✖ synthetic: changedStat failure closes temporary FDs and discloses no bytes (5.274417ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:455:3
+✖ synthetic: crossDevice failure closes temporary FDs and discloses no bytes (3.880417ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:485:3
+✖ synthetic: final authority leafReplacement after temporary close prevents byte disclosure (4.223792ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:485:3
+✖ synthetic: final authority ancestorReplacement after temporary close prevents byte disclosure (5.546584ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:485:3
+✖ synthetic: final authority rootReplacement after temporary close prevents byte disclosure (6.9345ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:485:3
+✖ synthetic: final authority leafSymlink after temporary close prevents byte disclosure (7.156042ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:485:3
+✖ synthetic: final authority revokeOwner after temporary close prevents byte disclosure (5.790834ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:485:3
+✖ synthetic: final authority throwCheck after temporary close prevents byte disclosure (5.2215ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:485:3
+✖ synthetic: final authority closeKernel after temporary close prevents byte disclosure (3.620209ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:540:1
+✖ synthetic: read reentry from the final authority callback refuses; final named checks follow it (7.380334ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:585:1
+✖ synthetic: temporary close failure erases bytes, attempts every FD and prevents successful close (20.823416ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:615:3
+✖ synthetic: rootClose revokes first and cannot report successful close (11.437125ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:615:3
+✖ synthetic: libraryClose revokes first and cannot report successful close (14.441792ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:634:1
+✖ real runtime gate with instrumented fs rejects Node with no kernel IO (26.292666ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /unsupported_runtime/. Input:
+  
+  "SyntaxError: Identifier 'options' has already been declared"
+  
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read.test.mjs:636:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: SyntaxError: Identifier 'options' has already been declared
+        at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+        at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+        at #translate (node:internal/modules/esm/loader:441:20)
+        at afterLoad (node:internal/modules/esm/loader:509:29)
+        at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+        at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+        at afterResolve (node:internal/modules/esm/loader:614:52)
+        at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+        at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+        at ModuleJob.link (node:internal/modules/esm/module_job:389:17),
+    expected: /unsupported_runtime/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:653:1
+✖ synthetic: identity compares every full-stat field, even if file bytes stay unchanged (5.872541ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:687:1
+✖ synthetic: callback returning an object or Promise fails closed during read (5.674709ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:697:1
+✖ synthetic: explicit null and undefined page numbers cannot use omitted-field defaults (5.795417ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)
+
+test at apps/desktop-app/src/host/native-descriptor-read.test.mjs:713:1
+✖ synthetic: a close failure that retains a leaf FD still attempts other cleanup and poisons reads (5.237625ms)
+  SyntaxError [Error]: Identifier 'options' has already been declared
+      at compileSourceTextModule (node:internal/modules/esm/utils:355:16)
+      at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:93:18)
+      at #translate (node:internal/modules/esm/loader:441:20)
+      at afterLoad (node:internal/modules/esm/loader:509:29)
+      at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:514:12)
+      at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:567:36)
+      at afterResolve (node:internal/modules/esm/loader:614:52)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:620:12)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:277:33)
+      at ModuleJob.link (node:internal/modules/esm/module_job:389:17)

@@ -1,0 +1,18 @@
+# Private kernel API proposal - not yet actual source freeze
+
+Factory createConfigurationSaveKernel({check = () => {}, timeoutMs = 10000} = {}) returns Promise of {prepare,publish,abort,close}. Importing module is inert in Node; dynamic import bun:ffi only inside factory, require actual Darwin/arm64/pinned Bun1.4.2. Options are Host-only, never forwarded from renderer/IPC. Factory failures are fixed reason exceptions with no raw path/text. No new helper process.
+
+prepare({runtimeEpoch,operationId,workspaceId,workspacePath,kind,text,expectation,version?}) after Main stage-intent flush. Closed plain own-data fields, wire-safe keys, canonical root, text/byte/surrogate/shared full-content rules. Main has already checked registered workspace/owner/approval, kernel independently observes file/metadata/version. One prepared task only. Return {status:'staged',token:hex64} after named stage sync or {status:'unknown',reason:closedReason}. Does not expose text, metadata values, arbitrary path or stage hash. Any exception sanitizes. Main treats all prepare failures after stage intent as unknown; no fabricated none.
+
+publish({token}) after Main publish-intent flush. Recheck prepared original/root/body/metadata; fixed SWAP existing or EXCL missing. Return {status:'saved',version:hex64,backupId?:fixedBackupBasename} only after exact post-effect observations/sync/FD cleanup; otherwise {status:'unknown',reason}. No automatic retry/replay/rollback. Token consumed once before publication attempt; duplicate does not replay. Deadline abort closes FDs, stage retained; an expired token never permits publication. If close fails, result unknown. Missing success has no backupId.
+
+abort({token}) closes corresponding prepared descriptors without deleting named stage, reports {status:'aborted'} only for known currently prepared token; otherwise unknown fixed reason. close() closes held preparations and FFI library, no pathname cleanup, idempotent. Stop tracks actual settlement, not merely abort request.
+
+Private fixed reasons: invalid_request,unsupported_runtime,busy,path_denied,file_changed,unsupported_content,unsupported_metadata,stage_collision,io_failed,expired,invalid_token,closed. These are private, not new public recovery reasons. Public recovery continues unresolved_operation/resource authority or existing path/global reasons.
+
+Dependencies Main to implement and source-freeze before worker:
+- host/configuration-file-observation.mjs exports configurationFileVersion(base,rootStat,fileStat,rawBytes), same current reader algorithm; configurationBackupId(runtimeEpoch,operationId,kind) returns fixed .omoc-configuration-<sha256(JSON.stringify([epoch,id]))>.<kind>.backup. No state owner/dependency beyond node:crypto.
+- renderer/shared/configuration-draft/validation.mjs additive configurationFileWriteFits(kind,text): current fileContentFits AND valid UTF16 surrogate pairing, byte bound and controls; existing read/format validators stay separate.
+- Kernel imports './configuration-file-observation.mjs' and '../renderer/shared/configuration-draft/validation.mjs'. Main stages explicit matched nested resource paths with allowed relative imports, source/manifest hashes and no repository paths. Worker does not edit these dependencies/staging/IPC/ledger.
+
+Synchronous descriptor work occurs within each phase, bounded IO<=32769/metadata<=32768/32 names. Phase pause allows Main durable append; active preparation blocks actual parent idle. No sync function claims immunity to external processes or kernel interruption. Testable fault injection may live in private test factory options only if explicitly coordinated; not accepted over wire. Prefer actual Bun process tests rather than Node mock success.

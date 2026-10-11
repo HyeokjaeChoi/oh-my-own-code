@@ -1,0 +1,142 @@
+{
+  "schema_version": 2,
+  "run": "configuration-mcp",
+  "gate": "design",
+  "verdict": "pass",
+  "summary": "r13의 변경된 rendered concern을 독립 검토했습니다. MCP-RENDER-R12-01은 해결되었습니다. 직접 본 hidden-r5 capture 6개에서 새 안내와 관련 제어의 추가 결함을 찾지 못했습니다.",
+  "reviewed": {
+    "contract_sha256": "fdf6b8f562361d071b13724afa127c252af6af335164b2341047fd873dfdabe3",
+    "environment_sha256": "5aeb2a2ecc308f991252752fa57d9f1603444a261f84c423260f43cb0652b0c8",
+    "gate": "design",
+    "plan_sha256": "b7bc69344397ab5b11f29bd6111d4e0c21e835ac6a10731916bda8e1c495de7c",
+    "schema_version": 2,
+    "source_sha256": "4c77540b8bee2dc299e3a80f92e2877264d9fb8f3a9953aa5dfc118054d301a0",
+    "verification_sha256": "43de6b070a82f2381aaa341f1482c6367e812c9dad0849f449ad76a04b2ca6ae",
+    "work_class_sha256": "fb440b14b39523b5a964d9a49f6775baa09c69c408f2ecff205b50787a83e333"
+  },
+  "provenance": {
+    "child_task_id": "01a119f6-c926-7882-8601-d7ae95271b66",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "role": "design_qa",
+    "profile": "solo_reader",
+    "skill": "solo-design-review",
+    "context": "fresh",
+    "independent_of_implementation": true,
+    "identity_evidence": "CODEX_THREAD_ID와 harness status의 final-render-packet-r13.json dispatch 연결이 일치합니다. dispatch 기록은 runtime sandbox 또는 model identity의 증명이 아닙니다.",
+    "report_only": true,
+    "files_written": [],
+    "ledger_edited": false,
+    "delegation_performed": false,
+    "runtime_rerun": false,
+    "code_finding_reviewed": false
+  },
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "MCP-RENDER-R12-01",
+      "severity": "P2",
+      "verification_status": "verified",
+      "scope": "workspace 목록 제거 전에 필요한 앱 소유 MCP 등록 제거 안내",
+      "source_locations": [
+        "apps/desktop-app/src/renderer/widgets/explorer/index.tsx:195",
+        "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx:161",
+        "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx:355",
+        "apps/desktop-app/src/workbench-service.mjs:2395"
+      ],
+      "exact_explorer_text": "작업 공간을 목록에서 제거하려면 이 앱이 등록한 MCP 항목을 먼저 제거하세요. 초안 종류에서 MCP를 선택한 뒤 ‘작업 공간 MCP 제어’의 ‘등록 제거’를 사용하세요. 파일은 유지됩니다.",
+      "exact_mcp_text": "작업 공간을 목록에서 제거하려면 이 앱이 등록한 MCP 항목을 먼저 제거하세요. ‘MCP 상태 확인’ 후 아래 앱 소유 항목의 ‘등록 제거’를 각각 선택하세요. 파일은 유지됩니다.",
+      "observed": "desktop intro에서 MCP 초안 선택과 제어 위치를 안내합니다. MCP 영역에서 상태 확인 후 각 앱 소유 항목의 등록 제거를 안내합니다. desktop과 760/200% capture에서 안내 전체가 줄바꿈되어 표시됩니다. 관련 상태 확인 버튼과 기존 앱 소유 등록 제거 버튼도 보입니다. 검토 대상 안내와 버튼에 잘림이나 겹침을 찾지 못했습니다.",
+      "source_confirmation": "등록 제거 버튼은 current_runtime 소유 항목에 표시되며 actions.removeMcp(row.sourceName)에 연결됩니다. workspace.remove의 liveMcp BUSY 보호가 유지됩니다.",
+      "text_selection": "MCP 안내는 user-select:text를 지정한 editor 내부의 실제 paragraph입니다. explorer 안내도 실제 paragraph이며 관련 source에서 선택 금지를 찾지 못했습니다. 안내 문구의 실제 드래그 선택은 실행하지 않았습니다."
+    }
+  ],
+  "directly_viewed_captures": {
+    "capture_root": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-mcp/evidence/hidden-r5/ui-states",
+    "origin": "실제 built production Electron renderer/preload와 test-only synthetic main process",
+    "capture_method": "BrowserWindow.webContents.capturePage().toPNG()",
+    "platform": "darwin",
+    "locale": "ko",
+    "theme": "light",
+    "os_window_visible": false,
+    "groups": [
+      {
+        "viewport_css": [1440, 928],
+        "pixel_ratio": 2,
+        "zoom_factor": 1,
+        "checked_png_pixels": [2880, 1856],
+        "filenames": [
+          "desktop-configuration-mcp-currentdisabled-desktop-removal-prerequisite-synthetic.png",
+          "desktop-configuration-mcp-currentdisabled-desktop-control-5-synthetic.png",
+          "desktop-configuration-normal-synthetic.png"
+        ]
+      },
+      {
+        "content_width": 760,
+        "viewport_css": [380, 484],
+        "pixel_ratio": 4,
+        "zoom_factor": 2,
+        "checked_png_pixels": [1520, 1936],
+        "filenames": [
+          "desktop-configuration-mcp-currentdisabled-removal-prerequisite-synthetic.png",
+          "desktop-configuration-mcp-currentdisabled-control-0-synthetic.png",
+          "desktop-configuration-mcp-currentdisabled-control-5-synthetic.png"
+        ]
+      }
+    ],
+    "directly_viewed_count": 6,
+    "all_240_pngs_visually_inspected": false
+  },
+  "evidence_checks": {
+    "review_binding": "final-render-input-r13.json을 그대로 복사했습니다. 현재 plan, contract, source inventory, environment 및 run verification digest와 일치합니다.",
+    "packet": "design v1 및 packet의 profile·skill 입력 hash가 현재 파일과 일치합니다.",
+    "source_inventory_hashes_checked": 551,
+    "source_hash_mismatches": [],
+    "r12_to_r13_changed_paths": [
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "apps/desktop-app/src/host/storage-integration.test.mjs",
+      "apps/desktop-app/src/host/workbench-mcp.mjs",
+      "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+      "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+      "apps/desktop-app/src/workbench-service.mjs"
+    ],
+    "png_header_dimensions_checked": 240,
+    "png_dimension_mismatches": [],
+    "provenance_file_hashes_checked": 123,
+    "provenance_file_hash_mismatches": [],
+    "native_additional_hashes_checked": 14,
+    "native_hash_mismatches": [],
+    "current_checks": {
+      "mcp": "PASS",
+      "native": "PASS",
+      "hidden-ui": "PASS",
+      "build": "PASS",
+      "typecheck": "PASS",
+      "boundaries": "PASS",
+      "bundle": "PASS",
+      "lint": "PASS",
+      "format": "PASS"
+    },
+    "check_binding": "9개 저장된 check 모두 r13 plan·contract·source·environment binding과 일치합니다. exit_code=0이며 interrupted, timed_out, inputs_changed는 false입니다. 이번 reviewer는 checks를 재실행하지 않았습니다.",
+    "fresh_build": "actual-build-r13.json은 actual-checks-r13.json의 build와 일치합니다. --skip-nx-cache actual build이며 build stamp 생성 시각은 2026-10-08T05:15:07.849Z입니다.",
+    "build_stamp_sha256": "015eab24e0a64dbb588686296576824dcc1bec885dc470863ba49980d0202133",
+    "fresh_runtime": "Native-r5와 hidden-r5가 같은 새 build stamp에 연결됩니다. hidden manifest의 currentBuildInputs는 build stamp inputs와 일치하며 provenanceVerifiedAfter=true입니다. r4는 현재 실행 증거로 사용하지 않았습니다.",
+    "hidden_r5": "PASS, 240 captures, 16 MCP states, owned exit code 0, stderr 비어 있음",
+    "native_r5": "저장된 실제 실행 증거에서 9 cases PASS, Native/helper 종료 2건, 지정 synthetic child의 NOTE_EXIT 2건과 observer exit code 0을 확인했습니다. before와 afterCleanup 기록은 일치합니다.",
+    "tokens": "approved desktop32/coarse44/permission36/focus3:1 기준을 유지합니다. MCP frame metadata의 control 최소 높이는 32 CSS px입니다. 관련 CSS와 token 파일은 r12와 같은 hash입니다. 새 안내 때문에 token 변경을 요구하지 않습니다."
+  },
+  "prior_review_link": {
+    "path": "docs/runs/configuration-mcp/final-render-review-r12.json",
+    "use": "변경되지 않은 기존 UI concern은 이전 독립 검토에 연결합니다. 이전 reviewer가 직접 본 24 captures를 이번 reviewer의 직접 검사 수에 포함하지 않습니다.",
+    "unaffected_source": "renderer store·controller·API·transport, 관련 CSS와 design token의 r12/r13 hash가 일치합니다.",
+    "scope": "이번 pass는 변경된 제거 선행 안내와 인접 제어에 대한 focused rendered judgment입니다. 전체 이전 matrix를 다시 검토했다는 뜻이 아닙니다."
+  },
+  "review_limits": [
+    "Native, Electron, UI, build 또는 provider runtime을 실행하지 않았습니다.",
+    "workspace 제거 실패부터 등록 제거와 workspace 제거 완료까지의 전체 경로는 직접 실행하지 않았습니다.",
+    "새 안내의 실제 드래그 선택, physical input, IME, screen reader, coarse pointer의 실제 MCP 화면, Windows와 real remote 동작은 미검증입니다.",
+    "Native 종료 증거는 지정 synthetic child에 한정됩니다. 모델의 도구 사용이나 임의 descendant 종료를 증명하지 않습니다.",
+    "MCP-R12-CODE-01의 cwd 수정은 별도 CODE 판단입니다. 해당 수정으로 RENDER finding을 해결했다고 판단하지 않았습니다."
+  ],
+  "next_dependency": "Main이 이 raw report를 docs/runs/configuration-mcp/final-render-review-r13.json으로 저장하고 별도 CODE 결과와 통합해야 합니다.",
+  "completion_scope": "r13 focused RENDER 검토 PASS. 전체 F14와 Goal은 ACTIVE로 유지합니다."
+}

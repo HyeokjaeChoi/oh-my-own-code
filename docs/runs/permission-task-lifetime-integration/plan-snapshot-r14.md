@@ -1,0 +1,31 @@
+# Original task lifetime coherent integration
+Revision: 14
+Class: routine implementation of accepted permission-task-lifetime-design candidate-r2, design-review-r2 PASS. No new permission boundary or repeat initial entry. Accepted design closeout is complete; routine integration edits are authorized. Full F09/full18 remain unfinished; Composer plus and design foundation unchanged.
+
+I1: Same journal/parser/checkpoint/registry durable task roots, exact original key/digest, per-root sequence, current registry revision, feature marker and immutable original ACK. Single pending-input owner, no effect after settlement, task proof before settlement, bounded authority reconciliation. Older actual parser refuses new journal/checkpoint without byte changes. No replay/unknown success upgrade.
+I2: Main actual durable intent→private one-use handoff→earliest exact Native input/method verification. Preserve both policy stages. Acquire checked cached attachments for raw digest before stages; never reopen originals. Track real coordinator/promoted inputs/title Fiber/children/IO and original RPC, not ACK/idle/finally as total settlement. Coherent EventHost protocol/supervisor/child and pinned Native recipe path, not unused helper acceptance.
+I3: Required authorityHold closed snapshot/host/renderer/fixture projection, original key lookup only, actual-call hold remains until finally. Confirmed ACK cannot clear unfinished task authority. Disjoint workspace progress/read allowed. No fabricated restored path/body or resend.
+I4: Meaningful RED→GREEN affected Node/extracted actual pinned Effect and host integration; freeze coherent APIs before dependent consumers. Full fresh independent CODE. Saved actual contained Native command stays unrun until separate exact pre-execution review and remaining inventory/compiler/rootbroker/bootstrap gates. Node/extracted Effect implementation remains distinct from runtime evidence. A separate owned physical file/directory kernel probe may run exact pinned Bun1.4.2 bytes only after fresh independent bounded CODE and exact pre-execution PASS bind script/source/input/engine/argv/environment. It imports no Native/Main/server/provider modules and uses only a fresh owned synthetic namespace for fixtures; no real stores, Documents, builds or GUI. This physical kernel unit probe does not relax the remaining full Native command gates or enable any execution grant.
+
+Ownership: staged disjoint workers after producer checkpoint: storage helper/journal/registry/tests; Native origin/lease/observer/graph lineage and tests; renderer store/controller and tests after DTO checkpoint. Main sole ledger writer, service/admission/IPC/DTO/recipe integration. Preserve originals before edit. Workers no recursive delegation/ledger/docs/out-of-scope edits. Final coherent integration continues beyond any component handoff.
+
+Changed concern: actual workspace-only operations cannot satisfy the accepted session-only mutation identity. Candidate workspace-mutation-supplement-r1.md defines explicit target variants with no additional execution grant. Independently review this changed design concern before its dependent consumers; keep other accepted routine integration progressing. No repeat initial full-feature entry review.
+
+## Current state (authoritative)
+
+- Original lifetime design candidate-r2 and workspace mutation supplement accepted. This remains routine implementation, not a new entry/design review.
+- Same-Task descriptor acquisition, original lifetime/owner fence, read auxiliary/Effect boundary, fixed14 Tool families17 declarations, and source-owned schema/options projection have bounded independent CODE passes. Relevant exact reports remain in this run.
+- Actual owned physical Bun r5 passed11; retain its unchanged kernel closure. It is not Native/service/task/full18 acceptance. Never replay r2/r3/r4/r5 namespaces.
+- Current source batch: ModelsDev automatic refresh disabled with original supported Layer options and preserved dependency wiring; unapproved file/npm provider loads denied before effect; planner count budget aligned with existing256 edits, unchanged32MiB/exact source-set checks. Owned8 passed affected462 Node checks and independent exact8 CODE.
+- All88 original builtin roots have source-only coverage. Live inventory is still incomplete; callbacks/current publication, acquisition effects, persisted mode/compiler/readback, Main durable handoff/current method verifier and complete task/background/IO lineage remain on the critical path.
+- complete=false, unsupported rows and runtime hold are intentional current prerequisites. No positive grant, Native/provider/server/Main/build/GUI acceptance or final fullF09/full18 completion is claimed.
+- Preserve UI foundation and Composer Plus. Main alone writes reports/ledger. Producer worker closed after saved handoff; no live worker. Separate exact11 CODE follows. Do not repeat unchanged physical/probe/owner/Effect checks; check-status and actual import closure determine reuse.
+
+## Next work
+
+1. Finish exact11 independent CODE for restored fixed Tool publication. Actual source-owned callback identity, same original Scope, exact returned declaration/current editor row, replay/disposal invalidation and joined metadata are implemented. Initial affected checks passed218+223+23+12. Independent CODE r1 found F1 deferred State.batch list ordering; correction moves completeness checks to original notify, retains exact result/Scope correlation, and restores actual batch2/inherit2 loader regression. Affected rechecks and fresh correction CODE follow; complete=false/unsupported/no execution remain. Main owns integration/reports.
+2. Bind actual current registrations and fixed callback provenance before marking inventory complete; prevent unknown discovery or source loading before effects.
+3. Connect original persisted mode/compiler/current readback and Main handoff verifier with both baseline policy stages.
+4. Complete original task/coordinator/promoted/title/child/RPC/IO lifetime, then coherent runtime/render and final independent gates.
+
+History was moved to plan-history-through-r13.md. Its earlier statements such as “not run” describe historical bytes and do not override this current state. Preserve source/command/hash/time distinctions when reusing evidence.

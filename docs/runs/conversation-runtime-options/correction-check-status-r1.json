@@ -1,0 +1,89 @@
+{
+  "run": "conversation-runtime-options",
+  "checks": {
+    "unit": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "typecheck": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-09T03:22:47+00:00",
+      "source_sha256": "6401814e676f13783d3ecb0b106a1e08eddd9f422899b3877e420e88729d8f68",
+      "input_binding_sha256": "6e36d32ff92709f5d72c0db5459f00a5c5a2be139af4e1ceab67a65886c83da9",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src",
+          "packages/ui",
+          "packages/contracts",
+          "apps/desktop-app/tsconfig.json"
+        ],
+        "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+      }
+    },
+    "boundaries": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "lint": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "format": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "build": {
+      "status": "reusable",
+      "reasons": [],
+      "recorded_at": "2026-10-09T03:24:32+00:00",
+      "source_sha256": "6401814e676f13783d3ecb0b106a1e08eddd9f422899b3877e420e88729d8f68",
+      "input_binding_sha256": "78e86c89172f1fd6f337916d94553d8e0ae1b32b13477b131b19c534807bf052",
+      "input_scope": {
+        "paths": [
+          "apps/desktop-app/src",
+          "packages/ui",
+          "packages/contracts",
+          "apps/desktop-app/public",
+          "docs/design/tokens",
+          "apps/desktop-app/package.json",
+          "apps/desktop-app/project.json",
+          "apps/desktop-app/index.html",
+          "apps/desktop-app/vite.config.ts",
+          "apps/desktop-app/tsconfig.json",
+          "apps/desktop-app/native/owner-lifetime/witness.c",
+          "apps/desktop-app/scripts/build.mjs",
+          "apps/desktop-app/scripts/build-provenance.mjs",
+          "apps/desktop-app/scripts/prepare-event-host.mjs",
+          "apps/desktop-app/scripts/stage-event-host.mjs",
+          "apps/desktop-app/scripts/stage-owner-lifetime.mjs",
+          "apps/desktop-app/scripts/package.mjs",
+          "apps/desktop-app/runtime-event-host/package.json",
+          "apps/desktop-app/runtime-event-host/package-lock.json",
+          "apps/desktop-app/runtime-event-host/installer-pins.json"
+        ],
+        "reason": "Explicit source dependency closure inspected by Main; root configuration, agent instructions, toolkit and environment guards remain automatic. Runner-only changes cannot alter renderer build inputs. Bundle and hidden checks keep whole-source freshness and independently verify current artifacts."
+      }
+    },
+    "bundle": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    },
+    "hidden": {
+      "status": "missing",
+      "reasons": [
+        "no recorded attempt"
+      ]
+    }
+  }
+}

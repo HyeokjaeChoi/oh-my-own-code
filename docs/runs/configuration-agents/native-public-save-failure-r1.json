@@ -1,0 +1,26 @@
+{
+  "failure": {
+    "phase": "actual-public-agent-service",
+    "reason": "bounded-Agent-prerequisite-failed",
+    "agentDiagnostic": {
+      "phase": "FILES",
+      "completedCases": [],
+      "operator": "strictEqual",
+      "location": "native-agents-public.mjs:109:12"
+    },
+    "code": "PROBE_ASSERTION"
+  },
+  "privateCasesPassed": 6,
+  "journalProof": {
+    "operationId": "agent-public-save",
+    "dispatches": [
+      "filesystem.configuration.stage",
+      "filesystem.configuration.publish"
+    ],
+    "receiptEffect": "unknown"
+  },
+  "actualSyntheticFileAndBackupExist": true,
+  "beforeAfterIdentityEqual": true,
+  "allOwnedExitsConfirmed": true,
+  "interpretation": "Publication happened; kernel result vs Main post-verification unresolved. Added bounded actual adapter result trace only. Native-r8 new contained namespace, no replay of failed original."
+}

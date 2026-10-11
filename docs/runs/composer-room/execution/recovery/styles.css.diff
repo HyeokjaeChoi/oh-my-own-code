@@ -1,0 +1,12 @@
+--- docs/runs/desktop-design-candidates/preview/styles.css
++++ docs/runs/composer-room/preview/styles.css
+@@ -521,3 +521,9 @@
+ .composer[data-composer-state="error"]+.state-reason,.composer[data-composer-state="error-focus-visible"]+.state-reason{color:var(--component-field-invalidBorder)}
+ .composer[data-composer-state="unknown"]+.state-reason{color:var(--component-status-unknownForeground)}
+ .composer[data-composer-state="stale"]+.state-reason{color:var(--component-status-staleForeground)}
++
++/* Selected A input room;
++ other candidates keep their current minimum. */
++.A textarea{min-height:var(--component-composer-inputMin);
++height:var(--component-composer-inputMin)}
++@media(max-height:600px){.A .emptyblock{top:40%}}

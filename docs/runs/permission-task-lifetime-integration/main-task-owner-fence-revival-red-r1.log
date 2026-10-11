@@ -1,0 +1,33 @@
+✔ actual Main recordTask refuses a lost owner before storage invocation (1.740125ms)
+✔ actual Main recordTask rechecks ownership after original async storage completion (1.341834ms)
+✔ actual Main recordPermissionReconciled refuses a lost owner before storage invocation (0.099167ms)
+✔ actual Main recordPermissionReconciled rechecks ownership after original async storage completion (0.72325ms)
+✔ actual Main permissionProgress refuses a lost owner before storage invocation (0.118209ms)
+✔ actual Main permissionProgress rechecks ownership after original async storage completion (0.260167ms)
+✔ actual Main owner verifier throw revokes task authority without storage IO (0.224708ms)
+✔ actual Main original dispatch retains both fences and storage result (0.125875ms)
+✖ actual Main observed owner loss cannot revive through a later ready response (0.360125ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 8
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 74.265042
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/main-task-owner-fence.test.mjs:119:1
+✖ actual Main observed owner loss cannot revive through a later ready response (0.360125ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/main-task-owner-fence.test.mjs:124:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

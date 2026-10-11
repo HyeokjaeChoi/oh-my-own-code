@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "7d183214da970d65f91ec7db59486208063c5a60946781f740623c451359c223",
+    "documents_sha256": "9f3aad95b488278c1b4f237ddfa2bad2943641548a1c0f3291d9cc534a6cde50",
+    "gate": "design_spec",
+    "plan_sha256": "2769202ad6febc1f6a7f62abca1ffbbc39daa71245229a9fc0a19a5bb3e8c5b5",
+    "schema_version": 2,
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "conversation-context의 design_spec_reviewer로 design-v1.md version 1을 검토했습니다. Host byte 관찰, cache 한도·expiry·pin·revocation, sender/epoch/workspace/root 검증과 renderer URI 차단 경계가 명확합니다. Model capability 미확인·미지원 입력은 전송 전에 차단하며, preview·Native receipt·provider 실행을 구분합니다. Before-user branch는 실제 target과 boundary 및 기존 lineage·operation correlation을 검증하고, 별도 명시적 send 전에는 실행하지 않습니다. Steer/queue는 F06 옵션과 구분하며 원본 digest, 두 policy 단계, cancellation의 flush-before-effect와 fail-closed unknown을 유지합니다. UI·접근성·검증 조건은 기존 계약과 맞습니다. 실제 API checkpoint와 필요한 storage marker 조정은 소비자 구현 전에 완료해야 합니다. Source-facts의 15개 파일 hash가 일치했습니다. 문서와 source만 검토했으며 구현·화면·runtime 동작을 검증하지 않았습니다. 향후 resume:false Native probe는 제안 상태이며, 이 판정으로 실행을 승인하지 않습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11ed5-9b5e-7783-9ed5-3365d96c4d9c",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

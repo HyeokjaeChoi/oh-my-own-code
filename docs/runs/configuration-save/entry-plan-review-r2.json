@@ -1,0 +1,103 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "c6261171f7d87d71a7cfa403240a8b77e2d87204ce0811615ac19948c763f259",
+    "gate": "plan",
+    "plan_sha256": "8cee9f0d654c317385f52346d614b935e5475a25faa07d262773e48996b90e7f",
+    "schema_version": 2,
+    "source_sha256": "626ff99cee537ff1b5f53c228dfe4bbfdc4df32aa1ccaa7df076f84e2be7019e",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "PLAN revision 1의 initial entry correction은 PASS입니다. 이전 유일한 finding PLAN-R1-01은 해결되었습니다. 현재 required_reviews에 design이 있고, 실제 harness가 계산한 required_gates에도 design이 있습니다. 이 gate는 최종 독립 design_qa RENDER 검토를 요구합니다. plan, contract, source 및 work class binding은 원본 검토와 같습니다. 기존에 수용한 범위와 실행 가능성을 뒤집는 증거는 없습니다. 별도 DESIGN_SPEC 판정과 구현 후 CODE/RENDER 검토는 남아 있습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11913-3128-70d1-beaa-89eef7a90c66",
+    "author_task_id": "Main01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "role": "plan_reviewer",
+    "profile": "solo_reader",
+    "skill": "solo-plan-review",
+    "mode": "default",
+    "identity_evidence": "현재 환경의 CODEX_THREAD_ID가 run의 fresh review dispatch child_ref와 같습니다. dispatch의 packet SHA256도 실제 r2 packet과 같습니다. packet과 profile은 OS sandbox 또는 model identity 증명이 아닙니다.",
+    "independent": true,
+    "authored_plan": false,
+    "modified_product_source": false,
+    "modified_ledger": false,
+    "recursively_delegated": false
+  },
+  "review_scope": {
+    "plan_path": "docs/runs/configuration-save/plan.md",
+    "plan_revision": "1",
+    "contract_path": "docs/runs/configuration-save/contract.json",
+    "input_path": "docs/runs/configuration-save/entry-plan-input-r2.json",
+    "packet_path": "docs/runs/configuration-save/entry-plan-packet-r2.json",
+    "prior_original_report": "docs/runs/configuration-save/entry-plan-review-r1.json",
+    "mode": "bounded initial entry correction: PLAN-R1-01 and previously accepted feasibility",
+    "proposed_design_path": "docs/runs/configuration-save/design.md",
+    "proposed_design_version": "1",
+    "design_spec_verdict_issued": false,
+    "only_written_path": "docs/runs/configuration-save/entry-plan-review-r2.json"
+  },
+  "resolved_findings": [
+    {
+      "id": "PLAN-R1-01",
+      "status": "resolved",
+      "evidence": "run.required_reviews=[design_spec,design]; run.required_gates와 실제 v2_required_gates 계산 모두 [plan,code,checks,design_spec,design]입니다. require-review는 required_reviews에 gate를 추가하고 요구를 유지합니다. v2_gaps는 필수 design에 현재 PASS가 없으면 완료 조건의 누락으로 처리합니다. design은 DOCUMENT_GATES에 속하지 않는 FINAL_GATE이며 reviewer는 design_qa입니다.",
+      "completion_boundary": "필수 최종 검토 등록의 누락을 해결했습니다. 현재 rendered-implementation PASS는 없습니다. 실제 구현과 checks 후 새 독립 reader가 built renderer/captures를 검토해야 합니다."
+    }
+  ],
+  "assessment": [
+    {
+      "concern": "기존에 수용한 범위와 실행 가능성",
+      "observation": "원본 보고서의 reviewed와 r2 입력이 정확히 같습니다. 현재 source fingerprint도 입력과 같습니다. plan은 원래 target의 explicit Save, 기존 pinned Bun Event Host, non-CAS UNKNOWN 및 retained displacement, 별도 runtime activation 경계를 유지합니다. 이 correction은 기능 또는 source를 바꾸지 않았습니다."
+    },
+    {
+      "concern": "source-facts와 primitive 증거",
+      "observation": "source-facts-r1의 pre-marker revision 비교, rejected identity 전 marker, UTF8-byte/UTF16 검증, 별도 bounded save IPC, 실제 staged import/asset closure, pending save lifetime 및 backup prefix 보호는 기존 S1/S2/S3/S5 구현 제약으로 유지합니다. metadata/exclusive primitive는 production adapter의 증명이 아닙니다. legacy-open은 실제 old reader의 unsupported_version 및 bytesUnchanged 증거이며 새 writer/checkpoint/reopen 검증은 계속 S3에 필요합니다."
+    },
+    {
+      "concern": "다음 dependency",
+      "observation": "Main이 이 실제 PLAN 보고서를 등록한 뒤 distinct DESIGN_SPEC review-input으로 별도 판정을 받아야 합니다. 이 PLAN PASS는 DESIGN_SPEC 승인 또는 product 구현 완료가 아닙니다."
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 -B .solopreneur/harness.py review-input configuration-save --gate plan",
+      "result": "exit 0; 출력은 entry-plan-input-r2.json과 정확히 같습니다."
+    },
+    {
+      "command": "read-only harness v2_review_binding, source_fingerprint, v2_required_gates, v2_review_current 및 SHA256 비교",
+      "result": "exit 0; r2 binding과 실제 source가 정확히 같습니다. 원본 report의 binding도 같습니다. packet routing, plan/raw contract/design 및 실제 legacy source/bundle hash가 일치합니다. current source=626ff99cee537ff1b5f53c228dfe4bbfdc4df32aa1ccaa7df076f84e2be7019e. required_gates=[plan,code,checks,design_spec,design]. render_review_current=false이며 최종 검토 요구가 남습니다."
+    },
+    {
+      "command": "read-only CODEX_THREAD_ID와 run.dispatches 비교",
+      "result": "exit 0; actual child 01a11913-3128-70d1-beaa-89eef7a90c66의 fresh review dispatch와 실제 r2 packet hash가 일치합니다."
+    }
+  ],
+  "inspected_paths": [
+    "AGENTS.md",
+    ".codex/agents/solo_reader.toml",
+    ".agents/skills/solo-specialist/SKILL.md",
+    ".agents/skills/solo-plan-review/SKILL.md",
+    ".solopreneur/harness.py",
+    ".solopreneur/docs/harness.md",
+    "docs/runs/configuration-save/plan.md",
+    "docs/runs/configuration-save/contract.json",
+    "docs/runs/configuration-save/design.md",
+    "docs/runs/configuration-save/run.json",
+    "docs/runs/configuration-save/entry-plan-input-r2.json",
+    "docs/runs/configuration-save/entry-plan-packet-r2.json",
+    "docs/runs/configuration-save/entry-plan-review-r1.json",
+    "docs/runs/configuration-save/source-facts-r1.md",
+    "docs/runs/configuration-save/evidence/metadata-primitive-r1.json",
+    "docs/runs/configuration-save/evidence/exclusive-primitive-r1.json",
+    "docs/runs/configuration-save/evidence/prechange/manifest.json",
+    "docs/runs/configuration-save/evidence/prechange/legacy-open-evidence.json"
+  ],
+  "limitations": [
+    "원본 보고서의 source discovery를 반복하지 않았습니다. 동일한 실제 binding과 현재 증거를 확인하여 이전에 수용한 실행 가능성을 유지했습니다.",
+    "PLAN correction 판정만 발행했습니다. DESIGN_SPEC 판정, product 구현, 저장 kernel 실행, 새 writer/checkpoint/reopen 통합 및 실제 Save UI의 최종 검토는 수행하지 않았습니다.",
+    "metadata/exclusive/legacy 증거를 읽었습니다. primitive와 store open을 다시 실행하지 않았으며 production 통합, CAS 또는 power-loss 내구성을 주장하지 않습니다.",
+    "Product source와 ledger를 수정하지 않았습니다. Native/provider/private stores에 접근하지 않았고 delegation을 수행하지 않았습니다."
+  ]
+}

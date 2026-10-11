@@ -1,0 +1,71 @@
+✖ ToolOutput: patched cleanup node acquires without original read/stat/remove or background fork (6.956792ms)
+✖ Shell: patched cleanup node acquires without original read/stat/remove or background fork (3.247291ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 351.194208
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-startup-maintenance.test.mjs:109:3
+✖ ToolOutput: patched cleanup node acquires without original read/stat/remove or background fork (6.956792ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'read',
+  +   [
+  +     'stat',
+  +     '/synthetic-native-data/tool-output/tool_abcdefabcdef'
+  +   ],
+  +   [
+  +     'remove',
+  +     '/synthetic-native-data/tool-output/tool_abcdefabcdef'
+  +   ]
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-startup-maintenance.test.mjs:114:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'read', [ 'stat', '/synthetic-native-data/tool-output/tool_abcdefabcdef' ], [ 'remove', '/synthetic-native-data/tool-output/tool_abcdefabcdef' ] ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/native-permission-startup-maintenance.test.mjs:109:3
+✖ Shell: patched cleanup node acquires without original read/stat/remove or background fork (3.247291ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'read',
+  +   'read',
+  +   [
+  +     'stat',
+  +     '/synthetic-native-data/shell/project/sh_abcdefabcdef.out'
+  +   ],
+  +   [
+  +     'remove',
+  +     '/synthetic-native-data/shell/project/sh_abcdefabcdef.out'
+  +   ]
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-startup-maintenance.test.mjs:114:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'read', 'read', [ 'stat', '/synthetic-native-data/shell/project/sh_abcdefabcdef.out' ], [ 'remove', '/synthetic-native-data/shell/project/sh_abcdefabcdef.out' ] ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

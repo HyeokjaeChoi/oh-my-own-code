@@ -1,0 +1,272 @@
+{
+  "unit": {
+    "argv": [
+      "python3",
+      "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+      "unit"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:20:01+00:00",
+    "scope": "New full current renderer store (including actual React regression), fixture, build-provenance and wrapper suites; exact original23file execution source/environment proof reuses other19unchanged files.",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "{\"priorActualUnitFiles\": 23, \"newAffectedUnitArgv\": [\"node\", \"--import\", \"tsx\", \"--test\", \"--test-concurrency=[REDACTED] \"--test-reporter=[REDACTED] \"apps/desktop-app/src/workbench-store.test.mjs\", \"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\", \"apps/desktop-app/scripts/build-provenance.test.mjs\", \"apps/desktop-app/scripts/run-evidence.test.mjs\"], \"reusedOtherUnitFiles\": 19, \"exactOnlyChangedUIPaths\": [\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\", \"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\", \"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\", \"apps/desktop-app/src/workbench-store.test.mjs\"]}\n\u2714 focused feedback pins only its actual runner and fixture plus unchanged build authority (151.488375ms)\n\u2714 stamp inventories source/config/tokens and actual built bytes separately from selected fixtures (96.614375ms)\n\u2714 lock/config/main/preload/renderer/package/token/asset drift invalidates stamp before capture (647.66075ms)\n\u2714 selected fixture edits change capture source identity without silently relabelling the build (129.128875ms)\n\u2714 changed inputs during build leave no stamp; missing stamp refuses validation (87.110584ms)\n\u2714 bounded source scope excludes tests, credentials, exports and captures; rejects symlinked inputs (89.022125ms)\n\u2714 source traversal enforces a finite depth bound (81.822083ms)\n\u2714 packaged capture binds archive entries and sidecar to stamped outputs before launch (231.981ms)\n\u2714 event-host bytes and declared link are part of launch identity; old4096 app bound stays fixed (101.485625ms)\n\u2714 a valid replacement lifetime helper still fails stamped launch identity (106.516625ms)\n\u2714 resource lock and preparation scripts invalidate build source binding (432.090375ms)\n\u2714 explicit commit pins only its actual runner and fixture plus unchanged build authority (109.385833ms)\n\u2714 branch restore pins only its actual runner and fixture plus unchanged build authority (110.504375ms)\n\u2714 Extensions actual controller start, polling, catalog, selection, refocus and file actions never auto-observe (181.859541ms)\n\u2714 Extensions real helper redacts unsupported source and Native private fields before public read (133.505375ms)\n\u25b6 Extensions actual controller refuses malformed wire rather than displaying an empty success\n  \u2714 extra (129.774791ms)\n  \u2714 sparse (129.84525ms)\n  \u2714 duplicate (127.555917ms)\n  \u2714 zeroHooks (124.91025ms)\n  \u2714 wrongFloor (120.029333ms)\n  \u2714 wrongRoot (120.74275ms)\n  \u2714 wrongEpoch (123.06275ms)\n\u2714 Extensions actual controller refuses malformed wire rather than displaying an empty success (876.531083ms)\n\u2714 Extensions actual controller pending cancel retires late result and permits a new explicit read (122.649208ms)\n\u25b6 Extensions pending producer rechecks original epoch, root, trust, revision and reset generation\n  \u2714 epoch (0.304667ms)\n  \u2714 root (0.182417ms)\n  \u2714 trust (0.195292ms)\n  \u2714 revokeTrust (0.1625ms)\n  \u2714 floor (0.160167ms)\n  \u2714 disconnected (0.3555ms)\n  \u2714 newHold (0.250916ms)\n  \u2714 reset (0.317791ms)\n\u2714 Extensions pending producer rechecks original epoch, root, trust, revision and reset generation (2.246333ms)\n\u25b6 Extensions actual controller late workspace ABA, epoch and floor never revive current rows\n  \u2714 late-workspace (133.978375ms)\n  \u2714 late-epoch (125.921666ms)\n  \u2714 late-floor (126.36775ms)\n\u2714 Extensions actual controller late workspace ABA, epoch and floor never revive current rows (386.500042ms)\n\u2714 Extensions held original key stays held through lookup and reload with no replay or read (249.691292ms)\n\u2714 UI capture actual writer refuses duplicate PNG names without overwriting earlier evidence (16.814458ms)\n\u25b6 Extensions closed reset inventory produces fresh scoped state and refuses guessed state\n  \u2714 not-observed (0.359667ms)\n  \u2714 populated (0.208041ms)\n  \u2714 empty (0.116291ms)\n  \u2714 plugins-unavailable (0.117667ms)\n  \u2714 tools-unavailable (0.17375ms)\n  \u2714 unavailable (0.100667ms)\n  \u2714 invalid-response (0.14875ms)\n  \u2714 limit-reached (0.151459ms)\n  \u2714 unsupported-source (0.189042ms)\n  \u2714 pending (0.195708ms)\n  \u2714 cancel (0.160708ms)\n  \u2714 escape (0.172709ms)\n  \u2714 late-workspace (0.174125ms)\n  \u2714 late-epoch (0.170833ms)\n  \u2714 late-floor (0.152333ms)\n  \u2714 stale (0.162291ms)\n  \u2714 held (0.092459ms)\n  \u2714 untrusted (0.072334ms)\n  \u2714 disconnected (0.073416ms)\n  \u2714 snapshot-required (0.15225ms)\n\u2714 Extensions closed reset inventory produces fresh scoped state and refuses guessed state (3.634291ms)\n\u25b6 Extensions untrusted, disconnected and non-idle snapshots block real controller reads\n  \u2714 untrusted (124.732375ms)\n  \u2714 disconnected (132.10325ms)\n  \u2714 snapshot-required (129.984334ms)\n\u2714 Extensions untrusted, disconnected and non-idle snapshots block real controller reads (387.008792ms)\n\u2714 Extensions fixture uses the closed workspace-only read and never mints effect authority (0.505708ms)\n\u25b6 Extensions fixture available empty is distinct from independently failed or bounded groups\n  \u2714 empty (0.235458ms)\n  \u2714 plugins-unavailable (0.192958ms)\n  \u2714 tools-unavailable (0.199333ms)\n  \u2714 unavailable (0.159083ms)\n  \u2714 invalid-response (0.194375ms)\n  \u2714 limit-reached (0.17ms)\n\u2714 Extensions fixture available empty is distinct from independently failed or bounded groups (1.370625ms)\n\u2714 instruction fixture reset removes discarded parent lineage before DTO validation (1.054917ms)\n\u2714 untrusted instruction fixture retains stored metadata but refuses observation and mutation (0.608042ms)\n\u2714 instruction probe claims fresh native attempts, rejects redirects and retains prior output (41.700917ms)\n\u2714 synthetic confirmation consumes the closed frozen production request and defaults false (29.49225ms)\n\u2714 same-bytes child fixture apply becomes direct while parent later changes preserve fork fact (1.033333ms)\n\u2714 instruction fixture uses actual projection, preserves file/history and refuses takeover (0.738333ms)\n\u2714 held instruction ACK retains original scope, unknown key and committed fork origin (0.38975ms)\n\u2714 configuration UI fixture keeps discovered/reported/unknown and untrusted states distinct (0.347875ms)\n\u2714 saved Native fork reads its original receipt key and rejects changed lineage or admission (4.586708ms)\n\u2714 synthetic configuration read projects only supported files and never enters mutation lane (0.571708ms)\n\u2714 v2 bootstrap and exact sender/frame admission reject legacy and malformed wire (0.2135ms)\n\u2714 duplicate and conflict cannot dispatch twice; lookup is redacted and read-only (0.312875ms)\n\u2714 unknown stays unknown after duplicate, lookup and successful snapshot (0.192959ms)\n\u2714 native permission ID is separate; stale revision/epoch cannot perform effects (0.160625ms)\n\u2714 cancel owns sender/frame, current epoch and admitted read; late read never projects (0.296166ms)\n\u2714 sender/service teardown settles admitted reads (0.307291ms)\n\u2714 approved main frame at a foreign URL is refused before parsing (0.090709ms)\n\u2714 permission rejection cancels only its session queue; interrupt is acceptance only (0.232208ms)\n\u2714 deferred diagnostics cancellation preserves only the current filtered read without effects (0.199375ms)\n\u2714 performance scope returns distinct registered transcripts and rejects foreign scope (0.486167ms)\n\u2714 count-only metrics distinguish read deduplication, cancellation and late settlement (0.127ms)\n\u2714 scoped snapshot is detached and sends update only the registered target (0.538458ms)\n\u2714 logical request peak is counted once and teardown cannot settle twice (0.127375ms)\n\u2714 mutation attempts are observable separately from disconnected/archived effects (0.152791ms)\n\u2714 connected running can interrupt with unknown receipt without changing its evidence (0.18325ms)\n\u2714 heap deltas prove ID survival/removal and strong references without exporting names (0.794375ms)\n\u2714 heap schema follows field indexes and rejects invalid graph metadata (0.507375ms)\n\u2714 heap group/path bounds disclose omissions and never label a truncated chain complete (1.281375ms)\n\u2714 heap capture streams in memory and always detaches listener; errors are redacted (0.299833ms)\n\u2714 heap stream byte limit refuses oversized capture and\n[truncated]",
+    "timed_out": false
+  },
+  "kernel": {
+    "argv": [
+      "python3",
+      "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+      "kernel"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:19:01+00:00",
+    "scope": "Exact full source inventory allows ONLY UI closed-target projection, appended actual React render tests, bounded page-error report, complete unoccluded capture reuse and callback test. Reuse prior actual branch108+index52+commit82 only after source/report/Bun/environment proof; no new kernel runtime claimed.",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "{\"priorActualNativeReports\": [{\"path\": \"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-git-branch-restore-kernel-7ZZCHc/report.json\", \"sha256\": \"2fb52278287efd28597d1f08e82c7073cc314bae933a9c33a5db618b9afce91b\", \"cases\": 108}, {\"path\": \"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-git-commit-kernel-ifEP5y/report.json\", \"sha256\": \"ca51f8ab45345a729783d47414dee1ae0c042f2512ea245dfc7d6742fdd63e4a\", \"cases\": 82}, {\"path\": \"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-git-index-kernel-SF7YIU/report.json\", \"sha256\": \"541b9e04cd11dc51ccab4bfd71719e1e9f9a081770d15dc503c17958e8df37b8\", \"cases\": 52}], \"newKernelExecution\": false, \"reusedNativeCases\": 242, \"exactOnlyChangedUIPaths\": [\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\", \"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\", \"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\", \"apps/desktop-app/src/workbench-store.test.mjs\"]}\n",
+    "timed_out": false
+  },
+  "typecheck": {
+    "argv": [
+      "pnpm",
+      "exec",
+      "tsc",
+      "-p",
+      "apps/desktop-app/tsconfig.json",
+      "--noEmit"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:20:06+00:00",
+    "scope": "Current public/private producers and consumers",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "",
+    "timed_out": false
+  },
+  "boundaries": {
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:20:08+00:00",
+    "scope": "FSD public exports and browser-server isolation",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "{\"result\":\"pass\",\"sourceFiles\":89,\"boundaryFixtures\":68,\"positiveFixtures\":16}\n",
+    "timed_out": false
+  },
+  "lint": {
+    "argv": [
+      "node",
+      "docs/runs/git-branch-restore/check-changed.mjs",
+      "lint"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:20:13+00:00",
+    "scope": "Exact changed ownership paths",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "{\"mode\":\"lint\",\"argv\":[\"exec\",\"eslint\",\"--config\",\"apps/desktop-app/eslint.config.mjs\",\"apps/desktop-app/scripts/build-provenance.mjs\",\"apps/desktop-app/scripts/build-provenance.test.mjs\",\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\",\"apps/desktop-app/scripts/git-branch-restore-probe.mjs\",\"apps/desktop-app/scripts/git-commit-probe.mjs\",\"apps/desktop-app/scripts/git-index-probe.mjs\",\"apps/desktop-app/scripts/run-evidence.mjs\",\"apps/desktop-app/scripts/run-evidence.test.mjs\",\"apps/desktop-app/src/desktop-bridge.d.ts\",\"apps/desktop-app/src/event-host-child.mjs\",\"apps/desktop-app/src/event-host-protocol.mjs\",\"apps/desktop-app/src/event-host-protocol.test.mjs\",\"apps/desktop-app/src/event-host-resources.mjs\",\"apps/desktop-app/src/event-host-supervisor.mjs\",\"apps/desktop-app/src/event-host-supervisor.test.mjs\",\"apps/desktop-app/src/git-branch-restore.test.mjs\",\"apps/desktop-app/src/host/git-branch-restore-contract.mjs\",\"apps/desktop-app/src/host/git-branch-restore-contract.test.mjs\",\"apps/desktop-app/src/host/git-branch-restore-kernel.mjs\",\"apps/desktop-app/src/host/git-branch-restore-kernel.test.mjs\",\"apps/desktop-app/src/host/git-metadata-kernel.mjs\",\"apps/desktop-app/src/host/storage-journal.mjs\",\"apps/desktop-app/src/host/storage-journal.test.mjs\",\"apps/desktop-app/src/host/workbench-admission.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore-storage.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore-storage.test.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore.test.mjs\",\"apps/desktop-app/src/host/workbench-git-index.test.mjs\",\"apps/desktop-app/src/host/workbench-git-snapshot.mjs\",\"apps/desktop-app/src/host/workbench-git.mjs\",\"apps/desktop-app/src/host/workbench-receipts.mjs\",\"apps/desktop-app/src/host/workspace-registry.mjs\",\"apps/desktop-app/src/host/workspace-registry.test.mjs\",\"apps/desktop-app/src/main.mjs\",\"apps/desktop-app/src/renderer/entities/workbench/index.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/store.ts\",\"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\",\"apps/desktop-app/src/renderer/features/git-review/index.tsx\",\"apps/desktop-app/src/renderer/shared/api/index.ts\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.d.mts\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.ts\",\"apps/desktop-app/src/renderer/shared/transport/index.ts\",\"apps/desktop-app/src/workbench-contract.mjs\",\"apps/desktop-app/src/workbench-service.mjs\",\"apps/desktop-app/src/workbench-store.test.mjs\"],\"exit\":0}\n",
+    "timed_out": false
+  },
+  "format": {
+    "argv": [
+      "node",
+      "docs/runs/git-branch-restore/check-changed.mjs",
+      "format"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:20:17+00:00",
+    "scope": "Exact changed ownership paths",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "Checking formatting...\nAll matched files use Prettier code style!\n{\"mode\":\"format\",\"argv\":[\"exec\",\"prettier\",\"--check\",\"apps/desktop-app/scripts/build-provenance.mjs\",\"apps/desktop-app/scripts/build-provenance.test.mjs\",\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.mjs\",\"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\",\"apps/desktop-app/scripts/git-branch-restore-probe.mjs\",\"apps/desktop-app/scripts/git-commit-probe.mjs\",\"apps/desktop-app/scripts/git-index-probe.mjs\",\"apps/desktop-app/scripts/run-evidence.mjs\",\"apps/desktop-app/scripts/run-evidence.test.mjs\",\"apps/desktop-app/src/desktop-bridge.d.ts\",\"apps/desktop-app/src/event-host-child.mjs\",\"apps/desktop-app/src/event-host-protocol.mjs\",\"apps/desktop-app/src/event-host-protocol.test.mjs\",\"apps/desktop-app/src/event-host-resources.mjs\",\"apps/desktop-app/src/event-host-supervisor.mjs\",\"apps/desktop-app/src/event-host-supervisor.test.mjs\",\"apps/desktop-app/src/git-branch-restore.test.mjs\",\"apps/desktop-app/src/host/git-branch-restore-contract.mjs\",\"apps/desktop-app/src/host/git-branch-restore-contract.test.mjs\",\"apps/desktop-app/src/host/git-branch-restore-kernel.mjs\",\"apps/desktop-app/src/host/git-branch-restore-kernel.test.mjs\",\"apps/desktop-app/src/host/git-metadata-kernel.mjs\",\"apps/desktop-app/src/host/storage-journal.mjs\",\"apps/desktop-app/src/host/storage-journal.test.mjs\",\"apps/desktop-app/src/host/workbench-admission.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore-storage.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore-storage.test.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore.mjs\",\"apps/desktop-app/src/host/workbench-git-branch-restore.test.mjs\",\"apps/desktop-app/src/host/workbench-git-index.test.mjs\",\"apps/desktop-app/src/host/workbench-git-snapshot.mjs\",\"apps/desktop-app/src/host/workbench-git.mjs\",\"apps/desktop-app/src/host/workbench-receipts.mjs\",\"apps/desktop-app/src/host/workspace-registry.mjs\",\"apps/desktop-app/src/host/workspace-registry.test.mjs\",\"apps/desktop-app/src/main.mjs\",\"apps/desktop-app/src/renderer/entities/workbench/index.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/controller.ts\",\"apps/desktop-app/src/renderer/entities/workbench/model/store.ts\",\"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\",\"apps/desktop-app/src/renderer/features/git-review/index.tsx\",\"apps/desktop-app/src/renderer/features/git-review/review.module.css\",\"apps/desktop-app/src/renderer/shared/api/index.ts\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.d.mts\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.mjs\",\"apps/desktop-app/src/renderer/shared/git-branch-restore/index.ts\",\"apps/desktop-app/src/renderer/shared/transport/index.ts\",\"apps/desktop-app/src/workbench-contract.mjs\",\"apps/desktop-app/src/workbench-service.mjs\",\"apps/desktop-app/src/workbench-store.test.mjs\"],\"exit\":0}\n",
+    "timed_out": false
+  },
+  "build": {
+    "argv": [
+      "node",
+      "docs/runs/git-branch-restore/ensure-current-build.mjs"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:20:32+00:00",
+    "scope": "Exact current input/artifact verified build or Nx rebuild",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "{\"result\":\"pass\",\"action\":\"[REDACTED]\"buildStampSha256\":\"e24fb126debf0154c346a64f1f28d09b4bb248b33f8cd0dbbe5a58085a989164\",\"inputsSha256\":\"462e279ff34bc76fec7eb296b17d6d5639d5ff2f01a54287b0e60a328305c14e\",\"artifactsSha256\":\"b3b11b872df213806df8d9f1a4af95681cc08e87151df73f8c50886b272d47ef\",\"selectedScriptsSha256\":\"ee6f5c03140521cc0bb4735006df0c8a1d945f941e7e3db2d8fd5814356c50a2\"}\n",
+    "timed_out": false
+  },
+  "bundle": {
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:20:33+00:00",
+    "scope": "Renderer bundle no arbitrary process/filesystem/credential authority",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "{\n  \"result\": \"pass\",\n  \"rendererFiles\": [\n    {\n      \"file\": \"assets/index-BpMEQ1W-.js\",\n      \"sha256\": \"fb671740c1dc5ca506a288516fa01661fcce8fd122ba4f9ba7d6d6ed7de5577d\"\n    },\n    {\n      \"file\": \"assets/index-DtjcA24X.css\",\n      \"sha256\": \"14e16e7cc39d03f2bdb7d30d799bd597e79c401496d1a0cd052c01a6a321bf95\"\n    },\n    {\n      \"file\": \"index.html\",\n      \"sha256\": \"ddf4838002f1829c3fba490b4a9f8a2b2c6231326eabc41f54564888aada2cc9\"\n    }\n  ]\n}\n",
+    "timed_out": false
+  },
+  "publication": {
+    "argv": [
+      "python3",
+      "docs/runs/git-branch-restore/verify-ui-fix-current.py",
+      "publication"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:20:49+00:00",
+    "scope": "Reuse actual coherent publication-r3 full34 ONLY after exact UI-only four-path source diff, unchanged all host/kernel/native sources, current verified resources/Git/Bun component identities and original pass/exit/before-after report hash; no new publication claimed.",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "{\"priorPublication\": {\"path\": \"docs/runs/git-branch-restore/evidence/publication-r3/publication-evidence.json\", \"sha256\": \"7c0d5129a101e6ed6e9835cf63544df5f25fbc666712f5bda8cebddf53e4b879\"}, \"actualCases\": 34, \"newPublicationExecution\": false, \"hostKernelNativeSourcesAndIdentitiesUnchanged\": true, \"exactOnlyChangedUIPaths\": [\"apps/desktop-app/scripts/e2e-git-branch-restore.mjs\", \"apps/desktop-app/scripts/fixtures/workbench-host.test.mjs\", \"apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx\", \"apps/desktop-app/src/workbench-store.test.mjs\"]}\n",
+    "timed_out": false
+  },
+  "hidden": {
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/run-evidence.mjs",
+      "--script",
+      "git-branch-restore",
+      "--out",
+      "docs/runs/git-branch-restore/evidence/hidden-r4"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:25:07+00:00",
+    "scope": "Actual current builtRenderer/preload with synthetic Main, keyboard/light/dark/760px200/held/unknown/lateScope, native PNG only",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "{\"script\":\"git-branch-restore\",\"mode\":null,\"platform\":\"darwin\",\"runnerPlatform\":\"darwin\",\"runnerArch\":\"arm64\",\"runnerNode\":\"v24.14.[REDACTED]\"destination\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-branch-restore/evidence/hidden-r4/git-branch-restore\",\"command\":[\"/Users/hyukjaechoi/.nvm/versions/node/v24.14.1/bin/node\",\"/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/scripts/e2e-git-branch-restore.mjs\"],\"startedAt\":\"2026-10-08T23:20:50.670Z\",\"status\":\"pass\",\"exitCode\":0,\"signal\":null,\"evidence\":[\"git-branch-restore-evidence.json\",\"git-branch-restore-1-preview-create-context-light-desktop.png\",\"git-branch-restore-10-preview-create-context-light-desktop.png\",\"git-branch-restore-19-preview-create-context-light-desktop.png\",\"git-branch-restore-25-preview-create-git-status-light-desktop.png\",\"git-branch-restore-26-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-37-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-38-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-39-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-40-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-41-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-42-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-44-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-45-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-46-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-47-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-48-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-49-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-50-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-59-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-68-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-79-preview-create-branch-restore-light-desktop.png\",\"git-branch-restore-81-preview-create-context-light-760px200.png\",\"git-branch-restore-83-preview-create-context-light-760px200.png\",\"git-branch-restore-88-preview-create-context-light-760px200.png\",\"git-branch-restore-93-preview-create-context-light-760px200.png\",\"git-branch-restore-99-preview-create-context-light-760px200.png\",\"git-branch-restore-105-preview-create-git-status-light-760px200.png\",\"git-branch-restore-106-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-109-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-116-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-117-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-118-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-119-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-120-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-121-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-122-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-124-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-125-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-126-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-127-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-128-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-129-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-130-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-132-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-134-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-140-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-144-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-147-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-150-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-154-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-159-preview-create-branch-restore-light-760px200.png\",\"git-branch-restore-161-preview-create-context-dark-desktop.png\",\"git-branch-restore-170-preview-create-context-dark-desktop.png\",\"git-branch-restore-179-preview-create-context-dark-desktop.png\",\"git-branch-restore-185-preview-create-git-status-dark-desktop.png\",\"git-branch-restore-186-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-197-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-198-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-199-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-200-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-201-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-202-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-204-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-205-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-206-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-207-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-208-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-209-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-210-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-219-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-228-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-239-preview-create-branch-restore-dark-desktop.png\",\"git-branch-restore-241-preview-create-context-dark-760px200.png\",\"git-branch-restore-243-preview-create-context-dark-760px200.png\",\"git-branch-restore-248-preview-create-context-dark-760px200.png\",\"git-branch-restore-253-preview-create-context-dark-760px200.png\",\"git-branch-restore-259-preview-create-context-dark-760px200.png\",\"git-branch-restore-265-preview-create-git-status-dark-760px200.png\",\"git-branch-restore-266-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-269-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-276-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-277-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-278-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-279-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-280-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-281-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-282-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-284-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-285-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-286-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-287-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-288-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-289-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-290-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-292-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-294-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-300-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-304-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-307-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-310-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-314-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-319-preview-create-branch-restore-dark-760px200.png\",\"git-branch-restore-321-success-create-context-dark-760px200.png\",\"git-branch-restore-323-success-create-context-dark-760px200.png\",\"git-branch-restore-328-success-create-context-dark-760px200.png\",\"git-branch-restore-333-success-create-context-dark-760px200.png\",\"git-branch-restore-339-success-create-context-dark-760px200.png\",\"git-b\n[truncated]",
+    "timed_out": false
+  },
+  "reader-regression": {
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/git-review-probe.mjs",
+      "--out",
+      "docs/runs/git-branch-restore/evidence/reader-regression-r1"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:25:54+00:00",
+    "scope": "Affected current safe reader Native matrix; exact unchanged evidence reuse only through recorded applicability proof",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "{\"status\":\"pass\",\"productionReaderSyntheticMatrixPassed\":true,\"report\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-branch-restore/evidence/reader-regression-r1/report.json\",\"retainedSyntheticEvidence\":\"/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-branch-restore/evidence/reader-regression-r1/synthetic-Bd050M\"}\n",
+    "timed_out": false
+  },
+  "index-regression": {
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/git-index-probe.mjs",
+      "--out",
+      "docs/runs/git-branch-restore/evidence/index-regression-r1",
+      "--platform",
+      "darwin"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:27:17+00:00",
+    "scope": "Affected old index authority/publication, no source API regression",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "",
+    "timed_out": false
+  },
+  "commit-regression": {
+    "argv": [
+      "node",
+      "apps/desktop-app/scripts/git-commit-probe.mjs",
+      "--out",
+      "docs/runs/git-branch-restore/evidence/commit-regression-r1",
+      "--platform",
+      "darwin"
+    ],
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "cwd": ".",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "exit_code": 0,
+    "inputs_changed": false,
+    "interrupted": false,
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "recorded_at": "2026-10-08T23:31:26+00:00",
+    "scope": "Affected old commit authority/publication after shared core changes",
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "stderr": "",
+    "stdout": "",
+    "timed_out": false
+  }
+}

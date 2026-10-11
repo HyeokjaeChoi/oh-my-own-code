@@ -1,0 +1,58 @@
+{
+  "schema_version": 2,
+  "run": "permission-task-lifetime-design",
+  "reviewer": "reviewer",
+  "reviewed": {
+    "contract_sha256": "b15083b396fb8ab82e77d29eb802a204387aa8699b1bed63e1fe814697c28ec1",
+    "environment_sha256": "89f13dd82df89df149c3a24098f88c71cb725230b309be0e7d58b333ab690b47",
+    "gate": "code",
+    "plan_sha256": "70056362fe060ef9f278e02494f11e44150e3d4a772e8f1e0d8e7ff6784bd9eb",
+    "schema_version": 2,
+    "source_sha256": "1ab65d7bc0818d4c8f1903bc47171f97ae3361db4d2944d7065ddce58b1d18ef",
+    "verification_sha256": "168726816b84e4c651666da014f9cad14ad6a9b73d9939006859c1a0ee8480ca",
+    "work_class_sha256": "cd6c9dd8295369c1153e39927bf24e04b360e4546daee8d98e86ebe3a7ffa93d"
+  },
+  "verdict": "pass",
+  "summary": "TL-CODE-01이 해결되었습니다. outcome의 변경 5개 경로와 삭제 목록이 현재 baseline 대비 차이와 정확히 일치합니다. 등록된 출처 문서와 선행 완료 run의 CODE PASS도 확인했습니다. code-input-r3.json 전체가 독립 계산한 현재 바인딩과 일치합니다. r2 대비 변경 필드는 verification_sha256뿐입니다. 기존 설계 판단을 유지하며 추가 지적은 없습니다. 이 PASS는 설계 run의 CODE closeout에만 적용됩니다.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "TL-CODE-01",
+      "assessment": "누락된 managed marker와 병렬 location correction 3개 경로가 outcome에 포함되었습니다. 출처 문서는 제품 변경과 설계 run의 작성 범위를 구분합니다. artifact와 outcome의 등록 해시도 실제 파일과 일치합니다."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "01a1246b-d64e-7361-bfb4-e843c24cf6f7",
+    "identity_source": "현재 프로세스의 CODEX_THREAD_ID",
+    "binding_input": "docs/runs/permission-task-lifetime-design/code-input-r3.json",
+    "prior_report": "docs/runs/permission-task-lifetime-design/code-review-r1.json",
+    "review_boundary": "동일 독립 검토자가 수정된 closeout metadata와 최종 전체 바인딩을 새로 검증했습니다. 기존 설계 실질 판단을 재사용했습니다.",
+    "verification": {
+      "entire_final_input_matches_current_binding": true,
+      "changed_binding_fields_from_r2": [
+        "verification_sha256"
+      ],
+      "exact_baseline_changed_paths_covered": true,
+      "exact_deleted_paths_covered": true,
+      "registered_artifact_and_outcome_hashes_match": true,
+      "prior_changes_requested_report_registered_unchanged": true,
+      "registered_plan_and_design_pass_reports_match": true,
+      "selected_source_manifest_entries": 20,
+      "selected_source_sizes_and_hashes_match": true,
+      "location_run_complete_and_registered_code_pass_verified": true,
+      "toolkit_run_complete_and_registered_code_pass_verified": true,
+      "adopted_protocol_matches_toolkit_and_managed_marker": true
+    },
+    "limits": [
+      "제품 구현이나 Native·Effect·component 통합 승인이 아닙니다.",
+      "선행 check 결과는 저장된 근거로 확인했으며 재실행하지 않았습니다.",
+      "실제 task/IO/child 종료, migration, renderer 동작은 실행 검증하지 않았습니다.",
+      "전체 F09와 병렬 location 구현의 전체 재검토는 하지 않았습니다.",
+      "테스트, build, Native, provider, 제품 runtime 또는 harness 명령을 실행하지 않았습니다."
+    ],
+    "delegation": false,
+    "file_edits": false,
+    "report_saved": false,
+    "ledger_edits": false
+  }
+}

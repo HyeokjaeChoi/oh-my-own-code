@@ -1,0 +1,78 @@
+{
+  "schema_version": 2,
+  "run": "bridge-browser-security-implementation",
+  "reviewer_role": "reviewer",
+  "verdict": "pass",
+  "summary": "No actionable code/security findings remain in the approved synthetic read-only increment. All seven closure-matrix items were independently checked against implementation and regression sources, including both R2 P2 fixes. The eight latest registered checks passed at the reviewed source binding. This approves the code gate only; current running-application design QA remains a separate BSI-5 gate.",
+  "open_findings": [],
+  "previous_findings": [
+    {
+      "finding": "Initial-read disconnect was a no-op",
+      "status": "closed",
+      "evidence": "WorkbenchPage.tsx changes operationRef to read immediately after capability acceptance; disconnect clears credentials, aborts requests and advances generation. synthetic-workbench.spec.ts:457 holds the initial read, disconnects and verifies no data or connected state returns."
+    },
+    {
+      "finding": "Heartbeat/read race and lost cadence",
+      "status": "closed",
+      "evidence": "WorkbenchPage.tsx serializes read and heartbeat operations, records heartbeatDueRef, drains deferred renewal and preserves read failure on successful heartbeat. E2E cases at lines 363, 522, 586 and 647 cover failed refresh, retained cadence, non-overlap, failure persistence and full recovery."
+    },
+    {
+      "finding": "Control bodies accepted non-JSON whitespace",
+      "status": "closed",
+      "evidence": "server.ts validEmptyControlBody uses fatal UTF-8 decoding with BOM preserved and JSON.parse. http.test.ts:668 accepts JSON whitespace, rejects NBSP/EM SPACE/LINE SEPARATOR, proves invalid revoke retains fixture access and invalid heartbeat does not renew expiry."
+    },
+    {
+      "finding": "Originless production-read test used a differently bound capability",
+      "status": "closed",
+      "evidence": "http.test.ts:630 pairs with Origin equal to the bridge origin, then verifies an originless same-origin snapshot is 200 and same-site metadata is denied."
+    },
+    {
+      "finding": "Restart, WebSocket, denied metadata and server expiry evidence missing",
+      "status": "closed",
+      "evidence": "http.test.ts:750, :777 and :823 cover a new server rejecting old capability, upgrade socket closure and denied pair/control/preflight metadata. synthetic-workbench.spec.ts:499 advances the actual in-process bridge clock and observes AUTH_EXPIRED 401 through Chromium."
+    },
+    {
+      "id": "BSI-R2-01",
+      "finding": "Pair-body decoding removed UTF-8 BOM",
+      "status": "closed",
+      "evidence": "server.ts:187 now sets ignoreBOM:true before JSON.parse. http.test.ts:262 sends BOM-prefixed valid pair JSON, expects 400 REQUEST_INVALID, then successfully pairs using the unchanged code."
+    },
+    {
+      "id": "BSI-R2-02",
+      "finding": "Snapshot events were overwritten before snapshot validation",
+      "status": "closed",
+      "evidence": "read-synthetic-fixture.ts:155 validates the complete snapshot before independently validating and composing events. read-synthetic-fixture.test.ts:165 covers missing, null and malformed snapshot.events with valid separate events. WorkbenchPage loadFixture maps non-auth schema rejection to recoverable read_failed with no rendered data."
+    }
+  ],
+  "acceptance_review": {
+    "BSI-1": "Supported: exact route/Host/Origin/metadata admission, deterministic status precedence and CORS decoration, strict JSON including BOM rejection, body limits, denied unknown/mutation routes and closed upgrades.",
+    "BSI-2": "Supported: CSPRNG 32-byte secrets, in-memory digests, synchronous one-time consumption, five-failure lockout, bounded idle/absolute expiry, per-capability renewal/revoke and server-instance invalidation.",
+    "BSI-3": "Supported: direct credential-omitting requests, complete snapshot validation, component-memory capability, abort/generation guards and operation-specific failure/focus behavior. Visual judgment is delegated to the separate design gate.",
+    "BSI-4": "Supported within the explicit bounded evidence: actual Chromium direct pairing/CORS/read/revoke and bridge-clock expiry; HTTP restart/upgrade/grammar/metadata tests; unchanged synthetic fixture assertions and static absence of SDK/filesystem/process-execution call sites. No parent BB-01..10 completion.",
+    "BSI-5": "The ledger records 11 bridge tests, 31 frontend tests, 14 Chromium tests and successful workspace lint/typecheck/format-check plus both builds at this source. This report passes independent code review; final BSI-5 completion also requires fresh independent running-application design QA."
+  },
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "4e4e9c2b57ee58dc6bb3f7128f5160377aeb3ec6cc7e7b752dfbc837c9f6bac5",
+    "contract_sha256": "4373086c90a451902647d00b330b4d50e1c6ad576de47b3c494df250bbab7cd7",
+    "source_sha256": "e6364f507171bd7a288f6985919bac228af2918fc853437534350be33f29cd8d",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "verification_sha256": "e2b4ca2451dfdba8d8696b64c6cf9f530c0f3fca5303c7a440b106dba5136b5c"
+  },
+  "review_boundary": "Fresh independent source, contract, configuration, regression-source and recorded-check review for plan revision 11. No implementation files edited; only this requested report was written. No tests, services, browser sessions or external systems started or accessed by reviewer.",
+  "evidence_limits": [
+    "Recorded check results were inspected rather than rerun. Nx reported sandbox socket failures with successful in-process fallback; successful checks do not attest runtime process isolation.",
+    "Expiry evidence uses an injected bridge clock; it is not an elapsed-wall-clock endurance test.",
+    "Several UI error and concurrency tests intercept responses deliberately; actual Chromium admission, revoke and bridge-clock expiry are separately exercised.",
+    "Synthetic local bridge only: no OpenCode SDK integration, user project data, filesystem/process execution, persistent credential storage or domain mutation authority is implemented in the reviewed runtime paths.",
+    "Static call-site inspection and synthetic-state equality do not prove OS isolation, same-user process protection, exhaustive cleanup, production asset serving, parent BB-01..10 completion or its runtime handler/effect counters.",
+    "No model/effort runtime identity attestation is available."
+  ],
+  "provenance": {
+    "child_task_id": "/root/bridge_code_final_review",
+    "author_task_id": "/root",
+    "binding_note": "The coordinator supplied the updated verification digest after correcting BSI-4 outcome check registration; the full binding was independently recomputed and matched before writing."
+  },
+  "runtime_identity_verified": false
+}

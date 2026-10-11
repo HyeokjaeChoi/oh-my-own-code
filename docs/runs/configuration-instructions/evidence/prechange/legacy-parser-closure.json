@@ -1,0 +1,62 @@
+{
+  "authority": "Actual pre-instructions source closure bundled before product source edits; not a substitute parser. Existing desktop esbuild, Node-only; no Native or provider.",
+  "node": "v26.8.2",
+  "output": "docs/runs/configuration-instructions/evidence/prechange/legacy-storage-journal.bundle.mjs",
+  "sha256": "1b6cf5048680e3e246e4efa8da4299e7e25008972f3604d2e5bf0f9fead98f33",
+  "inputs": {
+    "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": "72215cb0a63248342adc29ea6d376882a7bae5d4f698f394d3a0eedf37db4157",
+    "apps/desktop-app/src/workbench-contract.mjs": "58b6e06e67c42cdc14c04cb0effcc0ac712d92e486b6d7b0ea197912121efee6",
+    "apps/desktop-app/src/host/storage-journal.mjs": "faaad9a8eb53d19eafa00c1a473ec8b326982540da8639eae1f0c331ae34ea9d"
+  },
+  "outputs": {
+    "docs/runs/configuration-instructions/evidence/prechange/legacy-storage-journal.bundle.mjs": {
+      "imports": [
+        {
+          "path": "node:fs/promises",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:fs",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:crypto",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "node:path",
+          "kind": "import-statement",
+          "external": true
+        }
+      ],
+      "exports": [
+        "DISPATCH_STEPS",
+        "RESOURCE_RECOVERY_REASONS",
+        "STORAGE_LIMITS",
+        "STORE_RECOVERY_REASONS",
+        "openStorageJournal",
+        "storageError",
+        "validateJournalPayload",
+        "validateRegistryDelta",
+        "validateStorageIdentity",
+        "validateStorageReceipt"
+      ],
+      "entryPoint": "apps/desktop-app/src/host/storage-journal.mjs",
+      "inputs": {
+        "apps/desktop-app/src/host/storage-journal.mjs": {
+          "bytesInOutput": 27863
+        },
+        "apps/desktop-app/src/renderer/shared/configuration-draft/validation.mjs": {
+          "bytesInOutput": 211
+        },
+        "apps/desktop-app/src/workbench-contract.mjs": {
+          "bytesInOutput": 2710
+        }
+      },
+      "bytes": 31308
+    }
+  }
+}

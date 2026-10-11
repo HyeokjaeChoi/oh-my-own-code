@@ -1,0 +1,102 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "F1": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/workspace-file-editing/source-freeze-r1.json",
+        "docs/runs/workspace-file-editing/verification-summary-r1.json"
+      ],
+      "checks": [
+        "files",
+        "kernel",
+        "publication"
+      ]
+    },
+    "F2": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/workspace-file-editing/source-freeze-r1.json",
+        "docs/runs/workspace-file-editing/verification-summary-r1.json"
+      ],
+      "checks": [
+        "files",
+        "kernel",
+        "publication"
+      ]
+    },
+    "F3": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/workspace-file-editing/source-freeze-r1.json",
+        "docs/runs/workspace-file-editing/verification-summary-r1.json"
+      ],
+      "checks": [
+        "files",
+        "hidden-ui"
+      ]
+    },
+    "F4": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/workspace-file-editing/source-freeze-r1.json",
+        "docs/runs/workspace-file-editing/verification-summary-r1.json"
+      ],
+      "checks": [
+        "files",
+        "kernel",
+        "publication",
+        "hidden-ui",
+        "build",
+        "typecheck",
+        "boundaries",
+        "bundle",
+        "lint",
+        "format"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/scripts/run-evidence.test.mjs",
+    "apps/desktop-app/scripts/workspace-file-edit-probe.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/event-host-protocol.mjs",
+    "apps/desktop-app/src/event-host-resources.mjs",
+    "apps/desktop-app/src/host/configuration-file-observation.mjs",
+    "apps/desktop-app/src/host/configuration-save-kernel.mjs",
+    "apps/desktop-app/src/host/configuration-save-kernel.test.mjs",
+    "apps/desktop-app/src/host/storage-integration.test.mjs",
+    "apps/desktop-app/src/host/storage-journal.mjs",
+    "apps/desktop-app/src/host/storage-journal.test.mjs",
+    "apps/desktop-app/src/host/workbench-admission.mjs",
+    "apps/desktop-app/src/host/workbench-file-edit.mjs",
+    "apps/desktop-app/src/host/workbench-file-edit.test.mjs",
+    "apps/desktop-app/src/host/workbench-file-storage.mjs",
+    "apps/desktop-app/src/host/workbench-file-storage.test.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/features/workspace-file-editor/editor.module.css",
+    "apps/desktop-app/src/renderer/features/workspace-file-editor/index.tsx",
+    "apps/desktop-app/src/renderer/shared/api/index.ts",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts",
+    "apps/desktop-app/src/renderer/shared/workspace-file/index.d.mts",
+    "apps/desktop-app/src/renderer/shared/workspace-file/index.mjs",
+    "apps/desktop-app/src/renderer/shared/workspace-file/index.ts",
+    "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+    "apps/desktop-app/src/workbench-contract.mjs",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-store.test.mjs",
+    "apps/desktop-app/src/workspace-file.test.mjs"
+  ],
+  "deleted_paths": [],
+  "completion_scope": "Existing ordinary UTF-8 file explicit baseline/editor/save with exact durable authority and conflict/unknown holds. Whole AC11 and product remain unfinished."
+}

@@ -1,0 +1,61 @@
+{
+  "schema_version": 2,
+  "run": "bridge-browser-security-implementation",
+  "reviewer_role": "reviewer",
+  "verdict": "changes_requested",
+  "summary": "The five findings from the earlier review are closed by implementation and regression coverage. Two additional P2 contract-validation defects remain: pairing silently removes a leading UTF-8 BOM, and the client overwrites snapshot.events before validating the snapshot response. No P1 findings were identified. All eight registered checks passed at the reviewed source binding.",
+  "open_findings": [
+    {
+      "id": "BSI-R2-01",
+      "priority": "P2",
+      "title": "Preserve the original JSON text when decoding pairing bodies",
+      "file": "apps/local-bridge/src/server.ts",
+      "start": 189,
+      "end": 195,
+      "description": "parsePairBody uses TextDecoder without ignoreBOM:true, so a leading UTF-8 BOM is removed before JSON.parse sees the source. A BOM-prefixed otherwise valid pairing object is accepted and consumes its one-time code, contrary to the strict JSON-body contract. The control-body decoder preserves the BOM and rejects it, so the two control paths enforce different grammar.",
+      "requested_change": "Preserve the BOM during pairing-body decoding and let JSON.parse reject it. Add an HTTP regression proving a BOM-prefixed pairing body receives 400 REQUEST_INVALID without consuming the code, followed by successful pairing using the unchanged code.",
+      "validation_basis": "Static source analysis; no reproduction executed."
+    },
+    {
+      "id": "BSI-R2-02",
+      "priority": "P2",
+      "title": "Validate the snapshot response before replacing its events",
+      "file": "apps/workbench-web/src/shared/api/read-synthetic-fixture.ts",
+      "start": 149,
+      "end": 158,
+      "description": "The client merges the separate events response over snapshot.events before running SyntheticSnapshotSchema.parse. A malformed/missing required snapshot.events field can therefore be accepted whenever /events returns a valid array, bypassing the snapshot wire schema and incorrectly reaching connected rather than recoverable read failure.",
+      "requested_change": "Validate the snapshot response against SyntheticSnapshotSchema before composing the separately validated events response. Add malformed snapshot.events and missing snapshot.events cases while the separate events response remains valid.",
+      "validation_basis": "Static source analysis of the client and required events field in packages/contracts/src/index.ts; no reproduction executed."
+    }
+  ],
+  "previous_findings": [
+    { "finding": "Initial-read disconnect was a no-op", "status": "closed", "evidence": "A held-initial-read Chromium regression verifies disconnect aborts and prevents late restore." },
+    { "finding": "Heartbeat/read race and lost cadence", "status": "closed", "evidence": "Deferred browser tests verify serialization, retained cadence, no overlap, failure persistence and complete recovery." },
+    { "finding": "Control bodies accepted non-JSON whitespace", "status": "closed", "evidence": "HTTP tests reject invalid Unicode whitespace, prove no renewal/revoke and accept JSON whitespace." },
+    { "finding": "Originless production-read test used a differently bound capability", "status": "closed", "evidence": "The test pairs for bridge origin and gets 200 without Origin using same-origin metadata." },
+    { "finding": "Restart, WebSocket, denied metadata and server expiry evidence missing", "status": "closed", "evidence": "HTTP restart/upgrade/metadata cases and bridge-clock-driven Chromium AUTH_EXPIRED path pass." }
+  ],
+  "reviewed": {
+    "schema_version": 2,
+    "gate": "code",
+    "plan_sha256": "f7d7f0d1b9d49c25e2644c72777dff703814ce7e0cba5e559218655649f5d111",
+    "contract_sha256": "17da58fa38a5953f21d80823b28cfa377d1cbc06072c0fcf1f5250670ede4767",
+    "source_sha256": "683e85be8ec624e269bb9d763fbf020d519582319e5dd930b9a828a3e4c382f1",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "verification_sha256": "d7c08ba31840f1263469bb87a89c98a12d5eaa7a0952713d30b16363e38cdff4"
+  },
+  "review_boundary": "Independent read-only source, contract, configuration and recorded-evidence review. Current source/tests were reviewed; no edits or runtime work by reviewer.",
+  "evidence_limits": [
+    "No files edited and no tests, services or browser sessions started by reviewer.",
+    "Passing checks use an injected bridge clock for expiry; they are not elapsed-wall-clock endurance tests.",
+    "Static review and synthetic-state checks do not prove OS isolation, all cleanup paths or parent BB-01..10 completion.",
+    "Requested model and effort metadata do not attest runtime identity."
+  ],
+  "provenance": {
+    "child_task_id": "/root/bridge_final_code_review_r2",
+    "author_task_id": "/root"
+  },
+  "requested_model": "gpt-6-astra",
+  "requested_effort": "high",
+  "runtime_identity_verified": false
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 2,
+  "verdict": "pass",
+  "scope": "bounded CODE exact3 shared pure Native Read declaration constructor",
+  "reviewed_checkpoint": {
+    "path": "docs/runs/permission-task-lifetime-integration/read-declaration-source-checkpoint-r1.json",
+    "sha256": "006b6bd7dc209a40625170ce318b504f3ed5a9f749f878382a1465f739f9eb53"
+  },
+  "open_findings": [],
+  "source_pins_before_after": "exact3 match; all20 original and output recipe pins match",
+  "checks_read": {
+    "coherent": 11
+  },
+  "reviewer_reran_tests": false,
+  "summary": "Independent reviewer verified original execute literal occurs once and is unchanged, common frozen constructor outside transform, same declaration passed by actual Plugin, lazy helper forwarding avoids TDZ, honest metadata vs synthetic callback fixtures. General Tool callback guard unchanged; no positive authority.",
+  "provenance": {
+    "child_task_id": "01a125f0-e0ee-7d01-8b5a-1c585adcc665",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "limits": [
+    "Not final whole CODE/full18/F09",
+    "No Native runtime executed",
+    "Static formatter/linter read from checkpoint, not rerun"
+  ]
+}

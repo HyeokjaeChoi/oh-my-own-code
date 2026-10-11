@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "authority": "Actual Main host/factory source checkpoint after full owned integration; final coherent artifact checks/reviews remain",
+  "producer_sha256": {
+    "apps/desktop-app/src/desktop-bridge.d.ts": "471972d9be3e58c013a34aca265ded7cebb8fb51f5fb345f12387542f6a6736d",
+    "apps/desktop-app/src/workbench-contract.mjs": "91431c5ba0a157061a8c3362557ebcba7b50ea88256f3902099786097c36acf3",
+    "apps/desktop-app/src/host/workbench-mcp.mjs": "601ab78536584803e80912cfa6d2131ed8ea60e56f96cc39ee055918385ef140",
+    "apps/desktop-app/src/workbench-service.mjs": "438f531ea42486a6d075f3c365e0f8bde8660f98e7c3744d54288bb2ecf57556",
+    "apps/desktop-app/src/host/workbench-admission.mjs": "9f58da437133b0cfcadd63cfa1c9adf929ac418af98b11e61312eca348906186",
+    "apps/desktop-app/src/host/workbench-receipts.mjs": "338916766de0c7bffce829c09f703abda8a8d55ebcf600aea0d8e06bd6182e98",
+    "apps/desktop-app/src/main.mjs": "568bc09eb4c7046a659097d9daaa10aeca8afce7c7ef08499815a9f660752262"
+  },
+  "factory": "createWorkbenchService existing injections plus confirmMcp?:async immutableTarget=>boolean, default false. No other new injection. Normal v2 envelope+sender required with registry. Existing runtime/registry/runtimeEpoch/bootstrap behavior unchanged.",
+  "confirmMcp_target": {
+    "required": [
+      "action register|connect|disconnect|remove",
+      "workspaceId",
+      "workspacePath canonical",
+      "sourceName",
+      "nativeName",
+      "expectedObservationVersion",
+      "digest submitted normalized definition",
+      "sourceVersion exact file observation"
+    ],
+    "optional": "definition for register/connect only: actual normalized local argv/cwd/disabled:true or remote oauth:false/disabled:true; Object.freeze nested definition from helper"
+  },
+  "checks": "Main actual full host Node326/326PASS main-host-r4.log; Main scoped ESLint+desktoptscPASS. MCP26PASS plus workspace-removal guard1PASS and receiptcanary1PASS. No Native/UI/build invoked.",
+  "storage_checkpoint": "docs/runs/configuration-mcp/storage-api-freeze-r1.json",
+  "renderer_checkpoint": "await worker actual hooks/labels, relay later; do not invent",
+  "lifetime_guard": "workspace.remove is BUSY while any current-runtime app registration exists, including already absent Native entry; explicit confirmed MCP remove first. No SDK effect or authority pruning before guard."
+}

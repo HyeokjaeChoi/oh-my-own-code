@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "reviewer": "independent_code_reviewer",
+  "verdict": "changes_requested",
+  "binding": {
+    "contract": {
+      "path": "docs/workplans/desktop-app-bootstrap/contract.json",
+      "sha256": "97cafead7925fa98cd014fd9c9d9a044a85143875194bef556b7cc9a66358a61"
+    },
+    "plan": {
+      "path": "docs/workplans/desktop-app-bootstrap/plan.md",
+      "revision": 20,
+      "sha256": "b881fc85abb27e5f8c892acb1ffbdd81904bcaef168f9bf7e37ec5a71da89a4f"
+    },
+    "source_files": {
+      "apps/desktop-app/src/main.mjs": "3bda88c041e8bd26a5e5f718cf3e799db7447a8e0d51310017c7f9f62082149b",
+      "apps/desktop-app/src/preload.cjs": "edb294e8b5edbe3229ff4ea3a34c9e68ab1be3455d40222379c66ecf134230f4",
+      "apps/desktop-app/src/sidecar-supervisor.mjs": "bf8aee5bda75e0ced919b5f6d674edc71429dbe83ae51438ea34ee3e7d60b37b",
+      "apps/desktop-app/src/ephemeral-profile.mjs": "dc161c3b1da5832af479e6bb9cdd25c20b748ee59343ba5e79543bc7ab39444d",
+      "apps/desktop-app/src/renderer.tsx": "a264db1c7a278d6b725dd2390de5a21cc23209bfa609aba7d0c62f4366622d10",
+      "apps/desktop-app/src/desktop-bridge.d.ts": "c0781c7375e162f049f66eb98767115088a45648d945b9ac48df4326388bb600",
+      "apps/desktop-app/index.html": "973680da1eadd48eb58ff47aaaca46a10e33c0da3a31e97662f3ddea9fddc9ae",
+      "apps/desktop-app/package.json": "766e7ffeb63023ad636261dabb7d8fecad815d86867e8acd6b2794675e2ee181",
+      "apps/desktop-app/project.json": "e4615aa2f35cf32e87328a4497e8e8579d9ae9efb70a9a234d20878e141dcd40",
+      "apps/desktop-app/vite.config.ts": "1d02271112ce18d2e77b2a94aff3e9de15fc6cc3903e17ed3a5126b6e5dbe052",
+      "apps/desktop-app/scripts/build.mjs": "3cd0bda00d0f1e867783a3bcce4f213a73e2f7b6a0433a27ed72ea5f99502dcf",
+      "apps/desktop-app/scripts/package.mjs": "c147654b3d9b9b96a218a8b21bf451c55fc3e293b8c613b75fae694627513f63",
+      "apps/desktop-app/scripts/e2e-smoke.mjs": "e6ac6067e43428794e296b9426a3f818fc73186dc6dca6f982b878c673dab103",
+      "apps/desktop-app/scripts/inspect-packaged-bundle.mjs": "1a67be6a3da6e234e6c24bd3065b30cc52ee906078c2b103c890c441c0ec0c3d",
+      "apps/desktop-app/scripts/inspect-renderer-bundle.mjs": "5d05ced2a5a531f49fe6c7385f411b3397e46a03c768441b649b632aa195d056",
+      "apps/desktop-app/src/sidecar-supervisor.test.mjs": "9a75f56272b922b81b2b68b872e36d5b9cc5d6bbd709f0f1c2992c5c6cfcbba3",
+      "apps/desktop-app/src/ephemeral-profile.test.mjs": "8430e8f078a413f139ffca41a2a0b7a27f8288179bdb28cab64ae167123c06bb",
+      "pnpm-lock.yaml": "be1b170489bbe1b8f54b0aee1c0e0e7b53a65d87dfb693186093542728a90cd2",
+      "pnpm-workspace.yaml": "4d3db65848ea506ea21477408bfc430cd73aa81ac77e2f52c441a9589b2acb0b"
+    }
+  },
+  "prior_findings": {
+    "CR-1": "partially_resolved: renderer now polls and renders disconnected after child exit; app restart is the recovery path, but the new packaged crash assertion uses an obsolete state",
+    "CR-2": "partially_resolved: exact artifact hashes are compared and reported; foreign sender, subframe and crash/restart probes were added, but the subframe boundary is unenforced and several required negative scenarios remain absent",
+    "CR-3": "resolved: setup is within the cleanup scope and pre-spawn failure tests cover both directory and config writes",
+    "CR-4": "resolved_in_source: Windows USERPROFILE, APPDATA and LOCALAPPDATA now point inside the disposable root; actual Windows filesystem behavior remains a runtime evidence item",
+    "CR-5": "resolved: cleanup failure retries once and reports an absolute recovery path after the child has exited; Electron profile failure also reports its path"
+  },
+  "findings": [
+    {
+      "id": "CR2-1",
+      "severity": "P1",
+      "path": "apps/desktop-app/src/main.mjs",
+      "line": 25,
+      "title": "Same-URL subframes satisfy desktop IPC admission",
+      "trigger": "A subframe of the main webContents loads the allowed renderer URL and invokes desktop:v1:runtime-snapshot through preload.",
+      "impact": "admit compares webContents and URL but never requires event.senderFrame to equal the main frame. The new packaged test intentionally creates this exact subframe and expects request_denied, so the implemented boundary contradicts the required sender/frame admission. The handler also ignores extra IPC arguments, meaning malformed main-frame messages are accepted instead of rejected.",
+      "correction": "Require the exact main frame and reject unexpected arguments before returning a snapshot; retain negative tests for both conditions."
+    },
+    {
+      "id": "CR2-2",
+      "severity": "P1",
+      "path": "apps/desktop-app/scripts/e2e-smoke.mjs",
+      "line": 290,
+      "title": "Packaged crash test asserts the wrong runtime state",
+      "trigger": "The test kills the owned sidecar after a successful startup.",
+      "impact": "sidecar-supervisor.mjs:245-255 now returns disconnected and renderer.tsx:58-59 renders disconnected, while this packaged test polls and asserts unavailable. It will fail before verifying cleanup and relaunch on both operating systems, leaving the required packaged lifecycle gate unsatisfied.",
+      "correction": "Assert disconnected in both the bridge snapshot and UI, then complete the quit/restart and exact-child cleanup checks."
+    },
+    {
+      "id": "CR2-3",
+      "severity": "P2",
+      "path": "apps/desktop-app/scripts/e2e-smoke.mjs",
+      "line": 380,
+      "title": "Required packaged negative scenarios remain untested",
+      "trigger": "The current packaged script passes its listed scenarios after the frame and crash assertions are fixed.",
+      "impact": "It still does not inject startup failure, startup timeout, or service collision, and the only malformed payload is sent by a foreign window whose sender is rejected first. It has no preview surface to exercise preview isolation. The contract explicitly requires these packaged observations on each OS; listing the narrower scenarios cannot satisfy that gate.",
+      "correction": "Add native packaged failure fixtures for startup/timeout/collision and a trusted-main-frame malformed payload case; document preview isolation as inapplicable to this bootstrap only if the reviewed plan/contract accepts that narrower scope."
+    }
+  ],
+  "method": {
+    "review_type": "fresh independent read-only static rereview",
+    "scope": "Compared current Electron bootstrap, tests, packaging scripts and IPC callers with revision-20 plan, approved contract and CR-1 through CR-5; inspected code paths and exact SHA-256 hashes.",
+    "execution": "No app, build, E2E or tests were run, and no source or harness ledger was changed. This report file is the sole write.",
+    "limits": "Actual macOS and Windows runtime behavior, including profile isolation and failure recovery, requires separate executed evidence."
+  }
+}

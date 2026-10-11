@@ -1,0 +1,113 @@
+TAP version 13
+# Subtest: MCP ACK with wrong-status stays unknown and keeps an original workspace-wide hold
+not ok 1 - MCP ACK with wrong-status stays unknown and keeps an original workspace-wide hold
+  ---
+  duration_ms: 97.636375
+  type: 'test'
+  location: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2422:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2491:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: MCP ACK with malformed stays unknown and keeps an original workspace-wide hold
+not ok 2 - MCP ACK with malformed stays unknown and keeps an original workspace-wide hold
+  ---
+  duration_ms: 79.69075
+  type: 'test'
+  location: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2422:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2491:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: MCP ACK with other-drift stays unknown and keeps an original workspace-wide hold
+not ok 3 - MCP ACK with other-drift stays unknown and keeps an original workspace-wide hold
+  ---
+  duration_ms: 79.605125
+  type: 'test'
+  location: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2422:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2491:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: MCP ACK with policy-after-effect stays unknown and keeps an original workspace-wide hold
+not ok 4 - MCP ACK with policy-after-effect stays unknown and keeps an original workspace-wide hold
+  ---
+  duration_ms: 69.883334
+  type: 'test'
+  location: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2422:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"ok":false,"code":"UNAVAILABLE","message":"The runtime is unavailable."}
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2491:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: MCP completion delay never publishes speculative receipt or live ownership
+not ok 5 - MCP completion delay never publishes speculative receipt or live ownership
+  ---
+  duration_ms: 2038.696541
+  type: 'test'
+  location: '/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2498:3'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'servers')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:2531:35)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 0
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2434.126459

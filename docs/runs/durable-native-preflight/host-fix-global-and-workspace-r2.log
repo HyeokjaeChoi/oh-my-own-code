@@ -1,0 +1,109 @@
+✖ copied-set proof preserves originals, keeps stdin live, closes exact child and never inherits secrets (8.02675ms)
+✔ fresh proof has zero inspector calls; retained/resource recovery denies both namespaces (3.480041ms)
+✖ each invocation repeats inspection after startup journal revision; observation-only sequence is excluded (3.230125ms)
+✖ fork admission uses its own original identity/receipt separately from inherited root metadata (10.371666ms)
+✔ digest drift or invalid authority denies; no stale decision authorizes launch (2.6565ms)
+✔ receipt drift or invalid authority denies; no stale decision authorizes launch (2.516417ms)
+✔ revision drift or invalid authority denies; no stale decision authorizes launch (2.372375ms)
+✔ owner drift or invalid authority denies; no stale decision authorizes launch (2.914958ms)
+✔ resources drift or invalid authority denies; no stale decision authorizes launch (2.3875ms)
+✔ original drift or invalid authority denies; no stale decision authorizes launch (2.37175ms)
+✔ optional drift or invalid authority denies; no stale decision authorizes launch (2.255542ms)
+✔ config drift or invalid authority denies; no stale decision authorizes launch (2.396917ms)
+✔ config-extra drift or invalid authority denies; no stale decision authorizes launch (2.708541ms)
+✔ symlink drift or invalid authority denies; no stale decision authorizes launch (2.682291ms)
+✔ hardlink drift or invalid authority denies; no stale decision authorizes launch (2.754083ms)
+✔ mode drift or invalid authority denies; no stale decision authorizes launch (2.469125ms)
+✔ nonce drift or invalid authority denies; no stale decision authorizes launch (2.400458ms)
+✔ extra-output drift or invalid authority denies; no stale decision authorizes launch (2.530417ms)
+✔ oversized-output drift or invalid authority denies; no stale decision authorizes launch (2.539958ms)
+✖ pending closed result preserves bytes and exact recovery reason (2.30925ms)
+
+Interrupted while running:
+
+⚠ apps/desktop-app/src/host/native-preflight.test.mjs (apps/desktop-app/src/host/native-preflight.test.mjs:1:1)
+✖ apps/desktop-app/src/host/native-preflight.test.mjs (74171.901209ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 16
+ℹ fail 4
+ℹ cancelled 1
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 74175.290958
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/native-preflight.test.mjs:267:1
+✖ copied-set proof preserves originals, keeps stdin live, closes exact child and never inherits secrets (8.02675ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-preflight.test.mjs:270:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/native-preflight.test.mjs:305:1
+✖ each invocation repeats inspection after startup journal revision; observation-only sequence is excluded (3.230125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-preflight.test.mjs:307:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/native-preflight.test.mjs:312:1
+✖ fork admission uses its own original identity/receipt separately from inherited root metadata (10.371666ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-preflight.test.mjs:320:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/native-preflight.test.mjs:391:1
+✖ pending closed result preserves bytes and exact recovery reason (2.30925ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'native_startup_unverified'
+  - 'pending_inbox'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-preflight.test.mjs:402:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'native_startup_unverified',
+    expected: 'pending_inbox',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/desktop-app/src/host/native-preflight.test.mjs:1:1
+✖ apps/desktop-app/src/host/native-preflight.test.mjs (74171.901209ms)
+  'Promise resolution is still pending but the event loop has already resolved'

@@ -1,0 +1,218 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "31c9fcf05e5b778c61b61f13112d4f6ba32e287d37ff0b2e502e55622c1eb71e",
+    "environment_sha256": "0899c5422411bd0b5ad435f9f4d8835ac95982928fa450dab4b3ad2e452e4fac",
+    "gate": "design",
+    "plan_sha256": "0e04594e99ecfbe2b44e443df268d96f8ba8c9f331d0c03655a4ec3f49ec73c4",
+    "schema_version": 2,
+    "source_sha256": "eb5206617abea9f3c157b71628c4aadcebedd1b16e11f91ce62705f7152a1ef1",
+    "verification_sha256": "bcf9864ac9478579e6690a0427f20c407186e4f29becc6631a3299fdf4ff81cd",
+    "work_class_sha256": "bedc6ccdc1b1909a9b8b1de179e564ab2b82c47a24563c162af4476a693b86c9"
+  },
+  "verdict": "pass",
+  "summary": "Accepted DESIGNv3와 plan11의 제한된 UI 범위에서 수정이 필요한 구체적 결함을 발견하지 못했습니다. 현재 source, 검증 기록, built UI capture를 직접 확인했습니다. branch create/select와 tracked worktree INDEX/HEAD restore에만 적용되는 판정입니다.",
+  "open_findings": [],
+  "inspected_scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "run_directory": "docs/runs/git-branch-restore",
+    "instructions_read": [
+      "AGENTS.md",
+      ".codex/agents/solo_reader.toml",
+      ".agents/skills/solo-specialist/SKILL.md",
+      ".agents/skills/solo-design-review/SKILL.md"
+    ],
+    "current_documents_read": [
+      "plan.md",
+      "design.md",
+      "contract.json",
+      "source-freeze-r1.json",
+      "actual-checks-r1.json",
+      "verification-summary-r1.json",
+      "outcome-r1.json",
+      "run.json",
+      "final-render-input-r1.json",
+      "final-render-packet-r1.json",
+      "render-navigation-r1.json",
+      "evidence/react-preview-fix-r1/proof.json",
+      "evidence/react-preview-fix-r1/ui.diff",
+      "evidence/react-preview-fix-r1/runner.diff",
+      "evidence/hidden-r4/git-branch-restore/git-branch-restore-evidence.json",
+      "evidence/hidden-r4/git-branch-restore/manifest.json"
+    ],
+    "source_inspection": [
+      "apps/desktop-app/src/renderer/features/git-review/branch-restore.tsx",
+      "apps/desktop-app/src/renderer/features/git-review/review.module.css",
+      "apps/desktop-app/src/renderer/entities/workbench/model/store.ts의 branch/restore scope 및 요청 guard",
+      "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts의 preview 취소, target projection, apply 재검사 및 receipt 상관관계",
+      "apps/desktop-app/scripts/e2e-git-branch-restore.mjs의 capture, geometry, selection, keyboard 및 metrics",
+      "apps/desktop-app/src/workbench-store.test.mjs의 추가 회귀 검사",
+      "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs의 추가 회귀 검사",
+      "docs/runs/git-branch-restore/ensure-current-build.mjs",
+      ".solopreneur/harness.py의 최종 review binding 계산"
+    ],
+    "semantic_coverage": [
+      "create 후 자동 전환하지 않는 설명, select의 clean tracked 조건, restore의 worktree 전용 변경",
+      "명시적 작업, branch 이름, reflog name/email, INDEX/HEAD source 및 tracked 경로 입력",
+      "현재 상태와 원래 preview의 workspace, epoch, revision, preview ID 및 digest",
+      "전체 선택 경로와 변경 경로, 생성·삭제·내용·mode 변경 및 손실 경고",
+      "변경 전후 파일 존재 여부, bytes, mode, SHA-256 및 Git entry mode/OID",
+      "metadata 변경 순서와 변경 전후 bytes/hash",
+      "backup role/path별 결과 행, 전체 Backup ID 및 원본 부재 시 null 표시",
+      "성공, 거부, unknown, preview 취소, held, untrusted 및 이전 scope의 편집 가능한 비활성 초안",
+      "원래 operation key 유지, 조회 전용 recovery, 자동 replay 없음 및 늦은 ACK",
+      "receipt 확인과 실제 Renderer 호출 종료의 별도 표시",
+      "light/dark 1440px 및 760px 200% 화면, focus 표시와 긴 값 줄바꿈"
+    ],
+    "capture_inspection": {
+      "method": "view_image로 아래 74개 native PNG의 실제 픽셀을 직접 확인했습니다. render-navigation-r1.json은 파일 위치를 찾는 데만 사용했습니다.",
+      "directory": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/git-branch-restore/evidence/hidden-r4/git-branch-restore",
+      "directly_viewed_count": 74,
+      "files": [
+        "git-branch-restore-26-preview-create-branch-restore-light-desktop.png",
+        "git-branch-restore-50-preview-create-branch-restore-light-desktop.png",
+        "git-branch-restore-294-preview-create-branch-restore-dark-760px200.png",
+        "git-branch-restore-79-preview-create-branch-restore-light-desktop.png",
+        "git-branch-restore-186-preview-create-branch-restore-dark-desktop.png",
+        "git-branch-restore-134-preview-create-branch-restore-light-760px200.png",
+        "git-branch-restore-402-success-create-branch-restore-dark-760px200.png",
+        "git-branch-restore-414-success-create-branch-restore-dark-760px200.png",
+        "git-branch-restore-486-preview-select-branch-restore-light-desktop.png",
+        "git-branch-restore-602-preview-select-branch-restore-light-760px200.png",
+        "git-branch-restore-714-preview-select-branch-restore-dark-desktop.png",
+        "git-branch-restore-830-preview-select-branch-restore-dark-760px200.png",
+        "git-branch-restore-944-success-select-branch-restore-dark-760px200.png",
+        "git-branch-restore-1010-success-select-branch-restore-dark-760px200.png",
+        "git-branch-restore-1084-preview-restore-index-branch-restore-light-desktop.png",
+        "git-branch-restore-1189-preview-restore-index-branch-restore-light-760px200.png",
+        "git-branch-restore-1290-preview-restore-index-branch-restore-dark-desktop.png",
+        "git-branch-restore-1395-preview-restore-index-branch-restore-dark-760px200.png",
+        "git-branch-restore-1492-success-restore-index-branch-restore-dark-760px200.png",
+        "git-branch-restore-1536-success-restore-index-branch-restore-dark-760px200.png",
+        "git-branch-restore-1611-preview-restore-head-branch-restore-light-desktop.png",
+        "git-branch-restore-1716-preview-restore-head-branch-restore-light-760px200.png",
+        "git-branch-restore-1817-preview-restore-head-branch-restore-dark-desktop.png",
+        "git-branch-restore-1922-preview-restore-head-branch-restore-dark-760px200.png",
+        "git-branch-restore-2019-success-restore-head-branch-restore-dark-760px200.png",
+        "git-branch-restore-2063-success-restore-head-branch-restore-dark-760px200.png",
+        "git-branch-restore-2118-refusal-dirty-branch-restore-dark-760px200.png",
+        "git-branch-restore-2174-refusal-branch_occupied-branch-restore-dark-760px200.png",
+        "git-branch-restore-2230-refusal-branch_conflict-branch-restore-dark-760px200.png",
+        "git-branch-restore-2286-refusal-protected_source-branch-restore-dark-760px200.png",
+        "git-branch-restore-2340-refusal-unsupported_configuration-branch-restore-dark-760px200.png",
+        "git-branch-restore-2394-refusal-unsupported_branch_restore_state-branch-restore-dark-760px200.png",
+        "git-branch-restore-2448-refusal-unborn-branch-restore-dark-760px200.png",
+        "git-branch-restore-2538-denied-branch-restore-light-760px200.png",
+        "git-branch-restore-2634-unknown-branch-restore-light-760px200.png",
+        "git-branch-restore-2691-cancelled-preview-held-branch-restore-dark-760px200.png",
+        "git-branch-restore-2731-historical-held-branch-restore-dark-760px200.png",
+        "git-branch-restore-2811-historical-global-held-branch-restore-dark-760px200.png",
+        "git-branch-restore-2891-historical-untrusted-branch-restore-dark-760px200.png",
+        "git-branch-restore-2971-historical-root-branch-restore-dark-760px200.png",
+        "git-branch-restore-3051-historical-epoch-branch-restore-dark-760px200.png",
+        "git-branch-restore-3130-retained-original-key-branch-restore-light-760px200.png",
+        "git-branch-restore-3217-receipt-before-finally-newer-draft-branch-restore-dark-760px200.png",
+        "git-branch-restore-3313-late-ack-newer-draft-branch-restore-light-760px200.png",
+        "git-branch-restore-3404-receipt-before-finally-workspace-branch-restore-dark-760px200.png",
+        "git-branch-restore-3500-late-ack-workspace-branch-restore-light-760px200.png",
+        "git-branch-restore-3596-receipt-before-finally-root-branch-restore-dark-760px200.png",
+        "git-branch-restore-3692-late-ack-root-branch-restore-light-760px200.png",
+        "git-branch-restore-3788-receipt-before-finally-epoch-branch-restore-dark-760px200.png",
+        "git-branch-restore-3884-late-ack-epoch-branch-restore-light-760px200.png",
+        "git-branch-restore-997-success-select-branch-restore-dark-760px200.png",
+        "git-branch-restore-1002-success-select-branch-restore-dark-760px200.png",
+        "git-branch-restore-1006-success-select-branch-restore-dark-760px200.png",
+        "git-branch-restore-1406-preview-restore-index-branch-restore-dark-760px200.png",
+        "git-branch-restore-1942-preview-restore-head-branch-restore-dark-760px200.png",
+        "git-branch-restore-2718-historical-held-branch-restore-dark-760px200.png",
+        "git-branch-restore-2798-historical-global-held-branch-restore-dark-760px200.png",
+        "git-branch-restore-2878-historical-untrusted-branch-restore-dark-760px200.png",
+        "git-branch-restore-2958-historical-root-branch-restore-dark-760px200.png",
+        "git-branch-restore-3038-historical-epoch-branch-restore-dark-760px200.png",
+        "git-branch-restore-2721-historical-held-branch-restore-dark-760px200.png",
+        "git-branch-restore-2801-historical-global-held-branch-restore-dark-760px200.png",
+        "git-branch-restore-2881-historical-untrusted-branch-restore-dark-760px200.png",
+        "git-branch-restore-2961-historical-root-branch-restore-dark-760px200.png",
+        "git-branch-restore-3041-historical-epoch-branch-restore-dark-760px200.png",
+        "git-branch-restore-3505-late-ack-workspace-branch-restore-light-760px200.png",
+        "git-branch-restore-3601-receipt-before-finally-root-branch-restore-dark-760px200.png",
+        "git-branch-restore-3697-late-ack-root-branch-restore-light-760px200.png",
+        "git-branch-restore-3793-receipt-before-finally-epoch-branch-restore-dark-760px200.png",
+        "git-branch-restore-3889-late-ack-epoch-branch-restore-light-760px200.png",
+        "git-branch-restore-1361-preview-restore-index-branch-restore-dark-760px200.png",
+        "git-branch-restore-1366-preview-restore-index-branch-restore-dark-760px200.png",
+        "git-branch-restore-1372-preview-restore-index-branch-restore-dark-760px200.png",
+        "git-branch-restore-1399-preview-restore-index-branch-restore-dark-760px200.png"
+      ]
+    }
+  },
+  "checks": [
+    {
+      "name": "final_binding",
+      "result": "pass",
+      "detail": "최종 input 전체를 reviewed에 복사했습니다. source inventory, plan, semantic contract, environment, verification 및 work_class digest를 읽기 전용으로 계산하여 input과 대조했습니다. 최종 verification/work_class binding도 검토 종료 전에 다시 일치했습니다."
+    },
+    {
+      "name": "exact_source_inventory",
+      "result": "pass",
+      "detail": "전체 inventory의 688개 파일 hash와 mode가 현재 파일과 일치했습니다. 불완전한 git diff를 source 범위의 기준으로 사용하지 않았습니다. 이전 source와의 변경은 proof에 지정된 4개 경로와 일치하며, 기존 store/fixture test prefix는 byte 단위로 보존되어 있습니다."
+    },
+    {
+      "name": "contracted_check_records",
+      "result": "pass",
+      "detail": "13개 contracted command의 argv, 최신 기록 및 source/environment/plan/contract binding을 확인했습니다. 최신 기록의 exit_code는 모두 0입니다. 이 specialist는 명령을 다시 실행하지 않았습니다."
+    },
+    {
+      "name": "current_build_and_capture_provenance",
+      "result": "pass",
+      "detail": "현재 build stamp와 capture 전후 provenance가 일치합니다. build inputs, artifacts, selected scripts/fixtures 및 launch artifacts의 총 207개 inventory 항목을 직접 hash하여 불일치가 없었습니다. 마지막 build check는 기존 현재 artifact를 검증하여 재사용한 것으로 판단됩니다. 근거는 check보다 앞선 build stamp 시각, 동일 artifact hash 및 ensure-current-build의 분기입니다. stdout의 action 값은 redaction으로 직접 판독할 수 없으므로 새 rebuild를 주장하지 않습니다.",
+      "build_stamp_sha256": "e24fb126debf0154c346a64f1f28d09b4bb248b33f8cd0dbbe5a58085a989164"
+    },
+    {
+      "name": "hidden_r4",
+      "result": "pass",
+      "detail": "현재 실제 hidden-r4 보고서는 44개 상태, 3898개 coverage 항목, 961개 완전한 text selection 기록을 포함합니다. pageErrors는 빈 배열이고 owned teardown은 exit 0입니다. 전체 1283개 PNG의 SHA-256과 실제 PNG 크기가 기록과 일치했습니다. 직접 픽셀을 확인한 범위는 명시한 74개 파일입니다.",
+      "pageErrors": [],
+      "teardown": {
+        "exited": true,
+        "code": 0
+      }
+    },
+    {
+      "name": "viewport_keyboard_and_selection",
+      "result": "pass",
+      "detail": "1440px light/dark와 760px 200% light/dark의 주요 작업 화면을 직접 확인했습니다. full geometry와 5개 hitpoint가 모두 보이고 가려지지 않을 때만 기존 capture surface를 유지하는 guard를 확인했습니다. 나머지는 원래 center scroll을 사용합니다. 현재 보고서의 focus, Tab, Shift+Tab, Escape, opener 복귀 및 재개방 검사와 전체 text selection 기록을 확인했습니다. 이 specialist가 keyboard 동작을 새로 실행한 것은 아닙니다."
+    },
+    {
+      "name": "projection_backups_and_denial_repairs",
+      "result": "pass",
+      "detail": "현재 UI는 exact TARGET_FIELDS를 strict backup helper에 전달합니다. Backup role/path와 ID는 항목별 selectable 행으로 나뉩니다. 200% 화면에서 select의 6개 backup과 create/restore의 결과를 직접 확인했습니다. 실제 React 회귀 검사 및 capture callback/metrics 회귀 검사의 RED→GREEN 기록을 확인했습니다. denied는 dispatch 0, rejected 1, effects 0이며 unknown은 dispatch 1, rejected 0, effects 0입니다. 두 상태 모두 화면 관찰 전후 metrics가 같습니다."
+    },
+    {
+      "name": "scope_unknown_and_late_ack",
+      "result": "pass",
+      "detail": "held/untrusted/이전 scope에서 초안 편집과 요청 차단이 구분됩니다. preview 취소와 현재 scope 재검사 guard가 존재합니다. 원래 workspace·epoch·operation ID와 원래 작업 정보를 결과에서 유지합니다. unknown은 조회 전용이며 자동 재전송하지 않습니다. newer draft/workspace/root/epoch 변경 후 receipt와 늦은 ACK의 현재 capture 및 기록에서 원래 결과와 실제 호출 보류가 별도로 유지됩니다. 44개 상태의 관찰 전후 metrics는 모두 같습니다."
+    },
+    {
+      "name": "historical_evidence_boundaries",
+      "result": "pass",
+      "detail": "초기 JSX loader 실패, strict helper white-screen, Backup ID 가시성 실패 및 denied accounting 실패를 현재 성공으로 덮어쓰지 않은 기록을 확인했습니다. 최종 unit 검증은 변경 관련 4개 파일을 새로 실행하고 변경 없는 19개 파일의 이전 결과를 재사용합니다. kernel과 publication의 현재 wrapper 검증은 적용 가능성 검증이며 최종 source에서 해당 실제 runtime을 새로 실행했다는 근거로 해석하지 않았습니다."
+    }
+  ],
+  "limits": [
+    "읽기와 hash 대조 및 기존 PNG 열람만 수행했습니다. 파일·ledger·제품 수정, 자체 수리, delegation, test/build/runtime/Native/provider/private-store/productionMain/foreground 실행은 수행하지 않았습니다.",
+    "이 판정은 local branch create/select와 tracked worktree INDEX/HEAD restore의 bounded design review입니다. Full18PRDgroup, integrated/platform audit 및 나머지 구현은 포함하지 않습니다.",
+    "hidden-r4는 현재 built Renderer/preload와 test-only synthetic Main의 capturePage/native PNG 증거입니다. productionMain Native confirmation dialog의 픽셀 승인 또는 실제 EventHost OS IPC/lifetime 증거가 아닙니다.",
+    "1283개 PNG 전체의 hash와 크기를 확인했지만, 전체 이미지를 시각적으로 검사하지 않았습니다. 직접 검사한 이미지는 명시한 74개입니다.",
+    "keyboard, focus 복귀, text selection 및 자동 replay 부재의 동작 판정은 현재 실행 보고서와 runner/source 검토에 근거합니다. 이 specialist의 새 runtime 검증은 없습니다.",
+    "현재 kernel 검증은 기존 actual branch 108/index 52/commit 82 기록과 변경 없는 source/environment/Bun의 적용 가능성을 확인합니다. 최종 source에서 kernel runtime을 새로 실행했다고 주장하지 않습니다.",
+    "publication-r3의 34개 실제 coherent case는 동일한 host/kernel/Native source와 현재 resource/manifest/Git/Bun identity에 근거한 재사용 증거입니다. 최종 source의 새 publication 실행을 주장하지 않습니다.",
+    "publication-r1의 deep linked 경로에서 약 10.25초 후 kernel 적용과 원래 unknown이 함께 관찰된 한계는 유지됩니다. 일반 짧은 경로의 약 8.48초 결과가 이 한계를 제거하지 않습니다. budget 상향, replay 또는 원래 결과의 upgrade를 승인하지 않습니다.",
+    "direct typed adapter는 실제 OS IPC/lifetime을 입증하지 않습니다. 순서가 있는 effect는 전역 atomicity, 비협조적 writer 배제 또는 power-loss 안전성을 입증하지 않습니다.",
+    "전체 제품, Windows, production Native dialog 또는 실제 개인 저장소 사용의 승인을 의미하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11ddd-299f-7c30-bcdb-b40a8a90bc1f",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  }
+}

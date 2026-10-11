@@ -1,0 +1,5056 @@
+--- before/.agents/skills/solo-orchestrate/references/run-protocol.md
++++ .agents/skills/solo-orchestrate/references/run-protocol.md
+@@ -28,6 +28,8 @@
+ Use a proportionate SSOT plan with confirmed requirements, decisions, dependency holds, acceptance criteria, ownership, verification, and change history. A small edit needs a compact plan; routine artifact work does not require independent entry plan/design review. Major entry and explicit entry gates do. Product intent remains in `docs/product/` or `docs/specs/`; technical engineering plan/tasks belong in `docs/engineering/`. The run plan links those contracts. Read [planning-contract.md](planning-contract.md) for the minimal plan fields.
+ 
+ `begin RUN --kind KIND --objective TEXT` creates schema v2 with an included-file baseline. `plan RUN --file docs/runs/RUN/plan.md --contract docs/runs/RUN/contract.json` registers both files. The contract has `schema_version: 2`, nonempty `acceptance:[{id,description}]`, and `checks` keyed by stable check IDs. Each check requires exact `argv` (literal string array), project-relative `cwd`, nonempty `scope`, nonempty `acceptance_ids`, and `required` boolean. Optional `documents` entries have `{path,gate,version,sha256}` with gate `product` or `design_spec`; `user_approvals` have `{id,version,target:{path,sha256},evidence:{path,sha256}}`, and evidence files must live under `docs/runs/` so they are excluded from code/source fingerprints; `environment_files` is a list of project-relative paths hashed for check freshness. Never copy private environment content into run records.
++
++Before the first edit or writer handoff, preserve each assigned existing ordinary source file once under `docs/runs/<run-id>/before/<project-relative-path>`, with its path, byte length and SHA256 in a manifest. An immutable Git base whose file hashes match the recorded baseline is an alternative. `begin` records inventory identities; it does not save original contents. For a new path, record baseline absence instead of inventing an empty original file. Capture added write scopes before their first edit, not after each change. Keep the copy bounded to assigned source: never copy credentials, private stores, environment contents or runtime data. Compare preserved bytes to the recorded baseline hashes before using them for a final diff. If an original is unavailable, state that limit; hash-verified reconstruction may recover bytes, but today's contents must not substitute for the original or rewrite the baseline. This preparation adds no entry-review round.
+ 
+ Contracts may also contain an optional `decision_register` for consequential choices. Each entry is `{id,statement,status,source,impact,blocks,resolution}`. `status` is `open`, `assumption`, `confirmed`, or `delegated`. `blocks` is drawn from CLI-supported phases `research`, `implementation`, and `review`. An `open` decision must block at least one phase. An `assumption` records why it is safe/reversible for phases it does not block; block any phase where uncertainty makes the work unsafe. `confirmed` and `delegated` decisions require an authority/source and resolution and cannot retain blockers. Contracts that omit the field remain valid. The helper validates shape and enforces blockers, but it cannot discover unregistered decisions or authenticate the source claim; compare the register to current user direction in planning and review.
+ 
+--- before/.solopreneur/docs/harness.md
++++ .solopreneur/docs/harness.md
+@@ -80,6 +80,8 @@
+ Use only stages needed for the request. A PRD request ends with a reviewed PRD; a request to build and release continues through the authorized release. Post-release evidence produces a new bounded improvement plan, not an unbounded loop or an automatically purchased growth tool. Spec Kit's larger artifact graph is used only for large/complex features.
+ 
+ ## Run records and checks
++
++Before editing or dispatching writers, preserve the assigned ordinary source originals once, or name an immutable Git base with matching baseline hashes. Follow [original-source capture](../../.agents/skills/solo-orchestrate/references/run-protocol.md#plan-and-contract) for the bounded manifest, new-file absence and private-data exclusions. `begin` stores inventory identities, not original file contents; do not reconstruct a review diff from today's source.
+ 
+ Run commands from the product root. For this toolkit use `scripts/harness.py` in place of `.solopreneur/harness.py`. The current ledger is schema v2; see the [complete run protocol](../../.agents/skills/solo-orchestrate/references/run-protocol.md) for contract and report shapes, document readiness, outcome coverage, recovery, and migration.
+ 
+--- before/.solopreneur/managed.json
++++ .solopreneur/managed.json
+@@ -28,7 +28,7 @@
+     ".agents/skills/solo-orchestrate/references/adaptive-routing.md": "0e4f2a4e437fac0ba2e218f551a952acc12c7ae9a73783d1c5b0f895175e93b0",
+     ".agents/skills/solo-orchestrate/references/effort-and-feedback.md": "7a8da6ff7a0a7c029010aeeae6ba8d9166ee6726dfa6d945e7e887d0c6f355bc",
+     ".agents/skills/solo-orchestrate/references/planning-contract.md": "21b112a7bd34993699ae9a5a7742f18a67c345385a7942c14855d360ba19eb65",
+-    ".agents/skills/solo-orchestrate/references/run-protocol.md": "40dc08b8684296679291a4bdd9efc2b73bda939d7eb2fd2986cb537072591627",
++    ".agents/skills/solo-orchestrate/references/run-protocol.md": "91c7ffe569ce6faa830c36e396decd66c4133046ad8570a1f7a02cbf80f98fb0",
+     ".agents/skills/solo-plan-review/SKILL.md": "08f12fa67ef2816fcbd8c4d82aa8d54fe0158e984a4316a0d58db7dafa29d8d5",
+     ".agents/skills/solo-product-review/SKILL.md": "0cea16a9d9c06711e5e81b13e88a6720bc0bc8a4b4be197b558621033a0c198c",
+     ".agents/skills/solo-product-spec/SKILL.md": "44a21660bca26cfc10cee5d01a2c9fdc96474815d2e60999ed5c986b63d4adf8",
+@@ -54,7 +54,7 @@
+     ".solopreneur/docs/codex-runtime.md": "241ae7d45327adfc2cdeeb9f32407fbcc84a47fbd71d81665bb65dd96a2bc6f7",
+     ".solopreneur/docs/computer-use.md": "ddc05a5a9c55517da16dd0c7c801cb4c25a80b31b9361033c46b2dbf5fa3a9ae",
+     ".solopreneur/docs/handoff-coverage.md": "0e6bb199d081e000a0cbd439d880b5bc48b88ba9f3626f621632123fb8e8d4da",
+-    ".solopreneur/docs/harness.md": "1a96d7ec07abe767ed897d578c82fd26f87e29457277a71896babddde9432190",
++    ".solopreneur/docs/harness.md": "09b280fada22e43577e1f99a8b253e93170975c0535f7e194bfdb2557de6fcb6",
+     ".solopreneur/docs/mcp.md": "1ede0561811918966106dde1e653517f529f9a2e5c57e95b6eb1a4bda699e48c",
+     ".solopreneur/docs/research-sources.md": "194ceee68e43d3088387fdcc0a05fe5bee225c4aa88862898eb41c5bc1864350",
+     ".solopreneur/docs/research/agent-routing-and-verification.md": "2dc9c128b6cd673b86af5fe6795d0889100e2cfa3fadeaaea481a8a71fdb527d",
+--- before/apps/desktop-app/eslint.config.mjs
++++ apps/desktop-app/eslint.config.mjs
+@@ -45,6 +45,7 @@
+     },
+     plugins: { "@typescript-eslint": tsPlugin },
+     rules: {
++      "no-unused-vars": "off",
+       "no-undef": "off",
+       "@typescript-eslint/no-unused-vars": [
+         "error",
+--- before/apps/desktop-app/scripts/build-provenance.mjs
++++ apps/desktop-app/scripts/build-provenance.mjs
+@@ -71,6 +71,11 @@
+   { path: "docs/design/tokens", tree: true, source: true },
+ ];
+ const selectedPaths = {
++  "design-foundation": [
++    "e2e-design-foundation.mjs",
++    "e2e-workbench-states.mjs",
++    "fixtures/workbench-host.mjs",
++  ],
+   "conversation-context": [
+     "e2e-conversation-context.mjs",
+     "fixtures/workbench-host.mjs",
+--- before/apps/desktop-app/scripts/e2e-conversation-context.mjs
++++ apps/desktop-app/scripts/e2e-conversation-context.mjs
+@@ -317,6 +317,8 @@
+     ).toHaveAttribute("data-state", "connected");
+   await expect(section()).toBeAttached();
+   await expand(section());
++  await expand(page.locator("details[data-context-running-task]"));
++  await expand(page.locator('details[data-runtime-task="requested"]'));
+   assert.deepEqual(
+     await application.evaluate(() => [
+       globalThis.__omocUiFixture.contextReads.length,
+@@ -357,7 +359,7 @@
+   assert.equal(observations.length, 1);
+   const contextGeometry = await composer().evaluate((input) => {
+     const form = input.closest("form");
+-    const context = form.querySelector("[data-context-section]");
++    const context = input.ownerDocument.querySelector("[data-context-tasks]");
+     const toolbar = form.querySelector(
+       'button[aria-label="앱 동작과 명령 열기"]',
+     ).parentElement;
+@@ -370,10 +372,15 @@
+       context: box(context),
+       toolbar: box(toolbar),
+       form: box(form),
++      contextInsideForm: form.contains(context),
+     };
+   });
+-  assert.ok(contextGeometry.input.bottom <= contextGeometry.context.top + 1);
+-  assert.ok(contextGeometry.context.bottom <= contextGeometry.toolbar.top + 1);
++  assert.equal(contextGeometry.contextInsideForm, false);
++  assert.ok(
++    contextGeometry.context.bottom <= contextGeometry.form.top + 1,
++    "Context tasks must stay outside and above the message form",
++  );
++  assert.ok(contextGeometry.input.bottom <= contextGeometry.toolbar.top + 1);
+   assert.ok(contextGeometry.form.bottom >= contextGeometry.toolbar.bottom);
+   legacyGeometryEvidence = {
+     path: "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+--- before/apps/desktop-app/scripts/e2e-design-foundation.mjs
++++ apps/desktop-app/scripts/e2e-design-foundation.mjs
+@@ -0,0 +1,953 @@
++// Execute only through the fixed design-foundation evidence wrapper.
++import assert from "node:assert/strict";
++import { createHash } from "node:crypto";
++import {
++  lstat,
++  mkdtemp,
++  readFile,
++  realpath,
++  writeFile,
++} from "node:fs/promises";
++import { createRequire } from "node:module";
++import { tmpdir } from "node:os";
++import { dirname, join, resolve } from "node:path";
++import { fileURLToPath } from "node:url";
++import { _electron as electron, expect } from "@playwright/test";
++import { captureProvenance } from "./build-provenance.mjs";
++import { FOUNDATION_CAPTURE_LIMIT } from "./run-evidence.mjs";
++const desktop = resolve(dirname(fileURLToPath(import.meta.url)), "..");
++const root = resolve(desktop, "../..");
++if (!process.env.OMOC_EVIDENCE_DIR)
++  throw Error("Use fixed design-foundation run-evidence selector");
++const run = await realpath(process.env.OMOC_EVIDENCE_DIR);
++const claim = await lstat(join(run, ".run-evidence-claim"));
++assert.ok(claim.isFile() && !claim.isSymbolicLink());
++let fixtureRoot;
++const require = createRequire(import.meta.url);
++const screenshots = [],
++  states = [],
++  errors = [],
++  externalRequests = [];
++let application,
++  processHandle,
++  page,
++  failure,
++  before,
++  after,
++  currentState = "launch";
++let legacyGeometryEvidence;
++const interactions = [];
++const valueCoverage = [];
++const CAPTURE_LIMIT = FOUNDATION_CAPTURE_LIMIT;
++let teardown = { launchAttempted: false, exited: false };
++const bounded = (e) => String(e).slice(0, 2000);
++async function capture(page, name, state) {
++  const path = join(run, name);
++  // CDP page.screenshot clips Electron's zoomed viewport on macOS. Capture the
++  // complete native content surface without a CSS-coordinate clip rectangle.
++  const native = await application.evaluate(
++    async ({ BrowserWindow, screen }) => {
++      const windows = BrowserWindow.getAllWindows();
++      if (windows.length !== 1)
++        throw new Error("Exactly one background host window required");
++      const window = windows[0];
++      const before = {
++        visible: window.isVisible(),
++        focused: window.isFocused(),
++        focusable: window.isFocusable(),
++      };
++      if (before.visible || before.focused || before.focusable)
++        throw new Error(
++          "Verification window must be hidden and nonfocusable before capture",
++        );
++      const image = await window.webContents.capturePage(undefined, {
++        stayHidden: true,
++        stayAwake: true,
++      });
++      return {
++        before,
++        png: image.toPNG().toString("base64"),
++        contentBounds: window.getContentBounds(),
++        windowBounds: window.getBounds(),
++        displayScaleFactor: screen.getDisplayMatching(window.getBounds())
++          .scaleFactor,
++        zoomFactor: window.webContents.getZoomFactor(),
++        osWindowVisible: window.isVisible(),
++        osWindowFocused: window.isFocused(),
++        osWindowFocusable: window.isFocusable(),
++      };
++    },
++  );
++  assert.equal(
++    native.osWindowVisible,
++    false,
++    "Verification window must stay hidden",
++  );
++  assert.equal(
++    native.osWindowFocused,
++    false,
++    "Verification window must not take OS focus",
++  );
++  assert.equal(
++    native.osWindowFocusable,
++    false,
++    "Verification window must stay nonfocusable after capture",
++  );
++  assert.deepEqual(native.before, {
++    visible: false,
++    focused: false,
++    focusable: false,
++  });
++  const png = Buffer.from(native.png, "base64");
++  await writeFile(path, png, { flag: "wx" });
++  assert.equal(png.subarray(1, 4).toString(), "PNG");
++  const pixelDimensions = {
++    width: png.readUInt32BE(16),
++    height: png.readUInt32BE(20),
++  };
++  for (const dimension of ["width", "height"])
++    assert.ok(
++      Math.abs(
++        pixelDimensions[dimension] -
++          native.contentBounds[dimension] * native.displayScaleFactor,
++      ) <= 1,
++      `Native capture does not cover the complete content ${dimension}`,
++    );
++  screenshots.push({
++    pixelDimensions,
++    pngSha256: createHash("sha256").update(png).digest("hex"),
++    geometrySha256: createHash("sha256")
++      .update(
++        JSON.stringify({
++          pixelDimensions,
++          contentBounds: native.contentBounds,
++          windowBounds: native.windowBounds,
++          zoomFactor: native.zoomFactor,
++        }),
++      )
++      .digest("hex"),
++    path,
++    state,
++    viewport: await page.evaluate(() => ({
++      width: window.innerWidth,
++      height: window.innerHeight,
++      pixelRatio: window.devicePixelRatio,
++    })),
++    contentBounds: native.contentBounds,
++    windowBounds: native.windowBounds,
++    displayScaleFactor: native.displayScaleFactor,
++    zoomFactor: native.zoomFactor,
++    beforeCapture: native.before,
++    afterCapture: {
++      visible: native.osWindowVisible,
++      focused: native.osWindowFocused,
++      focusable: native.osWindowFocusable,
++    },
++    osWindowFocusable: native.osWindowFocusable,
++    osWindowVisible: native.osWindowVisible,
++    osWindowFocused: native.osWindowFocused,
++    captureMethod: "BrowserWindow.webContents.capturePage().toPNG()",
++    provenance:
++      "Built production Electron renderer and preload with a test-only synthetic main process; no provider execution",
++  });
++}
++
++async function setDisplay(page, width, height, zoomFactor = 1) {
++  const contentWidth = await application.evaluate(
++    ({ BrowserWindow }, display) => {
++      const window = BrowserWindow.getAllWindows()[0];
++      window.setSize(display.width, display.height);
++      window.webContents.setZoomFactor(display.zoomFactor);
++      return window.getContentSize()[0];
++    },
++    { width, height, zoomFactor },
++  );
++  await expect
++    .poll(() =>
++      page.evaluate(
++        (expected) => Math.abs(window.innerWidth - expected),
++        contentWidth / zoomFactor,
++      ),
++    )
++    .toBeLessThanOrEqual(1);
++}
++
++async function shot(name) {
++  assert.ok(
++    screenshots.length < CAPTURE_LIMIT,
++    "Foundation capture budget exceeded",
++  );
++  currentState = name;
++  // Two RAF callbacks run before paint. A task after the second callback is the
++  // post-paint barrier used by the existing production-renderer evidence runner.
++  await page.evaluate(
++    () =>
++      new Promise((resolve) =>
++        globalThis.requestAnimationFrame(() =>
++          globalThis.requestAnimationFrame(() =>
++            globalThis.setTimeout(resolve, 0),
++          ),
++        ),
++      ),
++  );
++  await capture(
++    page,
++    `${String(screenshots.length).padStart(3, "0")}-${name}.png`,
++    name,
++  );
++  states.push(name);
++}
++
++async function stopOwnedApplication(application, processHandle) {
++  if (!processHandle)
++    return { exited: false, reason: "No owned process handle" };
++  let listener, quitError, cleanupError;
++  const exited =
++    processHandle.exitCode !== null || processHandle.signalCode !== null
++      ? Promise.resolve([processHandle.exitCode, processHandle.signalCode])
++      : new Promise((resolve) => {
++          listener = (code, signal) => resolve([code, signal]);
++          processHandle.once("exit", listener);
++        });
++  async function within(promise, ms) {
++    let timer;
++    try {
++      return await Promise.race([
++        promise,
++        new Promise((_resolve, reject) => {
++          timer = setTimeout(
++            () => reject(Error("Owned Electron exit deadline")),
++            ms,
++          );
++        }),
++      ]);
++    } finally {
++      clearTimeout(timer);
++    }
++  }
++  const signals = [];
++  try {
++    if (processHandle.exitCode === null && processHandle.signalCode === null) {
++      void Promise.resolve()
++        .then(() => application.evaluate(({ app }) => app.quit()))
++        .catch((error) => {
++          quitError = bounded(error);
++        });
++    }
++    let exit;
++    try {
++      exit = await within(exited, 15000);
++    } catch (error) {
++      cleanupError = bounded(error);
++      signals.push("SIGTERM");
++      processHandle.kill("SIGTERM");
++      try {
++        exit = await within(exited, 5000);
++      } catch {
++        signals.push("SIGKILL");
++        processHandle.kill("SIGKILL");
++        exit = await within(exited, 5000);
++      }
++    }
++    return {
++      exited: true,
++      pid: processHandle.pid,
++      code: exit[0],
++      signal: exit[1],
++      signals,
++      ...(quitError && { quitError }),
++      ...(cleanupError && { cleanupError }),
++    };
++  } catch (error) {
++    return {
++      exited: false,
++      pid: processHandle.pid,
++      signals,
++      error: bounded(error),
++    };
++  } finally {
++    if (listener) processHandle.removeListener("exit", listener);
++  }
++}
++
++// Saved only. Main owns final UI checkpoint, coherent build and runtime invocation.
++export const SAVED_INVOCATION = Object.freeze([
++  "node",
++  "apps/desktop-app/scripts/run-evidence.mjs",
++  "--script",
++  "design-foundation",
++  "--out",
++  "docs/runs/design-foundation-v2/evidence/hidden-r1",
++]);
++const composer = () =>
++  page.getByRole("textbox", { name: "메시지 작성", exact: true });
++const send = () =>
++  page.getByRole("button", { name: "메시지 보내기", exact: true });
++const hook = (name) => page.locator(`[data-context-${name}]`);
++async function counters() {
++  return application.evaluate(() => {
++    const f = globalThis.__omocUiFixture;
++    return {
++      requests: f.requests.length,
++      contextReads: f.contextReads.length,
++      inboxReads: f.inboxReads.length,
++      effects: f.contextEffects.length,
++      fileBytes: f.workspaceFileReads.length,
++      mutations: globalThis.__omocUiMutationMetrics(),
++    };
++  });
++}
++async function scenario(name) {
++  const scope = await application.evaluate(
++    (_electron, name) =>
++      globalThis.__omocUiFixture.setConversationContextState(name),
++    name,
++  );
++  await page.reload();
++  await expect(hook("section")).toBeAttached();
++  await expect(composer()).toBeEditable();
++  assert.equal((await counters()).contextReads, 0);
++  assert.equal((await counters()).inboxReads, 0);
++  return scope;
++}
++async function reveal(locator) {
++  await locator.scrollIntoViewIfNeeded();
++  await expect(locator).toBeInViewport({ ratio: 0.95 });
++}
++async function expand(task, key = "Enter") {
++  if (!(await task.evaluate((el) => el.open))) {
++    const summary = task.locator(":scope > summary");
++    await reveal(summary);
++    await summary.focus();
++    await page.keyboard.press(key);
++  }
++  await expect(task).toHaveAttribute("open", "");
++}
++async function geometry() {
++  const source = await readFile(
++    new URL("./e2e-workbench-states.mjs", import.meta.url),
++    "utf8",
++  );
++  const code = source.match(
++    /async function assertComposerGeometry\(page\) \{[\s\S]*?\n\}/u,
++  )?.[0];
++  assert.ok(code);
++  const observations = [];
++  await new Function("assert", "observations", `return (${code});`)(
++    assert,
++    observations,
++  )(page);
++  legacyGeometryEvidence = {
++    path: "apps/desktop-app/scripts/e2e-workbench-states.mjs",
++    sourceSha256: createHash("sha256").update(source).digest("hex"),
++    functionSha256: createHash("sha256").update(code).digest("hex"),
++    observations,
++  };
++}
++async function display(theme, width, zoom = 1) {
++  await setDisplay(page, width, 1000, zoom);
++  await page.evaluate((theme) => {
++    globalThis.document.documentElement.dataset.theme = theme;
++    globalThis.document.documentElement.style.colorScheme = theme;
++  }, theme);
++  const bounds = await page.evaluate(() => ({
++    width: window.innerWidth,
++    scroll: globalThis.document.documentElement.scrollWidth,
++  }));
++  assert.ok(bounds.scroll <= bounds.width + 1, JSON.stringify(bounds));
++}
++// Actual frozen UI checkpoint: source owns these presentation-only hooks.
++const requestedTask = () =>
++  page.locator('details[data-runtime-task="requested"]');
++const requestedSummary = () =>
++  page.locator('[data-runtime-summary="requested"]');
++const nativeReport = () =>
++  page.locator('details[data-runtime-source="session"]');
++const field = (name) => page.getByRole("combobox", { name, exact: true });
++async function closeTask(task, control) {
++  const baseline = await counters();
++  await reveal(control);
++  await control.focus();
++  await page.keyboard.press("Escape");
++  await expect(task).not.toHaveAttribute("open", "");
++  await expect(task.locator(":scope > summary")).toBeFocused();
++  assert.deepEqual(
++    await counters(),
++    baseline,
++    "Closing a task must not read source bytes or mutate",
++  );
++}
++async function stagedOnly(name, action) {
++  const baseline = await counters();
++  await action();
++  const after = await counters();
++  assert.deepEqual(
++    after,
++    baseline,
++    `${name}: presentation must not read source bytes or mutate`,
++  );
++  interactions.push({ name, before: baseline, after });
++}
++async function recordValue(locator, label) {
++  await expect(locator).toBeInViewport({ ratio: 0.95 });
++  valueCoverage.push({
++    label,
++    text: await locator.evaluate((el) =>
++      el.tagName === "SELECT"
++        ? el.selectedOptions[0]?.textContent
++        : el.textContent,
++    ),
++    selectedValue: await locator.evaluate((el) =>
++      el.tagName === "SELECT" ? el.value : null,
++    ),
++    frame: screenshots.length - 1,
++    path: screenshots.at(-1).path,
++  });
++}
++async function choose(scope) {
++  await field("Agent 요청").selectOption(scope.agent);
++  await field("모델 요청").selectOption(scope.model);
++  await field("Variant 요청").selectOption(scope.variant);
++}
++async function observe(scope) {
++  await expand(hook("section"));
++  await hook("path").fill(scope.path);
++  await hook("observe").click();
++  await expect(hook("item")).toHaveCount(1);
++}
++async function criticalOutsideTask(locator) {
++  await expect(locator).toBeVisible();
++  assert.equal(
++    await locator.evaluate((el) => Boolean(el.closest("details"))),
++    false,
++    "Critical status must remain outside collapsed disclosures",
++  );
++}
++async function commandMenuRegression() {
++  await scenario("ready");
++  await display("light", 1440);
++  const trigger = page.getByRole("button", {
++    name: "앱 동작과 명령 열기",
++    exact: true,
++  });
++  const menu = page.getByRole("region", {
++    name: "앱 동작 및 런타임 명령",
++    exact: true,
++  });
++  await expect(trigger).toHaveText("명령");
++  await trigger.click();
++  await expect(menu).toBeVisible();
++  await shot("collapsed-command-menu-first-items");
++  const first = menu.locator("button[data-command]").first();
++  const close = menu.getByRole("button", {
++    name: "명령 목록 닫기",
++    exact: true,
++  });
++  const pointerReachable = async (button) => {
++    const proof = await button.evaluate((element) => {
++      const box = element.getBoundingClientRect();
++      const x = box.left + box.width / 2,
++        y = box.top + box.height / 2;
++      const hit = globalThis.document.elementFromPoint(x, y);
++      return {
++        label: element.textContent || element.getAttribute("aria-label"),
++        x,
++        y,
++        reachable: Boolean(hit && element.contains(hit)),
++      };
++    });
++    assert.equal(proof.reachable, true, JSON.stringify(proof));
++    return proof;
++  };
++  const firstProof = await pointerReachable(first);
++  const closeProof = await pointerReachable(close);
++  // Trial hit tests are real pointer checks without creating a session.
++  await first.click({ trial: true });
++  await close.click();
++  await expect(menu).toHaveCount(0);
++  await expect(trigger).toBeFocused();
++  await trigger.focus();
++  await page.keyboard.press("ArrowDown");
++  await expect(first).toBeFocused();
++  await page.keyboard.press("End");
++  const last = menu.locator("button[data-command]").last();
++  await expect(last).toBeFocused();
++  await last.scrollIntoViewIfNeeded();
++  const lastProof = await pointerReachable(last);
++  await last.click({ trial: true });
++  await shot("collapsed-command-menu-last-item");
++  await page.keyboard.press("Home");
++  await expect(first).toBeFocused();
++  await pointerReachable(first);
++  await page.keyboard.press("Escape");
++  await expect(menu).toHaveCount(0);
++  await expect(trigger).toBeFocused();
++  interactions.push({
++    state: "command-menu-closed-default-hit-test",
++    firstProof,
++    closeProof,
++    lastProof,
++  });
++}
++
++async function exerciseFoundation() {
++  await commandMenuRegression();
++  for (const theme of ["light", "dark"]) {
++    for (const [width, zoom] of [
++      [1440, 1],
++      [760, 1],
++      [320, 1],
++      [760, 2],
++    ]) {
++      const scope = await scenario("ready");
++      await display(theme, width, zoom);
++      const prefix = `${theme}-${width}-zoom${zoom}`;
++      for (const task of [
++        hook("section"),
++        hook("running-task"),
++        requestedTask(),
++        nativeReport(),
++      ])
++        await expect(task).not.toHaveAttribute("open", "");
++      await composer().fill(
++        "SYNTHETIC Foundation · 긴 한국어 입력 · 다음 요청을 편집합니다.",
++      );
++      await expect(requestedSummary()).toContainText("Native에서 결정");
++      await reveal(send());
++      await shot(`${prefix}-collapsed-idle`);
++      await geometry();
++      await stagedOnly(`${prefix}-settings-keyboard-disclosure`, async () => {
++        await expand(requestedTask(), zoom === 2 ? "Space" : "Enter");
++        await choose(scope);
++        await field("Agent 요청").focus();
++        await page.keyboard.press("Tab");
++        await expect(field("모델 요청")).toBeFocused();
++        await page.keyboard.press("Tab");
++        await expect(field("Variant 요청")).toBeFocused();
++        await reveal(page.locator('[data-runtime-source="requested"]'));
++        await shot(`${prefix}-expanded-requested`);
++        for (const name of ["Agent 요청", "모델 요청", "Variant 요청"])
++          await recordValue(field(name), `${prefix}-${name}`);
++        await closeTask(requestedTask(), field("Variant 요청"));
++        await expect(requestedSummary()).toContainText(scope.agent);
++        await expect(requestedSummary()).toContainText(scope.model);
++        await expect(requestedSummary()).toContainText(scope.variant);
++        await reveal(send());
++        await send().focus();
++        await expect(send()).toBeFocused();
++        await expect(send()).toBeInViewport({ ratio: 0.95 });
++        await expect(requestedSummary()).toBeInViewport({ ratio: 0.95 });
++        await shot(`${prefix}-selected-summary-final-action`);
++        await recordValue(requestedSummary(), `${prefix}-selected-summary`);
++        // Closed settings controls must not be in the keyboard path.
++        await requestedTask().locator(":scope > summary").focus();
++        await page.keyboard.press("Tab");
++        await expect(nativeReport().locator(":scope > summary")).toBeFocused();
++        await page.keyboard.press("Tab");
++        await expect(composer()).toBeFocused();
++      });
++    }
++  }
++
++  let scope = await scenario("ready");
++  await display("light", 1440);
++  await composer().fill("SYNTHETIC attachment draft stays editable");
++  await stagedOnly("attachment-keyboard-open", async () => {
++    await expand(hook("section"), "Space");
++    await hook("path").fill(scope.path);
++    await hook("path").focus();
++    await page.keyboard.press("Tab");
++    await expect(hook("observe")).toBeFocused();
++    await page.keyboard.press("Shift+Tab");
++    await expect(hook("path")).toBeFocused();
++  });
++  await observe(scope);
++  await expect(hook("text")).toHaveText(scope.text);
++  await closeTask(hook("section"), hook("path"));
++  await expect(hook("summary")).toBeVisible();
++  await reveal(hook("item"));
++  await shot("attachment-compact-collapsed");
++  await stagedOnly("attachment-metadata-disclosure", async () => {
++    await expand(hook("item").locator("details"));
++    await reveal(hook("item").locator("dl"));
++    await shot("attachment-expanded-original-metadata");
++    await recordValue(
++      hook("item").locator("dl"),
++      "original-path-size-source-version-hash",
++    );
++    await display("dark", 760, 2);
++    for (const [index, label] of [
++      [0, "long-source-path"],
++      [4, "original-sha256"],
++    ]) {
++      const value = hook("item").locator("dd").nth(index);
++      await reveal(value);
++      await shot(`attachment-200-${label}`);
++      await recordValue(value, label);
++    }
++  });
++  await display("light", 1440);
++  await hook("reobserve").click();
++  await expect(hook("text")).toHaveText(scope.text);
++  await reveal(hook("text"));
++  await shot("attachment-explicit-reobserve-preview");
++  await stagedOnly("preview-close-restores-origin", async () => {
++    await hook("close-preview").click();
++    await expect(hook("preview")).toHaveCount(0);
++    await expect(hook("reobserve")).toBeFocused();
++  });
++  assert.equal(
++    (await counters()).contextReads,
++    2,
++    "Only the two explicit file requests are permitted",
++  );
++
++  scope = await scenario("ready");
++  await display("light", 1440);
++  const retainedDraft =
++    "SYNTHETIC ordinary draft retained while branch task is open";
++  await composer().fill(retainedDraft);
++  const origin = page.locator(`[data-context-edit="${scope.userMessageId}"]`);
++  await stagedOnly("branch-first-task-Escape-return", async () => {
++    await origin.click();
++    await expect(hook("branch-text")).toBeFocused();
++    await expect(hook("boundary")).toContainText(scope.userMessageId);
++    await expect(
++      page.locator('[data-composer-state="branch-retained"]'),
++    ).toBeHidden();
++    assert.equal(
++      await hook("branch").evaluate(
++        (el) => el.parentElement.firstElementChild === el,
++      ),
++      true,
++    );
++    await reveal(hook("boundary"));
++    await shot("branch-first-task-boundary");
++    await hook("branch-text").fill("SYNTHETIC uncommitted branch edit");
++    await page.keyboard.press("Escape");
++    await expect(hook("branch")).toHaveCount(0);
++    await expect(origin).toBeFocused();
++    await expect(composer()).toHaveValue(retainedDraft);
++  });
++  const beforeFork = await counters();
++  await origin.click();
++  await expect(hook("branch-text")).toBeFocused();
++  await hook("branch-text").fill("SYNTHETIC edited branch draft · 한국어 입력");
++  await display("dark", 760, 2);
++  await reveal(hook("branch-confirm"));
++  await expect(hook("branch-close")).toBeInViewport({ ratio: 0.95 });
++  await shot("branch-200-edit-confirm-close");
++  await display("light", 1440);
++  await hook("branch-confirm").click();
++  await expect(composer()).toHaveValue(
++    "SYNTHETIC edited branch draft · 한국어 입력",
++  );
++  const forkRequests = await application.evaluate(
++    (_electron, from) => globalThis.__omocUiFixture.requests.slice(from),
++    beforeFork.requests,
++  );
++  assert.deepEqual(
++    forkRequests.map((r) => r.type),
++    ["session.fork"],
++  );
++  assert.equal(forkRequests[0].before, scope.userMessageId);
++  await reveal(send());
++  await shot("branch-confirmed-separate-send-required");
++
++  scope = await scenario("running");
++  await display("dark", 1440);
++  await composer().fill("SYNTHETIC next draft during the current run");
++  await stagedOnly("running-requested-distinct-from-current-run", async () => {
++    await expand(requestedTask());
++    await field("모델 요청").selectOption("fixture-other-model");
++    await field("Variant 요청").selectOption("other.variant");
++    await closeTask(requestedTask(), field("Variant 요청"));
++    await expand(hook("running-task"), "Space");
++    await expect(hook("running")).toContainText("Native의 현재 실행 설정");
++    await expect(hook("steer")).toBeEnabled();
++    await expect(hook("queue")).toBeEnabled();
++    await reveal(hook("running"));
++    await shot("running-current-run-task");
++    await closeTask(hook("running-task"), hook("queue"));
++    await expand(nativeReport());
++    await expect(nativeReport()).toContainText("session.variant");
++    await reveal(nativeReport());
++    await shot("running-native-report-separate-from-request");
++    await closeTask(
++      nativeReport(),
++      page.locator("[data-runtime-report-close]"),
++    );
++    await expect(requestedSummary()).toContainText("fixture-other-model");
++    await expect(requestedSummary()).toContainText("other.variant");
++  });
++
++  scope = await scenario("unsupported");
++  await display("light", 320);
++  await expand(hook("section"));
++  await hook("path").fill(scope.path);
++  await hook("observe").click();
++  await expect(hook("error")).toHaveAttribute(
++    "data-context-error",
++    "unsupported_content",
++  );
++  await closeTask(hook("section"), hook("path"));
++  await criticalOutsideTask(hook("error"));
++  await reveal(hook("error"));
++  await shot("unsupported-outside-closed-task");
++  scope = await scenario("unsupported-model");
++  await display("dark", 320);
++  await observe(scope);
++  await expand(requestedTask());
++  await field("모델 요청").selectOption(scope.model);
++  await closeTask(requestedTask(), field("모델 요청"));
++  await closeTask(hook("section"), hook("path"));
++  await composer().fill("SYNTHETIC unsupported model input stays editable");
++  await expect(send()).toBeDisabled();
++  await criticalOutsideTask(hook("send-blocked"));
++  await reveal(hook("send-blocked"));
++  await shot("unsupported-model-outside-closed-task");
++
++  scope = await scenario("ready");
++  await display("light", 760, 2);
++  await page.clock.install();
++  await observe(scope);
++  await closeTask(hook("section"), hook("path"));
++  await application.evaluate(() =>
++    globalThis.__omocUiFixture.expireContextCapabilities(),
++  );
++  await page.clock.fastForward(600001);
++  await expect(hook("error")).toHaveAttribute(
++    "data-context-error",
++    "CONTEXT_EXPIRED",
++  );
++  await composer().fill("SYNTHETIC expiry keeps draft editable");
++  await expect(send()).toBeDisabled();
++  await criticalOutsideTask(hook("error"));
++  await reveal(hook("error"));
++  await shot("expired-200-outside-closed-task");
++  assert.equal(
++    (await counters()).contextReads,
++    1,
++    "Expiry must not automatically reread",
++  );
++
++  for (const name of ["unknown", "held", "global-held", "untrusted"]) {
++    await scenario(name);
++    await display(name === "unknown" ? "dark" : "light", 320);
++    await stagedOnly(`${name}-inert-draft-and-closed-tasks`, async () => {
++      await composer().fill(`SYNTHETIC ${name} · 편집 가능한 입력`);
++      await expect(send()).toBeDisabled();
++      await criticalOutsideTask(hook("held"));
++      if (name === "unknown") {
++        await expect
++          .poll(() =>
++            application.evaluate(() =>
++              globalThis.__omocUiFixture.lookups.some(
++                (r) =>
++                  r.runtimeEpoch === "fixture-original-context-epoch" &&
++                  r.operationId === "fixture-original-context-send",
++              ),
++            ),
++          )
++          .toBe(true);
++      }
++      await reveal(hook("held"));
++      await shot(`${name}-visible-outside-closed-task`);
++    });
++  }
++
++  await scenario("ready");
++  await display("light", 1440);
++  await stagedOnly("wide-navigation-and-side-task", async () => {
++    const trigger = page.getByRole("button", {
++      name: "파일·확장",
++      exact: true,
++    });
++    await trigger.click();
++    await expect(
++      page.getByRole("complementary", {
++        name: "파일, 확장 및 활동",
++        exact: true,
++      }),
++    ).toBeVisible();
++    await shot("wide-navigation-side-task");
++    await page
++      .getByRole("button", { name: "상세 패널 닫기", exact: true })
++      .click();
++    await expect(trigger).toBeFocused();
++  });
++  await display("dark", 320);
++  await stagedOnly("narrow-navigation-Escape-return", async () => {
++    const trigger = page.getByRole("button", {
++      name: "작업 공간 탐색 열기",
++      exact: true,
++    });
++    await trigger.click();
++    await expect(
++      page.getByRole("button", { name: "작업 공간과 세션 닫기", exact: true }),
++    ).toBeVisible();
++    await shot("narrow-navigation");
++    await page.keyboard.press("Escape");
++    await expect(trigger).toBeFocused();
++  });
++  await stagedOnly("narrow-side-task-return", async () => {
++    const trigger = page.getByRole("button", {
++      name: "파일·확장",
++      exact: true,
++    });
++    await trigger.click();
++    const back = page.getByRole("button", {
++      name: "대화로 돌아가기",
++      exact: true,
++    });
++    await reveal(back);
++    await shot("narrow-side-task-return");
++    await back.click();
++    await expect(trigger).toBeFocused();
++  });
++  await page.emulateMedia({ reducedMotion: "reduce" });
++  assert.equal(
++    await page.evaluate(
++      () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
++    ),
++    true,
++  );
++  await composer().fill(
++    "SYNTHETIC reduced motion · 긴 한국어 입력을 유지합니다.",
++  );
++  await reveal(send());
++  await shot("reduced-motion-narrow-collapsed");
++  assert.ok(screenshots.length <= CAPTURE_LIMIT);
++}
++
++try {
++  before = await captureProvenance(root, { script: "design-foundation" });
++  fixtureRoot = await realpath(
++    await mkdtemp(join(tmpdir(), "omoc-design-foundation-ui-")),
++  );
++  teardown.retainedRoot = fixtureRoot;
++  teardown.launchAttempted = true;
++  application = await electron.launch({
++    timeout: 20000,
++    executablePath: require("electron"),
++    args: [
++      join(desktop, "scripts/fixtures/workbench-host.mjs"),
++      "--user-data-dir=" + join(fixtureRoot, "bootstrap"),
++    ],
++    env: {
++      PATH: "/usr/bin:/bin:/usr/sbin:/sbin",
++      HOME: fixtureRoot,
++      TMPDIR: fixtureRoot,
++      TMP: fixtureRoot,
++      TEMP: fixtureRoot,
++      OMOC_UI_TEST_ROOT: fixtureRoot,
++    },
++  });
++  processHandle = application.process();
++  for (const stream of ["stdout", "stderr"])
++    processHandle[stream]?.on("data", () => {});
++  page = await application.firstWindow();
++  page.on("pageerror", (error) => errors.push(bounded(error)));
++  page.on("request", (request) => {
++    if (/^https?:/i.test(request.url())) externalRequests.push(request.url());
++  });
++  await page.route(/^https?:/i, (route) => route.abort("blockedbyclient"));
++  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
++    "data-state",
++    "connected",
++  );
++  await exerciseFoundation();
++  assert.deepEqual(externalRequests, []);
++  assert.deepEqual(errors, []);
++} catch (error) {
++  failure = error;
++  if (page)
++    try {
++      await shot("failure");
++    } catch (captureError) {
++      errors.push(bounded(captureError));
++    }
++} finally {
++  try {
++    if (processHandle) {
++      teardown = {
++        ...teardown,
++        ...(await stopOwnedApplication(application, processHandle)),
++      };
++      assert.equal(
++        teardown.exited,
++        true,
++        "Owned Electron exit must be observed",
++      );
++      assert.equal(teardown.code, 0, "Owned Electron must exit successfully");
++      assert.deepEqual(
++        teardown.signals,
++        [],
++        "Forced cleanup is failed evidence",
++      );
++    }
++  } catch (error) {
++    failure ??= error;
++    teardown.error = bounded(error);
++  }
++  try {
++    if (legacyGeometryEvidence) {
++      const currentLegacySource = await readFile(
++        new URL("./e2e-workbench-states.mjs", import.meta.url),
++        "utf8",
++      );
++      assert.equal(
++        createHash("sha256").update(currentLegacySource).digest("hex"),
++        legacyGeometryEvidence.sourceSha256,
++      );
++    }
++    after = await captureProvenance(root, { script: "design-foundation" });
++    if (before) assert.deepEqual(after, before);
++  } catch (error) {
++    failure ??= error;
++  }
++}
++try {
++  await writeFile(
++    join(run, "design-foundation-evidence.json"),
++    JSON.stringify(
++      {
++        result: failure ? "fail" : "pass",
++        state: currentState,
++        platform: process.platform,
++        states,
++        screenshots,
++        legacyGeometryEvidence,
++        valueCoverage,
++        interactions,
++        captureLimit: CAPTURE_LIMIT,
++        pageErrors: errors,
++        externalRequests,
++        teardown,
++        sourceBuildProvenance: { before, after },
++        fixture:
++          "Explicit synthetic Main scenarios; actual production renderer/preload and frozen public projections",
++        clipboard: "not performed",
++        providerExecution: "not performed",
++        productionMain: "not performed",
++        ...(failure && { error: bounded(failure) }),
++      },
++      null,
++      2,
++    ) + "\n",
++    { flag: "wx" },
++  );
++} catch (error) {
++  failure ??= error;
++}
++if (failure) {
++  console.error(bounded(failure));
++  process.exitCode = 1;
++} else
++  console.log(
++    JSON.stringify({
++      result: "pass",
++      states: states.length,
++      captures: screenshots.length,
++    }),
++  );
+--- before/apps/desktop-app/scripts/e2e-runtime-options.mjs
++++ apps/desktop-app/scripts/e2e-runtime-options.mjs
+@@ -295,6 +295,7 @@
+     "connected",
+   );
+   await expect(requested()).toBeAttached();
++  await expand(page.locator('details[data-runtime-task="requested"]'));
+   return scope;
+ }
+ async function reveal(locator) {
+--- before/apps/desktop-app/scripts/e2e-workbench-states.mjs
++++ apps/desktop-app/scripts/e2e-workbench-states.mjs
+@@ -635,42 +635,63 @@
+       const toolbar = composer.querySelector(
+         'button[aria-label="앱 동작과 명령 열기"]',
+       ).parentElement;
+-      const requests = composer.querySelector(
++      const requests = input.ownerDocument.querySelector(
+         '[data-runtime-source="requested"]',
+       );
++      const requestedTask = requests.closest("details");
+       const box = (element) => {
+         const value = element.getBoundingClientRect();
+-        return { top: value.top, bottom: value.bottom, height: value.height };
++        return {
++          top: value.top,
++          bottom: value.bottom,
++          height: value.height,
++          left: value.left,
++          right: value.right,
++          width: value.width,
++        };
+       };
+       return {
+         composer: box(composer),
+         input: box(input),
++        toolbar: box(toolbar),
+         requests: box(requests),
+-        toolbar: box(toolbar),
++        requestsExpanded: !requestedTask || requestedTask.open,
++        requestsInsideComposer: composer.contains(requests),
+       };
+     });
+-  for (const [part, height] of Object.entries({ input: 72, toolbar: 32 }))
++  for (const [part, minimum] of Object.entries({ input: 72, toolbar: 32 }))
+     assert.ok(
+-      Math.abs(geometry[part].height - height) <= 2,
+-      `Approved A ${part} height: expected ${height}, got ${geometry[part].height}`,
++      geometry[part].height >= minimum - 1 && geometry[part].width > 0,
++      `Foundation ${part} requires usable dimensions: ${JSON.stringify(geometry[part])}`,
+     );
+-  assert.ok(
+-    geometry.requests.height > 0,
+-    "Runtime request controls must occupy space",
++  assert.equal(
++    geometry.requestsInsideComposer,
++    false,
++    "Requested settings task must be outside the message form",
+   );
+   assert.ok(
+-    geometry.input.bottom <= geometry.requests.top + 1 &&
+-      geometry.requests.bottom <= geometry.toolbar.top + 1,
+-    "Composer control order must not overlap",
++    geometry.input.bottom <= geometry.toolbar.top + 1,
++    "Composer input and toolbar must not overlap",
+   );
+-  assert.ok(
+-    geometry.composer.top <= geometry.input.top &&
+-      geometry.composer.bottom >= geometry.toolbar.bottom,
+-    "Composer must contain input, requests and toolbar",
+-  );
++  for (const part of ["input", "toolbar"])
++    assert.ok(
++      geometry.composer.top <= geometry[part].top + 1 &&
++        geometry.composer.bottom >= geometry[part].bottom - 1 &&
++        geometry.composer.left <= geometry[part].left + 1 &&
++        geometry.composer.right >= geometry[part].right - 1,
++      "Composer must contain independent input and toolbar",
++    );
++  if (geometry.requestsExpanded && geometry.requests.height > 0)
++    assert.ok(
++      geometry.requests.bottom <= geometry.composer.top + 1 ||
++        geometry.requests.top >= geometry.composer.bottom - 1 ||
++        geometry.requests.right <= geometry.composer.left + 1 ||
++        geometry.requests.left >= geometry.composer.right - 1,
++      "Expanded requested settings must not overlap the Composer",
++    );
+   observations.push({
+     check:
+-      "Approved A input/toolbar dimensions and F06 runtime request geometry",
++      "Foundation independent input/toolbar dimensions, containment and separated requested task",
+     geometry,
+   });
+ }
+--- before/apps/desktop-app/scripts/fixtures/workbench-host.test.mjs
++++ apps/desktop-app/scripts/fixtures/workbench-host.test.mjs
+@@ -11981,7 +11981,7 @@
+     }
+   });
+ 
+-test("Runtime options legacy geometry accepts added request controls and refuses overlap", async () => {
++test("Runtime options legacy geometry accepts separated request controls and refuses overlap", async () => {
+   const source = await readFile(
+     new URL("../e2e-workbench-states.mjs", import.meta.url),
+     "utf8",
+@@ -11996,23 +11996,31 @@
+     observations,
+   );
+   let overlap = false;
+-  const rect = (top, height) => ({ top, bottom: top + height, height });
+-  const toolbar = { getBoundingClientRect: () => rect(overlap ? 80 : 184, 32) };
+-  const requests = { getBoundingClientRect: () => rect(84, 96) };
++  const rect = (top, height) => ({
++    top,
++    bottom: top + height,
++    height,
++    left: 10,
++    right: 410,
++    width: 400,
++  });
++  const toolbar = {
++    getBoundingClientRect: () => rect(overlap ? 260 : 296, 32),
++  };
++  const requests = {
++    getBoundingClientRect: () => rect(84, 96),
++    closest: () => null,
++  };
+   const command = { parentElement: toolbar };
+-  const label = { getBoundingClientRect: () => rect(108, 52) };
+   const composer = {
+-    getBoundingClientRect: () => rect(0, 224),
+-    querySelector: (selector) =>
+-      selector.includes("data-runtime-source")
+-        ? requests
+-        : selector.includes("button")
+-          ? command
+-          : { parentElement: label },
++    getBoundingClientRect: () => rect(200, 140),
++    querySelector: (selector) => (selector.includes("button") ? command : null),
++    contains: (node) => node === input || node === toolbar,
+   };
+   const input = {
+     closest: () => composer,
+-    getBoundingClientRect: () => rect(8, 72),
++    getBoundingClientRect: () => rect(216, 72),
++    ownerDocument: { querySelector: () => requests },
+   };
+   const page = {
+     getByRole: () => ({ evaluate: async (callback) => callback(input) }),
+--- before/apps/desktop-app/scripts/run-evidence.mjs
++++ apps/desktop-app/scripts/run-evidence.mjs
+@@ -1,3 +1,4 @@
++import { createHash } from "node:crypto";
+ import { spawn } from "node:child_process";
+ import {
+   lstat,
+@@ -42,6 +43,7 @@
+   "docs/runs/conversation-markdown/evidence",
+   "docs/runs/conversation-runtime-options/evidence",
+   "docs/runs/conversation-context/evidence",
++  "docs/runs/design-foundation-v2/evidence",
+   "docs/runs/ui-state-families/evidence",
+   "docs/runs/event-host-app-integration/evidence",
+   "docs/runs/durable-workbench-storage/evidence",
+@@ -63,7 +65,13 @@
+   if (!root) throw new Error("Evidence path outside registered run roots");
+   return root;
+ }
++export const FOUNDATION_CAPTURE_LIMIT = 48;
++
+ const scripts = {
++  "design-foundation": [
++    "e2e-design-foundation.mjs",
++    "design-foundation-evidence.json",
++  ],
+   "conversation-context": [
+     "e2e-conversation-context.mjs",
+     "conversation-context-evidence.json",
+@@ -189,7 +197,7 @@
+       Object.hasOwn(parsed, key)
+     ) {
+       throw new Error(
+-        "Usage: run-evidence.mjs --out <fresh-run-directory> --script <sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|conversation-markdown|runtime-options|conversation-context|workbench|smoke> [--family all|legacy|extensions|workspace-files|git-review] [--mode dev|packaged --platform darwin|win32]",
++        "Usage: run-evidence.mjs --out <fresh-run-directory> --script <sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|conversation-markdown|runtime-options|conversation-context|design-foundation|workbench|smoke> [--family all|legacy|extensions|workspace-files|git-review] [--mode dev|packaged --platform darwin|win32]",
+       );
+     }
+     parsed[key] = value;
+@@ -251,7 +259,7 @@
+   const output = resolve(out);
+   assertWithin(root, output);
+   if (
+-    !/^(sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|conversation-markdown|runtime-options|conversation-context|workbench|smoke-(dev|packaged)-(darwin|win32))$/.test(
++    !/^(sessions|ui-states|feedback|git-index|git-commit|git-branch-restore|conversation-markdown|runtime-options|conversation-context|design-foundation|workbench|smoke-(dev|packaged)-(darwin|win32))$/.test(
+       selector,
+     )
+   )
+@@ -305,6 +313,7 @@
+       "conversation-markdown",
+       "runtime-options",
+       "conversation-context",
++      "design-foundation",
+     ].includes(script);
+   if (
+     strictCapture &&
+@@ -313,6 +322,11 @@
+     throw new Error("Evidence requires confirmed owned Electron exit zero");
+   if (hasUiCoverage) validateUiStateCoverage(report, family ?? "all");
+   const captures = [];
++  if (
++    script === "design-foundation" &&
++    report.screenshots.length > FOUNDATION_CAPTURE_LIMIT
++  )
++    throw new Error("Foundation capture budget exceeded");
+   for (const capture of report.screenshots) {
+     const auxiliary =
+       hasUiCoverage && capture?.evidenceType === "auxiliary-crop";
+@@ -355,9 +369,31 @@
+       throw new Error("Capture must contain an absolute path");
+     const absolute = resolve(path);
+     assertWithin(destination, absolute);
++    if (script === "design-foundation") {
++      if (
++        capture.evidenceType !== undefined ||
++        captures.includes(relative(destination, absolute))
++      )
++        throw new Error("Foundation requires unique original native frames");
++      if (
++        [
++          capture.afterCapture?.visible,
++          capture.afterCapture?.focused,
++          capture.afterCapture?.focusable,
++        ].some((value) => value !== false)
++      )
++        throw new Error("Foundation capture must stay hidden and nonfocusable");
++    }
+     const captureStat = await checkedPath(absolute);
+     if (!captureStat.isFile() || captureStat.size <= 8)
+       throw new Error("Capture is empty or not a file");
++    if (
++      script === "design-foundation" &&
++      createHash("sha256")
++        .update(await readFile(absolute))
++        .digest("hex") !== capture.pngSha256
++    )
++      throw new Error("Foundation original PNG hash mismatch");
+     const handle = await open(absolute, "r");
+     try {
+       const header = Buffer.alloc(strictCapture ? 24 : 8);
+--- before/apps/desktop-app/scripts/run-evidence.test.mjs
++++ apps/desktop-app/scripts/run-evidence.test.mjs
+@@ -1,4 +1,5 @@
+ import assert from "node:assert/strict";
++import { createHash } from "node:crypto";
+ import { spawn } from "node:child_process";
+ import {
+   mkdtemp,
+@@ -1006,3 +1007,276 @@
+   );
+   assert.equal(result.exitCode, 1);
+ });
++
++test("foundation selector/root are closed and cannot acquire smoke/family options", async (t) => {
++  assert.deepEqual(
++    parseArgs(["--out", "fresh", "--script", "design-foundation"]),
++    { out: "fresh", script: "design-foundation" },
++  );
++  for (const extra of [
++    ["--mode", "dev"],
++    ["--platform", "darwin"],
++    ["--family", "all"],
++  ])
++    assert.throws(() =>
++      parseArgs(["--out", "fresh", "--script", "design-foundation", ...extra]),
++    );
++  for (const script of [
++    "../design-foundation",
++    "e2e-design-foundation.mjs",
++    "design-foundation/extra",
++  ])
++    assert.throws(() => parseArgs(["--out", "fresh", "--script", script]));
++  const root = await fixture(t);
++  const base = join(root, "docs/runs/design-foundation-v2/evidence");
++  await mkdir(base, { recursive: true });
++  assert.equal(evidenceRootForOutput(root, join(base, "fresh")), base);
++  for (const out of [base, join(base, "../design"), base + "-redirect/fresh"])
++    assert.throws(() => evidenceRootForOutput(root, out));
++  const destination = await prepareDestination(
++    base,
++    join(base, "fresh"),
++    "design-foundation",
++  );
++  await assert.rejects(
++    prepareDestination(base, join(base, "fresh"), "design-foundation"),
++    /nonempty/,
++  );
++  await symlink(base, join(base, "alias"), "dir");
++  await assert.rejects(
++    prepareDestination(base, join(base, "alias/fresh"), "design-foundation"),
++    /symlink/,
++  );
++  assert.equal(
++    await readFile(join(destination, ".run-evidence-claim"), "utf8"),
++    "",
++  );
++});
++
++test("foundation reports require bounded original full hidden PNGs and owned exit", async (t) => {
++  const { validateEvidence, FOUNDATION_CAPTURE_LIMIT } = await import(
++    "./run-evidence.mjs"
++  );
++  const root = await fixture(t);
++  const png = Buffer.from(
++    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2cYkAAAAASUVORK5CYII=",
++    "base64",
++  );
++  const hidden = { visible: false, focused: false, focusable: false };
++  const frame = {
++    path: join(root, "native.png"),
++    pixelDimensions: { width: 1, height: 1 },
++    pngSha256: createHash("sha256").update(png).digest("hex"),
++    contentBounds: { width: 1, height: 1 },
++    viewport: { width: 1, height: 1, pixelRatio: 1 },
++    displayScaleFactor: 1,
++    zoomFactor: 1,
++    beforeCapture: hidden,
++    afterCapture: hidden,
++    osWindowVisible: false,
++    osWindowFocused: false,
++    osWindowFocusable: false,
++    captureMethod: "BrowserWindow.webContents.capturePage().toPNG()",
++  };
++  await writeFile(frame.path, png);
++  const report = {
++    result: "pass",
++    screenshots: [frame],
++    teardown: { exited: true, code: 0 },
++  };
++  const save = (value) =>
++    writeFile(
++      join(root, "design-foundation-evidence.json"),
++      JSON.stringify(value),
++    );
++  await save(report);
++  assert.deepEqual(await validateEvidence(root, "design-foundation"), [
++    "design-foundation-evidence.json",
++    "native.png",
++  ]);
++  for (const patch of [
++    { evidenceType: "auxiliary-crop" },
++    { captureMethod: "Playwright locator.screenshot()" },
++    { osWindowVisible: true },
++    { afterCapture: { ...hidden, focusable: true } },
++    { pixelDimensions: { width: 2, height: 1 } },
++    { viewport: { width: 4, height: 1, pixelRatio: 1 } },
++    { zoomFactor: 2 },
++    { pngSha256: "0".repeat(64) },
++    { path: join(root, "../escape.png") },
++  ]) {
++    await save({ ...report, screenshots: [{ ...frame, ...patch }] });
++    await assert.rejects(
++      validateEvidence(root, "design-foundation"),
++      JSON.stringify(patch),
++    );
++  }
++  for (const patch of [
++    { teardown: { exited: false, code: 0 } },
++    { teardown: { exited: true, code: 1 } },
++    { screenshots: [] },
++    { screenshots: [frame, frame] },
++    {
++      screenshots: Array.from(
++        { length: FOUNDATION_CAPTURE_LIMIT + 1 },
++        () => frame,
++      ),
++    },
++  ]) {
++    await save({ ...report, ...patch });
++    await assert.rejects(validateEvidence(root, "design-foundation"));
++  }
++});
++
++test("foundation provenance includes real runner, fixture and consumed geometry helper", async (t) => {
++  const root = await fixture(t);
++  await put(root, "apps/desktop-app/scripts/e2e-design-foundation.mjs");
++  const result = await runEvidence(
++    { out: join(root, "drift"), script: "design-foundation" },
++    {
++      repoRoot: root,
++      runRoot: root,
++      spawnChild: helper(
++        `require('node:fs').appendFileSync(${JSON.stringify(join(root, "apps/desktop-app/scripts/e2e-workbench-states.mjs"))}, 'changed');`,
++      ),
++    },
++  );
++  assert.equal(result.exitCode, 1);
++  assert.equal(result.manifest.provenanceVerifiedAfter, false);
++  assert.match(result.manifest.error, /provenance changed/);
++  const paths = result.manifest.provenance.selectedScriptsAndFixtures.files.map(
++    (file) => file.path,
++  );
++  for (const path of [
++    "e2e-design-foundation.mjs",
++    "e2e-workbench-states.mjs",
++    "fixtures/workbench-host.mjs",
++  ])
++    assert.ok(paths.includes("apps/desktop-app/scripts/" + path));
++  await rm(join(root, "apps/desktop-app/scripts/e2e-design-foundation.mjs"));
++  let spawned = false;
++  const missing = await runEvidence(
++    { out: join(root, "missing"), script: "design-foundation" },
++    {
++      repoRoot: root,
++      runRoot: root,
++      spawnChild: () => {
++        spawned = true;
++        throw Error("must not launch");
++      },
++    },
++  );
++  assert.equal(spawned, false);
++  assert.equal(missing.exitCode, 1);
++  assert.match(missing.manifest.error, /ENOENT/);
++});
++
++test("actual saved composer helper accepts separated tasks and rejects overlap/containment defects", async () => {
++  const source = await readFile(
++    new URL("./e2e-workbench-states.mjs", import.meta.url),
++    "utf8",
++  );
++  const code = source.match(
++    /async function assertComposerGeometry\(page\) \{[\s\S]*?\n\}/u,
++  )?.[0];
++  assert.ok(
++    code,
++    "Use the production saved helper, not a mirrored geometry predicate",
++  );
++  const rect = (top, bottom, left = 10, right = 410) => ({
++    top,
++    bottom,
++    left,
++    right,
++    height: bottom - top,
++    width: right - left,
++  });
++  async function execute(patch = {}) {
++    const boxes = {
++      composer: rect(200, 340),
++      input: rect(216, 288, 26, 394),
++      toolbar: rect(296, 328, 26, 394),
++      requests: rect(10, 170),
++      ...patch,
++    };
++    const nodes = Object.fromEntries(
++      Object.entries(boxes).map(([key, box]) => [
++        key,
++        { getBoundingClientRect: () => box },
++      ]),
++    );
++    const form = nodes.composer;
++    form.querySelector = (selector) =>
++      selector.includes("button") ? { parentElement: nodes.toolbar } : null;
++    form.contains = (node) =>
++      node === nodes.input ||
++      node === nodes.toolbar ||
++      (!!patch.nested && node === nodes.requests);
++    nodes.input.closest = () => form;
++    nodes.input.ownerDocument = { querySelector: () => nodes.requests };
++    nodes.requests.closest = () =>
++      patch.closed ? { open: false } : patch.nested ? form : null;
++    nodes.requests.getClientRects = () => [boxes.requests];
++    const observations = [];
++    await new Function("assert", "observations", `return (${code});`)(
++      assert,
++      observations,
++    )({ getByRole: () => ({ evaluate: async (fn) => fn(nodes.input) }) });
++    return observations;
++  }
++  assert.equal((await execute()).length, 1);
++  assert.equal(
++    (await execute({ closed: true, requests: rect(260, 380) })).length,
++    1,
++    "A closed details task may retain layout boxes without being painted",
++  );
++  for (const patch of [
++    { nested: true },
++    { toolbar: rect(280, 312) },
++    { input: rect(190, 262) },
++    { toolbar: rect(320, 352) },
++    { input: rect(216, 288, 0, 394) },
++    { input: rect(216, 230) },
++    { requests: rect(260, 380) },
++  ])
++    await assert.rejects(execute(patch), JSON.stringify(patch));
++});
++
++test("foundation wrapper dispatches its exact saved runner and retains pre/post identities", async (t) => {
++  const root = await fixture(t);
++  await put(root, "apps/desktop-app/scripts/e2e-design-foundation.mjs");
++  const code = `const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),dir=process.env.OMOC_EVIDENCE_DIR;
++    const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2cYkAAAAASUVORK5CYII=','base64');
++    const frame={path:path.join(dir,'original.png'),pngSha256:crypto.createHash('sha256').update(png).digest('hex'),
++      pixelDimensions:{width:1,height:1},contentBounds:{width:1,height:1},viewport:{width:1,height:1,pixelRatio:1},
++      displayScaleFactor:1,zoomFactor:1,beforeCapture:{visible:false,focused:false,focusable:false},
++      afterCapture:{visible:false,focused:false,focusable:false},osWindowVisible:false,osWindowFocused:false,
++      osWindowFocusable:false,captureMethod:'BrowserWindow.webContents.capturePage().toPNG()'};
++    fs.writeFileSync(frame.path,png);fs.writeFileSync(path.join(dir,'design-foundation-evidence.json'),
++      JSON.stringify({result:'pass',screenshots:[frame],teardown:{exited:true,code:0}}));`;
++  const result = await runEvidence(
++    { out: join(root, "wrapper"), script: "design-foundation" },
++    {
++      repoRoot: root,
++      runRoot: root,
++      env: { OMOC_EVIDENCE_DIR: "/unowned" },
++      spawnChild: helper(code, (exe, argv, options) => {
++        assert.equal(exe, process.execPath);
++        assert.deepEqual(argv, [
++          join(root, "apps/desktop-app/scripts/e2e-design-foundation.mjs"),
++        ]);
++        assert.equal(options.shell, false);
++        assert.equal(
++          options.env.OMOC_EVIDENCE_DIR,
++          join(root, "wrapper/design-foundation"),
++        );
++      }),
++    },
++  );
++  assert.equal(result.exitCode, 0);
++  assert.equal(result.manifest.provenanceVerifiedAfter, true);
++  assert.deepEqual(result.manifest.evidence, [
++    "design-foundation-evidence.json",
++    "original.png",
++  ]);
++});
+--- before/apps/desktop-app/src/conversation-context.test.mjs
++++ apps/desktop-app/src/conversation-context.test.mjs
+@@ -2,7 +2,7 @@
+ import test from "node:test";
+ import { createHash } from "node:crypto";
+ import * as context from "./renderer/shared/conversation-context/index.mjs";
+-import { validateRequest } from "./workbench-contract.mjs";
++import { BASELINE_POLICY, validateRequest } from "./workbench-contract.mjs";
+ const hash = (text) => createHash("sha256").update(text).digest("hex");
+ const descriptor = () => ({
+   capabilityId: "cap-1",
+@@ -327,3 +327,234 @@
+   assert.equal(projected.entries[0].textPreview, "a".repeat(1999));
+   assert.equal(projected.entries[0].textTruncated, true);
+ });
++
++test("production service refuses final-byte MIME mismatches before Native prompt", async (t) => {
++  const fs = await import("node:fs/promises");
++  const { join } = await import("node:path");
++  const { tmpdir } = await import("node:os");
++  const { createWorkbenchService } = await import("./workbench-service.mjs");
++  const { createConversationContextIO } = await import(
++    "./host/conversation-context-io.mjs"
++  );
++  const workspace = await fs.realpath(
++    await fs.mkdtemp(join(tmpdir(), "omoc-context-service-")),
++  );
++  const info = {
++    id: "native-session",
++    projectID: "project",
++    title: "Synthetic MIME test",
++    time: { created: 1, updated: 1 },
++    location: { directory: workspace },
++    permissions: BASELINE_POLICY,
++  };
++  const effects = [];
++  let promptedFiles;
++  const client = {
++    session: {
++      get: async () => info,
++      update: async ({ permissions }) => {
++        info.permissions = permissions;
++      },
++      active: async () => ({}),
++      inbox: { list: async () => [] },
++      switchModel: async () => {
++        effects.push("switchModel");
++      },
++      prompt: async ({ sessionID, text, files }) => {
++        effects.push("prompt");
++        promptedFiles = files;
++        return {
++          id: "native-inbox",
++          sessionID,
++          type: "user",
++          payload: {
++            text,
++            files: files.map(({ name, uri }) => ({
++              name,
++              mime: uri.slice(5, uri.indexOf(";")),
++              data: uri.slice(uri.indexOf(",") + 1),
++              source: { type: "inline" },
++            })),
++          },
++        };
++      },
++    },
++    message: { list: async () => ({ data: [], cursor: {} }) },
++    permission: { list: async () => [] },
++    command: { list: async () => ({ data: [] }) },
++    skill: { list: async () => ({ data: [] }) },
++    mcp: { list: async () => ({ data: [] }) },
++    agent: { list: async () => ({ data: [] }) },
++    model: {
++      list: async () => ({
++        data: [
++          {
++            id: "model",
++            providerID: "provider",
++            name: "Synthetic model",
++            enabled: true,
++            capabilities: {
++              tools: true,
++              input: ["text", "image", "pdf"],
++              output: ["text"],
++            },
++          },
++        ],
++      }),
++    },
++    provider: {
++      list: async () => ({
++        data: [
++          {
++            id: "provider",
++            integrationID: "integration",
++            activation: "enabled",
++          },
++        ],
++      }),
++    },
++    integration: {
++      list: async () => ({
++        data: [{ id: "integration", connections: [{ type: "credential" }] }],
++      }),
++    },
++  };
++  const service = createWorkbenchService({
++    trustedTestAdapter: true,
++    contextIO: createConversationContextIO({ validateImage: () => false }),
++    runtime: {
++      workspace,
++      snapshot: () => ({ state: "connected" }),
++      workbenchContext: () => ({ client, session: info }),
++    },
++  });
++  t.after(async () => {
++    service.close();
++    await service.drain();
++    await fs.rm(workspace, { recursive: true, force: true });
++  });
++  const snapshot = await service.handle({ type: "snapshot" });
++  assert.equal(snapshot.ok, true, JSON.stringify(snapshot));
++  const ids = {
++    workspaceId: snapshot.value.selectedWorkspaceId,
++    sessionId: snapshot.value.selectedSessionId,
++  };
++  let next = 0;
++  const read = (operation) =>
++    service.handle(
++      {
++        version: 2,
++        runtimeEpoch: snapshot.value.runtimeEpoch,
++        readId: `read-${++next}`,
++        operation,
++      },
++      "mime-sender",
++    );
++  const catalog = await read({
++    type: "catalog.list",
++    workspaceId: ids.workspaceId,
++  });
++  assert.equal(catalog.ok, true, JSON.stringify(catalog));
++  const model = catalog.value.models.entries[0].id;
++  const dispatch = (attachments) => {
++    const requestId = `send-${++next}`;
++    return service.handle(
++      {
++        version: 2,
++        runtimeEpoch: snapshot.value.runtimeEpoch,
++        operationId: requestId,
++        operation: {
++          type: "message.send",
++          ...ids,
++          requestId,
++          text: "check",
++          model,
++          attachments,
++        },
++      },
++      "mime-sender",
++    );
++  };
++  const path = "context.txt";
++  for (const [name, source, start] of [
++    ["BMP", "BMtext"],
++    ["AVIF", "xxxxftypavif"],
++    ["AVIS", "xxxxftypavis"],
++    ["invalid GIF8", "GIF8xx"],
++    ...[
++      "BMtext",
++      "GIF8xx",
++      "%PDF-1.7",
++      "RIFFxxxxWEBP",
++      "xxxxftypavif",
++      "xxxxftypavis",
++    ].map((text) => ["selection " + text, "prefix " + text, 7]),
++  ]) {
++    await t.test(name, async () => {
++      await fs.writeFile(join(workspace, path), source);
++      let selection;
++      if (start !== undefined) {
++        const full = await read({
++          type: "context.observe",
++          workspaceId: ids.workspaceId,
++          path,
++        });
++        assert.equal(full.ok, true, JSON.stringify(full));
++        assert.equal(full.value.status, "available");
++        selection = {
++          version: full.value.descriptor.version,
++          start,
++          end: source.length,
++        };
++      }
++      const observed = await read({
++        type: "context.observe",
++        workspaceId: ids.workspaceId,
++        path,
++        ...(selection && { selection }),
++      });
++      assert.equal(observed.ok, true, JSON.stringify(observed));
++      assert.equal(observed.value.status, "unsupported");
++      assert.equal(observed.value.reason, "unsupported_content");
++      assert.equal(Object.hasOwn(observed.value, "descriptor"), false);
++      // A renderer cannot turn a refusal into a cached attachment capability.
++      const refused = {
++        capabilityId: "refused.1",
++        workspaceId: ids.workspaceId,
++        workspacePath: workspace,
++        path,
++        name: path,
++        source: selection ? "selection" : "file",
++        version: selection?.version ?? hash(source),
++        digest: hash(source.slice(start ?? 0)),
++        mime: "text/plain",
++        size: Buffer.byteLength(source.slice(start ?? 0)),
++        ...(selection && { range: { start, end: source.length } }),
++      };
++      const result = await dispatch([refused]);
++      assert.equal(result.ok, false, JSON.stringify(result));
++      assert.equal(result.code, "INVALID_SELECTION");
++      assert.deepEqual(effects, []);
++    });
++  }
++  // Positive control proves this service fixture can reach prompt with exact held bytes.
++  const source = "\uFEFFordinary\r\n😀끝";
++  await fs.writeFile(join(workspace, path), source);
++  const observed = await read({
++    type: "context.observe",
++    workspaceId: ids.workspaceId,
++    path,
++  });
++  assert.equal(observed.ok, true, JSON.stringify(observed));
++  await fs.unlink(join(workspace, path));
++  const result = await dispatch([observed.value.descriptor]);
++  assert.equal(result.ok, true, JSON.stringify(result));
++  assert.equal(result.value.status, "accepted");
++  assert.deepEqual(effects, ["switchModel", "prompt"]);
++  assert.deepEqual(promptedFiles, [
++    {
++      name: path,
++      uri: `data:text/plain;base64,${Buffer.from(source).toString("base64")}`,
++    },
++  ]);
++});
+--- before/apps/desktop-app/src/host/conversation-context-io.mjs
++++ apps/desktop-app/src/host/conversation-context-io.mjs
+@@ -75,18 +75,20 @@
+   if (prefix(bytes, Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])))
+     return "image/png";
+   if (prefix(bytes, Buffer.from([255, 216, 255]))) return "image/jpeg";
+-  if (
+-    prefix(bytes, Buffer.from("GIF87a")) ||
+-    prefix(bytes, Buffer.from("GIF89a"))
+-  )
+-    return "image/gif";
++  if (prefix(bytes, Buffer.from("GIF8"))) return "image/gif";
++  if (prefix(bytes, Buffer.from("BM"))) return "image/bmp";
++  if (prefix(bytes, Buffer.from("%PDF-"))) return "application/pdf";
+   if (
+     prefix(bytes, Buffer.from("RIFF")) &&
+-    bytes.length >= 12 &&
+-    bytes.toString("ascii", 8, 12) === "WEBP"
++    prefix(bytes.subarray(8), Buffer.from("WEBP"))
+   )
+     return "image/webp";
+-  if (prefix(bytes, Buffer.from("%PDF-"))) return "application/pdf";
++  if (
++    prefix(bytes.subarray(4), Buffer.from("ftyp")) &&
++    (prefix(bytes.subarray(8), Buffer.from("avif")) ||
++      prefix(bytes.subarray(8), Buffer.from("avis")))
++  )
++    return "image/avif";
+   return undefined;
+ }
+ function decodeText(bytes) {
+@@ -199,6 +201,8 @@
+     if (source.status !== "available")
+       return { status: source.status, reason: source.reason };
+     const mime = mediaMime(source.bytes) ?? "text/plain";
++    if (mime === "image/bmp" || mime === "image/avif")
++      return unsupported("unsupported_content");
+     let bytes = source.bytes,
+       text;
+     if (mime === "text/plain") {
+@@ -216,6 +220,7 @@
+         fail("INVALID_REQUEST");
+       text = text.slice(s.selection.start, s.selection.end);
+       bytes = Buffer.from(text, "utf8");
++      if (mediaMime(bytes)) return unsupported("unsupported_content");
+     }
+     // The caller cannot mutate our held bytes through an injected decoder.
+     if (mime.startsWith("image/") && validateImage) {
+--- before/apps/desktop-app/src/host/conversation-context-io.test.mjs
++++ apps/desktop-app/src/host/conversation-context-io.test.mjs
+@@ -183,6 +183,8 @@
+   ["png", png, "image/png", "image"],
+   ["jpeg", Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 0]), "image/jpeg", "image"],
+   ["gif", Buffer.from("GIF89a"), "image/gif", "image"],
++  ["gif8", Buffer.from("GIF8"), "image/gif", "image"],
++  ["gif8-other", Buffer.from("GIF8xxpayload"), "image/gif", "image"],
+   ["webp", Buffer.from("RIFFxxxxWEBP"), "image/webp", "image"],
+   ["pdf", Buffer.from("%PDF-1.7\nsynthetic\n"), "application/pdf", "pdf"],
+ ])
+@@ -223,8 +225,13 @@
+   Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>'),
+   Buffer.from('\uFEFF<?xml version="1.0"?><!-- x --><svg/>'),
+   Buffer.from("BM\0\0\0"),
++  Buffer.from("BM"),
++  Buffer.from("BMplain UTF-8"),
+   Buffer.from("RIFFxxxxWAVE\0"),
++  Buffer.from([82, 73, 70, 70, 120, 120, 120, 120, 215, 197, 194, 208]),
+   Buffer.from("\0\0\0\x18ftypavif"),
++  Buffer.from("xxxxftypavif"),
++  Buffer.from("xxxxftypavis"),
+ ])
+   test(`unsupported content refuses without cache success: ${bytes.toString("hex").slice(0, 24)}`, async (t) => {
+     const f = await fixture(t, bytes);
+@@ -234,6 +241,91 @@
+       reason: "unsupported_content",
+     });
+     io.close();
++  });
++
++for (const text of [
++  "BMtext",
++  "GIF8",
++  "%PDF-1.7",
++  "RIFFxxxxWEBP",
++  "xxxxftypavif",
++  "xxxxftypavis",
++])
++  test(`media-prefixed text selection is refused: ${text}`, async (t) => {
++    const source = `ordinary text: ${text}`;
++    const f = await fixture(t, source);
++    let validations = 0,
++      tokens = 0;
++    const io = createConversationContextIO({
++      randomId: () => `token-${++tokens}`,
++      validateImage() {
++        validations++;
++        return true;
++      },
++    });
++    t.after(() => io.close());
++    const full = await io.observe(f.workspace, f.path, scope());
++    assert.equal(full.descriptor.mime, "text/plain");
++    assert.deepEqual(
++      await io.observe(
++        f.workspace,
++        f.path,
++        scope({
++          selection: {
++            version: full.descriptor.version,
++            start: 15,
++            end: source.length,
++          },
++        }),
++      ),
++      { status: "unsupported", reason: "unsupported_content" },
++    );
++    assert.equal(tokens, 1);
++    assert.equal(validations, 0);
++    const held = acquire(io, f, [full.descriptor]);
++    assert.deepEqual(held.files, [
++      {
++        name: "note.txt",
++        uri: `data:text/plain;base64,${Buffer.from(source).toString("base64")}`,
++      },
++    ]);
++    held.release();
++  });
++
++for (const valid of [false, true])
++  test(`GIF8 prefix requires injected decoder validation: ${valid}`, async (t) => {
++    const bytes = Buffer.from("GIF8xxsynthetic");
++    const f = await fixture(t, bytes);
++    let validations = 0;
++    const io = createConversationContextIO({
++      validateImage(copy, mime) {
++        validations++;
++        assert.equal(mime, "image/gif");
++        assert.deepEqual(copy, bytes);
++        copy.fill(0);
++        return valid;
++      },
++    });
++    t.after(() => io.close());
++    const observed = await io.observe(f.workspace, f.path, scope());
++    assert.equal(validations, 1);
++    if (!valid) {
++      assert.deepEqual(observed, {
++        status: "unsupported",
++        reason: "unsupported_content",
++      });
++      return;
++    }
++    assert.equal(observed.descriptor.mime, "image/gif");
++    assert.equal(observed.descriptor.digest, digest(bytes));
++    const held = acquire(io, f, [observed.descriptor]);
++    assert.deepEqual(held.files, [
++      {
++        name: "note.txt",
++        uri: `data:image/gif;base64,${bytes.toString("base64")}`,
++      },
++    ]);
++    held.release();
+   });
+ 
+ test("optional image validator gets a copy and exact MIME; invalid images are refused", async (t) => {
+--- before/apps/desktop-app/src/renderer/features/conversation-context/context.module.css
++++ apps/desktop-app/src/renderer/features/conversation-context/context.module.css
+@@ -1,137 +1,257 @@
+ .section {
+   min-width: 0;
+   color: var(--omoc-semantic-color-text-primary);
+-  font-size: 12px;
+-  line-height: 1.6;
+-  border-block-start: 1px solid var(--omoc-semantic-color-border-default);
+-}
+-.section > summary {
++  font-size: 13px;
++  line-height: 20px;
++}
++
++.section > p {
++  margin: 8px 0;
++  overflow-wrap: anywhere;
++}
++
++.section > [role="alert"],
++.section > [data-context-send-blocked],
++.section > [data-context-held] {
++  padding: 8px 12px;
++  border-radius: var(--omoc-component-size-control-radius);
++  background: var(--omoc-semantic-color-surface-subtle);
++}
++
++.section > [role="alert"] {
++  color: var(--omoc-semantic-color-danger-foreground);
++  background: var(--omoc-semantic-color-danger-background);
++}
++
++.task {
++  min-width: 0;
++}
++
++.taskGroup {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 0 16px;
++}
++
++.taskGroup[hidden] {
++  display: none;
++}
++
++.taskGroup > details {
++  flex: 1 1 220px;
++}
++
++.taskGroup > details[open] {
++  flex-basis: 100%;
++}
++
++.task > summary,
++.list summary,
++.branch summary {
++  min-height: var(--omoc-component-size-control-hit-target);
+   padding-block: 6px;
+   cursor: pointer;
+   overflow-wrap: anywhere;
+ }
++
++.task > summary {
++  color: var(--omoc-semantic-color-text-secondary);
++}
++
++.task[open] > summary {
++  color: var(--omoc-semantic-color-text-primary);
++  font-weight: 500;
++}
++
+ .body {
+   display: grid;
+-  gap: 8px;
+-  max-height: min(42vh, 360px);
+-  overflow: auto;
+-  overscroll-behavior: contain;
+-  padding: 4px 4px 8px;
+-}
++  gap: 16px;
++  min-width: 0;
++  padding-block: 8px 16px;
++}
++
++.body h2 {
++  margin: 0;
++  font-size: 16px;
++  line-height: 24px;
++  font-weight: 500;
++}
++
+ .body p,
++.branch p,
+ .messageActions p {
+   margin-block: 4px;
+   overflow-wrap: anywhere;
+ }
++
+ .controls {
+   display: grid;
+-  gap: 6px;
+-  min-width: 0;
+-}
+-.section input,
+-.section textarea {
++  gap: 8px;
++  min-width: 0;
++}
++
++.controls > button,
++.body > button {
++  justify-self: start;
++}
++
++.controls input,
++.branch textarea {
+   box-sizing: border-box;
+   width: 100%;
+   min-width: 0;
+-  padding: 6px 8px;
+-  border: 1px solid var(--omoc-semantic-color-border-default);
+-  border-radius: 6px;
+-  background: var(--omoc-semantic-color-canvas);
+-  color: inherit;
++  min-height: var(--omoc-component-size-standard-control-height);
++  padding: 8px 12px;
++  border: 1px solid var(--omoc-component-color-input-border);
++  border-radius: var(--omoc-component-size-control-radius);
++  background: var(--omoc-component-color-input-background);
++  color: var(--omoc-component-color-input-foreground);
+   font: inherit;
+ }
+-.section textarea {
+-  min-height: 80px;
++
++.branch textarea {
++  display: block;
++  height: 96px;
++  max-height: 240px;
++  margin-top: 8px;
+   resize: vertical;
+-}
+-.section button,
+-.messageActions button {
+-  max-width: 100%;
+-  padding: 4px 8px;
+-  border: 1px solid var(--omoc-semantic-color-border-default);
+-  border-radius: 6px;
+-  background: var(--omoc-semantic-color-surface-subtle);
+-  color: var(--omoc-semantic-color-text-primary);
+-  font: inherit;
+-  white-space: normal;
+-  overflow-wrap: anywhere;
+-  cursor: pointer;
+-}
+-.section button:disabled,
+-.messageActions button:disabled {
+-  opacity: 0.5;
+-  cursor: default;
+-}
++  overflow-y: auto;
++}
++
+ .section :focus-visible,
+ .messageActions :focus-visible {
+   outline: 2px solid var(--omoc-semantic-color-focus);
+   outline-offset: 2px;
+ }
++
+ .list {
+   display: grid;
+-  gap: 8px;
+   margin: 0;
+   padding: 0;
+   list-style: none;
+ }
+-.list li,
+-.preview {
+-  display: grid;
+-  gap: 4px;
+-  min-width: 0;
+-  padding: 8px;
+-  border: 1px solid var(--omoc-semantic-color-border-default);
+-  border-radius: 6px;
+-}
++
++.list li {
++  display: flex;
++  flex-wrap: wrap;
++  align-items: baseline;
++  gap: 4px 12px;
++  min-width: 0;
++  padding-block: 8px;
++  border-block-end: 1px solid var(--omoc-semantic-color-selection-background);
++}
++
++.list li > strong {
++  flex: 1 1 100%;
++  font-size: 14px;
++  font-weight: 500;
++}
++
++.list li > span {
++  color: var(--omoc-semantic-color-text-secondary);
++}
++
++.list li > details {
++  flex: 1 1 200px;
++  min-width: 0;
++}
++
++.list li > p,
++.list li > pre {
++  flex-basis: 100%;
++}
++
++.preview,
++.branch {
++  display: grid;
++  gap: 8px;
++  min-width: 0;
++  padding: 16px;
++  border-radius: var(--omoc-component-size-card-radius);
++  background: var(--omoc-semantic-color-surface-subtle);
++}
++
++.branch > strong {
++  font-size: 16px;
++  line-height: 24px;
++  font-weight: 500;
++}
++
++.branch .actions {
++  position: sticky;
++  bottom: 0;
++  z-index: 1;
++  padding-block: 8px;
++  background: var(--omoc-semantic-color-surface-subtle);
++}
++
+ .section dl {
+   margin: 0;
+ }
++
++.section dt {
++  color: var(--omoc-semantic-color-text-secondary);
++}
++
+ .section dd {
+-  margin: 0 0 4px;
++  margin: 0 0 8px;
+   overflow-wrap: anywhere;
+   user-select: text;
+ }
++
+ .section strong,
+ .list span {
+-  overflow-wrap: anywhere;
+-}
++  min-width: 0;
++  overflow-wrap: anywhere;
++}
++
+ .section pre {
+   min-width: 0;
+-  max-height: 180px;
++  width: 100%;
++  max-height: 240px;
+   overflow: auto;
+   margin: 4px 0;
+   white-space: pre-wrap;
+   overflow-wrap: anywhere;
+   user-select: text;
+   font:
+-    12px/1.6 ui-monospace,
++    13px/20px ui-monospace,
+     SFMono-Regular,
+     Consolas,
+     monospace;
+ }
++
+ .preview img {
+   display: block;
+   max-width: 100%;
+-  max-height: 180px;
++  max-height: 240px;
+   object-fit: contain;
+ }
++
+ .actions,
+ .messageActions {
+   display: flex;
+   flex-wrap: wrap;
+-  gap: 6px;
+-  min-width: 0;
+-}
++  gap: 8px;
++  min-width: 0;
++}
++
+ .messageActions {
+-  margin-top: 6px;
+-  font-size: 12px;
+-  line-height: 1.6;
+-}
++  margin-top: 8px;
++  font-size: 13px;
++  line-height: 20px;
++}
++
+ .messageActions p {
+   flex-basis: 100%;
+ }
++
+ @media (max-height: 440px) {
+-  .body {
+-    max-height: 100px;
++  .branch textarea {
++    height: 64px;
+   }
+-}
++  .branch,
++  .preview {
++    padding: 8px;
++  }
++}
+--- before/apps/desktop-app/src/renderer/features/conversation-context/index.tsx
++++ apps/desktop-app/src/renderer/features/conversation-context/index.tsx
+@@ -1,4 +1,5 @@
+ import { useEffect, useId, useRef, useState } from "react";
++import { Button } from "@workbench/ui";
+ import {
+   selectors,
+   useWorkbenchSelector,
+@@ -46,22 +47,24 @@
+           이전 첨부 입력을 사용할 수 없습니다. 파일을 다시 선택하세요.
+         </p>
+       )}
+-      <button
++      <Button
+         type="button"
++        size="compact"
+         data-context-retry={message.id}
+         disabled={!ready || !idle}
+         onClick={() => actions.previewContextBranch(message.id)}
+       >
+         이 입력으로 새 분기 준비
+-      </button>
+-      <button
++      </Button>
++      <Button
+         type="button"
++        size="compact"
+         data-context-edit={message.id}
+         disabled={!ready || !idle}
+         onClick={() => actions.previewContextBranch(message.id)}
+       >
+         입력 수정 후 새 분기 준비
+-      </button>
++      </Button>
+     </div>
+   );
+ }
+@@ -80,6 +83,12 @@
+   const [range, setRange] = useState<ContextSelection>();
+   const textPreview = useRef<HTMLPreElement>(null);
+   const section = useRef<HTMLDetailsElement>(null);
++  const runningTask = useRef<HTMLDetailsElement>(null);
++  const branchInput = useRef<HTMLTextAreaElement>(null);
++  const branchTrigger = useRef<HTMLElement | null>(null);
++  const previewTrigger = useRef<HTMLElement | null>(null);
++  const reobserveButtons = useRef(new Map<string, HTMLButtonElement>());
++  const branchBefore = context.branch?.before;
+   const pathId = useId();
+   const scopeKey = JSON.stringify([
+     snapshot?.runtimeEpoch,
+@@ -95,8 +104,49 @@
+     setRange(undefined);
+   }, [context.preview]);
+   useEffect(() => {
+-    if (context.branch && section.current) section.current.open = true;
+-  }, [context.branch]);
++    if (!branchBefore) return;
++    branchTrigger.current =
++      document.activeElement instanceof HTMLElement
++        ? document.activeElement
++        : null;
++    const frame = requestAnimationFrame(() => {
++      branchInput.current?.focus({ preventScroll: true });
++      branchInput.current
++        ?.closest("section")
++        ?.scrollIntoView({ block: "nearest" });
++    });
++    return () => cancelAnimationFrame(frame);
++  }, [branchBefore]);
++  const closeBranch = () => {
++    actions.closeContextBranch();
++    requestAnimationFrame(() => {
++      if (
++        branchTrigger.current?.isConnected &&
++        !branchTrigger.current.matches(":disabled")
++      ) {
++        branchTrigger.current.focus();
++      } else {
++        document
++          .querySelector<HTMLTextAreaElement>(
++            'textarea[aria-label="메시지 작성"]',
++          )
++          ?.focus();
++      }
++    });
++  };
++  const closeTask = (task: HTMLDetailsElement | null) => {
++    if (!task) return;
++    task.open = false;
++    task.querySelector("summary")?.focus();
++  };
++  const closePreview = () => {
++    actions.closeContextPreview();
++    const origin = previewTrigger.current?.isConnected
++      ? previewTrigger.current
++      : p && reobserveButtons.current.get(p.descriptor.capabilityId);
++    if (origin?.isConnected && !origin.matches(":disabled")) origin.focus();
++    else section.current?.querySelector("summary")?.focus();
++  };
+   const p = context.preview;
+   const readSelection = () => {
+     const node = textPreview.current,
+@@ -136,305 +186,413 @@
+     );
+   };
+   return (
+-    <details
+-      ref={section}
++    <div
+       className={styles.section}
+-      data-context-section
+-      onToggle={(event) => {
+-        if (!event.currentTarget.open) actions.closeContextPreview();
++      data-context-tasks
++      onKeyDown={(event) => {
++        if (
++          event.key !== "Escape" ||
++          event.nativeEvent.isComposing ||
++          event.keyCode === 229
++        )
++          return;
++        if (context.branch) {
++          event.preventDefault();
++          event.stopPropagation();
++          closeBranch();
++          return;
++        }
++        const task = (event.target as HTMLElement).closest<HTMLDetailsElement>(
++          "details[data-context-section], details[data-context-running-task]",
++        );
++        if (task?.open) {
++          event.preventDefault();
++          event.stopPropagation();
++          closeTask(task);
++        }
+       }}
+     >
+-      <summary>
+-        대화 입력 · 첨부와 실행 중 요청
+-        {draft.items.length ? ` (${draft.items.length})` : ""}
+-      </summary>
+-      <div className={styles.body}>
+-        <div className={styles.controls}>
+-          <label htmlFor={pathId}>Workspace 상대 경로</label>
+-          <input
+-            id={pathId}
+-            data-context-path
+-            value={path}
+-            onChange={(e) => setPath(e.target.value)}
+-            placeholder="src/example.ts"
+-            spellCheck={false}
+-          />
+-          <button
+-            type="button"
+-            data-context-observe
+-            disabled={!ready || !path}
+-            onClick={() => void actions.observeContext(path)}
+-          >
+-            파일 확인 후 추가
+-          </button>
+-          {context.request && (
+-            <button
++      {context.branch && (
++        <section
++          className={styles.branch}
++          aria-label="새 분기 준비"
++          data-context-branch
++        >
++          <strong>선택한 입력 직전에서 새 분기를 만듭니다.</strong>
++          <p data-context-boundary>분기 경계: {context.branch.before}</p>
++          <p>
++            현재 Workspace 파일을 유지합니다. 분기를 만든 뒤 별도로 메시지를
++            보내세요.
++          </p>
++          {context.branch.historical && (
++            <p>이전 첨부 입력을 사용할 수 없습니다. 파일을 다시 선택하세요.</p>
++          )}
++
++          <label>
++            새 분기에 준비할 입력
++            <textarea
++              ref={branchInput}
++              aria-label="새 분기에 준비할 입력"
++              data-context-branch-text
++              value={context.branch.text}
++              maxLength={32000}
++              onChange={(e) => actions.editContextBranch(e.target.value)}
++            />
++          </label>
++          <div className={styles.actions}>
++            <Button
+               type="button"
+-              data-context-cancel-read
+-              onClick={actions.cancelContextObservation}
++              intent="primary"
++              data-context-branch-confirm
++              disabled={!ready}
++              onClick={() => void actions.confirmContextBranch()}
+             >
+-              파일 확인 중단
+-            </button>
+-          )}
+-        </div>
+-        <p>
+-          확인한 입력을 Native에 보냅니다. Provider가 받은 입력을 증명하지
+-          않습니다.
++              새 분기 만들기 · 전송 안 함
++            </Button>
++            <Button
++              type="button"
++              data-context-branch-close
++              onClick={closeBranch}
++            >
++              분기 준비 닫기
++            </Button>
++          </div>
++          <details>
++            <summary>선택한 원래 입력</summary>
++            <pre>{context.branch.originalText}</pre>
++          </details>
++        </section>
++      )}
++      {context.error && (
++        <p role="alert" data-context-error={context.error}>
++          {errors[context.error] ??
++            "현재 입력을 확인할 수 없습니다. 다시 확인하세요."}
+         </p>
+-        <ul className={styles.list} data-context-list>
+-          {draft.items.map((d) => (
+-            <li
+-              key={d.capabilityId}
+-              data-context-item={d.capabilityId}
+-              data-context-source={d.source}
+-              data-context-available={Boolean(
+-                draft.authority && draft.verifiedIds.includes(d.capabilityId),
+-              )}
+-            >
+-              <strong>{d.path}</strong>
+-              <span>
+-                {d.source === "selection" ? "선택 영역 참조" : "파일 첨부"} ·{" "}
+-                {d.mime} · {d.size} bytes
+-              </span>
+-              {d.range && (
+-                <span>
+-                  UTF-16 범위 {d.range.start}–{d.range.end}
+-                </span>
+-              )}
+-              <details>
+-                <summary>확인 시점의 version과 SHA-256</summary>
+-                <dl>
+-                  <dt>version</dt>
+-                  <dd>{d.version}</dd>
+-                  <dt>SHA-256</dt>
+-                  <dd>{d.digest}</dd>
+-                </dl>
+-              </details>
+-              {(!draft.authority ||
+-                !draft.verifiedIds.includes(d.capabilityId)) && (
+-                <p>현재 전송 권한이 없습니다. 파일을 다시 확인하세요.</p>
+-              )}
+-              <div className={styles.actions}>
+-                <button
+-                  type="button"
+-                  data-context-reobserve={d.capabilityId}
+-                  disabled={!ready}
+-                  onClick={() => void actions.observeContext(d.path)}
++      )}
++      {draft.items.length > 0 && !sendReady && (
++        <p role="status" data-context-send-blocked>
++          첨부를 보내려면 파일을 다시 확인하고, 입력 형식을 지원하는 모델을
++          선택하세요.
++        </p>
++      )}
++      {context.notice && (
++        <p role="status" data-context-notice>
++          {context.notice}
++        </p>
++      )}
++      {!ready && (
++        <p role="status" data-context-held>
++          {context.request || context.inboxRequest
++            ? "입력을 확인 중입니다. 확인 중단은 실행 취소를 뜻하지 않습니다."
++            : "입력 작업을 보류했습니다. 연결·신뢰·요청 상태를 확인하세요. 자동으로 다시 실행하지 않습니다."}
++        </p>
++      )}
++      <>
++        {draft.items.length > 0 && (
++          <section aria-label="선택한 첨부 입력" data-context-summary>
++            <strong>첨부 {draft.items.length}개</strong>
++            <ul className={styles.list} data-context-list>
++              {draft.items.map((d) => (
++                <li
++                  key={d.capabilityId}
++                  data-context-item={d.capabilityId}
++                  data-context-source={d.source}
++                  data-context-available={Boolean(
++                    draft.authority &&
++                      draft.verifiedIds.includes(d.capabilityId),
++                  )}
+                 >
+-                  파일 다시 확인 · 미리보기
+-                </button>
+-                <button
+-                  type="button"
+-                  data-context-remove={d.capabilityId}
+-                  onClick={() => actions.removeContext(d.capabilityId)}
+-                >
+-                  입력 제거
+-                </button>
+-              </div>
+-            </li>
+-          ))}
+-        </ul>
+-        {draft.items.length > 0 && !sendReady && (
+-          <p role="status" data-context-send-blocked>
+-            첨부를 보내려면 파일을 다시 확인하고, 입력 형식을 지원하는 모델을
+-            선택하세요.
+-          </p>
+-        )}
+-        {p && (
+-          <section
+-            className={styles.preview}
+-            aria-label="확인 시점의 입력 미리보기"
+-            data-context-preview={p.value.kind}
+-          >
+-            <strong>{p.descriptor.path} · 확인 시점의 입력</strong>
+-            {p.value.kind === "text" ? (
+-              <>
+-                <pre
+-                  ref={textPreview}
+-                  tabIndex={0}
+-                  data-context-text
+-                  onMouseUp={readSelection}
+-                  onKeyUp={readSelection}
+-                >
+-                  {p.value.text}
+-                </pre>
+-                {p.descriptor.source === "file" && (
+-                  <>
+-                    <p>
+-                      {range
+-                        ? `UTF-16 범위 ${range.start}–${range.end}`
+-                        : "본문에서 참조할 텍스트를 선택하세요."}
+-                    </p>
+-                    <button
++                  <strong title={d.path}>{d.name}</strong>
++                  <span>
++                    {d.source === "selection" ? "선택 영역 참조" : "파일 첨부"}{" "}
++                    · {d.mime} ·{" "}
++                    {draft.authority &&
++                    draft.verifiedIds.includes(d.capabilityId)
++                      ? "확인됨"
++                      : "다시 확인 필요"}
++                  </span>
++                  {d.range && (
++                    <span>
++                      UTF-16 범위 {d.range.start}–{d.range.end}
++                    </span>
++                  )}
++                  <details>
++                    <summary>확인 시점의 version과 SHA-256</summary>
++                    <dl>
++                      <dt>경로</dt>
++                      <dd>{d.path}</dd>
++                      <dt>크기</dt>
++                      <dd>{d.size} bytes</dd>
++                      <dt>source</dt>
++                      <dd>{d.source}</dd>
++                      <dt>version</dt>
++                      <dd>{d.version}</dd>
++                      <dt>SHA-256</dt>
++                      <dd>{d.digest}</dd>
++                    </dl>
++                  </details>
++                  {(!draft.authority ||
++                    !draft.verifiedIds.includes(d.capabilityId)) && (
++                    <p>현재 전송 권한이 없습니다. 파일을 다시 확인하세요.</p>
++                  )}
++                  <div className={styles.actions}>
++                    <Button
+                       type="button"
+-                      data-context-selection
+-                      disabled={!ready || !range}
+-                      onClick={() =>
+-                        range &&
+-                        void actions.observeContext(p.descriptor.path, range)
+-                      }
++                      size="compact"
++                      data-context-reobserve={d.capabilityId}
++                      ref={(node) => {
++                        if (node)
++                          reobserveButtons.current.set(d.capabilityId, node);
++                        else reobserveButtons.current.delete(d.capabilityId);
++                      }}
++                      disabled={!ready}
++                      onClick={(event) => {
++                        previewTrigger.current = event.currentTarget;
++                        if (section.current) section.current.open = true;
++                        void actions.observeContext(d.path);
++                      }}
+                     >
+-                      선택 영역 확인 후 참조 추가
+-                    </button>
+-                  </>
+-                )}
+-              </>
+-            ) : p.value.kind === "image" ? (
+-              <img
+-                data-context-image
+-                src={p.value.dataUrl}
+-                alt={`${p.descriptor.name} · 확인 시점의 이미지`}
+-              />
+-            ) : (
+-              <p data-context-pdf>
+-                PDF 내용 미리보기를 사용할 수 없습니다. 파일 정보만 표시합니다.
+-              </p>
+-            )}
+-            <button
+-              type="button"
+-              data-context-close-preview
+-              onClick={actions.closeContextPreview}
+-            >
+-              미리보기 닫기
+-            </button>
++                      파일 다시 확인 · 미리보기
++                    </Button>
++                    <Button
++                      type="button"
++                      size="compact"
++                      data-context-remove={d.capabilityId}
++                      onClick={() => actions.removeContext(d.capabilityId)}
++                    >
++                      입력 제거
++                    </Button>
++                  </div>
++                </li>
++              ))}
++            </ul>
+           </section>
+         )}
+-        {context.error && (
+-          <p role="alert" data-context-error={context.error}>
+-            {errors[context.error] ??
+-              "현재 입력을 확인할 수 없습니다. 다시 확인하세요."}
+-          </p>
+-        )}
+-        {context.branch && (
+-          <section className={styles.preview} data-context-branch>
+-            <strong>선택한 입력 직전에서 새 분기를 만듭니다.</strong>
+-            <p data-context-boundary>분기 경계: {context.branch.before}</p>
++      </>
++      <div className={styles.taskGroup} hidden={Boolean(context.branch)}>
++        <details
++          ref={section}
++          className={styles.task}
++          data-context-section
++          onToggle={(event) => {
++            if (!event.currentTarget.open) actions.closeContextPreview();
++          }}
++        >
++          <summary>
++            파일 첨부와 미리보기
++            {draft.items.length ? ` (${draft.items.length})` : ""}
++          </summary>
++          <div className={styles.body}>
++            <h2>파일 첨부와 미리보기</h2>
++            <div className={styles.controls}>
++              <label htmlFor={pathId}>Workspace 상대 경로</label>
++              <input
++                id={pathId}
++                data-context-path
++                value={path}
++                onChange={(e) => setPath(e.target.value)}
++                placeholder="src/example.ts"
++                spellCheck={false}
++              />
++              <Button
++                type="button"
++                data-context-observe
++                disabled={!ready || !path}
++                onClick={(event) => {
++                  previewTrigger.current = event.currentTarget;
++                  void actions.observeContext(path);
++                }}
++              >
++                파일 확인 후 추가
++              </Button>
++              {context.request && (
++                <Button
++                  type="button"
++                  data-context-cancel-read
++                  onClick={actions.cancelContextObservation}
++                >
++                  파일 확인 중단
++                </Button>
++              )}
++            </div>
+             <p>
+-              현재 Workspace 파일을 유지합니다. 분기를 만든 뒤 별도로 메시지를
+-              보내세요.
++              확인한 입력을 Native에 보냅니다. Provider가 받은 입력을 증명하지
++              않습니다.
+             </p>
+-            {context.branch.historical && (
++            {p && (
++              <section
++                className={styles.preview}
++                aria-label="확인 시점의 입력 미리보기"
++                data-context-preview={p.value.kind}
++              >
++                <strong>{p.descriptor.path} · 확인 시점의 입력</strong>
++                {p.value.kind === "text" ? (
++                  <>
++                    <pre
++                      ref={textPreview}
++                      tabIndex={0}
++                      data-context-text
++                      onMouseUp={readSelection}
++                      onKeyUp={readSelection}
++                    >
++                      {p.value.text}
++                    </pre>
++                    {p.descriptor.source === "file" && (
++                      <>
++                        <p>
++                          {range
++                            ? `UTF-16 범위 ${range.start}–${range.end}`
++                            : "본문에서 참조할 텍스트를 선택하세요."}
++                        </p>
++                        <Button
++                          type="button"
++                          data-context-selection
++                          disabled={!ready || !range}
++                          onClick={() =>
++                            range &&
++                            void actions.observeContext(
++                              p.descriptor.path,
++                              range,
++                            )
++                          }
++                        >
++                          선택 영역 확인 후 참조 추가
++                        </Button>
++                      </>
++                    )}
++                  </>
++                ) : p.value.kind === "image" ? (
++                  <img
++                    data-context-image
++                    src={p.value.dataUrl}
++                    alt={`${p.descriptor.name} · 확인 시점의 이미지`}
++                  />
++                ) : (
++                  <p data-context-pdf>
++                    PDF 내용 미리보기를 사용할 수 없습니다. 파일 정보만
++                    표시합니다.
++                  </p>
++                )}
++                <Button
++                  type="button"
++                  data-context-close-preview
++                  onClick={closePreview}
++                >
++                  미리보기 닫기
++                </Button>
++              </section>
++            )}
++            <Button
++              size="compact"
++              onClick={() => closeTask(section.current)}
++              data-context-task-close
++            >
++              첨부 작업 닫기
++            </Button>
++          </div>
++        </details>
++        <details
++          ref={runningTask}
++          className={styles.task}
++          data-context-running-task
++        >
++          <summary>현재 실행 · 추가 지시와 대기열</summary>
++          <div className={styles.body}>
++            <section aria-label="현재 실행에 요청" data-context-running>
++              <strong>현재 실행에 요청</strong>
+               <p>
+-                이전 첨부 입력을 사용할 수 없습니다. 파일을 다시 선택하세요.
++                현재 작성한 텍스트만 보냅니다. Native의 현재 실행 설정을
++                사용합니다.
+               </p>
+-            )}
+-            <details>
+-              <summary>선택한 원래 입력</summary>
+-              <pre>{context.branch.originalText}</pre>
+-            </details>
+-            <label>
+-              새 분기에 준비할 입력
+-              <textarea
+-                data-context-branch-text
+-                value={context.branch.text}
+-                maxLength={32000}
+-                onChange={(e) => actions.editContextBranch(e.target.value)}
+-              />
+-            </label>
+-            <div className={styles.actions}>
+-              <button
++              <div className={styles.actions}>
++                <Button
++                  type="button"
++                  data-context-steer
++                  disabled={
++                    !ready ||
++                    session?.status !== "running" ||
++                    !messageDraft.text.trim()
++                  }
++                  onClick={() => void actions.deliverContextMessage("steer")}
++                >
++                  현재 실행에 추가 지시
++                </Button>
++                <Button
++                  type="button"
++                  data-context-queue
++                  disabled={
++                    !ready ||
++                    session?.status !== "running" ||
++                    !messageDraft.text.trim()
++                  }
++                  onClick={() => void actions.deliverContextMessage("queue")}
++                >
++                  현재 실행 대기열에 추가
++                </Button>
++              </div>
++            </section>
++            <section aria-label="Native 대기열 확인" data-context-inbox>
++              <Button
+                 type="button"
+-                data-context-branch-confirm
++                data-context-inbox-observe
+                 disabled={!ready}
+-                onClick={() => void actions.confirmContextBranch()}
++                onClick={() => void actions.observeInbox()}
+               >
+-                새 분기 만들기 · 전송 안 함
+-              </button>
+-              <button
+-                type="button"
+-                data-context-branch-close
+-                onClick={actions.closeContextBranch}
+-              >
+-                분기 준비 닫기
+-              </button>
+-            </div>
+-          </section>
+-        )}
+-        <section aria-label="현재 실행에 요청" data-context-running>
+-          <strong>현재 실행에 요청</strong>
+-          <p>
+-            현재 작성한 텍스트만 보냅니다. Native의 현재 실행 설정을 사용합니다.
+-          </p>
+-          <div className={styles.actions}>
+-            <button
+-              type="button"
+-              data-context-steer
+-              disabled={
+-                !ready ||
+-                session?.status !== "running" ||
+-                !messageDraft.text.trim()
+-              }
+-              onClick={() => void actions.deliverContextMessage("steer")}
++                현재 세션 대기열 확인
++              </Button>
++              {context.inboxRequest && (
++                <Button
++                  type="button"
++                  onClick={actions.cancelContextObservation}
++                >
++                  대기열 확인 중단
++                </Button>
++              )}
++              {context.inbox ? (
++                <>
++                  <p>
++                    확인 시점의 대기열입니다. 항목이 없어도 취소나 미실행을
++                    증명하지 않습니다.
++                  </p>
++                  <ul className={styles.list}>
++                    {context.inbox.entries.map((row) => (
++                      <li key={row.id} data-context-inbox-row={row.id}>
++                        <span>
++                          {row.delivery === "queue"
++                            ? "대기열 요청"
++                            : "추가 지시"}{" "}
++                          · {row.id}
++                        </span>
++                        <pre>{row.textPreview}</pre>
++                        {row.textTruncated && <p>텍스트 일부만 표시합니다.</p>}
++                        <p>첨부 {row.attachmentCount}개</p>
++                        <Button
++                          type="button"
++                          data-context-inbox-cancel={row.id}
++                          disabled={!ready}
++                          onClick={() => void actions.cancelInbox(row.id)}
++                        >
++                          이 항목 취소 요청
++                        </Button>
++                      </li>
++                    ))}
++                  </ul>
++                  <p>다른 형식의 항목 {context.inbox.otherCount}개</p>
++                </>
++              ) : (
++                <p>대기열은 명시적으로 확인해야 표시됩니다.</p>
++              )}
++            </section>
++            <Button
++              size="compact"
++              onClick={() => closeTask(runningTask.current)}
++              data-context-running-close
+             >
+-              현재 실행에 추가 지시
+-            </button>
+-            <button
+-              type="button"
+-              data-context-queue
+-              disabled={
+-                !ready ||
+-                session?.status !== "running" ||
+-                !messageDraft.text.trim()
+-              }
+-              onClick={() => void actions.deliverContextMessage("queue")}
+-            >
+-              현재 실행 대기열에 추가
+-            </button>
++              현재 실행 작업 닫기
++            </Button>
+           </div>
+-        </section>
+-        <section aria-label="Native 대기열 확인" data-context-inbox>
+-          <button
+-            type="button"
+-            data-context-inbox-observe
+-            disabled={!ready}
+-            onClick={() => void actions.observeInbox()}
+-          >
+-            현재 세션 대기열 확인
+-          </button>
+-          {context.inboxRequest && (
+-            <button type="button" onClick={actions.cancelContextObservation}>
+-              대기열 확인 중단
+-            </button>
+-          )}
+-          {context.inbox ? (
+-            <>
+-              <p>
+-                확인 시점의 대기열입니다. 항목이 없어도 취소나 미실행을 증명하지
+-                않습니다.
+-              </p>
+-              <ul className={styles.list}>
+-                {context.inbox.entries.map((row) => (
+-                  <li key={row.id} data-context-inbox-row={row.id}>
+-                    <span>
+-                      {row.delivery === "queue" ? "대기열 요청" : "추가 지시"} ·{" "}
+-                      {row.id}
+-                    </span>
+-                    <pre>{row.textPreview}</pre>
+-                    {row.textTruncated && <p>텍스트 일부만 표시합니다.</p>}
+-                    <p>첨부 {row.attachmentCount}개</p>
+-                    <button
+-                      type="button"
+-                      data-context-inbox-cancel={row.id}
+-                      disabled={!ready}
+-                      onClick={() => void actions.cancelInbox(row.id)}
+-                    >
+-                      이 항목 취소 요청
+-                    </button>
+-                  </li>
+-                ))}
+-              </ul>
+-              <p>다른 형식의 항목 {context.inbox.otherCount}개</p>
+-            </>
+-          ) : (
+-            <p>대기열은 명시적으로 확인해야 표시됩니다.</p>
+-          )}
+-        </section>
+-        {context.notice && (
+-          <p role="status" data-context-notice>
+-            {context.notice}
+-          </p>
+-        )}
++        </details>
+       </div>
+-    </details>
++    </div>
+   );
+ }
+--- before/apps/desktop-app/src/renderer/pages/workbench/index.tsx
++++ apps/desktop-app/src/renderer/pages/workbench/index.tsx
+@@ -1,6 +1,6 @@
+ /* eslint-disable no-unused-vars -- Type parameter names describe callbacks; TypeScript unused checks remain enabled. */
+ import { useEffect, useRef, useState, type CSSProperties } from "react";
+-import { ActionMenu, ModalSheet } from "@workbench/ui";
++import { ActionMenu, Button, ModalSheet } from "@workbench/ui";
+ import {
+   Folder,
+   MoreHorizontal,
+@@ -161,13 +161,15 @@
+     <div className={styles.navigationBody}>
+       <div className={styles.workspaceSelector}>
+         {wide && (
+-          <button
++          <Button
++            size="compact"
+             className={styles.iconButton}
+             onClick={closeNavigation}
+             aria-label="탐색 닫기"
++            title="탐색 닫기"
+           >
+             <PanelLeft size={18} />
+-          </button>
++          </Button>
+         )}
+         <Folder size={16} aria-hidden="true" />
+         <label className={styles.srOnly} htmlFor="workspace-select">
+@@ -266,48 +268,68 @@
+           </label>
+           <p>Documents에 새 관리 폴더를 만듭니다.</p>
+           <div className={styles.formActions}>
+-            <button type="submit" disabled={pending || globalDisabled}>
++            <Button
++              intent="primary"
++              type="submit"
++              disabled={pending || globalDisabled}
++            >
+               작업 공간 만들기
+-            </button>
+-            <button type="button" onClick={() => setCreateOpen(false)}>
++            </Button>
++            <Button type="button" onClick={() => setCreateOpen(false)}>
+               취소
+-            </button>
++            </Button>
+           </div>
+         </form>
+       )}
+-      <button
++      <Button
+         className={`${styles.newSession} new-session`}
+         disabled={!workspace || pending || !connected || resourceDisabled}
+         onClick={newSession}
+       >
+         <Plus size={16} aria-hidden="true" />새 세션
+-      </button>
+-      {workspace ? (
+-        <SessionNavigation
+-          key={workspace.id}
+-          sessions={lists?.sessions ?? []}
+-          workspaceId={workspace.id}
+-          selectedId={selection.sessionId}
+-          disabled={!connected || resourceDisabled}
+-          pending={pending}
+-          unknownIds={workbench.unknownSessionIds}
+-          mutate={mutate}
+-          select={(id) => {
+-            workbench.select(workspace.id, id);
+-            if (!wide) closeNavigation();
+-          }}
+-        />
+-      ) : (
+-        <p className={styles.muted}>작업 공간을 선택하세요.</p>
+-      )}
+-      <button
+-        className={styles.storageButton}
+-        ref={storageButton}
+-        disabled={!workspace}
+-        onClick={() => setLocationOpen(true)}
++      </Button>
++      <section
++        className={styles.sessionGroup}
++        aria-label="세션 검색과 최근 세션"
+       >
+-        작업 공간 위치·보관 정보
+-      </button>
++        <h2>최근 세션</h2>
++        {workspace ? (
++          <SessionNavigation
++            key={workspace.id}
++            sessions={lists?.sessions ?? []}
++            workspaceId={workspace.id}
++            selectedId={selection.sessionId}
++            disabled={!connected || resourceDisabled}
++            pending={pending}
++            unknownIds={workbench.unknownSessionIds}
++            mutate={mutate}
++            select={(id) => {
++              workbench.select(workspace.id, id);
++              if (!wide) closeNavigation();
++            }}
++          />
++        ) : (
++          <p className={styles.muted}>작업 공간을 선택하세요.</p>
++        )}
++      </section>
++      <div className={styles.secondaryActions} aria-label="작업 공간 관리">
++        <Button
++          size="compact"
++          disabled={pending || globalDisabled}
++          onClick={() => void mutate({ type: "workspace.import" }, true)}
++        >
++          <Folder size={16} aria-hidden="true" /> 폴더 가져오기
++        </Button>
++        <Button
++          size="compact"
++          className={styles.storageButton}
++          ref={storageButton}
++          disabled={!workspace}
++          onClick={() => setLocationOpen(true)}
++        >
++          작업 공간 위치·보관 정보
++        </Button>
++      </div>
+     </div>
+   );
+   const panelContent = (
+@@ -318,33 +340,37 @@
+           aria-label="상세 패널 보기"
+         >
+           {(Object.keys(panelLabels) as Panel[]).map((item) => (
+-            <button
++            <Button
++              size="compact"
+               key={item}
+               aria-pressed={panel === item}
+               onClick={() => setPanel(item)}
+             >
+               {panelLabels[item]}
+-            </button>
++            </Button>
+           ))}
+         </div>
+         {wide && (
+-          <button
++          <Button
++            size="compact"
+             className={styles.iconButton}
+             title="너비 초기화"
+             aria-label="상세 패널 너비 초기화"
+             onClick={() => setPanelWidth(336)}
+           >
+             <RotateCcw size={16} />
+-          </button>
++          </Button>
+         )}
+         {wide && (
+-          <button
++          <Button
++            size="compact"
+             className={styles.iconButton}
+             aria-label="상세 패널 닫기"
++            title="상세 패널 닫기"
+             onClick={closePanel}
+           >
+             <X size={18} />
+-          </button>
++          </Button>
+         )}
+       </div>
+       <div className={styles.panelContent}>
+@@ -366,9 +392,9 @@
+         )}
+       </div>
+       {!wide && (
+-        <button className={styles.returnButton} onClick={closePanel}>
++        <Button className={styles.returnButton} onClick={closePanel}>
+           대화로 돌아가기
+-        </button>
++        </Button>
+       )}
+     </>
+   );
+@@ -381,6 +407,17 @@
+         <aside
+           className={`${styles.navigation} navigation`}
+           aria-label="작업 공간과 세션"
++          onKeyDown={(event) => {
++            if (
++              event.key === "Escape" &&
++              !event.nativeEvent.isComposing &&
++              event.keyCode !== 229 &&
++              !event.defaultPrevented
++            ) {
++              event.preventDefault();
++              closeNavigation();
++            }
++          }}
+         >
+           {navigationContent}
+         </aside>
+@@ -401,18 +438,20 @@
+         aria-label="대화 작업 공간"
+       >
+         <header className={`${styles.header} workbench-header`}>
+-          <button
++          <Button
+             ref={navigationButton}
++            size="compact"
+             className={styles.iconButton}
+             aria-expanded={navigation}
+             aria-label="작업 공간 탐색 열기"
++            title="작업 공간 탐색"
+             onClick={() => {
+               setNavigation((value) => !value);
+               if (panel) setPanel(null);
+             }}
+           >
+             <PanelLeft size={18} />
+-          </button>
++          </Button>
+           <div className={styles.sessionHeading}>
+             <strong title={session?.title ?? workspace?.name}>
+               {session?.title ?? workspace?.name ?? "작업 공간"}
+@@ -421,8 +460,9 @@
+               {states[connection]}
+             </span>
+           </div>
+-          <button
++          <Button
+             ref={panelButton}
++            size="compact"
+             className={styles.iconButton}
+             aria-label="파일·확장"
+             title="파일·확장"
+@@ -430,7 +470,7 @@
+             onClick={() => (panel ? closePanel() : openPanel("files"))}
+           >
+             <PanelRight size={18} />
+-          </button>
++          </Button>
+         </header>
+         {recoveryReasons.length > 0 && (
+           <div
+@@ -472,12 +512,12 @@
+         {!connected && (
+           <div className={styles.statusLine}>
+             <span>연결 확인은 실행 요청을 재전송하지 않습니다.</span>
+-            <button
++            <Button
+               disabled={connection === "loading"}
+               onClick={workbench.refresh}
+             >
+               연결 다시 확인
+-            </button>
++            </Button>
+           </div>
+         )}
+         {(workbench.unknown || session?.status === "unknown") && (
+@@ -528,13 +568,14 @@
+                 ? "새 세션에서 작업을 시작하세요."
+                 : "연결되면 작업 공간이 표시됩니다."}
+             </p>
+-            <button
++            <Button
++              intent="primary"
+               className={styles.primaryButton}
+               disabled={!workspace || pending || !connected || resourceDisabled}
+               onClick={newSession}
+             >
+               새 세션
+-            </button>
++            </Button>
+           </div>
+         )}
+       </section>
+--- before/apps/desktop-app/src/renderer/pages/workbench/shell.module.css
++++ apps/desktop-app/src/renderer/pages/workbench/shell.module.css
+@@ -16,8 +16,8 @@
+   display: flex;
+   flex-direction: column;
+   min-height: 100%;
+-  padding: 8px;
+-  gap: 8px;
++  padding: 12px;
++  gap: 16px;
+   font-size: var(--omoc-component-type-navigation-size);
+   line-height: var(--omoc-component-type-navigation-line);
+ }
+@@ -38,7 +38,6 @@
+   background: var(--omoc-semantic-color-surface-subtle);
+ }
+ .workspaceSelector {
+-  order: -1;
+   display: flex;
+   align-items: center;
+   min-width: 0;
+@@ -59,36 +58,15 @@
+   text-overflow: ellipsis;
+   cursor: pointer;
+ }
+-.newSession,
+-.primaryButton {
+-  min-height: var(--omoc-component-size-control-hit-target);
+-  border: 0;
+-  border-radius: 8px;
+-  background: var(--omoc-component-color-button-primary-background);
+-  color: var(--omoc-component-color-button-primary-foreground);
+-  cursor: pointer;
+-  font-weight: 500;
+-  padding: 6px 8px;
+-}
+ .newSession {
+   display: flex;
+   align-items: center;
++  justify-content: flex-start;
+   gap: 8px;
+   width: 100%;
+-  background: transparent;
+-  color: var(--omoc-semantic-color-text-primary);
+-}
+-.newSession:hover {
+-  background: var(--omoc-semantic-color-surface-subtle);
+-}
+-.primaryButton:hover {
+-  background: var(--omoc-component-color-button-primary-hover);
+-}
+-.newSession:disabled,
+-.primaryButton:disabled {
+-  opacity: 0.5;
+-  cursor: default;
+-}
++  font-weight: 500;
++}
++
+ .createFolder {
+   display: grid;
+   gap: 8px;
+@@ -115,11 +93,9 @@
+ }
+ .formActions {
+   display: flex;
++  flex-wrap: wrap;
+   gap: 8px;
+ }
+-.formActions button,
+-.statusLine button,
+-.returnButton,
+ .storageButton {
+   border: 0;
+   border-radius: 8px;
+@@ -136,7 +112,8 @@
+   background: var(--omoc-semantic-color-selection-background);
+ }
+ .storageButton {
+-  margin-top: auto;
++  width: 100%;
++  justify-content: flex-start;
+   text-align: left;
+   color: var(--omoc-semantic-color-text-secondary);
+   font-size: 12px;
+@@ -205,8 +182,8 @@
+   margin: auto;
+ }
+ .noSession h1 {
+-  font-size: 18px;
+-  line-height: 26px;
++  font-size: 22px;
++  line-height: 28px;
+   font-weight: 500;
+   margin: 0 0 12px;
+ }
+@@ -226,13 +203,18 @@
+ .panelHeading {
+   display: flex;
+   align-items: center;
+-  padding: 2px 8px;
+-  gap: 0;
++  padding: 8px;
++  gap: 4px;
++  position: sticky;
++  top: 0;
++  z-index: 1;
++  background: var(--omoc-semantic-color-surface);
+   min-height: var(--omoc-component-size-header-height);
+   flex-shrink: 0;
+ }
+ .panelTabs {
+   display: flex;
++  flex-wrap: wrap;
+   flex: 1;
+   min-width: 0;
+ }
+@@ -366,3 +348,39 @@
+ .recovery p {
+   margin: 0;
+ }
++
++.sessionGroup {
++  min-width: 0;
++}
++
++.sessionGroup h2 {
++  margin: 8px 8px 12px;
++  color: var(--omoc-semantic-color-text-secondary);
++  font-size: 12px;
++  line-height: 18px;
++  font-weight: 500;
++}
++
++.secondaryActions {
++  display: grid;
++  gap: 4px;
++  margin-top: auto;
++  padding-top: 16px;
++  min-width: 0;
++}
++
++.secondaryActions > button {
++  justify-content: flex-start;
++  text-align: left;
++  font-size: 13px;
++  color: var(--omoc-semantic-color-text-secondary);
++}
++
++.navigationBody button:focus-visible,
++.header button:focus-visible,
++.panelHeading button:focus-visible,
++.statusLine button:focus-visible,
++.returnButton:focus-visible {
++  outline: 2px solid var(--omoc-semantic-color-focus);
++  outline-offset: 2px;
++}
+--- before/apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css
++++ apps/desktop-app/src/renderer/widgets/conversation/conversation.module.css
+@@ -33,9 +33,9 @@
+ 
+ .empty h1 {
+   margin: 0 0 16px;
+-  font-size: 18px;
++  font-size: 22px;
+   font-weight: 500;
+-  line-height: 26px;
++  line-height: 28px;
+   text-wrap: balance;
+ }
+ 
+@@ -237,6 +237,9 @@
+   max-height: 100%;
+   margin-inline: auto;
+   padding: 12px var(--omoc-component-size-gutter) 16px;
++  overflow-y: auto;
++  overscroll-behavior: contain;
++  scrollbar-gutter: stable;
+ }
+ 
+ .composer {
+@@ -245,7 +248,7 @@
+   min-width: 0;
+   min-height: var(--omoc-component-size-composer-height);
+   margin: 0;
+-  padding: 8px 12px;
++  padding: 12px 16px;
+   border: 0;
+   border-radius: var(--omoc-component-size-composer-radius);
+   background: var(--omoc-component-color-input-background);
+@@ -300,9 +303,8 @@
+   min-height: var(--omoc-component-size-toolbar-height);
+ }
+ 
+-.toolbar button,
+-.actions button,
+-.commandMenu button {
++.toolbar .commandTrigger,
++.toolbar .primary {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+@@ -318,14 +320,12 @@
+   cursor: pointer;
+ }
+ 
+-.toolbar button:hover:not(:disabled),
+-.actions button:hover:not(:disabled),
+-.commandMenu button:hover:not(:disabled),
++.toolbar .commandTrigger:hover:not(:disabled),
+ .select:hover:not(:disabled) {
+   background: var(--omoc-component-color-button-quiet-hover);
+ }
+ 
+-.conversation button:focus-visible,
++.toolbar .primary:focus-visible,
+ .select:focus-visible,
+ .toolDetail summary:focus-visible,
+ .runtimeReport summary:focus-visible {
+@@ -333,7 +333,7 @@
+   outline-offset: 2px;
+ }
+ 
+-.conversation button:disabled,
++.toolbar .primary:disabled,
+ .select:disabled {
+   color: var(--omoc-component-color-button-disabled-foreground);
+   cursor: not-allowed;
+@@ -341,10 +341,11 @@
+ 
+ .toolbar .commandTrigger,
+ .toolbar .primary {
+-  flex: 0 0 var(--omoc-component-size-control-hit-target);
+-  width: var(--omoc-component-size-control-hit-target);
++  flex: 0 0 var(--omoc-component-size-standard-control-height);
++  width: var(--omoc-component-size-standard-control-height);
++  min-height: var(--omoc-component-size-standard-control-height);
+   padding: 0;
+-  border-radius: 6px;
++  border-radius: var(--omoc-component-size-control-radius);
+ }
+ 
+ .select {
+@@ -352,15 +353,15 @@
+   width: auto;
+   max-width: 176px;
+   min-width: 0;
+-  min-height: var(--omoc-component-size-control-hit-target);
+-  padding: 0 6px;
+-  border: 0;
++  min-height: var(--omoc-component-size-standard-control-height);
++  padding: 6px 8px;
++  border: 1px solid var(--omoc-component-color-input-border);
+   border-radius: var(--omoc-component-size-navigation-radius);
+-  background: transparent;
+-  color: var(--omoc-semantic-color-text-primary);
++  background: var(--omoc-component-color-input-background);
++  color: var(--omoc-component-color-input-foreground);
+   font: inherit;
+-  font-size: 12px;
+-  line-height: 18px;
++  font-size: 14px;
++  line-height: 20px;
+   text-overflow: ellipsis;
+   cursor: pointer;
+ }
+@@ -511,11 +512,7 @@
+ }
+ 
+ .commandMenu {
+-  position: absolute;
+-  z-index: 10;
+-  right: 0;
+-  bottom: calc(100% + 8px);
+-  left: 0;
++  position: static;
+   max-height: min(320px, 40dvh);
+   padding: 8px;
+   overflow-y: auto;
+@@ -620,9 +617,6 @@
+     max-width: none;
+     min-width: 0;
+   }
+-  .toolbar .primary {
+-    margin-left: 0;
+-  }
+ }
+ 
+ @media (max-height: 600px) {
+@@ -633,10 +627,6 @@
+   .emptyConversation .composeRegion {
+     flex-shrink: 1;
+     transform: none;
+-  }
+-  /* Keep the keyboard menu inside the short viewport's scrollable region. */
+-  .commandMenu {
+-    position: static;
+   }
+ }
+ 
+@@ -748,3 +738,63 @@
+     align-items: center;
+   }
+ }
++
++/* These are adjacent tasks, never children of the message form. */
++.adjacentTasks {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 0 16px;
++  min-width: 0;
++  margin-bottom: 8px;
++}
++
++.adjacentTasks > details {
++  flex: 1 1 220px;
++  margin-block: 0;
++}
++
++.adjacentTasks > details[open] {
++  flex-basis: 100%;
++  padding-bottom: 12px;
++}
++
++.adjacentTasks > [hidden],
++.composer[hidden],
++.hint[hidden] {
++  display: none;
++}
++
++.requestedSummary {
++  margin: 8px 0 4px;
++  color: var(--omoc-semantic-color-text-secondary);
++  font-size: 12px;
++  line-height: 18px;
++  overflow-wrap: anywhere;
++  user-select: text;
++}
++
++@media (pointer: coarse) {
++  .toolbar .commandTrigger,
++  .toolbar .primary {
++    flex-basis: var(--omoc-component-size-coarse-target);
++    width: var(--omoc-component-size-coarse-target);
++    min-height: var(--omoc-component-size-coarse-target);
++  }
++  .select {
++    min-height: var(--omoc-component-size-coarse-target);
++  }
++}
++
++/* Named quiet action stays discoverable without a decorative slash glyph. */
++.toolbar .commandTrigger {
++  flex: 0 0 auto;
++  width: auto;
++  min-width: var(--omoc-component-size-standard-control-height);
++  padding-inline: 10px;
++  color: var(--omoc-semantic-color-text-secondary);
++}
++@media (pointer: coarse) {
++  .toolbar .commandTrigger {
++    min-width: var(--omoc-component-size-coarse-target);
++  }
++}
+--- before/apps/desktop-app/src/renderer/widgets/conversation/index.tsx
++++ apps/desktop-app/src/renderer/widgets/conversation/index.tsx
+@@ -2,14 +2,7 @@
+   ConversationContextControls,
+   ContextMessageActions,
+ } from "../../features/conversation-context/index.js";
+-import {
+-  useEffect,
+-  useLayoutEffect,
+-  useId,
+-  useMemo,
+-  useRef,
+-  useState,
+-} from "react";
++import { useEffect, useId, useMemo, useRef, useState } from "react";
+ import {
+   AssistantRuntimeProvider,
+   ComposerPrimitive,
+@@ -18,7 +11,7 @@
+   useExternalStoreRuntime,
+   type ToolCallMessagePartProps,
+ } from "@assistant-ui/react";
+-import { ArrowUp, Slash, Square, X } from "lucide-react";
++import { ArrowUp, Square, X } from "lucide-react";
+ import { mapMessages } from "../../shared/projection/index.js";
+ import {
+   selectors,
+@@ -30,7 +23,7 @@
+ import styles from "./conversation.module.css";
+ import { AssistantText, LiteralText } from "./markdown.js";
+ import { parseSafeLinkPreview } from "@workbench/contracts";
+-import { LinkPreview } from "@workbench/ui";
++import { Button, LinkPreview } from "@workbench/ui";
+ import {
+   type WorkbenchCatalog,
+   type WorkbenchMessage,
+@@ -186,6 +179,9 @@
+   } = useWorkbenchSelector(selectors.draft);
+   const contextDraft = useWorkbenchSelector(selectors.contextDraft);
+   const contextReady = useWorkbenchSelector(selectors.contextSendReady);
++  const branchActive = useWorkbenchSelector((s) =>
++    Boolean(s.conversationContext.branch),
++  );
+   const sessionSetting = useWorkbenchSelector(selectors.currentSessionSetting);
+   const invalidSelection = useWorkbenchSelector(
+     selectors.requestOptionsInvalid,
+@@ -209,6 +205,17 @@
+   const menuOpenedFromInput = useRef(false);
+   const commandMenuId = useId();
+   const hintId = useId();
++  const requestedTask = useRef<HTMLDetailsElement>(null);
++  const nativeReport = useRef<HTMLDetailsElement>(null);
++  const requestedSummaryId = useId();
++  const closeDisclosure = (task: HTMLDetailsElement | null) => {
++    if (!task) return;
++    task.open = false;
++    task.querySelector("summary")?.focus();
++  };
++  useEffect(() => {
++    if (branchActive) setMenu(false);
++  }, [branchActive]);
+   const composing = useRef(false);
+   useEffect(() => {
+     const viewport = window.matchMedia("(max-height: 440px)");
+@@ -240,6 +247,7 @@
+               ? "현재 세션은 실행 대기 상태입니다."
+               : "현재 세션 실행 상태가 불명확합니다.";
+   const blocked =
++    branchActive ||
+     props.disabled ||
+     props.pending ||
+     Boolean(props.archived) ||
+@@ -306,38 +314,6 @@
+     setMenu(false);
+     input.current?.focus();
+   };
+-  useLayoutEffect(() => {
+-    if (!menu) return;
+-    const place = () => {
+-      const popup = commandMenu.current;
+-      const form = input.current?.closest("form");
+-      if (!popup || !form) return;
+-      const bounds = form.getBoundingClientRect();
+-      const header =
+-        parseFloat(
+-          getComputedStyle(form).getPropertyValue(
+-            "--omoc-component-size-header-height",
+-          ),
+-        ) || 44;
+-      const above = Math.max(0, bounds.top - header - 8);
+-      const below = Math.max(0, window.innerHeight - bounds.bottom - 8);
+-      const useAbove =
+-        above >= Math.min(320, popup.scrollHeight) || above >= below;
+-      popup.style.maxHeight = `${Math.min(320, useAbove ? above : below)}px`;
+-      popup.style.bottom = useAbove ? "calc(100% + 8px)" : "auto";
+-      popup.style.top = useAbove ? "auto" : "calc(100% + 8px)";
+-    };
+-    place();
+-    const observer = new ResizeObserver(place);
+-    if (input.current) observer.observe(input.current);
+-    window.addEventListener("resize", place);
+-    document.addEventListener("scroll", place, true);
+-    return () => {
+-      observer.disconnect();
+-      window.removeEventListener("resize", place);
+-      document.removeEventListener("scroll", place, true);
+-    };
+-  }, [menu]);
+   // Native buttons keep Tab navigation; arrows offer quick command selection.
+   const menuButtons = () =>
+     Array.from(
+@@ -451,7 +427,8 @@
+                     거절하면 이 세션의 다른 대기 중 권한 요청도 취소됩니다.
+                   </p>
+                   <div className={styles.actions}>
+-                    <button
++                    <Button
++                      intent="primary"
+                       type="button"
+                       className={styles.permissionAllow}
+                       disabled={props.pending || props.disabled}
+@@ -466,8 +443,8 @@
+                       }
+                     >
+                       이번만 허용
+-                    </button>
+-                    <button
++                    </Button>
++                    <Button
+                       type="button"
+                       disabled={props.pending || props.disabled}
+                       onClick={() =>
+@@ -481,44 +458,187 @@
+                       }
+                     >
+                       거절
+-                    </button>
++                    </Button>
+                   </div>
+                 </section>
+               ))}
+             </div>
+           )}
+-          <details
+-            className={styles.runtimeReport}
+-            data-runtime-source="session"
++          <ConversationContextControls />
++          <div
++            className={styles.adjacentTasks}
++            onKeyDown={(event) => {
++              if (
++                event.key !== "Escape" ||
++                event.nativeEvent.isComposing ||
++                event.keyCode === 229
++              )
++                return;
++              const task = (
++                event.target as HTMLElement
++              ).closest<HTMLDetailsElement>(
++                "details[data-runtime-task], details[data-runtime-source='session']",
++              );
++              if (task?.open) {
++                event.preventDefault();
++                event.stopPropagation();
++                closeDisclosure(task);
++              }
++            }}
+           >
+-            <summary>Native 세션 설정</summary>
+-            {sessionSetting ? (
+-              <dl>
+-                <dt>Agent</dt>
+-                <dd>{sessionSetting.agent ?? "보고 없음"}</dd>
+-                {sessionSetting.model ? (
+-                  <ReportedModel model={sessionSetting.model} />
+-                ) : (
+-                  <>
+-                    <dt>모델</dt>
+-                    <dd>보고 없음</dd>
+-                  </>
++            <details
++              ref={requestedTask}
++              className={styles.runtimeReport}
++              hidden={branchActive}
++              data-runtime-task="requested"
++            >
++              <summary>다음 전송 설정</summary>
++              <fieldset
++                className={styles.runtimeRequests}
++                disabled={optionsHeld}
++                data-runtime-source="requested"
++              >
++                <legend>다음 전송에 요청</legend>
++                <div className={styles.runtimeFields}>
++                  <label>
++                    Agent 요청
++                    <select
++                      className={styles.select}
++                      aria-label="Agent 요청"
++                      value={agent}
++                      onChange={(event) => setAgent(event.target.value)}
++                    >
++                      <option value="">Native에서 결정 · 요청 안 함</option>
++                      {agent &&
++                        !props.catalog?.agents.entries.some(
++                          (entry) => entry.id === agent,
++                        ) && <option value={agent}>{agent} (사용 불가)</option>}
++                      {props.catalog?.agents.status === "available" &&
++                        props.catalog.agents.entries.map((entry) => (
++                          <option key={entry.id} value={entry.id}>
++                            {entry.name}
++                          </option>
++                        ))}
++                    </select>
++                  </label>
++                  <label>
++                    모델 요청
++                    <select
++                      className={styles.select}
++                      aria-label="모델 요청"
++                      value={model}
++                      onChange={(event) => setModel(event.target.value)}
++                    >
++                      <option value="">Native에서 결정 · 요청 안 함</option>
++                      {model && !selectedModel && (
++                        <option value={model}>{model} (사용 불가)</option>
++                      )}
++                      {props.catalog?.models.status === "available" &&
++                        props.catalog.models.entries.map((entry) => (
++                          <option key={entry.id} value={entry.id}>
++                            {entry.name}
++                          </option>
++                        ))}
++                    </select>
++                  </label>
++                  <label>
++                    Variant 요청
++                    <select
++                      className={styles.select}
++                      aria-label="Variant 요청"
++                      value={variant}
++                      disabled={!model && !variant}
++                      onChange={(event) => setVariant(event.target.value)}
++                    >
++                      <option value="">Native에서 결정 · 요청 안 함</option>
++                      {variant &&
++                        (variants?.status !== "available" ||
++                          !variants.ids.includes(variant)) && (
++                          <option value={variant}>{variant} (사용 불가)</option>
++                        )}
++                      {variants?.status === "available" &&
++                        variants.ids.map((value) => (
++                          <option key={value} value={value}>
++                            {value}
++                          </option>
++                        ))}
++                    </select>
++                  </label>
++                </div>
++                <p className={styles.runtimeHint}>
++                  선택은 다음 전송에만 요청합니다. 빈 선택은 값을 요청하지
++                  않습니다. 실제 설정은 Native 보고에서 확인하세요.
++                </p>
++                {model && variants?.status !== "available" && (
++                  <p className={styles.runtimeHint}>
++                    Variant 목록을 확인할 수 없습니다. Variant 요청 없이 모델을
++                    사용할 수 있습니다.
++                  </p>
+                 )}
+-              </dl>
+-            ) : (
+-              <p>현재 세션 설정 보고가 없습니다.</p>
+-            )}
+-            <p>
+-              Native가 보고한 설정입니다. 다음 전송 요청과 다를 수 있습니다.
+-            </p>
+-          </details>
+-          <ComposerPrimitive.Root className={styles.composer}>
++                {variantCleared && (
++                  <p
++                    className={styles.runtimeHint}
++                    role="status"
++                    data-variant-cleared="true"
++                  >
++                    모델을 바꿔 이전 Variant 요청을 지웠습니다.
++                  </p>
++                )}
++              </fieldset>
++              <Button
++                size="compact"
++                onClick={() => closeDisclosure(requestedTask.current)}
++                data-runtime-task-close
++              >
++                전송 설정 닫기
++              </Button>
++            </details>
++            <details
++              ref={nativeReport}
++              hidden={branchActive}
++              className={styles.runtimeReport}
++              data-runtime-source="session"
++            >
++              <summary>Native 세션 설정</summary>
++              {sessionSetting ? (
++                <dl>
++                  <dt>Agent</dt>
++                  <dd>{sessionSetting.agent ?? "보고 없음"}</dd>
++                  {sessionSetting.model ? (
++                    <ReportedModel model={sessionSetting.model} />
++                  ) : (
++                    <>
++                      <dt>모델</dt>
++                      <dd>보고 없음</dd>
++                    </>
++                  )}
++                </dl>
++              ) : (
++                <p>현재 세션 설정 보고가 없습니다.</p>
++              )}
++              <p>
++                Native가 보고한 설정입니다. 다음 전송 요청과 다를 수 있습니다.
++              </p>
++              <Button
++                size="compact"
++                onClick={() => closeDisclosure(nativeReport.current)}
++                data-runtime-report-close
++              >
++                Native 설정 닫기
++              </Button>
++            </details>
++          </div>
++          <ComposerPrimitive.Root
++            className={styles.composer}
++            hidden={branchActive}
++            data-composer-state={branchActive ? "branch-retained" : "message"}
++          >
+             <ComposerPrimitive.Input
+               ref={input}
+               onChange={(event) => actions.draft(event.target.value)}
+               className={styles.input}
+               aria-label="메시지 작성"
+-              aria-describedby={hintId}
++              aria-describedby={`${hintId} ${requestedSummaryId}`}
+               aria-controls={menu ? commandMenuId : undefined}
+               readOnly={Boolean(props.archived)}
+               placeholder="작업을 요청하세요. /로 명령 보기"
+@@ -607,15 +727,15 @@
+               >
+                 <div className={styles.menuHeading}>
+                   <strong>앱 동작</strong>
+-                  <button
++                  <Button
+                     type="button"
+                     onClick={closeMenu}
+                     aria-label="명령 목록 닫기"
+                   >
+                     <X size={18} aria-hidden="true" />
+-                  </button>
++                  </Button>
+                 </div>
+-                <button
++                <Button
+                   type="button"
+                   data-command
+                   disabled={
+@@ -627,8 +747,8 @@
+                   }}
+                 >
+                   새 세션 만들기
+-                </button>
+-                <button
++                </Button>
++                <Button
+                   type="button"
+                   data-command
+                   onClick={() => {
+@@ -637,8 +757,8 @@
+                   }}
+                 >
+                   파일 보기
+-                </button>
+-                <button
++                </Button>
++                <Button
+                   type="button"
+                   data-command
+                   onClick={() => {
+@@ -647,12 +767,12 @@
+                   }}
+                 >
+                   확장 목록 보기
+-                </button>
++                </Button>
+                 <strong>런타임 명령</strong>
+                 {props.catalog?.commands.status === "available" ? (
+                   props.catalog.commands.entries.length ? (
+                     props.catalog.commands.entries.map((entry) => (
+-                      <button
++                      <Button
+                         type="button"
+                         data-command
+                         key={entry.id}
+@@ -660,7 +780,7 @@
+                       >
+                         <span>/{entry.name}</span>
+                         <small>{entry.description}</small>
+-                      </button>
++                      </Button>
+                     ))
+                   ) : (
+                     <p>등록된 명령이 없습니다.</p>
+@@ -673,7 +793,7 @@
+                 {props.catalog?.skills.status === "available" ? (
+                   props.catalog.skills.entries.length ? (
+                     props.catalog.skills.entries.map((entry) => (
+-                      <button
++                      <Button
+                         type="button"
+                         data-command
+                         key={entry.id}
+@@ -684,7 +804,7 @@
+                         }
+                       >
+                         {entry.name}
+-                      </button>
++                      </Button>
+                     ))
+                   ) : (
+                     <p>등록된 스킬이 없습니다.</p>
+@@ -694,101 +814,17 @@
+                 )}
+               </div>
+             )}
+-            <fieldset
+-              className={styles.runtimeRequests}
+-              disabled={optionsHeld}
+-              data-runtime-source="requested"
++            <p
++              className={styles.requestedSummary}
++              id={requestedSummaryId}
++              data-runtime-summary="requested"
+             >
+-              <legend>다음 전송에 요청</legend>
+-              <div className={styles.runtimeFields}>
+-                <label>
+-                  Agent 요청
+-                  <select
+-                    className={styles.select}
+-                    aria-label="Agent 요청"
+-                    value={agent}
+-                    onChange={(event) => setAgent(event.target.value)}
+-                  >
+-                    <option value="">Native에서 결정 · 요청 안 함</option>
+-                    {agent &&
+-                      !props.catalog?.agents.entries.some(
+-                        (entry) => entry.id === agent,
+-                      ) && <option value={agent}>{agent} (사용 불가)</option>}
+-                    {props.catalog?.agents.status === "available" &&
+-                      props.catalog.agents.entries.map((entry) => (
+-                        <option key={entry.id} value={entry.id}>
+-                          {entry.name}
+-                        </option>
+-                      ))}
+-                  </select>
+-                </label>
+-                <label>
+-                  모델 요청
+-                  <select
+-                    className={styles.select}
+-                    aria-label="모델 요청"
+-                    value={model}
+-                    onChange={(event) => setModel(event.target.value)}
+-                  >
+-                    <option value="">Native에서 결정 · 요청 안 함</option>
+-                    {model && !selectedModel && (
+-                      <option value={model}>{model} (사용 불가)</option>
+-                    )}
+-                    {props.catalog?.models.status === "available" &&
+-                      props.catalog.models.entries.map((entry) => (
+-                        <option key={entry.id} value={entry.id}>
+-                          {entry.name}
+-                        </option>
+-                      ))}
+-                  </select>
+-                </label>
+-                <label>
+-                  Variant 요청
+-                  <select
+-                    className={styles.select}
+-                    aria-label="Variant 요청"
+-                    value={variant}
+-                    disabled={!model && !variant}
+-                    onChange={(event) => setVariant(event.target.value)}
+-                  >
+-                    <option value="">Native에서 결정 · 요청 안 함</option>
+-                    {variant &&
+-                      (variants?.status !== "available" ||
+-                        !variants.ids.includes(variant)) && (
+-                        <option value={variant}>{variant} (사용 불가)</option>
+-                      )}
+-                    {variants?.status === "available" &&
+-                      variants.ids.map((value) => (
+-                        <option key={value} value={value}>
+-                          {value}
+-                        </option>
+-                      ))}
+-                  </select>
+-                </label>
+-              </div>
+-              <p className={styles.runtimeHint}>
+-                선택은 다음 전송에만 요청합니다. 빈 선택은 값을 요청하지
+-                않습니다. 실제 설정은 Native 보고에서 확인하세요.
+-              </p>
+-              {model && variants?.status !== "available" && (
+-                <p className={styles.runtimeHint}>
+-                  Variant 목록을 확인할 수 없습니다. Variant 요청 없이 모델을
+-                  사용할 수 있습니다.
+-                </p>
+-              )}
+-              {variantCleared && (
+-                <p
+-                  className={styles.runtimeHint}
+-                  role="status"
+-                  data-variant-cleared="true"
+-                >
+-                  모델을 바꿔 이전 Variant 요청을 지웠습니다.
+-                </p>
+-              )}
+-            </fieldset>
+-            <ConversationContextControls />
++              Agent: {agent || "Native에서 결정"} · 모델:{" "}
++              {model || "Native에서 결정"} · Variant:{" "}
++              {variant || "Native에서 결정"}
++            </p>
+             <div className={styles.toolbar}>
+-              <button
++              <Button
+                 type="button"
+                 className={styles.commandTrigger}
+                 ref={slashButton}
+@@ -815,8 +851,8 @@
+                   }
+                 }}
+               >
+-                <Slash size={18} aria-hidden="true" />
+-              </button>
++                명령
++              </Button>
+               {running ? (
+                 <ComposerPrimitive.Cancel
+                   disabled={!canInterrupt}
+@@ -842,7 +878,7 @@
+               선택하거나 요청 안 함을 선택하세요.
+             </p>
+           )}
+-          <p className={styles.hint} id={hintId}>
++          <p className={styles.hint} id={hintId} hidden={branchActive}>
+             Enter 전송 · Shift+Enter 줄바꿈
+           </p>
+         </div>
+--- before/docs/design/components.json
++++ docs/design/components.json
+@@ -1428,11 +1428,7 @@
+       "family": "Input",
+       "base": "error",
+       "overlay": "focus-visible",
+-      "preserve": [
+-        "border",
+-        "errorText",
+-        "aria-invalid"
+-      ],
++      "preserve": ["border", "errorText", "aria-invalid"],
+       "add": [
+         "semantic.color.focus",
+         "semantic.stroke.focus",
+@@ -1444,11 +1440,7 @@
+       "family": "NavigationItem",
+       "base": "selected",
+       "overlay": "focus-visible",
+-      "preserve": [
+-        "background",
+-        "foreground",
+-        "aria-current=page"
+-      ],
++      "preserve": ["background", "foreground", "aria-current=page"],
+       "add": [
+         "semantic.color.focus",
+         "semantic.stroke.focus",
+@@ -1461,11 +1453,7 @@
+     "Input": {
+       "group": {
+         "layout": "vertical-auto",
+-        "children": [
+-          "label",
+-          "control",
+-          "feedback"
+-        ],
++        "children": ["label", "control", "feedback"],
+         "height": "content-driven"
+       },
+       "control": {
+@@ -1475,11 +1463,7 @@
+       },
+       "feedback": {
+         "slots": 1,
+-        "precedence": [
+-          "error",
+-          "hint",
+-          "none"
+-        ],
++        "precedence": ["error", "hint", "none"],
+         "placeholderIsNotHint": true,
+         "disabledGenericHint": false
+       }
+@@ -1491,19 +1475,10 @@
+       "widthFormula": "renderedLabelWidthPx + 16",
+       "lines": 1,
+       "verticalAlignment": "center",
+-      "sharedBy": [
+-        "ToolCall",
+-        "PermissionRequest"
+-      ],
++      "sharedBy": ["ToolCall", "PermissionRequest"],
+       "instanceOverrides": {
+         "label": "required-visible-text",
+-        "tone": [
+-          "info",
+-          "warning",
+-          "success",
+-          "error",
+-          "neutral"
+-        ]
++        "tone": ["info", "warning", "success", "error", "neutral"]
+       },
+       "bindingOwnership": "StatusBadge instance owns its background and foreground bindings; consuming components do not repaint an independent status frame."
+     },
+@@ -1556,9 +1531,7 @@
+         ],
+         "approved": [],
+         "denied": [],
+-        "stale": [
+-          "refresh:Button.quiet/default"
+-        ]
++        "stale": ["refresh:Button.quiet/default"]
+       },
+       "narrowActionLayout": "stack-below-scope-when-needed",
+       "runtimeHitTesting": "not-proven-by-figma",
+@@ -1588,9 +1561,7 @@
+           "visualState": "sending",
+           "label": "결정 전송 중",
+           "actionsKey": "sending",
+-          "preconditions": [
+-            "decision-dispatched"
+-          ],
++          "preconditions": ["decision-dispatched"],
+           "meaning": "Both decision buttons stay disabled; request submission is not proof of application.",
+           "labelSource": "runtimeStateMap"
+         },
+@@ -1616,9 +1587,7 @@
+             "POLICY_DENY": "정책에서 차단함"
+           },
+           "actionsKey": "denied",
+-          "preconditions": [
+-            "denial-reason-observed"
+-          ],
++          "preconditions": ["denial-reason-observed"],
+           "meaning": "User refusal and system policy denial are distinct; policy denial never offers approval.",
+           "labelSource": "labelByReason-only-after-observed-denial-reason"
+         },
+@@ -1626,9 +1595,7 @@
+           "visualState": "stale",
+           "label": "요청 만료됨",
+           "actionsKey": "stale",
+-          "preconditions": [
+-            "terminal-request-state-observed"
+-          ],
++          "preconditions": ["terminal-request-state-observed"],
+           "meaning": "A terminal request cannot be answered again; refresh is read-only.",
+           "labelSource": "runtimeStateMap"
+         },
+@@ -1636,9 +1603,7 @@
+           "visualState": "stale",
+           "label": "요청 취소됨",
+           "actionsKey": "stale",
+-          "preconditions": [
+-            "terminal-request-state-observed"
+-          ],
++          "preconditions": ["terminal-request-state-observed"],
+           "meaning": "Show cancellation actor when available; refresh is read-only.",
+           "labelSource": "runtimeStateMap"
+         },
+@@ -1646,9 +1611,7 @@
+           "visualState": "stale",
+           "label": "결정 상태 확인 필요",
+           "actionsKey": "stale",
+-          "preconditions": [
+-            "effect-or-response-uncertain"
+-          ],
++          "preconditions": ["effect-or-response-uncertain"],
+           "meaning": "Read-only reconciliation only; never resend the same decision after dispatch.",
+           "labelSource": "runtimeStateMap"
+         },
+@@ -1665,14 +1628,67 @@
+             "confirmed-no-effect-and-current-pending": "pending",
+             "otherwise": "stale"
+           },
+-          "preconditions": [
+-            "re-read-same-request-and-policy-revision"
+-          ],
++          "preconditions": ["re-read-same-request-and-policy-revision"],
+           "meaning": "A send error alone does not prove whether a decision was applied; enable a decision only after current pending is confirmed.",
+           "labelSource": "runtimeStateMap"
+         }
+       },
+       "runtimeStatusContract": "runtimeStateMap is required for every runtime label, visualState and action decision before composing the five visual variants. Never render preview sample labels as runtime status."
+     }
++  },
++  "compositionContracts": {
++    "version": 2,
++    "authority": "docs/runs/design-foundation-v2/design-v2.md",
++    "ControlButton": {
++      "implementation": "packages/ui/src/primitives/button.tsx",
++      "intents": ["primary", "secondary", "quiet", "danger"],
++      "sizes": {
++        "compact": "component.size.control.hit-target",
++        "standard": "component.size.standard-control-height",
++        "coarse": "component.size.coarse-target"
++      },
++      "defaultType": "button",
++      "stateOwnership": "none; native event/ref/disabled props retained",
++      "accessibility": "Visible label or caller-provided accessible name; focus-visible and native disabled; no side-effect orchestration"
++    },
++    "Composer": {
++      "owns": [
++        "message draft",
++        "compact requested/context summaries",
++        "send or interrupt"
++      ],
++      "excludes": [
++        "settings fields",
++        "file investigation form",
++        "branch confirmation",
++        "current-run queue management"
++      ],
++      "readingWidth": "component.size.reading-width"
++    },
++    "TaskDisclosure": {
++      "default": "closed unless explicit task action opens it",
++      "persistentStatus": [
++        "error",
++        "expired",
++        "unknown",
++        "held",
++        "trust/recovery blocker"
++      ],
++      "focus": "Explicit task focus and Escape trigger return; no draft loss or automatic IO"
++    },
++    "AttachmentRow": {
++      "summary": ["name/path", "type/source", "availability"],
++      "details": ["exact bytes", "version", "digest", "selectable full source"],
++      "layout": "Flat compact rows; one separate preview surface"
++    },
++    "Navigation": {
++      "groups": [
++        "Workspace identity",
++        "create/search",
++        "recent sessions",
++        "secondary management"
++      ],
++      "selected": "One current session; no success inference"
++    }
+   }
+ }
+--- before/docs/design/system.md
++++ docs/design/system.md
+@@ -1,104 +1,59 @@
+-# oh-my-own-code 디자인 시스템 · ChatGPT-inspired Workbench Foundation
++# Workbench desktop design foundation v2
+ 
+-**상태:** 저장소 디자인 계약 · 2026-09-27  
+-**기준:** docs/runs/component-polish/plan.md (현재 컴포넌트 수정 작업계획 SSOT), docs/runs/chatgpt-foundation/plan.md (Foundation 결정 이력), docs/design/research/chatgpt-observations.md, 기존 docs/design/specs/workbench-ux.md.
++**설계 계약 채택: 2026-10-09 KST. 구현·렌더 검증 진행 중.**
+ 
+-## 방향과 근거의 한계
++현재 원본은 [design-v2](../runs/design-foundation-v2/design-v2.md)와 [실행 계획](../runs/design-foundation-v2/plan.md)이다. 최초 PLAN과 DESIGN_SPEC 독립 검토를 통과했다. 이 문서와 토큰 변경만으로 실제 UI 완료나 RENDER 통과를 뜻하지 않는다. 이전 Foundation의 실행 전 설명·치수·개수는 현재 계약으로 대체한다. 이전 원본은 해당 run의 prechange source에 보존했다. 기능·권한·영수증·복구 계약은 변경하지 않는다.
+ 
+-**조용한 대화 캔버스, 분명한 실행 근거.** 사용자는 여러 로컬 작업과 에이전트의 문맥을 읽고 도구 실행·권한 범위·검증 근거를 판단한다. 공개된 로그아웃 ChatGPT 화면에서 관찰한 좁고 조용한 탐색 영역, 넓은 대화 캔버스, 중앙의 둥근 작성기, 글자·여백 중심의 위계를 참고한다. 이 제품의 도구·권한·검증 화면은 자체 요구에 따라 설계하며 ChatGPT의 미관찰 인증 화면을 재현했다고 주장하지 않는다. 관찰 치수와 근거는 연구 기록에 있다.
++## 제품 원칙
+ 
+-중립색이 기본이다. 행동 강조는 짙은 중립색의 채운 버튼, 상태 강조는 필요한 위치의 의미색, 포커스는 접근성을 위한 파랑이다. 장식용 줄무늬·그라디언트·광채를 쓰지 않는다. 모든 메시지나 행에 테두리를 그리지 않는다. 면, 정렬, 여백과 글꼴 크기로 먼저 구조를 만든다. 테두리는 입력 경계, 실제 분리선, 포커스·오류·범위 확인 등 기능적 이유가 있을 때만 쓴다. 권한 결정·도구 실행·검증 결과는 서로 다른 단계이며 같은 성공 표시로 합치지 않는다.
++**대화가 중심이고, 도구는 현재 작업의 문맥에서 연다.** 사용자는 로컬 코드 작업의 요청, 진행, 결과와 실행 근거를 읽는다. 기본 화면에서 전체 관리 기능을 해석할 필요가 없어야 한다. 시스템 sans, 중립색, 글자와 간격으로 위계를 만든다. 장식용 그라디언트·광채·유리 효과는 쓰지 않는다.
+ 
+-현재 계약은 Light/Dark, 한국어 UI와 원문 명령·경로·코드, 웹의 여섯 기초 컴포넌트 계열을 다룬다. 계정·구독·결제는 현재 제품 범위 밖이다. 인증 누락과 실패는 런타임의 ‘외부 설정 필요’ / ‘인증 실패’ 상태로 드러낸다. 저장소에는 아직 실행 제품이 없으며 정적 미리보기는 제품 동작의 증거가 아니다.
++[실제 레퍼런스 조사](../runs/design-foundation-v2/reference-audit-r1.md)는 Claude Desktop, ChatGPT Web/Mobbin Desktop viewport, 공식 Desktop 이미지와 Refero 공개 미리보기의 확인 범위를 구분한다. Mobbin viewport를 네이티브 앱으로 부르지 않는다. 미관찰 메뉴·전환이나 독점 토큰을 재현했다고 주장하지 않는다. 이전 공개 제품 스크린샷은 최신 구현 증거가 아니다.
+ 
+-## 원본과 동기화
++## 영역과 정보 계층
+ 
+-docs/design/tokens/manifest.json이 값·타입·Light/Dark alias·CSS 이름·Figma 적용 의도의 원본이다. tokens/tokens.css는 validate_system.py::generated_css의 결정적 출력이다. docs/design/components.json은 여섯 계열, **44개의 정확한 variant**, 콘텐츠 제약과 상태별 token binding의 원본이다. **저장소 원본 → CSS / Figma 변수·스타일·컴포넌트**의 단방향 흐름이며 역방향 자동 동기화는 없다. Figma 변경은 원본 JSON을 다시 수정·검증한 뒤 반영한다. 현재 이 문서 변경만으로 Figma가 동기화된 것은 아니다.
++| 영역      | 맡는 일                                         | 기본 노출                               |
++| --------- | ----------------------------------------------- | --------------------------------------- |
++| 탐색      | Workspace 선택, 새 세션, 검색, 최근 세션        | 현재 위치와 작업 시작; 관리는 보조 메뉴 |
++| 대화      | 메시지, 도구 실행, 권한 요청, 결과              | 주 읽기 영역                            |
++| Composer  | 메시지 작성, 간단한 선택/첨부 요약, 전송·중단   | 가장 가까운 주 행동 하나                |
++| 문맥 작업 | 요청 설정, 첨부 조사, 분기 준비, 현재 실행 요청 | 명시적으로 열며 Composer form 밖에 배치 |
++| 상세 패널 | 파일·변경·설정·활동                             | 현재 작업에 필요한 경우만 열기          |
+ 
+-각 token은 path, layer, type, value, css, figmaScopes를 갖는다. Primitive는 전역 raw 값이고 Figma picker에서 숨긴다. Semantic은 모드별로 primitive를 참조하고, Component는 semantic을 참조한다. 참조 문법은 {semantic.color.surface}다. 색상은 color variable, px 치수와 number는 수치 variable, 글꼴은 Figma의 family 이름으로 매핑한다. CSS는 px/ms를 보존한다. 현재 manifest는 **Primitive 61 / Semantic 65 / Component 37, 총 163개**다. Tokens Studio와의 값·참조 문법 호환은 의도이며 플러그인 import 성공을 뜻하지 않는다.
++설정 필드, 파일 경로 조사, 대기열 관리는 입력창 안에 쌓지 않는다. 첨부명·상태와 요청값 요약은 접힌 상태에서도 알 수 있어야 한다. version/hash/전체 출처는 선택 가능한 상세 정보로 제공한다. **오류·만료·unknown·전송 차단·신뢰/복구·권한 판단을 접힌 상세 안에만 숨기지 않는다.** 요청값과 Native 보고값은 서로 다른 근거다.
+ 
+-## 색, 면, 경계
++분기 준비를 열면 경계, 편집 입력, 생성·닫기가 먼저 보이고 해당 작업으로 포커스가 이동한다. 파일 확인과 현재 실행 제어는 별도 작업이다. 분기는 자동 전송이나 파일 복원이 아니다. 닫기·접기·Escape는 작성 내용을 버리거나 요청을 재실행하지 않는다.
+ 
+-| 역할 | Light | Dark | 사용 |
+-| --- | --- | --- | --- |
+-| semantic.color.canvas | #ffffff | #171717 | 중앙 대화 캔버스. 메시지는 기본적으로 이 면 위에 평평하게 놓는다. |
+-| semantic.color.surface.subtle | #fafafa | #3d3d3d | Light 탐색 부모면, Dark 선택 탐색 항목 또는 필요한 낮은 단계의 면. 전체 메시지 카드를 반복해서 채우지 않는다. |
+-| semantic.color.surface | #ffffff | #262626 | 작성기·입력·독립 컨트롤의 면. Dark 탐색 부모면과 기본 탐색 항목에도 사용한다. |
+-| semantic.color.text.primary | #171717 | #ffffff | 본문·제목·핵심 범위. |
+-| semantic.color.text.secondary | #555555 | #e8e8e8 | 메타데이터·보조 설명. |
+-| semantic.color.action.background | #171717 | #ffffff | 가장 중요한 확정 행동 하나. |
+-| semantic.color.focus | #0b5fc4 | #a9c9ff | focus-visible 링과 동등한 키보드 표시. |
+-| semantic.color.border.default | #767676 | #c6c6c6 | 입력·검증 가능한 구조 경계가 필요한 경우에만. |
++## 토큰 원본과 표현
+ 
+-이 값은 우리 제품을 위해 선택한 토큰이며 ChatGPT의 독점 토큰을 추출한 값이 아니다. 탐색 영역이 캔버스와 구분되도록 작은 명도 차이를 쓰고, 도구·권한 근거의 경계는 의미를 확인해야 할 때만 그린다. 테두리 token이 components.json에 결합되어 있어도 모든 인스턴스에 항상 stroke를 그리라는 뜻은 아니다. ToolCall의 요약 행은 평평하게 둘 수 있지만 원본/대상/결과를 접고 펼치는 독립 상세 영역은 범위를 드러낼 수 있다. PermissionRequest는 승인 대상·범위와 실행 결과를 혼동하지 않도록 독립 영역 경계를 허용한다. 위험·오류는 색뿐 아니라 텍스트, 아이콘, 결과 설명으로 구분한다.
++manifest.json이 원본이며 tokens.css는 validate_system.py::generated_css의 결정적 출력이다. Primitive → Semantic → Component 참조 방향을 유지한다. 현재 토큰은 223개(Primitive 81, Semantic 85, Component 57)다. components.json의 기존 6계열/44 variant와 PermissionRequest.runtimeStateMap은 유지한다. 새 앱 조합 규칙은 compositionContracts로 구분한다. Figma 동기화는 실행하지 않았다.
+ 
+-검증기는 두 모드에서 주요 글자·행동·상태 전경/배경 4.5:1, 경계·포커스 3:1 이상을 검사한다. 기본 경계 token은 이 대비 기준을 지키므로 강하게 보일 수 있다. 그 때문에 경계 사용량을 줄이는 것이 중요하다. Disabled는 WCAG 대비 예외이지만 필수 정보를 흐린 색만으로 전달하지 않는다. 포커스 링은 표면색으로 된 2px 바깥 간격 뒤 2px 링을 두며, 상호작용 상태가 색 변화만으로 전달되지 않도록 한다.
++| 항목      | 규칙                                                                                  |
++| --------- | ------------------------------------------------------------------------------------- |
++| 면        | Light #ffffff/탐색 #fafafa; Dark #171717/탐색 #262626                                 |
++| 글자      | 기본 #171717/#ffffff; 보조 #555555/#c6c6c6                                            |
++| 강조      | 주 행동은 역상 중립색; 상태 의미색과 키보드 포커스 파랑은 역할별 사용                 |
++| 글꼴      | 기존 시스템 sans와 한국어 fallback; 코드·경로는 기존 monospace; 새 font 다운로드 없음 |
++| 크기      | 대화16/24, UI14/20, 보조13/20, 작은 label12/18, section16/24, 빈 화면 제목22/28       |
++| 간격      | 4/8/12/16/24/32; 관련 조작8, 패널 안쪽16, 작업 그룹24                                 |
++| 형태      | 컨트롤8, 묶음12, Composer24; 그림자는 실제 overlay에만 필요할 때                      |
++| 폭        | 읽기 최대768; 탐색256; gutter24. 좁은 화면에서 가용폭에 맞춤                          |
++| 조작 영역 | dense desktop32, standard40, coarse44. 권한 결정 버튼44 및 사이 간격8 유지            |
+ 
+-permission.pending는 판단 대기, permission.denied는 거절 또는 정책 차단을 뜻하며 화면 문구에서 원인을 구별한다. verification.passed/failed/unknown은 실제 검증 결과의 분류다. PermissionRequest의 backend `applied`만 현재 요청 revision의 적용 영수증으로 확인된 경우 선택한 결정을 표시한다. 런타임 문구·상태·행동은 `components.json`의 `runtimeStateMap`에서만 가져오며, 각 visual variant의 sample label은 정적 시안 전용으로 제품 런타임에 표시하지 않는다. 승인 적용 확인은 도구 실행 완료가 아니다. `decision_sending`은 두 결정을 비활성화하고, dispatched 뒤 응답이 불명확하면 중립 `unknown`/“결정 상태 확인 필요”로 남긴다. 같은 요청을 자동 재전송하지 않는다. `denied`는 `USER_DENY`와 `POLICY_DENY` 원인을 각각 “사용자가 거절함”과 “정책에서 차단함”으로 표현한다. `expired`와 `cancelled`는 과거 요청의 종료 상태이며 새 응답을 허용하지 않는다. 전송 결과 오류가 side effect 없이 끝났더라도 같은 revision의 현재 `pending`을 다시 조회한 뒤에만 응답을 허용한다. 만료·취소·불명은 읽기 전용 상태 확인만 제공하며 새 pending이 관측된 경우에만 새 요청의 결정을 허용한다. ToolCall/success는 실행 계층이 완료를 확인한 뒤에만 사용한다. 연결 단절 후 확인하지 못한 구간은 성공으로 채우지 않는다.
++본문·행동 전경/배경 대비4.5:1, 실제 입력 경계와 포커스3:1 이상을 검증한다. 강한 입력 border를 모든 행과 그룹에 반복하지 않는다. 장식용 구분선은 조작 경계를 대신하지 않는다. Disabled 정보도 필요한 차단 사유를 보이는 문구로 설명한다.
+ 
+-## 글꼴, 공간, 형태
++## 공통 제어와 상태
+ 
+-본문은 16/24px, 제목은 24/28px, 보조 설명은 13/20px, 레이블은 16/22px, 코드는 13/20px(크기/줄 높이)이다. 제목은 700, 레이블 500, 본문 400을 기본으로 한다. 공개 화면에서는 시스템 sans 계열이 관찰되었지만 정확한 폰트 파일과 Figma family는 확인하지 못했다. Figma에서 실제 제공되는 Noto Sans KR Regular/Medium/Bold를 디자인 대체 family로 유지한다. 결정적 CSS 생성기는 이 원시값을 -apple-system, BlinkMacSystemFont, system-ui, Segoe UI, Noto Sans KR, sans-serif stack으로 매핑해 웹에서 시스템 글꼴을 우선한다. Figma와 웹은 각 플랫폼의 글꼴 렌더링이 다르며 관찰 화면의 정확한 폰트 파일을 복제했다는 뜻이 아니다. 한국어 폴백과 줄바꿈은 두 화면에서 검토한다. 명령·경로·코드는 IBM Plex Mono 400과 monospace 폴백을 사용한다. 글꼴 라이선스나 배포 권한은 이 문서가 증명하지 않는다.
++`@workbench/ui`의 Button은 native button의 event/ref/disabled/type을 유지하는 state-free primitive다. intent는 primary/secondary/quiet/danger, size는 compact/standard다. 기본 type은 button이다. 효과의 허용·중복·unknown 판단은 기존 도메인 소유자에게 남는다. 기존 ActionMenu/ModalSheet/StatusBadge와 Tool UI를 재사용한다. 전역 descendant button 스타일로 라이브러리 내부를 덮지 않는다.
+ 
+-4px 배수의 여백을 사용한다. 컨트롤 간격 8px, 밀접한 관련 항목 12px, 패널 안쪽 16px, 큰 섹션 사이 32px를 출발점으로 삼는다. 일반 컨트롤 시각 높이는 40px이고 클릭/터치 대상은 최소 44×44px다. 컨트롤 radius 12px, 독립 상세 영역 16px, badge는 pill이다. 작성기는 내용과 조작을 하나의 둥근 표면에 담되 과한 그림자·중첩 테두리를 피한다. 그림자가 필요하면 실제 떠 있는 메뉴·오버레이의 깊이에 한정한다.
++Primary는 현재 작업의 확정 행동 하나다. Secondary는 해당 작업의 조정, quiet는 탐색·펼침·메타데이터, danger는 실제 위험 행동에만 쓴다. 로딩은 반복 제출을 막고 레이블을 보존한다. 선택·hover·focus는 구별되며 focus는2px 링과2px 간격으로 reflow 없이 표시한다. Icon-only 제어에는 접근 가능한 이름이 필요하다.
+ 
+-1280×720 공개 화면 관찰에서는 약 260px 탐색 영역과 약 770px의 중앙 작성기가 확인되었다. 이 치수는 **미리보기 비교 기준**이며 모든 화면의 고정폭이 아니다. 데스크톱에서는 탐색 너비를 약 260px에서 시작하고 대화 읽기 폭과 작성기 최대 폭을 약 770px로 맞춘다. 좁은 화면에서는 가용폭에서 안전 영역과 좌우 여백을 뺀 폭으로 줄인다. 긴 한국어 문장과 경로는 안전하게 줄바꿈하고 코드·경로는 선택과 전체 값 보기를 제공한다. 200% 확대에서 작성기·권한 범위·핵심 행동이 잘리면 실패다.
++권한 적용은 실행 완료가 아니다. PermissionRequest의 실제 레이블·행동은 components.json의 runtimeStateMap에서 가져온다. 현재 revision pending만 결정 가능하며, 정책 거절은 UI가 해제하지 않는다. 일치하는 적용 receipt만 허용/거절 적용을 확인한다. unknown/만료/취소는 같은 요청을 재전송하지 않는다. 대기열 취소 ACK는 취소 요청의 수락이며 비실행 보장이 아니다. 복구·held 상태에서도 허용되는 inert 초안 편집과 탐색을 유지한다.
+ 
+-320–599px는 한 열, 탐색과 세부 정보는 별도 호출 가능한 패널로 전환한다. 600–899px에서는 세부 패널을 접고, 900px부터 병렬 패널을 허용하되 중앙 읽기 폭을 지킨다. 브라우저 safe area inset을 반영하며 오버레이가 현재 권한 대상과 승인 범위를 가리지 않게 한다. 설치형의 OS 메뉴·파일 선택기·알림·창 전환은 플랫폼 관례를 따르고 웹 탐색을 그대로 복제하지 않는다. 공유되는 것은 의미 token과 콘텐츠 계약이며 웹·모바일 내비게이션 구현은 별개다.
++## 반응형과 검증
+ 
+-## 컴포넌트·상태·흐름
++900px 이상은 중앙 읽기 폭이 유지될 때 선택 상세 패널을 병렬 표시한다.600–899px는 기존 좁은 상세 화면,320–599px는 단일 주 화면과 호출 가능한 탐색/상세를 사용한다. 항상 돌아오는 경로와 포커스 복귀가 있어야 한다.200%에서 실제 선택값·범위·최종 전송/중단을 확인한다. 긴 한국어·코드·경로는 선택과 전체 값 확인이 가능해야 한다.
+ 
+-| 계열 | Variant | 적용 기준 |
+-| --- | ---: | --- |
+-| Button | 18 | primary/quiet/danger × default/hover/pressed/focus/disabled/loading. 한 영역의 주요 행동을 분명히 하고 중복 제출을 막는다. |
+-| Input | 5 | default/hover/focus/disabled/error. 레이블·40px 컨트롤·피드백 하나를 내용에 맞게 세로로 쌓는다. 오류 메시지가 일반 도움말을 대체하며 placeholder를 보조 문구로 반복하지 않는다. 포커스 링은 배치를 밀지 않는 외곽 오버레이이다. |
+-| StatusBadge | 6 | queued/running/waiting/success/error/unknown. 높이 24px, 글자 너비에 좌우 8px씩 더한 HUG 폭, 가운데 정렬 한 줄 레이블을 사용한다. ToolCall과 PermissionRequest 내부 상태도 같은 규격으로 맞춘다. |
+-| NavigationItem | 4 | default/hover/selected/focus. 부모 폭을 채우는 40px 행과 12px 시작 여백, 왼쪽 정렬을 사용한다. 선택 상태는 면 색과 700 weight 레이블(기본 500 weight)로 표시하고 현재 위치는 aria-current로 나타내며 실행 성공과 혼동하지 않는다. |
+-| ToolCall | 6 | queued/running/waiting/success/error/unknown. 기본 요약은 테두리 없이 도구와 문자 상태를 먼저 보여 준다. 펼친 상세 영역만 실제 그룹 경계가 필요할 때 기능적 테두리를 쓸 수 있다. 로컬 펼침 동작과 런타임 결과로 이동하는 근거 링크는 별개이다. 유효한 결과 대상이 없으면 비활성 안내를 표시한다. 각 상태는 `StatusBadge` 인스턴스를 중첩하며 배지 자체가 치수와 색 토큰을 소유한다. |
+-| PermissionRequest | 5 | pending/sending/approved/denied/stale. 권한 대상·정확한 범위만 절제된 경계로 묶고 세션·요청·능력·범위·대상·기간·결과를 보인다. 허용은 기존 primary Button, 거절·새로고침은 기존 quiet Button을 합성한다. 각 상태는 `StatusBadge` 인스턴스를 중첩해 공통 치수와 자체 색 토큰을 사용한다. 40px 시각 버튼을 유지하되 제품 구현에서는 44px 이상 실제 조작 영역을 배정한다. Figma만으로 실제 조작 영역을 검증했다고 주장하지 않는다. |
++Tab/ShiftTab, Enter/Space 펼침, Escape 복귀, IME·Enter/ShiftEnter 작성 동작을 보존한다. 닫힌/inert 영역에는 포커스가 들어가지 않는다. Reduced motion에서 불필요한 전환은 제거한다. 관찰 상태를 매 poll마다 live region에 반복하지 않는다.
+ 
+-입력 필드 그룹은 고정 높이로 자르지 않는다. 레이블, 40px 컨트롤, 피드백 슬롯 하나를 세로로 두고 내용이 없으면 슬롯도 표시하지 않는다. error+focus는 오류 테두리·오류 설명·`aria-invalid`를 유지하며 같은 컨트롤 바깥에 focus-visible 링을 겹친다. 이 링은 레이아웃 폭이나 높이를 바꾸지 않는다.
+-
+-상태 배지는 단일 줄의 보이는 텍스트를 필수로 한다. 너비는 실제 글꼴 렌더링 폭에 좌우 8px씩 더해 결정하고 레이블이 길어져도 고정 폭으로 남는 공간을 만들지 않는다. ToolCall과 PermissionRequest는 별도 색 프레임을 만들지 않고 실제 StatusBadge 인스턴스를 중첩한다. 배지는 명시적인 label과 의미 tone을 받으며 배지 자신의 배경·전경 바인딩을 사용한다. 상태색 외에 텍스트를 유지한다. 적용 영수증을 받은 PermissionRequest의 `approved` display variant는 neutral/info tone을 사용하고 사용자가 선택한 결정(허용 또는 거절)을 구체적인 레이블로 적는다. 권한 결정이 적용됐다는 사실은 도구나 세션 작업 완료를 뜻하지 않는다.
+-
+-선택 내비게이션이 기본·hover와 실제 면에서 구별되는지 Light/Dark 부모 표면 위에서 함께 확인한다. Dark 탐색 부모면과 기본 항목은 `surface #262626`, hover는 `canvas #171717`, selected는 `surface.subtle #3d3d3d`를 사용한다. 기본 항목은 부모면과 같고 hover·selected는 부모면 및 서로와 구별된다. 이 모드별 바인딩은 NavigationItem에만 적용하며 전역 semantic 값은 바꾸지 않는다. 기본과 hover 레이블은 500 weight, selected/current 레이블은 700 weight를 사용한다. focus는 겹쳐진 기본 또는 선택 상태의 weight를 보존하며 배치를 바꾸지 않는다. 선택은 기본 500 대비 700 weight 레이블로도 구별하고 장식용 줄무늬를 추가하지 않는다. selected+focus는 선택 색·700 weight 글자·`aria-current="page"`를 유지하고 외곽 focus-visible 링을 겹친다.
+-
+-ToolCall 요약에는 공통 바깥 테두리를 반복하지 않는다. 도구명, 문자 상태, 출처·대상·결과의 정보 위계를 유지한다. 모든 상태는 보이는 자식에 맞춰 세로로 늘어나고 마지막 자식 뒤에 16px 하단 여백을 유지한다. 표시 대상과 입력의 `path`는 모든 상태와 Light/Dark 예시에서 정확히 같아야 하며 긴 경로는 자르지 않고 줄바꿈한다. 접기/펼치기는 별도 키보드 동작과 확장 의미를 가지며, 실제 런타임 결과로 이동하는 행동은 유효한 runtime-provided 결과 대상이 있을 때만 보인다. 디자인 예시의 근거 링크는 로컬에 존재하는 예시만 사용하고 `#` 또는 가짜 URL을 만들지 않는다. 상세 입력/출력은 민감 정보를 마스킹하며 알 수 없는 schema는 안전한 일반 텍스트로 표현한다.
+-
+-PermissionRequest의 backend 상태·원인·receipt 대 UI copy/행동 매핑은 `components.json`의 `componentContracts.PermissionRequest.runtimeStateMap`이 필수 단일 기준이다. 다섯 visual variant의 sample label은 정적 미리보기 전용이며 런타임 표시값으로 사용할 수 없다. 런타임 레이블과 행동은 상태·선택 결정·거절 원인·현재 revision·적용 receipt에 맞춰 이 맵에서 정한다. 기존 5개 시각 variant를 재사용한다.
+-
+-| Backend 상태 / 근거 | 시각 variant 및 레이블 | 행동 |
+-| --- | --- | --- |
+-| 현재 revision의 `pending` | pending · 승인 대기 | primary 허용 + quiet 사용자 거절. 정책 차단이면 허용 없음 |
+-| `decision_sending` | sending · 결정 전송 중 | 중복 결정을 막기 위해 양쪽 비활성화 |
+-| 일치하는 적용 영수증의 `applied` | approved · 허용 결정 적용 확인 또는 거절 결정 적용 확인 | 결정 버튼 없음. 실행 결과와는 별도 |
+-| `denied` + `USER_DENY` / `POLICY_DENY` | denied · 사용자가 거절함 / 정책에서 차단함 | 결정 버튼 없음; 정책 차단은 허용 불가 |
+-| `expired` / `cancelled` | stale · 요청 만료됨 / 요청 취소됨 | 과거 요청 재응답 없이 읽기 전용 재조회 |
+-| `unknown`, 오래된 revision, 전송 뒤 불명 | stale · 결정 상태 확인 필요 | 읽기 전용 대조. 같은 결정을 다시 보내지 않음 |
+-| 전송 실패 + `effectState=none` | 같은 revision의 새 조회가 pending이면 pending, 아니면 stale | 최신 pending을 확인하기 전까지 결정을 보내지 않음 |
+-
+-적용 영수증은 사용자가 선택한 결정을 반영해야 하며 `accepted`/HTTP 202는 적용 근거가 아니다. `dispatched` 뒤 응답이 불확실하면 `unknown`으로 유지한다. 280px 폭에서 정확한 경로·범위를 줄이지 않고 필요하면 행동을 아래 행으로 쌓는다. 기존 Button은 시각 높이 40px을 유지하며 실제 조작 영역은 최소 44px 높이, 서로 최소 8px 간격이다. 중첩된 별도 focusable wrapper를 만들지 않는다. Figma는 이 런타임 조건의 증거가 아니다.
+-
+-`components.json`의 `composedStates`는 독립된 Variant 수를 늘리지 않고 겹치는 상태를 정의한다. 오류 입력에 `focus-visible`이 오면 오류 테두리·설명·`aria-invalid`를 유지한 채 바깥 포커스 링을 더한다. 선택된 탐색 항목이 키보드 포커스를 받으면 선택 면·글자와 `aria-current="page"`를 유지한 채 같은 링을 더한다. Figma 컴포넌트 설명과 실제 화면 검수에서도 두 조합을 확인한다.
+-
+-빈 대화는 다음 동작을 제안하되 전송·실행을 가장하지 않는다. 로딩은 대상과 현재 단계를 알리고, 오류는 원인·영향·이미 일어난 부작용·안전한 재시도 조건을 알린다. 권한 요청은 보이는 범위와 현재 세션을 확인한 뒤 응답하게 한다. `decision_sending`은 결정 전송 중, `applied`는 영수증을 확인한 선택 결정 적용, `USER_DENY`는 사용자의 거절, `POLICY_DENY`는 정책 차단, `expired`와 `cancelled`는 종료 요청, `unknown`은 결정 효과 확인 필요로 표시한다. 전송 뒤 unknown은 승인/거절 버튼을 숨기며 최신 상태 조회만 허용한다. 실행 결과는 별도 ToolCall로 나타낸다. 등록되지 않은 도구 schema는 안전한 일반 표현을 사용한다. 알 수 없는 결과는 ‘확인할 수 없는 구간’, 제공되지 않은 사용량은 ‘정보 없음’이라고 적는다.
+-
+-Tab 순서는 전역 탐색→작업 헤더→대화/작성기→활성 세부 패널이다. Inline 권한 영역은 일반 Tab 흐름에 남고 초점을 가두지 않는다. 별도 모달일 때만 제목으로 초점을 옮기고 trap/복귀를 적용한다. 패널을 닫으면 열었던 컨트롤로 초점을 돌려준다. Esc가 실행 취소 또는 권한 거절이 되어서는 안 된다. Hover는 포인터 보조 피드백이며 모든 기능이 키보드·터치로 가능해야 한다. 스크린리더 알림은 권한 대기·중단 확인·완료·실패·연결 복구처럼 의미가 바뀔 때 작업 식별자를 포함해 간결하게 전한다. 스트리밍 토큰마다 대화 전체를 다시 읽지 않는다.
+-
+-## 움직임과 검증
+-
+-primitive.motion.fast 120ms는 hover/focus, standard 180ms는 상태·상세 내용 변화, panel 240ms는 패널 등장에 쓴다. 확인된 도구 결과의 상세 영역은 180ms 동안 opacity 0→1과 4px 이내의 이동으로 나타날 수 있다. 애니메이션만으로 실행 완료를 암시하지 않는다. prefers-reduced-motion: reduce에서는 변위·반복을 제거하고 상태 문구는 유지한다.
+-
+-python3 docs/design/validate_system.py는 token 타입·모드·참조 누락/순환/계층·중복 이름·CSS 일치·대비·정확한 44 variant를 검사한다. 이 검사는 문서와 색 대비의 정적 조건을 확인하며 렌더 결과나 Figma 실제 바인딩을 증명하지 않는다. 독립 design_spec_reviewer의 계약 검토와 coordinator의 handoff 후에 이 원본을 미리보기와 Figma에 적용한다. 이후 실제 UI는 키보드, 스크린리더, 반응형, 축소 동작을 별도 실측한다.
+-
+-## 결정 기록과 마이그레이션
+-
+-| 날짜 | 결정·근거 | 영향 |
+-| --- | --- | --- |
+-| 2026-09-26 | 승인/실행/검증을 분리하고 stale 권한 행동을 비활성화 | PermissionRequest, ToolCall, StatusBadge 의미와 런타임 연결 유지 |
+-| 2026-09-27 | 공개 로그아웃 화면의 대화 중심 구조와 사용자의 선택을 반영해 중립 Light/Dark로 이동 | 기존 파란 행동색은 중립 채움으로, 푸른 회색 면은 무채색으로 갱신; focus/info의 파랑은 유지 |
+-| 2026-09-27 | 본문 16px·제목 24/28px 및 넓은 중앙 작성기 기준 채택 | 이전 14px 본문·20px 제목을 쓰는 미리보기/텍스트 스타일 재검토; 웹 시스템 서체와 Figma Noto Sans KR의 줄바꿈·높이 확인 |
+-| 2026-09-27 | 장식 줄무늬와 반복 카드·경계를 제거하고 경계를 상태/구조에 한정 | components.json의 경계 binding은 유지하되 각 렌더러가 stroke 표시 조건을 명시해야 함 |
+-| 2026-09-27 | 저장소 JSON 원본, CSS/Figma 단방향 산출 | Figma Light/Dark 변수, 타입 스타일, 버튼·입력·탐색·도구·권한 컴포넌트 색/크기 재동기화 필요; 라이브러리 발행 별도 |
+-
+-designlang이 차단 페이지에서 생성한 수치는 이 결정을 뒷받침하지 않는다. 연구 폴더의 README를 먼저 읽고 해당 산출물을 제품 디자인 근거로 쓰지 않는다.
++변경한 기존 Context/runtime-options assertion을 최종 build에서 실제 실행한다. Foundation 기본/첨부/상세/분기/실행/unknown·held 화면을 원본 native PNG로 확인한다. Source/build/script 전후 hash와 소유 hidden-window 종료를 기록한다. Geometry 통과는 디자인 통과가 아니다. 독립 CODE와 실제 RENDER에 미해결 주요 문제가 없어야 foundation을 완료로 부른다. Synthetic Main은 Native/provider/Windows 실행 근거가 아니다.
+--- before/docs/design/tokens/manifest.json
++++ docs/design/tokens/manifest.json
+@@ -234,7 +234,7 @@
+       "path": "primitive.font.size.xl",
+       "layer": "primitive",
+       "type": "dimension",
+-      "value": "24px",
++      "value": "22px",
+       "css": "--omoc-primitive-font-size-xl",
+       "figmaScopes": []
+     },
+@@ -534,7 +534,7 @@
+       "type": "color",
+       "value": {
+         "light": "{primitive.color.n5}",
+-        "dark": "{primitive.color.n2}"
++        "dark": "{primitive.color.n3}"
+       },
+       "css": "--omoc-semantic-color-text-secondary",
+       "figmaScopes": ["TEXT_FILL"]
+@@ -1083,20 +1083,20 @@
+       "layer": "semantic",
+       "type": "dimension",
+       "value": {
++        "light": "{primitive.radius.navigation}",
++        "dark": "{primitive.radius.navigation}"
++      },
++      "css": "--omoc-semantic-radius-control",
++      "figmaScopes": ["CORNER_RADIUS"]
++    },
++    {
++      "path": "semantic.radius.card",
++      "layer": "semantic",
++      "type": "dimension",
++      "value": {
+         "light": "{primitive.radius.md}",
+         "dark": "{primitive.radius.md}"
+       },
+-      "css": "--omoc-semantic-radius-control",
+-      "figmaScopes": ["CORNER_RADIUS"]
+-    },
+-    {
+-      "path": "semantic.radius.card",
+-      "layer": "semantic",
+-      "type": "dimension",
+-      "value": {
+-        "light": "{primitive.radius.lg}",
+-        "dark": "{primitive.radius.lg}"
+-      },
+       "css": "--omoc-semantic-radius-card",
+       "figmaScopes": ["CORNER_RADIUS"]
+     },
+@@ -1770,7 +1770,7 @@
+       "path": "primitive.size.sidebar-width",
+       "layer": "primitive",
+       "type": "dimension",
+-      "value": "216px",
++      "value": "256px",
+       "css": "--omoc-primitive-size-sidebar-width",
+       "figmaScopes": []
+     },
+@@ -1830,7 +1830,7 @@
+       "path": "primitive.size.reading-width",
+       "layer": "primitive",
+       "type": "dimension",
+-      "value": "720px",
++      "value": "768px",
+       "css": "--omoc-primitive-size-reading-width",
+       "figmaScopes": []
+     },
+@@ -1860,7 +1860,7 @@
+       "path": "primitive.size.gutter",
+       "layer": "primitive",
+       "type": "dimension",
+-      "value": "32px",
++      "value": "24px",
+       "css": "--omoc-primitive-size-gutter",
+       "figmaScopes": []
+     },
+@@ -2040,7 +2040,7 @@
+       "path": "primitive.size.composer-radius",
+       "layer": "primitive",
+       "type": "dimension",
+-      "value": "16px",
++      "value": "24px",
+       "css": "--omoc-primitive-size-composer-radius",
+       "figmaScopes": []
+     },
+@@ -2160,7 +2160,7 @@
+       "path": "primitive.size.conversation-size",
+       "layer": "primitive",
+       "type": "dimension",
+-      "value": "15px",
++      "value": "16px",
+       "css": "--omoc-primitive-size-conversation-size",
+       "figmaScopes": []
+     },
+@@ -2185,6 +2185,36 @@
+       },
+       "css": "--omoc-component-size-conversation-size",
+       "figmaScopes": ["GAP"]
++    },
++    {
++      "path": "primitive.size.standard-control",
++      "layer": "primitive",
++      "type": "dimension",
++      "value": "40px",
++      "css": "--omoc-primitive-size-standard-control",
++      "figmaScopes": []
++    },
++    {
++      "path": "semantic.size.standard-control-height",
++      "layer": "semantic",
++      "type": "dimension",
++      "value": {
++        "light": "{primitive.size.standard-control}",
++        "dark": "{primitive.size.standard-control}"
++      },
++      "css": "--omoc-semantic-size-standard-control-height",
++      "figmaScopes": ["WIDTH_HEIGHT"]
++    },
++    {
++      "path": "component.size.standard-control-height",
++      "layer": "component",
++      "type": "dimension",
++      "value": {
++        "light": "{semantic.size.standard-control-height}",
++        "dark": "{semantic.size.standard-control-height}"
++      },
++      "css": "--omoc-component-size-standard-control-height",
++      "figmaScopes": ["WIDTH_HEIGHT"]
+     }
+   ]
+ }
+--- before/docs/design/tokens/tokens.css
++++ docs/design/tokens/tokens.css
+@@ -28,7 +28,7 @@
+   --omoc-primitive-font-size-sm: 13px;
+   --omoc-primitive-font-size-md: 16px;
+   --omoc-primitive-font-size-lg: 16px;
+-  --omoc-primitive-font-size-xl: 24px;
++  --omoc-primitive-font-size-xl: 22px;
+   --omoc-primitive-font-weight-regular: 400;
+   --omoc-primitive-font-weight-medium: 500;
+   --omoc-primitive-font-weight-bold: 700;
+@@ -113,8 +113,8 @@
+   --omoc-semantic-space-card-gap: var(--omoc-primitive-space-3);
+   --omoc-semantic-space-panel-padding: var(--omoc-primitive-space-4);
+   --omoc-semantic-space-section-gap: var(--omoc-primitive-space-6);
+-  --omoc-semantic-radius-control: var(--omoc-primitive-radius-md);
+-  --omoc-semantic-radius-card: var(--omoc-primitive-radius-lg);
++  --omoc-semantic-radius-control: var(--omoc-primitive-radius-navigation);
++  --omoc-semantic-radius-card: var(--omoc-primitive-radius-md);
+   --omoc-semantic-radius-badge: var(--omoc-primitive-radius-pill);
+   --omoc-semantic-size-control-height: var(--omoc-primitive-size-control);
+   --omoc-semantic-stroke-focus: var(--omoc-primitive-stroke-focus);
+@@ -178,16 +178,16 @@
+   --omoc-component-type-conversation-line: var(--omoc-semantic-type-line-conversation);
+   --omoc-component-size-navigation-radius: var(--omoc-semantic-radius-navigation);
+   --omoc-component-size-control-hit-target: var(--omoc-semantic-size-hit-target);
+-  --omoc-primitive-size-sidebar-width: 216px;
++  --omoc-primitive-size-sidebar-width: 256px;
+   --omoc-semantic-size-sidebar-width: var(--omoc-primitive-size-sidebar-width);
+   --omoc-component-size-sidebar-width: var(--omoc-semantic-size-sidebar-width);
+   --omoc-primitive-size-header-height: 44px;
+   --omoc-semantic-size-header-height: var(--omoc-primitive-size-header-height);
+   --omoc-component-size-header-height: var(--omoc-semantic-size-header-height);
+-  --omoc-primitive-size-reading-width: 720px;
++  --omoc-primitive-size-reading-width: 768px;
+   --omoc-semantic-size-reading-width: var(--omoc-primitive-size-reading-width);
+   --omoc-component-size-reading-width: var(--omoc-semantic-size-reading-width);
+-  --omoc-primitive-size-gutter: 32px;
++  --omoc-primitive-size-gutter: 24px;
+   --omoc-semantic-size-gutter: var(--omoc-primitive-size-gutter);
+   --omoc-component-size-gutter: var(--omoc-semantic-size-gutter);
+   --omoc-primitive-size-composer-height: 120px;
+@@ -205,7 +205,7 @@
+   --omoc-primitive-size-toolbar-height: 32px;
+   --omoc-semantic-size-toolbar-height: var(--omoc-primitive-size-toolbar-height);
+   --omoc-component-size-toolbar-height: var(--omoc-semantic-size-toolbar-height);
+-  --omoc-primitive-size-composer-radius: 16px;
++  --omoc-primitive-size-composer-radius: 24px;
+   --omoc-semantic-size-composer-radius: var(--omoc-primitive-size-composer-radius);
+   --omoc-component-size-composer-radius: var(--omoc-semantic-size-composer-radius);
+   --omoc-primitive-size-hint-height: 22px;
+@@ -217,9 +217,12 @@
+   --omoc-primitive-size-coarse-target: 44px;
+   --omoc-semantic-size-coarse-target: var(--omoc-primitive-size-coarse-target);
+   --omoc-component-size-coarse-target: var(--omoc-semantic-size-coarse-target);
+-  --omoc-primitive-size-conversation-size: 15px;
++  --omoc-primitive-size-conversation-size: 16px;
+   --omoc-semantic-size-conversation-size: var(--omoc-primitive-size-conversation-size);
+   --omoc-component-size-conversation-size: var(--omoc-semantic-size-conversation-size);
++  --omoc-primitive-size-standard-control: 40px;
++  --omoc-semantic-size-standard-control-height: var(--omoc-primitive-size-standard-control);
++  --omoc-component-size-standard-control-height: var(--omoc-semantic-size-standard-control-height);
+ }
+ [data-theme="dark"] {
+   --omoc-semantic-color-canvas: var(--omoc-primitive-color-n8);
+@@ -228,7 +231,7 @@
+   --omoc-semantic-color-surface-raised: var(--omoc-primitive-color-n6);
+   --omoc-semantic-color-overlay: var(--omoc-primitive-color-n8);
+   --omoc-semantic-color-text-primary: var(--omoc-primitive-color-white);
+-  --omoc-semantic-color-text-secondary: var(--omoc-primitive-color-n2);
++  --omoc-semantic-color-text-secondary: var(--omoc-primitive-color-n3);
+   --omoc-semantic-color-text-inverse: var(--omoc-primitive-color-white);
+   --omoc-semantic-color-border-default: var(--omoc-primitive-color-n3);
+   --omoc-semantic-color-border-strong: var(--omoc-primitive-color-n2);
+@@ -278,8 +281,8 @@
+   --omoc-semantic-space-card-gap: var(--omoc-primitive-space-3);
+   --omoc-semantic-space-panel-padding: var(--omoc-primitive-space-4);
+   --omoc-semantic-space-section-gap: var(--omoc-primitive-space-6);
+-  --omoc-semantic-radius-control: var(--omoc-primitive-radius-md);
+-  --omoc-semantic-radius-card: var(--omoc-primitive-radius-lg);
++  --omoc-semantic-radius-control: var(--omoc-primitive-radius-navigation);
++  --omoc-semantic-radius-card: var(--omoc-primitive-radius-md);
+   --omoc-semantic-radius-badge: var(--omoc-primitive-radius-pill);
+   --omoc-semantic-size-control-height: var(--omoc-primitive-size-control);
+   --omoc-semantic-stroke-focus: var(--omoc-primitive-stroke-focus);
+@@ -362,4 +365,6 @@
+   --omoc-component-size-coarse-target: var(--omoc-semantic-size-coarse-target);
+   --omoc-semantic-size-conversation-size: var(--omoc-primitive-size-conversation-size);
+   --omoc-component-size-conversation-size: var(--omoc-semantic-size-conversation-size);
++  --omoc-semantic-size-standard-control-height: var(--omoc-primitive-size-standard-control);
++  --omoc-component-size-standard-control-height: var(--omoc-semantic-size-standard-control-height);
+ }
+--- before/packages/ui/src/index.ts
++++ packages/ui/src/index.ts
+@@ -5,6 +5,8 @@
+ export type { ActionMenuProps } from "./primitives/action-menu.js";
+ export { ModalSheet } from "./primitives/modal-sheet.js";
+ export type { ModalSheetProps } from "./primitives/modal-sheet.js";
++export { Button } from "./primitives/button.js";
++export type { ButtonProps } from "./primitives/button.js";
+ export type {
+   StatusBadgeProps,
+   StatusBadgeTone,
+--- before/packages/ui/src/primitives/button.module.css
++++ packages/ui/src/primitives/button.module.css
+@@ -0,0 +1,84 @@
++.button {
++  display: inline-flex;
++  align-items: center;
++  justify-content: center;
++  gap: var(--omoc-semantic-space-control-gap);
++  min-width: var(--omoc-component-size-control-hit-target);
++  max-width: 100%;
++  padding: 6px 12px;
++  border: 1px solid transparent;
++  border-radius: var(--omoc-component-size-control-radius);
++  font: inherit;
++  font-size: var(--omoc-component-type-navigation-size);
++  line-height: var(--omoc-component-type-navigation-line);
++  white-space: normal;
++  overflow-wrap: anywhere;
++  cursor: pointer;
++}
++
++.standard {
++  min-height: var(--omoc-component-size-standard-control-height);
++}
++
++.compact {
++  min-height: var(--omoc-component-size-control-hit-target);
++  padding: 4px 8px;
++}
++
++.primary {
++  background: var(--omoc-component-color-button-primary-background);
++  color: var(--omoc-component-color-button-primary-foreground);
++}
++.primary:hover:not(:disabled) {
++  background: var(--omoc-component-color-button-primary-hover);
++}
++.primary:active:not(:disabled) {
++  background: var(--omoc-component-color-button-primary-pressed);
++}
++
++.secondary {
++  border-color: var(--omoc-semantic-color-border-default);
++  background: var(--omoc-semantic-color-surface);
++  color: var(--omoc-semantic-color-text-primary);
++}
++.secondary:hover:not(:disabled),
++.quiet:hover:not(:disabled) {
++  background: var(--omoc-component-color-button-quiet-hover);
++}
++.secondary:active:not(:disabled),
++.quiet:active:not(:disabled) {
++  background: var(--omoc-component-color-button-quiet-pressed);
++}
++
++.quiet {
++  background: transparent;
++  color: var(--omoc-component-color-button-quiet-foreground);
++}
++
++.danger {
++  background: var(--omoc-component-color-button-danger-background);
++  color: var(--omoc-component-color-button-danger-foreground);
++}
++.danger:hover:not(:disabled) {
++  background: var(--omoc-component-color-button-danger-hover);
++}
++.danger:active:not(:disabled) {
++  background: var(--omoc-component-color-button-danger-pressed);
++}
++
++.button:focus-visible {
++  outline: var(--omoc-semantic-stroke-focus) solid
++    var(--omoc-semantic-color-focus);
++  outline-offset: var(--omoc-semantic-size-focus-gap);
++}
++.button:disabled {
++  opacity: 0.5;
++  cursor: default;
++}
++
++@media (pointer: coarse) {
++  .button {
++    min-width: var(--omoc-component-size-coarse-target);
++    min-height: var(--omoc-component-size-coarse-target);
++  }
++}
+--- before/packages/ui/src/primitives/button.tsx
++++ packages/ui/src/primitives/button.tsx
+@@ -0,0 +1,32 @@
++import React, { forwardRef, type ComponentPropsWithoutRef } from "react";
++import styles from "./button.module.css";
++
++export type ButtonProps = ComponentPropsWithoutRef<"button"> & {
++  intent?: "primary" | "secondary" | "quiet" | "danger";
++  size?: "compact" | "standard";
++};
++
++// Presentation only. The caller owns permission, pending and effect authority.
++export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
++  function Button(
++    {
++      intent = "quiet",
++      size = "standard",
++      type = "button",
++      className,
++      ...props
++    },
++    ref,
++  ) {
++    return (
++      <button
++        {...props}
++        ref={ref}
++        type={type}
++        className={[styles.button, styles[intent], styles[size], className]
++          .filter(Boolean)
++          .join(" ")}
++      />
++    );
++  },
++);
+--- before/packages/ui/src/primitives/modal-sheet.module.css
++++ packages/ui/src/primitives/modal-sheet.module.css
+@@ -27,7 +27,7 @@
+ 
+ .content[data-side="left"] {
+   inset-inline-start: 0;
+-  width: min(216px, calc(100vw - 24px));
++  width: min(var(--omoc-component-size-sidebar-width), calc(100vw - 24px));
+   border-inline-end: 1px solid var(--omoc-semantic-color-border-default);
+ }
+ 

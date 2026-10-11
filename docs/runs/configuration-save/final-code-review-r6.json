@@ -1,0 +1,89 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "74e94d32605e48f5409237a1f7011513f268afdf587cdd57e5c91a7250f6f210",
+    "environment_sha256": "bacf8adbff4f9456ca8a2a573639879c6a3e78fe2c28f59554817c8ea8eda549",
+    "gate": "code",
+    "plan_sha256": "cf146f005eabf60e801da26eea13ab21d2ba9c9445cc45755c95678dc6b8d585",
+    "schema_version": 2,
+    "source_sha256": "98f8c758f463783736f7b7503d01602717afbb875a6955b7c0dc0d5db9e978f6",
+    "verification_sha256": "9f70827935fd952b1dc8245b7575d75e7c4513a25ac7df6cfd3f129ed5de9361",
+    "work_class_sha256": "115fbe71d56e7138f356b9a6d0773987ea42790493b418152303638f5185bd07"
+  },
+  "verdict": "pass",
+  "summary": "r6 수정과 직접 영향 경로에서 추가 수정 항목을 찾지 못했습니다. CS-R5-001은 해결되었습니다. 완료 기록 실패·시간 초과 시 미확정 configuration_saved가 출력되지 않습니다. 일반 receipt 경로, 화면 검증 helper와 안내 문구도 확인했습니다. 이 판정은 지정된 CODE 수정 범위에만 적용합니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a11955-d9bd-74f3-bb87-852ce3552451",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705"
+  },
+  "scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "mode": "solo-code-review/general/default, 독립 report-only",
+    "plan_revision": 6,
+    "design_version": 1,
+    "current_path_count": 44,
+    "correction_path_count": 5,
+    "scope_basis": "source-freeze-r5와 source-freeze-r6의 경로별 hash/mode 비교입니다. Git diff로 주장하지 않습니다.",
+    "correction_paths": [
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "apps/desktop-app/src/host/storage-integration.test.mjs",
+      "apps/desktop-app/src/host/workbench-admission.mjs",
+      "apps/desktop-app/src/host/workbench-receipts.mjs",
+      "apps/desktop-app/src/renderer/widgets/explorer/index.tsx"
+    ],
+    "affected_callers": [
+      "workbench-service의 결과 투영과 registry.complete 호출",
+      "workspace-registry의 completion 복사, flush, lookup과 resource hold",
+      "storage-journal의 receipt 검증",
+      "renderer store의 저장 receipt 검증과 원래 key 처리",
+      "화면 크기 전환과 capture helper"
+    ],
+    "reviewer_checks": [
+      "현재 44개 경로의 hash와 mode가 r6 freeze와 모두 일치했습니다.",
+      "읽기 전용 harness review-input 결과가 final-code-input-r6.json과 정확히 일치했습니다.",
+      "읽기 전용 Node 검사에서 configuration_saved 출력 조건 72개와 일반 receipt 사례 18개가 PASS했습니다.",
+      "읽기 전용 Native evidence verifier가 현재 source/resource/probe/owner/Electron byte와 kernel-r3 증거의 일치를 확인했습니다. Native를 실행하지 않았습니다.",
+      "등록된 artifact 243개의 hash가 모두 일치했습니다.",
+      "hidden-r4 provenance의 파일 119개에서 hash/mode 불일치가 없었습니다. PNG 88개의 형식과 크기도 보고서와 일치했습니다."
+    ],
+    "edits": false,
+    "ledger_writes": false,
+    "recursive_delegation": false
+  },
+  "passes": [
+    {
+      "pass": "spec_compliance",
+      "result": "pass",
+      "criteria": {
+        "S1": "닫힌 저장 요청과 확인 후 재관찰 경로는 r5와 동일합니다. 이번 수정은 요청·확인 계약을 변경하지 않습니다.",
+        "S2": "kernel과 private IPC는 r5와 동일합니다. 현재 byte와 일치하는 kernel-r3의 실제 7개 사례와 owned exit 증거를 확인했습니다.",
+        "S3": "redactor는 configuration.save/dispatched/accepted/confirmed 조합에서만 configuration_saved를 출력합니다. admission의 expiry와 오류 경로는 미확정 결과를 삭제합니다. 실제 service·registry 테스트는 completion flush 실패와 실제 2초 지연에서 saved result 부재, 원래 epoch/key, resource hold와 publication 1회를 확인합니다.",
+        "S4": "안내 문구는 파일 저장 가능 여부와 runtime 적용 상태를 구분합니다. runner는 responsive dialog 전환을 기다리고, 각 요소에 scrollIntoView와 가시 영역 비율 1 검사를 적용합니다. 760px/2x와 360px/2x의 대상·조작·결과·버전·backup을 별도 frame으로 검사합니다.",
+        "S5": "현재 binding의 계약 검사 9개는 모두 exit_code 0입니다. 실제 build 로그, kernel-r3 보고서, completion 수정 테스트 2개 PASS와 hidden-r4의 88개 PNG 및 owned exit 0을 대조했습니다."
+      }
+    },
+    {
+      "pass": "code_quality",
+      "result": "pass",
+      "evidence": [
+        "workbench-receipts.mjs:40-49의 조건은 미확정 저장 결과의 공개 출력을 막습니다.",
+        "workbench-admission.mjs:420-430과 491-509는 시간 초과·오류 시 미확정 configuration_saved를 삭제합니다. 다른 result 종류의 처리는 유지됩니다.",
+        "workspace-registry.mjs:1116-1123은 completion을 queue에 넣기 전에 복사합니다. :769-774는 flush 성공 뒤 root를 바꿉니다. 따라서 지연된 flush가 성공하면 원래 key가 나중에 confirmed로 정착할 수 있습니다.",
+        "storage-integration.test.mjs:1470-1577은 실제 service/admission/registry/journal을 사용하고 completion sync 실패·지연을 주입합니다. adapter publication은 synthetic입니다.",
+        "일반 created/forked/removed/metadata/delivery/rejected 결과의 읽기 전용 검사 18개가 PASS했습니다.",
+        "e2e-workbench-states.mjs:3172-3269는 remount 대기와 실제 clipping을 포함한 가시 영역 검사를 수행합니다. 별도 backup frame은 전체 경로 검증에 필요한 범위를 제공합니다.",
+        "explorer/index.tsx:187-190의 안내는 실제 저장 기능과 일치합니다."
+      ]
+    }
+  ],
+  "limits": [
+    "reviewer는 파일·ledger를 수정하지 않았고 provider/Native/GUI/production Main을 실행하지 않았습니다. 제품 파일을 쓰는 테스트도 새로 실행하지 않았습니다.",
+    "실제 service·registry completion 실패·지연 결과는 보존된 테스트 코드와 completion-correction-r6.log로 확인했습니다. reviewer의 새 Node 검사는 메모리 안의 redactor 검사입니다.",
+    "contract-build-r6.log는 실제 build 실행 증거입니다. 현재 build 검사는 runner의 globalThis 표기 수정 뒤 기존 build의 source/resource byte 일치를 확인한 결과이며 새 build 실행이 아닙니다.",
+    "contract-kernel-r6-attempt2.log와 kernel-r3 보고서는 실제 Native 7개 사례의 실행 증거입니다. 현재 kernel 검사는 contract argv 수정 뒤 수행한 읽기 전용 byte 검증이며 새 Native 실행이 아닙니다.",
+    "PNG의 시각적 품질을 직접 판정하지 않았습니다. 별도 RENDER gate를 승인하지 않습니다.",
+    "forced short-IO/fsync/close syscall 실패, Windows, power-loss 내구성은 이번 검토에서 실행 검증하지 않았습니다. 관찰 버전과 fsync는 CAS나 filesystem isolation을 증명하지 않습니다.",
+    "이 판정은 configuration-save r6 수정의 CODE gate에 한정됩니다. 전체 F14, Native activation, 다른 설정 범주, MCP lifecycle 또는 wholeGoal 완료를 승인하지 않습니다."
+  ]
+}

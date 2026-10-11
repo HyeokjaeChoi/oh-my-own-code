@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "6aba776d2a233dc66ad2d4f24d85347b32d623e85dba9621231e7accb96ed066",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "code",
+    "plan_sha256": "f1394dff1232453425e0811cf666188aa6d1bb5ad5aa589454c85e48d382a2c4",
+    "schema_version": 2,
+    "source_sha256": "42b56c7b7b071a36337ad221c4fb299afa29f4cf0297274513e75fbf97186ed6",
+    "verification_sha256": "a5dee80633a44602e8c10e38696e149d543984d1921441c7ced7ccfe8bdecf02"
+  },
+  "verdict": "pass",
+  "summary": "Independent static re-review of the three prior code-review findings found no remaining actionable defect in the current validators, contracts, and recorded Figma structural evidence. PermissionRequest covers each of five states exactly once in source and evidence, with per-state Button IDs and action states matching the contract. Dark navigation checks the raw semantic alias targets. ToolCall derives a 16px bottom gap from height minus content_bottom in every master and Dark instance across six exact states, with matching target/input paths and text bounds inside each frame.",
+  "open_findings": [],
+  "review_boundary": "Reviewed current docs/design/validate_system.py, docs/runs/component-polish/check_components.py, docs/design/components.json, docs/design/system.md, docs/design/tokens/manifest.json, docs/runs/component-polish/figma-structural-evidence.json, and the rev3 input and dispatch packet. The project contents are untracked, so no meaningful committed base-to-head diff was available. Only this report was written. Recomputed harness v2_review_binding from the current run ledger: contract, environment, plan, and source hashes match the prepared input; verification_sha256 is now a5dee80633a44602e8c10e38696e149d543984d1921441c7ced7ccfe8bdecf02, while the prepared input records 5a9a6e22f1ed5a8b26df258e5432c3e6622267ed85af7490ee59f9f4236ec4b1. The current binding above is exact at report creation; the coordinator should refresh the prepared input if a matching packet is required before registering the gate.",
+  "evidence_limits": "Source contracts and recorded Figma geometry were inspected statically. The recorded components_sha256 and manifest_sha256 match current file bytes, and the ledger records zero-exit validator runs at the current source hash; this review did not execute product tests or inspect live Figma nodes. Recorded content_bottom is a reported last-child bound, so the static calculation does not independently prove live layout. Runtime hit regions, keyboard behavior, assistive technology, and browser rendering remain unverified.",
+  "provenance": {
+    "child_task_id": "/root/code_reviewer_rev3",
+    "author_task_id": "/root"
+  }
+}

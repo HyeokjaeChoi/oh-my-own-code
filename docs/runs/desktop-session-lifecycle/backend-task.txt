@@ -1,0 +1,52 @@
+Fresh bounded implementation worker. Read .codex/agents/solo_worker.toml,
+.agents/skills/solo-specialist/SKILL.md and solo-implement/SKILL.md.
+Read docs/runs/desktop-session-lifecycle/backend.packet.json and the current
+plan.md revision 2, interface.md version 2, contract.json; the approved interface
+is authoritative. Its two review-driven clarifications are mandatory.
+Root /Users/hyukjaechoi/Projects/oh-my-own-code. Shared presets/comments English;
+product UI text Korean. Coordinator owns staffing, integration and ledger.
+
+Implement AC-1/AC-3 host session lifecycle and redacted local diagnostics.
+Owned files ONLY: apps/desktop-app/src/workbench-service.mjs,
+workbench-contract.mjs, desktop-bridge.d.ts, main.mjs, and new
+workbench-session.test.mjs, plus a focused src/host/session-lifecycle.mjs helper
+only if necessary. Do not edit renderer, existing tests, package/lockfiles,
+run ledger, presets or another worker's files. No recursive agents.
+
+Keep all existing policy, identity/location, trust, IPC, preview, generation,
+unknown-receipt and send/default-model safeguards. Inspect installed SDK
+declarations for exact update/fork/remove/list behavior. Implement the contract
+literally; pin/archive are temporary app metadata. Native removal dialog
+defaults to cancellation. Never delete project folders. Reject descendant
+deletion, archived sends, workspace/session races and pending/unknown execution.
+Workspace lock must also prevent other existing mutation paths racing with
+lifecycle operations. Lock synchronously before awaits; recheck live registry
+and canonical location/SDK identity, active state and inbox at required points.
+Do not assume a failed get proves removal. Before the native dialog and again
+immediately before removal, check the authoritative paginated SDK descendant
+list, not only app registrations. Empty pages with cursor.next are not absence;
+invalid/repeated cursors and bounded exhaustion must fail closed. Use the exact
+installed typed SessionNotFoundError or exhaustive list proof after removal.
+Bound duplicate receipts independently of sessions, including removed targets;
+exact repeat cannot fork/delete twice. Unknown duplicates return the fixed
+UNKNOWN_OUTCOME failure; known failures/cancellation repeat their saved failure;
+in-flight duplicate returns BUSY. Only known-success duplicates yield snapshots.
+Preserve receipt capacity and unknown effects without automatic replay.
+If a fork exists but policy/title verification fails, do not orphan it silently
+or expose it as executable; return honest unknown/failure state with a safe
+registry strategy consistent with the contract. Do not broaden auto-trust.
+
+Diagnostics only include main-created bounded IDs/times, allowlisted operation,
+owned opaque app IDs, finite monotonic duration, result/fixed error code. Never
+include request data, title, paths, credentials, raw errors or provider payloads.
+Count mutation outcomes only, max 500 events, dropped count, app-wide aggregates;
+filtering does not turn those aggregates into session-scoped claims.
+
+Add meaningful unit regressions in the new workbench-session.test.mjs for
+schema/boolean/title/request-ID bounds; ownership/races; archive enforcement;
+fork policy/identity/unknown outcomes; delete cancel/descendants/absence proof;
+duplicate/conflicting and removed-session receipts; diagnostics redaction and
+retention. Synthetic clients/disposable files only. You may run that focused
+test and existing host tests, not full build/packaging/native E2E or real user
+projects/providers. Format only owned files. Report changed paths, commands and
+actual results, uncovered behavior and any contract conflict. No self-review.

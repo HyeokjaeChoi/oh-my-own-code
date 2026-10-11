@@ -1,0 +1,41 @@
+✔ boot-held admission allocates no leases, including after invalidation (8.231792ms)
+✔ default global node fails closed without explicit configuration (0.712958ms)
+✔ configured global node replacement shares one kernel across actual graph consumers (1.256083ms)
+✔ configured rejects malformed closed inputs synchronously without getter or proxy traps (0.46275ms)
+✔ boot holds are copied, sorted, deduplicated, deeply frozen and remain held (0.60025ms)
+✔ initialization accepts exact UTF8 and count boundaries (44.065792ms)
+✔ transaction rejects invalid inputs before callbacks and does not execute getters (0.581833ms)
+✔ capabilities reject forgery, copies, uncovered projects, child fibers and escaped reuse (3.103ms)
+✔ same-fiber public reentry fails before acquiring even disjoint projects (0.348708ms)
+✔ inherited child transaction reentry rejects before parent-held or disjoint locks (0.48675ms)
+✔ same projects serialize; disjoint projects continue; reversed duplicate inputs cannot deadlock (1.872417ms)
+✔ reverse inputs acquire the sorted first project before touching the second (1.701416ms)
+✔ callback throw, failed Effect and interruption release all gates and expire capabilities (0.620875ms)
+✔ 32 waiters exclude the holder; overflow never enters; cancellation restores every project slot (62.218084ms)
+✔ invalidation proceeds while gates are held and is permanent for existing and new projects (0.57775ms)
+✔ invalid invalidation reasons fail without changing runtime state (0.394042ms)
+✔ each acquisition of the same configured Layer owns an independent kernel (0.223125ms)
+✔ location owner retains building, ready and finalizing incarnations without settlement claims (0.853ms)
+✔ location metadata excludes active project transactions without holding across Native effects (1.76525ms)
+✔ queued metadata precedes later shared admissions with staggered overlapping readers (5.157458ms)
+✔ metadata admission bounds and cancellation reopen readers only after the last writer leaves (64.435875ms)
+✔ failed queued metadata releases admission and inherited lifecycle reentry fails before waiting (2.303625ms)
+✔ location handles reject forgery, cross owner use, identity rebinding and reentrant lifecycle mutation (0.436209ms)
+✔ location capacity retains all thirty-two unknown entries and refuses another before effects (0.533958ms)
+✔ location identity validation never invokes caller accessors or Proxy traps (0.239875ms)
+✔ cancelled exclusive metadata waiter releases graph permits and does not leak an unknown build (1.767584ms)
+✔ actual acquired Control prepareTask holds without allocating authority (0.414542ms)
+✔ prepare captures entry metadata and observes runtime loss before deferred execution (0.323708ms)
+✔ trusted configured callback runs only at acquisition and receives the actual shared Service (0.203416ms)
+✔ real Control owns inventory counters and refuses caller completeness and old registration closures (0.687375ms)
+✔ location root pins actual directory before services and closes only at observed scope exit (2.901667ms)
+✔ location root replacement cannot be blessed by a current transaction or rename-back (2.022417ms)
+✔ location root capture refuses missing roots and cannot turn failure into a ready pin (0.405584ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 386.377042

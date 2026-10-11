@@ -1,0 +1,19 @@
+{
+  "status": "Actual private producer API; no public DTO/runtime acceptance yet",
+  "sources": {
+    "apps/desktop-app/src/native-skills-protocol.mjs": "e603d32a48f70dbda0e8765479472391c21aef9c8d89681859793b65dd4212ca",
+    "apps/desktop-app/src/configuration-skill-runtime.test.mjs": "3f206924368c6089084a8817c1603e51d1e7323f6cc9a4c650dcd409c34e746e"
+  },
+  "tests": "Main initial missing module RED, actual2/2GREEN, scopedlintPASS",
+  "methods": [
+    "observe",
+    "registerDisabled",
+    "removeOwned"
+  ],
+  "nonce": "Existing event-host child nonce, private only",
+  "limits": {
+    "owned": 16,
+    "native": 64,
+    "operations": 256
+  }
+}

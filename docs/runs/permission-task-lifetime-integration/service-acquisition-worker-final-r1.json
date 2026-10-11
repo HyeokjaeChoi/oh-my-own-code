@@ -1,0 +1,11 @@
+{
+  "agent_id": "01a127a8-cb70-7920-9989-0c97a14d4db7",
+  "actual_agent_result": {
+    "status": {
+      "01a127a8-cb70-7920-9989-0c97a14d4db7": {
+        "completed": "완료했습니다. 작성 파일은 [native-permission-service-acquisition.test.mjs](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-service-acquisition.test.mjs) 하나입니다.\n\nSHA256:\n```text\n0c1fa75635b9d759f4e834526e78d29af9fa514b72fd3693666baf32089e43d1\n```\n\n검사 결과: **Node 16/16 PASS**, `node --check`, ESLint, Prettier 모두 PASS.\n\n원본 생성자 확인 결과:\n\n- **Provider — `Service71`, Layer 228–358행:** 349행에서 `subscribe()`를 호출하고 scoped Fiber를 시작합니다. 이벤트 전에는 snapshot 조회와 알림 발행을 실행하지 않습니다.\n- **Model — `Service68`, Layer 63–219행:** 183행에서 `providers.snapshot()` Effect를 생성합니다. 이때 Effect 본문은 실행하지 않습니다. 실제 원본 Provider를 연결해도 생성·종료 중 `Integration.list` 실행은 0회입니다. 200행에서 구독을 시작합니다.\n- **구독 시점:** 직접 획득하는 scripted Stream은 build 반환 전에 획득했습니다. 비동기 producer Stream은 반환 뒤에 획득했습니다. `startImmediately`만으로 실제 Bus의 획득 완료 시점을 보장할 수 없습니다.\n- **종료 소유권:** Provider 310행, Model 142행의 원본 finalizer가 작동합니다. Scope 종료와 사용자 Fiber 취소는 차단된 알림을 취소하고 구독을 해제합니다. 원본 State의 shutdown은 상태를 닫으며 알림을 발행하지 않습니다.\n\n원본 SHA는 **추출 전에 receipt와 대조**했습니다.\n\n| 원본 | SHA256 |\n|---|---|\n| `config-zrq68ahz.js` | `475eaad9396f996a69155ece0828e12135646cad1905c41e2f123a9fa2a34757` |\n| `config-2e655exz.js` | `dec09d0bf8fa0b6716b82502604014af9db5734d2ac3ef3315c6bfb89767824e` |\n| `config-rdw6cm16.js` — `create3` 73–162행 | `8627e8ffcac2bfc7225c3d4731b0d180c86dc1cf9b445e7f2f74fb436328288c` |\n\n실제 **Effect 4.0.0-rc.112**를 사용했습니다. Effect JS 452개의 receipt 해시도 검증했습니다. AST 추출에서 알 수 없는 의존성과 import는 거부합니다.\n\n**다음 수정 지점:** Provider 349행·Model 200행의 구독 획득 경계와 Model 183행의 snapshot factory입니다. 원본 State finalizer 소유권은 유지해야 합니다.\n\nBus·Integration·Location과 빈 snapshot용 `freeze`는 명시한 테스트 대역입니다. Native/runtime 시작, 외부 DB·파일·프로세스·network·SDK 작업, provider transform callback은 실행하지 않았습니다. Main의 DB/Bus 감사는 중복하지 않았습니다. **Control held / inventory false는 유지하며 startup 승인을 주장하지 않습니다.**"
+      }
+    },
+    "timed_out": false
+  }
+}

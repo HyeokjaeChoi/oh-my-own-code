@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "d37eab3f25704784ec35fbea95adb660481da0896d3a2a6060f1fae53fd234d0",
+    "gate": "plan",
+    "plan_sha256": "0f9d084716a6f9225b337a1e549fa47a439187dbd0e64590d65a44b891eb0eb8",
+    "schema_version": 2,
+    "source_sha256": "9ed0d599560052472ed500821a979ca545e1e28a8a8f1d2350f415293555b420",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "plan.md revision 1은 설계 전용 목표에 맞으며, 범위와 순서가 적절합니다. 기존 DS02/03 및 design-contract-r4/schema-contract-r3 요구를 재사용합니다. immutable receipt, no replay, single journal, 두 baseline policy 단계, 최초 효과 전 genuine Native inbox ID와 raw-input 바인딩, ACK 이후 task/IO/child settlement, live steer/queue와 recovered uncertainty 구분, metadata IPC 16KiB 제한을 설계 완료 조건으로 둡니다. public DTO 적합성이나 command/bootstrap용 prompt digest를 가정하지 않습니다. location correction CODE 통과와 독립 design-spec 승인 전에는 후속 구현을 차단합니다. 정적 관찰은 runtime 증거가 아닙니다. 최초 검토 전후 바인딩과 선택 소스 해시는 일치했습니다. 이번 수정에서는 plan-input-r1.json을 다시 읽고 reviewed 전체를 그대로 복사했습니다. 실질 검토 결과는 유지합니다. 파일 쓰기, 위임, 테스트 또는 제품 실행은 하지 않았습니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a1241f-5074-7c61-94be-5fd88ff9dcd6"
+  }
+}

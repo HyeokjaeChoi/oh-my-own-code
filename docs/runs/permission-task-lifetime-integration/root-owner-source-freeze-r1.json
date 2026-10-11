@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "worker": "01a12575-2775-7762-854c-ea7814c9c713",
+  "files": [
+    {
+      "path": "apps/desktop-app/src/host/workspace-root-authority.mjs",
+      "sha256": "d644cf8c5d45637306dd3bea92566290447d5151547df0df9b45a8c97eff7000",
+      "bytes": 5268
+    },
+    {
+      "path": "apps/desktop-app/src/host/workspace-root-authority.test.mjs",
+      "sha256": "bd44cbe62ff4568f3ab094fc8f850b406e9307ab1c1e5cf85fb9491f55b15890",
+      "bytes": 18380
+    }
+  ],
+  "worker_checks": {
+    "node": {
+      "passed": 23,
+      "red_passed": 7,
+      "red_failed": 13
+    },
+    "eslint": "pass",
+    "prettier": "pass"
+  },
+  "independent_code": "not_performed",
+  "runtime": "Node only; no Native/Bun/Electron/build/provider"
+}

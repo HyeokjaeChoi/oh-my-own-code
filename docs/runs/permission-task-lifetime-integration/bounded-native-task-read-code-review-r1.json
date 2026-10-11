@@ -1,0 +1,100 @@
+{
+  "verdict": "changes_requested",
+  "scope": "plan revision9의 same-Task descriptor acquisition, exact4",
+  "findings": [
+    {
+      "severity": "P2",
+      "location": {
+        "path": "/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/native-permission-leases.mjs",
+        "start": 309,
+        "end": 310
+      },
+      "title": "후속 authority 검사가 rejected Promise 처리를 누락함",
+      "trigger": "일반 함수인 settings.check가 registry.cancel(handle), origins.revoke(origin) 또는 registry.close()를 호출한 뒤 Promise.reject(error)를 반환한다.",
+      "impact": "후속 readCurrent가 예외를 던져 반환된 Promise가 처리되지 않는다. IO는 거부되지만 unhandled rejection이 발생한다. Node 설정에 따라 프로세스가 종료될 수 있다.",
+      "evidence": [
+        "일반 함수가 Promise를 반환하는 입력은 초기 함수 검사에서 제외되지 않는다.",
+        "309행에서 받은 Promise는 310행의 예외 때문에 resource에 반환되지 않는다.",
+        "native-descriptor-read-resource.mjs:111-114의 기존 Promise rejection 처리가 이 경로에서는 실행되지 않는다.",
+        "현재 reentrant cancellation 테스트는 Promise 반환을 결합하지 않는다."
+      ],
+      "fix": "settings.check 반환 직후, 후속 readCurrent 전에 실제 Promise의 rejection handler를 등록한다. 기존 후속 authority 검사와 Promise 반환값 거부 동작을 유지한다. cancel/revoke/close와 rejected Promise를 결합한 회귀 검증을 추가한다.",
+      "verification": "정적 제어 흐름으로 확인했다. 재현 테스트는 실행하지 않았다."
+    }
+  ],
+  "exact4": [
+    {
+      "path": "apps/desktop-app/src/native-permission-task-observer.mjs",
+      "start_sha256": "3b19b6ee2f53db9be19d4db02fbd7481479e6b7529ce3e0e9e764d7754a3d3e9",
+      "end_sha256": "3b19b6ee2f53db9be19d4db02fbd7481479e6b7529ce3e0e9e764d7754a3d3e9"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-observer.test.mjs",
+      "start_sha256": "50c8df8c80ea512b3e414eec09babaaa9d0703bda3b9b32b07319d5dec51f935",
+      "end_sha256": "50c8df8c80ea512b3e414eec09babaaa9d0703bda3b9b32b07319d5dec51f935"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-leases.mjs",
+      "start_sha256": "019bfe7bddb707d05282f3ed2efceba24f4a9a1992e3cd4d29896141fc103456",
+      "end_sha256": "019bfe7bddb707d05282f3ed2efceba24f4a9a1992e3cd4d29896141fc103456"
+    },
+    {
+      "path": "apps/desktop-app/src/native-permission-task-read.test.mjs",
+      "start_sha256": "25b9f6c9df8d785fd63e92fe151d669b1bd7ba162badd48ca3010d7a991d3414",
+      "end_sha256": "25b9f6c9df8d785fd63e92fe151d669b1bd7ba162badd48ca3010d7a991d3414"
+    }
+  ],
+  "checked_evidence": {
+    "bindings": [
+      "exact4 시작·종료 hash 모두 source checkpoint와 일치",
+      "plan revision9 hash가 code packet과 일치",
+      "reader profile과 적용 skill hash가 code packet과 일치",
+      "보존된 원본 3개의 hash가 각 prechange manifest와 일치"
+    ],
+    "static_review": [
+      "allocation, fixed resource 생성, private claim이 하나의 동기 Effect.try callback 안에 있음",
+      "captured Fiber 일치 검사 후 allocation 수행",
+      "기존 bindFileIO claim 구현은 추출 전과 동일",
+      "registry의 running 상태, scope usability, 실제 Fiber exit, locationId 검사 확인",
+      "사용자 check 전후 lease 검사 확인",
+      "실제 resource의 factory 종료, active IO 종료, close 결과에 따른 completion 확인",
+      "테스트는 Effect 4.0.0-rc.112를 사용하고 physical kernel import만 교체",
+      "budget16 테스트는 실제 scheduler yield 발생을 검사"
+    ],
+    "saved_logs": [
+      {
+        "path": "docs/runs/permission-task-lifetime-integration/native-task-read-contract-r1.log",
+        "result": "11 PASS, 0 FAIL"
+      },
+      {
+        "path": "docs/runs/permission-task-lifetime-integration/native-task-read-descriptor-r1.log",
+        "result": "223 PASS, 0 FAIL"
+      },
+      {
+        "path": "docs/runs/permission-task-lifetime-integration/native-task-read-metadata-r1.log",
+        "result": "119 PASS, 0 FAIL"
+      },
+      {
+        "path": "docs/runs/permission-task-lifetime-integration/native-task-read-owner-regressions-r3.log",
+        "result": "66 PASS, 0 FAIL"
+      },
+      {
+        "path": "docs/runs/permission-task-lifetime-integration/native-task-read-prettier-r1.log",
+        "result": "PASS 문구 확인"
+      },
+      {
+        "path": "docs/runs/permission-task-lifetime-integration/native-task-read-source-eslint-r1.log",
+        "result": "빈 로그 확인. 로그 자체에는 exit status가 없음"
+      }
+    ],
+    "historical_failures": "owner regression r1/r2의 acquireDescriptorRead public-key fixture 실패가 보존되어 있음을 확인"
+  },
+  "limits": [
+    "테스트, Bun, Native, Main, Electron, server, build, provider, GUI를 실행하지 않았다.",
+    "저장된 테스트 로그를 읽었다. 해당 실행을 직접 관찰하지 않았다.",
+    "scripted kernel 결과는 실제 physical IO acceptance 증거가 아니다.",
+    "scheduler yield 발생 검사는 특정 acquisition 경계의 yield를 증명하지 않는다. claim 순서는 동기 callback 구조로 확인했다.",
+    "이 검토는 Control positive permission grant, Native 설치 또는 full18/F09 승인이 아니다.",
+    "파일 수정, 위임, ledger 작성, self-approval을 하지 않았다."
+  ]
+}

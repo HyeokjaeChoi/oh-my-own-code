@@ -1,0 +1,105 @@
+{
+  "schema_version": 2,
+  "acceptance": {
+    "M1": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-mcp/source-freeze-r12.json",
+        "docs/runs/configuration-mcp/verification-summary-r12.json"
+      ],
+      "checks": [
+        "mcp",
+        "native"
+      ]
+    },
+    "M2": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-mcp/source-freeze-r12.json",
+        "docs/runs/configuration-mcp/verification-summary-r12.json"
+      ],
+      "checks": [
+        "mcp",
+        "native"
+      ]
+    },
+    "M3": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-mcp/source-freeze-r12.json",
+        "docs/runs/configuration-mcp/verification-summary-r12.json"
+      ],
+      "checks": [
+        "mcp",
+        "native"
+      ]
+    },
+    "M4": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-mcp/source-freeze-r12.json",
+        "docs/runs/configuration-mcp/verification-summary-r12.json"
+      ],
+      "checks": [
+        "mcp",
+        "hidden-ui"
+      ]
+    },
+    "M5": {
+      "status": "verified",
+      "artifacts": [
+        "docs/runs/configuration-mcp/source-freeze-r12.json",
+        "docs/runs/configuration-mcp/verification-summary-r12.json"
+      ],
+      "checks": [
+        "mcp",
+        "native",
+        "hidden-ui",
+        "build",
+        "typecheck",
+        "boundaries",
+        "bundle",
+        "lint",
+        "format"
+      ]
+    }
+  },
+  "changed_paths": [
+    "apps/desktop-app/scripts/configuration-mcp-probe.mjs",
+    "apps/desktop-app/scripts/configuration-mcp-probe.test.mjs",
+    "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+    "apps/desktop-app/scripts/fixtures/mcp-exit-observer.py",
+    "apps/desktop-app/scripts/fixtures/p7-storage-owner-host.mjs",
+    "apps/desktop-app/scripts/fixtures/synthetic-mcp-server.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.mjs",
+    "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+    "apps/desktop-app/scripts/run-evidence.mjs",
+    "apps/desktop-app/scripts/run-evidence.test.mjs",
+    "apps/desktop-app/src/desktop-bridge.d.ts",
+    "apps/desktop-app/src/host/storage-integration.test.mjs",
+    "apps/desktop-app/src/host/storage-journal.mjs",
+    "apps/desktop-app/src/host/storage-journal.test.mjs",
+    "apps/desktop-app/src/host/workbench-admission.mjs",
+    "apps/desktop-app/src/host/workbench-admission.test.mjs",
+    "apps/desktop-app/src/host/workbench-mcp.mjs",
+    "apps/desktop-app/src/host/workbench-mcp.test.mjs",
+    "apps/desktop-app/src/host/workbench-receipts.mjs",
+    "apps/desktop-app/src/host/workspace-registry.mjs",
+    "apps/desktop-app/src/host/workspace-registry.test.mjs",
+    "apps/desktop-app/src/main.mjs",
+    "apps/desktop-app/src/renderer/entities/workbench/index.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/controller.ts",
+    "apps/desktop-app/src/renderer/entities/workbench/model/store.ts",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/drafts.module.css",
+    "apps/desktop-app/src/renderer/features/configuration-drafts/index.tsx",
+    "apps/desktop-app/src/renderer/shared/api/index.ts",
+    "apps/desktop-app/src/renderer/shared/transport/index.ts",
+    "apps/desktop-app/src/renderer/widgets/explorer/index.tsx",
+    "apps/desktop-app/src/workbench-contract.mjs",
+    "apps/desktop-app/src/workbench-contract.test.mjs",
+    "apps/desktop-app/src/workbench-service.mjs",
+    "apps/desktop-app/src/workbench-store.test.mjs"
+  ],
+  "deleted_paths": [],
+  "completion_scope": "Explicit supported workspace MCP controls. Full F14 and wholeF01-18 Goal remainACTIVE."
+}

@@ -1,0 +1,29 @@
+✔ Node import is inert; factory refuses Node and closed options (1.043167ms)
+✖ owned production kernel on manifest-verified app-staged pinned Bun (13818.296584ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13878.333542
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/configuration-save-kernel.test.mjs:64:3
+✖ owned production kernel on manifest-verified app-staged pinned Bun (13818.296584ms)
+  AssertionError [ERR_ASSERTION]: Synthetic fixture failed; inspect /Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/configuration-agents/evidence/kernel-red-r1/synthetic-Ida5dA/execution.json
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/configuration-save-kernel.test.mjs:150:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

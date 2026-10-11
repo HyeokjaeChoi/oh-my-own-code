@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "745984df9aa632b6b0336b5700513859883c0d524e418dbb56906d9d5a028449",
+    "documents_sha256": "d31590176aaf742dbe18e4dce54cb44ca801e4b13f12433915d42120d7c12d65",
+    "gate": "design_spec",
+    "plan_sha256": "23777e96ef18faf4923b407a0445b8f06d3dc04b748ca20e0dd16c74a936391d",
+    "schema_version": 2
+  },
+  "verdict": "pass",
+  "summary": "Independent sequential design-spec review: interface v3 requires unfiltered pagination and both parentID/fork.sessionID checks, fails closed for malformed lineage and preserves pagination/absence/unknown safeguards. Exact typed empty_session maps to EMPTY_SESSION with idle parent and stored repeatable failure. Sufficiently explicit without broadening scope. Reader verified plan/interface hashes; supplied SDK probes were not independently executed. No implementation or rendered-UI claim.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "/root/session_sdk_review",
+    "author_task_id": "/root"
+  }
+}

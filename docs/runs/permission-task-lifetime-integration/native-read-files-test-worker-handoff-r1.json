@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "child_task_id": "01a12662-9d8f-76a0-adfa-653ba7c8a4a6",
+  "report": "[테스트 파일](/Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/native-descriptor-read-resource.test.mjs) 하나만 수정했습니다. 기존 테스트를 유지하고 **12개 사례**를 추가했습니다.\n\n- 위조·미청구·재사용 resource 거절, getter·Proxy trap 미실행\n- 256회 호출, 요청량 32MiB, directory 누적 8192행 한도\n- 대기 중 취소, 결과 반환 직후 취소, root 이동·복원\n- 파일 교체 실패 후 원래 opaque identity 유지\n\n**검증:** Node v26.11.0에서 지정 suite **43/43 통과**. 해당 파일의 ESLint와 Prettier 검사도 통과했습니다. Production 소스 결함은 발견하지 못했습니다.\n\n테스트 파일 SHA256:\n```text\nddf92b90cb73d5d934198c2619d1b1c7a050f0f3da2eedfb84d98b04db719e66\n```\n\n검사 시 resource.mjs SHA256:\n```text\nf90dfdeb7c559289a05030929cdd15fa7fee475f013ae5b98f4fd38733f2ceaf\n```\n\nScripted 결과는 물리적 confinement 증거가 아닙니다. 경로 한도는 호출 한도와 함께 도달하므로 독립 검증으로 주장하지 않습니다. Bun·Native는 실행하지 않았습니다. 독립 code review와 통합 판단은 Main에 남아 있습니다."
+}

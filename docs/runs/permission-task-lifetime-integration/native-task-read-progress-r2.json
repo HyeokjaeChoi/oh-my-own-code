@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "planRevision": 9,
+  "status": "in_progress",
+  "implemented": [
+    "Fixed actual descriptor resource construction + original IO slot claim in one synchronous captured-Fiber callback",
+    "Real running lease / original scope / actual Fiber exit and location identity checks; no Task grant",
+    "Rejected Promise handling before reentrant post-authority check"
+  ],
+  "checks": {
+    "native-task-read": "12PASS",
+    "native-descriptor-read": "223PASS",
+    "native-metadata": "119PASS",
+    "sourceLintFormat": "exit0"
+  },
+  "independentReview": {
+    "r1": "changes_requested P2 rejected Promise loss; actual RED unhandled rejection plus failed cleanup preserved",
+    "r2": "correctionCODE PASS; exact r5 preExec PASS; report saved"
+  },
+  "physical": {
+    "prepared": "descriptor-probe-preparation-r5.json",
+    "executed": true,
+    "older": "r2 failed, r3/r4 historical no replay",
+    "passed": true,
+    "cases": 11,
+    "report": "descriptor-probe-r5-execution.json",
+    "fixture": "descriptor-probe-r5-fixture-result.json",
+    "namespace": "/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-descriptor-probe-jzs4oG",
+    "noReplay": true
+  },
+  "next": [
+    "Complete source-owned builtin/hook inventory with original generation",
+    "Actual mode/compiler/Native policy readback",
+    "Main durable one-use handoff + complete Task/IO/coordinator lineage then coherent runtime/GUI checks"
+  ],
+  "limits": [
+    "Control remains held",
+    "No Native/service/build/provider/GUI execution",
+    "full18/F09 incomplete"
+  ]
+}

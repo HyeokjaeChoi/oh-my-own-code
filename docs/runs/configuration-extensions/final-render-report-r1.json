@@ -1,0 +1,122 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "633fa293eeba278c2158f0e8fcbefdb36c8ef8d27914fddda76b3a4469cd3c4a",
+    "environment_sha256": "88e88bd173dd59c50b780a3c4bcf8307757869b7ea056c63b4a2b37d23c6b459",
+    "gate": "design",
+    "plan_sha256": "c557d9221e285764bde9f80d09c698dcf6457747ec346d50de6b178a2beb90af",
+    "schema_version": 2,
+    "source_sha256": "113fb104a12bf9be836b150a821d2e0b598f097832351b77e3b5cb6fe4172878",
+    "verification_sha256": "de4b76f16e1b5dc8fe01d0047cbd3446b3b5d31b1569b872068c1c13a6056add",
+    "work_class_sha256": "426030aae5d88356c9c39894eb04e091e3802cdb7315e9c46af9e39fb3ffb5ab"
+  },
+  "verdict": "pass",
+  "summary": "plan revision 6과 design version 1의 확장 상태 조회 범위에서 수정이 필요한 렌더 결함을 발견하지 못했습니다. 실제 PNG 20개를 직접 확인했습니다. Plugin 상태, Tools 등록 여부, Hooks 확인 불가가 구분됩니다. 조회·취소 버튼과 한국어 안내가 명확합니다. 이 판정은 observe-only 증분에 한정합니다. 전체 제품은 미완성입니다.",
+  "open_findings": [],
+  "inspection": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "run": "docs/runs/configuration-extensions",
+    "mode": "접근 가능한 실제 구현 캡처의 독립 읽기 전용 검토",
+    "capture_root": "docs/runs/configuration-extensions/evidence/hidden-r1/ui-states",
+    "directly_inspected_png_count": 20,
+    "desktop": {
+      "pixel_dimensions": {
+        "width": 2880,
+        "height": 1856
+      },
+      "viewport": {
+        "width": 1440,
+        "height": 928
+      },
+      "zoom_factor": 1,
+      "files": [
+        "desktop-configuration-extensions-populated-desktop-status-synthetic.png"
+      ]
+    },
+    "narrow200": {
+      "pixel_dimensions": {
+        "width": 1520,
+        "height": 1936
+      },
+      "content_bounds": {
+        "width": 760,
+        "height": 968
+      },
+      "viewport": {
+        "width": 380,
+        "height": 484
+      },
+      "zoom_factor": 2,
+      "files": [
+        "desktop-configuration-extensions-populated-narrow200-status-synthetic.png",
+        "desktop-configuration-extensions-populated-narrow200-plugins-0-3-synthetic.png",
+        "desktop-configuration-extensions-populated-narrow200-plugins-1-1-synthetic.png",
+        "desktop-configuration-extensions-empty-narrow200-plugins-message-synthetic.png",
+        "desktop-configuration-extensions-plugins-unavailable-narrow200-status-synthetic.png",
+        "desktop-configuration-extensions-unavailable-narrow200-status-synthetic.png",
+        "desktop-configuration-extensions-unsupported-source-narrow200-plugins-1-4-synthetic.png",
+        "desktop-configuration-extensions-pending-narrow200-status-synthetic.png",
+        "desktop-configuration-extensions-escape-late-response-narrow200-status-synthetic.png",
+        "desktop-configuration-extensions-successful-history-stale-narrow200-plugins-message-synthetic.png",
+        "desktop-configuration-extensions-held-reload-original-key-narrow200-status-synthetic.png",
+        "desktop-configuration-extensions-untrusted-narrow200-trust-synthetic.png",
+        "desktop-configuration-extensions-disconnected-narrow200-status-synthetic.png",
+        "desktop-configuration-extensions-populated-narrow200-tools-0-1-synthetic.png",
+        "desktop-configuration-extensions-populated-narrow200-hooks-synthetic.png",
+        "desktop-configuration-extensions-plugins-unavailable-narrow200-plugins-message-synthetic.png",
+        "desktop-configuration-extensions-cancel-late-response-narrow200-status-synthetic.png",
+        "desktop-configuration-agent-file-restoredoldkey-status-synthetic.png",
+        "desktop-configuration-agent-runtime-restoredoldkey-runtime-status-synthetic.png"
+      ]
+    },
+    "capture_extent": "직접 본 20개는 모두 전체 viewport 캡처입니다. 작은 요소 crop이 아닙니다. 각 파일은 해당 요소까지 세로 스크롤한 화면입니다. 화면 밖의 모든 내용을 한 이미지에서 확인했다는 뜻은 아닙니다."
+  },
+  "evidence_validation": {
+    "source_freeze": "등록된 41개 파일의 현재 SHA-256이 모두 일치합니다.",
+    "build": "현재 build stamp의 SHA-256이 manifest와 일치합니다. build 입력 146개는 파일 목록, 크기, mode, SHA-256이 일치합니다. 추가·누락 입력이 없습니다. 산출물 7개와 선택된 검사 스크립트·fixture 4개도 기록과 일치합니다.",
+    "build_stamp_sha256": "618264eb6216f69111b7363fcb8ca9d95bef92c52e60b6008707e3fb2107d5b1",
+    "png_inventory": "등록된 PNG 835개가 모두 존재하며 경로가 중복되지 않습니다. PNG 헤더의 픽셀 크기가 모두 기록과 일치합니다. 이 중 확장 캡처는 323개입니다. 픽셀을 직접 본 파일은 위의 20개입니다.",
+    "extension_metadata": "27개 확장 상태 기록을 확인했습니다. 모든 frame이 fullyVisible로 기록되어 있습니다. narrow200 기록은 contentWidth 760, zoomFactor 2, horizontalOverflow false입니다. 모든 확장 상태의 effects는 0으로 기록되어 있습니다.",
+    "origin": "실제 built Electron renderer와 preload를 synthetic Main fixture로 구동한 hidden capture입니다. 실제 Native 데이터가 이 UI에 연결된 화면이라는 주장은 하지 않습니다.",
+    "native": "별도 evidence/native-r3/extension-evidence.json은 같은 build stamp를 사용합니다. 실제 Native 관찰 6개 항목의 pass, Plugin 89개, Tools 62개와 보존 결과를 확인했습니다. 이는 UI의 시각 증거를 대신하지 않습니다.",
+    "actual_checks": "등록된 9개 검사는 모두 같은 source binding, exit_code 0, inputs_changed false로 기록되어 있습니다. 이번 검토에서는 재실행하지 않았습니다.",
+    "agent_filename_correction": "현재 manifest의 Agent file/runtime restoredoldkey 경로가 서로 다릅니다. 대표 파일 2개의 픽셀도 직접 확인했습니다. 이전 terminal run은 수정하지 않았습니다."
+  },
+  "judgment": {
+    "direct_visual_observations": [
+      "A Quiet Dock의 중립색, 여백 중심 위계, 코드 경로 서체와 파란 포커스 표시가 기존 화면과 일관됩니다.",
+      "긴 안전 경로와 ID가 좁은 화면에서 줄바꿈됩니다. 직접 본 대상에서 가로 잘림이나 컨트롤 겹침을 발견하지 못했습니다.",
+      "Plugin의 Native 활성·Native 실패와 Tools의 Native에 등록됨이 별도로 표시됩니다. 소유 관계를 추정하는 표시는 보이지 않습니다.",
+      "등록 여부가 사용 권한이나 실행 성공을 뜻하지 않는다는 설명이 있습니다. 발견된 설정 파일의 자동 로드·실행도 주장하지 않습니다.",
+      "Hooks는 목록 확인 불가로 표시됩니다. hook이 없거나 비활성이라는 뜻이 아니라는 설명을 직접 확인했습니다.",
+      "empty, partial, unavailable 안내가 구분됩니다. 확인 실패를 빈 목록 성공으로 표시하지 않습니다.",
+      "unsupported_source는 원본을 표시하지 않는다는 안내로 대체됩니다. 직접 본 대상에 raw secret이나 원본 URL이 보이지 않습니다.",
+      "조회 중에는 조회 버튼이 비활성이고 취소 버튼에 포커스가 보입니다. 취소 후에는 이전 결과가 현재 상태가 아니라는 안내와 빈 현재 결과 영역이 보입니다.",
+      "stale·held·disconnected 화면에서 이전 항목이 현재 결과로 표시되지 않습니다.",
+      "untrusted 안내는 기존 새 세션 경로, 신뢰 확인 창, 새 세션 추가라는 부작용과 이후 명시적 재조회를 설명합니다.",
+      "확장 영역의 행동은 확장 상태 확인과 조회 취소입니다. 설치·업데이트·실행·reload 컨트롤은 보이지 않습니다."
+    ],
+    "recorded_behavior": {
+      "keyboard": "저장된 실행 기록은 enabled 컨트롤의 Tab·Shift+Tab 복귀, Enter 조회·취소, Escape 취소와 즉시 status 포커스를 확인합니다. 이후 캡처 준비가 조회 버튼으로 포커스를 옮기므로 취소 PNG의 링만으로 status 포커스를 증명하지 않습니다.",
+      "selection": "전체 경로와 ID의 텍스트 선택이 기록되어 있습니다. clipboard 내용은 검사하지 않았습니다.",
+      "held": "원래 runtimeEpoch와 operationId를 유지한 unknown 영수증, 재로드 후 held 유지, reads 0과 noReplayOrHoldClearing이 기록되어 있습니다.",
+      "freshness": "취소 및 workspace·epoch·floor 변경 뒤 늦은 성공 결과 억제가 기록되어 있습니다."
+    },
+    "source_inference": "CSS와 캡처 스크립트는 토큰 연결과 기록 해석의 보조 근거로만 사용했습니다. 소스나 passing assertion을 렌더 증거로 사용하지 않았습니다.",
+    "subjective_preferences": "변경 요청으로 올릴 주관적 선호 사항은 없습니다."
+  },
+  "limits": [
+    "이번 검토에서 앱, Native, Bun, Electron, UI 또는 provider를 실행하지 않았습니다. build와 test도 실행하지 않았습니다.",
+    "OS 전경 키보드 조작, screen reader 음성, 실제 clipboard, Dark mode, Windows와 packaged 배포는 직접 검증하지 않았습니다.",
+    "held 상태에서 다른 초안에 실제로 입력하는 동작은 이번 직접 관찰 범위에 없습니다. 입력 가능 여부를 스크린샷만으로 확정하지 않습니다.",
+    "event-host 전체 resource inventory는 이번 검토에서 다시 해시하지 않았습니다.",
+    "이 결과는 독립 RENDER 판정입니다. CODE gate나 전체 F14·제품 완료를 대신하지 않습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11b73-11b0-7fc1-bb39-a07080e7bbf3",
+    "identity_source": "실제 CODEX_THREAD_ID 환경 변수",
+    "writes_performed": false,
+    "recursive_delegation_performed": false,
+    "ledger_written": false
+  }
+}

@@ -1,0 +1,48 @@
+✔ actual Control retains only unsupported metadata from the same source/activation and clears it on dispose (6.879959ms)
+✔ source-like IDs, undeclared copies, changed effects and reused activation results cannot mint metadata (0.932625ms)
+✔ read metadata cannot cross Location incarnation or survive reload (1.045708ms)
+▶ actual Read → PluginInternal → supervisor copies → loader retains inert metadata on the original activation Scope
+  ✔ ordinary actual loader disposal (3.349125ms)
+  ✖ 32 queued writers during actual loader disposal (33.919208ms)
+✖ actual Read → PluginInternal → supervisor copies → loader retains inert metadata on the original activation Scope (49.072292ms)
+✔ graph-owned Read source rejects getters, proxies, asynchronous verifier and reconfiguration before callbacks (0.443958ms)
+✔ terminal cleanup joins duplicates once at saturation and does not open ordinary admission (32.582083ms)
+✔ reentrant terminal cleanup cannot cache a failure or deadlock later actual disposal (0.731709ms)
+✔ source-owned publication API exists before original State registration (5.305709ms)
+✔ original State/editor publishes exact declaration, replays and retires original Scope (3.471ms)
+✔ unowned callback is refused before original registration or callback effects (0.732ms)
+✔ different activation Scope is refused before publication (0.547167ms)
+✔ returned declaration must be the exact originally published value (0.712292ms)
+✔ one original plugin activation cannot publish a second declaration (0.837333ms)
+✔ disposed publication callback cannot replay even when retained (0.811ms)
+✔ closed original activation Scope cannot admit a late declaration result (0.697458ms)
+✔ failed underlying registration revokes its captured publisher before replay (0.697208ms)
+✔ closing plugin owner revokes publisher even before original tool dispose (0.861ms)
+✔ actual published list joins source metadata once and refuses same-ID replacement (0.649084ms)
+✔ actual fixed Read publisher reaches original State and exact Control result (2.526708ms)
+✔ missing current editor row cannot be replaced by successful plugin result (0.541541ms)
+✔ original State.batch defers list notification until branded result is accepted (0.8415ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 21
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 472.369292
+
+✖ failing tests:
+
+test at apps/desktop-app/src/native-permission-read-metadata.test.mjs:308:13
+✖ 32 queued writers during actual loader disposal (33.919208ms)
+  Error: native_permission_inventory_unverified
+      at error (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-read-metadata-mD4L5K/native-permission-control.mjs:33:25)
+      at reject (file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-read-metadata-mD4L5K/native-permission-control.mjs:35:9)
+      at file:///private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/omoc-read-metadata-mD4L5K/native-permission-control.mjs:1205:11
+      at ~effect/Utils/internal (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Utils.js:79:14)
+      at Object.~effect/Effect/args (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:732:22)
+      at ~effect/Effect/evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:682:22)
+      at FiberImpl.runLoop (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:462:107)
+      at FiberImpl.evaluate (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:422:23)
+      at file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/internal/effect.js:781:15
+      at observer (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/runtime-event-host/.generated/install/node_modules/effect/dist/Semaphore.js:49:5)

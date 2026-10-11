@@ -1,0 +1,86 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "D1",
+      "description": "Complete source-grounded ownership/security/compatibility design and credible alternatives for remaining F09"
+    },
+    {
+      "id": "D2",
+      "description": "Closed API/storage/transition/remember/path/inheritance contracts and honest verification/implementation holds"
+    },
+    {
+      "id": "D3",
+      "description": "Independent current whole-boundary plan and design-spec judgments before mutation consumers"
+    }
+  ],
+  "checks": {
+    "source-inputs": {
+      "argv": [
+        "python3",
+        "-c",
+        "import json,hashlib,pathlib; d=json.loads(pathlib.Path('docs/runs/permission-control-design/source-inputs-r1.json').read_text()); assert all(pathlib.Path(p).stat().st_size==v['bytes'] and hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()==v['sha256'] for p,v in d['files'].items()); print('selected static design inputs match')"
+      ],
+      "cwd": ".",
+      "scope": "Verify selected static design input bytes only; no runtime or effect proof",
+      "acceptance_ids": [
+        "D1",
+        "D2"
+      ],
+      "required": true
+    }
+  },
+  "documents": [],
+  "user_approvals": [],
+  "environment_files": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "apps/desktop-app/package.json"
+  ],
+  "decision_register": [
+    {
+      "id": "inventory",
+      "statement": "Resolve trusted active tool/plugin/hook inventory and read-only completeness",
+      "status": "open",
+      "source": "PRD section5 and current selected source manifest; Main autonomous technical design",
+      "impact": "Blocks enabling presets",
+      "blocks": [
+        "implementation"
+      ],
+      "resolution": null
+    },
+    {
+      "id": "settlement",
+      "statement": "Resolve actual-call settlement and complete child/pending serialization",
+      "status": "open",
+      "source": "PRD section5 and current selected source manifest; Main autonomous technical design",
+      "impact": "Blocks active transition",
+      "blocks": [
+        "implementation"
+      ],
+      "resolution": null
+    },
+    {
+      "id": "paths",
+      "statement": "Resolve checked physical target enforcement for scoped edits",
+      "status": "open",
+      "source": "PRD section5 and current selected source manifest; Main autonomous technical design",
+      "impact": "Blocks scoped write preset",
+      "blocks": [
+        "implementation"
+      ],
+      "resolution": null
+    },
+    {
+      "id": "remember",
+      "statement": "Resolve full project-wide pending/grant inventory and readback",
+      "status": "open",
+      "source": "PRD section5 and current selected source manifest; Main autonomous technical design",
+      "impact": "Blocks remember/revoke consumer",
+      "blocks": [
+        "implementation"
+      ],
+      "resolution": null
+    }
+  ]
+}

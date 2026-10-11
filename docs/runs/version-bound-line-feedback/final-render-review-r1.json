@@ -1,0 +1,201 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "ed61b44e2f1799b588829da1dff871694accb0a34cfa87ee9946d1e74a5e64b4",
+    "environment_sha256": "3e2f33abb7f623f1d5216f96abfeffc8c0a3641363878d373ad1991a1fd81f22",
+    "gate": "design",
+    "plan_sha256": "3f18280f5e4f57e6d20b6b595daa28d20a9b66a01126604f157200844114794b",
+    "schema_version": 2,
+    "source_sha256": "60c8480bb8c6a45dfcdd6b59c8bacee73c5aa22dd7e553063d5a1f59f8bcc9f3",
+    "verification_sha256": "48f7c326f38c78197dbc51c36478097c9f9db395eaac39b597243650078652e5",
+    "work_class_sha256": "618f09a6e2432dd708bc301aed1a79d1782fab1dd852012ad5a66e7ca90d7488"
+  },
+  "verdict": "blocked",
+  "summary": "현재 PNG 30개를 직접 검사했습니다. 검사한 화면에서는 구체적인 UI 결함을 발견하지 못했습니다. 그러나 지정된 desktop dark 캡처가 hidden-r8에 없어 최종 RENDER 승인을 보류합니다. dark 화면 증거는 모두 760px·200% 조건입니다.",
+  "open_findings": [
+    {
+      "id": "RENDER-EVIDENCE-01",
+      "category": "missing_required_capture",
+      "severity": "medium",
+      "verification_status": "confirmed_evidence_gap",
+      "location": "docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/line-feedback-evidence.json",
+      "state": "desktop dark",
+      "expected": "지정된 desktop dark 구현 캡처를 직접 검사할 수 있어야 합니다.",
+      "observed": "PNG 46개의 메타데이터를 확인했습니다. desktop 캡처는 light뿐입니다. dark 캡처는 모두 contentBounds 760×968, zoomFactor 2, CSS viewport 380×484입니다.",
+      "reproduction": "screenshots 배열에서 zoomFactor 1인 항목과 각 state의 theme을 대조하면 desktop dark 항목이 없습니다.",
+      "impact": "지정된 desktop dark 레이아웃의 직접 시각 검사를 완료할 수 없습니다. 제품 결함을 의미하지는 않습니다.",
+      "correction": "동일한 최종 소스와 build에 연결된 실제 hidden desktop dark 캡처 및 dimensions/provenance를 제공하고 독립 RENDER 검사를 완료하세요."
+    }
+  ],
+  "directly_inspected_captures": {
+    "root": "/Users/hyukjaechoi/Projects/oh-my-own-code/docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback",
+    "path_rule": "각 전체 경로는 root + '/' + paths 항목입니다. 각 그룹의 dimensions는 해당 paths 전부에 적용됩니다.",
+    "count": 30,
+    "groups": [
+      {
+        "pixel_dimensions": {
+          "width": 2880,
+          "height": 1936
+        },
+        "css_viewport": {
+          "width": 1440,
+          "height": 968
+        },
+        "display_scale_factor": 2,
+        "zoom_factor": 1,
+        "theme": "light",
+        "paths": [
+          "feedback-1-file-original-baseline-light-desktop-path.png",
+          "feedback-2-file-original-baseline-light-desktop-version.png",
+          "feedback-3-file-original-baseline-light-desktop-excerpt.png",
+          "feedback-4-file-original-baseline-light-desktop-comment.png",
+          "feedback-15-git-staged-old-light-desktop-status.png",
+          "feedback-17-git-staged-old-light-desktop-preview.png",
+          "feedback-45-late-send-ack-newer-context-light-desktop-status.png",
+          "feedback-46-late-send-ack-newer-context-light-desktop-comment.png"
+        ]
+      },
+      {
+        "pixel_dimensions": {
+          "width": 1520,
+          "height": 1936
+        },
+        "css_viewport": {
+          "width": 380,
+          "height": 484
+        },
+        "content_bounds": {
+          "width": 760,
+          "height": 968
+        },
+        "display_scale_factor": 2,
+        "zoom_factor": 2,
+        "theme": "dark",
+        "paths": [
+          "feedback-5-file-added-separate-send-dark-760px200-status.png",
+          "feedback-6-file-added-separate-send-dark-760px200-comment.png",
+          "feedback-7-file-added-separate-send-dark-760px200-preview.png",
+          "feedback-8-file-added-separate-send-dark-760px200-append.png",
+          "feedback-11-retained-source-resume-dark-760px200-status.png",
+          "feedback-12-retained-source-resume-dark-760px200-comment.png",
+          "feedback-19-git-unstaged-new-dark-760px200-status.png",
+          "feedback-27-git-absent-side-dark-760px200-status.png",
+          "feedback-28-git-absent-side-dark-760px200-side.png",
+          "feedback-30-git-malformed-header-dark-760px200-status.png",
+          "feedback-36-original-draft-root-dark-760px200-status.png",
+          "feedback-37-original-draft-root-dark-760px200-comment.png",
+          "feedback-42-original-draft-trust-dark-760px200-status.png",
+          "feedback-43-original-draft-trust-dark-760px200-comment.png"
+        ]
+      },
+      {
+        "pixel_dimensions": {
+          "width": 1520,
+          "height": 1936
+        },
+        "css_viewport": {
+          "width": 380,
+          "height": 484
+        },
+        "content_bounds": {
+          "width": 760,
+          "height": 968
+        },
+        "display_scale_factor": 2,
+        "zoom_factor": 2,
+        "theme": "light",
+        "paths": [
+          "feedback-9-composer-overflow-light-760px200-status.png",
+          "feedback-10-composer-overflow-light-760px200-disabled-append.png",
+          "feedback-23-git-base-new-light-760px200-status.png",
+          "feedback-33-protected-source-light-760px200-status.png",
+          "feedback-34-protected-source-light-760px200-source.png",
+          "feedback-35-protected-source-light-760px200-disabled-append.png",
+          "feedback-39-original-draft-held-light-760px200-status.png",
+          "feedback-40-original-draft-held-light-760px200-comment.png"
+        ]
+      }
+    ]
+  },
+  "checks": [
+    {
+      "name": "current_binding",
+      "basis": "direct_file_inspection",
+      "result": "pass",
+      "detail": "reviewed는 final-render-input-r1.json의 전체 8필드 객체입니다. plan8 파일 SHA-256과 binding이 일치합니다. source-freeze의 현재 20개 파일 SHA-256이 모두 일치합니다."
+    },
+    {
+      "name": "capture_dimensions_and_metadata",
+      "basis": "direct_png_header_and_metadata_inspection",
+      "result": "pass",
+      "detail": "PNG 46개가 현재 접근 가능합니다. PNG header dimensions가 screenshots 메타데이터와 모두 일치합니다. 그중 30개를 직접 시각 검사했고 14개 상태를 모두 포함합니다."
+    },
+    {
+      "name": "task_clarity_and_recovery",
+      "basis": "direct_visual_inspection",
+      "result": "pass",
+      "detail": "원래 파일 기준 내용, 경로, version, 줄 범위, 발췌문과 의견을 구분할 수 있습니다. 추가 완료 안내는 기존 Send를 별도로 누르도록 설명합니다. overflow, stale, absent side, malformed patch, protected/missing source, held, untrusted 상태에 사유가 표시됩니다. 보관 의견은 화면에 유지됩니다."
+    },
+    {
+      "name": "wrapping_and_scroll",
+      "basis": "direct_visual_inspection_and_recorded_automation",
+      "result": "pass",
+      "detail": "직접 검사한 화면에서 긴 경로와 해시가 줄바꿈됩니다. 의견과 상태 안내를 읽을 수 있습니다. 기록된 자동 검사는 모든 대상의 ratio 1 가시성과 페이지 및 feedback 영역의 가로 overflow 부재를 확인합니다. 서로 다른 스크롤 위치의 캡처를 한 화면의 동시 가시성으로 해석하지 않았습니다."
+    },
+    {
+      "name": "keyboard_and_selection",
+      "basis": "recorded_automation_cross_checked_against_runner_source",
+      "result": "pass",
+      "detail": "현재 runner는 활성 control의 Tab/Shift+Tab 복귀, Enter로 명시적 추가, 의견 Enter 줄바꿈과 Send 0회, local Escape의 status focus 및 의견 보존을 검사합니다. scope 밖 Escape로 ModalSheet가 닫힌 기록도 있습니다. metadata와 excerpt의 전체 DOM range 선택 검사가 모두 complete입니다. 이 검사를 직접 조작해서 재실행하지는 않았습니다."
+    },
+    {
+      "name": "selection_evidence_repair",
+      "basis": "diagnostic_artifact_and_runner_source_inspection",
+      "result": "pass",
+      "detail": "selection-browser-diagnostic-r2는 terminal line break의 Selection.toString 생략과 정확한 cloneContents를 구분합니다. 현재 runner는 전체 cloned text와 user-select:text를 요구하며 끝의 CRLF/CR/LF 하나만 허용합니다. broad trim이나 내용 정규화는 없습니다."
+    },
+    {
+      "name": "semantic_tokens_and_escape_containment",
+      "basis": "source_inspection_with_visual_comparison",
+      "result": "pass",
+      "detail": "feedback CSS가 참조하는 semantic/component token은 현재 tokens.css에 모두 선언되어 있습니다. 검사한 light/dark 화면에서 텍스트, 테두리, 비활성 상태와 focus 표시를 구분할 수 있습니다. data-escape-key-scope는 feedback에만 있습니다. ModalSheet의 close와 focus restoration 코드는 유지됩니다. 다른 consumer의 실행 검증으로 확대 해석하지 않았습니다."
+    },
+    {
+      "name": "pending_send_and_late_ack",
+      "basis": "direct_visual_inspection_and_recorded_red_green",
+      "result": "pass",
+      "detail": "실제 pending Send의 HELD 실패 로그와 수정 후 fixture GREEN 및 store 83 PASS를 읽었습니다. 현재 hidden runner는 pending Send 중 file-baseline 추가, delayed ACK 후 newer composer 유지, 추가 Send 부재를 검사합니다. 마지막 desktop 캡처에서 newer feedback 문맥과 의견이 보입니다. Git detail retirement를 되살리는 요구로 해석하지 않았습니다."
+    },
+    {
+      "name": "hidden_lifecycle_and_build_provenance",
+      "basis": "recorded_execution_artifacts_and_current_build_stamp_hash",
+      "result": "pass",
+      "detail": "현재 build-provenance.json의 SHA-256이 manifest의 buildStampSha256과 일치합니다. 46개 캡처는 모두 hidden/nonfocused/nonfocusable 메타데이터를 갖습니다. manifest status pass, wrapperExitCode 0, provenanceVerifiedAfter true와 owned teardown exited true/code 0을 확인했습니다. runner는 초기 built URL load를 기다리고 실제 owned exit를 요구합니다."
+    },
+    {
+      "name": "eight_recorded_checks",
+      "basis": "recorded_execution_artifacts",
+      "result": "pass",
+      "detail": "files, typecheck, boundaries, lint, format, build, bundle, hidden-feedback 모두 현재 source/plan binding에서 exit_code 0이며 inputs_changed, interrupted, timed_out은 false입니다. 본 리뷰에서는 재실행하지 않았습니다."
+    }
+  ],
+  "limits": [
+    "desktop dark 캡처 부재로 지정된 시각 검사 범위를 완료하지 못했습니다.",
+    "직접 시각 검사한 PNG는 명시한 30개입니다. 나머지 16개는 dimensions와 메타데이터만 확인했습니다.",
+    "키보드 동작, 전체 문자열 선택, IO 부재와 ACK 동작은 기존 실행 기록 및 assertion을 검토한 결과입니다. 직접 runtime 검사는 수행하지 않았습니다.",
+    "close 버튼 활성화 후 focus restoration과 다른 ModalSheet consumer는 현재 소스에서 확인했으며 이번 실행 증거로 별도 검증되지는 않았습니다.",
+    "실제 built Renderer/preload와 synthetic Main의 Darwin 증거입니다. production Main, 실제 Git backend/provider, Windows 및 전체 제품 완료를 증명하지 않습니다.",
+    "파일 수정, ledger 기록, delegation, build, 앱 실행은 수행하지 않았습니다."
+  ],
+  "provenance": {
+    "child_task_id": "01a11c83-a894-74d3-b63e-c4c25384284b",
+    "author_task_id": "01a1021b-1e6a-7d31-8e0f-f1b7c9336705",
+    "author": "Main",
+    "role": "design_qa",
+    "mode": "fresh_independent_report_only",
+    "identity_basis": "현재 CODEX_THREAD_ID와 assignment의 Main author ID",
+    "evidence_origin": "Built production Electron Renderer/preload; test-only synthetic Main; BrowserWindow.webContents.capturePage().toPNG()",
+    "manifest": "docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/manifest.json",
+    "report": "docs/runs/version-bound-line-feedback/evidence/hidden-r8/feedback/line-feedback-evidence.json"
+  }
+}

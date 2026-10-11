@@ -1,0 +1,30 @@
+✖ stored permission mode is retained and never reset to baseline by send (93.912291ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 218.958542
+
+✖ failing tests:
+
+test at apps/desktop-app/src/host/storage-integration.test.mjs:5374:1
+✖ stored permission mode is retained and never reset to baseline by send (93.912291ms)
+  AssertionError [ERR_ASSERTION]: {"ok":true,"value":{"runtimeEpoch":"epoch","revision":19,"observationSequence":4,"recovery":{"store":{"state":"ready"},"resources":[]},"retainedOperations":[],"state":"connected","temporary":false,"workspaces":[{"id":"fe649216-18e4-4b23-9612-efb29a7a03e2","name":"Workbench","path":"/private/var/folders/7p/c3mr9tdj7v73lv27dw9r5dkr0000gn/T/p7-host-integration-iTy1y4/Documents/OhMyOwnCode/14ec5ea8-e30d-4c6f-a564-3ea6276c2b3d","kind":"folder","trusted":true,"trustRevision":2,"temporary":false}],"sessions":[{"id":"14ec5ea8-e30d-4c6f-a564-3ea6276c2b3d","workspaceId":"fe649216-18e4-4b23-9612-efb29a7a03e2","title":"Workbench","status":"idle","pinned":false,"archived":false},{"id":"a5c60851-8ccf-4040-8ce4-f63fe08a806e","workspaceId":"fe649216-18e4-4b23-9612-efb29a7a03e2","title":"Untitled session","status":"idle","pinned":false,"archived":false},{"id":"4c3a146a-3299-4f4e-a4b0-a5fe13761c93","workspaceId":"fe649216-18e4-4b23-9612-efb29a7a03e2","title":"Workbench","status":"idle","pinned":false,"archived":false,"parentSessionId":"14ec5ea8-e30d-4c6f-a564-3ea6276c2b3d"}],"selectedWorkspaceId":"fe649216-18e4-4b23-9612-efb29a7a03e2","selectedSessionId":"4c3a146a-3299-4f4e-a4b0-a5fe13761c93","messages":[],"permissions":[]},"receipt":{"runtimeEpoch":"epoch","operationId":"mode-fork","type":"session.fork","workspaceId":"fe649216-18e4-4b23-9612-efb29a7a03e2","sessionId":"14ec5ea8-e30d-4c6f-a564-3ea6276c2b3d","admission":"dispatched","delivery":"accepted","effect":"confirmed","revision":19,"evidence":[{"kind":"host-registry","id":"4c3a146a-3299-4f4e-a4b0-a5fe13761c93"},{"kind":"native_session_verified","id":"ses_fork_1"}],"result":{"kind":"forked","workspaceId":"fe649216-18e4-4b23-9612-efb29a7a03e2","sessionId":"4c3a146a-3299-4f4e-a4b0-a5fe13761c93","nativeSessionId":"ses_fork_1"}}}
+  + actual - expected
+  
+  + undefined
+  - 'POLICY_UNVERIFIED'
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/host/storage-integration.test.mjs:5450:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'POLICY_UNVERIFIED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

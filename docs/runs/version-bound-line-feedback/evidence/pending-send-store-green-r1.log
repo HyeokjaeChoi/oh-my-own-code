@@ -1,0 +1,123 @@
+(node:41210) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ line feedback: explicit action appends loaded baseline to selected composer without IO (6.06075ms)
+✔ line feedback: exact production helper output preserves BOM CRLF and plaintext context (0.719083ms)
+▶ line feedback: file scope changes keep historical drafts editable with no append authority or IO
+  ✔ fileABA (0.509208ms)
+  ✔ selectionABA (0.395209ms)
+  ✔ floor (0.440583ms)
+  ✔ rootABA (1.117917ms)
+  ✔ trust (0.379667ms)
+  ✔ untrusted (0.313334ms)
+  ✔ epoch (0.292ms)
+  ✔ hold (0.283333ms)
+  ✔ resourceHold (0.2705ms)
+✔ line feedback: file scope changes keep historical drafts editable with no append authority or IO (4.448292ms)
+✔ line feedback: refreshed identical metadata never relabels original source object (0.312083ms)
+▶ line feedback: reducer rejects stale captured events after composer/source/comment ABA
+  ✔ composer (0.193833ms)
+  ✔ options (0.132708ms)
+  ✔ comment (0.135042ms)
+  ✔ range (0.12375ms)
+  ✔ discard (0.129916ms)
+  ✔ source (0.197667ms)
+  ✔ session (0.167291ms)
+  ✔ root (0.163083ms)
+  ✔ hold (0.145625ms)
+✔ line feedback: reducer rejects stale captured events after composer/source/comment ABA (1.643625ms)
+▶ line feedback: subscriber reentry cannot redirect atomic append or overwrite newer composer
+  ✔ selection (0.259333ms)
+  ✔ composer (0.159917ms)
+  ✔ discard (0.18425ms)
+✔ line feedback: subscriber reentry cannot redirect atomic append or overwrite newer composer (0.713125ms)
+✔ line feedback: old submitted revision ACK cannot clear appended composer (0.399708ms)
+▶ line feedback: limits refuse without truncating comments or composer
+  ✔ empty (0.230667ms)
+  ✔ range (0.206333ms)
+  ✔ missing line (0.176875ms)
+  ✔ reversed (0.157833ms)
+  ✔ fraction (0.182458ms)
+  ✔ wrong side (0.168792ms)
+  ✔ excerpt (0.504625ms)
+  ✔ blank comment (0.18075ms)
+  ✔ invalid unicode (0.192458ms)
+  ✔ composer (0.210167ms)
+✔ line feedback: limits refuse without truncating comments or composer (2.72175ms)
+✔ line feedback: bounded retained draft cache refuses at 16 until explicit discard (0.991125ms)
+▶ line feedback: Git old/new staged/unstaged/base references use exact accepted source and OID
+  ✔ staged/old (1.786958ms)
+  ✔ staged/new (1.158ms)
+  ✔ unstaged/old (0.319166ms)
+  ✔ unstaged/new (0.259458ms)
+  ✔ base/old (0.459833ms)
+  ✔ base/new (0.247ms)
+✔ line feedback: Git old/new staged/unstaged/base references use exact accepted source and OID (4.534417ms)
+▶ line feedback: Git identity lifecycle keeps historical text but denies append
+  ✔ root (0.292875ms)
+  ✔ trustRevision (0.191209ms)
+  ✔ trustedBool (0.342667ms)
+  ✔ floor (0.2915ms)
+  ✔ workspace (0.201667ms)
+  ✔ epoch (0.173167ms)
+  ✔ globalHold (0.167334ms)
+  ✔ resourceHold (0.182834ms)
+  ✔ mutation (0.439917ms)
+  ✔ modeABA (0.242625ms)
+  ✔ pathABA (0.182916ms)
+  ✔ refresh (0.213792ms)
+  ✔ detail (0.185958ms)
+✔ line feedback: Git identity lifecycle keeps historical text but denies append (3.524167ms)
+▶ line feedback: Git missing side, empty and unsupported patch never append
+  ✔ empty (0.254334ms)
+  ✔ missing old (0.207416ms)
+  ✔ false null header (0.221459ms)
+  ✔ duplicate header (0.220958ms)
+  ✔ unsupported (0.205917ms)
+✔ line feedback: Git missing side, empty and unsupported patch never append (1.306625ms)
+✔ line feedback: missing source and selected session refuse; disposed actions stay inert (0.217708ms)
+▶ line feedback: protected unavailable and malformed loaded sources cannot append
+  ✔ protected_source (0.193417ms)
+  ✔ missing_file (0.107333ms)
+  ✔ unsupported_content (0.106417ms)
+  ✔ malformed (0.143417ms)
+✔ line feedback: protected unavailable and malformed loaded sources cannot append (0.713542ms)
+✔ line feedback: invalid history IDs are inert and reselect preserves same-source comment (0.197959ms)
+▶ line feedback: selected pending Send allows local Git context without granting read authority
+  ✖ selected (0.773541ms)
+  ✔ unknown (0.193667ms)
+  ✔ hostHeld (0.165916ms)
+  ✔ lookupOnly (0.198ms)
+  ✔ otherSession (0.171333ms)
+  ✔ otherWorkspace (0.151041ms)
+  ✔ otherEpoch (0.153583ms)
+  ✔ otherOperation (0.173958ms)
+✖ line feedback: selected pending Send allows local Git context without granting read authority (2.231959ms)
+ℹ tests 83
+ℹ suites 0
+ℹ pass 81
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 237.765917
+
+✖ failing tests:
+
+test at apps/desktop-app/src/workbench-store.test.mjs:13719:13
+✖ selected (0.773541ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:13739:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///Users/hyukjaechoi/Projects/oh-my-own-code/apps/desktop-app/src/workbench-store.test.mjs:13719:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

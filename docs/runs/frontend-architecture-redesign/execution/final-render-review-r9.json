@@ -1,0 +1,513 @@
+{
+  "schema_version": 2,
+  "run": "frontend-architecture-redesign",
+  "gate": "design",
+  "verdict": "pass",
+  "summary": "r9의 원본 PNG 10개를 독립 검토했습니다. 새 narrow 200% PNG 5개와 저장된 실제 renderer 상호작용 기록으로 RENDER-R7-1을 해소합니다. 복구 경고·draft·연결 재확인 및 Documents 위치·보관 안내에 접근할 근거가 충분합니다. 대표 일반·좁은 화면에서 새 차단 결함은 찾지 못했습니다. 현재 해시와 증거가 일치합니다. A5·A6와 A7의 제한된 hidden renderer 근거를 승인합니다. 전체 제품·OS 접근성·production Main GUI 승인은 포함하지 않습니다.",
+  "open_findings": [],
+  "reviewed": {
+    "contract_sha256": "3d5f6ef625de20eee10dbea90362fdbcd4f2770213eb0acac65d85be07168b15",
+    "environment_sha256": "37737bf27e46654b5692c3a81639d9004e0c00a50b494fd520fbd71c7dcb3b70",
+    "gate": "design",
+    "plan_sha256": "1e3ac54c890778b6a0c0f21cdb3c52abfa6a4e811fabe53870dae2ffc4758eb2",
+    "schema_version": 2,
+    "source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "verification_sha256": "68ba4112a2293378ded5dfd9c1cb1da4611b0b1671deb697ef6ca36cb1edcf6e",
+    "work_class_sha256": "a689ca7a6db18c7b48715faac9c0a20a4da419e2aae8f1fab492c2f586f929d6"
+  },
+  "provenance": {
+    "child_task_id": "01a118a5-2b82-77c2-889e-e5b3c182b0e0",
+    "author_task_id": "main-continuation",
+    "role": "design_qa",
+    "context": "fresh independent correction reviewer",
+    "identity_evidence": "현재 프로세스 CODEX_THREAD_ID와 run.json의 review dispatch가 일치함",
+    "reviewed_at": "2026-10-07T23:18:49.668039+00:00",
+    "no_self_approval": true,
+    "no_recursive_delegation": true,
+    "report_only": true,
+    "ledger_updated": false
+  },
+  "binding_verification": {
+    "input_path": "docs/runs/frontend-architecture-redesign/execution/final-design-input-r9.json",
+    "input_sha256": "77a50029212143bc1b21e1c20f78d412cd6be63ea013fc7d3dc4665f2a0409fe",
+    "packet_path": "docs/runs/frontend-architecture-redesign/execution/final-design-packet-r9.json",
+    "packet_sha256": "f8947cffd088130c7ab9a7815b79941a3d0a99d3a5b2c168b373391ae75320cb",
+    "current_binding_matches": true,
+    "reviewed_copy": "입력 JSON 전체 객체를 변경 없이 복사함",
+    "method": "읽기 전용 harness v2_review_binding 재계산. check 또는 제품 실행 없음.",
+    "pins_checked": 77,
+    "pin_mismatches": []
+  },
+  "scope": {
+    "repository": "/Users/hyukjaechoi/Projects/oh-my-own-code",
+    "plan_revision": 9,
+    "architecture_and_ui_version": 4,
+    "work_class": "routine",
+    "acceptance": [
+      "A5",
+      "A6",
+      "A7"
+    ],
+    "whole_product_or_A1_A4_code_approval": false,
+    "authority_sources": [
+      "docs/runs/selected-a-desktop-adoption/plan.md",
+      "docs/runs/selected-a-desktop-adoption/contract.json",
+      "docs/runs/composer-room/amendment.md"
+    ],
+    "authority_assessment": "사용자가 승인한 A Quiet Dock의 desktop32 / coarse44 / permission36 및 composer120·input72·toolbar32 기준을 적용함. 이전 blanket44를 결함으로 처리하지 않음. 유효한 200% reflow와 focus3:1 목표는 유지함.",
+    "fresh_full_270_path_audit": false,
+    "no_additional_cartesian_matrix_required": true
+  },
+  "source_continuity": {
+    "current_source_sha256": "a33e66c6ce194d95711bff6eac3073b78eaa123ea37be8f11a361a0cd118a65c",
+    "completed_p7_baseline_sha256": "3770a81d225bf29ea36016e03d602660986aa002b0c0710d20ee79698f441e8f",
+    "actual_changed_paths_from_completed_p7": [
+      "apps/desktop-app/scripts/e2e-workbench-states.mjs",
+      "apps/desktop-app/src/renderer/pages/workbench/shell.module.css",
+      "apps/desktop-app/src/workbench-projection.test.mjs"
+    ],
+    "current_freeze_path": "docs/runs/frontend-architecture-redesign/execution/current-render-correction-freeze-r3.json",
+    "full_parent_inventory_path": "docs/runs/frontend-architecture-redesign/execution/current-changed-paths-r9.json",
+    "parent_changed_paths": 270,
+    "parent_deleted_paths": 8,
+    "assessment": "현재 소스는 완료된 P7 baseline3770과 정확히 세 경로에서만 다름. parent270 및 삭제8개 목록과 승인된 focused predecessor 연결을 보존함. 이번 검토는 전270개 경로의 새 소스 감사가 아님. 기존 Native·알고리즘 증거는 기존 실행 시각·범위로 유지되며 현재 실행으로 바꾸지 않음.",
+    "accepted_predecessor_references": [
+      "docs/runs/projection-fixture-v5/code-review.json",
+      "docs/runs/durable-workbench-storage/execution/final-code-review-r8.json",
+      "docs/runs/durable-workbench-storage/execution/render-review-r4.json",
+      "docs/runs/durable-native-preflight/final-code-review-r1.json"
+    ],
+    "historical_reuse": "r9 verifier는 변경 없는 알고리즘·unit·function 사례7개를 재사용하고 원래 기록21개를 역사적 기록으로 구분함. CSS 변경 전 renderer/build 기록은 현재 실행을 대신하지 않음. Reviewer는 이 명령을 재실행하지 않음."
+  },
+  "capture_review": {
+    "root": "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states",
+    "origin": "실제 빌드된 production Electron renderer/preload + test-only synthetic Main DTO; capturePage PNG",
+    "saved_execution": {
+      "started_at": "2026-10-07T23:03:13.623Z",
+      "finished_at": "2026-10-07T23:04:30.811Z",
+      "status": "pass",
+      "exit_code": 0,
+      "wrapper_exit_code": 0,
+      "teardown": {
+        "exited": true,
+        "code": 0
+      },
+      "provenance_verified_after": true
+    },
+    "png_headers_verified": 51,
+    "p7_state_tags": 11,
+    "direct_original_resolution_inspections": 10,
+    "new_narrow_geometry": {
+      "window": [
+        760,
+        600
+      ],
+      "content_bounds": [
+        760,
+        568
+      ],
+      "css_viewport": [
+        380,
+        284
+      ],
+      "zoom_factor": 2,
+      "pixel_ratio": 4,
+      "display_scale_factor": 2,
+      "png_pixels": [
+        1520,
+        1136
+      ]
+    },
+    "hidden_nonfocusable": "PNG 51개 metadata의 OS visible/focused/focusable 값은 모두 false입니다. DOM focus와 OS window focus는 다릅니다.",
+    "direct_samples": [
+      {
+        "path": "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-p7-pending-inbox-draft-narrow-200-synthetic.png",
+        "state": "P7 pending-inbox bootstrap; narrow 200%; unchanged selectable draft",
+        "viewport": {
+          "width": 380,
+          "height": 284,
+          "pixelRatio": 4
+        },
+        "zoom_factor": 2,
+        "png_pixels": {
+          "width": 1520,
+          "height": 1136
+        },
+        "sha256": "c7be5613b7b7e920f151819cb91f101b237ee00cd66ab43faa8288de1684b24a",
+        "inspection": "view_image detail original; 원본 픽셀 직접 관찰",
+        "group": "correction"
+      },
+      {
+        "path": "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-p7-pending-inbox-warnings-narrow-200-synthetic.png",
+        "state": "P7 pending-inbox bootstrap; narrow 200%; recovery and retained warnings reached by wheel",
+        "viewport": {
+          "width": 380,
+          "height": 284,
+          "pixelRatio": 4
+        },
+        "zoom_factor": 2,
+        "png_pixels": {
+          "width": 1520,
+          "height": 1136
+        },
+        "sha256": "3f20c972c27e9749d21d7eea71c2bcbac3610524bc29cffd481b1f52b3d51561",
+        "inspection": "view_image detail original; 원본 픽셀 직접 관찰",
+        "group": "correction"
+      },
+      {
+        "path": "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-p7-pending-inbox-bootstrap-narrow-200-synthetic.png",
+        "state": "P7 pending-inbox bootstrap; narrow 200%; keyboard retry and unchanged draft, no replay",
+        "viewport": {
+          "width": 380,
+          "height": 284,
+          "pixelRatio": 4
+        },
+        "zoom_factor": 2,
+        "png_pixels": {
+          "width": 1520,
+          "height": 1136
+        },
+        "sha256": "0c7e640dd6deda28a33f2b75dc9a420fef5f73bef61fed8908153cbca37adc9c",
+        "inspection": "view_image detail original; 원본 픽셀 직접 관찰",
+        "group": "correction"
+      },
+      {
+        "path": "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-p7-durable-documents-path-narrow-200-synthetic.png",
+        "state": "P7 durable Documents full selected path; narrow 200%",
+        "viewport": {
+          "width": 380,
+          "height": 284,
+          "pixelRatio": 4
+        },
+        "zoom_factor": 2,
+        "png_pixels": {
+          "width": 1520,
+          "height": 1136
+        },
+        "sha256": "1b580287ca1115c5866058b9bbfaf59f5460d5d95e542fa611809f61fbaed193",
+        "inspection": "view_image detail original; 원본 픽셀 직접 관찰",
+        "group": "correction"
+      },
+      {
+        "path": "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-p7-durable-documents-location-narrow-200-synthetic.png",
+        "state": "P7 durable Documents location; narrow 200%; selectable full path and scrollable information",
+        "viewport": {
+          "width": 380,
+          "height": 284,
+          "pixelRatio": 4
+        },
+        "zoom_factor": 2,
+        "png_pixels": {
+          "width": 1520,
+          "height": 1136
+        },
+        "sha256": "210a69d5e57cfb00ecce09b939e4fab9dc8d8fa9947421756802b75f28db3802",
+        "inspection": "view_image detail original; 원본 픽셀 직접 관찰",
+        "group": "correction"
+      },
+      {
+        "path": "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-populated-conversation-normal-1180-synthetic.png",
+        "state": "populated-conversation; normal-1180",
+        "viewport": {
+          "width": 1180,
+          "height": 788,
+          "pixelRatio": 2
+        },
+        "zoom_factor": 1,
+        "png_pixels": {
+          "width": 2360,
+          "height": 1576
+        },
+        "sha256": "2978f0a03229e05245cf131f10221eacf28857f3193bdf97f2e0fdac465bd2d5",
+        "inspection": "view_image detail original; 원본 픽셀 직접 관찰",
+        "group": "regression"
+      },
+      {
+        "path": "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-permission-long-korean-draft-narrow-200-percent-synthetic.png",
+        "state": "permission-long-korean-draft; narrow-200-percent",
+        "viewport": {
+          "width": 380,
+          "height": 284,
+          "pixelRatio": 4
+        },
+        "zoom_factor": 2,
+        "png_pixels": {
+          "width": 1520,
+          "height": 1136
+        },
+        "sha256": "75ec80ff15e7abc1363852980e64e50033cd8c519df2e0cceee551579bd4f4c2",
+        "inspection": "view_image detail original; 원본 픽셀 직접 관찰",
+        "group": "regression"
+      },
+      {
+        "path": "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-long-korean-titles-narrow-200-percent-navigation-synthetic.png",
+        "state": "long-korean-titles; narrow-200-percent; navigation sheet",
+        "viewport": {
+          "width": 380,
+          "height": 284,
+          "pixelRatio": 4
+        },
+        "zoom_factor": 2,
+        "png_pixels": {
+          "width": 1520,
+          "height": 1136
+        },
+        "sha256": "6d38f508763b6cb1bd3dbacd2fabc56c763e2018e89d025576b691719cc6b8d4",
+        "inspection": "view_image detail original; 원본 픽셀 직접 관찰",
+        "group": "regression"
+      },
+      {
+        "path": "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-p7-pending-inbox-bootstrap-synthetic.png",
+        "state": "P7 pending-inbox; empty renderer consumes original retained key without resend",
+        "viewport": {
+          "width": 1440,
+          "height": 928,
+          "pixelRatio": 2
+        },
+        "zoom_factor": 1,
+        "png_pixels": {
+          "width": 2880,
+          "height": 1856
+        },
+        "sha256": "aebc09d3152b6ae665abf59147b97218a4bdcd808df727212613cdaca03462bf",
+        "inspection": "view_image detail original; 원본 픽셀 직접 관찰",
+        "group": "regression"
+      },
+      {
+        "path": "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-p7-durable-documents-location-synthetic.png",
+        "state": "P7 durable-documents selectable durable location",
+        "viewport": {
+          "width": 1440,
+          "height": 928,
+          "pixelRatio": 2
+        },
+        "zoom_factor": 1,
+        "png_pixels": {
+          "width": 2880,
+          "height": 1856
+        },
+        "sha256": "d9bfc98ab31d04e3641e04c371f617b2be443f8e0a2fca79d5133b9202278eb5",
+        "inspection": "view_image detail original; 원본 픽셀 직접 관찰",
+        "group": "regression"
+      }
+    ]
+  },
+  "resolved_findings": [
+    {
+      "id": "RENDER-R7-1",
+      "prior_report": "docs/runs/frontend-architecture-redesign/execution/final-render-review-r7.json",
+      "status": "resolved",
+      "acceptance": [
+        "A5",
+        "A6"
+      ],
+      "resolution": "최악의 pending-inbox bootstrap과 durable Documents location을 CSS380×284, 실제 Electron zoom2에서 확인했습니다. 수정 후 스크롤 전후 PNG와 저장된 상호작용이 이전의 좁은 화면 근거 누락을 해소합니다.",
+      "verification_status": "원본 픽셀 직접 확인 + 저장된 실제 renderer assertion과 대응 source를 독립 검토했습니다. Reviewer는 앱을 재실행하지 않았습니다.",
+      "evidence_paths": [
+        "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-p7-pending-inbox-draft-narrow-200-synthetic.png",
+        "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-p7-pending-inbox-warnings-narrow-200-synthetic.png",
+        "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-p7-pending-inbox-bootstrap-narrow-200-synthetic.png",
+        "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-p7-durable-documents-path-narrow-200-synthetic.png",
+        "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/desktop-p7-durable-documents-location-narrow-200-synthetic.png",
+        "docs/runs/frontend-architecture-redesign/execution/final-hidden-current-r3/ui-states/ui-states-evidence.json",
+        "apps/desktop-app/scripts/e2e-workbench-states.mjs:2088",
+        "apps/desktop-app/src/renderer/pages/workbench/shell.module.css:144"
+      ]
+    }
+  ],
+  "pixel_observations": [
+    {
+      "surface": "pending-inbox narrow200",
+      "observed": "warnings PNG에서 복구 이유·이전 요청1개·재전송하지 않는 연결 안내가 줄바꿈되어 읽힙니다. bootstrap PNG에서 연결 재확인 버튼의 파란 focus가 보입니다. draft PNG에서 선택된 한국어, composer, 전송 control, 전송 차단 이유가 보입니다. 높이를 넘는 내용은 스크롤 전후 별도 capture로 확인했습니다.",
+      "not_proven_by_pixels": "편집 가능·disabled 속성·request 수·wheel 입력·재전송 없음은 PNG만으로 판정하지 않습니다."
+    },
+    {
+      "surface": "durable Documents narrow200",
+      "observed": "path PNG에서 /synthetic/Documents/OhMyOwnCode/11111111-1111-4111-8111-111111111111 전체가 두 줄로 표시됩니다. location PNG에서 종료 후 보관, Documents 및 import 위치, 파일 비삭제 안내를 읽을 수 있습니다. header와 Close는 스크롤 후에도 보입니다.",
+      "not_proven_by_pixels": "전체 경로 선택·Escape·focus 복귀는 저장된 assertion으로 판단합니다."
+    },
+    {
+      "surface": "current regression samples",
+      "observed": "normal1180의 Tool UI 대화와 composer, normal1440의 복구 stack과 위치 dialog, narrow200의 긴 draft·permission 및 navigation을 원본으로 확인했습니다. 의미 있는 새 수평 clipping·control 겹침·focus 손실은 찾지 못했습니다."
+    }
+  ],
+  "saved_interaction_review": {
+    "pending_source": "apps/desktop-app/scripts/e2e-workbench-states.mjs:2088",
+    "pending_saved_state": {
+      "state": "pending-inbox-bootstrap-narrow-200",
+      "retainedOriginalKeyLookup": true,
+      "keyboardRetry": true,
+      "unchangedDraft": true,
+      "mutationAttemptsUnchanged": true,
+      "provenance": "synthetic host; actual hidden renderer at Electron 200%"
+    },
+    "pending_assessment": "page reload 후 빈 renderer에서 original retained runtimeEpoch/operationId lookup을 확인합니다. textarea.fill로 draft 편집, enabled·viewport ratio1·select 전체 길이를 assert합니다. focus 이동 후 page.mouse.wheel(0,-1000)으로 mainPane.scrollTop=0 및 복구·retained 영역 ratio1을 assert합니다. Tab으로 연결 재확인에 도달하고 Enter를 실행합니다. draft 유지·retained count1·Send disabled·mutation metrics 불변·수평 overflow 없음을 assert합니다. 실제 wheel 이벤트를 사용하며 물리 mouse·OS 입력을 검증한 것은 아닙니다.",
+    "location_source": "apps/desktop-app/scripts/e2e-workbench-states.mjs:2230",
+    "location_saved_state": {
+      "state": "durable-documents-location-narrow-200",
+      "fullPathSelectable": true,
+      "scrollReachable": true,
+      "escapeReturnsFocus": true,
+      "provenance": "synthetic host; actual hidden renderer at Electron 200%"
+    },
+    "location_assessment": "좁은 navigation에서 dialog를 엽니다. 전체 path의 viewport ratio1, userSelect!=none, DOM Range selection과 기대 path의 완전 일치를 assert합니다. path 영역에서 page.mouse.wheel(0,400) 후 durable 안내 ratio1을 assert합니다. 아래 파일 비삭제 문구는 PNG로 확인했습니다. Escape 후 location의 storage opener focus, 다음 Escape 후 navigation opener focus를 assert합니다.",
+    "modal_reuse_assessment": "저장된 일반 narrow의 Tab/Shift+Tab containment·background 격리·Escape 복귀와, 변경 없는 공통 ModalSheet의 Radix modal 및 returnFocusRef를 함께 검토했습니다. 새 location의 narrow200 기록은 path·scroll·Escape에 한정됩니다. 모든 새 상태의 Tab 순서를 새로 실행했다고 주장하지 않습니다.",
+    "selection_limits": "draft.select와 path DOM Range는 합성 DOM 선택입니다. 물리 keyboard만으로 경로 선택, OS IME, Screen Reader 발화는 미검증입니다.",
+    "code_cross_checks": [
+      "apps/desktop-app/src/renderer/pages/workbench/index.tsx:435",
+      "apps/desktop-app/src/renderer/pages/workbench/index.tsx:611",
+      "packages/ui/src/primitives/modal-sheet.tsx",
+      "packages/ui/src/primitives/modal-sheet.module.css"
+    ]
+  },
+  "accessibility": {
+    "current_computed_text_icon_samples": 306,
+    "saved_sample_failures": 0,
+    "focus_current_pixel_method": "PNG를 표준 zlib로 읽고 solid outline과 인접 배경 RGB로 sRGB contrast를 계산했습니다. 파일은 변경하지 않았습니다.",
+    "current_focus_samples": [
+      {
+        "file": "desktop-permission-long-korean-draft-narrow-200-percent-synthetic.png",
+        "outline_pixel": [
+          300,
+          626
+        ],
+        "background_pixel": [
+          300,
+          620
+        ],
+        "outline_rgb": [
+          42,
+          94,
+          190
+        ],
+        "background_rgb": [
+          255,
+          255,
+          255
+        ],
+        "contrast_ratio": 6.099206788169041
+      },
+      {
+        "file": "desktop-long-korean-titles-narrow-200-percent-navigation-synthetic.png",
+        "outline_pixel": [
+          668,
+          70
+        ],
+        "background_pixel": [
+          690,
+          70
+        ],
+        "outline_rgb": [
+          42,
+          94,
+          190
+        ],
+        "background_rgb": [
+          255,
+          255,
+          255
+        ],
+        "contrast_ratio": 6.099206788169041
+      },
+      {
+        "file": "desktop-p7-pending-inbox-bootstrap-narrow-200-synthetic.png",
+        "outline_pixel": [
+          68,
+          900
+        ],
+        "background_pixel": [
+          80,
+          900
+        ],
+        "outline_rgb": [
+          42,
+          94,
+          190
+        ],
+        "background_rgb": [
+          250,
+          250,
+          250
+        ],
+        "contrast_ratio": 5.843466195100208
+      }
+    ],
+    "assessment": "현재 focus 표본3개는3:1 목표를 충족합니다. r7의5.59–6.10:1 합격을 뒤집는 새 결함은 없습니다. 저장된 computed focus unverified를 전체 focus 합격으로 바꾸지 않습니다. 완전한 WCAG 감사가 아닙니다."
+  },
+  "performance_review": {
+    "path": "docs/runs/frontend-architecture-redesign/execution/final-performance-current-r2/ui-states/performance-evidence.json",
+    "manifest_path": "docs/runs/frontend-architecture-redesign/execution/final-performance-current-r2/ui-states/performance-manifest.json",
+    "saved_result": "pass",
+    "saved_failures": [],
+    "saved_teardown": "test process exit confirmed",
+    "summary": {
+      "input": {
+        "count": 20,
+        "p50": 6.899999976158142,
+        "p95": 8.699999988079071,
+        "max": 8.799999952316284,
+        "p95GoalMs": 100
+      },
+      "menu": {
+        "count": 20,
+        "p50": 6.600000023841858,
+        "p95": 8.600000023841858,
+        "max": 8.800000011920929,
+        "p95GoalMs": 100
+      },
+      "panel": {
+        "count": 20,
+        "p50": 7.100000023841858,
+        "p95": 9,
+        "max": 9.099999964237213,
+        "p95GoalMs": 100
+      },
+      "shell": {
+        "count": 100,
+        "p50": 7.400000035762787,
+        "p95": 9.199999988079071,
+        "max": 10.600000023841858,
+        "p95GoalMs": 150
+      },
+      "projection": {
+        "count": 100,
+        "p50": 7.5,
+        "p95": 9.399999976158142,
+        "max": 10.600000023841858,
+        "p95GoalMs": 100,
+        "includes": "selection through scoped snapshot IPC and transcript DOM"
+      }
+    },
+    "switch_validation": {
+      "requested": 100,
+      "correctTitleSelectionAndMarker": 100,
+      "oldTranscriptObservations": 0,
+      "blankPendingObservations": 3,
+      "boundary": "Title, aria-current and target transcript marker verified in sampled DOM frames; MutationObserver also checks old marker while target title is active."
+    },
+    "before_after_provenance_equal": true,
+    "ui_and_performance_build_stamp_equal": true,
+    "phase_resource_failures": [],
+    "assessment": "input/menu/panel 각20표본과 session100회가 기존 목표를 충족합니다. hidden synthetic DOM/local IPC 측정입니다. 준비60과 switch100의 독립 resource 기준을 유지하고 mixed160은 추가 관찰로 구분합니다. 물리 입력·전체 production GUI·provider latency·모든 frame·leak 없음은 증명하지 않습니다."
+  },
+  "limits": [
+    "production Main GUI 및 foreground 시작 미검증",
+    "real provider·credentials·private stores 미검증",
+    "Windows runtime 미검증",
+    "power-loss·migration cutover 보장 없음",
+    "실제 OS IME·Screen Reader 미검증",
+    "완전한 WCAG 감사 아님",
+    "물리 mouse·touch·keyboard의 Native 경로 미검증",
+    "이번 Reviewer는 app/build/provider/private-store 명령 또는 tests를 실행하지 않음",
+    "전체 F01–18 기능 완료를 주장하지 않음"
+  ],
+  "reviewer_actions": {
+    "read_only_status_command": "python3 .solopreneur/harness.py status frontend-architecture-redesign",
+    "other_checks": "입력 binding·source inventory·파일 hash·PNG header·PNG pixel 읽기 검증만 수행했습니다. 저장된 제품 check는 재실행하지 않았습니다.",
+    "authorized_write_only": "docs/runs/frontend-architecture-redesign/execution/final-render-review-r9.json",
+    "source_edits": false,
+    "ledger_edits": false,
+    "app_or_test_execution": false,
+    "recursive_delegation": false
+  }
+}

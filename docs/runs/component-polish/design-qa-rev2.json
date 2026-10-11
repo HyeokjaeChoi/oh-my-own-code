@@ -1,0 +1,991 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "6aba776d2a233dc66ad2d4f24d85347b32d623e85dba9621231e7accb96ed066",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "design",
+    "plan_sha256": "f1394dff1232453425e0811cf666188aa6d1bb5ad5aa589454c85e48d382a2c4",
+    "schema_version": 2,
+    "source_sha256": "42b56c7b7b071a36337ad221c4fb299afa29f4cf0297274513e75fbf97186ed6",
+    "verification_sha256": "5a9a6e22f1ed5a8b26df258e5432c3e6622267ed85af7490ee59f9f4236ec4b1"
+  },
+  "verdict": "pass",
+  "summary": "Independent post-repair review of the Figma library deliverable against component-polish plan revision 7. DQ-1 and DQ-2 are resolved in directly inspected current Light/Dark renders and live geometry. All six masters and six Dark instances hug visible content with exactly 16px measured bottom padding, without child overflow or overlapping composition rows. Target and input paths match in all twelve samples; long paths wrap completely and success content is coherent. Current spot checks of the previously accepted families show no visual regression. This is a Figma-library verdict, not a runtime or interactive accessibility verdict.",
+  "open_findings": [],
+  "resolved_findings": [
+    {
+      "id": "DQ-1",
+      "previous_severity": "P2",
+      "status": "verified_resolved",
+      "observation_type": "Direct current Figma screenshots and live read-only node measurements",
+      "result": "Queued and success masters and Dark instances are now 400x338; their trailing note/action is at y=306 with height 16, so content ends at 322 and bottom padding is exactly 16. Running/waiting/error/unknown are 400x310; their last visible result text is y=270,h=24, ending at 294 with 16px bottom padding. Every ToolCall has layoutMode VERTICAL, layoutSizingVertical HUG, primaryAxisSizingMode AUTO and zero outer strokes. Every adjacent visible child gap is 12px. No child extends outside its component bounds. Light set rows begin at y=48,400,752 with 14px between the tallest occupied row and the next row; horizontal column gap is 40px. Dark instances begin at y=72,422,744,1066,1416,1738 with 12px inter-instance gaps and 32px final container padding. Neither composition has intersecting component bounds.",
+      "screenshot_node_ids": [
+        "7:136",
+        "7:176",
+        "7:130",
+        "7:133"
+      ]
+    },
+    {
+      "id": "DQ-2",
+      "previous_severity": "P2",
+      "status": "verified_resolved",
+      "observation_type": "Direct current Figma text and screenshots",
+      "result": "All six states in both modes use exactly packages/desktop/src/features/permissions/PermissionRequest.ts in the target and input path. Each target block is x=16,y=114,w=368,h=72, and each input/output block is x=16,y=198,w=368,h=60. Both use HEIGHT text auto-resize, fixed horizontal width, HUG vertical sizing, no maxLines cap, and DISABLED text truncation. The long path visibly occupies two lines in each block with no clipping; the source and masked-output lines remain readable. Success says 확인 완료 and 결과 읽기 완료 for the same path, with a separate underlined 근거 보기 action below. Queued keeps its non-actionable absent-target note. Success/result wording no longer contradicts the target/input record.",
+      "screenshot_node_ids": [
+        "7:136",
+        "7:176",
+        "7:133"
+      ]
+    }
+  ],
+  "verified_observations": [
+    {
+      "family": "Input",
+      "scope": "Regression spot check only",
+      "screenshots": [
+        "7:7",
+        "7:28"
+      ],
+      "result": "Light states and Dark states remain legible and separated. Error feedback occupies its own line; the Dark error+focus composite preserves both error styling and an external focus ring without feedback overlap."
+    },
+    {
+      "family": "StatusBadge",
+      "scope": "Regression spot check only",
+      "screenshots": [
+        "7:82",
+        "7:92"
+      ],
+      "result": "All six labels remain legible and compact in both modes. Current ToolCall nested badge appearance retains distinct state labels and intended semantic colors."
+    },
+    {
+      "family": "NavigationItem",
+      "scope": "Regression spot check only",
+      "screenshots": [
+        "7:110",
+        "7:119"
+      ],
+      "result": "Light/Dark labels share a left inset. Selected remains visibly bold and distinct from hover/default; the Dark selected+focus composite retains selected fill and a clear outer focus ring."
+    },
+    {
+      "family": "PermissionRequest",
+      "scope": "Regression spot check only",
+      "screenshots": [
+        "8:7",
+        "8:42",
+        "56:60"
+      ],
+      "result": "Scope boundaries and full paths remain legible in both modes. Pending retains allow/deny, sending retains subdued allow/deny, approved/denied omit decision controls, and stale shows refresh. Decision-delivery copy remains distinct from execution completion. The existing 280px/720px Light examples retain stacked/inline actions and show their full path without clipping. Existing Button appearances were spot-checked in these compositions; no standalone Button re-audit is claimed."
+    }
+  ],
+  "evidence": {
+    "file_key": "e6QYqEsmA3FHB6A2ohNr2o",
+    "page_id": "5:9",
+    "origin": "Current direct Figma MCP get_screenshot and read-only use_figma calls by this independent child, after the repair. Screenshots were reviewed inline using the network-restricted environment fallback. Short-lived screenshot URLs are not persisted; stable Figma node links and raster dimensions are recorded.",
+    "coordinate_system": "Figma canvas pixels and rendered PNG pixels; no browser viewport/device is implied. ToolCall bounds are local to their parent; text/last-child bounds are local to each ToolCall.",
+    "captures": [
+      {
+        "node_id": "7:136",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-136",
+        "raster_size": [
+          928,
+          1076
+        ],
+        "original_size": [
+          928,
+          1076
+        ]
+      },
+      {
+        "node_id": "7:176",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-176",
+        "raster_size": [
+          460,
+          2080
+        ],
+        "original_size": [
+          460,
+          2080
+        ]
+      },
+      {
+        "node_id": "7:130",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-130",
+        "raster_size": [
+          400,
+          338
+        ],
+        "original_size": [
+          400,
+          338
+        ]
+      },
+      {
+        "node_id": "7:133",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-133",
+        "raster_size": [
+          400,
+          338
+        ],
+        "original_size": [
+          400,
+          338
+        ]
+      },
+      {
+        "node_id": "7:7",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-7",
+        "raster_size": [
+          1008,
+          426
+        ],
+        "original_size": [
+          1008,
+          426
+        ]
+      },
+      {
+        "node_id": "7:28",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-28",
+        "raster_size": [
+          800,
+          640
+        ],
+        "original_size": [
+          800,
+          640
+        ]
+      },
+      {
+        "node_id": "7:82",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-82",
+        "raster_size": [
+          576,
+          250
+        ],
+        "original_size": [
+          576,
+          250
+        ]
+      },
+      {
+        "node_id": "7:92",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-92",
+        "raster_size": [
+          800,
+          308
+        ],
+        "original_size": [
+          800,
+          308
+        ]
+      },
+      {
+        "node_id": "7:110",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-110",
+        "raster_size": [
+          828,
+          264
+        ],
+        "original_size": [
+          828,
+          264
+        ]
+      },
+      {
+        "node_id": "7:119",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=7-119",
+        "raster_size": [
+          800,
+          388
+        ],
+        "original_size": [
+          800,
+          388
+        ]
+      },
+      {
+        "node_id": "8:7",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=8-7",
+        "raster_size": [
+          928,
+          1371
+        ],
+        "original_size": [
+          928,
+          1371
+        ]
+      },
+      {
+        "node_id": "8:42",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=8-42",
+        "raster_size": [
+          460,
+          1840
+        ],
+        "original_size": [
+          460,
+          1840
+        ]
+      },
+      {
+        "node_id": "56:60",
+        "source_url": "https://www.figma.com/design/e6QYqEsmA3FHB6A2ohNr2o?node-id=56-60",
+        "raster_size": [
+          928,
+          667
+        ],
+        "original_size": [
+          928,
+          667
+        ]
+      }
+    ],
+    "toolcall_live_measurements": [
+      {
+        "id": "7:136",
+        "size": [
+          928,
+          1076
+        ],
+        "layout": "NONE",
+        "rows": [
+          {
+            "id": "7:130",
+            "name": "State=queued",
+            "bounds": [
+              24,
+              48,
+              400,
+              338
+            ],
+            "vertical": "HUG",
+            "primary": "AUTO",
+            "padding": 16,
+            "measuredBottom": 16,
+            "last": {
+              "id": "50:41",
+              "bounds": [
+                16,
+                306,
+                300,
+                16
+              ],
+              "text": "유효한 결과 대상이 없어 이동 링크를 표시하지 않습니다."
+            },
+            "target": {
+              "id": "7:140",
+              "text": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+              "bounds": [
+                16,
+                114,
+                368,
+                72
+              ],
+              "resize": "HEIGHT"
+            },
+            "input": {
+              "id": "7:141",
+              "text": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+              "bounds": [
+                16,
+                198,
+                368,
+                60
+              ],
+              "resize": "HEIGHT"
+            },
+            "gaps": [
+              12,
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "outerStroke": 0
+          },
+          {
+            "id": "7:131",
+            "name": "State=running",
+            "bounds": [
+              464,
+              48,
+              400,
+              310
+            ],
+            "vertical": "HUG",
+            "primary": "AUTO",
+            "padding": 16,
+            "measuredBottom": 16,
+            "last": {
+              "id": "7:148",
+              "bounds": [
+                16,
+                270,
+                368,
+                24
+              ],
+              "text": "결과  아직 확인되지 않음"
+            },
+            "target": {
+              "id": "7:146",
+              "text": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+              "bounds": [
+                16,
+                114,
+                368,
+                72
+              ],
+              "resize": "HEIGHT"
+            },
+            "input": {
+              "id": "7:147",
+              "text": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+              "bounds": [
+                16,
+                198,
+                368,
+                60
+              ],
+              "resize": "HEIGHT"
+            },
+            "gaps": [
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "outerStroke": 0
+          },
+          {
+            "id": "7:132",
+            "name": "State=waiting",
+            "bounds": [
+              24,
+              400,
+              400,
+              310
+            ],
+            "vertical": "HUG",
+            "primary": "AUTO",
+            "padding": 16,
+            "measuredBottom": 16,
+            "last": {
+              "id": "7:154",
+              "bounds": [
+                16,
+                270,
+                368,
+                24
+              ],
+              "text": "결과  아직 확인되지 않음"
+            },
+            "target": {
+              "id": "7:152",
+              "text": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+              "bounds": [
+                16,
+                114,
+                368,
+                72
+              ],
+              "resize": "HEIGHT"
+            },
+            "input": {
+              "id": "7:153",
+              "text": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+              "bounds": [
+                16,
+                198,
+                368,
+                60
+              ],
+              "resize": "HEIGHT"
+            },
+            "gaps": [
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "outerStroke": 0
+          },
+          {
+            "id": "7:133",
+            "name": "State=success",
+            "bounds": [
+              464,
+              400,
+              400,
+              338
+            ],
+            "vertical": "HUG",
+            "primary": "AUTO",
+            "padding": 16,
+            "measuredBottom": 16,
+            "last": {
+              "id": "50:51",
+              "bounds": [
+                16,
+                306,
+                67,
+                16
+              ],
+              "text": "근거 보기 ↗"
+            },
+            "target": {
+              "id": "7:158",
+              "text": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+              "bounds": [
+                16,
+                114,
+                368,
+                72
+              ],
+              "resize": "HEIGHT"
+            },
+            "input": {
+              "id": "7:159",
+              "text": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+              "bounds": [
+                16,
+                198,
+                368,
+                60
+              ],
+              "resize": "HEIGHT"
+            },
+            "gaps": [
+              12,
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "outerStroke": 0
+          },
+          {
+            "id": "7:134",
+            "name": "State=error",
+            "bounds": [
+              24,
+              752,
+              400,
+              310
+            ],
+            "vertical": "HUG",
+            "primary": "AUTO",
+            "padding": 16,
+            "measuredBottom": 16,
+            "last": {
+              "id": "7:166",
+              "bounds": [
+                16,
+                270,
+                368,
+                24
+              ],
+              "text": "결과  접근 실패 · 경로와 권한 확인"
+            },
+            "target": {
+              "id": "7:164",
+              "text": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+              "bounds": [
+                16,
+                114,
+                368,
+                72
+              ],
+              "resize": "HEIGHT"
+            },
+            "input": {
+              "id": "7:165",
+              "text": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+              "bounds": [
+                16,
+                198,
+                368,
+                60
+              ],
+              "resize": "HEIGHT"
+            },
+            "gaps": [
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "outerStroke": 0
+          },
+          {
+            "id": "7:135",
+            "name": "State=unknown",
+            "bounds": [
+              464,
+              752,
+              400,
+              310
+            ],
+            "vertical": "HUG",
+            "primary": "AUTO",
+            "padding": 16,
+            "measuredBottom": 16,
+            "last": {
+              "id": "7:172",
+              "bounds": [
+                16,
+                270,
+                368,
+                24
+              ],
+              "text": "결과  아직 확인되지 않음"
+            },
+            "target": {
+              "id": "7:170",
+              "text": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+              "bounds": [
+                16,
+                114,
+                368,
+                72
+              ],
+              "resize": "HEIGHT"
+            },
+            "input": {
+              "id": "7:171",
+              "text": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+              "bounds": [
+                16,
+                198,
+                368,
+                60
+              ],
+              "resize": "HEIGHT"
+            },
+            "gaps": [
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "outerStroke": 0
+          }
+        ]
+      },
+      {
+        "id": "7:176",
+        "size": [
+          460,
+          2080
+        ],
+        "layout": "VERTICAL",
+        "rows": [
+          {
+            "id": "7:178",
+            "name": "ToolCall",
+            "bounds": [
+              32,
+              72,
+              400,
+              338
+            ],
+            "vertical": "HUG",
+            "primary": "AUTO",
+            "padding": 16,
+            "measuredBottom": 16,
+            "last": {
+              "id": "I7:178;50:41",
+              "bounds": [
+                16,
+                306,
+                300,
+                16
+              ],
+              "text": "유효한 결과 대상이 없어 이동 링크를 표시하지 않습니다."
+            },
+            "target": {
+              "id": "I7:178;7:140",
+              "text": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+              "bounds": [
+                16,
+                114,
+                368,
+                72
+              ],
+              "resize": "HEIGHT"
+            },
+            "input": {
+              "id": "I7:178;7:141",
+              "text": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+              "bounds": [
+                16,
+                198,
+                368,
+                60
+              ],
+              "resize": "HEIGHT"
+            },
+            "gaps": [
+              12,
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "outerStroke": 0
+          },
+          {
+            "id": "7:185",
+            "name": "ToolCall",
+            "bounds": [
+              32,
+              422,
+              400,
+              310
+            ],
+            "vertical": "HUG",
+            "primary": "AUTO",
+            "padding": 16,
+            "measuredBottom": 16,
+            "last": {
+              "id": "I7:185;7:148",
+              "bounds": [
+                16,
+                270,
+                368,
+                24
+              ],
+              "text": "결과  아직 확인되지 않음"
+            },
+            "target": {
+              "id": "I7:185;7:146",
+              "text": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+              "bounds": [
+                16,
+                114,
+                368,
+                72
+              ],
+              "resize": "HEIGHT"
+            },
+            "input": {
+              "id": "I7:185;7:147",
+              "text": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+              "bounds": [
+                16,
+                198,
+                368,
+                60
+              ],
+              "resize": "HEIGHT"
+            },
+            "gaps": [
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "outerStroke": 0
+          },
+          {
+            "id": "7:192",
+            "name": "ToolCall",
+            "bounds": [
+              32,
+              744,
+              400,
+              310
+            ],
+            "vertical": "HUG",
+            "primary": "AUTO",
+            "padding": 16,
+            "measuredBottom": 16,
+            "last": {
+              "id": "I7:192;7:154",
+              "bounds": [
+                16,
+                270,
+                368,
+                24
+              ],
+              "text": "결과  아직 확인되지 않음"
+            },
+            "target": {
+              "id": "I7:192;7:152",
+              "text": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+              "bounds": [
+                16,
+                114,
+                368,
+                72
+              ],
+              "resize": "HEIGHT"
+            },
+            "input": {
+              "id": "I7:192;7:153",
+              "text": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+              "bounds": [
+                16,
+                198,
+                368,
+                60
+              ],
+              "resize": "HEIGHT"
+            },
+            "gaps": [
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "outerStroke": 0
+          },
+          {
+            "id": "7:199",
+            "name": "ToolCall",
+            "bounds": [
+              32,
+              1066,
+              400,
+              338
+            ],
+            "vertical": "HUG",
+            "primary": "AUTO",
+            "padding": 16,
+            "measuredBottom": 16,
+            "last": {
+              "id": "I7:199;50:51",
+              "bounds": [
+                16,
+                306,
+                67,
+                16
+              ],
+              "text": "근거 보기 ↗"
+            },
+            "target": {
+              "id": "I7:199;7:158",
+              "text": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+              "bounds": [
+                16,
+                114,
+                368,
+                72
+              ],
+              "resize": "HEIGHT"
+            },
+            "input": {
+              "id": "I7:199;7:159",
+              "text": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+              "bounds": [
+                16,
+                198,
+                368,
+                60
+              ],
+              "resize": "HEIGHT"
+            },
+            "gaps": [
+              12,
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "outerStroke": 0
+          },
+          {
+            "id": "7:206",
+            "name": "ToolCall",
+            "bounds": [
+              32,
+              1416,
+              400,
+              310
+            ],
+            "vertical": "HUG",
+            "primary": "AUTO",
+            "padding": 16,
+            "measuredBottom": 16,
+            "last": {
+              "id": "I7:206;7:166",
+              "bounds": [
+                16,
+                270,
+                368,
+                24
+              ],
+              "text": "결과  접근 실패 · 경로와 권한 확인"
+            },
+            "target": {
+              "id": "I7:206;7:164",
+              "text": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+              "bounds": [
+                16,
+                114,
+                368,
+                72
+              ],
+              "resize": "HEIGHT"
+            },
+            "input": {
+              "id": "I7:206;7:165",
+              "text": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+              "bounds": [
+                16,
+                198,
+                368,
+                60
+              ],
+              "resize": "HEIGHT"
+            },
+            "gaps": [
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "outerStroke": 0
+          },
+          {
+            "id": "7:213",
+            "name": "ToolCall",
+            "bounds": [
+              32,
+              1738,
+              400,
+              310
+            ],
+            "vertical": "HUG",
+            "primary": "AUTO",
+            "padding": 16,
+            "measuredBottom": 16,
+            "last": {
+              "id": "I7:213;7:172",
+              "bounds": [
+                16,
+                270,
+                368,
+                24
+              ],
+              "text": "결과  아직 확인되지 않음"
+            },
+            "target": {
+              "id": "I7:213;7:170",
+              "text": "출처  개발 에이전트\n대상  packages/desktop/src/features/permissions/PermissionRequest.ts",
+              "bounds": [
+                16,
+                114,
+                368,
+                72
+              ],
+              "resize": "HEIGHT"
+            },
+            "input": {
+              "id": "I7:213;7:171",
+              "text": "입력  { path: \"packages/desktop/src/features/permissions/PermissionRequest.ts\" }\n출력  민감한 값은 [마스킹]",
+              "bounds": [
+                16,
+                198,
+                368,
+                60
+              ],
+              "resize": "HEIGHT"
+            },
+            "gaps": [
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "outerStroke": 0
+          }
+        ]
+      }
+    ],
+    "additional_live_checks": {
+      "component_bound_collisions": [],
+      "visible_child_overflow": [],
+      "master_ids": [
+        "7:130",
+        "7:131",
+        "7:132",
+        "7:133",
+        "7:134",
+        "7:135"
+      ],
+      "dark_instance_ids": [
+        "7:178",
+        "7:185",
+        "7:192",
+        "7:199",
+        "7:206",
+        "7:213"
+      ],
+      "dark_main_component_ids": [
+        "7:130",
+        "7:131",
+        "7:132",
+        "7:133",
+        "7:134",
+        "7:135"
+      ],
+      "text_constraints": {
+        "horizontal": "FIXED",
+        "vertical": "HUG",
+        "textAutoResize": "HEIGHT",
+        "maxLines": null,
+        "textTruncation": "DISABLED"
+      },
+      "light_set_layout": "NONE; current explicit grid bounds measured and verified",
+      "dark_stack_layout": "VERTICAL/AUTO/HUG"
+    },
+    "source_hash_verification": {
+      "method": "Reopened the refreshed input and independently recomputed harness v2_review_binding using the current run state and source inventory. Exact equality confirmed for all binding fields, including refreshed verification hash. Recomputed individual SHA-256 file digests; structural evidence components_sha256 and manifest_sha256 match the actual canonical files.",
+      "binding_exact_match": true,
+      "files": {
+        "docs/runs/component-polish/plan.md": "f1394dff1232453425e0811cf666188aa6d1bb5ad5aa589454c85e48d382a2c4",
+        "docs/runs/component-polish/contract.json": "6aba776d2a233dc66ad2d4f24d85347b32d623e85dba9621231e7accb96ed066",
+        "docs/design/components.json": "c2eccfc549399c957734da0afd87ff29fb69cf12c61177fc9899718347026184",
+        "docs/design/system.md": "863cd6da5098b8009bb1fc82e9538f731a57a38b382ec11536fc887dcab558c4",
+        "docs/design/tokens/manifest.json": "84a1ecac6ef5e6dd51f9d7a1a9a959751a3a05731fe8cb3ff4ca3379957e0498",
+        "docs/design/tokens/tokens.css": "c6cedf264821dc9df98a44c16a24b00403783d5ab84bb19b0176ea5a3d3c61f3",
+        "docs/runs/component-polish/figma-structural-evidence.json": "db86b68436303ea1963add1d3b5f4553fd421e0406ec4f2acfb78e84b98d9324"
+      },
+      "evidence_parity": "Current structural evidence ToolCall sizes, bottom gaps, target/input text bounds, paths, composition positions and capture dimensions agree with independent live measurements. This report uses native Dark instance IDs returned by use_figma; supplied structural evidence also uses composite instance-root notation."
+    }
+  },
+  "limitations": [
+    "Figma is the deliverable for this assignment. This pass applies to the repaired component library and current composed examples only.",
+    "No application runtime, keyboard interaction, screen reader, programmatic semantics, hit testing, touch, zoom, browser E2E, or actual permission execution was tested.",
+    "Disclosure and result-navigation affordances were visually inspected only. Valid runtime target availability, hyperlink navigation, and expanded-state behavior are not established by these examples.",
+    "Light ToolCall component-set rows use explicit positions rather than an auto-layout container. Their current measured composition is non-overlapping; automatic grid reflow for future content mutations is not claimed. Individual ToolCalls and the Dark stack do use auto/hug vertical sizing.",
+    "Previously accepted families received regression spot checks, not a full repeated geometry, contrast, token, or accessibility audit. Standalone Button definitions and all 44 canonical variants were not independently re-audited.",
+    "Responsive PermissionRequest examples are existing Figma compositions, not proof of runtime responsive behavior; no separate Dark 280px/720px examples were inspected.",
+    "Numerical color contrast was not recalculated in this review.",
+    "The remote Figma source is mutable and no immutable remote revision hash is available. Stable node IDs, current raster sizes, and measured geometry document the direct inspection; repository hashes bind local reviewed inputs.",
+    "Direct images remain in this review tool conversation; no persistent PNG copies were written."
+  ],
+  "next_handoff": "Coordinator may record the design gate using this exact schema-v2 report and refreshed binding. Preserve the stated Figma-only limits and keep code/check gate outcomes separate. No further visual correction is required for DQ-1/DQ-2.",
+  "provenance": {
+    "child_task_id": "/root/design_qa_rev2",
+    "author_task_id": "/root",
+    "role": "design_qa",
+    "requested_model": "gpt-6-astra",
+    "requested_effort": "high",
+    "routing_attestation": "Requested settings from the assignment; not an independent runtime identity attestation.",
+    "independence": "Fresh independent child read current Figma renders and live properties. It did not author or change the Figma library or project implementation. Only the specifically assigned report file was written."
+  }
+}

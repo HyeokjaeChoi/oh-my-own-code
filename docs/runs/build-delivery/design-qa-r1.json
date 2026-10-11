@@ -1,0 +1,111 @@
+{
+  "schema_version": 2,
+  "gate": "design",
+  "role": "design_qa",
+  "run": "build-delivery",
+  "reviewed": {
+    "contract_sha256": "064248d8e9743d7823753cef30c2e95a1644feec1dbbaa69ccdc83b7a491d8fd",
+    "environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "gate": "design",
+    "plan_sha256": "d948d3b3ac16fd325e381defffd6cff7101ba7dccb94969c17db5738b16d44a3",
+    "schema_version": 2,
+    "source_sha256": "21115e12aba461dac2882aebf85b66894df5cbece77ceddd5973cca25467b905",
+    "verification_sha256": "60eafc033802b7adab640c788c104a748a9c744d86dfbb0b16c21efe6c188ead"
+  },
+  "verdict": "pass",
+  "scope": "Fresh rendered-UI judgment of the existing synthetic read-only workbench shell for the plan revision 5 SDK client probe increment. No UI source was assigned for change in this increment. This verdict is limited to the synthetic shell and does not approve full PRD behavior or real SDK operation.",
+  "observed_evidence": {
+    "origin": "Direct inspection of the running implementation in the Codex in-app browser at http://127.0.0.1:4200/ on 2026-09-27; screenshots and accessibility state were observed in the reviewer session, with no exported capture file.",
+    "route": "/",
+    "state": "Korean-language, light-theme LinkPreview synthetic fixture, marked '합성 데이터 · 읽기 전용'; no real path, project file, account information, or external execution represented.",
+    "viewports_checked": [
+      {
+        "width": 1280,
+        "height": 720,
+        "document_scroll_width": 1280
+      },
+      {
+        "width": 320,
+        "height": 844,
+        "document_scroll_width": 320
+      },
+      {
+        "width": 600,
+        "height": 844,
+        "document_scroll_width": 600
+      },
+      {
+        "width": 900,
+        "height": 844,
+        "document_scroll_width": 900
+      }
+    ],
+    "observations": [
+      "The page title and visible interface labels are Korean; 'Demo project' is the synthetic workspace name.",
+      "The user request, assistant response, tool outcome, validated link preview, and subsequent synthetic event remain in a clear reading order.",
+      "The preview card and status badges remain readable at the checked widths. No visible clipping or horizontal overflow was observed.",
+      "The accessibility tree exposes the page and preview headings and identifies the conversation and tool-call containers. The rendered fixture has no buttons or links, consistent with its read-only label.",
+      "The in-app browser recorded no warning or error console entries during this review."
+    ]
+  },
+  "open_findings": [],
+  "not_retested": [
+    "390px viewport and other intermediate widths from the prior review",
+    "Loading, error, and malformed-result fallback rendering",
+    "Keyboard focus behavior, screen-reader output, text zoom, dark theme, reduced motion, and interactive controls",
+    "Real SDK streaming, permissions, project navigation, recovery, and PRD AC-01–18 user journeys",
+    "Source-to-running-bundle hash identity and SDK client probe behavior"
+  ],
+  "limits": [
+    "This pass is a visual and accessibility-tree spot check of one synthetic, read-only state. The running bundle was not independently attested to source files. Missing product states and real-runtime behavior remain outside this design verdict.",
+    "390px viewport and other intermediate widths from the prior review",
+    "Loading, error, and malformed-result fallback rendering",
+    "Keyboard focus behavior, screen-reader output, text zoom, dark theme, reduced motion, and interactive controls",
+    "Real SDK streaming, permissions, project navigation, recovery, and PRD AC-01–18 user journeys",
+    "Source-to-running-bundle hash identity and SDK client probe behavior"
+  ],
+  "next_handoff": "Coordinator may bind this bounded design pass to the current increment; full product design QA still requires implemented flows and fresh rendered-state evidence.",
+  "provenance": {
+    "child_task_id": "/root/sdk_client_probe_design_qa_r1",
+    "author_task_id": "/root",
+    "report_only": true,
+    "requested_model": "gpt-6-sol",
+    "requested_effort": "medium",
+    "runtime_identity_verified": false
+  },
+  "summary": "The rendered synthetic read-only workbench shell passed a bounded visual spot check at 320, 600, 900, and 1280 px with no overflow, visible clipping, or browser warnings/errors. This design verdict does not cover full product flows or real SDK operation.",
+  "evidence": {
+    "origin": "Direct inspection of the running implementation in the Codex in-app browser at http://127.0.0.1:4200/ on 2026-09-27; screenshots and accessibility state were observed in the reviewer session, with no exported capture file.",
+    "route": "/",
+    "state": "Korean-language, light-theme LinkPreview synthetic fixture, marked '합성 데이터 · 읽기 전용'; no real path, project file, account information, or external execution represented.",
+    "viewports_checked": [
+      {
+        "width": 1280,
+        "height": 720,
+        "document_scroll_width": 1280
+      },
+      {
+        "width": 320,
+        "height": 844,
+        "document_scroll_width": 320
+      },
+      {
+        "width": 600,
+        "height": 844,
+        "document_scroll_width": 600
+      },
+      {
+        "width": 900,
+        "height": 844,
+        "document_scroll_width": 900
+      }
+    ],
+    "observations": [
+      "The page title and visible interface labels are Korean; 'Demo project' is the synthetic workspace name.",
+      "The user request, assistant response, tool outcome, validated link preview, and subsequent synthetic event remain in a clear reading order.",
+      "The preview card and status badges remain readable at the checked widths. No visible clipping or horizontal overflow was observed.",
+      "The accessibility tree exposes the page and preview headings and identifies the conversation and tool-call containers. The rendered fixture has no buttons or links, consistent with its read-only label.",
+      "The in-app browser recorded no warning or error console entries during this review."
+    ]
+  }
+}

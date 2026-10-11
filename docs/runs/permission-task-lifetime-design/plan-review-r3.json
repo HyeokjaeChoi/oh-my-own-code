@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "d37eab3f25704784ec35fbea95adb660481da0896d3a2a6060f1fae53fd234d0",
+    "gate": "plan",
+    "plan_sha256": "0f9d084716a6f9225b337a1e549fa47a439187dbd0e64590d65a44b891eb0eb8",
+    "schema_version": 2,
+    "source_sha256": "c7e7d9f0ecee850ac66abfe6c3bfb807b2da0588b292717f5d5d3ca4101959d8",
+    "work_class_sha256": "2a218aa116a6799cdd40b43ea0fa3e9b9128499f697f6b075c56736bc0714b1f"
+  },
+  "verdict": "pass",
+  "summary": "PLAN-BIND-01은 해결되었습니다. 현재 등록된 plan 소스 hash는 현재 source_fingerprint와 일치합니다. 계획·계약·work class는 변경되지 않았으며, 기존 초기 계획의 실질 통과 평가를 유지합니다. 이번 판단은 초기 plan gate에만 적용됩니다. 후속 구현에는 별도의 design-spec 승인이 필요합니다.",
+  "open_findings": [],
+  "provenance": {
+    "child_task_id": "01a12456-9fa6-7920-b2f6-98adc73a6d86",
+    "binding_input": "docs/runs/permission-task-lifetime-design/plan-input-r3.json",
+    "binding_before_after": "입력 전체 객체와 harness 출력이 검토 전후 일치",
+    "registered_plan_source_matches_current_fingerprint": true,
+    "plan_contract_work_class_unchanged": true,
+    "resolved_finding": "PLAN-BIND-01",
+    "prior_assessment_reused": "변경 없는 초기 계획의 기존 실질 통과 평가를 유지하고 plan-review-r2.json의 바인딩 차단만 재확인했습니다.",
+    "design_spec_review_performed": false,
+    "full_review_or_checks_repeated": false,
+    "runtime_launched": false,
+    "delegation": false,
+    "source_edits": false,
+    "report_saved": false,
+    "ledger_edits": false
+  }
+}

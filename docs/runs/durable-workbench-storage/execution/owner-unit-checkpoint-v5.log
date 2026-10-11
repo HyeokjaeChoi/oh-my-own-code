@@ -1,0 +1,78 @@
+✔ spawn intent without a recorded PID never permits takeover or clean release (35.71375ms)
+✔ concurrent same-root owners: denied kernel never opens owner record or writes (12.105709ms)
+✔ simultaneous acquisition returns exactly one owner (8.272833ms)
+✔ canonical symlink aliases conflict; separate canonical roots do not (27.203417ms)
+✔ missing root or missing record in populated store is preserved and blocked (1.385334ms)
+✔ empty roots require explicit initialization (0.572ms)
+▶ corrupt/partial/extra-key/unsupported owner records are never recreated
+  ✔ corrupt (10.208459ms)
+  ✔ partial (11.632542ms)
+  ✔ extra (9.601959ms)
+  ✔ version (11.269417ms)
+  ✔ checksum (10.334083ms)
+  ✔ missing-fields (10.703125ms)
+✔ corrupt/partial/extra-key/unsupported owner records are never recreated (64.391ms)
+▶ root binding and owned nonce changes block writes
+  ✔ {"root":"/synthetic-wrong-root"} (11.7035ms)
+  ✔ {"rootIdentity":"0:0"} (11.163041ms)
+  ✔ {"nonce":"different-nonce"} (10.066667ms)
+✔ root binding and owned nonce changes block writes (33.28425ms)
+▶ dirty takeover requires exact app AND child termination; PID age/absence/reuse do not suffice
+  ✔ alive/exited (31.11125ms)
+  ✔ exited/alive (30.046458ms)
+  ✔ unverified/exited (31.945167ms)
+  ✔ exited/unverified (33.953292ms)
+  ✔ identity_conflict/exited (30.750084ms)
+  ✔ exited/identity_conflict (33.852ms)
+  ✔ exited/exited (46.850959ms)
+✔ dirty takeover requires exact app AND child termination; PID age/absence/reuse do not suffice (239.636541ms)
+✔ process verifier rejects PID-only, replacement identity, stale boot and unsupported evidence (0.343583ms)
+✔ no OS identity adapter means no ready owner (1.351167ms)
+✔ wrong nonce, reused acquisition nonce, and child identity conflict cannot launch effects (10.650541ms)
+▶ child record requires flushed intent and rejects app identity as child
+  ✔ true (22.096416ms)
+  ✔ false (11.454291ms)
+✔ child record requires flushed intent and rejects app identity as child (33.982708ms)
+✔ release waits for exact owned child exit; blocked shutdown can retry only teardown (43.54525ms)
+✔ no-child clean shutdown releases and can reopen only after app termination (32.22725ms)
+▶ write/file-sync/directory-sync/rename/close/unlink failures poison owner, preserve evidence and block reopen
+  ✔ guard.writeFile (13.283208ms)
+  ✔ guard.sync (11.6335ms)
+  ✔ next.writeFile (14.074708ms)
+  ✔ next.sync (16.836417ms)
+  ✔ next.close (17.955542ms)
+  ✔ directory.sync (14.758917ms)
+  ✔ rename (17.455041ms)
+  ✔ unlink (21.767125ms)
+✔ write/file-sync/directory-sync/rename/close/unlink failures poison owner, preserve evidence and block reopen (128.926167ms)
+✔ initial record sync failure exposes neither ready nor nonce (5.403709ms)
+✔ clean shutdown sync failure never releases kernel or claims clean success (15.352334ms)
+✔ queued child publication cannot pass a paused or failed spawn-intent flush (19.602375ms)
+✔ Electron adapter binds canonical userData before singleton and preserves binding after override (0.536208ms)
+▶ post-rename and post-unlink directory sync failure retain a reopen blocker
+  ✔ directory sync 2 (18.22ms)
+  ✔ directory sync 3 (24.939542ms)
+✔ post-rename and post-unlink directory sync failure retain a reopen blocker (43.535875ms)
+✔ child identity flush failure preserves spawn gap and rejects later release (26.982ms)
+✔ moved root record rejects takeover instead of relocating storage (14.789291ms)
+✔ symlink owner record is rejected without reading or rewriting its target (1.715667ms)
+✔ lost kernel and unverified release cannot publish clean success (34.40625ms)
+✔ public API and returned DTOs are frozen and exactly closed (24.081625ms)
+▶ permissions and oversized record errors return closed recovery without rewriting bytes
+  ✔ root-mode (0.595458ms)
+  ✔ record-mode (11.807625ms)
+  ✔ oversize (13.230292ms)
+✔ permissions and oversized record errors return closed recovery without rewriting bytes (26.074959ms)
+✔ active canonical alias retarget blocks the old handle (12.678625ms)
+✔ kernel release failure exposes no released success (22.531167ms)
+✔ unchanged kernel after release is not reported released (24.02ms)
+✔ sync pre-acquired kernel binds async owner to exactly the same canonical root without another singleton request (23.759125ms)
+✔ lost pre-acquired kernel cannot be reused or requested again (0.316084ms)
+ℹ tests 63
+ℹ suites 0
+ℹ pass 63
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1029.09025

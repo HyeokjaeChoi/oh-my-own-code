@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "reviewed": {
+    "contract_sha256": "6aba776d2a233dc66ad2d4f24d85347b32d623e85dba9621231e7accb96ed066",
+    "gate": "plan",
+    "plan_sha256": "b01e9e71a22b64cedb27f97c326c1c70d9af65c5f06bf16013fe52e3b61df14c",
+    "schema_version": 2,
+    "source_sha256": "85e6ea89ecd92e97a6ea8e963edf3cb3875dfdac86af20f61a67d02add9aa2ce"
+  },
+  "verdict": "changes_requested",
+  "summary": "Revision 7's ToolCall acceptance now covers both observed QA defects with measurable vertical bounds, 16px bottom padding, exact target/input path equality, long-path wrapping, all six states, and Light/Dark evidence. The registered plan, contract, and three canonical document hashes match the review binding. The plan's revision header and execution sequence still describe revision 6 and the initial five-page implementation, leaving the current repair handoff ambiguous. Correct the SSOT identity and narrow the sequence to the observed ToolCall repair before starting another Figma increment; then refresh the binding and request review of the changed concerns.",
+  "open_findings": [
+    {
+      "id": "PR7-1",
+      "severity": "P2",
+      "finding": "The plan header says Revision: 6 and describes the dark navigation alias fix, while its change history includes Rev 7 and its AC-4/AC-6 include the new ToolCall QA repair. The plan therefore does not name its current revision unambiguously.",
+      "impact": "A handoff that cites plan revision 7 cannot be checked against the plan's own declared revision; a consumer could treat the QA repair as an unreviewed addendum to revision 6.",
+      "required_correction": "Change the SSOT header to Revision: 7 with the ToolCall QA repair purpose, retain the Rev 7 change-history entry, and regenerate the exact plan/contract review binding after the edit."
+    },
+    {
+      "id": "PR7-2",
+      "severity": "P2",
+      "finding": "The proposed sequence still starts from source-contract drafting and one Figma call per page across all five families, although the current design QA inspected an already-built library and left only DQ-1/DQ-2 in ToolCall unresolved. It does not state the bounded owner, inputs, and output for this repair increment.",
+      "impact": "The next implementer may redo accepted families or change canonical sources without a demonstrated need, while the required fresh review could be bound to the wrong increment.",
+      "required_correction": "Add a revision-7 continuation step assigning the ToolCall-only repair: use DQ-1/DQ-2 and current registered contract as inputs; correct queued/success and any other affected variant bounds and target/input content across all six states and both modes; update the run-local evidence/check only as needed; capture current Light/Dark set and Dark showcase; then run targeted checks and obtain a fresh independent rendered-design review. State that any canonical contract change requires refreshed hashes and design-spec review/handoff before projection."
+    }
+  ],
+  "provenance": {
+    "child_task_id": "/root/plan_reviewer_rev7",
+    "author_task_id": "/root"
+  }
+}

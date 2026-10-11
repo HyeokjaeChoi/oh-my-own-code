@@ -1,0 +1,223 @@
+{
+  "schema_version": 2,
+  "acceptance": [
+    {
+      "id": "A1",
+      "description": "Guarded agent files/drafts/publication"
+    },
+    {
+      "id": "A2",
+      "description": "Exact owned Native agent lifecycle and permission/reference safeguards"
+    },
+    {
+      "id": "A3",
+      "description": "Truthful scoped accessible agent UI"
+    },
+    {
+      "id": "A4",
+      "description": "Current checks/actual evidence/independent final gates"
+    }
+  ],
+  "checks": {
+    "agents": {
+      "argv": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/configuration-agent.test.mjs",
+        "apps/desktop-app/src/native-agents-host.test.mjs",
+        "apps/desktop-app/src/native-skills-plugin.test.mjs",
+        "apps/desktop-app/src/host/storage-integration.test.mjs",
+        "apps/desktop-app/src/host/storage-journal.test.mjs",
+        "apps/desktop-app/src/host/workspace-registry.test.mjs",
+        "apps/desktop-app/src/host/workbench-admission.test.mjs",
+        "apps/desktop-app/src/host/workbench-receipts.test.mjs",
+        "apps/desktop-app/src/workbench-contract.test.mjs",
+        "apps/desktop-app/src/workbench-service.test.mjs",
+        "apps/desktop-app/src/workbench-store.test.mjs",
+        "apps/desktop-app/src/configuration-draft.test.mjs",
+        "apps/desktop-app/scripts/fixtures/workbench-host.test.mjs",
+        "apps/desktop-app/scripts/stage-event-host.test.mjs",
+        "apps/desktop-app/src/native-agents-plugin.test.mjs",
+        "apps/desktop-app/src/host/workbench-agents.test.mjs",
+        "apps/desktop-app/src/host/workbench-skills.test.mjs",
+        "apps/desktop-app/src/event-host-supervisor.test.mjs",
+        "apps/desktop-app/src/configuration-agent-runtime-api.test.mjs",
+        "apps/desktop-app/src/configuration-skill-draft.test.mjs",
+        "apps/desktop-app/src/configuration-skill-runtime-api.test.mjs",
+        "apps/desktop-app/src/configuration-skill-runtime.test.mjs",
+        "apps/desktop-app/src/host/workbench-agent-storage.test.mjs",
+        "apps/desktop-app/scripts/fixtures/native-agents-public.test.mjs",
+        "apps/desktop-app/scripts/fixtures/native-skills-prerequisite.test.mjs",
+        "apps/desktop-app/scripts/run-evidence.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Affected agents files/runtime/durable/renderer plus legacy regression",
+      "acceptance_ids": [
+        "A1",
+        "A2",
+        "A3",
+        "A4"
+      ],
+      "required": true
+    },
+    "native": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/configuration-agent-probe.mjs",
+        "--out",
+        "docs/runs/configuration-agents/evidence/native-r11"
+      ],
+      "cwd": ".",
+      "scope": "Actual current coherent production owner/Native/private/public durable Agent14cases after Renderer fix build; no model/provider",
+      "acceptance_ids": [
+        "A1",
+        "A2",
+        "A4"
+      ],
+      "required": true
+    },
+    "hidden-ui": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/run-evidence.mjs",
+        "--script",
+        "ui-states",
+        "--out",
+        "docs/runs/configuration-agents/evidence/hidden-r2"
+      ],
+      "cwd": ".",
+      "scope": "Actual built hidden agent editor/runtime synthetic Main states",
+      "acceptance_ids": [
+        "A3",
+        "A4"
+      ],
+      "required": true
+    },
+    "build": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "nx",
+        "run",
+        "desktop-app:build",
+        "--skip-nx-cache"
+      ],
+      "cwd": ".",
+      "scope": "Actual current production resources/renderer build after Renderer original-ID correction",
+      "acceptance_ids": [
+        "A4"
+      ],
+      "required": true
+    },
+    "typecheck": {
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsc",
+        "-p",
+        "apps/desktop-app/tsconfig.json",
+        "--noEmit"
+      ],
+      "cwd": ".",
+      "scope": "Closed types",
+      "acceptance_ids": [
+        "A4"
+      ],
+      "required": true
+    },
+    "boundaries": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/check-renderer-boundaries.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Renderer slice boundaries",
+      "acceptance_ids": [
+        "A4"
+      ],
+      "required": true
+    },
+    "bundle": {
+      "argv": [
+        "node",
+        "apps/desktop-app/scripts/inspect-renderer-bundle.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Browser bundle closure",
+      "acceptance_ids": [
+        "A4"
+      ],
+      "required": true
+    },
+    "lint": {
+      "argv": [
+        "node",
+        "docs/runs/configuration-agents/check-changed.mjs",
+        "lint"
+      ],
+      "cwd": ".",
+      "scope": "Affected source lint",
+      "acceptance_ids": [
+        "A4"
+      ],
+      "required": true
+    },
+    "format": {
+      "argv": [
+        "node",
+        "docs/runs/configuration-agents/check-changed.mjs",
+        "format"
+      ],
+      "cwd": ".",
+      "scope": "Affected source format",
+      "acceptance_ids": [
+        "A4"
+      ],
+      "required": true
+    },
+    "kernel": {
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=dot",
+        "apps/desktop-app/src/host/configuration-save-kernel.test.mjs"
+      ],
+      "cwd": ".",
+      "scope": "Actual manifest-verified pinned Bun descriptor publication with Agent and legacy file race/backup/parity proofs",
+      "acceptance_ids": [
+        "A1",
+        "A4"
+      ],
+      "required": true
+    }
+  },
+  "documents": [
+    {
+      "path": "docs/runs/configuration-agents/design.md",
+      "gate": "design_spec",
+      "version": "1",
+      "sha256": "89969fa6f3ba1035f1d7ade937b5efca86428aaaf65bd1d75ee379b7dca43675"
+    }
+  ],
+  "environment_files": [
+    "pnpm-lock.yaml",
+    "docs/runs/configuration-agents/source-facts.json",
+    "docs/runs/configuration-agents/prechange-source.json",
+    "docs/runs/configuration-agents/check-changed.mjs"
+  ],
+  "user_approvals": [],
+  "decision_register": [
+    {
+      "id": "agents-supported-conversion",
+      "statement": "Existing flat agents Markdown plus explicit fixed trusted plugin custom-agent lifecycle with forced app baseline, no autoload or model",
+      "status": "delegated",
+      "source": "User ongoing local remaining-work continuation; PRD F14/AC14; current pinned source facts and accepted ADR/native owner/plugin architecture",
+      "impact": "New agent file/runtime/data/UI boundary; arbitrary hooks/tools/plugins remain out of scope",
+      "blocks": [],
+      "resolution": "Initial PLAN/DESIGN_SPEC once, actual contained route proof before consumers, closed narrow grammar and baseline/default/reference proof; abort unsafe fallback"
+    }
+  ]
+}
