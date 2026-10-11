@@ -13,12 +13,14 @@ import { join } from "node:path";
 import test from "node:test";
 import {
   DATA_LIMITS,
+  WIPE_WORD,
   buildExport,
   parseImport,
   redactText,
   retentionCandidates,
   validateDataRequest,
 } from "../renderer/shared/data-transfer/index.mjs";
+import { bindDataIpc } from "./data-ipc.mjs";
 import { createDataHost, wipeAppDataSync } from "./data-host.mjs";
 
 const HOME = "/Users/alice";
@@ -28,6 +30,11 @@ const FAKE_KEYS = [
   "ghp_" + "A1".repeat(15),
   "AKIA" + "ABCDEFGHIJKLMNOP",
   "xoxb-" + "1234567890-abcdef",
+  "sk_" + "live_" + "Ab1".repeat(8),
+  "rk_" + "test_" + "Ab1".repeat(8),
+  "glpat-" + "x1".repeat(12),
+  "npm_" + "Ab1".repeat(10),
+  "ya29." + "Ab1_".repeat(8),
   "eyJ" + "hbGciOiJI" + ".eyJzdWIiOiIx" + ".abcdefghijkl",
 ];
 const messages = [
@@ -86,6 +93,24 @@ test("redaction strips key patterns and the home path", () => {
       "-----BEGIN RSA PRIVATE KEY-----\nabc\n-----END RSA PRIVATE KEY-----",
     ).text.includes("abc"),
   );
+});
+
+test("redaction drops URL credentials and runs before clipping", () => {
+  assert.equal(
+    redactText("git clone https://bob:hunter2@example.com/r.git").text,
+    "git clone https://[REDACTED]@example.com/r.git",
+  );
+  const key = "sk-" + "a".repeat(40);
+  const { doc } = build({
+    messages: [
+      {
+        id: "m1",
+        role: "user",
+        text: `${"x".repeat(DATA_LIMITS.text - 11)} ${key}`,
+      },
+    ],
+  });
+  assert.ok(!doc.sessions[0].messages[0].text.includes("sk-"));
 });
 
 test("redaction is idempotent", () => {
@@ -203,6 +228,43 @@ test("data host stores archives atomically and sweeps by age", async () => {
   assert.equal((await host.retentionSet(30)).removed, 1);
   assert.equal((await host.list()).length, 0);
   assert.equal((await host.retention()).days, 30);
+});
+
+test("data host get reads one archive and validates the id", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "omoc-data-"));
+  const host = createDataHost({ metadataDir: () => dir, home: HOME });
+  const info = await host.importText(JSON.stringify(build().doc));
+  assert.equal((await host.get(info.id)).id, info.id);
+  await assert.rejects(host.get("../x"), { dataCode: "INVALID_REQUEST" });
+  await assert.rejects(host.get("a".repeat(8)), { dataCode: "NOT_FOUND" });
+});
+
+test("wipe IPC refuses when this process does not own storage", async () => {
+  let handler;
+  let wiped = 0;
+  const dialogs = {
+    confirmWipe: async () => true,
+    wipe: () => wiped++,
+  };
+  const bind = (owned) =>
+    bindDataIpc({
+      ipcMain: { handle: (_c, h) => (handler = h) },
+      admit: () => true,
+      host: {},
+      dialogs,
+      appDataRoot: () => "/x",
+      owned: () => owned,
+    });
+  const req = { type: "wipe.run", word: WIPE_WORD };
+  bind(false);
+  assert.deepEqual(await handler({}, req), { ok: false, code: "NOT_OWNER" });
+  assert.equal(wiped, 0);
+  bind(true);
+  assert.deepEqual(await handler({}, req), {
+    ok: true,
+    value: { started: true },
+  });
+  assert.equal(wiped, 1);
 });
 
 test("app-data wipe stays inside the directory", () => {

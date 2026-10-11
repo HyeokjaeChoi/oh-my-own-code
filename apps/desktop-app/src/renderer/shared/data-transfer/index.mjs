@@ -23,6 +23,10 @@ const SECRET_PATTERNS = [
   /\bsk-[A-Za-z0-9_-]{16,}/g,
   /\bgh[pousr]_[A-Za-z0-9]{20,}/g,
   /\bgithub_pat_[A-Za-z0-9_]{20,}/g,
+  /\b[sr]k_(?:live|test)_[A-Za-z0-9]{8,}/g,
+  /\bglpat-[A-Za-z0-9_-]{20,}/g,
+  /\bnpm_[A-Za-z0-9]{20,}/g,
+  /\bya29\.[A-Za-z0-9_-]{20,}/g,
   /\bxox[abprs]-[A-Za-z0-9-]{10,}/g,
   /\bAKIA[0-9A-Z]{16}\b/g,
   /\bAIza[0-9A-Za-z_-]{30,}/g,
@@ -31,6 +35,9 @@ const SECRET_PATTERNS = [
 // NAME=value / "name": "value" where NAME looks like a credential.
 const ASSIGN =
   /(["']?[A-Za-z0-9_.-]*(?:api[_-]?key|token|secret|passw(?:or)?d|credential|private[_-]?key)[A-Za-z0-9_.-]*["']?\s*[:=]\s*)(?:"[^"\n]*"|'[^'\n]*'|[^\s"',;]+)/gi;
+
+// scheme://user:pass@host keeps the scheme and host, drops the credentials.
+const URL_USERINFO = /\b([a-z][a-z0-9+.-]*:\/\/)[^\s/@:]+:[^\s/@]+@/gi;
 
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -51,6 +58,7 @@ export function redactText(value, { home } = {}) {
         ? `${name}${sep}${REDACTED}`
         : REDACTED,
     );
+  sub(URL_USERINFO, (_m, scheme) => `${scheme}${REDACTED}@`);
   sub(ASSIGN, (_m, lead) => `${lead}${REDACTED}`);
   if (typeof home === "string" && home.length > 1 && home !== "/") {
     const clean = home.replace(/[\\/]+$/, "");
@@ -84,10 +92,11 @@ export function buildExport({
 }) {
   const totals = { secrets: 0, home: 0, envOutputs: 0 };
   const red = (v, n) => {
-    const r = redactText(clip(v, n), { home });
+    // Redact the whole value first so clipping never splits a secret into an unmatched fragment.
+    const r = redactText(v, { home });
     totals.secrets += r.counts.secrets;
     totals.home += r.counts.home;
-    return r.text;
+    return clip(r.text, n);
   };
   let tools = 0;
   let outputs = 0;

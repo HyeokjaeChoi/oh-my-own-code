@@ -12,7 +12,7 @@ const err = (code) => ({ ok: false, code });
 
 // Separate channel: export/import/retention/wipe are host-owned app-data operations.
 // dialogs: {saveFile(defaultName), openFile(), confirmWipe(), wipe()} supplied by main.
-export function bindDataIpc({ ipcMain, admit, host, dialogs, appDataRoot }) {
+export function bindDataIpc({ ipcMain, admit, host, dialogs, appDataRoot, owned }) {
   ipcMain.handle("desktop:v1:data", async (event, ...args) => {
     if (!admit(event) || args.length !== 1) return err("INVALID_REQUEST");
     const r = validateDataRequest(args[0]);
@@ -57,6 +57,7 @@ export function bindDataIpc({ ipcMain, admit, host, dialogs, appDataRoot }) {
         case "wipe.info":
           return ok({ root: appDataRoot() });
         default:
+          if (!owned()) return err("NOT_OWNER");
           if (r.word !== WIPE_WORD) return err("CONFIRM_MISMATCH");
           if (!(await dialogs.confirmWipe())) return ok({ started: false });
           dialogs.wipe();

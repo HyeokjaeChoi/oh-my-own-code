@@ -52,8 +52,6 @@ import { randomUUID } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 
 let workbench;
-// One-shot path the next workspace.import adopts instead of opening a folder dialog.
-let stagedImport;
 const worktrees = createWorktreeHost({
   documentsRoot: () => namespace.documents,
   linksFile: () => join(namespace.metadata, "worktree-links.json"),
@@ -68,6 +66,8 @@ const plans = createPlansHost({
 });
 // Set by the confirmed "앱 데이터 삭제"; executed in will-quit after storage is released.
 let wipeOnQuit = false;
+// True only after this process acquired the storage owner; wipe never runs otherwise.
+let ownedStorage = false;
 const dataHost = createDataHost({
   metadataDir: () => namespace.metadata,
   appVersion: app.getVersion(),
@@ -85,7 +85,15 @@ let owner;
 let registry;
 let initialRecovery;
 let kernel;
+const gotInstanceLock = app.requestSingleInstanceLock();
+if (!gotInstanceLock) app.quit();
+app.on("second-instance", () => {
+  if (!mainWindow) return;
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.focus();
+});
 try {
+  if (!gotInstanceLock) throw new Error("second_instance");
   namespace = prepareDurableNamespace(app);
   kernel = createElectronOwnerKernel(app);
   // This call must stay synchronous, before whenReady and profile override.
@@ -124,6 +132,7 @@ const registryPromise = (async () => {
     }),
   });
   const result = await owner.acquire({ initialize: namespace.fresh });
+  ownedStorage = result.state === "ready";
   if (result.state !== "ready") {
     if (["owner_conflict", "owner_unverified"].includes(result.reason)) {
       registry = await openWorkspaceRegistry({
@@ -299,6 +308,7 @@ function bindIpc() {
     admit,
     host: dataHost,
     appDataRoot: () => namespace?.root,
+    owned: () => ownedStorage,
     dialogs: {
       async saveFile(defaultPath) {
         const r = await dialog.showSaveDialog(mainWindow, {
@@ -346,9 +356,6 @@ function bindIpc() {
     admit,
     host: worktrees,
     info: (id) => workbench?.workspaceInfo(id),
-    stageImport: (path) => {
-      stagedImport = { path, until: Date.now() + 30000 };
-    },
     async confirmDelete({ kind, path, reasons, force }) {
       const result = await dialog.showMessageBox(mainWindow, {
         type: "warning",
@@ -604,9 +611,6 @@ app.whenReady().then(async () => {
     bootstrap: true,
     probeWorkspace: probeWorkspaceMeta,
     async pickDirectory() {
-      const staged = stagedImport;
-      stagedImport = undefined;
-      if (staged && staged.until > Date.now()) return staged.path;
       const result = await dialog.showOpenDialog(mainWindow, {
         properties: ["openDirectory"],
       });
@@ -904,7 +908,7 @@ app.on("will-quit", () => {
   if (wipeOnQuit) {
     let result = { ok: false, reason: "STORAGE_NOT_RELEASED" };
     try {
-      if (storageShutdown && namespace)
+      if (storageShutdown && namespace && ownedStorage)
         result = wipeAppDataSync(namespace.root);
     } catch {
       result = { ok: false, reason: "REMOVE_FAILED" };
