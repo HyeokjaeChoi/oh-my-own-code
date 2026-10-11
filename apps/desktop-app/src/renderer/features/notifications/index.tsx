@@ -10,6 +10,8 @@ import type { AutomationList } from "../../shared/automation/index.js";
 import { callAutomation } from "../../shared/automation/index.js";
 import {
   NOTIFICATIONS_STORAGE_KEY,
+  NOTIFICATION_JOB_MARK_KEY,
+  jobNoticeMark,
   callNotify,
   deriveJobNotices,
   deriveSessionNotices,
@@ -42,6 +44,23 @@ function save(list: Notice[]) {
     // Blocked storage: the list lasts for this session only.
   }
 }
+function loadMark(): number {
+  try {
+    const v = Number(
+      globalThis.localStorage?.getItem(NOTIFICATION_JOB_MARK_KEY),
+    );
+    return Number.isFinite(v) ? v : 0;
+  } catch {
+    return 0;
+  }
+}
+function saveMark(v: number) {
+  try {
+    globalThis.localStorage?.setItem(NOTIFICATION_JOB_MARK_KEY, String(v));
+  } catch {
+    // Blocked storage: the mark lasts for this session only.
+  }
+}
 const KIND: Record<string, string> = {
   done: "완료",
   error: "오류",
@@ -57,6 +76,7 @@ export function NotificationCenter() {
   const [list, setList] = useState<Notice[]>(load);
   const [open, setOpen] = useState(false);
   const prev = useRef<NoticeSnapshot | undefined>(undefined);
+  const jobMark = useRef(loadMark());
   const listRef = useRef(list);
   listRef.current = list;
 
@@ -75,7 +95,7 @@ export function NotificationCenter() {
       for (const n of added.slice(0, 3))
         void callNotify({
           type: "notify.show",
-          text: n.text,
+          text: n.os ?? n.text,
           ...(n.workspaceId ? { workspaceId: n.workspaceId } : {}),
           ...(n.sessionId ? { sessionId: n.sessionId } : {}),
         });
@@ -104,8 +124,16 @@ export function NotificationCenter() {
       const r = await callAutomation<AutomationList>({
         type: "automation.list",
       });
-      if (!stop && r.ok)
-        push(deriveJobNotices(r.value.jobs, r.value.startedAt));
+      if (!stop && r.ok) {
+        push(
+          deriveJobNotices(r.value.jobs, r.value.startedAt, jobMark.current),
+        );
+        const mark = jobNoticeMark(r.value.jobs, jobMark.current);
+        if (mark !== jobMark.current) {
+          jobMark.current = mark;
+          saveMark(mark);
+        }
+      }
       const c = await callNotify<{
         workspaceId: string;
         sessionId: string;

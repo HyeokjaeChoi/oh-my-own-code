@@ -2,6 +2,8 @@
 export const AUTOMATION_LIMITS = Object.freeze({
   jobs: 30,
   history: 50,
+  retainedSessions: 5,
+  promptTimeoutMs: 2 * 60 * 60 * 1000,
   minEveryMinutes: 15,
   maxEveryMinutes: 10080,
   name: 80,
@@ -13,7 +15,13 @@ export const PERMISSION_MODES = Object.freeze([
   "scoped_edit",
   "read_plan",
 ]);
-export const RESULTS = Object.freeze(["ok", "failed", "skipped", "missed"]);
+export const RESULTS = Object.freeze([
+  "ok",
+  "failed",
+  "skipped",
+  "missed",
+  "timeout",
+]);
 const MINUTE = 60000;
 const id = (v) => typeof v === "string" && /^[A-Za-z0-9_.:-]{1,256}$/.test(v);
 const text = (v, max) =>
@@ -38,28 +46,72 @@ export function validateSchedule(s) {
   return undefined;
 }
 
-// Returns a normalized job definition or undefined. Target, schedule and permission are all mandatory.
+// Returns a normalized job definition or undefined. Prompt jobs require a permission mode; script jobs run
+// with the user's shell rights, so their mode must be null/absent and is stored as null.
 export function validateJobInput(v) {
   if (!v || typeof v !== "object" || Array.isArray(v)) return undefined;
   const allowed = ["name", "target", "schedule", "permissionMode"];
   if (Object.keys(v).some((k) => !allowed.includes(k))) return undefined;
   if (!text(v.name, AUTOMATION_LIMITS.name)) return undefined;
-  if (!PERMISSION_MODES.includes(v.permissionMode)) return undefined;
   const schedule = validateSchedule(v.schedule);
   const t = v.target;
   if (!schedule || !t || typeof t !== "object" || !id(t.workspaceId))
     return undefined;
   let target;
-  if (t.kind === "prompt" && text(t.prompt, AUTOMATION_LIMITS.prompt))
+  if (
+    t.kind === "prompt" &&
+    text(t.prompt, AUTOMATION_LIMITS.prompt) &&
+    PERMISSION_MODES.includes(v.permissionMode)
+  )
     target = { workspaceId: t.workspaceId, kind: "prompt", prompt: t.prompt };
-  else if (t.kind === "script" && /^[\w:.-]{1,64}$/.test(t.script ?? ""))
+  else if (
+    t.kind === "script" &&
+    (v.permissionMode ?? null) === null &&
+    /^[\w:.-]{1,64}$/.test(t.script ?? "")
+  )
     target = { workspaceId: t.workspaceId, kind: "script", script: t.script };
   else return undefined;
   return {
     name: v.name.trim(),
     target,
     schedule,
-    permissionMode: v.permissionMode,
+    permissionMode: target.kind === "prompt" ? v.permissionMode : null,
+  };
+}
+
+const entry = (e) =>
+  e &&
+  typeof e === "object" &&
+  typeof e.id === "string" &&
+  Number.isFinite(e.recordedAt) &&
+  RESULTS.includes(e.result);
+
+// Validates/migrates a job loaded from disk; undefined = unusable. Legacy script jobs lose their mode.
+export function normalizeStoredJob(j) {
+  if (!j || typeof j !== "object" || Array.isArray(j) || !id(j.id))
+    return undefined;
+  const input = validateJobInput({
+    name: j.name,
+    target: j.target,
+    schedule: j.schedule,
+    permissionMode: j.target?.kind === "script" ? null : j.permissionMode,
+  });
+  if (
+    !input ||
+    typeof j.enabled !== "boolean" ||
+    !Number.isFinite(j.anchor) ||
+    !Array.isArray(j.history)
+  )
+    return undefined;
+  return {
+    id: j.id,
+    ...input,
+    enabled: j.enabled,
+    anchor: j.anchor,
+    history: j.history.filter(entry).slice(-AUTOMATION_LIMITS.history),
+    sessionIds: (Array.isArray(j.sessionIds) ? j.sessionIds : [])
+      .filter(id)
+      .slice(-AUTOMATION_LIMITS.retainedSessions),
   };
 }
 

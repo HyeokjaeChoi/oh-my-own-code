@@ -7,14 +7,15 @@ export type JobInput = {
   name: string;
   target: JobTarget;
   schedule: Schedule;
-  permissionMode: PermissionMode;
+  /** Required for prompt jobs; null for scripts (they run with shell rights). */
+  permissionMode: PermissionMode | null;
 };
 export type HistoryEntry = {
   id: string;
   scheduledAt: number;
   startedAt: number | null;
   recordedAt: number;
-  result: "ok" | "failed" | "skipped" | "missed";
+  result: "ok" | "failed" | "skipped" | "missed" | "timeout";
   reason: string;
   count?: number;
   last?: number;
@@ -26,7 +27,11 @@ export type JobView = JobInput & {
   nextAt: number | null;
   history: HistoryEntry[];
 };
-export type AutomationList = { startedAt: number; jobs: JobView[] };
+export type AutomationList = {
+  startedAt: number;
+  jobs: JobView[];
+  storeError?: boolean;
+};
 export type AutomationRequest =
   | { type: "automation.list" }
   | { type: "automation.create"; job: JobInput }
@@ -40,6 +45,8 @@ export type AutomationResult<T> =
 export const AUTOMATION_LIMITS: Readonly<{
   jobs: number;
   history: number;
+  retainedSessions: number;
+  promptTimeoutMs: number;
   minEveryMinutes: number;
   maxEveryMinutes: number;
   name: number;
@@ -48,6 +55,15 @@ export const AUTOMATION_LIMITS: Readonly<{
 }>;
 export const PERMISSION_MODES: readonly PermissionMode[];
 export const MODE_LABELS: Readonly<Record<PermissionMode, string>>;
+export function normalizeStoredJob(value: unknown):
+  | (JobInput & {
+      id: string;
+      enabled: boolean;
+      anchor: number;
+      history: HistoryEntry[];
+      sessionIds: string[];
+    })
+  | undefined;
 export function validateSchedule(value: unknown): Schedule | undefined;
 export function validateJobInput(value: unknown): JobInput | undefined;
 export function nextOccurrence(

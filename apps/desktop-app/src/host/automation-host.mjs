@@ -5,6 +5,7 @@ import { clearInterval, setInterval } from "node:timers";
 import {
   AUTOMATION_LIMITS,
   nextOccurrence,
+  normalizeStoredJob,
   planTick,
 } from "../renderer/shared/automation/index.mjs";
 
@@ -12,10 +13,12 @@ const fail = (code) => Object.assign(new Error(code), { automationCode: code });
 
 // Main-owned scheduler for local recurring jobs. Runs only while the app runs.
 // Elapsed occurrences while the app was off (or asleep past the grace) are recorded as `missed`, never run.
-// run(job) -> Promise<{ result: "ok" | "failed", reason: string }>
+// run(job) -> Promise<{ result: "ok" | "failed" | "timeout", reason: string, sessionId?: string }>
+// archive(job, sessionId) archives an old prompt-run session (never deletes).
 export function createAutomationHost({
   storeFile,
   run,
+  archive = async () => {},
   now = Date.now,
   tickMs = 30000,
   setTimer = setInterval,
@@ -36,21 +39,46 @@ export function createAutomationHost({
     );
     return r;
   };
+  let stopped = false;
+  let blocked = false;
+  // Corrupt data is moved aside, never overwritten; if that fails, saving is refused.
+  const quarantine = async (content) => {
+    try {
+      await writeFile(`${storeFile()}.corrupt-${now()}`, content);
+    } catch {
+      blocked = true;
+    }
+  };
   const load = () =>
     (loaded ??= (async () => {
+      let raw;
       try {
-        const v = JSON.parse(await readFile(storeFile(), "utf8"));
-        if (v && Array.isArray(v.jobs))
-          state = {
-            lastCheck: Number.isFinite(v.lastCheck) ? v.lastCheck : 0,
-            jobs: v.jobs.slice(0, AUTOMATION_LIMITS.jobs),
-          };
-      } catch {
-        // Missing or corrupt file: start empty.
+        raw = await readFile(storeFile(), "utf8");
+      } catch (e) {
+        if (e?.code !== "ENOENT") blocked = true;
+        return;
       }
+      let v;
+      try {
+        v = JSON.parse(raw);
+      } catch {
+        v = undefined;
+      }
+      if (!v || !Array.isArray(v.jobs)) {
+        await quarantine(raw);
+        return;
+      }
+      const jobs = v.jobs.map(normalizeStoredJob);
+      const dropped = v.jobs.filter((_, i) => !jobs[i]);
+      if (dropped.length) await quarantine(JSON.stringify(dropped));
+      state = {
+        lastCheck: Number.isFinite(v.lastCheck) ? v.lastCheck : 0,
+        jobs: jobs.filter(Boolean).slice(0, AUTOMATION_LIMITS.jobs),
+      };
     })());
   const save = () =>
     serial(async () => {
+      if (stopped || blocked) return;
       const file = storeFile();
       await mkdir(dirname(file), { recursive: true });
       await writeFile(`${file}.tmp`, JSON.stringify(state));
@@ -84,7 +112,7 @@ export function createAutomationHost({
         scheduledAt,
         startedAt: null,
         result: "skipped",
-        reason: "이전 실행이 아직 진행 중입니다.",
+        reason: "이전 실행 진행 중",
       });
       return save();
     }
@@ -98,10 +126,20 @@ export function createAutomationHost({
     } finally {
       running.delete(job.id);
     }
+    if (stopped) return;
+    if (outcome.sessionId) {
+      job.sessionIds = [...(job.sessionIds ?? []), outcome.sessionId];
+      while (job.sessionIds.length > AUTOMATION_LIMITS.retainedSessions) {
+        const old = job.sessionIds.shift();
+        await archive(globalThis.structuredClone(job), old).catch(() => {});
+      }
+    }
     record(job, {
       scheduledAt,
       startedAt,
-      result: outcome.result === "ok" ? "ok" : "failed",
+      result: ["ok", "timeout"].includes(outcome.result)
+        ? outcome.result
+        : "failed",
       reason: String(outcome.reason ?? "").slice(0, 200),
     });
     return save();
@@ -109,6 +147,7 @@ export function createAutomationHost({
 
   async function tick() {
     await load();
+    if (stopped) return;
     const t = now();
     const wasStartup = startup;
     startup = false;
@@ -134,28 +173,37 @@ export function createAutomationHost({
         });
       if (plan.due !== undefined) due.push([job, plan.due]);
     }
-    state.lastCheck = t;
+    state.lastCheck = Math.max(state.lastCheck, t);
     await save();
     // Fire and forget: overlap is handled per job inside execute().
-    for (const [job, at] of due) void execute(job, at);
+    for (const [job, at] of due) void execute(job, at).catch(() => {});
   }
 
   return {
     async start() {
+      stopped = false;
       startedAt = now();
       startup = true;
       await tick();
       timer = setTimer(() => void tick().catch(() => {}), tickMs);
       timer.unref?.();
     },
-    stop() {
+    // Blocks further saves, then waits for the write already in flight. Running jobs are not awaited
+    // (a prompt run may last hours); their results are discarded.
+    async stop() {
+      stopped = true;
       clearTimer(timer);
       timer = undefined;
+      await queue;
     },
     tick,
     async list() {
       await load();
-      return { startedAt, jobs: state.jobs.map(view) };
+      return {
+        startedAt,
+        jobs: state.jobs.map(view),
+        ...(blocked ? { storeError: true } : {}),
+      };
     },
     async create(input) {
       await load();
@@ -167,6 +215,7 @@ export function createAutomationHost({
         enabled: true,
         anchor: now(),
         history: [],
+        sessionIds: [],
       };
       state.jobs.push(job);
       await save();
@@ -200,7 +249,8 @@ export function createAutomationHost({
     async runNow(jobId) {
       await load();
       const job = find(jobId);
-      await execute(job, now());
+      // Fire and forget: the result lands in history; prompt runs can last hours.
+      void execute(job, now()).catch(() => {});
       return view(job);
     },
   };

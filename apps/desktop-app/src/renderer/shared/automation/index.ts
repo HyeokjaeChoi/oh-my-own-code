@@ -4,6 +4,7 @@ export {
   MODE_LABELS,
   validateSchedule,
   validateJobInput,
+  normalizeStoredJob,
   nextOccurrence,
   occurrencesBetween,
   planTick,

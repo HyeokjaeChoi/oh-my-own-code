@@ -1,6 +1,8 @@
 export {
   NOTIFICATION_LIMIT,
   NOTIFICATIONS_STORAGE_KEY,
+  NOTIFICATION_JOB_MARK_KEY,
+  jobNoticeMark,
   sessionText,
   jobText,
   deriveSessionNotices,

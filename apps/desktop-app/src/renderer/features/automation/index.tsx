@@ -25,6 +25,7 @@ const RESULT = {
   ok: "성공",
   failed: "실패",
   skipped: "건너뜀",
+  timeout: "시간 초과(2시간)",
   missed: "놓침(앱 꺼짐, 재실행 안 함)",
 };
 const errors: Record<string, string> = {
@@ -54,7 +55,7 @@ const toForm = (j: JobView): Form => ({
   mode: "every" in j.schedule ? "every" : "daily",
   every: "every" in j.schedule ? j.schedule.every : 60,
   daily: "daily" in j.schedule ? j.schedule.daily : "09:00",
-  permissionMode: j.permissionMode,
+  permissionMode: j.permissionMode ?? "read_plan",
 });
 const toInput = (f: Form): JobInput => ({
   name: f.name,
@@ -63,7 +64,7 @@ const toInput = (f: Form): JobInput => ({
       ? { workspaceId: f.workspaceId, kind: "prompt", prompt: f.prompt }
       : { workspaceId: f.workspaceId, kind: "script", script: f.script },
   schedule: f.mode === "every" ? { every: f.every } : { daily: f.daily },
-  permissionMode: f.permissionMode,
+  permissionMode: f.kind === "prompt" ? f.permissionMode : null,
 });
 
 function JobForm({
@@ -201,24 +202,31 @@ function JobForm({
           </label>
         )}
       </fieldset>
-      <label>
-        권한
-        <select
-          value={f.permissionMode}
-          onChange={(e) =>
-            set({ permissionMode: e.target.value as PermissionMode })
-          }
-        >
-          {PERMISSION_MODES.map((m) => (
-            <option key={m} value={m}>
-              {MODE_LABELS[m]}
-            </option>
-          ))}
-        </select>
-      </label>
-      <p className={styles.hint}>
-        프롬프트 작업은 새 세션을 만들고 위 권한 모드를 적용한 뒤 전송합니다.
-      </p>
+      {f.kind === "prompt" ? (
+        <>
+          <label>
+            권한
+            <select
+              value={f.permissionMode}
+              onChange={(e) =>
+                set({ permissionMode: e.target.value as PermissionMode })
+              }
+            >
+              {PERMISSION_MODES.map((m) => (
+                <option key={m} value={m}>
+                  {MODE_LABELS[m]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className={styles.hint}>
+            프롬프트 작업은 새 세션을 만들고 위 권한 모드를 적용한 뒤
+            전송합니다.
+          </p>
+        </>
+      ) : (
+        <p className={styles.hint}>스크립트는 셸 권한으로 실행됩니다</p>
+      )}
       <div className={styles.row}>
         <Button type="submit" disabled={!valid}>
           저장
@@ -286,6 +294,12 @@ export function AutomationButton() {
       </Button>
       <ModalSheet open={open} onOpenChange={setOpen} title="자동화">
         {error && <p role="alert">{error}</p>}
+        {data?.storeError && (
+          <p role="alert">
+            저장된 자동화 파일을 읽지 못해 저장을 중단했습니다. 앱 데이터 폴더를
+            확인하세요.
+          </p>
+        )}
         {editing ? (
           <JobForm
             initial={editing.form}
@@ -329,7 +343,11 @@ export function AutomationButton() {
                       {j.nextAt ? ` · 다음 ${time(j.nextAt)}` : ""}
                     </dd>
                     <dt>권한</dt>
-                    <dd>{MODE_LABELS[j.permissionMode]}</dd>
+                    <dd>
+                      {j.permissionMode
+                        ? MODE_LABELS[j.permissionMode]
+                        : "셸 권한으로 실행"}
+                    </dd>
                   </dl>
                   <div className={styles.row}>
                     <Button
