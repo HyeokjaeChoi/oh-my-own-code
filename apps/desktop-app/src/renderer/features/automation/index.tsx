@@ -304,8 +304,9 @@ export function AutomationButton() {
         )}
         {data?.recovered && (
           <p role="status">
-            저장 파일의 손상된 항목 {data.recovered.count}개를{" "}
-            {data.recovered.backup}에 따로 보관했습니다.
+            {data.recovered.count === 0
+              ? `저장 파일 전체를 ${data.recovered.backup}에 보관했습니다.`
+              : `저장 파일의 손상된 항목 ${data.recovered.count}개를 ${data.recovered.backup}에 따로 보관했습니다.`}
           </p>
         )}
         {editing ? (

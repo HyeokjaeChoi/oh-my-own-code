@@ -560,7 +560,7 @@ test("host: busy retained session skips run and is never archived; legacy ids mi
   const clock = { t: 1_000_000 };
   const dir = await mkdtemp(join(tmpdir(), "auto-"));
   const file = join(dir, "jobs.json");
-  const busy = new Set(["s1"]);
+  const busy = new Set(["s5"]);
   const archived = [];
   const runs = [];
   const prompt = { workspaceId: "w1", kind: "prompt", prompt: "p" };
@@ -629,7 +629,14 @@ test("host: recovered info, STORE_BLOCKED, clock moved far back, stop aborts run
   let signal;
   const host = createAutomationHost({
     storeFile: () => file,
-    run: (_j, s) => ((signal = s), new Promise(() => {})),
+    run: (_j, s) => (
+      (signal = s),
+      new Promise((r) =>
+        s.addEventListener("abort", () =>
+          r({ result: "failed", reason: "x", sessionId: "sx" }),
+        ),
+      )
+    ),
     now: () => clock.t,
     setTimer: () => ({}),
     clearTimer() {},
@@ -645,6 +652,10 @@ test("host: recovered info, STORE_BLOCKED, clock moved far back, stop aborts run
   await new Promise((r) => setImmediate(r));
   await host.stop();
   assert.equal(signal.aborted, true);
+  assert.deepEqual(
+    JSON.parse(await readFile(file, "utf8")).jobs[0].sessionIds,
+    [{ sessionId: "sx", workspaceId: "w1" }],
+  );
   const blocked = createAutomationHost({
     storeFile: () => dir,
     run: async () => ({ result: "ok", reason: "" }),
@@ -677,4 +688,104 @@ test("notifications: union keeps both windows' entries", () => {
       ["a", true],
     ],
   );
+});
+
+test("wiring, follow-up, latest-session busy, anchor clamp, cleared mark, session dedupe", async () => {
+  // host takes isIdle/archive from the run function (main passes only `run`)
+  const clock = { t: 100 * 60 * MIN };
+  const dir = await mkdtemp(join(tmpdir(), "auto-"));
+  const file = join(dir, "jobs.json");
+  const prompt = { workspaceId: "w1", kind: "prompt", prompt: "p" };
+  const mk = (id, extra) => ({
+    id,
+    ...job({ target: prompt, permissionMode: "ask" }),
+    enabled: true,
+    anchor: 1,
+    history: [],
+    ...extra,
+  });
+  await writeFile(
+    file,
+    JSON.stringify({
+      lastCheck: 0,
+      jobs: [
+        mk("j", {
+          sessionIds: ["old", "new"],
+          anchor: clock.t + 5 * 60 * MIN,
+        }),
+      ],
+    }),
+  );
+  const runs = [];
+  const run = async () => (runs.push(1), { result: "ok", reason: "" });
+  let busyId = "new";
+  run.isIdle = async (id) => id !== busyId;
+  const host = createAutomationHost({
+    storeFile: () => file,
+    run,
+    now: () => clock.t,
+    setTimer: () => ({}),
+    clearTimer() {},
+  });
+  await host.runNow("j");
+  await new Promise((r) => setTimeout(r, 10));
+  assert.equal(runs.length, 0, "latest session busy via run.isIdle");
+  await host.tick();
+  assert.equal(
+    JSON.parse(await readFile(file, "utf8")).jobs[0].anchor,
+    clock.t,
+  );
+  // only the latest counts: busy "old" does not block
+  busyId = "old";
+  await host.runNow("j");
+  await new Promise((r) => setTimeout(r, 10));
+  assert.equal(runs.length, 1);
+
+  // runner: user continued the session -> no interrupt on timeout
+  const rc = { t: 0 };
+  const calls = [];
+  const svc = mkService(calls, Array(10).fill("running"));
+  const handle = svc.handle;
+  svc.handle = async (env) => {
+    const r = await handle(env);
+    if (env.operation.type === "snapshot" && env.operation.sessionId)
+      r.value.messages = [{ role: "user", text: "user follow-up" }];
+    return r;
+  };
+  const runner = createAutomationRunner({
+    service: () => svc,
+    terminals: {},
+    terminalRoot: () => "/x",
+    wait: async () => void (rc.t += 60 * 60 * 1000),
+    now: () => rc.t,
+  });
+  const res = await runner(promptJob);
+  assert.equal(res.result, "timeout");
+  assert.match(res.reason, /이어서/);
+  assert.equal(calls.includes("session.interrupt"), false);
+
+  // clear mark drops older entries; done/error notice dedupes by session across windows
+  const n = (id, at) => ({ id, at, read: false, kind: "done", text: id });
+  assert.deepEqual(
+    unionNotices([n("a", 1)], [n("b", 5)], 3).map((x) => x.id),
+    ["b"],
+  );
+  const shown = [];
+  const nh = createNotifyHost({
+    Notification: class {
+      static isSupported() {
+        return true;
+      }
+      on() {}
+      show() {
+        shown.push(1);
+      }
+    },
+    isFocused: () => false,
+    focusWindow() {},
+    now: () => 0,
+  });
+  nh.show({ id: "done:s1:111", text: "x", workspaceId: "w", sessionId: "s1" });
+  nh.show({ id: "done:s1:222", text: "x", workspaceId: "w", sessionId: "s1" });
+  assert.equal(shown.length, 1);
 });

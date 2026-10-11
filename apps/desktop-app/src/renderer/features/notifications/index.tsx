@@ -11,6 +11,7 @@ import { callAutomation } from "../../shared/automation/index.js";
 import {
   NOTIFICATIONS_STORAGE_KEY,
   NOTIFICATION_JOB_MARK_KEY,
+  NOTIFICATIONS_CLEARED_KEY,
   jobNoticeMark,
   callNotify,
   deriveJobNotices,
@@ -60,6 +61,23 @@ function saveMark(v: number) {
     globalThis.localStorage?.setItem(NOTIFICATION_JOB_MARK_KEY, String(v));
   } catch {
     // Blocked storage: the mark lasts for this session only.
+  }
+}
+function loadCleared(): number {
+  try {
+    const v = Number(
+      globalThis.localStorage?.getItem(NOTIFICATIONS_CLEARED_KEY),
+    );
+    return Number.isFinite(v) ? v : 0;
+  } catch {
+    return 0;
+  }
+}
+function saveCleared(v: number) {
+  try {
+    globalThis.localStorage?.setItem(NOTIFICATIONS_CLEARED_KEY, String(v));
+  } catch {
+    // Blocked storage: other windows will not see the clear.
   }
 }
 const KIND: Record<string, string> = {
@@ -154,8 +172,11 @@ export function NotificationCenter() {
   // Other windows write the same keys: union their list (never overwrite) and follow their job mark.
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
-      if (e.key === NOTIFICATIONS_STORAGE_KEY) {
-        const next = unionNotices(listRef.current, load());
+      if (
+        e.key === NOTIFICATIONS_STORAGE_KEY ||
+        e.key === NOTIFICATIONS_CLEARED_KEY
+      ) {
+        const next = unionNotices(listRef.current, load(), loadCleared());
         listRef.current = next;
         setList(next);
       } else if (e.key === NOTIFICATION_JOB_MARK_KEY)
@@ -195,7 +216,13 @@ export function NotificationCenter() {
           >
             모두 읽음
           </Button>
-          <Button size="compact" onClick={() => update([])}>
+          <Button
+            size="compact"
+            onClick={() => {
+              saveCleared(Date.now());
+              update([]);
+            }}
+          >
             비우기
           </Button>
         </div>

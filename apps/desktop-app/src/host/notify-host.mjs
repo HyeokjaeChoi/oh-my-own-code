@@ -21,7 +21,12 @@ export function createNotifyHost({
   return {
     status: () => ({ supported: supported(), failed }),
     show({ id, text, workspaceId, sessionId }) {
-      const key = id ?? JSON.stringify([text, workspaceId, sessionId]);
+      // done/error ids carry a per-window timestamp; those dedupe by (kind, session) instead.
+      const kind = id?.split(":", 1)[0];
+      const key =
+        sessionId && (kind === "done" || kind === "error")
+          ? `${kind}:${sessionId}`
+          : (id ?? JSON.stringify([text, workspaceId, sessionId]));
       const t = now();
       for (const [k, at] of recent) if (t - at >= dedupeMs) recent.delete(k);
       if (recent.has(key)) return { shown: false };

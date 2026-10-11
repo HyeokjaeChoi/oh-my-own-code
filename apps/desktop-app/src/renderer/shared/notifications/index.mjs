@@ -2,6 +2,7 @@
 // prompt/response/tool content or paths.
 export const NOTIFICATION_LIMIT = 100;
 export const NOTIFICATIONS_STORAGE_KEY = "omoc.notifications.v1";
+export const NOTIFICATIONS_CLEARED_KEY = "omoc.notifications.clearedAt.v1";
 const clean = (s, n = 40) => {
   const t = String(s ?? "")
     .replaceAll(/\p{Cc}+/gu, " ")
@@ -91,10 +92,12 @@ export function deriveJobNotices(jobs, startedAt, seenAt = 0) {
 export const jobNoticeMark = (jobs, seenAt = 0) =>
   Math.max(seenAt, ...jobs.flatMap((j) => j.history.map((e) => e.recordedAt)));
 
-// Merges two copies of the list (e.g. from another window): union by id, read wins, newest first.
-export function unionNotices(a, b) {
+// Merges two copies of the list (e.g. from another window): union by id, read wins, newest first;
+// entries at or before `clearedAt` (another window's "비우기") are dropped.
+export function unionNotices(a, b, clearedAt = 0) {
   const byId = new Map();
   for (const n of [...a, ...b]) {
+    if (n.at <= clearedAt) continue;
     const p = byId.get(n.id);
     byId.set(n.id, p ? { ...p, read: p.read || n.read } : n);
   }
