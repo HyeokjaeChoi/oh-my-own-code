@@ -16,6 +16,7 @@ import {
   sessionSuccessor,
 } from "../../features/sessions/index.js";
 import { Conversation } from "../../widgets/conversation/index.js";
+import { TerminalPanel } from "../../widgets/terminal/index.js";
 import { CatalogPanel, FileExplorer } from "../../widgets/explorer/index.js";
 import {
   selectors,
@@ -27,7 +28,12 @@ import {
 import { selectionKey } from "../../shared/projection/index.js";
 import styles from "./shell.module.css";
 
-const panelLabels = { files: "파일", catalog: "확장·명령", activity: "활동" };
+const panelLabels = {
+  files: "파일",
+  catalog: "확장·명령",
+  activity: "활동",
+  terminal: "터미널",
+};
 const states: Record<string, string> = {
   loading: "런타임 확인 중…",
   connected: "로컬 연결됨",
@@ -379,6 +385,12 @@ export function Workbench() {
             workspaceId={selection.workspaceId}
             sessionId={selection.sessionId}
           />
+        ) : panel === "terminal" ? (
+          selection.workspaceId ? (
+            <TerminalPanel key={key} workspaceId={selection.workspaceId} />
+          ) : (
+            <p className={styles.muted}>작업 공간을 선택하세요.</p>
+          )
         ) : panel === "catalog" ? (
           <CatalogPanel
             catalog={catalog}

@@ -20,6 +20,9 @@ import {
 
 import { createWorkbenchService } from "./workbench-service.mjs";
 import { bindWorkbenchIpc } from "./host/workbench-ipc.mjs";
+import { setInterval } from "node:timers";
+import { createTerminalHost } from "./host/terminal-host.mjs";
+import { bindTerminalIpc } from "./host/terminal-ipc.mjs";
 import {
   createStorageOwner,
   createElectronOwnerKernel,
@@ -32,6 +35,9 @@ import { randomUUID } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 
 let workbench;
+const terminals = createTerminalHost({
+  resolveWorkspace: (id) => workbench?.terminalRoot(id),
+});
 const here = dirname(fileURLToPath(import.meta.url));
 const developmentUrl = process.env.OMOC_DESKTOP_DEV_URL;
 const runtimeEpoch = randomUUID();
@@ -198,6 +204,7 @@ let storageShutdown = false;
 let nativePreflight;
 async function finishStorage() {
   if (storageShutdown) return;
+  await terminals.closeAll();
   await workbench?.drain();
   const inspection = await nativePreflight?.close();
   if (inspection && (!inspection.exited || inspection.cleanup !== "complete"))
@@ -244,6 +251,9 @@ function admit(event) {
 
 function bindIpc() {
   bindWorkbenchIpc({ ipcMain, admit, service: () => workbench });
+  bindTerminalIpc({ ipcMain, admit, host: terminals });
+  // Workspace removal/untrust has no hook; sweep so its terminals never outlive it.
+  setInterval(() => void terminals.reap(), 2000).unref();
   ipcMain.handle("desktop:v1:runtime-snapshot", (event, ...args) => {
     if (!admit(event)) throw new Error("request_denied");
     if (!acceptsNoIpcArguments(args)) throw new Error("request_denied");
@@ -274,14 +284,17 @@ function createWindow() {
   });
   mainWindow.once("ready-to-show", () => mainWindow?.show());
   const senderScope = String(mainWindow.webContents.id);
-  mainWindow.webContents.once("destroyed", () =>
-    workbench?.closeSender(senderScope),
-  );
-  mainWindow.webContents.on("render-process-gone", () =>
-    workbench?.closeSender(senderScope),
-  );
+  mainWindow.webContents.once("destroyed", () => {
+    workbench?.closeSender(senderScope);
+    void terminals.closeOwner(senderScope);
+  });
+  mainWindow.webContents.on("render-process-gone", () => {
+    workbench?.closeSender(senderScope);
+    void terminals.closeOwner(senderScope);
+  });
   mainWindow.on("closed", () => {
     workbench?.closeSender(senderScope);
+    void terminals.closeOwner(senderScope);
     mainWindow = undefined;
   });
   if (developmentUrl && !app.isPackaged) {
@@ -766,6 +779,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("will-quit", () => {
+  terminals.killAllSync();
   try {
     if (storageShutdown) ephemeralProfile.cleanup();
   } catch {

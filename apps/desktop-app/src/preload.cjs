@@ -3,6 +3,7 @@ if (process.isMainFrame) {
 
   contextBridge.exposeInMainWorld("desktopBridge", {
     workbench: (...args) => ipcRenderer.invoke("desktop:v2:workbench", ...args),
+    terminal: (...args) => ipcRenderer.invoke("desktop:v1:terminal", ...args),
     cancelRead: (...args) =>
       ipcRenderer.invoke("desktop:v2:cancel-read", ...args),
     runtimeSnapshot: async (...args) => {

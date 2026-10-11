@@ -1,3 +1,7 @@
+import type {
+  TerminalRequest,
+  TerminalResult,
+} from "./renderer/shared/terminal/index.mjs";
 import type { WorkbenchPermissionPolicyObservation } from "./renderer/shared/configuration-draft/index.js";
 export type { WorkbenchPermissionPolicyObservation } from "./renderer/shared/configuration-draft/index.js";
 import type {
@@ -1003,6 +1007,10 @@ declare global {
       ): Promise<
         WorkbenchResult<WorkbenchResponse<R> | { status: "duplicate" }>
       >;
+      terminal(
+        // eslint-disable-next-line no-unused-vars
+        _request: TerminalRequest,
+      ): Promise<TerminalResult<unknown>>;
       cancelRead(
         // eslint-disable-next-line no-unused-vars
         _request: WorkbenchCancel,

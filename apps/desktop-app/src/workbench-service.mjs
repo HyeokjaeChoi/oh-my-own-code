@@ -4930,6 +4930,11 @@ export function createWorkbenchService({
       await contextIO.close();
     },
     cancelRead: (value, sender) => host.cancel(value, sender),
+    // Terminal authority: only a trusted, currently registered workspace root.
+    terminalRoot(id) {
+      const w = committed.workspaces.get(id);
+      return w?.trusted ? w.path : undefined;
+    },
     closeSender(sender) {
       contextIO.closeSender(sender);
       gitReader?.closeSender(sender);
