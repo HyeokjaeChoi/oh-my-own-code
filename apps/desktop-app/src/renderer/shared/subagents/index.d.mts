@@ -46,6 +46,11 @@ export function isActive(row: { status: ChildStatus }): boolean;
 export function renderBrief(brief: Brief): string;
 export function validBrief(brief: Brief): boolean;
 export function briefTitle(brief: Brief): string;
+export function drainQueuePerParent<T extends { parentId: string }>(input: {
+  queued: T[];
+  runningByParent: ReadonlyMap<string, number>;
+  cap?: number;
+}): { start: T[]; rest: T[] };
 export function drainQueue<T>(input: {
   queued: T[];
   runningCount: number;

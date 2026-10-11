@@ -93,6 +93,26 @@ export function drainQueue({ queued, runningCount, cap = DEFAULT_CAP }) {
   return { start: queued.slice(0, free), rest: queued.slice(free) };
 }
 
+// drainQueue per parent: each parent has its own running count (Map parentId -> n).
+export function drainQueuePerParent({
+  queued,
+  runningByParent,
+  cap = DEFAULT_CAP,
+}) {
+  const used = new Map();
+  const start = [],
+    rest = [];
+  for (const item of queued) {
+    const n =
+      used.get(item.parentId) ?? runningByParent.get(item.parentId) ?? 0;
+    if (n < cap) {
+      used.set(item.parentId, n + 1);
+      start.push(item);
+    } else rest.push(item);
+  }
+  return { start, rest };
+}
+
 // Fan-out: cancel every active row sequentially (the host interrupts only the
 // selected session). Failures never stop the remaining children.
 export async function cancelAll(rows, cancelOne) {

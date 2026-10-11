@@ -59,19 +59,33 @@ function lines(text) {
   return out;
 }
 const eol = (text) => (text.includes("\r\n") ? "\r\n" : "\n");
-const FENCE = /^ {0,3}(```|~~~)/;
+const FENCE_OPEN = /^ {0,3}(`{3,}|~{3,})(.*)$/;
+const FENCE_CLOSE = /^ {0,3}(`{3,}|~{3,})[ \t]*$/;
+// CommonMark: a fence closes with the same char and length >= the opener.
+// Returns the next fence state ({ch, len} while inside) for one line.
+export function fenceStep(fence, text) {
+  if (fence) {
+    const m = FENCE_CLOSE.exec(text);
+    return m && m[1][0] === fence.ch && m[1].length >= fence.len
+      ? undefined
+      : fence;
+  }
+  const m = FENCE_OPEN.exec(text);
+  if (!m || (m[1][0] === "`" && m[2].includes("`"))) return undefined;
+  return { ch: m[1][0], len: m[1].length };
+}
 const HEADING = /^ {0,3}(#{1,6})\s+(.*?)\s*#*\s*$/;
 const BOX = /^(\s*(?:[-*+]|\d+[.)])\s+\[)([ xX])(\] .*|\]$)/;
 
 // Marks each line: inside a code fence, or inside the "## Review" section.
-function scan(text) {
+export function scan(text) {
   const rows = lines(text);
-  let fence = false,
+  let fence,
     review = false;
   return rows.map((row, line) => {
-    const f = FENCE.test(row.text);
-    const inFence = fence || f;
-    if (f) fence = !fence;
+    const was = fence;
+    fence = fenceStep(fence, row.text);
+    const inFence = Boolean(was || fence);
     if (!inFence) {
       const h = HEADING.exec(row.text);
       if (h && h[1].length <= 2) review = /^review$/i.test(h[2]);
@@ -218,12 +232,22 @@ export function checkStale(check, current) {
       check.fingerprint !== current.fingerprint,
   );
 }
+// current.dirty: the tree has uncommitted changes whose content the fingerprint
+// (HEAD + status letters) cannot identify, so a finished check may not describe
+// the current bytes. Such results are never shown as a bare current pass.
+export const checkUnverified = (check, current) =>
+  Boolean(
+    current.dirty &&
+      (check.status === "passed" || check.status === "failed") &&
+      !checkStale(check, current),
+  );
 export function verificationSummary(checks, current) {
   if (checks.length === 0) return "none";
   if (checks.some((c) => c.status === "running")) return "running";
   if (checks.some((c) => checkStale(c, current))) return "stale";
   if (checks.some((c) => c.status === "failed")) return "failed";
-  if (checks.every((c) => c.status === "passed")) return "passed";
+  if (checks.every((c) => c.status === "passed"))
+    return current.dirty ? "unverified" : "passed";
   return "pending";
 }
 export function workspaceFingerprint(repository, files) {

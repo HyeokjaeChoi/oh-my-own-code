@@ -9,7 +9,7 @@ import {
   briefTitle,
   cancelAll,
   deriveChildTree,
-  drainQueue,
+  drainQueuePerParent,
   isActive,
   renderBrief,
   validBrief,
@@ -80,11 +80,13 @@ export function SubagentPanel({
     lineage,
     queued: queue,
   });
-  const delegatedActive = (snapshot?.sessions ?? []).filter(
-    (s) =>
-      lineage[s.id] === sessionId &&
-      (s.status === "running" || s.status === "stopping"),
-  ).length;
+  const runningByParent = new Map<string, number>();
+  for (const s of snapshot?.sessions ?? []) {
+    const parent = lineage[s.id];
+    if (parent && (s.status === "running" || s.status === "stopping"))
+      runningByParent.set(parent, (runningByParent.get(parent) ?? 0) + 1);
+  }
+  const delegatedActive = sessionId ? (runningByParent.get(sessionId) ?? 0) : 0;
   const active = rows.filter(isActive);
 
   // The host acts only on the selected session, so wait for selection to settle.
@@ -137,6 +139,12 @@ export function SubagentPanel({
   // to the parent and sends the rendered brief as its first prompt.
   const start = async (item: QueuedDelegation) => {
     if (!workspaceId) return false;
+    const known = () =>
+      new Set([
+        ...store.getState().lists.sessions.map((x) => x.id),
+        ...(store.getState().snapshot?.sessions ?? []).map((x) => x.id),
+      ]);
+    const before = known();
     if (
       !(await actions.mutate(
         { type: "session.create", workspaceId, title: item.title },
@@ -144,20 +152,26 @@ export function SubagentPanel({
       ))
     )
       return false;
-    const child = store.getState().selection.sessionId;
+    // The new id comes from the session list diff, not from the (movable) selection.
+    const added = [...known()].filter((x) => !before.has(x));
+    const child =
+      added.length === 1
+        ? added[0]
+        : added.find((x) => x === store.getState().selection.sessionId);
     if (!child || child === item.parentId) return false;
     link(child, item.parentId);
     if (!(await settle(child))) return false;
-    // Inherit the parent's permission mode so the child is never broader.
+    // The child must never be broader than its parent: apply the parent's mode
+    // before the brief; an unknown parent mode or a failed set sends nothing.
     const state = store.getState();
-    const mode = (
-      state.snapshot?.sessions.find((x) => x.id === item.parentId) ?? {}
-    ).permissionMode;
+    const mode = state.snapshot?.sessions.find(
+      (x) => x.id === item.parentId,
+    )?.permissionMode;
+    if (!mode) return false;
     const own = state.snapshot?.sessions.find(
       (x) => x.id === child,
     )?.permissionMode;
     if (
-      mode &&
       mode !== own &&
       !(await actions.mutate({
         type: "permission.mode.set",
@@ -168,15 +182,19 @@ export function SubagentPanel({
       }))
     )
       return false;
-    return actions.sendContextMessage(renderBrief(item.brief));
+    return actions.sendMessageToSession(
+      workspaceId,
+      child,
+      renderBrief(item.brief),
+    );
   };
   const drain = async (items: QueuedDelegation[]) => {
     if (busy || pending) return;
     setBusy(true);
     try {
-      const { start: now, rest } = drainQueue({
+      const { start: now, rest } = drainQueuePerParent({
         queued: items,
-        runningCount: delegatedActive,
+        runningByParent,
       });
       setQueue(rest);
       for (const item of now)

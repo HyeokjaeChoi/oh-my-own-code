@@ -9,6 +9,7 @@ import {
   parseSubagentResult,
   DEFAULT_CAP,
 } from "./renderer/shared/subagents/index.mjs";
+import { drainQueuePerParent } from "./renderer/shared/subagents/index.mjs";
 
 const s = (id, status, extra = {}) => ({
   id,
@@ -126,4 +127,25 @@ test("subagent tool output parsing", () => {
     { sessionId: "ses_1", state: "completed", text: "최종 답\n둘째 줄" },
   );
   assert.equal(parseSubagentResult("plain"), null);
+});
+
+test("drainQueuePerParent counts running children per parent", () => {
+  const q = [
+    { id: "1", parentId: "a" },
+    { id: "2", parentId: "b" },
+    { id: "3", parentId: "a" },
+  ];
+  const out = drainQueuePerParent({
+    queued: q,
+    runningByParent: new Map([["a", 2]]),
+    cap: 3,
+  });
+  assert.deepEqual(
+    out.start.map((x) => x.id),
+    ["1", "2"],
+  );
+  assert.deepEqual(
+    out.rest.map((x) => x.id),
+    ["3"],
+  );
 });

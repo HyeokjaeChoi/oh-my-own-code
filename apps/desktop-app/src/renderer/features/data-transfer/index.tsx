@@ -44,7 +44,7 @@ function Export({
   );
   useEffect(() => {
     setSummary(undefined);
-  }, [session?.id, outputs]);
+  }, [session?.id, outputs, messages.length, messages.at(-1)?.id]);
   const preview = async () => {
     const r = await callData<ExportSummary>({
       type: "export.preview",

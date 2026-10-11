@@ -18,7 +18,7 @@ import { selectionKey } from "../../shared/projection/index.js";
 import type { ProjectActions } from "../../shared/project-actions/index.js";
 import {
   callTerminal,
-  TERMINAL_STARTED_EVENT,
+  announceTerminalStarted,
   type TerminalInfo,
 } from "../../shared/terminal/index.js";
 import styles from "./palette.module.css";
@@ -28,6 +28,8 @@ const startErrors: Record<string, string> = {
   LIMIT_REACHED: "터미널을 더 만들 수 없습니다.",
   NOT_FOUND: "작업 공간을 찾을 수 없습니다.",
 };
+
+const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform);
 
 // Cmd/Ctrl+K palette: runtime commands/skills, app operations and project scripts in one list.
 export function CommandPalette() {
@@ -52,7 +54,10 @@ export function CommandPalette() {
     const onKeyDown = (event: KeyboardEvent) => {
       if (
         event.key.toLowerCase() !== "k" ||
-        !(event.metaKey || event.ctrlKey) ||
+        // macOS: Ctrl+K is native kill-line in text fields.
+        !(IS_MAC
+          ? event.metaKey && !event.ctrlKey
+          : event.ctrlKey && !event.metaKey) ||
         event.altKey ||
         event.shiftKey ||
         event.isComposing
@@ -145,7 +150,7 @@ export function CommandPalette() {
           startErrors[r.code] ?? "스크립트를 시작하지 못했습니다.",
         );
       actions.openPanel("terminal");
-      window.dispatchEvent(new CustomEvent(TERMINAL_STARTED_EVENT));
+      announceTerminalStarted(r.value.terminalId);
     } else if (a.type === "settings")
       window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT));
     else if (a.type === "notifications")

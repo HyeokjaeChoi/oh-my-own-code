@@ -851,6 +851,21 @@ export function createWindowWorkbench(
       true,
     );
   }
+  // Sends to an explicit session: never the current selection, never the
+  // composer's model options or staged attachments (delegation, plan execution).
+  function sendMessageToSession(
+    workspaceId: string,
+    sessionId: string,
+    text: string,
+  ): Promise<boolean> {
+    return submitMutation({
+      type: "message.send",
+      workspaceId,
+      sessionId,
+      requestId: id(),
+      text,
+    });
+  }
   function deliverContextMessage(
     delivery: "steer" | "queue",
   ): Promise<boolean> {
@@ -4513,6 +4528,7 @@ export function createWindowWorkbench(
       dispatch({ type: "context.remove", capabilityId }),
     closeContextPreview: () => dispatch({ type: "context.preview.close" }),
     sendContextMessage,
+    sendMessageToSession,
     deliverContextMessage,
     observeInbox: () => observeConversation(),
     cancelInbox,

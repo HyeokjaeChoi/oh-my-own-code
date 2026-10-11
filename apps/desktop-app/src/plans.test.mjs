@@ -21,6 +21,7 @@ import {
   nextApprovalVersion,
   checkStatusFromTerminal,
   checkStale,
+  checkUnverified,
   verificationSummary,
   workspaceFingerprint,
   sha256Hex,
@@ -434,4 +435,36 @@ test("host: symlinked plan files are not followed", async () => {
   symlinkSync(join(outside, "secret.md"), join(root, ".omoc/plans/leak.md"));
   const v = await host.list("o", "w1");
   assert.deepEqual(v.plans, []);
+});
+
+test("fences follow CommonMark: same char, length >= opener", () => {
+  const text = ["````", "```", "- [ ] inside", "````", "- [ ] outside"].join(
+    "\n",
+  );
+  assert.deepEqual(
+    parseChecklist(text).items.map((i) => i.text),
+    ["outside"],
+  );
+  const tilde = ["~~~", "```", "- [ ] still inside", "~~~", "- [ ] out"].join(
+    "\n",
+  );
+  assert.deepEqual(
+    parseChecklist(tilde).items.map((i) => i.text),
+    ["out"],
+  );
+});
+
+test("dirty tree never yields a bare current pass", () => {
+  const pass = { status: "passed", planSha: "p", fingerprint: "f" };
+  const dirty = { planSha: "p", fingerprint: "f", dirty: true };
+  assert.equal(checkUnverified(pass, dirty), true);
+  assert.equal(
+    checkUnverified(pass, { planSha: "p", fingerprint: "f" }),
+    false,
+  );
+  assert.equal(verificationSummary([pass], dirty), "unverified");
+  assert.equal(
+    verificationSummary([pass], { planSha: "p", fingerprint: "f" }),
+    "passed",
+  );
 });
