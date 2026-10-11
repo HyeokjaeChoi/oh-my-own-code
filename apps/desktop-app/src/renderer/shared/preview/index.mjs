@@ -46,7 +46,7 @@ export function navigationDecision(mode, url) {
 
 const bound = (v) => Number.isInteger(v) && v >= 0 && v <= 20000;
 const schemas = {
-  "preview.open": ["url"],
+  "preview.open": ["workspaceId", "url"],
   "preview.openFile": ["workspaceId", "path"],
   "preview.bounds": ["x", "y", "width", "height"],
   "preview.nav": ["action"],

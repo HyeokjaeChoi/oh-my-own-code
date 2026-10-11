@@ -197,18 +197,22 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
       // not a git checkout
     }
     if (linked) {
-      const lines = (
+      const changed = (
+        await git(real, ["status", "--porcelain", "--untracked-files=all"])
+      )
+        .split("\n")
+        .filter(Boolean).length;
+      // Directory-level ignored entries (node_modules counts once), so output stays small.
+      const ignored = (
         await git(real, [
           "status",
           "--porcelain",
-          "--untracked-files=all",
           "--ignored",
+          "--untracked-files=normal",
         ])
       )
         .split("\n")
-        .filter(Boolean);
-      const ignored = lines.filter((l) => l.startsWith("!! ")).length;
-      const changed = lines.length - ignored;
+        .filter((l) => l.startsWith("!! ")).length;
       const head = (
         await git(real, ["symbolic-ref", "--short", "-q", "HEAD"]).catch(
           () => "",

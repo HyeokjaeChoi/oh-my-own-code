@@ -1,15 +1,21 @@
+import { createHash } from "node:crypto";
 import { session, WebContentsView } from "electron";
 
 // Electron-bound factory for the isolated preview view (not unit-testable without Electron).
 // Isolation: in-memory partition (no persist: prefix => nothing written to disk), no preload,
 // sandbox + contextIsolation, no node, all permissions denied, downloads cancelled.
-// Two fixed in-memory partitions (url / inert), configured once, instead of one per view.
+// One inert partition plus one URL partition per workspace (hashed id), so cookies/storage from a
+// localhost app never leak across workspaces. Each is configured once.
 export function createPreviewViewFactory({ getWindow }) {
   const sessions = new Map();
-  function sessionFor(inert) {
-    let ses = sessions.get(inert);
+  function sessionFor(inert, workspaceId) {
+    const key = inert ? "inert" : String(workspaceId);
+    let ses = sessions.get(key);
     if (ses) return ses;
-    ses = session.fromPartition(inert ? "preview-inert" : "preview-url");
+    const name = inert
+      ? "preview-inert"
+      : `preview-url-${createHash("sha256").update(key).digest("hex").slice(0, 16)}`;
+    ses = session.fromPartition(name);
     ses.setPermissionRequestHandler((_wc, _perm, cb) => cb(false));
     ses.setPermissionCheckHandler(() => false);
     ses.setDevicePermissionHandler(() => false);
@@ -19,13 +25,13 @@ export function createPreviewViewFactory({ getWindow }) {
       ses.webRequest.onBeforeRequest((d, cb) =>
         cb({ cancel: !d.url.startsWith("data:") }),
       );
-    sessions.set(inert, ses);
+    sessions.set(key, ses);
     return ses;
   }
-  return function createView({ inert }) {
+  return function createView({ inert, workspaceId }) {
     const win = getWindow();
     if (!win) throw new Error("no window");
-    const ses = sessionFor(Boolean(inert));
+    const ses = sessionFor(Boolean(inert), workspaceId);
     const view = new WebContentsView({
       webPreferences: {
         session: ses,

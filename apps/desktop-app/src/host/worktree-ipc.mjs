@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 const ok = (value) => ({ ok: true, value });
 const err = (code, extra) => ({ ok: false, code, ...extra });
 const id = (v) => typeof v === "string" && /^[\w.:-]{1,256}$/.test(v);
@@ -40,6 +42,7 @@ export function bindWorktreeIpc({
   host,
   info,
   trusted,
+  confirmTrust,
   confirmDelete,
 }) {
   ipcMain.handle("desktop:v1:worktree", async (event, ...args) => {
@@ -49,7 +52,15 @@ export function bindWorktreeIpc({
     const w = info(r.workspaceId);
     if (!w) return err("UNKNOWN_WORKSPACE");
     // Git can run repo-configured code; only trusted workspaces (the terminal rule) may reach it.
-    if (!trusted(r.workspaceId)) return err("UNTRUSTED_WORKSPACE");
+    // Create stays trusted-only. Inspect/delete of an untrusted workspace need the native trust
+    // confirmation first (per operation); a managed folder without .git runs no git, so no gate.
+    if (!trusted(r.workspaceId)) {
+      if (r.type === "worktree.create") return err("UNTRUSTED_WORKSPACE");
+      const plainFolder =
+        w.ownership === "managed" && !existsSync(join(w.path, ".git"));
+      if (!plainFolder && !(await confirmTrust(w.path)))
+        return err("UNTRUSTED_WORKSPACE");
+    }
     try {
       if (r.type === "worktree.create") {
         const made = await host.create({

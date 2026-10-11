@@ -59,7 +59,7 @@ test("external URL and navigation decision", () => {
 
 test("request validation", () => {
   const good = [
-    { type: "preview.open", url: "x" },
+    { type: "preview.open", workspaceId: "w1", url: "x" },
     { type: "preview.openFile", workspaceId: "w1", path: "a/b.md" },
     { type: "preview.bounds", x: 0, y: 1, width: 2, height: 3 },
     { type: "preview.nav", action: "back" },
@@ -74,8 +74,8 @@ test("request validation", () => {
     "preview.close",
     { type: "nope" },
     { type: "preview.close", extra: 1 },
-    { type: "preview.open" },
-    { type: "preview.open", url: 1 },
+    { type: "preview.open", workspaceId: "w1" },
+    { type: "preview.open", workspaceId: "w1", url: 1 },
     { type: "preview.bounds", x: -1, y: 0, width: 1, height: 1 },
     { type: "preview.bounds", x: 0.5, y: 0, width: 1, height: 1 },
     { type: "preview.bounds", x: 0, y: 0, width: 1e9, height: 1 },
@@ -150,11 +150,11 @@ const nav = (url) => ({
 
 test("open allows only local URLs and guards navigation", async () => {
   const { host, views, opened } = fixture();
-  await assert.rejects(host.open("1", "https://example.com/"), {
+  await assert.rejects(host.open("1", "w1", "https://example.com/"), {
     previewCode: "URL_DENIED",
   });
   assert.equal(views.length, 0);
-  const s = await host.open("1", "http://localhost:3000/");
+  const s = await host.open("1", "w1", "http://localhost:3000/");
   assert.equal(s.open, true);
   assert.equal(s.url, "http://localhost:3000/");
   assert.equal(views[0].opts.inert, false);
@@ -186,7 +186,7 @@ test("open allows only local URLs and guards navigation", async () => {
 
 test("load failure surfaces as error state, abort ignored", async () => {
   const { host, views } = fixture();
-  await host.open("1", "http://localhost:3000/");
+  await host.open("1", "w1", "http://localhost:3000/");
   const wc = views[0].webContents;
   wc.emit(
     "did-fail-load",
@@ -213,8 +213,8 @@ test("load failure surfaces as error state, abort ignored", async () => {
 test("nav, bounds, owner isolation, lifecycle", async () => {
   const { host, views } = fixture();
   assert.throws(() => host.nav("1", "reload"), { previewCode: "NOT_OPEN" });
-  await host.open("1", "http://localhost:3000/");
-  await host.open("2", "http://localhost:3001/");
+  await host.open("1", "w1", "http://localhost:3000/");
+  await host.open("2", "w1", "http://localhost:3001/");
   const wc = views[0].webContents;
   wc.back = true;
   host.nav("1", "back");
@@ -262,7 +262,7 @@ test("openFile: markdown/image inline, html in inert view, path safety", async (
   host.nav("1", "reload");
   assert.deepEqual(views[0].webContents.calls, []);
   // switching to url mode replaces the inert view; markdown closes the view
-  await host.open("1", "http://localhost:1/");
+  await host.open("1", "w1", "http://localhost:1/");
   assert.equal(views[0].destroyed, 1);
   assert.equal(views[1].opts.inert, false);
   await host.openFile("1", "w1", "a.md");
@@ -304,11 +304,16 @@ test("IPC admits, validates and maps errors", async () => {
     code: "INVALID_REQUEST",
   });
   assert.deepEqual(
-    await handler(ev, { type: "preview.open", url: "https://example.com" }),
+    await handler(ev, {
+      type: "preview.open",
+      workspaceId: "w1",
+      url: "https://example.com",
+    }),
     { ok: false, code: "URL_DENIED" },
   );
   const r = await handler(ev, {
     type: "preview.open",
+    workspaceId: "w1",
     url: "http://localhost:3000/",
   });
   assert.equal(r.ok, true);

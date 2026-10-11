@@ -327,6 +327,7 @@ test("worktree IPC refuses untrusted workspaces before touching git", async () =
     host: { inspect: async () => touched++, create: async () => touched++ },
     info: () => ({ path: "/x", ownership: "imported" }),
     trusted: () => false,
+    confirmTrust: async () => false,
     confirmDelete: async () => true,
   });
   for (const req of [
@@ -338,4 +339,96 @@ test("worktree IPC refuses untrusted workspaces before touching git", async () =
       code: "UNTRUSTED_WORKSPACE",
     });
   assert.equal(touched, 0);
+});
+
+test("inspect stays bounded with a huge ignored directory", async () => {
+  const f = fixture();
+  try {
+    const made = await f.host.create({
+      repo: f.repo,
+      branch: "feat/nm",
+      base: "main",
+    });
+    writeFileSync(join(made.path, ".gitignore"), "node_modules/\n");
+    g(made.path, "add", ".gitignore");
+    g(
+      made.path,
+      "-c",
+      "user.name=t",
+      "-c",
+      "user.email=t@t",
+      "commit",
+      "-qm",
+      "i",
+    );
+    mkdirSync(join(made.path, "node_modules"));
+    for (let i = 0; i < 3000; i++)
+      writeFileSync(join(made.path, "node_modules", `f${i}.js`), "x");
+    const info = await f.host.inspect({
+      path: made.path,
+      ownership: "imported",
+    });
+    assert.ok(info.reasons.some((r) => r.includes("무시된 파일 1개")));
+    assert.ok(!info.reasons.some((r) => r.includes("커밋되지 않은")));
+  } finally {
+    f.done();
+  }
+});
+
+test("worktree IPC trust gate: confirm for git workspaces, none for plain managed folders", async () => {
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), "omoc-ipc-")));
+  const plain = join(dir, "plain");
+  const gitish = join(dir, "gitish");
+  mkdirSync(plain);
+  mkdirSync(join(gitish, ".git"), { recursive: true });
+  try {
+    let handler;
+    let git = 0;
+    let asked = 0;
+    let answer = false;
+    const infos = {
+      p: { path: plain, ownership: "managed" },
+      g: { path: gitish, ownership: "managed" },
+    };
+    bindWorktreeIpc({
+      ipcMain: { handle: (_c, h) => (handler = h) },
+      admit: () => true,
+      host: {
+        inspect: async () => (git++, { kind: "folder", reasons: [] }),
+        remove: async () => git++,
+        create: async () => git++,
+      },
+      info: (id) => infos[id],
+      trusted: () => false,
+      confirmTrust: async () => (asked++, answer),
+      confirmDelete: async () => true,
+    });
+    const del = (workspaceId) =>
+      handler({}, { type: "worktree.delete", workspaceId });
+    assert.equal((await del("p")).ok, true);
+    assert.equal(asked, 0);
+    assert.deepEqual(await del("g"), {
+      ok: false,
+      code: "UNTRUSTED_WORKSPACE",
+    });
+    assert.equal(asked, 1);
+    const gitBefore = git;
+    assert.equal(git, gitBefore);
+    answer = true;
+    assert.equal((await del("g")).ok, true);
+    assert.deepEqual(
+      await handler(
+        {},
+        {
+          type: "worktree.create",
+          workspaceId: "p",
+          branch: "b",
+          base: "HEAD",
+        },
+      ),
+      { ok: false, code: "UNTRUSTED_WORKSPACE" },
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

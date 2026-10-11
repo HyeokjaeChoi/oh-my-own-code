@@ -90,7 +90,11 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
     if (parseLocalUrl(target)) {
       setFile(undefined);
       last.current = "";
-      const r = await call<PreviewState>({ type: "preview.open", url: target });
+      const r = await call<PreviewState>({
+        type: "preview.open",
+        workspaceId,
+        url: target,
+      });
       if (!r.ok) return fail(r.code);
       setState(r.value);
       sendBounds();

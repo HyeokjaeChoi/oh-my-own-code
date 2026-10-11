@@ -113,6 +113,27 @@ test("redaction drops URL credentials and runs before clipping", () => {
   assert.ok(!doc.sessions[0].messages[0].text.includes("sk-"));
 });
 
+test("export clip never cuts a [REDACTED] marker mid-token", () => {
+  const key = "sk-" + "a".repeat(40);
+  const n = DATA_LIMITS.text;
+  for (let pad = 0; pad < 12; pad++) {
+    const { doc } = build({
+      messages: [
+        {
+          id: "m1",
+          role: "user",
+          text: `${"x".repeat(n - 12 + pad)} ${key} tail`,
+        },
+      ],
+    });
+    const t = doc.sessions[0].messages[0].text;
+    assert.ok(t.length <= n);
+    assert.ok(
+      !/\[R(E(D(A(C(T(E(D)?)?)?)?)?)?)?$/.test(t.replace(/\[REDACTED\]$/, "")),
+    );
+  }
+});
+
 test("redaction is idempotent", () => {
   const once = redactText(
     `${FAKE_KEYS.join(" ")} TOKEN=zzz Authorization: Bearer abcdefghij ${HOME}`,

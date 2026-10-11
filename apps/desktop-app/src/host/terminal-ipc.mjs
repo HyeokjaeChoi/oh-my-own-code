@@ -15,7 +15,7 @@ export function bindTerminalIpc({ ipcMain, admit, host }) {
         case "terminal.start":
           return ok(
             r.script === undefined
-              ? host.start(owner, r)
+              ? await host.start(owner, r)
               : await host.startScript(owner, r),
           );
         case "terminal.scripts":
