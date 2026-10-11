@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { pathToFileURL, fileURLToPath } from "node:url";
 import { build } from "esbuild";
+import { mapMessages } from "./renderer/shared/projection/projection.mjs";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
@@ -198,9 +199,11 @@ test("Markdown generic tool output stays escaped and is not reinterpreted as Mar
   assert.ok(!html.includes("<h1>raw tool</h1>"));
 });
 test("Markdown copy labels describe bounded displayed source, not Native history", () => {
-  const html = render([message("x".repeat(70000))]);
-  assert.ok(html.includes("… 표시 길이 제한"));
+  // Snapshot validation caps messages at 32000; the projection bound is a second guard.
+  const html = render([message("x".repeat(32000))]);
   assert.ok(html.includes("표시된 메시지 복사"));
   assert.ok(!html.includes("전체 기록 복사"));
   assert.ok(html.length < 100000);
+  const [projected] = mapMessages([message("x".repeat(70000))]);
+  assert.ok(projected.content[0].text.endsWith("… 표시 길이 제한"));
 });
