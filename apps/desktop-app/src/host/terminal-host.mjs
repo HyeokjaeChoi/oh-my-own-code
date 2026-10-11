@@ -4,6 +4,7 @@ import { realpathSync, statSync } from "node:fs";
 import { isAbsolute, relative } from "node:path";
 import { StringDecoder } from "node:string_decoder";
 import { TERMINAL_LIMITS } from "../renderer/shared/terminal/index.mjs";
+import { readProjectActions } from "./project-actions.mjs";
 
 const WIN = process.platform === "win32";
 const ENV_KEYS = WIN
@@ -58,6 +59,8 @@ export function createTerminalHost({
       status: t.exited ? "exited" : "running",
       exitCode: t.exitCode,
       signal: t.signal,
+      script: t.script,
+      label: t.label,
     };
   }
   function get(id, owner) {
@@ -86,70 +89,95 @@ export function createTerminalHost({
     terminals.delete(t.id);
   }
 
+  // spawnSpec overrides the interactive shell: argv is passed as-is, never through a shell string.
+  function launch(owner, { workspaceId, cwd } = {}, spawnSpec, meta = {}) {
+    const root = resolveWorkspace(workspaceId);
+    if (typeof root !== "string") throw fail("NOT_FOUND");
+    let realRoot, realCwd;
+    try {
+      realRoot = realpathSync(root);
+      realCwd = realpathSync(cwd ?? root);
+      if (!statSync(realCwd).isDirectory()) throw new Error("not a directory");
+    } catch {
+      throw fail("CWD_DENIED");
+    }
+    if (!inside(realRoot, realCwd)) throw fail("CWD_DENIED");
+    const all = [...terminals.values()];
+    if (
+      all.length >= TERMINAL_LIMITS.total ||
+      all.filter((t) => t.workspaceId === workspaceId).length >=
+        TERMINAL_LIMITS.perWorkspace
+    )
+      throw fail("LIMIT_REACHED");
+    const target = spawnSpec ?? shell;
+    const child = spawn(target.file, target.args, {
+      cwd: realCwd,
+      env: minimalEnv(),
+      stdio: ["pipe", "pipe", "pipe"],
+      detached: !WIN,
+      windowsHide: true,
+      // ponytail: Windows .cmd shims need a shell; script names are validated to [\w:.-] so no metacharacters reach it (untested).
+      ...(WIN && spawnSpec ? { shell: true } : {}),
+    });
+    const t = {
+      id: randomUUID(),
+      owner,
+      workspaceId,
+      child,
+      output: "",
+      base: 0,
+      decoder: new StringDecoder("utf8"),
+      exited: false,
+      exitCode: null,
+      signal: null,
+      closing: false,
+      script: meta.script ?? null,
+      label: meta.label ?? null,
+    };
+    t.done = new Promise((resolve) => {
+      const finish = (code, signal) => {
+        if (t.exited) return;
+        t.exited = true;
+        t.exitCode = code;
+        t.signal = signal;
+        append(t, Buffer.from(t.decoder.end()));
+        resolve();
+      };
+      // No orphans: anything the shell left running in its group goes with it.
+      // Finish on "close" so output still buffered in the pipes is not lost.
+      child.once("exit", () => killTree(child, "SIGKILL"));
+      child.once("close", finish);
+      child.once("error", (e) => {
+        append(t, Buffer.from(`\n[spawn error: ${e.code ?? e.message}]\n`));
+        finish(127, null);
+      });
+    });
+    child.stdout?.on("data", (c) => append(t, c));
+    child.stderr?.on("data", (c) => append(t, c));
+    child.stdin?.on("error", () => {});
+    terminals.set(t.id, t);
+    return view(t);
+  }
+
   return {
-    start(owner, { workspaceId, cwd } = {}) {
+    start: (owner, request) => launch(owner, request),
+    // Script must exist in the workspace's package.json right now; package manager comes from its lockfile.
+    async startScript(owner, { workspaceId, script }) {
       const root = resolveWorkspace(workspaceId);
       if (typeof root !== "string") throw fail("NOT_FOUND");
-      let realRoot, realCwd;
-      try {
-        realRoot = realpathSync(root);
-        realCwd = realpathSync(cwd ?? root);
-        if (!statSync(realCwd).isDirectory())
-          throw new Error("not a directory");
-      } catch {
-        throw fail("CWD_DENIED");
-      }
-      if (!inside(realRoot, realCwd)) throw fail("CWD_DENIED");
-      const all = [...terminals.values()];
-      if (
-        all.length >= TERMINAL_LIMITS.total ||
-        all.filter((t) => t.workspaceId === workspaceId).length >=
-          TERMINAL_LIMITS.perWorkspace
-      )
-        throw fail("LIMIT_REACHED");
-      const child = spawn(shell.file, shell.args, {
-        cwd: realCwd,
-        env: minimalEnv(),
-        stdio: ["pipe", "pipe", "pipe"],
-        detached: !WIN,
-        windowsHide: true,
-      });
-      const t = {
-        id: randomUUID(),
+      const { packageManager, scripts } = await readProjectActions(root);
+      if (!scripts.some((s) => s.name === script)) throw fail("UNKNOWN_SCRIPT");
+      return launch(
         owner,
-        workspaceId,
-        child,
-        output: "",
-        base: 0,
-        decoder: new StringDecoder("utf8"),
-        exited: false,
-        exitCode: null,
-        signal: null,
-        closing: false,
-      };
-      t.done = new Promise((resolve) => {
-        const finish = (code, signal) => {
-          if (t.exited) return;
-          t.exited = true;
-          t.exitCode = code;
-          t.signal = signal;
-          append(t, Buffer.from(t.decoder.end()));
-          resolve();
-        };
-        // No orphans: anything the shell left running in its group goes with it.
-        // Finish on "close" so output still buffered in the pipes is not lost.
-        child.once("exit", () => killTree(child, "SIGKILL"));
-        child.once("close", finish);
-        child.once("error", (e) => {
-          append(t, Buffer.from(`\n[spawn error: ${e.code ?? e.message}]\n`));
-          finish(127, null);
-        });
-      });
-      child.stdout?.on("data", (c) => append(t, c));
-      child.stderr?.on("data", (c) => append(t, c));
-      child.stdin?.on("error", () => {});
-      terminals.set(t.id, t);
-      return view(t);
+        { workspaceId },
+        { file: packageManager, args: ["run", script] },
+        { script, label: `${packageManager} run ${script}` },
+      );
+    },
+    async scripts(owner, workspaceId) {
+      const root = resolveWorkspace(workspaceId);
+      if (typeof root !== "string") throw fail("NOT_FOUND");
+      return readProjectActions(root);
     },
     list(owner, workspaceId) {
       return [...terminals.values()]

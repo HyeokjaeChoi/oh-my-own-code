@@ -6,30 +6,25 @@ import {
   type FormEvent,
 } from "react";
 import {
+  callTerminal as call,
   stripAnsi,
   TERMINAL_LIMITS,
+  TERMINAL_STARTED_EVENT,
   type TerminalInfo,
   type TerminalRead,
-  type TerminalResult,
-  type TerminalRequest,
 } from "../../shared/terminal/index.js";
+import type { ProjectActions } from "../../shared/project-actions/index.js";
 import styles from "./terminal.module.css";
 
 type Tab = TerminalInfo & { text: string; cursor: number };
 const POLL_MS = 300;
 const KEEP_CHARS = TERMINAL_LIMITS.outputChars;
 
-async function call<T>(request: TerminalRequest): Promise<TerminalResult<T>> {
-  try {
-    return (await window.desktopBridge.terminal(request)) as TerminalResult<T>;
-  } catch {
-    return { ok: false, code: "UNAVAILABLE" };
-  }
-}
 const errors: Record<string, string> = {
   LIMIT_REACHED: "터미널을 더 만들 수 없습니다.",
   CWD_DENIED: "작업 공간 폴더에서 터미널을 시작할 수 없습니다.",
   NOT_FOUND: "작업 공간 또는 터미널을 찾을 수 없습니다.",
+  UNKNOWN_SCRIPT: "package.json에 없는 스크립트입니다.",
   NOT_RUNNING: "종료된 터미널에는 입력할 수 없습니다.",
 };
 const statusText = (t: TerminalInfo) =>
@@ -44,6 +39,7 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
   const [active, setActive] = useState<string>();
   const [line, setLine] = useState("");
   const [error, setError] = useState<string>();
+  const [project, setProject] = useState<ProjectActions>();
   const cursors = useRef(new Map<string, number>());
   const output = useRef<HTMLPreElement>(null);
   const fail = (code: string) =>
@@ -69,12 +65,29 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
   // cursor so a slow renderer never loses the main-process ring buffer position.
   useEffect(() => {
     let stopped = false;
-    void call<TerminalInfo[]>({ type: "terminal.list", workspaceId }).then(
-      (r) => {
-        if (stopped || !r.ok) return;
-        setTabs(r.value.map((t) => ({ ...t, text: "", cursor: 0 })));
-        setActive((a) => a ?? r.value[0]?.terminalId);
-      },
+    // Adds tabs unknown to this panel (restored after remount, or started by the palette).
+    const refresh = (select: boolean) =>
+      void call<TerminalInfo[]>({ type: "terminal.list", workspaceId }).then(
+        (r) => {
+          if (stopped || !r.ok) return;
+          setTabs((prev) => [
+            ...prev,
+            ...r.value
+              .filter((t) => !prev.some((p) => p.terminalId === t.terminalId))
+              .map((t) => ({ ...t, text: "", cursor: 0 })),
+          ]);
+          setActive(
+            (a) =>
+              (select ? r.value.at(-1)?.terminalId : a) ??
+              r.value[0]?.terminalId,
+          );
+        },
+      );
+    refresh(false);
+    const onStarted = () => refresh(true);
+    window.addEventListener(TERMINAL_STARTED_EVENT, onStarted);
+    void call<ProjectActions>({ type: "terminal.scripts", workspaceId }).then(
+      (r) => !stopped && r.ok && setProject(r.value),
     );
     const timer = setInterval(() => {
       for (const [terminalId, cursor] of cursors.current)
@@ -86,6 +99,7 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
     }, POLL_MS);
     return () => {
       stopped = true;
+      window.removeEventListener(TERMINAL_STARTED_EVENT, onStarted);
       clearInterval(timer);
     };
   }, [workspaceId, merge]);
@@ -100,9 +114,13 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
     output.current?.scrollTo({ top: output.current.scrollHeight });
   }, [current?.text]);
 
-  const start = async () => {
+  const start = async (script?: string) => {
     setError(undefined);
-    const r = await call<TerminalInfo>({ type: "terminal.start", workspaceId });
+    const r = await call<TerminalInfo>({
+      type: "terminal.start",
+      workspaceId,
+      ...(script ? { script } : {}),
+    });
     if (!r.ok) return fail(r.code);
     cursors.current.set(r.value.terminalId, 0);
     setTabs((p) => [...p, { ...r.value, text: "", cursor: 0 }]);
@@ -154,6 +172,7 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
             onClick={() => setActive(t.terminalId)}
           >
             {i + 1}
+            {t.label ? ` ${t.label}` : ""}
             {t.status === "exited" ? " ■" : ""}
           </button>
         ))}
@@ -161,6 +180,24 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
           +
         </button>
       </div>
+      {project && project.scripts.length > 0 && (
+        <details>
+          <summary>프로젝트 스크립트 ({project.packageManager})</summary>
+          <ul className={styles.scripts}>
+            {project.scripts.map((s) => (
+              <li key={s.name}>
+                <button
+                  onClick={() => void start(s.name)}
+                  aria-label={`${project.packageManager} run ${s.name} 실행`}
+                  title={s.command}
+                >
+                  {s.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
       {error && (
         <p role="alert" className={styles.error}>
           {error}

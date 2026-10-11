@@ -1,3 +1,4 @@
+import { isScriptName } from "../project-actions/index.mjs";
 // Browser-safe terminal request validation and output helpers. No IO.
 export const TERMINAL_LIMITS = Object.freeze({
   inputChars: 8192,
@@ -10,7 +11,8 @@ const id = (v, max) =>
   typeof v === "string" && /^[\w.:-]+$/.test(v) && v.length <= max;
 const dim = (v) => Number.isInteger(v) && v >= 1 && v <= 1000;
 const schemas = {
-  "terminal.start": [["workspaceId"], ["cols", "rows"]],
+  "terminal.start": [["workspaceId"], ["cols", "rows", "script"]],
+  "terminal.scripts": [["workspaceId"], []],
   "terminal.list": [["workspaceId"], []],
   "terminal.write": [["terminalId", "text"], []],
   "terminal.read": [["terminalId", "cursor"], []],
@@ -38,6 +40,7 @@ export function validateTerminalRequest(value) {
   for (const [k, v] of Object.entries(value)) {
     if (k === "type") continue;
     if (k === "workspaceId" && !id(v, 256)) return undefined;
+    if (k === "script" && !isScriptName(v)) return undefined;
     if (k === "terminalId" && !id(v, 64)) return undefined;
     if ((k === "cols" || k === "rows") && !dim(v)) return undefined;
     if (k === "cursor" && !(Number.isSafeInteger(v) && v >= 0))

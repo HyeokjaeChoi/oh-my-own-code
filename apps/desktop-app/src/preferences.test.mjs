@@ -65,4 +65,5 @@ test("applyPreferences resolves system theme, density and font scale", () => {
 
 test("shortcut help lists the help key", () => {
   assert.ok(SHORTCUTS.some((s) => s.keys === "?"));
+  assert.ok(SHORTCUTS.some((s) => s.keys === "Cmd/Ctrl+K"));
 });

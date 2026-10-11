@@ -123,8 +123,8 @@ Status: `done` = implemented end to end; `partial` = some of the clause exists; 
 | Real PTY | partial | pipes only, no tty (`terminal-host.mjs:44`) |
 | Resize | partial | stub `{resized:false}` (`:180`) |
 | Close tab vs stop process; orphan sweep | done | `reap` `main.mjs:256`, `closeAll` |
-| Build/lint/test/dev actions, recent runs | missing | none |
-| User vs agent command attribution | missing | none |
+| Build/lint/test/dev actions | done | package.json scripts, lockfile pm, argv spawn: `host/project-actions.mjs`, `terminalHost.startScript`; recent-run history not kept |
+| Command attribution | partial | tab label `<pm> run <script>` shows its action; agent-started commands not applicable (no agent terminal) |
 
 ## F-13 Commands
 | Clause | Status | Evidence |
@@ -132,7 +132,8 @@ Status: `done` = implemented end to end; `partial` = some of the clause exists; 
 | `/` search runtime commands | done | `catalog.list`, `conversation/index.tsx:693,822` |
 | Run runtime command, literal not shell | done | `command.run` |
 | Args help, source, unavailable reason | partial | entries shown; verify fields |
-| App commands (new/open/model/permissions/plan/review/compact/status/mcp/help) | partial | menu has file view etc. (`:809`); most absent |
+| Command palette (Cmd/Ctrl+K) | done | `features/palette`: runtime commands/skills + app ops + project scripts, source labels, disabled reasons |
+| App commands (model/permissions/plan/review/compact/status/mcp/help) | partial | only ops with existing actions are listed (settings, panels, new/switch session, import folder); the rest absent |
 | Conflict/arg error/busy/cancel | partial | busy via lock; others unverified |
 
 ## F-14 Harness config

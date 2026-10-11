@@ -13,7 +13,13 @@ export function bindTerminalIpc({ ipcMain, admit, host }) {
     try {
       switch (r.type) {
         case "terminal.start":
-          return ok(host.start(owner, r));
+          return ok(
+            r.script === undefined
+              ? host.start(owner, r)
+              : await host.startScript(owner, r),
+          );
+        case "terminal.scripts":
+          return ok(await host.scripts(owner, r.workspaceId));
         case "terminal.list":
           return ok(host.list(owner, r.workspaceId));
         case "terminal.write":
