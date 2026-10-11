@@ -280,7 +280,16 @@ test("ignored files are reported as a delete reason", async () => {
     });
     writeFileSync(join(made.path, ".gitignore"), ".env\n");
     g(made.path, "add", ".gitignore");
-    g(made.path, "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "i");
+    g(
+      made.path,
+      "-c",
+      "user.name=t",
+      "-c",
+      "user.email=t@t",
+      "commit",
+      "-qm",
+      "i",
+    );
     writeFileSync(join(made.path, ".env"), "SECRET=1");
     const info = await f.host.inspect({
       path: made.path,

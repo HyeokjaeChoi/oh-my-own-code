@@ -29,10 +29,7 @@ import {
 import { createWorkbenchService } from "./workbench-service.mjs";
 import { bindWorkbenchIpc } from "./host/workbench-ipc.mjs";
 import { setInterval } from "node:timers";
-import {
-  createTerminalHost,
-  resolveLoginPath,
-} from "./host/terminal-host.mjs";
+import { createTerminalHost, resolveLoginPath } from "./host/terminal-host.mjs";
 import { bindTerminalIpc } from "./host/terminal-ipc.mjs";
 import { createPlansHost } from "./host/plans-host.mjs";
 import { bindPlansIpc } from "./host/plans-ipc.mjs";
