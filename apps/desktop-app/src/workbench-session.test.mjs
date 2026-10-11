@@ -744,13 +744,8 @@ test("permission.mode.set validates strictly and does not approve or touch pendi
   );
   assert.equal(res.ok, true);
   assert.equal(res.value.sessions[0].permissionMode, "scoped_edit");
-  // Transition itself is not retroactive: no reply, no ruleset write.
+  // The mode is applied and verified at once, deny floor last; no reply.
   assert.equal(f.calls.filter((c) => c.name === "reply").length, 0);
-  assert.equal(f.calls.filter((c) => c.name === "update").length, before);
-  // The mode reaches Native at the next execution boundary, deny floor last.
-  await f.service.handle(
-    f.request("session.inbox.cancel", { inboxId: "none" }),
-  );
   const update = f.calls.filter((c) => c.name === "update").at(before);
   const rules = update.args[0].permissions;
   assert.deepEqual(
@@ -758,6 +753,8 @@ test("permission.mode.set validates strictly and does not approve or touch pendi
     { action: "edit", resource: "*", effect: "allow" },
   );
   assert.deepEqual(rules.slice(-1), BASELINE_POLICY.slice(1));
+  // Workspace-wide checks see matching rules instead of POLICY_UNVERIFIED.
+  assert.deepEqual(f.records.get("sdk-parent").permissions, rules);
 });
 
 test("mode change reaches Native subagent descendants, never leaving them broader", async (t) => {
@@ -778,11 +775,106 @@ test("mode change reaches Native subagent descendants, never leaving them broade
   await f.service.handle(
     f.request("permission.mode.set", { mode: "read_plan" }),
   );
-  await f.service.handle(
-    f.request("session.inbox.cancel", { inboxId: "none" }),
-  );
   const parent = f.records.get("sdk-parent").permissions;
   assert.deepEqual(f.records.get("sdk-native-child").permissions, parent);
   assert.deepEqual(f.records.get("sdk-native-grandchild").permissions, parent);
   assert.equal(parent.find((r) => r.action === "subagent")?.effect, "allow");
+});
+
+test("narrowing the mode rewrites a running Native child immediately", async (t) => {
+  const f = await fixture(t);
+  await f.service.handle(
+    f.request("permission.mode.set", { mode: "scoped_edit" }),
+  );
+  f.records.set("sdk-native-child", {
+    ...f.records.get("sdk-parent"),
+    id: "sdk-native-child",
+    parentID: "sdk-parent",
+    permissions: globalThis.structuredClone(
+      f.records.get("sdk-parent").permissions,
+    ),
+  });
+  f.state.active = { "sdk-native-child": { type: "running" } };
+  const res = await f.service.handle(
+    f.request("permission.mode.set", { mode: "ask" }),
+  );
+  assert.equal(res.ok, true);
+  assert.deepEqual(
+    f.records.get("sdk-native-child").permissions,
+    BASELINE_POLICY,
+  );
+});
+
+test("mode propagation skips app-tracked forks and fork-marked sessions", async (t) => {
+  const f = await fixture(t);
+  const forked = await f.service.handle(f.request("session.fork"));
+  assert.equal(forked.ok, true);
+  const forkBefore = globalThis.structuredClone(
+    f.records.get("sdk-child-1").permissions,
+  );
+  f.records.set("sdk-untracked-fork", {
+    ...f.records.get("sdk-parent"),
+    id: "sdk-untracked-fork",
+    parentID: "sdk-parent",
+    fork: { sessionID: "sdk-parent" },
+    permissions: forkBefore,
+  });
+  const res = await f.service.handle(
+    f.request("permission.mode.set", { mode: "scoped_edit" }),
+  );
+  assert.equal(res.ok, true);
+  assert.deepEqual(f.records.get("sdk-child-1").permissions, forkBefore);
+  assert.deepEqual(f.records.get("sdk-untracked-fork").permissions, forkBefore);
+});
+
+test("Native subagent child permission requests surface and route to the child", async (t) => {
+  const f = await fixture(t);
+  f.records.set("sdk-native-child", {
+    ...f.records.get("sdk-parent"),
+    id: "sdk-native-child",
+    parentID: "sdk-parent",
+    title: "Explore agent",
+  });
+  const pending = [
+    {
+      id: "perm-child",
+      sessionID: "sdk-native-child",
+      action: "read",
+      resources: ["a.txt"],
+    },
+  ];
+  f.client.permission.list = async ({ sessionID }) =>
+    pending.filter((p) => p.sessionID === sessionID);
+  const snap = await f.service.handle({ type: "snapshot" });
+  assert.equal(snap.ok, true);
+  const listed = snap.value.permissions;
+  assert.equal(listed.length, 1);
+  assert.equal(listed[0].id, "perm-child");
+  assert.equal(listed[0].sessionId, f.target.sessionId);
+  assert.equal(listed[0].childTitle, "Explore agent");
+  const res = await f.service.handle(
+    f.request("permission.respond", {
+      requestId: "perm-child",
+      decision: "once",
+    }),
+  );
+  assert.equal(res.value.status, "decided");
+  const reply = f.calls.find((c) => c.name === "reply");
+  assert.equal(reply.args[0].sessionID, "sdk-native-child");
+  assert.equal(reply.args[0].requestID, "perm-child");
+});
+
+test("mode.set overwrites broader Native rules with the mode ruleset", async (t) => {
+  // Native keeps broader rules than the persisted mode after a crash/restart.
+  const t2 = await fixture(t);
+  t2.records.get("sdk-parent").permissions = [
+    { action: "*", resource: "*", effect: "allow" },
+  ];
+  const before = t2.calls.filter((c) => c.name === "update").length;
+  const res = await t2.service.handle(
+    t2.request("permission.mode.set", { mode: "ask" }),
+  );
+  assert.equal(res.ok, true);
+  assert.deepEqual(t2.records.get("sdk-parent").permissions, BASELINE_POLICY);
+  assert.ok(t2.calls.filter((c) => c.name === "update").length > before);
 });

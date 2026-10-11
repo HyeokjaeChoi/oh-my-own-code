@@ -842,10 +842,16 @@ export function validateSnapshot(value) {
     );
   }
   for (const p of value.permissions) {
-    requiredObject(p, ["id", "sessionId", "title", "detail"], ["toolId"]);
+    requiredObject(
+      p,
+      ["id", "sessionId", "title", "detail"],
+      ["toolId", "childTitle"],
+    );
     needDTO(
-      (!Object.hasOwn(p, "toolId") ||
-        (boundedText(p.toolId, 256) && p.toolId.length > 0)) &&
+      (!Object.hasOwn(p, "childTitle") ||
+        (boundedText(p.childTitle, 128) && p.childTitle.length > 0)) &&
+        (!Object.hasOwn(p, "toolId") ||
+          (boundedText(p.toolId, 256) && p.toolId.length > 0)) &&
         boundedText(p.id, 256) &&
         p.id.length > 0 &&
         sessions.has(p.sessionId) &&

@@ -4253,3 +4253,23 @@ for (const mode of ["journal", "checkpoint"]) {
     );
   });
 }
+
+test("session record permissionMode is a closed, optional enum", () => {
+  const session = {
+    appSessionId: "session",
+    workspaceId: "workspace",
+    lifecycleState: "active",
+    nativeSessionId: "native",
+    pinned: false,
+    archived: false,
+  };
+  const delta = (s) => ({ workspaces: [], sessions: [s], tombstones: [] });
+  validateRegistryDelta(delta(session));
+  for (const permissionMode of ["ask", "scoped_edit", "read_plan"])
+    validateRegistryDelta(delta({ ...session, permissionMode }));
+  for (const permissionMode of ["custom", "allow", "", null, 1])
+    assert.throws(
+      () => validateRegistryDelta(delta({ ...session, permissionMode })),
+      { code: "invalid_record" },
+    );
+});

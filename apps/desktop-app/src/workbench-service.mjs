@@ -404,9 +404,8 @@ export function createWorkbenchService({
   });
   const reads = new Map();
   const lifecycleReceipts = new Map();
-  // In-memory per app session; a restart or fork falls back to the safe "ask".
-  const permissionModes = new Map();
-  const modeOf = (s) => permissionModes.get(s.id) ?? "ask";
+  // Persisted on the session record; legacy records and forks are "ask".
+  const modeOf = (s) => s?.permissionMode ?? "ask";
   const policyOk = (s, rules) =>
     matchesOrderedPermissionRules(compileModeRules(modeOf(s)), rules) ||
     matchesOrderedPermissionRules(legacyModeRules(modeOf(s)), rules);
@@ -928,6 +927,7 @@ export function createWorkbenchService({
         instructionRegistration: s.instructionRegistration,
       }),
       ...(s.permissionControl && { permissionControl: s.permissionControl }),
+      ...(s.permissionMode && { permissionMode: s.permissionMode }),
       ...(partial && { recoveryReason: "partial_native_mapping" }),
     };
   }
@@ -1054,6 +1054,7 @@ export function createWorkbenchService({
             parentSessionId: s.parentSessionId,
             instructionRegistration: s.instructionRegistration,
             permissionControl: s.permissionControl,
+            permissionMode: s.permissionMode,
             unavailable: s.status === "unavailable",
             unknown: s.status === "unavailable",
             lock: false,
@@ -1984,12 +1985,15 @@ export function createWorkbenchService({
     };
     return owner.reservation;
   }
-  // Native copies the parent's session permissions into a subagent child only
-  // at creation, so a later mode change would leave children broader. Rewrite
-  // every Native-owned descendant to the parent's compiled ruleset; any failure
-  // fails the policy write closed. Skipped for clients without session.list.
-  async function propagateToChildren(parentSdkId, expected) {
-    if (typeof client?.session?.list !== "function") return;
+  // Native-owned subagent descendants of a tracked session (depth-bounded).
+  // App-tracked sessions and forks (also parented to their source session by
+  // Native) are excluded: they follow their own mode through their own policy.
+  async function nativeDescendants(parentSdkId, code) {
+    if (typeof client?.session?.list !== "function") return [];
+    const tracked = new Set(
+      [...tables().sessions.values()].map((x) => x.sdkId),
+    );
+    const out = [];
     let frontier = [parentSdkId];
     const done = new Set(frontier);
     for (let depth = 0; depth < 4 && frontier.length; depth++) {
@@ -1999,23 +2003,40 @@ export function createWorkbenchService({
           { parentID: id },
           (data) => {
             for (const child of data)
-              if (child.parentID === id && !done.has(child.id)) {
+              if (
+                child.parentID === id &&
+                !done.has(child.id) &&
+                !child.fork &&
+                !tracked.has(child.id)
+              ) {
                 done.add(child.id);
                 next.push(child.id);
+                out.push({ id: child.id, title: child.title });
               }
           },
-          "POLICY_UNVERIFIED",
+          code,
         );
-      for (const id of next) {
-        await call(client.session.update, {
-          sessionID: id,
-          permissions: expected.map((rule) => ({ ...rule })),
-        });
-        const info = await call(client.session.get, { sessionID: id });
-        if (!matchesOrderedPermissionRules(expected, info?.permissions))
-          fail("POLICY_UNVERIFIED");
-      }
+      if (out.length > 64) fail(code);
       frontier = next;
+    }
+    return out;
+  }
+  // Native copies the parent's session permissions into a subagent child only
+  // at creation, so a later mode change would leave children broader. Rewrite
+  // every Native-owned descendant to the parent's compiled ruleset; any failure
+  // fails the policy write closed.
+  async function propagateToChildren(parentSdkId, expected) {
+    for (const { id } of await nativeDescendants(
+      parentSdkId,
+      "POLICY_UNVERIFIED",
+    )) {
+      await call(client.session.update, {
+        sessionID: id,
+        permissions: expected.map((rule) => ({ ...rule })),
+      });
+      const info = await call(client.session.get, { sessionID: id });
+      if (!matchesOrderedPermissionRules(expected, info?.permissions))
+        fail("POLICY_UNVERIFIED");
     }
   }
   async function policy(s, step = "native.policy") {
@@ -2325,6 +2346,7 @@ export function createWorkbenchService({
           status: entry.status,
           pinned: entry.pinned,
           archived: entry.archived,
+          permissionMode: entry.permissionMode,
           ...(entry.parentSessionId && {
             parentSessionId: entry.parentSessionId,
           }),
@@ -2381,10 +2403,11 @@ export function createWorkbenchService({
           pinned,
           archived,
           parentSessionId,
+          permissionMode,
         }) => ({
           id,
           workspaceId,
-          permissionMode: modeOf({ id }),
+          permissionMode: modeOf({ permissionMode }),
           title,
           status:
             blocked ||
@@ -2464,6 +2487,16 @@ export function createWorkbenchService({
         const pending = await call(client.permission.list, {
           sessionID: s.sdkId,
         });
+        const subagentPending = [];
+        for (const child of await nativeDescendants(s.sdkId, "RUNTIME_ERROR")) {
+          const list = await call(client.permission.list, {
+            sessionID: child.id,
+          });
+          if (!Array.isArray(list)) fail("RUNTIME_ERROR");
+          for (const p of list)
+            if (p?.sessionID === child.id)
+              subagentPending.push({ ...p, childTitle: child.title });
+        }
         if (
           info?.id !== s.sdkId ||
           (await canonicalDirectory(info.location?.directory)) !==
@@ -2484,17 +2517,18 @@ export function createWorkbenchService({
           fail("READ_BUSY");
         s.sessionSelection = projectSessionSelection(info, s.id);
         s.messages = projectMessages([...messages.data].reverse());
-        s.permissions = pending
-          .filter(
-            (p) =>
-              p.sessionID === s.sdkId &&
-              opaque(p.id) &&
-              !s.invalidPermissions.has(p.id),
-          )
+        s.permissions = [
+          ...pending.filter((p) => p.sessionID === s.sdkId),
+          ...subagentPending,
+        ]
+          .filter((p) => opaque(p.id) && !s.invalidPermissions.has(p.id))
           .slice(0, 100)
           .map((p) => ({
             id: p.id,
             sessionId: s.id,
+            ...(p.childTitle !== undefined && {
+              childTitle: clip(p.childTitle, 128) || "Subagent",
+            }),
             title: clip(p.action, 128),
             ...(p.source?.type === "tool" && opaque(p.source.id)
               ? { toolId: p.source.id }
@@ -3714,7 +3748,8 @@ export function createWorkbenchService({
     );
     for (const target of targets) {
       if (target.lock || target.unavailable) fail("BUSY");
-      const info = await idleIdentity(w, target);
+      let info = await idleIdentity(w, target);
+      if (!policyOk(target, info.permissions)) info = await policy(target);
       const correlated = await verifySavedSession(target, new Map(), new Set());
       if (
         !correlated ||
@@ -3943,7 +3978,8 @@ export function createWorkbenchService({
       checkLive();
       return info;
     };
-    const info = await identity();
+    let info = await identity();
+    if (!policyOk(s, info.permissions)) info = await policy(s);
     const correlated = await verifySavedSession(s, new Map(), new Set());
     if (
       !correlated ||
@@ -4229,7 +4265,10 @@ export function createWorkbenchService({
         // Takes effect via policy() before the next send; never replies to
         // or approves requests that are already pending.
         await markEffect();
-        permissionModes.set(s.id, request.mode);
+        s.permissionMode = request.mode;
+        // Write + verify the new ruleset now (also narrows running subagent
+        // children); the session is idle, so this cannot race a run.
+        await policy(s);
       } else if (request.type === "session.pin") {
         await markEffect();
         s.pinned = request.pinned;
@@ -4891,14 +4930,40 @@ export function createWorkbenchService({
       s.lock = true;
       s.generation++;
       try {
-        const pending = await call(client.permission.list, {
+        // The request may belong to a Native subagent child of this session.
+        let ownerId = s.sdkId;
+        let pending = await call(client.permission.list, {
           sessionID: s.sdkId,
         });
+        if (
+          Array.isArray(pending) &&
+          !pending.some(
+            (p) => p.id === request.requestId && p.sessionID === s.sdkId,
+          )
+        )
+          for (const child of await nativeDescendants(
+            s.sdkId,
+            "RUNTIME_ERROR",
+          )) {
+            const list = await call(client.permission.list, {
+              sessionID: child.id,
+            });
+            if (
+              Array.isArray(list) &&
+              list.some(
+                (p) => p.id === request.requestId && p.sessionID === child.id,
+              )
+            ) {
+              ownerId = child.id;
+              pending = list;
+              break;
+            }
+          }
         if (
           !Array.isArray(pending) ||
           s.invalidPermissions.has(request.requestId) ||
           !pending.some(
-            (p) => p.id === request.requestId && p.sessionID === s.sdkId,
+            (p) => p.id === request.requestId && p.sessionID === ownerId,
           )
         )
           fail("STALE_PERMISSION");
@@ -4907,14 +4972,14 @@ export function createWorkbenchService({
         await markEffect();
         for (const p of pending)
           if (
-            p.sessionID === s.sdkId &&
+            p.sessionID === ownerId &&
             (request.decision === "reject" || p.id === request.requestId)
           )
             s.invalidPermissions.add(p.id);
         s.permissions = [];
         try {
           await call(client.permission.reply, {
-            sessionID: s.sdkId,
+            sessionID: ownerId,
             requestID: request.requestId,
             decision: request.decision,
           });

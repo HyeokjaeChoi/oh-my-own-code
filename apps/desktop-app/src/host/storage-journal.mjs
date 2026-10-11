@@ -658,8 +658,13 @@ export function validateRegistryDelta(value) {
         "recoveryReason",
         "instructionRegistration",
         "permissionControl",
+        "permissionMode",
       ],
     );
+    if (Object.hasOwn(session, "permissionMode"))
+      need(
+        ["ask", "scoped_edit", "read_plan"].includes(session.permissionMode),
+      );
     need(
       resourceId(session.appSessionId) &&
         resourceId(session.workspaceId) &&

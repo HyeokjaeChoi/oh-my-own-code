@@ -27,6 +27,12 @@ const capabilities = BUILTIN.map(([action, category]) => ({
   adapterId: "opencode.builtin",
 }));
 
+const ENV_READ_RULES = [
+  { action: "read", resource: "*.env", effect: "ask" },
+  { action: "read", resource: "*.env.*", effect: "ask" },
+  { action: "read", resource: "*.env.example", effect: "allow" },
+];
+
 export const validPermissionMode = (mode) => PERMISSION_MODES.includes(mode);
 
 // Rules a pre-F-07 build wrote for this mode: no subagent capability rule and
@@ -41,11 +47,22 @@ export function legacyModeRules(mode = "ask") {
 
 export function compileModeRules(mode = "ask") {
   if (!validPermissionMode(mode)) throw new Error("permission_mode_invalid");
-  return compilePermissionRules({
+  const rules = compilePermissionRules({
     mode,
     settings: [],
     capabilities: mode === "ask" ? [] : capabilities.map((c) => ({ ...c })),
     authenticatedDenies: [],
     agentDenies: [],
   });
+  // Mirror Native's agent defaults: the broad read allow must not override
+  // the .env ask (last match wins), so re-assert it right after.
+  const at = rules.findIndex(
+    (r) => r.action === "read" && r.effect === "allow",
+  );
+  if (at < 0) return rules;
+  return Object.freeze([
+    ...rules.slice(0, at + 1),
+    ...ENV_READ_RULES.map((r) => Object.freeze({ ...r })),
+    ...rules.slice(at + 1),
+  ]);
 }

@@ -202,6 +202,7 @@ export interface WorkbenchPermission {
   title: string;
   detail: string;
   toolId?: string;
+  childTitle?: string;
 }
 export interface WorkbenchSnapshot {
   runtimeEpoch: string;
