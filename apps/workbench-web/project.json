@@ -35,7 +35,7 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import tsx --test apps/workbench-web/src/entities/session/model/*.test.ts apps/workbench-web/src/shared/api/*.test.ts apps/workbench-web/src/widgets/session-workspace/ui/*.test.tsx apps/workbench-web/scripts/*.test.mjs"
+        "command": "node --import ./apps/workbench-web/scripts/css-module-stub.mjs --import tsx --test apps/workbench-web/src/entities/session/model/*.test.ts apps/workbench-web/src/shared/api/*.test.ts apps/workbench-web/src/widgets/session-workspace/ui/*.test.tsx apps/workbench-web/scripts/*.test.mjs"
       }
     },
     "e2e": {
