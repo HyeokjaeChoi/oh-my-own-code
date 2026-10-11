@@ -66,12 +66,12 @@ export function createPreviewHost({
       externalRequest: e.externalRequest,
     };
   }
-  function ensure(owner, mode) {
+  function ensure(owner, mode, workspaceId) {
     const cur = views.get(owner);
-    if (cur?.mode === mode) return cur;
+    if (cur?.mode === mode && cur.workspaceId === workspaceId) return cur;
     destroy(owner);
-    const view = createView({ inert: mode === "inert" });
-    const e = { view, mode, error: null, externalRequest: null };
+    const view = createView({ inert: mode === "inert", workspaceId });
+    const e = { view, mode, workspaceId, error: null, externalRequest: null };
     views.set(owner, e);
     if (cur?.bounds) view.setBounds((e.bounds = cur.bounds));
     const wc = view.webContents;
@@ -98,10 +98,10 @@ export function createPreviewHost({
   }
 
   return {
-    async open(owner, url) {
+    async open(owner, workspaceId, url) {
       const local = parseLocalUrl(url);
       if (!local) throw fail("URL_DENIED");
-      const e = ensure(owner, "url");
+      const e = ensure(owner, "url", workspaceId);
       e.error = null;
       try {
         await e.view.webContents.loadURL(local);

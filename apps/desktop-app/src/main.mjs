@@ -52,13 +52,15 @@ import { randomUUID } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 
 let workbench;
+let loginPathPromise;
 const worktrees = createWorktreeHost({
   documentsRoot: () => namespace.documents,
   linksFile: () => join(namespace.metadata, "worktree-links.json"),
 });
 const terminals = createTerminalHost({
   resolveWorkspace: (id) => workbench?.terminalRoot(id),
-  loginPath: resolveLoginPath(),
+  // Lazy: the login shell is spawned only after the single-instance lock is held.
+  loginPath: () => loginPathPromise,
 });
 const plans = createPlansHost({
   resolveWorkspace: (id) => workbench?.terminalRoot(id),
@@ -88,6 +90,7 @@ let initialRecovery;
 let kernel;
 const gotInstanceLock = app.requestSingleInstanceLock();
 if (!gotInstanceLock) app.quit();
+else loginPathPromise = resolveLoginPath();
 app.on("second-instance", () => {
   if (!mainWindow) return;
   if (mainWindow.isMinimized()) mainWindow.restore();
@@ -358,6 +361,7 @@ function bindIpc() {
     host: worktrees,
     info: (id) => workbench?.workspaceInfo(id),
     trusted: (id) => typeof workbench?.terminalRoot(id) === "string",
+    confirmTrust: (path) => confirmWorkspaceTrust(path),
     async confirmDelete({ kind, path, reasons, force }) {
       const result = await dialog.showMessageBox(mainWindow, {
         type: "warning",
@@ -538,7 +542,22 @@ function requestQuit() {
   return quitPromise;
 }
 
+async function confirmWorkspaceTrust(path) {
+  const result = await dialog.showMessageBox(mainWindow, {
+    type: "warning",
+    title: "Trust this workspace?",
+    message: "Opening a session can load project configuration and plugins.",
+    detail: path,
+    buttons: ["Cancel", "Trust and open"],
+    defaultId: 0,
+    cancelId: 0,
+    noLink: true,
+  });
+  return result.response === 1;
+}
+
 app.whenReady().then(async () => {
+  if (!gotInstanceLock) return;
   let binaryPath = executableForResources(
     app.isPackaged ? process.resourcesPath : join(here, "..", "resources"),
     process.platform,
@@ -866,20 +885,7 @@ app.whenReady().then(async () => {
       });
       return result.response === 1;
     },
-    async confirmTrust(path) {
-      const result = await dialog.showMessageBox(mainWindow, {
-        type: "warning",
-        title: "Trust this workspace?",
-        message:
-          "Opening a session can load project configuration and plugins.",
-        detail: path,
-        buttons: ["Cancel", "Trust and open"],
-        defaultId: 0,
-        cancelId: 0,
-        noLink: true,
-      });
-      return result.response === 1;
-    },
+    confirmTrust: confirmWorkspaceTrust,
   });
   bindIpc();
   createWindow();

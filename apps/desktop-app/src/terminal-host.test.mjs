@@ -222,6 +222,39 @@ test("login PATH is resolved once, bounded, with fallback", async () => {
   assert.equal(failed, process.env.PATH ?? "");
 });
 
+test("login PATH timeout resolves without waiting for pipe close and destroys streams", async () => {
+  let destroyed = 0;
+  const run = () => ({
+    stdout: { destroy: () => destroyed++ },
+    stderr: { destroy: () => destroyed++ },
+    stdin: { end() {} },
+  }); // never calls back
+  const t0 = Date.now();
+  const v = await resolveLoginPath({ run, timeoutMs: 50 });
+  assert.equal(v, process.env.PATH ?? "");
+  assert.ok(Date.now() - t0 < 1000);
+  assert.equal(destroyed, 2);
+});
+
+test(
+  "terminals started before login PATH resolves wait for it",
+  { skip: !posix },
+  async () => {
+    let release;
+    const gate = new Promise((r) => (release = r));
+    const { host } = fixture(["-c", 'echo "$PATH"; exit 0'], {
+      loginPath: () => gate,
+    });
+    const p = host.start("o", { workspaceId: "w1" });
+    assert.ok(p instanceof Promise);
+    release("/login/bin");
+    const t = await p;
+    await until(() => host.read("o", t.terminalId, 0).status === "exited");
+    assert.match(host.read("o", t.terminalId, 0).output, /\/login\/bin/);
+    await host.closeAll();
+  },
+);
+
 test("terminal request validation is closed", () => {
   const good = [
     { type: "terminal.start", workspaceId: "w1" },

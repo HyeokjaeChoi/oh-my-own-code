@@ -77,6 +77,16 @@ export function redactText(value, { home } = {}) {
 
 const clip = (v, n) =>
   typeof v === "string" ? v.slice(0, n).replace(/\p{Surrogate}$/u, "") : "";
+function clipAtMarker(text, n) {
+  const out = clip(text, n);
+  const at = out.lastIndexOf("[");
+  return at >= 0 &&
+    out.length - at < REDACTED.length &&
+    REDACTED.startsWith(out.slice(at)) &&
+    out.length < text.length
+    ? out.slice(0, at)
+    : out;
+}
 const idOk = (v) => typeof v === "string" && v.length > 0 && v.length <= 256;
 const TOOL_STATUS = ["pending", "running", "completed", "error"];
 const ENV_FILE = /(^|[\\/\s"'])\.env(\.[\w.-]+)?(?=$|[\\/\s"'])/;
@@ -92,11 +102,12 @@ export function buildExport({
 }) {
   const totals = { secrets: 0, home: 0, envOutputs: 0 };
   const red = (v, n) => {
-    // Redact the whole value first so clipping never splits a secret into an unmatched fragment.
-    const r = redactText(v, { home });
+    // Bounded pre-clip (redaction only shrinks text, secrets are far shorter than the slack), redact,
+    // then the final clip; a cut inside a [REDACTED] marker backs up to the marker start.
+    const r = redactText(clip(v, n + 4096), { home });
     totals.secrets += r.counts.secrets;
     totals.home += r.counts.home;
-    return clip(r.text, n);
+    return clipAtMarker(r.text, n);
   };
   let tools = 0;
   let outputs = 0;

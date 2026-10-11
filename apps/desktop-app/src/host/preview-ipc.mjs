@@ -13,7 +13,7 @@ export function bindPreviewIpc({ ipcMain, admit, host }) {
     try {
       switch (r.type) {
         case "preview.open":
-          return ok(await host.open(owner, r.url));
+          return ok(await host.open(owner, r.workspaceId, r.url));
         case "preview.openFile":
           return ok(await host.openFile(owner, r.workspaceId, r.path));
         case "preview.bounds":

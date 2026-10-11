@@ -26,9 +26,19 @@ export function resolveLoginPath({
 } = {}) {
   const fallback = process.env.PATH ?? "";
   if (WIN) return Promise.resolve(fallback);
-  return new Promise((done) => {
+  return new Promise((rawDone) => {
+    let child;
+    let timer;
+    const done = (v) => {
+      clearTimeout(timer);
+      child?.stdout?.destroy?.();
+      child?.stderr?.destroy?.();
+      rawDone(v);
+    };
+    // Resolve on timeout without waiting for the shell's pipes to close.
+    timer = setTimeout(() => done(fallback), timeoutMs);
     try {
-      const child = run(
+      child = run(
         shell,
         ["-ilc", 'printf "__OMOC_PATH__%s__OMOC_PATH__" "$PATH"'],
         {
@@ -90,15 +100,30 @@ export function createTerminalHost({
   exitGraceMs = 500,
   closeAllMs = killGraceMs + exitGraceMs + 1000,
   loginPath,
+  loginPathTimeoutMs = 3000,
 } = {}) {
   const terminals = new Map();
   let pathValue;
-  Promise.resolve(loginPath).then(
-    (p) => {
-      if (typeof p === "string" && p) pathValue = p;
-    },
-    () => {},
-  );
+  // loginPath may be a promise or a function that starts the lookup (called lazily on first use).
+  // start() stays synchronous once settled; until then it waits (bounded) so no terminal gets a minimal PATH.
+  let pathReady;
+  let pathSettled = !loginPath;
+  const ensurePath = () => {
+    if (pathSettled) return undefined;
+    return (pathReady ??= Promise.race([
+      Promise.resolve(
+        typeof loginPath === "function" ? loginPath() : loginPath,
+      ),
+      new Promise((r) => setTimeout(r, loginPathTimeoutMs).unref?.()),
+    ])
+      .then((p) => {
+        if (typeof p === "string" && p) pathValue = p;
+      })
+      .catch(() => {})
+      .finally(() => {
+        pathSettled = true;
+      }));
+  };
 
   function view(t) {
     return {
@@ -224,13 +249,19 @@ export function createTerminalHost({
   }
 
   return {
-    start: (owner, request) => launch(owner, request),
+    start(owner, request) {
+      const wait = ensurePath();
+      return wait
+        ? wait.then(() => launch(owner, request))
+        : launch(owner, request);
+    },
     // Script must exist in the workspace's package.json right now; package manager comes from its lockfile.
     async startScript(owner, { workspaceId, script }) {
       const root = resolveWorkspace(workspaceId);
       if (typeof root !== "string") throw fail("NOT_FOUND");
       const { packageManager, scripts } = await readProjectActions(root);
       if (!scripts.some((s) => s.name === script)) throw fail("UNKNOWN_SCRIPT");
+      await ensurePath();
       return launch(
         owner,
         { workspaceId },

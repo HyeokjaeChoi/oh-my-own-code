@@ -4,7 +4,7 @@ export const PREVIEW_LIMITS: Readonly<{
   pathChars: number;
 }>;
 export type PreviewRequest =
-  | { type: "preview.open"; url: string }
+  | { type: "preview.open"; workspaceId: string; url: string }
   | { type: "preview.openFile"; workspaceId: string; path: string }
   | {
       type: "preview.bounds";
