@@ -7,6 +7,10 @@ import type {
   TerminalResult,
 } from "./renderer/shared/terminal/index.mjs";
 import type {
+  DataRequest,
+  DataResult,
+} from "./renderer/shared/data-transfer/index.mjs";
+import type {
   PlansRequest,
   PlansResult,
 } from "./renderer/shared/plans/index.mjs";
@@ -1027,6 +1031,10 @@ declare global {
         // eslint-disable-next-line no-unused-vars
         _request: TerminalRequest,
       ): Promise<TerminalResult<unknown>>;
+      data(
+        // eslint-disable-next-line no-unused-vars
+        _request: DataRequest,
+      ): Promise<DataResult<unknown>>;
       plans(
         // eslint-disable-next-line no-unused-vars
         _request: PlansRequest,

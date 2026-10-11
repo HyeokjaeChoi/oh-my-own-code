@@ -5,6 +5,7 @@ if (process.isMainFrame) {
     workbench: (...args) => ipcRenderer.invoke("desktop:v2:workbench", ...args),
     terminal: (...args) => ipcRenderer.invoke("desktop:v1:terminal", ...args),
     preview: (...args) => ipcRenderer.invoke("desktop:v1:preview", ...args),
+    data: (...args) => ipcRenderer.invoke("desktop:v1:data", ...args),
     plans: (...args) => ipcRenderer.invoke("desktop:v1:plans", ...args),
     worktree: (...args) => ipcRenderer.invoke("desktop:v1:worktree", ...args),
     cancelRead: (...args) =>

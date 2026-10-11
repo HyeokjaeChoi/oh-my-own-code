@@ -16,6 +16,7 @@ import {
   sessionSuccessor,
 } from "../../features/sessions/index.js";
 import { PreferencesButton } from "../../features/preferences/index.js";
+import { DataButton } from "../../features/data-transfer/index.js";
 import { CommandPalette } from "../../features/palette/index.js";
 import { Conversation } from "../../widgets/conversation/index.js";
 import { TerminalPanel } from "../../widgets/terminal/index.js";
@@ -744,6 +745,10 @@ export function Workbench() {
             </span>
           </div>
           <CommandPalette />
+          <DataButton
+            session={session && { id: session.id, title: session.title }}
+            messages={snapshot?.messages ?? []}
+          />
           <PreferencesButton />
           <Button
             ref={panelButton}
