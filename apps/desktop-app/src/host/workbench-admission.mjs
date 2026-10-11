@@ -132,6 +132,7 @@ export function createHostAdmission({
   registry: getRegistry,
   runtimeEpoch,
   mutationAllowed = () => true,
+  preflight,
 }) {
   const epoch = runtimeEpoch ?? randomUUID();
   const service = new AbortController();
@@ -416,7 +417,7 @@ export function createHostAdmission({
       }),
     };
   }
-  function mutate(envelope, sender) {
+  function mutate(envelope, sender, preflightCode) {
     const { operationId } = envelope;
     // Validation already rejected accessors, extra keys and undefined fields.
     // Preserve the original Git request across readiness/flush pauses.
@@ -578,6 +579,7 @@ export function createHostAdmission({
       evidence: [],
     };
     ledger.set(operationId, record);
+    if (preflightCode) return rejectRecord(record, preflightCode);
     if (mutation) return Promise.resolve(rejectRecord(record, "BUSY"));
     if (
       envelope.expectedRevision !== undefined &&
@@ -784,9 +786,21 @@ export function createHostAdmission({
           envelope.runtimeEpoch !== epoch
         )
           fail("STALE_EPOCH");
-        return READ_TYPES.includes(envelope.operation.type)
-          ? read(envelope, sender)
-          : mutate(envelope, sender);
+        if (READ_TYPES.includes(envelope.operation.type))
+          return read(envelope, sender);
+        // Separate, journaled prerequisites (e.g. policy re-apply) run before
+        // this operation is admitted; a failure rejects it with effect none.
+        if (
+          !preflight ||
+          mutation ||
+          ledger.has(envelope.operationId) ||
+          quiescing
+        )
+          return mutate(envelope, sender);
+        return preflight(envelope.operation, sender).then(
+          (code) => mutate(envelope, sender, code),
+          () => mutate(envelope, sender, "POLICY_UNVERIFIED"),
+        );
       } catch (error) {
         return Promise.resolve(errorResult(error));
       }

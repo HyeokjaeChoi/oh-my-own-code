@@ -109,7 +109,7 @@ import {
   validateInstructionDispatch,
   validateInstructionCompletion,
   validatePermissionModeCompletion,
-  isPolicyReapply,
+  isModePolicyWrite,
   PERMISSION_MODE_FEATURE,
   validateMcpAdmission,
   validateMcpDispatch,
@@ -579,7 +579,7 @@ function apply(root, payload, conservative = false, validatedFirstSessions) {
       operation &&
         !operation.terminal &&
         (isPermissionControl(operation.identity.type) ||
-          isPolicyReapply(operation.identity.type, payload) ||
+          isModePolicyWrite(operation.identity.type, payload) ||
           !operation.dispatches.some((step) => step.step === payload.step)),
       "identity_conflict",
     );
@@ -2059,7 +2059,7 @@ export async function openWorkspaceRegistry({
       }
       const prior =
         !isPermissionControl(operation.identity.type) &&
-        !isPolicyReapply(operation.identity.type, request) &&
+        !isModePolicyWrite(operation.identity.type, request) &&
         operation.dispatches.find((entry) => entry.step === request.step);
       if (prior) {
         need(!isInboxCancel(operation.identity.type), "identity_conflict");

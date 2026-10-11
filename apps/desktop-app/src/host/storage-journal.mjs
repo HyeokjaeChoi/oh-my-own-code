@@ -926,6 +926,12 @@ export function instructionStep(type) {
   return undefined;
 }
 export const PERMISSION_MODE_FEATURE = "permission_mode_v1";
+// mode.set writes the parent, its Native subagent children and any restore of
+// the previous mode: several native.policy dispatches, one per Native session.
+export const isModePolicyWrite = (type, dispatch) =>
+  type === "permission.mode.set" &&
+  dispatch.step === "native.policy" &&
+  typeof dispatch.nativeSessionId === "string";
 export function validatePermissionModeCompletion(payload, features) {
   if (
     payload.delta.sessions.some((session) =>
@@ -934,20 +940,8 @@ export function validatePermissionModeCompletion(payload, features) {
   )
     need(features.includes(PERMISSION_MODE_FEATURE), "unsupported_version");
 }
-// Workspace checks may re-apply the persisted mode to Native (one dispatch per
-// session/child) before the op's own step.
-export const isPolicyReapply = (type, dispatch) =>
-  dispatch.step === "native.policy" &&
-  typeof dispatch.nativeSessionId === "string" &&
-  Boolean(
-    type === "permission.mode.set" ||
-      instructionStep(type) ||
-      mcpStep(type) ||
-      isSkillSave(type),
-  );
 export function validateInstructionDispatch(identity, dispatch, sessions) {
   const expected = instructionStep(identity.type);
-  if (isPolicyReapply(identity.type, dispatch)) return;
   if (!expected && !dispatch.step.startsWith("native.instructions.")) return;
   const target = sessions.get(identity.sessionId);
   need(
@@ -1115,7 +1109,6 @@ export function validateMcpAdmission(value) {
 export function validateMcpDispatch(operation, dispatch) {
   need(typeof dispatch.step === "string");
   const expected = mcpStep(operation.identity.type);
-  if (isPolicyReapply(operation.identity.type, dispatch)) return;
   if (
     !expected &&
     !dispatch.step.startsWith("native.mcp.") &&
@@ -1186,7 +1179,6 @@ export function validateSkillAdmission(value) {
 }
 export function validateSkillDispatch(operation, dispatch) {
   if (!isSkillSave(operation.identity.type)) return;
-  if (isPolicyReapply(operation.identity.type, dispatch)) return;
   need(
     [
       "filesystem.configuration.stage",
@@ -1507,7 +1499,7 @@ function historyValidator() {
           );
         need(
           isPermissionControl(prior.identity.type) ||
-            isPolicyReapply(prior.identity.type, payload) ||
+            isModePolicyWrite(prior.identity.type, payload) ||
             !prior.steps.has(payload.step),
           "identity_conflict",
         );

@@ -177,12 +177,7 @@ for (const scenario of [
     }
     const result = await f.mutate(request, `instruction-${scenario}`);
     assert.equal(result.ok, false, JSON.stringify(result));
-    // A failed policy re-apply was itself a (journaled) Native dispatch.
-    assert.equal(
-      result.receipt.effect,
-      scenario === "policy" ? "unknown" : "none",
-      JSON.stringify(result),
-    );
+    assert.equal(result.receipt.effect, "none", JSON.stringify(result));
     assert.ok(!f.state.calls.includes("instruction-put"));
     assert.ok(!f.state.calls.includes("instruction-remove"));
     assert.equal(
@@ -2532,12 +2527,11 @@ for (const scenario of ["file", "catalog", "permissions", "policy", "inbox"])
     });
     const result = await f.mutate(f.register, `mcp-race-${scenario}`);
     assert.equal(result.ok, false, JSON.stringify(result));
-    const effect = scenario === "policy" ? "unknown" : "none";
-    assert.equal(result.receipt.effect, effect);
+    assert.equal(result.receipt.effect, "none");
     assert.ok(!f.state.calls.includes("mcp-add"));
     assert.equal(
       (await f.lookup(`mcp-race-${scenario}`)).value.receipt.effect,
-      effect,
+      "none",
     );
   });
 
@@ -2574,10 +2568,7 @@ for (const scenario of [
       f.state.inbox = [{ id: "pending", sessionID: nativeId }];
     const result = await f.mutate(f.register, `mcp-other-${scenario}`);
     assert.equal(result.ok, false, JSON.stringify(result));
-    assert.equal(
-      result.receipt.effect,
-      scenario === "policy" ? "unknown" : "none",
-    );
+    assert.equal(result.receipt.effect, "none");
     assert.ok(!f.state.calls.includes("mcp-add"));
   });
 
@@ -3258,7 +3249,7 @@ test("SKILL service confirmation cancellation keeps exact draft and performs zer
   assert.equal(result.code, "CANCELLED");
   assert.equal(result.receipt.effect, "none");
   assert.deepEqual(f.calls, []);
-  assert.deepEqual(f.state.calls, before);
+  assert.deepEqual(noGets(f.state.calls), noGets(before));
   assert.equal(f.confirmations[0].sourceName, "review");
   assert.equal(
     f.confirmations[0].directoryVersion,
@@ -3287,7 +3278,7 @@ test("SKILL service replacement of same empty source folder during confirm rejec
   assert.equal(result.code, "FILE_CHANGED");
   assert.equal(result.receipt.effect, "none");
   assert.deepEqual(f.calls, []);
-  assert.deepEqual(f.state.calls, before);
+  assert.deepEqual(noGets(f.state.calls), noGets(before));
   assert.deepEqual(await fs.readdir(f.sourcePath), []);
   assert.equal(
     (await skillPayloads(f)).some((p) => p.kind === "dispatch"),
@@ -3303,7 +3294,7 @@ for (const existing of [false, true]) {
     assert.equal(result.ok, true, JSON.stringify(result));
     assert.equal(result.value.status, "saved");
     assert.deepEqual(f.calls, ["stage", "publish"]);
-    assert.deepEqual(f.state.calls, before);
+    assert.deepEqual(noGets(f.state.calls), noGets(before));
     const read = await f.read({
       type: "configuration.skill.read",
       workspaceId: f.workspaceId,
@@ -3388,7 +3379,7 @@ for (const mode of [
     assert.equal(duplicate.receipt.effect, "unknown");
     assert.equal(duplicate.receipt.result, undefined);
     assert.deepEqual(f.calls, calls);
-    assert.deepEqual(f.state.calls, before);
+    assert.deepEqual(noGets(f.state.calls), noGets(before));
     const lookup = await f.lookup("skill-unknown");
     assert.equal(lookup.value.receipt.effect, "unknown");
     assert.equal(lookup.value.receipt.result, undefined);
@@ -3432,7 +3423,7 @@ test("SKILL service missing parent cannot be admitted as missing leaf publicatio
   assert.equal(result.receipt.effect, "none");
   assert.deepEqual(f.calls, []);
   assert.deepEqual(f.confirmations, []);
-  assert.deepEqual(f.state.calls, before);
+  assert.deepEqual(noGets(f.state.calls), noGets(before));
   assert.equal(
     (await skillPayloads(f)).some((p) => p.kind === "dispatch"),
     false,
@@ -3460,7 +3451,7 @@ test("SKILL service completion flush failure after publication exposes only orig
   assert.equal(result.receipt.operationId, "skill-flush-failed");
   assert.equal(result.receipt.runtimeEpoch, "epoch");
   assert.deepEqual(f.calls, ["stage", "publish"]);
-  assert.deepEqual(f.state.calls, before);
+  assert.deepEqual(noGets(f.state.calls), noGets(before));
   assert.equal(await fs.readFile(f.path, "utf8"), f.operation.text);
   const lookup = await f.lookup("skill-flush-failed");
   assert.equal(lookup.value.receipt.effect, "unknown");
@@ -4299,7 +4290,7 @@ test("Agent file service binds flat source/directory/original backup and keeps N
     configurationBackupId("epoch", operation.requestId, "agent"),
   );
   assert.deepEqual(calls, ["stage", "publish"]);
-  assert.deepEqual(f.state.calls, before);
+  assert.deepEqual(noGets(f.state.calls), noGets(before));
   assert.equal(confirmations[0].targetPath, path);
   assert.equal(prepared.directoryVersion, read.value.directoryVersion);
   assert.equal(prepared.kind, "agent");
@@ -5560,41 +5551,81 @@ test("stored permission mode is retained and never reset to baseline by send", a
   }
 });
 
-test("workspace check re-applies drifted Native rules (journaled native.policy) so instruction apply succeeds", async (t) => {
-  const f = await instructionFixture(t);
-  f.records.get(f.nativeId).permissions = compileModeRules("scoped_edit");
-  const applied = await f.mutate(f.apply, "instructions-reapply");
-  assert.equal(applied.ok, true, JSON.stringify(applied));
-  assert.deepEqual(
-    f.records.get(f.nativeId).permissions,
-    compileModeRules("ask"),
+// The pre-admission policy check performs read-only Native session.get calls.
+const noGets = (calls) => calls.filter((name) => name !== "get");
+const driftOther = async (f, workspaceId) => {
+  const extra = await f.mutate(
+    { type: "session.create", workspaceId },
+    `extra-${Math.random()}`,
   );
+  assert.equal(extra.ok, true, JSON.stringify(extra));
+  const nativeId = f.registry
+    .readView()
+    .sessions.find(
+      (x) => x.appSessionId === extra.value.selectedSessionId,
+    ).nativeSessionId;
+  f.records.get(nativeId).permissions = compileModeRules("scoped_edit");
+  return nativeId;
+};
+const modeSetOps = async (f) =>
+  (await fs.readFile(join(f.directory, "journal.jsonl"), "utf8"))
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line).payload)
+    .filter((p) => p.identity?.type === "permission.mode.set");
+
+test("MCP register with a drifted other session re-applies policy in its own journaled op and completes", async (t) => {
+  const f = await mcpFixture(t);
+  const other = await driftOther(f, f.workspaceId);
+  const result = await f.mutate(f.register, "mcp-drift");
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.equal(result.receipt.effect, "confirmed");
+  assert.deepEqual(f.records.get(other).permissions, compileModeRules("ask"));
+  assert.ok((await modeSetOps(f)).length > 0);
 });
 
-test("mode.set with failed readback is UNKNOWN_OUTCOME and falls back to the narrower mode", async (t) => {
+test("instruction apply with a drifted other session re-applies policy in its own journaled op and completes", async (t) => {
+  const f = await instructionFixture(t);
+  const other = await driftOther(f, f.scope.workspaceId);
+  const result = await f.mutate(f.apply, "instructions-drift");
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.equal(result.receipt.effect, "confirmed");
+  assert.deepEqual(f.records.get(other).permissions, compileModeRules("ask"));
+  assert.ok((await modeSetOps(f)).length > 0);
+});
+
+test("skill save with a drifted session re-applies policy in its own journaled op and completes", async (t) => {
+  const f = await skillServiceFixture(t);
+  const other = await driftOther(f, f.workspaceId);
+  const result = await f.mutate(f.operation, "skill-drift");
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.deepEqual(f.records.get(other).permissions, compileModeRules("ask"));
+  assert.ok((await modeSetOps(f)).length > 0);
+});
+
+test("mode.set with failed child propagation is UNKNOWN_OUTCOME and re-applies the recorded previous mode (ask, not narrower-of)", async (t) => {
   const f = await fixture(t);
   const snap = await f.ready();
-  const created = await f.mutate(
-    { type: "session.create", workspaceId: snap.selectedWorkspaceId },
-    "mode-trust",
-  );
-  assert.equal(created.ok, true, JSON.stringify(created));
-  const sessionId = created.value.selectedSessionId;
+  const sessionId = snap.selectedSessionId;
   const nativeId = f.registry
     .readView()
     .sessions.find((x) => x.appSessionId === sessionId).nativeSessionId;
-  let first = true;
+  f.records.set("child", {
+    ...f.records.get(nativeId),
+    id: "child",
+    parentID: nativeId,
+    title: "Agent",
+  });
   f.state.hooks.update = async ({ sessionID, permissions }) => {
-    const rules = first ? [] : permissions;
-    first = false;
-    f.records.get(sessionID).permissions = rules;
+    if (sessionID === "child") throw new Error("child propagation");
+    f.records.get(sessionID).permissions = permissions;
   };
   const result = await f.mutate(
     {
       type: "permission.mode.set",
       workspaceId: snap.selectedWorkspaceId,
       sessionId,
-      mode: "scoped_edit",
+      mode: "read_plan",
       requestId: "mode-unknown",
     },
     "mode-unknown",
