@@ -323,6 +323,7 @@ test("Git index unknown retained key survives snapshot validation without payloa
         operationId: "operation-1",
         type: "git.index.apply",
         workspaceId: "workspace-1",
+        authorityHold: false,
       },
     ],
     workspaces: [],

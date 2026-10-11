@@ -747,16 +747,29 @@ function kernel(initial) {
     const fields = record(plugin, ["id", "effect"]);
     if (
       fields.id !== "opencode.config.worktree" ||
-      !ordinaryFunction(fields.effect) || toolSources.has(fields.id) ||
-      runtimeHeld || locations.size > 32 ||
-      typeof sourceSha256 !== "string" || !/^[a-f0-9]{64}$/u.test(sourceSha256)
-    ) reject("inventory_unverified");
+      !ordinaryFunction(fields.effect) ||
+      toolSources.has(fields.id) ||
+      runtimeHeld ||
+      locations.size > 32 ||
+      typeof sourceSha256 !== "string" ||
+      !/^[a-f0-9]{64}$/u.test(sourceSha256)
+    )
+      reject("inventory_unverified");
     // Native define returns this actual mutable object. Freeze it, never a copy.
     Object.freeze(plugin);
-    toolSources.set(fields.id, Object.freeze({
-      id: fields.id, kind: "setup", plugin, effect: fields.effect, sourceSha256,
-      metadata: Object.freeze([Object.freeze({ domain: "worktree", name: "transform" })]),
-    }));
+    toolSources.set(
+      fields.id,
+      Object.freeze({
+        id: fields.id,
+        kind: "setup",
+        plugin,
+        effect: fields.effect,
+        sourceSha256,
+        metadata: Object.freeze([
+          Object.freeze({ domain: "worktree", name: "transform" }),
+        ]),
+      }),
+    );
   };
   const declarationPlugin = (id) =>
     id === "opencode.config.worktree" ||
@@ -902,10 +915,16 @@ function kernel(initial) {
           item.toolDescriptor === source,
       );
       if (source.producer.kind === "setup") {
-        if (!registration || result !== undefined || !registration.setupComplete ||
-          registration.setupResult || !activeMetadataScope(scope) ||
-          entry.inventoryFailed || entry.state === "finalizing" ||
-          registration.setupPublication?.state !== "registered")
+        if (
+          !registration ||
+          result !== undefined ||
+          !registration.setupComplete ||
+          registration.setupResult ||
+          !activeMetadataScope(scope) ||
+          entry.inventoryFailed ||
+          entry.state === "finalizing" ||
+          registration.setupPublication?.state !== "registered"
+        )
           reject("inventory_unverified");
         registration.setupResult = true;
         return;
@@ -979,16 +998,31 @@ function kernel(initial) {
       const entry = registration.entry;
       const source = toolDescriptor(entry, descriptor);
       if (source.producer.kind === "setup") {
-        if (result !== undefined || !registration.setupResult ||
-          registration.toolDescriptor !== source || registration.kind !== "plugin" ||
-          registration.state !== "registering" || registration.hookMetadata ||
-          entry.inventoryFailed || !activeMetadataScope(registration.toolScope) ||
-          entry.state === "finalizing" || registration.setupPublication?.state !== "registered")
+        if (
+          result !== undefined ||
+          !registration.setupResult ||
+          registration.toolDescriptor !== source ||
+          registration.kind !== "plugin" ||
+          registration.state !== "registering" ||
+          registration.hookMetadata ||
+          entry.inventoryFailed ||
+          !activeMetadataScope(registration.toolScope) ||
+          entry.state === "finalizing" ||
+          registration.setupPublication?.state !== "registered"
+        )
           reject("inventory_unverified");
         registration.setupResult = false;
-        registration.hookMetadata = Object.freeze(source.producer.metadata.map((row) =>
-          Object.freeze({ ...row, sourceSha256: source.producer.sourceSha256,
-            support: "unsupported", resource: null, adapterId: null })));
+        registration.hookMetadata = Object.freeze(
+          source.producer.metadata.map((row) =>
+            Object.freeze({
+              ...row,
+              sourceSha256: source.producer.sourceSha256,
+              support: "unsupported",
+              resource: null,
+              adapterId: null,
+            }),
+          ),
+        );
         inventoryAdvance();
         return;
       }
@@ -1264,119 +1298,203 @@ function kernel(initial) {
   const inventoryStateDomain = (handle, domain, service) => {
     const entry = locationEntry(handle);
     const transform = property(service, "transform");
-    if (domain !== "worktree" || !ordinaryFunction(transform) ||
-      entry.state === "finalizing" || runtimeHeld) reject("inventory_unverified");
+    if (
+      domain !== "worktree" ||
+      !ordinaryFunction(transform) ||
+      entry.state === "finalizing" ||
+      runtimeHeld
+    )
+      reject("inventory_unverified");
     const key = Object.freeze({});
-    stateDomains.set(key, Object.freeze({ entry, incarnation: entry.incarnation,
-      service, transform, domain }));
+    stateDomains.set(
+      key,
+      Object.freeze({
+        entry,
+        incarnation: entry.incarnation,
+        service,
+        transform,
+        domain,
+      }),
+    );
     return key;
   };
   const setupParent = (parent, source) => {
     const producer = source?.producer;
-    return !runtimeHeld && parent && parent.kind === "plugin" &&
+    return (
+      !runtimeHeld &&
+      parent &&
+      parent.kind === "plugin" &&
       ["registering", "registered"].includes(parent.state) &&
-      parent.toolDescriptor === source && source.entry === parent.entry &&
-      producer?.kind === "setup" && producer.id === "opencode.config.worktree" &&
+      parent.toolDescriptor === source &&
+      source.entry === parent.entry &&
+      producer?.kind === "setup" &&
+      producer.id === "opencode.config.worktree" &&
       toolSources.get(producer.id) === producer &&
-      !parent.entry.inventoryFailed && parent.entry.state !== "finalizing" &&
+      !parent.entry.inventoryFailed &&
+      parent.entry.state !== "finalizing" &&
       locations.get(parent.entry.locationId) === parent.entry &&
-      activeMetadataScope(parent.toolScope);
+      activeMetadataScope(parent.toolScope)
+    );
   };
   // Call inside Loader's updateContext, AFTER inventoryToolActivation. The
   // original constructor thunk is entered only after actual Fiber validation.
   const inventorySetupRun = (token, descriptor, scope, run) =>
-    Effect.withFiber((fiber) => Effect.gen(function* () {
-      const activation = yield* metadata(() => {
-        const parent = inventoryToken(token);
-        const source = toolDescriptor(parent.entry, descriptor);
-        if (!ordinaryFunction(run) || !setupParent(parent, source) ||
-          parent.state !== "registering" || parent.toolScope !== scope ||
-          parent.setupStarted || setupFibers.has(fiber)) setupFailure(parent.entry);
-        parent.setupStarted = true;
-        const activation = { parent, source, scope, fiber, live: true,
-          generation: inventoryGeneration };
-        setupFibers.set(fiber, activation);
-        return activation;
-      });
-      return yield* Effect.gen(function* () {
-        const result = yield* Effect.suspend(run);
-        yield* metadata(() => {
-          const parent = activation.parent;
-          if (result !== undefined || !setupParent(parent, activation.source) ||
-            parent.setupPublication?.state !== "registered") setupFailure(parent.entry);
-          parent.setupComplete = true;
+    Effect.withFiber((fiber) =>
+      Effect.gen(function* () {
+        const activation = yield* metadata(() => {
+          const parent = inventoryToken(token);
+          const source = toolDescriptor(parent.entry, descriptor);
+          if (
+            !ordinaryFunction(run) ||
+            !setupParent(parent, source) ||
+            parent.state !== "registering" ||
+            parent.toolScope !== scope ||
+            parent.setupStarted ||
+            setupFibers.has(fiber)
+          )
+            setupFailure(parent.entry);
+          parent.setupStarted = true;
+          const activation = {
+            parent,
+            source,
+            scope,
+            fiber,
+            live: true,
+            generation: inventoryGeneration,
+          };
+          setupFibers.set(fiber, activation);
+          return activation;
         });
-        return result;
-      }).pipe(Effect.onExit((exit) => {
-        activation.live = false;
-        setupFibers.delete(fiber);
-        return exit._tag === "Failure"
-          ? metadata(() => { activation.parent.entry.inventoryFailed = true; runtimeHeld = true; inventoryAdvance(); }, true)
-          : Effect.void;
-      }));
-    }));
+        return yield* Effect.gen(function* () {
+          const result = yield* Effect.suspend(run);
+          yield* metadata(() => {
+            const parent = activation.parent;
+            if (
+              result !== undefined ||
+              !setupParent(parent, activation.source) ||
+              parent.setupPublication?.state !== "registered"
+            )
+              setupFailure(parent.entry);
+            parent.setupComplete = true;
+          });
+          return result;
+        }).pipe(
+          Effect.onExit((exit) => {
+            activation.live = false;
+            setupFibers.delete(fiber);
+            return exit._tag === "Failure"
+              ? metadata(() => {
+                  activation.parent.entry.inventoryFailed = true;
+                  runtimeHeld = true;
+                  inventoryAdvance();
+                }, true)
+              : Effect.void;
+          }),
+        );
+      }),
+    );
   const stateRow = (token) => {
-    const row = inventoryToken(token), parent = row.toolParent;
+    const row = inventoryToken(token),
+      parent = row.toolParent;
     const domain = row.stateDomain;
-    if (!domain || !["registering", "registered"].includes(row.state) ||
-      row.kind !== "transform" || row.identity !== JSON.stringify(["worktree", "transform"]) ||
-      !setupParent(parent, row.setupSource) || parent.setupPublication !== row ||
-      row.entry !== domain.entry || row.entry !== parent.entry ||
+    if (
+      !domain ||
+      !["registering", "registered"].includes(row.state) ||
+      row.kind !== "transform" ||
+      row.identity !== JSON.stringify(["worktree", "transform"]) ||
+      !setupParent(parent, row.setupSource) ||
+      parent.setupPublication !== row ||
+      row.entry !== domain.entry ||
+      row.entry !== parent.entry ||
       row.entry.incarnation !== domain.incarnation ||
-      !activeMetadataScope(row.registrationScope)) reject("inventory_unverified");
+      !activeMetadataScope(row.registrationScope)
+    )
+      reject("inventory_unverified");
     return row;
   };
   const inventoryStateBegin = (domainHandle, callback, options, scope) =>
-    Effect.withFiber((fiber) => metadata(() => {
-      const domain = domainHandle && !types.isProxy(domainHandle)
-        ? stateDomains.get(domainHandle) : undefined;
-      const activation = setupFibers.get(fiber);
-      if (!domain || !activation) reject("inventory_unverified");
-      const parent = activation.parent, entry = parent.entry;
-      if (!activation.live || activation.fiber !== fiber ||
-        activation.generation !== inventoryGeneration ||
-        !setupParent(parent, activation.source) || parent.state !== "registering" ||
-        domain.entry !== entry || domain.incarnation !== entry.incarnation ||
-        scope !== activation.scope || options !== undefined ||
-        !ordinaryFunction(callback) || parent.setupPublication ||
-        (entry.inventoryRegistrations?.length ?? 0) >= 256) setupFailure(entry);
-      // Reserve in the existing row set under the same metadata permit BEFORE
-      // original State.transform can add or synchronously replay the wrapper.
-      inventoryAdvance();
-      activation.generation = inventoryGeneration;
-      const token = Object.freeze({});
-      const row = { kind: "transform", identity: JSON.stringify(["worktree", "transform"]),
-        sequence: inventoryGeneration, state: "registering", entry,
-        toolParent: parent, setupSource: activation.source, stateDomain: domain,
-        registrationScope: scope, setupActivation: activation };
-      inventoryTokens.set(token, row);
-      entry.inventoryRegistrations.push(row);
-      parent.setupPublication = row;
-      return token;
-    }));
+    Effect.withFiber((fiber) =>
+      metadata(() => {
+        const domain =
+          domainHandle && !types.isProxy(domainHandle)
+            ? stateDomains.get(domainHandle)
+            : undefined;
+        const activation = setupFibers.get(fiber);
+        if (!domain || !activation) reject("inventory_unverified");
+        const parent = activation.parent,
+          entry = parent.entry;
+        if (
+          !activation.live ||
+          activation.fiber !== fiber ||
+          activation.generation !== inventoryGeneration ||
+          !setupParent(parent, activation.source) ||
+          parent.state !== "registering" ||
+          domain.entry !== entry ||
+          domain.incarnation !== entry.incarnation ||
+          scope !== activation.scope ||
+          options !== undefined ||
+          !ordinaryFunction(callback) ||
+          parent.setupPublication ||
+          (entry.inventoryRegistrations?.length ?? 0) >= 256
+        )
+          setupFailure(entry);
+        // Reserve in the existing row set under the same metadata permit BEFORE
+        // original State.transform can add or synchronously replay the wrapper.
+        inventoryAdvance();
+        activation.generation = inventoryGeneration;
+        const token = Object.freeze({});
+        const row = {
+          kind: "transform",
+          identity: JSON.stringify(["worktree", "transform"]),
+          sequence: inventoryGeneration,
+          state: "registering",
+          entry,
+          toolParent: parent,
+          setupSource: activation.source,
+          stateDomain: domain,
+          registrationScope: scope,
+          setupActivation: activation,
+        };
+        inventoryTokens.set(token, row);
+        entry.inventoryRegistrations.push(row);
+        parent.setupPublication = row;
+        return token;
+      }),
+    );
   const inventoryStateReplay = (token) => {
     stateRow(token);
     inventoryAdvance();
   };
   const inventoryStateRegister = (domainHandle, token, guarded) =>
-    Effect.withFiber((fiber) => Effect.gen(function* () {
-      const domain = yield* Effect.try({ try: () => {
-        const row = stateRow(token), activation = setupFibers.get(fiber);
-        if (stateDomains.get(domainHandle) !== row.stateDomain ||
-          activation !== row.setupActivation || !activation?.live ||
-          !ordinaryFunction(guarded)) reject("inventory_unverified");
-        return row.stateDomain;
-      }, catch: (failure) => failure });
-      return yield* domain.transform.call(domain.service, guarded, undefined);
-    }));
-  const inventoryStateRegistered = (token) => metadata(() => {
-    const row = stateRow(token);
-    if (row.state !== "registering" || !row.setupActivation.live)
-      setupFailure(row.entry);
-    row.state = "registered";
-    inventoryAdvance();
-    row.setupActivation.generation = inventoryGeneration;
-  });
+    Effect.withFiber((fiber) =>
+      Effect.gen(function* () {
+        const domain = yield* Effect.try({
+          try: () => {
+            const row = stateRow(token),
+              activation = setupFibers.get(fiber);
+            if (
+              stateDomains.get(domainHandle) !== row.stateDomain ||
+              activation !== row.setupActivation ||
+              !activation?.live ||
+              !ordinaryFunction(guarded)
+            )
+              reject("inventory_unverified");
+            return row.stateDomain;
+          },
+          catch: (failure) => failure,
+        });
+        return yield* domain.transform.call(domain.service, guarded, undefined);
+      }),
+    );
+  const inventoryStateRegistered = (token) =>
+    metadata(() => {
+      const row = stateRow(token);
+      if (row.state !== "registering" || !row.setupActivation.live)
+        setupFailure(row.entry);
+      row.state = "registered";
+      inventoryAdvance();
+      row.setupActivation.generation = inventoryGeneration;
+    });
   // Cleanup uncertainty invalidates authority even if terminal metadata fails.
   const inventoryStateUncertain = (token) => {
     const row = inventoryToken(token);
