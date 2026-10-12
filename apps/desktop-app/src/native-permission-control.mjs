@@ -7,7 +7,7 @@ import {
   nativeBootstrapWorkspaceFailureClosed,
 } from "./host/native-bootstrap-workspace.mjs";
 import { types } from "node:util";
-import { isAbsolute, normalize, relative } from "node:path";
+import { isAbsolute, normalize, relative, resolve } from "node:path";
 import { realpathSync } from "node:fs";
 import { Context, Deferred, Effect, Layer, Option, Semaphore } from "effect";
 import { makeGlobalNode } from "@opencode/util/effect/app-node";
@@ -2589,13 +2589,13 @@ function kernel(initial) {
     admitLease,
     bindNativeReadRuntime,
     readNativeFile,
-    // Execution phase (step D) must call this with the running lease's
-    // location directory before admitting any tool file effect (edit, write,
-    // patch) and on formatter-output paths; permission rules alone are
-    // lexical and case-sensitive.
+    // Called by the patched Permission.assert for every "edit" action (edit,
+    // write and patch tools all assert through it; the formatter only rewrites
+    // the same asserted path). Permission rules alone are lexical and
+    // case-sensitive. Relative resources resolve against the location.
     assertNotVcsMetadataPath: (directory, path) =>
       Effect.tryPromise({
-        try: () => assertNotVcsMetadataPath(directory, path),
+        try: () => assertNotVcsMetadataPath(directory, resolve(directory, path)),
         catch: (failure) => failure,
       }),
     leaseSnapshot,

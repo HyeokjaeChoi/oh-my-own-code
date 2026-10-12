@@ -9,24 +9,32 @@ import { NATIVE_PERMISSION_OVERLAY_RECIPE } from "./native-permission-overlay-re
 import { planNativePermissionOverlay } from "./native-permission-overlay.mjs";
 
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
-// Two Session factory edits (create, fork wrapper) were deliberately changed
-// for bootstrap task authority. Archived snapshots predate that change, so the
-// freeze tests compare every OTHER edit byte-for-byte and drop only those two
-// entries and the file's output hash (their new output is pinned elsewhere).
-const SESSION_FACTORY =
-  "node_modules/@opencode/core/dist/chunks/config-zyp346xr.js";
-const EDITED_FINDS = new Set([
+// Deliberately changed edits whose archived snapshots predate the change:
+// two Session factory edits (create, fork wrapper) for bootstrap task
+// authority, and Permission.assert for the case-insensitive .git/.hg edit
+// guard. Freeze tests compare every OTHER edit byte-for-byte and drop only
+// these entries and their files' output hashes (new output is pinned elsewhere).
+const SESSION_FINDS = new Set([
   '    create: Effect.fn("Session.create")(function* (input) {\n',
   "  return result;\n}));",
 ]);
+const EDITED = new Map([
+  [
+    "node_modules/@opencode/core/dist/chunks/config-zyp346xr.js",
+    (find) => SESSION_FINDS.has(find),
+  ],
+  [
+    "node_modules/@opencode/core/dist/chunks/config-vgpkvtp0.js",
+    (find) =>
+      find.startsWith('  const assert = Effect.fn("Permission.assert")('),
+  ],
+]);
 const masked = (files) =>
   files.map((file) => {
-    if (file.path !== SESSION_FACTORY) return file;
+    const edited = EDITED.get(file.path);
+    if (!edited) return file;
     const { afterSha256: _after, ...rest } = file;
-    return {
-      ...rest,
-      edits: file.edits.filter((edit) => !EDITED_FINDS.has(edit.find)),
-    };
+    return { ...rest, edits: file.edits.filter((edit) => !edited(edit.find)) };
   });
 const root = new URL(
   "../runtime-event-host/.generated/install/",
@@ -47,7 +55,7 @@ test("pinned overlay recipe binds exact sixty-four source files and preserves fr
   assert.equal(recipe.id, "permission-session-entry-gate-v1");
   assert.equal(
     NATIVE_PERMISSION_OVERLAY_RECEIPT.recipeSha256,
-    "1fa2acc3cfe1e4fc3abc31a4aeb94eae73dcd77100eb241d62b539f68727c524",
+    "a15a60bc9e05ba5e758aa34e124f56632ab2755bfa5fccbd84b97ea270c50850",
   );
   assert.deepEqual(
     recipe.files.slice(0, 50).map(({ path }) => path),
@@ -164,7 +172,7 @@ test("pinned overlay recipe binds exact sixty-four source files and preserves fr
     [
       "c553abcc5404848220a97776c0d599ca45f183ca1c113610e6149bd6cf1a862a",
       "972489e8409c9b187fc6d60502fd55907407eff495691c490907400059f90338",
-      "aba86336a925c76c0de2e2da6324b85cf11eb304ce85f327c0a9aab613a032a1",
+      "23c9ce2d95a0eeea557e6a835299b6da435d70b27e5062561526385d2fdbb3bd",
       "b94b04da1aec07a7a2f5446670ba746d337f4d8c684cd88aa3d8b27142425d9e",
       "2646f6b2fccf432303f0a322e1b973d031f50bcd0dc46b47782a3a0759764be3",
       "f96d58b1e4a68ddd261170f16b953157f590229f52c2ebe4b4b0a50860391b9d",
@@ -713,7 +721,7 @@ test("Read layer addition preserves all preceding fifty-four frozen recipe entri
   };
   assert.equal(
     hash(canonical(preceding)),
-    "761e90f1f918bbf50a3f8556c34d8dc61d60818462306f43d470b758bfa19e69",
+    "9e590cab9da99c00f3b94ef31a26b7af99a6299fc2299987a8cf04c4739004d3",
   );
 });
 
