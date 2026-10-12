@@ -114,6 +114,8 @@ export async function startSidecar({
   owner,
   processIdentity,
   preflight,
+  onTaskAuthorityLoss,
+  onDiagnostic,
 } = {}) {
   if (!Number.isInteger(port) || port < 0 || port > 65535) {
     throw new Error("invalid_sidecar_port");
@@ -137,6 +139,8 @@ export async function startSidecar({
       writeConfig,
       removeRoot,
       makeClient,
+      onTaskAuthorityLoss,
+      onDiagnostic,
     });
   }
   const requireOwner = async () => {

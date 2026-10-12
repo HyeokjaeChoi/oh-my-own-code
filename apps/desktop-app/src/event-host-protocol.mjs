@@ -51,6 +51,52 @@ const closed = (object, keys) =>
   Object.keys(object).sort().join() === keys.sort().join();
 const absolute = (value) =>
   typeof value === "string" && isAbsolute(value) && !value.includes("\0");
+// Bounded, path-redacted diagnostics. Observational only: no authority, no
+// renderer exposure. Absolute paths and long opaque tokens never leave the child.
+const DIAGNOSTIC_TEXT = ["step", "code", "route", "tag", "detail", "heldBy"];
+const DIAGNOSTIC_FLAGS = ["runtimeHeld", "inventoryFailed", "inventoryChanged"];
+const redact = (value, max) =>
+  String(value ?? "")
+    .replace(/[^\x20-\x7e]/gu, "?")
+    .replace(/(^|[\s"'(=:])\/[^\s"')]*/gu, "$1<path>")
+    .replace(/[A-Za-z0-9+/_-]{40,}/gu, "<token>")
+    .slice(0, max);
+const redactRoute = (value) =>
+  String(value ?? "")
+    .split("?")[0]
+    .split("/")
+    .map((part) => (part.length >= 16 ? ":id" : part))
+    .join("/")
+    .replace(/[^\x20-\x7e]/gu, "?")
+    .slice(0, 120);
+export function sanitizeDiagnostic(input) {
+  const out = {};
+  if (["hold", "reject", "native"].includes(input?.kind)) out.kind = input.kind;
+  else return undefined;
+  for (const key of DIAGNOSTIC_TEXT)
+    if (input[key] !== undefined)
+      out[key] =
+        key === "route"
+          ? redactRoute(input[key])
+          : redact(input[key], key === "detail" ? 300 : 120);
+  for (const key of DIAGNOSTIC_FLAGS)
+    if (input[key] !== undefined) out[key] = input[key] === true;
+  if (
+    Number.isInteger(input.status) &&
+    input.status >= 100 &&
+    input.status < 600
+  )
+    out.status = input.status;
+  return out;
+}
+const validDiagnostic = (value) => {
+  const clean = sanitizeDiagnostic(value);
+  return (
+    clean !== undefined &&
+    Object.keys(value).length === Object.keys(clean).length &&
+    Object.entries(clean).every(([key, item]) => value[key] === item)
+  );
+};
 export function validateHostMessage(message, receiver) {
   let size;
   try {
@@ -426,6 +472,12 @@ export function validateHostMessage(message, receiver) {
         !Number.isSafeInteger(message.live) ||
         message.live < 0 ||
         message.live > 100000
+      )
+        throw new Error("invalid_ipc");
+    } else if (message.type === "diagnostic") {
+      if (
+        !closed(message, ["type", "nonce", "pid", "diagnostic"]) ||
+        !validDiagnostic(message.diagnostic)
       )
         throw new Error("invalid_ipc");
     } else if (

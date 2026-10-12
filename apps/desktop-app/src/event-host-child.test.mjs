@@ -18,13 +18,15 @@ test("held EventHost awaits the checked graph before constructing server start w
     release = resolve;
   });
   let graphInput;
+  let graphDiagnostic;
   let startArgs;
   let loads = 0;
   const expected = Object.freeze({ syntheticEffect: true });
-  const options = input();
+  const options = { ...input(), diagnostic() {} };
   const pending = child.prepareHeldEventHostStart(options, {
-    createGraph: async (value) => {
+    createGraph: async (value, diagnostic) => {
       graphInput = value;
+      graphDiagnostic = diagnostic;
       await paused;
       return { overrides };
     },
@@ -42,6 +44,7 @@ test("held EventHost awaits the checked graph before constructing server start w
   release();
   assert.equal(await pending, expected);
   assert.equal(loads, 1);
+  assert.equal(graphDiagnostic, options.diagnostic);
   assert.deepEqual(graphInput, {
     root: options.root,
     nonce: options.nonce,

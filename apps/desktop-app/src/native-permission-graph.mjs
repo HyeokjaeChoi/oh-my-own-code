@@ -58,7 +58,8 @@ function options(input) {
   });
 }
 
-export async function createNativePermissionGraph(input) {
+// `diagnostic` is a trusted observational sink (bounded/redacted by its owner).
+export async function createNativePermissionGraph(input, diagnostic) {
   const { root, nonce, runtimeEpoch, bootHolds } = options(input);
   const manifest = await verifyEventHostResources(
     {
@@ -616,6 +617,7 @@ export async function createNativePermissionGraph(input) {
       control.configured({ runtimeEpoch, bootHolds }, (service) => {
         if (closed || acquired)
           throw new Error("native_permission_runtime_unavailable");
+        service.bindDiagnostic(diagnostic);
         service.bindAgentNotificationSource({
           accepts: isAgentMetadataListener2,
           sourceSha256: manifest.permissionOverlay.files.find(

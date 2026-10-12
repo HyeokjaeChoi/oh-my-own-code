@@ -72,6 +72,8 @@ export async function startEventHost({
   requestTimeoutMs = 5_000,
   // Trusted Main callback: synchronous loss barrier for durable task authority.
   onTaskAuthorityLoss,
+  // Trusted Main log sink for bounded, redacted child diagnostics.
+  onDiagnostic,
 } = {}) {
   // Main and the existing startup preflight reject every retained operation.
   // This empty original-key table never releases the graph's boot-held state.
@@ -466,6 +468,12 @@ export async function startEventHost({
           const pending = taskHandoffRequest;
           taskHandoffRequest = undefined;
           pending.resolve(message.status);
+        } else if (message.type === "diagnostic") {
+          try {
+            onDiagnostic?.(message.diagnostic);
+          } catch {
+            /* logging must not affect the host */
+          }
         } else if (message.type === "observation") {
           if (
             !observationRequest ||

@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { validateHostMessage } from "./event-host-protocol.mjs";
+import {
+  sanitizeDiagnostic,
+  validateHostMessage,
+} from "./event-host-protocol.mjs";
 const hex = "a".repeat(64);
 
 const taskRequest = () => ({
@@ -455,4 +458,43 @@ test("task-arm and task-revoke are closed private messages; handoff results are 
       () => validateHostMessage({ ...result, ...patch }, "parent"),
       /invalid_ipc/,
     );
+});
+
+test("child diagnostics are bounded, path-redacted and strictly closed", () => {
+  const raw = {
+    kind: "native",
+    tag: "Error",
+    route: "GET /session/ses_0123456789abcdef0123/permission?token=secret",
+    status: 500,
+    detail:
+      "boom at /Users/someone/project/secret.txt and Bearer " +
+      "A".repeat(80) +
+      "\u0007" +
+      "x".repeat(1000),
+    runtimeHeld: true,
+    extra: "dropped",
+  };
+  const clean = sanitizeDiagnostic(raw);
+  assert.equal(clean.route, "GET /session/:id/permission");
+  assert.ok(!clean.detail.includes("/Users"));
+  assert.ok(!clean.detail.includes("AAAA"));
+  assert.ok(clean.detail.length <= 300);
+  assert.equal("extra" in clean, false);
+  const message = {
+    type: "diagnostic",
+    nonce: hex,
+    pid: 1,
+    diagnostic: clean,
+  };
+  assert.equal(validateHostMessage(message, "parent"), message);
+  assert.equal(sanitizeDiagnostic({ kind: "other" }), undefined);
+  for (const bad of [
+    { ...message, diagnostic: { ...clean, extra: 1 } },
+    { ...message, diagnostic: { ...clean, detail: "/Users/x/y" } },
+    { ...message, diagnostic: { ...clean, detail: "x".repeat(301) } },
+    { ...message, diagnostic: { kind: "reject", runtimeHeld: "yes" } },
+    { ...message, extra: true },
+  ])
+    assert.throws(() => validateHostMessage(bad, "parent"), /invalid_ipc/);
+  assert.throws(() => validateHostMessage(message, "child"), /invalid_ipc/);
 });
