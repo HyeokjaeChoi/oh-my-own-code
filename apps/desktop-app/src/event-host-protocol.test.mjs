@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  createDiagnosticEmitter,
   sanitizeDiagnostic,
   validateHostMessage,
 } from "./event-host-protocol.mjs";
@@ -466,19 +467,18 @@ test("child diagnostics are bounded, path-redacted and strictly closed", () => {
     tag: "Error",
     route: "GET /session/ses_0123456789abcdef0123/permission?token=secret",
     status: 500,
-    detail:
-      "boom at /Users/someone/project/secret.txt and Bearer " +
-      "A".repeat(80) +
-      "\u0007" +
-      "x".repeat(1000),
+    detail: "boom at /Users/someone/project/secret.txt",
+    code: "free text with spaces /Users/x",
     runtimeHeld: true,
     extra: "dropped",
   };
   const clean = sanitizeDiagnostic(raw);
   assert.equal(clean.route, "GET /session/:id/permission");
-  assert.ok(!clean.detail.includes("/Users"));
-  assert.ok(!clean.detail.includes("AAAA"));
-  assert.ok(clean.detail.length <= 300);
+  // Free text is dropped entirely; identifiers must be plain tokens.
+  assert.equal("detail" in clean, false);
+  assert.equal("code" in clean, false);
+  assert.equal(clean.tag, "Error");
+  assert.equal(sanitizeDiagnostic({ kind: "reject", code: "root_unverified" }).code, "root_unverified");
   assert.equal("extra" in clean, false);
   const message = {
     type: "diagnostic",
@@ -490,11 +490,29 @@ test("child diagnostics are bounded, path-redacted and strictly closed", () => {
   assert.equal(sanitizeDiagnostic({ kind: "other" }), undefined);
   for (const bad of [
     { ...message, diagnostic: { ...clean, extra: 1 } },
-    { ...message, diagnostic: { ...clean, detail: "/Users/x/y" } },
-    { ...message, diagnostic: { ...clean, detail: "x".repeat(301) } },
+    { ...message, diagnostic: { ...clean, detail: "anything" } },
+    { ...message, diagnostic: { ...clean, tag: "/Users/x/y" } },
     { ...message, diagnostic: { kind: "reject", runtimeHeld: "yes" } },
     { ...message, extra: true },
   ])
     assert.throws(() => validateHostMessage(bad, "parent"), /invalid_ipc/);
   assert.throws(() => validateHostMessage(message, "child"), /invalid_ipc/);
+});
+
+test("diagnostic emitter caps each kind separately so holds are never lost", () => {
+  const sent = [];
+  let closing = false;
+  const emit = createDiagnosticEmitter((m) => sent.push(m), () => closing);
+  for (let i = 0; i < 1000; i++) emit({ kind: "native", tag: "Error", route: `GET /r/${i}` });
+  for (let i = 0; i < 1000; i++) emit({ kind: "reject", code: `c${i}` });
+  emit({ kind: "hold", step: "first" });
+  emit({ kind: "hold", step: "first" }); // adjacent duplicate
+  const count = (kind) => sent.filter((m) => m.diagnostic.kind === kind).length;
+  assert.equal(count("native"), 100);
+  assert.equal(count("reject"), 100);
+  assert.equal(count("hold"), 1);
+  closing = true;
+  emit({ kind: "hold", step: "second" });
+  assert.equal(count("hold"), 1);
+  assert.ok(sent.every((m) => m.type === "diagnostic"));
 });

@@ -42,8 +42,6 @@ import {
 } from "./host/workspace-root-authority.mjs";
 
 const error = (code) => new Error(`native_permission_${code}`);
-// Trusted diagnostics sink bound by the graph factory; observational only.
-let diagnose;
 // Caller function and file:line only (no directories) for diagnostics.
 const rejectSite = () => {
   const frame = new Error().stack?.split("\n")[3] ?? "";
@@ -52,7 +50,6 @@ const rejectSite = () => {
   return at && `${name ?? "anon"}@${at}`;
 };
 const reject = (code) => {
-  diagnose?.({ kind: "reject", code, step: diagnose && rejectSite() });
   throw error(code);
 };
 const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
@@ -71,6 +68,14 @@ class TransactionScope extends Context.Service()(
 ) {}
 
 function kernel(initial) {
+  // Per-kernel diagnostics sink bound by the graph factory; observational only.
+  // The call site is captured (stack walk) only when a sink is bound.
+  let diagnostic;
+  let diagnose;
+  const reject = (code) => {
+    if (diagnostic) diagnose({ kind: "reject", code, step: rejectSite() });
+    throw error(code);
+  };
   const leases = createNativeLeaseRegistry({
     runtimeEpoch: initial.runtimeEpoch,
   });
@@ -162,7 +167,6 @@ function kernel(initial) {
   let metadataDrained = Deferred.makeUnsafe();
   let runtimeHeld = false;
   let heldBy;
-  let diagnostic;
   // Trusted graph factory only; observational, never an authority.
   const bindDiagnostic = (sink) => {
     if (sink !== undefined && typeof sink !== "function") reject("input");

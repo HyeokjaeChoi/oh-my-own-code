@@ -53,7 +53,10 @@ const absolute = (value) =>
   typeof value === "string" && isAbsolute(value) && !value.includes("\0");
 // Bounded, path-redacted diagnostics. Observational only: no authority, no
 // renderer exposure. Absolute paths and long opaque tokens never leave the child.
-const DIAGNOSTIC_TEXT = ["step", "code", "route", "tag", "detail", "heldBy"];
+// No free text: log messages and error messages can carry paths or user data.
+const DIAGNOSTIC_TEXT = ["step", "code", "route", "tag", "heldBy"];
+const DIAGNOSTIC_IDENTIFIER = ["code", "tag"];
+const IDENTIFIER = /^[A-Za-z0-9_.:-]{1,80}$/u;
 const DIAGNOSTIC_FLAGS = ["runtimeHeld", "inventoryFailed", "inventoryChanged"];
 const redact = (value, max) =>
   String(value ?? "")
@@ -73,12 +76,14 @@ export function sanitizeDiagnostic(input) {
   const out = {};
   if (["hold", "reject", "native"].includes(input?.kind)) out.kind = input.kind;
   else return undefined;
-  for (const key of DIAGNOSTIC_TEXT)
-    if (input[key] !== undefined)
+  for (const key of DIAGNOSTIC_TEXT) {
+    if (input[key] === undefined) continue;
+    if (DIAGNOSTIC_IDENTIFIER.includes(key)) {
+      if (IDENTIFIER.test(input[key])) out[key] = input[key];
+    } else
       out[key] =
-        key === "route"
-          ? redactRoute(input[key])
-          : redact(input[key], key === "detail" ? 300 : 120);
+        key === "route" ? redactRoute(input[key]) : redact(input[key], 120);
+  }
   for (const key of DIAGNOSTIC_FLAGS)
     if (input[key] !== undefined) out[key] = input[key] === true;
   if (
@@ -88,6 +93,27 @@ export function sanitizeDiagnostic(input) {
   )
     out.status = input.status;
   return out;
+}
+// Bounded, deduplicated emitter. Per-kind caps: a flood of rejects or 5xx logs
+// can never crowd out holds. Best effort; never throws or carries authority.
+export function createDiagnosticEmitter(emit, isClosing) {
+  const caps = { hold: 100, reject: 100, native: 100 };
+  const counts = { hold: 0, reject: 0, native: 0 };
+  let last;
+  return (raw) => {
+    try {
+      const clean = sanitizeDiagnostic(raw);
+      if (!clean || isClosing() || counts[clean.kind] >= caps[clean.kind])
+        return;
+      const key = JSON.stringify(clean);
+      if (key === last) return;
+      last = key;
+      counts[clean.kind]++;
+      emit({ type: "diagnostic", diagnostic: clean });
+    } catch {
+      /* diagnostics are best effort */
+    }
+  };
 }
 const validDiagnostic = (value) => {
   const clean = sanitizeDiagnostic(value);
