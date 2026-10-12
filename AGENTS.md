@@ -4,14 +4,12 @@ Respond to the user in Korean. Keep code, identifiers, paths and commands in the
 
 ## Workflow (replaces the former Solopreneur harness)
 
-1. **Plan** — read the PRD row (`docs/product/prd.md`) and current status (`docs/engineering/backlog-status.md`); state scope and acceptance checks briefly.
-2. **Implement** — a cheaper model (Sonnet/Haiku) implements on its own branch/worktree with tests.
-3. **Review** — a fresh-context Opus reviewer reviews the diff (correctness, security, regressions). It does not edit code.
-4. **Fix & re-review** — repeat until the review reports no major/critical findings.
-5. **Merge & continue** — fast-forward to `main`, update `backlog-status.md`, start the next item.
-6. **Final** — after all items, run Playwright e2e against the real app as the final check.
+1. **Plan** — read the PRD row (`docs/product/prd.md`) and current status (`docs/engineering/backlog-status.md`); state scope briefly.
+2. **Implement** — a cheaper model (Sonnet/Haiku) implements on its own branch/worktree with focused tests; verify in the real app (launch it), not only unit tests.
+3. **Review per major stage only** — one fresh-context Opus review at the end of each large stage (not every small fix); fix critical/major findings, then merge. Minors go to `backlog-status.md`.
+4. **Final** — Playwright e2e against the real app, including an actual chat round-trip.
 
-No run ledger, hash freezes, `harness.py` or multi-stage design reviews. `docs/runs/**` is historical evidence only.
+Priority: a working product first. Prefer simple, conventional safety (Native/OpenCode permission prompts, `external_directory` deny, path containment, git hardening) over elaborate proof machinery. `docs/runs/**` is historical evidence only.
 
 ## Checks (all must pass before merge)
 
