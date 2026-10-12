@@ -309,6 +309,14 @@ test("each invocation repeats inspection after startup journal revision; observa
   assert.equal(await f.preflight.check(), true);
   assert.equal(f.children.length, 2);
 });
+test("a user provider config in opencode.json does not block startup proof", async (t) => {
+  const f = await fixture(t);
+  await fs.writeFile(
+    join(f.namespace.config, "opencode", "opencode.json"),
+    '{"model":"lmstudio/m","providers":{"lmstudio":{"settings":{"baseURL":"http://127.0.0.1:1/v1"}}}}\n',
+  );
+  assert.equal(await f.preflight.check(), true);
+});
 test("fork admission uses its own original identity/receipt separately from inherited root metadata", async (t) => {
   const f = await fixture(t);
   f.view.sessions.push({
@@ -367,7 +375,9 @@ for (const fault of [
     if (fault === "config")
       await fs.writeFile(
         join(f.namespace.config, "opencode", "opencode.json"),
-        '{"plugins":["unknown"]}',
+        // The user's opencode.json may hold any JSON object; invalid JSON or a
+        // non-object still denies.
+        "not json",
       );
     if (fault === "config-extra")
       await fs.writeFile(join(f.namespace.config, "auth.json"), "synthetic", {

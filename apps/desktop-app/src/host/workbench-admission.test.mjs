@@ -1514,10 +1514,7 @@ test("late send, fork, rename and permission acknowledgements reconcile only the
         "accepted",
         JSON.stringify(found),
       );
-      assert.equal(
-        found.value.receipt.effect,
-        type === "permission.respond" ? "pending" : "confirmed",
-      );
+      assert.equal(found.value.receipt.effect, "confirmed");
       assert.equal(JSON.stringify(found).includes("PRIVATE"), false);
       if (type === "message.send")
         assert.equal(found.value.receipt.result.nativeInboxId, "late-inbox");

@@ -1,3 +1,5 @@
+// These tests pin the retained strict proof machinery; production runs non-strict.
+process.env.OMOC_PERMISSION_PROOF_STRICT = "1";
 // Actual pinned Effect and original hook registry; private producer is scripted.
 // This is metadata/Scope evidence. Callback execution authority stays held.
 import assert from "node:assert/strict";

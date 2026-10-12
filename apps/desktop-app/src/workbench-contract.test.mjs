@@ -149,10 +149,22 @@ test("closed requests reject extra fields, cross-selection, malformed values and
       workspaceId: "w",
       sessionId: "s",
       requestId: "r",
-      decision: "always",
+      decision: "forever",
     },
   ])
     assert.throws(() => validateRequest(value));
+  // "always" (remember this approval in Native) is a valid decision.
+  for (const decision of ["once", "always", "reject"])
+    assert.equal(
+      validateRequest({
+        type: "permission.respond",
+        workspaceId: "w",
+        sessionId: "s",
+        requestId: "r",
+        decision,
+      }).decision,
+      decision,
+    );
   assert.deepEqual(validateRequest({ type: "snapshot" }), { type: "snapshot" });
 });
 test("portable folder names and exact ask policy", () => {

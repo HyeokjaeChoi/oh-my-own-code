@@ -5486,16 +5486,14 @@ test("durable permission policy restored untrusted scope makes zero Native calls
   }
 });
 
-test("durable send prepares original prompt identity before either policy mutation", async (t) => {
-  let captured,
-    preparations = 0;
+test("durable send is a plain journaled Native call without task preparation", async (t) => {
+  let preparations = 0;
   const f = await fixture(t);
   const snapshot = await f.ready();
-  // Seed an already-created synthetic session, then attach the production-like
-  // channel. This does not claim that Native bootstrap has been implemented.
+  // Even with the production-like task channel attached, send no longer asks
+  // it to prepare or hold: dispatch -> effect -> complete only.
   f.context.nativeTasks = {
-    async prepare(request) {
-      captured = request;
+    async prepare() {
       preparations++;
       return { status: "held", reason: "inventory_unverified" };
     },
@@ -5505,45 +5503,21 @@ test("durable send prepares original prompt identity before either policy mutati
     type: "message.send",
     workspaceId: snapshot.selectedWorkspaceId,
     sessionId: snapshot.selectedSessionId,
-    requestId: "task-held",
+    requestId: "task-plain",
     text: "\uFEFFexact\r\n",
   };
   const result = await f.mutate(operation, operation.requestId);
-  assert.equal(result.code, "POLICY_UNVERIFIED", JSON.stringify(result));
-  assert.ok(captured);
-  assert.equal(captured.origin.runtimeEpoch, "epoch");
-  assert.equal(captured.origin.operationId, operation.requestId);
-  assert.equal(captured.origin.type, "message.send");
-  const identity = f.registry.lookupIdentity({
-    runtimeEpoch: "epoch",
-    operationId: operation.requestId,
-  });
-  assert.equal(captured.origin.digest, identity.digest);
-  assert.equal(identity.workspaceId, captured.workspaceId);
-  assert.equal(identity.sessionId, captured.appSessionId);
-  const { permissionPromptInputDigest } = await import(
-    "../permission-input-digest.mjs"
-  );
-  assert.equal(
-    captured.inputDigest,
-    permissionPromptInputDigest({
-      sessionID: captured.nativeSessionId,
-      text: operation.text,
-    }),
-  );
-  assert.equal(captured.workspaceId, operation.workspaceId);
-  assert.equal(captured.appSessionId, operation.sessionId);
-  assert.equal(Object.hasOwn(captured, "text"), false);
-  assert.equal(f.state.calls.includes("policy"), false);
-  assert.equal(f.state.calls.includes("prompt"), false);
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.equal(result.value.status, "accepted");
+  assert.equal(preparations, 0);
+  assert.ok(f.state.calls.includes("prompt"));
   assert.equal(f.registry.readView().tasks.length, 0);
   const original = await f.lookup(operation.requestId);
+  assert.equal(original.value.receipt.admission, "dispatched");
   f.state.calls.length = 0;
   const duplicate = await f.mutate(operation, operation.requestId);
   assert.equal(duplicate.value.status, "duplicate");
   assert.deepEqual(duplicate.receipt, result.receipt);
-  assert.deepEqual((await f.lookup(operation.requestId)).value, original.value);
-  assert.equal(preparations, 1);
   assert.deepEqual(f.state.calls, []);
 });
 

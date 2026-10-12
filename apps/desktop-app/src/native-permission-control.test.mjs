@@ -1,3 +1,5 @@
+// These tests pin the retained strict proof machinery; production runs non-strict.
+process.env.OMOC_PERMISSION_PROOF_STRICT = "1";
 import { copyPermissionControlSources } from "../scripts/native-permission-test-fixture.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
