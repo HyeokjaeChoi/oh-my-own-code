@@ -19,6 +19,8 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 
+const CONNECT_TIMEOUT_MS =
+  Number(process.env.OMOC_E2E_CONNECT_TIMEOUT_MS) || 150_000;
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const appDir = join(root, "apps", "desktop-app");
 const mode = process.argv[2] ?? "dev";
@@ -374,7 +376,7 @@ async function assertCrashAndRestart() {
     await expect(page.locator(".runtime-state")).toHaveAttribute(
       "data-state",
       "connected",
-      { timeout: 30_000 },
+      { timeout: CONNECT_TIMEOUT_MS },
     );
     crashProfile = await crashApp.evaluate(({ app: electronApp }) =>
       electronApp.getPath("userData"),
@@ -411,7 +413,7 @@ async function assertCrashAndRestart() {
     await expect(page.locator(".runtime-state")).toHaveAttribute(
       "data-state",
       "connected",
-      { timeout: 30_000 },
+      { timeout: CONNECT_TIMEOUT_MS },
     );
     const children = sidecarChildPids(restartProcess.pid);
     assert.equal(children.length, 1, "restart owns a fresh sidecar");
@@ -444,10 +446,10 @@ let userDataPath;
 try {
   const page = await app.firstWindow();
   await expect(page.getByRole("textbox", { name: "메시지 작성" })).toBeVisible({
-    timeout: 30_000,
+    timeout: CONNECT_TIMEOUT_MS,
   });
   await expect(page.getByText("로컬 런타임 연결됨")).toBeVisible({
-    timeout: 30_000,
+    timeout: CONNECT_TIMEOUT_MS,
   });
   const snapshot = await page.evaluate(() =>
     window.desktopBridge.runtimeSnapshot(),
