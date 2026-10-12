@@ -183,7 +183,7 @@ test("long single-line values keep content and leak no secret at any cut offset"
 });
 
 test("unterminated quoted secrets are redacted in raw text", () => {
-  const { text } = redactText('password="abc123\nnext line ok\napi_key=\'zzz9');
+  const { text } = redactText("password=\"abc123\nnext line ok\napi_key='zzz9");
   assert.ok(!/abc123|zzz9/.test(text) && text.includes("next line ok"));
 });
 
