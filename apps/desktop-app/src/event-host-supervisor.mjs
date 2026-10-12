@@ -776,6 +776,14 @@ export async function startEventHost({
           requestTimeoutMs,
           "reconcile_read_timeout",
         ),
+      readInstructions: (sessionID) =>
+        bounded(
+          Promise.resolve().then(() =>
+            rawClient.session.instructions.entry.list({ sessionID }),
+          ),
+          requestTimeoutMs,
+          "reconcile_read_timeout",
+        ),
       channel: {
         prepare: (request) =>
           taskCall(

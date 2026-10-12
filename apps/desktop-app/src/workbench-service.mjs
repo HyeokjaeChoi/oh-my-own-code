@@ -698,7 +698,10 @@ export function createWorkbenchService({
         phase: "bound",
         launchId: bt.launchId,
       });
-      await recordBootstrap(bt, "task.handoff", bootstrapHandoff(bt, "armed"));
+      await recordBootstrap(bt, "task.handoff", {
+        ...bootstrapHandoff(bt, "armed"),
+        armedAt: Date.now(),
+      });
       bt.journaled.armed = true;
       // Durable before Native may be told to create: after a hard kill the
       // trail up to "armed" is a confirmed prefix the startup reconciler can

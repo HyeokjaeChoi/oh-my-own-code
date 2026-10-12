@@ -3,6 +3,7 @@
 // failure/stop/exit. `verify` is the registry sole writer's private verifier; it
 // returns true only for a record that matches this live child correlation. A
 // digest, a held reply or a replayed disk record is never authority here.
+import { observeInstructions } from "./host/workbench-instructions.mjs";
 import { isDeepStrictEqual } from "node:util";
 import {
   taskArmRequest,
@@ -16,6 +17,8 @@ import { validateTaskHandoffIdentity } from "./host/workbench-task-storage.mjs";
 import {
   ABSENT_OBSERVATION,
   decideReconciliation,
+  forkCandidates,
+  inheritedRegistration,
   observationDigest,
   observeFork,
   observeSession,
@@ -37,6 +40,8 @@ export function createNativeTaskLedger({
   readSession,
   // Read-only complete scan of Native's sessions (absence cross-check, forks).
   listSessions,
+  // Read-only instruction entries of one Native session (fork child check).
+  readInstructions,
   now = () => Date.now(),
 }) {
   const entries = new Map();
@@ -199,6 +204,22 @@ export function createNativeTaskLedger({
       );
       if (children.length > MAX_CHILDREN) throw held();
       observation = observeFork(parent, children);
+      const [only, ...rest] =
+        forkCandidates(expectation, observation, facts) ?? [];
+      if (only && !rest.length) {
+        if (typeof readInstructions !== "function") throw held();
+        const entries = await readInstructions(only.id);
+        observation = {
+          ...observation,
+          instruction: {
+            childId: only.id,
+            status: observeInstructions(
+              entries,
+              inheritedRegistration(facts, operation.identity.sessionId),
+            ).status,
+          },
+        };
+      }
     } else {
       subject = expectation.nativeSessionId;
       try {

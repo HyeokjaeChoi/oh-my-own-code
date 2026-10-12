@@ -2805,10 +2805,20 @@ export async function openWorkspaceRegistry({
                 ? Boolean(session?.nativeSessionId)
                 : reservation.plannedNativeSessionId ===
                   session?.nativeSessionId)
-          : entry.reason === "path_missing" &&
+          : // A missing managed path is explained only as the leftover of this
+            // operation's own failed settle (its unavailable partial mapping);
+            // a bare missing path never is.
+            entry.reason === "path_missing" &&
               reservation.workspace.workspaceId === entry.workspaceId &&
               root.workspaces.get(entry.workspaceId)?.registrationState ===
-                "unavailable";
+                "unavailable" &&
+              [...root.sessions.values()].some(
+                (row) =>
+                  row.appSessionId === reservation.appSessionId &&
+                  row.workspaceId === entry.workspaceId &&
+                  row.lifecycleState === "unavailable" &&
+                  row.nativeSessionId === reservation.plannedNativeSessionId,
+              );
       });
     return {
       eligible:

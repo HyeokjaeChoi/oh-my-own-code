@@ -54,6 +54,7 @@ import {
   validateTaskHandoffIdentity,
   validateTaskRecord,
   applyTaskRecord,
+  bootstrapReconciliationCompletion,
   taskBindingDigest,
   taskReservationDigest,
 } from "./workbench-task-storage.mjs";
@@ -1123,4 +1124,68 @@ test("TASK workspace mutation binds stages without session inputs or fabricated 
     });
     assert.deepEqual([...tasks.values()][0].inputs, []);
   }
+});
+
+test("TASK handoff armedAt is a durable uint on armed rows only", () => {
+  const row = {
+    kind: "task.handoff",
+    revision: 1,
+    sequence: 1,
+    runtimeEpoch: "epoch",
+    operationId: "op",
+    taskScopeId: randomUUID(),
+    handoffId: randomUUID(),
+    step: "native.fork",
+    stageArgumentDigest: "b".repeat(64),
+    proofDigest: "c".repeat(64),
+  };
+  const ok = (extra) => validateTaskRecord({ ...row, ...extra });
+  assert.doesNotThrow(() => ok({ state: "armed", armedAt: 1_700_000_000_000 }));
+  assert.doesNotThrow(() => ok({ state: "armed" }));
+  for (const bad of [
+    { state: "consumed", armedAt: 5 },
+    { state: "armed", armedAt: -1 },
+    { state: "armed", armedAt: 1.5 },
+    { state: "armed", armedAt: "5" },
+  ])
+    assert.throws(
+      () => ok(bad),
+      { code: "invalid_record" },
+      JSON.stringify(bad),
+    );
+});
+
+test("workspace no_effect resolution needs a still-reserved row", () => {
+  const operation = {
+    identity: {
+      runtimeEpoch: "epoch",
+      operationId: "op",
+      type: "workspace.create",
+    },
+    reservation: {
+      appSessionId: "app",
+      workspace: { workspaceId: "w", canonicalPath: "/w" },
+    },
+  };
+  const complete = (registrationState) =>
+    bootstrapReconciliationCompletion(
+      operation,
+      {
+        workspaces: new Map(
+          registrationState
+            ? [
+                [
+                  "w",
+                  { workspaceId: "w", canonicalPath: "/w", registrationState },
+                ],
+              ]
+            : [],
+        ),
+        sessions: new Map(),
+      },
+      { outcome: "no_effect", revision: 7 },
+    );
+  assert.ok(complete("reserved"));
+  for (const state of ["registered", "unavailable", undefined])
+    assert.equal(complete(state), undefined, String(state));
 });
