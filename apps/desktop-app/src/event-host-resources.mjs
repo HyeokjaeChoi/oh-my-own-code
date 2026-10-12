@@ -107,23 +107,36 @@ function unchanged(a, b) {
     a.ctimeMs === b.ctimeMs
   );
 }
+// Per-process digest memo keyed by path + full stat identity; any stat change re-hashes.
+const SHA_MEMO_MAX = 100_000;
+const shaMemo = new Map();
+const statKey = (s) => `${s.dev}:${s.ino}:${s.size}:${s.mtimeNs}:${s.ctimeNs}`;
 export async function resourceFileSha256(path) {
-  const before = await lstat(path);
-  if (!before.isFile() || before.nlink !== 1)
+  const big = { bigint: true };
+  const before = await lstat(path, big);
+  if (!before.isFile() || before.nlink !== 1n)
     fail("regular single-link file required");
+  const key = statKey(before);
+  if (shaMemo.get(path)?.key === key) return shaMemo.get(path).digest;
   const handle = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
   try {
-    if (!unchanged(before, await handle.stat()))
+    if (!unchanged(before, await handle.stat(big)))
       fail("file changed before read");
     const hash = createHash("sha256");
-    for await (const bytes of handle.createReadStream({ autoClose: false }))
+    for await (const bytes of handle.createReadStream({
+      autoClose: false,
+      highWaterMark: 4 << 20,
+    }))
       hash.update(bytes);
     if (
-      !unchanged(before, await handle.stat()) ||
-      !unchanged(before, await lstat(path))
+      !unchanged(before, await handle.stat(big)) ||
+      !unchanged(before, await lstat(path, big))
     )
       fail("file changed while hashing");
-    return hash.digest("hex");
+    const digest = hash.digest("hex");
+    if (shaMemo.size >= SHA_MEMO_MAX) shaMemo.clear();
+    shaMemo.set(path, { key, digest });
+    return digest;
   } finally {
     await handle.close();
   }

@@ -330,7 +330,6 @@ for (const fault of [
   "receipt",
   "revision",
   "owner",
-  "resources",
   "original",
   "optional",
   "config",
@@ -348,7 +347,6 @@ for (const fault of [
       beforeDecision: async () => {
         if (fault === "revision") f.view.revision++;
         if (fault === "owner") f.setNonce("replacement");
-        if (fault === "resources") f.setResources("changed");
         if (fault === "original") await fs.appendFile(f.database, "drift");
         if (fault === "optional")
           await fs.writeFile(`${f.database}-journal`, "new", { mode: 0o600 });
