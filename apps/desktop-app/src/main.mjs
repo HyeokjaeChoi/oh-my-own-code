@@ -226,6 +226,12 @@ const registryPromise = (async () => {
       storeId: manifest.storeId,
       documentsPath: namespace.documents,
       runtimeEpoch,
+      // Private sole-writer authority: only the live sidecar's own task
+      // correlation can verify a record. Nothing from a caller reaches it.
+      taskAuthoritySource: (record, context) =>
+        nativeTaskRuntime
+          ?.workbenchContext?.()
+          .nativeTasks?.verify(record, context) === true,
       pathIO: {
         mkdir: async (...args) => {
           await requireOwner();
@@ -328,6 +334,8 @@ async function finishStorage() {
 }
 let mainWindow;
 let runtime;
+// Set the moment the sidecar facade exists, independent of `runtime` ordering.
+let nativeTaskRuntime;
 let stopPromise;
 let startupPromise;
 let startupAbortController;
@@ -679,6 +687,11 @@ app.whenReady().then(async () => {
       preflight: nativePreflight.check,
       binaryPath,
       signal: startupAbortController.signal,
+      // Sidecar loss/stop revokes live task authority synchronously.
+      onTaskAuthorityLoss: () => {
+        nativeTaskRuntime = undefined;
+        registry?.invalidateTaskAuthority?.();
+      },
       ...(e2eScenario === "startup-timeout" && { startupTimeoutMs: 25 }),
       ...(e2eScenario === "service-collision" &&
         Number.isInteger(e2ePort) &&
@@ -686,6 +699,12 @@ app.whenReady().then(async () => {
         e2ePort <= 65535 && { port: e2ePort }),
     });
   })();
+  startupPromise.then(
+    (value) => {
+      nativeTaskRuntime = value;
+    },
+    () => {},
+  );
   startupPromise.catch(() => {});
   // Automation writes under namespace.metadata; start only after owner.acquire
   // (inside registryPromise) so it cannot race the owner's storage scan.
