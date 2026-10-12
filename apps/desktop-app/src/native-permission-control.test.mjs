@@ -5,7 +5,14 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { performance } from "node:perf_hooks";
 import { after, test } from "node:test";
-import { mkdtemp, rm, symlink, mkdir, realpath } from "node:fs/promises";
+import {
+  mkdtemp,
+  rm,
+  symlink,
+  mkdir,
+  realpath,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -2490,6 +2497,61 @@ test("Native Read rejects accessor/Proxy/page extras before any caller access or
       assert.equal(accessed, 0);
     }),
   ));
+
+test("plain Native Read fails closed when no location owns the path or its realpath", async () => {
+  const root = await mkdtemp(join(tmpdir(), "omoc-plain-read-"));
+  // plainRead is the non-strict (production) path.
+  process.env.OMOC_PERMISSION_PROOF_STRICT = "0";
+  try {
+    const ws = join(root, "ws");
+    await mkdir(ws);
+    await writeFile(join(root, "outside.txt"), "x");
+    await symlink(join(root, "outside.txt"), join(ws, "link.txt"));
+    await run((service) =>
+      Effect.gen(function* () {
+        let reads = 0;
+        service.bindNativeReadRuntime({
+          read() {
+            reads++;
+            return Effect.succeed(undefined);
+          },
+          effects() {
+            throw Error("unused");
+          },
+          consumerSha256: "a".repeat(64),
+          effectsSha256: "b".repeat(64),
+        });
+        const read = (path) =>
+          service.readNativeFile({
+            kind: "read",
+            path,
+            resource: "f",
+            page: {},
+          });
+        // No location registered at all.
+        yield* expectFailure(
+          read(join(root, "outside.txt")),
+          "read_unverified",
+        );
+        const handle = yield* service.locationBegin({
+          directory: ws,
+          workspaceID: undefined,
+        });
+        // Location exists, path outside it, and a symlink escaping it.
+        yield* expectFailure(
+          read(join(root, "outside.txt")),
+          "read_unverified",
+        );
+        yield* expectFailure(read(join(ws, "link.txt")), "read_unverified");
+        assert.equal(reads, 0);
+        void handle;
+      }),
+    );
+  } finally {
+    process.env.OMOC_PERMISSION_PROOF_STRICT = "1";
+    await rm(root, { recursive: true, force: true });
+  }
+});
 
 test("Agent notification capture accepts only one fixed synchronous source and detached listeners", async () => {
   await run((service) =>
