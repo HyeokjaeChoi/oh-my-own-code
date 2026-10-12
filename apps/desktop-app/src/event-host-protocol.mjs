@@ -74,7 +74,10 @@ const redactRoute = (value) =>
     .slice(0, 120);
 export function sanitizeDiagnostic(input) {
   const out = {};
-  if (["hold", "reject", "native"].includes(input?.kind)) out.kind = input.kind;
+  if (
+    ["hold", "reject", "native", "inventory-diagnostic"].includes(input?.kind)
+  )
+    out.kind = input.kind;
   else return undefined;
   for (const key of DIAGNOSTIC_TEXT) {
     if (input[key] === undefined) continue;

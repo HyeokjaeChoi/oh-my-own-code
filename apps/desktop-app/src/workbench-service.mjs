@@ -3,7 +3,6 @@ import {
   matchesAuthenticatedFloor,
 } from "./permission-policy-compiler.mjs";
 import { compileModeRules, legacyModeRules } from "./permission-mode.mjs";
-import { permissionPromptInputDigest } from "./permission-input-digest.mjs";
 import {
   bootstrapHandoffProof,
   bootstrapMetadataDigest,
@@ -1168,8 +1167,10 @@ export function createWorkbenchService({
       // A correlated Native User ACK proves this request was admitted to its
       // inbox. It does not prove provider/tool execution or final delivery.
       // Other void/uncorrelated effect ACKs keep the existing pending hold.
+      // A successful permission reply is itself the plain Native effect.
       record.effect =
-        request.type === "message.send" && receipt?.inboxId
+        (request.type === "message.send" && receipt?.inboxId) ||
+        (request.type === "permission.respond" && value.status === "decided")
           ? "confirmed"
           : "pending";
       record.evidence = [
@@ -3039,9 +3040,13 @@ export function createWorkbenchService({
       const integration = integrations?.find(
         (i) => i.id === provider?.integrationID,
       );
-      const authenticated = integration?.connections?.some(
-        (c) => c.type === "credential" || c.type === "env",
-      );
+      // A provider with no integration that Native itself activated (a local
+      // endpoint such as LM Studio) needs no credential.
+      const authenticated =
+        integration?.connections?.some(
+          (c) => c.type === "credential" || c.type === "env",
+        ) ||
+        (provider?.activation === "enabled" && !provider.integrationID);
       if (
         model.enabled === true &&
         opaque(model.id) &&
@@ -3195,33 +3200,6 @@ export function createWorkbenchService({
             check: checkLive,
           },
         );
-      }
-      if (context.nativeTasks) {
-        const record = currentScope()?.record;
-        if (!record || request.type !== "message.send")
-          fail("POLICY_UNVERIFIED");
-        const inputDigest = permissionPromptInputDigest({
-          sessionID: s.sdkId,
-          text: request.text,
-          ...(currentRun && { delivery: request.delivery }),
-          ...(acquired && { files: acquired.files }),
-        });
-        await context.nativeTasks.prepare({
-          originKind: "prompt",
-          origin: {
-            runtimeEpoch: record.runtimeEpoch,
-            operationId: record.operationId,
-            type: "message.send",
-            digest: record.digest,
-          },
-          workspaceId: w.id,
-          appSessionId: s.id,
-          nativeSessionId: s.sdkId,
-          inputDigest,
-        });
-        // Positive preparation requires the still-pending inventory/compiler and
-        // durable task binding. A response cannot grant that authority here.
-        fail("POLICY_UNVERIFIED");
       }
       // Acquire and validate the exact cached bytes before any Native mutation.
       // Both baseline policy stages still bracket agent/model selection.

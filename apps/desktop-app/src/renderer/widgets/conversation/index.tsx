@@ -555,6 +555,21 @@ export function Conversation(props: Props) {
                             workspaceId: props.workspaceId,
                             sessionId: props.sessionId,
                             requestId: permission.id,
+                            decision: "always",
+                          })
+                        }
+                      >
+                        항상 허용
+                      </Button>
+                      <Button
+                        type="button"
+                        disabled={props.pending || props.disabled}
+                        onClick={() =>
+                          void props.mutate({
+                            type: "permission.respond",
+                            workspaceId: props.workspaceId,
+                            sessionId: props.sessionId,
+                            requestId: permission.id,
                             decision: "reject",
                           })
                         }

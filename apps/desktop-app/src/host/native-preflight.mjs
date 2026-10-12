@@ -448,11 +448,18 @@ export function createNativePreflight({
     const config = await file(
       context,
       join(namespace.config, "opencode", "opencode.json"),
-      64,
+      65536,
     );
     const bytes = Buffer.alloc(Number(config.stat.size));
     await config.handle.read(bytes, 0, bytes.length, 0);
-    if (bytes.toString("utf8") !== "{}\n") fail();
+    // The user's own OpenCode config (providers, models): any small JSON object.
+    try {
+      const parsed = JSON.parse(bytes.toString("utf8"));
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
+        fail();
+    } catch {
+      fail();
+    }
     config.hash = await read(context, config);
     const stateNames = await directory(context, namespace.state);
     if (stateNames.some((name) => name !== "opencode")) fail();

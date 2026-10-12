@@ -64,6 +64,14 @@
         "command": "node apps/desktop-app/scripts/e2e-workbench.mjs"
       }
     },
+    "e2e-chat": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/e2e-chat.mjs"
+      }
+    },
     "bundle-inspect": {
       "executor": "nx:run-commands",
       "dependsOn": ["build"],

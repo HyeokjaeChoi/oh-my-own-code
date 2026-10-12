@@ -56,7 +56,7 @@ import { createLifetimeWitness } from "./host/owner-lifetime.mjs";
 import { createNativePreflight } from "./host/native-preflight.mjs";
 import { reconcileBootstrapTasks } from "./native-bootstrap-reconciler.mjs";
 import { randomUUID } from "node:crypto";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 
 let workbench;
@@ -184,6 +184,18 @@ const registryPromise = (async () => {
   });
   const result = await owner.acquire({ initialize: namespace.fresh });
   ownedStorage = result.state === "ready";
+  // Unpackaged isolated e2e only: seed the fixture's OpenCode provider config
+  // (the sidecar reads <native config>/opencode/opencode.json) before the
+  // first sidecar start. Never active in a packaged app.
+  if (ownedStorage && isolatedRoot && process.env.OMOC_E2E_NATIVE_CONFIG) {
+    const dir = join(namespace.config, "opencode");
+    mkdirSync(dir, { recursive: true, mode: 0o700 });
+    writeFileSync(
+      join(dir, "opencode.json"),
+      readFileSync(process.env.OMOC_E2E_NATIVE_CONFIG),
+      { mode: 0o600, flag: "wx" },
+    );
+  }
   if (result.state !== "ready") {
     if (["owner_conflict", "owner_unverified"].includes(result.reason)) {
       registry = await openWorkspaceRegistry({
@@ -738,7 +750,12 @@ app.whenReady().then(async () => {
     },
     () => {},
   );
-  startupPromise.catch(() => {});
+  startupPromise.catch((error) => {
+    // Closed reason code only; never the message, path or cause chain.
+    process.stderr.write(
+      `[native-startup-failed] ${JSON.stringify({ reason: error?.storageReason ?? error?.reason ?? error?.message?.slice(0, 80) })}\n`,
+    );
+  });
   // Automation writes under namespace.metadata; start only after owner.acquire
   // (inside registryPromise) so it cannot race the owner's storage scan.
   void registryPromise

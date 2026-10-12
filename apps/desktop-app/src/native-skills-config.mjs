@@ -2,6 +2,28 @@ import { lstatSync, realpathSync, readFileSync } from "node:fs";
 import { isAbsolute, join, normalize } from "node:path";
 import { EVENT_HOST_CONFIG } from "./event-host-protocol.mjs";
 
+// The user's own provider setup: only `providers` and `model` are taken from
+// <config dir>/opencode.json (global config discovery is off in the graph).
+// Anything unreadable or malformed contributes nothing.
+function userProviderConfig() {
+  const dir = process.env.OPENCODE_CONFIG_DIR;
+  if (!dir || !isAbsolute(dir)) return {};
+  try {
+    const file = join(dir, "opencode.json");
+    const stat = lstatSync(file);
+    if (!stat.isFile() || stat.size > 65536) return {};
+    const user = JSON.parse(readFileSync(file, "utf8"));
+    const plain = (value) =>
+      value && typeof value === "object" && !Array.isArray(value);
+    return {
+      ...(plain(user.providers) && { providers: user.providers }),
+      ...(typeof user.model === "string" && { model: user.model }),
+    };
+  } catch {
+    return {};
+  }
+}
+
 // The supervisor first verifies the full resource manifest. The child accepts
 // only this fixed contained directory; nonce never enters persistent config.
 export function nativeSkillsConfig(root, nonce) {
@@ -44,6 +66,7 @@ export function nativeSkillsConfig(root, nonce) {
   // checked resource names literal; JSON decoding restores each opening brace.
   return JSON.stringify({
     ...JSON.parse(EVENT_HOST_CONFIG),
+    ...userProviderConfig(),
     plugins: [{ package: plugin, options: { nonce } }],
   })
     .replaceAll("{env:", "\\u007benv:")
