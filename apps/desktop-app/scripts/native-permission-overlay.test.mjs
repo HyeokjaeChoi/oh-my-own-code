@@ -453,13 +453,13 @@ test("empty replacement and no-op edits preserve exact bytes", () => {
   assert.throws(() => plan(input), /edit required/);
 });
 
-test("32 files and 256 total edits accepted; excess counts rejected", () => {
+test("64 files and 512 total edits accepted; excess counts rejected", () => {
   const input = fixture("abcdefgh", "ABCDEFGH");
   const edits = [..."abcdefgh"].map((find) => ({
     find,
     replace: find.toUpperCase(),
   }));
-  input.recipe.files = Array.from({ length: 32 }, (_, i) => ({
+  input.recipe.files = Array.from({ length: 64 }, (_, i) => ({
     ...input.recipe.files[0],
     path: root + i + ".js",
     edits,
@@ -468,18 +468,18 @@ test("32 files and 256 total edits accepted; excess counts rejected", () => {
     path,
     content: Buffer.from("abcdefgh"),
   }));
-  assert.equal(plan(input).files.length, 32);
+  assert.equal(plan(input).files.length, 64);
   input.recipe.files[0].edits = [...edits, { find: "A", replace: "A" }];
   assert.throws(() => plan(input));
   input.recipe.files[0].edits = edits;
-  input.recipe.files.push({ ...input.recipe.files[0], path: root + "33.js" });
-  input.files.push({ path: root + "33.js", content: Buffer.from("abcdefgh") });
+  input.recipe.files.push({ ...input.recipe.files[0], path: root + "65.js" });
+  input.files.push({ path: root + "65.js", content: Buffer.from("abcdefgh") });
   assert.throws(() => plan(input));
   rejects((input) => {
-    input.files = Array.from({ length: 33 }, () => input.files[0]);
+    input.files = Array.from({ length: 65 }, () => input.files[0]);
   });
   rejects(({ recipe }) => {
-    recipe.files[0].edits = Array.from({ length: 257 }, () => ({
+    recipe.files[0].edits = Array.from({ length: 513 }, () => ({
       find: "before",
       replace: "after",
     }));
@@ -499,9 +499,9 @@ test("fixed 35-file smoke remains accepted", () => {
   assert.equal(plan(input).files.length, 35);
 });
 
-test("256 recipe files are accepted; 257 recipe or source files refuse before planning", () => {
+test("512 recipe files are accepted; 513 recipe or source files refuse before planning", () => {
   const input = fixture("before", "after");
-  input.recipe.files = Array.from({ length: 256 }, (_, i) => ({
+  input.recipe.files = Array.from({ length: 512 }, (_, i) => ({
     ...input.recipe.files[0],
     path: root + i + ".js",
   }));
@@ -509,7 +509,7 @@ test("256 recipe files are accepted; 257 recipe or source files refuse before pl
     path,
     content: Buffer.from("before"),
   }));
-  assert.equal(plan(input).files.length, 256);
+  assert.equal(plan(input).files.length, 512);
   const extra = { ...input.recipe.files[0], path: root + "extra.js" };
   input.recipe.files.push(extra);
   input.files.push({ path: extra.path, content: Buffer.from("before") });
