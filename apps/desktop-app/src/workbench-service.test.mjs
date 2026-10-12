@@ -823,6 +823,39 @@ test("send waits briefly for a just-finished reply to leave active before BUSY",
     "accepted",
   );
 });
+test("catalog keeps local models when a large cloud catalog exceeds the cap", async (t) => {
+  const f = await fixture(t);
+  const cloud = Array.from({ length: 400 }, (_, i) => ({
+    id: `c${i}`,
+    providerID: "provider",
+    name: `Cloud ${i}`,
+    enabled: true,
+    status: "active",
+  }));
+  f.client.model.list = async () => ({
+    data: [
+      ...cloud,
+      {
+        id: "local-1",
+        providerID: "lmstudio",
+        name: "Local",
+        enabled: true,
+        status: "active",
+      },
+    ],
+  });
+  const original = f.client.provider.list;
+  f.client.provider.list = async (...a) => ({
+    data: [
+      ...(await original(...a)).data,
+      { id: "lmstudio", activation: "enabled" },
+    ],
+  });
+  const entries = (await f.service.handle({ type: "catalog.list", ...f.ids }))
+    .value.models.entries;
+  assert.equal(entries.length, 300);
+  assert.equal(entries[0].name, "Local");
+});
 test("native cancellation, exclusive folder create, UUIDv7 fallback and registration-only removal", async (t) => {
   const f = await fixture(t);
   assert.equal(

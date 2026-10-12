@@ -2995,11 +2995,11 @@ export function createWorkbenchService({
         models: new Map(),
       };
     const location = { location: { directory: w.path } };
-    const group = async (fn) => {
+    const group = async (fn, cap = 300) => {
       try {
         const result = await call(fn, location);
         if (!Array.isArray(result?.data)) throw new Error();
-        return result.data.slice(0, 300);
+        return result.data.slice(0, cap);
       } catch {
         checkLive();
         return null;
@@ -3009,7 +3009,9 @@ export function createWorkbenchService({
     const skills = await group(client.skill?.list);
     const mcp = await group(client.mcp?.list);
     const agents = await group(client.agent?.list);
-    const models = await group(client.model?.list);
+    // Uncapped: a large cloud catalog (OpenRouter) must not hide local models.
+    // The cap is applied after filtering, with local providers first (below).
+    const models = await group(client.model?.list, Infinity);
     const providers = await group(client.provider?.list);
     const integrations = await group(client.integration?.list);
     const simple = (items, key = "id", includeProvenance = false) =>
@@ -3027,6 +3029,10 @@ export function createWorkbenchService({
                 ...(includeProvenance ? skillProvenance(w.path, i) : {}),
               })),
           );
+    const isLocalModel = (m) => {
+      const p = providers?.find((x) => x.id === m.providerID);
+      return p?.activation === "enabled" && !p.integrationID;
+    };
     const modelMap = new Map();
     const seenModels = new Set();
     for (const model of models ?? []) {
@@ -3098,12 +3104,20 @@ export function createWorkbenchService({
           models === null || providers === null || integrations === null
             ? unavailable()
             : available(
-                [...modelMap].map(([id, m]) => ({
-                  id,
-                  name: clip(m.name, 256),
-                  status: clip(m.status, 32),
-                  ...projectModelOptions(m),
-                })),
+                [...modelMap]
+                  // Local providers (Native-activated, no integration) first so
+                  // the cap never drops them; sort is stable otherwise.
+                  .sort(
+                    ([, a], [, b]) =>
+                      Number(isLocalModel(b)) - Number(isLocalModel(a)),
+                  )
+                  .slice(0, 300)
+                  .map(([id, m]) => ({
+                    id,
+                    name: clip(m.name, 256),
+                    status: clip(m.status, 32),
+                    ...projectModelOptions(m),
+                  })),
               ),
       },
     };
