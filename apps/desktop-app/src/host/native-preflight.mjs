@@ -743,8 +743,6 @@ export function createNativePreflight({
         const decision = await inspector(context, request, resources);
         await fence(context);
         await unchanged(context);
-        if (!isDeepStrictEqual(resources, await resourceVerifier(eventHost)))
-          fail();
         await fence(context);
         if (!isDeepStrictEqual(view, viewBinding(registry))) fail();
         if (!decision.allowed) {
