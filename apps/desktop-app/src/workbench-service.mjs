@@ -2550,6 +2550,21 @@ export function createWorkbenchService({
     await projectReceipt(record, operation, result, true);
   }
   let needsDefaultBootstrap = false;
+  let needsSavedVerify = false;
+  // Saved-session verification runs in its own startup scope: the first scope's
+  // whole-read deadline also covers the (slow) sidecar wait and would expire,
+  // misreporting identity_conflict on a healthy relaunch.
+  async function verifySavedSessions() {
+    const verified = new Map();
+    for (const existing of committed.sessions.values()) {
+      if (existing.unavailable) continue;
+      if (!(await verifySavedSession(existing, verified, new Set()))) {
+        localRecovery = "identity_conflict";
+        return;
+      }
+    }
+    needsDefaultBootstrap = bootstrap && committed.workspaces.size === 0;
+  }
   ready = host
     .startup(async () => {
       await registryLoaded;
@@ -2575,15 +2590,7 @@ export function createWorkbenchService({
           localRecovery = "native_startup_unverified";
           return;
         }
-        const verified = new Map();
-        for (const existing of committed.sessions.values()) {
-          if (existing.unavailable) continue;
-          if (!(await verifySavedSession(existing, verified, new Set()))) {
-            localRecovery = "identity_conflict";
-            return;
-          }
-        }
-        needsDefaultBootstrap = bootstrap && committed.workspaces.size === 0;
+        needsSavedVerify = true;
         return;
       }
       if (!client || !context?.session) return;
@@ -2598,6 +2605,9 @@ export function createWorkbenchService({
         checkLive();
       }
     })
+    .then(() =>
+      needsSavedVerify ? host.startup(verifySavedSessions) : undefined,
+    )
     .then(() =>
       needsDefaultBootstrap
         ? host.startup(bootstrapDefaultWorkspace)
