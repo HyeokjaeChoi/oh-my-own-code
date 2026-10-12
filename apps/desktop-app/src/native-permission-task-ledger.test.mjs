@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
+import {
+  INSTRUCTION_KEY,
+  instructionDigest,
+} from "./host/workbench-instructions.mjs";
 import { createNativeTaskLedger } from "./native-permission-task-ledger.mjs";
 import {
   bootstrapHandoffProof,
@@ -488,6 +492,7 @@ const reconcileFixture = (over = {}) => {
     title: "Title",
   };
   state.answer = info;
+  state.entries = [];
   const ledger = createNativeTaskLedger({
     runtimeEpoch: "now",
     isLive: () => state.live,
@@ -497,6 +502,11 @@ const reconcileFixture = (over = {}) => {
       state.reads.push(sessionID);
       if (state.answer instanceof Error) throw state.answer;
       return state.answer;
+    },
+    readInstructions: async (sessionID) => {
+      state.instructionReads = [...(state.instructionReads ?? []), sessionID];
+      if (state.entries instanceof Error) throw state.entries;
+      return state.entries;
     },
     listSessions: async () => {
       state.lists = (state.lists ?? 0) + 1;
@@ -870,6 +880,13 @@ test("reconcile of a fork with no child proves no effect only for an unconsumed 
   ];
   assert.equal((await others.run()).outcome, "no_effect");
 });
+const registered = (text = "rules") => ({
+  state: "registered",
+  key: INSTRUCTION_KEY,
+  digest: instructionDigest(text),
+  sourceVersion: "b".repeat(64),
+  origin: "direct",
+});
 const forkTampered = {
   "two matching children": (f) => {
     f.state.list.push(f.child({ id: "ses_child2" }));
@@ -922,7 +939,16 @@ const forkTampered = {
   "a changed parent identity": (f) => {
     f.state.answer = { ...f.parent, location: { directory: "/moved" } };
   },
-  "a parent with a registered instruction": (f) => {
+  "a registered parent whose child lacks the inherited entry": (f) => {
+    f.registry.sessions[0].instructionRegistration = registered();
+  },
+  "an unregistered parent whose child holds an entry": (f) => {
+    f.state.entries = [{ key: INSTRUCTION_KEY, value: "text" }];
+  },
+  "an unreadable child instruction list": (f) => {
+    f.state.entries = new Error("boom");
+  },
+  "a malformed parent registration": (f) => {
     f.registry.sessions[0].instructionRegistration = { state: "registered" };
   },
   "an unmapped parent": (f) => {
@@ -934,10 +960,68 @@ for (const [name, mutate] of Object.entries(forkTampered))
     const f = forkFixture();
     f.task.handoffs = [{ state: "armed" }];
     mutate(f);
-    const decision = await f.run();
+    let decision;
+    try {
+      decision = await f.run();
+    } catch {
+      return; // a read error holds by throwing
+    }
     assert.equal(decision.outcome, "hold");
     assert.equal(f.ledger.verify(f.record(decision), f.context()), false);
   });
+test("reconcile of a fork with a registered parent settles when the child carries the inherited entry", async () => {
+  const f = forkFixture();
+  f.task.handoffs = [{ state: "armed" }];
+  f.registry.sessions[0].instructionRegistration = registered();
+  f.state.entries = [{ key: INSTRUCTION_KEY, value: "rules" }];
+  const decision = await f.run();
+  assert.equal(decision.outcome, "settled");
+  assert.deepEqual(f.state.instructionReads, ["ses_child"]);
+  assert.equal(f.ledger.verify(f.record(decision), f.context()), true);
+  // Drifted entry text is not the inherited one.
+  f.state.entries = [{ key: INSTRUCTION_KEY, value: "other" }];
+  assert.equal((await f.run()).outcome, "hold");
+});
+test("reconcile of a fork ignores children created before the durable arm", async () => {
+  const at = (created) => ({ time: { created } });
+  const armed = [{ state: "armed", armedAt: 100_000 }];
+  // Orphan fork of the same parent from before the arm; crash before the fork.
+  const orphan = forkFixture();
+  orphan.task.handoffs = armed;
+  orphan.operation.forkTarget = {};
+  orphan.state.list = [orphan.parent, orphan.child({ ...at(1_000) })];
+  const none = await orphan.run();
+  assert.equal(none.outcome, "no_effect");
+  assert.equal(
+    orphan.ledger.verify(orphan.record(none), orphan.context()),
+    true,
+  );
+  // The real post-arm child settles even beside an old orphan.
+  const both = forkFixture();
+  both.task.handoffs = armed;
+  both.operation.forkTarget = {};
+  both.state.list = [
+    both.parent,
+    both.child({ id: "ses_old", ...at(1_000) }),
+    both.child({ ...at(100_001) }),
+  ];
+  const settled = await both.run();
+  assert.equal(settled.outcome, "settled");
+  assert.equal(settled.bootstrap.nativeSessionId, "ses_child");
+  // Inside the skew window before the arm, or with no creation time: ambiguous.
+  for (const extra of [at(98_000), {}, at(100_000 - 1)]) {
+    const f = forkFixture();
+    f.task.handoffs = armed;
+    f.operation.forkTarget = {};
+    f.state.list = [f.parent, f.child({ ...extra })];
+    assert.equal((await f.run()).outcome, "hold", JSON.stringify(extra));
+  }
+  // An unbound plain fork with no arm time cannot be proven ours.
+  const legacy = forkFixture();
+  legacy.task.handoffs = [{ state: "armed" }];
+  legacy.operation.forkTarget = {};
+  assert.equal((await legacy.run()).outcome, "hold");
+});
 test("reconcile of a fork never settles from a never-armed trail and holds every read error", async () => {
   const unarmed = forkFixture();
   unarmed.task.handoffs = [];

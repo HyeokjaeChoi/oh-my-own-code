@@ -405,7 +405,14 @@ export function validateTaskRecord(input) {
         "stageArgumentDigest",
         "state",
         "proofDigest",
+        // Durable arm time (ms): lets reconciliation ignore older Native forks.
+        ...(Object.hasOwn(v, "armedAt") ? ["armedAt"] : []),
       ];
+      need(
+        !Object.hasOwn(v, "armedAt") ||
+          (v.state === "armed" && uint(v.armedAt)),
+        "invalid_record",
+      );
       validateTaskHandoffIdentity({
         handoffId: v.handoffId,
         step: v.step,
@@ -602,8 +609,7 @@ export function bootstrapReconciliationCompletion(
   });
   if (payload.outcome === "no_effect") {
     if (identity.type !== "session.create" && !fork) {
-      if (!["reserved", "registered"].includes(existing?.registrationState))
-        return undefined;
+      if (existing?.registrationState !== "reserved") return undefined;
       return {
         ...base,
         receipt: {

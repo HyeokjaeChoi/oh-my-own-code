@@ -4,6 +4,7 @@
 // `task_reconciled` record, so the record cannot be forged by a caller.
 import { createHash } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
+import { canonicalInstructionRegistration } from "./host/workbench-instructions.mjs";
 import { permissionCanonicalJSON } from "./permission-control-canonical.mjs";
 import {
   bootstrapBaselinePermissions,
@@ -18,6 +19,11 @@ const FORK = "session.fork";
 const WORKSPACE_TYPES = ["workspace.create", "workspace.import"];
 const HANDOFF_STATES = ["armed", "consumed", "completed", "revoked"];
 const hold = { outcome: "hold" };
+// Journal timestamps (Main's Date.now) and Native's `time.created` come from
+// the same host wall clock. A child created before the durable arm is not this
+// operation's; one inside the skew window before it is ambiguous and holds.
+// The tolerance only ever widens "hold", never makes a pre-arm child eligible.
+const ARM_SKEW_MS = 5000;
 
 // Handoff trail class of an unsettled create task, or undefined when the
 // journal shape is anything but the one this reconciler understands.
@@ -54,8 +60,10 @@ export function reconcileExpectation(operation, task) {
   const bound = Object.hasOwn(task.identity, "nativeSessionId");
   if (bound && task.identity.appSessionId !== reservation.appSessionId)
     return undefined;
+  const armedAt = task.handoffs?.[0]?.armedAt;
   const common = {
     handoff,
+    armedAt: Number.isSafeInteger(armedAt) && armedAt >= 0 ? armedAt : null,
     appSessionId: reservation.appSessionId,
     workspaceId: reservation.workspace.workspaceId,
     canonicalPath: reservation.workspace.canonicalPath,
@@ -119,6 +127,15 @@ export function reconcileFacts(operation, state) {
   const parent = sessions.find(
     (row) => row.appSessionId === operation?.identity?.sessionId,
   );
+  let registration = null;
+  let invalidRegistration = false;
+  try {
+    registration = canonicalInstructionRegistration(
+      parent?.instructionRegistration,
+    );
+  } catch {
+    invalidRegistration = true;
+  }
   const workspace = [...(state?.workspaces ?? [])].find(
     (row) => row.workspaceId === reservation?.workspace?.workspaceId,
   );
@@ -130,13 +147,15 @@ export function reconcileFacts(operation, state) {
         .filter((row) => row !== own && row.nativeSessionId)
         .map((row) => row.nativeSessionId)
         .sort(),
-      parent: parent
-        ? {
-            nativeSessionId: parent.nativeSessionId ?? null,
-            workspaceId: parent.workspaceId,
-            registered: parent.instructionRegistration?.state === "registered",
-          }
-        : null,
+      parent:
+        parent && !invalidRegistration
+          ? {
+              nativeSessionId: parent.nativeSessionId ?? null,
+              workspaceId: parent.workspaceId,
+              registration,
+              registered: registration?.state === "registered",
+            }
+          : null,
     }),
   );
 }
@@ -159,6 +178,9 @@ export function observeSession(info) {
         parentID: info?.parentID ?? null,
         fork: info?.fork ?? null,
         title: typeof info?.title === "string" ? info.title : "",
+        created: Number.isFinite(info?.time?.created)
+          ? info.time.created
+          : null,
       }),
     );
   } catch {
@@ -172,6 +194,39 @@ export const observeFork = (parent, children) => ({
   parent: observeSession(parent),
   children: children.map(observeSession),
 });
+// Native sessions that could be this fork's child: named by the parent as
+// source, not already mapped, not a plain subagent, and (when the durable arm
+// time is known) not created before it. `undefined` = cannot be told apart.
+export function forkCandidates(expectation, observation, facts) {
+  let found = (observation?.children ?? []).filter(
+    (child) =>
+      child.status === "found" &&
+      !facts?.known?.includes(child.id) &&
+      (child.fork !== null || child.parentID !== observation.parent?.id),
+  );
+  const armed = expectation.armedAt;
+  if (armed !== null) {
+    if (
+      found.some(
+        (child) =>
+          !Number.isFinite(child.created) ||
+          (child.created < armed && child.created >= armed - ARM_SKEW_MS),
+      )
+    )
+      return undefined;
+    found = found.filter((child) => child.created >= armed);
+  }
+  return found;
+}
+// The registration a fork child must inherit (same as `session.fork` checks).
+export const inheritedRegistration = (facts, parentAppSessionId) =>
+  facts?.parent?.registration?.state === "registered"
+    ? {
+        ...facts.parent.registration,
+        origin: "fork",
+        inheritedFromSessionId: parentAppSessionId,
+      }
+    : (facts?.parent?.registration ?? undefined);
 export const ABSENT_OBSERVATION = Object.freeze({ status: "absent" });
 
 export const observationDigest = (
@@ -269,12 +324,8 @@ function decideFork(expectation, observation, facts) {
     observation.children.some((child) => child.status !== "found")
   )
     return hold;
-  const candidates = observation.children.filter(
-    (child) =>
-      !facts.known.includes(child.id) &&
-      // Plain Native subagents (parent set, no fork source) are not forks.
-      (child.fork !== null || child.parentID !== parent.id),
-  );
+  const candidates = forkCandidates(expectation, observation, facts);
+  if (!candidates) return hold;
   if (!candidates.length) {
     // A consumed handoff, a bound id or a partial mapping all say Native was
     // told to fork: absence is then contradictory, not proof.
@@ -290,8 +341,12 @@ function decideFork(expectation, observation, facts) {
   if (
     candidates.length !== 1 ||
     !SETTLED_TRAILS.includes(handoff) ||
-    // Inherited instruction entries cannot be verified by a read of the child.
-    facts.parent.registered ||
+    // Without a durable arm time, an unbound plain fork is unprovable.
+    (expectation.before === null && expectation.armedAt === null) ||
+    // Same read-only check `session.fork` makes of the inherited instruction.
+    observation.instruction?.childId !== child.id ||
+    observation.instruction.status !==
+      (facts.parent.registered ? "registered" : "missing") ||
     (facts.own !== null && facts.own !== child.id) ||
     !exactFork(expectation, parent, child)
   )

@@ -720,6 +720,7 @@ async function fixture(
           ...parent,
           id: `ses_fork_${state.calls.filter((name) => name === "fork").length}`,
           metadata: { ...parent.metadata },
+          time: { created: Date.now() },
           fork: {
             sessionID,
             boundary: { type: "through", messageID: "synthetic-message" },
@@ -6421,6 +6422,9 @@ async function openReconciling(t, f, { read, wrap } = {}) {
     },
     listSessions: async () =>
       globalThis.structuredClone([...f.records.values()]),
+    readInstructions: async () => {
+      return [];
+    },
   });
   const opened = await openWorkspaceRegistry({
     ...f.options,
