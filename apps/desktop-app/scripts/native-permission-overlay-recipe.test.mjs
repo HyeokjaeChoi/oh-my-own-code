@@ -9,18 +9,25 @@ import { NATIVE_PERMISSION_OVERLAY_RECIPE } from "./native-permission-overlay-re
 import { planNativePermissionOverlay } from "./native-permission-overlay.mjs";
 
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
-// The Session factory entry was deliberately edited for bootstrap task
-// authority (create/fork). Archived snapshots predate that edit, so freeze
-// tests compare every OTHER entry byte-for-byte and, for this one, only the
-// pinned input path and hash (its new output is pinned separately above).
+// Two Session factory edits (create, fork wrapper) were deliberately changed
+// for bootstrap task authority. Archived snapshots predate that change, so the
+// freeze tests compare every OTHER edit byte-for-byte and drop only those two
+// entries and the file's output hash (their new output is pinned elsewhere).
 const SESSION_FACTORY =
   "node_modules/@opencode/core/dist/chunks/config-zyp346xr.js";
+const EDITED_FINDS = new Set([
+  '    create: Effect.fn("Session.create")(function* (input) {\n',
+  "  return result;\n}));",
+]);
 const masked = (files) =>
-  files.map((file) =>
-    file.path === SESSION_FACTORY
-      ? { path: file.path, beforeSha256: file.beforeSha256 }
-      : file,
-  );
+  files.map((file) => {
+    if (file.path !== SESSION_FACTORY) return file;
+    const { afterSha256: _after, ...rest } = file;
+    return {
+      ...rest,
+      edits: file.edits.filter((edit) => !EDITED_FINDS.has(edit.find)),
+    };
+  });
 const root = new URL(
   "../runtime-event-host/.generated/install/",
   import.meta.url,
@@ -40,7 +47,7 @@ test("pinned overlay recipe binds exact sixty-four source files and preserves fr
   assert.equal(recipe.id, "permission-session-entry-gate-v1");
   assert.equal(
     NATIVE_PERMISSION_OVERLAY_RECEIPT.recipeSha256,
-    "6d52f4c44ccf2da9f1645a62c85499e526780b2d5f211b6cce63582e59b367f9",
+    "ada387f4d8e5a2ec80b14d4ae6ae56d9a197ceb9ff3cf4df6fd62deddf83eb80",
   );
   assert.deepEqual(
     recipe.files.slice(0, 50).map(({ path }) => path),
@@ -208,7 +215,7 @@ test("pinned overlay recipe binds exact sixty-four source files and preserves fr
     ],
   );
   assert.equal(recipe.serverVersion, "2.0.18");
-  assert.equal(recipe.files.length, 65);
+  assert.equal(recipe.files.length, 66);
   assert.equal(Object.isFrozen(recipe), true);
   assert.equal(Object.isFrozen(recipe.files), true);
   for (const file of recipe.files) {
@@ -235,7 +242,7 @@ test("actual pinned source transforms to exact checked output without executing 
     NATIVE_PERMISSION_OVERLAY_RECIPE,
     files,
   );
-  assert.equal(plan.files.length, 65);
+  assert.equal(plan.files.length, 66);
   assert.equal(
     plan.recipeSha256,
     NATIVE_PERMISSION_OVERLAY_RECEIPT.recipeSha256,
@@ -408,7 +415,7 @@ test("patched Permission and Saved sources share the fixed control and preserve 
 
 test("sixty-four-file consumer refuses missing, duplicate and extra sources and keeps recipe output order", async () => {
   const files = await inputs();
-  assert.equal(files.length, 65);
+  assert.equal(files.length, 66);
   for (const [index] of files.entries()) {
     assert.throws(() =>
       planNativePermissionOverlay(
@@ -672,7 +679,7 @@ test("provider extension preserves every archived recipe entry as a byte-equival
   );
   const before = new Function(`return (${literal});`)();
   assert.equal(before.files.length, 44);
-  assert.equal(NATIVE_PERMISSION_OVERLAY_RECIPE.files.length, 65);
+  assert.equal(NATIVE_PERMISSION_OVERLAY_RECIPE.files.length, 66);
   assert.deepEqual(
     masked(NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 44)),
     masked(before.files),
@@ -686,7 +693,7 @@ test("provider extension preserves every archived recipe entry as a byte-equival
     (count, file) => count + file.edits.length,
     0,
   );
-  assert.equal(edits, 254);
+  assert.equal(edits, 255);
   assert.ok(edits <= 256);
 });
 
@@ -706,7 +713,7 @@ test("Read layer addition preserves all preceding fifty-four frozen recipe entri
   };
   assert.equal(
     hash(canonical(preceding)),
-    "05b5cf3b7de548c5bb05336158a185abe9aa00aa1584f49b50b57a1da0bb1e7c",
+    "761e90f1f918bbf50a3f8556c34d8dc61d60818462306f43d470b758bfa19e69",
   );
 });
 

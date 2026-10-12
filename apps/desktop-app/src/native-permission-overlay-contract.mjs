@@ -1824,6 +1824,20 @@ const recipe = {
         },
       ],
     },
+    {
+      path: "node_modules/@opencode/core/dist/session/transfer.js",
+      beforeSha256:
+        "249d3b466620989b2d3c6e0313fe2dd534222791ed70ac1eaa2c8a2c5d735aad",
+      afterSha256:
+        "311f89f8e09a88a35798d7404f022ba4158afe7fd34eb93a724508c3f9c194c5",
+      edits: [
+        {
+          find: '    import: Effect.fn("SessionTransfer.import")(function* (input) {\n',
+          replace:
+            '    import: Effect.fn("SessionTransfer.import")(function* (input) {\n      // Native session import bypasses the bootstrap handoff; it stays closed.\n      yield* Effect.fail(new Error("native_permission_held"));\n',
+        },
+      ],
+    },
   ],
 };
 for (const file of recipe.files) {
@@ -1840,7 +1854,7 @@ export const NATIVE_PERMISSION_OVERLAY_RECEIPT = Object.freeze({
   id: recipe.id,
   serverVersion: recipe.serverVersion,
   recipeSha256:
-    "6d52f4c44ccf2da9f1645a62c85499e526780b2d5f211b6cce63582e59b367f9",
+    "ada387f4d8e5a2ec80b14d4ae6ae56d9a197ceb9ff3cf4df6fd62deddf83eb80",
   files: Object.freeze(
     recipe.files.map(({ path, beforeSha256, afterSha256 }) =>
       Object.freeze({ path, beforeSha256, afterSha256 }),
