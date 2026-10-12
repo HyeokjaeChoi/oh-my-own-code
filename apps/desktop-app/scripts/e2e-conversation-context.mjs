@@ -885,6 +885,8 @@ try {
       TMP: fixtureRoot,
       TEMP: fixtureRoot,
       OMOC_UI_TEST_ROOT: fixtureRoot,
+      OMOC_DESKTOP_E2E_BACKGROUND: "1",
+      OMOC_APP_DATA_DIR: join(fixtureRoot, "app-profile"),
     },
   });
   processHandle = application.process();

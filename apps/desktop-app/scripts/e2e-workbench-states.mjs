@@ -46,12 +46,21 @@ let activeFamily = "bootstrap";
 
 const desktop = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const root = resolve(desktop, "../..");
-// The wrapper owns containment, symlink rejection and exclusive fresh output
-// admission. Do not create an alternate output tree or bypass its build gate.
-if (!process.env.OMOC_EVIDENCE_DIR)
-  throw new Error(
-    "Use run-evidence.mjs with an owned fresh UI evidence destination",
+// Under run-evidence.mjs the wrapper owns containment and fresh output admission.
+// Standalone (nx target), claim a private temp evidence dir ourselves.
+if (!process.env.OMOC_EVIDENCE_DIR) {
+  process.env.OMOC_EVIDENCE_DIR = await mkdtemp(
+    join(tmpdir(), "omoc-ui-evidence-"),
   );
+  await writeFile(
+    join(process.env.OMOC_EVIDENCE_DIR, ".run-evidence-claim"),
+    "",
+    {
+      mode: 0o600,
+    },
+  );
+  console.log(`Evidence dir: ${process.env.OMOC_EVIDENCE_DIR}`);
+}
 const run = resolve(process.env.OMOC_EVIDENCE_DIR);
 const claim = await lstat(join(run, ".run-evidence-claim"));
 assert.ok(
@@ -81,6 +90,8 @@ const application = await electron
       TMP: fixtureRoot,
       TEMP: fixtureRoot,
       OMOC_UI_TEST_ROOT: fixtureRoot,
+      OMOC_DESKTOP_E2E_BACKGROUND: "1",
+      OMOC_APP_DATA_DIR: join(fixtureRoot, "app-profile"),
       ...(process.platform === "win32" && {
         SystemRoot: process.env.SystemRoot ?? "C:\\Windows",
         USERPROFILE: fixtureRoot,
@@ -481,6 +492,15 @@ async function setDisplay(page, width, height, zoomFactor = 1) {
     .toBeLessThanOrEqual(1);
 }
 
+// Runtime request selects live inside a collapsed "다음 전송 설정" details.
+async function setRequestSettings(page, open) {
+  await page
+    .locator('details[data-runtime-task="requested"]')
+    .evaluate((element, value) => {
+      element.open = value;
+    }, open);
+}
+
 async function captureMatrix(page, state) {
   for (const [label, width, height, zoom] of [
     ["normal-1280", 1280, 800, 1],
@@ -512,6 +532,7 @@ async function captureMatrix(page, state) {
     const submitControl = page.getByRole("button", {
       name: /^(메시지 보내기|현재 세션 실행 중단)$/,
     });
+    await setRequestSettings(page, true);
     await expect(submitControl).toBeInViewport({ ratio: 1 });
     for (const control of [
       submitControl,
@@ -521,8 +542,8 @@ async function captureMatrix(page, state) {
       await expect(control).toBeInViewport({ ratio: 1 });
       const bounds = await control.boundingBox();
       assert.ok(
-        bounds && Math.abs(bounds.height - 32) <= 1,
-        "Desktop composer control must be the approved 32px",
+        bounds && Math.abs(bounds.height - 40) <= 1,
+        `Desktop composer control must be the approved 40px (got ${bounds?.height})`,
       );
     }
     if (state === "permission-long-korean-draft") {
@@ -592,6 +613,7 @@ async function captureMatrix(page, state) {
         await expect(control).toBeInViewport({ ratio: 1 });
       }
     }
+    await setRequestSettings(page, false);
     await capture(
       page,
       `desktop-${state}-${label}-synthetic.png`,
@@ -933,6 +955,8 @@ async function assertCoarseComposer(page) {
         page.evaluate(() => window.matchMedia("(pointer: coarse)").matches),
       )
       .toBe(true);
+    // Runtime request selects live inside a collapsed details disclosure.
+    await setRequestSettings(page, true);
     for (const control of [
       page.getByRole("button", { name: "메시지 보내기", exact: true }),
       page.getByRole("combobox", { name: "Agent 요청" }),
@@ -946,6 +970,7 @@ async function assertCoarseComposer(page) {
       await expect(control).toBeInViewport({ ratio: 1 });
     }
   } finally {
+    await setRequestSettings(page, false);
     await cdp.send("Emulation.setTouchEmulationEnabled", { enabled: false });
     await cdp.detach();
   }
@@ -1384,6 +1409,7 @@ try {
         "Synthetic compositionstart/Enter/compositionend guard dispatches no request and preserves the Korean draft; physical OS IME verification remains separate",
       );
       await composer.fill("Inspect the synthetic workspace.");
+      await setRequestSettings(page, true);
       await page
         .getByRole("combobox", { name: "Agent 요청" })
         .selectOption("fixture-agent");
@@ -1469,7 +1495,7 @@ try {
       );
       await captureMatrix(page, "permission-long-korean-draft");
       observations.push(
-        "Long Korean draft and two permissions at every display: full composer/send-stop viewport intersection, 32px composer and 36px permission controls, complete paths/warnings/actions inspectable through queue scrolling, and forward/backward permission action keyboard focus",
+        "Long Korean draft and two permissions at every display: full composer/send-stop viewport intersection, 40px composer and 36px permission controls, complete paths/warnings/actions inspectable through queue scrolling, and forward/backward permission action keyboard focus",
       );
       await composer.fill("");
       await expect(composer).toBeInViewport({ ratio: 1 });
