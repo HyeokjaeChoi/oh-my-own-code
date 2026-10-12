@@ -3270,3 +3270,49 @@ test("diagnostics sinks are per kernel: one kernel's sink never sees another's r
   assert.equal(first.length, before);
   assert.ok(second.some((row) => row.code === "root_unverified"));
 });
+
+test("assertNotVcsMetadataPath blocks .git/.hg edits case-insensitively, allows normal files, resolves relative resources", async () => {
+  const root = await realpath(await mkdtemp(join(tmpdir(), "omoc-vcs-edit-")));
+  try {
+    await mkdir(join(root, ".git", "hooks"), { recursive: true });
+    await mkdir(join(root, "sub", ".Git", "hooks"), { recursive: true });
+    await mkdir(join(root, "src"), { recursive: true });
+    await writeFile(join(root, ".git", "config"), "x");
+    await run((kernel) =>
+      Effect.gen(function* () {
+        for (const resource of [
+          ".git/hooks/x",
+          ".GIT/config",
+          "sub/.Git/hooks/x",
+          join(root, ".git", "hooks", "x"),
+          "../outside.txt",
+        ])
+          yield* expectFailure(kernel.assertNotVcsMetadataPath(root, resource));
+        for (const resource of ["src/a.txt", "src/new/b.txt", ".gitignore"])
+          yield* kernel.assertNotVcsMetadataPath(root, resource);
+      }),
+    );
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("patched Permission.assert runs the VCS guard for every edit before rule evaluation (all modes, saved allow rules)", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const src = await readFile(
+    new URL("./native-permission-overlay-contract.mjs", import.meta.url),
+    "utf8",
+  );
+  const patched = src.match(
+    /const assert = Effect\.fn\("Permission\.assert"\)[\s\S]*?evaluateInput\(input, tx\)/u,
+  );
+  assert.ok(patched, "patched Permission.assert present");
+  const text = patched[0];
+  const guard = text.indexOf('input.action === "edit"');
+  assert.ok(guard > 0 && guard < text.lastIndexOf("evaluateInput"));
+  assert.match(
+    text,
+    /control\.assertNotVcsMetadataPath\(location\.directory, resource\)/u,
+  );
+  assert.match(text, /reason: "vcs_metadata_path"/u);
+});

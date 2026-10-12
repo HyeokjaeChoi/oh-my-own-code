@@ -2595,7 +2595,8 @@ function kernel(initial) {
     // case-sensitive. Relative resources resolve against the location.
     assertNotVcsMetadataPath: (directory, path) =>
       Effect.tryPromise({
-        try: () => assertNotVcsMetadataPath(directory, resolve(directory, path)),
+        try: () =>
+          assertNotVcsMetadataPath(directory, resolve(directory, path)),
         catch: (failure) => failure,
       }),
     leaseSnapshot,

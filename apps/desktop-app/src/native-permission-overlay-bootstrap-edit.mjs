@@ -1,16 +1,32 @@
 // Test-only: the sanctioned differences between a prechange overlay recipe and
 // the current one are the Session.create gate (held -> bootstrap handoff) and
-// the fork wrapper that hands its input to Control.enter (parent-bound consume).
+// the fork wrapper that hands its input to Control.enter (parent-bound consume),
+// and the Permission.assert .git/.hg edit guard.
 import assert from "node:assert/strict";
 import { isDeepStrictEqual } from "node:util";
 
 const CHUNK = "node_modules/@opencode/core/dist/chunks/config-zyp346xr.js";
+const PERMISSION_CHUNK =
+  "node_modules/@opencode/core/dist/chunks/config-vgpkvtp0.js";
 const FIND = '    create: Effect.fn("Session.create")(function* (input) {\n';
 
 export function assertOnlyCreateGateChanged(current, baseline) {
   assert.equal(current.length, baseline.length);
   baseline.forEach((old, index) => {
     const file = current[index];
+    if (old.path === PERMISSION_CHUNK) {
+      // Permission.assert gained the .git/.hg edit guard; nothing else moved.
+      assert.equal(file.beforeSha256, old.beforeSha256);
+      assert.notEqual(file.afterSha256, old.afterSha256);
+      assert.equal(file.edits.length, old.edits.length);
+      const diff = old.edits
+        .map((edit, at) => [edit, file.edits[at]])
+        .filter(([was, now]) => !isDeepStrictEqual(was, now));
+      assert.equal(diff.length, 1, "only the Permission.assert edit differs");
+      assert.equal(diff[0][0].find, diff[0][1].find);
+      assert.match(diff[0][1].replace, /control\.assertNotVcsMetadataPath\(/u);
+      return;
+    }
     if (old.path !== CHUNK) return assert.deepEqual(file, old);
     assert.equal(file.path, old.path);
     // Same source bytes, a different (re-pinned) result.
