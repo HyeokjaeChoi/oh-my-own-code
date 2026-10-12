@@ -2115,21 +2115,38 @@ function kernel(initial) {
   };
   const plainRead = (request) =>
     Effect.gen(function* () {
-      const owner = [...locations.values()].find((entry) => {
-        const rel = relative(entry.directory, request.path);
-        return rel && !rel.startsWith("..") && !isAbsolute(rel);
-      });
-      if (owner) {
-        // A symlink inside the location must not lead out of it unprompted.
+      const inside = (directory, path) => {
+        const rel = relative(directory, path);
+        return rel === "" || (!rel.startsWith("..") && !isAbsolute(rel));
+      };
+      const realOrUndefined = (path) => {
         try {
-          const real = realpathSync(request.path);
-          const rel = relative(realpathSync(owner.directory), real);
-          if (rel.startsWith("..") || isAbsolute(rel))
-            return yield* Effect.fail(error("read_unverified"));
-        } catch (failure) {
-          if (failure?.code !== "ENOENT" && failure?.code !== "ENOTDIR")
-            return yield* Effect.fail(error("read_unverified"));
+          return realpathSync(path);
+        } catch {
+          return undefined;
         }
+      };
+      // Contained to a location by lexical path or by realpath; a path no
+      // location owns is never read.
+      const real = realOrUndefined(request.path);
+      const owner = [...locations.values()].find(
+        (entry) =>
+          inside(entry.directory, request.path) ||
+          (real !== undefined &&
+            inside(realOrUndefined(entry.directory) ?? entry.directory, real)),
+      );
+      if (!owner) return yield* Effect.fail(error("read_unverified"));
+      // A symlink inside the location must not lead out of it unprompted.
+      try {
+        const rel = relative(
+          realpathSync(owner.directory),
+          realpathSync(request.path),
+        );
+        if (rel.startsWith("..") || isAbsolute(rel))
+          return yield* Effect.fail(error("read_unverified"));
+      } catch (failure) {
+        if (failure?.code !== "ENOENT" && failure?.code !== "ENOTDIR")
+          return yield* Effect.fail(error("read_unverified"));
       }
       const { makeLocalDriver } = yield* Effect.promise(
         () => import("@opencode/core/environment/local"),
