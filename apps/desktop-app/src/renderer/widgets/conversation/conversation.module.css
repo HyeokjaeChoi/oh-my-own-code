@@ -627,6 +627,15 @@
     overflow-y: auto;
     overscroll-behavior: contain;
   }
+  /* Settings rows and disclosures scroll under the composer, which stays pinned. */
+  .composer {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    box-shadow:
+      0 0 0 1px var(--omoc-semantic-color-canvas),
+      0 16px 0 var(--omoc-semantic-color-canvas);
+  }
   .emptyConversation .composeRegion {
     flex-shrink: 1;
     transform: none;
