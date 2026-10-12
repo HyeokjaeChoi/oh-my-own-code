@@ -918,7 +918,8 @@ export function createWindowWorkbench(
     catalogAbort: AbortController | undefined,
     filesAbort: AbortController | undefined,
     diagnosticsAbort: AbortController | undefined;
-  let snapshotFlight = false,
+  let snapshotBackoff = 0,
+    snapshotFlight = false,
     fileFlight = false,
     lookupFlight = false;
   let lookupCursor = 0;
@@ -3580,12 +3581,18 @@ export function createWindowWorkbench(
     if (!visible()) return;
     if (!result.ok && result.code === "READ_BUSY")
       pollTimer = clock.setTimeout(() => void snapshot(bootstrap), 400);
-    else if (store.getState().connection === "connected")
+    else if (store.getState().connection === "connected") {
+      snapshotBackoff = 0;
       pollTimer = clock.setTimeout(() => void snapshot(), 1200);
-    else if (store.getState().connection === "unavailable")
-      // Metadata can arrive before native ready. Retry reads only, in the current
-      // scope, with one in-flight snapshot and a bounded five-second cadence.
-      pollTimer = clock.setTimeout(() => void snapshot(), 5000);
+    } else
+      // Sidecar startup can outlast one read timeout (health => disconnected).
+      // Never go quiet while non-connected: re-poll with 1s..5s capped backoff.
+      pollTimer = clock.setTimeout(
+        () => void snapshot(),
+        store.getState().connection === "unavailable"
+          ? 5000
+          : Math.min(5000, 1000 * 2 ** snapshotBackoff++),
+      );
   }
   async function catalog() {
     clock.clearTimeout(catalogTimer);
@@ -4454,6 +4461,7 @@ export function createWindowWorkbench(
   }
   function refresh() {
     clock.clearTimeout(pollTimer);
+    snapshotBackoff = 0;
     void snapshot();
     void catalog();
     if (store.getState().files.visible) void files();
