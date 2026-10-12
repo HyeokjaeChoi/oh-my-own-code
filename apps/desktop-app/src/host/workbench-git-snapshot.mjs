@@ -406,6 +406,8 @@ function command(ctx, kind, args) {
         "--ignore-submodules=all",
         "--no-renames",
       ];
+    case "ignored":
+      return [...prefix, "check-ignore", "-z", "--stdin"];
     case "candidates":
       return [
         ...prefix,
@@ -492,6 +494,9 @@ async function execute(
   ctx.check();
   const argv = command(ctx, kind, args);
   const env = cleanEnvironment(ctx.home);
+  // check-ignore rejects literal-pathspec mode; its stdin paths are validated
+  // by the caller (no leading ":" magic).
+  if (kind === "ignored") delete env.GIT_LITERAL_PATHSPECS;
   if (kind.startsWith("commit-")) {
     const ident = ctx.commitIdentity;
     if (
@@ -657,7 +662,7 @@ async function execute(
     result.signal !== null ||
     !(
       result.code === 0 ||
-      (["pair", "addition"].includes(kind) && result.code === 1)
+      (["pair", "addition", "ignored"].includes(kind) && result.code === 1)
     )
   )
     refuse(kind === "config" ? "unsupported_configuration" : "read_failed");
@@ -1406,11 +1411,51 @@ async function snapshot(ctx) {
       ctx.limits.candidates
     )
       refuse("too_large");
+    // Entries (directories, symlinks, other non-regular) that git ignores are
+    // never listed, read or hashed. Regular files go first so this directory's
+    // .gitignore is already in the private copy; ancestors were copied earlier.
+    const stats = new Map();
+    for (const name of names)
+      if (name.toLowerCase() !== ".git")
+        stats.set(name, await ctx.io.lstat(join(path, name), { bigint: true }));
+    const maybe = names.filter((n) => {
+      const st = stats.get(n);
+      return st && !(st.isFile() && !st.isSymbolicLink());
+    });
+    const ignored = new Set();
+    const classify = async () => {
+      if (!maybe.length) return;
+      const dirs = (n) => stats.get(n).isDirectory();
+      const full = (n) => (rel ? `${rel}/${n}` : n);
+      for (const n of maybe)
+        if (!validWorkspaceFilePath(full(n)) || full(n).startsWith(":"))
+          refuse("unsupported_repository");
+      const input = Buffer.from(
+        maybe.map((n) => `${full(n)}${dirs(n) ? "/" : ""}\0`).join(""),
+      );
+      const out = decode(await execute(ctx, "ignored", [], input)).split("\0");
+      for (const n of maybe) {
+        const p = full(n);
+        // Ignored paths holding tracked (force-added) files stay in the copy.
+        if (
+          out.includes(p + (dirs(n) ? "/" : "")) &&
+          !index.entries.some((e) => e.path === p || e.path.startsWith(`${p}/`))
+        )
+          ignored.add(n);
+      }
+    };
+    let classified = false;
+    names.sort((a, b) => Number(maybe.includes(a)) - Number(maybe.includes(b)));
     for (const name of names) {
       if (name.toLowerCase() === ".git") {
         if (!rel) continue;
         refuse("unsupported_repository");
       }
+      if (!classified && maybe.includes(name)) {
+        classified = true;
+        await classify();
+      }
+      if (ignored.has(name)) continue;
       if (++walked > ctx.limits.candidates) refuse("too_large");
       const child = rel ? `${rel}/${name}` : name;
       if (!validWorkspaceFilePath(child)) refuse("unsupported_repository");

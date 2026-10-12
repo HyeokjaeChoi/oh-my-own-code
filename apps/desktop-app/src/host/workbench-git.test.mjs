@@ -818,3 +818,37 @@ test("scratch parent inside worktree or external metadata refuses before any wri
     assert.deepEqual(await inventory(f.home), before, kind);
   }
 });
+
+test("ignored node_modules with symlinks and many files does not block observation", async (t) => {
+  const f = await fixture(t);
+  await fs.writeFile(join(f.root, ".gitignore"), "node_modules/\n");
+  f.run("add", "--", ".gitignore");
+  f.run("commit", "-m", "ignore");
+  const nm = join(f.root, "node_modules");
+  await fs.mkdir(join(nm, ".bin"), { recursive: true });
+  await fs.symlink("../pkg/cli.js", join(nm, ".bin", "cli"));
+  await fs.mkdir(join(nm, "pkg"));
+  for (let i = 0; i < 300; i++)
+    await fs.writeFile(join(nm, "pkg", `f${i}.js`), "x\n");
+  await fs.writeFile(join(f.root, "a.txt"), "edited\n");
+  const reader = createWorkbenchGitReader();
+  t.after(() => reader.close());
+  const observed = await reader.review(f.workspace, scope());
+  if (observed.status !== "available" && observed.reason === "git_unavailable")
+    return t.diagnostic(observed.reason);
+  assert.equal(observed.status, "available", observed.reason);
+  assert.deepEqual(
+    observed.files.map((x) => x.path),
+    ["a.txt"],
+  );
+});
+
+test("non-ignored symlink still refuses observation", async (t) => {
+  const f = await fixture(t);
+  await fs.symlink("a.txt", join(f.root, "link"));
+  const reader = createWorkbenchGitReader();
+  t.after(() => reader.close());
+  const observed = await reader.review(f.workspace, scope());
+  if (observed.reason === "git_unavailable") return t.diagnostic("git");
+  assert.notEqual(observed.status, "available");
+});
