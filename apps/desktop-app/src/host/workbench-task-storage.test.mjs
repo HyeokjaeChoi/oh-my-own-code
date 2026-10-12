@@ -577,6 +577,133 @@ test("TASK bootstrap reservation binds exactly once before real session authorit
     { code: "identity_conflict" },
   );
 });
+function bootstrapMachine(step = "native.create") {
+  const original = prepare();
+  original.identity.originKind = "bootstrap";
+  original.identity.origin.type =
+    step === "native.create" ? "session.create" : "session.fork";
+  delete original.identity.appSessionId;
+  delete original.identity.nativeSessionId;
+  const operation = {
+    identity: { ...original.identity.origin, workspaceId: "workspace" },
+    dispatches: [{ step }],
+    terminal: false,
+    reservation: {
+      workspace: { workspaceId: "workspace" },
+      appSessionId: "reserved",
+    },
+  };
+  original.binding = {
+    kind: "bootstrap",
+    step,
+    reservationDigest: taskReservationDigest(operation.reservation),
+    parentIdentityDigest: step === "native.create" ? null : "e".repeat(64),
+  };
+  const tasks = new Map();
+  applyTaskRecord(tasks, operation, original, new Map());
+  // Rejected records must not advance the sequence the next append expects.
+  const append = (kind, fields) => {
+    const sequence = tasks.values().next().value.sequence + 1;
+    return applyTaskRecord(
+      tasks,
+      operation,
+      {
+        kind,
+        runtimeEpoch: "epoch",
+        operationId: "send",
+        taskScopeId: original.taskScopeId,
+        revision: 4 + sequence,
+        sequence,
+        ...fields,
+      },
+      new Map(),
+    );
+  };
+  const handoff = (state) =>
+    append("task.handoff", {
+      handoffId: "5f1c2a40-1b7e-4c1a-8d33-0f5e5b9d3a11",
+      step,
+      stageArgumentDigest: "1".repeat(64),
+      state,
+      proofDigest: "2".repeat(64),
+    });
+  const bind = () =>
+    append("task.bootstrap-binding", {
+      appSessionId: "reserved",
+      nativeSessionId: "created",
+      metadataDigest: "a".repeat(64),
+    });
+  const proof = (outcome) =>
+    append("task_proof", {
+      proofDigest: "3".repeat(64),
+      outcome,
+      lastActivitySequence: tasks.values().next().value.sequence,
+    });
+  const settle = (outcome) =>
+    append("task.settle", { proofDigest: "3".repeat(64), outcome });
+  const bound = () =>
+    append("task.observe", { phase: "bound", launchId: "launch" });
+  return {
+    tasks,
+    task: () => tasks.values().next().value,
+    handoff,
+    bind,
+    proof,
+    settle,
+    bound,
+    append,
+  };
+}
+for (const step of ["native.create", "native.fork"])
+  test(`TASK ${step} bootstrap settles created from bound only with a completed handoff and the session binding`, () => {
+    const f = bootstrapMachine(step);
+    f.bound();
+    f.handoff("armed");
+    // Armed/consumed handoffs are open; the proof cannot skip them.
+    assert.throws(() => f.proof("settled"), { code: "identity_conflict" });
+    f.handoff("consumed");
+    assert.throws(() => f.proof("settled"), { code: "identity_conflict" });
+    f.handoff("completed");
+    // Completed handoff alone is not enough: the durable binding is required.
+    assert.throws(() => f.proof("settled"), { code: "identity_conflict" });
+    f.bind();
+    assert.equal(f.task().phase, "bound");
+    f.proof("settled");
+    // A settled proof is never a no-effect proof and cannot be changed.
+    assert.throws(() => f.proof("no_effect"), { code: "identity_conflict" });
+    assert.throws(() => f.settle("no_effect"), { code: "identity_conflict" });
+    f.settle("settled");
+    assert.equal(f.task().phase, "settled");
+    assert.equal(
+      validateTaskIdentity(f.task().identity).nativeSessionId,
+      "created",
+    );
+  });
+test("TASK bootstrap settled proof refuses a revoked handoff, a missing observe and non-bootstrap origins", () => {
+  const revoked = bootstrapMachine();
+  revoked.bound();
+  revoked.handoff("armed");
+  revoked.handoff("revoked");
+  revoked.bind();
+  assert.throws(() => revoked.proof("settled"), { code: "identity_conflict" });
+  // The no-effect path stays: armed -> revoked -> proof -> settle.
+  const none = bootstrapMachine();
+  none.bound();
+  none.handoff("armed");
+  assert.throws(() => none.proof("no_effect"), { code: "identity_conflict" });
+  none.handoff("revoked");
+  none.proof("no_effect");
+  none.settle("no_effect");
+  assert.equal(none.task().phase, "settled");
+  // Prepared (never observed bound) cannot be proven settled.
+  const prepared = bootstrapMachine();
+  prepared.bind();
+  assert.throws(() => prepared.proof("settled"), { code: "identity_conflict" });
+  // A prompt task still needs a running/cancelling phase for a settled proof.
+  const prompt = machine();
+  prompt.bound();
+  assert.throws(() => prompt.proof("settled"), { code: "identity_conflict" });
+});
 test("TASK command bindings carry command digest and actual expanded input; mutation cannot borrow prompt authority", () => {
   for (const kind of ["command", "mutation"]) {
     const initial = prepare();

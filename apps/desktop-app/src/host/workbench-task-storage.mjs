@@ -470,6 +470,13 @@ const activeInputs = (task) =>
   task.inputs.some((v) => ["pending", "promoted"].includes(v.state));
 const openHandoffs = (task) =>
   task.handoffs.some((v) => ["armed", "consumed"].includes(v.state));
+// A bootstrap task never runs. Its created session is proven by the completed
+// bootstrap handoff plus the durable session binding, straight from `bound`.
+const settledBootstrap = (task) =>
+  task.identity.originKind === "bootstrap" &&
+  task.phase === "bound" &&
+  Object.hasOwn(task.identity, "nativeSessionId") &&
+  task.handoffs.some((h) => h.state === "completed");
 function uniqueInput(tasks, nativeSessionId, inboxId) {
   need(
     ![...tasks.values()].some((task) =>
@@ -766,7 +773,8 @@ export function applyTaskRecord(tasks, operation, input, sessions, workspaces) {
       need(
         v.outcome === "no_effect"
           ? ["prepared", "bound"].includes(task.phase)
-          : ["running", "cancelling"].includes(task.phase),
+          : ["running", "cancelling"].includes(task.phase) ||
+              settledBootstrap(task),
       );
       task.proof = v;
       break;
