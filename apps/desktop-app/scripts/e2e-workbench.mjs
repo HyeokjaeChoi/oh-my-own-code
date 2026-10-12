@@ -15,6 +15,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
+import { createWorkbenchBridge } from "./e2e-bridge.mjs";
 
 const CONNECT_TIMEOUT_MS =
   Number(process.env.OMOC_E2E_CONNECT_TIMEOUT_MS) || 150_000;
@@ -101,8 +102,7 @@ try {
   );
   const composer = page.getByRole("textbox", { name: "메시지 작성" });
   await expect(composer).toBeVisible();
-  const bridge = (request) =>
-    page.evaluate((value) => window.desktopBridge.workbench(value), request);
+  const bridge = createWorkbenchBridge(page);
   const initial = await bridge({ type: "snapshot" });
   assert.equal(initial.ok, true);
   assert.equal(initial.value.state, "connected");

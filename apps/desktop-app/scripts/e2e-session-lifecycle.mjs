@@ -17,6 +17,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
+import { createWorkbenchBridge } from "./e2e-bridge.mjs";
 import { probeSessionHistory } from "./fixtures/session-history-probe.mjs";
 
 const CONNECT_TIMEOUT_MS =
@@ -103,8 +104,7 @@ try {
     "connected",
     { timeout: CONNECT_TIMEOUT_MS },
   );
-  const bridge = (request) =>
-    page.evaluate((value) => window.desktopBridge.workbench(value), request);
+  const bridge = createWorkbenchBridge(page);
   const initial = success(await bridge({ type: "snapshot" }));
   assert.equal(initial.temporary, true);
   // Never inherit user credentials/configuration. Import and trust only our
