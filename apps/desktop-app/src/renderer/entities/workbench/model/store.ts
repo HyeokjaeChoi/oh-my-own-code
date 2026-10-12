@@ -2467,15 +2467,14 @@ function validProjection(next: WorkbenchSnapshot): boolean {
     sessions = new Map<string, string>();
   for (const w of next.workspaces) {
     if (
-      !closed(w, [
-        "id",
-        "name",
-        "path",
-        "kind",
-        "trusted",
-        "trustRevision",
-        "temporary",
-      ]) ||
+      !closed(
+        w,
+        ["id", "name", "path", "kind", "trusted", "trustRevision", "temporary"],
+        // Read-only probe metadata the host contract already allows.
+        ["branch", "writable"],
+      ) ||
+      (Object.hasOwn(w, "branch") && typeof w.branch !== "string") ||
+      (Object.hasOwn(w, "writable") && typeof w.writable !== "boolean") ||
       !wireId(w.id, 256) ||
       workspaces.has(w.id) ||
       !validClock(w.trustRevision) ||

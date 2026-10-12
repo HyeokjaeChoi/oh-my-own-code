@@ -20164,3 +20164,19 @@ test("Permission policy accepted send and decision paths never schedule a policy
       }
     });
 });
+
+test("a snapshot whose workspaces carry the host's read-only probe metadata is accepted, malformed metadata is not", () => {
+  const s = createWorkbenchStore();
+  seed(
+    s,
+    snapshot(1, "a", {
+      workspaces: [{ ...workspace(), branch: "main", writable: true }],
+    }),
+  );
+  assert.equal(s.getState().connection, "connected");
+  assert.equal(s.getState().snapshot.workspaces[0].writable, true);
+  const before = s.getState().snapshot;
+  for (const extra of [{ writable: "yes" }, { branch: 7 }, { shell: "x" }])
+    seed(s, snapshot(2, "a", { workspaces: [{ ...workspace(), ...extra }] }));
+  assert.equal(s.getState().snapshot, before);
+});
