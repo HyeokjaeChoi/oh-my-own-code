@@ -539,6 +539,8 @@ async function captureMatrix(page, state) {
       page.getByRole("combobox", { name: "Agent 요청" }),
       page.getByRole("combobox", { name: "모델 요청" }),
     ]) {
+      // Settings rows scroll above the pinned composer at small heights.
+      await control.scrollIntoViewIfNeeded();
       await expect(control).toBeInViewport({ ratio: 1 });
       const bounds = await control.boundingBox();
       assert.ok(
@@ -886,7 +888,21 @@ async function assertSlashOutside(page) {
     await menu.getByText("앱 동작", { exact: true }).click();
     await expect(menu).toBeVisible();
     const box = await input.boundingBox();
-    const point = { x: box.x + 12, y: box.y + 12 };
+    // The menu opens above the toolbar and may cover the input's top-left, so
+    // probe the first input corner that lies outside the menu.
+    const menuBox = await menu.boundingBox();
+    const outside = ({ x, y }) =>
+      x < menuBox.x ||
+      x > menuBox.x + menuBox.width ||
+      y < menuBox.y ||
+      y > menuBox.y + menuBox.height;
+    const point = [
+      { x: box.x + 12, y: box.y + 12 },
+      { x: box.x + box.width - 12, y: box.y + 12 },
+      { x: box.x + 12, y: box.y + box.height - 12 },
+      { x: box.x + box.width - 12, y: box.y + box.height - 12 },
+    ].find(outside);
+    assert.ok(point, "A slash-outside point must exist on the input");
     if (touch) {
       const cdp = await page.context().newCDPSession(page);
       try {
