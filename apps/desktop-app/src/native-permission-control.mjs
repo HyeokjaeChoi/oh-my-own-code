@@ -2248,6 +2248,9 @@ function kernel(initial) {
     Effect.try({
       try: () => {
         const row = taskArmRequest(input);
+        // An expired handoff is unusable; it must not block the single slot.
+        if (armedBootstrap && armedBootstrap.row.expiresAt <= performance.now())
+          armedBootstrap = undefined;
         const entry = bootstrapPrepared.get(bootstrapKey(row.originalKey));
         const { request, result } = entry ?? {};
         if (
