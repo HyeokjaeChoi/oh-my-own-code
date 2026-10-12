@@ -1609,6 +1609,28 @@ test("unconfirmed absence in a successful snapshot never resolves deletion or re
   assert.equal(selectors.draft(api.store.getState()).text, "keep");
   api.dispose();
 });
+test("startup snapshot timeout keeps re-polling with capped backoff until connected", async () => {
+  const clock = fakeClock(),
+    pending = deferred();
+  let n = 0;
+  const h = bridgeHarness((e) =>
+    e.operation.type === "snapshot" && ++n === 1
+      ? pending.promise
+      : e.operation.type === "snapshot" && n < 4
+        ? { ok: false, code: "UNAVAILABLE", message: "x" }
+        : readFallback(e),
+  );
+  const api = createWindowWorkbench(h.bridge, { clock, id, timeoutMs: 30 });
+  api.start();
+  await flush();
+  await clock.advance(30);
+  assert.equal(api.store.getState().connection, "disconnected");
+  pending.resolve({ ok: false, code: "UNAVAILABLE", message: "late" });
+  await clock.advance(20000);
+  assert.ok(n >= 4);
+  assert.equal(api.store.getState().connection, "connected");
+  api.dispose();
+});
 test("bounded transport coalesces up to eight subscribers, isolates cancellations and keeps first task deadline", async () => {
   const clock = fakeClock(),
     pending = deferred(),
