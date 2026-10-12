@@ -452,10 +452,17 @@ export function createNativePreflight({
     );
     const bytes = Buffer.alloc(Number(config.stat.size));
     await config.handle.read(bytes, 0, bytes.length, 0);
-    // The user's own OpenCode config (providers, models): any small JSON object.
+    // The user's own OpenCode config: only the keys native-skills-config.mjs
+    // consumes (providers, model) plus $schema; anything else is unverified.
     try {
       const parsed = JSON.parse(bytes.toString("utf8"));
       if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
+        fail();
+      if (
+        Object.keys(parsed).some(
+          (key) => !["providers", "model", "$schema"].includes(key),
+        )
+      )
         fail();
     } catch {
       fail();

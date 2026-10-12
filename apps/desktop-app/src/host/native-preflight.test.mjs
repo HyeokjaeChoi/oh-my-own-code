@@ -342,6 +342,7 @@ for (const fault of [
   "optional",
   "config",
   "config-extra",
+  "config-unknown-key",
   "symlink",
   "hardlink",
   "mode",
@@ -375,9 +376,13 @@ for (const fault of [
     if (fault === "config")
       await fs.writeFile(
         join(f.namespace.config, "opencode", "opencode.json"),
-        // The user's opencode.json may hold any JSON object; invalid JSON or a
-        // non-object still denies.
+        // Invalid JSON, a non-object or unknown keys deny.
         "not json",
+      );
+    if (fault === "config-unknown-key")
+      await fs.writeFile(
+        join(f.namespace.config, "opencode", "opencode.json"),
+        '{"model":"lmstudio/m","mcp":{"x":{"command":["evil"]}}}\n',
       );
     if (fault === "config-extra")
       await fs.writeFile(join(f.namespace.config, "auth.json"), "synthetic", {
@@ -391,7 +396,14 @@ for (const fault of [
     if (fault === "mode") await fs.chmod(f.database, 0o644);
     assert.equal(await f.preflight.check(), false);
     if (
-      ["config", "config-extra", "symlink", "hardlink", "mode"].includes(fault)
+      [
+        "config",
+        "config-unknown-key",
+        "config-extra",
+        "symlink",
+        "hardlink",
+        "mode",
+      ].includes(fault)
     )
       assert.equal(f.children.length, 0);
   });
