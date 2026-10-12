@@ -48,32 +48,47 @@ const HARDEN = [
   "core.fsmonitor=false",
 ];
 
-function runGit(cwd, args) {
-  return new Promise((done, reject) => {
+// Repository config keys that make git execute a program on checkout/diff/merge
+// or follow files outside the repository; such repos are refused outright.
+const UNSAFE_CONFIG =
+  /^(filter\..+|include\..+|includeif\..+|core\.sshcommand|core\.gitproxy|diff\..+\.textconv|merge\..+\.driver)$/u;
+const gitEnv = (cwd) => ({
+  ...process.env,
+  // No system/global config: only the repo's own (screened) config applies.
+  GIT_CONFIG_NOSYSTEM: "1",
+  GIT_CONFIG_GLOBAL: NULL_DEVICE,
+  GIT_TERMINAL_PROMPT: "0",
+  LC_ALL: "C",
+  // Never discover a repo in a parent of cwd (a plain folder inside someone else's repo).
+  GIT_CEILING_DIRECTORIES: dirname(cwd),
+});
+const execGit = (cwd, args) =>
+  new Promise((done, reject) => {
     execFile(
       "git",
       [...HARDEN, ...args],
-      {
-        cwd,
-        timeout: 30000,
-        maxBuffer: 1 << 22,
-        env: {
-          ...process.env,
-          GIT_TERMINAL_PROMPT: "0",
-          LC_ALL: "C",
-          // Never discover a repo in a parent of cwd (a plain folder inside someone else's repo).
-          GIT_CEILING_DIRECTORIES: dirname(cwd),
-        },
-      },
-      (error, stdout, stderr) =>
-        error
-          ? reject(
-              fail("GIT_FAILED", {
-                detail: String(stderr || error.message).slice(0, 400),
-              }),
-            )
-          : done(stdout),
+      { cwd, timeout: 30000, maxBuffer: 1 << 22, env: gitEnv(cwd) },
+      (error, stdout, stderr) => (error ? reject({ error, stderr }) : done(stdout)),
     );
+  });
+
+async function assertSafeRepoConfig(cwd) {
+  // Not a repository (or unreadable): the real command reports that itself.
+  const listing = await execGit(cwd, ["config", "--local", "-z", "--list"]).catch(
+    () => "",
+  );
+  for (const entry of listing.split("\0")) {
+    const key = entry.split("\n", 1)[0].toLowerCase();
+    if (UNSAFE_CONFIG.test(key)) throw fail("UNSAFE_REPO_CONFIG");
+  }
+}
+
+async function runGit(cwd, args) {
+  await assertSafeRepoConfig(cwd);
+  return execGit(cwd, args).catch(({ error, stderr }) => {
+    throw fail("GIT_FAILED", {
+      detail: String(stderr || error.message).slice(0, 400),
+    });
   });
 }
 const inside = (root, path) => {
@@ -122,8 +137,10 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
     if (!validateRefName(base) && base !== "HEAD") throw fail("INVALID_BASE");
     const top = await git(repo, ["rev-parse", "--show-toplevel"])
       .then((out) => realpath(out.trim()))
-      .catch(() => {
-        throw fail("NOT_GIT_REPO");
+      .catch((error) => {
+        throw error?.worktreeCode === "UNSAFE_REPO_CONFIG"
+          ? error
+          : fail("NOT_GIT_REPO");
       });
     if (top !== (await realpath(repo))) throw fail("NOT_GIT_REPO");
     await git(top, [

@@ -582,3 +582,49 @@ test("unrelated sibling changes do not replace an ancestor or revoke the selecte
   assert.equal(await owner.assertCurrent(), true);
   assert.deepEqual(owner.inspect(), original);
 });
+
+test("assertNotVcsMetadataPath refuses VCS metadata by canonical identity", async () => {
+  const { assertNotVcsMetadataPath } = await import("./native-bootstrap-workspace.mjs");
+  const { mkdtemp, mkdir, writeFile, symlink, link, realpath, rm } = await import("node:fs/promises");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const root = await realpath(await mkdtemp(join(tmpdir(), "omoc-vcs-guard-")));
+  try {
+    await mkdir(join(root, ".git", "hooks"), { recursive: true });
+    await mkdir(join(root, ".hg"));
+    await mkdir(join(root, "src"));
+    await writeFile(join(root, ".git", "config"), "x");
+    await writeFile(join(root, "src", "a.txt"), "x");
+    await symlink(join(".git", "config"), join(root, "x"));
+    await symlink("../.git", join(root, "src", "g"));
+    await link(join(root, "src", "a.txt"), join(root, "src", "b.txt"));
+    await writeFile(join(root, "plain.txt"), "x");
+    const refused = [
+      ".git/config",
+      ".git/hooks/pre-commit",
+      ".git/new/file",
+      ".hg/hgrc",
+      "x", // symlink -> .git/config
+      "src/g/config", // symlinked dir
+      "src/g/new", // symlinked dir, nonexistent leaf
+      "src/b.txt", // hard link (nlink 2)
+      "../outside.txt",
+    ];
+    // Case-insensitive volume: .GIT/.Hg are the same directory.
+    const insensitive = await import("node:fs").then(
+      ({ existsSync }) => existsSync(join(root, ".GIT")),
+    );
+    if (insensitive) refused.push(".GIT/hooks/pre-commit", ".Hg/hgrc", "src/.GiT/x");
+    for (const rel of refused)
+      await assert.rejects(
+        assertNotVcsMetadataPath(root, join(root, rel)),
+        /native_bootstrap_workspace_unverified/u,
+        rel,
+      );
+    for (const rel of ["plain.txt", "src/new.txt", "src/deep/new.txt", "gitignore", "src/.github/x"])
+      await assertNotVcsMetadataPath(root, join(root, rel));
+    await assert.rejects(assertNotVcsMetadataPath(root, "relative"));
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});

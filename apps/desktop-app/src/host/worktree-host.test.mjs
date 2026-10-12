@@ -467,3 +467,49 @@ test("git runs never discover a repo above a plain folder", async () => {
     f.done();
   }
 });
+
+test("repos whose config can run programs or follow includes are refused before any git command", async () => {
+  for (const [key, value] of [
+    ["filter.x.smudge", "touch pwned"],
+    ["include.path", "/tmp/elsewhere"],
+    ["includeIf.gitdir:/.path", "/tmp/elsewhere"],
+    ["core.sshCommand", "touch pwned"],
+    ["core.gitProxy", "touch pwned"],
+    ["diff.x.textconv", "touch pwned"],
+    ["merge.x.driver", "touch pwned"],
+  ]) {
+    const f = fixture();
+    try {
+      g(f.repo, "config", key, value);
+      await fails(
+        f.host.create({ repo: f.repo, branch: "feat/u", base: "main" }),
+        "UNSAFE_REPO_CONFIG",
+      );
+      assert.equal(existsSync(join(f.dir, "pwned")), false);
+    } finally {
+      f.done();
+    }
+  }
+});
+
+test("git runs ignore system and global config", async () => {
+  const f = fixture();
+  const oldPath = process.env.PATH;
+  try {
+    const bin = join(f.dir, "bin");
+    const log = join(f.dir, "env.log");
+    mkdirSync(bin);
+    writeFileSync(
+      join(bin, "git"),
+      `#!/bin/sh\necho "$GIT_CONFIG_NOSYSTEM $GIT_CONFIG_GLOBAL" >> "${log}"\nPATH="${oldPath}" exec git "$@"\n`,
+      { mode: 0o755 },
+    );
+    process.env.PATH = `${bin}:${oldPath}`;
+    await f.host.create({ repo: f.repo, branch: "feat/e", base: "main" });
+    const seen = readFileSync(log, "utf8").trim().split("\n");
+    assert.ok(seen.length > 1 && seen.every((v) => v === "1 /dev/null"), seen.join("|"));
+  } finally {
+    process.env.PATH = oldPath;
+    f.done();
+  }
+});

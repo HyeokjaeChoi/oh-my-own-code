@@ -13,7 +13,7 @@
 import { createHash } from "node:crypto";
 import { lstatSync, realpathSync } from "node:fs";
 import * as fs from "node:fs/promises";
-import { dirname } from "node:path";
+import { dirname, isAbsolute, join, normalize, relative, sep } from "node:path";
 import { types } from "node:util";
 import {
   createWorkspaceRootAuthority,
@@ -82,6 +82,57 @@ const noteFailure = (error) => {
   failures.set(error, state);
   return state;
 };
+const VCS_NAMES = [".git", ".hg"];
+const swapCase = (value) =>
+  [...value].map((c) => (c === c.toLowerCase() ? c.toUpperCase() : c.toLowerCase())).join("");
+
+// Execution-side VCS metadata guard (permission rules are lexical and
+// case-sensitive; this is by canonical identity). Throws unless `target` is an
+// absolute path whose realpath (symlinks resolved through the longest existing
+// prefix, so not-yet-created files are covered) stays inside the realpath of
+// `workspace` and has no `.git`/`.hg` component (matched case-insensitively
+// when the volume is case-insensitive, probed on the workspace root). Existing
+// multiply-linked regular files are refused: a hard link into `.git/config`
+// has no path-level identity. Callers: every tool file-effect admission (edit,
+// write, patch) before the effect, and again on the formatter's output paths.
+export async function assertNotVcsMetadataPath(workspace, target) {
+  need(typeof workspace === "string" && isAbsolute(workspace));
+  need(typeof target === "string" && isAbsolute(target) && !target.includes("\0"));
+  const root = await fs.realpath(workspace);
+  const alias = join(dirname(root), swapCase(root.slice(dirname(root).length + 1)));
+  const caseInsensitive =
+    alias === root ||
+    (await fs.lstat(alias, { bigint: true }).then(
+      (a) => fs.lstat(root, { bigint: true }).then((r) => a.dev === r.dev && a.ino === r.ino),
+      () => false,
+    ));
+  let existing = normalize(target);
+  const tail = [];
+  for (;;) {
+    try {
+      existing = await fs.realpath(existing);
+      break;
+    } catch (cause) {
+      need(cause?.code === "ENOENT" || cause?.code === "ENOTDIR");
+      const parent = dirname(existing);
+      need(parent !== existing);
+      tail.unshift(existing.slice(parent.length + 1));
+      existing = parent;
+    }
+  }
+  const real = join(existing, ...tail);
+  const rel = relative(root, real);
+  need(rel !== "" && rel !== ".." && !rel.startsWith(`..${sep}`) && !isAbsolute(rel));
+  for (const part of rel.split(sep)) {
+    const name = caseInsensitive ? part.toLowerCase() : part;
+    need(!VCS_NAMES.includes(name));
+  }
+  if (tail.length === 0) {
+    const stat = await fs.lstat(real, { bigint: true });
+    need(!stat.isFile() || stat.nlink === 1n);
+  }
+}
+
 export function nativeBootstrapWorkspaceFailureClosed(error) {
   const state = failures.get(error);
   return state?.closed === true && state.reused === false;
