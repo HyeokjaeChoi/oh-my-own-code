@@ -1,8 +1,19 @@
-// Read-only NON-VCS candidate. No Native persistence or execution permission.
+// Read-only workspace candidate. No Native persistence or execution permission.
+//
+// Git/Hg repositories are allowed (the workspace may be a repository root or
+// inside one). The original refusal existed because Native's Project.resolve
+// discovers VCS by spawning git/hg against repository-controlled config and
+// derives a VCS-based project identity. This candidate never calls it: the
+// project id is always SHA1("directory:"+canonicalDirectory) and the Location
+// reports `vcs: undefined`, so every Native git/hg code path (VCS plugins,
+// snapshots, worktree strategies) stays disabled. A `.git`/`.hg` entry is just
+// a directory entry; root pinning, canonical-path and symlink identity checks
+// below are unchanged. VCS metadata must still be protected from tool writes
+// by permission rules (see permission-mode.mjs).
 import { createHash } from "node:crypto";
 import { lstatSync, realpathSync } from "node:fs";
 import * as fs from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { dirname } from "node:path";
 import { types } from "node:util";
 import {
   createWorkspaceRootAuthority,
@@ -51,19 +62,9 @@ const same = (left, right) => fields.every((key) => left[key] === right[key]);
 // changes alter size/nlink/timestamps without replacing that object. Every new
 // observation still checks ALL fields before/after and in its final sweep;
 // across observations retain identity, ownership and access mode, not a frozen
-// directory listing. VCS markers and canonical paths are always checked anew.
+// directory listing. Canonical paths are always checked anew.
 const sameIdentity = (left, right) =>
   ["dev", "ino", "mode", "uid", "gid"].every((key) => left[key] === right[key]);
-function absentSync(path) {
-  try {
-    lstatSync(path, { bigint: true });
-  } catch (error) {
-    if (error.code === "ENOENT") return;
-    throw error;
-  }
-  refuse();
-}
-
 // Facts belong to this factory invocation, never to caller error properties.
 const failures = new WeakMap();
 const noteFailure = (error) => {
@@ -119,18 +120,6 @@ export async function createNativeBootstrapWorkspace(workspace, options = {}) {
     requireLive();
     assertWorkspaceRootGuard(root.assertOpened, row);
   };
-  const absent = async (path) => {
-    let found = false;
-    await checked(async () => {
-      try {
-        await fs.lstat(path, { bigint: true });
-        found = true;
-      } catch (error) {
-        if (error.code !== "ENOENT") throw error;
-      }
-    });
-    need(!found);
-  };
   const observe = async () => {
     const chain = [];
     let path = selected.path;
@@ -139,8 +128,6 @@ export async function createNativeBootstrapWorkspace(workspace, options = {}) {
         await checked(() => fs.lstat(path, { bigint: true })),
       );
       need((await checked(() => fs.realpath(path))) === path);
-      await absent(join(path, ".git"));
-      await absent(join(path, ".hg"));
       const after = directory(
         await checked(() => fs.lstat(path, { bigint: true })),
       );
@@ -159,8 +146,6 @@ export async function createNativeBootstrapWorkspace(workspace, options = {}) {
     for (const { path, stat } of chain) {
       need(same(stat, directory(lstatSync(path, { bigint: true }))));
       need(realpathSync(path) === path);
-      absentSync(join(path, ".git"));
-      absentSync(join(path, ".hg"));
       need(same(stat, directory(lstatSync(path, { bigint: true }))));
     }
     guard();
