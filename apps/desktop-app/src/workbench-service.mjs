@@ -3151,12 +3151,24 @@ export function createWorkbenchService({
       await recheck(w);
       if (!w.trusted) fail("INVALID_SELECTION");
       await verifyInstructionBaseline(w, s, currentRun);
-      const active = await call(client.session.active);
-      const inbox = await call(client.session.inbox.list, {
-        sessionID: s.sdkId,
-      });
-      if (!active || typeof active !== "object" || !Array.isArray(inbox))
-        fail("RUNTIME_ERROR");
+      let active, inbox;
+      // A just-finished reply can still show as active for a moment; wait
+      // briefly for idle before rejecting (bounded, ~3s).
+      for (let attempt = 0; ; attempt++) {
+        active = await call(client.session.active);
+        inbox = await call(client.session.inbox.list, {
+          sessionID: s.sdkId,
+        });
+        if (!active || typeof active !== "object" || !Array.isArray(inbox))
+          fail("RUNTIME_ERROR");
+        if (
+          currentRun ||
+          attempt >= 15 ||
+          !(active[s.sdkId] || inbox.some((item) => item.sessionID === s.sdkId))
+        )
+          break;
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      }
       if (
         currentRun
           ? active[s.sdkId]?.type !== "running"

@@ -812,6 +812,17 @@ test("command.run and session.interrupt receipts confirm on Native success and g
   const bad = await run({ type: "session.interrupt", ...f.ids }, "i-bad");
   assert.equal(bad.receipt?.effect, "unknown");
 });
+test("send waits briefly for a just-finished reply to leave active before BUSY", async (t) => {
+  const f = await fixture(t);
+  f.state.active = { "sdk-default": { type: "running" } };
+  setTimeout(() => {
+    f.state.active = {};
+  }, 300);
+  assert.equal(
+    (await f.send({ requestId: "late-idle" })).value.status,
+    "accepted",
+  );
+});
 test("native cancellation, exclusive folder create, UUIDv7 fallback and registration-only removal", async (t) => {
   const f = await fixture(t);
   assert.equal(
