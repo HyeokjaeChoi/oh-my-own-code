@@ -16,10 +16,8 @@ import { createNativeSkillsClient } from "./native-skills-client.mjs";
 import { createNativeAgentsClient } from "./native-agents-client.mjs";
 import { createNativeExtensionsClient } from "./native-extensions-client.mjs";
 import { validateHostMessage } from "./event-host-protocol.mjs";
-import {
-  initialization,
-  taskPreparation,
-} from "./native-permission-control-input.mjs";
+import { initialization } from "./native-permission-control-input.mjs";
+import { createNativeTaskLedger } from "./native-permission-task-ledger.mjs";
 import { createNativeTaskRequestContext } from "./native-permission-task-request.mjs";
 
 const VERSION = "2.0.18";
@@ -72,6 +70,8 @@ export async function startEventHost({
   startupTimeoutMs = 20_000,
   stopTimeoutMs = 5_000,
   requestTimeoutMs = 5_000,
+  // Trusted Main callback: synchronous loss barrier for durable task authority.
+  onTaskAuthorityLoss,
 } = {}) {
   // Main and the existing startup preflight reject every retained operation.
   // This empty original-key table never releases the graph's boot-held state.
@@ -118,6 +118,17 @@ export async function startEventHost({
   const nonce = randomBytes(32).toString("hex");
   const password = randomBytes(32).toString("hex");
   const nativeTaskRequests = createNativeTaskRequestContext();
+  // Live task correlation (assigned once the host channel exists). In memory
+  // only; cleared on failure, stop and child exit.
+  let ledger;
+  const dropTaskAuthority = () => {
+    ledger?.clear();
+    try {
+      onTaskAuthorityLoss?.();
+    } catch {
+      /* the loss barrier must not mask the original failure */
+    }
+  };
   let child,
     exitResult,
     resolveExit,
@@ -138,6 +149,7 @@ export async function startEventHost({
     observationActive = false,
     pendingHostRequests = 0,
     taskPreparationRequest,
+    taskHandoffRequest,
     taskPreparationActive = false,
     configurationRequest,
     configurationActive = false,
@@ -155,6 +167,7 @@ export async function startEventHost({
   });
   const fail = (reason) => {
     nativeTaskRequests.close();
+    dropTaskAuthority();
     uncertain = true;
     failureReason ??= reason;
     wakeFailure();
@@ -202,6 +215,7 @@ export async function startEventHost({
     stopPromise = (async () => {
       stopping = true;
       nativeTaskRequests.close();
+      dropTaskAuthority();
       if (observationActive) fail("idle_interrupted");
       signal?.removeEventListener("abort", onAbort);
       let forced = false;
@@ -369,6 +383,7 @@ export async function startEventHost({
     child.on("error", () => fail("child_error"));
     child.once("exit", (code, exitSignal) => {
       nativeTaskRequests.close();
+      dropTaskAuthority();
       exitResult = { code, signal: exitSignal };
       try {
         processIdentity?.observeExit?.(child.pid);
@@ -439,6 +454,18 @@ export async function startEventHost({
           const pending = taskPreparationRequest;
           taskPreparationRequest = undefined;
           pending.resolve(message.result);
+        } else if (message.type === "task-handoff-result") {
+          if (
+            !taskHandoffRequest ||
+            stopping ||
+            taskHandoffRequest.requestId !== message.requestId ||
+            taskHandoffRequest.action !== message.action ||
+            taskHandoffRequest.handoffId !== message.handoffId
+          )
+            throw new Error("unexpected_task_handoff");
+          const pending = taskHandoffRequest;
+          taskHandoffRequest = undefined;
+          pending.resolve(message.status);
         } else if (message.type === "observation") {
           if (
             !observationRequest ||
@@ -644,67 +671,118 @@ export async function startEventHost({
       proxies.set(value, proxy);
       return proxy;
     };
-    const nativeTasks = Object.freeze({
-      async prepare(input) {
-        const request = taskPreparation(input);
+    // Single-flight host request to the child for task preparation/handoff.
+    const taskCall = async (build, register) => {
+      live();
+      if (
+        !connected ||
+        stopping ||
+        uncertain ||
+        observationActive ||
+        configurationActive ||
+        configurationPrepared ||
+        taskPreparationActive
+      )
+        throw new Error("task_preparation_held");
+      taskPreparationActive = true;
+      pendingHostRequests++;
+      try {
+        if ((await owner.assertOwned(owner.getNonce())).state !== "ready")
+          throw new Error("owner_unverified");
         live();
-        if (
-          request.origin.runtimeEpoch !== permissionInit.runtimeEpoch ||
-          !connected ||
-          stopping ||
-          uncertain ||
-          observationActive ||
-          configurationActive ||
-          configurationPrepared ||
-          taskPreparationActive
-        )
-          throw new Error("task_preparation_held");
-        taskPreparationActive = true;
-        pendingHostRequests++;
-        try {
-          if ((await owner.assertOwned(owner.getNonce())).state !== "ready")
-            throw new Error("owner_unverified");
-          live();
-          if (stopping || uncertain) throw new Error("task_preparation_held");
-          const requestId = randomBytes(32).toString("hex");
-          const message = { type: "task-prepare", nonce, requestId, request };
-          validateHostMessage(message, "child");
-          const response = new Promise((resolve) => {
-            taskPreparationRequest = { requestId, request, resolve };
-          });
-          await bounded(
-            send(message),
-            Math.min(startupTimeoutMs, 10000),
-            "task_send_timeout",
-          );
-          const result = await bounded(
-            Promise.race([
-              response,
-              failed.then(() => {
-                throw new Error("task_preparation_held");
-              }),
-              exited.then(() => {
-                throw new Error("task_preparation_held");
-              }),
-            ]),
-            Math.min(startupTimeoutMs, 10000),
-            "task_preparation_timeout",
-          );
-          live();
-          if ((await owner.assertOwned(owner.getNonce())).state !== "ready")
-            throw new Error("owner_unverified");
-          live();
-          if (stopping || uncertain) throw new Error("task_preparation_held");
-          return Object.freeze({ ...result });
-        } catch (error) {
-          if (!stopping) fail("task_preparation_unconfirmed");
-          throw error;
-        } finally {
-          taskPreparationRequest = undefined;
-          taskPreparationActive = false;
-          pendingHostRequests--;
-        }
+        if (stopping || uncertain) throw new Error("task_preparation_held");
+        const requestId = randomBytes(32).toString("hex");
+        const message = build(requestId);
+        validateHostMessage(message, "child");
+        const response = new Promise((resolve) => register(requestId, resolve));
+        await bounded(
+          send(message),
+          Math.min(startupTimeoutMs, 10000),
+          "task_send_timeout",
+        );
+        const result = await bounded(
+          Promise.race([
+            response,
+            failed.then(() => {
+              throw new Error("task_preparation_held");
+            }),
+            exited.then(() => {
+              throw new Error("task_preparation_held");
+            }),
+          ]),
+          Math.min(startupTimeoutMs, 10000),
+          "task_preparation_timeout",
+        );
+        live();
+        if ((await owner.assertOwned(owner.getNonce())).state !== "ready")
+          throw new Error("owner_unverified");
+        live();
+        if (stopping || uncertain) throw new Error("task_preparation_held");
+        return result;
+      } catch (error) {
+        if (!stopping) fail("task_preparation_unconfirmed");
+        throw error;
+      } finally {
+        taskPreparationRequest = undefined;
+        taskHandoffRequest = undefined;
+        taskPreparationActive = false;
+        pendingHostRequests--;
+      }
+    };
+    const taskLive = () => connected && !stopping && !uncertain && !exitResult;
+    ledger = createNativeTaskLedger({
+      runtimeEpoch: permissionInit.runtimeEpoch,
+      isLive: taskLive,
+      onUnconfirmed: () => fail("task_preparation_unconfirmed"),
+      channel: {
+        prepare: (request) =>
+          taskCall(
+            (requestId) => ({
+              type: "task-prepare",
+              nonce,
+              requestId,
+              request,
+            }),
+            (requestId, resolve) => {
+              taskPreparationRequest = { requestId, request, resolve };
+            },
+          ),
+        arm: (request) =>
+          taskCall(
+            (requestId) => ({ type: "task-arm", nonce, requestId, request }),
+            (requestId, resolve) => {
+              taskHandoffRequest = {
+                requestId,
+                action: "arm",
+                handoffId: request.handoffId,
+                resolve,
+              };
+            },
+          ),
+        revoke: (handoffId) =>
+          taskCall(
+            (requestId) => ({
+              type: "task-revoke",
+              nonce,
+              requestId,
+              handoffId,
+            }),
+            (requestId, resolve) => {
+              taskHandoffRequest = {
+                requestId,
+                action: "revoke",
+                handoffId,
+                resolve,
+              };
+            },
+          ),
       },
+    });
+    const nativeTasks = Object.freeze({
+      prepare: ledger.prepare,
+      arm: ledger.arm,
+      revoke: ledger.revoke,
+      verify: ledger.verify,
     });
     const configurationCall = async (type, fields) => {
       const indexRequest = type.startsWith("git-index-");

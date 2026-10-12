@@ -314,3 +314,145 @@ test("Git commit IPC admits only closed kind-specific private authority", () => 
     ),
   );
 });
+
+const uuid = (n) =>
+  `5f1c2a40-1b7e-4c1a-8d33-0f5e5b9d3a${String(n).padStart(2, "0")}`;
+const bootstrapRequest = () => ({
+  originKind: "bootstrap",
+  origin: {
+    runtimeEpoch: "main-epoch",
+    operationId: "original-create",
+    type: "session.create",
+    digest: hex,
+  },
+  workspaceId: "workspace",
+  workspacePath: "/checked/workspace",
+  appSessionId: "reserved-session",
+  plannedNativeSessionId: "ses_planned",
+  metadataDigest: "b".repeat(64),
+  reservation: {
+    kind: "bootstrap",
+    step: "native.create",
+    reservationDigest: "c".repeat(64),
+    parentIdentityDigest: null,
+  },
+});
+const prepared = () => ({
+  status: "prepared",
+  taskScopeId: uuid(1),
+  locationId: uuid(2),
+  projectId: "project",
+  modeGeneration: 1,
+  inventoryGeneration: 1,
+  launchId: "launch-1",
+});
+const armRequest = () => ({
+  handoffId: uuid(3),
+  taskScopeId: uuid(1),
+  originalKey: { runtimeEpoch: "main-epoch", operationId: "original-create" },
+  originalDigest: hex,
+  step: "native.create",
+  stageArgumentDigest: "d".repeat(64),
+  targetIdentity: {
+    taskScopeId: uuid(1),
+    origin: bootstrapRequest().origin,
+    workspaceId: "workspace",
+    projectId: "project",
+    locationId: uuid(2),
+    modeGeneration: 1,
+    inventoryGeneration: 1,
+    originKind: "bootstrap",
+  },
+  currentLaunchIdentity: "launch-1",
+});
+
+test("bootstrap preparation result is closed identity candidates only", () => {
+  const response = {
+    type: "task-preparation",
+    nonce: hex,
+    pid: 123,
+    requestId: hex,
+    request: bootstrapRequest(),
+    result: prepared(),
+  };
+  assert.equal(validateHostMessage(response, "parent"), response);
+  for (const result of [
+    { ...prepared(), extra: true },
+    { ...prepared(), modeGeneration: 0 },
+    { ...prepared(), inventoryGeneration: -1 },
+    { ...prepared(), taskScopeId: "not-a-uuid" },
+    { ...prepared(), locationId: "not-a-uuid" },
+    { ...prepared(), launchId: "bad launch" },
+    { ...prepared(), reason: "inventory_unverified" },
+    (({ launchId: _launch, ...rest }) => rest)(prepared()),
+  ])
+    assert.throws(
+      () => validateHostMessage({ ...response, result }, "parent"),
+      /invalid_ipc/,
+    );
+});
+
+test("task-arm and task-revoke are closed private messages; handoff results are typed", () => {
+  const arm = {
+    type: "task-arm",
+    nonce: hex,
+    requestId: hex,
+    request: armRequest(),
+  };
+  assert.equal(validateHostMessage(arm, "child"), arm);
+  for (const patch of [
+    { request: { ...armRequest(), expiresAt: 1 } },
+    { request: { ...armRequest(), step: "native.send" } },
+    { request: { ...armRequest(), handoffId: "not-a-uuid" } },
+    { request: { ...armRequest(), stageArgumentDigest: "bad" } },
+    { request: { ...armRequest(), taskScopeId: uuid(9) } },
+    { request: { ...armRequest(), originalDigest: "e".repeat(64) } },
+    {
+      request: {
+        ...armRequest(),
+        targetIdentity: {
+          ...armRequest().targetIdentity,
+          originKind: "prompt",
+        },
+      },
+    },
+    { requestId: "short" },
+    { extra: true },
+  ])
+    assert.throws(
+      () => validateHostMessage({ ...arm, ...patch }, "child"),
+      /invalid_ipc/,
+    );
+  const revoke = {
+    type: "task-revoke",
+    nonce: hex,
+    requestId: hex,
+    handoffId: uuid(3),
+  };
+  assert.equal(validateHostMessage(revoke, "child"), revoke);
+  for (const patch of [{ handoffId: "x" }, { handoffId: 1 }, { extra: 1 }])
+    assert.throws(
+      () => validateHostMessage({ ...revoke, ...patch }, "child"),
+      /invalid_ipc/,
+    );
+  const result = {
+    type: "task-handoff-result",
+    nonce: hex,
+    pid: 123,
+    requestId: hex,
+    action: "arm",
+    handoffId: uuid(3),
+    status: "ok",
+  };
+  assert.equal(validateHostMessage(result, "parent"), result);
+  for (const patch of [
+    { action: "consume" },
+    { status: "armed" },
+    { handoffId: "x" },
+    { extra: true },
+  ])
+    assert.throws(
+      () => validateHostMessage({ ...result, ...patch }, "parent"),
+      /invalid_ipc/,
+    );
+});

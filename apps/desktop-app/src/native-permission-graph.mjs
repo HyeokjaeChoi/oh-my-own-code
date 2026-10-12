@@ -8,6 +8,7 @@ import { NATIVE_PERMISSION_OVERLAY_RECEIPT } from "./native-permission-overlay-c
 import { nativeSkillsConfig } from "./native-skills-config.mjs";
 import {
   initialization,
+  taskArmRequest,
   taskPreparation,
 } from "./native-permission-control-input.mjs";
 
@@ -578,6 +579,30 @@ export async function createNativePermissionGraph(input) {
         closed || !service || acquired !== service
           ? unavailable()
           : service.prepareTask(captured),
+      );
+    },
+    // Private Main delivery after durable original intent only. Both fail closed
+    // (typed failure, no handoff) when the graph is closed or not yet acquired.
+    arm(request) {
+      let captured;
+      try {
+        captured = taskArmRequest(request);
+      } catch (failure) {
+        return Effect.fail(failure);
+      }
+      const service = acquired;
+      return Effect.suspend(() =>
+        closed || !service || acquired !== service
+          ? Effect.fail(new Error("native_permission_runtime_unavailable"))
+          : service.armBootstrap(captured),
+      );
+    },
+    revoke(handoffId) {
+      const service = acquired;
+      return Effect.suspend(() =>
+        closed || !service || acquired !== service
+          ? Effect.fail(new Error("native_permission_runtime_unavailable"))
+          : service.revokeBootstrap(handoffId),
       );
     },
     close(reason) {
