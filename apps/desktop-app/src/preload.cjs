@@ -23,15 +23,19 @@ if (process.isMainFrame) {
       }
       if (
         value?.state === "connected" &&
-        typeof value.serverVersion === "string" &&
-        typeof value.sessionTitle === "string" &&
-        typeof value.sessionId === "string"
+        typeof value.serverVersion === "string"
       ) {
+        // Namespaced runtimes connect without a bootstrap session.
+        const hasSession =
+          typeof value.sessionTitle === "string" &&
+          typeof value.sessionId === "string";
         return {
           state: "connected",
           serverVersion: value.serverVersion,
-          sessionTitle: value.sessionTitle,
-          sessionId: value.sessionId,
+          ...(hasSession && {
+            sessionTitle: value.sessionTitle,
+            sessionId: value.sessionId,
+          }),
         };
       }
       throw new Error("invalid_runtime_snapshot");
