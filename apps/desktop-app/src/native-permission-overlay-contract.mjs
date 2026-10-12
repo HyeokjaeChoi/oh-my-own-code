@@ -379,12 +379,12 @@ const recipe = {
       beforeSha256:
         "76638b2c4d683d304603080ba002d054cfcf49e037d378071e80b46efb74440b",
       afterSha256:
-        "0b365a3c2be9ba0698beb85865a9091b48d12c4f5758317fe173964c0556f819",
+        "a24ec771264a845261c7452f5506e62c1680a2374782ec64b3a9385cb14f5a4f",
       edits: [
         {
           find: '    create: Effect.fn("Session.create")(function* (input) {\n',
           replace:
-            '    create: Effect.fn("Session.create")(function* (input) {\n      // No pre-session effect until private bootstrap task authority is wired.\n      // This also refuses direct HTTP creation and duplicate-ID probing.\n      yield* Effect.fail(new Error("native_permission_held"));\n',
+            '    create: Effect.fn("Session.create")(function* (input) {\n      // Only a private bootstrap handoff armed for exactly this input may create.\n      // Direct HTTP callers, other methods and duplicate-ID probes are refused.\n      yield* control.consumeBootstrap(input);\n',
         },
         {
           find: "var layer = Layer.effect(Service27, Effect.gen(function* () {",
@@ -403,7 +403,7 @@ const recipe = {
         {
           find: "  return result;\n}));",
           replace:
-            '  // Existing-session effect entries only; create/import need private bootstrap authority.\n  for (const name of ["fork", "remove", "generate", "command", "background", "move"]) {\n    const original = result[name];\n    result[name] = (input, ...args) => enter(typeof input === "string" ? input : input.sessionID, () => Effect.void).pipe(Effect.andThen(Effect.suspend(() => original(input, ...args))));\n  }\n  const environment = result.environment;\n  result.environment = (input) => input.variables === undefined ? environment(input) : enter(input.sessionID, () => Effect.void).pipe(Effect.andThen(Effect.suspend(() => environment(input))));\n  return result;\n}));',
+            '  // Existing-session effect entries only; create/import need private bootstrap authority.\n  const forkOriginal = result.fork;\n  result.fork = (input, ...args) => enter(input?.sessionID, () => Effect.void, input).pipe(Effect.andThen(Effect.suspend(() => forkOriginal(input, ...args))));\n  for (const name of ["remove", "generate", "command", "background", "move"]) {\n    const original = result[name];\n    result[name] = (input, ...args) => enter(typeof input === "string" ? input : input.sessionID, () => Effect.void).pipe(Effect.andThen(Effect.suspend(() => original(input, ...args))));\n  }\n  const environment = result.environment;\n  result.environment = (input) => input.variables === undefined ? environment(input) : enter(input.sessionID, () => Effect.void).pipe(Effect.andThen(Effect.suspend(() => environment(input))));\n  return result;\n}));',
         },
       ],
     },
@@ -1840,7 +1840,7 @@ export const NATIVE_PERMISSION_OVERLAY_RECEIPT = Object.freeze({
   id: recipe.id,
   serverVersion: recipe.serverVersion,
   recipeSha256:
-    "1b61e8ad5b02c82d5091c6325221000085be6063f46d0fc1345048bf595c7ca6",
+    "6d52f4c44ccf2da9f1645a62c85499e526780b2d5f211b6cce63582e59b367f9",
   files: Object.freeze(
     recipe.files.map(({ path, beforeSha256, afterSha256 }) =>
       Object.freeze({ path, beforeSha256, afterSha256 }),

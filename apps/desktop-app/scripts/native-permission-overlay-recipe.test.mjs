@@ -9,6 +9,18 @@ import { NATIVE_PERMISSION_OVERLAY_RECIPE } from "./native-permission-overlay-re
 import { planNativePermissionOverlay } from "./native-permission-overlay.mjs";
 
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
+// The Session factory entry was deliberately edited for bootstrap task
+// authority (create/fork). Archived snapshots predate that edit, so freeze
+// tests compare every OTHER entry byte-for-byte and, for this one, only the
+// pinned input path and hash (its new output is pinned separately above).
+const SESSION_FACTORY =
+  "node_modules/@opencode/core/dist/chunks/config-zyp346xr.js";
+const masked = (files) =>
+  files.map((file) =>
+    file.path === SESSION_FACTORY
+      ? { path: file.path, beforeSha256: file.beforeSha256 }
+      : file,
+  );
 const root = new URL(
   "../runtime-event-host/.generated/install/",
   import.meta.url,
@@ -28,7 +40,7 @@ test("pinned overlay recipe binds exact sixty-four source files and preserves fr
   assert.equal(recipe.id, "permission-session-entry-gate-v1");
   assert.equal(
     NATIVE_PERMISSION_OVERLAY_RECEIPT.recipeSha256,
-    "1b61e8ad5b02c82d5091c6325221000085be6063f46d0fc1345048bf595c7ca6",
+    "6d52f4c44ccf2da9f1645a62c85499e526780b2d5f211b6cce63582e59b367f9",
   );
   assert.deepEqual(
     recipe.files.slice(0, 50).map(({ path }) => path),
@@ -151,7 +163,7 @@ test("pinned overlay recipe binds exact sixty-four source files and preserves fr
       "f96d58b1e4a68ddd261170f16b953157f590229f52c2ebe4b4b0a50860391b9d",
       "7e619e08c82a171a669c8743ed2cec700f11b1459d348d7f3a55a37e4435b442",
       "8bb1cbb6771fed3b5a77255c9e17f6ab266251e6031335b439137f8f2815ea77",
-      "0b365a3c2be9ba0698beb85865a9091b48d12c4f5758317fe173964c0556f819",
+      "a24ec771264a845261c7452f5506e62c1680a2374782ec64b3a9385cb14f5a4f",
       "2b374f48f4be331e06419fb43f30dfab5b2fa72d45b1cc8500d633ab3e6f0a6b",
       "41593f4696861893d2a07d5a02bc6aee294e9440a7ff2c89580334db05156208",
       "bc91187f78b5c59727654030e9f3f9c0efa133ef72951e0da3d3757f6ef22b34",
@@ -535,9 +547,23 @@ test("checked Session entries guard before original effect construction and rele
 
   assert.ok(
     factory.includes(
-      'for (const name of ["fork", "remove", "generate", "command", "background", "move"])',
+      'for (const name of ["remove", "generate", "command", "background", "move"])',
     ),
   );
+  // Fork consumes the private bootstrap handoff under the parent transaction;
+  // create consumes it before any store read. Neither admits execution.
+  assert.ok(
+    factory.includes(
+      "result.fork = (input, ...args) => enter(input?.sessionID, () => Effect.void, input).pipe(Effect.andThen(Effect.suspend(() => forkOriginal(input, ...args))));",
+    ),
+  );
+  assert.ok(
+    factory.includes(
+      '    create: Effect.fn("Session.create")(function* (input) {\n      // Only a private bootstrap handoff armed for exactly this input may create.',
+    ),
+  );
+  assert.ok(factory.includes("yield* control.consumeBootstrap(input);"));
+  assert.equal(factory.includes("native_permission_held"), false);
   assert.ok(
     factory.includes(
       'result[name] = (input, ...args) => enter(typeof input === "string" ? input : input.sessionID, () => Effect.void).pipe(Effect.andThen(Effect.suspend(() => original(input, ...args))));',
@@ -648,12 +674,12 @@ test("provider extension preserves every archived recipe entry as a byte-equival
   assert.equal(before.files.length, 44);
   assert.equal(NATIVE_PERMISSION_OVERLAY_RECIPE.files.length, 65);
   assert.deepEqual(
-    NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 44),
-    before.files,
+    masked(NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 44)),
+    masked(before.files),
   );
-  for (const [index, entry] of before.files.entries())
+  for (const [index, entry] of masked(before.files).entries())
     assert.equal(
-      JSON.stringify(NATIVE_PERMISSION_OVERLAY_RECIPE.files[index]),
+      JSON.stringify(masked(NATIVE_PERMISSION_OVERLAY_RECIPE.files)[index]),
       JSON.stringify(entry),
     );
   const edits = NATIVE_PERMISSION_OVERLAY_RECIPE.files.reduce(
@@ -676,11 +702,11 @@ test("Read layer addition preserves all preceding fifty-four frozen recipe entri
         : JSON.stringify(value);
   const preceding = {
     ...NATIVE_PERMISSION_OVERLAY_RECIPE,
-    files: NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 54),
+    files: masked(NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 54)),
   };
   assert.equal(
     hash(canonical(preceding)),
-    "6d83bab1317ded4c7d58cb92573d302b4eb7330b8cf3413a24719facfcd12f3b",
+    "05b5cf3b7de548c5bb05336158a185abe9aa00aa1584f49b50b57a1da0bb1e7c",
   );
 });
 
@@ -705,12 +731,12 @@ test("Agent and MCP additions preserve all prior fifty-five exact entries and ca
   const before = new Function(`return (${literal});`)();
   assert.equal(before.files.length, 55);
   assert.deepEqual(
-    NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 55),
-    before.files,
+    masked(NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 55)),
+    masked(before.files),
   );
-  for (const [index, entry] of before.files.entries())
+  for (const [index, entry] of masked(before.files).entries())
     assert.equal(
-      JSON.stringify(NATIVE_PERMISSION_OVERLAY_RECIPE.files[index]),
+      JSON.stringify(masked(NATIVE_PERMISSION_OVERLAY_RECIPE.files)[index]),
       JSON.stringify(entry),
     );
   const canonical = (value) =>
@@ -756,8 +782,8 @@ test("Agent notification addition preserves all fifty-eight prior frozen recipe 
   const before = new Function(`return (${literal});`)();
   assert.equal(before.files.length, 58);
   assert.deepEqual(
-    NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 58),
-    before.files,
+    masked(NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 58)),
+    masked(before.files),
   );
   assert.deepEqual(
     NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(58, 60).map((row) => row.path),
@@ -790,8 +816,8 @@ test("metadata State lifetime addition preserves all prior62 recipe objects", as
   const before = new Function(`return (${literal});`)();
   assert.equal(before.files.length, 62);
   assert.deepEqual(
-    NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 62),
-    before.files,
+    masked(NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 62)),
+    masked(before.files),
   );
 });
 
@@ -817,7 +843,7 @@ test("Config discovery addition preserves all preceding64 recipe objects", async
   const before = new Function(`return (${literal});`)();
   assert.equal(before.files.length, 64);
   assert.deepEqual(
-    NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 64),
-    before.files,
+    masked(NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 64)),
+    masked(before.files),
   );
 });
