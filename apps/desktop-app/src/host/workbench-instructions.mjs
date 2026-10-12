@@ -3,6 +3,10 @@ import { configurationFileWriteFits } from "../renderer/shared/configuration-dra
 
 export const INSTRUCTION_KEY = "omoc.project-instructions";
 export const INSTRUCTION_FEATURE = "configuration_instructions_v1";
+// A fork child whose inherited instruction entry has not been read back yet
+// (startup reconciliation may not build a Native location). Never "registered":
+// every instruction check treats it as changed until `verifiedInheritance`.
+export const PENDING = "pending_verification";
 export const instructionDigest = (text) =>
   createHash("sha256").update(text, "utf8").digest("hex");
 const digest = (value) =>
@@ -18,7 +22,7 @@ export function validInstructionRegistration(value) {
     return false;
   if (value.state === "absent") return Object.keys(value).length === 2;
   if (
-    value.state !== "registered" ||
+    !["registered", PENDING].includes(value.state) ||
     !digest(value.digest) ||
     !digest(value.sourceVersion)
   )
@@ -27,7 +31,7 @@ export function validInstructionRegistration(value) {
   if (value.origin === "fork") {
     if (!id(value.inheritedFromSessionId)) return false;
     fields.push("inheritedFromSessionId");
-  } else if (value.origin !== "direct") return false;
+  } else if (value.origin !== "direct" || value.state === PENDING) return false;
   return (
     Object.keys(value).length === fields.length &&
     fields.every((key) => Object.hasOwn(value, key))
@@ -40,7 +44,7 @@ export function canonicalInstructionRegistration(value) {
   if (value.state === "absent")
     return { state: "absent", key: INSTRUCTION_KEY };
   return {
-    state: "registered",
+    state: value.state,
     key: INSTRUCTION_KEY,
     digest: value.digest,
     sourceVersion: value.sourceVersion,
@@ -100,3 +104,8 @@ export function observeInstructions(entries, registration) {
     ...(actualDigest && { digest: actualDigest }),
   };
 }
+
+export const verifiedInheritance = (pending) => ({
+  ...pending,
+  state: "registered",
+});

@@ -97,6 +97,8 @@ import {
   INSTRUCTION_KEY,
   instructionDigest,
   observeInstructions,
+  PENDING,
+  verifiedInheritance,
 } from "./host/workbench-instructions.mjs";
 
 import {
@@ -4355,6 +4357,24 @@ export function createWorkbenchService({
     const entries = await call(client?.session?.instructions?.entry?.list, {
       sessionID: s.sdkId,
     });
+    // A reconciled fork child's inheritance is verified here, on first use after
+    // admission (the same check `session.fork` makes): promote on match, else
+    // the session is unavailable. Until then it observes as changed.
+    if (
+      registration?.state === PENDING &&
+      registration === s.instructionRegistration
+    ) {
+      const verified = verifiedInheritance(registration);
+      const observed = observeInstructions(entries, verified);
+      if (observed.status === "registered") {
+        s.instructionRegistration = verified;
+        return observed;
+      }
+      s.status = "unavailable";
+      s.unavailable = true;
+      s.unknown = true;
+      return { status: "unavailable", reason: "inheritance_mismatch" };
+    }
     return observeInstructions(entries, registration);
   }
   // repair: the caller's own journaled shape already includes native.policy

@@ -194,16 +194,21 @@ export const observeFork = (parent, children) => ({
   parent: observeSession(parent),
   children: children.map(observeSession),
 });
-// Native sessions that could be this fork's child: named by the parent as
-// source, not already mapped, not a plain subagent, and (when the durable arm
-// time is known) not created before it. `undefined` = cannot be told apart.
-export function forkCandidates(expectation, observation, facts) {
-  let found = (observation?.children ?? []).filter(
+// Native sessions naming the parent as fork source that no registry mapping
+// already explains and that are not plain subagents.
+const forkChildren = (observation, facts) =>
+  (observation?.children ?? []).filter(
     (child) =>
       child.status === "found" &&
       !facts?.known?.includes(child.id) &&
       (child.fork !== null || child.parentID !== observation.parent?.id),
   );
+// Settle candidates: the above, minus (when the durable arm time is known)
+// children created before it. The arm filter only ever narrows a settle
+// choice; it never proves absence (see decideFork). `undefined` = cannot be
+// told apart.
+export function forkCandidates(expectation, observation, facts) {
+  let found = forkChildren(observation, facts);
   const armed = expectation.armedAt;
   if (armed !== null) {
     if (
@@ -218,15 +223,6 @@ export function forkCandidates(expectation, observation, facts) {
   }
   return found;
 }
-// The registration a fork child must inherit (same as `session.fork` checks).
-export const inheritedRegistration = (facts, parentAppSessionId) =>
-  facts?.parent?.registration?.state === "registered"
-    ? {
-        ...facts.parent.registration,
-        origin: "fork",
-        inheritedFromSessionId: parentAppSessionId,
-      }
-    : (facts?.parent?.registration ?? undefined);
 export const ABSENT_OBSERVATION = Object.freeze({ status: "absent" });
 
 export const observationDigest = (
@@ -329,10 +325,15 @@ function decideFork(expectation, observation, facts) {
   if (!candidates.length) {
     // A consumed handoff, a bound id or a partial mapping all say Native was
     // told to fork: absence is then contradictory, not proof.
+    // A child dropped only for predating the arm time may be this fork's if
+    // the wall clock stepped back: it cannot prove absence either.
     if (
       !NO_EFFECT_TRAILS.includes(handoff) ||
       expectation.nativeSessionId !== null ||
-      facts.own !== null
+      facts.own !== null ||
+      forkChildren(observation, facts).some((child) =>
+        exactFork(expectation, parent, child),
+      )
     )
       return hold;
     return noEffect(expectation);
@@ -341,12 +342,8 @@ function decideFork(expectation, observation, facts) {
   if (
     candidates.length !== 1 ||
     !SETTLED_TRAILS.includes(handoff) ||
-    // Without a durable arm time, an unbound plain fork is unprovable.
-    (expectation.before === null && expectation.armedAt === null) ||
-    // Same read-only check `session.fork` makes of the inherited instruction.
-    observation.instruction?.childId !== child.id ||
-    observation.instruction.status !==
-      (facts.parent.registered ? "registered" : "missing") ||
+    // Without a durable arm time, an unbound fork is unprovable.
+    (expectation.nativeSessionId === null && expectation.armedAt === null) ||
     (facts.own !== null && facts.own !== child.id) ||
     !exactFork(expectation, parent, child)
   )
