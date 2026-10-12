@@ -8,8 +8,11 @@ import {
   PERMISSION_RECONCILIATION_FEATURE,
   validatePermissionReconciliationRecord,
   applyPermissionReconciliation,
+  bootstrapReconciliationCompletion,
+  bootstrapNoEffectProven,
 } from "./workbench-task-storage.mjs";
 import { permissionCanonicalJSON } from "../permission-control-canonical.mjs";
+import { reconcileExpectation } from "../native-bootstrap-reconcile.mjs";
 import {
   PERMISSION_FEATURE,
   isPermissionControl,
@@ -311,6 +314,16 @@ function apply(root, payload, conservative = false, validatedFirstSessions) {
       next.sessions,
       next.workspaces,
     );
+    // A bootstrap reconciliation also resolves the original operation in the
+    // same record, so a crash can never leave the two halves out of step.
+    if (payload.kind === "task_reconciled" && payload.bootstrap) {
+      const completion = bootstrapReconciliationCompletion(
+        operation,
+        next.workspaces,
+        payload,
+      );
+      if (completion) return apply(next, completion);
+    }
   } else if (payload.kind === "feature_gate") {
     if (conservative) return root;
     need(
@@ -765,8 +778,15 @@ function apply(root, payload, conservative = false, validatedFirstSessions) {
       receipt.effect !== "confirmed" || operation.dispatches.length > 0,
       "identity_conflict",
     );
+    // Only a settled no_effect bootstrap proof of a plain session.create may
+    // resolve a dispatched operation as "none" (it never reached Native).
+    const bootstrapNoEffect =
+      receipt.admission === "rejected" &&
+      bootstrapNoEffectProven(operation, next.tasks.get(opKey));
     need(
-      receipt.effect !== "none" || operation.dispatches.length === 0,
+      receipt.effect !== "none" ||
+        operation.dispatches.length === 0 ||
+        bootstrapNoEffect,
       "identity_conflict",
     );
     need(
@@ -2733,7 +2753,52 @@ export async function openWorkspaceRegistry({
       return { status: "recorded", record: copy(request) };
     });
   }
+  // Startup crash reconciliation plan: every retained operation must be an
+  // unsettled bootstrap create whose durable trail the reconciler understands.
+  // Anything else (any other operation, a settled or unrecognised trail) makes
+  // the whole plan ineligible and the profile stays in recovery hold.
+  function reconcilePlan() {
+    const candidates = [];
+    let eligible = !storeReason();
+    for (const [originalKey, operation] of root.operations) {
+      const task = root.tasks.get(originalKey);
+      if (!retained(operation) && !(task && taskHeld(task))) continue;
+      if (!reconcileExpectation(operation, task)) {
+        eligible = false;
+        continue;
+      }
+      candidates.push(copy({ operation, task }));
+    }
+    // Recovery resources must all be explained by the candidates themselves:
+    // their unresolved reservation, or what a failed settle left behind for
+    // exactly their own planned Native id (an unavailable partial session
+    // mapping and its unavailable workspace row).
+    const own = (entry) =>
+      candidates.some(({ operation }) => {
+        const { reservation } = operation;
+        const session = entry.sessionId
+          ? root.sessions.get(entry.sessionId)
+          : undefined;
+        return entry.sessionId
+          ? entry.reason === "partial_native_mapping" &&
+              reservation.appSessionId === entry.sessionId &&
+              reservation.plannedNativeSessionId === session?.nativeSessionId
+          : entry.reason === "path_missing" &&
+              reservation.workspace.workspaceId === entry.workspaceId &&
+              root.workspaces.get(entry.workspaceId)?.registrationState ===
+                "unavailable";
+      });
+    return {
+      eligible:
+        eligible &&
+        resources().every(
+          (entry) => entry.reason === "unresolved_operation" || own(entry),
+        ),
+      candidates,
+    };
+  }
   return {
+    reconcilePlan,
     begin,
     reserve,
     recordTask,

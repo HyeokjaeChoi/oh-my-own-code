@@ -346,3 +346,67 @@ test("failure and sentinel counts remain bounded with no correlation disclosure"
   unknown.migrationIds = [...ids.slice(1), "unexpected_public_migration"];
   assert.equal(evaluate(unknown).allowed, false);
 });
+
+const plannedRow = (id = "plan", over = {}) => {
+  const meta = { ...metadata(), appSessionId: id, ...over.meta };
+  return [
+    `ses_${id}`,
+    null,
+    null,
+    null,
+    0,
+    over.directory ?? "/workspace",
+    null,
+    null,
+    over.fork ?? null,
+    null,
+    JSON.stringify(meta),
+  ];
+};
+const plannedEntry = (id = "plan", extra = {}) => ({
+  appSessionId: id,
+  nativeSessionId: `ses_${id}`,
+  workspaceId: "workspace",
+  canonicalPath: "/workspace",
+  operationId: "operation",
+  originalRuntimeEpoch: "old-epoch",
+  digest: "b".repeat(64),
+  ...extra,
+});
+const provisionalEvaluate = (rows, provisional = [plannedEntry()]) =>
+  evaluatePreflightSnapshot(
+    { ...request(), provisional },
+    { ...fixture(), sessions: rows },
+    (value) => value,
+  );
+test("provisional sessions may be present or absent but never drift or hide extras", () => {
+  // absent and present are both accepted; mapped sessions stay mandatory
+  assert.equal(provisionalEvaluate([row()]).allowed, true);
+  const present = provisionalEvaluate([row(), plannedRow()]);
+  assert.equal(present.allowed, true);
+  assert.equal(present.counts.sessions, 2);
+  assert.equal(provisionalEvaluate([plannedRow()]).allowed, false);
+  // any drift from the planned original operation or location is denied
+  for (const over of [
+    { meta: { operationId: "other" } },
+    { meta: { digest: "c".repeat(64) } },
+    { meta: { originalRuntimeEpoch: "other-epoch" } },
+    { meta: { workspaceId: "other" } },
+    { directory: "/elsewhere" },
+    { fork: "ses_root" },
+  ])
+    assert.equal(
+      provisionalEvaluate([row(), plannedRow("plan", over)]).allowed,
+      false,
+      JSON.stringify(over),
+    );
+  // an unplanned extra session is still denied, and so is a duplicate id
+  assert.equal(
+    provisionalEvaluate([row(), plannedRow(), plannedRow("stray")]).allowed,
+    false,
+  );
+  assert.equal(
+    provisionalEvaluate([row(), plannedRow(), plannedRow()]).allowed,
+    false,
+  );
+});

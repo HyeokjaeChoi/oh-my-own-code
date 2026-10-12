@@ -10,6 +10,7 @@ import test from "node:test";
 import { createHash, randomUUID } from "node:crypto";
 import { createNativeTaskLedger } from "../native-permission-task-ledger.mjs";
 import { bootstrapStageDigest } from "../native-permission-bootstrap-digest.mjs";
+import { reconcileBootstrapTasks } from "../native-bootstrap-reconciler.mjs";
 import { readWorkspaceFile } from "./workbench-file-edit.mjs";
 import assert from "node:assert/strict";
 import * as fs from "node:fs/promises";
@@ -6341,4 +6342,643 @@ test("the registry refuses a second task.prepare for the same original operation
       launchId: "launch-2",
     }),
   );
+});
+
+// ---- Startup crash reconciliation of unsettled bootstrap creates ----------
+// Journal writes of one bootstrap create, in order: 1 task.prepare, 2 observe,
+// 3 handoff armed, 4 handoff consumed, 5 handoff completed, 6 binding, 7 proof,
+// 8 settle. A storage loss BEFORE write N leaves exactly writes 1..N-1 durable.
+// The crashed process is then replaced by a registry reopened from the journal
+// with a fresh live ledger; only that ledger's own read-only session.get may
+// ever resolve the task, and nothing is created, forked, updated or armed.
+const crashedFixture = async (t, step, { fromStart = false } = {}) => {
+  const child = fakeBootstrapChild();
+  let writes = 0;
+  let recording = fromStart;
+  const f = await fixture(t, {
+    taskChild: child,
+    projectRegistry: (registry) =>
+      new Proxy(registry, {
+        get(target, key) {
+          if (key === "recordTask" && recording)
+            return async (record) => {
+              if (
+                (fromStart || record.operationId === "create-crash") &&
+                ++writes >= step
+              )
+                throw new Error("synthetic storage loss");
+              return target.recordTask(record);
+            };
+          const value = Reflect.get(target, key);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      }),
+  });
+  let snapshot;
+  if (fromStart) {
+    // The crashed default bootstrap never reaches "connected": wait for it to
+    // leave its operation retained, then let the failure path finish.
+    await until(() => f.registry.readView().retainedOperations.length > 0);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    snapshot = await f.snapshot();
+  } else snapshot = await f.ready();
+  if (!fromStart) {
+    recording = true;
+    await f.mutate(createOperation(snapshot), "create-crash");
+  }
+  await f.registry.checkpoint();
+  return { f, snapshot, child };
+};
+const nativeMutations = (f) =>
+  f.state.calls.filter((name) =>
+    ["create", "fork", "update", "prompt", "interrupt"].includes(name),
+  );
+const notFound = (sessionID) =>
+  Object.assign(new Error("absent"), {
+    _tag: "SessionNotFoundError",
+    sessionID,
+  });
+async function openReconciling(t, f, { read, wrap } = {}) {
+  const reads = [];
+  const ledger = createNativeTaskLedger({
+    runtimeEpoch: "new",
+    isLive: () => true,
+    channel: {},
+    onUnconfirmed() {},
+    readSession: async (sessionID) => {
+      reads.push(sessionID);
+      if (read) return read(sessionID);
+      const info = f.records.get(sessionID);
+      if (!info) throw notFound(sessionID);
+      return globalThis.structuredClone(info);
+    },
+  });
+  const opened = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "new",
+    taskAuthoritySource: ledger.verify,
+  });
+  t.after(() => opened.close());
+  const registry = wrap ? wrap(opened) : opened;
+  return {
+    registry,
+    ledger,
+    reads,
+    run: () =>
+      reconcileBootstrapTasks({
+        registry,
+        nativeTasks: { reconcile: ledger.reconcile },
+      }),
+  };
+}
+const journalBytes = (f) => fs.readFile(join(f.directory, "journal.jsonl"));
+const planned = (rig, operationId = "create-crash") =>
+  rig.registry
+    .reconcilePlan()
+    .candidates.find((c) => c.operation.identity.operationId === operationId)
+    ?.operation.reservation.plannedNativeSessionId;
+async function assertReplays(t, f, expected) {
+  // Strict journal replay of the reconciliation record derives the same state.
+  const third = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "third",
+  });
+  t.after(() => third.close());
+  const view = third.readView();
+  assert.deepEqual(view.retainedOperations, expected.retained ?? []);
+  assert.equal(view.sessions.length, expected.sessions);
+  assert.equal(third.reconcilePlan().candidates.length, 0);
+  return view;
+}
+
+for (const step of [4, 5, 6, 7, 8])
+  test(`reconcile: a create whose Native session exists is bound and settled (crash before journal write ${step})`, async (t) => {
+    const { f, snapshot } = await crashedFixture(t, step);
+    const before = nativeMutations(f);
+    const rig = await openReconciling(t, f);
+    const id = planned(rig);
+    assert.ok(id, "unsettled create is an eligible candidate");
+    assert.equal(rig.registry.reconcilePlan().eligible, true);
+    await rig.run();
+    // Only the planned id was read; no Native effect was issued.
+    assert.deepEqual(rig.reads, [id]);
+    assert.deepEqual(nativeMutations(f), before);
+    const view = rig.registry.readView();
+    assert.deepEqual(view.retainedOperations, []);
+    const task = view.tasks.find(
+      (row) => row.identity.origin.operationId === "create-crash",
+    );
+    assert.equal(task.phase, "settled");
+    assert.equal(task.identity.nativeSessionId, id);
+    const receipt = rig.registry.lookup({
+      runtimeEpoch: "epoch",
+      operationId: "create-crash",
+    }).receipt;
+    assert.equal(receipt.effect, "confirmed");
+    assert.equal(receipt.result.kind, "created");
+    assert.equal(receipt.result.nativeSessionId, id);
+    const mapped = view.sessions.find((row) => row.nativeSessionId === id);
+    assert.equal(mapped.lifecycleState, "active");
+    assert.equal(mapped.appSessionId, receipt.result.sessionId);
+    await assertReplays(t, f, { sessions: snapshot.sessions.length + 1 });
+    // The restarted workbench adopts the session and never re-issues create.
+    const reopened = await reopenForks(t, f);
+    assert.equal(reopened.snapshot.state, "connected");
+    assert.equal(
+      reopened.snapshot.sessions.length,
+      snapshot.sessions.length + 1,
+    );
+    assert.deepEqual(nativeMutations(f), before);
+    // A second launch has nothing left to reconcile.
+    assert.deepEqual(rig.registry.reconcilePlan(), {
+      eligible: true,
+      candidates: [],
+    });
+  });
+
+for (const step of [2, 3])
+  test(`reconcile: a create whose session id is absent proves no effect and resolves (crash before journal write ${step})`, async (t) => {
+    const { f, snapshot } = await crashedFixture(t, step);
+    const before = nativeMutations(f);
+    const rig = await openReconciling(t, f);
+    const id = planned(rig);
+    await rig.run();
+    assert.deepEqual(rig.reads, [id]);
+    assert.deepEqual(nativeMutations(f), before);
+    const view = rig.registry.readView();
+    assert.deepEqual(view.retainedOperations, []);
+    const task = view.tasks.find(
+      (row) => row.identity.origin.operationId === "create-crash",
+    );
+    assert.equal(task.phase, "settled");
+    assert.equal(task.proof.outcome, "no_effect");
+    assert.equal(task.proof.kind, "task_reconciled");
+    assert.equal(
+      task.handoffs.every((handoff) => handoff.state === "revoked"),
+      true,
+    );
+    const receipt = rig.registry.lookup({
+      runtimeEpoch: "epoch",
+      operationId: "create-crash",
+    }).receipt;
+    assert.equal(receipt.effect, "none");
+    assert.equal(receipt.admission, "rejected");
+    assert.equal(view.sessions.length, snapshot.sessions.length);
+    await assertReplays(t, f, { sessions: snapshot.sessions.length });
+    // The original key stays burned: the same id can never be issued again.
+    assert.equal(rig.registry.reconcilePlan().candidates.length, 0);
+  });
+
+test("reconcile: a crash before any task record leaves a non-recognised trail held", async (t) => {
+  const { f } = await crashedFixture(t, 1);
+  const rig = await openReconciling(t, f);
+  assert.equal(rig.registry.reconcilePlan().eligible, false);
+  const before = await journalBytes(f);
+  await assert.rejects(rig.run(), {
+    storageReason: "native_startup_unverified",
+  });
+  assert.deepEqual(rig.reads, []);
+  assert.deepEqual(await journalBytes(f), before);
+});
+
+const tampered = {
+  "metadata digest drift": (info) => {
+    info.metadata = { ...info.metadata, digest: "f".repeat(64) };
+  },
+  "extra metadata": (info) => {
+    info.metadata = { ...info.metadata, extra: "x" };
+  },
+  "wrong permissions": (info) => {
+    info.permissions = [{ action: "*", resource: "*", effect: "allow" }];
+  },
+  "floor not last": (info) => {
+    info.permissions = [...info.permissions].reverse();
+  },
+  "extra permission rule": (info) => {
+    info.permissions = [
+      ...info.permissions,
+      { action: "subagent", resource: "*", effect: "deny" },
+    ];
+  },
+  "other directory": (info) => {
+    info.location = { directory: "/somewhere/else" };
+  },
+  "other project": (info) => {
+    info.projectID = "other-project";
+  },
+  "has a parent": (info) => {
+    info.parentID = "ses_parent";
+  },
+  "is a fork": (info) => {
+    info.fork = { sessionID: "ses_parent", boundary: { type: "before" } };
+  },
+};
+for (const [name, mutate] of Object.entries(tampered))
+  test(`reconcile: a Native session with ${name} is never adopted and stays held`, async (t) => {
+    const { f } = await crashedFixture(t, 4);
+    const before = nativeMutations(f);
+    const rig = await openReconciling(t, f, {
+      read: (id) => {
+        const info = globalThis.structuredClone(f.records.get(id));
+        mutate(info);
+        return info;
+      },
+    });
+    const journal = await journalBytes(f);
+    await assert.rejects(rig.run(), {
+      storageReason: "native_startup_unverified",
+    });
+    assert.equal(rig.reads.length, 1);
+    assert.deepEqual(await journalBytes(f), journal);
+    assert.deepEqual(nativeMutations(f), before);
+    assert.equal(
+      rig.registry
+        .readView()
+        .retainedOperations.some((row) => row.operationId === "create-crash"),
+      true,
+    );
+  });
+
+test("reconcile: any read error other than the typed not-found holds without writing", async (t) => {
+  for (const failure of [
+    new Error("network down"),
+    Object.assign(new Error("other"), {
+      _tag: "SessionNotFoundError",
+      sessionID: "ses_other",
+    }),
+    Object.assign(new Error("denied"), { status: 401 }),
+  ]) {
+    const { f } = await crashedFixture(t, 3);
+    const rig = await openReconciling(t, f, {
+      read: () => {
+        throw failure;
+      },
+    });
+    const journal = await journalBytes(f);
+    await assert.rejects(rig.run(), {
+      storageReason: "native_startup_unverified",
+    });
+    assert.equal(rig.reads.length, 1);
+    assert.deepEqual(await journalBytes(f), journal);
+  }
+});
+
+test("reconcile: absence contradicts a consumed handoff and a session contradicts a never-armed trail", async (t) => {
+  // handoff consumed (write 5 lost) but the session is gone: contradiction.
+  const consumed = await crashedFixture(t, 5);
+  const gone = await openReconciling(t, consumed.f, {
+    read: (id) => {
+      throw notFound(id);
+    },
+  });
+  const journal = await journalBytes(consumed.f);
+  await assert.rejects(gone.run(), {
+    storageReason: "native_startup_unverified",
+  });
+  assert.deepEqual(await journalBytes(consumed.f), journal);
+  // never armed (write 3 lost) yet a session answers for the planned id.
+  const unarmed = await crashedFixture(t, 3);
+  const stray = await openReconciling(t, unarmed.f, {
+    read: (id) => ({
+      id,
+      projectID: "project",
+      location: { directory: unarmed.snapshot.workspaces[0].path },
+      metadata: {},
+      permissions: BASELINE_POLICY,
+    }),
+  });
+  const unarmedJournal = await journalBytes(unarmed.f);
+  await assert.rejects(stray.run(), {
+    storageReason: "native_startup_unverified",
+  });
+  assert.deepEqual(await journalBytes(unarmed.f), unarmedJournal);
+});
+
+test("reconcile: any non-bootstrap retained operation holds everything without reading Native", async (t) => {
+  const { f } = await crashedFixture(t, 4);
+  // Leave one unrelated operation retained (admitted, dispatched, unresolved).
+  await f.registry.begin({
+    runtimeEpoch: "epoch",
+    operationId: "stuck-op",
+    type: "workspace.import",
+    digest: "e".repeat(64),
+  });
+  await f.registry.checkpoint();
+  const rig = await openReconciling(t, f);
+  assert.equal(rig.registry.reconcilePlan().eligible, false);
+  const journal = await journalBytes(f);
+  await assert.rejects(rig.run(), {
+    storageReason: "native_startup_unverified",
+  });
+  assert.deepEqual(rig.reads, []);
+  assert.deepEqual(await journalBytes(f), journal);
+  assert.equal(
+    rig.registry
+      .readView()
+      .retainedOperations.some((row) => row.operationId === "create-crash"),
+    true,
+  );
+});
+
+test("reconcile: a crash during reconciliation is idempotent and never re-issues create", async (t) => {
+  const { f, snapshot } = await crashedFixture(t, 4);
+  const before = nativeMutations(f);
+  let failures = 0;
+  const first = await openReconciling(t, f, {
+    wrap: (registry) =>
+      new Proxy(registry, {
+        get(target, key) {
+          if (key === "recordTask")
+            return async () => {
+              failures++;
+              throw new Error("synthetic storage loss");
+            };
+          const value = Reflect.get(target, key);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      }),
+  });
+  const journal = await journalBytes(f);
+  await assert.rejects(first.run(), {
+    storageReason: "native_startup_unverified",
+  });
+  assert.equal(failures, 1);
+  assert.deepEqual(await journalBytes(f), journal);
+  // The next launch repeats only the read and completes the same single record.
+  const second = await openReconciling(t, f);
+  await second.run();
+  assert.equal(second.reads.length, 1);
+  assert.deepEqual(nativeMutations(f), before);
+  await assertReplays(t, f, { sessions: snapshot.sessions.length + 1 });
+  // A third launch sees nothing to do.
+  const third = await openReconciling(t, f);
+  assert.deepEqual(third.registry.reconcilePlan(), {
+    eligible: true,
+    candidates: [],
+  });
+  await assert.rejects(third.run(), {
+    storageReason: "native_startup_unverified",
+  });
+  assert.deepEqual(third.reads, []);
+});
+
+test("reconcile: task_reconciled cannot be forged without, or against, the live ledger's own read", async (t) => {
+  const { f } = await crashedFixture(t, 4);
+  const rig = await openReconciling(t, f);
+  const [candidate] = rig.registry.reconcilePlan().candidates;
+  const taskScopeId = candidate.task.identity.taskScopeId;
+  const bootstrap = {
+    appSessionId: candidate.operation.reservation.appSessionId,
+    nativeSessionId: candidate.operation.reservation.plannedNativeSessionId,
+    metadataDigest: "a".repeat(64),
+    title: "Forged",
+  };
+  const forged = (over = {}) => ({
+    kind: "task_reconciled",
+    runtimeEpoch: "epoch",
+    operationId: "create-crash",
+    taskScopeId,
+    ticketDigest: "b".repeat(64),
+    proofDigest: "c".repeat(64),
+    outcome: "settled",
+    bootstrap,
+    ...over,
+  });
+  const journal = await journalBytes(f);
+  // No live read at all.
+  await assert.rejects(rig.registry.recordTask(forged()), {
+    code: "task_authority_required",
+  });
+  // A real read, then a record that claims something else than the read proved.
+  const decision = await rig.ledger.reconcile({
+    operation: candidate.operation,
+    task: candidate.task,
+  });
+  assert.equal(decision.outcome, "settled");
+  const honest = forged({
+    ticketDigest: decision.ticketDigest,
+    proofDigest: decision.proofDigest,
+    bootstrap: decision.bootstrap,
+  });
+  for (const over of [
+    { ticketDigest: "d".repeat(64) },
+    { proofDigest: "d".repeat(64) },
+    { outcome: "no_effect", bootstrap: {} },
+    { bootstrap: { ...decision.bootstrap, title: "Other" } },
+    { bootstrap: { ...decision.bootstrap, metadataDigest: "e".repeat(64) } },
+    { taskScopeId: randomUUID() },
+  ])
+    await assert.rejects(rig.registry.recordTask({ ...honest, ...over }));
+  assert.deepEqual(await journalBytes(f), journal);
+  // The exact record the ledger decided is accepted.
+  const result = await rig.registry.recordTask(honest);
+  assert.equal(result.status, "recorded");
+  assert.deepEqual(rig.registry.readView().retainedOperations, []);
+});
+
+for (const step of [5, 7, 8])
+  test(`reconcile: a crashed default-workspace bootstrap with a created session registers the workspace and session (crash before journal write ${step})`, async (t) => {
+    const { f } = await crashedFixture(t, step, { fromStart: true });
+    assert.equal(
+      f.registry
+        .readView()
+        .retainedOperations.every((row) => row.type === "workspace.create"),
+      true,
+    );
+    const before = nativeMutations(f);
+    const rig = await openReconciling(t, f);
+    const [candidate] = rig.registry.reconcilePlan().candidates;
+    assert.equal(candidate.operation.identity.type, "workspace.create");
+    await rig.run();
+    const view = rig.registry.readView();
+    assert.deepEqual(view.retainedOperations, []);
+    assert.equal(view.workspaces.length, 1);
+    assert.equal(view.workspaces[0].registrationState, "registered");
+    assert.equal(view.sessions.length, 1);
+    assert.equal(view.sessions[0].lifecycleState, "active");
+    await assertReplays(t, f, { sessions: 1 });
+    const reopened = await reopenForks(t, f);
+    assert.equal(reopened.snapshot.state, "connected");
+    assert.equal(reopened.snapshot.sessions.length, 1);
+    // The restart did not bootstrap a second default workspace or session.
+    assert.deepEqual(nativeMutations(f), before);
+    assert.equal(reopened.snapshot.workspaces.length, 1);
+  });
+
+test("reconcile: a proven-absent workspace-creating bootstrap keeps its folder effect and stays held", async (t) => {
+  const { f } = await crashedFixture(t, 3, { fromStart: true });
+  const rig = await openReconciling(t, f);
+  const journal = await journalBytes(f);
+  await assert.rejects(rig.run(), {
+    storageReason: "native_startup_unverified",
+  });
+  assert.equal(rig.reads.length, 1);
+  // The task itself is settled no_effect (one record), the operation retained.
+  const view = rig.registry.readView();
+  const [task] = view.tasks;
+  assert.equal(task.phase, "settled");
+  assert.equal(task.proof.outcome, "no_effect");
+  assert.equal(view.retainedOperations.length, 1);
+  assert.notDeepEqual(await journalBytes(f), journal);
+  // Settled tasks are no longer candidates: later launches hold unchanged.
+  assert.equal(rig.registry.reconcilePlan().eligible, false);
+});
+
+test("reconcile: the workbench stays unadmitted until reconciliation finishes, then continues the same launch without re-creating", async (t) => {
+  const { f, snapshot } = await crashedFixture(t, 5);
+  const before = nativeMutations(f);
+  const rig = await openReconciling(t, f);
+  const gate = deferred();
+  const service = createWorkbenchService({
+    registry: rig.registry,
+    runtimeReady: gate.promise.then(() => f.runtime),
+    runtimeEpoch: "new",
+    bootstrap: true,
+    recoverRetained: true,
+  });
+  t.after(async () => {
+    service.close();
+    await service.drain();
+  });
+  const read = (id) =>
+    service.handle(
+      { version: 2, readId: `r-${id}`, operation: { type: "snapshot" } },
+      "sender",
+    );
+  // While Main is still reconciling (runtime not yet resolved) nothing is
+  // admitted: mutations and reads see an unavailable, not-connected runtime.
+  const waiting = await read(1);
+  assert.equal(waiting.value.state === "connected", false);
+  const refused = await service.handle(
+    {
+      version: 2,
+      runtimeEpoch: "new",
+      operationId: "early",
+      operation: createOperation(snapshot),
+    },
+    "sender",
+  );
+  assert.equal(refused.ok, false);
+  assert.deepEqual(nativeMutations(f), before);
+  await rig.run();
+  gate.resolve();
+  let id = 1;
+  let connected;
+  await until(async () => {
+    connected = (await read(++id)).value;
+    return connected.state === "connected";
+  });
+  assert.equal(connected.recovery.store.state, "ready");
+  assert.deepEqual(connected.retainedOperations, []);
+  assert.equal(connected.sessions.length, snapshot.sessions.length + 1);
+  assert.deepEqual(nativeMutations(f), before);
+  // Without Main's recovery flag the same retained state still holds at once.
+  const held = await openReconciling(t, (await crashedFixture(t, 5)).f);
+  const strict = createWorkbenchService({
+    registry: held.registry,
+    runtimeReady: Promise.resolve(f.runtime),
+    runtimeEpoch: "new",
+    bootstrap: true,
+  });
+  t.after(async () => {
+    strict.close();
+    await strict.drain();
+  });
+  let strictSnapshot;
+  await until(async () => {
+    strictSnapshot = (
+      await strict.handle(
+        { version: 2, readId: "strict", operation: { type: "snapshot" } },
+        "sender",
+      )
+    ).value;
+    return strictSnapshot.recovery.store.state !== "ready";
+  });
+  assert.equal(
+    strictSnapshot.recovery.store.reason,
+    "native_startup_unverified",
+  );
+});
+
+test("the armed trail is checkpointed before Native may create, so a hard kill at the Native call is reconcilable", async (t) => {
+  const order = [];
+  const child = fakeBootstrapChild();
+  const consume = child.consume;
+  child.consume = (step, input) => {
+    order.push("consume");
+    return consume(step, input);
+  };
+  const f = await fixture(t, {
+    taskChild: child,
+    projectRegistry: (registry) =>
+      new Proxy(registry, {
+        get(target, key) {
+          if (key === "checkpoint")
+            return async () => {
+              order.push("checkpoint");
+              return target.checkpoint();
+            };
+          if (key === "recordTask")
+            return async (record) => {
+              order.push(
+                record.kind === "task.handoff"
+                  ? `handoff:${record.state}`
+                  : record.kind,
+              );
+              return target.recordTask(record);
+            };
+          const value = Reflect.get(target, key);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      }),
+  });
+  const snapshot = await f.ready();
+  order.length = 0;
+  // Hard kill exactly at the Native call: Native completes the create, then the
+  // process dies before it can journal anything else or checkpoint again.
+  let killed;
+  f.state.hooks.create = async (input) => {
+    child.consume("native.create", input);
+    f.records.set(input.id, {
+      ...input,
+      projectID: "project",
+      permissions: BASELINE_POLICY,
+    });
+    killed = join(f.root, "killed");
+    await fs.cp(f.directory, killed, { recursive: true });
+    throw new Error("process killed");
+  };
+  await f.mutate(createOperation(snapshot), "create-crash");
+  const armed = order.indexOf("handoff:armed");
+  assert.ok(armed >= 0);
+  assert.deepEqual(order.slice(armed, armed + 3), [
+    "handoff:armed",
+    "checkpoint",
+    "consume",
+  ]);
+  delete f.state.hooks.create;
+  // The copy is what a restart would find: a confirmed prefix, no tail.
+  const before = nativeMutations(f);
+  const rig = await openReconciling(t, {
+    ...f,
+    options: { ...f.options, directory: killed },
+  });
+  assert.equal(
+    rig.registry.status().state,
+    "ready",
+    JSON.stringify(rig.registry.status()),
+  );
+  const view = rig.registry.readView();
+  assert.equal(
+    view.retainedOperations.some((row) => row.operationId === "create-crash"),
+    true,
+  );
+  await rig.run();
+  assert.equal(rig.reads.length, 1);
+  assert.deepEqual(rig.registry.readView().retainedOperations, []);
+  assert.equal(
+    rig.registry.readView().sessions.length,
+    snapshot.sessions.length + 1,
+  );
+  assert.deepEqual(nativeMutations(f), before);
 });

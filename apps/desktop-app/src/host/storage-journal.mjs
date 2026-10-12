@@ -6,6 +6,8 @@ import {
   PERMISSION_RECONCILIATION_FEATURE,
   validatePermissionReconciliationRecord,
   applyPermissionReconciliation,
+  bootstrapReconciliationCompletion,
+  bootstrapNoEffectProven,
 } from "./workbench-task-storage.mjs";
 import {
   PERMISSION_FEATURE,
@@ -1284,7 +1286,7 @@ function historyValidator() {
   const sessions = new Map();
   const features = new Set();
   let revision = 0;
-  return (payload) => {
+  const validate = (payload) => {
     if (payload.kind === "permission_reconciled") {
       need(
         features.has(PERMISSION_RECONCILIATION_FEATURE),
@@ -1316,6 +1318,19 @@ function historyValidator() {
     if (isTaskRecord(payload.kind)) {
       need(features.has(TASK_FEATURE), "unsupported_version");
       applyTaskRecord(tasks, prior, payload, sessions, workspaces);
+      // A bootstrap reconciliation resolves the operation in the same record;
+      // replay derives the identical completion the registry applied.
+      if (payload.kind === "task_reconciled" && payload.bootstrap) {
+        const completion = bootstrapReconciliationCompletion(
+          prior,
+          workspaces,
+          payload,
+        );
+        if (completion) {
+          revision = payload.revision - 1;
+          validate(completion);
+        }
+      }
     } else if (payload.kind === "feature_gate") {
       need(!features.has(payload.feature), "identity_conflict");
       features.add(payload.feature);
@@ -1523,7 +1538,10 @@ function historyValidator() {
           "identity_conflict",
         );
         need(
-          payload.receipt.effect !== "none" || prior.steps.size === 0,
+          payload.receipt.effect !== "none" ||
+            prior.steps.size === 0 ||
+            (payload.receipt.admission === "rejected" &&
+              bootstrapNoEffectProven(prior, tasks.get(key))),
           "identity_conflict",
         );
         need(
@@ -1629,6 +1647,7 @@ function historyValidator() {
     }
     revision = payload.revision;
   };
+  return validate;
 }
 
 // The caller must acquire the exclusive store owner before invoking this API.
