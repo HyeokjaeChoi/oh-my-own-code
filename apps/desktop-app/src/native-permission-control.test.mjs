@@ -1609,9 +1609,11 @@ test("bootstrap candidate rejection closes original root without inventing locat
   const base = await realpath(
     await mkdtemp(join(tmpdir(), "omoc-bootstrap-marker-")),
   );
-  const directory = join(base, "root");
-  await mkdir(directory);
-  await fs.writeFile(join(directory, ".git"), "unsupported marker");
+  const real = join(base, "root");
+  await mkdir(real);
+  // A non-canonical (aliased) workspace path is unverifiable and refused.
+  const directory = join(base, "alias");
+  await fs.symlink(real, directory);
   try {
     await run((service) =>
       Effect.gen(function* () {
@@ -2095,20 +2097,27 @@ test("location candidate retains real pins, returns detached NONVCS metadata and
 
 for (const marker of [".git", ".hg"]) {
   for (const level of ["root", "ancestor"]) {
-    test(`location candidate refuses actual ${level} ${marker} and physically cleans construction`, async () => {
+    test(`location candidate accepts actual ${level} ${marker} as plain non-VCS and physically cleans`, async () => {
       await candidateFixture(async ({ fs, directory, base, handles }) => {
-        await fs.writeFile(
-          join(level === "root" ? directory : base, marker),
-          "marker",
-        );
+        await fs.mkdir(join(level === "root" ? directory : base, marker));
         await run((service) =>
           Effect.gen(function* () {
             const handle = yield* service.locationBegin({ directory });
             yield* service.locationRootAcquire(handle);
-            yield* expectFailure(service.locationProjectCandidate(handle));
+            const candidate = yield* service.locationProjectCandidate(handle);
+            // Native VCS discovery is never invoked: no VCS identity, and the
+            // project id is the plain directory hash.
+            assert.equal(candidate.vcs, undefined);
+            const { createHash } = yield* Effect.promise(
+              () => import("node:crypto"),
+            );
+            assert.equal(
+              candidate.id,
+              createHash("sha1").update(`directory:${directory}`).digest("hex"),
+            );
             assert.equal(handles.length, 2);
-            assert.ok(handles.every((handle) => handle.fd === -1));
             yield* service.locationScopeObserved(handle);
+            assert.ok(handles.every((handle) => handle.fd === -1));
             assert.equal((yield* snapshot(service)).runtimeHeld, false);
           }),
         );
@@ -2118,7 +2127,7 @@ for (const marker of [".git", ".hg"]) {
 }
 
 for (const phase of ["ready", "check"]) {
-  test(`location candidate ${phase} rechecks actual ancestor marker and permanently refuses stale owner`, async () => {
+  test(`location candidate ${phase} rechecks actual ancestor identity and permanently refuses stale owner`, async () => {
     await candidateFixture(async ({ fs, directory, base }) => {
       await run((service) =>
         Effect.gen(function* () {
@@ -2130,9 +2139,7 @@ for (const phase of ["ready", "check"]) {
             project: candidate,
           });
           if (phase === "check") yield* service.locationReady(handle);
-          yield* Effect.promise(() =>
-            fs.writeFile(join(base, ".git"), "marker"),
-          );
+          yield* Effect.promise(() => fs.chmod(base, 0o755));
           const check = () =>
             phase === "ready"
               ? service.locationReady(handle)
@@ -2140,7 +2147,7 @@ for (const phase of ["ready", "check"]) {
                   service.locationRootCheck(tx, candidate.id, handle),
                 );
           yield* expectFailure(check());
-          yield* Effect.promise(() => fs.unlink(join(base, ".git")));
+          yield* Effect.promise(() => fs.chmod(base, 0o700));
           yield* expectFailure(check());
           yield* service.locationScopeObserved(handle);
         }),
@@ -2349,8 +2356,19 @@ for (const constructionFailure of [false, true]) {
           return handle;
         };
         syncBuiltinESMExports();
-        if (constructionFailure)
-          await fs.writeFile(join(directory, ".git"), "marker");
+        const trackedLstat = fs.default.lstat;
+        if (constructionFailure) {
+          // Fail the candidate's own post-open observation of the root.
+          fs.default.lstat = async (path, ...args) => {
+            if (handles.length === 2 && path === directory) {
+              fs.default.lstat = trackedLstat;
+              syncBuiltinESMExports();
+              throw new Error("construction_failed");
+            }
+            return trackedLstat(path, ...args);
+          };
+          syncBuiltinESMExports();
+        }
         let operationFailed = false,
           cleanupFailed = false;
         await assert.rejects(
@@ -3099,3 +3117,58 @@ for (const failure of ["control", "native", "both"]) {
     );
   });
 }
+
+test("diagnostics sink observes reject sites and the first hold step without changing behavior", async () => {
+  const rows = [];
+  await run(
+    (service) =>
+      Effect.gen(function* () {
+        const handle = yield* service.locationBegin({ directory: "/diag" });
+        yield* expectFailure(
+          service.locationProjectCandidate(handle),
+          "root_unverified",
+        );
+        yield* service.invalidate("first_reason");
+        yield* service.invalidate("second_reason");
+      }),
+    control.configured(options(), (service) =>
+      service.bindDiagnostic((row) => rows.push(row)),
+    ),
+  );
+  const rejection = rows.find((row) => row.code === "root_unverified");
+  assert.equal(rejection.kind, "reject");
+  assert.equal(rejection.runtimeHeld, false);
+  assert.equal(rejection.inventoryFailed, false);
+  assert.match(rejection.step, /^[^@\s]+@native-permission-control\.mjs:\d+$/u);
+  const holds = rows.filter((row) => row.kind === "hold");
+  assert.deepEqual(
+    holds.map((row) => [row.step, row.heldBy, row.runtimeHeld]),
+    [
+      ["invalidate:first_reason", "invalidate:first_reason", true],
+      ["invalidate:second_reason", "invalidate:first_reason", true],
+      // Layer release also holds; the first step stays the recorded cause.
+      ["close_roots", "invalidate:first_reason", true],
+    ],
+  );
+  // A throwing sink never alters control flow.
+  await run(
+    (service) =>
+      Effect.gen(function* () {
+        const handle = yield* service.locationBegin({ directory: "/diag" });
+        yield* expectFailure(
+          service.locationProjectCandidate(handle),
+          "root_unverified",
+        );
+      }),
+    control.configured(options(), (service) =>
+      service.bindDiagnostic(() => {
+        throw new Error("sink");
+      }),
+    ),
+  );
+  await run((service) =>
+    Effect.sync(() =>
+      assert.throws(() => service.bindDiagnostic("not a function")),
+    ),
+  );
+});

@@ -50,18 +50,26 @@ test("candidate binds actual root metadata, exact Native directory SHA1 and reta
   await assert.rejects(owner.assertCurrent());
 });
 
-test("all ancestor marker kinds are refused without following markers", async (t) => {
+test("VCS markers in the workspace or any ancestor are accepted without following them or changing identity", async (t) => {
   const { createNativeBootstrapWorkspace } = await load();
   const { workspace, parent, path } = await fixture(t);
+  const projectId = createHash("sha1")
+    .update(`directory:${path}`)
+    .digest("hex");
   for (const base of [path, parent]) {
     for (const marker of [".git", ".hg"]) {
       for (const kind of ["file", "directory", "symlink"]) {
         const target = join(base, marker);
-        if (kind === "file") await fs.writeFile(target, "not a repository");
+        if (kind === "file") await fs.writeFile(target, "gitdir: /elsewhere");
         if (kind === "directory") await fs.mkdir(target);
         if (kind === "symlink")
           await fs.symlink(join(parent, "missing"), target);
-        await rejectCandidate(createNativeBootstrapWorkspace(workspace));
+        const owner = await createNativeBootstrapWorkspace(workspace);
+        // Never VCS-derived: the id is the plain directory hash, and the
+        // marker is neither followed nor made part of the pinned identity.
+        assert.equal(owner.inspect().projectId, projectId);
+        assert.equal(await owner.assertCurrent(), true);
+        await owner.close();
         await fs.rm(target, { recursive: true, force: true });
       }
     }
@@ -172,23 +180,33 @@ test("aliases, unreadable ancestors and excessive depth are refused", async (t) 
   );
 });
 
-test("ancestor replacement and marker insertion revoke without revival", async (t) => {
+test("ancestor replacement revokes without revival", async (t) => {
   const { createNativeBootstrapWorkspace } = await load();
-  for (const mode of ["swap", ".git", ".hg"]) {
-    const { workspace, parent } = await fixture(t);
-    const owner = await createNativeBootstrapWorkspace(workspace);
-    t.after(() => owner.close());
-    if (mode === "swap") {
-      await fs.rename(parent, parent + "-moved");
-      t.after(() => fs.rm(parent + "-moved", { recursive: true, force: true }));
-      await fs.mkdir(parent);
-      await fs.mkdir(workspace.path);
-    } else await fs.writeFile(join(parent, mode), "marker");
-    await assert.rejects(owner.assertCurrent());
-    if (mode !== "swap") await fs.unlink(join(parent, mode));
-    await assert.rejects(owner.assertCurrent());
-    assert.throws(() => owner.inspect());
+  const { workspace, parent } = await fixture(t);
+  const owner = await createNativeBootstrapWorkspace(workspace);
+  t.after(() => owner.close());
+  await fs.rename(parent, parent + "-moved");
+  t.after(() => fs.rm(parent + "-moved", { recursive: true, force: true }));
+  await fs.mkdir(parent);
+  await fs.mkdir(workspace.path);
+  await assert.rejects(owner.assertCurrent());
+  await assert.rejects(owner.assertCurrent());
+  assert.throws(() => owner.inspect());
+});
+
+test("a repository appearing or vanishing under a live candidate does not revoke it", async (t) => {
+  const { createNativeBootstrapWorkspace } = await load();
+  const { workspace, path } = await fixture(t);
+  const owner = await createNativeBootstrapWorkspace(workspace);
+  t.after(() => owner.close());
+  const id = owner.inspect().projectId;
+  for (const marker of [".git", ".hg"]) {
+    await fs.mkdir(join(path, marker));
+    assert.equal(await owner.assertCurrent(), true);
+    assert.equal(owner.inspect().projectId, id);
   }
+  await fs.rm(join(path, ".git"), { recursive: true });
+  assert.equal(await owner.assertCurrent(), true);
 });
 
 // Instrument the actual Node methods, retaining real handles and real stat
@@ -205,7 +223,7 @@ async function instrument(t, name, replacement) {
   });
 }
 
-test("observes each canonical ancestor through filesystem root with both markers", async (t) => {
+test("observes each canonical ancestor through filesystem root and never probes VCS markers", async (t) => {
   const { createNativeBootstrapWorkspace } = await load();
   const { workspace } = await fixture(t);
   const seen = new Set();
@@ -217,34 +235,12 @@ test("observes each canonical ancestor through filesystem root with both markers
   t.after(() => owner.close());
   let path = workspace.path;
   for (;;) {
+    assert.ok(seen.has(path));
     for (const marker of [".git", ".hg"])
-      assert.ok(seen.has(join(path, marker)));
+      assert.ok(!seen.has(join(path, marker)));
     if (dirname(path) === path) break;
     path = dirname(path);
   }
-});
-
-test("marker inserted after an early ancestor observation fails acquisition and closes real FD", async (t) => {
-  const { createNativeBootstrapWorkspace } = await load();
-  const { workspace, parent, path } = await fixture(t);
-  let handle,
-    inserted = false;
-  await instrument(t, "open", (original) => async (...args) => {
-    handle = await original(...args);
-    return handle;
-  });
-  await instrument(t, "lstat", (original) => async (target, ...args) => {
-    const result = await original(target, ...args);
-    if (target === dirname(parent) && !inserted) {
-      inserted = true;
-      await fs.writeFile(join(path, ".git"), "late marker");
-    }
-    return result;
-  });
-  await rejectCandidate(createNativeBootstrapWorkspace(workspace));
-  assert.ok(inserted);
-  assert.equal(handle.fd, -1);
-  await assert.rejects(handle.stat(), { code: "EBADF" });
 });
 
 test("ancestor swapped during observation refuses both original and replacement", async (t) => {
@@ -266,7 +262,7 @@ test("ancestor swapped during observation refuses both original and replacement"
   assert.ok(swapped);
 });
 
-test("permission failure after acquisition closes retained FD without treating it as marker absence", async (t) => {
+test("permission failure after acquisition closes retained FD and propagates", async (t) => {
   const { createNativeBootstrapWorkspace } = await load();
   const { workspace, parent } = await fixture(t);
   let handle;
@@ -275,7 +271,7 @@ test("permission failure after acquisition closes retained FD without treating i
     return handle;
   });
   await instrument(t, "lstat", (original) => async (target, ...args) => {
-    if (target === join(parent, ".hg"))
+    if (target === parent)
       throw Object.assign(Error("permission denied"), { code: "EACCES" });
     return original(target, ...args);
   });
@@ -334,10 +330,10 @@ test("cleanup failure is exposed; close revokes synchronously and keeps failed c
   await actualClose();
 });
 
-test("the last check cannot revoke or insert markers just before assertCurrent returns", async (t) => {
+test("the last check cannot revoke the candidate just before assertCurrent returns", async (t) => {
   const { createNativeBootstrapWorkspace } = await load();
-  const { writeFileSync, renameSync, mkdirSync } = await import("node:fs");
-  for (const mutation of ["close", ".git", ".hg", "rename"]) {
+  const { renameSync, mkdirSync } = await import("node:fs");
+  for (const mutation of ["close", "rename"]) {
     const { workspace, path } = await fixture(t);
     let calls = 0,
       finalCall = Infinity,
@@ -351,7 +347,7 @@ test("the last check cannot revoke or insert markers just before assertCurrent r
         else if (mutation === "rename") {
           renameSync(path, path + "-original");
           mkdirSync(path);
-        } else writeFileSync(join(path, mutation), "final callback marker");
+        }
       },
     });
     t.after(() => owner.close());
@@ -366,37 +362,6 @@ test("the last check cannot revoke or insert markers just before assertCurrent r
     await assert.rejects(owner.assertCurrent());
     if (closePromise) await closePromise;
   }
-});
-
-test("last acquisition callback cannot insert a marker before publication; FD is closed", async (t) => {
-  const { createNativeBootstrapWorkspace } = await load();
-  const { writeFileSync } = await import("node:fs");
-  const { workspace, path } = await fixture(t);
-  let calls = 0;
-  const calibrated = await createNativeBootstrapWorkspace(workspace, {
-    check: () => {
-      calls++;
-    },
-  });
-  const finalCall = calls;
-  await calibrated.close();
-  let handle;
-  await instrument(t, "open", (original) => async (...args) => {
-    handle = await original(...args);
-    return handle;
-  });
-  calls = 0;
-  await rejectCandidate(
-    createNativeBootstrapWorkspace(workspace, {
-      check: () => {
-        calls++;
-        if (calls === finalCall)
-          writeFileSync(join(path, ".hg"), "late acquisition marker");
-      },
-    }),
-  );
-  assert.equal(calls, finalCall);
-  assert.equal(handle.fd, -1);
 });
 
 test("check failure during assertCurrent is permanent and a pending close blocks reentry", async (t) => {
@@ -512,9 +477,9 @@ test("exactly 64 ancestors is accepted and the next level is refused", async (t)
   await rejectCandidate(createNativeBootstrapWorkspace({ ...workspace, path }));
 });
 
-test("changed ancestor metadata and transient marker insertion fail observation", async (t) => {
+test("changed ancestor metadata fails observation", async (t) => {
   const { createNativeBootstrapWorkspace } = await load();
-  const { workspace, parent, path } = await fixture(t);
+  const { workspace, parent } = await fixture(t);
   const owner = await createNativeBootstrapWorkspace(workspace);
   t.after(() => owner.close());
   const before = await fs.stat(parent, { bigint: true });
@@ -524,19 +489,6 @@ test("changed ancestor metadata and transient marker insertion fail observation"
   await assert.rejects(owner.assertCurrent());
   await fs.chmod(parent, 0o700);
   await assert.rejects(owner.assertCurrent());
-  let inserted = false;
-  await instrument(t, "lstat", (original) => async (target, ...args) => {
-    const stat = await original(target, ...args);
-    if (target === dirname(parent) && !inserted) {
-      inserted = true;
-      const marker = join(path, ".hg");
-      await fs.writeFile(marker, "transient");
-      await fs.unlink(marker);
-    }
-    return stat;
-  });
-  await rejectCandidate(createNativeBootstrapWorkspace(workspace));
-  assert.ok(inserted);
 });
 
 test("failed candidate acquisition exposes only factory-proven cleanup and refuses reused error proof", async (t) => {

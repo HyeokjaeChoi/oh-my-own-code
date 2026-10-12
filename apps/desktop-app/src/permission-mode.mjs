@@ -33,6 +33,20 @@ const ENV_READ_RULES = [
   { action: "read", resource: "*.env.example", effect: "allow" },
 ];
 
+// Workspaces may be Git/Hg repositories. An edit auto-allow must never cover
+// VCS metadata (hooks, config and attributes execute code on later VCS runs),
+// so it is re-denied right after the edit rule. Last match wins; resources are
+// workspace-relative. This is rule-level defence in depth only: pattern matching
+// is case-sensitive, so execution-time path checks must also refuse VCS
+// metadata by canonical identity (tool leases, execution phase).
+export const VCS_METADATA_EDIT_DENIES = Object.freeze(
+  [".git", ".hg"].flatMap((name) =>
+    [name, `${name}/*`, `*/${name}`, `*/${name}/*`].map((resource) =>
+      Object.freeze({ action: "edit", resource, effect: "deny" }),
+    ),
+  ),
+);
+
 export const validPermissionMode = (mode) => PERMISSION_MODES.includes(mode);
 
 // Rules a pre-F-07 build wrote for this mode: no subagent capability rule and
@@ -60,9 +74,21 @@ export function compileModeRules(mode = "ask") {
     (r) => r.action === "read" && r.effect === "allow",
   );
   if (at < 0) return rules;
-  return Object.freeze([
+  const withEnv = [
     ...rules.slice(0, at + 1),
     ...ENV_READ_RULES.map((r) => Object.freeze({ ...r })),
     ...rules.slice(at + 1),
-  ]);
+  ];
+  const edit = withEnv.findIndex(
+    (r) => r.action === "edit" && r.resource === "*" && r.effect === "allow",
+  );
+  return Object.freeze(
+    edit < 0
+      ? withEnv
+      : [
+          ...withEnv.slice(0, edit + 1),
+          ...VCS_METADATA_EDIT_DENIES.map((r) => Object.freeze({ ...r })),
+          ...withEnv.slice(edit + 1),
+        ],
+  );
 }
