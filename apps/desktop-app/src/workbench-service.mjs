@@ -7,6 +7,7 @@ import { permissionPromptInputDigest } from "./permission-input-digest.mjs";
 import {
   bootstrapHandoffProof,
   bootstrapMetadataDigest,
+  bootstrapBaselinePermissions,
   bootstrapParentDigest,
   bootstrapStageDigest,
   bootstrapTaskProof,
@@ -794,10 +795,27 @@ export function createWorkbenchService({
       typeof directory !== "string"
     )
       fail("POLICY_UNVERIFIED");
+    // A fork inherits its parent's rules and its permission setter is held, so
+    // only an "ask" parent carrying exactly the baseline can ever settle.
+    if (modeOf(s) !== "ask" || !bootstrapBaselinePermissions(info.permissions))
+      fail("POLICY_UNVERIFIED");
     return {
       identity: { id: info.id, projectID: info.projectID, directory },
       workspacePath: w.path,
     };
+  }
+  // Native's session.import is closed by the overlay, but a session that is
+  // already recorded under the planned id must still never be adopted as this
+  // create's result: refuse before any dispatch unless it is provably absent.
+  async function refuseRecordedSession(sessionID) {
+    if (!context?.nativeTasks) return;
+    try {
+      await call(client.session.get, { sessionID });
+    } catch (error) {
+      if (error?._tag === "SessionNotFoundError") return;
+      throw error;
+    }
+    fail("POLICY_UNVERIFIED");
   }
   async function call(fn, ...args) {
     checkLive();
@@ -2496,6 +2514,7 @@ export function createWorkbenchService({
       false,
       reservation,
     );
+    await refuseRecordedSession(reservation.plannedNativeSessionId);
     const info = await call(client.session.create, {
       id: reservation.plannedNativeSessionId,
       metadata: owner.nativeMetadata,
@@ -5080,6 +5099,10 @@ export function createWorkbenchService({
           w.trusted = true;
           w.trustRevision++;
         }
+        if (registry)
+          await refuseRecordedSession(
+            currentScope().reservation.plannedNativeSessionId,
+          );
         const info = await call(client.session.create, {
           ...(registry && {
             id: currentScope().reservation.plannedNativeSessionId,
