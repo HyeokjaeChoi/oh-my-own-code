@@ -1838,6 +1838,21 @@ const recipe = {
         },
       ],
     },
+    {
+      path: "node_modules/@opencode/core/dist/chunks/config-pd1wrm5b.js",
+      beforeSha256: "1bc33e8896e6adebed1a69b152cacd8fb674838e944159b636fb4735ed4072a3",
+      afterSha256: "94969ae96255ae619bc755dc26890fc50921b88bb95ad49ddbf1529e2cf0b44c",
+      edits: [
+        {
+          // Project.resolve is the single Native VCS discovery point (git/hg
+          // spawns against repository-controlled config, vcs project rows).
+          // Every caller (Session.create, SessionMove, Location) gets the
+          // directory-identity project; no VCS is ever discovered or spawned.
+          find: '    const native = yield* fs.up({ targets: [".git", ".hg"], start: directory, mode: "first" }).pipe(Effect.map((matches) => matches[0]), Effect.orElseSucceed(() => {\n      return;\n    }));\n',
+          replace: "    const native = undefined; // desktop: never discover VCS\n",
+        },
+      ],
+    },
   ],
 };
 for (const file of recipe.files) {
@@ -1854,7 +1869,7 @@ export const NATIVE_PERMISSION_OVERLAY_RECEIPT = Object.freeze({
   id: recipe.id,
   serverVersion: recipe.serverVersion,
   recipeSha256:
-    "ada387f4d8e5a2ec80b14d4ae6ae56d9a197ceb9ff3cf4df6fd62deddf83eb80",
+    "c14f92a57caa2854bf83ef3a9e6c8ffbf1174bb5a9dd853d45a2f9930af0cd2b",
   files: Object.freeze(
     recipe.files.map(({ path, beforeSha256, afterSha256 }) =>
       Object.freeze({ path, beforeSha256, afterSha256 }),
