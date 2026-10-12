@@ -41,7 +41,17 @@ import {
 } from "./host/workspace-root-authority.mjs";
 
 const error = (code) => new Error(`native_permission_${code}`);
+// Trusted diagnostics sink bound by the graph factory; observational only.
+let diagnose;
+// Caller function and file:line only (no directories) for diagnostics.
+const rejectSite = () => {
+  const frame = new Error().stack?.split("\n")[3] ?? "";
+  const at = /([^/\s:]+:\d+):\d+\)?$/u.exec(frame)?.[1];
+  const name = /at (?:async )?([^\s(]+) \(/u.exec(frame)?.[1];
+  return at && `${name ?? "anon"}@${at}`;
+};
 const reject = (code) => {
+  diagnose?.({ kind: "reject", code, step: diagnose && rejectSite() });
   throw error(code);
 };
 const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
@@ -139,7 +149,7 @@ function kernel(initial) {
 
   const inventoryAdvance = () => {
     if (inventoryGeneration >= Number.MAX_SAFE_INTEGER) {
-      runtimeHeld = true;
+      hold("inventory_generation_capacity");
       leases.close();
       reject("capacity");
     }
@@ -150,6 +160,34 @@ function kernel(initial) {
   let metadataQueued = 0;
   let metadataDrained = Deferred.makeUnsafe();
   let runtimeHeld = false;
+  let heldBy;
+  let diagnostic;
+  // Trusted graph factory only; observational, never an authority.
+  const bindDiagnostic = (sink) => {
+    if (sink !== undefined && typeof sink !== "function") reject("input");
+    diagnostic = sink;
+  };
+  const anyLocation = (flag) =>
+    [...locations.values()].some((entry) => entry[flag]);
+  diagnose = (row) => {
+    try {
+      diagnostic?.({
+        ...row,
+        runtimeHeld,
+        heldBy,
+        inventoryFailed: anyLocation("inventoryFailed"),
+        inventoryChanged: anyLocation("inventoryChangedKind"),
+      });
+    } catch {
+      /* diagnostics never alter control flow */
+    }
+  };
+  // Every runtime hold records which step set it (first wins) for diagnostics.
+  const hold = (step) => {
+    runtimeHeld = true;
+    heldBy ??= step;
+    diagnose({ kind: "hold", step });
+  };
   const sharedMembership = (effect) =>
     Effect.suspend(() => {
       if (metadataQueued > 0)
@@ -304,7 +342,7 @@ function kernel(initial) {
   };
   const advanceLocations = () => {
     if (locationGeneration >= Number.MAX_SAFE_INTEGER) {
-      runtimeHeld = true;
+      hold("location_generation_capacity");
       leases.close();
       reject("capacity");
     }
@@ -711,7 +749,7 @@ function kernel(initial) {
         return source;
       } catch (failure) {
         entry.inventoryFailed = true;
-        runtimeHeld = true;
+        hold("inventory_source");
         throw failure;
       }
     });
@@ -902,7 +940,7 @@ function kernel(initial) {
         // builtin factory. Setup can start discovery before its first callback
         // registration, so refuse before the original effect is constructed.
         registration.entry.inventoryFailed = true;
-        runtimeHeld = true;
+        hold("tool_declaration_unverified");
         reject("inventory_unverified");
       }
       if (property(descriptor, "id") !== registration.identity)
@@ -1001,7 +1039,7 @@ function kernel(initial) {
           );
         } catch (failure) {
           entry.inventoryFailed = true;
-          runtimeHeld = true;
+          hold("tool_publication");
           registration.toolResult = undefined;
           registration.toolProjection = undefined;
           throw failure;
@@ -1112,7 +1150,7 @@ function kernel(initial) {
         array(operations, 1).length !== 1
       ) {
         entry.inventoryFailed = true;
-        runtimeHeld = true;
+        hold("plugin_order");
         reject("inventory_unverified");
       }
       entry.inventoryPlan = Object.freeze([
@@ -1135,7 +1173,7 @@ function kernel(initial) {
         new Set(ids).size !== ids.length
       ) {
         entry.inventoryFailed = true;
-        runtimeHeld = true;
+        hold("inventory_plan");
         reject("inventory_unverified");
       }
     });
@@ -1146,7 +1184,8 @@ function kernel(initial) {
     const entry = locationEntry(handle);
     inventoryAdvance();
     entry.inventoryFailed = true;
-    if (owners.size > 0 || entry.state === "finalizing") runtimeHeld = true;
+    if (owners.size > 0 || entry.state === "finalizing")
+      hold("inventory_mutation");
     // Invalidation is not permission to run an unverified callback. State.get
     // can replay it outside a transaction and its body may have real effects.
     reject("inventory_unverified");
@@ -1312,7 +1351,7 @@ function kernel(initial) {
   };
   const setupFailure = (entry) => {
     entry.inventoryFailed = true;
-    runtimeHeld = true;
+    hold("setup_failure");
     inventoryAdvance();
     reject("inventory_unverified");
   };
@@ -1406,7 +1445,7 @@ function kernel(initial) {
             return exit._tag === "Failure"
               ? metadata(() => {
                   activation.parent.entry.inventoryFailed = true;
-                  runtimeHeld = true;
+                  hold("setup_activation_exit");
                   inventoryAdvance();
                 }, true)
               : Effect.void;
@@ -1520,7 +1559,7 @@ function kernel(initial) {
   const inventoryStateUncertain = (token) => {
     const row = inventoryToken(token);
     row.entry.inventoryFailed = true;
-    runtimeHeld = true;
+    hold("inventory_state_uncertain");
     inventoryAdvance();
   };
   const agentTransformMetadata = (token) => {
@@ -1593,7 +1632,7 @@ function kernel(initial) {
         entry.state === "finalizing" ||
         (entry.inventoryRegistrations?.length ?? 0) >= 256
       ) {
-        runtimeHeld = true;
+        hold("inventory_begin");
         reject("inventory_unverified");
       }
       if (identity !== undefined) text(identity);
@@ -1819,6 +1858,7 @@ function kernel(initial) {
       )
         reject("inventory_unverified");
       entry.inventoryFailed = true;
+      entry.inventoryChangedKind = kind;
       for (const registration of entry.inventoryRegistrations ?? []) {
         registration.toolMetadata = undefined;
         registration.toolResult = undefined;
@@ -1905,7 +1945,7 @@ function kernel(initial) {
           capabilities: Object.freeze([]),
         });
         if (Buffer.byteLength(JSON.stringify(snapshot), "utf8") > 1024 * 1024) {
-          runtimeHeld = true;
+          hold("snapshot_size");
           reject("capacity");
         }
         inventorySnapshots.set(snapshot, {
@@ -2123,12 +2163,12 @@ function kernel(initial) {
               try: async () => {
                 const result = await owner.close();
                 if (result?.complete !== true) {
-                  runtimeHeld = true;
+                  hold("read_close_unverified");
                   reject("read_close_unverified");
                 }
               },
               catch: (failure) => {
-                runtimeHeld = true;
+                hold("read_close_failed");
                 return failure;
               },
             }),
@@ -2195,7 +2235,7 @@ function kernel(initial) {
             observed = undefined;
             reason = "runtime_unavailable";
             if (!owner && !nativeBootstrapWorkspaceFailureClosed(failure)) {
-              runtimeHeld = true;
+              hold("bootstrap_workspace_open");
               bootstrapCloseFailures.push(failure);
             }
           } finally {
@@ -2205,7 +2245,7 @@ function kernel(initial) {
               } catch (failure) {
                 observed = undefined;
                 reason = "runtime_unavailable";
-                runtimeHeld = true;
+                hold("bootstrap_workspace_close");
                 bootstrapCloseFailures.push(failure);
               }
             }
@@ -2363,7 +2403,7 @@ function kernel(initial) {
     Effect.try({
       try: () => {
         identifier(reason);
-        runtimeHeld = true;
+        hold(`invalidate:${reason}`);
         leases.close();
         handoffs.close();
       },
@@ -2393,7 +2433,7 @@ function kernel(initial) {
       closeRoots: () =>
         Effect.uninterruptible(
           Effect.promise(async () => {
-            runtimeHeld = true;
+            hold("close_roots");
             leases.close();
             handoffs.close();
             // Revoke checks first; await original candidate IO and physical
@@ -2417,6 +2457,7 @@ function kernel(initial) {
       locationScopeObserved,
       locationSnapshot,
       bindAgentNotificationSource,
+      bindDiagnostic,
       captureAgentNotificationListeners,
       inventoryConfigure,
       inventoryToolSource,

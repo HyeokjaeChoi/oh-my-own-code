@@ -699,6 +699,10 @@ app.whenReady().then(async () => {
         nativeTaskRuntime = undefined;
         registry?.invalidateTaskAuthority?.();
       },
+      onDiagnostic: (diagnostic) =>
+        process.stderr.write(
+          `[native-diagnostic] ${JSON.stringify(diagnostic)}\n`,
+        ),
       ...(e2eScenario === "startup-timeout" && { startupTimeoutMs: 25 }),
       ...(e2eScenario === "service-collision" &&
         Number.isInteger(e2ePort) &&

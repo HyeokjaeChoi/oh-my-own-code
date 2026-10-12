@@ -4,7 +4,10 @@ import { lstatSync, realpathSync } from "node:fs";
 import { dirname, isAbsolute, join, relative } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { validateHostMessage } from "./event-host-protocol.mjs";
+import {
+  sanitizeDiagnostic,
+  validateHostMessage,
+} from "./event-host-protocol.mjs";
 import { nativeSkillsConfig } from "./native-skills-config.mjs";
 import { verifyEventHostResources } from "./event-host-resources.mjs";
 import { createNativePermissionGraph } from "./native-permission-graph.mjs";
@@ -213,12 +216,24 @@ function guardInit(input) {
 // The production caller supplies the fixed pinned server import. Test seams
 // are private function arguments and cannot be selected by an IPC request.
 export async function prepareHeldEventHostStart(
-  { root, nonce, runtimeEpoch, bootHolds, options, isClosing, bindTaskControl },
+  {
+    root,
+    nonce,
+    runtimeEpoch,
+    bootHolds,
+    options,
+    isClosing,
+    bindTaskControl,
+    diagnostic,
+  },
   { createGraph = createNativePermissionGraph, loadStart },
 ) {
   const permissionInit = initialization({ runtimeEpoch, bootHolds });
   if (isClosing()) throw new Error("startup_held");
-  const graph = await createGraph({ root, nonce, ...permissionInit });
+  const graph = await createGraph(
+    { root, nonce, ...permissionInit },
+    diagnostic,
+  );
   if (isClosing()) throw new Error("startup_held");
   if (bindTaskControl) {
     if (
@@ -241,7 +256,8 @@ export function runEventHostChild() {
     importing = false,
     ready = false,
     observing = false;
-  let scope, fiber, Effect, Scope, Exit, Fiber, observer, initialization;
+  let scope, fiber, Effect, Scope, Exit, Fiber, Logger, Cause, References;
+  let observer, initialization;
   let gitMetadataKernel,
     taskControl,
     taskPreparationTask,
@@ -258,6 +274,23 @@ export function runEventHostChild() {
       } catch {
         /* IPC loss retains parent hold */
       }
+    }
+  };
+  // Bounded, redacted, deduplicated diagnostics for Main logs only. Never
+  // carries authority; failures here cannot change host state.
+  let diagnosticCount = 0,
+    lastDiagnostic;
+  const diagnostic = (raw) => {
+    try {
+      const clean = sanitizeDiagnostic(raw);
+      if (!clean || closing || diagnosticCount >= 200) return;
+      const key = JSON.stringify(clean);
+      if (key === lastDiagnostic) return;
+      lastDiagnostic = key;
+      diagnosticCount++;
+      emit({ type: "diagnostic", diagnostic: clean });
+    } catch {
+      /* diagnostics are best effort */
     }
   };
   const bounded = (promise, ms) =>
@@ -360,7 +393,9 @@ export function runEventHostChild() {
       },
     );
     if (closing) throw new Error("startup_held");
-    ({ Effect, Scope, Exit, Fiber } = await import("effect"));
+    ({ Effect, Scope, Exit, Fiber, Logger, Cause, References } = await import(
+      "effect"
+    ));
     if (closing) throw new Error("startup_held");
     scope = await Effect.runPromise(Scope.make());
     if (closing) throw new Error("startup_held");
@@ -371,6 +406,7 @@ export function runEventHostChild() {
         runtimeEpoch: input.runtimeEpoch,
         bootHolds: [],
         isClosing: () => closing,
+        diagnostic,
         bindTaskControl: (value) => {
           taskControl = value;
         },
@@ -398,8 +434,42 @@ export function runEventHostChild() {
       },
     );
     if (closing) throw new Error("startup_held");
+    // Native error logs (including 5xx defects) become bounded diagnostics.
+    const nativeErrors = Logger.make((entry) => {
+      try {
+        const level = String(entry.logLevel);
+        const reasons = entry.cause?.reasons?.length ?? 0;
+        if (!reasons && !["Error", "Fatal"].includes(level)) return;
+        const failure = reasons ? Cause.squash(entry.cause) : undefined;
+        const notes = entry.fiber.getRef(References.CurrentLogAnnotations);
+        const text = [
+          ...(Array.isArray(entry.message) ? entry.message : [entry.message]),
+          failure?.message,
+        ]
+          .filter((part) => typeof part === "string")
+          .join(" | ");
+        let route;
+        try {
+          route = `${notes?.["http.method"] ?? ""} ${new URL(String(notes?.["http.url"]), "http://x").pathname}`;
+        } catch {
+          /* no HTTP context for this log entry */
+        }
+        diagnostic({
+          kind: "native",
+          tag: failure?._tag ?? failure?.name ?? level,
+          route,
+          status: Number(notes?.["http.status"]) || undefined,
+          detail: text,
+        });
+      } catch {
+        /* best effort */
+      }
+    });
     fiber = Effect.runFork(
-      server.pipe(Effect.provideService(Scope.Scope, scope)),
+      server.pipe(
+        Effect.provideService(Scope.Scope, scope),
+        Effect.provide(Logger.layer([nativeErrors])),
+      ),
     );
     importing = false;
     const result = await Effect.runPromise(Fiber.join(fiber));

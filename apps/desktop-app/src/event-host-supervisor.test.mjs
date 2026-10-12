@@ -1825,3 +1825,44 @@ test("bootstrap prepare needs a plan, refuses a second key use and an out-of-con
   assert.ok(lost >= 1);
   await runtime.stop().catch(() => {});
 });
+
+test("child diagnostics reach the trusted Main sink; a throwing sink or invalid row never affects the host", async (t) => {
+  const seen = [];
+  const f = await fixture(t, {
+    init(child, message) {
+      const diagnostic = (row) =>
+        child.emit("message", {
+          type: "diagnostic",
+          nonce: message.nonce,
+          pid: child.pid,
+          diagnostic: row,
+        });
+      diagnostic({
+        kind: "reject",
+        code: "inventory_unverified",
+        step: "a@b:1",
+      });
+      diagnostic({ kind: "hold", step: "invalidate:x", runtimeHeld: true });
+      child.emit("message", {
+        type: "ready",
+        nonce: message.nonce,
+        pid: child.pid,
+        port: message.port || 43121,
+        engineVersion: "1.4.2",
+        serverVersion: "2.0.18",
+      });
+    },
+  });
+  const runtime = await startEventHost({
+    ...f.options,
+    onDiagnostic: (row) => {
+      seen.push(row);
+      if (seen.length === 1) throw new Error("sink failure");
+    },
+  });
+  assert.deepEqual(seen, [
+    { kind: "reject", code: "inventory_unverified", step: "a@b:1" },
+    { kind: "hold", step: "invalidate:x", runtimeHeld: true },
+  ]);
+  await runtime.stop();
+});
