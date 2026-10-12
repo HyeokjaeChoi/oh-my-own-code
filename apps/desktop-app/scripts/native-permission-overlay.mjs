@@ -2,7 +2,7 @@ import { isUtf8 } from "node:buffer";
 import { createHash } from "node:crypto";
 import { types } from "node:util";
 
-const MAX_EDITS = 256;
+const MAX_EDITS = 512;
 // Every recipe file requires an edit, so the structural ceilings are equal.
 const MAX_FILES = MAX_EDITS;
 const MAX_BYTES = 32 * 1024 * 1024;
