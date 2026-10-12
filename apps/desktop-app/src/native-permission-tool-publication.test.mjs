@@ -1,3 +1,5 @@
+// These tests pin the retained strict proof machinery; production runs non-strict.
+process.env.OMOC_PERMISSION_PROOF_STRICT = "1";
 // Actual pinned Effect + original State/editor replay. Schema validation is
 // scripted here; this is publication/lifetime evidence, never execution proof.
 import assert from "node:assert/strict";

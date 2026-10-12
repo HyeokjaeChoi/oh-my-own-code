@@ -1,3 +1,5 @@
+// These tests pin the retained strict proof machinery; production runs non-strict.
+process.env.OMOC_PERMISSION_PROOF_STRICT = "1";
 // Concrete Control/Effect contract; synthetic producers confer no Native authority.
 import assert from "node:assert/strict";
 import test, { after } from "node:test";

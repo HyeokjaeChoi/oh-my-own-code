@@ -1,3 +1,5 @@
+// These tests pin the retained strict proof machinery; production runs non-strict.
+process.env.OMOC_PERMISSION_PROOF_STRICT = "1";
 // Node/extracted Effect metadata only. Synthetic producer identity is not Native authority.
 import assert from "node:assert/strict";
 import test, { after } from "node:test";

@@ -68,7 +68,13 @@ class TransactionScope extends Context.Service()(
   "@workbench/PermissionControlScope",
 ) {}
 
+// Test seam: the original hold-everything proof behavior stays available for the
+// retained proof tests. Production never sets it; OpenCode's own permission
+// rules are the safety layer.
+const strictProof = () => process.env.OMOC_PERMISSION_PROOF_STRICT === "1";
+
 function kernel(initial) {
+  const strict = strictProof();
   // Per-kernel diagnostics sink bound by the graph factory; observational only.
   // The call site is captured (stack walk) only when a sink is bound.
   let diagnostic;
@@ -154,7 +160,8 @@ function kernel(initial) {
           reject("inventory_unverified");
       }
       return Object.freeze(copy);
-    } catch {
+    } catch (failure) {
+      if (strict) throw failure;
       return Object.freeze(Array.isArray(listeners) ? [...listeners] : []);
     }
   };
@@ -210,7 +217,7 @@ function kernel(initial) {
     "snapshot_size",
   ]);
   const hold = (step) => {
-    if (diagnosticHolds.has(step)) {
+    if (!strict && diagnosticHolds.has(step)) {
       diagnose({ kind: "inventory-diagnostic", step });
       return;
     }
@@ -1900,17 +1907,25 @@ function kernel(initial) {
   // Hook/execute closures run under OpenCode's own permission checks; a stale
   // inventory token is a diagnostic only.
   const inventoryGuard = (token) =>
-    Effect.sync(() => {
-      try {
-        inventoryToken(token);
-      } catch (failure) {
-        diagnose({
-          kind: "inventory-diagnostic",
-          step: "inventoryGuard",
-          code: String(failure?.message ?? failure).slice(0, 80),
+    strict
+      ? Effect.try({
+          try: () => {
+            inventoryToken(token);
+            reject("inventory_unverified");
+          },
+          catch: (failure) => failure,
+        })
+      : Effect.sync(() => {
+          try {
+            inventoryToken(token);
+          } catch (failure) {
+            diagnose({
+              kind: "inventory-diagnostic",
+              step: "inventoryGuard",
+              code: String(failure?.message ?? failure).slice(0, 80),
+            });
+          }
         });
-      }
-    });
   const inventorySnapshot = (tx, id) =>
     Effect.flatMap(locationSnapshot(tx, id), (membership) =>
       Effect.sync(() => {
@@ -2036,7 +2051,10 @@ function kernel(initial) {
     );
   // Execution is admitted for any inspected project transaction; OpenCode's own
   // permission rules and ask prompts are the safety layer.
-  const assertExecution = (tx, id) => Effect.asVoid(inspect(tx, id));
+  const assertExecution = (tx, id) =>
+    strict
+      ? Effect.flatMap(inspect(tx, id), () => Effect.fail(error("held")))
+      : Effect.asVoid(inspect(tx, id));
   const leaseSnapshot = (tx, id) =>
     Effect.flatMap(inspect(tx, id), () =>
       Effect.sync(() => leases.snapshot(id)),
@@ -2150,9 +2168,10 @@ function kernel(initial) {
           if (!page || typeof page !== "object" || types.isProxy(page))
             reject("input");
           // The Read tool passes {offset, limit} with undefined when unset.
-          const keys = Reflect.ownKeys(page).filter(
-            (key) => page[key] !== undefined,
-          );
+          const keys = Reflect.ownKeys(page).filter((key) => {
+            const slot = Object.getOwnPropertyDescriptor(page, key);
+            return !(slot && "value" in slot && slot.value === undefined);
+          });
           if (keys.some((key) => !["offset", "limit"].includes(key)))
             reject("input");
           request.page = keys.length ? record(page, keys) : {};
@@ -2170,9 +2189,11 @@ function kernel(initial) {
       // Plain Native tool call (no task lease): OpenCode's own permission check
       // already ran in the Read tool; this only reads, contained to the
       // location when the lexical path is inside it.
-      const handle = yield* Effect.catch(leases.current(), () =>
-        Effect.succeed(undefined),
-      );
+      const handle = strict
+        ? yield* leases.current()
+        : yield* Effect.catch(leases.current(), () =>
+            Effect.succeed(undefined),
+          );
       if (handle === undefined) return yield* plainRead(request);
       const identity = leases.inspect(handle);
       // This short transaction retains the existing execution hold. A current
@@ -2635,7 +2656,7 @@ function kernel(initial) {
     inventoryLookup,
   };
   for (const [name, fn] of Object.entries(api))
-    if (name.startsWith("inventory") && !strictInventory.has(name))
+    if (!strict && name.startsWith("inventory") && !strictInventory.has(name))
       api[name] = tolerant(name, fn);
   return Service.of(Object.freeze(api));
 }
