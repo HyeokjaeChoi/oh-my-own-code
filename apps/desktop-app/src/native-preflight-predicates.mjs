@@ -204,6 +204,11 @@ function validateSessions(request, rawRows) {
   const mappings = new Map(
     request.mappings.map((mapping) => [mapping.nativeSessionId, mapping]),
   );
+  // Optional sessions of unsettled bootstrap creates, held to the same root
+  // rules plus their own original operation; absence is allowed, drift is not.
+  const provisional = new Map(
+    (request.provisional ?? []).map((entry) => [entry.nativeSessionId, entry]),
+  );
   const sessions = new Map();
   for (const raw of rows(rawRows, 11, PREFLIGHT_LIMITS.sessions)) {
     const [
@@ -219,14 +224,19 @@ function validateSessions(request, rawRows) {
       boundary,
       metadata,
     ] = raw;
-    preflightAssert(isPreflightId(id) && !sessions.has(id) && mappings.has(id));
+    preflightAssert(
+      isPreflightId(id) &&
+        !sessions.has(id) &&
+        (mappings.has(id) || provisional.has(id)),
+    );
     preflightAssert(
       parent === null &&
         suspended === null &&
         compacting === null &&
         attempts === 0,
     );
-    const mapping = mappings.get(id);
+    const planned = provisional.get(id);
+    const mapping = mappings.get(id) ?? planned;
     preflightAssert(
       isPreflightPath(directory) && directory === mapping.canonicalPath,
     );
@@ -241,6 +251,13 @@ function validateSessions(request, rawRows) {
     );
     preflightAssert(workspace === null || isPreflightId(workspace));
     const meta = rootMetadata(metadata);
+    if (planned)
+      preflightAssert(
+        meta.operationId === planned.operationId &&
+          meta.originalRuntimeEpoch === planned.originalRuntimeEpoch &&
+          meta.digest === planned.digest &&
+          fork === null,
+      );
     let forkBoundary = null;
     if (fork === null) {
       preflightAssert(
@@ -269,7 +286,10 @@ function validateSessions(request, rawRows) {
       boundary: forkBoundary,
     });
   }
-  preflightAssert(sessions.size === mappings.size);
+  preflightAssert(
+    [...mappings.keys()].every((id) => sessions.has(id)) &&
+      sessions.size <= mappings.size + provisional.size,
+  );
   return sessions;
 }
 

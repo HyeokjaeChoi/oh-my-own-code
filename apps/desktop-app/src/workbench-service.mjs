@@ -309,6 +309,7 @@ export function createWorkbenchService({
   runtimeEpoch,
   recoveryReason,
   bootstrap = false,
+  recoverRetained = false,
   gitReader: gitReaderInput,
   gitIndexManager: gitIndexInput,
   gitCommitManager: gitCommitInput,
@@ -699,6 +700,11 @@ export function createWorkbenchService({
       });
       await recordBootstrap(bt, "task.handoff", bootstrapHandoff(bt, "armed"));
       bt.journaled.armed = true;
+      // Durable before Native may be told to create: after a hard kill the
+      // trail up to "armed" is a confirmed prefix the startup reconciler can
+      // resolve, instead of an unconfirmed tail that nothing may interpret.
+      if (typeof registry.checkpoint === "function")
+        await registry.checkpoint();
       await context.nativeTasks.arm({
         handoffId: bt.handoffId,
         taskScopeId: bt.identity.taskScopeId,
@@ -2543,7 +2549,12 @@ export function createWorkbenchService({
     .startup(async () => {
       await registryLoaded;
       if (registryInput !== undefined) storageCheck();
-      if (registry?.readView().retainedOperations.length) {
+      // Main's startup may reconcile unsettled bootstrap creates before it
+      // resolves `runtimeReady`; only then are retained operations judged.
+      const retainedAtStart = Boolean(
+        registry?.readView().retainedOperations.length,
+      );
+      if (retainedAtStart && !(recoverRetained && runtimeReady)) {
         localRecovery = "native_startup_unverified";
         return;
       }
@@ -2551,6 +2562,7 @@ export function createWorkbenchService({
         runtime = await waitForReady(runtimeReady, controller.signal);
         context = runtime?.workbenchContext?.();
         client = context?.client;
+        if (retainedAtStart) hydrateRegistry();
       }
       if (registry) {
         const view = registry.readView();

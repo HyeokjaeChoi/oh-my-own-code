@@ -1657,6 +1657,7 @@ test("bootstrap task prepare/arm/revoke cross the private channel exactly and ve
   assert.deepEqual(Object.keys(tasks).sort(), [
     "arm",
     "prepare",
+    "reconcile",
     "revoke",
     "verify",
   ]);

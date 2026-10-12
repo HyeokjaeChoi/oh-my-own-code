@@ -475,3 +475,73 @@ test("ordinary imported workspace directory edits preserve directory identity", 
   await fs.chmod(f.namespace.documents, 0o755);
   assert.equal(await f.preflight.check(), true);
 });
+
+test("reconcile plan: planned sessions are provisional and only candidate-explained retention is tolerated", async (t) => {
+  const f = await fixture(t, {
+    decision: (decision) => {
+      decision.counts.sessions += 1;
+      decision.correlations.push({
+        nativeSessionId: "native-plan",
+        appSessionId: "app-plan",
+        workspaceId: "workspace",
+        runtimeEpoch: "old-epoch",
+        operationId: "plan-op",
+        digest: "e".repeat(64),
+      });
+    },
+  });
+  const candidate = {
+    operation: {
+      identity: {
+        runtimeEpoch: "old-epoch",
+        operationId: "plan-op",
+        digest: "e".repeat(64),
+      },
+      reservation: {
+        appSessionId: "app-plan",
+        plannedNativeSessionId: "native-plan",
+        workspace: {
+          workspaceId: "workspace",
+          canonicalPath: f.namespace.documents,
+        },
+      },
+    },
+  };
+  let plan = { eligible: true, candidates: [candidate] };
+  f.registry.reconcilePlan = () => plan;
+  f.view.retainedOperations.push({
+    runtimeEpoch: "old-epoch",
+    operationId: "plan-op",
+    type: "session.create",
+  });
+  f.view.state = "unavailable";
+  f.view.recovery.resources.push({
+    workspaceId: "workspace",
+    state: "unavailable",
+    reason: "unresolved_operation",
+  });
+  assert.equal(await f.preflight.check(), true);
+  const request = f.children.at(-1).child.request;
+  assert.equal(request.mappings.length, 1);
+  assert.deepEqual(request.provisional, [
+    {
+      appSessionId: "app-plan",
+      nativeSessionId: "native-plan",
+      workspaceId: "workspace",
+      canonicalPath: f.namespace.documents,
+      operationId: "plan-op",
+      originalRuntimeEpoch: "old-epoch",
+      digest: "e".repeat(64),
+    },
+  ]);
+  // Any retained operation the plan does not explain denies, as before.
+  plan = { eligible: false, candidates: [candidate] };
+  assert.equal(await f.preflight.check(), false);
+  plan = { eligible: true, candidates: [candidate] };
+  f.view.retainedOperations.push({
+    runtimeEpoch: "old-epoch",
+    operationId: "unexplained",
+    type: "session.send",
+  });
+  assert.equal(await f.preflight.check(), false);
+});

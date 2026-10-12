@@ -54,6 +54,7 @@ import {
 import { openWorkspaceRegistry } from "./host/workspace-registry.mjs";
 import { createLifetimeWitness } from "./host/owner-lifetime.mjs";
 import { createNativePreflight } from "./host/native-preflight.mjs";
+import { reconcileBootstrapTasks } from "./native-bootstrap-reconciler.mjs";
 import { randomUUID } from "node:crypto";
 import { mkdirSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
@@ -649,11 +650,17 @@ app.whenReady().then(async () => {
       throw Object.assign(new Error("storage recovery"), {
         storageReason: view.recovery.store.reason,
       });
-    // Unresolved app operations never authorize Native recovery or replay.
-    if (view.retainedOperations.length)
-      throw Object.assign(new Error("pending recovery"), {
-        storageReason: "native_startup_unverified",
-      });
+    // Unresolved app operations never authorize Native recovery or replay,
+    // except unsettled bootstrap creates with a recognised durable trail: the
+    // live sidecar may then only READ their planned session (reconcile phase).
+    const reconciling = view.retainedOperations.length > 0;
+    if (reconciling) {
+      const plan = store.reconcilePlan();
+      if (!plan.eligible || !plan.candidates.length)
+        throw Object.assign(new Error("pending recovery"), {
+          storageReason: "native_startup_unverified",
+        });
+    }
     const eventHost = eventHostForResources(
       app.isPackaged ? process.resourcesPath : join(here, "..", "resources"),
       process.platform,
@@ -678,7 +685,7 @@ app.whenReady().then(async () => {
     if (e2eScenario === "startup-failure") {
       throw new Error("event_host_missing_e2e_fixture");
     }
-    return startSidecar({
+    const sidecar = await startSidecar({
       eventHost,
       runtimeEpoch,
       namespace,
@@ -698,6 +705,28 @@ app.whenReady().then(async () => {
         e2ePort > 0 &&
         e2ePort <= 65535 && { port: e2ePort }),
     });
+    if (reconciling) {
+      // The workbench stays unadmitted until this settles (runtimeReady is this
+      // promise). Any non-exact outcome stops the sidecar and holds as before.
+      nativeTaskRuntime = sidecar;
+      try {
+        await reconcileBootstrapTasks({
+          registry: store,
+          nativeTasks: sidecar.workbenchContext().nativeTasks,
+          signal: startupAbortController.signal,
+        });
+      } catch (error) {
+        const stopped = await sidecar.stop();
+        throw Object.assign(new Error("pending recovery"), {
+          storageReason: "native_startup_unverified",
+          cleanupComplete:
+            stopped?.exited === true && stopped.cleanup === "complete",
+          stopOwnedSidecar: sidecar.stop,
+          cause: error,
+        });
+      }
+    }
+    return sidecar;
   })();
   startupPromise.then(
     (value) => {
@@ -723,6 +752,7 @@ app.whenReady().then(async () => {
     runtimeReady: startupPromise,
     runtimeEpoch,
     bootstrap: true,
+    recoverRetained: true,
     probeWorkspace: probeWorkspaceMeta,
     async pickDirectory() {
       const result = await dialog.showOpenDialog(mainWindow, {

@@ -51,8 +51,25 @@ function boundedJson(value, max) {
     typeof text === "string" && Buffer.byteLength(text) + 1 <= max,
   );
 }
+// Sessions that an unsettled bootstrap create MAY have produced (crash
+// reconciliation). Each is validated with the same root-session rules as a
+// mapping and bound to its original operation, but its presence is optional.
+const PROVISIONAL_MAX = 16;
+const PROVISIONAL_FIELDS = [
+  "appSessionId",
+  "nativeSessionId",
+  "workspaceId",
+  "canonicalPath",
+  "operationId",
+  "originalRuntimeEpoch",
+  "digest",
+];
 function validateRequest(value) {
-  assertClosedObject(value, ["version", "nonce", "database", "mappings"]);
+  assertClosedObject(
+    value,
+    ["version", "nonce", "database", "mappings"],
+    ["provisional"],
+  );
   preflightAssert(
     value.version === 1 &&
       isPreflightDigest(value.nonce) &&
@@ -82,6 +99,36 @@ function validateRequest(value) {
     );
     appIds.add(mapping.appSessionId);
     nativeIds.add(mapping.nativeSessionId);
+  }
+  if (Object.hasOwn(value, "provisional")) {
+    preflightAssert(
+      Array.isArray(value.provisional) &&
+        value.provisional.length >= 1 &&
+        value.provisional.length <= PROVISIONAL_MAX,
+    );
+    // Separate id sets: a mapped fork's parent must itself be a real mapping.
+    const provisionalApp = new Set(appIds);
+    const provisionalNative = new Set(nativeIds);
+    for (const entry of value.provisional) {
+      assertClosedObject(entry, PROVISIONAL_FIELDS);
+      preflightAssert(
+        [
+          "appSessionId",
+          "nativeSessionId",
+          "workspaceId",
+          "operationId",
+          "originalRuntimeEpoch",
+        ].every((key) => isPreflightId(entry[key])) &&
+          isPreflightPath(entry.canonicalPath) &&
+          isPreflightDigest(entry.digest),
+      );
+      preflightAssert(
+        !provisionalApp.has(entry.appSessionId) &&
+          !provisionalNative.has(entry.nativeSessionId),
+      );
+      provisionalApp.add(entry.appSessionId);
+      provisionalNative.add(entry.nativeSessionId);
+    }
   }
   for (const mapping of value.mappings) {
     if (Object.hasOwn(mapping, "parentAppSessionId"))

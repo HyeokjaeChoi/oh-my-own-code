@@ -465,3 +465,166 @@ test("the bounded table purges retired entries and refuses a seventeenth live ta
     /held/,
   );
 });
+
+// ---- startup reconciliation (read-only observation + verification) --------
+const reconcileFixture = (over = {}) => {
+  const state = { live: true, reads: [], answer: undefined };
+  const info = {
+    id: "ses_1",
+    projectID: "project",
+    location: { directory: "/work" },
+    metadata: {
+      operationId: "op-1",
+      originalRuntimeEpoch: "old",
+      appSessionId: "app",
+      workspaceId: "w",
+      digest: "d".repeat(64),
+    },
+    permissions: [
+      { action: "*", resource: "*", effect: "ask" },
+      { action: "external_directory", resource: "*", effect: "deny" },
+    ],
+    title: "Title",
+  };
+  state.answer = info;
+  const ledger = createNativeTaskLedger({
+    runtimeEpoch: "now",
+    isLive: () => state.live,
+    channel: {},
+    onUnconfirmed() {},
+    readSession: async (sessionID) => {
+      state.reads.push(sessionID);
+      if (state.answer instanceof Error) throw state.answer;
+      return state.answer;
+    },
+    ...over,
+  });
+  const operation = {
+    identity: {
+      runtimeEpoch: "old",
+      operationId: "op-1",
+      type: "session.create",
+      digest: "d".repeat(64),
+      workspaceId: "w",
+    },
+    terminal: false,
+    reservation: {
+      appSessionId: "app",
+      plannedNativeSessionId: "ses_1",
+      workspace: { workspaceId: "w", canonicalPath: "/work" },
+    },
+  };
+  const taskScopeId = randomUUID();
+  const task = {
+    identity: { originKind: "bootstrap", taskScopeId, projectId: "project" },
+    binding: { step: "native.create" },
+    phase: "bound",
+    handoffs: [{ state: "armed" }],
+    proof: null,
+  };
+  const record = (decision) => ({
+    kind: "task_reconciled",
+    runtimeEpoch: "old",
+    operationId: "op-1",
+    taskScopeId,
+    ticketDigest: decision.ticketDigest,
+    proofDigest: decision.proofDigest,
+    outcome: decision.outcome,
+    bootstrap: decision.bootstrap,
+  });
+  const context = () => ({ runtimeEpoch: "now", operation, task });
+  return { state, ledger, operation, task, record, context, info };
+};
+test("reconcile reads only the planned id and verifies exactly the decision it observed", async () => {
+  const f = reconcileFixture();
+  const decision = await f.ledger.reconcile(
+    f.operation && { operation: f.operation, task: f.task },
+  );
+  assert.deepEqual(f.state.reads, ["ses_1"]);
+  assert.equal(decision.outcome, "settled");
+  assert.equal(decision.bootstrap.title, "Title");
+  assert.equal(f.ledger.verify(f.record(decision), f.context()), true);
+  // Claims beyond what the observation proved are refused.
+  for (const over of [
+    { outcome: "no_effect", bootstrap: {} },
+    { ticketDigest: "e".repeat(64) },
+    { proofDigest: "e".repeat(64) },
+    { taskScopeId: randomUUID() },
+    { bootstrap: { ...decision.bootstrap, nativeSessionId: "ses_other" } },
+  ])
+    assert.equal(
+      f.ledger.verify({ ...f.record(decision), ...over }, f.context()),
+      false,
+      JSON.stringify(over),
+    );
+  // Journal context that no longer matches the observed task is refused.
+  assert.equal(
+    f.ledger.verify(f.record(decision), {
+      ...f.context(),
+      task: { ...f.task, handoffs: [] },
+    }),
+    false,
+  );
+  // Authority dies with the live child and with clear().
+  f.state.live = false;
+  assert.equal(f.ledger.verify(f.record(decision), f.context()), false);
+  f.state.live = true;
+  assert.equal(f.ledger.verify(f.record(decision), f.context()), true);
+  f.ledger.clear();
+  assert.equal(f.ledger.verify(f.record(decision), f.context()), false);
+});
+test("reconcile maps only the typed not-found to no_effect and holds every other failure", async () => {
+  const absent = reconcileFixture();
+  absent.state.answer = Object.assign(new Error("absent"), {
+    _tag: "SessionNotFoundError",
+    sessionID: "ses_1",
+  });
+  const decision = await absent.ledger.reconcile({
+    operation: absent.operation,
+    task: absent.task,
+  });
+  assert.equal(decision.outcome, "no_effect");
+  assert.equal(
+    absent.ledger.verify(absent.record(decision), absent.context()),
+    true,
+  );
+  for (const failure of [
+    new Error("boom"),
+    Object.assign(new Error("x"), {
+      _tag: "SessionNotFoundError",
+      sessionID: "ses_other",
+    }),
+    Object.assign(new Error("x"), { status: 404 }),
+  ]) {
+    const f = reconcileFixture();
+    f.state.answer = failure;
+    await assert.rejects(
+      f.ledger.reconcile({ operation: f.operation, task: f.task }),
+      {
+        message: "task_preparation_held",
+      },
+    );
+  }
+  // Not live, no reader, or an unrecognised journal trail: nothing is read.
+  const dead = reconcileFixture();
+  dead.state.live = false;
+  await assert.rejects(
+    dead.ledger.reconcile({ operation: dead.operation, task: dead.task }),
+  );
+  assert.deepEqual(dead.state.reads, []);
+  const noReader = reconcileFixture({ readSession: undefined });
+  await assert.rejects(
+    noReader.ledger.reconcile({
+      operation: noReader.operation,
+      task: noReader.task,
+    }),
+  );
+  const odd = reconcileFixture();
+  await assert.rejects(
+    odd.ledger.reconcile({
+      operation: odd.operation,
+      task: { ...odd.task, handoffs: [{ state: "armed" }, { state: "armed" }] },
+    }),
+  );
+  assert.deepEqual(odd.state.reads, []);
+});

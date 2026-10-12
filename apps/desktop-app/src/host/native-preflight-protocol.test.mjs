@@ -282,3 +282,38 @@ test("wire objects reject accessors, hidden fields and inherited serialization h
   );
   invalid(() => validatePreflightRequest(inherited));
 });
+
+const planned = (id = "plan", extra = {}) => ({
+  appSessionId: id,
+  nativeSessionId: `ses_${id}`,
+  workspaceId: "w",
+  canonicalPath: "/workspace",
+  operationId: "op",
+  originalRuntimeEpoch: "epoch",
+  digest: "b".repeat(64),
+  ...extra,
+});
+test("provisional sessions are optional, closed, distinct from mappings and bounded", () => {
+  const ok = { ...request(), provisional: [planned()] };
+  assert.equal(validatePreflightRequest(ok), ok);
+  for (const provisional of [
+    [],
+    "x",
+    [planned("root")], // app id collides with a mapping
+    [planned("plan", { nativeSessionId: "ses_root" })],
+    [planned("a"), planned("a")],
+    [planned("plan", { parentAppSessionId: "root" })],
+    [planned("plan", { digest: "short" })],
+    [planned("plan", { canonicalPath: "relative" })],
+    Array.from({ length: 17 }, (_, n) => planned(`p${n}`)),
+  ])
+    invalid(() => validatePreflightRequest({ ...request(), provisional }));
+  // A mapped fork may not name a provisional session as its parent.
+  invalid(() =>
+    validatePreflightRequest({
+      ...request(),
+      mappings: [{ ...mapping("fork"), parentAppSessionId: "plan" }],
+      provisional: [planned()],
+    }),
+  );
+});

@@ -51,38 +51,64 @@ function owned(stat, directory) {
 function viewBinding(registry) {
   if (registry.status().state !== "ready" || registry.status().closed) fail();
   const { observationSequence: _sequence, ...view } = registry.readView();
+  // Retained operations are tolerated ONLY as the reconciler's plan: each one
+  // an unsettled bootstrap create with a recognised durable trail, every
+  // recovery resource explained by those candidates. The strict path below (no
+  // retained operation, nothing unavailable) is unchanged.
+  const plan = registry.reconcilePlan?.() ?? { eligible: true, candidates: [] };
+  const reconciling = plan.candidates.length > 0;
   if (
-    view.state !== "ready" ||
     view.recovery.store.state !== "ready" ||
-    view.recovery.resources.length ||
-    view.retainedOperations.length ||
     !validWireId(view.runtimeEpoch) ||
-    !Number.isSafeInteger(view.revision)
+    !Number.isSafeInteger(view.revision) ||
+    (reconciling
+      ? !plan.eligible ||
+        view.retainedOperations.length !== plan.candidates.length
+      : view.state !== "ready" ||
+        view.recovery.resources.length ||
+        view.retainedOperations.length)
   )
     fail();
   return view;
 }
-function mappingsFor(view) {
-  const mappings = view.sessions.map((session) => {
-    const workspace = view.workspaces.find(
-      (value) => value.workspaceId === session.workspaceId,
-    );
-    if (
-      !workspace ||
-      session.lifecycleState !== "active" ||
-      session.status !== "idle"
-    )
-      fail();
-    return {
-      appSessionId: session.appSessionId,
-      nativeSessionId: session.nativeSessionId,
-      workspaceId: session.workspaceId,
-      canonicalPath: workspace.canonicalPath,
-      ...(session.parentSessionId && {
-        parentAppSessionId: session.parentSessionId,
-      }),
-    };
-  });
+// Sessions an unsettled bootstrap create may have produced before the crash.
+function provisionalFor(registry) {
+  const plan = registry.reconcilePlan?.() ?? { candidates: [] };
+  return plan.candidates.map(({ operation }) => ({
+    appSessionId: operation.reservation.appSessionId,
+    nativeSessionId: operation.reservation.plannedNativeSessionId,
+    workspaceId: operation.reservation.workspace.workspaceId,
+    canonicalPath: operation.reservation.workspace.canonicalPath,
+    operationId: operation.identity.operationId,
+    originalRuntimeEpoch: operation.identity.runtimeEpoch,
+    digest: operation.identity.digest,
+  }));
+}
+function mappingsFor(view, provisional = []) {
+  // A candidate's own partial session mapping is judged as provisional.
+  const planned = new Set(provisional.map((entry) => entry.appSessionId));
+  const mappings = view.sessions
+    .filter((session) => !planned.has(session.appSessionId))
+    .map((session) => {
+      const workspace = view.workspaces.find(
+        (value) => value.workspaceId === session.workspaceId,
+      );
+      if (
+        !workspace ||
+        session.lifecycleState !== "active" ||
+        session.status !== "idle"
+      )
+        fail();
+      return {
+        appSessionId: session.appSessionId,
+        nativeSessionId: session.nativeSessionId,
+        workspaceId: session.workspaceId,
+        canonicalPath: workspace.canonicalPath,
+        ...(session.parentSessionId && {
+          parentAppSessionId: session.parentSessionId,
+        }),
+      };
+    });
   return mappings.sort((a, b) => a.appSessionId.localeCompare(b.appSessionId));
 }
 function confirmed(registry, identity, mapping, kind) {
@@ -107,8 +133,17 @@ function confirmed(registry, identity, mapping, kind) {
   )
     fail();
 }
-function correlate(registry, mappings, decision) {
+function correlate(registry, mappings, provisional, decision) {
   const roots = mappings.filter((mapping) => !mapping.parentAppSessionId);
+  // Provisional sessions are checked by the reader against their own original
+  // operation; only mapped roots need a confirmed receipt here.
+  const planned = new Set(provisional.map((entry) => entry.nativeSessionId));
+  decision = {
+    ...decision,
+    correlations: decision.correlations.filter(
+      (entry) => !planned.has(entry.nativeSessionId),
+    ),
+  };
   if (decision.correlations.length !== roots.length) fail();
   for (const mapping of mappings) {
     if (mapping.parentAppSessionId) {
@@ -657,7 +692,8 @@ export function createNativePreflight({
         if (!isDeepStrictEqual(view, viewBinding(registry))) fail();
         allowed = true;
       } else {
-        const mappings = mappingsFor(view);
+        const provisional = provisionalFor(registry);
+        const mappings = mappingsFor(view, provisional);
         for (const path of [
           ...new Set(mappings.map((mapping) => mapping.canonicalPath)),
         ])
@@ -670,6 +706,7 @@ export function createNativePreflight({
           nonce: randomBytes(32).toString("hex"),
           database: context.database,
           mappings,
+          ...(provisional.length && { provisional }),
         });
         const decision = await inspector(context, request, resources);
         await fence(context);
@@ -683,14 +720,15 @@ export function createNativePreflight({
           return false;
         }
         if (
-          decision.counts.sessions !== mappings.length ||
+          decision.counts.sessions < mappings.length ||
+          decision.counts.sessions > mappings.length + provisional.length ||
           decision.counts.pending !== 0 ||
           decision.counts.inbox !== 0 ||
           decision.counts.kv !== 0 ||
           decision.counts.migrations !== 48
         )
           fail();
-        correlate(registry, mappings, decision);
+        correlate(registry, mappings, provisional, decision);
         await fence(context);
         if (!isDeepStrictEqual(view, viewBinding(registry))) fail();
         // The inline policy is fixed in source; result cannot select startup flags.

@@ -734,6 +734,13 @@ export async function startEventHost({
       runtimeEpoch: permissionInit.runtimeEpoch,
       isLive: taskLive,
       onUnconfirmed: () => fail("task_preparation_unconfirmed"),
+      // Read-only observation of one planned session for startup reconciliation.
+      readSession: (sessionID) =>
+        bounded(
+          Promise.resolve().then(() => rawClient.session.get({ sessionID })),
+          requestTimeoutMs,
+          "reconcile_read_timeout",
+        ),
       channel: {
         prepare: (request) =>
           taskCall(
@@ -783,6 +790,7 @@ export async function startEventHost({
       arm: ledger.arm,
       revoke: ledger.revoke,
       verify: ledger.verify,
+      reconcile: ledger.reconcile,
     });
     const configurationCall = async (type, fields) => {
       const indexRequest = type.startsWith("git-index-");

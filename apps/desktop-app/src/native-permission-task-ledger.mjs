@@ -13,6 +13,13 @@ import {
   bootstrapTaskProof,
 } from "./native-permission-bootstrap-digest.mjs";
 import { validateTaskHandoffIdentity } from "./host/workbench-task-storage.mjs";
+import {
+  ABSENT_OBSERVATION,
+  decideReconciliation,
+  observationDigest,
+  observeSession,
+  reconcileExpectation,
+} from "./native-bootstrap-reconcile.mjs";
 
 const held = () => new Error("task_preparation_held");
 const MAX_ENTRIES = 16;
@@ -23,9 +30,14 @@ export function createNativeTaskLedger({
   isLive,
   channel,
   onUnconfirmed,
+  // Read-only `session.get` against the live Native child (reconciliation).
+  readSession,
   now = () => Date.now(),
 }) {
   const entries = new Map();
+  // Reconciliation reads by original key. Only this ledger's own read of the
+  // live child can ever produce a verifiable `task_reconciled` record.
+  const observed = new Map();
   const originKey = (value) =>
     JSON.stringify([value.runtimeEpoch, value.operationId]);
   const identityOf = (entry) => ({
@@ -153,9 +165,85 @@ export function createNativeTaskLedger({
     entry.at = now();
   }
 
+  // Startup crash reconciliation of one unsettled bootstrap create. Issues only
+  // a read of the planned session id (never create, update or arm anything).
+  async function reconcile({ operation, task }) {
+    if (!isLive() || typeof readSession !== "function") throw held();
+    const expectation = reconcileExpectation(operation, task);
+    if (!expectation) throw held();
+    const original = {
+      runtimeEpoch: operation.identity.runtimeEpoch,
+      operationId: operation.identity.operationId,
+    };
+    let observation;
+    try {
+      observation = observeSession(
+        await readSession(expectation.nativeSessionId),
+      );
+    } catch (error) {
+      // Only the typed not-found answer for exactly this id proves absence.
+      if (
+        error?._tag !== "SessionNotFoundError" ||
+        (error.sessionID !== undefined &&
+          error.sessionID !== expectation.nativeSessionId)
+      )
+        throw held();
+      observation = ABSENT_OBSERVATION;
+    }
+    if (!isLive()) throw held();
+    const ticketDigest = observationDigest(
+      original,
+      expectation.nativeSessionId,
+      observation,
+    );
+    observed.set(originKey(original), {
+      taskScopeId: expectation.taskScopeId,
+      observation,
+      ticketDigest,
+    });
+    return Object.freeze({
+      ...decideReconciliation(operation, task, observation),
+      original,
+      taskScopeId: expectation.taskScopeId,
+      ticketDigest,
+    });
+  }
+
+  // `task_reconciled` is verified from this ledger's own stored observation and
+  // the registry's journal context, never from the record's own claims.
+  function verifyReconciled(record, context) {
+    const seen = observed.get(originKey(record));
+    if (
+      !seen ||
+      !record.bootstrap ||
+      record.taskScopeId !== seen.taskScopeId ||
+      !context?.operation ||
+      !context.task ||
+      context.task.identity.taskScopeId !== seen.taskScopeId
+    )
+      return false;
+    const decision = decideReconciliation(
+      context.operation,
+      context.task,
+      seen.observation,
+    );
+    return (
+      decision.outcome !== "hold" &&
+      decision.outcome === record.outcome &&
+      record.ticketDigest === seen.ticketDigest &&
+      record.proofDigest === decision.proofDigest &&
+      isDeepStrictEqual(record.bootstrap, decision.bootstrap)
+    );
+  }
+
   function verify(record, context) {
     try {
       if (!isLive()) return false;
+      if (record.kind === "task_reconciled")
+        return (
+          context?.runtimeEpoch === runtimeEpoch &&
+          verifyReconciled(record, context)
+        );
       const key = originKey(record);
       const entry = entries.get(key);
       if (
@@ -241,6 +329,10 @@ export function createNativeTaskLedger({
     arm,
     revoke,
     verify,
-    clear: () => entries.clear(),
+    reconcile,
+    clear: () => {
+      entries.clear();
+      observed.clear();
+    },
   });
 }

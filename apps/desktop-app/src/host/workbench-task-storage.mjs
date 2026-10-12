@@ -450,8 +450,35 @@ export function validateTaskRecord(input) {
       fields = ["proofDigest", "outcome"];
       break;
     case "task_reconciled":
-      fields = ["ticketDigest", "proofDigest", "outcome"];
+      // `bootstrap` marks the startup reconciler of an unsettled Native create:
+      // the observed result is carried so replay derives the same completion.
+      fields = [
+        "ticketDigest",
+        "proofDigest",
+        "outcome",
+        ...(Object.hasOwn(v, "bootstrap") ? ["bootstrap"] : []),
+      ];
       need(digest(v.ticketDigest), "invalid_record");
+      if (Object.hasOwn(v, "bootstrap")) {
+        need(v.bootstrap && typeof v.bootstrap === "object", "invalid_record");
+        if (v.outcome === "settled") {
+          exact(v.bootstrap, [
+            "appSessionId",
+            "nativeSessionId",
+            "metadataDigest",
+            "title",
+          ]);
+          need(
+            id(v.bootstrap.appSessionId) &&
+              id(v.bootstrap.nativeSessionId) &&
+              digest(v.bootstrap.metadataDigest) &&
+              typeof v.bootstrap.title === "string" &&
+              v.bootstrap.title.length > 0 &&
+              v.bootstrap.title.length <= 256,
+            "invalid_record",
+          );
+        } else exact(v.bootstrap, []);
+      }
       break;
   }
   exact(v, [...common, ...fields]);
@@ -477,6 +504,159 @@ const settledBootstrap = (task) =>
   task.phase === "bound" &&
   Object.hasOwn(task.identity, "nativeSessionId") &&
   task.handoffs.some((h) => h.state === "completed");
+// Startup reconciliation of an unsettled Native create (crash/lost response).
+// One record both proves the observed outcome and closes the stale handoff, so
+// there is no intermediate durable state. The registry verifier has already
+// bound it to the live child's own read of the planned session.
+function reconcileBootstrapTask(task, operation, v) {
+  const reservation = operation.reservation;
+  const [handoff] = task.handoffs;
+  const bound = Object.hasOwn(task.identity, "nativeSessionId");
+  need(
+    task.identity.originKind === "bootstrap" &&
+      task.binding.step === "native.create" &&
+      ["prepared", "bound"].includes(task.phase) &&
+      !operation.terminal &&
+      task.handoffs.length <= 1 &&
+      typeof reservation?.plannedNativeSessionId === "string" &&
+      ["session.create", "workspace.create", "workspace.import"].includes(
+        operation.identity.type,
+      ) &&
+      // A trail that already proved its outcome may only be confirmed as is.
+      (!task.proof ||
+        (task.proof.proofDigest === v.proofDigest &&
+          task.proof.outcome === v.outcome)) &&
+      (!bound ||
+        (task.identity.nativeSessionId === reservation.plannedNativeSessionId &&
+          task.identity.appSessionId === reservation.appSessionId)),
+  );
+  if (v.outcome === "no_effect") {
+    // Native was never told to create: nothing armed can have been consumed.
+    need(!bound && (!handoff || ["armed", "revoked"].includes(handoff.state)));
+    if (handoff) handoff.state = "revoked";
+  } else {
+    need(
+      task.phase === "bound" &&
+        handoff &&
+        ["armed", "consumed", "completed"].includes(handoff.state) &&
+        v.bootstrap.appSessionId === reservation.appSessionId &&
+        v.bootstrap.nativeSessionId === reservation.plannedNativeSessionId,
+    );
+    handoff.state = "completed";
+    task.identity = {
+      ...task.identity,
+      appSessionId: v.bootstrap.appSessionId,
+      nativeSessionId: v.bootstrap.nativeSessionId,
+    };
+  }
+  task.proof = v;
+  task.phase = "settled";
+}
+// Deterministic completion implied by a reconciled bootstrap create. Only an
+// exact created session (confirmed) or a proven-absent session.create (rejected,
+// no effect) resolves the operation; workspace-materializing creates that
+// proved absent keep their filesystem effect, so they stay retained.
+export function bootstrapReconciliationCompletion(
+  operation,
+  workspaces,
+  payload,
+) {
+  const { identity, reservation } = operation;
+  const scope = {
+    runtimeEpoch: identity.runtimeEpoch,
+    operationId: identity.operationId,
+    type: identity.type,
+    ...(identity.workspaceId && { workspaceId: identity.workspaceId }),
+    ...(identity.sessionId && { sessionId: identity.sessionId }),
+  };
+  const base = {
+    kind: "completion",
+    runtimeEpoch: identity.runtimeEpoch,
+    operationId: identity.operationId,
+    revision: payload.revision,
+  };
+  if (payload.outcome === "no_effect") {
+    if (identity.type !== "session.create") return undefined;
+    return {
+      ...base,
+      receipt: {
+        ...scope,
+        admission: "rejected",
+        delivery: "pending",
+        effect: "none",
+        revision: payload.revision,
+        evidence: [],
+        result: { kind: "rejected", code: "POLICY_UNVERIFIED" },
+      },
+      delta: { workspaces: [], sessions: [], tombstones: [] },
+    };
+  }
+  const { appSessionId, nativeSessionId, title } = payload.bootstrap;
+  const workspaceId = reservation.workspace.workspaceId;
+  const existing = workspaces.get(workspaceId);
+  return {
+    ...base,
+    receipt: {
+      ...scope,
+      admission: "dispatched",
+      delivery: "accepted",
+      effect: "confirmed",
+      revision: payload.revision,
+      evidence: [
+        { kind: "host-registry", id: appSessionId },
+        { kind: "native_session_verified", id: nativeSessionId },
+      ],
+      result: {
+        kind: "created",
+        workspaceId,
+        sessionId: appSessionId,
+        nativeSessionId,
+      },
+    },
+    delta: {
+      workspaces:
+        identity.type === "session.create" || !existing
+          ? []
+          : [
+              {
+                workspaceId,
+                ownership: existing.ownership,
+                canonicalPath: existing.canonicalPath,
+                registrationState: "registered",
+                ...(existing.folderSessionId && {
+                  folderSessionId: existing.folderSessionId,
+                }),
+                name: existing.name,
+                trustRevision: existing.trustRevision ?? 1,
+              },
+            ],
+      sessions: [
+        {
+          appSessionId,
+          workspaceId,
+          nativeSessionId,
+          lifecycleState: "active",
+          pinned: false,
+          archived: false,
+          title,
+        },
+      ],
+      tombstones: [],
+    },
+  };
+}
+// A settled no_effect bootstrap proof of a plain session.create: the only case
+// where a dispatched operation may resolve with effect "none".
+export function bootstrapNoEffectProven(operation, task) {
+  return (
+    operation.identity.type === "session.create" &&
+    operation.dispatches.every((entry) => entry.step === "native.create") &&
+    task?.identity.originKind === "bootstrap" &&
+    task.phase === "settled" &&
+    task.proof?.kind === "task_reconciled" &&
+    task.proof.outcome === "no_effect"
+  );
+}
 function uniqueInput(tasks, nativeSessionId, inboxId) {
   need(
     ![...tasks.values()].some((task) =>
@@ -780,6 +960,10 @@ export function applyTaskRecord(tasks, operation, input, sessions, workspaces) {
       break;
     case "task.settle":
     case "task_reconciled":
+      if (v.kind === "task_reconciled" && Object.hasOwn(v, "bootstrap")) {
+        reconcileBootstrapTask(task, operation, v);
+        break;
+      }
       need(
         task.proof &&
           task.proof.proofDigest === v.proofDigest &&
