@@ -1,7 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { pendingInheritance } from "./workbench-task-storage.mjs";
 import {
   INSTRUCTION_KEY,
+  PENDING,
   instructionDigest,
   observeInstructions,
   validInstructionRegistration,
@@ -125,4 +127,15 @@ test("pending_verification is a fork-only inheritance claim that never observes 
     observeInstructions(entries, verifiedInheritance(pending)).status,
     "registered",
   );
+});
+test("pendingInheritance (inlined helper) stays aligned with the registration contract", () => {
+  const claim = pendingInheritance(registration, "parent");
+  assert.equal(claim.state, PENDING);
+  assert.equal(validInstructionRegistration(claim), true);
+  // A pending parent forks a pending child that names the new parent.
+  const again = pendingInheritance(claim, "child");
+  assert.equal(validInstructionRegistration(again), true);
+  assert.equal(again.inheritedFromSessionId, "child");
+  const absent = { state: "absent", key: INSTRUCTION_KEY };
+  assert.equal(pendingInheritance(absent, "parent"), absent);
 });

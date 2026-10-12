@@ -577,7 +577,7 @@ function reconcileBootstrapTask(task, operation, v) {
 // A reconciled fork child's inherited instruction claim, held back as pending
 // until the first admitted read lists its entries (no Native location may be
 // built during startup reconciliation). Unregistered parents pass through.
-const pendingInheritance = (parent, parentSessionId) =>
+export const pendingInheritance = (parent, parentSessionId) =>
   parent?.state === "registered" || parent?.state === "pending_verification"
     ? {
         ...parent,
