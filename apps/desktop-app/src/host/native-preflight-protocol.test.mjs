@@ -317,3 +317,29 @@ test("provisional sessions are optional, closed, distinct from mappings and boun
     }),
   );
 });
+
+const forkSlot = (extra = {}) => ({
+  appSessionId: "fork-plan",
+  workspaceId: "w",
+  canonicalPath: "/workspace",
+  parentAppSessionId: "root",
+  parentNativeSessionId: "ses_root",
+  ...extra,
+});
+test("provisional fork children are optional, closed, bound to a mapped parent and bounded", () => {
+  const ok = { ...request(), provisionalForks: [forkSlot()] };
+  assert.equal(validatePreflightRequest(ok), ok);
+  for (const provisionalForks of [
+    [],
+    "x",
+    [forkSlot({ parentAppSessionId: "other" })],
+    [forkSlot({ parentNativeSessionId: "ses_other" })],
+    [forkSlot({ workspaceId: "other" })],
+    [forkSlot({ appSessionId: "root" })], // collides with a mapping
+    [forkSlot(), forkSlot()],
+    [forkSlot({ nativeSessionId: "ses_fork" })], // child id is unknown
+    [forkSlot({ canonicalPath: "relative" })],
+    Array.from({ length: 17 }, (_, n) => forkSlot({ appSessionId: `f${n}` })),
+  ])
+    invalid(() => validatePreflightRequest({ ...request(), provisionalForks }));
+});

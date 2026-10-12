@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { BASELINE_POLICY } from "./workbench-contract.mjs";
 import {
   bootstrapBaselinePermissions,
+  bootstrapForkPermissions,
   bootstrapHandoffProof,
   bootstrapMetadataDigest,
   bootstrapParentDigest,
@@ -167,4 +168,21 @@ test("proof digests separate states and outcomes", () => {
       nativeSessionId: "other",
     }),
   );
+});
+
+test("fork permissions must equal the parent's with the external_directory floor last", () => {
+  const baseline = BASELINE_POLICY.map((rule) => ({ ...rule }));
+  assert.equal(bootstrapForkPermissions(baseline, baseline), true);
+  const moded = [
+    baseline[0],
+    { action: "edit", resource: "*", effect: "allow" },
+    baseline.at(-1),
+  ];
+  assert.equal(bootstrapForkPermissions(moded, moded), true);
+  assert.equal(bootstrapForkPermissions(baseline, moded), false);
+  const loose = [...baseline].reverse();
+  assert.equal(bootstrapForkPermissions(loose, loose), false);
+  assert.equal(bootstrapForkPermissions([], []), false);
+  assert.equal(bootstrapForkPermissions(undefined, baseline), false);
+  assert.equal(bootstrapForkPermissions(baseline, "x"), false);
 });

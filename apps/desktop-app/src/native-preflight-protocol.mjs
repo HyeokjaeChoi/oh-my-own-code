@@ -68,7 +68,7 @@ function validateRequest(value) {
   assertClosedObject(
     value,
     ["version", "nonce", "database", "mappings"],
-    ["provisional"],
+    ["provisional", "provisionalForks"],
   );
   preflightAssert(
     value.version === 1 &&
@@ -128,6 +128,45 @@ function validateRequest(value) {
       );
       provisionalApp.add(entry.appSessionId);
       provisionalNative.add(entry.nativeSessionId);
+    }
+  }
+  if (Object.hasOwn(value, "provisionalForks")) {
+    // A fork child's Native id is unknown before it is read: the optional child
+    // is described by its parent only, and is bound to a mapped parent.
+    preflightAssert(
+      Array.isArray(value.provisionalForks) &&
+        value.provisionalForks.length >= 1 &&
+        value.provisionalForks.length <= PROVISIONAL_MAX,
+    );
+    const taken = new Set([
+      ...appIds,
+      ...(value.provisional ?? []).map((entry) => entry.appSessionId),
+    ]);
+    for (const entry of value.provisionalForks) {
+      assertClosedObject(entry, [
+        "appSessionId",
+        "workspaceId",
+        "canonicalPath",
+        "parentAppSessionId",
+        "parentNativeSessionId",
+      ]);
+      preflightAssert(
+        [
+          "appSessionId",
+          "workspaceId",
+          "parentAppSessionId",
+          "parentNativeSessionId",
+        ].every((key) => isPreflightId(entry[key])) &&
+          isPreflightPath(entry.canonicalPath) &&
+          !taken.has(entry.appSessionId) &&
+          value.mappings.some(
+            (mapping) =>
+              mapping.appSessionId === entry.parentAppSessionId &&
+              mapping.nativeSessionId === entry.parentNativeSessionId &&
+              mapping.workspaceId === entry.workspaceId,
+          ),
+      );
+      taken.add(entry.appSessionId);
     }
   }
   for (const mapping of value.mappings) {

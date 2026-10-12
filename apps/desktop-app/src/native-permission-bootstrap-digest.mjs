@@ -118,6 +118,21 @@ export function bootstrapBaselinePermissions(permissions) {
     return false;
   }
 }
+// Same rule list as the parent's and the external_directory deny floor last.
+export function bootstrapForkPermissions(child, parent) {
+  try {
+    const floor = permissionCanonicalJSON(BASELINE_POLICY.at(-1));
+    const a = rules(child);
+    const b = rules(parent);
+    return (
+      permissionCanonicalJSON(a) === permissionCanonicalJSON(b) &&
+      a.length > 0 &&
+      permissionCanonicalJSON(a.at(-1)) === floor
+    );
+  } catch {
+    return false;
+  }
+}
 export const bootstrapHandoffProof = ({
   handoffId,
   step,
