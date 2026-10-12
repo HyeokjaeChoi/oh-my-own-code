@@ -1,7 +1,11 @@
 // Shared private initialization. Pure validation; no Effect or Native imports.
 import { types } from "node:util";
 import { isAbsolute, resolve } from "node:path";
-import { validateTaskBinding } from "./host/workbench-task-storage.mjs";
+import {
+  validateTaskBinding,
+  validateTaskHandoffIdentity,
+  validateTaskIdentity,
+} from "./host/workbench-task-storage.mjs";
 import { validWireId } from "./wire-id.mjs";
 
 const error = (code) => new Error(`native_permission_${code}`);
@@ -206,4 +210,87 @@ export function taskPreparation(input) {
       reject("input");
   }
   return Object.freeze({ ...request, origin: Object.freeze(origin) });
+}
+
+// Main -> child handoff arming request. The child (never Main) chooses expiry.
+export function taskArmRequest(input) {
+  const row = record(input, [
+    "handoffId",
+    "taskScopeId",
+    "originalKey",
+    "originalDigest",
+    "step",
+    "stageArgumentDigest",
+    "targetIdentity",
+    "currentLaunchIdentity",
+  ]);
+  const key = record(row.originalKey, ["runtimeEpoch", "operationId"]);
+  const target = validateTaskIdentity(row.targetIdentity);
+  validateTaskHandoffIdentity({
+    handoffId: row.handoffId,
+    step: row.step,
+    stageArgumentDigest: row.stageArgumentDigest,
+  });
+  if (
+    target.originKind !== "bootstrap" ||
+    !["native.create", "native.fork"].includes(row.step) ||
+    target.taskScopeId !== row.taskScopeId ||
+    target.origin.runtimeEpoch !== key.runtimeEpoch ||
+    target.origin.operationId !== key.operationId ||
+    target.origin.digest !== row.originalDigest ||
+    !validWireId(row.currentLaunchIdentity)
+  )
+    reject("input");
+  return Object.freeze({
+    ...row,
+    originalKey: Object.freeze(key),
+    targetIdentity: Object.freeze({
+      ...target,
+      origin: Object.freeze(target.origin),
+    }),
+  });
+}
+
+// Child -> Main preparation result. "prepared" carries only identity candidates.
+export function taskPreparedResult(input) {
+  const status = Object.getOwnPropertyDescriptor(input ?? {}, "status")?.value;
+  if (status === "held") {
+    const row = record(input, ["status", "reason"]);
+    if (!["inventory_unverified", "runtime_unavailable"].includes(row.reason))
+      reject("input");
+    return Object.freeze(row);
+  }
+  const row = record(input, [
+    "status",
+    "taskScopeId",
+    "locationId",
+    "projectId",
+    "modeGeneration",
+    "inventoryGeneration",
+    "launchId",
+  ]);
+  if (
+    row.status !== "prepared" ||
+    ![row.projectId, row.launchId].every(validWireId) ||
+    ![row.modeGeneration, row.inventoryGeneration].every(
+      (value) => Number.isSafeInteger(value) && value > 0,
+    )
+  )
+    reject("input");
+  validateTaskIdentity({
+    taskScopeId: row.taskScopeId,
+    origin: {
+      runtimeEpoch: "e",
+      operationId: "o",
+      type: "session.create",
+      digest: "0".repeat(64),
+    },
+    workspaceId: "w",
+    projectId: row.projectId,
+    locationId: row.locationId,
+    modeGeneration: row.modeGeneration,
+    inventoryGeneration: row.inventoryGeneration,
+    originKind: "bootstrap",
+  });
+  return Object.freeze(row);
 }

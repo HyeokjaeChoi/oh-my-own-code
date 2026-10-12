@@ -28,7 +28,9 @@ import {
 import { isAbsolute } from "node:path";
 import {
   initialization,
+  taskArmRequest,
   taskPreparation,
+  taskPreparedResult,
 } from "./native-permission-control-input.mjs";
 
 export const EVENT_HOST_CONFIG = JSON.stringify({
@@ -88,6 +90,29 @@ export function validateHostMessage(message, receiver) {
       } catch {
         throw new Error("invalid_ipc");
       }
+      return message;
+    }
+    if (message.type === "task-arm") {
+      if (
+        !closed(message, ["type", "nonce", "requestId", "request"]) ||
+        !hex(message.requestId)
+      )
+        throw new Error("invalid_ipc");
+      try {
+        taskArmRequest(message.request);
+      } catch {
+        throw new Error("invalid_ipc");
+      }
+      return message;
+    }
+    if (message.type === "task-revoke") {
+      if (
+        !closed(message, ["type", "nonce", "requestId", "handoffId"]) ||
+        !hex(message.requestId) ||
+        typeof message.handoffId !== "string" ||
+        !/^[a-f0-9-]{36}$/.test(message.handoffId)
+      )
+        throw new Error("invalid_ipc");
       return message;
     }
     if (
@@ -263,12 +288,29 @@ export function validateHostMessage(message, receiver) {
       } catch {
         throw new Error("invalid_ipc");
       }
+      try {
+        taskPreparedResult(message.result);
+      } catch {
+        throw new Error("invalid_ipc");
+      }
+      return message;
+    }
+    if (message.type === "task-handoff-result") {
       if (
-        !closed(message.result, ["status", "reason"]) ||
-        message.result.status !== "held" ||
-        !["inventory_unverified", "runtime_unavailable"].includes(
-          message.result.reason,
-        )
+        !closed(message, [
+          "type",
+          "nonce",
+          "pid",
+          "requestId",
+          "action",
+          "handoffId",
+          "status",
+        ]) ||
+        !hex(message.requestId) ||
+        !["arm", "revoke"].includes(message.action) ||
+        !["ok", "refused"].includes(message.status) ||
+        typeof message.handoffId !== "string" ||
+        !/^[a-f0-9-]{36}$/.test(message.handoffId)
       )
         throw new Error("invalid_ipc");
       return message;

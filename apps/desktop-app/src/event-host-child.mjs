@@ -222,8 +222,9 @@ export async function prepareHeldEventHostStart(
   if (isClosing()) throw new Error("startup_held");
   if (bindTaskControl) {
     if (
-      typeof graph.taskControl?.prepare !== "function" ||
-      typeof graph.taskControl?.close !== "function"
+      ["prepare", "arm", "revoke", "close"].some(
+        (name) => typeof graph.taskControl?.[name] !== "function",
+      )
     )
       throw new Error("startup_held");
     bindTaskControl(graph.taskControl);
@@ -244,7 +245,8 @@ export function runEventHostChild() {
   let gitMetadataKernel,
     taskControl,
     taskPreparationTask,
-    taskPreparing = false;
+    taskPreparing = false,
+    taskHandoffing = false;
   let configurationKernel,
     configurationTask,
     configurationPrepared,
@@ -438,6 +440,7 @@ export function runEventHostChild() {
           closing ||
           message.nonce !== nonce ||
           taskPreparing ||
+          taskHandoffing ||
           observing ||
           configurationActive ||
           configurationPrepared ||
@@ -466,6 +469,56 @@ export function runEventHostChild() {
           })
           .finally(() => {
             taskPreparing = false;
+          });
+      } else if (["task-arm", "task-revoke"].includes(message.type)) {
+        if (
+          !ready ||
+          closing ||
+          message.nonce !== nonce ||
+          taskPreparing ||
+          taskHandoffing ||
+          observing ||
+          configurationActive ||
+          configurationPrepared ||
+          !taskControl
+        )
+          throw new Error("task_handoff_held");
+        taskHandoffing = true;
+        const arming = message.type === "task-arm";
+        const handoffId = arming
+          ? message.request.handoffId
+          : message.handoffId;
+        // A typed refusal is a normal answer (nothing armed); only transport or
+        // protocol faults hold the host.
+        Effect.runPromise(
+          arming
+            ? taskControl.arm(message.request)
+            : taskControl.revoke(message.handoffId),
+        )
+          .then(
+            () => "ok",
+            () => "refused",
+          )
+          .then((status) => {
+            if (closing) return;
+            const response = {
+              type: "task-handoff-result",
+              nonce,
+              pid: process.pid,
+              requestId: message.requestId,
+              action: arming ? "arm" : "revoke",
+              handoffId,
+              status,
+            };
+            validateHostMessage(response, "parent");
+            emit(response);
+          })
+          .catch(() => {
+            emit({ type: "hold" });
+            void stop();
+          })
+          .finally(() => {
+            taskHandoffing = false;
           });
       } else if (
         [
@@ -557,6 +610,7 @@ export function runEventHostChild() {
           closing ||
           observing ||
           taskPreparing ||
+          taskHandoffing ||
           configurationActive ||
           configurationPrepared ||
           message.nonce !== nonce

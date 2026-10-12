@@ -55,6 +55,18 @@ class Child extends EventEmitter {
           request: message.request,
           result: { status: "held", reason: "inventory_unverified" },
         });
+      } else if (["task-arm", "task-revoke"].includes(message.type)) {
+        if (this.behavior.taskHandoff)
+          return this.behavior.taskHandoff(this, message);
+        this.emit("message", {
+          type: "task-handoff-result",
+          nonce: message.nonce,
+          pid: this.pid,
+          requestId: message.requestId,
+          action: message.type === "task-arm" ? "arm" : "revoke",
+          handoffId: message.request?.handoffId ?? message.handoffId,
+          status: this.behavior.handoffStatus ?? "ok",
+        });
       } else if (message.type === "observe") {
         if (this.behavior.observe) return this.behavior.observe(this, message);
         this.emit("message", {
@@ -1541,7 +1553,11 @@ test("private bootstrap preparation transmits only reserved metadata and remains
     },
   };
   const tasks = runtime.workbenchContext().nativeTasks;
-  assert.deepEqual(await tasks.prepare(request), {
+  const plan = {
+    handoffId: "4f1c2a40-1b7e-4c1a-8d33-0f5e5b9d3a11",
+    stageArgumentDigest: "d".repeat(64),
+  };
+  assert.deepEqual(await tasks.prepare(request, plan), {
     status: "held",
     reason: "inventory_unverified",
   });
@@ -1549,9 +1565,262 @@ test("private bootstrap preparation transmits only reserved metadata and remains
   assert.equal(sent.length, 1);
   assert.deepEqual(sent[0].request, request);
   await runtime.stop();
-  await assert.rejects(() => tasks.prepare(request));
+  await assert.rejects(() => tasks.prepare(request, plan));
   assert.equal(
     f.child.messages.filter((m) => m.type === "task-prepare").length,
     1,
   );
+});
+
+const tid = (n) =>
+  `5f1c2a40-1b7e-4c1a-8d33-0f5e5b9d3a${String(n).padStart(2, "0")}`;
+const bootstrapTaskRequest = () => ({
+  originKind: "bootstrap",
+  origin: {
+    runtimeEpoch: "main-epoch",
+    operationId: "original-create",
+    type: "session.create",
+    digest: "a".repeat(64),
+  },
+  workspaceId: "workspace",
+  workspacePath: "/checked/workspace",
+  appSessionId: "reserved-session",
+  plannedNativeSessionId: "ses_planned",
+  metadataDigest: "b".repeat(64),
+  reservation: {
+    kind: "bootstrap",
+    step: "native.create",
+    reservationDigest: "c".repeat(64),
+    parentIdentityDigest: null,
+  },
+});
+const bootstrapPlan = () => ({
+  handoffId: tid(3),
+  stageArgumentDigest: "d".repeat(64),
+});
+const preparedBehavior = {
+  taskPrepare(child, message) {
+    child.emit("message", {
+      type: "task-preparation",
+      nonce: message.nonce,
+      pid: child.pid,
+      requestId: message.requestId,
+      request: message.request,
+      result: {
+        status: "prepared",
+        taskScopeId: tid(1),
+        locationId: tid(2),
+        projectId: "project",
+        modeGeneration: 1,
+        inventoryGeneration: 1,
+        launchId: "launch-1",
+      },
+    });
+  },
+};
+const armRowFor = (prepared) => ({
+  handoffId: bootstrapPlan().handoffId,
+  taskScopeId: prepared.taskScopeId,
+  originalKey: { runtimeEpoch: "main-epoch", operationId: "original-create" },
+  originalDigest: "a".repeat(64),
+  step: "native.create",
+  stageArgumentDigest: bootstrapPlan().stageArgumentDigest,
+  targetIdentity: {
+    taskScopeId: prepared.taskScopeId,
+    origin: bootstrapTaskRequest().origin,
+    workspaceId: "workspace",
+    projectId: prepared.projectId,
+    locationId: prepared.locationId,
+    modeGeneration: prepared.modeGeneration,
+    inventoryGeneration: prepared.inventoryGeneration,
+    originKind: "bootstrap",
+  },
+  currentLaunchIdentity: prepared.launchId,
+});
+const observeBound = (prepared) => ({
+  kind: "task.observe",
+  runtimeEpoch: "main-epoch",
+  operationId: "original-create",
+  taskScopeId: prepared.taskScopeId,
+  phase: "bound",
+  launchId: prepared.launchId,
+});
+
+test("bootstrap task prepare/arm/revoke cross the private channel exactly and verify only while the host is live", async (t) => {
+  let lost = 0;
+  const f = await fixture(t, preparedBehavior);
+  const runtime = await startEventHost({
+    ...f.options,
+    onTaskAuthorityLoss: () => lost++,
+  });
+  const tasks = runtime.workbenchContext().nativeTasks;
+  assert.deepEqual(Object.keys(tasks).sort(), [
+    "arm",
+    "prepare",
+    "revoke",
+    "verify",
+  ]);
+  const prepared = await tasks.prepare(bootstrapTaskRequest(), bootstrapPlan());
+  assert.equal(prepared.status, "prepared");
+  assert.equal(
+    tasks.verify(observeBound(prepared), {
+      runtimeEpoch: "main-epoch",
+      task: null,
+    }),
+    true,
+  );
+  await tasks.arm(armRowFor(prepared));
+  const arms = f.child.messages.filter((m) => m.type === "task-arm");
+  assert.equal(arms.length, 1);
+  assert.deepEqual(arms[0].request, armRowFor(prepared));
+  // Arming is not repeatable and the child never sees an expiry from Main.
+  await assert.rejects(() => tasks.arm(armRowFor(prepared)), /task_arm_held/);
+  assert.equal(f.child.messages.filter((m) => m.type === "task-arm").length, 1);
+  await tasks.revoke(bootstrapPlan().handoffId);
+  const revokes = f.child.messages.filter((m) => m.type === "task-revoke");
+  assert.equal(revokes.length, 1);
+  assert.equal(revokes[0].handoffId, bootstrapPlan().handoffId);
+  assert.equal(lost, 0);
+  await runtime.stop();
+  // Stop drops every live correlation and runs the loss barrier.
+  assert.ok(lost >= 1);
+  assert.equal(
+    tasks.verify(observeBound(prepared), {
+      runtimeEpoch: "main-epoch",
+      task: null,
+    }),
+    false,
+  );
+  await assert.rejects(() => tasks.arm(armRowFor(prepared)));
+});
+
+test("bootstrap task authority is cleared when the host exits, disconnects or fails", async (t) => {
+  for (const loss of [
+    (child) => child.emit("exit", 1, null),
+    (child) => child.emit("disconnect"),
+    (child) =>
+      child.emit("message", { type: "hold", nonce: "x", pid: child.pid }),
+  ]) {
+    let lost = 0;
+    const f = await fixture(t, preparedBehavior);
+    const runtime = await startEventHost({
+      ...f.options,
+      onTaskAuthorityLoss: () => lost++,
+    });
+    const tasks = runtime.workbenchContext().nativeTasks;
+    const prepared = await tasks.prepare(
+      bootstrapTaskRequest(),
+      bootstrapPlan(),
+    );
+    assert.equal(
+      tasks.verify(observeBound(prepared), {
+        runtimeEpoch: "main-epoch",
+        task: null,
+      }),
+      true,
+    );
+    loss(f.child);
+    assert.ok(lost >= 1);
+    assert.equal(
+      tasks.verify(observeBound(prepared), {
+        runtimeEpoch: "main-epoch",
+        task: null,
+      }),
+      false,
+    );
+    await runtime.stop().catch(() => {});
+  }
+});
+
+test("bootstrap arm refusal and uncorrelated handoff results never arm or hold silently", async (t) => {
+  let f = await fixture(t, { ...preparedBehavior, handoffStatus: "refused" });
+  let runtime = await startEventHost(f.options);
+  let tasks = runtime.workbenchContext().nativeTasks;
+  let prepared = await tasks.prepare(bootstrapTaskRequest(), bootstrapPlan());
+  await assert.rejects(
+    () => tasks.arm(armRowFor(prepared)),
+    /task_arm_refused/,
+  );
+  // Refused means nothing is armed: the same correlation cannot verify consumed.
+  assert.equal(
+    tasks.verify(
+      {
+        kind: "task.handoff",
+        runtimeEpoch: "main-epoch",
+        operationId: "original-create",
+        taskScopeId: prepared.taskScopeId,
+        handoffId: bootstrapPlan().handoffId,
+        step: "native.create",
+        stageArgumentDigest: bootstrapPlan().stageArgumentDigest,
+        state: "consumed",
+        proofDigest: "0".repeat(64),
+      },
+      { runtimeEpoch: "main-epoch", task: null },
+    ),
+    false,
+  );
+  await runtime.stop();
+  // A result for a different handoff or without a request fails the channel.
+  f = await fixture(t, {
+    ...preparedBehavior,
+    taskHandoff(child, message) {
+      child.emit("message", {
+        type: "task-handoff-result",
+        nonce: message.nonce,
+        pid: child.pid,
+        requestId: message.requestId,
+        action: "arm",
+        handoffId: tid(9),
+        status: "ok",
+      });
+    },
+  });
+  runtime = await startEventHost(f.options);
+  tasks = runtime.workbenchContext().nativeTasks;
+  prepared = await tasks.prepare(bootstrapTaskRequest(), bootstrapPlan());
+  await assert.rejects(() => tasks.arm(armRowFor(prepared)));
+  assert.equal(
+    tasks.verify(observeBound(prepared), {
+      runtimeEpoch: "main-epoch",
+      task: null,
+    }),
+    false,
+  );
+  await runtime.stop().catch(() => {});
+});
+
+test("bootstrap prepare needs a plan, refuses a second key use and an out-of-contract prepared reply", async (t) => {
+  let f = await fixture(t, preparedBehavior);
+  let runtime = await startEventHost(f.options);
+  let tasks = runtime.workbenchContext().nativeTasks;
+  await assert.rejects(() => tasks.prepare(bootstrapTaskRequest()));
+  assert.equal(
+    f.child.messages.some((m) => m.type === "task-prepare"),
+    false,
+  );
+  await tasks.prepare(bootstrapTaskRequest(), bootstrapPlan());
+  await assert.rejects(
+    () =>
+      tasks.prepare(bootstrapTaskRequest(), {
+        ...bootstrapPlan(),
+        handoffId: tid(4),
+      }),
+    /task_preparation_held/,
+  );
+  assert.equal(
+    f.child.messages.filter((m) => m.type === "task-prepare").length,
+    1,
+  );
+  await runtime.stop();
+  // A prepared reply to a prompt request is a protocol fault and drops the host.
+  let lost = 0;
+  f = await fixture(t, preparedBehavior);
+  runtime = await startEventHost({
+    ...f.options,
+    onTaskAuthorityLoss: () => lost++,
+  });
+  tasks = runtime.workbenchContext().nativeTasks;
+  await assert.rejects(() => tasks.prepare(taskPreparationRequest()));
+  assert.ok(lost >= 1);
+  await runtime.stop().catch(() => {});
 });

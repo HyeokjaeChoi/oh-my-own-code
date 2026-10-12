@@ -1,5 +1,7 @@
 import { copyPermissionControlSources } from "../scripts/native-permission-test-fixture.mjs";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
+import { performance } from "node:perf_hooks";
 import { after, test } from "node:test";
 import { mkdtemp, rm, symlink, mkdir, realpath } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -1480,7 +1482,7 @@ const bootstrapRequest = (workspacePath) => ({
   },
 });
 
-test("bootstrap preparation observes actual candidate and closes retained root before held reply", async () => {
+test("bootstrap preparation observes actual candidate and closes retained root before prepared reply", async () => {
   const fs = await import("node:fs/promises");
   const { syncBuiltinESMExports } = await import("node:module");
   const base = await realpath(
@@ -1500,10 +1502,28 @@ test("bootstrap preparation observes actual candidate and closes retained root b
     await run((service) =>
       Effect.gen(function* () {
         const before = yield* snapshot(service);
-        assert.deepEqual(
-          yield* service.prepareTask(bootstrapRequest(directory)),
-          { status: "held", reason: "inventory_unverified" },
+        const prepared = yield* service.prepareTask(
+          bootstrapRequest(directory),
         );
+        // Prepared identity candidates only: no lease, location, mode or
+        // inventory activity is created, and the root pin is already closed.
+        assert.equal(prepared.status, "prepared");
+        assert.equal(
+          prepared.projectId,
+          createHash("sha1").update(`directory:${directory}`).digest("hex"),
+        );
+        assert.equal(prepared.modeGeneration, 1);
+        assert.equal(prepared.inventoryGeneration, 1);
+        assert.deepEqual(Object.keys(prepared).sort(), [
+          "inventoryGeneration",
+          "launchId",
+          "locationId",
+          "modeGeneration",
+          "projectId",
+          "status",
+          "taskScopeId",
+        ]);
+        assert.ok(Object.isFrozen(prepared));
         assert.equal(handles.length, 1);
         assert.equal(handles[0].fd, -1);
         assert.deepEqual(yield* snapshot(service), before);
@@ -1620,6 +1640,310 @@ test("bootstrap candidate rejection closes original root without inventing locat
   } finally {
     await rm(base, { recursive: true, force: true });
   }
+});
+
+// ---- Bootstrap handoff arm/consume (real Control, real bootstrap workspace) ----
+const bootstrapDigest = await import(
+  "./native-permission-bootstrap-digest.mjs"
+);
+const BASELINE = () => [
+  { action: "*", resource: "*", effect: "ask" },
+  { action: "external_directory", resource: "*", effect: "deny" },
+];
+const createInput = (directory, over = {}) => ({
+  id: "ses_planned",
+  metadata: { operationId: "bootstrap-op", digest: "a".repeat(64) },
+  title: "Workbench",
+  location: { directory },
+  permissions: BASELINE(),
+  ...over,
+});
+const parentIdentity = (directory) => ({
+  id: "ses_parent",
+  projectID: "parent-project",
+  directory,
+});
+async function bootstrapFixture(body, step = "native.create") {
+  const base = await realpath(
+    await mkdtemp(join(tmpdir(), "omoc-bootstrap-handoff-")),
+  );
+  const directory = join(base, "root");
+  await mkdir(directory);
+  try {
+    await run((service) =>
+      Effect.gen(function* () {
+        const create = step === "native.create";
+        const input = create
+          ? createInput(directory)
+          : { sessionID: "ses_parent" };
+        const stageArgumentDigest = bootstrapDigest.bootstrapStageDigest(
+          step,
+          input,
+        );
+        const request = {
+          ...bootstrapRequest(directory),
+          metadataDigest: bootstrapDigest.bootstrapMetadataDigest(
+            createInput(directory).metadata,
+          ),
+          reservation: {
+            kind: "bootstrap",
+            step,
+            reservationDigest: "c".repeat(64),
+            parentIdentityDigest: create
+              ? null
+              : bootstrapDigest.bootstrapParentDigest(
+                  parentIdentity(directory),
+                ),
+          },
+          ...(create
+            ? {}
+            : {
+                origin: {
+                  ...bootstrapRequest(directory).origin,
+                  type: "session.fork",
+                },
+              }),
+        };
+        if (!create) {
+          delete request.plannedNativeSessionId;
+          request.parentNativeSessionId = "ses_parent";
+        }
+        const prepared = yield* service.prepareTask(request);
+        assert.equal(prepared.status, "prepared");
+        const handoffId = "5f1c2a40-1b7e-4c1a-8d33-0f5e5b9d3a11";
+        const row = (over = {}) => ({
+          handoffId,
+          taskScopeId: prepared.taskScopeId,
+          originalKey: {
+            runtimeEpoch: request.origin.runtimeEpoch,
+            operationId: request.origin.operationId,
+          },
+          originalDigest: request.origin.digest,
+          step,
+          stageArgumentDigest,
+          targetIdentity: {
+            taskScopeId: prepared.taskScopeId,
+            origin: request.origin,
+            workspaceId: request.workspaceId,
+            projectId: prepared.projectId,
+            locationId: prepared.locationId,
+            modeGeneration: prepared.modeGeneration,
+            inventoryGeneration: prepared.inventoryGeneration,
+            originKind: "bootstrap",
+          },
+          currentLaunchIdentity: prepared.launchId,
+          ...over,
+        });
+        yield* body({
+          service,
+          directory,
+          request,
+          prepared,
+          row,
+          input,
+          handoffId,
+        });
+      }),
+    );
+  } finally {
+    await rm(base, { recursive: true, force: true });
+  }
+}
+const forkConsume = (service, parent, input) =>
+  service.transaction([parent.projectID], (tx) =>
+    service.enterBootstrap(tx, parent, input),
+  );
+
+test("bootstrap create consumes exactly once for the exact armed input and never admits execution", async () => {
+  await bootstrapFixture(({ service, directory, row, input }) =>
+    Effect.gen(function* () {
+      // Nothing armed: every consume is refused, including the exact input.
+      yield* expectFailure(service.consumeBootstrap(input), "held");
+      yield* service.armBootstrap(row());
+      for (const changed of [
+        createInput(directory, { id: "ses_other" }),
+        createInput(directory, { title: "Other" }),
+        createInput(directory, {
+          location: { directory: join(directory, "x") },
+        }),
+        createInput(directory, {
+          metadata: { operationId: "other", digest: "a".repeat(64) },
+        }),
+        createInput(directory, { permissions: [] }),
+        createInput(directory, {
+          permissions: [
+            ...BASELINE(),
+            { action: "subagent", resource: "*", effect: "deny" },
+          ],
+        }),
+        createInput(directory, { permissions: BASELINE().reverse() }),
+        { ...createInput(directory), parentID: "ses_parent" },
+        { ...createInput(directory), agent: "build" },
+        { sessionID: "ses_parent" },
+        {},
+        null,
+      ])
+        yield* expectFailure(service.consumeBootstrap(changed));
+      // The handoff survives wrong callers (they never matched its digest).
+      yield* service.consumeBootstrap(input);
+      // Double consume, replayed arm and direct probes find nothing armed.
+      yield* expectFailure(service.consumeBootstrap(input));
+      yield* expectFailure(service.armBootstrap(row()));
+      yield* expectFailure(service.revokeBootstrap(row().handoffId));
+      // Consume is not execution: the held assertion is unchanged.
+      yield* expectFailure(
+        service.transaction(["parent-project"], (tx) =>
+          service.assertExecution(tx, "parent-project"),
+        ),
+        "held",
+      );
+    }),
+  );
+});
+
+test("bootstrap arm binds every prepared field, launch and exactly one handoff at a time", async () => {
+  await bootstrapFixture(({ service, request, prepared, row }) =>
+    Effect.gen(function* () {
+      const forged = [
+        { taskScopeId: "6f1c2a40-1b7e-4c1a-8d33-0f5e5b9d3a12" },
+        { originalDigest: "e".repeat(64) },
+        {
+          originalKey: {
+            runtimeEpoch: request.origin.runtimeEpoch,
+            operationId: "other",
+          },
+        },
+        { currentLaunchIdentity: "forged-launch" },
+        { step: "native.fork" },
+        {
+          targetIdentity: {
+            ...row().targetIdentity,
+            projectId: "forged-project",
+          },
+        },
+        {
+          targetIdentity: {
+            ...row().targetIdentity,
+            locationId: "7f1c2a40-1b7e-4c1a-8d33-0f5e5b9d3a13",
+          },
+        },
+        {
+          targetIdentity: {
+            ...row().targetIdentity,
+            modeGeneration: prepared.modeGeneration + 1,
+          },
+        },
+        {
+          targetIdentity: {
+            ...row().targetIdentity,
+            inventoryGeneration: prepared.inventoryGeneration + 1,
+          },
+        },
+        { targetIdentity: { ...row().targetIdentity, workspaceId: "forged" } },
+        { expiresAt: 1 },
+      ];
+      for (const over of forged)
+        yield* expectFailure(service.armBootstrap(row(over)));
+      yield* service.armBootstrap(row());
+      // A second handoff cannot be armed while one is armed.
+      yield* expectFailure(
+        service.armBootstrap(
+          row({ handoffId: "8f1c2a40-1b7e-4c1a-8d33-0f5e5b9d3a14" }),
+        ),
+      );
+    }),
+  );
+});
+
+test("bootstrap handoff expires on the child clock, after revoke and after runtime invalidation", async () => {
+  const { mock } = await import("node:test");
+  let now = 1000;
+  await bootstrapFixture(({ service, row, input, handoffId }) =>
+    Effect.gen(function* () {
+      const clock = mock.method(performance, "now", () => now);
+      try {
+        yield* service.armBootstrap(row());
+        now += 4001;
+        yield* expectFailure(service.consumeBootstrap(input));
+        // Expired is unusable and unreplayable; revoke still resolves cleanly.
+        yield* expectFailure(service.armBootstrap(row()));
+        yield* service.revokeBootstrap(handoffId);
+        yield* service.revokeBootstrap(handoffId);
+      } finally {
+        clock.mock.restore();
+      }
+    }),
+  );
+  now = 1000;
+  await bootstrapFixture(({ service, row, input, handoffId }) =>
+    Effect.gen(function* () {
+      yield* service.armBootstrap(row());
+      yield* service.revokeBootstrap(handoffId);
+      yield* expectFailure(service.consumeBootstrap(input));
+      yield* expectFailure(service.armBootstrap(row()));
+    }),
+  );
+  await bootstrapFixture(({ service, row, input }) =>
+    Effect.gen(function* () {
+      yield* service.armBootstrap(row());
+      yield* service.invalidate("owner_lost");
+      yield* expectFailure(service.consumeBootstrap(input));
+    }),
+  );
+});
+
+test("bootstrap preparation is never re-issued for an original operation key", async () => {
+  await bootstrapFixture(({ service, request, directory }) =>
+    Effect.gen(function* () {
+      assert.deepEqual(yield* service.prepareTask(request), {
+        status: "held",
+        reason: "runtime_unavailable",
+      });
+      assert.deepEqual(
+        yield* service
+          .prepareTask({
+            ...request,
+            origin: { ...request.origin, operationId: "different-op" },
+            workspacePath: directory,
+          })
+          .pipe(Effect.map((result) => result.status)),
+        "prepared",
+      );
+    }),
+  );
+});
+
+test("bootstrap fork consumes under the parent's own transaction with exact parent identity", async () => {
+  await bootstrapFixture(
+    ({ service, directory, row, input }) =>
+      Effect.gen(function* () {
+        const parent = parentIdentity(directory);
+        // Outside a transaction capability, or before arming, nothing is consumed.
+        yield* expectFailure(
+          service.enterBootstrap({}, parent, input),
+          "transaction",
+        );
+        yield* expectFailure(forkConsume(service, parent, input), "held");
+        yield* service.armBootstrap(row());
+        for (const [identity, changed] of [
+          [{ ...parent, id: "ses_other" }, { sessionID: "ses_other" }],
+          [{ ...parent, projectID: "other-project" }, input],
+          [{ ...parent, directory: join(directory, "x") }, input],
+          [parent, { sessionID: "ses_other" }],
+          [parent, { sessionID: "ses_parent", before: "msg_1" }],
+          [parent, { sessionID: "ses_parent", extra: true }],
+        ])
+          yield* expectFailure(forkConsume(service, identity, changed));
+        yield* forkConsume(service, parent, input);
+        yield* expectFailure(forkConsume(service, parent, input));
+        // Create input never satisfies a fork handoff and vice versa.
+        yield* expectFailure(
+          service.consumeBootstrap(createInput(directory)),
+          "held",
+        );
+      }),
+    "native.fork",
+  );
 });
 
 test("location project candidate API exists on the actual acquired Control", async () => {

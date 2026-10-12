@@ -327,3 +327,108 @@ test("tool context session ID capture refuses accessor and Proxy before callback
   assert.equal(captured, "session");
   assert.equal(calls, 0);
 });
+
+test("bootstrap fork admission consumes under the parent's own transaction instead of asserting execution", async () => {
+  await run((control) =>
+    Effect.gen(function* () {
+      const events = [];
+      const store = { get: () => Effect.sync(row) };
+      const observed = {
+        ...control,
+        assertExecution: (...args) => {
+          events.push("assert");
+          return control.assertExecution(...args);
+        },
+        enterBootstrap: (tx, parent, input) => {
+          events.push(["enter", parent, input]);
+          // The consume runs inside the parent's project transaction.
+          return Effect.flatMap(
+            control.inspect(tx, parent.projectID),
+            () => Effect.void,
+          );
+        },
+      };
+      const enter = createCoordinatorAdmission({ control: observed, store });
+      const input = { sessionID: "session" };
+      let calls = 0;
+      yield* enter(
+        "session",
+        () =>
+          Effect.sync(() => {
+            calls++;
+          }),
+        input,
+      );
+      assert.equal(calls, 1);
+      assert.deepEqual(events, [
+        [
+          "enter",
+          {
+            id: "session",
+            projectID: "project",
+            directory: "/checked/workspace",
+          },
+          input,
+        ],
+      ]);
+      // Existing-session guards still assert execution and stay held.
+      code(
+        yield* Effect.exit(enter("session", () => Effect.void)),
+        "native_permission_held",
+      );
+      assert.deepEqual(events.at(-1), "assert");
+    }),
+  );
+});
+
+test("bootstrap fork admission refuses when the consume fails, when it is unavailable and on identity drift", async () => {
+  await run((control) =>
+    Effect.gen(function* () {
+      const store = { get: () => Effect.sync(row) };
+      let calls = 0;
+      const body = () =>
+        Effect.sync(() => {
+          calls++;
+        });
+      const refused = createCoordinatorAdmission({
+        control: {
+          ...control,
+          enterBootstrap: () =>
+            Effect.fail(new Error("native_permission_held")),
+        },
+        store,
+      });
+      code(
+        yield* Effect.exit(refused("session", body, { sessionID: "session" })),
+        "native_permission_held",
+      );
+      // A control without the private consume cannot silently fall back.
+      const absent = createCoordinatorAdmission({
+        control: { ...control, enterBootstrap: undefined },
+        store,
+      });
+      code(
+        yield* Effect.exit(absent("session", body, { sessionID: "session" })),
+        "native_permission_scope_unverified",
+      );
+      let reads = 0;
+      const drifting = createCoordinatorAdmission({
+        control: { ...control, enterBootstrap: () => Effect.void },
+        store: {
+          get: () =>
+            Effect.sync(() => ({
+              ...row(),
+              location: {
+                directory: `/checked/workspace${reads++ ? "-x" : ""}`,
+              },
+            })),
+        },
+      });
+      code(
+        yield* Effect.exit(drifting("session", body, { sessionID: "session" })),
+        "native_permission_scope_unverified",
+      );
+      assert.equal(calls, 0);
+    }),
+  );
+});

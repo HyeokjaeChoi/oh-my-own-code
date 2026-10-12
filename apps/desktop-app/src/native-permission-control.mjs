@@ -16,8 +16,17 @@ import {
   identifier,
   initialization,
   taskPreparation,
+  taskArmRequest,
   record,
 } from "./native-permission-control-input.mjs";
+import { createNativeTaskHandoffs } from "./native-permission-task-handoff.mjs";
+import {
+  bootstrapBaselinePermissions,
+  bootstrapMetadataDigest,
+  bootstrapParentDigest,
+  bootstrapStageArguments,
+  bootstrapStageDigest,
+} from "./native-permission-bootstrap-digest.mjs";
 import {
   validateFixedPluginSource,
   BUILTIN_PLUGIN_ORDER,
@@ -56,6 +65,18 @@ function kernel(initial) {
   });
   const bootstrapTasks = new Set();
   const bootstrapCloseFailures = [];
+  // Child-only bootstrap handoff state. Handoffs are in-memory, never restored,
+  // and bound to this launch. Prepared entries carry no execution authority.
+  const launchId = randomUUID();
+  const handoffs = createNativeTaskHandoffs({
+    runtimeEpoch: initial.runtimeEpoch,
+    launchIdentity: launchId,
+  });
+  const bootstrapPrepared = new Map();
+  const bootstrapUsed = new Set();
+  let armedBootstrap;
+  const bootstrapKey = (value) =>
+    JSON.stringify([value.runtimeEpoch, value.operationId]);
   const projects = new Map();
   const capabilities = new WeakMap();
   const owners = new Map();
@@ -2137,12 +2158,21 @@ function kernel(initial) {
     // allocate a location, mode generation, task, session or execution grant.
     return Effect.uninterruptible(
       Effect.promise(() => {
+        const key = bootstrapKey(captured.origin);
+        for (const [id, entry] of bootstrapPrepared)
+          if (performance.now() - entry.preparedAt > 60000)
+            bootstrapPrepared.delete(id);
         if (
           runtimeHeld ||
           captured.origin.runtimeEpoch !== initial.runtimeEpoch ||
-          bootstrapTasks.size >= 16
+          bootstrapTasks.size >= 16 ||
+          bootstrapPrepared.size >= 16 ||
+          bootstrapUsed.size >= 8192 ||
+          // Never re-issue: one preparation per original operation key.
+          bootstrapUsed.has(key)
         )
           return Promise.resolve(held("runtime_unavailable"));
+        bootstrapUsed.add(key);
         const deadline = performance.now() + 5000;
         const check = () => {
           if (runtimeHeld || performance.now() >= deadline)
@@ -2151,6 +2181,7 @@ function kernel(initial) {
         let task;
         task = (async () => {
           let owner;
+          let observed;
           let reason = "inventory_unverified";
           try {
             owner = await createNativeBootstrapWorkspace(
@@ -2159,7 +2190,9 @@ function kernel(initial) {
             );
             await owner.assertCurrent();
             check();
+            observed = owner.inspect();
           } catch (failure) {
+            observed = undefined;
             reason = "runtime_unavailable";
             if (!owner && !nativeBootstrapWorkspaceFailureClosed(failure)) {
               runtimeHeld = true;
@@ -2170,25 +2203,166 @@ function kernel(initial) {
               try {
                 await owner.close();
               } catch (failure) {
+                observed = undefined;
                 reason = "runtime_unavailable";
                 runtimeHeld = true;
                 bootstrapCloseFailures.push(failure);
               }
             }
           }
-          return held(runtimeHeld ? "runtime_unavailable" : reason);
+          if (runtimeHeld) return held("runtime_unavailable");
+          if (!observed) return held(reason);
+          const result = Object.freeze({
+            status: "prepared",
+            taskScopeId: randomUUID(),
+            locationId: randomUUID(),
+            projectId: observed.projectId,
+            // Nothing executes for a bootstrap task: these are the control's
+            // current observed counters. No location exists before the first
+            // session, so a counter may still be 0; zero is not a valid
+            // generation, hence the floor of 1.
+            modeGeneration: Math.max(
+              1,
+              projects.get(observed.projectId)?.generation ?? 0,
+            ),
+            inventoryGeneration: Math.max(1, inventoryGeneration),
+            launchId,
+          });
+          bootstrapPrepared.set(key, {
+            request: captured,
+            result,
+            state: "prepared",
+            preparedAt: performance.now(),
+          });
+          return result;
         })().finally(() => bootstrapTasks.delete(task));
         bootstrapTasks.add(task);
         return task;
       }),
     );
   };
+  // Arm exactly one handoff for a prepared bootstrap task. Main reaches this only
+  // after its durable original-intent records; the child still binds every field
+  // to its own prepared state and chooses the (<=5s) expiry on its own clock.
+  const armBootstrap = (input) =>
+    Effect.try({
+      try: () => {
+        const row = taskArmRequest(input);
+        const entry = bootstrapPrepared.get(bootstrapKey(row.originalKey));
+        const { request, result } = entry ?? {};
+        if (
+          runtimeHeld ||
+          !entry ||
+          entry.state !== "prepared" ||
+          armedBootstrap ||
+          row.currentLaunchIdentity !== launchId ||
+          row.taskScopeId !== result.taskScopeId ||
+          row.originalDigest !== request.origin.digest ||
+          row.step !== request.reservation.step ||
+          row.targetIdentity.workspaceId !== request.workspaceId ||
+          row.targetIdentity.projectId !== result.projectId ||
+          row.targetIdentity.locationId !== result.locationId ||
+          row.targetIdentity.modeGeneration !== result.modeGeneration ||
+          row.targetIdentity.inventoryGeneration !== result.inventoryGeneration
+        )
+          reject("bootstrap_unverified");
+        const armed = Object.freeze({
+          ...row,
+          expiresAt: Math.floor(performance.now()) + 4000,
+        });
+        handoffs.arm(armed);
+        entry.state = "armed";
+        entry.handoffId = row.handoffId;
+        entry.row = armed;
+        armedBootstrap = entry;
+      },
+      catch: (failure) => failure,
+    });
+  const revokeBootstrap = (handoffId) =>
+    Effect.try({
+      try: () => {
+        identifier(handoffId);
+        const entry = [...bootstrapPrepared.values()].find(
+          (row) => row.handoffId === handoffId,
+        );
+        // A consumed handoff means Native may have an effect: never "revoked".
+        if (!entry || !["armed", "revoked"].includes(entry.state))
+          reject("bootstrap_unverified");
+        if (entry.state === "armed")
+          try {
+            handoffs.revoke(handoffId);
+          } catch {
+            // Already expired in the store: equally unusable.
+          }
+        entry.state = "revoked";
+        if (armedBootstrap === entry) armedBootstrap = undefined;
+      },
+      catch: (failure) => failure,
+    });
+  // Native-side consume. The key is the digest of the ACTUAL input, so a direct
+  // HTTP call, another method or a duplicate-id probe finds no armed handoff.
+  const consumeArmed = (step, input, verify) => {
+    const entry = armedBootstrap;
+    if (
+      runtimeHeld ||
+      !entry ||
+      entry.state !== "armed" ||
+      entry.row.step !== step ||
+      entry.row.stageArgumentDigest !== bootstrapStageDigest(step, input)
+    )
+      reject("held");
+    verify(entry.request);
+    // Throws when expired, already consumed or revoked.
+    handoffs.consume(entry.row);
+    entry.state = "consumed";
+    armedBootstrap = undefined;
+  };
+  const consumeBootstrap = (input) =>
+    Effect.try({
+      try: () => {
+        const args = bootstrapStageArguments("native.create", input);
+        consumeArmed("native.create", args, (request) => {
+          if (
+            args.id !== request.plannedNativeSessionId ||
+            args.location.directory !== request.workspacePath ||
+            bootstrapMetadataDigest(args.metadata) !== request.metadataDigest ||
+            !bootstrapBaselinePermissions(args.permissions)
+          )
+            reject("held");
+        });
+      },
+      catch: (failure) => failure,
+    });
+  // Fork replaces assertExecution for the parent's own transaction.
+  const enterBootstrap = (tx, parent, input) =>
+    Effect.withFiber((fiber) =>
+      Effect.try({
+        try: () => {
+          checked(tx, parent.projectID, fiber);
+          const args = bootstrapStageArguments("native.fork", input);
+          consumeArmed("native.fork", args, (request) => {
+            if (
+              args.sessionID !== parent.id ||
+              args.sessionID !== request.parentNativeSessionId ||
+              bootstrapParentDigest({
+                id: parent.id,
+                projectID: parent.projectID,
+                directory: parent.directory,
+              }) !== request.reservation.parentIdentityDigest
+            )
+              reject("held");
+          });
+        },
+        catch: (failure) => failure,
+      }),
+    );
   const invalidate = (reason) =>
     Effect.try({
       try: () => {
         identifier(reason);
         runtimeHeld = true;
         leases.close();
+        handoffs.close();
       },
       catch: (failure) => failure,
     });
@@ -2199,6 +2373,10 @@ function kernel(initial) {
       assertExecution,
       invalidate,
       prepareTask,
+      armBootstrap,
+      revokeBootstrap,
+      consumeBootstrap,
+      enterBootstrap,
       admitLease,
       bindNativeReadRuntime,
       readNativeFile,
@@ -2214,6 +2392,7 @@ function kernel(initial) {
           Effect.promise(async () => {
             runtimeHeld = true;
             leases.close();
+            handoffs.close();
             // Revoke checks first; await original candidate IO and physical
             // close before the acquired Control scope can report settlement.
             await Promise.allSettled([...bootstrapTasks]);

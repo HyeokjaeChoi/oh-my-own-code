@@ -148,7 +148,12 @@ test("held EventHost rejects missing epoch and pre-existing close before graph c
 });
 
 test("held EventHost binds the exact graph facade before server construction", async () => {
-  const facade = Object.freeze({ prepare() {}, close() {} });
+  const facade = Object.freeze({
+    prepare() {},
+    arm() {},
+    revoke() {},
+    close() {},
+  });
   const order = [];
   let actual;
   await child.prepareHeldEventHostStart(

@@ -224,7 +224,7 @@ async function actualFactory(t, changeManifest = () => {}, onLoad = () => {}) {
   const { isAbsolute, join, normalize } = await import("node:path");
   const { fileURLToPath, pathToFileURL } = await import("node:url");
   const { types } = await import("node:util");
-  const { initialization, taskPreparation } = await import(
+  const { initialization, taskArmRequest, taskPreparation } = await import(
     "./native-permission-control-input.mjs"
   );
   const root = await mkdtemp(join(tmpdir(), "omoc-graph-control-test-"));
@@ -743,6 +743,7 @@ async function actualFactory(t, changeManifest = () => {}, onLoad = () => {}) {
     "pathToFileURL",
     "types",
     "initialization",
+    "taskArmRequest",
     "taskPreparation",
     "verifyEventHostResources",
     "NATIVE_PERMISSION_OVERLAY_RECEIPT",
@@ -757,6 +758,7 @@ async function actualFactory(t, changeManifest = () => {}, onLoad = () => {}) {
     pathToFileURL,
     types,
     initialization,
+    taskArmRequest,
     taskPreparation,
     async () => {
       verified = true;
@@ -771,8 +773,10 @@ async function actualFactory(t, changeManifest = () => {}, onLoad = () => {}) {
   assert.equal(result.overrides.length, 7);
   assert.deepEqual(Object.keys(result).sort(), ["overrides", "taskControl"]);
   assert.deepEqual(Object.keys(result.taskControl).sort(), [
+    "arm",
     "close",
     "prepare",
+    "revoke",
   ]);
   assert.ok(Object.isFrozen(result.taskControl));
   const assertSources = () => {
@@ -1480,4 +1484,113 @@ test("Worktree direct registration sources require exact originals before any Na
       assert.equal(loads, 0, `${chunk}:${alteration}`);
     }
   }
+});
+
+test("graph arm/revoke reach only the acquired Control and fail closed before acquisition and after close", async (t) => {
+  const { mkdtemp, mkdir, realpath, rm } = await import("node:fs/promises");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const base = await realpath(await mkdtemp(join(tmpdir(), "omoc-graph-arm-")));
+  t.after(() => rm(base, { recursive: true, force: true }));
+  const directory = join(base, "root");
+  await mkdir(directory);
+  const { Effect, control, compiler, result } = await actualFactory(t);
+  const hex = "a".repeat(64);
+  const request = {
+    originKind: "bootstrap",
+    origin: {
+      runtimeEpoch: "test_epoch-1",
+      operationId: "bootstrap-op",
+      type: "session.create",
+      digest: hex,
+    },
+    workspaceId: "workspace-1",
+    workspacePath: directory,
+    appSessionId: "app-session",
+    plannedNativeSessionId: "ses_planned",
+    metadataDigest: "b".repeat(64),
+    reservation: {
+      kind: "bootstrap",
+      step: "native.create",
+      reservationDigest: "c".repeat(64),
+      parentIdentityDigest: null,
+    },
+  };
+  const facade = result.taskControl;
+  const failing = (effect) => Effect.exit(effect);
+  const layer = compiler.compile(control.node, {
+    replacements: result.overrides,
+  });
+  await Effect.runPromise(
+    Effect.provide(
+      Effect.gen(function* () {
+        const actual = yield* control.Service;
+        const prepared = yield* facade.prepare(request);
+        assert.equal(prepared.status, "prepared");
+        const row = {
+          handoffId: "5f1c2a40-1b7e-4c1a-8d33-0f5e5b9d3a11",
+          taskScopeId: prepared.taskScopeId,
+          originalKey: {
+            runtimeEpoch: request.origin.runtimeEpoch,
+            operationId: request.origin.operationId,
+          },
+          originalDigest: hex,
+          step: "native.create",
+          stageArgumentDigest: "d".repeat(64),
+          targetIdentity: {
+            taskScopeId: prepared.taskScopeId,
+            origin: request.origin,
+            workspaceId: request.workspaceId,
+            projectId: prepared.projectId,
+            locationId: prepared.locationId,
+            modeGeneration: prepared.modeGeneration,
+            inventoryGeneration: prepared.inventoryGeneration,
+            originKind: "bootstrap",
+          },
+          currentLaunchIdentity: prepared.launchId,
+        };
+        // A malformed request is a typed failure; nothing is armed.
+        assert.equal(
+          (yield* failing(facade.arm({ ...row, extra: 1 })))._tag,
+          "Failure",
+        );
+        yield* facade.arm(row);
+        assert.equal((yield* failing(facade.arm(row)))._tag, "Failure");
+        yield* facade.revoke(row.handoffId);
+        assert.equal(
+          (yield* failing(facade.revoke("unknown-id")))._tag,
+          "Failure",
+        );
+        // Close revokes the same acquired service; both calls then fail typed.
+        yield* facade.close("owner_lost");
+        assert.equal((yield* failing(facade.arm(row)))._tag, "Failure");
+        assert.equal(
+          (yield* failing(facade.revoke(row.handoffId)))._tag,
+          "Failure",
+        );
+        assert.equal(
+          (yield* failing(actual.armBootstrap(row)))._tag,
+          "Failure",
+        );
+      }),
+      layer,
+    ).pipe(Effect.timeout("5 seconds")),
+  );
+});
+
+test("graph arm/revoke are unavailable before the Control is acquired", async (t) => {
+  const { Effect, result } = await actualFactory(t);
+  const row = { handoffId: "5f1c2a40-1b7e-4c1a-8d33-0f5e5b9d3a11" };
+  assert.equal(
+    (await Effect.runPromise(Effect.exit(result.taskControl.arm(row))))._tag,
+    "Failure",
+  );
+  assert.equal(
+    (
+      await Effect.runPromise(
+        Effect.exit(result.taskControl.revoke(row.handoffId)),
+      )
+    )._tag,
+    "Failure",
+  );
 });

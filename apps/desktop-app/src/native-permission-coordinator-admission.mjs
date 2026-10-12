@@ -56,7 +56,10 @@ export function createCoordinatorAdmission(input) {
     [get, transaction, assertExecution].some((fn) => typeof fn !== "function")
   )
     throw failure();
-  return (sessionID, body) =>
+  // `bootstrap` is the actual fork input. It swaps the always-held execution
+  // assertion for a private one-shot handoff consume under the same parent
+  // transaction; it never admits execution.
+  return (sessionID, body, bootstrap) =>
     Effect.gen(function* () {
       yield* Effect.try({
         try: () => {
@@ -75,7 +78,14 @@ export function createCoordinatorAdmission(input) {
             Object.keys(before).some((key) => before[key] !== current[key])
           )
             return yield* Effect.fail(failure());
-          yield* assertExecution(tx, before.projectID);
+          if (bootstrap === undefined)
+            yield* assertExecution(tx, before.projectID);
+          else {
+            const enterBootstrap = field(control, "enterBootstrap");
+            if (typeof enterBootstrap !== "function")
+              return yield* Effect.fail(failure());
+            yield* enterBootstrap(tx, current, bootstrap);
+          }
           return yield* body(tx, current);
         }),
       );
