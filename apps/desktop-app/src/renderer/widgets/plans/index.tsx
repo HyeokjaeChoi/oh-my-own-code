@@ -89,6 +89,7 @@ export function PlansPanel({
   const [finding, setFinding] = useState("");
   const [author, setAuthor] = useState<FindingAuthor>("reviewer");
   const busy = useRef(false);
+  const checking = useRef(false);
   const fail = (code: string) =>
     setError(errors[code] ?? "계획 요청을 처리하지 못했습니다.");
 
@@ -128,7 +129,7 @@ export function PlansPanel({
         if (document.hidden) return;
         void refresh();
         // observeGitReview cancels an in-flight review, so skip while one runs.
-        if (!store.getState().gitReview.request)
+        if (!checking.current && !store.getState().gitReview.request)
           void actions.observeGitReview();
       },
       running ? POLL_MS : IDLE_POLL_MS,
@@ -260,7 +261,12 @@ export function PlansPanel({
   const runCheck = async () => {
     if (!plan || !script) return;
     setError(undefined);
-    if (!(await actions.observeGitReview())) return fail("OBSERVATION_FAILED");
+    // Idle polling must not cancel this observation (spurious OBSERVATION_FAILED).
+    checking.current = true;
+    const observed = await actions.observeGitReview().finally(() => {
+      checking.current = false;
+    });
+    if (!observed) return fail("OBSERVATION_FAILED");
     // Fingerprint is taken here, at check start (not at completion): edits made
     // while the check runs then make it stale, which is the safe direction.
     // Recompute from the refreshed observation, not the pre-refresh `fp`.

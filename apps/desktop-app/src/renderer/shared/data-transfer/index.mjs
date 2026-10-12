@@ -15,6 +15,7 @@ export const DATA_LIMITS = Object.freeze({
 });
 
 const REDACTED = "[REDACTED]";
+const TAIL_DROP = 256;
 // Order matters: block/header forms first, then bare token shapes, then assignments.
 const SECRET_PATTERNS = [
   /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z ]*PRIVATE KEY-----|$)/g,
@@ -31,10 +32,12 @@ const SECRET_PATTERNS = [
   /\bAKIA[0-9A-Z]{16}\b/g,
   /\bAIza[0-9A-Za-z_-]{30,}/g,
   /\beyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}/g,
+  // Partial JWT cut at the end of the text.
+  /\beyJ[\w-]+(?:\.[\w-]*){0,2}$/g,
 ];
 // NAME=value / "name": "value" where NAME looks like a credential.
 const ASSIGN =
-  /(["']?[A-Za-z0-9_.-]*(?:api[_-]?key|token|secret|passw(?:or)?d|credential|private[_-]?key)[A-Za-z0-9_.-]*["']?\s*[:=]\s*)(?:"[^"\n]*"|'[^'\n]*'|[^\s"',;]+)/gi;
+  /(["']?[A-Za-z0-9_.-]*(?:api[_-]?key|token|secret|passw(?:or)?d|credential|private[_-]?key)[A-Za-z0-9_.-]*["']?\s*[:=]\s*)(?:"[^"\n]*"|'[^'\n]*'|"[^"\n]*(?=\n|$)|'[^'\n]*(?=\n|$)|[^\s"',;]+)/gi;
 
 // scheme://user:pass@host keeps the scheme and host, drops the credentials.
 const URL_USERINFO = /\b([a-z][a-z0-9+.-]*:\/\/)[^\s/@:]+:[^\s/@]+@/gi;
@@ -104,15 +107,12 @@ export function buildExport({
   const red = (v, n) => {
     // Bounded pre-clip (redaction only shrinks text, secrets are far shorter than the slack), redact,
     // then the final clip; a cut inside a [REDACTED] marker backs up to the marker start.
-    // When pre-clipped, the cut may leave a partial secret (unclosed quote, partial JWT) at the tail.
-    // No redaction pattern spans a newline, so keep only whole lines; no newline means no safe text.
+    // When pre-clipped the cut may leave a partial secret at the tail; unterminated quotes and partial
+    // JWTs are redacted by the patterns, and a bounded tail is dropped for any other partial token shape.
     const cut = typeof v === "string" && v.length > n + 4096;
     const r = redactText(clip(v, n + 4096), { home });
     let text = r.text;
-    if (cut) {
-      const nl = text.lastIndexOf("\n");
-      text = nl >= 0 ? text.slice(0, nl) : "[TRUNCATED]";
-    }
+    if (cut) text = text.slice(0, -TAIL_DROP);
     totals.secrets += r.counts.secrets;
     totals.home += r.counts.home;
     return clipAtMarker(text, n);

@@ -42,11 +42,12 @@ function Export({
     }),
     [session, messages, outputs],
   );
-  // Streaming grows the last message's text without changing its id.
-  const lastLength = messages.at(-1)?.text.length;
+  // Key on content shape, not the `messages` reference (it changes on every snapshot).
+  const last = messages.at(-1);
+  const contentKey = `${messages.length}|${last?.id}|${last?.text.length}|${last?.tools?.length ?? 0}`;
   useEffect(() => {
     setSummary(undefined);
-  }, [session?.id, outputs, messages, lastLength]);
+  }, [session?.id, outputs, contentKey]);
   const preview = async () => {
     const r = await callData<ExportSummary>({
       type: "export.preview",
