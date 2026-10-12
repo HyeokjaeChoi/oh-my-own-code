@@ -2,6 +2,7 @@
 import { randomUUID } from "node:crypto";
 import { performance } from "node:perf_hooks";
 import {
+  assertNotVcsMetadataPath,
   createNativeBootstrapWorkspace,
   nativeBootstrapWorkspaceFailureClosed,
 } from "./host/native-bootstrap-workspace.mjs";
@@ -2423,6 +2424,15 @@ function kernel(initial) {
       admitLease,
       bindNativeReadRuntime,
       readNativeFile,
+      // Execution phase (step D) must call this with the running lease's
+      // location directory before admitting any tool file effect (edit, write,
+      // patch) and on formatter-output paths; permission rules alone are
+      // lexical and case-sensitive.
+      assertNotVcsMetadataPath: (directory, path) =>
+        Effect.tryPromise({
+          try: () => assertNotVcsMetadataPath(directory, path),
+          catch: (failure) => failure,
+        }),
       leaseSnapshot,
       locationBegin,
       locationBind,
