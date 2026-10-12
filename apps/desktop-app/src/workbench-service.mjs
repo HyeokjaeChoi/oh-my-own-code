@@ -4,6 +4,13 @@ import {
 } from "./permission-policy-compiler.mjs";
 import { compileModeRules, legacyModeRules } from "./permission-mode.mjs";
 import { permissionPromptInputDigest } from "./permission-input-digest.mjs";
+import {
+  bootstrapHandoffProof,
+  bootstrapMetadataDigest,
+  bootstrapParentDigest,
+  bootstrapStageDigest,
+  bootstrapTaskProof,
+} from "./native-permission-bootstrap-digest.mjs";
 import { projectPermissionPolicy } from "./renderer/shared/configuration-draft/permission-policy.mjs";
 import { createConversationContextIO } from "./host/conversation-context-io.mjs";
 import {
@@ -555,8 +562,242 @@ export function createWorkbenchService({
     if (fn === client.permission.reply) return "native.permission";
     fail("UNAVAILABLE");
   }
+  // Native create/fork authority. The bootstrap task is the durable original
+  // operation the effect is bound to; nothing here ever re-issues an effect.
   function checkBootstrapTaskAuthority() {
-    if (context?.nativeTasks) fail("POLICY_UNVERIFIED");
+    const tasks = context?.nativeTasks;
+    if (!tasks) return;
+    if (
+      !registry ||
+      ["prepare", "arm", "revoke", "verify"].some(
+        (name) => typeof tasks[name] !== "function",
+      )
+    )
+      fail("POLICY_UNVERIFIED");
+  }
+  // A refusal raised before any dispatch flush: a clean `effect: none` outcome.
+  function bootstrapRefusal() {
+    try {
+      fail("POLICY_UNVERIFIED");
+    } catch (error) {
+      error.bootstrapRefused = true;
+      throw error;
+    }
+  }
+  const bootstrapHandoff = (bt, state) => ({
+    handoffId: bt.handoffId,
+    step: bt.step,
+    stageArgumentDigest: bt.stageArgumentDigest,
+    state,
+    proofDigest: bootstrapHandoffProof({
+      handoffId: bt.handoffId,
+      step: bt.step,
+      stageArgumentDigest: bt.stageArgumentDigest,
+      state,
+    }),
+  });
+  async function recordBootstrap(bt, kind, fields) {
+    const result = await registry.recordTask({
+      kind,
+      runtimeEpoch: bt.identity.origin.runtimeEpoch,
+      operationId: bt.identity.origin.operationId,
+      taskScopeId: bt.identity.taskScopeId,
+      ...fields,
+    });
+    if (result.status !== "recorded") fail("UNKNOWN_OUTCOME");
+  }
+  // Step 1: the child's prepared identity, before any dispatch or Native effect.
+  async function prepareBootstrap(owner, step, args) {
+    const { record, reservation } = owner;
+    const create = step === "native.create";
+    const parent = create ? undefined : owner.bootstrapParent;
+    if (!reservation || !owner.nativeMetadata || (!create && !parent))
+      bootstrapRefusal();
+    let request, stageArgumentDigest;
+    try {
+      stageArgumentDigest = bootstrapStageDigest(step, args);
+      const reservationDigest = registry.reservationDigest(
+        operationKey(record),
+      );
+      if (
+        !reservationDigest ||
+        (create && args.id !== reservation.plannedNativeSessionId)
+      )
+        throw new Error("bootstrap_unverified");
+      request = {
+        originKind: "bootstrap",
+        origin: {
+          runtimeEpoch: record.runtimeEpoch,
+          operationId: record.operationId,
+          type: record.type,
+          digest: record.digest,
+        },
+        workspaceId: reservation.workspace.workspaceId,
+        workspacePath: create ? args.location.directory : parent.workspacePath,
+        appSessionId: reservation.appSessionId,
+        metadataDigest: bootstrapMetadataDigest(owner.nativeMetadata),
+        reservation: {
+          kind: "bootstrap",
+          step,
+          reservationDigest,
+          parentIdentityDigest: create
+            ? null
+            : bootstrapParentDigest(parent.identity),
+        },
+        ...(create
+          ? { plannedNativeSessionId: args.id }
+          : { parentNativeSessionId: args.sessionID }),
+      };
+    } catch {
+      bootstrapRefusal();
+    }
+    const handoffId = randomUUID();
+    let prepared;
+    try {
+      prepared = await context.nativeTasks.prepare(request, {
+        handoffId,
+        stageArgumentDigest,
+      });
+    } catch {
+      bootstrapRefusal();
+    }
+    if (prepared?.status !== "prepared") bootstrapRefusal();
+    owner.bootstrapTask = {
+      step,
+      request,
+      handoffId,
+      stageArgumentDigest,
+      launchId: prepared.launchId,
+      binding: request.reservation,
+      identity: {
+        taskScopeId: prepared.taskScopeId,
+        origin: request.origin,
+        workspaceId: request.workspaceId,
+        projectId: prepared.projectId,
+        locationId: prepared.locationId,
+        modeGeneration: prepared.modeGeneration,
+        inventoryGeneration: prepared.inventoryGeneration,
+        originKind: "bootstrap",
+      },
+      journaled: { prepared: false, armed: false },
+      completed: false,
+    };
+  }
+  // Steps 3-4 (after dispatch flushed): durable original intent, then arm.
+  async function armBootstrap(owner) {
+    const bt = owner.bootstrapTask;
+    try {
+      await recordBootstrap(bt, "task.prepare", {
+        identity: bt.identity,
+        binding: bt.binding,
+      });
+      bt.journaled.prepared = true;
+      await recordBootstrap(bt, "task.observe", {
+        phase: "bound",
+        launchId: bt.launchId,
+      });
+      await recordBootstrap(bt, "task.handoff", bootstrapHandoff(bt, "armed"));
+      bt.journaled.armed = true;
+      await context.nativeTasks.arm({
+        handoffId: bt.handoffId,
+        taskScopeId: bt.identity.taskScopeId,
+        originalKey: {
+          runtimeEpoch: bt.identity.origin.runtimeEpoch,
+          operationId: bt.identity.origin.operationId,
+        },
+        originalDigest: bt.identity.origin.digest,
+        step: bt.step,
+        stageArgumentDigest: bt.stageArgumentDigest,
+        targetIdentity: bt.identity,
+        currentLaunchIdentity: bt.launchId,
+      });
+    } catch (error) {
+      await abortBootstrap(bt);
+      throw error;
+    }
+  }
+  // Step 7: failure before the Native call. Best effort only: any gap leaves the
+  // task unsettled (held), never a silent replay or a guessed outcome.
+  async function abortBootstrap(bt) {
+    try {
+      await context.nativeTasks.revoke(bt.handoffId);
+      if (!bt.journaled.prepared) return;
+      if (bt.journaled.armed)
+        await recordBootstrap(
+          bt,
+          "task.handoff",
+          bootstrapHandoff(bt, "revoked"),
+        );
+      const proofDigest = bootstrapTaskProof({
+        outcome: "no_effect",
+        taskScopeId: bt.identity.taskScopeId,
+      });
+      const proof = { proofDigest, outcome: "no_effect" };
+      await recordBootstrap(bt, "task_proof", proof);
+      await recordBootstrap(bt, "task.settle", proof);
+    } catch {
+      /* unknown stays unknown */
+    }
+  }
+  // Step 6a: Native returned. The result must be exactly the planned session.
+  async function completeBootstrap(bt, owner, info) {
+    const create = bt.step === "native.create";
+    if (
+      !info ||
+      typeof info.id !== "string" ||
+      (create && info.id !== bt.request.plannedNativeSessionId)
+    )
+      fail("UNKNOWN_OUTCOME");
+    await recordBootstrap(bt, "task.handoff", bootstrapHandoff(bt, "consumed"));
+    await recordBootstrap(
+      bt,
+      "task.handoff",
+      bootstrapHandoff(bt, "completed"),
+    );
+    let metadataDigest;
+    try {
+      metadataDigest = bootstrapMetadataDigest(info.metadata);
+    } catch {
+      // Only a fork may lack metadata of its own (it inherits its parent's).
+      if (create) fail("UNKNOWN_OUTCOME");
+      metadataDigest = bootstrapMetadataDigest(owner.nativeMetadata);
+    }
+    await recordBootstrap(bt, "task.bootstrap-binding", {
+      appSessionId: bt.request.appSessionId,
+      nativeSessionId: info.id,
+      metadataDigest,
+    });
+    bt.completed = true;
+    bt.nativeSessionId = info.id;
+  }
+  // Step 6b: only after the policy readback.
+  async function settleBootstrap() {
+    const bt = currentScope()?.bootstrapTask;
+    if (!bt) return;
+    if (!bt.completed) fail("UNKNOWN_OUTCOME");
+    const proofDigest = bootstrapTaskProof({
+      outcome: "settled",
+      taskScopeId: bt.identity.taskScopeId,
+      appSessionId: bt.request.appSessionId,
+      nativeSessionId: bt.nativeSessionId,
+    });
+    const proof = { proofDigest, outcome: "settled" };
+    await recordBootstrap(bt, "task_proof", proof);
+    await recordBootstrap(bt, "task.settle", proof);
+  }
+  async function bootstrapParentIdentity(w, s) {
+    const info = await call(client.session.get, { sessionID: s.sdkId });
+    const directory = info?.location?.directory;
+    if (
+      info?.id !== s.sdkId ||
+      typeof info.projectID !== "string" ||
+      typeof directory !== "string"
+    )
+      fail("POLICY_UNVERIFIED");
+    return {
+      identity: { id: info.id, projectID: info.projectID, directory },
+      workspacePath: w.path,
+    };
   }
   async function call(fn, ...args) {
     checkLive();
@@ -607,32 +848,46 @@ export function createWorkbenchService({
         nativeServerName !== owner.record.nativeServerName
       )
         fail("MCP_UNVERIFIED");
-      const result = await registry.dispatch({
-        ...operationKey(owner.record),
-        step,
-        ...(step.startsWith("native.skill.") && {
-          skillRuntime: owner.skillRuntimeProof,
-        }),
-        ...(step.startsWith("native.agent.") && {
-          agentRuntime: owner.agentRuntimeProof,
-        }),
-        ...(nativeServerName && { nativeServerName }),
-        ...(step === "native.inbox.cancel" && {
-          inboxTarget: { inboxId: effectArgs[0]?.inboxID },
-        }),
-        ...(step === "native.fork" &&
-          owner.record.forkTarget && {
-            forkTarget: { ...owner.record.forkTarget },
+      // Step 1 (before dispatch): a held/failed preparation is a clean refusal.
+      const bootstrapTask =
+        context?.nativeTasks && ["native.create", "native.fork"].includes(step);
+      if (bootstrapTask) await prepareBootstrap(owner, step, effectArgs[0]);
+      const result = await registry
+        .dispatch({
+          ...operationKey(owner.record),
+          step,
+          ...(step.startsWith("native.skill.") && {
+            skillRuntime: owner.skillRuntimeProof,
           }),
-        ...(owner.record.type !== "session.inbox.cancel" &&
-          effectArgs[0]?.sessionID && {
-            nativeSessionId: effectArgs[0].sessionID,
+          ...(step.startsWith("native.agent.") && {
+            agentRuntime: owner.agentRuntimeProof,
           }),
-      });
+          ...(nativeServerName && { nativeServerName }),
+          ...(step === "native.inbox.cancel" && {
+            inboxTarget: { inboxId: effectArgs[0]?.inboxID },
+          }),
+          ...(step === "native.fork" &&
+            owner.record.forkTarget && {
+              forkTarget: { ...owner.record.forkTarget },
+            }),
+          ...(owner.record.type !== "session.inbox.cancel" &&
+            effectArgs[0]?.sessionID && {
+              nativeSessionId: effectArgs[0].sessionID,
+            }),
+        })
+        .catch(async (error) => {
+          // Nothing was flushed for this key: drop the child's prepared entry.
+          if (bootstrapTask)
+            await context.nativeTasks
+              .revoke(owner.bootstrapTask.handoffId)
+              .catch(() => {});
+          throw error;
+        });
       if (result.status !== "dispatched") fail("UNKNOWN_OUTCOME");
       // Flushed intent is itself conservative uncertainty even if the host
       // expires before invoking the native function.
       owner.effectStarted = true;
+      if (bootstrapTask) await armBootstrap(owner);
     };
     const effect =
       effectMethods.has(fn) ||
@@ -660,7 +915,13 @@ export function createWorkbenchService({
         client.session.instructions?.entry?.put,
         client.session.instructions?.entry?.remove,
       ].includes(fn);
-    return host.sdk(fn, args, effect, primary);
+    const result = await host.sdk(fn, args, effect, primary);
+    if (
+      owner.bootstrapTask &&
+      (fn === client.session?.create || fn === client.session?.fork)
+    )
+      await completeBootstrap(owner.bootstrapTask, owner, result);
+    return result;
   }
   function projectReceiptFields(record, request, response, effected) {
     record.revision = revision;
@@ -2050,17 +2311,23 @@ export function createWorkbenchService({
         fail("POLICY_UNVERIFIED");
     }
   }
-  async function policy(s, step = "native.policy") {
+  // `verifyOnly`: a bootstrap session already carries exactly this ruleset from
+  // its create input (and a fork of an "ask" session inherits it). Native's
+  // permission setter stays held until execution is admitted, so the redundant
+  // write is skipped; the exact-readback verification below is unchanged and a
+  // mismatch still fails closed. Never used for a mode change.
+  async function policy(s, step = "native.policy", verifyOnly = false) {
     try {
       // A persisted mode needs its exact compiler inputs and generation readback.
       // Until that producer is connected, the legacy baseline cannot replace it.
       if (s.permissionControl) fail("POLICY_UNVERIFIED");
       const expected = compileModeRules(modeOf(s));
       currentScope().policyStep = step;
-      await call(client.session.update, {
-        sessionID: s.sdkId,
-        permissions: expected.map((rule) => ({ ...rule })),
-      });
+      if (!verifyOnly)
+        await call(client.session.update, {
+          sessionID: s.sdkId,
+          permissions: expected.map((rule) => ({ ...rule })),
+        });
       const info = await call(client.session.get, { sessionID: s.sdkId });
       if (
         info?.id !== s.sdkId ||
@@ -2189,6 +2456,70 @@ export function createWorkbenchService({
     .catch((error) => {
       localRecovery = error?.storageReason ?? "storage_denied";
     });
+  // Default-workspace bootstrap is a durable multi-step effect. It runs in its
+  // own startup scope: the whole-read deadline of the first scope also covers
+  // the wait for the sidecar and would otherwise expire mid-journal.
+  async function bootstrapDefaultWorkspace() {
+    checkBootstrapTaskAuthority();
+    const owner = currentScope();
+    const operation = { type: "workspace.create", name: "Workbench" };
+    const record = {
+      runtimeEpoch: host.epoch,
+      operationId: randomUUID(),
+      type: operation.type,
+      digest: fingerprint(operation),
+      admission: "admitted",
+      delivery: "pending",
+      effect: "none",
+      revision: registry.status().revision,
+      evidence: [],
+    };
+    await registry.begin({
+      runtimeEpoch: record.runtimeEpoch,
+      operationId: record.operationId,
+      type: record.type,
+      digest: record.digest,
+    });
+    owner.record = record;
+    owner.candidate = cloneTables();
+    const reservation = await reserveSession(
+      undefined,
+      "managed",
+      undefined,
+      "Workbench",
+    );
+    await registry.materializeManaged(operationKey(record));
+    owner.effectStarted = true;
+    const w = addWorkspace(
+      reservation.workspace.canonicalPath,
+      true,
+      false,
+      reservation,
+    );
+    const info = await call(client.session.create, {
+      id: reservation.plannedNativeSessionId,
+      metadata: owner.nativeMetadata,
+      title: "Workbench",
+      location: { directory: w.path },
+      permissions: BASELINE_POLICY.map((rule) => ({ ...rule })),
+    });
+    const checked = await call(client.session.get, {
+      sessionID: info.id,
+    });
+    const s = await addSession(w, checked);
+    defaultWorkspace = w.id;
+    defaultSession = s.id;
+    let result;
+    try {
+      await policy(s, undefined, Boolean(context?.nativeTasks));
+      await settleBootstrap();
+      result = { ok: true, value: base(w, s) };
+    } catch {
+      result = failure("POLICY_UNVERIFIED");
+    }
+    await projectReceipt(record, operation, result, true);
+  }
+  let needsDefaultBootstrap = false;
   ready = host
     .startup(async () => {
       await registryLoaded;
@@ -2216,65 +2547,7 @@ export function createWorkbenchService({
             return;
           }
         }
-        if (bootstrap && committed.workspaces.size === 0) {
-          checkBootstrapTaskAuthority();
-          const owner = currentScope();
-          const operation = { type: "workspace.create", name: "Workbench" };
-          const record = {
-            runtimeEpoch: host.epoch,
-            operationId: randomUUID(),
-            type: operation.type,
-            digest: fingerprint(operation),
-            admission: "admitted",
-            delivery: "pending",
-            effect: "none",
-            revision: registry.status().revision,
-            evidence: [],
-          };
-          await registry.begin({
-            runtimeEpoch: record.runtimeEpoch,
-            operationId: record.operationId,
-            type: record.type,
-            digest: record.digest,
-          });
-          owner.record = record;
-          owner.candidate = cloneTables();
-          const reservation = await reserveSession(
-            undefined,
-            "managed",
-            undefined,
-            "Workbench",
-          );
-          await registry.materializeManaged(operationKey(record));
-          owner.effectStarted = true;
-          const w = addWorkspace(
-            reservation.workspace.canonicalPath,
-            true,
-            false,
-            reservation,
-          );
-          const info = await call(client.session.create, {
-            id: reservation.plannedNativeSessionId,
-            metadata: owner.nativeMetadata,
-            title: "Workbench",
-            location: { directory: w.path },
-            permissions: BASELINE_POLICY.map((rule) => ({ ...rule })),
-          });
-          const checked = await call(client.session.get, {
-            sessionID: info.id,
-          });
-          const s = await addSession(w, checked);
-          defaultWorkspace = w.id;
-          defaultSession = s.id;
-          let result;
-          try {
-            await policy(s);
-            result = { ok: true, value: base(w, s) };
-          } catch {
-            result = failure("POLICY_UNVERIFIED");
-          }
-          await projectReceipt(record, operation, result, true);
-        }
+        needsDefaultBootstrap = bootstrap && committed.workspaces.size === 0;
         return;
       }
       if (!client || !context?.session) return;
@@ -2289,6 +2562,11 @@ export function createWorkbenchService({
         checkLive();
       }
     })
+    .then(() =>
+      needsDefaultBootstrap
+        ? host.startup(bootstrapDefaultWorkspace)
+        : undefined,
+    )
     .catch((error) => {
       if (registryInput !== undefined && !localRecovery)
         localRecovery =
@@ -4406,6 +4684,8 @@ export function createWorkbenchService({
             fail("INVALID_SELECTION");
           await idleIdentity(w, s);
         }
+        if (context?.nativeTasks)
+          currentScope().bootstrapParent = await bootstrapParentIdentity(w, s);
         await reserveSession(w, undefined, undefined, undefined, true);
         dispatched = true;
         let forked;
@@ -4415,6 +4695,8 @@ export function createWorkbenchService({
             ...(request.before && { before: request.before }),
           });
         } catch (error) {
+          // Refused before any dispatch flush: nothing happened to the parent.
+          if (error?.bootstrapRefused) dispatched = false;
           // Only this typed SDK rejection proves the fork had no effect.
           if (
             error?._tag === "InvalidRequestError" &&
@@ -4445,7 +4727,7 @@ export function createWorkbenchService({
         child.archived = true;
         child.unknown = true;
         child.status = "unknown";
-        await policy(child);
+        await policy(child, undefined, Boolean(context?.nativeTasks));
         if (request.title)
           await call(client.session.update, {
             sessionID: child.sdkId,
@@ -4486,6 +4768,7 @@ export function createWorkbenchService({
           child.instructionRegistration = inherited;
         }
         await idleIdentity(w, s);
+        await settleBootstrap();
         child.title = clip(checked.title, 256) || child.title;
         child.archived = false;
         child.unknown = false;
@@ -4810,7 +5093,8 @@ export function createWorkbenchService({
           ? await call(client.session.get, { sessionID: info.id })
           : info;
         const created = await addSession(w, checked);
-        await policy(created);
+        await policy(created, undefined, Boolean(context?.nativeTasks));
+        await settleBootstrap();
         return base(w, created);
       } finally {
         w.lock = false;

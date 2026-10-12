@@ -7,7 +7,9 @@ import {
 } from "../native-skills-protocol.mjs";
 import nativeSkillsPlugin from "../builtins/workbench-skills/server.mjs";
 import test from "node:test";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
+import { createNativeTaskLedger } from "../native-permission-task-ledger.mjs";
+import { bootstrapStageDigest } from "../native-permission-bootstrap-digest.mjs";
 import { readWorkspaceFile } from "./workbench-file-edit.mjs";
 import assert from "node:assert/strict";
 import * as fs from "node:fs/promises";
@@ -29,6 +31,70 @@ import {
   instructionDigest,
 } from "./workbench-instructions.mjs";
 
+// In-memory stand-in for the child's Control (the real arm/consume checks are
+// covered against the real Control elsewhere). Main sees the REAL ledger, so
+// preparation, arm, revoke and every journal verification go through the same
+// code as production; only the Native side of the handoff is simulated.
+function fakeBootstrapChild(knobs = {}) {
+  const child = { knobs, events: [], live: true };
+  let armed;
+  child.channel = {
+    async prepare() {
+      child.events.push("prepare");
+      if (knobs.held) return { status: "held", reason: "inventory_unverified" };
+      return {
+        status: "prepared",
+        taskScopeId: randomUUID(),
+        locationId: randomUUID(),
+        projectId: "project",
+        modeGeneration: 1,
+        inventoryGeneration: 1,
+        launchId: "launch-1",
+      };
+    },
+    async arm(row) {
+      child.events.push("arm");
+      if (knobs.refuseArm || armed) return "refused";
+      armed = { row, state: "armed" };
+      return "ok";
+    },
+    async revoke(id) {
+      child.events.push("revoke");
+      if (!armed || armed.row.handoffId !== id) return "ok";
+      if (armed.state === "consumed") return "refused";
+      armed.state = "revoked";
+      return "ok";
+    },
+  };
+  // What the overlay does on Session.create / Session.fork.
+  child.consume = (step, input) => {
+    if (
+      !armed ||
+      armed.state !== "armed" ||
+      armed.row.step !== step ||
+      armed.row.stageArgumentDigest !== bootstrapStageDigest(step, input)
+    )
+      throw new Error("native_permission_held");
+    armed.state = "consumed";
+    armed = undefined;
+    child.events.push(`consume:${step}`);
+  };
+  child.ledger = createNativeTaskLedger({
+    runtimeEpoch: "epoch",
+    isLive: () => child.live,
+    channel: child.channel,
+    onUnconfirmed: () => {
+      child.live = false;
+    },
+  });
+  child.tasks = {
+    prepare: child.ledger.prepare,
+    arm: child.ledger.arm,
+    revoke: child.ledger.revoke,
+    verify: child.ledger.verify,
+  };
+  return child;
+}
 const deferred = () => {
   let resolve;
   const promise = new Promise((r) => {
@@ -579,6 +645,7 @@ async function fixture(
     confirmAgentRuntime,
     projectRegistry,
     nativeTasks,
+    taskChild,
   } = {},
 ) {
   runtimeReady?.catch(() => {});
@@ -595,6 +662,12 @@ async function fixture(
     storeId: "synthetic",
     runtimeEpoch: "epoch",
     io,
+    ...(taskChild && {
+      taskAuthoritySource: (record, context) =>
+        taskChild.verify
+          ? taskChild.verify(record, context)
+          : taskChild.ledger.verify(record, context),
+    }),
   };
   const registry = await openWorkspaceRegistry(options);
   const records = new Map();
@@ -617,7 +690,12 @@ async function fixture(
   const client = {
     session: {
       create: method("create", (input) => {
-        const info = { ...input, permissions: BASELINE_POLICY };
+        taskChild?.consume("native.create", input);
+        const info = {
+          ...input,
+          ...(taskChild && { projectID: "project" }),
+          permissions: BASELINE_POLICY,
+        };
         records.set(info.id, info);
         return info;
       }),
@@ -626,7 +704,9 @@ async function fixture(
         if (!info) throw new Error("absent");
         return { ...info };
       }),
-      fork: method("fork", ({ sessionID }) => {
+      fork: method("fork", (input) => {
+        taskChild?.consume("native.fork", input);
+        const { sessionID } = input;
         const parent = records.get(sessionID);
         const info = {
           ...parent,
@@ -748,7 +828,7 @@ async function fixture(
     nativeSkills,
     nativeAgents,
     nativeExtensions,
-    nativeTasks,
+    nativeTasks: nativeTasks ?? taskChild?.tasks,
   };
   const runtime = {
     snapshot: () => ({ state: "connected" }),
@@ -5670,5 +5750,564 @@ test("mode.set with failed child propagation is UNKNOWN_OUTCOME and re-applies t
   assert.deepEqual(
     f.records.get(nativeId).permissions,
     compileModeRules("ask"),
+  );
+});
+
+// ---- Bootstrap task authority (Native create/fork through the original task) ----
+const journalPayloads = async (f) =>
+  (await fs.readFile(join(f.directory, "journal.jsonl"), "utf8"))
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line).payload);
+// One label per journaled fact of this original operation, in durable order.
+const trail = (payloads, operationId) =>
+  payloads
+    .filter(
+      (payload) =>
+        (payload.operationId ?? payload.identity?.operationId) === operationId,
+    )
+    .map((payload) =>
+      payload.kind === "dispatch"
+        ? `dispatch:${payload.step}`
+        : payload.kind === "task.handoff"
+          ? `handoff:${payload.state}`
+          : payload.kind === "task_proof"
+            ? `proof:${payload.outcome}`
+            : payload.kind === "task.settle"
+              ? `settle:${payload.outcome}`
+              : payload.kind,
+    );
+const SETTLED_TRAIL = [
+  "dispatch:native.create",
+  "task.prepare",
+  "task.observe",
+  "handoff:armed",
+  "handoff:consumed",
+  "handoff:completed",
+  "task.bootstrap-binding",
+  "proof:settled",
+  "settle:settled",
+];
+async function bootstrapped(t, knobs, extra) {
+  const child = fakeBootstrapChild(knobs);
+  const f = await fixture(t, { taskChild: child, ...extra });
+  return { f, child };
+}
+
+test("fresh profile bootstraps its default session through the journaled original task", async (t) => {
+  const { f, child } = await bootstrapped(t);
+  const snapshot = await f.ready();
+  assert.equal(snapshot.state, "connected", JSON.stringify(snapshot.recovery));
+  assert.equal(snapshot.sessions.length, 1);
+  assert.equal(snapshot.retainedOperations.length, 0);
+  assert.deepEqual(child.events, ["prepare", "arm", "consume:native.create"]);
+  assert.equal(f.state.calls.filter((name) => name === "create").length, 1);
+  const [task] = f.registry.readView().tasks;
+  assert.equal(task.phase, "settled");
+  assert.equal(task.authorityHold, false);
+  assert.equal(task.identity.originKind, "bootstrap");
+  assert.equal(task.identity.appSessionId, snapshot.selectedSessionId);
+  const records = await journalPayloads(f);
+  const labels = trail(records, task.identity.origin.operationId);
+  assert.deepEqual(
+    labels.filter((label) => !label.startsWith("dispatch:filesystem")),
+    ["admission", "reservation", ...SETTLED_TRAIL, "completion"],
+    JSON.stringify(labels),
+  );
+});
+
+test("held preparation refuses the default bootstrap before dispatch and never reaches Native", async (t) => {
+  const { f, child } = await bootstrapped(t, { held: true });
+  const snapshot = await f.ready();
+  assert.equal(f.state.calls.includes("create"), false);
+  assert.deepEqual(child.events, ["prepare"]);
+  assert.equal(snapshot.sessions.length, 0);
+  assert.deepEqual(f.registry.readView().tasks, []);
+  const records = await journalPayloads(f);
+  assert.equal(
+    records.some(
+      (payload) =>
+        (payload.kind === "dispatch" && payload.step === "native.create") ||
+        String(payload.kind).startsWith("task"),
+    ),
+    false,
+  );
+  // The reserved folder keeps the original workspace.create retained (an
+  // effect-none receipt is impossible once filesystem steps were dispatched):
+  // the profile holds in recovery rather than guessing or re-issuing.
+  assert.equal(snapshot.recovery.store.reason, "native_startup_unverified");
+  assert.equal(
+    f.registry
+      .readView()
+      .retainedOperations.every((row) => row.type === "workspace.create"),
+    true,
+  );
+});
+
+test("session.create runs the full original task and is bound to exactly one Native call", async (t) => {
+  const { f, child } = await bootstrapped(t);
+  const snapshot = await f.ready();
+  child.events.length = 0;
+  f.state.calls.length = 0;
+  const response = await f.mutate(
+    {
+      type: "session.create",
+      workspaceId: snapshot.selectedWorkspaceId,
+      title: "Second",
+    },
+    "create-second",
+  );
+  assert.equal(response.ok, true, JSON.stringify(response));
+  assert.equal(response.receipt.effect, "confirmed");
+  assert.deepEqual(child.events, ["prepare", "arm", "consume:native.create"]);
+  assert.equal(f.state.calls.filter((name) => name === "create").length, 1);
+  const labels = trail(await journalPayloads(f), "create-second");
+  assert.deepEqual(labels, [
+    "admission",
+    "reservation",
+    "dispatch:native.create",
+    "task.prepare",
+    "task.observe",
+    "handoff:armed",
+    "handoff:consumed",
+    "handoff:completed",
+    "task.bootstrap-binding",
+    "proof:settled",
+    "settle:settled",
+    "completion",
+  ]);
+  const task = f.registry
+    .readView()
+    .tasks.find((row) => row.identity.origin.operationId === "create-second");
+  assert.equal(task.phase, "settled");
+  assert.equal(
+    task.identity.nativeSessionId,
+    [...f.records.values()].find((info) => info.title === "Second").id,
+  );
+  // A replay of the same operation id never reaches Native or the child again.
+  child.events.length = 0;
+  f.state.calls.length = 0;
+  const duplicate = await f.mutate(
+    {
+      type: "session.create",
+      workspaceId: snapshot.selectedWorkspaceId,
+      title: "Second",
+    },
+    "create-second",
+  );
+  assert.deepEqual(duplicate.receipt, response.receipt);
+  assert.deepEqual(child.events, []);
+  assert.equal(f.state.calls.includes("create"), false);
+});
+
+test("session.fork journals the parent identity, inherits metadata and settles the child", async (t) => {
+  const { f, child } = await bootstrapped(t);
+  const snapshot = await f.ready();
+  child.events.length = 0;
+  const response = await f.mutate(
+    {
+      type: "session.fork",
+      workspaceId: snapshot.selectedWorkspaceId,
+      sessionId: snapshot.selectedSessionId,
+      requestId: "fork-one",
+    },
+    "fork-one",
+  );
+  assert.equal(response.ok, true, JSON.stringify(response));
+  assert.deepEqual(child.events, ["prepare", "arm", "consume:native.fork"]);
+  const task = f.registry
+    .readView()
+    .tasks.find((row) => row.identity.origin.operationId === "fork-one");
+  assert.equal(task.phase, "settled");
+  assert.equal(task.binding.step, "native.fork");
+  const parentSdk = [...f.records.values()][0];
+  const { bootstrapParentDigest } = await import(
+    "../native-permission-bootstrap-digest.mjs"
+  );
+  assert.equal(
+    task.binding.parentIdentityDigest,
+    bootstrapParentDigest({
+      id: parentSdk.id,
+      projectID: "project",
+      directory: parentSdk.location.directory,
+    }),
+  );
+  const forked = [...f.records.values()].find((info) => info.fork);
+  assert.equal(task.identity.nativeSessionId, forked.id);
+  assert.deepEqual(forked.metadata, parentSdk.metadata);
+  const sessions = (await f.snapshot()).sessions;
+  const child_ = sessions.find((row) => row.parentSessionId);
+  assert.equal(child_.parentSessionId, snapshot.selectedSessionId);
+  assert.equal(child_.status, "idle");
+});
+
+const createOperation = (snapshot, title = "Second") => ({
+  type: "session.create",
+  workspaceId: snapshot.selectedWorkspaceId,
+  title,
+});
+test("held preparation for session.create is a clean refusal before reservation-side effects", async (t) => {
+  const { f, child } = await bootstrapped(t);
+  const snapshot = await f.ready();
+  child.knobs.held = true;
+  child.events.length = 0;
+  f.state.calls.length = 0;
+  const response = await f.mutate(createOperation(snapshot), "create-held");
+  assert.equal(response.code, "POLICY_UNVERIFIED", JSON.stringify(response));
+  assert.equal(response.receipt.effect, "none");
+  assert.deepEqual(child.events, ["prepare"]);
+  assert.equal(f.state.calls.includes("create"), false);
+  const labels = trail(await journalPayloads(f), "create-held");
+  assert.equal(labels.includes("dispatch:native.create"), false);
+  assert.equal(
+    labels.some((label) => label.startsWith("task")),
+    false,
+  );
+  assert.equal(f.registry.readView().tasks.length, 1, "only the default task");
+  assert.deepEqual((await f.snapshot()).retainedOperations, []);
+});
+
+test("arm refusal revokes, proves no effect and never reaches Native", async (t) => {
+  const { f, child } = await bootstrapped(t);
+  const snapshot = await f.ready();
+  child.knobs.refuseArm = true;
+  child.events.length = 0;
+  f.state.calls.length = 0;
+  const response = await f.mutate(createOperation(snapshot), "create-no-arm");
+  // Dispatch was durably flushed first, so the receipt stays unknown.
+  assert.equal(response.ok, false, JSON.stringify(response));
+  assert.equal(response.receipt.effect, "unknown");
+  assert.deepEqual(child.events, ["prepare", "arm"]);
+  assert.equal(f.state.calls.includes("create"), false);
+  assert.deepEqual(
+    trail(await journalPayloads(f), "create-no-arm").filter(
+      (label) =>
+        label.startsWith("task") ||
+        label.includes("handoff") ||
+        label.startsWith("proof") ||
+        label.startsWith("settle"),
+    ),
+    [
+      "task.prepare",
+      "task.observe",
+      "handoff:armed",
+      "handoff:revoked",
+      "proof:no_effect",
+      "settle:no_effect",
+    ],
+  );
+  const task = f.registry
+    .readView()
+    .tasks.find((row) => row.identity.origin.operationId === "create-no-arm");
+  assert.equal(task.phase, "settled");
+  // The original operation key is never re-issued, even by the same id.
+  child.events.length = 0;
+  const again = await f.mutate(createOperation(snapshot), "create-no-arm");
+  assert.deepEqual(child.events, []);
+  assert.equal(f.state.calls.includes("create"), false);
+  assert.equal(again.receipt.effect, "unknown");
+});
+
+test("a Native failure after the handoff was consumed holds the task unsettled and never retries", async (t) => {
+  const { f, child } = await bootstrapped(t);
+  const snapshot = await f.ready();
+  f.state.hooks.create = (input) => {
+    child.consume("native.create", input);
+    throw new Error("synthetic lost acknowledgement");
+  };
+  child.events.length = 0;
+  f.state.calls.length = 0;
+  const response = await f.mutate(createOperation(snapshot), "create-lost");
+  assert.equal(response.receipt.effect, "unknown", JSON.stringify(response));
+  assert.equal(f.state.calls.filter((name) => name === "create").length, 1);
+  // Nothing after the Native call was written: no revoke, consumed, completed,
+  // binding, proof or settle record, and the effect was dispatched exactly once.
+  assert.deepEqual(trail(await journalPayloads(f), "create-lost"), [
+    "admission",
+    "reservation",
+    "dispatch:native.create",
+    "task.prepare",
+    "task.observe",
+    "handoff:armed",
+    "completion",
+  ]);
+  assert.deepEqual(child.events, ["prepare", "arm", "consume:native.create"]);
+  const task = f.registry
+    .readView()
+    .tasks.find((row) => row.identity.origin.operationId === "create-lost");
+  assert.equal(task.phase, "bound");
+  assert.equal(task.proof, null);
+  const view = await f.snapshot();
+  assert.equal(
+    view.retainedOperations.find((row) => row.operationId === "create-lost")
+      .authorityHold,
+    true,
+  );
+  // A restart (new runtime epoch, no live task authority) keeps it held: the
+  // unknown outcome stays unknown and nothing is replayed.
+  await f.registry.checkpoint();
+  const reopened = await reopenForks(t, f);
+  assert.equal(
+    reopened.snapshot.recovery.store.reason,
+    "native_startup_unverified",
+  );
+  assert.equal(
+    reopened.registry
+      .readView()
+      .tasks.find((row) => row.identity.origin.operationId === "create-lost")
+      .authorityHold,
+    true,
+  );
+  assert.deepEqual(
+    reopened.calls.filter((name) =>
+      ["create", "fork", "update"].includes(name),
+    ),
+    [],
+  );
+});
+
+test("fork of a non-ask parent cannot settle: the child keeps inherited rules while permission writes are held", async (t) => {
+  const { f, child } = await bootstrapped(t);
+  const snapshot = await f.ready();
+  const mode = await f.mutate(
+    {
+      type: "permission.mode.set",
+      workspaceId: snapshot.selectedWorkspaceId,
+      sessionId: snapshot.selectedSessionId,
+      mode: "scoped_edit",
+      requestId: "mode-scoped",
+    },
+    "mode-scoped",
+  );
+  assert.equal(mode.ok, true, JSON.stringify(mode));
+  const parent = [...f.records.values()][0];
+  assert.deepEqual(parent.permissions, compileModeRules("scoped_edit"));
+  child.events.length = 0;
+  f.state.calls.length = 0;
+  const response = await f.mutate(
+    {
+      type: "session.fork",
+      workspaceId: snapshot.selectedWorkspaceId,
+      sessionId: snapshot.selectedSessionId,
+      requestId: "fork-scoped",
+    },
+    "fork-scoped",
+  );
+  // Bootstrap policy is verify-only: the inherited non-ask rules differ from
+  // the fork's "ask" mode, so readback fails closed (unknown, never settled)
+  // and no permission write was attempted behind the held Native setter.
+  assert.equal(response.code, "UNKNOWN_OUTCOME", JSON.stringify(response));
+  assert.deepEqual(child.events, ["prepare", "arm", "consume:native.fork"]);
+  assert.equal(f.state.calls.includes("update"), false);
+  const task = f.registry
+    .readView()
+    .tasks.find((row) => row.identity.origin.operationId === "fork-scoped");
+  assert.notEqual(task.phase, "settled");
+  assert.equal(task.proof, null);
+});
+
+test("a parent with stored permission control is refused before any task preparation", async (t) => {
+  const { f, child } = await bootstrapped(t);
+  const snapshot = await f.ready();
+  f.service.close();
+  await f.service.drain();
+  const projected = new Proxy(f.registry, {
+    get(target, key) {
+      if (key === "readView")
+        return () => {
+          const view = target.readView();
+          view.sessions = view.sessions.map((row) => ({
+            ...row,
+            permissionControl: {
+              version: 1,
+              mode: "read_plan",
+              modeGeneration: 3,
+              settings: [],
+              floorDigest: "a".repeat(64),
+              compilerVersion: 1,
+              policyDigest: "b".repeat(64),
+            },
+          }));
+          return view;
+        };
+      const value = Reflect.get(target, key);
+      return typeof value === "function" ? value.bind(target) : value;
+    },
+  });
+  const reopened = createWorkbenchService({
+    registry: projected,
+    runtimeReady: Promise.resolve(f.runtime),
+    runtimeEpoch: "epoch",
+    confirmTrust: async () => true,
+  });
+  t.after(async () => {
+    reopened.close();
+    await reopened.drain();
+  });
+  const mutate = (operation, operationId) =>
+    reopened.handle(
+      { version: 2, runtimeEpoch: "epoch", operationId, operation },
+      "mode-sender",
+    );
+  await until(async () => {
+    const result = await reopened.handle(
+      {
+        version: 2,
+        runtimeEpoch: "epoch",
+        readId: "pc-snapshot",
+        operation: { type: "snapshot" },
+      },
+      "mode-sender",
+    );
+    return result.ok && result.value.state === "connected";
+  });
+  child.events.length = 0;
+  f.state.calls.length = 0;
+  const fork = await mutate(
+    {
+      type: "session.fork",
+      workspaceId: snapshot.selectedWorkspaceId,
+      sessionId: snapshot.selectedSessionId,
+      requestId: "fork-pc",
+    },
+    "fork-pc",
+  );
+  assert.equal(fork.code, "POLICY_UNVERIFIED", JSON.stringify(fork));
+  assert.deepEqual(child.events, []);
+  assert.equal(f.state.calls.includes("fork"), false);
+  assert.equal(f.state.calls.includes("create"), false);
+});
+
+for (const step of [1, 2, 3, 4, 5, 6, 7, 8])
+  test(`storage loss at bootstrap journal step ${step} never replays and keeps the outcome held`, async (t) => {
+    const child = fakeBootstrapChild();
+    let writes = 0;
+    let recording = false;
+    const f = await fixture(t, {
+      taskChild: child,
+      projectRegistry: (registry) =>
+        new Proxy(registry, {
+          get(target, key) {
+            if (key === "recordTask" && recording)
+              return async (record) => {
+                if (record.operationId === "create-crash" && ++writes >= step)
+                  throw new Error("synthetic storage loss");
+                return target.recordTask(record);
+              };
+            const value = Reflect.get(target, key);
+            return typeof value === "function" ? value.bind(target) : value;
+          },
+        }),
+    });
+    const snapshot = await f.ready();
+    recording = true;
+    f.state.calls.length = 0;
+    child.events.length = 0;
+    const response = await f.mutate(createOperation(snapshot), "create-crash");
+    // Steps 1-3 precede the arm: Native is never called. From step 4 on it was
+    // called exactly once and the outcome stays unknown.
+    assert.equal(
+      f.state.calls.filter((name) => name === "create").length,
+      step <= 3 ? 0 : 1,
+      JSON.stringify(response),
+    );
+    assert.equal(response.receipt.effect, "unknown");
+    assert.equal(
+      child.events.filter((event) => event.startsWith("consume")).length,
+      step <= 3 ? 0 : 1,
+    );
+    const labels = trail(await journalPayloads(f), "create-crash");
+    assert.equal(
+      labels.filter((label) => label === "dispatch:native.create").length,
+      1,
+    );
+    assert.equal(labels.includes("settle:settled"), false);
+    const task = f.registry
+      .readView()
+      .tasks.find((row) => row.identity.origin.operationId === "create-crash");
+    if (step > 1) assert.notEqual(task?.phase, "settled");
+    // Crash: reopen from the journal. Nothing is replayed or re-dispatched.
+    const callsBefore = f.state.calls.length;
+    await f.registry.checkpoint();
+    const reopened = await reopenForks(t, f);
+    assert.equal(
+      reopened.snapshot.recovery.store.reason,
+      "native_startup_unverified",
+    );
+    assert.deepEqual(
+      reopened.calls.filter((name) =>
+        ["create", "fork", "update"].includes(name),
+      ),
+      [],
+    );
+    assert.equal(f.state.calls.length, callsBefore + reopened.calls.length);
+    assert.equal(
+      reopened.registry
+        .readView()
+        .retainedOperations.some((row) => row.operationId === "create-crash"),
+      true,
+    );
+  });
+
+for (const refused of ["task.prepare", "task.observe", "task.handoff"])
+  test(`a failing ${refused} verification keeps Native unreachable and the task unproven`, async (t) => {
+    const child = fakeBootstrapChild();
+    const base = child.ledger.verify;
+    let deny = false;
+    child.verify = (record, context) =>
+      deny && record.kind === refused ? false : base(record, context);
+    const f = await fixture(t, { taskChild: child });
+    const snapshot = await f.ready();
+    deny = true;
+    f.state.calls.length = 0;
+    child.events.length = 0;
+    const response = await f.mutate(createOperation(snapshot), "create-forged");
+    assert.equal(f.state.calls.includes("create"), false);
+    assert.equal(response.receipt.effect, "unknown");
+    const labels = trail(await journalPayloads(f), "create-forged");
+    assert.equal(labels.includes("handoff:consumed"), false);
+    assert.equal(labels.includes("proof:settled"), false);
+    assert.equal(labels.includes("settle:settled"), false);
+    assert.equal(
+      child.events.some((event) => event.startsWith("consume")),
+      false,
+    );
+  });
+
+test("the registry refuses a second task.prepare for the same original operation and a forged identity", async (t) => {
+  const { f } = await bootstrapped(t);
+  const snapshot = await f.ready();
+  const response = await f.mutate(createOperation(snapshot), "create-once");
+  assert.equal(response.ok, true, JSON.stringify(response));
+  const [task] = f.registry
+    .readView()
+    .tasks.filter((row) => row.identity.origin.operationId === "create-once");
+  const record = {
+    kind: "task.prepare",
+    runtimeEpoch: "epoch",
+    operationId: "create-once",
+    taskScopeId: task.identity.taskScopeId,
+    identity: (({ appSessionId: _a, nativeSessionId: _n, ...rest }) => rest)(
+      task.identity,
+    ),
+    binding: task.binding,
+  };
+  assert.equal((await f.registry.recordTask(record)).status, "duplicate");
+  const forged = {
+    ...record,
+    taskScopeId: randomUUID(),
+    identity: { ...record.identity, taskScopeId: randomUUID() },
+  };
+  await assert.rejects(async () => f.registry.recordTask(forged));
+  // No live correlation exists after settle: nothing else can be appended.
+  await assert.rejects(async () =>
+    f.registry.recordTask({
+      kind: "task.observe",
+      runtimeEpoch: "epoch",
+      operationId: "create-once",
+      taskScopeId: task.identity.taskScopeId,
+      phase: "bound",
+      launchId: "launch-2",
+    }),
   );
 });
