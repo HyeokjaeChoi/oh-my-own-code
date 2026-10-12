@@ -39,6 +39,8 @@ import { bindAutomationIpc } from "./host/automation-ipc.mjs";
 import { createAutomationRunner } from "./host/automation-runners.mjs";
 import { createNotifyHost } from "./host/notify-host.mjs";
 import { bindNotifyIpc } from "./host/notify-ipc.mjs";
+import { createProviderHost } from "./host/provider-host.mjs";
+import { bindProviderIpc } from "./host/provider-ipc.mjs";
 import { createDataHost, wipeAppDataSync } from "./host/data-host.mjs";
 import { bindDataIpc } from "./host/data-ipc.mjs";
 import { createPreviewHost } from "./host/preview-host.mjs";
@@ -108,6 +110,15 @@ let ownedStorage = false;
 const dataHost = createDataHost({
   metadataDir: () => namespace.metadata,
   appVersion: app.getVersion(),
+});
+const providers = createProviderHost({
+  context: () => {
+    const live = runtime ?? nativeTaskRuntime;
+    return live
+      ? { client: live.workbenchContext?.().client, directory: live.workspace }
+      : undefined;
+  },
+  configFile: () => join(namespace.config, "opencode", "opencode.json"),
 });
 const previews = createPreviewHost({
   createView: createPreviewViewFactory({ getWindow: () => mainWindow }),
@@ -381,6 +392,7 @@ function bindIpc() {
     host: notifier,
     canTakeClicked: (event) => targetWindow()?.webContents === event.sender,
   });
+  bindProviderIpc({ ipcMain, admit, host: providers });
   bindPreviewIpc({ ipcMain, admit, host: previews });
   bindDataIpc({
     ipcMain,

@@ -33,7 +33,10 @@ import {
   useWorkbenchSelector,
   useWindowWorkbench,
 } from "../../entities/workbench/index.js";
-import { useComposerDraft } from "../../features/composer/index.js";
+import {
+  useComposerDraft,
+  useDefaultModel,
+} from "../../features/composer/index.js";
 import type { MutationRequest } from "../../shared/transport/index.js";
 import styles from "./conversation.module.css";
 import { AssistantText, LiteralText } from "./markdown.js";
@@ -365,6 +368,7 @@ export function Conversation(props: Props) {
     },
   });
   useComposerDraft(runtime, props.workspaceId, props.sessionId);
+  useDefaultModel(props.workspaceId, props.sessionId);
   const insert = (text: string) => {
     actions.draft(text);
     runtime.thread.composer.setText(text);
