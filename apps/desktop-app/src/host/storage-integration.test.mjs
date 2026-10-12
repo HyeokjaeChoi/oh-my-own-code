@@ -701,7 +701,11 @@ async function fixture(
       }),
       get: method("get", ({ sessionID }) => {
         const info = records.get(sessionID);
-        if (!info) throw new Error("absent");
+        if (!info)
+          throw Object.assign(new Error("absent"), {
+            _tag: "SessionNotFoundError",
+            sessionID,
+          });
         return { ...info };
       }),
       fork: method("fork", (input) => {
@@ -5967,6 +5971,30 @@ test("held preparation for session.create is a clean refusal before reservation-
   assert.deepEqual((await f.snapshot()).retainedOperations, []);
 });
 
+test("session.create refuses cleanly when a session is already recorded under the planned id", async (t) => {
+  const { f, child } = await bootstrapped(t);
+  const snapshot = await f.ready();
+  child.events.length = 0;
+  f.state.calls.length = 0;
+  // An imported or otherwise pre-existing session answers for the planned id.
+  f.state.hooks.get = ({ sessionID }) => ({
+    id: sessionID,
+    projectID: "project",
+    location: { directory: "/" },
+  });
+  const response = await f.mutate(createOperation(snapshot), "create-recorded");
+  assert.equal(response.code, "POLICY_UNVERIFIED", JSON.stringify(response));
+  assert.equal(response.receipt.effect, "none");
+  assert.deepEqual(child.events, []);
+  assert.equal(f.state.calls.includes("create"), false);
+  assert.equal(
+    trail(await journalPayloads(f), "create-recorded").includes(
+      "dispatch:native.create",
+    ),
+    false,
+  );
+});
+
 test("arm refusal revokes, proves no effect and never reaches Native", async (t) => {
   const { f, child } = await bootstrapped(t);
   const snapshot = await f.ready();
@@ -6066,7 +6094,7 @@ test("a Native failure after the handoff was consumed holds the task unsettled a
   );
 });
 
-test("fork of a non-ask parent cannot settle: the child keeps inherited rules while permission writes are held", async (t) => {
+test("fork of a non-ask parent is refused cleanly before any task preparation or Native effect", async (t) => {
   const { f, child } = await bootstrapped(t);
   const snapshot = await f.ready();
   const mode = await f.mutate(
@@ -6093,17 +6121,20 @@ test("fork of a non-ask parent cannot settle: the child keeps inherited rules wh
     },
     "fork-scoped",
   );
-  // Bootstrap policy is verify-only: the inherited non-ask rules differ from
-  // the fork's "ask" mode, so readback fails closed (unknown, never settled)
-  // and no permission write was attempted behind the held Native setter.
-  assert.equal(response.code, "UNKNOWN_OUTCOME", JSON.stringify(response));
-  assert.deepEqual(child.events, ["prepare", "arm", "consume:native.fork"]);
+  assert.equal(response.code, "POLICY_UNVERIFIED", JSON.stringify(response));
+  assert.equal(response.receipt.effect, "none");
+  assert.deepEqual(child.events, []);
+  assert.equal(f.state.calls.includes("fork"), false);
   assert.equal(f.state.calls.includes("update"), false);
-  const task = f.registry
-    .readView()
-    .tasks.find((row) => row.identity.origin.operationId === "fork-scoped");
-  assert.notEqual(task.phase, "settled");
-  assert.equal(task.proof, null);
+  const labels = trail(await journalPayloads(f), "fork-scoped");
+  assert.equal(labels.includes("dispatch:native.fork"), false);
+  assert.equal(
+    f.registry
+      .readView()
+      .tasks.some((row) => row.identity.origin.operationId === "fork-scoped"),
+    false,
+  );
+  assert.deepEqual((await f.snapshot()).retainedOperations, []);
 });
 
 test("a parent with stored permission control is refused before any task preparation", async (t) => {
