@@ -1082,9 +1082,11 @@ export function validateInstructionCompletion(
           "identity_conflict",
         );
         expected =
-          registration.state === "registered"
+          registration.state === "registered" || registration.state === PENDING
             ? {
-                state: "registered",
+                // A pending parent forks a pending (reconciled) or promoted
+                // (live) child; both are covered by the checks below.
+                state: registration.state,
                 key: INSTRUCTION_KEY,
                 digest: registration.digest,
                 sourceVersion: registration.sourceVersion,
@@ -1109,6 +1111,9 @@ export function validateInstructionCompletion(
           confirmed &&
           session.appSessionId === reservation?.appSessionId &&
           isDeepStrictEqual(actual, pending(expected))) ||
+        // Accepted gap: pending->registered promotion is not tied to a receipt
+        // observation record; every instruction observation re-hashes against
+        // the Native entry, so a wrong promotion is detected on first read.
         (expected?.state === PENDING &&
           isDeepStrictEqual(actual, verifiedInheritance(expected))),
       "identity_conflict",

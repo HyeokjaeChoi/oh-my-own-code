@@ -7181,6 +7181,20 @@ test("reconcile: a registered parent's fork child starts pending verification an
     "registered",
   );
 });
+test("reconcile: forking a pending fork child (promoted only in memory) completes", async (t) => {
+  const { reopened, row } = await pendingForkChild(t);
+  const target = { workspaceId: row.workspaceId, sessionId: row.appSessionId };
+  const seen = await reopened.call({
+    type: "configuration.instructions.read",
+    ...target,
+  });
+  assert.equal(seen.value?.status, "registered", JSON.stringify(seen));
+  const forked = await reopened.call(
+    { type: "session.fork", ...target, requestId: "fork-pending" },
+    false,
+  );
+  assert.equal(forked.ok, true, JSON.stringify(forked));
+});
 test("reconcile: a pending fork child whose entry drifted becomes unavailable", async (t) => {
   const { f, reopened, row, nativeId } = await pendingForkChild(t);
   f.instructionEntries.set(nativeId, [
