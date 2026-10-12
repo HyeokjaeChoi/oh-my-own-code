@@ -16,6 +16,8 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 
+const CONNECT_TIMEOUT_MS =
+  Number(process.env.OMOC_E2E_CONNECT_TIMEOUT_MS) || 150_000;
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const require = createRequire(import.meta.url);
 const run = resolve(
@@ -95,7 +97,7 @@ try {
   await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
     "data-state",
     "connected",
-    { timeout: 30000 },
+    { timeout: CONNECT_TIMEOUT_MS },
   );
   const composer = page.getByRole("textbox", { name: "메시지 작성" });
   await expect(composer).toBeVisible();

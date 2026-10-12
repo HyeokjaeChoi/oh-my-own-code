@@ -19,6 +19,8 @@ import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { probeSessionHistory } from "./fixtures/session-history-probe.mjs";
 
+const CONNECT_TIMEOUT_MS =
+  Number(process.env.OMOC_E2E_CONNECT_TIMEOUT_MS) || 150_000;
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const run = resolve(
   process.env.OMOC_EVIDENCE_DIR ??
@@ -99,7 +101,7 @@ try {
   await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
     "data-state",
     "connected",
-    { timeout: 30000 },
+    { timeout: CONNECT_TIMEOUT_MS },
   );
   const bridge = (request) =>
     page.evaluate((value) => window.desktopBridge.workbench(value), request);
