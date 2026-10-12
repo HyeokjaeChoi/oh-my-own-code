@@ -3193,7 +3193,10 @@ test("diagnostics sinks are per kernel: one kernel's sink never sees another's r
   assert.ok(first.some((row) => row.code === "root_unverified"));
   // A later kernel with no sink: nothing leaks into the earlier sink.
   const before = first.length;
-  await run(reject, control.configured(options(), () => {}));
+  await run(
+    reject,
+    control.configured(options(), () => {}),
+  );
   await run(
     reject,
     control.configured(options(), (service) =>

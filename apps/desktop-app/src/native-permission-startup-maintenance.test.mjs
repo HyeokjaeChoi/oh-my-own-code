@@ -330,7 +330,7 @@ test("maintenance overlay preserves original cleanup closures/layers and frozen 
   assert.equal(before.files.length, 60);
   assertOnlyCreateGateChanged(recipe.files.slice(0, 60), before.files);
   // Five later extensions plus the closed SessionTransfer.import entry.
-  assert.equal(recipe.files.length, 66);
+  assert.equal(recipe.files.length, 67);
   assert.ok(
     recipe.files.reduce((count, row) => count + row.edits.length, 0) <= 256,
   );

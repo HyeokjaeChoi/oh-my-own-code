@@ -450,7 +450,9 @@ export function runEventHostChild() {
     fiber = Effect.runFork(
       server.pipe(
         Effect.provideService(Scope.Scope, scope),
-        Effect.provide(Logger.layer([nativeErrors], { mergeWithExisting: true })),
+        Effect.provide(
+          Logger.layer([nativeErrors], { mergeWithExisting: true }),
+        ),
       ),
     );
     importing = false;

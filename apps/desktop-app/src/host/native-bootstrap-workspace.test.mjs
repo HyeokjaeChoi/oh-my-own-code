@@ -584,8 +584,11 @@ test("unrelated sibling changes do not replace an ancestor or revoke the selecte
 });
 
 test("assertNotVcsMetadataPath refuses VCS metadata by canonical identity", async () => {
-  const { assertNotVcsMetadataPath } = await import("./native-bootstrap-workspace.mjs");
-  const { mkdtemp, mkdir, writeFile, symlink, link, realpath, rm } = await import("node:fs/promises");
+  const { assertNotVcsMetadataPath } = await import(
+    "./native-bootstrap-workspace.mjs"
+  );
+  const { mkdtemp, mkdir, writeFile, symlink, link, realpath, rm } =
+    await import("node:fs/promises");
   const { tmpdir } = await import("node:os");
   const { join } = await import("node:path");
   const root = await realpath(await mkdtemp(join(tmpdir(), "omoc-vcs-guard-")));
@@ -611,17 +614,24 @@ test("assertNotVcsMetadataPath refuses VCS metadata by canonical identity", asyn
       "../outside.txt",
     ];
     // Case-insensitive volume: .GIT/.Hg are the same directory.
-    const insensitive = await import("node:fs").then(
-      ({ existsSync }) => existsSync(join(root, ".GIT")),
+    const insensitive = await import("node:fs").then(({ existsSync }) =>
+      existsSync(join(root, ".GIT")),
     );
-    if (insensitive) refused.push(".GIT/hooks/pre-commit", ".Hg/hgrc", "src/.GiT/x");
+    if (insensitive)
+      refused.push(".GIT/hooks/pre-commit", ".Hg/hgrc", "src/.GiT/x");
     for (const rel of refused)
       await assert.rejects(
         assertNotVcsMetadataPath(root, join(root, rel)),
         /native_bootstrap_workspace_unverified/u,
         rel,
       );
-    for (const rel of ["plain.txt", "src/new.txt", "src/deep/new.txt", "gitignore", "src/.github/x"])
+    for (const rel of [
+      "plain.txt",
+      "src/new.txt",
+      "src/deep/new.txt",
+      "gitignore",
+      "src/.github/x",
+    ])
       await assertNotVcsMetadataPath(root, join(root, rel));
     await assert.rejects(assertNotVcsMetadataPath(root, "relative"));
   } finally {
