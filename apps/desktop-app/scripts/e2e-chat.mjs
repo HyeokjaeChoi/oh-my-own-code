@@ -292,7 +292,7 @@ try {
   // Turn 3: read tool (also asks in "ask" mode) -> approve -> result -> reply.
   await send(`READ-FIXTURE:${fixtureFile}`);
   await expect(prompt).toBeVisible({ timeout: 90_000 });
-  await prompt.getByRole("button", { name: "항상 허용" }).click();
+  await prompt.getByRole("button", { name: "이 프로젝트에서 항상 허용" }).click();
   await expect(
     page.getByText("Tool result received: file read ok"),
   ).toBeVisible({ timeout: 90_000 });
