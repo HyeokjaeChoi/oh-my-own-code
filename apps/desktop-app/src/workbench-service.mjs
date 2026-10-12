@@ -1330,9 +1330,11 @@ export function createWorkbenchService({
             ownership: w.ownership,
             folderSessionId: w.folderSessionId,
             kind: "folder",
+            // Trust persists in the record: the app-managed workspace, or a
+            // dialog grant (trustRevision 1 at creation, bumped on grant).
             trusted: preserveLive
               ? (committed.workspaces.get(w.workspaceId)?.trusted ?? false)
-              : false,
+              : w.ownership === "managed" || (w.trustRevision ?? 0) > 1,
             trustRevision: w.trustRevision ?? 0,
             temporary: false,
             lock: false,

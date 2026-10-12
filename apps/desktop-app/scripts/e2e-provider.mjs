@@ -10,6 +10,7 @@ import { createServer } from "node:http";
 import {
   mkdir,
   mkdtemp,
+  readdir,
   readFile,
   realpath,
   writeFile,
@@ -225,17 +226,27 @@ try {
     ).includes(FAKE_KEY),
   );
   assert.ok(!stderr.includes(FAKE_KEY), "key not in Main stderr");
-  assert.ok(!(await readFile(configFile, "utf8")).includes(FAKE_KEY));
-  observations.push("key absent from DOM, localStorage, stderr, opencode.json");
+  const profileFiles = async (dir) =>
+    (await readdir(dir, { withFileTypes: true, recursive: true }))
+      .filter((e) => e.isFile())
+      .map((e) => join(e.parentPath, e.name));
+  const profile = join(fixture, "app-profile");
+  const live = (await profileFiles(profile)).filter(
+    (f) =>
+      f.endsWith(join("native", "config", "opencode", "opencode.json")) ||
+      /native[\\/]log[\\/]/u.test(f),
+  );
+  assert.ok(
+    live.some((f) => f.endsWith("opencode.json")),
+    "profile config",
+  );
+  for (const f of live)
+    assert.ok(!(await readFile(f, "utf8")).includes(FAKE_KEY), f);
+  observations.push(
+    "key absent from DOM, localStorage, stderr, profile opencode.json/logs",
+  );
 
-  // Remove: connection disappears.
   await page.getByRole("button", { name: "설정·단축키" }).click();
-  await section.getByRole("button", { name: "OpenRouter 키 제거" }).click();
-  await expect(section.getByText("API 키를 제거했습니다.")).toBeVisible({
-    timeout: 30_000,
-  });
-  await expect(section.getByText("OpenRouter · 설정됨")).toHaveCount(0);
-  observations.push("remove key -> connection gone");
 
   // Local provider: LM Studio base URL set through the UI -> its models appear.
   await section
@@ -256,9 +267,30 @@ try {
       .getByLabel("로컬 제공자 주소"),
   ).toHaveValue(`http://127.0.0.1:${port}/v1`);
   await expect.poll(() => discoveries, { timeout: 60_000 }).toBeGreaterThan(0);
+  // Workspace trust persists across restart, so the catalog is not empty.
+  await expect
+    .poll(
+      async () =>
+        again
+          .getByRole("region", { name: "모델 제공자" })
+          .getByLabel("기본 모델")
+          .locator("option")
+          .count(),
+      { timeout: 60_000 },
+    )
+    .toBeGreaterThan(1);
   observations.push(
-    "local base URL saved via UI; after relaunch Native discovered models at that address",
+    "local base URL saved via UI; after relaunch Native discovered models at that address; catalog has models (workspace trust persisted)",
   );
+
+  // Remove: connection disappears (after relaunch, where the stored key still works).
+  const again2 = again.getByRole("region", { name: "모델 제공자" });
+  await again2.getByRole("button", { name: "OpenRouter 연결 해제" }).click();
+  await expect(again2.getByText("API 키를 제거했습니다.")).toBeVisible({
+    timeout: 30_000,
+  });
+  await expect(again2.getByText("OpenRouter · 설정됨")).toHaveCount(0);
+  observations.push("remove key -> connection gone");
 } catch (error) {
   console.error(
     "stderr tail:",
