@@ -563,7 +563,7 @@ export function Conversation(props: Props) {
                           })
                         }
                       >
-                        항상 허용
+                        이 프로젝트에서 항상 허용
                       </Button>
                       <Button
                         type="button"
