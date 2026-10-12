@@ -3,6 +3,7 @@ import {
   isTaskRecord,
   validateTaskRecord,
   applyTaskRecord,
+  taskReservationDigest,
   taskKey,
   PERMISSION_RECONCILIATION_FEATURE,
   validatePermissionReconciliationRecord,
@@ -1404,6 +1405,14 @@ export async function openWorkspaceRegistry({
   }
   // Host-only digest correlation. Conservative tail holds are lookup-visible,
   // but their identities are not authoritative until explicit tail adoption.
+  // Digest of the complete persisted reservation: Main binds its bootstrap
+  // task.prepare to exactly this record (applyTaskRecord re-checks it).
+  function reservationDigest(request) {
+    const operation = root.operations.get(operationKey(request));
+    return operation?.reservation
+      ? taskReservationDigest(operation.reservation)
+      : undefined;
+  }
   function lookupIdentity(request) {
     const opKey = operationKey(request);
     if (!validatedAdmissionKeys.has(opKey)) return undefined;
@@ -2740,6 +2749,7 @@ export async function openWorkspaceRegistry({
     readView,
     lookup,
     lookupIdentity,
+    reservationDigest,
     lookupForkIdentity,
     lookupForkBoundary,
     status,

@@ -66,6 +66,7 @@ export const EVENT_HOST_CODE_ASSETS = Object.freeze([
   "workbench-errors.mjs",
   "native-permission-task-handoff.mjs",
   "permission-input-digest.mjs",
+  "native-permission-bootstrap-digest.mjs",
   "wire-id.mjs",
   "host/workbench-task-storage.mjs",
   "native-permission-coordinator-admission.mjs",
