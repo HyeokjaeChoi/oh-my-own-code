@@ -1,3 +1,4 @@
+import { assertOnlyCreateGateChanged } from "./native-permission-overlay-bootstrap-edit.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
@@ -831,7 +832,8 @@ test("existing forty recipe entries retain all original edits and Browser baseli
     baseline.NATIVE_PERMISSION_OVERLAY_RECEIPT.recipeSha256,
     "e583c8fbf6864284ad21e3575e22a41f0cb28b6949be4e72372acec2286ac7c3",
   );
-  assert.deepEqual(
+  // Prechange bytes survive except the deliberate Session.create bootstrap gate.
+  assertOnlyCreateGateChanged(
     recipe.files.slice(0, 40),
     baseline.NATIVE_PERMISSION_OVERLAY_RECIPE.files,
   );
