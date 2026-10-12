@@ -106,7 +106,8 @@ try {
   );
   const bridge = createWorkbenchBridge(page);
   const initial = success(await bridge({ type: "snapshot" }));
-  assert.equal(initial.temporary, true);
+  // The profile is the durable journaled registry, no longer a temporary one.
+  assert.equal(initial.temporary, false);
   // Never inherit user credentials/configuration. Import and trust only our
   // empty owned fixture; this does not exercise physical OS dialog controls.
   await application.evaluate(({ dialog }, selected) => {

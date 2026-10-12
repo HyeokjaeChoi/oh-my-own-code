@@ -113,7 +113,8 @@ try {
   const originalTitle = initial.value.sessions.find(
     (item) => item.id === sessionId,
   ).title;
-  assert.equal(initial.value.temporary, true);
+  // The profile is the durable journaled registry, no longer a temporary one.
+  assert.equal(initial.value.temporary, false);
   assert.equal(await page.evaluate(() => typeof window.require), "undefined");
   assert.equal(await page.evaluate(() => typeof window.process), "undefined");
   assert.equal(await page.locator("iframe,webview").count(), 0);
