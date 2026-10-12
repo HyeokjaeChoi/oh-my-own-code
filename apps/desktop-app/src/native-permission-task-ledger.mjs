@@ -17,13 +17,16 @@ import {
   ABSENT_OBSERVATION,
   decideReconciliation,
   observationDigest,
+  observeFork,
   observeSession,
   reconcileExpectation,
+  reconcileFacts,
 } from "./native-bootstrap-reconcile.mjs";
 
 const held = () => new Error("task_preparation_held");
 const MAX_ENTRIES = 16;
 const RETIRED_MS = 60_000;
+const MAX_CHILDREN = 64;
 
 export function createNativeTaskLedger({
   runtimeEpoch,
@@ -32,6 +35,8 @@ export function createNativeTaskLedger({
   onUnconfirmed,
   // Read-only `session.get` against the live Native child (reconciliation).
   readSession,
+  // Read-only complete scan of Native's sessions (absence cross-check, forks).
+  listSessions,
   now = () => Date.now(),
 }) {
   const entries = new Map();
@@ -165,44 +170,67 @@ export function createNativeTaskLedger({
     entry.at = now();
   }
 
-  // Startup crash reconciliation of one unsettled bootstrap create. Issues only
-  // a read of the planned session id (never create, update or arm anything).
-  async function reconcile({ operation, task }) {
-    if (!isLive() || typeof readSession !== "function") throw held();
+  // Startup crash reconciliation of one unsettled bootstrap create/fork. Issues
+  // only reads (never create, fork, update or arm anything).
+  async function reconcile({ operation, task, state }) {
+    if (
+      !isLive() ||
+      typeof readSession !== "function" ||
+      typeof listSessions !== "function"
+    )
+      throw held();
     const expectation = reconcileExpectation(operation, task);
     if (!expectation) throw held();
+    const facts = reconcileFacts(operation, state);
     const original = {
       runtimeEpoch: operation.identity.runtimeEpoch,
       operationId: operation.identity.operationId,
     };
+    let subject;
     let observation;
-    try {
-      observation = observeSession(
-        await readSession(expectation.nativeSessionId),
+    if (expectation.kind === "fork") {
+      // Children are found through the parent: the parent must read back and
+      // every session naming it (parent or fork source) is observed.
+      subject = expectation.parentNativeSessionId;
+      const parent = await readSession(subject);
+      const children = (await listSessions()).filter(
+        (item) =>
+          item?.parentID === subject || item?.fork?.sessionID === subject,
       );
-    } catch (error) {
-      // Only the typed not-found answer for exactly this id proves absence.
-      if (
-        error?._tag !== "SessionNotFoundError" ||
-        (error.sessionID !== undefined &&
-          error.sessionID !== expectation.nativeSessionId)
-      )
-        throw held();
-      observation = ABSENT_OBSERVATION;
+      if (children.length > MAX_CHILDREN) throw held();
+      observation = observeFork(parent, children);
+    } else {
+      subject = expectation.nativeSessionId;
+      try {
+        observation = observeSession(await readSession(subject));
+      } catch (error) {
+        // Only the typed not-found answer for exactly this id, confirmed by a
+        // complete scan that also lacks it, proves absence.
+        if (
+          error?._tag !== "SessionNotFoundError" ||
+          error.sessionID !== subject
+        )
+          throw held();
+        if ((await listSessions()).some((item) => item?.id === subject))
+          throw held();
+        observation = ABSENT_OBSERVATION;
+      }
     }
     if (!isLive()) throw held();
     const ticketDigest = observationDigest(
       original,
-      expectation.nativeSessionId,
+      subject,
       observation,
+      facts,
     );
     observed.set(originKey(original), {
       taskScopeId: expectation.taskScopeId,
       observation,
+      facts,
       ticketDigest,
     });
     return Object.freeze({
-      ...decideReconciliation(operation, task, observation),
+      ...decideReconciliation(operation, task, observation, facts),
       original,
       taskScopeId: expectation.taskScopeId,
       ticketDigest,
@@ -222,10 +250,18 @@ export function createNativeTaskLedger({
       context.task.identity.taskScopeId !== seen.taskScopeId
     )
       return false;
+    if (
+      !isDeepStrictEqual(
+        seen.facts,
+        reconcileFacts(context.operation, context.reconcileState),
+      )
+    )
+      return false;
     const decision = decideReconciliation(
       context.operation,
       context.task,
       seen.observation,
+      seen.facts,
     );
     return (
       decision.outcome !== "hold" &&

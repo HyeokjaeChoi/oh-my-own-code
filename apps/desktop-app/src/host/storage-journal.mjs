@@ -1323,13 +1323,12 @@ function historyValidator() {
       if (payload.kind === "task_reconciled" && payload.bootstrap) {
         const completion = bootstrapReconciliationCompletion(
           prior,
-          workspaces,
+          { workspaces, sessions },
           payload,
         );
-        if (completion) {
-          revision = payload.revision - 1;
-          validate(completion);
-        }
+        need(completion, "identity_conflict");
+        revision = payload.revision - 1;
+        validate(completion);
       }
     } else if (payload.kind === "feature_gate") {
       need(!features.has(payload.feature), "identity_conflict");

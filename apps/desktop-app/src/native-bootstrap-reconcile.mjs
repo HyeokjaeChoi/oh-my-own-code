@@ -7,15 +7,15 @@ import { isDeepStrictEqual } from "node:util";
 import { permissionCanonicalJSON } from "./permission-control-canonical.mjs";
 import {
   bootstrapBaselinePermissions,
+  bootstrapForkPermissions,
   bootstrapMetadataDigest,
+  bootstrapParentDigest,
   bootstrapTaskProof,
 } from "./native-permission-bootstrap-digest.mjs";
 
-const SUPPORTED_TYPES = [
-  "session.create",
-  "workspace.create",
-  "workspace.import",
-];
+const CREATE_TYPES = ["session.create", "workspace.create", "workspace.import"];
+const FORK = "session.fork";
+const WORKSPACE_TYPES = ["workspace.create", "workspace.import"];
 const HANDOFF_STATES = ["armed", "consumed", "completed", "revoked"];
 const hold = { outcome: "hold" };
 
@@ -30,36 +30,72 @@ export function reconcilableHandoff(task) {
     : undefined;
 }
 
-// Exactly what a fresh bootstrap create had to produce, from journal data only.
+// Exactly what a fresh bootstrap create/fork had to produce, from journal data
+// only. A fork has no planned child id: it is found by its parent (below).
 export function reconcileExpectation(operation, task) {
   const reservation = operation?.reservation;
   const handoff = reconcilableHandoff(task);
+  const type = operation?.identity?.type;
+  const fork = type === FORK;
   if (
     !reservation ||
     !operation.identity ||
-    !SUPPORTED_TYPES.includes(operation.identity.type) ||
+    ![...CREATE_TYPES, FORK].includes(type) ||
     operation.terminal ||
     task?.identity?.originKind !== "bootstrap" ||
-    task.binding?.step !== "native.create" ||
+    task.binding?.step !== (fork ? "native.fork" : "native.create") ||
     !["prepared", "bound"].includes(task.phase) ||
-    (Object.hasOwn(task.identity, "nativeSessionId") &&
-      (task.identity.nativeSessionId !== reservation.plannedNativeSessionId ||
-        task.identity.appSessionId !== reservation.appSessionId)) ||
-    typeof reservation.plannedNativeSessionId !== "string" ||
     typeof reservation.appSessionId !== "string" ||
     !reservation.workspace?.workspaceId ||
     typeof reservation.workspace.canonicalPath !== "string" ||
     handoff === undefined
   )
     return undefined;
-  return {
+  const bound = Object.hasOwn(task.identity, "nativeSessionId");
+  if (bound && task.identity.appSessionId !== reservation.appSessionId)
+    return undefined;
+  const common = {
     handoff,
-    nativeSessionId: reservation.plannedNativeSessionId,
     appSessionId: reservation.appSessionId,
     workspaceId: reservation.workspace.workspaceId,
     canonicalPath: reservation.workspace.canonicalPath,
     projectId: task.identity.projectId,
     taskScopeId: task.identity.taskScopeId,
+  };
+  if (fork) {
+    const dispatched = (operation.dispatches ?? []).filter(
+      (entry) => entry.step === "native.fork",
+    );
+    if (
+      reservation.plannedNativeSessionId !== undefined ||
+      dispatched.length !== 1 ||
+      typeof dispatched[0].nativeSessionId !== "string" ||
+      typeof operation.identity.sessionId !== "string" ||
+      typeof task.binding.parentIdentityDigest !== "string" ||
+      (bound && typeof task.identity.nativeSessionId !== "string")
+    )
+      return undefined;
+    return {
+      ...common,
+      kind: "fork",
+      nativeSessionId: bound ? task.identity.nativeSessionId : null,
+      parentNativeSessionId: dispatched[0].nativeSessionId,
+      parentAppSessionId: operation.identity.sessionId,
+      parentIdentityDigest: task.binding.parentIdentityDigest,
+      before: operation.forkTarget?.beforeMessageId ?? null,
+    };
+  }
+  if (
+    typeof reservation.plannedNativeSessionId !== "string" ||
+    (bound &&
+      task.identity.nativeSessionId !== reservation.plannedNativeSessionId)
+  )
+    return undefined;
+  return {
+    ...common,
+    kind: "create",
+    nativeSessionId: reservation.plannedNativeSessionId,
+    workspaceType: WORKSPACE_TYPES.includes(type),
     metadata: {
       operationId: operation.identity.operationId,
       originalRuntimeEpoch: operation.identity.runtimeEpoch,
@@ -68,6 +104,41 @@ export function reconcileExpectation(operation, task) {
       digest: operation.identity.digest,
     },
   };
+}
+
+// Registry facts the decision depends on, recomputed from the registry's own
+// state (never from a record): sessions Native may already legitimately hold,
+// the fork parent's mapping, this operation's own partial mapping, and the
+// workspace row a workspace-type no-effect resolution would register.
+export function reconcileFacts(operation, state) {
+  const sessions = [...(state?.sessions ?? [])];
+  const reservation = operation?.reservation;
+  const own = sessions.find(
+    (row) => row.appSessionId === reservation?.appSessionId,
+  );
+  const parent = sessions.find(
+    (row) => row.appSessionId === operation?.identity?.sessionId,
+  );
+  const workspace = [...(state?.workspaces ?? [])].find(
+    (row) => row.workspaceId === reservation?.workspace?.workspaceId,
+  );
+  return JSON.parse(
+    permissionCanonicalJSON({
+      workspace: workspace?.registrationState ?? null,
+      own: own?.nativeSessionId ?? null,
+      known: sessions
+        .filter((row) => row !== own && row.nativeSessionId)
+        .map((row) => row.nativeSessionId)
+        .sort(),
+      parent: parent
+        ? {
+            nativeSessionId: parent.nativeSessionId ?? null,
+            workspaceId: parent.workspaceId,
+            registered: parent.instructionRegistration?.state === "registered",
+          }
+        : null,
+    }),
+  );
 }
 
 // Detached, closed copy of what Native answered. Anything unexpected is
@@ -94,9 +165,21 @@ export function observeSession(info) {
     return { status: "unreadable" };
   }
 }
+// The fork parent plus every Native session that names it as parent or fork
+// source. Any unreadable row is kept as `unreadable`, which always holds.
+export const observeFork = (parent, children) => ({
+  status: "fork",
+  parent: observeSession(parent),
+  children: children.map(observeSession),
+});
 export const ABSENT_OBSERVATION = Object.freeze({ status: "absent" });
 
-export const observationDigest = (original, nativeSessionId, observation) =>
+export const observationDigest = (
+  original,
+  nativeSessionId,
+  observation,
+  facts,
+) =>
   createHash("sha256")
     .update("omoc.native.bootstrap.reconcile.v1\n", "utf8")
     .update(
@@ -107,6 +190,7 @@ export const observationDigest = (original, nativeSessionId, observation) =>
         },
         nativeSessionId,
         observation,
+        facts,
       }),
       "utf8",
     )
@@ -129,33 +213,139 @@ const exactSession = (expectation, observed) => {
   }
 };
 
+const noEffect = (expectation) => ({
+  outcome: "no_effect",
+  proofDigest: bootstrapTaskProof({
+    outcome: "no_effect",
+    taskScopeId: expectation.taskScopeId,
+  }),
+  bootstrap: {},
+});
+const NO_EFFECT_TRAILS = ["none", "armed", "revoked"];
+const SETTLED_TRAILS = ["armed", "consumed", "completed"];
+
+function exactFork(expectation, parent, child) {
+  const source = child.fork;
+  return (
+    child.status === "found" &&
+    typeof child.id === "string" &&
+    child.id.length > 0 &&
+    child.id !== parent.id &&
+    (expectation.nativeSessionId === null ||
+      child.id === expectation.nativeSessionId) &&
+    child.projectID === parent.projectID &&
+    child.directory === expectation.canonicalPath &&
+    source?.sessionID === parent.id &&
+    (expectation.before === null
+      ? child.parentID === null || child.parentID === parent.id
+      : child.parentID === parent.id &&
+        source.boundary?.type === "before" &&
+        source.boundary.messageID === expectation.before) &&
+    isDeepStrictEqual(child.metadata, parent.metadata) &&
+    bootstrapForkPermissions(child.permissions, parent.permissions)
+  );
+}
+
+// A fork child is found by its parent: exactly one session Native holds that
+// names the planned parent as fork source and that no registry mapping already
+// explains. Nothing else (0 with a consumed trail, >1, any mismatch) settles.
+function decideFork(expectation, observation, facts) {
+  const { handoff } = expectation;
+  const parent = observation?.parent;
+  if (
+    observation?.status !== "fork" ||
+    parent?.status !== "found" ||
+    !facts?.parent ||
+    facts.parent.nativeSessionId !== parent.id ||
+    facts.parent.workspaceId !== expectation.workspaceId ||
+    parent.id !== expectation.parentNativeSessionId ||
+    parent.projectID !== expectation.projectId ||
+    parent.directory !== expectation.canonicalPath ||
+    bootstrapParentDigest({
+      id: parent.id,
+      projectID: parent.projectID,
+      directory: parent.directory,
+    }) !== expectation.parentIdentityDigest ||
+    observation.children.some((child) => child.status !== "found")
+  )
+    return hold;
+  const candidates = observation.children.filter(
+    (child) =>
+      !facts.known.includes(child.id) &&
+      // Plain Native subagents (parent set, no fork source) are not forks.
+      (child.fork !== null || child.parentID !== parent.id),
+  );
+  if (!candidates.length) {
+    // A consumed handoff, a bound id or a partial mapping all say Native was
+    // told to fork: absence is then contradictory, not proof.
+    if (
+      !NO_EFFECT_TRAILS.includes(handoff) ||
+      expectation.nativeSessionId !== null ||
+      facts.own !== null
+    )
+      return hold;
+    return noEffect(expectation);
+  }
+  const [child] = candidates;
+  if (
+    candidates.length !== 1 ||
+    !SETTLED_TRAILS.includes(handoff) ||
+    // Inherited instruction entries cannot be verified by a read of the child.
+    facts.parent.registered ||
+    (facts.own !== null && facts.own !== child.id) ||
+    !exactFork(expectation, parent, child)
+  )
+    return hold;
+  return {
+    outcome: "settled",
+    proofDigest: bootstrapTaskProof({
+      outcome: "settled",
+      taskScopeId: expectation.taskScopeId,
+      appSessionId: expectation.appSessionId,
+      nativeSessionId: child.id,
+    }),
+    bootstrap: {
+      appSessionId: expectation.appSessionId,
+      nativeSessionId: child.id,
+      metadataDigest: bootstrapMetadataDigest(child.metadata),
+      title: child.title.slice(0, 256) || "Untitled session",
+    },
+  };
+}
+
 // Never guesses: only a typed absence of the planned id proves no effect, and
 // only an exact match proves the created session. Everything else holds.
-export function decideReconciliation(operation, task, observation) {
+export function decideReconciliation(operation, task, observation, facts) {
   const expectation = reconcileExpectation(operation, task);
   if (!expectation) return hold;
+  try {
+    return decideChecked(expectation, task, observation, facts);
+  } catch {
+    return hold;
+  }
+}
+function decideChecked(expectation, task, observation, facts) {
+  if (expectation.kind === "fork")
+    return decideFork(expectation, observation, facts);
   const { handoff } = expectation;
   if (observation?.status === "absent") {
     // A consumed handoff means Native was already told to create: absence is
     // then contradictory, not proof.
     if (
-      !["none", "armed", "revoked"].includes(handoff) ||
-      Object.hasOwn(task.identity, "nativeSessionId")
+      !NO_EFFECT_TRAILS.includes(handoff) ||
+      Object.hasOwn(task.identity, "nativeSessionId") ||
+      // The workspace's no-effect resolution registers its row: only a
+      // still-reserved row (never an unavailable one) can be registered.
+      (expectation.workspaceType && facts?.workspace !== "reserved") ||
+      (facts?.own ?? null) !== null
     )
       return hold;
-    return {
-      outcome: "no_effect",
-      proofDigest: bootstrapTaskProof({
-        outcome: "no_effect",
-        taskScopeId: expectation.taskScopeId,
-      }),
-      bootstrap: {},
-    };
+    return noEffect(expectation);
   }
   // A never-armed or revoked trail cannot explain a session under this id.
   if (
     !exactSession(expectation, observation) ||
-    !["armed", "consumed", "completed"].includes(handoff)
+    !SETTLED_TRAILS.includes(handoff)
   )
     return hold;
   const title = observation.title.slice(0, 256) || "Untitled session";

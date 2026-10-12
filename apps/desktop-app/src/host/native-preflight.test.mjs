@@ -545,3 +545,58 @@ test("reconcile plan: planned sessions are provisional and only candidate-explai
   });
   assert.equal(await f.preflight.check(), false);
 });
+
+test("reconcile plan: an unsettled fork is described to the reader only by its mapped parent", async (t) => {
+  const f = await fixture(t, {
+    decision: (decision) => {
+      decision.counts.sessions += 1;
+    },
+  });
+  const candidate = {
+    operation: {
+      identity: {
+        runtimeEpoch: "old-epoch",
+        operationId: "fork-op",
+        type: "session.fork",
+        workspaceId: "workspace",
+        sessionId: "app-root",
+        digest: "e".repeat(64),
+      },
+      reservation: {
+        appSessionId: "app-fork",
+        workspace: {
+          workspaceId: "workspace",
+          canonicalPath: f.namespace.documents,
+        },
+      },
+    },
+  };
+  let plan = { eligible: true, candidates: [candidate] };
+  f.registry.reconcilePlan = () => plan;
+  f.view.retainedOperations.push({
+    runtimeEpoch: "old-epoch",
+    operationId: "fork-op",
+    type: "session.fork",
+  });
+  f.view.state = "unavailable";
+  f.view.recovery.resources.push({
+    workspaceId: "workspace",
+    state: "unavailable",
+    reason: "unresolved_operation",
+  });
+  assert.equal(await f.preflight.check(), true);
+  const request = f.children.at(-1).child.request;
+  assert.equal(request.provisional, undefined);
+  assert.deepEqual(request.provisionalForks, [
+    {
+      appSessionId: "app-fork",
+      workspaceId: "workspace",
+      canonicalPath: f.namespace.documents,
+      parentAppSessionId: "app-root",
+      parentNativeSessionId: "native-root",
+    },
+  ]);
+  // A fork whose parent is not a mapped session cannot be described: denied.
+  candidate.operation.identity.sessionId = "app-missing";
+  assert.equal(await f.preflight.check(), false);
+});

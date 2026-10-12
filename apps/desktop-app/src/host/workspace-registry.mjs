@@ -319,10 +319,12 @@ function apply(root, payload, conservative = false, validatedFirstSessions) {
     if (payload.kind === "task_reconciled" && payload.bootstrap) {
       const completion = bootstrapReconciliationCompletion(
         operation,
-        next.workspaces,
+        next,
         payload,
       );
-      if (completion) return apply(next, completion);
+      // The task never settles without its operation resolving with it.
+      need(completion, "identity_conflict");
+      return apply(next, completion);
     }
   } else if (payload.kind === "feature_gate") {
     if (conservative) return root;
@@ -2652,6 +2654,12 @@ export async function openWorkspaceRegistry({
         registryRevision: root.revision,
         operation: operation ?? null,
         task: prior ?? null,
+        ...(request.kind === "task_reconciled" && {
+          reconcileState: {
+            sessions: [...root.sessions.values()],
+            workspaces: [...root.workspaces.values()],
+          },
+        }),
         // Inert current registry metadata for Main's exact Native mapping and
         // complete affected-set verifier. This is never live Native authority.
         ...(candidateRecord.identity?.originKind === "mutation" ||
@@ -2767,7 +2775,16 @@ export async function openWorkspaceRegistry({
         eligible = false;
         continue;
       }
-      candidates.push(copy({ operation, task }));
+      candidates.push(
+        copy({
+          operation,
+          task,
+          state: {
+            sessions: [...root.sessions.values()],
+            workspaces: [...root.workspaces.values()],
+          },
+        }),
+      );
     }
     // Recovery resources must all be explained by the candidates themselves:
     // their unresolved reservation, or what a failed settle left behind for
@@ -2782,7 +2799,12 @@ export async function openWorkspaceRegistry({
         return entry.sessionId
           ? entry.reason === "partial_native_mapping" &&
               reservation.appSessionId === entry.sessionId &&
-              reservation.plannedNativeSessionId === session?.nativeSessionId
+              // A fork has no planned child id: its partial mapping carries
+              // the child Native answered with.
+              (operation.identity.type === "session.fork"
+                ? Boolean(session?.nativeSessionId)
+                : reservation.plannedNativeSessionId ===
+                  session?.nativeSessionId)
           : entry.reason === "path_missing" &&
               reservation.workspace.workspaceId === entry.workspaceId &&
               root.workspaces.get(entry.workspaceId)?.registrationState ===

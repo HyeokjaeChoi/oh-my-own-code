@@ -209,6 +209,12 @@ function validateSessions(request, rawRows) {
   const provisional = new Map(
     (request.provisional ?? []).map((entry) => [entry.nativeSessionId, entry]),
   );
+  // Optional fork children of unsettled bootstrap forks: found only through
+  // their mapped parent, at most one row per operation, same fork rules.
+  const forkSlots = (request.provisionalForks ?? []).map((entry) => ({
+    entry,
+    used: false,
+  }));
   const sessions = new Map();
   for (const raw of rows(rawRows, 11, PREFLIGHT_LIMITS.sessions)) {
     const [
@@ -224,11 +230,15 @@ function validateSessions(request, rawRows) {
       boundary,
       metadata,
     ] = raw;
-    preflightAssert(
-      isPreflightId(id) &&
-        !sessions.has(id) &&
-        (mappings.has(id) || provisional.has(id)),
-    );
+    preflightAssert(isPreflightId(id) && !sessions.has(id));
+    let slot;
+    if (!mappings.has(id) && !provisional.has(id)) {
+      slot = forkSlots.find(
+        (item) => !item.used && item.entry.parentNativeSessionId === fork,
+      );
+      preflightAssert(slot !== undefined);
+      slot.used = true;
+    }
     preflightAssert(
       parent === null &&
         suspended === null &&
@@ -236,7 +246,14 @@ function validateSessions(request, rawRows) {
         attempts === 0,
     );
     const planned = provisional.get(id);
-    const mapping = mappings.get(id) ?? planned;
+    const mapping = mappings.get(id) ??
+      planned ?? {
+        appSessionId: slot.entry.appSessionId,
+        nativeSessionId: id,
+        workspaceId: slot.entry.workspaceId,
+        canonicalPath: slot.entry.canonicalPath,
+        parentAppSessionId: slot.entry.parentAppSessionId,
+      };
     preflightAssert(
       isPreflightPath(directory) && directory === mapping.canonicalPath,
     );
@@ -288,7 +305,7 @@ function validateSessions(request, rawRows) {
   }
   preflightAssert(
     [...mappings.keys()].every((id) => sessions.has(id)) &&
-      sessions.size <= mappings.size + provisional.size,
+      sessions.size <= mappings.size + provisional.size + forkSlots.length,
   );
   return sessions;
 }

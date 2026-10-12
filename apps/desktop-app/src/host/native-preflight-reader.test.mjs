@@ -410,3 +410,73 @@ test("provisional sessions may be present or absent but never drift or hide extr
     false,
   );
 });
+
+const forkEntry = (extra = {}) => ({
+  appSessionId: "plan",
+  workspaceId: "workspace",
+  canonicalPath: "/workspace",
+  parentAppSessionId: "root",
+  parentNativeSessionId: "ses_root",
+  ...extra,
+});
+const forkRow = (id = "plan", fork = "ses_root", boundary) =>
+  row(
+    id,
+    fork,
+    boundary ?? JSON.stringify({ type: "through", messageID: "msg_one" }),
+  );
+const forkEvaluate = (rows, provisionalForks = [forkEntry()]) =>
+  evaluatePreflightSnapshot(
+    { ...request(), provisionalForks },
+    { ...fixture(), sessions: rows, messages: [message()] },
+    (value) => value,
+  );
+test("provisional fork children are found only through their mapped parent, once, with inherited metadata", () => {
+  // absent and present are both accepted; the mapped parent stays mandatory
+  assert.equal(forkEvaluate([row()]).allowed, true);
+  const present = forkEvaluate([row(), forkRow()]);
+  assert.equal(present.allowed, true);
+  assert.equal(present.counts.sessions, 2);
+  // fork children disclose no correlation (only roots do)
+  assert.equal(present.correlations.length, 1);
+  assert.equal(forkEvaluate([forkRow()]).allowed, false);
+  // a stray, a second child, another parent, a root claiming a slot, a bad or
+  // missing boundary message, drifted inherited metadata: all denied
+  for (const rows of [
+    [row(), forkRow(), forkRow("stray")],
+    [row(), forkRow("plan", "ses_unknown")],
+    [row(), forkRow("plan", null)],
+    [
+      row(),
+      forkRow(
+        "plan",
+        "ses_root",
+        JSON.stringify({ type: "through", messageID: "msg_missing" }),
+      ),
+    ],
+    [row(), forkRow("plan", "ses_root", "null")],
+    (() => {
+      const drift = forkRow();
+      drift[10] = JSON.stringify({ ...metadata(), operationId: "other" });
+      return [row(), drift];
+    })(),
+    (() => {
+      const elsewhere = forkRow();
+      elsewhere[5] = "/elsewhere";
+      return [row(), elsewhere];
+    })(),
+  ])
+    assert.equal(forkEvaluate(rows).allowed, false, JSON.stringify(rows));
+  // one slot admits one row
+  assert.equal(
+    forkEvaluate([row(), forkRow(), forkRow("other")]).allowed,
+    false,
+  );
+  assert.equal(
+    forkEvaluate(
+      [row(), forkRow(), forkRow("other")],
+      [forkEntry(), forkEntry({ appSessionId: "plan2" })],
+    ).allowed,
+    true,
+  );
+});

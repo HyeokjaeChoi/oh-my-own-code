@@ -734,6 +734,41 @@ export async function startEventHost({
       runtimeEpoch: permissionInit.runtimeEpoch,
       isLive: taskLive,
       onUnconfirmed: () => fail("task_preparation_unconfirmed"),
+      // Read-only complete scan of Native's sessions (absence cross-check and
+      // fork-child discovery) for startup reconciliation. Exhausts the cursor
+      // contract; any irregularity is an error, which always holds.
+      listSessions: async () => {
+        const all = [];
+        const seen = new Set();
+        let cursor;
+        for (let page = 0; page < 100; page++) {
+          const result = await bounded(
+            Promise.resolve().then(() =>
+              rawClient.session.list({
+                limit: 100,
+                ...(cursor && { cursor }),
+              }),
+            ),
+            requestTimeoutMs,
+            "reconcile_read_timeout",
+          );
+          const next = result?.cursor?.next;
+          if (
+            !Array.isArray(result?.data) ||
+            result.data.length > 100 ||
+            result.data.some((item) => typeof item?.id !== "string") ||
+            (next !== undefined &&
+              next !== null &&
+              (typeof next !== "string" || !next.length || seen.has(next)))
+          )
+            throw new Error("reconcile_list_invalid");
+          all.push(...result.data);
+          if (next === undefined || next === null) return all;
+          seen.add(next);
+          cursor = next;
+        }
+        throw new Error("reconcile_list_invalid");
+      },
       // Read-only observation of one planned session for startup reconciliation.
       readSession: (sessionID) =>
         bounded(

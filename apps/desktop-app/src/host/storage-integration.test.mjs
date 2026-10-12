@@ -9,7 +9,10 @@ import nativeSkillsPlugin from "../builtins/workbench-skills/server.mjs";
 import test from "node:test";
 import { createHash, randomUUID } from "node:crypto";
 import { createNativeTaskLedger } from "../native-permission-task-ledger.mjs";
-import { bootstrapStageDigest } from "../native-permission-bootstrap-digest.mjs";
+import {
+  bootstrapMetadataDigest,
+  bootstrapStageDigest,
+} from "../native-permission-bootstrap-digest.mjs";
 import { reconcileBootstrapTasks } from "../native-bootstrap-reconciler.mjs";
 import { readWorkspaceFile } from "./workbench-file-edit.mjs";
 import assert from "node:assert/strict";
@@ -81,7 +84,7 @@ function fakeBootstrapChild(knobs = {}) {
     child.events.push(`consume:${step}`);
   };
   child.ledger = createNativeTaskLedger({
-    runtimeEpoch: "epoch",
+    runtimeEpoch: knobs.epoch ?? "epoch",
     isLive: () => child.live,
     channel: child.channel,
     onUnconfirmed: () => {
@@ -6351,7 +6354,11 @@ test("the registry refuses a second task.prepare for the same original operation
 // The crashed process is then replaced by a registry reopened from the journal
 // with a fresh live ledger; only that ledger's own read-only session.get may
 // ever resolve the task, and nothing is created, forked, updated or armed.
-const crashedFixture = async (t, step, { fromStart = false } = {}) => {
+const crashedFixture = async (
+  t,
+  step,
+  { fromStart = false, operation = createOperation } = {},
+) => {
   const child = fakeBootstrapChild();
   let writes = 0;
   let recording = fromStart;
@@ -6384,7 +6391,7 @@ const crashedFixture = async (t, step, { fromStart = false } = {}) => {
   } else snapshot = await f.ready();
   if (!fromStart) {
     recording = true;
-    await f.mutate(createOperation(snapshot), "create-crash");
+    await f.mutate(operation(snapshot), "create-crash");
   }
   await f.registry.checkpoint();
   return { f, snapshot, child };
@@ -6412,6 +6419,8 @@ async function openReconciling(t, f, { read, wrap } = {}) {
       if (!info) throw notFound(sessionID);
       return globalThis.structuredClone(info);
     },
+    listSessions: async () =>
+      globalThis.structuredClone([...f.records.values()]),
   });
   const opened = await openWorkspaceRegistry({
     ...f.options,
@@ -6753,6 +6762,7 @@ test("reconcile: task_reconciled cannot be forged without, or against, the live 
   const decision = await rig.ledger.reconcile({
     operation: candidate.operation,
     task: candidate.task,
+    state: candidate.state,
   });
   assert.equal(decision.outcome, "settled");
   const honest = forged({
@@ -6805,23 +6815,327 @@ for (const step of [5, 7, 8])
     assert.equal(reopened.snapshot.workspaces.length, 1);
   });
 
-test("reconcile: a proven-absent workspace-creating bootstrap keeps its folder effect and stays held", async (t) => {
-  const { f } = await crashedFixture(t, 3, { fromStart: true });
+for (const step of [2, 3])
+  test(`reconcile: a proven-absent default-workspace bootstrap registers the empty workspace and the app stays usable (crash before journal write ${step})`, async (t) => {
+    const { f, child } = await crashedFixture(t, step, { fromStart: true });
+    const before = nativeMutations(f);
+    const rig = await openReconciling(t, f);
+    const [candidate] = rig.registry.reconcilePlan().candidates;
+    assert.equal(candidate.operation.identity.type, "workspace.create");
+    await rig.run();
+    assert.equal(rig.reads.length, 1);
+    const view = rig.registry.readView();
+    // The operation and its task resolve together: nothing settled-yet-retained.
+    assert.deepEqual(view.retainedOperations, []);
+    const [task] = view.tasks;
+    assert.equal(task.phase, "settled");
+    assert.equal(task.proof.outcome, "no_effect");
+    assert.equal(view.workspaces.length, 1);
+    assert.equal(view.workspaces[0].registrationState, "registered");
+    assert.equal(view.sessions.length, 0);
+    const receipt = rig.registry.lookup({
+      runtimeEpoch: "epoch",
+      operationId: candidate.operation.identity.operationId,
+    }).receipt;
+    assert.equal(receipt.effect, "confirmed");
+    assert.equal(receipt.result.kind, "created");
+    assert.equal(receipt.result.sessionId, undefined);
+    assert.equal(receipt.result.nativeSessionId, undefined);
+    await assertReplays(t, f, { sessions: 0 });
+    // Restart: no second default workspace, no Native effect, and the first
+    // session bootstraps fresh on use inside the registered managed folder.
+    const reopened = await reopenForks(t, f, undefined, {
+      confirmTrust: async () => true,
+    });
+    assert.equal(reopened.snapshot.state, "connected");
+    assert.equal(reopened.snapshot.workspaces.length, 1);
+    assert.equal(reopened.snapshot.sessions.length, 0);
+    assert.deepEqual(nativeMutations(f), before);
+    // First use under the new launch's own live task authority.
+    const next = fakeBootstrapChild({ epoch: "new" });
+    child.consume = next.consume;
+    child.verify = next.ledger.verify;
+    f.context.nativeTasks = next.tasks;
+    const created = await reopened.service.handle(
+      {
+        version: 2,
+        runtimeEpoch: "new",
+        operationId: "first-use",
+        operation: {
+          type: "session.create",
+          workspaceId: reopened.snapshot.workspaces[0].id,
+          title: "First",
+        },
+      },
+      "sender",
+    );
+    assert.equal(created.ok, true, JSON.stringify(created));
+    // A second launch has nothing left to reconcile (idempotent).
+    assert.deepEqual(rig.registry.reconcilePlan(), {
+      eligible: true,
+      candidates: [],
+    });
+    await reopened.registry.checkpoint();
+    await assertReplays(t, f, { sessions: 1 });
+  });
+
+test("reconcile: a proven-absent workspace.import (crash before arm) registers the imported workspace and is idempotent", async (t) => {
+  const child = fakeBootstrapChild();
+  const f = await fixture(t, { taskChild: child, bootstrap: false });
+  const directory = join(f.root, "imported");
+  await fs.mkdir(directory);
+  const canonicalPath = await fs.realpath(directory);
+  const key = { runtimeEpoch: "epoch", operationId: "import-crash" };
+  const digest = "c".repeat(64);
+  await f.registry.begin({ ...key, type: "workspace.import", digest });
+  const reserved = await f.registry.reserve({
+    ...key,
+    ownership: "imported",
+    canonicalPath,
+    plannedNativeSessionId: "ses_import",
+  });
+  await f.registry.dispatch({ ...key, step: "native.create" });
+  const metadata = {
+    operationId: key.operationId,
+    originalRuntimeEpoch: key.runtimeEpoch,
+    appSessionId: reserved.appSessionId,
+    workspaceId: reserved.workspace.workspaceId,
+    digest,
+  };
+  const request = {
+    originKind: "bootstrap",
+    origin: { ...key, type: "workspace.import", digest },
+    workspaceId: reserved.workspace.workspaceId,
+    workspacePath: canonicalPath,
+    appSessionId: reserved.appSessionId,
+    metadataDigest: bootstrapMetadataDigest(metadata),
+    reservation: {
+      kind: "bootstrap",
+      step: "native.create",
+      reservationDigest: f.registry.reservationDigest(key),
+      parentIdentityDigest: null,
+    },
+    plannedNativeSessionId: "ses_import",
+  };
+  const prepared = await child.ledger.prepare(request, {
+    handoffId: randomUUID(),
+    stageArgumentDigest: bootstrapStageDigest("native.create", {
+      id: "ses_import",
+      metadata,
+      title: "Workbench",
+      location: { directory: canonicalPath },
+      permissions: BASELINE_POLICY,
+    }),
+  });
+  assert.equal(prepared.status, "prepared");
+  await f.registry.recordTask({
+    kind: "task.prepare",
+    ...key,
+    taskScopeId: prepared.taskScopeId,
+    identity: {
+      taskScopeId: prepared.taskScopeId,
+      origin: request.origin,
+      workspaceId: request.workspaceId,
+      projectId: prepared.projectId,
+      locationId: prepared.locationId,
+      modeGeneration: prepared.modeGeneration,
+      inventoryGeneration: prepared.inventoryGeneration,
+      originKind: "bootstrap",
+    },
+    binding: request.reservation,
+  });
+  await f.registry.checkpoint();
+  const before = nativeMutations(f);
   const rig = await openReconciling(t, f);
+  assert.equal(rig.registry.reconcilePlan().candidates.length, 1);
+  await rig.run();
+  assert.deepEqual(rig.reads, ["ses_import"]);
+  const view = rig.registry.readView();
+  assert.deepEqual(view.retainedOperations, []);
+  assert.equal(view.workspaces.length, 1);
+  assert.equal(view.workspaces[0].registrationState, "registered");
+  assert.equal(view.workspaces[0].ownership, "imported");
+  assert.equal(view.tasks[0].phase, "settled");
+  const receipt = rig.registry.lookup(key).receipt;
+  assert.equal(receipt.effect, "confirmed");
+  assert.equal(receipt.result.kind, "created");
+  await assertReplays(t, f, { sessions: 0 });
+  const reopened = await reopenForks(t, f);
+  assert.equal(reopened.snapshot.state, "connected");
+  assert.equal(reopened.snapshot.workspaces.length, 1);
+  assert.deepEqual(nativeMutations(f), before);
+  // A second launch finds nothing to reconcile.
+  const again = await openReconciling(t, f);
+  assert.deepEqual(again.registry.reconcilePlan(), {
+    eligible: true,
+    candidates: [],
+  });
+  assert.deepEqual(again.reads, []);
+});
+
+const forkOperation = (snapshot) => ({
+  type: "session.fork",
+  workspaceId: snapshot.selectedWorkspaceId,
+  sessionId: snapshot.selectedSessionId,
+  requestId: "fork-crash",
+});
+const forkRecord = (f) =>
+  [...f.records.values()].find((info) => info.fork !== undefined);
+for (const step of [4, 5, 6, 7, 8])
+  test(`reconcile: a fork whose child exists is found by its parent, bound and settled (crash before journal write ${step})`, async (t) => {
+    const { f, snapshot } = await crashedFixture(t, step, {
+      operation: forkOperation,
+    });
+    const child = forkRecord(f);
+    assert.ok(child, "Native forked before the crash");
+    const before = nativeMutations(f);
+    const rig = await openReconciling(t, f);
+    assert.equal(rig.registry.reconcilePlan().eligible, true);
+    await rig.run();
+    // Only reads: the parent, never a create/fork/update.
+    assert.deepEqual(
+      rig.reads,
+      [snapshot.selectedSessionId].map(() => rig.reads[0]),
+    );
+    assert.equal(rig.reads.length, 1);
+    assert.deepEqual(nativeMutations(f), before);
+    const view = rig.registry.readView();
+    assert.deepEqual(view.retainedOperations, []);
+    const mapped = view.sessions.find(
+      (row) => row.nativeSessionId === child.id,
+    );
+    assert.equal(mapped.lifecycleState, "active");
+    assert.equal(mapped.parentSessionId, snapshot.selectedSessionId);
+    const receipt = rig.registry.lookup({
+      runtimeEpoch: "epoch",
+      operationId: "create-crash",
+    }).receipt;
+    assert.equal(receipt.effect, "confirmed");
+    assert.equal(receipt.result.kind, "forked");
+    assert.equal(receipt.result.nativeSessionId, child.id);
+    await assertReplays(t, f, { sessions: snapshot.sessions.length + 1 });
+    const reopened = await reopenForks(t, f);
+    assert.equal(reopened.snapshot.state, "connected");
+    assert.equal(
+      reopened.snapshot.sessions.length,
+      snapshot.sessions.length + 1,
+    );
+    assert.deepEqual(nativeMutations(f), before);
+    assert.deepEqual(rig.registry.reconcilePlan(), {
+      eligible: true,
+      candidates: [],
+    });
+  });
+
+for (const step of [2, 3])
+  test(`reconcile: a fork with no child proves no effect and resolves (crash before journal write ${step})`, async (t) => {
+    const { f, snapshot } = await crashedFixture(t, step, {
+      operation: forkOperation,
+    });
+    assert.equal(forkRecord(f), undefined);
+    const before = nativeMutations(f);
+    const rig = await openReconciling(t, f);
+    await rig.run();
+    assert.deepEqual(nativeMutations(f), before);
+    const view = rig.registry.readView();
+    assert.deepEqual(view.retainedOperations, []);
+    assert.equal(view.tasks.at(-1).proof.outcome, "no_effect");
+    const receipt = rig.registry.lookup({
+      runtimeEpoch: "epoch",
+      operationId: "create-crash",
+    }).receipt;
+    assert.equal(receipt.effect, "none");
+    assert.equal(receipt.admission, "rejected");
+    assert.equal(view.sessions.length, snapshot.sessions.length);
+    await assertReplays(t, f, { sessions: snapshot.sessions.length });
+    const reopened = await reopenForks(t, f);
+    assert.equal(reopened.snapshot.state, "connected");
+    assert.equal(reopened.snapshot.sessions.length, snapshot.sessions.length);
+  });
+
+const forkTampers = {
+  "a consumed handoff but no child": (f) => f.records.delete(forkRecord(f).id),
+  "two matching children": (f) => {
+    const child = forkRecord(f);
+    f.records.set("ses_twin", { ...child, id: "ses_twin" });
+  },
+  "a child with other metadata": (f) => {
+    forkRecord(f).metadata = { operationId: "other" };
+  },
+  "a child with weaker permissions": (f) => {
+    forkRecord(f).permissions = [
+      { action: "*", resource: "*", effect: "allow" },
+    ];
+  },
+  "a child whose floor is not last": (f) => {
+    forkRecord(f).permissions = [...forkRecord(f).permissions].reverse();
+  },
+  "a child in another directory": (f) => {
+    forkRecord(f).location = { directory: "/somewhere/else" };
+  },
+};
+for (const [name, mutate] of Object.entries(forkTampers))
+  test(`reconcile: a fork with ${name} stays held without writing`, async (t) => {
+    // Write 5 lost keeps the consumed handoff (write 4) durable.
+    const { f } = await crashedFixture(t, 5, { operation: forkOperation });
+    mutate(f);
+    const before = nativeMutations(f);
+    const rig = await openReconciling(t, f);
+    const journal = await journalBytes(f);
+    await assert.rejects(rig.run(), {
+      storageReason: "native_startup_unverified",
+    });
+    assert.deepEqual(await journalBytes(f), journal);
+    assert.deepEqual(nativeMutations(f), before);
+    assert.equal(
+      rig.registry
+        .readView()
+        .retainedOperations.some((row) => row.operationId === "create-crash"),
+      true,
+    );
+  });
+
+test("reconcile: a fork read error holds, and a crash during fork reconciliation repeats only reads", async (t) => {
+  const { f, snapshot } = await crashedFixture(t, 4, {
+    operation: forkOperation,
+  });
+  const before = nativeMutations(f);
+  const broken = await openReconciling(t, f, {
+    read: () => {
+      throw new Error("network down");
+    },
+  });
   const journal = await journalBytes(f);
-  await assert.rejects(rig.run(), {
+  await assert.rejects(broken.run(), {
     storageReason: "native_startup_unverified",
   });
-  assert.equal(rig.reads.length, 1);
-  // The task itself is settled no_effect (one record), the operation retained.
-  const view = rig.registry.readView();
-  const [task] = view.tasks;
-  assert.equal(task.phase, "settled");
-  assert.equal(task.proof.outcome, "no_effect");
-  assert.equal(view.retainedOperations.length, 1);
-  assert.notDeepEqual(await journalBytes(f), journal);
-  // Settled tasks are no longer candidates: later launches hold unchanged.
-  assert.equal(rig.registry.reconcilePlan().eligible, false);
+  assert.deepEqual(await journalBytes(f), journal);
+  let failures = 0;
+  const first = await openReconciling(t, f, {
+    wrap: (registry) =>
+      new Proxy(registry, {
+        get(target, key) {
+          if (key === "recordTask")
+            return async () => {
+              failures++;
+              throw new Error("synthetic storage loss");
+            };
+          const value = Reflect.get(target, key);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      }),
+  });
+  await assert.rejects(first.run(), {
+    storageReason: "native_startup_unverified",
+  });
+  assert.equal(failures, 1);
+  assert.deepEqual(await journalBytes(f), journal);
+  const second = await openReconciling(t, f);
+  await second.run();
+  assert.equal(second.reads.length, 1);
+  assert.deepEqual(second.registry.readView().retainedOperations, []);
+  await assertReplays(t, f, { sessions: snapshot.sessions.length + 1 });
+  assert.deepEqual(nativeMutations(f), before);
 });
 
 test("reconcile: the workbench stays unadmitted until reconciliation finishes, then continues the same launch without re-creating", async (t) => {

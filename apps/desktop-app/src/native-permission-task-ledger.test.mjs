@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 import { createNativeTaskLedger } from "./native-permission-task-ledger.mjs";
 import {
   bootstrapHandoffProof,
+  bootstrapParentDigest,
   bootstrapTaskProof,
 } from "./native-permission-bootstrap-digest.mjs";
 
@@ -468,7 +469,7 @@ test("the bounded table purges retired entries and refuses a seventeenth live ta
 
 // ---- startup reconciliation (read-only observation + verification) --------
 const reconcileFixture = (over = {}) => {
-  const state = { live: true, reads: [], answer: undefined };
+  const state = { live: true, reads: [], answer: undefined, list: [] };
   const info = {
     id: "ses_1",
     projectID: "project",
@@ -496,6 +497,11 @@ const reconcileFixture = (over = {}) => {
       state.reads.push(sessionID);
       if (state.answer instanceof Error) throw state.answer;
       return state.answer;
+    },
+    listSessions: async () => {
+      state.lists = (state.lists ?? 0) + 1;
+      if (state.list instanceof Error) throw state.list;
+      return state.list;
     },
     ...over,
   });
@@ -532,14 +538,25 @@ const reconcileFixture = (over = {}) => {
     outcome: decision.outcome,
     bootstrap: decision.bootstrap,
   });
-  const context = () => ({ runtimeEpoch: "now", operation, task });
-  return { state, ledger, operation, task, record, context, info };
+  const registry = {
+    sessions: [],
+    workspaces: [{ workspaceId: "w", registrationState: "reserved" }],
+  };
+  const context = () => ({
+    runtimeEpoch: "now",
+    operation,
+    task,
+    reconcileState: registry,
+  });
+  return { state, ledger, operation, task, record, context, info, registry };
 };
 test("reconcile reads only the planned id and verifies exactly the decision it observed", async () => {
   const f = reconcileFixture();
-  const decision = await f.ledger.reconcile(
-    f.operation && { operation: f.operation, task: f.task },
-  );
+  const decision = await f.ledger.reconcile({
+    operation: f.operation,
+    task: f.task,
+    state: f.registry,
+  });
   assert.deepEqual(f.state.reads, ["ses_1"]);
   assert.equal(decision.outcome, "settled");
   assert.equal(decision.bootstrap.title, "Title");
@@ -582,6 +599,7 @@ test("reconcile maps only the typed not-found to no_effect and holds every other
   const decision = await absent.ledger.reconcile({
     operation: absent.operation,
     task: absent.task,
+    state: absent.registry,
   });
   assert.equal(decision.outcome, "no_effect");
   assert.equal(
@@ -627,4 +645,319 @@ test("reconcile maps only the typed not-found to no_effect and holds every other
     }),
   );
   assert.deepEqual(odd.state.reads, []);
+});
+
+const gone = (id = "ses_1") =>
+  Object.assign(new Error("absent"), {
+    _tag: "SessionNotFoundError",
+    sessionID: id,
+  });
+test("reconcile confirms a typed not-found with a complete scan and holds without it", async () => {
+  const plain = async (f) =>
+    f.ledger.reconcile({
+      operation: f.operation,
+      task: f.task,
+      state: f.registry,
+    });
+  // The scan must lack the id too (a get that lies cannot prove absence).
+  const listed = reconcileFixture();
+  listed.state.answer = gone();
+  listed.state.list = [{ id: "ses_1" }];
+  await assert.rejects(plain(listed), { message: "task_preparation_held" });
+  // Scan failure, missing scanner, id-less not-found: held, never no_effect.
+  const broken = reconcileFixture();
+  broken.state.answer = gone();
+  broken.state.list = new Error("scan failed");
+  await assert.rejects(plain(broken), { message: "scan failed" });
+  const noScanner = reconcileFixture({ listSessions: undefined });
+  noScanner.state.answer = gone();
+  await assert.rejects(plain(noScanner), { message: "task_preparation_held" });
+  const anonymous = reconcileFixture();
+  anonymous.state.answer = Object.assign(new Error("absent"), {
+    _tag: "SessionNotFoundError",
+  });
+  await assert.rejects(plain(anonymous), { message: "task_preparation_held" });
+  const ok = reconcileFixture();
+  ok.state.answer = gone();
+  ok.state.list = [{ id: "ses_other" }];
+  assert.equal((await plain(ok)).outcome, "no_effect");
+  assert.equal(ok.state.lists, 1);
+});
+test("reconcile of an absent workspace create/import resolves only a still-reserved workspace", async () => {
+  for (const type of ["workspace.create", "workspace.import"]) {
+    const reserved = reconcileFixture();
+    reserved.operation.identity.type = type;
+    reserved.state.answer = gone();
+    const decision = await reserved.ledger.reconcile({
+      operation: reserved.operation,
+      task: reserved.task,
+      state: reserved.registry,
+    });
+    assert.equal(decision.outcome, "no_effect");
+    assert.equal(
+      reserved.ledger.verify(reserved.record(decision), reserved.context()),
+      true,
+    );
+    // An unavailable or missing workspace row cannot be registered: hold.
+    for (const workspaces of [
+      [{ workspaceId: "w", registrationState: "unavailable" }],
+      [],
+    ]) {
+      const f = reconcileFixture();
+      f.operation.identity.type = type;
+      f.state.answer = gone();
+      f.registry.workspaces = workspaces;
+      const held = await f.ledger.reconcile({
+        operation: f.operation,
+        task: f.task,
+        state: f.registry,
+      });
+      assert.equal(held.outcome, "hold");
+      assert.equal(f.ledger.verify(f.record(held), f.context()), false);
+    }
+    // A registry that changed after the observation no longer verifies.
+    reserved.registry.workspaces = [
+      { workspaceId: "w", registrationState: "unavailable" },
+    ];
+    assert.equal(
+      reserved.ledger.verify(reserved.record(decision), reserved.context()),
+      false,
+    );
+  }
+});
+
+const forkFixture = (over = {}) => {
+  const f = reconcileFixture(over);
+  const permissions = [
+    { action: "*", resource: "*", effect: "ask" },
+    { action: "external_directory", resource: "*", effect: "deny" },
+  ];
+  const parent = {
+    id: "ses_parent",
+    projectID: "project",
+    location: { directory: "/work" },
+    metadata: { operationId: "op-0", digest: "a".repeat(64) },
+    permissions,
+    title: "Parent",
+  };
+  const child = (extra = {}) => ({
+    id: "ses_child",
+    projectID: "project",
+    location: { directory: "/work" },
+    parentID: "ses_parent",
+    fork: {
+      sessionID: "ses_parent",
+      boundary: { type: "before", messageID: "msg_1" },
+    },
+    metadata: { ...parent.metadata },
+    permissions,
+    title: "Child",
+    ...extra,
+  });
+  f.operation.identity = {
+    runtimeEpoch: "old",
+    operationId: "op-1",
+    type: "session.fork",
+    digest: "d".repeat(64),
+    workspaceId: "w",
+    sessionId: "app-parent",
+  };
+  f.operation.forkTarget = { beforeMessageId: "msg_1" };
+  f.operation.dispatches = [
+    { step: "native.fork", nativeSessionId: "ses_parent" },
+  ];
+  delete f.operation.reservation.plannedNativeSessionId;
+  f.task.binding = {
+    step: "native.fork",
+    parentIdentityDigest: bootstrapParentDigest({
+      id: "ses_parent",
+      projectID: "project",
+      directory: "/work",
+    }),
+  };
+  f.registry.sessions = [
+    {
+      appSessionId: "app-parent",
+      workspaceId: "w",
+      nativeSessionId: "ses_parent",
+      lifecycleState: "active",
+    },
+  ];
+  f.state.answer = parent;
+  f.state.list = [parent, child()];
+  const run = () =>
+    f.ledger.reconcile({
+      operation: f.operation,
+      task: f.task,
+      state: f.registry,
+    });
+  return { ...f, parent, child, run };
+};
+test("reconcile of a fork settles exactly one child carrying the parent's metadata and baseline", async () => {
+  for (const handoff of ["armed", "consumed", "completed"]) {
+    const f = forkFixture();
+    f.task.handoffs = [{ state: handoff }];
+    const decision = await f.run();
+    assert.deepEqual(f.state.reads, ["ses_parent"]);
+    assert.equal(decision.outcome, "settled");
+    assert.equal(decision.bootstrap.nativeSessionId, "ses_child");
+    assert.equal(decision.bootstrap.appSessionId, "app");
+    assert.equal(decision.bootstrap.title, "Child");
+    assert.equal(f.ledger.verify(f.record(decision), f.context()), true);
+    for (const over of [
+      { outcome: "no_effect", bootstrap: {} },
+      { bootstrap: { ...decision.bootstrap, nativeSessionId: "ses_other" } },
+      { proofDigest: "e".repeat(64) },
+    ])
+      assert.equal(
+        f.ledger.verify({ ...f.record(decision), ...over }, f.context()),
+        false,
+      );
+    // The registry state judged at decision time must be the verified one.
+    f.registry.sessions.push({
+      appSessionId: "x",
+      workspaceId: "w",
+      nativeSessionId: "ses_child",
+    });
+    assert.equal(f.ledger.verify(f.record(decision), f.context()), false);
+  }
+});
+test("reconcile of a fork with no child proves no effect only for an unconsumed trail", async () => {
+  for (const [handoffs, outcome] of [
+    [[], "no_effect"],
+    [[{ state: "armed" }], "no_effect"],
+    [[{ state: "revoked" }], "no_effect"],
+    [[{ state: "consumed" }], "hold"],
+    [[{ state: "completed" }], "hold"],
+  ]) {
+    const f = forkFixture();
+    f.task.handoffs = handoffs;
+    f.state.list = [f.parent];
+    const decision = await f.run();
+    assert.equal(decision.outcome, outcome, JSON.stringify(handoffs));
+    if (outcome === "no_effect")
+      assert.equal(f.ledger.verify(f.record(decision), f.context()), true);
+  }
+  // A bound task, or this operation's own partial mapping, contradicts absence.
+  const bound = forkFixture();
+  bound.task.identity = {
+    ...bound.task.identity,
+    appSessionId: "app",
+    nativeSessionId: "ses_child",
+  };
+  bound.state.list = [bound.parent];
+  assert.equal((await bound.run()).outcome, "hold");
+  const partial = forkFixture();
+  partial.registry.sessions.push({
+    appSessionId: "app",
+    workspaceId: "w",
+    nativeSessionId: "ses_child",
+    lifecycleState: "unavailable",
+  });
+  partial.state.list = [partial.parent];
+  assert.equal((await partial.run()).outcome, "hold");
+  // Plain subagents and already-mapped children are not this fork.
+  const others = forkFixture();
+  others.registry.sessions.push({
+    appSessionId: "mapped",
+    workspaceId: "w",
+    nativeSessionId: "ses_mapped",
+  });
+  others.state.list = [
+    others.parent,
+    others.child({ id: "ses_sub", fork: null }),
+    others.child({ id: "ses_mapped" }),
+  ];
+  assert.equal((await others.run()).outcome, "no_effect");
+});
+const forkTampered = {
+  "two matching children": (f) => {
+    f.state.list.push(f.child({ id: "ses_child2" }));
+  },
+  "metadata drift": (f) => {
+    f.state.list[1] = f.child({ metadata: { operationId: "other" } });
+  },
+  "permissions differ": (f) => {
+    f.state.list[1] = f.child({
+      permissions: [{ action: "*", resource: "*", effect: "allow" }],
+    });
+  },
+  "floor not last": (f) => {
+    f.state.list[1] = f.child({
+      permissions: [...f.parent.permissions].reverse(),
+    });
+    f.state.answer = {
+      ...f.parent,
+      permissions: [...f.parent.permissions].reverse(),
+    };
+  },
+  "other boundary": (f) => {
+    f.state.list[1] = f.child({
+      fork: {
+        sessionID: "ses_parent",
+        boundary: { type: "before", messageID: "msg_2" },
+      },
+    });
+  },
+  "other directory": (f) => {
+    f.state.list[1] = f.child({ location: { directory: "/elsewhere" } });
+  },
+  "other project": (f) => {
+    f.state.list[1] = f.child({ projectID: "other" });
+  },
+  "a different id than the bound one": (f) => {
+    f.task.identity = {
+      ...f.task.identity,
+      appSessionId: "app",
+      nativeSessionId: "ses_bound",
+    };
+  },
+  "an unreadable child row": (f) => {
+    f.state.list.push({
+      id: "ses_junk",
+      parentID: "ses_parent",
+      permissions: 7,
+    });
+  },
+  "a changed parent identity": (f) => {
+    f.state.answer = { ...f.parent, location: { directory: "/moved" } };
+  },
+  "a parent with a registered instruction": (f) => {
+    f.registry.sessions[0].instructionRegistration = { state: "registered" };
+  },
+  "an unmapped parent": (f) => {
+    f.registry.sessions = [];
+  },
+};
+for (const [name, mutate] of Object.entries(forkTampered))
+  test(`reconcile of a fork holds with ${name}`, async () => {
+    const f = forkFixture();
+    f.task.handoffs = [{ state: "armed" }];
+    mutate(f);
+    const decision = await f.run();
+    assert.equal(decision.outcome, "hold");
+    assert.equal(f.ledger.verify(f.record(decision), f.context()), false);
+  });
+test("reconcile of a fork never settles from a never-armed trail and holds every read error", async () => {
+  const unarmed = forkFixture();
+  unarmed.task.handoffs = [];
+  assert.equal((await unarmed.run()).outcome, "hold");
+  const revoked = forkFixture();
+  revoked.task.handoffs = [{ state: "revoked" }];
+  assert.equal((await revoked.run()).outcome, "hold");
+  for (const make of [
+    (f) => (f.state.answer = gone("ses_parent")),
+    (f) => (f.state.answer = new Error("boom")),
+    (f) => (f.state.list = new Error("scan failed")),
+  ]) {
+    const f = forkFixture();
+    make(f);
+    await assert.rejects(f.run());
+  }
+  const huge = forkFixture();
+  huge.state.list = [
+    huge.parent,
+    ...Array.from({ length: 65 }, (_, i) => huge.child({ id: `ses_c${i}` })),
+  ];
+  await assert.rejects(huge.run(), { message: "task_preparation_held" });
 });

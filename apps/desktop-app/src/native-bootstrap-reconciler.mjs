@@ -19,11 +19,11 @@ export async function reconcileBootstrapTasks({
   // recovery at all: the profile stays held exactly as before.
   if (!plan.eligible || !plan.candidates.length) throw hold();
   if (typeof nativeTasks?.reconcile !== "function") throw hold();
-  for (const { operation, task } of plan.candidates) {
+  for (const { operation, task, state } of plan.candidates) {
     signal?.throwIfAborted();
     let decision;
     try {
-      decision = await nativeTasks.reconcile({ operation, task });
+      decision = await nativeTasks.reconcile({ operation, task, state });
     } catch {
       throw hold();
     }
@@ -52,7 +52,7 @@ export async function reconcileBootstrapTasks({
       throw hold();
     }
   }
-  // Anything still retained (e.g. a proven-absent workspace create keeps its
-  // filesystem effect) is not resolved by this phase: hold.
+  // Every recorded reconciliation resolves its operation in the same record;
+  // anything still retained is not explained by this phase: hold.
   if (registry.readView().retainedOperations.length) throw hold();
 }

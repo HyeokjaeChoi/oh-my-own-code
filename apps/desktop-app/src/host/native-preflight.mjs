@@ -74,19 +74,43 @@ function viewBinding(registry) {
 // Sessions an unsettled bootstrap create may have produced before the crash.
 function provisionalFor(registry) {
   const plan = registry.reconcilePlan?.() ?? { candidates: [] };
-  return plan.candidates.map(({ operation }) => ({
-    appSessionId: operation.reservation.appSessionId,
-    nativeSessionId: operation.reservation.plannedNativeSessionId,
-    workspaceId: operation.reservation.workspace.workspaceId,
-    canonicalPath: operation.reservation.workspace.canonicalPath,
-    operationId: operation.identity.operationId,
-    originalRuntimeEpoch: operation.identity.runtimeEpoch,
-    digest: operation.identity.digest,
-  }));
+  return plan.candidates
+    .filter(({ operation }) => operation.identity.type !== "session.fork")
+    .map(({ operation }) => ({
+      appSessionId: operation.reservation.appSessionId,
+      nativeSessionId: operation.reservation.plannedNativeSessionId,
+      workspaceId: operation.reservation.workspace.workspaceId,
+      canonicalPath: operation.reservation.workspace.canonicalPath,
+      operationId: operation.identity.operationId,
+      originalRuntimeEpoch: operation.identity.runtimeEpoch,
+      digest: operation.identity.digest,
+    }));
 }
-function mappingsFor(view, provisional = []) {
+// Fork children an unsettled bootstrap fork may have produced (id unknown).
+function forkChildrenFor(registry, mappings) {
+  const plan = registry.reconcilePlan?.() ?? { candidates: [] };
+  return plan.candidates
+    .filter(({ operation }) => operation.identity.type === "session.fork")
+    .map(({ operation }) => {
+      const parent = mappings.find(
+        (mapping) => mapping.appSessionId === operation.identity.sessionId,
+      );
+      if (!parent) fail();
+      return {
+        appSessionId: operation.reservation.appSessionId,
+        workspaceId: parent.workspaceId,
+        canonicalPath: parent.canonicalPath,
+        parentAppSessionId: parent.appSessionId,
+        parentNativeSessionId: parent.nativeSessionId,
+      };
+    });
+}
+function mappingsFor(view, provisional = [], forkApps = []) {
   // A candidate's own partial session mapping is judged as provisional.
-  const planned = new Set(provisional.map((entry) => entry.appSessionId));
+  const planned = new Set([
+    ...provisional.map((entry) => entry.appSessionId),
+    ...forkApps,
+  ]);
   const mappings = view.sessions
     .filter((session) => !planned.has(session.appSessionId))
     .map((session) => {
@@ -693,7 +717,14 @@ export function createNativePreflight({
         allowed = true;
       } else {
         const provisional = provisionalFor(registry);
-        const mappings = mappingsFor(view, provisional);
+        const forkApps = registry
+          .reconcilePlan?.()
+          .candidates.filter(
+            ({ operation }) => operation.identity.type === "session.fork",
+          )
+          .map(({ operation }) => operation.reservation.appSessionId);
+        const mappings = mappingsFor(view, provisional, forkApps ?? []);
+        const forkChildren = forkChildrenFor(registry, mappings);
         for (const path of [
           ...new Set(mappings.map((mapping) => mapping.canonicalPath)),
         ])
@@ -707,6 +738,7 @@ export function createNativePreflight({
           database: context.database,
           mappings,
           ...(provisional.length && { provisional }),
+          ...(forkChildren.length && { provisionalForks: forkChildren }),
         });
         const decision = await inspector(context, request, resources);
         await fence(context);
@@ -721,7 +753,8 @@ export function createNativePreflight({
         }
         if (
           decision.counts.sessions < mappings.length ||
-          decision.counts.sessions > mappings.length + provisional.length ||
+          decision.counts.sessions >
+            mappings.length + provisional.length + forkChildren.length ||
           decision.counts.pending !== 0 ||
           decision.counts.inbox !== 0 ||
           decision.counts.kv !== 0 ||

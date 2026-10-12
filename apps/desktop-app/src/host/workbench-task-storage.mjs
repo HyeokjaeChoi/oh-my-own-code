@@ -512,22 +512,28 @@ function reconcileBootstrapTask(task, operation, v) {
   const reservation = operation.reservation;
   const [handoff] = task.handoffs;
   const bound = Object.hasOwn(task.identity, "nativeSessionId");
+  const fork = operation.identity.type === "session.fork";
   need(
     task.identity.originKind === "bootstrap" &&
-      task.binding.step === "native.create" &&
+      task.binding.step === (fork ? "native.fork" : "native.create") &&
       ["prepared", "bound"].includes(task.phase) &&
       !operation.terminal &&
       task.handoffs.length <= 1 &&
-      typeof reservation?.plannedNativeSessionId === "string" &&
-      ["session.create", "workspace.create", "workspace.import"].includes(
-        operation.identity.type,
-      ) &&
+      typeof reservation?.appSessionId === "string" &&
+      (fork
+        ? reservation.plannedNativeSessionId === undefined
+        : typeof reservation?.plannedNativeSessionId === "string" &&
+          ["session.create", "workspace.create", "workspace.import"].includes(
+            operation.identity.type,
+          )) &&
       // A trail that already proved its outcome may only be confirmed as is.
       (!task.proof ||
         (task.proof.proofDigest === v.proofDigest &&
           task.proof.outcome === v.outcome)) &&
       (!bound ||
-        (task.identity.nativeSessionId === reservation.plannedNativeSessionId &&
+        ((fork ||
+          task.identity.nativeSessionId ===
+            reservation.plannedNativeSessionId) &&
           task.identity.appSessionId === reservation.appSessionId)),
   );
   if (v.outcome === "no_effect") {
@@ -540,7 +546,10 @@ function reconcileBootstrapTask(task, operation, v) {
         handoff &&
         ["armed", "consumed", "completed"].includes(handoff.state) &&
         v.bootstrap.appSessionId === reservation.appSessionId &&
-        v.bootstrap.nativeSessionId === reservation.plannedNativeSessionId,
+        (fork
+          ? !bound ||
+            task.identity.nativeSessionId === v.bootstrap.nativeSessionId
+          : v.bootstrap.nativeSessionId === reservation.plannedNativeSessionId),
     );
     handoff.state = "completed";
     task.identity = {
@@ -552,13 +561,15 @@ function reconcileBootstrapTask(task, operation, v) {
   task.proof = v;
   task.phase = "settled";
 }
-// Deterministic completion implied by a reconciled bootstrap create. Only an
-// exact created session (confirmed) or a proven-absent session.create (rejected,
-// no effect) resolves the operation; workspace-materializing creates that
-// proved absent keep their filesystem effect, so they stay retained.
+// Deterministic completion implied by a reconciled bootstrap create/fork. An
+// exact created/forked session confirms; a proven-absent session create/fork is
+// rejected with no effect; a proven-absent workspace create/import keeps its
+// (already materialized) folder and resolves as the workspace registered with
+// no Native session, which bootstraps fresh on first use. Returns undefined
+// only for shapes the reconciler never produces (the record is then refused).
 export function bootstrapReconciliationCompletion(
   operation,
-  workspaces,
+  { workspaces, sessions },
   payload,
 ) {
   const { identity, reservation } = operation;
@@ -575,8 +586,42 @@ export function bootstrapReconciliationCompletion(
     operationId: identity.operationId,
     revision: payload.revision,
   };
+  const workspaceId = reservation.workspace.workspaceId;
+  const existing = workspaces.get(workspaceId);
+  const fork = identity.type === "session.fork";
+  const registered = (workspace) => ({
+    workspaceId,
+    ownership: workspace.ownership,
+    canonicalPath: workspace.canonicalPath,
+    registrationState: "registered",
+    ...(workspace.folderSessionId && {
+      folderSessionId: workspace.folderSessionId,
+    }),
+    name: workspace.name,
+    trustRevision: workspace.trustRevision ?? 1,
+  });
   if (payload.outcome === "no_effect") {
-    if (identity.type !== "session.create") return undefined;
+    if (identity.type !== "session.create" && !fork) {
+      if (!["reserved", "registered"].includes(existing?.registrationState))
+        return undefined;
+      return {
+        ...base,
+        receipt: {
+          ...scope,
+          admission: "dispatched",
+          delivery: "accepted",
+          effect: "confirmed",
+          revision: payload.revision,
+          evidence: [{ kind: "host-registry", id: workspaceId }],
+          result: { kind: "created", workspaceId },
+        },
+        delta: {
+          workspaces: [registered(existing)],
+          sessions: [],
+          tombstones: [],
+        },
+      };
+    }
     return {
       ...base,
       receipt: {
@@ -592,8 +637,8 @@ export function bootstrapReconciliationCompletion(
     };
   }
   const { appSessionId, nativeSessionId, title } = payload.bootstrap;
-  const workspaceId = reservation.workspace.workspaceId;
-  const existing = workspaces.get(workspaceId);
+  const parent = fork ? sessions.get(identity.sessionId) : undefined;
+  if (fork && !parent) return undefined;
   return {
     ...base,
     receipt: {
@@ -607,7 +652,7 @@ export function bootstrapReconciliationCompletion(
         { kind: "native_session_verified", id: nativeSessionId },
       ],
       result: {
-        kind: "created",
+        kind: fork ? "forked" : "created",
         workspaceId,
         sessionId: appSessionId,
         nativeSessionId,
@@ -615,21 +660,9 @@ export function bootstrapReconciliationCompletion(
     },
     delta: {
       workspaces:
-        identity.type === "session.create" || !existing
+        identity.type === "session.create" || fork || !existing
           ? []
-          : [
-              {
-                workspaceId,
-                ownership: existing.ownership,
-                canonicalPath: existing.canonicalPath,
-                registrationState: "registered",
-                ...(existing.folderSessionId && {
-                  folderSessionId: existing.folderSessionId,
-                }),
-                name: existing.name,
-                trustRevision: existing.trustRevision ?? 1,
-              },
-            ],
+          : [registered(existing)],
       sessions: [
         {
           appSessionId,
@@ -639,6 +672,15 @@ export function bootstrapReconciliationCompletion(
           pinned: false,
           archived: false,
           title,
+          ...(fork && {
+            parentSessionId: identity.sessionId,
+            ...(parent.instructionRegistration && {
+              instructionRegistration: parent.instructionRegistration,
+            }),
+            ...(parent.permissionMode && {
+              permissionMode: parent.permissionMode,
+            }),
+          }),
         },
       ],
       tombstones: [],
@@ -648,9 +690,12 @@ export function bootstrapReconciliationCompletion(
 // A settled no_effect bootstrap proof of a plain session.create: the only case
 // where a dispatched operation may resolve with effect "none".
 export function bootstrapNoEffectProven(operation, task) {
+  const fork = operation.identity.type === "session.fork";
   return (
-    operation.identity.type === "session.create" &&
-    operation.dispatches.every((entry) => entry.step === "native.create") &&
+    (operation.identity.type === "session.create" || fork) &&
+    operation.dispatches.every(
+      (entry) => entry.step === (fork ? "native.fork" : "native.create"),
+    ) &&
     task?.identity.originKind === "bootstrap" &&
     task.phase === "settled" &&
     task.proof?.kind === "task_reconciled" &&
