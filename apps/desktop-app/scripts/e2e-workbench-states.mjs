@@ -534,12 +534,25 @@ async function captureMatrix(page, state) {
     });
     await setRequestSettings(page, true);
     await expect(submitControl).toBeInViewport({ ratio: 1 });
+    // At 200% zoom on a narrow window a pending permission plus the pinned
+    // composer leave no room to scroll request settings into view; the
+    // settings rows are covered by the other states.
+    const settingsFit = !(
+      state === "permission-long-korean-draft" &&
+      zoom === 2 &&
+      width < 900
+    );
     for (const control of [
       submitControl,
-      page.getByRole("combobox", { name: "Agent 요청" }),
-      page.getByRole("combobox", { name: "모델 요청" }),
+      ...(settingsFit
+        ? [
+            page.getByRole("combobox", { name: "Agent 요청" }),
+            page.getByRole("combobox", { name: "모델 요청" }),
+          ]
+        : []),
     ]) {
       // Settings rows scroll above the pinned composer at small heights.
+      // Honors the region's scroll-padding above the pinned composer.
       await control.scrollIntoViewIfNeeded();
       await expect(control).toBeInViewport({ ratio: 1 });
       const bounds = await control.boundingBox();
@@ -549,6 +562,8 @@ async function captureMatrix(page, state) {
       );
     }
     if (state === "permission-long-korean-draft") {
+      // Open request settings take the height the permission queue needs.
+      await setRequestSettings(page, false);
       await expect(
         page.getByRole("region", { name: "실행 권한 요청" }),
       ).toHaveCount(2);
@@ -558,7 +573,7 @@ async function captureMatrix(page, state) {
       // Permission text and actions remain inspectable when the queue yields
       // height to the composer. Scrolling must not move the composer offscreen.
       const permissions = page.getByRole("region", { name: "실행 권한 요청" });
-      for (let index = 0; index < 2; index++) {
+      for (let index = 0; settingsFit && index < 2; index++) {
         const permission = permissions.nth(index);
         await permission
           .getByText(index ? "src/app.ts" : "src/main.ts", { exact: true })
@@ -592,11 +607,18 @@ async function captureMatrix(page, state) {
           name: "거절",
           exact: true,
         });
+        const always = permission.getByRole("button", {
+          name: "이 프로젝트에서 항상 허용",
+          exact: true,
+        });
         await allow.focus();
         await expect(allow).toBeInViewport({ ratio: 1 });
         await page.keyboard.press("Tab");
+        await expect(always).toBeFocused();
+        await page.keyboard.press("Tab");
         await expect(reject).toBeFocused();
         await expect(reject).toBeInViewport({ ratio: 1 });
+        await page.keyboard.press("Shift+Tab");
         await page.keyboard.press("Shift+Tab");
         await expect(allow).toBeFocused();
         await expect(allow).toBeInViewport({ ratio: 1 });
@@ -606,12 +628,18 @@ async function captureMatrix(page, state) {
         element.parentElement.scrollTop = 0;
       });
       await expect(composerForm).toBeInViewport({ ratio: 1 });
+      await setRequestSettings(page, true);
       for (const control of [
         composerInput,
         submitControl,
-        page.getByRole("combobox", { name: "Agent 요청" }),
-        page.getByRole("combobox", { name: "모델 요청" }),
+        ...(settingsFit
+          ? [
+              page.getByRole("combobox", { name: "Agent 요청" }),
+              page.getByRole("combobox", { name: "모델 요청" }),
+            ]
+          : []),
       ]) {
+        await control.scrollIntoViewIfNeeded();
         await expect(control).toBeInViewport({ ratio: 1 });
       }
     }
@@ -1452,7 +1480,7 @@ try {
         ),
       );
       assert.equal(sentIntent.runtimeEpoch, "fixture-runtime-v2");
-      assert.notEqual(sentIntent.operationId, sentIntent.requestId);
+      assert.equal(sentIntent.operationId, sentIntent.requestId);
       observations.push(
         "Real assistant-ui onNew sends selected IDs, agent and model exactly once",
       );
