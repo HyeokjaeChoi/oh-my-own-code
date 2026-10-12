@@ -100,7 +100,7 @@ export function ProviderSettings() {
                   size="compact"
                   intent="danger"
                   disabled={busy}
-                  aria-label={`${p.name} 키 제거`}
+                  aria-label={`${p.name} 연결 해제`}
                   onClick={() =>
                     void run(
                       { type: "provider.remove", id: p.id },
@@ -108,7 +108,7 @@ export function ProviderSettings() {
                     )
                   }
                 >
-                  제거
+                  연결 해제
                 </Button>
               </span>
             )}
