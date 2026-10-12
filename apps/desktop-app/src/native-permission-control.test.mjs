@@ -1892,6 +1892,49 @@ test("bootstrap handoff expires on the child clock, after revoke and after runti
   );
 });
 
+test("an expired armed handoff does not block arming the next prepared task", async () => {
+  const { mock } = await import("node:test");
+  let now = 1000;
+  await bootstrapFixture(({ service, request, directory, row }) =>
+    Effect.gen(function* () {
+      const clock = mock.method(performance, "now", () => now);
+      try {
+        yield* service.armBootstrap(row());
+        const second = yield* service.prepareTask({
+          ...request,
+          origin: { ...request.origin, operationId: "second-op" },
+          workspacePath: directory,
+        });
+        assert.equal(second.status, "prepared");
+        const next = {
+          ...row(),
+          handoffId: "6a2d3b51-2c8f-4d2b-9e44-1a6f6c0e4b22",
+          taskScopeId: second.taskScopeId,
+          originalKey: {
+            runtimeEpoch: request.origin.runtimeEpoch,
+            operationId: "second-op",
+          },
+          targetIdentity: {
+            ...row().targetIdentity,
+            taskScopeId: second.taskScopeId,
+            origin: { ...request.origin, operationId: "second-op" },
+            locationId: second.locationId,
+            modeGeneration: second.modeGeneration,
+            inventoryGeneration: second.inventoryGeneration,
+          },
+          currentLaunchIdentity: second.launchId,
+        };
+        // Still within the first handoff's lifetime: the single slot is taken.
+        yield* expectFailure(service.armBootstrap(next));
+        now += 4001;
+        yield* service.armBootstrap(next);
+      } finally {
+        clock.mock.restore();
+      }
+    }),
+  );
+});
+
 test("bootstrap preparation is never re-issued for an original operation key", async () => {
   await bootstrapFixture(({ service, request, directory }) =>
     Effect.gen(function* () {
