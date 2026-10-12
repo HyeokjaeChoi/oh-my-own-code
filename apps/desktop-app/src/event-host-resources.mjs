@@ -194,9 +194,9 @@ export async function inventoryEventHostTree(root, { links = {} } = {}) {
   async function walk(directory, depth) {
     if (depth > EVENT_HOST_LIMITS.depth) fail("depth limit");
     const before = await lstat(directory);
-    for (const name of (await readdir(directory)).sort()) {
+    const visit = async (name) => {
       const path = relative(root, join(directory, name)).split(sep).join("/");
-      if (path === "manifest.json") continue;
+      if (path === "manifest.json") return;
       safeResourcePath(path);
       if (entries.length >= EVENT_HOST_LIMITS.entries) fail("entry limit");
       const absolute = join(root, path);
@@ -237,7 +237,11 @@ export async function inventoryEventHostTree(root, { links = {} } = {}) {
       } else fail("unknown file type");
       if (!unchanged(stat, await lstat(absolute)))
         fail("entry changed during inventory");
-    }
+    };
+    // Bounded fan-out: entries are sorted at the end, so visit order is free.
+    const names = (await readdir(directory)).sort();
+    for (let i = 0; i < names.length; i += 16)
+      await Promise.all(names.slice(i, i + 16).map(visit));
     if (!unchanged(before, await lstat(directory)))
       fail("directory changed during inventory");
   }
