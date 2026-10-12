@@ -1,4 +1,5 @@
-import { readFile, rename, writeFile } from "node:fs/promises";
+import { randomBytes } from "node:crypto";
+import { readFile, rename, rm, writeFile } from "node:fs/promises";
 
 // Main-side model provider settings. The API key goes renderer -> Main -> Native's
 // `integration.connect.key`; Native persists the credential. Main never stores,
@@ -19,6 +20,7 @@ export function validBaseUrl(v) {
     const u = new URL(v);
     return (
       ["http:", "https:"].includes(u.protocol) &&
+      /^(localhost|127(\.\d{1,3}){3}|\[::1\])$/u.test(u.hostname) &&
       !u.username &&
       !u.password &&
       !u.search &&
@@ -36,7 +38,14 @@ function failure(error) {
   return err("UNAVAILABLE");
 }
 
-export function createProviderHost({ context, configFile }) {
+const plain = (v) => (v && typeof v === "object" && !Array.isArray(v) ? v : {});
+
+export function createProviderHost({
+  context,
+  configFile,
+  owned = () => true,
+}) {
+  let writes = Promise.resolve();
   const ready = () => {
     const c = context();
     return c?.client && c.directory ? c : undefined;
@@ -81,7 +90,9 @@ export function createProviderHost({ context, configFile }) {
               a.name.localeCompare(b.name),
           )
           .slice(0, 300);
-        const baseUrl = config.providers?.[LOCAL_ID]?.settings?.baseURL;
+        const baseUrl = plain(
+          plain(plain(config.providers)[LOCAL_ID]).settings,
+        ).baseURL;
         return ok({
           providers,
           local: {
@@ -95,7 +106,7 @@ export function createProviderHost({ context, configFile }) {
     },
     async connect(integrationID, key) {
       const c = ready();
-      if (!c) return err("UNAVAILABLE");
+      if (!c || !owned()) return err("UNAVAILABLE");
       try {
         await c.client.integration.connect.key({
           ...location(c),
@@ -110,7 +121,7 @@ export function createProviderHost({ context, configFile }) {
     },
     async remove(integrationID) {
       const c = ready();
-      if (!c) return err("UNAVAILABLE");
+      if (!c || !owned()) return err("UNAVAILABLE");
       try {
         const info = await c.client.integration.get({
           ...location(c),
@@ -126,26 +137,45 @@ export function createProviderHost({ context, configFile }) {
     },
     // Native reads local provider endpoints from its opencode.json (no key involved).
     async setLocalBaseUrl(baseUrl) {
-      try {
-        const config = await readConfig();
-        const providers = { ...config.providers };
-        const entry = { ...providers[LOCAL_ID] };
-        const settings = { ...entry.settings };
-        if (baseUrl) settings.baseURL = baseUrl;
-        else delete settings.baseURL;
-        providers[LOCAL_ID] = { ...entry, settings };
+      if (!owned()) return err("UNAVAILABLE");
+      const run = async () => {
         const file = configFile();
-        const temp = `${file}.${process.pid}.tmp`;
-        await writeFile(
-          temp,
-          `${JSON.stringify({ ...config, providers }, null, 2)}\n`,
-          { mode: 0o600 },
-        );
-        await rename(temp, file);
-        return ok({ baseUrl });
-      } catch {
-        return err("UNAVAILABLE");
-      }
+        const temp = `${file}.${randomBytes(8).toString("hex")}.tmp`;
+        try {
+          const config = await readConfig();
+          const providers = { ...plain(config.providers) };
+          const entry = { ...plain(providers[LOCAL_ID]) };
+          const url = baseUrl ? new URL(baseUrl).href : "";
+          if (url) {
+            providers[LOCAL_ID] = {
+              ...entry,
+              settings: { ...plain(entry.settings), baseURL: url },
+            };
+          } else {
+            const { baseURL: _drop, ...settings } = plain(entry.settings);
+            const { settings: _s, ...rest } = entry;
+            const next = Object.keys(settings).length
+              ? { ...rest, settings }
+              : rest;
+            if (Object.keys(next).length) providers[LOCAL_ID] = next;
+            else delete providers[LOCAL_ID];
+          }
+          await writeFile(
+            temp,
+            `${JSON.stringify({ ...config, providers }, null, 2)}\n`,
+            { mode: 0o600, flag: "wx" },
+          );
+          await rename(temp, file);
+          return ok({ baseUrl: url });
+        } catch {
+          await rm(temp, { force: true }).catch(() => {});
+          return err("UNAVAILABLE");
+        }
+      };
+      // Serialize read-modify-write so concurrent saves never interleave.
+      const result = writes.then(run);
+      writes = result.catch(() => {});
+      return result;
     },
   };
 }

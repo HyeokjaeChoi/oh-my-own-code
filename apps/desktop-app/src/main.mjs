@@ -119,6 +119,7 @@ const providers = createProviderHost({
       : undefined;
   },
   configFile: () => join(namespace.config, "opencode", "opencode.json"),
+  owned: () => ownedStorage,
 });
 const previews = createPreviewHost({
   createView: createPreviewViewFactory({ getWindow: () => mainWindow }),

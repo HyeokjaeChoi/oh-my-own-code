@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, stat, writeFile } from "node:fs/promises";
+import { mkdtemp, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createProviderHost } from "./provider-host.mjs";
@@ -87,6 +87,8 @@ test("closed channel and request validation", async () => {
     { type: "provider.remove", id: "bad id" },
     { type: "provider.local", baseUrl: "file:///etc/passwd" },
     { type: "provider.local", baseUrl: "http://u:p@h/v1" },
+    { type: "provider.local", baseUrl: "http://example.com/v1" },
+    { type: "provider.local", baseUrl: "http://10.0.0.5:1234/v1" },
   ])
     assert.equal((await invoke(bad)).ok, false, JSON.stringify(bad));
   assert.equal(
@@ -210,10 +212,52 @@ test("local base URL merges into opencode.json at 0600 and can be cleared", asyn
   assert.equal(listed.value.local.baseUrl, "http://127.0.0.1:1234/v1");
   await invoke({ type: "provider.local", baseUrl: "" });
   assert.equal(
-    JSON.parse(await readFile(configFile, "utf8")).providers.lmstudio.settings
-      .baseURL,
+    JSON.parse(await readFile(configFile, "utf8")).providers.lmstudio,
     undefined,
   );
+});
+
+test("local base URL: normalized, stub removed, concurrent saves leave one clean file", async () => {
+  const { invoke, configFile, dir, host } = await setup();
+  await Promise.all(
+    [1, 2, 3, 4, 5].map((n) =>
+      invoke({ type: "provider.local", baseUrl: `http://LOCALHOST:${n}` }),
+    ),
+  );
+  assert.equal(
+    JSON.parse(await readFile(configFile, "utf8")).providers.lmstudio.settings
+      .baseURL,
+    "http://localhost:5/",
+  );
+  assert.deepEqual(await readdir(dir), ["opencode.json"]);
+  await invoke({ type: "provider.local", baseUrl: "" });
+  assert.equal(
+    "lmstudio" in JSON.parse(await readFile(configFile, "utf8")).providers,
+    false,
+  );
+  await writeFile(configFile, '{"providers":[1],"model":"x/y"}\n');
+  assert.equal(
+    (await invoke({ type: "provider.local", baseUrl: "http://[::1]:9/v1" })).ok,
+    true,
+  );
+  // Failure leaves no temp file behind.
+  await writeFile(configFile, "not json");
+  assert.equal((await host.setLocalBaseUrl("")).code, "UNAVAILABLE");
+  assert.deepEqual(await readdir(dir), ["opencode.json"]);
+});
+
+test("write operations are UNAVAILABLE when this process does not own storage", async () => {
+  const host = createProviderHost({
+    context: () => ({ client: {}, directory: "/x" }),
+    configFile: () => "/x",
+    owned: () => false,
+  });
+  for (const r of [
+    await host.connect("openai", KEY),
+    await host.remove("openai"),
+    await host.setLocalBaseUrl("http://127.0.0.1:1/v1"),
+  ])
+    assert.equal(r.code, "UNAVAILABLE");
 });
 
 test("host and ipc sources never log", async () => {
