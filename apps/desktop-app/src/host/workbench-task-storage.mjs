@@ -574,6 +574,18 @@ function reconcileBootstrapTask(task, operation, v) {
 // (already materialized) folder and resolves as the workspace registered with
 // no Native session, which bootstraps fresh on first use. Returns undefined
 // only for shapes the reconciler never produces (the record is then refused).
+// A reconciled fork child's inherited instruction claim, held back as pending
+// until the first admitted read lists its entries (no Native location may be
+// built during startup reconciliation). Unregistered parents pass through.
+const pendingInheritance = (parent, parentSessionId) =>
+  parent?.state === "registered" || parent?.state === "pending_verification"
+    ? {
+        ...parent,
+        state: "pending_verification",
+        origin: "fork",
+        inheritedFromSessionId: parentSessionId,
+      }
+    : parent;
 export function bootstrapReconciliationCompletion(
   operation,
   { workspaces, sessions },
@@ -681,7 +693,10 @@ export function bootstrapReconciliationCompletion(
           ...(fork && {
             parentSessionId: identity.sessionId,
             ...(parent.instructionRegistration && {
-              instructionRegistration: parent.instructionRegistration,
+              instructionRegistration: pendingInheritance(
+                parent.instructionRegistration,
+                identity.sessionId,
+              ),
             }),
             ...(parent.permissionMode && {
               permissionMode: parent.permissionMode,

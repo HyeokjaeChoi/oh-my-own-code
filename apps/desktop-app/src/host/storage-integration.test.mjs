@@ -6422,9 +6422,6 @@ async function openReconciling(t, f, { read, wrap } = {}) {
     },
     listSessions: async () =>
       globalThis.structuredClone([...f.records.values()]),
-    readInstructions: async () => {
-      return [];
-    },
   });
   const opened = await openWorkspaceRegistry({
     ...f.options,
@@ -7056,6 +7053,161 @@ for (const step of [2, 3])
     assert.equal(reopened.snapshot.state, "connected");
     assert.equal(reopened.snapshot.sessions.length, snapshot.sessions.length);
   });
+
+// A registered parent's reconciled fork child is settled with its inheritance
+// unverified (no Native instruction list at startup) and promoted, or made
+// unavailable, by the first ordinary admitted read after admission.
+async function pendingForkChild(t) {
+  const child = fakeBootstrapChild();
+  let recording = false;
+  let writes = 0;
+  const f = await instructionFixture(t, {
+    taskChild: child,
+    projectRegistry: (registry) =>
+      new Proxy(registry, {
+        get(target, key) {
+          if (key === "recordTask" && recording)
+            return async (record) => {
+              if (record.operationId === "create-crash" && ++writes >= 4)
+                throw new Error("synthetic storage loss");
+              return target.recordTask(record);
+            };
+          const value = Reflect.get(target, key);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      }),
+  });
+  assert.equal((await f.mutate(f.apply, "parent-apply")).ok, true);
+  recording = true;
+  await f.mutate(
+    { type: "session.fork", ...f.scope, requestId: "fork-crash" },
+    "create-crash",
+  );
+  await f.registry.checkpoint();
+  const rig = await openReconciling(t, f);
+  await rig.run();
+  const nativeId = forkRecord(f).id;
+  const row = rig.registry
+    .readView()
+    .sessions.find((r) => r.nativeSessionId === nativeId);
+  assert.equal(row.lifecycleState, "active");
+  assert.deepEqual(row.instructionRegistration, {
+    ...f.registry
+      .readView()
+      .sessions.find((r) => r.appSessionId === f.scope.sessionId)
+      .instructionRegistration,
+    state: "pending_verification",
+    origin: "fork",
+    inheritedFromSessionId: f.scope.sessionId,
+  });
+  // The relaunched child: a fresh live ledger for the new epoch.
+  const relaunched = createNativeTaskLedger({
+    runtimeEpoch: "next",
+    isLive: () => true,
+    channel: child.channel,
+    onUnconfirmed() {},
+  });
+  Object.assign(child.tasks, {
+    prepare: relaunched.prepare,
+    arm: relaunched.arm,
+    revoke: relaunched.revoke,
+    verify: relaunched.verify,
+  });
+  child.verify = relaunched.verify;
+  const registry = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "next",
+  });
+  const service = createWorkbenchService({
+    registry,
+    runtime: f.runtime,
+    runtimeEpoch: "next",
+    confirmTrust: async () => true,
+  });
+  t.after(async () => {
+    service.close();
+    await service.drain();
+    await registry.close();
+  });
+  let n = 0;
+  const call = (operation, read = true) =>
+    service.handle(
+      {
+        version: 2,
+        runtimeEpoch: "next",
+        [read ? "readId" : "operationId"]: `pending-${++n}`,
+        operation,
+      },
+      "sender",
+    );
+  const calls = f.state.calls.length;
+  await until(
+    async () => (await call({ type: "snapshot" })).value?.state === "connected",
+  );
+  // Startup (admission) never lists a session's instructions.
+  assert.ok(
+    !f.state.calls.slice(calls).some((name) => name.startsWith("instruction")),
+  );
+  const trusted = await call(
+    { type: "session.create", workspaceId: row.workspaceId },
+    false,
+  );
+  assert.equal(trusted.ok, true, JSON.stringify(trusted));
+  const reopened = { call, registry };
+  return { f, rig, reopened, row, nativeId };
+}
+test("reconcile: a registered parent's fork child starts pending verification and is promoted by the first admitted read", async (t) => {
+  const { f, reopened, row } = await pendingForkChild(t);
+  const target = { workspaceId: row.workspaceId, sessionId: row.appSessionId };
+  const seen = await reopened.call({
+    type: "configuration.instructions.read",
+    ...target,
+  });
+  assert.equal(seen.ok, true, JSON.stringify(seen));
+  assert.equal(seen.value.status, "registered");
+  assert.equal(seen.value.origin, "fork");
+  assert.equal(seen.value.inheritedFromSessionId, f.scope.sessionId);
+  // The promoted row is journaled by the next write that carries the session.
+  const pinned = await reopened.call(
+    { type: "session.pin", ...target, requestId: "pin", pinned: true },
+    false,
+  );
+  assert.equal(pinned.ok, true, JSON.stringify(pinned));
+  assert.equal(
+    reopened.registry
+      .readView()
+      .sessions.find((x) => x.appSessionId === row.appSessionId)
+      .instructionRegistration.state,
+    "registered",
+  );
+});
+test("reconcile: a pending fork child whose entry drifted becomes unavailable", async (t) => {
+  const { f, reopened, row, nativeId } = await pendingForkChild(t);
+  f.instructionEntries.set(nativeId, [
+    { key: INSTRUCTION_KEY, value: "drifted" },
+  ]);
+  const seen = await reopened.call({
+    type: "configuration.instructions.read",
+    workspaceId: row.workspaceId,
+    sessionId: row.appSessionId,
+  });
+  assert.notEqual(seen.value?.status, "registered", JSON.stringify(seen));
+  // The session stays unusable (and is never promoted) afterwards.
+  const again = await reopened.call({
+    type: "configuration.instructions.read",
+    workspaceId: row.workspaceId,
+    sessionId: row.appSessionId,
+  });
+  assert.equal(again.ok, false, JSON.stringify(again));
+  // The durable row stays pending: never promoted without a match.
+  assert.equal(
+    f.registry
+      .readView()
+      .sessions.find((x) => x.appSessionId === row.appSessionId)
+      ?.instructionRegistration?.state ?? "pending_verification",
+    "pending_verification",
+  );
+});
 
 const forkTampers = {
   "a consumed handoff but no child": (f) => f.records.delete(forkRecord(f).id),

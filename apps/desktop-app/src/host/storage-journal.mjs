@@ -138,6 +138,8 @@ import {
   INSTRUCTION_KEY,
   validInstructionRegistration,
   canonicalInstructionRegistration,
+  PENDING,
+  verifiedInheritance,
 } from "./workbench-instructions.mjs";
 import { validWireId, ERRORS } from "../workbench-contract.mjs";
 
@@ -1092,11 +1094,23 @@ export function validateInstructionCompletion(
             : canonicalInstructionRegistration(registration);
       }
     }
+    const actual = canonicalInstructionRegistration(
+      session.instructionRegistration,
+    );
+    // Unverified inheritance (startup reconciliation) is the same claim held
+    // back; a later verified promotion of a pending row is the same claim again.
+    const pending = (value) =>
+      value?.state === "registered" && value.origin === "fork"
+        ? { ...value, state: PENDING }
+        : value;
     need(
-      isDeepStrictEqual(
-        canonicalInstructionRegistration(session.instructionRegistration),
-        expected,
-      ),
+      isDeepStrictEqual(actual, expected) ||
+        (identity.type === "session.fork" &&
+          confirmed &&
+          session.appSessionId === reservation?.appSessionId &&
+          isDeepStrictEqual(actual, pending(expected))) ||
+        (expected?.state === PENDING &&
+          isDeepStrictEqual(actual, verifiedInheritance(expected))),
       "identity_conflict",
     );
   }

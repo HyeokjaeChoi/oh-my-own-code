@@ -5,6 +5,7 @@ import {
   instructionDigest,
   observeInstructions,
   validInstructionRegistration,
+  verifiedInheritance,
 } from "./workbench-instructions.mjs";
 const text = "\uFEFFFollow local rules.\n";
 const registration = {
@@ -103,6 +104,25 @@ test("owned drift is observable and missing is distinct from unobserved ownershi
       ...registration,
       digest: instructionDigest(""),
     }).status,
+    "registered",
+  );
+});
+test("pending_verification is a fork-only inheritance claim that never observes as registered", () => {
+  const pending = {
+    ...registration,
+    state: "pending_verification",
+    origin: "fork",
+    inheritedFromSessionId: "parent",
+  };
+  assert.equal(validInstructionRegistration(pending), true);
+  assert.equal(
+    validInstructionRegistration({ ...pending, origin: "direct" }),
+    false,
+  );
+  const entries = [{ key: INSTRUCTION_KEY, value: text }];
+  assert.equal(observeInstructions(entries, pending).status, "changed");
+  assert.equal(
+    observeInstructions(entries, verifiedInheritance(pending)).status,
     "registered",
   );
 });
