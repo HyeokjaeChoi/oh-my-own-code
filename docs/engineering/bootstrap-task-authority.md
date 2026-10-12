@@ -48,3 +48,9 @@ On startup, for each unsettled bootstrap task: `session.get(plannedNativeSession
 - Bootstrap `inventoryGeneration`/`modeGeneration` use the control's current observed counters (nothing executes) — accepted.
 - Overlay change → rebuild staged event host.
 - Possible bug: after fork, ws ~4465 checks `policyMatches` (baseline) after `policy(child)` applied mode rules → non-ask child may get UNKNOWN_OUTCOME; verify in fork tests.
+
+## Implementation notes (post-review)
+
+- Reconcile is read-only: only `session.get`/`session.list` (no per-location routes, which build a Native location). A reconciled fork child of a registered-instruction parent is stored as `pending_verification` and verified on its first admitted observation.
+- After a live fork, the parent's durable registration may stay `pending_verification` (its promotion is in memory) while the child is durably `registered`. This asymmetry is intended: the parent is re-verified on first use after restart. Do not make the journal reject a registered child of a pending parent.
+- Accepted gap: the journal's pending→registered promotion is not bound to a verification record; every instruction observation re-hashes against the Native entry, so a wrong promotion is caught on first read.
