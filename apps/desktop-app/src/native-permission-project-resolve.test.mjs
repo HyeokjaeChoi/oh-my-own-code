@@ -4,7 +4,16 @@
 // project. PATH shims record any spawn; a .git workspace must cause none.
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { chmod, mkdir, mkdtemp, readFile, realpath, rm, stat, writeFile } from "node:fs/promises";
+import {
+  chmod,
+  mkdir,
+  mkdtemp,
+  readFile,
+  realpath,
+  rm,
+  stat,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import nodePath, { dirname, join } from "node:path";
 import { after, test } from "node:test";
@@ -12,7 +21,10 @@ import { pathToFileURL } from "node:url";
 import { NATIVE_PERMISSION_OVERLAY_RECIPE } from "./native-permission-overlay-contract.mjs";
 import { planNativePermissionOverlay } from "../scripts/native-permission-overlay.mjs";
 
-const root = new URL("../runtime-event-host/.generated/install/", import.meta.url);
+const root = new URL(
+  "../runtime-event-host/.generated/install/",
+  import.meta.url,
+);
 const CHUNK = "node_modules/@opencode/core/dist/chunks/config-pd1wrm5b.js";
 const inputs = await Promise.all(
   NATIVE_PERMISSION_OVERLAY_RECIPE.files.map(async ({ path }) => ({
@@ -20,7 +32,10 @@ const inputs = await Promise.all(
     content: await readFile(new URL(path, root)),
   })),
 );
-const patched = planNativePermissionOverlay(NATIVE_PERMISSION_OVERLAY_RECIPE, inputs)
+const patched = planNativePermissionOverlay(
+  NATIVE_PERMISSION_OVERLAY_RECIPE,
+  inputs,
+)
   .files.find((file) => file.path === CHUNK)
   .content.toString("utf8");
 const original = await readFile(new URL(CHUNK, root), "utf8");
@@ -28,19 +43,26 @@ const lib = (path) => import(pathToFileURL(new URL(path, root).pathname).href);
 const { Effect } = await lib("node_modules/effect/dist/index.js");
 const { Hash } = await lib("node_modules/@opencode/util/dist/hash.js");
 
-const base = await realpath(await mkdtemp(join(tmpdir(), "omoc-project-resolve-")));
+const base = await realpath(
+  await mkdtemp(join(tmpdir(), "omoc-project-resolve-")),
+);
 after(() => rm(base, { recursive: true, force: true }));
 const log = join(base, "spawns.log");
 const bin = join(base, "bin");
 await mkdir(bin);
 for (const name of ["git", "hg"]) {
-  await writeFile(join(bin, name), `#!/bin/sh\necho "${name} $*" >> "${log}"\nexit 1\n`);
+  await writeFile(
+    join(bin, name),
+    `#!/bin/sh\necho "${name} $*" >> "${log}"\nexit 1\n`,
+  );
   await chmod(join(bin, name), 0o755);
 }
 const spawns = async () => (await readFile(log, "utf8").catch(() => "")).trim();
 // A real binary spawned by name through the shimmed PATH, as Native's git/hg service does.
 const run = (name, args) =>
-  spawnSync(name, args, { env: { ...process.env, PATH: `${bin}:${process.env.PATH}` } });
+  spawnSync(name, args, {
+    env: { ...process.env, PATH: `${bin}:${process.env.PATH}` },
+  });
 
 // Extract the resolve body (cached..resolve); persistence is a recording stub.
 function resolver(source) {
@@ -55,7 +77,13 @@ function resolver(source) {
         for (let dir = from; ; dir = dirname(dir)) {
           for (const target of targets) {
             const found = join(dir, target);
-            if (await stat(found).then(() => true, () => false)) return [found];
+            if (
+              await stat(found).then(
+                () => true,
+                () => false,
+              )
+            )
+              return [found];
           }
           if (dirname(dir) === dir) return [];
         }
@@ -63,28 +91,80 @@ function resolver(source) {
     readFileString: () => Effect.fail(new Error("absent")),
   };
   const git = {
-    repo: { discover: (dir) => Effect.sync(() => (run("git", ["rev-parse"]), { worktree: dir, gitDirectory: join(dir, ".git"), commonDirectory: join(dir, ".git") })) },
-    remote: { get: () => Effect.sync(() => (run("git", ["remote", "get-url", "origin"]), undefined)) },
-    history: { rootCommits: () => Effect.sync(() => (run("git", ["rev-list"]), [])) },
-    worktree: { list: () => Effect.sync(() => (run("git", ["worktree", "list"]), [])) },
+    repo: {
+      discover: (dir) =>
+        Effect.sync(
+          () => (
+            run("git", ["rev-parse"]),
+            {
+              worktree: dir,
+              gitDirectory: join(dir, ".git"),
+              commonDirectory: join(dir, ".git"),
+            }
+          ),
+        ),
+    },
+    remote: {
+      get: () =>
+        Effect.sync(
+          () => (run("git", ["remote", "get-url", "origin"]), undefined),
+        ),
+    },
+    history: {
+      rootCommits: () => Effect.sync(() => (run("git", ["rev-list"]), [])),
+    },
+    worktree: {
+      list: () => Effect.sync(() => (run("git", ["worktree", "list"]), [])),
+    },
   };
-  const proc = { run: () => Effect.sync(() => run("hg", ["log"])).pipe(Effect.as({ exitCode: 1, stdout: Buffer.alloc(0) })) };
+  const proc = {
+    run: () =>
+      Effect.sync(() => run("hg", ["log"])).pipe(
+        Effect.as({ exitCode: 1, stdout: Buffer.alloc(0) }),
+      ),
+  };
   const ID17 = { make: (value) => value, global: "global" };
   const AbsolutePath2 = { make: (value) => value };
   const ChildProcess = { make: () => ({}) };
-  const persist = (project) => Effect.sync(() => (persisted.push(project), project));
-  const names = ["Effect", "fs", "git", "proc", "path", "Hash", "AbsolutePath2", "ID17", "ChildProcess", "persist"];
+  const persist = (project) =>
+    Effect.sync(() => (persisted.push(project), project));
+  const names = [
+    "Effect",
+    "fs",
+    "git",
+    "proc",
+    "path",
+    "Hash",
+    "AbsolutePath2",
+    "ID17",
+    "ChildProcess",
+    "persist",
+  ];
   const resolve = new Function(
     ...names,
     `${source.slice(start, end)}\nreturn resolve;`,
-  )(Effect, fs, git, proc, nodePath, Hash, AbsolutePath2, ID17, ChildProcess, persist);
+  )(
+    Effect,
+    fs,
+    git,
+    proc,
+    nodePath,
+    Hash,
+    AbsolutePath2,
+    ID17,
+    ChildProcess,
+    persist,
+  );
   return { resolve, persisted };
 }
 
 async function workspace(name, vcs) {
   const dir = join(base, name);
   await mkdir(join(dir, vcs), { recursive: true });
-  await writeFile(join(dir, vcs, "config"), "[core]\n\tfsmonitor = touch pwned\n");
+  await writeFile(
+    join(dir, vcs, "config"),
+    "[core]\n\tfsmonitor = touch pwned\n",
+  );
   return dir;
 }
 
@@ -93,7 +173,9 @@ test("unpatched Native spawns git in a .git workspace (positive control for the 
   const { resolve } = resolver(original);
   await Effect.runPromise(resolve(dir));
   assert.match(await spawns(), /^git rev-parse/mu);
-  await Effect.runPromise(resolver(original).resolve(await workspace("control-hg", ".hg")));
+  await Effect.runPromise(
+    resolver(original).resolve(await workspace("control-hg", ".hg")),
+  );
   assert.match(await spawns(), /^hg log/mu);
 });
 

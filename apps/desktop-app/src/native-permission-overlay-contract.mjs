@@ -1840,8 +1840,10 @@ const recipe = {
     },
     {
       path: "node_modules/@opencode/core/dist/chunks/config-pd1wrm5b.js",
-      beforeSha256: "1bc33e8896e6adebed1a69b152cacd8fb674838e944159b636fb4735ed4072a3",
-      afterSha256: "94969ae96255ae619bc755dc26890fc50921b88bb95ad49ddbf1529e2cf0b44c",
+      beforeSha256:
+        "1bc33e8896e6adebed1a69b152cacd8fb674838e944159b636fb4735ed4072a3",
+      afterSha256:
+        "94969ae96255ae619bc755dc26890fc50921b88bb95ad49ddbf1529e2cf0b44c",
       edits: [
         {
           // Project.resolve is the single Native VCS discovery point (git/hg
@@ -1849,7 +1851,8 @@ const recipe = {
           // Every caller (Session.create, SessionMove, Location) gets the
           // directory-identity project; no VCS is ever discovered or spawned.
           find: '    const native = yield* fs.up({ targets: [".git", ".hg"], start: directory, mode: "first" }).pipe(Effect.map((matches) => matches[0]), Effect.orElseSucceed(() => {\n      return;\n    }));\n',
-          replace: "    const native = undefined; // desktop: never discover VCS\n",
+          replace:
+            "    const native = undefined; // desktop: never discover VCS\n",
         },
       ],
     },

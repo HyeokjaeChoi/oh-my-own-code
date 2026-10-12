@@ -478,7 +478,10 @@ test("child diagnostics are bounded, path-redacted and strictly closed", () => {
   assert.equal("detail" in clean, false);
   assert.equal("code" in clean, false);
   assert.equal(clean.tag, "Error");
-  assert.equal(sanitizeDiagnostic({ kind: "reject", code: "root_unverified" }).code, "root_unverified");
+  assert.equal(
+    sanitizeDiagnostic({ kind: "reject", code: "root_unverified" }).code,
+    "root_unverified",
+  );
   assert.equal("extra" in clean, false);
   const message = {
     type: "diagnostic",
@@ -502,8 +505,12 @@ test("child diagnostics are bounded, path-redacted and strictly closed", () => {
 test("diagnostic emitter caps each kind separately so holds are never lost", () => {
   const sent = [];
   let closing = false;
-  const emit = createDiagnosticEmitter((m) => sent.push(m), () => closing);
-  for (let i = 0; i < 1000; i++) emit({ kind: "native", tag: "Error", route: `GET /r/${i}` });
+  const emit = createDiagnosticEmitter(
+    (m) => sent.push(m),
+    () => closing,
+  );
+  for (let i = 0; i < 1000; i++)
+    emit({ kind: "native", tag: "Error", route: `GET /r/${i}` });
   for (let i = 0; i < 1000; i++) emit({ kind: "reject", code: `c${i}` });
   emit({ kind: "hold", step: "first" });
   emit({ kind: "hold", step: "first" }); // adjacent duplicate

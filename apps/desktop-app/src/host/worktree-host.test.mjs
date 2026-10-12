@@ -507,7 +507,10 @@ test("git runs ignore system and global config", async () => {
     process.env.PATH = `${bin}:${oldPath}`;
     await f.host.create({ repo: f.repo, branch: "feat/e", base: "main" });
     const seen = readFileSync(log, "utf8").trim().split("\n");
-    assert.ok(seen.length > 1 && seen.every((v) => v === "1 /dev/null"), seen.join("|"));
+    assert.ok(
+      seen.length > 1 && seen.every((v) => v === "1 /dev/null"),
+      seen.join("|"),
+    );
   } finally {
     process.env.PATH = oldPath;
     f.done();

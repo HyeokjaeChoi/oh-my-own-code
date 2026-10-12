@@ -68,15 +68,19 @@ const execGit = (cwd, args) =>
       "git",
       [...HARDEN, ...args],
       { cwd, timeout: 30000, maxBuffer: 1 << 22, env: gitEnv(cwd) },
-      (error, stdout, stderr) => (error ? reject({ error, stderr }) : done(stdout)),
+      (error, stdout, stderr) =>
+        error ? reject({ error, stderr }) : done(stdout),
     );
   });
 
 async function assertSafeRepoConfig(cwd) {
   // Not a repository (or unreadable): the real command reports that itself.
-  const listing = await execGit(cwd, ["config", "--local", "-z", "--list"]).catch(
-    () => "",
-  );
+  const listing = await execGit(cwd, [
+    "config",
+    "--local",
+    "-z",
+    "--list",
+  ]).catch(() => "");
   for (const entry of listing.split("\0")) {
     const key = entry.split("\n", 1)[0].toLowerCase();
     if (UNSAFE_CONFIG.test(key)) throw fail("UNSAFE_REPO_CONFIG");

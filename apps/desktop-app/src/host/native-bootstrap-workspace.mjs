@@ -84,7 +84,9 @@ const noteFailure = (error) => {
 };
 const VCS_NAMES = [".git", ".hg"];
 const swapCase = (value) =>
-  [...value].map((c) => (c === c.toLowerCase() ? c.toUpperCase() : c.toLowerCase())).join("");
+  [...value]
+    .map((c) => (c === c.toLowerCase() ? c.toUpperCase() : c.toLowerCase()))
+    .join("");
 
 // Execution-side VCS metadata guard (permission rules are lexical and
 // case-sensitive; this is by canonical identity). Throws unless `target` is an
@@ -97,13 +99,21 @@ const swapCase = (value) =>
 // write, patch) before the effect, and again on the formatter's output paths.
 export async function assertNotVcsMetadataPath(workspace, target) {
   need(typeof workspace === "string" && isAbsolute(workspace));
-  need(typeof target === "string" && isAbsolute(target) && !target.includes("\0"));
+  need(
+    typeof target === "string" && isAbsolute(target) && !target.includes("\0"),
+  );
   const root = await fs.realpath(workspace);
-  const alias = join(dirname(root), swapCase(root.slice(dirname(root).length + 1)));
+  const alias = join(
+    dirname(root),
+    swapCase(root.slice(dirname(root).length + 1)),
+  );
   const caseInsensitive =
     alias === root ||
     (await fs.lstat(alias, { bigint: true }).then(
-      (a) => fs.lstat(root, { bigint: true }).then((r) => a.dev === r.dev && a.ino === r.ino),
+      (a) =>
+        fs
+          .lstat(root, { bigint: true })
+          .then((r) => a.dev === r.dev && a.ino === r.ino),
       () => false,
     ));
   let existing = normalize(target);
@@ -122,7 +132,12 @@ export async function assertNotVcsMetadataPath(workspace, target) {
   }
   const real = join(existing, ...tail);
   const rel = relative(root, real);
-  need(rel !== "" && rel !== ".." && !rel.startsWith(`..${sep}`) && !isAbsolute(rel));
+  need(
+    rel !== "" &&
+      rel !== ".." &&
+      !rel.startsWith(`..${sep}`) &&
+      !isAbsolute(rel),
+  );
   for (const part of rel.split(sep)) {
     const name = caseInsensitive ? part.toLowerCase() : part;
     need(!VCS_NAMES.includes(name));
