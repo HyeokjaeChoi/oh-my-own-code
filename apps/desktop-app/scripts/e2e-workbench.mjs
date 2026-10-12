@@ -209,7 +209,11 @@ try {
     .click();
   await expect(composer).toHaveValue("");
   await composer.fill("A separate second-session draft");
-  await page.getByRole("button", { name: originalTitle, exact: true }).click();
+  // The recent-session strip also names the (disabled) current session.
+  await page
+    .getByRole("list")
+    .getByRole("button", { name: originalTitle, exact: true })
+    .click();
   await expect(composer).toHaveValue("Draft stays in this session");
   observations.push(
     "actual session navigation preserves separate assistant-ui drafts",
