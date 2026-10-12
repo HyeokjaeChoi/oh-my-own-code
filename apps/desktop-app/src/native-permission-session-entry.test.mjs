@@ -280,22 +280,30 @@ test("actual checked direct SessionShell refuses before Instance or Shell acquis
 });
 
 // Extract the actual patched pre-session method only. No Native graph or SQL is
-// loaded. A held create must not inspect even its input or allocate a Native ID.
-test("actual checked Native create stays held before input, ID allocation or store/project effects", async () => {
+// loaded. Create is gated by the private bootstrap handoff: it must consume it
+// as the FIRST statement, before inspecting input, allocating an ID or touching
+// the store/project, and a refusal leaves all of those untouched.
+async function createUnderGate(gate) {
   const text = await checkedSource("config-zyp346xr.js");
   const begin = text.indexOf('    create: Effect.fn("Session.create")');
   const finish = text.indexOf("\n    fork:", begin);
   assert.ok(begin >= 0 && finish > begin);
-  let id = 0,
-    store = 0,
-    project = 0,
-    reads = 0;
+  const seen = { id: 0, store: 0, project: 0, reads: 0, consumed: [] };
   const deps = {
     Effect,
+    control: {
+      consumeBootstrap: (input) =>
+        Effect.suspend(() => {
+          seen.consumed.push(input);
+          return gate
+            ? Effect.void
+            : Effect.fail(new Error("native_permission_held"));
+        }),
+    },
     SessionSchema2: {
       ID: {
         create: () => {
-          id++;
+          seen.id++;
           return "new-id";
         },
       },
@@ -303,14 +311,14 @@ test("actual checked Native create stays held before input, ID allocation or sto
     store: {
       get: () =>
         Effect.sync(() => {
-          store++;
+          seen.store++;
           return { id: "existing" };
         }),
     },
     projects: {
       resolve: () =>
         Effect.sync(() => {
-          project++;
+          seen.project++;
           return { id: "project" };
         }),
     },
@@ -319,22 +327,61 @@ test("actual checked Native create stays held before input, ID allocation or sto
     ...Object.keys(deps),
     "return ({" + text.slice(begin, finish) + "}).create;",
   )(...Object.values(deps));
-  for (const input of [
+  return { create, seen };
+}
+test("actual checked Native create is refused by the bootstrap gate before input, ID allocation or store/project effects", async () => {
+  const { create, seen } = await createUnderGate(false);
+  const inputs = [
     {},
     { id: "existing" },
     new Proxy(
       {},
       {
         get() {
-          reads++;
+          seen.reads++;
           throw new Error("must not inspect");
         },
       },
     ),
-  ])
+  ];
+  for (const input of inputs)
     held(await Effect.runPromise(Effect.exit(create(input))));
+  // Each attempt reached the gate with exactly its own input, and nothing else.
+  assert.equal(seen.consumed.length, inputs.length);
+  inputs.forEach((input, index) => assert.equal(seen.consumed[index], input));
   assert.deepEqual(
-    { id, store, project, reads },
+    {
+      id: seen.id,
+      store: seen.store,
+      project: seen.project,
+      reads: seen.reads,
+    },
     { id: 0, store: 0, project: 0, reads: 0 },
   );
+});
+test("actual checked Native create proceeds into the original body only after the gate admits it", async () => {
+  const { create, seen } = await createUnderGate(true);
+  const input = { id: "planned" };
+  const result = await Effect.runPromise(create(input));
+  assert.deepEqual(result, { id: "existing" });
+  assert.deepEqual(seen.consumed, [input]);
+  // The first original statement ran (duplicate probe) and nothing was created.
+  assert.deepEqual(
+    { id: seen.id, store: seen.store, project: seen.project },
+    { id: 0, store: 1, project: 0 },
+  );
+});
+test("actual checked Native session import stays closed", async () => {
+  const text = outputs
+    .find(
+      (entry) =>
+        entry.path === "node_modules/@opencode/core/dist/session/transfer.js",
+    )
+    .content.toString("utf8");
+  const begin = text.indexOf('    import: Effect.fn("SessionTransfer.import")');
+  assert.ok(begin >= 0);
+  const body = text.slice(begin, begin + 400);
+  const first = body.split("\n").slice(1, 4).join("\n");
+  assert.match(first, /native_permission_held/u);
+  assert.equal(first.includes("consumeBootstrap"), false);
 });

@@ -1,3 +1,4 @@
+import { assertOnlyCreateGateChanged } from "./native-permission-overlay-bootstrap-edit.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
@@ -313,7 +314,7 @@ test("four SDK additions preserve original fifty entries and 256 edit ceiling", 
     saved.indexOf(";\nfor (const file"),
   );
   const original = new Function(`return (${literal});`)();
-  assert.deepEqual(recipe.files.slice(0, 50), original.files);
+  assertOnlyCreateGateChanged(recipe.files.slice(0, 50), original.files);
   assert.deepEqual(
     recipe.files.slice(50, 54).map((row) => row.path),
     transformedPaths,
