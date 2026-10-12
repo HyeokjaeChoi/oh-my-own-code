@@ -159,6 +159,34 @@ test("export pre-clip never leaks a secret fragment at the tail", () => {
   }
 });
 
+test("long single-line values keep content and leak no secret at any cut offset", () => {
+  const n = DATA_LIMITS.text;
+  const plain = build({
+    messages: [{ id: "m1", role: "user", text: "word ".repeat(40000) }],
+  }).doc.sessions[0].messages[0].text;
+  assert.ok(plain.length > n - 10 && plain !== "[TRUNCATED]");
+  const jwt = `eyJ${"h".repeat(60)}.eyJ${"p".repeat(300)}.${"s".repeat(60)}`;
+  const secrets = [
+    ["QQQQ", `password="QQQQ ${"y ".repeat(600)}`],
+    ["QQQQ", `token='QQQQ${"x".repeat(1200)}`],
+    ["eyJhhhh", jwt],
+  ];
+  for (const [needle, secret] of secrets)
+    for (const off of [0, 5, 100, 400, 700, 2000]) {
+      const lead = n + 4096 - off - 10;
+      const text = `${"a ".repeat(lead / 2)}${secret}`;
+      const t = build({ messages: [{ id: "m1", role: "user", text }] }).doc
+        .sessions[0].messages[0].text;
+      assert.ok(t.length > 1000 && t !== "[TRUNCATED]");
+      assert.ok(!t.includes(needle) && !t.includes("eyJ"), `leak at ${off}`);
+    }
+});
+
+test("unterminated quoted secrets are redacted in raw text", () => {
+  const { text } = redactText('password="abc123\nnext line ok\napi_key=\'zzz9');
+  assert.ok(!/abc123|zzz9/.test(text) && text.includes("next line ok"));
+});
+
 test("redaction is idempotent", () => {
   const once = redactText(
     `${FAKE_KEYS.join(" ")} TOKEN=zzz Authorization: Bearer abcdefghij ${HOME}`,
