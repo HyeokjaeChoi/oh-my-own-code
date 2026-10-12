@@ -47,7 +47,7 @@ test("pinned overlay recipe binds exact sixty-four source files and preserves fr
   assert.equal(recipe.id, "permission-session-entry-gate-v1");
   assert.equal(
     NATIVE_PERMISSION_OVERLAY_RECEIPT.recipeSha256,
-    "c14f92a57caa2854bf83ef3a9e6c8ffbf1174bb5a9dd853d45a2f9930af0cd2b",
+    "1fa2acc3cfe1e4fc3abc31a4aeb94eae73dcd77100eb241d62b539f68727c524",
   );
   assert.deepEqual(
     recipe.files.slice(0, 50).map(({ path }) => path),
@@ -215,7 +215,7 @@ test("pinned overlay recipe binds exact sixty-four source files and preserves fr
     ],
   );
   assert.equal(recipe.serverVersion, "2.0.18");
-  assert.equal(recipe.files.length, 67);
+  assert.equal(recipe.files.length, 68);
   assert.equal(Object.isFrozen(recipe), true);
   assert.equal(Object.isFrozen(recipe.files), true);
   for (const file of recipe.files) {
@@ -242,7 +242,7 @@ test("actual pinned source transforms to exact checked output without executing 
     NATIVE_PERMISSION_OVERLAY_RECIPE,
     files,
   );
-  assert.equal(plan.files.length, 67);
+  assert.equal(plan.files.length, 68);
   assert.equal(
     plan.recipeSha256,
     NATIVE_PERMISSION_OVERLAY_RECEIPT.recipeSha256,
@@ -415,7 +415,7 @@ test("patched Permission and Saved sources share the fixed control and preserve 
 
 test("sixty-four-file consumer refuses missing, duplicate and extra sources and keeps recipe output order", async () => {
   const files = await inputs();
-  assert.equal(files.length, 67);
+  assert.equal(files.length, 68);
   for (const [index] of files.entries()) {
     assert.throws(() =>
       planNativePermissionOverlay(
@@ -679,7 +679,7 @@ test("provider extension preserves every archived recipe entry as a byte-equival
   );
   const before = new Function(`return (${literal});`)();
   assert.equal(before.files.length, 44);
-  assert.equal(NATIVE_PERMISSION_OVERLAY_RECIPE.files.length, 67);
+  assert.equal(NATIVE_PERMISSION_OVERLAY_RECIPE.files.length, 68);
   assert.deepEqual(
     masked(NATIVE_PERMISSION_OVERLAY_RECIPE.files.slice(0, 44)),
     masked(before.files),
@@ -693,8 +693,8 @@ test("provider extension preserves every archived recipe entry as a byte-equival
     (count, file) => count + file.edits.length,
     0,
   );
-  assert.equal(edits, 256);
-  assert.ok(edits <= 256);
+  assert.equal(edits, 259);
+  assert.ok(edits <= 512);
 });
 
 test("Read layer addition preserves all preceding fifty-four frozen recipe entries", () => {

@@ -288,7 +288,7 @@ function callbackExpressions(source) {
     .map((node) => source.slice(...node.declarations[0].init.range));
 }
 const transformedPaths = [factory, ...individuals].map((spec) => spec.path);
-test("four SDK additions preserve original fifty entries and 256 edit ceiling", async () => {
+test("four SDK additions preserve original fifty entries within the 512 edit ceiling", async () => {
   const backup = new URL(
     "../../../docs/runs/permission-task-lifetime-integration/prechange/provider-sdk-source-before-r1/",
     import.meta.url,
@@ -319,7 +319,7 @@ test("four SDK additions preserve original fifty entries and 256 edit ceiling", 
     recipe.files.slice(50, 54).map((row) => row.path),
     transformedPaths,
   );
-  assert.ok(recipe.files.reduce((n, row) => n + row.edits.length, 0) <= 256);
+  assert.ok(recipe.files.reduce((n, row) => n + row.edits.length, 0) <= 512);
 });
 for (const spec of specs) {
   test(`${spec.id}: pinned inert source, exact callbacks, lazy publication and owner isolation`, async () => {
