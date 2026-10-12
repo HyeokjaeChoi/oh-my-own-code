@@ -297,7 +297,9 @@ try {
     page.getByText("Tool result received: file read ok"),
   ).toBeVisible({ timeout: 90_000 });
   await idle();
-  observations.push("turn 3: read permission approved ("always"); result and final reply");
+  observations.push(
+    "turn 3: read permission approved (always); result and final reply",
+  );
 
   // Mode change: scoped_edit auto-allows an in-workspace write (no prompt).
   // The mode select may be refused (BUSY) for a moment after the last reply.

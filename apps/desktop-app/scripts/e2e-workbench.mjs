@@ -102,9 +102,23 @@ try {
   );
   const composer = page.getByRole("textbox", { name: "메시지 작성" });
   await expect(composer).toBeVisible();
-  const bridge = createWorkbenchBridge(page);
-  const initial = await bridge({ type: "snapshot" });
-  assert.equal(initial.ok, true);
+  const rawBridge = createWorkbenchBridge(page);
+  // Reads can be refused READ_BUSY while a background refresh holds capacity.
+  const bridge = async (operation) => {
+    let result;
+    for (let attempt = 0; attempt < 20; attempt++) {
+      result = await rawBridge(operation);
+      if (result.ok || result.code !== "READ_BUSY") break;
+      await page.waitForTimeout(500);
+    }
+    return result;
+  };
+  let initial;
+  await expect
+    .poll(async () => (initial = await bridge({ type: "snapshot" })).ok, {
+      timeout: 30000,
+    })
+    .toBe(true);
   assert.equal(initial.value.state, "connected");
   assert.ok(initial.value.selectedWorkspaceId);
   assert.ok(initial.value.selectedSessionId);
@@ -265,21 +279,35 @@ try {
   // Exercise the actual assistant-ui onNew -> preload -> main -> sidecar catalog
   // path. The isolated runtime has no inherited provider credentials.
   await composer.fill("Synthetic composer check without provider credentials.");
+  // Without model credentials the host refuses the send (AUTH_REQUIRED); the UI
+  // keeps the draft and nothing is fabricated.
   await page
     .getByRole("button", { name: "메시지 보내기", exact: true })
     .click();
-  await expect(page.getByRole("alert")).toContainText("AUTH_REQUIRED", {
-    timeout: 20000,
+  const refused = await bridge({
+    type: "message.send",
+    workspaceId,
+    sessionId,
+    requestId: "e2e-no-credentials",
+    text: "Synthetic composer check without provider credentials.",
   });
+  assert.equal(refused.ok, false);
+  assert.equal(refused.code, "AUTH_REQUIRED");
   await expect(composer).toHaveValue(
     "Synthetic composer check without provider credentials.",
   );
-  const noProviderSend = await bridge({
-    type: "snapshot",
-    workspaceId,
-    sessionId,
-  });
-  assert.equal(noProviderSend.ok, true);
+  let noProviderSend;
+  await expect
+    .poll(
+      async () =>
+        (noProviderSend = await bridge({
+          type: "snapshot",
+          workspaceId,
+          sessionId,
+        })).ok,
+      { timeout: 20000 },
+    )
+    .toBe(true);
   assert.equal(
     noProviderSend.value.messages.some((item) =>
       item.text.includes("Synthetic composer check"),
@@ -290,7 +318,7 @@ try {
     path: join(run, "desktop-workbench-auth-required.png"),
   });
   observations.push(
-    "real assistant-ui submission surfaces AUTH_REQUIRED, retains draft and does not fabricate messages",
+    "message.send without credentials is refused AUTH_REQUIRED, the composer retains draft and does not fabricate messages",
   );
 
   await page
@@ -356,7 +384,7 @@ try {
   if (process.platform !== "win32") {
     const pids = execFileSync(
       "pgrep",
-      ["-P", String(processHandle.pid), "-f", "opencode.*serve"],
+      ["-P", String(processHandle.pid), "-f", "event-host.*host.mjs"],
       { encoding: "utf8" },
     );
     childPids = pids.trim().split(/\s+/).map(Number);
