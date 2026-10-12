@@ -631,6 +631,10 @@
   .composeRegion {
     scroll-padding-bottom: 176px;
   }
+  /* The region scrolls here, so the queue keeps a reachable height. */
+  .permissionQueue {
+    min-height: min(72px, 12dvh);
+  }
   .composer {
     position: sticky;
     bottom: 0;
