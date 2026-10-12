@@ -329,9 +329,9 @@ test("maintenance overlay preserves original cleanup closures/layers and frozen 
   const before = new Function(`return (${literal});`)();
   assert.equal(before.files.length, 60);
   assertOnlyCreateGateChanged(recipe.files.slice(0, 60), before.files);
-  // Five later extensions plus the closed SessionTransfer.import entry.
-  assert.equal(recipe.files.length, 67);
+  // Five later extensions plus the closed SessionTransfer.import and Worktree entries.
+  assert.equal(recipe.files.length, 68);
   assert.ok(
-    recipe.files.reduce((count, row) => count + row.edits.length, 0) <= 256,
+    recipe.files.reduce((count, row) => count + row.edits.length, 0) <= 512,
   );
 });

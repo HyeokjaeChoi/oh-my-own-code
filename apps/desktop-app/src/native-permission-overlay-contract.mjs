@@ -1856,6 +1856,33 @@ const recipe = {
         },
       ],
     },
+    {
+      path: "node_modules/@opencode/core/dist/chunks/config-446vgdts.js",
+      beforeSha256:
+        "83d0e8bfff2bb5111c22420f11a344853a2811a120b48461391c06ac9949d27a",
+      afterSha256:
+        "be1d6b6709b3ec5e676ae96b13c925ec10c875aa55c6cb5347ed768066c1051c",
+      edits: [
+        {
+          // Worktree create/remove/refresh run the git strategy (git worktree
+          // add/remove/list: repo hooks, filters, config) and the project
+          // start command; they stay closed unconditionally.
+          find: '  const create = Effect.fn("Worktree.create")(function* (input, current) {\n',
+          replace:
+            '  const create = Effect.fn("Worktree.create")(function* (input, current) {\n    yield* Effect.fail(new Error("native_permission_held"));\n',
+        },
+        {
+          find: '  const remove = Effect.fn("Worktree.remove")(function* (input, current) {\n',
+          replace:
+            '  const remove = Effect.fn("Worktree.remove")(function* (input, current) {\n    yield* Effect.fail(new Error("native_permission_held"));\n',
+        },
+        {
+          find: '  const refresh = Effect.fn("Worktree.refresh")(function* (input, current) {\n',
+          replace:
+            '  const refresh = Effect.fn("Worktree.refresh")(function* (input, current) {\n    yield* Effect.fail(new Error("native_permission_held"));\n',
+        },
+      ],
+    },
   ],
 };
 for (const file of recipe.files) {
@@ -1872,7 +1899,7 @@ export const NATIVE_PERMISSION_OVERLAY_RECEIPT = Object.freeze({
   id: recipe.id,
   serverVersion: recipe.serverVersion,
   recipeSha256:
-    "c14f92a57caa2854bf83ef3a9e6c8ffbf1174bb5a9dd853d45a2f9930af0cd2b",
+    "1fa2acc3cfe1e4fc3abc31a4aeb94eae73dcd77100eb241d62b539f68727c524",
   files: Object.freeze(
     recipe.files.map(({ path, beforeSha256, afterSha256 }) =>
       Object.freeze({ path, beforeSha256, afterSha256 }),
