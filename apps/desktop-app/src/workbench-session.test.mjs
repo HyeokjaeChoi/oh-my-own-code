@@ -900,3 +900,46 @@ test("more than 64 finished Native subagent children never fail mode propagation
       f.records.get("sdk-parent").permissions,
     );
 });
+
+test("permission.list failure keeps the session readable but disables send and reply without RUNTIME_ERROR", async (t) => {
+  const f = await fixture(t);
+  f.client.message.list = async () => ({
+    data: [
+      {
+        id: "m1",
+        type: "user",
+        sessionID: "sdk-parent",
+        text: "hello",
+        time: { created: 1 },
+      },
+    ],
+    cursor: {},
+  });
+  let failing = true;
+  f.client.permission.list = async () => {
+    if (failing) throw Object.assign(new Error("HTTP 500"), { status: 500 });
+    return [];
+  };
+  const snap = await f.service.handle({ type: "snapshot" });
+  assert.equal(snap.ok, true);
+  // Not a runtime failure: still connected, no RUNTIME_ERROR, no pending list.
+  assert.notEqual(snap.value.error?.code, "RUNTIME_ERROR");
+  assert.equal(snap.value.error?.code, "UNAVAILABLE");
+  assert.deepEqual(snap.value.permissions, []);
+  assert.equal(snap.value.selectedSessionId, f.target.sessionId);
+  assert.notEqual(snap.value.sessions[0].status, "unknown");
+  for (const request of [
+    f.request("message.send", { text: "hi" }),
+    f.request("permission.respond", { requestId: "p", decision: "once" }),
+  ]) {
+    const res = await f.service.handle(request);
+    assert.equal(res.ok, false);
+    assert.equal(res.code, "UNAVAILABLE");
+  }
+  assert.equal(f.calls.filter((c) => c.name === "reply").length, 0);
+  // Recovery: a later successful read re-enables the session.
+  failing = false;
+  const again = await f.service.handle({ type: "snapshot" });
+  assert.equal(again.ok, true);
+  assert.equal(again.value.error, undefined);
+});

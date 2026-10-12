@@ -2835,18 +2835,35 @@ export function createWorkbenchService({
           limit: 100,
           order: "desc",
         });
-        const pending = await call(client.permission.list, {
-          sessionID: s.sdkId,
-        });
-        const subagentPending = [];
-        for (const child of await nativeDescendants(s.sdkId, "RUNTIME_ERROR")) {
-          const list = await call(client.permission.list, {
-            sessionID: child.id,
+        // Permission state is read per location. If it cannot be read, the
+        // transcript stays readable but nothing may act on permissions: the
+        // session is marked permissions-unavailable (send/reply refuse) and is
+        // not a runtime error by itself.
+        let pending = [];
+        let subagentPending = [];
+        let permissionsUnavailable = false;
+        try {
+          pending = await call(client.permission.list, {
+            sessionID: s.sdkId,
           });
-          if (!Array.isArray(list)) fail("RUNTIME_ERROR");
-          for (const p of list)
-            if (p?.sessionID === child.id)
-              subagentPending.push({ ...p, childTitle: child.title });
+          if (!Array.isArray(pending)) fail("RUNTIME_ERROR");
+          for (const child of await nativeDescendants(
+            s.sdkId,
+            "RUNTIME_ERROR",
+          )) {
+            const list = await call(client.permission.list, {
+              sessionID: child.id,
+            });
+            if (!Array.isArray(list)) fail("RUNTIME_ERROR");
+            for (const p of list)
+              if (p?.sessionID === child.id)
+                subagentPending.push({ ...p, childTitle: child.title });
+          }
+        } catch {
+          checkLive();
+          pending = [];
+          subagentPending = [];
+          permissionsUnavailable = true;
         }
         if (
           info?.id !== s.sdkId ||
@@ -2866,6 +2883,7 @@ export function createWorkbenchService({
           !currentResourceMatches()
         )
           fail("READ_BUSY");
+        s.permissionsUnavailable = permissionsUnavailable;
         s.sessionSelection = projectSessionSelection(info, s.id);
         s.messages = projectMessages([...messages.data].reverse());
         s.permissions = [
@@ -2922,9 +2940,14 @@ export function createWorkbenchService({
             : info.outcome === "failed"
               ? "RUNTIME_ERROR"
               : undefined;
-        s.error = code ? { code, message: ERRORS[code] } : undefined;
+        s.error = code
+          ? { code, message: ERRORS[code] }
+          : permissionsUnavailable
+            ? { code: "UNAVAILABLE", message: ERRORS.UNAVAILABLE }
+            : undefined;
       } catch {
         delete s.sessionSelection;
+        delete s.permissionsUnavailable;
         checkLive();
         if (
           (resourceGenerations.get(s.workspaceId) ?? 0) !== generation ||
@@ -3078,6 +3101,8 @@ export function createWorkbenchService({
   async function send(request, w, s) {
     const currentRun = Object.hasOwn(request, "delivery");
     if (s.archived) fail("ARCHIVED_SESSION");
+    if (nativeProjections.get(s.id)?.permissionsUnavailable)
+      fail("UNAVAILABLE");
     const hash = fingerprint(request);
     const receiptKey = currentScope()?.record?.operationId ?? request.requestId;
     const previous = s.receipts.get(receiptKey);
@@ -5389,6 +5414,8 @@ export function createWorkbenchService({
       }
     }
     if (request.type === "permission.respond") {
+      if (nativeProjections.get(s.id)?.permissionsUnavailable)
+        fail("UNAVAILABLE");
       if (w.lock || s.lock) fail("BUSY");
       w.lock = true;
       s.lock = true;
