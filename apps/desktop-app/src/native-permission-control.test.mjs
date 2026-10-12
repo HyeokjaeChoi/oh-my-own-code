@@ -3172,3 +3172,34 @@ test("diagnostics sink observes reject sites and the first hold step without cha
     ),
   );
 });
+
+test("diagnostics sinks are per kernel: one kernel's sink never sees another's rejects", async () => {
+  const first = [],
+    second = [];
+  const reject = (service) =>
+    Effect.gen(function* () {
+      const handle = yield* service.locationBegin({ directory: "/diag" });
+      yield* expectFailure(
+        service.locationProjectCandidate(handle),
+        "root_unverified",
+      );
+    });
+  await run(
+    reject,
+    control.configured(options(), (service) =>
+      service.bindDiagnostic((row) => first.push(row)),
+    ),
+  );
+  assert.ok(first.some((row) => row.code === "root_unverified"));
+  // A later kernel with no sink: nothing leaks into the earlier sink.
+  const before = first.length;
+  await run(reject, control.configured(options(), () => {}));
+  await run(
+    reject,
+    control.configured(options(), (service) =>
+      service.bindDiagnostic((row) => second.push(row)),
+    ),
+  );
+  assert.equal(first.length, before);
+  assert.ok(second.some((row) => row.code === "root_unverified"));
+});

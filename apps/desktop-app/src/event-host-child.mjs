@@ -5,7 +5,7 @@ import { dirname, isAbsolute, join, relative } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import {
-  sanitizeDiagnostic,
+  createDiagnosticEmitter,
   validateHostMessage,
 } from "./event-host-protocol.mjs";
 import { nativeSkillsConfig } from "./native-skills-config.mjs";
@@ -278,21 +278,10 @@ export function runEventHostChild() {
   };
   // Bounded, redacted, deduplicated diagnostics for Main logs only. Never
   // carries authority; failures here cannot change host state.
-  let diagnosticCount = 0,
-    lastDiagnostic;
-  const diagnostic = (raw) => {
-    try {
-      const clean = sanitizeDiagnostic(raw);
-      if (!clean || closing || diagnosticCount >= 200) return;
-      const key = JSON.stringify(clean);
-      if (key === lastDiagnostic) return;
-      lastDiagnostic = key;
-      diagnosticCount++;
-      emit({ type: "diagnostic", diagnostic: clean });
-    } catch {
-      /* diagnostics are best effort */
-    }
-  };
+  const diagnostic = createDiagnosticEmitter(
+    (message) => emit(message),
+    () => closing,
+  );
   const bounded = (promise, ms) =>
     new Promise((resolve, reject) => {
       const timer = setTimeout(() => reject(new Error("stop_timeout")), ms);
@@ -442,12 +431,6 @@ export function runEventHostChild() {
         if (!reasons && !["Error", "Fatal"].includes(level)) return;
         const failure = reasons ? Cause.squash(entry.cause) : undefined;
         const notes = entry.fiber.getRef(References.CurrentLogAnnotations);
-        const text = [
-          ...(Array.isArray(entry.message) ? entry.message : [entry.message]),
-          failure?.message,
-        ]
-          .filter((part) => typeof part === "string")
-          .join(" | ");
         let route;
         try {
           route = `${notes?.["http.method"] ?? ""} ${new URL(String(notes?.["http.url"]), "http://x").pathname}`;
@@ -459,7 +442,6 @@ export function runEventHostChild() {
           tag: failure?._tag ?? failure?.name ?? level,
           route,
           status: Number(notes?.["http.status"]) || undefined,
-          detail: text,
         });
       } catch {
         /* best effort */
@@ -468,7 +450,7 @@ export function runEventHostChild() {
     fiber = Effect.runFork(
       server.pipe(
         Effect.provideService(Scope.Scope, scope),
-        Effect.provide(Logger.layer([nativeErrors])),
+        Effect.provide(Logger.layer([nativeErrors], { mergeWithExisting: true })),
       ),
     );
     importing = false;
