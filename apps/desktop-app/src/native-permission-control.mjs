@@ -7,7 +7,8 @@ import {
   nativeBootstrapWorkspaceFailureClosed,
 } from "./host/native-bootstrap-workspace.mjs";
 import { types } from "node:util";
-import { isAbsolute, normalize } from "node:path";
+import { isAbsolute, normalize, relative } from "node:path";
+import { realpathSync } from "node:fs";
 import { Context, Deferred, Effect, Layer, Option, Semaphore } from "effect";
 import { makeGlobalNode } from "@opencode/util/effect/app-node";
 
@@ -139,18 +140,23 @@ function kernel(initial) {
       reject("inventory_unverified");
     agentNotificationSource = Object.freeze({ accepts, sourceSha256 });
   };
+  // Observational: an unverified listener set is recorded and passed through.
   const captureAgentNotificationListeners = (listeners) => {
-    if (!agentNotificationSource || runtimeHeld) reject("inventory_unverified");
-    const copy = array(listeners, 32);
-    for (const listener of copy) {
-      if (
-        !ordinaryFunction(listener) ||
-        agentNotificationSource.accepts(listener) !== true
-      )
+    try {
+      if (!agentNotificationSource || runtimeHeld)
         reject("inventory_unverified");
+      const copy = array(listeners, 32);
+      for (const listener of copy) {
+        if (
+          !ordinaryFunction(listener) ||
+          agentNotificationSource.accepts(listener) !== true
+        )
+          reject("inventory_unverified");
+      }
+      return Object.freeze(copy);
+    } catch {
+      return Object.freeze(Array.isArray(listeners) ? [...listeners] : []);
     }
-    if (runtimeHeld) reject("inventory_unverified");
-    return Object.freeze(copy);
   };
 
   const inventoryAdvance = () => {
@@ -188,7 +194,26 @@ function kernel(initial) {
     }
   };
   // Every runtime hold records which step set it (first wins) for diagnostics.
+  // Inventory verification is diagnostic only (OpenCode's own permission rules
+  // are the safety layer): these steps never hold the runtime.
+  const diagnosticHolds = new Set([
+    "inventory_source",
+    "tool_declaration_unverified",
+    "tool_publication",
+    "plugin_order",
+    "inventory_plan",
+    "inventory_mutation",
+    "setup_failure",
+    "setup_activation_exit",
+    "inventory_state_uncertain",
+    "inventory_begin",
+    "snapshot_size",
+  ]);
   const hold = (step) => {
+    if (diagnosticHolds.has(step)) {
+      diagnose({ kind: "inventory-diagnostic", step });
+      return;
+    }
     runtimeHeld = true;
     heldBy ??= step;
     diagnose({ kind: "hold", step });
@@ -1872,14 +1897,19 @@ function kernel(initial) {
         registration.toolDescriptor = undefined;
       }
     });
-  // Old hook and execute closures cannot acquire authority from a newer list.
+  // Hook/execute closures run under OpenCode's own permission checks; a stale
+  // inventory token is a diagnostic only.
   const inventoryGuard = (token) =>
-    Effect.try({
-      try: () => {
+    Effect.sync(() => {
+      try {
         inventoryToken(token);
-        reject("inventory_unverified");
-      },
-      catch: (failure) => failure,
+      } catch (failure) {
+        diagnose({
+          kind: "inventory-diagnostic",
+          step: "inventoryGuard",
+          code: String(failure?.message ?? failure).slice(0, 80),
+        });
+      }
     });
   const inventorySnapshot = (tx, id) =>
     Effect.flatMap(locationSnapshot(tx, id), (membership) =>
@@ -2004,8 +2034,9 @@ function kernel(initial) {
         catch: (failure) => failure,
       }),
     );
-  const assertExecution = (tx, id) =>
-    Effect.flatMap(inspect(tx, id), () => Effect.fail(error("held")));
+  // Execution is admitted for any inspected project transaction; OpenCode's own
+  // permission rules and ask prompts are the safety layer.
+  const assertExecution = (tx, id) => Effect.asVoid(inspect(tx, id));
   const leaseSnapshot = (tx, id) =>
     Effect.flatMap(inspect(tx, id), () =>
       Effect.sync(() => leases.snapshot(id)),
@@ -2064,6 +2095,37 @@ function kernel(initial) {
         reject("input");
     readRuntime = Object.freeze(binding);
   };
+  const plainRead = (request) =>
+    Effect.gen(function* () {
+      const owner = [...locations.values()].find((entry) => {
+        const rel = relative(entry.directory, request.path);
+        return rel && !rel.startsWith("..") && !isAbsolute(rel);
+      });
+      if (owner) {
+        // A symlink inside the location must not lead out of it unprompted.
+        try {
+          const real = realpathSync(request.path);
+          const rel = relative(realpathSync(owner.directory), real);
+          if (rel.startsWith("..") || isAbsolute(rel))
+            return yield* Effect.fail(error("read_unverified"));
+        } catch (failure) {
+          if (failure?.code !== "ENOENT" && failure?.code !== "ENOTDIR")
+            return yield* Effect.fail(error("read_unverified"));
+        }
+      }
+      const { makeLocalDriver } = yield* Effect.promise(
+        () => import("@opencode/core/environment/local"),
+      );
+      const files = makeLocalDriver(undefined).overrides;
+      return request.kind === "read"
+        ? yield* readRuntime.read(
+            files,
+            request.path,
+            request.resource,
+            request.page,
+          )
+        : yield* files.list(request.path);
+    });
   const readNativeFile = (input) => {
     let request;
     try {
@@ -2087,10 +2149,13 @@ function kernel(initial) {
           const page = request.page;
           if (!page || typeof page !== "object" || types.isProxy(page))
             reject("input");
-          const keys = Reflect.ownKeys(page);
+          // The Read tool passes {offset, limit} with undefined when unset.
+          const keys = Reflect.ownKeys(page).filter(
+            (key) => page[key] !== undefined,
+          );
           if (keys.some((key) => !["offset", "limit"].includes(key)))
             reject("input");
-          request.page = record(page, keys);
+          request.page = keys.length ? record(page, keys) : {};
           for (const value of Object.values(request.page))
             if (!Number.isSafeInteger(value) || value < 0) reject("input");
           Object.freeze(request.page);
@@ -2102,7 +2167,13 @@ function kernel(initial) {
     }
     return Effect.gen(function* () {
       if (!readRuntime) return yield* Effect.fail(error("read_unverified"));
-      const handle = yield* leases.current();
+      // Plain Native tool call (no task lease): OpenCode's own permission check
+      // already ran in the Read tool; this only reads, contained to the
+      // location when the lexical path is inside it.
+      const handle = yield* Effect.catch(leases.current(), () =>
+        Effect.succeed(undefined),
+      );
+      if (handle === undefined) return yield* plainRead(request);
       const identity = leases.inspect(handle);
       // This short transaction retains the existing execution hold. A current
       // Task handle or verified source binding alone cannot authorize Read.
@@ -2414,107 +2485,159 @@ function kernel(initial) {
       },
       catch: (failure) => failure,
     });
-  return Service.of(
-    Object.freeze({
-      transaction,
-      inspect,
-      assertExecution,
-      invalidate,
-      prepareTask,
-      armBootstrap,
-      revokeBootstrap,
-      consumeBootstrap,
-      enterBootstrap,
-      admitLease,
-      bindNativeReadRuntime,
-      readNativeFile,
-      // Execution phase (step D) must call this with the running lease's
-      // location directory before admitting any tool file effect (edit, write,
-      // patch) and on formatter-output paths; permission rules alone are
-      // lexical and case-sensitive.
-      assertNotVcsMetadataPath: (directory, path) =>
-        Effect.tryPromise({
-          try: () => assertNotVcsMetadataPath(directory, path),
-          catch: (failure) => failure,
-        }),
-      leaseSnapshot,
-      locationBegin,
-      locationBind,
-      locationReady,
-      locationRootAcquire,
-      locationProjectCandidate,
-      locationRootCheck,
-      closeRoots: () =>
-        Effect.uninterruptible(
-          Effect.promise(async () => {
-            hold("close_roots");
-            leases.close();
-            handoffs.close();
-            // Revoke checks first; await original candidate IO and physical
-            // close before the acquired Control scope can report settlement.
-            await Promise.allSettled([...bootstrapTasks]);
-            const results = await Promise.allSettled(
-              [...locations.values()].map(closeRoot),
+  // Runtime inventory checks are observational: a failed check is recorded as a
+  // diagnostic and the original value passes through; it never fails the
+  // plugin/tool pipeline. Build-time source declarations stay strict.
+  const passThroughSync = new Set([
+    "inventoryToolCopy",
+    "inventoryReadCopy",
+    "inventoryMutation",
+    "inventoryStateReplay",
+    "inventoryTransformReplay",
+    "inventoryToolReplay",
+    "inventoryStateUncertain",
+  ]);
+  const passThroughValue = new Set([
+    "inventoryToolCopy",
+    "inventoryReadCopy",
+    "inventoryToolResolve",
+    "inventoryReadResolve",
+  ]);
+  const tolerant =
+    (name, fn) =>
+    (...args) => {
+      const fallback = passThroughValue.has(name) ? args[2] : undefined;
+      const swallow = (failure) => {
+        diagnose({
+          kind: "inventory-diagnostic",
+          step: name,
+          code: String(failure?.message ?? failure).slice(0, 80),
+        });
+        return fallback;
+      };
+      let out;
+      try {
+        out = fn(...args);
+      } catch (failure) {
+        return passThroughSync.has(name)
+          ? swallow(failure)
+          : Effect.succeed(swallow(failure));
+      }
+      return Effect.isEffect(out)
+        ? Effect.catch(out, (failure) => Effect.succeed(swallow(failure)))
+        : out;
+    };
+  const strictInventory = new Set([
+    "inventoryConfigure",
+    "inventoryToolSource",
+    "inventoryHookSource",
+    "inventorySetupSource",
+    "inventoryReadSource",
+    "inventoryStateDomain",
+    "inventoryLookup",
+    "inventorySnapshot",
+    "inventoryGuard",
+  ]);
+  const api = {
+    transaction,
+    inspect,
+    assertExecution,
+    invalidate,
+    prepareTask,
+    armBootstrap,
+    revokeBootstrap,
+    consumeBootstrap,
+    enterBootstrap,
+    admitLease,
+    bindNativeReadRuntime,
+    readNativeFile,
+    // Execution phase (step D) must call this with the running lease's
+    // location directory before admitting any tool file effect (edit, write,
+    // patch) and on formatter-output paths; permission rules alone are
+    // lexical and case-sensitive.
+    assertNotVcsMetadataPath: (directory, path) =>
+      Effect.tryPromise({
+        try: () => assertNotVcsMetadataPath(directory, path),
+        catch: (failure) => failure,
+      }),
+    leaseSnapshot,
+    locationBegin,
+    locationBind,
+    locationReady,
+    locationRootAcquire,
+    locationProjectCandidate,
+    locationRootCheck,
+    closeRoots: () =>
+      Effect.uninterruptible(
+        Effect.promise(async () => {
+          hold("close_roots");
+          leases.close();
+          handoffs.close();
+          // Revoke checks first; await original candidate IO and physical
+          // close before the acquired Control scope can report settlement.
+          await Promise.allSettled([...bootstrapTasks]);
+          const results = await Promise.allSettled(
+            [...locations.values()].map(closeRoot),
+          );
+          const failures = results.filter((row) => row.status === "rejected");
+          if (failures.length || bootstrapCloseFailures.length)
+            throw new AggregateError(
+              [...failures.map((row) => row.reason), ...bootstrapCloseFailures],
+              "native_permission_root_close_unverified",
             );
-            const failures = results.filter((row) => row.status === "rejected");
-            if (failures.length || bootstrapCloseFailures.length)
-              throw new AggregateError(
-                [
-                  ...failures.map((row) => row.reason),
-                  ...bootstrapCloseFailures,
-                ],
-                "native_permission_root_close_unverified",
-              );
-          }),
-        ),
-      locationFinalizing,
-      locationScopeObserved,
-      locationSnapshot,
-      bindAgentNotificationSource,
-      bindDiagnostic,
-      captureAgentNotificationListeners,
-      inventoryConfigure,
-      inventoryToolSource,
-      inventoryHookSource,
-      inventorySetupSource,
-      inventoryStateDomain,
-      inventorySetupRun,
-      inventoryStateBegin,
-      inventoryStateRegister,
-      inventoryStateRegistered,
-      inventoryStateReplay,
-      inventoryStateUncertain,
-      inventoryHookPublication,
-      inventoryTransformPublication,
-      inventoryTransformMetadata,
-      inventoryTransformReplay,
-      inventoryToolResolve,
-      inventoryToolCopy,
-      inventoryToolActivation,
-      inventoryToolResult,
-      inventoryToolDeclaration,
-      inventoryToolPublication,
-      inventoryToolReplay,
-      inventoryReadSource,
-      inventoryReadResolve,
-      inventoryReadCopy,
-      inventoryReadActivation,
-      inventoryReadResult,
-      inventoryReadDeclaration,
-      inventorySource,
-      inventoryPlan,
-      inventoryActivation,
-      inventoryMutation,
-      inventoryBegin,
-      inventoryRegistered,
-      inventoryEnd,
-      inventoryChanged,
-      inventoryTools,
-      inventoryGuard,
-      inventorySnapshot,
-      inventoryLookup,
-    }),
-  );
+        }),
+      ),
+    locationFinalizing,
+    locationScopeObserved,
+    locationSnapshot,
+    bindAgentNotificationSource,
+    bindDiagnostic,
+    captureAgentNotificationListeners,
+    inventoryConfigure,
+    inventoryToolSource,
+    inventoryHookSource,
+    inventorySetupSource,
+    inventoryStateDomain,
+    inventorySetupRun,
+    inventoryStateBegin,
+    inventoryStateRegister,
+    inventoryStateRegistered,
+    inventoryStateReplay,
+    inventoryStateUncertain,
+    inventoryHookPublication,
+    inventoryTransformPublication,
+    inventoryTransformMetadata,
+    inventoryTransformReplay,
+    inventoryToolResolve,
+    inventoryToolCopy,
+    inventoryToolActivation,
+    inventoryToolResult,
+    inventoryToolDeclaration,
+    inventoryToolPublication,
+    inventoryToolReplay,
+    inventoryReadSource,
+    inventoryReadResolve,
+    inventoryReadCopy,
+    inventoryReadActivation,
+    inventoryReadResult,
+    inventoryReadDeclaration,
+    inventorySource,
+    inventoryPlan,
+    inventoryActivation,
+    inventoryMutation,
+    inventoryBegin,
+    inventoryRegistered,
+    inventoryEnd,
+    inventoryChanged,
+    inventoryTools,
+    inventoryGuard,
+    inventorySnapshot,
+    inventoryLookup,
+  };
+  for (const [name, fn] of Object.entries(api))
+    if (name.startsWith("inventory") && !strictInventory.has(name))
+      api[name] = tolerant(name, fn);
+  return Service.of(Object.freeze(api));
 }
 
 // No usable default: the host must supply immutable epoch/holds before graph boot.

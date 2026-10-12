@@ -810,7 +810,7 @@ export type WorkbenchRequest =
       workspaceId: string;
       sessionId: string;
       requestId: string;
-      decision: "once" | "reject";
+      decision: "once" | "always" | "reject";
     }
   | { type: "catalog.list"; workspaceId: string; sessionId?: string }
   | {

@@ -457,7 +457,7 @@ export function validateRequest(value) {
     fail("INVALID_REQUEST");
   if (
     value.type === "permission.respond" &&
-    !["once", "reject"].includes(value.decision)
+    !["once", "always", "reject"].includes(value.decision)
   )
     fail("INVALID_REQUEST");
   if (
