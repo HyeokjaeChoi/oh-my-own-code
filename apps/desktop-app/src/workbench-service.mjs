@@ -1167,10 +1167,13 @@ export function createWorkbenchService({
       // A correlated Native User ACK proves this request was admitted to its
       // inbox. It does not prove provider/tool execution or final delivery.
       // Other void/uncorrelated effect ACKs keep the existing pending hold.
-      // A successful permission reply is itself the plain Native effect.
+      // A successful permission reply, command call or interrupt is itself
+      // the plain Native effect (errors map to unknown above).
       record.effect =
         (request.type === "message.send" && receipt?.inboxId) ||
-        (request.type === "permission.respond" && value.status === "decided")
+        (request.type === "permission.respond" && value.status === "decided") ||
+        (request.type === "command.run" && value.status === "accepted") ||
+        (request.type === "session.interrupt" && value.status === "stopping")
           ? "confirmed"
           : "pending";
       record.evidence = [

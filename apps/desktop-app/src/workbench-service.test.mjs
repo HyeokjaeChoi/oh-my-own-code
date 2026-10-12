@@ -768,6 +768,50 @@ test("owned filesystem preview denies traversal, symlinks, sensitive, binary and
     false,
   );
 });
+test("command.run and session.interrupt receipts confirm on Native success and go unknown on error", async (t) => {
+  const f = await fixture(t);
+  const run = async (operation, id) => {
+    const snap = await f.service.handle(
+      {
+        version: 2,
+        runtimeEpoch: f.epoch,
+        readId: `r-${id}`,
+        operation: { type: "snapshot", ...f.ids },
+      },
+      "receipt-sender",
+    );
+    return f.service.handle(
+      {
+        version: 2,
+        runtimeEpoch: f.epoch,
+        operationId: id,
+        expectedRevision: snap.value.revision,
+        operation,
+      },
+      "receipt-sender",
+    );
+  };
+  const ok = await run(
+    {
+      type: "command.run",
+      ...f.ids,
+      requestId: "c-ok",
+      name: "review",
+      arguments: "x",
+    },
+    "c-ok",
+  );
+  assert.equal(ok.receipt?.effect, "confirmed");
+  const stop = await run({ type: "session.interrupt", ...f.ids }, "i-ok");
+  assert.equal(stop.receipt?.effect, "confirmed");
+  f.state.active = {};
+  f.state.inbox = [];
+  f.client.session.interrupt = async () => {
+    throw new Error("boom");
+  };
+  const bad = await run({ type: "session.interrupt", ...f.ids }, "i-bad");
+  assert.equal(bad.receipt?.effect, "unknown");
+});
 test("native cancellation, exclusive folder create, UUIDv7 fallback and registration-only removal", async (t) => {
   const f = await fixture(t);
   assert.equal(
