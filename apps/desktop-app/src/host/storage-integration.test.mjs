@@ -533,7 +533,8 @@ test("restart preserves registration but performs no automatic entry mutation; o
       snapshot = await call({ type: "snapshot", ...f.scope });
       return snapshot.value?.state === "connected";
     });
-    assert.equal(snapshot.value.workspaces[0].trusted, false);
+    // The managed workspace's trust persists across restart.
+    assert.equal(snapshot.value.workspaces[0].trusted, true);
     assert.equal(
       registry.readView().sessions[0].instructionRegistration.origin,
       "direct",
@@ -543,11 +544,6 @@ test("restart preserves registration but performs no automatic entry mutation; o
         .slice(before)
         .some((name) => name.startsWith("instruction-")),
     );
-    const untrusted = await call({
-      type: "configuration.instructions.read",
-      ...f.scope,
-    });
-    assert.equal(untrusted.code, "INVALID_SELECTION");
     const trusted = await call(
       {
         type: "session.create",
@@ -2933,15 +2929,6 @@ test("MCP restart forgets live authority, performs no automatic mutation, and ke
         (await call({ type: "snapshot" })).value?.state === "connected",
     );
     assert.ok(!f.state.calls.slice(before).some((x) => x.startsWith("mcp")));
-    assert.equal(
-      (
-        await call({
-          type: "configuration.mcp.read",
-          workspaceId: f.workspaceId,
-        })
-      ).code,
-      "INVALID_SELECTION",
-    );
     const old = await call({
       type: "operation.lookup",
       runtimeEpoch: "epoch",
@@ -4827,6 +4814,58 @@ test("workspace file staged token is aborted when authority changes before publi
   assert.equal(await fs.readFile(f.target, "utf8"), "\uFEFFOriginal\r\n");
 });
 
+test("workspace trust granted by dialog persists across restart; untrusted imports stay untrusted", async (t) => {
+  let selected;
+  const f = await fixture(t, {
+    bootstrap: false,
+    pickDirectory: async () => selected,
+  });
+  await f.ready();
+  const ids = [];
+  for (const name of ["trusted", "plain"]) {
+    selected = join(f.root, name);
+    await fs.mkdir(selected);
+    const imported = await f.mutate(
+      { type: "workspace.import" },
+      `import-${name}`,
+    );
+    assert.equal(imported.ok, true, JSON.stringify(imported));
+    ids.push(imported.value.selectedWorkspaceId);
+  }
+  const created = await f.mutate(
+    { type: "session.create", workspaceId: ids[0] },
+    "trust-first",
+  );
+  assert.equal(created.ok, true, JSON.stringify(created));
+  f.service.close();
+  await f.service.drain();
+  const reopened = createWorkbenchService({
+    registry: f.registry,
+    runtime: f.runtime,
+    runtimeEpoch: "epoch",
+    bootstrap: false,
+  });
+  try {
+    const snapshot = await reopened.handle(
+      {
+        version: 2,
+        runtimeEpoch: "epoch",
+        readId: "trust-snapshot",
+        operation: { type: "snapshot" },
+      },
+      "sender",
+    );
+    assert.equal(snapshot.ok, true, JSON.stringify(snapshot));
+    const trust = Object.fromEntries(
+      snapshot.value.workspaces.map((w) => [w.id, w.trusted]),
+    );
+    assert.deepEqual(trust, { [ids[0]]: true, [ids[1]]: false });
+  } finally {
+    reopened.close();
+    await reopened.drain();
+  }
+});
+
 test("durable duplicate import reuses canonical workspace across alias, duplicate key and checkpoint reopen", async (t) => {
   let selected;
   let picks = 0;
@@ -5440,9 +5479,9 @@ test("durable permission policy read cannot bypass original unresolved effect", 
   );
 });
 
-test("durable permission policy restored untrusted scope makes zero Native calls", async (t) => {
+test("durable permission policy restored managed scope stays trusted after restart", async (t) => {
   const f = await fixture(t);
-  const initial = await f.ready();
+  await f.ready();
   f.service.close();
   await f.service.drain();
   const reopened = createWorkbenchService({
@@ -5462,24 +5501,7 @@ test("durable permission policy restored untrusted scope makes zero Native calls
       "sender",
     );
     assert.equal(snapshot.ok, true, JSON.stringify(snapshot));
-    assert.equal(snapshot.value.workspaces[0].trusted, false);
-    f.state.calls.length = 0;
-    const read = await reopened.handle(
-      {
-        version: 2,
-        runtimeEpoch: "epoch",
-        readId: "restored-policy",
-        operation: {
-          type: "permission.policy.read",
-          workspaceId: initial.selectedWorkspaceId,
-          sessionId: initial.selectedSessionId,
-        },
-      },
-      "sender",
-    );
-    assert.equal(read.ok, false);
-    assert.equal(read.code, "UNAVAILABLE");
-    assert.deepEqual(f.state.calls, []);
+    assert.equal(snapshot.value.workspaces[0].trusted, true);
   } finally {
     reopened.close();
     await reopened.drain();
