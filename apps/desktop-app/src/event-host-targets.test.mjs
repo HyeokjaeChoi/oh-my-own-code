@@ -148,3 +148,26 @@ test("committed pins load per target; win32 has no links and official win32 pack
   assert.match(generatedDir("/p", "win32", "x64"), /\.generated-win32-x64$/);
   assert.match(generatedDir("/p", "darwin", "arm64"), /\.generated$/);
 });
+
+import {
+  installerEnvironment,
+  installerConfigFor,
+} from "../scripts/prepare-event-host.mjs";
+test("installer environment: win32 target drops bin shims; win32 host adds a profile", () => {
+  const mac = installerEnvironment("/b", "/n/bin/node", "darwin", "darwin");
+  assert.equal("npm_config_bin_links" in mac, false);
+  assert.equal("SystemRoot" in mac, false);
+  const cross = installerEnvironment("/b", "/n/bin/node", "win32", "darwin");
+  assert.equal(cross.npm_config_bin_links, "false");
+  assert.equal("USERPROFILE" in cross, false);
+  const win = installerEnvironment(
+    "C:\\b",
+    "C:\\n\\node.exe",
+    "win32",
+    "win32",
+  );
+  assert.equal(win.npm_config_bin_links, "false");
+  assert.ok(win.SystemRoot && win.USERPROFILE.endsWith("home"));
+  assert.match(installerConfigFor("win32"), /bin-links=false/);
+  assert.doesNotMatch(installerConfigFor("darwin"), /bin-links/);
+});

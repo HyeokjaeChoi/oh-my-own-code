@@ -439,6 +439,8 @@ export function createStorageOwner({
               "SingletonLock",
               "SingletonCookie",
               "SingletonSocket",
+              // Chromium's Windows process singleton keeps this file open (delete-on-close).
+              ...(process.platform === "win32" ? ["lockfile"] : []),
             ]);
             if (
               !initialize ||
