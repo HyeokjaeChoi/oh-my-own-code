@@ -344,6 +344,9 @@ async function controllerIdentity(pins) {
   const node = resolve(process.execPath);
   if (process.version !== pins.nodeVersion)
     throw new Error("Exact Node24 controller required");
+  // darwin must pin the exact controller path and bytes; only win32 may omit them.
+  if (pins.node === undefined && pins.target?.platform !== "win32")
+    throw new Error("Exact Node24 controller required");
   if (
     pins.node !== undefined &&
     (node !== pins.node || (await resourceFileSha256(node)) !== pins.nodeSha256)

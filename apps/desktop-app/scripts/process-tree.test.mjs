@@ -36,3 +36,9 @@ test("childPids parses PowerShell output on win32 and pgrep elsewhere", () => {
     [],
   );
 });
+
+test("typographic single quotes cannot end the PowerShell literal", () => {
+  const q = windowsChildQuery(1, "a’; calc; ‘b");
+  assert.match(q, /-match 'a’’; calc; ‘‘b'/u);
+  assert.match(windowsChildQuery(1, "x‚y‛z"), /'x‚‚y‛‛z'/u);
+});
