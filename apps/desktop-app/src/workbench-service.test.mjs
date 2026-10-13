@@ -856,6 +856,16 @@ test("catalog keeps local models when a large cloud catalog exceeds the cap", as
   assert.equal(entries.length, 300);
   assert.equal(entries[0].name, "Local");
 });
+test("a synthetic inbox entry from an agent switch does not block send", async (t) => {
+  const f = await fixture(t);
+  f.state.inbox = [
+    { id: "syn", sessionID: "sdk-default", type: "synthetic", payload: {} },
+  ];
+  assert.equal(
+    (await f.send({ requestId: "syn-send" })).value.status,
+    "accepted",
+  );
+});
 test("native cancellation, exclusive folder create, UUIDv7 fallback and registration-only removal", async (t) => {
   const f = await fixture(t);
   assert.equal(
