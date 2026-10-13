@@ -10,6 +10,7 @@ import {
 import { constants } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { nodePtySupported } from "./stage-node-pty.mjs";
 import { copyPackagedResources } from "./stage-event-host.mjs";
 import {
   ownerLifetimeForResources,
@@ -77,15 +78,16 @@ const appPath = await packager({
         arch,
       });
       const canonicalDestination = await realpath(destination);
-      await cp(
-        join(resources, "node-pty"),
-        join(canonicalDestination, "node-pty"),
-        {
-          recursive: true,
-          errorOnExist: true,
-          force: false,
-        },
-      );
+      if (nodePtySupported(platform, arch))
+        await cp(
+          join(resources, "node-pty"),
+          join(canonicalDestination, "node-pty"),
+          {
+            recursive: true,
+            errorOnExist: true,
+            force: false,
+          },
+        );
       // Windows has no helper binary (identity-mode lifetime witness).
       if (platform !== "darwin") return;
       const sourceWitness = await verifyOwnerLifetimeResources({

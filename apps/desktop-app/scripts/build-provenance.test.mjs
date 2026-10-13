@@ -283,6 +283,13 @@ test(
       `${resources}/node-pty/lib/index.js`,
       "synthetic node-pty\n",
     );
+    // A shadow binary that node-pty would load before prebuilds/ is an extra file: rejected.
+    await put(root, `${resources}/node-pty/build/Release/pty.node`, "shadow\n");
+    await assert.rejects(
+      captureProvenance(root, selection),
+      /node-pty does not match/,
+    );
+    await rm(join(root, resources, "node-pty/build"), { recursive: true });
     await put(root, sidecar, "wrong sidecar\n");
     await assert.rejects(
       captureProvenance(root, selection),
