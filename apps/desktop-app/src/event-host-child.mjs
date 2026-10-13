@@ -9,7 +9,10 @@ import {
   validateHostMessage,
 } from "./event-host-protocol.mjs";
 import { nativeSkillsConfig } from "./native-skills-config.mjs";
-import { verifyEventHostResources } from "./event-host-resources.mjs";
+import {
+  eventHostEnginePath,
+  verifyEventHostResources,
+} from "./event-host-resources.mjs";
 import { createNativePermissionGraph } from "./native-permission-graph.mjs";
 import { initialization } from "./native-permission-control-input.mjs";
 
@@ -371,7 +374,11 @@ export function runEventHostChild() {
     await verifyEventHostResources(
       {
         root: resourceRoot,
-        enginePath: join(resourceRoot, "runtime/bun"),
+        enginePath: eventHostEnginePath(
+          resourceRoot,
+          process.platform,
+          process.arch,
+        ),
         hostPath: join(resourceRoot, "host.mjs"),
         manifestPath: join(resourceRoot, "manifest.json"),
       },

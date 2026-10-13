@@ -3,7 +3,15 @@ import { matchesNativePermissionOverlay } from "./native-permission-overlay-cont
 import { createHash } from "node:crypto";
 import { constants } from "node:fs";
 import { lstat, open, readdir, readlink } from "node:fs/promises";
-import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import {
+  dirname,
+  isAbsolute,
+  join,
+  parse,
+  relative,
+  resolve,
+  sep,
+} from "node:path";
 
 import {
   CONFIGURATION_SAVE_ASSETS,
@@ -41,6 +49,26 @@ export const EVENT_HOST_IDENTITY = Object.freeze({
   serverVersion: "2.0.18",
   effectVersion: "4.0.0-rc.112",
 });
+// Closed target table. Anything not listed holds (fail closed).
+export const EVENT_HOST_TARGETS = Object.freeze({
+  "darwin-arm64": Object.freeze({
+    platform: "darwin",
+    arch: "arm64",
+    engine: "runtime/bun",
+    bunPackage: "@oven/bun-darwin-aarch64",
+    bunBinary: "bin/bun",
+  }),
+  "win32-x64": Object.freeze({
+    platform: "win32",
+    arch: "x64",
+    engine: "runtime/bun.exe",
+    bunPackage: "@oven/bun-windows-x64",
+    bunBinary: "bin/bun.exe",
+  }),
+});
+export const eventHostIdentity = (platform, arch) =>
+  Object.freeze({ ...EVENT_HOST_IDENTITY, platform, arch });
+export const eventHostTargetName = (platform, arch) => `${platform}-${arch}`;
 const keys = (object, expected) =>
   object &&
   typeof object === "object" &&
@@ -50,17 +78,27 @@ const fail = (message) => {
   throw new Error(`Event host resources: ${message}`);
 };
 export function assertEventHostTarget(platform, arch) {
-  if (platform !== "darwin" || arch !== "arm64")
-    fail(`unsupported target ${platform}-${arch}; hold required`);
+  const target = Object.hasOwn(EVENT_HOST_TARGETS, `${platform}-${arch}`)
+    ? EVENT_HOST_TARGETS[`${platform}-${arch}`]
+    : undefined;
+  if (!target) fail(`unsupported target ${platform}-${arch}; hold required`);
+  return target;
 }
+export const eventHostEnginePath = (root, platform, arch) =>
+  join(root, assertEventHostTarget(platform, arch).engine);
 export function eventHostForResources(resources, platform, arch) {
-  assertEventHostTarget(platform, arch);
+  const target = assertEventHostTarget(platform, arch);
   if (typeof resources !== "string" || !isAbsolute(resources))
     fail("resources must be absolute");
-  const root = join(resources, "opencode", "event-host", "darwin-arm64");
+  const root = join(
+    resources,
+    "opencode",
+    "event-host",
+    eventHostTargetName(platform, arch),
+  );
   return Object.freeze({
     root,
-    enginePath: join(root, "runtime", "bun"),
+    enginePath: join(root, target.engine),
     hostPath: join(root, "host.mjs"),
     manifestPath: join(root, "manifest.json"),
   });
@@ -87,8 +125,9 @@ const contained = (root, path) => {
 };
 export async function assertRealResourceParents(path) {
   path = resolve(path);
-  const parts = path.split(sep).filter(Boolean);
-  let current = sep;
+  const { root } = parse(path);
+  const parts = path.slice(root.length).split(sep).filter(Boolean);
+  let current = root;
   for (const part of parts) {
     current = join(current, part);
     const stat = await lstat(current);
@@ -187,7 +226,19 @@ async function checkLink(root, path, target) {
       fail("symlink must target contained single-link file");
   }
 }
-export async function inventoryEventHostTree(root, { links = {} } = {}) {
+// NTFS has no POSIX mode: win32 manifests record canonical modes so a tree
+// staged on any host verifies identically on Windows. Only the engine is "executable".
+const canonicalWindowsMode = (path, directory) =>
+  directory
+    ? 0o755
+    : path === EVENT_HOST_TARGETS["win32-x64"].engine
+      ? 0o755
+      : 0o644;
+export async function inventoryEventHostTree(
+  root,
+  { links = {}, platform = process.platform } = {},
+) {
+  const windows = platform === "win32";
   await assertRealResourceParents(root);
   const entries = [];
   let bytes = 0;
@@ -201,7 +252,9 @@ export async function inventoryEventHostTree(root, { links = {} } = {}) {
       if (entries.length >= EVENT_HOST_LIMITS.entries) fail("entry limit");
       const absolute = join(root, path);
       const stat = await lstat(absolute);
-      const mode = stat.mode & 0o7777;
+      const mode = windows
+        ? canonicalWindowsMode(path, stat.isDirectory())
+        : stat.mode & 0o7777;
       if (mode & 0o7000) fail("special mode rejected");
       if (stat.isSymbolicLink()) {
         const target = await readlink(absolute);
@@ -253,7 +306,7 @@ export async function inventoryEventHostTree(root, { links = {} } = {}) {
     a.path < b.path ? -1 : a.path > b.path ? 1 : 0,
   );
 }
-function validateManifest(manifest) {
+function validateManifest(manifest, target) {
   if (
     !keys(manifest, [
       ...Object.keys(EVENT_HOST_IDENTITY),
@@ -264,7 +317,9 @@ function validateManifest(manifest) {
     ])
   )
     fail("unknown manifest fields");
-  for (const [key, value] of Object.entries(EVENT_HOST_IDENTITY))
+  for (const [key, value] of Object.entries(
+    eventHostIdentity(target.platform, target.arch),
+  ))
     if (manifest[key] !== value)
       fail(`identity/version/target mismatch: ${key}`);
   if (
@@ -332,7 +387,7 @@ function validateManifest(manifest) {
     }
   }
   for (const path of [
-    "runtime/bun",
+    target.engine,
     "host.mjs",
     "event-host-protocol.mjs",
     "package.json",
@@ -343,10 +398,14 @@ function validateManifest(manifest) {
   ])
     if (!manifest.entries.some((e) => e.path === path && e.type === "file"))
       fail(`missing required asset ${path}`);
-  if (!(manifest.entries.find((e) => e.path === "runtime/bun").mode & 0o111))
+  if (!(manifest.entries.find((e) => e.path === target.engine).mode & 0o111))
     fail("engine not executable");
 }
-export async function verifyLockedEventHostPackages(root, entries) {
+export async function verifyLockedEventHostPackages(
+  root,
+  entries,
+  target = EVENT_HOST_TARGETS["darwin-arm64"],
+) {
   const pkg = await readResourceJson(join(root, "package.json"));
   const lock = await readResourceJson(join(root, "package-lock.json"));
   const expected = {
@@ -410,7 +469,8 @@ export async function verifyLockedEventHostPackages(root, entries) {
       !list ||
       ((!list.some((x) => !x.startsWith("!")) || list.includes(target)) &&
         !list.includes(`!${target}`));
-    const selected = allows(item.os, "darwin") && allows(item.cpu, "arm64");
+    const selected =
+      allows(item.os, target.platform) && allows(item.cpu, target.arch);
     if ((selected && !present.has(path)) || (!selected && present.has(path)))
       fail(`missing or wrong-target locked package ${path}`);
   }
@@ -424,21 +484,21 @@ export async function verifyEventHostResources(
     requirePermissionOverlay = false,
   } = {},
 ) {
-  assertEventHostTarget(platform, arch);
+  const target = assertEventHostTarget(platform, arch);
   if (
     !keys(descriptor, ["root", "enginePath", "hostPath", "manifestPath"]) ||
     !isAbsolute(descriptor.root) ||
     !descriptor.root.endsWith(
-      `${sep}opencode${sep}event-host${sep}darwin-arm64`,
+      `${sep}opencode${sep}event-host${sep}${eventHostTargetName(platform, arch)}`,
     ) ||
-    descriptor.enginePath !== join(descriptor.root, "runtime/bun") ||
+    descriptor.enginePath !== join(descriptor.root, target.engine) ||
     descriptor.hostPath !== join(descriptor.root, "host.mjs") ||
     descriptor.manifestPath !== join(descriptor.root, "manifest.json")
   )
     fail("invalid closed descriptor");
   await assertRealResourceParents(descriptor.root);
   const manifest = await readResourceJson(descriptor.manifestPath);
-  validateManifest(manifest);
+  validateManifest(manifest, target);
   if (typeof requirePermissionOverlay !== "boolean")
     fail("invalid permission overlay requirement");
   if (requirePermissionOverlay && !manifest.permissionOverlay)
@@ -448,10 +508,13 @@ export async function verifyEventHostResources(
       .filter((e) => e.type === "symlink")
       .map((e) => [e.path, { target: e.target }]),
   );
-  const actual = await inventoryEventHostTree(descriptor.root, { links });
+  const actual = await inventoryEventHostTree(descriptor.root, {
+    links,
+    platform,
+  });
   if (JSON.stringify(actual) !== JSON.stringify(manifest.entries))
     fail("missing/extra/hash/mode/type drift");
-  await verifyLockedEventHostPackages(descriptor.root, actual);
+  await verifyLockedEventHostPackages(descriptor.root, actual, target);
   for (const [name, version] of [
     ["@opencode/server", manifest.serverVersion],
     ["@opencode/client", manifest.serverVersion],
@@ -464,8 +527,9 @@ export async function verifyEventHostResources(
       fail("installed package version drift");
   }
   if (
-    JSON.stringify(await inventoryEventHostTree(descriptor.root, { links })) !==
-      JSON.stringify(actual) ||
+    JSON.stringify(
+      await inventoryEventHostTree(descriptor.root, { links, platform }),
+    ) !== JSON.stringify(actual) ||
     JSON.stringify(await readResourceJson(descriptor.manifestPath)) !==
       JSON.stringify(manifest)
   )

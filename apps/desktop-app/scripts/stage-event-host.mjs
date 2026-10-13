@@ -16,7 +16,7 @@ import {
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  EVENT_HOST_IDENTITY,
+  eventHostIdentity,
   EVENT_HOST_CODE_ASSETS,
   assertEventHostTarget,
   assertRealResourceParents,
@@ -26,7 +26,12 @@ import {
   resourceFileSha256,
   verifyEventHostResources,
 } from "../src/event-host-resources.mjs";
-import { loadRuntimeInputs, runtimePackageDir } from "./prepare-event-host.mjs";
+import {
+  generatedDir,
+  loadRuntimeInputs,
+  pinsFileName,
+  runtimePackageDir,
+} from "./prepare-event-host.mjs";
 import { planNativePermissionOverlay } from "./native-permission-overlay.mjs";
 import {
   NATIVE_PERMISSION_OVERLAY_RECIPE,
@@ -88,9 +93,9 @@ export async function stageEventHost({
     "../src/event-host-child.mjs",
   ),
 } = {}) {
-  assertEventHostTarget(platform, arch);
-  const { pins } = await loadRuntimeInputs(packageDir);
-  const generated = join(packageDir, ".generated");
+  const target = assertEventHostTarget(platform, arch);
+  const { pins } = await loadRuntimeInputs(packageDir, platform, arch);
+  const generated = generatedDir(packageDir, platform, arch);
   await assertRealResourceParents(generated);
   const receipt = await readResourceJson(join(generated, "receipt.json"));
   if (
@@ -102,12 +107,17 @@ export async function stageEventHost({
     receipt.packageSha256 !== pins.packageSha256 ||
     receipt.lockSha256 !== pins.lockSha256 ||
     receipt.pinsSha256 !==
-      (await resourceFileSha256(join(packageDir, "installer-pins.json"))) ||
+      (await resourceFileSha256(
+        join(packageDir, pinsFileName(platform, arch)),
+      )) ||
     receipt.engineSha256 !== pins.bun.binarySha256
   )
     throw new Error("Invalid preparation receipt");
   const install = join(generated, "install");
-  const before = await inventoryEventHostTree(install, { links: pins.links });
+  const before = await inventoryEventHostTree(install, {
+    links: pins.links,
+    platform,
+  });
   if (JSON.stringify(before) !== JSON.stringify(receipt.installEntries))
     throw new Error("Prepared dependency closure drift");
   // Validate every original pin before creating any stage/destination directories.
@@ -218,7 +228,7 @@ export async function stageEventHost({
     ),
   ];
   if (
-    (await resourceFileSha256(join(generated, "runtime/bun"))) !==
+    (await resourceFileSha256(join(generated, target.engine))) !==
     pins.bun.binarySha256
   )
     throw new Error("Prepared engine drift");
@@ -264,7 +274,7 @@ export async function stageEventHost({
         throw new Error(
           "Existing stage differs from prepared closure; retain for inspection",
         );
-    if (existingByPath.get("runtime/bun")?.sha256 !== pins.bun.binarySha256)
+    if (existingByPath.get(target.engine)?.sha256 !== pins.bun.binarySha256)
       throw new Error("Existing stage engine differs; retained");
     replaceExisting =
       !manifest.permissionOverlay ||
@@ -278,7 +288,7 @@ export async function stageEventHost({
     const expectedPaths = new Set([
       ...selected.map((e) => e.path),
       "runtime",
-      "runtime/bun",
+      target.engine,
       "host.mjs",
       "event-host-protocol.mjs",
       "event-host-resources.mjs",
@@ -308,11 +318,11 @@ export async function stageEventHost({
   }
   await mkdir(join(temporary, "runtime"), { mode: 0o755 });
   await copyFile(
-    join(generated, "runtime/bun"),
-    join(temporary, "runtime/bun"),
+    join(generated, target.engine),
+    join(temporary, target.engine),
     1,
   );
-  await chmod(join(temporary, "runtime/bun"), 0o755);
+  await chmod(join(temporary, target.engine), 0o755);
   await copyFile(hostSource, join(temporary, "host.mjs"), 1);
   await chmod(join(temporary, "host.mjs"), 0o644);
   await copyFile(protocolSource, join(temporary, "event-host-protocol.mjs"), 1);
@@ -338,6 +348,7 @@ export async function stageEventHost({
   }
   let entries = await inventoryEventHostTree(temporary, {
     links: pins.links,
+    platform,
   });
   let byPath = new Map(entries.map((e) => [e.path, e]));
   for (const entry of selected)
@@ -380,7 +391,10 @@ export async function stageEventHost({
     if ((await resourceFileSha256(path)) !== file.afterSha256)
       throw new Error("Permission overlay copied output drift");
   }
-  entries = await inventoryEventHostTree(temporary, { links: pins.links });
+  entries = await inventoryEventHostTree(temporary, {
+    links: pins.links,
+    platform,
+  });
   byPath = new Map(entries.map((e) => [e.path, e]));
   for (const entry of transformedSelected)
     if (JSON.stringify(byPath.get(entry.path)) !== JSON.stringify(entry))
@@ -395,10 +409,10 @@ export async function stageEventHost({
       moduleHash ||
     (await resourceFileSha256(hostSource)) !== hostHash ||
     (await resourceFileSha256(resourcesModule)) !== moduleHash ||
-    entries.find((e) => e.path === "runtime/bun").sha256 !==
+    entries.find((e) => e.path === target.engine).sha256 !==
       pins.bun.binarySha256 ||
     JSON.stringify(
-      await inventoryEventHostTree(install, { links: pins.links }),
+      await inventoryEventHostTree(install, { links: pins.links, platform }),
     ) !== JSON.stringify(before)
   )
     throw new Error("Source changed during staging");
@@ -411,7 +425,7 @@ export async function stageEventHost({
   const expectedPaths = new Set([
     ...transformedSelected.map((entry) => entry.path),
     "runtime",
-    "runtime/bun",
+    target.engine,
     "host.mjs",
     "event-host-protocol.mjs",
     "event-host-resources.mjs",
@@ -425,7 +439,7 @@ export async function stageEventHost({
   )
     throw new Error("Unexpected copied stage asset");
   const manifest = {
-    ...EVENT_HOST_IDENTITY,
+    ...eventHostIdentity(platform, arch),
     permissionOverlay: NATIVE_PERMISSION_OVERLAY_RECEIPT,
     entries,
   };

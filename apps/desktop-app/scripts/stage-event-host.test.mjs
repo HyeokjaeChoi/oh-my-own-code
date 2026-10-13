@@ -271,7 +271,7 @@ test("unsupported preparation target rejects before any directory/network action
   await assert.rejects(
     prepareEventHost({
       packageDir: "/does-not-exist",
-      platform: "win32",
+      platform: "linux",
       arch: "x64",
     }),
     /unsupported/,
