@@ -230,6 +230,42 @@ test("closeAll is bounded when a terminal never settles", async () => {
   assert.equal(host.size(), 0);
 });
 
+test("output ring serves contiguous reads across chunks and survives 50MB of 1KB chunks quickly", () => {
+  const { host, pty } = fixture();
+  const t = host.start("o", { workspaceId: "w1" });
+  const p = pty.spawned[0];
+  // Contiguity: a reader that keeps up sees every byte in order.
+  let seen = "";
+  let cursor = 0;
+  for (let i = 0; i < 300; i++) {
+    p.emit(`${String(i).padStart(4, "0")}|`.repeat(100));
+    const r = host.read("o", t.terminalId, cursor);
+    assert.equal(r.truncated, false);
+    seen += r.output;
+    cursor = r.cursor;
+  }
+  assert.equal(seen.length, 300 * 500);
+  assert.equal(seen.slice(500 * 299, 500 * 299 + 5), "0299|");
+  // Throughput: appends must not re-slice the whole buffer per chunk.
+  const chunk = "x".repeat(1024);
+  const t0 = performance.now();
+  for (let i = 0; i < 50 * 1024; i++) p.emit(chunk);
+  const ms = performance.now() - t0;
+  assert.ok(ms < 3000, `50MB took ${ms}ms`);
+  const r = host.read("o", t.terminalId, cursor);
+  assert.equal(r.truncated, true);
+  assert.ok(r.output.length <= 65536);
+  // A late reader resumes from the oldest retained byte and walks to the end.
+  let end = r.cursor;
+  for (let n = 0; n < 100; n++) {
+    const next = host.read("o", t.terminalId, end);
+    if (!next.output) break;
+    end = next.cursor;
+  }
+  assert.equal(end, 300 * 500 + 50 * 1024 * 1024);
+  assert.ok(host.read("o", t.terminalId, end).output === "");
+});
+
 test("output ring keeps a bounded tail and reports truncation", () => {
   const { host, pty } = fixture();
   const t = host.start("o", { workspaceId: "w1" });
