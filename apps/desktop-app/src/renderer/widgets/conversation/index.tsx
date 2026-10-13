@@ -979,6 +979,7 @@ export function Conversation(props: Props) {
                 className={styles.requestedSummary}
                 id={requestedSummaryId}
                 data-runtime-summary="requested"
+                title={`Agent: ${agent || "Native에서 결정"} · 모델: ${model || "Native에서 결정"} · Variant: ${variant || "Native에서 결정"}`}
               >
                 Agent: {agent || "Native에서 결정"} · 모델:{" "}
                 {model || "Native에서 결정"} · Variant:{" "}

@@ -104,7 +104,7 @@ KNOWN GAP (e2e-chat turn 4): the model-initiated `subagent` tool fails ("A tool 
 | Remember / "always"                             | partial | decision `once`/reject only; verify schema                            |
 | Presets (ask, scoped-edit, read/plan, custom)   | missing | read-only effective-rules view `features/permission-policy/index.tsx` |
 | Effective rules viewable                        | done    | `permission.policy.read`                                              |
-| Revoke saved rules                              | missing | none                                                                  |
+| Revoke saved rules                              | done    | `features/preferences/saved-rules.tsx`, `host/saved-rules-host.mjs`   |
 | Enforced at execution boundary                  | partial | `native-permission-*.mjs` overlay; no mode switching                  |
 | Mid-run switch, child, batch, expiry, duplicate | partial | duplicates guarded by requestId; rest unproven                        |
 
