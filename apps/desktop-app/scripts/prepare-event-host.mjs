@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { gunzipSync } from "node:zlib";
 import { rootCertificates } from "node:tls";
 import {
+  EVENT_HOST_TARGETS,
   assertEventHostTarget,
   assertRealResourceParents,
   inventoryEventHostTree,
@@ -19,6 +20,14 @@ import {
 
 const appDir = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 export const runtimePackageDir = join(appDir, "runtime-event-host");
+// darwin-arm64 keeps `.generated`; other targets prepare beside it.
+export const generatedDir = (packageDir, platform, arch) =>
+  join(
+    packageDir,
+    platform === "darwin" && arch === "arm64"
+      ? ".generated"
+      : `.generated-${platform}-${arch}`,
+  );
 const registry = "https://registry.npmjs.org/";
 const sha = (data) => createHash("sha256").update(data).digest("hex");
 export function assertPublicArchive(url) {
@@ -63,12 +72,22 @@ export function validateRuntimeLock(pkg, lock) {
     assertPublicArchive(item.resolved);
   }
 }
-export async function loadRuntimeInputs(packageDir = runtimePackageDir) {
+// darwin-arm64 keeps its historical file name (its digest is pinned elsewhere).
+export const pinsFileName = (platform, arch) =>
+  platform === "darwin" && arch === "arm64"
+    ? "installer-pins.json"
+    : `installer-pins.${platform}-${arch}.json`;
+const bunArchiveUrl = (name, version) =>
+  `${registry}${name}/-/${name.split("/")[1]}-${version}.tgz`;
+export async function loadRuntimeInputs(
+  packageDir = runtimePackageDir,
+  platform = "darwin",
+  arch = "arm64",
+) {
+  const target = assertEventHostTarget(platform, arch);
+  const pinsName = pinsFileName(platform, arch);
   await assertRealResourceParents(packageDir);
-  const pins = await readResourceJson(
-    join(packageDir, "installer-pins.json"),
-    65536,
-  );
+  const pins = await readResourceJson(join(packageDir, pinsName), 65536);
   const pkg = await readResourceJson(join(packageDir, "package.json"));
   const lock = await readResourceJson(join(packageDir, "package-lock.json"));
   if (
@@ -79,22 +98,25 @@ export async function loadRuntimeInputs(packageDir = runtimePackageDir) {
   )
     throw new Error("Pinned input hash drift");
   validateRuntimeLock(pkg, lock);
-  assertEventHostTarget(pins.target.platform, pins.target.arch);
+  if (pins.target?.platform !== platform || pins.target?.arch !== arch)
+    throw new Error("Installer pins target mismatch");
   if (
     pins.schemaVersion !== 1 ||
     pins.nodeVersion !== "v24.14.1" ||
     pins.npmVersion !== "11.11.0" ||
     pins.bun.version !== "1.4.2" ||
-    pins.bun.package !== "@oven/bun-darwin-aarch64" ||
-    pins.bun.url !==
-      `${registry}@oven/bun-darwin-aarch64/-/bun-darwin-aarch64-1.4.2.tgz` ||
+    pins.bun.package !== target.bunPackage ||
+    pins.bun.url !== bunArchiveUrl(target.bunPackage, "1.4.2") ||
     !/^sha512-[A-Za-z0-9+/]{86}==$/.test(pins.bun.integrity) ||
-    Object.keys(pins.links).length !== 31
+    !/^[a-f0-9]{64}$/.test(pins.bun.binarySha256) ||
+    // POSIX trees carry pinned .bin symlinks; win32 installs use bin-links=false
+    // (no shims, no symlinks), so the closed inventory has no links at all.
+    Object.keys(pins.links).length !== (platform === "win32" ? 0 : 31)
   )
     throw new Error("Unsupported installer pins");
   return { pins, pkg, lock };
 }
-export function installerEnvironment(base, nodePath) {
+export function installerEnvironment(base, nodePath, platform = "darwin") {
   // Construct from zero: no inherited auth, proxy, custom CA, NODE_OPTIONS/PATH.
   return {
     PATH: dirname(nodePath),
@@ -114,14 +136,26 @@ export function installerEnvironment(base, nodePath) {
     npm_config_strict_ssl: "true",
     npm_config_prefix: join(base, "prefix"),
     npm_config_progress: "false",
+    ...(platform === "win32" && { npm_config_bin_links: "false" }),
   };
 }
+export const installerConfigFor = (platform) =>
+  platform === "win32"
+    ? `${installerConfig}bin-links=false\n`
+    : installerConfig;
 export const installerConfig =
   "registry=https://registry.npmjs.org/\nignore-scripts=true\naudit=false\nfund=false\nworkspaces=false\nupdate-notifier=false\nstrict-ssl=true\nproxy=null\nhttps-proxy=null\ncafile=null\n";
-export async function assertInstalledClosure(root, links) {
+export async function assertInstalledClosure(
+  root,
+  links,
+  target = EVENT_HOST_TARGETS["darwin-arm64"],
+) {
   await assertRealResourceParents(root);
-  const entries = await inventoryEventHostTree(root, { links });
-  await verifyLockedEventHostPackages(root, entries);
+  const entries = await inventoryEventHostTree(root, {
+    links,
+    platform: target.platform,
+  });
+  await verifyLockedEventHostPackages(root, entries, target);
   return entries;
 }
 function nodeCommand(node, npm, args, cwd, env) {
@@ -210,13 +244,18 @@ export function downloadPublic(url, maxBytes) {
     request.once("error", reject);
   });
 }
-export function extractPinnedBun(archive, pins) {
+export function extractPinnedBun(
+  archive,
+  pins,
+  target = EVENT_HOST_TARGETS["darwin-arm64"],
+) {
   const actual = `sha512-${createHash("sha512").update(archive).digest("base64")}`;
   if (actual !== pins.integrity)
     throw new Error("Bun archive integrity mismatch");
-  const tar = gunzipSync(archive, { maxOutputLength: 70 * 1024 * 1024 });
+  const binary = `package/${target.bunBinary}`;
+  const tar = gunzipSync(archive, { maxOutputLength: 160 * 1024 * 1024 });
   const expected = new Set([
-    "package/bin/bun",
+    binary,
     "package/package.json",
     "package/README.md",
   ]);
@@ -243,7 +282,7 @@ export function extractPinnedBun(archive, pins) {
       ![0, 48].includes(header[156]) ||
       string(157, 257) ||
       string(345, 500) ||
-      mode !== (name === "package/bin/bun" ? 0o755 : 0o644) ||
+      mode !== (name === binary ? 0o755 : 0o644) ||
       offset + 512 + size > tar.length
     )
       throw new Error("Unsafe Bun archive entry");
@@ -253,18 +292,18 @@ export function extractPinnedBun(archive, pins) {
   if (
     files.size !== expected.size ||
     tar.subarray(offset).some((byte) => byte !== 0) ||
-    sha(files.get("package/bin/bun")) !== pins.binarySha256
+    sha(files.get(binary)) !== pins.binarySha256
   )
     throw new Error("Incomplete/changed Bun archive");
   const pkg = JSON.parse(files.get("package/package.json").toString());
   if (
     pkg.name !== pins.package ||
     pkg.version !== pins.version ||
-    !pkg.os.includes("darwin") ||
-    !pkg.cpu.includes("arm64")
+    !pkg.os.includes(target.platform) ||
+    !pkg.cpu.includes(target.arch)
   )
     throw new Error("Bun target/version mismatch");
-  return files.get("package/bin/bun");
+  return files.get(binary);
 }
 export function assertControllerEnvironment(
   environment = process.env,
@@ -283,27 +322,57 @@ export function assertControllerEnvironment(
     );
 }
 
+// The controller is the build machine's Node. darwin pins its exact path and
+// bytes; win32 pins only version (the machine path is not knowable in advance)
+// and the receipt records the controller's actual digest for audit.
+async function controllerIdentity(pins) {
+  const node = resolve(process.execPath);
+  if (process.version !== pins.nodeVersion)
+    throw new Error("Exact Node24 controller required");
+  if (
+    pins.node !== undefined &&
+    (node !== pins.node || (await resourceFileSha256(node)) !== pins.nodeSha256)
+  )
+    throw new Error("Exact Node24 controller required");
+  return { node, nodeSha256: await resourceFileSha256(node) };
+}
+// npm ships next to node: POSIX ../lib/node_modules, Windows <dir>/node_modules.
+async function npmCli(node) {
+  for (const candidate of [
+    resolve(dirname(node), "../lib/node_modules/npm/bin/npm-cli.js"),
+    resolve(dirname(node), "node_modules/npm/bin/npm-cli.js"),
+  ]) {
+    try {
+      if ((await lstat(candidate)).isFile()) return candidate;
+    } catch {
+      /* try next layout */
+    }
+  }
+  throw new Error("npm controller missing");
+}
 export async function prepareEventHost({
   packageDir = runtimePackageDir,
   platform = process.platform,
   arch = process.arch,
+  targetPlatform = platform,
+  targetArch = arch,
 } = {}) {
-  assertEventHostTarget(platform, arch);
+  // `target*` may differ from the host (cross-prepare: npm --os/--cpu, no execution).
+  const target = assertEventHostTarget(targetPlatform, targetArch);
   assertControllerEnvironment();
-  const { pins } = await loadRuntimeInputs(packageDir);
-  if (
-    process.version !== pins.nodeVersion ||
-    resolve(process.execPath) !== pins.node ||
-    (await resourceFileSha256(pins.node)) !== pins.nodeSha256
-  )
-    throw new Error("Exact Node24 controller required");
-  const base = join(packageDir, ".generated");
+  const { pins } = await loadRuntimeInputs(
+    packageDir,
+    targetPlatform,
+    targetArch,
+  );
+  const controller = await controllerIdentity(pins);
+  const base = generatedDir(packageDir, targetPlatform, targetArch);
   await mkdir(base, { mode: 0o700 }); // exclusive: never overwrite an old preparation
   await assertRealResourceParents(base);
   for (const name of ["home", "cache", "tmp", "prefix", "install", "runtime"])
     await mkdir(join(base, name), { mode: 0o700 });
   for (const name of ["user.npmrc", "global.npmrc", "install/.npmrc"])
-    await writeFile(join(base, name), installerConfig, {
+    await writeFile(join(base, name), installerConfigFor(targetPlatform), {
       mode: 0o600,
       flag: "wx",
     });
@@ -313,16 +382,12 @@ export async function prepareEventHost({
       await readFile(join(packageDir, name)),
       { mode: 0o644, flag: "wx" },
     );
-  const env = installerEnvironment(base, pins.node);
-  const npm = resolve(
-    dirname(pins.node),
-    "../lib/node_modules/npm/bin/npm-cli.js",
-  );
+  const env = installerEnvironment(base, controller.node, targetPlatform);
+  const npm = await npmCli(controller.node);
   await assertRealResourceParents(dirname(npm));
-  if (!(await lstat(npm)).isFile()) throw new Error("npm controller missing");
   if (
     (await nodeCommand(
-      pins.node,
+      controller.node,
       npm,
       ["--version"],
       join(base, "install"),
@@ -333,7 +398,7 @@ export async function prepareEventHost({
   const metadata = JSON.parse(
     (
       await downloadPublic(
-        `${registry}@oven%2fbun-darwin-aarch64/1.4.2`,
+        `${registry}${target.bunPackage.replace("/", "%2f")}/1.4.2`,
         1024 * 1024,
       )
     ).toString(),
@@ -346,19 +411,23 @@ export async function prepareEventHost({
   )
     throw new Error("Official Bun metadata pin mismatch");
   const binary = extractPinnedBun(
-    await downloadPublic(pins.bun.url, 32 * 1024 * 1024),
+    await downloadPublic(pins.bun.url, 64 * 1024 * 1024),
     pins.bun,
+    target,
   );
-  await writeFile(join(base, "runtime/bun"), binary, {
+  await writeFile(join(base, target.engine), binary, {
     mode: 0o755,
     flag: "wx",
   });
-  await chmod(join(base, "runtime/bun"), 0o755);
+  await chmod(join(base, target.engine), 0o755);
   await nodeCommand(
-    pins.node,
+    controller.node,
     npm,
     [
       "ci",
+      ...(targetPlatform === "win32"
+        ? ["--os=win32", `--cpu=${targetArch}`, "--no-bin-links"]
+        : []),
       "--ignore-scripts",
       "--audit=false",
       "--fund=false",
@@ -372,6 +441,7 @@ export async function prepareEventHost({
   const installEntries = await assertInstalledClosure(
     join(base, "install"),
     pins.links,
+    target,
   );
   if (
     (await resourceFileSha256(join(base, "install/package-lock.json"))) !==
@@ -382,7 +452,7 @@ export async function prepareEventHost({
     throw new Error("Installer changed pinned input");
   await writeFile(
     join(base, "receipt.json"),
-    `${JSON.stringify({ schemaVersion: 1, platform, arch, scriptsExecuted: false, runtimeExecuted: false, packageSha256: pins.packageSha256, lockSha256: pins.lockSha256, pinsSha256: await resourceFileSha256(join(packageDir, "installer-pins.json")), engineSha256: pins.bun.binarySha256, installEntries }, null, 2)}\n`,
+    `${JSON.stringify({ schemaVersion: 1, platform: targetPlatform, arch: targetArch, controller, scriptsExecuted: false, runtimeExecuted: false, packageSha256: pins.packageSha256, lockSha256: pins.lockSha256, pinsSha256: await resourceFileSha256(join(packageDir, pinsFileName(targetPlatform, targetArch))), engineSha256: pins.bun.binarySha256, installEntries }, null, 2)}\n`,
     { flag: "wx", mode: 0o600 },
   );
   return base;
@@ -391,7 +461,13 @@ if (
   process.argv[1] &&
   resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 ) {
-  if (process.argv.length !== 2)
-    throw new Error("Usage: prepare-event-host.mjs (exact local target only)");
-  console.log(await prepareEventHost());
+  const arg = process.argv[2];
+  const [targetPlatform, targetArch] = arg?.startsWith("--target=")
+    ? arg.slice(9).split("-")
+    : [process.platform, process.arch];
+  if (process.argv.length > 3 || (arg && !arg.startsWith("--target=")))
+    throw new Error(
+      "Usage: prepare-event-host.mjs [--target=<platform>-<arch>]",
+    );
+  console.log(await prepareEventHost({ targetPlatform, targetArch }));
 }

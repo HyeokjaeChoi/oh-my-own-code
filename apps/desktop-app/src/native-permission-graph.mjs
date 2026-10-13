@@ -43,7 +43,9 @@ function options(input) {
     !isAbsolute(root) ||
     normalize(root) !== root ||
     root.includes("\0") ||
-    !root.endsWith("/opencode/event-host/darwin-arm64") ||
+    !/[\\/]opencode[\\/]event-host[\\/](?:darwin-arm64|win32-x64)$/u.test(
+      root,
+    ) ||
     typeof nonce !== "string" ||
     !/^[a-f0-9]{64}$/u.test(nonce)
   )
@@ -64,7 +66,10 @@ export async function createNativePermissionGraph(input, diagnostic) {
   const manifest = await verifyEventHostResources(
     {
       root,
-      enginePath: join(root, "runtime/bun"),
+      enginePath: join(
+        root,
+        process.platform === "win32" ? "runtime/bun.exe" : "runtime/bun",
+      ),
       hostPath: join(root, "host.mjs"),
       manifestPath: join(root, "manifest.json"),
     },
