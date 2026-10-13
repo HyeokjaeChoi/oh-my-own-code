@@ -2474,9 +2474,27 @@ function kernel(initial) {
     entry.state = "consumed";
     armedBootstrap = undefined;
   };
+  // Subagent child create (Native Session.create with parentID). Native pins a
+  // child to its parent's location and inherits the parent's permissions and
+  // metadata when the input omits them, so only the exact child shape is
+  // admitted: no id, location, permissions or metadata override. The
+  // `subagent` tool itself stays behind OpenCode's permission prompt.
+  const CHILD_CREATE_KEYS = new Set(["parentID", "title", "agent", "model"]);
+  const admitChildCreate = (input) => {
+    if (strict || runtimeHeld) reject("held");
+    if (
+      Object.keys(input).some(
+        (key) => !CHILD_CREATE_KEYS.has(key) && input[key] !== undefined,
+      )
+    )
+      reject("child_create_invalid");
+    identifier(input.parentID);
+  };
   const consumeBootstrap = (input) =>
     Effect.try({
       try: () => {
+        if (input && typeof input === "object" && input.parentID !== undefined)
+          return admitChildCreate(input);
         const args = bootstrapStageArguments("native.create", input);
         consumeArmed("native.create", args, (request) => {
           if (
@@ -2487,28 +2505,6 @@ function kernel(initial) {
           )
             reject("held");
         });
-      },
-      catch: (failure) => failure,
-    });
-  // Subagent child create. Native pins a child to its parent's location and
-  // inherits the parent's permissions/metadata when the input omits them, so
-  // only the exact child shape is admitted: no id, location, permissions or
-  // metadata override. The `subagent` tool itself stays behind OpenCode's
-  // permission prompt.
-  const CHILD_CREATE_KEYS = new Set(["parentID", "title", "agent", "model"]);
-  const consumeChildCreate = (input) =>
-    Effect.try({
-      try: () => {
-        if (strict || runtimeHeld) reject("held");
-        if (
-          !input ||
-          typeof input !== "object" ||
-          Object.keys(input).some(
-            (key) => !CHILD_CREATE_KEYS.has(key) && input[key] !== undefined,
-          )
-        )
-          reject("child_create_invalid");
-        identifier(input.parentID);
       },
       catch: (failure) => failure,
     });
@@ -2607,7 +2603,6 @@ function kernel(initial) {
     armBootstrap,
     revokeBootstrap,
     consumeBootstrap,
-    consumeChildCreate,
     enterBootstrap,
     admitLease,
     bindNativeReadRuntime,

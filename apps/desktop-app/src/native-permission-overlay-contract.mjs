@@ -379,12 +379,12 @@ const recipe = {
       beforeSha256:
         "76638b2c4d683d304603080ba002d054cfcf49e037d378071e80b46efb74440b",
       afterSha256:
-        "edeab4ba668291b93024306f5c36e621a3d834fc5c6d56aaee13494bec526a94",
+        "a24ec771264a845261c7452f5506e62c1680a2374782ec64b3a9385cb14f5a4f",
       edits: [
         {
           find: '    create: Effect.fn("Session.create")(function* (input) {\n',
           replace:
-            '    create: Effect.fn("Session.create")(function* (input) {\n      // Only a private bootstrap handoff armed for exactly this input may create.\n      // Direct HTTP callers, other methods and duplicate-ID probes are refused.\n      // A subagent child (parentID) inherits the parent location and permissions.\n      yield* (input.parentID === undefined ? control.consumeBootstrap(input) : control.consumeChildCreate(input));\n',
+            '    create: Effect.fn("Session.create")(function* (input) {\n      // Only a private bootstrap handoff armed for exactly this input may create.\n      // Direct HTTP callers, other methods and duplicate-ID probes are refused.\n      yield* control.consumeBootstrap(input);\n',
         },
         {
           find: "var layer = Layer.effect(Service27, Effect.gen(function* () {",
@@ -1899,7 +1899,7 @@ export const NATIVE_PERMISSION_OVERLAY_RECEIPT = Object.freeze({
   id: recipe.id,
   serverVersion: recipe.serverVersion,
   recipeSha256:
-    "e60be82b78ff66ef13ef52fb4fe9baa608fe350eb8dc1d018ba39b58353f527b",
+    "a15a60bc9e05ba5e758aa34e124f56632ab2755bfa5fccbd84b97ea270c50850",
   files: Object.freeze(
     recipe.files.map(({ path, beforeSha256, afterSha256 }) =>
       Object.freeze({ path, beforeSha256, afterSha256 }),
