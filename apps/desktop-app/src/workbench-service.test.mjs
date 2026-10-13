@@ -856,15 +856,39 @@ test("catalog keeps local models when a large cloud catalog exceeds the cap", as
   assert.equal(entries.length, 300);
   assert.equal(entries[0].name, "Local");
 });
-test("a synthetic inbox entry from an agent switch does not block send", async (t) => {
+test("only the synthetic reminder from our own agent switch is ignored", async (t) => {
   const f = await fixture(t);
-  f.state.inbox = [
-    { id: "syn", sessionID: "sdk-default", type: "synthetic", payload: {} },
-  ];
+  const agents = await f.service.handle({ type: "catalog.list", ...f.ids });
+  const agent = agents.value.agents.entries[0]?.id;
+  assert.ok(agent);
+  f.client.session.switchAgent = async ({ sessionID }) => {
+    f.state.inbox = [
+      {
+        id: "syn",
+        sessionID,
+        type: "synthetic",
+        time: { created: Date.now() },
+        payload: {},
+      },
+    ];
+  };
   assert.equal(
-    (await f.send({ requestId: "syn-send" })).value.status,
+    (await f.send({ requestId: "syn-send", agent })).value.status,
     "accepted",
   );
+});
+test("a pre-existing synthetic inbox item is a pending run", async (t) => {
+  const f = await fixture(t);
+  f.state.inbox = [
+    {
+      id: "syn",
+      sessionID: "sdk-default",
+      type: "synthetic",
+      time: { created: Date.now() },
+      payload: {},
+    },
+  ];
+  assert.equal((await f.send({ requestId: "syn-pending" })).code, "BUSY");
 });
 test("native cancellation, exclusive folder create, UUIDv7 fallback and registration-only removal", async (t) => {
   const f = await fixture(t);

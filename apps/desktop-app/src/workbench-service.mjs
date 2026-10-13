@@ -2921,7 +2921,9 @@ export function createWorkbenchService({
           }));
         const running =
           active[s.sdkId]?.type === "running" ||
-          inbox.some((item) => item.sessionID === s.sdkId);
+          inbox.some(
+            (item) => item.sessionID === s.sdkId && !ownReminder(s, item),
+          );
         const observedReceipt = [...s.receipts.values()].some(
           (r) =>
             r.inboxId &&
@@ -3013,9 +3015,9 @@ export function createWorkbenchService({
     const skills = await group(client.skill?.list);
     const mcp = await group(client.mcp?.list);
     const agents = await group(client.agent?.list);
-    // Uncapped: a large cloud catalog (OpenRouter) must not hide local models.
+    // Generous bound: a large cloud catalog (OpenRouter) must not hide local models.
     // The cap is applied after filtering, with local providers first (below).
-    const models = await group(client.model?.list, Infinity);
+    const models = await group(client.model?.list, 5000);
     const providers = await group(client.provider?.list);
     const integrations = await group(client.integration?.list);
     const simple = (items, key = "id", includeProvenance = false) =>
@@ -3033,8 +3035,11 @@ export function createWorkbenchService({
                 ...(includeProvenance ? skillProvenance(w.path, i) : {}),
               })),
           );
-    const isLocalModel = (m) => {
-      const p = providers?.find((x) => x.id === m.providerID);
+    const providerById = new Map((providers ?? []).map((p) => [p.id, p]));
+    // Ordering heuristic only (not a trust signal): providers Native activated
+    // without an integration, e.g. a local endpoint, sort first.
+    const isNoIntegrationModel = (m) => {
+      const p = providerById.get(m.providerID);
       return p?.activation === "enabled" && !p.integrationID;
     };
     const modelMap = new Map();
@@ -3049,9 +3054,8 @@ export function createWorkbenchService({
         continue;
       }
       seenModels.add(id);
-      const provider = providers?.find(
-        (p) => p.id === model.providerID && p.activation !== "disabled",
-      );
+      const found = providerById.get(model.providerID);
+      const provider = found?.activation !== "disabled" ? found : undefined;
       const integration = integrations?.find(
         (i) => i.id === provider?.integrationID,
       );
@@ -3113,7 +3117,8 @@ export function createWorkbenchService({
                   // the cap never drops them; sort is stable otherwise.
                   .sort(
                     ([, a], [, b]) =>
-                      Number(isLocalModel(b)) - Number(isLocalModel(a)),
+                      Number(isNoIntegrationModel(b)) -
+                      Number(isNoIntegrationModel(a)),
                   )
                   .slice(0, 300)
                   .map(([id, m]) => ({
@@ -3127,18 +3132,26 @@ export function createWorkbenchService({
     };
   }
   // A just-finished reply, or a Native agent/model switch entry, can leave the
-  // inbox briefly non-empty; wait for idle (bounded, ~3s) before rejecting.
-  async function verifyBaselineSettled(w, s, currentRun) {
-    for (let attempt = 0; ; attempt++) {
+  // inbox briefly non-empty; wait for idle before rejecting. All waits in one
+  // send share a single ~3s deadline so Stop is not blocked by a long lock.
+  async function verifyBaselineSettled(w, s, currentRun, deadline) {
+    for (;;) {
       try {
         return await verifyInstructionBaseline(w, s, currentRun);
       } catch (error) {
-        if (currentRun || error.appCode !== "BUSY" || attempt >= 15)
+        if (currentRun || error.appCode !== "BUSY" || Date.now() >= deadline)
           throw error;
         await new Promise((resolve) => setTimeout(resolve, 200));
       }
     }
   }
+  // Only the synthetic reminder queued by our own switchAgent (created inside
+  // its call window) is ignorable; any other synthetic item is a pending run.
+  const ownReminder = (s, item) =>
+    item.type === "synthetic" &&
+    s.reminderWindow &&
+    item.time?.created >= s.reminderWindow.from &&
+    item.time?.created <= s.reminderWindow.to;
   async function send(request, w, s) {
     const currentRun = Object.hasOwn(request, "delivery");
     if (s.archived) fail("ARCHIVED_SESSION");
@@ -3174,6 +3187,8 @@ export function createWorkbenchService({
     s.receipts.set(receiptKey, receipt);
     s.lock = true;
     w.lock = true;
+    s.settling = true;
+    const deadline = Date.now() + 3000;
     s.generation++;
     let dispatched = false;
     let switching = false;
@@ -3181,11 +3196,11 @@ export function createWorkbenchService({
     try {
       await recheck(w);
       if (!w.trusted) fail("INVALID_SELECTION");
-      await verifyBaselineSettled(w, s, currentRun);
+      await verifyBaselineSettled(w, s, currentRun, deadline);
       let active, inbox;
       // A just-finished reply can still show as active for a moment; wait
       // briefly for idle before rejecting (bounded, ~3s).
-      for (let attempt = 0; ; attempt++) {
+      for (;;) {
         active = await call(client.session.active);
         inbox = await call(client.session.inbox.list, {
           sessionID: s.sdkId,
@@ -3194,11 +3209,11 @@ export function createWorkbenchService({
           fail("RUNTIME_ERROR");
         if (
           currentRun ||
-          attempt >= 15 ||
+          Date.now() >= deadline ||
           !(
             active[s.sdkId] ||
             inbox.some(
-              (item) => item.sessionID === s.sdkId && item.type !== "synthetic",
+              (item) => item.sessionID === s.sdkId && !ownReminder(s, item),
             )
           )
         )
@@ -3210,7 +3225,7 @@ export function createWorkbenchService({
           ? active[s.sdkId]?.type !== "running"
           : active[s.sdkId] ||
             inbox.some(
-              (item) => item.sessionID === s.sdkId && item.type !== "synthetic",
+              (item) => item.sessionID === s.sdkId && !ownReminder(s, item),
             )
       ) {
         s.status = "running";
@@ -3261,11 +3276,17 @@ export function createWorkbenchService({
       // Both baseline policy stages still bracket agent/model selection.
       await policy(s, "native.policy.before_selection");
       switching = true;
-      if (request.agent)
-        await call(client.session.switchAgent, {
-          sessionID: s.sdkId,
-          agent: request.agent,
-        });
+      if (request.agent) {
+        s.reminderWindow = { from: Date.now(), to: Infinity };
+        try {
+          await call(client.session.switchAgent, {
+            sessionID: s.sdkId,
+            agent: request.agent,
+          });
+        } finally {
+          s.reminderWindow.to = Date.now();
+        }
+      }
       // An omitted selection means the runtime's own resolution, including any
       // session/agent defaults and variant. Catalog order is never a default.
       if (request.model) {
@@ -3284,7 +3305,7 @@ export function createWorkbenchService({
       await policy(s, "native.policy.after_selection");
       switching = false;
       await recheck(w);
-      await verifyBaselineSettled(w, s, currentRun);
+      await verifyBaselineSettled(w, s, currentRun, deadline);
       s.status = "running";
       s.awaiting = Date.now();
       dispatched = true;
@@ -4586,6 +4607,7 @@ export function createWorkbenchService({
     } finally {
       w.lock = false;
       s.lock = false;
+      s.settling = false;
       s.generation++;
     }
   }
@@ -4612,7 +4634,7 @@ export function createWorkbenchService({
       active[s.sdkId] ||
       // Native queues a synthetic reminder when an agent (e.g. Plan) is
       // switched; it is consumed by the next prompt and is not a pending run.
-      inbox.some((item) => item.type !== "synthetic") ||
+      inbox.some((item) => !(s.settling && ownReminder(s, item))) ||
       s.unknown ||
       s.status !== "idle" ||
       s.awaiting
