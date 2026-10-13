@@ -18,27 +18,54 @@ export const isWin32 = (platform = process.platform) => platform === "win32";
 export const pathApiFor = (platform = process.platform) =>
   isWin32(platform) ? win32 : posix;
 
-// `\\?\C:\x` -> `C:\x`, `\\?\UNC\h\s\x` -> `\\h\s\x`. `\\.\` device paths are
-// never valid file targets and are returned unchanged for callers to refuse.
+// `\\?\C:\x` -> `C:\x`, `\\?\UNC\h\s\x` -> `\\h\s\x`. Every other extended
+// or device form (`\\?\GLOBALROOT\...`, `\\?\Volume{GUID}\...`, `\\.\...`) has no
+// plain equivalent: stripping it would leave a relative path that later code
+// resolves against the cwd, so those are returned UNCHANGED (still prefixed) and
+// reported by isWindowsDevicePath / hasUnsafeWindowsComponent.
 export function stripExtendedPrefix(path) {
-  if (/^\\\\\?\\UNC\\/iu.test(path)) return `\\\\${path.slice(8)}`;
-  if (/^\\\\\?\\/u.test(path)) return path.slice(4);
+  if (/^\\\\\?\\UNC\\[^\\]+\\[^\\]+/iu.test(path))
+    return `\\\\${path.slice(8)}`;
+  if (/^\\\\\?\\[A-Za-z]:(?:\\|$)/u.test(path)) return path.slice(4);
   return path;
 }
 
-export const isWindowsDevicePath = (path) => /^\\\\\.\\/u.test(path);
+// Device namespace or an extended form that could not be reduced to a plain path.
+export const isWindowsDevicePath = (path) =>
+  /^[\\/]{2}[.?][\\/]/u.test(path) && stripExtendedPrefix(path) === path;
+// UNC share path (reaching it makes Windows authenticate to that host).
+export const isWindowsNetworkPath = (path) =>
+  /^[\\/]{2}[^.?\\/]/u.test(stripExtendedPrefix(path)) ||
+  /^\\\\\?\\UNC\\/iu.test(path);
+
+// NTFS compares names through its $UpCase table: one UTF-16 code point maps to
+// one code point. JavaScript's toUpperCase also expands (ß -> SS, ﬁ -> FI), which
+// would make different NTFS names compare equal, so only 1:1 mappings are used;
+// dotless i folds to I like in the table.
+export function foldName(value) {
+  let out = "";
+  for (const ch of value) {
+    const upper = ch.toUpperCase();
+    out += [...upper].length === 1 ? upper : ch;
+  }
+  return out;
+}
 
 // Comparison key: identical keys mean the same NTFS name (case-insensitive,
 // separator-insensitive, extended-prefix-insensitive, trailing separator trimmed).
+// Forms with no plain equivalent get a key no plain path can have.
 export function comparablePath(path, platform = process.platform) {
   if (!isWin32(platform)) return posix.normalize(path);
-  const normalized = win32.normalize(stripExtendedPrefix(path));
+  const plain = stripExtendedPrefix(path);
+  if (isWindowsDevicePath(plain) || !win32.isAbsolute(plain))
+    return `\u0000unsafe:${path}`;
+  const normalized = win32.normalize(plain);
   const root = win32.parse(normalized).root;
   const trimmed =
     normalized.length > root.length
       ? normalized.replace(/[\\]+$/u, "")
       : normalized;
-  return trimmed.toUpperCase();
+  return foldName(trimmed);
 }
 
 // True when `target` is `root` or lies strictly below it (lexical only).
@@ -50,11 +77,12 @@ export function isPathInside(root, target, platform = process.platform) {
       (rel !== ".." && !rel.startsWith("../") && !posix.isAbsolute(rel))
     );
   }
-  if (isWindowsDevicePath(root) || isWindowsDevicePath(target)) return false;
-  const rel = win32.relative(
+  const keys = [
     comparablePath(root, platform),
     comparablePath(target, platform),
-  );
+  ];
+  if (keys.some((key) => key.startsWith("\u0000"))) return false;
+  const rel = win32.relative(keys[0], keys[1]);
   return (
     rel === "" ||
     (rel !== ".." && !rel.startsWith("..\\") && !win32.isAbsolute(rel))
@@ -90,7 +118,11 @@ export function isUnsafeWindowsComponent(name) {
 // Whole-path variant (absolute or relative). `\\?\`-prefixed input is checked
 // after the prefix is stripped; device paths are always unsafe.
 export function hasUnsafeWindowsComponent(path) {
-  if (isWindowsDevicePath(path)) return true;
+  if (
+    isWindowsDevicePath(path) ||
+    /^[\\/]{2}[.?][\\/]/u.test(stripExtendedPrefix(path))
+  )
+    return true;
   if (hasWindowsAlternateStream(path)) return true;
   const parsed = win32.parse(stripExtendedPrefix(path));
   const rest = stripExtendedPrefix(path).slice(parsed.root.length);
@@ -115,11 +147,12 @@ export function isVcsMetadataComponent(
   { platform = process.platform, caseInsensitive = false } = {},
 ) {
   if (isWin32(platform)) {
-    const folded = name
-      .split(":")[0]
-      .replace(/[. ]+$/u, "")
-      .toLowerCase();
-    return VCS.has(folded) || /^(?:git|hg)~[0-9]+$/u.test(folded);
+    const folded = foldName(name.split(":")[0].replace(/[. ]+$/u, ""));
+    return (
+      folded === ".GIT" ||
+      folded === ".HG" ||
+      /^(?:GIT|HG)~[0-9]+$/u.test(folded)
+    );
   }
   return VCS.has(caseInsensitive ? name.toLowerCase() : name);
 }

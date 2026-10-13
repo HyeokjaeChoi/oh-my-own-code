@@ -9,7 +9,12 @@ import {
 import { types } from "node:util";
 import { isAbsolute, normalize, resolve } from "node:path";
 import { realpathSync } from "node:fs";
-import { hasUnsafeWindowsComponent, isPathInside } from "./platform-paths.mjs";
+import {
+  hasUnsafeWindowsComponent,
+  isPathInside,
+  isWindowsDevicePath,
+  isWindowsNetworkPath,
+} from "./platform-paths.mjs";
 import { Context, Deferred, Effect, Layer, Option, Semaphore } from "effect";
 import { makeGlobalNode } from "@opencode/util/effect/app-node";
 
@@ -2130,15 +2135,29 @@ function kernel(initial) {
           return undefined;
         }
       };
-      // Contained to a location by lexical path or by realpath; a path no
-      // location owns is never read.
-      const real = realOrUndefined(request.path);
-      const owner = [...locations.values()].find(
-        (entry) =>
-          inside(entry.directory, request.path) ||
-          (real !== undefined &&
-            inside(realOrUndefined(entry.directory) ?? entry.directory, real)),
+      // A path is read only if a location owns it lexically, or (symlinked
+      // spelling of a location) by realpath; a path no location owns is never
+      // read. The second check below then requires the REAL target to stay
+      // inside that location, so a lexically inside symlink cannot lead out.
+      const lexical = [...locations.values()].find((entry) =>
+        inside(entry.directory, request.path),
       );
+      // Touching a UNC path makes Windows authenticate to that host: never
+      // resolve one unless a registered location already owns it lexically.
+      if (
+        process.platform === "win32" &&
+        (isWindowsDevicePath(request.path) ||
+          (isWindowsNetworkPath(request.path) && !lexical))
+      )
+        return yield* Effect.fail(error("read_unverified"));
+      const real = lexical ? undefined : realOrUndefined(request.path);
+      const owner =
+        lexical ??
+        [...locations.values()].find(
+          (entry) =>
+            real !== undefined &&
+            inside(realOrUndefined(entry.directory) ?? entry.directory, real),
+        );
       if (!owner) return yield* Effect.fail(error("read_unverified"));
       // A symlink inside the location must not lead out of it unprompted.
       try {

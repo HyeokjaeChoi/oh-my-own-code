@@ -672,3 +672,21 @@ test("assertNotVcsMetadataPath applies NTFS alias rules when platform is win32",
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test("assertNotVcsMetadataPath refuses device and foreign UNC forms before any filesystem call", async () => {
+  const { assertNotVcsMetadataPath } = await import(
+    "./native-bootstrap-workspace.mjs"
+  );
+  const platform = "win32";
+  // Neither path exists; a rejection (not ENOENT-style success) proves no realpath ran first.
+  for (const target of [
+    "\\\\?\\GLOBALROOT\\Device\\x",
+    "\\\\attacker\\share\\f.txt",
+    "\\\\.\\C:\\x",
+  ])
+    await assert.rejects(
+      assertNotVcsMetadataPath("/tmp", target, { platform }),
+      /native_bootstrap_workspace_unverified/u,
+      target,
+    );
+});

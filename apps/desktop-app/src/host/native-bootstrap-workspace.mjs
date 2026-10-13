@@ -22,7 +22,9 @@ import {
 } from "./workspace-root-authority.mjs";
 import {
   hasUnsafeWindowsComponent,
+  isPathInside,
   isVcsMetadataComponent,
+  isWindowsNetworkPath,
 } from "../platform-paths.mjs";
 
 const refuse = () => {
@@ -113,6 +115,13 @@ export async function assertNotVcsMetadataPath(
   // NTFS aliases (streams, trailing dot/space, DOS device names, \\.\ paths)
   // have no stable canonical form, so refuse them outright.
   need(!windows || !hasUnsafeWindowsComponent(target));
+  // A UNC target would be resolved (and authenticated against) before any other
+  // check; only the workspace's own lexical subtree may be a network path.
+  need(
+    !windows ||
+      !(isWindowsNetworkPath(target) || isWindowsNetworkPath(workspace)) ||
+      isPathInside(workspace, target, "win32"),
+  );
   const root = await fs.realpath(workspace);
   const alias = join(
     dirname(root),
