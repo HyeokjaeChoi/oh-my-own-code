@@ -167,6 +167,14 @@
       "options": {
         "command": "node apps/desktop-app/scripts/e2e-workbench-states.mjs"
       }
+    },
+    "e2e-features": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node apps/desktop-app/scripts/e2e-features.mjs"
+      }
     }
   }
 }

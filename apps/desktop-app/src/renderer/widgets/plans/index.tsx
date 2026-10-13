@@ -137,11 +137,20 @@ export function PlansPanel({
     return () => clearInterval(timer);
   }, [running, refresh, actions, store]);
 
+  const target = useRef<string | undefined>(undefined);
   const open = async (next: string) => {
+    target.current = next;
     setPath(next);
     setRaw(false);
     setNote(undefined);
-    await actions.readWorkspaceFile(next);
+    // A read is refused while another workbench read/observation is in
+    // flight (e.g. the git review poll); retry briefly instead of staying on
+    // "불러오는 중…" forever.
+    for (let attempt = 0; attempt < 10; attempt++) {
+      if (await actions.readWorkspaceFile(next)) return;
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      if (target.current !== next) return;
+    }
   };
   const loaded =
     path !== undefined &&
