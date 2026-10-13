@@ -201,6 +201,31 @@ test("a huge unterminated quoted value exports as a redacted marker", () => {
   assert.equal(t, "password=[REDACTED]");
 });
 
+test("escaped quotes, escaped-quote values and JSON-quoted header keys never leak", () => {
+  const cases = [
+    'Authorization: "Bearer ab\\"cdefgh123"',
+    "Authorization: 'Bearer ab\\'cdefgh123'",
+    '{"Authorization": "Basic dXNlcjpwYXNzd29yZA=="}',
+    'PASSWORD=\\"secretval123\\"',
+    '{\\"api_key\\": \\"secretval123\\"}',
+  ];
+  for (const c of cases) {
+    const { text } = redactText(c);
+    assert.ok(
+      !/cdefgh123|dXNlcjpwYXNz|secretval123/.test(text),
+      `${c} -> ${text}`,
+    );
+    assert.equal(redactText(text).text, text);
+  }
+});
+
+test("redaction of a long credential-like identifier stays fast", () => {
+  const t0 = performance.now();
+  redactText("a".repeat(70000));
+  redactText("token".repeat(14000));
+  assert.ok(performance.now() - t0 < 1500, "redaction must be near-linear");
+});
+
 test("redaction is idempotent", () => {
   const once = redactText(
     `${FAKE_KEYS.join(" ")} TOKEN=zzz Authorization: Bearer abcdefghij ${HOME}`,

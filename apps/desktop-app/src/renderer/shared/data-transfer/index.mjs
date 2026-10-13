@@ -19,7 +19,7 @@ const TAIL_DROP = 256;
 // Order matters: block/header forms first, then bare token shapes, then assignments.
 const SECRET_PATTERNS = [
   /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z ]*PRIVATE KEY-----|$)/g,
-  /\b(authorization|proxy-authorization|x-api-key)(\s*[:=]\s*)(?:"[^"\n]*"?|'[^'\n]*'?|(?:(?:Bearer|Basic|Token)\s+)?[^\s"',;]+)/gi,
+  /\b(authorization|proxy-authorization|x-api-key)(\\?["']?\s*[:=]\s*)(?:\\?"(?:[^"\\\n]|\\.)*"|\\?'(?:[^'\\\n]|\\.)*'|\\?"[^\n]*|\\?'[^\n]*|\[REDACTED\](?![\w.-])|(?:(?:Bearer|Basic|Token)\s+)?[^\s"',;]+)/gi,
   /\bBearer\s+[A-Za-z0-9._~+/=-]{8,}/g,
   /\bsk-[A-Za-z0-9_-]{16,}/g,
   /\bgh[pousr]_[A-Za-z0-9]{20,}/g,
@@ -37,7 +37,7 @@ const SECRET_PATTERNS = [
 ];
 // NAME=value / "name": "value" where NAME looks like a credential.
 const ASSIGN =
-  /(["']?[A-Za-z0-9_.-]*(?:api[_-]?key|token|secret|passw(?:or)?d|credential|private[_-]?key)[A-Za-z0-9_.-]*["']?\s*[:=]\s*)(?:"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|"[^\n]*|'[^\n]*|[^\s"',;]+)/gi;
+  /(["']?[A-Za-z0-9_.-]{0,64}(?:api[_-]?key|token|secret|passw(?:or)?d|credential|private[_-]?key)[A-Za-z0-9_.-]{0,64}\\?["']?\s*[:=]\s*)(?:\\?"(?:[^"\\\n]|\\.)*"|\\?'(?:[^'\\\n]|\\.)*'|\\?"[^\n]*|\\?'[^\n]*|\[REDACTED\](?![\w.-])|[^\s"',;]+)/gi;
 
 // scheme://user:pass@host keeps the scheme and host, drops the credentials.
 const URL_USERINFO = /\b([a-z][a-z0-9+.-]*:\/\/)[^\s/@:]+:[^\s/@]+@/gi;
