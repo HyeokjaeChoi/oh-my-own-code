@@ -2,6 +2,7 @@ export {
   TERMINAL_LIMITS,
   validateTerminalRequest,
   stripAnsi,
+  createResizeSync,
 } from "./index.mjs";
 export type {
   TerminalRequest,

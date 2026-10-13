@@ -12,6 +12,7 @@ import {
 } from "./host/terminal-host.mjs";
 import { lazyPty } from "./host/pty-loader.mjs";
 import {
+  createResizeSync,
   validateTerminalRequest,
   stripAnsi,
 } from "./renderer/shared/terminal/index.mjs";
@@ -583,4 +584,84 @@ test("terminal IPC checks admission and validation before touching the host", as
   assert.deepEqual(calls, []);
   assert.equal((await handler(event, req)).ok, true);
   assert.deepEqual(calls, ["list"]);
+});
+
+// Manual timer harness: fire() runs the pending callback.
+function fakeTimers() {
+  let pending;
+  return {
+    setTimer: (fn, ms) => (pending = { fn, ms }),
+    clearTimer: () => (pending = undefined),
+    get ms() {
+      return pending?.ms;
+    },
+    async fire() {
+      const p = pending;
+      pending = undefined;
+      await p?.fn();
+    },
+  };
+}
+
+test("resize sync collapses bursts into one trailing send of the latest size", async () => {
+  const timers = fakeTimers();
+  const sent = [];
+  const sync = createResizeSync({
+    ...timers,
+    send: async (c, r) => (sent.push([c, r]), { ok: true }),
+  });
+  for (let i = 1; i <= 100; i++) sync.request(80 + i, 24);
+  assert.equal(timers.ms, 100);
+  await timers.fire();
+  assert.deepEqual(sent, [[180, 24]]);
+  sync.request(180, 24);
+  await timers.fire();
+  assert.equal(sent.length, 1, "unchanged size is not re-sent");
+});
+
+test("resize sync retries a rate-limited size so the final grid is not lost", async () => {
+  const timers = fakeTimers();
+  const sent = [];
+  let limited = 2;
+  const sync = createResizeSync({
+    ...timers,
+    send: async (c, r) => {
+      sent.push([c, r]);
+      return limited-- > 0 ? { ok: false, code: "RATE_LIMITED" } : { ok: true };
+    },
+  });
+  sync.request(100, 30);
+  await timers.fire();
+  assert.equal(timers.ms, 250);
+  await timers.fire();
+  await timers.fire();
+  assert.deepEqual(sent, [
+    [100, 30],
+    [100, 30],
+    [100, 30],
+  ]);
+  assert.equal(timers.ms, undefined);
+  // A different failure is not retried forever.
+  const sync2 = createResizeSync({
+    ...timers,
+    send: async () => ({ ok: false, code: "NOT_FOUND" }),
+  });
+  sync2.request(90, 20);
+  await timers.fire();
+  assert.equal(timers.ms, undefined);
+  // A newer size requested while a send is in flight is sent afterwards.
+  let release;
+  const gate = new Promise((r) => (release = r));
+  const seen = [];
+  const sync3 = createResizeSync({
+    ...timers,
+    send: async (c) => (seen.push(c), c === 70 && (await gate), { ok: true }),
+  });
+  sync3.request(70, 20);
+  const firing = timers.fire();
+  sync3.request(71, 20);
+  release();
+  await firing;
+  await timers.fire();
+  assert.deepEqual(seen, [70, 71]);
 });

@@ -4,6 +4,7 @@ import { Terminal, type ITheme } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
 import {
   callTerminal as call,
+  createResizeSync,
   TERMINAL_LIMITS,
   type TerminalInfo,
   type TerminalRead,
@@ -110,8 +111,11 @@ export function XtermView({
       attributeFilter: ["data-theme"],
     });
 
-    // Size: fit to the container, tell the host only when the grid really changed.
-    let sent = { cols: 0, rows: 0 };
+    // Size: fit to the container; the debounced sync tells the host only the latest grid.
+    const sizeSync = createResizeSync({
+      send: (cols, rows) =>
+        call({ type: "terminal.resize", terminalId, cols, rows }),
+    });
     let frame = 0;
     const refit = () => {
       cancelAnimationFrame(frame);
@@ -122,10 +126,7 @@ export function XtermView({
         } catch {
           return;
         }
-        const { cols, rows } = term;
-        if (cols === sent.cols && rows === sent.rows) return;
-        sent = { cols, rows };
-        void call({ type: "terminal.resize", terminalId, cols, rows });
+        sizeSync.request(term.cols, term.rows);
       });
     };
     const resizeWatch = new ResizeObserver(refit);
@@ -227,6 +228,7 @@ export function XtermView({
       clearTimeout(timer);
       clearTimeout(sendTimer);
       cancelAnimationFrame(frame);
+      sizeSync.dispose();
       media.removeEventListener("change", restyle);
       themeWatch.disconnect();
       resizeWatch.disconnect();

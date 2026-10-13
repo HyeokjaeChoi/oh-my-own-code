@@ -65,3 +65,43 @@ const ansi =
 export function stripAnsi(text) {
   return text.replace(ansi, "").replace(/\r(?!\n)/g, "");
 }
+// Debounced grid-size sync. Only the latest size matters: requests within `delayMs` collapse into one
+// trailing send, a size equal to the last acknowledged one is skipped, and a RATE_LIMITED refusal is
+// retried (the host never saw that size) so the final size is never lost.
+export function createResizeSync({
+  send,
+  delayMs = 100,
+  retryMs = 250,
+  setTimer = setTimeout,
+  clearTimer = clearTimeout,
+}) {
+  let acked = { cols: 0, rows: 0 };
+  let want;
+  let timer;
+  let stopped = false;
+  const schedule = (ms) => {
+    clearTimer(timer);
+    timer = setTimer(run, ms);
+  };
+  async function run() {
+    timer = undefined;
+    if (stopped || !want) return;
+    const target = want;
+    if (target.cols === acked.cols && target.rows === acked.rows) return;
+    const result = await send(target.cols, target.rows);
+    if (stopped) return;
+    if (result.ok) acked = target;
+    else if (result.code === "RATE_LIMITED") return schedule(retryMs);
+    if (want !== target && timer === undefined) schedule(delayMs);
+  }
+  return {
+    request(cols, rows) {
+      want = { cols, rows };
+      schedule(delayMs);
+    },
+    dispose() {
+      stopped = true;
+      clearTimer(timer);
+    },
+  };
+}

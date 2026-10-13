@@ -42,3 +42,10 @@ export function validateTerminalRequest(
   value: unknown,
 ): TerminalRequest | undefined;
 export function stripAnsi(text: string): string;
+export function createResizeSync(options: {
+  send: (cols: number, rows: number) => Promise<{ ok: boolean; code?: string }>;
+  delayMs?: number;
+  retryMs?: number;
+  setTimer?: (fn: () => void, ms: number) => unknown;
+  clearTimer?: (timer: unknown) => void;
+}): { request(cols: number, rows: number): void; dispose(): void };
