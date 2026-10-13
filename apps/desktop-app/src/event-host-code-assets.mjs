@@ -59,6 +59,7 @@ export const EVENT_HOST_CODE_ASSETS = Object.freeze([
   "native-permission-task-observer.mjs",
   "host/native-workspace-file-io.mjs",
   "host/native-descriptor-read.mjs",
+  "host/native-descriptor-read-win32.mjs",
   "host/darwin-directory-entry.mjs",
   "host/native-descriptor-read-resource.mjs",
   "host/native-read-auxiliary.mjs",

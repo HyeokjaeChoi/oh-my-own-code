@@ -6,6 +6,11 @@ import { types } from "node:util";
 import { openDarwinDescriptorFFI } from "./darwin-descriptor-ffi.mjs";
 import { decodeDarwinDirectoryEntry } from "./darwin-directory-entry.mjs";
 import {
+  createWin32DescriptorReadKernel,
+  win32FailureKind,
+  win32PathKind,
+} from "./native-descriptor-read-win32.mjs";
+import {
   isWorkspaceRootGuard,
   assertWorkspaceRootGuard,
   invalidateWorkspaceRootGuard,
@@ -82,12 +87,12 @@ function wrongKind(kind) {
 // Classification is produced only after an actual descriptor observation and
 // cleanup/final authority checks, never from caller error tags or properties.
 export function nativeDescriptorPathKind(error) {
-  return pathKinds.get(error);
+  return pathKinds.get(error) ?? win32PathKind(error);
 }
 // Only this invocation's failed descriptor open can publish a reason, after
 // temporary cleanup and final root/authority checks. Error fields are not proof.
 export function nativeDescriptorFailureKind(error) {
-  return pathFailures.get(error);
+  return pathFailures.get(error) ?? win32FailureKind(error);
 }
 
 export async function createNativeDescriptorReadKernel(workspace, options) {
@@ -105,6 +110,9 @@ export async function createNativeDescriptorReadKernel(workspace, options) {
     isWorkspaceRootGuard(checkRoot) && synchronous(check),
     "invalid_request",
   );
+  // Windows has no openat: the name-identity kernel serves the same contract.
+  if (process.platform === "win32")
+    return createWin32DescriptorReadKernel(source, { checkRoot, check });
   // The loader checks the exact runtime before loading libc or opening any file.
   const { library, ptr, toArrayBuffer } = await openDarwinDescriptorFFI({
     directory: true,
