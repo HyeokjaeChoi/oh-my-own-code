@@ -5705,6 +5705,30 @@ test("a BUSY mode.set during policy sync settles once Native reports idle", asyn
   assert.equal(result.ok, true, JSON.stringify(result));
 });
 
+test("a mode the user changes between BUSY and the retry is never overwritten", async (t) => {
+  const f = await instructionFixture(t);
+  f.records.get(f.nativeId).permissions = compileModeRules("scoped_edit");
+  f.state.active = { [f.nativeId]: { type: "running" } };
+  const pending = f.mutate(f.apply, "instructions-busy-user-mode");
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  f.state.active = {};
+  const set = await f.mutate(
+    {
+      type: "permission.mode.set",
+      ...f.scope,
+      mode: "read_plan",
+      requestId: "user-mode",
+    },
+    "user-mode",
+  );
+  assert.equal(set.ok, true, JSON.stringify(set));
+  await pending;
+  assert.deepEqual(
+    f.records.get(f.nativeId).permissions,
+    compileModeRules("read_plan"),
+  );
+});
+
 test("a BUSY mode.set during policy sync surfaces BUSY, not POLICY_UNVERIFIED", async (t) => {
   const f = await instructionFixture(t);
   f.records.get(f.nativeId).permissions = compileModeRules("scoped_edit");
