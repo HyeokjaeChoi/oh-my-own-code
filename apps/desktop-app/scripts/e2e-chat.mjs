@@ -415,6 +415,29 @@ try {
     "turn 3: read permission approved (always); result and final reply",
   );
 
+  // The saved "항상 허용" rule is listed in Settings and can be revoked; the
+  // same read then asks again.
+  await page.getByRole("button", { name: "설정·단축키" }).click();
+  const rules = page.getByRole("region", { name: "저장된 허용 규칙" });
+  await expect(
+    rules.getByRole("button", { name: /허용 규칙 삭제/ }),
+  ).toHaveCount(1, { timeout: 30_000 });
+  await rules.getByRole("button", { name: /허용 규칙 삭제/ }).click();
+  await expect(
+    rules.getByText("이 프로젝트에 저장된 허용 규칙이 없습니다."),
+  ).toBeVisible({ timeout: 30_000 });
+  await page.keyboard.press("Escape");
+  await send(`READ-FIXTURE:${fixtureFile}`);
+  await expect(prompt).toBeVisible({ timeout: 90_000 });
+  await prompt.getByRole("button", { name: "이번만 허용" }).click();
+  await expect(
+    page.getByText("Tool result received: file read ok").nth(1),
+  ).toBeVisible({ timeout: 90_000 });
+  await idle();
+  observations.push(
+    "turn 3b: saved allow rule listed in settings, removed, and the read asks again",
+  );
+
   // Approves a permission prompt if one appears before `done` is rendered;
   // a prompt that does not match `expected` fails the run.
   const approveUntil = async (done, expected) => {

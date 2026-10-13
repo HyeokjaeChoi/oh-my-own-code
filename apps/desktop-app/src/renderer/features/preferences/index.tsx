@@ -14,6 +14,7 @@ import {
 } from "../../shared/notifications/index.js";
 import { OPEN_SETTINGS_EVENT } from "../../shared/palette/index.js";
 import { ProviderSettings } from "./providers.js";
+import { SavedRulesSettings } from "./saved-rules.js";
 import styles from "./preferences.module.css";
 
 const DARK_QUERY = "(prefers-color-scheme: dark)";
@@ -135,6 +136,7 @@ export function PreferencesSheetView(props: {
       ))}
       <OsNotificationField {...props} />
       <ProviderSettings />
+      <SavedRulesSettings />
       <h3 className={styles.subheading}>키보드 단축키</h3>
       <dl className={styles.shortcuts}>
         {SHORTCUTS.map(({ keys, action }) => (

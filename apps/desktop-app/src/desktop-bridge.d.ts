@@ -1057,6 +1057,10 @@ declare global {
         // eslint-disable-next-line no-unused-vars
         _request: unknown,
       ): Promise<unknown>;
+      rules(
+        // eslint-disable-next-line no-unused-vars
+        _request: unknown,
+      ): Promise<unknown>;
       plans(
         // eslint-disable-next-line no-unused-vars
         _request: PlansRequest,

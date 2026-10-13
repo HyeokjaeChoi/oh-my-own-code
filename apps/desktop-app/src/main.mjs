@@ -41,6 +41,8 @@ import { createNotifyHost } from "./host/notify-host.mjs";
 import { bindNotifyIpc } from "./host/notify-ipc.mjs";
 import { createProviderHost } from "./host/provider-host.mjs";
 import { bindProviderIpc } from "./host/provider-ipc.mjs";
+import { createSavedRulesHost } from "./host/saved-rules-host.mjs";
+import { bindSavedRulesIpc } from "./host/saved-rules-ipc.mjs";
 import { createDataHost, wipeAppDataSync } from "./host/data-host.mjs";
 import { bindDataIpc } from "./host/data-ipc.mjs";
 import { createPreviewHost } from "./host/preview-host.mjs";
@@ -119,6 +121,14 @@ const providers = createProviderHost({
       : undefined;
   },
   configFile: () => join(namespace.config, "opencode", "opencode.json"),
+  owned: () => ownedStorage,
+});
+const savedRules = createSavedRulesHost({
+  context: () => {
+    const live = runtime ?? nativeTaskRuntime;
+    return live ? { client: live.workbenchContext?.().client } : undefined;
+  },
+  resolveWorkspace: (id) => workbench?.terminalRoot(id),
   owned: () => ownedStorage,
 });
 const previews = createPreviewHost({
@@ -394,6 +404,7 @@ function bindIpc() {
     canTakeClicked: (event) => targetWindow()?.webContents === event.sender,
   });
   bindProviderIpc({ ipcMain, admit, host: providers });
+  bindSavedRulesIpc({ ipcMain, admit, host: savedRules });
   bindPreviewIpc({ ipcMain, admit, host: previews });
   bindDataIpc({
     ipcMain,
