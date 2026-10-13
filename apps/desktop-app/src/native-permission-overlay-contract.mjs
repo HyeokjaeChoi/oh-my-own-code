@@ -379,12 +379,12 @@ const recipe = {
       beforeSha256:
         "76638b2c4d683d304603080ba002d054cfcf49e037d378071e80b46efb74440b",
       afterSha256:
-        "a24ec771264a845261c7452f5506e62c1680a2374782ec64b3a9385cb14f5a4f",
+        "0f42816387762b6387648055f7987bfeba0c0fe63139c758c707ef36412ede19",
       edits: [
         {
           find: '    create: Effect.fn("Session.create")(function* (input) {\n',
           replace:
-            '    create: Effect.fn("Session.create")(function* (input) {\n      // Only a private bootstrap handoff armed for exactly this input may create.\n      // Direct HTTP callers, other methods and duplicate-ID probes are refused.\n      yield* control.consumeBootstrap(input);\n',
+            '    create: Effect.fn("Session.create")(function* (input) {\n      // Only a private bootstrap handoff armed for exactly this input may create.\n      // Direct HTTP callers, other methods and duplicate-ID probes are refused.\n      yield* control.consumeBootstrap(input);\n      // A child may only be created under a parent whose project is admitted (same gate as fork).\n      if (input?.parentID !== undefined) yield* enter(input.parentID, () => Effect.void);\n',
         },
         {
           find: "var layer = Layer.effect(Service27, Effect.gen(function* () {",
@@ -1899,7 +1899,7 @@ export const NATIVE_PERMISSION_OVERLAY_RECEIPT = Object.freeze({
   id: recipe.id,
   serverVersion: recipe.serverVersion,
   recipeSha256:
-    "a15a60bc9e05ba5e758aa34e124f56632ab2755bfa5fccbd84b97ea270c50850",
+    "113795df3c1ef07e1952edc59e99fa15c2097da7cd239d2b7382a723dea386d3",
   files: Object.freeze(
     recipe.files.map(({ path, beforeSha256, afterSha256 }) =>
       Object.freeze({ path, beforeSha256, afterSha256 }),

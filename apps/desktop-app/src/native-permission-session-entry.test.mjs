@@ -285,12 +285,19 @@ test("actual checked direct SessionShell refuses before Instance or Shell acquis
 // loaded. Create is gated by the private bootstrap handoff: it must consume it
 // as the FIRST statement, before inspecting input, allocating an ID or touching
 // the store/project, and a refusal leaves all of those untouched.
-async function createUnderGate(gate) {
+async function createUnderGate(gate, admitted = new Set()) {
   const text = await checkedSource("config-zyp346xr.js");
   const begin = text.indexOf('    create: Effect.fn("Session.create")');
   const finish = text.indexOf("\n    fork:", begin);
   assert.ok(begin >= 0 && finish > begin);
-  const seen = { id: 0, store: 0, project: 0, reads: 0, consumed: [] };
+  const seen = {
+    id: 0,
+    store: 0,
+    project: 0,
+    reads: 0,
+    consumed: [],
+    entered: [],
+  };
   const deps = {
     Effect,
     control: {
@@ -302,6 +309,14 @@ async function createUnderGate(gate) {
             : Effect.fail(new Error("native_permission_held"));
         }),
     },
+    // Stands in for the coordinator admission: only admitted parents pass.
+    enter: (sessionID, body) =>
+      Effect.suspend(() => {
+        seen.entered.push(sessionID);
+        return admitted.has(sessionID)
+          ? body()
+          : Effect.fail(new Error("native_permission_scope_unverified"));
+      }),
     SessionSchema2: {
       ID: {
         create: () => {
@@ -372,6 +387,39 @@ test("actual checked Native create proceeds into the original body only after th
     { id: seen.id, store: seen.store, project: seen.project },
     { id: 0, store: 1, project: 0 },
   );
+});
+test("actual checked Native child create is refused under a non-admitted parent before any create effect", async () => {
+  const { create, seen } = await createUnderGate(true);
+  const input = { parentID: "ses_removed_project", title: "child" };
+  const exit = await Effect.runPromise(Effect.exit(create(input)));
+  assert.equal(exit._tag, "Failure");
+  assert.match(String(exit.cause), /native_permission_scope_unverified/u);
+  assert.deepEqual(seen.entered, ["ses_removed_project"]);
+  assert.deepEqual(
+    { id: seen.id, store: seen.store, project: seen.project },
+    { id: 0, store: 0, project: 0 },
+  );
+});
+test("actual checked Native child create proceeds when the parent is admitted; the bootstrap path never enters a parent", async () => {
+  const admitted = await createUnderGate(true, new Set(["ses_parent"]));
+  await Effect.runPromise(
+    admitted.create({ parentID: "ses_parent", title: "child" }),
+  );
+  assert.deepEqual(admitted.seen.entered, ["ses_parent"]);
+  assert.equal(admitted.seen.store, 1);
+  const bootstrap = await createUnderGate(true);
+  await Effect.runPromise(bootstrap.create({ id: "planned" }));
+  assert.deepEqual(bootstrap.seen.entered, []);
+});
+test("actual checked Native child create stays refused in strict mode before the parent is entered", async () => {
+  const { create, seen } = await createUnderGate(
+    false,
+    new Set(["ses_parent"]),
+  );
+  held(
+    await Effect.runPromise(Effect.exit(create({ parentID: "ses_parent" }))),
+  );
+  assert.deepEqual(seen.entered, []);
 });
 test("actual checked Native session import stays closed", async () => {
   const text = outputs

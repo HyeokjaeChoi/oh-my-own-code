@@ -1,6 +1,6 @@
 // Test-only: the sanctioned differences between a prechange overlay recipe and
 // the current one are the Session.create gate (held -> bootstrap handoff) and
-// the fork wrapper that hands its input to Control.enter (parent-bound consume),
+// the parent admission for child creates, the fork wrapper that hands its input to Control.enter (parent-bound consume),
 // and the Permission.assert .git/.hg edit guard.
 import assert from "node:assert/strict";
 import { isDeepStrictEqual } from "node:util";
@@ -55,7 +55,13 @@ export function assertOnlyCreateGateChanged(current, baseline) {
     );
     // The gate is the first statement and no unconditional hold remains.
     assert.ok(
-      now.replace.endsWith("      yield* control.consumeBootstrap(input);\n"),
+      now.replace.includes("      yield* control.consumeBootstrap(input);\n"),
+    );
+    // A child create additionally requires its parent's project admission.
+    assert.ok(
+      now.replace.endsWith(
+        "      if (input?.parentID !== undefined) yield* enter(input.parentID, () => Effect.void);\n",
+      ),
     );
     assert.equal(now.replace.includes("native_permission_held"), false);
   });
