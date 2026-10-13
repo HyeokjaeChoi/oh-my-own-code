@@ -81,8 +81,13 @@ export function createWin32ConfigurationSaveKernel(
         return action();
       } catch (e) {
         if (attempt >= 5 || !TRANSIENT.has(e?.code)) throw e;
-        const until = Date.now() + 20 * attempt;
-        while (Date.now() < until);
+        // Synchronous kernel: block the thread without spinning the CPU.
+        Atomics.wait(
+          new Int32Array(new SharedArrayBuffer(4)),
+          0,
+          0,
+          20 * attempt,
+        );
       }
     }
   }
@@ -263,11 +268,14 @@ export function createWin32ConfigurationSaveKernel(
       published,
     );
     if (task.source) {
-      matches(
-        task.source,
-        observe(task.sourceFD, task.request.kind),
-        published,
-      );
+      // The source handle is closed before the replace (NTFS refuses to rename
+      // over a file that has an open handle); afterwards the backup name proves it.
+      if (task.sourceFD !== undefined)
+        matches(
+          task.source,
+          observe(task.sourceFD, task.request.kind),
+          published,
+        );
       matches(
         task.source,
         namedObservation(task, published ? task.backup : task.target),
@@ -590,6 +598,15 @@ export function createWin32ConfigurationSaveKernel(
         refuse("expired");
       }
       if (checkRoot || chainBound(task.request.kind)) rootStable(task);
+      if (task.source) {
+        // No handle to the target may be open when it is replaced. Close ours,
+        // then prove by NAME that the target is still exactly the observed original.
+        const fd = task.sourceFD;
+        task.sourceFD = undefined;
+        io.closeSync(fd);
+        matches(task.source, namedObservation(task, task.target));
+        rootStable(task);
+      }
       replace(task);
       io.fsyncSync(task.stageFD);
       verify(task, true);
