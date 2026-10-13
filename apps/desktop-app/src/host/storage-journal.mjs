@@ -1559,7 +1559,12 @@ function historyValidator() {
           payload.receipt.effect !== "none" ||
             prior.steps.size === 0 ||
             (payload.receipt.admission === "rejected" &&
-              bootstrapNoEffectProven(prior, tasks.get(key))),
+              (bootstrapNoEffectProven(prior, tasks.get(key)) ||
+                // Typed Native empty_session rejection proves no fork effect.
+                (prior.identity.type === "session.fork" &&
+                  payload.receipt.evidence.some(
+                    (entry) => entry.kind === "native-rejected-empty",
+                  )))),
           "identity_conflict",
         );
         need(
