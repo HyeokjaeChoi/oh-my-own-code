@@ -5,6 +5,7 @@ import {
   realpathSync,
   lstatSync,
 } from "node:fs";
+import { assertWindowsPrivateDirectoriesSync } from "./windows-acl.mjs";
 import { tmpdir } from "node:os";
 import { join, relative, isAbsolute } from "node:path";
 
@@ -66,6 +67,8 @@ export function prepareDurableNamespace(app) {
       throw new Error("storage_denied");
   }
   if (realpathSync(root) !== root) throw new Error("storage_denied");
+  // Windows has no uid/mode: the ACL of the durable root must be private to this user.
+  assertWindowsPrivateDirectoriesSync([product, root]);
   return Object.freeze({
     root,
     documents,

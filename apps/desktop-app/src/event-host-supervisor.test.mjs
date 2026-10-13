@@ -1866,3 +1866,64 @@ test("child diagnostics reach the trusted Main sink; a throwing sink or invalid 
   ]);
   await runtime.stop();
 });
+
+test("win32 target: Windows engine, ACL batch of every private directory, profile-confined environment", async (t) => {
+  const f = await fixture(t);
+  const checked = [];
+  f.options.platform = "win32";
+  f.options.arch = "x64";
+  f.options.eventHost = eventHostForResources(
+    join(f.root, "..", "resources"),
+    "win32",
+    "x64",
+  );
+  assert.match(f.options.eventHost.enginePath, /runtime[\\/]bun\.exe$/);
+  f.options.assertPrivateDirectories = async (paths, options) => {
+    checked.push([paths, options.platform]);
+    return true;
+  };
+  const spawned = f.options.spawnProcess;
+  f.options.spawnProcess = (engine, args, opts) => {
+    assert.equal(opts.windowsHide, true);
+    // A win32 path module is applied to a POSIX test root here, so compare slash-normalized.
+    assert.equal(
+      opts.env.USERPROFILE.replaceAll("\\", "/"),
+      join(f.root, "home"),
+    );
+    assert.ok(opts.env.SystemRoot);
+    assert.match(opts.env.PATH, /System32$/);
+    assert.equal(opts.env.HOME, opts.env.USERPROFILE);
+    return spawned(engine, args, opts);
+  };
+  const host = await startEventHost(f.options);
+  assert.equal(checked.length, 1);
+  assert.equal(checked[0][1], "win32");
+  for (const required of [
+    f.namespace.root,
+    f.namespace.config,
+    f.namespace.data,
+    f.namespace.state,
+    f.root,
+    join(f.root, "home"),
+    join(f.root, "tmp"),
+  ])
+    assert.ok(checked[0][0].includes(required), required);
+  await host.stop();
+});
+
+test("win32 target: a rejecting ACL check stops before spawn intent", async (t) => {
+  const f = await fixture(t);
+  f.options.platform = "win32";
+  f.options.arch = "x64";
+  f.options.eventHost = eventHostForResources(
+    join(f.root, "..", "resources"),
+    "win32",
+    "x64",
+  );
+  f.options.assertPrivateDirectories = async () => {
+    throw new Error("storage_denied");
+  };
+  await assert.rejects(startEventHost(f.options), /event host unavailable/i);
+  assert.equal(f.log.includes("intent"), false);
+  assert.equal(f.log.includes("spawn"), false);
+});

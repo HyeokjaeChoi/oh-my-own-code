@@ -25,7 +25,44 @@ import {
   validAgentSourceName,
   agentFileWriteFits,
 } from "./renderer/shared/configuration-draft/agent.mjs";
-import { isAbsolute } from "node:path";
+import { isAbsolute, posix, win32 } from "node:path";
+
+// The one environment the supervisor gives the host child and the child accepts.
+// Windows runtimes also need SystemRoot and a profile, all confined to the
+// disposable root; POSIX keeps its fixed system PATH.
+export function eventHostEnvironment({
+  platform,
+  root,
+  configPath,
+  dataPath,
+  statePath,
+  systemRoot = "C:\\Windows",
+}) {
+  const path = platform === "win32" ? win32 : posix;
+  const home = path.join(root, "home");
+  const tmp = path.join(root, "tmp");
+  return {
+    HOME: home,
+    XDG_CONFIG_HOME: configPath,
+    XDG_DATA_HOME: dataPath,
+    XDG_STATE_HOME: statePath,
+    XDG_CACHE_HOME: path.join(root, "cache"),
+    TMPDIR: tmp,
+    TMP: tmp,
+    TEMP: tmp,
+    OPENCODE_CONFIG_DIR: configPath,
+    OPENCODE_DISABLE_AUTOUPDATE: "true",
+    ...(platform === "win32"
+      ? {
+          PATH: path.join(systemRoot, "System32"),
+          SystemRoot: systemRoot,
+          USERPROFILE: home,
+          APPDATA: path.join(home, "AppData", "Roaming"),
+          LOCALAPPDATA: path.join(home, "AppData", "Local"),
+        }
+      : { PATH: "/usr/bin:/bin:/usr/sbin:/sbin" }),
+  };
+}
 import {
   initialization,
   taskArmRequest,

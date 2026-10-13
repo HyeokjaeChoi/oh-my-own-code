@@ -21,13 +21,21 @@ const buildInputs = await beginBuildProvenance(root);
 const distApp = join(appDir, "dist", "app");
 const resources = join(appDir, "dist", "resources");
 const require = createRequire(import.meta.url);
-const target = `${process.platform}-${process.arch}`;
-const packageName = sidecarPackageName(process.platform, process.arch);
-const sidecarPackage = require.resolve(`${packageName}/package.json`);
+// OMOC_BUILD_TARGET=<platform>-<arch> builds the resources of ANOTHER target
+// (layout/provenance verification only; nothing is executed). The sidecar then
+// comes from OMOC_SIDECAR_PACKAGE_DIR (see scripts/fetch-sidecar.mjs).
+const [targetPlatform, targetArch] = (
+  process.env.OMOC_BUILD_TARGET ?? `${process.platform}-${process.arch}`
+).split("-");
+const target = `${targetPlatform}-${targetArch}`;
+const packageName = sidecarPackageName(targetPlatform, targetArch);
+const sidecarPackageDir = process.env.OMOC_SIDECAR_PACKAGE_DIR
+  ? resolve(process.env.OMOC_SIDECAR_PACKAGE_DIR)
+  : dirname(require.resolve(`${packageName}/package.json`));
 const sidecarSource = join(
-  dirname(sidecarPackage),
+  sidecarPackageDir,
   "bin",
-  sidecarBinaryName(process.platform),
+  sidecarBinaryName(targetPlatform),
 );
 const sidecarFolder = join(resources, "opencode", target);
 
@@ -37,15 +45,20 @@ await mkdir(join(distApp, "renderer"), { recursive: true });
 await mkdir(sidecarFolder, { recursive: true });
 await copyFile(
   sidecarSource,
-  join(sidecarFolder, sidecarBinaryName(process.platform)),
+  join(sidecarFolder, sidecarBinaryName(targetPlatform)),
 );
-if (process.platform !== "win32") {
+if (targetPlatform !== "win32") {
   const { chmod } = await import("node:fs/promises");
   await chmod(join(sidecarFolder, "opencode"), 0o755);
 }
 
-await stageEventHost({ resources });
-await stageOwnerLifetime({ resources });
+await stageEventHost({
+  resources,
+  platform: targetPlatform,
+  arch: targetArch,
+});
+// Windows uses the identity-mode witness: no helper binary to stage.
+if (targetPlatform === "darwin") await stageOwnerLifetime({ resources });
 
 await build({
   entryPoints: [join(appDir, "src", "main.mjs")],

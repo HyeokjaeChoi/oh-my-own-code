@@ -740,7 +740,6 @@ test("64 generations block new admission; unexpected old files and oversized rec
 test("unsupported targets, corrupt/replaced packaged resources and spawn failure produce zero authority", async (t) => {
   for (const kind of [
     "linux",
-    "win32",
     "x64",
     "resource-hash",
     "resource-link",
@@ -750,7 +749,7 @@ test("unsupported targets, corrupt/replaced packaged resources and spawn failure
       const f = await fixture(t),
         fake = fakeHelper(f, { throwSpawn: kind === "spawn" });
       const patch = { spawn: fake.spawn };
-      if (["linux", "win32"].includes(kind)) patch.platform = kind;
+      if (kind === "linux") patch.platform = kind;
       if (kind === "x64") patch.arch = kind;
       if (kind === "resource-hash")
         await fs.appendFile(join(f.resource, "witness"), "drift");
@@ -760,7 +759,7 @@ test("unsupported targets, corrupt/replaced packaged resources and spawn failure
       }
       assert.deepEqual(await f.make(patch).register(f.c), recovery);
       assert.equal(fake.calls.length, kind === "spawn" ? 1 : 0);
-      if (["linux", "win32", "x64"].includes(kind))
+      if (["linux", "x64"].includes(kind))
         assert.equal(await f.make(patch).verify(f.full()), "unverified");
       await fake.settle();
     });

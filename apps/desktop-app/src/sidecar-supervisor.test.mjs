@@ -771,6 +771,35 @@ test("OS adapter uses boot and microsecond birth identity, never PID absence or 
   );
   assert.ok(winProbes.every(([, args]) => args.includes("-NoProfile")));
   assert.equal((await win.inspect(winIdentity)).state, "alive");
+  // authoritative absence and PID reuse both prove the original identity exited on win32
+  let mode = "same";
+  const winProbe = createOSProcessIdentityAdapter({
+    platform: "win32",
+    probe: async (_command, args) =>
+      args.at(-1).includes("LastBootUpTime")
+        ? "133800000000000000"
+        : mode === "absent"
+          ? "ABSENT"
+          : mode === "reused"
+            ? "133800099999999999"
+            : mode === "broken"
+              ? "garbage"
+              : "133800000012345678",
+  });
+  const known = await winProbe.capture(4242);
+  assert.equal((await winProbe.inspect(known)).state, "alive");
+  mode = "absent";
+  assert.deepEqual(await winProbe.inspect(known), {
+    state: "exited",
+    identity: known,
+    evidence: "os_identity",
+  });
+  mode = "reused";
+  assert.equal((await winProbe.inspect(known)).state, "exited");
+  mode = "broken";
+  assert.equal((await winProbe.inspect(known)).state, "unverified");
+  mode = "absent";
+  assert.equal(await winProbe.capture(4243), null);
   assert.equal(
     await createOSProcessIdentityAdapter({
       platform: "win32",

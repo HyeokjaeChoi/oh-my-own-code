@@ -13,7 +13,12 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const [platform, arch] = process.argv.slice(2);
 if (!platform || !arch)
   throw new Error("Usage: package.mjs <darwin|win32> <arm64|x64>");
-if (platform !== process.platform || arch !== process.arch) {
+// Cross-packaging is for layout/hash verification only (nothing is executed);
+// shippable builds are made on the target's native OS and architecture.
+if (
+  (platform !== process.platform || arch !== process.arch) &&
+  process.env.OMOC_ALLOW_CROSS_PACKAGE !== "1"
+) {
   throw new Error(
     "Build each desktop target on its native OS and architecture",
   );
@@ -65,6 +70,8 @@ const appPath = await packager({
         arch,
       });
       const canonicalDestination = await realpath(destination);
+      // Windows has no helper binary (identity-mode lifetime witness).
+      if (platform !== "darwin") return;
       const sourceWitness = await verifyOwnerLifetimeResources({
         resourcesPath: resources,
         platform,
