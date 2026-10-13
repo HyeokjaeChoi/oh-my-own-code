@@ -479,6 +479,7 @@ try {
       "plans",
       "preview",
       "provider",
+      "rules",
       "runtimeSnapshot",
       "terminal",
       "workbench",
