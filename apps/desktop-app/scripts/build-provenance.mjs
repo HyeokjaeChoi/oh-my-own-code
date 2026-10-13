@@ -53,6 +53,7 @@ const sourceScopes = [
     "scripts/prepare-event-host.mjs",
     "scripts/stage-event-host.mjs",
     "scripts/stage-owner-lifetime.mjs",
+    "scripts/stage-node-pty.mjs",
     "native/owner-lifetime/witness.c",
     "scripts/package.mjs",
     "runtime-event-host/package.json",
@@ -227,6 +228,7 @@ export function snapshotBuildInputs(root) {
 function outputScopes(platform, arch) {
   return [
     { path: `${app}/dist/app`, tree: true },
+    { path: `${app}/dist/resources/node-pty`, tree: true },
     {
       path: `${app}/dist/resources/opencode/${platform}-${arch}/${platform === "win32" ? "opencode.exe" : "opencode"}`,
     },
@@ -354,6 +356,12 @@ export async function finishBuildProvenance(root, before, extra = {}) {
   );
   const eventHostResources = await builtEventHost(root, target);
   const ownerLifetimeResources = await builtOwnerLifetime(root, target);
+  if (
+    !artifacts.files.some(
+      (file) => file.path === `${app}/dist/resources/node-pty/lib/index.js`,
+    )
+  )
+    throw new Error("Missing required build artifact: node-pty");
   for (const required of [
     "main.mjs",
     "preload.cjs",
@@ -467,13 +475,32 @@ async function packagedArtifacts(root, buildStamp, platform) {
   if (actual.length !== expected.length)
     throw new Error("Packaged archive is missing stamped build files");
   const resourceIdentity = buildStamp.artifacts.files.find((file) =>
-    file.path.includes("/dist/resources/"),
+    file.path.includes("/dist/resources/opencode/"),
   );
   if (
     artifacts.files.find((file) => file.path === sidecar).sha256 !==
     resourceIdentity.sha256
   )
     throw new Error("Packaged sidecar does not match stamped build");
+  // node-pty ships outside the asar; every staged file must be byte-identical in the package.
+  const ptyExpected = buildStamp.artifacts.files.filter((file) =>
+    file.path.startsWith(`${app}/dist/resources/node-pty/`),
+  );
+  const ptyActual = await inventory(
+    root,
+    ptyExpected.map((file) => ({
+      path: `${packagedApp}/${resource}/${file.path.slice(`${app}/dist/resources/`.length)}`,
+    })),
+  );
+  if (
+    ptyExpected.length === 0 ||
+    ptyActual.files.some(
+      (file, i) =>
+        file.sha256 !== ptyExpected[i].sha256 ||
+        file.size !== ptyExpected[i].size,
+    )
+  )
+    throw new Error("Packaged node-pty does not match stamped build");
   const eventHostResources = await snapshotEventHostResources(
     join(root, packagedApp, resource),
     platform,

@@ -11,6 +11,7 @@ import {
   sidecarBinaryName,
   sidecarPackageName,
 } from "../src/sidecar-package.mjs";
+import { stageNodePty } from "./stage-node-pty.mjs";
 import {
   beginBuildProvenance,
   finishBuildProvenance,
@@ -77,6 +78,11 @@ await stageEventHost({
 });
 // Windows uses the identity-mode witness: no helper binary to stage.
 if (targetPlatform === "darwin") await stageOwnerLifetime({ resources });
+await stageNodePty({
+  resources,
+  platform: targetPlatform,
+  arch: targetArch,
+});
 
 await build({
   entryPoints: [join(appDir, "src", "main.mjs")],

@@ -31,6 +31,7 @@ import { createWorkbenchService } from "./workbench-service.mjs";
 import { bindWorkbenchIpc } from "./host/workbench-ipc.mjs";
 import { setInterval } from "node:timers";
 import { createTerminalHost, resolveLoginPath } from "./host/terminal-host.mjs";
+import { lazyPty, loadStagedPty } from "./host/pty-loader.mjs";
 import { bindTerminalIpc } from "./host/terminal-ipc.mjs";
 import { createPlansHost } from "./host/plans-host.mjs";
 import { bindPlansIpc } from "./host/plans-ipc.mjs";
@@ -71,6 +72,12 @@ const worktrees = createWorktreeHost({
 });
 const terminals = createTerminalHost({
   resolveWorkspace: (id) => workbench?.terminalRoot(id),
+  // Native module from dist/resources (outside the asar); loaded on first terminal start.
+  pty: lazyPty(() =>
+    loadStagedPty(
+      app.isPackaged ? process.resourcesPath : join(here, "..", "resources"),
+    ),
+  ),
   // Lazy: the login shell is spawned only after the single-instance lock is held.
   loginPath: () => loginPathPromise,
 });

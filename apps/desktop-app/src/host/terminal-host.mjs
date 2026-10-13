@@ -1,22 +1,53 @@
-import { execFile, spawn as nodeSpawn } from "node:child_process";
+import { execFile, execFileSync, spawn as nodeSpawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { realpathSync, statSync } from "node:fs";
-import { isAbsolute, relative } from "node:path";
-import { StringDecoder } from "node:string_decoder";
+import { existsSync, realpathSync, statSync } from "node:fs";
+import { constants as osConstants } from "node:os";
+import { isAbsolute, join, relative } from "node:path";
 import { TERMINAL_LIMITS } from "../renderer/shared/terminal/index.mjs";
 import { readProjectActions } from "./project-actions.mjs";
 
 const WIN = process.platform === "win32";
 const ENV_KEYS = WIN
-  ? ["SystemRoot", "ComSpec", "PATH", "PATHEXT", "USERPROFILE", "TEMP", "TMP"]
+  ? [
+      "SystemRoot",
+      "windir",
+      "ComSpec",
+      "PATH",
+      "PATHEXT",
+      "USERPROFILE",
+      "USERNAME",
+      "APPDATA",
+      "LOCALAPPDATA",
+      "ProgramFiles",
+      "ProgramData",
+      "TEMP",
+      "TMP",
+    ]
   : ["PATH", "HOME", "USER", "LOGNAME", "SHELL", "LANG", "LC_ALL", "TMPDIR"];
 const fail = (code) => Object.assign(new Error(code), { terminalCode: code });
 
+// The renderer never picks an executable: only this shell or a project-actions argv runs.
 function defaultShell() {
-  return WIN
-    ? { file: process.env.ComSpec ?? "cmd.exe", args: [] }
-    : { file: process.env.SHELL || "/bin/sh", args: [] };
+  if (!WIN) return { file: process.env.SHELL || "/bin/sh", args: ["-l"] };
+  const ps = join(
+    process.env.SystemRoot ?? "C:\\Windows",
+    "System32",
+    "WindowsPowerShell",
+    "v1.0",
+    "powershell.exe",
+  );
+  return {
+    file: existsSync(ps) ? ps : (process.env.ComSpec ?? "cmd.exe"),
+    args: [],
+  };
 }
+// Output is replayed into xterm.js, so the child sees a capable terminal.
+const TERM_ENV = { TERM: "xterm-256color", COLORTERM: "truecolor" };
+const signalName = (n) =>
+  n
+    ? (Object.entries(osConstants.signals).find(([, v]) => v === n)?.[0] ??
+      `${n}`)
+    : null;
 // Packaged macOS apps start with a minimal PATH; ask the login shell once for the user's real one.
 // Bounded by timeout and output size; any failure falls back to the process PATH.
 export function resolveLoginPath({
@@ -63,7 +94,7 @@ export function resolveLoginPath({
   });
 }
 function minimalEnv(pathValue) {
-  const env = { TERM: "dumb" };
+  const env = { ...TERM_ENV };
   for (const k of ENV_KEYS)
     if (process.env[k] !== undefined) env[k] = process.env[k];
   if (pathValue) env.PATH = pathValue;
@@ -73,32 +104,91 @@ function inside(root, path) {
   const rel = relative(root, path);
   return rel === "" || (!rel.startsWith("..") && !isAbsolute(rel));
 }
-// Kills the whole process group so background children of the shell die too.
-// ponytail: Windows has no process groups here; taskkill /T walks the child tree instead (untested).
-function killTree(child, signal) {
-  if (child.pid === undefined) return;
-  // The pid may already be reused; never taskkill a child that has exited.
-  if (WIN && (child.exitCode !== null || child.signalCode !== null)) return;
+// Interactive shells give each job its own process group, so killing the shell's group alone misses
+// `cmd &` jobs. Snapshot the descendant tree (pids and their groups) and signal all of it.
+function processTable() {
   try {
-    if (WIN)
-      nodeSpawn("taskkill", ["/pid", String(child.pid), "/T", "/F"], {
-        stdio: "ignore",
-      }).on("error", () => {});
-    else process.kill(-child.pid, signal);
+    return execFileSync(
+      process.platform === "darwin" ? "/bin/ps" : "ps",
+      ["-A", "-o", "pid=,ppid=,pgid="],
+      {
+        encoding: "utf8",
+        timeout: 2000,
+        maxBuffer: 1 << 22,
+        stdio: ["ignore", "pipe", "ignore"],
+      },
+    )
+      .split("\n")
+      .map((l) => l.trim().split(/\s+/).map(Number))
+      .filter((r) => r.length === 3 && r.every(Number.isInteger));
   } catch {
-    // ESRCH: group already gone.
+    return [];
+  }
+}
+function treeOf(root) {
+  const pids = new Set([root]);
+  const groups = new Set([root]);
+  const rows = processTable();
+  for (let grew = true; grew; ) {
+    grew = false;
+    for (const [pid, ppid, pgid] of rows)
+      if (!pids.has(pid) && pids.has(ppid)) {
+        pids.add(pid);
+        groups.add(pgid);
+        grew = true;
+      }
+  }
+  return { pids, groups };
+}
+// ponytail: Windows has no process groups here; taskkill /T walks the child tree instead (untested).
+function killTree(t, signal) {
+  const pid = t.pid;
+  if (pid === undefined) return;
+  // The pid may already be reused; never taskkill a child that has exited.
+  if (WIN) {
+    if (t.exited) return;
+    try {
+      nodeSpawn("taskkill", ["/pid", String(pid), "/T", "/F"], {
+        stdio: "ignore",
+        windowsHide: true,
+      }).on("error", () => {});
+    } catch {
+      // taskkill unavailable: the pty close below still ends the console.
+    }
+    return;
+  }
+  const { pids, groups } = treeOf(pid);
+  for (const g of groups) if (g > 1) send(-g, signal);
+  for (const p of pids) send(p, signal);
+}
+function send(target, signal) {
+  try {
+    process.kill(target, signal);
+  } catch {
+    // ESRCH: already gone.
   }
 }
 
-// ponytail: pipe-based, no PTY. Shell sees non-tty stdio (no prompt, line editing, job control, colors); resize is a no-op.
-// A PTY backend (node-pty) can replace spawn+pipes behind this same start/write/read/resize/stop/close surface.
+const DEFAULT_COLS = 80;
+const DEFAULT_ROWS = 24;
+// Per-terminal input limits: a compromised renderer cannot flood the PTY or the resize ioctl.
+const RATE = Object.freeze({
+  windowMs: 1000,
+  writeCalls: 200,
+  writeChars: 262144,
+  resizeCalls: 30,
+});
+
+// `pty` is node-pty's module shape ({ spawn }); injected so tests use a fake and the packaged
+// build loads the staged native binary. A missing pty fails closed with PTY_UNAVAILABLE.
 export function createTerminalHost({
   resolveWorkspace,
-  spawn = nodeSpawn,
+  pty,
   shell = defaultShell(),
+  now = Date.now,
+  kill = killTree,
   killGraceMs = 1500,
-  exitGraceMs = 500,
-  closeAllMs = killGraceMs + exitGraceMs + 1000,
+  closeAllMs = killGraceMs + 1500,
   loginPath,
   loginPathTimeoutMs = 3000,
 } = {}) {
@@ -150,8 +240,17 @@ export function createTerminalHost({
     if (!t || t.owner !== owner) throw fail("NOT_FOUND");
     return t;
   }
-  const append = (t, chunk, stream) =>
-    appendText(t, t.decoders[stream].write(chunk));
+  // Fixed window per terminal and kind; cheap and good enough against a runaway renderer.
+  function allow(t, kind, calls, chars = 0, limit = Infinity) {
+    const at = now();
+    const w = (t.rate[kind] ??= { start: at, calls: 0, chars: 0 });
+    if (at - w.start >= RATE.windowMs)
+      Object.assign(w, { start: at, calls: 0, chars: 0 });
+    if (w.calls + 1 > calls || w.chars + chars > limit)
+      throw fail("RATE_LIMITED");
+    w.calls += 1;
+    w.chars += chars;
+  }
   function appendText(t, text) {
     t.output += text;
     if (t.output.length > TERMINAL_LIMITS.outputChars) {
@@ -160,10 +259,12 @@ export function createTerminalHost({
       t.base += drop;
     }
   }
+  // Interactive shells ignore SIGTERM, so hang up the session first, then force after the grace period.
   function terminate(t) {
     if (t.exited) return Promise.resolve();
-    killTree(t.child, "SIGTERM");
-    const timer = setTimeout(() => killTree(t.child, "SIGKILL"), killGraceMs);
+    kill(t, "SIGHUP");
+    kill(t, "SIGTERM");
+    const timer = setTimeout(() => kill(t, "SIGKILL"), killGraceMs);
     timer.unref?.();
     return t.done.finally(() => clearTimeout(timer));
   }
@@ -175,7 +276,13 @@ export function createTerminalHost({
 
   // spawnSpec overrides the interactive shell: argv is passed as-is, never through a shell string.
   let closedAll = false;
-  function launch(owner, { workspaceId, cwd } = {}, spawnSpec, meta = {}) {
+  function launch(
+    owner,
+    { workspaceId, cwd, cols, rows } = {},
+    spawnSpec,
+    meta = {},
+  ) {
+    if (!pty) throw fail("PTY_UNAVAILABLE");
     const root = resolveWorkspace(workspaceId);
     if (typeof root !== "string") throw fail("NOT_FOUND");
     let realRoot, realCwd;
@@ -195,65 +302,48 @@ export function createTerminalHost({
     )
       throw fail("LIMIT_REACHED");
     const target = spawnSpec ?? shell;
-    const child = spawn(target.file, target.args, {
-      cwd: realCwd,
-      env: minimalEnv(pathValue),
-      stdio: ["pipe", "pipe", "pipe"],
-      detached: !WIN,
-      windowsHide: true,
-      // ponytail: Windows .cmd shims need a shell; script names are validated to [\w:.-] so no metacharacters reach it (untested).
-      ...(WIN && spawnSpec ? { shell: true } : {}),
-    });
+    let proc;
+    try {
+      proc = pty.spawn(target.file, target.args, {
+        name: TERM_ENV.TERM,
+        cols: cols ?? DEFAULT_COLS,
+        rows: rows ?? DEFAULT_ROWS,
+        cwd: realCwd,
+        env: minimalEnv(pathValue),
+        encoding: "utf8",
+        ...(WIN ? { useConpty: true } : {}),
+      });
+    } catch {
+      throw fail("SPAWN_FAILED");
+    }
     const t = {
       id: randomUUID(),
       owner,
       workspaceId,
-      child,
+      proc,
+      pid: proc.pid,
       output: "",
       base: 0,
-      decoders: {
-        stdout: new StringDecoder("utf8"),
-        stderr: new StringDecoder("utf8"),
-      },
       exited: false,
       exitCode: null,
       signal: null,
       closing: false,
+      rate: {},
       script: meta.script ?? null,
       label: meta.label ?? null,
     };
     t.done = new Promise((resolve) => {
-      let grace;
-      const finish = (code, signal) => {
+      proc.onExit(({ exitCode, signal }) => {
         if (t.exited) return;
-        clearTimeout(grace);
         t.exited = true;
-        t.exitCode = code;
-        t.signal = signal;
-        appendText(t, t.decoders.stdout.end() + t.decoders.stderr.end());
+        t.exitCode = signal ? null : (exitCode ?? null);
+        t.signal = signalName(signal);
+        // No orphans: anything the shell left running in its group goes with it.
+        if (!WIN) kill(t, "SIGKILL");
         resolve();
-      };
-      // No orphans: anything the shell left running in its group goes with it.
-      // Finish on "close" so output still buffered in the pipes is not lost; a descendant that
-      // escaped the group (setsid) may hold the pipes open, so after a short grace cut them.
-      child.once("exit", (code, signal) => {
-        killTree(child, "SIGKILL");
-        grace = setTimeout(() => {
-          child.stdout?.destroy();
-          child.stderr?.destroy();
-          finish(code, signal);
-        }, exitGraceMs);
-        grace.unref?.();
-      });
-      child.once("close", finish);
-      child.once("error", (e) => {
-        appendText(t, `\n[spawn error: ${e.code ?? e.message}]\n`);
-        finish(127, null);
       });
     });
-    child.stdout?.on("data", (c) => append(t, c, "stdout"));
-    child.stderr?.on("data", (c) => append(t, c, "stderr"));
-    child.stdin?.on("error", () => {});
+    proc.onData((data) => appendText(t, data));
     terminals.set(t.id, t);
     return view(t);
   }
@@ -263,7 +353,7 @@ export function createTerminalHost({
       return guarded(owner, ensurePath(), () => launch(owner, request));
     },
     // Script must exist in the workspace's package.json right now; package manager comes from its lockfile.
-    async startScript(owner, { workspaceId, script }) {
+    async startScript(owner, { workspaceId, script, cols, rows }) {
       const root = resolveWorkspace(workspaceId);
       if (typeof root !== "string") throw fail("NOT_FOUND");
       const e = epochs.get(owner) ?? 0;
@@ -273,13 +363,16 @@ export function createTerminalHost({
       // ponytail: never reset; if quit fails mid-way, scripts stay CLOSED until restart.
       if (closedAll) throw fail("CLOSED");
       if (!scripts.some((s) => s.name === script)) throw fail("UNKNOWN_SCRIPT");
+      const label = `${packageManager} run ${script}`;
+      // ponytail: Windows package managers are .cmd shims; run through cmd (script names are [\w:.-], pm is a fixed set) (untested).
+      const spec = WIN
+        ? {
+            file: process.env.ComSpec ?? "cmd.exe",
+            args: ["/d", "/s", "/c", label],
+          }
+        : { file: packageManager, args: ["run", script] };
       return guarded(owner, ensurePath(), () =>
-        launch(
-          owner,
-          { workspaceId },
-          { file: packageManager, args: ["run", script] },
-          { script, label: `${packageManager} run ${script}` },
-        ),
+        launch(owner, { workspaceId, cols, rows }, spec, { script, label }),
       );
     },
     async scripts(owner, workspaceId) {
@@ -294,8 +387,13 @@ export function createTerminalHost({
     },
     write(owner, id, text) {
       const t = get(id, owner);
-      if (t.exited || !t.child.stdin?.writable) throw fail("NOT_RUNNING");
-      t.child.stdin.write(text);
+      if (t.exited) throw fail("NOT_RUNNING");
+      allow(t, "write", RATE.writeCalls, text.length, RATE.writeChars);
+      try {
+        t.proc.write(text);
+      } catch {
+        throw fail("NOT_RUNNING");
+      }
       return view(t);
     },
     read(owner, id, cursor) {
@@ -313,9 +411,16 @@ export function createTerminalHost({
         truncated,
       };
     },
-    resize(owner, id) {
-      get(id, owner);
-      return { resized: false };
+    resize(owner, id, cols, rows) {
+      const t = get(id, owner);
+      if (t.exited) return { resized: false };
+      allow(t, "resize", RATE.resizeCalls);
+      try {
+        t.proc.resize(cols, rows);
+      } catch {
+        return { resized: false };
+      }
+      return { resized: true };
     },
     async stop(owner, id) {
       const t = get(id, owner);
@@ -352,12 +457,12 @@ export function createTerminalHost({
         }),
       ]);
       clearTimeout(timer);
-      for (const t of terminals.values()) killTree(t.child, "SIGKILL");
+      for (const t of terminals.values()) kill(t, "SIGKILL");
       terminals.clear();
     },
     // Last-ditch for process exit handlers, where async cannot run.
     killAllSync() {
-      for (const t of terminals.values()) killTree(t.child, "SIGKILL");
+      for (const t of terminals.values()) kill(t, "SIGKILL");
     },
     size: () => terminals.size,
   };
