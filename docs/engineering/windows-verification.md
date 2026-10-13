@@ -211,13 +211,14 @@ reason shown by the app (`storage_denied` = ACL policy, `owner_unverified` = lif
 - `@oven/bun-windows-x64` needs AVX2; on older CPUs a baseline build would need its own pin.
 - Antivirus holding `node_modules` files can still cause `EPERM` beyond the retry budget.
 
-## 8. Items left for `terminal-host.mjs` (not touched here)
+## 8. `terminal-host.mjs` (PTY work)
 
-`killTree` uses `taskkill` without an absolute path or `windowsHide`; `process.env.SHELL || "/bin/sh"` and the
-colon-joined login `PATH` (`resolveLoginPath`) are POSIX; the env whitelist (`TMPDIR`, `HOME`, `SHELL`) lacks
-`SystemRoot`/`USERPROFILE`/`ComSpec`/`PATH` casing handling. Shell selection should be `ComSpec`/PowerShell with
-`windowsSpawnPlan` (`src/platform-paths.mjs`) for `.cmd` launchers, and tree termination should reuse
-`killProcessTree`.
+Done and unit-tested with injected `win32`: shell selection (`defaultShell`: PowerShell under the trusted `SystemRoot`,
+else `ComSpec`), tree termination (`killTree` uses `taskkillCommand`: absolute `System32\taskkill.exe`, `windowsHide`,
+skipped for exited terminals), project scripts through `cmd /d /s /c` with the package-manager shim resolved from
+absolute `PATH` entries only (`windowsScriptSpec`), and the wider env allowlist. The login-shell `PATH` lookup
+(`resolveLoginPath`) is POSIX-only and returns the process `PATH` on Windows. Not yet run on a real Windows machine:
+ConPTY via node-pty (`useConpty`), `package-windows` staging of `node-pty/prebuilds/win32-x64`, and the xterm renderer.
 
 ## 9. What was verified where
 

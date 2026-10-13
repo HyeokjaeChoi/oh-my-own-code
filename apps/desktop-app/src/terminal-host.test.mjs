@@ -8,6 +8,8 @@ import { join } from "node:path";
 import { spawn as nodeSpawn } from "node:child_process";
 import {
   createTerminalHost,
+  defaultShell,
+  killTree,
   resolveLoginPath,
   windowsScriptSpec,
 } from "./host/terminal-host.mjs";
@@ -503,6 +505,62 @@ test("windows script launch resolves the shim from absolute PATH entries only", 
     comSpec: "cmd.exe",
   });
   assert.equal(bare.args, '/d /s /c "npm run build:app"');
+});
+
+test("windows tree kill uses the absolute taskkill, hidden, and skips exited terminals", () => {
+  const calls = [];
+  const spawnProcess = (file, args, options) => {
+    calls.push({ file, args, options });
+    return { once() {}, unref() {} };
+  };
+  const opts = {
+    platform: "win32",
+    spawnProcess,
+    env: { SystemRoot: "D:\\Win" },
+  };
+  killTree({ pid: 321, exited: false }, "SIGKILL", {}, opts);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].file, "D:\\Win\\System32\\taskkill.exe");
+  assert.deepEqual(calls[0].args, ["/PID", "321", "/T", "/F"]);
+  assert.equal(calls[0].options.windowsHide, true);
+  killTree({ pid: 321, exited: true }, "SIGKILL", {}, opts);
+  killTree({ pid: undefined, exited: false }, "SIGKILL", {}, opts);
+  assert.equal(calls.length, 1);
+  // A hostile SystemRoot falls back to the stock location.
+  killTree(
+    { pid: 5, exited: false },
+    "SIGKILL",
+    {},
+    {
+      ...opts,
+      env: { SystemRoot: "\\\\evil\\share" },
+    },
+  );
+  assert.equal(calls[1].file, "C:\\Windows\\System32\\taskkill.exe");
+});
+
+test("default shell: login shell on POSIX, PowerShell or ComSpec on Windows", () => {
+  assert.deepEqual(
+    defaultShell({ platform: "darwin", env: { SHELL: "/bin/zsh" } }),
+    { file: "/bin/zsh", args: ["-l"] },
+  );
+  assert.deepEqual(defaultShell({ platform: "linux", env: {} }), {
+    file: "/bin/sh",
+    args: ["-l"],
+  });
+  const ps = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe";
+  assert.equal(
+    defaultShell({ platform: "win32", env: {}, exists: (p) => p === ps }).file,
+    ps,
+  );
+  assert.equal(
+    defaultShell({
+      platform: "win32",
+      env: { ComSpec: "C:\\Windows\\System32\\cmd.exe" },
+      exists: () => false,
+    }).file,
+    "C:\\Windows\\System32\\cmd.exe",
+  );
 });
 
 test("terminal request validation is closed", () => {

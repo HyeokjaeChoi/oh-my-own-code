@@ -5,6 +5,11 @@ import { constants as osConstants } from "node:os";
 import { isAbsolute, join, relative, win32 } from "node:path";
 import { TERMINAL_LIMITS } from "../renderer/shared/terminal/index.mjs";
 import { readProjectActions } from "./project-actions.mjs";
+import {
+  isWin32,
+  taskkillCommand,
+  trustedSystemRoot,
+} from "../platform-paths.mjs";
 
 const WIN = process.platform === "win32";
 const ENV_KEYS = WIN
@@ -32,17 +37,21 @@ const ENV_KEYS = WIN
 const fail = (code) => Object.assign(new Error(code), { terminalCode: code });
 
 // The renderer never picks an executable: only this shell or a project-actions argv runs.
-function defaultShell() {
-  if (!WIN) return { file: process.env.SHELL || "/bin/sh", args: ["-l"] };
-  const ps = join(
-    process.env.SystemRoot ?? "C:\\Windows",
+export function defaultShell({
+  platform = process.platform,
+  env = process.env,
+  exists = existsSync,
+} = {}) {
+  if (!isWin32(platform)) return { file: env.SHELL || "/bin/sh", args: ["-l"] };
+  const ps = win32.join(
+    trustedSystemRoot(env),
     "System32",
     "WindowsPowerShell",
     "v1.0",
     "powershell.exe",
   );
   return {
-    file: existsSync(ps) ? ps : (process.env.ComSpec ?? "cmd.exe"),
+    file: exists(ps) ? ps : (env.ComSpec ?? "cmd.exe"),
     args: [],
   };
 }
@@ -149,18 +158,33 @@ function treeOf(root, snap = {}) {
 }
 // ponytail: Windows has no process groups here; taskkill /T walks the child tree instead (untested).
 // `snap` is an optional lazily-filled ps snapshot holder so one terminate/closeAll costs one ps call.
-function killTree(t, signal, snap) {
+export function killTree(
+  t,
+  signal,
+  snap,
+  {
+    platform = process.platform,
+    spawnProcess = nodeSpawn,
+    env = process.env,
+  } = {},
+) {
   const pid = t.pid;
   // The pid may already be reused; never signal a child that has exited.
   if (pid === undefined || t.exited) return;
-  if (WIN) {
+  if (isWin32(platform)) {
     try {
-      nodeSpawn("taskkill", ["/pid", String(pid), "/T", "/F"], {
+      // Absolute System32 path (a poisoned PATH cannot substitute taskkill), no console window.
+      const { file, args } = taskkillCommand(pid, {
+        systemRoot: trustedSystemRoot(env),
+      });
+      const killer = spawnProcess(file, args, {
         stdio: "ignore",
         windowsHide: true,
-      }).on("error", () => {});
+      });
+      killer.once?.("error", () => {});
+      killer.unref?.();
     } catch {
-      // taskkill unavailable: proc.kill() below the caller still closes the console.
+      // taskkill unavailable: the caller's proc.kill() still closes the console.
     }
     return;
   }
