@@ -4,7 +4,13 @@ import { mkdtempSync, mkdirSync, symlinkSync, realpathSync } from "node:fs";
 import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createTerminalHost, resolveLoginPath } from "./host/terminal-host.mjs";
+import { spawn as nodeSpawn } from "node:child_process";
+import {
+  createTerminalHost,
+  resolveLoginPath,
+  windowsScriptSpec,
+} from "./host/terminal-host.mjs";
+import { lazyPty } from "./host/pty-loader.mjs";
 import {
   validateTerminalRequest,
   stripAnsi,
@@ -32,11 +38,13 @@ function fakePty() {
   const spawned = [];
   return {
     spawned,
+    nextPid: 4242,
     spawn(file, args, opts) {
+      const pid = this.nextPid;
       let onData = () => {};
       let onExit = () => {};
       const proc = {
-        pid: 4242,
+        pid,
         file,
         args,
         opts,
@@ -411,6 +419,88 @@ test("closeOwner during the login PATH wait cancels the pending start", async ()
   await assert.rejects(p, { terminalCode: "NOT_FOUND" });
   assert.deepEqual(host.list("o", "w1"), []);
   assert.equal(pty.spawned.length, 0);
+});
+
+test(
+  "an exited terminal's pid is never signalled again (pid reuse)",
+  { skip: !posix },
+  async () => {
+    const bystander = nodeSpawn("sleep", ["30"], { stdio: "ignore" });
+    try {
+      const { host, pty } = fixture({ kill: undefined });
+      const t = host.start("o", { workspaceId: "w1" });
+      pty.spawned[0].pid = bystander.pid;
+      // pid is read at launch; emulate a reused pid by pointing the host's record at the bystander.
+      const rec = host.list("o", "w1");
+      assert.equal(rec.length, 1);
+      pty.spawned[0].exit(0);
+      await until(() => host.list("o", "w1")[0].status === "exited");
+      host.killAllSync();
+      await host.closeAll();
+      assert.equal(alive(bystander.pid), true);
+      void t;
+    } finally {
+      bystander.kill("SIGKILL");
+    }
+  },
+);
+
+test("stop and close are bounded when the OS never reports the exit", async () => {
+  const { host } = fixture({
+    kill: () => {},
+    killGraceMs: 10,
+    forceExitMs: 30,
+  });
+  const t = host.start("o", { workspaceId: "w1" });
+  const t0 = Date.now();
+  const stopped = await host.stop("o", t.terminalId);
+  assert.ok(Date.now() - t0 < 1000);
+  assert.equal(stopped.status, "exited");
+  assert.equal(stopped.signal, "SIGKILL");
+  await host.close("o", t.terminalId);
+  assert.equal(host.size(), 0);
+});
+
+test(
+  "child env defaults LANG to UTF-8 when the app has no locale",
+  { skip: !posix },
+  () => {
+    const saved = { LANG: process.env.LANG, LC_ALL: process.env.LC_ALL };
+    delete process.env.LANG;
+    delete process.env.LC_ALL;
+    try {
+      const { host, pty } = fixture();
+      host.start("o", { workspaceId: "w1" });
+      assert.equal(pty.spawned[0].opts.env.LANG, "en_US.UTF-8");
+    } finally {
+      for (const [k, v] of Object.entries(saved))
+        if (v !== undefined) process.env[k] = v;
+    }
+  },
+);
+
+test("a missing native pty maps to PTY_UNAVAILABLE", () => {
+  const { host } = fixture({ pty: lazyPty(() => undefined) });
+  assert.throws(() => host.start("o", { workspaceId: "w1" }), {
+    terminalCode: "PTY_UNAVAILABLE",
+  });
+});
+
+test("windows script launch resolves the shim from absolute PATH entries only", () => {
+  const present = new Set(["C:\\tools\\pnpm.cmd", "relative\\pnpm.cmd"]);
+  const spec = windowsScriptSpec("pnpm", "dev", {
+    env: { PATH: "relative;C:\\tools;C:\\other" },
+    exists: (p) => present.has(p),
+    comSpec: "C:\\Windows\\System32\\cmd.exe",
+  });
+  assert.equal(spec.file, "C:\\Windows\\System32\\cmd.exe");
+  assert.equal(spec.args, '/d /s /c ""C:\\tools\\pnpm.cmd" run dev"');
+  const bare = windowsScriptSpec("npm", "build:app", {
+    env: { PATH: "." },
+    exists: () => true,
+    comSpec: "cmd.exe",
+  });
+  assert.equal(bare.args, '/d /s /c "npm run build:app"');
 });
 
 test("terminal request validation is closed", () => {

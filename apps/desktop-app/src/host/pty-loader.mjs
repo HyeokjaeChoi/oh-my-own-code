@@ -13,13 +13,16 @@ export function loadStagedPty(resourcesPath) {
   }
 }
 
-// Defers the native load to the first spawn; a failed load throws (the host maps it to SPAWN_FAILED).
+// Defers the native load to the first spawn; a failed load throws PTY_UNAVAILABLE.
 export function lazyPty(load) {
   let pty;
   return {
     spawn(...args) {
       pty ??= load();
-      if (!pty) throw new Error("node-pty unavailable");
+      if (!pty)
+        throw Object.assign(new Error("node-pty unavailable"), {
+          terminalCode: "PTY_UNAVAILABLE",
+        });
       return pty.spawn(...args);
     },
   };
