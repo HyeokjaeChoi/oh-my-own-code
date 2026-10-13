@@ -187,6 +187,20 @@ test("unterminated quoted secrets are redacted in raw text", () => {
   assert.ok(!/abc123|zzz9/.test(text) && text.includes("next line ok"));
 });
 
+test("escaped-quote and quoted-header secrets are redacted without a leak", () => {
+  const { text } = redactText(
+    `password="ab\\"cd1234" ok\nAuthorization: "Bearer zz9988 yy7766\nx-api-key: 'qq5544`,
+  );
+  assert.ok(!/cd1234|zz9988|yy7766|qq5544/.test(text) && text.includes("ok"));
+});
+
+test("a huge unterminated quoted value exports as a redacted marker", () => {
+  const big = `password="${"x".repeat(1.5 * 1024 * 1024)}`;
+  const t = build({ messages: [{ id: "m1", role: "user", text: big }] }).doc
+    .sessions[0].messages[0].text;
+  assert.equal(t, "password=[REDACTED]");
+});
+
 test("redaction is idempotent", () => {
   const once = redactText(
     `${FAKE_KEYS.join(" ")} TOKEN=zzz Authorization: Bearer abcdefghij ${HOME}`,
