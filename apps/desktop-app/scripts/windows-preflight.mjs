@@ -17,6 +17,11 @@ import { arch, platform, release, tmpdir, version as osVersion } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { windowsSpawnPlan } from "../src/platform-paths.mjs";
+import { assertWindowsPrivateDirectoriesSync } from "../src/windows-acl.mjs";
+import {
+  WINDOWS_BOOT_SCRIPT,
+  windowsStartScript,
+} from "../src/sidecar-supervisor.mjs";
 
 const here = resolve(fileURLToPath(import.meta.url), "..", "..", "..", "..");
 const win = platform() === "win32";
@@ -149,15 +154,8 @@ try {
         defender.toLowerCase().includes(here.toLowerCase().slice(0, 3)),
       "hint only: exclude the repo, node_modules and %LOCALAPPDATA%\\pnpm (build/test are 2-5x slower otherwise); needs admin to read",
     );
-    // Process identity probes used by the owner/lifetime logic must be stable.
-    const boot = [
-      psRun(
-        "(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToUniversalTime().ToFileTimeUtc()",
-      ),
-      psRun(
-        "(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToUniversalTime().ToFileTimeUtc()",
-      ),
-    ];
+    // Process identity (CIM creation FILETIME) is the Windows lifetime witness.
+    const boot = [psRun(WINDOWS_BOOT_SCRIPT), psRun(WINDOWS_BOOT_SCRIPT)];
     check(
       "boot_identity_stable",
       typeof boot[0] === "string" &&
@@ -165,14 +163,38 @@ try {
         boot[0] === boot[1],
       boot,
     );
-    const start = psRun(
-      `(Get-Process -Id ${process.pid} -ErrorAction Stop).StartTime.ToUniversalTime().ToFileTimeUtc()`,
-    );
+    const startIdentity = [
+      psRun(windowsStartScript(process.pid)),
+      psRun(windowsStartScript(process.pid)),
+    ];
     check(
       "process_start_identity",
-      typeof start === "string" && /^\d{15,19}$/.test(start),
-      start,
+      typeof startIdentity[0] === "string" &&
+        /^\d{15,19}$/.test(startIdentity[0]) &&
+        startIdentity[0] === startIdentity[1],
+      startIdentity,
     );
+    check(
+      "absent_pid_is_authoritative",
+      psRun(windowsStartScript(2147483646)) === "ABSENT",
+      "CIM must answer ABSENT for a PID that cannot exist",
+    );
+    // The app refuses to run unless these directories are private to this user (DACL).
+    for (const [name, dir] of [
+      ["appdata_private_acl", process.env.APPDATA],
+      ["temp_private_acl", process.env.TEMP ?? process.env.TMP],
+    ]) {
+      try {
+        assertWindowsPrivateDirectoriesSync([dir]);
+        check(name, true, dir);
+      } catch {
+        check(
+          name,
+          false,
+          `${dir}: owner is not you/Administrators, or another principal has access; the app refuses such a profile`,
+        );
+      }
+    }
     check(
       "taskkill_present",
       typeof run(root + "\\System32\\taskkill.exe", ["/?"]) === "string",
