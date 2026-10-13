@@ -388,6 +388,31 @@ test("login PATH timeout resolves without waiting for pipe close and destroys st
   assert.equal(destroyed, 2);
 });
 
+test("terminals started before login PATH resolves wait for it", async () => {
+  let release;
+  const gate = new Promise((r) => (release = r));
+  const { host, pty } = fixture({ loginPath: () => gate });
+  const p = host.start("o", { workspaceId: "w1" });
+  assert.ok(p instanceof Promise);
+  assert.equal(pty.spawned.length, 0);
+  release("/login/bin");
+  const t = await p;
+  assert.equal(t.status, "running");
+  assert.equal(pty.spawned[0].opts.env.PATH, "/login/bin");
+});
+
+test("closeOwner during the login PATH wait cancels the pending start", async () => {
+  let release;
+  const gate = new Promise((r) => (release = r));
+  const { host, pty } = fixture({ loginPath: () => gate });
+  const p = host.start("o", { workspaceId: "w1" });
+  await host.closeOwner("o");
+  release("/x");
+  await assert.rejects(p, { terminalCode: "NOT_FOUND" });
+  assert.deepEqual(host.list("o", "w1"), []);
+  assert.equal(pty.spawned.length, 0);
+});
+
 test("terminal request validation is closed", () => {
   const good = [
     { type: "terminal.start", workspaceId: "w1" },
