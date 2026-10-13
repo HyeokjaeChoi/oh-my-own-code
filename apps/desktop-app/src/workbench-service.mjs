@@ -4208,40 +4208,46 @@ export function createWorkbenchService({
           return locked && out.length ? "BUSY" : locked ? [] : out;
         })
         .catch(() => []);
-    const targets = await drifted();
-    if (targets === "BUSY") return "BUSY";
-    for (const target of targets) {
-      // Native may still report a just-finished session active while the app
-      // status is idle: BUSY is transient, so settle with a short bounded retry.
-      let result;
-      for (const delay of [0, 250, 500, 1000, 1000]) {
-        if (delay) await new Promise((resolve) => setTimeout(resolve, delay));
-        result = await host.handle(
-          {
-            version: 2,
-            runtimeEpoch: host.epoch,
-            operationId: randomUUID(),
-            operation: {
-              type: "permission.mode.set",
-              workspaceId: target.workspaceId,
-              sessionId: target.id,
-              mode: modeOf(target),
-              requestId: randomUUID(),
-            },
+    // Native may still report a just-finished session active while the app
+    // status is idle: BUSY is transient, so settle within ONE overall deadline.
+    // Every pass recomputes drift from the current tables, so a mode the user
+    // changed meanwhile is never overwritten by a stale one: a session whose
+    // mode differs from the one first seen aborts with a retryable BUSY.
+    const deadline = Date.now() + 2750;
+    const seen = new Map();
+    const repaired = new Set();
+    for (;;) {
+      const targets = await drifted();
+      if (targets === "BUSY") return "BUSY";
+      const target = targets[0];
+      if (!target) return undefined;
+      const mode = modeOf(target);
+      if (repaired.has(target.id)) return "POLICY_UNVERIFIED";
+      if (seen.has(target.id) && seen.get(target.id) !== mode) return "BUSY";
+      seen.set(target.id, mode);
+      const result = await host.handle(
+        {
+          version: 2,
+          runtimeEpoch: host.epoch,
+          operationId: randomUUID(),
+          operation: {
+            type: "permission.mode.set",
+            workspaceId: target.workspaceId,
+            sessionId: target.id,
+            mode,
+            requestId: randomUUID(),
           },
-          sender,
-        );
-        if (result.ok || result.code !== "BUSY") break;
+        },
+        sender,
+      );
+      if (result.ok) {
+        repaired.add(target.id);
+        continue;
       }
-      if (!result.ok)
-        return result.code === "BUSY" ? "BUSY" : "POLICY_UNVERIFIED";
+      if (result.code !== "BUSY") return "POLICY_UNVERIFIED";
+      if (Date.now() >= deadline) return "BUSY";
+      await new Promise((resolve) => setTimeout(resolve, 250));
     }
-    if (targets.length) {
-      const left = await drifted();
-      if (left === "BUSY") return "BUSY";
-      if (left.length) return "POLICY_UNVERIFIED";
-    }
-    return undefined;
   }
   async function workspaceIdleIdentity(w, unverifiedCode, readOnly = false) {
     if (!registry) fail("UNAVAILABLE");
