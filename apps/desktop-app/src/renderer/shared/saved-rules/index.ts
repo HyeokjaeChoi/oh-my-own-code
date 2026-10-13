@@ -6,7 +6,9 @@ export type SavedRulesRequest =
 export const savedRulesErrorText = (code: string) =>
   code === "NOT_FOUND"
     ? "이미 삭제된 규칙입니다. 목록을 새로 불러왔습니다."
-    : "Native에 연결할 수 없어 규칙을 처리하지 못했습니다.";
+    : code === "GLOBAL_PROJECT"
+      ? "공용 프로젝트의 규칙은 여기서 삭제할 수 없습니다."
+      : "Native에 연결할 수 없어 규칙을 처리하지 못했습니다.";
 
 export async function callSavedRules<T>(
   request: SavedRulesRequest,
