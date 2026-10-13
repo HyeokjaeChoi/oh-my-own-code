@@ -6,6 +6,7 @@
 // directory inherit its DACL; callers verify roots, not every file.
 import { execFile, execFileSync } from "node:child_process";
 import { win32 } from "node:path";
+import { trustedSystemRoot } from "./platform-paths.mjs";
 
 export const SID_SYSTEM = "S-1-5-18";
 export const SID_ADMINISTRATORS = "S-1-5-32-544";
@@ -87,7 +88,7 @@ function command(paths, env = process.env) {
     )
   )
     throw new Error("storage_denied");
-  const root = env.SystemRoot ?? "C:\\Windows";
+  const root = trustedSystemRoot(env);
   return {
     file: win32.join(
       root,

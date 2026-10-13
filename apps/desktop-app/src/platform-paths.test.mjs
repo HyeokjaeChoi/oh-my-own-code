@@ -341,3 +341,22 @@ test("samePath: NTFS names are case/separator-insensitive, POSIX names exact", (
   assert.equal(samePath("/w/p", "/w/p", "linux"), true);
   assert.equal(samePath(undefined, "/w", "linux"), false);
 });
+
+import { trustedSystemRoot } from "./platform-paths.mjs";
+test("SystemRoot is trusted only as a local absolute drive path", () => {
+  assert.equal(trustedSystemRoot({ SystemRoot: "D:\\WinNT\\" }), "D:\\WinNT");
+  for (const bad of [
+    undefined,
+    "",
+    "relative",
+    "\\\\evil\\share\\Windows",
+    "\\\\?\\C:\\Windows",
+    "C:Windows",
+    "C:\\a|b",
+  ])
+    assert.equal(
+      trustedSystemRoot({ SystemRoot: bad }),
+      "C:\\Windows",
+      String(bad),
+    );
+});

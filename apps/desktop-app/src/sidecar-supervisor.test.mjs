@@ -757,9 +757,7 @@ test("OS adapter uses boot and microsecond birth identity, never PID absence or 
     platform: "win32",
     probe: async (command, args) => {
       winProbes.push([command, args]);
-      return args.at(-1).includes("LastBootUpTime")
-        ? "133800000000000000"
-        : "133800000012345678";
+      return "OK:133800000012345678";
     },
   });
   const winIdentity = await win.capture(4242);
@@ -770,21 +768,29 @@ test("OS adapter uses boot and microsecond birth identity, never PID absence or 
     /WindowsPowerShell[\\/]v1\.0[\\/]powershell\.exe$/,
   );
   assert.ok(winProbes.every(([, args]) => args.includes("-NoProfile")));
+  // One PowerShell launch per sample: no separate boot probe on Windows.
+  assert.equal(winProbes.length, 1);
   assert.equal((await win.inspect(winIdentity)).state, "alive");
-  // authoritative absence and PID reuse both prove the original identity exited on win32
+  assert.equal(winProbes.length, 2);
+  // The script fails closed: Stop, own-process positive control, exact output.
+  const script = winProbes[0][1].at(-1);
+  assert.match(script, /^\$ErrorActionPreference='Stop'/);
+  assert.match(script, /ProcessId = \$PID/);
+  assert.match(script, /'OK:'\+/);
+
   let mode = "same";
+  let rawValue = "";
+  const outputs = {
+    same: "OK:133800000012345678",
+    absent: "ABSENT",
+    reused: "OK:133800099999999999",
+  };
   const winProbe = createOSProcessIdentityAdapter({
     platform: "win32",
-    probe: async (_command, args) =>
-      args.at(-1).includes("LastBootUpTime")
-        ? "133800000000000000"
-        : mode === "absent"
-          ? "ABSENT"
-          : mode === "reused"
-            ? "133800099999999999"
-            : mode === "broken"
-              ? "garbage"
-              : "133800000012345678",
+    probe: async () => {
+      if (mode === "throws") throw new Error("powershell failed");
+      return mode === "raw" ? rawValue : outputs[mode];
+    },
   });
   const known = await winProbe.capture(4242);
   assert.equal((await winProbe.inspect(known)).state, "alive");
@@ -796,17 +802,38 @@ test("OS adapter uses boot and microsecond birth identity, never PID absence or 
   });
   mode = "reused";
   assert.equal((await winProbe.inspect(known)).state, "exited");
-  mode = "broken";
-  assert.equal((await winProbe.inspect(known)).state, "unverified");
+  // Any failure, noise or malformed output is unverified, never "exited".
+  for (const bad of [
+    "throws",
+    "garbage",
+    "",
+    "133800000012345678",
+    "OK:12",
+    "ABSENT\nOK:133800000012345678",
+    "absent",
+    "ABSENT ",
+    "OK:133800000012345678\r\nWARNING: x",
+  ]) {
+    mode = bad === "throws" ? "throws" : "raw";
+    rawValue = bad;
+    assert.equal(
+      (await winProbe.inspect(known)).state,
+      "unverified",
+      JSON.stringify(bad),
+    );
+  }
   mode = "absent";
   assert.equal(await winProbe.capture(4243), null);
-  assert.equal(
-    await createOSProcessIdentityAdapter({
-      platform: "win32",
-      probe: async () => "not-a-number",
-    }).capture(4242),
-    null,
-  );
+  // The boot identity never changes on Windows, so a clock step cannot fake an exit.
+  const first = await createOSProcessIdentityAdapter({
+    platform: "win32",
+    probe: async () => "OK:133800000012345678",
+  }).capture(7);
+  const second = await createOSProcessIdentityAdapter({
+    platform: "win32",
+    probe: async () => "OK:133800000012345678",
+  }).capture(7);
+  assert.equal(first.bootId, second.bootId);
   assert.equal(
     await createOSProcessIdentityAdapter({ platform: "freebsd" }).capture(4242),
     null,

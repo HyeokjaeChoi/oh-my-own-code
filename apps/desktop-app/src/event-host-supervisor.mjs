@@ -1,4 +1,8 @@
-import { isPathInside, killProcessTree } from "./platform-paths.mjs";
+import {
+  isPathInside,
+  killProcessTree,
+  trustedSystemRoot,
+} from "./platform-paths.mjs";
 import { assertWindowsPrivateDirectories } from "./windows-acl.mjs";
 import { randomBytes } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
@@ -393,7 +397,7 @@ export async function startEventHost({
         configPath,
         dataPath: namespace.data,
         statePath: namespace.state,
-        systemRoot: process.env.SystemRoot,
+        systemRoot: trustedSystemRoot(),
       }),
       stdio: ["ignore", "ignore", "ignore", "ipc"],
       windowsHide: true,

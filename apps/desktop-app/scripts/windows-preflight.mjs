@@ -18,10 +18,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { windowsSpawnPlan } from "../src/platform-paths.mjs";
 import { assertWindowsPrivateDirectoriesSync } from "../src/windows-acl.mjs";
-import {
-  WINDOWS_BOOT_SCRIPT,
-  windowsStartScript,
-} from "../src/sidecar-supervisor.mjs";
+import { windowsStartScript } from "../src/sidecar-supervisor.mjs";
 
 const here = resolve(fileURLToPath(import.meta.url), "..", "..", "..", "..");
 const win = platform() === "win32";
@@ -155,14 +152,6 @@ try {
       "hint only: exclude the repo, node_modules and %LOCALAPPDATA%\\pnpm (build/test are 2-5x slower otherwise); needs admin to read",
     );
     // Process identity (CIM creation FILETIME) is the Windows lifetime witness.
-    const boot = [psRun(WINDOWS_BOOT_SCRIPT), psRun(WINDOWS_BOOT_SCRIPT)];
-    check(
-      "boot_identity_stable",
-      typeof boot[0] === "string" &&
-        /^\d{15,19}$/.test(boot[0]) &&
-        boot[0] === boot[1],
-      boot,
-    );
     const startIdentity = [
       psRun(windowsStartScript(process.pid)),
       psRun(windowsStartScript(process.pid)),
@@ -170,7 +159,7 @@ try {
     check(
       "process_start_identity",
       typeof startIdentity[0] === "string" &&
-        /^\d{15,19}$/.test(startIdentity[0]) &&
+        /^OK:\d{15,19}$/.test(startIdentity[0]) &&
         startIdentity[0] === startIdentity[1],
       startIdentity,
     );

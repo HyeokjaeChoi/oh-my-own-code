@@ -19,7 +19,11 @@ import {
   win32 as win32Path,
 } from "node:path";
 import { OpenCode } from "@opencode/client";
-import { directorySyncSupported, killProcessTree } from "./platform-paths.mjs";
+import {
+  directorySyncSupported,
+  killProcessTree,
+  trustedSystemRoot,
+} from "./platform-paths.mjs";
 
 export const OPEN_CODE_VERSION = "2.0.18";
 // Event host re-verifies its ~35k-file (~485MB) resource tree itself (~14s per
@@ -521,11 +525,12 @@ const runProbe = (command, args) =>
       command,
       args,
       {
-        timeout: 2000,
+        // PowerShell cold start alone can take seconds on a busy Windows machine.
+        timeout: process.platform === "win32" ? 20_000 : 2000,
         maxBuffer: 16384,
         env:
           process.platform === "win32"
-            ? { SystemRoot: process.env.SystemRoot ?? "C:\\Windows" }
+            ? { SystemRoot: trustedSystemRoot() }
             : { PATH: "/usr/bin:/bin:/usr/sbin:/sbin" },
         windowsHide: true,
       },
@@ -534,7 +539,7 @@ const runProbe = (command, args) =>
   );
 // Fixed, argument-free PowerShell scripts; pid is validated as a safe integer.
 const powershellPath = () =>
-  `${process.env.SystemRoot ?? "C:\\Windows"}\\System32\\WindowsPowerShell\\v1.0\\powershell.exe`;
+  `${trustedSystemRoot()}\\System32\\WindowsPowerShell\\v1.0\\powershell.exe`;
 const powershellArgs = (script) => [
   "-NoProfile",
   "-NonInteractive",
@@ -543,13 +548,14 @@ const powershellArgs = (script) => [
   "-Command",
   script,
 ];
-export const WINDOWS_BOOT_SCRIPT =
-  "(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToUniversalTime().ToFileTimeUtc()";
 // CIM enumerates every process regardless of access rights, so "no row" is an
 // authoritative absence (unlike a failed open), and CreationDate is the exact
-// kernel creation FILETIME that makes a PID reuse distinguishable.
+// kernel creation FILETIME that makes a PID reuse distinguishable. "ABSENT" is
+// only believable if the SAME call could see its own process (positive control)
+// and nothing failed (Stop turns any error into a nonzero exit, never ABSENT).
+// Output is exactly OK:<filetime> or ABSENT; anything else is unverified.
 export const windowsStartScript = (pid) =>
-  `$p=Get-CimInstance Win32_Process -Filter "ProcessId = ${Number(pid)}";if($p){$p.CreationDate.ToUniversalTime().ToFileTimeUtc()}else{'ABSENT'}`;
+  `$ErrorActionPreference='Stop';$me=Get-CimInstance Win32_Process -Filter "ProcessId = $PID";if(-not $me){throw 'no-control'};$p=Get-CimInstance Win32_Process -Filter "ProcessId = ${Number(pid)}";if($p){'OK:'+$p.CreationDate.ToUniversalTime().ToFileTimeUtc()}else{'ABSENT'}`;
 const digestIdentity = (value) =>
   createHash("sha256").update(value).digest("hex");
 export function createOSProcessIdentityAdapter({
@@ -563,13 +569,11 @@ export function createOSProcessIdentityAdapter({
     if (platform === "darwin")
       value = await probe("/usr/sbin/sysctl", ["-n", "kern.bootsessionuuid"]);
     if (platform === "win32") {
-      // Boot time (FILETIME) stands in for a boot UUID; callers hash it.
-      const boot = await probe(
-        powershellPath(),
-        powershellArgs(WINDOWS_BOOT_SCRIPT),
-      );
-      if (/^\d{15,19}$/.test(boot)) return boot;
-      throw new Error("process_identity_unavailable");
+      // No boot identity on Windows: LastBootUpTime is now-minus-uptime and
+      // moves when the clock is stepped, which would fake an "exited" proof.
+      // Identity is (pid, creation FILETIME) only; a reboot changes both
+      // the process set and every creation time.
+      return "win32-pid-creation-time";
     }
     if (platform === "linux")
       value = (
@@ -606,7 +610,9 @@ export function createOSProcessIdentityAdapter({
           powershellArgs(windowsStartScript(pid)),
         );
         if (token === "ABSENT") return ABSENT;
-        if (!/^\d{15,19}$/.test(token)) return null;
+        const match = /^OK:(\d{15,19})$/.exec(token);
+        if (!match) return null;
+        token = match[1];
       } else return null;
       const identity = Object.freeze({
         pid,
