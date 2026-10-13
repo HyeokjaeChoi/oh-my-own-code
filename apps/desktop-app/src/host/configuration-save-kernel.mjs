@@ -1,7 +1,7 @@
 import { openDarwinDescriptorFFI } from "./darwin-descriptor-ffi.mjs";
 // Private, descriptor-only Darwin adapter. Importing this module does no IO.
 import * as fs from "node:fs";
-import { join, isAbsolute, normalize } from "node:path";
+import { join } from "node:path";
 import { randomBytes } from "node:crypto";
 import {
   isWorkspaceRootGuard,
@@ -15,72 +15,32 @@ import {
   configurationWorkspaceFileDirectoryVersion,
 } from "./configuration-file-observation.mjs";
 import {
-  validSkillSourceName,
   skillFileContentFits,
   skillFileWriteFits,
 } from "../renderer/shared/configuration-draft/skill.mjs";
 import {
-  validAgentSourceName,
   agentFileContentFits,
   agentFileWriteFits,
 } from "../renderer/shared/configuration-draft/agent.mjs";
+import {
+  HEX,
+  LIMIT,
+  chainBound,
+  closed,
+  identity,
+  refuse,
+  requestFits,
+  sameFile,
+  sameMetadata,
+  unknown,
+} from "./configuration-save-shared.mjs";
+import { createWin32ConfigurationSaveKernel } from "./configuration-save-kernel-win32.mjs";
 import { configurationFileWriteFits } from "../renderer/shared/configuration-draft/validation.mjs";
 
 import {
-  validWorkspaceFileRoot,
-  workspaceFilePathReason,
   workspaceFileWriteFits,
   WORKSPACE_FILE_LIMITS,
 } from "../renderer/shared/workspace-file/index.mjs";
-
-// Metadata budgets stay fixed; only ordinary file content receives 64KiB.
-const LIMIT = 32768;
-const sourceFile = (kind) => ["skill", "agent"].includes(kind);
-const chainBound = (kind) => sourceFile(kind) || kind === "file";
-const HEX = /^[a-f0-9]{64}$/;
-const key = (v, max = 128) =>
-  typeof v === "string" && new RegExp(`^[A-Za-z0-9_.:-]{1,${max}}$`).test(v);
-const closed = (v, required, optional = []) => {
-  if (!v || Object.getPrototypeOf(v) !== Object.prototype) return false;
-  const keys = Reflect.ownKeys(v);
-  return (
-    required.every((k) => keys.includes(k)) &&
-    keys.every(
-      (k) =>
-        [...required, ...optional].includes(k) &&
-        Object.hasOwn(Object.getOwnPropertyDescriptor(v, k), "value"),
-    )
-  );
-};
-class KernelFailure extends Error {}
-const refuse = (reason) => {
-  throw new KernelFailure(reason);
-};
-const unknown = (e, task) => ({
-  status: "unknown",
-  reason:
-    e instanceof KernelFailure
-      ? e.message
-      : chainBound(task?.request.kind) && ["EACCES", "EPERM"].includes(e?.code)
-        ? "path_denied"
-        : chainBound(task?.request.kind) &&
-            ["ENOENT", "ENOTDIR"].includes(e?.code)
-          ? "path_missing"
-          : "io_failed",
-});
-const identity = (a, b) => a.dev === b.dev && a.ino === b.ino;
-const sameFile = (a, b, renamed = false) =>
-  identity(a, b) &&
-  a.size === b.size &&
-  a.mtimeNs === b.mtimeNs &&
-  (renamed || a.ctimeNs === b.ctimeNs);
-const sameMetadata = (a, b) =>
-  a.mode === b.mode &&
-  a.entries.length === b.entries.length &&
-  a.entries.every(
-    ([name, value], i) =>
-      name.equals(b.entries[i][0]) && value.equals(b.entries[i][1]),
-  );
 
 export async function createConfigurationSaveKernel(options = {}) {
   let check, checkRoot, timeoutMs;
@@ -106,6 +66,9 @@ export async function createConfigurationSaveKernel(options = {}) {
   } catch {
     refuse("invalid_request");
   }
+  // Windows: same contract through the name-identity kernel (no dirfd / swap rename).
+  if (process.platform === "win32")
+    return createWin32ConfigurationSaveKernel({ check, checkRoot, timeoutMs });
   if (
     process.platform !== "darwin" ||
     process.arch !== "arm64" ||
@@ -376,64 +339,6 @@ export async function createConfigurationSaveKernel(options = {}) {
       );
     } else if (!published) missing(task);
     rootStable(task);
-  }
-  function requestFits(r) {
-    if (
-      !closed(
-        r,
-        [
-          "runtimeEpoch",
-          "operationId",
-          "workspaceId",
-          "workspacePath",
-          "kind",
-          "text",
-          "expectation",
-        ],
-        r?.kind === "file"
-          ? ["version", "path", "directoryVersion"]
-          : sourceFile(r?.kind)
-            ? ["version", "sourceName", "directoryVersion"]
-            : ["version"],
-      )
-    )
-      return false;
-    return (
-      key(r.runtimeEpoch) &&
-      key(r.operationId) &&
-      key(r.workspaceId, 256) &&
-      typeof r.workspacePath === "string" &&
-      r.workspacePath.length <= 4096 &&
-      isAbsolute(r.workspacePath) &&
-      normalize(r.workspacePath) === r.workspacePath &&
-      !Array.from(r.workspacePath).some((ch) => {
-        const code = ch.charCodeAt(0);
-        return code < 32 || (code >= 127 && code <= 159);
-      }) &&
-      ["instructions", "mcp", "skill", "agent", "file"].includes(r.kind) &&
-      (r.kind === "file"
-        ? key(r.workspaceId) &&
-          validWorkspaceFileRoot(r.workspacePath) &&
-          workspaceFilePathReason(r.path) === undefined &&
-          workspaceFileWriteFits(r.text) &&
-          r.expectation === "version" &&
-          typeof r.directoryVersion === "string" &&
-          HEX.test(r.directoryVersion)
-        : sourceFile(r.kind)
-          ? (r.kind === "skill" ? validSkillSourceName : validAgentSourceName)(
-              r.sourceName,
-            ) &&
-            typeof r.directoryVersion === "string" &&
-            HEX.test(r.directoryVersion) &&
-            (r.kind === "skill" ? skillFileWriteFits : agentFileWriteFits)(
-              r.text,
-            )
-          : configurationFileWriteFits(r.kind, r.text)) &&
-      ((r.expectation === "missing" && !Object.hasOwn(r, "version")) ||
-        (r.expectation === "version" &&
-          typeof r.version === "string" &&
-          HEX.test(r.version)))
-    );
   }
   function admit() {
     if (stopped) refuse("closed");
