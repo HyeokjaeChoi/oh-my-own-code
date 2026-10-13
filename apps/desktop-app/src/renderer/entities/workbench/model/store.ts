@@ -2941,10 +2941,41 @@ export function resourceMutationDisabled(
     )
   );
 }
+// Interrupt only reduces effects; a held message.send receipt must not block it.
+function interruptMutationDisabled(state: State, workspaceId?: string) {
+  return resourceMutationDisabled(
+    {
+      ...state,
+      operations: Object.fromEntries(
+        Object.entries(state.operations).filter(
+          ([, i]) => i.operation.type !== "message.send",
+        ),
+      ),
+    },
+    workspaceId,
+  );
+}
+function executionAvailableFor(s: State, interrupt: boolean): boolean {
+  const ws = s.selection.workspaceId;
+  return Boolean(
+    s.connection === "connected" &&
+      s.snapshot &&
+      s.snapshot.state === "connected" &&
+      s.snapshot.runtimeEpoch === s.epoch &&
+      s.snapshot.revision >= s.revision &&
+      s.snapshot.selectedWorkspaceId === ws &&
+      s.snapshot.selectedSessionId === s.selection.sessionId &&
+      !(interrupt
+        ? interruptMutationDisabled(s, ws)
+        : resourceMutationDisabled(s, ws)),
+  );
+}
 export function mutationDisabled(
   state: State,
   operation: OperationIdentity,
 ): boolean {
+  if (operation.type === "session.interrupt")
+    return interruptMutationDisabled(state, operation.workspaceId);
   return resourceMutationDisabled(state, operation.workspaceId);
 }
 // A disk observation belongs to this epoch and registered root. Inert comparison
@@ -9800,17 +9831,9 @@ export const selectors = {
   recovery: (s: State) => s.recovery,
   globalMutationDisabled,
   workspaceMutationDisabled: (s: State) => resourceMutationDisabled(s),
-  executionAvailable: (s: State) =>
-    Boolean(
-      s.connection === "connected" &&
-        s.snapshot &&
-        s.snapshot.state === "connected" &&
-        s.snapshot.runtimeEpoch === s.epoch &&
-        s.snapshot.revision >= s.revision &&
-        s.snapshot.selectedWorkspaceId === s.selection.workspaceId &&
-        s.snapshot.selectedSessionId === s.selection.sessionId &&
-        !resourceMutationDisabled(s, s.selection.workspaceId),
-    ),
+  executionAvailable: (s: State) => executionAvailableFor(s, false),
+  // Stop stays available while a held message.send receipt blocks other mutations.
+  interruptAvailable: (s: State) => executionAvailableFor(s, true),
   mutationDisabled: (s: State) =>
     resourceMutationDisabled(s, s.selection.workspaceId),
   selection: (s: State) => s.selection,
