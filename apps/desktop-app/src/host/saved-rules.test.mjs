@@ -13,7 +13,14 @@ const setup = ({ owned = true } = {}) => {
   const client = {
     location: {
       get: async ({ location }) => ({
-        project: { id: location.directory === "/a" ? "p1" : "p2" },
+        project: {
+          id:
+            location.directory === "/a"
+              ? "p1"
+              : location.directory === "/g"
+                ? "global"
+                : "p2",
+        },
       }),
     },
     permission: {
@@ -33,7 +40,8 @@ const setup = ({ owned = true } = {}) => {
   };
   const host = createSavedRulesHost({
     context: () => ({ client }),
-    resolveWorkspace: (id) => (id === "wa" ? "/a" : undefined),
+    resolveWorkspace: (id) =>
+      id === "wa" ? "/a" : id === "wg" ? "/g" : undefined,
     owned: () => owned,
   });
   const channels = new Map();
@@ -77,6 +85,26 @@ test("remove deletes a listed row and refuses other projects' or unknown ids", a
     f.calls.filter((c) => c[0] === "remove"),
     [["remove", "r1"]],
   );
+});
+
+test("global project rules are listed read-only and rows are redacted", async () => {
+  const g = setup();
+  g.rows.splice(0, g.rows.length, {
+    id: "g1",
+    projectID: "global",
+    action: "bash",
+    resource: "curl -H 'Authorization: Bearer abcdefghij123456'",
+  });
+  const listed = await g.invoke({ type: "rules.list", workspaceId: "wg" });
+  assert.equal(listed.value.global, true);
+  assert.ok(!listed.value.rules[0].resource.includes("abcdefghij123456"));
+  const removed = await g.invoke({
+    type: "rules.remove",
+    workspaceId: "wg",
+    id: "g1",
+  });
+  assert.equal(removed.code, "GLOBAL_PROJECT");
+  assert.equal(g.calls.filter((c) => c[0] === "remove").length, 0);
 });
 
 test("remove is refused when storage is not owned", async () => {

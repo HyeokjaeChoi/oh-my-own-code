@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@workbench/ui";
 import { useWorkbenchSelector } from "../../entities/workbench/index.js";
 import {
@@ -13,18 +13,25 @@ import styles from "./preferences.module.css";
 export function SavedRulesSettings() {
   const workspaceId = useWorkbenchSelector((s) => s.selection.workspaceId);
   const [rules, setRules] = useState<SavedRule[]>();
+  const [isGlobal, setIsGlobal] = useState(false);
+  const latest = useRef(0);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const load = useCallback(async () => {
+    const mine = ++latest.current;
     if (!workspaceId) return setRules(undefined);
-    const result = await callSavedRules<{ rules: SavedRule[] }>({
-      type: "rules.list",
-      workspaceId,
-    });
+    const result = await callSavedRules<{
+      rules: SavedRule[];
+      global: boolean;
+    }>({ type: "rules.list", workspaceId });
+    // A newer load (or workspace switch) supersedes this reply.
+    if (mine !== latest.current) return;
     if (!result.ok) {
       setRules(undefined);
       return setError(savedRulesErrorText(result.code));
     }
+    setError("");
+    setIsGlobal(result.value.global === true);
     setRules(result.value.rules);
   }, [workspaceId]);
   useEffect(() => {
@@ -40,8 +47,8 @@ export function SavedRulesSettings() {
       id: rule.id,
     });
     setBusy(false);
-    if (!result.ok) setError(savedRulesErrorText(result.code));
     await load();
+    if (!result.ok) setError(savedRulesErrorText(result.code));
   };
   if (!workspaceId) return null;
   return (
@@ -52,6 +59,10 @@ export function SavedRulesSettings() {
           {error}
         </p>
       )}
+      <p className={styles.muted}>
+        규칙은 Native 프로젝트 단위로 저장되며 같은 프로젝트의 작업 트리가 함께
+        사용합니다.
+      </p>
       {rules?.length === 0 && (
         <p role="status">이 프로젝트에 저장된 허용 규칙이 없습니다.</p>
       )}
@@ -63,7 +74,7 @@ export function SavedRulesSettings() {
           <Button
             size="compact"
             intent="danger"
-            disabled={busy}
+            disabled={busy || isGlobal}
             aria-label={`${rule.action} ${rule.resource} 허용 규칙 삭제`}
             onClick={() => void remove(rule)}
           >
