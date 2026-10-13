@@ -958,7 +958,7 @@ export function createWorkbenchService({
   function projectReceiptFields(record, request, response, effected) {
     record.revision = revision;
     const value = response.value;
-    if (!registry && !response.ok && record.verifiedNone) {
+    if (!response.ok && record.verifiedNone) {
       record.admission = "rejected";
       record.delivery = "pending";
       record.effect = "none";

@@ -2181,7 +2181,7 @@ test("native read metadata never mutates committed title, permissions or durable
   assert.equal(f.registry.status().journal.sequence, prior);
 });
 
-test("durable exact typed-empty fork rejection retains flushed intent as unknown with no confirmed mapping", async (t) => {
+test("durable exact typed-empty fork rejection is a definite no-effect outcome and leaves the session idle", async (t) => {
   const f = await fixture(t);
   const initial = await f.ready();
   let forks = 0;
@@ -2197,18 +2197,20 @@ test("durable exact typed-empty fork rejection retains flushed intent as unknown
   };
   const result = await f.mutate(operation, "empty-fork");
   assert.equal(result.code, "EMPTY_SESSION");
-  assert.equal(result.receipt.effect, "unknown");
+  assert.equal(result.receipt.effect, "none");
+  assert.equal(result.receipt.admission, "rejected");
   const snap = await f.snapshot();
   assert.equal(snap.sessions.length, 1);
+  assert.equal(snap.sessions[0].status, "idle");
   assert.ok(
-    snap.retainedOperations.some((k) => k.operationId === "empty-fork"),
+    !snap.retainedOperations.some((k) => k.operationId === "empty-fork"),
   );
   assert.equal(
     (await f.mutate(operation, "empty-fork")).receipt.effect,
-    "unknown",
+    "none",
   );
   assert.equal(forks, 1);
-  assert.equal((await f.lookup("empty-fork")).value.receipt.effect, "unknown");
+  assert.equal((await f.lookup("empty-fork")).value.receipt.effect, "none");
 });
 
 test("configuration denial and post-confirm external conflict have no target effect or kernel call", async (t) => {

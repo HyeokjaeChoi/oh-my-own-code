@@ -784,7 +784,12 @@ function apply(root, payload, conservative = false, validatedFirstSessions) {
     // resolve a dispatched operation as "none" (it never reached Native).
     const bootstrapNoEffect =
       receipt.admission === "rejected" &&
-      bootstrapNoEffectProven(operation, next.tasks.get(opKey));
+      (bootstrapNoEffectProven(operation, next.tasks.get(opKey)) ||
+        // Typed Native empty_session rejection proves no fork effect.
+        (operation.identity.type === "session.fork" &&
+          receipt.evidence.some(
+            (entry) => entry.kind === "native-rejected-empty",
+          )));
     need(
       receipt.effect !== "none" ||
         operation.dispatches.length === 0 ||
