@@ -158,6 +158,7 @@ export async function stageEventHost({
           "./native-permission-graph.mjs",
           "./native-permission-control-input.mjs",
           "./host/configuration-save-kernel.mjs",
+          "./host/configuration-save-kernel-win32.mjs",
           "./host/git-index-kernel.mjs",
           "./host/git-metadata-kernel.mjs",
         ].includes(path),

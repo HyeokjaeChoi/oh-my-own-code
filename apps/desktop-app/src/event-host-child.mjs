@@ -20,6 +20,7 @@ import { initialization } from "./native-permission-control-input.mjs";
 
 import { createGitMetadataKernel } from "./host/git-metadata-kernel.mjs";
 import { createConfigurationSaveKernel } from "./host/configuration-save-kernel.mjs";
+import { createWin32ConfigurationSaveKernel } from "./host/configuration-save-kernel-win32.mjs";
 
 // Exact JS handles supply exit evidence. This does not enumerate OS descendants.
 export function createDirectHandleObserver(
@@ -620,7 +621,18 @@ export function runEventHostChild() {
                 if (closing || !process.connected) throw new Error("closing");
               },
             });
-          else configurationKernel ??= await createConfigurationSaveKernel();
+          else
+            configurationKernel ??=
+              process.platform === "win32"
+                ? createWin32ConfigurationSaveKernel({
+                    check() {
+                      if (closing || !process.connected)
+                        throw new Error("closing");
+                    },
+                    checkRoot: undefined,
+                    timeoutMs: 10000,
+                  })
+                : await createConfigurationSaveKernel();
           const kernel = branchRestoreRequest
             ? gitMetadataKernel.branchRestore
             : commitRequest
