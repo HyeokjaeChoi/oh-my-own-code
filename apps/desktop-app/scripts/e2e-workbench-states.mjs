@@ -534,22 +534,10 @@ async function captureMatrix(page, state) {
     });
     await setRequestSettings(page, true);
     await expect(submitControl).toBeInViewport({ ratio: 1 });
-    // At 200% zoom on a narrow window a pending permission plus the pinned
-    // composer leave no room for the open request settings rows; those are
-    // covered by the other states. Permission checks below run everywhere.
-    const settingsFit = !(
-      state === "permission-long-korean-draft" &&
-      zoom === 2 &&
-      width < 900
-    );
     for (const control of [
       submitControl,
-      ...(settingsFit
-        ? [
-            page.getByRole("combobox", { name: "Agent 요청" }),
-            page.getByRole("combobox", { name: "모델 요청" }),
-          ]
-        : []),
+      page.getByRole("combobox", { name: "Agent 요청" }),
+      page.getByRole("combobox", { name: "모델 요청" }),
     ]) {
       // Settings rows scroll above the pinned composer at small heights.
       // Honors the region's scroll-padding above the pinned composer.
@@ -573,13 +561,7 @@ async function captureMatrix(page, state) {
       // Permission text and actions remain inspectable when the queue yields
       // height to the composer. Scrolling must not move the composer offscreen.
       const permissions = page.getByRole("region", { name: "실행 권한 요청" });
-      // At 200% zoom on a narrow window the pinned composer leaves the queue
-      // ~6px of scrollable height, so only require visibility there; every
-      // other layout must show the item fully in the viewport.
-      const visible = (locator) =>
-        settingsFit
-          ? expect(locator).toBeInViewport({ ratio: 1 })
-          : expect(locator).toBeVisible();
+      const visible = (locator) => expect(locator).toBeInViewport({ ratio: 1 });
       for (let index = 0; index < 2; index++) {
         const permission = permissions.nth(index);
         await permission
@@ -639,12 +621,8 @@ async function captureMatrix(page, state) {
       for (const control of [
         composerInput,
         submitControl,
-        ...(settingsFit
-          ? [
-              page.getByRole("combobox", { name: "Agent 요청" }),
-              page.getByRole("combobox", { name: "모델 요청" }),
-            ]
-          : []),
+        page.getByRole("combobox", { name: "Agent 요청" }),
+        page.getByRole("combobox", { name: "모델 요청" }),
       ]) {
         await control.scrollIntoViewIfNeeded();
         await expect(control).toBeInViewport({ ratio: 1 });
