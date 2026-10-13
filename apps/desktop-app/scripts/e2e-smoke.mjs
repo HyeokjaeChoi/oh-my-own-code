@@ -478,6 +478,7 @@ try {
       "notify",
       "plans",
       "preview",
+      "provider",
       "runtimeSnapshot",
       "terminal",
       "workbench",
