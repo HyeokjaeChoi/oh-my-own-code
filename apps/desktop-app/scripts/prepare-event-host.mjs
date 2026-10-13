@@ -116,7 +116,13 @@ export async function loadRuntimeInputs(
     throw new Error("Unsupported installer pins");
   return { pins, pkg, lock };
 }
-export function installerEnvironment(base, nodePath, platform = "darwin") {
+// `platform` is the TARGET (bin-links); `host` is where the installer runs.
+export function installerEnvironment(
+  base,
+  nodePath,
+  platform = "darwin",
+  host = process.platform,
+) {
   // Construct from zero: no inherited auth, proxy, custom CA, NODE_OPTIONS/PATH.
   return {
     PATH: dirname(nodePath),
@@ -137,6 +143,15 @@ export function installerEnvironment(base, nodePath, platform = "darwin") {
     npm_config_prefix: join(base, "prefix"),
     npm_config_progress: "false",
     ...(platform === "win32" && { npm_config_bin_links: "false" }),
+    // A Windows host also needs these for node/npm to find a profile and temp.
+    ...(host === "win32" && {
+      SystemRoot: process.env.SystemRoot ?? "C:\\Windows",
+      USERPROFILE: join(base, "home"),
+      APPDATA: join(base, "home", "AppData", "Roaming"),
+      LOCALAPPDATA: join(base, "home", "AppData", "Local"),
+      TEMP: join(base, "tmp"),
+      TMP: join(base, "tmp"),
+    }),
   };
 }
 export const installerConfigFor = (platform) =>

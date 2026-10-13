@@ -255,3 +255,12 @@ export function pinnedOpenFlags(
 // it can bypass any name-based deny. Refused wherever a name is user-supplied.
 export const isWindowsShortAlias = (name) =>
   /^[^.]{1,6}~[0-9]{1,6}(?:\.[^.]{0,3})?$/u.test(name);
+
+// Path identity for comparing a path we canonicalized with one a runtime reported:
+// NTFS names are case/separator-insensitive, POSIX names are exact.
+export const samePath = (a, b, platform = process.platform) =>
+  typeof a === "string" &&
+  typeof b === "string" &&
+  (isWin32(platform)
+    ? comparablePath(a, platform) === comparablePath(b, platform)
+    : a === b);

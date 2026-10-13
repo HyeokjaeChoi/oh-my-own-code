@@ -330,3 +330,14 @@ test("sensitiveName ignores trailing dots/spaces; short alias detection", () => 
   assert.deepEqual(relativeParts("a/b"), ["a", "b"]);
   assert.throws(() => relativeParts("a/.env."));
 });
+
+import { samePath } from "./platform-paths.mjs";
+test("samePath: NTFS names are case/separator-insensitive, POSIX names exact", () => {
+  assert.equal(samePath("C:\\Work\\Proj", "c:/work/proj/", "win32"), true);
+  assert.equal(samePath("C:\\Work\\Proj", "C:\\Work\\Proj2", "win32"), false);
+  assert.equal(samePath("C:\\Work", "D:\\Work", "win32"), false);
+  assert.equal(samePath("\\\\?\\C:\\Work", "C:\\work", "win32"), true);
+  assert.equal(samePath("/w/p", "/w/P", "darwin"), false);
+  assert.equal(samePath("/w/p", "/w/p", "linux"), true);
+  assert.equal(samePath(undefined, "/w", "linux"), false);
+});

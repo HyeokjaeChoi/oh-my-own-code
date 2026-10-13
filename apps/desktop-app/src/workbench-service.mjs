@@ -2,6 +2,7 @@ import {
   matchesOrderedPermissionRules,
   matchesAuthenticatedFloor,
 } from "./permission-policy-compiler.mjs";
+import { samePath } from "./platform-paths.mjs";
 import { compileModeRules, legacyModeRules } from "./permission-mode.mjs";
 import {
   bootstrapHandoffProof,
@@ -1412,7 +1413,7 @@ export function createWorkbenchService({
     };
     if (
       !matches() ||
-      (await canonicalDirectory(w.path)) !== w.path ||
+      !samePath(await canonicalDirectory(w.path), w.path) ||
       !matches()
     )
       fail("FILE_DENIED");
@@ -2208,7 +2209,7 @@ export function createWorkbenchService({
     const reservation = owner?.reservation;
     if (
       !opaque(info?.id) ||
-      (await canonicalDirectory(info.location?.directory)) !== w.path ||
+      !samePath(await canonicalDirectory(info.location?.directory), w.path) ||
       [...tables().sessions.values()].some((s) => s.sdkId === info.id)
     )
       fail("RUNTIME_ERROR");
@@ -2370,8 +2371,10 @@ export function createWorkbenchService({
       const info = await call(client.session.get, { sessionID: s.sdkId });
       if (
         info?.id !== s.sdkId ||
-        (await canonicalDirectory(info.location?.directory)) !==
-          workspace(s.workspaceId).path ||
+        !samePath(
+          await canonicalDirectory(info.location?.directory),
+          workspace(s.workspaceId).path,
+        ) ||
         !matchesAuthenticatedFloor(info.permissions) ||
         !matchesOrderedPermissionRules(expected, info.permissions)
       )
@@ -2417,7 +2420,7 @@ export function createWorkbenchService({
       });
       if (
         info?.id !== existing.sdkId ||
-        (await canonicalDirectory(info?.location?.directory)) !== w.path
+        !samePath(await canonicalDirectory(info?.location?.directory), w.path)
       )
         return undefined;
       if (existing.parentSessionId) {
@@ -2879,8 +2882,10 @@ export function createWorkbenchService({
         }
         if (
           info?.id !== s.sdkId ||
-          (await canonicalDirectory(info.location?.directory)) !==
-            workspace(s.workspaceId).path ||
+          !samePath(
+            await canonicalDirectory(info.location?.directory),
+            workspace(s.workspaceId).path,
+          ) ||
           !active ||
           typeof active !== "object" ||
           !Array.isArray(inbox) ||
@@ -3418,7 +3423,7 @@ export function createWorkbenchService({
     const info = await call(client.session.get, { sessionID: s.sdkId });
     if (
       info?.id !== s.sdkId ||
-      (await canonicalDirectory(info.location?.directory)) !== w.path
+      !samePath(await canonicalDirectory(info.location?.directory), w.path)
     )
       fail("UNAVAILABLE");
     verify();
@@ -3459,7 +3464,7 @@ export function createWorkbenchService({
     verify();
     if (
       info?.id !== sdkId ||
-      (await canonicalDirectory(info.location?.directory)) !== w.path
+      !samePath(await canonicalDirectory(info.location?.directory), w.path)
     )
       fail("UNAVAILABLE");
     verify();
@@ -4512,7 +4517,7 @@ export function createWorkbenchService({
       const info = await call(client.session.get, { sessionID: s.sdkId });
       if (
         info?.id !== s.sdkId ||
-        (await canonicalDirectory(info.location?.directory)) !== w.path
+        !samePath(await canonicalDirectory(info.location?.directory), w.path)
       )
         fail("UNAVAILABLE");
       await recheck(w);
@@ -4640,7 +4645,7 @@ export function createWorkbenchService({
     const inbox = await call(client.session.inbox.list, { sessionID: s.sdkId });
     if (
       info?.id !== s.sdkId ||
-      (await canonicalDirectory(info.location?.directory)) !== w.path ||
+      !samePath(await canonicalDirectory(info.location?.directory), w.path) ||
       !active ||
       typeof active !== "object" ||
       Array.isArray(active) ||
@@ -4909,7 +4914,10 @@ export function createWorkbenchService({
               checked?.fork?.boundary?.type !== "before" ||
               checked?.fork?.boundary?.messageID !== request.before)) ||
           checked?.id !== child.sdkId ||
-          (await canonicalDirectory(checked.location?.directory)) !== w.path ||
+          !samePath(
+            await canonicalDirectory(checked.location?.directory),
+            w.path,
+          ) ||
           !policyMatches(checked.permissions) ||
           (request.title && checked.title !== request.title)
         )
