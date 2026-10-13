@@ -2,6 +2,7 @@
 // Platform-neutral path/process helpers shared by main, host and scripts.
 // Every function takes `platform` (default: this process) so Windows rules are
 // unit-testable on any OS. Pure: no fs access, no module state.
+import { constants } from "node:fs";
 import { posix, win32 } from "node:path";
 
 export const isWin32 = (platform = process.platform) => platform === "win32";
@@ -227,5 +228,25 @@ export function windowsSpawnPlan(
     file: shell,
     args: ["/d", "/s", "/c", `"${[file, ...args].map(quote).join(" ")}"`],
     options: { windowsVerbatimArguments: true, windowsHide: true },
+  };
+}
+
+// POSIX pins directories/files with O_NOFOLLOW|O_DIRECTORY|O_NONBLOCK. Windows
+// has none of them: libuv opens reparse points transparently, so the callers'
+// lstat -> open -> fstat(dev/ino) -> lstat identity check (which rejects symlinks
+// and junctions, and any swap between the checks) is the whole defence there.
+// `supported` is false only where the platform SHOULD have the flags but does not.
+export function pinnedOpenFlags(
+  fsConstants = constants,
+  platform = process.platform,
+) {
+  const names = ["O_NOFOLLOW", "O_NONBLOCK", "O_DIRECTORY"];
+  if (isWin32(platform))
+    return { O_NOFOLLOW: 0, O_NONBLOCK: 0, O_DIRECTORY: 0, supported: true };
+  return {
+    ...Object.fromEntries(names.map((k) => [k, fsConstants[k]])),
+    supported: names.every(
+      (k) => Number.isInteger(fsConstants[k]) && fsConstants[k] !== 0,
+    ),
   };
 }

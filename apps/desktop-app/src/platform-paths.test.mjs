@@ -277,3 +277,41 @@ test("renameWithRetry and directory sync policy", async () => {
   assert.equal(directorySyncSupported(W), false);
   assert.equal(directorySyncSupported("darwin"), true);
 });
+
+import { pinnedOpenFlags } from "./platform-paths.mjs";
+test("pinnedOpenFlags: win32 needs none, posix needs all three", () => {
+  assert.deepEqual(pinnedOpenFlags({}, "win32"), {
+    O_NOFOLLOW: 0,
+    O_NONBLOCK: 0,
+    O_DIRECTORY: 0,
+    supported: true,
+  });
+  assert.equal(pinnedOpenFlags({}, "darwin").supported, false);
+  assert.equal(
+    pinnedOpenFlags({ O_NOFOLLOW: 1, O_NONBLOCK: 2, O_DIRECTORY: 4 }, "linux")
+      .supported,
+    true,
+  );
+  assert.equal(
+    pinnedOpenFlags({ O_NOFOLLOW: 1, O_NONBLOCK: 0, O_DIRECTORY: 4 }, "linux")
+      .supported,
+    false,
+  );
+  assert.equal(pinnedOpenFlags().supported, true);
+});
+
+import { workspaceFilePathReason } from "./renderer/shared/workspace-file/index.mjs";
+test("workspace file paths refuse NTFS 8.3 aliases of protected names", () => {
+  for (const p of [
+    "GIT~1/config",
+    "src/ENV~1",
+    "a/PROGRA~1.TXT",
+    ".GIT/x",
+    "CON",
+    "a.",
+    "x:y",
+  ])
+    assert.notEqual(workspaceFilePathReason(p), undefined, p);
+  for (const p of ["src/index.mjs", "notes.md", "a/b.c"])
+    assert.equal(workspaceFilePathReason(p), undefined, p);
+});
