@@ -2,7 +2,7 @@
 // responses are substituted, inside this disposable test process.
 import assert from "node:assert/strict";
 import { once } from "node:events";
-import { execFileSync } from "node:child_process";
+import { childPids as findChildPids } from "./process-tree.mjs";
 import { existsSync } from "node:fs";
 import {
   mkdir,
@@ -468,17 +468,8 @@ try {
   assert.deepEqual(pageErrors, []);
   profile = await application.evaluate(({ app }) => app.getPath("userData"));
   assert.equal(relative(fixture, profile).startsWith(".."), false);
-  if (process.platform !== "win32") {
-    childPids = execFileSync(
-      "pgrep",
-      ["-P", String(processHandle.pid), "-f", "event-host.*host.mjs"],
-      { encoding: "utf8" },
-    )
-      .trim()
-      .split(/\s+/)
-      .map(Number);
-    assert.equal(childPids.length, 1);
-  }
+  childPids = findChildPids(processHandle.pid, "event-host.*host.mjs");
+  assert.equal(childPids.length, 1);
   await application.evaluate(({ app }) => app.quit());
   assert.equal(await waitForExit(), 0);
   closed = true;

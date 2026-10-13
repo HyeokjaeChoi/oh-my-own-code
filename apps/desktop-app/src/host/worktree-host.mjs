@@ -1,3 +1,4 @@
+import { renameReplacing } from "../platform-paths.mjs";
 import { execFile } from "node:child_process";
 import { randomBytes, randomUUID } from "node:crypto";
 import {
@@ -5,7 +6,6 @@ import {
   mkdir,
   readFile,
   realpath,
-  rename,
   rm,
   writeFile,
 } from "node:fs/promises";
@@ -127,7 +127,7 @@ export function createWorktreeHost({ documentsRoot, linksFile, git = runGit }) {
       await mkdir(dirname(file), { recursive: true });
       const tmp = `${file}.${randomUUID()}.tmp`;
       await writeFile(tmp, JSON.stringify(value));
-      await rename(tmp, file);
+      await renameReplacing(tmp, file);
     });
     queue = run.then(
       () => undefined,

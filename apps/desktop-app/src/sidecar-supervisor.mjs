@@ -19,6 +19,7 @@ import {
   win32 as win32Path,
 } from "node:path";
 import { OpenCode } from "@opencode/client";
+import { directorySyncSupported, killProcessTree } from "./platform-paths.mjs";
 
 export const OPEN_CODE_VERSION = "2.0.18";
 // Event host re-verifies its ~35k-file (~485MB) resource tree itself (~14s per
@@ -176,7 +177,7 @@ export async function startSidecar({
     }
     if (stopPromise) return stopPromise;
     stopPromise = (async () => {
-      if (child && !exitResult) child.kill("SIGTERM");
+      if (child && !exitResult) killProcessTree(child, "SIGTERM", { platform });
       let forced = false;
       if (child && !exitResult) {
         let result = await Promise.race([
@@ -185,7 +186,7 @@ export async function startSidecar({
         ]);
         if (result === null) {
           forced = true;
-          child.kill("SIGKILL");
+          killProcessTree(child, "SIGKILL", { platform });
           result = await Promise.race([
             exited,
             delay(stopTimeoutMs).then(() => null),
@@ -320,7 +321,7 @@ export async function startSidecar({
       if (!collectingStartupOutput) return;
       startupOutput += chunk.toString("utf8");
       if (startupOutput.length > MAX_STARTUP_OUTPUT) {
-        child.kill("SIGTERM");
+        killProcessTree(child, "SIGTERM", { platform });
       }
     };
     child.stdout.on("data", collect);
@@ -485,11 +486,13 @@ export async function openDurableManifest(
     } finally {
       await handle.close();
     }
-    const directory = await open(namespace.root, "r");
-    try {
-      await directory.sync();
-    } finally {
-      await directory.close();
+    if (directorySyncSupported()) {
+      const directory = await open(namespace.root, "r");
+      try {
+        await directory.sync();
+      } finally {
+        await directory.close();
+      }
     }
   }
   for (const path of [
@@ -520,11 +523,30 @@ const runProbe = (command, args) =>
       {
         timeout: 2000,
         maxBuffer: 16384,
-        env: { PATH: "/usr/bin:/bin:/usr/sbin:/sbin" },
+        env:
+          process.platform === "win32"
+            ? { SystemRoot: process.env.SystemRoot ?? "C:\\Windows" }
+            : { PATH: "/usr/bin:/bin:/usr/sbin:/sbin" },
+        windowsHide: true,
       },
       (error, stdout) => (error ? reject(error) : resolve(stdout.trim())),
     ),
   );
+// Fixed, argument-free PowerShell scripts; pid is validated as a safe integer.
+const powershellPath = () =>
+  `${process.env.SystemRoot ?? "C:\\Windows"}\\System32\\WindowsPowerShell\\v1.0\\powershell.exe`;
+const powershellArgs = (script) => [
+  "-NoProfile",
+  "-NonInteractive",
+  "-ExecutionPolicy",
+  "Bypass",
+  "-Command",
+  script,
+];
+export const WINDOWS_BOOT_SCRIPT =
+  "(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToUniversalTime().ToFileTimeUtc()";
+export const windowsStartScript = (pid) =>
+  `(Get-Process -Id ${Number(pid)} -ErrorAction Stop).StartTime.ToUniversalTime().ToFileTimeUtc()`;
 const digestIdentity = (value) =>
   createHash("sha256").update(value).digest("hex");
 export function createOSProcessIdentityAdapter({
@@ -537,6 +559,15 @@ export function createOSProcessIdentityAdapter({
     let value;
     if (platform === "darwin")
       value = await probe("/usr/sbin/sysctl", ["-n", "kern.bootsessionuuid"]);
+    if (platform === "win32") {
+      // Boot time (FILETIME) stands in for a boot UUID; callers hash it.
+      const boot = await probe(
+        powershellPath(),
+        powershellArgs(WINDOWS_BOOT_SCRIPT),
+      );
+      if (/^\d{15,19}$/.test(boot)) return boot;
+      throw new Error("process_identity_unavailable");
+    }
     if (platform === "linux")
       value = (
         await readFile("/proc/sys/kernel/random/boot_id", "utf8")
@@ -565,6 +596,12 @@ export function createOSProcessIdentityAdapter({
         const stat = await readFile(`/proc/${pid}/stat`, "utf8");
         token = stat.slice(stat.lastIndexOf(")") + 2).split(" ")[19];
         if (!/^\d+$/.test(token)) return null;
+      } else if (platform === "win32") {
+        token = await probe(
+          powershellPath(),
+          powershellArgs(windowsStartScript(pid)),
+        );
+        if (!/^\d{15,19}$/.test(token)) return null;
       } else return null;
       const identity = Object.freeze({
         pid,

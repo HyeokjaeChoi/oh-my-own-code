@@ -1,3 +1,4 @@
+import { renameReplacing } from "../platform-paths.mjs";
 import { randomUUID } from "node:crypto";
 import {
   lstatSync,
@@ -6,14 +7,7 @@ import {
   rmSync,
   rmdirSync,
 } from "node:fs";
-import {
-  mkdir,
-  readFile,
-  readdir,
-  rename,
-  rm,
-  writeFile,
-} from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, isAbsolute, join, parse, resolve, sep } from "node:path";
 import {
@@ -76,7 +70,7 @@ export function createDataHost({
     await mkdir(dirname(file), { recursive: true, mode: 0o700 });
     const tmp = `${file}.${randomUUID()}.tmp`;
     await writeFile(tmp, text, { mode: 0o600 });
-    await rename(tmp, file);
+    await renameReplacing(tmp, file);
   };
   const info = (a) => ({
     id: a.id,

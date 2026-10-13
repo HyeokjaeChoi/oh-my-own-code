@@ -139,6 +139,11 @@ export async function retryTransient(
     }
   }
 }
+export const renameReplacing = (from, to, options) =>
+  retryTransient(
+    () => process.getBuiltinModule("node:fs/promises").rename(from, to),
+    options,
+  );
 export const renameWithRetry = (io, from, to, options) =>
   retryTransient(() => io.rename(from, to), options);
 
@@ -175,7 +180,7 @@ export function killProcessTree(
     systemRoot,
   } = {},
 ) {
-  if (!child || child.pid === undefined) return false;
+  if (!child || child.pid === undefined || child.exitCode != null) return false;
   if (isWin32(platform)) {
     try {
       const { file, args } = taskkillCommand(child.pid, { systemRoot });

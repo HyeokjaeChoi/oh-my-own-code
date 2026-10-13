@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { once } from "node:events";
-import { execFileSync } from "node:child_process";
+import { childPids as findChildPids } from "./process-tree.mjs";
 import { existsSync } from "node:fs";
 import {
   mkdir,
@@ -44,7 +44,14 @@ await writeFile(
   "SYNTHETIC_SECRET=never-render-this-fixture\n",
 );
 await writeFile(join(fixture, "outside.txt"), "Outside registered workspace\n");
-await symlink(join(fixture, "outside.txt"), join(project, "escape.txt"));
+try {
+  await symlink(join(fixture, "outside.txt"), join(project, "escape.txt"));
+} catch (error) {
+  // Windows without Developer Mode/SeCreateSymbolicLinkPrivilege cannot create it;
+  // the missing path is still rejected, but report that the symlink leg was skipped.
+  if (process.platform !== "win32" || error?.code !== "EPERM") throw error;
+  console.warn("SKIPPED symlink leg: no symlink privilege (EPERM)");
+}
 const env = {
   PATH: process.env.PATH ?? "/usr/bin:/bin:/usr/sbin:/sbin",
   OMOC_DESKTOP_E2E_BACKGROUND: process.env.OMOC_E2E_FOREGROUND ? "" : "1",
@@ -381,15 +388,8 @@ try {
   );
   profile = await application.evaluate(({ app }) => app.getPath("userData"));
   assert.equal(relative(fixture, profile).startsWith(".."), false);
-  if (process.platform !== "win32") {
-    const pids = execFileSync(
-      "pgrep",
-      ["-P", String(processHandle.pid), "-f", "event-host.*host.mjs"],
-      { encoding: "utf8" },
-    );
-    childPids = pids.trim().split(/\s+/).map(Number);
-    assert.equal(childPids.length, 1);
-  }
+  childPids = findChildPids(processHandle.pid, "event-host.*host.mjs");
+  assert.equal(childPids.length, 1);
   await application.evaluate(({ app }) => app.quit());
   assert.equal(await waitForExit(), 0);
   closed = true;

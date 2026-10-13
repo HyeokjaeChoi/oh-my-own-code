@@ -1,3 +1,4 @@
+import { killProcessTree } from "../platform-paths.mjs";
 import * as fs from "node:fs/promises";
 import { constants } from "node:fs";
 import { spawn as spawnProcess } from "node:child_process";
@@ -606,7 +607,7 @@ export function createNativePreflight({
     const stop = () => {
       child.stdin?.destroy();
       try {
-        child.kill("SIGTERM");
+        killProcessTree(child, "SIGTERM");
       } catch {
         failed = true;
       }
@@ -693,7 +694,7 @@ export function createNativePreflight({
         );
         if (!exited) {
           try {
-            child.kill("SIGKILL");
+            killProcessTree(child, "SIGKILL");
           } catch {
             failed = true;
           }

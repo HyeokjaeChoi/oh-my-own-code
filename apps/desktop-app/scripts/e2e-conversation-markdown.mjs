@@ -1,5 +1,6 @@
 // Execute only through the fixed conversation-markdown evidence wrapper.
 import assert from "node:assert/strict";
+import { e2ePath } from "./e2e-env.mjs";
 import { createHash } from "node:crypto";
 import { lstat, mkdtemp, realpath, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -302,7 +303,7 @@ try {
       "--user-data-dir=" + join(fixtureRoot, "bootstrap"),
     ],
     env: {
-      PATH: "/usr/bin:/bin:/usr/sbin:/sbin",
+      PATH: e2ePath(),
       HOME: fixtureRoot,
       TMPDIR: fixtureRoot,
       TMP: fixtureRoot,

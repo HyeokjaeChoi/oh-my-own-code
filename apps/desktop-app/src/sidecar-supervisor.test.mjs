@@ -752,8 +752,34 @@ test("OS adapter uses boot and microsecond birth identity, never PID absence or 
         command === "/usr/bin/python3" && args[1].includes("proc_pidinfo"),
     ),
   );
+  const winProbes = [];
+  const win = createOSProcessIdentityAdapter({
+    platform: "win32",
+    probe: async (command, args) => {
+      winProbes.push([command, args]);
+      return args.at(-1).includes("LastBootUpTime")
+        ? "133800000000000000"
+        : "133800000012345678";
+    },
+  });
+  const winIdentity = await win.capture(4242);
+  assert.equal(winIdentity.platform, "win32");
+  assert.equal(winIdentity.startToken.length, 64);
+  assert.match(
+    winProbes[0][0],
+    /WindowsPowerShell[\\/]v1\.0[\\/]powershell\.exe$/,
+  );
+  assert.ok(winProbes.every(([, args]) => args.includes("-NoProfile")));
+  assert.equal((await win.inspect(winIdentity)).state, "alive");
   assert.equal(
-    await createOSProcessIdentityAdapter({ platform: "win32" }).capture(4242),
+    await createOSProcessIdentityAdapter({
+      platform: "win32",
+      probe: async () => "not-a-number",
+    }).capture(4242),
+    null,
+  );
+  assert.equal(
+    await createOSProcessIdentityAdapter({ platform: "freebsd" }).capture(4242),
     null,
   );
 });

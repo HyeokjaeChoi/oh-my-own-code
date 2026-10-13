@@ -1,4 +1,5 @@
-import { stat, readFile, writeFile, rename } from "node:fs/promises";
+import { renameReplacing } from "../platform-paths.mjs";
+import { stat, readFile, writeFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { basename } from "node:path";
 import {
@@ -36,7 +37,7 @@ export function bindDataIpc({
           if (!path) return ok({ saved: false, summary });
           const tmp = `${path}.${randomUUID()}.tmp`;
           await writeFile(tmp, JSON.stringify(doc, null, 2), { mode: 0o600 });
-          await rename(tmp, path);
+          await renameReplacing(tmp, path);
           return ok({ saved: true, name: basename(path), summary });
         }
         case "import.open": {

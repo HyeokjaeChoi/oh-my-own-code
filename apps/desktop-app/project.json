@@ -46,7 +46,7 @@
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "node --import ./apps/desktop-app/scripts/test-ts-resolve.mjs --test --test-concurrency=1 apps/desktop-app/src/*.test.mjs apps/desktop-app/src/host/*.test.mjs"
+        "command": "node --import ./apps/desktop-app/scripts/test-ts-resolve.mjs --test --test-concurrency=1 apps/desktop-app/src/*.test.mjs apps/desktop-app/src/host/*.test.mjs apps/desktop-app/scripts/process-tree.test.mjs"
       }
     },
     "boundaries": {

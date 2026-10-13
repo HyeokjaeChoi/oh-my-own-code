@@ -1,3 +1,4 @@
+import { renameReplacing } from "../platform-paths.mjs";
 import { createHash, randomUUID } from "node:crypto";
 import {
   lstat,
@@ -6,7 +7,6 @@ import {
   readFile,
   readdir,
   realpath,
-  rename,
   writeFile,
 } from "node:fs/promises";
 import { constants } from "node:fs";
@@ -60,7 +60,7 @@ export function createPlansHost({
     const file = storeFile();
     await mkdir(dirname(file), { recursive: true });
     await writeFile(`${file}.tmp`, JSON.stringify(value));
-    await rename(`${file}.tmp`, file);
+    await renameReplacing(`${file}.tmp`, file);
   }
   const rootOf = async (workspaceId) => {
     const root = resolveWorkspace(workspaceId);

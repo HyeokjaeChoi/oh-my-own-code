@@ -1,3 +1,4 @@
+import { killProcessTree } from "./platform-paths.mjs";
 import { randomBytes } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
 import { spawn } from "node:child_process";
@@ -234,7 +235,7 @@ export async function startEventHost({
           uncertain = true;
           forced = true;
           try {
-            child.kill("SIGKILL");
+            killProcessTree(child, "SIGKILL", { platform });
           } catch {
             /* exact handle only */
           }
