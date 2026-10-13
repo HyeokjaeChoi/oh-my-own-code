@@ -121,6 +121,7 @@ const mock = createServer((req, res) => {
       url: req.url,
       tools: parsed.tools?.length ?? 0,
       model: parsed.model,
+      planMode: /plan mode/i.test(JSON.stringify(messages)),
     });
     const last = messages.at(-1);
     const users = messages
@@ -360,11 +361,7 @@ try {
     .locator("option")
     .evaluateAll((o) => o.map((x) => x.value).filter(Boolean));
   assert.ok(agentValues.length > 0, "catalog lists at least one agent");
-  const baselineTools = Math.max(
-    ...requests.filter((r) => r.model).map((r) => r.tools),
-  );
-  // plan denies edit tools, so a request that reached Native under it
-  // carries fewer tools than the default agent's.
+  // Native injects a plan-mode reminder into requests made under plan.
   const chosenAgent = agentValues.includes("plan")
     ? "plan"
     : agentValues.at(-1);
@@ -379,10 +376,8 @@ try {
     .toBe(true);
   if (chosenAgent === "plan")
     assert.ok(
-      requests.some(
-        (r) => r.model === "mock-model-2" && r.tools < baselineTools,
-      ),
-      "plan agent reached Native (reduced tool set)",
+      requests.some((r) => r.model === "mock-model-2" && r.planMode),
+      "plan agent reached Native (plan-mode reminder)",
     );
   await idle();
   observations.push(
