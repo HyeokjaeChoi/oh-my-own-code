@@ -110,12 +110,12 @@ KNOWN GAP (e2e-chat turn 4): the model-initiated `subagent` tool fails ("A tool 
 
 ## F-10 Preview
 
-| Clause                                       | Status  | Evidence                                                |
-| -------------------------------------------- | ------- | ------------------------------------------------------- |
-| Browser/artifact tabs, URL/HTML/MD/image/PDF | missing | `webviewTag: false` (`main.mjs:278`), no preview widget |
-| Nav/reload/resize/open external              | missing | none                                                    |
-| Dev server start/stop/port/logs              | missing | none                                                    |
-| No local exec for preview content            | n/a     | nothing to isolate yet                                  |
+| Clause                                       | Status  | Evidence                                                                          |
+| -------------------------------------------- | ------- | --------------------------------------------------------------------------------- |
+| Browser/artifact tabs, URL/HTML/MD/image/PDF | missing | `webviewTag: false` (`main.mjs:278`), no preview widget                           |
+| Nav/reload/resize/open external              | missing | none                                                                              |
+| Dev server start/stop/port/logs              | partial | start/stop/logs via a project script on the PTY (terminal tab); no port detection |
+| No local exec for preview content            | n/a     | nothing to isolate yet                                                            |
 
 ## F-11 Files/Git
 
@@ -134,8 +134,8 @@ KNOWN GAP (e2e-chat turn 4): the model-initiated `subagent` tool fails ("A tool 
 | Clause                                                    | Status  | Evidence                                                                                                                           |
 | --------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | Terminal in workspace dir, tabs, input, exit code, output | done    | `host/terminal-host.mjs`, `widgets/terminal/index.tsx:148`                                                                         |
-| Real PTY                                                  | partial | pipes only, no tty (`terminal-host.mjs:44`)                                                                                        |
-| Resize                                                    | partial | stub `{resized:false}` (`:180`)                                                                                                    |
+| Real PTY                                                  | done    | `node-pty` in `host/terminal-host.mjs`, xterm.js in `widgets/terminal/xterm-view.tsx`; `scripts/e2e-terminal.mjs`                  |
+| Resize                                                    | done    | `terminal.resize` -> `pty.resize`, fit addon + ResizeObserver                                                                      |
 | Close tab vs stop process; orphan sweep                   | done    | `reap` `main.mjs:256`, `closeAll`                                                                                                  |
 | Build/lint/test/dev actions                               | done    | package.json scripts, lockfile pm, argv spawn: `host/project-actions.mjs`, `terminalHost.startScript`; recent-run history not kept |
 | Command attribution                                       | partial | tab label `<pm> run <script>` shows its action; agent-started commands not applicable (no agent terminal)                          |
@@ -207,7 +207,7 @@ Updated 2026-10-11 after merging the review-fix rounds (permissions, hosts, UI, 
 
 D = needs user decision.
 
-1. **L** Real PTY via `node-pty` + `xterm.js` (F-12; also dev server for F-10). D: new native dependency.
+1. ~~Real PTY via `node-pty` + `xterm.js`~~ landed (F-12; dev server runs as a terminal script for F-10). Windows ConPTY path and `package-windows` staging are untested (need a Windows machine).
 2. **M** Windows support (old B02/B18). D: needs a real Windows machine.
 3. **S** Export: values >1 MiB with no newline export as `[TRUNCATED]`; unterminated quoted secrets in raw text are not redacted (`renderer/shared/data-transfer`). — **done (follow-ups 2026-10-13):** `[TRUNCATED]` and bare unterminated-quote cases were already fixed on `main`; escaped-quote and quoted `Authorization` leaks now redacted; huge unterminated values keep a `[REDACTED]` marker.
 4. **S** Git review is unavailable in repos whose ignored dirs contain symlinks or exceed file caps (e.g. `node_modules`), so plan checks never show a plain pass there (`host/workbench-git-snapshot.mjs` walk). — **done (follow-ups 2026-10-13):** already fixed on `main` (`1929531f`: ignored paths skipped via `check-ignore`; regression test with symlinked `node_modules`).

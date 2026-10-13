@@ -266,6 +266,7 @@ function checkProject(projectRoot, entries) {
   const sharedRoots = [ui, contracts];
   const primitives = resolve(ui, "primitives");
   const storeModel = resolve(renderer, "entities/workbench/model");
+  const terminalWidget = resolve(renderer, "widgets/terminal");
   const storeSelector = resolve(storeModel, "store-selector.tsx");
   const globalStyles = new Set([
     resolve(app, "src/renderer.css"),
@@ -411,6 +412,10 @@ function checkProject(projectRoot, entries) {
       return within(primitives, file)
         ? null
         : "radix-ui is restricted to UI primitive implementation";
+    if (specifier === "@xterm/xterm" || specifier === "@xterm/addon-fit")
+      return within(terminalWidget, file)
+        ? null
+        : "xterm.js is restricted to the terminal widget";
     if (specifier === "zustand/vanilla")
       return within(storeModel, file)
         ? null
@@ -537,7 +542,11 @@ function checkProject(projectRoot, entries) {
           /^(?:[a-z][\w+.-]*:|\/\/|\/)/i.test(specifier)
         )
           issue = "external stylesheet dependency is not approved";
-        else {
+        else if (specifier === "@xterm/xterm/css/xterm.css") {
+          // Vendor stylesheet the library needs for layout; only the terminal widget may load it.
+          if (!within(terminalWidget, file))
+            issue = "xterm stylesheet is restricted to the terminal widget";
+        } else {
           const external = externalViolation(file, item);
           if (external !== undefined) {
             issue = external;

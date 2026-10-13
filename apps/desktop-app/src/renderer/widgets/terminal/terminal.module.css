@@ -25,42 +25,27 @@
   cursor: default;
   color: var(--omoc-semantic-color-text-secondary);
 }
-.panel button:focus-visible,
-.panel input:focus-visible,
-.output:focus-visible {
+.panel button:focus-visible {
   outline: 2px solid var(--omoc-semantic-color-focus);
 }
 .tabs,
-.input,
 .footer {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
 }
-.output {
+.screen {
   margin: 8px 0;
   height: 280px;
-  overflow: auto;
-  padding: 8px;
+  padding: 4px 4px 4px 8px;
   border: 1px solid var(--omoc-semantic-color-border-default);
   border-radius: 8px;
   background: var(--omoc-semantic-color-canvas);
-  font: 12px/1.5 var(--omoc-semantic-type-family-code);
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  user-select: text;
+  overflow: hidden;
 }
-.input input {
-  flex: 1;
-  min-width: 0;
-  min-height: var(--omoc-component-size-control-hit-target);
-  padding: 0 8px;
-  border: 1px solid var(--omoc-semantic-color-border-default);
-  border-radius: 8px;
-  background: var(--omoc-semantic-color-surface);
-  color: var(--omoc-semantic-color-text-primary);
-  font: 12px var(--omoc-semantic-type-family-code);
+.screen:focus-within {
+  outline: 2px solid var(--omoc-semantic-color-focus);
 }
 .footer span {
   flex: 1;

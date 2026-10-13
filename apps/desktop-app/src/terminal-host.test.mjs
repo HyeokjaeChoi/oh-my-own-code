@@ -295,7 +295,7 @@ test(
     );
     await until(() => /BG_\d+/.test(out()));
     assert.match(out(), /TTY_30x100/);
-    assert.match(out(), /\x1b\[31mred/);
+    assert.ok(out().includes("\x1b[31mred"));
     const bg = Number(/BG_(\d+)/.exec(out())[1]);
     assert.ok(alive(bg));
     host.resize("o", t.terminalId, 120, 40);
@@ -359,6 +359,8 @@ test("terminal request validation is closed", () => {
     { type: "terminal.write", terminalId: "abc", text: "ls\n" },
     { type: "terminal.read", terminalId: "abc", cursor: 0 },
     { type: "terminal.close", terminalId: "abc" },
+    { type: "terminal.resize", terminalId: "abc", cols: 120, rows: 40 },
+    { type: "terminal.write", terminalId: "abc", text: "\x1b[A\u{1F600}" },
   ];
   for (const r of good)
     assert.ok(validateTerminalRequest(r), JSON.stringify(r));
@@ -372,6 +374,18 @@ test("terminal request validation is closed", () => {
     { type: "terminal.write", terminalId: "abc", text: "a\0" },
     { type: "terminal.write", terminalId: "abc", text: "x".repeat(8193) },
     { type: "terminal.read", terminalId: "abc", cursor: -1 },
+    { type: "terminal.resize", terminalId: "abc", cols: 80 },
+    { type: "terminal.resize", terminalId: "abc", cols: 80.5, rows: 24 },
+    { type: "terminal.resize", terminalId: "abc", cols: 80, rows: 1001 },
+    { type: "terminal.resize", terminalId: "abc", cols: 80, rows: 24, x: 1 },
+    { type: "terminal.write", terminalId: "abc", text: "\ud800" },
+    { type: "terminal.write", terminalId: "abc", text: 5 },
+    {
+      type: "terminal.start",
+      workspaceId: "w1",
+      script: "dev",
+      file: "/bin/sh",
+    },
     { type: "terminal.exec", terminalId: "abc" },
     { type: "__proto__" },
     Object.assign(Object.create({ a: 1 }), {
