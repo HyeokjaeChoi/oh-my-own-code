@@ -95,6 +95,22 @@ const env = {
     LOCALAPPDATA: e2eLocal,
   }),
 };
+Object.assign(env, await isolatedHome("main"));
+
+// A packaged app always uses the durable profile under the user's home, and Electron resolves it via
+// NSHomeDirectory, which honours CFFIXED_USER_HOME (not $HOME). Give every packaged macOS launch group
+// its own throw-away home so e2e never touches the real profile and failure scenarios cannot leave
+// unreconciled owner state for the next launch.
+async function isolatedHome(name) {
+  if (mode !== "packaged" || process.platform !== "darwin") return {};
+  const home = join(e2eRoot, `home-${name}`);
+  await mkdir(join(home, "Library", "Application Support"), {
+    recursive: true,
+    mode: 0o700,
+  });
+  await mkdir(join(home, "Documents"), { recursive: true, mode: 0o700 });
+  return { CFFIXED_USER_HOME: home };
+}
 
 async function fileHash(path) {
   const hash = createHash("sha256");
@@ -242,7 +258,11 @@ async function assertTrustedMalformedPayloadDenied(page) {
 }
 
 async function assertStartupFailureScenario(scenario) {
-  const scenarioEnv = { ...env, OMOC_DESKTOP_E2E_SCENARIO: scenario };
+  const scenarioEnv = {
+    ...env,
+    ...(await isolatedHome(scenario)),
+    OMOC_DESKTOP_E2E_SCENARIO: scenario,
+  };
   let collisionServer;
   let collisionRequests = 0;
   if (scenario === "service-collision") {
