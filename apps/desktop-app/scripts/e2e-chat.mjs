@@ -14,6 +14,7 @@
 //   turn 6: interrupt during a streaming reply, then a normal send works
 // OMOC_E2E_CONNECT_TIMEOUT_MS (default 150s) bounds the runtime connect wait.
 import assert from "node:assert/strict";
+import { windowsEnv } from "./e2e-env.mjs";
 import { once } from "node:events";
 import { existsSync } from "node:fs";
 import { createServer } from "node:http";
@@ -255,6 +256,7 @@ const env = {
   TEMP: scratch,
   LANG: "en_US.UTF-8",
   LC_ALL: "en_US.UTF-8",
+  ...windowsEnv(fixture),
 };
 
 let application;

@@ -1,3 +1,4 @@
+import { directorySyncSupported, renameReplacing } from "../platform-paths.mjs";
 import {
   TASK_FEATURE,
   isTaskRecord,
@@ -1688,6 +1689,7 @@ export async function openStorageJournal({
     write: (file, bytes) => file.writeFile(bytes),
     syncFile: (file) => file.sync(),
     syncDirectory: async (directory) => {
+      if (!directorySyncSupported()) return;
       const handle = await fs.open(directory, constants.O_RDONLY);
       try {
         await handle.sync();
@@ -1695,7 +1697,7 @@ export async function openStorageJournal({
         await handle.close();
       }
     },
-    rename: fs.rename,
+    rename: (from, to) => renameReplacing(from, to),
     unlink: fs.unlink,
     ...io,
   };

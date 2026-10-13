@@ -1,5 +1,6 @@
+import { renameReplacing } from "../platform-paths.mjs";
 import { randomUUID } from "node:crypto";
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { basename, dirname } from "node:path";
 import { clearInterval, setInterval } from "node:timers";
 import {
@@ -94,7 +95,7 @@ export function createAutomationHost({
       const file = storeFile();
       await mkdir(dirname(file), { recursive: true });
       await writeFile(`${file}.tmp`, JSON.stringify(state));
-      await rename(`${file}.tmp`, file);
+      await renameReplacing(`${file}.tmp`, file);
     });
   const record = (job, entry) => {
     job.history.push({ id: randomUUID(), recordedAt: now(), ...entry });

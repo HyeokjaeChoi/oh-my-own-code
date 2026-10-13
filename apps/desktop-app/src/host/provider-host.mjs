@@ -1,5 +1,6 @@
+import { renameReplacing } from "../platform-paths.mjs";
 import { randomBytes } from "node:crypto";
-import { readFile, rename, rm, writeFile } from "node:fs/promises";
+import { readFile, rm, writeFile } from "node:fs/promises";
 
 // Main-side model provider settings. The API key goes renderer -> Main -> Native's
 // `integration.connect.key`; Native persists the credential. Main never stores,
@@ -165,7 +166,7 @@ export function createProviderHost({
             `${JSON.stringify({ ...config, providers }, null, 2)}\n`,
             { mode: 0o600, flag: "wx" },
           );
-          await rename(temp, file);
+          await renameReplacing(temp, file);
           return ok({ baseUrl: url });
         } catch {
           await rm(temp, { force: true }).catch(() => {});

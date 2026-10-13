@@ -2,6 +2,7 @@ import * as fs from "node:fs/promises";
 import { constants } from "node:fs";
 import { createHash, randomUUID } from "node:crypto";
 import { join, isAbsolute } from "node:path";
+import { directorySyncSupported, renameWithRetry } from "../platform-paths.mjs";
 
 const VERSION = 5;
 const MAX_BYTES = 16384;
@@ -208,6 +209,7 @@ export function createStorageOwner({
   };
   const file = (name) => join(canonical, name);
   async function syncDirectory() {
+    if (!directorySyncSupported()) return;
     const handle = await io.open(canonical, constants.O_RDONLY);
     try {
       await handle.sync();
@@ -295,7 +297,7 @@ export function createStorageOwner({
       } finally {
         await handle.close();
       }
-      await io.rename(file("owner.next"), file("owner.json"));
+      await renameWithRetry(io, file("owner.next"), file("owner.json"));
       await syncDirectory();
       await io.unlink(file("owner.pending"));
       await syncDirectory();

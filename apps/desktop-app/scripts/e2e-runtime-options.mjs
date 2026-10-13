@@ -1,5 +1,6 @@
 // Execute only through the fixed runtime-options evidence wrapper.
 import assert from "node:assert/strict";
+import { e2ePath } from "./e2e-env.mjs";
 import { createHash } from "node:crypto";
 import {
   lstat,
@@ -589,7 +590,7 @@ try {
       "--user-data-dir=" + join(fixtureRoot, "bootstrap"),
     ],
     env: {
-      PATH: "/usr/bin:/bin:/usr/sbin:/sbin",
+      PATH: e2ePath(),
       HOME: fixtureRoot,
       TMPDIR: fixtureRoot,
       TMP: fixtureRoot,

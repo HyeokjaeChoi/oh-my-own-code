@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
+import { childPids as findChildPids } from "./process-tree.mjs";
 import { once } from "node:events";
 import { createServer } from "node:http";
 import { createReadStream, existsSync } from "node:fs";
@@ -308,26 +309,7 @@ async function assertPackagedStartupFailures() {
 }
 
 function sidecarChildPids(parentPid) {
-  if (process.platform === "win32") {
-    const command = `Get-CimInstance Win32_Process -Filter "ParentProcessId = ${Number(parentPid)}" | Where-Object { $_.Name -match '^opencode(\\.exe)?$' } | ForEach-Object { $_.ProcessId }`;
-    const output = execFileSync(
-      "powershell.exe",
-      ["-NoProfile", "-NonInteractive", "-Command", command],
-      { encoding: "utf8" },
-    );
-    return output.split(/\s+/).filter(Boolean).map(Number);
-  }
-  try {
-    const output = execFileSync(
-      "pgrep",
-      ["-P", String(parentPid), "-f", "event-host|opencode.*serve"],
-      { encoding: "utf8" },
-    );
-    return output.split(/\s+/).filter(Boolean).map(Number);
-  } catch (error) {
-    if (error?.status === 1 && !error.signal) return [];
-    throw error;
-  }
+  return findChildPids(parentPid, "event-host|opencode.*serve");
 }
 
 async function assertNoPreviewSurface(page) {

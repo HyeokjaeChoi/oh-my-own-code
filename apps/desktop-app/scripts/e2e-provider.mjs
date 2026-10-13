@@ -5,6 +5,7 @@
 // mock as a bearer token, then sends a message and checks the reply.
 // Also checks error display (rejected key shape) and that the key is not echoed.
 import assert from "node:assert/strict";
+import { windowsEnv } from "./e2e-env.mjs";
 import { once } from "node:events";
 import { createServer } from "node:http";
 import {
@@ -117,6 +118,7 @@ const env = {
   TEMP: scratch,
   LANG: "en_US.UTF-8",
   LC_ALL: "en_US.UTF-8",
+  ...windowsEnv(fixture),
 };
 
 let application;
