@@ -2,7 +2,7 @@ import { execFile, execFileSync, spawn as nodeSpawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { existsSync, realpathSync, statSync } from "node:fs";
 import { constants as osConstants } from "node:os";
-import { isAbsolute, join, relative, win32 } from "node:path";
+import { isAbsolute, relative, win32 } from "node:path";
 import { TERMINAL_LIMITS } from "../renderer/shared/terminal/index.mjs";
 import { readProjectActions } from "./project-actions.mjs";
 import {
