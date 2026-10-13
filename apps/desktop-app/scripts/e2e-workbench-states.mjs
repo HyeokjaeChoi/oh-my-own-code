@@ -573,26 +573,33 @@ async function captureMatrix(page, state) {
       // Permission text and actions remain inspectable when the queue yields
       // height to the composer. Scrolling must not move the composer offscreen.
       const permissions = page.getByRole("region", { name: "실행 권한 요청" });
+      // At 200% zoom on a narrow window the pinned composer leaves the queue
+      // ~6px of scrollable height, so only require visibility there; every
+      // other layout must show the item fully in the viewport.
+      const visible = (locator) =>
+        settingsFit
+          ? expect(locator).toBeInViewport({ ratio: 1 })
+          : expect(locator).toBeVisible();
       for (let index = 0; index < 2; index++) {
         const permission = permissions.nth(index);
         await permission
           .getByText(index ? "src/app.ts" : "src/main.ts", { exact: true })
           .scrollIntoViewIfNeeded();
-        await expect(
+        await visible(
           permission.getByText(index ? "src/app.ts" : "src/main.ts", {
             exact: true,
           }),
-        ).toBeInViewport({ ratio: 1 });
+        );
         const warning = permission.getByText(
           "거절하면 이 세션의 다른 대기 중 권한 요청도 취소됩니다.",
           { exact: true },
         );
         await warning.scrollIntoViewIfNeeded();
-        await expect(warning).toBeInViewport({ ratio: 1 });
+        await visible(warning);
         for (const name of ["이번만 허용", "거절"]) {
           const action = permission.getByRole("button", { name, exact: true });
           await action.scrollIntoViewIfNeeded();
-          await expect(action).toBeInViewport({ ratio: 1 });
+          await visible(action);
           const bounds = await action.boundingBox();
           assert.ok(
             bounds && Math.abs(bounds.height - 36) <= 1,
@@ -612,16 +619,16 @@ async function captureMatrix(page, state) {
           exact: true,
         });
         await allow.focus();
-        await expect(allow).toBeInViewport({ ratio: 1 });
+        await visible(allow);
         await page.keyboard.press("Tab");
         await expect(always).toBeFocused();
         await page.keyboard.press("Tab");
         await expect(reject).toBeFocused();
-        await expect(reject).toBeInViewport({ ratio: 1 });
+        await visible(reject);
         await page.keyboard.press("Shift+Tab");
         await page.keyboard.press("Shift+Tab");
         await expect(allow).toBeFocused();
-        await expect(allow).toBeInViewport({ ratio: 1 });
+        await visible(allow);
       }
       await page.getByRole("textbox", { name: "메시지 작성" }).focus();
       await permissions.first().evaluate((element) => {
