@@ -2490,6 +2490,28 @@ function kernel(initial) {
       },
       catch: (failure) => failure,
     });
+  // Subagent child create. Native pins a child to its parent's location and
+  // inherits the parent's permissions/metadata when the input omits them, so
+  // only the exact child shape is admitted: no id, location, permissions or
+  // metadata override. The `subagent` tool itself stays behind OpenCode's
+  // permission prompt.
+  const CHILD_CREATE_KEYS = new Set(["parentID", "title", "agent", "model"]);
+  const consumeChildCreate = (input) =>
+    Effect.try({
+      try: () => {
+        if (strict || runtimeHeld) reject("held");
+        if (
+          !input ||
+          typeof input !== "object" ||
+          Object.keys(input).some(
+            (key) => !CHILD_CREATE_KEYS.has(key) && input[key] !== undefined,
+          )
+        )
+          reject("child_create_invalid");
+        identifier(input.parentID);
+      },
+      catch: (failure) => failure,
+    });
   // Fork replaces assertExecution for the parent's own transaction.
   const enterBootstrap = (tx, parent, input) =>
     Effect.withFiber((fiber) =>
@@ -2585,6 +2607,7 @@ function kernel(initial) {
     armBootstrap,
     revokeBootstrap,
     consumeBootstrap,
+    consumeChildCreate,
     enterBootstrap,
     admitLease,
     bindNativeReadRuntime,

@@ -2553,6 +2553,44 @@ test("plain Native Read fails closed when no location owns the path or its realp
   }
 });
 
+test("subagent child create admits only the inheriting child shape", async () => {
+  // Non-strict (production) path; strict proof mode holds every create.
+  process.env.OMOC_PERMISSION_PROOF_STRICT = "0";
+  try {
+    await run((service) =>
+      Effect.gen(function* () {
+        yield* service.consumeChildCreate({ parentID: "ses_parent" });
+        yield* service.consumeChildCreate({
+          parentID: "ses_parent",
+          title: "Explore",
+          agent: "explore",
+          model: { id: "m", providerID: "p" },
+          location: undefined,
+        });
+        for (const bad of [
+          { parentID: "ses_parent", id: "ses_child" },
+          { parentID: "ses_parent", location: { directory: "/elsewhere" } },
+          { parentID: "ses_parent", permissions: [] },
+          { parentID: "ses_parent", metadata: {} },
+          { parentID: "../ses" },
+          { title: "no parent" },
+          null,
+        ])
+          yield* expectFailure(service.consumeChildCreate(bad));
+      }),
+    );
+  } finally {
+    process.env.OMOC_PERMISSION_PROOF_STRICT = "1";
+  }
+  // Strict proof mode keeps holding child creates.
+  await run((service) =>
+    expectFailure(
+      service.consumeChildCreate({ parentID: "ses_parent" }),
+      "held",
+    ),
+  );
+});
+
 test("Agent notification capture accepts only one fixed synchronous source and detached listeners", async () => {
   await run((service) =>
     Effect.sync(() => {

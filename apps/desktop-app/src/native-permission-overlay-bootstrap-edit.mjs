@@ -55,7 +55,9 @@ export function assertOnlyCreateGateChanged(current, baseline) {
     );
     // The gate is the first statement and no unconditional hold remains.
     assert.ok(
-      now.replace.endsWith("      yield* control.consumeBootstrap(input);\n"),
+      now.replace.endsWith(
+        "      yield* (input.parentID === undefined ? control.consumeBootstrap(input) : control.consumeChildCreate(input));\n",
+      ),
     );
     assert.equal(now.replace.includes("native_permission_held"), false);
   });
