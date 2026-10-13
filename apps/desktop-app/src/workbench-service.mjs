@@ -2986,7 +2986,7 @@ export function createWorkbenchService({
     reads.set(s.id, read);
     return read;
   }
-  async function catalog(w, provenance = false) {
+  async function catalog(w, provenance = false, pinModels = []) {
     if (!w.trusted && !provenance)
       return { dto: emptyCatalog(), models: new Map() };
     await recheck(w);
@@ -3122,7 +3122,7 @@ export function createWorkbenchService({
                       Number(isNoIntegrationModel(b)) -
                       Number(isNoIntegrationModel(a)),
                   )
-                  .slice(0, 300)
+                  .filter(([id], i) => i < 300 || pinModels.includes(id))
                   .map(([id, m]) => ({
                     id,
                     name: clip(m.name, 256),
@@ -5424,7 +5424,8 @@ export function createWorkbenchService({
       await recheck(w);
       return result;
     }
-    if (request.type === "catalog.list") return (await catalog(w, true)).dto;
+    if (request.type === "catalog.list")
+      return (await catalog(w, true, request.pinModels)).dto;
     if (request.type === "file.search") {
       await recheck(w);
       // A newer search for the same workspace cancels the previous one.

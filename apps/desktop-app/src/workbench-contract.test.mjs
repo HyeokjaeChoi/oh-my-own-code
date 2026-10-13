@@ -553,3 +553,14 @@ test("retained snapshot authorityHold is a required closed boolean, never inferr
     assert.throws(() => validateSnapshot(snapshot));
   }
 });
+
+test("catalog.list pinModels is a closed list of at most two model ids", () => {
+  const id = "a".repeat(64);
+  const base = { type: "catalog.list", workspaceId: "w" };
+  assert.deepEqual(validateRequest({ ...base, pinModels: [id] }), {
+    ...base,
+    pinModels: [id],
+  });
+  for (const pinModels of [[id, id, id], ["x"], id, [1]])
+    assert.throws(() => validateRequest({ ...base, pinModels }));
+});

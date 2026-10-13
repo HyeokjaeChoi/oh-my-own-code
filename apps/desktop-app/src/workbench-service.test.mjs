@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import {
   mkdtemp,
   rm,
@@ -855,6 +856,34 @@ test("catalog keeps local models when a large cloud catalog exceeds the cap", as
     .value.models.entries;
   assert.equal(entries.length, 300);
   assert.equal(entries[0].name, "Local");
+});
+test("catalog pins requested models beyond the display cap", async (t) => {
+  const f = await fixture(t);
+  f.client.model.list = async () => ({
+    data: Array.from({ length: 400 }, (_, i) => ({
+      id: `c${i}`,
+      providerID: "provider",
+      name: `Cloud ${i}`,
+      enabled: true,
+      status: "active",
+    })),
+  });
+  const all = (await f.service.handle({ type: "catalog.list", ...f.ids })).value
+    .models.entries;
+  assert.equal(all.length, 300);
+  const pinned = (
+    await f.service.handle({
+      type: "catalog.list",
+      ...f.ids,
+      pinModels: [
+        createHash("sha256")
+          .update(JSON.stringify(["provider", "c399"]))
+          .digest("hex"),
+      ],
+    })
+  ).value.models.entries;
+  assert.equal(pinned.length, 301);
+  assert.equal(pinned.at(-1).name, "Cloud 399");
 });
 test("only the synthetic reminder from our own agent switch is ignored", async (t) => {
   const f = await fixture(t);

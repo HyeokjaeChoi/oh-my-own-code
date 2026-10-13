@@ -183,7 +183,7 @@ const schemas = {
     ["workspaceId", "sessionId", "requestId", "decision"],
     [],
   ],
-  "catalog.list": [["workspaceId"], ["sessionId"]],
+  "catalog.list": [["workspaceId"], ["sessionId", "pinModels"]],
   "command.run": [
     ["workspaceId", "sessionId", "requestId", "name", "arguments"],
     [],
@@ -253,6 +253,17 @@ export function validateRequest(value) {
     }
     if (key === "selection") {
       if (!validContextSelection(entry)) fail("INVALID_REQUEST");
+      continue;
+    }
+    if (key === "pinModels") {
+      if (
+        !Array.isArray(entry) ||
+        entry.length > 2 ||
+        !entry.every(
+          (id) => typeof id === "string" && /^[a-f0-9]{64}$/u.test(id),
+        )
+      )
+        fail("INVALID_REQUEST");
       continue;
     }
     if (["pinned", "archived", "caseSensitive"].includes(key)) {
