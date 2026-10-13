@@ -3,9 +3,15 @@ import { lstat, realpath, open, opendir, mkdir } from "node:fs/promises";
 import { join, relative, isAbsolute, sep } from "node:path";
 import { randomBytes } from "node:crypto";
 import { fail, portableName } from "../workbench-contract.mjs";
+import {
+  isUnsafeWindowsComponent,
+  isWindowsShortAlias,
+} from "../platform-paths.mjs";
 
 export const MAX_FILE_BYTES = 256 * 1024;
 export function sensitiveName(name) {
+  // Win32 ignores trailing dots/spaces, so ".env." and ".env " are ".env".
+  name = name.replace(/[. ]+$/u, "");
   return (
     /^\.omoc-configuration-/i.test(name) ||
     /^(\.env(?:\..*)?|\.git|\.ssh|\.aws|\.azure|\.config|\.npmrc|\.netrc|\.pypirc|credentials(?:\..*)?|secrets?(?:\..*)?|auth\.json|opencode\.jsonc?|id_(rsa|ed25519|ecdsa)(?:\.pub)?)$/i.test(
@@ -32,7 +38,13 @@ export function relativeParts(path = "") {
   const parts = path.split("/");
   if (
     parts.some(
-      (part) => !part || part === "." || part === ".." || sensitiveName(part),
+      (part) =>
+        !part ||
+        part === "." ||
+        part === ".." ||
+        sensitiveName(part) ||
+        (process.platform === "win32" &&
+          (isUnsafeWindowsComponent(part) || isWindowsShortAlias(part))),
     )
   )
     fail("FILE_DENIED");

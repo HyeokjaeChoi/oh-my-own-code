@@ -6,7 +6,10 @@ import { build } from "esbuild";
 import { build as buildRenderer } from "vite";
 import { stageEventHost } from "./stage-event-host.mjs";
 import { stageOwnerLifetime } from "./stage-owner-lifetime.mjs";
-import { sidecarPackageName } from "../src/sidecar-package.mjs";
+import {
+  sidecarBinaryName,
+  sidecarPackageName,
+} from "../src/sidecar-package.mjs";
 import {
   beginBuildProvenance,
   finishBuildProvenance,
@@ -24,7 +27,7 @@ const sidecarPackage = require.resolve(`${packageName}/package.json`);
 const sidecarSource = join(
   dirname(sidecarPackage),
   "bin",
-  process.platform === "win32" ? "opencode.exe" : "opencode",
+  sidecarBinaryName(process.platform),
 );
 const sidecarFolder = join(resources, "opencode", target);
 
@@ -34,10 +37,7 @@ await mkdir(join(distApp, "renderer"), { recursive: true });
 await mkdir(sidecarFolder, { recursive: true });
 await copyFile(
   sidecarSource,
-  join(
-    sidecarFolder,
-    process.platform === "win32" ? "opencode.exe" : "opencode",
-  ),
+  join(sidecarFolder, sidecarBinaryName(process.platform)),
 );
 if (process.platform !== "win32") {
   const { chmod } = await import("node:fs/promises");
