@@ -4211,21 +4211,28 @@ export function createWorkbenchService({
     const targets = await drifted();
     if (targets === "BUSY") return "BUSY";
     for (const target of targets) {
-      const result = await host.handle(
-        {
-          version: 2,
-          runtimeEpoch: host.epoch,
-          operationId: randomUUID(),
-          operation: {
-            type: "permission.mode.set",
-            workspaceId: target.workspaceId,
-            sessionId: target.id,
-            mode: modeOf(target),
-            requestId: randomUUID(),
+      // Native may still report a just-finished session active while the app
+      // status is idle: BUSY is transient, so settle with a short bounded retry.
+      let result;
+      for (const delay of [0, 250, 500, 1000, 1000]) {
+        if (delay) await new Promise((resolve) => setTimeout(resolve, delay));
+        result = await host.handle(
+          {
+            version: 2,
+            runtimeEpoch: host.epoch,
+            operationId: randomUUID(),
+            operation: {
+              type: "permission.mode.set",
+              workspaceId: target.workspaceId,
+              sessionId: target.id,
+              mode: modeOf(target),
+              requestId: randomUUID(),
+            },
           },
-        },
-        sender,
-      );
+          sender,
+        );
+        if (result.ok || result.code !== "BUSY") break;
+      }
       if (!result.ok)
         return result.code === "BUSY" ? "BUSY" : "POLICY_UNVERIFIED";
     }
@@ -4236,7 +4243,7 @@ export function createWorkbenchService({
     }
     return undefined;
   }
-  async function workspaceIdleIdentity(w, unverifiedCode) {
+  async function workspaceIdleIdentity(w, unverifiedCode, readOnly = false) {
     if (!registry) fail("UNAVAILABLE");
     storageCheck();
     if (!w.trusted) fail("INVALID_SELECTION");
@@ -4250,10 +4257,13 @@ export function createWorkbenchService({
       // (policySync); writing here would add an unjournaled-shape dispatch.
       const info = await idleIdentity(w, target);
       const correlated = await verifySavedSession(target, new Map(), new Set());
+      // A read-only listing tolerates policy drift (the next policy-synced
+      // mutation repairs and re-verifies it); session identity still must hold.
       if (
         !correlated ||
-        !policyOk(target, info.permissions) ||
-        !policyOk(target, correlated.permissions)
+        (!readOnly &&
+          (!policyOk(target, info.permissions) ||
+            !policyOk(target, correlated.permissions)))
       )
         fail("POLICY_UNVERIFIED");
       const pending = await call(client.permission.list, {
@@ -4267,9 +4277,10 @@ export function createWorkbenchService({
     if (!w.trusted || tables().workspaces.get(w.id) !== w)
       fail("INVALID_SELECTION");
   }
-  const mcpIdentity = (w) => workspaceIdleIdentity(w, "MCP_UNVERIFIED");
-  async function mcpObservation(w) {
-    await mcpIdentity(w);
+  const mcpIdentity = (w, readOnly) =>
+    workspaceIdleIdentity(w, "MCP_UNVERIFIED", readOnly);
+  async function mcpObservation(w, readOnly = false) {
+    await mcpIdentity(w, readOnly);
     const result = await call(client.mcp?.list, {
       location: { directory: w.path },
     });
@@ -4279,7 +4290,7 @@ export function createWorkbenchService({
       runtimeEpoch: host.epoch,
       owned: liveMcp,
     });
-    await mcpIdentity(w);
+    await mcpIdentity(w, readOnly);
     return observed;
   }
   function liveMcpRegistration(w, nativeName) {
@@ -5063,7 +5074,7 @@ export function createWorkbenchService({
       return mutateSkillRuntime(request, w, s);
     if (request.type === "configuration.mcp.read") {
       if (w.lock) fail("BUSY");
-      return mcpObservation(w);
+      return mcpObservation(w, true);
     }
     if (mcpStep(request.type)) return mutateMcp(request, w);
     if (request.type === "configuration.instructions.read") {

@@ -5689,6 +5689,22 @@ test("instruction apply on an idle session with a drifted running session is nev
   assert.notEqual(result.code, "POLICY_UNVERIFIED", JSON.stringify(result));
 });
 
+test("MCP observation read succeeds while another session has drifted", async (t) => {
+  const f = await mcpFixture(t);
+  await driftOther(f, f.workspaceId);
+  const result = await f.observe();
+  assert.equal(result.ok, true, JSON.stringify(result));
+});
+
+test("a BUSY mode.set during policy sync settles once Native reports idle", async (t) => {
+  const f = await instructionFixture(t);
+  f.records.get(f.nativeId).permissions = compileModeRules("scoped_edit");
+  f.state.active = { [f.nativeId]: { type: "running" } };
+  setTimeout(() => (f.state.active = {}), 400);
+  const result = await f.mutate(f.apply, "instructions-busy-settles");
+  assert.equal(result.ok, true, JSON.stringify(result));
+});
+
 test("a BUSY mode.set during policy sync surfaces BUSY, not POLICY_UNVERIFIED", async (t) => {
   const f = await instructionFixture(t);
   f.records.get(f.nativeId).permissions = compileModeRules("scoped_edit");
