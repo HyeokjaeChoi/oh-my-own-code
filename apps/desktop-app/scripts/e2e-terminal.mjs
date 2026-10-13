@@ -125,11 +125,6 @@ try {
   );
   const shellPid = Number(/\r\nSH_(\d+)\r\n/.exec(text)[1]);
   assert.ok(alive(shellPid));
-  const size1 = /\r\n(\d+) (\d+)\r\n/.exec(
-    text.slice(text.indexOf("ENV_clean")),
-  );
-  assert.ok(size1 && Number(size1[2]) > 20, `fitted size ${size1?.[0]}`);
-  assert.notEqual(`${size1[1]}x${size1[2]}`, "24x80", "resize reached the pty");
   observations.push("terminal is a tty in the workspace dir with a clean env");
 
   // colors rendered by xterm
@@ -196,6 +191,10 @@ try {
       .slice(1)
       .map(Number);
   };
+  // The first fit reaches the pty through the 100 ms debounced sync, so poll for it.
+  await expect
+    .poll(async () => (await sizeOf()).join("x"), { timeout: 15_000 })
+    .not.toBe("24x80");
   const before = await sizeOf();
   const separator = page.getByRole("separator");
   await separator.focus();
