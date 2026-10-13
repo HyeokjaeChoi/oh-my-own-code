@@ -220,10 +220,13 @@ test("escaped quotes, escaped-quote values and JSON-quoted header keys never lea
 });
 
 test("redaction of a long credential-like identifier stays fast", () => {
-  const t0 = performance.now();
+  const t0 = globalThis.performance.now();
   redactText("a".repeat(70000));
   redactText("token".repeat(14000));
-  assert.ok(performance.now() - t0 < 1500, "redaction must be near-linear");
+  assert.ok(
+    globalThis.performance.now() - t0 < 1500,
+    "redaction must be near-linear",
+  );
 });
 
 test("redaction is idempotent", () => {
