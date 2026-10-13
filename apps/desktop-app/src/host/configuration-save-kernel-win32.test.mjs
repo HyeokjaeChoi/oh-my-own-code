@@ -232,3 +232,75 @@ test("workspace files: nested path, short aliases refused, ancestor symlink refu
   });
   assert.equal(linked.status, "unknown");
 });
+
+test("the target has no open handle when it is replaced (NTFS refuses rename-over-open-file)", (t) => {
+  const dir = workspace(t);
+  const target = instructions(dir);
+  const open = new Map();
+  const ntfs = {
+    ...fs,
+    constants: fs.constants,
+    openSync(path, ...rest) {
+      const fd = fs.openSync(path, ...rest);
+      open.set(fd, path);
+      return fd;
+    },
+    closeSync(fd) {
+      open.delete(fd);
+      return fs.closeSync(fd);
+    },
+    renameSync(from, to) {
+      if ([...open.values()].includes(to))
+        throw Object.assign(
+          new Error("EPERM: operation not permitted, rename"),
+          { code: "EPERM" },
+        );
+      return fs.renameSync(from, to);
+    },
+  };
+  const k = createWin32ConfigurationSaveKernel(
+    { check: () => {}, checkRoot: undefined, timeoutMs: 2000 },
+    ntfs,
+  );
+  t.after(() => k.close());
+  const r = request(dir);
+  const prepared = k.prepare(r);
+  assert.equal(prepared.status, "staged", prepared.reason);
+  const saved = k.publish({ token: prepared.token });
+  assert.equal(saved.status, "saved", saved.reason);
+  assert.equal(fs.readFileSync(target, "utf8"), "NEW");
+  assert.equal(fs.readFileSync(backupOf(r), "utf8"), "ORIGINAL");
+  assert.equal(open.size, 0);
+});
+
+test("a target swapped after the source handle was closed is not replaced", (t) => {
+  const dir = workspace(t);
+  const target = instructions(dir);
+  let swapped = false;
+  const hostile = {
+    ...fs,
+    constants: fs.constants,
+    closeSync(fd) {
+      fs.closeSync(fd);
+    },
+    linkSync(...args) {
+      if (!swapped) {
+        swapped = true;
+        // Replace the original behind the kernel's back right before the backup link.
+        fs.rmSync(target);
+        fs.writeFileSync(target, "ATTACKER");
+      }
+      return fs.linkSync(...args);
+    },
+  };
+  const k = createWin32ConfigurationSaveKernel(
+    { check: () => {}, checkRoot: undefined, timeoutMs: 2000 },
+    hostile,
+  );
+  t.after(() => k.close());
+  const prepared = k.prepare(request(dir));
+  assert.equal(prepared.status, "staged", prepared.reason);
+  const result = k.publish({ token: prepared.token });
+  assert.equal(result.status, "unknown");
+  assert.equal(fs.readFileSync(target, "utf8"), "ATTACKER");
+});
