@@ -208,6 +208,10 @@ Updated 2026-10-11 after merging the review-fix rounds (permissions, hosts, UI, 
 D = needs user decision.
 
 1. ~~Real PTY via `node-pty` + `xterm.js`~~ landed (F-12; dev server runs as a terminal script for F-10). Windows ConPTY path and `package-windows` staging are untested (need a Windows machine).
+   - **S** CSP tradeoff: `index.html` has `style-src-elem 'self' 'unsafe-inline'` because xterm.js injects `<style>` elements (inline style _attributes_ stay blocked). Revisit if xterm gains a nonce/adoptedStyleSheets option, or serve the renderer with a per-load nonce.
+   - **S** Terminal a11y: xterm `screenReaderMode` is off (performance); the input textarea and screen are labelled and Ctrl+Shift+M leaves the terminal. Consider a settings toggle that enables `screenReaderMode`.
+   - **S** A shell that exits by itself leaves jobs it moved to their own process group running (like any terminal); close/stop/quit kill the whole tree.
+   - **S** No pty flow control (`pause`/`resume`): a background tab is not polled, so pausing would stall its process; the bounded ring drops the oldest output instead.
 2. **M** Windows support (old B02/B18). D: needs a real Windows machine.
 3. **S** Export: values >1 MiB with no newline export as `[TRUNCATED]`; unterminated quoted secrets in raw text are not redacted (`renderer/shared/data-transfer`). — **done (follow-ups 2026-10-13):** `[TRUNCATED]` and bare unterminated-quote cases were already fixed on `main`; escaped-quote and quoted `Authorization` leaks now redacted; huge unterminated values keep a `[REDACTED]` marker.
 4. **S** Git review is unavailable in repos whose ignored dirs contain symlinks or exceed file caps (e.g. `node_modules`), so plan checks never show a plain pass there (`host/workbench-git-snapshot.mjs` walk). — **done (follow-ups 2026-10-13):** already fixed on `main` (`1929531f`: ignored paths skipped via `check-ignore`; regression test with symlinked `node_modules`).
