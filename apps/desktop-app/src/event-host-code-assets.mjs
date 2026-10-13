@@ -49,6 +49,7 @@ export const EVENT_HOST_CODE_ASSETS = Object.freeze([
   "native-permission-graph.mjs",
   "native-permission-control.mjs",
   "host/native-bootstrap-workspace.mjs",
+  "platform-paths.mjs",
   "native-permission-control-input.mjs",
   "native-permission-inventory.mjs",
   "native-permission-tool-data.mjs",

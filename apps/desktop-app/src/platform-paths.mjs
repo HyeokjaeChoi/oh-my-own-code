@@ -3,7 +3,6 @@
 // Every function takes `platform` (default: this process) so Windows rules are
 // unit-testable on any OS. Pure: no fs access, no module state.
 import { posix, win32 } from "node:path";
-import { spawn } from "node:child_process";
 
 export const isWin32 = (platform = process.platform) => platform === "win32";
 export const pathApiFor = (platform = process.platform) =>
@@ -169,7 +168,12 @@ export function taskkillCommand(
 export function killProcessTree(
   child,
   signal = "SIGTERM",
-  { platform = process.platform, spawnProcess = spawn, systemRoot } = {},
+  {
+    platform = process.platform,
+    spawnProcess = (...args) =>
+      process.getBuiltinModule("node:child_process").spawn(...args),
+    systemRoot,
+  } = {},
 ) {
   if (!child || child.pid === undefined) return false;
   if (isWin32(platform)) {

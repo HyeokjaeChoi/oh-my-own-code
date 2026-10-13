@@ -638,3 +638,37 @@ test("assertNotVcsMetadataPath refuses VCS metadata by canonical identity", asyn
     await rm(root, { recursive: true, force: true });
   }
 });
+
+test("assertNotVcsMetadataPath applies NTFS alias rules when platform is win32", async () => {
+  const { assertNotVcsMetadataPath } = await import(
+    "./native-bootstrap-workspace.mjs"
+  );
+  const { mkdtemp, realpath, rm } = await import("node:fs/promises");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const root = await realpath(await mkdtemp(join(tmpdir(), "omoc-vcs-win-")));
+  const platform = "win32";
+  try {
+    for (const rel of [
+      ".GIT/config",
+      ".git./config",
+      ".git /config",
+      "GIT~1/config",
+      ".git::$INDEX_ALLOCATION/x",
+      "a.txt:stream",
+      "src/NUL",
+      "src/con.txt",
+      "trailing./x",
+    ])
+      await assert.rejects(
+        assertNotVcsMetadataPath(root, join(root, rel), { platform }),
+        /native_bootstrap_workspace_unverified/u,
+        rel,
+      );
+    await assertNotVcsMetadataPath(root, join(root, "src", "ok.txt"), {
+      platform,
+    });
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
