@@ -812,7 +812,12 @@ export type WorkbenchRequest =
       requestId: string;
       decision: "once" | "always" | "reject";
     }
-  | { type: "catalog.list"; workspaceId: string; sessionId?: string }
+  | {
+      type: "catalog.list";
+      workspaceId: string;
+      sessionId?: string;
+      pinModels?: string[];
+    }
   | {
       type: "command.run";
       workspaceId: string;

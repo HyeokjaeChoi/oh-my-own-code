@@ -139,6 +139,7 @@ import {
   type ReadRequest,
 } from "../../../shared/transport/index.js";
 import { selectionKey } from "../../../shared/projection/index.js";
+import { loadDefaultModel } from "../../../shared/providers/index.js";
 import {
   parseAgentFile,
   BASELINE_POLICY,
@@ -3602,11 +3603,23 @@ export function createWindowWorkbench(
     dispatch({ type: "catalog.check" });
     const scope = scopeOf(store.getState());
     if (!scope.epoch || !scope.workspaceId) return;
+    // Keep the selected and the saved default model listed past the display cap.
+    const pinModels = [
+      ...new Set(
+        [
+          store.getState().drafts[
+            selectionKey(scope.workspaceId, scope.sessionId)
+          ]?.model,
+          loadDefaultModel(),
+        ].filter((id): id is string => /^[a-f0-9]{64}$/u.test(id ?? "")),
+      ),
+    ];
     const result = await transport.read<WorkbenchCatalog>(
       {
         type: "catalog.list",
         workspaceId: scope.workspaceId,
         ...(scope.sessionId ? { sessionId: scope.sessionId } : {}),
+        ...(pinModels.length ? { pinModels } : {}),
       },
       scope.epoch,
       abort.signal,
