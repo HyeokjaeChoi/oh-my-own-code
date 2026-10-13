@@ -148,7 +148,7 @@ export function ProviderSettings() {
           key={list?.local.baseUrl}
           ref={base}
           aria-label="로컬 제공자 주소"
-          placeholder="LM Studio 주소 (예: http://127.0.0.1:1234/v1)"
+          placeholder="LM Studio 주소 (예: localhost:1234/v1)"
           defaultValue={list?.local.baseUrl}
           autoComplete="off"
           spellCheck={false}
