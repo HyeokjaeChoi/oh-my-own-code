@@ -35,7 +35,12 @@ export function validWorkspaceFilePath(value) {
     )
   );
 }
-const protectedName = (part) =>
+// NTFS upcases dotless i to I, which /iu does not; fold it so ".gıt" is ".git".
+const protectedName = (original) => {
+  const part = original.replaceAll("\u0131", "i");
+  return protectedFolded(part);
+};
+const protectedFolded = (part) =>
   /^\.omoc-configuration-/iu.test(part) ||
   /^(\.env(?:\..*)?|\.git|\.ssh|\.aws|\.azure|\.config|\.npmrc|\.netrc|\.pypirc|credentials(?:\..*)?|secrets?(?:\..*)?|auth\.json|opencode\.jsonc?|id_(rsa|ed25519|ecdsa)(?:\.pub)?|\.opencode|\.agents|\.codex|\.claude|AGENTS\.md|CLAUDE\.md)$/iu.test(
     part,

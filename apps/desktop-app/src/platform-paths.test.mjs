@@ -360,3 +360,58 @@ test("SystemRoot is trusted only as a local absolute drive path", () => {
       String(bad),
     );
 });
+
+import {
+  foldName,
+  isWindowsDevicePath,
+  isWindowsNetworkPath,
+} from "./platform-paths.mjs";
+test("NTFS folding is one code point to one code point", () => {
+  assert.equal(
+    isPathInside("C:\\w\\Straße", "C:\\w\\STRASSE\\secret", "win32"),
+    false,
+  );
+  assert.equal(isPathInside("C:\\w\\ﬁle", "C:\\w\\FILE\\x", "win32"), false);
+  assert.equal(
+    isPathInside("C:\\w\\Straße", "C:\\w\\STRAßE\\x", "win32"),
+    true,
+  );
+  assert.equal(foldName("ß"), "ß");
+  assert.equal(foldName("straße"), "STRAßE");
+  assert.equal(isVcsMetadataComponent(".gıt", { platform: "win32" }), true);
+  assert.equal(isVcsMetadataComponent(".HG.", { platform: "win32" }), true);
+  assert.equal(isVcsMetadataComponent(".gıtx", { platform: "win32" }), false);
+});
+
+test("extended and device prefixes: only \\\\?\\X:\\ and \\\\?\\UNC\\ reduce to plain paths", () => {
+  for (const unsafe of [
+    "\\\\?\\GLOBALROOT\\Device\\HarddiskVolume1\\x",
+    "\\\\?\\Volume{01234567-89ab-cdef-0123-456789abcdef}\\x",
+    "\\\\?\\pipe\\x",
+    "\\\\.\\C:\\x",
+  ]) {
+    assert.equal(stripExtendedPrefix(unsafe), unsafe, unsafe);
+    assert.equal(isWindowsDevicePath(unsafe), true, unsafe);
+    assert.equal(hasUnsafeWindowsComponent(unsafe), true, unsafe);
+    assert.equal(isPathInside("C:\\w", unsafe, "win32"), false, unsafe);
+    assert.equal(isPathInside(unsafe, "C:\\w\\x", "win32"), false, unsafe);
+  }
+  assert.equal(stripExtendedPrefix("\\\\?\\C:\\a"), "C:\\a");
+  assert.equal(isPathInside("C:\\w", "\\\\?\\C:\\W\\a", "win32"), true);
+  assert.equal(
+    isPathInside("\\\\h\\s\\w", "\\\\?\\UNC\\H\\S\\w\\a", "win32"),
+    true,
+  );
+  // relative inputs are never "inside" (win32.relative would resolve them against the cwd)
+  assert.equal(isPathInside("C:\\w", "a\\b", "win32"), false);
+  assert.equal(isPathInside("C:\\w", "\\\\?\\a\\b", "win32"), false);
+  assert.equal(isWindowsNetworkPath("\\\\evil\\share\\x"), true);
+  assert.equal(isWindowsNetworkPath("\\\\?\\UNC\\evil\\share\\x"), true);
+  assert.equal(isWindowsNetworkPath("C:\\x"), false);
+  assert.equal(isWindowsNetworkPath("\\\\?\\C:\\x"), false);
+});
+
+test("dotless i cannot dodge protected-name checks", () => {
+  for (const p of [".gıt/config", "src/.ENV", ".enV", "A/.sSH/x"])
+    assert.notEqual(workspaceFilePathReason(p), undefined, p);
+});
