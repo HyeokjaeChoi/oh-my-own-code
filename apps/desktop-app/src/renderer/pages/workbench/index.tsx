@@ -60,7 +60,7 @@ export function Workbench() {
     selectors.workspaceMutationDisabled,
   );
   const resourceDisabled = useWorkbenchSelector(selectors.mutationDisabled);
-  const executionAvailable = useWorkbenchSelector(selectors.executionAvailable);
+  const executionAvailable = useWorkbenchSelector(selectors.interruptAvailable);
   const snapshot = useWorkbenchSelector(selectors.snapshot);
   const selection = useWorkbenchSelector(selectors.selection);
   const catalog = useWorkbenchSelector(selectors.catalog);

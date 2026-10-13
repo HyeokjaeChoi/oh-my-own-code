@@ -2471,6 +2471,31 @@ test("controller admits one current connected running safety interrupt over orig
   assert.equal(clock.timers.size, 0);
 });
 
+test("host-held message.send receipt blocks mutations but not session.interrupt", async () => {
+  const { api, original, operation } = await controllerInterruptFixture();
+  try {
+    const state = api.store.getState();
+    const held = {
+      ...state,
+      operations: {
+        ...state.operations,
+        [operationKey(original.epoch, original.id)]: {
+          ...original,
+          hostHeld: true,
+        },
+      },
+    };
+    assert.equal(resourceMutationDisabled(held, "w"), true);
+    assert.equal(mutationDisabled(held, operation), false);
+    assert.equal(
+      mutationDisabled(held, { ...operation, type: "session.rename" }),
+      true,
+    );
+  } finally {
+    api.dispose();
+  }
+});
+
 for (const unknownHold of [true, false])
   test(`controller safety interrupt waits for current observation at confirmed receipt floor: unknown=${unknownHold}`, async () => {
     const {
@@ -4499,9 +4524,18 @@ test("v5 interrupt ACK needs later current-target idle at the exact durable floo
   assert.equal(selectors.unknown(store.getState()), true);
 });
 
-test("v5 host-retained running hold blocks interrupt despite a confirmed historical receipt and connected health", async () => {
-  const h = bridgeHarness(() =>
-    assert.fail("host hold dispatched an interrupt"),
+test("v5 host-retained running hold still admits interrupt despite a confirmed historical receipt and connected health", async () => {
+  const h = bridgeHarness((e) =>
+    e.operation.type === "session.interrupt"
+      ? {
+          ok: true,
+          value: { status: "stopping" },
+          receipt: receipt(e, {
+            effect: "pending",
+            result: { kind: "delivery", status: "stopping" },
+          }),
+        }
+      : readFallback(e),
   );
   const api = createWindowWorkbench(h.bridge, { clock: fakeClock(), id });
   const key = retainedKey();
@@ -4532,9 +4566,12 @@ test("v5 host-retained running hold blocks interrupt despite a confirmed histori
       workspaceId: "w",
       sessionId: "a",
     }),
-    false,
+    true,
   );
-  assert.equal(h.calls.length, 0);
+  assert.equal(
+    h.calls.filter((e) => e.operation.type === "session.interrupt").length,
+    1,
+  );
   api.dispose();
 });
 
