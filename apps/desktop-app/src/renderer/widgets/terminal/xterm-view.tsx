@@ -13,6 +13,9 @@ import styles from "./terminal.module.css";
 
 const SCROLLBACK = 5000;
 const SEND_MS = 8;
+const RETRY_MS = 250;
+const MAX_SEND_RETRIES = 40;
+const MAX_PASTE_CHARS = 1024 * 1024;
 // Light-background ANSI colors; xterm's built-in palette is tuned for dark backgrounds.
 const LIGHT_ANSI: ITheme = {
   black: "#000000",
@@ -70,14 +73,18 @@ export function XtermView({
   terminalId,
   onInfo,
   onError,
+  onLeave,
+  hintId,
 }: {
   terminalId: string;
+  onLeave: () => void;
+  hintId: string;
   onInfo: (info: TerminalInfo) => void;
   onError: (code: string) => void;
 }) {
   const host = useRef<HTMLDivElement>(null);
-  const callbacks = useRef({ onInfo, onError });
-  callbacks.current = { onInfo, onError };
+  const callbacks = useRef({ onInfo, onError, onLeave });
+  callbacks.current = { onInfo, onError, onLeave };
 
   useEffect(() => {
     const el = host.current;
@@ -92,11 +99,14 @@ export function XtermView({
       scrollback: SCROLLBACK,
       theme,
       allowProposedApi: false,
+      // OSC 8 hyperlinks from program output are never opened: no confirm(), no window.open.
+      linkHandler: { activate: () => {}, allowNonHttpProtocols: false },
     });
     const fit = new FitAddon();
     term.loadAddon(fit);
     term.open(el);
     term.textarea?.setAttribute("aria-label", "터미널 입력");
+    term.textarea?.setAttribute("aria-describedby", hintId);
 
     const restyle = () => {
       const next = readTheme(el);
@@ -137,6 +147,16 @@ export function XtermView({
     let pending = "";
     let sendTimer: ReturnType<typeof setTimeout> | undefined;
     let sending = Promise.resolve();
+    // A chunk the host rate-limits is retried (not dropped), so large pastes arrive complete.
+    const sendChunk = async (text: string) => {
+      for (let attempt = 0; attempt < MAX_SEND_RETRIES && !stopped; attempt++) {
+        const r = await call({ type: "terminal.write", terminalId, text });
+        if (r.ok) return kick();
+        if (r.code !== "RATE_LIMITED") return callbacks.current.onError(r.code);
+        await new Promise((done) => setTimeout(done, RETRY_MS));
+      }
+      if (!stopped) callbacks.current.onError("RATE_LIMITED");
+    };
     const flush = () => {
       sendTimer = undefined;
       const data = pending
@@ -144,12 +164,20 @@ export function XtermView({
         .replaceAll("\0", "");
       pending = "";
       for (const text of chunks(data, TERMINAL_LIMITS.inputChars))
-        sending = sending.then(async () => {
-          const r = await call({ type: "terminal.write", terminalId, text });
-          if (!r.ok && !stopped) callbacks.current.onError(r.code);
-          else kick();
-        });
+        sending = sending.then(() => sendChunk(text));
     };
+    // Paste: drop control characters (notably ESC, which could end bracketed paste early) and
+    // refuse oversized pastes outright instead of letting middle chunks go missing.
+    const onPaste = (e: ClipboardEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const text = e.clipboardData?.getData("text/plain") ?? "";
+      if (text.length > MAX_PASTE_CHARS)
+        return callbacks.current.onError("PASTE_TOO_LARGE");
+      // eslint-disable-next-line no-control-regex
+      term.paste(text.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, ""));
+    };
+    term.element?.addEventListener("paste", onPaste, true);
     const input = term.onData((d) => {
       pending += d;
       sendTimer ??= setTimeout(flush, SEND_MS);
@@ -157,6 +185,12 @@ export function XtermView({
     term.attachCustomKeyEventHandler((e) => {
       if (e.type !== "keydown") return true;
       const key = e.key.toLowerCase();
+      // Keyboard-trap escape (WCAG 2.1.2): Tab/Esc belong to the shell, so this chord hands focus on.
+      if (e.ctrlKey && e.shiftKey && key === "m") {
+        e.preventDefault();
+        callbacks.current.onLeave();
+        return false;
+      }
       const copy =
         key === "c" &&
         (isMac
@@ -232,6 +266,7 @@ export function XtermView({
       media.removeEventListener("change", restyle);
       themeWatch.disconnect();
       resizeWatch.disconnect();
+      term.element?.removeEventListener("paste", onPaste, true);
       input.dispose();
       term.dispose();
     };

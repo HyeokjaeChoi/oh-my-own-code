@@ -138,6 +138,43 @@ try {
   ).toBeVisible();
   observations.push("ANSI colors rendered by xterm.js");
 
+  // paste: control characters (ESC) are stripped; oversized pastes are refused with a notice
+  const paste = (value) =>
+    page.evaluate((v) => {
+      const dt = new DataTransfer();
+      dt.setData("text/plain", v);
+      document.querySelector(".xterm-helper-textarea").dispatchEvent(
+        new ClipboardEvent("paste", {
+          clipboardData: dt,
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
+    }, value);
+  await paste("echo PA\x1b[201~STE");
+  await page.keyboard.press("Enter");
+  await waitOut(/\r\nPA\[201~STE\r\n/);
+  await paste("x".repeat(1024 * 1024 + 1));
+  await expect(page.getByRole("alert")).toContainText("붙여넣기가 너무 커서");
+  observations.push("paste strips ESC and refuses >1 MiB with a notice");
+
+  // keyboard-trap escape: the chord moves focus out of the terminal; hint is exposed
+  const textarea = screen.locator(".xterm-helper-textarea");
+  await expect(textarea).toHaveAttribute(
+    "aria-describedby",
+    "omoc-terminal-hint",
+  );
+  await expect(page.locator("#omoc-terminal-hint")).toContainText(
+    "Ctrl+Shift+M",
+  );
+  await textarea.focus();
+  await page.keyboard.press("Control+Shift+M");
+  await expect(
+    page.getByRole("button", { name: "중지", exact: true }),
+  ).toBeFocused();
+  await screen.locator(".xterm").click();
+  observations.push("Ctrl+Shift+M releases keyboard focus from the terminal");
+
   // line editing handled by the shell's readline: Left arrow + insert
   await page.keyboard.type("echo ABD");
   await page.keyboard.press("ArrowLeft");

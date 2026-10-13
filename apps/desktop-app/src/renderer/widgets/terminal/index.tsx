@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   callTerminal as call,
   TERMINAL_STARTED_EVENT,
@@ -10,6 +10,7 @@ import { XtermView } from "./xterm-view.js";
 import styles from "./terminal.module.css";
 
 const LIST_MS = 1000;
+const HINT_ID = "omoc-terminal-hint";
 
 const errors: Record<string, string> = {
   LIMIT_REACHED: "터미널을 더 만들 수 없습니다.",
@@ -20,6 +21,7 @@ const errors: Record<string, string> = {
   RATE_LIMITED: "입력이 너무 빠릅니다. 잠시 후 다시 시도하세요.",
   PTY_UNAVAILABLE: "이 빌드에서는 터미널을 사용할 수 없습니다.",
   SPAWN_FAILED: "셸을 시작하지 못했습니다.",
+  PASTE_TOO_LARGE: "붙여넣기가 너무 커서 취소했습니다. (최대 1 MiB)",
 };
 const statusText = (t: TerminalInfo) =>
   t.status === "running"
@@ -33,6 +35,7 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
   const [active, setActive] = useState<string>();
   const [error, setError] = useState<string>();
   const [project, setProject] = useState<ProjectActions>();
+  const footer = useRef<HTMLDivElement>(null);
   const fail = useCallback(
     (code: string) =>
       setError(errors[code] ?? "터미널 요청을 처리하지 못했습니다."),
@@ -169,8 +172,17 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
             terminalId={current.terminalId}
             onInfo={update}
             onError={fail}
+            hintId={HINT_ID}
+            onLeave={() =>
+              footer.current
+                ?.querySelector<HTMLButtonElement>("button:not(:disabled)")
+                ?.focus()
+            }
           />
-          <div className={styles.footer}>
+          <p id={HINT_ID} className={styles.hint}>
+            터미널에서 포커스를 벗어나려면 Ctrl+Shift+M
+          </p>
+          <div className={styles.footer} ref={footer}>
             <span role="status">{statusText(current)}</span>
             <button
               onClick={() => void run("terminal.stop")}
