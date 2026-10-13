@@ -17,6 +17,7 @@ import {
   ownerLifetimeForResources,
   verifyOwnerLifetimeResources,
 } from "../src/owner-lifetime-resources.mjs";
+import { nodePtySupported } from "./stage-node-pty.mjs";
 
 const app = "apps/desktop-app";
 export const stampPath = `${app}/dist/build-provenance.json`;
@@ -356,12 +357,21 @@ export async function finishBuildProvenance(root, before, extra = {}) {
   );
   const eventHostResources = await builtEventHost(root, target);
   const ownerLifetimeResources = await builtOwnerLifetime(root, target);
-  if (
-    !artifacts.files.some(
-      (file) => file.path === `${app}/dist/resources/node-pty/lib/index.js`,
+  if (nodePtySupported(target.platform, target.arch)) {
+    const pty = artifacts.files.filter((file) =>
+      file.path.startsWith(`${app}/dist/resources/node-pty/`),
+    );
+    if (!pty.some((file) => file.path.endsWith("/node-pty/lib/index.js")))
+      throw new Error("Missing required build artifact: node-pty");
+    // Without the exec bit the native spawn helper fails at runtime (pnpm skips node-pty's postinstall).
+    if (
+      target.platform !== "win32" &&
+      pty
+        .filter((file) => file.path.endsWith("/spawn-helper"))
+        .some((file) => !(file.mode & 0o100))
     )
-  )
-    throw new Error("Missing required build artifact: node-pty");
+      throw new Error("node-pty spawn-helper is not executable");
+  }
   for (const required of [
     "main.mjs",
     "preload.cjs",
@@ -482,23 +492,32 @@ async function packagedArtifacts(root, buildStamp, platform) {
     resourceIdentity.sha256
   )
     throw new Error("Packaged sidecar does not match stamped build");
-  // node-pty ships outside the asar; every staged file must be byte-identical in the package.
+  // node-pty ships outside the asar. Compare the FULL packaged tree with the stamp: exact file list,
+  // sha256, size and mode (the executable spawn-helper). An extra file such as build/Release/pty.node
+  // would be loaded in preference to the stamped prebuild, so extras are rejected.
+  const ptyPrefix = `${app}/dist/resources/node-pty/`;
+  const ptyRoot = `${packagedApp}/${resource}/node-pty`;
   const ptyExpected = buildStamp.artifacts.files.filter((file) =>
-    file.path.startsWith(`${app}/dist/resources/node-pty/`),
+    file.path.startsWith(ptyPrefix),
   );
-  const ptyActual = await inventory(
-    root,
-    ptyExpected.map((file) => ({
-      path: `${packagedApp}/${resource}/${file.path.slice(`${app}/dist/resources/`.length)}`,
-    })),
-  );
+  const ptyActual = (
+    await inventory(root, [{ path: ptyRoot, tree: true, optional: true }])
+  ).files;
+  const ptySame =
+    ptyActual.length === ptyExpected.length &&
+    ptyActual.every((file, i) => {
+      const want = ptyExpected[i];
+      return (
+        file.path.slice(ptyRoot.length + 1) ===
+          want.path.slice(ptyPrefix.length) &&
+        file.sha256 === want.sha256 &&
+        file.size === want.size &&
+        (platform === "win32" || file.mode === want.mode)
+      );
+    });
   if (
-    ptyExpected.length === 0 ||
-    ptyActual.files.some(
-      (file, i) =>
-        file.sha256 !== ptyExpected[i].sha256 ||
-        file.size !== ptyExpected[i].size,
-    )
+    !ptySame ||
+    (ptyExpected.length === 0) !== !nodePtySupported(platform, process.arch)
   )
     throw new Error("Packaged node-pty does not match stamped build");
   const eventHostResources = await snapshotEventHostResources(

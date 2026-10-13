@@ -13,11 +13,28 @@ import { dirname, join } from "node:path";
 // node-pty is a native module and cannot live in the esbuild bundle or the asar.
 // Stage the pinned package's JS plus only the current target's prebuilt binaries beside the other
 // resources (outside the asar), where the host loads it with require(). No install scripts run.
+// Targets node-pty 1.1.0 ships prebuilt binaries for. Elsewhere (e.g. linux) the build skips staging
+// and the terminal reports PTY_UNAVAILABLE at runtime.
+export const NODE_PTY_TARGETS = new Set([
+  "darwin-arm64",
+  "darwin-x64",
+  "win32-x64",
+  "win32-arm64",
+]);
+export const nodePtySupported = (platform, arch) =>
+  NODE_PTY_TARGETS.has(`${platform}-${arch}`);
+
 export async function stageNodePty({
   resources,
   platform = process.platform,
   arch = process.arch,
 } = {}) {
+  if (!nodePtySupported(platform, arch)) {
+    console.warn(
+      `node-pty: no prebuilt binary for ${platform}-${arch}; skipping (terminals will be unavailable in this build)`,
+    );
+    return { skipped: true };
+  }
   const require = createRequire(import.meta.url);
   const source = dirname(require.resolve("node-pty/package.json"));
   const pkg = JSON.parse(await readFile(join(source, "package.json"), "utf8"));
