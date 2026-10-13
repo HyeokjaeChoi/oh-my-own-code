@@ -19,6 +19,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
+import { createWorkbenchBridge } from "./e2e-bridge.mjs";
 
 const CONNECT_TIMEOUT_MS =
   Number(process.env.OMOC_E2E_CONNECT_TIMEOUT_MS) || 150_000;
@@ -497,6 +498,31 @@ try {
   });
   await page.waitForTimeout(150);
   assert.equal(page.url(), originalUrl);
+
+  // The staged native node-pty works in this build (packaged: outside the asar): a real tty.
+  if (process.platform !== "win32") {
+    const snap = await createWorkbenchBridge(page)({ type: "snapshot" });
+    const workspaceId = snap.value.selectedWorkspaceId;
+    const term = (request) =>
+      page.evaluate((r) => window.desktopBridge.terminal(r), request);
+    const started = await term({ type: "terminal.start", workspaceId });
+    assert.equal(started.ok, true, JSON.stringify(started));
+    const { terminalId } = started.value;
+    await term({
+      type: "terminal.write",
+      terminalId,
+      text: "[ -t 0 ] && echo SMOKE_TTY_OK; exit\n",
+    });
+    await expect
+      .poll(
+        async () =>
+          (await term({ type: "terminal.read", terminalId, cursor: 0 })).value
+            ?.output,
+        { timeout: 20_000 },
+      )
+      .toMatch(/\r\nSMOKE_TTY_OK\r\n/);
+    await term({ type: "terminal.close", terminalId });
+  }
 
   const screenshotPath = join(tmpdir(), `oh-my-own-code-desktop-${mode}.png`);
   await page.screenshot({ path: screenshotPath });
