@@ -41,7 +41,7 @@ function identity(value) {
     exact(value, ID_KEYS) &&
     Number.isSafeInteger(value.pid) &&
     value.pid > 0 &&
-    value.platform === "darwin" &&
+    ["darwin", "win32"].includes(value.platform) &&
     HEX.test(value.bootId) &&
     HEX.test(value.startToken)
   );
@@ -131,6 +131,114 @@ function owned(stat, directory) {
     fail();
 }
 
+/**
+ * Windows lifetime witness (identity mode). macOS records exit facts through an
+ * independent kqueue observer process; Windows has no cheap equivalent that
+ * needs no native compiler, and does not need one: the process identity is the
+ * kernel creation FILETIME and the adapter (createOSProcessIdentityAdapter)
+ * reads it from CIM, which lists every process. A crashed owner is therefore
+ * proven gone when CIM has no row for its PID, or a row with another creation
+ * time, within the same boot. This witness adds: registration only for a live,
+ * exact identity (no stale or foreign PID), one app and at most one child per
+ * owner nonce, no registration after sealing, and "exited" only when EVERY
+ * registered role is individually proven exited. Any probe failure is
+ * "unverified" (store stays blocked). It writes no files, so there is nothing
+ * to tamper with; the trade-off is that there is no durable per-run exit record.
+ */
+export function createWindowsLifetimeWitness({
+  processIdentity = createOSProcessIdentityAdapter({ platform: "win32" }),
+  deadlineMs = 5000,
+} = {}) {
+  const sessions = new Map();
+  let busy = false;
+  const timeout = Number.isFinite(deadlineMs)
+    ? Math.max(1, Math.min(20_000, deadlineMs))
+    : 5000;
+  const withDeadline = (work) =>
+    Promise.race([
+      work,
+      new Promise((_, reject) => {
+        const timer = setTimeout(
+          () => reject(new Error("owner_unverified")),
+          timeout,
+        );
+        timer.unref?.();
+      }),
+    ]);
+  const live = async (id) => {
+    if (!sameIdentity(await processIdentity.capture(id.pid), id)) fail();
+  };
+  async function register(value) {
+    if (busy) return recovery();
+    busy = true;
+    try {
+      const c = context(value);
+      if (c.identity.platform !== "win32") fail();
+      await withDeadline(
+        (async () => {
+          await live(c.identity);
+          let session = sessions.get(c.ownerNonce);
+          if (c.role === "app") {
+            if (session) fail();
+            sessions.set(c.ownerNonce, {
+              c,
+              sealed: false,
+              child: null,
+            });
+            return;
+          }
+          if (
+            !session ||
+            session.sealed ||
+            session.child ||
+            session.c.root !== c.root ||
+            session.c.rootIdentity !== c.rootIdentity ||
+            c.identity.pid === session.c.identity.pid ||
+            c.identity.bootId !== session.c.identity.bootId
+          )
+            fail();
+          await live(session.c.identity);
+          session.child = orderedIdentity(c.identity);
+        })(),
+      );
+      return ready();
+    } catch {
+      return recovery();
+    } finally {
+      busy = false;
+    }
+  }
+  async function verify(value) {
+    try {
+      const c = context(value, true);
+      const { app, child } = c.expectedRegistrations;
+      if ([app, child].some((id) => id && id.platform !== "win32")) fail();
+      for (const id of child ? [app, child] : [app]) {
+        const result = await withDeadline(processIdentity.inspect(id));
+        if (result?.state === "identity_conflict") conflict();
+        if (
+          result?.state !== "exited" ||
+          !sameIdentity(result.identity, id) ||
+          !["os_identity", "owned_exit"].includes(result.evidence)
+        )
+          return "unverified";
+      }
+      return "exited";
+    } catch (error) {
+      return error?.message === "identity_conflict"
+        ? "identity_conflict"
+        : "unverified";
+    }
+  }
+  async function closeRegistration(ownerNonce) {
+    const session = sessions.get(ownerNonce);
+    if (busy || !session) return recovery();
+    session.sealed = true;
+    return ready();
+  }
+  return Object.freeze({ register, verify, closeRegistration });
+}
+
 /** Host/test injection only. No journal, owner record, or Native content writes. */
 export function createLifetimeWitness({
   resourcesPath,
@@ -141,6 +249,11 @@ export function createLifetimeWitness({
   io = fs,
   deadlineMs = 5000,
 } = {}) {
+  if (platform === "win32")
+    return createWindowsLifetimeWitness({
+      processIdentity: processIdentity ?? undefined,
+      deadlineMs,
+    });
   const timeout = Number.isFinite(deadlineMs)
     ? Math.max(1, Math.min(20_000, deadlineMs))
     : 5000;

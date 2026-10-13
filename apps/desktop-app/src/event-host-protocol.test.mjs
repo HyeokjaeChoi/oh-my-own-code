@@ -523,3 +523,42 @@ test("diagnostic emitter caps each kind separately so holds are never lost", () 
   assert.equal(count("hold"), 1);
   assert.ok(sent.every((m) => m.type === "diagnostic"));
 });
+
+import { eventHostEnvironment } from "./event-host-protocol.mjs";
+test("host child environment is closed per platform and confined to the root", () => {
+  const posix = eventHostEnvironment({
+    platform: "darwin",
+    root: "/r",
+    configPath: "/c",
+    dataPath: "/d",
+    statePath: "/s",
+  });
+  assert.equal(posix.PATH, "/usr/bin:/bin:/usr/sbin:/sbin");
+  assert.equal(posix.HOME, "/r/home");
+  assert.equal("SystemRoot" in posix, false);
+  const win = eventHostEnvironment({
+    platform: "win32",
+    root: "C:\\r",
+    configPath: "C:\\c",
+    dataPath: "C:\\d",
+    statePath: "C:\\s",
+    systemRoot: "C:\\Windows",
+  });
+  assert.deepEqual(win, {
+    HOME: "C:\\r\\home",
+    XDG_CONFIG_HOME: "C:\\c",
+    XDG_DATA_HOME: "C:\\d",
+    XDG_STATE_HOME: "C:\\s",
+    XDG_CACHE_HOME: "C:\\r\\cache",
+    TMPDIR: "C:\\r\\tmp",
+    TMP: "C:\\r\\tmp",
+    TEMP: "C:\\r\\tmp",
+    OPENCODE_CONFIG_DIR: "C:\\c",
+    OPENCODE_DISABLE_AUTOUPDATE: "true",
+    PATH: "C:\\Windows\\System32",
+    SystemRoot: "C:\\Windows",
+    USERPROFILE: "C:\\r\\home",
+    APPDATA: "C:\\r\\home\\AppData\\Roaming",
+    LOCALAPPDATA: "C:\\r\\home\\AppData\\Local",
+  });
+});

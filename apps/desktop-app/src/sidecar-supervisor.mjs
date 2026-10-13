@@ -545,8 +545,11 @@ const powershellArgs = (script) => [
 ];
 export const WINDOWS_BOOT_SCRIPT =
   "(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToUniversalTime().ToFileTimeUtc()";
+// CIM enumerates every process regardless of access rights, so "no row" is an
+// authoritative absence (unlike a failed open), and CreationDate is the exact
+// kernel creation FILETIME that makes a PID reuse distinguishable.
 export const windowsStartScript = (pid) =>
-  `(Get-Process -Id ${Number(pid)} -ErrorAction Stop).StartTime.ToUniversalTime().ToFileTimeUtc()`;
+  `$p=Get-CimInstance Win32_Process -Filter "ProcessId = ${Number(pid)}";if($p){$p.CreationDate.ToUniversalTime().ToFileTimeUtc()}else{'ABSENT'}`;
 const digestIdentity = (value) =>
   createHash("sha256").update(value).digest("hex");
 export function createOSProcessIdentityAdapter({
@@ -581,6 +584,7 @@ export function createOSProcessIdentityAdapter({
       return value;
     throw new Error("process_identity_unavailable");
   }
+  const ABSENT = Symbol("absent");
   async function sample(pid = process.pid) {
     if (!Number.isSafeInteger(pid) || pid <= 0) return null;
     try {
@@ -601,6 +605,7 @@ export function createOSProcessIdentityAdapter({
           powershellPath(),
           powershellArgs(windowsStartScript(pid)),
         );
+        if (token === "ABSENT") return ABSENT;
         if (!/^\d{15,19}$/.test(token)) return null;
       } else return null;
       const identity = Object.freeze({
@@ -616,6 +621,7 @@ export function createOSProcessIdentityAdapter({
   }
   async function capture(pid = process.pid) {
     const identity = await sample(pid);
+    if (identity === ABSENT) return null;
     if (identity) captured.set(pid, identity);
     return identity;
   }
@@ -637,7 +643,15 @@ export function createOSProcessIdentityAdapter({
         )
           return { state: "exited", identity, evidence: "os_identity" };
         const actual = await sample(expected.pid);
-        if (!actual) return { state: "unverified" }; // PID absence alone is not exit proof.
+        // Windows: CIM lists every process, so no row (or another creation
+        // FILETIME under the same PID within one boot) proves THIS identity is gone.
+        if (platform === "win32" && expected.platform === "win32") {
+          if (actual === ABSENT)
+            return { state: "exited", identity, evidence: "os_identity" };
+          if (actual && actual.startToken !== expected.startToken)
+            return { state: "exited", identity, evidence: "os_identity" };
+        }
+        if (!actual || actual === ABSENT) return { state: "unverified" }; // PID absence alone is not exit proof.
         if (JSON.stringify(actual) !== JSON.stringify(expected))
           return { state: "identity_conflict" };
         return { state: "alive", identity, evidence: "os_identity" };

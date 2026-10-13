@@ -1,4 +1,5 @@
-import { killProcessTree } from "../platform-paths.mjs";
+import { directorySyncSupported, killProcessTree } from "../platform-paths.mjs";
+import { assertWindowsPrivateDirectories } from "../windows-acl.mjs";
 import * as fs from "node:fs/promises";
 import { constants } from "node:fs";
 import { spawn as spawnProcess } from "node:child_process";
@@ -42,10 +43,14 @@ const sameDirectoryIdentity = (a, b) =>
   ["dev", "ino", "uid", "gid", "mode"].every((key) => a[key] === b[key]);
 const overlaps = (a, b) => a === b || inside(a, b) || inside(b, a);
 function owned(stat, directory) {
+  if (directory ? !stat.isDirectory() : !stat.isFile() || stat.nlink !== 1n)
+    fail();
+  // POSIX: exact owner and 0700/0600. Windows has neither; its directories are
+  // proven private by DACL (assertWindowsPrivateDirectories) where they are created.
   if (
-    stat.uid !== BigInt(process.getuid()) ||
-    (stat.mode & 0o7777n) !== (directory ? 0o700n : 0o600n) ||
-    (directory ? !stat.isDirectory() : !stat.isFile() || stat.nlink !== 1n)
+    process.platform !== "win32" &&
+    (stat.uid !== BigInt(process.getuid()) ||
+      (stat.mode & 0o7777n) !== (directory ? 0o700n : 0o600n))
   )
     fail();
 }
@@ -542,6 +547,7 @@ export function createNativePreflight({
       fail();
     context.copyStat = await io.lstat(copy, { bigint: true });
     owned(context.copyStat, true);
+    await assertWindowsPrivateDirectories([copy, namespace.root]);
     for (const name of ["home", "config", "data", "state", "cache", "tmp"])
       await io.mkdir(join(copy, name), { mode: 0o700 });
     context.database = join(copy, "data", "event-host.sqlite");
@@ -562,7 +568,9 @@ export function createNativePreflight({
         await target.close();
       }
     }
-    for (const path of [join(copy, "data"), copy]) {
+    for (const path of directorySyncSupported()
+      ? [join(copy, "data"), copy]
+      : []) {
       const handle = await io.open(
         path,
         constants.O_RDONLY | constants.O_DIRECTORY | constants.O_NOFOLLOW,
@@ -583,7 +591,15 @@ export function createNativePreflight({
       shell: false,
       stdio: ["pipe", "pipe", "ignore"],
       env: {
-        PATH: "/usr/bin:/bin:/usr/sbin:/sbin",
+        ...(process.platform === "win32"
+          ? {
+              PATH: join(process.env.SystemRoot ?? "C:\\Windows", "System32"),
+              SystemRoot: process.env.SystemRoot ?? "C:\\Windows",
+              USERPROFILE: join(context.copy, "home"),
+              APPDATA: join(context.copy, "home", "AppData", "Roaming"),
+              LOCALAPPDATA: join(context.copy, "home", "AppData", "Local"),
+            }
+          : { PATH: "/usr/bin:/bin:/usr/sbin:/sbin" }),
         HOME: join(context.copy, "home"),
         XDG_CONFIG_HOME: join(context.copy, "config"),
         XDG_DATA_HOME: join(context.copy, "data"),

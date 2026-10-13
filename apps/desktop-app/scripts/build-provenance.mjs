@@ -268,14 +268,35 @@ export async function snapshotEventHostResources(
     throw new Error("Event-host manifest changed during resource snapshot");
   return { ...identity, sha256: eventHostInventorySha256(identity) };
 }
-async function builtEventHost(root) {
-  return snapshotEventHostResources(join(root, app, "dist/resources"));
+// OMOC_BUILD_TARGET=<platform>-<arch> seals a cross-target layout (nothing runs).
+export function buildTarget(env = process.env) {
+  const [platform, arch] = (
+    env.OMOC_BUILD_TARGET ?? `${process.platform}-${process.arch}`
+  ).split("-");
+  return { platform, arch };
+}
+async function builtEventHost(root, target = buildTarget()) {
+  return snapshotEventHostResources(
+    join(root, app, "dist/resources"),
+    target.platform,
+    target.arch,
+  );
 }
 export async function snapshotOwnerLifetimeResources(
   resourcesPath,
   platform = process.platform,
   arch = process.arch,
 ) {
+  if (platform === "win32") {
+    // Identity-mode witness (no helper binary): the stamp pins that choice itself.
+    const identity = {
+      algorithm: "owner-lifetime-identity-mode-v1",
+      mode: "process-creation-time-cim",
+      platform,
+      arch,
+    };
+    return { ...identity, sha256: digest(identity) };
+  }
   const descriptor = ownerLifetimeForResources(resourcesPath, platform, arch);
   await assertRealResourceParents(descriptor.root);
   const before = await resourceFileSha256(descriptor.manifestPath);
@@ -303,8 +324,12 @@ export async function snapshotOwnerLifetimeResources(
   };
   return { ...identity, sha256: digest(identity) };
 }
-async function builtOwnerLifetime(root) {
-  return snapshotOwnerLifetimeResources(join(root, app, "dist/resources"));
+async function builtOwnerLifetime(root, target = buildTarget()) {
+  return snapshotOwnerLifetimeResources(
+    join(root, app, "dist/resources"),
+    target.platform,
+    target.arch,
+  );
 }
 
 export async function beginBuildProvenance(root) {
@@ -319,12 +344,13 @@ export async function finishBuildProvenance(root, before) {
     throw new Error(
       "Build inputs changed during build; no provenance stamp written",
     );
+  const target = buildTarget();
   const artifacts = await inventory(
     root,
-    outputScopes(process.platform, process.arch),
+    outputScopes(target.platform, target.arch),
   );
-  const eventHostResources = await builtEventHost(root);
-  const ownerLifetimeResources = await builtOwnerLifetime(root);
+  const eventHostResources = await builtEventHost(root, target);
+  const ownerLifetimeResources = await builtOwnerLifetime(root, target);
   for (const required of [
     "main.mjs",
     "preload.cjs",
@@ -339,12 +365,12 @@ export async function finishBuildProvenance(root, before) {
       throw new Error(`Missing required build artifact: ${required}`);
   }
   if (
-    (await inventory(root, outputScopes(process.platform, process.arch)))
+    (await inventory(root, outputScopes(target.platform, target.arch)))
       .sha256 !== artifacts.sha256 ||
     (await snapshotBuildInputs(root)).sha256 !== inputs.sha256 ||
-    JSON.stringify(await builtEventHost(root)) !==
+    JSON.stringify(await builtEventHost(root, target)) !==
       JSON.stringify(eventHostResources) ||
-    JSON.stringify(await builtOwnerLifetime(root)) !==
+    JSON.stringify(await builtOwnerLifetime(root, target)) !==
       JSON.stringify(ownerLifetimeResources)
   )
     throw new Error(
@@ -359,6 +385,7 @@ export async function finishBuildProvenance(root, before) {
       platform: process.platform,
       arch: process.arch,
     },
+    target,
     inputs,
     artifacts,
     eventHostResources,

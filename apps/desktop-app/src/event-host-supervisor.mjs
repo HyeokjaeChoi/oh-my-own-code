@@ -1,4 +1,5 @@
-import { killProcessTree } from "./platform-paths.mjs";
+import { isPathInside, killProcessTree } from "./platform-paths.mjs";
+import { assertWindowsPrivateDirectories } from "./windows-acl.mjs";
 import { randomBytes } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
 import { spawn } from "node:child_process";
@@ -11,12 +12,15 @@ import {
   realpath,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, relative, isAbsolute } from "node:path";
+import { join, isAbsolute } from "node:path";
 import { EVENT_HOST_CODE_ASSETS } from "./event-host-resources.mjs";
 import { createNativeSkillsClient } from "./native-skills-client.mjs";
 import { createNativeAgentsClient } from "./native-agents-client.mjs";
 import { createNativeExtensionsClient } from "./native-extensions-client.mjs";
-import { validateHostMessage } from "./event-host-protocol.mjs";
+import {
+  eventHostEnvironment,
+  validateHostMessage,
+} from "./event-host-protocol.mjs";
 import { initialization } from "./native-permission-control-input.mjs";
 import { createNativeTaskLedger } from "./native-permission-task-ledger.mjs";
 import { createNativeTaskRequestContext } from "./native-permission-task-request.mjs";
@@ -27,23 +31,25 @@ const ENGINE = "1.4.2";
 // The package owner's module remains the authority for layout and byte validation.
 export { eventHostForResources } from "./event-host-resources.mjs";
 
-function contains(parent, path) {
-  const rel = relative(parent, path);
-  return !rel || (!isAbsolute(rel) && rel !== ".." && !rel.startsWith("../"));
-}
+const contains = (parent, path) => isPathInside(parent, path);
 function overlaps(a, b) {
   return contains(a, b) || contains(b, a);
 }
 
-async function checkedDirectory(path) {
+// POSIX: owned by this uid with no group/other bits. Windows has neither; there
+// the directory must be a real directory here and its DACL is verified in one
+// batch (assertWindowsPrivateDirectories) by the caller.
+const privateStat = (stat, platform) =>
+  platform === "win32" ||
+  (stat.uid === process.getuid() && !(stat.mode & 0o077));
+async function checkedDirectory(path, platform = process.platform) {
   const stat = await lstat(path);
   if (
     !isAbsolute(path) ||
     (await realpath(path)) !== path ||
     !stat.isDirectory() ||
     stat.isSymbolicLink() ||
-    stat.uid !== process.getuid() ||
-    stat.mode & 0o077
+    !privateStat(stat, platform)
   )
     throw new Error("storage_denied");
 }
@@ -67,6 +73,7 @@ export async function startEventHost({
   makeRoot = async () =>
     realpath(await mkdtemp(join(tmpdir(), "oh-my-own-code-event-host-"))),
   verifyResources,
+  assertPrivateDirectories = assertWindowsPrivateDirectories,
   makeClient,
   startupTimeoutMs = 20_000,
   stopTimeoutMs = 5_000,
@@ -303,7 +310,7 @@ export async function startEventHost({
         namespace[key] === namespace.root
       )
         throw new Error("storage_denied");
-      await checkedDirectory(namespace[key]);
+      await checkedDirectory(namespace[key], platform);
     }
     for (const directory of ["home", "cache", "tmp", "workspace"])
       await createDirectory(join(root, directory), {
@@ -311,10 +318,25 @@ export async function startEventHost({
         mode: 0o700,
       });
     for (const directory of ["home", "cache", "tmp", "workspace"])
-      await checkedDirectory(join(root, directory));
+      await checkedDirectory(join(root, directory), platform);
     const configPath = join(namespace.config, "opencode");
     await createDirectory(configPath, { recursive: true, mode: 0o700 });
-    await checkedDirectory(configPath);
+    await checkedDirectory(configPath, platform);
+    await assertPrivateDirectories(
+      [
+        namespace.root,
+        namespace.config,
+        namespace.data,
+        namespace.state,
+        root,
+        join(root, "home"),
+        join(root, "cache"),
+        join(root, "tmp"),
+        join(root, "workspace"),
+        configPath,
+      ],
+      { platform },
+    );
     const configFile = join(configPath, "opencode.json");
     try {
       // Preserve the original supervisor's exclusive empty-config policy.
@@ -327,8 +349,7 @@ export async function startEventHost({
         !stat.isFile() ||
         stat.isSymbolicLink() ||
         stat.nlink !== 1 ||
-        stat.uid !== process.getuid() ||
-        stat.mode & 0o077
+        !privateStat(stat, platform)
       )
         throw new Error("storage_denied");
     }
@@ -345,8 +366,7 @@ export async function startEventHost({
           !stat.isFile() ||
           stat.isSymbolicLink() ||
           stat.nlink !== 1 ||
-          stat.uid !== process.getuid() ||
-          stat.mode & 0o077
+          !privateStat(stat, platform)
         )
           throw new Error("storage_denied");
       } catch (error) {
@@ -367,19 +387,14 @@ export async function startEventHost({
     aborted();
     child = spawnProcess(eventHost.enginePath, [eventHost.hostPath], {
       cwd: workspace,
-      env: {
-        HOME: join(root, "home"),
-        XDG_CONFIG_HOME: configPath,
-        XDG_DATA_HOME: namespace.data,
-        XDG_STATE_HOME: namespace.state,
-        XDG_CACHE_HOME: join(root, "cache"),
-        TMPDIR: join(root, "tmp"),
-        TMP: join(root, "tmp"),
-        TEMP: join(root, "tmp"),
-        OPENCODE_CONFIG_DIR: configPath,
-        OPENCODE_DISABLE_AUTOUPDATE: "true",
-        PATH: "/usr/bin:/bin:/usr/sbin:/sbin",
-      },
+      env: eventHostEnvironment({
+        platform,
+        root,
+        configPath,
+        dataPath: namespace.data,
+        statePath: namespace.state,
+        systemRoot: process.env.SystemRoot,
+      }),
       stdio: ["ignore", "ignore", "ignore", "ipc"],
       windowsHide: true,
     });

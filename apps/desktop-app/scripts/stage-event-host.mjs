@@ -153,6 +153,7 @@ export async function stageEventHost({
         ![
           "./event-host-protocol.mjs",
           "./event-host-resources.mjs",
+          "./platform-paths.mjs",
           "./native-skills-config.mjs",
           "./native-permission-graph.mjs",
           "./native-permission-control-input.mjs",

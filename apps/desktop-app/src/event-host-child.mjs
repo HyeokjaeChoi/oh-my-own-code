@@ -1,13 +1,15 @@
 import cp from "node:child_process";
 import { syncBuiltinESMExports } from "node:module";
 import { lstatSync, realpathSync } from "node:fs";
-import { dirname, isAbsolute, join, relative } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import {
   createDiagnosticEmitter,
+  eventHostEnvironment,
   validateHostMessage,
 } from "./event-host-protocol.mjs";
+import { isPathInside } from "./platform-paths.mjs";
 import { nativeSkillsConfig } from "./native-skills-config.mjs";
 import {
   eventHostEnginePath,
@@ -121,18 +123,17 @@ export function createDirectHandleObserver(
     },
   };
 }
-const contains = (root, path) => {
-  const rel = relative(root, path);
-  return !rel || (!isAbsolute(rel) && rel !== ".." && !rel.startsWith("../"));
-};
+const contains = (root, path) => isPathInside(root, path);
 function directory(path) {
   const stat = lstatSync(path);
   if (
     realpathSync(path) !== path ||
     !stat.isDirectory() ||
     stat.isSymbolicLink() ||
-    stat.uid !== process.getuid() ||
-    stat.mode & 0o077
+    // Windows: the supervisor verified every directory's DACL before spawn;
+    // the child may not start processes, so it only re-checks the shape here.
+    (process.platform !== "win32" &&
+      (stat.uid !== process.getuid() || stat.mode & 0o077))
   )
     throw new Error("storage_denied");
 }
@@ -140,9 +141,8 @@ function guardInit(input) {
   const resourceRoot = dirname(fileURLToPath(import.meta.url));
   if (
     globalThis.Bun?.version !== "1.4.2" ||
-    process.platform !== "darwin" ||
-    process.arch !== "arm64" ||
-    process.execPath !== join(resourceRoot, "runtime", "bun")
+    process.execPath !==
+      eventHostEnginePath(resourceRoot, process.platform, process.arch)
   )
     throw new Error("runtime_identity_mismatch");
   directory(input.root);
@@ -184,27 +184,22 @@ function guardInit(input) {
         !stat.isFile() ||
         stat.isSymbolicLink() ||
         stat.nlink !== 1 ||
-        stat.uid !== process.getuid() ||
-        stat.mode & 0o077
+        (process.platform !== "win32" &&
+          (stat.uid !== process.getuid() || stat.mode & 0o077))
       )
         throw new Error("storage_denied");
     } catch (error) {
       if (error.code !== "ENOENT") throw error;
     }
   }
-  const expected = {
-    HOME: join(input.root, "home"),
-    XDG_CONFIG_HOME: input.configPath,
-    XDG_DATA_HOME: input.dataPath,
-    XDG_STATE_HOME: input.statePath,
-    XDG_CACHE_HOME: join(input.root, "cache"),
-    TMPDIR: join(input.root, "tmp"),
-    TMP: join(input.root, "tmp"),
-    TEMP: join(input.root, "tmp"),
-    OPENCODE_CONFIG_DIR: input.configPath,
-    OPENCODE_DISABLE_AUTOUPDATE: "true",
-    PATH: "/usr/bin:/bin:/usr/sbin:/sbin",
-  };
+  const expected = eventHostEnvironment({
+    platform: process.platform,
+    root: input.root,
+    configPath: input.configPath,
+    dataPath: input.dataPath,
+    statePath: input.statePath,
+    systemRoot: process.env.SystemRoot,
+  });
   for (const [key, value] of Object.entries(expected))
     if (process.env[key] !== value) throw new Error("environment_denied");
   const allowed = new Set([
@@ -361,7 +356,7 @@ export function runEventHostChild() {
   };
   const initialize = async (input) => {
     guardInit(input);
-    process.umask(0o077);
+    if (process.platform !== "win32") process.umask(0o077);
     observer = createDirectHandleObserver(
       cp,
       globalThis.Bun,
