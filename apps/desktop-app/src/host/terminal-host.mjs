@@ -255,10 +255,10 @@ export function createTerminalHost({
   // chunks are dropped once the rest still holds the limit. `total` is the absolute end offset.
   function appendText(t, text) {
     if (!text) return;
-    if (text.length > TERMINAL_LIMITS.outputChars)
-      text = text.slice(-TERMINAL_LIMITS.outputChars);
-    t.chunks.push({ start: t.total, text });
-    t.total += text.length;
+    const dropped = Math.max(0, text.length - TERMINAL_LIMITS.outputChars);
+    if (dropped) text = text.slice(dropped);
+    t.chunks.push({ start: t.total + dropped, text });
+    t.total += dropped + text.length;
     t.size += text.length;
     while (
       t.chunks.length - t.head > 1 &&
