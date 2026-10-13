@@ -213,3 +213,16 @@ D = needs user decision.
 4. **S** Git review is unavailable in repos whose ignored dirs contain symlinks or exceed file caps (e.g. `node_modules`), so plan checks never show a plain pass there (`host/workbench-git-snapshot.mjs` walk).
 5. **S** Permission policySync may return BUSY for a drifted session that Native reports active while app status is idle; config reads keep failing while any session has drifted (`workbench-service.mjs` policySync).
 6. **S** Plans: idle poll can cancel the observation `runCheck` started (`OBSERVATION_FAILED`); export summary clears on any snapshot change.
+
+### 2026-10-13 — chat stage landed (`main` at `f5e35adc`)
+
+Chat works end to end in the real app: streamed replies, write/read/shell permission prompts, "이 프로젝트에서 항상 허용", agent/model selection, subagent delegation, interrupt, `scoped_edit`, provider/API-key settings and local LM Studio. Full suite 4966/4966, 4 static checks, and e2e-chat (strict subagent), e2e-workbench, e2e-sessions, e2e-ui-states, e2e-macos, e2e-provider all pass.
+
+Open follow-ups (minor, from stage reviews):
+
+7. **S** Subagent child create (`consumeBootstrap` parentID path) has no parent-project transaction gate; later execution is still gated by `enter()`. Adding it needs an overlay recipe change.
+8. **S** Inherited session rules (`*:*:ask` first) shadow agent-level restrictions (e.g. `explore` `*:deny`), so a child agent is never narrower than its parent session.
+9. **S** "항상 허용" is a permanent per-project allow with no revoke UI.
+10. **S** Narrow window at 200% zoom: pinned composer (184px) leaves ~6px for the permission queue / stacked notices; e2e-ui-states only requires visibility there. Composer needs a compact layout.
+11. **S** Journal duplicate replies return `{ok:true,status:"duplicate"}` even when the original attempt failed; clients must read the receipt.
+12. **S** Native `model.list` is bounded at 5000 and the catalog shows 300 after local-first sorting; the selected/default model is not pinned into the list.
