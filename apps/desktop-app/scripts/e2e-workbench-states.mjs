@@ -1122,7 +1122,9 @@ try {
       let node = e.parentElement;
       while (
         node &&
-        !["auto", "scroll"].includes(getComputedStyle(node).overflowY)
+        !["auto", "scroll"].includes(
+          globalThis.getComputedStyle(node).overflowY,
+        )
       )
         node = node.parentElement;
       return !node || e.getBoundingClientRect().height <= node.clientHeight + 1;
