@@ -1,6 +1,8 @@
 // Closed staged-source allowlist. Pure data shared by staging and test-copy helpers.
 export const CONFIGURATION_SAVE_ASSETS = Object.freeze([
   "host/configuration-save-kernel.mjs",
+  "host/configuration-save-shared.mjs",
+  "host/configuration-save-kernel-win32.mjs",
   "host/darwin-descriptor-ffi.mjs",
   "host/workspace-root-authority.mjs",
   "renderer/shared/workspace-file/index.mjs",
