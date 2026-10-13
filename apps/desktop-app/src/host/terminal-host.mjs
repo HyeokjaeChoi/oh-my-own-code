@@ -251,13 +251,41 @@ export function createTerminalHost({
     w.calls += 1;
     w.chars += chars;
   }
+  // Chunk ring: appends are O(1) (no re-slicing of the whole buffer per pty read); whole oldest
+  // chunks are dropped once the rest still holds the limit. `total` is the absolute end offset.
   function appendText(t, text) {
-    t.output += text;
-    if (t.output.length > TERMINAL_LIMITS.outputChars) {
-      const drop = t.output.length - TERMINAL_LIMITS.outputChars;
-      t.output = t.output.slice(drop);
-      t.base += drop;
+    if (!text) return;
+    if (text.length > TERMINAL_LIMITS.outputChars)
+      text = text.slice(-TERMINAL_LIMITS.outputChars);
+    t.chunks.push({ start: t.total, text });
+    t.total += text.length;
+    t.size += text.length;
+    while (
+      t.chunks.length - t.head > 1 &&
+      t.size - t.chunks[t.head].text.length >= TERMINAL_LIMITS.outputChars
+    ) {
+      t.size -= t.chunks[t.head].text.length;
+      t.chunks[t.head++] = undefined;
     }
+    if (t.head > 1024) {
+      t.chunks = t.chunks.slice(t.head);
+      t.head = 0;
+    }
+  }
+  const baseOf = (t) => t.chunks[t.head]?.start ?? t.total;
+  function sliceFrom(t, from, max) {
+    let i = t.chunks.length - 1;
+    while (i > t.head && t.chunks[i].start > from) i--;
+    let out = "";
+    for (; i < t.chunks.length && out.length < max; i++) {
+      const c = t.chunks[i];
+      if (!c) continue;
+      out += c.text.slice(
+        Math.max(0, from - c.start),
+        max - out.length + Math.max(0, from - c.start),
+      );
+    }
+    return out;
   }
   // Interactive shells ignore SIGTERM, so hang up the session first, then force after the grace period.
   function terminate(t) {
@@ -322,8 +350,10 @@ export function createTerminalHost({
       workspaceId,
       proc,
       pid: proc.pid,
-      output: "",
-      base: 0,
+      chunks: [],
+      head: 0,
+      total: 0,
+      size: 0,
       exited: false,
       exitCode: null,
       signal: null,
@@ -398,12 +428,10 @@ export function createTerminalHost({
     },
     read(owner, id, cursor) {
       const t = get(id, owner);
-      const truncated = cursor < t.base;
-      const from = Math.max(cursor, t.base);
-      const slice = t.output.slice(
-        from - t.base,
-        from - t.base + TERMINAL_LIMITS.readChars,
-      );
+      const base = baseOf(t);
+      const truncated = cursor < base;
+      const from = Math.min(Math.max(cursor, base), t.total);
+      const slice = sliceFrom(t, from, TERMINAL_LIMITS.readChars);
       return {
         ...view(t),
         output: slice,
