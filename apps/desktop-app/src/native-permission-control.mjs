@@ -7,8 +7,9 @@ import {
   nativeBootstrapWorkspaceFailureClosed,
 } from "./host/native-bootstrap-workspace.mjs";
 import { types } from "node:util";
-import { isAbsolute, normalize, relative, resolve } from "node:path";
+import { isAbsolute, normalize, resolve } from "node:path";
 import { realpathSync } from "node:fs";
+import { hasUnsafeWindowsComponent, isPathInside } from "./platform-paths.mjs";
 import { Context, Deferred, Effect, Layer, Option, Semaphore } from "effect";
 import { makeGlobalNode } from "@opencode/util/effect/app-node";
 
@@ -2115,13 +2116,16 @@ function kernel(initial) {
   };
   const plainRead = (request) =>
     Effect.gen(function* () {
-      const inside = (directory, path) => {
-        const rel = relative(directory, path);
-        return rel === "" || (!rel.startsWith("..") && !isAbsolute(rel));
-      };
+      const inside = (directory, path) => isPathInside(directory, path);
+      // DOS device names / streams / 8.3-style aliases are not plain files.
+      if (
+        process.platform === "win32" &&
+        hasUnsafeWindowsComponent(request.path)
+      )
+        return yield* Effect.fail(error("read_unverified"));
       const realOrUndefined = (path) => {
         try {
-          return realpathSync(path);
+          return realpathSync.native(path);
         } catch {
           return undefined;
         }
@@ -2138,11 +2142,12 @@ function kernel(initial) {
       if (!owner) return yield* Effect.fail(error("read_unverified"));
       // A symlink inside the location must not lead out of it unprompted.
       try {
-        const rel = relative(
-          realpathSync(owner.directory),
-          realpathSync(request.path),
-        );
-        if (rel.startsWith("..") || isAbsolute(rel))
+        if (
+          !isPathInside(
+            realpathSync.native(owner.directory),
+            realpathSync.native(request.path),
+          )
+        )
           return yield* Effect.fail(error("read_unverified"));
       } catch (failure) {
         if (failure?.code !== "ENOENT" && failure?.code !== "ENOTDIR")

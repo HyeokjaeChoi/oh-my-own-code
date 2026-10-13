@@ -20,6 +20,10 @@ import {
   assertWorkspaceRootGuard,
   workspaceRootFailureClosed,
 } from "./workspace-root-authority.mjs";
+import {
+  hasUnsafeWindowsComponent,
+  isVcsMetadataComponent,
+} from "../platform-paths.mjs";
 
 const refuse = () => {
   throw new Error("native_bootstrap_workspace_unverified");
@@ -82,7 +86,6 @@ const noteFailure = (error) => {
   failures.set(error, state);
   return state;
 };
-const VCS_NAMES = [".git", ".hg"];
 const swapCase = (value) =>
   [...value]
     .map((c) => (c === c.toLowerCase() ? c.toUpperCase() : c.toLowerCase()))
@@ -97,17 +100,26 @@ const swapCase = (value) =>
 // multiply-linked regular files are refused: a hard link into `.git/config`
 // has no path-level identity. Callers: every tool file-effect admission (edit,
 // write, patch) before the effect, and again on the formatter's output paths.
-export async function assertNotVcsMetadataPath(workspace, target) {
+export async function assertNotVcsMetadataPath(
+  workspace,
+  target,
+  { platform = process.platform } = {},
+) {
+  const windows = platform === "win32";
   need(typeof workspace === "string" && isAbsolute(workspace));
   need(
     typeof target === "string" && isAbsolute(target) && !target.includes("\0"),
   );
+  // NTFS aliases (streams, trailing dot/space, DOS device names, \\.\ paths)
+  // have no stable canonical form, so refuse them outright.
+  need(!windows || !hasUnsafeWindowsComponent(target));
   const root = await fs.realpath(workspace);
   const alias = join(
     dirname(root),
     swapCase(root.slice(dirname(root).length + 1)),
   );
   const caseInsensitive =
+    windows ||
     alias === root ||
     (await fs.lstat(alias, { bigint: true }).then(
       (a) =>
@@ -138,10 +150,8 @@ export async function assertNotVcsMetadataPath(workspace, target) {
       !rel.startsWith(`..${sep}`) &&
       !isAbsolute(rel),
   );
-  for (const part of rel.split(sep)) {
-    const name = caseInsensitive ? part.toLowerCase() : part;
-    need(!VCS_NAMES.includes(name));
-  }
+  for (const part of rel.split(sep))
+    need(!isVcsMetadataComponent(part, { platform, caseInsensitive }));
   if (tail.length === 0) {
     const stat = await fs.lstat(real, { bigint: true });
     need(!stat.isFile() || stat.nlink === 1n);
