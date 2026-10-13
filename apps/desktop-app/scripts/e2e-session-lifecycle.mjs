@@ -303,8 +303,13 @@ try {
   const removed = success(await bridge(confirmed));
   assert.equal(getSession(removed, childId), undefined);
   assert.equal(removed.selectedWorkspaceId, workspaceId);
+  // The journal dedupes the replayed requestId: no second removal.
+  assert.equal(success(await bridge(confirmed)).status, "duplicate");
   assert.equal(
-    getSession(success(await bridge(confirmed)), childId),
+    getSession(
+      success(await bridge({ type: "snapshot", workspaceId, sessionId })),
+      childId,
+    ),
     undefined,
   );
   assert.equal(
@@ -466,7 +471,7 @@ try {
   if (process.platform !== "win32") {
     childPids = execFileSync(
       "pgrep",
-      ["-P", String(processHandle.pid), "-f", "opencode.*serve"],
+      ["-P", String(processHandle.pid), "-f", "event-host.*host.mjs"],
       { encoding: "utf8" },
     )
       .trim()
