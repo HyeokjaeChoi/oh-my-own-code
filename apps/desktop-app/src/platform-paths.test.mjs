@@ -315,3 +315,18 @@ test("workspace file paths refuse NTFS 8.3 aliases of protected names", () => {
   for (const p of ["src/index.mjs", "notes.md", "a/b.c"])
     assert.equal(workspaceFilePathReason(p), undefined, p);
 });
+
+import { sensitiveName, relativeParts } from "./host/workbench-files.mjs";
+import { isWindowsShortAlias } from "./platform-paths.mjs";
+test("sensitiveName ignores trailing dots/spaces; short alias detection", () => {
+  for (const n of [".env.", ".env ", ".git.", "secrets. ."])
+    assert.equal(sensitiveName(n), true, n);
+  for (const n of ["src", "env", "a.txt"])
+    assert.equal(sensitiveName(n), false, n);
+  assert.equal(isWindowsShortAlias("GIT~1"), true);
+  assert.equal(isWindowsShortAlias("ENV~1.TXT"), true);
+  assert.equal(isWindowsShortAlias("PROGRA~12"), true);
+  assert.equal(isWindowsShortAlias("notes.md"), false);
+  assert.deepEqual(relativeParts("a/b"), ["a", "b"]);
+  assert.throws(() => relativeParts("a/.env."));
+});

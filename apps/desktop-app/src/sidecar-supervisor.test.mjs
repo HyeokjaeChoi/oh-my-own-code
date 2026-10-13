@@ -879,3 +879,13 @@ test("legacy durable manifest is never silently changed to the event host databa
   );
   assert.deepEqual(await readFile(join(root, "manifest.json")), before);
 });
+
+import { sidecarBinaryName } from "./sidecar-package.mjs";
+test("sidecar binary naming and staged layout have no darwin-only names", () => {
+  assert.equal(sidecarBinaryName("win32"), "opencode.exe");
+  assert.equal(sidecarBinaryName("darwin"), "opencode");
+  assert.equal(
+    executableForResources("C:\\r", "win32", "x64").replaceAll("\\", "/"),
+    "C:\\r/opencode/win32-x64/opencode.exe".replaceAll("\\", "/"),
+  );
+});

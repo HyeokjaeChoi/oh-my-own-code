@@ -250,3 +250,8 @@ export function pinnedOpenFlags(
     ),
   };
 }
+
+// NTFS 8.3 short alias such as GIT~1 / ENV~1.TXT: opens the aliased entry, so
+// it can bypass any name-based deny. Refused wherever a name is user-supplied.
+export const isWindowsShortAlias = (name) =>
+  /^[^.]{1,6}~[0-9]{1,6}(?:\.[^.]{0,3})?$/u.test(name);

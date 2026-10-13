@@ -262,7 +262,7 @@ export async function snapshotEventHostResources(
       effect: manifest.effectVersion,
     },
     target: { platform: manifest.platform, arch: manifest.arch },
-    manifestPath: "opencode/event-host/darwin-arm64/manifest.json",
+    manifestPath: `opencode/event-host/${platform}-${arch}/manifest.json`,
   };
   if (beforeManifestSha256 !== manifestSha256)
     throw new Error("Event-host manifest changed during resource snapshot");
