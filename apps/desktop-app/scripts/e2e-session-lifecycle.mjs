@@ -68,6 +68,13 @@ function success(result) {
   assert.equal(result.ok, true, JSON.stringify(result));
   return result.value;
 }
+// A replayed requestId is answered from the journal: no second effect, and the
+// original (failed) attempt is never reported as confirmed.
+function replayedWithoutEffect(result) {
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.equal(result.value?.status, "duplicate", JSON.stringify(result));
+  assert.notEqual(result.receipt?.effect, "confirmed", JSON.stringify(result));
+}
 function failure(result, code) {
   assert.equal(result.ok, false, JSON.stringify(result));
   assert.equal(result.code, code);
@@ -105,7 +112,13 @@ try {
     { timeout: CONNECT_TIMEOUT_MS },
   );
   const bridge = createWorkbenchBridge(page);
-  const initial = success(await bridge({ type: "snapshot" }));
+  // Startup reads can briefly hold the read capacity; the renderer re-polls too.
+  let first = await bridge({ type: "snapshot" });
+  for (let i = 0; i < 20 && first.code === "READ_BUSY"; i++) {
+    await new Promise((done) => setTimeout(done, 250));
+    first = await bridge({ type: "snapshot" });
+  }
+  const initial = success(first);
   // The profile is the durable journaled registry, no longer a temporary one.
   assert.equal(initial.temporary, false);
   // Never inherit user credentials/configuration. Import and trust only our
@@ -144,12 +157,15 @@ try {
     await mutation("session.rename", "rename-one", { title: renamedTitle }),
   );
   assert.equal(getSession(renamed).title, renamedTitle);
+  // A replayed requestId is deduped by the journal: no second effect.
   assert.equal(
-    getSession(
-      success(
-        await mutation("session.rename", "rename-one", { title: renamedTitle }),
-      ),
-    ).title,
+    success(
+      await mutation("session.rename", "rename-one", { title: renamedTitle }),
+    ).status,
+    "duplicate",
+  );
+  assert.equal(
+    getSession(success(await bridge({ type: "snapshot" }))).title,
     renamedTitle,
   );
   failure(
@@ -218,7 +234,7 @@ try {
     requestId: "empty-fork",
   };
   failure(await bridge(forkRequest), "EMPTY_SESSION");
-  failure(await bridge(forkRequest), "EMPTY_SESSION");
+  replayedWithoutEffect(await bridge(forkRequest));
   assert.equal(
     getSession(success(await bridge({ type: "snapshot", ...target }))).status,
     "idle",
@@ -264,7 +280,7 @@ try {
     requestId: "cancel-child",
   };
   failure(await bridge(removeChild), "CANCELLED");
-  failure(await bridge(removeChild), "CANCELLED");
+  replayedWithoutEffect(await bridge(removeChild));
   const dialogs = await application.evaluate(
     () => globalThis.__sessionE2eDialogs,
   );

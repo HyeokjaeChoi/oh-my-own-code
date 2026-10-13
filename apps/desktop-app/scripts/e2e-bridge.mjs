@@ -16,7 +16,14 @@ export function createWorkbenchBridge(page) {
           ...(runtimeEpoch && { runtimeEpoch }),
           operation,
         }
-      : { version: 2, operationId: id, runtimeEpoch, operation };
+      : // Like the renderer, a retried mutation reuses its requestId as the
+        // operationId so the host dedupes (or conflicts) on it.
+        {
+          version: 2,
+          operationId: operation?.requestId ?? id,
+          runtimeEpoch,
+          operation,
+        };
     const result = await page.evaluate(
       (value) => window.desktopBridge.workbench(value),
       envelope,
