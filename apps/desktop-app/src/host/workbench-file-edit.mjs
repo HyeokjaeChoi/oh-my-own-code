@@ -1,4 +1,5 @@
 // Existing-file observation only. Importing this module does no IO.
+import { pinnedOpenFlags } from "../platform-paths.mjs";
 import { constants } from "node:fs";
 import * as actualIO from "node:fs/promises";
 import { isAbsolute, normalize, join } from "node:path";
@@ -248,14 +249,7 @@ export async function observeWorkspaceFileBytes(
     await stable();
   }
   async function run() {
-    if (
-      ![
-        constants.O_NOFOLLOW,
-        constants.O_NONBLOCK,
-        constants.O_DIRECTORY,
-      ].every((f) => Number.isInteger(f) && f !== 0)
-    )
-      refuse("path_denied");
+    if (!pinnedOpenFlags().supported) refuse("path_denied");
     await acquire(root, true);
     let parent = root;
     for (const component of relativePath.split("/").slice(0, -1)) {

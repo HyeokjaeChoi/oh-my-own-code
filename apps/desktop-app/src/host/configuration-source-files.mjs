@@ -1,4 +1,5 @@
 // Private metadata/file observation only. Importing this module does no IO.
+import { pinnedOpenFlags } from "../platform-paths.mjs";
 import { constants } from "node:fs";
 import * as actualIO from "node:fs/promises";
 import { join } from "node:path";
@@ -256,14 +257,7 @@ async function observe(kind, workspace, sourceName, options) {
   const identities = () =>
     chain.map((e) => [e.path, String(e.stat.dev), String(e.stat.ino)]);
   async function run() {
-    if (
-      ![
-        constants.O_NOFOLLOW,
-        constants.O_NONBLOCK,
-        constants.O_DIRECTORY,
-      ].every((f) => Number.isInteger(f) && f !== 0)
-    )
-      refuse("path_denied");
+    if (!pinnedOpenFlags().supported) refuse("path_denied");
     for (const directory of paths) await acquire(directory);
     if (listing) {
       await guarded(async () => {

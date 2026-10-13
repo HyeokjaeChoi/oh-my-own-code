@@ -1,4 +1,5 @@
 import { configurationFileVersion } from "./configuration-file-observation.mjs";
+import { pinnedOpenFlags } from "../platform-paths.mjs";
 import { constants } from "node:fs";
 import * as actualIO from "node:fs/promises";
 import { join } from "node:path";
@@ -105,14 +106,7 @@ export async function readConfigurationFile(workspace, kind, options = {}) {
 
   async function observe() {
     // Do not silently drop a required safety flag on an unsupported platform.
-    if (
-      ![
-        constants.O_NOFOLLOW,
-        constants.O_NONBLOCK,
-        constants.O_DIRECTORY,
-      ].every((flag) => typeof flag === "number" && flag !== 0)
-    )
-      denied();
+    if (!pinnedOpenFlags().supported) denied();
     const rootBefore = await statPath(base.workspacePath);
     if (!rootBefore.isDirectory() || rootBefore.isSymbolicLink()) denied();
     if ((await canonical(base.workspacePath)) !== base.workspacePath) denied();

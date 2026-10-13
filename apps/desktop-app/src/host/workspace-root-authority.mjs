@@ -1,4 +1,5 @@
 // Private retained directory identity. This does not authorize a tool, mode or IO.
+import { pinnedOpenFlags } from "../platform-paths.mjs";
 import { constants } from "node:fs";
 import * as actualIO from "node:fs/promises";
 import { isAbsolute, normalize } from "node:path";
@@ -95,11 +96,7 @@ export async function createWorkspaceRootAuthority(workspace, options = {}) {
   need(
     ["lstat", "realpath", "open"].every((key) => typeof io[key] === "function"),
   );
-  need(
-    [constants.O_NOFOLLOW, constants.O_DIRECTORY, constants.O_NONBLOCK].every(
-      (flag) => Number.isInteger(flag) && flag !== 0,
-    ),
-  );
+  need(pinnedOpenFlags().supported);
   let handle, pinned;
   const checked = async (action) => {
     check();

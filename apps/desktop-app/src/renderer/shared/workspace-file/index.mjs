@@ -40,7 +40,9 @@ const protectedName = (part) =>
   /^(\.env(?:\..*)?|\.git|\.ssh|\.aws|\.azure|\.config|\.npmrc|\.netrc|\.pypirc|credentials(?:\..*)?|secrets?(?:\..*)?|auth\.json|opencode\.jsonc?|id_(rsa|ed25519|ecdsa)(?:\.pub)?|\.opencode|\.agents|\.codex|\.claude|AGENTS\.md|CLAUDE\.md)$/iu.test(
     part,
   ) ||
-  /\.(pem|key|p12|pfx|keystore)$/iu.test(part);
+  /\.(pem|key|p12|pfx|keystore)$/iu.test(part) ||
+  // NTFS 8.3 short alias (GIT~1, ENV~1.): may name any protected entry above.
+  /^[^.]{1,6}~[0-9]{1,6}(?:\.[^.]{0,3})?$/u.test(part);
 export function workspaceFilePathReason(value) {
   if (!validWorkspaceFilePath(value)) return "invalid_path";
   return value.split("/").some(protectedName) ? "protected_source" : undefined;

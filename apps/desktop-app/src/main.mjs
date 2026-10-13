@@ -381,7 +381,11 @@ let quitPromise;
 
 function allowedRendererUrl(raw) {
   if (developmentUrl && !app.isPackaged) return raw === developmentUrl;
-  return raw === pathToFileURL(join(here, "renderer", "index.html")).href;
+  const expected = pathToFileURL(join(here, "renderer", "index.html")).href;
+  // NTFS paths are case-insensitive: Chromium may report a different drive-letter case.
+  return process.platform === "win32"
+    ? raw.toLowerCase() === expected.toLowerCase()
+    : raw === expected;
 }
 
 function admit(event) {
@@ -512,6 +516,7 @@ function createWindow() {
   mainWindow.once("ready-to-show", () => {
     if (!backgroundE2E) return mainWindow?.show();
     app.dock?.hide();
+    if (process.platform === "win32") mainWindow?.setSkipTaskbar(true);
     mainWindow?.setOpacity(0);
     mainWindow?.setIgnoreMouseEvents(true);
     mainWindow?.showInactive();
