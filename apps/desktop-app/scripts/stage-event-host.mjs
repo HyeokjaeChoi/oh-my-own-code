@@ -1,4 +1,5 @@
 import { constants } from "node:fs";
+import { renameReplacing } from "../src/platform-paths.mjs";
 import { createHash } from "node:crypto";
 import {
   chmod,
@@ -9,7 +10,6 @@ import {
   mkdtemp,
   open,
   readFile,
-  rename,
   symlink,
   writeFile,
 } from "node:fs/promises";
@@ -456,11 +456,15 @@ export async function stageEventHost({
     const retainedDescriptor = eventHostForResources(retained, platform, arch);
     await mkdir(dirname(retainedDescriptor.root), { recursive: true });
     await assertRealResourceParents(dirname(retainedDescriptor.root));
-    await rename(descriptor.root, retainedDescriptor.root);
+    await renameReplacing(descriptor.root, retainedDescriptor.root, {
+      attempts: 20,
+    });
   }
-  // Claim destination exclusively; never discard an old resource tree.
-  await mkdir(descriptor.root, { mode: 0o755 });
-  await rename(temporary, descriptor.root);
+  // Claim destination exclusively; never discard an old resource tree. POSIX
+  // renames onto an empty directory; Windows cannot replace a directory, so the
+  // rename itself is the exclusive claim there (it fails if the root exists).
+  if (platform !== "win32") await mkdir(descriptor.root, { mode: 0o755 });
+  await renameReplacing(temporary, descriptor.root, { attempts: 20 });
   await verifyEventHostResources(descriptor, {
     platform,
     arch,

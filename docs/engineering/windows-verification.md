@@ -1,44 +1,42 @@
 # Windows 10/11 x64 verification kit
 
-Status: **code prepared on macOS, never run on Windows.** Everything below marked
-"expected" is what the code is designed to do; the first run on a real machine is
-the actual verification. Record real results in `docs/runs/` only if you want
-historical evidence (that folder is not a source of truth).
+Status: **the code path is complete for startup, chat, permissions, file read/list/save and
+configuration save, but it has never run on a real Windows machine.** Everything marked
+"expected" is what the code is designed to do. The first run on Windows is the actual
+verification. Record real results in `docs/runs/` only if you want historical evidence.
 
-## 0. Known hard blockers (read first)
+## 0. What is supported, what is held
 
-The native permission stack is pinned to **darwin-arm64** and fails closed elsewhere.
-On Windows the app will therefore stop at startup with a "native startup unverified"
-recovery screen until these are ported. The following were NOT changed because they
-are security-pinned recipes/digests or need a Windows-only native component:
-
-| Area                                         | Where                                                                                                                                                                                                     | Why it blocks                                                                                                                                |
-| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Event-host target                            | `src/event-host-resources.mjs` (`assertEventHostTarget`, `darwin-arm64` dir, `runtime/bun`), `scripts/prepare-event-host.mjs` (`@oven/bun-darwin-aarch64` pins), `runtime-event-host/installer-pins.json` | Needs a `win32-x64` Bun engine pin, Windows install receipt, and `.bin` shim (not symlink) handling in the closed inventory                  |
-| Owner lifetime witness                       | `native/owner-lifetime/witness.c`, `src/owner-lifetime-resources.mjs`, `src/host/owner-lifetime.mjs` (`darwin`, `arm64`, `getuid`, POSIX modes)                                                           | A Windows equivalent (Job Object with KILL_ON_JOB_CLOSE or handle-inheritance witness) must be designed and compiled                         |
-| Descriptor reads / git / config-save kernels | `src/host/native-descriptor-read.mjs`, `configuration-save-kernel.mjs`, `git-metadata-kernel.mjs`, `workbench-git.mjs` (`platform !== "darwin"` -> `platform_unavailable`)                                | `openat`/`renameatx_np` via `bun:ffi` on libSystem. On Windows these features report unavailable (fail closed), they do not degrade silently |
-
-Features that stay unavailable on Windows until the above are ported: git
-review/commit/index/branch-restore, configuration save (instructions, skills,
-agents), native descriptor reads. Nothing was weakened to make them "work".
-
-Do not edit `NATIVE_PERMISSION_OVERLAY_RECIPE` or its digests for Windows: the
-overlay patches platform-independent JavaScript inside the event-host install, so
-it should apply unchanged once a win32 install exists.
+| Area                                                 | Windows status                                                                                              |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Event host (pinned Bun + `@opencode/server` closure) | Supported target `win32-x64`: `@oven/bun-windows-x64@1.4.2`                                                 |
+| Native permission overlay                            | Applies unchanged: all 68 original-file digests of the recipe match the Windows install (checked)           |
+| Sidecar                                              | `@opencode/cli-windows-x64@2.0.18` (integrity from `pnpm-lock.yaml`)                                        |
+| Startup ownership / crash recovery                   | Supported with the **identity-mode lifetime witness** (section 4.2)                                         |
+| Native `read` / `list` tools                         | Supported through the **name-identity kernel** (section 4.4)                                                |
+| File save, instructions/MCP/skill/agent save         | Supported through the **name-identity save kernel** (section 4.5)                                           |
+| Git review (read-only snapshot)                      | **Held** (`platform_unavailable`): see 4.6                                                                  |
+| Git commit / index / branch restore                  | **Held**: `git-metadata-kernel.mjs` is a 3k-line `bun:ffi` libSystem `openat`/`renameatx_np` implementation |
+| Terminal                                             | Owned by the PTY work (`src/host/terminal-host.mjs`); see section 8                                         |
 
 ## 1. Prerequisites
 
-- Windows 10 22H2 or Windows 11, x64, NTFS volume with >= 10 GiB free.
-- Node.js 24.14.1 x64 (matches `runtime-event-host/package.json` engines).
-- pnpm (version from root `package.json` `packageManager`), Git for Windows.
-- Visual Studio Build Tools only if a native witness is later added.
-- Enable long paths (admin PowerShell, then reboot or sign out):
+- Windows 10 22H2 or Windows 11, x64, NTFS, >= 12 GiB free (the event-host tree is ~0.6 GB, Electron ~0.3 GB).
+- Node.js **24.14.1** x64 from nodejs.org (the pins require exactly this version for `prepare`),
+  with its bundled npm 11.11.0 (check: `npm --version`). Do not set `NODE_OPTIONS`, `NODE_PATH`,
+  `NODE_EXTRA_CA_CERTS`, `SSL_CERT_*` while preparing (the controller refuses them).
+- pnpm (`packageManager` in the root `package.json`), Git for Windows (for the repo only; the app does not need it yet).
+- Windows PowerShell 5.1 (preinstalled): the app calls
+  `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe` for ACL and process identity.
+- Long paths (admin PowerShell, then sign out/in):
   `Set-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem LongPathsEnabled 1`
-- Enable Developer Mode (Settings > For developers) so symlinks can be created
-  without elevation; otherwise the symlink legs of the e2e scripts are skipped.
-- Optional speedup: exclude the repo, `node_modules`, `%LOCALAPPDATA%\pnpm` from
-  Windows Defender real-time scanning.
-- Clone to a short path such as `C:\src\omoc` (avoid OneDrive-synced folders).
+- Developer Mode (so symlinks can be created); otherwise the e2e symlink legs are skipped.
+- The profile must be private: `%APPDATA%` and `%TEMP%` may only be accessible to your account,
+  SYSTEM and Administrators (default). A domain/roaming/shared profile with broader ACEs makes the app
+  stop with `storage_denied` by design (section 4.3).
+- Clone to a short path such as `C:\src\omoc`, outside OneDrive. Optional: exclude the repo and
+  `%LOCALAPPDATA%\pnpm` from Defender real-time scanning (otherwise builds are 2-5x slower and
+  directory renames can hit sharing violations; they are retried but not infinitely).
 
 ## 2. Preflight
 
@@ -46,68 +44,123 @@ it should apply unchanged once a win32 install exists.
 node apps\desktop-app\scripts\windows-preflight.mjs > preflight.json
 ```
 
-Expected: `"ok": true` on a prepared machine. Notable facts in the output:
+Expected `"ok": true`. Facts and checks that matter for the new code:
 
-- `checks.long_paths_enabled`, `checks.file_symlink_privilege`, `checks.junction_creatable`
-- `facts.directoryFsync` -> `ok:false` with `EPERM`/`EISDIR` is expected; the code skips
-  directory fsync on win32 (`directorySyncSupported`). If it is `ok:true`, nothing breaks.
-- `facts.renameOverOpenFile` -> `EPERM`/`EBUSY` is expected; writes go through
-  `renameReplacing` (bounded retry, `retryTransient`).
-- `facts.reservedNameOpensDevice` must not matter for safety: names such as `NUL`/`CON`
-  are refused by `validWorkspaceFilePath`, `relativeParts`, `assertNotVcsMetadataPath`.
-- `checks.boot_identity_stable`, `checks.process_start_identity`: PowerShell/CIM probes
-  used by the Windows process identity adapter must be stable across two calls. If
-  `boot_identity_stable` is false the owner recovery logic will always report unverified.
+- `boot_identity_stable`, `process_start_identity`, `absent_pid_is_authoritative`: the CIM probes behind
+  the lifetime witness. If `absent_pid_is_authoritative` is false the app can never prove a crashed owner is gone.
+- `appdata_private_acl`, `temp_private_acl`: the DACL policy the app enforces on its storage roots.
+- `facts.directoryFsync`: `ok:false` with `EPERM`/`EISDIR` is expected (the code skips directory fsync on win32).
+- `facts.renameOverOpenFile`: `EPERM`/`EBUSY` is expected (writes use `renameReplacing` with bounded retry).
+- `checks.file_symlink_privilege`, `junction_creatable`, `path_over_260_usable`, `free_disk_*`.
 
-Attach `preflight.json` to any bug report.
-
-## 3. Install, build, unit tests
+## 3. Install, prepare, build, package
 
 ```powershell
-corepack enable
 pnpm install --frozen-lockfile
-# optional deps include @opencode/cli-windows-x64@2.0.18; confirm:
-dir node_modules\.pnpm | findstr cli-windows
+dir node_modules\.pnpm | findstr cli-windows          # expect @opencode+cli-windows-x64@2.0.18
+node apps\desktop-app\scripts\prepare-event-host.mjs   # downloads + verifies bun.exe, npm ci into .generated-win32-x64
 node apps\desktop-app\scripts\build.mjs
-```
-
-Expected today: the renderer builds and the sidecar is copied to
-`apps\desktop-app\dist\resources\opencode\win32-x64\opencode.exe`; the build then fails at
-`stageEventHost` with `Event host resources: unsupported target win32-x64; hold
-required` (blocker #1). That message is the correct fail-closed result.
-
-Unit tests (platform-injected tests also run here natively):
-
-```powershell
-$env:TMPDIR = (New-Item -ItemType Directory -Path "$env:TEMP\omoc-test-$(Get-Random)").FullName
-node_modules\.bin\nx run desktop-app:test --skip-nx-cache
-node_modules\.bin\nx run desktop-app:typecheck
-node_modules\.bin\nx run desktop-app:lint
-node_modules\.bin\nx run desktop-app:format-check
-node_modules\.bin\nx run desktop-app:boundaries
-```
-
-Expected on Windows: a number of pre-existing darwin-only tests (FFI, owner-lifetime,
-POSIX modes) will fail or must be skipped; record the failing test names. Only
-`platform-paths`, `sidecar-supervisor`, `native-bootstrap-workspace`, `process-tree`
-and the other platform-injected suites are expected to be green.
-
-## 4. Package
-
-```powershell
 pnpm --filter @workbench/desktop run package:windows
+node apps\desktop-app\scripts\verify-package-layout.mjs win32 x64
 ```
 
-Expected today: stops at `copyPackagedResources` (blocker #1). After the event host is
-ported: `apps\desktop-app\dist\packages\OhMyOwnCode-win32-x64\OhMyOwnCode.exe` plus
-`resources\app.asar`, `resources\opencode\win32-x64\opencode.exe`.
+Expected results:
 
-## 5. E2E scripts (PowerShell syntax)
+- `prepare-event-host.mjs` prints `...\runtime-event-host\.generated-win32-x64`. It refuses a wrong
+  archive: the registry tarball integrity must equal
+  `sha512-+bN6OuVld/9diT/RLSXSW7JE6CvNE3gL9XsAEjULi1nUsXd6DNO6GuA9jNdNb3r8PdJFnYHr5aypNV1Oj3Rd9g==`
+  and `bun.exe` must hash to
+  `15277c59ccd6c6c20f8dc9716c2b59c1776320d606b6a8658f70be8799519ca4`. The install runs with
+  `--ignore-scripts --no-bin-links --os=win32 --cpu=x64`; no script and no Bun byte is executed.
+  A second run fails (`.generated-win32-x64` is exclusive); delete the folder to prepare again.
+- `build.mjs`: renderer, `dist\resources\opencode\win32-x64\opencode.exe`,
+  `dist\resources\opencode\event-host\win32-x64\...`, provenance stamp `dist\build-provenance.json`
+  with `target: {platform: "win32", arch: "x64"}` and `ownerLifetimeResources.algorithm =
+"owner-lifetime-identity-mode-v1"`. There is no `owner-lifetime` folder on Windows.
+- `package:windows` prints `Packaged local personal-use app: ...\dist\packages\OhMyOwnCode-win32-x64`.
+- `verify-package-layout.mjs` prints six passed checks (exe is a PE file, asar, sidecar bytes equal staged bytes,
+  event host verifies including overlay receipt, snapshots equal the provenance stamp, no foreign-target names).
 
-The scripts set their own isolated `OMOC_APP_DATA_DIR`, `TMP/TEMP`, `USERPROFILE`,
-`APPDATA`, `LOCALAPPDATA`. Optional: `$env:OMOC_E2E_FOREGROUND = "1"` to watch the window.
-`OMOC_DESKTOP_E2E_BACKGROUND=1` is set by the scripts: the window is shown inactive with
-opacity 0, click-through, and hidden from the taskbar (`setSkipTaskbar` on win32).
+### Cross-checking the layout on macOS (what was done for this kit)
+
+```sh
+node apps/desktop-app/scripts/prepare-event-host.mjs --target=win32-x64
+node apps/desktop-app/scripts/fetch-sidecar.mjs win32-x64          # integrity checked against pnpm-lock.yaml
+OMOC_BUILD_TARGET=win32-x64 OMOC_SIDECAR_PACKAGE_DIR=$PWD/apps/desktop-app/.cross/win32-x64/@opencode/cli-windows-x64 \
+  node apps/desktop-app/scripts/build.mjs
+OMOC_ALLOW_CROSS_PACKAGE=1 node apps/desktop-app/scripts/package.mjs win32 x64
+node apps/desktop-app/scripts/verify-package-layout.mjs win32 x64
+```
+
+Move the native `dist` aside first: the cross build writes into `dist`. Cross output is for layout and hash
+verification only; ship builds made on Windows.
+
+## 4. Design notes and trade-offs (security-relevant)
+
+### 4.1 Event-host manifests on Windows
+
+NTFS has no POSIX mode, so Windows manifests record canonical modes (directories `0755`, files `0644`,
+`runtime/bun.exe` `0755`) computed from the file type, not from the file system. The same tree therefore
+verifies identically on Windows and when staged on another host. `npm ci --no-bin-links` leaves no `.bin`
+shims, so the closed inventory contains no symlinks (a junction or symlink is rejected as "undeclared symlink").
+All other checks (single hard link, size, sha256, locked package versions, overlay receipt) are unchanged.
+Windows hosts also use a case-insensitive containment test, so `..\x` style escapes cannot hide behind the
+separator.
+
+### 4.2 Lifetime witness: identity mode (replaces the macOS kqueue helper)
+
+macOS records durable exit facts through an independent helper process. Windows has no equivalent without
+a native compiler and does not need one: the process identity is the kernel creation FILETIME read from
+CIM (`Win32_Process`), which lists every process. A crashed owner or child is proven gone when CIM has no row
+for its PID, or a row with a different creation time inside the same boot. Probe failure, timeout or odd
+output is `unverified` and keeps the store blocked. The witness additionally enforces one app and at most one
+child per owner nonce, only live exact identities, no registration after sealing, and "exited" only if
+every registered role is individually proven exited. **Trade-off:** it writes no durable per-run exit file, so
+there is nothing to inspect after the fact. The event-host child exits when its IPC channel closes, so a
+force-killed app does not leave a running host that the next launch would have to hunt down.
+
+### 4.3 Directory privacy replaces uid/mode checks
+
+POSIX requires "owned by my uid, no group/other bits". Windows requires the directory's DACL (`Get-Acl`, SIDs only,
+no localized names) to be private: owner is you or Administrators, and every allow rule belongs to you, SYSTEM,
+Administrators or CREATOR OWNER. The storage root is checked synchronously before the app is ready; the
+supervisor checks the root, config/data/state, and the disposable profile directories in one batched call
+before spawning the host. **Trade-off:** children created inside a verified directory inherit its DACL and are
+only shape-checked (not individually ACL-checked); a same-user attacker can change ACLs anyway.
+
+### 4.4 Native read/list: name-identity kernel (`native-descriptor-read-win32.mjs`)
+
+No `openat`/`O_NOFOLLOW`. Every directory component is proven by `lstat` (symlinks and junctions are reported
+as symbolic links and refused) plus `realpath` equality; the leaf is `lstat`ed before open, opened read-only,
+`fstat`ed, and compared (dev, ino, size, mtime, ctime, mode, nlink) before, during and after each read. Directories are
+never opened. 8.3 aliases and DOS device names are refused. **Residual:** the instant between a leaf's `lstat`
+and its `open` cannot be closed (darwin's `O_NOFOLLOW` closes it); a swap inside it is detected by the identity
+comparison and no bytes are returned.
+
+### 4.5 File and configuration save: name-identity save kernel (`configuration-save-kernel-win32.mjs`)
+
+Same prepare/publish/abort contract. Publishing an existing target is link/rename based:
+stage -> `.swap` name, `link(target, backup)`, `rename(.swap, target)` (MoveFileEx replace), so the target is
+never absent and the ORIGINAL content stays at the backup name exactly like the darwin swap. A missing target
+is published with `link(stage, target)` which fails if it appeared. **Trade-offs:** (1) alternate data streams,
+explicit ACEs and file attributes of the original are not readable from Node and are not carried over to the
+new file; a read-only original is refused. (2) there is no compare-and-swap rename on NTFS: a write by another
+process in the instant between the last identity check and the replacing rename is overwritten, but its content is
+what remains at the backup name and the immediate post-publish verification fails closed.
+Stray `.omoc-configuration-*.swap` files after a crash are kept for inspection, never deleted.
+
+### 4.6 Git: holds
+
+- **Review snapshot** (`workbench-git*.mjs`): runs a pinned Apple CLT git (`/Library/Developer/CommandLineTools/usr/bin/git`),
+  verifies a root-owned non-writable ancestor chain and accepts only `2.50.1 (Apple Git-155)` / `2.54.x`. Windows
+  needs a trust anchor (Git for Windows under `%ProgramFiles%` with an ACL-verified chain, version allowlist that
+  accepts `2.54.x.windows.N`), `core.symlinks=false`/`core.filemode=false`/`core.ignorecase=true` repository
+  semantics in `minimalConfig`, and directory handles. Not attempted blind; it reports `platform_unavailable`.
+- **Commit / index / branch restore** (`git-metadata-kernel.mjs`): writes objects, refs and the index through
+  `bun:ffi` + libSystem `openat`/`renameatx_np`. A Windows implementation is a new kernel (path-based with the
+  same identity proofs and exclusive `link` publication), then enabling the three request paths.
+
+## 5. E2E scripts (PowerShell)
 
 ```powershell
 $env:OMOC_DESKTOP_E2E_BACKGROUND = "1"
@@ -118,38 +171,50 @@ node apps\desktop-app\scripts\e2e-session-lifecycle.mjs
 node apps\desktop-app\scripts\e2e-workbench-states.mjs
 node apps\desktop-app\scripts\e2e-smoke.mjs dev win32
 node apps\desktop-app\scripts\e2e-smoke.mjs packaged win32
-git checkout -- docs\runs   # discard evidence the scripts write
+git checkout -- docs\runs
 ```
 
-cmd.exe equivalents: `set OMOC_DESKTOP_E2E_BACKGROUND=1` then the same `node ...` lines.
+cmd.exe: `set OMOC_DESKTOP_E2E_BACKGROUND=1` then the same `node ...` lines. Background mode shows the window
+inactive with opacity 0, click-through, and hidden from the taskbar. Child-process checks use `scripts\process-tree.mjs`
+(`Win32_Process` instead of `pgrep`); termination uses `taskkill /PID <pid> /T /F`.
 
-Expected today: all fail at app startup with the native startup recovery screen
-(blocker #1). After the event host is ported, expected results are the same assertions as
-on macOS, except:
+Expected: the same assertions as on macOS. The first thing to look at if startup fails is the recovery
+reason shown by the app (`storage_denied` = ACL policy, `owner_unverified` = lifetime witness/CIM,
+`native_startup_unverified` = preflight or event-host verification).
 
-- e2e-workbench: if the preflight reports no symlink privilege, the `escape.txt` leg
-  prints `SKIPPED symlink leg`.
-- child process checks use `scripts\process-tree.mjs` (PowerShell `Win32_Process`
-  instead of `pgrep`); the event-host child must be found and must be gone (`ESRCH`)
-  after quit. Tree termination uses `taskkill /PID <pid> /T /F`.
+## 6. Manual spot checks
 
-## 6. Manual spot checks once the app starts
+1. Add `C:\Users\<you>\proj` and again as `c:\users\<YOU>\PROJ\`: one workspace, not two.
+2. In the file tree request `.GIT`, `.git.`, `GIT~1`, `.env.`, `NUL`, `a.txt:stream`: all refused.
+3. End the app in Task Manager and relaunch: it recovers (identity proof) or shows an explicit recovery state.
+   Check `tasklist | findstr /i "bun opencode"` is empty after quitting normally.
+4. Save a file in the editor: the old content is next to it as `.omoc-configuration-<hash>.file.backup`.
+5. Ask the agent to read a file: the leased read goes through the Windows kernel (check the transcript shows the content).
 
-1. Add a project at `C:\Users\<you>\proj` and again via `c:\users\<YOU>\PROJ\` (different
-   case, trailing slash): it must resolve to one workspace, not two.
-2. In the file tree request `.GIT`, `.git.`, `GIT~1`, `.env.`, `NUL`, `a.txt:stream`:
-   all must be refused.
-3. Kill the app from Task Manager (End task) and relaunch: expect owner recovery to
-   either recover or show an explicit recovery state, never a silent new store.
-4. Quit the app: no `opencode.exe` or `bun.exe` children remain (`tasklist | findstr opencode`).
+## 7. Unverifiable-here items (first thing to check on Windows)
 
-## 7. What was verified where
+- Bun IPC (`stdio: ["ignore","ignore","ignore","ipc"]`) with `bun.exe` on Windows.
+- `fs.openSync` semantics for directories under Bun (the Windows kernels never open directories).
+- `process.umask` is skipped on Windows; `chmod` calls are no-ops.
+- CIM / PowerShell cold start adds roughly 0.5-1 s per call (startup, child registration, ACL batches).
+- Chromium's `lockfile` in the user-data root is whitelisted for a first start.
+- `@oven/bun-windows-x64` needs AVX2; on older CPUs a baseline build would need its own pin.
+- Antivirus holding `node_modules` files can still cause `EPERM` beyond the retry budget.
 
-- Unit-tested on macOS with injected `win32`: path containment/case-folding, UNC and
-  `\\?\` prefixes, drive letters, reserved names, ADS, trailing dots/spaces, `.GIT`/`GIT~1`
-  VCS aliases, taskkill command construction, `.cmd`/`.bat` spawn plan and injection
-  refusal, transient rename retry, process-identity probes (fake PowerShell), cross-platform
-  child-pid lookup, sidecar naming/layout.
-- Never executed on Windows: all of section 5, `taskkill`, PowerShell identity probes,
-  directory open/fsync behaviour, junction detection, rename-over-open-file, long paths,
-  Electron single-instance lock, background-window flags.
+## 8. Items left for `terminal-host.mjs` (not touched here)
+
+`killTree` uses `taskkill` without an absolute path or `windowsHide`; `process.env.SHELL || "/bin/sh"` and the
+colon-joined login `PATH` (`resolveLoginPath`) are POSIX; the env whitelist (`TMPDIR`, `HOME`, `SHELL`) lacks
+`SystemRoot`/`USERPROFILE`/`ComSpec`/`PATH` casing handling. Shell selection should be `ComSpec`/PowerShell with
+`windowsSpawnPlan` (`src/platform-paths.mjs`) for `.cmd` launchers, and tree termination should reuse
+`killProcessTree`.
+
+## 9. What was verified where
+
+- Verified on macOS by running it: `prepare-event-host --target=win32-x64` (downloads and checks the official
+  Windows Bun archive, `npm ci --os=win32`); the overlay recipe applying to the Windows install; `stage` + full
+  manifest verification for `win32-x64`; `fetch-sidecar` (integrity vs lockfile); cross `build` with provenance
+  stamp; cross `package` (Electron 44.4.4 win32 zip); `verify-package-layout.mjs win32 x64`.
+- Unit-tested with injected `win32` on macOS: path/NTFS rules, ACL policy, process-identity probes, lifetime witness,
+  host environment, event-host target table and canonical modes, the three name-identity kernels, supervisor flow.
+- Not exercised on Windows: everything in sections 3-7 on a real machine.
