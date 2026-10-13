@@ -2,7 +2,7 @@ import { execFile, execFileSync, spawn as nodeSpawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { existsSync, realpathSync, statSync } from "node:fs";
 import { constants as osConstants } from "node:os";
-import { isAbsolute, join, relative } from "node:path";
+import { isAbsolute, join, relative, win32 } from "node:path";
 import { TERMINAL_LIMITS } from "../renderer/shared/terminal/index.mjs";
 import { readProjectActions } from "./project-actions.mjs";
 
@@ -20,6 +20,11 @@ const ENV_KEYS = WIN
       "LOCALAPPDATA",
       "ProgramFiles",
       "ProgramData",
+      "SystemDrive",
+      "HOMEDRIVE",
+      "HOMEPATH",
+      "NUMBER_OF_PROCESSORS",
+      "PROCESSOR_ARCHITECTURE",
       "TEMP",
       "TMP",
     ]
@@ -98,6 +103,8 @@ function minimalEnv(pathValue) {
   for (const k of ENV_KEYS)
     if (process.env[k] !== undefined) env[k] = process.env[k];
   if (pathValue) env.PATH = pathValue;
+  // A GUI-launched app may have no locale; shells and TUIs then fall back to non-UTF-8 output.
+  if (!WIN && !env.LANG && !env.LC_ALL) env.LANG = "en_US.UTF-8";
   return env;
 }
 function inside(root, path) {
@@ -125,10 +132,10 @@ function processTable() {
     return [];
   }
 }
-function treeOf(root) {
+function treeOf(root, snap = {}) {
+  const rows = (snap.rows ??= processTable());
   const pids = new Set([root]);
   const groups = new Set([root]);
-  const rows = processTable();
   for (let grew = true; grew; ) {
     grew = false;
     for (const [pid, ppid, pgid] of rows)
@@ -141,23 +148,23 @@ function treeOf(root) {
   return { pids, groups };
 }
 // ponytail: Windows has no process groups here; taskkill /T walks the child tree instead (untested).
-function killTree(t, signal) {
+// `snap` is an optional lazily-filled ps snapshot holder so one terminate/closeAll costs one ps call.
+function killTree(t, signal, snap) {
   const pid = t.pid;
-  if (pid === undefined) return;
-  // The pid may already be reused; never taskkill a child that has exited.
+  // The pid may already be reused; never signal a child that has exited.
+  if (pid === undefined || t.exited) return;
   if (WIN) {
-    if (t.exited) return;
     try {
       nodeSpawn("taskkill", ["/pid", String(pid), "/T", "/F"], {
         stdio: "ignore",
         windowsHide: true,
       }).on("error", () => {});
     } catch {
-      // taskkill unavailable: the pty close below still ends the console.
+      // taskkill unavailable: proc.kill() below the caller still closes the console.
     }
     return;
   }
-  const { pids, groups } = treeOf(pid);
+  const { pids, groups } = treeOf(pid, snap);
   for (const g of groups) if (g > 1) send(-g, signal);
   for (const p of pids) send(p, signal);
 }
@@ -167,6 +174,34 @@ function send(target, signal) {
   } catch {
     // ESRCH: already gone.
   }
+}
+
+// Windows package managers are .cmd shims, so the script runs through cmd. The shim is resolved
+// from absolute PATH entries only: cmd itself would try the (workspace) cwd first and could pick up
+// a planted pnpm.cmd. If no safe absolute path is found it falls back to the bare name (cwd first).
+// Script names are [\w:.-] and the manager comes from a fixed set. node-pty takes a string
+// command line on Windows verbatim, which keeps the quoting exactly as written here.
+export function windowsScriptSpec(
+  pm,
+  script,
+  { env = process.env, exists = existsSync, comSpec = env.ComSpec } = {},
+) {
+  const dirs = (env.PATH ?? env.Path ?? "")
+    .split(";")
+    .filter((d) => win32.isAbsolute(d));
+  let command = pm;
+  search: for (const dir of dirs)
+    for (const ext of [".cmd", ".exe", ".bat"]) {
+      const candidate = win32.join(dir, pm + ext);
+      if (!/["%^&|<>]/.test(candidate) && exists(candidate)) {
+        command = `"${candidate}"`;
+        break search;
+      }
+    }
+  return {
+    file: comSpec ?? "cmd.exe",
+    args: `/d /s /c "${command} run ${script}"`,
+  };
 }
 
 const DEFAULT_COLS = 80;
@@ -188,7 +223,8 @@ export function createTerminalHost({
   now = Date.now,
   kill = killTree,
   killGraceMs = 1500,
-  closeAllMs = killGraceMs + 1500,
+  forceExitMs = 2000,
+  closeAllMs = killGraceMs + forceExitMs + 1000,
   loginPath,
   loginPathTimeoutMs = 3000,
 } = {}) {
@@ -288,17 +324,34 @@ export function createTerminalHost({
     return out;
   }
   // Interactive shells ignore SIGTERM, so hang up the session first, then force after the grace period.
-  function terminate(t) {
+  // Bounded: if the OS never reports the exit (e.g. a Windows console that will not close), the
+  // terminal is declared exited after `forceExitMs` so close/stop cannot hang forever.
+  function terminate(t, snap = {}) {
     if (t.exited) return Promise.resolve();
-    kill(t, "SIGHUP");
-    kill(t, "SIGTERM");
+    kill(t, "SIGHUP", snap);
+    kill(t, "SIGTERM", snap);
+    if (WIN) {
+      try {
+        t.proc.kill();
+      } catch {
+        // already closed
+      }
+    }
     const timer = setTimeout(() => kill(t, "SIGKILL"), killGraceMs);
+    const forced = setTimeout(
+      () => t.finish(null, "SIGKILL"),
+      killGraceMs + forceExitMs,
+    );
     timer.unref?.();
-    return t.done.finally(() => clearTimeout(timer));
+    forced.unref?.();
+    return t.done.finally(() => {
+      clearTimeout(timer);
+      clearTimeout(forced);
+    });
   }
-  async function remove(t) {
+  async function remove(t, snap) {
     t.closing = true;
-    await terminate(t);
+    await terminate(t, snap);
     terminals.delete(t.id);
   }
 
@@ -341,8 +394,12 @@ export function createTerminalHost({
         encoding: "utf8",
         ...(WIN ? { useConpty: true } : {}),
       });
-    } catch {
-      throw fail("SPAWN_FAILED");
+    } catch (e) {
+      throw fail(
+        e?.terminalCode === "PTY_UNAVAILABLE"
+          ? "PTY_UNAVAILABLE"
+          : "SPAWN_FAILED",
+      );
     }
     const t = {
       id: randomUUID(),
@@ -363,14 +420,21 @@ export function createTerminalHost({
       label: meta.label ?? null,
     };
     t.done = new Promise((resolve) => {
-      proc.onExit(({ exitCode, signal }) => {
+      t.finish = (exitCode, signal) => {
         if (t.exited) return;
         t.exited = true;
-        t.exitCode = signal ? null : (exitCode ?? null);
-        t.signal = signalName(signal);
-        // No orphans: anything the shell left running in its group goes with it.
-        if (!WIN) kill(t, "SIGKILL");
+        t.exitCode = exitCode;
+        t.signal = signal;
         resolve();
+      };
+      proc.onExit(({ exitCode, signal }) => {
+        if (t.exited) return;
+        t.finish(signal ? null : (exitCode ?? null), signalName(signal));
+        // The leader's group cannot have been reused yet, so one immediate sweep is safe: anything the
+        // shell left in its own group dies with it. Jobs that an interactive shell moved to their own
+        // process group are not found here (the tree is gone once the shell exits); like in any
+        // terminal they outlive a shell that exits by itself. Close/stop/quit kill the whole tree first.
+        if (!WIN) send(-t.pid, "SIGKILL");
       });
     });
     proc.onData((data) => appendText(t, data));
@@ -394,12 +458,10 @@ export function createTerminalHost({
       if (closedAll) throw fail("CLOSED");
       if (!scripts.some((s) => s.name === script)) throw fail("UNKNOWN_SCRIPT");
       const label = `${packageManager} run ${script}`;
-      // ponytail: Windows package managers are .cmd shims; run through cmd (script names are [\w:.-], pm is a fixed set) (untested).
       const spec = WIN
-        ? {
-            file: process.env.ComSpec ?? "cmd.exe",
-            args: ["/d", "/s", "/c", label],
-          }
+        ? windowsScriptSpec(packageManager, script, {
+            env: { ...process.env, PATH: pathValue ?? process.env.PATH },
+          })
         : { file: packageManager, args: ["run", script] };
       return guarded(owner, ensurePath(), () =>
         launch(owner, { workspaceId, cols, rows }, spec, { script, label }),
@@ -477,8 +539,9 @@ export function createTerminalHost({
     async closeAll() {
       closedAll = true;
       let timer;
+      const snap = {};
       await Promise.race([
-        Promise.all([...terminals.values()].map(remove)),
+        Promise.all([...terminals.values()].map((t) => remove(t, snap))),
         new Promise((r) => {
           timer = setTimeout(r, closeAllMs);
           timer.unref?.();
@@ -490,7 +553,8 @@ export function createTerminalHost({
     },
     // Last-ditch for process exit handlers, where async cannot run.
     killAllSync() {
-      for (const t of terminals.values()) kill(t, "SIGKILL");
+      const snap = {};
+      for (const t of terminals.values()) kill(t, "SIGKILL", snap);
     },
     size: () => terminals.size,
   };
