@@ -55,7 +55,7 @@ test("pinned overlay recipe binds exact sixty-four source files and preserves fr
   assert.equal(recipe.id, "permission-session-entry-gate-v1");
   assert.equal(
     NATIVE_PERMISSION_OVERLAY_RECEIPT.recipeSha256,
-    "e60be82b78ff66ef13ef52fb4fe9baa608fe350eb8dc1d018ba39b58353f527b",
+    "a15a60bc9e05ba5e758aa34e124f56632ab2755bfa5fccbd84b97ea270c50850",
   );
   assert.deepEqual(
     recipe.files.slice(0, 50).map(({ path }) => path),
@@ -178,7 +178,7 @@ test("pinned overlay recipe binds exact sixty-four source files and preserves fr
       "f96d58b1e4a68ddd261170f16b953157f590229f52c2ebe4b4b0a50860391b9d",
       "7e619e08c82a171a669c8743ed2cec700f11b1459d348d7f3a55a37e4435b442",
       "8bb1cbb6771fed3b5a77255c9e17f6ab266251e6031335b439137f8f2815ea77",
-      "edeab4ba668291b93024306f5c36e621a3d834fc5c6d56aaee13494bec526a94",
+      "a24ec771264a845261c7452f5506e62c1680a2374782ec64b3a9385cb14f5a4f",
       "2b374f48f4be331e06419fb43f30dfab5b2fa72d45b1cc8500d633ab3e6f0a6b",
       "41593f4696861893d2a07d5a02bc6aee294e9440a7ff2c89580334db05156208",
       "bc91187f78b5c59727654030e9f3f9c0efa133ef72951e0da3d3757f6ef22b34",
@@ -577,11 +577,7 @@ test("checked Session entries guard before original effect construction and rele
       '    create: Effect.fn("Session.create")(function* (input) {\n      // Only a private bootstrap handoff armed for exactly this input may create.',
     ),
   );
-  assert.ok(
-    factory.includes(
-      "yield* (input.parentID === undefined ? control.consumeBootstrap(input) : control.consumeChildCreate(input));",
-    ),
-  );
+  assert.ok(factory.includes("yield* control.consumeBootstrap(input);"));
   assert.equal(factory.includes("native_permission_held"), false);
   assert.ok(
     factory.includes(

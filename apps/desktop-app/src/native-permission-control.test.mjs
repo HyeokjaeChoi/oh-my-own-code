@@ -2559,8 +2559,8 @@ test("subagent child create admits only the inheriting child shape", async () =>
   try {
     await run((service) =>
       Effect.gen(function* () {
-        yield* service.consumeChildCreate({ parentID: "ses_parent" });
-        yield* service.consumeChildCreate({
+        yield* service.consumeBootstrap({ parentID: "ses_parent" });
+        yield* service.consumeBootstrap({
           parentID: "ses_parent",
           title: "Explore",
           agent: "explore",
@@ -2576,7 +2576,7 @@ test("subagent child create admits only the inheriting child shape", async () =>
           { title: "no parent" },
           null,
         ])
-          yield* expectFailure(service.consumeChildCreate(bad));
+          yield* expectFailure(service.consumeBootstrap(bad));
       }),
     );
   } finally {
@@ -2584,10 +2584,7 @@ test("subagent child create admits only the inheriting child shape", async () =>
   }
   // Strict proof mode keeps holding child creates.
   await run((service) =>
-    expectFailure(
-      service.consumeChildCreate({ parentID: "ses_parent" }),
-      "held",
-    ),
+    expectFailure(service.consumeBootstrap({ parentID: "ses_parent" }), "held"),
   );
 });
 

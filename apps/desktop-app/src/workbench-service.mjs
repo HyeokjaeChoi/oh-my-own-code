@@ -2463,8 +2463,10 @@ export function createWorkbenchService({
             runtimeEpoch: metadata.originalRuntimeEpoch,
             operationId: metadata.operationId,
           });
+        // Subagent children inherit metadata too; a root is never a child.
         if (
           info.fork != null ||
+          info.parentID != null ||
           !admitted ||
           !["workspace.create", "workspace.import", "session.create"].includes(
             admitted.type,
