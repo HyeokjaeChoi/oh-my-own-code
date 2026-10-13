@@ -1,3 +1,4 @@
+/* global document, DataTransfer, ClipboardEvent */
 // Real Electron + real node-pty: terminal tab, colors, line editing, resize, exit code,
 // close-tab and quit orphan checks, and the dev-server project action. No model/provider needed.
 import assert from "node:assert/strict";
