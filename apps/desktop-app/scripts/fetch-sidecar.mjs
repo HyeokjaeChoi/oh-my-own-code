@@ -65,6 +65,53 @@ export function unpackSidecar(archive, integrity, binary) {
   return files;
 }
 
+// The unpacked manifest must be exactly the package we asked for.
+export function assertSidecarManifest(
+  bytes,
+  { name, version, platform, arch },
+) {
+  let manifest;
+  try {
+    manifest = JSON.parse(bytes.toString("utf8"));
+  } catch {
+    throw new Error("Sidecar package.json is not JSON");
+  }
+  const same = (value, expected) =>
+    Array.isArray(value) && value.length === 1 && value[0] === expected;
+  if (
+    manifest?.name !== name ||
+    manifest.version !== version ||
+    !same(manifest.os, platform) ||
+    !same(manifest.cpu, arch)
+  )
+    throw new Error("Sidecar package identity mismatch");
+}
+const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
+export const SIDECAR_RECEIPT = ".omoc-verified.json";
+// build.mjs only honours OMOC_SIDECAR_PACKAGE_DIR for a directory that fetchSidecar
+// produced: the receipt binds the locked archive integrity to the unpacked bytes.
+export async function verifySidecarReceipt(
+  packageDir,
+  { lockText, name, version, binary },
+) {
+  const receipt = JSON.parse(
+    await readFile(join(packageDir, SIDECAR_RECEIPT), "utf8"),
+  );
+  const bytes = await readFile(join(packageDir, "bin", binary));
+  const manifest = await readFile(join(packageDir, "package.json"));
+  if (
+    receipt?.name !== name ||
+    receipt.version !== version ||
+    receipt.integrity !== lockedIntegrity(lockText, name, version) ||
+    receipt.binarySha256 !== sha256(bytes) ||
+    receipt.manifestSha256 !== sha256(manifest)
+  )
+    throw new Error(
+      "Sidecar package directory is not the verified lockfile package",
+    );
+  return receipt;
+}
+
 export async function fetchSidecar(
   target,
   { outDir = join(root, "apps/desktop-app/.cross") } = {},
@@ -86,6 +133,12 @@ export async function fetchSidecar(
     integrity,
     binary,
   );
+  assertSidecarManifest(files.get("package/package.json"), {
+    name,
+    version,
+    platform,
+    arch,
+  });
   const packageDir = join(outDir, target, name);
   await mkdir(join(packageDir, "bin"), { recursive: true });
   await writeFile(
@@ -96,6 +149,10 @@ export async function fetchSidecar(
     join(packageDir, "bin", binary),
     files.get(`package/bin/${binary}`),
     { mode: 0o755 },
+  );
+  await writeFile(
+    join(packageDir, SIDECAR_RECEIPT),
+    `${JSON.stringify({ name, version, integrity, binarySha256: sha256(files.get(`package/bin/${binary}`)), manifestSha256: sha256(files.get("package/package.json")) }, null, 2)}\n`,
   );
   return packageDir;
 }

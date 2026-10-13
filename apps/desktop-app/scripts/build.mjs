@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 import { build as buildRenderer } from "vite";
 import { stageEventHost } from "./stage-event-host.mjs";
+import { verifySidecarReceipt } from "./fetch-sidecar.mjs";
 import { stageOwnerLifetime } from "./stage-owner-lifetime.mjs";
 import {
   sidecarBinaryName,
@@ -29,9 +30,26 @@ const [targetPlatform, targetArch] = (
 ).split("-");
 const target = `${targetPlatform}-${targetArch}`;
 const packageName = sidecarPackageName(targetPlatform, targetArch);
+// An override directory is honoured ONLY for a cross-target build and ONLY if
+// fetch-sidecar's receipt proves it is the lockfile-pinned package; a native
+// (shippable) build always uses the installed dependency.
+const crossBuild = target !== `${process.platform}-${process.arch}`;
+if (process.env.OMOC_SIDECAR_PACKAGE_DIR && !crossBuild)
+  throw new Error(
+    "OMOC_SIDECAR_PACKAGE_DIR is only valid with OMOC_BUILD_TARGET for another target",
+  );
 const sidecarPackageDir = process.env.OMOC_SIDECAR_PACKAGE_DIR
   ? resolve(process.env.OMOC_SIDECAR_PACKAGE_DIR)
   : dirname(require.resolve(`${packageName}/package.json`));
+const sidecarReceipt = process.env.OMOC_SIDECAR_PACKAGE_DIR
+  ? await verifySidecarReceipt(sidecarPackageDir, {
+      lockText: await readFile(join(root, "pnpm-lock.yaml"), "utf8"),
+      name: packageName,
+      version: JSON.parse(await readFile(join(appDir, "package.json"), "utf8"))
+        .dependencies["@opencode/client"],
+      binary: sidecarBinaryName(targetPlatform),
+    })
+  : undefined;
 const sidecarSource = join(
   sidecarPackageDir,
   "bin",
@@ -90,4 +108,4 @@ await writeFile(
     2,
   )}\n`,
 );
-await finishBuildProvenance(root, buildInputs);
+await finishBuildProvenance(root, buildInputs, { sidecarReceipt });

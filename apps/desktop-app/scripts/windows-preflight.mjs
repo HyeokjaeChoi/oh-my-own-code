@@ -184,6 +184,19 @@ try {
         );
       }
     }
+    // File identity (dev:ino) and the identity proofs assume NTFS 64-bit file IDs; ReFS
+    // (128-bit IDs), FAT and exFAT do not provide them reliably.
+    for (const [name, dir] of [
+      ["repo_volume_ntfs", here],
+      ["appdata_volume_ntfs", process.env.APPDATA],
+      ["temp_volume_ntfs", process.env.TEMP ?? process.env.TMP],
+    ]) {
+      const drive = /^([A-Za-z]):/.exec(dir ?? "")?.[1];
+      const format = drive
+        ? psRun(`[System.IO.DriveInfo]::new('${drive}').DriveFormat`)
+        : undefined;
+      check(name, format === "NTFS", format ?? `${dir}: not on a drive letter`);
+    }
     check(
       "taskkill_present",
       typeof run(root + "\\System32\\taskkill.exe", ["/?"]) === "string",

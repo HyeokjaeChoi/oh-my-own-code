@@ -46,8 +46,11 @@ node apps\desktop-app\scripts\windows-preflight.mjs > preflight.json
 
 Expected `"ok": true`. Facts and checks that matter for the new code:
 
-- `boot_identity_stable`, `process_start_identity`, `absent_pid_is_authoritative`: the CIM probes behind
-  the lifetime witness. If `absent_pid_is_authoritative` is false the app can never prove a crashed owner is gone.
+- `process_start_identity`, `absent_pid_is_authoritative`: the CIM probe behind the lifetime witness (one
+  PowerShell call, output exactly `OK:<filetime>` or `ABSENT`). If `absent_pid_is_authoritative` is false the app can never
+  prove a crashed owner is gone.
+- `repo_volume_ntfs`, `appdata_volume_ntfs`, `temp_volume_ntfs`: file identity (dev:ino) and the identity proofs assume NTFS
+  64-bit file IDs; ReFS (128-bit IDs), FAT and exFAT are not supported.
 - `appdata_private_acl`, `temp_private_acl`: the DACL policy the app enforces on its storage roots.
 - `facts.directoryFsync`: `ok:false` with `EPERM`/`EISDIR` is expected (the code skips directory fsync on win32).
 - `facts.renameOverOpenFile`: `EPERM`/`EBUSY` is expected (writes use `renameReplacing` with bounded retry).
@@ -85,14 +88,16 @@ Expected results:
 
 ```sh
 node apps/desktop-app/scripts/prepare-event-host.mjs --target=win32-x64
-node apps/desktop-app/scripts/fetch-sidecar.mjs win32-x64          # integrity checked against pnpm-lock.yaml
+node apps/desktop-app/scripts/fetch-sidecar.mjs win32-x64          # integrity checked against pnpm-lock.yaml; writes a receipt
 OMOC_BUILD_TARGET=win32-x64 OMOC_SIDECAR_PACKAGE_DIR=$PWD/apps/desktop-app/.cross/win32-x64/@opencode/cli-windows-x64 \
   node apps/desktop-app/scripts/build.mjs
 OMOC_ALLOW_CROSS_PACKAGE=1 node apps/desktop-app/scripts/package.mjs win32 x64
 node apps/desktop-app/scripts/verify-package-layout.mjs win32 x64
 ```
 
-Move the native `dist` aside first: the cross build writes into `dist`. Cross output is for layout and hash
+`OMOC_SIDECAR_PACKAGE_DIR` is honoured only together with an `OMOC_BUILD_TARGET` for another target, only for a directory
+with fetch-sidecar's receipt (locked integrity + file hashes re-checked), and the receipt is recorded in the provenance stamp
+(`crossSidecar`). Move the native `dist` aside first: the cross build writes into `dist`. Cross output is for layout and hash
 verification only; ship builds made on Windows.
 
 ## 4. Design notes and trade-offs (security-relevant)
@@ -112,8 +117,12 @@ separator.
 macOS records durable exit facts through an independent helper process. Windows has no equivalent without
 a native compiler and does not need one: the process identity is the kernel creation FILETIME read from
 CIM (`Win32_Process`), which lists every process. A crashed owner or child is proven gone when CIM has no row
-for its PID, or a row with a different creation time inside the same boot. Probe failure, timeout or odd
-output is `unverified` and keeps the store blocked. The witness additionally enforces one app and at most one
+for its PID, or a row with a different creation time. There is deliberately **no boot identity** on Windows
+(`LastBootUpTime` is now-minus-uptime and moves when the clock is stepped, which would fake an exit proof); a reboot
+changes the process set and every creation time anyway. The probe is one PowerShell call that sets
+`$ErrorActionPreference='Stop'`, first reads its OWN process row (positive control: if CIM cannot see itself, the call
+fails) and prints exactly `OK:<filetime>` or `ABSENT`. Nonzero exit, stderr noise, timeout (20 s) or any other output is
+`unverified` and keeps the store blocked. `SystemRoot` is used only if it is a local absolute drive path (never UNC). The witness additionally enforces one app and at most one
 child per owner nonce, only live exact identities, no registration after sealing, and "exited" only if
 every registered role is individually proven exited. **Trade-off:** it writes no durable per-run exit file, so
 there is nothing to inspect after the fact. The event-host child exits when its IPC channel closes, so a
@@ -134,12 +143,12 @@ No `openat`/`O_NOFOLLOW`. Every directory component is proven by `lstat` (symlin
 as symbolic links and refused) plus `realpath` equality; the leaf is `lstat`ed before open, opened read-only,
 `fstat`ed, and compared (dev, ino, size, mtime, ctime, mode, nlink) before, during and after each read. Directories are
 never opened. 8.3 aliases and DOS device names are refused. **Residual:** the instant between a leaf's `lstat`
-and its `open` cannot be closed (darwin's `O_NOFOLLOW` closes it); a swap inside it is detected by the identity
+and its `open`, and an A-B-A swap of a directory exactly around `opendir` (name re-proved before and after, no directory handle exists), cannot be closed (darwin's `O_NOFOLLOW` closes it); a swap inside it is detected by the identity
 comparison and no bytes are returned.
 
 ### 4.5 File and configuration save: name-identity save kernel (`configuration-save-kernel-win32.mjs`)
 
-Same prepare/publish/abort contract. Publishing an existing target is link/rename based:
+Same prepare/publish/abort contract. Before the replace the kernel closes its own handle to the target (NTFS refuses to rename over a file with an open handle) and re-proves by name that the target is still the observed original. Publishing an existing target is link/rename based:
 stage -> `.swap` name, `link(target, backup)`, `rename(.swap, target)` (MoveFileEx replace), so the target is
 never absent and the ORIGINAL content stays at the backup name exactly like the darwin swap. A missing target
 is published with `link(stage, target)` which fails if it appeared. **Trade-offs:** (1) alternate data streams,
@@ -198,6 +207,7 @@ reason shown by the app (`storage_denied` = ACL policy, `owner_unverified` = lif
 - `process.umask` is skipped on Windows; `chmod` calls are no-ops.
 - CIM / PowerShell cold start adds roughly 0.5-1 s per call (startup, child registration, ACL batches).
 - Chromium's `lockfile` in the user-data root is whitelisted for a first start.
+- Extended/device paths: only `\\?\X:\` and `\\?\UNC\` are reduced to plain paths; `\\?\GLOBALROOT`, `\\?\Volume{}` and `\\.\` are refused, and UNC targets are refused before any filesystem call unless inside a registered location.
 - `@oven/bun-windows-x64` needs AVX2; on older CPUs a baseline build would need its own pin.
 - Antivirus holding `node_modules` files can still cause `EPERM` beyond the retry budget.
 

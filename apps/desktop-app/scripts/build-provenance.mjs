@@ -58,6 +58,9 @@ const sourceScopes = [
     "runtime-event-host/package.json",
     "runtime-event-host/package-lock.json",
     "runtime-event-host/installer-pins.json",
+    "runtime-event-host/installer-pins.win32-x64.json",
+    "scripts/fetch-sidecar.mjs",
+    "scripts/verify-package-layout.mjs",
   ].map((path) => ({ path: `${app}/${path}` })),
   { path: `${app}/src`, tree: true, source: true },
   { path: `${app}/public`, tree: true, source: true, optional: true },
@@ -338,7 +341,7 @@ export async function beginBuildProvenance(root) {
   return snapshotBuildInputs(root);
 }
 
-export async function finishBuildProvenance(root, before) {
+export async function finishBuildProvenance(root, before, extra = {}) {
   const inputs = await snapshotBuildInputs(root);
   if (inputs.sha256 !== before.sha256)
     throw new Error(
@@ -386,6 +389,7 @@ export async function finishBuildProvenance(root, before) {
       arch: process.arch,
     },
     target,
+    ...(extra.sidecarReceipt && { crossSidecar: extra.sidecarReceipt }),
     inputs,
     artifacts,
     eventHostResources,

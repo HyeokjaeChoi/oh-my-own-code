@@ -43,9 +43,11 @@ function options(input) {
     !isAbsolute(root) ||
     normalize(root) !== root ||
     root.includes("\0") ||
-    !/[\\/]opencode[\\/]event-host[\\/](?:darwin-arm64|win32-x64)$/u.test(
-      root,
-    ) ||
+    !(
+      process.platform === "win32"
+        ? /[\\/]opencode[\\/]event-host[\\/]win32-x64$/u
+        : /\/opencode\/event-host\/darwin-arm64$/u
+    ).test(root) ||
     typeof nonce !== "string" ||
     !/^[a-f0-9]{64}$/u.test(nonce)
   )

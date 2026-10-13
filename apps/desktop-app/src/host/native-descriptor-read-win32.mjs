@@ -420,8 +420,21 @@ export function createWin32DescriptorReadKernel(
         );
         let stream;
         try {
+          // opendir follows reparse points: prove the NAME is the observed
+          // directory immediately before and after (an A-B-A swap exactly
+          // around the call cannot be excluded without a directory handle).
+          need(io.realpathSync(target.path) === target.path);
           stream = io.opendirSync(target.path);
+          need(io.realpathSync(target.path) === target.path);
+          need(
+            sameDirectory(
+              target.stat,
+              io.lstatSync(target.path, { bigint: true }),
+            ),
+          );
         } catch (cause) {
+          if (cause instanceof Error && cause.message.startsWith("native_"))
+            throw cause;
           const failure = openFailure(cause);
           fail(
             failure.kind === "denied"
