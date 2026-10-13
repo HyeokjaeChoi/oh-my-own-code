@@ -6691,9 +6691,7 @@ try {
           ).toContainText("fixture-agent");
           await expect(
             agentRuntime.locator("[data-agent-runtime-policy]"),
-          ).toHaveText(
-            "* / * / ask\nexternal_directory / * / deny\nsubagent / * / deny",
-          );
+          ).toHaveText("* / * / ask\nexternal_directory / * / deny");
           await expect(
             agentRuntime.locator("[data-agent-runtime-request]"),
           ).toContainText("model override 없음");
