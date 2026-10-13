@@ -1,7 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, symlinkSync, realpathSync } from "node:fs";
-import { createRequire } from "node:module";
 import { performance } from "node:perf_hooks";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -13,7 +12,8 @@ import {
   resolveLoginPath,
   windowsScriptSpec,
 } from "./host/terminal-host.mjs";
-import { lazyPty } from "./host/pty-loader.mjs";
+import { lazyPty, loadStagedPty } from "./host/pty-loader.mjs";
+import { nodePtySupported, stageNodePty } from "../scripts/stage-node-pty.mjs";
 import {
   createResizeSync,
   validateTerminalRequest,
@@ -314,11 +314,17 @@ test("startScript runs only the package manager argv for a declared script", asy
   assert.equal(t.label, "pnpm run dev");
 });
 
-// Real node-pty, when the dev install has it: proves tty behaviour, exit codes and group kill.
-const realPty = (() => {
-  if (!posix) return undefined;
+// Real node-pty through the production path: stage it (exec bit on the spawn helper, only the
+// target prebuild) into a temp resources dir and load it with the same loader the app uses. A
+// pnpm install skips node-pty's postinstall, so node_modules itself may hold a non-executable
+// helper; this keeps the test independent of those file modes.
+const realPty = await (async () => {
+  if (!posix || !nodePtySupported(process.platform, process.arch))
+    return undefined;
   try {
-    return createRequire(import.meta.url)("node-pty");
+    const resources = realpathSync(mkdtempSync(join(tmpdir(), "pty-res-")));
+    await stageNodePty({ resources });
+    return loadStagedPty(resources);
   } catch {
     return undefined;
   }
