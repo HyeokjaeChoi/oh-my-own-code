@@ -360,7 +360,15 @@ try {
     .locator("option")
     .evaluateAll((o) => o.map((x) => x.value).filter(Boolean));
   assert.ok(agentValues.length > 0, "catalog lists at least one agent");
-  await agentSelect.selectOption(agentValues.at(-1));
+  const baselineTools = Math.max(
+    ...requests.filter((r) => r.model).map((r) => r.tools),
+  );
+  // plan denies edit tools, so a request that reached Native under it
+  // carries fewer tools than the default agent's.
+  const chosenAgent = agentValues.includes("plan")
+    ? "plan"
+    : agentValues.at(-1);
+  await agentSelect.selectOption(chosenAgent);
   await page
     .getByRole("combobox", { name: "모델 요청" })
     .selectOption({ label: "Mock Model Two" });
@@ -369,9 +377,16 @@ try {
   await expect
     .poll(() => requests.some((r) => r.tools > 0 && r.model === "mock-model-2"))
     .toBe(true);
+  if (chosenAgent === "plan")
+    assert.ok(
+      requests.some(
+        (r) => r.model === "mock-model-2" && r.tools < baselineTools,
+      ),
+      "plan agent reached Native (reduced tool set)",
+    );
   await idle();
   observations.push(
-    `turn 1b: agent ${agentValues.at(-1)} and Mock Model Two chosen; mock received mock-model-2`,
+    `turn 1b: agent ${chosenAgent} and Mock Model Two chosen; mock received mock-model-2`,
   );
 
   // Turn 2: write tool call -> permission prompt -> approve -> result -> reply.
@@ -405,14 +420,17 @@ try {
     "turn 3: read permission approved (always); result and final reply",
   );
 
-  // Approves a permission prompt if one appears before `done` is rendered.
-  const approveUntil = async (done) => {
+  // Approves a permission prompt if one appears before `done` is rendered;
+  // a prompt that does not match `expected` fails the run.
+  const approveUntil = async (done, expected) => {
     await expect(async () => {
-      if (await prompt.first().isVisible())
+      if (await prompt.first().isVisible()) {
+        assert.match(await prompt.first().innerText(), expected);
         await prompt
           .first()
           .getByRole("button", { name: "이번만 허용" })
           .click();
+      }
       await expect(done).toBeVisible({ timeout: 1_000 });
     }).toPass({ timeout: 120_000 });
   };
@@ -422,6 +440,7 @@ try {
   await send("SUBAGENT-FIXTURE");
   await approveUntil(
     page.getByText(/Tool result received: subagent (done|missing)/),
+    /task|subagent|general|explore/i,
   );
   await idle();
   const subagentDone = await page

@@ -535,8 +535,8 @@ async function captureMatrix(page, state) {
     await setRequestSettings(page, true);
     await expect(submitControl).toBeInViewport({ ratio: 1 });
     // At 200% zoom on a narrow window a pending permission plus the pinned
-    // composer leave no room to scroll request settings into view; the
-    // settings rows are covered by the other states.
+    // composer leave no room for the open request settings rows; those are
+    // covered by the other states. Permission checks below run everywhere.
     const settingsFit = !(
       state === "permission-long-korean-draft" &&
       zoom === 2 &&
@@ -573,7 +573,7 @@ async function captureMatrix(page, state) {
       // Permission text and actions remain inspectable when the queue yields
       // height to the composer. Scrolling must not move the composer offscreen.
       const permissions = page.getByRole("region", { name: "실행 권한 요청" });
-      for (let index = 0; settingsFit && index < 2; index++) {
+      for (let index = 0; index < 2; index++) {
         const permission = permissions.nth(index);
         await permission
           .getByText(index ? "src/app.ts" : "src/main.ts", { exact: true })

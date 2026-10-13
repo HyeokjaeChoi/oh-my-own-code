@@ -85,6 +85,8 @@ Status: `done` = implemented end to end; `partial` = some of the clause exists; 
 | Parallel + failure verified               | partial | pure tests only (2 parallel running + failed child); no live Native run                                                                                                                                                                                                                                                                 |
 | Fresh context vs fork; isolation shown    | partial | delegation form labelled "새 컨텍스트"; fork unchanged. Child permission inheritance for model-initiated children is Native-internal (unverified); user-delegated children get `policy()` on create plus the parent permission mode via `permission.mode.set`                                                                           |
 
+KNOWN GAP (e2e-chat turn 4): the model-initiated `subagent` tool fails ("A tool operation failed.") in the real app because the permission overlay inventory is not fully verified (execution-task-authority.md, phase D); the parent run survives and stays sendable. `OMOC_E2E_STRICT_SUBAGENT=1` makes e2e-chat assert the round-trip.
+
 ## F-08 Tools
 
 | Clause                                              | Status  | Evidence                                                                         |
