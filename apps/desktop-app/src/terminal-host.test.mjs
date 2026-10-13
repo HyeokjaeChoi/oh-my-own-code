@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, symlinkSync, realpathSync } from "node:fs";
+import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { execFileSync } from "node:child_process";
 import { createTerminalHost, resolveLoginPath } from "./host/terminal-host.mjs";
 import {
   validateTerminalRequest,
@@ -20,78 +20,167 @@ const alive = (pid) => {
   }
 };
 const until = async (fn) => {
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 200; i++) {
     if (fn()) return;
     await new Promise((r) => setTimeout(r, 20));
   }
   assert.fail("timeout");
 };
-function fixture(args, extra = {}) {
+
+// Fake node-pty: tests drive data/exit by hand; the kill hook records signals and never touches real pids.
+function fakePty() {
+  const spawned = [];
+  return {
+    spawned,
+    spawn(file, args, opts) {
+      let onData = () => {};
+      let onExit = () => {};
+      const proc = {
+        pid: 4242,
+        file,
+        args,
+        opts,
+        written: [],
+        sizes: [],
+        onData: (cb) => (onData = cb),
+        onExit: (cb) => (onExit = cb),
+        write: (t) => proc.written.push(t),
+        resize: (c, r) => proc.sizes.push([c, r]),
+        emit: (d) => onData(d),
+        exit: (exitCode, signal = 0) => onExit({ exitCode, signal }),
+      };
+      spawned.push(proc);
+      return proc;
+    },
+  };
+}
+function fixture(extra = {}) {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "term-")));
   mkdirSync(join(root, "sub"));
+  const pty = fakePty();
+  const signals = [];
   const host = createTerminalHost({
     resolveWorkspace: (id) => (id === "w1" ? root : undefined),
-    shell: { file: "/bin/sh", args },
-    killGraceMs: 200,
+    pty,
+    shell: { file: "/bin/fake-shell", args: ["-l"] },
+    killGraceMs: 20,
+    kill: (t, sig) => {
+      signals.push(sig);
+      // A hang-up (or kill) ends the fake session like a real shell would.
+      if (sig === "SIGHUP" || sig === "SIGKILL") t.proc.exit(0, 1);
+    },
     ...extra,
   });
-  return { root, host };
+  return { root, host, pty, signals };
 }
 
-test("terminal captures output and exit code", { skip: !posix }, async () => {
-  const { host } = fixture(["-c", "echo hi; echo err >&2; exit 3"]);
-  const t = host.start("o", { workspaceId: "w1" });
-  await until(() => host.read("o", t.terminalId, 0).status === "exited");
-  const r = host.read("o", t.terminalId, 0);
-  assert.equal(r.exitCode, 3);
-  assert.match(r.output, /hi\n/);
-  assert.match(r.output, /err\n/);
-  assert.equal(host.read("o", t.terminalId, r.cursor).output, "");
-  await host.closeAll();
+test("terminal spawns the host shell in a pty with a safe env", () => {
+  process.env.OMOC_TEST_SECRET = "s3cret";
+  const { host, pty, root } = fixture();
+  const t = host.start("o", { workspaceId: "w1", cols: 100, rows: 30 });
+  const p = pty.spawned[0];
+  assert.equal(p.file, "/bin/fake-shell");
+  assert.deepEqual(p.args, ["-l"]);
+  assert.equal(p.opts.cwd, root);
+  assert.equal(p.opts.cols, 100);
+  assert.equal(p.opts.rows, 30);
+  assert.equal(p.opts.env.TERM, "xterm-256color");
+  assert.equal(p.opts.env.OMOC_TEST_SECRET, undefined);
+  delete process.env.OMOC_TEST_SECRET;
+  assert.equal(t.status, "running");
 });
 
-test("terminal input, cwd, and resize no-op", { skip: !posix }, async () => {
-  const { host, root } = fixture([]);
-  const t = host.start("o", { workspaceId: "w1", cwd: join(root, "sub") });
-  host.write("o", t.terminalId, "pwd\nexit 0\n");
+test("terminal captures output, input, resize and exit code", async () => {
+  const { host, pty } = fixture();
+  const t = host.start("o", { workspaceId: "w1" });
+  const p = pty.spawned[0];
+  assert.equal(p.opts.cols, 80);
+  p.emit("\x1b[31mhi\x1b[0m\r\n");
+  const r = host.read("o", t.terminalId, 0);
+  assert.equal(r.output, "\x1b[31mhi\x1b[0m\r\n");
+  assert.equal(host.read("o", t.terminalId, r.cursor).output, "");
+  host.write("o", t.terminalId, "ls\r");
+  assert.deepEqual(p.written, ["ls\r"]);
+  assert.deepEqual(host.resize("o", t.terminalId, 120, 40), { resized: true });
+  assert.deepEqual(p.sizes, [[120, 40]]);
+  p.exit(3);
   await until(() => host.read("o", t.terminalId, 0).status === "exited");
-  assert.ok(host.read("o", t.terminalId, 0).output.includes(join(root, "sub")));
+  assert.equal(host.read("o", t.terminalId, 0).exitCode, 3);
   assert.deepEqual(host.resize("o", t.terminalId, 80, 24), { resized: false });
   assert.throws(() => host.write("o", t.terminalId, "x"), {
     terminalCode: "NOT_RUNNING",
   });
-  await host.closeAll();
 });
 
-test(
-  "terminal refuses unknown workspace and cwd outside root",
-  { skip: !posix },
-  () => {
-    const { host, root } = fixture([]);
-    assert.throws(() => host.start("o", { workspaceId: "nope" }), {
-      terminalCode: "NOT_FOUND",
-    });
-    assert.throws(() => host.start("o", { workspaceId: "w1", cwd: tmpdir() }), {
-      terminalCode: "CWD_DENIED",
-    });
-    assert.throws(
-      () => host.start("o", { workspaceId: "w1", cwd: join(root, "..") }),
-      { terminalCode: "CWD_DENIED" },
-    );
-    const outside = realpathSync(mkdtempSync(join(tmpdir(), "out-")));
-    symlinkSync(outside, join(root, "link"));
-    assert.throws(
-      () => host.start("o", { workspaceId: "w1", cwd: join(root, "link") }),
-      { terminalCode: "CWD_DENIED" },
-    );
-    assert.equal(host.size(), 0);
-  },
-);
+test("terminal write and resize are rate limited per terminal", () => {
+  let clock = 1000;
+  const { host } = fixture({ now: () => clock });
+  const t = host.start("o", { workspaceId: "w1" });
+  for (let i = 0; i < 200; i++) host.write("o", t.terminalId, "a");
+  assert.throws(() => host.write("o", t.terminalId, "a"), {
+    terminalCode: "RATE_LIMITED",
+  });
+  for (let i = 0; i < 30; i++) host.resize("o", t.terminalId, 80, 24);
+  assert.throws(() => host.resize("o", t.terminalId, 80, 24), {
+    terminalCode: "RATE_LIMITED",
+  });
+  clock += 1000;
+  host.write("o", t.terminalId, "a");
+  host.resize("o", t.terminalId, 80, 24);
+  clock += 1000;
+  const big = "x".repeat(8192);
+  for (let i = 0; i < 32; i++) host.write("o", t.terminalId, big);
+  assert.throws(() => host.write("o", t.terminalId, big), {
+    terminalCode: "RATE_LIMITED",
+  });
+});
 
-test("terminal is scoped to its owner", { skip: !posix }, async () => {
-  const { host } = fixture(["-c", "sleep 30"]);
+test("terminal refuses unknown workspace and cwd outside root", () => {
+  const { host, root } = fixture();
+  assert.throws(() => host.start("o", { workspaceId: "nope" }), {
+    terminalCode: "NOT_FOUND",
+  });
+  assert.throws(() => host.start("o", { workspaceId: "w1", cwd: tmpdir() }), {
+    terminalCode: "CWD_DENIED",
+  });
+  assert.throws(
+    () => host.start("o", { workspaceId: "w1", cwd: join(root, "..") }),
+    { terminalCode: "CWD_DENIED" },
+  );
+  const outside = realpathSync(mkdtempSync(join(tmpdir(), "out-")));
+  symlinkSync(outside, join(root, "link"));
+  assert.throws(
+    () => host.start("o", { workspaceId: "w1", cwd: join(root, "link") }),
+    { terminalCode: "CWD_DENIED" },
+  );
+  assert.equal(host.size(), 0);
+});
+
+test("terminal fails closed without a pty and on spawn errors", () => {
+  assert.throws(
+    () => fixture({ pty: undefined }).host.start("o", { workspaceId: "w1" }),
+    { terminalCode: "PTY_UNAVAILABLE" },
+  );
+  const { host } = fixture({
+    pty: {
+      spawn() {
+        throw new Error("posix_spawnp failed");
+      },
+    },
+  });
+  assert.throws(() => host.start("o", { workspaceId: "w1" }), {
+    terminalCode: "SPAWN_FAILED",
+  });
+  assert.equal(host.size(), 0);
+});
+
+test("terminal is scoped to its owner", async () => {
+  const { host } = fixture();
   const t = host.start("a", { workspaceId: "w1" });
   assert.throws(() => host.read("b", t.terminalId, 0), {
+    terminalCode: "NOT_FOUND",
+  });
+  assert.throws(() => host.write("b", t.terminalId, "x"), {
     terminalCode: "NOT_FOUND",
   });
   assert.deepEqual(host.list("b", "w1"), []);
@@ -99,106 +188,133 @@ test("terminal is scoped to its owner", { skip: !posix }, async () => {
   assert.equal(host.size(), 0);
 });
 
-test(
-  "close and closeAll kill the whole process group",
-  { skip: !posix },
-  async () => {
-    const { host } = fixture(["-c", "sleep 60 & echo $!; wait"]);
-    const t = host.start("o", { workspaceId: "w1" });
-    const sh = host.start("o", { workspaceId: "w1" });
-    await until(() => /\d+\n/.test(host.read("o", t.terminalId, 0).output));
-    const bg = Number(host.read("o", t.terminalId, 0).output.trim());
-    assert.ok(alive(bg));
-    await host.close("o", t.terminalId);
-    await until(() => !alive(bg));
-    assert.equal(host.size(), 1);
-    await host.closeAll();
-    assert.equal(host.size(), 0);
-    assert.equal(sh.status, "running");
-  },
-);
+test("stop keeps the tab, close removes it, reap closes removed workspaces", async () => {
+  let live = true;
+  const { host, signals } = fixture({
+    resolveWorkspace: () => (live ? process.cwd() : undefined),
+  });
+  const t = host.start("o", { workspaceId: "w1" });
+  const stopped = await host.stop("o", t.terminalId);
+  assert.equal(stopped.status, "exited");
+  assert.ok(signals.includes("SIGHUP"));
+  assert.equal(host.list("o", "w1").length, 1);
+  await host.close("o", t.terminalId);
+  assert.equal(host.size(), 0);
+  host.start("o", { workspaceId: "w1" });
+  live = false;
+  await host.reap();
+  assert.equal(host.size(), 0);
+});
 
-test(
-  "stop keeps the tab with a signal and reap closes removed workspaces",
-  { skip: !posix },
-  async () => {
-    let live = true;
-    const { host, root } = fixture(["-c", "sleep 60"], {
-      resolveWorkspace: () => (live ? process.cwd() : undefined),
-    });
-    void root;
-    const t = host.start("o", { workspaceId: "w1" });
-    const stopped = await host.stop("o", t.terminalId);
-    assert.equal(stopped.status, "exited");
-    assert.equal(stopped.signal, "SIGTERM");
-    assert.equal(host.list("o", "w1").length, 1);
-    live = false;
-    await host.reap();
-    assert.equal(host.size(), 0);
-  },
-);
+test("a terminal that ignores hang-up is force killed after the grace period", async () => {
+  const signals = [];
+  const { host } = fixture({
+    kill: (t, sig) => {
+      signals.push(sig);
+      if (sig === "SIGKILL") t.proc.exit(0, 9);
+    },
+  });
+  const t = host.start("o", { workspaceId: "w1" });
+  const stopped = await host.stop("o", t.terminalId);
+  assert.deepEqual(signals.slice(0, 3), ["SIGHUP", "SIGTERM", "SIGKILL"]);
+  assert.equal(stopped.signal, "SIGKILL");
+  assert.equal(stopped.exitCode, null);
+});
 
-test(
-  "output ring keeps a bounded tail and reports truncation",
-  { skip: !posix },
-  async () => {
-    const { host } = fixture(["-c", "head -c 300000 /dev/zero | tr '\\0' x"]);
-    const t = host.start("o", { workspaceId: "w1" });
-    await until(() => host.read("o", t.terminalId, 0).status === "exited");
-    const r = host.read("o", t.terminalId, 0);
-    assert.equal(r.truncated, true);
-    assert.ok(r.output.length <= 65536);
-    await host.closeAll();
-  },
-);
+test("closeAll is bounded when a terminal never settles", async () => {
+  const { host } = fixture({ kill: () => {}, closeAllMs: 50 });
+  host.start("o", { workspaceId: "w1" });
+  const t0 = Date.now();
+  await host.closeAll();
+  assert.ok(Date.now() - t0 < 2000);
+  assert.equal(host.size(), 0);
+});
 
-const hasPython = (() => {
+test("output ring keeps a bounded tail and reports truncation", () => {
+  const { host, pty } = fixture();
+  const t = host.start("o", { workspaceId: "w1" });
+  pty.spawned[0].emit("x".repeat(300000));
+  const r = host.read("o", t.terminalId, 0);
+  assert.equal(r.truncated, true);
+  assert.ok(r.output.length <= 65536);
+});
+
+test("startScript runs only the package manager argv for a declared script", async () => {
+  const { host, pty, root } = fixture();
+  const { writeFileSync } = await import("node:fs");
+  writeFileSync(
+    join(root, "package.json"),
+    JSON.stringify({ scripts: { dev: "vite" } }),
+  );
+  writeFileSync(join(root, "pnpm-lock.yaml"), "");
+  await assert.rejects(
+    host.startScript("o", { workspaceId: "w1", script: "rm" }),
+    { terminalCode: "UNKNOWN_SCRIPT" },
+  );
+  const t = await host.startScript("o", {
+    workspaceId: "w1",
+    script: "dev",
+    cols: 90,
+    rows: 20,
+  });
+  const p = pty.spawned[0];
+  if (posix) {
+    assert.equal(p.file, "pnpm");
+    assert.deepEqual(p.args, ["run", "dev"]);
+  }
+  assert.equal(p.opts.cols, 90);
+  assert.equal(t.label, "pnpm run dev");
+});
+
+// Real node-pty, when the dev install has it: proves tty behaviour, exit codes and group kill.
+const realPty = (() => {
+  if (!posix) return undefined;
   try {
-    execFileSync("python3", ["-c", ""], { stdio: "ignore" });
-    return true;
+    return createRequire(import.meta.url)("node-pty");
   } catch {
-    return false;
+    return undefined;
   }
 })();
 test(
-  "a detached descendant holding the pipes cannot hang stop or closeAll",
-  { skip: !posix || !hasPython },
+  "real pty: tty, colors, resize, exit code, and no orphan after close",
+  { skip: !realPty },
   async () => {
-    const { host } = fixture(
-      [
-        "-c",
-        `python3 -c "import subprocess;p=subprocess.Popen(['sleep','20'],start_new_session=True);print(p.pid,flush=True)"; exit 0`,
-      ],
-      { exitGraceMs: 100 },
+    const root = realpathSync(mkdtempSync(join(tmpdir(), "term-")));
+    const host = createTerminalHost({
+      resolveWorkspace: () => root,
+      pty: realPty,
+      shell: { file: "/bin/sh", args: [] },
+      killGraceMs: 300,
+    });
+    const t = host.start("o", { workspaceId: "w1", cols: 100, rows: 30 });
+    const out = () => host.read("o", t.terminalId, 0).output;
+    host.write(
+      "o",
+      t.terminalId,
+      "[ -t 0 ] && echo TTY_$(stty size | tr ' ' x); printf '\\033[31mred\\033[0m\\n'; sleep 60 & echo BG_$!\n",
     );
-    const t = host.start("o", { workspaceId: "w1" });
-    await until(() => /^\d+\n/.test(host.read("o", t.terminalId, 0).output));
-    const holder = Number(host.read("o", t.terminalId, 0).output.trim());
-    try {
-      const started = Date.now();
-      await host.stop("o", t.terminalId);
-      assert.equal(host.read("o", t.terminalId, 0).status, "exited");
-      await host.closeAll();
-      assert.ok(Date.now() - started < 3000);
-      assert.equal(host.size(), 0);
-    } finally {
-      process.kill(holder, "SIGKILL");
-    }
-  },
-);
-
-test(
-  "each stream keeps its own utf8 decoder state",
-  { skip: !posix },
-  async () => {
-    // 0xEA 0xB0 0x80 is U+AC00; split across stdout/stderr must not merge.
-    const { host } = fixture([
-      "-c",
-      "printf '\\352\\260'; printf '\\352\\260\\200' >&2; exit 0",
-    ]);
-    const t = host.start("o", { workspaceId: "w1" });
+    await until(() => /BG_\d+/.test(out()));
+    assert.match(out(), /TTY_30x100/);
+    assert.match(out(), /\x1b\[31mred/);
+    const bg = Number(/BG_(\d+)/.exec(out())[1]);
+    assert.ok(alive(bg));
+    host.resize("o", t.terminalId, 120, 40);
+    host.write("o", t.terminalId, "stty size | tr ' ' y\n");
+    await until(() => /40y120/.test(out()));
+    host.write("o", t.terminalId, "exit 7\n");
     await until(() => host.read("o", t.terminalId, 0).status === "exited");
-    assert.ok(host.read("o", t.terminalId, 0).output.includes("\uAC00"));
+    assert.equal(host.read("o", t.terminalId, 0).exitCode, 7);
+    // A shell that exits by itself leaves its own jobs alone, like any terminal.
+    process.kill(bg, "SIGKILL");
+    // Close tab while a background job runs: the whole group goes.
+    const t2 = host.start("o", { workspaceId: "w1" });
+    host.write("o", t2.terminalId, "sleep 60 & echo BG_$!\n");
+    await until(() => /BG_\d+/.test(host.read("o", t2.terminalId, 0).output));
+    const bg2 = Number(
+      /BG_(\d+)/.exec(host.read("o", t2.terminalId, 0).output)[1],
+    );
+    await host.close("o", t2.terminalId);
+    await until(() => !alive(bg2));
     await host.closeAll();
   },
 );
@@ -235,40 +351,6 @@ test("login PATH timeout resolves without waiting for pipe close and destroys st
   assert.ok(Date.now() - t0 < 1000);
   assert.equal(destroyed, 2);
 });
-
-test(
-  "terminals started before login PATH resolves wait for it",
-  { skip: !posix },
-  async () => {
-    let release;
-    const gate = new Promise((r) => (release = r));
-    const { host } = fixture(["-c", 'echo "$PATH"; exit 0'], {
-      loginPath: () => gate,
-    });
-    const p = host.start("o", { workspaceId: "w1" });
-    assert.ok(p instanceof Promise);
-    release("/login/bin");
-    const t = await p;
-    await until(() => host.read("o", t.terminalId, 0).status === "exited");
-    assert.match(host.read("o", t.terminalId, 0).output, /\/login\/bin/);
-    await host.closeAll();
-  },
-);
-
-test(
-  "closeOwner during the login PATH wait cancels the pending start",
-  { skip: !posix },
-  async () => {
-    let release;
-    const gate = new Promise((r) => (release = r));
-    const { host } = fixture(["-c", "exit 0"], { loginPath: () => gate });
-    const p = host.start("o", { workspaceId: "w1" });
-    await host.closeOwner("o");
-    release("/x");
-    await assert.rejects(p, { terminalCode: "NOT_FOUND" });
-    assert.deepEqual(host.list("o", "w1"), []);
-  },
-);
 
 test("terminal request validation is closed", () => {
   const good = [

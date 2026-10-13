@@ -240,6 +240,11 @@ test(
       join(root, resources, "owner-lifetime"),
       { recursive: true },
     );
+    await cp(
+      join(root, "apps/desktop-app/dist/resources/node-pty"),
+      join(root, resources, "node-pty"),
+      { recursive: true },
+    );
     await createPackage(
       join(root, "apps/desktop-app/dist/app"),
       join(root, archive),
@@ -267,6 +272,16 @@ test(
       join(root, "apps/desktop-app/dist/resources/opencode/event-host"),
       join(root, resources, "opencode/event-host"),
       { recursive: true, verbatimSymlinks: true },
+    );
+    await put(root, `${resources}/node-pty/lib/index.js`, "tampered pty\n");
+    await assert.rejects(
+      captureProvenance(root, selection),
+      /node-pty does not match/,
+    );
+    await put(
+      root,
+      `${resources}/node-pty/lib/index.js`,
+      "synthetic node-pty\n",
     );
     await put(root, sidecar, "wrong sidecar\n");
     await assert.rejects(

@@ -36,6 +36,7 @@ export async function syntheticRepository(root) {
       "scripts/prepare-event-host.mjs",
       "scripts/stage-event-host.mjs",
       "scripts/stage-owner-lifetime.mjs",
+      "scripts/stage-node-pty.mjs",
       "native/owner-lifetime/witness.c",
       "scripts/package.mjs",
       "runtime-event-host/package.json",
@@ -89,6 +90,11 @@ export async function syntheticBuild(root, mutate = async () => {}) {
     root,
     `apps/desktop-app/dist/resources/opencode/${process.platform}-${process.arch}/${process.platform === "win32" ? "opencode.exe" : "opencode"}`,
     "synthetic sidecar\n",
+  );
+  await put(
+    root,
+    "apps/desktop-app/dist/resources/node-pty/lib/index.js",
+    "synthetic node-pty\n",
   );
   await syntheticEventHost(join(root, "apps/desktop-app/dist/resources"));
   await syntheticOwnerLifetime(join(root, "apps/desktop-app/dist/resources"));
