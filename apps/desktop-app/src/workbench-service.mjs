@@ -401,7 +401,11 @@ export function createWorkbenchService({
           {
             ...s,
             status: nativeProjections.get(id)?.status ?? s.status,
-            awaiting: nativeProjections.get(id)?.awaiting ?? s.awaiting,
+            // A projection that cleared `awaiting` must not resurrect the
+            // stale committed timestamp (it made every next send BUSY).
+            awaiting: nativeProjections.has(id)
+              ? nativeProjections.get(id).awaiting
+              : s.awaiting,
             receipts: new Map(s.receipts),
             invalidPermissions: new Set(s.invalidPermissions),
           },
@@ -3122,6 +3126,19 @@ export function createWorkbenchService({
       },
     };
   }
+  // A just-finished reply, or a Native agent/model switch entry, can leave the
+  // inbox briefly non-empty; wait for idle (bounded, ~3s) before rejecting.
+  async function verifyBaselineSettled(w, s, currentRun) {
+    for (let attempt = 0; ; attempt++) {
+      try {
+        return await verifyInstructionBaseline(w, s, currentRun);
+      } catch (error) {
+        if (currentRun || error.appCode !== "BUSY" || attempt >= 15)
+          throw error;
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      }
+    }
+  }
   async function send(request, w, s) {
     const currentRun = Object.hasOwn(request, "delivery");
     if (s.archived) fail("ARCHIVED_SESSION");
@@ -3164,7 +3181,7 @@ export function createWorkbenchService({
     try {
       await recheck(w);
       if (!w.trusted) fail("INVALID_SELECTION");
-      await verifyInstructionBaseline(w, s, currentRun);
+      await verifyBaselineSettled(w, s, currentRun);
       let active, inbox;
       // A just-finished reply can still show as active for a moment; wait
       // briefly for idle before rejecting (bounded, ~3s).
@@ -3178,7 +3195,12 @@ export function createWorkbenchService({
         if (
           currentRun ||
           attempt >= 15 ||
-          !(active[s.sdkId] || inbox.some((item) => item.sessionID === s.sdkId))
+          !(
+            active[s.sdkId] ||
+            inbox.some(
+              (item) => item.sessionID === s.sdkId && item.type !== "synthetic",
+            )
+          )
         )
           break;
         await new Promise((resolve) => setTimeout(resolve, 200));
@@ -3186,7 +3208,10 @@ export function createWorkbenchService({
       if (
         currentRun
           ? active[s.sdkId]?.type !== "running"
-          : active[s.sdkId] || inbox.some((item) => item.sessionID === s.sdkId)
+          : active[s.sdkId] ||
+            inbox.some(
+              (item) => item.sessionID === s.sdkId && item.type !== "synthetic",
+            )
       ) {
         s.status = "running";
         fail("BUSY");
@@ -3259,7 +3284,7 @@ export function createWorkbenchService({
       await policy(s, "native.policy.after_selection");
       switching = false;
       await recheck(w);
-      await verifyInstructionBaseline(w, s, currentRun);
+      await verifyBaselineSettled(w, s, currentRun);
       s.status = "running";
       s.awaiting = Date.now();
       dispatched = true;
@@ -4585,7 +4610,9 @@ export function createWorkbenchService({
     if (tables().sessions.get(s.id) !== s) fail("NOT_FOUND");
     if (
       active[s.sdkId] ||
-      inbox.length ||
+      // Native queues a synthetic reminder when an agent (e.g. Plan) is
+      // switched; it is consumed by the next prompt and is not a pending run.
+      inbox.some((item) => item.type !== "synthetic") ||
       s.unknown ||
       s.status !== "idle" ||
       s.awaiting
