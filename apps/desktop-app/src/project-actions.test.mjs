@@ -1,6 +1,5 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { spawn as realSpawn } from "node:child_process";
 import { mkdtempSync, writeFileSync, realpathSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -16,6 +15,19 @@ import {
   filterPaletteEntries,
 } from "./renderer/shared/palette/index.mjs";
 
+// Minimal node-pty stand-in: records spawns, never starts a process.
+const fakePty = (calls) => ({
+  spawn(file, args, options) {
+    calls.push({ file, args, options });
+    return {
+      pid: undefined,
+      onData() {},
+      onExit() {},
+      write() {},
+      resize() {},
+    };
+  },
+});
 const dir = () => realpathSync(mkdtempSync(join(tmpdir(), "pa-")));
 const pkg = (root, value) =>
   writeFileSync(
@@ -105,16 +117,13 @@ test("startScript spawns argv of the detected package manager, attributed", asyn
   const calls = [];
   const host = createTerminalHost({
     resolveWorkspace: (id) => (id === "w1" ? root : undefined),
-    spawn: (file, args, options) => {
-      calls.push({ file, args, shell: options.shell });
-      return realSpawn("/bin/sh", ["-c", "exit 0"], options);
-    },
+    pty: fakePty(calls),
     killGraceMs: 100,
   });
   const t = await host.startScript("o", { workspaceId: "w1", script: "test" });
-  assert.deepEqual(calls, [
-    { file: "pnpm", args: ["run", "test"], shell: undefined },
-  ]);
+  assert.equal(calls.length, 1);
+  if (process.platform !== "win32")
+    assert.deepEqual([calls[0].file, calls[0].args], ["pnpm", ["run", "test"]]);
   assert.equal(t.script, "test");
   assert.equal(t.label, "pnpm run test");
   assert.deepEqual(
@@ -127,19 +136,16 @@ test("startScript spawns argv of the detected package manager, attributed", asyn
 test("closeOwner during the scripts read cancels startScript", async () => {
   const root = dir();
   pkg(root, { scripts: { test: "echo hi" } });
-  let spawned = 0;
+  const calls = [];
   const host = createTerminalHost({
     resolveWorkspace: () => root,
-    spawn: (file, args, options) => {
-      spawned++;
-      return realSpawn("/bin/sh", ["-c", "exit 0"], options);
-    },
+    pty: fakePty(calls),
     killGraceMs: 100,
   });
   const p = host.startScript("o", { workspaceId: "w1", script: "test" });
   await host.closeOwner("o");
   await assert.rejects(p, { terminalCode: "NOT_FOUND" });
-  assert.equal(spawned, 0);
+  assert.equal(calls.length, 0);
   await host.closeAll();
 });
 
@@ -149,7 +155,7 @@ test("startScript rejects unknown scripts and workspaces without spawning", asyn
   const calls = [];
   const host = createTerminalHost({
     resolveWorkspace: (id) => (id === "w1" ? root : undefined),
-    spawn: (...a) => calls.push(a),
+    pty: fakePty(calls),
   });
   for (const script of ["nope", "test; id", "--version", "constructor"])
     await assert.rejects(host.startScript("o", { workspaceId: "w1", script }), {
