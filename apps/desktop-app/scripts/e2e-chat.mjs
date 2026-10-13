@@ -516,8 +516,8 @@ try {
     "native diagnostics (non-reject):\n" +
       stderr
         .split("\n")
-        .filter((line) => true)
-        .slice(-400)
+        .filter((line) => !line.includes('"kind":"reject"'))
+        .slice(-20)
         .join("\n"),
   );
   mock.close();
