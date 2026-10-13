@@ -5,6 +5,15 @@
 import { constants } from "node:fs";
 import { posix, win32 } from "node:path";
 
+// SystemRoot comes from the environment; only a local absolute drive path is trusted
+// (never UNC, never relative), otherwise the stock location is used.
+export function trustedSystemRoot(env = process.env) {
+  const value = env.SystemRoot;
+  return typeof value === "string" &&
+    /^[A-Za-z]:\\[^<>"|?*\u0000-\u001f]*$/u.test(value)
+    ? value.replace(/\\+$/u, "")
+    : "C:\\Windows";
+}
 export const isWin32 = (platform = process.platform) => platform === "win32";
 export const pathApiFor = (platform = process.platform) =>
   isWin32(platform) ? win32 : posix;

@@ -9,7 +9,7 @@ import {
   eventHostEnvironment,
   validateHostMessage,
 } from "./event-host-protocol.mjs";
-import { isPathInside } from "./platform-paths.mjs";
+import { isPathInside, trustedSystemRoot } from "./platform-paths.mjs";
 import { nativeSkillsConfig } from "./native-skills-config.mjs";
 import {
   eventHostEnginePath,
@@ -199,7 +199,7 @@ function guardInit(input) {
     configPath: input.configPath,
     dataPath: input.dataPath,
     statePath: input.statePath,
-    systemRoot: process.env.SystemRoot,
+    systemRoot: trustedSystemRoot(),
   });
   for (const [key, value] of Object.entries(expected))
     if (process.env[key] !== value) throw new Error("environment_denied");
