@@ -9,6 +9,7 @@ if (process.isMainFrame) {
     automation: (...args) =>
       ipcRenderer.invoke("desktop:v1:automation", ...args),
     provider: (...args) => ipcRenderer.invoke("desktop:v1:provider", ...args),
+    rules: (...args) => ipcRenderer.invoke("desktop:v1:rules", ...args),
     notify: (...args) => ipcRenderer.invoke("desktop:v1:notify", ...args),
     plans: (...args) => ipcRenderer.invoke("desktop:v1:plans", ...args),
     worktree: (...args) => ipcRenderer.invoke("desktop:v1:worktree", ...args),
