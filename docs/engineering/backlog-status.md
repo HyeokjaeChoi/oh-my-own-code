@@ -209,10 +209,10 @@ D = needs user decision.
 
 1. **L** Real PTY via `node-pty` + `xterm.js` (F-12; also dev server for F-10). D: new native dependency.
 2. **M** Windows support (old B02/B18). D: needs a real Windows machine.
-3. **S** Export: values >1 MiB with no newline export as `[TRUNCATED]`; unterminated quoted secrets in raw text are not redacted (`renderer/shared/data-transfer`).
-4. **S** Git review is unavailable in repos whose ignored dirs contain symlinks or exceed file caps (e.g. `node_modules`), so plan checks never show a plain pass there (`host/workbench-git-snapshot.mjs` walk).
-5. **S** Permission policySync may return BUSY for a drifted session that Native reports active while app status is idle; config reads keep failing while any session has drifted (`workbench-service.mjs` policySync).
-6. **S** Plans: idle poll can cancel the observation `runCheck` started (`OBSERVATION_FAILED`); export summary clears on any snapshot change.
+3. **S** Export: values >1 MiB with no newline export as `[TRUNCATED]`; unterminated quoted secrets in raw text are not redacted (`renderer/shared/data-transfer`). — **done (follow-ups 2026-10-13):** `[TRUNCATED]` and bare unterminated-quote cases were already fixed on `main`; escaped-quote and quoted `Authorization` leaks now redacted; huge unterminated values keep a `[REDACTED]` marker.
+4. **S** Git review is unavailable in repos whose ignored dirs contain symlinks or exceed file caps (e.g. `node_modules`), so plan checks never show a plain pass there (`host/workbench-git-snapshot.mjs` walk). — **done (follow-ups 2026-10-13):** already fixed on `main` (`1929531f`: ignored paths skipped via `check-ignore`; regression test with symlinked `node_modules`).
+5. **S** Permission policySync may return BUSY for a drifted session that Native reports active while app status is idle; config reads keep failing while any session has drifted (`workbench-service.mjs` policySync). — **done (follow-ups 2026-10-13):** `mode.set` BUSY is retried (bounded ~2.75s) before surfacing BUSY; `configuration.mcp.read` tolerates drift (mutations still repair and re-verify).
+6. **S** Plans: idle poll can cancel the observation `runCheck` started (`OBSERVATION_FAILED`); export summary clears on any snapshot change. — **done (follow-ups 2026-10-13):** already fixed on `main` (`56d9bf2b`: poll skips while `runCheck` observes; export summary keyed on content shape).
 
 ### 2026-10-13 — chat stage landed (`main` at `f5e35adc`)
 
@@ -220,9 +220,9 @@ Chat works end to end in the real app: streamed replies, write/read/shell permis
 
 Open follow-ups (minor, from stage reviews):
 
-7. **S** Subagent child create (`consumeBootstrap` parentID path) has no parent-project transaction gate; later execution is still gated by `enter()`. Adding it needs an overlay recipe change.
-8. **S** Inherited session rules (`*:*:ask` first) shadow agent-level restrictions (e.g. `explore` `*:deny`), so a child agent is never narrower than its parent session.
-9. **S** "항상 허용" is a permanent per-project allow with no revoke UI.
-10. **S** Narrow window at 200% zoom: pinned composer (184px) leaves ~6px for the permission queue / stacked notices; e2e-ui-states only requires visibility there. Composer needs a compact layout.
-11. **S** Journal duplicate replies return `{ok:true,status:"duplicate"}` even when the original attempt failed; clients must read the receipt.
-12. **S** Native `model.list` is bounded at 5000 and the catalog shows 300 after local-first sorting; the selected/default model is not pinned into the list.
+7. **S** Subagent child create (`consumeBootstrap` parentID path) has no parent-project transaction gate; later execution is still gated by `enter()`. Adding it needs an overlay recipe change. — **skipped:** accepted / needs a permission-overlay change.
+8. **S** Inherited session rules (`*:*:ask` first) shadow agent-level restrictions (e.g. `explore` `*:deny`), so a child agent is never narrower than its parent session. — **skipped:** accepted / needs a permission-overlay change.
+9. **S** "항상 허용" is a permanent per-project allow with no revoke UI. — **done (follow-ups 2026-10-13):** Settings "저장된 허용 규칙" lists/removes Native saved rules via `desktop:v1:rules` (`permission.saved.list/remove`, scoped to the workspace project, allow-only; deny floor untouched).
+10. **S** Narrow window at 200% zoom: pinned composer (184px) leaves ~6px for the permission queue / stacked notices; e2e-ui-states only requires visibility there. Composer needs a compact layout. — **done (follow-ups 2026-10-13):** composer is a compact grid at `max-height: 600px`; `e2e-ui-states` requires full viewport visibility again.
+11. **S** Journal duplicate replies return `{ok:true,status:"duplicate"}` even when the original attempt failed; clients must read the receipt. — **skipped:** accepted / needs a permission-overlay change.
+12. **S** Native `model.list` is bounded at 5000 and the catalog shows 300 after local-first sorting; the selected/default model is not pinned into the list. — **done (follow-ups 2026-10-13):** `catalog.list` accepts `pinModels` (selected + saved default) which stay listed past the 300 cap.
