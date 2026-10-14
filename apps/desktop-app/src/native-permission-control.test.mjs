@@ -2575,6 +2575,25 @@ test("subagent child create admits only the inheriting child shape", async () =>
           { parentID: "../ses" },
           { title: "no parent" },
           null,
+          // Accessor, Proxy and inherited values could differ between the gate
+          // and the Native body, so none of them is inspected or admitted.
+          Object.defineProperty({}, "parentID", {
+            enumerable: true,
+            get: () => "ses_parent",
+          }),
+          Object.defineProperty({ parentID: "ses_parent" }, "title", {
+            enumerable: true,
+            get: () => "t",
+          }),
+          new Proxy({ parentID: "ses_parent" }, {}),
+          Object.create({ parentID: "ses_parent" }),
+          Object.assign(Object.create({ permissions: [] }), {
+            parentID: "ses_parent",
+          }),
+          Object.assign(Object.create({ id: "ses_child" }), {
+            parentID: "ses_parent",
+          }),
+          Object.assign(Object.create(null), { parentID: "ses_parent" }),
         ])
           yield* expectFailure(service.consumeBootstrap(bad));
       }),
