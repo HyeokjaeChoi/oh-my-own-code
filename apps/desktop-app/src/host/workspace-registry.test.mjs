@@ -8656,7 +8656,8 @@ test("GC logical timeout holds actual call and cannot later mint confirmed succe
   assert.equal(response.code, "UNKNOWN_OUTCOME");
   assert.equal(host.mutationActive(), true);
   const duplicate = await host.handle(envelope, "sender");
-  assert.equal(duplicate.value.status, "duplicate");
+  assert.equal(duplicate.code, "UNKNOWN_OUTCOME");
+  assert.equal(duplicate.receipt.effect, "unknown");
   assert.equal(calls, 1);
   host.closeSender("sender");
   assert.equal(host.mutationActive(), true);
@@ -9584,7 +9585,8 @@ test("BR logical timeout holds actual call and cannot later mint confirmed succe
   assert.equal(response.code, "UNKNOWN_OUTCOME");
   assert.equal(host.mutationActive(), true);
   const duplicate = await host.handle(envelope, "sender");
-  assert.equal(duplicate.value.status, "duplicate");
+  assert.equal(duplicate.code, "UNKNOWN_OUTCOME");
+  assert.equal(duplicate.receipt.effect, "unknown");
   assert.equal(calls, 1);
   host.closeSender("sender");
   assert.equal(host.mutationActive(), true);
@@ -10643,10 +10645,7 @@ test("CTX-CANCEL logical timeout retains actual call and original key without la
   await started.promise;
   assert.equal((await pending).code, "UNKNOWN_OUTCOME");
   assert.equal(host.mutationActive(), true);
-  assert.equal(
-    (await host.handle(envelope, "sender")).value.status,
-    "duplicate",
-  );
+  assert.equal((await host.handle(envelope, "sender")).code, "UNKNOWN_OUTCOME");
   assert.equal(
     (
       await host.handle(
