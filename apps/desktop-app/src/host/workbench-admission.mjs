@@ -337,6 +337,15 @@ export function createHostAdmission({
     }
     return promise;
   }
+  // A replay of an operation that was rejected/failed without effect returns
+  // that original failure; only true successes (and unknown outcomes, whose
+  // receipt says so) answer "duplicate".
+  function replay(receipt) {
+    return receipt.admission === "rejected" &&
+      receipt.result?.kind === "rejected"
+      ? { ...failure(receipt.result.code), receipt }
+      : { ok: true, value: { status: "duplicate" }, receipt };
+  }
   function rejectRecord(record, code) {
     return trackActual(async () => {
       if (getRegistry) {
@@ -480,11 +489,7 @@ export function createHostAdmission({
       const duplicate = () => {
         const durable = registry.lookup({ runtimeEpoch: epoch, operationId });
         return durable.status === "found"
-          ? {
-              ok: true,
-              value: { status: "duplicate" },
-              receipt: durable.receipt,
-            }
+          ? replay(durable.receipt)
           : failure("UNAVAILABLE");
       };
       return registry.lookup({ runtimeEpoch: epoch, operationId }).status ===
@@ -495,11 +500,7 @@ export function createHostAdmission({
     if (old)
       return Promise.resolve(
         old.digest === hash
-          ? {
-              ok: true,
-              value: { status: "duplicate" },
-              receipt: redactReceipt(old),
-            }
+          ? replay(redactReceipt(old))
           : failure("DUPLICATE_CONFLICT"),
       );
     if (ledger.size >= 2048) return Promise.resolve(failure("LIMIT_REACHED"));
@@ -652,11 +653,7 @@ export function createHostAdmission({
             if (admission.status !== "admitted") {
               finishResponse(
                 admission.status === "duplicate"
-                  ? {
-                      ok: true,
-                      value: { status: "duplicate" },
-                      receipt: redactReceipt(record),
-                    }
+                  ? replay(redactReceipt(record))
                   : {
                       ...failure(record.result.code),
                       receipt: redactReceipt(record),
