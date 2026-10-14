@@ -2353,42 +2353,101 @@ export function createWorkbenchService({
   }
   // Backlog #14: Native sessions outlive `workspace.remove`, so the permission
   // control holds the removed workspace's project (prompt, fork, subagent child
-  // create). In memory per run, keyed by the canonical path so re-import clears.
+  // create). In memory per run (not re-derived after a restart), keyed by the
+  // canonical path. Darwin realpath does not case-normalize, so a case-only
+  // re-import of the same folder does not clear it. A removal that completes only
+  // partially leaves the hold until re-import. Native project ids are shared by
+  // git worktrees/clones of one repo, so the hold is also cleared whenever a
+  // workspace or session is (re)registered on a held project; `global` (every
+  // commit-less repo) is never held.
   const removedProjects = new Map();
-  async function projectIdsOf(items) {
+  // `strict`: a failed lookup throws; otherwise it marks the result unresolved.
+  async function sessionProjectIds(items, strict) {
     const ids = new Set();
-    for (const item of items) {
+    let unresolved = false;
+    // Sequential: one SDK call per scope lane (parallel calls answer READ_BUSY);
+    // bounded by the 200-session table cap.
+    for (const item of items.slice(0, 200)) {
       try {
         const info = await call(client.session.get, { sessionID: item.sdkId });
         if (typeof info?.projectID === "string") ids.add(info.projectID);
       } catch (error) {
-        if (error?._tag !== "SessionNotFoundError") throw error;
+        if (error?._tag === "SessionNotFoundError") continue;
+        if (strict) throw error;
+        unresolved = true;
       }
     }
-    return ids;
+    return { ids, unresolved };
+  }
+  // Native's own project resolution for a workspace path (sessionless worktrees
+  // included): the project whose canonical directory or sandboxes contain it.
+  // Resolves to undefined when the lookup fails; no API means no extra ids.
+  async function pathProjectIds(path) {
+    const list = client?.project?.list;
+    if (typeof list !== "function") return new Set();
+    try {
+      const ids = new Set();
+      for (const project of (await call(list, {})) ?? []) {
+        const dirs = [project.canonical, ...(project.sandboxes ?? [])];
+        for (const dir of dirs)
+          if (
+            typeof dir === "string" &&
+            (samePath(dir, path) ||
+              samePath(await canonicalDirectory(dir).catch(() => dir), path))
+          )
+            ids.add(project.id);
+      }
+      return ids;
+    } catch {
+      return undefined;
+    }
   }
   async function setProjectHolds(ids, held) {
     const hold = context?.nativeProjects?.hold;
     if (typeof hold !== "function") return;
-    for (const id of ids) {
-      let status;
-      for (let attempt = 0; attempt < 8 && status === undefined; attempt++) {
-        checkLive();
-        try {
-          status = await hold(id, held);
-        } catch {
-          await new Promise((resolve) => setTimeout(resolve, 250));
+    const done = [];
+    try {
+      for (const id of ids) {
+        let status;
+        for (let attempt = 0; attempt < 8 && status === undefined; attempt++) {
+          checkLive();
+          try {
+            status = await hold(id, held);
+          } catch {
+            await new Promise((resolve) => setTimeout(resolve, 250));
+          }
         }
+        if (status === undefined) fail("BUSY");
+        if (status !== "ok") fail("UNAVAILABLE");
+        done.push(id);
       }
-      if (status === undefined) fail("BUSY");
-      if (status !== "ok") fail("UNAVAILABLE");
+    } catch (error) {
+      // All-or-nothing when holding: undo what was already set (best effort).
+      if (held) for (const id of done) await hold(id, false).catch(() => {});
+      throw error;
+    }
+  }
+  // Best effort: a failed release only leaves the (conservative) hold in place.
+  async function releaseHeldProjects(ids) {
+    if (!removedProjects.size) return;
+    for (const [path, held] of [...removedProjects]) {
+      const hit = held.filter((id) => ids.has(id));
+      if (!hit.length) continue;
+      try {
+        await setProjectHolds(hit, false);
+      } catch {
+        continue;
+      }
+      const rest = held.filter((id) => !ids.has(id));
+      if (rest.length) removedProjects.set(path, rest);
+      else removedProjects.delete(path);
     }
   }
   async function releaseRemovedProjects(path) {
-    const ids = removedProjects.get(path);
-    if (!ids) return;
-    await setProjectHolds(ids, false);
-    removedProjects.delete(path);
+    const ids = new Set(removedProjects.get(path) ?? []);
+    if (removedProjects.size)
+      for (const id of (await pathProjectIds(path)) ?? []) ids.add(id);
+    await releaseHeldProjects(ids);
   }
   // `verifyOnly`: a bootstrap session already carries exactly this ruleset from
   // its create input (and a fork of an "ask" session inherits it). Native's
@@ -5285,14 +5344,32 @@ export function createWorkbenchService({
       let heldProjects = [];
       if (context?.nativeProjects && client) {
         const all = [...tables().sessions.values()];
-        const kept = await projectIdsOf(
-          all.filter((x) => x.workspaceId !== w.id),
+        const mine = await sessionProjectIds(
+          all.filter((x) => x.workspaceId === w.id),
+          true,
         );
-        heldProjects = [
-          ...(await projectIdsOf(all.filter((x) => x.workspaceId === w.id))),
-        ].filter((id) => !kept.has(id));
-        await setProjectHolds(heldProjects, true);
+        const others = all.filter((x) => x.workspaceId !== w.id);
+        const kept = await sessionProjectIds(others, false);
+        // Every other registered workspace's project, resolved from its path as
+        // well (a sessionless worktree shares the project). An unresolved lookup
+        // means "possibly shared": hold nothing rather than lock a live workspace.
+        let unresolved = kept.unresolved;
+        for (const other of tables().workspaces.values()) {
+          if (other.id === w.id) continue;
+          const ids = await pathProjectIds(other.path);
+          if (!ids) unresolved = true;
+          else for (const id of ids) kept.ids.add(id);
+        }
+        heldProjects = unresolved
+          ? []
+          : [...mine.ids].filter((id) => id !== "global" && !kept.ids.has(id));
         removedProjects.set(w.path, heldProjects);
+        try {
+          await setProjectHolds(heldProjects, true);
+        } catch (error) {
+          removedProjects.delete(w.path);
+          throw error;
+        }
       }
       try {
         await markEffect("registry.unregister");
@@ -5347,6 +5424,7 @@ export function createWorkbenchService({
           ? await call(client.session.get, { sessionID: info.id })
           : info;
         const created = await addSession(w, checked);
+        await releaseHeldProjects(new Set([checked.projectID]));
         await policy(created, undefined, Boolean(context?.nativeTasks));
         await settleBootstrap();
         return base(w, created);
