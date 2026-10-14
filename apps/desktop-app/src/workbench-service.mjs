@@ -2368,18 +2368,36 @@ export function createWorkbenchService({
           sessionID: s.sdkId,
           permissions: expected.map((rule) => ({ ...rule })),
         });
-      const info = await call(client.session.get, { sessionID: s.sdkId });
-      if (
-        info?.id !== s.sdkId ||
-        !samePath(
-          await canonicalDirectory(info.location?.directory),
-          workspace(s.workspaceId).path,
-        ) ||
-        !matchesAuthenticatedFloor(info.permissions) ||
-        !matchesOrderedPermissionRules(expected, info.permissions)
-      )
-        fail("POLICY_UNVERIFIED");
-      await propagateToChildren(s.sdkId, expected);
+      const readback = async () => {
+        const read = await call(client.session.get, { sessionID: s.sdkId });
+        if (
+          read?.id !== s.sdkId ||
+          !samePath(
+            await canonicalDirectory(read.location?.directory),
+            workspace(s.workspaceId).path,
+          ) ||
+          !matchesAuthenticatedFloor(read.permissions) ||
+          !matchesOrderedPermissionRules(expected, read.permissions)
+        )
+          fail("POLICY_UNVERIFIED");
+        await propagateToChildren(s.sdkId, expected);
+        return read;
+      };
+      // A bootstrap session was created with exactly this ruleset, so its
+      // readback is purely read-only: a transient Native read failure settles
+      // within a few bounded attempts. A real mismatch persists and still
+      // fails closed.
+      let info;
+      for (let attempt = 1; ; attempt++) {
+        try {
+          info = await readback();
+          break;
+        } catch (error) {
+          checkLive();
+          if (!verifyOnly || attempt >= 3) throw error;
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+      }
       s.policyError = false;
       return info;
     } catch {
