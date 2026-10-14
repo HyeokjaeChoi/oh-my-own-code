@@ -231,3 +231,10 @@ Open follow-ups (minor, from stage reviews):
 10. **S** Narrow window at 200% zoom: pinned composer (184px) leaves ~6px for the permission queue / stacked notices; e2e-ui-states only requires visibility there. Composer needs a compact layout. — **done (follow-ups 2026-10-13):** composer is a compact grid at `max-height: 600px`; `e2e-ui-states` requires full viewport visibility again.
 11. **S** Journal duplicate replies returned `{ok:true,status:"duplicate"}` even when the original attempt failed. — **done (backlog2 2026-10-14):** a replay of an operation whose receipt is `rejected` returns the original failure (`ok:false`, same code, with receipt); true successes still answer `duplicate`, and unknown outcomes keep their unknown receipt (`host/workbench-admission.mjs` `replay`). `e2e-session-lifecycle` asserts the original code on replays and still proves no second effect.
 12. **S** Native `model.list` is bounded at 5000 and the catalog shows 300 after local-first sorting; the selected/default model is not pinned into the list. — **done (follow-ups 2026-10-13):** `catalog.list` accepts `pinModels` (selected + saved default) which stay listed past the 300 cap.
+
+### 2026-10-13/14 — overlay follow-ups landed
+
+Items 7 (child create gated on parent admission) and 11 (journal replay returns the original failure; unknown outcome replays as `UNKNOWN_OUTCOME`) are done; 8 is accepted (parent session policy is the authority). All `scripts/*.test.mjs` now run in the nx test target.
+
+13. **S** `e2e-sessions` failed once with `POLICY_UNVERIFIED` on `session.create` and then passed 6 consecutive reruns; cause not investigated (suspect startup policy verification timing). Re-check if it recurs.
+14. **S** Subagent child-create gate does not detect a parent whose workspace was removed (Native session persists); needs a per-project removal hold in the permission control.
