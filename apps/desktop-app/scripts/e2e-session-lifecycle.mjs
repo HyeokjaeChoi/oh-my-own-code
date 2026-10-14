@@ -68,11 +68,12 @@ function success(result) {
   assert.equal(result.ok, true, JSON.stringify(result));
   return result.value;
 }
-// A replayed requestId is answered from the journal: no second effect, and the
-// original (failed) attempt is never reported as confirmed.
-function replayedWithoutEffect(result) {
-  assert.equal(result.ok, true, JSON.stringify(result));
-  assert.equal(result.value?.status, "duplicate", JSON.stringify(result));
+// A replayed requestId is answered from the journal: the original failure is
+// returned again (same code, with its receipt), no second effect happens, and
+// the failed attempt is never reported as confirmed.
+function replayedWithoutEffect(result, code) {
+  assert.equal(result.ok, false, JSON.stringify(result));
+  assert.equal(result.code, code, JSON.stringify(result));
   assert.notEqual(result.receipt?.effect, "confirmed", JSON.stringify(result));
 }
 function failure(result, code) {
@@ -234,7 +235,7 @@ try {
     requestId: "empty-fork",
   };
   failure(await bridge(forkRequest), "EMPTY_SESSION");
-  replayedWithoutEffect(await bridge(forkRequest));
+  replayedWithoutEffect(await bridge(forkRequest), "EMPTY_SESSION");
   assert.equal(
     getSession(success(await bridge({ type: "snapshot", ...target }))).status,
     "idle",
@@ -280,7 +281,7 @@ try {
     requestId: "cancel-child",
   };
   failure(await bridge(removeChild), "CANCELLED");
-  replayedWithoutEffect(await bridge(removeChild));
+  replayedWithoutEffect(await bridge(removeChild), "CANCELLED");
   const dialogs = await application.evaluate(
     () => globalThis.__sessionE2eDialogs,
   );

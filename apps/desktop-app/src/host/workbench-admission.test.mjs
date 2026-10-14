@@ -1018,10 +1018,13 @@ test("mutation identity, admission1, no late ready dispatch and reserved lookup 
   await tick();
   await tick();
   assert.equal(dispatches, 0);
-  assert.equal(
-    (await admission.handle(request, "a")).value.status,
-    "duplicate",
-  );
+  // The original timed out before any effect: the replay is that failure, not a success.
+  const replayed = await admission.handle(request, "a");
+  assert.equal(replayed.ok, false);
+  assert.equal(replayed.code, "READ_TIMEOUT");
+  assert.equal(replayed.receipt.admission, "rejected");
+  assert.equal(replayed.receipt.effect, "none");
+  assert.equal(dispatches, 0);
 });
 
 test("late native create finalizes SAME host registry and evidence receipt; no duplicate replay", async (t) => {
@@ -1209,8 +1212,8 @@ test("receipt cap2048 keeps rejected identities; missing and old epoch never imp
         { type: "workspace.remove", workspaceId: "missing" },
         "cap-0",
       )
-    ).value.status,
-    "duplicate",
+    ).code,
+    "NOT_FOUND",
   );
   assert.equal((await f.lookup("cap-0")).value.receipt.effect, "none");
   assert.deepEqual((await f.lookup("absent")).value, {
@@ -1586,10 +1589,13 @@ test("only exact typed empty-session fork rejection proves none; lookalike remai
       assert.equal(result.code, typed ? "EMPTY_SESSION" : "UNKNOWN_OUTCOME");
       assert.equal(result.receipt.effect, typed ? "none" : "unknown");
       const count = f.state.calls.filter((c) => c.name === "fork").length;
-      assert.equal(
-        (await f.mutate(operation, "empty")).value.status,
-        "duplicate",
-      );
+      const replayed = await f.mutate(operation, "empty");
+      // A proven-none rejection replays as that failure; an unknown outcome stays "duplicate".
+      if (typed) {
+        assert.equal(replayed.ok, false);
+        assert.equal(replayed.code, "EMPTY_SESSION");
+        assert.equal(replayed.receipt.effect, "none");
+      } else assert.equal(replayed.value.status, "duplicate");
       assert.equal(
         f.state.calls.filter((c) => c.name === "fork").length,
         count,
