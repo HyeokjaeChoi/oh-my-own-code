@@ -9,7 +9,7 @@
     "dev": "pnpm exec electron dist/app",
     "package:macos": "node scripts/package.mjs darwin arm64",
     "package:windows": "node scripts/package.mjs win32 x64",
-    "test": "node --test src/*.test.mjs",
+    "test": "node --test src/*.test.mjs src/host/*.test.mjs scripts/*.test.mjs",
     "inspect:bundle": "node scripts/inspect-renderer-bundle.mjs",
     "check:boundaries": "node scripts/check-renderer-boundaries.mjs",
     "e2e:workbench": "node scripts/e2e-workbench.mjs",

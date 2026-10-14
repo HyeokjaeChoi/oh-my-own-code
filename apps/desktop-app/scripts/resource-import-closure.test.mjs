@@ -62,68 +62,78 @@ test("resource parser preserves actual syntax and fail-closed malformed/template
   assert.throws(() => localResourceImports("{", "package.json"));
 });
 
-test("contracted descriptor and task input scopes contain their current checked import and copy closure", async () => {
-  const root = new URL("../../../", import.meta.url),
-    run = "docs/runs/permission-task-lifetime-integration/";
-  const manifest = JSON.parse(
-    await readFile(
-      new URL("./permission-test-inputs.json", import.meta.url),
-      "utf8",
-    ),
-  );
-  const contract = JSON.parse(
-    await readFile(new URL(run + "contract.json", root), "utf8"),
-  );
-  const selected = process.env.PERMISSION_TEST_CHECK;
-  assert.ok(
-    ["native-descriptor-read", "native-task-read"].includes(selected),
-    "contracted check selector required",
-  );
-  const selectedCheck = contract.checks[selected];
-  assert.deepEqual(selectedCheck.argv.slice(0, 3), [
-    "/usr/bin/env",
-    `PERMISSION_TEST_CHECK=${selected}`,
-    "node",
-  ]);
-  for (const name of [selected]) {
-    const row = manifest.checks[name];
-    assert.deepEqual(
-      contract.checks[name].argv
-        .filter((value) => value.endsWith(".test.mjs"))
-        .sort(),
-      row.seeds.filter((value) => value.endsWith(".test.mjs")).sort(),
+// Contract probe: run with PERMISSION_TEST_CHECK=native-descriptor-read|native-task-read
+// (see docs/runs/permission-task-lifetime-integration/contract.json); skipped otherwise.
+test(
+  "contracted descriptor and task input scopes contain their current checked import and copy closure",
+  {
+    skip: process.env.PERMISSION_TEST_CHECK
+      ? false
+      : "probe: needs PERMISSION_TEST_CHECK",
+  },
+  async () => {
+    const root = new URL("../../../", import.meta.url),
+      run = "docs/runs/permission-task-lifetime-integration/";
+    const manifest = JSON.parse(
+      await readFile(
+        new URL("./permission-test-inputs.json", import.meta.url),
+        "utf8",
+      ),
     );
-    const current = await permissionTestInputClosure(row.seeds);
-    assert.deepEqual(
-      current,
-      row.files,
-      `${name}: update reviewed input closure before accepting changed imports`,
+    const contract = JSON.parse(
+      await readFile(new URL(run + "contract.json", root), "utf8"),
     );
-    const scope = contract.checks[name].input_scope.paths;
-    for (const file of current)
-      assert.ok(scope.includes(file), `${name}: missing input ${file}`);
-    for (const file of [
-      "apps/desktop-app/scripts/permission-test-inputs.json",
-      "package.json",
-      "pnpm-lock.yaml",
-      "apps/desktop-app/package.json",
-    ])
-      assert.ok(scope.includes(file));
-    for (const excluded of [
-      "stage-event-host.mjs",
-      "prepare-event-host.mjs",
-      "native-permission-overlay-contract.mjs",
-      "native-permission-control.mjs",
-      "native-permission-inventory.mjs",
-    ])
-      assert.equal(
-        current.some((file) => file.endsWith("/" + excluded)),
-        false,
-        `${name}: unrelated dependency reintroduced`,
+    const selected = process.env.PERMISSION_TEST_CHECK;
+    assert.ok(
+      ["native-descriptor-read", "native-task-read"].includes(selected),
+      "contracted check selector required",
+    );
+    const selectedCheck = contract.checks[selected];
+    assert.deepEqual(selectedCheck.argv.slice(0, 3), [
+      "/usr/bin/env",
+      `PERMISSION_TEST_CHECK=${selected}`,
+      "node",
+    ]);
+    for (const name of [selected]) {
+      const row = manifest.checks[name];
+      assert.deepEqual(
+        contract.checks[name].argv
+          .filter((value) => value.endsWith(".test.mjs"))
+          .sort(),
+        row.seeds.filter((value) => value.endsWith(".test.mjs")).sort(),
       );
-  }
-  await assert.rejects(
-    () => permissionTestInputClosure(["../README.md"]),
-    /unclosed_test_input_path/,
-  );
-});
+      const current = await permissionTestInputClosure(row.seeds);
+      assert.deepEqual(
+        current,
+        row.files,
+        `${name}: update reviewed input closure before accepting changed imports`,
+      );
+      const scope = contract.checks[name].input_scope.paths;
+      for (const file of current)
+        assert.ok(scope.includes(file), `${name}: missing input ${file}`);
+      for (const file of [
+        "apps/desktop-app/scripts/permission-test-inputs.json",
+        "package.json",
+        "pnpm-lock.yaml",
+        "apps/desktop-app/package.json",
+      ])
+        assert.ok(scope.includes(file));
+      for (const excluded of [
+        "stage-event-host.mjs",
+        "prepare-event-host.mjs",
+        "native-permission-overlay-contract.mjs",
+        "native-permission-control.mjs",
+        "native-permission-inventory.mjs",
+      ])
+        assert.equal(
+          current.some((file) => file.endsWith("/" + excluded)),
+          false,
+          `${name}: unrelated dependency reintroduced`,
+        );
+    }
+    await assert.rejects(
+      () => permissionTestInputClosure(["../README.md"]),
+      /unclosed_test_input_path/,
+    );
+  },
+);
