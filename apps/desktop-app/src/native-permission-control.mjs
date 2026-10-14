@@ -2504,21 +2504,38 @@ function kernel(initial) {
   // admitted: no id, location, permissions or metadata override. The
   // `subagent` tool itself stays behind OpenCode's permission prompt.
   const CHILD_CREATE_KEYS = new Set(["parentID", "title", "agent", "model"]);
+  // Plain object, own enumerable data properties only: no Proxy, accessor or
+  // inherited key, so the gate and the Native body cannot read different values.
   const admitChildCreate = (input) => {
     if (strict || runtimeHeld) reject("held");
     if (
-      Object.keys(input).some(
-        (key) => !CHILD_CREATE_KEYS.has(key) && input[key] !== undefined,
-      )
+      types.isProxy(input) ||
+      Object.getPrototypeOf(input) !== Object.prototype
     )
       reject("child_create_invalid");
-    identifier(input.parentID);
+    let parentID;
+    for (const key of Reflect.ownKeys(input)) {
+      const field = Object.getOwnPropertyDescriptor(input, key);
+      if (!field.enumerable || !Object.hasOwn(field, "value"))
+        reject("child_create_invalid");
+      if (key === "parentID") parentID = field.value;
+      else if (!CHILD_CREATE_KEYS.has(key) && field.value !== undefined)
+        reject("child_create_invalid");
+    }
+    // Override keys must not be satisfied by an inherited value either.
+    for (const key of ["id", "location", "permissions", "metadata"])
+      if (!Object.hasOwn(input, key) && key in input)
+        reject("child_create_invalid");
+    identifier(parentID);
   };
   const consumeBootstrap = (input) =>
     Effect.try({
       try: () => {
-        if (input && typeof input === "object" && input.parentID !== undefined)
-          return admitChildCreate(input);
+        if (input && typeof input === "object") {
+          // A Proxy is never inspected (its traps could answer differently later).
+          if (types.isProxy(input)) reject("child_create_invalid");
+          if ("parentID" in input) return admitChildCreate(input);
+        }
         const args = bootstrapStageArguments("native.create", input);
         consumeArmed("native.create", args, (request) => {
           if (
