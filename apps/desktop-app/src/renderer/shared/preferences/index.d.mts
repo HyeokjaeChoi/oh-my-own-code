@@ -6,6 +6,7 @@ export interface Preferences {
   fontSize: FontSize;
   density: Density;
   osNotifications: boolean;
+  terminalScreenReader: boolean;
 }
 export const THEMES: readonly Theme[];
 export const FONT_SIZES: readonly FontSize[];

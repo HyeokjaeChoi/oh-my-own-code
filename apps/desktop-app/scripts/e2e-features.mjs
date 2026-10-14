@@ -269,6 +269,25 @@ try {
   );
 
   await check(
+    "terminal-screen-reader",
+    async () => {
+      // The terminal from terminal-panel is still mounted behind the sheet.
+      // The modal sheet hides the page from role queries, so use a CSS locator.
+      const screen = page.locator('[aria-label="터미널 화면"]');
+      await expect(screen.locator(".xterm-accessibility")).toHaveCount(0);
+      await page.getByRole("button", { name: "설정·단축키" }).click();
+      const toggle = dialog().getByLabel(/터미널 스크린 리더 모드/);
+      await expect(toggle).not.toBeChecked();
+      await toggle.check();
+      await expect(screen.locator(".xterm-accessibility")).toHaveCount(1);
+      await toggle.uncheck();
+      await expect(screen.locator(".xterm-accessibility")).toHaveCount(0);
+      await page.keyboard.press("Escape");
+    },
+    { needs: "runtime" },
+  );
+
+  await check(
     "plans-panel",
     async () => {
       await mkdir(join(project, ".omoc/plans"), { recursive: true });

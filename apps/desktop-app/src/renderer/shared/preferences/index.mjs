@@ -6,6 +6,7 @@ export const DEFAULT_PREFERENCES = Object.freeze({
   fontSize: "medium",
   density: "comfortable",
   osNotifications: false,
+  terminalScreenReader: false,
 });
 export const PREFERENCES_STORAGE_KEY = "omoc.preferences.v1";
 const FONT_SCALE = { small: 0.9, medium: 1, large: 1.15 };
@@ -36,6 +37,7 @@ export function parsePreferences(raw) {
     fontSize: pick(FONT_SIZES, r.fontSize, DEFAULT_PREFERENCES.fontSize),
     density: pick(DENSITIES, r.density, DEFAULT_PREFERENCES.density),
     osNotifications: r.osNotifications === true,
+    terminalScreenReader: r.terminalScreenReader === true,
   };
 }
 
@@ -66,6 +68,11 @@ export function applyPreferences(root, preferences, systemDark) {
     (preferences.theme === "system" && systemDark);
   root.setAttribute("data-theme", dark ? "dark" : "light");
   root.setAttribute("data-density", preferences.density);
+  // xterm's screenReaderMode costs performance, so it follows an explicit opt-in.
+  root.setAttribute(
+    "data-terminal-screen-reader",
+    String(preferences.terminalScreenReader),
+  );
   const scale = FONT_SCALE[preferences.fontSize];
   for (const [name, px] of Object.entries(SIZE_TOKENS)) {
     const property = `--omoc-semantic-type-size-${name}`;
