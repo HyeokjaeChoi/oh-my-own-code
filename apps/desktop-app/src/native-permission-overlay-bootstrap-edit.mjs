@@ -53,15 +53,16 @@ export function assertOnlyCreateGateChanged(current, baseline) {
       was.replace,
       /Effect\.fail\(new Error\("native_permission_held"\)\)/u,
     );
-    // The gate is the first statement and no unconditional hold remains.
-    assert.ok(
-      now.replace.includes("      yield* control.consumeBootstrap(input);\n"),
-    );
-    // A child create additionally requires its parent's project admission.
-    assert.ok(
-      now.replace.endsWith(
+    // The gate is the first statement, then the child-parent admission, and
+    // nothing else is added: the whole replacement is pinned exactly.
+    assert.equal(
+      now.replace,
+      FIND +
+        "      // Only a private bootstrap handoff armed for exactly this input may create.\n" +
+        "      // Direct HTTP callers, other methods and duplicate-ID probes are refused.\n" +
+        "      yield* control.consumeBootstrap(input);\n" +
+        "      // A child may only be created under a parent whose project is admitted (same gate as fork).\n" +
         "      if (input?.parentID !== undefined) yield* enter(input.parentID, () => Effect.void);\n",
-      ),
     );
     assert.equal(now.replace.includes("native_permission_held"), false);
   });
