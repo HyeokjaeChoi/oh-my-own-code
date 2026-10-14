@@ -109,6 +109,30 @@ function OsNotificationField(props: {
   );
 }
 
+function TerminalScreenReaderField(props: {
+  preferences: Preferences;
+  onChange: (patch: Partial<Preferences>) => void;
+}) {
+  return (
+    <label className={styles.field}>
+      <span>
+        터미널 스크린 리더 모드
+        <small>
+          {" "}
+          (출력을 보조 기술이 읽을 수 있게 하며, 터미널이 느려질 수 있습니다)
+        </small>
+      </span>
+      <input
+        type="checkbox"
+        checked={props.preferences.terminalScreenReader}
+        onChange={(event) =>
+          props.onChange({ terminalScreenReader: event.target.checked })
+        }
+      />
+    </label>
+  );
+}
+
 export function PreferencesSheetView(props: {
   preferences: Preferences;
   onChange: (patch: Partial<Preferences>) => void;
@@ -135,6 +159,7 @@ export function PreferencesSheetView(props: {
         </label>
       ))}
       <OsNotificationField {...props} />
+      <TerminalScreenReaderField {...props} />
       <ProviderSettings />
       <SavedRulesSettings />
       <h3 className={styles.subheading}>키보드 단축키</h3>

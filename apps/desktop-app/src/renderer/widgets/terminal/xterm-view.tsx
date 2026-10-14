@@ -37,6 +37,9 @@ const LIGHT_ANSI: ITheme = {
 };
 const LONE_SURROGATE =
   /[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/g;
+const SCREEN_READER_ATTR = "data-terminal-screen-reader";
+const screenReaderOn = () =>
+  document.documentElement.getAttribute(SCREEN_READER_ATTR) === "true";
 const isMac = /Mac/i.test(navigator.platform);
 const isWin = /Win/i.test(navigator.platform);
 
@@ -97,6 +100,7 @@ export function XtermView({
       lineHeight: 1.2,
       cursorBlink: true,
       scrollback: SCROLLBACK,
+      screenReaderMode: screenReaderOn(),
       theme,
       allowProposedApi: false,
       // OSC 8 hyperlinks from program output are never opened: no confirm(), no window.open.
@@ -112,13 +116,14 @@ export function XtermView({
       const next = readTheme(el);
       term.options.theme = next.theme;
       term.options.fontFamily = next.font;
+      term.options.screenReaderMode = screenReaderOn();
     };
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     media.addEventListener("change", restyle);
     const themeWatch = new MutationObserver(restyle);
     themeWatch.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["data-theme"],
+      attributeFilter: ["data-theme", SCREEN_READER_ATTR],
     });
 
     // Size: fit to the container; the debounced sync tells the host only the latest grid.

@@ -19,6 +19,32 @@ test("parsePreferences defaults invalid input per field", () => {
   });
 });
 
+test("terminalScreenReader is a closed opt-in boolean (default off)", () => {
+  assert.equal(DEFAULT_PREFERENCES.terminalScreenReader, false);
+  for (const bad of ["true", 1, null, {}])
+    assert.equal(
+      parsePreferences({ terminalScreenReader: bad }).terminalScreenReader,
+      false,
+    );
+  assert.equal(
+    parsePreferences({ terminalScreenReader: true }).terminalScreenReader,
+    true,
+  );
+  const attrs = {};
+  const root = {
+    setAttribute: (k, v) => (attrs[k] = v),
+    style: { setProperty() {}, removeProperty() {} },
+  };
+  applyPreferences(root, DEFAULT_PREFERENCES, false);
+  assert.equal(attrs["data-terminal-screen-reader"], "false");
+  applyPreferences(
+    root,
+    { ...DEFAULT_PREFERENCES, terminalScreenReader: true },
+    false,
+  );
+  assert.equal(attrs["data-terminal-screen-reader"], "true");
+});
+
 test("load/save round-trip and tolerate blocked storage", () => {
   const data = new Map();
   const storage = {
@@ -30,6 +56,7 @@ test("load/save round-trip and tolerate blocked storage", () => {
     fontSize: "large",
     density: "compact",
     osNotifications: true,
+    terminalScreenReader: true,
   };
   savePreferences(next, storage);
   assert.deepEqual(loadPreferences(storage), next);
