@@ -110,10 +110,9 @@ test("CTX-BRANCH late before fork stays unknown and duplicate lookup never reexe
   const pending = admission.handle(envelope, "sender");
   await entered.promise;
   assert.equal((await pending).code, "UNKNOWN_OUTCOME");
-  assert.equal(
-    (await admission.handle(envelope, "sender")).value.status,
-    "duplicate",
-  );
+  const replayed = await admission.handle(envelope, "sender");
+  assert.equal(replayed.code, "UNKNOWN_OUTCOME");
+  assert.equal(replayed.receipt.effect, "unknown");
   held.resolve();
   await admission.drain();
   assert.equal(projected.code, "UNKNOWN_OUTCOME");
@@ -983,9 +982,8 @@ test("mutation identity, admission1, no late ready dispatch and reserved lookup 
     operation: { type: "workspace.import" },
   };
   const waiting = admission.handle(request, "a");
-  const duplicate = await admission.handle(request, "a");
-  assert.equal(duplicate.value.status, "duplicate");
-  assert.equal(duplicate.receipt.admission, "admitted");
+  // An in-flight duplicate waits for the original and returns its outcome.
+  const duplicatePending = admission.handle(request, "a");
   assert.equal(
     (
       await admission.handle(
@@ -1014,6 +1012,10 @@ test("mutation identity, admission1, no late ready dispatch and reserved lookup 
   );
   assert.equal(lookup.value.receipt.effect, "none");
   assert.equal((await waiting).receipt.effect, "none");
+  const duplicate = await duplicatePending;
+  assert.equal(duplicate.ok, false);
+  assert.equal(duplicate.code, "READ_TIMEOUT");
+  assert.equal(duplicate.receipt.admission, "rejected");
   ready.resolve();
   await tick();
   await tick();
@@ -1040,7 +1042,9 @@ test("late native create finalizes SAME host registry and evidence receipt; no d
   const waiting = f.mutate(op, "create-late");
   await until(() => f.state.calls.some((c) => c.name === "create"));
   assert.equal((await waiting).code, "UNKNOWN_OUTCOME");
-  assert.equal((await f.mutate(op, "create-late")).value.status, "duplicate");
+  const replayed = await f.mutate(op, "create-late");
+  assert.equal(replayed.code, "UNKNOWN_OUTCOME");
+  assert.equal(replayed.receipt.effect, "unknown");
   assert.equal((await f.mutate(op, "second-create")).code, "BUSY");
   assert.equal(f.state.inFlight, 1);
   const result = f.info("late-native", { title: op.title });
@@ -1498,8 +1502,8 @@ test("late send, fork, rename and permission acknowledgements reconcile only the
       await until(() => fired);
       assert.equal((await response).code, "UNKNOWN_OUTCOME");
       assert.equal(
-        (await f.mutate(operation, "late-intent")).value.status,
-        "duplicate",
+        (await f.mutate(operation, "late-intent")).code,
+        "UNKNOWN_OUTCOME",
       );
       assert.equal(
         (await f.lookup("late-intent")).value.receipt.effect,
@@ -1590,12 +1594,16 @@ test("only exact typed empty-session fork rejection proves none; lookalike remai
       assert.equal(result.receipt.effect, typed ? "none" : "unknown");
       const count = f.state.calls.filter((c) => c.name === "fork").length;
       const replayed = await f.mutate(operation, "empty");
-      // A proven-none rejection replays as that failure; an unknown outcome stays "duplicate".
+      // A proven-none rejection replays as that failure; an unknown outcome as UNKNOWN_OUTCOME.
       if (typed) {
         assert.equal(replayed.ok, false);
         assert.equal(replayed.code, "EMPTY_SESSION");
         assert.equal(replayed.receipt.effect, "none");
-      } else assert.equal(replayed.value.status, "duplicate");
+      } else {
+        assert.equal(replayed.ok, false);
+        assert.equal(replayed.code, "UNKNOWN_OUTCOME");
+        assert.equal(replayed.receipt.effect, "unknown");
+      }
       assert.equal(
         f.state.calls.filter((c) => c.name === "fork").length,
         count,
@@ -3030,8 +3038,8 @@ test("runtime options actual durable admission binds variant and keeps unknown o
   assert.equal(first.ok, false);
   assert.equal(first.receipt.effect, "unknown");
   assert.equal(
-    (await admission.handle(envelope, "sender")).value.status,
-    "duplicate",
+    (await admission.handle(envelope, "sender")).code,
+    "UNKNOWN_OUTCOME",
   );
   assert.equal(
     (

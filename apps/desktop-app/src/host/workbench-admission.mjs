@@ -337,14 +337,15 @@ export function createHostAdmission({
     }
     return promise;
   }
-  // A replay of an operation that was rejected/failed without effect returns
-  // that original failure; only true successes (and unknown outcomes, whose
-  // receipt says so) answer "duplicate".
+  // A replay answers with the original outcome: the rejection code for an
+  // operation that failed without effect, UNKNOWN_OUTCOME when the effect is
+  // unknown, and "duplicate" only for a true success.
   function replay(receipt) {
-    return receipt.admission === "rejected" &&
-      receipt.result?.kind === "rejected"
-      ? { ...failure(receipt.result.code), receipt }
-      : { ok: true, value: { status: "duplicate" }, receipt };
+    if (receipt.admission === "rejected" && receipt.result?.kind === "rejected")
+      return { ...failure(receipt.result.code), receipt };
+    if (receipt.effect === "unknown")
+      return { ...failure("UNKNOWN_OUTCOME"), receipt };
+    return { ok: true, value: { status: "duplicate" }, receipt };
   }
   function rejectRecord(record, code) {
     return trackActual(async () => {
@@ -497,12 +498,16 @@ export function createHostAdmission({
         ? Promise.resolve(duplicate())
         : old.response.then(duplicate);
     }
-    if (old)
-      return Promise.resolve(
-        old.digest === hash
-          ? replay(redactReceipt(old))
-          : failure("DUPLICATE_CONFLICT"),
+    if (old) {
+      if (old.digest !== hash)
+        return Promise.resolve(failure("DUPLICATE_CONFLICT"));
+      // Wait for an in-flight original so a duplicate of an operation that
+      // later fails returns that failure (records rejected at admission have
+      // no pending response).
+      return (old.response ?? Promise.resolve()).then(() =>
+        replay(redactReceipt(old)),
       );
+    }
     if (ledger.size >= 2048) return Promise.resolve(failure("LIMIT_REACHED"));
     const admittedRevision = revision();
     // Injected readiness/registry/revision callbacks can reenter drain too.

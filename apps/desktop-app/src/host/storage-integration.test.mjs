@@ -1409,7 +1409,10 @@ test("late native settlement retains mutation slot and durable original receipt 
     (await f.mutate({ ...op, title: "Other" }, "other")).code,
     "BUSY",
   );
-  assert.equal((await f.mutate(op, "original")).value.status, "duplicate");
+  // The original already timed out with an unknown effect; the replay says so.
+  const replayed = await f.mutate(op, "original");
+  assert.equal(replayed.code, "UNKNOWN_OUTCOME");
+  assert.equal(replayed.receipt.effect, "unknown");
   pause.resolve();
   assert.equal((await pending).receipt.operationId, "original");
   assert.equal((await f.lookup("original")).value.receipt.effect, "confirmed");
