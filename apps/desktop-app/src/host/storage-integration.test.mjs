@@ -6041,6 +6041,37 @@ test("session.create refuses cleanly when a session is already recorded under th
   );
 });
 
+// Backlog #13: a transient Native read failure during the post-create policy
+// readback must settle within the bounded attempts; a persistent one (or a real
+// mismatch) still fails closed with POLICY_UNVERIFIED.
+for (const [name, transient, ok] of [
+  ["transient", 1, true],
+  ["persistent", 99, false],
+])
+  test(`session.create bootstrap readback: ${name} Native read failure ${ok ? "settles" : "fails closed"}`, async (t) => {
+    const { f } = await bootstrapped(t);
+    const snapshot = await f.ready();
+    let present = 0;
+    let failures = transient;
+    f.state.hooks.get = ({ sessionID }) => {
+      const record = f.records.get(sessionID);
+      if (!record)
+        throw Object.assign(new Error("absent"), {
+          _tag: "SessionNotFoundError",
+          sessionID,
+        });
+      // 1st present read is the post-create check; later ones are readbacks.
+      if (present++ >= 1 && failures-- > 0) throw new Error("transient read");
+      return { ...record };
+    };
+    const response = await f.mutate(
+      createOperation(snapshot),
+      `create-readback-${name}`,
+    );
+    if (ok) assert.equal(response.ok, true, JSON.stringify(response));
+    else assert.equal(response.code, "POLICY_UNVERIFIED");
+  });
+
 test("arm refusal revokes, proves no effect and never reaches Native", async (t) => {
   const { f, child } = await bootstrapped(t);
   const snapshot = await f.ready();
