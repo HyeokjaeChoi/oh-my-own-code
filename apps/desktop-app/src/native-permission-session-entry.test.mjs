@@ -309,10 +309,12 @@ async function createUnderGate(gate, admitted = new Set()) {
             : Effect.fail(new Error("native_permission_held"));
         }),
     },
-    // Stands in for the coordinator admission: only admitted parents pass.
+    // Stub coordinator admission (only admitted parents pass) unless a test
+    // installs the real createCoordinatorAdmission through seen.realEnter.
     enter: (sessionID, body) =>
       Effect.suspend(() => {
         seen.entered.push(sessionID);
+        if (seen.realEnter) return seen.realEnter(sessionID, body);
         return admitted.has(sessionID)
           ? body()
           : Effect.fail(new Error("native_permission_scope_unverified"));
@@ -388,16 +390,50 @@ test("actual checked Native create proceeds into the original body only after th
     { id: 0, store: 1, project: 0 },
   );
 });
-test("actual checked Native child create is refused under a non-admitted parent before any create effect", async () => {
+test("actual checked Native child create is refused under a stubbed non-admitted parent before any create effect", async () => {
   const { create, seen } = await createUnderGate(true);
-  const input = { parentID: "ses_removed_project", title: "child" };
+  const input = { parentID: "ses_unadmitted", title: "child" };
   const exit = await Effect.runPromise(Effect.exit(create(input)));
   assert.equal(exit._tag, "Failure");
   assert.match(String(exit.cause), /native_permission_scope_unverified/u);
-  assert.deepEqual(seen.entered, ["ses_removed_project"]);
+  assert.deepEqual(seen.entered, ["ses_unadmitted"]);
   assert.deepEqual(
     { id: seen.id, store: seen.store, project: seen.project },
     { id: 0, store: 0, project: 0 },
+  );
+});
+test("actual checked Native child create is refused for a NONEXISTENT parent by the real coordinator admission", async () => {
+  const { create, seen } = await createUnderGate(true);
+  await Effect.runPromise(
+    Effect.gen(function* () {
+      const control = yield* Control.Service;
+      let reads = 0;
+      seen.realEnter = createCoordinatorAdmission({
+        control,
+        // Native store: the parent id is not in it.
+        store: {
+          get: () =>
+            Effect.suspend(() => {
+              reads++;
+              return Effect.fail(new Error("Session.NotFoundError"));
+            }),
+        },
+      });
+      const exit = yield* Effect.exit(
+        create({ parentID: "ses_nonexistent", title: "child" }),
+      );
+      assert.equal(exit._tag, "Failure");
+      assert.match(String(exit.cause), /Session\.NotFoundError/u);
+      assert.equal(reads, 1);
+      assert.deepEqual(
+        { id: seen.id, store: seen.store, project: seen.project },
+        { id: 0, store: 0, project: 0 },
+      );
+    }).pipe(
+      Effect.provide(
+        Control.configured({ runtimeEpoch: "child-parent", bootHolds: [] }),
+      ),
+    ),
   );
 });
 test("actual checked Native child create proceeds when the parent is admitted; the bootstrap path never enters a parent", async () => {
