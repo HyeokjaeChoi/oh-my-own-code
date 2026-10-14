@@ -488,6 +488,19 @@ export async function startEventHost({
           const pending = taskHandoffRequest;
           taskHandoffRequest = undefined;
           pending.resolve(message.status);
+        } else if (message.type === "project-hold-result") {
+          if (
+            !taskHandoffRequest ||
+            stopping ||
+            taskHandoffRequest.action !== "hold" ||
+            taskHandoffRequest.requestId !== message.requestId ||
+            taskHandoffRequest.projectId !== message.projectId ||
+            taskHandoffRequest.held !== message.held
+          )
+            throw new Error("unexpected_project_hold");
+          const pending = taskHandoffRequest;
+          taskHandoffRequest = undefined;
+          pending.resolve(message.status);
         } else if (message.type === "diagnostic") {
           try {
             onDiagnostic?.(message.diagnostic);
@@ -848,6 +861,28 @@ export async function startEventHost({
           ),
       },
     });
+    // Removal hold for a Native project (workspace.remove); resolves "ok"/"refused".
+    const nativeProjects = Object.freeze({
+      hold: (projectId, held) =>
+        taskCall(
+          (requestId) => ({
+            type: "project-hold",
+            nonce,
+            requestId,
+            projectId,
+            held,
+          }),
+          (requestId, resolve) => {
+            taskHandoffRequest = {
+              requestId,
+              action: "hold",
+              projectId,
+              held,
+              resolve,
+            };
+          },
+        ),
+    });
     const nativeTasks = Object.freeze({
       prepare: ledger.prepare,
       arm: ledger.arm,
@@ -1195,6 +1230,7 @@ export async function startEventHost({
         nativeExtensions,
         nativeTaskRequests,
         nativeTasks,
+        nativeProjects,
       }),
       stop,
       observeIdle,

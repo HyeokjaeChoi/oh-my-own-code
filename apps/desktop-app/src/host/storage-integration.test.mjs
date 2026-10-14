@@ -6072,6 +6072,67 @@ for (const [name, transient, ok] of [
     else assert.equal(response.code, "POLICY_UNVERIFIED");
   });
 
+// Backlog #14: Native sessions outlive workspace.remove, so the removed
+// workspace's project is held in the permission control until re-import.
+for (const scenario of ["unshared", "shared", "refused"])
+  test(`workspace.remove project hold: ${scenario}`, async (t) => {
+    let selected;
+    const { f } = await bootstrapped(t, undefined, {
+      pickDirectory: async () => selected,
+    });
+    const snapshot = await f.ready();
+    const holds = [];
+    f.context.nativeProjects = {
+      hold: async (id, held) => {
+        holds.push([id, held]);
+        return scenario === "refused" ? "refused" : "ok";
+      },
+    };
+    selected = join(f.root, "removable");
+    await fs.mkdir(selected);
+    const imported = await f.mutate(
+      { type: "workspace.import" },
+      "hold-import",
+    );
+    assert.equal(imported.ok, true, JSON.stringify(imported));
+    const workspaceId = imported.value.selectedWorkspaceId;
+    const created = await f.mutate(
+      { type: "session.create", workspaceId },
+      "hold-create",
+    );
+    assert.equal(created.ok, true, JSON.stringify(created));
+    const nativeId = [...f.records.keys()].at(-1);
+    if (scenario !== "shared") f.records.get(nativeId).projectID = "project-b";
+    const removed = await f.mutate(
+      { type: "workspace.remove", workspaceId },
+      "hold-remove",
+    );
+    if (scenario === "refused") {
+      assert.equal(removed.code, "UNAVAILABLE", JSON.stringify(removed));
+      assert.ok(
+        (await f.snapshot()).workspaces.some((w) => w.id === workspaceId),
+      );
+      return;
+    }
+    assert.equal(removed.ok, true, JSON.stringify(removed));
+    assert.equal(
+      (await f.snapshot()).workspaces.length,
+      snapshot.workspaces.length,
+    );
+    if (scenario === "shared") {
+      // Another registered workspace still uses the project: nothing held.
+      assert.deepEqual(holds, []);
+      return;
+    }
+    assert.deepEqual(holds, [["project-b", true]]);
+    const again = await f.mutate({ type: "workspace.import" }, "hold-reimport");
+    assert.equal(again.ok, true, JSON.stringify(again));
+    assert.deepEqual(holds, [
+      ["project-b", true],
+      ["project-b", false],
+    ]);
+  });
+
 test("arm refusal revokes, proves no effect and never reaches Native", async (t) => {
   const { f, child } = await bootstrapped(t);
   const snapshot = await f.ready();

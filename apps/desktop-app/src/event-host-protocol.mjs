@@ -217,6 +217,17 @@ export function validateHostMessage(message, receiver) {
       }
       return message;
     }
+    if (message.type === "project-hold") {
+      if (
+        !closed(message, ["type", "nonce", "requestId", "projectId", "held"]) ||
+        !hex(message.requestId) ||
+        typeof message.projectId !== "string" ||
+        !/^[^\p{Cc}]{1,256}$/u.test(message.projectId) ||
+        typeof message.held !== "boolean"
+      )
+        throw new Error("invalid_ipc");
+      return message;
+    }
     if (message.type === "task-revoke") {
       if (
         !closed(message, ["type", "nonce", "requestId", "handoffId"]) ||
@@ -405,6 +416,26 @@ export function validateHostMessage(message, receiver) {
       } catch {
         throw new Error("invalid_ipc");
       }
+      return message;
+    }
+    if (message.type === "project-hold-result") {
+      if (
+        !closed(message, [
+          "type",
+          "nonce",
+          "pid",
+          "requestId",
+          "projectId",
+          "held",
+          "status",
+        ]) ||
+        !hex(message.requestId) ||
+        typeof message.projectId !== "string" ||
+        !/^[^\p{Cc}]{1,256}$/u.test(message.projectId) ||
+        typeof message.held !== "boolean" ||
+        !["ok", "refused"].includes(message.status)
+      )
+        throw new Error("invalid_ipc");
       return message;
     }
     if (message.type === "task-handoff-result") {

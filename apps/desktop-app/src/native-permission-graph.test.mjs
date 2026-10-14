@@ -775,6 +775,7 @@ async function actualFactory(t, changeManifest = () => {}, onLoad = () => {}) {
   assert.deepEqual(Object.keys(result.taskControl).sort(), [
     "arm",
     "close",
+    "holdProject",
     "prepare",
     "revoke",
   ]);

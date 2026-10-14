@@ -67,6 +67,16 @@ class Child extends EventEmitter {
           handoffId: message.request?.handoffId ?? message.handoffId,
           status: this.behavior.handoffStatus ?? "ok",
         });
+      } else if (message.type === "project-hold") {
+        this.emit("message", {
+          type: "project-hold-result",
+          nonce: message.nonce,
+          pid: this.pid,
+          requestId: message.requestId,
+          projectId: message.projectId,
+          held: message.held,
+          status: this.behavior.handoffStatus ?? "ok",
+        });
       } else if (message.type === "observe") {
         if (this.behavior.observe) return this.behavior.observe(this, message);
         this.emit("message", {
@@ -1693,6 +1703,26 @@ test("bootstrap task prepare/arm/revoke cross the private channel exactly and ve
     false,
   );
   await assert.rejects(() => tasks.arm(armRowFor(prepared)));
+});
+
+test("project removal hold round-trips through the host and reports a typed refusal", async (t) => {
+  const f = await fixture(t, preparedBehavior);
+  const runtime = await startEventHost({ ...f.options });
+  const projects = runtime.workbenchContext().nativeProjects;
+  assert.equal(await projects.hold("project-a", true), "ok");
+  assert.equal(await projects.hold("project-a", false), "ok");
+  const holds = f.child.messages.filter((m) => m.type === "project-hold");
+  assert.deepEqual(
+    holds.map(({ projectId, held }) => [projectId, held]),
+    [
+      ["project-a", true],
+      ["project-a", false],
+    ],
+  );
+  f.child.behavior.handoffStatus = "refused";
+  assert.equal(await projects.hold("project-b", true), "refused");
+  await runtime.stop();
+  await assert.rejects(() => projects.hold("project-a", true));
 });
 
 test("bootstrap task authority is cleared when the host exits, disconnects or fails", async (t) => {

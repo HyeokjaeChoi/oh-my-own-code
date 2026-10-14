@@ -2000,6 +2000,44 @@ test("bootstrap fork consumes under the parent's own transaction with exact pare
   );
 });
 
+test("removal hold refuses assertExecution and fork for that project only, and release clears it", async () => {
+  await bootstrapFixture(
+    ({ service, directory, row, input }) =>
+      Effect.gen(function* () {
+        const parent = parentIdentity(directory);
+        const exec = (id) =>
+          Effect.exit(
+            service.transaction([id], (tx) => service.assertExecution(tx, id)),
+          );
+        const removedCode = (exit) =>
+          Exit.isFailure(exit) &&
+          exit.cause.reasons.some((r) =>
+            String(r.error?.message).includes("project_removed"),
+          );
+        yield* service.armBootstrap(row());
+        yield* expectFailure(service.holdProject("", true), "input");
+        yield* expectFailure(
+          service.holdProject("parent-project", "yes"),
+          "input",
+        );
+        yield* service.holdProject("parent-project", true);
+        // prompt / subagent child create (assertExecution) and fork are refused.
+        assert.ok(removedCode(yield* exec("parent-project")));
+        yield* expectFailure(
+          forkConsume(service, parent, input),
+          "project_removed",
+        );
+        // Another project is unaffected, and the refused fork did not consume
+        // the armed handoff.
+        assert.ok(!removedCode(yield* exec("other-project")));
+        yield* service.holdProject("parent-project", false);
+        assert.ok(!removedCode(yield* exec("parent-project")));
+        yield* forkConsume(service, parent, input);
+      }),
+    "native.fork",
+  );
+});
+
 test("location project candidate API exists on the actual acquired Control", async () => {
   await run((service) =>
     Effect.sync(() => {

@@ -577,6 +577,49 @@ export function runEventHostChild() {
           .finally(() => {
             taskHandoffing = false;
           });
+      } else if (message.type === "project-hold") {
+        if (
+          !ready ||
+          closing ||
+          message.nonce !== nonce ||
+          taskPreparing ||
+          taskHandoffing ||
+          observing ||
+          configurationActive ||
+          configurationPrepared ||
+          typeof taskControl?.holdProject !== "function"
+        )
+          throw new Error("task_handoff_held");
+        taskHandoffing = true;
+        // A typed refusal is a normal answer; only transport faults hold the host.
+        Effect.runPromise(
+          taskControl.holdProject(message.projectId, message.held),
+        )
+          .then(
+            () => "ok",
+            () => "refused",
+          )
+          .then((status) => {
+            if (closing) return;
+            const response = {
+              type: "project-hold-result",
+              nonce,
+              pid: process.pid,
+              requestId: message.requestId,
+              projectId: message.projectId,
+              held: message.held,
+              status,
+            };
+            validateHostMessage(response, "parent");
+            emit(response);
+          })
+          .catch(() => {
+            emit({ type: "hold" });
+            void stop();
+          })
+          .finally(() => {
+            taskHandoffing = false;
+          });
       } else if (
         [
           "configuration-prepare",
