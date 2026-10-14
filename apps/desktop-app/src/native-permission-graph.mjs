@@ -613,6 +613,15 @@ export async function createNativePermissionGraph(input, diagnostic) {
           : service.revokeBootstrap(handoffId),
       );
     },
+    // Main's removal hold for a project (workspace.remove); cleared on re-admission.
+    holdProject(projectId, held) {
+      const service = acquired;
+      return Effect.suspend(() =>
+        closed || !service || acquired !== service
+          ? Effect.fail(new Error("native_permission_runtime_unavailable"))
+          : service.holdProject(projectId, held),
+      );
+    },
     close(reason) {
       // Revoke immediately, even if the caller never runs the returned Effect.
       closed = true;

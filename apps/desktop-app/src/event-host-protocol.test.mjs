@@ -461,6 +461,42 @@ test("task-arm and task-revoke are closed private messages; handoff results are 
     );
 });
 
+test("project-hold is a closed private message with a typed result", () => {
+  const hold = {
+    type: "project-hold",
+    nonce: hex,
+    requestId: hex,
+    projectId: "abc123",
+    held: true,
+  };
+  assert.equal(validateHostMessage(hold, "child"), hold);
+  for (const patch of [
+    { projectId: "" },
+    { projectId: "a\nb" },
+    { held: "yes" },
+    { extra: 1 },
+  ])
+    assert.throws(
+      () => validateHostMessage({ ...hold, ...patch }, "child"),
+      /invalid_ipc/,
+    );
+  const result = {
+    type: "project-hold-result",
+    nonce: hex,
+    pid: 123,
+    requestId: hex,
+    projectId: "abc123",
+    held: true,
+    status: "ok",
+  };
+  assert.equal(validateHostMessage(result, "parent"), result);
+  for (const patch of [{ status: "armed" }, { held: 1 }, { extra: true }])
+    assert.throws(
+      () => validateHostMessage({ ...result, ...patch }, "parent"),
+      /invalid_ipc/,
+    );
+});
+
 test("child diagnostics are bounded, path-redacted and strictly closed", () => {
   const raw = {
     kind: "native",

@@ -2351,6 +2351,45 @@ export function createWorkbenchService({
         fail("POLICY_UNVERIFIED");
     }
   }
+  // Backlog #14: Native sessions outlive `workspace.remove`, so the permission
+  // control holds the removed workspace's project (prompt, fork, subagent child
+  // create). In memory per run, keyed by the canonical path so re-import clears.
+  const removedProjects = new Map();
+  async function projectIdsOf(items) {
+    const ids = new Set();
+    for (const item of items) {
+      try {
+        const info = await call(client.session.get, { sessionID: item.sdkId });
+        if (typeof info?.projectID === "string") ids.add(info.projectID);
+      } catch (error) {
+        if (error?._tag !== "SessionNotFoundError") throw error;
+      }
+    }
+    return ids;
+  }
+  async function setProjectHolds(ids, held) {
+    const hold = context?.nativeProjects?.hold;
+    if (typeof hold !== "function") return;
+    for (const id of ids) {
+      let status;
+      for (let attempt = 0; attempt < 8 && status === undefined; attempt++) {
+        checkLive();
+        try {
+          status = await hold(id, held);
+        } catch {
+          await new Promise((resolve) => setTimeout(resolve, 250));
+        }
+      }
+      if (status === undefined) fail("BUSY");
+      if (status !== "ok") fail("UNAVAILABLE");
+    }
+  }
+  async function releaseRemovedProjects(path) {
+    const ids = removedProjects.get(path);
+    if (!ids) return;
+    await setProjectHolds(ids, false);
+    removedProjects.delete(path);
+  }
   // `verifyOnly`: a bootstrap session already carries exactly this ruleset from
   // its create input (and a fork of an "ask" session inherits it). Native's
   // permission setter stays held until execution is admitted, so the redundant
@@ -5216,6 +5255,7 @@ export function createWorkbenchService({
         : undefined;
       if (registry) await markEffect();
       const added = addWorkspace(path, false, false, reservation);
+      await releaseRemovedProjects(path);
       await refreshWorkspaceMeta();
       return base(added);
     }
@@ -5242,7 +5282,25 @@ export function createWorkbenchService({
         )
       )
         fail("BUSY");
-      await markEffect("registry.unregister");
+      let heldProjects = [];
+      if (context?.nativeProjects && client) {
+        const all = [...tables().sessions.values()];
+        const kept = await projectIdsOf(
+          all.filter((x) => x.workspaceId !== w.id),
+        );
+        heldProjects = [
+          ...(await projectIdsOf(all.filter((x) => x.workspaceId === w.id))),
+        ].filter((id) => !kept.has(id));
+        await setProjectHolds(heldProjects, true);
+        removedProjects.set(w.path, heldProjects);
+      }
+      try {
+        await markEffect("registry.unregister");
+      } catch (error) {
+        removedProjects.delete(w.path);
+        await setProjectHolds(heldProjects, false).catch(() => {});
+        throw error;
+      }
       const record = currentScope()?.record;
       if (record)
         record.removedSessionIds = [...tables().sessions.values()]

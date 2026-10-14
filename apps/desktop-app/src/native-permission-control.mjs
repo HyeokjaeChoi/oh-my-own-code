@@ -2058,9 +2058,29 @@ function kernel(initial) {
   // Execution is admitted for any inspected project transaction; OpenCode's own
   // permission rules and ask prompts are the safety layer.
   const assertExecution = (tx, id) =>
-    strict
-      ? Effect.flatMap(inspect(tx, id), () => Effect.fail(error("held")))
-      : Effect.asVoid(inspect(tx, id));
+    Effect.flatMap(inspect(tx, id), () =>
+      removedProjects.has(id)
+        ? Effect.fail(error("project_removed"))
+        : strict
+          ? Effect.fail(error("held"))
+          : Effect.void,
+    );
+  // Removal hold (backlog #14): Main sets it when a workspace is removed, since
+  // Native sessions of that project persist. Refuses prompt, fork, subagent
+  // child create and lease admission for the project until re-admission clears it.
+  const removedProjects = new Set();
+  const holdProject = (id, held) =>
+    Effect.try({
+      try: () => {
+        text(id);
+        if (typeof held !== "boolean") reject("input");
+        if (!held) removedProjects.delete(id);
+        else if (removedProjects.size >= 1024 && !removedProjects.has(id))
+          reject("capacity");
+        else removedProjects.add(id);
+      },
+      catch: (failure) => failure,
+    });
   const leaseSnapshot = (tx, id) =>
     Effect.flatMap(inspect(tx, id), () =>
       Effect.sync(() => leases.snapshot(id)),
@@ -2555,6 +2575,7 @@ function kernel(initial) {
       Effect.try({
         try: () => {
           checked(tx, parent.projectID, fiber);
+          if (removedProjects.has(parent.projectID)) reject("project_removed");
           const args = bootstrapStageArguments("native.fork", input);
           consumeArmed("native.fork", args, (request) => {
             if (
@@ -2645,6 +2666,7 @@ function kernel(initial) {
     revokeBootstrap,
     consumeBootstrap,
     enterBootstrap,
+    holdProject,
     admitLease,
     bindNativeReadRuntime,
     readNativeFile,
