@@ -107,8 +107,10 @@ export async function sourceIdentity() {
     assert.equal(await resourceFileSha256(path), before);
     files.set(path, before);
     if (!path.endsWith(".mjs")) continue;
+    // Real import statements only: the overlay recipe quotes foreign import
+    // text inside string literals, which never starts a source line.
     for (const match of text.matchAll(
-      /(?:from\s*|import\s*(?:\(\s*)?)(["'])(\.[^"']+)\1/g,
+      /(?:^[ \t]*(?:\}|(?:import|export)\b[^'";]*?)\s*from\s*|^[ \t]*import\s*|\bimport\s*\(\s*)(["'])(\.[^"']+)\1/gm,
     ))
       pending.push(resolve(dirname(path), match[2]));
   }
