@@ -6133,6 +6133,189 @@ for (const scenario of ["unshared", "shared", "refused"])
     ]);
   });
 
+// Backlog #14 review: Native project ids are shared across worktrees of a repo.
+async function holdFixture(t) {
+  let selected;
+  const { f } = await bootstrapped(t, undefined, {
+    pickDirectory: async () => selected,
+  });
+  await f.ready();
+  const holds = [];
+  let refuseOn;
+  f.context.nativeProjects = {
+    hold: async (id, held) => {
+      holds.push([id, held]);
+      return refuseOn === id && held ? "refused" : "ok";
+    },
+  };
+  const projects = [];
+  f.context.client.project = { list: async () => projects };
+  let n = 0;
+  const addWorkspace = async (withSession, projectID) => {
+    selected = join(f.root, `wt-${n++}`);
+    await fs.mkdir(selected);
+    const path = await fs.realpath(selected);
+    const imported = await f.mutate({ type: "workspace.import" }, `imp-${n}`);
+    assert.equal(imported.ok, true, JSON.stringify(imported));
+    const workspaceId = imported.value.selectedWorkspaceId;
+    let nativeId;
+    if (withSession) {
+      const created = await f.mutate(
+        { type: "session.create", workspaceId },
+        `cr-${n}`,
+      );
+      assert.equal(created.ok, true, JSON.stringify(created));
+      nativeId = [...f.records.keys()].at(-1);
+      f.records.get(nativeId).projectID = projectID;
+    }
+    return { workspaceId, path, nativeId };
+  };
+  const remove = (workspaceId) =>
+    f.mutate({ type: "workspace.remove", workspaceId }, `rm-${workspaceId}`);
+  return {
+    f,
+    holds,
+    projects,
+    addWorkspace,
+    remove,
+    refuse: (id) => (refuseOn = id),
+    pick: (path) => (selected = path),
+  };
+}
+
+test("removing a worktree keeps a sessionless sibling usable (project shared via Native path resolution)", async (t) => {
+  const h = await holdFixture(t);
+  const a = await h.addWorkspace(true, "shared-p");
+  const b = await h.addWorkspace(false);
+  h.projects.push({ id: "shared-p", canonical: a.path, sandboxes: [b.path] });
+  const removed = await h.remove(a.workspaceId);
+  assert.equal(removed.ok, true, JSON.stringify(removed));
+  assert.deepEqual(h.holds, []);
+});
+
+test("a workspace imported later on a held project clears the hold; unrelated projects stay held", async (t) => {
+  const h = await holdFixture(t);
+  const a = await h.addWorkspace(true, "proj-a");
+  const c = await h.addWorkspace(true, "proj-c");
+  assert.equal((await h.remove(a.workspaceId)).ok, true);
+  assert.equal((await h.remove(c.workspaceId)).ok, true);
+  assert.deepEqual(h.holds, [
+    ["proj-a", true],
+    ["proj-c", true],
+  ]);
+  // A new worktree of proj-a is registered: only proj-a is released.
+  const dir = join(h.f.root, "later");
+  await fs.mkdir(dir);
+  h.projects.push({
+    id: "proj-a",
+    canonical: await fs.realpath(dir),
+    sandboxes: [],
+  });
+  h.pick(dir);
+  assert.equal(
+    (await h.f.mutate({ type: "workspace.import" }, "later")).ok,
+    true,
+  );
+  assert.deepEqual(h.holds.slice(2), [["proj-a", false]]);
+  // A session created on proj-c by another workspace releases proj-c.
+  const d = await h.addWorkspace(true, "proj-c");
+  assert.deepEqual(h.holds.slice(3), []);
+  assert.ok(d.nativeId);
+});
+
+test("session.create on a held project releases it", async (t) => {
+  const h = await holdFixture(t);
+  const a = await h.addWorkspace(true, "proj-a");
+  const b = await h.addWorkspace(false);
+  assert.equal((await h.remove(a.workspaceId)).ok, true);
+  assert.deepEqual(h.holds, [["proj-a", true]]);
+  const orig = h.f.state.hooks.create;
+  h.f.state.hooks.create = (input) => {
+    const info = {
+      ...input,
+      projectID: "proj-a",
+      permissions: BASELINE_POLICY,
+    };
+    h.f.records.set(info.id, info);
+    return info;
+  };
+  void orig;
+  const created = await h.f.mutate(
+    { type: "session.create", workspaceId: b.workspaceId },
+    "cr-held",
+  );
+  assert.equal(created.ok, true, JSON.stringify(created));
+  assert.deepEqual(h.holds.slice(1), [["proj-a", false]]);
+});
+
+test("global is never held and a failed lookup for another workspace's session holds nothing", async (t) => {
+  const h = await holdFixture(t);
+  const a = await h.addWorkspace(true, "global");
+  assert.equal((await h.remove(a.workspaceId)).ok, true);
+  assert.deepEqual(h.holds, []);
+  const b = await h.addWorkspace(true, "proj-b");
+  const other = await h.addWorkspace(true, "proj-x");
+  const get = h.f.state.hooks.get;
+  h.f.state.hooks.get = ({ sessionID }) => {
+    if (sessionID === other.nativeId) throw new Error("transient");
+    const record = h.f.records.get(sessionID);
+    return { ...record };
+  };
+  void get;
+  assert.equal((await h.remove(b.workspaceId)).ok, true);
+  assert.deepEqual(h.holds, []);
+});
+
+test("a partially failing multi-project hold rolls back and keeps the workspace", async (t) => {
+  const h = await holdFixture(t);
+  const a = await h.addWorkspace(true, "proj-a");
+  const second = await h.f.mutate(
+    { type: "session.create", workspaceId: a.workspaceId },
+    "cr-second",
+  );
+  assert.equal(second.ok, true, JSON.stringify(second));
+  h.f.records.get([...h.f.records.keys()].at(-1)).projectID = "proj-b";
+  h.refuse("proj-b");
+  const removed = await h.remove(a.workspaceId);
+  assert.equal(removed.code, "UNAVAILABLE", JSON.stringify(removed));
+  assert.deepEqual(h.holds, [
+    ["proj-a", true],
+    ["proj-b", true],
+    ["proj-a", false],
+  ]);
+  assert.ok(
+    (await h.f.snapshot()).workspaces.some((w) => w.id === a.workspaceId),
+  );
+});
+
+// Backlog #13 review: a mismatching readback is retried, and still fails closed.
+for (const [name, mismatches, ok] of [
+  ["persistent", 99, false],
+  ["transient", 1, true],
+])
+  test(`session.create bootstrap readback: ${name} permission mismatch ${ok ? "settles" : "fails closed"}`, async (t) => {
+    const { f } = await bootstrapped(t);
+    const snapshot = await f.ready();
+    let present = 0;
+    let left = mismatches;
+    f.state.hooks.get = ({ sessionID }) => {
+      const record = f.records.get(sessionID);
+      if (!record)
+        throw Object.assign(new Error("absent"), {
+          _tag: "SessionNotFoundError",
+          sessionID,
+        });
+      if (present++ >= 1 && left-- > 0) return { ...record, permissions: [] };
+      return { ...record };
+    };
+    const response = await f.mutate(
+      createOperation(snapshot),
+      `create-mismatch-${name}`,
+    );
+    if (ok) assert.equal(response.ok, true, JSON.stringify(response));
+    else assert.equal(response.code, "POLICY_UNVERIFIED");
+  });
+
 test("arm refusal revokes, proves no effect and never reaches Native", async (t) => {
   const { f, child } = await bootstrapped(t);
   const snapshot = await f.ready();
