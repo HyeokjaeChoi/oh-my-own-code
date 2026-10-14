@@ -1,6 +1,6 @@
 # Backlog status (F-01..F-18)
 
-Refreshed 2026-10-11 from current `apps/desktop-app` source (branch `audit-refresh`). Supersedes `docs/runs/full-product-coverage-audit/*` (2026-10-09). Evidence is static source reading; nothing was run. `workbench-web` ignored. Paths are relative to `apps/desktop-app/src/`.
+Refreshed 2026-10-11 from current `apps/desktop-app` source (branch `audit-refresh`); rows touched since are marked with their date. Supersedes `docs/runs/full-product-coverage-audit/*` (2026-10-09). Evidence is static source reading; nothing was run. `workbench-web` ignored. Paths are relative to `apps/desktop-app/src/`.
 
 Status: `done` = implemented end to end; `partial` = some of the clause exists; `missing` = no code found. "Contract" = `workbench-contract.mjs` operation schemas (lines ~42-208); the contract has no ops for preview, plan, usage, tool call, subagent, export/import, automation.
 
@@ -85,7 +85,7 @@ Status: `done` = implemented end to end; `partial` = some of the clause exists; 
 | Parallel + failure verified               | partial | pure tests only (2 parallel running + failed child); no live Native run                                                                                                                                                                                                                                                                 |
 | Fresh context vs fork; isolation shown    | partial | delegation form labelled "새 컨텍스트"; fork unchanged. Child permission inheritance for model-initiated children is Native-internal (unverified); user-delegated children get `policy()` on create plus the parent permission mode via `permission.mode.set`                                                                           |
 
-KNOWN GAP (e2e-chat turn 4): the model-initiated `subagent` tool fails ("A tool operation failed.") in the real app because the permission overlay inventory is not fully verified (execution-task-authority.md, phase D); the parent run survives and stays sendable. `OMOC_E2E_STRICT_SUBAGENT=1` makes e2e-chat assert the round-trip.
+Model-initiated `subagent` works in the real app (2026-10-13/14): `OMOC_E2E_STRICT_SUBAGENT=1 e2e-chat` asserts the round-trip. Child create is gated on the parent project's admission and on the removal hold (a removed workspace's sessions are refused).
 
 ## F-08 Tools
 
@@ -119,26 +119,26 @@ KNOWN GAP (e2e-chat turn 4): the model-initiated `subagent` tool fails ("A tool 
 
 ## F-11 Files/Git
 
-| Clause                                              | Status  | Evidence                                                       |
-| --------------------------------------------------- | ------- | -------------------------------------------------------------- |
-| File tree                                           | done    | `widgets/explorer/index.tsx`, `file.list`                      |
-| File search                                         | done    | `host/workbench-file-search.mjs`, `explorer/index.tsx:30`      |
-| Open/edit/save text, external-change conflict       | done    | `file.edit.read`/`file.save`; `features/workspace-file-editor` |
-| Changed files; staged/unstaged/base diff            | done    | `git.review.read`, `git.diff.read`; `features/git-review`      |
-| Line feedback                                       | done    | `features/line-feedback`                                       |
-| Stage/unstage, commit, branch, restore with confirm | done    | `git.index/commit/branch/restore.*`; `branch-restore.tsx`      |
-| Protects origin repo / other worktrees              | partial | owner-fence kernels; no worktree-aware tests                   |
+| Clause                                              | Status  | Evidence                                                                                                               |
+| --------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| File tree                                           | done    | `widgets/explorer/index.tsx`, `file.list`                                                                              |
+| File search                                         | done    | `host/workbench-file-search.mjs`, `explorer/index.tsx:30`                                                              |
+| Open/edit/save text, external-change conflict       | done    | `file.edit.read`/`file.save`; `features/workspace-file-editor`                                                         |
+| Changed files; staged/unstaged/base diff            | done    | `git.review.read`, `git.diff.read`; `features/git-review`; macOS only (pinned Apple git), win32 `platform_unavailable` |
+| Line feedback                                       | done    | `features/line-feedback`                                                                                               |
+| Stage/unstage, commit, branch, restore with confirm | done    | `git.index/commit/branch/restore.*`; `branch-restore.tsx`; macOS only, win32 reports `platform_unavailable`            |
+| Protects origin repo / other worktrees              | partial | owner-fence kernels; no worktree-aware tests                                                                           |
 
 ## F-12 Terminal
 
-| Clause                                                    | Status  | Evidence                                                                                                                           |
-| --------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Terminal in workspace dir, tabs, input, exit code, output | done    | `host/terminal-host.mjs`, `widgets/terminal/index.tsx:148`                                                                         |
-| Real PTY                                                  | done    | `node-pty` in `host/terminal-host.mjs`, xterm.js in `widgets/terminal/xterm-view.tsx`; `scripts/e2e-terminal.mjs`                  |
-| Resize                                                    | done    | `terminal.resize` -> `pty.resize`, fit addon + ResizeObserver                                                                      |
-| Close tab vs stop process; orphan sweep                   | done    | `reap` `main.mjs:256`, `closeAll`                                                                                                  |
-| Build/lint/test/dev actions                               | done    | package.json scripts, lockfile pm, argv spawn: `host/project-actions.mjs`, `terminalHost.startScript`; recent-run history not kept |
-| Command attribution                                       | partial | tab label `<pm> run <script>` shows its action; agent-started commands not applicable (no agent terminal)                          |
+| Clause                                                    | Status  | Evidence                                                                                                                                                                                           |
+| --------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Terminal in workspace dir, tabs, input, exit code, output | done    | `host/terminal-host.mjs`, `widgets/terminal/index.tsx:148`                                                                                                                                         |
+| Real PTY                                                  | done    | `node-pty` in `host/terminal-host.mjs`, xterm.js in `widgets/terminal/xterm-view.tsx`; `scripts/e2e-terminal.mjs`; Windows ConPTY and `package-windows` staging untested (needs a Windows machine) |
+| Resize                                                    | done    | `terminal.resize` -> `pty.resize`, fit addon + debounced `createResizeSync` with rate-limit retry; `e2e-terminal` polls the first resize                                                           |
+| Close tab vs stop process; orphan sweep                   | done    | `reap` `main.mjs:256`, `closeAll`                                                                                                                                                                  |
+| Build/lint/test/dev actions                               | done    | package.json scripts, lockfile pm, argv spawn: `host/project-actions.mjs`, `terminalHost.startScript`; recent-run history not kept                                                                 |
+| Command attribution                                       | partial | tab label `<pm> run <script>` shows its action; agent-started commands not applicable (no agent terminal)                                                                                          |
 
 ## F-13 Commands
 
@@ -197,44 +197,52 @@ KNOWN GAP (e2e-chat turn 4): the model-initiated `subagent` tool fails ("A tool 
 | Command palette (keyboard global)              | done    | `features/palette`, `shared/palette` (Cmd+K on macOS, Ctrl+K elsewhere)                                                                 |
 | Theme, font size, density                      | done    | `shared/preferences/index.mjs` (localStorage)                                                                                           |
 | Layout setting                                 | partial | detail panel width already user-resizable; no persisted layout preference                                                               |
-| Accessibility                                  | partial | aria labels present; no audit evidence                                                                                                  |
+| Accessibility                                  | partial | aria labels present; terminal screen-reader mode toggle in Settings (2026-10-14, `e2e-features`); no audit evidence                     |
 | Notifications (done/error/approval), redaction | done    | `features/notifications`, `shared/notifications` (generic text; OS opt-in, `host/notify-host.mjs`); approval only for selected session  |
 | Local recurring jobs                           | done    | `host/automation-host.mjs`, `automation-runners.mjs`, `features/automation` (missed shown, not backfilled; runs only while app is open) |
 
-## Remaining work, ordered
+## Remaining work
 
-Updated 2026-10-11 after merging the review-fix rounds (permissions, hosts, UI, F-18) to `main` at `274f72c5`; full suite 4776/4776 and the 4 static checks pass. Items 1-11 and 14-15 of the earlier list landed (each passed fresh-context Opus review with no critical/major).
+Current as of 2026-10-14 (branch `backlog3`, after `main` at `ec039547`). The F-xx tables above are per-clause status; this section is the single de-duplicated work list. Earlier numbering (items 1-14) is retired; the old numbers appear in parentheses only where a commit message or run note cites them.
 
-D = needs user decision.
+### Done (do not reopen)
 
-1. ~~Real PTY via `node-pty` + `xterm.js`~~ landed (F-12; dev server runs as a terminal script for F-10). Windows ConPTY path and `package-windows` staging are untested (need a Windows machine).
-   - **S** CSP tradeoff: `index.html` has `style-src-elem 'self' 'unsafe-inline'` because xterm.js injects `<style>` elements (inline style _attributes_ stay blocked). Revisit if xterm gains a nonce/adoptedStyleSheets option, or serve the renderer with a per-load nonce.
-   - **S** Terminal a11y: xterm `screenReaderMode` is off (performance); the input textarea and screen are labelled and Ctrl+Shift+M leaves the terminal. Consider a settings toggle that enables `screenReaderMode`.
-   - **S** A shell that exits by itself leaves jobs it moved to their own process group running (like any terminal); close/stop/quit kill the whole tree.
-   - **S** No pty flow control (`pause`/`resume`): a background tab is not polled, so pausing would stall its process; the bounded ring drops the oldest output instead.
-   - **S** Packaged builds always use the durable profile under the user's home (the `OMOC_APP_DATA_DIR` isolation is unpackaged-only). On macOS `e2e-smoke packaged` isolates via `CFFIXED_USER_HOME` (one throw-away home per launch group); never run a packaged app by hand with failure scenarios against the real profile — a launch that dies mid-startup leaves owner state the next launch refuses (`owner_unverified` / `native_startup_unverified`), same on `main`. The `crash_restart` relaunch-on-same-profile case is still skipped by default.
-2. **M** Windows support (old B02/B18). D: needs a real Windows machine.
-3. **S** Export: values >1 MiB with no newline export as `[TRUNCATED]`; unterminated quoted secrets in raw text are not redacted (`renderer/shared/data-transfer`). — **done (follow-ups 2026-10-13):** `[TRUNCATED]` and bare unterminated-quote cases were already fixed on `main`; escaped-quote and quoted `Authorization` leaks now redacted; huge unterminated values keep a `[REDACTED]` marker.
-4. **S** Git review is unavailable in repos whose ignored dirs contain symlinks or exceed file caps (e.g. `node_modules`), so plan checks never show a plain pass there (`host/workbench-git-snapshot.mjs` walk). — **done (follow-ups 2026-10-13):** already fixed on `main` (`1929531f`: ignored paths skipped via `check-ignore`; regression test with symlinked `node_modules`).
-5. **S** Permission policySync may return BUSY for a drifted session that Native reports active while app status is idle; config reads keep failing while any session has drifted (`workbench-service.mjs` policySync). — **done (follow-ups 2026-10-13):** `mode.set` BUSY is retried (bounded ~2.75s) before surfacing BUSY; `configuration.mcp.read` tolerates drift (mutations still repair and re-verify).
-6. **S** Plans: idle poll can cancel the observation `runCheck` started (`OBSERVATION_FAILED`); export summary clears on any snapshot change. — **done (follow-ups 2026-10-13):** already fixed on `main` (`56d9bf2b`: poll skips while `runCheck` observes; export summary keyed on content shape).
+- **Real PTY terminal** (F-12): `node-pty` + `xterm.js`, resize sync, orphan sweep, keyboard-trap escape chord, safe paste, no OSC 8 activation; `e2e-terminal`, `e2e-features` terminal checks. Windows ConPTY is still untested (below).
+- **Terminal screen-reader mode** — 2026-10-14: Settings "터미널 스크린 리더 모드" (`terminalScreenReader`, default off, persisted with the other preferences) toggles xterm `screenReaderMode` live; `e2e-features` `terminal-screen-reader`.
+- **Export redaction** (escaped-quote and quoted `Authorization` leaks, oversized unterminated values) — 2026-10-13.
+- **Git review with ignored symlinked dirs / file caps** (`check-ignore`, regression test) — 2026-10-13.
+- **Permission policySync BUSY / config reads under drift** (bounded ~2.75s retry; `configuration.mcp.read` tolerates drift) — 2026-10-13.
+- **Plans: poll vs `runCheck`, export summary key** — 2026-10-13.
+- **Saved "항상 허용" rules** list/revoke UI (`permission.saved.list/remove`) — 2026-10-13.
+- **Narrow-window composer** compact grid; `e2e-ui-states` full viewport again — 2026-10-13.
+- **`catalog.list` pins selected/default model** past the 300 cap — 2026-10-13.
+- **Subagent child create gated on parent admission** (`enter(parentID)` after `consumeBootstrap`) — 2026-10-14; strict mode holds, `e2e-chat` (`OMOC_E2E_STRICT_SUBAGENT=1`) passes.
+- **Journal replay returns the original failure** (unknown outcome replays as `UNKNOWN_OUTCOME`) — 2026-10-14. All `scripts/*.test.mjs` run in the nx test target.
+- **Removed-workspace parent no longer passes the gates** (old #14) — 2026-10-14: the permission control keeps a per-project removal hold. `workspace.remove` sets it (new closed `project-hold` IPC message, only for projects no remaining workspace still uses; a failed hold refuses the removal), re-importing the same path clears it. `assertExecution` (prompt, tools, child create, lease admission) and `enterBootstrap` (fork) refuse a held project. The overlay recipe and digests are unchanged. The hold is in memory per run: after an app restart the removed workspace's Native sessions are unreachable from the app anyway (nothing registered), and the hold is not re-derived.
+- **`e2e-sessions` `POLICY_UNVERIFIED` on `session.create`** (old #13) — 2026-10-14: mitigated, root cause not reproduced. Every failure inside the post-create policy step is reported as `POLICY_UNVERIFIED`, including a transient Native read failure; the readback of the just-created session is read-only, so it now settles within 3 bounded attempts (200 ms apart) before failing closed (a persistent failure or a real mismatch still fails closed; unit-tested both ways). The first failure was seen once; ~15 runs of the script on this branch (several under 12 busy-loop CPU hogs and 3 concurrent copies) never produced it, only unrelated load flakes (see "New open items"). Other places that map a transient condition to `POLICY_UNVERIFIED` and were not changed: a single-flight `task_preparation_held` from the event host (another task/observation call in flight) and the child's 5 s bootstrap-workspace inspection deadline (`prepareBootstrap` -> `bootstrapRefusal`). If it recurs, check which of these fired (the refusal is `effect: none`, so a repeat of the same `session.create` is safe).
 
-### 2026-10-13 — chat stage landed (`main` at `f5e35adc`)
+### Needs a Windows machine
 
-Chat works end to end in the real app: streamed replies, write/read/shell permission prompts, "이 프로젝트에서 항상 허용", agent/model selection, subagent delegation, interrupt, `scoped_edit`, provider/API-key settings and local LM Studio. Full suite 4966/4966, 4 static checks, and e2e-chat (strict subagent), e2e-workbench, e2e-sessions, e2e-ui-states, e2e-macos, e2e-provider all pass.
+Nothing here can be proven on macOS. Wire-level pieces are implemented and unit-tested with injected `win32`; see `windows-verification.md` for the run checklist.
 
-Open follow-ups (minor, from stage reviews):
+- **ConPTY and `package-windows`**: `node-pty` ConPTY (`useConpty`), `package-windows` staging of `node-pty/prebuilds/win32-x64`, and the xterm renderer under Windows; run `e2e-terminal`, `e2e-features`, `e2e-smoke packaged win32`.
+- **Git review / commit / index / branch restore on win32**: all report `platform_unavailable`. Review snapshot needs a trust anchor (Git for Windows under `%ProgramFiles%` with an ACL-verified chain, a version allowlist that accepts `2.54.x.windows.N`, `core.symlinks=false` / `core.filemode=false` / `core.ignorecase=true` in `minimalConfig`, directory handles). Commit / index / branch restore need a new path-based kernel replacing the `bun:ffi` `openat`/`renameatx_np` one in `git-metadata-kernel.mjs` (same identity proofs, exclusive `link` publication), then enabling the three request paths and `e2e-git-*`.
+- **Bun IPC with `bun.exe`**: `stdio: ["ignore","ignore","ignore","ipc"]` and `fs.openSync` on directories under Bun, first thing to check when startup fails.
+- **Antivirus sharing**: `EPERM`/sharing violations on `node_modules` beyond the retry budget.
+- **AVX2**: `@oven/bun-windows-x64` needs it; older CPUs need a baseline build with its own pin.
+- Also on that list: CIM/PowerShell cold-start cost, Chromium `lockfile` in the user-data root, extended/device path refusals, `process.umask` no-op.
 
-7. **S** Subagent child create (`consumeBootstrap` parentID path) had no parent-project transaction gate. — **done (backlog2 2026-10-14):** the overlay's `Session.create` now runs `enter(parentID)` (same admission as `fork`) for `parentID` inputs after `consumeBootstrap`; the parent must exist in the Native store and pass the project transaction/inspection, otherwise the child is refused before any row is created (a nonexistent parent is refused; a parent whose workspace was removed is not detected by this gate, `assertExecution` does not check removal state). Overlay recipe `afterSha256` and receipt digest re-pinned; strict mode still holds; e2e-chat (strict subagent) passes.
-8. **S** Inherited session rules (`*:*:ask` first) shadow agent-level restrictions (e.g. `explore` `*:deny`), so a child agent is never narrower than its parent session. — **accepted (2026-10-14), no change:** the parent session policy is the authority; agent-level restrictions are advisory for children and must not be relied on to narrow a child below its parent.
-9. **S** "항상 허용" is a permanent per-project allow with no revoke UI. — **done (follow-ups 2026-10-13):** Settings "저장된 허용 규칙" lists/removes Native saved rules via `desktop:v1:rules` (`permission.saved.list/remove`, scoped to the workspace project, allow-only; deny floor untouched).
-10. **S** Narrow window at 200% zoom: pinned composer (184px) leaves ~6px for the permission queue / stacked notices; e2e-ui-states only requires visibility there. Composer needs a compact layout. — **done (follow-ups 2026-10-13):** composer is a compact grid at `max-height: 600px`; `e2e-ui-states` requires full viewport visibility again.
-11. **S** Journal duplicate replies returned `{ok:true,status:"duplicate"}` even when the original attempt failed. — **done (backlog2 2026-10-14):** a replay of an operation whose receipt is `rejected` returns the original failure (`ok:false`, same code, with receipt); true successes still answer `duplicate`, and unknown outcomes keep their unknown receipt (`host/workbench-admission.mjs` `replay`). `e2e-session-lifecycle` asserts the original code on replays and still proves no second effect.
-12. **S** Native `model.list` is bounded at 5000 and the catalog shows 300 after local-first sorting; the selected/default model is not pinned into the list. — **done (follow-ups 2026-10-13):** `catalog.list` accepts `pinModels` (selected + saved default) which stay listed past the 300 cap.
+### Accepted / won't do
 
-### 2026-10-13/14 — overlay follow-ups landed
+- **Inherited session rules shadow agent-level restrictions** (old #8), accepted 2026-10-14: the parent session policy is the authority; agent-level restrictions (e.g. `explore` `*:deny`) are advisory for children and must not be relied on to narrow a child below its parent.
+- **No pty flow control** (`pause`/`resume`): a background tab is not polled, so pausing would stall its process; the bounded ring drops the oldest output instead.
+- **A shell that exits by itself leaves jobs it moved to their own process group running** (like any terminal); close/stop/quit kill the whole tree.
+- **CSP `style-src-elem 'unsafe-inline'`** (evaluated 2026-10-14, left as is): xterm.js 6.0.0 creates three `<style>` elements at runtime (DOM renderer theme, dimensions, scrollbar) with `textContent`, has no `nonce` option and no `adoptedStyleSheets` path, so the directive is needed for them, not for `xterm.css` (which is a bundled file allowed by `'self'`). A per-load nonce would need (1) serving the renderer through a custom protocol so the CSP can carry a fresh nonce (it is currently `loadFile` with a `<meta>` CSP, and `onHeadersReceived` does not apply to `file://`), and (2) monkey-patching `document.createElement("style")` to stamp the nonce, since xterm never sets it. That is more moving parts and attack surface than the directive it removes (inline style attributes and scripts stay blocked). Revisit if xterm adds a nonce or constructable-stylesheet option.
+- **Packaged builds always use the durable profile** under the user's home (the `OMOC_APP_DATA_DIR` isolation is unpackaged-only). On macOS `e2e-smoke packaged` isolates via `CFFIXED_USER_HOME`; never run a packaged app by hand with failure scenarios against the real profile (a launch that dies mid-startup leaves owner state the next launch refuses: `owner_unverified` / `native_startup_unverified`). The `crash_restart` relaunch-on-same-profile case is still skipped by default.
 
-Items 7 (child create gated on parent admission) and 11 (journal replay returns the original failure; unknown outcome replays as `UNKNOWN_OUTCOME`) are done; 8 is accepted (parent session policy is the authority). All `scripts/*.test.mjs` now run in the nx test target.
+### New open items
 
-13. **S** `e2e-sessions` failed once with `POLICY_UNVERIFIED` on `session.create` and then passed 6 consecutive reruns; cause not investigated (suspect startup policy verification timing). Re-check if it recurs.
-14. **S** Subagent child-create gate does not detect a parent whose workspace was removed (Native session persists); needs a per-project removal hold in the permission control.
+- **e2e-sessions is load-sensitive** (found 2026-10-14 while trying to reproduce old #13): under heavy CPU load it fails with `READ_BUSY` on the initial `snapshot` (the script retries only the first one) and with a 5 s `toBeFocused` timeout on the session menu "이름 변경" item. Test-only; give those waits the same bounded settle as the idle waits if it flakes in CI.
+- **Hold on re-import is path based**: the removal hold is cleared when the same canonical path is imported/created again; a project shared by two registered workspaces is never held. If Native ever reports a different `projectID` for the same path, the hold stays until restart.
+- **Native per-run `outcome:failed` is not projected** into the subagent tree (F-07); model-initiated child permission inheritance is Native-internal.
+- **Remaining `partial`/`missing` F-xx clauses** (typed-path import, tool-ui cards and direct tool run, permission presets view, layout preference, accessibility audit evidence) are tracked in the tables above, not repeated here.
