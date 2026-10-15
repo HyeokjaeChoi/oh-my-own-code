@@ -322,6 +322,7 @@ const registryPromise = (async () => {
       "recordOwnerIntent",
       "recordMigrationPhase",
       "checkpoint",
+      "retainTailAsUnknown",
       "recordTask",
       "recordPermissionReconciled",
       "permissionProgress",
@@ -685,6 +686,98 @@ async function confirmWorkspaceTrust(path, action) {
   return result.response === 1;
 }
 
+// Unpackaged isolated e2e only: answer the crash-recovery dialog without a
+// native window ("continue" | "quit"). Never active in a packaged app.
+const e2eCrashRecoveryResponse =
+  !app.isPackaged && isolatedRoot
+    ? process.env.OMOC_E2E_CRASH_RECOVERY_RESPONSE
+    : undefined;
+const CRASH_RECOVERY_LABELS = {
+  "session.rename": "세션 이름 변경",
+  "session.pin": "세션 고정",
+  "session.archive": "세션 보관",
+  "configuration.save": "설정 파일 저장",
+};
+function crashRecoveryLines(operations) {
+  return operations.map(
+    ({ type, sessionId, workspaceId }) =>
+      `· ${CRASH_RECOVERY_LABELS[type] ?? type}${sessionId ? ` (세션 ${sessionId.slice(0, 8)})` : workspaceId ? ` (작업 공간 ${workspaceId.slice(0, 8)})` : ""}`,
+  );
+}
+async function showStartupDialog(options) {
+  return (
+    mainWindow
+      ? await dialog.showMessageBox(mainWindow, options)
+      : await dialog.showMessageBox(options)
+  ).response;
+}
+// After a crash: offer to record non-authority outcomes as UNKNOWN, or explain
+// a hold that stays exactly as before (task/permission/execution records, or
+// an uncertain checkpoint). Nothing is replayed or re-sent either way.
+async function resolveCrashRecovery(store) {
+  const plan = store.crashRecoveryPlan?.();
+  if (!plan || plan.state === "none") return;
+  const location = namespace?.root;
+  const quit = () => {
+    void requestQuit();
+    throw Object.assign(new Error("crash recovery declined"), {
+      storageReason: plan.reason,
+    });
+  };
+  process.stderr.write(
+    `[crash-recovery] ${JSON.stringify({ state: plan.state, reason: plan.reason, operations: plan.operations.length })}\n`,
+  );
+  if (plan.state === "offer") {
+    // A tail of intent records only: no operation outcome is in question.
+    if (!plan.operations.length)
+      return void (await store.retainTailAsUnknown());
+    for (;;) {
+      const response =
+        e2eCrashRecoveryResponse === "continue"
+          ? 0
+          : e2eCrashRecoveryResponse === "quit"
+            ? 2
+            : await showStartupDialog({
+                type: "warning",
+                title: "비정상 종료 후 복구",
+                message: `앱이 비정상 종료되어 마지막 작업 ${plan.operations.length}개의 결과를 확인할 수 없습니다. 결과를 '알 수 없음'으로 기록하고 계속할까요?`,
+                detail: `${crashRecoveryLines(plan.operations).join("\n")}\n\n이 작업들은 다시 실행하지 않습니다. 실제 결과(세션 이름, 설정 파일 등)는 앱이 다시 읽어 표시합니다.\n데이터 위치: ${location}`,
+                buttons: ["계속", "데이터 위치 열기", "종료"],
+                defaultId: 0,
+                cancelId: 2,
+                noLink: true,
+              });
+      if (response === 0) {
+        await store.retainTailAsUnknown();
+        return;
+      }
+      if (response === 1) {
+        if (location) await shell.openPath(location);
+        continue;
+      }
+      return quit();
+    }
+  }
+  if (e2eCrashRecoveryResponse) return;
+  for (;;) {
+    const response = await showStartupDialog({
+      type: "error",
+      title: "저장소 확인 필요",
+      message:
+        plan.reason === "uncertain_checkpoint"
+          ? "앱이 비정상 종료되어 마지막 저장 확인이 끝나지 않았습니다. 데이터를 보호하기 위해 저장소를 잠근 상태로 시작합니다."
+          : "앱이 비정상 종료되어 마지막 작업의 결과를 확인할 수 없습니다. 권한이나 실행과 관련된 작업이 포함되어 있어 자동으로 계속할 수 없습니다.",
+      detail: `${crashRecoveryLines(plan.operations).join("\n")}${plan.operations.length ? "\n\n" : ""}기존 기록은 그대로 보존됩니다. 앱은 읽기 전용으로 열리며 새 작업은 실행되지 않습니다.\n데이터 위치: ${location}`,
+      buttons: ["데이터 위치 열기", "닫기"],
+      defaultId: 1,
+      cancelId: 1,
+      noLink: true,
+    });
+    if (response !== 0) return;
+    if (location) await shell.openPath(location);
+  }
+}
+
 app.whenReady().then(async () => {
   if (!gotInstanceLock) return;
   let binaryPath = executableForResources(
@@ -700,6 +793,7 @@ app.whenReady().then(async () => {
   startupAbortController = new AbortController();
   startupPromise = (async () => {
     const store = await registryPromise;
+    await resolveCrashRecovery(store);
     const view = store.readView();
     if (view.recovery.store.state !== "ready")
       throw Object.assign(new Error("storage recovery"), {

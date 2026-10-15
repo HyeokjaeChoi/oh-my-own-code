@@ -2700,6 +2700,16 @@ export function createWorkbenchService({
   ready = host
     .startup(async () => {
       await registryLoaded;
+      // Main may first resolve a crash-recovery decision over an unconfirmed
+      // tail (owner-verified, user-confirmed); judge storage only after it.
+      if (
+        recoverRetained &&
+        runtimeReady &&
+        registry?.status().reason === "unconfirmed_tail"
+      ) {
+        await runtimeReady.catch(() => {});
+        if (registry.status().state === "ready") hydrateRegistry();
+      }
       if (registryInput !== undefined) storageCheck();
       // Main's startup may reconcile unsettled bootstrap creates before it
       // resolves `runtimeReady`; only then are retained operations judged.

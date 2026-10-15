@@ -909,6 +909,33 @@ export function validateJournalPayload(value) {
       );
       break;
     case "recovery_decision":
+      if (value.action === RETAIN_TAIL_AS_UNKNOWN) {
+        closed(value, [
+          ...common,
+          "action",
+          "fromSequence",
+          "throughSequence",
+          "throughHash",
+          "operations",
+        ]);
+        need(
+          integer(value.fromSequence) &&
+            integer(value.throughSequence) &&
+            value.fromSequence <= value.throughSequence &&
+            digest(value.throughHash) &&
+            Array.isArray(value.operations) &&
+            value.operations.length <= STORAGE_LIMITS.operations,
+        );
+        for (const operation of value.operations) {
+          closed(operation, ["runtimeEpoch", "operationId"]);
+          need(id(operation.runtimeEpoch) && id(operation.operationId));
+        }
+        need(
+          new Set(value.operations.map(operationKey)).size ===
+            value.operations.length,
+        );
+        break;
+      }
       closed(value, [...common, "action", "throughSequence", "throughHash"]);
       need(
         value.action === "adopt_validated_tail" &&
@@ -1297,6 +1324,101 @@ export function validateAgentFileCompletion(operation, payload, features) {
           operation.dispatches.length === 0),
       "identity_conflict",
     );
+}
+// Crash recovery without authority: a decision may only cover records of
+// operations that carry no task, permission or execution authority. Their
+// outcomes become UNKNOWN; nothing is replayed. Anything else stays held.
+export const RETAIN_TAIL_AS_UNKNOWN = "retain_tail_as_unknown";
+export const RETAINABLE_OPERATION_TYPES = Object.freeze([
+  "session.rename",
+  "session.pin",
+  "session.archive",
+  "configuration.save",
+]);
+const RETAINABLE_STEPS = new Set([
+  "native.rename",
+  "registry.metadata",
+  "filesystem.configuration.stage",
+  "filesystem.configuration.publish",
+]);
+const RETAINABLE_ADMISSION_FIELDS = new Set([
+  "kind",
+  "revision",
+  "identity",
+  "rejectionCode",
+]);
+const RETAINABLE_DISPATCH_FIELDS = new Set([
+  "kind",
+  "revision",
+  "runtimeEpoch",
+  "operationId",
+  "step",
+  "nativeSessionId",
+]);
+// records: full validated journal; [fromSequence, records.length) is covered.
+export function retainableTail(records, fromSequence, operations) {
+  const listed = new Set(operations.map(operationKey));
+  if (listed.size !== operations.length) return false;
+  const admissions = new Map();
+  for (const { payload } of records)
+    if (payload.kind === "admission")
+      admissions.set(operationKey(payload.identity), payload);
+  const retainableOp = (key) =>
+    RETAINABLE_OPERATION_TYPES.includes(admissions.get(key)?.identity.type);
+  const allowed = (payload) => {
+    if (payload.kind === "owner_intent") return true;
+    if (payload.kind === "feature_gate")
+      return payload.feature === "configuration_save_v1";
+    if (payload.kind === "admission")
+      return (
+        retainableOp(operationKey(payload.identity)) &&
+        Object.keys(payload).every((field) =>
+          RETAINABLE_ADMISSION_FIELDS.has(field),
+        )
+      );
+    if (payload.kind === "dispatch")
+      return (
+        retainableOp(operationKey(payload)) &&
+        RETAINABLE_STEPS.has(payload.step) &&
+        Object.keys(payload).every((field) =>
+          RETAINABLE_DISPATCH_FIELDS.has(field),
+        )
+      );
+    if (payload.kind === "completion")
+      return retainableOp(operationKey(payload));
+    // Task, permission, reservation, migration and decision records never.
+    return false;
+  };
+  for (const { payload } of records.slice(fromSequence)) {
+    if (!allowed(payload)) return false;
+    if (
+      payload.kind === "admission" &&
+      !listed.has(operationKey(payload.identity))
+    )
+      return false;
+  }
+  for (const key of listed) {
+    if (!retainableOp(key)) return false;
+    for (const [index, { payload }] of records.entries()) {
+      const recordKey =
+        payload.kind === "admission"
+          ? operationKey(payload.identity)
+          : isTaskRecord(payload.kind) ||
+              payload.kind === "dispatch" ||
+              payload.kind === "completion" ||
+              payload.kind === "reservation" ||
+              payload.kind === "permission_progress"
+            ? operationKey(payload)
+            : payload.kind === "permission_reconciled"
+              ? operationKey(payload.original)
+              : undefined;
+      if (recordKey !== key) continue;
+      if (!allowed(payload)) return false;
+      // A confirmed prefix outcome is already terminal: never rewrite it.
+      if (payload.kind === "completion" && index < fromSequence) return false;
+    }
+  }
+  return true;
 }
 function historyValidator() {
   const operations = new Map();
@@ -1716,6 +1838,7 @@ export async function openStorageJournal({
   let checkpointValue;
   let lastHash = zeroHash;
   let uncertainCheckpoint = false;
+  let pendingRetainCheckpoint = false;
   try {
     const stat = await fs.lstat(directory);
     need(stat.isDirectory() && !stat.isSymbolicLink(), "storage_denied");
@@ -1864,7 +1987,21 @@ export async function openStorageJournal({
     checkpointValue = checkpoints[0];
     checkpointGeneration = checkpointValue?.generation ?? 0;
     committed = records.slice(0, checkpointValue?.sequence ?? 0);
-    if (records.length > committed.length || uncertainCheckpoint)
+    // A crash between writing a retain decision and its checkpoint leaves the
+    // decision as the last record of the tail. It was written by a verified
+    // owner over exactly that tail; re-check it and finish it (no re-prompt).
+    const last = records.at(-1)?.payload;
+    if (
+      !reason &&
+      !uncertainCheckpoint &&
+      last?.kind === "recovery_decision" &&
+      last.action === RETAIN_TAIL_AS_UNKNOWN &&
+      last.fromSequence === committed.length &&
+      last.throughSequence === records.length - 1 &&
+      retainableTail(records.slice(0, -1), last.fromSequence, last.operations)
+    )
+      pendingRetainCheckpoint = true;
+    else if (records.length > committed.length || uncertainCheckpoint)
       reason ??= "unconfirmed_tail";
     if (!reason) {
       handle = await fs.open(
@@ -2008,6 +2145,12 @@ export async function openStorageJournal({
     uncertainCheckpoint = false;
     return clone(candidate);
   }
+  if (pendingRetainCheckpoint && !reason)
+    try {
+      await checkpointInternal();
+    } catch {
+      /* checkpointInternal poisoned the writer: recovery_required */
+    }
   return {
     status,
     readRecords: () =>
@@ -2021,6 +2164,79 @@ export async function openStorageJournal({
       return serialized(() => appendInternal(copy));
     },
     checkpoint: () => serialized(checkpointInternal),
+    // Whether a retain decision over the current tail (from the confirmed
+    // prefix) for exactly these operations would be accepted.
+    retainable: (operations) =>
+      clone({
+        ok:
+          !closedWriter &&
+          !uncertainCheckpoint &&
+          (reason === undefined || reason === "unconfirmed_tail") &&
+          retainableTail(records, committed.length, operations),
+        uncertainCheckpoint,
+      }),
+    // Owner-verified crash recovery for non-authority operations only: the
+    // covered range is replayed conservatively by the registry and the listed
+    // operations become terminal with an UNKNOWN outcome.
+    retainTailAsUnknown: (decision) =>
+      serialized(async () => {
+        closed(decision, [
+          "expectedSequence",
+          "expectedHash",
+          "ownerVerified",
+          "operations",
+        ]);
+        need(
+          !closedWriter &&
+            decision.ownerVerified === true &&
+            decision.expectedSequence === records.length &&
+            decision.expectedHash === lastHash &&
+            Array.isArray(decision.operations),
+          "recovery_denied",
+        );
+        need(
+          !uncertainCheckpoint &&
+            (reason === undefined || reason === "unconfirmed_tail"),
+          "recovery_denied",
+        );
+        const operations = decision.operations.map((operation) => {
+          closed(operation, ["runtimeEpoch", "operationId"]);
+          return {
+            runtimeEpoch: operation.runtimeEpoch,
+            operationId: operation.operationId,
+          };
+        });
+        need(
+          retainableTail(records, committed.length, operations),
+          "recovery_denied",
+        );
+        const fromSequence = committed.length;
+        const tail = reason === "unconfirmed_tail";
+        reason = undefined;
+        try {
+          if (tail)
+            handle = await fs.open(
+              filename,
+              constants.O_APPEND | constants.O_WRONLY | constants.O_NOFOLLOW,
+            );
+          const record = await appendInternal({
+            kind: "recovery_decision",
+            revision:
+              (records.findLast((entry) => entry.payload.revision !== undefined)
+                ?.payload.revision ?? 0) + 1,
+            action: RETAIN_TAIL_AS_UNKNOWN,
+            fromSequence,
+            throughSequence: decision.expectedSequence,
+            throughHash: decision.expectedHash,
+            operations,
+          });
+          await checkpointInternal();
+          return clone(record);
+        } catch {
+          poison();
+          throw storageError(reason);
+        }
+      }),
     // Only a trusted local host recovery decision may adopt a complete validated tail.
     recover: (decision) =>
       serialized(async () => {
