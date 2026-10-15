@@ -8,7 +8,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { openWorkspaceRegistry } from "./workspace-registry.mjs";
 import { mcpNativeName, mcpStep } from "./workbench-mcp.mjs";
-import { validateStorageReceipt } from "./storage-journal.mjs";
+import {
+  openStorageJournal,
+  validateStorageReceipt,
+} from "./storage-journal.mjs";
 
 test("CTX-BRANCH admission retains a detached exact boundary and conflicts on a changed target", async (t) => {
   const f = await fixture(t);
@@ -12652,4 +12655,246 @@ test("IDLE checkpoint waits for the owner fence and is skipped when the fence re
   owned = true;
   await intent("child_started");
   await until(() => checkpointed(registry));
+});
+
+// Crash recovery without authority ("retain_tail_as_unknown").
+async function renameScope(t, io) {
+  const f = await fixture(t, io);
+  const created = await createManaged(f, "seed");
+  await f.registry.checkpoint();
+  return {
+    f,
+    session: created.delta.sessions[0],
+    scope: {
+      workspaceId: created.workspace.workspaceId,
+      sessionId: created.appSessionId,
+    },
+  };
+}
+const crashedDirectory = async (f) =>
+  join(
+    f.root,
+    (await fs.readdir(f.root)).find((n) => n.startsWith("crashed-")),
+  );
+async function beginRename(f, scope, operationId = "rename") {
+  await f.registry.begin(
+    identity(operationId, { type: "session.rename", ...scope }),
+  );
+  await f.registry.dispatch({
+    runtimeEpoch: "old",
+    operationId,
+    step: "native.rename",
+  });
+}
+const journalLines = async (directory) =>
+  (await fs.readFile(join(directory, "journal.jsonl"), "utf8"))
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line).payload);
+test("CRASH-A mid-flight rename: decision makes the outcome UNKNOWN, replays nothing and survives reopen", async (t) => {
+  const { f, scope } = await renameScope(t);
+  await beginRename(f, scope);
+  const next = await crashCopy(t, f);
+  assert.equal(next.status().reason, "unconfirmed_tail");
+  const plan = next.crashRecoveryPlan();
+  assert.equal(plan.state, "offer", JSON.stringify(plan));
+  assert.deepEqual(
+    plan.operations.map((operation) => operation.type),
+    ["session.rename"],
+  );
+  const crashedDir = await crashedDirectory(f);
+  const before = await journalLines(crashedDir);
+  await next.retainTailAsUnknown();
+  assert.equal(next.status().state, "ready", JSON.stringify(next.status()));
+  const key = { runtimeEpoch: "old", operationId: "rename" };
+  assert.equal(next.lookup(key).receipt.effect, "unknown");
+  assert.deepEqual(next.readView().retainedOperations, []);
+  assert.equal(next.crashRecoveryPlan().state, "none");
+  // Exactly one decision record is appended; nothing else is re-run.
+  const after = await journalLines(crashedDir);
+  assert.equal(after.length, before.length + 1);
+  assert.equal(after.at(-1).action, "retain_tail_as_unknown");
+  await next.close();
+  const again = await openWorkspaceRegistry({
+    ...f.options,
+    directory: crashedDir,
+    io: {},
+    runtimeEpoch: "third",
+  });
+  t.after(() => again.close());
+  assert.equal(again.status().state, "ready");
+  assert.equal(again.lookup(key).receipt.effect, "unknown");
+  assert.equal(again.crashRecoveryPlan().state, "none");
+});
+test("CRASH-A a completed but uncheckpointed rename is never promoted to success", async (t) => {
+  const { f, scope, session } = await renameScope(t, noIdleCheckpoint());
+  await beginRename(f, scope);
+  await f.registry.complete({
+    runtimeEpoch: "old",
+    operationId: "rename",
+    receipt: receipt("rename", { type: "session.rename", ...scope }),
+    delta: {
+      workspaces: [],
+      sessions: [{ ...session, title: "NEW NAME" }],
+      tombstones: [],
+    },
+  });
+  const next = await reopened(t, f);
+  assert.equal(next.crashRecoveryPlan().state, "offer");
+  await next.retainTailAsUnknown();
+  const key = { runtimeEpoch: "old", operationId: "rename" };
+  assert.equal(next.lookup(key).receipt.effect, "unknown");
+  assert.notEqual(
+    next.readView().sessions.find((s) => s.appSessionId === scope.sessionId)
+      .title,
+    "NEW NAME",
+  );
+});
+for (const kind of ["message.send", "session.create"])
+  test(`CRASH-A a tail with ${kind} is held and refused at the journal level`, async (t) => {
+    const { f, scope } = await renameScope(t);
+    await beginRename(f, scope);
+    if (kind === "message.send")
+      await f.registry.begin(identity("send", { type: kind, ...scope }));
+    else {
+      await f.registry.begin(identity("create"));
+      await f.registry.reserve({
+        runtimeEpoch: "old",
+        operationId: "create",
+        ownership: "managed",
+        plannedNativeSessionId: "native-create",
+      });
+    }
+    const next = await crashCopy(t, f);
+    assert.equal(next.crashRecoveryPlan().state, "hold");
+    await assert.rejects(next.retainTailAsUnknown(), {
+      code: "recovery_denied",
+    });
+    assert.equal(next.status().reason, "unconfirmed_tail");
+    await next.close();
+    const directory = await crashedDirectory(f);
+    const journal = await openStorageJournal({
+      directory,
+      storeId: "store",
+    });
+    t.after(() => journal.close());
+    const { sequence, hash } = journal.status();
+    const operations = journal
+      .readRecords()
+      .uncertain.filter(({ payload }) => payload.kind === "admission")
+      .map(({ payload }) => ({
+        runtimeEpoch: payload.identity.runtimeEpoch,
+        operationId: payload.identity.operationId,
+      }));
+    await assert.rejects(
+      journal.retainTailAsUnknown({
+        expectedSequence: sequence,
+        expectedHash: hash,
+        ownerVerified: true,
+        operations,
+      }),
+      { code: "recovery_denied" },
+    );
+    assert.equal(journal.status().reason, "unconfirmed_tail");
+  });
+test("CRASH-A a permission tail is held and refused at the journal level", async (t) => {
+  const f = await permissionRegistryFixture(t, noIdleCheckpoint());
+  await f.registry.checkpoint();
+  await f.registry.begin(f.input);
+  await f.registry.dispatch(f.dispatch(0));
+  const next = await reopened(t, f);
+  assert.equal(next.crashRecoveryPlan().state, "hold");
+  await assert.rejects(next.retainTailAsUnknown(), { code: "recovery_denied" });
+  assert.equal(next.status().reason, "unconfirmed_tail");
+});
+test("CRASH-A an uncertain checkpoint stays a hard hold", async (t) => {
+  const { f, scope } = await renameScope(t);
+  await beginRename(f, scope);
+  const { checkpointGeneration } = f.registry.status().journal;
+  await fs.writeFile(
+    join(f.directory, "checkpoint.pending.json"),
+    `${JSON.stringify({ schemaVersion: 1, storeId: "store", baseGeneration: checkpointGeneration })}\n`,
+    { mode: 0o600 },
+  );
+  const next = await crashCopy(t, f);
+  const plan = next.crashRecoveryPlan();
+  assert.equal(plan.state, "hold");
+  assert.equal(plan.reason, "uncertain_checkpoint");
+  await assert.rejects(next.retainTailAsUnknown(), { code: "recovery_denied" });
+});
+test("CRASH-A a crash right after the decision is written neither re-prompts nor re-applies", async (t) => {
+  const { f, scope } = await renameScope(t);
+  await beginRename(f, scope);
+  await f.registry.close();
+  const crashed = join(f.root, "after-decision");
+  const next = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "new",
+    io: {
+      syncFile: async (file, context) => {
+        await file.sync();
+        if (context === "append:recovery_decision")
+          await fs.cp(f.directory, crashed, { recursive: true });
+      },
+    },
+  });
+  t.after(() => next.close());
+  await next.retainTailAsUnknown();
+  const restarted = await openWorkspaceRegistry({
+    ...f.options,
+    directory: crashed,
+    io: {},
+    runtimeEpoch: "third",
+  });
+  t.after(() => restarted.close());
+  assert.equal(
+    restarted.status().state,
+    "ready",
+    JSON.stringify(restarted.status()),
+  );
+  assert.equal(restarted.crashRecoveryPlan().state, "none");
+  assert.equal(
+    restarted.lookup({ runtimeEpoch: "old", operationId: "rename" }).receipt
+      .effect,
+    "unknown",
+  );
+  const payloads = await journalLines(crashed);
+  assert.equal(
+    payloads.filter((payload) => payload.kind === "recovery_decision").length,
+    1,
+  );
+  const { sequence, checkpointSequence } = restarted.status().journal;
+  assert.equal(sequence, checkpointSequence);
+});
+test("CRASH-A declining leaves the journal untouched", async (t) => {
+  const { f, scope } = await renameScope(t);
+  await beginRename(f, scope);
+  const next = await crashCopy(t, f);
+  const directory = await crashedDirectory(f);
+  const bytes = await fs.readFile(join(directory, "journal.jsonl"));
+  const checkpoint = await fs.readFile(join(directory, "checkpoint.json"));
+  assert.equal(next.crashRecoveryPlan().state, "offer");
+  await next.close();
+  assert.deepEqual(await fs.readFile(join(directory, "journal.jsonl")), bytes);
+  assert.deepEqual(
+    await fs.readFile(join(directory, "checkpoint.json")),
+    checkpoint,
+  );
+});
+test("CRASH-A a retained rename in a confirmed prefix (native_startup_unverified) is offered and resolved", async (t) => {
+  const { f, scope } = await renameScope(t);
+  await beginRename(f, scope);
+  await f.registry.checkpoint(); // e.g. a lost response, then a clean quit
+  const next = await reopened(t, f);
+  assert.equal(next.status().state, "ready");
+  assert.equal(next.readView().retainedOperations.length, 1);
+  const plan = next.crashRecoveryPlan();
+  assert.equal(plan.state, "offer");
+  assert.equal(plan.reason, "native_startup_unverified");
+  await next.retainTailAsUnknown();
+  assert.deepEqual(next.readView().retainedOperations, []);
+  assert.equal(
+    next.lookup({ runtimeEpoch: "old", operationId: "rename" }).receipt.effect,
+    "unknown",
+  );
 });

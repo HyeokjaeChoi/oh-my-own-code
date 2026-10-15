@@ -181,13 +181,14 @@ Model-initiated `subagent` works in the real app (2026-10-13/14): `OMOC_E2E_STRI
 
 ## F-17 Recovery/data
 
-| Clause                                   | Status  | Evidence                                                                                                    |
-| ---------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
-| Reconnect, runtime exit, partial failure | done    | `operation.lookup`, sidecar-supervisor, recovery journal                                                    |
-| Abort vs confirmed stop                  | done    | `session.interrupt` + status                                                                                |
-| Resubscribe + re-snapshot, gap marked    | partial | `snapshot`; projection has no gap marker, so no divider                                                     |
-| Session/history export/import            | partial | `host/data-host.mjs`, `features/data-transfer` (current session; archive view only)                         |
-| Retention settings, app-data deletion    | partial | imported archives only; wipe in `data-host.mjs`; native archived-session retention not done (no timestamps) |
+| Clause                                   | Status  | Evidence                                                                                                                                                                                  |
+| ---------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reconnect, runtime exit, partial failure | done    | `operation.lookup`, sidecar-supervisor, recovery journal                                                                                                                                  |
+| App crash / force quit, relaunch         | partial | idle checkpoint (relaunch after any completed op is ready); `retain_tail_as_unknown` dialog for in-flight rename/pin/archive/config save; task/permission/execution in flight still holds |
+| Abort vs confirmed stop                  | done    | `session.interrupt` + status                                                                                                                                                              |
+| Resubscribe + re-snapshot, gap marked    | partial | `snapshot`; projection has no gap marker, so no divider                                                                                                                                   |
+| Session/history export/import            | partial | `host/data-host.mjs`, `features/data-transfer` (current session; archive view only)                                                                                                       |
+| Retention settings, app-data deletion    | partial | imported archives only; wipe in `data-host.mjs`; native archived-session retention not done (no timestamps)                                                                               |
 
 ## F-18 Convenience/automation
 
@@ -238,7 +239,9 @@ Nothing here can be proven on macOS. Wire-level pieces are implemented and unit-
 - **No pty flow control** (`pause`/`resume`): a background tab is not polled, so pausing would stall its process; the bounded ring drops the oldest output instead.
 - **A shell that exits by itself leaves jobs it moved to their own process group running** (like any terminal); close/stop/quit kill the whole tree.
 - **CSP `style-src-elem 'unsafe-inline'`** (evaluated 2026-10-14, left as is): xterm.js 6.0.0 creates three `<style>` elements at runtime (DOM renderer theme, dimensions, scrollbar) with `textContent`, has no `nonce` option and no `adoptedStyleSheets` path, so the directive is needed for them, not for `xterm.css` (which is a bundled file allowed by `'self'`). A per-load nonce would need (1) serving the renderer through a custom protocol so the CSP can carry a fresh nonce (it is currently `loadFile` with a `<meta>` CSP, and `onHeadersReceived` does not apply to `file://`), and (2) monkey-patching `document.createElement("style")` to stamp the nonce, since xterm never sets it. That is more moving parts and attack surface than the directive it removes (inline style attributes and scripts stay blocked). Revisit if xterm adds a nonce or constructable-stylesheet option.
-- **Packaged builds always use the durable profile** under the user's home (the `OMOC_APP_DATA_DIR` isolation is unpackaged-only). On macOS `e2e-smoke packaged` isolates via `CFFIXED_USER_HOME`; never run a packaged app by hand with failure scenarios against the real profile (a launch that dies mid-startup leaves owner state the next launch refuses: `owner_unverified` / `native_startup_unverified`). The `crash_restart` relaunch-on-same-profile case is still skipped by default.
+- **Packaged builds always use the durable profile** under the user's home (the `OMOC_APP_DATA_DIR` isolation is unpackaged-only). On macOS `e2e-smoke packaged` isolates via `CFFIXED_USER_HOME`; never run a packaged app by hand with failure scenarios against the real profile (a launch that dies mid-startup leaves owner state the next launch refuses: `owner_unverified` / `native_startup_unverified`). The old `crash_restart` case (SIGKILLs the sidecar) is still skipped by default; `e2e-smoke dev` now covers a main-process `process.crash()` relaunch and a mid-flight rename recovered through the dialog.
+- **Crash relaunch bug** (fixed 2026-10-15): only a clean quit checkpointed the journal, so any crash or force quit left `unconfirmed_tail` and every later launch stayed unavailable. Now an owner-fenced idle checkpoint runs whenever no operation is in flight, and an in-flight non-authority operation can be recorded as UNKNOWN after confirmation (`docs/engineering/bootstrap-task-authority.md`, "Crash recovery without authority").
+- **Remaining crash hold**: a crash while a task/permission/execution operation (send, command, permission reply, git, fork, create, MCP/skill/agent) is in flight, or with an uncertain checkpoint marker, still holds the store read-only (explained by a startup dialog with the data location). No in-app escape yet; the dialog only points to the data location.
 
 ### New open items
 

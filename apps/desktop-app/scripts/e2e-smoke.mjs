@@ -21,6 +21,7 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { createWorkbenchBridge } from "./e2e-bridge.mjs";
+import { openWorkspaceRegistry } from "../src/host/workspace-registry.mjs";
 
 const CONNECT_TIMEOUT_MS =
   Number(process.env.OMOC_E2E_CONNECT_TIMEOUT_MS) || 150_000;
@@ -516,6 +517,119 @@ async function assertMainCrashRelaunch() {
   }
 }
 
+// Dev only: a rename that was mid-flight when the main process died. The
+// fixture writes that journal tail (admission + dispatch, no completion, no
+// checkpoint) into a cleanly closed profile; the relaunch then offers crash
+// recovery. "quit" must leave the journal untouched; "continue" records the
+// outcome as UNKNOWN (one decision record, nothing replayed) and connects.
+async function assertMidFlightCrashRecovery() {
+  const profile = join(e2eRoot, "recovery-profile");
+  const storage = join(profile, "appdata", "OhMyOwnCode", "storage-v1");
+  const metadata = join(storage, "metadata");
+  const launchEnv = (response) => ({
+    ...env,
+    OMOC_APP_DATA_DIR: profile,
+    ...(response && { OMOC_E2E_CRASH_RECOVERY_RESPONSE: response }),
+  });
+  const first = await electron.launch({
+    executablePath,
+    args,
+    env: launchEnv(),
+  });
+  const firstProcess = first.process();
+  await expect(
+    (await first.firstWindow()).locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected", {
+    timeout: CONNECT_TIMEOUT_MS,
+  });
+  await first.evaluate(({ app: electronApp }) => electronApp.quit());
+  assert.equal(await waitForExit(firstProcess, 20_000), 0);
+  const { storeId } = JSON.parse(
+    await readFile(join(storage, "manifest.json"), "utf8"),
+  );
+  const registry = await openWorkspaceRegistry({
+    directory: metadata,
+    storeId,
+    documentsPath: join(profile, "Documents", "OhMyOwnCode"),
+    runtimeEpoch: "e2e-crashed-launch",
+    idleCheckpoint: false,
+  });
+  const session = registry.readView().sessions[0];
+  const operationId = "e2e-mid-flight-rename";
+  await registry.begin({
+    runtimeEpoch: "e2e-crashed-launch",
+    operationId,
+    type: "session.rename",
+    digest: "a".repeat(64),
+    workspaceId: session.workspaceId,
+    sessionId: session.appSessionId,
+  });
+  await registry.dispatch({
+    runtimeEpoch: "e2e-crashed-launch",
+    operationId,
+    step: "native.rename",
+  });
+  await registry.close(); // no checkpoint: what a crash leaves behind
+  const journalFile = join(metadata, "journal.jsonl");
+  const crashed = await readFile(journalFile);
+
+  const declined = await electron.launch({
+    executablePath,
+    args,
+    env: launchEnv("quit"),
+  });
+  assert.equal(await waitForExit(declined.process(), 60_000), 0);
+  assert.deepEqual(
+    await readFile(journalFile),
+    crashed,
+    "declining recovery leaves the journal untouched",
+  );
+
+  const resumed = await electron.launch({
+    executablePath,
+    args,
+    env: launchEnv("continue"),
+  });
+  const resumedProcess = resumed.process();
+  try {
+    await expect(
+      (await resumed.firstWindow()).locator(
+        ".workbench-header [data-connection]",
+      ),
+    ).toHaveAttribute("data-connection", "connected", {
+      timeout: CONNECT_TIMEOUT_MS,
+    });
+    const payloads = (await readFile(journalFile, "utf8"))
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line).payload);
+    const decisions = payloads.filter(
+      (payload) => payload.kind === "recovery_decision",
+    );
+    assert.equal(decisions.length, 1);
+    assert.equal(decisions[0].action, "retain_tail_as_unknown");
+    assert.deepEqual(decisions[0].operations, [
+      { runtimeEpoch: "e2e-crashed-launch", operationId },
+    ]);
+    assert.equal(
+      payloads.some(
+        (payload) =>
+          payload.kind === "completion" && payload.operationId === operationId,
+      ),
+      false,
+      "the interrupted rename is never completed or replayed",
+    );
+    console.log(
+      "PASS crash_recovery_mid_flight: declined untouched, continued as unknown",
+    );
+  } finally {
+    if (resumedProcess.exitCode === null) {
+      await resumed.evaluate(({ app: electronApp }) => electronApp.quit());
+      assert.equal(await waitForExit(resumedProcess, 20_000), 0);
+    }
+  }
+}
+
 const inspection = mode === "packaged" ? await inspectedIdentity() : null;
 if (inspection) await assertPackagedStartupFailures();
 const app = await electron.launch({ executablePath, args, env });
@@ -678,6 +792,7 @@ try {
       "SKIPPED crash_restart: relaunch on same profile is runtime-unavailable (set OMOC_E2E_CRASH_RESTART=1)",
     );
   if (mode === "dev") await assertMainCrashRelaunch();
+  if (mode === "dev") await assertMidFlightCrashRecovery();
   await rm(e2eRoot, { recursive: true, force: false });
   console.log(
     JSON.stringify({

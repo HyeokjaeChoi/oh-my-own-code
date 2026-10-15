@@ -119,6 +119,7 @@ import {
   validateMcpDispatch,
   validateMcpCompletion,
   isMcpAbsentRemoval,
+  RETAIN_TAIL_AS_UNKNOWN,
 } from "./storage-journal.mjs";
 
 const copy = (value) => JSON.parse(JSON.stringify(value));
@@ -984,6 +985,22 @@ function apply(root, payload, conservative = false, validatedFirstSessions) {
     operation.receipt = receipt;
     operation.terminal = terminal;
     operation.completedDelta = delta;
+  } else if (
+    payload.kind === "recovery_decision" &&
+    payload.action === RETAIN_TAIL_AS_UNKNOWN
+  ) {
+    // Crash recovery without authority: the outcome stays UNKNOWN forever
+    // (never confirmed, never replayed); the operation just stops holding.
+    for (const entry of payload.operations) {
+      const retained = next.operations.get(key(entry));
+      need(retained && !retained.terminal, "identity_conflict");
+      retained.receipt = {
+        ...retained.receipt,
+        effect: "unknown",
+        delivery: "unknown",
+      };
+      retained.terminal = true;
+    }
   } else if (payload.kind === "owner_intent") next.ownerIntent = payload;
   else if (payload.kind === "migration_phase")
     next.migrations.set(payload.migrationId, payload);
@@ -1142,8 +1159,23 @@ export async function openWorkspaceRegistry({
   const unavailablePaths = new Map();
   if (journal) {
     const { committed, uncertain } = journal.readRecords();
+    // Ranges a retain decision covered replay conservatively, as they did
+    // when the decision was made: no outcome from them is ever confirmed.
+    const covered = new Set();
+    for (const { payload } of committed)
+      if (
+        payload.kind === "recovery_decision" &&
+        payload.action === RETAIN_TAIL_AS_UNKNOWN
+      )
+        for (
+          let n = payload.fromSequence + 1;
+          n <= payload.throughSequence;
+          n++
+        )
+          covered.add(n);
     try {
-      for (const record of committed) root = apply(root, record.payload);
+      for (const record of committed)
+        root = apply(root, record.payload, covered.has(record.sequence));
     } catch (error) {
       localReason =
         error.code === "retained_limit" ? error.code : "identity_conflict";
@@ -2871,7 +2903,68 @@ export async function openWorkspaceRegistry({
       candidates,
     };
   }
+  // Startup crash recovery for operations without authority (Main shows the
+  // dialog). "offer": every retained operation and every tail record is a
+  // non-authority one; "hold": anything else (unchanged hold); "none": no
+  // decision is needed (or the bootstrap reconciler owns it).
+  function crashRecoveryPlan() {
+    const reason = storeReason();
+    if (!journal || closedRegistry) return { state: "none" };
+    if (reason && reason !== "unconfirmed_tail") return { state: "none" };
+    const retainedOps = [...root.operations.values()].filter(
+      (operation) => !operation.terminal,
+    );
+    const { sequence, checkpointSequence } = journal.status();
+    if (!reason && !retainedOps.length) return { state: "none" };
+    if (!reason) {
+      const plan = reconcilePlan();
+      if (plan.eligible && plan.candidates.length) return { state: "none" };
+    }
+    const operations = retainedOps.map(({ identity }) => ({
+      runtimeEpoch: identity.runtimeEpoch,
+      operationId: identity.operationId,
+    }));
+    const verdict = journal.retainable(operations);
+    const tasksSettled = [...root.tasks.values()].every(
+      (task) => task.phase === "settled",
+    );
+    return copy({
+      state: verdict.ok && tasksSettled ? "offer" : "hold",
+      reason: verdict.uncertainCheckpoint
+        ? "uncertain_checkpoint"
+        : (reason ?? "native_startup_unverified"),
+      tailRecords: sequence - checkpointSequence,
+      operations: retainedOps.map(({ identity }) => ({
+        type: identity.type,
+        ...(identity.sessionId && { sessionId: identity.sessionId }),
+        ...(identity.workspaceId && { workspaceId: identity.workspaceId }),
+      })),
+    });
+  }
   return {
+    crashRecoveryPlan,
+    // Owner-verified (Main) and only after the user chose 계속.
+    retainTailAsUnknown: () =>
+      serialized(async () => {
+        need(journal && !closedRegistry, "recovery_denied");
+        need(crashRecoveryPlan().state === "offer", "recovery_denied");
+        const operations = [...root.operations.values()]
+          .filter((operation) => !operation.terminal)
+          .map(({ identity }) => ({
+            runtimeEpoch: identity.runtimeEpoch,
+            operationId: identity.operationId,
+          }));
+        const { sequence, hash } = journal.status();
+        const record = await journal.retainTailAsUnknown({
+          expectedSequence: sequence,
+          expectedHash: hash,
+          ownerVerified: true,
+          operations,
+        });
+        root = apply(root, record.payload);
+        validatedAdmissionKeys = new Set(root.operations.keys());
+        return status();
+      }),
     reconcilePlan,
     begin,
     reserve,
