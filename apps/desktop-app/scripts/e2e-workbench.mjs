@@ -134,7 +134,7 @@ try {
   const sessionId = initial.value.selectedSessionId;
   assert.equal(
     initial.value.sessions.find((item) => item.id === sessionId).title,
-    "Workbench",
+    "Untitled session",
   );
   // The profile is the durable journaled registry, no longer a temporary one.
   assert.equal(initial.value.temporary, false);

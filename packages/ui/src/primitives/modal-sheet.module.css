@@ -28,12 +28,20 @@
 .content[data-side="left"] {
   inset-inline-start: 0;
   width: min(var(--omoc-component-size-sidebar-width), calc(100vw - 24px));
-  border-inline-end: 1px solid var(--omoc-semantic-color-border-default);
+  box-shadow: var(
+    --omoc-elevation-overlay,
+    0 1px 3px rgb(0 0 0 / 10%),
+    0 8px 28px rgb(0 0 0 / 16%)
+  );
 }
 
 .content[data-side="right"] {
   inset-inline-end: 0;
-  border-inline-start: 1px solid var(--omoc-semantic-color-border-default);
+  box-shadow: var(
+    --omoc-elevation-overlay,
+    0 1px 3px rgb(0 0 0 / 10%),
+    0 8px 28px rgb(0 0 0 / 16%)
+  );
 }
 
 .content:focus-visible {

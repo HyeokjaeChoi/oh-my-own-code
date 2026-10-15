@@ -746,7 +746,7 @@ async function exerciseFoundation() {
     // The run strip appears only while a run is active.
     await expect(page.locator("[data-run-strip]")).toBeVisible();
     await expandPopover("run", "Space");
-    await expect(hook("running")).toContainText("Native의 현재 실행 설정");
+    await expect(hook("running")).toContainText("현재 실행 설정을 사용합니다");
     await expect(hook("steer")).toBeEnabled();
     await expect(hook("queue")).toBeEnabled();
     await reveal(hook("running"));

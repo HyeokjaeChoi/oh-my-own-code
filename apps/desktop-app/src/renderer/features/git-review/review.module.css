@@ -3,7 +3,6 @@
   max-width: 100%;
   margin-block: 24px;
   padding-block: 16px;
-  border-block: 1px solid var(--omoc-semantic-color-border-default);
   color: var(--omoc-semantic-color-text-primary);
   background: var(--omoc-semantic-color-surface);
   font-size: 13px;
@@ -44,19 +43,20 @@
   min-height: var(--omoc-component-size-control-hit-target);
   max-width: 100%;
   padding: 6px 8px;
-  border: 1px solid var(--omoc-semantic-color-border-default);
+  border: 0;
   border-radius: var(--omoc-component-size-navigation-radius);
-  background: var(--omoc-component-color-input-background);
+  background: var(--omoc-fill-subtle);
   color: var(--omoc-component-color-input-foreground);
   font: inherit;
   white-space: normal;
   overflow-wrap: anywhere;
 }
 .review button:hover:enabled {
-  background: var(--omoc-semantic-color-surface-subtle);
+  background: var(--omoc-fill-hover);
 }
 .review button[aria-pressed="true"] {
-  border-color: var(--omoc-semantic-color-focus);
+  background: var(--omoc-fill-hover);
+  font-weight: 600;
 }
 .review :disabled {
   opacity: 0.5;
@@ -83,7 +83,9 @@
   max-width: 100%;
   margin: 12px 0;
   padding: 8px;
-  border: 1px solid var(--omoc-semantic-color-border-default);
+  border: 0;
+  border-radius: var(--omoc-component-size-navigation-radius);
+  background: var(--omoc-fill-subtle);
 }
 .selection select {
   width: 100%;

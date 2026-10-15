@@ -8,16 +8,26 @@ export async function openMoreMenuItem(page, name) {
   await page.getByRole("menuitem", { name, exact: true }).click();
 }
 
-/** Settings live in the sidebar footer button. */
+/** Settings: the sidebar footer button, else the header "더 보기" menu entry. */
 export async function openSettings(page) {
   const button = page.getByRole("button", { name: "설정", exact: true });
-  if (await button.isVisible()) await button.click();
+  if (await button.isVisible()) return button.click();
   // Below 1200px an open detail panel hides the sidebar (and its footer
-  // button); the command palette entry fires this same app event.
-  else
+  // button); the header menu then carries 설정.
+  const item = page.getByRole("menuitem", { name: "설정", exact: true });
+  try {
+    await page
+      .getByRole("button", { name: "더 보기", exact: true })
+      .click({ timeout: 3000 });
+    await item.click({ timeout: 3000 });
+  } catch {
+    // A modal sheet may already own the page: fire the same app event the
+    // command palette uses.
+    await page.keyboard.press("Escape");
     await page.evaluate(() =>
       globalThis.dispatchEvent(new globalThis.Event("omoc:open-settings")),
     );
+  }
 }
 
 /** Opens the sidebar workspace switcher menu and returns the menu locator. */

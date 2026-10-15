@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { GitBranch, SquarePen } from "lucide-react";
 import { Button } from "@workbench/ui";
 import {
   selectors,
@@ -42,29 +43,35 @@ export function ContextMessageActions({
   if (message.role !== "user") return null;
   return (
     <div className={styles.messageActions} data-context-message={message.id}>
+      <Button
+        type="button"
+        size="compact"
+        data-message-action
+        data-context-retry={message.id}
+        aria-label="이 입력으로 새 분기 준비"
+        title="이 입력으로 새 분기 준비"
+        disabled={!ready || !idle}
+        onClick={() => actions.previewContextBranch(message.id)}
+      >
+        <GitBranch size={16} aria-hidden="true" />
+      </Button>
+      <Button
+        type="button"
+        size="compact"
+        data-message-action
+        data-context-edit={message.id}
+        aria-label="입력 수정 후 새 분기 준비"
+        title="입력 수정 후 새 분기 준비"
+        disabled={!ready || !idle}
+        onClick={() => actions.previewContextBranch(message.id)}
+      >
+        <SquarePen size={16} aria-hidden="true" />
+      </Button>
       {message.context && (
-        <p data-context-historical="unavailable">
+        <p data-context-historical="unavailable" className={styles.historical}>
           이전 첨부 입력을 사용할 수 없습니다. 파일을 다시 선택하세요.
         </p>
       )}
-      <Button
-        type="button"
-        size="compact"
-        data-context-retry={message.id}
-        disabled={!ready || !idle}
-        onClick={() => actions.previewContextBranch(message.id)}
-      >
-        이 입력으로 새 분기 준비
-      </Button>
-      <Button
-        type="button"
-        size="compact"
-        data-context-edit={message.id}
-        disabled={!ready || !idle}
-        onClick={() => actions.previewContextBranch(message.id)}
-      >
-        입력 수정 후 새 분기 준비
-      </Button>
     </div>
   );
 }
@@ -95,6 +102,11 @@ export function ConversationContextControls({
   const previewTrigger = useRef<HTMLElement | null>(null);
   const attachBody = useRef<HTMLDivElement>(null);
   const runBody = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!context.notice) return;
+    const timer = setTimeout(actions.clearNotices, 8000);
+    return () => clearTimeout(timer);
+  }, [context.notice, actions]);
   const reobserveButtons = useRef(new Map<string, HTMLButtonElement>());
   const branchBefore = context.branch?.before;
   const pathId = useId();
@@ -222,8 +234,8 @@ export function ConversationContextControls({
           <strong>선택한 입력 직전에서 새 분기를 만듭니다.</strong>
           <p data-context-boundary>분기 경계: {context.branch.before}</p>
           <p>
-            현재 Workspace 파일을 유지합니다. 분기를 만든 뒤 별도로 메시지를
-            보내세요.
+            현재 작업 공간의 파일은 그대로 둡니다. 분기를 만든 뒤 별도로
+            메시지를 보내세요.
           </p>
           {context.branch.historical && (
             <p>이전 첨부 입력을 사용할 수 없습니다. 파일을 다시 선택하세요.</p>
@@ -277,7 +289,7 @@ export function ConversationContextControls({
         </p>
       )}
       {context.notice && (
-        <p role="status" data-context-notice>
+        <p role="status" data-context-notice className={styles.notice}>
           {context.notice}
         </p>
       )}
@@ -389,7 +401,7 @@ export function ConversationContextControls({
             <div className={styles.body}>
               <h2>파일 첨부와 미리보기</h2>
               <div className={styles.controls}>
-                <label htmlFor={pathId}>Workspace 상대 경로</label>
+                <label htmlFor={pathId}>작업 공간 기준 파일 경로</label>
                 <input
                   id={pathId}
                   data-context-path
@@ -419,10 +431,7 @@ export function ConversationContextControls({
                   </Button>
                 )}
               </div>
-              <p>
-                확인한 입력을 Native에 보냅니다. Provider가 받은 입력을 증명하지
-                않습니다.
-              </p>
+              <p>확인한 입력을 그대로 보냅니다.</p>
               {p && (
                 <section
                   className={styles.preview}
@@ -502,10 +511,7 @@ export function ConversationContextControls({
             <div className={styles.body}>
               <section aria-label="현재 실행에 요청" data-context-running>
                 <strong>현재 실행에 요청</strong>
-                <p>
-                  현재 작성한 텍스트만 보냅니다. Native의 현재 실행 설정을
-                  사용합니다.
-                </p>
+                <p>작성한 텍스트만 보냅니다. 현재 실행 설정을 사용합니다.</p>
                 <div className={styles.actions}>
                   <Button
                     type="button"
@@ -533,7 +539,7 @@ export function ConversationContextControls({
                   </Button>
                 </div>
               </section>
-              <section aria-label="Native 대기열 확인" data-context-inbox>
+              <section aria-label="대기열 확인" data-context-inbox>
                 <Button
                   type="button"
                   data-context-inbox-observe

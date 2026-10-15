@@ -792,7 +792,7 @@ async function exerciseConversationContext() {
   ]);
   await setDisplay(page, 1440, 1000, 1);
   await hook("inbox-cancel").click();
-  await expect(hook("notice")).toContainText("취소 요청");
+  await expect(hook("notice")).toContainText("취소를 요청");
   await reveal(hook("notice"));
   await shot("cancel-request-ACK-not-cancelled");
   await captureResponsive("cancel-request-ACK", [

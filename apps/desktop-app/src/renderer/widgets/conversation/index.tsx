@@ -21,6 +21,7 @@ import {
 } from "@assistant-ui/react";
 import {
   ArrowUp,
+  ChevronRight,
   Folder,
   GitBranch,
   Plus,
@@ -37,7 +38,12 @@ import {
   effectiveToolStatus,
   permissionsForTool,
 } from "../../shared/tool-ui/index.js";
-import { ToolBody, ToolContext, useToolContext } from "./tool-views.js";
+import {
+  ToolBody,
+  ToolContext,
+  toolSummary,
+  useToolContext,
+} from "./tool-views.js";
 import {
   currentGitReviewObservation,
   selectors,
@@ -51,7 +57,7 @@ import {
 import type { MutationRequest } from "../../shared/transport/index.js";
 import styles from "./conversation.module.css";
 import { PopoverPanel, PopoverTrigger } from "./composer-popovers.js";
-import { AssistantText, LiteralText } from "./markdown.js";
+import { AssistantText, CopyButton, LiteralText } from "./markdown.js";
 import { parseSafeLinkPreview } from "@workbench/contracts";
 import { Button, LinkPreview } from "@workbench/ui";
 import {
@@ -140,21 +146,62 @@ function ToolDetail({
     output,
     status: rawState,
   });
+  const summary = toolSummary(view, toolName);
+  const status = labels[state] ?? "상태 확인 불가";
   return (
-    <div className={`tool-detail ${styles.toolDetail}`}>
-      <div className={`tool-heading ${styles.toolHeading}`}>
-        <strong>{toolName}</strong>
-        <span>{labels[state] ?? "상태 확인 불가"}</span>
-      </div>
-      <ToolBody view={view} />
-      {pendingPermissions.map((p) => (
-        <div className={styles.toolPermission} key={p.id}>
-          <strong>{p.title}</strong>
-          <p className={styles.muted}>
-            {p.detail} · 아래 권한 요청에서 응답하세요.
-          </p>
+    <div className={`tool-detail ${styles.toolDetail}`} data-tool-state={state}>
+      <details className={styles.toolCall}>
+        <summary className={styles.disclosure}>
+          <ChevronRight
+            size={14}
+            className={styles.chevron}
+            aria-hidden="true"
+          />
+          <span className={styles.summaryText}>{summary}</span>
+          {state !== "completed" && (
+            <span className={styles.summaryState}>{status}</span>
+          )}
+        </summary>
+        <div className={`tool-heading ${styles.toolHeading}`}>
+          <strong>{toolName}</strong>
+          <span>{status}</span>
         </div>
-      ))}
+        <ToolBody view={view} />
+        {pendingPermissions.map((p) => (
+          <div className={styles.toolPermission} key={p.id}>
+            <strong>{p.title}</strong>
+            <p className={styles.muted}>
+              {p.detail} · 아래 권한 요청에서 응답하세요.
+            </p>
+          </div>
+        ))}
+        {subagent && state === "completed" ? (
+          <div className="subagent-result">
+            <p className={styles.muted}>
+              하위 세션 최종 응답 ({subagent.sessionId})
+            </p>
+            <pre>{subagent.text}</pre>
+          </div>
+        ) : null}
+        <details className={styles.rawDetails}>
+          <summary className={styles.disclosure}>
+            <ChevronRight
+              size={14}
+              className={styles.chevron}
+              aria-hidden="true"
+            />
+            도구 입력과 결과
+          </summary>
+          <p className={styles.muted}>입력</p>
+          <pre>{typeof args.input === "string" ? args.input : ""}</pre>
+          <p className={styles.muted}>
+            {state === "completed" || state === "error"
+              ? "결과"
+              : "현재까지 받은 출력 · 완료되지 않음"}
+          </p>
+          <pre>{output || "아직 출력이 없습니다."}</pre>
+        </details>
+      </details>
       {preview ? (
         <LinkPreview
           {...preview}
@@ -163,32 +210,13 @@ function ToolDetail({
           className={styles.linkPreview ?? ""}
         />
       ) : null}
-      {subagent && state === "completed" ? (
-        <div className="subagent-result">
-          <p className={styles.muted}>
-            하위 세션 최종 응답 ({subagent.sessionId})
-          </p>
-          <pre>{subagent.text}</pre>
-        </div>
-      ) : null}
-      <details>
-        <summary>도구 입력과 결과</summary>
-        <p className={styles.muted}>입력</p>
-        <pre>{typeof args.input === "string" ? args.input : ""}</pre>
-        <p className={styles.muted}>
-          {state === "completed" || state === "error"
-            ? "결과"
-            : "현재까지 받은 출력 · 완료되지 않음"}
-        </p>
-        <pre>{output || "아직 출력이 없습니다."}</pre>
-      </details>
     </div>
   );
 }
 function ReportedModel({ model }: { model: RuntimeModel }) {
   return (
     <>
-      <dt>Provider</dt>
+      <dt>제공자</dt>
       <dd>{model.providerId}</dd>
       <dt>모델</dt>
       <dd>{model.id}</dd>
@@ -212,6 +240,12 @@ function MessageView({
     role === "assistant" && validAssistantRuntime(runtime)
       ? runtime
       : undefined;
+  // Copy the same bounded text the transcript displays.
+  const text = useMemo(() => {
+    const content = original ? mapMessages([original])[0]?.content : undefined;
+    const part = Array.isArray(content) ? content[0] : undefined;
+    return part && part.type === "text" ? part.text : "";
+  }, [original]);
   return (
     <MessagePrimitive.Root
       data-message-role={role}
@@ -227,25 +261,45 @@ function MessageView({
           tools: { Fallback: ToolDetail },
         }}
       />
-      {original && <ContextMessageActions message={original} />}
-      {role === "assistant" && (
-        <details
-          className={styles.runtimeReport}
-          data-response-runtime={messageId}
+      <div className={styles.messageFooter}>
+        <div
+          className={styles.messageToolbar}
+          role="group"
+          aria-label="메시지 동작"
         >
-          <summary>응답이 보고한 실행 정보</summary>
-          {report ? (
-            <dl>
-              <dt>Agent</dt>
-              <dd>{report.agent}</dd>
-              <ReportedModel model={report.model} />
-            </dl>
-          ) : (
-            <p>이 응답에 실행 정보 보고가 없습니다.</p>
-          )}
-          <p>이 응답의 보고입니다. 현재 목록과 다를 수 있습니다.</p>
-        </details>
-      )}
+          {text && <CopyButton text={text} kind="message" />}
+          {original && <ContextMessageActions message={original} />}
+        </div>
+        {role === "assistant" && (
+          <details
+            className={styles.runtimeReport}
+            data-response-runtime={messageId}
+          >
+            <summary className={styles.disclosure}>
+              <ChevronRight
+                size={14}
+                className={styles.chevron}
+                aria-hidden="true"
+              />
+              <span className={styles.summaryText}>
+                {report
+                  ? `${report.agent} · ${report.model.id}`
+                  : "실행 정보 없음"}
+              </span>
+            </summary>
+            {report ? (
+              <dl>
+                <dt>Agent</dt>
+                <dd>{report.agent}</dd>
+                <ReportedModel model={report.model} />
+              </dl>
+            ) : (
+              <p>이 응답에 실행 정보 보고가 없습니다.</p>
+            )}
+            <p>이 응답의 보고입니다. 현재 목록과 다를 수 있습니다.</p>
+          </details>
+        )}
+      </div>
     </MessagePrimitive.Root>
   );
 }
@@ -684,7 +738,9 @@ export function Conversation(props: Props) {
                     {props.status === "stopping"
                       ? "중단하는 중"
                       : running
-                        ? "실행 중"
+                        ? props.messages.at(-1)?.role === "user"
+                          ? "응답 대기 중"
+                          : "실행 중"
                         : "대기열 (마지막 확인)"}
                     {queueCount > 0 &&
                       (running ? ` · 대기열 ${queueCount}` : ` ${queueCount}`)}
@@ -1112,7 +1168,7 @@ export function Conversation(props: Props) {
                                 : ""
                             }`
                           : "모델 보고 없음"
-                      } · Native 보고이며 다음 요청과 다를 수 있습니다.`
+                      } · 보고된 값이며 다음 요청과 다를 수 있습니다.`
                     : "현재 세션: 설정 보고가 없습니다."}
                 </p>
               </PopoverPanel>

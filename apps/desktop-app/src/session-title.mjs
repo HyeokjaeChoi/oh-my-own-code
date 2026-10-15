@@ -12,7 +12,7 @@ export const isPlaceholderTitle = (title) =>
 export function nativeSessionTitle(raw) {
   if (typeof raw !== "string") return undefined;
   const text = redactText(raw.slice(0, 1024))
-    .text.replace(/[\u0000-\u001f\u007f-\u009f\s]+/g, " ")
+    .text.replace(/[\p{Cc}\s]+/gu, " ")
     .trim();
   let out = "";
   for (const char of text) {

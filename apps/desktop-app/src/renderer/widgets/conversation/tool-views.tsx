@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import { ChevronRight } from "lucide-react";
 import type { ToolView } from "../../shared/tool-ui/index.js";
 import styles from "./conversation.module.css";
 
@@ -11,6 +12,38 @@ export const ToolContext = createContext<ToolContextValue>({
   openFile: () => undefined,
 });
 export const useToolContext = () => useContext(ToolContext);
+
+const base = (path: string) =>
+  path.split(/[\\/]/).filter(Boolean).at(-1) ?? path;
+const clip = (text: string, size = 60) =>
+  text.length > size ? `${text.slice(0, size - 1)}…` : text;
+
+// One plain line per tool call; the full input/output stays in the details.
+export function toolSummary(view: ToolView, toolName: string): string {
+  switch (view.kind) {
+    case "read":
+      return `${base(view.path)} 읽음`;
+    case "diff": {
+      const add = view.rows.filter((r) => r.sign === "+").length;
+      const del = view.rows.filter((r) => r.sign === "-").length;
+      return `${view.path ? base(view.path) : "패치"} 편집 +${add} −${del}`;
+    }
+    case "shell": {
+      const command = clip(view.command.split("\n")[0] ?? "");
+      return view.exitCode === null
+        ? `명령 실행 · ${command}`
+        : `명령 실행 · ${command} · ${view.exitCode === 0 ? "성공" : `종료 코드 ${view.exitCode}`}`;
+    }
+    case "search":
+      return `${view.pattern ? "검색" : "목록"} · ${clip(view.pattern || view.scope || ".", 40)} · ${view.matches.length}건`;
+    case "web":
+      return `웹 · ${clip(view.url ?? view.query ?? "")}`;
+    case "todo":
+      return `할 일 ${view.items.length}개`;
+    default:
+      return toolName;
+  }
+}
 
 function PathButton({ path, line }: { path: string; line?: number | null }) {
   const { openFile } = useToolContext();
@@ -42,7 +75,14 @@ export function ToolBody({ view }: { view: ToolView }) {
           )}
           {view.content && (
             <details>
-              <summary>읽은 내용</summary>
+              <summary className={styles.disclosure}>
+                <ChevronRight
+                  size={14}
+                  className={styles.chevron}
+                  aria-hidden="true"
+                />
+                읽은 내용
+              </summary>
               <pre>{view.content}</pre>
             </details>
           )}
@@ -81,7 +121,14 @@ export function ToolBody({ view }: { view: ToolView }) {
           )}
           {view.output && (
             <details>
-              <summary>출력</summary>
+              <summary className={styles.disclosure}>
+                <ChevronRight
+                  size={14}
+                  className={styles.chevron}
+                  aria-hidden="true"
+                />
+                출력
+              </summary>
               <pre>{view.output}</pre>
             </details>
           )}

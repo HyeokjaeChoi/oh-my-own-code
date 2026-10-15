@@ -73,6 +73,7 @@ const states: Record<string, string> = {
   disconnected: "연결 끊김",
   unavailable: "사용 불가",
 };
+const NOTICE_MS = 8000;
 export function Workbench() {
   const { actions, store } = useWindowWorkbench();
   const recovery = useWorkbenchSelector(selectors.recovery);
@@ -90,6 +91,12 @@ export function Workbench() {
   const error = useWorkbenchSelector((s) => s.error);
   const notice = useWorkbenchSelector((s) => s.notice);
   const catalogError = useWorkbenchSelector((s) => s.catalogError);
+  // Receipts are a brief status, not a standing banner.
+  useEffect(() => {
+    if (!notice) return;
+    const timer = setTimeout(actions.clearNotices, NOTICE_MS);
+    return () => clearTimeout(timer);
+  }, [notice, actions]);
   const unknown = useWorkbenchSelector(selectors.unknown);
   const operations = useWorkbenchSelector((s) => s.operations);
   const unknownSessionIds = Object.values(operations)
@@ -891,6 +898,17 @@ export function Workbench() {
                 icon: <Database size={16} />,
                 onSelect: () => openSheet(OPEN_DATA_EVENT, moreButton.current),
               },
+              // The sidebar footer owns 설정 while the sidebar is docked.
+              ...(wide && navigation
+                ? []
+                : [
+                    {
+                      label: "설정",
+                      icon: <Settings size={16} />,
+                      onSelect: () =>
+                        openSheet(OPEN_SETTINGS_EVENT, moreButton.current),
+                    },
+                  ]),
             ]}
           />
         </header>
@@ -927,7 +945,10 @@ export function Workbench() {
           </div>
         )}
         {workbench.notice && (
-          <div className={styles.statusLine} role="status">
+          <div
+            className={`${styles.statusLine} ${styles.notice}`}
+            role="status"
+          >
             {workbench.notice}
           </div>
         )}

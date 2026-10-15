@@ -38,10 +38,10 @@ function Rules({
 }
 const labels = {
   not_observed: "아직 확인하지 않았습니다.",
-  checking: "Native 세션 규칙 확인 중…",
+  checking: "세션 권한 규칙 확인 중…",
   observed: "세션 규칙을 확인했습니다.",
   unavailable:
-    "Native 세션 규칙을 확인할 수 없습니다. 규칙이 없다는 뜻은 아닙니다.",
+    "세션 권한 규칙을 확인할 수 없습니다. 규칙이 없다는 뜻은 아닙니다.",
   stale: "이전 결과는 현재 상태가 아닙니다. 다시 확인하세요.",
   error: "세션 규칙을 확인하지 못했습니다. 다시 확인하세요.",
 } as const;
@@ -139,7 +139,7 @@ export function PermissionPolicy({
             disabled={!canObserve}
             onClick={() => void actions.observePermissionPolicy()}
           >
-            Native 세션 규칙 확인
+            세션 권한 규칙 확인
           </Button>
         )}
         <Button size="compact" data-runtime-task-close onClick={close}>

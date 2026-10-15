@@ -5144,6 +5144,7 @@ export type Event =
   | { type: "context.branch.edit"; text: string }
   | { type: "context.branch.close" }
   | { type: "context.notice"; text: string }
+  | { type: "notice.clear" }
   | {
       type: "git.branchRestore.edit";
       value: Partial<
@@ -5727,6 +5728,10 @@ function reduceConversationContext(state: State, event: Event): State {
       return { ...state, conversationContext: { ...c, branch: undefined } };
     case "context.notice":
       return { ...state, conversationContext: { ...c, notice: event.text } };
+    case "notice.clear":
+      return state.notice || c.notice
+        ? { ...state, notice: "", conversationContext: { ...c, notice: "" } }
+        : state;
     default:
       return state;
   }
@@ -9089,8 +9094,7 @@ function reduceWorkbench(state: State, event: Event): State {
                     preview: undefined,
                   }
                 : {}),
-              notice:
-                "Native가 입력 접수를 확인했습니다. Provider 실행이나 최종 전달 완료를 증명하지 않습니다.",
+              notice: "전송됨",
             },
           };
         }
@@ -9101,8 +9105,7 @@ function reduceWorkbench(state: State, event: Event): State {
               ...c,
               inbox: undefined,
               inboxScope: undefined,
-              notice:
-                "취소 요청이 접수되었습니다. 취소 또는 미실행을 확인한 것은 아닙니다.",
+              notice: "취소를 요청했습니다 · 아직 취소 여부는 알 수 없습니다",
             },
           };
         if (
@@ -9262,11 +9265,14 @@ function reduceWorkbench(state: State, event: Event): State {
           notice:
             receipt.result?.kind === "delivery" &&
             receipt.result.status === "stopping"
-              ? "중단 요청을 접수했습니다. 실제 상태를 확인하고 있습니다."
+              ? "중단을 요청했습니다 · 상태 확인 중"
               : receipt.result?.kind === "delivery" &&
                   receipt.result.status === "decided"
-                ? "권한 결정을 전달했습니다. 도구 실행 완료를 뜻하지 않습니다."
-                : "요청을 접수했습니다. 실행 결과는 대화에서 확인합니다.",
+                ? "권한 응답 전달됨"
+                : receipt.result?.kind === "delivery" &&
+                    intent.operation.type !== "message.send"
+                  ? "전송됨"
+                  : "",
         };
       }
       return next;

@@ -36,14 +36,20 @@
   background: var(--omoc-component-color-button-primary-pressed);
 }
 
+/* Borderless: a translucent fill (falls back to the surface tokens). */
 .secondary {
-  border-color: var(--omoc-semantic-color-border-default);
-  background: var(--omoc-semantic-color-surface);
+  background: var(
+    --omoc-fill-subtle,
+    var(--omoc-component-color-button-quiet-hover)
+  );
   color: var(--omoc-semantic-color-text-primary);
 }
 .secondary:hover:not(:disabled),
 .quiet:hover:not(:disabled) {
-  background: var(--omoc-component-color-button-quiet-hover);
+  background: var(
+    --omoc-fill-hover,
+    var(--omoc-component-color-button-quiet-hover)
+  );
 }
 .secondary:active:not(:disabled),
 .quiet:active:not(:disabled) {
