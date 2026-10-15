@@ -1007,6 +1007,27 @@ function apply(root, payload, conservative = false, validatedFirstSessions) {
   next.revision = conservative ? root.revision : payload.revision;
   return next;
 }
+// Ranges a retain decision covered replay conservatively (no outcome from
+// them is ever confirmed). Feature gates are capability facts, not outcomes:
+// they always apply, so later records of that kind stay admissible.
+function replayCommitted(committed) {
+  const covered = new Set();
+  for (const { payload } of committed)
+    if (
+      payload.kind === "recovery_decision" &&
+      payload.action === RETAIN_TAIL_AS_UNKNOWN
+    )
+      for (let n = payload.fromSequence + 1; n <= payload.throughSequence; n++)
+        covered.add(n);
+  let root = emptyRoot();
+  for (const record of committed)
+    root = apply(
+      root,
+      record.payload,
+      covered.has(record.sequence) && record.payload.kind !== "feature_gate",
+    );
+  return root;
+}
 function workspaceScopes(identity, permissionTarget, reservation) {
   return new Set(
     [
@@ -1138,7 +1159,13 @@ export async function openWorkspaceRegistry({
     recoveryReason,
   )
     ? undefined
-    : await openStorageJournal({ directory, storeId, io, recoveryReason });
+    : await openStorageJournal({
+        directory,
+        storeId,
+        io,
+        recoveryReason,
+        checkpointFence,
+      });
   let root = emptyRoot();
   let validatedAdmissionKeys = new Set();
   // Only this live admission may dispatch. Reopen/tail adoption never permits replay.
@@ -1159,23 +1186,8 @@ export async function openWorkspaceRegistry({
   const unavailablePaths = new Map();
   if (journal) {
     const { committed, uncertain } = journal.readRecords();
-    // Ranges a retain decision covered replay conservatively, as they did
-    // when the decision was made: no outcome from them is ever confirmed.
-    const covered = new Set();
-    for (const { payload } of committed)
-      if (
-        payload.kind === "recovery_decision" &&
-        payload.action === RETAIN_TAIL_AS_UNKNOWN
-      )
-        for (
-          let n = payload.fromSequence + 1;
-          n <= payload.throughSequence;
-          n++
-        )
-          covered.add(n);
     try {
-      for (const record of committed)
-        root = apply(root, record.payload, covered.has(record.sequence));
+      root = replayCommitted(committed);
     } catch (error) {
       localReason =
         error.code === "retained_limit" ? error.code : "identity_conflict";
@@ -2961,7 +2973,9 @@ export async function openWorkspaceRegistry({
           ownerVerified: true,
           operations,
         });
-        root = apply(root, record.payload);
+        // Rebuild exactly as a reopen will (one replay rule for both).
+        need(record.payload.action === RETAIN_TAIL_AS_UNKNOWN);
+        root = replayCommitted(journal.readRecords().committed);
         validatedAdmissionKeys = new Set(root.operations.keys());
         return status();
       }),

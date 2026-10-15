@@ -741,7 +741,7 @@ async function resolveCrashRecovery(store) {
                 type: "warning",
                 title: "비정상 종료 후 복구",
                 message: `앱이 비정상 종료되어 마지막 작업 ${plan.operations.length}개의 결과를 확인할 수 없습니다. 결과를 '알 수 없음'으로 기록하고 계속할까요?`,
-                detail: `${crashRecoveryLines(plan.operations).join("\n")}\n\n이 작업들은 다시 실행하지 않습니다. 실제 결과(세션 이름, 설정 파일 등)는 앱이 다시 읽어 표시합니다.\n데이터 위치: ${location}`,
+                detail: `${crashRecoveryLines(plan.operations).join("\n")}\n\n이 작업들은 다시 실행하지 않으며, 변경 내용이 적용되지 않았을 수 있습니다. 세션 이름·고정·보관 상태는 이전 값으로 표시되니 확인 후 필요하면 다시 해 주세요. 설정 파일은 디스크의 실제 내용을 다시 읽어 표시합니다.\n데이터 위치: ${location}`,
                 buttons: ["계속", "데이터 위치 열기", "종료"],
                 defaultId: 0,
                 cancelId: 2,
