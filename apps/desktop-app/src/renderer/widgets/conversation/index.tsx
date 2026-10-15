@@ -81,6 +81,7 @@ type Props = {
   newSessionDisabled?: boolean;
   archived?: boolean;
   workspaceName?: string | undefined;
+  workspacePath?: string | undefined;
   permissionMode?: "ask" | "scoped_edit" | "read_plan";
   pending: boolean;
   mutate(
@@ -171,7 +172,7 @@ function ToolDetail({
     output,
     status: rawState,
   });
-  const summary = toolSummary(view, toolName);
+  const summary = toolSummary(view, toolName, ctx.workspaceRoot);
   const status = labels[state] ?? "상태 확인 불가";
   return (
     <div className={`tool-detail ${styles.toolDetail}`} data-tool-state={state}>
@@ -193,8 +194,27 @@ function ToolDetail({
             aria-hidden="true"
           />
           <span className={styles.summaryText}>{summary}</span>
-          {state !== "completed" && (
-            <span className={styles.summaryState}>{status}</span>
+          {pendingPermissions[0] ? (
+            <button
+              type="button"
+              className={`${styles.summaryState} ${styles.summaryStateLink}`}
+              aria-label="권한 요청으로 이동"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                const card = document.querySelector<HTMLElement>(
+                  `[data-permission-id="${CSS.escape(pendingPermissions[0]!.id)}"]`,
+                );
+                card?.scrollIntoView({ block: "center" });
+                card?.focus();
+              }}
+            >
+              {status}
+            </button>
+          ) : (
+            state !== "completed" && (
+              <span className={styles.summaryState}>{status}</span>
+            )
           )}
         </summary>
         {state !== "completed" && state !== "needs-permission" && (
@@ -204,14 +224,6 @@ function ToolDetail({
           </div>
         )}
         <ToolBody view={view} />
-        {pendingPermissions.map((p) => (
-          <div className={styles.toolPermission} key={p.id}>
-            <strong>{permissionHeading(p.title)}</strong>
-            <p className={styles.muted}>
-              {p.detail} · 아래 권한 요청에서 응답하세요.
-            </p>
-          </div>
-        ))}
         {subagent && state === "completed" ? (
           <div className="subagent-result">
             <p className={styles.muted}>
@@ -306,6 +318,7 @@ function MessageView({
         {role === "assistant" && showRuntime && (
           <details
             className={styles.runtimeReport}
+            data-abnormal={report ? undefined : "true"}
             data-response-runtime={messageId}
           >
             <summary className={styles.disclosure}>
@@ -443,10 +456,11 @@ export function Conversation(props: Props) {
   const toolContext = useMemo(
     () => ({
       permissions,
+      workspaceRoot: props.workspacePath,
       openFile: (path: string) => actions.openFiles(path, "file"),
     }),
     // permissions is derived from props each render; memo keys on its sources.
-    [props.permissions, props.sessionId, actions],
+    [props.permissions, props.sessionId, props.workspacePath, actions],
   );
   const closeMenu = () => {
     setMenu(false);
@@ -657,6 +671,7 @@ export function Conversation(props: Props) {
                     className={styles.permission}
                     aria-label="실행 권한 요청"
                     data-permission-id={permission.id}
+                    tabIndex={-1}
                     key={permission.id}
                   >
                     <strong
