@@ -20230,6 +20230,15 @@ test("a snapshot whose workspaces carry the host's read-only probe metadata is a
   assert.equal(s.getState().snapshot, before);
 });
 
+test("notice.clear clears the page receipt notice", () => {
+  const store = createWorkbenchStore();
+  seed(store);
+  acceptInterrupt(store, interruptIntent(store));
+  assert.match(store.getState().notice, /중단을 요청/);
+  store.dispatch({ type: "notice.clear" });
+  assert.equal(store.getState().notice, "");
+});
+
 test("receipt notices clear independently of the conversation-context notice", () => {
   const s = createWorkbenchStore();
   s.dispatch({ type: "context.notice", text: "전송됨" });
