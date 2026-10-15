@@ -285,6 +285,8 @@ const registryPromise = (async () => {
           return mkdir(...args);
         },
       },
+      // The registry's own idle checkpoint is fenced like the wrapped one.
+      checkpointFence: requireOwner,
     });
     // One registry authority with an owner fence, never a second journal/root.
     registry = {
