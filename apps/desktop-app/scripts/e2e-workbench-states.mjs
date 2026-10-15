@@ -1341,7 +1341,8 @@ try {
       });
       await workspaceActions.focus();
       await page.keyboard.press("ArrowDown");
-      await expect(page.getByRole("menu")).toBeVisible();
+      // Opening by keyboard lands on the first workspace radio.
+      await expect(page.getByRole("menuitemradio").first()).toBeFocused();
       await page
         .getByRole("menuitem", { name: "폴더 열기…", exact: true })
         .focus();
@@ -2330,9 +2331,19 @@ try {
               );
             });
           }
+          // Destructive workspace actions live in the separate 관리 menu.
+          await page
+            .getByRole("button", { name: "작업 공간 관리", exact: true })
+            .click();
+          await expect(
+            page.getByRole("menuitem", {
+              name: "목록에서 제거 · 파일 유지",
+              exact: true,
+            }),
+          ).toBeDisabled();
+          await page.keyboard.press("Escape");
           await page.getByRole("button", { name: /^작업 공간 전환:/ }).click();
           for (const label of [
-            "목록에서 제거 · 파일 유지",
             ...(state.store ? ["폴더 열기…", "새 작업 공간"] : []),
           ]) {
             await expect(

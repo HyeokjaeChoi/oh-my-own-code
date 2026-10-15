@@ -5072,6 +5072,10 @@ export function createWorkbenchService({
             title: clip(info.title, 256) || s.title,
             workspaceName: w.name,
             path: w.path,
+            sessionId: s.id,
+            ...(Number.isFinite(info.time?.updated ?? info.time?.created) && {
+              updatedAt: info.time.updated ?? info.time.created,
+            }),
           }))
         )
           fail("CANCELLED");

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type RefObject } from "react";
 import { Button, ModalSheet } from "@workbench/ui";
 import { Clock } from "lucide-react";
 import {
@@ -255,8 +255,10 @@ const blank: Form = {
 
 export function AutomationButton({
   hideTrigger = false,
+  returnFocusRef,
 }: {
   hideTrigger?: boolean;
+  returnFocusRef?: RefObject<HTMLElement | null>;
 }) {
   const lists = useWorkbenchSelector(selectors.lists);
   const [open, setOpen] = useState(false);
@@ -300,7 +302,12 @@ export function AutomationButton({
           <Clock size={18} />
         </Button>
       )}
-      <ModalSheet open={open} onOpenChange={setOpen} title="자동화">
+      <ModalSheet
+        open={open}
+        onOpenChange={setOpen}
+        title="자동화"
+        {...(returnFocusRef && { returnFocusRef })}
+      >
         {error && <p role="alert">{error}</p>}
         {data?.storeError && (
           <p role="alert">

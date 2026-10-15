@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type RefObject } from "react";
 import { Button, ModalSheet } from "@workbench/ui";
 import { Database } from "lucide-react";
 import {
@@ -313,6 +313,7 @@ export function DataButton(props: {
   messages: WorkbenchMessage[];
   /** Header menu opens the sheet through OPEN_DATA_EVENT instead. */
   hideTrigger?: boolean;
+  returnFocusRef?: RefObject<HTMLElement | null>;
 }) {
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -332,7 +333,12 @@ export function DataButton(props: {
           <Database size={18} />
         </Button>
       )}
-      <ModalSheet open={open} onOpenChange={setOpen} title="데이터">
+      <ModalSheet
+        open={open}
+        onOpenChange={setOpen}
+        title="데이터"
+        {...(props.returnFocusRef && { returnFocusRef: props.returnFocusRef })}
+      >
         <Export session={props.session} messages={props.messages} />
         <Archives />
         <Retention />

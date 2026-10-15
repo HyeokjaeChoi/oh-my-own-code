@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type RefObject } from "react";
 import { Button, ModalSheet } from "@workbench/ui";
 import { Settings } from "lucide-react";
 import {
@@ -179,8 +179,10 @@ export function PreferencesSheetView(props: {
 
 export function PreferencesButton({
   hideTrigger = false,
+  returnFocusRef,
 }: {
   hideTrigger?: boolean;
+  returnFocusRef?: RefObject<HTMLElement | null>;
 }) {
   const { preferences, update } = usePreferences();
   const [open, setOpen] = useState(false);
@@ -218,7 +220,12 @@ export function PreferencesButton({
           <Settings size={18} />
         </Button>
       )}
-      <ModalSheet open={open} onOpenChange={setOpen} title="설정">
+      <ModalSheet
+        open={open}
+        onOpenChange={setOpen}
+        title="설정"
+        {...(returnFocusRef && { returnFocusRef })}
+      >
         <PreferencesSheetView preferences={preferences} onChange={update} />
       </ModalSheet>
     </>

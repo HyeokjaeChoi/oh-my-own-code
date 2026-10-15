@@ -14,6 +14,7 @@ import {
   MoreHorizontal,
   Pin,
   Search,
+  ShieldAlert,
 } from "lucide-react";
 import type { WorkbenchSession } from "../../shared/api/index.js";
 import {
@@ -21,6 +22,7 @@ import {
   trackSessions,
   visibleSessions,
   validSessionTitle,
+  isPlaceholderTitle,
   type SessionActivity,
 } from "./navigation.js";
 import styles from "./sessions.module.css";
@@ -34,7 +36,8 @@ export {
 } from "./navigation.js";
 /* eslint-disable no-unused-vars -- Callback parameter names describe the public interface. */
 type Props = {
-  sessions: WorkbenchSession[];
+  /** `storedTitle` = authoritative title when `title` is a display fallback. */
+  sessions: (WorkbenchSession & { storedTitle?: string })[];
   workspaceId: string;
   selectedId?: string | undefined;
   disabled: boolean;
@@ -73,10 +76,7 @@ function useSessionActivity(sessions: WorkbenchSession[], selectedId?: string) {
   );
 }
 export function SessionNavigation(props: Props) {
-  const { unread, recent } = useSessionActivity(
-    props.sessions,
-    props.selectedId,
-  );
+  const { unread } = useSessionActivity(props.sessions, props.selectedId);
   const [query, setQuery] = useState("");
   const [archived, setArchived] = useState(false);
   const [searching, setSearching] = useState(false);
@@ -118,7 +118,10 @@ export function SessionNavigation(props: Props) {
         </button>
       </div>
       {searching && (
-        <label className={`${styles.search} session-search`}>
+        <label
+          className={`${styles.search} session-search`}
+          data-escape-key-scope
+        >
           <span className={styles.srOnly}>세션 검색</span>
           <input
             ref={search}
@@ -138,36 +141,6 @@ export function SessionNavigation(props: Props) {
             }}
           />
         </label>
-      )}
-      {!archived && !query && (
-        <div className={styles.views} aria-label="최근 연 세션">
-          {recent
-            .map((id) =>
-              props.sessions.find(
-                (s) =>
-                  s.id === id &&
-                  s.workspaceId === props.workspaceId &&
-                  !s.archived &&
-                  s.id !== props.selectedId,
-              ),
-            )
-            .filter((s): s is WorkbenchSession => Boolean(s))
-            .map((s) => (
-              <button
-                key={s.id}
-                title={s.title}
-                disabled={
-                  props.disabled ||
-                  props.pending ||
-                  s.status !== "idle" ||
-                  props.unknownIds.includes(s.id)
-                }
-                onClick={() => props.select(s.id)}
-              >
-                {s.title.length > 14 ? `${s.title.slice(0, 14)}…` : s.title}
-              </button>
-            ))}
-        </div>
       )}
       <ul className={`${styles.list} session-list`}>
         {sessions.map((session) => (
@@ -214,7 +187,7 @@ function SessionRow({
   mutate,
   afterHidden,
 }: {
-  session: WorkbenchSession;
+  session: WorkbenchSession & { storedTitle?: string };
   selected: boolean;
   unread: boolean;
   permission: boolean;
@@ -291,17 +264,21 @@ function SessionRow({
           <span className={styles.title}>{session.title}</span>
           {permission && (
             <span
-              className={`${styles.dot} ${styles.permission}`}
+              className={`${styles.indicator} ${styles.permission}`}
               role="img"
               aria-label="권한 요청 대기"
+              title="권한 요청 대기"
               data-session-permission
-            />
+            >
+              <ShieldAlert size={14} />
+            </span>
           )}
           {unread && (
             <span
               className={`${styles.dot} ${styles.unread}`}
               role="img"
               aria-label="읽지 않은 응답"
+              title="읽지 않은 응답"
               data-session-unread
             />
           )}
@@ -333,7 +310,9 @@ function SessionRow({
               label: "이름 변경",
               disabled,
               onSelect: () => {
-                setTitle(session.title);
+                // Never prefill a derived/fallback title: Enter would persist it.
+                const stored = session.storedTitle ?? session.title;
+                setTitle(isPlaceholderTitle(stored) ? "" : stored);
                 setInvalid(false);
                 setRenaming(true);
               },

@@ -350,6 +350,10 @@ try {
     }).toPass({ timeout: 60_000 });
   };
 
+  if (process.env.OMOC_P2_SHOTS)
+    await page.screenshot({
+      path: join(process.env.OMOC_P2_SHOTS, "empty-state.png"),
+    });
   // Turn 1: streamed plain reply.
   await send("hello");
   await expect(page.getByText("Hello from the mock model.")).toBeVisible({
@@ -372,6 +376,11 @@ try {
     await page.keyboard.press("Escape");
     await page.getByRole("button", { name: /^작업 공간 전환:/ }).click();
     await page.screenshot({ path: join(shots, "workspace-switcher-open.png") });
+    await page.keyboard.press("Escape");
+    await page
+      .getByRole("button", { name: "작업 공간 관리", exact: true })
+      .click();
+    await page.screenshot({ path: join(shots, "manage-menu-open.png") });
     await page.keyboard.press("Escape");
     await page
       .getByRole("button", { name: "보관된 세션 보기", exact: true })

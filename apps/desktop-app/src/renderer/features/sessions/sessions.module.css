@@ -69,29 +69,6 @@
   font-size: 14px;
   padding: 6px 0;
 }
-.views {
-  display: flex;
-  gap: 4px;
-}
-.views button {
-  text-align: left;
-  min-height: var(--omoc-component-size-control-hit-target);
-  flex: 1;
-  padding: 6px 4px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  cursor: pointer;
-  color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-}
-.views button[aria-pressed="true"] {
-  color: var(--omoc-semantic-color-text-primary);
-  font-weight: 500;
-}
-.views button:hover {
-  background: var(--omoc-semantic-color-selection-background);
-}
 .list {
   margin: 4px 0 0;
   padding: 0;
@@ -225,7 +202,7 @@
   background: var(--omoc-semantic-color-info-foreground);
 }
 .permission {
-  background: var(--omoc-semantic-color-warning-foreground);
+  color: var(--omoc-semantic-color-warning-foreground);
 }
 .spinner {
   animation: session-spin 1s linear infinite;

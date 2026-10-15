@@ -4,6 +4,9 @@ import {
   visibleSessions,
   sessionSuccessor,
   validSessionTitle,
+  isPlaceholderTitle,
+  titleFromPrompt,
+  withDisplayTitles,
 } from "./renderer/features/sessions/navigation.ts";
 const sessions = [
   { id: "a", workspaceId: "w", title: "Alpha", status: "idle" },
@@ -81,4 +84,26 @@ test("trackSessions marks finished background runs unread and keeps recent opens
   assert.deepEqual(a.recent, ["b", "a"]);
   a = trackSessions(a, [s("a", "idle")], "a");
   assert.deepEqual(a.recent, ["a"]);
+});
+
+test("placeholder titles display as 새 세션 or the first prompt; stored title is kept", () => {
+  assert.equal(isPlaceholderTitle("Untitled session"), true);
+  assert.equal(isPlaceholderTitle("Workbench"), true);
+  assert.equal(isPlaceholderTitle("Alpha"), false);
+  assert.equal(titleFromPrompt("  hello\n  world  "), "hello world");
+  assert.equal(titleFromPrompt("x".repeat(60)), `${"x".repeat(48)}…`);
+  const list = [
+    { id: "1", workspaceId: "w", title: "Untitled session", status: "idle" },
+    { id: "2", workspaceId: "w", title: "Workbench", status: "idle" },
+    { id: "3", workspaceId: "w", title: "Alpha", status: "idle" },
+  ];
+  const shown = withDisplayTitles(list, { 2: "first prompt" });
+  assert.deepEqual(
+    shown.map((s) => [s.title, s.storedTitle]),
+    [
+      ["새 세션", "Untitled session"],
+      ["first prompt", "Workbench"],
+      ["Alpha", "Alpha"],
+    ],
+  );
 });

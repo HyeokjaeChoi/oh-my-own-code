@@ -159,6 +159,9 @@ export function Workbench() {
   const createInput = useRef<HTMLInputElement>(null);
   const importInput = useRef<HTMLInputElement>(null);
   const switcherButton = useRef<HTMLButtonElement>(null);
+  const moreButton = useRef<HTMLButtonElement>(null);
+  const settingsRow = useRef<HTMLButtonElement>(null);
+  const sheetReturn = useRef<HTMLElement | null>(null);
   // First prompt per session whose stored title is still a placeholder.
   const [derivedTitles, setDerivedTitles] = useState<Record<string, string>>(
     {},
@@ -197,43 +200,38 @@ export function Workbench() {
       item.id === selection.sessionId &&
       item.workspaceId === selection.workspaceId,
   );
-  const workspaceNames = useMemo(
-    () =>
-      Object.fromEntries((lists?.workspaces ?? []).map((w) => [w.id, w.name])),
-    [lists?.workspaces],
-  );
   const displaySessions = useMemo(
-    () =>
-      withDisplayTitles(lists?.sessions ?? [], workspaceNames, derivedTitles),
-    [lists?.sessions, workspaceNames, derivedTitles],
+    () => withDisplayTitles(lists?.sessions ?? [], derivedTitles),
+    [lists?.sessions, derivedTitles],
   );
   const displayTitle =
     displaySessions.find((item) => item.id === session?.id)?.title ??
     session?.title;
+  const hasMessages = (snapshot?.messages.length ?? 0) > 0;
   const firstPrompt = (snapshot?.messages ?? []).find(
     (message) => message.role === "user" && message.text.trim(),
   )?.text;
   useEffect(() => {
-    if (
-      !session ||
-      !firstPrompt ||
-      !isPlaceholderTitle(session.title, workspace?.name)
-    )
-      return;
-    const title = titleFromPrompt(firstPrompt);
+    if (!session || !firstPrompt || !isPlaceholderTitle(session.title)) return;
+    // Set once: the message window slides, the first prompt must not retitle.
     setDerivedTitles((previous) =>
-      previous[session.id] === title
+      previous[session.id]
         ? previous
-        : { ...previous, [session.id]: title },
+        : { ...previous, [session.id]: titleFromPrompt(firstPrompt) },
     );
-  }, [session, firstPrompt, workspace?.name]);
+  }, [session, firstPrompt]);
   const permissionIds = useMemo(
     () => [...new Set((snapshot?.permissions ?? []).map((p) => p.sessionId))],
     [snapshot?.permissions],
   );
   const connected = connection === "connected";
-  const openFromMenu = (event: string) => () => {
-    if (!wide) closeNavigation();
+  // Sheets return focus here; narrow nav closes, so its opener is the target.
+  const openSheet = (event: string, from: HTMLElement | null) => {
+    sheetReturn.current = from;
+    if (!wide) {
+      setNavigation(false);
+      sheetReturn.current = navigationButton.current;
+    }
     window.dispatchEvent(new Event(event));
   };
   const newSession = () => {
@@ -245,7 +243,8 @@ export function Workbench() {
   };
   const closeNavigation = () => {
     setNavigation(false);
-    navigationButton.current?.focus();
+    // The header toggle mounts once the sidebar is gone.
+    requestAnimationFrame(() => navigationButton.current?.focus());
   };
   const closePanel = () => {
     setPanel(null);
@@ -377,9 +376,16 @@ export function Workbench() {
               disabled: !workspace,
               onSelect: () => setLocationOpen(true),
             },
-            { separator: true as const },
+          ]}
+        />
+        <ActionMenu
+          label="작업 공간 관리"
+          title="작업 공간 관리"
+          className={styles.iconButton ?? ""}
+          trigger={<MoreHorizontal size={18} />}
+          items={[
             {
-              label: "대화 기록 삭제…",
+              label: `‘${displayTitle ?? "세션"}’ 대화 기록 삭제…`,
               danger: true,
               disabled:
                 !selection.workspaceId ||
@@ -399,6 +405,7 @@ export function Workbench() {
                   );
               },
             },
+            { separator: true as const },
             {
               label: "실제 삭제… · 디스크에서 폴더 삭제",
               danger: true,
@@ -653,8 +660,9 @@ export function Workbench() {
         )}
       </section>
       <Button
+        ref={settingsRow}
         className={styles.settingsRow}
-        onClick={openFromMenu(OPEN_SETTINGS_EVENT)}
+        onClick={() => openSheet(OPEN_SETTINGS_EVENT, settingsRow.current)}
       >
         <Settings size={16} aria-hidden="true" />
         설정
@@ -789,22 +797,24 @@ export function Workbench() {
         aria-label="대화 작업 공간"
       >
         <header className={`${styles.header} workbench-header`}>
-          <Button
-            ref={navigationButton}
-            size="compact"
-            className={styles.iconButton}
-            aria-expanded={navigation}
-            aria-label="작업 공간 탐색 열기"
-            title="작업 공간 탐색"
-            onClick={() => {
-              setNavigation((value) => !value);
-              if (panel) setPanel(null);
-            }}
-          >
-            <PanelLeft size={18} />
-          </Button>
+          {(!wide || !navigation) && (
+            <Button
+              ref={navigationButton}
+              size="compact"
+              className={styles.iconButton}
+              aria-expanded={navigation}
+              aria-label="작업 공간 탐색 열기"
+              title="작업 공간 탐색"
+              onClick={() => {
+                setNavigation((value) => !value);
+                if (panel) setPanel(null);
+              }}
+            >
+              <PanelLeft size={18} />
+            </Button>
+          )}
           <div className={styles.sessionHeading}>
-            {session && (
+            {session && hasMessages && (
               <>
                 <strong title={displayTitle}>{displayTitle}</strong>
                 {workspace && (
@@ -818,6 +828,7 @@ export function Workbench() {
             <span
               className={styles.runtimeState}
               data-connection={connection}
+              role="status"
               hidden={connected}
             >
               {states[connection]}
@@ -826,12 +837,13 @@ export function Workbench() {
           <CommandPalette />
           <DataButton
             hideTrigger
-            session={session && { id: session.id, title: displayTitle ?? "" }}
+            returnFocusRef={sheetReturn}
+            session={session && { id: session.id, title: session.title }}
             messages={snapshot?.messages ?? []}
           />
-          <NotificationCenter badgeOnly />
-          <AutomationButton hideTrigger />
-          <PreferencesButton hideTrigger />
+          <NotificationCenter badgeOnly returnFocusRef={sheetReturn} />
+          <AutomationButton hideTrigger returnFocusRef={sheetReturn} />
+          <PreferencesButton hideTrigger returnFocusRef={sheetReturn} />
           <Button
             size="compact"
             className={styles.iconButton}
@@ -858,6 +870,7 @@ export function Workbench() {
           <ActionMenu
             label="더 보기"
             title="더 보기"
+            triggerRef={moreButton}
             className={styles.iconButton ?? ""}
             trigger={<MoreHorizontal size={18} />}
             items={[
@@ -865,25 +878,18 @@ export function Workbench() {
                 label: "알림",
                 icon: <Bell size={16} />,
                 onSelect: () =>
-                  window.dispatchEvent(new Event(OPEN_NOTIFICATIONS_EVENT)),
+                  openSheet(OPEN_NOTIFICATIONS_EVENT, moreButton.current),
               },
               {
                 label: "자동화",
                 icon: <Clock size={16} />,
                 onSelect: () =>
-                  window.dispatchEvent(new Event(OPEN_AUTOMATION_EVENT)),
+                  openSheet(OPEN_AUTOMATION_EVENT, moreButton.current),
               },
               {
                 label: "데이터·내보내기",
                 icon: <Database size={16} />,
-                onSelect: () =>
-                  window.dispatchEvent(new Event(OPEN_DATA_EVENT)),
-              },
-              {
-                label: "설정·단축키",
-                icon: <Settings size={16} />,
-                onSelect: () =>
-                  window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT)),
+                onSelect: () => openSheet(OPEN_DATA_EVENT, moreButton.current),
               },
             ]}
           />
