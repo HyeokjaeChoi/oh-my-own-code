@@ -61,11 +61,25 @@ test("create input refuses any extra defined Native field and weak shapes", () =
       location: { directory: "/work", workspaceID: "w" },
     }),
   );
-  for (const key of ["id", "metadata", "title", "location", "permissions"]) {
+  for (const key of ["id", "metadata", "location", "permissions"]) {
     const input = create();
     delete input[key];
     assert.throws(() => bootstrapStageArguments("native.create", input), key);
   }
+  // title is optional (Native then names the session itself) but never weak.
+  const untitled = create();
+  delete untitled.title;
+  assert.equal(
+    "title" in bootstrapStageArguments("native.create", untitled),
+    false,
+  );
+  assert.notEqual(
+    bootstrapStageDigest("native.create", untitled),
+    bootstrapStageDigest("native.create", create()),
+  );
+  assert.throws(() =>
+    bootstrapStageArguments("native.create", { ...create(), title: 7 }),
+  );
   assert.throws(() =>
     bootstrapStageArguments("native.create", {
       ...create(),
