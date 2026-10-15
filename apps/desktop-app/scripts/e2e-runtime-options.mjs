@@ -15,6 +15,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
+import { openComposerPopover } from "./e2e-composer.mjs";
 const desktop = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const root = resolve(desktop, "../..");
 if (!process.env.OMOC_EVIDENCE_DIR)
@@ -264,15 +265,30 @@ async function stopOwnedApplication(application, processHandle) {
 }
 
 // Selectors come from the actual runtime-options renderer source checkpoint.
-const requested = () => page.locator('[data-runtime-source="requested"]');
+// Agent and model/variant live in separate chip popovers; `requested` is the
+// model fieldset (model + variant + hints).
+const requested = () =>
+  page.locator('fieldset[data-runtime-source="requested"]').last();
 const sessionReport = () => page.locator('[data-runtime-source="session"]');
 const responseReport = () => page.locator("[data-response-runtime]").first();
 const agentRequest = () =>
-  page.getByRole("combobox", { name: "Agent 요청", exact: true });
+  page.getByRole("combobox", {
+    name: "Agent 요청",
+    exact: true,
+    includeHidden: true,
+  });
 const modelRequest = () =>
-  page.getByRole("combobox", { name: "모델 요청", exact: true });
+  page.getByRole("combobox", {
+    name: "모델 요청",
+    exact: true,
+    includeHidden: true,
+  });
 const variantRequest = () =>
-  page.getByRole("combobox", { name: "Variant 요청", exact: true });
+  page.getByRole("combobox", {
+    name: "Variant 요청",
+    exact: true,
+    includeHidden: true,
+  });
 const composer = () =>
   page.getByRole("textbox", { name: "메시지 작성", exact: true });
 const send = () =>
@@ -296,7 +312,6 @@ async function scenario(name) {
     "connected",
   );
   await expect(requested()).toBeAttached();
-  await expand(page.locator('details[data-runtime-task="requested"]'));
   return scope;
 }
 async function reveal(locator) {
@@ -324,7 +339,9 @@ async function choose(scope, variant = scope.variant) {
   await expect(
     modelRequest().locator(`option[value="${scope.model}"]`),
   ).toHaveCount(1);
+  await openComposerPopover(page, "agent");
   await agentRequest().selectOption(scope.agent);
+  await openComposerPopover(page, "model");
   await modelRequest().selectOption(scope.model);
   await variantRequest().selectOption(variant);
 }
@@ -361,9 +378,8 @@ async function exerciseRuntimeOptions() {
   };
   await choose(scope);
   await composer().fill("SYNTHETIC next-send request");
-  await agentRequest().focus();
-  await page.keyboard.press("Tab");
-  await expect(modelRequest()).toBeFocused();
+  await openComposerPopover(page, "model");
+  await modelRequest().focus();
   await page.keyboard.press("Tab");
   await expect(variantRequest()).toBeFocused();
   await shot("requested-keyboard");
@@ -372,7 +388,7 @@ async function exerciseRuntimeOptions() {
     initialSends,
     "Option changes must stage only",
   );
-  await expand(sessionReport());
+  await openComposerPopover(page, "model");
   await expect(sessionReport()).toContainText("session-model");
   await expect(sessionReport()).toContainText("session.variant");
   await expand(responseReport());
@@ -391,21 +407,15 @@ async function exerciseRuntimeOptions() {
         globalThis.document.documentElement.style.colorScheme = theme;
       }, theme);
       await geometry();
-      await expand(sessionReport());
+      await openComposerPopover(page, "model");
       await expand(responseReport());
       await reveal(modelRequest());
       await shot(`${theme}-${width}-zoom${zoom}-requested`);
-      await reveal(sessionReport().locator("summary"));
+      await reveal(sessionReport());
       await shot(`${theme}-${width}-zoom${zoom}-session`);
       await reveal(responseReport().locator("summary"));
       await shot(`${theme}-${width}-zoom${zoom}-response`);
       if (zoom === 2) {
-        // A summary is not proof that its clipped values are accessible.
-        const sessionSummary = sessionReport().locator("summary");
-        await reveal(sessionSummary);
-        await sessionSummary.focus();
-        await page.keyboard.press("Enter");
-        await expect(sessionReport()).not.toHaveAttribute("open", "");
         const values = responseReport().locator("dd");
         await expect(values).toHaveCount(4);
         for (let index = 0; index < 4; index++) {
@@ -438,6 +448,7 @@ async function exerciseRuntimeOptions() {
     scope.variant,
   );
   await refreshCatalog();
+  await openComposerPopover(page, "model");
   await expect(variantRequest().locator("option:checked")).toContainText(
     "사용 불가",
   );
@@ -467,11 +478,11 @@ async function exerciseRuntimeOptions() {
   }
 
   await scenario("absent");
-  await expand(sessionReport());
+  await openComposerPopover(page, "model");
   await expect(sessionReport()).toContainText(
-    "현재 세션 설정 보고가 없습니다.",
+    "현재 세션: 설정 보고가 없습니다.",
   );
-  await reveal(sessionReport().locator("summary"));
+  await reveal(sessionReport());
   await shot("session-no-report");
   await expand(responseReport());
   await expect(responseReport()).toContainText(
@@ -480,9 +491,9 @@ async function exerciseRuntimeOptions() {
   await reveal(responseReport().locator("summary"));
   await shot("response-no-report");
   await scenario("failed");
-  await expand(sessionReport());
+  await openComposerPopover(page, "model");
   await expect(sessionReport()).toContainText(
-    "현재 세션 설정 보고가 없습니다.",
+    "현재 세션: 설정 보고가 없습니다.",
   );
   await shot("failed-session-refresh");
   await expand(responseReport());
@@ -521,6 +532,7 @@ async function exerciseRuntimeOptions() {
   await expect(
     page.getByRole("button", { name: "현재 세션 실행 중단", exact: true }),
   ).toBeVisible();
+  await openComposerPopover(page, "model");
   await modelRequest().selectOption("fixture-other-model");
   await expect(variantRequest()).toHaveValue("");
   await variantRequest().selectOption("other.variant");
@@ -531,7 +543,7 @@ async function exerciseRuntimeOptions() {
   assert.equal(requests.length, initialSends + 1);
   assert.equal(requests.at(-1).model, scope.model);
   assert.equal(requests.at(-1).variant, scope.variant);
-  await expand(sessionReport());
+  await openComposerPopover(page, "model");
   await expect(sessionReport()).toContainText("session.variant");
   await shot("running-distinct-session-setting");
   await expand(responseReport());
@@ -546,7 +558,7 @@ async function exerciseRuntimeOptions() {
   await expect.poll(async () => (await sends()).length).toBe(initialSends + 2);
   requests = await sends();
   assert.equal(Object.hasOwn(requests.at(-1), "variant"), false);
-  await expand(sessionReport());
+  await openComposerPopover(page, "model");
   await expect(sessionReport()).toContainText("session.variant");
   await shot("omitted-request-preserves-observed-variant");
 

@@ -19,7 +19,16 @@ import {
   useExternalStoreRuntime,
   type ToolCallMessagePartProps,
 } from "@assistant-ui/react";
-import { ArrowUp, Plus, Square, X } from "lucide-react";
+import {
+  ArrowUp,
+  Folder,
+  GitBranch,
+  Plus,
+  Shield,
+  Slash,
+  Square,
+  X,
+} from "lucide-react";
 import { mapMessages } from "../../shared/projection/index.js";
 import { parseSubagentResult } from "../../shared/subagents/index.js";
 import {
@@ -29,6 +38,7 @@ import {
 } from "../../shared/tool-ui/index.js";
 import { ToolBody, ToolContext, useToolContext } from "./tool-views.js";
 import {
+  currentGitReviewObservation,
   selectors,
   useWorkbenchSelector,
   useWindowWorkbench,
@@ -39,6 +49,7 @@ import {
 } from "../../features/composer/index.js";
 import type { MutationRequest } from "../../shared/transport/index.js";
 import styles from "./conversation.module.css";
+import { PopoverPanel, PopoverTrigger } from "./composer-popovers.js";
 import { AssistantText, LiteralText } from "./markdown.js";
 import { parseSafeLinkPreview } from "@workbench/contracts";
 import { Button, LinkPreview } from "@workbench/ui";
@@ -62,6 +73,7 @@ type Props = {
   executionAvailable: boolean;
   newSessionDisabled?: boolean;
   archived?: boolean;
+  workspaceName?: string | undefined;
   permissionMode?: "ask" | "scoped_edit" | "read_plan";
   pending: boolean;
   mutate(
@@ -73,6 +85,23 @@ type Props = {
   newSession(): void;
 };
 /* eslint-enable no-unused-vars */
+const permissionModes = [
+  {
+    value: "ask",
+    label: "요청마다 확인",
+    detail: "편집과 명령 실행 전에 매번 묻습니다",
+  },
+  {
+    value: "scoped_edit",
+    label: "범위 내 편집 허용",
+    detail: "작업 공간 안의 파일 편집은 묻지 않습니다",
+  },
+  {
+    value: "read_plan",
+    label: "읽기/계획",
+    detail: "읽기만 하고 아무것도 바꾸지 않습니다",
+  },
+] as const;
 const labels: Record<string, string> = {
   pending: "대기 중",
   running: "실행 중",
@@ -230,6 +259,7 @@ export function Conversation(props: Props) {
     variantCleared,
   } = useWorkbenchSelector(selectors.draft);
   const contextDraft = useWorkbenchSelector(selectors.contextDraft);
+  const contextState = useWorkbenchSelector(selectors.conversationContext);
   const contextReady = useWorkbenchSelector(selectors.contextSendReady);
   const branchActive = useWorkbenchSelector((s) =>
     Boolean(s.conversationContext.branch),
@@ -246,6 +276,16 @@ export function Conversation(props: Props) {
       ? props.catalog.models.entries.find((entry) => entry.id === model)
       : undefined;
   const variants = selectedModel?.variants;
+  const agentLabel = agent
+    ? props.catalog?.agents.status === "available"
+      ? (props.catalog.agents.entries.find((entry) => entry.id === agent)
+          ?.name ?? agent)
+      : agent
+    : "기본 에이전트";
+  const modelLabel = model ? (selectedModel?.name ?? model) : "기본 모델";
+  const permissionLabel =
+    permissionModes.find((m) => m.value === (props.permissionMode ?? "ask"))
+      ?.label ?? "요청마다 확인";
   const optionsHeld = Boolean(props.archived);
   const [menu, setMenu] = useState(false);
   const [shortViewport, setShortViewport] = useState(
@@ -256,15 +296,15 @@ export function Conversation(props: Props) {
   const commandMenu = useRef<HTMLDivElement>(null);
   const menuOpenedFromInput = useRef(false);
   const commandMenuId = useId();
-  const hintId = useId();
-  const requestedTask = useRef<HTMLDetailsElement>(null);
-  const nativeReport = useRef<HTMLDetailsElement>(null);
-  const requestedSummaryId = useId();
-  const closeDisclosure = (task: HTMLDetailsElement | null) => {
-    if (!task) return;
-    task.open = false;
-    task.querySelector("summary")?.focus();
-  };
+  const attachId = useId();
+  const runId = useId();
+  const agentId = useId();
+  const modelId = useId();
+  const permissionId = useId();
+  const gitReview = useWorkbenchSelector(currentGitReviewObservation);
+  const branchName =
+    gitReview?.status === "available" ? gitReview.repository.branch : null;
+  const queueCount = contextState.inbox?.entries.length ?? 0;
   useEffect(() => {
     if (branchActive) setMenu(false);
   }, [branchActive]);
@@ -501,7 +541,7 @@ export function Conversation(props: Props) {
           <div className={`compose-region ${styles.composeRegion}`}>
             {messages.length === 0 && (
               <div className={styles.empty}>
-                <h1>무엇을 함께 만들까요?</h1>
+                <h1>무엇을 만들까요?</h1>
               </div>
             )}
             {props.archived && (
@@ -585,114 +625,457 @@ export function Conversation(props: Props) {
                 ))}
               </div>
             )}
-            <ConversationContextControls />
-            <div
-              className={styles.adjacentTasks}
-              onKeyDown={(event) => {
-                if (
-                  event.key !== "Escape" ||
-                  event.nativeEvent.isComposing ||
-                  event.keyCode === 229
+            <ConversationContextControls
+              attachPanel={(body) => (
+                <PopoverPanel
+                  id={attachId}
+                  anchor="--attach"
+                  align="start"
+                  className={styles.popover}
+                  label="파일 첨부와 미리보기"
+                  onToggle={(open) => {
+                    if (!open) actions.closeContextPreview();
+                  }}
+                >
+                  {body}
+                </PopoverPanel>
+              )}
+              runPanel={(body) =>
+                (running || queueCount > 0) && (
+                  <PopoverPanel
+                    id={runId}
+                    anchor="--run"
+                    align="start"
+                    className={styles.popover}
+                    label="현재 실행 · 추가 지시와 대기열"
+                  >
+                    {body}
+                  </PopoverPanel>
                 )
-                  return;
-                const task = (
-                  event.target as HTMLElement
-                ).closest<HTMLDetailsElement>(
-                  "details[data-runtime-task], details[data-runtime-source='session']",
-                );
-                if (task?.open) {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  closeDisclosure(task);
-                }
-              }}
-            >
-              <details
-                ref={requestedTask}
-                className={styles.runtimeReport}
+              }
+            />
+            <div className={styles.composerCard} hidden={branchActive}>
+              {(props.workspaceName || branchName) && (
+                <div className={styles.contextStrip} data-composer-context>
+                  {props.workspaceName && (
+                    <span title={props.workspaceName}>
+                      <Folder size={14} aria-hidden="true" />
+                      {props.workspaceName}
+                    </span>
+                  )}
+                  {branchName && (
+                    <span title={branchName}>
+                      <GitBranch size={14} aria-hidden="true" />
+                      {branchName}
+                    </span>
+                  )}
+                </div>
+              )}
+              {(running || queueCount > 0) && (
+                <div className={styles.runStrip} data-run-strip>
+                  <span className={styles.runStatus}>
+                    {props.status === "stopping"
+                      ? "중단하는 중"
+                      : running
+                        ? "실행 중"
+                        : "실행 대기"}
+                    {queueCount > 0 && ` · 대기열 ${queueCount}`}
+                  </span>
+                  <PopoverTrigger
+                    id={runId}
+                    anchor="--run"
+                    className={styles.runAction}
+                    aria-label="현재 실행 · 추가 지시와 대기열"
+                  >
+                    추가 지시와 대기열
+                  </PopoverTrigger>
+                </div>
+              )}
+              <ComposerPrimitive.Root
+                className={styles.composer}
                 hidden={branchActive}
-                data-runtime-task="requested"
+                data-composer-state={
+                  branchActive ? "branch-retained" : "message"
+                }
               >
-                <summary>다음 전송 설정</summary>
+                <ComposerPrimitive.Input
+                  ref={input}
+                  onChange={(event) => actions.draft(event.target.value)}
+                  className={styles.input}
+                  aria-label="메시지 작성"
+                  aria-controls={menu ? commandMenuId : undefined}
+                  readOnly={Boolean(props.archived)}
+                  placeholder="작업을 요청하세요. /로 명령 보기"
+                  maxLength={32000}
+                  minRows={3}
+                  maxRows={shortViewport ? 3 : 6}
+                  submitMode="enter"
+                  cancelOnEscape={false}
+                  onCompositionStart={() => {
+                    composing.current = true;
+                  }}
+                  onCompositionEnd={() => {
+                    composing.current = false;
+                  }}
+                  onKeyDown={(event) => {
+                    if (
+                      event.key === "Enter" &&
+                      (composing.current ||
+                        event.nativeEvent.isComposing ||
+                        event.keyCode === 229)
+                    ) {
+                      event.preventDefault();
+                      return;
+                    }
+                    if (
+                      composing.current ||
+                      event.nativeEvent.isComposing ||
+                      event.keyCode === 229
+                    )
+                      return;
+                    if (event.key === "Escape" && menu) {
+                      event.preventDefault();
+                      closeMenu();
+                    }
+                    if (
+                      menu &&
+                      (event.key === "ArrowDown" || event.key === "ArrowUp")
+                    ) {
+                      const buttons = menuButtons();
+                      const button =
+                        event.key === "ArrowDown" ? buttons[0] : buttons.at(-1);
+                      if (button) {
+                        event.preventDefault();
+                        button.focus();
+                      }
+                    }
+                    if (event.key === "/" && !draft) {
+                      menuOpenedFromInput.current = true;
+                      setMenu(true);
+                    }
+                  }}
+                />
+                {menu && (
+                  <div
+                    className={`slash-menu ${styles.commandMenu}`}
+                    id={commandMenuId}
+                    ref={commandMenu}
+                    popover="manual"
+                    role="region"
+                    aria-label="앱 동작 및 런타임 명령"
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape") {
+                        event.preventDefault();
+                        closeMenu();
+                      }
+                      if (
+                        ["ArrowDown", "ArrowUp", "Home", "End"].includes(
+                          event.key,
+                        )
+                      ) {
+                        const buttons = menuButtons();
+                        if (!buttons.length) return;
+                        event.preventDefault();
+                        const index = buttons.indexOf(
+                          event.target as HTMLButtonElement,
+                        );
+                        const next =
+                          event.key === "Home"
+                            ? 0
+                            : event.key === "End"
+                              ? buttons.length - 1
+                              : (index +
+                                  (event.key === "ArrowUp" ? -1 : 1) +
+                                  buttons.length) %
+                                buttons.length;
+                        buttons[next]?.focus();
+                      }
+                    }}
+                  >
+                    <div className={styles.menuHeading}>
+                      <strong>앱 동작</strong>
+                      <Button
+                        type="button"
+                        onClick={closeMenu}
+                        aria-label="명령 목록 닫기"
+                      >
+                        <X size={18} aria-hidden="true" />
+                      </Button>
+                    </div>
+                    <Button
+                      type="button"
+                      data-command
+                      disabled={
+                        props.newSessionDisabled || props.pending || running
+                      }
+                      onClick={() => {
+                        closeMenu();
+                        props.newSession();
+                      }}
+                    >
+                      새 세션 만들기
+                    </Button>
+                    <Button
+                      type="button"
+                      data-command
+                      onClick={() => {
+                        closeMenu();
+                        props.openPanel("files");
+                      }}
+                    >
+                      파일 보기
+                    </Button>
+                    <Button
+                      type="button"
+                      data-command
+                      onClick={() => {
+                        closeMenu();
+                        props.openPanel("catalog");
+                      }}
+                    >
+                      확장 목록 보기
+                    </Button>
+                    <strong>런타임 명령</strong>
+                    {props.catalog?.commands.status === "available" ? (
+                      props.catalog.commands.entries.length ? (
+                        props.catalog.commands.entries.map((entry) => (
+                          <Button
+                            type="button"
+                            data-command
+                            key={entry.id}
+                            onClick={() => insert(`/${entry.name} `)}
+                          >
+                            <span>/{entry.name}</span>
+                            <small>{entry.description}</small>
+                          </Button>
+                        ))
+                      ) : (
+                        <p>등록된 명령이 없습니다.</p>
+                      )
+                    ) : (
+                      <p>명령 목록을 사용할 수 없습니다.</p>
+                    )}
+                    <strong>스킬 언급</strong>
+                    <p className={styles.muted}>
+                      메시지에 스킬 이름을 추가합니다.
+                    </p>
+                    {props.catalog?.skills.status === "available" ? (
+                      props.catalog.skills.entries.length ? (
+                        props.catalog.skills.entries.map((entry) => (
+                          <Button
+                            type="button"
+                            data-command
+                            key={entry.id}
+                            onClick={() =>
+                              insert(
+                                `${draft === "/" ? "" : draft}${draft && draft !== "/" ? "\n" : ""}스킬 ${entry.name}을 참고해 주세요. `,
+                              )
+                            }
+                          >
+                            {entry.name}
+                          </Button>
+                        ))
+                      ) : (
+                        <p>등록된 스킬이 없습니다.</p>
+                      )
+                    ) : (
+                      <p>스킬 목록을 사용할 수 없습니다.</p>
+                    )}
+                  </div>
+                )}
+                <div className={styles.toolbar}>
+                  <PopoverTrigger
+                    id={attachId}
+                    anchor="--attach"
+                    className={styles.roundButton}
+                    title="파일 첨부와 미리보기"
+                    aria-label={`파일 첨부와 미리보기${contextDraft.items.length ? ` (${contextDraft.items.length})` : ""}`}
+                  >
+                    <Plus size={20} aria-hidden="true" />
+                  </PopoverTrigger>
+                  <Button
+                    type="button"
+                    className={styles.slashTrigger}
+                    title="앱 동작과 명령"
+                    ref={slashButton}
+                    aria-label="앱 동작과 명령 열기"
+                    aria-expanded={menu}
+                    aria-controls={commandMenuId}
+                    onClick={() => {
+                      if (menu) closeMenu();
+                      else {
+                        menuOpenedFromInput.current = false;
+                        setMenu(true);
+                      }
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape" && menu) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        closeMenu();
+                      } else if (event.key === "ArrowDown") {
+                        event.preventDefault();
+                        menuOpenedFromInput.current = false;
+                        setMenu(true);
+                        requestAnimationFrame(() => menuButtons()[0]?.focus());
+                      }
+                    }}
+                  >
+                    <Slash size={18} aria-hidden="true" />
+                  </Button>
+                  <div className={styles.chips}>
+                    <PopoverTrigger
+                      id={agentId}
+                      anchor="--agent"
+                      className={styles.chip}
+                      aria-label={`Agent: ${agentLabel}`}
+                    >
+                      <span className={styles.agentDot} aria-hidden="true" />
+                      <span className={styles.chipText}>{agentLabel}</span>
+                    </PopoverTrigger>
+                    <PopoverTrigger
+                      id={modelId}
+                      anchor="--model"
+                      className={styles.chip}
+                      aria-label={`모델: ${modelLabel}${variant ? ` · ${variant}` : ""}`}
+                    >
+                      <span className={styles.chipText}>{modelLabel}</span>
+                      {variant && (
+                        <span className={styles.chipSecondary}>{variant}</span>
+                      )}
+                    </PopoverTrigger>
+                    <PopoverTrigger
+                      id={permissionId}
+                      anchor="--permission"
+                      className={styles.chip}
+                      aria-label={`권한 모드: ${permissionLabel}`}
+                    >
+                      <Shield size={14} aria-hidden="true" />
+                      <span className={styles.chipText}>{permissionLabel}</span>
+                    </PopoverTrigger>
+                  </div>
+                  {running ? (
+                    <ComposerPrimitive.Cancel
+                      disabled={!canInterrupt}
+                      className={styles.primary}
+                      aria-label="현재 세션 실행 중단"
+                    >
+                      <Square
+                        size={16}
+                        fill="currentColor"
+                        aria-hidden="true"
+                      />
+                    </ComposerPrimitive.Cancel>
+                  ) : (
+                    <ComposerPrimitive.Send
+                      className={styles.primary}
+                      title="전송 (Enter) · 줄바꿈 Shift+Enter"
+                      aria-label="메시지 보내기"
+                      disabled={blocked}
+                    >
+                      <ArrowUp size={18} aria-hidden="true" />
+                    </ComposerPrimitive.Send>
+                  )}
+                </div>
+              </ComposerPrimitive.Root>
+              {/* Popovers live outside the form so Enter in their fields never sends. */}
+              <PopoverPanel
+                id={agentId}
+                anchor="--agent"
+                className={styles.popover}
+                label="Agent 선택"
+              >
                 <fieldset
                   className={styles.runtimeRequests}
                   disabled={optionsHeld}
                   data-runtime-source="requested"
                 >
-                  <legend>다음 전송에 요청</legend>
-                  <div className={styles.runtimeFields}>
-                    <label>
-                      Agent 요청
-                      <select
-                        className={styles.select}
-                        aria-label="Agent 요청"
-                        value={agent}
-                        onChange={(event) => setAgent(event.target.value)}
-                      >
-                        <option value="">Native에서 결정 · 요청 안 함</option>
-                        {agent &&
-                          !props.catalog?.agents.entries.some(
-                            (entry) => entry.id === agent,
-                          ) && (
-                            <option value={agent}>{agent} (사용 불가)</option>
-                          )}
-                        {props.catalog?.agents.status === "available" &&
-                          props.catalog.agents.entries.map((entry) => (
-                            <option key={entry.id} value={entry.id}>
-                              {entry.name}
-                            </option>
-                          ))}
-                      </select>
-                    </label>
-                    <label>
-                      모델 요청
-                      <select
-                        className={styles.select}
-                        aria-label="모델 요청"
-                        value={model}
-                        onChange={(event) => setModel(event.target.value)}
-                      >
-                        <option value="">Native에서 결정 · 요청 안 함</option>
-                        {model && !selectedModel && (
-                          <option value={model}>{model} (사용 불가)</option>
-                        )}
-                        {props.catalog?.models.status === "available" &&
-                          props.catalog.models.entries.map((entry) => (
-                            <option key={entry.id} value={entry.id}>
-                              {entry.name}
-                            </option>
-                          ))}
-                      </select>
-                    </label>
-                    <label>
-                      Variant 요청
-                      <select
-                        className={styles.select}
-                        aria-label="Variant 요청"
-                        value={variant}
-                        disabled={!model && !variant}
-                        onChange={(event) => setVariant(event.target.value)}
-                      >
-                        <option value="">Native에서 결정 · 요청 안 함</option>
-                        {variant &&
-                          (variants?.status !== "available" ||
-                            !variants.ids.includes(variant)) && (
-                            <option value={variant}>
-                              {variant} (사용 불가)
-                            </option>
-                          )}
-                        {variants?.status === "available" &&
-                          variants.ids.map((value) => (
-                            <option key={value} value={value}>
-                              {value}
-                            </option>
-                          ))}
-                      </select>
-                    </label>
-                  </div>
+                  <legend>Agent</legend>
+                  <label className={styles.field}>
+                    Agent 요청
+                    <select
+                      className={styles.select}
+                      aria-label="Agent 요청"
+                      value={agent}
+                      onChange={(event) => setAgent(event.target.value)}
+                    >
+                      <option value="">기본값 · 요청 안 함</option>
+                      {agent &&
+                        !props.catalog?.agents.entries.some(
+                          (entry) => entry.id === agent,
+                        ) && <option value={agent}>{agent} (사용 불가)</option>}
+                      {props.catalog?.agents.status === "available" &&
+                        props.catalog.agents.entries.map((entry) => (
+                          <option key={entry.id} value={entry.id}>
+                            {entry.name}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
                   <p className={styles.runtimeHint}>
-                    선택은 다음 전송에만 요청합니다. 빈 선택은 값을 요청하지
-                    않습니다. 실제 설정은 Native 보고에서 확인하세요.
+                    선택은 다음 전송에만 요청합니다. 기본값은 값을 요청하지
+                    않습니다.
+                  </p>
+                </fieldset>
+              </PopoverPanel>
+              <PopoverPanel
+                id={modelId}
+                anchor="--model"
+                className={styles.popover}
+                label="모델 선택"
+              >
+                <fieldset
+                  className={styles.runtimeRequests}
+                  disabled={optionsHeld}
+                  data-runtime-source="requested"
+                >
+                  <legend>모델</legend>
+                  <label className={styles.field}>
+                    모델 요청
+                    <select
+                      className={styles.select}
+                      aria-label="모델 요청"
+                      value={model}
+                      onChange={(event) => setModel(event.target.value)}
+                    >
+                      <option value="">기본값 · 요청 안 함</option>
+                      {model && !selectedModel && (
+                        <option value={model}>{model} (사용 불가)</option>
+                      )}
+                      {props.catalog?.models.status === "available" &&
+                        props.catalog.models.entries.map((entry) => (
+                          <option key={entry.id} value={entry.id}>
+                            {entry.name}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    Variant 요청
+                    <select
+                      className={styles.select}
+                      aria-label="Variant 요청"
+                      value={variant}
+                      disabled={!model && !variant}
+                      onChange={(event) => setVariant(event.target.value)}
+                    >
+                      <option value="">기본값 · 요청 안 함</option>
+                      {variant &&
+                        (variants?.status !== "available" ||
+                          !variants.ids.includes(variant)) && (
+                          <option value={variant}>{variant} (사용 불가)</option>
+                        )}
+                      {variants?.status === "available" &&
+                        variants.ids.map((value) => (
+                          <option key={value} value={value}>
+                            {value}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                  <p className={styles.runtimeHint}>
+                    선택은 다음 전송에만 요청합니다. 기본값은 값을 요청하지
+                    않습니다.
                   </p>
                   {model && variants?.status !== "available" && (
                     <p className={styles.runtimeHint}>
@@ -710,340 +1093,73 @@ export function Conversation(props: Props) {
                     </p>
                   )}
                 </fieldset>
-                <Button
-                  size="compact"
-                  onClick={() => closeDisclosure(requestedTask.current)}
-                  data-runtime-task-close
-                >
-                  전송 설정 닫기
-                </Button>
-              </details>
-              <details
-                ref={nativeReport}
-                hidden={branchActive}
-                className={styles.runtimeReport}
-                data-runtime-source="session"
-              >
-                <summary>Native 세션 설정</summary>
-                {sessionSetting ? (
-                  <dl>
-                    <dt>Agent</dt>
-                    <dd>{sessionSetting.agent ?? "보고 없음"}</dd>
-                    {sessionSetting.model ? (
-                      <ReportedModel model={sessionSetting.model} />
-                    ) : (
-                      <>
-                        <dt>모델</dt>
-                        <dd>보고 없음</dd>
-                      </>
-                    )}
-                  </dl>
-                ) : (
-                  <p>현재 세션 설정 보고가 없습니다.</p>
-                )}
-                <p>
-                  Native가 보고한 설정입니다. 다음 전송 요청과 다를 수 있습니다.
+                <p className={styles.sessionLine} data-runtime-source="session">
+                  {sessionSetting
+                    ? `현재 세션: ${sessionSetting.agent ?? "Agent 보고 없음"} · ${
+                        sessionSetting.model
+                          ? `${sessionSetting.model.providerId}/${sessionSetting.model.id}${
+                              sessionSetting.model.variant
+                                ? ` (${sessionSetting.model.variant})`
+                                : ""
+                            }`
+                          : "모델 보고 없음"
+                      } · Native 보고이며 다음 요청과 다를 수 있습니다.`
+                    : "현재 세션: 설정 보고가 없습니다."}
                 </p>
-                <Button
-                  size="compact"
-                  onClick={() => closeDisclosure(nativeReport.current)}
-                  data-runtime-report-close
-                >
-                  Native 설정 닫기
-                </Button>
-              </details>
-              <label className={styles.permissionMode} hidden={branchActive}>
-                <span>권한 모드</span>
-                <select
-                  aria-label="권한 모드"
-                  value={props.permissionMode ?? "ask"}
-                  disabled={props.pending || props.disabled}
-                  onChange={(event) =>
-                    void props.mutate({
-                      type: "permission.mode.set",
-                      workspaceId: props.workspaceId,
-                      sessionId: props.sessionId,
-                      requestId: crypto.randomUUID(),
-                      mode: event.target.value as
-                        | "ask"
-                        | "scoped_edit"
-                        | "read_plan",
-                    })
-                  }
-                >
-                  <option value="ask">요청마다 확인</option>
-                  <option value="scoped_edit">범위 내 편집 허용</option>
-                  <option value="read_plan">읽기/계획</option>
-                </select>
-                <small>
-                  다음 요청부터 적용됩니다. 대기 중인 요청은 바뀌지 않습니다.
-                </small>
-              </label>
-              <PermissionPolicy
-                className={styles.runtimeReport}
-                hidden={branchActive}
-              />
-            </div>
-            <ComposerPrimitive.Root
-              className={styles.composer}
-              hidden={branchActive}
-              data-composer-state={branchActive ? "branch-retained" : "message"}
-            >
-              <ComposerPrimitive.Input
-                ref={input}
-                onChange={(event) => actions.draft(event.target.value)}
-                className={styles.input}
-                aria-label="메시지 작성"
-                aria-describedby={`${hintId} ${requestedSummaryId}`}
-                aria-controls={menu ? commandMenuId : undefined}
-                readOnly={Boolean(props.archived)}
-                placeholder="작업을 요청하세요. /로 명령 보기"
-                maxLength={32000}
-                minRows={3}
-                maxRows={shortViewport ? 3 : 6}
-                submitMode="enter"
-                cancelOnEscape={false}
-                onCompositionStart={() => {
-                  composing.current = true;
-                }}
-                onCompositionEnd={() => {
-                  composing.current = false;
-                }}
-                onKeyDown={(event) => {
-                  if (
-                    event.key === "Enter" &&
-                    (composing.current ||
-                      event.nativeEvent.isComposing ||
-                      event.keyCode === 229)
-                  ) {
-                    event.preventDefault();
-                    return;
-                  }
-                  if (
-                    composing.current ||
-                    event.nativeEvent.isComposing ||
-                    event.keyCode === 229
-                  )
-                    return;
-                  if (event.key === "Escape" && menu) {
-                    event.preventDefault();
-                    closeMenu();
-                  }
-                  if (
-                    menu &&
-                    (event.key === "ArrowDown" || event.key === "ArrowUp")
-                  ) {
-                    const buttons = menuButtons();
-                    const button =
-                      event.key === "ArrowDown" ? buttons[0] : buttons.at(-1);
-                    if (button) {
-                      event.preventDefault();
-                      button.focus();
-                    }
-                  }
-                  if (event.key === "/" && !draft) {
-                    menuOpenedFromInput.current = true;
-                    setMenu(true);
-                  }
-                }}
-              />
-              {menu && (
-                <div
-                  className={`slash-menu ${styles.commandMenu}`}
-                  id={commandMenuId}
-                  ref={commandMenu}
-                  popover="manual"
-                  role="region"
-                  aria-label="앱 동작 및 런타임 명령"
-                  onKeyDown={(event) => {
-                    if (event.key === "Escape") {
-                      event.preventDefault();
-                      closeMenu();
-                    }
-                    if (
-                      ["ArrowDown", "ArrowUp", "Home", "End"].includes(
-                        event.key,
-                      )
-                    ) {
-                      const buttons = menuButtons();
-                      if (!buttons.length) return;
-                      event.preventDefault();
-                      const index = buttons.indexOf(
-                        event.target as HTMLButtonElement,
-                      );
-                      const next =
-                        event.key === "Home"
-                          ? 0
-                          : event.key === "End"
-                            ? buttons.length - 1
-                            : (index +
-                                (event.key === "ArrowUp" ? -1 : 1) +
-                                buttons.length) %
-                              buttons.length;
-                      buttons[next]?.focus();
-                    }
-                  }}
-                >
-                  <div className={styles.menuHeading}>
-                    <strong>앱 동작</strong>
-                    <Button
-                      type="button"
-                      onClick={closeMenu}
-                      aria-label="명령 목록 닫기"
-                    >
-                      <X size={18} aria-hidden="true" />
-                    </Button>
-                  </div>
-                  <Button
-                    type="button"
-                    data-command
-                    disabled={
-                      props.newSessionDisabled || props.pending || running
-                    }
-                    onClick={() => {
-                      closeMenu();
-                      props.newSession();
-                    }}
-                  >
-                    새 세션 만들기
-                  </Button>
-                  <Button
-                    type="button"
-                    data-command
-                    onClick={() => {
-                      closeMenu();
-                      props.openPanel("files");
-                    }}
-                  >
-                    파일 보기
-                  </Button>
-                  <Button
-                    type="button"
-                    data-command
-                    onClick={() => {
-                      closeMenu();
-                      props.openPanel("catalog");
-                    }}
-                  >
-                    확장 목록 보기
-                  </Button>
-                  <strong>런타임 명령</strong>
-                  {props.catalog?.commands.status === "available" ? (
-                    props.catalog.commands.entries.length ? (
-                      props.catalog.commands.entries.map((entry) => (
-                        <Button
-                          type="button"
-                          data-command
-                          key={entry.id}
-                          onClick={() => insert(`/${entry.name} `)}
-                        >
-                          <span>/{entry.name}</span>
-                          <small>{entry.description}</small>
-                        </Button>
-                      ))
-                    ) : (
-                      <p>등록된 명령이 없습니다.</p>
-                    )
-                  ) : (
-                    <p>명령 목록을 사용할 수 없습니다.</p>
-                  )}
-                  <strong>스킬 언급</strong>
-                  <p className={styles.muted}>
-                    메시지에 스킬 이름을 추가합니다.
-                  </p>
-                  {props.catalog?.skills.status === "available" ? (
-                    props.catalog.skills.entries.length ? (
-                      props.catalog.skills.entries.map((entry) => (
-                        <Button
-                          type="button"
-                          data-command
-                          key={entry.id}
-                          onClick={() =>
-                            insert(
-                              `${draft === "/" ? "" : draft}${draft && draft !== "/" ? "\n" : ""}스킬 ${entry.name}을 참고해 주세요. `,
-                            )
-                          }
-                        >
-                          {entry.name}
-                        </Button>
-                      ))
-                    ) : (
-                      <p>등록된 스킬이 없습니다.</p>
-                    )
-                  ) : (
-                    <p>스킬 목록을 사용할 수 없습니다.</p>
-                  )}
-                </div>
-              )}
-              <p
-                className={styles.requestedSummary}
-                id={requestedSummaryId}
-                data-runtime-summary="requested"
-                title={`Agent: ${agent || "Native에서 결정"} · 모델: ${model || "Native에서 결정"} · Variant: ${variant || "Native에서 결정"}`}
+              </PopoverPanel>
+              <PopoverPanel
+                id={permissionId}
+                anchor="--permission"
+                className={styles.popover}
+                label="권한 모드"
               >
-                Agent: {agent || "Native에서 결정"} · 모델:{" "}
-                {model || "Native에서 결정"} · Variant:{" "}
-                {variant || "Native에서 결정"}
-              </p>
-              <div className={styles.toolbar}>
-                <Button
-                  type="button"
-                  className={styles.commandTrigger}
-                  title="추가 동작"
-                  ref={slashButton}
-                  aria-label="앱 동작과 명령 열기"
-                  aria-expanded={menu}
-                  aria-controls={commandMenuId}
-                  onClick={() => {
-                    if (menu) closeMenu();
-                    else {
-                      menuOpenedFromInput.current = false;
-                      setMenu(true);
-                    }
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Escape" && menu) {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      closeMenu();
-                    } else if (event.key === "ArrowDown") {
-                      event.preventDefault();
-                      menuOpenedFromInput.current = false;
-                      setMenu(true);
-                      requestAnimationFrame(() => menuButtons()[0]?.focus());
-                    }
-                  }}
+                <div
+                  role="radiogroup"
+                  aria-label="권한 모드"
+                  className={styles.permissionModes}
                 >
-                  <Plus size={20} aria-hidden="true" />
-                </Button>
-                {running ? (
-                  <ComposerPrimitive.Cancel
-                    disabled={!canInterrupt}
-                    className={styles.primary}
-                    aria-label="현재 세션 실행 중단"
-                  >
-                    <Square size={16} fill="currentColor" aria-hidden="true" />
-                  </ComposerPrimitive.Cancel>
-                ) : (
-                  <ComposerPrimitive.Send
-                    className={styles.primary}
-                    aria-label="메시지 보내기"
-                    disabled={blocked}
-                  >
-                    <ArrowUp size={18} aria-hidden="true" />
-                  </ComposerPrimitive.Send>
-                )}
-              </div>
-            </ComposerPrimitive.Root>
+                  {permissionModes.map((option) => (
+                    <label
+                      key={option.value}
+                      className={styles.permissionOption}
+                    >
+                      <input
+                        type="radio"
+                        name={permissionId}
+                        value={option.value}
+                        checked={
+                          (props.permissionMode ?? "ask") === option.value
+                        }
+                        disabled={props.pending || props.disabled}
+                        onChange={() =>
+                          void props.mutate({
+                            type: "permission.mode.set",
+                            workspaceId: props.workspaceId,
+                            sessionId: props.sessionId,
+                            requestId: crypto.randomUUID(),
+                            mode: option.value,
+                          })
+                        }
+                      />
+                      <span>
+                        <strong>{option.label}</strong>
+                        <small>{option.detail}</small>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+                <p className={styles.runtimeHint}>
+                  다음 요청부터 적용됩니다. 대기 중인 요청은 바뀌지 않습니다.
+                </p>
+                <PermissionPolicy className={styles.runtimeReport} />
+              </PopoverPanel>
+            </div>
             {invalidSelection && (
               <p className={styles.selectionError} role="alert">
                 선택한 Agent, 모델 또는 Variant를 사용할 수 없습니다. 다시
                 선택하거나 요청 안 함을 선택하세요.
               </p>
             )}
-            <p className={styles.hint} id={hintId} hidden={branchActive}>
-              Enter 전송 · Shift+Enter 줄바꿈
-            </p>
           </div>
         </ThreadPrimitive.Root>
       </AssistantRuntimeProvider>

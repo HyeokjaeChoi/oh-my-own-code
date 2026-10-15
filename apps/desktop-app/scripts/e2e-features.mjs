@@ -17,6 +17,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { createWorkbenchBridge } from "./e2e-bridge.mjs";
+import { openComposerPopover } from "./e2e-composer.mjs";
 
 const CONNECT_TIMEOUT_MS =
   Number(process.env.OMOC_E2E_CONNECT_TIMEOUT_MS) || 150000;
@@ -328,14 +329,16 @@ try {
     "permission-mode",
     async () => {
       await selectFixture();
-      const mode = () => page.getByRole("combobox", { name: "권한 모드" });
-      await expect(mode()).toBeEnabled({ timeout: 15000 });
-      for (const value of ["scoped_edit", "read_plan", "ask"]) {
-        await mode().selectOption(value);
-        await expect(mode()).toHaveValue(value, { timeout: 15000 });
+      const panel = await openComposerPopover(page, "permission");
+      const mode = (label) =>
+        panel.getByRole("radio", { name: new RegExp(`^${label}`) });
+      await expect(mode("요청마다 확인")).toBeEnabled({ timeout: 15000 });
+      for (const label of ["범위 내 편집 허용", "읽기/계획", "요청마다 확인"]) {
+        await mode(label).click();
+        await expect(mode(label)).toBeChecked({ timeout: 15000 });
       }
-      await mode().selectOption("scoped_edit");
-      await expect(mode()).toHaveValue("scoped_edit");
+      await mode("범위 내 편집 허용").click();
+      await expect(mode("범위 내 편집 허용")).toBeChecked();
       await expect
         .poll(async () => {
           const snap = await bridge({ type: "snapshot" });
@@ -350,7 +353,10 @@ try {
         timeout: CONNECT_TIMEOUT_MS,
       });
       await selectFixture();
-      await expect(mode()).toHaveValue("scoped_edit", { timeout: 15000 });
+      const reopened = await openComposerPopover(page, "permission");
+      await expect(
+        reopened.getByRole("radio", { name: /^범위 내 편집 허용/ }),
+      ).toBeChecked({ timeout: 15000 });
     },
     { needs: "runtime" },
   );

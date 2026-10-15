@@ -242,30 +242,89 @@
   scrollbar-gutter: stable;
 }
 
-.composer {
+.composerCard {
   position: relative;
   flex-shrink: 0;
+  width: 100%;
+  max-width: 720px;
   min-width: 0;
-  min-height: var(--omoc-component-size-composer-height);
-  margin: 0;
-  padding: 12px 16px;
-  border: 0;
-  border-radius: var(--omoc-component-size-composer-radius);
+  margin-inline: auto;
+  border: 1px solid var(--omoc-semantic-color-border-subtle);
+  border-radius: 20px;
   background: var(--omoc-component-color-input-background);
+  box-shadow: 0 2px 12px rgb(0 0 0 / 6%);
 }
 
-.composer::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border: 1px solid var(--omoc-component-color-input-border);
-  border-radius: inherit;
-  pointer-events: none;
+.composerCard[hidden] {
+  display: none;
 }
 
-.composer:focus-within {
-  outline: 2px solid var(--omoc-semantic-color-focus);
-  outline-offset: 2px;
+/* One 1px focus treatment on the card; the textarea draws no ring of its own. */
+.composerCard:focus-within {
+  border-color: var(--omoc-semantic-color-focus);
+}
+
+.contextStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  min-width: 0;
+  padding: 6px 16px;
+  border-radius: 19px 19px 0 0;
+  background: var(--omoc-semantic-color-surface-subtle);
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.contextStrip > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.runStrip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 8px 4px 16px;
+  border-bottom: 1px solid var(--omoc-semantic-color-border-subtle);
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.runStatus {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.runAction {
+  min-height: 32px;
+  padding: 2px 10px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--omoc-semantic-color-text-primary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.runAction:hover {
+  background: var(--omoc-component-color-button-quiet-hover);
+}
+
+.composer {
+  min-width: 0;
+  margin: 0;
+  padding: 12px 16px 8px;
+  border: 0;
 }
 
 .input {
@@ -303,55 +362,202 @@
   min-height: var(--omoc-component-size-toolbar-height);
 }
 
-.toolbar .commandTrigger,
+.roundButton,
+.slashTrigger,
 .toolbar .primary {
   display: inline-flex;
+  flex: 0 0 36px;
   align-items: center;
   justify-content: center;
-  min-height: var(--omoc-component-size-control-hit-target);
-  padding: 6px 8px;
+  width: 36px;
+  min-height: 36px;
+  height: 36px;
+  padding: 0;
   border: 0;
-  border-radius: var(--omoc-component-size-navigation-radius);
+  border-radius: 50%;
   background: transparent;
   color: var(--omoc-semantic-color-text-primary);
   font: inherit;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 20px;
   cursor: pointer;
 }
 
-.toolbar .commandTrigger:hover:not(:disabled),
-.select:hover:not(:disabled) {
+/* Decorative ring as a shadow: the glyph itself carries the 3:1 contrast. */
+.roundButton {
+  background: var(--omoc-semantic-color-surface-subtle);
+  box-shadow: inset 0 0 0 1px var(--omoc-semantic-color-border-subtle);
+}
+
+.roundButton:hover:not(:disabled),
+.slashTrigger:hover:not(:disabled),
+.chip:hover:not(:disabled) {
   background: var(--omoc-component-color-button-quiet-hover);
 }
 
+.roundButton:focus-visible,
+.slashTrigger:focus-visible,
+.chip:focus-visible,
 .toolbar .primary:focus-visible,
 .select:focus-visible,
+.runAction:focus-visible,
+.permissionOption:focus-within,
 .toolDetail summary:focus-visible,
 .runtimeReport summary:focus-visible {
   outline: 2px solid var(--omoc-semantic-color-focus);
   outline-offset: 2px;
 }
 
+.toolbar .primary,
+.actions .permissionAllow {
+  background: var(--omoc-component-color-button-primary-background);
+  color: var(--omoc-component-color-button-primary-foreground);
+}
+
+.toolbar .primary:hover:not(:disabled),
+.actions .permissionAllow:hover:not(:disabled) {
+  background: var(--omoc-component-color-button-primary-hover);
+}
+
 .toolbar .primary:disabled,
-.select:disabled {
+.actions .permissionAllow:disabled {
+  background: var(--omoc-component-color-button-disabled-background);
   color: var(--omoc-component-color-button-disabled-foreground);
   cursor: not-allowed;
 }
 
-.toolbar .commandTrigger,
-.toolbar .primary {
-  flex: 0 0 var(--omoc-component-size-standard-control-height);
-  width: var(--omoc-component-size-standard-control-height);
-  min-height: var(--omoc-component-size-standard-control-height);
-  padding: 0;
-  border-radius: var(--omoc-component-size-control-radius);
+.chips {
+  display: flex;
+  flex: 1 1 0;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  min-width: 0;
+}
+
+.chip {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 180px;
+  min-height: 32px;
+  padding: 2px 10px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--omoc-semantic-color-text-primary);
+  font: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.chipText,
+.chipSecondary {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chipSecondary {
+  color: var(--omoc-semantic-color-text-secondary);
+}
+
+.agentDot {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--omoc-semantic-color-focus);
+}
+
+/* Native popover anchored to its chip; the browser clamps it to the viewport. */
+.popover {
+  position: fixed;
+  position-anchor: var(--anchor);
+  inset: auto;
+  margin: 0 0 8px;
+  width: max-content;
+  max-width: min(360px, calc(100vw - 16px));
+  max-height: min(70dvh, 560px);
+  padding: 12px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--omoc-semantic-color-border-subtle);
+  border-radius: 14px;
+  background: var(--omoc-semantic-color-surface-raised);
+  color: var(--omoc-semantic-color-text-primary);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 14%);
+  font-size: 13px;
+  line-height: 20px;
+  position-area: top span-left;
+  position-try-fallbacks: flip-block;
+}
+
+.popover[data-align="start"] {
+  position-area: top span-right;
+  min-width: min(300px, calc(100vw - 16px));
+}
+
+.popover:not(:popover-open) {
+  display: none;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  margin-block: 8px;
+}
+
+.sessionLine {
+  margin: 12px 0 0;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+  overflow-wrap: anywhere;
+}
+
+.permissionModes {
+  display: grid;
+  gap: 2px;
+}
+
+.permissionOption {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.permissionOption:hover {
+  background: var(--omoc-component-color-button-quiet-hover);
+}
+
+.permissionOption input {
+  margin: 4px 0 0;
+}
+
+.permissionOption span {
+  display: flex;
+  flex-direction: column;
+}
+
+.permissionOption small {
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+  line-height: 18px;
 }
 
 .select {
-  flex: 0 1 auto;
-  width: auto;
-  max-width: 176px;
+  width: 100%;
   min-width: 0;
   min-height: var(--omoc-component-size-standard-control-height);
   padding: 6px 8px;
@@ -366,38 +572,9 @@
   cursor: pointer;
 }
 
-.agentSelect {
-  max-width: 128px;
-}
-
-.toolbar .primary,
-.actions .permissionAllow {
-  background: var(--omoc-component-color-button-primary-background);
-  color: var(--omoc-component-color-button-primary-foreground);
-}
-
-.toolbar .primary {
-  margin-left: auto;
-}
-
-.toolbar .primary:hover:not(:disabled),
-.actions .permissionAllow:hover:not(:disabled) {
-  background: var(--omoc-component-color-button-primary-hover);
-}
-
-.toolbar .primary:disabled,
-.actions .permissionAllow:disabled {
-  background: var(--omoc-component-color-button-disabled-background);
+.select:disabled {
   color: var(--omoc-component-color-button-disabled-foreground);
-}
-
-.hint {
-  margin: 4px 0 0;
-  min-height: 18px;
-  text-align: center;
-  color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
+  cursor: not-allowed;
 }
 
 .muted {
@@ -582,19 +759,6 @@
     padding-inline: 16px;
   }
 
-  .composer {
-    padding-inline: 8px;
-  }
-
-  .toolbar {
-    gap: 2px;
-  }
-
-  .select {
-    font-size: 12px;
-    padding-inline: 2px;
-  }
-
   .userMessage {
     max-width: 94%;
   }
@@ -614,69 +778,20 @@
   padding-top: 0;
 }
 
-@container conversation (max-width: 400px) {
-  .select {
-    width: 100%;
-    max-width: none;
-    min-width: 0;
-  }
-}
-
 @media (max-height: 600px) {
   .composeRegion {
     overflow-y: auto;
     overscroll-behavior: contain;
-  }
-  /* Settings rows and disclosures scroll under the composer, which stays pinned. */
-  .composeRegion {
     padding-block: 8px;
-    scroll-padding-bottom: 136px;
   }
-  /* Compact composer: input on top; "+", the one-line requested summary and
-     send share one row, so the pinned composer leaves room for permission actions. */
-  .composer {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    column-gap: 4px;
-    align-items: center;
-    min-height: 0;
-    padding: 8px 12px;
-  }
-  .toolbar {
-    display: contents;
-  }
-  .input {
-    grid-column: 1 / -1;
-  }
-  .commandTrigger {
-    grid-row: 2;
-    grid-column: 1;
-  }
-  /* .composer prefix: must outrank the base .requestedSummary rule declared later. */
-  .composer .requestedSummary {
-    grid-row: 2;
-    grid-column: 2;
-    min-width: 0;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .toolbar .primary {
-    grid-row: 2;
-    grid-column: 3;
+  .composerCard {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
   }
   /* The region scrolls here, so the queue keeps a reachable height. */
   .permissionQueue {
     min-height: min(72px, 12dvh);
-  }
-  .composer {
-    position: sticky;
-    bottom: 0;
-    z-index: 1;
-    box-shadow:
-      0 0 0 1px var(--omoc-semantic-color-canvas),
-      0 16px 0 var(--omoc-semantic-color-canvas);
   }
   .emptyConversation .composeRegion {
     flex-shrink: 1;
@@ -696,15 +811,8 @@
   .input {
     max-height: var(--omoc-component-size-input-min);
   }
-  .hint {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    min-height: 0;
-    margin: 0;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
+  .contextStrip {
+    display: none;
   }
   .emptyConversation {
     justify-content: flex-start;
@@ -761,97 +869,11 @@
   padding: 0;
   font-weight: 600;
 }
-.runtimeFields {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-}
-.runtimeFields label {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-.runtimeFields .select {
-  width: 100%;
-  max-width: none;
-  padding-inline: 4px;
-}
 .runtimeHint {
   margin: 4px 0;
   color: var(--omoc-semantic-color-text-secondary);
   overflow-wrap: anywhere;
 }
-@container conversation (max-width: 599px) {
-  .runtimeFields {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 4px;
-  }
-  .runtimeFields label {
-    display: grid;
-    grid-template-columns: 76px minmax(0, 1fr);
-    align-items: center;
-  }
-}
-
-/* These are adjacent tasks, never children of the message form. */
-.adjacentTasks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 16px;
-  min-width: 0;
-  margin-bottom: 8px;
-}
-
-.adjacentTasks > details {
-  flex: 1 1 220px;
-  margin-block: 0;
-}
-
-.adjacentTasks > details[open] {
-  flex-basis: 100%;
-  padding-bottom: 12px;
-}
-
-.adjacentTasks > [hidden],
-.composer[hidden],
-.hint[hidden] {
-  display: none;
-}
-
-.requestedSummary {
-  margin: 8px 0 4px;
-  color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
-  overflow-wrap: anywhere;
-  user-select: text;
-}
-
-@media (pointer: coarse) {
-  .toolbar .commandTrigger,
-  .toolbar .primary {
-    flex-basis: var(--omoc-component-size-coarse-target);
-    width: var(--omoc-component-size-coarse-target);
-    min-height: var(--omoc-component-size-coarse-target);
-  }
-  .select {
-    min-height: var(--omoc-component-size-coarse-target);
-  }
-}
-
-.permissionMode {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8125rem;
-}
-
-.permissionMode small {
-  flex-basis: 100%;
-  color: var(--color-text-muted, inherit);
-}
-
 .toolPath {
   font: inherit;
   background: none;
@@ -882,4 +904,26 @@
 .toolPermission {
   border-left: 3px solid currentColor;
   padding-left: 0.5rem;
+}
+
+.roundButton,
+.chip,
+.runAction {
+  anchor-name: var(--anchor);
+}
+
+@media (pointer: coarse) {
+  .roundButton,
+  .slashTrigger,
+  .toolbar .primary {
+    flex-basis: var(--omoc-component-size-coarse-target);
+    width: var(--omoc-component-size-coarse-target);
+    min-height: var(--omoc-component-size-coarse-target);
+    height: var(--omoc-component-size-coarse-target);
+  }
+  .chip,
+  .runAction,
+  .select {
+    min-height: var(--omoc-component-size-coarse-target);
+  }
 }

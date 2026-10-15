@@ -15,6 +15,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
+import { COMPOSER_POPOVERS } from "./e2e-composer.mjs";
 import { FOUNDATION_CAPTURE_LIMIT } from "./run-evidence.mjs";
 const desktop = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const root = resolve(desktop, "../..");
@@ -305,7 +306,7 @@ async function scenario(name) {
     name,
   );
   await page.reload();
-  await expect(hook("section")).toBeAttached();
+  await expect(chip("attach")).toBeAttached();
   await expect(composer()).toBeEditable();
   assert.equal((await counters()).contextReads, 0);
   assert.equal((await counters()).inboxReads, 0);
@@ -316,6 +317,14 @@ async function reveal(locator) {
   await expect(locator).toBeInViewport({ ratio: 0.95 });
 }
 async function expand(task, key = "Enter") {
+  // A details inside a closed composer popover first needs its chip opened.
+  const host = task.locator("xpath=ancestor::*[@popover][1]");
+  if (await host.count()) {
+    if (!(await host.evaluate((el) => el.matches(":popover-open"))))
+      await page
+        .locator(`[popovertarget="${await host.getAttribute("id")}"]`)
+        .click();
+  }
   if (!(await task.evaluate((el) => el.open))) {
     const summary = task.locator(":scope > summary");
     await reveal(summary);
@@ -358,20 +367,33 @@ async function display(theme, width, zoom = 1) {
   assert.ok(bounds.scroll <= bounds.width + 1, JSON.stringify(bounds));
 }
 // Actual frozen UI checkpoint: source owns these presentation-only hooks.
-const requestedTask = () =>
-  page.locator('details[data-runtime-task="requested"]');
-const requestedSummary = () =>
-  page.locator('[data-runtime-summary="requested"]');
-const nativeReport = () =>
-  page.locator('details[data-runtime-source="session"]');
-const field = (name) => page.getByRole("combobox", { name, exact: true });
-async function closeTask(task, control) {
+// Composer controls live in native popovers opened from footer chips.
+const chip = (kind) =>
+  page.getByRole("button", { name: COMPOSER_POPOVERS[kind] }).first();
+const popover = async (kind) =>
+  page.locator(`[id="${await chip(kind).getAttribute("popovertarget")}"]`);
+const sessionReport = () => page.locator('[data-runtime-source="session"]');
+const field = (name) =>
+  page.getByRole("combobox", { name, exact: true, includeHidden: true });
+// Opens via the keyboard (Enter/Space on the chip) when it is closed.
+async function expandPopover(kind, key = "Enter") {
+  const panel = await popover(kind);
+  if (!(await panel.evaluate((el) => el.matches(":popover-open")))) {
+    await reveal(chip(kind));
+    await chip(kind).focus();
+    await page.keyboard.press(key);
+  }
+  await expect(panel).toBeVisible();
+  return panel;
+}
+// Esc inside a popover closes it natively and returns focus to its chip.
+async function closePopover(kind, control) {
   const baseline = await counters();
   await reveal(control);
   await control.focus();
   await page.keyboard.press("Escape");
-  await expect(task).not.toHaveAttribute("open", "");
-  await expect(task.locator(":scope > summary")).toBeFocused();
+  await expect(await popover(kind)).toBeHidden();
+  await expect(chip(kind)).toBeFocused();
   assert.deepEqual(
     await counters(),
     baseline,
@@ -406,12 +428,14 @@ async function recordValue(locator, label) {
   });
 }
 async function choose(scope) {
+  await expandPopover("agent");
   await field("Agent 요청").selectOption(scope.agent);
+  await expandPopover("model");
   await field("모델 요청").selectOption(scope.model);
   await field("Variant 요청").selectOption(scope.variant);
 }
 async function observe(scope) {
-  await expand(hook("section"));
+  await expandPopover("attach");
   await hook("path").fill(scope.path);
   await hook("observe").click();
   await expect(hook("item")).toHaveCount(1);
@@ -436,7 +460,7 @@ async function commandMenuRegression() {
     exact: true,
   });
   await expect(trigger).toHaveText("");
-  await expect(trigger.locator("svg.lucide-plus")).toHaveCount(1);
+  await expect(trigger.locator("svg.lucide-slash")).toHaveCount(1);
   const composerBefore = await trigger
     .locator("xpath=ancestor::form")
     .boundingBox();
@@ -553,53 +577,50 @@ async function exerciseFoundation() {
       const scope = await scenario("ready");
       await display(theme, width, zoom);
       const prefix = `${theme}-${width}-zoom${zoom}`;
-      for (const task of [
-        hook("section"),
-        hook("running-task"),
-        requestedTask(),
-        nativeReport(),
-      ])
-        await expect(task).not.toHaveAttribute("open", "");
+      await expect(page.locator("[popover]:popover-open")).toHaveCount(0);
+      await expect(page.locator("[data-run-strip]")).toHaveCount(0);
       await composer().fill(
         "SYNTHETIC Foundation · 긴 한국어 입력 · 다음 요청을 편집합니다.",
       );
-      await expect(requestedSummary()).toContainText("Native에서 결정");
+      await expect(chip("agent")).toContainText("기본 에이전트");
+      await expect(chip("model")).toContainText("기본 모델");
+      await expect(send()).toHaveAttribute(
+        "title",
+        "전송 (Enter) · 줄바꿈 Shift+Enter",
+      );
       await reveal(send());
       await shot(`${prefix}-collapsed-idle`);
       await geometry();
       await stagedOnly(`${prefix}-settings-keyboard-disclosure`, async () => {
-        await expand(requestedTask(), zoom === 2 ? "Space" : "Enter");
+        await expandPopover("agent", zoom === 2 ? "Space" : "Enter");
         await choose(scope);
-        await field("Agent 요청").focus();
-        await page.keyboard.press("Tab");
-        await expect(field("모델 요청")).toBeFocused();
+        await field("모델 요청").focus();
         await page.keyboard.press("Tab");
         await expect(field("Variant 요청")).toBeFocused();
-        await reveal(page.locator('[data-runtime-source="requested"]'));
+        await reveal(page.locator('[data-runtime-source="requested"]').last());
         await shot(`${prefix}-expanded-requested`);
-        for (const name of ["Agent 요청", "모델 요청", "Variant 요청"])
+        for (const name of ["모델 요청", "Variant 요청"])
           await recordValue(field(name), `${prefix}-${name}`);
-        await closeTask(requestedTask(), field("Variant 요청"));
-        await expect(requestedSummary()).toContainText(scope.agent);
-        await expect(requestedSummary()).toContainText(scope.model);
-        await expect(requestedSummary()).toContainText(scope.variant);
+        await closePopover("model", field("Variant 요청"));
+        await expect(chip("model")).toContainText(scope.variant);
+        await expandPopover("agent");
+        await recordValue(field("Agent 요청"), `${prefix}-Agent 요청`);
+        await closePopover("agent", field("Agent 요청"));
         await reveal(send());
         await send().focus();
         await expect(send()).toBeFocused();
         await expect(send()).toBeInViewport({ ratio: 0.95 });
-        await expect(requestedSummary()).toBeInViewport({ ratio: 0.95 });
+        await expect(chip("model")).toBeInViewport({ ratio: 0.95 });
         await shot(`${prefix}-selected-summary-final-action`);
-        await recordValue(requestedSummary(), `${prefix}-selected-summary`);
-        // Closed settings controls must not be in the keyboard path.
-        await requestedTask().locator(":scope > summary").focus();
+        await recordValue(chip("model"), `${prefix}-selected-summary`);
+        // Closed popover controls must not be in the keyboard path.
+        await chip("agent").focus();
         await page.keyboard.press("Tab");
-        await expect(nativeReport().locator(":scope > summary")).toBeFocused();
+        await expect(chip("model")).toBeFocused();
         await page.keyboard.press("Tab");
-        await expect(
-          page.locator('[data-runtime-task="permission"] > summary'),
-        ).toBeFocused();
+        await expect(chip("permission")).toBeFocused();
         await page.keyboard.press("Tab");
-        await expect(composer()).toBeFocused();
+        await expect(send()).toBeFocused();
       });
     }
   }
@@ -608,7 +629,7 @@ async function exerciseFoundation() {
   await display("light", 1440);
   await composer().fill("SYNTHETIC attachment draft stays editable");
   await stagedOnly("attachment-keyboard-open", async () => {
-    await expand(hook("section"), "Space");
+    await expandPopover("attach", "Space");
     await hook("path").fill(scope.path);
     await hook("path").focus();
     await page.keyboard.press("Tab");
@@ -618,7 +639,7 @@ async function exerciseFoundation() {
   });
   await observe(scope);
   await expect(hook("text")).toHaveText(scope.text);
-  await closeTask(hook("section"), hook("path"));
+  await closePopover("attach", hook("path"));
   await expect(hook("summary")).toBeVisible();
   await reveal(hook("item"));
   await shot("attachment-compact-collapsed");
@@ -713,49 +734,47 @@ async function exerciseFoundation() {
   await display("dark", 1440);
   await composer().fill("SYNTHETIC next draft during the current run");
   await stagedOnly("running-requested-distinct-from-current-run", async () => {
-    await expand(requestedTask());
+    await expandPopover("model");
     await field("모델 요청").selectOption("fixture-other-model");
     await field("Variant 요청").selectOption("other.variant");
-    await closeTask(requestedTask(), field("Variant 요청"));
-    await expand(hook("running-task"), "Space");
+    // The current-session report is a separate muted line from the request.
+    await expect(sessionReport()).toContainText("session.variant");
+    await reveal(sessionReport());
+    await shot("running-native-report-separate-from-request");
+    await closePopover("model", field("Variant 요청"));
+    await expect(chip("model")).toContainText("other.variant");
+    // The run strip appears only while a run is active.
+    await expect(page.locator("[data-run-strip]")).toBeVisible();
+    await expandPopover("run", "Space");
     await expect(hook("running")).toContainText("Native의 현재 실행 설정");
     await expect(hook("steer")).toBeEnabled();
     await expect(hook("queue")).toBeEnabled();
     await reveal(hook("running"));
     await shot("running-current-run-task");
-    await closeTask(hook("running-task"), hook("queue"));
-    await expand(nativeReport());
-    await expect(nativeReport()).toContainText("session.variant");
-    await reveal(nativeReport());
-    await shot("running-native-report-separate-from-request");
-    await closeTask(
-      nativeReport(),
-      page.locator("[data-runtime-report-close]"),
-    );
-    await expect(requestedSummary()).toContainText("fixture-other-model");
-    await expect(requestedSummary()).toContainText("other.variant");
+    await closePopover("run", hook("queue"));
   });
 
   scope = await scenario("unsupported");
   await display("light", 320);
-  await expand(hook("section"));
+  await expandPopover("attach");
   await hook("path").fill(scope.path);
   await hook("observe").click();
   await expect(hook("error")).toHaveAttribute(
     "data-context-error",
     "unsupported_content",
   );
-  await closeTask(hook("section"), hook("path"));
+  await closePopover("attach", hook("path"));
   await criticalOutsideTask(hook("error"));
   await reveal(hook("error"));
   await shot("unsupported-outside-closed-task");
   scope = await scenario("unsupported-model");
   await display("dark", 320);
   await observe(scope);
-  await expand(requestedTask());
+  await expandPopover("model");
   await field("모델 요청").selectOption(scope.model);
-  await closeTask(requestedTask(), field("모델 요청"));
-  await closeTask(hook("section"), hook("path"));
+  await closePopover("model", field("모델 요청"));
+  await expandPopover("attach");
+  await closePopover("attach", hook("path"));
   await composer().fill("SYNTHETIC unsupported model input stays editable");
   await expect(send()).toBeDisabled();
   await criticalOutsideTask(hook("send-blocked"));
@@ -766,7 +785,7 @@ async function exerciseFoundation() {
   await display("light", 760, 2);
   await page.clock.install();
   await observe(scope);
-  await closeTask(hook("section"), hook("path"));
+  await closePopover("attach", hook("path"));
   await application.evaluate(() =>
     globalThis.__omocUiFixture.expireContextCapabilities(),
   );
@@ -1128,8 +1147,8 @@ async function exercisePermissionPolicy() {
       await expect(permissionTask().getByRole("status")).toBeFocused();
     } else {
       await page.keyboard.press("Escape");
-      await expect(permissionTask()).not.toHaveAttribute("open", "");
-      await expect(permissionTask().locator(":scope > summary")).toBeFocused();
+      await expect(await popover("permission")).toBeHidden();
+      await expect(chip("permission")).toBeFocused();
     }
     await expect(permissionTask()).toHaveAttribute(
       "data-permission-policy-status",

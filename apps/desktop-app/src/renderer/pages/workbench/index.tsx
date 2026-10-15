@@ -848,6 +848,7 @@ export function Workbench() {
             mutate={mutate}
             openPanel={openPanel}
             newSession={newSession}
+            workspaceName={workspace?.name}
             newSessionDisabled={
               !workspace || pending || !connected || resourceDisabled
             }

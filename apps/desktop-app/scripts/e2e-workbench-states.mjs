@@ -33,6 +33,7 @@ import {
   SKILL_RUNTIME_RETAINED_KEY,
 } from "./fixtures/workbench-host.mjs";
 import { captureProvenance } from "./build-provenance.mjs";
+import { closeComposerPopovers, openComposerPopover } from "./e2e-composer.mjs";
 
 import {
   UI_STATE_FAMILIES,
@@ -492,13 +493,21 @@ async function setDisplay(page, width, height, zoomFactor = 1) {
     .toBeLessThanOrEqual(1);
 }
 
-// Runtime request selects live inside a collapsed "다음 전송 설정" details.
+// Runtime request selects live in the Agent / 모델 chip popovers; only one
+// popover is open at a time, so callers visit each select in turn.
 async function setRequestSettings(page, open) {
-  await page
-    .locator('details[data-runtime-task="requested"]')
-    .evaluate((element, value) => {
-      element.open = value;
-    }, open);
+  if (!open) await closeComposerPopovers(page);
+}
+
+async function eachRequestSelect(page, visit) {
+  for (const [kind, name] of [
+    ["agent", "Agent 요청"],
+    ["model", "모델 요청"],
+  ]) {
+    await openComposerPopover(page, kind);
+    await visit(page.getByRole("combobox", { name }));
+  }
+  await closeComposerPopovers(page);
 }
 
 async function captureMatrix(page, state) {
@@ -534,21 +543,20 @@ async function captureMatrix(page, state) {
     });
     await setRequestSettings(page, true);
     await expect(submitControl).toBeInViewport({ ratio: 1 });
-    for (const control of [
-      submitControl,
-      page.getByRole("combobox", { name: "Agent 요청" }),
-      page.getByRole("combobox", { name: "모델 요청" }),
-    ]) {
-      // Settings rows scroll above the pinned composer at small heights.
+    const checkHeight = async (control, expected, what) => {
       // Honors the region's scroll-padding above the pinned composer.
       await control.scrollIntoViewIfNeeded();
       await expect(control).toBeInViewport({ ratio: 1 });
       const bounds = await control.boundingBox();
       assert.ok(
-        bounds && Math.abs(bounds.height - 40) <= 1,
-        `Desktop composer control must be the approved 40px (got ${bounds?.height})`,
+        bounds && Math.abs(bounds.height - expected) <= 1,
+        `Desktop ${what} must be ${expected}px (got ${bounds?.height})`,
       );
-    }
+    };
+    await checkHeight(submitControl, 36, "composer send control");
+    await eachRequestSelect(page, (control) =>
+      checkHeight(control, 40, "request select"),
+    );
     if (state === "permission-long-korean-draft") {
       // Open request settings take the height the permission queue needs.
       await setRequestSettings(page, false);
@@ -617,16 +625,14 @@ async function captureMatrix(page, state) {
         element.parentElement.scrollTop = 0;
       });
       await expect(composerForm).toBeInViewport({ ratio: 1 });
-      await setRequestSettings(page, true);
-      for (const control of [
-        composerInput,
-        submitControl,
-        page.getByRole("combobox", { name: "Agent 요청" }),
-        page.getByRole("combobox", { name: "모델 요청" }),
-      ]) {
+      for (const control of [composerInput, submitControl]) {
         await control.scrollIntoViewIfNeeded();
         await expect(control).toBeInViewport({ ratio: 1 });
       }
+      await eachRequestSelect(page, async (control) => {
+        await control.scrollIntoViewIfNeeded();
+        await expect(control).toBeInViewport({ ratio: 1 });
+      });
     }
     await setRequestSettings(page, false);
     await capture(
@@ -985,19 +991,18 @@ async function assertCoarseComposer(page) {
       )
       .toBe(true);
     // Runtime request selects live inside a collapsed details disclosure.
-    await setRequestSettings(page, true);
-    for (const control of [
-      page.getByRole("button", { name: "메시지 보내기", exact: true }),
-      page.getByRole("combobox", { name: "Agent 요청" }),
-      page.getByRole("combobox", { name: "모델 요청" }),
-    ]) {
+    const checkCoarse = async (control) => {
       const bounds = await control.boundingBox();
       assert.ok(
         bounds && Math.abs(bounds.height - 44) <= 1,
         "Coarse composer control must be 44px",
       );
       await expect(control).toBeInViewport({ ratio: 1 });
-    }
+    };
+    await checkCoarse(
+      page.getByRole("button", { name: "메시지 보내기", exact: true }),
+    );
+    await eachRequestSelect(page, checkCoarse);
   } finally {
     await setRequestSettings(page, false);
     await cdp.send("Emulation.setTouchEmulationEnabled", { enabled: false });
@@ -1452,13 +1457,15 @@ try {
         "Synthetic compositionstart/Enter/compositionend guard dispatches no request and preserves the Korean draft; physical OS IME verification remains separate",
       );
       await composer.fill("Inspect the synthetic workspace.");
-      await setRequestSettings(page, true);
+      await openComposerPopover(page, "agent");
       await page
         .getByRole("combobox", { name: "Agent 요청" })
         .selectOption("fixture-agent");
+      await openComposerPopover(page, "model");
       await page
         .getByRole("combobox", { name: "모델 요청" })
         .selectOption("fixture-model");
+      await closeComposerPopovers(page);
       await page.getByRole("button", { name: "메시지 보내기" }).click();
       await expect(
         page.getByRole("button", { name: "현재 세션 실행 중단" }),
