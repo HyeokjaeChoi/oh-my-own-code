@@ -1,5 +1,4 @@
 import { createContext, useContext } from "react";
-import { ChevronRight } from "lucide-react";
 import type { ToolView } from "../../shared/tool-ui/index.js";
 import styles from "./conversation.module.css";
 
@@ -73,19 +72,7 @@ export function ToolBody({ view }: { view: ToolView }) {
               {view.range.end ? `–${view.range.end}` : "부터"}
             </span>
           )}
-          {view.content && (
-            <details>
-              <summary className={styles.disclosure}>
-                <ChevronRight
-                  size={14}
-                  className={styles.chevron}
-                  aria-hidden="true"
-                />
-                읽은 내용
-              </summary>
-              <pre>{view.content}</pre>
-            </details>
-          )}
+          {view.content && <pre>{view.content}</pre>}
         </div>
       );
     case "diff":
@@ -119,19 +106,7 @@ export function ToolBody({ view }: { view: ToolView }) {
           {view.exitCode !== null && (
             <p className={styles.muted}>종료 코드 {view.exitCode}</p>
           )}
-          {view.output && (
-            <details>
-              <summary className={styles.disclosure}>
-                <ChevronRight
-                  size={14}
-                  className={styles.chevron}
-                  aria-hidden="true"
-                />
-                출력
-              </summary>
-              <pre>{view.output}</pre>
-            </details>
-          )}
+          {view.output && <pre>{view.output}</pre>}
         </div>
       );
     case "search":

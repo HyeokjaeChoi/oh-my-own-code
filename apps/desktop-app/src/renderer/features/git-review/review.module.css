@@ -43,20 +43,35 @@
   min-height: var(--omoc-component-size-control-hit-target);
   max-width: 100%;
   padding: 6px 8px;
-  border: 0;
+  border: 1px solid transparent;
   border-radius: var(--omoc-component-size-navigation-radius);
-  background: var(--omoc-fill-subtle);
+  background: var(--omoc-semantic-color-fill-subtle);
   color: var(--omoc-component-color-input-foreground);
   font: inherit;
   white-space: normal;
   overflow-wrap: anywhere;
 }
+/* Selects are fields: they keep the 3:1 input boundary. */
+.review select {
+  border-color: var(--omoc-component-color-input-border);
+  background: var(--omoc-component-color-input-background);
+}
 .review button:hover:enabled {
-  background: var(--omoc-fill-hover);
+  background: var(--omoc-semantic-color-fill-hover);
 }
 .review button[aria-pressed="true"] {
-  background: var(--omoc-fill-hover);
+  background: var(--omoc-semantic-color-fill-hover);
   font-weight: 600;
+}
+/* Pressed is also marked by a check, not only by fill and weight. */
+.review button[aria-pressed="true"]::before {
+  content: "✓";
+  margin-inline-end: 4px;
+}
+@media (forced-colors: active) {
+  .review button[aria-pressed="true"] {
+    border-color: Highlight;
+  }
 }
 .review :disabled {
   opacity: 0.5;
@@ -83,9 +98,9 @@
   max-width: 100%;
   margin: 12px 0;
   padding: 8px;
-  border: 0;
+  border: 1px solid transparent;
   border-radius: var(--omoc-component-size-navigation-radius);
-  background: var(--omoc-fill-subtle);
+  background: var(--omoc-semantic-color-fill-subtle);
 }
 .selection select {
   width: 100%;

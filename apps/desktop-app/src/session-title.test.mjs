@@ -14,6 +14,14 @@ test("native titles are cleaned, redacted and bounded", () => {
   assert.equal(nativeSessionTitle("Untitled session"), undefined);
   assert.equal(nativeSessionTitle("\u0007\u0000"), undefined);
   assert.equal(nativeSessionTitle(42), undefined);
+  assert.equal(
+    nativeSessionTitle("New session - 2026-10-15T05:33:17.421Z"),
+    undefined,
+  );
+  assert.equal(
+    nativeSessionTitle("Child session - 2026-10-15T05:33:17.421Z"),
+    undefined,
+  );
   const secret = `use sk-${"a".repeat(32)} now`;
   assert.ok(!nativeSessionTitle(secret).includes("sk-aaaa"));
   const long = nativeSessionTitle("가".repeat(500));

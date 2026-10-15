@@ -15,13 +15,14 @@ MANIFEST = ROOT / "tokens" / "manifest.json"
 CSS = ROOT / "tokens" / "tokens.css"
 COMPONENTS = ROOT / "components.json"
 MODES = ("light", "dark")
-TYPES = {"color", "dimension", "duration", "number", "fontFamily"}
+TYPES = {"color", "dimension", "duration", "number", "fontFamily", "shadow"}
 SCOPE_BY_TYPE = {
     "color": {"FRAME_FILL", "SHAPE_FILL", "TEXT_FILL", "STROKE_COLOR"},
     "dimension": {"GAP", "CORNER_RADIUS", "WIDTH_HEIGHT", "FONT_SIZE", "LINE_HEIGHT", "STROKE_FLOAT"},
     "duration": set(),
     "number": {"FONT_WEIGHT", "LINE_HEIGHT"},
     "fontFamily": {"FONT_FAMILY"},
+    "shadow": set(),
 }
 REF = re.compile(r"^\{([a-z][a-z0-9.-]*)\}$")
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
@@ -90,7 +91,7 @@ def check() -> None:
             fail(f"invalid type or Figma scopes: {path}")
         if layer == "primitive" and scopes:
             fail(f"primitive must be hidden from Figma picker: {path}")
-        if layer != "primitive" and not scopes:
+        if layer != "primitive" and not scopes and kind != "shadow":
             fail(f"missing Figma scope: {path}")
         if layer != "primitive" and kind == "color":
             if "foreground" in path or ".text." in path:
@@ -101,7 +102,7 @@ def check() -> None:
                 expected_scope = ["FRAME_FILL", "SHAPE_FILL"]
             if scopes != expected_scope:
                 fail(f"incorrect color picker scope: {path}")
-        if layer != "primitive" and kind != "color":
+        if layer != "primitive" and kind not in ("color", "shadow"):
             if ".type.size." in path:
                 expected_scope = ["FONT_SIZE"]
             elif ".type.weight." in path:
@@ -162,6 +163,8 @@ def check() -> None:
             fail(f"invalid duration: {path}/{mode} = {value}")
         if token["type"] == "number" and (not isinstance(value, (int, float)) or isinstance(value, bool)):
             fail(f"invalid number: {path}/{mode} = {value}")
+        if token["type"] == "shadow" and not (isinstance(value, str) and value.strip()):
+            fail(f"invalid shadow: {path}/{mode}")
         if token["type"] == "fontFamily" and not (isinstance(value, str) and value.strip()):
             fail(f"invalid font family: {path}/{mode}")
         resolving.remove(key)

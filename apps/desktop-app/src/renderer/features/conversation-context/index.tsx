@@ -102,11 +102,19 @@ export function ConversationContextControls({
   const previewTrigger = useRef<HTMLElement | null>(null);
   const attachBody = useRef<HTMLDivElement>(null);
   const runBody = useRef<HTMLDivElement>(null);
+  const notice = useWorkbenchSelector((s) => s.notice);
+  // Receipts are a brief status, not a standing banner. An unknown outcome
+  // must stay until the user acts on it, so it never auto-clears.
   useEffect(() => {
     if (!context.notice) return;
-    const timer = setTimeout(actions.clearNotices, 8000);
+    const timer = setTimeout(actions.clearContextNotice, 8000);
     return () => clearTimeout(timer);
   }, [context.notice, actions]);
+  useEffect(() => {
+    if (!notice || /자동 재전송하지 않습니다/.test(notice)) return;
+    const timer = setTimeout(actions.clearNotice, 8000);
+    return () => clearTimeout(timer);
+  }, [notice, actions]);
   const reobserveButtons = useRef(new Map<string, HTMLButtonElement>());
   const branchBefore = context.branch?.before;
   const pathId = useId();
@@ -286,6 +294,11 @@ export function ConversationContextControls({
         <p role="status" data-context-send-blocked>
           첨부를 보내려면 파일을 다시 확인하고, 입력 형식을 지원하는 모델을
           선택하세요.
+        </p>
+      )}
+      {notice && (
+        <p role="status" data-run-notice className={styles.notice}>
+          {notice}
         </p>
       )}
       {context.notice && (

@@ -5145,6 +5145,7 @@ export type Event =
   | { type: "context.branch.close" }
   | { type: "context.notice"; text: string }
   | { type: "notice.clear" }
+  | { type: "context.notice.clear" }
   | {
       type: "git.branchRestore.edit";
       value: Partial<
@@ -5729,8 +5730,10 @@ function reduceConversationContext(state: State, event: Event): State {
     case "context.notice":
       return { ...state, conversationContext: { ...c, notice: event.text } };
     case "notice.clear":
-      return state.notice || c.notice
-        ? { ...state, notice: "", conversationContext: { ...c, notice: "" } }
+      return state.notice ? { ...state, notice: "" } : state;
+    case "context.notice.clear":
+      return c.notice
+        ? { ...state, conversationContext: { ...c, notice: "" } }
         : state;
     default:
       return state;

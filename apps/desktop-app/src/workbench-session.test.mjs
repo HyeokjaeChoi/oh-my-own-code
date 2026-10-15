@@ -34,7 +34,7 @@ import { join } from "node:path";
 import { createWorkbenchService } from "./workbench-service.mjs";
 import { BASELINE_POLICY } from "./workbench-contract.mjs";
 
-async function fixture(t, parentTitle) {
+async function fixture(t, parentTitle, options = {}) {
   const root = await realpath(
     await mkdtemp(join(tmpdir(), "session-lifecycle-")),
   );
@@ -118,6 +118,8 @@ async function fixture(t, parentTitle) {
   };
   const service = createWorkbenchService({
     trustedTestAdapter: true,
+    titleSyncGraceMs: 20,
+    ...options,
     runtime: {
       workspace: root,
       snapshot: () => ({ state: "connected" }),
@@ -947,7 +949,7 @@ test("permission.list failure keeps the session readable but disables send and r
   assert.equal(again.value.error, undefined);
 });
 
-const settle = () => new Promise((resolve) => setTimeout(resolve, 30));
+const settle = (ms = 150) => new Promise((resolve) => setTimeout(resolve, ms));
 async function observe(f, nativeTitle) {
   f.records.get("sdk-parent").title = nativeTitle;
   await f.service.handle({ type: "snapshot", ...f.target });
@@ -982,4 +984,63 @@ test("a Native title is redacted and bounded before it is stored", async (t) => 
   );
   assert.ok(!stored.includes("sk-aaaa"));
   assert.ok(stored.length <= 120 && !stored.includes("\n"));
+});
+
+const titleUpdates = (f) =>
+  f.calls.filter((c) => c.name === "update" && c.args[0].title).length;
+
+test("the Native title waits while a user mutation is active, then retries", async (t) => {
+  const f = await fixture(t, "Untitled session");
+  let release;
+  f.state.update = (sessionID, patch) =>
+    patch.title === "Untitled session"
+      ? new Promise((resolve) => {
+          release = () => {
+            Object.assign(f.records.get(sessionID), patch);
+            resolve();
+          };
+        })
+      : Object.assign(f.records.get(sessionID), patch);
+  // A user rename (to a placeholder) holds the mutation slot.
+  const held = f.service.handle(
+    f.request("session.rename", { title: "Untitled session" }),
+  );
+  await settle(20);
+  f.records.get("sdk-parent").title = "Generated";
+  await f.service.handle({ type: "snapshot", ...f.target });
+  await settle(300);
+  assert.equal(
+    f.calls.some((c) => c.name === "update" && c.args[0].title === "Generated"),
+    false,
+    "no automatic rename while a user mutation is active",
+  );
+  release();
+  await held;
+  // The deferral budget is spent; the next observation retries.
+  assert.equal(await observe(f, "Generated"), "Generated");
+});
+
+test("an automatic rename never overwrites a user rename that landed first", async (t) => {
+  const f = await fixture(t, "Untitled session", { titleSyncGraceMs: 80 });
+  f.records.get("sdk-parent").title = "Generated";
+  await f.service.handle({ type: "snapshot", ...f.target });
+  const renamed = await f.service.handle(
+    f.request("session.rename", { title: "Mine" }),
+  );
+  assert.equal(renamed.ok, true);
+  await settle(400);
+  assert.equal(titleUpdates(f), 1, "only the user's rename reached Native");
+  assert.equal(
+    (await f.service.handle({ type: "snapshot", ...f.target })).value
+      .sessions[0].title,
+    "Mine",
+  );
+});
+
+test("Native default titles are never stored", async (t) => {
+  const f = await fixture(t, "Untitled session");
+  assert.equal(
+    await observe(f, "New session - 2026-10-15T05:33:17.421Z"),
+    "Untitled session",
+  );
 });

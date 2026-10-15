@@ -20224,3 +20224,17 @@ test("a snapshot whose workspaces carry the host's read-only probe metadata is a
     seed(s, snapshot(2, "a", { workspaces: [{ ...workspace(), ...extra }] }));
   assert.equal(s.getState().snapshot, before);
 });
+
+test("receipt notices clear independently of the conversation-context notice", () => {
+  const s = createWorkbenchStore();
+  s.dispatch({ type: "context.notice", text: "전송됨" });
+  const before = s.getState();
+  s.dispatch({ type: "notice.clear" });
+  assert.equal(s.getState(), before, "page clear leaves context notice alone");
+  assert.equal(s.getState().conversationContext.notice, "전송됨");
+  s.dispatch({ type: "context.notice.clear" });
+  assert.equal(s.getState().conversationContext.notice, "");
+  const cleared = s.getState();
+  s.dispatch({ type: "context.notice.clear" });
+  assert.equal(s.getState(), cleared, "clearing nothing keeps the state");
+});

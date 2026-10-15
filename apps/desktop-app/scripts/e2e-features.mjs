@@ -485,6 +485,31 @@ try {
     }
   });
 
+  await check("forced-colors-borders", async () => {
+    // Borderless surfaces keep a transparent 1px border, which Windows High
+    // Contrast (forced colors) turns into a visible system-colour outline.
+    await page.emulateMedia({ forcedColors: "active" });
+    try {
+      await page.getByRole("button", { name: "더 보기", exact: true }).click();
+      const menu = page.getByRole("menu");
+      await expect(menu).toBeVisible();
+      const border = await menu.evaluate((el) => {
+        const style = getComputedStyle(el);
+        return {
+          width: style.borderTopWidth,
+          style: style.borderTopStyle,
+          color: style.borderTopColor,
+        };
+      });
+      assert.equal(border.width, "1px");
+      assert.equal(border.style, "solid");
+      assert.notEqual(border.color, "rgba(0, 0, 0, 0)");
+      await page.keyboard.press("Escape");
+    } finally {
+      await page.emulateMedia({ forcedColors: "none" });
+    }
+  });
+
   await check("preferences-theme", async () => {
     await openSettings(page);
     const theme = dialog().getByLabel("테마");

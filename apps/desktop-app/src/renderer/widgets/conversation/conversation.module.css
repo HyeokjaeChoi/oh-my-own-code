@@ -119,7 +119,7 @@
 }
 
 .message [data-message-action]:hover:not(:disabled) {
-  background: var(--omoc-fill-hover);
+  background: var(--omoc-semantic-color-fill-hover);
   color: var(--omoc-semantic-color-text-primary);
 }
 
@@ -129,7 +129,7 @@
   opacity: 0.45;
 }
 
-@media (pointer: coarse) {
+@media (any-pointer: coarse), (hover: none) {
   .message [data-message-action] {
     opacity: 1;
   }
@@ -254,7 +254,7 @@
   cursor: pointer;
 }
 .copyControl button:hover:not(:disabled) {
-  background: var(--omoc-fill-hover);
+  background: var(--omoc-semantic-color-fill-hover);
 }
 .copyControl [role="status"] {
   overflow-wrap: anywhere;
@@ -438,13 +438,13 @@
 
 /* Filled, not ringed: buttons are identified by their glyph (3:1). */
 .roundButton {
-  background: var(--omoc-fill-subtle);
+  background: var(--omoc-semantic-color-fill-subtle);
 }
 
 .roundButton:hover:not(:disabled),
 .slashTrigger:hover:not(:disabled),
 .chip:hover:not(:disabled) {
-  background: var(--omoc-fill-hover);
+  background: var(--omoc-semantic-color-fill-hover);
 }
 
 .roundButton:focus-visible,
@@ -538,11 +538,11 @@
   padding: 12px;
   overflow: auto;
   overscroll-behavior: contain;
-  border: 0;
+  border: 1px solid transparent;
   border-radius: 14px;
   background: var(--omoc-semantic-color-surface-raised);
   color: var(--omoc-semantic-color-text-primary);
-  box-shadow: var(--omoc-elevation-overlay);
+  box-shadow: var(--omoc-semantic-shadow-overlay);
   font-size: 13px;
   line-height: 20px;
   position-area: top span-left;
@@ -654,6 +654,7 @@
 
 .permission {
   padding: 10px 14px 12px;
+  border: 1px solid transparent;
   border-radius: 12px;
   background: var(--omoc-semantic-color-permission-pending-background);
   overflow-wrap: anywhere;
@@ -699,21 +700,18 @@
 }
 
 .toolCall {
+  border: 1px solid transparent;
   border-radius: 10px;
 }
 
 .toolCall[open] {
   margin-block: 8px;
   padding-bottom: 8px;
-  background: var(--omoc-fill-subtle);
+  background: var(--omoc-semantic-color-fill-subtle);
 }
 
 .toolCall[open] > :not(summary) {
   margin-inline: 12px;
-}
-
-.toolCall[open] > .rawDetails {
-  margin-inline: 4px;
 }
 
 /* One-line disclosure: chevron, summary, optional state. */
@@ -734,7 +732,7 @@
 }
 
 .disclosure:hover {
-  background: var(--omoc-fill-subtle);
+  background: var(--omoc-semantic-color-fill-subtle);
 }
 
 .chevron {
@@ -753,10 +751,15 @@ details[open] > .disclosure > .chevron {
   white-space: nowrap;
 }
 
+/* A small badge right after the summary text, not pushed to the far edge. */
 .summaryState {
   flex: none;
-  margin-inline-start: auto;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--omoc-semantic-color-fill-hover);
+  color: var(--omoc-semantic-color-text-primary);
   font-size: 12px;
+  line-height: 20px;
 }
 
 .toolDetail[data-tool-state="error"] .toolCall > .disclosure .summaryState {
@@ -784,7 +787,7 @@ details[open] > .disclosure > .chevron {
   padding: 12px;
   overflow-y: auto;
   border-radius: 8px;
-  background: var(--omoc-fill-subtle);
+  background: var(--omoc-semantic-color-fill-hover);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   font:
@@ -809,10 +812,10 @@ details[open] > .disclosure > .chevron {
   padding: 8px;
   overflow-y: auto;
   overscroll-behavior: contain;
-  border: 0;
+  border: 1px solid transparent;
   border-radius: 16px;
   background: var(--omoc-semantic-color-surface-raised);
-  box-shadow: var(--omoc-elevation-overlay);
+  box-shadow: var(--omoc-semantic-shadow-overlay);
   font-size: 13px;
   line-height: 20px;
 }
@@ -988,12 +991,20 @@ details[open] > .disclosure > .chevron {
   overflow-wrap: anywhere;
 }
 .toolPath {
-  font: inherit;
+  display: block;
+  max-width: 100%;
+  font:
+    12px/20px ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
   background: none;
   border: 0;
   padding: 0;
   color: inherit;
+  text-align: start;
   text-decoration: underline;
+  overflow-wrap: anywhere;
   cursor: pointer;
 }
 .toolDiff {
@@ -1016,6 +1027,7 @@ details[open] > .disclosure > .chevron {
 }
 .toolPermission {
   margin-block: 8px;
+  border: 1px solid transparent;
   padding: 8px 12px;
   border-radius: 8px;
   background: var(--omoc-semantic-color-permission-pending-background);

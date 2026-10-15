@@ -306,6 +306,7 @@ export function createWorkbenchService({
   confirmSkillRuntime = async () => false,
   confirmAgentRuntime = async () => false,
   deadlineMs = 10000,
+  titleSyncGraceMs = 1500,
   trustedTestAdapter = false,
   registry: registryInput,
   runtimeReady,
@@ -2939,27 +2940,54 @@ export function createWorkbenchService({
   // Native names a session after its first reply. While the stored title is
   // still an app placeholder, persist that title through the normal
   // session.rename path (journaled, redacted, bounded); a user-chosen title is
-  // never touched. One attempt per (session, title); BUSY retries later.
+  // never touched. The rename waits for user mutations (it must never make a
+  // send or permission reply fail with BUSY), re-checks the placeholder when it
+  // runs, and is retried a bounded number of times after a transient failure.
   const titleSyncMarks = new Map();
+  const titleSyncTries = new Map();
+  const titleSyncOps = new Set();
+  let lastUserMutationAt = -Infinity;
   function syncNativeTitle(id, raw, idle) {
+    for (const key of [...titleSyncMarks.keys()])
+      if (!committed.sessions.has(key)) {
+        titleSyncMarks.delete(key);
+        titleSyncTries.delete(key);
+      }
     const title = nativeSessionTitle(raw);
     const current = committed.sessions.get(id);
     if (
       !title ||
+      !idle ||
       !current ||
       current.parentSessionId ||
       current.unavailable ||
       current.lock ||
-      !idle ||
       !isPlaceholderTitle(current.title) ||
       titleSyncMarks.get(id) === title
     )
       return;
     titleSyncMarks.set(id, title);
-    const operationId = randomUUID();
-    setImmediate(() => {
-      host
-        .handle(
+    scheduleTitleSync(id, title, 0);
+  }
+  function scheduleTitleSync(id, title, defers) {
+    const timer = setTimeout(async () => {
+      const current = committed.sessions.get(id);
+      if (!current || current.unavailable || !isPlaceholderTitle(current.title))
+        return;
+      if (
+        current.lock ||
+        host.mutationActive() ||
+        performance.now() - lastUserMutationAt < titleSyncGraceMs
+      ) {
+        if (defers < 5) scheduleTitleSync(id, title, defers + 1);
+        else titleSyncMarks.delete(id);
+        return;
+      }
+      const operationId = randomUUID();
+      titleSyncOps.add(operationId);
+      let result;
+      try {
+        result = await host.handle(
           {
             version: 2,
             runtimeEpoch: host.epoch,
@@ -2973,12 +3001,19 @@ export function createWorkbenchService({
             },
           },
           "internal:title-sync",
-        )
-        .then((result) => {
-          if (result?.code === "BUSY") titleSyncMarks.delete(id);
-        })
-        .catch(() => titleSyncMarks.delete(id));
-    });
+        );
+      } catch {
+        result = undefined;
+      }
+      titleSyncOps.delete(operationId);
+      if (result?.ok || ["CANCELLED", "NOT_FOUND"].includes(result?.code))
+        return;
+      const tries = (titleSyncTries.get(id) ?? 0) + 1;
+      titleSyncTries.set(id, tries);
+      // The next refresh retries; give up after a few transient failures.
+      if (tries < 3) titleSyncMarks.delete(id);
+    }, titleSyncGraceMs);
+    timer.unref?.();
   }
   async function refresh(original) {
     const s = {
@@ -4962,6 +4997,10 @@ export function createWorkbenchService({
       s.generation++;
       await idleIdentity(w, s);
       if (request.type === "session.rename") {
+        // An automatic Native-title rename never overwrites a title that is no
+        // longer a placeholder (a user rename may have landed first).
+        if (titleSyncOps.has(request.requestId) && !isPlaceholderTitle(s.title))
+          fail("CANCELLED");
         dispatched = true;
         await call(client.session.update, {
           sessionID: s.sdkId,
@@ -5777,12 +5816,16 @@ export function createWorkbenchService({
     fail("INVALID_REQUEST");
   }
   async function handleRequest(value) {
+    let userMutation = false;
     let request;
     let owned;
     let result;
     const started = performance.now();
     try {
       request = validateRequest(value);
+      userMutation =
+        mutationTypes.has(request.type) && !titleSyncOps.has(request.requestId);
+      if (userMutation) lastUserMutationAt = performance.now();
       if (request.type !== "snapshot" && request.type !== "diagnostics.list")
         await waitForReady(ready, currentScope().signal);
       if (mutationTypes.has(request.type)) {
@@ -5825,6 +5868,7 @@ export function createWorkbenchService({
       result.value?.status !== "duplicate"
     )
       observe(request, result, started, owned);
+    if (userMutation) lastUserMutationAt = performance.now();
     return result;
   }
   return {

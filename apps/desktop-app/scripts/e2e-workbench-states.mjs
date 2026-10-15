@@ -1653,7 +1653,8 @@ try {
         page.getByText("중단을 요청했습니다 · 상태 확인 중", {
           exact: true,
         }),
-      ).toBeHidden();
+        // Cleared by the idle observation, well inside the 8s auto-clear.
+      ).toBeHidden({ timeout: 3000 });
       await expect(preview).toContainText("프로젝트 구조 참고 문서");
       assert.equal(await preview.getAttribute("data-interactive"), "false");
       const previewPath = join(run, "desktop-link-preview-synthetic.png");
@@ -1715,7 +1716,9 @@ try {
         .filter({ hasText: "unknown_tool" });
       // The tool call is a one-line summary; expand it, then its raw details.
       await unknownTool.locator("summary").first().click();
-      await unknownTool.getByText("도구 입력과 결과", { exact: true }).click();
+      await expect(
+        unknownTool.getByText("입력", { exact: true }),
+      ).toBeVisible();
       assert.equal(
         await page.locator(".tool-detail img, .tool-detail script").count(),
         0,

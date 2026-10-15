@@ -6,27 +6,6 @@
   background: var(--omoc-semantic-color-canvas);
   font-synthesis: none;
 }
-/* Borderless surfaces: translucent text-colour fills and one overlay shadow,
-   derived from tokens so both themes follow the palette. */
-:root,
-[data-theme="dark"] {
-  --omoc-fill-subtle: color-mix(
-    in srgb,
-    var(--omoc-semantic-color-text-primary) 6%,
-    transparent
-  );
-  --omoc-fill-hover: color-mix(
-    in srgb,
-    var(--omoc-semantic-color-text-primary) 11%,
-    transparent
-  );
-  --omoc-elevation-overlay:
-    0 1px 3px rgb(0 0 0 / 10%), 0 8px 28px rgb(0 0 0 / 16%);
-}
-[data-theme="dark"] {
-  --omoc-elevation-overlay:
-    0 1px 3px rgb(0 0 0 / 40%), 0 8px 28px rgb(0 0 0 / 50%);
-}
 *,
 *::before,
 *::after {
