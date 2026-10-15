@@ -4549,6 +4549,7 @@ export function createWindowWorkbench(
       dispatch({ type: "context.remove", capabilityId }),
     closeContextPreview: () => dispatch({ type: "context.preview.close" }),
     clearNotice: () => dispatch({ type: "notice.clear" }),
+    clearError: () => dispatch({ type: "error.clear" }),
     clearContextNotice: () => dispatch({ type: "context.notice.clear" }),
     sendContextMessage,
     sendMessageToSession,

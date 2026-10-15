@@ -424,7 +424,9 @@ try {
     .getByRole("textbox", { name: "세션 이름", exact: true })
     .fill("   ");
   await page.getByRole("button", { name: "이름 저장", exact: true }).click();
-  await expect(page.getByRole("alert")).toContainText("1~120");
+  await expect(
+    page.getByRole("alert").filter({ hasText: "1~120" }),
+  ).toBeVisible();
   await page
     .getByRole("textbox", { name: "세션 이름", exact: true })
     .fill(renamedTitle);

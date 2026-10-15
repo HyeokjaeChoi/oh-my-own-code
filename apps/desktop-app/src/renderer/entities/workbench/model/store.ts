@@ -2178,6 +2178,8 @@ export type State = {
   lists: Pick<WorkbenchSnapshot, "workspaces" | "sessions">;
   connection: string;
   error: string;
+  // Operation type behind `error`, so the UI can show it near where the user acted.
+  errorOp?: string | undefined;
   notice: string;
   interruptNotice: {
     operationId: string;
@@ -5145,6 +5147,7 @@ export type Event =
   | { type: "context.branch.close" }
   | { type: "context.notice"; text: string }
   | { type: "notice.clear" }
+  | { type: "error.clear" }
   | { type: "context.notice.clear" }
   | {
       type: "git.branchRestore.edit";
@@ -5444,6 +5447,7 @@ function select(state: State, workspaceId?: string, sessionId?: string): State {
     configurationNotice: "",
     diagnostics: null,
     error: "",
+    errorOp: undefined,
     notice: "",
     interruptNotice: null,
     files: { ...initialFiles(), generation: state.files.generation + 1 },
@@ -5792,6 +5796,8 @@ function reduceWorkbench(state: State, event: Event): State {
   if (event.type.startsWith("context."))
     return reduceConversationContext(state, event);
   switch (event.type) {
+    case "error.clear":
+      return state.error ? { ...state, error: "", errorOp: undefined } : state;
     case "line.feedback.select": {
       if (!["file", "git"].includes(event.kind)) return state;
       const source = currentLineFeedbackSource(state, event.kind),
@@ -7623,7 +7629,8 @@ function reduceWorkbench(state: State, event: Event): State {
         ),
         lists: { workspaces: next.workspaces, sessions: next.sessions },
         connection: next.state,
-        error: "",
+        // A rejection stays until dismissed, retried or the selection changes.
+        ...(selectionChanged ? { error: "", errorOp: undefined } : {}),
         catalog:
           changed || selectionChanged || runtimeChanged ? null : state.catalog,
         files:
@@ -7975,7 +7982,13 @@ function reduceWorkbench(state: State, event: Event): State {
         next.variant === draft.variant &&
         next.variantCleared === draft.variantCleared
         ? state
-        : { ...state, drafts: { ...state.drafts, [event.key]: next } };
+        : {
+            ...state,
+            drafts: { ...state.drafts, [event.key]: next },
+            ...(state.errorOp === "message.send" && next.text !== draft.text
+              ? { error: "", errorOp: undefined }
+              : {}),
+          };
     }
     case "intent": {
       const key = operationKey(event.intent.epoch, event.intent.id);
@@ -8465,6 +8478,7 @@ function reduceWorkbench(state: State, event: Event): State {
           },
         },
         error: "",
+        errorOp: undefined,
         notice: "",
         interruptNotice: null,
       };
@@ -8600,6 +8614,7 @@ function reduceWorkbench(state: State, event: Event): State {
           [key!]: { ...intent, status: "failed" },
         },
         error: event.code,
+        errorOp: intent.operation.type,
         gitBranchRestore: gitBranchRestoreMutationState(
           next,
           intent,
@@ -9218,6 +9233,20 @@ function reduceWorkbench(state: State, event: Event): State {
             snapshot: { ...next.snapshot, workspaces, sessions },
           };
       }
+      if (
+        failed &&
+        runtimeCurrent &&
+        !intent.lookupOnly &&
+        currentIntent(next, intent)
+      )
+        next = {
+          ...next,
+          error:
+            receipt.result?.kind === "rejected"
+              ? receipt.result.code
+              : "RUNTIME_ERROR",
+          errorOp: intent.operation.type,
+        };
       if (accepted && next.files.visible)
         next = {
           ...next,

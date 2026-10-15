@@ -2,10 +2,14 @@ import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { GitBranch, SquarePen } from "lucide-react";
 import { Button } from "@workbench/ui";
 import {
+  composerOperation,
+  rejectionMessage,
   selectors,
+  transientRejection,
   useWorkbenchSelector,
   useWindowWorkbench,
 } from "../../entities/workbench/index.js";
+import { OPEN_SETTINGS_EVENT } from "../../shared/palette/index.js";
 import type {
   ContextSelection,
   WorkbenchMessage,
@@ -103,6 +107,19 @@ export function ConversationContextControls({
   const attachBody = useRef<HTMLDivElement>(null);
   const runBody = useRef<HTMLDivElement>(null);
   const notice = useWorkbenchSelector((s) => s.notice);
+  const rejection = useWorkbenchSelector((s) =>
+    composerOperation(s.errorOp) ? s.error : "",
+  );
+  const catalog = useWorkbenchSelector(selectors.catalog);
+  // The conversation widget already shows a standing alert for this case.
+  const noModels =
+    catalog?.models.status === "available" &&
+    catalog.models.entries.length === 0;
+  useEffect(() => {
+    if (!rejection || !transientRejection(rejection)) return;
+    const timer = setTimeout(actions.clearError, 10000);
+    return () => clearTimeout(timer);
+  }, [rejection, actions]);
   // Receipts are a brief status, not a standing banner. An unknown outcome
   // must stay until the user acts on it, so it never auto-clears.
   useEffect(() => {
@@ -294,6 +311,24 @@ export function ConversationContextControls({
         <p role="status" data-context-send-blocked>
           첨부를 보내려면 파일을 다시 확인하고, 입력 형식을 지원하는 모델을
           선택하세요.
+        </p>
+      )}
+      {rejection && !(rejection === "AUTH_REQUIRED" && noModels) && (
+        <p role="alert" data-reject-notice={rejection}>
+          {rejectionMessage(rejection)}{" "}
+          {rejection === "AUTH_REQUIRED" && (
+            <Button
+              size="compact"
+              onClick={() =>
+                window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))
+              }
+            >
+              설정 열기
+            </Button>
+          )}{" "}
+          <Button size="compact" onClick={actions.clearError}>
+            닫기
+          </Button>
         </p>
       )}
       {notice && (

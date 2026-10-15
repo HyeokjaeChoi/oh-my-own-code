@@ -675,6 +675,20 @@ try {
   await expect(page.getByRole("region", { name: "모델 제공자" })).toHaveCount(
     0,
   );
+  // Sending without a provider is rejected by the host (AUTH_REQUIRED with a
+  // receipt): the reason stays visible after the post-send snapshot, shown once
+  // (the no-models alert covers it), and the typed text is kept for a retry.
+  const composer = page.getByRole("textbox", { name: "메시지 작성" });
+  await composer.fill("거절 확인");
+  await composer.press("Enter");
+  await page.waitForTimeout(1500);
+  const reasons = page
+    .locator('[role="alert"]')
+    .filter({ hasText: "모델 제공자" });
+  await expect(reasons).toHaveCount(1);
+  await expect(reasons).toBeVisible();
+  await expect(composer).toHaveValue("거절 확인");
+  await composer.fill("");
   const rendererCapabilities = await page.evaluate(() => ({
     bridge: Object.keys(window.desktopBridge).sort(),
     require: typeof window.require,
