@@ -23,44 +23,12 @@
   background: var(--omoc-semantic-color-danger-background);
 }
 
-.task {
-  min-width: 0;
-}
-
-.taskGroup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 16px;
-}
-
-.taskGroup[hidden] {
-  display: none;
-}
-
-.taskGroup > details {
-  flex: 1 1 220px;
-}
-
-.taskGroup > details[open] {
-  flex-basis: 100%;
-}
-
-.task > summary,
 .list summary,
 .branch summary {
   min-height: var(--omoc-component-size-control-hit-target);
   padding-block: 6px;
   cursor: pointer;
   overflow-wrap: anywhere;
-}
-
-.task > summary {
-  color: var(--omoc-semantic-color-text-secondary);
-}
-
-.task[open] > summary {
-  color: var(--omoc-semantic-color-text-primary);
-  font-weight: 500;
 }
 
 .body {
