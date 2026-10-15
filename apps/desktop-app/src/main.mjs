@@ -1052,12 +1052,31 @@ app.whenReady().then(async () => {
       });
       return result.response === 1;
     },
-    async confirmSessionRemoval({ title, workspaceName, path }) {
+    async confirmSessionRemoval({
+      title,
+      workspaceName,
+      path,
+      sessionId,
+      updatedAt,
+    }) {
+      // Same placeholder mapping as the renderer's session list ("새 세션").
+      const shown =
+        title === "Untitled session" || title === "Workbench"
+          ? "새 세션"
+          : title;
+      const identity = [
+        updatedAt
+          ? `마지막 활동: ${new Date(updatedAt).toLocaleString("ko-KR")}`
+          : "",
+        sessionId ? `세션 ID: ${String(sessionId).slice(0, 8)}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n");
       const result = await dialog.showMessageBox(mainWindow, {
         type: "warning",
         title: "대화 기록 삭제",
-        message: `“${title}” 대화 기록을 삭제하시겠습니까?`,
-        detail: `작업공간: ${workspaceName}\n${path}\n대화 기록만 삭제하며 프로젝트 파일과 폴더는 유지됩니다.`,
+        message: `“${shown}” 대화 기록을 삭제하시겠습니까?`,
+        detail: `작업공간: ${workspaceName}\n${path}\n${identity ? `${identity}\n` : ""}대화 기록만 삭제하며 프로젝트 파일과 폴더는 유지됩니다.`,
         buttons: ["취소", "대화 기록 삭제"],
         defaultId: 0,
         cancelId: 0,

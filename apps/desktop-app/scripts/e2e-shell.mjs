@@ -8,7 +8,15 @@ export async function openMoreMenuItem(page, name) {
   await page.getByRole("menuitem", { name, exact: true }).click();
 }
 
-export const openSettings = (page) => openMoreMenuItem(page, "설정·단축키");
+/** Settings live in the sidebar footer; open the nav first when it is collapsed. */
+export async function openSettings(page) {
+  const button = page.getByRole("button", { name: "설정", exact: true });
+  if (!(await button.isVisible()))
+    await page
+      .getByRole("button", { name: "작업 공간 탐색 열기", exact: true })
+      .click();
+  await button.click();
+}
 
 /** Opens the sidebar workspace switcher menu and returns the menu locator. */
 export async function openWorkspaceMenu(page) {

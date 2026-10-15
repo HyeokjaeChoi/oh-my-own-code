@@ -423,6 +423,13 @@ try {
     async () => {
       await openMoreMenuItem(page, "자동화");
       const sheet = dialog();
+      // Closing a sheet opened from "더 보기" returns focus to that button.
+      await page.keyboard.press("Escape");
+      await expect(page.getByRole("dialog")).toHaveCount(0);
+      await expect(
+        page.getByRole("button", { name: "더 보기", exact: true }),
+      ).toBeFocused();
+      await openMoreMenuItem(page, "자동화");
       await sheet.getByRole("button", { name: "작업 추가" }).click();
       await sheet.getByLabel("이름").fill("E2E script job");
       await sheet.getByLabel("작업 공간").selectOption(workspace.id);

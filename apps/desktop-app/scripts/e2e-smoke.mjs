@@ -447,6 +447,11 @@ try {
   await expect(page.getByRole("textbox", { name: "메시지 작성" })).toBeVisible({
     timeout: CONNECT_TIMEOUT_MS,
   });
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected", {
+    timeout: CONNECT_TIMEOUT_MS,
+  });
   // A healthy connection shows no status chip; the unhealthy chips must be gone.
   for (const text of ["런타임 확인 중…", "연결 끊김", "사용 불가"])
     await expect(page.getByText(text, { exact: true })).toHaveCount(0, {

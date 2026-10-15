@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type RefObject,
+} from "react";
 import { Button, ModalSheet } from "@workbench/ui";
 import { Bell } from "lucide-react";
 import {
@@ -90,7 +96,10 @@ const KIND: Record<string, string> = {
 // In-app center is the source of truth; OS notifications are an optional, generic-text echo.
 export function NotificationCenter({
   badgeOnly = false,
+  returnFocusRef,
 }: {
+  /** Where focus goes after a menu/event-opened sheet; the bell keeps its own. */
+  returnFocusRef?: RefObject<HTMLElement | null>;
   /** Header "더 보기" owns the entry point; show the bell only while unread. */
   badgeOnly?: boolean;
 }) {
@@ -99,6 +108,7 @@ export function NotificationCenter({
   const snapshot = useWorkbenchSelector(selectors.snapshot);
   const [list, setList] = useState<Notice[]>(load);
   const [open, setOpen] = useState(false);
+  const viaBell = useRef(false);
   const prev = useRef<NoticeSnapshot | undefined>(undefined);
   const jobMark = useRef(loadMark());
   const listRef = useRef(list);
@@ -192,7 +202,10 @@ export function NotificationCenter({
   }, []);
 
   useEffect(() => {
-    const onOpen = () => setOpen(true);
+    const onOpen = () => {
+      viaBell.current = false;
+      setOpen(true);
+    };
     window.addEventListener(OPEN_NOTIFICATIONS_EVENT, onOpen);
     return () => window.removeEventListener(OPEN_NOTIFICATIONS_EVENT, onOpen);
   }, []);
@@ -209,13 +222,21 @@ export function NotificationCenter({
           size="compact"
           aria-label={`알림 ${unread}건 읽지 않음`}
           title="알림"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            viaBell.current = true;
+            setOpen(true);
+          }}
         >
           <Bell size={18} />
           {unread > 0 && <span className={styles.badge}>{unread}</span>}
         </Button>
       )}
-      <ModalSheet open={open} onOpenChange={setOpen} title="알림">
+      <ModalSheet
+        open={open}
+        onOpenChange={setOpen}
+        title="알림"
+        {...(returnFocusRef && !viaBell.current && { returnFocusRef })}
+      >
         <div className={styles.toolbar}>
           <Button
             size="compact"
