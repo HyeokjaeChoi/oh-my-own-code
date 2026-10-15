@@ -177,7 +177,11 @@ export function PreferencesSheetView(props: {
   );
 }
 
-export function PreferencesButton() {
+export function PreferencesButton({
+  hideTrigger = false,
+}: {
+  hideTrigger?: boolean;
+}) {
   const { preferences, update } = usePreferences();
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -204,14 +208,16 @@ export function PreferencesButton() {
   }, []);
   return (
     <>
-      <Button
-        size="compact"
-        aria-label="설정·단축키"
-        title="설정·단축키"
-        onClick={() => setOpen(true)}
-      >
-        <Settings size={18} />
-      </Button>
+      {!hideTrigger && (
+        <Button
+          size="compact"
+          aria-label="설정·단축키"
+          title="설정·단축키"
+          onClick={() => setOpen(true)}
+        >
+          <Settings size={18} />
+        </Button>
+      )}
       <ModalSheet open={open} onOpenChange={setOpen} title="설정">
         <PreferencesSheetView preferences={preferences} onChange={update} />
       </ModalSheet>

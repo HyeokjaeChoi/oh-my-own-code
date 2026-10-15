@@ -88,7 +88,12 @@ const KIND: Record<string, string> = {
 };
 
 // In-app center is the source of truth; OS notifications are an optional, generic-text echo.
-export function NotificationCenter() {
+export function NotificationCenter({
+  badgeOnly = false,
+}: {
+  /** Header "더 보기" owns the entry point; show the bell only while unread. */
+  badgeOnly?: boolean;
+}) {
   const { actions } = useWindowWorkbench();
   const lists = useWorkbenchSelector(selectors.lists);
   const snapshot = useWorkbenchSelector(selectors.snapshot);
@@ -199,15 +204,17 @@ export function NotificationCenter() {
   };
   return (
     <>
-      <Button
-        size="compact"
-        aria-label={`알림 ${unread}건 읽지 않음`}
-        title="알림"
-        onClick={() => setOpen(true)}
-      >
-        <Bell size={18} />
-        {unread > 0 && <span className={styles.badge}>{unread}</span>}
-      </Button>
+      {(!badgeOnly || unread > 0) && (
+        <Button
+          size="compact"
+          aria-label={`알림 ${unread}건 읽지 않음`}
+          title="알림"
+          onClick={() => setOpen(true)}
+        >
+          <Bell size={18} />
+          {unread > 0 && <span className={styles.badge}>{unread}</span>}
+        </Button>
+      )}
       <ModalSheet open={open} onOpenChange={setOpen} title="알림">
         <div className={styles.toolbar}>
           <Button

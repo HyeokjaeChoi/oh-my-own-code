@@ -10,6 +10,7 @@ import {
   type ExportSummary,
 } from "../../shared/data-transfer/index.js";
 import type { WorkbenchMessage } from "../../shared/api/index.js";
+import { OPEN_DATA_EVENT } from "../../shared/palette/index.js";
 import styles from "./data.module.css";
 
 type Due = { id: string; at: string; title: string };
@@ -310,18 +311,27 @@ function Wipe() {
 export function DataButton(props: {
   session: { id: string; title: string } | undefined;
   messages: WorkbenchMessage[];
+  /** Header menu opens the sheet through OPEN_DATA_EVENT instead. */
+  hideTrigger?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener(OPEN_DATA_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_DATA_EVENT, onOpen);
+  }, []);
   return (
     <>
-      <Button
-        size="compact"
-        aria-label="데이터·내보내기"
-        title="데이터·내보내기"
-        onClick={() => setOpen(true)}
-      >
-        <Database size={18} />
-      </Button>
+      {!props.hideTrigger && (
+        <Button
+          size="compact"
+          aria-label="데이터·내보내기"
+          title="데이터·내보내기"
+          onClick={() => setOpen(true)}
+        >
+          <Database size={18} />
+        </Button>
+      )}
       <ModalSheet open={open} onOpenChange={setOpen} title="데이터">
         <Export session={props.session} messages={props.messages} />
         <Archives />

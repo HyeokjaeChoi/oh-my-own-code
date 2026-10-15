@@ -253,7 +253,11 @@ const blank: Form = {
   permissionMode: "read_plan",
 };
 
-export function AutomationButton() {
+export function AutomationButton({
+  hideTrigger = false,
+}: {
+  hideTrigger?: boolean;
+}) {
   const lists = useWorkbenchSelector(selectors.lists);
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<AutomationList>();
@@ -286,14 +290,16 @@ export function AutomationButton() {
     lists.workspaces.find((w) => w.id === id)?.name ?? "(등록 해제됨)";
   return (
     <>
-      <Button
-        size="compact"
-        aria-label="자동화"
-        title="자동화"
-        onClick={() => setOpen(true)}
-      >
-        <Clock size={18} />
-      </Button>
+      {!hideTrigger && (
+        <Button
+          size="compact"
+          aria-label="자동화"
+          title="자동화"
+          onClick={() => setOpen(true)}
+        >
+          <Clock size={18} />
+        </Button>
+      )}
       <ModalSheet open={open} onOpenChange={setOpen} title="자동화">
         {error && <p role="alert">{error}</p>}
         {data?.storeError && (
