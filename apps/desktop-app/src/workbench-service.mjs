@@ -1292,16 +1292,6 @@ export function createWorkbenchService({
         delta,
         verifiedNativeSessionIds: [...(owner.verifiedNativeIds ?? [])],
       });
-      // Like the startup reconciler (creates only): make a settled bootstrap
-      // create durable now. Left as an uncheckpointed tail, a crash would hold
-      // every relaunch (unconfirmed_tail); a failed checkpoint keeps that.
-      if (
-        !partial &&
-        owner.bootstrapTask?.step === "native.create" &&
-        owner.bootstrapTask.completed &&
-        typeof registry.checkpoint === "function"
-      )
-        await registry.checkpoint().catch(() => {});
       Object.assign(record, completed.receipt);
       if (partial) hydrateRegistry(true);
       else {

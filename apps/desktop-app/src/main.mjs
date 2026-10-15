@@ -735,9 +735,6 @@ app.whenReady().then(async () => {
       ownerNonce: owner.getNonce(),
       phase: "startup",
     });
-    // The store was ready (no tail), so this confirms only the intent record;
-    // left uncheckpointed, a crash before a clean quit would hold every relaunch.
-    await store.checkpoint();
     if (e2eScenario === "startup-failure") {
       throw new Error("event_host_missing_e2e_fixture");
     }
