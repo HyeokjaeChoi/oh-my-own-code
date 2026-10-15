@@ -1087,6 +1087,8 @@ export async function openWorkspaceRegistry({
   recoveryReason,
   taskAuthoritySource,
   permissionReconciliationSource,
+  // Tests turn this off to model a process that dies before its idle checkpoint.
+  idleCheckpoint = true,
 } = {}) {
   need(validWireId(runtimeEpoch));
   // Main supplies this private source at construction. recordTask accepts no
@@ -1322,6 +1324,33 @@ export async function openWorkspaceRegistry({
         return true;
     return false;
   }
+  // Idle checkpoint: once every operation is terminal and every task settled,
+  // confirm what this live, unpoisoned writer has acknowledged, exactly as the
+  // shutdown checkpoint does; otherwise a crash leaves an unconfirmed tail that
+  // holds every relaunch. Queued behind the current write (coalesced, never
+  // delaying its caller) and re-checked when it runs. A failure poisons the
+  // writer, which status()/readView() then report as recovery_required.
+  let idleCheckpointQueued = false;
+  let closing = false;
+  function queueIdleCheckpoint() {
+    if (!idleCheckpoint || idleCheckpointQueued) return;
+    idleCheckpointQueued = true;
+    void serialized(async () => {
+      idleCheckpointQueued = false;
+      if (
+        closing ||
+        closedRegistry ||
+        storeReason() ||
+        [...root.operations.values()].some(
+          (operation) => !operation.terminal,
+        ) ||
+        [...root.tasks.values()].some((task) => task.phase !== "settled")
+      )
+        return;
+      const { sequence, checkpointSequence } = journal.status();
+      if (sequence !== checkpointSequence) await journal.checkpoint();
+    }).catch(() => {});
+  }
   async function commit(payload) {
     // Apply a delta to the LATEST root under the same queue that serializes all
     // admissions and completions. No stale whole-root candidates are accepted.
@@ -1347,6 +1376,7 @@ export async function openWorkspaceRegistry({
       validatedAdmissionKeys.add(key(payload.identity));
       if (!payload.rejectionCode) liveTaskAdmissions.add(key(payload.identity));
     }
+    queueIdleCheckpoint();
   }
   function readView() {
     need(!closedRegistry, "closed");
@@ -2898,12 +2928,16 @@ export async function openWorkspaceRegistry({
         validatedAdmissionKeys = new Set(root.operations.keys());
         return status();
       }),
-    close: () =>
-      serialized(async () => {
+    close: () => {
+      // A close drops any queued idle checkpoint (a clean shutdown checkpoints
+      // explicitly first); closing without one models a crash before it.
+      closing = true;
+      return serialized(async () => {
         if (closedRegistry) return;
         closedRegistry = true;
         liveTasks.clear();
         if (journal) await journal.close();
-      }),
+      });
+    },
   };
 }

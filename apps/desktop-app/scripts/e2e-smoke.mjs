@@ -10,6 +10,7 @@ import {
   mkdtemp,
   mkdir,
   readdir,
+  readFile,
   readlink,
   rm,
   writeFile,
@@ -436,6 +437,85 @@ async function assertCrashAndRestart() {
   }
 }
 
+// Dev only (a packaged app ignores OMOC_APP_DATA_DIR): the main process itself
+// crashes (Electron's own process.crash(), no external signal) once the store is
+// idle and checkpointed; the next launch on the same profile must connect.
+async function assertMainCrashRelaunch() {
+  const crashEnv = {
+    ...env,
+    OMOC_APP_DATA_DIR: join(e2eRoot, "crash-profile"),
+  };
+  const metadata = join(
+    crashEnv.OMOC_APP_DATA_DIR,
+    "appdata",
+    "OhMyOwnCode",
+    "storage-v1",
+    "metadata",
+  );
+  const connected = (page) =>
+    expect(page.locator(".workbench-header [data-connection]")).toHaveAttribute(
+      "data-connection",
+      "connected",
+      {
+        timeout: CONNECT_TIMEOUT_MS,
+      },
+    );
+  const crashApp = await electron.launch({
+    executablePath,
+    args,
+    env: crashEnv,
+  });
+  const crashProcess = crashApp.process();
+  try {
+    await connected(await crashApp.firstWindow());
+    await expect
+      .poll(
+        async () => {
+          const lines = (
+            await readFile(join(metadata, "journal.jsonl"), "utf8")
+          )
+            .trim()
+            .split("\n").length;
+          const { sequence } = JSON.parse(
+            await readFile(join(metadata, "checkpoint.json"), "utf8"),
+          );
+          return lines === sequence;
+        },
+        { timeout: 30_000 },
+      )
+      .toBe(true);
+    void crashApp.evaluate(() => process.crash()).catch(() => {});
+    await once(crashProcess, "exit");
+  } finally {
+    if (crashProcess.exitCode === null && crashProcess.signalCode === null) {
+      await crashApp.evaluate(({ app: electronApp }) => electronApp.quit());
+      await waitForExit(crashProcess, 20_000);
+    }
+  }
+  const relaunch = await electron.launch({
+    executablePath,
+    args,
+    env: crashEnv,
+  });
+  const relaunchProcess = relaunch.process();
+  try {
+    await connected(await relaunch.firstWindow());
+    assert.equal(
+      sidecarChildPids(relaunchProcess.pid).length,
+      1,
+      "the relaunch after a main crash owns one sidecar",
+    );
+    console.log(
+      "PASS main_crash_relaunch: same profile connects after process.crash()",
+    );
+  } finally {
+    if (relaunchProcess.exitCode === null) {
+      await relaunch.evaluate(({ app: electronApp }) => electronApp.quit());
+      assert.equal(await waitForExit(relaunchProcess, 20_000), 0);
+    }
+  }
+}
+
 const inspection = mode === "packaged" ? await inspectedIdentity() : null;
 if (inspection) await assertPackagedStartupFailures();
 const app = await electron.launch({ executablePath, args, env });
@@ -597,6 +677,7 @@ try {
     console.log(
       "SKIPPED crash_restart: relaunch on same profile is runtime-unavailable (set OMOC_E2E_CRASH_RESTART=1)",
     );
+  if (mode === "dev") await assertMainCrashRelaunch();
   await rm(e2eRoot, { recursive: true, force: false });
   console.log(
     JSON.stringify({

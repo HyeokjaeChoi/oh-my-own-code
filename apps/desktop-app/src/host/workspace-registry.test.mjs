@@ -475,7 +475,7 @@ const receipt = (operationId = "op", extra = {}) => ({
   evidence: [],
   ...extra,
 });
-async function fixture(t, io = {}, runtimeEpoch = "current") {
+async function fixture(t, io = {}, runtimeEpoch = "current", extra = {}) {
   const root = await fs.realpath(
     await fs.mkdtemp(join(tmpdir(), "p7-registry-")),
   );
@@ -490,6 +490,7 @@ async function fixture(t, io = {}, runtimeEpoch = "current") {
     storeId: "store",
     runtimeEpoch,
     io,
+    ...extra,
   };
   const registry = await openWorkspaceRegistry(options);
   t.after(() => registry.close());
@@ -1922,13 +1923,19 @@ for (const state of [
 for (const uncertain of ["failed-rejection-flush", "rejected-retry-tail"]) {
   test(`JR-V5-R3-01 ${uncertain} cannot authorize ID transfer or clear original holds`, async (t) => {
     let rejectFlush = false;
-    const f = await fixture(t, {
-      syncFile: async (file, context) => {
-        if (rejectFlush && context === "append:completion")
-          throw new Error("unconfirmed rejection flush");
-        await file.sync();
+    const f = await fixture(
+      t,
+      {
+        syncFile: async (file, context) => {
+          if (rejectFlush && context === "append:completion")
+            throw new Error("unconfirmed rejection flush");
+          await file.sync();
+        },
       },
-    });
+      "current",
+      // The scenario is a crash with this tail still unconfirmed.
+      { idleCheckpoint: false },
+    );
     const staged = await createManagedWorkspaceOnly(f);
     await f.registry.checkpoint();
     const scope = {
@@ -2050,7 +2057,7 @@ for (const collision of ["cross-workspace", "wrong-kind"]) {
 
 for (const count of [0, 199]) {
   test(`HOST-first-session uncheckpointed staged reuse at ${count} sessions retains both unknown holds until explicit tail adoption`, async (t) => {
-    const f = await fixture(t);
+    const f = await fixture(t, {}, "current", { idleCheckpoint: false });
     if (count) await committedSessions(t, f, count);
     const staged = await createManagedWorkspaceOnly(f);
     const request = { runtimeEpoch: "old", operationId: "first-tail" };
@@ -3342,7 +3349,7 @@ test("duplicate create completion and reservation are no-ops; conflicting planne
 });
 
 test("explicit recovery adopts only reviewed validated tail; ordinary reopen never promotes confirmed success", async (t) => {
-  const f = await fixture(t);
+  const f = await fixture(t, {}, "current", { idleCheckpoint: false });
   await createManaged(f);
   const registry = await reopened(t, f);
   assert.equal(registry.status().reason, "unconfirmed_tail");
@@ -12541,4 +12548,78 @@ test("TASK workspace mutation wrong variant and incomplete project sets refuse b
     );
     assert.deepEqual(f.registry.readView().tasks, []);
   }
+});
+
+// Idle checkpoint. A crash leaves the files exactly as they are: copy the live
+// directory (no close, no shutdown checkpoint) and reopen the copy.
+async function crashCopy(t, f) {
+  const crashed = join(
+    f.root,
+    `crashed-${Math.random().toString(16).slice(2)}`,
+  );
+  await fs.cp(f.directory, crashed, { recursive: true });
+  const registry = await openWorkspaceRegistry({
+    ...f.options,
+    directory: crashed,
+    io: {},
+    runtimeEpoch: "new",
+  });
+  t.after(() => registry.close());
+  return registry;
+}
+const checkpointed = (registry) => {
+  const { sequence, checkpointSequence } = registry.status().journal;
+  return sequence === checkpointSequence;
+};
+test("IDLE startup owner_intent is checkpointed, so a crash right after relaunches ready", async (t) => {
+  const f = await fixture(t);
+  await f.registry.recordOwnerIntent({
+    ownerNonce: "11111111-1111-4111-8111-111111111111",
+    phase: "startup",
+  });
+  await until(() => checkpointed(f.registry));
+  const next = await crashCopy(t, f);
+  assert.equal(next.status().state, "ready", JSON.stringify(next.status()));
+});
+test("IDLE an in-flight operation is never checkpointed; a crash keeps it held and unknown", async (t) => {
+  const f = await fixture(t);
+  await createManaged(f, "settled");
+  await until(() => checkpointed(f.registry));
+  await f.registry.begin(identity("in-flight"));
+  // Later idle-looking records do not confirm while the operation is retained.
+  await f.registry.recordOwnerIntent({
+    ownerNonce: "11111111-1111-4111-8111-111111111111",
+    phase: "startup",
+  });
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(checkpointed(f.registry), false);
+  const next = await crashCopy(t, f);
+  assert.equal(next.status().reason, "unconfirmed_tail");
+  assert.notEqual(
+    next.lookup({ runtimeEpoch: "old", operationId: "in-flight" }).receipt
+      ?.effect,
+    "confirmed",
+  );
+  assert.equal(next.readView().sessions.length, 1);
+});
+test("IDLE a failed idle checkpoint poisons the writer visibly without failing the acknowledged write", async (t) => {
+  let fail = false;
+  const f = await fixture(t, {
+    syncFile: async (file, context) => {
+      if (fail && context.startsWith("checkpoint:"))
+        throw new Error("synthetic checkpoint failure");
+      await file.sync();
+    },
+  });
+  fail = true;
+  await f.registry.recordOwnerIntent({
+    ownerNonce: "11111111-1111-4111-8111-111111111111",
+    phase: "startup",
+  });
+  await until(() => f.registry.status().state === "recovery_required");
+  assert.equal(f.registry.status().reason, "writer_poisoned");
+  assert.equal(f.registry.readView().recovery.store.reason, "writer_poisoned");
+  await assert.rejects(f.registry.begin(identity("after-poison")), {
+    code: "writer_poisoned",
+  });
 });

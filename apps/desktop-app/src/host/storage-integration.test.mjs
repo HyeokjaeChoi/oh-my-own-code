@@ -646,6 +646,7 @@ async function fixture(
     projectRegistry,
     nativeTasks,
     taskChild,
+    idleCheckpoint,
   } = {},
 ) {
   runtimeReady?.catch(() => {});
@@ -662,6 +663,7 @@ async function fixture(
     storeId: "synthetic",
     runtimeEpoch: "epoch",
     io,
+    ...(idleCheckpoint === false && { idleCheckpoint }),
     ...(taskChild && {
       taskAuthoritySource: (record, context) =>
         taskChild.verify
@@ -1281,7 +1283,7 @@ for (const reason of [
   });
 
 test("complete valid but unconfirmed tail never automatically adopts mapping or success at restart", async (t) => {
-  const f = await fixture(t);
+  const f = await fixture(t, { idleCheckpoint: false });
   const initial = await f.ready();
   f.service.close();
   await f.service.drain();
@@ -2112,7 +2114,7 @@ test("partial completion bytes after native success remain corrupt evidence; che
     io: {
       write: async (file, bytes) => {
         const payload = JSON.parse(bytes).payload;
-        if (armed && payload.kind === "completion") {
+        if (armed && payload?.kind === "completion") {
           await file.writeFile(bytes.subarray(0, Math.floor(bytes.length / 2)));
           throw new Error("partial write");
         }
@@ -4583,7 +4585,7 @@ async function workspaceFilePublisherFixture(
     io: {
       write: async (file, bytes) => {
         const payload = JSON.parse(bytes).payload;
-        if (armed && payload.operationId === "file-save") {
+        if (armed && payload?.operationId === "file-save") {
           if (payload.kind === "completion") await waitAt("completion");
           if (payload.step === "filesystem.configuration.stage")
             await waitAt("stage-flush");
@@ -7783,14 +7785,13 @@ test("the armed trail is checkpointed before Native may create, so a hard kill a
   assert.deepEqual(nativeMutations(f), before);
 });
 
-test("a settled bootstrap create is checkpointed, so a crash afterwards relaunches ready", async (t) => {
-  const f = await fixture(t, { taskChild: fakeBootstrapChild() });
-  const snapshot = await f.ready();
-  assert.equal(
-    (await f.mutate(createOperation(snapshot), "create-then-crash")).ok,
-    true,
-  );
-  // A crash leaves the journal as-is: no shutdown intent, no final checkpoint.
+// A crash leaves the journal exactly as it is on disk: no shutdown intent and
+// no final checkpoint. Copy it once the idle checkpoint has run, then reopen.
+async function crashCopyAfterIdle(t, f) {
+  await until(() => {
+    const { sequence, checkpointSequence } = f.registry.status().journal;
+    return sequence === checkpointSequence;
+  });
   const crashed = join(f.root, "crashed");
   await fs.cp(f.directory, crashed, { recursive: true });
   const restarted = await openWorkspaceRegistry({
@@ -7799,12 +7800,36 @@ test("a settled bootstrap create is checkpointed, so a crash afterwards relaunch
     runtimeEpoch: "new",
   });
   t.after(() => restarted.close());
-  assert.equal(
-    restarted.status().state,
-    "ready",
-    JSON.stringify(restarted.status()),
-  );
-  const view = restarted.readView();
-  assert.deepEqual(view.retainedOperations, []);
-  assert.equal(view.sessions.length, snapshot.sessions.length + 1);
-});
+  return restarted;
+}
+for (const kind of ["bootstrap create", "session.rename"])
+  test(`idle checkpoint after a ${kind}: a crash afterwards relaunches ready`, async (t) => {
+    const f = await fixture(t, { taskChild: fakeBootstrapChild() });
+    const snapshot = await f.ready();
+    const result =
+      kind === "session.rename"
+        ? await f.mutate({
+            type: "session.rename",
+            workspaceId: snapshot.selectedWorkspaceId,
+            sessionId: snapshot.selectedSessionId,
+            requestId: "rename-then-crash",
+            title: "Renamed",
+          })
+        : await f.mutate(createOperation(snapshot), "create-then-crash");
+    assert.equal(result.ok, true, JSON.stringify(result));
+    const restarted = await crashCopyAfterIdle(t, f);
+    assert.equal(
+      restarted.status().state,
+      "ready",
+      JSON.stringify(restarted.status()),
+    );
+    const view = restarted.readView();
+    assert.deepEqual(view.retainedOperations, []);
+    if (kind === "session.rename")
+      assert.equal(
+        view.sessions.find((s) => s.appSessionId === snapshot.selectedSessionId)
+          ?.title,
+        "Renamed",
+      );
+    else assert.equal(view.sessions.length, snapshot.sessions.length + 1);
+  });
