@@ -11,11 +11,14 @@ export async function openMoreMenuItem(page, name) {
 /** Settings live in the sidebar footer; open the nav first when it is collapsed. */
 export async function openSettings(page) {
   const button = page.getByRole("button", { name: "설정", exact: true });
-  if (!(await button.isVisible()))
+  try {
+    await button.click({ timeout: 5000 });
+  } catch {
     await page
       .getByRole("button", { name: "작업 공간 탐색 열기", exact: true })
       .click();
-  await button.click();
+    await button.click();
+  }
 }
 
 /** Opens the sidebar workspace switcher menu and returns the menu locator. */
