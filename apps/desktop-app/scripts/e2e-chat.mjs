@@ -31,6 +31,11 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { createWorkbenchBridge } from "./e2e-bridge.mjs";
+import {
+  closeComposerPopovers,
+  openComposerPopover,
+  setPermissionMode,
+} from "./e2e-composer.mjs";
 
 const CONNECT_TIMEOUT_MS =
   Number(process.env.OMOC_E2E_CONNECT_TIMEOUT_MS) || 150_000;
@@ -353,11 +358,7 @@ try {
   observations.push("turn 1: send -> streamed mock reply rendered");
 
   // Turn 1b: choose agent and model explicitly in the composer.
-  await page
-    .locator('details[data-runtime-task="requested"]')
-    .evaluate((el) => {
-      el.open = true;
-    });
+  await openComposerPopover(page, "agent");
   const agentSelect = page.getByRole("combobox", { name: "Agent 요청" });
   const agentValues = await agentSelect
     .locator("option")
@@ -368,9 +369,11 @@ try {
     ? "plan"
     : agentValues.at(-1);
   await agentSelect.selectOption(chosenAgent);
+  await openComposerPopover(page, "model");
   await page
     .getByRole("combobox", { name: "모델 요청" })
     .selectOption({ label: "Mock Model Two" });
+  await closeComposerPopovers(page);
   await send("hello explicit");
   await expect(page.getByText("hello explicit")).toBeVisible();
   await expect
@@ -456,7 +459,9 @@ try {
   };
 
   // Turn 4: subagent (subagent tool) delegation round-trip.
+  await openComposerPopover(page, "agent");
   await agentSelect.selectOption("build");
+  await closeComposerPopovers(page);
   await send("SUBAGENT-FIXTURE");
   await approveUntil(
     page.getByText(/Tool result received: subagent (done|missing)/),
@@ -506,9 +511,8 @@ try {
   // Mode change: scoped_edit auto-allows an in-workspace write (no prompt).
   // The mode select may be refused (BUSY) for a moment after the last reply.
   await expect(async () => {
-    await page
-      .getByRole("combobox", { name: "권한 모드" })
-      .selectOption({ label: "범위 내 편집 허용" });
+    await setPermissionMode(page, "범위 내 편집 허용");
+    await closeComposerPopovers(page);
     await expect
       .poll(
         async () => (await snapshot()).value?.sessions?.[0]?.permissionMode,

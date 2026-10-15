@@ -648,6 +648,8 @@ test("conversation context: actual React controls render inert previews and comp
     tsconfig: fileURLToPath(new URL("../tsconfig.json", import.meta.url)),
   });
   let Controls, MessageActions, Provider;
+  // The composer wraps these bodies in popovers; render them bare here.
+  const passthrough = { attachPanel: (body) => body, runPanel: (body) => body };
   try {
     ({
       ConversationContextControls: Controls,
@@ -697,7 +699,7 @@ test("conversation context: actual React controls render inert previews and comp
       store: { ...api.store, getInitialState: () => api.store.getState() },
     };
     const html = renderToStaticMarkup(
-      createElement(Provider, { value }, createElement(Controls)),
+      createElement(Provider, { value }, createElement(Controls, passthrough)),
     );
     assert.ok(
       html.includes("&lt;script&gt;never run&lt;/script&gt;\r\nexact text"),
@@ -751,7 +753,7 @@ test("conversation context: actual React controls render inert previews and comp
     });
     assert.equal(await api.actions.observeContext("pixel.gif"), true);
     const imageHtml = renderToStaticMarkup(
-      createElement(Provider, { value }, createElement(Controls)),
+      createElement(Provider, { value }, createElement(Controls, passthrough)),
     );
     assert.ok(imageHtml.includes(`src="data:image/gif;base64,${gif}"`));
     assert.ok(
@@ -769,13 +771,13 @@ test("conversation context: actual React controls render inert previews and comp
     });
     assert.equal(await api.actions.observeContext("sample.pdf"), true);
     const pdfHtml = renderToStaticMarkup(
-      createElement(Provider, { value }, createElement(Controls)),
+      createElement(Provider, { value }, createElement(Controls, passthrough)),
     );
     assert.ok(pdfHtml.includes("PDF 내용 미리보기를 사용할 수 없습니다"));
     assert.ok(!/<(?:iframe|embed|object|img)\b/.test(pdfHtml));
     assert.equal(await api.actions.observeInbox(), true);
     const inboxHtml = renderToStaticMarkup(
-      createElement(Provider, { value }, createElement(Controls)),
+      createElement(Provider, { value }, createElement(Controls, passthrough)),
     );
     assert.ok(inboxHtml.includes('data-context-inbox-row="pending-1"'));
     assert.ok(inboxHtml.includes('data-context-inbox-cancel="pending-1"'));

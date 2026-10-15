@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { Button } from "@workbench/ui";
 import {
   selectors,
@@ -69,7 +69,15 @@ export function ContextMessageActions({
   );
 }
 
-export function ConversationContextControls() {
+// The composer wraps the attach and current-run bodies in its popovers; they
+// render beside (never inside) the message form so Enter can never send.
+export function ConversationContextControls({
+  attachPanel,
+  runPanel,
+}: {
+  attachPanel: (body: ReactNode) => ReactNode;
+  runPanel: (body: ReactNode) => ReactNode;
+}) {
   const { actions } = useWindowWorkbench();
   const context = useWorkbenchSelector(selectors.conversationContext);
   const draft = useWorkbenchSelector(selectors.contextDraft);
@@ -82,11 +90,11 @@ export function ConversationContextControls() {
   const [path, setPath] = useState("");
   const [range, setRange] = useState<ContextSelection>();
   const textPreview = useRef<HTMLPreElement>(null);
-  const section = useRef<HTMLDetailsElement>(null);
-  const runningTask = useRef<HTMLDetailsElement>(null);
   const branchInput = useRef<HTMLTextAreaElement>(null);
   const branchTrigger = useRef<HTMLElement | null>(null);
   const previewTrigger = useRef<HTMLElement | null>(null);
+  const attachBody = useRef<HTMLDivElement>(null);
+  const runBody = useRef<HTMLDivElement>(null);
   const reobserveButtons = useRef(new Map<string, HTMLButtonElement>());
   const branchBefore = context.branch?.before;
   const pathId = useId();
@@ -134,18 +142,19 @@ export function ConversationContextControls() {
       }
     });
   };
-  const closeTask = (task: HTMLDetailsElement | null) => {
-    if (!task) return;
-    task.open = false;
-    task.querySelector("summary")?.focus();
-  };
+  // Native popover hide returns focus to the invoking button.
+  const closeTask = (host: HTMLElement | null) =>
+    host?.closest<HTMLElement>("[popover]")?.hidePopover();
   const closePreview = () => {
     actions.closeContextPreview();
     const origin = previewTrigger.current?.isConnected
       ? previewTrigger.current
       : p && reobserveButtons.current.get(p.descriptor.capabilityId);
     if (origin?.isConnected && !origin.matches(":disabled")) origin.focus();
-    else section.current?.querySelector("summary")?.focus();
+    else
+      attachBody.current
+        ?.querySelector<HTMLElement>("[data-context-path]")
+        ?.focus();
   };
   const p = context.preview;
   const readSelection = () => {
@@ -201,14 +210,6 @@ export function ConversationContextControls() {
           event.stopPropagation();
           closeBranch();
           return;
-        }
-        const task = (event.target as HTMLElement).closest<HTMLDetailsElement>(
-          "details[data-context-section], details[data-context-running-task]",
-        );
-        if (task?.open) {
-          event.preventDefault();
-          event.stopPropagation();
-          closeTask(task);
         }
       }}
     >
@@ -348,7 +349,10 @@ export function ConversationContextControls() {
                       disabled={!ready}
                       onClick={(event) => {
                         previewTrigger.current = event.currentTarget;
-                        if (section.current) section.current.open = true;
+                        const pop =
+                          attachBody.current?.closest<HTMLElement>("[popover]");
+                        if (pop && !pop.matches(":popover-open"))
+                          pop.showPopover();
                         void actions.observeContext(d.path);
                       }}
                     >
@@ -369,19 +373,8 @@ export function ConversationContextControls() {
           </section>
         )}
       </>
-      <div className={styles.taskGroup} hidden={Boolean(context.branch)}>
-        <details
-          ref={section}
-          className={styles.task}
-          data-context-section
-          onToggle={(event) => {
-            if (!event.currentTarget.open) actions.closeContextPreview();
-          }}
-        >
-          <summary>
-            파일 첨부와 미리보기
-            {draft.items.length ? ` (${draft.items.length})` : ""}
-          </summary>
+      {attachPanel(
+        <div ref={attachBody}>
           <div className={styles.body}>
             <h2>파일 첨부와 미리보기</h2>
             <div className={styles.controls}>
@@ -484,19 +477,16 @@ export function ConversationContextControls() {
             )}
             <Button
               size="compact"
-              onClick={() => closeTask(section.current)}
+              onClick={() => closeTask(attachBody.current)}
               data-context-task-close
             >
               첨부 작업 닫기
             </Button>
           </div>
-        </details>
-        <details
-          ref={runningTask}
-          className={styles.task}
-          data-context-running-task
-        >
-          <summary>현재 실행 · 추가 지시와 대기열</summary>
+        </div>,
+      )}
+      {runPanel(
+        <div ref={runBody}>
           <div className={styles.body}>
             <section aria-label="현재 실행에 요청" data-context-running>
               <strong>현재 실행에 요청</strong>
@@ -585,14 +575,14 @@ export function ConversationContextControls() {
             </section>
             <Button
               size="compact"
-              onClick={() => closeTask(runningTask.current)}
+              onClick={() => closeTask(runBody.current)}
               data-context-running-close
             >
               현재 실행 작업 닫기
             </Button>
           </div>
-        </details>
-      </div>
+        </div>,
+      )}
     </div>
   );
 }

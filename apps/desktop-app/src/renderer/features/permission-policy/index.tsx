@@ -111,7 +111,7 @@ export function PermissionPolicy({
       }}
     >
       <summary>
-        권한 규칙
+        저장된 권한 규칙 관리
         {available && !available.baselineMatches && (
           <span className={styles.mismatch}> · 앱 필수 규칙과 다름</span>
         )}

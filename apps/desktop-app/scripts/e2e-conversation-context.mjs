@@ -15,6 +15,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
+import { COMPOSER_POPOVERS, openComposerPopover } from "./e2e-composer.mjs";
 const desktop = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const root = resolve(desktop, "../..");
 if (!process.env.OMOC_EVIDENCE_DIR)
@@ -274,7 +275,10 @@ export const SAVED_INVOCATION = Object.freeze([
   "docs/runs/conversation-context/evidence/hidden-r1",
 ]);
 // Hooks inspected in the actual renderer feature. No store injection or fake UI.
-const section = () => page.locator("[data-context-section]");
+// Attach, request and running-task controls live in native popovers; only one
+// popover is open at a time, so each step opens the one it needs.
+const attachTrigger = () =>
+  page.getByRole("button", { name: COMPOSER_POPOVERS.attach }).first();
 const composer = () =>
   page.getByRole("textbox", { name: "메시지 작성", exact: true });
 const send = () =>
@@ -316,10 +320,8 @@ async function scenario(name) {
     await expect(
       page.locator(".workbench-header [data-state]"),
     ).toHaveAttribute("data-state", "connected");
-  await expect(section()).toBeAttached();
-  await expand(section());
-  await expand(page.locator("details[data-context-running-task]"));
-  await expand(page.locator('details[data-runtime-task="requested"]'));
+  await expect(attachTrigger()).toBeAttached();
+  await openComposerPopover(page, "attach");
   assert.deepEqual(
     await application.evaluate(() => [
       globalThis.__omocUiFixture.contextReads.length,
@@ -495,6 +497,11 @@ async function exerciseConversationContext() {
   await setDisplay(page, 1440, 1000, 1);
   await inspectLegacyGeometry();
   const initial = (await requests()).length;
+  await openComposerPopover(page, "model");
+  await page
+    .getByRole("combobox", { name: "모델 요청", exact: true })
+    .selectOption(scope.model);
+  await openComposerPopover(page, "attach");
   await hook("path").fill(scope.path);
   await hook("path").focus();
   await page.keyboard.press("Tab");
@@ -506,9 +513,6 @@ async function exerciseConversationContext() {
   await expect(hook("item")).toHaveCount(1);
   assert.equal(await hook("text").textContent(), scope.text);
   await expect(hook("item")).toContainText("44 bytes");
-  await page
-    .getByRole("combobox", { name: "모델 요청", exact: true })
-    .selectOption(scope.model);
   await composer().fill("SYNTHETIC staged request");
   await expand(hook("item").locator("details"));
   for (const theme of ["light", "dark"]) {
@@ -535,9 +539,6 @@ async function exerciseConversationContext() {
         "[data-context-reobserve]",
         "[data-context-remove]",
         "[data-context-close-preview]",
-        "[data-context-steer]",
-        "[data-context-queue]",
-        "[data-context-inbox-observe]",
       ]);
       await reveal(send());
       await send().focus();
@@ -675,6 +676,7 @@ async function exerciseConversationContext() {
   for (const name of ["unsupported-model", "missing-capabilities"]) {
     scope = await scenario(name);
     await observe(scope);
+    await openComposerPopover(page, "model");
     await page
       .getByRole("combobox", { name: "모델 요청", exact: true })
       .selectOption(scope.model);
@@ -757,9 +759,17 @@ async function exerciseConversationContext() {
     scope = await scenario("running");
     const count = (await requests()).length;
     await composer().fill(`SYNTHETIC current-run ${delivery}`);
+    await openComposerPopover(page, "model");
     await page
       .getByRole("combobox", { name: "모델 요청", exact: true })
       .selectOption("fixture-other-model");
+    await openComposerPopover(page, "run");
+    if (delivery === "steer")
+      await captureValues("running-current-run", [
+        "[data-context-steer]",
+        "[data-context-queue]",
+        "[data-context-inbox-observe]",
+      ]);
     await hook(delivery).click();
     await expect.poll(async () => (await requests()).length).toBe(count + 1);
     const request = (await requests()).at(-1);
@@ -772,6 +782,7 @@ async function exerciseConversationContext() {
     await shot(`${delivery}-scoped-inbox`);
   }
   scope = await scenario("queued");
+  await openComposerPopover(page, "run");
   await hook("inbox-observe").click();
   await expect(hook("inbox-row")).toHaveCount(1);
   await captureResponsive("inbox", [
@@ -852,13 +863,13 @@ async function exerciseConversationContext() {
   await captureResponsive("unknown", [
     '[aria-label="메시지 작성"]',
     '[aria-label="메시지 보내기"]',
-    "[data-context-inbox-observe]",
   ]);
   for (const name of ["held", "global-held", "untrusted"]) {
     await scenario(name);
     await composer().fill(`SYNTHETIC ${name} inert draft`);
     await expect(hook("observe")).toBeDisabled();
-    await expect(hook("inbox-observe")).toBeDisabled();
+    // The current-run strip only exists for an active run or known queue.
+    await expect(page.locator("[data-run-strip]")).toHaveCount(0);
     await expect(send()).toBeDisabled();
     await reveal(composer());
     await shot(`${name}-editable-effects-held`);

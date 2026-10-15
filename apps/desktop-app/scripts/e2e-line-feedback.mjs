@@ -7,6 +7,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
+import { closeComposerPopovers, openComposerPopover } from "./e2e-composer.mjs";
 import {
   formatLineFeedback,
   appendLineFeedback,
@@ -517,8 +518,11 @@ try {
   const agent = page.getByLabel("Agent 요청", { exact: true });
   const model = page.getByLabel("모델 요청", { exact: true });
   await composer().fill(prefix);
+  await openComposerPopover(page, "agent");
   await agent.selectOption("fixture-agent");
+  await openComposerPopover(page, "model");
   await model.selectOption("fixture-model");
+  await closeComposerPopovers(page);
   await editor()
     .locator("[data-workspace-file-text]")
     .fill("SYNTHETIC UNSAVED DIFFERENT TEXT\n");
