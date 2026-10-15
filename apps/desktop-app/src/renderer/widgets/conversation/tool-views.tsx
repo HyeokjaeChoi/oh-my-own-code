@@ -3,6 +3,7 @@ import type { ToolView } from "../../shared/tool-ui/index.js";
 import styles from "./conversation.module.css";
 
 export type ToolContextValue = {
+  workspaceRoot?: string | undefined;
   permissions: { id: string; title: string; detail: string; toolId?: string }[];
   openFile(_path: string): void;
 };
@@ -12,20 +13,32 @@ export const ToolContext = createContext<ToolContextValue>({
 });
 export const useToolContext = () => useContext(ToolContext);
 
-const base = (path: string) =>
-  path.split(/[\\/]/).filter(Boolean).at(-1) ?? path;
+export function displayPath(path: string, root?: string): string {
+  if (!root) return path;
+  const r = root.replace(/[\\/]+$/, "");
+  return path.length > r.length + 1 &&
+    path.startsWith(r) &&
+    /[\\/]/.test(path[r.length] ?? "")
+    ? path.slice(r.length + 1)
+    : path;
+}
 const clip = (text: string, size = 60) =>
   text.length > size ? `${text.slice(0, size - 1)}…` : text;
 
 // One plain line per tool call; the full input/output stays in the details.
-export function toolSummary(view: ToolView, toolName: string): string {
+export function toolSummary(
+  view: ToolView,
+  toolName: string,
+  root?: string,
+): string {
+  const name = (path: string) => displayPath(path, root);
   switch (view.kind) {
     case "read":
-      return `${base(view.path)} 읽음`;
+      return `${name(view.path)} 읽음`;
     case "diff": {
       const add = view.rows.filter((r) => r.sign === "+").length;
       const del = view.rows.filter((r) => r.sign === "-").length;
-      return `${view.path ? base(view.path) : "패치"} 편집 +${add} −${del}`;
+      return `${view.path ? name(view.path) : "패치"} 편집 +${add} −${del}`;
     }
     case "shell": {
       const command = clip(view.command.split("\n")[0] ?? "");
@@ -45,14 +58,15 @@ export function toolSummary(view: ToolView, toolName: string): string {
 }
 
 function PathButton({ path, line }: { path: string; line?: number | null }) {
-  const { openFile } = useToolContext();
+  const { openFile, workspaceRoot } = useToolContext();
   return (
     <button
       type="button"
       className={styles.toolPath}
+      title={path}
       onClick={() => openFile(path)}
     >
-      {path}
+      {displayPath(path, workspaceRoot)}
       {line ? `:${line}` : ""}
     </button>
   );

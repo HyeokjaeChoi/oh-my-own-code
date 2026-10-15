@@ -762,6 +762,13 @@ details[open] > .disclosure > .chevron {
   line-height: 20px;
 }
 
+.summaryStateLink {
+  border: 0;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
 .toolDetail[data-tool-state="error"] .toolCall > .disclosure .summaryState {
   color: var(--omoc-semantic-color-danger-foreground);
 }
@@ -948,6 +955,21 @@ details[open] > .disclosure > .chevron {
   }
 }
 
+/* Run info shows with the message actions; abnormal or open stays visible. */
+.runtimeReport:not([data-abnormal], [open]) {
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.message:hover .runtimeReport,
+.message:focus-within .runtimeReport {
+  opacity: 1;
+}
+@media (any-pointer: coarse), (hover: none) {
+  .runtimeReport {
+    opacity: 1;
+  }
+}
+
 .runtimeReport {
   flex: 1 1 12rem;
   min-width: 0;
@@ -1025,14 +1047,6 @@ details[open] > .disclosure > .chevron {
   max-height: 16rem;
   overflow: auto;
 }
-.toolPermission {
-  margin-block: 8px;
-  border: 1px solid transparent;
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: var(--omoc-semantic-color-permission-pending-background);
-}
-
 .roundButton,
 .chip {
   anchor-name: var(--anchor);
