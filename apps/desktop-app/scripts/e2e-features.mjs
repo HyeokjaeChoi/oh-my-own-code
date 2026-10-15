@@ -494,7 +494,7 @@ try {
       const menu = page.getByRole("menu");
       await expect(menu).toBeVisible();
       const border = await menu.evaluate((el) => {
-        const style = getComputedStyle(el);
+        const style = globalThis.getComputedStyle(el);
         return {
           width: style.borderTopWidth,
           style: style.borderTopStyle,
