@@ -219,11 +219,16 @@ const registryPromise = (async () => {
   if (ownedStorage && isolatedRoot && process.env.OMOC_E2E_NATIVE_CONFIG) {
     const dir = join(namespace.config, "opencode");
     mkdirSync(dir, { recursive: true, mode: 0o700 });
-    writeFileSync(
-      join(dir, "opencode.json"),
-      readFileSync(process.env.OMOC_E2E_NATIVE_CONFIG),
-      { mode: 0o600, flag: "wx" },
-    );
+    try {
+      writeFileSync(
+        join(dir, "opencode.json"),
+        readFileSync(process.env.OMOC_E2E_NATIVE_CONFIG),
+        { mode: 0o600, flag: "wx" },
+      );
+    } catch (error) {
+      // A relaunch on the same profile keeps the config seeded the first time.
+      if (error.code !== "EEXIST") throw error;
+    }
   }
   if (result.state !== "ready") {
     if (["owner_conflict", "owner_unverified"].includes(result.reason)) {
@@ -730,6 +735,9 @@ app.whenReady().then(async () => {
       ownerNonce: owner.getNonce(),
       phase: "startup",
     });
+    // The store was ready (no tail), so this confirms only the intent record;
+    // left uncheckpointed, a crash before a clean quit would hold every relaunch.
+    await store.checkpoint();
     if (e2eScenario === "startup-failure") {
       throw new Error("event_host_missing_e2e_fixture");
     }
