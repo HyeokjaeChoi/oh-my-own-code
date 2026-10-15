@@ -307,10 +307,9 @@ async function scenario(name) {
     name,
   );
   await page.reload();
-  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
-    "data-state",
-    "connected",
-  );
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected");
   await expect(requested()).toBeAttached();
   return scope;
 }
@@ -621,10 +620,9 @@ try {
     if (/^https?:/i.test(request.url())) externalRequests.push(request.url());
   });
   await page.route(/^https?:/i, (route) => route.abort("blockedbyclient"));
-  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
-    "data-state",
-    "connected",
-  );
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected");
   await exerciseRuntimeOptions();
   assert.deepEqual(externalRequests, []);
   assert.deepEqual(errors, []);

@@ -212,10 +212,9 @@ async function openCase(name = "ready", kind = "file", patch) {
   );
   const beforeMount = await metrics();
   await page.reload();
-  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
-    "data-state",
-    "connected",
-  );
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected");
   await page.getByRole("button", { name: "파일·확장", exact: true }).click();
   const explorer = page.getByRole("region", {
     name: "파일 탐색 및 편집",

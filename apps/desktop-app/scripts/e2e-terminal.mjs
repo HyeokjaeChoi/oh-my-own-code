@@ -62,11 +62,11 @@ try {
   page.on("console", (m) => {
     if (/Content Security Policy/i.test(m.text())) csp.push(m.text());
   });
-  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
-    "data-state",
-    "connected",
-    { timeout: CONNECT_TIMEOUT_MS },
-  );
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected", {
+    timeout: CONNECT_TIMEOUT_MS,
+  });
   const bridge = createWorkbenchBridge(page);
   let initial;
   await expect

@@ -4,6 +4,7 @@
 // The test sets a FAKE key through the settings UI, expects it to reach the
 // mock as a bearer token, then sends a message and checks the reply.
 // Also checks error display (rejected key shape) and that the key is not echoed.
+import { openSettings } from "./e2e-shell.mjs";
 import assert from "node:assert/strict";
 import { windowsEnv } from "./e2e-env.mjs";
 import { once } from "node:events";
@@ -139,8 +140,10 @@ async function start(environment) {
   });
   const window = await application.firstWindow();
   await expect(
-    window.locator(".workbench-header [data-state]"),
-  ).toHaveAttribute("data-state", "connected", { timeout: CONNECT_TIMEOUT_MS });
+    window.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected", {
+    timeout: CONNECT_TIMEOUT_MS,
+  });
   return window;
 }
 async function stop() {
@@ -156,7 +159,7 @@ try {
   await expect(composer).toBeVisible();
 
   // No credential yet: the provider has no usable model.
-  await page.getByRole("button", { name: "설정·단축키" }).click();
+  await openSettings(page);
   const section = page.getByRole("region", { name: "모델 제공자" });
   await expect(section).toBeVisible();
   await section.getByLabel("제공자 선택").selectOption({ label: "OpenRouter" });
@@ -248,7 +251,7 @@ try {
     "key absent from DOM, localStorage, stderr, profile opencode.json/logs",
   );
 
-  await page.getByRole("button", { name: "설정·단축키" }).click();
+  await openSettings(page);
 
   // Local provider: LM Studio base URL set through the UI -> its models appear.
   await section
@@ -262,7 +265,7 @@ try {
   await stop();
   const { OMOC_E2E_NATIVE_CONFIG: _seed, ...relaunchEnv } = env;
   const again = await start(relaunchEnv);
-  await again.getByRole("button", { name: "설정·단축키" }).click();
+  await openSettings(again);
   await expect(
     again
       .getByRole("region", { name: "모델 제공자" })

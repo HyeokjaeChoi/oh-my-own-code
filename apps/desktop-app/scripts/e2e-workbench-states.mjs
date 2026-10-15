@@ -34,6 +34,7 @@ import {
 } from "./fixtures/workbench-host.mjs";
 import { captureProvenance } from "./build-provenance.mjs";
 import { closeComposerPopovers, openComposerPopover } from "./e2e-composer.mjs";
+import { openWorkspaceMenu, selectWorkspace } from "./e2e-shell.mjs";
 
 import {
   UI_STATE_FAMILIES,
@@ -851,8 +852,7 @@ async function assertNestedMenu(page) {
   const dialog = page.getByRole("dialog", { includeHidden: true });
   await expect(dialog).toBeVisible();
   const menuTrigger = dialog.getByRole("button", {
-    name: "작업 공간 작업",
-    exact: true,
+    name: /^작업 공간 전환:/,
   });
   await menuTrigger.click();
   const menu = page.getByRole("menu");
@@ -1079,10 +1079,9 @@ try {
   page = await application.firstWindow({ timeout: 15000 });
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
-    "data-state",
-    "connected",
-  );
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected");
 
   async function captureSaveElement(locator, filename, state) {
     // Resize can replace the panel with a dialog. Wait before scrolling the new owner.
@@ -1196,8 +1195,8 @@ try {
     );
     await page.reload();
     await expect(
-      page.locator(".workbench-header [data-state]"),
-    ).toHaveAttribute("data-state", "connected");
+      page.locator(".workbench-header [data-connection]"),
+    ).toHaveAttribute("data-connection", "connected");
     await page.getByRole("button", { name: "파일·확장", exact: true }).click();
     const explorer = page.getByRole("region", {
       name: "파일 탐색 및 편집",
@@ -1338,17 +1337,17 @@ try {
         "Navigation open and close controls work at the desktop viewport",
       );
       const workspaceActions = page.getByRole("button", {
-        name: "작업 공간 작업",
-        exact: true,
+        name: /^작업 공간 전환:/,
       });
       await workspaceActions.focus();
       await page.keyboard.press("ArrowDown");
-      await expect(
-        page.getByRole("menuitem", { name: "폴더 가져오기", exact: true }),
-      ).toBeFocused();
+      await expect(page.getByRole("menu")).toBeVisible();
+      await page
+        .getByRole("menuitem", { name: "폴더 열기…", exact: true })
+        .focus();
       await page.keyboard.press("ArrowDown");
       await expect(
-        page.getByRole("menuitem", { name: "새 작업 공간", exact: true }),
+        page.getByRole("menuitem", { name: "경로로 열기…", exact: true }),
       ).toBeFocused();
       await page.keyboard.press("Escape");
       await expect(workspaceActions).toBeFocused();
@@ -1950,8 +1949,8 @@ try {
         globalThis.__omocUiFixture.snapshot.sessions[0].status = "running";
       });
       await expect(
-        page.locator(".workbench-header [data-state]"),
-      ).toHaveAttribute("data-state", "connected");
+        page.locator(".workbench-header [data-connection]"),
+      ).toHaveAttribute("data-connection", "connected");
       const stop = page.getByRole("button", { name: "현재 세션 실행 중단" });
       await expect(stop).toBeEnabled();
       await expect(composer).toHaveValue("Ambiguous synthetic submission");
@@ -2120,8 +2119,8 @@ try {
         globalThis.__omocUiFixture.snapshot.state = "disconnected";
       });
       await expect(
-        page.locator(".workbench-header [data-state]"),
-      ).toHaveAttribute("data-state", "disconnected");
+        page.locator(".workbench-header [data-connection]"),
+      ).toHaveAttribute("data-connection", "disconnected");
       await expect(stop).toBeDisabled();
       const disconnectedStopDisabled = await stop.isDisabled();
       const disconnectedMutationsBefore = await application.evaluate(() =>
@@ -2165,8 +2164,8 @@ try {
       });
       await page.getByRole("button", { name: "연결 다시 확인" }).click();
       await expect(
-        page.locator(".workbench-header [data-state]"),
-      ).toHaveAttribute("data-state", "connected");
+        page.locator(".workbench-header [data-connection]"),
+      ).toHaveAttribute("data-connection", "connected");
       await expect(composer).toHaveAttribute("readonly", "");
       await expect(composer).toHaveValue("Ambiguous synthetic submission");
       const archivedSelection = await composer.evaluate((input) => {
@@ -2265,8 +2264,8 @@ try {
         );
         await page.reload();
         await expect(
-          page.locator(".workbench-header [data-state]"),
-        ).toHaveAttribute("data-state", "connected");
+          page.locator(".workbench-header [data-connection]"),
+        ).toHaveAttribute("data-connection", "connected");
         const draft = `P7 unchanged synthetic draft: ${name}`;
         const input = page.getByRole("textbox", { name: "메시지 작성" });
         await input.fill(draft);
@@ -2331,12 +2330,10 @@ try {
               );
             });
           }
-          await page
-            .getByRole("button", { name: "작업 공간 작업", exact: true })
-            .click();
+          await page.getByRole("button", { name: /^작업 공간 전환:/ }).click();
           for (const label of [
             "목록에서 제거 · 파일 유지",
-            ...(state.store ? ["폴더 가져오기", "새 작업 공간"] : []),
+            ...(state.store ? ["폴더 열기…", "새 작업 공간"] : []),
           ]) {
             await expect(
               page.getByRole("menuitem", { name: label, exact: true }),
@@ -2346,7 +2343,7 @@ try {
           if (state.resource) {
             await expect(
               page.getByRole("menuitem", {
-                name: "폴더 가져오기",
+                name: "폴더 열기…",
                 exact: true,
               }),
             ).toBeEnabled();
@@ -2382,14 +2379,16 @@ try {
         } else {
           await expect(recovery).toHaveCount(0);
           // Observe the full, selectable actual path in the durable location dialog.
-          await page
-            .getByRole("button", {
-              name: "작업 공간 위치·보관 정보",
-              exact: true,
-            })
-            .click();
+          await openWorkspaceMenu(page).then((menu) =>
+            menu
+              .getByRole("menuitem", {
+                name: "저장 위치와 보관 정보",
+                exact: true,
+              })
+              .click(),
+          );
           const dialog = page.getByRole("dialog", {
-            name: "작업 공간 위치·보관 정보",
+            name: "저장 위치와 보관 정보",
             exact: true,
           });
           await expect(
@@ -2690,8 +2689,8 @@ try {
       );
       await page.reload();
       await expect(
-        page.locator(".workbench-header [data-state]"),
-      ).toHaveAttribute("data-state", "connected");
+        page.locator(".workbench-header [data-connection]"),
+      ).toHaveAttribute("data-connection", "connected");
       currentState = "P7 pending-inbox bootstrap; narrow 200%";
       const narrowBefore = await application.evaluate(() => {
         globalThis.__omocUiFixture.setStorageState("pending-inbox");
@@ -2833,20 +2832,23 @@ try {
       );
       await page.reload();
       await expect(
-        page.locator(".workbench-header [data-state]"),
-      ).toHaveAttribute("data-state", "connected");
+        page.locator(".workbench-header [data-connection]"),
+      ).toHaveAttribute("data-connection", "connected");
       const narrowNavigation = page.getByRole("button", {
         name: "작업 공간 탐색 열기",
         exact: true,
       });
       await narrowNavigation.click();
-      const narrowStorage = page.getByRole("button", {
-        name: "작업 공간 위치·보관 정보",
-        exact: true,
-      });
-      await narrowStorage.click();
+      await openWorkspaceMenu(page).then((menu) =>
+        menu
+          .getByRole("menuitem", {
+            name: "저장 위치와 보관 정보",
+            exact: true,
+          })
+          .click(),
+      );
       const narrowDialog = page.getByRole("dialog", {
-        name: "작업 공간 위치·보관 정보",
+        name: "저장 위치와 보관 정보",
         exact: true,
       });
       const narrowPath = narrowDialog.locator("dd").filter({
@@ -2888,7 +2890,9 @@ try {
       );
       await page.keyboard.press("Escape");
       await expect(narrowDialog).toHaveCount(0);
-      await expect(narrowStorage).toBeFocused();
+      await expect(
+        page.getByRole("button", { name: /^작업 공간 전환:/ }),
+      ).toBeFocused();
       await page.keyboard.press("Escape");
       await expect(narrowNavigation).toBeFocused();
       p7StorageStates.push({
@@ -2919,8 +2923,8 @@ try {
         }, name);
         await page.reload();
         await expect(
-          page.locator(".workbench-header [data-state]"),
-        ).toHaveAttribute("data-state", "connected");
+          page.locator(".workbench-header [data-connection]"),
+        ).toHaveAttribute("data-connection", "connected");
         await page
           .getByRole("button", { name: "파일·확장", exact: true })
           .click();
@@ -3101,8 +3105,8 @@ try {
       });
       await page.reload();
       await expect(
-        page.locator(".workbench-header [data-state]"),
-      ).toHaveAttribute("data-state", "connected");
+        page.locator(".workbench-header [data-connection]"),
+      ).toHaveAttribute("data-connection", "connected");
       await page
         .getByRole("button", { name: "파일·확장", exact: true })
         .click();
@@ -3223,14 +3227,10 @@ try {
       await expect(draftContent).toHaveValue(
         "# 합성 프로젝트 지침\n\n수정 후 테스트와 별도 리뷰를 확인하세요.",
       );
-      await page
-        .getByRole("combobox", { name: "작업 공간", exact: true })
-        .selectOption("fixture-draft-w2");
+      await selectWorkspace(page, "fixture-draft-w2");
       await expect(draftContent).toHaveValue("");
       await draftContent.fill("# 다른 작업 공간의 초안");
-      await page
-        .getByRole("combobox", { name: "작업 공간", exact: true })
-        .selectOption("fixture-w");
+      await selectWorkspace(page, "fixture-w");
       await expect(draftContent).toHaveValue(
         "# 합성 프로젝트 지침\n\n수정 후 테스트와 별도 리뷰를 확인하세요.",
       );
@@ -3382,8 +3382,8 @@ try {
       });
       await page.reload();
       await expect(
-        page.locator(".workbench-header [data-state]"),
-      ).toHaveAttribute("data-state", "connected");
+        page.locator(".workbench-header [data-connection]"),
+      ).toHaveAttribute("data-connection", "connected");
       await page
         .getByRole("button", { name: "파일·확장", exact: true })
         .click();
@@ -3684,8 +3684,8 @@ try {
       });
       await page.reload();
       await expect(
-        page.locator(".workbench-header [data-state]"),
-      ).toHaveAttribute("data-state", "connected");
+        page.locator(".workbench-header [data-connection]"),
+      ).toHaveAttribute("data-connection", "connected");
       await page
         .getByRole("button", { name: "파일·확장", exact: true })
         .click();
@@ -3756,8 +3756,8 @@ try {
         );
         await page.reload();
         await expect(
-          page.locator(".workbench-header [data-state]"),
-        ).toHaveAttribute("data-state", "connected");
+          page.locator(".workbench-header [data-connection]"),
+        ).toHaveAttribute("data-connection", "connected");
         await page
           .getByRole("button", {
             name: "\uD30C\uC77C\u00B7\uD655\uC7A5",
@@ -4080,8 +4080,8 @@ try {
         }, name);
         await page.reload();
         await expect(
-          page.locator(".workbench-header [data-state]"),
-        ).toHaveAttribute("data-state", "connected");
+          page.locator(".workbench-header [data-connection]"),
+        ).toHaveAttribute("data-connection", "connected");
         await page
           .getByRole("button", { name: "파일·확장", exact: true })
           .click();
@@ -4567,8 +4567,8 @@ try {
         );
         await page.reload();
         await expect(
-          page.locator(".workbench-header [data-state]"),
-        ).toHaveAttribute("data-state", "connected");
+          page.locator(".workbench-header [data-connection]"),
+        ).toHaveAttribute("data-connection", "connected");
         await page
           .getByRole("button", { name: "파일·확장", exact: true })
           .click();
@@ -4934,9 +4934,7 @@ try {
         "data-mcp-action-status",
         "pending",
       );
-      await page
-        .getByRole("combobox", { name: "작업 공간", exact: true })
-        .selectOption("fixture-mcp-other-w");
+      await selectWorkspace(page, "fixture-mcp-other-w");
       await expect(mcpPanel).toHaveAttribute(
         "data-mcp-workspace",
         "fixture-mcp-other-w",
@@ -5028,8 +5026,8 @@ try {
         assert.equal(initialMetrics.runtimeEffects, 0);
         await page.reload();
         await expect(
-          page.locator(".workbench-header [data-state]"),
-        ).toHaveAttribute("data-state", "connected");
+          page.locator(".workbench-header [data-connection]"),
+        ).toHaveAttribute("data-connection", "connected");
         await page
           .getByRole("button", { name: "파일·확장", exact: true })
           .click();
@@ -5281,8 +5279,8 @@ try {
               const before = await skillMetrics();
               await page.reload();
               await expect(
-                page.locator(".workbench-header [data-state]"),
-              ).toHaveAttribute("data-state", "connected");
+                page.locator(".workbench-header [data-connection]"),
+              ).toHaveAttribute("data-connection", "connected");
               await page
                 .getByRole("button", { name: "파일·확장", exact: true })
                 .click();
@@ -6162,8 +6160,8 @@ try {
         });
         await page.reload();
         await expect(
-          page.locator(".workbench-header [data-state]"),
-        ).toHaveAttribute("data-state", "connected");
+          page.locator(".workbench-header [data-connection]"),
+        ).toHaveAttribute("data-connection", "connected");
         await openAgentPanel();
         await expect(agentListStatus).toHaveAttribute(
           "data-agent-list-status",
@@ -6919,9 +6917,9 @@ try {
         assert.equal(before.effects, 0);
         await page.reload();
         await expect(
-          page.locator(".workbench-header [data-state]"),
+          page.locator(".workbench-header [data-connection]"),
         ).toHaveAttribute(
-          "data-state",
+          "data-connection",
           name === "disconnected" ? "disconnected" : "connected",
         );
         await openExtensionsPanel();
@@ -7174,16 +7172,12 @@ try {
         await openExtensionCase(name);
         await observeExtensions("checking");
         if (name === "late-workspace") {
-          const workspaceSelect = page.getByRole("combobox", {
-            name: "작업 공간",
-            exact: true,
-          });
-          await workspaceSelect.selectOption("fixture-extensions-other-w");
+          await selectWorkspace(page, "fixture-extensions-other-w");
           await expect(extensionPanel).toHaveAttribute(
             "data-extensions-state",
             "not_observed",
           );
-          await workspaceSelect.selectOption("fixture-w");
+          await selectWorkspace(page, "fixture-w");
         } else {
           await application.evaluate((_electron, name) => {
             const snapshot = globalThis.__omocUiFixture.snapshot;
@@ -7625,8 +7619,8 @@ try {
         );
         await page.reload();
         await expect(
-          page.locator(".workbench-header [data-state]"),
-        ).toHaveAttribute("data-state", "connected");
+          page.locator(".workbench-header [data-connection]"),
+        ).toHaveAttribute("data-connection", "connected");
         await page
           .getByRole("button", { name: "파일·확장", exact: true })
           .click();

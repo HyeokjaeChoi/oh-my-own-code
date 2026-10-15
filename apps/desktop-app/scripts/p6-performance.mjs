@@ -1321,8 +1321,8 @@ export async function runPerformance(argv = process.argv.slice(2)) {
       const start = globalThis.performance.now();
       while (
         globalThis.document
-          .querySelector(".workbench-header [data-state]")
-          ?.getAttribute("data-state") !== "connected"
+          .querySelector(".workbench-header [data-connection]")
+          ?.getAttribute("data-connection") !== "connected"
       ) {
         if (globalThis.performance.now() - start > 15000)
           throw new Error("Cold connected DOM timeout");

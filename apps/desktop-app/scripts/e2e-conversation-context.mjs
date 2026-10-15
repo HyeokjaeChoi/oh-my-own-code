@@ -318,8 +318,8 @@ async function scenario(name) {
   const connected = !["global-held"].includes(name);
   if (connected)
     await expect(
-      page.locator(".workbench-header [data-state]"),
-    ).toHaveAttribute("data-state", "connected");
+      page.locator(".workbench-header [data-connection]"),
+    ).toHaveAttribute("data-connection", "connected");
   await expect(attachTrigger()).toBeAttached();
   await openComposerPopover(page, "attach");
   assert.deepEqual(
@@ -914,10 +914,9 @@ try {
     if (/^https?:/i.test(request.url())) externalRequests.push(request.url());
   });
   await page.route(/^https?:/i, (route) => route.abort("blockedbyclient"));
-  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
-    "data-state",
-    "connected",
-  );
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected");
   await exerciseConversationContext();
   assert.deepEqual(externalRequests, []);
   assert.deepEqual(errors, []);

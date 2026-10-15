@@ -1228,10 +1228,9 @@ try {
     if (/^https?:/i.test(request.url())) externalRequests.push(request.url());
   });
   await page.route(/^https?:/i, (route) => route.abort("blockedbyclient"));
-  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
-    "data-state",
-    "connected",
-  );
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected");
   await exerciseFoundation();
   await exercisePermissionPolicy();
   assert.deepEqual(externalRequests, []);
