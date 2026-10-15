@@ -7782,3 +7782,29 @@ test("the armed trail is checkpointed before Native may create, so a hard kill a
   );
   assert.deepEqual(nativeMutations(f), before);
 });
+
+test("a settled bootstrap create is checkpointed, so a crash afterwards relaunches ready", async (t) => {
+  const f = await fixture(t, { taskChild: fakeBootstrapChild() });
+  const snapshot = await f.ready();
+  assert.equal(
+    (await f.mutate(createOperation(snapshot), "create-then-crash")).ok,
+    true,
+  );
+  // A crash leaves the journal as-is: no shutdown intent, no final checkpoint.
+  const crashed = join(f.root, "crashed");
+  await fs.cp(f.directory, crashed, { recursive: true });
+  const restarted = await openWorkspaceRegistry({
+    ...f.options,
+    directory: crashed,
+    runtimeEpoch: "new",
+  });
+  t.after(() => restarted.close());
+  assert.equal(
+    restarted.status().state,
+    "ready",
+    JSON.stringify(restarted.status()),
+  );
+  const view = restarted.readView();
+  assert.deepEqual(view.retainedOperations, []);
+  assert.equal(view.sessions.length, snapshot.sessions.length + 1);
+});
