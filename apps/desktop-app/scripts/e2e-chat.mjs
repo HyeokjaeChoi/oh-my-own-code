@@ -360,6 +360,7 @@ try {
     timeout: 90_000,
   });
   await idle();
+  await expect(page.locator("[data-no-models]")).toHaveCount(0);
   observations.push("turn 1: send -> streamed mock reply rendered");
   // Native names the session after the first reply (the mock answers its
   // title request with "Mock title"); main persists that title through the
