@@ -116,6 +116,31 @@ const labels: Record<string, string> = {
   error: "오류",
   "needs-permission": "권한 대기",
 };
+const permissionHeadings: Record<string, string> = {
+  edit: "파일 편집",
+  write: "파일 쓰기",
+  patch: "패치 적용",
+  apply_patch: "패치 적용",
+  bash: "명령 실행",
+  shell: "명령 실행",
+  read: "파일 읽기",
+  glob: "파일 검색",
+  grep: "파일 검색",
+  list: "폴더 보기",
+  webfetch: "웹 요청",
+  websearch: "웹 검색",
+  subagent: "하위 에이전트 실행",
+  task: "하위 에이전트 실행",
+  external_directory: "작업 공간 밖 접근",
+};
+// Plain sentence for a raw tool/action name; readable titles pass through.
+function permissionHeading(title: string) {
+  const known = permissionHeadings[title];
+  if (known) return `${known} 허용이 필요합니다`;
+  return /^[a-z][a-z0-9_.-]*$/.test(title)
+    ? `${title} 실행 허용이 필요합니다`
+    : title;
+}
 function ToolDetail({
   toolName,
   toolCallId,
@@ -150,7 +175,17 @@ function ToolDetail({
   const status = labels[state] ?? "상태 확인 불가";
   return (
     <div className={`tool-detail ${styles.toolDetail}`} data-tool-state={state}>
-      <details className={styles.toolCall}>
+      <details
+        className={styles.toolCall}
+        // Anything that needs attention is never hidden behind a collapsed row.
+        open={
+          pendingPermissions.length > 0 ||
+          state === "error" ||
+          (subagent !== null && state === "completed")
+            ? true
+            : undefined
+        }
+      >
         <summary className={styles.disclosure}>
           <ChevronRight
             size={14}
@@ -162,14 +197,16 @@ function ToolDetail({
             <span className={styles.summaryState}>{status}</span>
           )}
         </summary>
-        <div className={`tool-heading ${styles.toolHeading}`}>
-          <strong>{toolName}</strong>
-          <span>{status}</span>
-        </div>
+        {state !== "completed" && state !== "needs-permission" && (
+          <div className={`tool-heading ${styles.toolHeading}`}>
+            <strong>{toolName}</strong>
+            <span>{status}</span>
+          </div>
+        )}
         <ToolBody view={view} />
         {pendingPermissions.map((p) => (
           <div className={styles.toolPermission} key={p.id}>
-            <strong>{p.title}</strong>
+            <strong>{permissionHeading(p.title)}</strong>
             <p className={styles.muted}>
               {p.detail} · 아래 권한 요청에서 응답하세요.
             </p>
@@ -183,24 +220,18 @@ function ToolDetail({
             <pre>{subagent.text}</pre>
           </div>
         ) : null}
-        <details className={styles.rawDetails}>
-          <summary className={styles.disclosure}>
-            <ChevronRight
-              size={14}
-              className={styles.chevron}
-              aria-hidden="true"
-            />
-            도구 입력과 결과
-          </summary>
-          <p className={styles.muted}>입력</p>
-          <pre>{typeof args.input === "string" ? args.input : ""}</pre>
-          <p className={styles.muted}>
-            {state === "completed" || state === "error"
-              ? "결과"
-              : "현재까지 받은 출력 · 완료되지 않음"}
-          </p>
-          <pre>{output || "아직 출력이 없습니다."}</pre>
-        </details>
+        {view.kind === "generic" && (
+          <>
+            <p className={styles.muted}>입력</p>
+            <pre>{typeof args.input === "string" ? args.input : ""}</pre>
+            <p className={styles.muted}>
+              {state === "completed" || state === "error"
+                ? "결과"
+                : "현재까지 받은 출력 · 완료되지 않음"}
+            </p>
+            <pre>{output || "아직 출력이 없습니다."}</pre>
+          </>
+        )}
       </details>
       {preview ? (
         <LinkPreview
@@ -230,11 +261,13 @@ function MessageView({
   messageId,
   runtime,
   original,
+  showRuntime,
 }: {
   role: "user" | "assistant";
   messageId: string;
   runtime: unknown;
   original?: WorkbenchMessage | undefined;
+  showRuntime: boolean;
 }) {
   const report =
     role === "assistant" && validAssistantRuntime(runtime)
@@ -270,7 +303,7 @@ function MessageView({
           {text && <CopyButton text={text} kind="message" />}
           {original && <ContextMessageActions message={original} />}
         </div>
-        {role === "assistant" && (
+        {role === "assistant" && showRuntime && (
           <details
             className={styles.runtimeReport}
             data-response-runtime={messageId}
@@ -592,6 +625,12 @@ export function Conversation(props: Props) {
                     messageId={message.id}
                     runtime={message.metadata?.custom.runtime}
                     original={props.messages.find((m) => m.id === message.id)}
+                    // Agent/model once per turn: on the last assistant message.
+                    showRuntime={
+                      props.messages[
+                        props.messages.findIndex((m) => m.id === message.id) + 1
+                      ]?.role !== "assistant"
+                    }
                   />
                 )}
               </ThreadPrimitive.Messages>
@@ -620,10 +659,13 @@ export function Conversation(props: Props) {
                     data-permission-id={permission.id}
                     key={permission.id}
                   >
-                    <strong className={styles.permissionTitle}>
+                    <strong
+                      className={styles.permissionTitle}
+                      title={permission.title}
+                    >
                       {permission.childTitle !== undefined &&
                         `하위 에이전트 · ${permission.childTitle} · `}
-                      {permission.title}
+                      {permissionHeading(permission.title)}
                     </strong>
                     <p className={styles.permissionDetail}>
                       {permission.detail}

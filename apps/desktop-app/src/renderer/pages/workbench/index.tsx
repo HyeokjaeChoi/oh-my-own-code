@@ -73,7 +73,6 @@ const states: Record<string, string> = {
   disconnected: "연결 끊김",
   unavailable: "사용 불가",
 };
-const NOTICE_MS = 8000;
 export function Workbench() {
   const { actions, store } = useWindowWorkbench();
   const recovery = useWorkbenchSelector(selectors.recovery);
@@ -91,12 +90,6 @@ export function Workbench() {
   const error = useWorkbenchSelector((s) => s.error);
   const notice = useWorkbenchSelector((s) => s.notice);
   const catalogError = useWorkbenchSelector((s) => s.catalogError);
-  // Receipts are a brief status, not a standing banner.
-  useEffect(() => {
-    if (!notice) return;
-    const timer = setTimeout(actions.clearNotices, NOTICE_MS);
-    return () => clearTimeout(timer);
-  }, [notice, actions]);
   const unknown = useWorkbenchSelector(selectors.unknown);
   const operations = useWorkbenchSelector((s) => s.operations);
   const unknownSessionIds = Object.values(operations)
@@ -942,14 +935,6 @@ export function Workbench() {
         {(workbench.error || snapshot?.error) && (
           <div className={`${styles.statusLine} ${styles.error}`} role="alert">
             요청을 완료하지 못했습니다. 연결과 현재 상태를 다시 확인하세요.
-          </div>
-        )}
-        {workbench.notice && (
-          <div
-            className={`${styles.statusLine} ${styles.notice}`}
-            role="status"
-          >
-            {workbench.notice}
           </div>
         )}
         {!connected && (
