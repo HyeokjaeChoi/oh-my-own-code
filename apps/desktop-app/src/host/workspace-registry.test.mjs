@@ -312,7 +312,7 @@ for (const stage of ["admitted", "reserved", "dispatched", "unknown"])
   });
 
 test("CTX-BRANCH conservative tail holds cannot supply boundary authority or adopt unconfirmed success", async (t) => {
-  const f = await beforeBranchFixture(t, {}, false);
+  const f = await beforeBranchFixture(t, noIdleCheckpoint(), false);
   await f.registry.checkpoint(); // Only parent state is committed.
   await f.registry.begin(f.input);
   await reserveBeforeBranch(f);
@@ -475,11 +475,13 @@ const receipt = (operationId = "op", extra = {}) => ({
   evidence: [],
   ...extra,
 });
-async function fixture(t, io = {}, runtimeEpoch = "current", extra = {}) {
+// Marks a fixture io whose scenario is a crash before the idle checkpoint.
+const crashBeforeIdle = new WeakSet();
+const noIdleCheckpoint = (io = {}) => (crashBeforeIdle.add(io), io);
+async function fixture(t, io = {}, runtimeEpoch = "current") {
   const root = await fs.realpath(
     await fs.mkdtemp(join(tmpdir(), "p7-registry-")),
   );
-  t.after(() => fs.rm(root, { recursive: true, force: true }));
   const directory = join(root, "private");
   const documentsPath = join(root, "Documents");
   await fs.mkdir(directory);
@@ -490,10 +492,16 @@ async function fixture(t, io = {}, runtimeEpoch = "current", extra = {}) {
     storeId: "store",
     runtimeEpoch,
     io,
-    ...extra,
+    ...(crashBeforeIdle.has(io) && { idleCheckpoint: false }),
   };
   const registry = await openWorkspaceRegistry(options);
-  t.after(() => registry.close());
+  // One hook: close (and its queued writes) before the directory is removed.
+  // Hooks run in registration order, so a later reopened registry may still be
+  // finishing a queued write: retry instead of failing with ENOTEMPTY.
+  t.after(async () => {
+    await registry.close();
+    await fs.rm(root, { recursive: true, force: true, maxRetries: 5 });
+  });
   return { root, directory, documentsPath, registry, options };
 }
 const deferred = () => {
@@ -1923,18 +1931,16 @@ for (const state of [
 for (const uncertain of ["failed-rejection-flush", "rejected-retry-tail"]) {
   test(`JR-V5-R3-01 ${uncertain} cannot authorize ID transfer or clear original holds`, async (t) => {
     let rejectFlush = false;
+    // The scenario is a crash with this tail still unconfirmed.
     const f = await fixture(
       t,
-      {
+      noIdleCheckpoint({
         syncFile: async (file, context) => {
           if (rejectFlush && context === "append:completion")
             throw new Error("unconfirmed rejection flush");
           await file.sync();
         },
-      },
-      "current",
-      // The scenario is a crash with this tail still unconfirmed.
-      { idleCheckpoint: false },
+      }),
     );
     const staged = await createManagedWorkspaceOnly(f);
     await f.registry.checkpoint();
@@ -2057,7 +2063,7 @@ for (const collision of ["cross-workspace", "wrong-kind"]) {
 
 for (const count of [0, 199]) {
   test(`HOST-first-session uncheckpointed staged reuse at ${count} sessions retains both unknown holds until explicit tail adoption`, async (t) => {
-    const f = await fixture(t, {}, "current", { idleCheckpoint: false });
+    const f = await fixture(t, noIdleCheckpoint());
     if (count) await committedSessions(t, f, count);
     const staged = await createManagedWorkspaceOnly(f);
     const request = { runtimeEpoch: "old", operationId: "first-tail" };
@@ -3349,7 +3355,7 @@ test("duplicate create completion and reservation are no-ops; conflicting planne
 });
 
 test("explicit recovery adopts only reviewed validated tail; ordinary reopen never promotes confirmed success", async (t) => {
-  const f = await fixture(t, {}, "current", { idleCheckpoint: false });
+  const f = await fixture(t, noIdleCheckpoint());
   await createManaged(f);
   const registry = await reopened(t, f);
   assert.equal(registry.status().reason, "unconfirmed_tail");
@@ -4946,7 +4952,7 @@ for (const [label, expected, mutate] of [
 }
 
 test("MCP conservative tail keeps original lookup-only key and private target until explicit recovery", async (t) => {
-  const f = await fixture(t);
+  const f = await fixture(t, noIdleCheckpoint());
   const seed = await createManaged(f, "mcp-tail-seed");
   await f.registry.checkpoint();
   const op = mcpRequest(seed, "mcp-tail");
@@ -8553,7 +8559,7 @@ for (const phase of ["admission", "dispatch", "completion"])
   });
 
 test("GC confirmed surviving tail cannot upgrade unknown through explicit adoption", async (t) => {
-  const f = await commitStorageFixture(t);
+  const f = await commitStorageFixture(t, noIdleCheckpoint());
   await f.registry.dispatch(commitDispatch(f));
   await f.registry.dispatch(commitDispatch(f, "publish"));
   await f.registry.checkpoint();
@@ -9482,7 +9488,7 @@ for (const phase of ["admission", "dispatch", "completion"])
   });
 
 test("BR confirmed surviving tail cannot upgrade unknown through explicit adoption", async (t) => {
-  const f = await brStorageFixture(t);
+  const f = await brStorageFixture(t, noIdleCheckpoint());
   await f.registry.dispatch(brDispatch(f));
   await f.registry.dispatch(brDispatch(f, "publish"));
   await f.registry.checkpoint();
@@ -11093,7 +11099,7 @@ test("permission validated-tail adoption ending in progress retains no live disp
   await assert.rejects(r.complete(f.completion()), { code: "UNAVAILABLE" });
 });
 test("permission surviving uncheckpointed success cannot be upgraded by tail adoption", async (t) => {
-  const f = await permissionRegistryFixture(t);
+  const f = await permissionRegistryFixture(t, noIdleCheckpoint());
   await f.registry.begin(f.input);
   await permissionRegistryAdvance(f);
   await f.registry.complete(f.completion());
@@ -12622,4 +12628,28 @@ test("IDLE a failed idle checkpoint poisons the writer visibly without failing t
   await assert.rejects(f.registry.begin(identity("after-poison")), {
     code: "writer_poisoned",
   });
+});
+test("IDLE checkpoint waits for the owner fence and is skipped when the fence rejects", async (t) => {
+  let owned = false;
+  const f = await fixture(t, {}, "current");
+  await f.registry.close();
+  const registry = await openWorkspaceRegistry({
+    ...f.options,
+    checkpointFence: async () => {
+      if (!owned) throw new Error("owner_unverified");
+    },
+  });
+  t.after(() => registry.close());
+  const intent = (phase) =>
+    registry.recordOwnerIntent({
+      ownerNonce: "11111111-1111-4111-8111-111111111111",
+      phase,
+    });
+  await intent("startup");
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(checkpointed(registry), false);
+  assert.equal(registry.status().state, "ready");
+  owned = true;
+  await intent("child_started");
+  await until(() => checkpointed(registry));
 });

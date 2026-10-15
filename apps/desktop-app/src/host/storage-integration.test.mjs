@@ -884,7 +884,8 @@ async function fixture(
     service.close();
     await service.drain();
     await registry.close();
-    await fs.rm(root, { recursive: true, force: true });
+    // A reopened registry registered later may still finish a queued write.
+    await fs.rm(root, { recursive: true, force: true, maxRetries: 5 });
   });
   return {
     root,

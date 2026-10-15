@@ -1089,6 +1089,9 @@ export async function openWorkspaceRegistry({
   permissionReconciliationSource,
   // Tests turn this off to model a process that dies before its idle checkpoint.
   idleCheckpoint = true,
+  // Awaited before every idle checkpoint (Main: the owner fence); a rejection
+  // skips that checkpoint, exactly like a fenced explicit checkpoint call.
+  checkpointFence = async () => {},
 } = {}) {
   need(validWireId(runtimeEpoch));
   // Main supplies this private source at construction. recordTask accepts no
@@ -1103,6 +1106,7 @@ export async function openWorkspaceRegistry({
       typeof permissionReconciliationSource === "function",
     "invalid_record",
   );
+  need(typeof checkpointFence === "function", "invalid_record");
   if (recoveryReason !== undefined)
     need(STORE_RECOVERY_REASONS.includes(recoveryReason));
   const paths = {
@@ -1348,7 +1352,10 @@ export async function openWorkspaceRegistry({
       )
         return;
       const { sequence, checkpointSequence } = journal.status();
-      if (sequence !== checkpointSequence) await journal.checkpoint();
+      if (sequence === checkpointSequence) return;
+      await checkpointFence();
+      if (closing || closedRegistry || storeReason()) return;
+      await journal.checkpoint();
     }).catch(() => {});
   }
   async function commit(payload) {
