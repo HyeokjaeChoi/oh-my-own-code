@@ -59,6 +59,32 @@
   outline-offset: -2px;
 }
 
+.item {
+  gap: 8px;
+}
+
+.itemLabel {
+  flex: 1;
+  min-width: 0;
+}
+
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.check {
+  display: inline-flex;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.separator {
+  height: 1px;
+  margin: 4px 2px;
+  background: var(--omoc-semantic-color-border-subtle);
+}
+
 .item[data-danger] {
   color: var(--omoc-semantic-color-danger-foreground);
 }
