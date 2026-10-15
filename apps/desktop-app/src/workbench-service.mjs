@@ -69,6 +69,7 @@ import { performance } from "node:perf_hooks";
 import { basename, isAbsolute } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { redactReceipt } from "./host/workbench-receipts.mjs";
+import { isPlaceholderTitle, nativeSessionTitle } from "./session-title.mjs";
 import {
   BASELINE_POLICY,
   ERRORS,
@@ -2660,7 +2661,6 @@ export function createWorkbenchService({
     const info = await call(client.session.create, {
       id: reservation.plannedNativeSessionId,
       metadata: owner.nativeMetadata,
-      title: "Workbench",
       location: { directory: w.path },
       permissions: BASELINE_POLICY.map((rule) => ({ ...rule })),
     });
@@ -2936,6 +2936,50 @@ export function createWorkbenchService({
           : {}),
     });
   }
+  // Native names a session after its first reply. While the stored title is
+  // still an app placeholder, persist that title through the normal
+  // session.rename path (journaled, redacted, bounded); a user-chosen title is
+  // never touched. One attempt per (session, title); BUSY retries later.
+  const titleSyncMarks = new Map();
+  function syncNativeTitle(id, raw, idle) {
+    const title = nativeSessionTitle(raw);
+    const current = committed.sessions.get(id);
+    if (
+      !title ||
+      !current ||
+      current.parentSessionId ||
+      current.unavailable ||
+      current.lock ||
+      !idle ||
+      !isPlaceholderTitle(current.title) ||
+      titleSyncMarks.get(id) === title
+    )
+      return;
+    titleSyncMarks.set(id, title);
+    const operationId = randomUUID();
+    setImmediate(() => {
+      host
+        .handle(
+          {
+            version: 2,
+            runtimeEpoch: host.epoch,
+            operationId,
+            operation: {
+              type: "session.rename",
+              workspaceId: current.workspaceId,
+              sessionId: id,
+              requestId: operationId,
+              title,
+            },
+          },
+          "internal:title-sync",
+        )
+        .then((result) => {
+          if (result?.code === "BUSY") titleSyncMarks.delete(id);
+        })
+        .catch(() => titleSyncMarks.delete(id));
+    });
+  }
   async function refresh(original) {
     const s = {
       ...original,
@@ -3065,7 +3109,7 @@ export function createWorkbenchService({
           s.status = "idle";
           s.awaiting = undefined;
         } else s.status = s.unknown ? "unknown" : s.status;
-        // Native title observation never commits authoritative metadata.
+        syncNativeTitle(original.id, info.title, s.status === "idle");
         const latest = messages.data.find((m) => m.type === "assistant");
         const failed = latest?.error ? latest : undefined;
         const code = s.unknown
@@ -5420,7 +5464,7 @@ export function createWorkbenchService({
             id: currentScope().reservation.plannedNativeSessionId,
             metadata: currentScope().nativeMetadata,
           }),
-          title: request.title || "Untitled session",
+          ...(request.title && { title: request.title }),
           location: { directory: w.path },
           permissions: BASELINE_POLICY.map((rule) => ({ ...rule })),
         });

@@ -70,15 +70,18 @@ export function bootstrapStageArguments(step, input) {
     const row = fields(
       input,
       ["id", "metadata", "title", "location", "permissions"],
-      ["id", "metadata", "title", "location", "permissions"],
+      ["id", "metadata", "location", "permissions"],
     );
-    need(typeof row.id === "string" && typeof row.title === "string");
+    need(
+      typeof row.id === "string" &&
+        (row.title === undefined || typeof row.title === "string"),
+    );
     const location = fields(row.location, ["directory"], ["directory"]);
     need(typeof location.directory === "string");
     return {
       id: row.id,
       metadata: stringMap(row.metadata),
-      title: row.title,
+      ...(row.title !== undefined && { title: row.title }),
       location,
       permissions: rules(row.permissions),
     };
