@@ -16,7 +16,7 @@ export async function openSettings(page) {
   // button); the command palette entry fires this same app event.
   else
     await page.evaluate(() =>
-      globalThis.dispatchEvent(new Event("omoc:open-settings")),
+      globalThis.dispatchEvent(new globalThis.Event("omoc:open-settings")),
     );
 }
 
