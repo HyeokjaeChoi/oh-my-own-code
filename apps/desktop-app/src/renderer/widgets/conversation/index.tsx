@@ -55,6 +55,7 @@ import {
   useDefaultModel,
 } from "../../features/composer/index.js";
 import type { MutationRequest } from "../../shared/transport/index.js";
+import { OPEN_SETTINGS_EVENT } from "../../shared/palette/index.js";
 import styles from "./conversation.module.css";
 import { PopoverPanel, PopoverTrigger } from "./composer-popovers.js";
 import { AssistantText, CopyButton, LiteralText } from "./markdown.js";
@@ -1279,6 +1280,25 @@ export function Conversation(props: Props) {
                 <PermissionPolicy className={styles.runtimeReport} />
               </PopoverPanel>
             </div>
+            {props.catalog?.models.status === "available" &&
+              props.catalog.models.entries.length === 0 && (
+                <p
+                  className={styles.selectionError}
+                  role="alert"
+                  data-no-models
+                >
+                  사용할 수 있는 모델이 없어 메시지를 보낼 수 없습니다. 설정의
+                  모델 제공자에서 제공자를 연결하세요.{" "}
+                  <Button
+                    size="compact"
+                    onClick={() =>
+                      window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))
+                    }
+                  >
+                    설정 열기
+                  </Button>
+                </p>
+              )}
             {invalidSelection && (
               <p className={styles.selectionError} role="alert">
                 선택한 Agent, 모델 또는 Variant를 사용할 수 없습니다. 다시

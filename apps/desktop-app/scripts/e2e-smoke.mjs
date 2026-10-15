@@ -665,6 +665,16 @@ try {
     )
     .toBe("connected");
   assert.equal(snapshot.serverVersion, "2.0.18");
+  // No provider in this profile: the composer says why sending cannot work
+  // and links to Settings -> 모델 제공자.
+  const noModels = page.locator("[data-no-models]");
+  await expect(noModels).toBeVisible({ timeout: 60_000 });
+  await noModels.getByRole("button", { name: "설정 열기" }).click();
+  await expect(page.getByRole("region", { name: "모델 제공자" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("region", { name: "모델 제공자" })).toHaveCount(
+    0,
+  );
   const rendererCapabilities = await page.evaluate(() => ({
     bridge: Object.keys(window.desktopBridge).sort(),
     require: typeof window.require,
