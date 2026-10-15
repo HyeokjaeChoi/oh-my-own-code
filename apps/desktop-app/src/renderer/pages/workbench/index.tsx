@@ -158,6 +158,7 @@ export function Workbench() {
   const panelButton = useRef<HTMLButtonElement>(null);
   const createInput = useRef<HTMLInputElement>(null);
   const importInput = useRef<HTMLInputElement>(null);
+  const switcherButton = useRef<HTMLButtonElement>(null);
   // First prompt per session whose stored title is still a placeholder.
   const [derivedTitles, setDerivedTitles] = useState<Record<string, string>>(
     {},
@@ -320,6 +321,7 @@ export function Workbench() {
         <ActionMenu
           label={`작업 공간 전환: ${workspace?.name ?? "선택 없음"}`}
           title="작업 공간 전환"
+          triggerRef={switcherButton}
           align="start"
           className={styles.switcher ?? ""}
           contentClassName={styles.switcherMenu ?? ""}
@@ -1065,6 +1067,7 @@ export function Workbench() {
         open={locationOpen}
         onOpenChange={setLocationOpen}
         title="저장 위치와 보관 정보"
+        returnFocusRef={switcherButton}
       >
         <div className={styles.locationInfo}>
           <h3>{workspace?.name}</h3>
