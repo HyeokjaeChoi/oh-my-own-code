@@ -1,5 +1,5 @@
 import React from "react";
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import { DropdownMenu } from "radix-ui";
 import { Check } from "lucide-react";
 import styles from "./action-menu.module.css";
@@ -26,6 +26,7 @@ export type ActionMenuProps = {
   contentClassName?: string;
   align?: "start" | "end";
   title?: string;
+  triggerRef?: Ref<HTMLButtonElement>;
 };
 
 export function ActionMenu({
@@ -36,6 +37,7 @@ export function ActionMenu({
   contentClassName,
   align = "end",
   title,
+  triggerRef,
 }: ActionMenuProps) {
   const checkedIndex = items.findIndex(
     (item) => "checked" in item && item.checked,
@@ -44,6 +46,7 @@ export function ActionMenu({
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button
+          ref={triggerRef}
           type="button"
           aria-label={label}
           title={title}
