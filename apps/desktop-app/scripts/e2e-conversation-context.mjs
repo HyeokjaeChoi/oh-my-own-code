@@ -859,17 +859,21 @@ async function exerciseConversationContext() {
     )
     .toBe(true);
   await composer().fill("SYNTHETIC inert unknown draft");
+  await openComposerPopover(page, "run");
   await shot("unknown-original-key-editable-no-replay");
   await captureResponsive("unknown", [
     '[aria-label="메시지 작성"]',
     '[aria-label="메시지 보내기"]',
+    "[data-context-inbox-observe]",
   ]);
   for (const name of ["held", "global-held", "untrusted"]) {
     await scenario(name);
     await composer().fill(`SYNTHETIC ${name} inert draft`);
     await expect(hook("observe")).toBeDisabled();
-    // The current-run strip only exists for an active run or known queue.
+    // The queue entry point stays available; its status strip does not.
     await expect(page.locator("[data-run-strip]")).toHaveCount(0);
+    await openComposerPopover(page, "run");
+    await expect(hook("inbox-observe")).toBeDisabled();
     await expect(send()).toBeDisabled();
     await reveal(composer());
     await shot(`${name}-editable-effects-held`);

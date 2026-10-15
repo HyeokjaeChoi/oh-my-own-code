@@ -693,7 +693,6 @@ test("conversation context: actual React controls render inert previews and comp
       }),
     );
     await api.actions.observeContext("notes.txt");
-    api.actions.previewContextBranch("u-1");
     const value = {
       ...api,
       store: { ...api.store, getInitialState: () => api.store.getState() },
@@ -715,17 +714,22 @@ test("conversation context: actual React controls render inert previews and comp
       "preview",
       "text",
       "selection",
-      "branch",
-      "boundary",
-      "branch-text",
-      "branch-confirm",
       "steer",
       "queue",
       "inbox-observe",
     ])
       assert.ok(html.includes(`data-context-${hook}`), hook);
-    assert.ok(html.includes("현재 Workspace 파일을 유지합니다"));
-    assert.ok(html.includes("새 분기 만들기 · 전송 안 함"));
+    // A branch task owns the composer: attach/run panels are not rendered.
+    api.actions.previewContextBranch("u-1");
+    const branchHtml = renderToStaticMarkup(
+      createElement(Provider, { value }, createElement(Controls, passthrough)),
+    );
+    for (const hook of ["branch", "boundary", "branch-text", "branch-confirm"])
+      assert.ok(branchHtml.includes(`data-context-${hook}`), hook);
+    for (const hook of ["path", "observe", "steer", "queue", "inbox-observe"])
+      assert.ok(!branchHtml.includes(`data-context-${hook}`), hook);
+    assert.ok(branchHtml.includes("현재 Workspace 파일을 유지합니다"));
+    assert.ok(branchHtml.includes("새 분기 만들기 · 전송 안 함"));
     const messageHtml = renderToStaticMarkup(
       createElement(
         Provider,
@@ -742,6 +746,7 @@ test("conversation context: actual React controls render inert previews and comp
       1,
       "Server rendering performs no read, upload or mutation",
     );
+    api.actions.closeContextBranch();
     const gif = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     observed = contextObserved("pixel.gif", "", {
       descriptor: {

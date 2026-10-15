@@ -460,7 +460,7 @@ async function commandMenuRegression() {
     exact: true,
   });
   await expect(trigger).toHaveText("");
-  await expect(trigger.locator("svg.lucide-slash")).toHaveCount(1);
+  await expect(trigger.locator("svg.lucide-square-slash")).toHaveCount(1);
   const composerBefore = await trigger
     .locator("xpath=ancestor::form")
     .boundingBox();

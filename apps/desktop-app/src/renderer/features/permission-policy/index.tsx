@@ -48,10 +48,8 @@ const labels = {
 
 export function PermissionPolicy({
   className,
-  hidden,
 }: {
   className?: string | undefined;
-  hidden?: boolean;
 }) {
   const { actions } = useWindowWorkbench();
   const entry = useWorkbenchSelector(selectors.permissionPolicy);
@@ -90,7 +88,6 @@ export function PermissionPolicy({
     <details
       ref={details}
       className={`${className ?? ""} ${styles.policy}`}
-      hidden={hidden}
       data-runtime-task="permission"
       data-permission-policy-status={status}
       data-permission-policy-baseline={

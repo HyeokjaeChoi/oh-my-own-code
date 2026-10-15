@@ -45,7 +45,7 @@ export function PopoverPanel({
   id: string;
   anchor: string;
   className: string | undefined;
-  label: string;
+  label?: string | undefined;
   align?: "start" | "end";
   onToggle?: (open: boolean) => void;
   children: ReactNode;
@@ -54,7 +54,7 @@ export function PopoverPanel({
     <div
       id={id}
       popover="auto"
-      role="group"
+      role={label ? "group" : undefined}
       aria-label={label}
       className={className}
       data-align={align}

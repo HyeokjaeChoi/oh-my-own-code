@@ -10,16 +10,22 @@ export const COMPOSER_POPOVERS = {
   run: "현재 실행 · 추가 지시와 대기열",
 };
 
-/** Opens (if closed) the popover behind the named trigger and returns its panel. */
+/**
+ * Opens (if closed) the popover behind the named trigger and returns its panel.
+ * Auto popovers can be closed by a remount or another popover, so the
+ * click-if-closed + visible check is retried until it holds.
+ */
 export async function openComposerPopover(page, kind) {
   const trigger = page
     .getByRole("button", { name: COMPOSER_POPOVERS[kind] })
     .first();
   const id = await trigger.getAttribute("popovertarget");
   const panel = page.locator(`[id="${id}"]`);
-  if (!(await panel.evaluate((el) => el.matches(":popover-open"))))
-    await trigger.click();
-  await expect(panel).toBeVisible();
+  await expect(async () => {
+    if (!(await panel.evaluate((el) => el.matches(":popover-open"))))
+      await trigger.click();
+    await expect(panel).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 10000 });
   return panel;
 }
 

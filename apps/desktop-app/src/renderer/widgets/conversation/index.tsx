@@ -25,7 +25,8 @@ import {
   GitBranch,
   Plus,
   Shield,
-  Slash,
+  SquareSlash,
+  ListTodo,
   Square,
   X,
 } from "lucide-react";
@@ -296,6 +297,7 @@ export function Conversation(props: Props) {
   const commandMenu = useRef<HTMLDivElement>(null);
   const menuOpenedFromInput = useRef(false);
   const commandMenuId = useId();
+  const hintId = useId();
   const attachId = useId();
   const runId = useId();
   const agentId = useId();
@@ -304,6 +306,9 @@ export function Conversation(props: Props) {
   const gitReview = useWorkbenchSelector(currentGitReviewObservation);
   const branchName =
     gitReview?.status === "available" ? gitReview.repository.branch : null;
+  const policyRequest = useWorkbenchSelector(
+    selectors.permissionPolicy,
+  ).request;
   const queueCount = contextState.inbox?.entries.length ?? 0;
   useEffect(() => {
     if (branchActive) setMenu(false);
@@ -640,19 +645,17 @@ export function Conversation(props: Props) {
                   {body}
                 </PopoverPanel>
               )}
-              runPanel={(body) =>
-                (running || queueCount > 0) && (
-                  <PopoverPanel
-                    id={runId}
-                    anchor="--run"
-                    align="start"
-                    className={styles.popover}
-                    label="현재 실행 · 추가 지시와 대기열"
-                  >
-                    {body}
-                  </PopoverPanel>
-                )
-              }
+              runPanel={(body) => (
+                <PopoverPanel
+                  id={runId}
+                  anchor="--run"
+                  align="start"
+                  className={styles.popover}
+                  label="현재 실행 · 추가 지시와 대기열"
+                >
+                  {body}
+                </PopoverPanel>
+              )}
             />
             <div className={styles.composerCard} hidden={branchActive}>
               {(props.workspaceName || branchName) && (
@@ -671,6 +674,10 @@ export function Conversation(props: Props) {
                   )}
                 </div>
               )}
+              <span id={hintId} className={styles.speaker}>
+                Enter 전송 · Shift+Enter 줄바꿈 · Agent: {agent || "기본값"} ·
+                모델: {model || "기본값"} · Variant: {variant || "기본값"}
+              </span>
               {(running || queueCount > 0) && (
                 <div className={styles.runStrip} data-run-strip>
                   <span className={styles.runStatus}>
@@ -678,22 +685,15 @@ export function Conversation(props: Props) {
                       ? "중단하는 중"
                       : running
                         ? "실행 중"
-                        : "실행 대기"}
-                    {queueCount > 0 && ` · 대기열 ${queueCount}`}
+                        : "대기열 (마지막 확인)"}
+                    {queueCount > 0 &&
+                      (running ? ` · 대기열 ${queueCount}` : ` ${queueCount}`)}
                   </span>
-                  <PopoverTrigger
-                    id={runId}
-                    anchor="--run"
-                    className={styles.runAction}
-                    aria-label="현재 실행 · 추가 지시와 대기열"
-                  >
-                    추가 지시와 대기열
-                  </PopoverTrigger>
                 </div>
               )}
               <ComposerPrimitive.Root
                 className={styles.composer}
-                hidden={branchActive}
+                aria-describedby={hintId}
                 data-composer-state={
                   branchActive ? "branch-retained" : "message"
                 }
@@ -895,8 +895,8 @@ export function Conversation(props: Props) {
                   </PopoverTrigger>
                   <Button
                     type="button"
-                    className={styles.slashTrigger}
-                    title="앱 동작과 명령"
+                    className={`${styles.roundButton} ${styles.slashTrigger}`}
+                    title="명령 (/)"
                     ref={slashButton}
                     aria-label="앱 동작과 명령 열기"
                     aria-expanded={menu}
@@ -921,8 +921,17 @@ export function Conversation(props: Props) {
                       }
                     }}
                   >
-                    <Slash size={18} aria-hidden="true" />
+                    <SquareSlash size={18} aria-hidden="true" />
                   </Button>
+                  <PopoverTrigger
+                    id={runId}
+                    anchor="--run"
+                    className={styles.roundButton}
+                    title="현재 실행 · 추가 지시와 대기열"
+                    aria-label="현재 실행 · 추가 지시와 대기열"
+                  >
+                    <ListTodo size={18} aria-hidden="true" />
+                  </PopoverTrigger>
                   <div className={styles.chips}>
                     <PopoverTrigger
                       id={agentId}
@@ -1111,7 +1120,10 @@ export function Conversation(props: Props) {
                 id={permissionId}
                 anchor="--permission"
                 className={styles.popover}
-                label="권한 모드"
+                onToggle={(open) => {
+                  if (!open && policyRequest)
+                    actions.cancelPermissionPolicyObservation();
+                }}
               >
                 <div
                   role="radiogroup"

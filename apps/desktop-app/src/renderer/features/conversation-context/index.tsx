@@ -351,8 +351,18 @@ export function ConversationContextControls({
                         previewTrigger.current = event.currentTarget;
                         const pop =
                           attachBody.current?.closest<HTMLElement>("[popover]");
-                        if (pop && !pop.matches(":popover-open"))
-                          pop.showPopover();
+                        // A branch task owns the composer: never reopen the panel.
+                        if (
+                          pop &&
+                          !context.branch &&
+                          !pop.matches(":popover-open")
+                        )
+                          // source returns focus to this button on close (newer DOM lib than TS ships).
+                          (
+                            pop as HTMLElement & {
+                              showPopover(options: { source: Element }): void;
+                            }
+                          ).showPopover({ source: event.currentTarget });
                         void actions.observeContext(d.path);
                       }}
                     >
@@ -373,216 +383,220 @@ export function ConversationContextControls({
           </section>
         )}
       </>
-      {attachPanel(
-        <div ref={attachBody}>
-          <div className={styles.body}>
-            <h2>파일 첨부와 미리보기</h2>
-            <div className={styles.controls}>
-              <label htmlFor={pathId}>Workspace 상대 경로</label>
-              <input
-                id={pathId}
-                data-context-path
-                value={path}
-                onChange={(e) => setPath(e.target.value)}
-                placeholder="src/example.ts"
-                spellCheck={false}
-              />
-              <Button
-                type="button"
-                data-context-observe
-                disabled={!ready || !path}
-                onClick={(event) => {
-                  previewTrigger.current = event.currentTarget;
-                  void actions.observeContext(path);
-                }}
-              >
-                파일 확인 후 추가
-              </Button>
-              {context.request && (
+      {!context.branch &&
+        attachPanel(
+          <div ref={attachBody}>
+            <div className={styles.body}>
+              <h2>파일 첨부와 미리보기</h2>
+              <div className={styles.controls}>
+                <label htmlFor={pathId}>Workspace 상대 경로</label>
+                <input
+                  id={pathId}
+                  data-context-path
+                  value={path}
+                  onChange={(e) => setPath(e.target.value)}
+                  placeholder="src/example.ts"
+                  spellCheck={false}
+                />
                 <Button
                   type="button"
-                  data-context-cancel-read
-                  onClick={actions.cancelContextObservation}
+                  data-context-observe
+                  disabled={!ready || !path}
+                  onClick={(event) => {
+                    previewTrigger.current = event.currentTarget;
+                    void actions.observeContext(path);
+                  }}
                 >
-                  파일 확인 중단
+                  파일 확인 후 추가
                 </Button>
-              )}
-            </div>
-            <p>
-              확인한 입력을 Native에 보냅니다. Provider가 받은 입력을 증명하지
-              않습니다.
-            </p>
-            {p && (
-              <section
-                className={styles.preview}
-                aria-label="확인 시점의 입력 미리보기"
-                data-context-preview={p.value.kind}
-              >
-                <strong>{p.descriptor.path} · 확인 시점의 입력</strong>
-                {p.value.kind === "text" ? (
-                  <>
-                    <pre
-                      ref={textPreview}
-                      tabIndex={0}
-                      data-context-text
-                      onMouseUp={readSelection}
-                      onKeyUp={readSelection}
-                    >
-                      {p.value.text}
-                    </pre>
-                    {p.descriptor.source === "file" && (
-                      <>
-                        <p>
-                          {range
-                            ? `UTF-16 범위 ${range.start}–${range.end}`
-                            : "본문에서 참조할 텍스트를 선택하세요."}
-                        </p>
-                        <Button
-                          type="button"
-                          data-context-selection
-                          disabled={!ready || !range}
-                          onClick={() =>
-                            range &&
-                            void actions.observeContext(
-                              p.descriptor.path,
-                              range,
-                            )
-                          }
-                        >
-                          선택 영역 확인 후 참조 추가
-                        </Button>
-                      </>
-                    )}
-                  </>
-                ) : p.value.kind === "image" ? (
-                  <img
-                    data-context-image
-                    src={p.value.dataUrl}
-                    alt={`${p.descriptor.name} · 확인 시점의 이미지`}
-                  />
-                ) : (
-                  <p data-context-pdf>
-                    PDF 내용 미리보기를 사용할 수 없습니다. 파일 정보만
-                    표시합니다.
-                  </p>
+                {context.request && (
+                  <Button
+                    type="button"
+                    data-context-cancel-read
+                    onClick={actions.cancelContextObservation}
+                  >
+                    파일 확인 중단
+                  </Button>
                 )}
-                <Button
-                  type="button"
-                  data-context-close-preview
-                  onClick={closePreview}
-                >
-                  미리보기 닫기
-                </Button>
-              </section>
-            )}
-            <Button
-              size="compact"
-              onClick={() => closeTask(attachBody.current)}
-              data-context-task-close
-            >
-              첨부 작업 닫기
-            </Button>
-          </div>
-        </div>,
-      )}
-      {runPanel(
-        <div ref={runBody}>
-          <div className={styles.body}>
-            <section aria-label="현재 실행에 요청" data-context-running>
-              <strong>현재 실행에 요청</strong>
-              <p>
-                현재 작성한 텍스트만 보냅니다. Native의 현재 실행 설정을
-                사용합니다.
-              </p>
-              <div className={styles.actions}>
-                <Button
-                  type="button"
-                  data-context-steer
-                  disabled={
-                    !ready ||
-                    session?.status !== "running" ||
-                    !messageDraft.text.trim()
-                  }
-                  onClick={() => void actions.deliverContextMessage("steer")}
-                >
-                  현재 실행에 추가 지시
-                </Button>
-                <Button
-                  type="button"
-                  data-context-queue
-                  disabled={
-                    !ready ||
-                    session?.status !== "running" ||
-                    !messageDraft.text.trim()
-                  }
-                  onClick={() => void actions.deliverContextMessage("queue")}
-                >
-                  현재 실행 대기열에 추가
-                </Button>
               </div>
-            </section>
-            <section aria-label="Native 대기열 확인" data-context-inbox>
+              <p>
+                확인한 입력을 Native에 보냅니다. Provider가 받은 입력을 증명하지
+                않습니다.
+              </p>
+              {p && (
+                <section
+                  className={styles.preview}
+                  aria-label="확인 시점의 입력 미리보기"
+                  data-context-preview={p.value.kind}
+                >
+                  <strong>{p.descriptor.path} · 확인 시점의 입력</strong>
+                  {p.value.kind === "text" ? (
+                    <>
+                      <pre
+                        ref={textPreview}
+                        tabIndex={0}
+                        data-context-text
+                        onMouseUp={readSelection}
+                        onKeyUp={readSelection}
+                      >
+                        {p.value.text}
+                      </pre>
+                      {p.descriptor.source === "file" && (
+                        <>
+                          <p>
+                            {range
+                              ? `UTF-16 범위 ${range.start}–${range.end}`
+                              : "본문에서 참조할 텍스트를 선택하세요."}
+                          </p>
+                          <Button
+                            type="button"
+                            data-context-selection
+                            disabled={!ready || !range}
+                            onClick={() =>
+                              range &&
+                              void actions.observeContext(
+                                p.descriptor.path,
+                                range,
+                              )
+                            }
+                          >
+                            선택 영역 확인 후 참조 추가
+                          </Button>
+                        </>
+                      )}
+                    </>
+                  ) : p.value.kind === "image" ? (
+                    <img
+                      data-context-image
+                      src={p.value.dataUrl}
+                      alt={`${p.descriptor.name} · 확인 시점의 이미지`}
+                    />
+                  ) : (
+                    <p data-context-pdf>
+                      PDF 내용 미리보기를 사용할 수 없습니다. 파일 정보만
+                      표시합니다.
+                    </p>
+                  )}
+                  <Button
+                    type="button"
+                    data-context-close-preview
+                    onClick={closePreview}
+                  >
+                    미리보기 닫기
+                  </Button>
+                </section>
+              )}
               <Button
-                type="button"
-                data-context-inbox-observe
-                disabled={!ready}
-                onClick={() => void actions.observeInbox()}
+                size="compact"
+                onClick={() => closeTask(attachBody.current)}
+                data-context-task-close
               >
-                현재 세션 대기열 확인
+                첨부 작업 닫기
               </Button>
-              {context.inboxRequest && (
+            </div>
+          </div>,
+        )}
+      {!context.branch &&
+        runPanel(
+          <div ref={runBody}>
+            <div className={styles.body}>
+              <section aria-label="현재 실행에 요청" data-context-running>
+                <strong>현재 실행에 요청</strong>
+                <p>
+                  현재 작성한 텍스트만 보냅니다. Native의 현재 실행 설정을
+                  사용합니다.
+                </p>
+                <div className={styles.actions}>
+                  <Button
+                    type="button"
+                    data-context-steer
+                    disabled={
+                      !ready ||
+                      session?.status !== "running" ||
+                      !messageDraft.text.trim()
+                    }
+                    onClick={() => void actions.deliverContextMessage("steer")}
+                  >
+                    현재 실행에 추가 지시
+                  </Button>
+                  <Button
+                    type="button"
+                    data-context-queue
+                    disabled={
+                      !ready ||
+                      session?.status !== "running" ||
+                      !messageDraft.text.trim()
+                    }
+                    onClick={() => void actions.deliverContextMessage("queue")}
+                  >
+                    현재 실행 대기열에 추가
+                  </Button>
+                </div>
+              </section>
+              <section aria-label="Native 대기열 확인" data-context-inbox>
                 <Button
                   type="button"
-                  onClick={actions.cancelContextObservation}
+                  data-context-inbox-observe
+                  disabled={!ready}
+                  onClick={() => void actions.observeInbox()}
                 >
-                  대기열 확인 중단
+                  현재 세션 대기열 확인
                 </Button>
-              )}
-              {context.inbox ? (
-                <>
-                  <p>
-                    확인 시점의 대기열입니다. 항목이 없어도 취소나 미실행을
-                    증명하지 않습니다.
-                  </p>
-                  <ul className={styles.list}>
-                    {context.inbox.entries.map((row) => (
-                      <li key={row.id} data-context-inbox-row={row.id}>
-                        <span>
-                          {row.delivery === "queue"
-                            ? "대기열 요청"
-                            : "추가 지시"}{" "}
-                          · {row.id}
-                        </span>
-                        <pre>{row.textPreview}</pre>
-                        {row.textTruncated && <p>텍스트 일부만 표시합니다.</p>}
-                        <p>첨부 {row.attachmentCount}개</p>
-                        <Button
-                          type="button"
-                          data-context-inbox-cancel={row.id}
-                          disabled={!ready}
-                          onClick={() => void actions.cancelInbox(row.id)}
-                        >
-                          이 항목 취소 요청
-                        </Button>
-                      </li>
-                    ))}
-                  </ul>
-                  <p>다른 형식의 항목 {context.inbox.otherCount}개</p>
-                </>
-              ) : (
-                <p>대기열은 명시적으로 확인해야 표시됩니다.</p>
-              )}
-            </section>
-            <Button
-              size="compact"
-              onClick={() => closeTask(runBody.current)}
-              data-context-running-close
-            >
-              현재 실행 작업 닫기
-            </Button>
-          </div>
-        </div>,
-      )}
+                {context.inboxRequest && (
+                  <Button
+                    type="button"
+                    onClick={actions.cancelContextObservation}
+                  >
+                    대기열 확인 중단
+                  </Button>
+                )}
+                {context.inbox ? (
+                  <>
+                    <p>
+                      확인 시점의 대기열입니다. 항목이 없어도 취소나 미실행을
+                      증명하지 않습니다.
+                    </p>
+                    <ul className={styles.list}>
+                      {context.inbox.entries.map((row) => (
+                        <li key={row.id} data-context-inbox-row={row.id}>
+                          <span>
+                            {row.delivery === "queue"
+                              ? "대기열 요청"
+                              : "추가 지시"}{" "}
+                            · {row.id}
+                          </span>
+                          <pre>{row.textPreview}</pre>
+                          {row.textTruncated && (
+                            <p>텍스트 일부만 표시합니다.</p>
+                          )}
+                          <p>첨부 {row.attachmentCount}개</p>
+                          <Button
+                            type="button"
+                            data-context-inbox-cancel={row.id}
+                            disabled={!ready}
+                            onClick={() => void actions.cancelInbox(row.id)}
+                          >
+                            이 항목 취소 요청
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                    <p>다른 형식의 항목 {context.inbox.otherCount}개</p>
+                  </>
+                ) : (
+                  <p>대기열은 명시적으로 확인해야 표시됩니다.</p>
+                )}
+              </section>
+              <Button
+                size="compact"
+                onClick={() => closeTask(runBody.current)}
+                data-context-running-close
+              >
+                현재 실행 작업 닫기
+              </Button>
+            </div>
+          </div>,
+        )}
     </div>
   );
 }
