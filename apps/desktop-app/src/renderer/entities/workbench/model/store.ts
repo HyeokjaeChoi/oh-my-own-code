@@ -5793,7 +5793,7 @@ function retireConversationContext(previous: State, next: State): State {
   };
 }
 function reduceWorkbench(state: State, event: Event): State {
-  if (event.type.startsWith("context."))
+  if (event.type.startsWith("context.") || event.type === "notice.clear")
     return reduceConversationContext(state, event);
   switch (event.type) {
     case "error.clear":
