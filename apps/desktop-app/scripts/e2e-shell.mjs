@@ -8,17 +8,16 @@ export async function openMoreMenuItem(page, name) {
   await page.getByRole("menuitem", { name, exact: true }).click();
 }
 
-/** Settings live in the sidebar footer; open the nav first when it is collapsed. */
+/** Settings live in the sidebar footer button. */
 export async function openSettings(page) {
   const button = page.getByRole("button", { name: "설정", exact: true });
-  try {
-    await button.click({ timeout: 5000 });
-  } catch {
-    await page
-      .getByRole("button", { name: "작업 공간 탐색 열기", exact: true })
-      .click();
-    await button.click();
-  }
+  if (await button.isVisible()) await button.click();
+  // Below 1200px an open detail panel hides the sidebar (and its footer
+  // button); the command palette entry fires this same app event.
+  else
+    await page.evaluate(() =>
+      globalThis.dispatchEvent(new Event("omoc:open-settings")),
+    );
 }
 
 /** Opens the sidebar workspace switcher menu and returns the menu locator. */
