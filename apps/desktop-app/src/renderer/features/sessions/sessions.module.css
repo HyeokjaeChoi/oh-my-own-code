@@ -1,6 +1,51 @@
 .navigation {
   min-width: 0;
 }
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0 0 4px;
+  padding-left: 8px;
+}
+.sectionHeader h2 {
+  flex: 1;
+  margin: 0;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+}
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--omoc-semantic-color-text-secondary);
+  cursor: pointer;
+}
+.iconButton:hover {
+  background: var(--omoc-component-color-navigation-hover-background);
+}
+.iconButton[aria-pressed="true"] {
+  background: var(--omoc-component-color-navigation-selected-background);
+  color: var(--omoc-semantic-color-text-primary);
+}
+.iconButton:focus-visible {
+  outline: 2px solid var(--omoc-semantic-color-focus);
+  outline-offset: 2px;
+}
+@media (pointer: coarse) {
+  .iconButton {
+    width: 44px;
+    height: 44px;
+  }
+}
 .search {
   display: flex;
   align-items: center;
@@ -9,10 +54,11 @@
   margin: 0 0 8px;
   padding: 0 10px;
   border-radius: 8px;
-  background: transparent;
+  background: var(--omoc-semantic-color-surface);
+  border: 1px solid var(--omoc-semantic-color-border-subtle);
 }
 .search:focus-within {
-  background: var(--omoc-semantic-color-surface);
+  border-color: var(--omoc-semantic-color-focus);
 }
 .search input {
   border: 0;
@@ -28,6 +74,7 @@
   gap: 4px;
 }
 .views button {
+  text-align: left;
   min-height: var(--omoc-component-size-control-hit-target);
   flex: 1;
   padding: 6px 4px;
@@ -46,7 +93,7 @@
   background: var(--omoc-semantic-color-selection-background);
 }
 .list {
-  margin: 8px 0 0;
+  margin: 4px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -54,7 +101,7 @@
   display: flex;
   align-items: center;
   min-width: 0;
-  border-radius: var(--omoc-component-size-navigation-radius);
+  border-radius: 8px;
 }
 .row:hover,
 .row:focus-within {
@@ -69,8 +116,8 @@
   gap: 6px;
   align-items: center;
   min-width: 0;
-  min-height: var(--omoc-component-size-control-hit-target);
-  padding: 6px 8px;
+  min-height: max(34px, var(--omoc-component-size-control-hit-target));
+  padding: 4px 8px;
   background: transparent;
   border: 0;
   border-radius: 8px;
@@ -166,4 +213,30 @@
 
 .row[data-session-status="unavailable"] .indicator {
   color: var(--omoc-semantic-color-danger-foreground);
+}
+
+.dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.unread {
+  background: var(--omoc-semantic-color-info-foreground);
+}
+.permission {
+  background: var(--omoc-semantic-color-warning-foreground);
+}
+.spinner {
+  animation: session-spin 1s linear infinite;
+}
+@keyframes session-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
 }

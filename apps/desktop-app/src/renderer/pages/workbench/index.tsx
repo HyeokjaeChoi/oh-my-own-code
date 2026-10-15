@@ -1,20 +1,41 @@
 /* eslint-disable no-unused-vars -- Type parameter names describe callbacks; TypeScript unused checks remain enabled. */
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { ActionMenu, Button, ModalSheet } from "@workbench/ui";
 import {
+  Bell,
+  ChevronDown,
+  Clock,
+  Database,
   Folder,
   MoreHorizontal,
   PanelLeft,
   PanelRight,
-  Plus,
   RotateCcw,
+  Settings,
+  SquarePen,
+  SquareTerminal,
   X,
 } from "lucide-react";
 import { ActivityPanel } from "../../widgets/activity/index.js";
 import {
   SessionNavigation,
+  isPlaceholderTitle,
   sessionSuccessor,
+  titleFromPrompt,
+  withDisplayTitles,
 } from "../../features/sessions/index.js";
+import {
+  OPEN_AUTOMATION_EVENT,
+  OPEN_DATA_EVENT,
+  OPEN_NOTIFICATIONS_EVENT,
+  OPEN_SETTINGS_EVENT,
+} from "../../shared/palette/index.js";
 import { PreferencesButton } from "../../features/preferences/index.js";
 import { DataButton } from "../../features/data-transfer/index.js";
 import { NotificationCenter } from "../../features/notifications/index.js";
@@ -49,7 +70,6 @@ const panelLabels = {
 };
 const states: Record<string, string> = {
   loading: "런타임 확인 중…",
-  connected: "로컬 연결됨",
   disconnected: "연결 끊김",
   unavailable: "사용 불가",
 };
@@ -137,7 +157,11 @@ export function Workbench() {
   const navigationButton = useRef<HTMLButtonElement>(null);
   const panelButton = useRef<HTMLButtonElement>(null);
   const createInput = useRef<HTMLInputElement>(null);
-  const storageButton = useRef<HTMLButtonElement>(null);
+  const importInput = useRef<HTMLInputElement>(null);
+  // First prompt per session whose stored title is still a placeholder.
+  const [derivedTitles, setDerivedTitles] = useState<Record<string, string>>(
+    {},
+  );
   const drag = useRef<{ x: number; width: number } | null>(null);
   useEffect(() => {
     const media = window.matchMedia("(min-width: 900px)");
@@ -158,6 +182,12 @@ export function Workbench() {
   useEffect(() => {
     if (createOpen) createInput.current?.focus();
   }, [createOpen]);
+  useEffect(() => {
+    if (!importOpen) return;
+    // Let the menu's focus restoration settle before focusing the field.
+    const frame = requestAnimationFrame(() => importInput.current?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, [importOpen]);
   const workspace = lists?.workspaces.find(
     (item) => item.id === selection.workspaceId,
   );
@@ -166,7 +196,45 @@ export function Workbench() {
       item.id === selection.sessionId &&
       item.workspaceId === selection.workspaceId,
   );
+  const workspaceNames = useMemo(
+    () =>
+      Object.fromEntries((lists?.workspaces ?? []).map((w) => [w.id, w.name])),
+    [lists?.workspaces],
+  );
+  const displaySessions = useMemo(
+    () =>
+      withDisplayTitles(lists?.sessions ?? [], workspaceNames, derivedTitles),
+    [lists?.sessions, workspaceNames, derivedTitles],
+  );
+  const displayTitle =
+    displaySessions.find((item) => item.id === session?.id)?.title ??
+    session?.title;
+  const firstPrompt = (snapshot?.messages ?? []).find(
+    (message) => message.role === "user" && message.text.trim(),
+  )?.text;
+  useEffect(() => {
+    if (
+      !session ||
+      !firstPrompt ||
+      !isPlaceholderTitle(session.title, workspace?.name)
+    )
+      return;
+    const title = titleFromPrompt(firstPrompt);
+    setDerivedTitles((previous) =>
+      previous[session.id] === title
+        ? previous
+        : { ...previous, [session.id]: title },
+    );
+  }, [session, firstPrompt, workspace?.name]);
+  const permissionIds = useMemo(
+    () => [...new Set((snapshot?.permissions ?? []).map((p) => p.sessionId))],
+    [snapshot?.permissions],
+  );
   const connected = connection === "connected";
+  const openFromMenu = (event: string) => () => {
+    if (!wide) closeNavigation();
+    window.dispatchEvent(new Event(event));
+  };
   const newSession = () => {
     if (selection.workspaceId)
       void mutate(
@@ -249,48 +317,47 @@ export function Workbench() {
   const navigationContent = (
     <div className={styles.navigationBody}>
       <div className={styles.workspaceSelector}>
-        {wide && (
-          <Button
-            size="compact"
-            className={styles.iconButton}
-            onClick={closeNavigation}
-            aria-label="탐색 닫기"
-            title="탐색 닫기"
-          >
-            <PanelLeft size={18} />
-          </Button>
-        )}
-        <Folder size={16} aria-hidden="true" />
-        <label className={styles.srOnly} htmlFor="workspace-select">
-          작업 공간
-        </label>
-        <select
-          id="workspace-select"
-          value={selection.workspaceId ?? ""}
-          onChange={(event) => {
-            const id = event.target.value;
-            workbench.select(id, sessionSuccessor(lists?.sessions ?? [], id));
-            if (!wide) closeNavigation();
-          }}
-        >
-          {!workspace && <option value="">작업 공간 선택</option>}
-          {lists?.workspaces.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-              {item.branch ? ` · ${item.branch}` : ""}
-            </option>
-          ))}
-        </select>
         <ActionMenu
-          label="작업 공간 작업"
-          trigger={<MoreHorizontal size={18} />}
+          label={`작업 공간 전환: ${workspace?.name ?? "선택 없음"}`}
+          title="작업 공간 전환"
+          align="start"
+          className={styles.switcher ?? ""}
+          contentClassName={styles.switcherMenu ?? ""}
+          trigger={
+            <>
+              <Folder size={16} aria-hidden="true" />
+              <span className={styles.switcherName}>
+                {workspace?.name ?? "작업 공간 선택"}
+              </span>
+              <ChevronDown size={14} aria-hidden="true" />
+            </>
+          }
           items={[
+            ...(lists?.workspaces ?? []).map((item) => ({
+              label: `${item.name}${item.branch ? ` · ${item.branch}` : ""}`,
+              checked: item.id === selection.workspaceId,
+              value: item.id,
+              onSelect: () => {
+                if (item.id === selection.workspaceId) return;
+                workbench.select(
+                  item.id,
+                  sessionSuccessor(lists?.sessions ?? [], item.id),
+                );
+                if (!wide) closeNavigation();
+              },
+            })),
+            { separator: true as const },
             {
-              label: "폴더 가져오기",
+              label: "폴더 열기…",
               disabled: pending || globalDisabled,
               onSelect: () => {
                 void mutate({ type: "workspace.import" }, true);
               },
+            },
+            {
+              label: "경로로 열기…",
+              disabled: pending || globalDisabled,
+              onSelect: () => setImportOpen(true),
             },
             {
               label: "새 작업 공간",
@@ -298,15 +365,17 @@ export function Workbench() {
               onSelect: () => setCreateOpen(true),
             },
             {
-              label: "작업 공간 위치·보관 정보",
-              disabled: !workspace,
-              onSelect: () => setLocationOpen(true),
-            },
-            {
               label: "새 워크트리…",
               disabled: !workspace || pending || globalDisabled,
               onSelect: () => setWorktreeOpen(true),
             },
+            { separator: true as const },
+            {
+              label: "저장 위치와 보관 정보",
+              disabled: !workspace,
+              onSelect: () => setLocationOpen(true),
+            },
+            { separator: true as const },
             {
               label: "대화 기록 삭제…",
               danger: true,
@@ -369,6 +438,17 @@ export function Workbench() {
             },
           ]}
         />
+        {wide && (
+          <Button
+            size="compact"
+            className={styles.iconButton}
+            onClick={closeNavigation}
+            aria-label="탐색 닫기"
+            title="탐색 닫기"
+          >
+            <PanelLeft size={18} />
+          </Button>
+        )}
       </div>
       {worktreeMessage && <p role="alert">{worktreeMessage}</p>}
       {deleteReasons && (
@@ -475,7 +555,7 @@ export function Workbench() {
               maxLength={2048}
               onChange={(event) => setImportPath(event.target.value)}
               placeholder="/Users/me/project"
-              autoFocus
+              ref={importInput}
             />
           </label>
           <p>선택기와 같은 신뢰 확인을 거칩니다.</p>
@@ -544,22 +624,22 @@ export function Workbench() {
         disabled={!workspace || pending || !connected || resourceDisabled}
         onClick={newSession}
       >
-        <Plus size={16} aria-hidden="true" />새 세션
+        <SquarePen size={16} aria-hidden="true" />새 세션
       </Button>
       <section
         className={styles.sessionGroup}
         aria-label="세션 검색과 최근 세션"
       >
-        <h2>최근 세션</h2>
         {workspace ? (
           <SessionNavigation
             key={workspace.id}
-            sessions={lists?.sessions ?? []}
+            sessions={displaySessions}
             workspaceId={workspace.id}
             selectedId={selection.sessionId}
             disabled={!connected || resourceDisabled}
             pending={pending}
             unknownIds={workbench.unknownSessionIds}
+            permissionIds={permissionIds}
             mutate={mutate}
             select={(id) => {
               workbench.select(workspace.id, id);
@@ -570,31 +650,13 @@ export function Workbench() {
           <p className={styles.muted}>작업 공간을 선택하세요.</p>
         )}
       </section>
-      <div className={styles.secondaryActions} aria-label="작업 공간 관리">
-        <Button
-          size="compact"
-          disabled={pending || globalDisabled}
-          onClick={() => void mutate({ type: "workspace.import" }, true)}
-        >
-          <Folder size={16} aria-hidden="true" /> 폴더 가져오기
-        </Button>
-        <Button
-          size="compact"
-          disabled={pending || globalDisabled}
-          onClick={() => setImportOpen((open) => !open)}
-        >
-          경로 입력
-        </Button>
-        <Button
-          size="compact"
-          className={styles.storageButton}
-          ref={storageButton}
-          disabled={!workspace}
-          onClick={() => setLocationOpen(true)}
-        >
-          작업 공간 위치·보관 정보
-        </Button>
-      </div>
+      <Button
+        className={styles.settingsRow}
+        onClick={openFromMenu(OPEN_SETTINGS_EVENT)}
+      >
+        <Settings size={16} aria-hidden="true" />
+        설정
+      </Button>
     </div>
   );
   const panelContent = (
@@ -740,21 +802,46 @@ export function Workbench() {
             <PanelLeft size={18} />
           </Button>
           <div className={styles.sessionHeading}>
-            <strong title={session?.title ?? workspace?.name}>
-              {session?.title ?? workspace?.name ?? "작업 공간"}
-            </strong>
-            <span className={styles.runtimeState} data-state={connection}>
+            {session && (
+              <>
+                <strong title={displayTitle}>{displayTitle}</strong>
+                {workspace && (
+                  <span className={styles.context}>
+                    {workspace.name}
+                    {workspace.branch ? ` · ${workspace.branch}` : ""}
+                  </span>
+                )}
+              </>
+            )}
+            <span
+              className={styles.runtimeState}
+              data-connection={connection}
+              hidden={connected}
+            >
               {states[connection]}
             </span>
           </div>
           <CommandPalette />
           <DataButton
-            session={session && { id: session.id, title: session.title }}
+            hideTrigger
+            session={session && { id: session.id, title: displayTitle ?? "" }}
             messages={snapshot?.messages ?? []}
           />
-          <NotificationCenter />
-          <AutomationButton />
-          <PreferencesButton />
+          <NotificationCenter badgeOnly />
+          <AutomationButton hideTrigger />
+          <PreferencesButton hideTrigger />
+          <Button
+            size="compact"
+            className={styles.iconButton}
+            aria-label="터미널 패널"
+            title="터미널"
+            aria-pressed={panel === "terminal"}
+            onClick={() =>
+              panel === "terminal" ? closePanel() : openPanel("terminal")
+            }
+          >
+            <SquareTerminal size={18} />
+          </Button>
           <Button
             ref={panelButton}
             size="compact"
@@ -766,6 +853,38 @@ export function Workbench() {
           >
             <PanelRight size={18} />
           </Button>
+          <ActionMenu
+            label="더 보기"
+            title="더 보기"
+            className={styles.iconButton ?? ""}
+            trigger={<MoreHorizontal size={18} />}
+            items={[
+              {
+                label: "알림",
+                icon: <Bell size={16} />,
+                onSelect: () =>
+                  window.dispatchEvent(new Event(OPEN_NOTIFICATIONS_EVENT)),
+              },
+              {
+                label: "자동화",
+                icon: <Clock size={16} />,
+                onSelect: () =>
+                  window.dispatchEvent(new Event(OPEN_AUTOMATION_EVENT)),
+              },
+              {
+                label: "데이터·내보내기",
+                icon: <Database size={16} />,
+                onSelect: () =>
+                  window.dispatchEvent(new Event(OPEN_DATA_EVENT)),
+              },
+              {
+                label: "설정·단축키",
+                icon: <Settings size={16} />,
+                onSelect: () =>
+                  window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT)),
+              },
+            ]}
+          />
         </header>
         {recoveryReasons.length > 0 && (
           <div
@@ -945,8 +1064,7 @@ export function Workbench() {
       <ModalSheet
         open={locationOpen}
         onOpenChange={setLocationOpen}
-        title="작업 공간 위치·보관 정보"
-        returnFocusRef={storageButton}
+        title="저장 위치와 보관 정보"
       >
         <div className={styles.locationInfo}>
           <h3>{workspace?.name}</h3>

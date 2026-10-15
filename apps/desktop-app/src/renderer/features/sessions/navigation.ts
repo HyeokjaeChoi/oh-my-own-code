@@ -79,3 +79,30 @@ export function trackSessions(
     selectedId,
   };
 }
+
+export const NEW_SESSION_TITLE = "새 세션";
+// Sessions start as "Untitled session"; the first managed session is "Workbench".
+// Native auto-titles are observed but never committed to app metadata, so the
+// renderer shows the first user prompt instead of those placeholders.
+export function isPlaceholderTitle(title: string, workspaceName?: string) {
+  return (
+    title === "Untitled session" ||
+    title === "Workbench" ||
+    (workspaceName !== undefined && title === workspaceName)
+  );
+}
+export function titleFromPrompt(text: string) {
+  const line = text.replace(/\s+/g, " ").trim();
+  return line.length > 48 ? `${line.slice(0, 48)}…` : line;
+}
+export function withDisplayTitles(
+  sessions: WorkbenchSession[],
+  workspaceNames: Record<string, string>,
+  derived: Record<string, string>,
+): WorkbenchSession[] {
+  return sessions.map((s) =>
+    isPlaceholderTitle(s.title, workspaceNames[s.workspaceId])
+      ? { ...s, title: derived[s.id] ?? NEW_SESSION_TITLE }
+      : s,
+  );
+}

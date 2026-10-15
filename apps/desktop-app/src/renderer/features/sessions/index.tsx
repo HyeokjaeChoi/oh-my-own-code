@@ -8,6 +8,7 @@ import {
 } from "react";
 import { ActionMenu } from "@workbench/ui";
 import {
+  Archive,
   CircleAlert,
   LoaderCircle,
   MoreHorizontal,
@@ -27,6 +28,9 @@ export {
   visibleSessions,
   sessionSuccessor,
   validSessionTitle,
+  isPlaceholderTitle,
+  titleFromPrompt,
+  withDisplayTitles,
 } from "./navigation.js";
 /* eslint-disable no-unused-vars -- Callback parameter names describe the public interface. */
 type Props = {
@@ -36,6 +40,8 @@ type Props = {
   disabled: boolean;
   pending: boolean;
   unknownIds: string[];
+  /** Sessions with a pending permission request (only those the renderer holds). */
+  permissionIds?: string[];
   select(id: string): void;
   mutate(operation: MutationRequest, navigate?: boolean): Promise<boolean>;
 };
@@ -73,7 +79,9 @@ export function SessionNavigation(props: Props) {
   );
   const [query, setQuery] = useState("");
   const [archived, setArchived] = useState(false);
+  const [searching, setSearching] = useState(false);
   const search = useRef<HTMLInputElement>(null);
+  const searchButton = useRef<HTMLButtonElement>(null);
   const sessions = visibleSessions(
     props.sessions,
     props.workspaceId,
@@ -82,25 +90,55 @@ export function SessionNavigation(props: Props) {
   );
   return (
     <div className={`${styles.navigation} session-navigation`}>
-      <label className={`${styles.search} session-search`}>
-        <Search size={16} aria-hidden="true" />
-        <span className={styles.srOnly}>세션 검색</span>
-        <input
-          ref={search}
-          type="search"
-          value={query}
-          placeholder="세션 검색"
-          onChange={(event) => setQuery(event.target.value)}
-        />
-      </label>
-      <div className={styles.views} aria-label="세션 보기">
-        <button aria-pressed={!archived} onClick={() => setArchived(false)}>
-          활성 세션
+      <div className={styles.sectionHeader}>
+        <h2>{archived ? "보관된 세션" : "최근"}</h2>
+        <button
+          ref={searchButton}
+          type="button"
+          className={styles.iconButton}
+          aria-label="세션 검색"
+          title="세션 검색"
+          aria-pressed={searching}
+          onClick={() => {
+            if (searching) setQuery("");
+            setSearching(!searching);
+          }}
+        >
+          <Search size={16} aria-hidden="true" />
         </button>
-        <button aria-pressed={archived} onClick={() => setArchived(true)}>
-          보관된 세션
+        <button
+          type="button"
+          className={styles.iconButton}
+          aria-label="보관된 세션 보기"
+          title="보관된 세션 보기"
+          aria-pressed={archived}
+          onClick={() => setArchived(!archived)}
+        >
+          <Archive size={16} aria-hidden="true" />
         </button>
       </div>
+      {searching && (
+        <label className={`${styles.search} session-search`}>
+          <span className={styles.srOnly}>세션 검색</span>
+          <input
+            ref={search}
+            type="search"
+            value={query}
+            placeholder="세션 검색"
+            autoFocus
+            onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Escape" && !event.nativeEvent.isComposing) {
+                event.preventDefault();
+                event.stopPropagation();
+                setQuery("");
+                setSearching(false);
+                searchButton.current?.focus();
+              }
+            }}
+          />
+        </label>
+      )}
       {!archived && !query && (
         <div className={styles.views} aria-label="최근 연 세션">
           {recent
@@ -138,6 +176,7 @@ export function SessionNavigation(props: Props) {
             session={session}
             selected={session.id === props.selectedId}
             unread={unread.includes(session.id)}
+            permission={props.permissionIds?.includes(session.id) ?? false}
             disabled={
               props.disabled ||
               props.pending ||
@@ -146,7 +185,9 @@ export function SessionNavigation(props: Props) {
             }
             select={() => props.select(session.id)}
             mutate={props.mutate}
-            afterHidden={() => search.current?.focus()}
+            afterHidden={() =>
+              (search.current ?? searchButton.current)?.focus()
+            }
           />
         ))}
       </ul>
@@ -167,6 +208,7 @@ function SessionRow({
   session,
   selected,
   unread,
+  permission,
   disabled,
   select,
   mutate,
@@ -175,6 +217,7 @@ function SessionRow({
   session: WorkbenchSession;
   selected: boolean;
   unread: boolean;
+  permission: boolean;
   disabled: boolean;
   select(): void;
   mutate(operation: MutationRequest, navigate?: boolean): Promise<boolean>;
@@ -246,15 +289,21 @@ function SessionRow({
           title={session.title}
         >
           <span className={styles.title}>{session.title}</span>
+          {permission && (
+            <span
+              className={`${styles.dot} ${styles.permission}`}
+              role="img"
+              aria-label="권한 요청 대기"
+              data-session-permission
+            />
+          )}
           {unread && (
             <span
-              className={styles.indicator}
+              className={`${styles.dot} ${styles.unread}`}
               role="img"
               aria-label="읽지 않은 응답"
               data-session-unread
-            >
-              ●
-            </span>
+            />
           )}
           {session.pinned && (
             <span className={styles.indicator} role="img" aria-label="고정">
@@ -270,7 +319,7 @@ function SessionRow({
               {["unknown", "unavailable"].includes(session.status) ? (
                 <CircleAlert size={14} />
               ) : (
-                <LoaderCircle size={14} />
+                <LoaderCircle size={14} className={styles.spinner} />
               )}
             </span>
           )}

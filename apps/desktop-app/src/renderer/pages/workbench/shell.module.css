@@ -17,7 +17,7 @@
   flex-direction: column;
   min-height: 100%;
   padding: 12px;
-  gap: 16px;
+  gap: 8px;
   font-size: var(--omoc-component-type-navigation-size);
   line-height: var(--omoc-component-type-navigation-line);
 }
@@ -43,20 +43,30 @@
   min-width: 0;
   gap: 4px;
 }
-.workspaceSelector > svg {
+.navigationBody .switcher {
+  flex: 1;
+  justify-content: flex-start;
+  gap: 8px;
+  min-width: 0;
+  min-height: max(34px, var(--omoc-component-size-control-hit-target));
+  padding: 4px 8px;
+  color: var(--omoc-semantic-color-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+}
+.switcher svg {
   flex-shrink: 0;
 }
-.workspaceSelector select {
+.switcherName {
   flex: 1;
   min-width: 0;
-  width: 100%;
-  min-height: var(--omoc-component-size-control-hit-target);
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  font-size: 14px;
+  overflow: hidden;
+  text-align: left;
   text-overflow: ellipsis;
-  cursor: pointer;
+  white-space: nowrap;
+}
+.switcherMenu {
+  min-width: 240px;
 }
 .newSession {
   display: flex;
@@ -64,7 +74,28 @@
   justify-content: flex-start;
   gap: 8px;
   width: 100%;
+  min-height: max(34px, var(--omoc-component-size-control-hit-target));
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
   font-weight: 500;
+}
+.newSession:hover:not(:disabled),
+.settingsRow:hover:not(:disabled) {
+  background: var(--omoc-component-color-navigation-hover-background);
+}
+.settingsRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-height: max(34px, var(--omoc-component-size-control-hit-target));
+  margin-top: auto;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--omoc-semantic-color-text-secondary);
 }
 
 .createFolder {
@@ -96,27 +127,10 @@
   flex-wrap: wrap;
   gap: 8px;
 }
-.storageButton {
-  border: 0;
-  border-radius: 8px;
-  background: var(--omoc-semantic-color-surface-subtle);
-  min-height: var(--omoc-component-size-control-hit-target);
-  padding: 6px 8px;
-  cursor: pointer;
-  font-size: 13px;
-}
 .formActions button:hover,
 .statusLine button:hover,
-.returnButton:hover,
-.storageButton:hover {
+.returnButton:hover {
   background: var(--omoc-semantic-color-selection-background);
-}
-.storageButton {
-  width: 100%;
-  justify-content: flex-start;
-  text-align: left;
-  color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
 }
 .mainPane {
   display: flex;
@@ -148,13 +162,28 @@
   font-weight: 500;
   font-size: 14px;
 }
+.context {
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.runtimeState[hidden] {
+  display: none;
+}
 .runtimeState {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--omoc-semantic-color-surface-subtle);
   color: var(--omoc-semantic-color-text-secondary);
   font-size: 12px;
   white-space: nowrap;
 }
-.runtimeState[data-state="disconnected"],
-.runtimeState[data-state="unavailable"] {
+.runtimeState[data-connection="disconnected"],
+.runtimeState[data-connection="unavailable"] {
+  background: var(--omoc-semantic-color-danger-background);
   color: var(--omoc-semantic-color-danger-foreground);
 }
 .statusLine {
@@ -313,15 +342,8 @@
     padding: 7px 8px;
     gap: 4px;
   }
-  .sessionHeading {
-    display: block;
-  }
-  .sessionHeading strong {
-    display: block;
-  }
-  .runtimeState {
-    display: block;
-    font-size: 11px;
+  .context {
+    display: none;
   }
   .statusLine {
     margin: 4px 12px;
@@ -351,29 +373,6 @@
 
 .sessionGroup {
   min-width: 0;
-}
-
-.sessionGroup h2 {
-  margin: 8px 8px 12px;
-  color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 500;
-}
-
-.secondaryActions {
-  display: grid;
-  gap: 4px;
-  margin-top: auto;
-  padding-top: 16px;
-  min-width: 0;
-}
-
-.secondaryActions > button {
-  justify-content: flex-start;
-  text-align: left;
-  font-size: 13px;
-  color: var(--omoc-semantic-color-text-secondary);
 }
 
 .navigationBody button:focus-visible,
