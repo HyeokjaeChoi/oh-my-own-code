@@ -762,7 +762,7 @@ async function assertOutsideDismissal(
       window.__backdropClicks = 0;
     });
   // Clicking the surface itself must not dismiss or select an action.
-  await layer.click({ position: { x: 1, y: 1 } });
+  await layer.click({ position: { x: 2, y: 12 } });
   await expect(layer).toBeVisible();
   const bounds = await layer.boundingBox();
   const viewport = await page.evaluate(() => ({
@@ -857,7 +857,7 @@ async function assertNestedMenu(page) {
   await menuTrigger.click();
   const menu = page.getByRole("menu");
   await expect(menu).toBeVisible();
-  await menu.click({ position: { x: 1, y: 1 } });
+  await menu.click({ position: { x: 2, y: 12 } });
   await expect(menu).toBeVisible();
   const box = await dialog.boundingBox();
   await page.mouse.click(box.x + 12, box.y + 12);
@@ -1593,10 +1593,10 @@ try {
       ).toBeDisabled();
       const interruptReceipt = page
         .getByRole("status")
-        .filter({ hasText: "중단 요청을 접수했습니다." });
+        .filter({ hasText: "중단을 요청했습니다" });
       await expect(interruptReceipt).toHaveCount(1);
       await expect(interruptReceipt).toBeVisible();
-      await expect(interruptReceipt).toContainText("실제 상태를 확인");
+      await expect(interruptReceipt).toContainText("상태 확인 중");
       const interrupted = await application.evaluate(() =>
         globalThis.__omocUiFixture.requests.filter(
           (r) => r.type === "session.interrupt",
@@ -1650,12 +1650,9 @@ try {
       const preview = page.locator('[data-slot="link-preview"]');
       await expect(preview).toHaveCount(1);
       await expect(
-        page.getByText(
-          "중단 요청을 접수했습니다. 실제 상태를 확인하고 있습니다.",
-          {
-            exact: true,
-          },
-        ),
+        page.getByText("중단을 요청했습니다 · 상태 확인 중", {
+          exact: true,
+        }),
       ).toBeHidden();
       await expect(preview).toContainText("프로젝트 구조 참고 문서");
       assert.equal(await preview.getAttribute("data-interactive"), "false");
@@ -1713,11 +1710,12 @@ try {
         captureMethod: "Playwright locator.screenshot() at 100% Electron zoom",
         bounds: await preview.boundingBox(),
       });
-      await page
+      const unknownTool = page
         .locator(".tool-detail")
-        .filter({ hasText: "unknown_tool" })
-        .getByText("도구 입력과 결과", { exact: true })
-        .click();
+        .filter({ hasText: "unknown_tool" });
+      // The tool call is a one-line summary; expand it, then its raw details.
+      await unknownTool.locator("summary").first().click();
+      await unknownTool.getByText("도구 입력과 결과", { exact: true }).click();
       assert.equal(
         await page.locator(".tool-detail img, .tool-detail script").count(),
         0,

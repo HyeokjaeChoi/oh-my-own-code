@@ -728,7 +728,7 @@ test("conversation context: actual React controls render inert previews and comp
       assert.ok(branchHtml.includes(`data-context-${hook}`), hook);
     for (const hook of ["path", "observe", "steer", "queue", "inbox-observe"])
       assert.ok(!branchHtml.includes(`data-context-${hook}`), hook);
-    assert.ok(branchHtml.includes("현재 Workspace 파일을 유지합니다"));
+    assert.ok(branchHtml.includes("현재 작업 공간의 파일은 그대로 둡니다"));
     assert.ok(branchHtml.includes("새 분기 만들기 · 전송 안 함"));
     const messageHtml = renderToStaticMarkup(
       createElement(
@@ -840,7 +840,7 @@ test("conversation context: exact cancellation ACK means request accepted and in
     );
     assert.match(
       selectors.conversationContext(api.store.getState()).notice,
-      /취소 요청이 접수/,
+      /취소를 요청했습니다/,
     );
     assert.equal(
       calls.filter((e) => e.operation.type === "session.inbox").length,
@@ -2801,7 +2801,7 @@ test("interrupt wait survives running/stopping but fresh idle retires display on
   const operations = store.getState().operations;
   const drafts = store.getState().drafts;
   const notice = store.getState().notice;
-  assert.match(notice, /중단 요청/);
+  assert.match(notice, /중단을 요청/);
   for (const [revision, status] of [
     [3, "running"],
     [4, "stopping"],
@@ -4513,7 +4513,7 @@ test("v5 interrupt ACK needs later current-target idle at the exact durable floo
   const interrupt = interruptIntent(store);
   acceptInterrupt(store, interrupt, 8);
   const notice = store.getState().notice;
-  assert.match(notice, /중단 요청/);
+  assert.match(notice, /중단을 요청/);
   seed(store, snapshot(8, "a", { observationSequence: 100 }));
   seed(store, snapshot(7, "a", { observationSequence: 999 }));
   assert.equal(store.getState().notice, notice);

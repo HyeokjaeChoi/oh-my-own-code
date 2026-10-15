@@ -361,13 +361,22 @@ try {
   });
   await idle();
   observations.push("turn 1: send -> streamed mock reply rendered");
-  // The placeholder session title is replaced by the first prompt in the
-  // header and the sidebar row (native auto-titles are not committed to app metadata).
-  await expect(page.locator(".workbench-header strong")).toHaveText("hello");
+  // Native names the session after the first reply (the mock answers its
+  // title request with "Mock title"); main persists that title through the
+  // normal rename path while the stored title is still a placeholder. Until
+  // then the header shows the title derived from the first prompt.
+  await expect
+    .poll(async () => (await snapshot()).value?.sessions?.[0]?.title, {
+      timeout: 60_000,
+    })
+    .toBe("Mock title");
+  await expect(page.locator(".workbench-header strong")).toHaveText(
+    "Mock title",
+  );
   await expect(
     page.locator(".session-row button[title]").first(),
-  ).toHaveAttribute("title", "hello");
-  observations.push("session title derived from first prompt in header + row");
+  ).toHaveAttribute("title", "Mock title");
+  observations.push("native session title persisted to header + row");
   if (process.env.OMOC_P2_SHOTS) {
     const shots = process.env.OMOC_P2_SHOTS;
     await page.screenshot({ path: join(shots, "session-with-messages.png") });

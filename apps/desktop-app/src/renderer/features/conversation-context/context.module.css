@@ -196,22 +196,25 @@
   object-fit: contain;
 }
 
-.actions,
-.messageActions {
+.actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   min-width: 0;
 }
 
+/* Icon buttons join the message toolbar (hover/focus reveal lives there). */
 .messageActions {
-  margin-top: 8px;
-  font-size: 13px;
-  line-height: 20px;
+  display: contents;
 }
 
-.messageActions p {
-  flex-basis: 100%;
+.messageActions .historical {
+  flex: 1 0 100%;
+  order: 9;
+  margin: 2px 0 0;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+  line-height: 18px;
 }
 
 @media (max-height: 440px) {
@@ -222,4 +225,11 @@
   .preview {
     padding: 8px;
   }
+}
+
+.section > .notice {
+  margin: 4px 0;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 12px;
+  line-height: 18px;
 }

@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { useMessagePartText } from "@assistant-ui/react";
+import { Copy } from "lucide-react";
 import {
   MarkdownTextPrimitive,
   type CodeHeaderProps,
@@ -15,7 +16,7 @@ const copyMessages: Record<CopyStatus, string> = {
   error: "복사하지 못했습니다. 텍스트를 선택해 복사해 주세요.",
 };
 
-function CopyButton({
+export function CopyButton({
   text,
   kind,
 }: {
@@ -61,9 +62,22 @@ function CopyButton({
   };
   return (
     <div className={styles.copyControl} data-copy-control={kind}>
-      <button type="button" disabled={status === "pending"} onClick={copy}>
-        {kind === "code" ? "코드 복사" : "표시된 메시지 복사"}
-      </button>
+      {kind === "code" ? (
+        <button type="button" disabled={status === "pending"} onClick={copy}>
+          코드 복사
+        </button>
+      ) : (
+        <button
+          type="button"
+          data-message-action
+          disabled={status === "pending"}
+          onClick={copy}
+          aria-label="표시된 메시지 복사"
+          title="표시된 메시지 복사"
+        >
+          <Copy size={16} aria-hidden="true" />
+        </button>
+      )}
       <span role="status" data-copy-status={status}>
         {copyMessages[status]}
       </span>
@@ -131,7 +145,6 @@ const containerProps = {
 };
 
 export function AssistantText() {
-  const { text } = useMessagePartText();
   return (
     <div>
       <MarkdownTextPrimitive
@@ -142,7 +155,6 @@ export function AssistantText() {
         remarkPlugins={remarkPlugins}
         components={components}
       />
-      <CopyButton text={text} kind="message" />
     </div>
   );
 }
@@ -154,7 +166,6 @@ export function LiteralText() {
       <div className={styles.messageText} data-literal-text>
         {text}
       </div>
-      <CopyButton text={text} kind="message" />
     </div>
   );
 }

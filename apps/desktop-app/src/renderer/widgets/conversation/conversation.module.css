@@ -68,6 +68,76 @@
   margin-left: auto;
 }
 
+.messageFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0 4px;
+  min-height: 4px;
+}
+
+.userMessage .messageFooter {
+  justify-content: flex-end;
+}
+
+.messageToolbar {
+  order: 2;
+  margin-inline-start: auto;
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+}
+
+.messageToolbar:empty {
+  display: none;
+}
+
+/* Icon actions appear on hover and keyboard focus (always on touch). */
+.message [data-message-action] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--omoc-component-size-control-hit-target);
+  min-height: var(--omoc-component-size-control-hit-target);
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--omoc-semantic-color-text-secondary);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+
+.message:hover [data-message-action],
+.message:focus-within [data-message-action],
+.message [data-message-action]:focus-visible {
+  opacity: 1;
+}
+
+.message [data-message-action]:hover:not(:disabled) {
+  background: var(--omoc-fill-hover);
+  color: var(--omoc-semantic-color-text-primary);
+}
+
+.message:hover [data-message-action]:disabled,
+.message:focus-within [data-message-action]:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+@media (pointer: coarse) {
+  .message [data-message-action] {
+    opacity: 1;
+  }
+  .message [data-message-action]:disabled {
+    opacity: 0.45;
+  }
+}
+
 .messageText {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -167,7 +237,6 @@
   overflow-wrap: anywhere;
 }
 .copyControl {
-  margin-top: 4px;
   font-size: 12px;
   color: var(--omoc-semantic-color-text-secondary);
 }
@@ -185,7 +254,7 @@
   cursor: pointer;
 }
 .copyControl button:hover:not(:disabled) {
-  background: var(--omoc-component-color-button-quiet-hover);
+  background: var(--omoc-fill-hover);
 }
 .copyControl [role="status"] {
   overflow-wrap: anywhere;
@@ -293,8 +362,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 4px 8px 4px 16px;
-  border-bottom: 1px solid var(--omoc-semantic-color-border-subtle);
+  padding: 4px 8px 0 16px;
   color: var(--omoc-semantic-color-text-secondary);
   font-size: 12px;
   line-height: 18px;
@@ -368,17 +436,15 @@
   cursor: pointer;
 }
 
-/* Decorative ring as a shadow: buttons are identified by their glyph (3:1),
-   not by the ring, so the ring needs no boundary contrast. */
+/* Filled, not ringed: buttons are identified by their glyph (3:1). */
 .roundButton {
-  background: var(--omoc-semantic-color-surface-subtle);
-  box-shadow: inset 0 0 0 1px var(--omoc-semantic-color-border-subtle);
+  background: var(--omoc-fill-subtle);
 }
 
 .roundButton:hover:not(:disabled),
 .slashTrigger:hover:not(:disabled),
 .chip:hover:not(:disabled) {
-  background: var(--omoc-component-color-button-quiet-hover);
+  background: var(--omoc-fill-hover);
 }
 
 .roundButton:focus-visible,
@@ -472,11 +538,11 @@
   padding: 12px;
   overflow: auto;
   overscroll-behavior: contain;
-  border: 1px solid var(--omoc-semantic-color-border-subtle);
+  border: 0;
   border-radius: 14px;
   background: var(--omoc-semantic-color-surface-raised);
   color: var(--omoc-semantic-color-text-primary);
-  box-shadow: 0 8px 28px rgb(0 0 0 / 14%);
+  box-shadow: var(--omoc-elevation-overlay);
   font-size: 13px;
   line-height: 20px;
   position-area: top span-left;
@@ -587,12 +653,14 @@
 }
 
 .permission {
-  padding-block: 8px 12px;
+  padding: 10px 14px 12px;
+  border-radius: 12px;
+  background: var(--omoc-semantic-color-permission-pending-background);
   overflow-wrap: anywhere;
 }
 
 .permission + .permission {
-  border-top: 1px solid var(--omoc-semantic-color-border-default);
+  margin-top: 8px;
 }
 
 .permissionTitle {
@@ -623,10 +691,76 @@
 }
 
 .toolDetail {
-  margin-block: 16px;
+  margin-block: 4px;
+  border-radius: 10px;
   font-size: 13px;
   line-height: 20px;
   overflow-wrap: anywhere;
+}
+
+.toolCall {
+  border-radius: 10px;
+}
+
+.toolCall[open] {
+  margin-block: 8px;
+  padding-bottom: 8px;
+  background: var(--omoc-fill-subtle);
+}
+
+.toolCall[open] > :not(summary) {
+  margin-inline: 12px;
+}
+
+.toolCall[open] > .rawDetails {
+  margin-inline: 4px;
+}
+
+/* One-line disclosure: chevron, summary, optional state. */
+.disclosure {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--omoc-component-size-control-hit-target);
+  padding: 4px 8px;
+  border-radius: 10px;
+  color: var(--omoc-semantic-color-text-secondary);
+  list-style: none;
+  cursor: pointer;
+}
+
+.disclosure::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure:hover {
+  background: var(--omoc-fill-subtle);
+}
+
+.chevron {
+  flex: none;
+  transition: transform 0.12s;
+}
+
+details[open] > .disclosure > .chevron {
+  transform: rotate(90deg);
+}
+
+.summaryText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.summaryState {
+  flex: none;
+  margin-inline-start: auto;
+  font-size: 12px;
+}
+
+.toolDetail[data-tool-state="error"] .toolCall > .disclosure .summaryState {
+  color: var(--omoc-semantic-color-danger-foreground);
 }
 
 .toolHeading {
@@ -644,20 +778,13 @@
   color: var(--omoc-semantic-color-text-secondary);
 }
 
-.toolDetail summary {
-  min-height: var(--omoc-component-size-control-hit-target);
-  padding-block: 6px;
-  color: var(--omoc-semantic-color-text-secondary);
-  cursor: pointer;
-}
-
 .toolDetail pre {
   max-height: 320px;
   margin: 0 0 12px;
   padding: 12px;
   overflow-y: auto;
   border-radius: 8px;
-  background: var(--omoc-semantic-color-surface-subtle);
+  background: var(--omoc-fill-subtle);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   font:
@@ -682,9 +809,10 @@
   padding: 8px;
   overflow-y: auto;
   overscroll-behavior: contain;
-  border: 1px solid var(--omoc-semantic-color-border-default);
+  border: 0;
   border-radius: 16px;
-  background: var(--omoc-semantic-color-surface);
+  background: var(--omoc-semantic-color-surface-raised);
+  box-shadow: var(--omoc-elevation-overlay);
   font-size: 13px;
   line-height: 20px;
 }
@@ -818,17 +946,17 @@
 }
 
 .runtimeReport {
+  flex: 1 1 12rem;
   min-width: 0;
-  margin-block: 8px;
+  margin-block: 0;
   color: var(--omoc-semantic-color-text-secondary);
   font-size: 12px;
   line-height: 20px;
   overflow-wrap: anywhere;
 }
-.runtimeReport summary {
-  min-height: var(--omoc-component-size-control-hit-target);
-  padding-block: 8px;
-  cursor: pointer;
+.runtimeReport dl,
+.runtimeReport > p {
+  margin-inline: 8px;
 }
 .runtimeReport dl {
   display: grid;
@@ -887,8 +1015,10 @@
   overflow: auto;
 }
 .toolPermission {
-  border-left: 3px solid currentColor;
-  padding-left: 0.5rem;
+  margin-block: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--omoc-semantic-color-permission-pending-background);
 }
 
 .roundButton,
