@@ -1389,6 +1389,18 @@ export function retainableTail(records, fromSequence, operations) {
     // Task, permission, reservation, migration and decision records never.
     return false;
   };
+  // Exactly the operations the confirmed prefix leaves open must be listed,
+  // and it may leave no task unsettled.
+  const prefix = historyValidator();
+  try {
+    for (const { payload } of records.slice(0, fromSequence)) prefix(payload);
+  } catch {
+    return false;
+  }
+  for (const [key, operation] of prefix.state.operations)
+    if (!operation.terminal && !listed.has(key)) return false;
+  for (const task of prefix.state.tasks.values())
+    if (task.phase !== "settled") return false;
   for (const { payload } of records.slice(fromSequence)) {
     if (!allowed(payload)) return false;
     if (
@@ -1767,6 +1779,17 @@ function historyValidator() {
           isMcpAbsentRemoval(payload.receipt) ||
           payload.receipt.admission === "rejected";
       }
+    } else if (
+      payload.kind === "recovery_decision" &&
+      payload.action === RETAIN_TAIL_AS_UNKNOWN
+    ) {
+      // A tail completion already applied here stays applied: this is
+      // structural history only; the registry replays the range conservatively.
+      for (const entry of payload.operations) {
+        const retained = operations.get(operationKey(entry));
+        need(retained, "identity_conflict");
+        retained.terminal = true;
+      }
     } else if (payload.kind === "migration_phase") {
       const priorMigration = migrations.get(payload.migrationId);
       if (priorMigration)
@@ -1793,6 +1816,7 @@ function historyValidator() {
     }
     revision = payload.revision;
   };
+  validate.state = { operations, tasks };
   return validate;
 }
 
@@ -1803,6 +1827,9 @@ export async function openStorageJournal({
   storeId,
   io = {},
   recoveryReason,
+  // Awaited before an open finishes a retain decision's checkpoint (Main: the
+  // owner fence); a rejection leaves the tail unconfirmed instead.
+  checkpointFence = async () => {},
 } = {}) {
   need(path(directory) && id(storeId));
   if (recoveryReason !== undefined)
@@ -2000,8 +2027,16 @@ export async function openStorageJournal({
       last.throughSequence === records.length - 1 &&
       retainableTail(records.slice(0, -1), last.fromSequence, last.operations)
     )
-      pendingRetainCheckpoint = true;
-    else if (records.length > committed.length || uncertainCheckpoint)
+      try {
+        await checkpointFence();
+        pendingRetainCheckpoint = true;
+      } catch {
+        /* unfenced: the tail stays unconfirmed */
+      }
+    if (
+      !pendingRetainCheckpoint &&
+      (records.length > committed.length || uncertainCheckpoint)
+    )
       reason ??= "unconfirmed_tail";
     if (!reason) {
       handle = await fs.open(

@@ -10,6 +10,7 @@ import { openWorkspaceRegistry } from "./workspace-registry.mjs";
 import { mcpNativeName, mcpStep } from "./workbench-mcp.mjs";
 import {
   openStorageJournal,
+  retainableTail,
   validateStorageReceipt,
 } from "./storage-journal.mjs";
 
@@ -12897,4 +12898,217 @@ test("CRASH-A a retained rename in a confirmed prefix (native_startup_unverified
     next.lookup({ runtimeEpoch: "old", operationId: "rename" }).receipt.effect,
     "unknown",
   );
+});
+
+async function configScope(t, io) {
+  const f = await fixture(t, io);
+  const reserved = await createManagedWorkspaceOnly(f);
+  await f.registry.checkpoint();
+  return { f, workspaceId: reserved.workspace.workspaceId };
+}
+const configSave = (registry, workspaceId, operationId) =>
+  identity(operationId, {
+    type: "configuration.save",
+    workspaceId,
+    expectedRevision: registry.status().revision,
+  });
+test("CRASH-A mid-flight first configuration.save: after 계속 the next save is admitted in the same run", async (t) => {
+  const { f, workspaceId } = await configScope(t);
+  await f.registry.begin(configSave(f.registry, workspaceId, "save-1"));
+  await f.registry.dispatch({
+    runtimeEpoch: "old",
+    operationId: "save-1",
+    step: "filesystem.configuration.stage",
+  });
+  const next = await crashCopy(t, f);
+  assert.equal(next.crashRecoveryPlan().state, "offer");
+  await next.retainTailAsUnknown();
+  assert.equal(
+    next.lookup({ runtimeEpoch: "old", operationId: "save-1" }).receipt.effect,
+    "unknown",
+  );
+  assert.equal(
+    (await next.begin(configSave(next, workspaceId, "save-2"))).status,
+    "admitted",
+  );
+});
+test("CRASH-A mid-flight first configuration.save: a reopen after 계속 still admits the next save", async (t) => {
+  const { f, workspaceId } = await configScope(t);
+  await f.registry.begin(configSave(f.registry, workspaceId, "save-1"));
+  const next = await crashCopy(t, f);
+  await next.retainTailAsUnknown();
+  const directory = await crashedDirectory(f);
+  await next.close();
+  const again = await openWorkspaceRegistry({
+    ...f.options,
+    directory,
+    io: {},
+    runtimeEpoch: "third",
+  });
+  t.after(() => again.close());
+  assert.equal(again.status().state, "ready", JSON.stringify(again.status()));
+  assert.equal(
+    (await again.begin(configSave(again, workspaceId, "save-2"))).status,
+    "admitted",
+  );
+});
+test("CRASH-A a gate-only tail continues without a prompt and keeps configuration.save admissible", async (t) => {
+  const { f, workspaceId } = await configScope(t);
+  await f.registry.close();
+  const crashed = join(f.root, "gate-only");
+  const live = await openWorkspaceRegistry({
+    ...f.options,
+    io: {
+      syncFile: async (file, context) => {
+        await file.sync();
+        if (context === "append:feature_gate")
+          await fs.cp(f.directory, crashed, { recursive: true });
+      },
+    },
+  });
+  t.after(() => live.close());
+  await live.begin(configSave(live, workspaceId, "save-1"));
+  const next = await openWorkspaceRegistry({
+    ...f.options,
+    directory: crashed,
+    io: {},
+    runtimeEpoch: "new",
+  });
+  t.after(() => next.close());
+  assert.equal(next.status().reason, "unconfirmed_tail");
+  const plan = next.crashRecoveryPlan();
+  assert.equal(plan.state, "offer");
+  assert.deepEqual(plan.operations, []);
+  await next.retainTailAsUnknown();
+  assert.equal(
+    (await next.begin(configSave(next, workspaceId, "save-2"))).status,
+    "admitted",
+  );
+});
+test("CRASH-A an owner_intent-only tail is retained and ready", async (t) => {
+  const f = await fixture(t, noIdleCheckpoint());
+  await f.registry.recordOwnerIntent({
+    ownerNonce: "11111111-1111-4111-8111-111111111111",
+    phase: "startup",
+  });
+  const next = await reopened(t, f);
+  assert.equal(next.status().reason, "unconfirmed_tail");
+  assert.equal(next.crashRecoveryPlan().state, "offer");
+  await next.retainTailAsUnknown();
+  assert.equal(next.status().state, "ready");
+});
+test("CRASH-A a retained message.send in the prefix denies the decision at the journal level", async (t) => {
+  const { f, scope } = await renameScope(t);
+  const other = await createManaged(f, "other");
+  await f.registry.begin(
+    identity("send", {
+      type: "message.send",
+      workspaceId: other.workspace.workspaceId,
+      sessionId: other.appSessionId,
+    }),
+  );
+  await f.registry.checkpoint();
+  await beginRename(f, scope);
+  const next = await crashCopy(t, f);
+  assert.equal(next.crashRecoveryPlan().state, "hold");
+  const directory = await crashedDirectory(f);
+  await next.close();
+  const journal = await openStorageJournal({ directory, storeId: "store" });
+  t.after(() => journal.close());
+  const { sequence, hash } = journal.status();
+  for (const operations of [
+    [{ runtimeEpoch: "old", operationId: "rename" }],
+    [
+      { runtimeEpoch: "old", operationId: "send" },
+      { runtimeEpoch: "old", operationId: "rename" },
+    ],
+  ])
+    await assert.rejects(
+      journal.retainTailAsUnknown({
+        expectedSequence: sequence,
+        expectedHash: hash,
+        ownerVerified: true,
+        operations,
+      }),
+      { code: "recovery_denied" },
+    );
+  assert.equal(journal.status().reason, "unconfirmed_tail");
+});
+test("CRASH-A retainableTail denies unknown record kinds and extra dispatch fields", () => {
+  const rename = {
+    kind: "admission",
+    revision: 1,
+    identity: identity("rename", {
+      type: "session.rename",
+      workspaceId: "w",
+      sessionId: "s",
+    }),
+  };
+  const ops = [{ runtimeEpoch: "old", operationId: "rename" }];
+  const records = (...payloads) => payloads.map((payload) => ({ payload }));
+  const dispatch = {
+    kind: "dispatch",
+    revision: 2,
+    runtimeEpoch: "old",
+    operationId: "rename",
+    step: "native.rename",
+  };
+  assert.equal(retainableTail(records(rename, dispatch), 0, ops), true);
+  assert.equal(
+    retainableTail(
+      records(rename, { ...dispatch, permissionEffect: { kind: "x" } }),
+      0,
+      ops,
+    ),
+    false,
+  );
+  assert.equal(
+    retainableTail(
+      records(rename, { ...dispatch, step: "native.send" }),
+      0,
+      ops,
+    ),
+    false,
+  );
+  assert.equal(
+    retainableTail(
+      records(rename, { kind: "unknown_kind", revision: 2 }),
+      0,
+      ops,
+    ),
+    false,
+  );
+  assert.equal(retainableTail(records(rename, dispatch), 0, []), false);
+});
+test("CRASH-A finishing a decision at open is owner-fenced", async (t) => {
+  const { f, scope } = await renameScope(t);
+  await beginRename(f, scope);
+  await f.registry.close();
+  const crashed = join(f.root, "after-decision");
+  const live = await openWorkspaceRegistry({
+    ...f.options,
+    runtimeEpoch: "new",
+    io: {
+      syncFile: async (file, context) => {
+        await file.sync();
+        if (context === "append:recovery_decision")
+          await fs.cp(f.directory, crashed, { recursive: true });
+      },
+    },
+  });
+  t.after(() => live.close());
+  await live.retainTailAsUnknown();
+  const unowned = await openWorkspaceRegistry({
+    ...f.options,
+    directory: crashed,
+    io: {},
+    runtimeEpoch: "third",
+    checkpointFence: async () => {
+      throw new Error("owner_unverified");
+    },
+  });
+  t.after(() => unowned.close());
+  assert.equal(unowned.status().reason, "unconfirmed_tail");
+  const { sequence, checkpointSequence } = unowned.status().journal;
+  assert.notEqual(sequence, checkpointSequence);
 });
