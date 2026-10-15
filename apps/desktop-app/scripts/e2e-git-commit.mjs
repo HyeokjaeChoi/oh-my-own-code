@@ -263,10 +263,9 @@ async function openCase(name = "ready") {
     name,
   );
   await page.reload();
-  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
-    "data-state",
-    "connected",
-  );
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected");
   await page.getByRole("button", { name: "파일·확장", exact: true }).click();
   await expect(commit()).toBeVisible();
   await expect(field("Commit 작성자 이름")).toHaveValue("");

@@ -18,6 +18,7 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { createWorkbenchBridge } from "./e2e-bridge.mjs";
+import { openSessionSearch, openWorkspaceMenu } from "./e2e-shell.mjs";
 import { probeSessionHistory } from "./fixtures/session-history-probe.mjs";
 
 const CONNECT_TIMEOUT_MS =
@@ -110,11 +111,11 @@ try {
   const page = await application.firstWindow();
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
-  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
-    "data-state",
-    "connected",
-    { timeout: CONNECT_TIMEOUT_MS },
-  );
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected", {
+    timeout: CONNECT_TIMEOUT_MS,
+  });
   const bridge = createWorkbenchBridge(page);
   // Startup reads can briefly hold the read capacity; the renderer re-polls too.
   let first = await bridge({ type: "snapshot" });
@@ -385,15 +386,20 @@ try {
   );
 
   // Exercise the production session controls as well as the closed IPC API.
-  await page
-    .getByRole("combobox", { name: "작업 공간", exact: true })
-    .selectOption(workspaceId);
-  const search = page.getByRole("searchbox", { name: "세션 검색" });
+  // Switch to the imported workspace through the sidebar switcher menu.
+  const menu = await openWorkspaceMenu(page);
+  await menu
+    .getByRole("menuitemradio", {
+      name: imported.workspaces.find((item) => item.id === workspaceId).name,
+    })
+    .click();
+  const search = await openSessionSearch(page);
   await search.fill("no-matching-session-fixture");
   await expect(
     page.getByText("검색 결과가 없습니다.", { exact: true }),
   ).toBeVisible();
   await search.fill("");
+  await page.getByRole("button", { name: "세션 검색", exact: true }).click();
   const actions = () =>
     page.getByRole("button", {
       name: `${renamedTitle} 세션 작업`,
@@ -433,11 +439,11 @@ try {
   ).toBeVisible();
   await page.getByRole("menuitem", { name: "세션 보관", exact: true }).click();
   await expect(actions()).toHaveCount(0);
-  await page.getByRole("button", { name: "보관된 세션", exact: true }).click();
+  await page.getByRole("button", { name: "보관된 세션 보기" }).click();
   await actions().click();
   await page.getByRole("menuitem", { name: "세션 복원", exact: true }).click();
   await expect(actions()).toHaveCount(0);
-  await page.getByRole("button", { name: "활성 세션", exact: true }).click();
+  await page.getByRole("button", { name: "보관된 세션 보기" }).click();
   await expect(actions()).toBeVisible();
   observations.push(
     "Actual renderer search, Escape focus return, rename validation/save, pin, archive and restore controls",

@@ -321,10 +321,9 @@ try {
   page.on("request", (request) => {
     if (/^https?:/i.test(request.url())) externalRequests.push(request.url());
   });
-  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
-    "data-state",
-    "connected",
-  );
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected");
   await application.evaluate(() => {
     const f = globalThis.__omocUiFixture;
     f.enablePerformanceSessions();

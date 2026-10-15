@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { selectWorkspace } from "./e2e-shell.mjs";
 import { once } from "node:events";
 import { childPids as findChildPids } from "./process-tree.mjs";
 import { existsSync } from "node:fs";
@@ -102,11 +103,11 @@ try {
   const page = await application.firstWindow();
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
-  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
-    "data-state",
-    "connected",
-    { timeout: CONNECT_TIMEOUT_MS },
-  );
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected", {
+    timeout: CONNECT_TIMEOUT_MS,
+  });
   const composer = page.getByRole("textbox", { name: "메시지 작성" });
   await expect(composer).toBeVisible();
   const rawBridge = createWorkbenchBridge(page);
@@ -131,9 +132,10 @@ try {
   assert.ok(initial.value.selectedSessionId);
   const workspaceId = initial.value.selectedWorkspaceId;
   const sessionId = initial.value.selectedSessionId;
-  const originalTitle = initial.value.sessions.find(
-    (item) => item.id === sessionId,
-  ).title;
+  assert.equal(
+    initial.value.sessions.find((item) => item.id === sessionId).title,
+    "Workbench",
+  );
   // The profile is the durable journaled registry, no longer a temporary one.
   assert.equal(initial.value.temporary, false);
   assert.equal(await page.evaluate(() => typeof window.require), "undefined");
@@ -233,7 +235,8 @@ try {
   // The recent-session strip also names the (disabled) current session.
   await page
     .getByRole("list")
-    .getByRole("button", { name: originalTitle, exact: true })
+    // The placeholder title ("Workbench") is displayed as "새 세션".
+    .getByRole("button", { name: "새 세션", exact: true })
     .click();
   await expect(composer).toHaveValue("Draft stays in this session");
   observations.push(
@@ -328,9 +331,7 @@ try {
     "message.send without credentials is refused AUTH_REQUIRED, the composer retains draft and does not fabricate messages",
   );
 
-  await page
-    .getByRole("combobox", { name: "작업 공간", exact: true })
-    .selectOption(importedWorkspace.id);
+  await selectWorkspace(page, importedWorkspace.id);
   await page.getByRole("button", { name: "파일·확장", exact: true }).click();
   await page.getByRole("button", { name: /notes\.md.*파일 미리보기/ }).click();
   await expect(page.getByRole("region", { name: "파일 내용" })).toContainText(
@@ -347,9 +348,7 @@ try {
   await page
     .getByRole("button", { name: "상세 패널 닫기", exact: true })
     .click();
-  await page
-    .getByRole("combobox", { name: "작업 공간", exact: true })
-    .selectOption(workspaceId);
+  await selectWorkspace(page, workspaceId);
   await expect(composer).toBeVisible();
   observations.push(
     "actual read-only file and extension panels render the selected workspace",

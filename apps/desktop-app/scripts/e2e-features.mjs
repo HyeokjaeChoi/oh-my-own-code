@@ -1,5 +1,10 @@
 // Feature e2e: command palette, terminal, plans, permission mode, data export,
 // automation, preferences. Real Electron UI with an isolated HOME; no live model.
+import {
+  openMoreMenuItem,
+  openSettings,
+  selectWorkspace,
+} from "./e2e-shell.mjs";
 import assert from "node:assert/strict";
 import { once } from "node:events";
 import { execFileSync } from "node:child_process";
@@ -119,8 +124,8 @@ try {
   // Runtime-dependent checks are reported "blocked" when the sidecar is down.
   const stateOf = () =>
     page
-      .locator(".workbench-header [data-state]")
-      .getAttribute("data-state", { timeout: 1000 })
+      .locator(".workbench-header [data-connection]")
+      .getAttribute("data-connection", { timeout: 1000 })
       .catch(() => "unknown");
   let connected = false;
   for (let i = 0; i < CONNECT_TIMEOUT_MS / 1000 && !connected; i++) {
@@ -164,16 +169,7 @@ try {
   let sessionId;
   const selectFixture = async () => {
     // With the side panel open the sidebar is a sheet behind this button.
-    const nav = page.getByRole("button", {
-      name: "작업 공간 탐색 열기",
-      exact: true,
-    });
-    const picker = page.getByRole("combobox", {
-      name: "작업 공간",
-      exact: true,
-    });
-    if (!(await picker.isVisible())) await nav.click();
-    await picker.selectOption(workspace.id);
+    await selectWorkspace(page, workspace.id);
     await page
       .getByRole("button", { name: "E2E features session", exact: true })
       .click();
@@ -202,8 +198,8 @@ try {
         // store starts from the trusted state instead of a stale snapshot.
         await page.reload();
         await expect(
-          page.locator(".workbench-header [data-state]"),
-        ).toHaveAttribute("data-state", "connected", {
+          page.locator(".workbench-header [data-connection]"),
+        ).toHaveAttribute("data-connection", "connected", {
           timeout: CONNECT_TIMEOUT_MS,
         });
         await selectFixture();
@@ -276,7 +272,7 @@ try {
       // The modal sheet hides the page from role queries, so use a CSS locator.
       const screen = page.locator('[aria-label="터미널 화면"]');
       await expect(screen.locator(".xterm-accessibility")).toHaveCount(0);
-      await page.getByRole("button", { name: "설정·단축키" }).click();
+      await openSettings(page);
       const toggle = dialog().getByLabel(/터미널 스크린 리더 모드/);
       await expect(toggle).not.toBeChecked();
       await toggle.check();
@@ -348,8 +344,8 @@ try {
         .toBe("scoped_edit");
       await page.reload();
       await expect(
-        page.locator(".workbench-header [data-state]"),
-      ).toHaveAttribute("data-state", "connected", {
+        page.locator(".workbench-header [data-connection]"),
+      ).toHaveAttribute("data-connection", "connected", {
         timeout: CONNECT_TIMEOUT_MS,
       });
       await selectFixture();
@@ -369,7 +365,7 @@ try {
       await application.evaluate(({ dialog: d }, p) => {
         d.showSaveDialog = async () => ({ canceled: false, filePath: p });
       }, out);
-      await page.getByRole("button", { name: "데이터·내보내기" }).click();
+      await openMoreMenuItem(page, "데이터·내보내기");
       await page.getByRole("button", { name: "요약 확인" }).click();
       await expect(page.getByText(/메시지 \d+개, 도구 호출/)).toBeVisible();
       await page.getByRole("button", { name: "파일로 저장" }).click();
@@ -425,7 +421,7 @@ try {
   await check(
     "automation",
     async () => {
-      await page.getByRole("button", { name: "자동화", exact: true }).click();
+      await openMoreMenuItem(page, "자동화");
       const sheet = dialog();
       await sheet.getByRole("button", { name: "작업 추가" }).click();
       await sheet.getByLabel("이름").fill("E2E script job");
@@ -449,7 +445,7 @@ try {
   await check(
     "saved-rules-settings",
     async () => {
-      await page.getByRole("button", { name: "설정·단축키" }).click();
+      await openSettings(page);
       const rules = dialog().getByRole("region", {
         name: "저장된 허용 규칙",
       });
@@ -483,7 +479,7 @@ try {
   });
 
   await check("preferences-theme", async () => {
-    await page.getByRole("button", { name: "설정·단축키" }).click();
+    await openSettings(page);
     const theme = dialog().getByLabel("테마");
     await theme.selectOption("dark");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");

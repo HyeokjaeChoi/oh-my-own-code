@@ -284,11 +284,9 @@ async function assertStartupFailureScenario(scenario) {
   const scenarioProcess = scenarioApp.process();
   try {
     const page = await scenarioApp.firstWindow();
-    await expect(page.locator('[class*="runtimeState"]')).toHaveAttribute(
-      "data-state",
-      "unavailable",
-      { timeout: 30_000 },
-    );
+    await expect(
+      page.locator(".workbench-header [data-connection]"),
+    ).toHaveAttribute("data-connection", "unavailable", { timeout: 30_000 });
     const profile = await scenarioApp.evaluate(({ app: electronApp }) =>
       electronApp.getPath("userData"),
     );
@@ -376,11 +374,11 @@ async function assertCrashAndRestart() {
   let crashProfile;
   try {
     const page = await crashApp.firstWindow();
-    await expect(page.locator('[class*="runtimeState"]')).toHaveAttribute(
-      "data-state",
-      "connected",
-      { timeout: CONNECT_TIMEOUT_MS },
-    );
+    await expect(
+      page.locator(".workbench-header [data-connection]"),
+    ).toHaveAttribute("data-connection", "connected", {
+      timeout: CONNECT_TIMEOUT_MS,
+    });
     crashProfile = await crashApp.evaluate(({ app: electronApp }) =>
       electronApp.getPath("userData"),
     );
@@ -393,11 +391,9 @@ async function assertCrashAndRestart() {
         timeout: 10_000,
       })
       .toMatchObject({ state: "disconnected" });
-    await expect(page.locator('[class*="runtimeState"]')).toHaveAttribute(
-      "data-state",
-      "disconnected",
-      { timeout: 10_000 },
-    );
+    await expect(
+      page.locator(".workbench-header [data-connection]"),
+    ).toHaveAttribute("data-connection", "disconnected", { timeout: 10_000 });
     await crashApp.evaluate(({ app: electronApp }) => electronApp.quit());
     assert.equal(await waitForExit(crashProcess, 20_000), 0);
     assert.equal(processIsRunning(crashedPid), false);
@@ -413,11 +409,11 @@ async function assertCrashAndRestart() {
   const restartProcess = restartApp.process();
   try {
     const page = await restartApp.firstWindow();
-    await expect(page.locator('[class*="runtimeState"]')).toHaveAttribute(
-      "data-state",
-      "connected",
-      { timeout: CONNECT_TIMEOUT_MS },
-    );
+    await expect(
+      page.locator(".workbench-header [data-connection]"),
+    ).toHaveAttribute("data-connection", "connected", {
+      timeout: CONNECT_TIMEOUT_MS,
+    });
     const children = sidecarChildPids(restartProcess.pid);
     assert.equal(children.length, 1, "restart owns a fresh sidecar");
     assert.notEqual(children[0], crashedPid);
@@ -451,9 +447,11 @@ try {
   await expect(page.getByRole("textbox", { name: "메시지 작성" })).toBeVisible({
     timeout: CONNECT_TIMEOUT_MS,
   });
-  await expect(page.getByText("로컬 연결됨", { exact: true })).toBeVisible({
-    timeout: CONNECT_TIMEOUT_MS,
-  });
+  // A healthy connection shows no status chip; the unhealthy chips must be gone.
+  for (const text of ["런타임 확인 중…", "연결 끊김", "사용 불가"])
+    await expect(page.getByText(text, { exact: true })).toHaveCount(0, {
+      timeout: CONNECT_TIMEOUT_MS,
+    });
   // The preload rejects non-terminal states; poll until the snapshot is connected.
   let snapshot;
   await expect

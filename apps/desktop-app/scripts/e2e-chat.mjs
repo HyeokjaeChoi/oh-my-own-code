@@ -13,6 +13,7 @@
 //   turn 5: shell (bash) tool run with a permission prompt
 //   turn 6: interrupt during a streaming reply, then a normal send works
 // OMOC_E2E_CONNECT_TIMEOUT_MS (default 150s) bounds the runtime connect wait.
+import { openSettings } from "./e2e-shell.mjs";
 import assert from "node:assert/strict";
 import { windowsEnv } from "./e2e-env.mjs";
 import { once } from "node:events";
@@ -299,11 +300,11 @@ try {
     stderr = (stderr + chunk).slice(-20_000);
   });
   const page = await application.firstWindow();
-  await expect(page.locator(".workbench-header [data-state]")).toHaveAttribute(
-    "data-state",
-    "connected",
-    { timeout: CONNECT_TIMEOUT_MS },
-  );
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected", {
+    timeout: CONNECT_TIMEOUT_MS,
+  });
   const bridge = createWorkbenchBridge(page);
   const composer = page.getByRole("textbox", { name: "메시지 작성" });
   await expect(composer).toBeVisible();
@@ -356,6 +357,30 @@ try {
   });
   await idle();
   observations.push("turn 1: send -> streamed mock reply rendered");
+  // The placeholder session title is replaced by the first prompt in the
+  // header and the sidebar row (native auto-titles are not committed to app metadata).
+  await expect(page.locator(".workbench-header strong")).toHaveText("hello");
+  await expect(
+    page.locator(".session-row button[title]").first(),
+  ).toHaveAttribute("title", "hello");
+  observations.push("session title derived from first prompt in header + row");
+  if (process.env.OMOC_P2_SHOTS) {
+    const shots = process.env.OMOC_P2_SHOTS;
+    await page.screenshot({ path: join(shots, "session-with-messages.png") });
+    await page.getByRole("button", { name: "더 보기", exact: true }).click();
+    await page.screenshot({ path: join(shots, "more-menu-open.png") });
+    await page.keyboard.press("Escape");
+    await page.getByRole("button", { name: /^작업 공간 전환:/ }).click();
+    await page.screenshot({ path: join(shots, "workspace-switcher-open.png") });
+    await page.keyboard.press("Escape");
+    await page
+      .getByRole("button", { name: "보관된 세션 보기", exact: true })
+      .click();
+    await page.screenshot({ path: join(shots, "archived-view.png") });
+    await page
+      .getByRole("button", { name: "보관된 세션 보기", exact: true })
+      .click();
+  }
 
   // Turn 1b: choose agent and model explicitly in the composer.
   await openComposerPopover(page, "agent");
@@ -422,7 +447,7 @@ try {
 
   // The saved "항상 허용" rule is listed in Settings and can be revoked; the
   // same read then asks again.
-  await page.getByRole("button", { name: "설정·단축키" }).click();
+  await openSettings(page);
   const rules = page.getByRole("region", { name: "저장된 허용 규칙" });
   await expect(
     rules.getByRole("button", { name: /허용 규칙 삭제/ }),
