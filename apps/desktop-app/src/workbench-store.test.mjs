@@ -32,6 +32,11 @@ import {
   gitReviewHeld,
   extensionsHeld,
 } from "./renderer/entities/workbench/model/store.ts";
+import {
+  rejectionMessage,
+  transientRejection,
+  composerOperation,
+} from "./renderer/entities/workbench/model/rejection.ts";
 import { createWindowWorkbench } from "./renderer/entities/workbench/model/controller.ts";
 import { createTransport } from "./renderer/shared/transport/index.ts";
 import { selectionKey } from "./renderer/shared/projection/projection.mjs";
@@ -20237,4 +20242,106 @@ test("receipt notices clear independently of the conversation-context notice", (
   const cleared = s.getState();
   s.dispatch({ type: "context.notice.clear" });
   assert.equal(s.getState(), cleared, "clearing nothing keeps the state");
+});
+
+const rejectedSend =
+  (code, withReceipt = true) =>
+  (e) =>
+    e.operation.type === "message.send"
+      ? {
+          ok: false,
+          code,
+          message: code,
+          ...(withReceipt
+            ? {
+                receipt: receipt(e, {
+                  admission: "rejected",
+                  delivery: "pending",
+                  effect: "none",
+                  evidence: [],
+                  result: { kind: "rejected", code },
+                }),
+              }
+            : {}),
+        }
+      : undefined;
+for (const [name, withReceipt] of [
+  ["with receipt", true],
+  ["without receipt", false],
+])
+  test(`rejected message.send ${name}: error survives snapshots, draft kept, edit or retry clears`, async () => {
+    const { api, calls } = contextWindow(rejectedSend("BUSY", withReceipt));
+    try {
+      api.actions.draft("question");
+      assert.equal(await api.actions.sendContextMessage("question"), false);
+      await flush();
+      const failed = api.store.getState();
+      assert.equal(failed.error, "BUSY");
+      assert.equal(failed.errorOp, "message.send");
+      assert.equal(selectors.draft(failed).text, "question");
+      // A follow-up snapshot (the post-mutation refresh) must not erase it.
+      await api.actions.refresh();
+      await flush();
+      assert.equal(api.store.getState().error, "BUSY");
+      // Editing the draft dismisses it.
+      api.actions.draft("question 2");
+      assert.equal(api.store.getState().error, "");
+      assert.equal(
+        calls.filter((e) => e.operation.type === "message.send").length,
+        1,
+      );
+    } finally {
+      api.dispose();
+    }
+  });
+
+test("rejected message.send: dismissal and retry clear the error; no auto-resend", async () => {
+  let rejecting = true;
+  const { api, calls } = contextWindow((e) =>
+    rejecting
+      ? rejectedSend("UNAVAILABLE")(e)
+      : e.operation.type === "message.send"
+        ? { ok: true, value: { status: "accepted" }, receipt: receipt(e) }
+        : undefined,
+  );
+  try {
+    api.actions.draft("question");
+    await api.actions.sendContextMessage("question");
+    await flush();
+    assert.equal(api.store.getState().error, "UNAVAILABLE");
+    api.actions.clearError();
+    assert.equal(api.store.getState().error, "");
+    assert.equal(api.store.getState().errorOp, undefined);
+    await api.actions.sendContextMessage("question");
+    await flush();
+    assert.equal(api.store.getState().error, "UNAVAILABLE");
+    rejecting = false;
+    await api.actions.sendContextMessage("question");
+    await flush();
+    assert.equal(api.store.getState().error, "");
+    assert.equal(
+      calls.filter((e) => e.operation.type === "message.send").length,
+      3,
+    );
+  } finally {
+    api.dispose();
+  }
+});
+
+test("rejection code to Korean message mapping", () => {
+  assert.match(rejectionMessage("BUSY"), /다른 작업을 처리 중/);
+  assert.match(rejectionMessage("AUTH_REQUIRED"), /모델 제공자/);
+  assert.match(
+    rejectionMessage("UNAVAILABLE"),
+    /런타임에 연결되어 있지 않습니다/,
+  );
+  assert.match(rejectionMessage("POLICY_DENIED"), /권한/);
+  assert.equal(
+    rejectionMessage("WEIRD_CODE"),
+    "요청이 거절되었습니다 (WEIRD_CODE)",
+  );
+  assert.equal(transientRejection("BUSY"), true);
+  assert.equal(transientRejection("AUTH_REQUIRED"), false);
+  assert.equal(composerOperation("message.send"), true);
+  assert.equal(composerOperation("session.rename"), false);
 });

@@ -51,6 +51,11 @@ export type {
   Panel,
 } from "./model/store.js";
 export {
+  rejectionMessage,
+  transientRejection,
+  composerOperation,
+} from "./model/rejection.js";
+export {
   WorkbenchProvider,
   useWindowWorkbench,
   useWorkbenchSelector,

@@ -47,6 +47,9 @@ import { PreviewPanel } from "../../widgets/preview/index.js";
 import { PlansPanel } from "../../widgets/plans/index.js";
 import { CatalogPanel, FileExplorer } from "../../widgets/explorer/index.js";
 import {
+  composerOperation,
+  rejectionMessage,
+  transientRejection,
   selectors,
   recoveryMessages,
   useWorkbenchSelector,
@@ -88,6 +91,7 @@ export function Workbench() {
   const connection = useWorkbenchSelector((s) => s.connection);
   const pending = useWorkbenchSelector(selectors.pending);
   const error = useWorkbenchSelector((s) => s.error);
+  const errorOp = useWorkbenchSelector((s) => s.errorOp);
   const notice = useWorkbenchSelector((s) => s.notice);
   const catalogError = useWorkbenchSelector((s) => s.catalogError);
   const unknown = useWorkbenchSelector(selectors.unknown);
@@ -127,6 +131,12 @@ export function Workbench() {
     unknownSessionIds,
   };
   const mutate = actions.mutate;
+  useEffect(() => {
+    if (!error || composerOperation(errorOp) || !transientRejection(error))
+      return;
+    const timer = setTimeout(actions.clearError, 10000);
+    return () => clearTimeout(timer);
+  }, [error, errorOp, actions]);
   const key = selectionKey(selection.workspaceId, selection.sessionId);
   const { wide, navigation, panel, panelWidth } = useWorkbenchSelector(
     selectors.layout,
@@ -932,10 +942,22 @@ export function Workbench() {
             실행하지 않습니다.
           </div>
         )}
-        {(workbench.error || snapshot?.error) && (
+        {workbench.error && !composerOperation(errorOp) ? (
           <div className={`${styles.statusLine} ${styles.error}`} role="alert">
-            요청을 완료하지 못했습니다. 연결과 현재 상태를 다시 확인하세요.
+            <span data-reject-notice={workbench.error}>
+              {rejectionMessage(workbench.error)}
+            </span>
+            <Button onClick={workbench.clearError}>닫기</Button>
           </div>
+        ) : (
+          snapshot?.error && (
+            <div
+              className={`${styles.statusLine} ${styles.error}`}
+              role="alert"
+            >
+              요청을 완료하지 못했습니다. 연결과 현재 상태를 다시 확인하세요.
+            </div>
+          )
         )}
         {!connected && (
           <div className={styles.statusLine}>
