@@ -5,6 +5,11 @@ export { ActionMenu } from "./primitives/action-menu.js";
 export type { ActionMenuProps } from "./primitives/action-menu.js";
 export { ModalSheet } from "./primitives/modal-sheet.js";
 export type { ModalSheetProps } from "./primitives/modal-sheet.js";
+export { SettingsDialog } from "./primitives/settings-dialog.js";
+export type {
+  SettingsDialogProps,
+  SettingsNavItem,
+} from "./primitives/settings-dialog.js";
 export { Button } from "./primitives/button.js";
 export type { ButtonProps } from "./primitives/button.js";
 export type {
@@ -32,5 +37,7 @@ export { Notice } from "./primitives/notice.js";
 export type { NoticeProps, NoticeTone } from "./primitives/notice.js";
 export { EmptyState } from "./primitives/empty-state.js";
 export type { EmptyStateProps } from "./primitives/empty-state.js";
+export { InfoTip } from "./primitives/info-tip.js";
+export type { InfoTipProps } from "./primitives/info-tip.js";
 export { Kbd } from "./primitives/kbd.js";
 export type { KbdProps } from "./primitives/kbd.js";

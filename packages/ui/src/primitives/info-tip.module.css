@@ -1,0 +1,48 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--omoc-semantic-color-text-tertiary);
+  cursor: pointer;
+}
+.trigger:hover,
+.trigger[data-state="open"] {
+  background: var(--omoc-semantic-color-fill-hover);
+  color: var(--omoc-semantic-color-text-primary);
+}
+.trigger:focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: 0;
+}
+
+.content {
+  z-index: 80;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(320px, calc(100vw - 24px));
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--omoc-semantic-color-surface-raised);
+  color: var(--omoc-semantic-color-text-secondary);
+  box-shadow: var(--omoc-semantic-shadow-overlay);
+  font-size: var(--omoc-primitive-font-size-xs);
+  line-height: 1.55;
+}
+.content p {
+  margin: 0;
+}
+.content p + p {
+  margin-block-start: 6px;
+}
+.content:focus-visible {
+  outline: none;
+}

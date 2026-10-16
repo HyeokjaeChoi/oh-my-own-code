@@ -12,6 +12,12 @@
   margin-block-end: 8px;
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .title {
   margin: 0;
   font-size: var(--omoc-primitive-font-size-sm);
@@ -62,4 +68,9 @@
   justify-content: flex-end;
   gap: var(--omoc-semantic-space-control-gap);
   min-width: 0;
+}
+
+/* Loose buttons keep their natural width instead of stretching. */
+.section > button {
+  align-self: flex-start;
 }
