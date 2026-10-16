@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@workbench/ui";
+import { Button, Input, Notice, Row, Section, Select } from "@workbench/ui";
 import {
   selectors,
   useWindowWorkbench,
@@ -69,14 +69,9 @@ export function ProviderSettings() {
   const models =
     catalog?.models.status === "available" ? catalog.models.entries : [];
   return (
-    <section aria-label="모델 제공자">
-      <h3 className={styles.subheading}>모델 제공자</h3>
-      {error && (
-        <p role="alert" className={styles.error}>
-          {error}
-        </p>
-      )}
-      {notice && <p role="status">{notice}</p>}
+    <Section title="모델 제공자">
+      {error && <Notice tone="danger">{error}</Notice>}
+      {notice && <Notice tone="success">{notice}</Notice>}
       {list?.providers
         .filter((p) => p.connected)
         .map((p) => (
@@ -115,7 +110,7 @@ export function ProviderSettings() {
           </div>
         ))}
       <div className={styles.providerForm}>
-        <select
+        <Select
           aria-label="제공자 선택"
           value={selected || list?.providers[0]?.id || ""}
           onChange={(event) => setSelected(event.target.value)}
@@ -126,8 +121,8 @@ export function ProviderSettings() {
               {p.connected ? " (설정됨)" : ""}
             </option>
           ))}
-        </select>
-        <input
+        </Select>
+        <Input
           ref={key}
           type="password"
           aria-label="API 키"
@@ -144,7 +139,7 @@ export function ProviderSettings() {
         </Button>
       </div>
       <div className={styles.providerForm}>
-        <input
+        <Input
           key={list?.local.baseUrl}
           ref={base}
           aria-label="로컬 제공자 주소"
@@ -168,9 +163,9 @@ export function ProviderSettings() {
           주소 저장
         </Button>
       </div>
-      <label className={styles.field}>
-        <span>기본 모델</span>
-        <select
+      <Row label="기본 모델" htmlFor="pref-default-model">
+        <Select
+          id="pref-default-model"
           aria-label="기본 모델"
           value={defaultModel}
           onChange={(event) => {
@@ -184,8 +179,8 @@ export function ProviderSettings() {
               {m.name}
             </option>
           ))}
-        </select>
-      </label>
-    </section>
+        </Select>
+      </Row>
+    </Section>
   );
 }

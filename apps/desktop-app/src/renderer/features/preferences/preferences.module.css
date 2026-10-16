@@ -1,14 +1,3 @@
-.field {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--omoc-semantic-space-card-gap);
-  margin-bottom: var(--omoc-semantic-space-card-gap);
-}
-.subheading {
-  margin: var(--omoc-semantic-space-section-gap) 0
-    var(--omoc-semantic-space-control-gap);
-}
 .shortcuts {
   margin: 0;
 }
@@ -36,9 +25,8 @@
   gap: var(--omoc-semantic-space-control-gap);
   margin-bottom: var(--omoc-semantic-space-card-gap);
 }
-.error {
-  color: var(--omoc-semantic-color-danger-foreground);
-  margin: 0 0 var(--omoc-semantic-space-control-gap);
+.providerForm > :not(button) {
+  flex: 1 1 160px;
 }
 .muted {
   margin: 0 0 var(--omoc-semantic-space-control-gap);

@@ -8,26 +8,6 @@
   font-weight: 500;
   margin: 0 0 8px;
 }
-.panel button {
-  border: 0;
-  border-radius: 8px;
-  min-height: var(--omoc-component-size-control-hit-target);
-  padding: 8px 12px;
-  background: var(--omoc-semantic-color-surface-subtle);
-  color: var(--omoc-semantic-color-text-primary);
-  cursor: pointer;
-}
-.panel button:hover:not(:disabled),
-.panel button[aria-selected="true"] {
-  background: var(--omoc-semantic-color-selection-background);
-}
-.panel button:disabled {
-  cursor: default;
-  color: var(--omoc-semantic-color-text-secondary);
-}
-.panel button:focus-visible {
-  outline: 2px solid var(--omoc-semantic-color-focus);
-}
 .tabs,
 .footer {
   display: flex;
@@ -53,9 +33,6 @@
 }
 .muted {
   color: var(--omoc-semantic-color-text-secondary);
-}
-.error {
-  color: var(--omoc-semantic-color-danger-foreground);
 }
 .scripts {
   display: flex;

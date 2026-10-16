@@ -12,6 +12,7 @@ import {
   type GitBranchRestoreTarget,
 } from "../../shared/api/index.js";
 import styles from "./review.module.css";
+import { Button, Input, Select, Textarea } from "@workbench/ui";
 
 const disabledReasons: Record<string, string> = {
   HISTORICAL:
@@ -112,7 +113,7 @@ export function GitBranchRestoreSection() {
       <fieldset className={styles.selection}>
         <legend>편집 가능한 branch/restore 초안</legend>
         <label htmlFor={`${prefix}-draft`}>초안 scope</label>
-        <select
+        <Select
           id={`${prefix}-draft`}
           data-git-branch-restore-draft
           value={selectedKey === currentKey ? "" : (selectedKey ?? "")}
@@ -128,9 +129,9 @@ export function GitBranchRestoreSection() {
                 {d.workspacePath} / {d.epoch}
               </option>
             ))}
-        </select>
+        </Select>
         <label htmlFor={`${prefix}-action`}>작업</label>
-        <select
+        <Select
           id={`${prefix}-action`}
           data-git-branch-restore-control="action"
           value={draft.action}
@@ -143,13 +144,13 @@ export function GitBranchRestoreSection() {
           <option value="create">새 local branch 생성 · 전환 없음</option>
           <option value="select">기존 local branch 선택 · 실제 checkout</option>
           <option value="restore">선택한 파일 복원 · worktree만 변경</option>
-        </select>
+        </Select>
         {draft.action !== "restore" ? (
           <>
             <label htmlFor={`${prefix}-branch`}>
               Local branch full ref · refs/heads/이름
             </label>
-            <input
+            <Input
               id={`${prefix}-branch`}
               data-git-branch-restore-control="branch"
               value={draft.branch}
@@ -167,7 +168,7 @@ export function GitBranchRestoreSection() {
                 <label htmlFor={`${prefix}-existing`}>
                   관찰한 local branch 선택
                 </label>
-                <select
+                <Select
                   id={`${prefix}-existing`}
                   data-git-branch-restore-control="existing-branch"
                   value={
@@ -189,13 +190,13 @@ export function GitBranchRestoreSection() {
                         {b.name} / {b.oid}
                       </option>
                     ))}
-                </select>
+                </Select>
               </>
             )}
             <label htmlFor={`${prefix}-name`}>
               Reflog 사용자 이름 · 직접 입력
             </label>
-            <input
+            <Input
               id={`${prefix}-name`}
               data-git-branch-restore-control="name"
               value={draft.name}
@@ -205,7 +206,7 @@ export function GitBranchRestoreSection() {
               }
             />
             <label htmlFor={`${prefix}-email`}>Reflog email · 직접 입력</label>
-            <input
+            <Input
               id={`${prefix}-email`}
               data-git-branch-restore-control="email"
               value={draft.email}
@@ -219,7 +220,7 @@ export function GitBranchRestoreSection() {
         ) : (
           <>
             <label htmlFor={`${prefix}-source`}>복원 source · 직접 선택</label>
-            <select
+            <Select
               id={`${prefix}-source`}
               data-git-branch-restore-control="source"
               value={draft.source}
@@ -232,7 +233,7 @@ export function GitBranchRestoreSection() {
               <option value="">Source를 선택하세요</option>
               <option value="index">INDEX · staged 내용</option>
               <option value="head">HEAD · 현재 commit 내용</option>
-            </select>
+            </Select>
             <p>
               INDEX에 없는 경로는 INDEX 복원을 할 수 없습니다. HEAD에 없고
               index가 추적하는 경로는 HEAD 복원 시 삭제될 수 있습니다.
@@ -254,7 +255,7 @@ export function GitBranchRestoreSection() {
             <label htmlFor={`${prefix}-paths`}>
               복원 경로 · 한 줄에 한 경로 · 변경 없는 tracked 경로도 입력 가능
             </label>
-            <textarea
+            <Textarea
               id={`${prefix}-paths`}
               data-git-branch-restore-control="paths"
               rows={3}
@@ -269,7 +270,9 @@ export function GitBranchRestoreSection() {
         )}
       </fieldset>
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           data-git-branch-restore-command="preview"
           disabled={!selectors.canPreviewGitBranchRestore(state)}
           onClick={() => {
@@ -277,8 +280,10 @@ export function GitBranchRestoreSection() {
           }}
         >
           Branch/restore Preview 요청
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           data-git-branch-restore-command="cancel-preview"
           disabled={!g.request}
           onClick={() => {
@@ -287,8 +292,10 @@ export function GitBranchRestoreSection() {
           }}
         >
           Preview 읽기 취소
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           data-git-branch-restore-command="apply"
           disabled={!selectors.canApplyGitBranchRestore(state)}
           onClick={() => {
@@ -296,7 +303,7 @@ export function GitBranchRestoreSection() {
           }}
         >
           확인 후 branch/restore 적용 요청
-        </button>
+        </Button>
       </div>
       <p
         ref={statusRef}

@@ -1,6 +1,3 @@
-.section {
-  margin-bottom: var(--omoc-semantic-space-section-gap);
-}
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -9,7 +6,8 @@
   margin: var(--omoc-semantic-space-control-gap) 0;
 }
 .muted {
-  opacity: 0.75;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: var(--omoc-primitive-font-size-xs);
   margin: var(--omoc-semantic-space-control-gap) 0;
 }
 .list {
@@ -20,7 +18,4 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   margin: 0 0 var(--omoc-semantic-space-control-gap);
-}
-.danger {
-  color: var(--omoc-semantic-color-danger, #b3261e);
 }

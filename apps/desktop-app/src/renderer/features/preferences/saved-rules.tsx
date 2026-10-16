@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@workbench/ui";
+import { Button, Notice, Section } from "@workbench/ui";
 import { useWorkbenchSelector } from "../../entities/workbench/index.js";
 import {
   callSavedRules,
@@ -52,19 +52,14 @@ export function SavedRulesSettings() {
   };
   if (!workspaceId) return null;
   return (
-    <section aria-label="저장된 허용 규칙">
-      <h3 className={styles.subheading}>저장된 허용 규칙</h3>
-      {error && (
-        <p role="alert" className={styles.error}>
-          {error}
-        </p>
-      )}
+    <Section title="저장된 허용 규칙">
+      {error && <Notice tone="danger">{error}</Notice>}
       <p className={styles.muted}>
         규칙은 Native 프로젝트 단위로 저장되며 같은 프로젝트의 작업 트리가 함께
         사용합니다.
       </p>
       {rules?.length === 0 && (
-        <p role="status">이 프로젝트에 저장된 허용 규칙이 없습니다.</p>
+        <Notice tone="info">이 프로젝트에 저장된 허용 규칙이 없습니다.</Notice>
       )}
       {rules?.map((rule) => (
         <div key={rule.id} className={styles.providerRow}>
@@ -82,6 +77,6 @@ export function SavedRulesSettings() {
           </Button>
         </div>
       ))}
-    </section>
+    </Section>
   );
 }

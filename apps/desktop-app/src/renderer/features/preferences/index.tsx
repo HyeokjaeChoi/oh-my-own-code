@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useState, type RefObject } from "react";
-import { Button, ModalSheet } from "@workbench/ui";
+import {
+  Button,
+  Kbd,
+  ModalSheet,
+  Row,
+  Section,
+  Select,
+  Switch,
+} from "@workbench/ui";
 import { Settings } from "lucide-react";
 import {
   applyPreferences,
@@ -88,24 +96,25 @@ function OsNotificationField(props: {
   }, []);
   const blocked = status ? !status.supported || status.failed : false;
   return (
-    <label className={styles.field}>
-      <span>
-        OS 알림 (창이 비활성일 때, 내용 없이 알림만)
-        {blocked && (
-          <small role="status">
-            {" "}
+    <Row
+      htmlFor="pref-os-notifications"
+      label="OS 알림 (창이 비활성일 때, 내용 없이 알림만)"
+      description={
+        blocked ? (
+          <span role="status">
             이 환경에서는 OS 알림을 사용할 수 없어 앱 안에서만 표시됩니다.
-          </small>
-        )}
-      </span>
-      <input
-        type="checkbox"
+          </span>
+        ) : undefined
+      }
+    >
+      <Switch
+        id="pref-os-notifications"
         checked={props.preferences.osNotifications}
         onChange={(event) =>
           props.onChange({ osNotifications: event.target.checked })
         }
       />
-    </label>
+    </Row>
   );
 }
 
@@ -114,22 +123,19 @@ function TerminalScreenReaderField(props: {
   onChange: (patch: Partial<Preferences>) => void;
 }) {
   return (
-    <label className={styles.field}>
-      <span>
-        터미널 스크린 리더 모드
-        <small>
-          {" "}
-          (출력을 보조 기술이 읽을 수 있게 하며, 터미널이 느려질 수 있습니다)
-        </small>
-      </span>
-      <input
-        type="checkbox"
+    <Row
+      htmlFor="pref-terminal-screen-reader"
+      label="터미널 스크린 리더 모드"
+      description="(출력을 보조 기술이 읽을 수 있게 하며, 터미널이 느려질 수 있습니다)"
+    >
+      <Switch
+        id="pref-terminal-screen-reader"
         checked={props.preferences.terminalScreenReader}
         onChange={(event) =>
           props.onChange({ terminalScreenReader: event.target.checked })
         }
       />
-    </label>
+    </Row>
   );
 }
 
@@ -140,9 +146,9 @@ export function PreferencesSheetView(props: {
   return (
     <>
       {FIELDS.map(([key, label, options]) => (
-        <label key={key} className={styles.field}>
-          <span>{label}</span>
-          <select
+        <Row key={key} htmlFor={`pref-${key}`} label={label}>
+          <Select
+            id={`pref-${key}`}
             value={props.preferences[key]}
             onChange={(event) =>
               props.onChange({
@@ -155,24 +161,25 @@ export function PreferencesSheetView(props: {
                 {text}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Row>
       ))}
       <OsNotificationField {...props} />
       <TerminalScreenReaderField {...props} />
       <ProviderSettings />
       <SavedRulesSettings />
-      <h3 className={styles.subheading}>키보드 단축키</h3>
-      <dl className={styles.shortcuts}>
-        {SHORTCUTS.map(({ keys, action }) => (
-          <div key={keys} className={styles.shortcut}>
-            <dt>
-              <kbd>{keys}</kbd>
-            </dt>
-            <dd>{action}</dd>
-          </div>
-        ))}
-      </dl>
+      <Section title="키보드 단축키">
+        <dl className={styles.shortcuts}>
+          {SHORTCUTS.map(({ keys, action }) => (
+            <div key={keys} className={styles.shortcut}>
+              <dt>
+                <Kbd>{keys}</Kbd>
+              </dt>
+              <dd>{action}</dd>
+            </div>
+          ))}
+        </dl>
+      </Section>
     </>
   );
 }

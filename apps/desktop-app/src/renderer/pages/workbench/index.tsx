@@ -6,7 +6,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
-import { ActionMenu, Button, ModalSheet } from "@workbench/ui";
+import { ActionMenu, Button, Input, ModalSheet } from "@workbench/ui";
 import {
   Bell,
   ChevronDown,
@@ -504,7 +504,7 @@ export function Workbench() {
         >
           <label>
             새 브랜치 이름
-            <input
+            <Input
               value={worktreeBranch}
               maxLength={100}
               required
@@ -514,7 +514,7 @@ export function Workbench() {
           </label>
           <label>
             기준 ref
-            <input
+            <Input
               value={worktreeBase}
               maxLength={100}
               required
@@ -523,7 +523,7 @@ export function Workbench() {
           </label>
           <label>
             위치 (선택, 절대 경로)
-            <input
+            <Input
               value={worktreePath}
               maxLength={1024}
               onChange={(event) => setWorktreePath(event.target.value)}
@@ -569,7 +569,7 @@ export function Workbench() {
         >
           <label>
             폴더 경로
-            <input
+            <Input
               value={importPath}
               maxLength={2048}
               onChange={(event) => setImportPath(event.target.value)}
@@ -615,7 +615,7 @@ export function Workbench() {
         >
           <label>
             폴더 이름 (선택)
-            <input
+            <Input
               ref={createInput}
               value={folderName}
               maxLength={100}

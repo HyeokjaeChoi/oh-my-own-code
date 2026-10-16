@@ -5,6 +5,7 @@ import {
   useWorkbenchSelector,
 } from "../../entities/workbench/index.js";
 import styles from "./extensions.module.css";
+import { Button } from "@workbench/ui";
 
 const unavailableReasons = {
   runtime_unavailable: "Native 정보를 확인할 수 없습니다.",
@@ -87,22 +88,26 @@ export function ConfigurationExtensions() {
         않습니다.
       </p>
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-extensions-observe="true"
           disabled={!canObserve}
           onClick={() => void actions.observeExtensions()}
         >
           확장 상태 확인
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-extensions-cancel="true"
           disabled={!entry.request}
           onClick={cancel}
         >
           조회 취소
-        </button>
+        </Button>
       </div>
       <p
         ref={statusRef}

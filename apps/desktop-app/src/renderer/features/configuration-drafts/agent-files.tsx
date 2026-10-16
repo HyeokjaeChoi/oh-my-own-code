@@ -11,6 +11,7 @@ import {
   agentIssueMessages,
 } from "../../shared/configuration-draft/index.js";
 import styles from "./drafts.module.css";
+import { Button, Notice, Select, Textarea } from "@workbench/ui";
 
 const reasonMessages: Record<string, string> = {
   path_missing:
@@ -89,7 +90,9 @@ export function AgentFilesEditor() {
         </p>
       )}
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-agent-action="list"
           aria-describedby={
@@ -101,7 +104,7 @@ export function AgentFilesEditor() {
           }}
         >
           Agent 파일 목록 확인
-        </button>
+        </Button>
       </div>
       <div
         role="status"
@@ -127,17 +130,16 @@ export function AgentFilesEditor() {
                     : "아직 목록을 확인하지 않았습니다."}
         </p>
         {listing?.status === "available" && listing.truncated && (
-          <p className={styles.error} data-agent-list-truncated="true">
+          <Notice tone="danger" data-agent-list-truncated="true" role="note">
             목록 일부만 표시합니다. 최대 {AGENT_LIMITS.scan}개 항목을 검사하고{" "}
             {AGENT_LIMITS.entries}개 파일을 표시합니다.
-          </p>
+          </Notice>
         )}
       </div>
       <div className={styles.field}>
         <label htmlFor={`${id}-source`}>Agent 원본 파일</label>
-        <select
+        <Select
           id={`${id}-source`}
-          className={styles.select}
           value={sourceName ?? ""}
           data-agent-source-select
           onChange={(e) => actions.selectAgentFile(e.currentTarget.value)}
@@ -149,7 +151,7 @@ export function AgentFilesEditor() {
                 {row.sourceName}
               </option>
             ))}
-        </select>
+        </Select>
       </div>
       <p className={styles.path} data-agent-path>
         {target}
@@ -160,7 +162,9 @@ export function AgentFilesEditor() {
         않습니다. 외부 변경은 자동 확인하지 않습니다.
       </p>
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-agent-action="read"
           disabled={!canRead || !sourceName}
@@ -170,7 +174,7 @@ export function AgentFilesEditor() {
           }}
         >
           Agent 파일 불러오기
-        </button>
+        </Button>
       </div>
       <div
         role="status"
@@ -200,7 +204,7 @@ export function AgentFilesEditor() {
       </div>
       <div className={styles.field}>
         <label htmlFor={`${id}-text`}>Agent 초안 내용</label>
-        <textarea
+        <Textarea
           id={`${id}-text`}
           className={styles.textarea}
           value={draft.text}
@@ -224,15 +228,19 @@ export function AgentFilesEditor() {
         등록합니다.
       </p>
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-agent-action="validate"
           disabled={!sourceName}
           onClick={() => actions.validateAgentFile()}
         >
           형식 검증
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-agent-action="save"
           aria-describedby={
@@ -244,15 +252,17 @@ export function AgentFilesEditor() {
           }}
         >
           Agent 파일에 저장
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-agent-action="discard"
           disabled={!sourceName}
           onClick={() => actions.discardAgentFile()}
         >
           이 초안 버리기
-        </button>
+        </Button>
       </div>
       <div
         id={`${id}-validation`}
@@ -269,11 +279,13 @@ export function AgentFilesEditor() {
             : "현재 초안은 미검증입니다."}
         </p>
         {validation?.issues.length ? (
-          <ul className={styles.issues}>
-            {validation.issues.map((issue) => (
-              <li key={issue}>{agentIssueMessages[issue]}</li>
-            ))}
-          </ul>
+          <Notice tone="danger" role="note">
+            <ul className={styles.issues}>
+              {validation.issues.map((issue) => (
+                <li key={issue}>{agentIssueMessages[issue]}</li>
+              ))}
+            </ul>
+          </Notice>
         ) : null}
       </div>
       <div
@@ -367,7 +379,9 @@ function AgentRuntimeRemove({
   );
   return (
     <div className={styles.actions}>
-      <button
+      <Button
+        size="compact"
+        intent="secondary"
         type="button"
         data-agent-runtime-remove={nativeId}
         disabled={!allowed}
@@ -377,7 +391,7 @@ function AgentRuntimeRemove({
         }}
       >
         Native 등록 제거
-      </button>
+      </Button>
     </div>
   );
 }
@@ -426,7 +440,9 @@ export function AgentRuntimeControls() {
         override는 없습니다. 기본 Agent와 현재 세션은 그대로입니다.
       </p>
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-agent-runtime-observe
           disabled={!selectors.canObserveAgentRuntime(state)}
@@ -435,17 +451,21 @@ export function AgentRuntimeControls() {
           }}
         >
           Native 상태 확인
-        </button>
+        </Button>
         {entry.request && (
-          <button
+          <Button
+            size="compact"
+            intent="secondary"
             type="button"
             data-agent-runtime-cancel
             onClick={() => actions.cancelAgentRuntimeObservation()}
           >
             Native 상태 확인 취소
-          </button>
+          </Button>
         )}
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-agent-runtime-register
           disabled={!selectors.canRegisterAgent(state)}
@@ -455,7 +475,7 @@ export function AgentRuntimeControls() {
           }}
         >
           primary Agent로 Native에 등록
-        </button>
+        </Button>
       </div>
       <p role="status" data-agent-runtime-status>
         {entry.request
@@ -467,9 +487,9 @@ export function AgentRuntimeControls() {
               : "현재 관찰이 없습니다. 파일과 상태를 확인한 뒤 Native 상태 확인을 선택하세요."}
       </p>
       {entry.error && (
-        <p className={styles.error} data-agent-runtime-error>
+        <Notice tone="danger" data-agent-runtime-error role="note">
           Native 상태 확인 실패: {entry.error}. 다시 확인하세요.
-        </p>
+        </Notice>
       )}
       {action && (
         <p

@@ -16,6 +16,7 @@ import {
   type GitIndexEntry,
 } from "../../shared/api/index.js";
 import styles from "./review.module.css";
+import { Button, Input, Select, Textarea } from "@workbench/ui";
 
 const indexReasons: Partial<Record<GitIndexReason, string>> = {
   platform_unavailable: "현재 운영 체제에서 index 변경을 지원하지 않습니다.",
@@ -143,7 +144,7 @@ function GitCommitSection() {
       <fieldset className={styles.selection}>
         <legend>Commit 초안</legend>
         <label htmlFor={`${prefix}-draft`}>보존한 Commit 초안</label>
-        <select
+        <Select
           id={`${prefix}-draft`}
           value={draftKey === currentKey ? "" : (draftKey ?? "")}
           onChange={(e) =>
@@ -158,7 +159,7 @@ function GitCommitSection() {
                 {d.workspacePath} · {d.epoch} · 보존한 초안
               </option>
             ))}
-        </select>
+        </Select>
         {draftKey !== currentKey && (
           <p role="status">
             보존한 초안은 편집과 복사만 가능합니다. 현재 요청에 사용하지
@@ -166,7 +167,7 @@ function GitCommitSection() {
           </p>
         )}
         <label htmlFor={`${prefix}-name`}>Commit 작성자 이름</label>
-        <input
+        <Input
           id={`${prefix}-name`}
           autoComplete="off"
           spellCheck={false}
@@ -174,7 +175,7 @@ function GitCommitSection() {
           onChange={(e) => actions.editGitCommit({ name: e.target.value })}
         />
         <label htmlFor={`${prefix}-email`}>Commit 작성자 이메일</label>
-        <input
+        <Input
           id={`${prefix}-email`}
           type="text"
           inputMode="email"
@@ -184,7 +185,7 @@ function GitCommitSection() {
           onChange={(e) => actions.editGitCommit({ email: e.target.value })}
         />
         <label htmlFor={`${prefix}-message`}>Commit 메시지</label>
-        <textarea
+        <Textarea
           id={`${prefix}-message`}
           rows={5}
           spellCheck={false}
@@ -198,7 +199,9 @@ function GitCommitSection() {
         </p>
       </fieldset>
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           disabled={!selectors.canPreviewGitCommit(state)}
           aria-describedby={`${prefix}-disabled`}
           onClick={() => {
@@ -208,8 +211,10 @@ function GitCommitSection() {
           }}
         >
           전체 staged Commit 미리보기
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           disabled={!g.request}
           onClick={() => {
             actions.cancelGitCommitPreview();
@@ -217,8 +222,10 @@ function GitCommitSection() {
           }}
         >
           Commit 미리보기 취소
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           disabled={!selectors.canApplyGitCommit(state)}
           aria-describedby={`${prefix}-disabled`}
           onClick={() => {
@@ -228,7 +235,7 @@ function GitCommitSection() {
           }}
         >
           전체 staged Commit 적용
-        </button>
+        </Button>
       </div>
       <p id={`${prefix}-disabled`}>
         {reason
@@ -507,7 +514,9 @@ export function GitReviewPanel() {
         </p>
       )}
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           disabled={!selectors.canObserveGitReview(state)}
           onClick={() => {
             void actions
@@ -516,8 +525,10 @@ export function GitReviewPanel() {
           }}
         >
           Git 상태 새로고침
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           disabled={!g.request}
           onClick={() => {
             actions.cancelGitReview();
@@ -525,7 +536,7 @@ export function GitReviewPanel() {
           }}
         >
           Git 상태 읽기 취소
-        </button>
+        </Button>
       </div>
       <p
         ref={statusRef}
@@ -623,7 +634,7 @@ export function GitReviewPanel() {
             <p>현재 Git 상태를 먼저 확인하세요.</p>
           )}
           <label htmlFor={`${prefix}-index-action`}>Index 작업</label>
-          <select
+          <Select
             id={`${prefix}-index-action`}
             aria-label="Index 작업"
             value={index.action}
@@ -636,11 +647,13 @@ export function GitReviewPanel() {
           >
             <option value="stage">Stage · worktree 내용으로 교체</option>
             <option value="unstage">Unstage · HEAD 상태로 복원</option>
-          </select>
+          </Select>
           <p>선택한 경로: {index.paths.length}개</p>
         </fieldset>
         <div className={styles.actions}>
-          <button
+          <Button
+            size="compact"
+            intent="secondary"
             disabled={!selectors.canPreviewGitIndex(state)}
             onClick={() => {
               void actions
@@ -649,8 +662,10 @@ export function GitReviewPanel() {
             }}
           >
             Index 변경 미리보기
-          </button>
-          <button
+          </Button>
+          <Button
+            size="compact"
+            intent="secondary"
             disabled={!index.request}
             onClick={() => {
               actions.cancelGitIndexPreview();
@@ -658,8 +673,10 @@ export function GitReviewPanel() {
             }}
           >
             Index 미리보기 취소
-          </button>
-          <button
+          </Button>
+          <Button
+            size="compact"
+            intent="secondary"
             disabled={!selectors.canApplyGitIndex(state)}
             onClick={() => {
               void actions
@@ -668,7 +685,7 @@ export function GitReviewPanel() {
             }}
           >
             Index 변경 적용
-          </button>
+          </Button>
         </div>
         <p>
           적용 버튼 다음에 Main 확인 창이 열립니다. 확인을 거부하면 변경하지
@@ -838,14 +855,16 @@ export function GitReviewPanel() {
                 <ul className={styles.rows}>
                   {rows.map((f) => (
                     <li key={f.path}>
-                      <button
+                      <Button
+                        size="compact"
+                        intent="secondary"
                         disabled={!available}
                         aria-label={`${mode === "staged" ? "Staged" : "Unstaged"} 차이 선택: ${f.path}`}
                         aria-pressed={g.path === f.path && g.mode === mode}
                         onClick={() => selectRow(f.path, mode)}
                       >
                         {f.path}
-                      </button>
+                      </Button>
                       <dl className={styles.metadata}>
                         <dt>Index</dt>
                         <dd>{states[f.index]}</dd>
@@ -871,7 +890,7 @@ export function GitReviewPanel() {
       <fieldset className={styles.selection} disabled={!available}>
         <legend>선택한 파일의 Git 차이</legend>
         <label htmlFor={`${prefix}-path`}>Git 비교 경로</label>
-        <select
+        <Select
           id={`${prefix}-path`}
           value={g.path}
           onChange={(e) => actions.selectGitPath(e.target.value)}
@@ -883,9 +902,9 @@ export function GitReviewPanel() {
                 {f.path}
               </option>
             ))}
-        </select>
+        </Select>
         <label htmlFor={`${prefix}-mode`}>Git 비교 방식</label>
-        <select
+        <Select
           id={`${prefix}-mode`}
           value={g.mode}
           onChange={(e) => actions.selectGitMode(e.target.value as GitDiffMode)}
@@ -893,9 +912,9 @@ export function GitReviewPanel() {
           <option value="staged">Staged · HEAD → index</option>
           <option value="unstaged">Unstaged · index → worktree</option>
           <option value="base">Local branch TIP → worktree</option>
-        </select>
+        </Select>
         <label htmlFor={`${prefix}-base`}>Git 기준 branch</label>
-        <select
+        <Select
           id={`${prefix}-base`}
           disabled={g.mode !== "base"}
           value={g.baseRef}
@@ -908,7 +927,7 @@ export function GitReviewPanel() {
                 {b.name}
               </option>
             ))}
-        </select>
+        </Select>
       </fieldset>
       <p>
         기준 branch는 관찰한 TIP commit과 worktree를 직접 비교합니다.
@@ -928,15 +947,19 @@ export function GitReviewPanel() {
         </dd>
       </dl>
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           disabled={!selectors.canReadGitDiff(state)}
           onClick={() => {
             void actions.readGitDiff().then(() => detailRef.current?.focus());
           }}
         >
           선택한 Git 차이 읽기
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           disabled={!g.detailRequest}
           onClick={() => {
             actions.cancelGitDiff();
@@ -944,7 +967,7 @@ export function GitReviewPanel() {
           }}
         >
           Git 차이 읽기 취소
-        </button>
+        </Button>
       </div>
       <section aria-label="Git 차이 결과" data-git-diff-state={detailStatus}>
         <p

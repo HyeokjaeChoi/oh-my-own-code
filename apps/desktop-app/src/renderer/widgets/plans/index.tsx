@@ -32,6 +32,7 @@ import {
 } from "../../shared/terminal/index.js";
 import type { ProjectActions } from "../../shared/project-actions/index.js";
 import styles from "./plans.module.css";
+import { Button, Input, Notice, Select, Textarea } from "@workbench/ui";
 
 const POLL_MS = 1000;
 const IDLE_POLL_MS = 5000;
@@ -321,21 +322,22 @@ export function PlansPanel({
   return (
     <section className={styles.panel} aria-label="계획과 검증">
       <h2>계획</h2>
-      {error && (
-        <p role="alert" className={styles.error}>
-          {error}
-        </p>
-      )}
+      {error && <Notice tone="danger">{error}</Notice>}
       <div className={styles.input}>
-        <input
+        <Input
           aria-label="새 계획 제목"
           placeholder="새 계획 제목"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <button disabled={!title.trim()} onClick={() => void create()}>
+        <Button
+          size="compact"
+          intent="primary"
+          disabled={!title.trim()}
+          onClick={() => void create()}
+        >
           만들기
-        </button>
+        </Button>
       </div>
       <p className={styles.muted}>
         내용은 에이전트에게 .omoc/plans/*.md 로 작성하도록 요청해도 됩니다.
@@ -349,12 +351,14 @@ export function PlansPanel({
           );
           return (
             <li key={p.path}>
-              <button
+              <Button
+                size="compact"
+                intent="secondary"
                 aria-pressed={p.path === path}
                 onClick={() => void open(p.path)}
               >
                 {p.path.replace(/^\.omoc\/plans\//, "")}
-              </button>{" "}
+              </Button>{" "}
               <span className={styles.badge}>
                 {st.state === "approved"
                   ? `승인됨 v${st.version}`
@@ -367,18 +371,20 @@ export function PlansPanel({
         })}
       </ul>
       <div className={styles.input}>
-        <input
+        <Input
           aria-label="다른 Markdown 경로"
           placeholder="docs/plan.md"
           value={extra}
           onChange={(e) => setExtra(e.target.value)}
         />
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           disabled={!extra.trim().endsWith(".md")}
           onClick={() => void open(extra.trim())}
         >
           열기
-        </button>
+        </Button>
       </div>
 
       {path && (
@@ -392,13 +398,23 @@ export function PlansPanel({
                 {dirty && <span className={styles.warn}> · 저장 안 됨</span>}
               </p>
               <div className={styles.input}>
-                <button onClick={() => setRaw(!raw)} aria-pressed={raw}>
+                <Button
+                  size="compact"
+                  intent="secondary"
+                  onClick={() => setRaw(!raw)}
+                  aria-pressed={raw}
+                >
                   {raw ? "보기" : "원문 편집"}
-                </button>
+                </Button>
                 {raw && (
-                  <button disabled={!canSave} onClick={() => void saveRaw()}>
+                  <Button
+                    size="compact"
+                    intent="secondary"
+                    disabled={!canSave}
+                    onClick={() => void saveRaw()}
+                  >
                     저장
-                  </button>
+                  </Button>
                 )}
               </div>
               {raw ? (
@@ -407,7 +423,7 @@ export function PlansPanel({
                     CRLF 파일은 파일 패널의 편집기에서 수정하세요.
                   </p>
                 ) : (
-                  <textarea
+                  <Textarea
                     className={styles.raw}
                     aria-label="계획 원문"
                     spellCheck={false}
@@ -464,19 +480,23 @@ export function PlansPanel({
                         : "아직 승인하지 않았습니다."}
                 </p>
                 <div className={styles.input}>
-                  <button
+                  <Button
+                    size="compact"
+                    intent="secondary"
                     disabled={dirty || approval?.state === "approved"}
                     onClick={() => void approve()}
                   >
                     승인
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    size="compact"
+                    intent="secondary"
                     disabled={approval?.state !== "approved" || !sessionId}
                     onClick={() => void execute()}
                     title="승인된 버전의 경로와 해시를 현재 세션에 보냅니다"
                   >
                     실행
-                  </button>
+                  </Button>
                 </div>
                 {note && <p role="status">{note}</p>}
                 {links.length > 0 && (
@@ -525,7 +545,7 @@ export function PlansPanel({
                 )}
                 {project && project.scripts.length > 0 ? (
                   <div className={styles.input}>
-                    <select
+                    <Select
                       aria-label="검증 종류"
                       value={kind}
                       onChange={(e) => setKind(e.target.value as CheckKind)}
@@ -533,8 +553,8 @@ export function PlansPanel({
                       {CHECK_KINDS.map((k) => (
                         <option key={k}>{k}</option>
                       ))}
-                    </select>
-                    <select
+                    </Select>
+                    <Select
                       aria-label="검증 스크립트"
                       value={script}
                       onChange={(e) => setScript(e.target.value)}
@@ -545,13 +565,15 @@ export function PlansPanel({
                           {project.packageManager} run {s.name}
                         </option>
                       ))}
-                    </select>
-                    <button
+                    </Select>
+                    <Button
+                      size="compact"
+                      intent="secondary"
                       disabled={!script || dirty}
                       onClick={() => void runCheck()}
                     >
                       실행하고 기록
-                    </button>
+                    </Button>
                   </div>
                 ) : (
                   <p className={styles.muted}>
@@ -578,7 +600,9 @@ export function PlansPanel({
                           {(
                             ["user", "implementer", "reviewer"] as Resolver[]
                           ).map((who) => (
-                            <button
+                            <Button
+                              size="compact"
+                              intent="secondary"
                               key={who}
                               onClick={() =>
                                 void persist(
@@ -596,7 +620,7 @@ export function PlansPanel({
                                 : who === "implementer"
                                   ? "구현자가 수정함"
                                   : "리뷰어가 확인"}
-                            </button>
+                            </Button>
                           ))}
                         </>
                       ) : (
@@ -610,7 +634,9 @@ export function PlansPanel({
                               f.resolvedBy === "implementer" &&
                               " · 리뷰어 재확인 필요"}
                           </small>{" "}
-                          <button
+                          <Button
+                            size="compact"
+                            intent="secondary"
                             onClick={() =>
                               void persist(
                                 setFindingStatus(text, f.line, "open"),
@@ -618,7 +644,7 @@ export function PlansPanel({
                             }
                           >
                             다시 열기
-                          </button>
+                          </Button>
                         </>
                       )}
                     </li>
@@ -628,27 +654,29 @@ export function PlansPanel({
                   독립 리뷰어는 하위 세션 위임으로 실행하고, 최종 답변을 아래에
                   붙여넣어 추가하세요. 자동으로 해결 처리되지 않습니다.
                 </p>
-                <select
+                <Select
                   aria-label="결과 작성자"
                   value={author}
                   onChange={(e) => setAuthor(e.target.value as FindingAuthor)}
                 >
                   <option value="reviewer">독립 리뷰어</option>
                   <option value="implementer">구현자</option>
-                </select>
-                <textarea
+                </Select>
+                <Textarea
                   className={styles.raw}
                   aria-label="리뷰 결과 붙여넣기"
                   placeholder="한 줄에 하나씩"
                   value={finding}
                   onChange={(e) => setFinding(e.target.value)}
                 />
-                <button
+                <Button
+                  size="compact"
+                  intent="secondary"
                   disabled={!finding.trim() || dirty}
                   onClick={addFindings}
                 >
                   결과 추가
-                </button>
+                </Button>
               </div>
             </>
           )}

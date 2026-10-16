@@ -1,19 +1,15 @@
-import React, { type ReactNode } from "react";
+import React, { type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from "lucide-react";
 import styles from "./notice.module.css";
 
 export type NoticeTone = "info" | "warning" | "danger" | "success";
 
-export type NoticeProps = {
+export type NoticeProps = Omit<ComponentPropsWithoutRef<"div">, "role"> & {
   tone?: NoticeTone;
-  children: ReactNode;
   // One quiet Button, kept by the caller.
   action?: ReactNode;
   onDismiss?: () => void;
   role?: "alert" | "status" | "note";
-  className?: string;
-  id?: string;
-  tabIndex?: number;
 };
 
 const ICONS = {

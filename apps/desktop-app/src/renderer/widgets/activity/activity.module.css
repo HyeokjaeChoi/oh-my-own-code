@@ -16,33 +16,10 @@
 .panel p {
   margin: 8px 0;
 }
-.panel button {
-  border: 0;
-  border-radius: 8px;
-  min-height: var(--omoc-component-size-control-hit-target);
-  padding: 8px 12px;
-  background: var(--omoc-semantic-color-surface-subtle);
-  cursor: pointer;
-}
-.panel button:hover {
-  background: var(--omoc-semantic-color-selection-background);
-}
 .muted {
   color: var(--omoc-semantic-color-text-secondary);
   font-size: 12px;
   line-height: 1.6;
-}
-.filter {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: var(--omoc-component-size-control-hit-target);
-  cursor: pointer;
-}
-.filter input {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--omoc-semantic-color-text-primary);
 }
 .counts {
   margin: 0;
@@ -119,6 +96,8 @@
   gap: 4px;
   margin: 8px 0;
 }
-.chips button[aria-pressed="true"] {
-  background: var(--omoc-semantic-color-selection-background);
+.events .entry {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
 }

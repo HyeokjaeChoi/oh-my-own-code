@@ -14,6 +14,7 @@ import {
   type PreviewState,
 } from "../../shared/preview/index.js";
 import styles from "./preview.module.css";
+import { Button, Input, Notice } from "@workbench/ui";
 
 const POLL_MS = 400;
 async function call<T>(request: PreviewRequest): Promise<PreviewResult<T>> {
@@ -142,51 +143,66 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
     <section className={styles.panel} aria-label="미리보기">
       <h2>미리보기</h2>
       <form className={styles.row} onSubmit={(e) => void go(e)}>
-        <button
+        <Button
+          size="compact"
+          intent="quiet"
           type="button"
           onClick={() => nav("back")}
           disabled={!isUrl || !state?.canGoBack}
           aria-label="뒤로"
         >
           ←
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="quiet"
           type="button"
           onClick={() => nav("forward")}
           disabled={!isUrl || !state?.canGoForward}
           aria-label="앞으로"
         >
           →
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="quiet"
           type="button"
           onClick={() => nav("reload")}
           disabled={!isUrl}
           aria-label="새로고침"
         >
           ↻
-        </button>
-        <input
+        </Button>
+        <Input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           aria-label="미리보기 주소"
           spellCheck={false}
           autoComplete="off"
         />
-        <button type="submit">열기</button>
-        <button
+        <Button size="compact" intent="primary" type="submit">
+          열기
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           onClick={() => setExternal(state?.url || url.trim())}
           disabled={!parseExternalUrl(state?.url || url.trim())}
         >
           외부에서 열기
-        </button>
-        <button type="button" onClick={() => void closeAll()}>
+        </Button>
+        <Button
+          size="compact"
+          intent="quiet"
+          type="button"
+          onClick={() => void closeAll()}
+        >
           닫기
-        </button>
+        </Button>
       </form>
       <form className={styles.row} onSubmit={(e) => void openFile(e)}>
-        <input
+        <Input
           value={path}
           onChange={(e) => setPath(e.target.value)}
           placeholder="작업 공간 파일 경로 (html, md, 이미지)"
@@ -194,9 +210,14 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
           spellCheck={false}
           autoComplete="off"
         />
-        <button type="submit" disabled={!path.trim()}>
+        <Button
+          size="compact"
+          intent="secondary"
+          type="submit"
+          disabled={!path.trim()}
+        >
           파일 열기
-        </button>
+        </Button>
       </form>
       {external && (
         <div
@@ -205,24 +226,35 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
           className={styles.row}
         >
           <span>기본 브라우저에서 엽니다: {external}</span>
-          <button type="button" onClick={() => void confirmExternal()}>
+          <Button
+            size="compact"
+            intent="secondary"
+            type="button"
+            onClick={() => void confirmExternal()}
+          >
             열기
-          </button>
-          <button type="button" onClick={() => setExternal(undefined)}>
+          </Button>
+          <Button
+            size="compact"
+            intent="quiet"
+            type="button"
+            onClick={() => setExternal(undefined)}
+          >
             취소
-          </button>
+          </Button>
         </div>
       )}
-      {error && (
-        <p role="alert" className={styles.error}>
-          {error}
-        </p>
-      )}
-      {status && (
-        <p role="status" className={state?.error ? styles.error : styles.muted}>
-          {status}
-        </p>
-      )}
+      {error && <Notice tone="danger">{error}</Notice>}
+      {status &&
+        (state?.error ? (
+          <Notice tone="danger" role="status">
+            {status}
+          </Notice>
+        ) : (
+          <p role="status" className={styles.muted}>
+            {status}
+          </p>
+        ))}
       <div ref={stage} className={styles.stage}>
         {file?.kind === "markdown" && (
           // ponytail: plain text, not rendered Markdown; the existing renderer is bound to assistant-ui message context.

@@ -5,7 +5,7 @@ import {
   useState,
   type RefObject,
 } from "react";
-import { Button, ModalSheet } from "@workbench/ui";
+import { Button, EmptyState, ModalSheet } from "@workbench/ui";
 import { Bell } from "lucide-react";
 import {
   selectors,
@@ -254,7 +254,7 @@ export function NotificationCenter({
             비우기
           </Button>
         </div>
-        {!list.length && <p>알림이 없습니다.</p>}
+        {!list.length && <EmptyState title="알림이 없습니다." />}
         <ul className={styles.list}>
           {list.map((n) => (
             <li key={n.id} data-unread={!n.read}>

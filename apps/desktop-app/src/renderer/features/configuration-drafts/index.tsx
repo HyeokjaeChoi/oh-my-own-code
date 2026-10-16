@@ -17,6 +17,8 @@ import styles from "./drafts.module.css";
 import { AgentFilesEditor, AgentRuntimeControls } from "./agent-files.js";
 export { AgentFilesEditor, AgentRuntimeControls } from "./agent-files.js";
 import { SkillFilesEditor } from "./skill-files.js";
+import { Button, Notice, Select, Textarea } from "@workbench/ui";
+import { Status } from "./status.js";
 export { SkillFilesEditor } from "./skill-files.js";
 
 function SkillRuntimeRowActions({
@@ -35,7 +37,9 @@ function SkillRuntimeRowActions({
   );
   return (
     <div className={styles.actions}>
-      <button
+      <Button
+        size="compact"
+        intent="secondary"
         type="button"
         data-skill-runtime-remove={nativeId}
         disabled={!canRemove}
@@ -45,8 +49,10 @@ function SkillRuntimeRowActions({
         }}
       >
         Native 등록 제거
-      </button>
-      <button
+      </Button>
+      <Button
+        size="compact"
+        intent="secondary"
         type="button"
         data-skill-runtime-apply={nativeId}
         disabled={!canApply}
@@ -56,7 +62,7 @@ function SkillRuntimeRowActions({
         }}
       >
         선택한 세션에 적용
-      </button>
+      </Button>
     </div>
   );
 }
@@ -109,7 +115,9 @@ function SkillRuntimeControls() {
         수 있습니다. 파일 설정과 관계없이 autoinvoke: false로 등록합니다.
       </p>
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-skill-runtime-observe
           disabled={!canObserve}
@@ -118,17 +126,21 @@ function SkillRuntimeControls() {
           }}
         >
           Native 상태 확인
-        </button>
+        </Button>
         {entry.request && (
-          <button
+          <Button
+            size="compact"
+            intent="secondary"
             type="button"
             data-skill-runtime-cancel
             onClick={() => actions.cancelSkillRuntimeObservation()}
           >
             Native 상태 확인 취소
-          </button>
+          </Button>
         )}
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-skill-runtime-register
           disabled={!canRegister}
@@ -138,7 +150,7 @@ function SkillRuntimeControls() {
           }}
         >
           자동 호출 없이 Native에 등록
-        </button>
+        </Button>
       </div>
       <p role="status" data-skill-runtime-status>
         {entry.request
@@ -150,9 +162,9 @@ function SkillRuntimeControls() {
               : "현재 관찰이 없습니다. 파일과 상태를 확인한 뒤 Native 상태 확인을 선택하세요."}
       </p>
       {entry.error && (
-        <p className={styles.error} data-skill-runtime-error>
+        <Notice tone="danger" data-skill-runtime-error role="note">
           Native 상태 확인 실패: {entry.error}. 다시 확인하세요.
-        </p>
+        </Notice>
       )}
       {action && (
         <p role="status" data-skill-runtime-action={action.status}>
@@ -426,10 +438,10 @@ function McpControls() {
       </p>
       {workspace && !workspace.trusted && (
         <div role="status" aria-label="MCP 작업 공간 신뢰 상태">
-          <p className={styles.error}>
+          <Notice tone="danger" role="note">
             작업 공간 신뢰를 확인하지 않아 MCP 상태 확인과 변경을 사용할 수
             없습니다.
-          </p>
+          </Notice>
           <p className={styles.muted}>
             기존 ‘새 세션’을 선택하면 세션 생성 과정에서 신뢰 확인 창이
             표시됩니다. 이 작업은 새 세션을 추가합니다. 확인 후 ‘MCP 상태
@@ -438,7 +450,9 @@ function McpControls() {
         </div>
       )}
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-mcp-action="observe"
           disabled={!selectors.canObserveMcp(state)}
@@ -448,7 +462,7 @@ function McpControls() {
           }}
         >
           MCP 상태 확인
-        </button>
+        </Button>
       </div>
       <div
         role="status"
@@ -479,8 +493,7 @@ function McpControls() {
       </div>
       <div className={styles.field}>
         <label htmlFor={`${id}-definition`}>등록할 파일 정의</label>
-        <select
-          className={styles.select}
+        <Select
           id={`${id}-definition`}
           value={sourceName}
           onChange={(event) => setSourceName(event.currentTarget.value)}
@@ -491,7 +504,7 @@ function McpControls() {
               {name}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
       <div data-mcp-server={sourceName || undefined}>
         <p className={styles.muted} id={`${id}-register`}>
@@ -522,14 +535,14 @@ function McpControls() {
           </p>
         )}
         {unsupported && (
-          <p
+          <Notice
+            tone="danger"
             role="status"
             aria-label="지원하지 않는 MCP 변환"
-            className={styles.error}
           >
             파일 검사에서는 oauth 생략을 허용합니다. runtime 등록은 명시적인
             oauth:false가 필요하므로 현재 정의를 등록할 수 없습니다.
-          </p>
+          </Notice>
         )}
         {!definition && (
           <p className={styles.muted}>
@@ -538,7 +551,9 @@ function McpControls() {
           </p>
         )}
         <div className={styles.actions}>
-          <button
+          <Button
+            size="compact"
+            intent="secondary"
             type="button"
             data-mcp-action="register"
             disabled={!selectors.canRegisterMcp(state, sourceName)}
@@ -548,7 +563,7 @@ function McpControls() {
             }}
           >
             선택한 정의를 비활성 등록
-          </button>
+          </Button>
         </div>
       </div>
       {observation?.status === "observed" && (
@@ -585,7 +600,9 @@ function McpControls() {
                     설정의 증명이 아닙니다.
                   </p>
                   <div className={styles.actions}>
-                    <button
+                    <Button
+                      size="compact"
+                      intent="secondary"
                       type="button"
                       data-mcp-action="connect"
                       disabled={!selectors.canConnectMcp(state, row.sourceName)}
@@ -595,8 +612,10 @@ function McpControls() {
                       }}
                     >
                       연결
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      size="compact"
+                      intent="secondary"
                       type="button"
                       data-mcp-action="disconnect"
                       disabled={
@@ -608,8 +627,10 @@ function McpControls() {
                       }}
                     >
                       연결 해제
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      size="compact"
+                      intent="secondary"
                       type="button"
                       data-mcp-action="remove"
                       disabled={!selectors.canRemoveMcp(state, row.sourceName)}
@@ -619,7 +640,7 @@ function McpControls() {
                       }}
                     >
                       등록 제거
-                    </button>
+                    </Button>
                   </div>
                 </>
               )}
@@ -648,7 +669,9 @@ function McpControls() {
               </p>
             )}
             {action.code && (
-              <p className={styles.error}>{mcpErrorMessage(action.code)}</p>
+              <Notice tone="danger" role="note">
+                {mcpErrorMessage(action.code)}
+              </Notice>
             )}
           </>
         )}
@@ -834,9 +857,8 @@ export function ConfigurationDraftEditor() {
       )}
       <div className={styles.field}>
         <label htmlFor={`${id}-kind`}>초안 종류</label>
-        <select
+        <Select
           id={`${id}-kind`}
-          className={styles.select}
           value={editorKind}
           onChange={(event) => {
             const value = event.currentTarget.value;
@@ -853,7 +875,7 @@ export function ConfigurationDraftEditor() {
           <option value="mcp">OpenCode MCP</option>
           <option value="skills">Skills</option>
           <option value="agents">Agents</option>
-        </select>
+        </Select>
       </div>
       {editorKind === "agents" ? (
         <>
@@ -882,7 +904,9 @@ export function ConfigurationDraftEditor() {
               지웁니다. 읽는 동안 초안을 변경하면 불러오기를 취소합니다.
             </p>
             <div className={styles.actions}>
-              <button
+              <Button
+                size="compact"
+                intent="secondary"
                 type="button"
                 disabled={!workspace?.path || !epoch || loading || saveBlocked}
                 data-configuration-action="load"
@@ -892,7 +916,7 @@ export function ConfigurationDraftEditor() {
                 }}
               >
                 파일 불러오기
-              </button>
+              </Button>
             </div>
             <div
               role="status"
@@ -900,22 +924,26 @@ export function ConfigurationDraftEditor() {
               aria-atomic="true"
               data-configuration-read-status={draft.fileRead?.status}
             >
-              <p className={readFailed ? styles.error : styles.muted}>
+              <Status error={readFailed}>
                 {draft.fileRead
                   ? savedBaseline && draft.fileRead.status === "available"
                     ? "저장 완료 시점의 파일을 확인했습니다."
                     : readStatusMessages[draft.fileRead.status]
                   : "아직 파일을 읽지 않았습니다. 파일 불러오기를 선택하면 읽습니다."}
-              </p>
+              </Status>
               {draft.fileRead && (
                 <p className={styles.path} data-configuration-read-path>
                   마지막 파일 관찰 경로: {draft.fileRead.path}
                 </p>
               )}
               {draft.fileRead?.reason && (
-                <p className={styles.error} data-configuration-read-reason>
+                <Notice
+                  tone="danger"
+                  data-configuration-read-reason
+                  role="note"
+                >
                   {readReasonMessage(draft.fileRead.reason)}
-                </p>
+                </Notice>
               )}
             </div>
             <p className={styles.muted}>
@@ -935,7 +963,9 @@ export function ConfigurationDraftEditor() {
               승인합니다. 형식 검증은 저장 확인과 별도입니다.
             </p>
             <div className={styles.actions}>
-              <button
+              <Button
+                size="compact"
+                intent="secondary"
                 type="button"
                 disabled={!canSave || saveBlocked}
                 data-configuration-action="save"
@@ -945,7 +975,7 @@ export function ConfigurationDraftEditor() {
                 }}
               >
                 파일에 저장
-              </button>
+              </Button>
             </div>
             <div
               id={`${id}-save-status`}
@@ -968,17 +998,15 @@ export function ConfigurationDraftEditor() {
                     결과입니다. 현재 수정 내용은 저장되지 않았습니다.
                   </p>
                 )}
-              <p
-                className={
-                  save &&
+              <Status
+                error={
+                  !!save &&
                   ["denied", "conflict", "unknown"].includes(save.status)
-                    ? styles.error
-                    : styles.muted
                 }
                 data-configuration-save-message
               >
                 {saveStatusMessage(save)}
-              </p>
+              </Status>
               {save?.status === "unknown" && (
                 <p className={styles.muted}>
                   원본 파일이 변경되었을 수 있습니다. 저장 재시도와 파일
@@ -1037,10 +1065,10 @@ export function ConfigurationDraftEditor() {
                   role="status"
                   data-instructions-trust="untrusted"
                 >
-                  <p className={styles.error}>
+                  <Notice tone="danger" role="note">
                     이 작업 공간의 신뢰를 확인하지 않았습니다. 세션 지침의 상태
                     확인·등록·제거를 사용할 수 없습니다.
-                  </p>
+                  </Notice>
                   <p className={styles.muted}>
                     기존 ‘새 세션’을 선택하여 세션을 만들 때 작업 공간 신뢰 확인
                     창이 표시됩니다. 신뢰를 확인한 뒤 원래 세션을 다시 선택하고
@@ -1054,7 +1082,9 @@ export function ConfigurationDraftEditor() {
                 </div>
               )}
               <div className={styles.actions}>
-                <button
+                <Button
+                  size="compact"
+                  intent="secondary"
                   type="button"
                   data-instructions-action="observe"
                   disabled={!canObserve}
@@ -1064,8 +1094,10 @@ export function ConfigurationDraftEditor() {
                   }}
                 >
                   세션 등록 상태 확인
-                </button>
-                <button
+                </Button>
+                <Button
+                  size="compact"
+                  intent="secondary"
                   type="button"
                   data-instructions-action="apply"
                   disabled={!canApply}
@@ -1075,8 +1107,10 @@ export function ConfigurationDraftEditor() {
                   }}
                 >
                   이 세션에 지침 등록
-                </button>
-                <button
+                </Button>
+                <Button
+                  size="compact"
+                  intent="secondary"
                   type="button"
                   data-instructions-action="remove"
                   disabled={!canRemove}
@@ -1086,7 +1120,7 @@ export function ConfigurationDraftEditor() {
                   }}
                 >
                   이 세션의 지침 등록 제거
-                </button>
+                </Button>
               </div>
               <div
                 className={styles.saveStatus}
@@ -1100,13 +1134,11 @@ export function ConfigurationDraftEditor() {
                     : undefined
                 }
               >
-                <p
-                  className={
+                <Status
+                  error={
                     instructionStatus === "changed" ||
                     instructionStatus === "unavailable" ||
                     instructionStatus === "error"
-                      ? styles.error
-                      : styles.muted
                   }
                 >
                   {instructionStatus === "checking"
@@ -1128,7 +1160,7 @@ export function ConfigurationDraftEditor() {
                               : instructions.error
                                 ? "세션 등록 상태를 확인하지 못했습니다. 상태 확인을 다시 선택하세요."
                                 : "아직 이 세션의 등록 상태를 확인하지 않았습니다."}
-                </p>
+                </Status>
                 {observation?.status === "registered" &&
                   observation.origin === "fork" && (
                     <p className={styles.path} data-instructions-parent>
@@ -1179,14 +1211,10 @@ export function ConfigurationDraftEditor() {
                 data-instructions-action-code={instructionAction?.code}
               >
                 {instructionAction && (
-                  <p
-                    className={
-                      ["denied", "changed", "unknown"].includes(
-                        instructionAction.status,
-                      )
-                        ? styles.error
-                        : styles.muted
-                    }
+                  <Status
+                    error={["denied", "changed", "unknown"].includes(
+                      instructionAction.status,
+                    )}
                   >
                     {instructionAction.status === "pending"
                       ? "지침 변경 확인 또는 처리 중입니다."
@@ -1201,7 +1229,7 @@ export function ConfigurationDraftEditor() {
                             : instructionAction.status === "changed"
                               ? "확인 중 지침 상태가 바뀌었습니다. 상태를 다시 확인하세요."
                               : "지침 변경 결과를 확인하지 못했습니다. Native 항목이 바뀌었을 수 있습니다. 자동 재전송하지 않습니다. 원래 요청의 결과를 복구 상태에서 확인하세요."}
-                  </p>
+                  </Status>
                 )}
                 {instructionAction && !instructionActionCurrent && (
                   <p className={styles.muted}>
@@ -1225,7 +1253,7 @@ export function ConfigurationDraftEditor() {
           )}
           <div className={styles.field}>
             <label htmlFor={`${id}-text`}>설정 초안 내용</label>
-            <textarea
+            <Textarea
               id={`${id}-text`}
               className={styles.textarea}
               value={draft.text}
@@ -1249,34 +1277,40 @@ export function ConfigurationDraftEditor() {
             창에 최대 {CONFIGURATION_DRAFT_LIMITS.entries}개 초안
           </p>
           <div className={styles.actions}>
-            <button
+            <Button
+              size="compact"
+              intent="secondary"
               type="button"
               disabled={!workspace}
               onClick={() => actions.validateConfigurationDraft(kind)}
             >
               형식 검증
-            </button>
-            <button
+            </Button>
+            <Button
+              size="compact"
+              intent="secondary"
               type="button"
               disabled={!workspace || loading || saveBlocked}
               data-configuration-action="baseline"
               onClick={() => actions.baselineConfigurationDraft(kind)}
             >
               현재 초안을 비교 기준으로
-            </button>
-            <button
+            </Button>
+            <Button
+              size="compact"
+              intent="secondary"
               type="button"
               disabled={!workspace}
               data-configuration-action="discard"
               onClick={() => actions.discardConfigurationDraft(kind)}
             >
               이 초안 버리기
-            </button>
+            </Button>
           </div>
           {notice && (
-            <p role="status" className={styles.error}>
+            <Notice tone="danger" role="status">
               {notice}
-            </p>
+            </Notice>
           )}
           <div
             id={`${id}-validation`}
@@ -1284,7 +1318,7 @@ export function ConfigurationDraftEditor() {
             aria-atomic="true"
             data-draft-validation={validation?.status}
           >
-            <p className={invalid ? styles.error : styles.muted}>
+            <Status error={invalid}>
               현재 초안 버전: {draft.revision} ·{" "}
               {validation
                 ? `검증 버전: ${validation.revision} · ${
@@ -1295,13 +1329,15 @@ export function ConfigurationDraftEditor() {
                         : "형식 검증 실패"
                   }`
                 : "현재 버전 미검증 · 내용 변경 후 다시 검증하세요."}
-            </p>
+            </Status>
             {validation && validation.issues.length > 0 && (
-              <ul className={styles.issues}>
-                {validation.issues.map((issue) => (
-                  <li key={issue}>{configurationIssueMessages[issue]}</li>
-                ))}
-              </ul>
+              <Notice tone="danger" role="note">
+                <ul className={styles.issues}>
+                  {validation.issues.map((issue) => (
+                    <li key={issue}>{configurationIssueMessages[issue]}</li>
+                  ))}
+                </ul>
+              </Notice>
             )}
           </div>
           <p className={styles.muted}>
@@ -1349,7 +1385,9 @@ export function ConfigurationDraftEditor() {
               변경하지 않습니다.
             </p>
             {!comparison.bounded ? (
-              <p className={styles.error}>비교 크기 한도를 초과했습니다.</p>
+              <Notice tone="danger" role="note">
+                비교 크기 한도를 초과했습니다.
+              </Notice>
             ) : !comparison.added && !comparison.removed ? (
               <p className={styles.muted}>비교 기준과 다른 내용이 없습니다.</p>
             ) : (

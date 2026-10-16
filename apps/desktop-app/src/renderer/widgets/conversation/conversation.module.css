@@ -451,7 +451,6 @@
 .slashTrigger:focus-visible,
 .chip:focus-visible,
 .toolbar .primary:focus-visible,
-.select:focus-visible,
 .permissionOption:focus-within,
 .toolDetail summary:focus-visible,
 .runtimeReport summary:focus-visible {
@@ -607,39 +606,11 @@
   line-height: 18px;
 }
 
-.select {
-  width: 100%;
-  min-width: 0;
-  min-height: var(--omoc-component-size-standard-control-height);
-  padding: 6px 8px;
-  border: 1px solid var(--omoc-component-color-input-border);
-  border-radius: var(--omoc-component-size-navigation-radius);
-  background: var(--omoc-component-color-input-background);
-  color: var(--omoc-component-color-input-foreground);
-  font: inherit;
-  font-size: 14px;
-  line-height: 20px;
-  text-overflow: ellipsis;
-  cursor: pointer;
-}
-
-.select:disabled {
-  color: var(--omoc-component-color-button-disabled-foreground);
-  cursor: not-allowed;
-}
-
 .muted {
   margin: 8px 0;
   color: var(--omoc-semantic-color-text-secondary);
   font-size: 12px;
   line-height: 18px;
-}
-
-.selectionError {
-  margin: 8px 0 0;
-  color: var(--omoc-semantic-color-danger-foreground);
-  font-size: 13px;
-  line-height: 20px;
 }
 
 .permissionQueue {
@@ -1061,8 +1032,7 @@ details[open] > .disclosure > .chevron {
     min-height: var(--omoc-component-size-coarse-target);
     height: var(--omoc-component-size-coarse-target);
   }
-  .chip,
-  .select {
+  .chip {
     min-height: var(--omoc-component-size-coarse-target);
   }
 }

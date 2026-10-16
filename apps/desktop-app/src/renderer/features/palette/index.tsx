@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ModalSheet } from "@workbench/ui";
+import { Input, ModalSheet } from "@workbench/ui";
 import {
   selectors,
   useWindowWorkbench,
@@ -171,7 +171,7 @@ export function CommandPalette() {
 
   return (
     <ModalSheet open={open} onOpenChange={setOpen} title="명령 팔레트">
-      <input
+      <Input
         className={styles.search}
         autoFocus
         value={query}

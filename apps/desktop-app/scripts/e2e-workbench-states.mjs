@@ -1906,7 +1906,7 @@ try {
           ),
         )
         .toBe(1);
-      await page.getByRole("checkbox", { name: "선택한 세션만 보기" }).check();
+      await page.getByRole("switch", { name: "선택한 세션만 보기" }).check();
       await expect(
         activity.getByText("세션 이름 변경", { exact: true }),
       ).toBeVisible();

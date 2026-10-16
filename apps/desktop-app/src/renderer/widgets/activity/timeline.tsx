@@ -13,6 +13,7 @@ import {
 } from "../../shared/projection/index.js";
 import type { WorkbenchDiagnostics } from "../../../desktop-bridge.js";
 import styles from "./activity.module.css";
+import { Button } from "@workbench/ui";
 const kindLabels: Record<TimelineKind, string> = {
   message: "메시지",
   tool: "도구",
@@ -79,7 +80,9 @@ export function Timeline({
       </p>
       <div role="group" aria-label="종류 필터" className={styles.chips}>
         {timelineKinds.map((kind) => (
-          <button
+          <Button
+            size="compact"
+            intent="secondary"
             key={kind}
             aria-pressed={kinds.has(kind)}
             onClick={() => {
@@ -89,7 +92,7 @@ export function Timeline({
             }}
           >
             {kindLabels[kind]}
-          </button>
+          </Button>
         ))}
       </div>
       <div role="group" aria-label="세션 필터" className={styles.chips}>
@@ -100,13 +103,15 @@ export function Timeline({
             ["children", "하위 세션"],
           ] as const
         ).map(([value, label]) => (
-          <button
+          <Button
+            size="compact"
+            intent="secondary"
             key={value}
             aria-pressed={scope === value}
             onClick={() => setScope(value)}
           >
             {label}
-          </button>
+          </Button>
         ))}
       </div>
       {visible.length === 0 ? (
@@ -115,7 +120,10 @@ export function Timeline({
         <ol className={styles.events}>
           {visible.map((entry) => (
             <li key={entry.seq}>
-              <button
+              <Button
+                size="compact"
+                intent="quiet"
+                className={styles.entry}
                 disabled={!entry.target}
                 onClick={() => jump(entry)}
                 title={entry.target ? "관련 결과로 이동" : undefined}
@@ -128,7 +136,7 @@ export function Timeline({
                     {new Date(entry.time).toLocaleTimeString("ko-KR")}
                   </time>
                 )}
-              </button>
+              </Button>
             </li>
           ))}
         </ol>

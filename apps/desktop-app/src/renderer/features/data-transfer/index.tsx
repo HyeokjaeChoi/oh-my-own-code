@@ -1,5 +1,15 @@
 import { useCallback, useEffect, useState, type RefObject } from "react";
-import { Button, ModalSheet } from "@workbench/ui";
+import {
+  Button,
+  Field,
+  Input,
+  ModalSheet,
+  Notice,
+  Row,
+  Section,
+  Select,
+  Switch,
+} from "@workbench/ui";
 import { Database } from "lucide-react";
 import {
   RETENTION_OPTIONS,
@@ -71,20 +81,16 @@ function Export({
     );
   };
   return (
-    <section className={styles.section}>
-      <h3>현재 대화 내보내기</h3>
+    <Section title="현재 대화 내보내기">
       <p className={styles.muted}>
         화면에 표시된 최근 메시지만 내보냅니다. 자격 증명처럼 보이는 값과 홈
         경로는 기본으로 제거됩니다.
       </p>
-      <label>
-        <input
-          type="checkbox"
-          checked={outputs}
-          onChange={(e) => setOutputs(e.target.checked)}
-        />{" "}
-        도구 출력 포함
-      </label>
+      <Switch
+        label="도구 출력 포함"
+        checked={outputs}
+        onChange={(e) => setOutputs(e.target.checked)}
+      />
       <div className={styles.row}>
         <Button disabled={!session} onClick={() => void preview()}>
           요약 확인
@@ -94,7 +100,7 @@ function Export({
         </Button>
       </div>
       {summary && (
-        <p role="status">
+        <Notice>
           메시지 {summary.messages}개, 도구 호출 {summary.tools}개
           {summary.toolOutputsIncluded
             ? ` (출력 ${summary.toolOutputs}개 포함)`
@@ -105,10 +111,10 @@ function Export({
             ? `, .env 출력 ${summary.redactions.envOutputs}건`
             : ""}
           .
-        </p>
+        </Notice>
       )}
-      {note && <p role="status">{note}</p>}
-    </section>
+      {note && <Notice>{note}</Notice>}
+    </Section>
   );
 }
 
@@ -149,13 +155,12 @@ function Archives() {
     await reload();
   };
   return (
-    <section className={styles.section}>
-      <h3>가져온 기록 (읽기 전용)</h3>
+    <Section title="가져온 기록 (읽기 전용)">
       <p className={styles.muted}>
         가져온 기록은 보관용 사본이며 Native에서 다시 실행되지 않습니다.
       </p>
       <Button onClick={() => void importFile()}>파일 가져오기</Button>
-      {note && <p role="status">{note}</p>}
+      {note && <Notice>{note}</Notice>}
       <ul className={styles.list}>
         {list.map((a) => (
           <li key={a.id}>
@@ -183,7 +188,7 @@ function Archives() {
           ))}
         </div>
       ))}
-    </section>
+    </Section>
   );
 }
 
@@ -223,15 +228,14 @@ function Retention() {
     setPending(undefined);
   };
   return (
-    <section className={styles.section}>
-      <h3>보관 기간</h3>
+    <Section title="보관 기간">
       <p className={styles.muted}>
         가져온 기록에만 적용됩니다. 시작 시와 매일 한 번 확인합니다. 작업 폴더의
         파일과 Native 대화는 삭제하지 않습니다.
       </p>
-      <label>
-        보관 기간{" "}
-        <select
+      <Row label="보관 기간" htmlFor="data-retention">
+        <Select
+          id="data-retention"
           value={pending?.days ?? days}
           onChange={(e) => void choose(Number(e.target.value))}
         >
@@ -240,10 +244,10 @@ function Retention() {
               {d === 0 ? "끔" : `${d}일`}
             </option>
           ))}
-        </select>
-      </label>
+        </Select>
+      </Row>
       {pending && (
-        <div role="status">
+        <Notice tone="warning" role="status">
           <p>
             {pending.days}일이 지난 가져온 기록 {pending.due.length}개가
             삭제됩니다.
@@ -259,10 +263,10 @@ function Retention() {
             <Button onClick={() => void apply()}>적용</Button>
             <Button onClick={() => setPending(undefined)}>취소</Button>
           </div>
-        </div>
+        </Notice>
       )}
-      {note && <p role="status">{note}</p>}
-    </section>
+      {note && <Notice>{note}</Notice>}
+    </Section>
   );
 }
 
@@ -281,8 +285,7 @@ function Wipe() {
     else if (!r.value.started) setNote("취소했습니다.");
   };
   return (
-    <section className={styles.section}>
-      <h3 className={styles.danger}>앱 데이터 삭제</h3>
+    <Section title="앱 데이터 삭제">
       <p className={styles.muted}>
         삭제됨: {root || "앱 데이터 폴더"} 안의 모든 내용 — 워크스페이스 목록,
         저널, 계획(plans.json), 워크트리 링크, 가져온 기록, 설정, Native 대화
@@ -295,16 +298,25 @@ function Wipe() {
         파일도 그대로 남습니다.
       </p>
       <div className={styles.row}>
-        <label>
-          확인을 위해 &quot;{WIPE_WORD}&quot; 입력{" "}
-          <input value={word} onChange={(e) => setWord(e.target.value)} />
-        </label>
-        <Button disabled={word !== WIPE_WORD} onClick={() => void run()}>
+        <Field label={`확인을 위해 "${WIPE_WORD}" 입력`}>
+          {(c) => (
+            <Input
+              {...c}
+              value={word}
+              onChange={(e) => setWord(e.target.value)}
+            />
+          )}
+        </Field>
+        <Button
+          intent="danger"
+          disabled={word !== WIPE_WORD}
+          onClick={() => void run()}
+        >
           삭제 후 종료
         </Button>
       </div>
-      {note && <p role="status">{note}</p>}
-    </section>
+      {note && <Notice>{note}</Notice>}
+    </Section>
   );
 }
 

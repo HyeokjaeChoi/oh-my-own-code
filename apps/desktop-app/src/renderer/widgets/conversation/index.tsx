@@ -60,7 +60,7 @@ import styles from "./conversation.module.css";
 import { PopoverPanel, PopoverTrigger } from "./composer-popovers.js";
 import { AssistantText, CopyButton, LiteralText } from "./markdown.js";
 import { parseSafeLinkPreview } from "@workbench/contracts";
-import { Button, LinkPreview } from "@workbench/ui";
+import { Button, LinkPreview, Notice, Select } from "@workbench/ui";
 import {
   type WorkbenchCatalog,
   type WorkbenchMessage,
@@ -1116,8 +1116,7 @@ export function Conversation(props: Props) {
                   <legend>Agent</legend>
                   <label className={styles.field}>
                     Agent 요청
-                    <select
-                      className={styles.select}
+                    <Select
                       aria-label="Agent 요청"
                       value={agent}
                       onChange={(event) => setAgent(event.target.value)}
@@ -1133,7 +1132,7 @@ export function Conversation(props: Props) {
                             {entry.name}
                           </option>
                         ))}
-                    </select>
+                    </Select>
                   </label>
                   <p className={styles.runtimeHint}>
                     선택은 다음 전송에만 요청합니다. 기본값은 값을 요청하지
@@ -1155,8 +1154,7 @@ export function Conversation(props: Props) {
                   <legend>모델</legend>
                   <label className={styles.field}>
                     모델 요청
-                    <select
-                      className={styles.select}
+                    <Select
                       aria-label="모델 요청"
                       value={model}
                       onChange={(event) => setModel(event.target.value)}
@@ -1171,12 +1169,11 @@ export function Conversation(props: Props) {
                             {entry.name}
                           </option>
                         ))}
-                    </select>
+                    </Select>
                   </label>
                   <label className={styles.field}>
                     Variant 요청
-                    <select
-                      className={styles.select}
+                    <Select
                       aria-label="Variant 요청"
                       value={variant}
                       disabled={!model && !variant}
@@ -1194,7 +1191,7 @@ export function Conversation(props: Props) {
                             {value}
                           </option>
                         ))}
-                    </select>
+                    </Select>
                   </label>
                   <p className={styles.runtimeHint}>
                     선택은 다음 전송에만 요청합니다. 기본값은 값을 요청하지
@@ -1282,28 +1279,29 @@ export function Conversation(props: Props) {
             </div>
             {props.catalog?.models.status === "available" &&
               props.catalog.models.entries.length === 0 && (
-                <p
-                  className={styles.selectionError}
-                  role="alert"
+                <Notice
+                  tone="danger"
                   data-no-models
+                  action={
+                    <Button
+                      size="compact"
+                      onClick={() =>
+                        window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))
+                      }
+                    >
+                      설정 열기
+                    </Button>
+                  }
                 >
                   사용할 수 있는 모델이 없어 메시지를 보낼 수 없습니다. 설정의
-                  모델 제공자에서 제공자를 연결하세요.{" "}
-                  <Button
-                    size="compact"
-                    onClick={() =>
-                      window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))
-                    }
-                  >
-                    설정 열기
-                  </Button>
-                </p>
+                  모델 제공자에서 제공자를 연결하세요.
+                </Notice>
               )}
             {invalidSelection && (
-              <p className={styles.selectionError} role="alert">
+              <Notice tone="danger">
                 선택한 Agent, 모델 또는 Variant를 사용할 수 없습니다. 다시
                 선택하거나 요청 안 함을 선택하세요.
-              </p>
+              </Notice>
             )}
           </div>
         </ThreadPrimitive.Root>
