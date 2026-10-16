@@ -62,7 +62,7 @@ function mcpStatusLabel(status?: string) {
   }
 }
 
-const TITLES: Record<ExtensionSub, string> = {
+export const SUB_TITLES: Record<ExtensionSub, string> = {
   mcp: "MCP",
   skills: "스킬",
   agents: "에이전트",
@@ -88,7 +88,7 @@ const CONFIG_KIND: Partial<
 };
 
 function summary(sub: ExtensionSub, catalog: WorkbenchCatalog | null) {
-  if (sub === "native") return "조회해서 확인";
+  if (sub === "native") return "아직 조회하지 않음";
   if (!catalog) return "확인 중";
   if (sub === "instructions") {
     const n =
@@ -139,19 +139,27 @@ function Collection({
                   )}
                 </>
               ) : sub === "skills" ? (
-                <span className={styles.muted}>
-                  {observationNames.reported}
-                  {entry.source ? ` · ${sourceNames[entry.source]}` : ""}
-                  {entry.scope ? ` · ${scopeNames[entry.scope]}` : ""}
-                </span>
+                <>
+                  <span className={styles.muted}>
+                    {observationNames.reported}
+                  </span>
+                  <span className={styles.muted}>
+                    출처:{" "}
+                    {entry.source ? sourceNames[entry.source] : "정보 없음"} ·
+                    범위: {entry.scope ? scopeNames[entry.scope] : "정보 없음"}
+                  </span>
+                </>
               ) : (
                 entry.status && (
                   <span className={styles.muted}>상태: {entry.status}</span>
                 )
               )}
-              {sub === "skills" && entry.path && (
-                <span className={styles.path}>{entry.path}</span>
-              )}
+              {sub === "skills" &&
+                (entry.path ? (
+                  <span className={styles.path}>{entry.path}</span>
+                ) : (
+                  <span className={styles.muted}>경로 정보 없음</span>
+                ))}
             </li>
           ))}
         </ul>
@@ -269,7 +277,9 @@ export function ExtensionsSettings({
           <ChevronLeft size={14} aria-hidden="true" />
           확장
         </Button>
-        <h3 className={styles.subTitle}>{TITLES[sub]}</h3>
+        {sub !== "native" && (
+          <h3 className={styles.subTitle}>{SUB_TITLES[sub]}</h3>
+        )}
         {error && <Notice tone="danger">{error}</Notice>}
         {sub === "native" ? (
           <ConfigurationExtensions />
@@ -329,7 +339,7 @@ export function ExtensionsSettings({
                   onSubChange(item);
                 }}
               >
-                <span className={styles.navName}>{TITLES[item]}</span>
+                <span className={styles.navName}>{SUB_TITLES[item]}</span>
                 <span className={styles.navStatus}>
                   {summary(item, catalog)}
                 </span>

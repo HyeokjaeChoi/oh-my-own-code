@@ -29,7 +29,13 @@ export function Section({
           <h3 id={titleId} className={styles.title}>
             {title}
           </h3>
-          {info ? <InfoTip>{info}</InfoTip> : null}
+          {info ? (
+            <InfoTip
+              {...(typeof title === "string" && { label: `${title} 설명` })}
+            >
+              {info}
+            </InfoTip>
+          ) : null}
         </div>
         {description ? (
           <p className={styles.description}>{description}</p>

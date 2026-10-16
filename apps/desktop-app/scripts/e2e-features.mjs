@@ -457,7 +457,7 @@ try {
       const rules = dialog().getByRole("region", {
         name: "저장된 허용 규칙",
       });
-      await expect(rules.getByText("저장된 규칙이 없습니다")).toBeVisible({
+      await expect(rules.getByText("저장된 규칙이 없습니다.")).toBeVisible({
         timeout: 15000,
       });
       await expect(rules.getByText(/프로젝트별로 저장/)).toBeVisible();

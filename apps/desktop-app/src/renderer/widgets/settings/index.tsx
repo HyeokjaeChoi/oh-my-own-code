@@ -42,7 +42,11 @@ import {
 import { NotificationList } from "../../features/notifications/index.js";
 import { AutomationSettings } from "../../features/automation/index.js";
 import { DataSettings } from "../../features/data-transfer/index.js";
-import { ExtensionsSettings, type ExtensionSub } from "./extensions.js";
+import {
+  ExtensionsSettings,
+  SUB_TITLES,
+  type ExtensionSub,
+} from "./extensions.js";
 
 const ICON = 16;
 const ITEMS: SettingsNavItem<SettingsPage>[] = [
@@ -61,7 +65,7 @@ const DESCRIPTIONS: Partial<Record<SettingsPage, string>> = {
   permissions: "‘항상 허용’으로 저장한 규칙입니다.",
   notifications: "완료·오류·승인 요청을 모아 둡니다.",
   automation: "정해진 시간에 프롬프트나 스크립트를 실행합니다.",
-  data: "대화 내보내기, 가져온 기록, 보관 기간, 앱 데이터 삭제.",
+  data: "대화를 내보내고, 가져온 기록과 앱 데이터를 관리합니다.",
 };
 
 // The only settings surface: one centered dialog, opened at a page by event.
@@ -70,10 +74,13 @@ export function SettingsHost({
   session,
   messages,
   returnFocusRef,
+  fallbackFocusRef,
 }: {
   session: { id: string; title: string } | undefined;
   messages: WorkbenchMessage[];
   returnFocusRef?: RefObject<HTMLElement | null>;
+  // Where focus goes when the opener is no longer visible.
+  fallbackFocusRef?: RefObject<HTMLElement | null>;
 }) {
   const { actions } = useWindowWorkbench();
   const { preferences, update } = usePreferences();
@@ -90,6 +97,8 @@ export function SettingsHost({
     undefined,
   );
   const localReturn = useRef<HTMLElement | null>(null);
+  const openRef = useRef(false);
+  openRef.current = open;
 
   const flash = useCallback(() => {
     setSaved(true);
@@ -106,12 +115,12 @@ export function SettingsHost({
   );
 
   const show = useCallback(
-    (next: SettingsPage) => {
+    (next: SettingsPage, nextSub: ExtensionSub | null = null) => {
       // The opener hands its focus target over once; never reuse a stale one.
       localReturn.current = returnFocusRef?.current ?? null;
       if (returnFocusRef) returnFocusRef.current = null;
       setPage(next);
-      setSub(null);
+      setSub(nextSub);
       setSaved(false);
       setOpen(true);
     },
@@ -120,12 +129,16 @@ export function SettingsHost({
   useEffect(() => {
     const on = (name: string, next?: SettingsPage) => {
       const handler = (event: Event) => {
-        const detail = (event as CustomEvent<{ page?: string }>).detail?.page;
+        const { page: detail, sub: subDetail } =
+          (event as CustomEvent<{ page?: string; sub?: string }>).detail ?? {};
         show(
           next ??
             (detail && PAGES.has(detail)
               ? (detail as SettingsPage)
               : "general"),
+          next === "extensions" && subDetail && subDetail in SUB_TITLES
+            ? (subDetail as ExtensionSub)
+            : null,
         );
       };
       window.addEventListener(name, handler);
@@ -152,7 +165,8 @@ export function SettingsHost({
       )
         return;
       event.preventDefault();
-      show("general");
+      // Already open: the key must not navigate away from the current page.
+      if (!openRef.current) show("general");
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
@@ -218,6 +232,7 @@ export function SettingsHost({
       }
       status={saved ? "저장됨" : undefined}
       returnFocusRef={localReturn}
+      {...(fallbackFocusRef && { fallbackFocusRef })}
     >
       {content}
     </SettingsDialog>

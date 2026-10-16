@@ -80,8 +80,7 @@ function Export({
   return (
     <Section
       title="현재 대화 내보내기"
-      description="자격 증명처럼 보이는 값과 홈 경로는 제거됩니다."
-      info="화면에 표시된 최근 메시지만 내보냅니다."
+      description="화면에 표시된 최근 메시지만 내보냅니다. 자격 증명처럼 보이는 값과 홈 경로는 제거됩니다."
     >
       <Switch
         label="도구 출력 포함"
@@ -286,22 +285,18 @@ function Wipe() {
     <Section
       title="앱 데이터 삭제"
       description="앱 데이터 폴더의 모든 내용을 지우고 앱을 종료합니다."
-      info={
-        <>
-          <p>
-            삭제됨: {root || "앱 데이터 폴더"} 안의 모든 내용 — 워크스페이스
-            목록, 저널, 계획(plans.json), 워크트리 링크, 가져온 기록, 설정,
-            런타임 대화 기록 데이터.
-          </p>
-          <p>
-            삭제되지 않음: 프로젝트·워크스페이스 폴더, Git 저장소, 앱이 만든
-            Documents 아래 워크트리 폴더. 외부 보존 한계: 이미 OpenAI 등 외부
-            제공자에 전송된 프롬프트·응답은 이 앱에서 삭제할 수 없습니다. 내보낸
-            파일도 그대로 남습니다.
-          </p>
-        </>
-      }
     >
+      <p className={styles.muted}>
+        삭제됨: {root || "앱 데이터 폴더"} 안의 모든 내용 — 워크스페이스 목록,
+        저널, 계획(plans.json), 워크트리 링크, 가져온 기록, 설정, 런타임 대화
+        기록 데이터.
+      </p>
+      <p className={styles.muted}>
+        삭제되지 않음: 프로젝트·워크스페이스 폴더, Git 저장소, 앱이 만든
+        Documents 아래 워크트리 폴더. 외부 보존 한계: 이미 OpenAI 등 외부
+        제공자에 전송된 프롬프트·응답은 이 앱에서 삭제할 수 없습니다. 내보낸
+        파일도 그대로 남습니다.
+      </p>
       <div className={styles.wipeRow}>
         <Field label={`확인을 위해 "${WIPE_WORD}" 입력`}>
           {(c) => (

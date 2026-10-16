@@ -80,7 +80,7 @@ export function SavedRulesSettings() {
         title="저장된 허용 규칙"
         description="프로젝트별로 저장되며 같은 프로젝트의 작업 트리가 함께 사용합니다."
       >
-        {rules?.length === 0 && <EmptyState title="저장된 규칙이 없습니다" />}
+        {rules?.length === 0 && <EmptyState title="저장된 규칙이 없습니다." />}
         <ul className={styles.rowList}>
           {rules?.map((rule) => (
             <li key={rule.id} className={styles.ruleRow}>

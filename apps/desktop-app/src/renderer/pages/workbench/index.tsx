@@ -845,6 +845,7 @@ export function Workbench() {
           <CommandPalette />
           <SettingsHost
             returnFocusRef={sheetReturn}
+            fallbackFocusRef={navigationButton}
             session={session && { id: session.id, title: session.title }}
             messages={snapshot?.messages ?? []}
           />

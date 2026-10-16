@@ -65,7 +65,7 @@ export function ConfigurationExtensions() {
   return (
     <section
       className={styles.extensions}
-      aria-label="Native 확장 상태"
+      aria-label="런타임 확장"
       data-configuration-extensions="true"
       // While a read is cancellable, Escape belongs to this section, not the dialog.
       data-escape-key-scope={entry.request ? true : undefined}
@@ -79,7 +79,7 @@ export function ConfigurationExtensions() {
         }
       }}
     >
-      <h3>Native 확장 상태</h3>
+      <h3>런타임 확장</h3>
       <p className={styles.muted}>
         버튼을 선택할 때만 조회합니다. Plugin 목록과 Tools 목록은 독립된 두
         관찰입니다. 같은 시점의 권한 상태를 보장하지 않습니다.
