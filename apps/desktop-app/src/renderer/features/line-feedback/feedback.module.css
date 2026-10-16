@@ -29,7 +29,7 @@
   padding: 8px;
 }
 .field {
-  border: 1px solid var(--omoc-semantic-color-border-default);
+  border: 0;
 }
 .metadata dd {
   min-width: 0;
@@ -37,38 +37,16 @@
   overflow-wrap: anywhere;
   font: 12px/1.6 var(--omoc-semantic-type-family-code);
 }
-.feedback :is(button, input, select, textarea) {
-  box-sizing: border-box;
-  min-width: 0;
-  max-width: 100%;
-  min-height: var(--omoc-component-size-control-hit-target);
-  padding: 8px;
-  border: 1px solid var(--omoc-component-color-input-border);
-  border-radius: var(--omoc-component-size-navigation-radius);
-  background: var(--omoc-component-color-input-background);
-  color: var(--omoc-component-color-input-foreground);
-  font: inherit;
-}
-.field :is(input, select, textarea) {
-  width: 100%;
-}
 .feedback textarea {
   min-height: 120px;
   resize: vertical;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
-.feedback button {
-  white-space: normal;
-  overflow-wrap: anywhere;
-}
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-}
-.feedback :disabled {
-  opacity: 0.5;
 }
 .preview {
   min-width: 0;
@@ -79,14 +57,8 @@
   overflow-wrap: anywhere;
   font: 12px/1.6 var(--omoc-semantic-type-family-code);
 }
-.feedback
-  :is(button, input, select, textarea, .preview, .status):focus-visible {
+.feedback :is(.preview, .status):focus-visible {
   outline: var(--omoc-semantic-stroke-focus) solid
     var(--omoc-semantic-color-focus);
   outline-offset: var(--omoc-semantic-size-focus-gap);
-}
-@media (pointer: coarse) {
-  .feedback :is(button, input, select) {
-    min-height: 44px;
-  }
 }

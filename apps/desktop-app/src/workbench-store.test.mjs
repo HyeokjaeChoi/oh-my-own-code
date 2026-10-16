@@ -12769,7 +12769,7 @@ test("Extensions feature exposes only observation controls and preserves truthfu
     ].sort(),
     ["cancelExtensionObservation", "observeExtensions"],
   );
-  assert.equal([...source.matchAll(/<button\b/gu)].length, 2);
+  assert.equal([...source.matchAll(/<Button\b/gu)].length, 2);
   for (const label of [
     "Native 확장 상태",
     "확장 상태 확인",

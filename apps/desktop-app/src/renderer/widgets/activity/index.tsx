@@ -6,6 +6,7 @@ import {
 import { Timeline } from "./timeline.js";
 import { SubagentPanel } from "../../features/subagents/index.js";
 import styles from "./activity.module.css";
+import { Button, Notice, Switch } from "@workbench/ui";
 const operationLabels: Record<string, string> = {
   "workspace.import": "폴더 가져오기",
   "workspace.create": "작업 공간 만들기",
@@ -53,22 +54,27 @@ export function ActivityPanel({
       <h2>로컬 활동</h2>
       <p className={styles.muted}>이번 앱 실행에서 관찰한 작업입니다.</p>
       <SubagentPanel workspaceId={workspaceId} sessionId={sessionId} />
-      <label className={styles.filter}>
-        <input
-          type="checkbox"
-          checked={filtered}
-          disabled={!workspaceId || !sessionId}
-          onChange={(event) => actions.diagnostics(event.target.checked)}
-        />
-        선택한 세션만 보기
-      </label>
+      <Switch
+        label="선택한 세션만 보기"
+        checked={filtered}
+        disabled={!workspaceId || !sessionId}
+        onChange={(event) => actions.diagnostics(event.target.checked)}
+      />
       {error ? (
-        <div role="alert">
-          <p>{error}</p>
-          <button onClick={() => actions.refreshDiagnostics()}>
-            활동 다시 확인
-          </button>
-        </div>
+        <Notice
+          tone="danger"
+          action={
+            <Button
+              size="compact"
+              intent="quiet"
+              onClick={() => actions.refreshDiagnostics()}
+            >
+              활동 다시 확인
+            </Button>
+          }
+        >
+          {error}
+        </Notice>
       ) : !data ? (
         <p role="status">활동 불러오는 중…</p>
       ) : null}

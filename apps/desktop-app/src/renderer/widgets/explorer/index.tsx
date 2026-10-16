@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { File, Folder, FolderUp, House, RefreshCw, Search } from "lucide-react";
+import { Button, Input, Notice, Select } from "@workbench/ui";
 import styles from "./explorer.module.css";
 import {
   type WorkbenchCatalog,
@@ -34,42 +35,50 @@ function FileSearch({ open }: { open: (path: string) => void }) {
   };
   return (
     <form
-      className={styles.toolbar}
+      className={styles.search}
       role="search"
       aria-label="파일 검색"
       onSubmit={(event) => void submit(event)}
     >
-      <input
-        aria-label="검색어"
-        value={query}
-        maxLength={200}
-        onChange={(event) => setQuery(event.target.value)}
-      />
-      <select
-        aria-label="검색 방식"
-        value={mode}
-        onChange={(event) => setMode(event.target.value as "name" | "content")}
-      >
-        <option value="name">파일 이름</option>
-        <option value="content">내용</option>
-      </select>
-      <label>
-        <input
-          type="checkbox"
-          checked={caseSensitive}
-          onChange={(event) => setCaseSensitive(event.target.checked)}
+      <div className={styles.searchRow}>
+        <Input
+          className={styles.searchInput}
+          aria-label="검색어"
+          value={query}
+          maxLength={200}
+          onChange={(event) => setQuery(event.target.value)}
         />
-        대소문자
-      </label>
-      <button aria-label="검색" title="검색" disabled={!query.trim()}>
-        <Search size={18} aria-hidden="true" />
-      </button>
+        <Select
+          aria-label="검색 방식"
+          value={mode}
+          onChange={(event) =>
+            setMode(event.target.value as "name" | "content")
+          }
+        >
+          <option value="name">파일 이름</option>
+          <option value="content">내용</option>
+        </Select>
+        <Button
+          size="compact"
+          aria-label="대소문자"
+          title="대소문자 구분"
+          aria-pressed={caseSensitive}
+          onClick={() => setCaseSensitive((value) => !value)}
+        >
+          Aa
+        </Button>
+        <Button
+          type="submit"
+          size="compact"
+          aria-label="검색"
+          title="검색"
+          disabled={!query.trim()}
+        >
+          <Search size={18} aria-hidden="true" />
+        </Button>
+      </div>
       {state === "busy" && <p role="status">검색 중…</p>}
-      {state === "error" && (
-        <p role="alert" className={styles.error}>
-          검색하지 못했습니다.
-        </p>
-      )}
+      {state === "error" && <Notice tone="danger">검색하지 못했습니다.</Notice>}
       {found && state === "idle" && (
         <>
           {!found.results.length && <p className={styles.muted}>결과 없음</p>}
@@ -120,30 +129,33 @@ export function FileExplorer({ workspaceId }: { workspaceId: string }) {
     >
       <p className={styles.muted}>읽기 전용 · 텍스트 미리보기</p>
       <div className={styles.toolbar}>
-        <button
+        <Button
+          size="compact"
           aria-label="루트"
           title="루트"
           disabled={busy}
           onClick={() => void load("")}
         >
           <House size={18} aria-hidden="true" />
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
           aria-label="상위 폴더"
           title="상위 폴더"
           disabled={busy || !listing?.path}
           onClick={() => void load(parent)}
         >
           <FolderUp size={18} aria-hidden="true" />
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
           aria-label="새로고침"
           title="새로고침"
           disabled={busy}
           onClick={() => void actions.refreshFiles()}
         >
           <RefreshCw size={18} aria-hidden="true" />
-        </button>
+        </Button>
       </div>
       <FileSearch open={(path) => void load(path, true)} />
       <p className={styles.path}>{listing?.path || "/"}</p>
@@ -157,11 +169,7 @@ export function FileExplorer({ workspaceId }: { workspaceId: string }) {
       {status === "missing" && (
         <p role="status">파일이 없습니다. 새로고침으로 다시 확인하세요.</p>
       )}
-      {error && (
-        <p role="alert" className={styles.error}>
-          {error}
-        </p>
-      )}
+      {error && <Notice tone="danger">{error}</Notice>}
       {listing && !listing.entries.length && (
         <p className={styles.muted}>빈 폴더입니다.</p>
       )}
@@ -278,7 +286,9 @@ export function CatalogPanel({
     >
       <div className={styles.heading}>
         <p className={styles.muted}>현재 작업 공간의 런타임 목록</p>
-        <button onClick={refresh}>새로고침</button>
+        <Button size="compact" onClick={refresh}>
+          새로고침
+        </Button>
       </div>
       <p className={styles.muted}>
         설정 출처와 런타임 목록을 확인하고, 창 안의 임시 초안을 작성할 수
@@ -295,11 +305,7 @@ export function CatalogPanel({
         제거하세요. 초안 종류에서 MCP를 선택한 뒤 ‘작업 공간 MCP 제어’의 ‘등록
         제거’를 사용하세요. 파일은 유지됩니다.
       </p>
-      {error && (
-        <p role="alert" className={styles.error}>
-          {error}
-        </p>
-      )}
+      {error && <Notice tone="danger">{error}</Notice>}
       {!catalog && !error && <p role="status">목록 확인 중…</p>}
       {catalog && (
         <section className={styles.group} aria-label="설정 출처">

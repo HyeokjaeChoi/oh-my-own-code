@@ -1,5 +1,15 @@
 import { useCallback, useEffect, useState, type RefObject } from "react";
-import { Button, ModalSheet } from "@workbench/ui";
+import {
+  Button,
+  EmptyState,
+  Field,
+  Input,
+  ModalSheet,
+  Notice,
+  Section,
+  Select,
+  Textarea,
+} from "@workbench/ui";
 import { Clock } from "lucide-react";
 import {
   selectors,
@@ -112,125 +122,147 @@ function JobForm({
         if (valid) onSave(toInput(f));
       }}
     >
-      <label>
-        이름
-        <input
-          value={f.name}
-          maxLength={80}
-          onChange={(e) => set({ name: e.target.value })}
-        />
-      </label>
-      <fieldset>
-        <legend>대상</legend>
-        <label>
-          작업 공간
-          <select
-            value={f.workspaceId}
-            onChange={(e) => set({ workspaceId: e.target.value })}
-          >
-            <option value="">선택</option>
-            {lists.workspaces.map((w) => (
-              <option key={w.id} value={w.id}>
-                {w.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          종류
-          <select
-            value={f.kind}
-            onChange={(e) => set({ kind: e.target.value as Form["kind"] })}
-          >
-            <option value="prompt">새 세션에 고정 프롬프트 전송</option>
-            <option value="script">package.json 스크립트 실행</option>
-          </select>
-        </label>
-        {f.kind === "prompt" ? (
-          <label>
-            프롬프트
-            <textarea
-              rows={3}
-              maxLength={AUTOMATION_LIMITS.prompt}
-              value={f.prompt}
-              onChange={(e) => set({ prompt: e.target.value })}
-            />
-          </label>
-        ) : (
-          <label>
-            스크립트
-            <select
-              value={f.script}
-              onChange={(e) => set({ script: e.target.value })}
+      <Field label="이름">
+        {(c) => (
+          <Input
+            {...c}
+            value={f.name}
+            maxLength={80}
+            onChange={(e) => set({ name: e.target.value })}
+          />
+        )}
+      </Field>
+      <Section title="대상">
+        <div className={styles.group}>
+          <Field label="작업 공간">
+            {(c) => (
+              <Select
+                {...c}
+                value={f.workspaceId}
+                onChange={(e) => set({ workspaceId: e.target.value })}
+              >
+                <option value="">선택</option>
+                {lists.workspaces.map((w) => (
+                  <option key={w.id} value={w.id}>
+                    {w.name}
+                  </option>
+                ))}
+              </Select>
+            )}
+          </Field>
+          <Field label="종류">
+            {(c) => (
+              <Select
+                {...c}
+                value={f.kind}
+                onChange={(e) => set({ kind: e.target.value as Form["kind"] })}
+              >
+                <option value="prompt">새 세션에 고정 프롬프트 전송</option>
+                <option value="script">package.json 스크립트 실행</option>
+              </Select>
+            )}
+          </Field>
+          {f.kind === "prompt" ? (
+            <Field label="프롬프트">
+              {(c) => (
+                <Textarea
+                  {...c}
+                  rows={3}
+                  maxLength={AUTOMATION_LIMITS.prompt}
+                  value={f.prompt}
+                  onChange={(e) => set({ prompt: e.target.value })}
+                />
+              )}
+            </Field>
+          ) : (
+            <Field label="스크립트">
+              {(c) => (
+                <Select
+                  {...c}
+                  value={f.script}
+                  onChange={(e) => set({ script: e.target.value })}
+                >
+                  <option value="">선택</option>
+                  {scripts.map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
+                </Select>
+              )}
+            </Field>
+          )}
+        </div>
+      </Section>
+      <Section title="일정 (앱이 켜져 있을 때만 실행)">
+        <div className={styles.group}>
+          <Field label="방식">
+            {(c) => (
+              <Select
+                {...c}
+                value={f.mode}
+                onChange={(e) => set({ mode: e.target.value as Form["mode"] })}
+              >
+                <option value="every">N분마다</option>
+                <option value="daily">매일 정해진 시각</option>
+              </Select>
+            )}
+          </Field>
+          {f.mode === "every" ? (
+            <Field
+              label={`분 간격 (${AUTOMATION_LIMITS.minEveryMinutes} 이상)`}
             >
-              <option value="">선택</option>
-              {scripts.map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </select>
-          </label>
-        )}
-      </fieldset>
-      <fieldset>
-        <legend>일정 (앱이 켜져 있을 때만 실행)</legend>
-        <label>
-          방식
-          <select
-            value={f.mode}
-            onChange={(e) => set({ mode: e.target.value as Form["mode"] })}
-          >
-            <option value="every">N분마다</option>
-            <option value="daily">매일 정해진 시각</option>
-          </select>
-        </label>
-        {f.mode === "every" ? (
-          <label>
-            분 간격 ({AUTOMATION_LIMITS.minEveryMinutes} 이상)
-            <input
-              type="number"
-              min={AUTOMATION_LIMITS.minEveryMinutes}
-              value={f.every}
-              onChange={(e) => set({ every: Number(e.target.value) })}
-            />
-          </label>
-        ) : (
-          <label>
-            시각
-            <input
-              type="time"
-              value={f.daily}
-              onChange={(e) => set({ daily: e.target.value })}
-            />
-          </label>
-        )}
-      </fieldset>
+              {(c) => (
+                <Input
+                  {...c}
+                  type="number"
+                  min={AUTOMATION_LIMITS.minEveryMinutes}
+                  value={f.every}
+                  onChange={(e) => set({ every: Number(e.target.value) })}
+                />
+              )}
+            </Field>
+          ) : (
+            <Field label="시각">
+              {(c) => (
+                <Input
+                  {...c}
+                  type="time"
+                  value={f.daily}
+                  onChange={(e) => set({ daily: e.target.value })}
+                />
+              )}
+            </Field>
+          )}
+        </div>
+      </Section>
       {f.kind === "prompt" ? (
         <>
-          <label>
-            권한
-            <select
-              value={f.permissionMode}
-              onChange={(e) =>
-                set({ permissionMode: e.target.value as PermissionMode })
-              }
-            >
-              {PERMISSION_MODES.map((m) => (
-                <option key={m} value={m}>
-                  {MODE_LABELS[m]}
-                </option>
-              ))}
-            </select>
-          </label>
+          <Field label="권한">
+            {(c) => (
+              <Select
+                {...c}
+                value={f.permissionMode}
+                onChange={(e) =>
+                  set({ permissionMode: e.target.value as PermissionMode })
+                }
+              >
+                {PERMISSION_MODES.map((m) => (
+                  <option key={m} value={m}>
+                    {MODE_LABELS[m]}
+                  </option>
+                ))}
+              </Select>
+            )}
+          </Field>
           <p className={styles.hint}>
             프롬프트 작업은 새 세션을 만들고 위 권한 모드를 적용한 뒤
             전송합니다.
           </p>
         </>
       ) : (
-        <p className={styles.hint}>스크립트는 셸 권한으로 실행됩니다</p>
+        <Notice tone="warning">스크립트는 셸 권한으로 실행됩니다</Notice>
       )}
       <div className={styles.row}>
-        <Button type="submit" disabled={!valid}>
+        <Button type="submit" intent="primary" disabled={!valid}>
           저장
         </Button>
         <Button type="button" onClick={onCancel}>
@@ -308,19 +340,19 @@ export function AutomationButton({
         title="자동화"
         {...(returnFocusRef && { returnFocusRef })}
       >
-        {error && <p role="alert">{error}</p>}
+        {error && <Notice tone="danger">{error}</Notice>}
         {data?.storeError && (
-          <p role="alert">
+          <Notice tone="danger">
             저장된 자동화 파일을 읽지 못해 저장을 중단했습니다. 앱 데이터 폴더를
             확인하세요.
-          </p>
+          </Notice>
         )}
         {data?.recovered && (
-          <p role="status">
+          <Notice tone="warning">
             {data.recovered.count === 0
               ? `저장 파일 전체를 ${data.recovered.backup}에 보관했습니다.`
               : `저장 파일의 손상된 항목 ${data.recovered.count}개를 ${data.recovered.backup}에 따로 보관했습니다.`}
-          </p>
+          </Notice>
         )}
         {editing ? (
           <JobForm
@@ -336,14 +368,19 @@ export function AutomationButton({
           />
         ) : (
           <>
-            <Button onClick={() => setEditing({ form: blank })}>
+            <Button
+              intent="primary"
+              onClick={() => setEditing({ form: blank })}
+            >
               작업 추가
             </Button>
             <p className={styles.hint}>
               앱이 켜져 있는 동안에만 실행됩니다. 꺼져 있던 시간의 실행은
               &apos;놓침&apos;으로만 표시하고 다시 실행하지 않습니다.
             </p>
-            {!data?.jobs.length && <p>등록된 작업이 없습니다.</p>}
+            {!data?.jobs.length && (
+              <EmptyState title="등록된 작업이 없습니다." />
+            )}
             <ul className={styles.jobs}>
               {data?.jobs.map((j) => (
                 <li key={j.id}>

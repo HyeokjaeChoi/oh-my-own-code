@@ -6,6 +6,7 @@ import {
 } from "../../entities/workbench/index.js";
 import { LINE_FEEDBACK_LIMITS } from "../../shared/api/index.js";
 import styles from "./feedback.module.css";
+import { Button, Input, Select, Textarea } from "@workbench/ui";
 
 const reasons: Record<string, string> = {
   MISSING_SOURCE:
@@ -80,7 +81,7 @@ export function LineFeedbackPanel() {
       </p>
       <div className={styles.field}>
         <label htmlFor={`${prefix}-source`}>피드백 출처</label>
-        <select
+        <Select
           id={`${prefix}-source`}
           data-line-feedback-source
           value=""
@@ -94,9 +95,9 @@ export function LineFeedbackPanel() {
           <option value="">현재 출처를 직접 선택하세요</option>
           <option value="file">읽은 파일 기준 내용</option>
           <option value="git">현재 Git 차이</option>
-        </select>
+        </Select>
         <label htmlFor={`${prefix}-history`}>보관 피드백 초안</label>
-        <select
+        <Select
           id={`${prefix}-history`}
           data-line-feedback-history
           value={feedback.active ?? ""}
@@ -109,7 +110,7 @@ export function LineFeedbackPanel() {
               {d.scope.sessionId ?? "없음"}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
       <dl className={styles.metadata} data-line-feedback-session>
         <dt>추가 대상 세션</dt>
@@ -160,7 +161,7 @@ export function LineFeedbackPanel() {
       <fieldset className={styles.field} disabled={!draft}>
         <legend>줄 범위와 의견</legend>
         <label htmlFor={`${prefix}-side`}>피드백 쪽</label>
-        <select
+        <Select
           id={`${prefix}-side`}
           data-line-feedback-side
           value={draft?.selection.side ?? "file"}
@@ -178,9 +179,9 @@ export function LineFeedbackPanel() {
               <option value="new">New · 변경 후</option>
             </>
           )}
-        </select>
+        </Select>
         <label htmlFor={`${prefix}-start`}>시작 줄</label>
-        <input
+        <Input
           id={`${prefix}-start`}
           type="number"
           min="1"
@@ -193,7 +194,7 @@ export function LineFeedbackPanel() {
           }
         />
         <label htmlFor={`${prefix}-end`}>끝 줄</label>
-        <input
+        <Input
           id={`${prefix}-end`}
           type="number"
           min="1"
@@ -206,7 +207,7 @@ export function LineFeedbackPanel() {
           }
         />
         <label htmlFor={`${prefix}-comment`}>줄 피드백 의견</label>
-        <textarea
+        <Textarea
           id={`${prefix}-comment`}
           data-line-feedback-comment
           value={draft?.comment ?? ""}
@@ -230,7 +231,9 @@ export function LineFeedbackPanel() {
         {preview?.excerpt ?? "선택할 줄이 없거나 줄 범위를 확인해야 합니다."}
       </pre>
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="primary"
           data-line-feedback-append
           disabled={!selectors.canAppendLineFeedback(state)}
           onClick={() => {
@@ -239,8 +242,10 @@ export function LineFeedbackPanel() {
           }}
         >
           작성기 초안에 추가
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           data-line-feedback-discard
           disabled={!draft}
           onClick={() => {
@@ -249,7 +254,7 @@ export function LineFeedbackPanel() {
           }}
         >
           피드백 초안 버리기
-        </button>
+        </Button>
       </div>
       {reason && status !== reason && (
         <p>{reasons[reason] ?? "출처와 입력을 확인하세요."}</p>

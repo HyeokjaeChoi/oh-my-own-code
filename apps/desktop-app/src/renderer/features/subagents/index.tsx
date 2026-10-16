@@ -18,6 +18,7 @@ import {
   type QueuedDelegation,
 } from "../../shared/subagents/index.js";
 import styles from "./subagents.module.css";
+import { Button, Field, Input, Textarea } from "@workbench/ui";
 
 const statusLabels: Record<ChildStatus, string> = {
   queued: "대기열",
@@ -251,21 +252,31 @@ export function SubagentPanel({
                 </small>
               </span>
               {row.status === "queued" ? (
-                <button
+                <Button
+                  size="compact"
+                  intent="secondary"
                   onClick={() => setQueue(queue.filter((q) => q.id !== row.id))}
                 >
                   대기열 취소
-                </button>
+                </Button>
               ) : (
                 <>
-                  <button onClick={() => open(row.id)}>기록 열기</button>
+                  <Button
+                    size="compact"
+                    intent="secondary"
+                    onClick={() => open(row.id)}
+                  >
+                    기록 열기
+                  </Button>
                   {isActive(row) && (
-                    <button
+                    <Button
+                      size="compact"
+                      intent="secondary"
                       disabled={busy || pending}
                       onClick={() => void cancelMany([row.id])}
                     >
                       중단
-                    </button>
+                    </Button>
                   )}
                 </>
               )}
@@ -275,12 +286,14 @@ export function SubagentPanel({
       )}
       {active.length > 0 && (
         <p>
-          <button
+          <Button
+            size="compact"
+            intent="secondary"
             disabled={busy || pending}
             onClick={() => void cancelMany(active.map((r) => r.id))}
           >
             모든 하위 세션 중단 ({active.length})
-          </button>
+          </Button>
         </p>
       )}
       <p className={styles.muted}>
@@ -302,48 +315,60 @@ export function SubagentPanel({
           delegate();
         }}
       >
-        <label>
-          역할
-          <input
-            value={brief.role ?? ""}
-            onChange={(e) => set("role")(e.target.value)}
-          />
-        </label>
-        <label>
-          목표 (필수)
-          <textarea
-            value={brief.goal ?? ""}
-            onChange={(e) => set("goal")(e.target.value)}
-          />
-        </label>
-        <label>
-          입력/참고 자료
-          <textarea
-            value={brief.inputs ?? ""}
-            onChange={(e) => set("inputs")(e.target.value)}
-          />
-        </label>
-        <label>
-          담당 경로
-          <textarea
-            value={String(brief.ownedPaths ?? "")}
-            onChange={(e) => set("ownedPaths")(e.target.value)}
-          />
-        </label>
-        <label>
-          수락 기준
-          <textarea
-            value={brief.acceptance ?? ""}
-            onChange={(e) => set("acceptance")(e.target.value)}
-          />
-        </label>
-        <button
+        <Field label="역할">
+          {(c) => (
+            <Input
+              {...c}
+              value={brief.role ?? ""}
+              onChange={(e) => set("role")(e.target.value)}
+            />
+          )}
+        </Field>
+        <Field label="목표 (필수)">
+          {(c) => (
+            <Textarea
+              {...c}
+              value={brief.goal ?? ""}
+              onChange={(e) => set("goal")(e.target.value)}
+            />
+          )}
+        </Field>
+        <Field label="입력/참고 자료">
+          {(c) => (
+            <Textarea
+              {...c}
+              value={brief.inputs ?? ""}
+              onChange={(e) => set("inputs")(e.target.value)}
+            />
+          )}
+        </Field>
+        <Field label="담당 경로">
+          {(c) => (
+            <Textarea
+              {...c}
+              value={String(brief.ownedPaths ?? "")}
+              onChange={(e) => set("ownedPaths")(e.target.value)}
+            />
+          )}
+        </Field>
+        <Field label="수락 기준">
+          {(c) => (
+            <Textarea
+              {...c}
+              value={brief.acceptance ?? ""}
+              onChange={(e) => set("acceptance")(e.target.value)}
+            />
+          )}
+        </Field>
+        <Button
+          size="compact"
+          intent="primary"
           type="submit"
           disabled={!sessionId || !validBrief(brief) || busy || pending}
         >
           새 컨텍스트로 위임
           {waiting.length ? ` (대기 ${waiting.length})` : ""}
-        </button>
+        </Button>
       </form>
     </div>
   );

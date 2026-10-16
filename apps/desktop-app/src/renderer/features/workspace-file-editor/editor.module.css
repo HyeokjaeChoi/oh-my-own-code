@@ -33,29 +33,13 @@
   min-width: 0;
   margin-block: 12px 6px;
 }
-.textarea,
-.field select {
-  box-sizing: border-box;
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  min-height: var(--omoc-component-size-control-hit-target);
-  padding: 8px;
-  border: 1px solid var(--omoc-component-color-input-border);
-  border-radius: var(--omoc-component-size-navigation-radius);
-  background: var(--omoc-component-color-input-background);
-  color: var(--omoc-component-color-input-foreground);
-}
-.textarea {
+.editor .textarea {
   min-height: 180px;
   max-height: 480px;
   resize: vertical;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   font: 12px/1.6 var(--omoc-semantic-type-family-code);
-}
-.textarea[aria-invalid="true"] {
-  border-color: var(--omoc-component-color-input-error-border);
 }
 .actions {
   display: flex;
@@ -64,22 +48,7 @@
   min-width: 0;
   margin-block: 12px;
 }
-.editor button {
-  min-width: var(--omoc-component-size-control-hit-target);
-  min-height: var(--omoc-component-size-control-hit-target);
-  max-width: 100%;
-  padding: 6px 10px;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  border: 1px solid transparent;
-  border-radius: var(--omoc-component-size-navigation-radius);
-  background: var(--omoc-semantic-color-fill-subtle);
-  color: var(--omoc-component-color-input-foreground);
-}
-.editor button:disabled {
-  opacity: 0.5;
-}
-.editor :is(button, textarea, select, summary, .status):focus-visible {
+.editor :is(summary, .status):focus-visible {
   outline: 2px solid var(--omoc-semantic-color-text-primary);
   outline-offset: 2px;
 }

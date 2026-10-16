@@ -458,7 +458,7 @@ try {
   const activity = page.getByRole("region", { name: "로컬 활동 기록" });
   await expect(activity).toContainText("앱 전체 집계");
   await expect(activity).toContainText("이름 변경");
-  await page.getByRole("checkbox", { name: "선택한 세션만 보기" }).check();
+  await page.getByRole("switch", { name: "선택한 세션만 보기" }).check();
   await expect(activity).toContainText("선택한 세션의 기록");
   const activityCapture = join(run, "desktop-session-activity.png");
   await page.screenshot({ path: activityCapture });

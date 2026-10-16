@@ -11,6 +11,7 @@ import {
   skillIssueMessages,
 } from "../../shared/configuration-draft/index.js";
 import styles from "./drafts.module.css";
+import { Button, Notice, Select, Textarea } from "@workbench/ui";
 
 const reasonMessages: Record<string, string> = {
   path_missing:
@@ -90,7 +91,9 @@ export function SkillFilesEditor() {
         </p>
       )}
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-skill-action="list"
           aria-describedby={
@@ -102,7 +105,7 @@ export function SkillFilesEditor() {
           }}
         >
           Skill 파일 목록 확인
-        </button>
+        </Button>
       </div>
       <div
         role="status"
@@ -128,17 +131,16 @@ export function SkillFilesEditor() {
                     : "아직 목록을 확인하지 않았습니다."}
         </p>
         {listing?.status === "available" && listing.truncated && (
-          <p className={styles.error} data-skill-list-truncated="true">
+          <Notice tone="danger" data-skill-list-truncated="true" role="note">
             목록 일부만 표시합니다. 최대 {SKILL_LIMITS.scan}개 항목을 검사하고{" "}
             {SKILL_LIMITS.entries}개 폴더를 표시합니다.
-          </p>
+          </Notice>
         )}
       </div>
       <div className={styles.field}>
         <label htmlFor={`${id}-source`}>Skill 원본 폴더</label>
-        <select
+        <Select
           id={`${id}-source`}
-          className={styles.select}
           value={sourceName ?? ""}
           data-skill-source-select
           onChange={(e) => actions.selectSkillFile(e.currentTarget.value)}
@@ -150,7 +152,7 @@ export function SkillFilesEditor() {
                 {row.sourceName}
               </option>
             ))}
-        </select>
+        </Select>
       </div>
       <p className={styles.path} data-skill-path>
         {target}
@@ -161,7 +163,9 @@ export function SkillFilesEditor() {
         않습니다. 외부 변경은 자동 확인하지 않습니다.
       </p>
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-skill-action="read"
           disabled={!canRead || !sourceName}
@@ -171,7 +175,7 @@ export function SkillFilesEditor() {
           }}
         >
           Skill 파일 불러오기
-        </button>
+        </Button>
       </div>
       <div
         role="status"
@@ -201,7 +205,7 @@ export function SkillFilesEditor() {
       </div>
       <div className={styles.field}>
         <label htmlFor={`${id}-text`}>Skill 초안 내용</label>
-        <textarea
+        <Textarea
           id={`${id}-text`}
           className={styles.textarea}
           value={draft.text}
@@ -223,15 +227,19 @@ export function SkillFilesEditor() {
         편집할 수 있습니다. name은 원본 폴더 ID를 바꾸지 않습니다.
       </p>
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-skill-action="validate"
           disabled={!sourceName}
           onClick={() => actions.validateSkillFile()}
         >
           형식 검증
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-skill-action="save"
           aria-describedby={
@@ -243,15 +251,17 @@ export function SkillFilesEditor() {
           }}
         >
           Skill 파일에 저장
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           type="button"
           data-skill-action="discard"
           disabled={!sourceName}
           onClick={() => actions.discardSkillFile()}
         >
           이 초안 버리기
-        </button>
+        </Button>
       </div>
       <div
         id={`${id}-validation`}
@@ -268,11 +278,13 @@ export function SkillFilesEditor() {
             : "현재 초안은 미검증입니다."}
         </p>
         {validation?.issues.length ? (
-          <ul className={styles.issues}>
-            {validation.issues.map((issue) => (
-              <li key={issue}>{skillIssueMessages[issue]}</li>
-            ))}
-          </ul>
+          <Notice tone="danger" role="note">
+            <ul className={styles.issues}>
+              {validation.issues.map((issue) => (
+                <li key={issue}>{skillIssueMessages[issue]}</li>
+              ))}
+            </ul>
+          </Notice>
         ) : null}
       </div>
       <div

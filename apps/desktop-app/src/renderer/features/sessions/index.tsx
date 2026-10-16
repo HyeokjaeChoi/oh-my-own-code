@@ -6,7 +6,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import { ActionMenu } from "@workbench/ui";
+import { ActionMenu, Button, Input, Notice } from "@workbench/ui";
 import {
   Archive,
   CircleAlert,
@@ -123,7 +123,7 @@ export function SessionNavigation(props: Props) {
           data-escape-key-scope
         >
           <span className={styles.srOnly}>세션 검색</span>
-          <input
+          <Input
             ref={search}
             type="search"
             value={query}
@@ -389,7 +389,7 @@ function SessionRow({
           }}
         >
           <label htmlFor={id}>세션 이름</label>
-          <input
+          <Input
             ref={input}
             id={id}
             value={title}
@@ -402,17 +402,22 @@ function SessionRow({
             }}
           />
           {invalid && (
-            <p id={`${id}-error`} className={styles.error} role="alert">
+            <Notice tone="danger" id={`${id}-error`}>
               이름은 공백과 제어 문자를 제외한 1~120자로 입력하세요.
-            </p>
+            </Notice>
           )}
           <div>
-            <button type="submit" disabled={disabled}>
+            <Button
+              size="compact"
+              intent="primary"
+              type="submit"
+              disabled={disabled}
+            >
               이름 저장
-            </button>
-            <button type="button" onClick={close}>
+            </Button>
+            <Button size="compact" type="button" onClick={close}>
               취소
-            </button>
+            </Button>
           </div>
         </form>
       )}

@@ -8,6 +8,7 @@ import {
 import type { ProjectActions } from "../../shared/project-actions/index.js";
 import { XtermView } from "./xterm-view.js";
 import styles from "./terminal.module.css";
+import { Button, Notice } from "@workbench/ui";
 
 const LIST_MS = 1000;
 const HINT_ID = "omoc-terminal-hint";
@@ -127,7 +128,9 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
       <h2>터미널</h2>
       <div className={styles.tabs} role="tablist" aria-label="터미널 탭">
         {tabs.map((t, i) => (
-          <button
+          <Button
+            size="compact"
+            intent="secondary"
             key={t.terminalId}
             role="tab"
             aria-selected={t.terminalId === active}
@@ -136,11 +139,16 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
             {i + 1}
             {t.label ? ` ${t.label}` : ""}
             {t.status === "exited" ? " ■" : ""}
-          </button>
+          </Button>
         ))}
-        <button onClick={() => void start()} aria-label="새 터미널">
+        <Button
+          size="compact"
+          intent="secondary"
+          onClick={() => void start()}
+          aria-label="새 터미널"
+        >
           +
-        </button>
+        </Button>
       </div>
       {project && project.scripts.length > 0 && (
         <details>
@@ -148,23 +156,21 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
           <ul className={styles.scripts}>
             {project.scripts.map((s) => (
               <li key={s.name}>
-                <button
+                <Button
+                  size="compact"
+                  intent="secondary"
                   onClick={() => void start(s.name)}
                   aria-label={`${project.packageManager} run ${s.name} 실행`}
                   title={s.command}
                 >
                   {s.name}
-                </button>
+                </Button>
               </li>
             ))}
           </ul>
         </details>
       )}
-      {error && (
-        <p role="alert" className={styles.error}>
-          {error}
-        </p>
-      )}
+      {error && <Notice tone="danger">{error}</Notice>}
       {current ? (
         <>
           <XtermView
@@ -184,13 +190,21 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
           </p>
           <div className={styles.footer} ref={footer}>
             <span role="status">{statusText(current)}</span>
-            <button
+            <Button
+              size="compact"
+              intent="secondary"
               onClick={() => void run("terminal.stop")}
               disabled={current.status !== "running"}
             >
               중지
-            </button>
-            <button onClick={() => void run("terminal.close")}>닫기</button>
+            </Button>
+            <Button
+              size="compact"
+              intent="quiet"
+              onClick={() => void run("terminal.close")}
+            >
+              닫기
+            </Button>
           </div>
         </>
       ) : (

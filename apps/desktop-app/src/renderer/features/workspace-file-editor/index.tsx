@@ -10,6 +10,7 @@ import {
   workspaceFileIssueMessages,
 } from "../../shared/workspace-file/index.js";
 import styles from "./editor.module.css";
+import { Button, Select, Textarea } from "@workbench/ui";
 
 const errors: Record<string, string> = {
   FILE_CHANGED:
@@ -152,7 +153,7 @@ export function WorkspaceFileEditor() {
       {paths.length > 0 && (
         <label className={styles.field}>
           파일 또는 보관한 초안
-          <select
+          <Select
             aria-label="편집할 파일"
             value={
               archived ? `draft:${state.workspaceFile.draftKey}` : (path ?? "")
@@ -174,7 +175,7 @@ export function WorkspaceFileEditor() {
                 {d.file} · 이전 연결의 초안 ({d.root})
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       )}
       <p className={styles.path} data-workspace-file-target="true">
@@ -203,27 +204,39 @@ export function WorkspaceFileEditor() {
       {protectedPath && (
         <p>
           {errors.protected_source}{" "}
-          <button onClick={() => actions.openPanel("catalog")}>
+          <Button
+            size="compact"
+            intent="secondary"
+            onClick={() => actions.openPanel("catalog")}
+          >
             전용 편집기 보기
-          </button>
+          </Button>
         </p>
       )}
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           data-workspace-file-open="true"
           disabled={!path || !canRead || Boolean(protectedPath)}
           onClick={() => path && void actions.readWorkspaceFile(path)}
         >
           편집용으로 열기
-        </button>
+        </Button>
         {draft.request && (
-          <button onClick={actions.cancelWorkspaceFileRead}>읽기 취소</button>
+          <Button
+            size="compact"
+            intent="quiet"
+            onClick={actions.cancelWorkspaceFileRead}
+          >
+            읽기 취소
+          </Button>
         )}
       </div>
       <label className={styles.field} htmlFor={`${uid}-text`}>
         파일 초안
       </label>
-      <textarea
+      <Textarea
         id={`${uid}-text`}
         className={styles.textarea}
         data-workspace-file-text="true"
@@ -246,27 +259,33 @@ export function WorkspaceFileEditor() {
         검사하지 않습니다. 저장은 기존 파일을 바꾸고 백업을 남깁니다.
       </p>
       <div className={styles.actions}>
-        <button
+        <Button
+          size="compact"
+          intent="secondary"
           disabled={!path || !canRead || Boolean(draft.request)}
           onClick={actions.validateWorkspaceFile}
         >
           내용 확인
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="primary"
           data-workspace-file-save="true"
           disabled={!canSave}
           onClick={() => void actions.saveWorkspaceFile()}
         >
           파일 저장
-        </button>
-        <button
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
           disabled={
             !path || save?.status === "pending" || save?.status === "unknown"
           }
           onClick={actions.discardWorkspaceFile}
         >
           초안 버리기
-        </button>
+        </Button>
       </div>
       <div
         id={`${uid}-status`}

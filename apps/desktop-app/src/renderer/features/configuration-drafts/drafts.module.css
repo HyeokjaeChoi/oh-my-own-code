@@ -48,21 +48,7 @@
 .field label {
   font-weight: 500;
 }
-.select,
-.textarea {
-  box-sizing: border-box;
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  min-height: var(--draft-hit-target);
-  border: 1px solid var(--omoc-component-color-input-border);
-  border-radius: var(--omoc-component-size-navigation-radius);
-  background: var(--omoc-component-color-input-background);
-  color: var(--omoc-component-color-input-foreground);
-  padding: 6px 8px;
-  font-size: 13px;
-}
-.textarea {
+.textarea.textarea {
   min-height: 160px;
   max-height: 360px;
   resize: vertical;
@@ -71,51 +57,20 @@
   overflow-wrap: anywhere;
   font: 12px/1.6 var(--omoc-semantic-type-family-code);
 }
-.textarea[aria-invalid="true"] {
-  border-color: var(--omoc-component-color-input-error-border);
-}
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   min-width: 0;
 }
-.actions button {
-  min-width: var(--draft-hit-target);
-  min-height: var(--draft-hit-target);
-  max-width: 100%;
-  border: 1px solid transparent;
-  border-radius: var(--omoc-component-size-navigation-radius);
-  padding: 6px 8px;
-  background: var(--omoc-semantic-color-fill-subtle);
-  font-size: 12px;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  cursor: pointer;
-}
-.actions button:hover:enabled {
-  background: var(--omoc-semantic-color-surface-subtle);
-}
-.actions button:disabled,
-.textarea:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-.select:focus-visible,
-.textarea:focus-visible,
-.actions button:focus-visible,
 .diff:focus-visible {
   outline: var(--omoc-semantic-stroke-focus) solid
     var(--omoc-semantic-color-focus);
   outline-offset: var(--omoc-semantic-size-focus-gap);
 }
-.error,
 .issues {
-  color: var(--omoc-semantic-color-danger-foreground);
+  margin: 0;
   font-size: 12px;
-}
-.issues {
-  margin: 8px 0;
   padding-left: 20px;
 }
 .comparison {

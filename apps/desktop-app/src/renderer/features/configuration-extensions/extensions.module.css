@@ -30,28 +30,6 @@
   gap: 6px;
   min-width: 0;
 }
-.actions button {
-  min-width: var(--omoc-component-size-control-hit-target);
-  min-height: var(--omoc-component-size-control-hit-target);
-  max-width: 100%;
-  padding: 6px 8px;
-  border: 1px solid transparent;
-  border-radius: var(--omoc-component-size-navigation-radius);
-  background: var(--omoc-semantic-color-fill-subtle);
-  color: var(--omoc-semantic-color-text-primary);
-  font-size: 12px;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  cursor: pointer;
-}
-.actions button:hover:enabled {
-  background: var(--omoc-semantic-color-surface-subtle);
-}
-.actions button:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-.actions button:focus-visible,
 .status:focus-visible {
   outline: var(--omoc-semantic-stroke-focus) solid
     var(--omoc-semantic-color-focus);
@@ -68,10 +46,4 @@
   min-width: 0;
   max-width: 100%;
   overflow-wrap: anywhere;
-}
-@media (pointer: coarse) {
-  .actions button {
-    min-width: 44px;
-    min-height: 44px;
-  }
 }

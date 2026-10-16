@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { GitBranch, SquarePen } from "lucide-react";
-import { Button } from "@workbench/ui";
+import { Button, Input, Textarea } from "@workbench/ui";
 import {
   composerOperation,
   rejectionMessage,
@@ -268,7 +268,7 @@ export function ConversationContextControls({
 
           <label>
             새 분기에 준비할 입력
-            <textarea
+            <Textarea
               ref={branchInput}
               aria-label="새 분기에 준비할 입력"
               data-context-branch-text
@@ -450,7 +450,7 @@ export function ConversationContextControls({
               <h2>파일 첨부와 미리보기</h2>
               <div className={styles.controls}>
                 <label htmlFor={pathId}>작업 공간 기준 파일 경로</label>
-                <input
+                <Input
                   id={pathId}
                   data-context-path
                   value={path}
