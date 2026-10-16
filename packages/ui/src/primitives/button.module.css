@@ -14,6 +14,13 @@
   white-space: normal;
   overflow-wrap: anywhere;
   cursor: pointer;
+  transition:
+    background var(--omoc-primitive-motion-fast) ease-out,
+    transform var(--omoc-primitive-motion-fast) ease-out;
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.97);
 }
 
 .standard {
@@ -72,8 +79,21 @@
   outline-offset: var(--omoc-semantic-size-focus-gap);
 }
 .button:disabled {
-  opacity: 0.5;
+  background: var(--omoc-semantic-color-fill-subtle);
+  color: var(--omoc-semantic-color-text-tertiary);
   cursor: default;
+}
+.quiet:disabled {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+  .button:active:not(:disabled) {
+    transform: none;
+  }
 }
 
 @media (pointer: coarse) {

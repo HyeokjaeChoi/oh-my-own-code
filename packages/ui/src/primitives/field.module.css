@@ -1,0 +1,40 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--omoc-primitive-font-size-xs);
+  font-weight: var(--omoc-semantic-type-weight-label);
+  line-height: var(--omoc-semantic-type-line-caption);
+  color: var(--omoc-semantic-color-text-primary);
+}
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.hint,
+.error {
+  margin: 0;
+  font-size: var(--omoc-primitive-font-size-xs);
+  line-height: var(--omoc-semantic-type-line-caption);
+  overflow-wrap: anywhere;
+}
+
+.hint {
+  color: var(--omoc-semantic-color-text-secondary);
+}
+
+.error {
+  color: var(--omoc-semantic-color-danger-foreground);
+}

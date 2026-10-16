@@ -1,0 +1,65 @@
+.switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 32px;
+  height: 18px;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: var(--omoc-semantic-radius-badge);
+  background: var(--omoc-semantic-color-fill-hover);
+  appearance: none;
+  cursor: pointer;
+  transition: background var(--omoc-primitive-motion-fast) ease-out;
+}
+
+.switch::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  inset-inline-start: 1px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--omoc-semantic-color-surface);
+  box-shadow: var(--omoc-semantic-shadow-control);
+  transition: translate var(--omoc-primitive-motion-fast) ease-out;
+}
+
+.switch:checked {
+  background: var(--omoc-component-color-button-primary-background);
+}
+
+.switch:checked::before {
+  translate: 14px 0;
+}
+
+.switch:focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: var(--omoc-semantic-size-focus-gap);
+}
+
+.switch:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.labelled {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--omoc-semantic-space-control-gap);
+  font-size: var(--omoc-component-type-navigation-size);
+  line-height: var(--omoc-component-type-navigation-line);
+}
+
+@media (forced-colors: active) {
+  .switch:checked {
+    background: Highlight;
+  }
+}
+
+@media (pointer: coarse) {
+  .switch {
+    margin-block: 13px;
+  }
+}

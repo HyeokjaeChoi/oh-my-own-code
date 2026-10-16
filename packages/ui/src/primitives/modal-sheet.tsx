@@ -64,7 +64,7 @@ export function ModalSheet({
                 className={styles.close}
                 aria-label={`${title} 닫기`}
               >
-                <X size={18} aria-hidden="true" />
+                <X size={16} aria-hidden="true" />
               </button>
             </Dialog.Close>
           </header>

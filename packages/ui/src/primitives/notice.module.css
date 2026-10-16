@@ -1,0 +1,68 @@
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: var(--omoc-primitive-font-size-xs);
+  line-height: var(--omoc-semantic-type-line-caption);
+  overflow-wrap: anywhere;
+}
+
+.info {
+  background: var(--omoc-semantic-color-info-background);
+  color: var(--omoc-semantic-color-info-foreground);
+}
+.warning {
+  background: var(--omoc-semantic-color-warning-background);
+  color: var(--omoc-semantic-color-warning-foreground);
+}
+.danger {
+  background: var(--omoc-semantic-color-danger-background);
+  color: var(--omoc-semantic-color-danger-foreground);
+}
+.success {
+  background: var(--omoc-semantic-color-success-background);
+  color: var(--omoc-semantic-color-success-foreground);
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-block-start: 2px;
+}
+
+.body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.slot {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+  margin-block: -4px;
+}
+
+.dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.dismiss:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+.dismiss:focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: 0;
+}

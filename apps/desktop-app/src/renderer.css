@@ -21,6 +21,45 @@ select {
   font: inherit;
   color: inherit;
 }
+/* Baseline for any raw text control; zero specificity so the @workbench/ui
+   primitives and widget modules always win. */
+:where(
+  input:not(
+    [type="checkbox"],
+    [type="radio"],
+    [type="range"],
+    [type="file"],
+    [type="color"],
+    [type="button"],
+    [type="submit"]
+  ),
+  textarea,
+  select
+) {
+  min-width: 0;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: var(--omoc-component-size-control-radius);
+  background: var(--omoc-semantic-color-fill-subtle);
+  font-size: var(--omoc-component-type-navigation-size);
+}
+:where(textarea) {
+  min-height: var(--omoc-component-size-input-min);
+  padding-block: 6px;
+}
+:where(select) {
+  padding-inline-end: 8px;
+}
+:where(input, textarea)::placeholder {
+  color: var(--omoc-semantic-color-text-tertiary);
+}
+:where(input, textarea, select):where(:hover:not(:disabled, :read-only)) {
+  background: var(--omoc-semantic-color-fill-hover);
+}
+:where(input, textarea, select):disabled {
+  color: var(--omoc-semantic-color-text-tertiary);
+}
 :focus-visible {
   outline: 2px solid var(--omoc-semantic-color-focus);
   outline-offset: 2px;
