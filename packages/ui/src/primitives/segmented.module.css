@@ -1,0 +1,64 @@
+.group {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid transparent;
+  border-radius: var(--omoc-component-size-control-radius);
+  background: var(--omoc-semantic-color-fill-subtle);
+}
+
+.option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: var(--omoc-primitive-font-size-sm);
+  font-weight: var(--omoc-semantic-type-weight-label);
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--omoc-primitive-motion-fast) ease-out;
+}
+
+.option:hover {
+  color: var(--omoc-semantic-color-text-primary);
+}
+
+.selected {
+  background: var(--omoc-semantic-color-surface);
+  color: var(--omoc-semantic-color-text-primary);
+  box-shadow: var(--omoc-semantic-shadow-control);
+}
+
+.native {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.option:has(.native:focus-visible) {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: 0;
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.disabled .native {
+  cursor: default;
+}
+
+@media (forced-colors: active) {
+  .selected {
+    outline: 1px solid Highlight;
+  }
+}
