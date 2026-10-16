@@ -10,6 +10,8 @@ export type ModalSheetProps = {
   title: string;
   children: ReactNode;
   side?: "left" | "right";
+  // Content that owns its own padding and scrolling (panels, navigation).
+  flush?: boolean;
   returnFocusRef?: RefObject<HTMLElement | null>;
 };
 
@@ -19,6 +21,7 @@ export function ModalSheet({
   title,
   children,
   side = "right",
+  flush = false,
   returnFocusRef,
 }: ModalSheetProps) {
   const openingFocusRef = useRef<HTMLElement | null>(null);
@@ -68,7 +71,9 @@ export function ModalSheet({
               </button>
             </Dialog.Close>
           </header>
-          <div className={styles.body}>{children}</div>
+          <div className={styles.body} data-flush={flush || undefined}>
+            {children}
+          </div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

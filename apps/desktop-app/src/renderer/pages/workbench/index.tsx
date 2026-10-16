@@ -797,6 +797,7 @@ export function Workbench() {
           onOpenChange={setNavigation}
           title="작업 공간과 세션"
           side="left"
+          flush
           returnFocusRef={navigationButton}
         >
           {navigationContent}
@@ -1093,6 +1094,7 @@ export function Workbench() {
             if (!open) closePanel();
           }}
           title="파일, 확장 및 활동"
+          flush
           returnFocusRef={panelButton}
         >
           {panelContent}

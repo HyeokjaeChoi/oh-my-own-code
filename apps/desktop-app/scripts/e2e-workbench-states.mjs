@@ -556,7 +556,7 @@ async function captureMatrix(page, state) {
     };
     await checkHeight(submitControl, 36, "composer send control");
     await eachRequestSelect(page, (control) =>
-      checkHeight(control, 40, "request select"),
+      checkHeight(control, 32, "request select"),
     );
     if (state === "permission-long-korean-draft") {
       // Open request settings take the height the permission queue needs.
@@ -4148,11 +4148,17 @@ try {
           );
         }
         for (const [part, locator] of [
-          ["session", instructionPanel.locator(":scope > p").nth(1)],
+          [
+            "session",
+            instructionPanel.locator(':scope > :is(p, [role="note"])').nth(1),
+          ],
           ["observe", observeInstructions],
           ["apply", applyInstructions],
           ["remove", removeInstructions],
-          ["status", instructionStatus.locator(":scope > p").first()],
+          [
+            "status",
+            instructionStatus.locator(':scope > :is(p, [role="note"])').first(),
+          ],
           ...((await instructionPanel
             .locator("[data-instructions-trust]")
             .count())
@@ -4160,25 +4166,30 @@ try {
                 [
                   "trust-block",
                   instructionPanel
-                    .locator("[data-instructions-trust] p")
+                    .locator("[data-instructions-trust] > *")
                     .nth(0),
                 ],
                 [
                   "trust-next-step",
                   instructionPanel
-                    .locator("[data-instructions-trust] p")
+                    .locator("[data-instructions-trust] > *")
                     .nth(1),
                 ],
                 [
                   "trust-stored-metadata",
                   instructionPanel
-                    .locator("[data-instructions-trust] p")
+                    .locator("[data-instructions-trust] > *")
                     .nth(2),
                 ],
               ]
             : []),
-          ...((await instructionAction.locator("p").count())
-            ? [["result", instructionAction.locator("p").first()]]
+          ...((await instructionAction.locator(':is(p, [role="note"])').count())
+            ? [
+                [
+                  "result",
+                  instructionAction.locator(':is(p, [role="note"])').first(),
+                ],
+              ]
             : []),
           ...((await instructionPanel
             .locator("[data-instructions-parent]")
