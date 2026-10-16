@@ -106,3 +106,16 @@
     height: 44px;
   }
 }
+
+.body[data-flush] {
+  padding: 0;
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding-inline: 12px 8px;
+  }
+  .body:not([data-flush]) {
+    padding-inline: 12px;
+  }
+}
