@@ -1,16 +1,14 @@
-import { useCallback, useEffect, useState, type RefObject } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Button,
   EmptyState,
   Field,
   Input,
-  ModalSheet,
   Notice,
   Section,
   Select,
   Textarea,
 } from "@workbench/ui";
-import { Clock } from "lucide-react";
 import {
   selectors,
   useWorkbenchSelector,
@@ -26,7 +24,6 @@ import {
   type JobView,
   type PermissionMode,
 } from "../../shared/automation/index.js";
-import { OPEN_AUTOMATION_EVENT } from "../../shared/palette/index.js";
 import type { ProjectActions } from "../../shared/project-actions/index.js";
 import { callTerminal } from "../../shared/terminal/index.js";
 import styles from "./automation.module.css";
@@ -157,7 +154,7 @@ function JobForm({
                 value={f.kind}
                 onChange={(e) => set({ kind: e.target.value as Form["kind"] })}
               >
-                <option value="prompt">새 세션에 고정 프롬프트 전송</option>
+                <option value="prompt">새 세션에서 프롬프트 실행</option>
                 <option value="script">package.json 스크립트 실행</option>
               </Select>
             )}
@@ -192,7 +189,11 @@ function JobForm({
           )}
         </div>
       </Section>
-      <Section title="일정 (앱이 켜져 있을 때만 실행)">
+      <Section
+        title="일정"
+        description="앱이 켜져 있을 때만 실행됩니다."
+        info="꺼져 있던 시간의 실행은 '놓침'으로만 표시하고 다시 실행하지 않습니다."
+      >
         <div className={styles.group}>
           <Field label="방식">
             {(c) => (
@@ -208,7 +209,9 @@ function JobForm({
           </Field>
           {f.mode === "every" ? (
             <Field
-              label={`분 간격 (${AUTOMATION_LIMITS.minEveryMinutes} 이상)`}
+              label="반복 간격(분)"
+              hint={`${AUTOMATION_LIMITS.minEveryMinutes}분 이상`}
+              error={everyOk ? undefined : "간격이 너무 짧습니다."}
             >
               {(c) => (
                 <Input
@@ -236,7 +239,7 @@ function JobForm({
       </Section>
       {f.kind === "prompt" ? (
         <>
-          <Field label="권한">
+          <Field label="권한" hint="실행할 때마다 새 세션을 만듭니다.">
             {(c) => (
               <Select
                 {...c}
@@ -253,20 +256,16 @@ function JobForm({
               </Select>
             )}
           </Field>
-          <p className={styles.hint}>
-            프롬프트 작업은 새 세션을 만들고 위 권한 모드를 적용한 뒤
-            전송합니다.
-          </p>
         </>
       ) : (
-        <Notice tone="warning">스크립트는 셸 권한으로 실행됩니다</Notice>
+        <Notice tone="warning">셸 권한으로 실행됩니다.</Notice>
       )}
-      <div className={styles.row}>
-        <Button type="submit" intent="primary" disabled={!valid}>
-          저장
-        </Button>
+      <div className={styles.footer}>
         <Button type="button" onClick={onCancel}>
           취소
+        </Button>
+        <Button type="submit" intent="primary" disabled={!valid}>
+          저장
         </Button>
       </div>
     </form>
@@ -285,15 +284,9 @@ const blank: Form = {
   permissionMode: "read_plan",
 };
 
-export function AutomationButton({
-  hideTrigger = false,
-  returnFocusRef,
-}: {
-  hideTrigger?: boolean;
-  returnFocusRef?: RefObject<HTMLElement | null>;
-}) {
+// "자동화" page: mounted only while the page is visible, so polling stops with it.
+export function AutomationSettings() {
   const lists = useWorkbenchSelector(selectors.lists);
-  const [open, setOpen] = useState(false);
   const [data, setData] = useState<AutomationList>();
   const [editing, setEditing] = useState<{ id?: string; form: Form }>();
   const [error, setError] = useState<string>();
@@ -302,16 +295,10 @@ export function AutomationButton({
     if (r.ok) setData(r.value);
   }, []);
   useEffect(() => {
-    const onOpen = () => setOpen(true);
-    window.addEventListener(OPEN_AUTOMATION_EVENT, onOpen);
-    return () => window.removeEventListener(OPEN_AUTOMATION_EVENT, onOpen);
-  }, []);
-  useEffect(() => {
-    if (!open) return;
     void refresh();
     const t = setInterval(() => void refresh(), 3000);
     return () => clearInterval(t);
-  }, [open, refresh]);
+  }, [refresh]);
   const act = async (request: Parameters<typeof callAutomation>[0]) => {
     const r = await callAutomation(request);
     setError(
@@ -324,127 +311,111 @@ export function AutomationButton({
     lists.workspaces.find((w) => w.id === id)?.name ?? "(등록 해제됨)";
   return (
     <>
-      {!hideTrigger && (
-        <Button
-          size="compact"
-          aria-label="자동화"
-          title="자동화"
-          onClick={() => setOpen(true)}
-        >
-          <Clock size={18} />
-        </Button>
+      {error && <Notice tone="danger">{error}</Notice>}
+      {data?.storeError && (
+        <Notice tone="danger">
+          저장된 자동화 파일을 읽지 못해 저장을 중단했습니다. 앱 데이터 폴더를
+          확인하세요.
+        </Notice>
       )}
-      <ModalSheet
-        open={open}
-        onOpenChange={setOpen}
-        title="자동화"
-        {...(returnFocusRef && { returnFocusRef })}
-      >
-        {error && <Notice tone="danger">{error}</Notice>}
-        {data?.storeError && (
-          <Notice tone="danger">
-            저장된 자동화 파일을 읽지 못해 저장을 중단했습니다. 앱 데이터 폴더를
-            확인하세요.
-          </Notice>
-        )}
-        {data?.recovered && (
-          <Notice tone="warning">
-            {data.recovered.count === 0
-              ? `저장 파일 전체를 ${data.recovered.backup}에 보관했습니다.`
-              : `저장 파일의 손상된 항목 ${data.recovered.count}개를 ${data.recovered.backup}에 따로 보관했습니다.`}
-          </Notice>
-        )}
-        {editing ? (
-          <JobForm
-            initial={editing.form}
-            onCancel={() => setEditing(undefined)}
-            onSave={(job) =>
-              void act(
-                editing.id
-                  ? { type: "automation.update", jobId: editing.id, job }
-                  : { type: "automation.create", job },
-              )
-            }
-          />
-        ) : (
-          <>
-            <Button
-              intent="primary"
-              onClick={() => setEditing({ form: blank })}
-            >
-              작업 추가
-            </Button>
-            <p className={styles.hint}>
-              앱이 켜져 있는 동안에만 실행됩니다. 꺼져 있던 시간의 실행은
-              &apos;놓침&apos;으로만 표시하고 다시 실행하지 않습니다.
-            </p>
-            {!data?.jobs.length && (
-              <EmptyState title="등록된 작업이 없습니다." />
-            )}
-            <ul className={styles.jobs}>
-              {data?.jobs.map((j) => (
-                <li key={j.id}>
-                  <strong>{j.name}</strong>{" "}
-                  <small>
+      {data?.recovered && (
+        <Notice tone="warning">
+          {data.recovered.count === 0
+            ? `저장 파일 전체를 ${data.recovered.backup}에 보관했습니다.`
+            : `저장 파일의 손상된 항목 ${data.recovered.count}개를 ${data.recovered.backup}에 따로 보관했습니다.`}
+        </Notice>
+      )}
+      {editing ? (
+        <JobForm
+          initial={editing.form}
+          onCancel={() => setEditing(undefined)}
+          onSave={(job) =>
+            void act(
+              editing.id
+                ? { type: "automation.update", jobId: editing.id, job }
+                : { type: "automation.create", job },
+            )
+          }
+        />
+      ) : (
+        <>
+          <Button
+            intent="primary"
+            className={styles.newJob ?? ""}
+            onClick={() => setEditing({ form: blank })}
+          >
+            새 자동화
+          </Button>
+          {!data?.jobs.length && <EmptyState title="등록된 작업이 없습니다." />}
+          <ul className={styles.jobs}>
+            {data?.jobs.map((j) => (
+              <li key={j.id} className={styles.job}>
+                <div className={styles.jobHead}>
+                  <strong>{j.name}</strong>
+                  <span className={styles.chip}>
                     {j.enabled ? (j.running ? "실행 중" : "활성") : "일시정지"}
-                  </small>
-                  <dl className={styles.facts}>
-                    <dt>대상</dt>
-                    <dd>
-                      {wsName(j.target.workspaceId)} ·{" "}
-                      {j.target.kind === "prompt"
-                        ? "새 세션에 프롬프트 전송"
-                        : `스크립트 ${j.target.script}`}
-                    </dd>
-                    <dt>일정</dt>
-                    <dd>
-                      {describeSchedule(j.schedule)}
-                      {j.nextAt ? ` · 다음 ${time(j.nextAt)}` : ""}
-                    </dd>
-                    <dt>권한</dt>
-                    <dd>
-                      {j.permissionMode
-                        ? MODE_LABELS[j.permissionMode]
-                        : "셸 권한으로 실행"}
-                    </dd>
-                  </dl>
-                  <div className={styles.row}>
-                    <Button
-                      size="compact"
-                      onClick={() =>
-                        void act({
-                          type: "automation.setEnabled",
-                          jobId: j.id,
-                          enabled: !j.enabled,
-                        })
-                      }
-                    >
-                      {j.enabled ? "일시정지" : "재개"}
-                    </Button>
-                    <Button
-                      size="compact"
-                      disabled={j.running}
-                      onClick={() =>
-                        void act({ type: "automation.runNow", jobId: j.id })
-                      }
-                    >
-                      지금 실행
-                    </Button>
-                    <Button
-                      size="compact"
-                      onClick={() => setEditing({ id: j.id, form: toForm(j) })}
-                    >
-                      편집
-                    </Button>
-                    <Button
-                      size="compact"
-                      onClick={() =>
-                        void act({ type: "automation.remove", jobId: j.id })
-                      }
-                    >
-                      삭제
-                    </Button>
-                  </div>
+                  </span>
+                </div>
+                <dl className={styles.facts}>
+                  <dt>대상</dt>
+                  <dd>
+                    {wsName(j.target.workspaceId)} ·{" "}
+                    {j.target.kind === "prompt"
+                      ? "새 세션에 프롬프트 전송"
+                      : `스크립트 ${j.target.script}`}
+                  </dd>
+                  <dt>일정</dt>
+                  <dd>
+                    {describeSchedule(j.schedule)}
+                    {j.nextAt ? ` · 다음 ${time(j.nextAt)}` : ""}
+                  </dd>
+                  <dt>권한</dt>
+                  <dd>
+                    {j.permissionMode
+                      ? MODE_LABELS[j.permissionMode]
+                      : "셸 권한으로 실행"}
+                  </dd>
+                </dl>
+                <div className={styles.row}>
+                  <Button
+                    size="compact"
+                    onClick={() =>
+                      void act({
+                        type: "automation.setEnabled",
+                        jobId: j.id,
+                        enabled: !j.enabled,
+                      })
+                    }
+                  >
+                    {j.enabled ? "일시정지" : "재개"}
+                  </Button>
+                  <Button
+                    size="compact"
+                    disabled={j.running}
+                    onClick={() =>
+                      void act({ type: "automation.runNow", jobId: j.id })
+                    }
+                  >
+                    지금 실행
+                  </Button>
+                  <Button
+                    size="compact"
+                    onClick={() => setEditing({ id: j.id, form: toForm(j) })}
+                  >
+                    편집
+                  </Button>
+                  <Button
+                    size="compact"
+                    className={styles.dangerText ?? ""}
+                    onClick={() =>
+                      void act({ type: "automation.remove", jobId: j.id })
+                    }
+                  >
+                    삭제
+                  </Button>
+                </div>
+                <details className={styles.historyBox}>
+                  <summary>실행 기록</summary>
                   <ul className={styles.history} aria-label="실행 기록">
                     {j.history.map((h) => (
                       <li key={h.id}>
@@ -457,12 +428,12 @@ export function AutomationButton({
                     ))}
                     {!j.history.length && <li>기록 없음</li>}
                   </ul>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </ModalSheet>
+                </details>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </>
   );
 }

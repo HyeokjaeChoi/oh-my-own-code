@@ -1,22 +1,21 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: var(--omoc-semantic-space-card-gap);
+  gap: 16px;
 }
 .group {
   display: flex;
   flex-direction: column;
-  gap: var(--omoc-semantic-space-card-gap);
+  gap: 12px;
 }
 .row {
   display: flex;
-  gap: var(--omoc-semantic-space-control-gap);
+  gap: 4px;
   flex-wrap: wrap;
 }
-.hint {
-  margin: 0;
-  font-size: var(--omoc-primitive-font-size-xs);
-  color: var(--omoc-semantic-color-text-secondary);
+.newJob {
+  align-self: flex-start;
+  margin-block-end: 8px;
 }
 .jobs,
 .history {
@@ -24,19 +23,63 @@
   margin: 0;
   padding: 0;
 }
-.jobs > li {
-  margin-bottom: var(--omoc-semantic-space-section-gap);
+.job {
+  padding-block: 12px;
+}
+.job + .job {
+  border-block-start: 1px solid var(--omoc-semantic-color-border-subtle);
+}
+.jobHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chip {
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--omoc-semantic-color-fill-subtle);
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: 11px;
+  line-height: 18px;
 }
 .facts {
   display: grid;
   grid-template-columns: max-content 1fr;
   gap: 2px 12px;
-  margin: 4px 0;
+  margin: 6px 0 8px;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: var(--omoc-primitive-font-size-xs);
 }
 .facts dd {
   margin: 0;
 }
+.row .dangerText {
+  color: var(--omoc-semantic-color-danger-foreground);
+}
+.historyBox {
+  margin-block-start: 6px;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: var(--omoc-primitive-font-size-xs);
+}
+.historyBox summary {
+  cursor: pointer;
+}
 .history {
   margin-top: var(--omoc-semantic-space-control-gap);
-  font-size: var(--omoc-semantic-type-size-caption);
+}
+.footer {
+  position: sticky;
+  bottom: -28px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 8px -28px -28px;
+  padding: 12px 28px 20px;
+  background: var(--omoc-semantic-color-surface);
+}
+@media (max-width: 700px) {
+  .footer {
+    margin-inline: -16px;
+    padding-inline: 16px;
+  }
 }

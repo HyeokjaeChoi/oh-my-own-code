@@ -2,15 +2,10 @@ export type PaletteAction =
   | { type: "settings" }
   | { type: "notifications" }
   | { type: "automation" }
+  | { type: "extensions" }
   | {
       type: "panel";
-      panel:
-        | "files"
-        | "catalog"
-        | "activity"
-        | "terminal"
-        | "preview"
-        | "plans";
+      panel: "files" | "activity" | "terminal" | "preview" | "plans";
     }
   | { type: "session.create" }
   | { type: "workspace.import" }

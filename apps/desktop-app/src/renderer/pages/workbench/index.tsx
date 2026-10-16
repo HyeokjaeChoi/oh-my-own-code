@@ -33,19 +33,18 @@ import {
 import {
   OPEN_AUTOMATION_EVENT,
   OPEN_DATA_EVENT,
+  OPEN_EXTENSIONS_EVENT,
   OPEN_NOTIFICATIONS_EVENT,
   OPEN_SETTINGS_EVENT,
 } from "../../shared/palette/index.js";
-import { PreferencesButton } from "../../features/preferences/index.js";
-import { DataButton } from "../../features/data-transfer/index.js";
 import { NotificationCenter } from "../../features/notifications/index.js";
-import { AutomationButton } from "../../features/automation/index.js";
+import { SettingsHost } from "../../widgets/settings/index.js";
 import { CommandPalette } from "../../features/palette/index.js";
 import { Conversation } from "../../widgets/conversation/index.js";
 import { TerminalPanel } from "../../widgets/terminal/index.js";
 import { PreviewPanel } from "../../widgets/preview/index.js";
 import { PlansPanel } from "../../widgets/plans/index.js";
-import { CatalogPanel, FileExplorer } from "../../widgets/explorer/index.js";
+import { FileExplorer } from "../../widgets/explorer/index.js";
 import {
   composerOperation,
   rejectionMessage,
@@ -65,7 +64,6 @@ import styles from "./shell.module.css";
 
 const panelLabels = {
   files: "파일",
-  catalog: "확장·명령",
   activity: "활동",
   terminal: "터미널",
   preview: "미리보기",
@@ -263,6 +261,11 @@ export function Workbench() {
   const openPanel = (next: Panel) => {
     actions.openPanel(next);
   };
+  // The conversation menu links to the extension settings page.
+  const openConversationPanel = (next: "files" | "extensions") =>
+    next === "extensions"
+      ? window.dispatchEvent(new Event(OPEN_EXTENSIONS_EVENT))
+      : openPanel(next);
   const worktreeCall = async (
     request: WorktreeRequest,
   ): Promise<WorktreeResult> => {
@@ -748,12 +751,6 @@ export function Workbench() {
           ) : (
             <p className={styles.muted}>작업 공간을 선택하세요.</p>
           )
-        ) : panel === "catalog" ? (
-          <CatalogPanel
-            catalog={catalog}
-            error={workbench.catalogError}
-            refresh={workbench.refresh}
-          />
         ) : selection.workspaceId ? (
           <FileExplorer key={key} workspaceId={selection.workspaceId} />
         ) : (
@@ -846,15 +843,12 @@ export function Workbench() {
             </span>
           </div>
           <CommandPalette />
-          <DataButton
-            hideTrigger
+          <SettingsHost
             returnFocusRef={sheetReturn}
             session={session && { id: session.id, title: session.title }}
             messages={snapshot?.messages ?? []}
           />
-          <NotificationCenter badgeOnly returnFocusRef={sheetReturn} />
-          <AutomationButton hideTrigger returnFocusRef={sheetReturn} />
-          <PreferencesButton hideTrigger returnFocusRef={sheetReturn} />
+          <NotificationCenter badgeOnly />
           <Button
             size="compact"
             className={styles.iconButton}
@@ -1002,7 +996,7 @@ export function Workbench() {
             permissionMode={session?.permissionMode ?? "ask"}
             pending={pending}
             mutate={mutate}
-            openPanel={openPanel}
+            openPanel={openConversationPanel}
             newSession={newSession}
             workspaceName={workspace?.name}
             workspacePath={workspace?.path}

@@ -6,7 +6,6 @@ export const PALETTE_SOURCES = Object.freeze({
 });
 const PANELS = [
   ["files", "파일 패널 열기"],
-  ["catalog", "확장·명령 패널 열기"],
   ["activity", "활동 패널 열기"],
   ["terminal", "터미널 패널 열기"],
   ["preview", "미리보기 패널 열기"],
@@ -29,12 +28,13 @@ export function buildPaletteEntries(ctx) {
   app("app:settings", "설정·단축키 열기", { type: "settings" });
   app("app:notifications", "알림 센터 열기", { type: "notifications" });
   app("app:automation", "자동화(반복 작업) 열기", { type: "automation" });
+  app("app:extensions", "확장 설정 열기", { type: "extensions" });
   for (const [panel, label] of PANELS)
     app(
       `app:panel:${panel}`,
       label,
       { type: "panel", panel },
-      panel !== "files" && panel !== "catalog" && !ctx.hasWorkspace
+      panel !== "files" && !ctx.hasWorkspace
         ? "작업 공간을 먼저 선택하세요."
         : undefined,
     );

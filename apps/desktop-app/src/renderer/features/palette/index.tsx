@@ -7,6 +7,7 @@ import {
 } from "../../entities/workbench/index.js";
 import {
   OPEN_AUTOMATION_EVENT,
+  OPEN_EXTENSIONS_EVENT,
   OPEN_NOTIFICATIONS_EVENT,
   OPEN_SETTINGS_EVENT,
   PALETTE_SOURCES,
@@ -157,6 +158,8 @@ export function CommandPalette() {
       window.dispatchEvent(new Event(OPEN_NOTIFICATIONS_EVENT));
     else if (a.type === "automation")
       window.dispatchEvent(new Event(OPEN_AUTOMATION_EVENT));
+    else if (a.type === "extensions")
+      window.dispatchEvent(new Event(OPEN_EXTENSIONS_EVENT));
     else if (a.type === "panel") actions.openPanel(a.panel);
     else if (a.type === "session.create") {
       if (workspaceId)

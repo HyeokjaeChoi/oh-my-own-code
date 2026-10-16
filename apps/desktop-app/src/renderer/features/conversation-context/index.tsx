@@ -9,7 +9,7 @@ import {
   useWorkbenchSelector,
   useWindowWorkbench,
 } from "../../entities/workbench/index.js";
-import { OPEN_SETTINGS_EVENT } from "../../shared/palette/index.js";
+import { openSettingsPage } from "../../shared/palette/index.js";
 import type {
   ContextSelection,
   WorkbenchMessage,
@@ -317,12 +317,7 @@ export function ConversationContextControls({
         <p role="alert" data-reject-notice={rejection}>
           {rejectionMessage(rejection)}{" "}
           {rejection === "AUTH_REQUIRED" && (
-            <Button
-              size="compact"
-              onClick={() =>
-                window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))
-              }
-            >
+            <Button size="compact" onClick={() => openSettingsPage("models")}>
               설정 열기
             </Button>
           )}{" "}

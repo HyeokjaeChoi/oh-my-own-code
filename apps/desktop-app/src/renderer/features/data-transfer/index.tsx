@@ -1,16 +1,14 @@
-import { useCallback, useEffect, useState, type RefObject } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Field,
   Input,
-  ModalSheet,
   Notice,
   Row,
   Section,
   Select,
   Switch,
 } from "@workbench/ui";
-import { Database } from "lucide-react";
 import {
   RETENTION_OPTIONS,
   WIPE_WORD,
@@ -20,7 +18,6 @@ import {
   type ExportSummary,
 } from "../../shared/data-transfer/index.js";
 import type { WorkbenchMessage } from "../../shared/api/index.js";
-import { OPEN_DATA_EVENT } from "../../shared/palette/index.js";
 import styles from "./data.module.css";
 
 type Due = { id: string; at: string; title: string };
@@ -81,11 +78,11 @@ function Export({
     );
   };
   return (
-    <Section title="현재 대화 내보내기">
-      <p className={styles.muted}>
-        화면에 표시된 최근 메시지만 내보냅니다. 자격 증명처럼 보이는 값과 홈
-        경로는 기본으로 제거됩니다.
-      </p>
+    <Section
+      title="현재 대화 내보내기"
+      description="자격 증명처럼 보이는 값과 홈 경로는 제거됩니다."
+      info="화면에 표시된 최근 메시지만 내보냅니다."
+    >
       <Switch
         label="도구 출력 포함"
         checked={outputs}
@@ -155,10 +152,11 @@ function Archives() {
     await reload();
   };
   return (
-    <Section title="가져온 기록 (읽기 전용)">
-      <p className={styles.muted}>
-        가져온 기록은 보관용 사본이며 Native에서 다시 실행되지 않습니다.
-      </p>
+    <Section
+      title="가져온 기록"
+      description="읽기 전용 보관 사본입니다."
+      info="가져온 기록은 런타임에서 다시 실행되지 않습니다."
+    >
       <Button onClick={() => void importFile()}>파일 가져오기</Button>
       {note && <Notice>{note}</Notice>}
       <ul className={styles.list}>
@@ -228,11 +226,11 @@ function Retention() {
     setPending(undefined);
   };
   return (
-    <Section title="보관 기간">
-      <p className={styles.muted}>
-        가져온 기록에만 적용됩니다. 시작 시와 매일 한 번 확인합니다. 작업 폴더의
-        파일과 Native 대화는 삭제하지 않습니다.
-      </p>
+    <Section
+      title="보관 기간"
+      description="가져온 기록에만 적용됩니다."
+      info="시작 시와 매일 한 번 확인합니다. 작업 폴더의 파일과 런타임 대화는 삭제하지 않습니다."
+    >
       <Row label="보관 기간" htmlFor="data-retention">
         <Select
           id="data-retention"
@@ -285,19 +283,26 @@ function Wipe() {
     else if (!r.value.started) setNote("취소했습니다.");
   };
   return (
-    <Section title="앱 데이터 삭제">
-      <p className={styles.muted}>
-        삭제됨: {root || "앱 데이터 폴더"} 안의 모든 내용 — 워크스페이스 목록,
-        저널, 계획(plans.json), 워크트리 링크, 가져온 기록, 설정, Native 대화
-        기록 데이터.
-      </p>
-      <p className={styles.muted}>
-        삭제되지 않음: 프로젝트·워크스페이스 폴더, Git 저장소, 앱이 만든
-        Documents 아래 워크트리 폴더. 외부 보존 한계: 이미 OpenAI 등 외부
-        제공자에 전송된 프롬프트·응답은 이 앱에서 삭제할 수 없습니다. 내보낸
-        파일도 그대로 남습니다.
-      </p>
-      <div className={styles.row}>
+    <Section
+      title="앱 데이터 삭제"
+      description="앱 데이터 폴더의 모든 내용을 지우고 앱을 종료합니다."
+      info={
+        <>
+          <p>
+            삭제됨: {root || "앱 데이터 폴더"} 안의 모든 내용 — 워크스페이스
+            목록, 저널, 계획(plans.json), 워크트리 링크, 가져온 기록, 설정,
+            런타임 대화 기록 데이터.
+          </p>
+          <p>
+            삭제되지 않음: 프로젝트·워크스페이스 폴더, Git 저장소, 앱이 만든
+            Documents 아래 워크트리 폴더. 외부 보존 한계: 이미 OpenAI 등 외부
+            제공자에 전송된 프롬프트·응답은 이 앱에서 삭제할 수 없습니다. 내보낸
+            파일도 그대로 남습니다.
+          </p>
+        </>
+      }
+    >
+      <div className={styles.wipeRow}>
         <Field label={`확인을 위해 "${WIPE_WORD}" 입력`}>
           {(c) => (
             <Input
@@ -320,42 +325,16 @@ function Wipe() {
   );
 }
 
-export function DataButton(props: {
+export function DataSettings(props: {
   session: { id: string; title: string } | undefined;
   messages: WorkbenchMessage[];
-  /** Header menu opens the sheet through OPEN_DATA_EVENT instead. */
-  hideTrigger?: boolean;
-  returnFocusRef?: RefObject<HTMLElement | null>;
 }) {
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const onOpen = () => setOpen(true);
-    window.addEventListener(OPEN_DATA_EVENT, onOpen);
-    return () => window.removeEventListener(OPEN_DATA_EVENT, onOpen);
-  }, []);
   return (
     <>
-      {!props.hideTrigger && (
-        <Button
-          size="compact"
-          aria-label="데이터·내보내기"
-          title="데이터·내보내기"
-          onClick={() => setOpen(true)}
-        >
-          <Database size={18} />
-        </Button>
-      )}
-      <ModalSheet
-        open={open}
-        onOpenChange={setOpen}
-        title="데이터"
-        {...(props.returnFocusRef && { returnFocusRef: props.returnFocusRef })}
-      >
-        <Export session={props.session} messages={props.messages} />
-        <Archives />
-        <Retention />
-        <Wipe />
-      </ModalSheet>
+      <Export session={props.session} messages={props.messages} />
+      <Archives />
+      <Retention />
+      <Wipe />
     </>
   );
 }

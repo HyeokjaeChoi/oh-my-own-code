@@ -1,11 +1,5 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type RefObject,
-} from "react";
-import { Button, EmptyState, ModalSheet } from "@workbench/ui";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Button, EmptyState } from "@workbench/ui";
 import { Bell } from "lucide-react";
 import {
   selectors,
@@ -29,7 +23,7 @@ import {
   type NoticeSpec,
 } from "../../shared/notifications/index.js";
 import { loadPreferences } from "../../shared/preferences/index.js";
-import { OPEN_NOTIFICATIONS_EVENT } from "../../shared/palette/index.js";
+import { openSettingsPage } from "../../shared/palette/index.js";
 import styles from "./notifications.module.css";
 
 function load(): Notice[] {
@@ -42,6 +36,8 @@ function load(): Notice[] {
     return [];
   }
 }
+// Same-window subscribers (badge + settings list) reload from storage on this.
+const CHANGED_EVENT = "omoc:notices-changed";
 function save(list: Notice[]) {
   try {
     globalThis.localStorage?.setItem(
@@ -51,6 +47,7 @@ function save(list: Notice[]) {
   } catch {
     // Blocked storage: the list lasts for this session only.
   }
+  globalThis.dispatchEvent?.(new Event(CHANGED_EVENT));
 }
 function loadMark(): number {
   try {
@@ -94,12 +91,10 @@ const KIND: Record<string, string> = {
 };
 
 // In-app center is the source of truth; OS notifications are an optional, generic-text echo.
+// This mounts for the app's lifetime: it derives notices and owns the unread badge.
 export function NotificationCenter({
   badgeOnly = false,
-  returnFocusRef,
 }: {
-  /** Where focus goes after a menu/event-opened sheet; the bell keeps its own. */
-  returnFocusRef?: RefObject<HTMLElement | null>;
   /** Header "더 보기" owns the entry point; show the bell only while unread. */
   badgeOnly?: boolean;
 }) {
@@ -107,13 +102,10 @@ export function NotificationCenter({
   const lists = useWorkbenchSelector(selectors.lists);
   const snapshot = useWorkbenchSelector(selectors.snapshot);
   const [list, setList] = useState<Notice[]>(load);
-  const [open, setOpen] = useState(false);
-  const viaBell = useRef(false);
   const prev = useRef<NoticeSnapshot | undefined>(undefined);
   const jobMark = useRef(loadMark());
   const listRef = useRef(list);
   listRef.current = list;
-
   const push = useCallback((specs: NoticeSpec[]) => {
     if (!specs.length) return;
     const { added, list: next } = mergeNotices(
@@ -201,85 +193,91 @@ export function NotificationCenter({
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
+  // The settings list edits the same storage; follow it.
   useEffect(() => {
-    const onOpen = () => {
-      viaBell.current = false;
-      setOpen(true);
+    const onChanged = () => {
+      const next = load();
+      listRef.current = next;
+      setList(next);
     };
-    window.addEventListener(OPEN_NOTIFICATIONS_EVENT, onOpen);
-    return () => window.removeEventListener(OPEN_NOTIFICATIONS_EVENT, onOpen);
+    window.addEventListener(CHANGED_EVENT, onChanged);
+    return () => window.removeEventListener(CHANGED_EVENT, onChanged);
   }, []);
 
   const unread = list.filter((n) => !n.read).length;
+  if (badgeOnly && unread === 0) return null;
+  return (
+    <Button
+      size="compact"
+      aria-label={`알림 ${unread}건 읽지 않음`}
+      title="알림"
+      onClick={() => openSettingsPage("notifications")}
+    >
+      <Bell size={18} />
+      {unread > 0 && <span className={styles.badge}>{unread}</span>}
+    </Button>
+  );
+}
+
+// "알림" page content: the in-app list. Edits go through storage so the badge follows.
+export function NotificationList({ onNavigate }: { onNavigate?: () => void }) {
+  const { actions } = useWindowWorkbench();
+  const [list, setList] = useState<Notice[]>(load);
+  useEffect(() => {
+    const onChanged = () => setList(load());
+    window.addEventListener(CHANGED_EVENT, onChanged);
+    return () => window.removeEventListener(CHANGED_EVENT, onChanged);
+  }, []);
   const update = (next: Notice[]) => {
     setList(next);
     save(next);
   };
   return (
     <>
-      {(!badgeOnly || unread > 0) && (
+      <div className={styles.toolbar}>
         <Button
           size="compact"
-          aria-label={`알림 ${unread}건 읽지 않음`}
-          title="알림"
+          disabled={!list.some((n) => !n.read)}
+          onClick={() => update(list.map((n) => ({ ...n, read: true })))}
+        >
+          모두 읽음
+        </Button>
+        <Button
+          size="compact"
+          disabled={!list.length}
           onClick={() => {
-            viaBell.current = true;
-            setOpen(true);
+            saveCleared(Date.now());
+            update([]);
           }}
         >
-          <Bell size={18} />
-          {unread > 0 && <span className={styles.badge}>{unread}</span>}
+          비우기
         </Button>
-      )}
-      <ModalSheet
-        open={open}
-        onOpenChange={setOpen}
-        title="알림"
-        {...(returnFocusRef && !viaBell.current && { returnFocusRef })}
-      >
-        <div className={styles.toolbar}>
-          <Button
-            size="compact"
-            onClick={() => update(list.map((n) => ({ ...n, read: true })))}
-          >
-            모두 읽음
-          </Button>
-          <Button
-            size="compact"
-            onClick={() => {
-              saveCleared(Date.now());
-              update([]);
-            }}
-          >
-            비우기
-          </Button>
-        </div>
-        {!list.length && <EmptyState title="알림이 없습니다." />}
-        <ul className={styles.list}>
-          {list.map((n) => (
-            <li key={n.id} data-unread={!n.read}>
-              <button
-                type="button"
-                className={styles.item}
-                onClick={() => {
-                  update(
-                    list.map((x) => (x.id === n.id ? { ...x, read: true } : x)),
-                  );
-                  if (n.workspaceId && n.sessionId) {
-                    actions.select(n.workspaceId, n.sessionId);
-                    setOpen(false);
-                  }
-                }}
-              >
-                <span>
-                  <small>{KIND[n.kind]}</small> {n.text}
-                </span>
-                <small>{new Date(n.at).toLocaleString()}</small>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </ModalSheet>
+      </div>
+      {!list.length && <EmptyState title="알림이 없습니다." />}
+      <ul className={styles.list}>
+        {list.map((n) => (
+          <li key={n.id} data-unread={!n.read}>
+            <button
+              type="button"
+              className={styles.item}
+              onClick={() => {
+                update(
+                  list.map((x) => (x.id === n.id ? { ...x, read: true } : x)),
+                );
+                if (n.workspaceId && n.sessionId) {
+                  actions.select(n.workspaceId, n.sessionId);
+                  onNavigate?.();
+                }
+              }}
+            >
+              <span>
+                <small>{KIND[n.kind]}</small> {n.text}
+              </span>
+              <small>{new Date(n.at).toLocaleString()}</small>
+            </button>
+          </li>
+        ))}
+      </ul>
     </>
   );
 }

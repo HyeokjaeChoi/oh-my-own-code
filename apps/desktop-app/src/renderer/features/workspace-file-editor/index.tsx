@@ -1,3 +1,4 @@
+import { OPEN_EXTENSIONS_EVENT } from "../../shared/palette/index.js";
 import { useId, useRef } from "react";
 import {
   selectors,
@@ -207,7 +208,9 @@ export function WorkspaceFileEditor() {
           <Button
             size="compact"
             intent="secondary"
-            onClick={() => actions.openPanel("catalog")}
+            onClick={() =>
+              window.dispatchEvent(new Event(OPEN_EXTENSIONS_EVENT))
+            }
           >
             전용 편집기 보기
           </Button>

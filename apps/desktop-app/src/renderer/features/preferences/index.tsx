@@ -1,14 +1,5 @@
-import { useCallback, useEffect, useState, type RefObject } from "react";
-import {
-  Button,
-  Kbd,
-  ModalSheet,
-  Row,
-  Section,
-  Select,
-  Switch,
-} from "@workbench/ui";
-import { Settings } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { Kbd, Row, Section, Segmented, Switch } from "@workbench/ui";
 import {
   applyPreferences,
   loadPreferences,
@@ -20,43 +11,31 @@ import {
   callNotify,
   type NotifyStatus,
 } from "../../shared/notifications/index.js";
-import { OPEN_SETTINGS_EVENT } from "../../shared/palette/index.js";
-import { ProviderSettings } from "./providers.js";
-import { SavedRulesSettings } from "./saved-rules.js";
+import { ThemePicker } from "./theme-picker.js";
 import styles from "./preferences.module.css";
 
+export { ProviderSettings } from "./providers.js";
+export { SavedRulesSettings } from "./saved-rules.js";
+
 const DARK_QUERY = "(prefers-color-scheme: dark)";
-const FIELDS = [
-  [
-    "theme",
-    "테마",
-    [
-      ["system", "시스템 설정 따르기"],
-      ["light", "라이트"],
-      ["dark", "다크"],
-    ],
-  ],
-  [
-    "fontSize",
-    "글자 크기",
-    [
-      ["small", "작게"],
-      ["medium", "보통"],
-      ["large", "크게"],
-    ],
-  ],
-  [
-    "density",
-    "밀도",
-    [
-      ["comfortable", "여유롭게"],
-      ["compact", "촘촘하게"],
-    ],
-  ],
+const FONT_SIZES = [
+  { value: "small", label: "작게" },
+  { value: "medium", label: "보통" },
+  { value: "large", label: "크게" },
 ] as const;
+const DENSITIES = [
+  { value: "comfortable", label: "여유롭게" },
+  { value: "compact", label: "촘촘하게" },
+] as const;
+const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform);
+
+type PreferenceProps = {
+  preferences: Preferences;
+  onChange: (patch: Partial<Preferences>) => void;
+};
 
 // Single owner of user preferences: loads, applies to the document root, persists.
-function usePreferences() {
+export function usePreferences() {
   const [preferences, setPreferences] = useState<Preferences>(() =>
     loadPreferences(),
   );
@@ -84,10 +63,59 @@ function usePreferences() {
   return { preferences, update };
 }
 
-function OsNotificationField(props: {
-  preferences: Preferences;
-  onChange: (patch: Partial<Preferences>) => void;
-}) {
+// "일반": appearance and terminal accessibility. Every control applies at once.
+export function GeneralSettings({ preferences, onChange }: PreferenceProps) {
+  return (
+    <>
+      <Section title="화면">
+        <ThemePicker
+          value={preferences.theme}
+          onChange={(theme) => onChange({ theme })}
+        />
+        <Row label="글자 크기">
+          <Segmented
+            name="pref-fontSize"
+            aria-label="글자 크기"
+            options={FONT_SIZES}
+            value={preferences.fontSize}
+            onChange={(fontSize) => onChange({ fontSize })}
+          />
+        </Row>
+        <Row label="밀도">
+          <Segmented
+            name="pref-density"
+            aria-label="밀도"
+            options={DENSITIES}
+            value={preferences.density}
+            onChange={(density) => onChange({ density })}
+          />
+        </Row>
+      </Section>
+      <Section title="접근성">
+        <Row
+          label="터미널 스크린 리더 모드"
+          htmlFor="pref-terminal-screen-reader"
+          description="출력을 보조 기술이 읽을 수 있게 하지만 터미널이 느려질 수 있습니다."
+        >
+          <Switch
+            id="pref-terminal-screen-reader"
+            aria-describedby="pref-terminal-screen-reader-description"
+            checked={preferences.terminalScreenReader}
+            onChange={(event) =>
+              onChange({ terminalScreenReader: event.target.checked })
+            }
+          />
+        </Row>
+      </Section>
+    </>
+  );
+}
+
+// "알림" page header row: OS notifications are an optional echo of the in-app list.
+export function OsNotificationField({
+  preferences,
+  onChange,
+}: PreferenceProps) {
   const [status, setStatus] = useState<NotifyStatus>();
   useEffect(() => {
     void callNotify<NotifyStatus>({ type: "notify.status" }).then(
@@ -98,147 +126,49 @@ function OsNotificationField(props: {
   return (
     <Row
       htmlFor="pref-os-notifications"
-      label="OS 알림 (창이 비활성일 때, 내용 없이 알림만)"
+      label="시스템 알림"
       description={
         blocked ? (
           <span role="status">
-            이 환경에서는 OS 알림을 사용할 수 없어 앱 안에서만 표시됩니다.
+            이 환경에서는 시스템 알림을 사용할 수 없어 앱 안에서만 표시됩니다.
           </span>
-        ) : undefined
+        ) : (
+          "앱이 백그라운드일 때 알립니다. 내용은 표시하지 않습니다."
+        )
       }
     >
       <Switch
         id="pref-os-notifications"
-        aria-describedby={
-          blocked ? "pref-os-notifications-description" : undefined
-        }
-        checked={props.preferences.osNotifications}
+        aria-describedby="pref-os-notifications-description"
+        checked={preferences.osNotifications}
         onChange={(event) =>
-          props.onChange({ osNotifications: event.target.checked })
+          onChange({ osNotifications: event.target.checked })
         }
       />
     </Row>
   );
 }
 
-function TerminalScreenReaderField(props: {
-  preferences: Preferences;
-  onChange: (patch: Partial<Preferences>) => void;
-}) {
-  return (
-    <Row
-      htmlFor="pref-terminal-screen-reader"
-      label="터미널 스크린 리더 모드"
-      description="(출력을 보조 기술이 읽을 수 있게 하며, 터미널이 느려질 수 있습니다)"
-    >
-      <Switch
-        id="pref-terminal-screen-reader"
-        aria-describedby="pref-terminal-screen-reader-description"
-        checked={props.preferences.terminalScreenReader}
-        onChange={(event) =>
-          props.onChange({ terminalScreenReader: event.target.checked })
-        }
-      />
-    </Row>
-  );
-}
+// ⌘ on macOS, Ctrl elsewhere; every other key is shown as written.
+const glyphs = (keys: string) =>
+  keys
+    .split("+")
+    .flatMap((part) => part.split(" "))
+    .map((part) => (part === "Cmd/Ctrl" ? (IS_MAC ? "⌘" : "Ctrl") : part));
 
-export function PreferencesSheetView(props: {
-  preferences: Preferences;
-  onChange: (patch: Partial<Preferences>) => void;
-}) {
+export function ShortcutsSettings() {
   return (
-    <>
-      {FIELDS.map(([key, label, options]) => (
-        <Row key={key} htmlFor={`pref-${key}`} label={label}>
-          <Select
-            id={`pref-${key}`}
-            value={props.preferences[key]}
-            onChange={(event) =>
-              props.onChange({
-                [key]: event.target.value,
-              } as Partial<Preferences>)
-            }
-          >
-            {options.map(([value, text]) => (
-              <option key={value} value={value}>
-                {text}
-              </option>
+    <ul className={styles.shortcuts} aria-label="키보드 단축키">
+      {SHORTCUTS.map(({ keys, action }) => (
+        <li key={keys} className={styles.shortcut}>
+          <span>{action}</span>
+          <span className={styles.keys}>
+            {glyphs(keys).map((key) => (
+              <Kbd key={key}>{key}</Kbd>
             ))}
-          </Select>
-        </Row>
+          </span>
+        </li>
       ))}
-      <OsNotificationField {...props} />
-      <TerminalScreenReaderField {...props} />
-      <ProviderSettings />
-      <SavedRulesSettings />
-      <Section title="키보드 단축키">
-        <dl className={styles.shortcuts}>
-          {SHORTCUTS.map(({ keys, action }) => (
-            <div key={keys} className={styles.shortcut}>
-              <dt>
-                <Kbd>{keys}</Kbd>
-              </dt>
-              <dd>{action}</dd>
-            </div>
-          ))}
-        </dl>
-      </Section>
-    </>
-  );
-}
-
-export function PreferencesButton({
-  hideTrigger = false,
-  returnFocusRef,
-}: {
-  hideTrigger?: boolean;
-  returnFocusRef?: RefObject<HTMLElement | null>;
-}) {
-  const { preferences, update } = usePreferences();
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const onOpen = () => setOpen(true);
-    window.addEventListener(OPEN_SETTINGS_EVENT, onOpen);
-    return () => window.removeEventListener(OPEN_SETTINGS_EVENT, onOpen);
-  }, []);
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "?" || event.metaKey || event.ctrlKey || event.altKey)
-        return;
-      if (event.isComposing || event.defaultPrevented) return;
-      if (
-        (event.target as Element | null)?.closest?.(
-          "input, textarea, select, [contenteditable]",
-        )
-      )
-        return;
-      event.preventDefault();
-      setOpen(true);
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, []);
-  return (
-    <>
-      {!hideTrigger && (
-        <Button
-          size="compact"
-          aria-label="설정·단축키"
-          title="설정·단축키"
-          onClick={() => setOpen(true)}
-        >
-          <Settings size={18} />
-        </Button>
-      )}
-      <ModalSheet
-        open={open}
-        onOpenChange={setOpen}
-        title="설정"
-        {...(returnFocusRef && { returnFocusRef })}
-      >
-        <PreferencesSheetView preferences={preferences} onChange={update} />
-      </ModalSheet>
-    </>
+    </ul>
   );
 }
