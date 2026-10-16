@@ -60,12 +60,13 @@ import styles from "./conversation.module.css";
 import { PopoverPanel, PopoverTrigger } from "./composer-popovers.js";
 import { AssistantText, CopyButton, LiteralText } from "./markdown.js";
 import { parseSafeLinkPreview } from "@workbench/contracts";
-import { Button, LinkPreview, Notice, Select } from "@workbench/ui";
+import { Button, LinkPreview, Notice, Segmented, Select } from "@workbench/ui";
 import {
   type WorkbenchCatalog,
   type WorkbenchMessage,
   type WorkbenchPermission,
   validAssistantRuntime,
+  visibleModels,
   type RuntimeModel,
 } from "../../shared/api/index.js";
 
@@ -378,6 +379,15 @@ export function Conversation(props: Props) {
       ? props.catalog.models.entries.find((entry) => entry.id === model)
       : undefined;
   const variants = selectedModel?.variants;
+  const modelEntries =
+    props.catalog?.models.status === "available"
+      ? props.catalog.models.entries
+      : [];
+  // "무료만" defaults on while any free model exists; the user's choice wins.
+  const [freeChoice, setFreeChoice] = useState<"free" | "all">();
+  const hasFree = modelEntries.some((entry) => entry.free);
+  const freeOnly = (freeChoice ?? (hasFree ? "free" : "all")) === "free";
+  const shownModels = visibleModels(modelEntries, freeOnly, model);
   const agentLabel = agent
     ? props.catalog?.agents.status === "available"
       ? (props.catalog.agents.entries.find((entry) => entry.id === agent)
@@ -1063,6 +1073,9 @@ export function Conversation(props: Props) {
                       aria-label={`모델: ${modelLabel}${variant ? ` · ${variant}` : ""}`}
                     >
                       <span className={styles.chipText}>{modelLabel}</span>
+                      {selectedModel?.free && (
+                        <span className={styles.chipSecondary}>무료</span>
+                      )}
                       {variant && (
                         <span className={styles.chipSecondary}>{variant}</span>
                       )}
@@ -1152,6 +1165,18 @@ export function Conversation(props: Props) {
                   data-runtime-source="requested"
                 >
                   <legend>모델</legend>
+                  {hasFree && (
+                    <Segmented
+                      aria-label="모델 필터"
+                      name="model-free-filter"
+                      value={freeOnly ? "free" : "all"}
+                      onChange={setFreeChoice}
+                      options={[
+                        { value: "all", label: "전체" },
+                        { value: "free", label: "무료" },
+                      ]}
+                    />
+                  )}
                   <label className={styles.field}>
                     모델 요청
                     <Select
@@ -1163,40 +1188,54 @@ export function Conversation(props: Props) {
                       {model && !selectedModel && (
                         <option value={model}>{model} (사용 불가)</option>
                       )}
-                      {props.catalog?.models.status === "available" &&
-                        props.catalog.models.entries.map((entry) => (
-                          <option key={entry.id} value={entry.id}>
-                            {entry.name}
-                          </option>
-                        ))}
+                      {shownModels.map((entry) => (
+                        <option key={entry.id} value={entry.id}>
+                          {entry.free ? `${entry.name} · 무료` : entry.name}
+                        </option>
+                      ))}
                     </Select>
                   </label>
-                  <label className={styles.field}>
-                    Variant 요청
-                    <Select
-                      aria-label="Variant 요청"
-                      value={variant}
-                      disabled={!model && !variant}
-                      onChange={(event) => setVariant(event.target.value)}
-                    >
-                      <option value="">기본값 · 요청 안 함</option>
-                      {variant &&
-                        (variants?.status !== "available" ||
-                          !variants.ids.includes(variant)) && (
-                          <option value={variant}>{variant} (사용 불가)</option>
-                        )}
-                      {variants?.status === "available" &&
-                        variants.ids.map((value) => (
-                          <option key={value} value={value}>
-                            {value}
-                          </option>
-                        ))}
-                    </Select>
-                  </label>
+                  {(!model ||
+                    variants?.status !== "available" ||
+                    variants.ids.length > 0 ||
+                    variant) && (
+                    <label className={styles.field}>
+                      Variant 요청
+                      <Select
+                        aria-label="Variant 요청"
+                        value={variant}
+                        disabled={!model && !variant}
+                        onChange={(event) => setVariant(event.target.value)}
+                      >
+                        <option value="">기본값 · 요청 안 함</option>
+                        {variant &&
+                          (variants?.status !== "available" ||
+                            !variants.ids.includes(variant)) && (
+                            <option value={variant}>
+                              {variant} (사용 불가)
+                            </option>
+                          )}
+                        {variants?.status === "available" &&
+                          variants.ids.map((value) => (
+                            <option key={value} value={value}>
+                              {value}
+                            </option>
+                          ))}
+                      </Select>
+                    </label>
+                  )}
                   <p className={styles.runtimeHint}>
                     선택은 다음 전송에만 요청합니다. 기본값은 값을 요청하지
                     않습니다.
                   </p>
+                  {props.catalog?.models.entries.some(
+                    (entry) => entry.free,
+                  ) && (
+                    <p className={styles.runtimeHint} data-free-models-note>
+                      무료 모델은 예고 없이 바뀔 수 있고, 일부는 입력을 학습에
+                      사용할 수 있습니다.
+                    </p>
+                  )}
                   {model && variants?.status !== "available" && (
                     <p className={styles.runtimeHint}>
                       Variant 목록을 확인할 수 없습니다. Variant 요청 없이

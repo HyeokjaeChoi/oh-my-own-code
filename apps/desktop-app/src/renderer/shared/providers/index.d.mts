@@ -20,7 +20,7 @@ export function saveDefaultModel(
 ): void;
 export function usableDefaultModel(
   catalogModels:
-    | { status: string; entries?: readonly { id: string }[] }
+    | { status: string; entries?: readonly { id: string; free?: boolean }[] }
     | undefined,
   id: string,
 ): string;

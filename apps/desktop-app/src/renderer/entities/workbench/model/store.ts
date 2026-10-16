@@ -19,6 +19,7 @@ import {
   validAssistantRuntime,
   validSessionSelection,
   validModelOptions,
+  variantForModel,
   type SessionSelection,
 } from "../../../shared/api/index.js";
 import {
@@ -2663,11 +2664,13 @@ function validRuntimeCatalog(value: WorkbenchCatalog): boolean {
             "source",
             "path",
             "scope",
-            ...(name === "models" ? ["capabilities"] : []),
+            ...(name === "models" ? ["capabilities", "free"] : []),
           ],
         ) ||
         !validRuntimeText(entry.id) ||
         ids.has(entry.id) ||
+        (Object.hasOwn(entry, "free") &&
+          (entry as { free?: unknown }).free !== true) ||
         typeof entry.name !== "string" ||
         entry.name.length > 256 ||
         (Object.hasOwn(entry, "description") &&
@@ -7957,16 +7960,25 @@ function reduceWorkbench(state: State, event: Event): State {
         return state;
       const modelChanged =
         event.model !== undefined && event.model !== draft.model;
+      // A new model keeps the variant only if it lists it itself.
+      const keptVariant = modelChanged
+        ? variantForModel(
+            draft.variant,
+            state.catalog?.models.status === "available"
+              ? state.catalog.models.entries.find((e) => e.id === event.model)
+              : undefined,
+          )
+        : draft.variant;
       const next = {
         text: event.text ?? draft.text,
         agent: event.agent ?? draft.agent,
         model: event.model ?? draft.model,
-        variant: event.variant ?? (modelChanged ? "" : draft.variant),
+        variant: event.variant ?? keptVariant,
         variantCleared:
           event.variant !== undefined
             ? false
             : modelChanged
-              ? Boolean(draft.variant)
+              ? Boolean(draft.variant) && !keptVariant
               : draft.variantCleared,
         revision: draft.revision + 1,
       };

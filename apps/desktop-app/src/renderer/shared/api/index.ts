@@ -160,6 +160,8 @@ export {
   validAssistantRuntime,
   validSessionSelection,
   validModelOptions,
+  variantForModel,
+  visibleModels,
 } from "../runtime-options/index.js";
 export type {
   RuntimeModel,

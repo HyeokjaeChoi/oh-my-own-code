@@ -147,3 +147,25 @@ export function projectSessionSelection(info, sessionId) {
   };
   return validSessionSelection(value) ? value : undefined;
 }
+
+// Free = every cost tier of the model is priced 0 for input and output. A
+// missing or malformed cost never counts as free.
+export const isFreeModel = (model) =>
+  Array.isArray(model?.cost) &&
+  model.cost.length > 0 &&
+  model.cost.every((tier) => tier?.input === 0 && tier?.output === 0);
+
+// The variant a draft may keep after its model changes: only one the new model
+// itself lists. Otherwise "" (no request), so a stale variant is never sent.
+export const variantForModel = (variant, model) =>
+  variant &&
+  model?.variants?.status === "available" &&
+  model.variants.ids.includes(variant)
+    ? variant
+    : "";
+
+// Catalog order is kept. The filter never hides the model currently selected.
+export const visibleModels = (entries, freeOnly, selectedId) =>
+  freeOnly
+    ? entries.filter((entry) => entry.free === true || entry.id === selectedId)
+    : entries;

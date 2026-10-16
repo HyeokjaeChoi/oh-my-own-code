@@ -6,6 +6,9 @@ export {
   validSessionSelection,
   validModelOptions,
   projectModelOptions,
+  isFreeModel,
+  variantForModel,
+  visibleModels,
   projectAssistantRuntime,
   projectSessionSelection,
 } from "./index.mjs";

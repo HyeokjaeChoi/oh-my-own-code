@@ -24,6 +24,7 @@ import {
 } from "./renderer/shared/conversation-context/index.mjs";
 import {
   projectModelOptions,
+  isFreeModel,
   projectAssistantRuntime,
   projectSessionSelection,
 } from "./renderer/shared/runtime-options/index.mjs";
@@ -3278,6 +3279,9 @@ export function createWorkbenchService({
           (c) => c.type === "credential" || c.type === "env",
         ) ||
         (provider?.activation === "enabled" && !provider.integrationID);
+      // Zen serves its free models only to the official OpenCode client; this
+      // host cannot use them, so they never enter the usable catalog.
+      if (model.providerID === "opencode" && isFreeModel(model)) continue;
       if (
         model.enabled === true &&
         opaque(model.id) &&
@@ -3337,6 +3341,7 @@ export function createWorkbenchService({
                     id,
                     name: clip(m.name, 256),
                     status: clip(m.status, 32),
+                    ...(isFreeModel(m) ? { free: true } : {}),
                     ...projectModelOptions(m),
                   })),
               ),

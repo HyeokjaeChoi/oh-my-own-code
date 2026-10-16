@@ -51,6 +51,30 @@ test("default model persists and applies only while the catalog offers it", () =
   assert.equal(usableDefaultModel(models, ID), ID);
   assert.equal(usableDefaultModel(models, "b".repeat(64)), "");
   assert.equal(usableDefaultModel({ status: "unavailable" }, ID), "");
+  // No usable stored default: a free-only catalog starts on its first entry.
+  const freeOnly = {
+    status: "available",
+    entries: [
+      { id: "first", free: true },
+      { id: "second", free: true },
+    ],
+  };
+  assert.equal(usableDefaultModel(freeOnly, ""), "first");
+  assert.equal(usableDefaultModel(freeOnly, "second"), "second");
+  assert.equal(
+    usableDefaultModel(
+      {
+        status: "available",
+        entries: [{ id: "paid" }, { id: "f", free: true }],
+      },
+      "",
+    ),
+    "",
+  );
+  assert.equal(
+    usableDefaultModel({ status: "available", entries: [] }, ""),
+    "",
+  );
   saveDefaultModel("", s);
   assert.equal(s.getItem(DEFAULT_MODEL_STORAGE_KEY), null);
 });

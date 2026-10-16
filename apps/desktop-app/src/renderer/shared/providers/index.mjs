@@ -50,9 +50,14 @@ export function saveDefaultModel(id, storage = globalThis.localStorage) {
   }
 }
 
-// The stored default applies only while the catalog still offers it.
-export const usableDefaultModel = (catalogModels, id) =>
-  catalogModels?.status === "available" &&
-  catalogModels.entries.some((entry) => entry.id === id)
-    ? id
+// The stored default applies only while the catalog still offers it. With no
+// usable stored default, a catalog that offers only free models (a fresh
+// profile) starts on the first one, in the order the runtime lists them.
+export function usableDefaultModel(catalogModels, id) {
+  if (catalogModels?.status !== "available") return "";
+  const { entries } = catalogModels;
+  if (entries.some((entry) => entry.id === id)) return id;
+  return entries.length && entries.every((entry) => entry.free === true)
+    ? entries[0].id
     : "";
+}

@@ -200,3 +200,57 @@ test("runtime options closed metadata rejects private fields, accessors and malf
   assert.equal(projected.variants.ids[0], "variant-0");
   assert.deepEqual(projected.capabilities.input, ["text"]);
 });
+
+test("free means every cost tier is zero; variants survive a model switch only if listed", async () => {
+  const { isFreeModel, variantForModel } = await import(
+    "./renderer/shared/runtime-options/index.mjs"
+  );
+  assert.equal(isFreeModel({ cost: [{ input: 0, output: 0 }] }), true);
+  for (const cost of [
+    undefined,
+    [],
+    [{ input: 0, output: 1 }],
+    [
+      { input: 0, output: 0 },
+      { input: 1, output: 0 },
+    ],
+    [{ input: "0", output: 0 }],
+    [{}],
+  ])
+    assert.equal(isFreeModel({ cost }), false);
+  assert.equal(isFreeModel(undefined), false);
+  const high = { variants: { status: "available", ids: ["low", "high"] } };
+  assert.equal(variantForModel("high", high), "high");
+  assert.equal(variantForModel("max", high), "");
+  assert.equal(variantForModel("", high), "");
+  assert.equal(
+    variantForModel("high", { variants: { status: "available", ids: [] } }),
+    "",
+  );
+  assert.equal(
+    variantForModel("high", { variants: { status: "unavailable", ids: [] } }),
+    "",
+  );
+  assert.equal(variantForModel("high", undefined), "");
+});
+
+test("free filter keeps catalog order and never hides the selected model", async () => {
+  const { visibleModels } = await import(
+    "./renderer/shared/runtime-options/index.mjs"
+  );
+  const entries = [
+    { id: "a", free: true },
+    { id: "b" },
+    { id: "c", free: true },
+    { id: "d" },
+  ];
+  assert.deepEqual(
+    visibleModels(entries, true, "").map((e) => e.id),
+    ["a", "c"],
+  );
+  assert.deepEqual(
+    visibleModels(entries, true, "d").map((e) => e.id),
+    ["a", "c", "d"],
+  );
+  assert.equal(visibleModels(entries, false, ""), entries);
+});

@@ -42,3 +42,13 @@ export function projectSessionSelection(
   info: unknown,
   sessionId: string,
 ): SessionSelection | undefined;
+export function isFreeModel(model: unknown): boolean;
+export function variantForModel(
+  variant: string,
+  model: { variants?: { status: string; ids: readonly string[] } } | undefined,
+): string;
+export function visibleModels<T extends { id: string; free?: boolean }>(
+  entries: readonly T[],
+  freeOnly: boolean,
+  selectedId: string,
+): T[];

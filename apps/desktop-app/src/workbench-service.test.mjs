@@ -115,7 +115,7 @@ async function fixture(t, { contextIO, deadlineMs = 5000 } = {}) {
           ? [
               {
                 id: "model-a",
-                providerID: "provider",
+                providerID: state.providerID ?? "provider",
                 name: "Model",
                 enabled: true,
                 status: "active",
@@ -130,7 +130,7 @@ async function fixture(t, { contextIO, deadlineMs = 5000 } = {}) {
       list: method("providers", () => ({
         data: [
           {
-            id: "provider",
+            id: state.providerID ?? "provider",
             integrationID: "integration",
             activation: "enabled",
           },
@@ -142,14 +142,16 @@ async function fixture(t, { contextIO, deadlineMs = 5000 } = {}) {
         data: [
           {
             id: "integration",
-            connections: [
-              {
-                type: "credential",
-                id: "credential",
-                method: "key",
-                label: "test",
-              },
-            ],
+            connections: state.noCredential
+              ? []
+              : [
+                  {
+                    type: "credential",
+                    id: "credential",
+                    method: "key",
+                    label: "test",
+                  },
+                ],
           },
         ],
       })),
@@ -1178,6 +1180,41 @@ test("runtime options model variants are closed public IDs and selected before n
   assert.ok(
     names.slice(selection + 1, names.indexOf("prompt")).includes("update"),
   );
+});
+test("credential stays required for free models; Zen (opencode) free models are excluded, paid Zen stays usable", async (t) => {
+  const free = {
+    cost: [{ input: 0, output: 0, cache: { read: 0, write: 0 } }],
+  };
+  const paid = { cost: [{ input: 1, output: 2 }] };
+  const list = async (f) =>
+    (await f.service.handle({ type: "catalog.list", ...f.ids })).value.models
+      .entries;
+  // No credential: free or not, nothing is usable and sending is refused.
+  let f = await fixture(t);
+  f.state.noCredential = true;
+  f.state.modelOptions = free;
+  assert.deepEqual(await list(f), []);
+  assert.equal((await f.send()).code, "AUTH_REQUIRED");
+  // Credentialed free model of another provider (e.g. OpenRouter :free).
+  f = await fixture(t);
+  f.state.modelOptions = free;
+  let entries = await list(f);
+  assert.equal(entries.length, 1);
+  assert.equal(entries[0].free, true);
+  assert.equal((await f.send({ model: entries[0].id })).ok, true);
+  // Paid models carry no free marker.
+  f = await fixture(t);
+  f.state.modelOptions = paid;
+  assert.equal("free" in (await list(f))[0], false);
+  // Zen: free excluded even with a credential, paid kept.
+  f = await fixture(t);
+  f.state.providerID = "opencode";
+  f.state.modelOptions = free;
+  assert.deepEqual(await list(f), []);
+  f = await fixture(t);
+  f.state.providerID = "opencode";
+  f.state.modelOptions = paid;
+  assert.equal((await list(f)).length, 1);
 });
 test("runtime options removed or malformed variants cannot switch or prompt", async (t) => {
   for (const variants of [
