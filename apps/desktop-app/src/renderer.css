@@ -33,7 +33,7 @@ select {
     [type="button"],
     [type="submit"]
   ),
-  textarea,
+  textarea:not(.xterm-helper-textarea),
   select
 ) {
   min-width: 0;
@@ -44,7 +44,7 @@ select {
   background: var(--omoc-semantic-color-fill-subtle);
   font-size: var(--omoc-component-type-navigation-size);
 }
-:where(textarea) {
+:where(textarea:not(.xterm-helper-textarea)) {
   min-height: var(--omoc-component-size-input-min);
   padding-block: 6px;
 }
@@ -54,10 +54,10 @@ select {
 :where(input, textarea)::placeholder {
   color: var(--omoc-semantic-color-text-tertiary);
 }
-:where(input, textarea, select):where(:hover:not(:disabled, :read-only)) {
+:where(input, textarea, select):where(:hover:not(:disabled):not([readonly])) {
   background: var(--omoc-semantic-color-fill-hover);
 }
-:where(input, textarea, select):disabled {
+:where(input, textarea, select):where(:disabled) {
   color: var(--omoc-semantic-color-text-tertiary);
 }
 :focus-visible {

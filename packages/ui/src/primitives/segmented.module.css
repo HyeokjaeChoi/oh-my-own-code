@@ -57,6 +57,12 @@
   cursor: default;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .option {
+    transition: none;
+  }
+}
+
 @media (forced-colors: active) {
   .selected {
     outline: 1px solid Highlight;

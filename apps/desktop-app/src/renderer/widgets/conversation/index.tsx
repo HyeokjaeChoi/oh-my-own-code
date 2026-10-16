@@ -1281,6 +1281,7 @@ export function Conversation(props: Props) {
               props.catalog.models.entries.length === 0 && (
                 <Notice
                   tone="danger"
+                  role="status"
                   data-no-models
                   action={
                     <Button

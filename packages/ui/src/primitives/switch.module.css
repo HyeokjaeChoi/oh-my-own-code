@@ -6,10 +6,11 @@
   margin: 0;
   border: 1px solid transparent;
   border-radius: var(--omoc-semantic-radius-badge);
-  background: var(--omoc-semantic-color-fill-hover);
+  background: var(--omoc-semantic-color-border-default);
   appearance: none;
   cursor: pointer;
   transition: background var(--omoc-primitive-motion-fast) ease-out;
+  forced-color-adjust: none;
 }
 
 .switch::before {
@@ -53,8 +54,26 @@
 }
 
 @media (forced-colors: active) {
+  .switch {
+    border-color: ButtonText;
+    background: Canvas;
+  }
+  .switch::before {
+    background: ButtonText;
+    box-shadow: none;
+  }
   .switch:checked {
     background: Highlight;
+  }
+  .switch:checked::before {
+    background: HighlightText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch,
+  .switch::before {
+    transition: none;
   }
 }
 
