@@ -90,20 +90,42 @@ export async function openExtensions(page, sub) {
 }
 
 /**
- * Switches workspace while Settings is open. The dialog is modal, so it is
- * closed (button, not Escape: Escape cancels an in-flight observation), the
- * workspace switched, and `reopen` brings the same page back.
+ * Changes the window's selection while the (modal) settings dialog stays open
+ * and its editor stays mounted. The renderer polls `notify.clicked` every 5s
+ * and selects what a clicked OS notification carries; the test main answers
+ * that poll once with the requested workspace/session.
  */
-export async function selectWorkspaceBehindSettings(page, id, reopen) {
-  const dialog = page.getByRole("dialog", { name: "설정", exact: true });
-  if (await dialog.isVisible()) {
-    await dialog
-      .getByRole("button", { name: "설정 닫기", exact: true })
-      .click();
-    await expect(dialog).toBeHidden();
-  }
-  await selectWorkspace(page, id);
-  await reopen();
+export async function selectWhileSettingsOpen(
+  page,
+  application,
+  workspaceId,
+  sessionId,
+) {
+  await application.evaluate(
+    ({ ipcMain }, target) => {
+      globalThis.__omocNotifyConsumed = false;
+      ipcMain.removeHandler("desktop:v1:notify");
+      ipcMain.handle("desktop:v1:notify", (_event, request) => {
+        if (
+          request?.type === "notify.clicked" &&
+          !globalThis.__omocNotifyConsumed
+        ) {
+          globalThis.__omocNotifyConsumed = true;
+          return { ok: true, value: target };
+        }
+        return { ok: true, value: null };
+      });
+    },
+    { workspaceId, sessionId },
+  );
+  await expect
+    .poll(() => application.evaluate(() => globalThis.__omocNotifyConsumed), {
+      timeout: 20000,
+    })
+    .toBe(true);
+  await expect(
+    page.getByRole("dialog", { name: "설정", exact: true }),
+  ).toBeVisible();
 }
 
 /** Closes Settings with its button (Escape would cancel an in-flight observation). */

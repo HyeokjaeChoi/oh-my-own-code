@@ -38,7 +38,7 @@ import {
   closeSettings,
   openExtensions,
   openWorkspaceMenu,
-  selectWorkspaceBehindSettings,
+  selectWhileSettingsOpen,
 } from "./e2e-shell.mjs";
 
 import {
@@ -2448,11 +2448,9 @@ try {
           `P7 ${name}; unchanged draft and synthetic storage projection`,
         );
         if (state.retained) {
-          const retained = page.getByRole("status", {
-            name: "보관된 요청 확인",
-            exact: true,
-            includeHidden: true,
-          });
+          const retained = page.locator(
+            '[role="status"][aria-label="보관된 요청 확인"]',
+          );
           await expect(retained).toHaveAttribute("data-retained-count", "1");
           await expect(retained).toHaveText(
             "이전 요청 1개의 결과 확인이 필요합니다. 자동으로 다시 실행하지 않습니다.",
@@ -2498,7 +2496,7 @@ try {
           );
           await page.reload();
           await expect(
-            page.getByRole("status", { name: "보관된 요청 확인", exact: true }),
+            page.locator('[role="status"][aria-label="보관된 요청 확인"]'),
           ).toHaveAttribute("data-retained-count", "1");
           await expect
             .poll(() =>
@@ -2592,11 +2590,9 @@ try {
           return identity;
         }, effect);
         await page.reload();
-        const retained = page.getByRole("status", {
-          name: "보관된 요청 확인",
-          exact: true,
-          includeHidden: true,
-        });
+        const retained = page.locator(
+          '[role="status"][aria-label="보관된 요청 확인"]',
+        );
         const input = page.getByRole("textbox", {
           name: "메시지 작성",
           exact: true,
@@ -2720,11 +2716,9 @@ try {
         };
       });
       await page.reload();
-      const narrowRetained = page.getByRole("status", {
-        name: "보관된 요청 확인",
-        exact: true,
-        includeHidden: true,
-      });
+      const narrowRetained = page.locator(
+        '[role="status"][aria-label="보관된 요청 확인"]',
+      );
       await expect(narrowRetained).toHaveAttribute("data-retained-count", "1");
       await expect
         .poll(() =>
@@ -3242,13 +3236,19 @@ try {
       await expect(draftContent).toHaveValue(
         "# 합성 프로젝트 지침\n\n수정 후 테스트와 별도 리뷰를 확인하세요.",
       );
-      await selectWorkspaceBehindSettings(page, "fixture-draft-w2", () =>
-        openExtensions(page, "instructions"),
+      await selectWhileSettingsOpen(
+        page,
+        application,
+        "fixture-draft-w2",
+        "fixture-draft-s2",
       );
       await expect(draftContent).toHaveValue("");
       await draftContent.fill("# 다른 작업 공간의 초안");
-      await selectWorkspaceBehindSettings(page, "fixture-w", () =>
-        openExtensions(page, "instructions"),
+      await selectWhileSettingsOpen(
+        page,
+        application,
+        "fixture-w",
+        "fixture-s",
       );
       await expect(draftContent).toHaveValue(
         "# 합성 프로젝트 지침\n\n수정 후 테스트와 별도 리뷰를 확인하세요.",
@@ -3351,7 +3351,11 @@ try {
         .toBeGreaterThan(panelScroll);
       await page.keyboard.press("Escape");
       await expect(draftDialog).toBeHidden();
-      // The docked-sidebar opener is hidden at this zoom, so focus may fall back to the page.
+      // The docked-sidebar opener is hidden at this zoom: focus falls back to
+      // the navigation toggle.
+      await expect(
+        page.getByRole("button", { name: "작업 공간 탐색 열기", exact: true }),
+      ).toBeFocused();
       assert.deepEqual(
         await application.evaluate(() => globalThis.__omocUiMutationMetrics()),
         draftMutations,
@@ -3601,7 +3605,11 @@ try {
       );
       await page.keyboard.press("Escape");
       await expect(draftDialog).toBeHidden();
-      // The docked-sidebar opener is hidden at this zoom, so focus may fall back to the page.
+      // The docked-sidebar opener is hidden at this zoom: focus falls back to
+      // the navigation toggle.
+      await expect(
+        page.getByRole("button", { name: "작업 공간 탐색 열기", exact: true }),
+      ).toBeFocused();
       assert.deepEqual(
         await application.evaluate(() => globalThis.__omocUiMutationMetrics()),
         draftMutations,
@@ -4925,8 +4933,11 @@ try {
         "data-mcp-action-status",
         "pending",
       );
-      await selectWorkspaceBehindSettings(page, "fixture-mcp-other-w", () =>
-        openExtensions(page, "mcp"),
+      await selectWhileSettingsOpen(
+        page,
+        application,
+        "fixture-mcp-other-w",
+        "fixture-mcp-other-s",
       );
       await expect(mcpPanel).toHaveAttribute(
         "data-mcp-workspace",
@@ -5240,11 +5251,7 @@ try {
               for (const control of [skillList, skillRead, skillSave])
                 await expect(control).toBeDisabled();
               await expect(
-                page.getByRole("status", {
-                  name: "보관된 요청 확인",
-                  exact: true,
-                  includeHidden: true,
-                }),
+                page.locator('[role="status"][aria-label="보관된 요청 확인"]'),
               ).toHaveAttribute("data-retained-count", "1");
               await expect
                 .poll(() =>
@@ -6829,7 +6836,7 @@ try {
       // Append to the complete legacy matrix. Every case reloads the actual built
       // renderer/window store. Seeding only producer conditions is not UI evidence.
       const extensionPanel = page.locator(
-        'section[aria-label="Native 확장 상태"][data-configuration-extensions="true"]',
+        'section[aria-label="런타임 확장"][data-configuration-extensions="true"]',
       );
       const extensionObserve = extensionPanel.locator(
         '[data-extensions-observe="true"]',
@@ -7131,17 +7138,21 @@ try {
         await openExtensionCase(name);
         await observeExtensions("checking");
         if (name === "late-workspace") {
-          await selectWorkspaceBehindSettings(
+          await selectWhileSettingsOpen(
             page,
+            application,
             "fixture-extensions-other-w",
-            () => openExtensions(page, "native"),
+            "fixture-extensions-other-s",
           );
           await expect(extensionPanel).toHaveAttribute(
             "data-extensions-state",
             "not_observed",
           );
-          await selectWorkspaceBehindSettings(page, "fixture-w", () =>
-            openExtensions(page, "native"),
+          await selectWhileSettingsOpen(
+            page,
+            application,
+            "fixture-w",
+            "fixture-s",
           );
         } else {
           await application.evaluate((_electron, name) => {

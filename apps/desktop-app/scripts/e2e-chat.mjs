@@ -473,7 +473,7 @@ try {
     rules.getByRole("button", { name: /허용 규칙 삭제/ }),
   ).toHaveCount(1, { timeout: 30_000 });
   await rules.getByRole("button", { name: /허용 규칙 삭제/ }).click();
-  await expect(rules.getByText("저장된 규칙이 없습니다")).toBeVisible({
+  await expect(rules.getByText("저장된 규칙이 없습니다.")).toBeVisible({
     timeout: 30_000,
   });
   await page.keyboard.press("Escape");

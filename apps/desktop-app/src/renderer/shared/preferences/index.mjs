@@ -88,4 +88,6 @@ export const SHORTCUTS = Object.freeze([
   { keys: "?", action: "설정·단축키 열기" },
   { keys: "Esc", action: "열린 메뉴·대화 상자·편집 닫기" },
   { keys: "/", action: "빈 입력창에서 명령 메뉴 열기" },
+  { keys: "↑ ↓", action: "명령 메뉴 항목 이동" },
+  { keys: "Home End", action: "메뉴 처음·끝 항목으로 이동" },
 ]);

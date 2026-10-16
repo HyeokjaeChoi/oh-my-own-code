@@ -1,4 +1,4 @@
-import { OPEN_EXTENSIONS_EVENT } from "../../shared/palette/index.js";
+import { openExtensionsSub } from "../../shared/palette/index.js";
 import { useId, useRef } from "react";
 import {
   selectors,
@@ -63,6 +63,18 @@ function exactTextareaEdit(original: string, input: string): string {
     original.slice(offsets[normalized.length - end])
   );
 }
+// Protected sources are the files the extension editors own.
+const protectedKind = (path: string) =>
+  path.endsWith("AGENTS.md")
+    ? "instructions"
+    : path.endsWith("opencode.json")
+      ? "mcp"
+      : path.includes("/skills/")
+        ? "skills"
+        : path.includes("/agents/")
+          ? "agents"
+          : "";
+
 export function WorkspaceFileEditor() {
   const { actions } = useWindowWorkbench();
   const state = useWorkbenchSelector((s) => s);
@@ -208,9 +220,7 @@ export function WorkspaceFileEditor() {
           <Button
             size="compact"
             intent="secondary"
-            onClick={() =>
-              window.dispatchEvent(new Event(OPEN_EXTENSIONS_EVENT))
-            }
+            onClick={() => openExtensionsSub(protectedKind(path))}
           >
             전용 편집기 보기
           </Button>

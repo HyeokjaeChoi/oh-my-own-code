@@ -1,4 +1,4 @@
-import React, { useId, useRef } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import type { KeyboardEvent, ReactNode, RefObject } from "react";
 import { Dialog } from "radix-ui";
 import { X } from "lucide-react";
@@ -25,6 +25,8 @@ export type SettingsDialogProps<T extends string> = {
   status?: ReactNode;
   children: ReactNode;
   returnFocusRef?: RefObject<HTMLElement | null>;
+  // Used when the opener is gone or hidden (e.g. a docked sidebar button).
+  fallbackFocusRef?: RefObject<HTMLElement | null>;
 };
 
 // Centered two-column dialog: left navigation (a vertical tablist, collapsing
@@ -41,15 +43,22 @@ export function SettingsDialog<T extends string>({
   status,
   children,
   returnFocusRef,
+  fallbackFocusRef,
 }: SettingsDialogProps<T>) {
   const openingFocusRef = useRef<HTMLElement | null>(null);
   const base = useId();
   const tabId = (id: string) => `${base}-tab-${id}`;
   const panelId = `${base}-panel`;
   const current = items.find((item) => item.id === page) ?? items[0];
+  // Arrows move focus only; Enter/Space (click) activates a page.
+  const [focusId, setFocusId] = useState<T | undefined>(undefined);
+  const tabStop = focusId ?? current?.id;
+  useEffect(() => {
+    if (open) setFocusId(undefined);
+  }, [open]);
 
   const onTabKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    const index = items.findIndex((item) => item.id === page);
+    const index = items.findIndex((item) => item.id === tabStop);
     const last = items.length - 1;
     const next =
       event.key === "ArrowDown"
@@ -64,7 +73,7 @@ export function SettingsDialog<T extends string>({
     if (next < 0) return;
     event.preventDefault();
     const item = items[next]!;
-    onPageChange(item.id);
+    setFocusId(item.id);
     document.getElementById(tabId(item.id))?.focus();
   };
 
@@ -91,8 +100,11 @@ export function SettingsDialog<T extends string>({
                 : null;
           }}
           onCloseAutoFocus={(event) => {
-            const target = returnFocusRef?.current ?? openingFocusRef.current;
-            if (target?.isConnected) {
+            const visible = (el?: HTMLElement | null) =>
+              Boolean(el?.isConnected && el.checkVisibility());
+            const opener = returnFocusRef?.current ?? openingFocusRef.current;
+            const target = visible(opener) ? opener : fallbackFocusRef?.current;
+            if (target && visible(target)) {
               event.preventDefault();
               target.focus({ preventScroll: true });
             }
@@ -115,7 +127,8 @@ export function SettingsDialog<T extends string>({
                   className={styles.tab}
                   aria-selected={item.id === current?.id}
                   aria-controls={panelId}
-                  tabIndex={item.id === current?.id ? 0 : -1}
+                  tabIndex={item.id === tabStop ? 0 : -1}
+                  onFocus={() => setFocusId(item.id)}
                   onClick={() => onPageChange(item.id)}
                 >
                   {item.icon ? (

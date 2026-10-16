@@ -24,3 +24,8 @@ export const openSettingsPage = (page: SettingsPage) =>
   window.dispatchEvent(
     new CustomEvent(OPEN_SETTINGS_EVENT, { detail: { page } }),
   );
+// OPEN_EXTENSIONS_EVENT optionally carries the kind to drill into.
+export const openExtensionsSub = (sub: string) =>
+  window.dispatchEvent(
+    new CustomEvent(OPEN_EXTENSIONS_EVENT, { detail: { sub } }),
+  );
