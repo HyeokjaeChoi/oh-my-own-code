@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { selectWorkspace } from "./e2e-shell.mjs";
+import { openExtensions, selectWorkspace } from "./e2e-shell.mjs";
 import { once } from "node:events";
 import { childPids as findChildPids } from "./process-tree.mjs";
 import { existsSync } from "node:fs";
@@ -340,11 +340,12 @@ try {
   await page.screenshot({
     path: join(run, "desktop-workbench-file-preview.png"),
   });
-  await page.getByRole("button", { name: "확장·명령", exact: true }).click();
-  await expect(
-    page.getByRole("region", { name: "런타임 확장 목록" }),
-  ).toContainText("MCP");
+  await openExtensions(page);
+  await expect(page.getByRole("region", { name: "확장 종류" })).toContainText(
+    "MCP",
+  );
   await page.screenshot({ path: join(run, "desktop-workbench-catalog.png") });
+  await page.keyboard.press("Escape");
   await page
     .getByRole("button", { name: "상세 패널 닫기", exact: true })
     .click();

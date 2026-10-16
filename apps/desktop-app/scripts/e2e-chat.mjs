@@ -467,14 +467,15 @@ try {
   // The saved "항상 허용" rule is listed in Settings and can be revoked; the
   // same read then asks again.
   await openSettings(page);
+  await page.getByRole("tab", { name: "권한" }).click();
   const rules = page.getByRole("region", { name: "저장된 허용 규칙" });
   await expect(
     rules.getByRole("button", { name: /허용 규칙 삭제/ }),
   ).toHaveCount(1, { timeout: 30_000 });
   await rules.getByRole("button", { name: /허용 규칙 삭제/ }).click();
-  await expect(
-    rules.getByText("이 프로젝트에 저장된 허용 규칙이 없습니다."),
-  ).toBeVisible({ timeout: 30_000 });
+  await expect(rules.getByText("저장된 규칙이 없습니다")).toBeVisible({
+    timeout: 30_000,
+  });
   await page.keyboard.press("Escape");
   await send(`READ-FIXTURE:${fixtureFile}`);
   await expect(prompt).toBeVisible({ timeout: 90_000 });
