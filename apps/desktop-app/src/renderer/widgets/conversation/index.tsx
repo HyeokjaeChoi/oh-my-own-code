@@ -55,7 +55,7 @@ import {
   useDefaultModel,
 } from "../../features/composer/index.js";
 import type { MutationRequest } from "../../shared/transport/index.js";
-import { OPEN_SETTINGS_EVENT } from "../../shared/palette/index.js";
+import { openSettingsPage } from "../../shared/palette/index.js";
 import styles from "./conversation.module.css";
 import { PopoverPanel, PopoverTrigger } from "./composer-popovers.js";
 import { AssistantText, CopyButton, LiteralText } from "./markdown.js";
@@ -90,7 +90,7 @@ type Props = {
     _navigate?: boolean,
     _submittedText?: string,
   ): Promise<boolean>;
-  openPanel(_panel: "files" | "catalog"): void;
+  openPanel(_panel: "files" | "extensions"): void;
   newSession(): void;
 };
 /* eslint-enable no-unused-vars */
@@ -944,7 +944,7 @@ export function Conversation(props: Props) {
                       data-command
                       onClick={() => {
                         closeMenu();
-                        props.openPanel("catalog");
+                        props.openPanel("extensions");
                       }}
                     >
                       확장 목록 보기
@@ -1286,9 +1286,7 @@ export function Conversation(props: Props) {
                   action={
                     <Button
                       size="compact"
-                      onClick={() =>
-                        window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))
-                      }
+                      onClick={() => openSettingsPage("models")}
                     >
                       설정 열기
                     </Button>

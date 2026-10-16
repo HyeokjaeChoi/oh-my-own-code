@@ -19,3 +19,13 @@
   overflow-wrap: anywhere;
   margin: 0 0 var(--omoc-semantic-space-control-gap);
 }
+.wipeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--omoc-semantic-space-control-gap);
+  margin-block-start: 8px;
+}
+.wipeRow > :first-child {
+  flex: 1 1 220px;
+}

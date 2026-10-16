@@ -687,11 +687,16 @@ function McpControls() {
   );
 }
 
-export function ConfigurationDraftEditor() {
+export function ConfigurationDraftEditor({
+  fixedKind,
+}: {
+  // Settings drills into one kind; the kind picker is then redundant.
+  fixedKind?: ConfigurationDraftKind | "skills" | "agents";
+} = {}) {
   const id = useId();
   const [editorKind, setEditorKind] = useState<
     ConfigurationDraftKind | "skills" | "agents"
-  >("instructions");
+  >(fixedKind ?? "instructions");
   const kind: ConfigurationDraftKind =
     editorKind === "skills" || editorKind === "agents"
       ? "instructions"
@@ -839,15 +844,18 @@ export function ConfigurationDraftEditor() {
       aria-label="설정 초안"
       data-configuration-draft-kind={editorKind}
     >
-      <h3 className={styles.heading}>설정 초안</h3>
-      <p className={styles.muted} id={`${id}-retention`}>
-        저장 전 수정 내용은 이 창의 임시 초안입니다. 파일에 저장을 선택하면 확인
-        창에서 저장을 승인합니다. 런타임 적용과 연결은 별도입니다.
-      </p>
-      <p className={styles.muted}>
-        패널을 닫거나 작업 공간을 바꿔도 이 창에서는 유지합니다. 창을 닫으면
-        저장하지 않은 내용은 사라집니다. 새 창에서는 초안을 복원하지 않습니다.
-      </p>
+      {!fixedKind && <h3 className={styles.heading}>설정 초안</h3>}
+      <details className={styles.info}>
+        <summary>초안 안내</summary>
+        <p className={styles.muted} id={`${id}-retention`}>
+          저장 전 수정 내용은 이 창의 임시 초안입니다. 파일에 저장을 선택하면
+          확인 창에서 저장을 승인합니다. 런타임 적용과 연결은 별도입니다.
+        </p>
+        <p className={styles.muted}>
+          설정을 닫거나 작업 공간을 바꿔도 이 창에서는 유지합니다. 창을 닫으면
+          저장하지 않은 내용은 사라집니다. 새 창에서는 초안을 복원하지 않습니다.
+        </p>
+      </details>
       {workspace ? (
         <p className={styles.path}>작업 공간: {workspace.path}</p>
       ) : (
@@ -855,28 +863,30 @@ export function ConfigurationDraftEditor() {
           등록된 작업 공간을 선택하면 임시 초안을 작성할 수 있습니다.
         </p>
       )}
-      <div className={styles.field}>
-        <label htmlFor={`${id}-kind`}>초안 종류</label>
-        <Select
-          id={`${id}-kind`}
-          value={editorKind}
-          onChange={(event) => {
-            const value = event.currentTarget.value;
-            if (
-              value === "instructions" ||
-              value === "mcp" ||
-              value === "skills" ||
-              value === "agents"
-            )
-              setEditorKind(value);
-          }}
-        >
-          <option value="instructions">AGENTS.md</option>
-          <option value="mcp">OpenCode MCP</option>
-          <option value="skills">Skills</option>
-          <option value="agents">Agents</option>
-        </Select>
-      </div>
+      {!fixedKind && (
+        <div className={styles.field}>
+          <label htmlFor={`${id}-kind`}>초안 종류</label>
+          <Select
+            id={`${id}-kind`}
+            value={editorKind}
+            onChange={(event) => {
+              const value = event.currentTarget.value;
+              if (
+                value === "instructions" ||
+                value === "mcp" ||
+                value === "skills" ||
+                value === "agents"
+              )
+                setEditorKind(value);
+            }}
+          >
+            <option value="instructions">AGENTS.md</option>
+            <option value="mcp">OpenCode MCP</option>
+            <option value="skills">Skills</option>
+            <option value="agents">Agents</option>
+          </Select>
+        </div>
+      )}
       {editorKind === "agents" ? (
         <>
           <AgentFilesEditor />

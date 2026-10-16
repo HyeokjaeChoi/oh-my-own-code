@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Notice, Section } from "@workbench/ui";
+import { Button, EmptyState, Notice, Section } from "@workbench/ui";
 import { useWorkbenchSelector } from "../../entities/workbench/index.js";
 import {
   callSavedRules,
@@ -8,7 +8,7 @@ import {
 } from "../../shared/saved-rules/index.js";
 import styles from "./preferences.module.css";
 
-// "저장된 허용 규칙": the project's "항상 허용" rows. They can only be removed
+// "권한": the project's "항상 허용" rows. They can only be removed
 // here; the deny floor and the .git guard are never listed or editable.
 export function SavedRulesSettings() {
   const workspaceId = useWorkbenchSelector((s) => s.selection.workspaceId);
@@ -16,7 +16,12 @@ export function SavedRulesSettings() {
   const [isGlobal, setIsGlobal] = useState(false);
   const latest = useRef(0);
   const [error, setError] = useState("");
+  const [offline, setOffline] = useState(false);
   const [busy, setBusy] = useState(false);
+  const fail = (code: string) => {
+    setOffline(code === "UNAVAILABLE");
+    setError(code === "UNAVAILABLE" ? "" : savedRulesErrorText(code));
+  };
   const load = useCallback(async () => {
     const mine = ++latest.current;
     if (!workspaceId) return setRules(undefined);
@@ -28,9 +33,14 @@ export function SavedRulesSettings() {
     if (mine !== latest.current) return;
     if (!result.ok) {
       setRules(undefined);
-      return setError(savedRulesErrorText(result.code));
+      setOffline(result.code === "UNAVAILABLE");
+      setError(
+        result.code === "UNAVAILABLE" ? "" : savedRulesErrorText(result.code),
+      );
+      return;
     }
     setError("");
+    setOffline(false);
     setIsGlobal(result.value.global === true);
     setRules(result.value.rules);
   }, [workspaceId]);
@@ -48,35 +58,49 @@ export function SavedRulesSettings() {
     });
     setBusy(false);
     await load();
-    if (!result.ok) setError(savedRulesErrorText(result.code));
+    if (!result.ok) fail(result.code);
   };
-  if (!workspaceId) return null;
+  if (!workspaceId) return <EmptyState title="작업 공간을 먼저 선택하세요." />;
   return (
-    <Section title="저장된 허용 규칙">
-      {error && <Notice tone="danger">{error}</Notice>}
-      <p className={styles.muted}>
-        규칙은 Native 프로젝트 단위로 저장되며 같은 프로젝트의 작업 트리가 함께
-        사용합니다.
-      </p>
-      {rules?.length === 0 && (
-        <Notice tone="info">이 프로젝트에 저장된 허용 규칙이 없습니다.</Notice>
+    <>
+      {offline && (
+        <Notice
+          tone="danger"
+          action={
+            <Button size="compact" onClick={() => void load()}>
+              다시 시도
+            </Button>
+          }
+        >
+          런타임에 연결되지 않았습니다.
+        </Notice>
       )}
-      {rules?.map((rule) => (
-        <div key={rule.id} className={styles.providerRow}>
-          <span>
-            {rule.action} · <small>{rule.resource}</small>
-          </span>
-          <Button
-            size="compact"
-            intent="danger"
-            disabled={busy || isGlobal}
-            aria-label={`${rule.action} ${rule.resource} 허용 규칙 삭제`}
-            onClick={() => void remove(rule)}
-          >
-            삭제
-          </Button>
-        </div>
-      ))}
-    </Section>
+      {error && <Notice tone="danger">{error}</Notice>}
+      <Section
+        title="저장된 허용 규칙"
+        description="프로젝트별로 저장되며 같은 프로젝트의 작업 트리가 함께 사용합니다."
+      >
+        {rules?.length === 0 && <EmptyState title="저장된 규칙이 없습니다" />}
+        <ul className={styles.rowList}>
+          {rules?.map((rule) => (
+            <li key={rule.id} className={styles.ruleRow}>
+              <span className={styles.itemText}>
+                <span className={styles.mono}>{rule.resource}</span>
+              </span>
+              <span className={styles.chip}>{rule.action}</span>
+              <Button
+                size="compact"
+                className={styles.dangerText ?? ""}
+                disabled={busy || isGlobal}
+                aria-label={`${rule.action} ${rule.resource} 허용 규칙 삭제`}
+                onClick={() => void remove(rule)}
+              >
+                삭제
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    </>
   );
 }

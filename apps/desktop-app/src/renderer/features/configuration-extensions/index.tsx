@@ -67,6 +67,8 @@ export function ConfigurationExtensions() {
       className={styles.extensions}
       aria-label="Native 확장 상태"
       data-configuration-extensions="true"
+      // While a read is cancellable, Escape belongs to this section, not the dialog.
+      data-escape-key-scope={entry.request ? true : undefined}
       data-extensions-state={state}
       data-extensions-blocked={blocked ?? "none"}
       onKeyDown={(event) => {
