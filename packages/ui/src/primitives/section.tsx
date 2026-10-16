@@ -1,9 +1,12 @@
 import React, { useId, type ReactNode } from "react";
+import { InfoTip } from "./info-tip.js";
 import styles from "./section.module.css";
 
 export type SectionProps = {
   title: ReactNode;
   description?: ReactNode;
+  // Longer explanation, disclosed from an "i" button beside the title.
+  info?: ReactNode;
   className?: string;
   children: ReactNode;
 };
@@ -11,6 +14,7 @@ export type SectionProps = {
 export function Section({
   title,
   description,
+  info,
   className,
   children,
 }: SectionProps) {
@@ -21,9 +25,12 @@ export function Section({
       className={[styles.section, className].filter(Boolean).join(" ")}
     >
       <div className={styles.header}>
-        <h3 id={titleId} className={styles.title}>
-          {title}
-        </h3>
+        <div className={styles.titleRow}>
+          <h3 id={titleId} className={styles.title}>
+            {title}
+          </h3>
+          {info ? <InfoTip>{info}</InfoTip> : null}
+        </div>
         {description ? (
           <p className={styles.description}>{description}</p>
         ) : null}
