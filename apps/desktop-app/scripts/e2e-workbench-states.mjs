@@ -34,7 +34,12 @@ import {
 } from "./fixtures/workbench-host.mjs";
 import { captureProvenance } from "./build-provenance.mjs";
 import { closeComposerPopovers, openComposerPopover } from "./e2e-composer.mjs";
-import { openWorkspaceMenu, selectWorkspace } from "./e2e-shell.mjs";
+import {
+  closeSettings,
+  openExtensions,
+  openWorkspaceMenu,
+  selectWorkspaceBehindSettings,
+} from "./e2e-shell.mjs";
 
 import {
   UI_STATE_FAMILIES,
@@ -2446,6 +2451,7 @@ try {
           const retained = page.getByRole("status", {
             name: "보관된 요청 확인",
             exact: true,
+            includeHidden: true,
           });
           await expect(retained).toHaveAttribute("data-retained-count", "1");
           await expect(retained).toHaveText(
@@ -2589,6 +2595,7 @@ try {
         const retained = page.getByRole("status", {
           name: "보관된 요청 확인",
           exact: true,
+          includeHidden: true,
         });
         const input = page.getByRole("textbox", {
           name: "메시지 작성",
@@ -2716,6 +2723,7 @@ try {
       const narrowRetained = page.getByRole("status", {
         name: "보관된 요청 확인",
         exact: true,
+        includeHidden: true,
       });
       await expect(narrowRetained).toHaveAttribute("data-retained-count", "1");
       await expect
@@ -2937,12 +2945,7 @@ try {
         await expect(
           page.locator(".workbench-header [data-connection]"),
         ).toHaveAttribute("data-connection", "connected");
-        await page
-          .getByRole("button", { name: "파일·확장", exact: true })
-          .click();
-        await page
-          .getByRole("button", { name: "확장·명령", exact: true })
-          .click();
+        await openExtensions(page);
         const sources = page.getByRole("region", {
           name: "설정 출처",
           exact: true,
@@ -3000,7 +3003,7 @@ try {
           if (name === "long-path") {
             await location.scrollIntoViewIfNeeded();
             const dialog = page.getByRole("dialog", {
-              name: "파일, 확장 및 활동",
+              name: "설정",
               exact: true,
             });
             await expect(dialog).toBeVisible();
@@ -3014,15 +3017,28 @@ try {
               ),
               true,
             );
+            // scrollIntoView may have reached the end; start from the top.
+            await location.evaluate((e) => {
+              e.closest("[data-settings-body]").scrollTop = 0;
+            });
             const scroll = await location.evaluate(
-              (e) => e.closest(".catalog").parentElement.scrollTop,
+              (e) => e.closest("[data-settings-body]").scrollTop,
             );
-            await page.mouse.move(200, 180);
+            const box = await location.evaluate((e) => {
+              const r = e
+                .closest("[data-settings-body]")
+                .getBoundingClientRect();
+              return { x: r.x, y: r.y, width: r.width, height: r.height };
+            });
+            await page.mouse.move(
+              box.x + box.width / 2,
+              box.y + box.height / 2,
+            );
             await page.mouse.wheel(0, 400);
             await expect
               .poll(() =>
                 location.evaluate(
-                  (e) => e.closest(".catalog").parentElement.scrollTop,
+                  (e) => e.closest("[data-settings-body]").scrollTop,
                 ),
               )
               .toBeGreaterThan(scroll);
@@ -3034,6 +3050,7 @@ try {
           currentState,
         );
         if (name === "normal") {
+          await openExtensions(page, "mcp");
           const mcp = page.getByText("상태: 외부 인증 설정 필요", {
             exact: true,
           });
@@ -3048,8 +3065,9 @@ try {
             "Configuration MCP reported needs_auth/connected, no activation",
           );
         }
+        await openExtensions(page);
         const refresh = page
-          .getByRole("region", { name: "런타임 확장 목록", exact: true })
+          .getByRole("region", { name: "확장 종류", exact: true })
           .getByRole("button", { name: "새로고침", exact: true });
         await refresh.focus();
         await expect(refresh).toBeFocused();
@@ -3064,13 +3082,13 @@ try {
         if (name === "long-path") {
           await page.keyboard.press("Escape");
           await expect(
-            page.getByRole("dialog", {
-              name: "파일, 확장 및 활동",
-              exact: true,
-            }),
+            page.getByRole("dialog", { name: "설정", exact: true }),
           ).toBeHidden();
           await expect(
-            page.getByRole("button", { name: "파일·확장", exact: true }),
+            page.getByRole("button", {
+              name: "작업 공간 탐색 열기",
+              exact: true,
+            }),
           ).toBeFocused();
         }
         configurationStates.push({
@@ -3119,22 +3137,13 @@ try {
       await expect(
         page.locator(".workbench-header [data-connection]"),
       ).toHaveAttribute("data-connection", "connected");
-      await page
-        .getByRole("button", { name: "파일·확장", exact: true })
-        .click();
-      await page
-        .getByRole("button", { name: "확장·명령", exact: true })
-        .click();
+      await openExtensions(page, "instructions");
       const drafts = page.getByRole("region", {
         name: "설정 초안",
         exact: true,
       });
       const draftContent = drafts.getByRole("textbox", {
         name: "설정 초안 내용",
-        exact: true,
-      });
-      const draftKind = drafts.getByRole("combobox", {
-        name: "초안 종류",
         exact: true,
       });
       const validateDraft = drafts.getByRole("button", {
@@ -3187,7 +3196,7 @@ try {
       });
 
       currentState = "Configuration draft MCP invalid and supported subset";
-      await draftKind.selectOption("mcp");
+      await openExtensions(page, "mcp");
       await draftContent.fill('{"mcpServers":{"example":{"type":"local"}}}');
       await validateDraft.click();
       await expect(
@@ -3223,26 +3232,24 @@ try {
         "desktop-configuration-draft-mcp-valid-synthetic.png",
         currentState,
       );
-      await draftKind.selectOption("instructions");
+      await openExtensions(page, "instructions");
       await expect(draftContent).toHaveValue(
         "# 합성 프로젝트 지침\n\n수정 후 테스트와 별도 리뷰를 확인하세요.",
       );
-      await page
-        .getByRole("button", { name: "상세 패널 닫기", exact: true })
-        .click();
-      await page
-        .getByRole("button", { name: "파일·확장", exact: true })
-        .click();
-      await page
-        .getByRole("button", { name: "확장·명령", exact: true })
-        .click();
+      await page.keyboard.press("Escape");
+      await expect(page.getByRole("dialog")).toBeHidden();
+      await openExtensions(page, "instructions");
       await expect(draftContent).toHaveValue(
         "# 합성 프로젝트 지침\n\n수정 후 테스트와 별도 리뷰를 확인하세요.",
       );
-      await selectWorkspace(page, "fixture-draft-w2");
+      await selectWorkspaceBehindSettings(page, "fixture-draft-w2", () =>
+        openExtensions(page, "instructions"),
+      );
       await expect(draftContent).toHaveValue("");
       await draftContent.fill("# 다른 작업 공간의 초안");
-      await selectWorkspace(page, "fixture-w");
+      await selectWorkspaceBehindSettings(page, "fixture-w", () =>
+        openExtensions(page, "instructions"),
+      );
       await expect(draftContent).toHaveValue(
         "# 합성 프로젝트 지침\n\n수정 후 테스트와 별도 리뷰를 확인하세요.",
       );
@@ -3273,7 +3280,7 @@ try {
       await setDisplay(page, 760, 600, 2);
       await compareDraft.scrollIntoViewIfNeeded();
       const draftDialog = page.getByRole("dialog", {
-        name: "파일, 확장 및 활동",
+        name: "설정",
         exact: true,
       });
       await expect(draftDialog).toBeVisible();
@@ -3328,7 +3335,7 @@ try {
         currentState,
       );
       const panelScroll = await drafts.evaluate(
-        (e) => e.closest(".catalog").parentElement.scrollTop,
+        (e) => e.closest("[data-settings-body]").scrollTop,
       );
       const validateBounds = await validateDraft.boundingBox();
       assert.ok(validateBounds);
@@ -3339,14 +3346,12 @@ try {
       await page.mouse.wheel(0, 400);
       await expect
         .poll(() =>
-          drafts.evaluate((e) => e.closest(".catalog").parentElement.scrollTop),
+          drafts.evaluate((e) => e.closest("[data-settings-body]").scrollTop),
         )
         .toBeGreaterThan(panelScroll);
       await page.keyboard.press("Escape");
       await expect(draftDialog).toBeHidden();
-      await expect(
-        page.getByRole("button", { name: "파일·확장", exact: true }),
-      ).toBeFocused();
+      // The docked-sidebar opener is hidden at this zoom, so focus may fall back to the page.
       assert.deepEqual(
         await application.evaluate(() => globalThis.__omocUiMutationMetrics()),
         draftMutations,
@@ -3396,12 +3401,7 @@ try {
       await expect(
         page.locator(".workbench-header [data-connection]"),
       ).toHaveAttribute("data-connection", "connected");
-      await page
-        .getByRole("button", { name: "파일·확장", exact: true })
-        .click();
-      await page
-        .getByRole("button", { name: "확장·명령", exact: true })
-        .click();
+      await openExtensions(page, "instructions");
       const loadFile = drafts.getByRole("button", {
         name: "파일 불러오기",
         exact: true,
@@ -3484,7 +3484,7 @@ try {
 
       currentState =
         "Configuration file MCP supported and refused private content";
-      await draftKind.selectOption("mcp");
+      await openExtensions(page, "mcp");
       await loadFile.click();
       await expect(readStatus).toHaveAttribute(
         "data-configuration-read-status",
@@ -3545,7 +3545,7 @@ try {
 
       currentState =
         "Configuration file narrow200 observed baseline and keyboard";
-      await draftKind.selectOption("instructions");
+      await openExtensions(page, "instructions");
       await expect(draftContent).toHaveValue(
         "# 합성 파일 지침\n수정한 합성 편집 내용을 유지하세요.\n",
       );
@@ -3601,9 +3601,7 @@ try {
       );
       await page.keyboard.press("Escape");
       await expect(draftDialog).toBeHidden();
-      await expect(
-        page.getByRole("button", { name: "파일·확장", exact: true }),
-      ).toBeFocused();
+      // The docked-sidebar opener is hidden at this zoom, so focus may fall back to the page.
       assert.deepEqual(
         await application.evaluate(() => globalThis.__omocUiMutationMetrics()),
         draftMutations,
@@ -3628,12 +3626,7 @@ try {
           "\ufeff \n\t",
         ),
       );
-      await page
-        .getByRole("button", { name: "파일·확장", exact: true })
-        .click();
-      await page
-        .getByRole("button", { name: "확장·명령", exact: true })
-        .click();
+      await openExtensions(page, "instructions");
       await loadFile.focus();
       await page.keyboard.press("Enter");
       await expect(readStatus).toHaveAttribute(
@@ -3698,12 +3691,7 @@ try {
       await expect(
         page.locator(".workbench-header [data-connection]"),
       ).toHaveAttribute("data-connection", "connected");
-      await page
-        .getByRole("button", { name: "파일·확장", exact: true })
-        .click();
-      await page
-        .getByRole("button", { name: "확장·명령", exact: true })
-        .click();
+      await openExtensions(page, "instructions");
       await expect(
         drafts.locator("[data-configuration-read-target]"),
       ).toHaveText("읽기 대상: /fixture/projects/한글\\폴더\\/AGENTS.md");
@@ -3770,18 +3758,7 @@ try {
         await expect(
           page.locator(".workbench-header [data-connection]"),
         ).toHaveAttribute("data-connection", "connected");
-        await page
-          .getByRole("button", {
-            name: "\uD30C\uC77C\u00B7\uD655\uC7A5",
-            exact: true,
-          })
-          .click();
-        await page
-          .getByRole("button", {
-            name: "\uD655\uC7A5\u00B7\uBA85\uB839",
-            exact: true,
-          })
-          .click();
+        await openExtensions(page, "instructions");
         await loadFile.click();
         await expect(readStatus).toHaveAttribute(
           "data-configuration-read-status",
@@ -4094,12 +4071,7 @@ try {
         await expect(
           page.locator(".workbench-header [data-connection]"),
         ).toHaveAttribute("data-connection", "connected");
-        await page
-          .getByRole("button", { name: "파일·확장", exact: true })
-          .click();
-        await page
-          .getByRole("button", { name: "확장·명령", exact: true })
-          .click();
+        await openExtensions(page, "instructions");
         await expect(instructionPanel).toHaveAttribute(
           "data-instructions-session",
           "fixture-s",
@@ -4480,7 +4452,9 @@ try {
           ),
         )
         .toBe(1);
+      await closeSettings(page);
       await page.locator('button[title="합성 다른 세션"]').click();
+      await openExtensions(page, "instructions");
       await expect(instructionPanel).toHaveAttribute(
         "data-instructions-session",
         "fixture-instruction-other",
@@ -4592,13 +4566,7 @@ try {
         await expect(
           page.locator(".workbench-header [data-connection]"),
         ).toHaveAttribute("data-connection", "connected");
-        await page
-          .getByRole("button", { name: "파일·확장", exact: true })
-          .click();
-        await page
-          .getByRole("button", { name: "확장·명령", exact: true })
-          .click();
-        await draftKind.selectOption("mcp");
+        await openExtensions(page, "mcp");
         await expect(mcpPanel).toHaveAttribute(
           "data-mcp-workspace",
           "fixture-w",
@@ -4654,7 +4622,7 @@ try {
         }));
         if (narrow) {
           await setDisplay(page, 760, 1000, 2);
-          await draftKind.selectOption("mcp");
+          await openExtensions(page, "mcp");
           if (definitionChoice)
             await mcpDefinition.selectOption(definitionChoice);
           assert.deepEqual(
@@ -4854,7 +4822,7 @@ try {
       );
       await captureMcp("keyboard-register-retired-read", true);
       await setDisplay(page, 1440, 960, 1);
-      await draftKind.selectOption("mcp");
+      await openExtensions(page, "mcp");
       await expect(mcpObserve).toBeEnabled();
       await mcpObserve.click();
       await expect(ownedMcp).toHaveCount(1);
@@ -4957,7 +4925,9 @@ try {
         "data-mcp-action-status",
         "pending",
       );
-      await selectWorkspace(page, "fixture-mcp-other-w");
+      await selectWorkspaceBehindSettings(page, "fixture-mcp-other-w", () =>
+        openExtensions(page, "mcp"),
+      );
       await expect(mcpPanel).toHaveAttribute(
         "data-mcp-workspace",
         "fixture-mcp-other-w",
@@ -5051,16 +5021,7 @@ try {
         await expect(
           page.locator(".workbench-header [data-connection]"),
         ).toHaveAttribute("data-connection", "connected");
-        await page
-          .getByRole("button", { name: "파일·확장", exact: true })
-          .click();
-        await page
-          .getByRole("button", { name: "확장·명령", exact: true })
-          .click();
-        await expect(draftKind.locator('option[value="skills"]')).toHaveText(
-          "Skills",
-        );
-        await draftKind.selectOption("skills");
+        await openExtensions(page, "skills");
         await expect(skillPanel).toBeVisible();
         await expect(skillList).toHaveAttribute("data-skill-action", "list");
         await expect(skillRead).toHaveAttribute("data-skill-action", "read");
@@ -5155,7 +5116,7 @@ try {
         if (narrow) {
           await setDisplay(page, 760, 1000, 2);
           // Responsive remount resets local kind only; authoritative drafts remain.
-          await draftKind.selectOption("skills");
+          await openExtensions(page, "skills");
           await expect(draftDialog).toBeVisible();
           assert.deepEqual(
             await skillMetrics(),
@@ -5282,6 +5243,7 @@ try {
                 page.getByRole("status", {
                   name: "보관된 요청 확인",
                   exact: true,
+                  includeHidden: true,
                 }),
               ).toHaveAttribute("data-retained-count", "1");
               await expect
@@ -5304,13 +5266,7 @@ try {
               await expect(
                 page.locator(".workbench-header [data-connection]"),
               ).toHaveAttribute("data-connection", "connected");
-              await page
-                .getByRole("button", { name: "파일·확장", exact: true })
-                .click();
-              await page
-                .getByRole("button", { name: "확장·명령", exact: true })
-                .click();
-              await draftKind.selectOption("skills");
+              await openExtensions(page, "skills");
               await expect(skillText).toHaveValue("");
               await expect(skillSource).toHaveValue("");
               assert.deepEqual(await skillMetrics(), before);
@@ -5709,7 +5665,7 @@ try {
         const before = await skillMetrics();
         if (narrow) {
           await setDisplay(page, 760, 1000, 2);
-          await draftKind.selectOption("skills");
+          await openExtensions(page, "skills");
           await expect(draftDialog).toBeVisible();
         }
         // Refocus and responsive remount must never fetch or execute implicitly.
@@ -5857,13 +5813,7 @@ try {
             .toBe(true);
           const before = await skillMetrics();
           await page.reload();
-          await page
-            .getByRole("button", { name: "파일·확장", exact: true })
-            .click();
-          await page
-            .getByRole("button", { name: "확장·명령", exact: true })
-            .click();
-          await draftKind.selectOption("skills");
+          await openExtensions(page, "skills");
           await expect(skillText).toHaveValue("");
           assert.deepEqual(await skillMetrics(), before);
           await captureRuntime(name, { narrow: true });
@@ -6150,16 +6100,7 @@ try {
         });
       const textareaValue = (text) => text.replace(/\r\n/gu, "\n");
       async function openAgentPanel() {
-        await page
-          .getByRole("button", { name: "파일·확장", exact: true })
-          .click();
-        await page
-          .getByRole("button", { name: "확장·명령", exact: true })
-          .click();
-        await expect(draftKind.locator('option[value="agents"]')).toHaveText(
-          "Agents",
-        );
-        await draftKind.selectOption("agents");
+        await openExtensions(page, "agents");
         await expect(agentPanel).toBeVisible();
         await expect(agentRuntime).toBeVisible();
       }
@@ -6257,7 +6198,7 @@ try {
         const before = await agentMetrics();
         if (narrow) {
           await setDisplay(page, 760, 1000, 2);
-          await draftKind.selectOption("agents");
+          await openExtensions(page, "agents");
           await expect(draftDialog).toBeVisible();
           assert.equal(
             await draftDialog.evaluate(
@@ -6914,12 +6855,7 @@ try {
           };
         });
       async function openExtensionsPanel() {
-        await page
-          .getByRole("button", { name: "파일·확장", exact: true })
-          .click();
-        await page
-          .getByRole("button", { name: "확장·명령", exact: true })
-          .click();
+        await openExtensions(page, "native");
         await expect(extensionPanel).toBeVisible();
         await expect(extensionObserve).toHaveText("확장 상태 확인");
         await expect(extensionCancel).toHaveText("조회 취소");
@@ -7195,12 +7131,18 @@ try {
         await openExtensionCase(name);
         await observeExtensions("checking");
         if (name === "late-workspace") {
-          await selectWorkspace(page, "fixture-extensions-other-w");
+          await selectWorkspaceBehindSettings(
+            page,
+            "fixture-extensions-other-w",
+            () => openExtensions(page, "native"),
+          );
           await expect(extensionPanel).toHaveAttribute(
             "data-extensions-state",
             "not_observed",
           );
-          await selectWorkspace(page, "fixture-w");
+          await selectWorkspaceBehindSettings(page, "fixture-w", () =>
+            openExtensions(page, "native"),
+          );
         } else {
           await application.evaluate((_electron, name) => {
             const snapshot = globalThis.__omocUiFixture.snapshot;

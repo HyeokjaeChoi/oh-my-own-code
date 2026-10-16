@@ -56,3 +56,59 @@ export async function selectWorkspace(page, id) {
   await trigger.click();
   await page.locator(`[role="menuitemradio"][data-value="${id}"]`).click();
 }
+
+const EXTENSION_ROWS = {
+  mcp: /^MCP/,
+  skills: /^스킬/,
+  agents: /^에이전트/,
+  instructions: /^지침/,
+  commands: /^명령/,
+  native: /^런타임 확장/,
+};
+
+/**
+ * Opens Settings -> 확장 (back at the kind list), then drills into `sub`
+ * ("mcp" | "skills" | "agents" | "instructions" | "commands" | "native").
+ * Reuses an already open settings dialog. Narrow windows collapse the nav to a
+ * select, so the page is picked through it there.
+ */
+export async function openExtensions(page, sub) {
+  const dialog = page.getByRole("dialog", { name: "설정", exact: true });
+  if (!(await dialog.isVisible())) await openSettings(page);
+  await expect(dialog).toBeVisible();
+  const tab = dialog.getByRole("tab", { name: "확장", exact: true });
+  if (await tab.isVisible()) await tab.click();
+  else
+    await dialog
+      .getByRole("combobox", { name: "설정 페이지", exact: true })
+      .selectOption({ label: "확장" });
+  const back = dialog.getByRole("button", { name: "확장", exact: true });
+  if (await back.isVisible()) await back.click();
+  if (sub)
+    await dialog.getByRole("button", { name: EXTENSION_ROWS[sub] }).click();
+  return dialog;
+}
+
+/**
+ * Switches workspace while Settings is open. The dialog is modal, so it is
+ * closed (button, not Escape: Escape cancels an in-flight observation), the
+ * workspace switched, and `reopen` brings the same page back.
+ */
+export async function selectWorkspaceBehindSettings(page, id, reopen) {
+  const dialog = page.getByRole("dialog", { name: "설정", exact: true });
+  if (await dialog.isVisible()) {
+    await dialog
+      .getByRole("button", { name: "설정 닫기", exact: true })
+      .click();
+    await expect(dialog).toBeHidden();
+  }
+  await selectWorkspace(page, id);
+  await reopen();
+}
+
+/** Closes Settings with its button (Escape would cancel an in-flight observation). */
+export async function closeSettings(page) {
+  const dialog = page.getByRole("dialog", { name: "설정", exact: true });
+  await dialog.getByRole("button", { name: "설정 닫기", exact: true }).click();
+  await expect(dialog).toBeHidden();
+}

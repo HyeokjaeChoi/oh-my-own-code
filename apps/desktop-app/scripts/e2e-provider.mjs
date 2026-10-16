@@ -160,13 +160,17 @@ try {
 
   // No credential yet: the provider has no usable model.
   await openSettings(page);
-  const section = page.getByRole("region", { name: "모델 제공자" });
+  await page.getByRole("tab", { name: "모델" }).click();
+  const section = page.getByRole("tabpanel");
   await expect(section).toBeVisible();
-  await section.getByLabel("제공자 선택").selectOption({ label: "OpenRouter" });
+  await section.getByRole("button", { name: "제공자 추가" }).click();
+  await section
+    .getByRole("combobox", { name: "제공자", exact: true })
+    .selectOption({ label: "OpenRouter" });
 
   // Error state: a malformed key is refused with a visible message.
   await section.getByLabel("API 키").fill("short");
-  await section.getByRole("button", { name: "키 저장" }).click();
+  await section.getByRole("button", { name: "저장", exact: true }).click();
   await expect(section.getByRole("alert")).toContainText(
     "API 키가 올바르지 않습니다",
   );
@@ -174,19 +178,22 @@ try {
 
   // Connect with the fake key.
   await section.getByLabel("API 키").fill(FAKE_KEY);
-  await section.getByRole("button", { name: "키 저장" }).click();
+  await section.getByRole("button", { name: "저장", exact: true }).click();
   await expect(section.getByText("API 키를 설정했습니다.")).toBeVisible({
     timeout: 30_000,
   });
-  await expect(section.getByLabel("API 키")).toHaveValue("");
-  await expect(section.getByText("OpenRouter · 설정됨")).toBeVisible();
+  await expect(section.getByLabel("API 키")).toHaveCount(0);
+  const openRouter = section
+    .getByRole("listitem")
+    .filter({ hasText: "OpenRouter" });
+  await expect(openRouter.getByText("연결됨")).toBeVisible();
   assert.ok(!(await section.innerText()).includes(FAKE_KEY), "key not echoed");
   observations.push(
-    "key stored via Native; UI shows 설정됨, input cleared, key not echoed",
+    "key stored via Native; UI shows 연결됨, input cleared, key not echoed",
   );
 
   // Default model: pick the first provider model; it persists in localStorage.
-  const defaults = section.getByLabel("기본 모델");
+  const defaults = section.getByRole("combobox", { name: "기본 모델" });
   await expect
     .poll(async () => (await defaults.locator("option").count()) > 1, {
       timeout: 60_000,
@@ -252,12 +259,14 @@ try {
   );
 
   await openSettings(page);
+  await page.getByRole("tab", { name: "모델" }).click();
 
   // Local provider: LM Studio base URL set through the UI -> its models appear.
+  await section.getByRole("button", { name: "LM Studio 주소 수정" }).click();
   await section
     .getByLabel("로컬 제공자 주소")
     .fill(`http://127.0.0.1:${port}/v1`);
-  await section.getByRole("button", { name: "주소 저장" }).click();
+  await section.getByRole("button", { name: "저장", exact: true }).click();
   await expect(
     section.getByText(/로컬 제공자 주소를 저장했습니다/u),
   ).toBeVisible();
@@ -266,19 +275,18 @@ try {
   const { OMOC_E2E_NATIVE_CONFIG: _seed, ...relaunchEnv } = env;
   const again = await start(relaunchEnv);
   await openSettings(again);
+  await again.getByRole("tab", { name: "모델" }).click();
   await expect(
-    again
-      .getByRole("region", { name: "모델 제공자" })
-      .getByLabel("로컬 제공자 주소"),
-  ).toHaveValue(`http://127.0.0.1:${port}/v1`);
+    again.getByRole("tabpanel").getByText(`http://127.0.0.1:${port}/v1`),
+  ).toBeVisible();
   await expect.poll(() => discoveries, { timeout: 60_000 }).toBeGreaterThan(0);
   // Workspace trust persists across restart, so the catalog is not empty.
   await expect
     .poll(
       async () =>
         again
-          .getByRole("region", { name: "모델 제공자" })
-          .getByLabel("기본 모델")
+          .getByRole("tabpanel")
+          .getByRole("combobox", { name: "기본 모델" })
           .locator("option")
           .count(),
       { timeout: 60_000 },
@@ -289,12 +297,14 @@ try {
   );
 
   // Remove: connection disappears (after relaunch, where the stored key still works).
-  const again2 = again.getByRole("region", { name: "모델 제공자" });
+  const again2 = again.getByRole("tabpanel");
   await again2.getByRole("button", { name: "OpenRouter 연결 해제" }).click();
   await expect(again2.getByText("API 키를 제거했습니다.")).toBeVisible({
     timeout: 30_000,
   });
-  await expect(again2.getByText("OpenRouter · 설정됨")).toHaveCount(0);
+  await expect(
+    again2.getByRole("listitem").filter({ hasText: "OpenRouter" }),
+  ).toContainText("키 필요");
   observations.push("remove key -> connection gone");
 } catch (error) {
   console.error(

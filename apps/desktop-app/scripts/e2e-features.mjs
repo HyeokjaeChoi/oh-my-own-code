@@ -430,7 +430,7 @@ try {
         page.getByRole("button", { name: "더 보기", exact: true }),
       ).toBeFocused();
       await openMoreMenuItem(page, "자동화");
-      await sheet.getByRole("button", { name: "작업 추가" }).click();
+      await sheet.getByRole("button", { name: "새 자동화" }).click();
       await sheet.getByLabel("이름").fill("E2E script job");
       await sheet.getByLabel("작업 공간").selectOption(workspace.id);
       await sheet.getByLabel("종류").selectOption("script");
@@ -453,13 +453,14 @@ try {
     "saved-rules-settings",
     async () => {
       await openSettings(page);
+      await dialog().getByRole("tab", { name: "권한" }).click();
       const rules = dialog().getByRole("region", {
         name: "저장된 허용 규칙",
       });
-      await expect(
-        rules.getByText("이 프로젝트에 저장된 허용 규칙이 없습니다."),
-      ).toBeVisible({ timeout: 15000 });
-      await expect(rules.getByText(/Native 프로젝트 단위/)).toBeVisible();
+      await expect(rules.getByText("저장된 규칙이 없습니다")).toBeVisible({
+        timeout: 15000,
+      });
+      await expect(rules.getByText(/프로젝트별로 저장/)).toBeVisible();
       assert.equal(await rules.getByRole("button").count(), 0);
       await page.keyboard.press("Escape");
     },
@@ -512,12 +513,13 @@ try {
 
   await check("preferences-theme", async () => {
     await openSettings(page);
-    const theme = dialog().getByLabel("테마");
-    await theme.selectOption("dark");
+    const theme = dialog().getByRole("radiogroup", { name: "테마" });
+    await theme.getByRole("radio", { name: "다크" }).check();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-    await theme.selectOption("light");
+    await expect(dialog().getByRole("status")).toHaveText("저장됨");
+    await theme.getByRole("radio", { name: "라이트" }).check();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-    await theme.selectOption("dark");
+    await theme.getByRole("radio", { name: "다크" }).check();
     await page.keyboard.press("Escape");
     await page.reload();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");

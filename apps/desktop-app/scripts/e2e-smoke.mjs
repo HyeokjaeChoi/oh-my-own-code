@@ -666,15 +666,13 @@ try {
     .toBe("connected");
   assert.equal(snapshot.serverVersion, "2.0.18");
   // No provider in this profile: the composer says why sending cannot work
-  // and links to Settings -> 모델 제공자.
+  // and links to Settings -> 모델.
   const noModels = page.locator("[data-no-models]");
   await expect(noModels).toBeVisible({ timeout: 60_000 });
   await noModels.getByRole("button", { name: "설정 열기" }).click();
-  await expect(page.getByRole("region", { name: "모델 제공자" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "제공자" })).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("region", { name: "모델 제공자" })).toHaveCount(
-    0,
-  );
+  await expect(page.getByRole("region", { name: "제공자" })).toHaveCount(0);
   // Sending without a provider is rejected by the host (AUTH_REQUIRED with a
   // receipt): the reason stays visible after the post-send snapshot, shown once
   // (the no-models alert covers it), and the typed text is kept for a retry.
