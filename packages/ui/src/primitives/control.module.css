@@ -20,7 +20,7 @@
   color: var(--omoc-semantic-color-text-tertiary);
 }
 
-.control:hover:not(:disabled, :read-only) {
+.control:hover:not(:disabled):not([readonly]) {
   background: var(--omoc-semantic-color-fill-hover);
 }
 

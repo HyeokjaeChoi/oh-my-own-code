@@ -109,6 +109,9 @@ function OsNotificationField(props: {
     >
       <Switch
         id="pref-os-notifications"
+        aria-describedby={
+          blocked ? "pref-os-notifications-description" : undefined
+        }
         checked={props.preferences.osNotifications}
         onChange={(event) =>
           props.onChange({ osNotifications: event.target.checked })
@@ -130,6 +133,7 @@ function TerminalScreenReaderField(props: {
     >
       <Switch
         id="pref-terminal-screen-reader"
+        aria-describedby="pref-terminal-screen-reader-description"
         checked={props.preferences.terminalScreenReader}
         onChange={(event) =>
           props.onChange({ terminalScreenReader: event.target.checked })

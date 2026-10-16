@@ -683,7 +683,7 @@ try {
   await composer.press("Enter");
   await page.waitForTimeout(1500);
   const reasons = page
-    .locator('[role="alert"]')
+    .locator("[data-no-models]")
     .filter({ hasText: "모델 제공자" });
   await expect(reasons).toHaveCount(1);
   await expect(reasons).toBeVisible();

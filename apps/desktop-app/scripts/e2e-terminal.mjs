@@ -151,7 +151,9 @@ try {
   await page.keyboard.press("Enter");
   await waitOut(/\r\nPA\[201~STE\r\n/);
   await paste("x".repeat(1024 * 1024 + 1));
-  await expect(page.getByRole("alert")).toContainText("붙여넣기가 너무 커서");
+  await expect(
+    page.getByRole("region", { name: "작업 공간 터미널" }).getByRole("alert"),
+  ).toContainText("붙여넣기가 너무 커서");
   observations.push("paste strips ESC and refuses >1 MiB with a notice");
 
   // keyboard-trap escape: the chord moves focus out of the terminal; hint is exposed

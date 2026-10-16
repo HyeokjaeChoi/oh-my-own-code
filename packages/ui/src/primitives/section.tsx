@@ -57,7 +57,12 @@ export function Row({
           {label}
         </LabelTag>
         {description ? (
-          <span className={styles.rowDescription}>{description}</span>
+          <span
+            id={htmlFor ? `${htmlFor}-description` : undefined}
+            className={styles.rowDescription}
+          >
+            {description}
+          </span>
         ) : null}
       </div>
       {children ? <div className={styles.control}>{children}</div> : null}
