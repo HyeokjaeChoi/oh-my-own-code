@@ -86,6 +86,30 @@ test("trackSessions marks finished background runs unread and keeps recent opens
   assert.deepEqual(a.recent, ["a"]);
 });
 
+test("last activity is stamped on observed status changes only; relativeTime is compact Korean", async () => {
+  const { trackSessions, emptyActivity, relativeTime } = await import(
+    "./renderer/features/sessions/navigation.ts"
+  );
+  const s = (id, status) => ({ id, workspaceId: "w", title: id, status });
+  // First sighting has no time; a change stamps it; no change keeps it.
+  let a = trackSessions(emptyActivity, [s("a", "idle")], "a", 1000);
+  assert.deepEqual(a.active, {});
+  a = trackSessions(a, [s("a", "running")], "a", 2000);
+  assert.deepEqual(a.active, { a: 2000 });
+  a = trackSessions(a, [s("a", "running")], "a", 9000);
+  assert.deepEqual(a.active, { a: 2000 });
+  a = trackSessions(a, [], "a", 9500);
+  assert.deepEqual(a.active, {});
+  const now = 1_000_000_000;
+  const ago = (ms) => relativeTime(now - ms, now);
+  assert.equal(ago(5_000), "방금");
+  assert.equal(ago(3 * 60_000), "3분");
+  assert.equal(ago(2 * 3_600_000), "2시간");
+  assert.equal(ago(30 * 3_600_000), "어제");
+  assert.equal(ago(3 * 86_400_000), "3일");
+  assert.equal(ago(15 * 86_400_000), "2주");
+});
+
 test("placeholder titles display as 새 세션 or the first prompt; stored title is kept", () => {
   assert.equal(isPlaceholderTitle("Untitled session"), true);
   assert.equal(isPlaceholderTitle("Workbench"), true);

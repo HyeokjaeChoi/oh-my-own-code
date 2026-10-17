@@ -45,18 +45,33 @@ export type SessionActivity = {
   unread: string[];
   recent: string[];
   selectedId?: string | undefined;
+  /** Last observed status change per session (ms). Unknown until one is seen. */
+  active: Record<string, number>;
 };
 export const emptyActivity: SessionActivity = {
   status: {},
   unread: [],
   recent: [],
+  active: {},
 };
+const MINUTE = 60_000;
+// "방금", "3분", "2시간", "어제", "5일", "3주". Compact, no "전".
+export function relativeTime(then: number, now: number): string {
+  const ago = Math.max(0, now - then);
+  if (ago < MINUTE) return "방금";
+  if (ago < 60 * MINUTE) return `${Math.floor(ago / MINUTE)}분`;
+  if (ago < 24 * 60 * MINUTE) return `${Math.floor(ago / (60 * MINUTE))}시간`;
+  const days = Math.floor(ago / (24 * 60 * MINUTE));
+  if (days === 1) return "어제";
+  return days < 7 ? `${days}일` : `${Math.floor(days / 7)}주`;
+}
 // Unread = a non-selected session finished a run (running/stopping -> idle)
 // since it was last opened. Derived from snapshots only; not persisted.
 export function trackSessions(
   prev: SessionActivity,
   sessions: WorkbenchSession[],
   selectedId?: string,
+  now = Date.now(),
 ): SessionActivity {
   const ids = new Set(sessions.map((s) => s.id));
   const unread = new Set(prev.unread.filter((id) => ids.has(id)));
@@ -72,7 +87,18 @@ export function trackSessions(
     selectedId && selectedId !== prev.selectedId
       ? [selectedId, ...prev.recent.filter((id) => id !== selectedId)]
       : prev.recent;
+  const active = Object.fromEntries(
+    sessions.flatMap((s) => {
+      const previous = prev.status[s.id];
+      const at =
+        previous !== undefined && previous !== s.status
+          ? now
+          : prev.active[s.id];
+      return at === undefined ? [] : [[s.id, at]];
+    }),
+  );
   return {
+    active,
     status: Object.fromEntries(sessions.map((s) => [s.id, s.status])),
     unread: [...unread],
     recent: recent.filter((id) => ids.has(id)).slice(0, RECENT_LIMIT),

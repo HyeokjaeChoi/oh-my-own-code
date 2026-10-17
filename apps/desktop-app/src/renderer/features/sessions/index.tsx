@@ -7,15 +7,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import { ActionMenu, Button, Input, Notice } from "@workbench/ui";
-import {
-  Archive,
-  CircleAlert,
-  LoaderCircle,
-  MoreHorizontal,
-  Pin,
-  Search,
-  ShieldAlert,
-} from "lucide-react";
+import { Archive, MoreHorizontal, Pin, Search } from "lucide-react";
 import type { WorkbenchSession } from "../../shared/api/index.js";
 import {
   emptyActivity,
@@ -23,6 +15,7 @@ import {
   visibleSessions,
   validSessionTitle,
   isPlaceholderTitle,
+  relativeTime,
   type SessionActivity,
 } from "./navigation.js";
 import styles from "./sessions.module.css";
@@ -57,11 +50,33 @@ const labels = {
   unavailable: "사용 불가",
 };
 // Module-level so unread/recent survive the navigation unmounting or a workspace switch.
-let activity: SessionActivity = emptyActivity;
+// Last-activity times persist per profile so "3분" survives a restart.
+const ACTIVE_KEY = "omoc.sessionActive.v1";
+function loadActive(): Record<string, number> {
+  try {
+    const value: unknown = JSON.parse(
+      globalThis.localStorage?.getItem(ACTIVE_KEY) ?? "{}",
+    );
+    return Object.fromEntries(
+      Object.entries(
+        value && typeof value === "object" ? (value as object) : {},
+      ).filter(([, at]) => Number.isFinite(at)),
+    ) as Record<string, number>;
+  } catch {
+    return {};
+  }
+}
+let activity: SessionActivity = { ...emptyActivity, active: loadActive() };
 const listeners = new Set<() => void>();
 function track(sessions: WorkbenchSession[], selectedId?: string) {
   const next = trackSessions(activity, sessions, selectedId);
   if (JSON.stringify(next) === JSON.stringify(activity)) return;
+  if (JSON.stringify(next.active) !== JSON.stringify(activity.active))
+    try {
+      globalThis.localStorage?.setItem(ACTIVE_KEY, JSON.stringify(next.active));
+    } catch {
+      // Blocked storage: times last for this session only.
+    }
   activity = next;
   for (const listener of listeners) listener();
 }
@@ -76,7 +91,15 @@ function useSessionActivity(sessions: WorkbenchSession[], selectedId?: string) {
   );
 }
 export function SessionNavigation(props: Props) {
-  const { unread } = useSessionActivity(props.sessions, props.selectedId);
+  const { unread, active } = useSessionActivity(
+    props.sessions,
+    props.selectedId,
+  );
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(timer);
+  }, []);
   const [query, setQuery] = useState("");
   const [archived, setArchived] = useState(false);
   const [searching, setSearching] = useState(false);
@@ -149,6 +172,11 @@ export function SessionNavigation(props: Props) {
             session={session}
             selected={session.id === props.selectedId}
             unread={unread.includes(session.id)}
+            time={
+              active[session.id] === undefined
+                ? ""
+                : relativeTime(active[session.id]!, now)
+            }
             permission={props.permissionIds?.includes(session.id) ?? false}
             disabled={
               props.disabled ||
@@ -181,6 +209,7 @@ function SessionRow({
   session,
   selected,
   unread,
+  time,
   permission,
   disabled,
   select,
@@ -190,6 +219,7 @@ function SessionRow({
   session: WorkbenchSession & { storedTitle?: string };
   selected: boolean;
   unread: boolean;
+  time: string;
   permission: boolean;
   disabled: boolean;
   select(): void;
@@ -264,14 +294,13 @@ function SessionRow({
           <span className={styles.title}>{session.title}</span>
           {permission && (
             <span
-              className={`${styles.indicator} ${styles.permission}`}
+              className={styles.statusDot}
+              data-tone="warning"
               role="img"
               aria-label="권한 요청 대기"
               title="권한 요청 대기"
               data-session-permission
-            >
-              <ShieldAlert size={14} />
-            </span>
+            />
           )}
           {unread && (
             <span
@@ -289,17 +318,18 @@ function SessionRow({
           )}
           {session.status !== "idle" && (
             <span
-              className={styles.indicator}
+              className={styles.statusDot}
+              data-tone={
+                ["unknown", "unavailable"].includes(session.status)
+                  ? "danger"
+                  : "running"
+              }
               role="img"
               aria-label={labels[session.status]}
-            >
-              {["unknown", "unavailable"].includes(session.status) ? (
-                <CircleAlert size={14} />
-              ) : (
-                <LoaderCircle size={14} className={styles.spinner} />
-              )}
-            </span>
+              title={labels[session.status]}
+            />
           )}
+          {time && <span className={styles.time}>{time}</span>}
         </button>
         <ActionMenu
           className={styles.menuTrigger ?? ""}

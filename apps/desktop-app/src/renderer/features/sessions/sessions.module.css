@@ -155,10 +155,6 @@
   }
 }
 
-.row[data-session-status="unavailable"] .indicator {
-  color: var(--omoc-semantic-color-danger-foreground);
-}
-
 .dot {
   flex-shrink: 0;
   width: 8px;
@@ -168,19 +164,50 @@
 .unread {
   background: var(--omoc-semantic-color-info-foreground);
 }
-.permission {
-  color: var(--omoc-semantic-color-warning-foreground);
+/* One status dot: running (pulses), awaiting approval, or error. */
+.statusDot {
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--omoc-primitive-radius-pill);
 }
-.spinner {
-  animation: session-spin 1s linear infinite;
+.statusDot[data-tone="running"] {
+  background: var(--omoc-semantic-color-focus);
+  animation: session-pulse 1.4s ease-in-out infinite;
 }
-@keyframes session-spin {
-  to {
-    transform: rotate(360deg);
+.statusDot[data-tone="warning"] {
+  background: var(--omoc-semantic-color-warning-foreground);
+}
+.statusDot[data-tone="danger"] {
+  background: var(--omoc-semantic-color-danger-foreground);
+}
+.time {
+  flex: none;
+  color: var(--omoc-semantic-color-text-tertiary);
+  font-size: var(--omoc-semantic-type-size-caption);
+  line-height: var(--omoc-semantic-type-line-caption);
+}
+.row[data-selected="true"] .time {
+  color: var(--omoc-semantic-color-text-secondary);
+}
+/* The row menu takes the time's place on hover and keyboard focus. */
+.row:hover .time,
+.row:focus-within .time {
+  visibility: hidden;
+}
+@keyframes session-pulse {
+  50% {
+    opacity: 0.35;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .spinner {
+  .statusDot[data-tone="running"] {
     animation: none;
+  }
+}
+@media (forced-colors: active) {
+  .statusDot {
+    forced-color-adjust: none;
+    background: CanvasText;
   }
 }
