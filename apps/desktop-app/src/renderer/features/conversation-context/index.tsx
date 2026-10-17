@@ -108,7 +108,9 @@ export function ContextMessageActions({
 export function ConversationContextControls({
   attachPanel,
   runPanel,
+  noModelsShown,
 }: {
+  noModelsShown: boolean;
   attachPanel: (body: ReactNode) => ReactNode;
   runPanel: (body: ReactNode) => ReactNode;
 }) {
@@ -144,11 +146,6 @@ export function ConversationContextControls({
       messageId: selectors.revert(st)?.messageId ?? "",
     }),
   );
-  const catalog = useWorkbenchSelector(selectors.catalog);
-  // The conversation widget already shows a standing alert for this case.
-  const noModels =
-    catalog?.models.status === "available" &&
-    catalog.models.entries.length === 0;
   useEffect(() => {
     if (!rejection || !transientRejection(rejection)) return;
     const timer = setTimeout(actions.clearError, 10000);
@@ -370,7 +367,7 @@ export function ConversationContextControls({
           </p>
         </div>
       )}
-      {rejection && !(rejection === "AUTH_REQUIRED" && noModels) && (
+      {rejection && !(rejection === "AUTH_REQUIRED" && noModelsShown) && (
         <p role="alert" data-reject-notice={rejection}>
           {rejectionMessage(rejection, rejectionOp)}{" "}
           {rejection === "AUTH_REQUIRED" && (
