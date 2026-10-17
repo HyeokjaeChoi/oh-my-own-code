@@ -1316,6 +1316,8 @@ export function applyWorkspaceFileState(fixture, name) {
   for (const [file, content] of [
     [path, text],
     [otherPath, "SYNTHETIC OTHER\n"],
+    // The host refuses ":" paths for editing; the explorer still previews them.
+    ["notes/odd:name.txt", "SYNTHETIC REFUSED PATH\n"],
   ]) {
     const key = fixture.workspaceFileKey(workspace.id, file);
     fixture.workspaceFiles.set(key, content);
@@ -3340,6 +3342,7 @@ export function createFixtureTransport(
             entries: [
               "notes/SYNTHETIC-editor.txt",
               "notes/SYNTHETIC-other.txt",
+              "notes/odd:name.txt",
               "AGENTS.md",
             ].map((path) => ({ name: path, path, type: "file" })),
           },

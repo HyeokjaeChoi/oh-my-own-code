@@ -99,6 +99,9 @@ try {
   await page.getByRole("tab", { name: "터미널", exact: true }).click();
   // First open of the tab auto-starts a shell in a trusted workspace.
   await expect.poll(async () => (await list()).length).toBe(1);
+  // No double shell: the auto-start fires once, even across list refreshes.
+  await page.waitForTimeout(2500);
+  assert.equal((await list()).length, 1);
   const screen = page.getByRole("group", { name: "터미널 화면" });
   await expect(screen.locator(".xterm")).toBeVisible();
   await expect(
@@ -216,6 +219,11 @@ try {
   assert.equal((await list())[0].exitCode, 7);
   observations.push("exit code 7 shown and reported");
   await page.getByRole("button", { name: "닫기", exact: true }).click();
+  assert.equal((await list()).length, 0);
+  // Closing the last shell and switching tabs must not respawn one.
+  await page.getByRole("tab", { name: "파일", exact: true }).click();
+  await page.getByRole("tab", { name: "터미널", exact: true }).click();
+  await page.waitForTimeout(2500);
   assert.equal((await list()).length, 0);
 
   // close tab kills the whole tree incl. background jobs

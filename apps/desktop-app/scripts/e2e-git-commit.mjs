@@ -279,7 +279,6 @@ async function openCase(name = "ready") {
   ).toHaveAttribute("data-connection", "connected");
   await page.getByRole("button", { name: "보조 패널", exact: true }).click();
   await openGitTray(page, "커밋");
-  await openGitTray(page, "커밋");
   await expect(commit()).toBeVisible();
   await expect(field("Commit 작성자 이름")).toHaveValue("");
   await expect(field("Commit 작성자 이메일")).toHaveValue("");
@@ -498,7 +497,6 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
           });
           await expect(opener).toBeFocused();
           await page.keyboard.press("Enter");
-          await openGitTray(page, "커밋");
           await openGitTray(page, "커밋");
           await expect(commit()).toBeVisible();
           await item.focus();

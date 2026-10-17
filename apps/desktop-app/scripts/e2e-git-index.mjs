@@ -256,7 +256,6 @@ async function openCase(name = "ready") {
   ).toHaveAttribute("data-connection", "connected");
   await page.getByRole("button", { name: "보조 패널", exact: true }).click();
   await openGitTray(page, "Stage");
-  await openGitTray(page, "Stage");
   await expect(index()).toBeVisible();
   await expect(index()).toHaveAttribute("data-git-index-state", "empty");
   await expect(previewButton()).toBeDisabled();

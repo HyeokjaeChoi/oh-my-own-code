@@ -1167,9 +1167,9 @@ try {
   const workspaceSave = workspaceEditor.locator(
     '[data-workspace-file-save="true"]',
   );
-  // The save bar exists only while editing; either absent or disabled is inert.
+  // Used only where editing is guaranteed: the save button must exist and be disabled.
   const expectSaveInert = async () => {
-    if (await workspaceSave.count()) await expect(workspaceSave).toBeDisabled();
+    await expect(workspaceSave).toBeDisabled();
   };
   const workspaceStatus = workspaceEditor.getByRole("status", {
     name: "파일 편집 상태",
@@ -1217,10 +1217,14 @@ try {
       scope.workspacePath + "/" + scope.path,
     );
     // Selection shows the read-only view; the editor opens only via 편집.
-    if (await workspaceText.count()) {
+    // Held, untrusted and restored states cannot read, so their draft is editable at once.
+    if (["held", "untrusted", "restored-original", "missing"].includes(name)) {
       await expect(workspaceText).toHaveValue("");
       await expectSaveInert();
-    } else await expect(workspaceSave).toHaveCount(0);
+    } else {
+      await expect(workspaceText).toHaveCount(0);
+      await expect(workspaceSave).toHaveCount(0);
+    }
     assert.equal(
       (await workspaceMetrics()).reads,
       0,
@@ -7346,6 +7350,7 @@ try {
         if (name === "protected") {
           await expect(workspaceOpen).toBeDisabled();
           await expect(workspaceEditor).toContainText("전용 편집기");
+          await expect(workspaceSave).toHaveCount(0);
         } else {
           await explicitWorkspaceRead(
             name === "denied"
@@ -7363,11 +7368,40 @@ try {
             if (name === "blank") await expect(bytes).toHaveCount(0);
             else await expect(bytes).toContainText("65,536 / 65,536");
           }
+          await expectSaveInert();
         }
-        await expectSaveInert();
         await captureWorkspace(`${name}-narrow200`);
       }
 
+      // An untrusted workspace never auto-starts a shell; it keeps the explicit button.
+      await openWorkspaceCase("untrusted");
+      await page.getByRole("tab", { name: "터미널", exact: true }).click();
+      await expect(
+        page.getByRole("button", { name: "터미널 열기", exact: true }),
+      ).toBeVisible();
+      await page.waitForTimeout(1500);
+      await expect(
+        page.getByRole("tablist", { name: "터미널 탭" }).getByRole("tab"),
+      ).toHaveCount(0);
+      // A path the host refuses for editing still previews, read-only, with its own label.
+      await application.evaluate((_electron) =>
+        globalThis.__omocUiFixture.setWorkspaceFileState("ready"),
+      );
+      await page.reload();
+      await expect(
+        page.locator(".workbench-header [data-connection]"),
+      ).toHaveAttribute("data-connection", "connected");
+      await page
+        .getByRole("button", { name: "보조 패널", exact: true })
+        .click();
+      await page
+        .getByRole("region", { name: "파일 탐색 및 편집", exact: true })
+        .getByTitle("notes/odd:name.txt", { exact: true })
+        .click();
+      const refused = page.getByRole("region", { name: "파일 내용" });
+      await expect(refused).toContainText("SYNTHETIC REFUSED PATH");
+      await expect(refused).toContainText("notes/odd:name.txt");
+      await expect(workspaceOpen).toHaveCount(0);
       await openWorkspaceCase("pending-read");
       await explicitWorkspaceRead("loading");
       await workspaceText.focus();
@@ -7643,8 +7677,8 @@ try {
           "data-git-review-state",
           "empty",
         );
-        await expect(gitBase).toHaveValue("");
-        await expect(gitRead).toBeDisabled();
+        // The comparison controls live on the diff screen, hidden on the list.
+        await expect(gitRead).toHaveCount(0);
         assert.equal(
           (await gitMetrics()).reads,
           0,
@@ -7673,6 +7707,27 @@ try {
         if (await back.isVisible()) await back.click();
       }
       async function selectGitUi(path, mode = "unstaged", baseRef) {
+        if (!(await gitPath.isVisible())) {
+          // From the list, a changed-file row opens the diff and reads it in one step.
+          const before = await gitMetrics();
+          const rowFor = (kind) =>
+            gitPanel.getByRole("button", {
+              name: `${kind} 차이 선택: ${path}`,
+              exact: true,
+            });
+          const wanted = mode === "staged" ? "Staged" : "Unstaged";
+          const kind = (await rowFor(wanted).count())
+            ? wanted
+            : wanted === "Staged"
+              ? "Unstaged"
+              : "Staged";
+          await rowFor(kind).click();
+          await expect(gitPath).toBeVisible();
+          await expect
+            .poll(async () => (await gitMetrics()).diffReads)
+            .toBe(before.diffReads + 1);
+          if (mode !== "base" && kind === wanted) return;
+        }
         const before = await gitMetrics();
         await gitPath.selectOption(path);
         await gitMode.selectOption(mode);
@@ -7689,6 +7744,13 @@ try {
       }
       async function readGitUi(expected = "available") {
         const before = await gitMetrics();
+        // A row selection already read this diff; the settled result is what to check.
+        if (
+          (await gitRead.isDisabled()) &&
+          (await gitDetailRegion.getAttribute("data-git-diff-state")) ===
+            expected
+        )
+          return;
         await expect(gitRead).toBeEnabled();
         await gitRead.focus();
         await page.keyboard.press("Enter");
@@ -7737,7 +7799,7 @@ try {
             selection: await selectableAgent(dd),
           });
         }
-        await ensureGitListView();
+        // The list and diff screens are exclusive; only the shown screen is captured.
         const controls = [
           gitRefresh,
           gitCancel,
@@ -7803,7 +7865,8 @@ try {
             parts.push([`metadata-${++ddIndex}`, dd]);
         const frames = [],
           serial = ++gitCaptureSerial;
-        for (const [part, locator] of parts)
+        for (const [part, locator] of parts) {
+          if (!(await locator.isVisible())) continue;
           frames.push(
             await captureSaveElement(
               locator,
@@ -7811,6 +7874,7 @@ try {
               currentState,
             ),
           );
+        }
         assert.deepEqual(
           await gitMetrics(),
           before,
@@ -7871,12 +7935,22 @@ try {
         await row.focus();
         await page.keyboard.press("Enter");
         await expect(gitMode).toHaveValue(label.toLowerCase());
-        assert.deepEqual(await gitMetrics(), before);
-        // Selecting a row opens its diff; the list is hidden until 목록으로.
+        // A row opens its diff and reads it once; no extra 차이 읽기 click.
+        await expect(gitDetailRegion).toHaveAttribute(
+          "data-git-diff-state",
+          "available",
+        );
+        const afterRow = await gitMetrics();
+        assert.equal(afterRow.diffReads, before.diffReads + 1);
+        assert.equal(afterRow.statusReads, before.statusReads);
+        // The list is hidden while the diff shows; 목록으로 brings it back.
         await ensureGitListView();
         await expect(row).toHaveAttribute("aria-pressed", "true");
         await row.click();
-        await readGitUi();
+        await expect(gitDetailRegion).toHaveAttribute(
+          "data-git-diff-state",
+          "available",
+        );
         await expect(gitPatch).toContainText(
           label === "Staged" ? "-SYNTHETIC HEAD" : "-SYNTHETIC INDEX",
         );
@@ -7975,7 +8049,7 @@ try {
         await openGitCase(name);
         await observeGitUi("unavailable");
         await expect(gitStatus).toContainText(message);
-        await expect(gitRead).toBeDisabled();
+        await expect(gitRead).toBeHidden(); // no changes list, so no diff screen
         await captureGitUi(name, { narrow: true });
       }
       for (const name of ["clean", "unborn", "detached"]) {
@@ -8002,11 +8076,15 @@ try {
         await selectGitUi(gitScopeUi.path, "base", "review/diverged-local-tip");
         await readGitUi();
         const originalOid = "2".repeat(40);
-        await gitPanel.locator("details > summary").evaluate((e) => {
-          e.parentElement.open = true;
-        });
+        const diffSource = gitPanel.locator('dl[aria-label="Git 차이 출처"]');
+        await gitPanel
+          .locator("details")
+          .filter({ has: page.locator('dl[aria-label="Git 차이 출처"]') })
+          .evaluate((e) => {
+            e.open = true;
+          });
         await expect(
-          gitPanel
+          diffSource
             .getByRole("definition")
             .filter({ hasText: originalOid })
             .first(),
