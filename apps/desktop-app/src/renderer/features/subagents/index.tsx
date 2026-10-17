@@ -18,7 +18,8 @@ import {
   type QueuedDelegation,
 } from "../../shared/subagents/index.js";
 import styles from "./subagents.module.css";
-import { Button, Field, Input, Textarea } from "@workbench/ui";
+import { Plus } from "lucide-react";
+import { Button, Field, InfoTip, Input, Textarea } from "@workbench/ui";
 
 const statusLabels: Record<ChildStatus, string> = {
   queued: "대기열",
@@ -74,6 +75,7 @@ export function SubagentPanel({
   const [brief, setBrief] = useState<Brief>({});
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
   const unlinked = useRef(false);
   const rows = deriveChildTree({
     rootId: sessionId,
@@ -219,6 +221,7 @@ export function SubagentPanel({
       brief,
     };
     setBrief({});
+    setFormOpen(false);
     void drain([...queue, item]);
   };
   const waiting = queue.filter((q) => q.parentId === sessionId);
@@ -232,9 +235,32 @@ export function SubagentPanel({
     setBrief({ ...brief, [key]: value });
   return (
     <div className={`${styles.root} subagent-panel`}>
-      <h3>하위 세션 (위임)</h3>
+      <div className={styles.head}>
+        <h3>하위 작업</h3>
+        <InfoTip label="위임 안내">
+          <p>
+            동시에 실행하는 직접 위임은 최대 {DEFAULT_CAP}개이며 초과분은
+            대기열에서 순서대로 시작합니다. 모델이 시작한 하위 작업은 여기서
+            관찰만 합니다. 중단은 해당 세션을 열어 요청하므로 선택이 바뀝니다.
+          </p>
+          <p>
+            분기와 달리 현재 대화 기록 없이 새 컨텍스트로 시작하며, 아래
+            지시서가 첫 프롬프트가 됩니다.
+          </p>
+        </InfoTip>
+        <Button
+          size="compact"
+          intent="secondary"
+          className={styles.newButton}
+          aria-expanded={formOpen}
+          onClick={() => setFormOpen((value) => !value)}
+        >
+          <Plus size={14} aria-hidden="true" />
+          위임 만들기
+        </Button>
+      </div>
       {rows.length === 0 ? (
-        <p className={styles.muted}>이 세션에서 만든 하위 세션이 없습니다.</p>
+        <p className={styles.muted}>아직 하위 작업이 없어요.</p>
       ) : (
         <ul className={styles.tree}>
           {rows.map((row) => (
@@ -254,7 +280,7 @@ export function SubagentPanel({
               {row.status === "queued" ? (
                 <Button
                   size="compact"
-                  intent="secondary"
+                  intent="quiet"
                   onClick={() => setQueue(queue.filter((q) => q.id !== row.id))}
                 >
                   대기열 취소
@@ -263,7 +289,7 @@ export function SubagentPanel({
                 <>
                   <Button
                     size="compact"
-                    intent="secondary"
+                    intent="quiet"
                     onClick={() => open(row.id)}
                   >
                     기록 열기
@@ -271,7 +297,7 @@ export function SubagentPanel({
                   {isActive(row) && (
                     <Button
                       size="compact"
-                      intent="secondary"
+                      intent="quiet"
                       disabled={busy || pending}
                       onClick={() => void cancelMany([row.id])}
                     >
@@ -292,84 +318,80 @@ export function SubagentPanel({
             disabled={busy || pending}
             onClick={() => void cancelMany(active.map((r) => r.id))}
           >
-            모든 하위 세션 중단 ({active.length})
+            모든 하위 작업 중단 ({active.length})
           </Button>
         </p>
       )}
-      <p className={styles.muted}>
-        동시에 실행하는 직접 위임은 최대 {DEFAULT_CAP}개이며 초과분은 대기열에서
-        순서대로 시작합니다. 모델이 시작한 하위 세션은 Native가 관리하며
-        여기서는 관찰만 합니다. 중단은 해당 세션을 열어 요청하므로 선택이
-        바뀝니다.
-      </p>
       {note && <p role="status">{note}</p>}
-      <h3>위임</h3>
-      <p className={styles.muted}>
-        분기와 달리 현재 대화 기록 없이 새 컨텍스트로 시작하며, 아래 지시서가 첫
-        프롬프트가 됩니다.
-      </p>
-      <form
-        className={styles.form}
-        onSubmit={(event) => {
-          event.preventDefault();
-          delegate();
-        }}
-      >
-        <Field label="역할">
-          {(c) => (
-            <Input
-              {...c}
-              value={brief.role ?? ""}
-              onChange={(e) => set("role")(e.target.value)}
-            />
-          )}
-        </Field>
-        <Field label="목표 (필수)">
-          {(c) => (
-            <Textarea
-              {...c}
-              value={brief.goal ?? ""}
-              onChange={(e) => set("goal")(e.target.value)}
-            />
-          )}
-        </Field>
-        <Field label="입력/참고 자료">
-          {(c) => (
-            <Textarea
-              {...c}
-              value={brief.inputs ?? ""}
-              onChange={(e) => set("inputs")(e.target.value)}
-            />
-          )}
-        </Field>
-        <Field label="담당 경로">
-          {(c) => (
-            <Textarea
-              {...c}
-              value={String(brief.ownedPaths ?? "")}
-              onChange={(e) => set("ownedPaths")(e.target.value)}
-            />
-          )}
-        </Field>
-        <Field label="수락 기준">
-          {(c) => (
-            <Textarea
-              {...c}
-              value={brief.acceptance ?? ""}
-              onChange={(e) => set("acceptance")(e.target.value)}
-            />
-          )}
-        </Field>
-        <Button
-          size="compact"
-          intent="primary"
-          type="submit"
-          disabled={!sessionId || !validBrief(brief) || busy || pending}
+      {formOpen && (
+        <form
+          className={styles.form}
+          aria-label="위임 만들기"
+          onSubmit={(event) => {
+            event.preventDefault();
+            delegate();
+          }}
         >
-          새 컨텍스트로 위임
-          {waiting.length ? ` (대기 ${waiting.length})` : ""}
-        </Button>
-      </form>
+          <Field label="목표 (필수)">
+            {(c) => (
+              <Textarea
+                {...c}
+                autoFocus
+                value={brief.goal ?? ""}
+                onChange={(e) => set("goal")(e.target.value)}
+              />
+            )}
+          </Field>
+          <details className={styles.more}>
+            <summary>자세히</summary>
+            <Field label="역할">
+              {(c) => (
+                <Input
+                  {...c}
+                  value={brief.role ?? ""}
+                  onChange={(e) => set("role")(e.target.value)}
+                />
+              )}
+            </Field>
+            <Field label="입력/참고 자료">
+              {(c) => (
+                <Textarea
+                  {...c}
+                  value={brief.inputs ?? ""}
+                  onChange={(e) => set("inputs")(e.target.value)}
+                />
+              )}
+            </Field>
+            <Field label="담당 경로">
+              {(c) => (
+                <Textarea
+                  {...c}
+                  value={String(brief.ownedPaths ?? "")}
+                  onChange={(e) => set("ownedPaths")(e.target.value)}
+                />
+              )}
+            </Field>
+            <Field label="수락 기준">
+              {(c) => (
+                <Textarea
+                  {...c}
+                  value={brief.acceptance ?? ""}
+                  onChange={(e) => set("acceptance")(e.target.value)}
+                />
+              )}
+            </Field>
+          </details>
+          <Button
+            size="compact"
+            intent="primary"
+            type="submit"
+            disabled={!sessionId || !validBrief(brief) || busy || pending}
+          >
+            새 컨텍스트로 위임
+            {waiting.length ? ` (대기 ${waiting.length})` : ""}
+          </Button>
+        </form>
+      )}
     </div>
   );
 }

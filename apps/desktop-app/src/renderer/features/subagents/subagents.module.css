@@ -1,29 +1,43 @@
 .root {
-  font-size: 13px;
+  font-size: var(--omoc-semantic-type-size-compact);
   line-height: 1.5;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
-.root h3 {
-  font-size: 13px;
+.root p {
+  margin: 0;
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.head h3 {
+  margin: 0;
+  font-size: var(--omoc-semantic-type-size-compact);
   font-weight: 600;
-  margin: 24px 0 12px;
+}
+.root .newButton {
+  margin-inline-start: auto;
+  gap: 4px;
 }
 .muted {
-  color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 1.6;
+  color: var(--omoc-semantic-color-text-tertiary);
+  font-size: var(--omoc-semantic-type-size-caption);
 }
 .tree {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 4px;
+  gap: 2px;
 }
 .row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   flex-wrap: wrap;
 }
 .row > span:first-child {
@@ -31,7 +45,24 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
+.row small {
+  color: var(--omoc-semantic-color-text-secondary);
+}
 .form {
   display: grid;
   gap: 8px;
+}
+.more {
+  display: grid;
+  gap: 8px;
+}
+.more summary {
+  cursor: pointer;
+  min-height: 28px;
+  display: list-item;
+  align-content: center;
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.more[open] > :not(summary) {
+  margin-top: 8px;
 }

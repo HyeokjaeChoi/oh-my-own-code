@@ -32,7 +32,14 @@ import {
 } from "../../shared/terminal/index.js";
 import type { ProjectActions } from "../../shared/project-actions/index.js";
 import styles from "./plans.module.css";
-import { Button, Input, Notice, Select, Textarea } from "@workbench/ui";
+import {
+  Button,
+  InfoTip,
+  Input,
+  Notice,
+  Select,
+  Textarea,
+} from "@workbench/ui";
 
 const POLL_MS = 1000;
 const IDLE_POLL_MS = 5000;
@@ -321,8 +328,15 @@ export function PlansPanel({
 
   return (
     <section className={styles.panel} aria-label="계획과 검증">
-      <h2>계획</h2>
       {error && <Notice tone="danger">{error}</Notice>}
+      <div className={styles.head}>
+        <h3 className={styles.title}>계획</h3>
+        <InfoTip label="계획 안내">
+          <p>
+            내용은 에이전트에게 .omoc/plans/*.md 로 작성하도록 요청해도 됩니다.
+          </p>
+        </InfoTip>
+      </div>
       <div className={styles.input}>
         <Input
           aria-label="새 계획 제목"
@@ -332,16 +346,16 @@ export function PlansPanel({
         />
         <Button
           size="compact"
-          intent="primary"
+          intent="secondary"
           disabled={!title.trim()}
           onClick={() => void create()}
         >
           만들기
         </Button>
       </div>
-      <p className={styles.muted}>
-        내용은 에이전트에게 .omoc/plans/*.md 로 작성하도록 요청해도 됩니다.
-      </p>
+      {(list?.plans.length ?? 0) === 0 && !path && (
+        <p className={styles.none}>계획이 없습니다.</p>
+      )}
       <ul className={styles.list}>
         {(list?.plans ?? []).map((p) => {
           const st = approvalState(
@@ -350,10 +364,10 @@ export function PlansPanel({
             p.sha256,
           );
           return (
-            <li key={p.path}>
+            <li key={p.path} className={styles.planRow}>
               <Button
                 size="compact"
-                intent="secondary"
+                intent={p.path === path ? "secondary" : "quiet"}
                 aria-pressed={p.path === path}
                 onClick={() => void open(p.path)}
               >
@@ -370,37 +384,49 @@ export function PlansPanel({
           );
         })}
       </ul>
-      <div className={styles.input}>
-        <Input
-          aria-label="다른 Markdown 경로"
-          placeholder="docs/plan.md"
-          value={extra}
-          onChange={(e) => setExtra(e.target.value)}
-        />
-        <Button
-          size="compact"
-          intent="secondary"
-          disabled={!extra.trim().endsWith(".md")}
-          onClick={() => void open(extra.trim())}
-        >
-          열기
-        </Button>
-      </div>
+      <details className={styles.more}>
+        <summary>다른 Markdown 열기</summary>
+        <div className={styles.input}>
+          <Input
+            aria-label="다른 Markdown 경로"
+            placeholder="docs/plan.md"
+            value={extra}
+            onChange={(e) => setExtra(e.target.value)}
+          />
+          <Button
+            size="compact"
+            intent="secondary"
+            disabled={!extra.trim().endsWith(".md")}
+            onClick={() => void open(extra.trim())}
+          >
+            열기
+          </Button>
+        </div>
+      </details>
 
       {path && (
         <>
-          <h3>{path}</h3>
-          {!loaded && <p className={styles.muted}>계획을 불러오는 중…</p>}
+          <div className={styles.planHead}>
+            <h4 className={styles.planPath} title={path}>
+              {path}
+            </h4>
+            {loaded && (
+              <span
+                className={styles.counter}
+                aria-label={`진행 ${checklist.done}/${checklist.total}`}
+              >
+                {checklist.done} / {checklist.total}
+              </span>
+            )}
+          </div>
+          {!loaded && <p className={styles.none}>계획을 불러오는 중…</p>}
           {loaded && (
             <>
-              <p>
-                진행 {checklist.done}/{checklist.total}
-                {dirty && <span className={styles.warn}> · 저장 안 됨</span>}
-              </p>
+              {dirty && <p className={styles.warn}>저장 안 됨</p>}
               <div className={styles.input}>
                 <Button
                   size="compact"
-                  intent="secondary"
+                  intent="quiet"
                   onClick={() => setRaw(!raw)}
                   aria-pressed={raw}
                 >
@@ -419,7 +445,7 @@ export function PlansPanel({
               </div>
               {raw ? (
                 crlf ? (
-                  <p className={styles.muted}>
+                  <p className={styles.none}>
                     CRLF 파일은 파일 패널의 편집기에서 수정하세요.
                   </p>
                 ) : (
@@ -432,7 +458,7 @@ export function PlansPanel({
                   />
                 )
               ) : (
-                <div>
+                <div className={styles.checklist}>
                   {rows.map((row, line) => {
                     const reviewSection = scanned[line]?.review ?? false;
                     const h =
@@ -441,7 +467,11 @@ export function PlansPanel({
                     const item = itemByLine.get(line);
                     if (item)
                       return (
-                        <label key={line} className={styles.check}>
+                        <label
+                          key={line}
+                          className={styles.check}
+                          data-done={item.checked || undefined}
+                        >
                           <input
                             type="checkbox"
                             checked={item.checked}
@@ -468,8 +498,17 @@ export function PlansPanel({
                 </div>
               )}
 
-              <div className={styles.section}>
-                <h4>승인과 실행</h4>
+              <details className={styles.section} open>
+                <summary>
+                  승인과 실행
+                  <span className={styles.badge}>
+                    {approval?.state === "approved"
+                      ? `승인됨 v${approval.version}`
+                      : approval?.state === "stale"
+                        ? "승인 후 변경됨"
+                        : "미승인"}
+                  </span>
+                </summary>
                 <p>
                   {approval?.state === "approved"
                     ? `승인됨 v${approval.version}`
@@ -512,19 +551,21 @@ export function PlansPanel({
                     ))}
                   </ul>
                 )}
-              </div>
+              </details>
 
-              <div className={styles.section}>
-                <h4>
-                  검증{" "}
+              <details className={styles.section}>
+                <summary>
+                  검증
                   <span className={styles.badge}>
                     {summaryLabels[verificationSummary(checks, current)]}
                   </span>
-                </h4>
-                <p className={styles.muted}>
-                  상태는 앱이 실행한 스크립트의 종료 코드로만 기록됩니다.
-                  에이전트의 완료 보고는 반영되지 않습니다.
-                </p>
+                  <InfoTip label="검증 안내">
+                    <p>
+                      상태는 앱이 실행한 스크립트의 종료 코드로만 기록됩니다.
+                      에이전트의 완료 보고는 반영되지 않습니다.
+                    </p>
+                  </InfoTip>
+                </summary>
                 {checks.length > 0 && (
                   <ul className={styles.list}>
                     {checks.map((c) => (
@@ -576,14 +617,24 @@ export function PlansPanel({
                     </Button>
                   </div>
                 ) : (
-                  <p className={styles.muted}>
+                  <p className={styles.none}>
                     package.json 스크립트가 없습니다.
                   </p>
                 )}
-              </div>
+              </details>
 
-              <div className={styles.section}>
-                <h4>리뷰 결과</h4>
+              <details className={styles.section}>
+                <summary>
+                  리뷰 결과
+                  <span className={styles.badge}>미해결 {summary.open}</span>
+                  <InfoTip label="리뷰 안내">
+                    <p>
+                      독립 리뷰어는 하위 세션 위임으로 실행하고, 최종 답변을
+                      아래에 붙여넣어 추가하세요. 자동으로 해결 처리되지
+                      않습니다.
+                    </p>
+                  </InfoTip>
+                </summary>
                 <p>
                   미해결 {summary.open} · 해결 {summary.resolved} · 리뷰어
                   재확인 대기 {summary.awaitingRecheck}
@@ -650,10 +701,6 @@ export function PlansPanel({
                     </li>
                   ))}
                 </ul>
-                <p className={styles.muted}>
-                  독립 리뷰어는 하위 세션 위임으로 실행하고, 최종 답변을 아래에
-                  붙여넣어 추가하세요. 자동으로 해결 처리되지 않습니다.
-                </p>
                 <Select
                   aria-label="결과 작성자"
                   value={author}
@@ -677,7 +724,7 @@ export function PlansPanel({
                 >
                   결과 추가
                 </Button>
-              </div>
+              </details>
             </>
           )}
         </>
