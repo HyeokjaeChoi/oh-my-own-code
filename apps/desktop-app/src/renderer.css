@@ -5,9 +5,9 @@
   color: var(--omoc-semantic-color-text-primary);
   background: var(--omoc-semantic-color-canvas);
   font-synthesis: none;
-  /* Korean wraps at word boundaries; paths and long tokens still break. */
+  /* Korean wraps at word boundaries; path/code/URL containers opt into `anywhere` locally. */
   word-break: keep-all;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 *,
 *::before,

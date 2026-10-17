@@ -14,7 +14,7 @@
   color: var(--omoc-semantic-color-text-tertiary);
   font-size: var(--omoc-semantic-type-size-group);
   line-height: var(--omoc-semantic-type-line-group);
-  font-weight: var(--omoc-primitive-font-weight-semibold);
+  font-weight: var(--omoc-semantic-type-weight-heading);
 }
 .iconButton {
   display: inline-flex;
@@ -74,6 +74,7 @@
   gap: 6px;
   align-items: center;
   min-width: 0;
+  position: relative;
   min-height: var(--omoc-component-size-sidebar-row-height);
   padding: 4px 8px;
   background: transparent;
@@ -84,8 +85,21 @@
   font-size: var(--omoc-component-type-navigation-size);
   line-height: var(--omoc-component-type-navigation-line);
 }
+.sessionButton::before {
+  /* Row is 30/28px; keep a 32px pointer hit area. */
+  content: "";
+  position: absolute;
+  inset-block: calc(
+    (
+        var(--omoc-component-size-sidebar-row-height) -
+          var(--omoc-component-size-control-hit-target)
+      ) /
+      2
+  );
+  inset-inline: 0;
+}
 .row[data-selected="true"] .sessionButton {
-  font-weight: var(--omoc-primitive-font-weight-medium);
+  font-weight: var(--omoc-semantic-type-weight-label);
 }
 .title {
   flex: 1;
@@ -112,14 +126,14 @@
   padding: 8px;
   display: grid;
   gap: 6px;
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
 }
 .rename > div {
   display: flex;
   gap: 6px;
 }
 .empty {
-  font-size: var(--omoc-primitive-font-size-md);
+  font-size: var(--omoc-semantic-type-size-label);
   color: var(--omoc-semantic-color-text-secondary);
   padding: 8px;
   line-height: 1.5;
