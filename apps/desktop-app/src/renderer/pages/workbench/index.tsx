@@ -74,6 +74,8 @@ export function Workbench() {
   const { actions, store } = useWindowWorkbench();
   const recovery = useWorkbenchSelector(selectors.recovery);
   const gitObservation = useWorkbenchSelector(currentGitReviewObservation);
+  // The free-model failure sentence replaces the generic banner.
+  const freeFailure = useWorkbenchSelector(selectors.lastTurnFreeFailure);
   // 변경 is the default tab once a current Git read shows changes.
   const hasChanges =
     gitObservation?.status === "available" && gitObservation.files.length > 0;
@@ -911,7 +913,8 @@ export function Workbench() {
             <Button onClick={workbench.clearError}>닫기</Button>
           </div>
         ) : (
-          snapshot?.error && (
+          snapshot?.error &&
+          !freeFailure && (
             <div
               className={`${styles.statusLine} ${styles.error}`}
               role="alert"
