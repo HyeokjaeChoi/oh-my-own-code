@@ -2438,3 +2438,36 @@ test("checkpoint: a file restore is refused while another session of the workspa
   const ok = await revert("session.revert");
   assert.equal(ok.ok, true, JSON.stringify(ok));
 });
+
+test("checkpoint: another session's newer checkpoint refuses the file restore with CONFLICT", async (t) => {
+  const cp = fakeCheckpoints({ conflict: async () => true });
+  const { f, rec, revert } = await revertFixture(t, async () => true, cp);
+  cp.known.set("msg_3", "oid-9");
+  const result = await revert("session.revert");
+  assert.equal(result.code, "CONFLICT");
+  assert.equal(rec.asked.length, 0);
+  assert.equal(rec.stage.length, 0);
+});
+test("checkpoint: another session starting during the confirmation refuses the restore", async (t) => {
+  const cp = fakeCheckpoints();
+  let f;
+  const made = await revertFixture(
+    t,
+    async () => {
+      f.state.active["sdk-1"] = true;
+      return true;
+    },
+    cp,
+  );
+  f = made.f;
+  cp.known.set("msg_3", "oid-9");
+  const created = await f.service.handle({
+    type: "session.create",
+    workspaceId: f.ids.workspaceId,
+    title: "Other",
+  });
+  assert.equal(created.ok, true, JSON.stringify(created));
+  const result = await made.revert("session.revert");
+  assert.equal(result.code, "BUSY");
+  assert.equal(made.rec.stage.length, 0);
+});

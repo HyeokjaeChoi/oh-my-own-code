@@ -31,6 +31,7 @@ export const ERRORS = Object.freeze({
   INVALID_REQUEST: "Invalid workbench request.",
   NOT_FOUND: "The workspace or session is not registered.",
   BUSY: "The session is busy or its outcome is unconfirmed.",
+  CONFLICT: "Another session of the workspace changed files afterwards.",
   CANCELLED: "The operation was cancelled.",
   UNAVAILABLE: "The runtime is unavailable.",
   AUTH_REQUIRED: "No verified model credentials are available.",

@@ -1318,6 +1318,7 @@ export type WorkbenchErrorCode =
   | "INVALID_REQUEST"
   | "NOT_FOUND"
   | "BUSY"
+  | "CONFLICT"
   | "CANCELLED"
   | "UNAVAILABLE"
   | "AUTH_REQUIRED"

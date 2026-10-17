@@ -495,3 +495,91 @@ test("hardening: process env and PATH never reach git; user gitconfig is not rea
   assert.equal(existsSync(join(base, "TRACE-MARKER")), false);
   assert.equal(existsSync(join(base, "PATH-MARKER")), false);
 });
+
+test("N1: a directory unreadable at checkpoint time is never deleted after it becomes readable", async (t) => {
+  const { ws, store } = await setup(t);
+  await mkdir(join(ws, "priv"));
+  await writeFile(join(ws, "priv", "data"), "private");
+  await chmod(join(ws, "priv"), 0o000);
+  t.after(() => chmod(join(ws, "priv"), 0o755).catch(() => {}));
+  await stageAt(store, ws);
+  await chmod(join(ws, "priv"), 0o755);
+  await store.stage("w", ws, "s", "m");
+  assert.equal(await read(join(ws, "priv", "data")), "private");
+});
+
+test("N2: conflict is true only when another session checkpointed later", async (t) => {
+  const { ws, store } = await setup(t);
+  await writeFile(join(ws, "f"), "1");
+  await stageAt(store, ws, "m1");
+  assert.equal(await store.conflict("w", "s", "m1", false), false);
+  const other = await store.snapshot("w", ws, "other");
+  await new Promise((r) => setTimeout(r, 5));
+  await store.bind("w", "other", "o1", other.oid);
+  assert.equal(await store.conflict("w", "s", "m1", false), true);
+  assert.equal(await store.conflict("other", "s", "m1", false), false);
+});
+
+test("N4: protection compares case- and normalization-insensitively", async (t) => {
+  const { ws, store } = await setup(t);
+  await writeFile(join(ws, ".gitignore"), "Vault/\n");
+  await mkdir(join(ws, "Vault"));
+  await writeFile(join(ws, "Vault", "k"), "key");
+  await stageAt(store, ws);
+  await rm(join(ws, ".gitignore"));
+  await rename(join(ws, "Vault"), join(ws, "vault"));
+  await store.stage("w", ws, "s", "m");
+  assert.equal(
+    (await readdir(ws)).some((n) => /^vault$/iu.test(n)),
+    true,
+  );
+  const dir = (await readdir(ws)).find((n) => /^vault$/iu.test(n));
+  assert.equal(await read(join(ws, dir, "k")), "key");
+});
+
+test("F8: the exec bit follows the checkpoint while other bits are kept", async (t) => {
+  const { ws, store } = await setup(t);
+  await writeFile(join(ws, "plain"), "1");
+  await chmod(join(ws, "plain"), 0o644);
+  await stageAt(store, ws);
+  await writeFile(join(ws, "plain"), "2");
+  await chmod(join(ws, "plain"), 0o755);
+  await store.stage("w", ws, "s", "m");
+  assert.equal((await stat(join(ws, "plain"))).mode & 0o777, 0o644);
+});
+
+test("N5/F10: only git.exe on Windows; NTFS single-colon streams are refused", async () => {
+  assert.equal(
+    await resolveGit({
+      platform: "win32",
+      pathEnv: "C:\\Git",
+      isFile: async (f) => f.endsWith("git.cmd"),
+    }),
+    undefined,
+  );
+  assert.equal(cleanPath(".git:stream/x"), undefined);
+});
+
+test("the hardening -c flags reach every spawned git", async (t) => {
+  const base = await realpath(await mkdtemp(join(tmpdir(), "checkpoint-")));
+  t.after(() => rm(base, { recursive: true, force: true }));
+  const log = join(base, "argv.log");
+  const wrapper = join(base, "git-wrapper");
+  await writeFile(
+    wrapper,
+    `#!/bin/sh\nprintf '%s\\n' "$*" >> "${log}"\nexec /usr/bin/git "$@"\n`,
+  );
+  await chmod(wrapper, 0o755);
+  const ws = join(base, "ws");
+  await mkdir(ws);
+  await writeFile(join(ws, "f"), "1");
+  const store = createCheckpointStore({ root: join(base, "cp"), git: wrapper });
+  const snap = await store.snapshot("w", ws, "s");
+  assert.ok(snap.oid, JSON.stringify(snap));
+  const calls = (await read(log)).trim().split("\n");
+  assert.ok(calls.length >= 3);
+  for (const call of calls) {
+    assert.match(call, /core\.hooksPath=\/dev\/null/u);
+    assert.match(call, /core\.fsmonitor=false/u);
+  }
+});
