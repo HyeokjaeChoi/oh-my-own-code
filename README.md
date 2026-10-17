@@ -1,5 +1,7 @@
 # Oh My Own Code
 
+**카드 없이, 어떤 모델로든 — 한국어로 쓰는 코딩 에이전트.** Oh My Own Code starts on OpenRouter's free models with a single API key and no credit card, and works with any other provider key you already have. The interface is Korean-first.
+
 A personal Electron workbench for inspecting and using an agent harness through an app-owned OpenCode v2 sidecar. The desktop renderer uses assistant-ui for conversations and an owned Tool UI component for validated tool results. macOS and Windows are the target platforms; package and runtime checks must run on each native platform.
 
 ## Run the desktop app

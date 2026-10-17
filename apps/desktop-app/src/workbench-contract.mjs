@@ -822,7 +822,20 @@ export function validateSnapshot(value) {
     JSON.stringify([k.runtimeEpoch, k.operationId]),
   );
   for (const m of value.messages) {
-    requiredObject(m, ["id", "role", "text", "tools"], ["runtime", "context"]);
+    requiredObject(
+      m,
+      ["id", "role", "text", "tools"],
+      ["runtime", "context", "failure"],
+    );
+    if (Object.hasOwn(m, "failure")) {
+      requiredObject(m.failure, ["status"]);
+      needDTO(
+        m.role === "assistant" &&
+          Number.isInteger(m.failure.status) &&
+          m.failure.status >= 400 &&
+          m.failure.status <= 599,
+      );
+    }
     if (Object.hasOwn(m, "context"))
       needDTO(m.role === "user" && validHistoricalContext(m.context));
     if (Object.hasOwn(m, "runtime"))

@@ -1,0 +1,47 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(100%, 440px);
+  margin: 0 auto 16px;
+  padding: 16px;
+  border-radius: var(--omoc-primitive-radius-navigation);
+  background: var(--omoc-semantic-color-fill-subtle);
+  text-align: start;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--omoc-semantic-type-size-heading);
+  font-weight: var(--omoc-semantic-type-weight-heading);
+  line-height: var(--omoc-semantic-type-line-heading);
+}
+
+.text,
+.success {
+  margin: 0;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: var(--omoc-semantic-type-size-label);
+  line-height: var(--omoc-semantic-type-line-label);
+}
+
+.success {
+  color: var(--omoc-semantic-color-success-foreground);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--omoc-semantic-color-text-primary);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}

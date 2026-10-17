@@ -195,6 +195,8 @@ export interface WorkbenchTool {
 export interface WorkbenchMessage {
   context?: HistoricalContext;
   runtime?: AssistantRuntime;
+  // HTTP status of a failed assistant turn (400-599), when the runtime reports one.
+  failure?: { status: number };
   id: string;
   role: "user" | "assistant";
   text: string;

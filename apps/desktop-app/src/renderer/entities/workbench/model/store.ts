@@ -2649,7 +2649,7 @@ function validProjection(next: WorkbenchSnapshot): boolean {
       !closed(
         message,
         ["id", "role", "text", "tools"],
-        ["runtime", "context"],
+        ["runtime", "context", "failure"],
       ) ||
       !validRuntimeText(message.id) ||
       !["user", "assistant"].includes(message.role) ||
@@ -2662,7 +2662,13 @@ function validProjection(next: WorkbenchSnapshot): boolean {
           !validHistoricalContext(message.context))) ||
       (Object.hasOwn(message, "runtime") &&
         (message.role !== "assistant" ||
-          !validAssistantRuntime(message.runtime)))
+          !validAssistantRuntime(message.runtime))) ||
+      (Object.hasOwn(message, "failure") &&
+        (message.role !== "assistant" ||
+          !closed(message.failure, ["status"]) ||
+          !Number.isInteger(message.failure?.status) ||
+          (message.failure?.status ?? 0) < 400 ||
+          (message.failure?.status ?? 0) > 599))
     )
       return false;
     for (const tool of message.tools) {

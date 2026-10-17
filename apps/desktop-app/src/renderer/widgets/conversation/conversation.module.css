@@ -32,18 +32,18 @@
 }
 
 .empty h1 {
-  margin: 0 0 16px;
+  margin: 0 0 8px;
   font-size: var(--omoc-semantic-type-size-hero);
   font-weight: var(--omoc-semantic-type-weight-heading);
   line-height: var(--omoc-semantic-type-line-hero);
   text-wrap: balance;
 }
 
-.empty p {
-  margin: 0;
+.empty > p {
+  margin: 0 0 16px;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: var(--omoc-semantic-type-size-body);
-  line-height: var(--omoc-semantic-type-line-body);
+  font-size: var(--omoc-semantic-type-size-label);
+  line-height: var(--omoc-semantic-type-line-label);
 }
 
 .message {
@@ -1227,6 +1227,28 @@ details[open] > .disclosure > .chevron {
   color: var(--omoc-semantic-color-success-foreground);
   font-size: var(--omoc-semantic-type-size-group);
   line-height: var(--omoc-semantic-type-line-group);
+}
+
+.unavailableTag {
+  flex: none;
+  color: var(--omoc-semantic-color-text-tertiary);
+  font-size: var(--omoc-semantic-type-size-group);
+  line-height: var(--omoc-semantic-type-line-group);
+}
+
+.freeFailure {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-block: 8px;
+  color: var(--omoc-semantic-color-danger-foreground);
+  font-size: var(--omoc-semantic-type-size-body);
+  line-height: var(--omoc-semantic-type-line-body);
+}
+
+.freeFailure p {
+  margin: 0;
 }
 
 .modelCheck {

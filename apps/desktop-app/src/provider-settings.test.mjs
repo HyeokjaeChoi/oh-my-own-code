@@ -128,3 +128,82 @@ test("an auto-picked model survives catalog growth and goes only when removed", 
     false,
   );
 });
+
+test("free-model failures classify by structured status and never touch paid models", async () => {
+  const { freeFailure } = await import("./renderer/shared/providers/index.mjs");
+  const entries = [
+    {
+      id: "f".repeat(64),
+      providerId: "openrouter",
+      modelId: "x/y:free",
+      free: true,
+    },
+    { id: "p".repeat(64), providerId: "openrouter", modelId: "x/paid" },
+  ];
+  const free = { providerId: "openrouter", id: "x/y:free" };
+  assert.deepEqual(freeFailure(entries, free, 404), {
+    kind: "unavailable",
+    id: "f".repeat(64),
+  });
+  assert.deepEqual(freeFailure(entries, free, 429), {
+    kind: "limit",
+    id: "f".repeat(64),
+  });
+  // Paid model, other status, unknown model: no free-model fallback.
+  assert.equal(
+    freeFailure(entries, { providerId: "openrouter", id: "x/paid" }, 404),
+    undefined,
+  );
+  assert.equal(freeFailure(entries, free, 500), undefined);
+  assert.equal(freeFailure(entries, undefined, 404), undefined);
+  // Not in the catalog (yet): the OpenRouter free naming still counts.
+  assert.equal(
+    freeFailure([], { providerId: "openrouter", id: "a/b:free" }, 429)?.kind,
+    "limit",
+  );
+  assert.equal(
+    freeFailure([], { providerId: "openai", id: "a/b:free" }, 429),
+    undefined,
+  );
+});
+
+test("unavailable models persist per profile, bounded, catalog ids only", async () => {
+  const { loadUnavailableModels, markModelUnavailable } = await import(
+    "./renderer/shared/providers/index.mjs"
+  );
+  const s = storage();
+  assert.deepEqual(loadUnavailableModels(s), []);
+  markModelUnavailable(ID, s);
+  markModelUnavailable(ID, s);
+  assert.deepEqual(loadUnavailableModels(s), [ID]);
+  s.setItem("omoc.unavailableModels.v1", JSON.stringify([ID, "not-an-id"]));
+  assert.deepEqual(loadUnavailableModels(s), [ID]);
+  s.setItem("omoc.unavailableModels.v1", "{");
+  assert.deepEqual(loadUnavailableModels(s), []);
+});
+
+test("first-run card shows only for an empty conversation with a known, unconnected provider list", async () => {
+  const { showFirstRun, findFreeRouter } = await import(
+    "./renderer/shared/providers/index.mjs"
+  );
+  const none = parseProviderList({
+    providers: [{ id: "openrouter", name: "OpenRouter", connected: false }],
+  });
+  const some = parseProviderList({
+    providers: [{ id: "openrouter", name: "OpenRouter", connected: true }],
+  });
+  assert.equal(showFirstRun(none, 0), true);
+  assert.equal(showFirstRun(some, 0), false);
+  assert.equal(showFirstRun(none, 1), false);
+  assert.equal(showFirstRun(undefined, 0), false);
+  const router = {
+    id: "r".repeat(64),
+    providerId: "openrouter",
+    modelId: "openrouter/free",
+  };
+  assert.equal(
+    findFreeRouter({ status: "available", entries: [{ id: "x" }, router] }),
+    router,
+  );
+  assert.equal(findFreeRouter({ status: "unavailable" }), undefined);
+});

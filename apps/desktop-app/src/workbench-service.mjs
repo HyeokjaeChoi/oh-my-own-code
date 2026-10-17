@@ -267,6 +267,14 @@ export function projectMessages(data) {
       ...(projectAssistantRuntime(message)
         ? { runtime: projectAssistantRuntime(message) }
         : {}),
+      // Only the numeric HTTP status of a failed turn; its type and message
+      // can carry URLs or keys and never reach the renderer.
+      ...(message.type === "assistant" &&
+      Number.isInteger(message.error?.status) &&
+      message.error.status >= 400 &&
+      message.error.status <= 599
+        ? { failure: { status: message.error.status } }
+        : {}),
       text:
         message.type === "user"
           ? clip(message.text, 32000)

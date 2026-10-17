@@ -10,6 +10,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type ReactNode,
 } from "react";
 import {
   AssistantRuntimeProvider,
@@ -57,6 +58,17 @@ import {
 } from "../../features/composer/index.js";
 import type { MutationRequest } from "../../shared/transport/index.js";
 import { openSettingsPage } from "../../shared/palette/index.js";
+import {
+  FirstRunCard,
+  useProviderList,
+} from "../../features/onboarding/index.js";
+import {
+  findFreeRouter,
+  freeFailure,
+  loadUnavailableModels,
+  markModelUnavailable,
+  showFirstRun,
+} from "../../shared/providers/index.js";
 import styles from "./conversation.module.css";
 import { PopoverPanel, PopoverTrigger } from "./composer-popovers.js";
 import { ModelPicker } from "./model-picker.js";
@@ -290,6 +302,31 @@ function RunElapsed({ sessionId }: { sessionId: string }) {
     </>
   );
 }
+// One sentence for a failed turn on a free model, plus the way out. The retry
+// button only appears where it is useful (latest turn, router available).
+function FreeFailureNote({
+  kind,
+  onRetry,
+}: {
+  kind: "unavailable" | "limit";
+  onRetry?: (() => void) | undefined;
+}) {
+  return (
+    <div className={styles.freeFailure} role="alert" data-free-failure={kind}>
+      <p>
+        {kind === "unavailable"
+          ? "이 모델은 지금 무료로 쓸 수 없습니다."
+          : "무료 사용 한도에 걸렸습니다. 잠시 후 다시 시도하거나 다른 모델을 고르세요."}
+      </p>
+      {onRetry && (
+        <Button size="compact" type="button" onClick={onRetry}>
+          Free Models Router로 다시 보내기
+        </Button>
+      )}
+    </div>
+  );
+}
+
 function MessageView({
   role,
   messageId,
@@ -297,6 +334,7 @@ function MessageView({
   original,
   showRuntime,
   running,
+  failure,
 }: {
   role: "user" | "assistant";
   messageId: string;
@@ -304,6 +342,7 @@ function MessageView({
   original?: WorkbenchMessage | undefined;
   showRuntime: boolean;
   running: boolean;
+  failure?: ReactNode;
 }) {
   const report =
     role === "assistant" && validAssistantRuntime(runtime)
@@ -330,6 +369,7 @@ function MessageView({
           tools: { Fallback: ToolDetail },
         }}
       />
+      {failure}
       <div className={styles.messageFooter}>
         <div
           className={styles.messageToolbar}
@@ -474,6 +514,45 @@ export function Conversation(props: Props) {
   }, []);
   const messages = useMemo(() => mapMessages(props.messages), [props.messages]);
   const running = props.status === "running" || props.status === "stopping";
+  const providerList = useProviderList();
+  // The card outlives its own trigger: connecting flips the list to connected.
+  const [cardHeld, setCardHeld] = useState(false);
+  useEffect(() => setCardHeld(false), [props.sessionId]);
+  const firstRun =
+    showFirstRun(providerList, messages.length) ||
+    (cardHeld && messages.length === 0);
+  const [unavailable, setUnavailable] = useState(loadUnavailableModels);
+  // Free-model failures come from the structured HTTP status of the turn.
+  const failures = useMemo(() => {
+    const found = new Map<
+      string,
+      { kind: "unavailable" | "limit"; id?: string }
+    >();
+    const entries =
+      props.catalog?.models.status === "available"
+        ? props.catalog.models.entries
+        : [];
+    for (const message of props.messages) {
+      const failed =
+        message.role === "assistant" && message.failure
+          ? freeFailure(entries, message.runtime?.model, message.failure.status)
+          : undefined;
+      if (failed) found.set(message.id, failed);
+    }
+    return found;
+  }, [props.messages, props.catalog]);
+  useEffect(() => {
+    let next = unavailable;
+    for (const failed of failures.values())
+      if (
+        failed.kind === "unavailable" &&
+        failed.id &&
+        !next.includes(failed.id)
+      )
+        next = markModelUnavailable(failed.id);
+    if (next !== unavailable) setUnavailable(next);
+  }, [failures, unavailable]);
+  const freeRouter = findFreeRouter(props.catalog?.models);
   // Sending may be blocked by an unknown receipt while interruption is needed.
   const canInterrupt =
     props.executionAvailable &&
@@ -685,6 +764,36 @@ export function Conversation(props: Props) {
                     original={props.messages.find((m) => m.id === message.id)}
                     // Agent/model once per turn: on the last assistant message.
                     running={running}
+                    failure={(() => {
+                      const failed = failures.get(message.id);
+                      if (!failed) return undefined;
+                      const index = props.messages.findIndex(
+                        (m) => m.id === message.id,
+                      );
+                      const prompt =
+                        index > 0 && props.messages[index - 1]?.role === "user"
+                          ? props.messages[index - 1]!.text
+                          : "";
+                      const canRetry =
+                        freeRouter &&
+                        prompt &&
+                        index === props.messages.length - 1 &&
+                        !blocked &&
+                        freeRouter.id !== failed.id;
+                      return (
+                        <FreeFailureNote
+                          kind={failed.kind}
+                          onRetry={
+                            canRetry
+                              ? () => {
+                                  actions.options({ model: freeRouter.id });
+                                  void actions.sendContextMessage(prompt);
+                                }
+                              : undefined
+                          }
+                        />
+                      );
+                    })()}
                     showRuntime={
                       props.messages[
                         props.messages.findIndex((m) => m.id === message.id) + 1
@@ -699,6 +808,10 @@ export function Conversation(props: Props) {
             {messages.length === 0 && (
               <div className={styles.empty}>
                 <h1>무엇을 만들까요?</h1>
+                <p>카드 없이, 어떤 모델로든 — 한국어로 쓰는 코딩 에이전트.</p>
+                {firstRun && (
+                  <FirstRunCard onVerified={() => setCardHeld(true)} />
+                )}
               </div>
             )}
             {props.archived && (
@@ -1218,6 +1331,7 @@ export function Conversation(props: Props) {
                       variant={variant}
                       variantCleared={variantCleared}
                       disabled={optionsHeld}
+                      unavailable={unavailable}
                       onModel={setModel}
                       onVariant={setVariant}
                       close={() => {
