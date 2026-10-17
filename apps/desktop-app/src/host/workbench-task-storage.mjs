@@ -28,6 +28,8 @@ export const TASK_NATIVE_STEPS = Object.freeze([
   "native.create",
   "native.fork",
   "native.remove",
+  "native.revert.stage",
+  "native.revert.clear",
   "native.rename",
   "native.pin",
   "native.archive",

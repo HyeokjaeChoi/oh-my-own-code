@@ -16,7 +16,10 @@ import { createWorkbenchService } from "./workbench-service.mjs";
 import { BASELINE_POLICY } from "./workbench-contract.mjs";
 import { MAX_FILE_BYTES, defaultFolderName } from "./host/workbench-files.mjs";
 
-async function fixture(t, { contextIO, deadlineMs = 5000 } = {}) {
+async function fixture(
+  t,
+  { contextIO, deadlineMs = 5000, confirmSessionRevert } = {},
+) {
   const root = await mkdtemp(join(tmpdir(), "workbench-test-"));
   const workspace = join(root, "workspace");
   await mkdir(workspace);
@@ -197,6 +200,7 @@ async function fixture(t, { contextIO, deadlineMs = 5000 } = {}) {
       writable: path !== "x",
     }),
     confirmTrust: async () => state.trust,
+    ...(confirmSessionRevert && { confirmSessionRevert }),
   });
   t.after(() => service.close());
   const initial = await service.handle({ type: "snapshot" });
@@ -2011,4 +2015,227 @@ test("permission policy session generation change during get retires the observa
   });
   assert.equal(result.ok, false);
   assert.equal(result.code, "UNAVAILABLE");
+});
+
+// --- per-turn revert ---
+async function revertFixture(t, confirm = async () => true) {
+  const asked = [];
+  const f = await fixture(t, {
+    confirmSessionRevert: async (details) => {
+      asked.push(details);
+      return confirm(details);
+    },
+  });
+  const rec = { stage: [], clear: [], asked };
+  const sdk = f.infos.get("sdk-default");
+  f.state.messages = [
+    { id: "msg_4", type: "assistant", content: [{ type: "text", text: "b2" }] },
+    { id: "msg_3", type: "user", text: "second" },
+    { id: "msg_2", type: "assistant", content: [{ type: "text", text: "b1" }] },
+    { id: "msg_1", type: "user", text: "first" },
+  ];
+  f.client.session.message = {
+    get: async ({ messageID }) => {
+      const m = f.state.messages.find((x) => x.id === messageID);
+      return m && { ...m, sessionID: "sdk-default" };
+    },
+  };
+  f.client.session.revert = {
+    stage: async (args) => {
+      rec.stage.push(args);
+      sdk.revert = {
+        messageID: args.messageID,
+        snapshot: "tree",
+        files: [
+          { file: "a.txt", patch: "SECRET-PATCH", additions: 1, deletions: 0 },
+        ],
+      };
+    },
+    clear: async (args) => {
+      rec.clear.push(args);
+      delete sdk.revert;
+    },
+  };
+  const revert = (type, overrides = {}) =>
+    f.service.handle({
+      type,
+      ...f.ids,
+      requestId: `r-${Math.random()}`,
+      messageId: "msg_3",
+      ...overrides,
+    });
+  return { f, rec, sdk, revert };
+}
+test("revert stages through Native after native confirmation and hides the boundary and later messages", async (t) => {
+  const { f, rec, revert } = await revertFixture(t);
+  const result = await revert("session.revert");
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.deepEqual(rec.stage, [
+    { sessionID: "sdk-default", messageID: "msg_3" },
+  ]);
+  assert.equal(rec.asked.length, 1);
+  assert.equal(rec.asked[0].action, "revert");
+  // Dialog facts come from main-side metadata, never from the renderer.
+  assert.equal(rec.asked[0].restoresFiles, true);
+  assert.equal(Object.hasOwn(rec.asked[0], "messageId"), false);
+  assert.deepEqual(
+    result.value.messages.map((m) => m.id),
+    ["msg_1", "msg_2"],
+  );
+  assert.deepEqual(result.value.revert, {
+    messageId: "msg_3",
+    fileCount: 1,
+    files: ["a.txt"],
+    filesRestored: true,
+  });
+  assert.equal(JSON.stringify(result.value).includes("SECRET-PATCH"), false);
+  const snap = await f.service.handle({ type: "snapshot" });
+  assert.deepEqual(snap.value.revert, result.value.revert);
+  assert.deepEqual(
+    snap.value.messages.map((m) => m.id),
+    ["msg_1", "msg_2"],
+  );
+});
+test("revert without a git snapshot reports that no files were restored", async (t) => {
+  const { f, sdk, revert } = await revertFixture(t);
+  f.client.session.revert.stage = async (args) => {
+    sdk.revert = { messageID: args.messageID, files: [] };
+  };
+  const result = await revert("session.revert");
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.equal(result.value.revert.filesRestored, false);
+  assert.equal(result.value.revert.fileCount, 0);
+  assert.deepEqual(
+    result.value.messages.map((m) => m.id),
+    ["msg_1", "msg_2"],
+  );
+});
+test("revert is default-deny: no confirmation, no Native stage", async (t) => {
+  const { rec, revert } = await revertFixture(t, async () => false);
+  const result = await revert("session.revert");
+  assert.equal(result.ok, false);
+  assert.equal(result.code, "CANCELLED");
+  assert.equal(rec.stage.length, 0);
+  const plain = await fixture(t);
+  plain.client.session.revert = { stage: async () => assert.fail("staged") };
+  plain.client.session.message = {
+    get: async () => ({ id: "m", sessionID: "sdk-default", type: "user" }),
+  };
+  const denied = await plain.service.handle({
+    type: "session.revert",
+    ...plain.ids,
+    requestId: "r1",
+    messageId: "m",
+  });
+  assert.equal(denied.code, "CANCELLED");
+});
+test("revert refuses assistant, unknown and already hidden targets, and busy sessions, before any Native write", async (t) => {
+  const { f, rec, revert } = await revertFixture(t);
+  assert.equal(
+    (await revert("session.revert", { messageId: "msg_4" })).code,
+    "INVALID_SELECTION",
+  );
+  assert.equal(
+    (await revert("session.revert", { messageId: "nope" })).code,
+    "INVALID_SELECTION",
+  );
+  const get = f.client.session.message.get;
+  f.client.session.message.get = async (args) => ({
+    ...(await get(args)),
+    sessionID: "someone-else",
+  });
+  assert.equal((await revert("session.revert")).code, "INVALID_SELECTION");
+  f.client.session.message.get = async (args) => {
+    const { sessionID, ...real } = await get(args);
+    return real;
+  };
+  f.state.inbox = [{ id: "i1", sessionID: "sdk-default" }];
+  assert.equal((await revert("session.revert")).code, "BUSY");
+  f.state.inbox = [];
+  f.state.active = { "sdk-default": { type: "running" } };
+  assert.equal((await revert("session.revert")).code, "BUSY");
+  f.state.active = {};
+  assert.equal(rec.stage.length, 0);
+  assert.equal(rec.asked.length, 0);
+  // Real Native omits sessionID from message.get: still accepted.
+  assert.equal((await revert("session.revert")).ok, true);
+  // Re-staging at or after the current boundary is not a visible message.
+  assert.equal(
+    (await revert("session.revert", { messageId: "msg_3" })).code,
+    "INVALID_SELECTION",
+  );
+  assert.equal(rec.stage.length, 1);
+});
+test("a revert that Native did not record, or that fails after dispatch, is an unknown outcome", async (t) => {
+  const a = await revertFixture(t);
+  a.f.client.session.revert.stage = async () => {};
+  const missing = await a.revert("session.revert");
+  assert.equal(missing.code, "UNKNOWN_OUTCOME");
+  const b = await revertFixture(t);
+  b.f.client.session.revert.stage = async () => {
+    throw new Error("checkout failed halfway");
+  };
+  const partial = await b.revert("session.revert");
+  assert.equal(partial.code, "UNKNOWN_OUTCOME");
+  const snap = await b.f.service.handle({ type: "snapshot" });
+  assert.equal(
+    snap.value.sessions.find((x) => x.id === b.f.ids.sessionId).status,
+    "unknown",
+  );
+});
+test("reapply clears only the staged boundary, with its own confirmation", async (t) => {
+  const { rec, revert } = await revertFixture(t);
+  assert.equal(
+    (await revert("session.revert.clear")).code,
+    "INVALID_SELECTION",
+  );
+  assert.equal(rec.clear.length, 0);
+  assert.equal((await revert("session.revert")).ok, true);
+  assert.equal(
+    (await revert("session.revert.clear", { messageId: "msg_1" })).code,
+    "INVALID_SELECTION",
+  );
+  assert.equal(rec.clear.length, 0);
+  const result = await revert("session.revert.clear");
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.deepEqual(rec.clear, [{ sessionID: "sdk-default" }]);
+  assert.equal(rec.asked.at(-1).action, "reapply");
+  assert.equal(Object.hasOwn(result.value, "revert"), false);
+  assert.deepEqual(
+    result.value.messages.map((m) => m.id),
+    ["msg_1", "msg_2", "msg_3", "msg_4"],
+  );
+});
+test("reapply is default-deny and a clear that leaves the revert in place is unknown", async (t) => {
+  const deny = await revertFixture(t, async (d) => d.action !== "reapply");
+  assert.equal((await deny.revert("session.revert")).ok, true);
+  assert.equal((await deny.revert("session.revert.clear")).code, "CANCELLED");
+  assert.equal(deny.rec.clear.length, 0);
+  const noop = await revertFixture(t);
+  assert.equal((await noop.revert("session.revert")).ok, true);
+  noop.f.client.session.revert.clear = async () => {};
+  assert.equal(
+    (await noop.revert("session.revert.clear")).code,
+    "UNKNOWN_OUTCOME",
+  );
+});
+test("hidden messages do not shrink the transcript before the boundary", async (t) => {
+  const { f, revert } = await revertFixture(t);
+  const all = [];
+  for (let i = 120; i >= 1; i--)
+    all.push({
+      id: `m${String(i).padStart(3, "0")}`,
+      type: i % 2 ? "user" : "assistant",
+      text: `t${i}`,
+      content: [{ type: "text", text: `t${i}` }],
+    });
+  f.state.messages = all;
+  f.client.message.list = async ({ limit }) => ({
+    data: all.slice(0, limit),
+    cursor: {},
+  });
+  const result = await revert("session.revert", { messageId: "m031" });
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.equal(result.value.messages.length, 30);
+  assert.equal(result.value.messages.at(-1).id, "m030");
 });

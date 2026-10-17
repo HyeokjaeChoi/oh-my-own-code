@@ -165,6 +165,14 @@ const schemas = {
     [],
   ],
   "session.remove": [["workspaceId", "sessionId", "requestId"], []],
+  "session.revert": [
+    ["workspaceId", "sessionId", "requestId", "messageId"],
+    [],
+  ],
+  "session.revert.clear": [
+    ["workspaceId", "sessionId", "requestId", "messageId"],
+    [],
+  ],
   "workspace.import": [[], ["path"]],
   "workspace.create": [[], ["name"]],
   "workspace.remove": [["workspaceId"], []],
@@ -676,7 +684,13 @@ export function validateSnapshot(value) {
       "messages",
       "permissions",
     ],
-    ["selectedWorkspaceId", "selectedSessionId", "sessionSelection", "error"],
+    [
+      "selectedWorkspaceId",
+      "selectedSessionId",
+      "sessionSelection",
+      "revert",
+      "error",
+    ],
   );
   needDTO(
     validWireId(value.runtimeEpoch) &&
@@ -850,6 +864,23 @@ export function validateSnapshot(value) {
         value.workspaces.some(
           (w) => w.id === value.selectedWorkspaceId && w.trusted,
         ),
+    );
+  }
+  if (Object.hasOwn(value, "revert")) {
+    const r = value.revert;
+    requiredObject(r, ["messageId", "fileCount", "files", "filesRestored"]);
+    needDTO(
+      Object.hasOwn(value, "selectedSessionId") &&
+        /^[\w.:-]{1,256}$/.test(r.messageId) &&
+        Number.isSafeInteger(r.fileCount) &&
+        r.fileCount >= 0 &&
+        Array.isArray(r.files) &&
+        r.files.length <= 50 &&
+        r.files.length <= r.fileCount &&
+        r.files.every((f) => boundedText(f, 1024) && f.length > 0) &&
+        typeof r.filesRestored === "boolean" &&
+        // Hidden-message invariant: nothing at or after the boundary is shown.
+        value.messages.every((m) => !(m.id >= r.messageId)),
     );
   }
   for (const p of value.permissions) {

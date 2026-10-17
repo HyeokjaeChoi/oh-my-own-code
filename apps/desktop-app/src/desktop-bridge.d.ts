@@ -208,6 +208,14 @@ export interface WorkbenchPermission {
   toolId?: string;
   childTitle?: string;
 }
+export interface SessionRevert {
+  messageId: string;
+  /** Total changed files; `files` lists at most 50 of them. */
+  fileCount: number;
+  files: string[];
+  /** False when no files were restored (non-git folder): only the chat is hidden. */
+  filesRestored: boolean;
+}
 export interface WorkbenchSnapshot {
   runtimeEpoch: string;
   revision: number;
@@ -221,6 +229,8 @@ export interface WorkbenchSnapshot {
   selectedWorkspaceId?: string;
   selectedSessionId?: string;
   sessionSelection?: SessionSelection;
+  /** Staged revert of the selected session; messages from messageId on are already hidden. */
+  revert?: SessionRevert;
   messages: WorkbenchMessage[];
   permissions: WorkbenchPermission[];
   error?: { code: string; message: string };
@@ -783,6 +793,11 @@ export type WorkbenchRequest =
       before?: string;
     } & SessionLifecycleTarget)
   | ({ type: "session.remove" } & SessionLifecycleTarget)
+  | ({ type: "session.revert"; messageId: string } & SessionLifecycleTarget)
+  | ({
+      type: "session.revert.clear";
+      messageId: string;
+    } & SessionLifecycleTarget)
   | {
       type: "context.observe";
       workspaceId: string;
