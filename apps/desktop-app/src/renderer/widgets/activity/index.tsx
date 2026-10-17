@@ -18,6 +18,8 @@ const operationLabels: Record<string, string> = {
   "session.archive": "세션 보관 변경",
   "session.fork": "대화 분기",
   "session.remove": "대화 삭제",
+  "session.revert": "되돌리기",
+  "session.revert.clear": "다시 적용",
   "message.send": "메시지 전송",
   "command.run": "명령 실행",
   "session.interrupt": "실행 중단 요청",

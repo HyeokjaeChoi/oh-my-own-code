@@ -20568,3 +20568,192 @@ test("rejection code to Korean message mapping", () => {
   assert.equal(composerOperation("message.send"), true);
   assert.equal(composerOperation("session.rename"), false);
 });
+
+const revertFixture = (extra = {}) => {
+  const messages = [
+    { id: "msg_1", role: "user", text: "first", tools: [] },
+    { id: "msg_2", role: "assistant", text: "a1", tools: [] },
+    { id: "msg_3", role: "user", text: "second", tools: [] },
+    { id: "msg_4", role: "assistant", text: "a2", tools: [] },
+  ];
+  const revert = {
+    messageId: "msg_3",
+    fileCount: 1,
+    files: ["a.txt"],
+    filesRestored: true,
+  };
+  const { api, calls } = contextWindow((e) => {
+    if (e.operation.type === "session.revert")
+      return {
+        ok: true,
+        value: snapshot(2, "a", { messages: messages.slice(0, 2), revert }),
+        receipt: receipt(e, {
+          result: { kind: "metadata", workspaceId: "w", sessionId: "a" },
+        }),
+      };
+    if (e.operation.type === "session.revert.clear")
+      return {
+        ok: true,
+        value: snapshot(3, "a", { messages }),
+        receipt: receipt(e, {
+          revision: 3,
+          result: { kind: "metadata", workspaceId: "w", sessionId: "a" },
+        }),
+      };
+    return undefined;
+  });
+  seed(api.store, snapshot(1, "a", { messages, ...extra }));
+  return { api, calls, messages, revert };
+};
+test("revert: revertToMessage sends only the message id, hides via the snapshot and refills the empty composer", async () => {
+  const { api, calls, revert } = revertFixture();
+  try {
+    assert.equal(selectors.revert(api.store.getState()), undefined);
+    assert.equal(await api.actions.revertToMessage("msg_3"), true);
+    const e = calls.find((c) => c.operation.type === "session.revert");
+    assert.deepEqual(Object.keys(e.operation).sort(), [
+      "messageId",
+      "requestId",
+      "sessionId",
+      "type",
+      "workspaceId",
+    ]);
+    assert.equal(e.operation.messageId, "msg_3");
+    assert.deepEqual(selectors.revert(api.store.getState()), revert);
+    assert.equal(selectors.draft(api.store.getState()).text, "second");
+    assert.equal(await api.actions.reapplyRevert(), true);
+    const c = calls.find((x) => x.operation.type === "session.revert.clear");
+    assert.equal(c.operation.messageId, "msg_3");
+    assert.equal(selectors.revert(api.store.getState()), undefined);
+  } finally {
+    api.dispose();
+  }
+});
+test("revert: typed composer text is never overwritten by the refill", async () => {
+  const { api } = revertFixture();
+  try {
+    api.store.dispatch({
+      type: "draft",
+      key: selectionKey("w", "a"),
+      text: "typing",
+    });
+    assert.equal(await api.actions.revertToMessage("msg_3"), true);
+    assert.equal(selectors.draft(api.store.getState()).text, "typing");
+  } finally {
+    api.dispose();
+  }
+});
+test("revert: assistant, unknown, busy and stale-boundary requests never reach the host", async () => {
+  const { api, calls } = revertFixture();
+  try {
+    assert.equal(await api.actions.revertToMessage("msg_4"), false);
+    assert.equal(await api.actions.revertToMessage("nope"), false);
+    assert.equal(await api.actions.reapplyRevert(), false);
+    assert.equal(
+      await api.actions.mutate({
+        type: "session.revert.clear",
+        workspaceId: "w",
+        sessionId: "a",
+        requestId: "r-stale",
+        messageId: "msg_3",
+      }),
+      false,
+    );
+    assert.equal(
+      await api.actions.mutate({
+        type: "session.revert",
+        workspaceId: "w",
+        sessionId: "a",
+        requestId: "r-extra",
+        messageId: "msg_3",
+        files: ["x"],
+      }),
+      false,
+    );
+    assert.equal(
+      calls.filter((c) => c.operation.type.startsWith("session.revert")).length,
+      0,
+    );
+  } finally {
+    api.dispose();
+  }
+  const running = contextWindow(undefined, true);
+  try {
+    seed(
+      running.api.store,
+      snapshot(1, "a", {
+        sessions: [session("a", "w", { status: "running" }), session("b")],
+        messages: [{ id: "msg_1", role: "user", text: "first", tools: [] }],
+      }),
+    );
+    assert.equal(await running.api.actions.revertToMessage("msg_1"), false);
+  } finally {
+    running.api.dispose();
+  }
+});
+test("revert: a failed revert does not refill the composer and a hidden message in the snapshot is refused", async () => {
+  const { api } = contextWindow((e) =>
+    e.operation.type === "session.revert"
+      ? { ok: false, code: "UNKNOWN_OUTCOME" }
+      : undefined,
+  );
+  try {
+    seed(
+      api.store,
+      snapshot(1, "a", {
+        messages: [{ id: "msg_1", role: "user", text: "first", tools: [] }],
+      }),
+    );
+    assert.equal(await api.actions.revertToMessage("msg_1"), false);
+    assert.equal(selectors.draft(api.store.getState()).text, "");
+  } finally {
+    api.dispose();
+  }
+  const bad = createWorkbenchStore();
+  seed(
+    bad,
+    snapshot(1, "a", {
+      messages: [{ id: "msg_5", role: "user", text: "shown", tools: [] }],
+      revert: {
+        messageId: "msg_3",
+        fileCount: 0,
+        files: [],
+        filesRestored: false,
+      },
+    }),
+  );
+  assert.equal(bad.getState().snapshot, null);
+  const patch = createWorkbenchStore();
+  seed(
+    patch,
+    snapshot(1, "a", {
+      revert: {
+        messageId: "msg_3",
+        fileCount: 0,
+        files: [],
+        filesRestored: false,
+        patch: "diff",
+      },
+    }),
+  );
+  assert.equal(patch.getState().snapshot, null);
+});
+test("revert: composer rejection routing and Korean copy per operation", () => {
+  assert.equal(composerOperation("session.revert"), true);
+  assert.equal(composerOperation("session.revert.clear"), true);
+  for (const op of ["session.revert", "session.revert.clear"])
+    for (const code of [
+      "BUSY",
+      "INVALID_SELECTION",
+      "CANCELLED",
+      "UNKNOWN_OUTCOME",
+    ]) {
+      const text = rejectionMessage(code, op);
+      assert.notEqual(text, rejectionMessage(code));
+      assert.equal(/Native|네이티브/.test(text), false, text);
+    }
+  assert.match(
+    rejectionMessage("UNKNOWN_OUTCOME", "session.revert"),
+    /일부 파일/,
+  );
+});

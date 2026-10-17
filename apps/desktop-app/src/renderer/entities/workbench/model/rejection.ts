@@ -27,8 +27,29 @@ const messages: Record<string, string> = {
     "요청 결과를 확인할 수 없습니다. 자동으로 다시 보내지 않습니다.",
 };
 
-export function rejectionMessage(code: string): string {
-  const known = messages[code];
+// Revert/reapply copy by operation. Pass the operation type (`errorOp`) to get it.
+const revertMessages: Record<string, Record<string, string>> = {
+  "session.revert": {
+    BUSY: "대화가 진행 중이거나 대기 중인 메시지가 있어 되돌릴 수 없습니다. 끝난 뒤 다시 시도하세요.",
+    INVALID_SELECTION:
+      "이 메시지로는 되돌릴 수 없습니다. 신뢰한 작업 공간의 사용자 메시지인지 확인하세요.",
+    CANCELLED: "되돌리기를 취소했습니다. 아무것도 바뀌지 않았습니다.",
+    UNKNOWN_OUTCOME:
+      "되돌리기 결과를 확인할 수 없습니다. 일부 파일이 이미 복원되었을 수 있으니 작업 폴더를 확인하세요. 자동으로 다시 시도하지 않습니다.",
+  },
+  "session.revert.clear": {
+    BUSY: "대화가 진행 중이거나 대기 중인 메시지가 있어 다시 적용할 수 없습니다. 끝난 뒤 다시 시도하세요.",
+    INVALID_SELECTION:
+      "이미 확정되었거나 상태가 바뀌어 다시 적용할 수 없습니다.",
+    CANCELLED: "다시 적용을 취소했습니다. 아무것도 바뀌지 않았습니다.",
+    UNKNOWN_OUTCOME:
+      "다시 적용 결과를 확인할 수 없습니다. 일부 파일만 적용되었을 수 있으니 작업 폴더를 확인하세요. 자동으로 다시 시도하지 않습니다.",
+  },
+};
+
+export function rejectionMessage(code: string, operation?: string): string {
+  const known =
+    (operation && revertMessages[operation]?.[code]) ?? messages[code];
   if (known) return known;
   if (code.startsWith("POLICY_"))
     return "권한 정책에 의해 요청이 보류되었습니다. 설정의 권한 규칙을 확인하세요.";
@@ -45,4 +66,6 @@ export const composerOperation = (type?: string) =>
   type === "permission.respond" ||
   type === "session.interrupt" ||
   type === "session.fork" ||
-  type === "session.inbox.cancel";
+  type === "session.inbox.cancel" ||
+  type === "session.revert" ||
+  type === "session.revert.clear";
