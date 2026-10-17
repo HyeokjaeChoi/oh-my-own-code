@@ -289,7 +289,7 @@ function exactFork(expectation, parent, child) {
     source?.sessionID === parent.id &&
     (expectation.before === null
       ? child.parentID === null || child.parentID === parent.id
-      : child.parentID === parent.id &&
+      : (child.parentID === null || child.parentID === parent.id) &&
         source.boundary?.type === "before" &&
         source.boundary.messageID === expectation.before) &&
     isDeepStrictEqual(child.metadata, parent.metadata) &&

@@ -2562,7 +2562,8 @@ export function createWorkbenchService({
         });
         if (
           boundary
-            ? info.fork?.boundary?.type !== "before" ||
+            ? (info.parentID != null && info.parentID !== parent.sdkId) ||
+              info.fork?.boundary?.type !== "before" ||
               info.fork?.boundary?.messageID !== boundary.beforeMessageId
             : info.fork?.boundary?.type === "before"
         )
@@ -5051,10 +5052,17 @@ export function createWorkbenchService({
         await verifyInstructionBaseline(w, s);
         if (tables().sessions.size >= 200) fail("LIMIT_REACHED");
         if (request.before) {
-          const target = await call(client.session.message?.get, {
-            sessionID: s.sdkId,
-            messageID: request.before,
-          });
+          let target;
+          try {
+            target = await call(client.session.message?.get, {
+              sessionID: s.sdkId,
+              messageID: request.before,
+            });
+          } catch (error) {
+            if (error?._tag === "MessageNotFoundError")
+              fail("INVALID_SELECTION");
+            throw error;
+          }
           if (
             target?.id !== request.before ||
             // Native's message.get omits sessionID and rejects other sessions'
@@ -5097,8 +5105,10 @@ export function createWorkbenchService({
         }
         if (
           request.before &&
-          // Native's fork response carries lineage in `fork` only (no parentID).
-          (forked?.fork?.sessionID !== s.sdkId ||
+          // Native's fork response carries lineage in `fork` only (no
+          // parentID); a present parentID must still name the parent.
+          ((forked?.parentID != null && forked.parentID !== s.sdkId) ||
+            forked?.fork?.sessionID !== s.sdkId ||
             forked?.fork?.boundary?.type !== "before" ||
             forked?.fork?.boundary?.messageID !== request.before)
         )
@@ -5119,7 +5129,8 @@ export function createWorkbenchService({
         });
         if (
           (request.before &&
-            (checked?.fork?.sessionID !== s.sdkId ||
+            ((checked?.parentID != null && checked.parentID !== s.sdkId) ||
+              checked?.fork?.sessionID !== s.sdkId ||
               checked?.fork?.boundary?.type !== "before" ||
               checked?.fork?.boundary?.messageID !== request.before)) ||
           checked?.id !== child.sdkId ||

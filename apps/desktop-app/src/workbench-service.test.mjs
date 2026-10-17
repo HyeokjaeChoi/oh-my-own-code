@@ -1476,6 +1476,29 @@ test("context before-user branch refuses an explicit other-session target before
   assert.equal(result.ok, false);
   assert.equal(count, 0);
 });
+test("context before-user branch maps MessageNotFoundError to INVALID_SELECTION without forking", async (t) => {
+  const f = await fixture(t);
+  let count = 0;
+  f.client.session.message = {
+    get: async () => {
+      throw Object.assign(new Error("Message not found"), {
+        _tag: "MessageNotFoundError",
+      });
+    },
+  };
+  f.client.session.fork = async () => {
+    count++;
+  };
+  const result = await f.service.handle({
+    type: "session.fork",
+    ...f.ids,
+    requestId: "branch-missing",
+    before: "other-session-message",
+  });
+  assert.equal(result.ok, false);
+  assert.equal(result.code, "INVALID_SELECTION");
+  assert.equal(count, 0);
+});
 test("context before-user branch refuses assistant targets before Native fork", async (t) => {
   const f = await fixture(t);
   let count = 0;
