@@ -1,5 +1,5 @@
 import { GitBranchRestoreSection } from "./branch-restore.js";
-import { useId, useRef } from "react";
+import { Fragment, useId, useMemo, useRef, useState } from "react";
 import {
   selectors,
   useWindowWorkbench,
@@ -15,8 +15,18 @@ import {
   type GitIndexReason,
   type GitIndexEntry,
 } from "../../shared/api/index.js";
+import { ArrowLeft, Copy, GitBranch, RefreshCw, X } from "lucide-react";
+import { PathText, parsePatch } from "../../shared/panel-text/index.js";
 import styles from "./review.module.css";
-import { Button, Input, Select, Textarea } from "@workbench/ui";
+import {
+  Button,
+  EmptyState,
+  InfoTip,
+  Input,
+  Notice,
+  Select,
+  Textarea,
+} from "@workbench/ui";
 
 const indexReasons: Partial<Record<GitIndexReason, string>> = {
   platform_unavailable: "현재 운영 체제에서 index 변경을 지원하지 않습니다.",
@@ -278,10 +288,6 @@ function GitCommitSection() {
           <dl className={styles.metadata} aria-label="Commit 미리보기 출처">
             <dt>작업 공간</dt>
             <dd>{preview.workspacePath}</dd>
-            <dt>Runtime epoch / revision</dt>
-            <dd>
-              {preview.runtimeEpoch} / {preview.revision}
-            </dd>
             <dt>작성자 / committer</dt>
             <dd>
               {preview.author.name} &lt;{preview.author.email}&gt;
@@ -345,6 +351,15 @@ function GitCommitSection() {
                 : "Reflog 변경 없음"}
             </dd>
           </dl>
+          <details className={styles.diagnostics}>
+            <summary>진단 정보</summary>
+            <dl className={styles.metadata}>
+              <dt>Runtime epoch / revision</dt>
+              <dd>
+                {preview.runtimeEpoch} / {preview.revision}
+              </dd>
+            </dl>
+          </details>
           <h5>실제 Commit 메시지 (끝 LF 포함)</h5>
           <pre
             className={styles.commitMessage}
@@ -393,10 +408,6 @@ function GitCommitSection() {
               data-git-commit-operation-state={i.status}
             >
               <dl className={styles.metadata}>
-                <dt>원래 Runtime epoch / Operation ID</dt>
-                <dd>
-                  {i.epoch} / {i.id}
-                </dd>
                 <dt>원래 작업 공간</dt>
                 <dd>
                   {i.gitCommitMutation?.workspacePath ??
@@ -434,6 +445,15 @@ function GitCommitSection() {
                   </>
                 )}
               </dl>
+              <details className={styles.diagnostics}>
+                <summary>진단 정보</summary>
+                <dl className={styles.metadata}>
+                  <dt>원래 Runtime epoch / Operation ID</dt>
+                  <dd>
+                    {i.epoch} / {i.id}
+                  </dd>
+                </dl>
+              </details>
             </li>
           ))}
         </ul>
@@ -441,12 +461,50 @@ function GitCommitSection() {
     </section>
   );
 }
-export function GitReviewPanel() {
+const statusLetter = (
+  f: { index: GitFileState; worktree: GitFileState; kind: string },
+  mode: "staged" | "unstaged",
+) => {
+  if (mode === "unstaged" && f.kind === "untracked") return "?";
+  if (f.kind === "conflict") return "!";
+  const s = mode === "staged" ? f.index : f.worktree;
+  return s === "added"
+    ? "A"
+    : s === "deleted"
+      ? "D"
+      : s === "type_changed"
+        ? "T"
+        : s === "unmerged"
+          ? "!"
+          : "M";
+};
+
+function Facts({ label, rows }: { label: string; rows: [string, string][] }) {
+  return (
+    <dl className={styles.metadata} aria-label={label}>
+      {rows.map(([term, value]) => (
+        <Fragment key={term}>
+          <dt>{term}</dt>
+          <dd>{value}</dd>
+        </Fragment>
+      ))}
+    </dl>
+  );
+}
+
+type Tray = "index" | "commit" | "restore";
+const trayLabels: Record<Tray, string> = {
+  index: "Stage",
+  commit: "커밋",
+  restore: "되돌리기",
+};
+
+function GitIndexSection() {
   const { actions } = useWindowWorkbench();
   const state = useWorkbenchSelector((s) => s),
-    g = selectors.gitReview(state),
     index = selectors.gitIndex(state),
-    currentIndex = selectors.currentGitIndexPreview(state);
+    currentIndex = selectors.currentGitIndexPreview(state),
+    current = selectors.currentGitReviewObservation(state);
   const indexPreview = index.preview;
   const indexStatus = index.request
     ? "loading"
@@ -455,269 +513,132 @@ export function GitReviewPanel() {
       : indexPreview
         ? "stale"
         : "empty";
-  const current = selectors.currentGitReviewObservation(state);
-  const observation = g.observation;
-  const detail = g.detail;
-  const currentDetail = selectors.currentGitDiffObservation(state);
-  const workspace = state.lists.workspaces.find(
-    (w) => w.id === state.selection.workspaceId,
-  );
-  const held = selectors.gitReviewHeld(state);
-  const available = current?.status === "available";
-  const statusRef = useRef<HTMLParagraphElement>(null),
-    detailRef = useRef<HTMLParagraphElement>(null),
-    indexRef = useRef<HTMLParagraphElement>(null);
+  const indexRef = useRef<HTMLParagraphElement>(null);
   const prefix = useId();
-  const status = g.request
-    ? "loading"
-    : g.error
-      ? "stale"
-      : current
-        ? current.status
-        : observation
-          ? "stale"
-          : "empty";
-  const detailStatus = g.detailRequest
-    ? "loading"
-    : g.detailError
-      ? "error"
-      : currentDetail
-        ? currentDetail.status
-        : detail
-          ? "stale"
-          : "empty";
-  const selectRow = (path: string, mode: "staged" | "unstaged") => {
-    actions.selectGitMode(mode);
-    actions.selectGitPath(path);
-  };
   return (
     <section
-      className={styles.review}
-      aria-label="Git 변경 검토"
-      data-git-review-state={status}
+      aria-label="선택한 Git index 변경"
+      data-git-index-state={indexStatus}
     >
-      <h3>Git 변경 검토</h3>
-      <p>상태와 차이는 마지막 관찰입니다. 버튼을 눌러 확인하세요.</p>
-      <dl className={styles.metadata} aria-label="Git 작업 공간">
-        <dt>선택한 작업 공간</dt>
-        <dd>{workspace?.path ?? "작업 공간을 선택하세요."}</dd>
-      </dl>
-      {workspace && !workspace.trusted && (
-        <p>
-          실행 신뢰가 없는 작업 공간입니다. Git 읽기는 구성을 실행하지 않습니다.
-        </p>
-      )}
-      {held && (
-        <p role="status">
-          Recovery 또는 앱 작업 처리로 Git 읽기를 보류합니다. 파일 초안은 계속
-          편집할 수 있습니다.
-        </p>
-      )}
+      <h4>선택한 경로의 Stage / Unstage</h4>
+      <p>
+        Stage는 선택한 경로의 staged 내용을 현재 worktree 내용으로 교체합니다.
+        Unstage는 staged 내용을 HEAD 상태로 되돌립니다. 기존 staged 내용은
+        사라질 수 있습니다. Worktree 파일은 바꾸지 않습니다.
+      </p>
+      <fieldset className={styles.selection}>
+        <legend>Index 경로 선택</legend>
+        {current?.status === "available" ? (
+          current.files.map((f) => (
+            <label key={f.path} className={styles.indexPath}>
+              <input
+                type="checkbox"
+                aria-label={`Index 경로 선택: ${f.path}`}
+                checked={index.paths.includes(f.path)}
+                disabled={
+                  !selectors.canSelectGitIndexPaths(state) ||
+                  f.kind === "conflict" ||
+                  !validGitIndexPaths([f.path])
+                }
+                onChange={() => actions.toggleGitIndexPath(f.path)}
+              />
+              <span>
+                {f.path}
+                {!validGitIndexPaths([f.path])
+                  ? " · 보호된 경로"
+                  : f.kind === "conflict"
+                    ? " · 충돌"
+                    : ""}
+              </span>
+            </label>
+          ))
+        ) : (
+          <p>현재 Git 상태를 먼저 확인하세요.</p>
+        )}
+        <label htmlFor={`${prefix}-index-action`}>Index 작업</label>
+        <Select
+          id={`${prefix}-index-action`}
+          aria-label="Index 작업"
+          value={index.action}
+          disabled={!selectors.canSelectGitIndexPaths(state)}
+          onChange={(e) =>
+            actions.selectGitIndexAction(
+              e.target.value === "unstage" ? "unstage" : "stage",
+            )
+          }
+        >
+          <option value="stage">Stage · worktree 내용으로 교체</option>
+          <option value="unstage">Unstage · HEAD 상태로 복원</option>
+        </Select>
+        <p>선택한 경로: {index.paths.length}개</p>
+      </fieldset>
       <div className={styles.actions}>
         <Button
           size="compact"
           intent="secondary"
-          disabled={!selectors.canObserveGitReview(state)}
+          disabled={!selectors.canPreviewGitIndex(state)}
           onClick={() => {
             void actions
-              .observeGitReview()
-              .then(() => statusRef.current?.focus());
+              .previewGitIndex()
+              .then(() => indexRef.current?.focus());
           }}
         >
-          Git 상태 새로고침
+          Index 변경 미리보기
         </Button>
         <Button
           size="compact"
           intent="secondary"
-          disabled={!g.request}
+          disabled={!index.request}
           onClick={() => {
-            actions.cancelGitReview();
-            statusRef.current?.focus();
+            actions.cancelGitIndexPreview();
+            indexRef.current?.focus();
           }}
         >
-          Git 상태 읽기 취소
+          Index 미리보기 취소
+        </Button>
+        <Button
+          size="compact"
+          intent="secondary"
+          disabled={!selectors.canApplyGitIndex(state)}
+          onClick={() => {
+            void actions.applyGitIndex().then(() => indexRef.current?.focus());
+          }}
+        >
+          Index 변경 적용
         </Button>
       </div>
+      <p>
+        적용 버튼 다음에 Main 확인 창이 열립니다. 확인을 거부하면 변경하지
+        않습니다. 이 작업은 commit을 만들지 않습니다.
+      </p>
       <p
-        ref={statusRef}
+        ref={indexRef}
         tabIndex={-1}
         role="status"
         aria-live="polite"
         aria-atomic="true"
         className={styles.status}
+        data-git-index-status
       >
-        {g.request
-          ? "Git 상태 읽는 중…"
-          : g.error
-            ? errorMessage(g.error)
-            : current?.status === "unavailable"
-              ? reasons[current.reason]
-              : available
-                ? "Git 상태 관찰 완료"
-                : "Git 상태를 직접 확인하세요."}
-        {observation &&
-          !current &&
-          " 마지막 관찰만 표시합니다. 현재 읽기의 기준으로 사용할 수 없습니다."}
-        {!g.retryReady && " 다시 시도 준비 중…"}
+        {index.request
+          ? "Index 변경 미리보기 읽는 중…"
+          : index.error
+            ? errorMessage(index.error)
+            : currentIndex?.status === "unavailable"
+              ? (indexReasons[currentIndex.reason] ??
+                reasons[currentIndex.reason as GitDiffReason] ??
+                "Index 변경을 지원하지 않습니다.")
+              : currentIndex?.status === "available"
+                ? "Preview를 확인한 뒤 적용하세요."
+                : "경로와 작업을 선택한 뒤 Preview를 요청하세요."}
+        {indexPreview &&
+          !currentIndex &&
+          " 이전 Preview입니다. 현재 변경의 기준으로 사용할 수 없습니다."}
+        {index.mutation &&
+          ` 원래 작업 (${index.mutation.identity.workspacePath}): ${index.mutation.status === "applied" ? "Index 변경 확인 완료. 최신 snapshot 이후 Git 상태를 직접 확인하세요." : index.mutation.status === "unknown" ? "결과 불명확. 원래 작업 조회만 수행합니다. 자동 재전송하지 않습니다." : index.mutation.status === "pending" ? "Main 확인 또는 적용 대기 중." : "적용을 거부했습니다."}`}
       </p>
-      {observation && (
-        <dl className={styles.metadata} aria-label="관찰한 Git 출처">
-          <dt>관찰한 작업 공간</dt>
-          <dd>{observation.workspacePath}</dd>
-          <dt>Runtime epoch / revision</dt>
-          <dd>
-            {observation.runtimeEpoch} / {observation.revision}
-          </dd>
-          {observation.status === "available" && (
-            <>
-              <dt>Worktree 루트</dt>
-              <dd>{observation.repository.worktreePath}</dd>
-              <dt>Git directory</dt>
-              <dd>{observation.repository.gitDirectory}</dd>
-              <dt>Common directory</dt>
-              <dd>{observation.repository.commonDirectory}</dd>
-              <dt>HEAD</dt>
-              <dd>
-                {observation.repository.head ?? "Unborn · 아직 commit 없음"}
-              </dd>
-              <dt>Branch</dt>
-              <dd>{observation.repository.branch ?? "Detached HEAD"}</dd>
-              <dt>Observation ID</dt>
-              <dd>{observation.observationId}</dd>
-            </>
-          )}
-        </dl>
-      )}
-      <p>
-        Staged는 HEAD → index, Unstaged는 index → worktree입니다. Rename은
-        삭제와 추가 경로로 나누어 표시합니다.
-      </p>
-      <GitCommitSection />
-      <GitBranchRestoreSection />
-      <section
-        aria-label="선택한 Git index 변경"
-        data-git-index-state={indexStatus}
-      >
-        <h4>선택한 경로의 Stage / Unstage</h4>
-        <p>
-          Stage는 선택한 경로의 staged 내용을 현재 worktree 내용으로 교체합니다.
-          Unstage는 staged 내용을 HEAD 상태로 되돌립니다. 기존 staged 내용은
-          사라질 수 있습니다. Worktree 파일은 바꾸지 않습니다.
-        </p>
-        <fieldset className={styles.selection}>
-          <legend>Index 경로 선택</legend>
-          {current?.status === "available" ? (
-            current.files.map((f) => (
-              <label key={f.path} className={styles.indexPath}>
-                <input
-                  type="checkbox"
-                  aria-label={`Index 경로 선택: ${f.path}`}
-                  checked={index.paths.includes(f.path)}
-                  disabled={
-                    !selectors.canSelectGitIndexPaths(state) ||
-                    f.kind === "conflict" ||
-                    !validGitIndexPaths([f.path])
-                  }
-                  onChange={() => actions.toggleGitIndexPath(f.path)}
-                />
-                <span>
-                  {f.path}
-                  {!validGitIndexPaths([f.path])
-                    ? " · 보호된 경로"
-                    : f.kind === "conflict"
-                      ? " · 충돌"
-                      : ""}
-                </span>
-              </label>
-            ))
-          ) : (
-            <p>현재 Git 상태를 먼저 확인하세요.</p>
-          )}
-          <label htmlFor={`${prefix}-index-action`}>Index 작업</label>
-          <Select
-            id={`${prefix}-index-action`}
-            aria-label="Index 작업"
-            value={index.action}
-            disabled={!selectors.canSelectGitIndexPaths(state)}
-            onChange={(e) =>
-              actions.selectGitIndexAction(
-                e.target.value === "unstage" ? "unstage" : "stage",
-              )
-            }
-          >
-            <option value="stage">Stage · worktree 내용으로 교체</option>
-            <option value="unstage">Unstage · HEAD 상태로 복원</option>
-          </Select>
-          <p>선택한 경로: {index.paths.length}개</p>
-        </fieldset>
-        <div className={styles.actions}>
-          <Button
-            size="compact"
-            intent="secondary"
-            disabled={!selectors.canPreviewGitIndex(state)}
-            onClick={() => {
-              void actions
-                .previewGitIndex()
-                .then(() => indexRef.current?.focus());
-            }}
-          >
-            Index 변경 미리보기
-          </Button>
-          <Button
-            size="compact"
-            intent="secondary"
-            disabled={!index.request}
-            onClick={() => {
-              actions.cancelGitIndexPreview();
-              indexRef.current?.focus();
-            }}
-          >
-            Index 미리보기 취소
-          </Button>
-          <Button
-            size="compact"
-            intent="secondary"
-            disabled={!selectors.canApplyGitIndex(state)}
-            onClick={() => {
-              void actions
-                .applyGitIndex()
-                .then(() => indexRef.current?.focus());
-            }}
-          >
-            Index 변경 적용
-          </Button>
-        </div>
-        <p>
-          적용 버튼 다음에 Main 확인 창이 열립니다. 확인을 거부하면 변경하지
-          않습니다. 이 작업은 commit을 만들지 않습니다.
-        </p>
-        <p
-          ref={indexRef}
-          tabIndex={-1}
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-          className={styles.status}
-          data-git-index-status
-        >
-          {index.request
-            ? "Index 변경 미리보기 읽는 중…"
-            : index.error
-              ? errorMessage(index.error)
-              : currentIndex?.status === "unavailable"
-                ? (indexReasons[currentIndex.reason] ??
-                  reasons[currentIndex.reason as GitDiffReason] ??
-                  "Index 변경을 지원하지 않습니다.")
-                : currentIndex?.status === "available"
-                  ? "Preview를 확인한 뒤 적용하세요."
-                  : "경로와 작업을 선택한 뒤 Preview를 요청하세요."}
-          {indexPreview &&
-            !currentIndex &&
-            " 이전 Preview입니다. 현재 변경의 기준으로 사용할 수 없습니다."}
-          {index.mutation &&
-            ` 원래 작업 (${index.mutation.identity.workspacePath}): ${index.mutation.status === "applied" ? "Index 변경 확인 완료. 최신 snapshot 이후 Git 상태를 직접 확인하세요." : index.mutation.status === "unknown" ? "결과 불명확. 원래 작업 조회만 수행합니다. 자동 재전송하지 않습니다." : index.mutation.status === "pending" ? "Main 확인 또는 적용 대기 중." : "적용을 거부했습니다."}`}
-        </p>
-        {indexPreview && (
+      {indexPreview && (
+        <>
           <dl
             className={styles.metadata}
             aria-label="Index Preview 출처"
@@ -725,10 +646,6 @@ export function GitReviewPanel() {
           >
             <dt>관찰한 작업 공간</dt>
             <dd>{indexPreview.workspacePath}</dd>
-            <dt>Runtime epoch / revision</dt>
-            <dd>
-              {indexPreview.runtimeEpoch} / {indexPreview.revision}
-            </dd>
             {indexPreview.status === "available" ? (
               <>
                 <dt>작업</dt>
@@ -766,269 +683,593 @@ export function GitReviewPanel() {
               </>
             )}
           </dl>
-        )}
-        {indexPreview?.status === "available" && (
-          <ul
-            className={styles.rows}
-            aria-label="선택한 index 항목 변경"
-            data-git-index-entries
-          >
-            {indexPreview.entries.map((row) => (
-              <li key={row.path}>
-                <p>{row.path}</p>
-                <dl className={styles.metadata}>
-                  <dt>변경 전 · mode / OID</dt>
-                  <dd>{indexEntryText(row.before)}</dd>
-                  <dt>변경 후 · mode / OID</dt>
-                  <dd>{indexEntryText(row.after)}</dd>
-                  <dt>변경 여부</dt>
-                  <dd>
-                    {indexEntryText(row.before) === indexEntryText(row.after)
-                      ? "변경 없음"
-                      : "변경 예정"}
-                  </dd>
-                </dl>
-              </li>
-            ))}
-          </ul>
-        )}
-        {index.mutation && (
-          <dl
-            className={styles.metadata}
-            aria-label="Index 작업 결과"
-            data-git-index-result={index.mutation.status}
-          >
-            <dt>원래 작업 공간</dt>
-            <dd>{index.mutation.identity.workspacePath}</dd>
-            <dt>원래 작업 · epoch / operation ID</dt>
-            <dd>
-              {index.mutation.identity.epoch} /{" "}
-              {index.mutation.identity.operationId}
-            </dd>
-            <dt>원래 선택 경로</dt>
-            <dd>{index.mutation.identity.request.paths.join("\n")}</dd>
-            <dt>상태</dt>
-            <dd>
-              {index.mutation.status === "pending"
-                ? "Main 확인 또는 적용 대기 중"
-                : index.mutation.status === "unknown"
-                  ? "결과 불명확 · 원래 작업 조회만 수행합니다. 자동 재전송하지 않습니다."
-                  : index.mutation.status === "applied"
-                    ? "Index 변경 확인 완료 · 최신 snapshot 이후 Git 상태를 직접 확인하세요."
-                    : "적용 거부됨"}
-              {index.mutation.code ? ` · ${index.mutation.code}` : ""}
-            </dd>
-            {index.mutation.status === "applied" && (
-              <>
-                <dt>원래 index backup</dt>
-                <dd>
-                  {index.mutation.identity.backupId ??
-                    "원래 index 없음 · backup 없음"}
-                </dd>
-              </>
-            )}
-          </dl>
-        )}
-      </section>
-      {observation?.status === "available" && (
-        <>
-          {observation.files.length === 0 && (
-            <p>관찰한 staged·unstaged 변경이 없습니다.</p>
-          )}
-          {(["staged", "unstaged"] as const).map((mode) => {
-            const rows = observation.files.filter((f) =>
-              mode === "staged"
-                ? f.index !== "none"
-                : f.worktree !== "none" || f.kind === "untracked",
-            );
-            return (
-              <section
-                key={mode}
-                aria-label={
-                  mode === "staged" ? "Staged 변경 목록" : "Unstaged 변경 목록"
-                }
-              >
-                <h4>
-                  {mode === "staged" ? "Staged · index" : "Unstaged · worktree"}
-                </h4>
-                {!rows.length && <p>관찰한 변경이 없습니다.</p>}
-                <ul className={styles.rows}>
-                  {rows.map((f) => (
-                    <li key={f.path}>
-                      <Button
-                        size="compact"
-                        intent="secondary"
-                        disabled={!available}
-                        aria-label={`${mode === "staged" ? "Staged" : "Unstaged"} 차이 선택: ${f.path}`}
-                        aria-pressed={g.path === f.path && g.mode === mode}
-                        onClick={() => selectRow(f.path, mode)}
-                      >
-                        {f.path}
-                      </Button>
-                      <dl className={styles.metadata}>
-                        <dt>Index</dt>
-                        <dd>{states[f.index]}</dd>
-                        <dt>Worktree</dt>
-                        <dd>{states[f.worktree]}</dd>
-                        <dt>파일 상태</dt>
-                        <dd>
-                          {f.kind === "untracked"
-                            ? "Untracked · 추적 안 됨"
-                            : f.kind === "conflict"
-                              ? "충돌"
-                              : "Tracked · 추적 중"}
-                        </dd>
-                      </dl>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            );
-          })}
-        </>
-      )}
-      <fieldset className={styles.selection} disabled={!available}>
-        <legend>선택한 파일의 Git 차이</legend>
-        <label htmlFor={`${prefix}-path`}>Git 비교 경로</label>
-        <Select
-          id={`${prefix}-path`}
-          value={g.path}
-          onChange={(e) => actions.selectGitPath(e.target.value)}
-        >
-          <option value="">경로를 선택하세요</option>
-          {observation?.status === "available" &&
-            observation.files.map((f) => (
-              <option key={f.path} value={f.path}>
-                {f.path}
-              </option>
-            ))}
-        </Select>
-        <label htmlFor={`${prefix}-mode`}>Git 비교 방식</label>
-        <Select
-          id={`${prefix}-mode`}
-          value={g.mode}
-          onChange={(e) => actions.selectGitMode(e.target.value as GitDiffMode)}
-        >
-          <option value="staged">Staged · HEAD → index</option>
-          <option value="unstaged">Unstaged · index → worktree</option>
-          <option value="base">Local branch TIP → worktree</option>
-        </Select>
-        <label htmlFor={`${prefix}-base`}>Git 기준 branch</label>
-        <Select
-          id={`${prefix}-base`}
-          disabled={g.mode !== "base"}
-          value={g.baseRef}
-          onChange={(e) => actions.selectGitBase(e.target.value)}
-        >
-          <option value="">기준 branch를 직접 선택하세요</option>
-          {observation?.status === "available" &&
-            observation.branches.map((b) => (
-              <option key={b.name} value={b.name}>
-                {b.name}
-              </option>
-            ))}
-        </Select>
-      </fieldset>
-      <p>
-        기준 branch는 관찰한 TIP commit과 worktree를 직접 비교합니다.
-        Merge-base를 계산하지 않습니다.
-      </p>
-      <dl className={styles.metadata} aria-label="Git 비교 선택">
-        <dt>경로</dt>
-        <dd>{g.path || "선택 안 함"}</dd>
-        <dt>비교 방식</dt>
-        <dd>{g.mode}</dd>
-        <dt>기준 branch / 관찰한 OID</dt>
-        <dd>
-          {g.baseRef || "선택 안 함"}
-          {available &&
-            g.baseRef &&
-            ` / ${current.branches.find((b) => b.name === g.baseRef)?.oid ?? "확인 불가"}`}
-        </dd>
-      </dl>
-      <div className={styles.actions}>
-        <Button
-          size="compact"
-          intent="secondary"
-          disabled={!selectors.canReadGitDiff(state)}
-          onClick={() => {
-            void actions.readGitDiff().then(() => detailRef.current?.focus());
-          }}
-        >
-          선택한 Git 차이 읽기
-        </Button>
-        <Button
-          size="compact"
-          intent="secondary"
-          disabled={!g.detailRequest}
-          onClick={() => {
-            actions.cancelGitDiff();
-            detailRef.current?.focus();
-          }}
-        >
-          Git 차이 읽기 취소
-        </Button>
-      </div>
-      <section aria-label="Git 차이 결과" data-git-diff-state={detailStatus}>
-        <p
-          ref={detailRef}
-          tabIndex={-1}
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-          className={styles.status}
-        >
-          {g.detailRequest
-            ? "Git 차이 읽는 중…"
-            : g.detailError
-              ? errorMessage(g.detailError)
-              : detail?.status === "unavailable"
-                ? reasons[detail.reason]
-                : currentDetail?.status === "available"
-                  ? "Git 차이 관찰 완료"
-                  : "경로와 비교 방식을 선택한 뒤 차이 읽기를 누르세요."}
-          {detail &&
-            !currentDetail &&
-            " 마지막 차이입니다. 현재 내용은 다시 확인해야 합니다."}
-          {!g.detailRetryReady && " 다시 시도 준비 중…"}
-        </p>
-        {detail && (
-          <>
-            <dl className={styles.metadata} aria-label="Git 차이 출처">
-              <dt>관찰한 작업 공간</dt>
-              <dd>{detail.workspacePath}</dd>
+          <details className={styles.diagnostics}>
+            <summary>진단 정보</summary>
+            <dl className={styles.metadata}>
               <dt>Runtime epoch / revision</dt>
               <dd>
-                {detail.runtimeEpoch} / {detail.revision}
+                {indexPreview.runtimeEpoch} / {indexPreview.revision}
               </dd>
-              <dt>관찰 ID</dt>
-              <dd>{detail.observationId}</dd>
-              <dt>비교 경로 / 방식</dt>
-              <dd>
-                {detail.path} / {detail.mode}
-              </dd>
-              {detail.mode === "base" && (
-                <>
-                  <dt>기준 branch / 원래 OID</dt>
-                  <dd>
-                    {detail.baseRef} / {detail.baseOid}
-                  </dd>
-                </>
-              )}
             </dl>
-            {detail.status === "available" && (
-              <pre
-                className={styles.patch}
-                tabIndex={0}
-                role="region"
-                aria-label="Git patch"
-              >
-                {detail.patch || "(이 비교에서 텍스트 차이 없음)"}
-              </pre>
-            )}
-          </>
+          </details>
+        </>
+      )}
+      {indexPreview?.status === "available" && (
+        <ul
+          className={styles.rows}
+          aria-label="선택한 index 항목 변경"
+          data-git-index-entries
+        >
+          {indexPreview.entries.map((row) => (
+            <li key={row.path}>
+              <p>{row.path}</p>
+              <dl className={styles.metadata}>
+                <dt>변경 전 · mode / OID</dt>
+                <dd>{indexEntryText(row.before)}</dd>
+                <dt>변경 후 · mode / OID</dt>
+                <dd>{indexEntryText(row.after)}</dd>
+                <dt>변경 여부</dt>
+                <dd>
+                  {indexEntryText(row.before) === indexEntryText(row.after)
+                    ? "변경 없음"
+                    : "변경 예정"}
+                </dd>
+              </dl>
+            </li>
+          ))}
+        </ul>
+      )}
+      {index.mutation && (
+        <dl
+          className={styles.metadata}
+          aria-label="Index 작업 결과"
+          data-git-index-result={index.mutation.status}
+        >
+          <dt>원래 작업 공간</dt>
+          <dd>{index.mutation.identity.workspacePath}</dd>
+          <dt>원래 작업 · epoch / operation ID</dt>
+          <dd>
+            {index.mutation.identity.epoch} /{" "}
+            {index.mutation.identity.operationId}
+          </dd>
+          <dt>원래 선택 경로</dt>
+          <dd>{index.mutation.identity.request.paths.join("\n")}</dd>
+          <dt>상태</dt>
+          <dd>
+            {index.mutation.status === "pending"
+              ? "Main 확인 또는 적용 대기 중"
+              : index.mutation.status === "unknown"
+                ? "결과 불명확 · 원래 작업 조회만 수행합니다. 자동 재전송하지 않습니다."
+                : index.mutation.status === "applied"
+                  ? "Index 변경 확인 완료 · 최신 snapshot 이후 Git 상태를 직접 확인하세요."
+                  : "적용 거부됨"}
+            {index.mutation.code ? ` · ${index.mutation.code}` : ""}
+          </dd>
+          {index.mutation.status === "applied" && (
+            <>
+              <dt>원래 index backup</dt>
+              <dd>
+                {index.mutation.identity.backupId ??
+                  "원래 index 없음 · backup 없음"}
+              </dd>
+            </>
+          )}
+        </dl>
+      )}
+    </section>
+  );
+}
+
+// Write actions live outside the read-only review region, pinned to the panel bottom.
+export function GitActionDock() {
+  const state = useWorkbenchSelector((s) => s);
+  const observation = selectors.gitReview(state).observation;
+  const prefix = useId();
+  const [tray, setTray] = useState<Tray | null>(null);
+  const toggleTray = (next: Tray) => setTray(tray === next ? null : next);
+  const changed =
+    observation?.status === "available" ? observation.files.length : undefined;
+  return (
+    <div className={styles.dock}>
+      <div className={styles.tray}>
+        <div hidden={tray !== "index"} id={`${prefix}-tray-index`}>
+          <GitIndexSection />
+        </div>
+        <div hidden={tray !== "commit"} id={`${prefix}-tray-commit`}>
+          <GitCommitSection />
+        </div>
+        <div hidden={tray !== "restore"} id={`${prefix}-tray-restore`}>
+          <GitBranchRestoreSection />
+        </div>
+      </div>
+      <div className={styles.footer} role="group" aria-label="Git 작업">
+        <span className={styles.count}>
+          {changed === undefined
+            ? "변경 상태 미확인"
+            : `${changed}개 파일 변경`}
+        </span>
+        {(Object.keys(trayLabels) as Tray[]).map((key) => (
+          <Button
+            key={key}
+            size="compact"
+            intent={tray === key ? "secondary" : "quiet"}
+            aria-expanded={tray === key}
+            aria-controls={`${prefix}-tray-${key}`}
+            onClick={() => toggleTray(key)}
+          >
+            {trayLabels[key]}
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function GitReviewPanel() {
+  const { actions } = useWindowWorkbench();
+  const state = useWorkbenchSelector((s) => s),
+    g = selectors.gitReview(state);
+  const current = selectors.currentGitReviewObservation(state);
+  const observation = g.observation;
+  const detail = g.detail;
+  const currentDetail = selectors.currentGitDiffObservation(state);
+  const workspace = state.lists.workspaces.find(
+    (w) => w.id === state.selection.workspaceId,
+  );
+  const held = selectors.gitReviewHeld(state);
+  const available = current?.status === "available";
+  const statusRef = useRef<HTMLParagraphElement>(null),
+    detailRef = useRef<HTMLParagraphElement>(null);
+  const [view, setView] = useState<"list" | "diff">("list");
+  const [copied, setCopied] = useState(false);
+  const status = g.request
+    ? "loading"
+    : g.error
+      ? "stale"
+      : current
+        ? current.status
+        : observation
+          ? "stale"
+          : "empty";
+  const detailStatus = g.detailRequest
+    ? "loading"
+    : g.detailError
+      ? "error"
+      : currentDetail
+        ? currentDetail.status
+        : detail
+          ? "stale"
+          : "empty";
+  const selectRow = (path: string, mode: "staged" | "unstaged") => {
+    actions.selectGitMode(mode);
+    actions.selectGitPath(path);
+    setView("diff");
+  };
+  const parsed = useMemo(
+    () =>
+      detail?.status === "available" ? parsePatch(detail.patch) : undefined,
+    [detail],
+  );
+  const facts: { label: string; rows: [string, string][] }[] = [
+    {
+      label: "Git 작업 공간",
+      rows: [
+        ["선택한 작업 공간", workspace?.path ?? "작업 공간을 선택하세요."],
+      ],
+    },
+    ...(observation
+      ? [
+          {
+            label: "관찰한 Git 출처",
+            rows: [
+              ["관찰한 작업 공간", observation.workspacePath],
+              [
+                "Runtime epoch / revision",
+                `${observation.runtimeEpoch} / ${observation.revision}`,
+              ],
+              ...(observation.status === "available"
+                ? ([
+                    ["Worktree 루트", observation.repository.worktreePath],
+                    ["Git directory", observation.repository.gitDirectory],
+                    [
+                      "Common directory",
+                      observation.repository.commonDirectory,
+                    ],
+                    [
+                      "HEAD",
+                      observation.repository.head ??
+                        "Unborn · 아직 commit 없음",
+                    ],
+                    [
+                      "Branch",
+                      observation.repository.branch ?? "Detached HEAD",
+                    ],
+                    ["Observation ID", observation.observationId],
+                  ] as [string, string][])
+                : []),
+            ] as [string, string][],
+          },
+        ]
+      : []),
+    {
+      label: "Git 비교 선택",
+      rows: [
+        ["경로", g.path || "선택 안 함"],
+        ["비교 방식", g.mode],
+        [
+          "기준 branch / 관찰한 OID",
+          (g.baseRef || "선택 안 함") +
+            (available && g.baseRef
+              ? ` / ${current.branches.find((b) => b.name === g.baseRef)?.oid ?? "확인 불가"}`
+              : ""),
+        ],
+      ],
+    },
+    ...(detail
+      ? [
+          {
+            label: "Git 차이 출처",
+            rows: [
+              ["관찰한 작업 공간", detail.workspacePath],
+              [
+                "Runtime epoch / revision",
+                `${detail.runtimeEpoch} / ${detail.revision}`,
+              ],
+              ["관찰 ID", detail.observationId],
+              ["비교 경로 / 방식", `${detail.path} / ${detail.mode}`],
+              ...(detail.mode === "base"
+                ? ([
+                    [
+                      "기준 branch / 원래 OID",
+                      `${detail.baseRef} / ${detail.baseOid}`,
+                    ],
+                  ] as [string, string][])
+                : []),
+            ] as [string, string][],
+          },
+        ]
+      : []),
+  ];
+  const copyDiagnostics = () => {
+    const text = facts
+      .map(
+        (f) =>
+          `[${f.label}]\n` + f.rows.map(([k, v]) => `${k}: ${v}`).join("\n"),
+      )
+      .join("\n\n");
+    void navigator.clipboard
+      ?.writeText(text)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      })
+      .catch(() => undefined);
+  };
+  return (
+    <section
+      className={styles.review}
+      aria-label="Git 변경 검토"
+      data-git-review-state={status}
+    >
+      <div className={styles.toolbar}>
+        <Button
+          size="compact"
+          className={styles.iconButton}
+          aria-label="Git 상태 새로고침"
+          title="Git 상태 새로고침"
+          disabled={!selectors.canObserveGitReview(state)}
+          onClick={() => {
+            void actions
+              .observeGitReview()
+              .then(() => statusRef.current?.focus());
+          }}
+        >
+          <RefreshCw size={16} aria-hidden="true" />
+        </Button>
+        <Button
+          size="compact"
+          className={styles.iconButton}
+          aria-label="Git 상태 읽기 취소"
+          title="Git 상태 읽기 취소"
+          disabled={!g.request}
+          onClick={() => {
+            actions.cancelGitReview();
+            statusRef.current?.focus();
+          }}
+        >
+          <X size={16} aria-hidden="true" />
+        </Button>
+        {observation?.status === "available" && (
+          <span className={styles.branch} title="현재 branch">
+            <GitBranch size={14} aria-hidden="true" />
+            {observation.repository.branch ?? "Detached HEAD"}
+          </span>
         )}
-      </section>
+        <span className={styles.spacer} />
+        <InfoTip label="변경 안내">
+          <p>상태와 차이는 마지막 관찰입니다. 버튼을 눌러 확인하세요.</p>
+          <p>
+            Staged는 HEAD → index, Unstaged는 index → worktree입니다. Rename은
+            삭제와 추가 경로로 나누어 표시합니다.
+          </p>
+          <p>
+            기준 branch는 관찰한 TIP commit과 worktree를 직접 비교합니다.
+            Merge-base를 계산하지 않습니다.
+          </p>
+        </InfoTip>
+      </div>
+      <p
+        ref={statusRef}
+        tabIndex={-1}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className={styles.status}
+      >
+        {g.request
+          ? "Git 상태 읽는 중…"
+          : g.error
+            ? errorMessage(g.error)
+            : current?.status === "unavailable"
+              ? reasons[current.reason]
+              : available
+                ? "Git 상태 관찰 완료"
+                : "Git 상태를 직접 확인하세요."}
+        {observation &&
+          !current &&
+          " 마지막 관찰만 표시합니다. 현재 읽기의 기준으로 사용할 수 없습니다."}
+        {!g.retryReady && " 다시 시도 준비 중…"}
+      </p>
+      {workspace && !workspace.trusted && (
+        <Notice tone="warning">
+          실행 신뢰가 없는 작업 공간입니다. Git 읽기는 구성을 실행하지 않습니다.
+        </Notice>
+      )}
+      {held && (
+        <Notice tone="warning" role="status">
+          Recovery 또는 앱 작업 처리로 Git 읽기를 보류합니다. 파일 초안은 계속
+          편집할 수 있습니다.
+        </Notice>
+      )}
+      <div className={styles.list} hidden={view !== "list"}>
+        {observation?.status === "available" ? (
+          observation.files.length === 0 ? (
+            <EmptyState title="변경된 파일이 없습니다" />
+          ) : (
+            (["staged", "unstaged"] as const).map((mode) => {
+              const rows = observation.files.filter((f) =>
+                mode === "staged"
+                  ? f.index !== "none"
+                  : f.worktree !== "none" || f.kind === "untracked",
+              );
+              return (
+                <section
+                  key={mode}
+                  aria-label={
+                    mode === "staged"
+                      ? "Staged 변경 목록"
+                      : "Unstaged 변경 목록"
+                  }
+                >
+                  <h4 className={styles.group}>
+                    {mode === "staged" ? "Staged" : "Unstaged"}
+                    <span>{rows.length}</span>
+                  </h4>
+                  {!rows.length && (
+                    <p className={styles.none}>관찰한 변경이 없습니다.</p>
+                  )}
+                  <ul className={styles.rows}>
+                    {rows.map((f) => {
+                      const letter = statusLetter(f, mode);
+                      const counts =
+                        parsed &&
+                        detail?.path === f.path &&
+                        detail.mode === mode
+                          ? parsed
+                          : undefined;
+                      return (
+                        <li key={f.path}>
+                          <button
+                            type="button"
+                            className={styles.fileRow}
+                            disabled={!available}
+                            aria-label={`${mode === "staged" ? "Staged" : "Unstaged"} 차이 선택: ${f.path}`}
+                            aria-pressed={g.path === f.path && g.mode === mode}
+                            title={`${f.path}\nIndex ${states[f.index]} · Worktree ${states[f.worktree]} · ${
+                              f.kind === "untracked"
+                                ? "추적 안 됨"
+                                : f.kind === "conflict"
+                                  ? "충돌"
+                                  : "추적 중"
+                            }`}
+                            onClick={() => selectRow(f.path, mode)}
+                          >
+                            <span
+                              className={styles.letter}
+                              data-letter={letter}
+                              aria-hidden="true"
+                            >
+                              {letter}
+                            </span>
+                            <PathText path={f.path} />
+                            {counts && (
+                              <span
+                                className={styles.counts}
+                                aria-hidden="true"
+                              >
+                                <span className={styles.add}>
+                                  +{counts.added}
+                                </span>{" "}
+                                <span className={styles.del}>
+                                  −{counts.removed}
+                                </span>
+                              </span>
+                            )}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              );
+            })
+          )
+        ) : null}
+      </div>
+      <div className={styles.diffView}>
+        {view === "diff" && (
+          <div className={styles.diffHead}>
+            <Button
+              size="compact"
+              className={styles.iconButton}
+              aria-label="변경 목록으로"
+              title="변경 목록으로"
+              onClick={() => setView("list")}
+            >
+              <ArrowLeft size={16} aria-hidden="true" />
+            </Button>
+            <span className={styles.diffPath} title={g.path}>
+              <PathText path={g.path || "파일을 선택하세요"} />
+            </span>
+            {parsed && detail?.path === g.path && (
+              <span className={styles.counts}>
+                <span className={styles.add}>+{parsed.added}</span>{" "}
+                <span className={styles.del}>−{parsed.removed}</span>
+              </span>
+            )}
+          </div>
+        )}
+        <fieldset className={styles.chips} disabled={!available}>
+          <legend className={styles.srOnly}>선택한 파일의 Git 차이</legend>
+          <Select
+            aria-label="Git 비교 경로"
+            wrapperClassName={styles.chip ?? ""}
+            value={g.path}
+            onChange={(e) => actions.selectGitPath(e.target.value)}
+          >
+            <option value="">경로를 선택하세요</option>
+            {observation?.status === "available" &&
+              observation.files.map((f) => (
+                <option key={f.path} value={f.path}>
+                  {f.path}
+                </option>
+              ))}
+          </Select>
+          <Select
+            aria-label="Git 비교 방식"
+            wrapperClassName={styles.chip ?? ""}
+            value={g.mode}
+            onChange={(e) =>
+              actions.selectGitMode(e.target.value as GitDiffMode)
+            }
+          >
+            <option value="staged">Staged · HEAD → index</option>
+            <option value="unstaged">Unstaged · index → worktree</option>
+            <option value="base">Local branch TIP → worktree</option>
+          </Select>
+          <Select
+            aria-label="Git 기준 branch"
+            wrapperClassName={`${styles.chip} ${g.mode !== "base" ? styles.gone : ""}`}
+            hidden={g.mode !== "base"}
+            disabled={g.mode !== "base"}
+            value={g.baseRef}
+            onChange={(e) => actions.selectGitBase(e.target.value)}
+          >
+            <option value="">기준 branch를 직접 선택하세요</option>
+            {observation?.status === "available" &&
+              observation.branches.map((b) => (
+                <option key={b.name} value={b.name}>
+                  {b.name}
+                </option>
+              ))}
+          </Select>
+          <Button
+            size="compact"
+            intent="primary"
+            aria-label="선택한 Git 차이 읽기"
+            disabled={!selectors.canReadGitDiff(state)}
+            onClick={() => {
+              void actions.readGitDiff().then(() => detailRef.current?.focus());
+            }}
+          >
+            차이 읽기
+          </Button>
+          <Button
+            size="compact"
+            className={styles.iconButton}
+            aria-label="Git 차이 읽기 취소"
+            title="Git 차이 읽기 취소"
+            disabled={!g.detailRequest}
+            onClick={() => {
+              actions.cancelGitDiff();
+              detailRef.current?.focus();
+            }}
+          >
+            <X size={16} aria-hidden="true" />
+          </Button>
+        </fieldset>
+        <section aria-label="Git 차이 결과" data-git-diff-state={detailStatus}>
+          <p
+            ref={detailRef}
+            tabIndex={-1}
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            className={styles.status}
+          >
+            {g.detailRequest
+              ? "Git 차이 읽는 중…"
+              : g.detailError
+                ? errorMessage(g.detailError)
+                : detail?.status === "unavailable"
+                  ? reasons[detail.reason]
+                  : currentDetail?.status === "available"
+                    ? "Git 차이 관찰 완료"
+                    : "경로와 비교 방식을 선택한 뒤 차이 읽기를 누르세요."}
+            {detail &&
+              !currentDetail &&
+              " 마지막 차이입니다. 현재 내용은 다시 확인해야 합니다."}
+            {!g.detailRetryReady && " 다시 시도 준비 중…"}
+          </p>
+          {parsed && (
+            <pre
+              className={styles.patch}
+              tabIndex={0}
+              role="region"
+              aria-label="Git patch"
+            >
+              {parsed.rows.length
+                ? parsed.rows.map((row, n) => (
+                    <span
+                      key={n}
+                      className={styles.line}
+                      data-kind={row.kind}
+                      data-old={row.oldNo}
+                      data-new={row.newNo}
+                    >
+                      {row.text}
+                    </span>
+                  ))
+                : "(이 비교에서 텍스트 차이 없음)"}
+            </pre>
+          )}
+        </section>
+      </div>
+      <details className={styles.diagnostics}>
+        <summary>진단 정보</summary>
+        <Button
+          size="compact"
+          intent="secondary"
+          onClick={copyDiagnostics}
+          aria-label="진단 정보 복사"
+        >
+          <Copy size={14} aria-hidden="true" />
+          {copied ? "복사했습니다" : "복사"}
+        </Button>
+        {facts.map((f) => (
+          <Facts key={f.label} {...f} />
+        ))}
+      </details>
     </section>
   );
 }
