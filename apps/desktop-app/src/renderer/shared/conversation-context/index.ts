@@ -8,6 +8,7 @@ export {
   validateInboxObservation,
   validInboxCancelResult,
   validHistoricalContext,
+  revertFilesText,
 } from "./index.mjs";
 export type {
   ContextSelection,

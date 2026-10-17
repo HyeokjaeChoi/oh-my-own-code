@@ -167,19 +167,46 @@ test("free-model failures classify by structured status and never touch paid mod
   );
 });
 
-test("unavailable models persist per profile, bounded, catalog ids only", async () => {
-  const { loadUnavailableModels, markModelUnavailable } = await import(
+test("unavailable marks expire after a day, clear on success, bounded to catalog ids", async () => {
+  const { loadUnavailableModels, markModelUnavailable, clearModelUnavailable } =
+    await import("./renderer/shared/providers/index.mjs");
+  const s = storage();
+  const t0 = 1_000_000;
+  assert.deepEqual(loadUnavailableModels(s, t0), []);
+  markModelUnavailable(ID, s, t0);
+  markModelUnavailable(ID, s, t0);
+  assert.deepEqual(loadUnavailableModels(s, t0 + 1000), [ID]);
+  // 24h later the mark is gone.
+  assert.deepEqual(loadUnavailableModels(s, t0 + 24 * 3600 * 1000), []);
+  // A successful turn clears it early.
+  assert.deepEqual(clearModelUnavailable(ID, s, t0 + 1000), []);
+  assert.deepEqual(loadUnavailableModels(s, t0 + 1000), []);
+  s.setItem(
+    "omoc.unavailableModels.v2",
+    JSON.stringify([
+      { id: "bad", at: t0 },
+      { id: ID, at: t0 },
+    ]),
+  );
+  assert.deepEqual(loadUnavailableModels(s, t0), [ID]);
+  s.setItem("omoc.unavailableModels.v2", "{");
+  assert.deepEqual(loadUnavailableModels(s, t0), []);
+});
+
+test("only plain, unclipped, attachment-free prompts may be resent as text", async () => {
+  const { retryablePrompt } = await import(
     "./renderer/shared/providers/index.mjs"
   );
-  const s = storage();
-  assert.deepEqual(loadUnavailableModels(s), []);
-  markModelUnavailable(ID, s);
-  markModelUnavailable(ID, s);
-  assert.deepEqual(loadUnavailableModels(s), [ID]);
-  s.setItem("omoc.unavailableModels.v1", JSON.stringify([ID, "not-an-id"]));
-  assert.deepEqual(loadUnavailableModels(s), [ID]);
-  s.setItem("omoc.unavailableModels.v1", "{");
-  assert.deepEqual(loadUnavailableModels(s), []);
+  const user = (text, extra = {}) => ({ role: "user", text, ...extra });
+  assert.equal(retryablePrompt(user("fix it")), "fix it");
+  assert.equal(retryablePrompt(user("/review x")), undefined);
+  assert.equal(
+    retryablePrompt(user("hi", { context: { status: "unavailable" } })),
+    undefined,
+  );
+  assert.equal(retryablePrompt(user("a".repeat(32000))), undefined);
+  assert.equal(retryablePrompt({ role: "assistant", text: "x" }), undefined);
+  assert.equal(retryablePrompt(undefined), undefined);
 });
 
 test("first-run card shows only for an empty conversation with a known, unconnected provider list", async () => {

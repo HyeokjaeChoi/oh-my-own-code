@@ -16,8 +16,10 @@ export {
   findFreeRouter,
   showFirstRun,
   freeFailure,
+  retryablePrompt,
   loadUnavailableModels,
   markModelUnavailable,
+  clearModelUnavailable,
 } from "./index.mjs";
 export type { ProviderRow, ProviderList } from "./index.mjs";
 export type ProviderRequest =

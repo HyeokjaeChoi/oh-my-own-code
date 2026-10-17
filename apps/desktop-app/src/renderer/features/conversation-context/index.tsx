@@ -11,6 +11,7 @@ import {
   useWindowWorkbench,
 } from "../../entities/workbench/index.js";
 import { openSettingsPage } from "../../shared/palette/index.js";
+import { revertFilesText } from "../../shared/conversation-context/index.js";
 import type {
   ContextSelection,
   WorkbenchMessage,
@@ -134,6 +135,15 @@ export function ConversationContextControls({
   );
   const rejectionOp = useWorkbenchSelector((s) => s.errorOp);
   const revert = useWorkbenchSelector(selectors.revert);
+  const canReapply = useWorkbenchSelector((st) =>
+    revertRequestReady(st, {
+      type: "session.revert.clear",
+      workspaceId: st.selection.workspaceId ?? "",
+      sessionId: st.selection.sessionId ?? "",
+      requestId: "validation",
+      messageId: selectors.revert(st)?.messageId ?? "",
+    }),
+  );
   const catalog = useWorkbenchSelector(selectors.catalog);
   // The conversation widget already shows a standing alert for this case.
   const noModels =
@@ -344,14 +354,12 @@ export function ConversationContextControls({
           data-revert-banner={revert.messageId}
         >
           <p>
-            이 메시지 이후를 되돌렸습니다 ·{" "}
-            {revert.filesRestored
-              ? `파일 ${revert.fileCount}개 복원`
-              : "파일은 복원되지 않았습니다"}{" "}
+            선택한 메시지부터 되돌렸습니다 · {revertFilesText(revert)}{" "}
             <Button
               size="compact"
               type="button"
               data-revert-reapply
+              disabled={!canReapply}
               onClick={() => void actions.reapplyRevert()}
             >
               다시 적용

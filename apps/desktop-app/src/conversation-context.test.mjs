@@ -563,3 +563,18 @@ test("production service refuses final-byte MIME mismatches before Native prompt
     },
   ]);
 });
+
+test("revert banner files text distinguishes none changed from not restored", () => {
+  assert.equal(
+    context.revertFilesText({ fileCount: 3, filesRestored: true }),
+    "파일 3개 복원",
+  );
+  assert.equal(
+    context.revertFilesText({ fileCount: 0, filesRestored: true }),
+    "바뀐 파일 없음",
+  );
+  assert.equal(
+    context.revertFilesText({ fileCount: 0, filesRestored: false }),
+    "파일은 복원되지 않았습니다",
+  );
+});

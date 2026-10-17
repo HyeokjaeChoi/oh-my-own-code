@@ -105,3 +105,7 @@ export function validInboxCancelResult(
 export function validHistoricalContext(
   value: unknown,
 ): value is HistoricalContext;
+export function revertFilesText(revert: {
+  fileCount: number;
+  filesRestored: boolean;
+}): string;

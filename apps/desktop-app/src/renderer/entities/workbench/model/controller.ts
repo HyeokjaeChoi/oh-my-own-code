@@ -868,6 +868,24 @@ export function createWindowWorkbench(
       text,
     });
   }
+  // Resends one prompt on an explicit model for the selected session. It never
+  // reads or clears the composer draft or its staged attachments.
+  function resendMessage(
+    text: string,
+    model: string,
+    agent?: string,
+  ): Promise<boolean> {
+    const state = store.getState();
+    return submitMutation({
+      type: "message.send",
+      workspaceId: state.selection.workspaceId!,
+      sessionId: state.selection.sessionId!,
+      requestId: id(),
+      text,
+      model,
+      ...(agent ? { agent } : {}),
+    });
+  }
   function deliverContextMessage(
     delivery: "steer" | "queue",
   ): Promise<boolean> {
@@ -4618,6 +4636,7 @@ export function createWindowWorkbench(
     clearContextNotice: () => dispatch({ type: "context.notice.clear" }),
     sendContextMessage,
     sendMessageToSession,
+    resendMessage,
     deliverContextMessage,
     observeInbox: () => observeConversation(),
     cancelInbox,

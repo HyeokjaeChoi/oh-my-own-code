@@ -65,10 +65,21 @@ export function freeFailure(
   model: { providerId: string; id: string } | undefined,
   status: number | undefined,
 ): { kind: "unavailable" | "limit"; id?: string } | undefined;
+export const UNAVAILABLE_TTL_MS: number;
 export function loadUnavailableModels(
   storage?: Pick<Storage, "getItem">,
+  now?: number,
 ): string[];
 export function markModelUnavailable(
   id: string,
   storage?: Pick<Storage, "getItem" | "setItem">,
+  now?: number,
 ): string[];
+export function clearModelUnavailable(
+  id: string,
+  storage?: Pick<Storage, "getItem" | "setItem">,
+  now?: number,
+): string[];
+export function retryablePrompt(
+  userMessage: { role: string; text?: string; context?: unknown } | undefined,
+): string | undefined;

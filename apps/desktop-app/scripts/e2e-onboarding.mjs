@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { windowsEnv } from "./e2e-env.mjs";
 import { once } from "node:events";
 import { createServer } from "node:http";
-import { mkdir, mkdtemp, realpath, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, realpath, rm, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -166,9 +166,13 @@ try {
     card.getByRole("heading", { name: "무료 모델로 바로 시작" }),
   ).toBeVisible();
   await expect(
-    page.getByText("카드 없이, 어떤 모델로든 — 한국어로 쓰는 코딩 에이전트."),
+    page.getByText(
+      "신용카드 없이, 어떤 모델로든 — 한국어로 쓰는 코딩 에이전트.",
+    ),
   ).toBeVisible();
   await expect(card.getByRole("button", { name: "키 발급" })).toBeVisible();
+  // The card replaces the generic "no models" notice.
+  await expect(page.locator("[data-no-models]")).toHaveCount(0);
   await shot(page, "first-run-empty");
   await openSettings(page);
   await expect(
@@ -262,5 +266,6 @@ try {
     await Promise.race([exited, new Promise((r) => setTimeout(r, 30_000))]);
   }
   mock.close();
+  await rm(fixture, { recursive: true, force: true });
   console.log(JSON.stringify({ observations, mockRequests: seen.length }));
 }

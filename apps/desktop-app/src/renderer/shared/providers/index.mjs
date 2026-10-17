@@ -5,7 +5,7 @@ import { isFreeModel } from "../runtime-options/index.mjs";
 export const DEFAULT_MODEL_STORAGE_KEY = "omoc.defaultModel.v1";
 export const RECENT_MODELS_STORAGE_KEY = "omoc.recentModels.v1";
 export const FREE_ONLY_STORAGE_KEY = "omoc.modelFreeOnly.v1";
-export const UNAVAILABLE_MODELS_STORAGE_KEY = "omoc.unavailableModels.v1";
+export const UNAVAILABLE_MODELS_STORAGE_KEY = "omoc.unavailableModels.v2";
 export const PROVIDER_ERRORS = Object.freeze({
   INVALID_KEY: "API 키가 올바르지 않습니다. 키를 다시 확인해 주세요.",
   INVALID_REQUEST: "입력값이 올바르지 않습니다.",
@@ -157,29 +157,68 @@ export function freeFailure(entries, model, status) {
 }
 
 // Models that answered "not available for free", remembered per profile in the
-// same renderer storage as the picker memory (catalog ids only).
-export function loadUnavailableModels(storage = globalThis.localStorage) {
+// same renderer storage as the picker memory (catalog ids only). A mark expires
+// after a day (free availability comes and goes) and a successful turn clears it.
+export const UNAVAILABLE_TTL_MS = 24 * 60 * 60 * 1000;
+function readUnavailable(storage, now) {
   try {
     const list = JSON.parse(
       storage?.getItem(UNAVAILABLE_MODELS_STORAGE_KEY) ?? "[]",
     );
     return Array.isArray(list)
       ? list
-          .filter((id) => typeof id === "string" && /^[a-f0-9]{64}$/u.test(id))
+          .filter(
+            (entry) =>
+              typeof entry?.id === "string" &&
+              /^[a-f0-9]{64}$/u.test(entry.id) &&
+              Number.isFinite(entry.at) &&
+              now - entry.at < UNAVAILABLE_TTL_MS,
+          )
           .slice(0, 50)
       : [];
   } catch {
     return [];
   }
 }
-export function markModelUnavailable(id, storage = globalThis.localStorage) {
-  const current = loadUnavailableModels(storage);
-  if (current.includes(id)) return current;
-  const next = [id, ...current].slice(0, 50);
+function writeUnavailable(list, storage) {
   try {
-    storage?.setItem(UNAVAILABLE_MODELS_STORAGE_KEY, JSON.stringify(next));
+    storage?.setItem(UNAVAILABLE_MODELS_STORAGE_KEY, JSON.stringify(list));
   } catch {
     // Blocked storage: the mark lasts for this session only.
   }
-  return next;
 }
+export const loadUnavailableModels = (
+  storage = globalThis.localStorage,
+  now = Date.now(),
+) => readUnavailable(storage, now).map((entry) => entry.id);
+export function markModelUnavailable(
+  id,
+  storage = globalThis.localStorage,
+  now = Date.now(),
+) {
+  const rest = readUnavailable(storage, now).filter((entry) => entry.id !== id);
+  writeUnavailable([{ id, at: now }, ...rest].slice(0, 50), storage);
+  return loadUnavailableModels(storage, now);
+}
+export function clearModelUnavailable(
+  id,
+  storage = globalThis.localStorage,
+  now = Date.now(),
+) {
+  const rest = readUnavailable(storage, now).filter((entry) => entry.id !== id);
+  writeUnavailable(rest, storage);
+  return rest.map((entry) => entry.id);
+}
+
+// The prompt a failed free-model turn may be resent as: only plain text. A
+// message with attachments, a slash command or text clipped at the 32000 limit
+// would not be the same request when resent as bare text.
+export const retryablePrompt = (userMessage) =>
+  userMessage?.role === "user" &&
+  !userMessage.context &&
+  typeof userMessage.text === "string" &&
+  userMessage.text.trim() !== "" &&
+  !userMessage.text.trimStart().startsWith("/") &&
+  userMessage.text.length < 32000
+    ? userMessage.text
+    : undefined;
