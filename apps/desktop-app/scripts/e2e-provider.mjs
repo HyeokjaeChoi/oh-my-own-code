@@ -302,9 +302,10 @@ try {
   await expect(again2.getByText("API 키를 제거했습니다.")).toBeVisible({
     timeout: 30_000,
   });
+  // Only connected providers are listed, so the row itself goes away.
   await expect(
     again2.getByRole("listitem").filter({ hasText: "OpenRouter" }),
-  ).toContainText("키 필요");
+  ).toHaveCount(0);
   observations.push("remove key -> connection gone");
 } catch (error) {
   console.error(

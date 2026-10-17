@@ -112,52 +112,56 @@ export function ProviderSettings({ onSaved }: { onSaved?: () => void }) {
       {notice && <Notice tone="success">{notice}</Notice>}
       <Section title="제공자">
         <ul className={styles.rowList}>
-          {list?.providers.map((p) => (
-            <li key={p.id} className={styles.itemRow}>
-              <span className={styles.initial} aria-hidden="true">
-                {p.name.slice(0, 1).toUpperCase()}
-              </span>
-              <span className={styles.itemText}>
-                <span className={styles.itemName}>{p.name}</span>
-                <span className={styles.itemMeta}>
-                  {p.connected
-                    ? p.source === "env"
-                      ? "연결됨 · 환경 변수"
-                      : "연결됨"
-                    : "키 필요"}
+          {/* Only connected providers are rows; every other integration is
+              reachable through 제공자 추가 (the list holds hundreds). */}
+          {list?.providers
+            .filter((p) => p.connected)
+            .map((p) => (
+              <li key={p.id} className={styles.itemRow}>
+                <span className={styles.initial} aria-hidden="true">
+                  {p.name.slice(0, 1).toUpperCase()}
                 </span>
-              </span>
-              {p.source === "credential" && (
-                <span className={styles.itemActions}>
-                  <Button
-                    size="compact"
-                    disabled={busy || down}
-                    aria-label={`${p.name} 키 교체`}
-                    onClick={() => {
-                      setSelected(p.id);
-                      setAdding(true);
-                    }}
-                  >
-                    키 교체
-                  </Button>
-                  <Button
-                    size="compact"
-                    className={styles.dangerText ?? ""}
-                    disabled={busy || down}
-                    aria-label={`${p.name} 연결 해제`}
-                    onClick={() =>
-                      void run(
-                        { type: "provider.remove", id: p.id },
-                        "API 키를 제거했습니다.",
-                      )
-                    }
-                  >
-                    연결 해제
-                  </Button>
+                <span className={styles.itemText}>
+                  <span className={styles.itemName}>{p.name}</span>
+                  <span className={styles.itemMeta}>
+                    {p.connected
+                      ? p.source === "env"
+                        ? "연결됨 · 환경 변수"
+                        : "연결됨"
+                      : "키 필요"}
+                  </span>
                 </span>
-              )}
-            </li>
-          ))}
+                {p.source === "credential" && (
+                  <span className={styles.itemActions}>
+                    <Button
+                      size="compact"
+                      disabled={busy || down}
+                      aria-label={`${p.name} 키 교체`}
+                      onClick={() => {
+                        setSelected(p.id);
+                        setAdding(true);
+                      }}
+                    >
+                      키 교체
+                    </Button>
+                    <Button
+                      size="compact"
+                      className={styles.dangerText ?? ""}
+                      disabled={busy || down}
+                      aria-label={`${p.name} 연결 해제`}
+                      onClick={() =>
+                        void run(
+                          { type: "provider.remove", id: p.id },
+                          "API 키를 제거했습니다.",
+                        )
+                      }
+                    >
+                      연결 해제
+                    </Button>
+                  </span>
+                )}
+              </li>
+            ))}
           <li className={styles.itemRow}>
             <span className={styles.initial} aria-hidden="true">
               L
