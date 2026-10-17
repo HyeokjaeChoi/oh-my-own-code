@@ -19,7 +19,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { openSettings } from "./e2e-shell.mjs";
-import { openComposerPopover, pickModel } from "./e2e-composer.mjs";
+import { openComposerPopover } from "./e2e-composer.mjs";
 
 const CONNECT_TIMEOUT_MS =
   Number(process.env.OMOC_E2E_CONNECT_TIMEOUT_MS) || 150_000;
@@ -122,7 +122,13 @@ const hard = setTimeout(() => {
 }, HARD_TIMEOUT_MS);
 const observations = [];
 const shot = async (page, name) => {
-  if (SHOTS) await page.screenshot({ path: join(SHOTS, `${name}.png`) });
+  if (SHOTS)
+    await page.screenshot({
+      path: join(
+        SHOTS,
+        `${name}-${process.env.OMOC_E2E_SCHEME ?? "light"}-${process.env.OMOC_E2E_SIZE ?? "default"}.png`,
+      ),
+    });
 };
 try {
   application = await electron.launch({
@@ -136,8 +142,17 @@ try {
   const page = await application.firstWindow();
   if (process.env.OMOC_E2E_SIZE) {
     const [width, height] = process.env.OMOC_E2E_SIZE.split("x").map(Number);
-    await page.setViewportSize({ width, height });
+    await application.evaluate(
+      ({ BrowserWindow }, size) =>
+        BrowserWindow.getAllWindows()[0].setContentSize(
+          size.width,
+          size.height,
+        ),
+      { width, height },
+    );
   }
+  if (process.env.OMOC_E2E_SCHEME)
+    await page.emulateMedia({ colorScheme: process.env.OMOC_E2E_SCHEME });
   await expect(
     page.locator(".workbench-header [data-connection]"),
   ).toHaveAttribute("data-connection", "connected", {
