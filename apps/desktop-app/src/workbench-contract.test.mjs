@@ -564,3 +564,68 @@ test("catalog.list pinModels is a closed list of at most two model ids", () => {
   for (const pinModels of [[id, id, id], ["x"], id, [1]])
     assert.throws(() => validateRequest({ ...base, pinModels }));
 });
+
+test("revert requests carry only a message id; snapshot revert is closed and never shows hidden messages", () => {
+  for (const type of ["session.revert", "session.revert.clear"]) {
+    const request = {
+      type,
+      workspaceId: "w",
+      sessionId: "s",
+      requestId: "r",
+      messageId: "msg_2",
+    };
+    assert.deepEqual(validateRequest(request), request);
+    for (const bad of [
+      { ...request, messageId: undefined },
+      { ...request, messageId: "bad id/with space" },
+      { ...request, files: ["a.txt"] },
+      { ...request, path: "/etc/passwd" },
+      { ...request, commit: true },
+    ])
+      assert.throws(() => validateRequest(bad), { appCode: "INVALID_REQUEST" });
+  }
+  const snapshot = {
+    ...recoverySnapshot(),
+    state: "connected",
+    recovery: { store: { state: "ready" }, resources: [] },
+    workspaces: [
+      {
+        id: "w",
+        name: "Workspace",
+        path: "/synthetic",
+        kind: "repository",
+        trusted: true,
+        trustRevision: 0,
+        temporary: false,
+      },
+    ],
+    sessions: [{ id: "s", workspaceId: "w", title: "Session", status: "idle" }],
+    selectedWorkspaceId: "w",
+    selectedSessionId: "s",
+    messages: [{ id: "msg_1", role: "user", text: "kept", tools: [] }],
+    revert: {
+      messageId: "msg_2",
+      fileCount: 1,
+      files: ["a.txt"],
+      filesRestored: true,
+    },
+  };
+  assert.deepEqual(validateSnapshot(snapshot), snapshot);
+  for (const revert of [
+    { ...snapshot.revert, patch: "diff" },
+    { ...snapshot.revert, messageId: "has space" },
+    { ...snapshot.revert, filesRestored: "yes" },
+    {
+      ...snapshot.revert,
+      files: Array.from({ length: 51 }, (_, i) => `f${i}`),
+      fileCount: 51,
+    },
+    { ...snapshot.revert, files: ["a", "b"], fileCount: 1 },
+    { ...snapshot.revert, files: [""] },
+    { ...snapshot.revert, messageId: "msg_1" },
+    { ...snapshot.revert, messageId: "msg_0" },
+  ])
+    assert.throws(() => validateSnapshot({ ...snapshot, revert }), {
+      appCode: "INVALID_REQUEST",
+    });
+});

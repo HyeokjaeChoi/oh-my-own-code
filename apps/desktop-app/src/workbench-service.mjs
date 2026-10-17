@@ -157,6 +157,8 @@ const lifecycleTypes = new Set([
   "session.archive",
   "session.fork",
   "session.remove",
+  "session.revert",
+  "session.revert.clear",
 ]);
 const mutationTypes = new Set([
   "git.branch.apply",
@@ -225,6 +227,22 @@ function structuredError(error) {
     error?.type === "ProviderAuthError"
     ? "AUTH_REQUIRED"
     : "RUNTIME_ERROR";
+}
+// Native's staged revert, reduced to what the UI needs: the boundary message,
+// at most 50 changed paths (never patch bodies) and whether files were really
+// restored (false outside a git workspace, where only the chat is hidden).
+export function projectRevert(revert) {
+  if (!revert || !/^[\w.:-]{1,256}$/.test(revert.messageID)) return undefined;
+  const files = Array.isArray(revert.files) ? revert.files : [];
+  return {
+    messageId: revert.messageID,
+    fileCount: files.length,
+    files: files
+      .map((f) => clip(f?.file, 1024))
+      .filter(Boolean)
+      .slice(0, 50),
+    filesRestored: Boolean(revert.snapshot),
+  };
 }
 export function projectMessages(data) {
   if (!Array.isArray(data)) fail("RUNTIME_ERROR");
@@ -301,6 +319,7 @@ export function createWorkbenchService({
   probeWorkspace,
   confirmTrust,
   confirmSessionRemoval = async () => false,
+  confirmSessionRevert = async () => false,
   confirmConfigurationSave = async () => false,
   confirmInstructions = async () => false,
   confirmMcp = async () => false,
@@ -502,6 +521,8 @@ export function createWorkbenchService({
       client?.session?.create,
       client?.session?.fork,
       client?.session?.remove,
+      client?.session?.revert?.stage,
+      client?.session?.revert?.clear,
       client?.session?.switchAgent,
       client?.session?.switchModel,
       client?.session?.prompt,
@@ -560,6 +581,8 @@ export function createWorkbenchService({
     if (fn === client.session.create) return "native.create";
     if (fn === client.session.fork) return "native.fork";
     if (fn === client.session.remove) return "native.remove";
+    if (fn === client.session.revert?.stage) return "native.revert.stage";
+    if (fn === client.session.revert?.clear) return "native.revert.clear";
     if (fn === client.session.update)
       return Object.hasOwn(args[0], "title")
         ? "native.rename"
@@ -861,6 +884,8 @@ export function createWorkbenchService({
         client.session?.create,
         client.session?.fork,
         client.session?.remove,
+        client.session?.revert?.stage,
+        client.session?.revert?.clear,
         client.session?.prompt,
         client.session?.command,
         client.session?.interrupt,
@@ -941,6 +966,8 @@ export function createWorkbenchService({
         client.session?.fork,
         client.session?.update,
         client.session?.remove,
+        client.session?.revert?.stage,
+        client.session?.revert?.clear,
         client.session?.switchAgent,
         client.session?.switchModel,
         client.session?.prompt,
@@ -1151,6 +1178,8 @@ export function createWorkbenchService({
         "session.rename",
         "session.pin",
         "session.archive",
+        "session.revert",
+        "session.revert.clear",
         "permission.mode.set",
       ].includes(request.type)
     ) {
@@ -2932,6 +2961,13 @@ export function createWorkbenchService({
       projection?.sessionSelection
         ? { sessionSelection: projection.sessionSelection }
         : {}),
+      ...(!blocked &&
+      !initializing &&
+      !selectedBlocked &&
+      !s?.unavailable &&
+      projected?.revert
+        ? { revert: projected.revert }
+        : {}),
       permissions:
         blocked || initializing || selectedBlocked || s?.unavailable
           ? []
@@ -3108,7 +3144,28 @@ export function createWorkbenchService({
           fail("READ_BUSY");
         s.permissionsUnavailable = permissionsUnavailable;
         s.sessionSelection = projectSessionSelection(info, s.id);
-        s.messages = projectMessages([...messages.data].reverse());
+        // Native does not hide reverted messages; the boundary message and all
+        // later ones are hidden here.
+        s.revert = projectRevert(info.revert);
+        const boundary = info.revert?.messageID;
+        const hide = (list) =>
+          boundary ? list.filter((m) => !(m?.id >= boundary)) : list;
+        let visible = hide(messages.data);
+        // Hidden messages used up part of the newest-100 window: read further
+        // back so the transcript before the boundary is still complete.
+        if (
+          visible.length < messages.data.length &&
+          messages.data.length >= 100
+        ) {
+          const wider = await call(client.message.list, {
+            sessionID: s.sdkId,
+            limit: 500,
+            order: "desc",
+          });
+          if (!Array.isArray(wider?.data)) fail("RUNTIME_ERROR");
+          visible = hide(wider.data);
+        }
+        s.messages = projectMessages([...visible].reverse());
         s.permissions = [
           ...pending.filter((p) => p.sessionID === s.sdkId),
           ...subagentPending,
@@ -3156,7 +3213,7 @@ export function createWorkbenchService({
           s.awaiting = undefined;
         } else s.status = s.unknown ? "unknown" : s.status;
         syncNativeTitle(original.id, info.title, s.status === "idle");
-        const latest = messages.data.find((m) => m.type === "assistant");
+        const latest = visible.find((m) => m.type === "assistant");
         const failed = latest?.error ? latest : undefined;
         const code = s.unknown
           ? "UNKNOWN_OUTCOME"
@@ -3172,6 +3229,7 @@ export function createWorkbenchService({
             : undefined;
       } catch {
         delete s.sessionSelection;
+        delete s.revert;
         delete s.permissionsUnavailable;
         checkLive();
         if (
@@ -5207,6 +5265,70 @@ export function createWorkbenchService({
         await call(client.session.remove, { sessionID: s.sdkId });
         await verifyRemoved(s);
         tables().sessions.delete(s.id);
+      } else if (
+        request.type === "session.revert" ||
+        request.type === "session.revert.clear"
+      ) {
+        // Revert writes workspace files from Native's private snapshot. That
+        // path bypasses the permission ruleset, so it is guarded here only:
+        // trusted workspace, idle session with an empty inbox, a user-message
+        // target of this session, and a native default-deny confirmation.
+        // The renderer supplies a message id and never a path or file list.
+        if (!w.trusted) fail("INVALID_SELECTION");
+        const reapply = request.type === "session.revert.clear";
+        const info = await idleIdentity(w, s);
+        const staged = info.revert?.messageID;
+        if (reapply) {
+          if (staged !== request.messageId) fail("INVALID_SELECTION");
+        } else {
+          const target = await call(client.session.message?.get, {
+            sessionID: s.sdkId,
+            messageID: request.messageId,
+          });
+          if (
+            target?.id !== request.messageId ||
+            // The Native response omits sessionID; the lookup itself is
+            // session-scoped, so only a present, different value is refused.
+            (target.sessionID !== undefined && target.sessionID !== s.sdkId) ||
+            target.type !== "user" ||
+            (staged !== undefined && request.messageId >= staged)
+          )
+            fail("INVALID_SELECTION");
+        }
+        if (
+          !(await confirmSessionRevert({
+            action: reapply ? "reapply" : "revert",
+            title: clip(info.title, 256) || s.title,
+            workspaceName: w.name,
+            path: w.path,
+            sessionId: s.id,
+            // Display metadata only: a readable git HEAD means files can be restored.
+            restoresFiles: Boolean(workspaceMeta.get(w.path)?.branch),
+            ...(reapply && {
+              fileCount: Array.isArray(info.revert?.files)
+                ? info.revert.files.length
+                : 0,
+            }),
+          }))
+        )
+          fail("CANCELLED");
+        await idleIdentity(w, s);
+        dispatched = true;
+        // A failure past this point may have restored only some files; the
+        // catch below reports it as UNKNOWN_OUTCOME and locks the session.
+        await call(
+          reapply ? client.session.revert.clear : client.session.revert.stage,
+          reapply
+            ? { sessionID: s.sdkId }
+            : { sessionID: s.sdkId, messageID: request.messageId },
+        );
+        const after = await call(client.session.get, { sessionID: s.sdkId });
+        if (
+          reapply
+            ? after?.revert
+            : after?.revert?.messageID !== request.messageId
+        )
+          fail("UNKNOWN_OUTCOME");
       }
       const selected =
         child ??
@@ -5242,15 +5364,17 @@ export function createWorkbenchService({
       observe(request, result, started, { workspaceId: w.id, sessionId: s.id });
       if (result.ok) receipt.result = { ok: true };
     }
-    return receipt.result.ok
-      ? {
-          ok: true,
-          value: safeSnapshot(
-            w,
-            tables().sessions.get(receipt.selectedSessionId),
-          ),
-        }
-      : receipt.result;
+    if (!receipt.result.ok) return receipt.result;
+    const done = tables().sessions.get(receipt.selectedSessionId);
+    // Revert changes what the transcript shows: re-project it so the returned
+    // snapshot never carries the pre-revert messages.
+    const projection = request.type.startsWith("session.revert")
+      ? await refresh(done).catch(() => undefined)
+      : undefined;
+    return {
+      ok: true,
+      value: projection ? base(w, done, projection) : safeSnapshot(w, done),
+    };
   }
   const fileSearches = new Map();
   async function execute(request) {

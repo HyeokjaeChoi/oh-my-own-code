@@ -639,6 +639,7 @@ async function fixture(
     confirmInstructions,
     confirmMcp,
     confirmSkillRuntime,
+    confirmSessionRevert,
     createNativeSkills,
     createNativeAgents,
     createNativeExtensions,
@@ -854,6 +855,7 @@ async function fixture(
     confirmInstructions,
     confirmMcp,
     confirmSkillRuntime,
+    confirmSessionRevert,
     confirmAgentRuntime,
     deadlineMs: 2000,
   });
@@ -1170,6 +1172,54 @@ for (const kind of ["admission", "dispatch", "completion"])
     assert.deepEqual(snap.messages, []);
     assert.deepEqual(snap.permissions, []);
   });
+
+test("session.revert and reapply are journaled (native.revert.*), confirmed by a metadata receipt and survive lookup", async (t) => {
+  const f = await fixture(t, { confirmSessionRevert: async () => true });
+  const initial = await f.ready();
+  const target = {
+    workspaceId: initial.selectedWorkspaceId,
+    sessionId: initial.selectedSessionId,
+  };
+  const nativeId = [...f.records.keys()][0];
+  const calls = [];
+  f.context.client.session.message = {
+    get: async ({ messageID }) => ({ id: messageID, type: "user" }),
+  };
+  f.context.client.session.revert = {
+    stage: async (input) => {
+      calls.push(["stage", input]);
+      f.records.get(nativeId).revert = { messageID: input.messageID };
+    },
+    clear: async (input) => {
+      calls.push(["clear", input]);
+      delete f.records.get(nativeId).revert;
+    },
+  };
+  const staged = await f.mutate(
+    { type: "session.revert", ...target, requestId: "rv", messageId: "msg_9" },
+    "revert-op",
+  );
+  assert.equal(staged.ok, true, JSON.stringify(staged));
+  assert.deepEqual(calls, [
+    ["stage", { sessionID: nativeId, messageID: "msg_9" }],
+  ]);
+  const found = await f.lookup("revert-op");
+  assert.equal(found.value.status, "found", JSON.stringify(found));
+  assert.equal(found.value.receipt.effect, "confirmed");
+  assert.equal(found.value.receipt.result.kind, "metadata");
+  const cleared = await f.mutate(
+    {
+      type: "session.revert.clear",
+      ...target,
+      requestId: "rc",
+      messageId: "msg_9",
+    },
+    "clear-op",
+  );
+  assert.equal(cleared.ok, true, JSON.stringify(cleared));
+  assert.equal(calls[1][0], "clear");
+  assert.equal((await f.lookup("clear-op")).value.receipt.effect, "confirmed");
+});
 
 test("BUSY rejection rebase survives concurrent atomic completion; digest conflict never dispatches", async (t) => {
   const pause = deferred();

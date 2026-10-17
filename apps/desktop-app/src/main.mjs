@@ -1185,6 +1185,37 @@ app.whenReady().then(async () => {
       });
       return result.response === 1;
     },
+    async confirmSessionRevert({
+      action,
+      title,
+      workspaceName,
+      path,
+      restoresFiles,
+      fileCount,
+    }) {
+      const shown =
+        title === "Untitled session" || title === "Workbench"
+          ? "새 세션"
+          : title;
+      const reapply = action === "reapply";
+      const result = await dialog.showMessageBox(mainWindow, {
+        type: "warning",
+        title: reapply ? "다시 적용" : "이 시점으로 되돌리기",
+        message: reapply
+          ? `“${shown}”의 되돌린 내용을 다시 적용하시겠습니까?`
+          : `“${shown}”을 이 메시지 이전으로 되돌리시겠습니까?`,
+        detail: `작업공간: ${workspaceName}\n${path}\n${
+          reapply
+            ? `되돌린 뒤 같은 파일을 수정했다면 그 수정은 덮어써집니다.${fileCount ? `\n되돌려진 파일 ${fileCount}개가 다시 적용됩니다.` : ""}`
+            : `이 메시지와 이후 대화가 숨겨지고${restoresFiles ? ", 이후 변경된 파일이 이전 상태로 복원됩니다. 복원 전에 수정한 파일은 덮어써질 수 있으며, git이 무시하는 파일과 2MB를 넘는 새 파일은 복원되지 않습니다" : ". 이 작업공간은 git 저장소가 아닌 것으로 보여 파일은 복원되지 않습니다"}.\n다음 메시지를 보내기 전에는 "다시 적용"으로 되돌릴 수 있습니다.`
+        }`,
+        buttons: ["취소", reapply ? "다시 적용" : "되돌리기"],
+        defaultId: 0,
+        cancelId: 0,
+        noLink: true,
+      });
+      return result.response === 1;
+    },
     confirmTrust: confirmWorkspaceTrust,
   });
   bindIpc();

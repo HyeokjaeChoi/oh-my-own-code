@@ -4061,7 +4061,11 @@ test("TASK checkpoint replay retains exact roots; unconfirmed task tail refuses 
   );
 });
 
-async function mutationJournalFixture(t, targetKind = "workspace") {
+async function mutationJournalFixture(
+  t,
+  targetKind = "workspace",
+  override = {},
+) {
   const f = await fixture(t);
   let revision = 0;
   const append = (payload) =>
@@ -4114,13 +4118,16 @@ async function mutationJournalFixture(t, targetKind = "workspace") {
     ...key,
     workspaceId: "workspace",
     type:
-      targetKind === "workspace"
+      override.type ??
+      (targetKind === "workspace"
         ? "configuration.mcp.register"
-        : "session.rename",
+        : "session.rename"),
     digest: "a".repeat(64),
     ...(targetKind === "session" ? { sessionId: "child" } : {}),
   };
-  const step = targetKind === "workspace" ? "native.mcp.add" : "native.rename";
+  const step =
+    override.step ??
+    (targetKind === "workspace" ? "native.mcp.add" : "native.rename");
   const nativeServerName = mcpNativeName("workspace", "local");
   if (targetKind === "workspace")
     await append({ kind: "feature_gate", feature: MCP_FEATURE });
@@ -4222,6 +4229,27 @@ for (const targetKind of ["session", "workspace"]) {
     assert.equal(next.status().state, "ready");
     assert.deepEqual(next.readRecords().committed.at(-1).payload, f.prepared);
     await next.checkpoint();
+  });
+}
+for (const [type, step] of [
+  ["session.revert", "native.revert.stage"],
+  ["session.revert.clear", "native.revert.clear"],
+]) {
+  test(`journal admits ${type} and its ${step} dispatch through a checkpoint`, async (t) => {
+    const f = await mutationJournalFixture(t, "session", { type, step });
+    await f.journal.append(f.prepared);
+    await f.journal.checkpoint();
+    await f.journal.close();
+    const next = await openStorageJournal({
+      directory: f.directory,
+      storeId: "store",
+    });
+    t.after(() => next.close());
+    assert.equal(next.status().state, "ready");
+    assert.equal(
+      next.readRecords().committed.at(-1).payload.binding.step,
+      step,
+    );
   });
 }
 for (const mode of ["journal", "checkpoint"]) {
