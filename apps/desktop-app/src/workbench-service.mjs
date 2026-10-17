@@ -3338,7 +3338,9 @@ export function createWorkbenchService({
                     ([, a], [, b]) =>
                       Number(isNoIntegrationModel(b)) -
                         Number(isNoIntegrationModel(a)) ||
-                      Number(isFreeRouter(b)) - Number(isFreeRouter(a)),
+                      Number(isFreeRouter(b)) - Number(isFreeRouter(a)) ||
+                      // Free models go ahead of the 300 cap, like the router.
+                      Number(isFreeModel(b)) - Number(isFreeModel(a)),
                   )
                   .filter(([id], i) => i < 300 || pinModels.includes(id))
                   .map(([id, m]) => ({

@@ -54,6 +54,7 @@ export const emptyActivity: SessionActivity = {
   recent: [],
   active: {},
 };
+export const ACTIVE_LIMIT = 200;
 const MINUTE = 60_000;
 // "방금", "3분", "2시간", "어제", "5일", "3주". Compact, no "전".
 export function relativeTime(then: number, now: number): string {
@@ -87,15 +88,25 @@ export function trackSessions(
     selectedId && selectedId !== prev.selectedId
       ? [selectedId, ...prev.recent.filter((id) => id !== selectedId)]
       : prev.recent;
+  // Merge, never rebuild: sessions outside the current list keep their time.
+  // A move into or out of unknown/unavailable (a reconnect) is not activity.
+  const lost = (status?: WorkbenchSession["status"]) =>
+    status === "unknown" || status === "unavailable";
+  const merged = { ...prev.active };
+  for (const s of sessions) {
+    const previous = prev.status[s.id];
+    if (
+      previous !== undefined &&
+      previous !== s.status &&
+      !lost(previous) &&
+      !lost(s.status)
+    )
+      merged[s.id] = now;
+  }
   const active = Object.fromEntries(
-    sessions.flatMap((s) => {
-      const previous = prev.status[s.id];
-      const at =
-        previous !== undefined && previous !== s.status
-          ? now
-          : prev.active[s.id];
-      return at === undefined ? [] : [[s.id, at]];
-    }),
+    Object.entries(merged)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, ACTIVE_LIMIT),
   );
   return {
     active,

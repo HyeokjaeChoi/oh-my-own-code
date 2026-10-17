@@ -1242,11 +1242,36 @@ test("catalog entries carry the provider, OpenRouter :free ids are free and its 
     entries.map((e) => [e.name, e.free === true, e.providerId]),
     [
       ["Free Models Router", true, "openrouter"],
-      ["Model", false, "openrouter"],
       ["X free", true, "openrouter"],
+      ["Model", false, "openrouter"],
     ],
   );
   assert.equal(typeof entries[0].provider, "string");
+});
+test("free models survive the 300-entry catalog cap", async (t) => {
+  const f = await fixture(t);
+  f.state.extraModels = [
+    ...Array.from({ length: 310 }, (_, i) => ({
+      id: `paid-${i}`,
+      providerID: "provider",
+      name: `Paid ${i}`,
+      enabled: true,
+      status: "active",
+      cost: [{ input: 1, output: 1 }],
+    })),
+    {
+      id: "last-free",
+      providerID: "provider",
+      name: "Last free",
+      enabled: true,
+      status: "active",
+      cost: [{ input: 0, output: 0 }],
+    },
+  ];
+  const entries = (await f.service.handle({ type: "catalog.list", ...f.ids }))
+    .value.models.entries;
+  assert.equal(entries.length, 300);
+  assert.ok(entries.some((e) => e.name === "Last free"));
 });
 test("runtime options removed or malformed variants cannot switch or prompt", async (t) => {
   for (const variants of [

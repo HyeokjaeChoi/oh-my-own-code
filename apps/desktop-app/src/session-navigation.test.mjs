@@ -98,8 +98,21 @@ test("last activity is stamped on observed status changes only; relativeTime is 
   assert.deepEqual(a.active, { a: 2000 });
   a = trackSessions(a, [s("a", "running")], "a", 9000);
   assert.deepEqual(a.active, { a: 2000 });
+  // Leaving the list (workspace switch) keeps the time.
   a = trackSessions(a, [], "a", 9500);
-  assert.deepEqual(a.active, {});
+  assert.deepEqual(a.active, { a: 2000 });
+  // A reconnect (unknown/unavailable round trip) is not activity.
+  a = trackSessions(a, [s("b", "idle")], "b", 10_000);
+  a = trackSessions(a, [s("b", "unavailable")], "b", 11_000);
+  a = trackSessions(a, [s("b", "idle")], "b", 12_000);
+  assert.deepEqual(a.active, { a: 2000 });
+  // Oldest entries drop past the cap.
+  let many = emptyActivity;
+  const list = (status) =>
+    Array.from({ length: 205 }, (_, i) => s(`n${i}`, status));
+  many = trackSessions(many, list("idle"), undefined, 1);
+  many = trackSessions(many, list("running"), undefined, 2);
+  assert.equal(Object.keys(many.active).length, 200);
   const now = 1_000_000_000;
   const ago = (ms) => relativeTime(now - ms, now);
   assert.equal(ago(5_000), "방금");

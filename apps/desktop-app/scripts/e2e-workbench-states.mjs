@@ -36,6 +36,7 @@ import { captureProvenance } from "./build-provenance.mjs";
 import {
   closeComposerPopovers,
   openCommandMenu,
+  openCommandMenuShortcut,
   openComposerPopover,
   pickModel,
 } from "./e2e-composer.mjs";
@@ -2611,19 +2612,18 @@ try {
         await expect(input).toBeEditable();
         const draft = `SYNTHETIC authority draft ${effect}`;
         await input.fill(draft);
-        // "/" opens the menu only in an empty composer; Escape returns to the
-        // textarea and the retained draft is untouched once restored.
+        // ⌘/ opens the menu with a draft present; Escape returns to the
+        // textarea with the retained draft untouched (never refilled).
         await expect(
           page.getByRole("button", {
             name: "앱 동작과 명령 열기",
             exact: true,
           }),
         ).toHaveCount(0);
-        await openCommandMenu(page);
+        await openCommandMenuShortcut(page);
         await page.keyboard.press("Escape");
         await expect(commandMenu).toHaveCount(0);
         await expect(input).toBeFocused();
-        await input.fill(draft);
         await expect(input).toHaveValue(draft);
         await assertComposerGeometry(page);
         const before = await application.evaluate(() =>

@@ -91,6 +91,9 @@ test("recent models keep the last 3 distinct ids; free-only choice persists", as
   assert.deepEqual(loadRecentModels(s), []);
   for (const c of ["a", "b", "c", "a", "d"]) pushRecentModel(id(c), s);
   assert.deepEqual(loadRecentModels(s), [id("d"), id("a"), id("c")]);
+  // Saving prunes ids the catalog dropped.
+  pushRecentModel(id("e"), s, [id("e"), id("a")]);
+  assert.deepEqual(loadRecentModels(s), [id("e"), id("a")]);
   store.set("omoc.recentModels.v1", JSON.stringify(["x", id("b"), 3]));
   assert.deepEqual(loadRecentModels(s), [id("b")]);
   store.set("omoc.recentModels.v1", "{bad");
@@ -100,4 +103,28 @@ test("recent models keep the last 3 distinct ids; free-only choice persists", as
   assert.equal(loadFreeOnly(s), false);
   saveFreeOnly(true, s);
   assert.equal(loadFreeOnly(s), true);
+});
+
+test("an auto-picked model survives catalog growth and goes only when removed", async () => {
+  const { keepAutoModel } = await import(
+    "./renderer/shared/providers/index.mjs"
+  );
+  const free = { id: "free", free: true };
+  assert.equal(
+    keepAutoModel({ status: "available", entries: [free] }, "free"),
+    true,
+  );
+  // A paid key adds models: the free pick stays.
+  assert.equal(
+    keepAutoModel(
+      { status: "available", entries: [free, { id: "paid" }] },
+      "free",
+    ),
+    true,
+  );
+  assert.equal(keepAutoModel({ status: "unavailable" }, "free"), true);
+  assert.equal(
+    keepAutoModel({ status: "available", entries: [{ id: "paid" }] }, "free"),
+    false,
+  );
 });

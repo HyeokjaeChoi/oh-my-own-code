@@ -10,6 +10,8 @@ export {
   variantForModel,
   defaultFreeOnly,
   groupModels,
+  variantLabel,
+  modelDisplayName,
   projectAssistantRuntime,
   projectSessionSelection,
 } from "./index.mjs";

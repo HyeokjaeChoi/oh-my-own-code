@@ -336,13 +336,17 @@ export function ConversationContextControls({
           {context.notice}
         </p>
       )}
-      {!ready && (
-        <p role="status" data-context-held>
-          {context.request || context.inboxRequest
-            ? "입력을 확인 중입니다. 확인 중단은 실행 취소를 뜻하지 않습니다."
-            : "입력 작업을 보류했습니다. 연결·신뢰·요청 상태를 확인하세요. 자동으로 다시 실행하지 않습니다."}
-        </p>
-      )}
+      {!ready &&
+        (draft.items.length > 0 ||
+          messageDraft.text.trim() ||
+          context.request ||
+          context.inboxRequest) && (
+          <p role="status" data-context-held>
+            {context.request || context.inboxRequest
+              ? "입력을 확인하는 중입니다."
+              : "연결을 확인하는 중입니다."}
+          </p>
+        )}
       <>
         {draft.items.length > 0 && (
           <section aria-label="선택한 첨부 입력" data-context-summary>

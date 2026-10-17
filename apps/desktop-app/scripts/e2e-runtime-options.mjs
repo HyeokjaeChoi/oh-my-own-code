@@ -495,9 +495,11 @@ async function exerciseRuntimeOptions() {
   await scenario("historical");
   await showResponse();
   await expect(responseReport()).toContainText("removed-response-model");
-  await expect(
-    page.locator('[role="option"][data-model-option]'),
-  ).not.toContainText(["removed-response-model"]);
+  await openComposerPopover(page, "model");
+  const options = page.locator('[role="option"][data-model-option]');
+  await expect(options.first()).toBeVisible();
+  await expect(options).not.toContainText(["removed-response-model"]);
+  await closeComposerPopovers(page);
   await shot("historical-response-read-only");
   assert.equal((await sends()).length, initialSends);
 

@@ -68,6 +68,7 @@ import {
   type WorkbenchMessage,
   type WorkbenchPermission,
   validAssistantRuntime,
+  variantLabel,
 } from "../../shared/api/index.js";
 
 /* eslint-disable no-unused-vars -- Names document type-only callback parameters. */
@@ -95,6 +96,10 @@ type Props = {
   newSession(): void;
 };
 /* eslint-enable no-unused-vars */
+const shortcutKey =
+  typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform)
+    ? "⌘"
+    : "Ctrl+";
 const permissionModes = [
   {
     value: "ask",
@@ -263,18 +268,42 @@ function ToolDetail({
     </div>
   );
 }
+// Ticks on its own, so the composer does not re-render every second. The run
+// start is not reported, so it counts from when this strip appeared.
+function RunElapsed({ sessionId }: { sessionId: string }) {
+  const [seconds, setSeconds] = useState(0);
+  useEffect(() => {
+    const start = Date.now();
+    setSeconds(0);
+    const timer = setInterval(
+      () => setSeconds(Math.floor((Date.now() - start) / 1000)),
+      1000,
+    );
+    return () => clearInterval(timer);
+  }, [sessionId]);
+  return (
+    <>
+      {" · "}
+      {seconds >= 60
+        ? `${Math.floor(seconds / 60)}분 ${seconds % 60}초`
+        : `${seconds}초`}
+    </>
+  );
+}
 function MessageView({
   role,
   messageId,
   runtime,
   original,
   showRuntime,
+  running,
 }: {
   role: "user" | "assistant";
   messageId: string;
   runtime: unknown;
   original?: WorkbenchMessage | undefined;
   showRuntime: boolean;
+  running: boolean;
 }) {
   const report =
     role === "assistant" && validAssistantRuntime(runtime)
@@ -310,7 +339,7 @@ function MessageView({
           {text && <CopyButton text={text} kind="message" />}
           {original && <ContextMessageActions message={original} />}
         </div>
-        {role === "assistant" && showRuntime && (
+        {role === "assistant" && showRuntime && (report || !running) && (
           <span
             className={styles.turnMeta}
             data-abnormal={report ? undefined : "true"}
@@ -445,17 +474,6 @@ export function Conversation(props: Props) {
   }, []);
   const messages = useMemo(() => mapMessages(props.messages), [props.messages]);
   const running = props.status === "running" || props.status === "stopping";
-  const [elapsed, setElapsed] = useState(0);
-  useEffect(() => {
-    if (!running) return;
-    const start = Date.now();
-    setElapsed(0);
-    const timer = setInterval(
-      () => setElapsed(Math.floor((Date.now() - start) / 1000)),
-      1000,
-    );
-    return () => clearInterval(timer);
-  }, [running, props.sessionId]);
   // Sending may be blocked by an unknown receipt while interruption is needed.
   const canInterrupt =
     props.executionAvailable &&
@@ -666,6 +684,7 @@ export function Conversation(props: Props) {
                     runtime={message.metadata?.custom.runtime}
                     original={props.messages.find((m) => m.id === message.id)}
                     // Agent/model once per turn: on the last assistant message.
+                    running={running}
                     showRuntime={
                       props.messages[
                         props.messages.findIndex((m) => m.id === message.id) + 1
@@ -807,12 +826,7 @@ export function Conversation(props: Props) {
                       : running
                         ? "실행 중"
                         : "대기열 (마지막 확인)"}
-                    {running &&
-                      ` · ${
-                        elapsed >= 60
-                          ? `${Math.floor(elapsed / 60)}분 ${elapsed % 60}초`
-                          : `${elapsed}초`
-                      }`}
+                    {running && <RunElapsed sessionId={props.sessionId} />}
                     {queueCount > 0 &&
                       (running ? ` · 대기열 ${queueCount}` : ` ${queueCount}`)}
                   </span>
@@ -854,7 +868,7 @@ export function Conversation(props: Props) {
                   aria-label="메시지 작성"
                   aria-controls={menu ? commandMenuId : undefined}
                   readOnly={Boolean(props.archived)}
-                  placeholder="작업을 요청하세요. /로 명령 보기"
+                  placeholder={`작업을 요청하세요. / 또는 ${shortcutKey}/로 명령 보기`}
                   maxLength={32000}
                   minRows={3}
                   maxRows={shortViewport ? 3 : 6}
@@ -898,7 +912,11 @@ export function Conversation(props: Props) {
                         button.focus();
                       }
                     }
-                    if (event.key === "/" && !draft) setMenu(true);
+                    // "/" in an empty composer, or ⌘/ (Ctrl+/) with any draft.
+                    if (event.key === "/" && (event.metaKey || event.ctrlKey)) {
+                      event.preventDefault();
+                      setMenu(true);
+                    } else if (event.key === "/" && !draft) setMenu(true);
                   }}
                 />
                 {menu && (
@@ -989,7 +1007,12 @@ export function Conversation(props: Props) {
                             type="button"
                             data-command
                             key={entry.id}
-                            onClick={() => insert(`/${entry.name} `)}
+                            onClick={() =>
+                              // A draft already typed becomes the command's arguments.
+                              insert(
+                                `/${entry.name} ${draft === "/" ? "" : draft}`,
+                              )
+                            }
                           >
                             <span>/{entry.name}</span>
                             <small>{entry.description}</small>
@@ -1074,12 +1097,14 @@ export function Conversation(props: Props) {
                       id={modelId}
                       anchor="--model"
                       className={styles.chip}
-                      aria-label={`모델: ${modelLabel}${variant ? ` · ${variant}` : ""}${modelDetail ? ` — ${modelDetail}` : ""}`}
+                      aria-label={`모델: ${modelLabel}${variant ? ` · ${variantLabel(variant)}` : ""}${modelDetail ? ` — ${modelDetail}` : ""}`}
                       {...(modelDetail ? { title: modelDetail } : {})}
                     >
                       <span className={styles.chipText}>{modelLabel}</span>
                       {variant && (
-                        <span className={styles.chipSecondary}>{variant}</span>
+                        <span className={styles.chipSecondary}>
+                          {variantLabel(variant)}
+                        </span>
                       )}
                       {modelDetail && (
                         <span
@@ -1192,6 +1217,7 @@ export function Conversation(props: Props) {
                       model={model}
                       variant={variant}
                       variantCleared={variantCleared}
+                      disabled={optionsHeld}
                       onModel={setModel}
                       onVariant={setVariant}
                       close={() => {

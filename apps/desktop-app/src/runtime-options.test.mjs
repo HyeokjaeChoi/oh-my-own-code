@@ -234,16 +234,20 @@ test("free means every cost tier is zero; variants survive a model switch only i
   assert.equal(variantForModel("high", undefined), "");
 });
 
-test("OpenRouter free ids count as free even without a cost", async () => {
+test("OpenRouter free ids count as free even without a cost, under OpenRouter only", async () => {
   const { isFreeModel } = await import(
     "./renderer/shared/runtime-options/index.mjs"
   );
-  assert.equal(isFreeModel({ id: "vendor/model:free" }), true);
-  assert.equal(isFreeModel({ id: "openrouter/free" }), true);
-  assert.equal(isFreeModel({ id: "vendor/model:freedom" }), false);
-  assert.equal(isFreeModel({ id: "vendor/free" }), false);
+  const or = (id) => ({ providerID: "openrouter", id });
+  assert.equal(isFreeModel(or("vendor/model:free")), true);
+  assert.equal(isFreeModel(or("openrouter/free")), true);
+  assert.equal(isFreeModel(or("vendor/model:freedom")), false);
+  assert.equal(isFreeModel(or("vendor/free")), false);
+  // Another provider's ":free" lookalike is not free.
+  assert.equal(isFreeModel({ providerID: "acme", id: "x:free" }), false);
+  assert.equal(isFreeModel({ id: "openrouter/free" }), false);
   assert.equal(
-    isFreeModel({ id: "vendor/model", cost: [{ input: 1, output: 1 }] }),
+    isFreeModel({ ...or("vendor/model"), cost: [{ input: 1, output: 1 }] }),
     false,
   );
 });
@@ -301,4 +305,18 @@ test("model picker groups: recents first, free first per provider, filters never
   assert.equal(defaultFreeOnly([], undefined), false);
   assert.equal(defaultFreeOnly(entries.slice(0, 3), false), false);
   assert.equal(defaultFreeOnly(entries, true), true);
+});
+
+test('reasoning levels read in Korean and "(free)" is not repeated beside the badge', async () => {
+  const { variantLabel, modelDisplayName } = await import(
+    "./renderer/shared/runtime-options/index.mjs"
+  );
+  assert.equal(variantLabel("minimal"), "최소");
+  assert.equal(variantLabel("high"), "높음");
+  assert.equal(variantLabel("xhigh"), "xhigh");
+  assert.equal(variantLabel("toString"), "toString");
+  assert.equal(modelDisplayName("DeepSeek R1 (free)"), "DeepSeek R1");
+  assert.equal(modelDisplayName("Llama (FREE) "), "Llama");
+  assert.equal(modelDisplayName("(free)"), "(free)");
+  assert.equal(modelDisplayName("Freedom model"), "Freedom model");
 });
