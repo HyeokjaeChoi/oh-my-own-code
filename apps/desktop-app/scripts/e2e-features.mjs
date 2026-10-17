@@ -210,10 +210,10 @@ try {
   const openPanel = async (label) => {
     const tab = page
       .locator(".panel-tabs")
-      .getByRole("button", { name: label, exact: true });
+      .getByRole("tab", { name: label, exact: true });
     if (!(await tab.count()))
       await page
-        .getByRole("button", { name: "파일·확장", exact: true })
+        .getByRole("button", { name: "보조 패널", exact: true })
         .click();
     await tab.click();
   };
@@ -292,7 +292,7 @@ try {
         join(project, ".omoc/plans/disk-plan.md"),
         "# Disk plan\n\n- [ ] first step\n",
       );
-      await openPanel("계획");
+      await openPanel("작업");
       const panel = page.getByRole("region", { name: "계획과 검증" });
       await expect(
         panel.getByRole("button", { name: "disk-plan.md" }),

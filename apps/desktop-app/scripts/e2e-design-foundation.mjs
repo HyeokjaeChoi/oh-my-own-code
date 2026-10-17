@@ -867,13 +867,13 @@ async function exerciseFoundation() {
   await display("light", 1440);
   await stagedOnly("wide-navigation-and-side-task", async () => {
     const trigger = page.getByRole("button", {
-      name: "파일·확장",
+      name: "보조 패널",
       exact: true,
     });
     await trigger.click();
     await expect(
       page.getByRole("complementary", {
-        name: "파일, 확장 및 활동",
+        name: "보조 패널",
         exact: true,
       }),
     ).toBeVisible();
@@ -899,7 +899,7 @@ async function exerciseFoundation() {
   });
   await stagedOnly("narrow-side-task-return", async () => {
     const trigger = page.getByRole("button", {
-      name: "파일·확장",
+      name: "보조 패널",
       exact: true,
     });
     await trigger.click();

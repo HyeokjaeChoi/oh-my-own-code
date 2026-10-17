@@ -7,6 +7,17 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
+import { selectWorkspace } from "./e2e-shell.mjs";
+
+// The Git write sections live in the 변경 tab's action dock; open one by its toggle.
+async function openGitTray(page, label) {
+  await page.getByRole("tab", { name: "변경", exact: true }).click();
+  const toggle = page
+    .getByRole("group", { name: "Git 작업", exact: true })
+    .getByRole("button", { name: label, exact: true });
+  if ((await toggle.getAttribute("aria-expanded")) !== "true")
+    await toggle.click();
+}
 const desktop = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const root = resolve(desktop, "../..");
 if (!process.env.OMOC_EVIDENCE_DIR)
@@ -243,7 +254,9 @@ async function openCase(name = "ready") {
   await expect(
     page.locator(".workbench-header [data-connection]"),
   ).toHaveAttribute("data-connection", "connected");
-  await page.getByRole("button", { name: "파일·확장", exact: true }).click();
+  await page.getByRole("button", { name: "보조 패널", exact: true }).click();
+  await openGitTray(page, "Stage");
+  await openGitTray(page, "Stage");
   await expect(index()).toBeVisible();
   await expect(index()).toHaveAttribute("data-git-index-state", "empty");
   await expect(previewButton()).toBeDisabled();
@@ -292,6 +305,7 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
     globalThis.document.documentElement.dataset.theme = theme;
   }, theme);
   await setDisplay(page, narrow ? 760 : 1440, 1000, narrow ? 2 : 1);
+  await openGitTray(page, "Stage");
   await expect(index()).toBeVisible();
   assert.ok(
     await page.evaluate(
@@ -353,6 +367,9 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
   }
   // Controls alone do not show lower metadata. Capture representative complete
   // fields separately so independent review can inspect wrapping and results.
+  await index().evaluate((e) =>
+    e.querySelectorAll("details").forEach((d) => (d.open = true)),
+  );
   const details = [];
   if (
     [
@@ -362,7 +379,8 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
       "absent-stage-preview",
     ].includes(name)
   ) {
-    for (const at of [0, 4, 5, 6])
+    // Runtime epoch moved into 진단 정보, so later rows shift by one.
+    for (const at of [0, 3, 4, 5])
       details.push(preview().locator("dd").nth(at));
     for (const at of [0, 1])
       details.push(index().locator("[data-git-index-entries] dd").nth(at));
@@ -711,9 +729,8 @@ try {
   await expect.poll(async () => (await metrics()).heldCalls).toBe(1);
   // Sidebar uses the real public selection control; no Renderer state injection.
   await setDisplay(page, 1440, 1000, 1);
-  await page
-    .getByLabel("작업 공간", { exact: true })
-    .selectOption("synthetic-index-other-w");
+  await selectWorkspace(page, "synthetic-index-other-w");
+  await page.getByRole("tab", { name: "파일", exact: true }).click();
   await expect(
     page
       .getByTitle("SYNTHETIC selectable other draft", { exact: true })

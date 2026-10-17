@@ -1167,6 +1167,10 @@ try {
   const workspaceSave = workspaceEditor.locator(
     '[data-workspace-file-save="true"]',
   );
+  // The save bar exists only while editing; either absent or disabled is inert.
+  const expectSaveInert = async () => {
+    if (await workspaceSave.count()) await expect(workspaceSave).toBeDisabled();
+  };
   const workspaceStatus = workspaceEditor.getByRole("status", {
     name: "파일 편집 상태",
     exact: true,
@@ -1202,7 +1206,7 @@ try {
     await expect(
       page.locator(".workbench-header [data-connection]"),
     ).toHaveAttribute("data-connection", "connected");
-    await page.getByRole("button", { name: "파일·확장", exact: true }).click();
+    await page.getByRole("button", { name: "보조 패널", exact: true }).click();
     const explorer = page.getByRole("region", {
       name: "파일 탐색 및 편집",
       exact: true,
@@ -1212,8 +1216,11 @@ try {
     await expect(workspaceTarget).toHaveText(
       scope.workspacePath + "/" + scope.path,
     );
-    await expect(workspaceText).toHaveValue("");
-    await expect(workspaceSave).toBeDisabled();
+    // Selection shows the read-only view; the editor opens only via 편집.
+    if (await workspaceText.count()) {
+      await expect(workspaceText).toHaveValue("");
+      await expectSaveInert();
+    } else await expect(workspaceSave).toHaveCount(0);
     assert.equal(
       (await workspaceMetrics()).reads,
       0,
@@ -1268,7 +1275,7 @@ try {
         await expect(control).toBeFocused();
       }
     }
-    if (await workspaceText.isEnabled()) {
+    if ((await workspaceText.count()) && (await workspaceText.isEnabled())) {
       await workspaceText.focus();
       await page.keyboard.press("ControlOrMeta+A");
       const selection = await workspaceText.evaluate((e) => ({
@@ -1291,7 +1298,9 @@ try {
       if (await locator.count()) parts.push([hook, locator]);
     }
     const frames = [];
-    for (const [part, locator] of parts)
+    for (const [part, locator] of parts) {
+      // The read-only view has no editor surface (text/save/bytes/status).
+      if (!(await locator.count())) continue;
       frames.push(
         await captureSaveElement(
           locator,
@@ -1299,6 +1308,7 @@ try {
           currentState,
         ),
       );
+    }
     assert.deepEqual(
       await workspaceMetrics(),
       before,
@@ -1308,9 +1318,9 @@ try {
       state: name,
       syntheticOnly: true,
       actualRendererPreload: true,
-      visibleState: await workspaceStatus.getAttribute(
-        "data-workspace-file-state",
-      ),
+      visibleState: (await workspaceStatus.count())
+        ? await workspaceStatus.getAttribute("data-workspace-file-state")
+        : "view",
       selectableFullTarget: selectedPath,
       selectionOnlyClipboardNotInspected: true,
       keyboardForwardBackward: true,
@@ -1390,7 +1400,7 @@ try {
       );
 
       const panelTrigger = page.getByRole("button", {
-        name: "파일·확장",
+        name: "보조 패널",
         exact: true,
       });
       await panelTrigger.click();
@@ -1899,7 +1909,7 @@ try {
       });
       if ((await panelTrigger.getAttribute("aria-expanded")) !== "true")
         await panelTrigger.click();
-      await page.getByRole("button", { name: "활동", exact: true }).click();
+      await page.getByRole("tab", { name: "작업", exact: true }).click();
       const activity = page.getByRole("region", { name: "로컬 활동 기록" });
       await expect
         .poll(() =>
@@ -7298,7 +7308,7 @@ try {
         "saved",
       );
       await expect(workspaceText).toHaveValue(workspaceEdited);
-      await expect(workspaceSave).toBeDisabled();
+      await expectSaveInert();
       const workspaceSaved = await application.evaluate((_electron, scope) => {
         const f = globalThis.__omocUiFixture,
           receipt = [...f.retainedReceipts.values()].find(
@@ -7346,12 +7356,15 @@ try {
           );
           if (["blank", "limit"].includes(name)) {
             await expect(workspaceText).toHaveValue(workspaceScope.text);
-            await expect(
-              workspaceEditor.locator('[data-workspace-file-bytes="true"]'),
-            ).toContainText(name === "blank" ? "UTF-8 0" : "65,536 / 65,536");
+            // The byte counter appears only above 80% of the limit.
+            const bytes = workspaceEditor.locator(
+              '[data-workspace-file-bytes="true"]',
+            );
+            if (name === "blank") await expect(bytes).toHaveCount(0);
+            else await expect(bytes).toContainText("65,536 / 65,536");
           }
         }
-        await expect(workspaceSave).toBeDisabled();
+        await expectSaveInert();
         await captureWorkspace(`${name}-narrow200`);
       }
 
@@ -7369,7 +7382,7 @@ try {
         globalThis.__omocUiFixture.releaseWorkspaceFileReads(),
       );
       await expect(workspaceText).toHaveValue("");
-      await expect(workspaceSave).toBeDisabled();
+      await expectSaveInert();
       await captureWorkspace("escape-cancel-late-read-narrow200");
 
       for (const name of [
@@ -7399,7 +7412,7 @@ try {
         await expect(workspaceText).toHaveValue(
           "SYNTHETIC NEWER RETAINED DRAFT\n",
         );
-        await expect(workspaceSave).toBeDisabled();
+        await expectSaveInert();
         await captureWorkspace(`${name}-retained-narrow200`);
         if (name === "unknown") {
           const original = (await workspaceMetrics()).receipts.find(
@@ -7449,7 +7462,7 @@ try {
           await expect(workspaceStatus).toContainText(
             "더 최근에 수정한 초안은 유지됩니다",
           );
-          await expect(workspaceSave).toBeDisabled();
+          await expectSaveInert();
           await captureWorkspace("late-ack-newer-draft-narrow200");
         }
       }
@@ -7458,11 +7471,13 @@ try {
         workspaceScope = await openWorkspaceCase(name);
         await expect(workspaceOpen).toBeDisabled();
         await workspaceText.fill("SYNTHETIC HELD OR UNTRUSTED EDIT");
-        await workspaceSelect.selectOption(workspaceScope.path);
+        // The file switcher appears only with more than one file.
+        if (await workspaceSelect.count())
+          await workspaceSelect.selectOption(workspaceScope.path);
         await expect(workspaceText).toHaveValue(
           "SYNTHETIC HELD OR UNTRUSTED EDIT",
         );
-        await expect(workspaceSave).toBeDisabled();
+        await expectSaveInert();
         if (name === "untrusted") {
           const trust = workspaceEditor.locator(
             '[data-workspace-file-trust="untrusted"]',
@@ -7531,7 +7546,7 @@ try {
         );
         await workspaceText.fill("SYNTHETIC SELECTABLE RETAINED EDIT");
         await expect(workspaceOpen).toBeDisabled();
-        await expect(workspaceSave).toBeDisabled();
+        await expectSaveInert();
         await captureWorkspace(`${boundary}-retained-draft-narrow200`);
         assert.equal((await workspaceMetrics()).reads, 1);
         assert.equal((await workspaceMetrics()).effects, 0);
@@ -7586,6 +7601,22 @@ try {
             ).length,
           };
         });
+      // Files and 변경 are separate tabs now; draft edits happen on 파일.
+      const showFilesTab = () =>
+        page.getByRole("tab", { name: "파일", exact: true }).click();
+      const showChangesTab = () =>
+        page.getByRole("tab", { name: "변경", exact: true }).click();
+      async function fillDraft(text) {
+        await showFilesTab();
+        if (!(await workspaceText.count())) await workspaceOpen.click();
+        await workspaceText.fill(text);
+        await showChangesTab();
+      }
+      async function expectDraft(text) {
+        await showFilesTab();
+        await expect(workspaceText).toHaveValue(text);
+        await showChangesTab();
+      }
       async function openGitCase(name = "ready") {
         assert.ok(GIT_REVIEW_UI_STATES.includes(name));
         currentState = `Synthetic Git ${name}`;
@@ -7599,14 +7630,15 @@ try {
           page.locator(".workbench-header [data-connection]"),
         ).toHaveAttribute("data-connection", "connected");
         await page
-          .getByRole("button", { name: "파일·확장", exact: true })
+          .getByRole("button", { name: "보조 패널", exact: true })
           .click();
-        await expect(gitPanel).toBeVisible();
         await page
           .getByRole("region", { name: "파일 탐색 및 편집", exact: true })
           .getByTitle(scope.path, { exact: true })
           .click();
-        await expect(workspaceText).toBeEnabled();
+        await expect(workspaceTarget).toBeVisible();
+        await page.getByRole("tab", { name: "변경", exact: true }).click();
+        await expect(gitPanel).toBeVisible();
         await expect(gitPanel).toHaveAttribute(
           "data-git-review-state",
           "empty",
@@ -7631,6 +7663,14 @@ try {
         );
         await expect(gitStatus).toBeFocused();
         assert.equal((await gitMetrics()).statusReads, before.statusReads + 1);
+      }
+      // A changed-file row opens the diff header and hides the list (selection only, no Git read).
+      async function ensureGitListView() {
+        const back = gitPanel.getByRole("button", {
+          name: "변경 목록으로",
+          exact: true,
+        });
+        if (await back.isVisible()) await back.click();
       }
       async function selectGitUi(path, mode = "unstaged", baseRef) {
         const before = await gitMetrics();
@@ -7688,12 +7728,16 @@ try {
           true,
         );
         const selectableMetadata = [];
+        await gitPanel.locator("details > summary").evaluate((e) => {
+          e.parentElement.open = true;
+        });
         for (const dd of await gitPanel.locator("dl dd").all()) {
           selectableMetadata.push({
             text: await dd.textContent(),
             selection: await selectableAgent(dd),
           });
         }
+        await ensureGitListView();
         const controls = [
           gitRefresh,
           gitCancel,
@@ -7707,7 +7751,7 @@ try {
             .all()),
         ];
         for (const control of controls)
-          if (await control.isEnabled()) {
+          if ((await control.isVisible()) && (await control.isEnabled())) {
             await control.scrollIntoViewIfNeeded();
             await control.focus();
             await expect(control).toBeFocused();
@@ -7728,7 +7772,17 @@ try {
             ["cancel-diff", gitCancelDiff],
           );
         if (["staged", "unstaged", "diverged-base"].includes(name))
-          parts.push(["path", gitPath], ["mode", gitMode], ["base", gitBase]);
+          parts.push(["path", gitPath], ["mode", gitMode]);
+        // The base branch field is shown only for base comparisons.
+        if (
+          ["staged", "unstaged", "diverged-base"].includes(name) &&
+          (await gitBase.isVisible())
+        )
+          parts.push(["base", gitBase]);
+        // 진단 정보 holds the observation identity rows; open it to inspect them.
+        await gitPanel.evaluate((e) =>
+          e.querySelectorAll("details").forEach((d) => (d.open = true)),
+        );
         if (await gitPatch.count()) {
           assert.equal(
             await gitPatch.locator("script,img,a,input,button,iframe").count(),
@@ -7808,6 +7862,7 @@ try {
         }),
       ).toContainText("notes/SYNTHETIC-editor.txt");
       for (const label of ["Staged", "Unstaged"]) {
+        await ensureGitListView();
         const row = gitPanel.getByRole("button", {
           name: `${label} 차이 선택: ${gitScopeUi.path}`,
           exact: true,
@@ -7815,9 +7870,12 @@ try {
         const before = await gitMetrics();
         await row.focus();
         await page.keyboard.press("Enter");
-        await expect(row).toHaveAttribute("aria-pressed", "true");
         await expect(gitMode).toHaveValue(label.toLowerCase());
         assert.deepEqual(await gitMetrics(), before);
+        // Selecting a row opens its diff; the list is hidden until 목록으로.
+        await ensureGitListView();
+        await expect(row).toHaveAttribute("aria-pressed", "true");
+        await row.click();
         await readGitUi();
         await expect(gitPatch).toContainText(
           label === "Staged" ? "-SYNTHETIC HEAD" : "-SYNTHETIC INDEX",
@@ -7829,10 +7887,22 @@ try {
       await expect(gitPatch).toContainText(
         "<script>SYNTHETIC INERT TEXT</script>",
       );
+      // Rows are plain spans (gutter numbers are CSS-only); nothing else, and
+      // nothing interactive, may be created from patch text.
       assert.equal(
-        await gitPatch.locator("*").count(),
+        await gitPatch.locator("*:not(span)").count(),
         0,
         "Patch is plaintext, with no HTML controls",
+      );
+      assert.equal(
+        await gitPatch.locator("span:not([class])").count(),
+        0,
+        "Patch rows are inert styled spans",
+      );
+      assert.equal(
+        await gitPatch.locator("span *").count(),
+        0,
+        "Patch rows contain only text",
       );
       for (const name of [
         "Stage",
@@ -7912,9 +7982,7 @@ try {
         gitScopeUi = await openGitCase(name);
         await observeGitUi();
         if (name === "clean")
-          await expect(gitPanel).toContainText(
-            "관찰한 staged·unstaged 변경이 없습니다",
-          );
+          await expect(gitPanel).toContainText("변경된 파일이 없습니다");
         else {
           await expect(gitPanel).toContainText(
             name === "unborn" ? "Unborn · 아직 commit 없음" : "Detached HEAD",
@@ -7934,13 +8002,23 @@ try {
         await selectGitUi(gitScopeUi.path, "base", "review/diverged-local-tip");
         await readGitUi();
         const originalOid = "2".repeat(40);
+        await gitPanel.locator("details > summary").evaluate((e) => {
+          e.parentElement.open = true;
+        });
         await expect(
           gitPanel
             .getByRole("definition")
             .filter({ hasText: originalOid })
             .first(),
         ).toContainText(originalOid);
-        await expect(gitPanel).toContainText("Merge-base를 계산하지 않습니다");
+        // The comparison note lives in the 변경 안내 tip.
+        await gitPanel
+          .getByRole("button", { name: "변경 안내", exact: true })
+          .click();
+        await expect(
+          page.getByText("Merge-base를 계산하지 않습니다"),
+        ).toBeVisible();
+        await page.keyboard.press("Escape");
         await expect(gitPatch).toContainText(
           name === "base-only-equal"
             ? "이 비교에서 텍스트 차이 없음"
@@ -7952,7 +8030,8 @@ try {
             globalThis.__omocUiFixture.gitState = "expired";
           });
           await readGitUi("stale");
-          await expect(gitDetailRegion).toContainText(originalOid);
+          // Observation identity now lives in 진단 정보, outside the diff result.
+          await expect(gitPanel).toContainText(originalOid);
           await expect(gitDetailStatus).toContainText("관찰이 만료됐습니다");
           await captureGitUi("expired-original-base-oid", {
             narrow: true,
@@ -8071,7 +8150,7 @@ try {
         gitScopeUi = await openGitCase("pending-diff");
         await observeGitUi();
         await selectGitUi(gitScopeUi.path);
-        await workspaceText.fill("SYNTHETIC EDIT BEFORE GIT SCOPE CHANGE");
+        await fillDraft("SYNTHETIC EDIT BEFORE GIT SCOPE CHANGE");
         await gitRead.focus();
         await page.keyboard.press("Enter");
         await expect(gitDetailRegion).toHaveAttribute(
@@ -8114,6 +8193,7 @@ try {
           globalThis.__omocUiFixture.releaseGitReads(),
         );
         await expect(gitPatch).toHaveCount(0);
+        await showFilesTab();
         if (["epoch", "root"].includes(boundary)) {
           const retained = workspaceSelect.locator('option[value^="draft:"]');
           await expect(retained).toHaveCount(1);
@@ -8125,6 +8205,7 @@ try {
           "SYNTHETIC EDIT BEFORE GIT SCOPE CHANGE",
         );
         await workspaceText.fill("SYNTHETIC EDIT AFTER GIT SCOPE CHANGE");
+        await showChangesTab();
         await captureGitUi(`${boundary}-late-detail-draft-editable`, {
           narrow: true,
         });
@@ -8132,7 +8213,7 @@ try {
       }
       for (const name of ["held", "untrusted"]) {
         gitScopeUi = await openGitCase(name);
-        await workspaceText.fill("SYNTHETIC GIT INERT EDIT");
+        await fillDraft("SYNTHETIC GIT INERT EDIT");
         if (name === "held") {
           await expect(gitRefresh).toBeDisabled();
           await expect(gitPanel).toContainText("Git 읽기를 보류합니다");
@@ -8142,12 +8223,12 @@ try {
           await selectGitUi(gitScopeUi.path);
           await readGitUi();
         }
-        await expect(workspaceText).toHaveValue("SYNTHETIC GIT INERT EDIT");
+        await expectDraft("SYNTHETIC GIT INERT EDIT");
         await captureGitUi(`${name}-editable`, { narrow: true, theme: "dark" });
         assert.equal((await gitMetrics()).effects, 0);
       }
       gitScopeUi = await openGitCase();
-      await workspaceText.fill("SYNTHETIC BEFORE GLOBAL HOLD");
+      await fillDraft("SYNTHETIC BEFORE GLOBAL HOLD");
       await application.evaluate(() => {
         const f = globalThis.__omocUiFixture;
         f.snapshot.state = "unavailable";
@@ -8161,10 +8242,8 @@ try {
       });
       await expect(gitRefresh).toBeDisabled();
       await expect(gitPanel).toContainText("Git 읽기를 보류합니다");
-      await workspaceText.fill("SYNTHETIC EDIT DURING GLOBAL HOLD");
-      await expect(workspaceText).toHaveValue(
-        "SYNTHETIC EDIT DURING GLOBAL HOLD",
-      );
+      await fillDraft("SYNTHETIC EDIT DURING GLOBAL HOLD");
+      await expectDraft("SYNTHETIC EDIT DURING GLOBAL HOLD");
       await captureGitUi("global-hold-editable", {
         narrow: true,
         theme: "dark",
@@ -8173,6 +8252,7 @@ try {
 
       // Existing app mutation action supplies the real Renderer hold signal.
       gitScopeUi = await openGitCase();
+      await showFilesTab();
       await page
         .getByRole("region", { name: "파일 탐색 및 편집", exact: true })
         .getByTitle(gitScopeUi.path, { exact: true })
@@ -8184,16 +8264,15 @@ try {
       });
       await workspaceSave.focus();
       await page.keyboard.press("Enter");
+      await showChangesTab();
       await expect(gitRefresh).toBeDisabled();
       await expect(gitPanel).toContainText("Git 읽기를 보류합니다");
-      await workspaceText.fill("SYNTHETIC EDIT DURING APP MUTATION");
+      await fillDraft("SYNTHETIC EDIT DURING APP MUTATION");
       await captureGitUi("app-mutation-hold-editable", { narrow: true });
       await application.evaluate(() =>
         globalThis.__omocUiFixture.releaseWorkspaceFileSaves(),
       );
-      await expect(workspaceText).toHaveValue(
-        "SYNTHETIC EDIT DURING APP MUTATION",
-      );
+      await expectDraft("SYNTHETIC EDIT DURING APP MUTATION");
       observations.push(
         "Git appendix uses synthetic host responses only. Actual Git/root copy/process safety G2 remains outside this UI evidence.",
       );

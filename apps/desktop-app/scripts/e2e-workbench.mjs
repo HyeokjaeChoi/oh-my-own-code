@@ -331,7 +331,7 @@ try {
   );
 
   await selectWorkspace(page, importedWorkspace.id);
-  await page.getByRole("button", { name: "파일·확장", exact: true }).click();
+  await page.getByRole("button", { name: "보조 패널", exact: true }).click();
   await page.getByRole("button", { name: /notes\.md.*파일 미리보기/ }).click();
   await expect(page.getByRole("region", { name: "파일 내용" })).toContainText(
     "Disposable workbench validation",

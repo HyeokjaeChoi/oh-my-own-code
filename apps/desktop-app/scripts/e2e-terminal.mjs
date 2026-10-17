@@ -95,9 +95,10 @@ try {
   const list = async () =>
     (await term({ type: "terminal.list", workspaceId: workspace.id })).value;
 
-  await page.getByRole("button", { name: "파일·확장", exact: true }).click();
-  await page.getByRole("button", { name: "터미널", exact: true }).click();
-  await page.getByRole("button", { name: "새 터미널" }).click();
+  await page.getByRole("button", { name: "보조 패널", exact: true }).click();
+  await page.getByRole("tab", { name: "터미널", exact: true }).click();
+  // First open of the tab auto-starts a shell in a trusted workspace.
+  await expect.poll(async () => (await list()).length).toBe(1);
   const screen = page.getByRole("group", { name: "터미널 화면" });
   await expect(screen.locator(".xterm")).toBeVisible();
   await expect(
