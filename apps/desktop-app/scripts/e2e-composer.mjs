@@ -46,3 +46,42 @@ export async function setPermissionMode(page, label) {
   await expect(radio).toBeChecked({ timeout: 15000 });
   return radio;
 }
+
+/** Model rows by catalog id (the list is a listbox, not a native select). */
+export const modelOption = (page, id) =>
+  page.locator(`[role="option"][data-model-option="${id}"]`);
+
+/** Picks a model by catalog id or visible name in the model popover. */
+export async function pickModel(page, key) {
+  const panel = await openComposerPopover(page, "model");
+  await expect(panel.getByRole("listbox", { name: "모델" })).toBeVisible();
+  const byId = modelOption(page, key);
+  const option = (await byId.count())
+    ? byId
+    : panel.getByRole("option", { name: key });
+  await option.first().click();
+  return panel;
+}
+
+/** Picks a reasoning level ("" = 기본) in the open or reopened model popover. */
+export async function pickVariant(page, value) {
+  const panel = await openComposerPopover(page, "model");
+  await expect(panel.getByRole("listbox", { name: "모델" })).toBeVisible();
+  // No reasoning levels listed: nothing to clear.
+  if (!value && !(await panel.getByRole("radiogroup").count())) return panel;
+  await panel
+    .getByRole("radio", { name: value || "기본", exact: true })
+    .check({ force: true });
+  return panel;
+}
+
+/** Opens the command menu the way a user does: "/" in an empty composer. */
+export async function openCommandMenu(page) {
+  const input = page.getByRole("textbox", { name: "메시지 작성", exact: true });
+  await input.fill("");
+  await input.focus();
+  await page.keyboard.press("/");
+  const menu = page.getByRole("region", { name: "앱 동작 및 런타임 명령" });
+  await expect(menu).toBeVisible();
+  return menu;
+}

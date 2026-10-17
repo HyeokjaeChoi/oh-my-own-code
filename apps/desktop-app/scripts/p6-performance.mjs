@@ -1081,10 +1081,14 @@ async function measure(page, kind, index, observeMutations = true) {
             composer.value === text &&
             button("메시지 보내기")?.disabled === false;
         } else if (kind === "menu") {
-          const trigger = button("앱 동작과 명령 열기");
-          trigger.click();
+          composer.focus();
+          composer.dispatchEvent(
+            new globalThis.KeyboardEvent("keydown", {
+              key: "/",
+              bubbles: true,
+            }),
+          );
           ready = () =>
-            trigger.getAttribute("aria-expanded") === "true" &&
             globalThis.document.querySelector(
               '[aria-label="앱 동작 및 런타임 명령"]',
             );

@@ -365,15 +365,48 @@
   white-space: nowrap;
 }
 
+/* Always present: the strip appears inside it, so nothing below shifts. */
+.runSlot {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: var(--omoc-component-size-reading-width);
+  min-height: 24px;
+  margin-inline: auto;
+}
+
+.runSlot[hidden] {
+  display: none;
+}
+
 .runStrip {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
-  padding: 4px 8px 0 16px;
+  padding: 0 4px 4px;
   color: var(--omoc-semantic-color-text-secondary);
   font-size: var(--omoc-semantic-type-size-caption);
   line-height: var(--omoc-semantic-type-line-caption);
+}
+
+.runDot {
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--omoc-primitive-radius-pill);
+  background: var(--omoc-semantic-color-focus);
+  animation: run-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes run-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .runDot {
+    animation: none;
+  }
 }
 
 .runStatus {
@@ -424,44 +457,44 @@
 }
 
 .roundButton,
-.slashTrigger,
 .toolbar .primary {
   display: inline-flex;
-  flex: 0 0 36px;
+  flex: 0 0 28px;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  min-height: 36px;
-  height: 36px;
+  width: 28px;
+  min-height: 28px;
+  height: 28px;
   padding: 0;
   border: 0;
-  border-radius: 50%;
+  border-radius: var(--omoc-primitive-radius-sm);
   background: transparent;
-  color: var(--omoc-semantic-color-text-primary);
+  color: var(--omoc-semantic-color-text-secondary);
   font: inherit;
   font-size: var(--omoc-semantic-type-size-lead);
   line-height: 20px;
   cursor: pointer;
 }
 
-/* Filled, not ringed: buttons are identified by their glyph (3:1). */
-.roundButton {
-  background: var(--omoc-semantic-color-fill-subtle);
+.toolbar .primary {
+  flex-basis: 36px;
+  width: 36px;
+  min-height: 36px;
+  height: 36px;
+  border-radius: 50%;
 }
 
 .roundButton:hover:not(:disabled),
-.slashTrigger:hover:not(:disabled),
 .chip:hover:not(:disabled) {
-  background: var(--omoc-semantic-color-fill-hover);
+  background: var(--omoc-semantic-color-fill-subtle);
+  color: var(--omoc-semantic-color-text-primary);
 }
 
 .roundButton:focus-visible,
-.slashTrigger:focus-visible,
 .chip:focus-visible,
 .toolbar .primary:focus-visible,
 .permissionOption:focus-within,
-.toolDetail summary:focus-visible,
-.runtimeReport summary:focus-visible {
+.toolDetail summary:focus-visible {
   outline: 2px solid var(--omoc-semantic-color-focus);
   outline-offset: 2px;
 }
@@ -498,19 +531,31 @@
   display: inline-flex;
   flex: 0 1 auto;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   min-width: 0;
-  max-width: 180px;
-  min-height: 32px;
-  padding: 2px 10px;
+  max-width: 200px;
+  height: 28px;
+  padding: 0 8px;
   border: 0;
-  border-radius: var(--omoc-primitive-radius-md);
+  border-radius: var(--omoc-primitive-radius-sm);
   background: transparent;
-  color: var(--omoc-semantic-color-text-primary);
+  color: var(--omoc-semantic-color-text-secondary);
   font: inherit;
   font-size: var(--omoc-semantic-type-size-label);
   line-height: 20px;
   cursor: pointer;
+}
+
+/* Risk tint: only modes that skip confirmation read as a warning. */
+.chip[data-risk="warning"] {
+  background: var(--omoc-semantic-color-warning-background);
+  color: var(--omoc-semantic-color-warning-foreground);
+}
+
+.chip[data-risk="warning"]:hover:not(:disabled) {
+  background: var(--omoc-semantic-color-warning-background);
+  color: var(--omoc-semantic-color-warning-foreground);
+  filter: brightness(0.96);
 }
 
 .chipText,
@@ -522,15 +567,29 @@
 }
 
 .chipSecondary {
-  color: var(--omoc-semantic-color-text-secondary);
+  color: var(--omoc-semantic-color-text-tertiary);
 }
 
-.agentDot {
-  flex: 0 0 8px;
-  width: 8px;
-  height: 8px;
-  border-radius: var(--omoc-primitive-radius-xs);
-  background: var(--omoc-semantic-color-focus);
+.chipChevron {
+  flex: none;
+  opacity: 0.7;
+}
+
+.mismatchDot {
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--omoc-primitive-radius-pill);
+  background: var(--omoc-semantic-color-warning-foreground);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* Native popover anchored to its chip; the browser clamps it to the viewport. */
@@ -571,14 +630,6 @@
   gap: 4px;
   min-width: 0;
   margin-block: 8px;
-}
-
-.sessionLine {
-  margin: 12px 0 0;
-  color: var(--omoc-semantic-color-text-secondary);
-  font-size: var(--omoc-semantic-type-size-caption);
-  line-height: var(--omoc-semantic-type-line-caption);
-  overflow-wrap: anywhere;
 }
 
 .permissionModes {
@@ -673,8 +724,9 @@
 .toolDetail {
   margin-block: 4px;
   border-radius: var(--omoc-primitive-radius-navigation);
+  color: var(--omoc-semantic-color-text-secondary);
   font-size: var(--omoc-semantic-type-size-label);
-  line-height: 20px;
+  line-height: var(--omoc-semantic-type-line-label);
   overflow-wrap: anywhere;
 }
 
@@ -683,10 +735,13 @@
   border-radius: var(--omoc-primitive-radius-navigation);
 }
 
+/* Open card: no fill, a quiet 2px rule on the left. */
 .toolCall[open] {
   margin-block: 8px;
+  margin-inline-start: 8px;
   padding-bottom: 8px;
-  background: var(--omoc-semantic-color-fill-subtle);
+  border-inline-start: 2px solid var(--omoc-semantic-color-border-subtle);
+  border-radius: 0;
 }
 
 .toolCall[open] > :not(summary) {
@@ -768,17 +823,44 @@ details[open] > .disclosure > .chevron {
 }
 
 .toolDetail pre {
-  max-height: 320px;
-  margin: 0 0 12px;
-  padding: 12px;
+  max-height: 240px;
+  margin: 0 0 8px;
+  padding: 8px 12px;
   overflow-y: auto;
   border: 1px solid var(--omoc-semantic-color-border-subtle);
   border-radius: var(--omoc-primitive-radius-sm);
   background: var(--omoc-semantic-color-canvas);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+  color: var(--omoc-semantic-color-text-primary);
   font: var(--omoc-semantic-type-size-code) /
     var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
+}
+
+.toolDetail pre[data-expanded="true"] {
+  max-height: none;
+}
+
+.showAll {
+  margin: -4px 0 8px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: var(--omoc-primitive-radius-xs);
+  background: transparent;
+  color: var(--omoc-semantic-color-text-secondary);
+  font: inherit;
+  font-size: var(--omoc-semantic-type-size-caption);
+  line-height: var(--omoc-semantic-type-line-caption);
+  cursor: pointer;
+}
+
+.showAll:hover {
+  color: var(--omoc-semantic-color-text-primary);
+}
+
+.showAll:focus-visible {
+  outline: 2px solid var(--omoc-semantic-color-focus);
+  outline-offset: 2px;
 }
 
 .linkPreview {
@@ -932,23 +1014,38 @@ details[open] > .disclosure > .chevron {
   }
 }
 
-/* Run info shows with the message actions; abnormal or open stays visible. */
-.runtimeReport:not([data-abnormal], [open]) {
+/* Turn meta (agent · model) shows with the message actions on hover or focus;
+   an abnormal (unreported) turn stays visible. */
+.turnMeta {
+  order: 1;
+  flex: 1 1 8rem;
+  min-width: 0;
+  color: var(--omoc-semantic-color-text-tertiary);
+  font-size: var(--omoc-semantic-type-size-caption);
+  line-height: var(--omoc-semantic-type-line-caption);
+  overflow-wrap: anywhere;
+  align-self: center;
+}
+.turnMeta:not([data-abnormal]) {
   opacity: 0;
   transition: opacity 0.12s;
 }
-.message:hover .runtimeReport,
-.message:focus-within .runtimeReport {
+.message:hover .turnMeta,
+.message:focus-within .turnMeta {
   opacity: 1;
 }
 @media (any-pointer: coarse), (hover: none) {
-  .runtimeReport {
+  .turnMeta {
     opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .turnMeta {
+    transition: none;
   }
 }
 
 .runtimeReport {
-  flex: 1 1 12rem;
   min-width: 0;
   margin-block: 0;
   color: var(--omoc-semantic-color-text-secondary);
@@ -993,18 +1090,22 @@ details[open] > .disclosure > .chevron {
   display: block;
   max-width: 100%;
   font: var(--omoc-semantic-type-size-code) /
-    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
+    var(--omoc-semantic-type-line-caption) var(--omoc-semantic-type-family-code);
   background: none;
   border: 0;
   padding: 0;
-  color: inherit;
+  color: var(--omoc-semantic-color-text-secondary);
   text-align: start;
-  text-decoration: underline;
+  text-decoration: none;
   overflow-wrap: anywhere;
   cursor: pointer;
 }
+
+.toolPath:hover {
+  color: var(--omoc-semantic-color-text-primary);
+  text-decoration: underline;
+}
 .toolDiff {
-  max-height: 20rem;
   overflow: auto;
 }
 .diffAdd {
@@ -1028,7 +1129,6 @@ details[open] > .disclosure > .chevron {
 
 @media (pointer: coarse) {
   .roundButton,
-  .slashTrigger,
   .toolbar .primary {
     flex-basis: var(--omoc-component-size-coarse-target);
     width: var(--omoc-component-size-coarse-target);
@@ -1036,6 +1136,140 @@ details[open] > .disclosure > .chevron {
     height: var(--omoc-component-size-coarse-target);
   }
   .chip {
-    min-height: var(--omoc-component-size-coarse-target);
+    height: var(--omoc-component-size-coarse-target);
+  }
+}
+
+/* Model picker: a 320px searchable list inside the native model popover. */
+.modelPopover {
+  width: 320px;
+  padding: 0;
+}
+
+.modelPopover .runtimeRequests {
+  margin: 0;
+}
+
+.modelPicker {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.modelHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-bottom: 1px solid var(--omoc-semantic-color-border-subtle);
+}
+
+.modelHeader > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.modelList {
+  max-height: 280px;
+  padding: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.modelGroupLabel {
+  padding: 8px 8px 4px;
+  color: var(--omoc-semantic-color-text-tertiary);
+  font-size: var(--omoc-semantic-type-size-group);
+  font-weight: var(--omoc-semantic-type-weight-heading);
+  line-height: var(--omoc-semantic-type-line-group);
+}
+
+.modelOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 8px;
+  border-radius: var(--omoc-primitive-radius-sm);
+  font-size: var(--omoc-semantic-type-size-label);
+  line-height: var(--omoc-semantic-type-line-label);
+  cursor: pointer;
+}
+
+.modelOption[data-active="true"] {
+  background: var(--omoc-semantic-color-fill-subtle);
+}
+
+.modelName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modelHint {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--omoc-semantic-color-text-tertiary);
+  font-size: var(--omoc-semantic-type-size-caption);
+  line-height: var(--omoc-semantic-type-line-caption);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.freeBadge {
+  flex: none;
+  padding: 0 6px;
+  border-radius: var(--omoc-primitive-radius-pill);
+  background: var(--omoc-semantic-color-success-background);
+  color: var(--omoc-semantic-color-success-foreground);
+  font-size: var(--omoc-semantic-type-size-group);
+  line-height: var(--omoc-semantic-type-line-group);
+}
+
+.modelCheck {
+  flex: none;
+  visibility: hidden;
+}
+
+.modelCheck[data-checked="true"] {
+  visibility: visible;
+}
+
+.modelEmpty {
+  margin: 0;
+  padding: 12px 8px;
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: var(--omoc-semantic-type-size-caption);
+  line-height: var(--omoc-semantic-type-line-caption);
+}
+
+.modelVariant {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  border-top: 1px solid var(--omoc-semantic-color-border-subtle);
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: var(--omoc-semantic-type-size-label);
+  line-height: var(--omoc-semantic-type-line-label);
+}
+
+.modelPicker > .runtimeHint {
+  margin: 0;
+  padding: 8px;
+}
+
+@media (forced-colors: active) {
+  .modelOption[data-active="true"] {
+    outline: 1px solid Highlight;
+  }
+  .mismatchDot,
+  .runDot {
+    forced-color-adjust: none;
+    background: CanvasText;
   }
 }

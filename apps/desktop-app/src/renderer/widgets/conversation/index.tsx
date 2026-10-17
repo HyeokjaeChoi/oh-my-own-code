@@ -21,12 +21,12 @@ import {
 } from "@assistant-ui/react";
 import {
   ArrowUp,
+  ChevronDown,
   ChevronRight,
   Folder,
   GitBranch,
   Plus,
   Shield,
-  SquareSlash,
   ListTodo,
   Square,
   X,
@@ -39,6 +39,7 @@ import {
   permissionsForTool,
 } from "../../shared/tool-ui/index.js";
 import {
+  OutputPre,
   ToolBody,
   ToolContext,
   toolSummary,
@@ -58,6 +59,7 @@ import type { MutationRequest } from "../../shared/transport/index.js";
 import { openSettingsPage } from "../../shared/palette/index.js";
 import styles from "./conversation.module.css";
 import { PopoverPanel, PopoverTrigger } from "./composer-popovers.js";
+import { ModelPicker } from "./model-picker.js";
 import { AssistantText, CopyButton, LiteralText } from "./markdown.js";
 import { parseSafeLinkPreview } from "@workbench/contracts";
 import { Button, LinkPreview, Notice, Select } from "@workbench/ui";
@@ -66,7 +68,6 @@ import {
   type WorkbenchMessage,
   type WorkbenchPermission,
   validAssistantRuntime,
-  type RuntimeModel,
 } from "../../shared/api/index.js";
 
 /* eslint-disable no-unused-vars -- Names document type-only callback parameters. */
@@ -99,16 +100,19 @@ const permissionModes = [
     value: "ask",
     label: "요청마다 확인",
     detail: "편집과 명령 실행 전에 매번 묻습니다",
+    risk: "neutral",
   },
   {
     value: "scoped_edit",
     label: "범위 내 편집 허용",
     detail: "작업 공간 안의 파일 편집은 묻지 않습니다",
+    risk: "warning",
   },
   {
     value: "read_plan",
     label: "읽기/계획",
     detail: "읽기만 하고 아무것도 바꾸지 않습니다",
+    risk: "neutral",
   },
 ] as const;
 const labels: Record<string, string> = {
@@ -228,21 +232,23 @@ function ToolDetail({
         {subagent && state === "completed" ? (
           <div className="subagent-result">
             <p className={styles.muted}>
-              하위 세션 최종 응답 ({subagent.sessionId})
+              하위 작업 최종 응답 ({subagent.sessionId})
             </p>
-            <pre>{subagent.text}</pre>
+            <OutputPre>{subagent.text}</OutputPre>
           </div>
         ) : null}
         {view.kind === "generic" && (
           <>
             <p className={styles.muted}>입력</p>
-            <pre>{typeof args.input === "string" ? args.input : ""}</pre>
+            <OutputPre>
+              {typeof args.input === "string" ? args.input : ""}
+            </OutputPre>
             <p className={styles.muted}>
               {state === "completed" || state === "error"
                 ? "결과"
                 : "현재까지 받은 출력 · 완료되지 않음"}
             </p>
-            <pre>{output || "아직 출력이 없습니다."}</pre>
+            <OutputPre>{output || "아직 출력이 없습니다."}</OutputPre>
           </>
         )}
       </details>
@@ -255,18 +261,6 @@ function ToolDetail({
         />
       ) : null}
     </div>
-  );
-}
-function ReportedModel({ model }: { model: RuntimeModel }) {
-  return (
-    <>
-      <dt>제공자</dt>
-      <dd>{model.providerId}</dd>
-      <dt>모델</dt>
-      <dd>{model.id}</dd>
-      <dt>Variant</dt>
-      <dd>{model.variant ?? "보고 없음"}</dd>
-    </>
   );
 }
 function MessageView({
@@ -317,34 +311,20 @@ function MessageView({
           {original && <ContextMessageActions message={original} />}
         </div>
         {role === "assistant" && showRuntime && (
-          <details
-            className={styles.runtimeReport}
+          <span
+            className={styles.turnMeta}
             data-abnormal={report ? undefined : "true"}
             data-response-runtime={messageId}
+            title={
+              report
+                ? `에이전트 ${report.agent} · ${report.model.providerId}/${report.model.id}${report.model.variant ? ` · ${report.model.variant}` : ""} · 이 응답의 보고입니다. 현재 목록과 다를 수 있습니다.`
+                : "이 응답에 실행 정보 보고가 없습니다."
+            }
           >
-            <summary className={styles.disclosure}>
-              <ChevronRight
-                size={14}
-                className={styles.chevron}
-                aria-hidden="true"
-              />
-              <span className={styles.summaryText}>
-                {report
-                  ? `${report.agent} · ${report.model.id}`
-                  : "실행 정보 없음"}
-              </span>
-            </summary>
-            {report ? (
-              <dl>
-                <dt>Agent</dt>
-                <dd>{report.agent}</dd>
-                <ReportedModel model={report.model} />
-              </dl>
-            ) : (
-              <p>이 응답에 실행 정보 보고가 없습니다.</p>
-            )}
-            <p>이 응답의 보고입니다. 현재 목록과 다를 수 있습니다.</p>
-          </details>
+            {report
+              ? `${report.agent} · ${report.model.id}${report.model.variant ? ` · ${report.model.variant}` : ""}`
+              : "실행 정보 없음"}
+          </span>
         )}
       </div>
     </MessagePrimitive.Root>
@@ -377,32 +357,73 @@ export function Conversation(props: Props) {
     props.catalog?.models.status === "available"
       ? props.catalog.models.entries.find((entry) => entry.id === model)
       : undefined;
-  const variants = selectedModel?.variants;
+  const modelEntries =
+    props.catalog?.models.status === "available"
+      ? props.catalog.models.entries
+      : [];
+  const agentName = (id: string) =>
+    props.catalog?.agents.status === "available"
+      ? (props.catalog.agents.entries.find((entry) => entry.id === id)?.name ??
+        id)
+      : id;
+  // The session's own report names what "default" resolved to, when known.
+  const reportedModel = sessionSetting?.model
+    ? modelEntries.find(
+        (entry) =>
+          entry.providerId === sessionSetting.model?.providerId &&
+          entry.modelId === sessionSetting.model?.id,
+      )
+    : undefined;
   const agentLabel = agent
-    ? props.catalog?.agents.status === "available"
-      ? (props.catalog.agents.entries.find((entry) => entry.id === agent)
-          ?.name ?? agent)
-      : agent
-    : "기본 에이전트";
-  const modelLabel = model ? (selectedModel?.name ?? model) : "기본 모델";
-  const permissionLabel =
-    permissionModes.find((m) => m.value === (props.permissionMode ?? "ask"))
-      ?.label ?? "요청마다 확인";
+    ? agentName(agent)
+    : sessionSetting?.agent
+      ? agentName(sessionSetting.agent)
+      : "기본 에이전트";
+  const modelLabel = model
+    ? (selectedModel?.name ?? model)
+    : (reportedModel?.name ?? sessionSetting?.model?.id ?? "기본 모델");
+  // Requested for the next send vs reported by the session: a difference is
+  // shown as a dot on the chip with the detail in its tooltip.
+  const reportedModelName = reportedModel?.name ?? sessionSetting?.model?.id;
+  const modelMismatch =
+    Boolean(model && selectedModel && sessionSetting?.model) &&
+    (selectedModel?.providerId !== sessionSetting?.model?.providerId ||
+      selectedModel?.modelId !== sessionSetting?.model?.id);
+  const variantMismatch =
+    Boolean(variant && sessionSetting?.model) &&
+    sessionSetting?.model?.variant !== variant;
+  const modelDetail =
+    modelMismatch || variantMismatch
+      ? `현재 세션 보고: ${reportedModelName ?? "모델 보고 없음"}${
+          sessionSetting?.model?.variant
+            ? ` (${sessionSetting.model.variant})`
+            : ""
+        } · 다음 전송 요청: ${modelLabel}${variant ? ` (${variant})` : ""}`
+      : "";
+  const agentMismatch = Boolean(
+    agent && sessionSetting?.agent && agent !== sessionSetting.agent,
+  );
+  const agentDetail = agentMismatch
+    ? `현재 세션 보고: ${agentName(sessionSetting?.agent ?? "")} · 다음 전송 요청: ${agentLabel}`
+    : "";
+  const permissionOption =
+    permissionModes.find((m) => m.value === (props.permissionMode ?? "ask")) ??
+    permissionModes[0];
+  const permissionLabel = permissionOption.label;
   const optionsHeld = Boolean(props.archived);
   const [menu, setMenu] = useState(false);
   const [shortViewport, setShortViewport] = useState(
     () => window.matchMedia("(max-height: 440px)").matches,
   );
   const input = useRef<HTMLTextAreaElement>(null);
-  const slashButton = useRef<HTMLButtonElement>(null);
   const commandMenu = useRef<HTMLDivElement>(null);
-  const menuOpenedFromInput = useRef(false);
   const commandMenuId = useId();
   const hintId = useId();
   const attachId = useId();
   const runId = useId();
   const agentId = useId();
   const modelId = useId();
+  const [modelOpen, setModelOpen] = useState(false);
   const permissionId = useId();
   const gitReview = useWorkbenchSelector(currentGitReviewObservation);
   const branchName =
@@ -424,6 +445,17 @@ export function Conversation(props: Props) {
   }, []);
   const messages = useMemo(() => mapMessages(props.messages), [props.messages]);
   const running = props.status === "running" || props.status === "stopping";
+  const [elapsed, setElapsed] = useState(0);
+  useEffect(() => {
+    if (!running) return;
+    const start = Date.now();
+    setElapsed(0);
+    const timer = setInterval(
+      () => setElapsed(Math.floor((Date.now() - start) / 1000)),
+      1000,
+    );
+    return () => clearInterval(timer);
+  }, [running, props.sessionId]);
   // Sending may be blocked by an unknown receipt while interruption is needed.
   const canInterrupt =
     props.executionAvailable &&
@@ -465,8 +497,7 @@ export function Conversation(props: Props) {
   );
   const closeMenu = () => {
     setMenu(false);
-    if (menuOpenedFromInput.current) input.current?.focus();
-    else slashButton.current?.focus();
+    input.current?.focus();
   };
   const runtime = useExternalStoreRuntime({
     messages,
@@ -533,7 +564,7 @@ export function Conversation(props: Props) {
   useLayoutEffect(() => {
     if (!menu) return;
     const panel = commandMenu.current;
-    const trigger = slashButton.current;
+    const trigger = input.current;
     if (!panel || !trigger) return;
     panel.showPopover();
     const place = () => {
@@ -578,11 +609,7 @@ export function Conversation(props: Props) {
       )
         return;
       const target = event.target;
-      if (
-        commandMenu.current?.contains(target) ||
-        slashButton.current?.contains(target)
-      )
-        return;
+      if (commandMenu.current?.contains(target)) return;
       const hadMenuFocus = commandMenu.current?.contains(
         document.activeElement,
       );
@@ -592,10 +619,8 @@ export function Conversation(props: Props) {
           if (
             !document.activeElement ||
             document.activeElement === document.body
-          ) {
-            if (menuOpenedFromInput.current) input.current?.focus();
-            else slashButton.current?.focus();
-          }
+          )
+            input.current?.focus();
         });
       }
     };
@@ -769,6 +794,31 @@ export function Conversation(props: Props) {
                 </PopoverPanel>
               )}
             />
+            {/* Always reserved, so the composer never moves between idle and running. */}
+            <div className={styles.runSlot} hidden={branchActive}>
+              {(running || queueCount > 0) && (
+                <div className={styles.runStrip} data-run-strip>
+                  {running && (
+                    <span className={styles.runDot} aria-hidden="true" />
+                  )}
+                  <span className={styles.runStatus}>
+                    {props.status === "stopping"
+                      ? "중단하는 중"
+                      : running
+                        ? "실행 중"
+                        : "대기열 (마지막 확인)"}
+                    {running &&
+                      ` · ${
+                        elapsed >= 60
+                          ? `${Math.floor(elapsed / 60)}분 ${elapsed % 60}초`
+                          : `${elapsed}초`
+                      }`}
+                    {queueCount > 0 &&
+                      (running ? ` · 대기열 ${queueCount}` : ` ${queueCount}`)}
+                  </span>
+                </div>
+              )}
+            </div>
             <div className={styles.composerCard} hidden={branchActive}>
               {(props.workspaceName || branchName) && (
                 <div className={styles.contextStrip} data-composer-context>
@@ -787,24 +837,9 @@ export function Conversation(props: Props) {
                 </div>
               )}
               <span id={hintId} className={styles.speaker}>
-                Enter 전송 · Shift+Enter 줄바꿈 · Agent: {agent || "기본값"} ·
-                모델: {model || "기본값"} · Variant: {variant || "기본값"}
+                Enter 전송 · Shift+Enter 줄바꿈 · 에이전트: {agent || "기본값"}{" "}
+                · 모델: {model || "기본값"} · 추론 강도: {variant || "기본값"}
               </span>
-              {(running || queueCount > 0) && (
-                <div className={styles.runStrip} data-run-strip>
-                  <span className={styles.runStatus}>
-                    {props.status === "stopping"
-                      ? "중단하는 중"
-                      : running
-                        ? props.messages.at(-1)?.role === "user"
-                          ? "응답 대기 중"
-                          : "실행 중"
-                        : "대기열 (마지막 확인)"}
-                    {queueCount > 0 &&
-                      (running ? ` · 대기열 ${queueCount}` : ` ${queueCount}`)}
-                  </span>
-                </div>
-              )}
               <ComposerPrimitive.Root
                 className={styles.composer}
                 aria-describedby={hintId}
@@ -863,10 +898,7 @@ export function Conversation(props: Props) {
                         button.focus();
                       }
                     }
-                    if (event.key === "/" && !draft) {
-                      menuOpenedFromInput.current = true;
-                      setMenu(true);
-                    }
+                    if (event.key === "/" && !draft) setMenu(true);
                   }}
                 />
                 {menu && (
@@ -1005,38 +1037,8 @@ export function Conversation(props: Props) {
                     title="파일 첨부와 미리보기"
                     aria-label={`파일 첨부와 미리보기${contextDraft.items.length ? ` (${contextDraft.items.length})` : ""}`}
                   >
-                    <Plus size={20} aria-hidden="true" />
+                    <Plus size={16} aria-hidden="true" />
                   </PopoverTrigger>
-                  <Button
-                    type="button"
-                    className={`${styles.roundButton} ${styles.slashTrigger}`}
-                    title="명령 (/)"
-                    ref={slashButton}
-                    aria-label="앱 동작과 명령 열기"
-                    aria-expanded={menu}
-                    aria-controls={commandMenuId}
-                    onClick={() => {
-                      if (menu) closeMenu();
-                      else {
-                        menuOpenedFromInput.current = false;
-                        setMenu(true);
-                      }
-                    }}
-                    onKeyDown={(event) => {
-                      if (event.key === "Escape" && menu) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        closeMenu();
-                      } else if (event.key === "ArrowDown") {
-                        event.preventDefault();
-                        menuOpenedFromInput.current = false;
-                        setMenu(true);
-                        requestAnimationFrame(() => menuButtons()[0]?.focus());
-                      }
-                    }}
-                  >
-                    <SquareSlash size={18} aria-hidden="true" />
-                  </Button>
                   <PopoverTrigger
                     id={runId}
                     anchor="--run"
@@ -1044,7 +1046,7 @@ export function Conversation(props: Props) {
                     title="현재 실행 · 추가 지시와 대기열"
                     aria-label="현재 실행 · 추가 지시와 대기열"
                   >
-                    <ListTodo size={18} aria-hidden="true" />
+                    <ListTodo size={16} aria-hidden="true" />
                   </PopoverTrigger>
                   <div className={styles.chips}>
                     <PopoverTrigger
@@ -1052,29 +1054,60 @@ export function Conversation(props: Props) {
                       anchor="--agent"
                       className={styles.chip}
                       aria-label={`Agent: ${agentLabel}`}
+                      {...(agentDetail ? { title: agentDetail } : {})}
                     >
-                      <span className={styles.agentDot} aria-hidden="true" />
                       <span className={styles.chipText}>{agentLabel}</span>
+                      {agentDetail && (
+                        <span
+                          className={styles.mismatchDot}
+                          data-runtime-mismatch="agent"
+                          aria-hidden="true"
+                        />
+                      )}
+                      <ChevronDown
+                        size={12}
+                        className={styles.chipChevron}
+                        aria-hidden="true"
+                      />
                     </PopoverTrigger>
                     <PopoverTrigger
                       id={modelId}
                       anchor="--model"
                       className={styles.chip}
-                      aria-label={`모델: ${modelLabel}${variant ? ` · ${variant}` : ""}`}
+                      aria-label={`모델: ${modelLabel}${variant ? ` · ${variant}` : ""}${modelDetail ? ` — ${modelDetail}` : ""}`}
+                      {...(modelDetail ? { title: modelDetail } : {})}
                     >
                       <span className={styles.chipText}>{modelLabel}</span>
                       {variant && (
                         <span className={styles.chipSecondary}>{variant}</span>
                       )}
+                      {modelDetail && (
+                        <span
+                          className={styles.mismatchDot}
+                          data-runtime-mismatch="model"
+                          aria-hidden="true"
+                        />
+                      )}
+                      <ChevronDown
+                        size={12}
+                        className={styles.chipChevron}
+                        aria-hidden="true"
+                      />
                     </PopoverTrigger>
                     <PopoverTrigger
                       id={permissionId}
                       anchor="--permission"
                       className={styles.chip}
+                      data-risk={permissionOption.risk}
                       aria-label={`권한 모드: ${permissionLabel}`}
                     >
                       <Shield size={14} aria-hidden="true" />
                       <span className={styles.chipText}>{permissionLabel}</span>
+                      <ChevronDown
+                        size={12}
+                        className={styles.chipChevron}
+                        aria-hidden="true"
+                      />
                     </PopoverTrigger>
                   </div>
                   {running ? (
@@ -1143,89 +1176,30 @@ export function Conversation(props: Props) {
               <PopoverPanel
                 id={modelId}
                 anchor="--model"
-                className={styles.popover}
+                className={`${styles.popover} ${styles.modelPopover}`}
                 label="모델 선택"
+                onToggle={setModelOpen}
               >
                 <fieldset
                   className={styles.runtimeRequests}
                   disabled={optionsHeld}
                   data-runtime-source="requested"
                 >
-                  <legend>모델</legend>
-                  <label className={styles.field}>
-                    모델 요청
-                    <Select
-                      aria-label="모델 요청"
-                      value={model}
-                      onChange={(event) => setModel(event.target.value)}
-                    >
-                      <option value="">기본값 · 요청 안 함</option>
-                      {model && !selectedModel && (
-                        <option value={model}>{model} (사용 불가)</option>
-                      )}
-                      {props.catalog?.models.status === "available" &&
-                        props.catalog.models.entries.map((entry) => (
-                          <option key={entry.id} value={entry.id}>
-                            {entry.name}
-                          </option>
-                        ))}
-                    </Select>
-                  </label>
-                  <label className={styles.field}>
-                    Variant 요청
-                    <Select
-                      aria-label="Variant 요청"
-                      value={variant}
-                      disabled={!model && !variant}
-                      onChange={(event) => setVariant(event.target.value)}
-                    >
-                      <option value="">기본값 · 요청 안 함</option>
-                      {variant &&
-                        (variants?.status !== "available" ||
-                          !variants.ids.includes(variant)) && (
-                          <option value={variant}>{variant} (사용 불가)</option>
-                        )}
-                      {variants?.status === "available" &&
-                        variants.ids.map((value) => (
-                          <option key={value} value={value}>
-                            {value}
-                          </option>
-                        ))}
-                    </Select>
-                  </label>
-                  <p className={styles.runtimeHint}>
-                    선택은 다음 전송에만 요청합니다. 기본값은 값을 요청하지
-                    않습니다.
-                  </p>
-                  {model && variants?.status !== "available" && (
-                    <p className={styles.runtimeHint}>
-                      Variant 목록을 확인할 수 없습니다. Variant 요청 없이
-                      모델을 사용할 수 있습니다.
-                    </p>
-                  )}
-                  {variantCleared && (
-                    <p
-                      className={styles.runtimeHint}
-                      role="status"
-                      data-variant-cleared="true"
-                    >
-                      모델을 바꿔 이전 Variant 요청을 지웠습니다.
-                    </p>
+                  <legend className={styles.srOnly}>모델</legend>
+                  {modelOpen && (
+                    <ModelPicker
+                      entries={modelEntries}
+                      model={model}
+                      variant={variant}
+                      variantCleared={variantCleared}
+                      onModel={setModel}
+                      onVariant={setVariant}
+                      close={() => {
+                        document.getElementById(modelId)?.hidePopover();
+                      }}
+                    />
                   )}
                 </fieldset>
-                <p className={styles.sessionLine} data-runtime-source="session">
-                  {sessionSetting
-                    ? `현재 세션: ${sessionSetting.agent ?? "Agent 보고 없음"} · ${
-                        sessionSetting.model
-                          ? `${sessionSetting.model.providerId}/${sessionSetting.model.id}${
-                              sessionSetting.model.variant
-                                ? ` (${sessionSetting.model.variant})`
-                                : ""
-                            }`
-                          : "모델 보고 없음"
-                      } · 보고된 값이며 다음 요청과 다를 수 있습니다.`
-                    : "현재 세션: 설정 보고가 없습니다."}
-                </p>
               </PopoverPanel>
               <PopoverPanel
                 id={permissionId}
@@ -1298,8 +1272,8 @@ export function Conversation(props: Props) {
               )}
             {invalidSelection && (
               <Notice tone="danger">
-                선택한 Agent, 모델 또는 Variant를 사용할 수 없습니다. 다시
-                선택하거나 요청 안 함을 선택하세요.
+                선택한 에이전트, 모델 또는 추론 강도를 사용할 수 없습니다. 다시
+                선택하거나 기본값을 선택하세요.
               </Notice>
             )}
           </div>

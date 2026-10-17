@@ -1,4 +1,11 @@
-import { createContext, useContext } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import type { ToolView } from "../../shared/tool-ui/index.js";
 import styles from "./conversation.module.css";
 
@@ -57,6 +64,49 @@ export function toolSummary(
   }
 }
 
+// Output capped at 240px; "전체 보기" appears only when something is cut off.
+export function OutputPre({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string | undefined;
+}) {
+  const ref = useRef<HTMLPreElement>(null);
+  const [expanded, setExpanded] = useState(false);
+  const [clipped, setClipped] = useState(false);
+  useEffect(() => {
+    const element = ref.current;
+    if (!element || typeof ResizeObserver === "undefined") return;
+    const check = () =>
+      setClipped(
+        element.clientHeight > 0 &&
+          (expanded || element.scrollHeight > element.clientHeight + 1),
+      );
+    check();
+    const observer = new ResizeObserver(check);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [expanded, children]);
+  return (
+    <>
+      <pre ref={ref} className={className} data-expanded={expanded}>
+        {children}
+      </pre>
+      {clipped && (
+        <button
+          type="button"
+          className={styles.showAll}
+          aria-expanded={expanded}
+          onClick={() => setExpanded(!expanded)}
+        >
+          {expanded ? "접기" : "전체 보기"}
+        </button>
+      )}
+    </>
+  );
+}
+
 function PathButton({ path, line }: { path: string; line?: number | null }) {
   const { openFile, workspaceRoot } = useToolContext();
   return (
@@ -86,14 +136,14 @@ export function ToolBody({ view }: { view: ToolView }) {
               {view.range.end ? `–${view.range.end}` : "부터"}
             </span>
           )}
-          {view.content && <pre>{view.content}</pre>}
+          {view.content && <OutputPre>{view.content}</OutputPre>}
         </div>
       );
     case "diff":
       return (
         <div>
           {view.path && <PathButton path={view.path} />}
-          <pre className={styles.toolDiff}>
+          <OutputPre className={styles.toolDiff}>
             {view.rows.slice(0, 400).map((row, i) => (
               <span
                 key={i}
@@ -110,17 +160,17 @@ export function ToolBody({ view }: { view: ToolView }) {
                 {"\n"}
               </span>
             ))}
-          </pre>
+          </OutputPre>
         </div>
       );
     case "shell":
       return (
         <div>
-          <pre>$ {view.command}</pre>
+          <OutputPre>$ {view.command}</OutputPre>
           {view.exitCode !== null && (
             <p className={styles.muted}>종료 코드 {view.exitCode}</p>
           )}
-          {view.output && <pre>{view.output}</pre>}
+          {view.output && <OutputPre>{view.output}</OutputPre>}
         </div>
       );
     case "search":

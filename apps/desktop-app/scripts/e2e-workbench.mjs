@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { openExtensions, selectWorkspace } from "./e2e-shell.mjs";
+import { openCommandMenu } from "./e2e-composer.mjs";
 import { once } from "node:events";
 import { childPids as findChildPids } from "./process-tree.mjs";
 import { existsSync } from "node:fs";
@@ -221,11 +222,10 @@ try {
   observations.push("two real sidecar sessions retain separate identity");
 
   await composer.fill("Draft stays in this session");
-  await page.getByRole("button", { name: "앱 동작과 명령 열기" }).click();
-  await expect(
-    page.getByRole("region", { name: "앱 동작 및 런타임 명령" }),
-  ).toBeVisible();
+  await composer.fill("");
+  await openCommandMenu(page);
   await page.getByRole("button", { name: "명령 목록 닫기" }).click();
+  await composer.fill("Draft stays in this session");
   await expect(composer).toHaveValue("Draft stays in this session");
   await page
     .getByRole("button", { name: "E2E second session", exact: true })

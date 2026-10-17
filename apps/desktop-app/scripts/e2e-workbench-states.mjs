@@ -33,7 +33,12 @@ import {
   SKILL_RUNTIME_RETAINED_KEY,
 } from "./fixtures/workbench-host.mjs";
 import { captureProvenance } from "./build-provenance.mjs";
-import { closeComposerPopovers, openComposerPopover } from "./e2e-composer.mjs";
+import {
+  closeComposerPopovers,
+  openCommandMenu,
+  openComposerPopover,
+  pickModel,
+} from "./e2e-composer.mjs";
 import {
   closeSettings,
   openExtensions,
@@ -508,7 +513,7 @@ async function setRequestSettings(page, open) {
 async function eachRequestSelect(page, visit) {
   for (const [kind, name] of [
     ["agent", "Agent 요청"],
-    ["model", "모델 요청"],
+    ["model", "모델 검색"],
   ]) {
     await openComposerPopover(page, kind);
     await visit(page.getByRole("combobox", { name }));
@@ -682,7 +687,7 @@ async function assertComposerGeometry(page) {
     .evaluate((input) => {
       const composer = input.closest("form");
       const toolbar = composer.querySelector(
-        'button[aria-label="앱 동작과 명령 열기"]',
+        'button[aria-label^="파일 첨부와 미리보기"]',
       ).parentElement;
       const requests = input.ownerDocument.querySelector(
         '[data-runtime-source="requested"]',
@@ -896,10 +901,6 @@ async function assertNestedMenu(page) {
 }
 
 async function assertSlashOutside(page) {
-  const opener = page.getByRole("button", {
-    name: "앱 동작과 명령 열기",
-    exact: true,
-  });
   const input = page.getByRole("textbox", { name: "메시지 작성" });
   const menu = page.getByRole("region", {
     name: "앱 동작 및 런타임 명령",
@@ -907,13 +908,12 @@ async function assertSlashOutside(page) {
   });
   const before = await requestCount();
   for (const touch of [false, true]) {
-    await opener.click();
-    await expect(menu).toBeVisible();
+    await openCommandMenu(page);
     await menu.getByText("앱 동작", { exact: true }).click();
     await expect(menu).toBeVisible();
     const box = await input.boundingBox();
-    // The menu opens above the toolbar and may cover the input's top-left, so
-    // probe the first input corner that lies outside the menu.
+    // The menu opens above the input; probe the first input corner that lies
+    // outside the menu anyway.
     const menuBox = await menu.boundingBox();
     const outside = ({ x, y }) =>
       x < menuBox.x ||
@@ -973,13 +973,12 @@ async function assertSlashOutside(page) {
       "Slash outside dismissal must not execute a command",
     );
   }
-  await opener.click();
-  await expect(menu).toBeVisible();
+  await openCommandMenu(page);
   await page.keyboard.press("Escape");
   await expect(menu).toBeHidden();
-  await expect(opener).toBeFocused();
+  await expect(input).toBeFocused();
   observations.push(
-    "Custom slash popup: inside preserved; outside mouse/CDP synthetic touch closed, textarea focus preserved, Escape restored opener, no command executed",
+    "Custom slash popup: opened with / in an empty composer; inside preserved; outside mouse/CDP synthetic touch closed, textarea focus preserved, Escape restored the textarea, no command executed",
   );
 }
 
@@ -1466,10 +1465,7 @@ try {
       await page
         .getByRole("combobox", { name: "Agent 요청" })
         .selectOption("fixture-agent");
-      await openComposerPopover(page, "model");
-      await page
-        .getByRole("combobox", { name: "모델 요청" })
-        .selectOption("fixture-model");
+      await pickModel(page, "fixture-model");
       await closeComposerPopovers(page);
       await page.getByRole("button", { name: "메시지 보내기" }).click();
       await expect(
@@ -2605,8 +2601,8 @@ try {
           name: "새 세션",
           exact: true,
         });
-        const plus = page.getByRole("button", {
-          name: "앱 동작과 명령 열기",
+        const commandMenu = page.getByRole("region", {
+          name: "앱 동작 및 런타임 명령",
           exact: true,
         });
         await expect(retained).toHaveAttribute("data-retained-count", "1");
@@ -2615,14 +2611,19 @@ try {
         await expect(input).toBeEditable();
         const draft = `SYNTHETIC authority draft ${effect}`;
         await input.fill(draft);
-        // Keep the existing Composer plus label and ArrowDown/Escape contract.
-        await expect(plus).toBeEnabled();
-        await plus.focus();
-        await page.keyboard.press("ArrowDown");
-        await expect(plus).toHaveAttribute("aria-expanded", "true");
+        // "/" opens the menu only in an empty composer; Escape returns to the
+        // textarea and the retained draft is untouched once restored.
+        await expect(
+          page.getByRole("button", {
+            name: "앱 동작과 명령 열기",
+            exact: true,
+          }),
+        ).toHaveCount(0);
+        await openCommandMenu(page);
         await page.keyboard.press("Escape");
-        await expect(plus).toBeFocused();
-        await expect(plus).toHaveAttribute("aria-expanded", "false");
+        await expect(commandMenu).toHaveCount(0);
+        await expect(input).toBeFocused();
+        await input.fill(draft);
         await expect(input).toHaveValue(draft);
         await assertComposerGeometry(page);
         const before = await application.evaluate(() =>
