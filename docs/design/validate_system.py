@@ -68,12 +68,6 @@ def ratio(a: str, b: str) -> float:
     return (hi + 0.05) / (lo + 0.05)
 
 
-# Files another branch is rewriting; they keep literals until it lands, then delete this list.
-FONT_SIZE_ALLOWLIST = (
-    "features/git-review/", "features/subagents/", "features/workspace-file-editor/",
-    "pages/workbench/shell.module.css",
-    "widgets/activity/", "widgets/explorer/", "widgets/plans/", "widgets/preview/", "widgets/terminal/",
-)
 # Any font/font-size declaration (shorthand, multi-line, calc/max, decimals, rem) carrying a px/rem length.
 LITERAL_FONT_SIZE = re.compile(r"\bfont(?:-size)?\s*:[^;{}]*?\b\d+(?:\.\d+)?(?:px|rem)\b", re.I)
 PRIMITIVE_FONT_REF = re.compile(r"--omoc-primitive-font-")
@@ -85,8 +79,6 @@ def check_font_size_literals() -> None:
     offenders = []
     for base in (repo / "apps" / "desktop-app" / "src", repo / "packages" / "ui" / "src"):
         for path in sorted(base.rglob("*.css")):
-            if any(allowed in path.as_posix() for allowed in FONT_SIZE_ALLOWLIST):
-                continue
             text = path.read_text()
             for rule, why in ((LITERAL_FONT_SIZE, "literal"), (PRIMITIVE_FONT_REF, "primitive font ref")):
                 for match in rule.finditer(text):
