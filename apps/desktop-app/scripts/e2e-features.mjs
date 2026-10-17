@@ -249,7 +249,7 @@ try {
     async () => {
       await openPanel("터미널");
       const panel = page.getByRole("region", { name: "작업 공간 터미널" });
-      await panel.getByRole("button", { name: "새 터미널" }).click();
+      // Opening the tab auto-starts the first shell.
       await expect(panel.getByRole("status")).toHaveText("실행 중");
       const screen = panel.getByRole("group", { name: "터미널 화면" });
       await expect(screen.locator(".xterm")).toBeVisible();

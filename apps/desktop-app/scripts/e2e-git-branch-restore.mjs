@@ -278,8 +278,7 @@ async function openCase(name = "ready") {
     page.locator(".workbench-header [data-connection]"),
   ).toHaveAttribute("data-connection", "connected");
   await page.getByRole("button", { name: "보조 패널", exact: true }).click();
-  await openGitTray(page, "되돌리기");
-  await openGitTray(page, "되돌리기");
+  await openGitTray(page, "브랜치 복원");
   await expect(section()).toBeVisible();
   await expect(control("name")).toHaveValue("");
   await expect(control("email")).toHaveValue("");
@@ -387,7 +386,7 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
     globalThis.document.documentElement.dataset.theme = theme;
   }, theme);
   await setDisplay(page, narrow ? 760 : 1440, 1000, narrow ? 2 : 1);
-  await openGitTray(page, "되돌리기");
+  await openGitTray(page, "브랜치 복원");
   assert.ok(
     await page.evaluate(
       () =>
@@ -524,8 +523,7 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
           });
           await expect(opener).toBeFocused();
           await page.keyboard.press("Enter");
-          await openGitTray(page, "되돌리기");
-          await openGitTray(page, "되돌리기");
+          await openGitTray(page, "브랜치 복원");
           await expect(section()).toBeVisible();
           await item.focus();
         }
@@ -886,7 +884,7 @@ try {
       }, boundary);
       await expect(control("branch")).toHaveValue("", { timeout: 10000 });
     }
-    await openGitTray(page, "되돌리기");
+    await openGitTray(page, "브랜치 복원");
     await control("branch").fill("refs/heads/SYNTHETIC-newer-draft");
     await application.evaluate(() =>
       globalThis.__omocUiFixture.releaseGitBranchRestoreApplies(),
