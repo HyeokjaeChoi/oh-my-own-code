@@ -14,7 +14,14 @@ import {
   type PreviewState,
 } from "../../shared/preview/index.js";
 import styles from "./preview.module.css";
-import { Button, Input, Notice } from "@workbench/ui";
+import {
+  ArrowLeft,
+  ArrowRight,
+  MoreHorizontal,
+  RotateCw,
+  SquareArrowOutUpRight,
+} from "lucide-react";
+import { ActionMenu, Button, Input, Notice } from "@workbench/ui";
 
 const POLL_MS = 400;
 async function call<T>(request: PreviewRequest): Promise<PreviewResult<T>> {
@@ -40,6 +47,7 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
   const [file, setFile] = useState<PreviewFile>();
   const [error, setError] = useState<string>();
   const [external, setExternal] = useState<string>();
+  const [fileRow, setFileRow] = useState(false);
   const stage = useRef<HTMLDivElement>(null);
   const last = useRef("");
   const fail = (code: string) =>
@@ -141,91 +149,108 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
       : undefined;
   return (
     <section className={styles.panel} aria-label="미리보기">
-      <h2>미리보기</h2>
-      <form className={styles.row} onSubmit={(e) => void go(e)}>
+      <form className={styles.toolbar} onSubmit={(e) => void go(e)}>
         <Button
           size="compact"
           intent="quiet"
+          className={styles.iconButton}
           type="button"
           onClick={() => nav("back")}
           disabled={!isUrl || !state?.canGoBack}
           aria-label="뒤로"
+          title="뒤로"
         >
-          ←
+          <ArrowLeft size={16} aria-hidden="true" />
         </Button>
         <Button
           size="compact"
           intent="quiet"
+          className={styles.iconButton}
           type="button"
           onClick={() => nav("forward")}
           disabled={!isUrl || !state?.canGoForward}
           aria-label="앞으로"
+          title="앞으로"
         >
-          →
+          <ArrowRight size={16} aria-hidden="true" />
         </Button>
         <Button
           size="compact"
           intent="quiet"
+          className={styles.iconButton}
           type="button"
           onClick={() => nav("reload")}
           disabled={!isUrl}
           aria-label="새로고침"
+          title="새로고침"
         >
-          ↻
+          <RotateCw size={16} aria-hidden="true" />
         </Button>
         <Input
+          className={styles.url}
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           aria-label="미리보기 주소"
+          placeholder="http://localhost:3000"
           spellCheck={false}
           autoComplete="off"
         />
-        <Button size="compact" intent="primary" type="submit">
-          열기
-        </Button>
-        <Button
-          size="compact"
-          intent="secondary"
-          type="button"
-          onClick={() => setExternal(state?.url || url.trim())}
-          disabled={!parseExternalUrl(state?.url || url.trim())}
-        >
-          외부에서 열기
-        </Button>
         <Button
           size="compact"
           intent="quiet"
+          className={styles.iconButton}
           type="button"
-          onClick={() => void closeAll()}
+          onClick={() => setExternal(state?.url || url.trim())}
+          disabled={!parseExternalUrl(state?.url || url.trim())}
+          aria-label="외부에서 열기"
+          title="외부에서 열기"
         >
-          닫기
+          <SquareArrowOutUpRight size={16} aria-hidden="true" />
         </Button>
-      </form>
-      <form className={styles.row} onSubmit={(e) => void openFile(e)}>
-        <Input
-          value={path}
-          onChange={(e) => setPath(e.target.value)}
-          placeholder="작업 공간 파일 경로 (html, md, 이미지)"
-          aria-label="미리볼 작업 공간 파일"
-          spellCheck={false}
-          autoComplete="off"
+        <ActionMenu
+          label="미리보기 더 보기"
+          title="더 보기"
+          className={styles.iconButton ?? ""}
+          trigger={<MoreHorizontal size={16} aria-hidden="true" />}
+          items={[
+            {
+              label: "작업 공간 파일 열기…",
+              onSelect: () => setFileRow(true),
+            },
+            { label: "미리보기 닫기", onSelect: () => void closeAll() },
+          ]}
         />
-        <Button
-          size="compact"
-          intent="secondary"
-          type="submit"
-          disabled={!path.trim()}
-        >
-          파일 열기
-        </Button>
       </form>
+      {fileRow && (
+        <form className={styles.fileRow} onSubmit={(e) => void openFile(e)}>
+          <Input
+            value={path}
+            onChange={(e) => setPath(e.target.value)}
+            placeholder="작업 공간 파일 경로 (html, md, 이미지)"
+            aria-label="미리볼 작업 공간 파일"
+            spellCheck={false}
+            autoComplete="off"
+            autoFocus
+          />
+          <Button
+            size="compact"
+            intent="secondary"
+            type="submit"
+            disabled={!path.trim()}
+          >
+            파일 열기
+          </Button>
+        </form>
+      )}
       {external && (
         <div
           role="alertdialog"
           aria-label="외부 열기 확인"
           className={styles.row}
         >
-          <span>기본 브라우저에서 엽니다: {external}</span>
+          <span className={styles.externalUrl}>
+            기본 브라우저에서 엽니다: {external}
+          </span>
           <Button
             size="compact"
             intent="secondary"
@@ -244,10 +269,14 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
           </Button>
         </div>
       )}
-      {error && <Notice tone="danger">{error}</Notice>}
+      {error && (
+        <Notice tone="danger" className={styles.notice}>
+          {error}
+        </Notice>
+      )}
       {status &&
         (state?.error ? (
-          <Notice tone="danger" role="status">
+          <Notice tone="danger" role="status" className={styles.notice}>
             {status}
           </Notice>
         ) : (
@@ -270,9 +299,8 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
           />
         )}
         {!file && !state?.open && (
-          <p className={styles.muted}>
-            로컬 개발 서버 주소(localhost, 127.0.0.1, [::1])나 작업 공간 파일을
-            여세요.
+          <p className={styles.empty}>
+            개발 서버 주소를 입력하세요 · 예: localhost:3000
           </p>
         )}
       </div>
