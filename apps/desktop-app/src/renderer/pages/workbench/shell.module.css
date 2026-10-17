@@ -4,7 +4,7 @@
   overflow: hidden;
   background: var(--omoc-semantic-color-canvas);
   color: var(--omoc-semantic-color-text-primary);
-  font-size: 14px;
+  font-size: var(--omoc-semantic-type-size-body);
 }
 .navigation {
   width: var(--omoc-component-size-sidebar-width);
@@ -51,7 +51,7 @@
   min-height: max(34px, var(--omoc-component-size-control-hit-target));
   padding: 4px 8px;
   color: var(--omoc-semantic-color-text-primary);
-  font-size: 14px;
+  font-size: var(--omoc-semantic-type-size-body);
   font-weight: 500;
 }
 .switcher svg {
@@ -106,10 +106,10 @@
 .createFolder label {
   display: grid;
   gap: 6px;
-  font-size: 12px;
+  font-size: var(--omoc-semantic-type-size-caption);
 }
 .createFolder p {
-  font-size: 12px;
+  font-size: var(--omoc-semantic-type-size-caption);
   color: var(--omoc-semantic-color-text-secondary);
   margin: 0;
 }
@@ -150,11 +150,12 @@
   text-overflow: ellipsis;
   overflow: hidden;
   font-weight: 500;
-  font-size: 14px;
+  font-size: var(--omoc-semantic-type-size-compact);
+  line-height: var(--omoc-semantic-type-line-compact);
 }
 .context {
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
+  font-size: var(--omoc-semantic-type-size-caption);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -168,7 +169,7 @@
   border-radius: 999px;
   background: var(--omoc-semantic-color-surface-subtle);
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
+  font-size: var(--omoc-semantic-type-size-caption);
   white-space: nowrap;
 }
 .runtimeState[data-connection="disconnected"],
@@ -181,7 +182,7 @@
   padding: 6px 8px;
   border-radius: 8px;
   background: var(--omoc-semantic-color-surface-subtle);
-  font-size: 13px;
+  font-size: var(--omoc-semantic-type-size-compact);
   line-height: 1.5;
   display: flex;
   gap: 12px;
@@ -201,7 +202,7 @@
   margin: auto;
 }
 .noSession h1 {
-  font-size: 22px;
+  font-size: var(--omoc-semantic-type-size-heading);
   line-height: 28px;
   font-weight: 500;
   margin: 0 0 12px;
@@ -217,48 +218,15 @@
   width: var(--detail-width);
   flex-shrink: 0;
   min-width: 0;
-  background: var(--omoc-semantic-color-surface);
-}
-.panelHeading {
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  gap: 4px;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: var(--omoc-semantic-color-surface);
-  min-height: var(--omoc-component-size-header-height);
-  flex-shrink: 0;
-}
-.panelTabs {
-  display: flex;
-  flex-wrap: wrap;
-  flex: 1;
-  min-width: 0;
-}
-.panelTabs button {
-  min-height: var(--omoc-component-size-control-hit-target);
-  border: 0;
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 13px;
-  background: transparent;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.panelTabs button[aria-pressed="true"],
-.panelTabs button:hover {
-  background: var(--omoc-semantic-color-surface-subtle);
-}
-.panelContent {
-  overflow: auto;
-  min-height: 0;
-  flex: 1;
-  padding: 12px 16px 20px;
+  background: var(--omoc-semantic-color-panel);
+  /* One tone step from the canvas replaces a hairline; the transparent edge
+     only becomes visible in forced-colors mode. */
+  border-inline-start: 1px solid transparent;
 }
 .separator {
-  width: 5px;
+  width: 6px;
+  margin-inline: -3px;
+  z-index: 1;
   flex-shrink: 0;
   cursor: col-resize;
   touch-action: none;
@@ -268,17 +236,26 @@
 .separator::after {
   content: "";
   position: absolute;
-  width: 1px;
+  width: 2px;
   top: 0;
   bottom: 0;
   left: 2px;
-  background: var(--omoc-semantic-color-selection-background);
+  background: transparent;
 }
 .separator:hover::after,
-.separator:focus-visible::after {
+.separator:focus-visible::after,
+.separator:active::after {
   background: var(--omoc-semantic-color-focus);
-  width: 3px;
-  left: 1px;
+}
+.separator:focus-visible {
+  outline: none;
+}
+@media (forced-colors: active) {
+  .separator:hover::after,
+  .separator:focus-visible::after,
+  .separator:active::after {
+    background: Highlight;
+  }
 }
 .returnButton {
   width: 100%;
@@ -286,11 +263,11 @@
 }
 .locationInfo {
   padding: 16px;
-  font-size: 14px;
+  font-size: var(--omoc-semantic-type-size-body);
   line-height: 1.6;
 }
 .locationInfo h3 {
-  font-size: 16px;
+  font-size: var(--omoc-semantic-type-size-body);
   font-weight: 500;
   margin: 0 0 16px;
   overflow-wrap: anywhere;
@@ -300,7 +277,7 @@
 }
 .locationInfo dt {
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
+  font-size: var(--omoc-semantic-type-size-caption);
 }
 .locationInfo dd {
   margin: 0 0 16px;
@@ -313,7 +290,7 @@
 }
 .muted {
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 13px;
+  font-size: var(--omoc-semantic-type-size-compact);
   line-height: 1.5;
 }
 @media (max-width: 599px) {
@@ -356,7 +333,6 @@
 
 .navigationBody button:focus-visible,
 .header button:focus-visible,
-.panelHeading button:focus-visible,
 .statusLine button:focus-visible,
 .returnButton:focus-visible {
   outline: 2px solid var(--omoc-semantic-color-focus);

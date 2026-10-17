@@ -3075,7 +3075,7 @@ for (const lateError of [false, true])
     });
     const api = createWindowWorkbench(h.bridge, { clock, id });
     seed(api.store);
-    api.actions.openPanel("activity");
+    api.actions.openPanel("work");
     void api.actions.diagnostics(false);
     await flush();
     void api.actions.diagnostics(true);
@@ -3122,7 +3122,7 @@ for (const close of ["panel", "dispose"])
       const h = bridgeHarness(() => pending.promise);
       const api = createWindowWorkbench(h.bridge, { clock, id });
       seed(api.store);
-      api.actions.openPanel("activity");
+      api.actions.openPanel("work");
       void api.actions.diagnostics(true);
       await flush();
       if (close === "panel") api.actions.closePanel();
@@ -3227,7 +3227,7 @@ test("diagnostics filtered-to-all clears old payload/error and rejects prior gen
   );
   const api = createWindowWorkbench(h.bridge, { clock, id });
   seed(api.store);
-  api.actions.openPanel("activity");
+  api.actions.openPanel("work");
   api.actions.diagnostics(true);
   await flush();
   const identity = api.store.getState().diagnosticsIdentity;
@@ -3263,7 +3263,7 @@ for (const move of ["selection", "epoch", "reopen"])
     );
     const api = createWindowWorkbench(h.bridge, { clock, id });
     seed(api.store);
-    api.actions.openPanel("activity");
+    api.actions.openPanel("work");
     api.actions.diagnostics(true);
     await flush();
     const identity = api.store.getState().diagnosticsIdentity;
@@ -3276,7 +3276,7 @@ for (const move of ["selection", "epoch", "reopen"])
       });
     else {
       api.actions.closePanel();
-      api.actions.openPanel("activity");
+      api.actions.openPanel("work");
       api.actions.diagnostics(true);
     }
     await flush();
@@ -4901,7 +4901,7 @@ test("configuration drafts retain panel/workspace/kind isolation without any tra
   assert.equal(first.validation.status, "valid");
   api.actions.baselineConfigurationDraft("instructions");
   api.actions.editConfigurationDraft("mcp", '{"mcp":{"servers":{}}}');
-  api.actions.openPanel("catalog");
+  api.actions.openPanel("changes");
   api.actions.closePanel();
   assert.equal(
     selectors.configurationDraft("instructions")(api.store.getState()).text,
@@ -12683,7 +12683,7 @@ test("Extensions startup, catalog, poll, selection, refocus, trust and draft loa
   try {
     client.start();
     await flush();
-    client.actions.openPanel("catalog");
+    client.actions.openPanel("changes");
     client.actions.refresh();
     refocus();
     client.actions.editConfigurationDraft("instructions", "# Inert");
