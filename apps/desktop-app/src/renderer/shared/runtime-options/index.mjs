@@ -147,3 +147,72 @@ export function projectSessionSelection(info, sessionId) {
   };
   return validSessionSelection(value) ? value : undefined;
 }
+
+// Free = every cost tier of the model is priced 0 for input and output, or
+// the model is an OpenRouter free variant (":free" suffix, the free router).
+// A missing or malformed cost never counts as free by itself.
+export const isFreeModel = (model) =>
+  (Array.isArray(model?.cost) &&
+    model.cost.length > 0 &&
+    model.cost.every((tier) => tier?.input === 0 && tier?.output === 0)) ||
+  (typeof model?.id === "string" &&
+    (model.id.endsWith(":free") || model.id === "openrouter/free"));
+
+// The variant a draft may keep after its model changes: only one the new model
+// itself lists. Otherwise "" (no request), so a stale variant is never sent.
+export const variantForModel = (variant, model) =>
+  variant &&
+  model?.variants?.status === "available" &&
+  model.variants.ids.includes(variant)
+    ? variant
+    : "";
+
+// "무료만" starts on only while every connected provider is OpenRouter (the
+// only source of free models here); the user's own choice always wins.
+export const defaultFreeOnly = (entries, stored) =>
+  typeof stored === "boolean"
+    ? stored
+    : entries.length > 0 &&
+      entries.every((entry) => entry.providerId === "openrouter");
+
+// Picker rows: "최근" (up to 3, only without a search), then one group per
+// provider in catalog order. Free models lead each provider (stable, so the
+// pinned router the catalog lists first stays first). The free filter never
+// hides the selected model; a search matches name and provider.
+export function groupModels(entries, { query, freeOnly, recent, selectedId }) {
+  const q = query.trim().toLowerCase();
+  const shown = entries.filter(
+    (entry) =>
+      (!freeOnly || entry.free === true || entry.id === selectedId) &&
+      (!q || `${entry.name} ${entry.provider ?? ""}`.toLowerCase().includes(q)),
+  );
+  const recents = q
+    ? []
+    : recent
+        .map((id) => shown.find((entry) => entry.id === id))
+        .filter(Boolean)
+        .slice(0, 3);
+  const groups = recents.length
+    ? [{ key: "recent", label: "최근", items: recents }]
+    : [];
+  const byProvider = new Map();
+  for (const entry of shown) {
+    if (recents.includes(entry)) continue;
+    const key = entry.providerId ?? "";
+    if (!byProvider.has(key))
+      byProvider.set(key, {
+        key,
+        label: entry.provider || key || "기타",
+        items: [],
+      });
+    byProvider.get(key).items.push(entry);
+  }
+  for (const group of byProvider.values()) {
+    group.items = [
+      ...group.items.filter((entry) => entry.free === true),
+      ...group.items.filter((entry) => entry.free !== true),
+    ];
+    groups.push(group);
+  }
+  return groups;
+}

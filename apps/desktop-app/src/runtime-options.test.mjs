@@ -200,3 +200,105 @@ test("runtime options closed metadata rejects private fields, accessors and malf
   assert.equal(projected.variants.ids[0], "variant-0");
   assert.deepEqual(projected.capabilities.input, ["text"]);
 });
+
+test("free means every cost tier is zero; variants survive a model switch only if listed", async () => {
+  const { isFreeModel, variantForModel } = await import(
+    "./renderer/shared/runtime-options/index.mjs"
+  );
+  assert.equal(isFreeModel({ cost: [{ input: 0, output: 0 }] }), true);
+  for (const cost of [
+    undefined,
+    [],
+    [{ input: 0, output: 1 }],
+    [
+      { input: 0, output: 0 },
+      { input: 1, output: 0 },
+    ],
+    [{ input: "0", output: 0 }],
+    [{}],
+  ])
+    assert.equal(isFreeModel({ cost }), false);
+  assert.equal(isFreeModel(undefined), false);
+  const high = { variants: { status: "available", ids: ["low", "high"] } };
+  assert.equal(variantForModel("high", high), "high");
+  assert.equal(variantForModel("max", high), "");
+  assert.equal(variantForModel("", high), "");
+  assert.equal(
+    variantForModel("high", { variants: { status: "available", ids: [] } }),
+    "",
+  );
+  assert.equal(
+    variantForModel("high", { variants: { status: "unavailable", ids: [] } }),
+    "",
+  );
+  assert.equal(variantForModel("high", undefined), "");
+});
+
+test("OpenRouter free ids count as free even without a cost", async () => {
+  const { isFreeModel } = await import(
+    "./renderer/shared/runtime-options/index.mjs"
+  );
+  assert.equal(isFreeModel({ id: "vendor/model:free" }), true);
+  assert.equal(isFreeModel({ id: "openrouter/free" }), true);
+  assert.equal(isFreeModel({ id: "vendor/model:freedom" }), false);
+  assert.equal(isFreeModel({ id: "vendor/free" }), false);
+  assert.equal(
+    isFreeModel({ id: "vendor/model", cost: [{ input: 1, output: 1 }] }),
+    false,
+  );
+});
+
+test("model picker groups: recents first, free first per provider, filters never hide the selection", async () => {
+  const { groupModels, defaultFreeOnly } = await import(
+    "./renderer/shared/runtime-options/index.mjs"
+  );
+  const m = (id, providerId, free) => ({
+    id,
+    name: id.toUpperCase(),
+    providerId,
+    provider: providerId,
+    ...(free ? { free: true } : {}),
+  });
+  const entries = [
+    m("router", "openrouter", true),
+    m("paid-or", "openrouter"),
+    m("free-or", "openrouter", true),
+    m("claude", "anthropic"),
+    m("haiku", "anthropic", true),
+  ];
+  const run = (o) =>
+    groupModels(entries, {
+      query: "",
+      freeOnly: false,
+      recent: [],
+      selectedId: "",
+      ...o,
+    }).map((g) => [g.label, g.items.map((e) => e.id)]);
+  assert.deepEqual(run({}), [
+    ["openrouter", ["router", "free-or", "paid-or"]],
+    ["anthropic", ["haiku", "claude"]],
+  ]);
+  // Recents (max 3, existing ids only) lead and are not repeated below.
+  assert.deepEqual(
+    run({ recent: ["claude", "gone", "router", "haiku", "paid-or"] }),
+    [
+      ["최근", ["claude", "router", "haiku"]],
+      ["openrouter", ["free-or", "paid-or"]],
+    ],
+  );
+  // Free filter keeps the selected paid model visible.
+  assert.deepEqual(run({ freeOnly: true, selectedId: "claude" }), [
+    ["openrouter", ["router", "free-or"]],
+    ["anthropic", ["haiku", "claude"]],
+  ]);
+  // Search matches name or provider and drops the recents group.
+  assert.deepEqual(run({ query: " ANTHRO", recent: ["claude"] }), [
+    ["anthropic", ["haiku", "claude"]],
+  ]);
+  // "무료만" defaults on only when every connected provider is OpenRouter.
+  assert.equal(defaultFreeOnly(entries.slice(0, 3), undefined), true);
+  assert.equal(defaultFreeOnly(entries, undefined), false);
+  assert.equal(defaultFreeOnly([], undefined), false);
+  assert.equal(defaultFreeOnly(entries.slice(0, 3), false), false);
+  assert.equal(defaultFreeOnly(entries, true), true);
+});

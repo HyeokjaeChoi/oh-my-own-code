@@ -160,6 +160,9 @@ export {
   validAssistantRuntime,
   validSessionSelection,
   validModelOptions,
+  variantForModel,
+  defaultFreeOnly,
+  groupModels,
 } from "../runtime-options/index.js";
 export type {
   RuntimeModel,

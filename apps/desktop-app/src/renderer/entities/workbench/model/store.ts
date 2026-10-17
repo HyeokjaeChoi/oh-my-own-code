@@ -19,6 +19,7 @@ import {
   validAssistantRuntime,
   validSessionSelection,
   validModelOptions,
+  variantForModel,
   type SessionSelection,
 } from "../../../shared/api/index.js";
 import {
@@ -2663,11 +2664,22 @@ function validRuntimeCatalog(value: WorkbenchCatalog): boolean {
             "source",
             "path",
             "scope",
-            ...(name === "models" ? ["capabilities"] : []),
+            ...(name === "models"
+              ? ["capabilities", "free", "provider", "providerId", "modelId"]
+              : []),
           ],
         ) ||
         !validRuntimeText(entry.id) ||
         ids.has(entry.id) ||
+        (Object.hasOwn(entry, "free") &&
+          (entry as { free?: unknown }).free !== true) ||
+        (Object.hasOwn(entry, "provider") &&
+          (typeof (entry as { provider?: unknown }).provider !== "string" ||
+            (entry as { provider: string }).provider.length > 256)) ||
+        (Object.hasOwn(entry, "providerId") &&
+          !validRuntimeText((entry as { providerId?: unknown }).providerId)) ||
+        (Object.hasOwn(entry, "modelId") &&
+          !validRuntimeText((entry as { modelId?: unknown }).modelId)) ||
         typeof entry.name !== "string" ||
         entry.name.length > 256 ||
         (Object.hasOwn(entry, "description") &&
@@ -7957,16 +7969,25 @@ function reduceWorkbench(state: State, event: Event): State {
         return state;
       const modelChanged =
         event.model !== undefined && event.model !== draft.model;
+      // A new model keeps the variant only if it lists it itself.
+      const keptVariant = modelChanged
+        ? variantForModel(
+            draft.variant,
+            state.catalog?.models.status === "available"
+              ? state.catalog.models.entries.find((e) => e.id === event.model)
+              : undefined,
+          )
+        : draft.variant;
       const next = {
         text: event.text ?? draft.text,
         agent: event.agent ?? draft.agent,
         model: event.model ?? draft.model,
-        variant: event.variant ?? (modelChanged ? "" : draft.variant),
+        variant: event.variant ?? keptVariant,
         variantCleared:
           event.variant !== undefined
             ? false
             : modelChanged
-              ? Boolean(draft.variant)
+              ? Boolean(draft.variant) && !keptVariant
               : draft.variantCleared,
         revision: draft.revision + 1,
       };
@@ -9106,7 +9127,8 @@ function reduceWorkbench(state: State, event: Event): State {
                     preview: undefined,
                   }
                 : {}),
-              notice: "전송됨",
+              // The message appearing is the acknowledgement.
+              notice: "",
             },
           };
         }
@@ -9292,13 +9314,7 @@ function reduceWorkbench(state: State, event: Event): State {
             receipt.result?.kind === "delivery" &&
             receipt.result.status === "stopping"
               ? "중단을 요청했습니다 · 상태 확인 중"
-              : receipt.result?.kind === "delivery" &&
-                  receipt.result.status === "decided"
-                ? "권한 응답 전달됨"
-                : receipt.result?.kind === "delivery" &&
-                    intent.operation.type !== "message.send"
-                  ? "전송됨"
-                  : "",
+              : "",
         };
       }
       return next;

@@ -24,6 +24,7 @@ import {
 } from "./renderer/shared/conversation-context/index.mjs";
 import {
   projectModelOptions,
+  isFreeModel,
   projectAssistantRuntime,
   projectSessionSelection,
 } from "./renderer/shared/runtime-options/index.mjs";
@@ -3254,6 +3255,9 @@ export function createWorkbenchService({
       const p = providerById.get(m.providerID);
       return p?.activation === "enabled" && !p.integrationID;
     };
+    // OpenRouter's free router leads its provider's list in the model picker.
+    const isFreeRouter = (m) =>
+      m.providerID === "openrouter" && m.id === "openrouter/free";
     const modelMap = new Map();
     const seenModels = new Set();
     for (const model of models ?? []) {
@@ -3278,6 +3282,9 @@ export function createWorkbenchService({
           (c) => c.type === "credential" || c.type === "env",
         ) ||
         (provider?.activation === "enabled" && !provider.integrationID);
+      // Zen serves its free models only to the official OpenCode client; this
+      // host cannot use them, so they never enter the usable catalog.
+      if (model.providerID === "opencode" && isFreeModel(model)) continue;
       if (
         model.enabled === true &&
         opaque(model.id) &&
@@ -3330,13 +3337,21 @@ export function createWorkbenchService({
                   .sort(
                     ([, a], [, b]) =>
                       Number(isNoIntegrationModel(b)) -
-                      Number(isNoIntegrationModel(a)),
+                        Number(isNoIntegrationModel(a)) ||
+                      Number(isFreeRouter(b)) - Number(isFreeRouter(a)),
                   )
                   .filter(([id], i) => i < 300 || pinModels.includes(id))
                   .map(([id, m]) => ({
                     id,
                     name: clip(m.name, 256),
                     status: clip(m.status, 32),
+                    providerId: m.providerID,
+                    modelId: m.id,
+                    provider: clip(
+                      providerById.get(m.providerID)?.name ?? m.providerID,
+                      256,
+                    ),
+                    ...(isFreeModel(m) ? { free: true } : {}),
                     ...projectModelOptions(m),
                   })),
               ),

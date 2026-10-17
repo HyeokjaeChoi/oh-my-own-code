@@ -184,6 +184,12 @@ export function ProviderSettings({ onSaved }: { onSaved?: () => void }) {
             </span>
           </li>
         </ul>
+        {list?.providers.some((p) => p.id === "opencode" && p.connected) && (
+          <p className={styles.itemMeta}>
+            OpenCode Zen 무료 모델은 공식 OpenCode 앱에서만 쓸 수 있어 목록에서
+            제외했습니다.
+          </p>
+        )}
         {editingLocal && (
           <div className={styles.addCard}>
             <Field label="로컬 제공자 주소">
@@ -238,6 +244,12 @@ export function ProviderSettings({ onSaved }: { onSaved?: () => void }) {
                 </Select>
               )}
             </Field>
+            {selectedId === "openrouter" && (
+              <p className={styles.itemMeta}>
+                OpenRouter 키로 이름이 :free로 끝나는 무료 모델을 쓸 수
+                있습니다.
+              </p>
+            )}
             <Field label="API 키">
               {(c) => (
                 <Input

@@ -9,6 +9,8 @@ export interface ProviderList {
   local: { baseUrl: string };
 }
 export const DEFAULT_MODEL_STORAGE_KEY: string;
+export const RECENT_MODELS_STORAGE_KEY: string;
+export const FREE_ONLY_STORAGE_KEY: string;
 export const PROVIDER_ERRORS: Readonly<Record<string, string>>;
 export function providerErrorText(code: string): string;
 export function sourceText(provider: ProviderRow): string;
@@ -20,7 +22,19 @@ export function saveDefaultModel(
 ): void;
 export function usableDefaultModel(
   catalogModels:
-    | { status: string; entries?: readonly { id: string }[] }
+    | { status: string; entries?: readonly { id: string; free?: boolean }[] }
     | undefined,
   id: string,
 ): string;
+export function loadRecentModels(storage?: Pick<Storage, "getItem">): string[];
+export function pushRecentModel(
+  id: string,
+  storage?: Pick<Storage, "getItem" | "setItem">,
+): string[];
+export function loadFreeOnly(
+  storage?: Pick<Storage, "getItem">,
+): boolean | undefined;
+export function saveFreeOnly(
+  value: boolean,
+  storage?: Pick<Storage, "setItem">,
+): void;
