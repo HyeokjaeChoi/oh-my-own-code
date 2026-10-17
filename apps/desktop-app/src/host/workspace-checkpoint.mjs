@@ -65,7 +65,7 @@ function isGitName(segment) {
     .normalize("NFC")
     .replace(IGNORABLE, "")
     .toLowerCase()
-    .replace(/::.*$/u, "")
+    .replace(/:.*$/u, "")
     .replace(/[. ]+$/u, "");
   return name === ".git" || name === "git~1";
 }
@@ -104,7 +104,7 @@ export async function resolveGit({
 } = {}) {
   const { delimiter, isAbsolute, join } = platform === "win32" ? win32 : posix;
   if (isAbsolute(git)) return (await isFile(git)) ? git : undefined;
-  const names = platform === "win32" ? ["git.exe", "git.cmd"] : ["git"];
+  const names = platform === "win32" ? ["git.exe"] : ["git"];
   const dirs =
     platform === "win32"
       ? pathEnv.split(delimiter).filter((d) => d && isAbsolute(d))
@@ -235,7 +235,7 @@ export function createCheckpointStore({
   async function run(
     env,
     args,
-    { input, feed, max = 256 * 1024 * 1024, ms = lim.gitMs } = {},
+    { input, feed, stderr, max = 256 * 1024 * 1024, ms = lim.gitMs } = {},
   ) {
     await prepare();
     const bin = (gitBin ??= resolveGit({ git, platform }));
@@ -258,14 +258,16 @@ export function createCheckpointStore({
         else out.push(chunk);
       });
       child.stderr.on("data", (chunk) => {
-        if (err.length < 2000) err += chunk.toString("utf8");
+        if (err.length < 256 * 1024) err += chunk.toString("utf8");
       });
       child.once("error", (error) =>
         reject(fail(error.code === "ENOENT" ? "git_missing" : "git_failed")),
       );
       child.once("close", (code) =>
         code === 0 && size <= max
-          ? resolve(Buffer.concat(out))
+          ? resolve(
+              stderr ? { out: Buffer.concat(out), err } : Buffer.concat(out),
+            )
           : reject(fail("git_failed")),
       );
       child.stdin.on("error", () => {});
@@ -323,11 +325,23 @@ export function createCheckpointStore({
       // cannot see (ignored paths, nested repositories, oversize/unreadable
       // files) is recorded as `protect`: a restore never deletes or overwrites
       // those paths.
-      const lines = async (args) =>
-        (await run(env, args, { ms: lim.snapshotMs }))
-          .toString("utf8")
-          .split("\0")
-          .filter(Boolean);
+      // Directories git could not open are invisible to the listing: protect
+      // them. Any other warning means the listing cannot be trusted.
+      const unreadable = [];
+      const lines = async (args) => {
+        const { out, err } = await run(env, args, {
+          ms: lim.snapshotMs,
+          stderr: true,
+        });
+        for (const line of err.split("\n").filter(Boolean)) {
+          const m = /^warning: could not open directory '(.*)': [^']*$/u.exec(
+            line,
+          );
+          if (!m) throw fail("listing_warning");
+          unreadable.push(m[1]);
+        }
+        return out.toString("utf8").split("\0").filter(Boolean);
+      };
       const [others, ignored] = await Promise.all([
         lines(["ls-files", "-z", "-o", "--exclude-standard"]),
         lines([
@@ -340,7 +354,7 @@ export function createCheckpointStore({
         ]),
       ]);
       await rm(index, { force: true });
-      const protect = new Set(ignored);
+      const protect = new Set([...ignored, ...unreadable]);
       const listed = [];
       for (const path of others)
         if (path.endsWith("/")) protect.add(path);
@@ -359,7 +373,7 @@ export function createCheckpointStore({
       });
       for (const { path, parts, info } of stats) {
         if (!info) {
-          if (!parts) protect.add(path);
+          protect.add(path);
           continue;
         }
         if (info.isSymbolicLink())
@@ -503,6 +517,33 @@ export function createCheckpointStore({
       return undefined;
     }
   }
+  // True when another session of this workspace took a checkpoint after the
+  // one this restore goes back to (its files may be in the way).
+  async function conflict(workspaceId, sessionId, messageId, reapply) {
+    try {
+      const refs = text(
+        await run(refEnv(workspaceId), [
+          "for-each-ref",
+          "--format=%(refname)",
+          "refs/omoc/",
+        ]),
+      )
+        .split("\n")
+        .map((r) => /^refs\/omoc\/([^/]+)\/t\/(\d+)-([0-9a-f]+)$/u.exec(r))
+        .filter(Boolean);
+      const own = refs
+        .filter((m) => m[1] === sessionId && m[3] === hashOf(messageId))
+        .map((m) => Number(m[2]))
+        .at(-1);
+      const record = reapply ? await staged(workspaceId, sessionId) : undefined;
+      const since = record?.at ?? own;
+      return since === undefined
+        ? false
+        : refs.some((m) => m[1] !== sessionId && Number(m[2]) > since);
+    } catch {
+      return false;
+    }
+  }
   async function staged(workspaceId, sessionId) {
     try {
       const blob = text(
@@ -580,10 +621,14 @@ export function createCheckpointStore({
     const base = await realpath(workspacePath);
     const env = environment(dirOf(workspaceId));
     const protect = await protectOf(env, target);
+    // Case/normalization-insensitive: the file system may be.
+    const key = (path) => path.normalize("NFC").toLowerCase();
+    const keys = new Set([...protect].map(key));
     const isProtected = (path) => {
-      if (protect.has(path)) return true;
-      for (let at = path.indexOf("/"); at >= 0; at = path.indexOf("/", at + 1))
-        if (protect.has(path.slice(0, at + 1))) return true;
+      const k = key(path);
+      if (keys.has(k)) return true;
+      for (let at = k.indexOf("/"); at >= 0; at = k.indexOf("/", at + 1))
+        if (keys.has(k.slice(0, at + 1))) return true;
       return false;
     };
     const raw = (
@@ -659,7 +704,13 @@ export function createCheckpointStore({
           await symlink(blobs.get(c.path).toString("utf8"), temp);
         else {
           // Keep an existing file's permissions; new files follow the umask.
-          const keep = info?.isFile() ? info.mode & 0o777 : undefined;
+          let keep = info?.isFile() ? info.mode & 0o777 : undefined;
+          // Exec bits follow the checkpoint (where read is allowed); the rest stays.
+          if (keep !== undefined)
+            keep =
+              c.srcMode === "100755"
+                ? keep | ((keep & 0o444) >> 2)
+                : keep & ~0o111;
           await writeFile(temp, blobs.get(c.path), {
             flag: "wx",
             mode: keep ?? (c.srcMode === "100755" ? 0o755 : 0o644),
@@ -702,7 +753,8 @@ export function createCheckpointStore({
           }),
         ),
       ]);
-    await write({ messageId, original, fileCount: 0, files: [] });
+    const at = Date.now();
+    await write({ messageId, original, at, fileCount: 0, files: [] });
     const changed = await applyDiff(
       workspaceId,
       workspacePath,
@@ -712,6 +764,7 @@ export function createCheckpointStore({
     const record = {
       messageId,
       original,
+      at,
       fileCount: changed.length,
       files: changed.slice(0, 50),
     };
@@ -766,6 +819,7 @@ export function createCheckpointStore({
     discard: locked(discard),
     find: locked(find),
     staged: locked(staged),
+    conflict: locked(conflict),
     clearStaged: locked(clearStaged),
     stage: locked(stage),
     reapply: locked(reapply),

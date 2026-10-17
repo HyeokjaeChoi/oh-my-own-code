@@ -5412,6 +5412,10 @@ export function createWorkbenchService({
           );
           restoresFiles ||= hasCheckpoint;
         }
+        const willRestore = reapply ? recordCount !== undefined : hasCheckpoint;
+        const clash = () =>
+          checkpoints?.conflict?.(w.id, s.id, request.messageId, reapply);
+        if (willRestore && (await clash())) fail("CONFLICT");
         if (
           !(await confirmSessionRevert({
             action: reapply ? "reapply" : "revert",
@@ -5431,6 +5435,8 @@ export function createWorkbenchService({
         )
           fail("CANCELLED");
         await idleIdentity(w, s);
+        if (checkpoints) await otherSessionsIdle(w, s);
+        if (willRestore && (await clash())) fail("CONFLICT");
         dispatched = true;
         // A failure past this point may have restored only some files; the
         // catch below reports it as UNKNOWN_OUTCOME and locks the session.
