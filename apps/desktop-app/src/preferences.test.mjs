@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -101,6 +102,24 @@ test("applyPreferences resolves system theme, density and font scale", () => {
   assert.equal(style["--omoc-primitive-size-conversation-size"], "13px");
   applyPreferences(root, DEFAULT_PREFERENCES, false);
   assert.deepEqual(style, {});
+});
+
+test("font scale base values match tokens.css", () => {
+  const css = readFileSync(
+    new URL("../../../docs/design/tokens/tokens.css", import.meta.url),
+    "utf8",
+  );
+  const style = {};
+  const root = {
+    setAttribute() {},
+    style: { setProperty: (k, v) => (style[k] = v), removeProperty() {} },
+  };
+  applyPreferences(root, { ...DEFAULT_PREFERENCES, fontSize: "large" }, false);
+  for (const [property, value] of Object.entries(style)) {
+    const base = css.match(new RegExp(`${property}: (\\d+)px`))?.[1];
+    assert.equal(Number(base) + 1, parseFloat(value), property);
+  }
+  assert.equal(Object.keys(style).length, 3);
 });
 
 test("shortcut help lists the help key", () => {

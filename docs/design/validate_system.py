@@ -71,28 +71,31 @@ def ratio(a: str, b: str) -> float:
 # Files another branch is rewriting; they keep literals until it lands, then delete this list.
 FONT_SIZE_ALLOWLIST = (
     "features/git-review/", "features/subagents/", "features/workspace-file-editor/",
-    "pages/workbench/index.tsx", "pages/workbench/shell.module.css",
+    "pages/workbench/shell.module.css",
     "widgets/activity/", "widgets/explorer/", "widgets/plans/", "widgets/preview/", "widgets/terminal/",
 )
-LITERAL_FONT_SIZE = re.compile(r"font(?:-size)?:\s*\d+px")
+# Any font/font-size declaration (shorthand, multi-line, calc/max, decimals, rem) carrying a px/rem length.
+LITERAL_FONT_SIZE = re.compile(r"\bfont(?:-size)?\s*:[^;{}]*?\b\d+(?:\.\d+)?(?:px|rem)\b", re.I)
+PRIMITIVE_FONT_REF = re.compile(r"--omoc-primitive-font-")
 
 
 def check_font_size_literals() -> None:
-    """Type sizes come from --omoc-* font-size tokens; px literals in CSS Modules bypass the scale."""
+    """Type values come from semantic --omoc-* tokens: no px/rem font literals and no primitive font refs in CSS."""
     repo = ROOT.parent.parent
-    offenders = [
-        f"{path.relative_to(repo)}:{n}"
-        for base in (repo / "apps" / "desktop-app" / "src", repo / "packages" / "ui" / "src")
-        for path in sorted(base.rglob("*.module.css"))
-        if not any(allowed in path.as_posix() for allowed in FONT_SIZE_ALLOWLIST)
-        for n, line in enumerate(path.read_text().splitlines(), 1)
-        if LITERAL_FONT_SIZE.search(line)
-    ]
+    offenders = []
+    for base in (repo / "apps" / "desktop-app" / "src", repo / "packages" / "ui" / "src"):
+        for path in sorted(base.rglob("*.css")):
+            if any(allowed in path.as_posix() for allowed in FONT_SIZE_ALLOWLIST):
+                continue
+            text = path.read_text()
+            for rule, why in ((LITERAL_FONT_SIZE, "literal"), (PRIMITIVE_FONT_REF, "primitive font ref")):
+                for match in rule.finditer(text):
+                    offenders.append(f"{path.relative_to(repo)}:{text.count(chr(10), 0, match.start()) + 1} ({why})")
     if offenders:
-        fail("hard-coded font-size px (use --omoc-*-font-size tokens): " + ", ".join(offenders))
+        fail("font tokens: use --omoc-semantic-type-* only: " + ", ".join(offenders))
 
 
-def check() -> None:
+def check(css_text: str | None = None) -> None:
     manifest = json.loads(MANIFEST.read_text())
     components = json.loads(COMPONENTS.read_text())
     if manifest.get("schemaVersion") != 1 or manifest.get("modes") != list(MODES):
@@ -198,7 +201,7 @@ def check() -> None:
     for path in by_path:
         for mode in MODES:
             resolve(path, mode)
-    if CSS.read_text() != generated_css(manifest):
+    if (CSS.read_text() if css_text is None else css_text) != generated_css(manifest):
         fail("CSS export diverges from manifest")
 
     contrast_pairs = [
@@ -396,10 +399,13 @@ def check() -> None:
 
 
 if __name__ == "__main__":
-    if "--write" in sys.argv:  # regenerate tokens.css from manifest.json
-        CSS.write_text(generated_css(json.loads(MANIFEST.read_text())))
     try:
-        check()
+        if "--write" in sys.argv:  # regenerate tokens.css from manifest.json; written only if the checks pass
+            generated = generated_css(json.loads(MANIFEST.read_text()))
+            check(generated)
+            CSS.write_text(generated)
+        else:
+            check()
     except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         raise SystemExit(1)

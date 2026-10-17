@@ -34,7 +34,7 @@
 .empty h1 {
   margin: 0 0 16px;
   font-size: var(--omoc-semantic-type-size-hero);
-  font-weight: var(--omoc-primitive-font-weight-semibold);
+  font-weight: var(--omoc-semantic-type-weight-heading);
   line-height: var(--omoc-semantic-type-line-hero);
   text-wrap: balance;
 }
@@ -42,7 +42,7 @@
 .empty p {
   margin: 0;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: var(--omoc-primitive-font-size-base);
+  font-size: var(--omoc-semantic-type-size-body);
   line-height: var(--omoc-semantic-type-line-body);
 }
 
@@ -175,17 +175,17 @@
 .markdown h5,
 .markdown h6 {
   margin-block: 24px 12px;
-  font-size: var(--omoc-primitive-font-size-base);
-  line-height: var(--omoc-primitive-font-line-body);
-  font-weight: var(--omoc-primitive-font-weight-semibold);
+  font-size: var(--omoc-semantic-type-size-body);
+  line-height: var(--omoc-semantic-type-line-body);
+  font-weight: var(--omoc-semantic-type-weight-heading);
 }
 .markdown h1 {
-  font-size: var(--omoc-primitive-font-size-xl);
-  line-height: var(--omoc-primitive-font-line-h1);
+  font-size: var(--omoc-semantic-type-size-h1);
+  line-height: var(--omoc-semantic-type-line-h1);
 }
 .markdown h2 {
-  font-size: var(--omoc-primitive-font-size-lg);
-  line-height: var(--omoc-primitive-font-line-title);
+  font-size: var(--omoc-semantic-type-size-lead);
+  line-height: var(--omoc-semantic-type-line-title);
 }
 .markdown ul,
 .markdown ol {
@@ -198,7 +198,7 @@
   color: var(--omoc-semantic-color-text-secondary);
 }
 .markdown code {
-  font-family: var(--omoc-primitive-font-family-mono);
+  font-family: var(--omoc-semantic-type-family-code);
 }
 .markdown :not(pre) > code {
   padding: var(--omoc-primitive-space-0-5) var(--omoc-primitive-space-1);
@@ -234,13 +234,13 @@
   border-radius: var(--omoc-primitive-radius-navigation)
     var(--omoc-primitive-radius-navigation) 0 0;
   background: var(--omoc-semantic-color-surface-subtle);
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
 }
 .codeHeader > span {
   overflow-wrap: anywhere;
 }
 .copyControl {
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
   color: var(--omoc-semantic-color-text-secondary);
 }
 .codeHeader .copyControl {
@@ -350,7 +350,7 @@
     calc(var(--omoc-component-size-composer-radius) - 1px) 0 0;
   background: var(--omoc-semantic-color-surface-subtle);
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
   line-height: var(--omoc-semantic-type-line-caption);
 }
 
@@ -372,7 +372,7 @@
   gap: 8px;
   padding: 4px 8px 0 16px;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
   line-height: var(--omoc-semantic-type-line-caption);
 }
 
@@ -439,7 +439,7 @@
   background: transparent;
   color: var(--omoc-semantic-color-text-primary);
   font: inherit;
-  font-size: var(--omoc-primitive-font-size-lg);
+  font-size: var(--omoc-semantic-type-size-lead);
   line-height: 20px;
   cursor: pointer;
 }
@@ -508,7 +508,7 @@
   background: transparent;
   color: var(--omoc-semantic-color-text-primary);
   font: inherit;
-  font-size: var(--omoc-primitive-font-size-md);
+  font-size: var(--omoc-semantic-type-size-label);
   line-height: 20px;
   cursor: pointer;
 }
@@ -550,7 +550,7 @@
   background: var(--omoc-semantic-color-surface-raised);
   color: var(--omoc-semantic-color-text-primary);
   box-shadow: var(--omoc-semantic-shadow-overlay);
-  font-size: var(--omoc-primitive-font-size-md);
+  font-size: var(--omoc-semantic-type-size-label);
   line-height: 20px;
   position-area: top span-left;
   position-try-fallbacks: flip-block;
@@ -576,7 +576,7 @@
 .sessionLine {
   margin: 12px 0 0;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
   line-height: var(--omoc-semantic-type-line-caption);
   overflow-wrap: anywhere;
 }
@@ -610,14 +610,14 @@
 
 .permissionOption small {
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
   line-height: var(--omoc-semantic-type-line-caption);
 }
 
 .muted {
   margin: 8px 0;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
   line-height: var(--omoc-semantic-type-line-caption);
 }
 
@@ -644,15 +644,15 @@
 }
 
 .permissionTitle {
-  font-size: var(--omoc-primitive-font-size-md);
-  font-weight: var(--omoc-primitive-font-weight-semibold);
+  font-size: var(--omoc-semantic-type-size-label);
+  font-weight: var(--omoc-semantic-type-weight-heading);
   line-height: 20px;
 }
 
 .permissionDetail {
   margin: 6px 0;
   white-space: pre-wrap;
-  font-size: var(--omoc-primitive-font-size-md);
+  font-size: var(--omoc-semantic-type-size-label);
   line-height: 20px;
 }
 
@@ -673,7 +673,7 @@
 .toolDetail {
   margin-block: 4px;
   border-radius: var(--omoc-primitive-radius-navigation);
-  font-size: var(--omoc-primitive-font-size-md);
+  font-size: var(--omoc-semantic-type-size-label);
   line-height: 20px;
   overflow-wrap: anywhere;
 }
@@ -737,14 +737,14 @@ details[open] > .disclosure > .chevron {
   border-radius: 999px;
   background: var(--omoc-semantic-color-fill-hover);
   color: var(--omoc-semantic-color-text-primary);
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
   line-height: 20px;
 }
 
 .summaryStateLink {
   border: 0;
   font: inherit;
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
   cursor: pointer;
 }
 
@@ -800,7 +800,7 @@ details[open] > .disclosure > .chevron {
   border-radius: var(--omoc-primitive-radius-md);
   background: var(--omoc-semantic-color-surface-raised);
   box-shadow: var(--omoc-semantic-shadow-overlay);
-  font-size: var(--omoc-primitive-font-size-md);
+  font-size: var(--omoc-semantic-type-size-label);
   line-height: 20px;
 }
 
@@ -814,8 +814,8 @@ details[open] > .disclosure > .chevron {
 
 .menuHeading strong,
 .commandMenu > strong {
-  font-size: var(--omoc-primitive-font-size-sm);
-  font-weight: var(--omoc-primitive-font-weight-semibold);
+  font-size: var(--omoc-semantic-type-size-caption);
+  font-weight: var(--omoc-semantic-type-weight-heading);
   color: var(--omoc-semantic-color-text-secondary);
 }
 
@@ -839,14 +839,14 @@ details[open] > .disclosure > .chevron {
 
 .commandMenu small {
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
   line-height: var(--omoc-semantic-type-line-caption);
 }
 
 .commandMenu p {
   margin: 8px;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
   line-height: var(--omoc-semantic-type-line-caption);
 }
 
@@ -952,7 +952,7 @@ details[open] > .disclosure > .chevron {
   min-width: 0;
   margin-block: 0;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
   line-height: 20px;
   overflow-wrap: anywhere;
 }
@@ -977,12 +977,12 @@ details[open] > .disclosure > .chevron {
   margin: 4px 0 0;
   padding: 0;
   border: 0;
-  font-size: var(--omoc-primitive-font-size-sm);
+  font-size: var(--omoc-semantic-type-size-caption);
   line-height: 20px;
 }
 .runtimeRequests legend {
   padding: 0;
-  font-weight: var(--omoc-primitive-font-weight-semibold);
+  font-weight: var(--omoc-semantic-type-weight-heading);
 }
 .runtimeHint {
   margin: 4px 0;
