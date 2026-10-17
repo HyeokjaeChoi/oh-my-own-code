@@ -498,6 +498,7 @@ async function captureResponsive(prefix, selectors) {
   await setDisplay(page, 1440, 1000, 1);
 }
 async function exerciseConversationContext() {
+  await exerciseRevert();
   let scope = await scenario("ready");
   await setDisplay(page, 1440, 1000, 1);
   await inspectLegacyGeometry();
@@ -870,6 +871,69 @@ async function exerciseConversationContext() {
     await reveal(composer());
     await shot(`${name}-editable-effects-held`);
   }
+}
+
+// Per-turn revert UI against the synthetic host's revert backend (state only).
+async function exerciseRevert() {
+  if (process.env.OMOC_E2E_SCHEME)
+    await page.emulateMedia({ colorScheme: process.env.OMOC_E2E_SCHEME });
+  await scenario("ready");
+  await application.evaluate(() => globalThis.__omocUiFixture.enableRevert());
+  await page.reload();
+  await expect(
+    page.locator(".workbench-header [data-connection]"),
+  ).toHaveAttribute("data-connection", "connected");
+  const message = (id) => page.locator(`[data-message-id="${id}"]`);
+  const revertButton = (id) => page.locator(`[data-context-revert="${id}"]`);
+  const banner = page.locator("[data-revert-banner]");
+  await expect(message("revert-m6")).toBeVisible();
+  // Only user messages carry the action.
+  await expect(page.locator("[data-context-revert]")).toHaveCount(3);
+  await message("revert-m3").hover();
+  await expect(revertButton("revert-m3")).toBeEnabled();
+  await expect(revertButton("revert-m3")).toHaveAttribute(
+    "aria-label",
+    "여기로 되돌리기",
+  );
+  await shot("revert-hover-action");
+  // Denied in the native dialog: nothing changes, copy says so.
+  await application.evaluate(() => {
+    globalThis.__omocUiFixture.nextRevert = "denied";
+  });
+  await revertButton("revert-m3").click();
+  await expect(page.locator("[data-reject-notice]")).toContainText(
+    "되돌리기를 취소했습니다",
+  );
+  await expect(banner).toHaveCount(0);
+  await expect(message("revert-m6")).toBeVisible();
+  // Accepted: later messages hide, banner shows, the prompt refills the composer.
+  await page.getByRole("button", { name: "닫기", exact: true }).first().click();
+  await message("revert-m3").hover();
+  await revertButton("revert-m3").click();
+  await expect(banner).toContainText(
+    "이 메시지 이후를 되돌렸습니다 · 파일 1개 복원",
+  );
+  await expect(banner).toContainText(
+    "다음 메시지를 보내면 되돌린 내용이 확정됩니다.",
+  );
+  await expect(message("revert-m3")).toHaveCount(0);
+  await expect(message("revert-m2")).toBeVisible();
+  await expect(composer()).toHaveValue("SYNTHETIC revert prompt 3");
+  await shot("revert-banner");
+  // Reapply: banner gone, hidden messages are back.
+  await banner.getByRole("button", { name: "다시 적용" }).click();
+  await expect(banner).toHaveCount(0);
+  await expect(message("revert-m6")).toBeVisible();
+  // Non-git folder: only the chat is hidden.
+  await application.evaluate(() => {
+    globalThis.__omocUiFixture.revertFilesRestored = false;
+  });
+  await message("revert-m5").hover();
+  await revertButton("revert-m5").click();
+  await expect(banner).toContainText("파일은 복원되지 않았습니다");
+  await shot("revert-banner-non-git");
+  await banner.getByRole("button", { name: "다시 적용" }).click();
+  await expect(banner).toHaveCount(0);
 }
 
 try {

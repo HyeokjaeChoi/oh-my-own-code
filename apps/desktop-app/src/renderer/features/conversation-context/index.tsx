@@ -1,9 +1,10 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { GitBranch, SquarePen } from "lucide-react";
+import { GitBranch, SquarePen, Undo2 } from "lucide-react";
 import { Button, Input, Textarea } from "@workbench/ui";
 import {
   composerOperation,
   rejectionMessage,
+  revertRequestReady,
   selectors,
   transientRejection,
   useWorkbenchSelector,
@@ -44,9 +45,30 @@ export function ContextMessageActions({
   const idle =
     snapshot?.sessions.find((s) => s.id === snapshot.selectedSessionId)
       ?.status === "idle";
+  const canRevert = useWorkbenchSelector((s) =>
+    revertRequestReady(s, {
+      type: "session.revert",
+      workspaceId: s.selection.workspaceId ?? "",
+      sessionId: s.selection.sessionId ?? "",
+      requestId: "validation",
+      messageId: message.id,
+    }),
+  );
   if (message.role !== "user") return null;
   return (
     <div className={styles.messageActions} data-context-message={message.id}>
+      <Button
+        type="button"
+        size="compact"
+        data-message-action
+        data-context-revert={message.id}
+        aria-label="여기로 되돌리기"
+        title="여기로 되돌리기"
+        disabled={!canRevert}
+        onClick={() => void actions.revertToMessage(message.id)}
+      >
+        <Undo2 size={16} aria-hidden="true" />
+      </Button>
       <Button
         type="button"
         size="compact"
@@ -110,6 +132,8 @@ export function ConversationContextControls({
   const rejection = useWorkbenchSelector((s) =>
     composerOperation(s.errorOp) ? s.error : "",
   );
+  const rejectionOp = useWorkbenchSelector((s) => s.errorOp);
+  const revert = useWorkbenchSelector(selectors.revert);
   const catalog = useWorkbenchSelector(selectors.catalog);
   // The conversation widget already shows a standing alert for this case.
   const noModels =
@@ -313,9 +337,34 @@ export function ConversationContextControls({
           선택하세요.
         </p>
       )}
+      {revert && (
+        <div
+          role="status"
+          className={styles.revertBanner}
+          data-revert-banner={revert.messageId}
+        >
+          <p>
+            이 메시지 이후를 되돌렸습니다 ·{" "}
+            {revert.filesRestored
+              ? `파일 ${revert.fileCount}개 복원`
+              : "파일은 복원되지 않았습니다"}{" "}
+            <Button
+              size="compact"
+              type="button"
+              data-revert-reapply
+              onClick={() => void actions.reapplyRevert()}
+            >
+              다시 적용
+            </Button>
+          </p>
+          <p className={styles.revertNote}>
+            다음 메시지를 보내면 되돌린 내용이 확정됩니다.
+          </p>
+        </div>
+      )}
       {rejection && !(rejection === "AUTH_REQUIRED" && noModels) && (
         <p role="alert" data-reject-notice={rejection}>
-          {rejectionMessage(rejection)}{" "}
+          {rejectionMessage(rejection, rejectionOp)}{" "}
           {rejection === "AUTH_REQUIRED" && (
             <Button size="compact" onClick={() => openSettingsPage("models")}>
               설정 열기
