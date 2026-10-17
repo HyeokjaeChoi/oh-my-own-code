@@ -1985,7 +1985,7 @@ export type DiagnosticsIdentity = Scope & {
   filtered: boolean;
   requestGeneration: number;
 };
-export type Panel = "files" | "activity" | "terminal" | "preview" | "plans";
+export type Panel = "files" | "changes" | "work" | "terminal" | "preview";
 export type ContextDraft = {
   items: readonly ContextDescriptor[];
   verifiedIds: readonly string[];
@@ -9414,7 +9414,7 @@ function reduceWorkbench(state: State, event: Event): State {
     }
     case "layout": {
       const next = { ...state, layout: { ...state.layout, ...event.value } };
-      return event.value.panel !== undefined && event.value.panel !== "activity"
+      return event.value.panel !== undefined && event.value.panel !== "work"
         ? transition(next, { type: "diagnostics.close" })
         : next;
     }
@@ -9789,7 +9789,7 @@ export function createWorkbenchStore(wide = true) {
       wide,
       navigation: wide,
       panel: null,
-      panelWidth: 336,
+      panelWidth: 420,
       navigationBeforePanel: false,
     },
   }));

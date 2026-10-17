@@ -6,10 +6,10 @@ export const PALETTE_SOURCES = Object.freeze({
 });
 const PANELS = [
   ["files", "파일 패널 열기"],
-  ["activity", "활동 패널 열기"],
+  ["changes", "변경 패널 열기"],
+  ["work", "작업 패널 열기"],
   ["terminal", "터미널 패널 열기"],
   ["preview", "미리보기 패널 열기"],
-  ["plans", "계획 패널 열기"],
 ];
 
 // ctx: { hasWorkspace, hasSession, pending, workspaceBlocked, resourceBlocked, connected,

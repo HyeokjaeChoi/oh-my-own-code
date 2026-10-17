@@ -16,11 +16,9 @@ import {
   MoreHorizontal,
   PanelLeft,
   PanelRight,
-  RotateCcw,
   Settings,
   SquarePen,
   SquareTerminal,
-  X,
 } from "lucide-react";
 import { ActivityPanel } from "../../widgets/activity/index.js";
 import {
@@ -44,12 +42,15 @@ import { Conversation } from "../../widgets/conversation/index.js";
 import { TerminalPanel } from "../../widgets/terminal/index.js";
 import { PreviewPanel } from "../../widgets/preview/index.js";
 import { PlansPanel } from "../../widgets/plans/index.js";
+import { ChangesPanel } from "../../widgets/changes/index.js";
+import { SidePanel } from "./side-panel.js";
 import { FileExplorer } from "../../widgets/explorer/index.js";
 import {
   composerOperation,
   rejectionMessage,
   transientRejection,
   selectors,
+  currentGitReviewObservation,
   recoveryMessages,
   useWorkbenchSelector,
   useWindowWorkbench,
@@ -62,13 +63,8 @@ import type {
 import { selectionKey } from "../../shared/projection/index.js";
 import styles from "./shell.module.css";
 
-const panelLabels = {
-  files: "파일",
-  activity: "활동",
-  terminal: "터미널",
-  preview: "미리보기",
-  plans: "계획",
-};
+const MIN_PANEL_WIDTH = 320;
+const DEFAULT_PANEL_WIDTH = 420;
 const states: Record<string, string> = {
   loading: "런타임 확인 중…",
   disconnected: "연결 끊김",
@@ -77,6 +73,10 @@ const states: Record<string, string> = {
 export function Workbench() {
   const { actions, store } = useWindowWorkbench();
   const recovery = useWorkbenchSelector(selectors.recovery);
+  const gitObservation = useWorkbenchSelector(currentGitReviewObservation);
+  // 변경 is the default tab once a current Git read shows changes.
+  const hasChanges =
+    gitObservation?.status === "available" && gitObservation.files.length > 0;
   const globalDisabled = useWorkbenchSelector(
     selectors.workspaceMutationDisabled,
   );
@@ -326,7 +326,10 @@ export function Workbench() {
       );
     }
   };
-  const clampWidth = (value: number) => Math.min(420, Math.max(300, value));
+  const maxPanelWidth = () =>
+    Math.max(MIN_PANEL_WIDTH, Math.round(window.innerWidth * 0.6));
+  const clampWidth = (value: number) =>
+    Math.min(maxPanelWidth(), Math.max(MIN_PANEL_WIDTH, value));
   const navigationContent = (
     <div className={styles.navigationBody}>
       <div className={styles.workspaceSelector}>
@@ -682,81 +685,39 @@ export function Workbench() {
       </Button>
     </div>
   );
+  const noWorkspace = <p className={styles.muted}>작업 공간을 선택하세요.</p>;
   const panelContent = (
     <>
-      <div className={styles.panelHeading}>
-        <div
-          className={`${styles.panelTabs} panel-tabs`}
-          aria-label="상세 패널 보기"
-        >
-          {(Object.keys(panelLabels) as Panel[]).map((item) => (
-            <Button
-              size="compact"
-              key={item}
-              aria-pressed={panel === item}
-              onClick={() => setPanel(item)}
-            >
-              {panelLabels[item]}
-            </Button>
-          ))}
-        </div>
-        {wide && (
-          <Button
-            size="compact"
-            className={styles.iconButton}
-            title="너비 초기화"
-            aria-label="상세 패널 너비 초기화"
-            onClick={() => setPanelWidth(336)}
-          >
-            <RotateCcw size={16} />
-          </Button>
-        )}
-        {wide && (
-          <Button
-            size="compact"
-            className={styles.iconButton}
-            aria-label="상세 패널 닫기"
-            title="상세 패널 닫기"
-            onClick={closePanel}
-          >
-            <X size={18} />
-          </Button>
-        )}
-      </div>
-      <div className={styles.panelContent}>
-        {panel === "activity" ? (
-          <ActivityPanel
-            workspaceId={selection.workspaceId}
-            sessionId={selection.sessionId}
-          />
-        ) : panel === "terminal" ? (
-          selection.workspaceId ? (
-            <TerminalPanel key={key} workspaceId={selection.workspaceId} />
-          ) : (
-            <p className={styles.muted}>작업 공간을 선택하세요.</p>
-          )
-        ) : panel === "preview" ? (
-          selection.workspaceId ? (
-            <PreviewPanel key={key} workspaceId={selection.workspaceId} />
-          ) : (
-            <p className={styles.muted}>작업 공간을 선택하세요.</p>
-          )
-        ) : panel === "plans" ? (
-          selection.workspaceId ? (
+      <SidePanel
+        panel={panel ?? "files"}
+        onSelect={setPanel}
+        onClose={wide ? closePanel : undefined}
+        fill={panel === "terminal" || panel === "preview"}
+      >
+        {!selection.workspaceId ? (
+          noWorkspace
+        ) : panel === "work" ? (
+          <>
             <PlansPanel
               key={key}
               workspaceId={selection.workspaceId}
               sessionId={selection.sessionId}
             />
-          ) : (
-            <p className={styles.muted}>작업 공간을 선택하세요.</p>
-          )
-        ) : selection.workspaceId ? (
-          <FileExplorer key={key} workspaceId={selection.workspaceId} />
+            <ActivityPanel
+              workspaceId={selection.workspaceId}
+              sessionId={selection.sessionId}
+            />
+          </>
+        ) : panel === "terminal" ? (
+          <TerminalPanel key={key} workspaceId={selection.workspaceId} />
+        ) : panel === "preview" ? (
+          <PreviewPanel key={key} workspaceId={selection.workspaceId} />
+        ) : panel === "changes" ? (
+          <ChangesPanel key={key} workspaceId={selection.workspaceId} />
         ) : (
-          <p className={styles.muted}>작업 공간을 선택하세요.</p>
+          <FileExplorer key={key} workspaceId={selection.workspaceId} />
         )}
-      </div>
+      </SidePanel>
       {!wide && (
         <Button className={styles.returnButton} onClick={closePanel}>
           대화로 돌아가기
@@ -767,7 +728,9 @@ export function Workbench() {
   return (
     <main
       className={`${styles.workbench} workbench ${navigation ? "navigation-open" : ""} ${panel ? "detail-open" : ""}`}
-      style={{ "--detail-width": `${panelWidth}px` } as CSSProperties}
+      style={
+        { "--detail-width": `${clampWidth(panelWidth)}px` } as CSSProperties
+      }
     >
       {wide && navigation && (
         <aside
@@ -866,10 +829,12 @@ export function Workbench() {
             ref={panelButton}
             size="compact"
             className={styles.iconButton}
-            aria-label="파일·확장"
-            title="파일·확장"
+            aria-label="보조 패널"
+            title="보조 패널"
             aria-expanded={Boolean(panel)}
-            onClick={() => (panel ? closePanel() : openPanel("files"))}
+            onClick={() =>
+              panel ? closePanel() : openPanel(hasChanges ? "changes" : "files")
+            }
           >
             <PanelRight size={18} />
           </Button>
@@ -1036,18 +1001,18 @@ export function Workbench() {
             tabIndex={0}
             aria-label="상세 패널 너비"
             aria-orientation="vertical"
-            aria-valuemin={300}
-            aria-valuemax={420}
-            aria-valuenow={panelWidth}
-            aria-valuetext={`${panelWidth}픽셀`}
-            onDoubleClick={() => setPanelWidth(336)}
+            aria-valuemin={MIN_PANEL_WIDTH}
+            aria-valuemax={maxPanelWidth()}
+            aria-valuenow={clampWidth(panelWidth)}
+            aria-valuetext={`${clampWidth(panelWidth)}픽셀`}
+            onDoubleClick={() => setPanelWidth(DEFAULT_PANEL_WIDTH)}
             onKeyDown={(event) => {
               const values: Record<string, number> = {
-                ArrowLeft: panelWidth + 10,
-                ArrowRight: panelWidth - 10,
-                Home: 300,
-                End: 420,
-                Enter: 336,
+                ArrowLeft: clampWidth(panelWidth) + 10,
+                ArrowRight: clampWidth(panelWidth) - 10,
+                Home: MIN_PANEL_WIDTH,
+                End: maxPanelWidth(),
+                Enter: DEFAULT_PANEL_WIDTH,
               };
               if (event.key in values) {
                 event.preventDefault();
@@ -1055,7 +1020,10 @@ export function Workbench() {
               }
             }}
             onPointerDown={(event) => {
-              drag.current = { x: event.clientX, width: panelWidth };
+              drag.current = {
+                x: event.clientX,
+                width: clampWidth(panelWidth),
+              };
               event.currentTarget.setPointerCapture(event.pointerId);
             }}
             onPointerMove={(event) => {
@@ -1076,7 +1044,7 @@ export function Workbench() {
           />
           <aside
             className={`${styles.detailPanel} detail-panel`}
-            aria-label="파일, 확장 및 활동"
+            aria-label="보조 패널"
           >
             {panelContent}
           </aside>
@@ -1088,7 +1056,7 @@ export function Workbench() {
           onOpenChange={(open) => {
             if (!open) closePanel();
           }}
-          title="파일, 확장 및 활동"
+          title="보조 패널"
           flush
           returnFocusRef={panelButton}
         >
