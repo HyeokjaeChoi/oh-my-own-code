@@ -2441,7 +2441,7 @@ test("checkpoint: a file restore is refused while another session of the workspa
 
 test("checkpoint: another session's newer checkpoint refuses the file restore with CONFLICT", async (t) => {
   const cp = fakeCheckpoints({ conflict: async () => true });
-  const { f, rec, revert } = await revertFixture(t, async () => true, cp);
+  const { rec, revert } = await revertFixture(t, async () => true, cp);
   cp.known.set("msg_3", "oid-9");
   const result = await revert("session.revert");
   assert.equal(result.code, "CONFLICT");
