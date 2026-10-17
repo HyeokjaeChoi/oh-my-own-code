@@ -19,7 +19,7 @@
   height: min(560px, 86vh);
   overflow: hidden;
   border: 1px solid transparent;
-  border-radius: 14px;
+  border-radius: var(--omoc-primitive-radius-md);
   background: var(--omoc-semantic-color-surface);
   color: var(--omoc-semantic-color-text-primary);
   box-shadow: var(--omoc-semantic-shadow-overlay);
@@ -48,7 +48,7 @@
 .title {
   margin: 0 0 8px;
   padding-inline: 10px;
-  font-size: 15px;
+  font-size: var(--omoc-semantic-type-size-title);
   font-weight: 600;
   line-height: 24px;
 }
@@ -70,7 +70,7 @@
   background: transparent;
   color: var(--omoc-semantic-color-text-secondary);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--omoc-primitive-font-size-md);
   text-align: start;
   cursor: pointer;
 }
@@ -132,7 +132,7 @@
 
 .pageTitle {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--omoc-semantic-type-size-title);
   font-weight: 600;
   line-height: 28px;
 }
@@ -140,14 +140,14 @@
 .pageDescription {
   margin: 2px 0 0;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
   line-height: 18px;
 }
 
 .status {
   flex-shrink: 0;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
   line-height: 28px;
 }
 

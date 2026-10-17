@@ -11,10 +11,10 @@
 .sectionHeader h2 {
   flex: 1;
   margin: 0;
-  color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 500;
+  color: var(--omoc-semantic-color-text-tertiary);
+  font-size: var(--omoc-semantic-type-size-group);
+  line-height: var(--omoc-semantic-type-line-group);
+  font-weight: var(--omoc-primitive-font-weight-semibold);
 }
 .iconButton {
   display: inline-flex;
@@ -74,7 +74,7 @@
   gap: 6px;
   align-items: center;
   min-width: 0;
-  min-height: max(34px, var(--omoc-component-size-control-hit-target));
+  min-height: var(--omoc-component-size-sidebar-row-height);
   padding: 4px 8px;
   background: transparent;
   border: 0;
@@ -83,6 +83,9 @@
   text-align: left;
   font-size: var(--omoc-component-type-navigation-size);
   line-height: var(--omoc-component-type-navigation-line);
+}
+.row[data-selected="true"] .sessionButton {
+  font-weight: var(--omoc-primitive-font-weight-medium);
 }
 .title {
   flex: 1;
@@ -109,14 +112,14 @@
   padding: 8px;
   display: grid;
   gap: 6px;
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
 }
 .rename > div {
   display: flex;
   gap: 6px;
 }
 .empty {
-  font-size: 13px;
+  font-size: var(--omoc-primitive-font-size-md);
   color: var(--omoc-semantic-color-text-secondary);
   padding: 8px;
   line-height: 1.5;
