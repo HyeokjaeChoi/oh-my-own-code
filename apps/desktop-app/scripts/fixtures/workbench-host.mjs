@@ -583,8 +583,8 @@ export function createUiFixture() {
       ]),
     );
   };
-  // Opt-in per-turn revert state (state only, no file IO). Message ids sort in
-  // conversation order like Native's, because hiding is `id >= boundary`.
+  // Opt-in per-turn revert state (state only, no file IO). Hiding is by position
+  // (the boundary and everything after it), like Native's seq order.
   // `fixture.nextRevert`: undefined | "denied" (native dialog refused) | "unknown".
   // `fixture.revertFilesRestored = false` simulates a non-git folder.
   fixture.enableRevert = () => {
@@ -5320,7 +5320,7 @@ export function createFixtureTransport(
     return finish();
   }
   // Selected-session snapshot from per-session messages, hiding a staged revert
-  // (`id >= boundary`) the way the real projection does.
+  // (boundary and later messages) the way the real projection does.
   function selectedSnapshot(workspaceId, sessionId) {
     const ready = fixture.snapshot.recovery.store.state === "ready";
     const staged = fixture.sessionRevert?.get(sessionId);
@@ -5332,7 +5332,12 @@ export function createFixtureTransport(
         selectedSessionId: sessionId,
         messages: ready
           ? clone(
-              staged ? rows.filter((m) => !(m.id >= staged.messageId)) : rows,
+              staged
+                ? rows.slice(
+                    0,
+                    rows.findIndex((m) => m.id === staged.messageId),
+                  )
+                : rows,
             )
           : [],
         ...(ready &&
@@ -5360,9 +5365,12 @@ export function createFixtureTransport(
     if (!staged) return;
     fixture.sessionMessages.set(
       sessionId,
-      fixture.sessionMessages
-        .get(sessionId)
-        .filter((m) => !(m.id >= staged.messageId)),
+      fixture.sessionMessages.get(sessionId).slice(
+        0,
+        fixture.sessionMessages
+          .get(sessionId)
+          .findIndex((m) => m.id === staged.messageId),
+      ),
     );
     fixture.sessionRevert.delete(sessionId);
   }
@@ -5910,7 +5918,13 @@ export function createFixtureTransport(
             : "INVALID_SELECTION";
       else if (
         target?.role !== "user" ||
-        (staged && request.messageId >= staged.messageId)
+        (staged &&
+          (fixture.sessionMessages.get(session.id) ?? []).findIndex(
+            (m) => m.id === request.messageId,
+          ) >=
+            (fixture.sessionMessages.get(session.id) ?? []).findIndex(
+              (m) => m.id === staged.messageId,
+            ))
       )
         refused = "INVALID_SELECTION";
       if (!refused && fixture.nextRevert === "denied") {

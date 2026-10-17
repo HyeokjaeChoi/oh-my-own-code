@@ -16,7 +16,8 @@ Revert is allowed outside the permission ruleset. It undoes changes that were al
 - A native confirmation dialog (default deny, `confirmSessionRevert`) is required for both revert and reapply. The reapply dialog warns that edits made after the revert to the same files are overwritten.
 - The renderer sends only a message id. It never passes paths or a file list, and `commit` is never exposed: the next prompt or compaction commits server-side.
 - A failure after dispatch can leave only some files restored. It is reported as `UNKNOWN_OUTCOME` and locks the session like any other unresolved effect.
-- Without a git repository nothing is restored. The snapshot DTO says so (`revert.filesRestored: false`) so the UI can tell the user.
+- Whether files are restored is decided from Native facts, never from workspace metadata. The dialog's `restoresFiles` is true only if an assistant message at or after the target recorded `snapshot.start`; the DTO's `revert.filesRestored` is true only if the staged revert carries a snapshot. Without them (non-git folder, or an event host that runs with VCS discovery off) the dialog says "대화만 되돌립니다. 파일은 복원되지 않습니다." and the UI can say the same. Today the desktop event host never discovers VCS, so file restore is off there until that is decided separately.
+- Messages are hidden by position in Native's sequence order (not by id order), reading history in pages of 100.
 
 ## Alternatives and impact
 

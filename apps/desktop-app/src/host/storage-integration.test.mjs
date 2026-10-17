@@ -1185,6 +1185,10 @@ test("session.revert and reapply are journaled (native.revert.*), confirmed by a
   f.context.client.session.message = {
     get: async ({ messageID }) => ({ id: messageID, type: "user" }),
   };
+  f.context.client.message.list = async () => ({
+    data: [{ id: "msg_9", type: "user", text: "x" }],
+    cursor: {},
+  });
   f.context.client.session.revert = {
     stage: async (input) => {
       calls.push(["stage", input]);

@@ -2640,7 +2640,7 @@ function validProjection(next: WorkbenchSnapshot): boolean {
       r!.files.length > r!.fileCount ||
       r!.files.some((f) => typeof f !== "string" || !f || f.length > 1024) ||
       typeof r!.filesRestored !== "boolean" ||
-      next.messages.some((m) => m.id >= r!.messageId)
+      next.messages.some((m) => m.id === r!.messageId)
     )
       return false;
   }

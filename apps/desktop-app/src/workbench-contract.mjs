@@ -879,8 +879,9 @@ export function validateSnapshot(value) {
         r.files.length <= r.fileCount &&
         r.files.every((f) => boundedText(f, 1024) && f.length > 0) &&
         typeof r.filesRestored === "boolean" &&
-        // Hidden-message invariant: nothing at or after the boundary is shown.
-        value.messages.every((m) => !(m.id >= r.messageId)),
+        // Hidden-message invariant: the boundary itself is never shown (Native
+        // orders by sequence, so later ids cannot be compared here).
+        value.messages.every((m) => m.id !== r.messageId),
     );
   }
   for (const p of value.permissions) {
