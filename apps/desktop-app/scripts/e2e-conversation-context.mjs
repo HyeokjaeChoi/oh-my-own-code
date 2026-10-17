@@ -498,6 +498,8 @@ async function captureResponsive(prefix, selectors) {
   await setDisplay(page, 1440, 1000, 1);
 }
 async function exerciseConversationContext() {
+  // First on purpose: the later scenarios leave unknown-outcome receipts that
+  // make every following send/revert report UNKNOWN_OUTCOME in this host.
   await exerciseRevert();
   let scope = await scenario("ready");
   await setDisplay(page, 1440, 1000, 1);
@@ -851,6 +853,7 @@ async function exerciseConversationContext() {
       ),
     )
     .toBe(true);
+  await expectRevertDisabled();
   await composer().fill("SYNTHETIC inert unknown draft");
   await openComposerPopover(page, "run");
   await shot("unknown-original-key-editable-no-replay");
@@ -863,6 +866,7 @@ async function exerciseConversationContext() {
     await scenario(name);
     await composer().fill(`SYNTHETIC ${name} inert draft`);
     await expect(hook("observe")).toBeDisabled();
+    await expectRevertDisabled();
     // The queue entry point stays available; its status strip does not.
     await expect(page.locator("[data-run-strip]")).toHaveCount(0);
     await openComposerPopover(page, "run");
@@ -911,7 +915,7 @@ async function exerciseRevert() {
   await message("revert-m3").hover();
   await revertButton("revert-m3").click();
   await expect(banner).toContainText(
-    "이 메시지 이후를 되돌렸습니다 · 파일 1개 복원",
+    "선택한 메시지부터 되돌렸습니다 · 파일 1개 복원",
   );
   await expect(banner).toContainText(
     "다음 메시지를 보내면 되돌린 내용이 확정됩니다.",
@@ -927,6 +931,7 @@ async function exerciseRevert() {
   // Non-git folder: only the chat is hidden.
   await application.evaluate(() => {
     globalThis.__omocUiFixture.revertFilesRestored = false;
+    globalThis.__omocUiFixture.revertFiles = [];
   });
   await message("revert-m5").hover();
   await revertButton("revert-m5").click();
@@ -934,6 +939,43 @@ async function exerciseRevert() {
   await shot("revert-banner-non-git");
   await banner.getByRole("button", { name: "다시 적용" }).click();
   await expect(banner).toHaveCount(0);
+  // A running session never offers a revert.
+  await application.evaluate(() => {
+    const f = globalThis.__omocUiFixture;
+    f.snapshot.sessions.find(
+      (x) => x.id === f.snapshot.selectedSessionId,
+    ).status = "running";
+    f.snapshot.revision++;
+  });
+  await page.reload();
+  await expect(message("revert-m5")).toBeVisible();
+  assert.equal(await page.locator("[data-context-revert]").count(), 3);
+  await expectRevertDisabled();
+  await application.evaluate(() => {
+    const f = globalThis.__omocUiFixture;
+    f.snapshot.sessions.find(
+      (x) => x.id === f.snapshot.selectedSessionId,
+    ).status = "idle";
+    f.snapshot.revision++;
+  });
+  await page.reload();
+  await expect(message("revert-m5")).toBeVisible();
+  // A git folder with nothing changed since that message.
+  await application.evaluate(() => {
+    globalThis.__omocUiFixture.revertFilesRestored = true;
+  });
+  await message("revert-m5").hover();
+  await revertButton("revert-m5").click();
+  await expect(banner).toContainText("바뀐 파일 없음");
+  await banner.getByRole("button", { name: "다시 적용" }).click();
+  await expect(banner).toHaveCount(0);
+}
+// Held, unknown or untrusted sessions never offer a revert.
+async function expectRevertDisabled() {
+  const all = page.locator("[data-context-revert]");
+  // Some held scenarios show no transcript; the revert scenario covers a
+  // non-idle session with messages (non-vacuous).
+  for (const button of await all.all()) await expect(button).toBeDisabled();
 }
 
 try {

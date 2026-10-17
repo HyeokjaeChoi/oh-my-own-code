@@ -293,3 +293,12 @@ export function validHistoricalContext(v) {
         v.count <= CONTEXT_LIMITS.items))
   );
 }
+
+// The files half of the revert banner: a count wins; with none, say whether
+// restoring files was even possible (a non-git folder restores none).
+export const revertFilesText = (revert) =>
+  revert.fileCount
+    ? `파일 ${revert.fileCount}개 복원`
+    : revert.filesRestored
+      ? "바뀐 파일 없음"
+      : "파일은 복원되지 않았습니다";

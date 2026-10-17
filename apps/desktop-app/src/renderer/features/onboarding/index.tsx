@@ -22,12 +22,22 @@ const CATALOG_WAIT_MS = 20_000;
 
 // Provider connection state, re-read whenever the model catalog changes (a key
 // saved in Settings refreshes it). Undefined until known, so nothing flashes.
+// Callers that load in the same tick (conversation + settings) share one IPC call.
+let inflight: Promise<ProviderList | undefined> | undefined;
+function readProviderList() {
+  inflight ??= callProvider<unknown>({ type: "provider.list" })
+    .then((result) => (result.ok ? parseProviderList(result.value) : undefined))
+    .finally(() => {
+      inflight = undefined;
+    });
+  return inflight;
+}
 export function useProviderList(): ProviderList | undefined {
   const catalog = useWorkbenchSelector(selectors.catalog);
   const [list, setList] = useState<ProviderList>();
   const load = useCallback(async () => {
-    const result = await callProvider<unknown>({ type: "provider.list" });
-    if (result.ok) setList(parseProviderList(result.value));
+    const next = await readProviderList();
+    if (next) setList(next);
   }, []);
   useEffect(() => {
     void load();
@@ -46,7 +56,7 @@ const openKeysPage = () =>
     .preview({ type: "preview.openExternal", url: KEYS_URL })
     .catch(() => {});
 
-type Phase = "idle" | "busy" | "done";
+type Phase = "idle" | "busy" | "done" | "stalled";
 
 // Empty-state card for a profile with no provider: one OpenRouter key buys the
 // free models. The key lives in the uncontrolled input and one provider.connect
@@ -73,11 +83,9 @@ export function FirstRunCard({ onVerified }: { onVerified?: () => void }) {
       return;
     }
     const timer = setTimeout(() => {
+      // Connected, but no model list yet: never show the key form again.
       setWaiting(false);
-      setPhase("idle");
-      setNotice(
-        "연결했지만 모델 목록을 불러오지 못했습니다. 네트워크를 확인한 뒤 설정에서 다시 시도하세요.",
-      );
+      setPhase("stalled");
     }, CATALOG_WAIT_MS);
     return () => clearTimeout(timer);
   }, [waiting, router, actions]);
@@ -126,6 +134,25 @@ export function FirstRunCard({ onVerified }: { onVerified?: () => void }) {
     setWaiting(true);
   };
 
+  if (phase === "stalled")
+    return (
+      <div className={styles.card} data-first-run="stalled">
+        <p className={styles.success} role="status">
+          연결됨
+        </p>
+        <p className={styles.text}>
+          모델 목록을 불러오지 못했습니다. 네트워크를 확인한 뒤 설정의 모델
+          탭에서 다시 시도하세요.{" "}
+          <button
+            type="button"
+            className={styles.link}
+            onClick={() => openSettingsPage("models")}
+          >
+            설정 열기
+          </button>
+        </p>
+      </div>
+    );
   if (phase === "done")
     return (
       <div className={styles.card} data-first-run="done">

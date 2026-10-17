@@ -102,6 +102,7 @@ import {
 } from "../../../shared/api/index.js";
 import type { MutationRequest } from "../../../shared/transport/index.js";
 import { selectionKey } from "../../../shared/projection/index.js";
+import { freeFailure } from "../../../shared/providers/index.js";
 import {
   SKILL_LIMITS,
   AGENT_LIMITS,
@@ -9811,8 +9812,21 @@ export function createWorkbenchStore(wide = true) {
   };
 }
 export type WorkbenchStore = ReturnType<typeof createWorkbenchStore>;
+// How the latest assistant turn failed when its model is free (404 = no longer
+// served for free, 429 = rate limit); the page uses it to drop its generic banner.
+function lastTurnFreeFailure(s: State): "unavailable" | "limit" | undefined {
+  const last = currentSelectedSnapshot(s)?.messages.at(-1);
+  if (last?.role !== "assistant" || !last.failure) return undefined;
+  const models = s.catalog?.models;
+  return freeFailure(
+    models?.status === "available" ? models.entries : [],
+    last.runtime?.model,
+    last.failure.status,
+  )?.kind;
+}
 export const selectors = {
   revert: currentRevert,
+  lastTurnFreeFailure,
   conversationContext: (s: State) => s.conversationContext,
   contextDraft: selectedContextDraft,
   contextEffectsReady,

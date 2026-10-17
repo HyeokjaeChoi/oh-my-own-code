@@ -63,9 +63,11 @@ import {
   useProviderList,
 } from "../../features/onboarding/index.js";
 import {
+  clearModelUnavailable,
   findFreeRouter,
   freeFailure,
   loadUnavailableModels,
+  retryablePrompt,
   markModelUnavailable,
   showFirstRun,
 } from "../../shared/providers/index.js";
@@ -541,18 +543,37 @@ export function Conversation(props: Props) {
     }
     return found;
   }, [props.messages, props.catalog]);
+  // Only the latest turn counts: a 404 marks its model, a later success on a
+  // marked model clears it (older failures in the history stay history).
   useEffect(() => {
+    const last = props.messages.at(-1);
+    if (last?.role !== "assistant") return;
     let next = unavailable;
-    for (const failed of failures.values())
+    const failed = failures.get(last.id);
+    if (failed) {
       if (
         failed.kind === "unavailable" &&
         failed.id &&
         !next.includes(failed.id)
       )
         next = markModelUnavailable(failed.id);
+    } else if (
+      !last.failure &&
+      last.runtime &&
+      props.catalog?.models.status === "available"
+    ) {
+      const entry = props.catalog.models.entries.find(
+        (e) =>
+          e.providerId === last.runtime?.model.providerId &&
+          e.modelId === last.runtime?.model.id,
+      );
+      if (entry && next.includes(entry.id))
+        next = clearModelUnavailable(entry.id);
+    }
     if (next !== unavailable) setUnavailable(next);
-  }, [failures, unavailable]);
+  }, [failures, unavailable, props.messages, props.catalog]);
   const freeRouter = findFreeRouter(props.catalog?.models);
+  const retrying = useRef(false);
   // Sending may be blocked by an unknown receipt while interruption is needed.
   const canInterrupt =
     props.executionAvailable &&
@@ -770,10 +791,7 @@ export function Conversation(props: Props) {
                       const index = props.messages.findIndex(
                         (m) => m.id === message.id,
                       );
-                      const prompt =
-                        index > 0 && props.messages[index - 1]?.role === "user"
-                          ? props.messages[index - 1]!.text
-                          : "";
+                      const prompt = retryablePrompt(props.messages[index - 1]);
                       const canRetry =
                         freeRouter &&
                         prompt &&
@@ -786,8 +804,18 @@ export function Conversation(props: Props) {
                           onRetry={
                             canRetry
                               ? () => {
+                                  if (retrying.current) return;
+                                  retrying.current = true;
                                   actions.options({ model: freeRouter.id });
-                                  void actions.sendContextMessage(prompt);
+                                  void actions
+                                    .resendMessage(
+                                      prompt,
+                                      freeRouter.id,
+                                      agent || undefined,
+                                    )
+                                    .finally(() => {
+                                      retrying.current = false;
+                                    });
                                 }
                               : undefined
                           }
@@ -808,7 +836,9 @@ export function Conversation(props: Props) {
             {messages.length === 0 && (
               <div className={styles.empty}>
                 <h1>무엇을 만들까요?</h1>
-                <p>카드 없이, 어떤 모델로든 — 한국어로 쓰는 코딩 에이전트.</p>
+                <p>
+                  신용카드 없이, 어떤 모델로든 — 한국어로 쓰는 코딩 에이전트.
+                </p>
                 {firstRun && (
                   <FirstRunCard onVerified={() => setCardHeld(true)} />
                 )}
@@ -1391,7 +1421,8 @@ export function Conversation(props: Props) {
                 <PermissionPolicy className={styles.runtimeReport} />
               </PopoverPanel>
             </div>
-            {props.catalog?.models.status === "available" &&
+            {!firstRun &&
+              props.catalog?.models.status === "available" &&
               props.catalog.models.entries.length === 0 && (
                 <Notice
                   tone="danger"

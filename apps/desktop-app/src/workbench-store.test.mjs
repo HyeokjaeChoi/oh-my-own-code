@@ -19359,10 +19359,58 @@ test("runtime options: session setting correlation and closedness reject absent 
         },
       ],
     },
+    ...[
+      { role: "user", failure: { status: 404 } },
+      { role: "assistant", failure: { status: 200 } },
+      { role: "assistant", failure: { status: 404, message: "leak" } },
+    ].map(({ role, failure }) => ({
+      messages: [{ id: "m", role, text: "", tools: [], failure }],
+    })),
   ]) {
     seed(store, snapshot(2, "a", extra));
     assert.equal(store.getState(), before);
   }
+});
+test("a failed assistant turn is accepted with its status and drives lastTurnFreeFailure", () => {
+  const { api } = runtimeWindow(() => undefined);
+  seed(
+    api.store,
+    snapshot(1, "a", {
+      messages: [
+        {
+          id: "m",
+          role: "assistant",
+          text: "",
+          tools: [],
+          runtime: {
+            agent: "build",
+            model: { providerId: "openrouter", id: "x/y:free" },
+          },
+          failure: { status: 429 },
+        },
+      ],
+    }),
+  );
+  assert.equal(selectors.lastTurnFreeFailure(api.store.getState()), "limit");
+  seed(
+    api.store,
+    snapshot(2, "a", {
+      messages: [
+        {
+          id: "m",
+          role: "assistant",
+          text: "",
+          tools: [],
+          runtime: {
+            agent: "build",
+            model: { providerId: "openai", id: "gpt" },
+          },
+          failure: { status: 429 },
+        },
+      ],
+    }),
+  );
+  assert.equal(selectors.lastTurnFreeFailure(api.store.getState()), undefined);
 });
 test("runtime options: current session report waits for fresh snapshot at ACK floor; never copies NEXT request", async () => {
   const noRead = deferred();
