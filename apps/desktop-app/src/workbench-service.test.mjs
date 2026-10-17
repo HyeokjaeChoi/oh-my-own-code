@@ -1433,6 +1433,49 @@ test("context before-user branch validates Native boundary and never prompts or 
     baseline,
   );
 });
+test("context before-user branch accepts Native's real message.get and fork shapes (no sessionID, no parentID)", async (t) => {
+  const f = await fixture(t);
+  f.client.session.message = {
+    get: async () => ({ id: "user-before", type: "user", text: "original" }),
+  };
+  const forkInfo = {
+    ...f.infos.get("sdk-default"),
+    id: "sdk-fork",
+    fork: {
+      sessionID: "sdk-default",
+      boundary: { type: "before", messageID: "user-before" },
+    },
+  };
+  f.client.session.fork = async () => {
+    f.infos.set("sdk-fork", forkInfo);
+    return forkInfo;
+  };
+  const result = await f.service.handle({
+    type: "session.fork",
+    ...f.ids,
+    requestId: "branch-no-sid",
+    before: "user-before",
+  });
+  assert.equal(result.ok, true, JSON.stringify(result));
+});
+test("context before-user branch refuses an explicit other-session target before Native fork", async (t) => {
+  const f = await fixture(t);
+  let count = 0;
+  f.client.session.message = {
+    get: async () => ({ id: "target", sessionID: "sdk-other", type: "user" }),
+  };
+  f.client.session.fork = async () => {
+    count++;
+  };
+  const result = await f.service.handle({
+    type: "session.fork",
+    ...f.ids,
+    requestId: "branch-cross",
+    before: "target",
+  });
+  assert.equal(result.ok, false);
+  assert.equal(count, 0);
+});
 test("context before-user branch refuses assistant targets before Native fork", async (t) => {
   const f = await fixture(t);
   let count = 0;

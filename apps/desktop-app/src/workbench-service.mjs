@@ -2562,8 +2562,7 @@ export function createWorkbenchService({
         });
         if (
           boundary
-            ? info.parentID !== parent.sdkId ||
-              info.fork?.boundary?.type !== "before" ||
+            ? info.fork?.boundary?.type !== "before" ||
               info.fork?.boundary?.messageID !== boundary.beforeMessageId
             : info.fork?.boundary?.type === "before"
         )
@@ -5058,7 +5057,9 @@ export function createWorkbenchService({
           });
           if (
             target?.id !== request.before ||
-            target.sessionID !== s.sdkId ||
+            // Native's message.get omits sessionID and rejects other sessions'
+            // ids itself (MessageNotFoundError); refuse an explicit mismatch.
+            (target.sessionID !== undefined && target.sessionID !== s.sdkId) ||
             target.type !== "user"
           )
             fail("INVALID_SELECTION");
@@ -5096,8 +5097,8 @@ export function createWorkbenchService({
         }
         if (
           request.before &&
-          (forked?.parentID !== s.sdkId ||
-            forked?.fork?.sessionID !== s.sdkId ||
+          // Native's fork response carries lineage in `fork` only (no parentID).
+          (forked?.fork?.sessionID !== s.sdkId ||
             forked?.fork?.boundary?.type !== "before" ||
             forked?.fork?.boundary?.messageID !== request.before)
         )
@@ -5118,8 +5119,7 @@ export function createWorkbenchService({
         });
         if (
           (request.before &&
-            (checked?.parentID !== s.sdkId ||
-              checked?.fork?.sessionID !== s.sdkId ||
+            (checked?.fork?.sessionID !== s.sdkId ||
               checked?.fork?.boundary?.type !== "before" ||
               checked?.fork?.boundary?.messageID !== request.before)) ||
           checked?.id !== child.sdkId ||
