@@ -320,6 +320,7 @@ export function createWorkbenchService({
   confirmTrust,
   confirmSessionRemoval = async () => false,
   confirmSessionRevert = async () => false,
+  checkpoints, // app-owned file checkpoint store (host/workspace-checkpoint.mjs)
   confirmConfigurationSave = async () => false,
   confirmInstructions = async () => false,
   confirmMcp = async () => false,
@@ -3191,6 +3192,16 @@ export function createWorkbenchService({
         // Native does not hide reverted messages; the boundary message and all
         // later ones are hidden here.
         s.revert = projectRevert(info.revert);
+        if (s.revert && checkpoints) {
+          const record = await checkpoints.staged(s.workspaceId, s.id);
+          if (record?.messageId === s.revert.messageId)
+            s.revert = {
+              ...s.revert,
+              fileCount: record.fileCount,
+              files: record.files.slice(0, 50),
+              filesRestored: true,
+            };
+        }
         const boundary = info.revert?.messageID;
         const visible = boundary
           ? await olderThanBoundary(s.sdkId, messages, boundary)
@@ -3623,6 +3634,18 @@ export function createWorkbenchService({
       switching = false;
       await recheck(w);
       await verifyBaselineSettled(w, s, currentRun, deadline);
+      // Checkpoint the files before the agent can touch them. Failure or an
+      // over-cap workspace only means this turn cannot restore files.
+      let checkpoint;
+      if (
+        checkpoints &&
+        request.type === "message.send" &&
+        !currentRun &&
+        w.trusted
+      )
+        checkpoint = await checkpoints
+          .snapshot(w.id, w.path, s.id)
+          .catch(() => ({ unavailable: "failed" }));
       s.status = "running";
       s.awaiting = Date.now();
       dispatched = true;
@@ -3644,6 +3667,12 @@ export function createWorkbenchService({
         )
           throw new Error("invalid_receipt");
         receipt.inboxId = result.id;
+        if (checkpoints && !currentRun)
+          await (
+            checkpoint?.oid
+              ? checkpoints.bind(w.id, s.id, result.id, checkpoint.oid)
+              : checkpoints.clearStaged(w.id, s.id)
+          ).catch(() => {});
       } else
         await call(client.session.command, {
           sessionID: s.sdkId,
@@ -5295,6 +5324,7 @@ export function createWorkbenchService({
         await call(client.session.remove, { sessionID: s.sdkId });
         await verifyRemoved(s);
         tables().sessions.delete(s.id);
+        void checkpoints?.dropSession(w.id, s.id).catch(() => {});
       } else if (
         request.type === "session.revert" ||
         request.type === "session.revert.clear"
@@ -5309,8 +5339,17 @@ export function createWorkbenchService({
         const info = await idleIdentity(w, s);
         const staged = info.revert?.messageID;
         let restoresFiles = Boolean(info.revert?.snapshot);
+        let hasCheckpoint = false;
+        let recordCount;
         if (reapply) {
           if (staged !== request.messageId) fail("INVALID_SELECTION");
+          const record = checkpoints
+            ? await checkpoints.staged(w.id, s.id)
+            : undefined;
+          if (record?.messageId === request.messageId) {
+            restoresFiles = true;
+            recordCount = record.fileCount;
+          }
         } else {
           let target;
           try {
@@ -5343,6 +5382,11 @@ export function createWorkbenchService({
           restoresFiles = newer.some(
             (m) => m?.type === "assistant" && m.snapshot?.start,
           );
+          hasCheckpoint = Boolean(
+            checkpoints &&
+              (await checkpoints.find(w.id, s.id, request.messageId)),
+          );
+          restoresFiles ||= hasCheckpoint;
         }
         if (
           !(await confirmSessionRevert({
@@ -5353,9 +5397,11 @@ export function createWorkbenchService({
             sessionId: s.id,
             restoresFiles,
             ...(reapply && {
-              fileCount: Array.isArray(info.revert?.files)
-                ? info.revert.files.length
-                : 0,
+              fileCount:
+                recordCount ??
+                (Array.isArray(info.revert?.files)
+                  ? info.revert.files.length
+                  : 0),
             }),
           }))
         )
@@ -5377,6 +5423,15 @@ export function createWorkbenchService({
             : after?.revert?.messageID !== request.messageId
         )
           fail("UNKNOWN_OUTCOME");
+        // App-side file restore (outside Native's permission ruleset; trust,
+        // idle, confirmation and containment guard it). A failure leaves the
+        // files possibly half-restored: the catch reports UNKNOWN_OUTCOME.
+        if (checkpoints && (reapply ? restoresFiles : hasCheckpoint)) {
+          const restore = reapply
+            ? checkpoints.reapply(w.id, w.path, s.id, request.messageId)
+            : checkpoints.stage(w.id, w.path, s.id, request.messageId);
+          await restore.catch(() => fail("UNKNOWN_OUTCOME"));
+        }
       }
       const selected =
         child ??
@@ -5681,6 +5736,7 @@ export function createWorkbenchService({
           item.generation++;
         }
       tables().workspaces.delete(w.id);
+      void checkpoints?.dropWorkspace(w.id).catch(() => {});
       return base();
     }
     if (request.type === "session.create") {
