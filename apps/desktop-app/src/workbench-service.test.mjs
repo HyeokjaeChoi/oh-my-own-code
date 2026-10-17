@@ -18,7 +18,7 @@ import { MAX_FILE_BYTES, defaultFolderName } from "./host/workbench-files.mjs";
 
 async function fixture(
   t,
-  { contextIO, deadlineMs = 5000, confirmSessionRevert } = {},
+  { contextIO, deadlineMs = 5000, confirmSessionRevert, checkpoints } = {},
 ) {
   const root = await mkdtemp(join(tmpdir(), "workbench-test-"));
   const workspace = join(root, "workspace");
@@ -201,6 +201,7 @@ async function fixture(
     }),
     confirmTrust: async () => state.trust,
     ...(confirmSessionRevert && { confirmSessionRevert }),
+    ...(checkpoints && { checkpoints }),
   });
   t.after(() => service.close());
   const initial = await service.handle({ type: "snapshot" });
@@ -2018,9 +2019,10 @@ test("permission policy session generation change during get retires the observa
 });
 
 // --- per-turn revert ---
-async function revertFixture(t, confirm = async () => true) {
+async function revertFixture(t, confirm = async () => true, checkpoints) {
   const asked = [];
   const f = await fixture(t, {
+    checkpoints,
     confirmSessionRevert: async (details) => {
       asked.push(details);
       return confirm(details);
@@ -2287,4 +2289,129 @@ test("a message id of another session (Native MessageNotFoundError) is an invali
   const result = await revert("session.revert");
   assert.equal(result.code, "INVALID_SELECTION");
   assert.equal(rec.stage.length, 0);
+});
+
+function fakeCheckpoints(over = {}) {
+  const log = [];
+  const known = new Map();
+  let record;
+  return {
+    log,
+    known,
+    snapshot: async (...a) => (
+      log.push(["snapshot", ...a.slice(2)]),
+      { oid: "oid-1", fileCount: 2 }
+    ),
+    bind: async (_w, sid, mid, oid) => (
+      known.set(mid, oid),
+      log.push(["bind", sid, mid, oid])
+    ),
+    clearStaged: async () => log.push(["clearStaged"]),
+    find: async (_w, _s, mid) => known.get(mid),
+    staged: async () => record,
+    stage: async (_w, _p, sid, mid) => {
+      log.push(["stage", sid, mid]);
+      record = {
+        messageId: mid,
+        original: "orig",
+        fileCount: 2,
+        files: ["a.txt", "b/c.txt"],
+      };
+      return record;
+    },
+    reapply: async (_w, _p, sid, mid) => {
+      log.push(["reapply", sid, mid]);
+      record = undefined;
+      return { fileCount: 2 };
+    },
+    dropSession: async (...a) => log.push(["dropSession", a[1]]),
+    dropWorkspace: async () => {},
+    ...over,
+  };
+}
+test("checkpoint: an idle send is checkpointed before the prompt and bound to the inbox id", async (t) => {
+  const cp = fakeCheckpoints();
+  const { f } = await revertFixture(t, async () => true, cp);
+  const order = [];
+  const prompt = f.client.session.prompt;
+  f.client.session.prompt = async (a) => (order.push("prompt"), prompt(a));
+  const snap = cp.snapshot;
+  cp.snapshot = async (...a) => (order.push("snapshot"), snap(...a));
+  const sent = await f.send();
+  assert.equal(sent.ok, true, JSON.stringify(sent));
+  assert.deepEqual(order, ["snapshot", "prompt"]);
+  assert.deepEqual(cp.log.find((e) => e[0] === "bind").slice(2), [
+    "inbox-1",
+    "oid-1",
+  ]);
+  assert.equal(cp.known.get("inbox-1"), "oid-1");
+});
+test("checkpoint: an unavailable checkpoint never blocks the send and clears a staged revert record", async (t) => {
+  const cp = fakeCheckpoints({
+    snapshot: async () => ({ unavailable: "too_many_files" }),
+  });
+  const { f } = await revertFixture(t, async () => true, cp);
+  const sent = await f.send();
+  assert.equal(sent.ok, true, JSON.stringify(sent));
+  assert.equal(
+    cp.log.some((e) => e[0] === "bind"),
+    false,
+  );
+  assert.equal(
+    cp.log.some((e) => e[0] === "clearStaged"),
+    true,
+  );
+});
+test("checkpoint: revert restores files from the checkpoint, the dialog and DTO come from it", async (t) => {
+  const cp = fakeCheckpoints();
+  const { f, rec, revert } = await revertFixture(t, async () => true, cp);
+  for (const m of f.state.messages) delete m.snapshot;
+  cp.known.set("msg_3", "oid-9");
+  const result = await revert("session.revert");
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.equal(rec.asked[0].restoresFiles, true);
+  assert.equal(cp.log.find((e) => e[0] === "stage")[2], "msg_3");
+  const snap = await f.service.handle({ type: "snapshot" });
+  assert.deepEqual(snap.value.revert, {
+    messageId: "msg_3",
+    fileCount: 2,
+    files: ["a.txt", "b/c.txt"],
+    filesRestored: true,
+  });
+  const again = await revert("session.revert.clear");
+  assert.equal(again.ok, true, JSON.stringify(again));
+  assert.equal(rec.asked.at(-1).restoresFiles, true);
+  assert.equal(rec.asked.at(-1).fileCount, 2);
+  assert.equal(
+    cp.log.some((e) => e[0] === "reapply"),
+    true,
+  );
+});
+test("checkpoint: without a checkpoint for the boundary no files are claimed or touched", async (t) => {
+  const cp = fakeCheckpoints();
+  const { f, rec, revert } = await revertFixture(t, async () => true, cp);
+  for (const m of f.state.messages) delete m.snapshot;
+  const result = await revert("session.revert");
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.equal(rec.asked[0].restoresFiles, false);
+  assert.equal(
+    cp.log.some((e) => e[0] === "stage"),
+    false,
+  );
+});
+test("checkpoint: a file restore that fails after Native staged is an unknown outcome", async (t) => {
+  const cp = fakeCheckpoints({
+    stage: async () => {
+      throw new Error("disk");
+    },
+  });
+  const { f, revert } = await revertFixture(t, async () => true, cp);
+  cp.known.set("msg_3", "oid-9");
+  const result = await revert("session.revert");
+  assert.equal(result.code, "UNKNOWN_OUTCOME");
+  const snap = await f.service.handle({ type: "snapshot" });
+  assert.equal(
+    snap.value.sessions.find((x) => x.id === f.ids.sessionId).status,
+    "unknown",
+  );
 });
