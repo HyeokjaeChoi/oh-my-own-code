@@ -33,17 +33,17 @@
 
 .empty h1 {
   margin: 0 0 16px;
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 28px;
+  font-size: var(--omoc-semantic-type-size-hero);
+  font-weight: var(--omoc-primitive-font-weight-semibold);
+  line-height: var(--omoc-semantic-type-line-hero);
   text-wrap: balance;
 }
 
 .empty p {
   margin: 0;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 14px;
-  line-height: 22px;
+  font-size: var(--omoc-primitive-font-size-base);
+  line-height: var(--omoc-semantic-type-line-body);
 }
 
 .message {
@@ -145,8 +145,8 @@
 
 .userMessage .messageText {
   padding: 12px 16px;
-  border-radius: 10px;
-  background: var(--omoc-semantic-color-surface-subtle);
+  border-radius: var(--omoc-primitive-radius-md);
+  background: var(--omoc-semantic-color-bubble-user);
 }
 
 .assistantMessage {
@@ -175,15 +175,17 @@
 .markdown h5,
 .markdown h6 {
   margin-block: 24px 12px;
-  font-size: 1.15em;
-  line-height: 1.4;
-  font-weight: 600;
+  font-size: var(--omoc-primitive-font-size-base);
+  line-height: var(--omoc-primitive-font-line-body);
+  font-weight: var(--omoc-primitive-font-weight-semibold);
 }
 .markdown h1 {
-  font-size: 1.4em;
+  font-size: var(--omoc-primitive-font-size-xl);
+  line-height: var(--omoc-primitive-font-line-h1);
 }
 .markdown h2 {
-  font-size: 1.25em;
+  font-size: var(--omoc-primitive-font-size-lg);
+  line-height: var(--omoc-primitive-font-line-title);
 }
 .markdown ul,
 .markdown ol {
@@ -196,15 +198,13 @@
   color: var(--omoc-semantic-color-text-secondary);
 }
 .markdown code {
-  font:
-    0.9em/1.6 ui-monospace,
-    SFMono-Regular,
-    Consolas,
-    monospace;
+  font-family: var(--omoc-primitive-font-family-mono);
 }
 .markdown :not(pre) > code {
-  padding: 2px 4px;
-  border-radius: 4px;
+  padding: var(--omoc-primitive-space-0-5) var(--omoc-primitive-space-1);
+  border-radius: var(--omoc-primitive-radius-xs);
+  font-size: 0.9em;
+  line-height: 1.6;
   background: var(--omoc-semantic-color-surface-subtle);
 }
 .markdownLink,
@@ -229,15 +229,18 @@
   justify-content: space-between;
   margin-top: 16px;
   padding: 6px 12px;
-  border-radius: 8px 8px 0 0;
+  border: 1px solid var(--omoc-semantic-color-border-subtle);
+  border-bottom: 0;
+  border-radius: var(--omoc-primitive-radius-navigation)
+    var(--omoc-primitive-radius-navigation) 0 0;
   background: var(--omoc-semantic-color-surface-subtle);
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
 }
 .codeHeader > span {
   overflow-wrap: anywhere;
 }
 .copyControl {
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
   color: var(--omoc-semantic-color-text-secondary);
 }
 .codeHeader .copyControl {
@@ -265,8 +268,12 @@
   margin: 0 0 16px;
   padding: 12px;
   overflow: auto;
-  border-radius: 0 0 8px 8px;
-  background: var(--omoc-semantic-color-surface-subtle);
+  border: 1px solid var(--omoc-semantic-color-border-subtle);
+  border-radius: 0 0 var(--omoc-primitive-radius-navigation)
+    var(--omoc-primitive-radius-navigation);
+  background: var(--omoc-semantic-color-canvas);
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
   white-space: pre;
   user-select: text;
 }
@@ -283,7 +290,7 @@
 .markdownTable td {
   min-width: 96px;
   padding: 8px 12px;
-  border-bottom: 1px solid var(--omoc-semantic-color-border-default);
+  border-bottom: 1px solid var(--omoc-semantic-color-border-subtle);
   text-align: start;
 }
 .markdownCode:focus-visible,
@@ -315,11 +322,11 @@
   position: relative;
   flex-shrink: 0;
   width: 100%;
-  max-width: 720px;
+  max-width: var(--omoc-component-size-reading-width);
   min-width: 0;
   margin-inline: auto;
   border: 1px solid var(--omoc-semantic-color-border-subtle);
-  border-radius: 20px;
+  border-radius: var(--omoc-component-size-composer-radius);
   background: var(--omoc-component-color-input-background);
   box-shadow: 0 2px 12px rgb(0 0 0 / 6%);
 }
@@ -339,11 +346,12 @@
   gap: 4px 12px;
   min-width: 0;
   padding: 6px 16px;
-  border-radius: 19px 19px 0 0;
+  border-radius: calc(var(--omoc-component-size-composer-radius) - 1px)
+    calc(var(--omoc-component-size-composer-radius) - 1px) 0 0;
   background: var(--omoc-semantic-color-surface-subtle);
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: var(--omoc-primitive-font-size-sm);
+  line-height: var(--omoc-semantic-type-line-caption);
 }
 
 .contextStrip > span {
@@ -364,8 +372,8 @@
   gap: 8px;
   padding: 4px 8px 0 16px;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: var(--omoc-primitive-font-size-sm);
+  line-height: var(--omoc-semantic-type-line-caption);
 }
 
 .runStatus {
@@ -395,7 +403,7 @@
   color: var(--omoc-component-color-input-foreground);
   font: inherit;
   font-size: var(--omoc-component-size-conversation-size);
-  line-height: 24px;
+  line-height: var(--omoc-component-type-conversation-line);
 }
 
 .input:focus-visible {
@@ -431,7 +439,7 @@
   background: transparent;
   color: var(--omoc-semantic-color-text-primary);
   font: inherit;
-  font-size: 16px;
+  font-size: var(--omoc-primitive-font-size-lg);
   line-height: 20px;
   cursor: pointer;
 }
@@ -496,11 +504,11 @@
   min-height: 32px;
   padding: 2px 10px;
   border: 0;
-  border-radius: 14px;
+  border-radius: var(--omoc-primitive-radius-md);
   background: transparent;
   color: var(--omoc-semantic-color-text-primary);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--omoc-primitive-font-size-md);
   line-height: 20px;
   cursor: pointer;
 }
@@ -521,7 +529,7 @@
   flex: 0 0 8px;
   width: 8px;
   height: 8px;
-  border-radius: 2px;
+  border-radius: var(--omoc-primitive-radius-xs);
   background: var(--omoc-semantic-color-focus);
 }
 
@@ -538,11 +546,11 @@
   overflow: auto;
   overscroll-behavior: contain;
   border: 1px solid transparent;
-  border-radius: 14px;
+  border-radius: var(--omoc-primitive-radius-md);
   background: var(--omoc-semantic-color-surface-raised);
   color: var(--omoc-semantic-color-text-primary);
   box-shadow: var(--omoc-semantic-shadow-overlay);
-  font-size: 13px;
+  font-size: var(--omoc-primitive-font-size-md);
   line-height: 20px;
   position-area: top span-left;
   position-try-fallbacks: flip-block;
@@ -568,8 +576,8 @@
 .sessionLine {
   margin: 12px 0 0;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: var(--omoc-primitive-font-size-sm);
+  line-height: var(--omoc-semantic-type-line-caption);
   overflow-wrap: anywhere;
 }
 
@@ -583,7 +591,7 @@
   align-items: flex-start;
   gap: 8px;
   padding: 8px;
-  border-radius: 10px;
+  border-radius: var(--omoc-primitive-radius-navigation);
   cursor: pointer;
 }
 
@@ -602,15 +610,15 @@
 
 .permissionOption small {
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: var(--omoc-primitive-font-size-sm);
+  line-height: var(--omoc-semantic-type-line-caption);
 }
 
 .muted {
   margin: 8px 0;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: var(--omoc-primitive-font-size-sm);
+  line-height: var(--omoc-semantic-type-line-caption);
 }
 
 .permissionQueue {
@@ -636,15 +644,15 @@
 }
 
 .permissionTitle {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--omoc-primitive-font-size-md);
+  font-weight: var(--omoc-primitive-font-weight-semibold);
   line-height: 20px;
 }
 
 .permissionDetail {
   margin: 6px 0;
   white-space: pre-wrap;
-  font-size: 13px;
+  font-size: var(--omoc-primitive-font-size-md);
   line-height: 20px;
 }
 
@@ -664,15 +672,15 @@
 
 .toolDetail {
   margin-block: 4px;
-  border-radius: 10px;
-  font-size: 13px;
+  border-radius: var(--omoc-primitive-radius-navigation);
+  font-size: var(--omoc-primitive-font-size-md);
   line-height: 20px;
   overflow-wrap: anywhere;
 }
 
 .toolCall {
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: var(--omoc-primitive-radius-navigation);
 }
 
 .toolCall[open] {
@@ -692,7 +700,7 @@
   gap: 6px;
   min-height: var(--omoc-component-size-control-hit-target);
   padding: 4px 8px;
-  border-radius: 10px;
+  border-radius: var(--omoc-primitive-radius-navigation);
   color: var(--omoc-semantic-color-text-secondary);
   list-style: none;
   cursor: pointer;
@@ -729,14 +737,14 @@ details[open] > .disclosure > .chevron {
   border-radius: 999px;
   background: var(--omoc-semantic-color-fill-hover);
   color: var(--omoc-semantic-color-text-primary);
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
   line-height: 20px;
 }
 
 .summaryStateLink {
   border: 0;
   font: inherit;
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
   cursor: pointer;
 }
 
@@ -764,15 +772,13 @@ details[open] > .disclosure > .chevron {
   margin: 0 0 12px;
   padding: 12px;
   overflow-y: auto;
-  border-radius: 8px;
-  background: var(--omoc-semantic-color-fill-hover);
+  border: 1px solid var(--omoc-semantic-color-border-subtle);
+  border-radius: var(--omoc-primitive-radius-sm);
+  background: var(--omoc-semantic-color-canvas);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font:
-    12px/20px ui-monospace,
-    SFMono-Regular,
-    Consolas,
-    monospace;
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
 }
 
 .linkPreview {
@@ -791,10 +797,10 @@ details[open] > .disclosure > .chevron {
   overflow-y: auto;
   overscroll-behavior: contain;
   border: 1px solid transparent;
-  border-radius: 16px;
+  border-radius: var(--omoc-primitive-radius-md);
   background: var(--omoc-semantic-color-surface-raised);
   box-shadow: var(--omoc-semantic-shadow-overlay);
-  font-size: 13px;
+  font-size: var(--omoc-primitive-font-size-md);
   line-height: 20px;
 }
 
@@ -808,8 +814,8 @@ details[open] > .disclosure > .chevron {
 
 .menuHeading strong,
 .commandMenu > strong {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--omoc-primitive-font-size-sm);
+  font-weight: var(--omoc-primitive-font-weight-semibold);
   color: var(--omoc-semantic-color-text-secondary);
 }
 
@@ -833,15 +839,15 @@ details[open] > .disclosure > .chevron {
 
 .commandMenu small {
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: var(--omoc-primitive-font-size-sm);
+  line-height: var(--omoc-semantic-type-line-caption);
 }
 
 .commandMenu p {
   margin: 8px;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: var(--omoc-primitive-font-size-sm);
+  line-height: var(--omoc-semantic-type-line-caption);
 }
 
 @container conversation (max-width: 599px) {
@@ -946,7 +952,7 @@ details[open] > .disclosure > .chevron {
   min-width: 0;
   margin-block: 0;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
   line-height: 20px;
   overflow-wrap: anywhere;
 }
@@ -971,12 +977,12 @@ details[open] > .disclosure > .chevron {
   margin: 4px 0 0;
   padding: 0;
   border: 0;
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
   line-height: 20px;
 }
 .runtimeRequests legend {
   padding: 0;
-  font-weight: 600;
+  font-weight: var(--omoc-primitive-font-weight-semibold);
 }
 .runtimeHint {
   margin: 4px 0;
@@ -986,11 +992,8 @@ details[open] > .disclosure > .chevron {
 .toolPath {
   display: block;
   max-width: 100%;
-  font:
-    12px/20px ui-monospace,
-    SFMono-Regular,
-    Consolas,
-    monospace;
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
   background: none;
   border: 0;
   padding: 0;

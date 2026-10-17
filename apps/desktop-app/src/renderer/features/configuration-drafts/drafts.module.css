@@ -3,24 +3,25 @@
   max-width: 100%;
   margin: 24px 0;
   padding-top: 16px;
-  font-size: 13px;
+  font-size: var(--omoc-primitive-font-size-md);
   line-height: 1.6;
   overflow-wrap: anywhere;
   user-select: text;
 }
 .heading {
   margin: 0 0 8px;
-  font-size: 13px;
+  font-size: var(--omoc-primitive-font-size-md);
   font-weight: 600;
 }
 .muted {
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
 }
 .path {
   min-width: 0;
   max-width: 100%;
-  font: 12px/1.6 var(--omoc-semantic-type-family-code);
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
   overflow-wrap: anywhere;
   user-select: text;
 }
@@ -54,7 +55,8 @@
   overflow: auto;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font: 12px/1.6 var(--omoc-semantic-type-family-code);
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
 }
 .actions {
   display: flex;
@@ -69,7 +71,7 @@
 }
 .issues {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
   padding-left: 20px;
 }
 .comparison {
@@ -84,7 +86,8 @@
   padding: 8px;
   border-radius: var(--omoc-component-size-navigation-radius);
   background: var(--omoc-semantic-color-surface-subtle);
-  font: 12px/1.6 var(--omoc-semantic-type-family-code);
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   overflow: auto;
@@ -132,7 +135,7 @@
 .info {
   margin-block: 4px 8px;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
 }
 .info summary {
   cursor: pointer;

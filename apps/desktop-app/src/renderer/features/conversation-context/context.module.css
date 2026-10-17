@@ -1,7 +1,7 @@
 .section {
   min-width: 0;
   color: var(--omoc-semantic-color-text-primary);
-  font-size: 13px;
+  font-size: var(--omoc-primitive-font-size-md);
   line-height: 20px;
 }
 
@@ -40,7 +40,7 @@
 
 .body h2 {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--omoc-semantic-type-size-heading);
   line-height: 24px;
   font-weight: 500;
 }
@@ -97,7 +97,7 @@
 
 .list li > strong {
   flex: 1 1 100%;
-  font-size: 14px;
+  font-size: var(--omoc-primitive-font-size-base);
   font-weight: 500;
 }
 
@@ -126,7 +126,7 @@
 }
 
 .branch > strong {
-  font-size: 16px;
+  font-size: var(--omoc-semantic-type-size-heading);
   line-height: 24px;
   font-weight: 500;
 }
@@ -168,11 +168,8 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   user-select: text;
-  font:
-    13px/20px ui-monospace,
-    SFMono-Regular,
-    Consolas,
-    monospace;
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
 }
 
 .preview img {
@@ -199,7 +196,7 @@
   order: 9;
   margin: 2px 0 0;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
   line-height: 18px;
 }
 
@@ -216,6 +213,6 @@
 .section > .notice {
   margin: 4px 0;
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
+  font-size: var(--omoc-primitive-font-size-sm);
   line-height: 18px;
 }
