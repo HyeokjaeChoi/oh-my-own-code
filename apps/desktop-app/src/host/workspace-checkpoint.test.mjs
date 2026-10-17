@@ -3,10 +3,14 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import {
   mkdtemp,
+  chmod,
   mkdir,
+  readdir,
+  stat,
   writeFile,
   readFile,
   rm,
+  rename,
   symlink,
   lstat,
   realpath,
@@ -14,7 +18,12 @@ import {
 import { existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createCheckpointStore } from "./workspace-checkpoint.mjs";
+import {
+  cleanPath,
+  createCheckpointStore,
+  readRegular,
+  resolveGit,
+} from "./workspace-checkpoint.mjs";
 
 async function setup(t, limits) {
   const base = await realpath(await mkdtemp(join(tmpdir(), "checkpoint-")));
@@ -265,4 +274,224 @@ test("missing git makes the checkpoint unavailable", async (t) => {
   assert.deepEqual(await store.snapshot("w", base, "s"), {
     unavailable: "git_missing",
   });
+});
+
+const stageAt = async (store, ws, name = "m") => {
+  const snap = await store.snapshot("w", ws, "s");
+  assert.ok(snap.oid, JSON.stringify(snap));
+  await store.bind("w", "s", name, snap.oid);
+  return snap;
+};
+
+test("F1: files invisible at checkpoint time (ignored, nested repo) are never deleted", async (t) => {
+  const { ws, store } = await setup(t);
+  await writeFile(join(ws, ".gitignore"), ".env\nlocal.db\n");
+  await writeFile(join(ws, ".env"), "SECRET=1");
+  await writeFile(join(ws, "local.db"), "db");
+  await mkdir(join(ws, "vendor"));
+  execFileSync("git", ["init", "-q"], { cwd: join(ws, "vendor") });
+  await writeFile(join(ws, "vendor", "lib.js"), "lib");
+  await stageAt(store, ws);
+  // The turn removes what hid those files.
+  await rm(join(ws, ".gitignore"));
+  await rm(join(ws, "vendor", ".git"), { recursive: true });
+  await store.stage("w", ws, "s", "m");
+  assert.equal(await read(join(ws, ".gitignore")), ".env\nlocal.db\n");
+  assert.equal(await read(join(ws, ".env")), "SECRET=1");
+  assert.equal(await read(join(ws, "local.db")), "db");
+  assert.equal(await read(join(ws, "vendor", "lib.js")), "lib");
+});
+
+test("F2: a case-only rename is restored without deleting the file", async (t) => {
+  const { ws, store } = await setup(t);
+  await writeFile(join(ws, "Readme.md"), "hello");
+  await stageAt(store, ws);
+  await rename(join(ws, "Readme.md"), join(ws, "readme.md"));
+  await store.stage("w", ws, "s", "m");
+  assert.deepEqual(
+    (await readdir(ws)).filter((n) => /^readme\.md$/iu.test(n)),
+    ["Readme.md"],
+  );
+  assert.equal(await read(join(ws, "Readme.md")), "hello");
+});
+
+test("F3: a file that grew past the limit is not overwritten, and reapply keeps it", async (t) => {
+  const { ws, store } = await setup(t, { fileBytes: 10 });
+  await writeFile(join(ws, "data.csv"), "tiny");
+  await stageAt(store, ws);
+  await writeFile(join(ws, "data.csv"), "x".repeat(50));
+  await store.stage("w", ws, "s", "m");
+  assert.equal(await read(join(ws, "data.csv")), "x".repeat(50));
+  await store.reapply("w", ws, "s", "m");
+  assert.equal(await read(join(ws, "data.csv")), "x".repeat(50));
+});
+
+test("F4: concurrent first use of a workspace initializes the repo once", async (t) => {
+  const { ws, store } = await setup(t);
+  await writeFile(join(ws, "f"), "1");
+  const all = await Promise.all(
+    ["a", "b", "c", "d"].map((id) => store.snapshot("w", ws, id)),
+  );
+  for (const snap of all) assert.ok(snap.oid, JSON.stringify(snap));
+});
+
+test("F5: pruned and dropped checkpoints are actually removed from disk", async (t) => {
+  const { base, ws, store } = await setup(t);
+  await writeFile(join(ws, "secret.txt"), "unique-content-f5");
+  const snap = await stageAt(store, ws);
+  const gitDir = join(base, "cp", "w.git");
+  const blob = execFileSync("git", [
+    "--git-dir",
+    gitDir,
+    "rev-parse",
+    `${snap.oid}:secret.txt`,
+  ])
+    .toString()
+    .trim();
+  const has = () => {
+    try {
+      execFileSync("git", ["--git-dir", gitDir, "cat-file", "-e", blob], {
+        stdio: "ignore",
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  assert.equal(has(), true);
+  await store.dropSession("w", "s");
+  assert.equal(has(), false);
+});
+
+test("F6: git resolves to an absolute path; relative PATH entries and the macOS shim are refused", async () => {
+  const yes = async () => true;
+  assert.equal(await resolveGit({ git: "/x/git", isFile: yes }), "/x/git");
+  assert.equal(
+    await resolveGit({ git: "/x/git", isFile: async () => false }),
+    undefined,
+  );
+  assert.equal(
+    await resolveGit({
+      platform: "win32",
+      pathEnv: ["", ".", "evil", "C:\\Git"].join(";"),
+      isFile: async (f) => !f.startsWith("C:"),
+    }),
+    undefined,
+  );
+  assert.equal(
+    await resolveGit({
+      platform: "win32",
+      pathEnv: ".;C:\\Git",
+      isFile: async (f) => f.startsWith("C:"),
+    }).then((f) => f.startsWith("C:")),
+    true,
+  );
+  const shim = {
+    platform: "darwin",
+    isFile: async (f) => f === "/usr/bin/git",
+  };
+  assert.equal(
+    await resolveGit({ ...shim, exec: async () => false }),
+    undefined,
+  );
+  assert.equal(
+    await resolveGit({ ...shim, exec: async () => true }),
+    "/usr/bin/git",
+  );
+});
+
+test("F7: readRegular refuses symlinks and FIFOs without blocking", async (t) => {
+  const { base } = await setup(t);
+  await writeFile(join(base, "real"), "data");
+  await symlink(join(base, "real"), join(base, "link"));
+  execFileSync("mkfifo", [join(base, "pipe")]);
+  assert.equal((await readRegular(join(base, "real"), 100)).toString(), "data");
+  assert.equal(await readRegular(join(base, "link"), 100), undefined);
+  assert.equal(await readRegular(join(base, "pipe"), 100), undefined);
+  assert.equal(await readRegular(join(base, "real"), 2), undefined);
+});
+
+test("F8: a restored file keeps its permissions", async (t) => {
+  const { ws, store } = await setup(t);
+  await writeFile(join(ws, "key"), "one");
+  await chmod(join(ws, "key"), 0o600);
+  await stageAt(store, ws);
+  await writeFile(join(ws, "key"), "two");
+  await store.stage("w", ws, "s", "m");
+  assert.equal(await read(join(ws, "key")), "one");
+  assert.equal((await stat(join(ws, "key"))).mode & 0o777, 0o600);
+});
+
+test("F9: a restore that fails part-way can still be reapplied", async (t) => {
+  const { base, ws, store } = await setup(t);
+  const outside = join(base, "outside");
+  await mkdir(outside);
+  await mkdir(join(ws, "dir"));
+  await writeFile(join(ws, "dir", "f"), "inside");
+  await writeFile(join(ws, "a"), "a1");
+  await stageAt(store, ws);
+  await writeFile(join(ws, "dir", "f"), "changed");
+  hook.run = async () => {
+    await rm(join(ws, "dir"), { recursive: true });
+    await symlink(outside, join(ws, "dir"));
+  };
+  t.after(() => delete hook.run);
+  await assert.rejects(store.stage("w", ws, "s", "m"), {
+    checkpoint: "containment",
+  });
+  const record = await store.staged("w", "s");
+  assert.equal(record?.messageId, "m");
+  assert.ok(record.original);
+});
+
+test("F10: paths are checked like git's verify_path", () => {
+  for (const bad of [
+    ".git/config",
+    "a/.GIT/x",
+    ".g\u200cit/x",
+    ".git./x",
+    ".git /x",
+    "git~1/x",
+    ".git::$INDEX_ALLOCATION/x",
+    "a/../b",
+    "/abs",
+    "a\\b",
+    "",
+  ])
+    assert.equal(cleanPath(bad), undefined, JSON.stringify(bad));
+  assert.deepEqual(cleanPath("a/.gitignore"), ["a", ".gitignore"]);
+});
+
+test("hardening: process env and PATH never reach git; user gitconfig is not read", async (t) => {
+  const { base, ws, store } = await setup(t);
+  const bin = join(base, "bin");
+  await mkdir(bin);
+  await writeFile(
+    join(bin, "git"),
+    `#!/bin/sh\ntouch "${join(base, "PATH-MARKER")}"\nexec /usr/bin/git "$@"\n`,
+  );
+  await chmod(join(bin, "git"), 0o755);
+  const home = join(base, "userhome");
+  await mkdir(home);
+  await writeFile(join(home, "ignore-all"), "*\n");
+  await writeFile(
+    join(home, ".gitconfig"),
+    `[core]\n\texcludesFile = ${join(home, "ignore-all")}\n`,
+  );
+  const saved = { ...process.env };
+  t.after(() => {
+    for (const key of ["GIT_TRACE", "PATH", "HOME", "XDG_CONFIG_HOME"])
+      saved[key] === undefined
+        ? delete process.env[key]
+        : (process.env[key] = saved[key]);
+  });
+  process.env.GIT_TRACE = join(base, "TRACE-MARKER");
+  process.env.PATH = `${bin}:${process.env.PATH}`;
+  process.env.HOME = home;
+  process.env.XDG_CONFIG_HOME = home;
+  await writeFile(join(ws, "f"), "1");
+  const snap = await store.snapshot("w", ws, "s");
+  assert.equal(snap.fileCount, 1, JSON.stringify(snap));
+  assert.equal(existsSync(join(base, "TRACE-MARKER")), false);
+  assert.equal(existsSync(join(base, "PATH-MARKER")), false);
 });
