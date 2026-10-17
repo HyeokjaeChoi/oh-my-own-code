@@ -8,7 +8,9 @@ import {
 import type { ProjectActions } from "../../shared/project-actions/index.js";
 import { XtermView } from "./xterm-view.js";
 import styles from "./terminal.module.css";
-import { Button, Notice } from "@workbench/ui";
+import { SquareTerminal, Plus } from "lucide-react";
+import { Button, EmptyState, Notice } from "@workbench/ui";
+import { useWorkbenchSelector } from "../../entities/workbench/index.js";
 
 const LIST_MS = 1000;
 const HINT_ID = "omoc-terminal-hint";
@@ -37,6 +39,12 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
   const [error, setError] = useState<string>();
   const [project, setProject] = useState<ProjectActions>();
   const footer = useRef<HTMLDivElement>(null);
+  const [loaded, setLoaded] = useState(false);
+  const autoStarted = useRef(false);
+  const trusted = useWorkbenchSelector(
+    (state) =>
+      state.lists.workspaces.find((w) => w.id === workspaceId)?.trusted,
+  );
   const fail = useCallback(
     (code: string) =>
       setError(errors[code] ?? "터미널 요청을 처리하지 못했습니다."),
@@ -62,6 +70,7 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
       void call<TerminalInfo[]>({ type: "terminal.list", workspaceId }).then(
         (r) => {
           if (stopped || !r.ok) return;
+          setLoaded(true);
           setTabs((prev) => [
             ...prev.map(
               (p) => r.value.find((t) => t.terminalId === p.terminalId) ?? p,
@@ -108,6 +117,13 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
     setTabs((p) => [...p, r.value]);
     setActive(r.value.terminalId);
   };
+  // First open: start a shell when trusted and none exists. An untrusted
+  // workspace keeps the explicit 터미널 열기 button (the host enforces trust).
+  useEffect(() => {
+    if (!loaded || tabs.length || autoStarted.current || !trusted) return;
+    autoStarted.current = true;
+    void start();
+  }, [loaded, tabs.length, trusted]);
   const run = async (type: "terminal.stop" | "terminal.close") => {
     if (!current) return;
     setError(undefined);
@@ -125,33 +141,36 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
 
   return (
     <section className={styles.panel} aria-label="작업 공간 터미널">
-      <h2>터미널</h2>
-      <div className={styles.tabs} role="tablist" aria-label="터미널 탭">
-        {tabs.map((t, i) => (
-          <Button
-            size="compact"
-            intent="secondary"
-            key={t.terminalId}
-            role="tab"
-            aria-selected={t.terminalId === active}
-            onClick={() => setActive(t.terminalId)}
-          >
-            {i + 1}
-            {t.label ? ` ${t.label}` : ""}
-            {t.status === "exited" ? " ■" : ""}
-          </Button>
-        ))}
+      <div className={styles.strip}>
+        <div className={styles.tabs} role="tablist" aria-label="터미널 탭">
+          {tabs.map((t, i) => (
+            <button
+              type="button"
+              key={t.terminalId}
+              role="tab"
+              className={styles.tab}
+              aria-selected={t.terminalId === active}
+              onClick={() => setActive(t.terminalId)}
+            >
+              {t.label ?? "셸"}
+              {tabs.length > 1 ? ` ${i + 1}` : ""}
+              {t.status === "exited" ? " ■" : ""}
+            </button>
+          ))}
+        </div>
         <Button
           size="compact"
-          intent="secondary"
+          intent="quiet"
+          className={styles.add}
           onClick={() => void start()}
           aria-label="새 터미널"
+          title="새 터미널"
         >
-          +
+          <Plus size={14} aria-hidden="true" />
         </Button>
       </div>
       {project && project.scripts.length > 0 && (
-        <details>
+        <details className={styles.scriptBox}>
           <summary>프로젝트 스크립트 ({project.packageManager})</summary>
           <ul className={styles.scripts}>
             {project.scripts.map((s) => (
@@ -170,7 +189,11 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
           </ul>
         </details>
       )}
-      {error && <Notice tone="danger">{error}</Notice>}
+      {error && (
+        <Notice tone="danger" className={styles.error}>
+          {error}
+        </Notice>
+      )}
       {current ? (
         <>
           <XtermView
@@ -185,14 +208,14 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
                 ?.focus()
             }
           />
-          <p id={HINT_ID} className={styles.hint}>
-            터미널에서 포커스를 벗어나려면 Ctrl+Shift+M
-          </p>
           <div className={styles.footer} ref={footer}>
             <span role="status">{statusText(current)}</span>
+            <span id={HINT_ID} className={styles.hint}>
+              포커스 이동: Ctrl+Shift+M
+            </span>
             <Button
               size="compact"
-              intent="secondary"
+              intent="quiet"
               onClick={() => void run("terminal.stop")}
               disabled={current.status !== "running"}
             >
@@ -208,9 +231,24 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
           </div>
         </>
       ) : (
-        <p className={styles.muted}>
-          + 로 이 작업 공간 폴더에서 터미널을 시작하세요.
-        </p>
+        <EmptyState
+          className={styles.empty ?? ""}
+          icon={<SquareTerminal size={20} />}
+          title={
+            loaded
+              ? "실행 중인 터미널이 없습니다"
+              : "터미널을 확인하는 중입니다"
+          }
+          action={
+            <Button
+              size="compact"
+              intent="primary"
+              onClick={() => void start()}
+            >
+              터미널 열기
+            </Button>
+          }
+        />
       )}
     </section>
   );
