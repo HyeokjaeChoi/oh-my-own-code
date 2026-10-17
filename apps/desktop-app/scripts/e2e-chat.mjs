@@ -35,6 +35,7 @@ import { createWorkbenchBridge } from "./e2e-bridge.mjs";
 import {
   closeComposerPopovers,
   openComposerPopover,
+  pickModel,
   setPermissionMode,
 } from "./e2e-composer.mjs";
 
@@ -413,10 +414,7 @@ try {
     ? "plan"
     : agentValues.at(-1);
   await agentSelect.selectOption(chosenAgent);
-  await openComposerPopover(page, "model");
-  await page
-    .getByRole("combobox", { name: "모델 요청" })
-    .selectOption({ label: "Mock Model Two" });
+  await pickModel(page, "Mock Model Two");
   await closeComposerPopovers(page);
   await send("hello explicit");
   await expect(page.getByText("hello explicit")).toBeVisible();

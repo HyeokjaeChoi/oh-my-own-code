@@ -15,7 +15,12 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
-import { COMPOSER_POPOVERS, openComposerPopover } from "./e2e-composer.mjs";
+import {
+  COMPOSER_POPOVERS,
+  openCommandMenu,
+  openComposerPopover,
+  pickModel,
+} from "./e2e-composer.mjs";
 const desktop = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const root = resolve(desktop, "../..");
 if (!process.env.OMOC_EVIDENCE_DIR)
@@ -364,7 +369,7 @@ async function inspectLegacyGeometry() {
     const form = input.closest("form");
     const context = input.ownerDocument.querySelector("[data-context-tasks]");
     const toolbar = form.querySelector(
-      'button[aria-label="앱 동작과 명령 열기"]',
+      'button[aria-label^="파일 첨부와 미리보기"]',
     ).parentElement;
     const box = (el) => {
       const r = el.getBoundingClientRect();
@@ -497,10 +502,7 @@ async function exerciseConversationContext() {
   await setDisplay(page, 1440, 1000, 1);
   await inspectLegacyGeometry();
   const initial = (await requests()).length;
-  await openComposerPopover(page, "model");
-  await page
-    .getByRole("combobox", { name: "모델 요청", exact: true })
-    .selectOption(scope.model);
+  await pickModel(page, scope.model);
   await openComposerPopover(page, "attach");
   await hook("path").fill(scope.path);
   await hook("path").focus();
@@ -578,21 +580,18 @@ async function exerciseConversationContext() {
   await page.keyboard.press("Escape");
   await expect(composer()).toHaveValue("SYNTHETIC staged request");
   assert.equal((await requests()).length, initial);
-  const commands = page.getByRole("button", {
-    name: "앱 동작과 명령 열기",
-    exact: true,
-  });
-  await reveal(commands);
-  await commands.focus();
-  await page.keyboard.press("Enter");
   await expect(
-    page.getByRole("region", { name: "앱 동작 및 런타임 명령", exact: true }),
-  ).toBeVisible();
+    page.getByRole("button", { name: "앱 동작과 명령 열기", exact: true }),
+  ).toHaveCount(0);
+  // "/" opens the menu only in an empty composer; the staged text is restored.
+  const staged = await composer().inputValue();
+  await openCommandMenu(page);
   await page.keyboard.press("Escape");
   await expect(
     page.getByRole("region", { name: "앱 동작 및 런타임 명령", exact: true }),
   ).toHaveCount(0);
-  await expect(commands).toBeFocused();
+  await expect(composer()).toBeFocused();
+  await composer().fill(staged);
   assert.equal((await requests()).length, initial);
   // Enter runs the real normal-send path only after explicit staging.
   await application.evaluate(() => {
@@ -676,10 +675,7 @@ async function exerciseConversationContext() {
   for (const name of ["unsupported-model", "missing-capabilities"]) {
     scope = await scenario(name);
     await observe(scope);
-    await openComposerPopover(page, "model");
-    await page
-      .getByRole("combobox", { name: "모델 요청", exact: true })
-      .selectOption(scope.model);
+    await pickModel(page, scope.model);
     await composer().fill("SYNTHETIC unsupported input remains editable");
     await expect(send()).toBeDisabled();
     await reveal(hook("send-blocked"));
@@ -759,10 +755,7 @@ async function exerciseConversationContext() {
     scope = await scenario("running");
     const count = (await requests()).length;
     await composer().fill(`SYNTHETIC current-run ${delivery}`);
-    await openComposerPopover(page, "model");
-    await page
-      .getByRole("combobox", { name: "모델 요청", exact: true })
-      .selectOption("fixture-other-model");
+    await pickModel(page, "fixture-other-model");
     await openComposerPopover(page, "run");
     if (delivery === "steer")
       await captureValues("running-current-run", [

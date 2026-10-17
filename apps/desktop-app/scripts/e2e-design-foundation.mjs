@@ -15,7 +15,14 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
-import { COMPOSER_POPOVERS } from "./e2e-composer.mjs";
+import {
+  COMPOSER_POPOVERS,
+  closeComposerPopovers,
+  modelOption,
+  openCommandMenu,
+  pickModel,
+  pickVariant,
+} from "./e2e-composer.mjs";
 import { FOUNDATION_CAPTURE_LIMIT } from "./run-evidence.mjs";
 const desktop = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const root = resolve(desktop, "../..");
@@ -372,7 +379,6 @@ const chip = (kind) =>
   page.getByRole("button", { name: COMPOSER_POPOVERS[kind] }).first();
 const popover = async (kind) =>
   page.locator(`[id="${await chip(kind).getAttribute("popovertarget")}"]`);
-const sessionReport = () => page.locator('[data-runtime-source="session"]');
 const field = (name) =>
   page.getByRole("combobox", { name, exact: true, includeHidden: true });
 // Opens via the keyboard (Enter/Space on the chip) when it is closed.
@@ -430,9 +436,8 @@ async function recordValue(locator, label) {
 async function choose(scope) {
   await expandPopover("agent");
   await field("Agent 요청").selectOption(scope.agent);
-  await expandPopover("model");
-  await field("모델 요청").selectOption(scope.model);
-  await field("Variant 요청").selectOption(scope.variant);
+  await pickModel(page, scope.model);
+  await pickVariant(page, scope.variant);
 }
 async function observe(scope) {
   await expandPopover("attach");
@@ -451,20 +456,20 @@ async function criticalOutsideTask(locator) {
 async function commandMenuRegression() {
   await scenario("ready");
   await display("light", 1440);
-  const trigger = page.getByRole("button", {
-    name: "앱 동작과 명령 열기",
-    exact: true,
-  });
+  // The "/" key is the only opener: there is no slash button any more.
+  const trigger = composer();
+  await expect(
+    page.getByRole("button", { name: "앱 동작과 명령 열기", exact: true }),
+  ).toHaveCount(0);
+  const open = () => openCommandMenu(page);
   const menu = page.getByRole("region", {
     name: "앱 동작 및 런타임 명령",
     exact: true,
   });
-  await expect(trigger).toHaveText("");
-  await expect(trigger.locator("svg.lucide-square-slash")).toHaveCount(1);
   const composerBefore = await trigger
     .locator("xpath=ancestor::form")
     .boundingBox();
-  await trigger.click();
+  await open();
   await expect(menu).toBeVisible();
   assert.equal(
     await menu.evaluate((element) => element.matches(":popover-open")),
@@ -507,7 +512,7 @@ async function commandMenuRegression() {
   await close.click();
   await expect(menu).toHaveCount(0);
   await expect(trigger).toBeFocused();
-  await trigger.focus();
+  await open();
   await page.keyboard.press("ArrowDown");
   await expect(first).toBeFocused();
   await page.keyboard.press("End");
@@ -528,8 +533,7 @@ async function commandMenuRegression() {
     ["dark", 1440, 1],
   ]) {
     await display(theme, width, zoom);
-    await trigger.click();
-    await expect(menu).toBeVisible();
+    await open();
     const box = await menu.boundingBox();
     const viewport = await page.evaluate(() => ({
       width: window.innerWidth,
@@ -552,7 +556,7 @@ async function commandMenuRegression() {
     await page.keyboard.press("Escape");
     await expect(menu).toHaveCount(0);
     await expect(trigger).toBeFocused();
-    await trigger.click();
+    await open();
     // The popup can cover the textbox center; click a genuinely outside gutter.
     await page.mouse.click(1, 1);
     await expect(menu).toHaveCount(0);
@@ -582,8 +586,9 @@ async function exerciseFoundation() {
       await composer().fill(
         "SYNTHETIC Foundation · 긴 한국어 입력 · 다음 요청을 편집합니다.",
       );
-      await expect(chip("agent")).toContainText("기본 에이전트");
-      await expect(chip("model")).toContainText("기본 모델");
+      // With no explicit request, the chips name what the session reports.
+      await expect(chip("agent")).toContainText("session-agent");
+      await expect(chip("model")).toContainText("session-model");
       await expect(send()).toHaveAttribute(
         "title",
         "전송 (Enter) · 줄바꿈 Shift+Enter",
@@ -594,14 +599,23 @@ async function exerciseFoundation() {
       await stagedOnly(`${prefix}-settings-keyboard-disclosure`, async () => {
         await expandPopover("agent", zoom === 2 ? "Space" : "Enter");
         await choose(scope);
-        await field("모델 요청").focus();
+        await expandPopover("model");
+        await field("모델 검색").focus();
         await page.keyboard.press("Tab");
-        await expect(field("Variant 요청")).toBeFocused();
+        await expect(
+          page.getByRole("switch", { name: "무료만" }),
+        ).toBeFocused();
+        await page.keyboard.press("Tab");
+        const variantRadio = page.getByRole("radio", {
+          name: scope.variant,
+          exact: true,
+        });
+        await expect(variantRadio).toBeFocused();
         await reveal(page.locator('[data-runtime-source="requested"]').last());
         await shot(`${prefix}-expanded-requested`);
-        for (const name of ["모델 요청", "Variant 요청"])
-          await recordValue(field(name), `${prefix}-${name}`);
-        await closePopover("model", field("Variant 요청"));
+        await recordValue(modelOption(page, scope.model), `${prefix}-모델`);
+        await recordValue(variantRadio.locator(".."), `${prefix}-추론 강도`);
+        await closePopover("model", variantRadio);
         await expect(chip("model")).toContainText(scope.variant);
         await expandPopover("agent");
         await recordValue(field("Agent 요청"), `${prefix}-Agent 요청`);
@@ -734,14 +748,19 @@ async function exerciseFoundation() {
   await display("dark", 1440);
   await composer().fill("SYNTHETIC next draft during the current run");
   await stagedOnly("running-requested-distinct-from-current-run", async () => {
-    await expandPopover("model");
-    await field("모델 요청").selectOption("fixture-other-model");
-    await field("Variant 요청").selectOption("other.variant");
-    // The current-session report is a separate muted line from the request.
-    await expect(sessionReport()).toContainText("session.variant");
-    await reveal(sessionReport());
+    await pickModel(page, "fixture-other-model");
+    await pickVariant(page, "other.variant");
+    // The session's own report is not a line in the picker: a dot on the chip
+    // flags the difference and its tooltip names the reported value.
+    await expect(chip("model").locator("[data-runtime-mismatch]")).toHaveCount(
+      1,
+    );
+    await expect(chip("model")).toHaveAttribute("title", /session\.variant/);
     await shot("running-native-report-separate-from-request");
-    await closePopover("model", field("Variant 요청"));
+    await closePopover(
+      "model",
+      page.getByRole("radio", { name: "other.variant", exact: true }),
+    );
     await expect(chip("model")).toContainText("other.variant");
     // The run strip appears only while a run is active.
     await expect(page.locator("[data-run-strip]")).toBeVisible();
@@ -771,8 +790,8 @@ async function exerciseFoundation() {
   await display("dark", 320);
   await observe(scope);
   await expandPopover("model");
-  await field("모델 요청").selectOption(scope.model);
-  await closePopover("model", field("모델 요청"));
+  await pickModel(page, scope.model);
+  await closeComposerPopovers(page);
   await expandPopover("attach");
   await closePopover("attach", hook("path"));
   await composer().fill("SYNTHETIC unsupported model input stays editable");

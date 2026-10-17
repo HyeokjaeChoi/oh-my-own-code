@@ -7,7 +7,12 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
-import { closeComposerPopovers, openComposerPopover } from "./e2e-composer.mjs";
+import {
+  closeComposerPopovers,
+  modelOption,
+  openComposerPopover,
+  pickModel,
+} from "./e2e-composer.mjs";
 import {
   formatLineFeedback,
   appendLineFeedback,
@@ -515,12 +520,10 @@ try {
   const baseline = await readFileBaseline();
   const prefix = "SYNTHETIC existing composer";
   const agent = page.getByLabel("Agent 요청", { exact: true });
-  const model = page.getByLabel("모델 요청", { exact: true });
   await composer().fill(prefix);
   await openComposerPopover(page, "agent");
   await agent.selectOption("fixture-agent");
-  await openComposerPopover(page, "model");
-  await model.selectOption("fixture-model");
+  await pickModel(page, "fixture-model");
   await closeComposerPopovers(page);
   await editor()
     .locator("[data-workspace-file-text]")
@@ -574,7 +577,12 @@ try {
     prefix,
   );
   await expect(agent).toHaveValue("fixture-agent");
-  await expect(model).toHaveValue("fixture-model");
+  await openComposerPopover(page, "model");
+  await expect(modelOption(page, "fixture-model")).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
+  await closeComposerPopovers(page);
   assert.deepEqual(
     await metrics(),
     beforeAppend,

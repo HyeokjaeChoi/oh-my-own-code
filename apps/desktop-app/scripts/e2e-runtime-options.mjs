@@ -15,7 +15,13 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
-import { openComposerPopover } from "./e2e-composer.mjs";
+import {
+  closeComposerPopovers,
+  modelOption,
+  openComposerPopover,
+  pickModel,
+  pickVariant,
+} from "./e2e-composer.mjs";
 const desktop = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const root = resolve(desktop, "../..");
 if (!process.env.OMOC_EVIDENCE_DIR)
@@ -269,26 +275,24 @@ async function stopOwnedApplication(application, processHandle) {
 // model fieldset (model + variant + hints).
 const requested = () =>
   page.locator('fieldset[data-runtime-source="requested"]').last();
-const sessionReport = () => page.locator('[data-runtime-source="session"]');
 const responseReport = () => page.locator("[data-response-runtime]").first();
+// The session's own report is no longer a line in the picker: a mismatch with
+// the next request shows as a dot on the model chip with the detail in its title.
+const modelChip = () => page.getByRole("button", { name: "모델:" }).first();
 const agentRequest = () =>
   page.getByRole("combobox", {
     name: "Agent 요청",
     exact: true,
     includeHidden: true,
   });
-const modelRequest = () =>
+const modelSearch = () =>
   page.getByRole("combobox", {
-    name: "모델 요청",
+    name: "모델 검색",
     exact: true,
     includeHidden: true,
   });
-const variantRequest = () =>
-  page.getByRole("combobox", {
-    name: "Variant 요청",
-    exact: true,
-    includeHidden: true,
-  });
+const variantGroup = () =>
+  page.getByRole("radiogroup", { name: "추론 강도", includeHidden: true });
 const composer = () =>
   page.getByRole("textbox", { name: "메시지 작성", exact: true });
 const send = () =>
@@ -317,15 +321,11 @@ async function reveal(locator) {
   await locator.scrollIntoViewIfNeeded();
   await expect(locator).toBeInViewport({ ratio: 0.5 });
 }
-async function expand(locator) {
-  if (!(await locator.evaluate((element) => element.open))) {
-    const summary = locator.locator("summary");
-    await reveal(summary);
-    await summary.focus();
-    await expect(summary).toBeFocused();
-    await page.keyboard.press("Enter");
-  }
-  await expect(locator).toHaveAttribute("open", "");
+// The turn meta shows on hover or focus; hovering the turn reveals it.
+async function showResponse() {
+  await reveal(responseReport());
+  await responseReport().hover();
+  await expect(responseReport()).toBeVisible();
 }
 async function geometry() {
   const value = await page.evaluate(() => ({
@@ -335,14 +335,10 @@ async function geometry() {
   assert.ok(value.scrollWidth <= value.width + 1, JSON.stringify(value));
 }
 async function choose(scope, variant = scope.variant) {
-  await expect(
-    modelRequest().locator(`option[value="${scope.model}"]`),
-  ).toHaveCount(1);
   await openComposerPopover(page, "agent");
   await agentRequest().selectOption(scope.agent);
-  await openComposerPopover(page, "model");
-  await modelRequest().selectOption(scope.model);
-  await variantRequest().selectOption(variant);
+  await pickModel(page, scope.model);
+  await pickVariant(page, variant);
 }
 async function refreshCatalog() {
   // Dispatch a synthetic renderer event to the actual onRefocus read listener.
@@ -378,19 +374,22 @@ async function exerciseRuntimeOptions() {
   await choose(scope);
   await composer().fill("SYNTHETIC next-send request");
   await openComposerPopover(page, "model");
-  await modelRequest().focus();
+  await modelSearch().focus();
   await page.keyboard.press("Tab");
-  await expect(variantRequest()).toBeFocused();
+  await expect(page.getByRole("switch", { name: "무료만" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(
+    variantGroup().getByRole("radio", { name: scope.variant, exact: true }),
+  ).toBeFocused();
   await shot("requested-keyboard");
   assert.equal(
     (await sends()).length,
     initialSends,
     "Option changes must stage only",
   );
-  await openComposerPopover(page, "model");
-  await expect(sessionReport()).toContainText("session-model");
-  await expect(sessionReport()).toContainText("session.variant");
-  await expand(responseReport());
+  await expect(modelChip()).toHaveAttribute("title", /session-model/);
+  await expect(modelChip()).toHaveAttribute("title", /session\.variant/);
+  await showResponse();
   await expect(responseReport()).toContainText("response-model");
   await expect(responseReport()).toContainText("response.variant");
   for (const theme of ["light", "dark"]) {
@@ -407,21 +406,16 @@ async function exerciseRuntimeOptions() {
       }, theme);
       await geometry();
       await openComposerPopover(page, "model");
-      await expand(responseReport());
-      await reveal(modelRequest());
+      await reveal(modelSearch());
       await shot(`${theme}-${width}-zoom${zoom}-requested`);
-      await reveal(sessionReport());
+      await reveal(modelChip());
       await shot(`${theme}-${width}-zoom${zoom}-session`);
-      await reveal(responseReport().locator("summary"));
+      await showResponse();
       await shot(`${theme}-${width}-zoom${zoom}-response`);
       if (zoom === 2) {
-        const values = responseReport().locator("dd");
-        await expect(values).toHaveCount(4);
-        for (let index = 0; index < 4; index++) {
-          await values.nth(index).scrollIntoViewIfNeeded();
-          await expect(values.nth(index)).toBeInViewport({ ratio: 0.95 });
-          await shot(`${theme}-200-response-value-${index}`);
-        }
+        // The whole turn meta must be readable: it wraps, never clips.
+        await expect(responseReport()).toBeInViewport({ ratio: 0.95 });
+        await shot(`${theme}-200-response-value-0`);
         const hint = requested().locator("p").first();
         await hint.scrollIntoViewIfNeeded();
         await expect(hint).toBeInViewport({ ratio: 0.95 });
@@ -448,17 +442,20 @@ async function exerciseRuntimeOptions() {
   );
   await refreshCatalog();
   await openComposerPopover(page, "model");
-  await expect(variantRequest().locator("option:checked")).toContainText(
-    "사용 불가",
-  );
-  await expect(variantRequest()).toHaveValue(scope.variant);
+  const unavailableVariant = variantGroup().getByRole("radio", {
+    name: `${scope.variant} (사용 불가)`,
+    exact: true,
+  });
+  await expect(unavailableVariant).toBeChecked();
   await expect(send()).toBeDisabled();
-  await expect(page.getByRole("alert")).toContainText("Variant");
-  await reveal(variantRequest());
+  await expect(page.getByRole("alert")).toContainText("추론 강도");
+  await reveal(variantGroup());
   await shot("removed-variant-retained-blocked");
   assert.equal((await sends()).length, initialSends);
-  await modelRequest().selectOption("fixture-other-model");
-  await expect(variantRequest()).toHaveValue("");
+  await pickModel(page, "fixture-other-model");
+  await expect(
+    variantGroup().getByRole("radio", { name: "기본", exact: true }),
+  ).toBeChecked();
   await expect(page.locator('[data-variant-cleared="true"]')).toBeVisible();
   await shot("model-change-clears-variant");
   assert.equal((await sends()).length, initialSends);
@@ -468,42 +465,39 @@ async function exerciseRuntimeOptions() {
     await choose(scope, "");
     await composer().fill("SYNTHETIC model with no explicit variant");
     await expect(requested()).toContainText(
-      "Variant 목록을 확인할 수 없습니다.",
+      "추론 강도 목록을 확인할 수 없습니다.",
     );
-    await expect(variantRequest().locator("option")).toHaveCount(1);
+    await expect(variantGroup()).toHaveCount(0);
     await expect(send()).toBeEnabled();
-    await reveal(variantRequest());
+    await reveal(requested());
     await shot(`${name}-variants-unavailable`);
   }
 
   await scenario("absent");
-  await openComposerPopover(page, "model");
-  await expect(sessionReport()).toContainText(
-    "현재 세션: 설정 보고가 없습니다.",
-  );
-  await reveal(sessionReport());
+  // No session report: nothing to compare, so the chip carries no mismatch dot.
+  await expect(modelChip().locator("[data-runtime-mismatch]")).toHaveCount(0);
+  await expect(modelChip()).not.toHaveAttribute("title", /./);
+  await reveal(modelChip());
   await shot("session-no-report");
-  await expand(responseReport());
-  await expect(responseReport()).toContainText(
-    "이 응답에 실행 정보 보고가 없습니다.",
+  await showResponse();
+  await expect(responseReport()).toHaveAttribute(
+    "title",
+    /이 응답에 실행 정보 보고가 없습니다/,
   );
-  await reveal(responseReport().locator("summary"));
+  await expect(responseReport()).toContainText("실행 정보 없음");
   await shot("response-no-report");
   await scenario("failed");
-  await openComposerPopover(page, "model");
-  await expect(sessionReport()).toContainText(
-    "현재 세션: 설정 보고가 없습니다.",
-  );
+  await expect(modelChip().locator("[data-runtime-mismatch]")).toHaveCount(0);
   await shot("failed-session-refresh");
-  await expand(responseReport());
+  await showResponse();
   await expect(responseReport()).toContainText("response-model");
   await shot("failed-session-independent-response");
   await scenario("historical");
-  await expand(responseReport());
+  await showResponse();
   await expect(responseReport()).toContainText("removed-response-model");
-  await expect(modelRequest().locator("option")).not.toContainText([
-    "removed-response-model",
-  ]);
+  await expect(
+    page.locator('[role="option"][data-model-option]'),
+  ).not.toContainText(["removed-response-model"]);
   await shot("historical-response-read-only");
   assert.equal((await sends()).length, initialSends);
 
@@ -527,25 +521,27 @@ async function exerciseRuntimeOptions() {
   await application.evaluate(() =>
     globalThis.__omocUiFixture.releaseSendAcks(),
   );
-  await expect(modelRequest()).toBeEnabled();
+  await openComposerPopover(page, "model");
+  await expect(modelSearch()).toBeEnabled();
+  await closeComposerPopovers(page);
   await expect(
     page.getByRole("button", { name: "현재 세션 실행 중단", exact: true }),
   ).toBeVisible();
-  await openComposerPopover(page, "model");
-  await modelRequest().selectOption("fixture-other-model");
-  await expect(variantRequest()).toHaveValue("");
-  await variantRequest().selectOption("other.variant");
+  await pickModel(page, "fixture-other-model");
+  await expect(
+    variantGroup().getByRole("radio", { name: "기본", exact: true }),
+  ).toBeChecked();
+  await pickVariant(page, "other.variant");
   await composer().fill("SYNTHETIC editable next running draft");
-  await reveal(modelRequest());
+  await reveal(modelSearch());
   await shot("running-next-draft");
   let requests = await sends();
   assert.equal(requests.length, initialSends + 1);
   assert.equal(requests.at(-1).model, scope.model);
   assert.equal(requests.at(-1).variant, scope.variant);
-  await openComposerPopover(page, "model");
-  await expect(sessionReport()).toContainText("session.variant");
+  await expect(modelChip()).toHaveAttribute("title", /session\.variant/);
   await shot("running-distinct-session-setting");
-  await expand(responseReport());
+  await showResponse();
   await expect(responseReport()).toContainText("response.variant");
   await shot("running-distinct-response-report");
 
@@ -557,8 +553,7 @@ async function exerciseRuntimeOptions() {
   await expect.poll(async () => (await sends()).length).toBe(initialSends + 2);
   requests = await sends();
   assert.equal(Object.hasOwn(requests.at(-1), "variant"), false);
-  await openComposerPopover(page, "model");
-  await expect(sessionReport()).toContainText("session.variant");
+  await expect(modelChip()).toHaveAttribute("title", /session\.variant/);
   await shot("omitted-request-preserves-observed-variant");
 
   await scenario("unknown");
@@ -574,8 +569,9 @@ async function exerciseRuntimeOptions() {
       ),
     )
     .toBe(true);
-  await expect(modelRequest()).toHaveValue("");
-  await expect(variantRequest()).toHaveValue("");
+  await openComposerPopover(page, "model");
+  await expect(modelOption(page, "")).toHaveAttribute("aria-selected", "true");
+  await expect(variantGroup()).toHaveCount(0);
   await reveal(composer());
   await shot("unknown-original-key-no-replay");
   assert.equal((await sends()).length, initialSends + 2);
