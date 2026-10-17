@@ -40,7 +40,7 @@ def css_value(value: str | int | float) -> str:
     if value == "Noto Sans KR":
         return '-apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", "Noto Sans KR", sans-serif'
     if value == "IBM Plex Mono":
-        return '"IBM Plex Mono", monospace'
+        return 'ui-monospace, "SF Mono", Menlo, "IBM Plex Mono", monospace'
     return str(value)
 
 
@@ -66,6 +66,30 @@ def luminance(color: str) -> float:
 def ratio(a: str, b: str) -> float:
     hi, lo = sorted((luminance(a), luminance(b)), reverse=True)
     return (hi + 0.05) / (lo + 0.05)
+
+
+# Files another branch is rewriting; they keep literals until it lands, then delete this list.
+FONT_SIZE_ALLOWLIST = (
+    "features/git-review/", "features/subagents/", "features/workspace-file-editor/",
+    "pages/workbench/index.tsx", "pages/workbench/shell.module.css",
+    "widgets/activity/", "widgets/explorer/", "widgets/plans/", "widgets/preview/", "widgets/terminal/",
+)
+LITERAL_FONT_SIZE = re.compile(r"font(?:-size)?:\s*\d+px")
+
+
+def check_font_size_literals() -> None:
+    """Type sizes come from --omoc-* font-size tokens; px literals in CSS Modules bypass the scale."""
+    repo = ROOT.parent.parent
+    offenders = [
+        f"{path.relative_to(repo)}:{n}"
+        for base in (repo / "apps" / "desktop-app" / "src", repo / "packages" / "ui" / "src")
+        for path in sorted(base.rglob("*.module.css"))
+        if not any(allowed in path.as_posix() for allowed in FONT_SIZE_ALLOWLIST)
+        for n, line in enumerate(path.read_text().splitlines(), 1)
+        if LITERAL_FONT_SIZE.search(line)
+    ]
+    if offenders:
+        fail("hard-coded font-size px (use --omoc-*-font-size tokens): " + ", ".join(offenders))
 
 
 def check() -> None:
@@ -186,7 +210,8 @@ def check() -> None:
     ]
     for role in ("success", "warning", "danger", "info", "permission.pending", "permission.denied"):
         contrast_pairs.append((role + ".foreground", role + ".background", 4.5))
-    contrast_pairs += [("focus", "surface", 3), ("focus", "canvas", 3), ("border.default", "surface", 3), ("border.strong", "surface", 3)]
+    contrast_pairs += [("focus", "surface", 3), ("focus", "canvas", 3), ("border.control", "surface", 3), ("border.strong", "surface", 3)]
+    # border.default/subtle are decorative separators; interactive boundaries use border.control (3:1).
     for mode in MODES:
         for fg, bg, threshold in contrast_pairs:
             a = resolve("semantic.color." + fg, mode)
@@ -241,7 +266,7 @@ def check() -> None:
             if "border" in bindings and family in ("Input", "ToolCall", "PermissionRequest"):
                 pairs.append(("border", "background", 3))
             for fg, bg, threshold in pairs:
-                if family == "Button" and variant["name"].endswith("/disabled"):
+                if (family == "Button" and variant["name"].endswith("/disabled")) or (family == "Input" and variant["name"] == "disabled"):
                     continue  # Disabled controls have a WCAG contrast exception.
                 score = ratio(resolve(bindings[fg], mode), resolve(bindings[bg], mode))
                 if score + 1e-9 < threshold:
@@ -289,14 +314,14 @@ def check() -> None:
     if nav_contract.get("darkStateSurfaces") != {
         "parent": "semantic.color.surface",
         "default": "semantic.color.surface",
-        "hover": "semantic.color.canvas",
-        "selected": "semantic.color.surface.subtle",
+        "hover": "semantic.color.navigation.hover.background",
+        "selected": "semantic.color.navigation.selected-background",
     }:
         fail("NavigationItem dark surface contract mismatch")
     expected_nav_aliases = {
         "component.color.navigation.background": "{semantic.color.surface}",
-        "component.color.navigation.hover-background": "{semantic.color.canvas}",
-        "component.color.navigation.selected-background": "{semantic.color.surface.subtle}",
+        "component.color.navigation.hover-background": "{semantic.color.navigation.hover.background}",
+        "component.color.navigation.selected-background": "{semantic.color.navigation.selected-background}",
     }
     for path, alias in expected_nav_aliases.items():
         if by_path[path]["value"]["dark"] != alias:
@@ -352,8 +377,8 @@ def check() -> None:
             reviewed = {
                 "parent": resolve("semantic.color.surface", mode),
                 "default": resolve("semantic.color.surface", mode),
-                "hover": resolve("semantic.color.canvas", mode),
-                "selected": resolve("semantic.color.surface.subtle", mode),
+                "hover": resolve("semantic.color.navigation.hover.background", mode),
+                "selected": resolve("semantic.color.navigation.selected-background", mode),
             }
             if {
                 "parent": parent,
@@ -362,10 +387,17 @@ def check() -> None:
                 "selected": nav_selected,
             } != reviewed:
                 fail("dark NavigationItem parent/default/hover/selected surfaces must match the reviewed matrix")
+            if not luminance(parent) < luminance(nav_hover) < luminance(nav_selected):
+                fail("dark navigation hover and selected must both step lighter than the sidebar, selected above hover")
+            if resolve("semantic.color.selection.background", mode) == resolve("semantic.color.surface", mode):
+                fail("dark selection-background must differ from surface")
+    check_font_size_literals()
     print(f"PASS: {len(tokens)} tokens, {len(variants)} exact variants, two modes, CSS parity, contrast, aliases")
 
 
 if __name__ == "__main__":
+    if "--write" in sys.argv:  # regenerate tokens.css from manifest.json
+        CSS.write_text(generated_css(json.loads(MANIFEST.read_text())))
     try:
         check()
     except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:

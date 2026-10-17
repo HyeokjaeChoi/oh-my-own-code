@@ -857,7 +857,7 @@
         "height": "component.size.navigation.height"
       },
       "content": "Start-aligned item label with optional trailing status; fills its parent width and exposes its full title when truncated.",
-      "behavior": "Use a 40px full-width row, 12px start inset, and start-aligned content. Default and hover use 500 label weight; selected/current uses 700. In Dark mode, the navigation parent and default row use semantic.color.surface; hover uses semantic.color.canvas and selected uses semantic.color.surface.subtle. Focus overlays the underlying default or selected state without changing layout and preserves that state’s fill and label weight. Current destination uses aria-current=page; selection never implies execution success.",
+      "behavior": "Use a 40px full-width row, 12px start inset, and start-aligned content. Default and hover use 500 label weight; selected/current uses 700. In Dark mode, the navigation parent and default row use semantic.color.surface; hover uses semantic.color.navigation.hover.background and selected uses semantic.color.navigation.selected-background (both lighter than the parent). Focus overlays the underlying default or selected state without changing layout and preserves that state’s fill and label weight. Current destination uses aria-current=page; selection never implies execution success.",
       "properties": {
         "state": "default",
         "label": "작업",
@@ -885,7 +885,7 @@
         "height": "component.size.navigation.height"
       },
       "content": "Start-aligned item label with optional trailing status; fills its parent width and exposes its full title when truncated.",
-      "behavior": "Use a 40px full-width row, 12px start inset, and start-aligned content. Default and hover use 500 label weight; selected/current uses 700. In Dark mode, the navigation parent and default row use semantic.color.surface; hover uses semantic.color.canvas and selected uses semantic.color.surface.subtle. Focus overlays the underlying default or selected state without changing layout and preserves that state’s fill and label weight. Current destination uses aria-current=page; selection never implies execution success.",
+      "behavior": "Use a 40px full-width row, 12px start inset, and start-aligned content. Default and hover use 500 label weight; selected/current uses 700. In Dark mode, the navigation parent and default row use semantic.color.surface; hover uses semantic.color.navigation.hover.background and selected uses semantic.color.navigation.selected-background (both lighter than the parent). Focus overlays the underlying default or selected state without changing layout and preserves that state’s fill and label weight. Current destination uses aria-current=page; selection never implies execution success.",
       "properties": {
         "state": "hover",
         "label": "작업",
@@ -913,7 +913,7 @@
         "height": "component.size.navigation.height"
       },
       "content": "Start-aligned item label with optional trailing status; fills its parent width and exposes its full title when truncated.",
-      "behavior": "Use a 40px full-width row, 12px start inset, and start-aligned content. Default and hover use 500 label weight; selected/current uses 700. In Dark mode, the navigation parent and default row use semantic.color.surface; hover uses semantic.color.canvas and selected uses semantic.color.surface.subtle. Focus overlays the underlying default or selected state without changing layout and preserves that state’s fill and label weight. Current destination uses aria-current=page; selection never implies execution success.",
+      "behavior": "Use a 40px full-width row, 12px start inset, and start-aligned content. Default and hover use 500 label weight; selected/current uses 700. In Dark mode, the navigation parent and default row use semantic.color.surface; hover uses semantic.color.navigation.hover.background and selected uses semantic.color.navigation.selected-background (both lighter than the parent). Focus overlays the underlying default or selected state without changing layout and preserves that state’s fill and label weight. Current destination uses aria-current=page; selection never implies execution success.",
       "properties": {
         "state": "selected",
         "label": "작업",
@@ -943,7 +943,7 @@
         "focusGapWidth": "semantic.size.focus-gap"
       },
       "content": "Start-aligned item label with optional trailing status; fills its parent width and exposes its full title when truncated.",
-      "behavior": "Use a 40px full-width row, 12px start inset, and start-aligned content. Default and hover use 500 label weight; selected/current uses 700. In Dark mode, the navigation parent and default row use semantic.color.surface; hover uses semantic.color.canvas and selected uses semantic.color.surface.subtle. Focus overlays the underlying default or selected state without changing layout and preserves that state’s fill and label weight. Current destination uses aria-current=page; selection never implies execution success.",
+      "behavior": "Use a 40px full-width row, 12px start inset, and start-aligned content. Default and hover use 500 label weight; selected/current uses 700. In Dark mode, the navigation parent and default row use semantic.color.surface; hover uses semantic.color.navigation.hover.background and selected uses semantic.color.navigation.selected-background (both lighter than the parent). Focus overlays the underlying default or selected state without changing layout and preserves that state’s fill and label weight. Current destination uses aria-current=page; selection never implies execution success.",
       "properties": {
         "state": "focus",
         "label": "작업",
@@ -1494,8 +1494,8 @@
       "darkStateSurfaces": {
         "parent": "semantic.color.surface",
         "default": "semantic.color.surface",
-        "hover": "semantic.color.canvas",
-        "selected": "semantic.color.surface.subtle"
+        "hover": "semantic.color.navigation.hover.background",
+        "selected": "semantic.color.navigation.selected-background"
       },
       "darkParentSurface": "semantic.color.surface"
     },

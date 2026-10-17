@@ -202,7 +202,7 @@
       "path": "primitive.font.size.xs",
       "layer": "primitive",
       "type": "dimension",
-      "value": "12px",
+      "value": "11px",
       "css": "--omoc-primitive-font-size-xs",
       "figmaScopes": []
     },
@@ -210,7 +210,7 @@
       "path": "primitive.font.size.sm",
       "layer": "primitive",
       "type": "dimension",
-      "value": "13px",
+      "value": "12px",
       "css": "--omoc-primitive-font-size-sm",
       "figmaScopes": []
     },
@@ -218,7 +218,7 @@
       "path": "primitive.font.size.md",
       "layer": "primitive",
       "type": "dimension",
-      "value": "16px",
+      "value": "13px",
       "css": "--omoc-primitive-font-size-md",
       "figmaScopes": []
     },
@@ -234,7 +234,7 @@
       "path": "primitive.font.size.xl",
       "layer": "primitive",
       "type": "dimension",
-      "value": "22px",
+      "value": "18px",
       "css": "--omoc-primitive-font-size-xl",
       "figmaScopes": []
     },
@@ -266,7 +266,7 @@
       "path": "primitive.font.line.body",
       "layer": "primitive",
       "type": "dimension",
-      "value": "24px",
+      "value": "22px",
       "css": "--omoc-primitive-font-line-body",
       "figmaScopes": []
     },
@@ -274,7 +274,7 @@
       "path": "primitive.font.line.caption",
       "layer": "primitive",
       "type": "dimension",
-      "value": "20px",
+      "value": "16px",
       "css": "--omoc-primitive-font-line-caption",
       "figmaScopes": []
     },
@@ -282,7 +282,7 @@
       "path": "primitive.font.line.label",
       "layer": "primitive",
       "type": "dimension",
-      "value": "22px",
+      "value": "20px",
       "css": "--omoc-primitive-font-line-label",
       "figmaScopes": []
     },
@@ -290,7 +290,7 @@
       "path": "primitive.font.line.heading",
       "layer": "primitive",
       "type": "dimension",
-      "value": "28px",
+      "value": "20px",
       "css": "--omoc-primitive-font-line-heading",
       "figmaScopes": []
     },
@@ -298,7 +298,7 @@
       "path": "primitive.font.line.code",
       "layer": "primitive",
       "type": "dimension",
-      "value": "20px",
+      "value": "18px",
       "css": "--omoc-primitive-font-line-code",
       "figmaScopes": []
     },
@@ -556,7 +556,7 @@
       "type": "color",
       "value": {
         "light": "{primitive.color.n4}",
-        "dark": "{primitive.color.n3}"
+        "dark": "{primitive.color.d5c}"
       },
       "css": "--omoc-semantic-color-border-default",
       "figmaScopes": ["STROKE_COLOR"]
@@ -567,7 +567,7 @@
       "type": "color",
       "value": {
         "light": "{primitive.color.n2}",
-        "dark": "{primitive.color.n6}"
+        "dark": "{primitive.color.d30}"
       },
       "css": "--omoc-semantic-color-border-subtle",
       "figmaScopes": ["STROKE_COLOR"]
@@ -677,7 +677,7 @@
       "type": "color",
       "value": {
         "light": "{primitive.color.n2}",
-        "dark": "{primitive.color.n7}"
+        "dark": "{primitive.color.d33}"
       },
       "css": "--omoc-semantic-color-selection-background",
       "figmaScopes": ["FRAME_FILL", "SHAPE_FILL"]
@@ -863,8 +863,8 @@
       "layer": "semantic",
       "type": "dimension",
       "value": {
-        "light": "{primitive.font.size.md}",
-        "dark": "{primitive.font.size.md}"
+        "light": "{primitive.font.size.base}",
+        "dark": "{primitive.font.size.base}"
       },
       "css": "--omoc-semantic-type-size-body",
       "figmaScopes": ["FONT_SIZE"]
@@ -896,8 +896,8 @@
       "layer": "semantic",
       "type": "dimension",
       "value": {
-        "light": "{primitive.font.size.xl}",
-        "dark": "{primitive.font.size.xl}"
+        "light": "{primitive.font.size.base}",
+        "dark": "{primitive.font.size.base}"
       },
       "css": "--omoc-semantic-type-size-heading",
       "figmaScopes": ["FONT_SIZE"]
@@ -951,8 +951,8 @@
       "layer": "semantic",
       "type": "number",
       "value": {
-        "light": "{primitive.font.weight.bold}",
-        "dark": "{primitive.font.weight.bold}"
+        "light": "{primitive.font.weight.semibold}",
+        "dark": "{primitive.font.weight.semibold}"
       },
       "css": "--omoc-semantic-type-weight-heading",
       "figmaScopes": ["FONT_WEIGHT"]
@@ -1358,8 +1358,8 @@
       "layer": "component",
       "type": "color",
       "value": {
-        "light": "{semantic.color.border.default}",
-        "dark": "{semantic.color.border.default}"
+        "light": "{semantic.color.border.control}",
+        "dark": "{semantic.color.border.control}"
       },
       "css": "--omoc-component-color-input-border",
       "figmaScopes": ["STROKE_COLOR"]
@@ -1413,8 +1413,8 @@
       "layer": "component",
       "type": "color",
       "value": {
-        "light": "{semantic.color.selection.background}",
-        "dark": "{semantic.color.surface.subtle}"
+        "light": "{semantic.color.navigation.selected-background}",
+        "dark": "{semantic.color.navigation.selected-background}"
       },
       "css": "--omoc-component-color-navigation-selected-background",
       "figmaScopes": ["FRAME_FILL", "SHAPE_FILL"]
@@ -1457,8 +1457,8 @@
       "layer": "component",
       "type": "color",
       "value": {
-        "light": "{semantic.color.border.default}",
-        "dark": "{semantic.color.border.default}"
+        "light": "{semantic.color.border.control}",
+        "dark": "{semantic.color.border.control}"
       },
       "css": "--omoc-component-color-tool-border",
       "figmaScopes": ["STROKE_COLOR"]
@@ -1644,7 +1644,7 @@
       "type": "color",
       "value": {
         "light": "{primitive.color.n1}",
-        "dark": "{primitive.color.n7}"
+        "dark": "{primitive.color.d2e}"
       },
       "css": "--omoc-semantic-color-navigation-hover-background",
       "figmaScopes": ["FRAME_FILL", "SHAPE_FILL"]
@@ -1655,7 +1655,7 @@
       "type": "color",
       "value": {
         "light": "{semantic.color.navigation.hover.background}",
-        "dark": "{semantic.color.canvas}"
+        "dark": "{semantic.color.navigation.hover.background}"
       },
       "css": "--omoc-component-color-navigation-hover-background",
       "figmaScopes": ["FRAME_FILL", "SHAPE_FILL"]
@@ -1664,7 +1664,7 @@
       "path": "primitive.font.size.compact",
       "layer": "primitive",
       "type": "dimension",
-      "value": "14px",
+      "value": "13px",
       "css": "--omoc-primitive-font-size-compact",
       "figmaScopes": []
     },
@@ -1680,7 +1680,7 @@
       "path": "primitive.font.line.conversation",
       "layer": "primitive",
       "type": "dimension",
-      "value": "24px",
+      "value": "22px",
       "css": "--omoc-primitive-font-line-conversation",
       "figmaScopes": []
     },
@@ -1705,8 +1705,8 @@
       "layer": "semantic",
       "type": "dimension",
       "value": {
-        "light": "{primitive.font.size.compact}",
-        "dark": "{primitive.font.size.compact}"
+        "light": "{primitive.font.size.md}",
+        "dark": "{primitive.font.size.md}"
       },
       "css": "--omoc-semantic-type-size-compact",
       "figmaScopes": ["FONT_SIZE"]
@@ -2084,7 +2084,7 @@
       "path": "primitive.size.composer-radius",
       "layer": "primitive",
       "type": "dimension",
-      "value": "24px",
+      "value": "16px",
       "css": "--omoc-primitive-size-composer-radius",
       "figmaScopes": []
     },
@@ -2204,7 +2204,7 @@
       "path": "primitive.size.conversation-size",
       "layer": "primitive",
       "type": "dimension",
-      "value": "16px",
+      "value": "14px",
       "css": "--omoc-primitive-size-conversation-size",
       "figmaScopes": []
     },
@@ -2297,6 +2297,301 @@
       },
       "css": "--omoc-semantic-shadow-control",
       "figmaScopes": []
+    },
+    {
+      "path": "primitive.font.size.base",
+      "layer": "primitive",
+      "type": "dimension",
+      "value": "14px",
+      "css": "--omoc-primitive-font-size-base",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.font.size.title",
+      "layer": "primitive",
+      "type": "dimension",
+      "value": "17px",
+      "css": "--omoc-primitive-font-size-title",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.font.size.2xl",
+      "layer": "primitive",
+      "type": "dimension",
+      "value": "20px",
+      "css": "--omoc-primitive-font-size-2xl",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.font.line.title",
+      "layer": "primitive",
+      "type": "dimension",
+      "value": "24px",
+      "css": "--omoc-primitive-font-line-title",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.font.line.hero",
+      "layer": "primitive",
+      "type": "dimension",
+      "value": "28px",
+      "css": "--omoc-primitive-font-line-hero",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.font.line.h1",
+      "layer": "primitive",
+      "type": "dimension",
+      "value": "26px",
+      "css": "--omoc-primitive-font-line-h1",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.font.weight.semibold",
+      "layer": "primitive",
+      "type": "number",
+      "value": 600,
+      "css": "--omoc-primitive-font-weight-semibold",
+      "figmaScopes": []
+    },
+    {
+      "path": "semantic.type.size.title",
+      "layer": "semantic",
+      "type": "dimension",
+      "value": {
+        "light": "{primitive.font.size.title}",
+        "dark": "{primitive.font.size.title}"
+      },
+      "css": "--omoc-semantic-type-size-title",
+      "figmaScopes": ["FONT_SIZE"]
+    },
+    {
+      "path": "semantic.type.size.hero",
+      "layer": "semantic",
+      "type": "dimension",
+      "value": {
+        "light": "{primitive.font.size.2xl}",
+        "dark": "{primitive.font.size.2xl}"
+      },
+      "css": "--omoc-semantic-type-size-hero",
+      "figmaScopes": ["FONT_SIZE"]
+    },
+    {
+      "path": "semantic.type.size.group",
+      "layer": "semantic",
+      "type": "dimension",
+      "value": {
+        "light": "{primitive.font.size.xs}",
+        "dark": "{primitive.font.size.xs}"
+      },
+      "css": "--omoc-semantic-type-size-group",
+      "figmaScopes": ["FONT_SIZE"]
+    },
+    {
+      "path": "semantic.type.line.title",
+      "layer": "semantic",
+      "type": "dimension",
+      "value": {
+        "light": "{primitive.font.line.title}",
+        "dark": "{primitive.font.line.title}"
+      },
+      "css": "--omoc-semantic-type-line-title",
+      "figmaScopes": ["LINE_HEIGHT"]
+    },
+    {
+      "path": "semantic.type.line.hero",
+      "layer": "semantic",
+      "type": "dimension",
+      "value": {
+        "light": "{primitive.font.line.hero}",
+        "dark": "{primitive.font.line.hero}"
+      },
+      "css": "--omoc-semantic-type-line-hero",
+      "figmaScopes": ["LINE_HEIGHT"]
+    },
+    {
+      "path": "semantic.type.line.group",
+      "layer": "semantic",
+      "type": "dimension",
+      "value": {
+        "light": "{primitive.font.line.caption}",
+        "dark": "{primitive.font.line.caption}"
+      },
+      "css": "--omoc-semantic-type-line-group",
+      "figmaScopes": ["LINE_HEIGHT"]
+    },
+    {
+      "path": "primitive.space.0-5",
+      "layer": "primitive",
+      "type": "dimension",
+      "value": "2px",
+      "css": "--omoc-primitive-space-0-5",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.space.1-5",
+      "layer": "primitive",
+      "type": "dimension",
+      "value": "6px",
+      "css": "--omoc-primitive-space-1-5",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.radius.xs",
+      "layer": "primitive",
+      "type": "dimension",
+      "value": "4px",
+      "css": "--omoc-primitive-radius-xs",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.size.control-compact",
+      "layer": "primitive",
+      "type": "dimension",
+      "value": "28px",
+      "css": "--omoc-primitive-size-control-compact",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.color.d2a",
+      "layer": "primitive",
+      "type": "color",
+      "value": "#2a2a2a",
+      "css": "--omoc-primitive-color-d2a",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.color.d2e",
+      "layer": "primitive",
+      "type": "color",
+      "value": "#2e2e2e",
+      "css": "--omoc-primitive-color-d2e",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.color.d30",
+      "layer": "primitive",
+      "type": "color",
+      "value": "#303030",
+      "css": "--omoc-primitive-color-d30",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.color.d33",
+      "layer": "primitive",
+      "type": "color",
+      "value": "#333333",
+      "css": "--omoc-primitive-color-d33",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.color.d36",
+      "layer": "primitive",
+      "type": "color",
+      "value": "#363636",
+      "css": "--omoc-primitive-color-d36",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.color.d5c",
+      "layer": "primitive",
+      "type": "color",
+      "value": "#5c5c5c",
+      "css": "--omoc-primitive-color-d5c",
+      "figmaScopes": []
+    },
+    {
+      "path": "semantic.color.navigation.selected-background",
+      "layer": "semantic",
+      "type": "color",
+      "value": {
+        "light": "{primitive.color.n2}",
+        "dark": "{primitive.color.d36}"
+      },
+      "css": "--omoc-semantic-color-navigation-selected-background",
+      "figmaScopes": ["FRAME_FILL", "SHAPE_FILL"]
+    },
+    {
+      "path": "semantic.color.bubble-user",
+      "layer": "semantic",
+      "type": "color",
+      "value": {
+        "light": "{primitive.color.n1}",
+        "dark": "{primitive.color.d2a}"
+      },
+      "css": "--omoc-semantic-color-bubble-user",
+      "figmaScopes": ["FRAME_FILL", "SHAPE_FILL"]
+    },
+    {
+      "path": "semantic.color.border.control",
+      "layer": "semantic",
+      "type": "color",
+      "value": {
+        "light": "{primitive.color.n4}",
+        "dark": "{primitive.color.n4}"
+      },
+      "css": "--omoc-semantic-color-border-control",
+      "figmaScopes": ["STROKE_COLOR"]
+    },
+    {
+      "path": "primitive.size.sidebar-row-height",
+      "layer": "primitive",
+      "type": "dimension",
+      "value": "30px",
+      "css": "--omoc-primitive-size-sidebar-row-height",
+      "figmaScopes": []
+    },
+    {
+      "path": "semantic.size.sidebar-row-height",
+      "layer": "semantic",
+      "type": "dimension",
+      "value": {
+        "light": "{primitive.size.sidebar-row-height}",
+        "dark": "{primitive.size.sidebar-row-height}"
+      },
+      "css": "--omoc-semantic-size-sidebar-row-height",
+      "figmaScopes": ["WIDTH_HEIGHT"]
+    },
+    {
+      "path": "component.size.sidebar-row-height",
+      "layer": "component",
+      "type": "dimension",
+      "value": {
+        "light": "{semantic.size.sidebar-row-height}",
+        "dark": "{semantic.size.sidebar-row-height}"
+      },
+      "css": "--omoc-component-size-sidebar-row-height",
+      "figmaScopes": ["WIDTH_HEIGHT"]
+    },
+    {
+      "path": "primitive.size.menu-row-height",
+      "layer": "primitive",
+      "type": "dimension",
+      "value": "32px",
+      "css": "--omoc-primitive-size-menu-row-height",
+      "figmaScopes": []
+    },
+    {
+      "path": "semantic.size.menu-row-height",
+      "layer": "semantic",
+      "type": "dimension",
+      "value": {
+        "light": "{primitive.size.menu-row-height}",
+        "dark": "{primitive.size.menu-row-height}"
+      },
+      "css": "--omoc-semantic-size-menu-row-height",
+      "figmaScopes": ["WIDTH_HEIGHT"]
+    },
+    {
+      "path": "component.size.menu-row-height",
+      "layer": "component",
+      "type": "dimension",
+      "value": {
+        "light": "{semantic.size.menu-row-height}",
+        "dark": "{semantic.size.menu-row-height}"
+      },
+      "css": "--omoc-component-size-menu-row-height",
+      "figmaScopes": ["WIDTH_HEIGHT"]
     }
   ]
 }
