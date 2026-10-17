@@ -3740,6 +3740,75 @@ test("v5 metadata unavailable startup reaches connected through bounded reads wi
   api.dispose();
 });
 
+test("the catalog is re-read when the connection becomes connected after a startup timeout", async () => {
+  const clock = fakeClock();
+  let reads = 0,
+    catalogReads = 0;
+  const agentCatalog = {
+    ...catalog,
+    agents: { status: "available", entries: [{ id: "build", name: "build" }] },
+  };
+  const h = bridgeHarness((e) => {
+    if (e.operation.type === "snapshot")
+      return {
+        ok: true,
+        value:
+          ++reads < 4
+            ? snapshot(5, "a", { state: "unavailable" })
+            : snapshot(5),
+      };
+    if (e.operation.type === "catalog.list")
+      return ++catalogReads === 1
+        ? { ok: false, code: "READ_TIMEOUT" }
+        : { ok: true, value: agentCatalog };
+    return readFallback(e);
+  });
+  const api = createWindowWorkbench(h.bridge, { clock, id });
+  try {
+    api.start();
+    await flush();
+    assert.notEqual(api.store.getState().connection, "connected");
+    await clock.advance(30000);
+    assert.equal(api.store.getState().connection, "connected");
+    assert.deepEqual(
+      api.store.getState().catalog?.agents.entries.map((a) => a.id),
+      ["build"],
+    );
+  } finally {
+    api.dispose();
+  }
+});
+
+test("a catalog read that fails at startup (READ_TIMEOUT) is retried with backoff", async () => {
+  const clock = fakeClock();
+  let catalogReads = 0;
+  const agentCatalog = {
+    ...catalog,
+    agents: { status: "available", entries: [{ id: "build", name: "build" }] },
+  };
+  const h = bridgeHarness((e) =>
+    e.operation.type === "catalog.list"
+      ? ++catalogReads === 1
+        ? { ok: false, code: "READ_TIMEOUT" }
+        : { ok: true, value: agentCatalog }
+      : readFallback(e),
+  );
+  const api = createWindowWorkbench(h.bridge, { clock, id });
+  try {
+    api.start();
+    await flush();
+    assert.equal(api.store.getState().catalog, null);
+    await clock.advance(3000);
+    assert.ok(catalogReads >= 2, "the failed read was retried");
+    assert.deepEqual(
+      api.store.getState().catalog?.agents.entries.map((a) => a.id),
+      ["build"],
+    );
+  } finally {
+    api.dispose();
+  }
+});
+
 test("a catalog read dropped as stale during startup is retried until it lands", async () => {
   const clock = fakeClock(),
     first = deferred();

@@ -3636,12 +3636,21 @@ export function createWindowWorkbench(
         ? { type: "catalog", scope, value: result.value }
         : { type: "catalog", scope, error: result.code },
     );
-    // The reducer drops a result whose scope went stale while it was in
-    // flight (e.g. the revision moved during startup). Nothing else re-reads
-    // the catalog until the selection changes, so retry a few times.
-    if (store.getState() === before && catalogRetries < 10) {
+    // Nothing else re-reads the catalog until the selection changes, so a
+    // read that failed (the first one can time out while the runtime is still
+    // loading a large provider catalog at startup) or was dropped as stale
+    // retries with backoff while connected (recovery reads stay quiet).
+    const dropped = store.getState() === before;
+    if (
+      (dropped || !result.ok) &&
+      store.getState().connection === "connected" &&
+      catalogRetries < 6
+    ) {
+      catalogTimer = clock.setTimeout(
+        () => void catalog(),
+        dropped ? 400 : 1000 * 2 ** catalogRetries,
+      );
       catalogRetries++;
-      catalogTimer = clock.setTimeout(() => void catalog(), 400);
     } else catalogRetries = 0;
   }
   function armFiles() {
@@ -4896,11 +4905,15 @@ export function createWindowWorkbench(
           });
           void catalog();
         } else if (
+          // The first catalog read races runtime startup and can time out
+          // while the connection is still unavailable; re-read once it is up.
+          (next.connection === "connected" &&
+            previous.connection !== "connected") ||
           next.lists.workspaces.find((w) => w.id === next.selection.workspaceId)
             ?.trustRevision !==
-          previous.lists.workspaces.find(
-            (w) => w.id === previous.selection.workspaceId,
-          )?.trustRevision
+            previous.lists.workspaces.find(
+              (w) => w.id === previous.selection.workspaceId,
+            )?.trustRevision
         )
           void catalog();
         if (
