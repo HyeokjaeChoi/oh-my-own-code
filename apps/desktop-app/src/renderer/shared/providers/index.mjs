@@ -1,12 +1,13 @@
 // Pure provider-settings helpers. The API key is only ever the argument of a
 // connect request; nothing here keeps, returns or formats it.
 export const DEFAULT_MODEL_STORAGE_KEY = "omoc.defaultModel.v1";
+export const RECENT_MODELS_STORAGE_KEY = "omoc.recentModels.v1";
+export const FREE_ONLY_STORAGE_KEY = "omoc.modelFreeOnly.v1";
 export const PROVIDER_ERRORS = Object.freeze({
   INVALID_KEY: "API 키가 올바르지 않습니다. 키를 다시 확인해 주세요.",
   INVALID_REQUEST: "입력값이 올바르지 않습니다.",
   NOT_FOUND: "알 수 없는 제공자입니다.",
-  UNAVAILABLE:
-    "Native에 연결할 수 없습니다. 네트워크 또는 런타임 상태를 확인해 주세요.",
+  UNAVAILABLE: "런타임에 연결할 수 없습니다. 네트워크 상태를 확인해 주세요.",
 });
 export const providerErrorText = (code) =>
   PROVIDER_ERRORS[code] ?? PROVIDER_ERRORS.UNAVAILABLE;
@@ -50,9 +51,58 @@ export function saveDefaultModel(id, storage = globalThis.localStorage) {
   }
 }
 
-// The stored default applies only while the catalog still offers it.
-export const usableDefaultModel = (catalogModels, id) =>
-  catalogModels?.status === "available" &&
-  catalogModels.entries.some((entry) => entry.id === id)
-    ? id
+// The stored default applies only while the catalog still offers it. With no
+// usable stored default, a catalog that offers only free models (a fresh
+// profile) starts on the first one, in the order the runtime lists them.
+export function usableDefaultModel(catalogModels, id) {
+  if (catalogModels?.status !== "available") return "";
+  const { entries } = catalogModels;
+  if (entries.some((entry) => entry.id === id)) return id;
+  return entries.length && entries.every((entry) => entry.free === true)
+    ? entries[0].id
     : "";
+}
+
+// Model picker memory, kept per profile in the same renderer storage as the
+// default model: the last 3 chosen model ids and the "무료만" choice.
+export function loadRecentModels(storage = globalThis.localStorage) {
+  try {
+    const list = JSON.parse(
+      storage?.getItem(RECENT_MODELS_STORAGE_KEY) ?? "[]",
+    );
+    return Array.isArray(list)
+      ? list
+          .filter((id) => typeof id === "string" && /^[a-f0-9]{64}$/u.test(id))
+          .slice(0, 3)
+      : [];
+  } catch {
+    return [];
+  }
+}
+export function pushRecentModel(id, storage = globalThis.localStorage) {
+  const next = [id, ...loadRecentModels(storage).filter((x) => x !== id)].slice(
+    0,
+    3,
+  );
+  try {
+    storage?.setItem(RECENT_MODELS_STORAGE_KEY, JSON.stringify(next));
+  } catch {
+    // Blocked storage: recents last for this session only.
+  }
+  return next;
+}
+export function loadFreeOnly(storage = globalThis.localStorage) {
+  try {
+    const value = storage?.getItem(FREE_ONLY_STORAGE_KEY);
+    return value === "1" ? true : value === "0" ? false : undefined;
+  } catch {
+    return undefined;
+  }
+}
+export function saveFreeOnly(value, storage = globalThis.localStorage) {
+  try {
+    storage?.setItem(FREE_ONLY_STORAGE_KEY, value ? "1" : "0");
+  } catch {
+    // Blocked storage: the choice lasts for this session only.
+  }
+}

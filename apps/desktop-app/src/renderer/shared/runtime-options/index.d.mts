@@ -42,3 +42,28 @@ export function projectSessionSelection(
   info: unknown,
   sessionId: string,
 ): SessionSelection | undefined;
+export function isFreeModel(model: unknown): boolean;
+export function variantForModel(
+  variant: string,
+  model: { variants?: { status: string; ids: readonly string[] } } | undefined,
+): string;
+export interface PickerModel {
+  id: string;
+  name: string;
+  free?: boolean;
+  provider?: string;
+  providerId?: string;
+}
+export function defaultFreeOnly(
+  entries: readonly PickerModel[],
+  stored: boolean | undefined,
+): boolean;
+export function groupModels<T extends PickerModel>(
+  entries: readonly T[],
+  options: {
+    query: string;
+    freeOnly: boolean;
+    recent: readonly string[];
+    selectedId: string;
+  },
+): { key: string; label: string; items: T[] }[];

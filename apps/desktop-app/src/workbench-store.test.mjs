@@ -18807,6 +18807,59 @@ test("runtime options: explicit model change clears variant; background refresh 
   assert.equal(selectors.draft(store.getState()).variant, "");
   assert.equal(selectors.draft(store.getState()).variantCleared, true);
 });
+test("runtime options: switching models keeps a variant only if the new model lists it; effort control never goes stale", () => {
+  const store = createWorkbenchStore();
+  seed(store);
+  seedRuntimeCatalog(store, {
+    ...runtimeCatalog(),
+    models: {
+      status: "available",
+      entries: [
+        {
+          id: "m-high",
+          name: "A",
+          free: true,
+          variants: { status: "available", ids: ["low", "high"] },
+        },
+        {
+          id: "m-low",
+          name: "B",
+          free: true,
+          variants: { status: "available", ids: ["low", "medium"] },
+        },
+        {
+          id: "m-none",
+          name: "C",
+          free: true,
+          variants: { status: "available", ids: [] },
+        },
+      ],
+    },
+  });
+  const key = selectionKey("w", "a");
+  const draft = () => selectors.draft(store.getState());
+  const invalid = () => selectors.requestOptionsInvalid(store.getState());
+  store.dispatch({ type: "draft", key, model: "m-high" });
+  store.dispatch({ type: "draft", key, variant: "high" });
+  assert.equal(invalid(), false);
+  // New model lacks "high": reset, notice shown, nothing invalid is sendable.
+  store.dispatch({ type: "draft", key, model: "m-low" });
+  assert.equal(draft().variant, "");
+  assert.equal(draft().variantCleared, true);
+  assert.equal(invalid(), false);
+  // Shared variant survives the switch.
+  store.dispatch({ type: "draft", key, variant: "low" });
+  store.dispatch({ type: "draft", key, model: "m-high" });
+  assert.equal(draft().variant, "low");
+  assert.equal(draft().variantCleared, false);
+  // A model without variants never keeps one.
+  store.dispatch({ type: "draft", key, model: "m-none" });
+  assert.equal(draft().variant, "");
+  assert.equal(invalid(), false);
+  // Forcing a variant onto it is invalid and would not be sendable.
+  store.dispatch({ type: "draft", key, variant: "low" });
+  assert.equal(invalid(), true);
+});
 test("runtime options: accept separate session and same-message reports; omission clears only session setting", () => {
   const store = createWorkbenchStore();
   const message = {
@@ -20330,6 +20383,49 @@ test("Permission policy accepted send and decision paths never schedule a policy
         client.dispose();
       }
     });
+});
+
+test("accepted sends and permission decisions leave no acknowledgement notice", () => {
+  for (const [operation, result] of [
+    [send(), { kind: "delivery", status: "accepted", nativeInboxId: "inbox" }],
+    [
+      {
+        type: "permission.respond",
+        workspaceId: "w",
+        sessionId: "a",
+        requestId: "permission",
+        decision: "once",
+      },
+      { kind: "delivery", status: "decided" },
+    ],
+    [
+      {
+        type: "session.inbox.promote",
+        workspaceId: "w",
+        sessionId: "a",
+        requestId: "other",
+      },
+      { kind: "delivery", status: "accepted" },
+    ],
+  ]) {
+    const store = createWorkbenchStore();
+    seed(store);
+    const intent = interruptIntent(store, "ack", { operation });
+    store.dispatch({
+      type: "receipt",
+      id: intent.id,
+      receipt: receipt(
+        {
+          runtimeEpoch: intent.epoch,
+          operationId: intent.id,
+          operation,
+        },
+        { result },
+      ),
+    });
+    assert.equal(store.getState().notice, "", operation.type);
+    assert.equal(store.getState().conversationContext.notice, "");
+  }
 });
 
 test("a snapshot whose workspaces carry the host's read-only probe metadata is accepted, malformed metadata is not", () => {

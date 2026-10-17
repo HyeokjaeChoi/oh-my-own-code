@@ -7,6 +7,10 @@ export {
   loadDefaultModel,
   saveDefaultModel,
   usableDefaultModel,
+  loadRecentModels,
+  pushRecentModel,
+  loadFreeOnly,
+  saveFreeOnly,
 } from "./index.mjs";
 export type { ProviderRow, ProviderList } from "./index.mjs";
 export type ProviderRequest =

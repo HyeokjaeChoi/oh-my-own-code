@@ -36,7 +36,7 @@ test("provider list parsing is closed and error text is generic", () => {
   assert.equal(sourceText(parsed.providers[0]), "설정됨");
   assert.equal(sourceText({ connected: false }), "연결 안 됨");
   assert.match(providerErrorText("INVALID_KEY"), /키/u);
-  assert.match(providerErrorText("whatever"), /Native/u);
+  assert.match(providerErrorText("whatever"), /런타임/u);
 });
 
 test("default model persists and applies only while the catalog offers it", () => {
@@ -51,6 +51,53 @@ test("default model persists and applies only while the catalog offers it", () =
   assert.equal(usableDefaultModel(models, ID), ID);
   assert.equal(usableDefaultModel(models, "b".repeat(64)), "");
   assert.equal(usableDefaultModel({ status: "unavailable" }, ID), "");
+  // No usable stored default: a free-only catalog starts on its first entry.
+  const freeOnly = {
+    status: "available",
+    entries: [
+      { id: "first", free: true },
+      { id: "second", free: true },
+    ],
+  };
+  assert.equal(usableDefaultModel(freeOnly, ""), "first");
+  assert.equal(usableDefaultModel(freeOnly, "second"), "second");
+  assert.equal(
+    usableDefaultModel(
+      {
+        status: "available",
+        entries: [{ id: "paid" }, { id: "f", free: true }],
+      },
+      "",
+    ),
+    "",
+  );
+  assert.equal(
+    usableDefaultModel({ status: "available", entries: [] }, ""),
+    "",
+  );
   saveDefaultModel("", s);
   assert.equal(s.getItem(DEFAULT_MODEL_STORAGE_KEY), null);
+});
+
+test("recent models keep the last 3 distinct ids; free-only choice persists", async () => {
+  const { loadRecentModels, pushRecentModel, loadFreeOnly, saveFreeOnly } =
+    await import("./renderer/shared/providers/index.mjs");
+  const store = new Map();
+  const s = {
+    getItem: (k) => store.get(k) ?? null,
+    setItem: (k, v) => store.set(k, v),
+  };
+  const id = (c) => c.repeat(64);
+  assert.deepEqual(loadRecentModels(s), []);
+  for (const c of ["a", "b", "c", "a", "d"]) pushRecentModel(id(c), s);
+  assert.deepEqual(loadRecentModels(s), [id("d"), id("a"), id("c")]);
+  store.set("omoc.recentModels.v1", JSON.stringify(["x", id("b"), 3]));
+  assert.deepEqual(loadRecentModels(s), [id("b")]);
+  store.set("omoc.recentModels.v1", "{bad");
+  assert.deepEqual(loadRecentModels(s), []);
+  assert.equal(loadFreeOnly(s), undefined);
+  saveFreeOnly(false, s);
+  assert.equal(loadFreeOnly(s), false);
+  saveFreeOnly(true, s);
+  assert.equal(loadFreeOnly(s), true);
 });

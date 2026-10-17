@@ -43,14 +43,26 @@ export function useDefaultModel(workspaceId: string, sessionId: string) {
     key = selectionKey(workspaceId, sessionId);
   useEffect(() => {
     let applied = false;
+    // The model this hook picked itself. While the draft still holds it, the
+    // pick follows the catalog (runtime catalogs change) instead of going stale.
+    let auto = "";
     const apply = () => {
-      if (applied) return;
       const state = store.getState();
+      const current = (state.drafts[key] ?? emptyDraft).model;
       const id = usableDefaultModel(state.catalog?.models, loadDefaultModel());
-      if (!id) return;
-      applied = true;
-      if (!(state.drafts[key] ?? emptyDraft).model)
+      if (auto && current === auto) {
+        if (id === auto || state.catalog?.models.status !== "available") return;
+        auto = id;
+        applied = Boolean(id);
         actions.options({ model: id });
+        return;
+      }
+      if (applied || !id) return;
+      applied = true;
+      if (!current) {
+        auto = id;
+        actions.options({ model: id });
+      }
     };
     apply();
     return store.subscribe(apply);

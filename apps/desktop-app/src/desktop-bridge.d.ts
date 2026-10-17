@@ -240,7 +240,12 @@ export interface WorkbenchCatalogGroup {
 }
 export interface WorkbenchModelEntry
   extends WorkbenchCatalogEntry,
-    ModelOptions {}
+    ModelOptions {
+  free?: true;
+  provider?: string;
+  providerId?: string;
+  modelId?: string;
+}
 export interface WorkbenchModelCatalogGroup {
   status: "available" | "unavailable";
   entries: WorkbenchModelEntry[];
