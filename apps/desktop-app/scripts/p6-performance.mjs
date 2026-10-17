@@ -1093,7 +1093,7 @@ async function measure(page, kind, index, observeMutations = true) {
               '[aria-label="앱 동작 및 런타임 명령"]',
             );
         } else if (kind === "panel") {
-          const trigger = button("파일·확장");
+          const trigger = button("보조 패널");
           trigger.click();
           ready = () =>
             trigger.getAttribute("aria-expanded") === "true" &&

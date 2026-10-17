@@ -8,6 +8,17 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
+import { selectWorkspace } from "./e2e-shell.mjs";
+
+// The Git write sections live in the 변경 tab's action dock; open one by its toggle.
+async function openGitTray(page, label) {
+  await page.getByRole("tab", { name: "변경", exact: true }).click();
+  const toggle = page
+    .getByRole("group", { name: "Git 작업", exact: true })
+    .getByRole("button", { name: label, exact: true });
+  if ((await toggle.getAttribute("aria-expanded")) !== "true")
+    await toggle.click();
+}
 const desktop = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const root = resolve(desktop, "../..");
 if (!process.env.OMOC_EVIDENCE_DIR)
@@ -266,7 +277,9 @@ async function openCase(name = "ready") {
   await expect(
     page.locator(".workbench-header [data-connection]"),
   ).toHaveAttribute("data-connection", "connected");
-  await page.getByRole("button", { name: "파일·확장", exact: true }).click();
+  await page.getByRole("button", { name: "보조 패널", exact: true }).click();
+  await openGitTray(page, "되돌리기");
+  await openGitTray(page, "되돌리기");
   await expect(section()).toBeVisible();
   await expect(control("name")).toHaveValue("");
   await expect(control("email")).toHaveValue("");
@@ -374,6 +387,7 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
     globalThis.document.documentElement.dataset.theme = theme;
   }, theme);
   await setDisplay(page, narrow ? 760 : 1440, 1000, narrow ? 2 : 1);
+  await openGitTray(page, "되돌리기");
   assert.ok(
     await page.evaluate(
       () =>
@@ -392,8 +406,13 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
   );
   const coverage = [];
   let previousSurface, surfaceCapture;
+  await git()
+    .locator(":scope > details")
+    .evaluate((e) => {
+      e.open = true;
+    });
   const groups = [
-    ["context", git().locator(":scope > dl dt,:scope > dl dd")],
+    ["context", git().locator(":scope > details dl dt,:scope > details dl dd")],
     ["git-status", git().locator(':scope > p[role="status"]').last()],
     [
       "branch-restore",
@@ -414,7 +433,15 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
           [r.right - 1, r.bottom - 1],
           [r.left + r.width / 2, r.top + r.height / 2],
         ];
+        // Ancestors that clip (scroll containers) must contain the whole block too.
+        let clipped = false;
+        for (let n = e.parentElement; n; n = n.parentElement) {
+          if (globalThis.getComputedStyle(n).overflowY === "visible") continue;
+          const c = n.getBoundingClientRect();
+          if (r.top < c.top - 0.5 || r.bottom > c.bottom + 0.5) clipped = true;
+        }
         const complete =
+          !clipped &&
           r.left >= 0 &&
           r.top >= 0 &&
           r.right <= globalThis.innerWidth &&
@@ -492,11 +519,13 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
         if (narrow) {
           await expect(section()).toHaveCount(0);
           const opener = page.getByRole("button", {
-            name: "파일·확장",
+            name: "보조 패널",
             exact: true,
           });
           await expect(opener).toBeFocused();
           await page.keyboard.press("Enter");
+          await openGitTray(page, "되돌리기");
+          await openGitTray(page, "되돌리기");
           await expect(section()).toBeVisible();
           await item.focus();
         }
@@ -839,9 +868,8 @@ try {
     });
     if (boundary === "workspace") {
       await setDisplay(page, 1440, 1000, 1);
-      await page
-        .getByLabel("작업 공간", { exact: true })
-        .selectOption("synthetic-index-other-w");
+      await selectWorkspace(page, "synthetic-index-other-w");
+      await page.getByRole("tab", { name: "파일", exact: true }).click();
       await expect(
         page
           .getByTitle("SYNTHETIC selectable other draft", { exact: true })
@@ -858,6 +886,7 @@ try {
       }, boundary);
       await expect(control("branch")).toHaveValue("", { timeout: 10000 });
     }
+    await openGitTray(page, "되돌리기");
     await control("branch").fill("refs/heads/SYNTHETIC-newer-draft");
     await application.evaluate(() =>
       globalThis.__omocUiFixture.releaseGitBranchRestoreApplies(),

@@ -8,6 +8,17 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
+import { selectWorkspace } from "./e2e-shell.mjs";
+
+// The Git write sections live in the 변경 tab's action dock; open one by its toggle.
+async function openGitTray(page, label) {
+  await page.getByRole("tab", { name: "변경", exact: true }).click();
+  const toggle = page
+    .getByRole("group", { name: "Git 작업", exact: true })
+    .getByRole("button", { name: label, exact: true });
+  if ((await toggle.getAttribute("aria-expanded")) !== "true")
+    await toggle.click();
+}
 const desktop = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const root = resolve(desktop, "../..");
 if (!process.env.OMOC_EVIDENCE_DIR)
@@ -266,7 +277,9 @@ async function openCase(name = "ready") {
   await expect(
     page.locator(".workbench-header [data-connection]"),
   ).toHaveAttribute("data-connection", "connected");
-  await page.getByRole("button", { name: "파일·확장", exact: true }).click();
+  await page.getByRole("button", { name: "보조 패널", exact: true }).click();
+  await openGitTray(page, "커밋");
+  await openGitTray(page, "커밋");
   await expect(commit()).toBeVisible();
   await expect(field("Commit 작성자 이름")).toHaveValue("");
   await expect(field("Commit 작성자 이메일")).toHaveValue("");
@@ -352,6 +365,7 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
     globalThis.document.documentElement.dataset.theme = theme;
   }, theme);
   await setDisplay(page, narrow ? 760 : 1440, 1000, narrow ? 2 : 1);
+  await openGitTray(page, "커밋");
   assert.ok(
     await page.evaluate(
       () =>
@@ -370,12 +384,23 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
   );
   const coverage = [];
   let previousSurface, surfaceCapture;
+  // 진단 정보 holds the runtime identity rows; open it so every fact is inspected.
+  await commit().evaluate((e) =>
+    e.querySelectorAll("details").forEach((d) => (d.open = true)),
+  );
   const blocks = commit().locator(
     "h4,h5,p,legend,label,select,input,textarea,button,dl dt,dl dd,pre,ol li strong,ol li div",
   );
   // The context above Commit is part of the evidence, including current workspace,
   // Git source and status. It must not be replaced by control-only images.
-  const context = git().locator(":scope > dl dt,:scope > dl dd");
+  await git()
+    .locator(":scope > details")
+    .evaluate((e) => {
+      e.open = true;
+    });
+  const context = git().locator(
+    ":scope > details dl dt,:scope > details dl dd",
+  );
   for (const [kind, group] of [
     ["context", context],
     // The transient held hint may disappear after receipt reconciliation. Its
@@ -384,6 +409,10 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
     ["commit", blocks],
   ]) {
     for (const item of await group.all()) {
+      await item.evaluate((e) => {
+        const d = e.closest("details");
+        if (d) d.open = true;
+      });
       await expect(item).toBeVisible();
       await item.evaluate((e) =>
         e.scrollIntoView({
@@ -464,11 +493,13 @@ async function recordState(name, { theme = "light", narrow = false } = {}) {
           // Escape belongs to the existing modal sheet, not Commit cancellation.
           await expect(commit()).toHaveCount(0);
           const opener = page.getByRole("button", {
-            name: "파일·확장",
+            name: "보조 패널",
             exact: true,
           });
           await expect(opener).toBeFocused();
           await page.keyboard.press("Enter");
+          await openGitTray(page, "커밋");
+          await openGitTray(page, "커밋");
           await expect(commit()).toBeVisible();
           await item.focus();
         }
@@ -576,11 +607,15 @@ try {
       await openCase(name);
       await observe();
       const currentMessage = await edit();
-      const selected = git().getByRole("checkbox", {
-        name: "Index 경로 선택: notes/SYNTHETIC-editor.txt",
-        exact: true,
-      });
+      await openGitTray(page, "Stage");
+      const selected = page
+        .getByRole("region", { name: "선택한 Git index 변경", exact: true })
+        .getByRole("checkbox", {
+          name: "Index 경로 선택: notes/SYNTHETIC-editor.txt",
+          exact: true,
+        });
       await selected.check();
+      await openGitTray(page, "커밋");
       assert.equal((await metrics()).indexApplies, 0);
       const value = await readPreview();
       await checkPreview(value);
@@ -849,9 +884,8 @@ try {
     });
     if (boundary === "workspace") {
       await setDisplay(page, 1440, 1000, 1);
-      await page
-        .getByLabel("작업 공간", { exact: true })
-        .selectOption("synthetic-index-other-w");
+      await selectWorkspace(page, "synthetic-index-other-w");
+      await page.getByRole("tab", { name: "파일", exact: true }).click();
       await expect(
         page
           .getByTitle("SYNTHETIC selectable other draft", { exact: true })
@@ -870,6 +904,7 @@ try {
       // Wait for the current snapshot to expose an empty new-scope draft.
       await expect(field("Commit 메시지")).toHaveValue("", { timeout: 10000 });
     }
+    await openGitTray(page, "커밋");
     await field("Commit 메시지").fill("SYNTHETIC newer independent draft");
     await application.evaluate(() =>
       globalThis.__omocUiFixture.releaseGitCommitApplies(),
@@ -892,7 +927,9 @@ try {
         .getByRole("button", { name: "Git 상태 새로고침", exact: true })
         .isEnabled(),
       contextBlocks: await git()
-        .locator(':scope > dl dt,:scope > dl dd,:scope > p[role="status"]')
+        .locator(
+          ':scope > details dl dt,:scope > details dl dd,:scope > p[role="status"]',
+        )
         .count(),
     });
     await expect(field("Commit 메시지")).toHaveValue(

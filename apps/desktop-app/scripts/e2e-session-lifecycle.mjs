@@ -453,8 +453,8 @@ try {
   const capture = join(run, "desktop-session-lifecycle.png");
   await page.screenshot({ path: capture });
   screenshots.push(capture);
-  await page.getByRole("button", { name: "파일·확장", exact: true }).click();
-  await page.getByRole("button", { name: "활동", exact: true }).click();
+  await page.getByRole("button", { name: "보조 패널", exact: true }).click();
+  await page.getByRole("tab", { name: "작업", exact: true }).click();
   const activity = page.getByRole("region", { name: "로컬 활동 기록" });
   await expect(activity).toContainText("앱 전체 집계");
   await expect(activity).toContainText("이름 변경");

@@ -158,6 +158,13 @@ async function setDisplay(page, width, height, zoomFactor = 1) {
       ),
     )
     .toBeLessThanOrEqual(1);
+  // A resize can remount the panel (narrow sheet) and close the 줄 피드백 drawer.
+  const summary = page.getByText("줄 피드백", { exact: true });
+  if (
+    (await summary.count()) &&
+    !(await summary.evaluate((e) => e.parentElement.open))
+  )
+    await summary.click();
 }
 
 // Instrumentation reads only the explicit synthetic Main fixture. Renderer state
@@ -184,6 +191,16 @@ const composer = () =>
   page.getByRole("textbox", { name: "메시지 작성", exact: true });
 const git = () =>
   page.getByRole("region", { name: "Git 변경 검토", exact: true });
+// File editor and line feedback live in different side-panel tabs.
+async function showFiles() {
+  await page.getByRole("tab", { name: "파일", exact: true }).click();
+}
+async function showChanges() {
+  await page.getByRole("tab", { name: "변경", exact: true }).click();
+  const summary = page.getByText("줄 피드백", { exact: true });
+  if (!(await summary.evaluate((e) => e.parentElement.open)))
+    await summary.click();
+}
 async function enterButton(button) {
   await expect(button).toBeEnabled();
   await button.scrollIntoViewIfNeeded();
@@ -220,7 +237,7 @@ async function openCase(name = "ready", kind = "file", patch) {
   await expect(
     page.locator(".workbench-header [data-connection]"),
   ).toHaveAttribute("data-connection", "connected");
-  await page.getByRole("button", { name: "파일·확장", exact: true }).click();
+  await page.getByRole("button", { name: "보조 패널", exact: true }).click();
   const explorer = page.getByRole("region", {
     name: "파일 탐색 및 편집",
     exact: true,
@@ -229,6 +246,7 @@ async function openCase(name = "ready", kind = "file", patch) {
   await expect(editor().locator("[data-workspace-file-target]")).toHaveText(
     `${scope.workspacePath}/${scope.path}`,
   );
+  await showChanges();
   await expect(feedback()).toBeVisible();
   const m = await metrics();
   assert.equal(m.fileReads, beforeMount.fileReads);
@@ -240,6 +258,7 @@ async function openCase(name = "ready", kind = "file", patch) {
   return scope;
 }
 async function readFileBaseline() {
+  await showFiles();
   const before = await metrics();
   const open = editor().locator("[data-workspace-file-open]");
   await enterButton(open);
@@ -257,9 +276,11 @@ async function readFileBaseline() {
     () => globalThis.__omocUiFixture.lastWorkspaceFileObservation,
   );
   assert.equal(observation.status, "available");
+  await showChanges();
   return observation;
 }
 async function readGit(mode, scope, baseRef) {
+  await showChanges();
   const before = await metrics();
   await enterButton(
     git().getByRole("button", { name: "Git 상태 새로고침", exact: true }),
@@ -525,9 +546,11 @@ try {
   await agent.selectOption("fixture-agent");
   await pickModel(page, "fixture-model");
   await closeComposerPopovers(page);
+  await showFiles();
   await editor()
     .locator("[data-workspace-file-text]")
     .fill("SYNTHETIC UNSAVED DIFFERENT TEXT\n");
+  await showChanges();
   await selectSource("file", "SYNTHETIC 첫 의견");
   await hook("end").fill("3");
   await hook("comment").focus();
@@ -707,10 +730,12 @@ try {
 
   await openCase("protected");
   const protectedBefore = await metrics();
+  await showFiles();
   await expect(editor().locator("[data-workspace-file-open]")).toBeDisabled();
   await expect(
     editor().locator('[data-workspace-file-state="unavailable"]'),
   ).toBeVisible();
+  await showChanges();
   await hook("source").selectOption("file");
   await assertRefused("MISSING_SOURCE");
   assert.deepEqual(
@@ -833,12 +858,12 @@ try {
   // Local Escape must not disable ordinary modal dismissal outside that scope.
   await setDisplay(page, 760, 1000, 2);
   const modal = page.getByRole("dialog", {
-    name: "파일, 확장 및 활동",
+    name: "보조 패널",
     exact: true,
   });
   await expect(modal).toBeVisible();
   const close = modal.getByRole("button", {
-    name: "파일, 확장 및 활동 닫기",
+    name: "보조 패널 닫기",
     exact: true,
   });
   await close.focus();
