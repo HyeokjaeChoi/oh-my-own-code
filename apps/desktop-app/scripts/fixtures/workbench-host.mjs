@@ -583,6 +583,25 @@ export function createUiFixture() {
       ]),
     );
   };
+  // Opt-in per-turn revert state (state only, no file IO). Message ids sort in
+  // conversation order like Native's, because hiding is `id >= boundary`.
+  // `fixture.nextRevert`: undefined | "denied" (native dialog refused) | "unknown".
+  // `fixture.revertFilesRestored = false` simulates a non-git folder.
+  fixture.enableRevert = () => {
+    fixture.sessionRevert = new Map();
+    fixture.revertFilesRestored = true;
+    fixture.nextRevert = undefined;
+    const rows = Array.from({ length: 6 }, (_, n) => ({
+      id: `revert-m${n + 1}`,
+      role: n % 2 ? "assistant" : "user",
+      text:
+        n % 2
+          ? `SYNTHETIC revert answer ${n + 1}`
+          : `SYNTHETIC revert prompt ${n + 1}`,
+      tools: [],
+    }));
+    fixture.sessionMessages = new Map([["fixture-s", rows]]);
+  };
   fixture.setStorageState = (name) => applyStorageState(fixture, name);
   fixture.setConfigurationState = (name) =>
     applyConfigurationState(fixture, name);
@@ -3303,28 +3322,7 @@ export function createFixtureTransport(
         )
       )
         return failure("NOT_FOUND");
-      return {
-        ok: true,
-        value: validateSnapshot(
-          runtimeSnapshot(fixture, {
-            ...clone(fixture.snapshot),
-            selectedWorkspaceId: workspaceId,
-            selectedSessionId: sessionId,
-            messages:
-              fixture.snapshot.recovery.store.state === "ready"
-                ? clone(fixture.sessionMessages.get(sessionId) ?? [])
-                : [],
-            permissions:
-              fixture.snapshot.recovery.store.state === "ready"
-                ? clone(
-                    fixture.snapshot.permissions.filter(
-                      (p) => p.sessionId === sessionId,
-                    ),
-                  )
-                : [],
-          }),
-        ),
-      };
+      return { ok: true, value: selectedSnapshot(workspaceId, sessionId) };
     }
     if (
       fixture.workspaceFileState &&
@@ -5321,6 +5319,53 @@ export function createFixtureTransport(
       });
     return finish();
   }
+  // Selected-session snapshot from per-session messages, hiding a staged revert
+  // (`id >= boundary`) the way the real projection does.
+  function selectedSnapshot(workspaceId, sessionId) {
+    const ready = fixture.snapshot.recovery.store.state === "ready";
+    const staged = fixture.sessionRevert?.get(sessionId);
+    const rows = fixture.sessionMessages.get(sessionId) ?? [];
+    return validateSnapshot(
+      runtimeSnapshot(fixture, {
+        ...clone(fixture.snapshot),
+        selectedWorkspaceId: workspaceId,
+        selectedSessionId: sessionId,
+        messages: ready
+          ? clone(
+              staged ? rows.filter((m) => !(m.id >= staged.messageId)) : rows,
+            )
+          : [],
+        ...(ready &&
+          staged && {
+            revert: {
+              messageId: staged.messageId,
+              fileCount: staged.files.length,
+              files: clone(staged.files.slice(0, 50)),
+              filesRestored: fixture.revertFilesRestored !== false,
+            },
+          }),
+        permissions: ready
+          ? clone(
+              fixture.snapshot.permissions.filter(
+                (p) => p.sessionId === sessionId,
+              ),
+            )
+          : [],
+      }),
+    );
+  }
+  // A send makes Native commit a staged revert: boundary and later messages go.
+  function commitRevert(sessionId) {
+    const staged = fixture.sessionRevert?.get(sessionId);
+    if (!staged) return;
+    fixture.sessionMessages.set(
+      sessionId,
+      fixture.sessionMessages
+        .get(sessionId)
+        .filter((m) => !(m.id >= staged.messageId)),
+    );
+    fixture.sessionRevert.delete(sessionId);
+  }
   function mutateContext(envelope) {
     const request = clone(envelope.operation);
     const originalEpoch = envelope.runtimeEpoch;
@@ -5627,6 +5672,7 @@ export function createFixtureTransport(
           });
           fixture.syntheticContextInbox.set(session.id, rows);
         } else {
+          commitRevert(session.id);
           const messages = fixture.sessionMessages.get(session.id);
           messages.push({
             id: `synthetic-context-sent-${fixture.contextSerial}`,
@@ -5777,6 +5823,9 @@ export function createFixtureTransport(
         "configuration.save",
         "configuration.instructions.apply",
         "configuration.instructions.remove",
+        ...(fixture.sessionRevert
+          ? ["session.revert", "session.revert.clear"]
+          : []),
       ].includes(request.type)
     )
       refused = "INVALID_REQUEST";
@@ -5843,6 +5892,32 @@ export function createFixtureTransport(
     else if (session.archived) refused = "ARCHIVED_SESSION";
     else if (request.type === "permission.respond" && !permission)
       refused = "STALE_PERMISSION";
+    else if (request.type.startsWith("session.revert")) {
+      const staged = fixture.sessionRevert.get(session.id);
+      const target = (fixture.sessionMessages.get(session.id) ?? []).find(
+        (m) => m.id === request.messageId,
+      );
+      if (
+        !fixture.snapshot.workspaces.find((w) => w.id === request.workspaceId)
+          ?.trusted
+      )
+        refused = "INVALID_SELECTION";
+      else if (session.status !== "idle") refused = "BUSY";
+      else if (request.type === "session.revert.clear")
+        refused =
+          staged?.messageId === request.messageId
+            ? undefined
+            : "INVALID_SELECTION";
+      else if (
+        target?.role !== "user" ||
+        (staged && request.messageId >= staged.messageId)
+      )
+        refused = "INVALID_SELECTION";
+      if (!refused && fixture.nextRevert === "denied") {
+        fixture.nextRevert = undefined;
+        refused = "CANCELLED";
+      }
+    }
     if (
       !refused &&
       fixture.runtimeOptionsState &&
@@ -5903,6 +5978,7 @@ export function createFixtureTransport(
     });
     receipt.admission = "dispatched";
     let value;
+    let revertSnapshot = false;
     if (request.type.startsWith("configuration.instructions.")) {
       const outcome = fixture.nextInstructions;
       fixture.nextInstructions = undefined;
@@ -6032,6 +6108,7 @@ export function createFixtureTransport(
         value = { requestId: request.requestId, status: "unknown" };
       } else {
         session.status = "running";
+        commitRevert(request.sessionId);
         (
           fixture.sessionMessages?.get(request.sessionId) ??
           fixture.snapshot.messages
@@ -6052,6 +6129,31 @@ export function createFixtureTransport(
           nativeInboxId: inboxId,
         };
         value = { requestId: request.requestId, status: "accepted" };
+      }
+    } else if (request.type.startsWith("session.revert")) {
+      if (fixture.nextRevert === "unknown") {
+        // Partial restore: outcome unknown, session locked like Native's.
+        fixture.nextRevert = undefined;
+        session.status = "unknown";
+        receipt.delivery = "unknown";
+        receipt.effect = "unknown";
+        value = { requestId: request.requestId, status: "unknown" };
+      } else {
+        if (request.type === "session.revert")
+          fixture.sessionRevert.set(session.id, {
+            messageId: request.messageId,
+            files: clone(fixture.revertFiles ?? ["src/synthetic.txt"]),
+          });
+        else fixture.sessionRevert.delete(session.id);
+        receipt.delivery = "accepted";
+        receipt.effect = "confirmed";
+        receipt.evidence = [{ kind: "host-registry", id: session.id }];
+        receipt.result = {
+          kind: "metadata",
+          workspaceId: request.workspaceId,
+          sessionId: request.sessionId,
+        };
+        revertSnapshot = true;
       }
     } else if (request.type === "session.interrupt") {
       session.status = "stopping";
@@ -6081,6 +6183,8 @@ export function createFixtureTransport(
       value = { requestId: request.requestId, status: "decided" };
     }
     receipt.revision = ++fixture.snapshot.revision;
+    if (revertSnapshot)
+      value = selectedSnapshot(request.workspaceId, request.sessionId);
     if (request.type === "message.send" && fixture.holdSendAck) {
       const result = { ok: true, value, receipt: clone(receipt) };
       return new Promise((resolve) =>
