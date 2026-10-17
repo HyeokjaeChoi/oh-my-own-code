@@ -2029,7 +2029,12 @@ async function revertFixture(t, confirm = async () => true) {
   const rec = { stage: [], clear: [], asked };
   const sdk = f.infos.get("sdk-default");
   f.state.messages = [
-    { id: "msg_4", type: "assistant", content: [{ type: "text", text: "b2" }] },
+    {
+      id: "msg_4",
+      type: "assistant",
+      content: [{ type: "text", text: "b2" }],
+      snapshot: { start: "tree-a", files: ["a.txt"] },
+    },
     { id: "msg_3", type: "user", text: "second" },
     { id: "msg_2", type: "assistant", content: [{ type: "text", text: "b1" }] },
     { id: "msg_1", type: "user", text: "first" },
@@ -2075,38 +2080,37 @@ test("revert stages through Native after native confirmation and hides the bound
   ]);
   assert.equal(rec.asked.length, 1);
   assert.equal(rec.asked[0].action, "revert");
-  // Dialog facts come from main-side metadata, never from the renderer.
+  // Dialog facts come from Native (a later step recorded a snapshot), never
+  // from the renderer.
   assert.equal(rec.asked[0].restoresFiles, true);
   assert.equal(Object.hasOwn(rec.asked[0], "messageId"), false);
+  const snap = await f.service.handle({ type: "snapshot" });
   assert.deepEqual(
-    result.value.messages.map((m) => m.id),
+    snap.value.messages.map((m) => m.id),
     ["msg_1", "msg_2"],
   );
-  assert.deepEqual(result.value.revert, {
+  assert.deepEqual(snap.value.revert, {
     messageId: "msg_3",
     fileCount: 1,
     files: ["a.txt"],
     filesRestored: true,
   });
-  assert.equal(JSON.stringify(result.value).includes("SECRET-PATCH"), false);
-  const snap = await f.service.handle({ type: "snapshot" });
-  assert.deepEqual(snap.value.revert, result.value.revert);
-  assert.deepEqual(
-    snap.value.messages.map((m) => m.id),
-    ["msg_1", "msg_2"],
-  );
+  assert.equal(JSON.stringify(snap.value).includes("SECRET-PATCH"), false);
 });
-test("revert without a git snapshot reports that no files were restored", async (t) => {
-  const { f, sdk, revert } = await revertFixture(t);
+test("without Native snapshot facts the dialog and snapshot say no files are restored", async (t) => {
+  const { f, rec, sdk, revert } = await revertFixture(t);
+  for (const m of f.state.messages) delete m.snapshot;
   f.client.session.revert.stage = async (args) => {
     sdk.revert = { messageID: args.messageID, files: [] };
   };
   const result = await revert("session.revert");
   assert.equal(result.ok, true, JSON.stringify(result));
-  assert.equal(result.value.revert.filesRestored, false);
-  assert.equal(result.value.revert.fileCount, 0);
+  assert.equal(rec.asked[0].restoresFiles, false);
+  const snap = await f.service.handle({ type: "snapshot" });
+  assert.equal(snap.value.revert.filesRestored, false);
+  assert.equal(snap.value.revert.fileCount, 0);
   assert.deepEqual(
-    result.value.messages.map((m) => m.id),
+    snap.value.messages.map((m) => m.id),
     ["msg_1", "msg_2"],
   );
 });
@@ -2118,6 +2122,7 @@ test("revert is default-deny: no confirmation, no Native stage", async (t) => {
   assert.equal(rec.stage.length, 0);
   const plain = await fixture(t);
   plain.client.session.revert = { stage: async () => assert.fail("staged") };
+  plain.state.messages = [{ id: "m", type: "user", text: "x" }];
   plain.client.session.message = {
     get: async () => ({ id: "m", sessionID: "sdk-default", type: "user" }),
   };
@@ -2146,7 +2151,8 @@ test("revert refuses assistant, unknown and already hidden targets, and busy ses
   });
   assert.equal((await revert("session.revert")).code, "INVALID_SELECTION");
   f.client.session.message.get = async (args) => {
-    const { sessionID, ...real } = await get(args);
+    const real = { ...(await get(args)) };
+    delete real.sessionID;
     return real;
   };
   f.state.inbox = [{ id: "i1", sessionID: "sdk-default" }];
@@ -2184,7 +2190,7 @@ test("a revert that Native did not record, or that fails after dispatch, is an u
   );
 });
 test("reapply clears only the staged boundary, with its own confirmation", async (t) => {
-  const { rec, revert } = await revertFixture(t);
+  const { f, rec, revert } = await revertFixture(t);
   assert.equal(
     (await revert("session.revert.clear")).code,
     "INVALID_SELECTION",
@@ -2200,9 +2206,10 @@ test("reapply clears only the staged boundary, with its own confirmation", async
   assert.equal(result.ok, true, JSON.stringify(result));
   assert.deepEqual(rec.clear, [{ sessionID: "sdk-default" }]);
   assert.equal(rec.asked.at(-1).action, "reapply");
-  assert.equal(Object.hasOwn(result.value, "revert"), false);
+  const snap = await f.service.handle({ type: "snapshot" });
+  assert.equal(Object.hasOwn(snap.value, "revert"), false);
   assert.deepEqual(
-    result.value.messages.map((m) => m.id),
+    snap.value.messages.map((m) => m.id),
     ["msg_1", "msg_2", "msg_3", "msg_4"],
   );
 });
@@ -2219,10 +2226,24 @@ test("reapply is default-deny and a clear that leaves the revert in place is unk
     "UNKNOWN_OUTCOME",
   );
 });
-test("hidden messages do not shrink the transcript before the boundary", async (t) => {
+function pagedList(all) {
+  // Native: at most 100 per page; cursor.next continues toward older messages.
+  return async ({ limit, cursor, order }) => {
+    // The cursor already encodes the order.
+    if (cursor && order) throw new Error("order with cursor");
+    if (limit > 100) throw new Error("limit must be <= 100");
+    const from = cursor ? Number(cursor) : 0;
+    const data = all.slice(from, from + limit);
+    return {
+      data,
+      cursor: from + limit < all.length ? { next: String(from + limit) } : {},
+    };
+  };
+}
+test("hidden messages do not shrink the transcript: paged at Native's 100 limit", async (t) => {
   const { f, revert } = await revertFixture(t);
   const all = [];
-  for (let i = 120; i >= 1; i--)
+  for (let i = 250; i >= 1; i--)
     all.push({
       id: `m${String(i).padStart(3, "0")}`,
       type: i % 2 ? "user" : "assistant",
@@ -2230,12 +2251,40 @@ test("hidden messages do not shrink the transcript before the boundary", async (
       content: [{ type: "text", text: `t${i}` }],
     });
   f.state.messages = all;
-  f.client.message.list = async ({ limit }) => ({
-    data: all.slice(0, limit),
-    cursor: {},
-  });
-  const result = await revert("session.revert", { messageId: "m031" });
+  f.client.message.list = pagedList(all);
+  const result = await revert("session.revert", { messageId: "m231" });
   assert.equal(result.ok, true, JSON.stringify(result));
-  assert.equal(result.value.messages.length, 30);
-  assert.equal(result.value.messages.at(-1).id, "m030");
+  const snap = await f.service.handle({ type: "snapshot" });
+  assert.equal(snap.value.messages.length, 100);
+  assert.equal(snap.value.messages.at(-1).id, "m230");
+  assert.equal(snap.value.messages[0].id, "m131");
+});
+test("hiding follows Native's sequence order, not id order", async (t) => {
+  const { f, revert } = await revertFixture(t);
+  // seq order (oldest first): u1, a1, u3(boundary), a3, queued-u2 (smaller id, later seq)
+  f.state.messages = [
+    { id: "msg_2q", type: "user", text: "queued later" },
+    { id: "msg_4", type: "assistant", content: [] },
+    { id: "msg_3", type: "user", text: "second" },
+    { id: "msg_2", type: "assistant", content: [] },
+    { id: "msg_1", type: "user", text: "first" },
+  ];
+  f.client.message.list = pagedList(f.state.messages);
+  assert.equal((await revert("session.revert")).ok, true);
+  const snap = await f.service.handle({ type: "snapshot" });
+  assert.deepEqual(
+    snap.value.messages.map((m) => m.id),
+    ["msg_1", "msg_2"],
+  );
+});
+test("a message id of another session (Native MessageNotFoundError) is an invalid selection", async (t) => {
+  const { f, rec, revert } = await revertFixture(t);
+  f.client.session.message.get = async () => {
+    throw Object.assign(new Error("not found"), {
+      _tag: "MessageNotFoundError",
+    });
+  };
+  const result = await revert("session.revert");
+  assert.equal(result.code, "INVALID_SELECTION");
+  assert.equal(rec.stage.length, 0);
 });

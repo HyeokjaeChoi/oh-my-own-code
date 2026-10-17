@@ -3062,6 +3062,50 @@ export function createWorkbenchService({
     }, titleSyncGraceMs);
     timer.unref?.();
   }
+  // Native lists messages in seq order, not id order. Messages newer than
+  // `targetId` (newest first, bounded paging at Native's 100 maximum).
+  async function newerThan(sessionID, targetId) {
+    const first = await call(client.message.list, {
+      sessionID,
+      limit: 100,
+      order: "desc",
+    });
+    let data = first?.data;
+    if (!Array.isArray(data)) fail("RUNTIME_ERROR");
+    let next = first.cursor?.next;
+    for (let page = 0; ; page++) {
+      const at = data.findIndex((m) => m?.id === targetId);
+      if (at >= 0) return data.slice(0, at);
+      if (!next || page >= 9) return undefined;
+      const more = await call(client.message.list, {
+        sessionID,
+        limit: 100,
+        cursor: next,
+      });
+      if (!Array.isArray(more?.data)) fail("RUNTIME_ERROR");
+      data = [...data, ...more.data];
+      next = more.data.length ? more.cursor?.next : undefined;
+    }
+  }
+  // Messages before the staged boundary in seq order (newest first), enough of
+  // them to fill the 100-message transcript window.
+  async function olderThanBoundary(sessionID, first, boundary) {
+    let data = first.data;
+    let next = first.cursor?.next;
+    for (let page = 0; ; page++) {
+      const at = data.findIndex((m) => m?.id === boundary);
+      if (at >= 0 && data.length - at - 1 >= 100) return data.slice(at + 1);
+      if (!next || page >= 9) return at >= 0 ? data.slice(at + 1) : [];
+      const more = await call(client.message.list, {
+        sessionID,
+        limit: 100,
+        cursor: next,
+      });
+      if (!Array.isArray(more?.data)) fail("RUNTIME_ERROR");
+      data = [...data, ...more.data];
+      next = more.data.length ? more.cursor?.next : undefined;
+    }
+  }
   async function refresh(original) {
     const s = {
       ...original,
@@ -3148,23 +3192,9 @@ export function createWorkbenchService({
         // later ones are hidden here.
         s.revert = projectRevert(info.revert);
         const boundary = info.revert?.messageID;
-        const hide = (list) =>
-          boundary ? list.filter((m) => !(m?.id >= boundary)) : list;
-        let visible = hide(messages.data);
-        // Hidden messages used up part of the newest-100 window: read further
-        // back so the transcript before the boundary is still complete.
-        if (
-          visible.length < messages.data.length &&
-          messages.data.length >= 100
-        ) {
-          const wider = await call(client.message.list, {
-            sessionID: s.sdkId,
-            limit: 500,
-            order: "desc",
-          });
-          if (!Array.isArray(wider?.data)) fail("RUNTIME_ERROR");
-          visible = hide(wider.data);
-        }
+        const visible = boundary
+          ? await olderThanBoundary(s.sdkId, messages, boundary)
+          : messages.data;
         s.messages = projectMessages([...visible].reverse());
         s.permissions = [
           ...pending.filter((p) => p.sessionID === s.sdkId),
@@ -5278,22 +5308,41 @@ export function createWorkbenchService({
         const reapply = request.type === "session.revert.clear";
         const info = await idleIdentity(w, s);
         const staged = info.revert?.messageID;
+        let restoresFiles = Boolean(info.revert?.snapshot);
         if (reapply) {
           if (staged !== request.messageId) fail("INVALID_SELECTION");
         } else {
-          const target = await call(client.session.message?.get, {
-            sessionID: s.sdkId,
-            messageID: request.messageId,
-          });
+          let target;
+          try {
+            target = await call(client.session.message?.get, {
+              sessionID: s.sdkId,
+              messageID: request.messageId,
+            });
+          } catch (error) {
+            // A message of another session (or none) is simply not a target.
+            if (error?._tag === "MessageNotFoundError")
+              fail("INVALID_SELECTION");
+            throw error;
+          }
           if (
             target?.id !== request.messageId ||
             // The Native response omits sessionID; the lookup itself is
             // session-scoped, so only a present, different value is refused.
             (target.sessionID !== undefined && target.sessionID !== s.sdkId) ||
-            target.type !== "user" ||
-            (staged !== undefined && request.messageId >= staged)
+            target.type !== "user"
           )
             fail("INVALID_SELECTION");
+          const newer = await newerThan(s.sdkId, request.messageId);
+          // Must be found, and (when already staged) older than the boundary.
+          if (
+            !newer ||
+            (staged !== undefined && !newer.some((m) => m?.id === staged))
+          )
+            fail("INVALID_SELECTION");
+          // Native facts: files are restored only if a later step recorded a snapshot.
+          restoresFiles = newer.some(
+            (m) => m?.type === "assistant" && m.snapshot?.start,
+          );
         }
         if (
           !(await confirmSessionRevert({
@@ -5302,8 +5351,7 @@ export function createWorkbenchService({
             workspaceName: w.name,
             path: w.path,
             sessionId: s.id,
-            // Display metadata only: a readable git HEAD means files can be restored.
-            restoresFiles: Boolean(workspaceMeta.get(w.path)?.branch),
+            restoresFiles,
             ...(reapply && {
               fileCount: Array.isArray(info.revert?.files)
                 ? info.revert.files.length
@@ -5366,14 +5414,9 @@ export function createWorkbenchService({
     }
     if (!receipt.result.ok) return receipt.result;
     const done = tables().sessions.get(receipt.selectedSessionId);
-    // Revert changes what the transcript shows: re-project it so the returned
-    // snapshot never carries the pre-revert messages.
-    const projection = request.type.startsWith("session.revert")
-      ? await refresh(done).catch(() => undefined)
-      : undefined;
     return {
       ok: true,
-      value: projection ? base(w, done, projection) : safeSnapshot(w, done),
+      value: safeSnapshot(w, done),
     };
   }
   const fileSearches = new Map();

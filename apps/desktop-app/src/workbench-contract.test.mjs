@@ -611,6 +611,12 @@ test("revert requests carry only a message id; snapshot revert is closed and nev
     },
   };
   assert.deepEqual(validateSnapshot(snapshot), snapshot);
+  // Native orders by sequence: a shown message may have a larger id.
+  const later = {
+    ...snapshot,
+    revert: { ...snapshot.revert, messageId: "msg_0" },
+  };
+  assert.deepEqual(validateSnapshot(later), later);
   for (const revert of [
     { ...snapshot.revert, patch: "diff" },
     { ...snapshot.revert, messageId: "has space" },
@@ -623,7 +629,6 @@ test("revert requests carry only a message id; snapshot revert is closed and nev
     { ...snapshot.revert, files: ["a", "b"], fileCount: 1 },
     { ...snapshot.revert, files: [""] },
     { ...snapshot.revert, messageId: "msg_1" },
-    { ...snapshot.revert, messageId: "msg_0" },
   ])
     assert.throws(() => validateSnapshot({ ...snapshot, revert }), {
       appCode: "INVALID_REQUEST",

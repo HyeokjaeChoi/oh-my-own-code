@@ -20713,7 +20713,7 @@ test("revert: a failed revert does not refill the composer and a hidden message 
   seed(
     bad,
     snapshot(1, "a", {
-      messages: [{ id: "msg_5", role: "user", text: "shown", tools: [] }],
+      messages: [{ id: "msg_3", role: "user", text: "shown", tools: [] }],
       revert: {
         messageId: "msg_3",
         fileCount: 0,
