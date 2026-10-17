@@ -2633,6 +2633,66 @@
       "value": "#3a3a3a",
       "css": "--omoc-primitive-color-d3a",
       "figmaScopes": []
+    },
+    {
+      "path": "primitive.color.diff-add-dark",
+      "layer": "primitive",
+      "type": "color",
+      "value": "#262f29",
+      "css": "--omoc-primitive-color-diff-add-dark",
+      "figmaScopes": []
+    },
+    {
+      "path": "primitive.color.diff-remove-dark",
+      "layer": "primitive",
+      "type": "color",
+      "value": "#332a29",
+      "css": "--omoc-primitive-color-diff-remove-dark",
+      "figmaScopes": []
+    },
+    {
+      "path": "semantic.color.panel",
+      "layer": "semantic",
+      "type": "color",
+      "value": {
+        "light": "{primitive.color.n0}",
+        "dark": "{primitive.color.n7}"
+      },
+      "css": "--omoc-semantic-color-panel",
+      "figmaScopes": ["FRAME_FILL", "SHAPE_FILL"]
+    },
+    {
+      "path": "semantic.color.diff.add",
+      "layer": "semantic",
+      "type": "color",
+      "value": {
+        "light": "{primitive.color.green0}",
+        "dark": "{primitive.color.diff-add-dark}"
+      },
+      "css": "--omoc-semantic-color-diff-add",
+      "figmaScopes": ["FRAME_FILL", "SHAPE_FILL"]
+    },
+    {
+      "path": "semantic.color.diff.remove",
+      "layer": "semantic",
+      "type": "color",
+      "value": {
+        "light": "{primitive.color.red0}",
+        "dark": "{primitive.color.diff-remove-dark}"
+      },
+      "css": "--omoc-semantic-color-diff-remove",
+      "figmaScopes": ["FRAME_FILL", "SHAPE_FILL"]
+    },
+    {
+      "path": "semantic.color.terminal.surface",
+      "layer": "semantic",
+      "type": "color",
+      "value": {
+        "light": "{primitive.color.white}",
+        "dark": "{primitive.color.n8}"
+      },
+      "css": "--omoc-semantic-color-terminal-surface",
+      "figmaScopes": ["FRAME_FILL", "SHAPE_FILL"]
     }
   ]
 }
