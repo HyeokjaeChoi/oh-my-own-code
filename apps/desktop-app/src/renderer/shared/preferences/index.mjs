@@ -9,14 +9,12 @@ export const DEFAULT_PREFERENCES = Object.freeze({
   terminalScreenReader: false,
 });
 export const PREFERENCES_STORAGE_KEY = "omoc.preferences.v1";
-const FONT_SCALE = { small: 0.9, medium: 1, large: 1.15 };
-const SIZE_TOKENS = {
-  body: 16,
-  caption: 13,
-  label: 16,
-  heading: 22,
-  code: 13,
-  compact: 14,
+// 글자 크기: shifts the md/base steps (and the conversation size) of the one type scale.
+const FONT_DELTA = { small: -1, medium: 0, large: 1 };
+const FONT_STEPS = {
+  "--omoc-primitive-font-size-md": 13,
+  "--omoc-primitive-font-size-base": 14,
+  "--omoc-primitive-size-conversation-size": 14,
 };
 const pick = (allowed, value, fallback) =>
   allowed.includes(value) ? value : fallback;
@@ -61,7 +59,7 @@ export function savePreferences(
   }
 }
 
-// Maps preferences onto existing design tokens ([data-theme="dark"], type-size tokens).
+// Maps preferences onto existing design tokens ([data-theme="dark"], type-scale primitives).
 export function applyPreferences(root, preferences, systemDark) {
   const dark =
     preferences.theme === "dark" ||
@@ -73,12 +71,10 @@ export function applyPreferences(root, preferences, systemDark) {
     "data-terminal-screen-reader",
     String(preferences.terminalScreenReader),
   );
-  const scale = FONT_SCALE[preferences.fontSize];
-  for (const [name, px] of Object.entries(SIZE_TOKENS)) {
-    const property = `--omoc-semantic-type-size-${name}`;
-    if (scale === 1) root.style.removeProperty(property);
-    else
-      root.style.setProperty(property, `${Math.round(px * scale * 10) / 10}px`);
+  const delta = FONT_DELTA[preferences.fontSize];
+  for (const [property, px] of Object.entries(FONT_STEPS)) {
+    if (delta === 0) root.style.removeProperty(property);
+    else root.style.setProperty(property, `${px + delta}px`);
   }
 }
 
