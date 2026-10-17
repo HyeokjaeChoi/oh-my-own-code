@@ -213,8 +213,14 @@ export function NotificationCenter({
       title="알림"
       onClick={() => openSettingsPage("notifications")}
     >
-      <Bell size={18} />
-      {unread > 0 && <span className={styles.badge}>{unread}</span>}
+      <span className={styles.bell}>
+        <Bell size={16} />
+        {unread > 0 && (
+          <span className={styles.badge} aria-hidden="true">
+            {unread > 9 ? "9+" : unread}
+          </span>
+        )}
+      </span>
     </Button>
   );
 }

@@ -1,7 +1,22 @@
+.bell {
+  position: relative;
+  display: inline-flex;
+}
+/* A small pill over the bell's corner; the count is in the button's label. */
 .badge {
-  margin-left: 4px;
-  font-size: var(--omoc-semantic-type-size-caption);
-  font-weight: 600;
+  position: absolute;
+  top: -6px;
+  left: 8px;
+  min-width: 14px;
+  padding: 0 4px;
+  border-radius: var(--omoc-primitive-radius-pill);
+  background: var(--omoc-semantic-color-danger-foreground);
+  color: var(--omoc-semantic-color-text-inverse);
+  font-size: var(--omoc-semantic-type-size-group);
+  font-weight: var(--omoc-semantic-type-weight-heading);
+  line-height: 14px;
+  text-align: center;
+  pointer-events: none;
 }
 .toolbar {
   display: flex;
