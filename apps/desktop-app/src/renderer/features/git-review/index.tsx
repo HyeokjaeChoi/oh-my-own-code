@@ -496,7 +496,7 @@ type Tray = "index" | "commit" | "restore";
 const trayLabels: Record<Tray, string> = {
   index: "Stage",
   commit: "커밋",
-  restore: "되돌리기",
+  restore: "브랜치 복원",
 };
 
 function GitIndexSection() {
@@ -820,7 +820,7 @@ export function GitReviewPanel() {
   const available = current?.status === "available";
   const statusRef = useRef<HTMLParagraphElement>(null),
     detailRef = useRef<HTMLParagraphElement>(null);
-  const [view, setView] = useState<"list" | "diff">("list");
+  const [view, setView] = useState<"list" | "diff">(g.path ? "diff" : "list");
   const [copied, setCopied] = useState(false);
   const status = g.request
     ? "loading"
@@ -844,6 +844,8 @@ export function GitReviewPanel() {
     actions.selectGitMode(mode);
     actions.selectGitPath(path);
     setView("diff");
+    // A row opens its diff and reads it in one step.
+    void actions.readGitDiff().then(() => detailRef.current?.focus());
   };
   const parsed = useMemo(
     () =>
@@ -1116,7 +1118,7 @@ export function GitReviewPanel() {
           )
         ) : null}
       </div>
-      <div className={styles.diffView}>
+      <div className={styles.diffView} hidden={view !== "diff"}>
         {view === "diff" && (
           <div className={styles.diffHead}>
             <Button

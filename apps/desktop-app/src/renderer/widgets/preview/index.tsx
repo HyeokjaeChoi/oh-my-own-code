@@ -20,6 +20,7 @@ import {
   MoreHorizontal,
   RotateCw,
   SquareArrowOutUpRight,
+  X,
 } from "lucide-react";
 import { ActionMenu, Button, Input, Notice } from "@workbench/ui";
 
@@ -239,6 +240,16 @@ export function PreviewPanel({ workspaceId }: { workspaceId: string }) {
             disabled={!path.trim()}
           >
             파일 열기
+          </Button>
+          <Button
+            size="compact"
+            intent="quiet"
+            type="button"
+            aria-label="파일 열기 닫기"
+            title="닫기"
+            onClick={() => setFileRow(false)}
+          >
+            <X size={16} aria-hidden="true" />
           </Button>
         </form>
       )}

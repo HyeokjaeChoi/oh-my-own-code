@@ -321,9 +321,11 @@
   .review button[aria-pressed="true"] {
     border-color: Highlight;
   }
-  .line[data-kind="add"],
-  .line[data-kind="del"] {
+  .line[data-kind="add"] {
     border-inline-start: 3px solid Highlight;
+  }
+  .line[data-kind="del"] {
+    border-inline-start: 3px dashed Highlight;
   }
 }
 .review :is(.status, .patch):focus-visible {

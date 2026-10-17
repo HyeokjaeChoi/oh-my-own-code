@@ -12,6 +12,9 @@ import { SquareTerminal, Plus } from "lucide-react";
 import { Button, EmptyState, Notice } from "@workbench/ui";
 import { useWorkbenchSelector } from "../../entities/workbench/index.js";
 
+// A workspace auto-starts its shell once per app run, so closing the last shell
+// and switching tabs does not respawn one.
+const autoStartedWorkspaces = new Set<string>();
 const LIST_MS = 1000;
 const HINT_ID = "omoc-terminal-hint";
 
@@ -40,7 +43,6 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
   const [project, setProject] = useState<ProjectActions>();
   const footer = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
-  const autoStarted = useRef(false);
   const trusted = useWorkbenchSelector(
     (state) =>
       state.lists.workspaces.find((w) => w.id === workspaceId)?.trusted,
@@ -120,10 +122,11 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
   // First open: start a shell when trusted and none exists. An untrusted
   // workspace keeps the explicit 터미널 열기 button (the host enforces trust).
   useEffect(() => {
-    if (!loaded || tabs.length || autoStarted.current || !trusted) return;
-    autoStarted.current = true;
+    if (!loaded || tabs.length || !trusted) return;
+    if (autoStartedWorkspaces.has(workspaceId)) return;
+    autoStartedWorkspaces.add(workspaceId);
     void start();
-  }, [loaded, tabs.length, trusted]);
+  }, [loaded, tabs.length, trusted, workspaceId]);
   const run = async (type: "terminal.stop" | "terminal.close") => {
     if (!current) return;
     setError(undefined);
@@ -243,6 +246,7 @@ export function TerminalPanel({ workspaceId }: { workspaceId: string }) {
             <Button
               size="compact"
               intent="primary"
+              disabled={!loaded}
               onClick={() => void start()}
             >
               터미널 열기

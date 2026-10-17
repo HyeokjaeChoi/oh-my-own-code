@@ -9,7 +9,7 @@
 
 /** CustomEase path data extracted from the live page, keyed by family. */
 export const eases = {
-  standard: 'M0,0 C0.25,0.1 0.25,1 1,1',
+  standard: "M0,0 C0.25,0.1 0.25,1 1,1",
 };
 
 /** Duration presets (seconds), extracted from the live page. */
@@ -21,22 +21,58 @@ export const durations = {
 
 /** Register every extracted curve as a named GSAP CustomEase. Call once. */
 export function registerEases(gsap) {
-  const CustomEase = gsap.plugins?.CustomEase || (typeof window !== 'undefined' && window.CustomEase);
+  const CustomEase =
+    gsap.plugins?.CustomEase ||
+    (typeof window !== "undefined" && window.CustomEase);
   if (!CustomEase) {
-    console.warn('[motion.gsap] CustomEase plugin not registered — call gsap.registerPlugin(CustomEase) first.');
+    console.warn(
+      "[motion.gsap] CustomEase plugin not registered — call gsap.registerPlugin(CustomEase) first.",
+    );
     return;
   }
-  for (const [name, path] of Object.entries(eases)) CustomEase.create(name, path);
+  for (const [name, path] of Object.entries(eases))
+    CustomEase.create(name, path);
 }
 
 /** gsap.from() reveal helpers. Pass any GSAP target + optional vars override. */
 export const reveals = {
-  fadeIn: (target, vars = {}) => gsap.from(target, { opacity: 0, duration: 0.3, ease: 'standard', ...vars }),
-  slideUp: (target, vars = {}) => gsap.from(target, { opacity: 0, y: 24, duration: 0.3, ease: 'standard', ...vars }),
-  slideDown: (target, vars = {}) => gsap.from(target, { opacity: 0, y: -24, duration: 0.3, ease: 'standard', ...vars }),
-  scaleIn: (target, vars = {}) => gsap.from(target, { opacity: 0, scale: 0.96, duration: 0.3, ease: 'standard', ...vars }),
-  pop: (target, vars = {}) => gsap.from(target, { scale: 0.9, duration: 0.3, ease: 'standard', ...vars }),
-  stagger: (targets, vars = {}) => gsap.from(targets, { opacity: 0, y: 24, duration: 0.3, ease: 'standard', stagger: 0.080, ...vars }),
+  fadeIn: (target, vars = {}) =>
+    gsap.from(target, { opacity: 0, duration: 0.3, ease: "standard", ...vars }),
+  slideUp: (target, vars = {}) =>
+    gsap.from(target, {
+      opacity: 0,
+      y: 24,
+      duration: 0.3,
+      ease: "standard",
+      ...vars,
+    }),
+  slideDown: (target, vars = {}) =>
+    gsap.from(target, {
+      opacity: 0,
+      y: -24,
+      duration: 0.3,
+      ease: "standard",
+      ...vars,
+    }),
+  scaleIn: (target, vars = {}) =>
+    gsap.from(target, {
+      opacity: 0,
+      scale: 0.96,
+      duration: 0.3,
+      ease: "standard",
+      ...vars,
+    }),
+  pop: (target, vars = {}) =>
+    gsap.from(target, { scale: 0.9, duration: 0.3, ease: "standard", ...vars }),
+  stagger: (targets, vars = {}) =>
+    gsap.from(targets, {
+      opacity: 0,
+      y: 24,
+      duration: 0.3,
+      ease: "standard",
+      stagger: 0.08,
+      ...vars,
+    }),
 };
 
 /** Site uses scroll-/view-timeline. Batch-reveals elements as they enter. */
@@ -44,9 +80,18 @@ export const reveals = {
 export function revealOnScroll(targets, vars = {}) {
   return gsap.utils.toArray(targets).map((el) =>
     gsap.from(el, {
-      opacity: 0, y: 24, duration: 0.3, ease: 'standard', ...vars,
-      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' },
-    }));
+      opacity: 0,
+      y: 24,
+      duration: 0.3,
+      ease: "standard",
+      ...vars,
+      scrollTrigger: {
+        trigger: el,
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      },
+    }),
+  );
 }
 
 export default { eases, durations, registerEases, reveals };

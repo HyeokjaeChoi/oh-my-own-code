@@ -37,13 +37,13 @@ These are analyses of public interfaces and available first-party materials, not
 
 ## Comparative synthesis
 
-| Foundation axis | Clear | Editorial | Instrument | Mono |
-| --- | --- | --- | --- | --- |
-| Intended job | Frequent conversation and steering | Reading plans and reviewing artifacts | Following execution and changes | Strong focus with sparse chrome |
-| Visual organizing principle | Space and soft groups | Reading measure and title hierarchy | Dense aligned rows and quiet separators | Deliberate contrast and fewer surface levels |
-| Input treatment | Soft rounded composer | Document-like reading area with calm input | Compact workbench controls | Restrained geometry, strong primary control |
-| Risk to judge | Lower information density | Long-form emphasis can slow scanning | Excessive density on small screens | Too little hierarchy without clear state text |
-| Preserved requirement | Current task/path and explicit state labels in all four | Same | Same | Same |
+| Foundation axis             | Clear                                                   | Editorial                                  | Instrument                              | Mono                                          |
+| --------------------------- | ------------------------------------------------------- | ------------------------------------------ | --------------------------------------- | --------------------------------------------- |
+| Intended job                | Frequent conversation and steering                      | Reading plans and reviewing artifacts      | Following execution and changes         | Strong focus with sparse chrome               |
+| Visual organizing principle | Space and soft groups                                   | Reading measure and title hierarchy        | Dense aligned rows and quiet separators | Deliberate contrast and fewer surface levels  |
+| Input treatment             | Soft rounded composer                                   | Document-like reading area with calm input | Compact workbench controls              | Restrained geometry, strong primary control   |
+| Risk to judge               | Lower information density                               | Long-form emphasis can slow scanning       | Excessive density on small screens      | Too little hierarchy without clear state text |
+| Preserved requirement       | Current task/path and explicit state labels in all four | Same                                       | Same                                    | Same                                          |
 
 All four have light/dark values, Korean text plus original code identifiers, primitive → semantic → component aliases, focus/error/disabled/loading/status specimens, reduced-motion support and the same synthetic workbench content. The presets are intentionally distinguishable beyond palette. Use comparison and mode switching before choosing; combining a palette from one with density from another is a subsequent reviewed edit.
 

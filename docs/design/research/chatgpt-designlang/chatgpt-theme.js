@@ -38,74 +38,74 @@
  */
 
 export const theme = {
-  "colors": {
-    "foreground": "#000000",
-    "neutral50": "#8e8ea0",
-    "neutral100": "#000000"
+  colors: {
+    foreground: "#000000",
+    neutral50: "#8e8ea0",
+    neutral100: "#000000",
   },
-  "fonts": {
-    "body": "'Arial', sans-serif"
+  fonts: {
+    body: "'Arial', sans-serif",
   },
-  "fontSizes": {
-    "16": "16px",
-    "24": "24px",
-    "13.3333": "13.3333px"
+  fontSizes: {
+    16: "16px",
+    24: "24px",
+    13.3333: "13.3333px",
   },
-  "space": {
-    "8": "8px",
-    "32": "32px"
+  space: {
+    8: "8px",
+    32: "32px",
   },
-  "radii": {
-    "sm": "5px"
+  radii: {
+    sm: "5px",
   },
-  "shadows": {},
-  "states": {
-    "hover": {
-      "opacity": 0.08
+  shadows: {},
+  states: {
+    hover: {
+      opacity: 0.08,
     },
-    "focus": {
-      "opacity": 0.12
+    focus: {
+      opacity: 0.12,
     },
-    "active": {
-      "opacity": 0.16
+    active: {
+      opacity: 0.16,
     },
-    "disabled": {
-      "opacity": 0.38
-    }
-  }
+    disabled: {
+      opacity: 0.38,
+    },
+  },
 };
 
 // MUI v5 theme
 export const muiTheme = {
-  "palette": {
-    "background": {},
-    "text": {
-      "primary": "#000000",
-      "secondary": "#8e8ea0"
-    }
-  },
-  "typography": {
-    "fontFamily": "'Arial', sans-serif",
-    "h2": {
-      "fontSize": "24px",
-      "fontWeight": "700",
-      "lineHeight": "normal"
+  palette: {
+    background: {},
+    text: {
+      primary: "#000000",
+      secondary: "#8e8ea0",
     },
-    "body1": {
-      "fontSize": "16px",
-      "fontWeight": "400",
-      "lineHeight": "normal"
+  },
+  typography: {
+    fontFamily: "'Arial', sans-serif",
+    h2: {
+      fontSize: "24px",
+      fontWeight: "700",
+      lineHeight: "normal",
     },
-    "body2": {
-      "fontSize": "13.3333px",
-      "fontWeight": "400",
-      "lineHeight": "normal"
-    }
+    body1: {
+      fontSize: "16px",
+      fontWeight: "400",
+      lineHeight: "normal",
+    },
+    body2: {
+      fontSize: "13.3333px",
+      fontWeight: "400",
+      lineHeight: "normal",
+    },
   },
-  "shape": {
-    "borderRadius": 5
+  shape: {
+    borderRadius: 5,
   },
-  "shadows": []
+  shadows: [],
 };
 
 export default theme;

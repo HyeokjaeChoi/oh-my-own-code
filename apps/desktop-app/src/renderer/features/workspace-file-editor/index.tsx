@@ -22,7 +22,7 @@ import {
 
 const errors: Record<string, string> = {
   FILE_CHANGED:
-    "파일이 외부에서 변경되었습니다. 초안은 유지됩니다. 편집용으로 다시 열어 비교하세요.",
+    "파일이 외부에서 변경되었습니다. 초안은 유지됩니다. ‘다시 읽기’로 비교하세요.",
   FILE_DENIED:
     "파일 쓰기 권한 또는 경로 권한을 확인할 수 없습니다. 초안은 유지됩니다.",
   FILE_MISSING: "기존 파일이 없습니다. 여기에서는 새 파일을 만들 수 없습니다.",
@@ -32,7 +32,7 @@ const errors: Record<string, string> = {
   missing_file: "기존 파일이 없습니다. 여기에서는 새 파일을 만들 수 없습니다.",
   path_missing: "파일 경로가 없습니다. 초안은 유지됩니다.",
   path_denied: "파일을 읽을 권한 또는 경로 권한을 확인할 수 없습니다.",
-  file_changed: "파일이 변경되었습니다. 편집용으로 다시 열어 확인하세요.",
+  file_changed: "파일이 변경되었습니다. ‘다시 읽기’로 확인하세요.",
   too_large: "편집할 파일은 UTF-8 기준 64KiB 이하여야 합니다.",
   unsupported_content: "이 파일은 지원하는 UTF-8 텍스트가 아닙니다.",
   protected_source:
@@ -175,7 +175,7 @@ export function WorkspaceFileEditor({ view }: { view?: ReactNode } = {}) {
         : save?.status === "saved"
           ? save.current
             ? "파일 저장을 확인했습니다. 다시 저장하려면 다시 읽으세요."
-            : "이전 초안의 저장을 확인했습니다. 더 최근에 수정한 초안은 유지됩니다. 편집용으로 다시 열어 비교하세요."
+            : "이전 초안의 저장을 확인했습니다. 더 최근에 수정한 초안은 유지됩니다. ‘다시 읽기’로 비교하세요."
           : save?.status === "conflict" || save?.status === "denied"
             ? (errors[save.code ?? ""] ??
               "저장할 수 없습니다. 초안은 유지됩니다. 파일과 권한을 다시 확인하세요.")
@@ -185,7 +185,7 @@ export function WorkspaceFileEditor({ view }: { view?: ReactNode } = {}) {
               : protectedPath
                 ? errors.protected_source
                 : !draft.observation
-                  ? "저장 기준이 없습니다. 편집용으로 열어 확인하세요."
+                  ? "저장 기준이 없습니다. ‘편집’을 눌러 확인하세요."
                   : draft.text !== draft.baseline
                     ? "초안을 수정했습니다. 내용을 확인한 뒤 저장하세요."
                     : "편집할 파일을 불러왔습니다.";
@@ -259,9 +259,8 @@ export function WorkspaceFileEditor({ view }: { view?: ReactNode } = {}) {
           {workspace && !workspace.trusted && (
             <Notice tone="warning" data-workspace-file-trust="untrusted">
               신뢰하지 않는 작업 공간입니다. 기존 ‘새 세션’에서 신뢰를 확인할 수
-              있습니다. 이 작업은 새 세션을 만듭니다. 신뢰 확인 후 ‘편집용으로
-              열기’를 직접 눌러야 합니다. 파일이나 구성을 자동으로 불러오지
-              않습니다.
+              있습니다. 이 작업은 새 세션을 만듭니다. 신뢰 확인 후 ‘다시 읽기’를
+              직접 눌러야 합니다. 파일이나 구성을 자동으로 불러오지 않습니다.
             </Notice>
           )}
           {held && (

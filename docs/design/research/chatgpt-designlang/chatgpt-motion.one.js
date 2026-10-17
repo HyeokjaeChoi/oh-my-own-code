@@ -22,19 +22,19 @@ export const durations = {
 
 /** Motion One spring options — pass as the `type: 'spring'` block of an animate() call. */
 export const springs = {
-  soft: { type: 'spring', stiffness: 320, damping: 30, mass: 1 },
+  soft: { type: "spring", stiffness: 320, damping: 30, mass: 1 },
 };
 
 /** @keyframes blocks reconstructed as Motion One keyframe maps. */
 export const keyframes = {
   enlargeAppear: {
-    "opacity": ["0","1"],
-    "transform": ["scale(0.75) rotate(-90deg)","scale(1) rotate(0deg)"]
+    opacity: ["0", "1"],
+    transform: ["scale(0.75) rotate(-90deg)", "scale(1) rotate(0deg)"],
   },
 };
 
 /** Animate-on-call helpers. Each takes a Motion One target + optional override. */
-import { animate } from 'motion';
+import { animate } from "motion";
 
 const _t = { duration: 0.3, easing: easings.standard };
 
@@ -54,12 +54,14 @@ export const animations = {
 };
 
 /** Site uses scroll- or view-timeline. Helpers wired to Motion One's `inView` / `scroll`. */
-import { inView, scroll } from 'motion';
+import { inView, scroll } from "motion";
 
 export const enterOnView = (target, variant = animations.slideUp) =>
-  inView(target, (el) => { variant(el.target); });
+  inView(target, (el) => {
+    variant(el.target);
+  });
 
 export const parallaxY = (target, distance = 80) =>
-  scroll(animate(target, { y: [0, -distance] }, { easing: 'linear' }));
+  scroll(animate(target, { y: [0, -distance] }, { easing: "linear" }));
 
 export default { easings, durations, springs, keyframes, animations };
