@@ -1,94 +1,180 @@
 .panel {
-  font-size: 13px;
+  font-size: var(--omoc-semantic-type-size-compact);
   line-height: 1.5;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 12px;
 }
-.panel h2 {
-  font-size: 16px;
-  font-weight: 500;
-  margin: 0 0 8px;
+.panel p {
+  margin: 0;
 }
-.output:focus-visible {
-  outline: 2px solid var(--omoc-semantic-color-focus);
+.head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
-.tabs,
-.input,
-.footer {
+.title {
+  margin: 0;
+  font-size: var(--omoc-semantic-type-size-compact);
+  font-weight: 600;
+}
+.input {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
 }
-.output {
-  margin: 8px 0;
-  height: 280px;
-  overflow: auto;
-  padding: 8px;
-  border: 1px solid var(--omoc-semantic-color-border-default);
-  border-radius: 8px;
-  background: var(--omoc-semantic-color-canvas);
-  font: 12px/1.5 var(--omoc-semantic-type-family-code);
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  user-select: text;
-}
 .input input {
   flex: 1;
-}
-.footer span {
-  flex: 1;
   min-width: 0;
+}
+.none {
+  font-size: var(--omoc-semantic-type-size-caption);
+  color: var(--omoc-semantic-color-text-tertiary);
 }
 .muted {
   color: var(--omoc-semantic-color-text-secondary);
 }
-.scripts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  list-style: none;
-  margin: 4px 0;
-  padding: 0;
-}
 .list {
   list-style: none;
-  margin: 4px 0;
+  margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
+.planRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.more summary,
+.section > summary {
+  cursor: pointer;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.section > summary {
+  color: var(--omoc-semantic-color-text-primary);
+  font-weight: 600;
+}
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 4px;
+}
+.section[open] > *:not(summary) {
+  margin-top: 6px;
+}
+.planHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.planPath {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
+  color: var(--omoc-semantic-color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.counter {
+  font-size: var(--omoc-semantic-type-size-caption);
+  font-variant-numeric: tabular-nums;
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+/* The native checkbox stays for semantics; state is drawn as a circle/check icon. */
 .check {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   align-items: flex-start;
-  margin: 2px 0;
+  padding: 3px 0;
+  cursor: pointer;
 }
 .check input {
-  margin-top: 4px;
+  appearance: none;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin: 2px 0 0;
+  border: 1.5px solid var(--omoc-semantic-color-border-default);
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+.check input::after {
+  content: "";
+  width: 8px;
+  height: 4px;
+  border-inline-start: 1.5px solid var(--omoc-semantic-color-text-inverse);
+  border-block-end: 1.5px solid var(--omoc-semantic-color-text-inverse);
+  transform: translateY(-1px) rotate(-45deg);
+  opacity: 0;
+}
+.check input:checked {
+  background: var(--omoc-semantic-color-success-foreground);
+  border-color: var(--omoc-semantic-color-success-foreground);
+}
+.check input:checked::after {
+  opacity: 1;
+}
+.check input:focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: 2px;
+}
+.check[data-done] span {
+  text-decoration: line-through;
+  color: var(--omoc-semantic-color-text-tertiary);
+}
+@media (forced-colors: active) {
+  .check input:checked {
+    background: Highlight;
+  }
 }
 .line {
-  margin: 2px 0;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+  color: var(--omoc-semantic-color-text-secondary);
 }
 .heading {
-  margin: 8px 0 2px;
+  margin-top: 6px !important;
   font-weight: 600;
 }
 .badge {
   display: inline-block;
-  padding: 0 6px;
-  border-radius: 8px;
-  background: var(--omoc-semantic-color-surface-subtle);
-  font-size: 12px;
+  padding: 0 8px;
+  border-radius: var(--omoc-semantic-radius-badge);
+  background: var(--omoc-semantic-color-fill-subtle);
+  color: var(--omoc-semantic-color-text-secondary);
+  font-size: var(--omoc-semantic-type-size-caption);
+  font-weight: 400;
 }
 .warn {
   color: var(--omoc-semantic-color-danger-foreground);
 }
 .panel .raw {
   width: 100%;
-  min-height: 200px;
+  min-height: 160px;
   box-sizing: border-box;
-  font: 12px/1.5 var(--omoc-semantic-type-family-code);
-}
-.section {
-  margin: 10px 0;
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
 }

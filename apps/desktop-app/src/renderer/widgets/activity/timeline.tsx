@@ -12,6 +12,7 @@ import {
   type TimelineKind,
 } from "../../shared/projection/index.js";
 import type { WorkbenchDiagnostics } from "../../../desktop-bridge.js";
+import { operationLabels } from "./labels.js";
 import styles from "./activity.module.css";
 import { Button } from "@workbench/ui";
 const kindLabels: Record<TimelineKind, string> = {
@@ -73,10 +74,8 @@ export function Timeline({
   };
   return (
     <>
-      <h3>타임라인</h3>
       <p className={styles.muted}>
-        메시지·도구·권한은 시각 정보가 없어 대화 순서대로 먼저 표시하고, 활동은
-        시각순으로 이어 표시합니다.
+        메시지·도구·권한은 대화 순서대로, 활동은 시각순으로 이어 표시합니다.
       </p>
       <div role="group" aria-label="종류 필터" className={styles.chips}>
         {timelineKinds.map((kind) => (
@@ -128,7 +127,10 @@ export function Timeline({
                 onClick={() => jump(entry)}
                 title={entry.target ? "관련 결과로 이동" : undefined}
               >
-                <strong>{kindLabels[entry.kind]}</strong> {entry.title}
+                <strong>{kindLabels[entry.kind]}</strong>{" "}
+                {entry.kind === "activity" || entry.kind === "error"
+                  ? (operationLabels[entry.title] ?? entry.title)
+                  : entry.title}
                 <span> {entry.status}</span>
                 {entry.time !== null && (
                   <time dateTime={new Date(entry.time).toISOString()}>
