@@ -17,6 +17,7 @@ import {
 import {
   contextEffectsReady,
   contextRequestReady,
+  revertRequestReady,
   selectedContextDraft,
   validContextBranchSnapshot,
   type ContextReadIdentity,
@@ -899,6 +900,49 @@ export function createWindowWorkbench(
       },
       true,
     );
+  }
+  // Revert hides the message and everything after it; the message text goes
+  // back into the composer (only if it is empty: typed input is never lost).
+  async function revertToMessage(messageId: string): Promise<boolean> {
+    const state = store.getState(),
+      workspaceId = state.selection.workspaceId,
+      sessionId = state.selection.sessionId,
+      text = state.snapshot?.messages.find(
+        (m) => m.id === messageId && m.role === "user",
+      )?.text;
+    if (!workspaceId || !sessionId) return false;
+    const accepted = await submitMutation({
+      type: "session.revert",
+      workspaceId,
+      sessionId,
+      requestId: id(),
+      messageId,
+    });
+    const now = store.getState();
+    if (
+      !accepted ||
+      disposed ||
+      !text ||
+      now.selection.workspaceId !== workspaceId ||
+      now.selection.sessionId !== sessionId
+    )
+      return accepted;
+    const key = selectionKey(workspaceId, sessionId);
+    if (!(now.drafts[key] ?? emptyDraft).text)
+      dispatch({ type: "draft", key, text });
+    return accepted;
+  }
+  function reapplyRevert(): Promise<boolean> {
+    const state = store.getState(),
+      revert = selectors.revert(state);
+    if (!revert) return Promise.resolve(false);
+    return submitMutation({
+      type: "session.revert.clear",
+      workspaceId: state.selection.workspaceId!,
+      sessionId: state.selection.sessionId!,
+      requestId: id(),
+      messageId: revert.messageId,
+    });
   }
   function cancelInbox(inboxId: string): Promise<boolean> {
     const state = store.getState();
@@ -3860,6 +3904,9 @@ export function createWindowWorkbench(
     const state = store.getState();
     if (
       mutationDisabled(state, operation) ||
+      ((operation.type === "session.revert" ||
+        operation.type === "session.revert.clear") &&
+        !revertRequestReady(state, operation)) ||
       (operation.type === "message.send" &&
         requestOptionsInvalid(state, operation)) ||
       (operation.type === "file.save" && !workspaceFileSave) ||
@@ -4580,6 +4627,8 @@ export function createWindowWorkbench(
       dispatch({ type: "context.branch.edit", text }),
     closeContextBranch: () => dispatch({ type: "context.branch.close" }),
     confirmContextBranch,
+    revertToMessage,
+    reapplyRevert,
     selectLineFeedbackSource: (kind: "file" | "git") => {
       if (disposed) return false;
       dispatch({ type: "line.feedback.select", kind });

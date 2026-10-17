@@ -2161,6 +2161,64 @@ export function contextRequestReady(
     );
   return false;
 }
+// The staged revert of the selected session, only while the snapshot is
+// current for this epoch/selection. Hiding and the banner depend on it alone
+// (no optimistic UI).
+function currentSelectedSnapshot(state: State): WorkbenchSnapshot | undefined {
+  const snapshot = state.snapshot;
+  return state.connection === "connected" &&
+    snapshot?.state === "connected" &&
+    snapshot.runtimeEpoch === state.epoch &&
+    snapshot.revision >= state.revision &&
+    snapshot.selectedWorkspaceId === state.selection.workspaceId &&
+    snapshot.selectedSessionId === state.selection.sessionId &&
+    !resourceMutationDisabled(state, state.selection.workspaceId)
+    ? snapshot
+    : undefined;
+}
+export function currentRevert(
+  state: State,
+): NonNullable<WorkbenchSnapshot["revert"]> | undefined {
+  return currentSelectedSnapshot(state)?.revert;
+}
+// Revert and reapply carry only a message id. They run against the selected,
+// idle, trusted session and a message/boundary the current snapshot shows.
+export function revertRequestReady(
+  s: State,
+  operation: MutationRequest,
+): boolean {
+  if (
+    (operation.type !== "session.revert" &&
+      operation.type !== "session.revert.clear") ||
+    !closed(operation, [
+      "type",
+      "workspaceId",
+      "sessionId",
+      "requestId",
+      "messageId",
+    ]) ||
+    operation.workspaceId !== s.selection.workspaceId ||
+    operation.sessionId !== s.selection.sessionId ||
+    !currentSelectedSnapshot(s)
+  )
+    return false;
+  const workspace = s.lists.workspaces.find(
+    (w) => w.id === operation.workspaceId,
+  );
+  const session = s.lists.sessions.find((x) => x.id === operation.sessionId);
+  if (
+    !workspace?.trusted ||
+    !session ||
+    session.archived ||
+    session.status !== "idle"
+  )
+    return false;
+  return operation.type === "session.revert"
+    ? currentSelectedSnapshot(s)!.messages.some(
+        (m) => m.id === operation.messageId && m.role === "user",
+      )
+    : currentRevert(s)?.messageId === operation.messageId;
+}
 export type State = {
   conversationContext: ConversationContext;
   epoch: string | undefined;
@@ -2380,6 +2438,8 @@ const mutationTypes: OperationIdentity["type"][] = [
   "session.fork",
   "session.inbox.cancel",
   "session.remove",
+  "session.revert",
+  "session.revert.clear",
   "session.interrupt",
   "message.send",
   "command.run",
@@ -2442,7 +2502,13 @@ function validProjection(next: WorkbenchSnapshot): boolean {
         "messages",
         "permissions",
       ],
-      ["selectedWorkspaceId", "selectedSessionId", "sessionSelection", "error"],
+      [
+        "selectedWorkspaceId",
+        "selectedSessionId",
+        "sessionSelection",
+        "revert",
+        "error",
+      ],
     ) ||
     !wireId(next.runtimeEpoch) ||
     !validClock(next.revision) ||
@@ -2560,6 +2626,24 @@ function validProjection(next: WorkbenchSnapshot): boolean {
     )
   )
     return false;
+  if (Object.hasOwn(next, "revert")) {
+    const r = next.revert;
+    if (
+      !closed(r, ["messageId", "fileCount", "files", "filesRestored"]) ||
+      next.selectedSessionId === undefined ||
+      typeof r!.messageId !== "string" ||
+      !/^[\w.:-]{1,256}$/.test(r!.messageId) ||
+      !Number.isSafeInteger(r!.fileCount) ||
+      r!.fileCount < 0 ||
+      !Array.isArray(r!.files) ||
+      r!.files.length > 50 ||
+      r!.files.length > r!.fileCount ||
+      r!.files.some((f) => typeof f !== "string" || !f || f.length > 1024) ||
+      typeof r!.filesRestored !== "boolean" ||
+      next.messages.some((m) => m.id >= r!.messageId)
+    )
+      return false;
+  }
   for (const message of next.messages) {
     if (
       !closed(
@@ -9720,6 +9804,7 @@ export function createWorkbenchStore(wide = true) {
 }
 export type WorkbenchStore = ReturnType<typeof createWorkbenchStore>;
 export const selectors = {
+  revert: currentRevert,
   conversationContext: (s: State) => s.conversationContext,
   contextDraft: selectedContextDraft,
   contextEffectsReady,

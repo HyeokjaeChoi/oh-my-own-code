@@ -165,7 +165,12 @@ export type {
   GitBranchRestoreMutationIdentity,
 } from "./model/store.js";
 
-export { requestOptionsInvalid, currentSessionSetting } from "./model/store.js";
+export {
+  requestOptionsInvalid,
+  currentSessionSetting,
+  currentRevert,
+  revertRequestReady,
+} from "./model/store.js";
 
 export {
   contextEffectsReady,
