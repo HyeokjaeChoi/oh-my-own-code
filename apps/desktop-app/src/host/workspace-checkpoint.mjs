@@ -10,13 +10,15 @@
 //   refs/omoc/<session>/t/<ms>-<hash>  checkpoint taken before user message <hash>
 //   refs/omoc/<session>/orig           state when the revert was staged
 //   refs/omoc/<session>/staged         blob: JSON record of the staged restore
-import { spawn } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
+import { constants as fsc } from "node:fs";
 import { createHash, randomBytes } from "node:crypto";
 import {
+  access,
   chmod,
   lstat,
   mkdir,
-  readFile,
+  open,
   readlink,
   realpath,
   rename,
@@ -27,6 +29,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { devNull } from "node:os";
+import { posix, win32 } from "node:path";
 import { join } from "node:path";
 
 export const CHECKPOINT_LIMITS = Object.freeze({
@@ -36,6 +39,7 @@ export const CHECKPOINT_LIMITS = Object.freeze({
   turns: 50,
   gitMs: 20_000,
   snapshotMs: 4_000,
+  guardEntries: 100_000,
 });
 const ID = /^[A-Za-z0-9_-]{1,80}$/u;
 const hashOf = (value) =>
@@ -53,8 +57,20 @@ function quotePath(path) {
   }
   return `${out}"`;
 }
+// Names git's verify_path refuses as ".git": case-insensitive, HFS+ ignorable
+// code points, NTFS trailing dots/spaces, alternate streams and the 8.3 alias.
+const IGNORABLE = /[\u200c-\u200f\u202a-\u202e\u206a-\u206f\ufeff]/gu;
+function isGitName(segment) {
+  const name = segment
+    .normalize("NFC")
+    .replace(IGNORABLE, "")
+    .toLowerCase()
+    .replace(/::.*$/u, "")
+    .replace(/[. ]+$/u, "");
+  return name === ".git" || name === "git~1";
+}
 // A restore path is a plain relative path with no traversal and never `.git`.
-function cleanPath(path) {
+export function cleanPath(path) {
   if (
     !path ||
     path.includes("\0") ||
@@ -63,11 +79,65 @@ function cleanPath(path) {
   )
     return undefined;
   const parts = path.split("/");
-  return parts.every(
-    (p) => p && p !== "." && p !== ".." && p.toLowerCase() !== ".git",
-  )
+  return parts.every((p) => p && p !== "." && p !== ".." && !isGitName(p))
     ? parts
     : undefined;
+}
+// Absolute git only (libuv searches the cwd first on Windows). Never resolves
+// a relative PATH entry. A macOS Command Line Tools shim without the tools
+// installed would raise an install dialog on every run, so it is "missing".
+export async function resolveGit({
+  git = "git",
+  platform = process.platform,
+  pathEnv = process.env.PATH ?? "",
+  isFile = (file) =>
+    access(file, fsc.X_OK).then(
+      () => true,
+      () => false,
+    ),
+  exec = (file, args) =>
+    new Promise((resolve) =>
+      execFile(file, args, { timeout: 5000, windowsHide: true }, (error) =>
+        resolve(!error),
+      ),
+    ),
+} = {}) {
+  const { delimiter, isAbsolute, join } = platform === "win32" ? win32 : posix;
+  if (isAbsolute(git)) return (await isFile(git)) ? git : undefined;
+  const names = platform === "win32" ? ["git.exe", "git.cmd"] : ["git"];
+  const dirs =
+    platform === "win32"
+      ? pathEnv.split(delimiter).filter((d) => d && isAbsolute(d))
+      : ["/usr/bin", "/bin", "/usr/local/bin", "/opt/homebrew/bin"];
+  for (const dir of dirs)
+    for (const name of names) {
+      const file = join(dir, name);
+      if (!(await isFile(file))) continue;
+      if (platform === "darwin" && file === "/usr/bin/git")
+        if (!(await exec("/usr/bin/xcode-select", ["-p"]))) continue;
+      return file;
+    }
+  return undefined;
+}
+
+// Reads a regular file without following a symlink swapped in after lstat and
+// without blocking on a FIFO swapped in. Anything else is `undefined`.
+export async function readRegular(file, max) {
+  let handle;
+  try {
+    handle = await open(
+      file,
+      fsc.O_RDONLY | (fsc.O_NOFOLLOW ?? 0) | (fsc.O_NONBLOCK ?? 0),
+    );
+    const info = await handle.stat();
+    if (!info.isFile() || info.size > max) return undefined;
+    const data = await handle.readFile();
+    return data.length <= max ? data : undefined;
+  } catch {
+    return undefined;
+  } finally {
+    await handle?.close().catch(() => {});
+  }
 }
 
 // Bounded-parallel map (file system latency dominates a serial walk).
@@ -95,7 +165,22 @@ export function createCheckpointStore({
   const lim = { ...CHECKPOINT_LIMITS, ...limits };
   const home = join(root, "home");
   let ready;
-  let gitOk;
+  let gitBin;
+  const tails = new Map();
+  // One operation at a time per workspace (repo init, gc and restores race).
+  const locked =
+    (fn) =>
+    (workspaceId, ...args) => {
+      const run = (tails.get(workspaceId) ?? Promise.resolve()).then(() =>
+        fn(workspaceId, ...args),
+      );
+      const tail = run.catch(() => {});
+      tails.set(workspaceId, tail);
+      tail.then(
+        () => tails.get(workspaceId) === tail && tails.delete(workspaceId),
+      );
+      return run;
+    };
   const prepare = () =>
     (ready ??= mkdir(home, { recursive: true, mode: 0o700 }));
 
@@ -147,14 +232,19 @@ export function createCheckpointStore({
   ];
 
   // Runs git; `feed(write)` may stream stdin. Resolves stdout; always bounded.
-  function run(
+  async function run(
     env,
     args,
     { input, feed, max = 256 * 1024 * 1024, ms = lim.gitMs } = {},
   ) {
+    await prepare();
+    const bin = (gitBin ??= resolveGit({ git, platform }));
+    const resolved = await bin;
+    if (!resolved) throw fail("git_missing");
     return new Promise((resolve, reject) => {
-      const child = spawn(git, [...flags, ...args], {
+      const child = spawn(resolved, [...flags, ...args], {
         env,
+        cwd: home,
         stdio: ["pipe", "pipe", "pipe"],
         windowsHide: true,
         signal: AbortSignal.timeout(ms),
@@ -209,22 +299,8 @@ export function createCheckpointStore({
     }
     return { gitDir, env };
   }
-  async function hasGit() {
-    gitOk ??= run(
-      {
-        PATH:
-          platform === "win32"
-            ? (process.env.PATH ?? "")
-            : "/usr/bin:/bin:/usr/sbin:/sbin",
-        HOME: home,
-      },
-      ["--version"],
-    ).then(
-      () => true,
-      () => false,
-    );
-    return gitOk;
-  }
+  const hasGit = async () =>
+    Boolean(await (gitBin ??= resolveGit({ git, platform })));
   const text = (buffer) => buffer.toString("utf8").trim();
   const sessionRef = (sessionId) => {
     if (!ID.test(sessionId)) throw fail("invalid_id");
@@ -243,17 +319,35 @@ export function createCheckpointStore({
       );
       const { env } = await repo(workspaceId, base, index);
       // Standard ignore rules (read as data); the empty index means every
-      // non-ignored file is "other". `.git` is never listed.
-      const listed = (
-        await run(env, ["ls-files", "-z", "-o", "--exclude-standard"], {
-          ms: lim.snapshotMs,
-        })
-      )
-        .toString("utf8")
-        .split("\0")
-        .filter((p) => p && !p.endsWith("/"));
+      // non-ignored file is "other". `.git` is never listed. What the snapshot
+      // cannot see (ignored paths, nested repositories, oversize/unreadable
+      // files) is recorded as `protect`: a restore never deletes or overwrites
+      // those paths.
+      const lines = async (args) =>
+        (await run(env, args, { ms: lim.snapshotMs }))
+          .toString("utf8")
+          .split("\0")
+          .filter(Boolean);
+      const [others, ignored] = await Promise.all([
+        lines(["ls-files", "-z", "-o", "--exclude-standard"]),
+        lines([
+          "ls-files",
+          "-z",
+          "-o",
+          "-i",
+          "--exclude-standard",
+          "--directory",
+        ]),
+      ]);
       await rm(index, { force: true });
+      const protect = new Set(ignored);
+      const listed = [];
+      for (const path of others)
+        if (path.endsWith("/")) protect.add(path);
+        else listed.push(path);
       if (listed.length > lim.files) return { unavailable: "too_many_files" };
+      if (protect.size > lim.guardEntries)
+        return { unavailable: "too_many_files" };
       const entries = [];
       let total = 0;
       const stats = await pool(listed, async (path) => {
@@ -264,7 +358,10 @@ export function createCheckpointStore({
         return { path, parts, info };
       });
       for (const { path, parts, info } of stats) {
-        if (!info) continue;
+        if (!info) {
+          if (!parts) protect.add(path);
+          continue;
+        }
         if (info.isSymbolicLink())
           entries.push({ path, parts, mode: "120000", symlink: true });
         else if (info.isFile() && info.size <= lim.fileBytes) {
@@ -274,7 +371,7 @@ export function createCheckpointStore({
             parts,
             mode: info.mode & 0o100 ? "100755" : "100644",
           });
-        }
+        } else protect.add(path);
       }
       if (total > lim.totalBytes) return { unavailable: "too_large" };
       const ref = `${sessionRef(sessionId)}/pending`;
@@ -303,21 +400,36 @@ export function createCheckpointStore({
                   const file = join(base, ...entry.parts);
                   const data = entry.symlink
                     ? Buffer.from(await readlink(file).catch(() => ""), "utf8")
-                    : await readFile(file).catch(() => undefined);
-                  return data && data.length <= lim.fileBytes
-                    ? Buffer.concat([
-                        Buffer.from(
-                          `M ${entry.mode} inline ${quotePath(entry.path)}\ndata ${data.length}\n`,
-                        ),
-                        data,
-                        Buffer.from("\n"),
-                      ])
-                    : Buffer.alloc(0);
+                    : await readRegular(file, lim.fileBytes);
+                  if (!data) {
+                    protect.add(entry.path);
+                    entry.skipped = true;
+                    return Buffer.alloc(0);
+                  }
+                  return Buffer.concat([
+                    Buffer.from(
+                      `M ${entry.mode} inline ${quotePath(entry.path)}\ndata ${data.length}\n`,
+                    ),
+                    data,
+                    Buffer.from("\n"),
+                  ]);
                 },
               );
               await write(Buffer.concat(batch));
             }
-            await write(Buffer.from("done\n"));
+            // Same tree again; the message carries what the tree cannot.
+            const meta = Buffer.from(
+              `omoc checkpoint\n${JSON.stringify({ protect: [...protect] })}\n`,
+            );
+            await write(
+              Buffer.concat([
+                Buffer.from(
+                  `commit ${ref}\ncommitter omoc <omoc@localhost> ${stamp} +0000\ndata ${meta.length}\n`,
+                ),
+                meta,
+                Buffer.from("done\n"),
+              ]),
+            );
           },
         },
       );
@@ -328,7 +440,7 @@ export function createCheckpointStore({
           ref,
         ]),
       );
-      return { oid, fileCount: entries.length };
+      return { oid, fileCount: entries.filter((e) => !e.skipped).length };
     } catch (error) {
       if (error.checkpoint === "git_missing")
         return { unavailable: "git_missing" };
@@ -363,8 +475,13 @@ export function createCheckpointStore({
       await run(env, ["update-ref", "--stdin"], {
         input: old.map((r) => `delete ${r}\n`).join(""),
       });
+    if (old.length) await collect(env);
     return old.length;
   }
+  // Dropped refs only free disk once unreachable objects are pruned (explicit
+  // gc is not governed by gc.auto).
+  const collect = (env) =>
+    run(env, ["gc", "--prune=now", "--quiet"]).catch(() => {});
   async function discard(workspaceId, sessionId) {
     await run(refEnv(workspaceId), [
       "update-ref",
@@ -443,11 +560,32 @@ export function createCheckpointStore({
       }
     }
   }
+  // `protect` of a checkpoint: paths its snapshot could not see.
+  async function protectOf(env, commit) {
+    try {
+      const body = (await run(env, ["cat-file", "commit", commit]))
+        .toString("utf8")
+        .trimEnd();
+      const list = JSON.parse(body.slice(body.lastIndexOf("\n") + 1)).protect;
+      return Array.isArray(list) ? new Set(list) : new Set();
+    } catch {
+      throw fail("git_failed");
+    }
+  }
   // Make the workspace match `target` for every path that differs from
-  // `current` (both commits in the private repo). Returns the changed paths.
+  // `current` (both commits in the private repo). Never deletes or overwrites
+  // what `target` could not see; deletes run before writes (case-insensitive
+  // file systems). Returns the changed paths.
   async function applyDiff(workspaceId, workspacePath, target, current) {
     const base = await realpath(workspacePath);
     const env = environment(dirOf(workspaceId));
+    const protect = await protectOf(env, target);
+    const isProtected = (path) => {
+      if (protect.has(path)) return true;
+      for (let at = path.indexOf("/"); at >= 0; at = path.indexOf("/", at + 1))
+        if (protect.has(path.slice(0, at + 1))) return true;
+      return false;
+    };
     const raw = (
       await run(env, [
         "diff-tree",
@@ -461,7 +599,8 @@ export function createCheckpointStore({
     )
       .toString("utf8")
       .split("\0");
-    const changes = [];
+    const removes = [];
+    const writes = [];
     for (let i = 0; i + 1 < raw.length; i += 2) {
       const m = /^:(\d+) (\d+) ([0-9a-f]+) ([0-9a-f]+) ([A-Z])/u.exec(raw[i]);
       const parts = cleanPath(raw[i + 1]);
@@ -470,51 +609,47 @@ export function createCheckpointStore({
         continue;
       }
       const [, srcMode, , srcOid, , status] = m;
-      changes.push({
-        path: raw[i + 1],
-        parts,
-        srcMode,
-        srcOid,
-        remove: status === "A",
-      });
+      const change = { path: raw[i + 1], parts, srcMode, srcOid };
+      if (srcMode === "160000") continue;
+      if (status === "A") {
+        if (!isProtected(change.path)) removes.push(change);
+      } else writes.push({ ...change, onlyIfAbsent: status === "D" });
     }
     await beforeApply?.();
     const changed = [];
-    for (let i = 0; i < changes.length; i += 200) {
-      const chunk = changes.slice(i, i + 200);
-      const writes = chunk.filter((c) => !c.remove && c.srcMode !== "160000");
+    for (const c of removes) {
+      const dir = await parentOf(base, c.parts, false);
+      if (!dir) continue;
+      const info = await lstat(join(dir, c.parts.at(-1))).catch(() => null);
+      if (info && !info.isDirectory()) {
+        await unlink(join(dir, c.parts.at(-1)));
+        await removeEmptyParents(base, c.parts);
+        changed.push(c.path);
+      }
+    }
+    for (let i = 0; i < writes.length; i += 200) {
+      const chunk = writes.slice(i, i + 200);
       const blobs = new Map();
-      if (writes.length) {
-        const out = await run(env, ["cat-file", "--batch"], {
-          input: writes.map((c) => `${c.srcOid}\n`).join(""),
-        });
-        let at = 0;
-        for (const c of writes) {
-          const eol = out.indexOf(10, at);
-          const head = out.subarray(at, eol).toString("utf8").split(" ");
-          if (head[1] !== "blob") throw fail("git_failed");
-          const size = Number(head[2]);
-          blobs.set(c.path, out.subarray(eol + 1, eol + 1 + size));
-          at = eol + 1 + size + 1;
-        }
+      const out = await run(env, ["cat-file", "--batch"], {
+        input: chunk.map((c) => `${c.srcOid}\n`).join(""),
+      });
+      let at = 0;
+      for (const c of chunk) {
+        const eol = out.indexOf(10, at);
+        const head = out.subarray(at, eol).toString("utf8").split(" ");
+        if (head[1] !== "blob") throw fail("git_failed");
+        const size = Number(head[2]);
+        blobs.set(c.path, out.subarray(eol + 1, eol + 1 + size));
+        at = eol + 1 + size + 1;
       }
       for (const c of chunk) {
-        if (c.srcMode === "160000") continue;
-        if (c.remove) {
-          const dir = await parentOf(base, c.parts, false);
-          if (!dir) continue;
-          const file = join(dir, c.parts.at(-1));
-          const info = await lstat(file).catch(() => null);
-          if (info && !info.isDirectory()) {
-            await unlink(file);
-            await removeEmptyParents(base, c.parts);
-            changed.push(c.path);
-          }
-          continue;
-        }
         const dir = await parentOf(base, c.parts, true);
         const file = join(dir, c.parts.at(-1));
         const info = await lstat(file).catch(() => null);
+        // In the checkpoint but absent from the current snapshot: if it
+        // exists on disk it is content no checkpoint holds (oversize,
+        // unreadable, ignored). Keep it.
+        if (info && c.onlyIfAbsent) continue;
         if (info?.isDirectory()) throw fail("containment");
         const temp = join(
           dir,
@@ -523,11 +658,13 @@ export function createCheckpointStore({
         if (c.srcMode === "120000")
           await symlink(blobs.get(c.path).toString("utf8"), temp);
         else {
+          // Keep an existing file's permissions; new files follow the umask.
+          const keep = info?.isFile() ? info.mode & 0o777 : undefined;
           await writeFile(temp, blobs.get(c.path), {
             flag: "wx",
-            mode: c.srcMode === "100755" ? 0o755 : 0o644,
+            mode: keep ?? (c.srcMode === "100755" ? 0o755 : 0o644),
           });
-          await chmod(temp, c.srcMode === "100755" ? 0o755 : 0o644);
+          if (keep !== undefined) await chmod(temp, keep);
         }
         try {
           await rename(temp, file);
@@ -554,6 +691,18 @@ export function createCheckpointStore({
     const env = refEnv(workspaceId);
     const ref = sessionRef(sessionId);
     await run(env, ["update-ref", `${ref}/orig`, original]);
+    // Recorded first: a failure part-way still leaves 다시 적용 available.
+    const write = async (record) =>
+      run(env, [
+        "update-ref",
+        `${ref}/staged`,
+        text(
+          await run(env, ["hash-object", "-w", "--stdin"], {
+            input: JSON.stringify(record),
+          }),
+        ),
+      ]);
+    await write({ messageId, original, fileCount: 0, files: [] });
     const changed = await applyDiff(
       workspaceId,
       workspacePath,
@@ -566,12 +715,7 @@ export function createCheckpointStore({
       fileCount: changed.length,
       files: changed.slice(0, 50),
     };
-    const blob = text(
-      await run(env, ["hash-object", "-w", "--stdin"], {
-        input: JSON.stringify(record),
-      }),
-    );
-    await run(env, ["update-ref", `${ref}/staged`, blob]);
+    await write(record);
     await discard(workspaceId, sessionId);
     return record;
   }
@@ -608,7 +752,7 @@ export function createCheckpointStore({
             .map((r) => `delete ${r}\n`)
             .join(""),
         });
-      await run(env, ["gc", "--auto", "--quiet"]).catch(() => {});
+      await collect(env);
     } catch {
       // nothing recorded for this session
     }
@@ -617,15 +761,15 @@ export function createCheckpointStore({
     await rm(dirOf(workspaceId), { recursive: true, force: true });
   }
   return {
-    snapshot,
-    bind,
-    discard,
-    find,
-    staged,
-    clearStaged,
-    stage,
-    reapply,
-    dropSession,
-    dropWorkspace,
+    snapshot: locked(snapshot),
+    bind: locked(bind),
+    discard: locked(discard),
+    find: locked(find),
+    staged: locked(staged),
+    clearStaged: locked(clearStaged),
+    stage: locked(stage),
+    reapply: locked(reapply),
+    dropSession: locked(dropSession),
+    dropWorkspace: locked(dropWorkspace),
   };
 }

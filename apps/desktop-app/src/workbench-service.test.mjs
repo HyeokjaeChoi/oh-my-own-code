@@ -2415,3 +2415,26 @@ test("checkpoint: a file restore that fails after Native staged is an unknown ou
     "unknown",
   );
 });
+test("checkpoint: a file restore is refused while another session of the workspace runs", async (t) => {
+  const cp = fakeCheckpoints();
+  const { f, rec, revert } = await revertFixture(t, async () => true, cp);
+  cp.known.set("msg_3", "oid-9");
+  const created = await f.service.handle({
+    type: "session.create",
+    workspaceId: f.ids.workspaceId,
+    title: "Other",
+  });
+  assert.equal(created.ok, true, JSON.stringify(created));
+  f.state.active["sdk-1"] = true;
+  const result = await revert("session.revert");
+  assert.equal(result.code, "BUSY");
+  assert.equal(rec.asked.length, 0);
+  assert.equal(rec.stage.length, 0);
+  assert.equal(
+    cp.log.some((e) => e[0] === "stage"),
+    false,
+  );
+  f.state.active = {};
+  const ok = await revert("session.revert");
+  assert.equal(ok.ok, true, JSON.stringify(ok));
+});

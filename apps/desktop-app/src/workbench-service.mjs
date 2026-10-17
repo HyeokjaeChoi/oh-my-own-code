@@ -5005,6 +5005,28 @@ export function createWorkbenchService({
       fail("BUSY");
     return info;
   }
+  async function otherSessionsIdle(w, s) {
+    const others = [...tables().sessions.values()].filter(
+      (item) => item.workspaceId === w.id && item !== s,
+    );
+    if (
+      others.some(
+        (item) => item.status !== "idle" || item.unknown || item.awaiting,
+      )
+    )
+      fail("BUSY");
+    if (!others.length) return;
+    const active = await call(client.session.active);
+    if (!active || typeof active !== "object" || Array.isArray(active))
+      fail("RUNTIME_ERROR");
+    for (const item of others) {
+      const inbox = await call(client.session.inbox.list, {
+        sessionID: item.sdkId,
+      });
+      if (!Array.isArray(inbox)) fail("RUNTIME_ERROR");
+      if (active[item.sdkId] || inbox.length) fail("BUSY");
+    }
+  }
   // Exhaust the installed SDK's cursor contract, including empty intermediate pages.
   async function scanSessions(input, visit, code) {
     const seen = new Set();
@@ -5337,6 +5359,8 @@ export function createWorkbenchService({
         if (!w.trusted) fail("INVALID_SELECTION");
         const reapply = request.type === "session.revert.clear";
         const info = await idleIdentity(w, s);
+        // File restore is workspace-wide: no other session may be running.
+        if (checkpoints) await otherSessionsIdle(w, s);
         const staged = info.revert?.messageID;
         let restoresFiles = Boolean(info.revert?.snapshot);
         let hasCheckpoint = false;
