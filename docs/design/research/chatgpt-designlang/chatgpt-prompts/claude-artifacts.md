@@ -6,8 +6,9 @@ Colors to use: #8e8ea0, #000000.
 Fonts: [object Object].
 Radius vocabulary: 5.
 Sections:
+
 - hero
 - features
 - cta
 - footer
-Use Tailwind via CDN, lucide-react for icons, and keep the material language consistent across sections. Do not add extra decorative elements outside this vocabulary.
+  Use Tailwind via CDN, lucide-react for icons, and keep the material language consistent across sections. Do not add extra decorative elements outside this vocabulary.

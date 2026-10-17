@@ -48,7 +48,7 @@ function readTheme(el: HTMLElement): { theme: ITheme; font: string } {
   const v = (name: string) => css.getPropertyValue(name).trim() || undefined;
   const dark = document.documentElement.getAttribute("data-theme") === "dark";
   const colors = {
-    background: v("--omoc-semantic-color-terminal-surface"),
+    background: v("--omoc-semantic-color-canvas"),
     foreground: v("--omoc-semantic-color-text-primary"),
     cursor: v("--omoc-semantic-color-text-primary"),
     selectionBackground: v("--omoc-semantic-color-selection-background"),

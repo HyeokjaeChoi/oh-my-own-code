@@ -5,34 +5,34 @@ Extracted by designlang on 2026-09-26.
 
 ## Brand at a glance
 
-- title         잠시만 기다리십시오…
-- page intent   landing
-- material      flat
-- design grade  B
+- title 잠시만 기다리십시오…
+- page intent landing
+- material flat
+- design grade B
 
 ## Colour
 
-- neutrals    #8e8ea0 · #000000
+- neutrals #8e8ea0 · #000000
 
 ## Typography
 
-- families   Arial
-- weights    400 · 700
-- base size  16px
+- families Arial
+- weights 400 · 700
+- base size 16px
 
 ## Spacing
 
-- scale      8px · 32px
+- scale 8px · 32px
 
 ## Radii
 
-- scale      5px
+- scale 5px
 
 ## Voice
 
-- tone       neutral
-- pronoun    third-person
-- headings   unknown
+- tone neutral
+- pronoun third-person
+- headings unknown
 
 ## Accessibility
 
@@ -62,17 +62,17 @@ designlang wrote these alongside this prompt. Reach for them when
 you need ground truth:
 
 - `<host>-design-tokens.json` — DTCG primitive · semantic · composite tokens
-- `<host>-tailwind.config.js`  — Tailwind v3 config
-- `<host>-tailwind-v4.css`     — Tailwind v4 `@theme` block
-- `<host>-tokens.d.ts`         — TypeScript literal-union types
-- `<host>-variables.css`       — bare CSS custom properties
-- `<host>-reset.css`           — brand-aware base styles
-- `<host>-gradients.css`       — `.grad-N` utility classes
-- `<host>-anatomy.tsx`         — typed React component scaffolds
-- `<host>-shadcn-theme.css`    — shadcn/ui theme
-- `<host>-theme.js`            — React / Vue / Svelte theme object
-- `<host>-mcp.json`            — MCP server payload (load via stdio)
-- `<host>.brand.pdf`           — print-ready 13-chapter brand book
+- `<host>-tailwind.config.js` — Tailwind v3 config
+- `<host>-tailwind-v4.css` — Tailwind v4 `@theme` block
+- `<host>-tokens.d.ts` — TypeScript literal-union types
+- `<host>-variables.css` — bare CSS custom properties
+- `<host>-reset.css` — brand-aware base styles
+- `<host>-gradients.css` — `.grad-N` utility classes
+- `<host>-anatomy.tsx` — typed React component scaffolds
+- `<host>-shadcn-theme.css` — shadcn/ui theme
+- `<host>-theme.js` — React / Vue / Svelte theme object
+- `<host>-mcp.json` — MCP server payload (load via stdio)
+- `<host>.brand.pdf` — print-ready 13-chapter brand book
 
 When you reference the system in code, prefer importing from these
 files over hard-coding values.

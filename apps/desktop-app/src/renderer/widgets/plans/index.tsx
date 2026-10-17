@@ -559,13 +559,13 @@ export function PlansPanel({
                   <span className={styles.badge}>
                     {summaryLabels[verificationSummary(checks, current)]}
                   </span>
-                  <InfoTip label="검증 안내">
-                    <p>
-                      상태는 앱이 실행한 스크립트의 종료 코드로만 기록됩니다.
-                      에이전트의 완료 보고는 반영되지 않습니다.
-                    </p>
-                  </InfoTip>
                 </summary>
+                <InfoTip label="검증 안내">
+                  <p>
+                    상태는 앱이 실행한 스크립트의 종료 코드로만 기록됩니다.
+                    에이전트의 완료 보고는 반영되지 않습니다.
+                  </p>
+                </InfoTip>
                 {checks.length > 0 && (
                   <ul className={styles.list}>
                     {checks.map((c) => (
@@ -627,14 +627,13 @@ export function PlansPanel({
                 <summary>
                   리뷰 결과
                   <span className={styles.badge}>미해결 {summary.open}</span>
-                  <InfoTip label="리뷰 안내">
-                    <p>
-                      독립 리뷰어는 하위 세션 위임으로 실행하고, 최종 답변을
-                      아래에 붙여넣어 추가하세요. 자동으로 해결 처리되지
-                      않습니다.
-                    </p>
-                  </InfoTip>
                 </summary>
+                <InfoTip label="리뷰 안내">
+                  <p>
+                    독립 리뷰어는 하위 작업 위임으로 실행하고, 최종 답변을
+                    아래에 붙여넣어 추가하세요. 자동으로 해결 처리되지 않습니다.
+                  </p>
+                </InfoTip>
                 <p>
                   미해결 {summary.open} · 해결 {summary.resolved} · 리뷰어
                   재확인 대기 {summary.awaitingRecheck}

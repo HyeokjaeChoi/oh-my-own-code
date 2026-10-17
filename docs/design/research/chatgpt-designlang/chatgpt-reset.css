@@ -4,20 +4,45 @@
    2026-09-26T08:08:40.438Z
    ────────────────────────────────────────────────────────────── */
 
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-html, body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, blockquote, figure,
-form, fieldset, table, hr {
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+li,
+blockquote,
+figure,
+form,
+fieldset,
+table,
+hr {
   margin: 0;
   padding: 0;
 }
 
 html {
   -webkit-text-size-adjust: 100%;
-  -moz-text-size-adjust:    100%;
-  text-size-adjust:         100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
-  font-family: "Arial", system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family:
+    "Arial",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
   font-size: 16px;
   line-height: 1.5;
 }
@@ -31,8 +56,17 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: "Arial", system-ui, -apple-system, sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family:
+    "Arial",
+    system-ui,
+    -apple-system,
+    sans-serif;
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -0.015em;
@@ -43,23 +77,44 @@ a {
   text-decoration: none;
   background-color: transparent;
 }
-a:hover { text-decoration: underline; }
-a:focus-visible { outline: 2px solid #0070f3; outline-offset: 2px; border-radius: 4px; }
+a:hover {
+  text-decoration: underline;
+}
+a:focus-visible {
+  outline: 2px solid #0070f3;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 
-img, picture, video, canvas, svg {
+img,
+picture,
+video,
+canvas,
+svg {
   display: block;
   max-width: 100%;
   height: auto;
 }
 
-input, textarea, select, button {
+input,
+textarea,
+select,
+button {
   font: inherit;
   color: inherit;
 }
-button { cursor: pointer; background: none; border: 0; padding: 0; }
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
 
-code, pre, kbd, samp {
-  font-family: ui-monospace, ui-monospace, 'SF Mono', Menlo, monospace;
+code,
+pre,
+kbd,
+samp {
+  font-family: ui-monospace, ui-monospace, "SF Mono", Menlo, monospace;
 }
 
 hr {
@@ -73,7 +128,9 @@ hr {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;

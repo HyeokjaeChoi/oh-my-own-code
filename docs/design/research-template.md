@@ -11,14 +11,14 @@ Audience / task / platform / constraints:
 ## Sources and observations
 
 | Source / URL or Figma node | Date | Platform / state / viewport | Direct observation | Screenshot or evidence | Access limits |
-| --- | --- | --- | --- | --- | --- |
-| TBD | TBD | TBD | TBD | None | None recorded |
+| -------------------------- | ---- | --------------------------- | ------------------ | ---------------------- | ------------- |
+| TBD                        | TBD  | TBD                         | TBD                | None                   | None recorded |
 
 ## Synthesis
 
 | Transferable pattern | Why it helps this user | Risk or mismatch | Recommendation |
-| --- | --- | --- | --- |
-| TBD | TBD | TBD | TBD |
+| -------------------- | ---------------------- | ---------------- | -------------- |
+| TBD                  | TBD                    | TBD              | TBD            |
 
 - Conventions to preserve:
 - Opportunity or differentiator:

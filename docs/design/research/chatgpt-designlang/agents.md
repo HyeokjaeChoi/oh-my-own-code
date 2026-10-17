@@ -6,6 +6,7 @@ Source: https://chatgpt.com/
 Extracted by designlang v7.0.0 on 2026-09-26T07:59:50.987Z
 
 ## Semantic tokens (use these)
+
 - color.action.primary: #8e8ea0
 - color.surface.default: #ffffff
 - color.text.body: #000000
@@ -13,6 +14,7 @@ Extracted by designlang v7.0.0 on 2026-09-26T07:59:50.987Z
 - typography.body.fontFamily: Arial
 
 ## How to use
+
 - Prefer `semantic.*` tokens over `primitive.*`.
 - Never invent new tokens or hex values; reuse the ones above.
 - When a value is missing, pick the closest existing semantic token and flag the gap.

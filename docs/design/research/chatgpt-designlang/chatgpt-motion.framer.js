@@ -20,14 +20,14 @@ export const durations = {
 
 /** Spring presets — pass to a Framer Motion `transition` prop. */
 export const springs = {
-  soft: { type: 'spring', stiffness: 320, damping: 30, mass: 1 },
+  soft: { type: "spring", stiffness: 320, damping: 30, mass: 1 },
 };
 
 /** Ready-to-spread Framer Motion transition objects. */
 export const transitions = {
-  base:  { duration: 0.3, ease: easings.standard },
-  fast:  { duration: 0.150, ease: easings.standard },
-  slow:  { duration: 0.540, ease: easings.standard },
+  base: { duration: 0.3, ease: easings.standard },
+  fast: { duration: 0.15, ease: easings.standard },
+  slow: { duration: 0.54, ease: easings.standard },
   spring: springs.soft,
 };
 
@@ -35,29 +35,29 @@ export const transitions = {
 export const variants = {
   fade: {
     hidden: { opacity: 0 },
-    show:   { opacity: 1, transition: transitions.base },
+    show: { opacity: 1, transition: transitions.base },
   },
   slideUp: {
     hidden: { opacity: 0, y: 16 },
-    show:   { opacity: 1, y: 0, transition: transitions.base },
+    show: { opacity: 1, y: 0, transition: transitions.base },
   },
   scaleIn: {
     hidden: { opacity: 0, scale: 0.96 },
-    show:   { opacity: 1, scale: 1, transition: transitions.base },
+    show: { opacity: 1, scale: 1, transition: transitions.base },
   },
   pop: {
     hidden: { opacity: 0, scale: 0.9 },
-    show:   { opacity: 1, scale: 1, transition: springs.soft },
+    show: { opacity: 1, scale: 1, transition: springs.soft },
   },
   stagger: {
     hidden: {},
-    show:   { transition: { staggerChildren: 0.075 } },
+    show: { transition: { staggerChildren: 0.075 } },
   },
   enlargeAppear: {
     hidden: {},
     show: {
-      "opacity": ["0","1"],
-      "transform": ["scale(0.75) rotate(-90deg)","scale(1) rotate(0deg)"],
+      opacity: ["0", "1"],
+      transform: ["scale(0.75) rotate(-90deg)", "scale(1) rotate(0deg)"],
       transition: transitions.base,
     },
   },

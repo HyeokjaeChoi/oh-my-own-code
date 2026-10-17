@@ -10,9 +10,9 @@ Implementation capture path, origin, state, checked dimensions, and unobserved s
 
 ## Findings
 
-| Location | User impact | Evidence | Proposed fix | Status |
-|---|---|---|---|---|
-| TBD | TBD | running app or accessible implementation capture | TBD | Unverified |
+| Location | User impact | Evidence                                         | Proposed fix | Status     |
+| -------- | ----------- | ------------------------------------------------ | ------------ | ---------- |
+| TBD      | TBD         | running app or accessible implementation capture | TBD          | Unverified |
 
 ## If tokens or handoff change
 

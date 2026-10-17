@@ -152,6 +152,25 @@ export function FileExplorer({ workspaceId }: { workspaceId: string }) {
     return actions.closeFiles;
   }, [actions, workspaceId]);
   const parent = listing?.path.split("/").slice(0, -1).join("/") ?? "";
+  const filePath = useWorkbenchSelector((s) => s.workspaceFile.path);
+  const editable = Boolean(preview) && preview?.path === filePath;
+  const previewNode = preview ? (
+    <section aria-label="파일 내용" className={styles.preview}>
+      {!editable && (
+        <p className={styles.previewPath}>
+          <PathText path={preview.path} />
+        </p>
+      )}
+      {preview.truncated && (
+        <p role="status" className={styles.note}>
+          파일 크기 제한으로 앞부분만 표시합니다.
+        </p>
+      )}
+      <pre className={`${styles.content} file-content`} tabIndex={0}>
+        {preview.content || "(빈 파일)"}
+      </pre>
+    </section>
+  ) : undefined;
   return (
     <section
       className={`${styles.explorer} file-explorer`}
@@ -258,22 +277,11 @@ export function FileExplorer({ workspaceId }: { workspaceId: string }) {
           </li>
         ))}
       </ul>
-      <WorkspaceFileEditor
-        view={
-          preview ? (
-            <section aria-label="파일 내용" className={styles.preview}>
-              {preview.truncated && (
-                <p role="status" className={styles.note}>
-                  파일 크기 제한으로 앞부분만 표시합니다.
-                </p>
-              )}
-              <pre className={`${styles.content} file-content`} tabIndex={0}>
-                {preview.content || "(빈 파일)"}
-              </pre>
-            </section>
-          ) : undefined
-        }
-      />
+      {/* The host may refuse a path for editing: then only the read-only preview shows. */}
+      {preview && !editable && previewNode}
+      {(editable || filePath || !preview) && (
+        <WorkspaceFileEditor view={editable ? previewNode : undefined} />
+      )}
     </section>
   );
 }

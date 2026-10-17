@@ -10,25 +10,25 @@
 // Generated: 2026-09-26T08:08:40.438Z
 
 export type Hex = `#${string}`;
-export type Px  = `${number}px`;
-export type Ms  = `${number}ms`;
+export type Px = `${number}px`;
+export type Ms = `${number}ms`;
 
 export type ColorRole = never;
-export type ColorHex  = '#8e8ea0' | '#000000';
+export type ColorHex = "#8e8ea0" | "#000000";
 export type ColorToken = ColorRole | ColorHex;
 
-export type FontFamilyToken = 'Arial';
-export type FontSizeToken   = never;
-export type FontWeightToken = '400' | '700';
+export type FontFamilyToken = "Arial";
+export type FontSizeToken = never;
+export type FontWeightToken = "400" | "700";
 
-export type SpacingToken = '8px' | '32px';
+export type SpacingToken = "8px" | "32px";
 
-export type RadiusToken = '5px';
+export type RadiusToken = "5px";
 
 export type DurationToken = never;
-export type EasingToken   = never;
+export type EasingToken = never;
 
-export type MaterialLanguage = 'flat';
+export type MaterialLanguage = "flat";
 
 export interface DesignTokens {
   color: { [role in ColorRole]: ColorHex };
@@ -38,10 +38,10 @@ export interface DesignTokens {
     weight: FontWeightToken;
   };
   spacing: ReadonlyArray<SpacingToken>;
-  radius:  ReadonlyArray<RadiusToken>;
+  radius: ReadonlyArray<RadiusToken>;
   motion: {
     duration: ReadonlyArray<DurationToken>;
-    easing:   ReadonlyArray<EasingToken>;
+    easing: ReadonlyArray<EasingToken>;
   };
 }
 

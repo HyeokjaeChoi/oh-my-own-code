@@ -9,7 +9,7 @@
 
 /** Easing curves extracted from the live page, as WAAPI easing strings. */
 export const easings = {
-  standard: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+  standard: "cubic-bezier(0.25, 0.1, 0.25, 1)",
 };
 
 /** Duration presets (milliseconds), extracted from the live page. */
@@ -21,14 +21,18 @@ export const durations = {
 
 /** @keyframes blocks reconstructed as WAAPI keyframe arrays. */
 export const keyframes = {
-  enlargeAppear: [{"opacity":"0","transform":"scale(0.75) rotate(-90deg)","offset":0},{"opacity":"1","transform":"scale(1) rotate(0deg)","offset":1}],
+  enlargeAppear: [
+    { opacity: "0", transform: "scale(0.75) rotate(-90deg)", offset: 0 },
+    { opacity: "1", transform: "scale(1) rotate(0deg)", offset: 1 },
+  ],
 };
 
 /** Honours the user's reduced-motion preference. */
 export const prefersReducedMotion = () =>
-  typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  typeof matchMedia === "function" &&
+  matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const _timing = { duration: 300, easing: easings.standard, fill: 'both' };
+const _timing = { duration: 300, easing: easings.standard, fill: "both" };
 
 function _animate(el, frames, opts = {}) {
   const timing = { ..._timing, ...opts };
@@ -38,11 +42,43 @@ function _animate(el, frames, opts = {}) {
 
 /** Animate-on-call helpers. Each returns the live Animation (await `.finished`). */
 export const animations = {
-  fadeIn: (el, opts = {}) => _animate(el, [{ opacity: 0 }, { opacity: 1 }], opts),
-  fadeOut: (el, opts = {}) => _animate(el, [{ opacity: 1 }, { opacity: 0 }], opts),
-  slideUp: (el, opts = {}) => _animate(el, [{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'translateY(0)' }], opts),
-  slideDown: (el, opts = {}) => _animate(el, [{ opacity: 0, transform: 'translateY(-16px)' }, { opacity: 1, transform: 'translateY(0)' }], opts),
-  scaleIn: (el, opts = {}) => _animate(el, [{ opacity: 0, transform: 'scale(0.96)' }, { opacity: 1, transform: 'scale(1)' }], opts),
+  fadeIn: (el, opts = {}) =>
+    _animate(el, [{ opacity: 0 }, { opacity: 1 }], opts),
+  fadeOut: (el, opts = {}) =>
+    _animate(el, [{ opacity: 1 }, { opacity: 0 }], opts),
+  slideUp: (el, opts = {}) =>
+    _animate(
+      el,
+      [
+        { opacity: 0, transform: "translateY(16px)" },
+        { opacity: 1, transform: "translateY(0)" },
+      ],
+      opts,
+    ),
+  slideDown: (el, opts = {}) =>
+    _animate(
+      el,
+      [
+        { opacity: 0, transform: "translateY(-16px)" },
+        { opacity: 1, transform: "translateY(0)" },
+      ],
+      opts,
+    ),
+  scaleIn: (el, opts = {}) =>
+    _animate(
+      el,
+      [
+        { opacity: 0, transform: "scale(0.96)" },
+        { opacity: 1, transform: "scale(1)" },
+      ],
+      opts,
+    ),
 };
 
-export default { easings, durations, keyframes, animations, prefersReducedMotion };
+export default {
+  easings,
+  durations,
+  keyframes,
+  animations,
+  prefersReducedMotion,
+};

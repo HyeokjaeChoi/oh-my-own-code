@@ -25,16 +25,16 @@
 
 브라우저 요청은 아래 경로별 정책표를 사용한다. 경로 분기는 고정 allowlist에만 일치하며 한 경로의 예외를 다른 endpoint나 임의 URL에 전파하지 않는다.
 
-| 종류 | 예시 method/path | Origin | Capability | 동작 |
-|---|---|---|---|---|
-| 초기 trusted document | production `GET/HEAD /` | 허용 Origin이면 정확히 일치; Origin 생략 시 `Sec-Fetch-Site: none`, `Sec-Fetch-Mode: navigate`, `Sec-Fetch-Dest: document` 모두 필수 | 불필요 | 해당 metadata를 만족하는 top-level 문서만 정적 반환; cross-site link 차단 |
-| 정적 asset | production `GET/HEAD /assets/<manifest-path>` | 허용 Origin이면 정확히 일치; 생략 시 `Sec-Fetch-Site: same-origin`, mode는 `same-origin`, `cors`, `no-cors` 중 하나, dest는 `script`, `style`, `image`, `font` 중 하나 | 불필요 | manifest 정적 자원만 반환; API handler 진입 금지 |
-| CORS preflight | `OPTIONS /api/v1/<fixed-route>` | 단일 허용 Origin 필수 | 불필요 | route에 허용된 method/header만 최소 CORS 응답, 상태 변경 없음 |
-| Pairing | `POST /api/v1/pair` | 단일 허용 Origin 필수 | bootstrap code | 일회 교환; 원자 소비 후 읽기 capability 발급 |
-| Revoke/heartbeat | `POST /api/v1/pair/revoke`, `/heartbeat` | 단일 허용 Origin 필수 | 해당 tab capability | control-plane 예외: 해당 capability 폐기 또는 인증된 activity만 기록 |
-| 일반 read | 명시된 `GET/HEAD /api/v1/...` | 허용 Origin은 정확히 일치; 생략은 `Sec-Fetch-Site: same-origin`인 production same-origin 요청만 | 필수 | schema 검증된 읽기만 실행 |
-| Event stream | `GET /api/v1/events` | 일반 read와 동일: allowlisted Origin 일치 또는 production `same-origin` Fetch Metadata 생략 예외 | 필수 | 인증 read stream, 만료 시 종료 |
-| domain mutation/미등록 경로 | 모든 기타 쓰기·실행 요청 | 적용 가능한 Host/Origin 검사 후 | 있어도 불허 | `MUTATION_DENIED` 또는 `FEATURE_DISABLED`, 부작용 0회 |
+| 종류                        | 예시 method/path                              | Origin                                                                                                                                                                 | Capability          | 동작                                                                      |
+| --------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ------------------------------------------------------------------------- |
+| 초기 trusted document       | production `GET/HEAD /`                       | 허용 Origin이면 정확히 일치; Origin 생략 시 `Sec-Fetch-Site: none`, `Sec-Fetch-Mode: navigate`, `Sec-Fetch-Dest: document` 모두 필수                                   | 불필요              | 해당 metadata를 만족하는 top-level 문서만 정적 반환; cross-site link 차단 |
+| 정적 asset                  | production `GET/HEAD /assets/<manifest-path>` | 허용 Origin이면 정확히 일치; 생략 시 `Sec-Fetch-Site: same-origin`, mode는 `same-origin`, `cors`, `no-cors` 중 하나, dest는 `script`, `style`, `image`, `font` 중 하나 | 불필요              | manifest 정적 자원만 반환; API handler 진입 금지                          |
+| CORS preflight              | `OPTIONS /api/v1/<fixed-route>`               | 단일 허용 Origin 필수                                                                                                                                                  | 불필요              | route에 허용된 method/header만 최소 CORS 응답, 상태 변경 없음             |
+| Pairing                     | `POST /api/v1/pair`                           | 단일 허용 Origin 필수                                                                                                                                                  | bootstrap code      | 일회 교환; 원자 소비 후 읽기 capability 발급                              |
+| Revoke/heartbeat            | `POST /api/v1/pair/revoke`, `/heartbeat`      | 단일 허용 Origin 필수                                                                                                                                                  | 해당 tab capability | control-plane 예외: 해당 capability 폐기 또는 인증된 activity만 기록      |
+| 일반 read                   | 명시된 `GET/HEAD /api/v1/...`                 | 허용 Origin은 정확히 일치; 생략은 `Sec-Fetch-Site: same-origin`인 production same-origin 요청만                                                                        | 필수                | schema 검증된 읽기만 실행                                                 |
+| Event stream                | `GET /api/v1/events`                          | 일반 read와 동일: allowlisted Origin 일치 또는 production `same-origin` Fetch Metadata 생략 예외                                                                       | 필수                | 인증 read stream, 만료 시 종료                                            |
+| domain mutation/미등록 경로 | 모든 기타 쓰기·실행 요청                      | 적용 가능한 Host/Origin 검사 후                                                                                                                                        | 있어도 불허         | `MUTATION_DENIED` 또는 `FEATURE_DISABLED`, 부작용 0회                     |
 
 Event stream에는 일반 read와 같은 Origin/Fetch Metadata 규칙을 적용한다. Origin 없는 요청은 production same-origin에서 `Sec-Fetch-Site: same-origin`인 fetch만 허용하며 development origin의 정상 CORS fetch는 명시 허용된 Origin을 반드시 보내야 한다.
 
@@ -80,17 +80,17 @@ POST/기타 비안전 method에는 JSON content type, 제한된 body 크기와 s
 
 ### 안정된 거부 동작
 
-| 조건 | 오류 코드 예시 | 기대 동작 |
-|---|---|---|
-| peer 또는 Host가 비허용 | `HOST_DENIED` | 처리 전 거부, endpoint·상태 비노출 |
-| 초기 document/asset/read/stream에 정의한 Fetch Metadata 예외를 벗어난 Origin 누락·opaque·비허용 값 | `ORIGIN_DENIED` | 처리 전 거부, Origin 반사 금지 |
-| pairing 코드 없음/만료/재사용 | `BOOTSTRAP_INVALID` | capability 발급 없음; 실패 제한 적용 |
-| 해당 bootstrap code 5회 실패로 잠김 | `BOOTSTRAP_RATE_LIMITED` | 현재 code 폐기, 사용자가 launcher에서 새 code 발급 |
-| capability 누락/오류 | `AUTH_REQUIRED` | API 자료 제공 없이 거부 |
-| capability 만료/폐기 | `AUTH_EXPIRED` / `AUTH_REVOKED` | stream 종료 및 다시 pair하도록 안내; 무효 credential은 다른 tab을 폐기하지 않음 |
-| 잘못된 schema/method/body | `REQUEST_INVALID` | handler side effect 0회 |
-| 현재 범위에서 금지된 mutation | `MUTATION_DENIED` | SDK/process/filesystem 변경 0회 |
-| 기능 미구현 또는 비활성 | `FEATURE_DISABLED` | 기능이 실행된 것처럼 가장하지 않음 |
+| 조건                                                                                               | 오류 코드 예시                  | 기대 동작                                                                       |
+| -------------------------------------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------- |
+| peer 또는 Host가 비허용                                                                            | `HOST_DENIED`                   | 처리 전 거부, endpoint·상태 비노출                                              |
+| 초기 document/asset/read/stream에 정의한 Fetch Metadata 예외를 벗어난 Origin 누락·opaque·비허용 값 | `ORIGIN_DENIED`                 | 처리 전 거부, Origin 반사 금지                                                  |
+| pairing 코드 없음/만료/재사용                                                                      | `BOOTSTRAP_INVALID`             | capability 발급 없음; 실패 제한 적용                                            |
+| 해당 bootstrap code 5회 실패로 잠김                                                                | `BOOTSTRAP_RATE_LIMITED`        | 현재 code 폐기, 사용자가 launcher에서 새 code 발급                              |
+| capability 누락/오류                                                                               | `AUTH_REQUIRED`                 | API 자료 제공 없이 거부                                                         |
+| capability 만료/폐기                                                                               | `AUTH_EXPIRED` / `AUTH_REVOKED` | stream 종료 및 다시 pair하도록 안내; 무효 credential은 다른 tab을 폐기하지 않음 |
+| 잘못된 schema/method/body                                                                          | `REQUEST_INVALID`               | handler side effect 0회                                                         |
+| 현재 범위에서 금지된 mutation                                                                      | `MUTATION_DENIED`               | SDK/process/filesystem 변경 0회                                                 |
+| 기능 미구현 또는 비활성                                                                            | `FEATURE_DISABLED`              | 기능이 실행된 것처럼 가장하지 않음                                              |
 
 오류 응답은 request correlation ID만 허용하고 입력, 코드, bearer, 전체 경로, 원본 body를 포함하지 않는다. 거부 사유는 사용자에게 필요한 범위로 설명하되 내부 경로·credential 상태·서비스 구조를 공격자에게 과도하게 노출하지 않는다.
 
@@ -98,18 +98,18 @@ POST/기타 비안전 method에는 JSON content type, 제한된 body 크기와 s
 
 정적 설계 검토는 런타임 안전 증거가 아니다. 아래 라이브 시험은 별도의 승인된 구현 run에서 합성 fixture와 실제 브라우저/로컬 bridge를 대상으로 실행하고, 요청·거부·side-effect counter·process/API 상태를 함께 기록해야 한다.
 
-| ID | 시험 | 기대 결과 | 필요한 증거 |
-|---|---|---|---|
-| BB-01 | launcher가 직접 연 초기 document(`none/navigate/document`), same-origin asset(fetch metadata allowlist), Origin 생략 same-origin GET/HEAD, 유효 capability read/stream | static 자원은 credential 없이 제공; API read/stream은 browser `same-origin` metadata와 bearer로 성공 | browser 생성 headers, document/asset/API 응답, capability scope, side effect 0 |
-| BB-02 | endpoint별 금지된 누락, `null`, opaque, 잘못된 형식, 중복, 다른 port/host Origin 및 cross-site navigation | `ORIGIN_DENIED`; 상태 비노출. BB-01에 지정된 static/API 생략 예외만 허용 | request class별 raw headers, 응답 코드, handler 진입/효과 counter 0 |
-| BB-03 | `localhost`, 외부 Host alias, 다른 port, userinfo, 중복 Host 및 비-loopback peer | 연결/요청 거부 | 실제 bound address와 peer/Host 관측, 효과 0 |
-| BB-04 | 외부 Origin simple form/fetch/preflight 및 DNS-rebinding Host; 명시 허용된 dev Origin preflight와 credential-bearing read | 외부 origin 거부; 허용 dev preflight만 최소 header/method로 성공하고 유효 capability 없는 read는 거부 | browser network log, exact CORS headers, admission 및 효과 관측 |
-| BB-05 | bootstrap code 만료·재사용·5회 실패·재발급·동시 교환·응답 유실 후 재시도 | 정확히 하나만 소비/발급; 실패 5회면 해당 code만 잠김; 유실은 새 수동 pairing 필요 | 상태 전이·요청 순서, capability hash, code 로그 부재 |
-| BB-06 | query/fragment/history/referrer/cookie/storage/cache/service-worker/bundle/log 유출 검사 | 코드와 capability가 지정 위치 모두에 없음 | 브라우저 저장소·history·network·bundle·log 검사 |
-| BB-07 | missing/wrong/expired/revoked bearer, 무자격 실패와 다른 tab, idle 중 stream, heartbeat, 유휴/절대 만료, bridge restart, 한 tab revoke와 다른 tab 동시 read | revoke 성공 응답 후 target tab 차단/stream 종료, 다른 tab capability는 유효; 만료 stream 다음 연결은 `AUTH_EXPIRED` | capability별 상태, revoke receipt, expiry/stream close, effect 0 |
+| ID    | 시험                                                                                                                                                                                                                               | 기대 결과                                                                                                                                                                              | 필요한 증거                                                                                                                 |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| BB-01 | launcher가 직접 연 초기 document(`none/navigate/document`), same-origin asset(fetch metadata allowlist), Origin 생략 same-origin GET/HEAD, 유효 capability read/stream                                                             | static 자원은 credential 없이 제공; API read/stream은 browser `same-origin` metadata와 bearer로 성공                                                                                   | browser 생성 headers, document/asset/API 응답, capability scope, side effect 0                                              |
+| BB-02 | endpoint별 금지된 누락, `null`, opaque, 잘못된 형식, 중복, 다른 port/host Origin 및 cross-site navigation                                                                                                                          | `ORIGIN_DENIED`; 상태 비노출. BB-01에 지정된 static/API 생략 예외만 허용                                                                                                               | request class별 raw headers, 응답 코드, handler 진입/효과 counter 0                                                         |
+| BB-03 | `localhost`, 외부 Host alias, 다른 port, userinfo, 중복 Host 및 비-loopback peer                                                                                                                                                   | 연결/요청 거부                                                                                                                                                                         | 실제 bound address와 peer/Host 관측, 효과 0                                                                                 |
+| BB-04 | 외부 Origin simple form/fetch/preflight 및 DNS-rebinding Host; 명시 허용된 dev Origin preflight와 credential-bearing read                                                                                                          | 외부 origin 거부; 허용 dev preflight만 최소 header/method로 성공하고 유효 capability 없는 read는 거부                                                                                  | browser network log, exact CORS headers, admission 및 효과 관측                                                             |
+| BB-05 | bootstrap code 만료·재사용·5회 실패·재발급·동시 교환·응답 유실 후 재시도                                                                                                                                                           | 정확히 하나만 소비/발급; 실패 5회면 해당 code만 잠김; 유실은 새 수동 pairing 필요                                                                                                      | 상태 전이·요청 순서, capability hash, code 로그 부재                                                                        |
+| BB-06 | query/fragment/history/referrer/cookie/storage/cache/service-worker/bundle/log 유출 검사                                                                                                                                           | 코드와 capability가 지정 위치 모두에 없음                                                                                                                                              | 브라우저 저장소·history·network·bundle·log 검사                                                                             |
+| BB-07 | missing/wrong/expired/revoked bearer, 무자격 실패와 다른 tab, idle 중 stream, heartbeat, 유휴/절대 만료, bridge restart, 한 tab revoke와 다른 tab 동시 read                                                                        | revoke 성공 응답 후 target tab 차단/stream 종료, 다른 tab capability는 유효; 만료 stream 다음 연결은 `AUTH_EXPIRED`                                                                    | capability별 상태, revoke receipt, expiry/stream close, effect 0                                                            |
 | BB-08 | embedded initial URL의 비허용 scheme/trusted UI origin, sandbox top-navigation/popup 시도, iframe self-navigation 후 trusted UI URL 응답, UI framing, external-open의 최초 URL 검사와 이후 navigation, bridge fetch/form/WebSocket | 금지된 최초 URL/top-navigation/popup은 차단; iframe이 trusted UI를 렌더링하지 못함; external 이후 이동은 앱이 통제하지 않음을 확인; 모든 출처 불일치 bridge 요청은 거부, side effect 0 | 실제 iframe sandbox/CSP/origin, redirect chain, browser frame tree와 network log, bridge admission 및 API/파일/process 전후 |
-| BB-09 | 권한 있는 UI의 중복/잘못된 content type/body size/지원하지 않는 method | `REQUEST_INVALID`; mutation 0 | 요청 schema, handler admission, SDK/process/filesystem counter 0 |
-| BB-10 | 사용 중인 스트림 reconnect 및 cursor 누락 | snapshot 대조와 `history_gap`; 누락 event를 꾸며내지 않음 | app sequence, reconnect cursor, snapshot 및 UI 상태 |
+| BB-09 | 권한 있는 UI의 중복/잘못된 content type/body size/지원하지 않는 method                                                                                                                                                             | `REQUEST_INVALID`; mutation 0                                                                                                                                                          | 요청 schema, handler admission, SDK/process/filesystem counter 0                                                            |
+| BB-10 | 사용 중인 스트림 reconnect 및 cursor 누락                                                                                                                                                                                          | snapshot 대조와 `history_gap`; 누락 event를 꾸며내지 않음                                                                                                                              | app sequence, reconnect cursor, snapshot 및 UI 상태                                                                         |
 
 BB-01부터 BB-10까지는 현재 설계 상태에서는 **미실행**이다. BBS-1..3 통과나 설계 리뷰는 S-08, AC-10 또는 OS 수준의 격리를 완료했다는 뜻이 아니다. Canary나 실제 SDK 호출은 이 설계 검증의 일부가 아니다.
 
