@@ -45,3 +45,30 @@ export function keepAutoModel(
     | undefined,
   id: string,
 ): boolean;
+export const UNAVAILABLE_MODELS_STORAGE_KEY: string;
+export const FREE_ROUTER: Readonly<{ providerId: string; modelId: string }>;
+interface RouterEntry {
+  id: string;
+  providerId?: string;
+  modelId?: string;
+  free?: boolean;
+}
+export function findFreeRouter<T extends RouterEntry>(
+  catalogModels: { status: string; entries?: readonly T[] } | undefined,
+): T | undefined;
+export function showFirstRun(
+  list: ProviderList | undefined,
+  messageCount: number,
+): boolean;
+export function freeFailure(
+  entries: readonly RouterEntry[],
+  model: { providerId: string; id: string } | undefined,
+  status: number | undefined,
+): { kind: "unavailable" | "limit"; id?: string } | undefined;
+export function loadUnavailableModels(
+  storage?: Pick<Storage, "getItem">,
+): string[];
+export function markModelUnavailable(
+  id: string,
+  storage?: Pick<Storage, "getItem" | "setItem">,
+): string[];

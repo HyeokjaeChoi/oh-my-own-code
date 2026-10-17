@@ -12,6 +12,12 @@ export {
   pushRecentModel,
   loadFreeOnly,
   saveFreeOnly,
+  FREE_ROUTER,
+  findFreeRouter,
+  showFirstRun,
+  freeFailure,
+  loadUnavailableModels,
+  markModelUnavailable,
 } from "./index.mjs";
 export type { ProviderRow, ProviderList } from "./index.mjs";
 export type ProviderRequest =

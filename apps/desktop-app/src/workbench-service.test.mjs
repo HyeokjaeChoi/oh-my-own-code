@@ -12,7 +12,10 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createWorkbenchService } from "./workbench-service.mjs";
+import {
+  createWorkbenchService,
+  projectMessages,
+} from "./workbench-service.mjs";
 import { BASELINE_POLICY } from "./workbench-contract.mjs";
 import { MAX_FILE_BYTES, defaultFolderName } from "./host/workbench-files.mjs";
 
@@ -2470,4 +2473,26 @@ test("checkpoint: another session starting during the confirmation refuses the r
   const result = await made.revert("session.revert");
   assert.equal(result.code, "BUSY");
   assert.equal(made.rec.stage.length, 0);
+});
+test("a failed assistant turn projects only its numeric HTTP status", () => {
+  const turn = (error) => ({
+    id: "a",
+    type: "assistant",
+    content: [],
+    time: { created: 1 },
+    ...(error ? { error } : {}),
+  });
+  const [failed, plain, odd] = projectMessages([
+    turn({
+      type: "provider.invalid-request",
+      status: 404,
+      message: "key sk-secret at http://x",
+    }),
+    turn(),
+    turn({ type: "x", status: "404", message: "m" }),
+  ]);
+  assert.deepEqual(failed.failure, { status: 404 });
+  assert.equal(JSON.stringify(failed).includes("sk-secret"), false);
+  assert.equal("failure" in plain, false);
+  assert.equal("failure" in odd, false);
 });

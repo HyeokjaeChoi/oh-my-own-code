@@ -1,8 +1,11 @@
+import { isFreeModel } from "../runtime-options/index.mjs";
+
 // Pure provider-settings helpers. The API key is only ever the argument of a
 // connect request; nothing here keeps, returns or formats it.
 export const DEFAULT_MODEL_STORAGE_KEY = "omoc.defaultModel.v1";
 export const RECENT_MODELS_STORAGE_KEY = "omoc.recentModels.v1";
 export const FREE_ONLY_STORAGE_KEY = "omoc.modelFreeOnly.v1";
+export const UNAVAILABLE_MODELS_STORAGE_KEY = "omoc.unavailableModels.v1";
 export const PROVIDER_ERRORS = Object.freeze({
   INVALID_KEY: "API 키가 올바르지 않습니다. 키를 다시 확인해 주세요.",
   INVALID_REQUEST: "입력값이 올바르지 않습니다.",
@@ -117,3 +120,66 @@ export function saveFreeOnly(value, storage = globalThis.localStorage) {
 export const keepAutoModel = (catalogModels, id) =>
   catalogModels?.status !== "available" ||
   catalogModels.entries.some((entry) => entry.id === id);
+
+// First run: the catalog's own free router is the model a fresh key lands on.
+export const FREE_ROUTER = Object.freeze({
+  providerId: "openrouter",
+  modelId: "openrouter/free",
+});
+export const findFreeRouter = (catalogModels) =>
+  catalogModels?.status === "available"
+    ? catalogModels.entries.find(
+        (entry) =>
+          entry.providerId === FREE_ROUTER.providerId &&
+          entry.modelId === FREE_ROUTER.modelId,
+      )
+    : undefined;
+// The first-run card shows on an empty conversation only once the provider
+// list is known and nothing is connected (an unknown list never shows it).
+export const showFirstRun = (list, messageCount) =>
+  Boolean(list) &&
+  messageCount === 0 &&
+  !list.providers.some((provider) => provider.connected);
+
+// A failed turn on a free model: 404 = no longer served for free, 429 = rate
+// limit. Decided from the structured HTTP status only, never from message text,
+// and a paid model never gets the free-model advice.
+export function freeFailure(entries, model, status) {
+  const kind = status === 404 ? "unavailable" : status === 429 ? "limit" : "";
+  if (!kind || !model) return undefined;
+  const entry = entries.find(
+    (e) => e.providerId === model.providerId && e.modelId === model.id,
+  );
+  const free = entry
+    ? entry.free === true
+    : isFreeModel({ providerID: model.providerId, id: model.id });
+  return free ? { kind, ...(entry ? { id: entry.id } : {}) } : undefined;
+}
+
+// Models that answered "not available for free", remembered per profile in the
+// same renderer storage as the picker memory (catalog ids only).
+export function loadUnavailableModels(storage = globalThis.localStorage) {
+  try {
+    const list = JSON.parse(
+      storage?.getItem(UNAVAILABLE_MODELS_STORAGE_KEY) ?? "[]",
+    );
+    return Array.isArray(list)
+      ? list
+          .filter((id) => typeof id === "string" && /^[a-f0-9]{64}$/u.test(id))
+          .slice(0, 50)
+      : [];
+  } catch {
+    return [];
+  }
+}
+export function markModelUnavailable(id, storage = globalThis.localStorage) {
+  const current = loadUnavailableModels(storage);
+  if (current.includes(id)) return current;
+  const next = [id, ...current].slice(0, 50);
+  try {
+    storage?.setItem(UNAVAILABLE_MODELS_STORAGE_KEY, JSON.stringify(next));
+  } catch {
+    // Blocked storage: the mark lasts for this session only.
+  }
+  return next;
+}

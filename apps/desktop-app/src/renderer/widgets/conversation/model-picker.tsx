@@ -17,7 +17,13 @@ import {
 import styles from "./conversation.module.css";
 
 type Entry = WorkbenchCatalog["models"]["entries"][number];
-type Row = { id: string; name: string; hint?: string; free?: boolean };
+type Row = {
+  id: string;
+  name: string;
+  hint?: string;
+  free?: boolean;
+  unavailable?: boolean;
+};
 
 type Props = {
   entries: Entry[];
@@ -25,6 +31,8 @@ type Props = {
   variant: string;
   variantCleared: boolean;
   disabled: boolean;
+  // Catalog ids that answered "not available for free"; still selectable.
+  unavailable: readonly string[];
   onModel(_id: string): void;
   onVariant(_variant: string): void;
   close(): void;
@@ -67,6 +75,7 @@ export function ModelPicker(props: Props) {
           ? { hint: entry.provider }
           : {}),
         ...(entry.free ? { free: true } : {}),
+        ...(props.unavailable.includes(entry.id) ? { unavailable: true } : {}),
       }),
     ),
   }));
@@ -130,7 +139,11 @@ export function ModelPicker(props: Props) {
       >
         <span className={styles.modelName}>{row.name}</span>
         {row.hint && <span className={styles.modelHint}>{row.hint}</span>}
-        {row.free && <span className={styles.freeBadge}>무료</span>}
+        {row.unavailable ? (
+          <span className={styles.unavailableTag}>사용 불가</span>
+        ) : (
+          row.free && <span className={styles.freeBadge}>무료</span>
+        )}
         <Check
           size={16}
           className={styles.modelCheck}

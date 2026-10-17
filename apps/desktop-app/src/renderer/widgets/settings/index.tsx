@@ -39,6 +39,10 @@ import {
   ShortcutsSettings,
   usePreferences,
 } from "../../features/preferences/index.js";
+import {
+  noProviderConnected,
+  useProviderList,
+} from "../../features/onboarding/index.js";
 import { NotificationList } from "../../features/notifications/index.js";
 import { AutomationSettings } from "../../features/automation/index.js";
 import { DataSettings } from "../../features/data-transfer/index.js";
@@ -89,6 +93,9 @@ export function SettingsHost({
   const workspace = useWorkbenchSelector((s) =>
     s.lists.workspaces.find((w) => w.id === s.selection.workspaceId),
   );
+  const providerList = useProviderList();
+  const noProvider = useRef(false);
+  noProvider.current = noProviderConnected(providerList);
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState<SettingsPage>("general");
   const [sub, setSub] = useState<ExtensionSub | null>(null);
@@ -135,7 +142,10 @@ export function SettingsHost({
           next ??
             (detail && PAGES.has(detail)
               ? (detail as SettingsPage)
-              : "general"),
+              : // With nothing connected, the only useful page is 모델.
+                noProvider.current
+                ? "models"
+                : "general"),
           next === "extensions" && subDetail && subDetail in SUB_TITLES
             ? (subDetail as ExtensionSub)
             : null,
