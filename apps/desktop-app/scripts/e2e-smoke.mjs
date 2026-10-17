@@ -665,26 +665,28 @@ try {
     )
     .toBe("connected");
   assert.equal(snapshot.serverVersion, "2.0.18");
-  // No provider in this profile: the composer says why sending cannot work
-  // and links to Settings -> 모델.
-  const noModels = page.locator("[data-no-models]");
-  await expect(noModels).toBeVisible({ timeout: 60_000 });
-  await noModels.getByRole("button", { name: "설정 열기" }).click();
+  // No provider in this profile: the first-run card replaces the standing
+  // no-models notice and links to Settings -> 모델 ("다른 제공자 연결").
+  const firstRunCard = page.locator('[data-first-run="form"]');
+  await expect(firstRunCard).toBeVisible({ timeout: 60_000 });
+  await expect(page.locator("[data-no-models]")).toHaveCount(0);
+  await firstRunCard.getByRole("button", { name: "다른 제공자 연결" }).click();
   await expect(page.getByRole("region", { name: "제공자" })).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("region", { name: "제공자" })).toHaveCount(0);
   // Sending without a provider is rejected by the host (AUTH_REQUIRED with a
   // receipt): the reason stays visible after the post-send snapshot, shown once
-  // (the no-models alert covers it), and the typed text is kept for a retry.
+  // (the standing notice is hidden under the card), and the typed text is kept.
   const composer = page.getByRole("textbox", { name: "메시지 작성" });
   await composer.fill("거절 확인");
   await composer.press("Enter");
   await page.waitForTimeout(1500);
-  const reasons = page
-    .locator("[data-no-models]")
-    .filter({ hasText: "모델 제공자" });
+  const reasons = page.locator('[data-reject-notice="AUTH_REQUIRED"]');
   await expect(reasons).toHaveCount(1);
   await expect(reasons).toBeVisible();
+  await expect(reasons).toContainText("모델 제공자");
+  await expect(page.locator("[data-no-models]")).toHaveCount(0);
+  await expect(firstRunCard).toBeVisible();
   await expect(composer).toHaveValue("거절 확인");
   await composer.fill("");
   const rendererCapabilities = await page.evaluate(() => ({

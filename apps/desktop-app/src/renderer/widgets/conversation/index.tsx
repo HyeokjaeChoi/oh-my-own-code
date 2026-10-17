@@ -523,6 +523,12 @@ export function Conversation(props: Props) {
   const firstRun =
     showFirstRun(providerList, messages.length) ||
     (cardHeld && messages.length === 0);
+  // The standing alert waits for the provider list (no flash) and yields to the first-run card.
+  const noModelsShown =
+    providerList !== undefined &&
+    !firstRun &&
+    props.catalog?.models.status === "available" &&
+    props.catalog.models.entries.length === 0;
   const [unavailable, setUnavailable] = useState(loadUnavailableModels);
   // Free-model failures come from the structured HTTP status of the turn.
   const failures = useMemo(() => {
@@ -930,6 +936,7 @@ export function Conversation(props: Props) {
               </div>
             )}
             <ConversationContextControls
+              noModelsShown={noModelsShown}
               attachPanel={(body) => (
                 <PopoverPanel
                   id={attachId}
@@ -1421,26 +1428,24 @@ export function Conversation(props: Props) {
                 <PermissionPolicy className={styles.runtimeReport} />
               </PopoverPanel>
             </div>
-            {!firstRun &&
-              props.catalog?.models.status === "available" &&
-              props.catalog.models.entries.length === 0 && (
-                <Notice
-                  tone="danger"
-                  role="status"
-                  data-no-models
-                  action={
-                    <Button
-                      size="compact"
-                      onClick={() => openSettingsPage("models")}
-                    >
-                      설정 열기
-                    </Button>
-                  }
-                >
-                  사용할 수 있는 모델이 없어 메시지를 보낼 수 없습니다. 설정의
-                  모델 제공자에서 제공자를 연결하세요.
-                </Notice>
-              )}
+            {noModelsShown && (
+              <Notice
+                tone="danger"
+                role="status"
+                data-no-models
+                action={
+                  <Button
+                    size="compact"
+                    onClick={() => openSettingsPage("models")}
+                  >
+                    설정 열기
+                  </Button>
+                }
+              >
+                사용할 수 있는 모델이 없어 메시지를 보낼 수 없습니다. 설정의
+                모델 제공자에서 제공자를 연결하세요.
+              </Notice>
+            )}
             {invalidSelection && (
               <Notice tone="danger">
                 선택한 에이전트, 모델 또는 추론 강도를 사용할 수 없습니다. 다시
