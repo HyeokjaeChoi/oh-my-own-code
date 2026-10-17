@@ -1,25 +1,263 @@
 .review {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   min-width: 0;
   max-width: 100%;
-  margin-block: 24px;
-  padding-block: 16px;
+  min-height: 100%;
   color: var(--omoc-semantic-color-text-primary);
-  background: var(--omoc-semantic-color-surface);
-  font-size: 13px;
-  line-height: 1.6;
+  background: var(--omoc-semantic-color-panel);
+  font-size: var(--omoc-semantic-type-size-compact);
+  line-height: 1.5;
   overflow-wrap: anywhere;
   user-select: text;
 }
-.review :is(h3, h4, h5, legend) {
-  font-size: 13px;
+.review :is(h3, h4, h5, legend),
+.dock :is(h3, h4, h5, legend) {
+  font-size: var(--omoc-semantic-type-size-compact);
   font-weight: 600;
+  margin: 0;
+}
+.review p,
+.dock p {
+  margin: 0;
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+.spacer {
+  flex: 1;
+}
+.review .iconButton {
+  flex-shrink: 0;
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.branch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  margin-inline-start: 6px;
+  padding: 2px 8px;
+  border-radius: var(--omoc-semantic-radius-badge);
+  background: var(--omoc-semantic-color-fill-subtle);
+  color: var(--omoc-semantic-color-text-secondary);
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.status {
+  font-size: var(--omoc-semantic-type-size-caption);
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 2px;
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.group span {
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.none {
+  font-size: var(--omoc-semantic-type-size-caption);
+  color: var(--omoc-semantic-color-text-tertiary);
+}
+.rows {
+  list-style: none;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.rows li {
+  min-width: 0;
+  max-width: 100%;
+}
+.review .fileRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--omoc-semantic-radius-control);
+  background: transparent;
+  color: var(--omoc-semantic-color-text-primary);
+  font: inherit;
+  font-size: var(--omoc-semantic-type-size-compact);
+  text-align: left;
+  cursor: pointer;
+}
+.review .fileRow:hover:not(:disabled) {
+  background: var(--omoc-semantic-color-fill-hover);
+}
+.review .fileRow[aria-pressed="true"] {
+  background: var(--omoc-semantic-color-fill-subtle);
+  font-weight: 600;
+}
+.review .fileRow[aria-pressed="true"]::before {
+  content: none;
+}
+.fileRow:focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: -2px;
+}
+.letter {
+  flex: 0 0 14px;
+  text-align: center;
+  font: 600 var(--omoc-semantic-type-size-code)
+    var(--omoc-semantic-type-family-code);
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.letter[data-letter="A"] {
+  color: var(--omoc-semantic-color-success-foreground);
+}
+.letter[data-letter="D"],
+.letter[data-letter="!"] {
+  color: var(--omoc-semantic-color-danger-foreground);
+}
+.counts {
+  flex-shrink: 0;
+  margin-inline-start: auto;
+  font: var(--omoc-semantic-type-size-code)
+    var(--omoc-semantic-type-family-code);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.add {
+  color: var(--omoc-semantic-color-success-foreground);
+}
+.del {
+  color: var(--omoc-semantic-color-danger-foreground);
+}
+.diffView {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.diffView[hidden],
+.list[hidden],
+.tray > [hidden] {
+  display: none;
+}
+.diffHead {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.diffPath {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.chip {
+  flex: 1 1 130px;
+  min-width: 0;
+}
+.gone {
+  display: none;
+}
+.patch {
+  min-width: 0;
+  max-width: 100%;
+  max-height: 60vh;
+  margin: 0;
+  padding: 4px 0;
+  overflow: auto;
+  border-radius: var(--omoc-semantic-radius-control);
+  background: var(--omoc-semantic-color-canvas);
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
+  tab-size: 4;
+}
+/* Gutter numbers come from data attributes, so the text stays the pure patch. */
+.line {
+  display: block;
+  position: relative;
+  padding-inline: 76px 8px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  min-height: 1.6em;
+}
+.line::before,
+.line::after {
+  position: absolute;
+  top: 0;
+  width: 32px;
+  text-align: right;
+  color: var(--omoc-semantic-color-text-tertiary);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+.line::before {
+  content: attr(data-old);
+  left: 4px;
+}
+.line::after {
+  content: attr(data-new);
+  left: 40px;
+}
+.line[data-kind="add"] {
+  background: var(--omoc-semantic-color-diff-add);
+}
+.line[data-kind="del"] {
+  background: var(--omoc-semantic-color-diff-remove);
+}
+.line[data-kind="hunk"] {
+  padding-block: 2px;
+  color: var(--omoc-semantic-color-text-secondary);
+  background: var(--omoc-semantic-color-fill-subtle);
+}
+.line[data-kind="meta"] {
+  display: none;
+}
+.diagnostics {
+  font-size: var(--omoc-semantic-type-size-caption);
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.diagnostics summary {
+  cursor: pointer;
+  min-height: 28px;
+  display: list-item;
+  align-content: center;
 }
 .metadata {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   min-width: 0;
   max-width: 100%;
-  margin-block: 12px;
+  margin-block: 8px;
 }
 .metadata dt {
   color: var(--omoc-semantic-color-text-secondary);
@@ -27,7 +265,9 @@
 .metadata dd {
   min-width: 0;
   margin: 0 0 6px;
-  font: 12px/1.6 var(--omoc-semantic-type-family-code);
+  color: var(--omoc-semantic-color-text-primary);
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   user-select: text;
@@ -38,7 +278,41 @@
   gap: 6px;
   min-width: 0;
 }
+/* Pinned to the panel's bottom edge; the open action section scrolls above the bar. */
+.dock {
+  font-size: var(--omoc-semantic-type-size-compact);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  user-select: text;
+  margin: auto -12px -12px;
+  background: var(--omoc-semantic-color-panel);
+}
+.tray {
+  padding-inline: 12px;
+}
+.tray > div:not([hidden]) {
+  padding-block: 8px;
+}
+/* The action bar sticks to the panel's bottom edge while an open section scrolls. */
+.footer {
+  position: sticky;
+  bottom: -12px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: var(--omoc-semantic-color-panel);
+  box-shadow: 0 -1px 0 var(--omoc-semantic-color-border-subtle);
+}
+.count {
+  flex: 1;
+  font-size: var(--omoc-semantic-type-size-caption);
+  color: var(--omoc-semantic-color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
 /* Pressed is also marked by a check, not only by fill and weight. */
+.dock button[aria-pressed="true"]::before,
 .review button[aria-pressed="true"]::before {
   content: "✓";
   margin-inline-end: 4px;
@@ -47,20 +321,15 @@
   .review button[aria-pressed="true"] {
     border-color: Highlight;
   }
+  .line[data-kind="add"],
+  .line[data-kind="del"] {
+    border-inline-start: 3px solid Highlight;
+  }
 }
 .review :is(.status, .patch):focus-visible {
   outline: var(--omoc-semantic-stroke-focus) solid
     var(--omoc-semantic-color-focus);
   outline-offset: var(--omoc-semantic-size-focus-gap);
-}
-.rows {
-  min-width: 0;
-  max-width: 100%;
-  padding-inline-start: 20px;
-}
-.rows li {
-  min-width: 0;
-  max-width: 100%;
 }
 .selection {
   display: grid;
@@ -68,21 +337,21 @@
   gap: 6px;
   min-width: 0;
   max-width: 100%;
-  margin: 12px 0;
+  margin: 8px 0;
   padding: 0;
   border: 0;
 }
-.patch {
-  min-width: 0;
-  max-width: 100%;
-  max-height: 480px;
-  overflow: auto;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  font: 12px/1.6 var(--omoc-semantic-type-family-code);
-  tab-size: 4;
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
-
 .indexPath {
   display: flex;
   align-items: flex-start;
@@ -101,7 +370,6 @@
   min-width: 0;
   user-select: text;
 }
-
 .selection textarea {
   resize: vertical;
   white-space: pre-wrap;
@@ -112,17 +380,18 @@
   max-width: 100%;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font: 12px/1.6 var(--omoc-semantic-type-family-code);
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
   user-select: text;
 }
+.dock :is(textarea, .commitMessage):focus-visible,
 .review :is(textarea, .commitMessage):focus-visible {
   outline: var(--omoc-semantic-stroke-focus) solid
     var(--omoc-semantic-color-focus);
   outline-offset: var(--omoc-semantic-size-focus-gap);
 }
-
-.review [data-git-branch-restore-preview],
-.review [data-git-branch-restore-result] {
+.dock [data-git-branch-restore-preview],
+.dock [data-git-branch-restore-result] {
   border-inline-start: 2px solid var(--omoc-semantic-color-border-default);
   padding-inline-start: 10px;
 }
