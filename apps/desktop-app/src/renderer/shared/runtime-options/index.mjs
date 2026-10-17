@@ -149,13 +149,14 @@ export function projectSessionSelection(info, sessionId) {
 }
 
 // Free = every cost tier of the model is priced 0 for input and output, or
-// the model is an OpenRouter free variant (":free" suffix, the free router).
+// the model is an OpenRouter free variant (only under that provider) (":free" suffix, the free router).
 // A missing or malformed cost never counts as free by itself.
 export const isFreeModel = (model) =>
   (Array.isArray(model?.cost) &&
     model.cost.length > 0 &&
     model.cost.every((tier) => tier?.input === 0 && tier?.output === 0)) ||
-  (typeof model?.id === "string" &&
+  (model?.providerID === "openrouter" &&
+    typeof model.id === "string" &&
     (model.id.endsWith(":free") || model.id === "openrouter/free"));
 
 // The variant a draft may keep after its model changes: only one the new model
@@ -216,3 +217,17 @@ export function groupModels(entries, { query, freeOnly, recent, selectedId }) {
   }
   return groups;
 }
+
+const VARIANT_LABELS = {
+  minimal: "최소",
+  low: "낮음",
+  medium: "보통",
+  high: "높음",
+  max: "최대",
+};
+// Reasoning levels read in Korean when known; any other id shows as reported.
+export const variantLabel = (id) =>
+  Object.hasOwn(VARIANT_LABELS, id) ? VARIANT_LABELS[id] : id;
+// The 무료 badge says it; a "(free)" suffix in the name would repeat it.
+export const modelDisplayName = (name) =>
+  name.replace(/\s*\(free\)\s*$/iu, "") || name;

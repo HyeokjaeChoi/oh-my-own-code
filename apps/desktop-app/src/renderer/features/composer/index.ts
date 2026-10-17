@@ -6,6 +6,7 @@ import {
 } from "../../entities/workbench/index.js";
 import { selectionKey } from "../../shared/projection/index.js";
 import {
+  keepAutoModel,
   loadDefaultModel,
   usableDefaultModel,
 } from "../../shared/providers/index.js";
@@ -51,7 +52,7 @@ export function useDefaultModel(workspaceId: string, sessionId: string) {
       const current = (state.drafts[key] ?? emptyDraft).model;
       const id = usableDefaultModel(state.catalog?.models, loadDefaultModel());
       if (auto && current === auto) {
-        if (id === auto || state.catalog?.models.status !== "available") return;
+        if (keepAutoModel(state.catalog?.models, auto)) return;
         auto = id;
         applied = Boolean(id);
         actions.options({ model: id });

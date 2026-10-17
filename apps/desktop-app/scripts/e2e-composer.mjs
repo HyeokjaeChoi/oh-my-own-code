@@ -71,7 +71,7 @@ export async function pickVariant(page, value) {
   if (!value && !(await panel.getByRole("radiogroup").count())) return panel;
   await panel
     .getByRole("radio", { name: value || "기본", exact: true })
-    .check({ force: true });
+    .check();
   return panel;
 }
 
@@ -81,6 +81,18 @@ export async function openCommandMenu(page) {
   await input.fill("");
   await input.focus();
   await page.keyboard.press("/");
+  const menu = page.getByRole("region", { name: "앱 동작 및 런타임 명령" });
+  await expect(menu).toBeVisible();
+  return menu;
+}
+
+/** Opens the command menu with ⌘/ (Ctrl+/), leaving any draft untouched. */
+export async function openCommandMenuShortcut(page) {
+  const input = page.getByRole("textbox", { name: "메시지 작성", exact: true });
+  await input.focus();
+  await page.keyboard.press(
+    `${process.platform === "darwin" ? "Meta" : "Control"}+/`,
+  );
   const menu = page.getByRole("region", { name: "앱 동작 및 런타임 명령" });
   await expect(menu).toBeVisible();
   return menu;

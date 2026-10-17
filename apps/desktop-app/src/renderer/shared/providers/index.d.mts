@@ -30,6 +30,7 @@ export function loadRecentModels(storage?: Pick<Storage, "getItem">): string[];
 export function pushRecentModel(
   id: string,
   storage?: Pick<Storage, "getItem" | "setItem">,
+  validIds?: readonly string[],
 ): string[];
 export function loadFreeOnly(
   storage?: Pick<Storage, "getItem">,
@@ -38,3 +39,9 @@ export function saveFreeOnly(
   value: boolean,
   storage?: Pick<Storage, "setItem">,
 ): void;
+export function keepAutoModel(
+  catalogModels:
+    | { status: string; entries?: readonly { id: string }[] }
+    | undefined,
+  id: string,
+): boolean;

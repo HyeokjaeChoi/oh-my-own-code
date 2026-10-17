@@ -7,6 +7,7 @@ export {
   loadDefaultModel,
   saveDefaultModel,
   usableDefaultModel,
+  keepAutoModel,
   loadRecentModels,
   pushRecentModel,
   loadFreeOnly,

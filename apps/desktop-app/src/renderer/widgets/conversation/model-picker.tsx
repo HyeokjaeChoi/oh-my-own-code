@@ -4,6 +4,8 @@ import { Input, Segmented, Switch } from "@workbench/ui";
 import {
   defaultFreeOnly,
   groupModels,
+  modelDisplayName,
+  variantLabel,
   type WorkbenchCatalog,
 } from "../../shared/api/index.js";
 import {
@@ -22,6 +24,7 @@ type Props = {
   model: string;
   variant: string;
   variantCleared: boolean;
+  disabled: boolean;
   onModel(_id: string): void;
   onVariant(_variant: string): void;
   close(): void;
@@ -53,19 +56,21 @@ export function ModelPicker(props: Props) {
           ? [{ id: model, name: `${model} (사용 불가)` }]
           : []),
       ];
-  const rows: Row[] = [
-    ...lead,
-    ...groups.flatMap((group) =>
-      group.items.map((entry) => ({
+  const groupRows = groups.map((group) => ({
+    key: group.key,
+    label: group.label,
+    rows: group.items.map(
+      (entry): Row => ({
         id: entry.id,
-        name: entry.name,
+        name: modelDisplayName(entry.name),
         ...(group.key === "recent" && entry.provider
           ? { hint: entry.provider }
           : {}),
         ...(entry.free ? { free: true } : {}),
-      })),
+      }),
     ),
-  ];
+  }));
+  const rows: Row[] = [...lead, ...groupRows.flatMap((group) => group.rows)];
   const optionId = (index: number) => `${base}-option-${index}`;
   const selectedIndex = rows.findIndex((row) => row.id === model);
   const variants = selected?.variants;
@@ -88,8 +93,16 @@ export function ModelPicker(props: Props) {
   }, [active, rows.length]);
 
   const choose = (row: Row) => {
+    if (props.disabled) return;
     props.onModel(row.id);
-    if (row.id) setRecent(pushRecentModel(row.id));
+    if (row.id)
+      setRecent(
+        pushRecentModel(
+          row.id,
+          undefined,
+          entries.map((entry) => entry.id),
+        ),
+      );
     const chosen = entries.find((entry) => entry.id === row.id);
     // A model with reasoning levels keeps the picker open for them.
     if (
@@ -110,6 +123,8 @@ export function ModelPicker(props: Props) {
         className={styles.modelOption}
         data-active={i === active}
         data-model-option={row.id}
+        // Keep focus in the search field.
+        onMouseDown={(event) => event.preventDefault()}
         onMouseMove={() => i !== active && setActive(i)}
         onClick={() => choose(row)}
       >
@@ -143,7 +158,7 @@ export function ModelPicker(props: Props) {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onKeyDown={(event) => {
-            if (event.nativeEvent.isComposing) return;
+            if (event.nativeEvent.isComposing || props.disabled) return;
             const last = rows.length - 1;
             if (event.key === "ArrowDown" || event.key === "ArrowUp") {
               event.preventDefault();
@@ -157,7 +172,9 @@ export function ModelPicker(props: Props) {
                     : i - 1,
               );
             } else if (event.key === "Home" || event.key === "End") {
-              if (!query) return;
+              // Home/End jump in the list only with an empty search; otherwise
+              // they keep moving the text cursor.
+              if (query) return;
               event.preventDefault();
               setActive(event.key === "Home" ? 0 : last);
             } else if (event.key === "Enter") {
@@ -166,7 +183,9 @@ export function ModelPicker(props: Props) {
               if (row) choose(row);
             } else if (event.key === "Escape") {
               event.preventDefault();
-              props.close();
+              // A search is cleared first; a second Esc closes.
+              if (query) setQuery("");
+              else props.close();
             }
           }}
         />
@@ -187,7 +206,7 @@ export function ModelPicker(props: Props) {
         className={styles.modelList}
       >
         {leadOptions}
-        {groups.map((group) => (
+        {groupRows.map((group) => (
           <div
             key={group.key}
             role="group"
@@ -197,16 +216,7 @@ export function ModelPicker(props: Props) {
             <div className={styles.modelGroupLabel} aria-hidden="true">
               {group.label}
             </div>
-            {group.items.map((entry) =>
-              option({
-                id: entry.id,
-                name: entry.name,
-                ...(group.key === "recent" && entry.provider
-                  ? { hint: entry.provider }
-                  : {}),
-                ...(entry.free ? { free: true } : {}),
-              }),
-            )}
+            {group.rows.map(option)}
           </div>
         ))}
         {rows.length === 0 && (
@@ -222,13 +232,22 @@ export function ModelPicker(props: Props) {
             aria-labelledby={`${base}-variant`}
             name={`${base}-variant`}
             value={variant}
+            disabled={props.disabled}
             onChange={props.onVariant}
             options={[
               { value: "", label: "기본" },
               ...(variant && !variantIds.includes(variant)
-                ? [{ value: variant, label: `${variant} (사용 불가)` }]
+                ? [
+                    {
+                      value: variant,
+                      label: `${variantLabel(variant)} (사용 불가)`,
+                    },
+                  ]
                 : []),
-              ...variantIds.map((id) => ({ value: id, label: id })),
+              ...variantIds.map((id) => ({
+                value: id,
+                label: variantLabel(id),
+              })),
             ]}
           />
         </div>

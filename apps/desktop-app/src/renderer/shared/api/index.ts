@@ -163,6 +163,8 @@ export {
   variantForModel,
   defaultFreeOnly,
   groupModels,
+  variantLabel,
+  modelDisplayName,
 } from "../runtime-options/index.js";
 export type {
   RuntimeModel,

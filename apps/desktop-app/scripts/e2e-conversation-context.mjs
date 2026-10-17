@@ -17,7 +17,7 @@ import { _electron as electron, expect } from "@playwright/test";
 import { captureProvenance } from "./build-provenance.mjs";
 import {
   COMPOSER_POPOVERS,
-  openCommandMenu,
+  openCommandMenuShortcut,
   openComposerPopover,
   pickModel,
 } from "./e2e-composer.mjs";
@@ -583,15 +583,14 @@ async function exerciseConversationContext() {
   await expect(
     page.getByRole("button", { name: "앱 동작과 명령 열기", exact: true }),
   ).toHaveCount(0);
-  // "/" opens the menu only in an empty composer; the staged text is restored.
-  const staged = await composer().inputValue();
-  await openCommandMenu(page);
+  // ⌘/ opens the menu over the staged draft; closing leaves it untouched.
+  await openCommandMenuShortcut(page);
   await page.keyboard.press("Escape");
   await expect(
     page.getByRole("region", { name: "앱 동작 및 런타임 명령", exact: true }),
   ).toHaveCount(0);
   await expect(composer()).toBeFocused();
-  await composer().fill(staged);
+  await expect(composer()).toHaveValue("SYNTHETIC staged request");
   assert.equal((await requests()).length, initial);
   // Enter runs the real normal-send path only after explicit staging.
   await application.evaluate(() => {

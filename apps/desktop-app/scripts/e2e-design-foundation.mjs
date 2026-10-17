@@ -20,6 +20,7 @@ import {
   closeComposerPopovers,
   modelOption,
   openCommandMenu,
+  openCommandMenuShortcut,
   pickModel,
   pickVariant,
 } from "./e2e-composer.mjs";
@@ -527,6 +528,19 @@ async function commandMenuRegression() {
   await page.keyboard.press("Escape");
   await expect(menu).toHaveCount(0);
   await expect(trigger).toBeFocused();
+  // ⌘/ (Ctrl+/) opens the menu over a draft and leaves the draft alone;
+  // a plain "/" with a draft just types.
+  await trigger.fill("SYNTHETIC draft kept");
+  await trigger.focus();
+  await page.keyboard.press("End");
+  await page.keyboard.press("/");
+  await expect(menu).toHaveCount(0);
+  await trigger.fill("SYNTHETIC draft kept");
+  await openCommandMenuShortcut(page);
+  await page.keyboard.press("Escape");
+  await expect(menu).toHaveCount(0);
+  await expect(trigger).toHaveValue("SYNTHETIC draft kept");
+  await trigger.fill("");
   for (const [theme, width, zoom] of [
     ["light", 320, 1],
     ["dark", 760, 2],

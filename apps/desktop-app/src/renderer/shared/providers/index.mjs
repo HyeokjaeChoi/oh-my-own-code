@@ -79,11 +79,15 @@ export function loadRecentModels(storage = globalThis.localStorage) {
     return [];
   }
 }
-export function pushRecentModel(id, storage = globalThis.localStorage) {
-  const next = [id, ...loadRecentModels(storage).filter((x) => x !== id)].slice(
-    0,
-    3,
-  );
+// Saving also prunes ids the catalog no longer offers (validIds, when given).
+export function pushRecentModel(
+  id,
+  storage = globalThis.localStorage,
+  validIds,
+) {
+  const next = [id, ...loadRecentModels(storage).filter((x) => x !== id)]
+    .filter((x) => !validIds || validIds.includes(x))
+    .slice(0, 3);
   try {
     storage?.setItem(RECENT_MODELS_STORAGE_KEY, JSON.stringify(next));
   } catch {
@@ -106,3 +110,10 @@ export function saveFreeOnly(value, storage = globalThis.localStorage) {
     // Blocked storage: the choice lasts for this session only.
   }
 }
+
+// An auto-picked model stays while the catalog offers it, and while the catalog
+// is unknown. Only its removal replaces it: a newly added paid key must never
+// clear or swap what the user is already on.
+export const keepAutoModel = (catalogModels, id) =>
+  catalogModels?.status !== "available" ||
+  catalogModels.entries.some((entry) => entry.id === id);
