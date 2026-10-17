@@ -3740,6 +3740,55 @@ test("v5 metadata unavailable startup reaches connected through bounded reads wi
   api.dispose();
 });
 
+test("a catalog read dropped as stale during startup is retried until it lands", async () => {
+  const clock = fakeClock(),
+    first = deferred();
+  let revision = 1,
+    catalogReads = 0;
+  const model = {
+    id: "free-model",
+    name: "Free model",
+    variants: { status: "available", ids: [] },
+  };
+  const h = bridgeHarness((e) => {
+    if (e.operation.type === "catalog.list")
+      return ++catalogReads === 1
+        ? first.promise
+        : {
+            ok: true,
+            value: {
+              ...catalog,
+              models: { status: "available", entries: [model] },
+            },
+          };
+    if (e.operation.type === "snapshot")
+      return { ok: true, value: snapshot(revision) };
+    return readFallback(e);
+  });
+  const api = createWindowWorkbench(h.bridge, { clock, id });
+  try {
+    api.start();
+    await flush();
+    assert.equal(api.store.getState().connection, "connected");
+    // The revision moves while the first catalog read is in flight.
+    revision = 2;
+    await clock.advance(6000);
+    first.resolve({
+      ok: true,
+      value: { ...catalog, models: { status: "available", entries: [model] } },
+    });
+    await flush();
+    await clock.advance(2000);
+    assert.ok(catalogReads >= 2, "the dropped read was retried");
+    assert.deepEqual(
+      api.store.getState().catalog?.models.entries.map((m) => m.id),
+      ["free-model"],
+    );
+  } finally {
+    api.dispose();
+  }
+});
+
 test("v5 metadata startup retry pauses while hidden and disposal drops a late ready read", async () => {
   const clock = fakeClock(),
     pending = deferred();
