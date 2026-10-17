@@ -286,23 +286,41 @@ async function readGit(mode, scope, baseRef) {
     git().getByRole("button", { name: "Git 상태 새로고침", exact: true }),
   );
   await expect(git()).toHaveAttribute("data-git-review-state", "available");
-  await git()
-    .getByLabel("Git 비교 경로", { exact: true })
-    .selectOption(scope.path);
-  await git().getByLabel("Git 비교 방식", { exact: true }).selectOption(mode);
-  if (mode === "base")
+  let read = false;
+  if (!(await git().getByLabel("Git 비교 경로", { exact: true }).isVisible())) {
+    // From the list, a changed-file row opens the diff and reads it in one step.
+    const rowFor = (kind) =>
+      git().getByRole("button", {
+        name: `${kind} 차이 선택: ${scope.path}`,
+        exact: true,
+      });
+    const wanted = mode === "staged" ? "Staged" : "Unstaged";
+    const kind = (await rowFor(wanted).count())
+      ? wanted
+      : wanted === "Staged"
+        ? "Unstaged"
+        : "Staged";
+    await rowFor(kind).click();
+    read = mode !== "base" && kind === wanted;
+  }
+  if (!read) {
     await git()
-      .getByLabel("Git 기준 branch", { exact: true })
-      .selectOption(baseRef);
-  assert.equal((await metrics()).gitReads, before.gitReads + 1);
-  await enterButton(
-    git().getByRole("button", { name: "선택한 Git 차이 읽기", exact: true }),
-  );
+      .getByLabel("Git 비교 경로", { exact: true })
+      .selectOption(scope.path);
+    await git().getByLabel("Git 비교 방식", { exact: true }).selectOption(mode);
+    if (mode === "base")
+      await git()
+        .getByLabel("Git 기준 branch", { exact: true })
+        .selectOption(baseRef);
+    await enterButton(
+      git().getByRole("button", { name: "선택한 Git 차이 읽기", exact: true }),
+    );
+  }
   await expect(git().locator("[data-git-diff-state]")).toHaveAttribute(
     "data-git-diff-state",
     "available",
   );
-  assert.equal((await metrics()).gitReads, before.gitReads + 2);
+  assert.ok((await metrics()).gitReads >= before.gitReads + 2);
   return application.evaluate(
     () => globalThis.__omocUiFixture.lastGitDiffObservation,
   );

@@ -273,6 +273,13 @@ try {
       const screen = page.locator('[aria-label="터미널 화면"]');
       await expect(screen.locator(".xterm-accessibility")).toHaveCount(0);
       await openSettings(page);
+      // Without a connected provider the dialog opens on 모델; the toggle is on 일반.
+      const general = dialog().getByRole("tab", { name: "일반", exact: true });
+      if (await general.isVisible()) await general.click();
+      else
+        await dialog()
+          .getByRole("combobox", { name: "설정 페이지", exact: true })
+          .selectOption({ label: "일반" });
       const toggle = dialog().getByLabel(/터미널 스크린 리더 모드/);
       await expect(toggle).not.toBeChecked();
       await toggle.check();
