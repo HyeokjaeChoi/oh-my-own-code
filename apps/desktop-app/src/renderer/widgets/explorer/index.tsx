@@ -1,10 +1,18 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { File, Folder, FolderUp, House, RefreshCw, Search } from "lucide-react";
+import {
+  ChevronRight,
+  File,
+  Folder,
+  FolderUp,
+  House,
+  RefreshCw,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
 import { Button, Input, Notice, Select } from "@workbench/ui";
 import styles from "./explorer.module.css";
 import { type WorkbenchFileSearch } from "../../shared/api/index.js";
-import { LineFeedbackPanel } from "../../features/line-feedback/index.js";
-import { GitReviewPanel } from "../../features/git-review/index.js";
+import { PathText } from "../../shared/panel-text/index.js";
 import { WorkspaceFileEditor } from "../../features/workspace-file-editor/index.js";
 
 import {
@@ -28,6 +36,7 @@ function FileSearch({ open }: { open: (path: string) => void }) {
     setFound(result.ok ? result.value : undefined);
     setState(result.ok ? "idle" : "error");
   };
+  const [options, setOptions] = useState(false);
   return (
     <form
       className={styles.search}
@@ -39,46 +48,70 @@ function FileSearch({ open }: { open: (path: string) => void }) {
         <Input
           className={styles.searchInput}
           aria-label="검색어"
+          placeholder="파일 검색"
           value={query}
           maxLength={200}
+          autoFocus
           onChange={(event) => setQuery(event.target.value)}
         />
-        <Select
-          aria-label="검색 방식"
-          value={mode}
-          onChange={(event) =>
-            setMode(event.target.value as "name" | "content")
-          }
-        >
-          <option value="name">파일 이름</option>
-          <option value="content">내용</option>
-        </Select>
         <Button
           size="compact"
-          aria-label="대소문자"
-          title="대소문자 구분"
-          aria-pressed={caseSensitive}
-          onClick={() => setCaseSensitive((value) => !value)}
+          className={styles.iconButton}
+          aria-label="검색 옵션"
+          title="검색 옵션"
+          aria-pressed={options}
+          onClick={() => setOptions((value) => !value)}
         >
-          Aa
+          <SlidersHorizontal size={16} aria-hidden="true" />
         </Button>
         <Button
           type="submit"
           size="compact"
+          intent="primary"
+          className={styles.iconButton}
           aria-label="검색"
           title="검색"
           disabled={!query.trim()}
         >
-          <Search size={18} aria-hidden="true" />
+          <Search size={16} aria-hidden="true" />
         </Button>
       </div>
-      {state === "busy" && <p role="status">검색 중…</p>}
+      {options && (
+        <div className={styles.searchRow}>
+          <Select
+            aria-label="검색 방식"
+            value={mode}
+            onChange={(event) =>
+              setMode(event.target.value as "name" | "content")
+            }
+          >
+            <option value="name">파일 이름</option>
+            <option value="content">내용</option>
+          </Select>
+          <Button
+            size="compact"
+            aria-label="대소문자"
+            title="대소문자 구분"
+            aria-pressed={caseSensitive}
+            onClick={() => setCaseSensitive((value) => !value)}
+          >
+            Aa
+          </Button>
+        </div>
+      )}
+      {state === "busy" && (
+        <p role="status" className={styles.note}>
+          검색 중…
+        </p>
+      )}
       {state === "error" && <Notice tone="danger">검색하지 못했습니다.</Notice>}
       {found && state === "idle" && (
         <>
-          {!found.results.length && <p className={styles.muted}>결과 없음</p>}
+          {!found.results.length && <p className={styles.note}>결과 없음</p>}
           {found.truncated && (
-            <p role="status">결과가 많아 일부만 표시합니다.</p>
+            <p role="status" className={styles.note}>
+              결과가 많아 일부만 표시합니다.
+            </p>
           )}
           <ul className={`${styles.list} file-search-results`}>
             {found.results.map((hit) => (
@@ -88,14 +121,15 @@ function FileSearch({ open }: { open: (path: string) => void }) {
                   title={hit.path}
                   onClick={() => open(hit.path)}
                 >
-                  <span aria-hidden="true">
-                    <File size={17} />
+                  <span aria-hidden="true" className={styles.icon}>
+                    <File size={16} />
                   </span>
-                  <span>
-                    {hit.path}
-                    {hit.line ? `:${hit.line}` : ""}
-                    {hit.snippet ? ` ${hit.snippet}` : ""}
-                  </span>
+                  <PathText
+                    path={`${hit.path}${hit.line ? `:${hit.line}` : ""}`}
+                  />
+                  {hit.snippet && (
+                    <span className={styles.snippet}>{hit.snippet}</span>
+                  )}
                 </button>
               </li>
             ))}
@@ -110,6 +144,7 @@ export function FileExplorer({ workspaceId }: { workspaceId: string }) {
   const { listing, preview, error, busy, status } = useWorkbenchSelector(
     selectors.files,
   );
+  const [searching, setSearching] = useState(false);
   const load = (path: string, file = false) =>
     actions.openFiles(path, file ? "file" : "directory");
   useEffect(() => {
@@ -122,68 +157,100 @@ export function FileExplorer({ workspaceId }: { workspaceId: string }) {
       className={`${styles.explorer} file-explorer`}
       aria-label="파일 탐색 및 편집"
     >
-      <p className={styles.muted}>읽기 전용 · 텍스트 미리보기</p>
-      <div className={styles.toolbar}>
+      <div className={styles.bar}>
+        <span className={styles.crumb} title={listing?.path || "/"}>
+          <PathText path={listing?.path || "/"} />
+        </span>
         <Button
           size="compact"
-          aria-label="루트"
-          title="루트"
-          disabled={busy}
-          onClick={() => void load("")}
+          className={styles.iconButton}
+          aria-label="파일 검색 열기"
+          title="검색"
+          aria-pressed={searching}
+          onClick={() => setSearching((value) => !value)}
         >
-          <House size={18} aria-hidden="true" />
+          <Search size={16} aria-hidden="true" />
         </Button>
         <Button
           size="compact"
-          aria-label="상위 폴더"
-          title="상위 폴더"
-          disabled={busy || !listing?.path}
-          onClick={() => void load(parent)}
-        >
-          <FolderUp size={18} aria-hidden="true" />
-        </Button>
-        <Button
-          size="compact"
+          className={styles.iconButton}
           aria-label="새로고침"
           title="새로고침"
           disabled={busy}
           onClick={() => void actions.refreshFiles()}
         >
-          <RefreshCw size={18} aria-hidden="true" />
+          <RefreshCw size={16} aria-hidden="true" />
+        </Button>
+        <Button
+          size="compact"
+          className={styles.iconButton}
+          aria-label="상위 폴더"
+          title="상위 폴더"
+          disabled={busy || !listing?.path}
+          onClick={() => void load(parent)}
+        >
+          <FolderUp size={16} aria-hidden="true" />
+        </Button>
+        <Button
+          size="compact"
+          className={styles.iconButton}
+          aria-label="루트"
+          title="루트"
+          disabled={busy}
+          onClick={() => void load("")}
+        >
+          <House size={16} aria-hidden="true" />
         </Button>
       </div>
-      <FileSearch open={(path) => void load(path, true)} />
-      <p className={styles.path}>{listing?.path || "/"}</p>
-      {busy && <p role="status">불러오는 중…</p>}
+      {searching && <FileSearch open={(path) => void load(path, true)} />}
+      {busy && (
+        <p role="status" className={styles.note}>
+          불러오는 중…
+        </p>
+      )}
       {status === "checking" && (
-        <p role="status">확인 중 · 마지막으로 관찰한 내용</p>
+        <p role="status" className={styles.note}>
+          확인 중 · 마지막으로 관찰한 내용
+        </p>
       )}
       {status === "stale" && (
-        <p role="status">최신 내용 확인 실패 · 마지막으로 관찰한 내용</p>
+        <p role="status" className={styles.note}>
+          최신 내용 확인 실패 · 마지막으로 관찰한 내용
+        </p>
       )}
       {status === "missing" && (
-        <p role="status">파일이 없습니다. 새로고침으로 다시 확인하세요.</p>
+        <p role="status" className={styles.note}>
+          파일이 없습니다. 새로고침으로 다시 확인하세요.
+        </p>
       )}
       {error && <Notice tone="danger">{error}</Notice>}
       {listing && !listing.entries.length && (
-        <p className={styles.muted}>빈 폴더입니다.</p>
+        <p className={styles.note}>빈 폴더입니다.</p>
       )}
-      <ul className={`${styles.list} file-list`}>
+      <ul
+        className={`${styles.list} file-list`}
+        data-compact={Boolean(preview)}
+      >
         {listing?.entries.map((entry) => (
           <li key={entry.path}>
             <button
               disabled={busy}
               title={entry.path}
+              data-dot={entry.name.startsWith(".") || undefined}
+              aria-current={preview?.path === entry.path || undefined}
               onClick={() => void load(entry.path, entry.type === "file")}
             >
-              <span aria-hidden="true">
+              <span aria-hidden="true" className={styles.chevron}>
+                {entry.type === "directory" && <ChevronRight size={14} />}
+              </span>
+              <span aria-hidden="true" className={styles.icon}>
                 {entry.type === "directory" ? (
-                  <Folder size={17} />
+                  <Folder size={16} />
                 ) : (
-                  <File size={17} />
+                  <File size={16} />
                 )}
               </span>
-              <span>{entry.name}</span>
+              <span className={styles.name}>{entry.name}</span>
               <span className={styles.srOnly}>
                 {entry.type === "directory" ? "폴더 열기" : "파일 미리보기"}
               </span>
@@ -191,20 +258,22 @@ export function FileExplorer({ workspaceId }: { workspaceId: string }) {
           </li>
         ))}
       </ul>
-      {preview && (
-        <section aria-label="파일 내용">
-          <h3 className={styles.path}>{preview.path}</h3>
-          {preview.truncated && (
-            <p role="status">파일 크기 제한으로 앞부분만 표시합니다.</p>
-          )}
-          <pre className={`${styles.content} file-content`}>
-            {preview.content || "(빈 파일)"}
-          </pre>
-        </section>
-      )}
-      <WorkspaceFileEditor />
-      <GitReviewPanel />
-      <LineFeedbackPanel />
+      <WorkspaceFileEditor
+        view={
+          preview ? (
+            <section aria-label="파일 내용" className={styles.preview}>
+              {preview.truncated && (
+                <p role="status" className={styles.note}>
+                  파일 크기 제한으로 앞부분만 표시합니다.
+                </p>
+              )}
+              <pre className={`${styles.content} file-content`} tabIndex={0}>
+                {preview.content || "(빈 파일)"}
+              </pre>
+            </section>
+          ) : undefined
+        }
+      />
     </section>
   );
 }

@@ -1,25 +1,53 @@
 .explorer {
   min-width: 0;
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: var(--omoc-semantic-type-size-compact);
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .explorer p {
-  margin: 8px 0;
+  margin: 0;
 }
-.muted {
+.note {
   color: var(--omoc-semantic-color-text-secondary);
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: var(--omoc-semantic-type-size-caption);
+  line-height: 1.5;
 }
-.toolbar {
+.bar {
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 2px;
+  min-height: 32px;
+}
+.crumb {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
+  color: var(--omoc-semantic-color-text-secondary);
+  user-select: text;
+}
+.explorer .iconButton {
+  flex-shrink: 0;
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  color: var(--omoc-semantic-color-text-secondary);
+}
+.explorer .iconButton[aria-pressed="true"] {
+  background: var(--omoc-semantic-color-fill-subtle);
+  color: var(--omoc-semantic-color-text-primary);
 }
 .search {
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 0;
+  margin-bottom: 4px;
 }
 .searchRow {
   display: flex;
@@ -28,58 +56,98 @@
 }
 .searchInput {
   flex: 1 1 0;
-}
-.list button:hover {
-  background: var(--omoc-semantic-color-surface-subtle);
-}
-.list button:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-.path {
-  font: 12px/1.6 var(--omoc-semantic-type-family-code);
-  overflow-wrap: anywhere;
-  margin: 12px 0;
-  user-select: text;
+  min-width: 0;
 }
 .list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
+.list[data-compact="true"]:not(:has(.snippet)) {
+  max-height: 224px;
+  overflow: auto;
+}
 .list button {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   width: 100%;
-  min-height: var(--omoc-component-size-control-hit-target);
+  min-height: 28px;
+  height: 28px;
   text-align: left;
   border: 0;
   background: transparent;
-  padding: 8px;
-  border-radius: 8px;
+  color: var(--omoc-semantic-color-text-primary);
+  padding: 0 8px 0 4px;
+  border-radius: var(--omoc-semantic-radius-control);
   cursor: pointer;
-  font-size: 13px;
+  font: inherit;
+  font-size: var(--omoc-semantic-type-size-compact);
 }
-.list button > span:first-child {
+.list button:hover {
+  background: var(--omoc-semantic-color-fill-hover);
+}
+.list button[aria-current="true"] {
+  background: var(--omoc-semantic-color-fill-subtle);
+}
+.list button[data-dot] .name,
+.list button[data-dot] .icon {
+  color: var(--omoc-semantic-color-text-tertiary);
+}
+.list button:focus-visible {
+  outline: var(--omoc-semantic-stroke-focus) solid
+    var(--omoc-semantic-color-focus);
+  outline-offset: -2px;
+}
+.list button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.chevron {
+  flex: 0 0 14px;
+  display: inline-flex;
+  color: var(--omoc-semantic-color-text-tertiary);
+}
+.icon {
   flex-shrink: 0;
   display: inline-flex;
   color: var(--omoc-semantic-color-text-secondary);
 }
-.list button > span:nth-child(2) {
+.name {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.snippet {
+  flex: 1 1 0;
   min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--omoc-semantic-color-text-tertiary);
+  font: var(--omoc-semantic-type-size-code)
+    var(--omoc-semantic-type-family-code);
+}
+.preview {
+  margin-top: 8px;
+}
+.previewPath {
+  display: flex;
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
+  user-select: text;
 }
 .content {
-  padding: 12px;
-  border-radius: 8px;
-  background: var(--omoc-semantic-color-surface-subtle);
-  font: 12px/1.6 var(--omoc-semantic-type-family-code);
+  padding: 8px 12px;
+  border-radius: var(--omoc-semantic-radius-control);
+  background: var(--omoc-semantic-color-canvas);
+  font: var(--omoc-semantic-type-size-code) /
+    var(--omoc-semantic-type-line-code) var(--omoc-semantic-type-family-code);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  margin: 8px 0;
+  margin: 4px 0;
   user-select: text;
 }
 .srOnly {
