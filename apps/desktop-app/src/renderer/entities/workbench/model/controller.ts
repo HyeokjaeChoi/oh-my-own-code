@@ -920,6 +920,7 @@ export function createWindowWorkbench(
     filesAbort: AbortController | undefined,
     diagnosticsAbort: AbortController | undefined;
   let snapshotBackoff = 0,
+    catalogRetries = 0,
     snapshotFlight = false,
     fileFlight = false,
     lookupFlight = false;
@@ -3629,11 +3630,19 @@ export function createWindowWorkbench(
       catalogTimer = clock.setTimeout(() => void catalog(), 400);
       return;
     }
+    const before = store.getState();
     dispatch(
       result.ok
         ? { type: "catalog", scope, value: result.value }
         : { type: "catalog", scope, error: result.code },
     );
+    // The reducer drops a result whose scope went stale while it was in
+    // flight (e.g. the revision moved during startup). Nothing else re-reads
+    // the catalog until the selection changes, so retry a few times.
+    if (store.getState() === before && catalogRetries < 10) {
+      catalogRetries++;
+      catalogTimer = clock.setTimeout(() => void catalog(), 400);
+    } else catalogRetries = 0;
   }
   function armFiles() {
     clock.clearTimeout(fileTimer);
