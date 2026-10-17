@@ -92,7 +92,15 @@ test("applyPreferences resolves system theme, density and font scale", () => {
     true,
   );
   assert.equal(attrs["data-theme"], "light");
-  assert.equal(style["--omoc-semantic-type-size-body"], "18.4px");
+  assert.equal(style["--omoc-primitive-font-size-md"], "14px");
+  assert.equal(style["--omoc-primitive-font-size-base"], "15px");
+  assert.equal(style["--omoc-primitive-size-conversation-size"], "15px");
+  applyPreferences(root, { ...DEFAULT_PREFERENCES, fontSize: "small" }, false);
+  assert.equal(style["--omoc-primitive-font-size-md"], "12px");
+  assert.equal(style["--omoc-primitive-font-size-base"], "13px");
+  assert.equal(style["--omoc-primitive-size-conversation-size"], "13px");
+  applyPreferences(root, DEFAULT_PREFERENCES, false);
+  assert.deepEqual(style, {});
 });
 
 test("shortcut help lists the help key", () => {

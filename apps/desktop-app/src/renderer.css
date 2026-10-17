@@ -5,6 +5,9 @@
   color: var(--omoc-semantic-color-text-primary);
   background: var(--omoc-semantic-color-canvas);
   font-synthesis: none;
+  /* Korean wraps at word boundaries; paths and long tokens still break. */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 *,
 *::before,
@@ -37,7 +40,7 @@ select {
   select
 ) {
   min-width: 0;
-  min-height: 32px;
+  min-height: var(--omoc-component-size-input-height);
   padding: 0 10px;
   border: 1px solid transparent;
   border-radius: var(--omoc-component-size-control-radius);
@@ -77,6 +80,12 @@ select {
   --omoc-semantic-space-card-gap: 8px;
   --omoc-semantic-space-panel-padding: 12px;
   --omoc-semantic-space-section-gap: 24px;
+  --omoc-semantic-size-control-height: var(
+    --omoc-primitive-size-control-compact
+  );
+  --omoc-semantic-size-sidebar-row-height: var(
+    --omoc-primitive-size-control-compact
+  );
 }
 [data-theme="dark"] {
   color-scheme: dark;
