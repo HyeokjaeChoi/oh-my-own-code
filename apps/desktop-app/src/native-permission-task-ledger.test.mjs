@@ -748,7 +748,6 @@ const forkFixture = (over = {}) => {
     id: "ses_child",
     projectID: "project",
     location: { directory: "/work" },
-    parentID: "ses_parent",
     fork: {
       sessionID: "ses_parent",
       boundary: { type: "before", messageID: "msg_1" },
@@ -927,7 +926,7 @@ const forkTampered = {
   "an unreadable child row": (f) => {
     f.state.list.push({
       id: "ses_junk",
-      parentID: "ses_parent",
+      fork: { sessionID: "ses_parent" },
       permissions: 7,
     });
   },
@@ -955,6 +954,17 @@ for (const [name, mutate] of Object.entries(forkTampered))
     assert.equal(decision.outcome, "hold");
     assert.equal(f.ledger.verify(f.record(decision), f.context()), false);
   });
+test("reconcile of a before-fork child without parentID (real Native shape) settles; a wrong parentID holds", async () => {
+  const ok = forkFixture();
+  ok.task.handoffs = [{ state: "armed", armedAt: 100_000 }];
+  assert.equal("parentID" in ok.child(), false);
+  assert.equal((await ok.run()).outcome, "settled");
+  const wrong = forkFixture();
+  wrong.task.handoffs = [{ state: "armed", armedAt: 100_000 }];
+  wrong.state.list[1] = wrong.child({ parentID: "ses_other" });
+  const decision = await wrong.run();
+  assert.equal(decision.outcome, "hold");
+});
 test("reconcile of a fork with a registered parent settles with only get/list reads", async () => {
   const f = forkFixture();
   f.task.handoffs = [{ state: "armed", armedAt: 100_000 }];
