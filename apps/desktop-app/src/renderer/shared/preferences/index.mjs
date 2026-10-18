@@ -9,6 +9,11 @@ export const DEFAULT_PREFERENCES = Object.freeze({
   terminalScreenReader: false,
 });
 export const PREFERENCES_STORAGE_KEY = "omoc.preferences.v1";
+// 레이아웃: detail/side panel width in px. Stored under `layout` in the same blob;
+// the live value is owned by the workbench store, this only persists it.
+export const PANEL_WIDTH_MIN = 320;
+export const PANEL_WIDTH_MAX = 4000;
+export const DEFAULT_LAYOUT = Object.freeze({ panelWidth: 420 });
 // 글자 크기: shifts the md/base steps (and the conversation size) of the one type scale.
 const FONT_DELTA = { small: -1, medium: 0, large: 1 };
 const FONT_STEPS = {
@@ -39,6 +44,32 @@ export function parsePreferences(raw) {
   };
 }
 
+const parseBlob = (raw) => {
+  try {
+    const value = typeof raw === "string" ? JSON.parse(raw) : raw;
+    return value && typeof value === "object" && !Array.isArray(value)
+      ? value
+      : {};
+  } catch {
+    return {};
+  }
+};
+
+// Out-of-range numbers clamp; non-numbers fall back to the default.
+export function parseLayout(raw) {
+  const layout = parseBlob(raw).layout;
+  const width = layout && typeof layout === "object" ? layout.panelWidth : null;
+  return {
+    panelWidth:
+      typeof width === "number" && Number.isFinite(width)
+        ? Math.min(
+            PANEL_WIDTH_MAX,
+            Math.max(PANEL_WIDTH_MIN, Math.round(width)),
+          )
+        : DEFAULT_LAYOUT.panelWidth,
+  };
+}
+
 // ponytail: renderer localStorage; main has no app-preferences store or IPC yet.
 // Move behind the closed workbench contract once a durable settings store exists.
 export function loadPreferences(storage = globalThis.localStorage) {
@@ -48,15 +79,36 @@ export function loadPreferences(storage = globalThis.localStorage) {
     return { ...DEFAULT_PREFERENCES };
   }
 }
+export function loadLayout(storage = globalThis.localStorage) {
+  try {
+    return parseLayout(storage?.getItem(PREFERENCES_STORAGE_KEY) ?? null);
+  } catch {
+    return { ...DEFAULT_LAYOUT };
+  }
+}
+// Writes preserve the stored layout (and vice versa) so each owner can save alone.
+function writeBlob(patch, storage) {
+  try {
+    const current = parseBlob(
+      storage?.getItem(PREFERENCES_STORAGE_KEY) ?? null,
+    );
+    storage?.setItem(
+      PREFERENCES_STORAGE_KEY,
+      JSON.stringify({ ...current, ...patch }),
+    );
+  } catch {
+    // Blocked storage: preferences last for this session only.
+  }
+}
 export function savePreferences(
   preferences,
   storage = globalThis.localStorage,
 ) {
-  try {
-    storage?.setItem(PREFERENCES_STORAGE_KEY, JSON.stringify(preferences));
-  } catch {
-    // Blocked storage: preferences last for this session only.
-  }
+  const { layout: _ignored, ...rest } = preferences;
+  writeBlob(rest, storage);
+}
+export function saveLayout(layout, storage = globalThis.localStorage) {
+  writeBlob({ layout: parseLayout({ layout }) }, storage);
 }
 
 // Maps preferences onto existing design tokens ([data-theme="dark"], type-scale primitives).

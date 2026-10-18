@@ -23,6 +23,7 @@ import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { createWorkbenchBridge } from "./e2e-bridge.mjs";
 import { openComposerPopover } from "./e2e-composer.mjs";
+import { auditDialogFocus, auditDom, auditTabOrder } from "./e2e-a11y.mjs";
 
 const CONNECT_TIMEOUT_MS =
   Number(process.env.OMOC_E2E_CONNECT_TIMEOUT_MS) || 150000;
@@ -537,6 +538,222 @@ try {
     await page.keyboard.press("Escape");
     await page.reload();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  });
+
+  await check("layout-panel-width", async () => {
+    const storageKey = "omoc.preferences.v1";
+    const stored = () =>
+      page.evaluate(
+        (k) => JSON.parse(globalThis.localStorage.getItem(k) ?? "{}"),
+        storageKey,
+      );
+    const handle = () =>
+      page.getByRole("separator", { name: "상세 패널 너비" });
+    const reopen = async () => {
+      await page.reload();
+      await expect(
+        page.locator(".workbench-header [data-connection]"),
+      ).toHaveAttribute(
+        "data-connection",
+        /connected|disconnected|unavailable|starting/,
+        {
+          timeout: CONNECT_TIMEOUT_MS,
+        },
+      );
+      if (!(await handle().count()))
+        await page
+          .getByRole("button", { name: "보조 패널", exact: true })
+          .click();
+    };
+    if (!(await handle().count()))
+      await page
+        .getByRole("button", { name: "보조 패널", exact: true })
+        .click();
+    await expect(handle()).toBeVisible();
+    await handle().focus();
+    await page.keyboard.press("Enter"); // reset to the default first
+    await expect(handle()).toHaveAttribute("aria-valuenow", "420");
+    for (let i = 0; i < 5; i++) await page.keyboard.press("ArrowLeft");
+    await expect(handle()).toHaveAttribute("aria-valuenow", "470");
+    assert.equal((await stored()).layout?.panelWidth, 470);
+    // Appearance preferences saved later must not drop the layout.
+    await openSettings(page);
+    const general = dialog().getByRole("tab", { name: "일반", exact: true });
+    if (await general.isVisible()) await general.click();
+    const before = (await stored()).theme ?? "system";
+    await dialog()
+      .getByRole("radiogroup", { name: "테마" })
+      .getByRole("radio", { name: "다크" })
+      .check();
+    await expect.poll(async () => (await stored()).theme).toBe("dark");
+    assert.equal((await stored()).layout?.panelWidth, 470);
+    const label = { system: "시스템", light: "라이트", dark: "다크" }[before];
+    await dialog()
+      .getByRole("radiogroup", { name: "테마" })
+      .getByRole("radio", { name: label })
+      .check();
+    await expect.poll(async () => (await stored()).theme).toBe(before);
+    assert.equal((await stored()).layout?.panelWidth, 470);
+    await page.keyboard.press("Escape");
+    await expect(dialog()).toHaveCount(0);
+    await reopen();
+    await expect(handle()).toHaveAttribute("aria-valuenow", "470");
+    // Corrupt / out-of-range storage falls back to a valid width.
+    await page.evaluate((k) => {
+      const blob = JSON.parse(globalThis.localStorage.getItem(k) ?? "{}");
+      globalThis.localStorage.setItem(
+        k,
+        JSON.stringify({ ...blob, layout: { panelWidth: "wide" } }),
+      );
+    }, storageKey);
+    await reopen();
+    await expect(handle()).toHaveAttribute("aria-valuenow", "420");
+    await page.evaluate((k) => {
+      const blob = JSON.parse(globalThis.localStorage.getItem(k) ?? "{}");
+      globalThis.localStorage.setItem(
+        k,
+        JSON.stringify({ ...blob, layout: { panelWidth: 99999 } }),
+      );
+    }, storageKey);
+    await reopen();
+    const max = Math.round(
+      (await page.evaluate(() => window.innerWidth)) * 0.6,
+    );
+    await expect(handle()).toHaveAttribute("aria-valuenow", String(max));
+    await page.evaluate(
+      (k) => globalThis.localStorage.setItem(k, "{not json"),
+      storageKey,
+    );
+    await reopen();
+    await expect(handle()).toHaveAttribute("aria-valuenow", "420");
+    // Reset path: double-click restores the default and persists it.
+    await handle().focus();
+    await page.keyboard.press("ArrowLeft");
+    await handle().dblclick();
+    await expect(handle()).toHaveAttribute("aria-valuenow", "420");
+    assert.equal((await stored()).layout?.panelWidth, 420);
+    // Pointer drag persists on release.
+    const box = await handle().boundingBox();
+    assert.ok(box, "resize handle has a box");
+    const x = box.x + box.width / 2;
+    const y = box.y + box.height / 2;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x - 60, y, { steps: 6 });
+    await page.mouse.up();
+    await expect(handle()).toHaveAttribute("aria-valuenow", "480");
+    assert.equal((await stored()).layout?.panelWidth, 480);
+    await handle().dblclick();
+  });
+
+  const failIfAny = (label, violations) =>
+    assert.equal(violations.length, 0, `${label}: ${violations.join("; ")}`);
+
+  await check("a11y-audit-detects-violations", async () => {
+    // Guard against a vacuous audit: seeded violations must be reported.
+    await page.evaluate(() => {
+      const host = globalThis.document.createElement("div");
+      host.id = "a11y-seed";
+      host.innerHTML =
+        '<button></button><img src="data:," /><div tabindex="3"></div>' +
+        '<div role="dialog"></div><div role="radiogroup"></div>' +
+        '<div role="dialog" aria-modal="true">has text but no name</div>' +
+        '<div role="radiogroup"><label>one <input type="radio" /></label></div>' +
+        '<div role="region">text region</div>' +
+        '<input id="x" /><input id="x" />';
+      globalThis.document.body.append(host);
+    });
+    try {
+      const found = (await auditDom(page, "#a11y-seed")).join("\n");
+      for (const rule of [
+        "unnamed interactive: button",
+        "img without alt",
+        "positive tabindex",
+        "unnamed region",
+        "duplicate id: x",
+      ])
+        assert.ok(found.includes(rule), `audit missed: ${rule}\n${found}`);
+      // Two of each: the empty one and the text-filled one must both be flagged.
+      for (const rule of ["unnamed dialog", "unnamed radiogroup"])
+        assert.equal(
+          found.split(rule).length - 1,
+          2,
+          `audit must flag text-filled ${rule}\n${found}`,
+        );
+    } finally {
+      await page.evaluate(() =>
+        globalThis.document.getElementById("a11y-seed")?.remove(),
+      );
+    }
+  });
+
+  await check("a11y-workbench-shell", async () => {
+    failIfAny("shell dom", await auditDom(page));
+    await page.evaluate(() => globalThis.document.activeElement?.blur());
+    const tabs = await auditTabOrder(page, { stops: 40 });
+    failIfAny("shell tab order", tabs.violations);
+    assert.ok(tabs.stops >= 8, `Tab reached ${tabs.stops} stops`);
+  });
+
+  await check("a11y-sidebar-sessions", async () => {
+    const list = page.locator('section[aria-label="세션 검색과 최근 세션"]');
+    await expect(list).toBeVisible();
+    failIfAny(
+      "sidebar dom",
+      await auditDom(page, 'section[aria-label="세션 검색과 최근 세션"]'),
+    );
+    const sessions = list.getByRole("button", {
+      name: /^E2E features session/,
+    });
+    assert.ok(
+      (await sessions.count()) > 0,
+      "the fixture session is listed as a named button",
+    );
+  });
+
+  await check("a11y-settings-dialog", async () => {
+    const opener = page.getByRole("button", { name: "설정", exact: true });
+    // The sidebar footer button is the opener whose focus return is asserted.
+    await expect(opener).toBeVisible();
+    failIfAny(
+      "settings focus",
+      await auditDialogFocus(page, {
+        open: () => openSettings(page),
+        openerLocator: opener,
+        dialogLocator: dialog(),
+      }),
+    );
+    await openSettings(page);
+    await expect(dialog()).toBeVisible();
+    failIfAny("settings dom", await auditDom(page, "[role=dialog]"));
+    const general = dialog().getByRole("tab", { name: "일반", exact: true });
+    if (await general.isVisible()) await general.click();
+    failIfAny("settings general dom", await auditDom(page, "[role=dialog]"));
+    for (const name of ["테마", "글자 크기", "밀도"]) {
+      await expect(dialog().getByRole("radiogroup", { name })).toBeVisible();
+    }
+    await page.keyboard.press("Escape");
+    await expect(dialog()).toHaveCount(0);
+  });
+
+  await check("a11y-command-palette", async () => {
+    await page.keyboard.press(`${mod}+k`);
+    const search = page.getByRole("combobox", { name: "명령 검색" });
+    await expect(search).toBeVisible();
+    await expect(search).toBeFocused();
+    failIfAny("palette dom", await auditDom(page, "[role=dialog]"));
+    await expect(page.getByRole("listbox")).toBeVisible();
+    for (let i = 0; i < 20; i++) {
+      await page.keyboard.press("Tab");
+      assert.ok(
+        await page.evaluate(
+          () => !!globalThis.document.activeElement?.closest("[role=dialog]"),
+        ),
+        "focus stays inside the palette",
+      );
+    }
+    await page.keyboard.press("Escape");
+    await expect(search).toBeHidden();
   });
 
   results.push({
