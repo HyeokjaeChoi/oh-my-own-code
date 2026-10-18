@@ -675,3 +675,13 @@ test("revert requests carry only a message id; snapshot revert is closed and nev
       appCode: "INVALID_REQUEST",
     });
 });
+
+test("workspace.import path is optional, bounded, non-empty, NUL-free and string-only", () => {
+  assert.deepEqual(validateRequest({ type: "workspace.import" }), {
+    type: "workspace.import",
+  });
+  const ok = { type: "workspace.import", path: "/tmp/a" };
+  assert.deepEqual(validateRequest(ok), ok);
+  for (const path of ["", "/a\0b", `/${"a".repeat(2048)}`, 1, null, {}, ["/a"]])
+    assert.throws(() => validateRequest({ type: "workspace.import", path }));
+});

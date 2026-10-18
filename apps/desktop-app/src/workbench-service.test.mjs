@@ -9,6 +9,8 @@ import {
   mkdir,
   symlink,
   stat,
+  chmod,
+  realpath,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -327,6 +329,58 @@ test("typed-path import uses the picker's validation and publishes workspace met
   const w = imported.value.workspaces.find((x) => x.path.endsWith("typed"));
   assert.equal(w.branch, "main");
   assert.equal(w.writable, true);
+});
+test("typed-path import rejects bad paths with one non-leaking code and imports resolved real paths once", async (t) => {
+  const f = await fixture(t);
+  f.state.pick = undefined;
+  const dir = join(f.root, "real");
+  await mkdir(dir);
+  await writeFile(join(f.root, "file.txt"), "x");
+  await symlink(dir, join(f.root, "alias"));
+  await symlink(join(f.root, "file.txt"), join(f.root, "filelink"));
+  await symlink(join(f.root, "gone"), join(f.root, "dangling"));
+  await mkdir(join(f.root, "locked", "inner"), { recursive: true });
+  await chmod(join(f.root, "locked"), 0o000);
+  const imp = (path) => f.service.handle({ type: "workspace.import", path });
+  for (const [path, code] of [
+    ["relative/dir", "INVALID_REQUEST"],
+    ["./real", "INVALID_REQUEST"],
+    ["~other/real", "INVALID_REQUEST"],
+    [join(f.root, "nope"), "FILE_DENIED"],
+    [join(f.root, "file.txt"), "FILE_DENIED"],
+    [join(f.root, "filelink"), "FILE_DENIED"],
+    [join(f.root, "dangling"), "FILE_DENIED"],
+    [`${f.root}/real/../file.txt`, "FILE_DENIED"],
+    ...(process.getuid?.() === 0
+      ? []
+      : [[join(f.root, "locked", "inner"), "FILE_DENIED"]]),
+  ]) {
+    const r = await imp(path);
+    assert.equal(r.ok, false, path);
+    assert.equal(r.code, code, path);
+    assert.ok(!JSON.stringify(r).includes(f.root), "no path leaked");
+  }
+  await chmod(join(f.root, "locked"), 0o700);
+  const first = await imp(`${f.root}/real/../real/`);
+  assert.equal(first.ok, true, JSON.stringify(first));
+  const real = await realpath(dir);
+  assert.ok(first.value.workspaces.some((w) => w.path === real));
+  const count = first.value.workspaces.length;
+  const viaAlias = await imp(join(f.root, "alias"));
+  assert.equal(viaAlias.ok, true);
+  assert.equal(viaAlias.value.workspaces.length, count);
+  assert.equal(
+    viaAlias.value.selectedWorkspaceId,
+    first.value.selectedWorkspaceId,
+  );
+  const prior = process.env.HOME;
+  process.env.HOME = dir;
+  t.after(() => {
+    process.env.HOME = prior;
+  });
+  const home = await imp("~");
+  assert.equal(home.ok, true, JSON.stringify(home));
+  assert.equal(home.value.workspaces.length, count);
 });
 test("extension read discards a pending observation after a workspace mutation", async (t) => {
   const f = await fixture(t);

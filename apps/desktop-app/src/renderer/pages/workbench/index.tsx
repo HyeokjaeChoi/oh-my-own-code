@@ -174,6 +174,7 @@ export function Workbench() {
   const [deleteReasons, setDeleteReasons] = useState<string[] | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [importPath, setImportPath] = useState("");
+  const [importError, setImportError] = useState(false);
   const navigationButton = useRef<HTMLButtonElement>(null);
   const panelButton = useRef<HTMLButtonElement>(null);
   const createInput = useRef<HTMLInputElement>(null);
@@ -578,6 +579,7 @@ export function Workbench() {
               { type: "workspace.import", path: importPath.trim() },
               true,
             ).then((ok) => {
+              setImportError(!ok);
               if (ok) {
                 setImportOpen(false);
                 setImportPath("");
@@ -590,19 +592,26 @@ export function Workbench() {
             <Input
               value={importPath}
               maxLength={2048}
-              onChange={(event) => setImportPath(event.target.value)}
-              placeholder="/Users/me/project"
+              onChange={(event) => {
+                setImportPath(event.target.value);
+                setImportError(false);
+              }}
+              placeholder="/Users/me/project 또는 ~/project"
               ref={importInput}
             />
           </label>
           <p>선택기와 같은 신뢰 확인을 거칩니다.</p>
+          {importError && (
+            <p role="alert">
+              이 경로를 열 수 없습니다. 절대 경로로 존재하는 폴더인지 확인하거나
+              &apos;폴더 열기…&apos; 선택 버튼을 사용하세요.
+            </p>
+          )}
           <div className={styles.formActions}>
             <Button
               intent="primary"
               type="submit"
-              disabled={
-                pending || globalDisabled || !importPath.trim().startsWith("/")
-              }
+              disabled={pending || globalDisabled || !importPath.trim()}
             >
               경로로 가져오기
             </Button>
