@@ -193,3 +193,32 @@ test("recentSessions lists recent opens excluding the open, archived and foreign
   );
   assert.deepEqual(recentSessions(list, [], "w"), []);
 });
+
+test("recent display limit applies after filtering; store keeps more than the display limit", async () => {
+  const { recentSessions, trackSessions, emptyActivity } = await import(
+    "./renderer/features/sessions/navigation.ts"
+  );
+  const s = (id, extra = {}) => ({
+    id,
+    workspaceId: "w",
+    title: id,
+    status: "idle",
+    ...extra,
+  });
+  const list = [
+    s("a"),
+    s("b"),
+    s("c"),
+    s("d"),
+    s("e"),
+    s("f"),
+    s("g", { archived: true }),
+    s("h", { workspaceId: "x" }),
+  ];
+  let a = emptyActivity;
+  for (const id of ["h", "g", "f", "e", "d", "c", "b", "a"])
+    a = trackSessions(a, list, id);
+  assert.equal(a.recent.length, 8);
+  const shown = recentSessions(list, a.recent, "w", "a").map((r) => r.id);
+  assert.deepEqual(shown, ["b", "c", "d", "e", "f"]);
+});
