@@ -773,7 +773,7 @@ try {
   // Visual a11y: WCAG contrast (text) and keyboard focus indicators on each key
   // surface, in both themes (the app follows the OS colour scheme by default),
   // plus advisory field-boundary notes. Nothing is allow-listed here.
-  const { visualAudit, takeFieldNotes } = createVisualAudit(page);
+  const { eachTheme, visualAudit, takeFieldNotes } = createVisualAudit(page);
   const tagScope = async (locator) => {
     await locator.evaluate((el) => {
       globalThis.document
@@ -785,61 +785,98 @@ try {
   };
 
   await check("a11y-visual-detects-violations", async () => {
-    // Guard against a vacuous audit: a low-contrast text, a borderless field and a
-    // control with no focus indicator must be reported; a good control must not.
+    // Guard against a vacuous audit, in both themes: bad seeds must be reported
+    // and good seeds (ring, outline, pseudo-element indicators) must not.
     await page.evaluate(() => {
       // CSP forbids inline style attributes/markup: build with the CSSOM.
       const doc = globalThis.document;
       const host = doc.createElement("div");
       host.id = "a11y-visual-seed";
       Object.assign(host.style, { background: "#fff", padding: "8px" });
-      const make = (tag, props, style = {}) => {
+      const make = (tag, props, style = {}, parent = host) => {
         const el = doc.createElement(tag);
         Object.assign(el, props);
         Object.assign(el.style, style);
-        host.append(el);
+        parent.append(el);
         return el;
       };
       const text = { font: "14px sans-serif" };
+      const p = (textContent, style, parent) =>
+        make("p", { textContent }, { ...text, ...style }, parent);
+      p("low contrast text", { color: "#bbb" });
+      p("fine text", { color: "#222" });
+      // #666 passes on white but not on the 30% black layer under it.
+      const veil = make("div", {}, { background: "rgba(0,0,0,0.3)" });
+      p("translucent low text", { color: "#666" }, veil);
+      p(
+        "dark low text",
+        { color: "#333" },
+        make("div", {}, { background: "#111" }),
+      );
+      p("gradient text", {
+        color: "#222",
+        backgroundImage: "linear-gradient(#fff, #eee)",
+      });
+      // Wrapped so the field's only candidate edges are white-on-white in both themes.
       make(
-        "p",
-        { textContent: "low contrast text" },
-        { ...text, color: "#bbb" },
-      );
-      make("p", { textContent: "fine text" }, { ...text, color: "#222" });
-      make("input", {}, { border: "0", background: "#fff" }).setAttribute(
-        "aria-label",
-        "seed field",
-      );
-      make("button", { textContent: "no indicator" }, { outline: "none" });
-      make("button", { textContent: "has indicator", className: "a11y-ok" });
+        "input",
+        {},
+        { border: "0", background: "#fff" },
+        make("div", {}, { background: "#fff" }),
+      ).setAttribute("aria-label", "seed field");
+      const button = (textContent, className, style = {}) =>
+        make("button", { textContent, className }, style);
+      button("no indicator", "", { outline: "none" });
+      button("glow only", "a11y-glow", { outline: "none" });
+      button("has outline", "a11y-ok");
+      button("has ring", "a11y-ring", { outline: "none" });
+      button("has pseudo", "a11y-pe", {
+        outline: "none",
+        position: "relative",
+      });
       const sheet = new globalThis.CSSStyleSheet();
-      sheet.replaceSync(".a11y-ok:focus-visible{outline:2px solid #000}");
+      sheet.replaceSync(
+        ".a11y-ok:focus-visible{outline:2px solid #000}" +
+          ".a11y-glow:focus-visible{box-shadow:0 0 8px 0 #000}" +
+          ".a11y-ring:focus-visible{box-shadow:0 0 0 2px #000}" +
+          '.a11y-pe:focus-visible::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:#000}',
+      );
       doc.adoptedStyleSheets = [...doc.adoptedStyleSheets, sheet];
-      globalThis.document.body.append(host);
+      doc.body.append(host);
     });
     try {
-      const seeded = await auditContrast(page, "#a11y-visual-seed");
-      const contrast = seeded.violations;
-      assert.equal(contrast.length, 1, JSON.stringify(seeded));
-      assert.match(contrast[0], /low contrast text/);
-      const field = (await auditFieldBoundaries(page, "#a11y-visual-seed"))
-        .violations;
-      assert.equal(field.length, 1, "field: " + field.join("\n"));
-      const focus = (await auditFocusIndicators(page, "#a11y-visual-seed"))
-        .violations;
-      assert.ok(
-        focus.some((v) => v.includes("no indicator")),
-        focus.join("\n"),
-      );
-      assert.ok(
-        !focus.some((v) => v.includes("has indicator")),
-        focus.join("\n"),
-      );
+      await eachTheme(async (scheme) => {
+        const tag = (what) => `[${scheme}] ${what}`;
+        const contrast = (
+          await auditContrast(page, "#a11y-visual-seed")
+        ).violations.join("\n");
+        for (const bad of [
+          "low contrast text",
+          "translucent low text",
+          "dark low text",
+          "background image/gradient",
+        ])
+          assert.ok(contrast.includes(bad), tag(`missed ${bad}\n${contrast}`));
+        assert.ok(!contrast.includes("fine text"), tag(contrast));
+        const field = (await auditFieldBoundaries(page, "#a11y-visual-seed"))
+          .violations;
+        assert.equal(field.length, 1, tag("field: " + field.join("\n")));
+        const focus = (
+          await auditFocusIndicators(page, "#a11y-visual-seed")
+        ).violations.join("\n");
+        for (const bad of ["no indicator", "glow only"])
+          assert.ok(focus.includes(bad), tag(`missed ${bad}\n${focus}`));
+        for (const good of ["has outline", "has ring", "has pseudo"])
+          assert.ok(
+            !focus.includes(good),
+            tag(`false positive ${good}\n${focus}`),
+          );
+      });
     } finally {
-      await page.evaluate(() =>
-        globalThis.document.getElementById("a11y-visual-seed")?.remove(),
-      );
+      await page.evaluate(() => {
+        globalThis.document.getElementById("a11y-visual-seed")?.remove();
+        globalThis.document.adoptedStyleSheets = [];
+      });
     }
   });
 

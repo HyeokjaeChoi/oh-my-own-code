@@ -2,6 +2,7 @@ import {
   compositeOver,
   contrastRatio,
   flatten,
+  formatRatio,
   parseBoxShadow,
   textContrast,
 } from "./a11y-contrast.mjs";
@@ -10,6 +11,20 @@ import {
 // control-boundary contrast from computed styles, and keyboard focus indicators.
 // Colours are normalised by the browser (canvas), so oklch()/color-mix() work.
 // The maths lives in a11y-contrast.mjs; this file only reads the page.
+// Limitation: backgrounds come from the DOM ancestor chain only. Positioned
+// overlays, backdrop-filter, pseudo-element fills and z-index overlap behind a
+// text element are not modelled (text over a gradient/url image fails instead).
+// Every skipped category is returned in `skips` and printed in the check notes.
+
+const NO_BASE = { r: 255, g: 255, b: 255, a: 1 }; // window canvas under html
+
+// Allow-list entries are { match: RegExp on the element description, reason }.
+function checkAllow(allow) {
+  for (const a of allow)
+    if (!(a.match instanceof RegExp) || !String(a.reason ?? "").trim())
+      throw new Error("allow entries need { match: RegExp, reason: string }");
+  return (description) => allow.some((a) => a.match.test(description));
+}
 
 const PAGE_HELPERS = `(() => {
   const g = globalThis;
@@ -43,12 +58,12 @@ const PAGE_HELPERS = `(() => {
   // Jumps finite transitions to their end state (a hidden e2e window never
   // ticks them, so computed colours would lag the real ones); infinite
   // animations (spinners) are left alone. Style flush first, then finish.
-  g.__a11ySettle = () => {
+  g.__a11ySettle = (nodes) => {
+    const list = nodes ?? [...g.document.querySelectorAll("*")];
     for (let pass = 0; pass < 3; pass++) {
-      // Reading every element's style forces lazily-styled subtrees to start
-      // their pending transitions so they can be finished too.
-      for (const el of g.document.querySelectorAll("*"))
-        g.getComputedStyle(el).backgroundColor;
+      // Reading style forces lazily-styled subtrees to start their pending
+      // transitions so they can be finished too (nodes: only that chain).
+      for (const el of list) g.getComputedStyle(el).backgroundColor;
       for (const a of g.document.getAnimations())
         if (a.effect?.getComputedTiming().endTime !== Infinity) a.finish();
     }
@@ -72,7 +87,9 @@ const PAGE_HELPERS = `(() => {
 
 // Installs the page helpers. Colour transitions start at the next frame after a
 // theme/tab change and tick slowly in a hidden e2e window, so wait a beat for
-// them to exist, then jump them to the end state (see __a11ySettle).
+// them to exist, then jump them to the end state (see __a11ySettle). 300ms is
+// a few frames and more than twice the 120ms motion-fast token; the settle
+// itself does not depend on it, it only lets the transitions be created.
 const prepare = async (page) => {
   await page.evaluate(`if (!globalThis.__a11yNorm) ${PAGE_HELPERS}; true`);
   await page.evaluate(async () => {
@@ -87,10 +104,13 @@ const hex = ({ r, g, b }) =>
 
 /**
  * Text contrast of every visible text-bearing element under `scope`.
- * `allow` entries ({ match: RegExp tested on the description, reason }) exempt
- * documented decorative/placeholder cases. Returns { violations, checked, skipped }.
+ * Fails (not skips) on text over a background image/gradient and on colours the
+ * browser cannot parse, unless an `allow` entry ({ match, reason }) covers it.
+ * WCAG-exempt disabled text is skipped; every skip is counted in `skips`.
+ * Returns { violations, checked, skips }.
  */
 export async function auditContrast(page, scope = "body", { allow = [] } = {}) {
+  const allowed = checkAllow(allow);
   await prepare(page);
   const items = await page.evaluate((scopeSelector) => {
     const g = globalThis;
@@ -98,7 +118,8 @@ export async function auditContrast(page, scope = "body", { allow = [] } = {}) {
     const root = g.document.querySelector(scopeSelector);
     if (!root) return { error: `scope ${scopeSelector} not found` };
     const out = [];
-    const skipped = [];
+    const skips = {};
+    const skip = (reason) => (skips[reason] = (skips[reason] ?? 0) + 1);
     const seen = new Map();
     const consider = (el, kind) => {
       if (seen.get(el)?.has(kind)) return;
@@ -108,26 +129,27 @@ export async function auditContrast(page, scope = "body", { allow = [] } = {}) {
       if (rect.width === 0 || rect.height === 0) return;
       if (s.visibility !== "visible" || s.display === "none") return;
       if (el.closest("[aria-hidden='true'],[inert],[hidden],.xterm")) return;
-      const disabled = el.closest(":disabled,[aria-disabled='true']");
-      if (disabled) return skipped.push("disabled");
+      if (el.closest(":disabled,[aria-disabled='true']"))
+        return skip("disabled text (WCAG-exempt)");
       const color =
         kind === "placeholder"
           ? g.getComputedStyle(el, "::placeholder").color
           : s.color;
       const { layers, image } = g.__a11yLayers(el);
-      if (image) return skipped.push("background-image");
+      const opacity = g.__a11yOpacity(el);
+      if (opacity < 1 && layers.length) skip("opacity<1 (approximate)");
       out.push({
         kind,
         description: g.__a11yDescribe(el),
         fg: g.__a11yNorm(color),
         layers,
-        opacity: g.__a11yOpacity(el),
+        image,
+        opacity,
         fontSize: Number.parseFloat(s.fontSize),
         fontWeight: Number(s.fontWeight) || 400,
       });
     };
-    const all = [root, ...root.querySelectorAll("*")];
-    for (const el of all) {
+    for (const el of [root, ...root.querySelectorAll("*")]) {
       if (
         [...el.childNodes].some(
           (n) => n.nodeType === 3 && n.textContent.trim() !== "",
@@ -140,38 +162,48 @@ export async function auditContrast(page, scope = "body", { allow = [] } = {}) {
           !/^(checkbox|radio|range|color|file|hidden)$/.test(el.type)
         )
           consider(el, "text");
-        if (el.getAttribute("placeholder")) consider(el, "placeholder");
+        // The placeholder is only visible while the field is empty.
+        if (el.getAttribute("placeholder") && !el.value)
+          consider(el, "placeholder");
       }
     }
-    return { items: out, skipped };
+    return { items: out, skips };
   }, scope);
-  if (items.error) return { violations: [items.error], checked: 0, skipped: 0 };
+  if (items.error) return { violations: [items.error], checked: 0, skips: {} };
   const violations = [];
   const dedupe = new Set();
+  const add = (line) => {
+    if (!dedupe.has(line)) {
+      dedupe.add(line);
+      violations.push(line);
+    }
+  };
   for (const item of items.items) {
-    if (!item.fg) continue;
-    // The page canvas behind everything is white in this app's default window.
+    if (allowed(item.description)) continue;
+    if (!item.fg) {
+      add(`${item.kind} colour not parsable: ${item.description}`);
+      continue;
+    }
+    if (item.image) {
+      add(
+        `${item.kind} over a background image/gradient, contrast unverifiable: ${item.description}`,
+      );
+      continue;
+    }
     const result = textContrast({
       fg: item.fg,
       layers: item.layers,
-      base: { r: 255, g: 255, b: 255, a: 1 },
+      base: NO_BASE,
       opacity: item.opacity,
       fontSize: item.fontSize,
       fontWeight: item.fontWeight,
     });
     if (result.pass) continue;
-    if (allow.some((a) => a.match.test(item.description))) continue;
-    const line = `${item.kind} contrast ${result.ratio.toFixed(2)} < ${result.required}: ${item.description} (${hex(result.ink)} on ${hex(result.bg)}, ${item.fontSize}px/${item.fontWeight})`;
-    if (!dedupe.has(line)) {
-      dedupe.add(line);
-      violations.push(line);
-    }
+    add(
+      `${item.kind} contrast ${formatRatio(result.ratio)} < ${result.required}: ${item.description} (${hex(result.ink)} on ${hex(result.bg)}, ${item.fontSize}px/${item.fontWeight})`,
+    );
   }
-  return {
-    violations,
-    checked: items.items.length,
-    skipped: items.skipped.length,
-  };
+  return { violations, checked: items.items.length, skips: items.skips };
 }
 
 /**
@@ -183,6 +215,7 @@ export async function auditFieldBoundaries(
   scope = "body",
   { allow = [] } = {},
 ) {
+  const allowed = checkAllow(allow);
   await prepare(page);
   const items = await page.evaluate((scopeSelector) => {
     const g = globalThis;
@@ -199,9 +232,9 @@ export async function auditFieldBoundaries(
         continue;
       if (el.closest("[aria-hidden='true'],[inert],[hidden],.xterm,:disabled"))
         continue;
-      // The field itself, else a wrapper up to three levels up, may draw the edge.
+      // The field itself, else its direct wrapper, may draw the edge.
       const chain = [];
-      for (let n = el, i = 0; n && i < 4; n = n.parentElement, i++) {
+      for (let n = el, i = 0; n && i < 2; n = n.parentElement, i++) {
         const ns = g.getComputedStyle(n);
         const border = ["Top", "Right", "Bottom", "Left"]
           .map((side) => ({
@@ -221,7 +254,7 @@ export async function auditFieldBoundaries(
     return { items: out };
   }, scope);
   if (items.error) return { violations: [items.error], checked: 0 };
-  const base = { r: 255, g: 255, b: 255, a: 1 };
+  const base = NO_BASE;
   const violations = [];
   for (const item of items.items) {
     let best = 0;
@@ -238,9 +271,9 @@ export async function auditFieldBoundaries(
       }
     }
     if (best >= 3) continue;
-    if (allow.some((a) => a.match.test(item.description))) continue;
+    if (allowed(item.description)) continue;
     violations.push(
-      `field boundary contrast ${best.toFixed(2)} < 3: ${item.description} (best edge: ${note || "none"})`,
+      `field boundary contrast ${formatRatio(best)} < 3: ${item.description} (best edge: ${note || "none"})`,
     );
   }
   return { violations, checked: items.items.length };
@@ -253,13 +286,18 @@ const FOCUSABLE =
  * For each focusable control under `scope`: focus it with keyboard modality
  * (:focus-visible) and require a changed outline / ring box-shadow / border /
  * background whose colour is >= 3:1 against the surrounding background. The
- * control, its three nearest ancestors and its label may carry the indicator.
+ * control, its three nearest ancestors and its closest <label> (an ancestor of
+ * the control, not matched by FOCUSABLE itself) may carry the indicator.
+ * Unchecked categories are counted in `skips` (0x0 controls, role-less
+ * div[tabindex], elements that do not take focus); disabled controls are not
+ * focusable (WCAG-exempt) and are counted too.
  */
 export async function auditFocusIndicators(
   page,
   scope = "body",
   { allow = [] } = {},
 ) {
+  const allowed = checkAllow(allow);
   await prepare(page);
   await page.evaluate(() => globalThis.document.activeElement?.blur());
   await page.keyboard.press("Tab"); // keyboard modality => :focus-visible
@@ -310,28 +348,41 @@ export async function auditFocusIndicators(
         };
       };
       const out = [];
+      const skips = {};
+      const skip = (reason) => (skips[reason] = (skips[reason] ?? 0) + 1);
       for (const el of root.querySelectorAll(focusable)) {
         const rect = el.getBoundingClientRect();
         const s = g.getComputedStyle(el);
         if (s.visibility !== "visible" || s.display === "none") continue;
-        // Visually-hidden inputs (custom radios/switches) have a ~0 box; their
-        // wrapper (label) carries the indicator and is still a real stop.
-        if (rect.width === 0 && rect.height === 0) continue;
-        if (
-          el.closest("[aria-hidden='true'],[inert],[hidden],.xterm,:disabled")
-        )
+        if (el.closest("[aria-hidden='true'],[inert],[hidden],.xterm"))
           continue;
+        if (el.closest(":disabled")) {
+          skip("disabled control (WCAG-exempt)");
+          continue;
+        }
+        // Visually-hidden inputs (custom radios/switches) have a ~0 box and are
+        // not exercised here; they are counted, not silently dropped.
+        if (rect.width === 0 && rect.height === 0) {
+          skip("0x0 focusable");
+          continue;
+        }
         if (
           el.matches("[tabindex]") &&
           el.tagName === "DIV" &&
           !el.getAttribute("role")
-        )
+        ) {
+          skip("role-less div[tabindex]");
           continue;
+        }
         const nodes = chain(el);
+        g.__a11ySettle(nodes);
         const before = nodes.map(snap);
         el.focus({ focusVisible: true });
-        g.__a11ySettle();
-        if (g.document.activeElement !== el) continue;
+        g.__a11ySettle(nodes);
+        if (g.document.activeElement !== el) {
+          skip("did not take focus");
+          continue;
+        }
         const after = nodes.map(snap);
         const focusVisible = el.matches(":focus-visible");
         el.blur();
@@ -342,11 +393,12 @@ export async function auditFocusIndicators(
           after,
         });
       }
-      return { items: out };
+      return { items: out, skips };
     },
     { scopeSelector: scope, focusable: FOCUSABLE },
   );
-  if (result.error) return { violations: [result.error], checked: 0 };
+  if (result.error)
+    return { violations: [result.error], checked: 0, skips: {} };
   const shadowColors = [
     ...new Set(
       result.items.flatMap((item) =>
@@ -361,7 +413,7 @@ export async function auditFocusIndicators(
     shadowColors,
   );
   const shadowRgba = new Map(shadowColors.map((c, i) => [c, normalized[i]]));
-  const base = { r: 255, g: 255, b: 255, a: 1 };
+  const base = NO_BASE;
   const violations = [];
   const dedupe = new Set();
   for (const item of result.items) {
@@ -429,14 +481,14 @@ export async function auditFocusIndicators(
         }
     }
     if (best >= 3) continue;
-    if (allow.some((a) => a.match.test(item.description))) continue;
-    const line = `focus indicator ${kind === "none" ? "missing" : `${kind} ${best.toFixed(2)} < 3`}: ${item.description}${item.focusVisible ? "" : " (not :focus-visible)"}`;
+    if (allowed(item.description)) continue;
+    const line = `focus indicator ${kind === "none" ? "missing" : `${kind} ${formatRatio(best)} < 3`}: ${item.description}${item.focusVisible ? "" : " (not :focus-visible)"}`;
     if (!dedupe.has(line)) {
       dedupe.add(line);
       violations.push(line);
     }
   }
-  return { violations, checked: result.items.length };
+  return { violations, checked: result.items.length, skips: result.skips };
 }
 
 /**
@@ -446,9 +498,10 @@ export async function auditFocusIndicators(
  * takeFieldNotes(), because the borderless fill controls are an open design
  * decision (docs/engineering/backlog-status.md, F-18).
  */
-export function createVisualAudit(page) {
+export function createVisualAudit(page, { allow = {} } = {}) {
   const fieldNotes = [];
   const audited = [];
+  const skipped = {};
   const eachTheme = async (fn) => {
     try {
       for (const scheme of ["light", "dark"]) {
@@ -466,11 +519,20 @@ export function createVisualAudit(page) {
   const visualAudit = async (surface, scope) => {
     const found = [];
     let checked = 0;
+    const audits = [
+      ["contrast", auditContrast],
+      ["focus", auditFocusIndicators],
+    ];
     await eachTheme(async (scheme) => {
-      for (const audit of [auditContrast, auditFocusIndicators]) {
-        const r = await audit(page, scope);
+      for (const [name, audit] of audits) {
+        const r = await audit(page, scope, { allow: allow[name] ?? [] });
         checked += r.checked;
         found.push(...r.violations.map((v) => `[${scheme}] ${v}`));
+        for (const [reason, n] of Object.entries(r.skips ?? {}))
+          skipped[`${name}: ${reason}`] = Math.max(
+            skipped[`${name}: ${reason}`] ?? 0,
+            n,
+          );
       }
       const fields = await auditFieldBoundaries(page, scope);
       fieldNotes.push(
@@ -483,7 +545,11 @@ export function createVisualAudit(page) {
   };
   const takeFieldNotes = () => {
     const notes = [...new Set(fieldNotes.splice(0))];
-    const stats = `audited (text+focus checks, 2 themes): ${audited.splice(0).join(", ")}`;
+    const skips = Object.entries(skipped)
+      .map(([reason, n]) => `${reason} x${n}`)
+      .join(", ");
+    Object.keys(skipped).forEach((k) => delete skipped[k]);
+    const stats = `audited (text+focus checks, 2 themes): ${audited.splice(0).join(", ")}; unchecked (max per surface/theme): ${skips || "none"}`;
     return notes.length
       ? `${stats}; advisory, ${notes.length} field boundary note(s): ${notes.join("; ")}`
       : stats;

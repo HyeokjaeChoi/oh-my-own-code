@@ -114,18 +114,22 @@ try {
   ).toHaveCount(1);
   const cards = await page.locator("[data-tool-card],.tool-heading").count();
   assert.ok(cards > 0, "tool cards are rendered");
-  // Tool cards are collapsed by default: expand them so diff/output text is audited.
-  for (let round = 0; round < 4; round++)
+  // Tool cards are collapsed <details>: open them so diff/output text is audited.
+  // Open details only (clicking triggers could change state); a few rounds
+  // because nested details mount once their parent is open.
+  for (let round = 0; round < 3; round++)
     await page.evaluate(() => {
       for (const d of globalThis.document.querySelectorAll(
         "details:not([open])",
       ))
         d.open = true;
-      for (const b of globalThis.document.querySelectorAll(
-        ".transcript [aria-expanded='false']",
-      ))
-        b.click();
     });
+  // Pin what the audit must see, so a layout change cannot silently empty it:
+  // the error badge (the dark-theme contrast fix) and expanded-only output.
+  await expect(
+    page.locator('[data-tool-state="error"] summary [class*=summaryState]'),
+  ).toHaveText("오류");
+  await expect(page.getByText("src/a.ts:3:needle here")).toBeVisible();
   const { visualAudit, takeFieldNotes } = createVisualAudit(page);
   const found = await visualAudit("conversation + tool cards", "body");
   assert.equal(found.length, 0, found.join("\n"));
