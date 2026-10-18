@@ -178,3 +178,27 @@ test("policy uses original v2 read envelope and refuses mutation/outer requestId
     }),
   );
 });
+
+import { classifyPreset } from "./renderer/shared/configuration-draft/permission-preset.mjs";
+import { compileModeRules, legacyModeRules } from "./permission-mode.mjs";
+test("classifyPreset matches every compiled mode (and legacy), else custom", () => {
+  for (const mode of ["ask", "scoped_edit", "read_plan"]) {
+    assert.equal(classifyPreset(compileModeRules(mode)), mode);
+    assert.equal(classifyPreset(legacyModeRules(mode)), mode);
+  }
+  const ask = compileModeRules("ask").map((r) => ({ ...r }));
+  assert.equal(classifyPreset(ask), "ask");
+  // mixed: scoped_edit with shell opened up, or floor removed / reordered
+  const scoped = compileModeRules("scoped_edit").map((r) => ({ ...r }));
+  const open = scoped.map((r) =>
+    r.action === "shell" ? { ...r, effect: "allow" } : r,
+  );
+  assert.equal(classifyPreset(open), "custom");
+  assert.equal(classifyPreset(scoped.slice(0, -1)), "custom");
+  assert.equal(classifyPreset([...ask].reverse()), "custom");
+  assert.equal(classifyPreset([...ask, { ...ask[0] }]), "custom");
+});
+test("classifyPreset treats empty and malformed input as custom", () => {
+  for (const bad of [[], undefined, null, "ask", {}, [null], [1], [{}]])
+    assert.equal(classifyPreset(bad), "custom");
+});

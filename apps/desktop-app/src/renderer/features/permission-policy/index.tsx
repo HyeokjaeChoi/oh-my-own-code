@@ -6,7 +6,76 @@ import {
   useWorkbenchSelector,
 } from "../../entities/workbench/index.js";
 import type { WorkbenchPermissionPolicyObservation } from "../../shared/api/index.js";
+import {
+  classifyPreset,
+  type PermissionPresetId,
+} from "../../shared/configuration-draft/index.js";
 import styles from "./policy.module.css";
+
+const PRESETS: readonly {
+  id: PermissionPresetId;
+  label: string;
+  detail: string;
+}[] = [
+  {
+    id: "ask",
+    label: "요청마다 확인",
+    detail: "기본값. 읽기·편집·명령 실행 등 모든 도구 사용을 매번 묻습니다.",
+  },
+  {
+    id: "scoped_edit",
+    label: "범위 내 편집 허용",
+    detail:
+      "작업 공간 안 파일 편집은 묻지 않습니다(.git/.hg 메타데이터 제외). 읽기·검색은 허용하고 .env 읽기는 묻습니다. 셸 명령과 웹 접근은 거부합니다.",
+  },
+  {
+    id: "read_plan",
+    label: "읽기/계획",
+    detail:
+      "읽기·검색만 허용하고(.env 읽기는 묻습니다) 편집·셸 명령·웹 접근은 거부합니다.",
+  },
+  {
+    id: "custom",
+    label: "사용자 정의",
+    detail: "위 세 프리셋의 규칙과 정확히 일치하지 않는 규칙입니다.",
+  },
+];
+
+function Presets({ rules }: { rules: Available["sessionRules"] | undefined }) {
+  const current = rules ? classifyPreset(rules) : undefined;
+  return (
+    <section aria-labelledby="permission-presets-title">
+      <h4 id="permission-presets-title">권한 프리셋</h4>
+      <p>
+        {current
+          ? "현재 세션 규칙과 일치하는 프리셋에 표시합니다."
+          : "세션 권한 규칙을 확인하면 현재 프리셋이 표시됩니다."}{" "}
+        이 목록은 보기 전용입니다. 모드는 작성창의 권한 메뉴에서 바꿉니다.
+      </p>
+      <ul className={styles.rules} data-permission-presets>
+        {PRESETS.map((preset) => (
+          <li
+            key={preset.id}
+            data-permission-preset={preset.id}
+            data-current={preset.id === current ? "true" : "false"}
+            aria-current={preset.id === current ? "true" : undefined}
+          >
+            <strong>{preset.label}</strong>
+            {preset.id === current && (
+              <span className={styles.mismatch}> · 현재</span>
+            )}
+            <br />
+            {preset.detail}
+          </li>
+        ))}
+      </ul>
+      <p data-permission-floor>
+        작업 공간 밖 접근(external_directory)은 모든 프리셋에서 항상 거부되며,
+        앱이 강제하는 하한선입니다.
+      </p>
+    </section>
+  );
+}
 
 type Available = Extract<
   WorkbenchPermissionPolicyObservation,
@@ -149,6 +218,7 @@ export function PermissionPolicy({
       {!canObserve && !entry.request && (
         <p>현재 선택의 연결·신뢰·복구 상태와 새 세션 상태 확인이 필요합니다.</p>
       )}
+      <Presets rules={available?.sessionRules} />
       {available && (
         <>
           <h4>세션에 저장된 규칙</h4>
