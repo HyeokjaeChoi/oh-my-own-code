@@ -60,6 +60,9 @@ export function validSessionTitle(title: string) {
   );
 }
 export const RECENT_LIMIT = 5;
+// Stored list is longer than the display limit: archived, removed, open and
+// other-workspace entries are filtered out at display time.
+export const RECENT_STORE_LIMIT = 50;
 export type SessionActivity = {
   status: Record<string, WorkbenchSession["status"]>;
   unread: string[];
@@ -143,7 +146,7 @@ export function trackSessions(
     active,
     status: Object.fromEntries(sessions.map((s) => [s.id, s.status])),
     unread: [...unread],
-    recent: recent.filter((id) => ids.has(id)).slice(0, RECENT_LIMIT),
+    recent: recent.filter((id) => ids.has(id)).slice(0, RECENT_STORE_LIMIT),
     selectedId,
   };
 }

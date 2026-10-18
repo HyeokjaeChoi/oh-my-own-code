@@ -612,7 +612,7 @@ try {
   // It also shows in the recent group (with its own unread marker in the name).
   const recent = page.getByRole("navigation", { name: "최근 연 세션" });
   const recentItem = recent.getByRole("button", {
-    name: new RegExp(`^최근 연 세션 ${firstTitle}`),
+    name: firstTitle, // substring match: unread adds a suffix
   });
   await expect(recentItem).toBeVisible();
   await recentItem.click();
@@ -655,6 +655,7 @@ try {
         .slice(-20)
         .join("\n"),
   );
+  bgHeld?.();
   mock.close();
   console.log(JSON.stringify({ observations, mockRequests: requests.length }));
 }

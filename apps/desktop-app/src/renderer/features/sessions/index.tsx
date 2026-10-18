@@ -14,6 +14,7 @@ import {
   trackSessions,
   visibleSessions,
   recentSessions,
+  RECENT_STORE_LIMIT,
   validSessionTitle,
   isPlaceholderTitle,
   relativeTime,
@@ -61,7 +62,11 @@ function loadRecent(): string[] {
       globalThis.localStorage?.getItem(RECENT_KEY) ?? "[]",
     );
     return Array.isArray(value)
-      ? value.filter((id): id is string => typeof id === "string").slice(0, 5)
+      ? [
+          ...new Set(
+            value.filter((id): id is string => typeof id === "string"),
+          ),
+        ].slice(0, RECENT_STORE_LIMIT)
       : [];
   } catch {
     return [];
@@ -118,6 +123,7 @@ function useSessionActivity(sessions: WorkbenchSession[], selectedId?: string) {
   );
 }
 export function SessionNavigation(props: Props) {
+  const recentLabelId = useId();
   const { unread, active, recent } = useSessionActivity(
     props.sessions,
     props.selectedId,
@@ -204,9 +210,9 @@ export function SessionNavigation(props: Props) {
       {reopen.length > 0 && (
         <nav
           className={`${styles.recent} session-recent`}
-          aria-label="최근 연 세션"
+          aria-labelledby={recentLabelId}
         >
-          <p className={styles.recentLabel} aria-hidden="true">
+          <p id={recentLabelId} className={styles.recentLabel}>
             최근 연 세션
           </p>
           <ul>
@@ -215,7 +221,12 @@ export function SessionNavigation(props: Props) {
                 <button
                   type="button"
                   className={styles.recentButton}
-                  aria-label={`최근 연 세션 ${session.title}${unread.includes(session.id) ? ", 읽지 않은 응답" : ""}`}
+                  title={session.title}
+                  aria-label={
+                    unread.includes(session.id)
+                      ? `${session.title}, 읽지 않은 응답`
+                      : session.title
+                  }
                   data-session-recent={session.id}
                   onClick={() => props.select(session.id)}
                 >
