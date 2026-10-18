@@ -211,3 +211,44 @@
     background: CanvasText;
   }
 }
+
+.recent {
+  margin: 0 0 8px;
+  padding: 0 0 4px;
+}
+.recent ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.recentButton {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--omoc-component-size-sidebar-row-height);
+  padding: 4px 8px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: var(--omoc-semantic-color-text-secondary);
+  cursor: pointer;
+  text-align: left;
+  font-size: var(--omoc-component-type-navigation-size);
+  line-height: var(--omoc-component-type-navigation-line);
+}
+.recentButton:hover {
+  background: var(--omoc-component-color-navigation-hover-background);
+}
+.recentButton:focus-visible {
+  outline: 2px solid var(--omoc-semantic-color-focus);
+  outline-offset: 2px;
+}
+.recentLabel {
+  margin: 0;
+  padding: 0 8px 2px;
+  color: var(--omoc-semantic-color-text-tertiary);
+  font-size: var(--omoc-semantic-type-size-caption);
+  line-height: var(--omoc-semantic-type-line-caption);
+}
