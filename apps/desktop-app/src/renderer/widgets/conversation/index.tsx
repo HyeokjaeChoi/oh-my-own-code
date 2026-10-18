@@ -32,6 +32,7 @@ import {
   Square,
   X,
 } from "lucide-react";
+import { redactText } from "../../shared/data-transfer/index.js";
 import { mapMessages } from "../../shared/projection/index.js";
 import { parseSubagentResult } from "../../shared/subagents/index.js";
 import {
@@ -177,12 +178,18 @@ function ToolDetail({
   const rawState = typeof args.state === "string" ? args.state : "pending";
   const pendingPermissions = permissionsForTool(ctx.permissions, toolCallId);
   const state = effectiveToolStatus(rawState, pendingPermissions);
-  const output =
+  const [rawOpen, setRawOpen] = useState(false);
+  // One redaction point for everything this card shows.
+  const output = redactText(
     typeof result === "string"
       ? result
       : typeof args.output === "string"
         ? args.output
-        : "";
+        : "",
+  ).text;
+  const input = redactText(
+    typeof args.input === "string" ? args.input : "",
+  ).text;
   let decoded: unknown = null;
   try {
     if (output.length <= 8192) decoded = JSON.parse(output);
@@ -193,7 +200,7 @@ function ToolDetail({
   const preview = state === "completed" ? parseSafeLinkPreview(decoded) : null;
   const view = deriveToolView({
     name: toolName,
-    input: typeof args.input === "string" ? args.input : "",
+    input,
     output,
     status: rawState,
   });
@@ -263,20 +270,25 @@ function ToolDetail({
           </div>
         ) : null}
         {view.kind !== "generic" && (
-          <details className={styles.rawIo}>
+          <details
+            className={styles.rawIo}
+            onToggle={(event) => setRawOpen(event.currentTarget.open)}
+          >
             <summary className={styles.muted}>원본 입력·결과</summary>
-            <OutputPre>
-              {typeof args.input === "string" ? args.input : ""}
-            </OutputPre>
-            <OutputPre>{output || "아직 출력이 없습니다."}</OutputPre>
+            {rawOpen && (
+              <>
+                <p className={styles.muted}>입력</p>
+                <OutputPre>{input}</OutputPre>
+                <p className={styles.muted}>결과</p>
+                <OutputPre>{output || "아직 출력이 없습니다."}</OutputPre>
+              </>
+            )}
           </details>
         )}
         {view.kind === "generic" && (
           <>
             <p className={styles.muted}>입력</p>
-            <OutputPre>
-              {typeof args.input === "string" ? args.input : ""}
-            </OutputPre>
+            <OutputPre>{input}</OutputPre>
             <p className={styles.muted}>
               {state === "completed" || state === "error"
                 ? "결과"

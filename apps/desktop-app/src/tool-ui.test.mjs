@@ -97,7 +97,6 @@ test("hostile and huge input stays bounded and text-only", () => {
     tool("edit", { path: "a", oldString: "x".repeat(1e6), newString: "y" }),
   );
   assert.ok(long.rows[0].text.length <= MAX_LINE + 1);
-  assert.ok(long.hiddenRows > 0);
   const p = deriveToolView(
     tool("apply_patch", { patchText: "+a\n".repeat(1e5) }),
   );
@@ -140,4 +139,29 @@ test("unknown tools, binary-ish output and deep JSON fall back safely", () => {
   assert.equal(bin.kind, "shell");
   assert.equal(bin.exitCode, null);
   assert.equal(deriveToolView(tool("read", { filePath: 1 })).kind, "generic");
+});
+
+test("long edit keeps both sides and marks truncation; marker and clipped paths are not paths", () => {
+  const e = deriveToolView(
+    tool("edit", {
+      path: "a",
+      oldString: Array.from({ length: 800 }, (_, i) => `old${i}`).join("\n"),
+      newString: "NEW",
+    }),
+  );
+  assert.ok(e.rows.some((r) => r.sign === "+" && r.text === "NEW"));
+  assert.ok(e.rows.length <= MAX_ROWS);
+  assert.equal(e.hiddenRows, 800 - (MAX_ROWS - 1));
+  const g = deriveToolView(
+    tool(
+      "glob",
+      { pattern: "*" },
+      `a.ts\n${"p".repeat(MAX_LINE + 5)}\n… 표시 길이 제한`,
+    ),
+  );
+  assert.deepEqual(
+    g.matches.map((m) => m.path),
+    ["a.ts", null],
+  );
+  assert.equal(g.hiddenMatches, 1);
 });
