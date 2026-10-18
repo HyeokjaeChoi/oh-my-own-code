@@ -25,6 +25,12 @@ import { _electron as electron, expect } from "@playwright/test";
 import { createWorkbenchBridge } from "./e2e-bridge.mjs";
 import { openComposerPopover } from "./e2e-composer.mjs";
 import { auditDialogFocus, auditDom, auditTabOrder } from "./e2e-a11y.mjs";
+import {
+  auditContrast,
+  auditFieldBoundaries,
+  auditFocusIndicators,
+  createVisualAudit,
+} from "./e2e-a11y-visual.mjs";
 
 const CONNECT_TIMEOUT_MS =
   Number(process.env.OMOC_E2E_CONNECT_TIMEOUT_MS) || 150000;
@@ -149,8 +155,13 @@ try {
         throw Object.assign(new Error("runtime unavailable"), {
           blocked: true,
         });
-      await fn();
-      results.push({ name, status: "pass", ms: Date.now() - started });
+      const notes = await fn();
+      results.push({
+        name,
+        status: "pass",
+        ms: Date.now() - started,
+        ...(typeof notes === "string" && { notes }),
+      });
     } catch (error) {
       const file = `${name}-failure.png`;
       await page.screenshot({ path: join(run, file) }).catch(() => {});
@@ -757,6 +768,166 @@ try {
     }
     await page.keyboard.press("Escape");
     await expect(search).toBeHidden();
+  });
+
+  // Visual a11y: WCAG contrast (text) and keyboard focus indicators on each key
+  // surface, in both themes (the app follows the OS colour scheme by default),
+  // plus advisory field-boundary notes. Nothing is allow-listed here.
+  const { visualAudit, takeFieldNotes } = createVisualAudit(page);
+  const tagScope = async (locator) => {
+    await locator.evaluate((el) => {
+      globalThis.document
+        .querySelectorAll("[data-a11y-scope]")
+        .forEach((n) => n.removeAttribute("data-a11y-scope"));
+      el.setAttribute("data-a11y-scope", "");
+    });
+    return "[data-a11y-scope]";
+  };
+
+  await check("a11y-visual-detects-violations", async () => {
+    // Guard against a vacuous audit: a low-contrast text, a borderless field and a
+    // control with no focus indicator must be reported; a good control must not.
+    await page.evaluate(() => {
+      // CSP forbids inline style attributes/markup: build with the CSSOM.
+      const doc = globalThis.document;
+      const host = doc.createElement("div");
+      host.id = "a11y-visual-seed";
+      Object.assign(host.style, { background: "#fff", padding: "8px" });
+      const make = (tag, props, style = {}) => {
+        const el = doc.createElement(tag);
+        Object.assign(el, props);
+        Object.assign(el.style, style);
+        host.append(el);
+        return el;
+      };
+      const text = { font: "14px sans-serif" };
+      make(
+        "p",
+        { textContent: "low contrast text" },
+        { ...text, color: "#bbb" },
+      );
+      make("p", { textContent: "fine text" }, { ...text, color: "#222" });
+      make("input", {}, { border: "0", background: "#fff" }).setAttribute(
+        "aria-label",
+        "seed field",
+      );
+      make("button", { textContent: "no indicator" }, { outline: "none" });
+      make("button", { textContent: "has indicator", className: "a11y-ok" });
+      const sheet = new globalThis.CSSStyleSheet();
+      sheet.replaceSync(".a11y-ok:focus-visible{outline:2px solid #000}");
+      doc.adoptedStyleSheets = [...doc.adoptedStyleSheets, sheet];
+      globalThis.document.body.append(host);
+    });
+    try {
+      const seeded = await auditContrast(page, "#a11y-visual-seed");
+      const contrast = seeded.violations;
+      assert.equal(contrast.length, 1, JSON.stringify(seeded));
+      assert.match(contrast[0], /low contrast text/);
+      const field = (await auditFieldBoundaries(page, "#a11y-visual-seed"))
+        .violations;
+      assert.equal(field.length, 1, "field: " + field.join("\n"));
+      const focus = (await auditFocusIndicators(page, "#a11y-visual-seed"))
+        .violations;
+      assert.ok(
+        focus.some((v) => v.includes("no indicator")),
+        focus.join("\n"),
+      );
+      assert.ok(
+        !focus.some((v) => v.includes("has indicator")),
+        focus.join("\n"),
+      );
+    } finally {
+      await page.evaluate(() =>
+        globalThis.document.getElementById("a11y-visual-seed")?.remove(),
+      );
+    }
+  });
+
+  await check("a11y-visual-workbench-shell", async () => {
+    failIfAny("shell visual", await visualAudit("shell + sidebar", "body"));
+    return takeFieldNotes();
+  });
+
+  await check(
+    "a11y-visual-composer-permission",
+    async () => {
+      const panel = await openComposerPopover(page, "permission");
+      await expect(
+        panel.getByRole("radio", { name: /^요청마다 확인/ }),
+      ).toBeEnabled({ timeout: 15000 });
+      failIfAny(
+        "permission visual",
+        await visualAudit("permission popover", await tagScope(panel)),
+      );
+      await page.keyboard.press("Escape");
+      return takeFieldNotes();
+    },
+    { needs: "runtime" },
+  );
+
+  await check("a11y-visual-settings-tabs", async () => {
+    await openSettings(page);
+    await expect(dialog()).toBeVisible();
+    const tabs = dialog().getByRole("tab");
+    const names = await tabs.allInnerTexts();
+    assert.ok(names.length >= 2, "settings has page tabs");
+    const found = [];
+    for (const name of names) {
+      await dialog().getByRole("tab", { name, exact: true }).click();
+      found.push(
+        ...(await visualAudit(`settings ${name.trim()}`, "[role=dialog]")),
+      );
+    }
+    failIfAny("settings visual", found);
+    await page.keyboard.press("Escape");
+    return takeFieldNotes();
+  });
+
+  await check("a11y-visual-menus", async () => {
+    const found = [];
+    await openWorkspaceMenu(page);
+    found.push(...(await visualAudit("workspace menu", '[role="menu"]')));
+    await page.keyboard.press("Escape");
+    await page.getByRole("button", { name: "더 보기", exact: true }).click();
+    found.push(...(await visualAudit("more menu", '[role="menu"]')));
+    await page.keyboard.press("Escape");
+    failIfAny("menus visual", found);
+    return takeFieldNotes();
+  });
+
+  await check(
+    "a11y-visual-side-panel",
+    async () => {
+      await openPanel("작업");
+      const tabs = page.locator(".panel-tabs").getByRole("tab");
+      const names = await tabs.allInnerTexts();
+      assert.ok(names.length >= 2, "side panel has tabs");
+      const found = [];
+      // The terminal tab is an xterm canvas (not DOM text) and is audited elsewhere.
+      for (const name of names.filter((n) => n.trim() !== "터미널")) {
+        await page
+          .locator(".panel-tabs")
+          .getByRole("tab", { name: name.trim(), exact: true })
+          .click();
+        found.push(...(await visualAudit(`side panel ${name.trim()}`, "body")));
+      }
+      failIfAny("side panel visual", found);
+      return takeFieldNotes();
+    },
+    { needs: "runtime" },
+  );
+
+  await check("a11y-visual-command-palette", async () => {
+    await page.keyboard.press(`${mod}+k`);
+    await expect(
+      page.getByRole("combobox", { name: "명령 검색" }),
+    ).toBeVisible();
+    failIfAny(
+      "palette visual",
+      await visualAudit("command palette", "[role=dialog]"),
+    );
+    await page.keyboard.press("Escape");
+    return takeFieldNotes();
   });
 
   await check(

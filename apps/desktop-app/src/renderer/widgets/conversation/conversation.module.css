@@ -803,7 +803,9 @@ details[open] > .disclosure > .chevron {
   cursor: pointer;
 }
 
+/* Danger text on the hover fill is 4.37:1 in dark; the subtle fill clears 4.5:1. */
 .toolDetail[data-tool-state="error"] .toolCall > .disclosure .summaryState {
+  background: var(--omoc-semantic-color-fill-subtle);
   color: var(--omoc-semantic-color-danger-foreground);
 }
 
