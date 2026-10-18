@@ -51,6 +51,7 @@ const CHILD_REPLY = "CHILD-REPLY-FIXTURE";
 const SHELL_OUT = "SHELL-OUT-FIXTURE";
 let slowClosed = false;
 let slowOpen = false;
+let bgHeld; // BG-FIXTURE response held open until the test releases it
 
 const fixture = await realpath(await mkdtemp(join(tmpdir(), "omoc-chat-e2e-")));
 const scratch = join(fixture, "tmp");
@@ -172,6 +173,18 @@ const mock = createServer((req, res) => {
         clearTimeout(timer);
         slowClosed = true;
       });
+      return;
+    }
+    if (lastUser.startsWith("BG-FIXTURE")) {
+      // Stream one chunk, then hold until the test lets the turn finish.
+      res.writeHead(200, { "content-type": "text/event-stream" });
+      res.write(
+        `data: ${JSON.stringify({ id: "chatcmpl-bg", object: "chat.completion.chunk", created: 1, model: "mock-model", choices: [{ index: 0, delta: { role: "assistant", content: "Background reply started" }, finish_reason: null }] })}\n\n`,
+      );
+      bgHeld = () =>
+        res.end(
+          `data: ${JSON.stringify({ id: "chatcmpl-bg", object: "chat.completion.chunk", created: 1, model: "mock-model", choices: [{ index: 0, delta: { content: " and finished." }, finish_reason: "stop" }], usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 } })}\n\ndata: [DONE]\n\n`,
+        );
       return;
     }
     const special = /^(SUBAGENT|SHELL)-FIXTURE/u.exec(lastUser);
@@ -572,6 +585,42 @@ try {
   assert.equal(await prompt.count(), 0, "no prompt in scoped_edit");
   assert.match(await readFile(written2, "utf8"), new RegExp(WRITE_TEXT));
   observations.push("mode change: scoped_edit write ran without a prompt");
+
+  // F-04: unread state + recent reopen. Last on purpose: it adds a session.
+  // Row buttons are located by title; the recent list is a separate group
+  // whose buttons are named "최근 연 세션 <title>".
+  const firstTitle = (await snapshot()).value.sessions[0].title;
+  const rowOf = (title) =>
+    page.locator(".session-row button[title]").filter({ hasText: title });
+  await send("BG-FIXTURE");
+  await expect.poll(() => bgHeld !== undefined, { timeout: 90_000 }).toBe(true);
+  await page
+    .getByRole("button", { name: "새 세션", exact: true })
+    .first()
+    .click();
+  // The held session is now a background one: still running, no unread yet.
+  await expect(rowOf(firstTitle)).toHaveCount(1);
+  await expect(page.locator("[data-session-unread]")).toHaveCount(0);
+  bgHeld();
+  await expect(rowOf(firstTitle).locator("[data-session-unread]")).toHaveCount(
+    1,
+    { timeout: 90_000 },
+  );
+  await expect(
+    rowOf(firstTitle).getByRole("img", { name: "읽지 않은 응답" }),
+  ).toBeVisible();
+  // It also shows in the recent group (with its own unread marker in the name).
+  const recent = page.getByRole("navigation", { name: "최근 연 세션" });
+  const recentItem = recent.getByRole("button", {
+    name: firstTitle, // substring match: unread adds a suffix
+  });
+  await expect(recentItem).toBeVisible();
+  await recentItem.click();
+  await expect(page.locator(".workbench-header strong")).toHaveText(firstTitle);
+  await expect(page.locator("[data-session-unread]")).toHaveCount(0);
+  observations.push(
+    "F-04: background session finish shows unread dot, recent group reopens it and clears the dot",
+  );
   assert.ok(requests.some((r) => r.tools > 0));
 } catch (error) {
   try {
@@ -606,6 +655,7 @@ try {
         .slice(-20)
         .join("\n"),
   );
+  bgHeld?.();
   mock.close();
   console.log(JSON.stringify({ observations, mockRequests: requests.length }));
 }

@@ -13,6 +13,8 @@ import {
   emptyActivity,
   trackSessions,
   visibleSessions,
+  recentSessions,
+  RECENT_STORE_LIMIT,
   validSessionTitle,
   isPlaceholderTitle,
   relativeTime,
@@ -53,6 +55,23 @@ const labels = {
 // Module-level so unread/recent survive the navigation unmounting or a workspace switch.
 // Last-activity times persist per profile so "3분" survives a restart.
 const ACTIVE_KEY = "omoc.sessionActive.v1";
+const RECENT_KEY = "omoc.sessionRecent.v1";
+function loadRecent(): string[] {
+  try {
+    const value: unknown = JSON.parse(
+      globalThis.localStorage?.getItem(RECENT_KEY) ?? "[]",
+    );
+    return Array.isArray(value)
+      ? [
+          ...new Set(
+            value.filter((id): id is string => typeof id === "string"),
+          ),
+        ].slice(0, RECENT_STORE_LIMIT)
+      : [];
+  } catch {
+    return [];
+  }
+}
 function loadActive(): Record<string, number> {
   try {
     const value: unknown = JSON.parse(
@@ -67,9 +86,15 @@ function loadActive(): Record<string, number> {
     return {};
   }
 }
-let activity: SessionActivity = { ...emptyActivity, active: loadActive() };
+let activity: SessionActivity = {
+  ...emptyActivity,
+  active: loadActive(),
+  recent: loadRecent(),
+};
 const listeners = new Set<() => void>();
 function track(sessions: WorkbenchSession[], selectedId?: string) {
+  // An empty list is "not loaded yet", not "all sessions gone": keep persisted recents.
+  if (sessions.length === 0) return;
   const next = trackSessions(activity, sessions, selectedId);
   if (JSON.stringify(next) === JSON.stringify(activity)) return;
   if (JSON.stringify(next.active) !== JSON.stringify(activity.active))
@@ -77,6 +102,12 @@ function track(sessions: WorkbenchSession[], selectedId?: string) {
       globalThis.localStorage?.setItem(ACTIVE_KEY, JSON.stringify(next.active));
     } catch {
       // Blocked storage: times last for this session only.
+    }
+  if (JSON.stringify(next.recent) !== JSON.stringify(activity.recent))
+    try {
+      globalThis.localStorage?.setItem(RECENT_KEY, JSON.stringify(next.recent));
+    } catch {
+      // Blocked storage: recents last for this session only.
     }
   activity = next;
   for (const listener of listeners) listener();
@@ -92,7 +123,8 @@ function useSessionActivity(sessions: WorkbenchSession[], selectedId?: string) {
   );
 }
 export function SessionNavigation(props: Props) {
-  const { unread, active } = useSessionActivity(
+  const recentLabelId = useId();
+  const { unread, active, recent } = useSessionActivity(
     props.sessions,
     props.selectedId,
   );
@@ -112,6 +144,15 @@ export function SessionNavigation(props: Props) {
     query,
     archived,
   );
+  const reopen =
+    archived || query.trim()
+      ? []
+      : recentSessions(
+          props.sessions,
+          recent,
+          props.workspaceId,
+          props.selectedId,
+        );
   return (
     <div className={`${styles.navigation} session-navigation`}>
       <div className={styles.sectionHeader}>
@@ -165,6 +206,42 @@ export function SessionNavigation(props: Props) {
             }}
           />
         </label>
+      )}
+      {reopen.length > 0 && (
+        <nav
+          className={`${styles.recent} session-recent`}
+          aria-labelledby={recentLabelId}
+        >
+          <p id={recentLabelId} className={styles.recentLabel}>
+            최근 연 세션
+          </p>
+          <ul>
+            {reopen.map((session) => (
+              <li key={session.id}>
+                <button
+                  type="button"
+                  className={styles.recentButton}
+                  title={session.title}
+                  aria-label={
+                    unread.includes(session.id)
+                      ? `${session.title}, 읽지 않은 응답`
+                      : session.title
+                  }
+                  data-session-recent={session.id}
+                  onClick={() => props.select(session.id)}
+                >
+                  <span className={styles.title}>{session.title}</span>
+                  {unread.includes(session.id) && (
+                    <span
+                      className={`${styles.dot} ${styles.unread}`}
+                      aria-hidden="true"
+                    />
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
       )}
       <ul className={`${styles.list} session-list`}>
         {sessions.map((session) => {

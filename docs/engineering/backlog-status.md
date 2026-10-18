@@ -39,15 +39,15 @@ Status: `done` = implemented end to end; `partial` = some of the clause exists; 
 
 ## F-04 Sessions
 
-| Clause                                                  | Status  | Evidence                                                                          |
-| ------------------------------------------------------- | ------- | --------------------------------------------------------------------------------- |
-| Create, rename, pin, archive/restore, delete            | done    | contract `:151-171`; `features/sessions/index.tsx`                                |
-| Search                                                  | done    | `sessions/index.tsx:50`                                                           |
-| Recent reopen                                           | missing | none                                                                              |
-| Unread state                                            | missing | none                                                                              |
-| Two parallel sessions on different paths, no cross-talk | partial | per-session locks in service; no dedicated test found                             |
-| Fork vs empty new session                               | done    | `sessions/index.tsx:244`, `session.create`                                        |
-| Restore after restart, missing path shown               | partial | registry/journal restore (`host/storage-journal.mjs`); missing-path UI unverified |
+| Clause                                                  | Status  | Evidence                                                                                                   |
+| ------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
+| Create, rename, pin, archive/restore, delete            | done    | contract `:151-171`; `features/sessions/index.tsx`                                                         |
+| Search                                                  | done    | `sessions/index.tsx:50`                                                                                    |
+| Recent reopen                                           | done    | `sessions/index.tsx` recent group (last 5, persisted), `recentSessions`; `e2e-chat` F-04 turn (2026-10-18) |
+| Unread state                                            | done    | `trackSessions`, `data-session-unread` dot; permission dot; `e2e-chat` F-04 turn (2026-10-18)              |
+| Two parallel sessions on different paths, no cross-talk | partial | per-session locks in service; no dedicated test found                                                      |
+| Fork vs empty new session                               | done    | `sessions/index.tsx:244`, `session.create`                                                                 |
+| Restore after restart, missing path shown               | partial | registry/journal restore (`host/storage-journal.mjs`); missing-path UI unverified                          |
 
 ## F-05 Conversation
 
