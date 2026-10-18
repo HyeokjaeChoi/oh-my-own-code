@@ -61,6 +61,7 @@ import type {
   WorktreeResult,
 } from "../../../desktop-bridge.js";
 import { selectionKey } from "../../shared/projection/index.js";
+import { inlineExplained } from "../../shared/providers/index.js";
 import styles from "./shell.module.css";
 
 const MIN_PANEL_WIDTH = 320;
@@ -914,7 +915,7 @@ export function Workbench() {
           </div>
         ) : (
           snapshot?.error &&
-          !turnFailure && (
+          !inlineExplained(turnFailure, snapshot.error.code) && (
             <div
               className={`${styles.statusLine} ${styles.error}`}
               role="alert"

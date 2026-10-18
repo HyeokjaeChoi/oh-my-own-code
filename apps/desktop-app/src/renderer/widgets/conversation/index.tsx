@@ -311,7 +311,7 @@ function FreeFailureNote({
   kind,
   onRetry,
 }: {
-  kind: "unavailable" | "limit" | "auth" | "server";
+  kind: "unavailable" | "limit" | "auth" | "refused" | "server";
   onRetry?: (() => void) | undefined;
 }) {
   return (
@@ -323,7 +323,9 @@ function FreeFailureNote({
             ? "무료 사용 한도에 걸렸습니다. 잠시 후 다시 시도하거나 다른 모델을 고르세요."
             : kind === "auth"
               ? "제공자가 요청을 거부했습니다. 키 또는 요금제를 확인하세요."
-              : "제공자 응답 오류입니다. 잠시 후 다시 시도하세요."}
+              : kind === "refused"
+                ? "제공자가 이 요청을 거절했습니다."
+                : "제공자 응답 오류입니다. 잠시 후 다시 시도하세요."}
       </p>
       {kind === "auth" && (
         <Button
@@ -464,12 +466,12 @@ export function Conversation(props: Props) {
     : sessionSetting?.agent
       ? agentName(sessionSetting.agent)
       : "기본 에이전트";
+  const reportedModelName = reportedModel?.name ?? sessionSetting?.model?.id;
   const modelLabel = model
     ? (selectedModel?.name ?? model)
-    : defaultModelText(reportedModel?.name ?? sessionSetting?.model?.id).chip;
+    : defaultModelText(reportedModelName).chip;
   // Requested for the next send vs reported by the session: a difference is
   // shown as a dot on the chip with the detail in its tooltip.
-  const reportedModelName = reportedModel?.name ?? sessionSetting?.model?.id;
   const modelMismatch =
     Boolean(model && selectedModel && sessionSetting?.model) &&
     (selectedModel?.providerId !== sessionSetting?.model?.providerId ||
@@ -548,7 +550,10 @@ export function Conversation(props: Props) {
   const failures = useMemo(() => {
     const found = new Map<
       string,
-      { kind: "unavailable" | "limit" | "auth" | "server"; id?: string }
+      {
+        kind: "unavailable" | "limit" | "auth" | "refused" | "server";
+        id?: string;
+      }
     >();
     const entries =
       props.catalog?.models.status === "available"
@@ -1383,9 +1388,7 @@ export function Conversation(props: Props) {
                       model={model}
                       variant={variant}
                       variantCleared={variantCleared}
-                      reportedName={
-                        reportedModel?.name ?? sessionSetting?.model?.id
-                      }
+                      reportedName={reportedModelName}
                       disabled={optionsHeld}
                       unavailable={unavailable}
                       onModel={setModel}

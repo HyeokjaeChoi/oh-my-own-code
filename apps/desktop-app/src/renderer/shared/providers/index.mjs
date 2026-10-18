@@ -162,16 +162,21 @@ export function turnFailure(entries, model, failure) {
   if (!failure) return undefined;
   const free = freeFailure(entries, model, failure.status);
   if (free) return free;
-  if (
-    failure.kind === "auth" ||
-    failure.status === 401 ||
-    failure.status === 403
-  )
-    return { kind: "auth" };
+  // Main derives "auth" from the error type; any other 401/403 (for example a
+  // content filter) is a refusal that no key or plan change explains.
+  if (failure.kind === "auth") return { kind: "auth" };
+  if (failure.status === 401 || failure.status === 403)
+    return { kind: "refused" };
   if (failure.kind === "network" || failure.status >= 500)
     return { kind: "server" };
   return undefined;
 }
+// The page banner yields only when the last turn's failure is explained inline
+// and the page error is the one that failed turn produces (never an unknown
+// outcome or an unrelated read failure).
+export const inlineExplained = (kind, errorCode) =>
+  Boolean(kind) &&
+  (errorCode === "AUTH_REQUIRED" || errorCode === "RUNTIME_ERROR");
 
 // Models that answered "not available for free", remembered per profile in the
 // same renderer storage as the picker memory (catalog ids only). A mark expires

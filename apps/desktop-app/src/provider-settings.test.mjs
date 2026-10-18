@@ -168,10 +168,23 @@ test("free-model failures classify by structured status and never touch paid mod
 });
 
 test("any failed turn classifies from structured status/kind only", async () => {
-  const { turnFailure } = await import("./renderer/shared/providers/index.mjs");
+  const { turnFailure, inlineExplained } = await import(
+    "./renderer/shared/providers/index.mjs"
+  );
+  // The page banner yields only to a failed turn's own page error.
+  assert.equal(inlineExplained("auth", "AUTH_REQUIRED"), true);
+  assert.equal(inlineExplained("server", "RUNTIME_ERROR"), true);
+  assert.equal(inlineExplained("auth", "UNKNOWN_OUTCOME"), false);
+  assert.equal(inlineExplained("auth", "UNAVAILABLE"), false);
+  assert.equal(inlineExplained(undefined, "RUNTIME_ERROR"), false);
   const paid = { providerId: "opencode", id: "gpt" };
-  assert.equal(turnFailure([], paid, { status: 403 })?.kind, "auth");
-  assert.equal(turnFailure([], paid, { status: 401 })?.kind, "auth");
+  // Only main's derived kind says auth; another 401/403 is a plain refusal.
+  assert.equal(turnFailure([], paid, { status: 403 })?.kind, "refused");
+  assert.equal(turnFailure([], paid, { status: 401 })?.kind, "refused");
+  assert.equal(
+    turnFailure([], paid, { status: 403, kind: "auth" })?.kind,
+    "auth",
+  );
   assert.equal(turnFailure([], paid, { kind: "auth" })?.kind, "auth");
   assert.equal(turnFailure([], paid, { status: 502 })?.kind, "server");
   assert.equal(turnFailure([], paid, { kind: "network" })?.kind, "server");

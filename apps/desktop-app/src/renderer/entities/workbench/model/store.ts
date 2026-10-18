@@ -9833,7 +9833,7 @@ export type WorkbenchStore = ReturnType<typeof createWorkbenchStore>;
 // inline (free-model 404/429, auth, server); the page drops its generic banner.
 function lastTurnFailure(
   s: State,
-): "unavailable" | "limit" | "auth" | "server" | undefined {
+): "unavailable" | "limit" | "auth" | "refused" | "server" | undefined {
   const last = currentSelectedSnapshot(s)?.messages.at(-1);
   if (last?.role !== "assistant" || !last.failure) return undefined;
   const models = s.catalog?.models;
