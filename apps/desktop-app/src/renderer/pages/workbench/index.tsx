@@ -62,10 +62,15 @@ import type {
 } from "../../../desktop-bridge.js";
 import { selectionKey } from "../../shared/projection/index.js";
 import { inlineExplained } from "../../shared/providers/index.js";
+import {
+  DEFAULT_LAYOUT,
+  PANEL_WIDTH_MIN,
+  saveLayout,
+} from "../../shared/preferences/index.js";
 import styles from "./shell.module.css";
 
-const MIN_PANEL_WIDTH = 320;
-const DEFAULT_PANEL_WIDTH = 420;
+const MIN_PANEL_WIDTH = PANEL_WIDTH_MIN;
+const DEFAULT_PANEL_WIDTH = DEFAULT_LAYOUT.panelWidth;
 const states: Record<string, string> = {
   loading: "런타임 확인 중…",
   disconnected: "연결 끊김",
@@ -151,7 +156,11 @@ export function Workbench() {
     });
   const setPanel = (panel: Panel | null) =>
     panel ? actions.openPanel(panel) : actions.closePanel();
-  const setPanelWidth = (panelWidth: number) => actions.layout({ panelWidth });
+  // Dragging updates the store only; the width is persisted when a gesture ends.
+  const setPanelWidth = (panelWidth: number, persist = true) => {
+    actions.layout({ panelWidth });
+    if (persist) saveLayout({ panelWidth });
+  };
   const [createOpen, setCreateOpen] = useState(false);
   const [locationOpen, setLocationOpen] = useState(false);
   const [folderName, setFolderName] = useState("");
@@ -1036,13 +1045,18 @@ export function Workbench() {
                   clampWidth(
                     drag.current.width + drag.current.x - event.clientX,
                   ),
+                  false,
                 );
             }}
             onPointerUp={(event) => {
+              if (drag.current)
+                saveLayout({ panelWidth: store.getState().layout.panelWidth });
               drag.current = null;
               event.currentTarget.releasePointerCapture(event.pointerId);
             }}
             onPointerCancel={() => {
+              if (drag.current)
+                saveLayout({ panelWidth: store.getState().layout.panelWidth });
               drag.current = null;
             }}
           />

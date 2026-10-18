@@ -114,6 +114,7 @@ export function SettingsDialog<T extends string>({
             <Dialog.Title className={styles.title}>{title}</Dialog.Title>
             <div
               role="tablist"
+              aria-label={`${title} 페이지`}
               aria-orientation="vertical"
               className={styles.tabs}
               onKeyDown={onTabKeyDown}
